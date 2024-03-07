@@ -109,7 +109,7 @@ extension AnalyticsItemsSoldViewModel {
     /// Items Solds data to render.
     ///
     var itemsSoldData: [TopPerformersRow.Data] {
-        isRedacted ? [] : itemSoldRows(from: itemsSoldStats)
+        isRedacted ? [.init(imageURL: nil, name: "Product Name", details: "Net Sales", value: "$5678")] : itemSoldRows(from: itemsSoldStats)
     }
 
     /// Indicates if there was an error loading items sold part of the card.

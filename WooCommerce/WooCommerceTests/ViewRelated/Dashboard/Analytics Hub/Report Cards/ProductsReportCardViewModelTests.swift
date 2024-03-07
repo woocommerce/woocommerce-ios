@@ -58,7 +58,10 @@ final class ProductsReportCardViewModelTests: XCTestCase {
 
     func test_AnalyticsProductsStatsCardViewModel_shows_sync_error_when_current_stats_are_nil() {
         // Given
-        let vm = AnalyticsProductsStatsCardViewModel(currentPeriodStats: nil, previousPeriodStats: .fake(), timeRange: .monthToDate, usageTracksEventEmitter: eventEmitter)
+        let vm = AnalyticsProductsStatsCardViewModel(currentPeriodStats: nil,
+                                                     previousPeriodStats: .fake(),
+                                                     timeRange: .monthToDate,
+                                                     usageTracksEventEmitter: eventEmitter)
 
         // Then
         XCTAssertTrue(vm.showStatsError)
@@ -66,7 +69,10 @@ final class ProductsReportCardViewModelTests: XCTestCase {
 
     func test_AnalyticsProductsStatsCardViewModel_shows_sync_error_when_previous_stats_are_nil() {
         // Given
-        let vm = AnalyticsProductsStatsCardViewModel(currentPeriodStats: .fake(), previousPeriodStats: nil, timeRange: .monthToDate, usageTracksEventEmitter: eventEmitter)
+        let vm = AnalyticsProductsStatsCardViewModel(currentPeriodStats: .fake(),
+                                                     previousPeriodStats: nil,
+                                                     timeRange: .monthToDate,
+                                                     usageTracksEventEmitter: eventEmitter)
 
         // Then
         XCTAssertTrue(vm.showStatsError)
@@ -74,7 +80,7 @@ final class ProductsReportCardViewModelTests: XCTestCase {
 
     func test_AnalyticsProductsStatsCardViewModel_redact_updates_properties_as_expected() {
         // Given
-        var vm = AnalyticsProductsStatsCardViewModel(currentPeriodStats: nil,
+        let vm = AnalyticsProductsStatsCardViewModel(currentPeriodStats: nil,
                                                      previousPeriodStats: nil,
                                                      timeRange: .monthToDate,
                                                      usageTracksEventEmitter: eventEmitter,
@@ -96,7 +102,9 @@ final class ProductsReportCardViewModelTests: XCTestCase {
         // Given
         let productName = "Woo!"
         let imageUrl = "https://woo.com/woo.png"
-        let vm = AnalyticsItemsSoldViewModel(itemsSoldStats: .fake().copy(items: [.fake().copy(productName: productName, quantity: 5, total: 100, currency: "USD", imageUrl: imageUrl)]))
+        let vm = AnalyticsItemsSoldViewModel(itemsSoldStats: .fake().copy(items: [
+            .fake().copy(productName: productName, quantity: 5, total: 100, currency: "USD", imageUrl: imageUrl)
+        ]))
 
         // Then
         assertEqual(URL(string: imageUrl), vm.itemsSoldData.first?.imageURL)
@@ -109,7 +117,7 @@ final class ProductsReportCardViewModelTests: XCTestCase {
 
     func test_AnalyticsItemsSoldViewModel_shows_error_when_stats_are_nil() {
         // Given
-        var vm = AnalyticsItemsSoldViewModel(itemsSoldStats: nil)
+        let vm = AnalyticsItemsSoldViewModel(itemsSoldStats: nil)
 
         // Then
         XCTAssertTrue(vm.showItemsSoldError)
@@ -117,14 +125,17 @@ final class ProductsReportCardViewModelTests: XCTestCase {
 
     func test_AnalyticsItemsSoldViewModel_redact_updates_properties_as_expected() {
         // Given
-        var vm = AnalyticsItemsSoldViewModel(itemsSoldStats: nil)
+        let vm = AnalyticsItemsSoldViewModel(itemsSoldStats: nil)
 
         // When
         vm.redact()
 
         // Then
-
-        assertEqual(0, vm.itemsSoldData.count)
+        let expectedPlaceholder = TopPerformersRow.Data(imageURL: nil, name: "Product Name", details: "Net Sales", value: "$5678")
+        assertEqual(expectedPlaceholder.imageURL, vm.itemsSoldData.first?.imageURL)
+        assertEqual(expectedPlaceholder.name, vm.itemsSoldData.first?.name)
+        assertEqual(expectedPlaceholder.details, vm.itemsSoldData.first?.details)
+        assertEqual(expectedPlaceholder.value, vm.itemsSoldData.first?.value)
         XCTAssertTrue(vm.isRedacted)
         XCTAssertFalse(vm.showItemsSoldError)
     }

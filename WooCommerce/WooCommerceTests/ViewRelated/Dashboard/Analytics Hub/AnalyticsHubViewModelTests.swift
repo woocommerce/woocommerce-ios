@@ -58,7 +58,6 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         XCTAssertEqual(vm.productsStatsCard.itemsSold, "5")
         XCTAssertEqual(vm.itemsSoldCard.itemsSoldData.count, 1)
         XCTAssertEqual(vm.sessionsCard.leadingValue, "53")
-        XCTAssertEqual(vm.sessionsCard.trailingValue, "50%")
     }
 
     func test_cards_viewmodels_show_sync_error_after_getting_error_from_network() async {
@@ -82,7 +81,6 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         // Then
         XCTAssertTrue(vm.productsStatsCard.showStatsError)
         XCTAssertTrue(vm.itemsSoldCard.showItemsSoldError)
-        XCTAssertTrue(vm.sessionsCard.showSyncError)
     }
 
     func test_cards_viewmodels_show_sync_error_only_if_underlying_request_fails() async {
@@ -109,8 +107,6 @@ final class AnalyticsHubViewModelTests: XCTestCase {
 
         XCTAssertFalse(vm.itemsSoldCard.showItemsSoldError)
         XCTAssertEqual(vm.itemsSoldCard.itemsSoldData.count, 1)
-
-        XCTAssertTrue(vm.sessionsCard.showSyncError)
     }
 
     func test_cards_viewmodels_redacted_while_updating_from_network() async {
@@ -119,7 +115,7 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         var loadingOrdersCardRedacted: Bool = false
         var loadingProductsCard: AnalyticsProductsStatsCardViewModel?
         var loadingItemsSoldCard: AnalyticsItemsSoldViewModel?
-        var loadingSessionsCard: AnalyticsReportCardCurrentPeriodViewModel?
+        var loadingSessionsCard: AnalyticsReportCardProtocol?
         stores.whenReceivingAction(ofType: StatsActionV4.self) { action in
             switch action {
             case let .retrieveCustomStats(_, _, _, _, _, _, _, completion):

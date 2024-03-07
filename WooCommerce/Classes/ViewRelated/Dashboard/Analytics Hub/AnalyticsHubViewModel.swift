@@ -97,7 +97,9 @@ final class AnalyticsHubViewModel: ObservableObject {
 
     /// Sessions Card ViewModel
     ///
-    @Published var sessionsCard = AnalyticsHubViewModel.sessionsCard(currentPeriodStats: nil, siteStats: nil)
+    lazy var sessionsCard: AnalyticsReportCardProtocol = {
+        sessionsCard(currentPeriodStats: currentOrderStats, siteStats: siteStats)
+    }()
 
     /// View model for `AnalyticsHubCustomizeView`, to customize the cards in the Analytics Hub.
     ///
@@ -404,7 +406,7 @@ private extension AnalyticsHubViewModel {
                 self.productsStatsCard = productsStatsCard.redacted
                 self.itemsSoldCard = itemsSoldCard.redacted
             case .sessions:
-                self.sessionsCard = sessionsCard.redacted
+                self.sessionsCard.redact()
             }
         }
     }
@@ -441,7 +443,7 @@ private extension AnalyticsHubViewModel {
             .sink { [weak self] (currentOrderStats, siteStats) in
                 guard let self else { return }
 
-                self.sessionsCard = AnalyticsHubViewModel.sessionsCard(currentPeriodStats: currentOrderStats, siteStats: siteStats)
+                self.sessionsCard = sessionsCard(currentPeriodStats: currentOrderStats, siteStats: siteStats)
             }.store(in: &subscriptions)
 
         $timeRangeSelectionType
@@ -504,20 +506,8 @@ private extension AnalyticsHubViewModel {
         return AnalyticsItemsSoldViewModel(itemsSoldData: itemSoldRows(from: itemsSoldStats), isRedacted: false, showItemsSoldError: showItemsSoldError)
     }
 
-    /// Helper function to create a `AnalyticsReportCardCurrentPeriodViewModel` from the fetched stats.
-    ///
-    static func sessionsCard(currentPeriodStats: OrderStatsV4?, siteStats: SiteSummaryStats?) -> AnalyticsReportCardCurrentPeriodViewModel {
-        let showSyncError = currentPeriodStats == nil || siteStats == nil
-
-        return AnalyticsReportCardCurrentPeriodViewModel(title: Localization.SessionsCard.title,
-                                                         leadingTitle: Localization.SessionsCard.leadingTitle,
-                                                         leadingValue: StatsDataTextFormatter.createViewsCountText(siteStats: siteStats),
-                                                         trailingTitle: Localization.SessionsCard.trailingTitle,
-                                                         trailingValue: StatsDataTextFormatter.createConversionRateText(orderStats: currentPeriodStats,
-                                                                                                                        siteStats: siteStats),
-                                                         isRedacted: false,
-                                                         showSyncError: showSyncError,
-                                                         syncErrorMessage: Localization.SessionsCard.noSessions)
+    func sessionsCard(currentPeriodStats: OrderStatsV4?, siteStats: SiteSummaryStats?) -> AnalyticsReportCardProtocol {
+        SessionsReportCardViewModel(currentOrderStats: currentPeriodStats, siteStats: siteStats)
     }
 
     /// Helper functions to create `TopPerformersRow.Data` items rom the provided `TopEarnerStats`.
@@ -643,14 +633,6 @@ private extension AnalyticsHubViewModel {
             static let reportTitle = NSLocalizedString("analyticsHub.productCard.reportTitle",
                                                        value: "Products Report",
                                                        comment: "Title for the products analytics report linked in the Analytics Hub")
-        }
-
-        enum SessionsCard {
-            static let title = NSLocalizedString("SESSIONS", comment: "Title for sessions section in the Analytics Hub")
-            static let leadingTitle = NSLocalizedString("Views", comment: "Label for total store views in the Analytics Hub")
-            static let trailingTitle = NSLocalizedString("Conversion Rate", comment: "Label for the conversion rate (orders per visitor) in the Analytics Hub")
-            static let noSessions = NSLocalizedString("Unable to load session analytics",
-                                                      comment: "Text displayed when there is an error loading session stats data.")
         }
 
         static let timeRangeGeneratorError = NSLocalizedString("Sorry, something went wrong. We can't load analytics for the selected date range.",

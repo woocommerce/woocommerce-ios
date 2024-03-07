@@ -257,7 +257,7 @@ extension StatsTimeRangeV4 {
     }
 }
 
-private extension StatsTimeRangeV4 {
+public extension StatsTimeRangeV4 {
     enum DifferenceInDays {
         case greaterThan3Years
         case from91daysTo3Years

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-02-27 09:54:04+0000 */
+/* Translation-Revision-Date: 2024-03-05 09:54:03+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ja_JP */
@@ -21,7 +21,8 @@
 /* Format for each Product attribute in plural form */
 "%1$@ (%2$ld options)" = "%1$@ (%2$ld オプション)";
 
-/* Displays a date range for a stats interval */
+/* Displays a date range for a custom stats interval
+   Displays a date range for a stats interval */
 "%1$@ - %2$@" = "%1$@-%2$@";
 
 /* Labels an order note. The user know it's not visible to the customer. Reads like 05:30 PM - username (Private) */
@@ -1902,6 +1903,7 @@ which should be translated separately and considered part of this sentence. */
 /* Action button to contact support when Jetpack install fails
    Button to contact support for login
    Close Account error alert button title - navigates the user to contact support.
+   Contact Support button in the application password tutorial screen
    Contact support button in the connectivity tool screen
    Contact Support title
    Text for the button to contact support from the store picker error screen
@@ -1930,6 +1932,7 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button on the Store Picker screen to select a store
    Button to submit password on the WPCom password login screen of the Jetpack setup flow.
+   Continue button in the application password tutorial screen
    Continue button inside every cell inside Create Shipping Label form
    Continue button on the add product from image form.
    Continue button on the product name field
@@ -2214,8 +2217,7 @@ which should be translated separately and considered part of this sentence. */
 "Currently creation is supported for 100 variations maximum. Generating variations for this product would create %d variations." = "現在、作成がサポートされているのは、最大100件のバリエーションです。 この商品のバリエーションを生成すると、%d件のバリエーションが作成されます。";
 
 /* Name of the section for custom shipment tracking carriers
-   Title of the Analytics Hub Custom selection range
-   Top Performers section title - Custom */
+   Title of the Analytics Hub Custom selection range */
 "Custom" = "カスタム";
 
 /* Navigation title on the add custom amount view in orders.
@@ -3099,6 +3101,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the exclusions section in Coupon Usage Restrictions screen */
 "Exclusions" = "除外";
 
+/* Button to exit the application password flow. */
+"Exit Anyway" = "終了";
+
 /* Button to cancel installation on the Jetpack setup interrupted screen */
 "Exit Without Connecting" = "連携せずに終了";
 
@@ -3766,6 +3771,9 @@ which should be translated separately and considered part of this sentence. */
 /* Legal disclaimer for signing up. The underscores _..._ denote underline. */
 "If you continue with Apple or Google and don't already have a WordPress.com account, you are creating an account and you agree to our _Terms of Service_." = "Apple または Google を引き続き使用し、WordPress.com アカウントをまだお持ちでない場合は、アカウントを作成して WordPress.com の _利用規約_ に同意します。";
 
+/* Text to contact support in the application password tutorial screen */
+"If you encounter any problem, contact us and we will happily assist you!" = "問題が発生した場合はいつでもお気軽にご相談ください。";
+
 /* Heading for the details pane showing the contactless limit on About Tap to Pay */
 "Important information" = "重要情報";
 
@@ -4043,6 +4051,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* An error message shown when a wpcom user provides the wrong password. */
 "It seems like you've entered an incorrect password. Want to give it another try?" = "入力したパスワードが正しくないようです。もう一度試しますか ?";
+
+/* Title for the unfinished application password alert */
+"It seems that you have not approved the app connection yet. Are you sure you want to exit?" = "アプリの連携をまだ承認していないようです。 終了してもよいですか ? ";
 
 /* An error message displayed when the user tries to log in to the app with site credentials but has application password disabled. Reads like: It seems that your site google.com has Application Password disabled. Please enable it to use the WooCommerce app. */
 "It seems that your site %@ has Application Password disabled. Please enable it to use the WooCommerce app." = "サイト %@ のアプリケーションパスワードが無効になっているようです。 WooCommerce アプリを使用するには、アプリケーションパスワードを有効にしてください。";
@@ -8005,19 +8016,16 @@ which should be translated separately and considered part of this sentence. */
    Title of button that displays information about the third party software libraries used in the creation of this app */
 "Third Party Licenses" = "サードパーティのライセンス";
 
-/* Tab selector title that shows the statistics for this month
-   Top Performers section title - this month */
+/* Tab selector title that shows the statistics for this month */
 "This Month" = "今月";
 
 /* The message of the alert when there is an error updating the product SKU */
 "This SKU is used on another product or is invalid." = "この SKU は別の製品で使用されているか、無効です。";
 
-/* Tab selector title that shows the statistics for this week
-   Top Performers section title - this week */
+/* Tab selector title that shows the statistics for this week */
 "This Week" = "今週";
 
-/* Tab selector title that shows the statistics for this year
-   Top Performers section title - this year */
+/* Tab selector title that shows the statistics for this year */
 "This Year" = "今年";
 
 /* Explanation in the alert presented when the user tries to connect a Bluetooth card reader with insufficient permissions */
@@ -8040,6 +8048,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error for missing package details on the Add New Custom Package screen in Shipping Label flow */
 "This field is required" = "このフィールドは必須です";
+
+/* Generic reason for why the user could not login tin the application password tutorial screen */
+"This is because we got an unexpected response from your site." = "サイトから予期しない応答があったことが原因です。";
+
+/* Reason for why the user could not login tin the application password tutorial screen */
+"This is likely because your store has some extra security steps in place." = "ストアのセキュリティ措置が強化されていることが原因だと考えられます。";
 
 /* Footer text in Product Slug screen */
 "This is the URL-friendly version of the product title" = "これは商品タイトルの URL フレンドリーなバージョンです。";
@@ -8173,8 +8187,7 @@ which should be translated separately and considered part of this sentence. */
 /* Label for one of the filters in order date range
    Tab selector title that shows the statistics for today
    Title of the Analytics Hub Today's selection range
-   Today Section Header
-   Top Performers section title - today */
+   Today Section Header */
 "Today" = "今日";
 
 /* Accessibility hint for selecting a product in the Select Products screen */
@@ -9051,6 +9064,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the default store picker error screen */
 "We couldn't load your site" = "サイトを読み込めませんでした";
 
+/* Title for the application password tutorial screen */
+"We couldn't log in into your site! 😭" = "サイトにログインできませんでした😭";
+
 /* A message displayed through a bottom notice letting the user know that the login from the app link failed */
 "We couldn't process your app login request" = "アプリログインのリクエストを処理できませんでした";
 
@@ -9641,6 +9657,12 @@ which should be translated separately and considered part of this sentence. */
 /* Label for button that opens a screen to customize the Analytics Hub */
 "analyticsHub.editButton.label" = "編集";
 
+/* Description when there are no analytics to display in the Analytics Hub. */
+"analyticsHub.emptyState.description" = "別の日付範囲を選択するか、「編集」をタップして表示できるアナリティクスを増やしてください。";
+
+/* Title when there are no analytics to display in the Analytics Hub. */
+"analyticsHub.emptyState.title" = "表示できるアナリティクスがありません";
+
 /* Label for button to enable Jetpack Stats */
 "analyticsHub.jetpackStatsCTA.buttonLabel" = "Jetpack 統計を有効化";
 
@@ -9682,6 +9704,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Widget title, displayed when selecting which widget to add */
 "appLinkWidget.displayName" = "アイコン";
+
+/* Button to send a message to a customer via Telegram */
+"billingInfoViewController.telegram" = "Telegram メッセージを送信";
+
+/* Button to send a message to a customer via WhatsApp */
+"billingInfoViewController.whatsapp" = "WhatsApp メッセージを送信";
 
 /* Message to display when a phone number or email address has been copied to clipboard */
 "billingInformationViewController.action.copied" = "クリップボードにコピーしました。";
@@ -10339,6 +10367,18 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility hint for selecting a variable product in the Add Product screen */
 "configurationForBlaze.variableProductRowAccessibilityHint" = "商品のバリエーション一覧を開きます。";
 
+/* Accessibility hint for selecting a product from the order filter screen */
+"configurationForOrder.productRowAccessibilityHint" = "注文を絞り込むための商品を選択します。";
+
+/* Text for the cancel button in the Product selector screen */
+"configurationForOrder.productSelectorCancel" = "キャンセル";
+
+/* Title for the screen to select product for filtering orders */
+"configurationForOrder.productSelectorTitle" = "商品";
+
+/* Accessibility hint for selecting a variable product to select product for filtering orders */
+"configurationForOrder.variableProductRowAccessibilityHint" = "商品のバリエーション一覧を開きます。";
+
 /* Action to toggle whether a bundle item is included when it is optional. */
 "configureBundleItem.add" = "追加";
 
@@ -10522,6 +10562,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility label to expand an expandable bottom sheet */
 "expandableBottomSheet.chevron.expand" = "詳細を表示";
+
+/* Row title for filtering orders by Product. */
+"filterOrderListViewModel.OrderListFilter.rowTitleProduct" = "商品";
 
 /* A message that tells the user why the app needs access to Bluetooth. */
 "infoplist.NSBluetoothAlwaysUsageDescription" = "このアプリでは Bluetooth を使用してサポートされているカードリーダーに接続します。";
@@ -10783,6 +10826,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the barcode scanning button to add a product to an order */
 "orderForm.products.add.scan.row.title" = "商品をスキャン";
 
+/* Title of the primary button on the new order screen when changes need to be manually synced. Tapping the button will send changes to the server, and when complete the totals and taxes will be accurate. */
+"orderForm.recalculate.button.title" = "再計算";
+
 /* Label for the row showing the cost of coupon in the order */
 "orderPaymentSection.coupon" = "クーポン";
 
@@ -10932,6 +10978,18 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the Products tab — plural form of Product */
 "productsTab.tabTitle" = "商品";
+
+/* Button to submit selected products to the order, when some product has been selected. */
+"productselectorview.doneButtonTitle.addProductsText" = "商品を追加";
+
+/* Button to dismiss the alert displayed when selecting an invalid time range for analytics */
+"rangedDatePicker.invalidTimeRangeAlert.action" = "了解";
+
+/* Message of the alert displayed when selecting an invalid time range for analytics */
+"rangedDatePicker.invalidTimeRangeAlert.message" = "開始日は終了日よりも前である必要があります。 別の時間範囲を選択してください。";
+
+/* Title of the alert displayed when selecting an invalid time range for analytics */
+"rangedDatePicker.invalidTimeRangeAlert.title" = "無効な時間範囲";
 
 /* Format of the number of product ratings in plural form */
 "rated %ld times" = "評価回数%ld回";
@@ -11277,6 +11335,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Åland Islands" = "オーランド諸島";
+
+/* Tutorial steps on the application password tutorial screen */
+"⁃ Tap the continue button at the bottom to login directly into your site.\n\n⁃ Once logged in, approve the connection to give access to the woo app like the in the image below." = "- 下にある「続行」ボタンをタップし、サイトに直接ログインします。\n\n- ログインしたら、下の画像のように、連携を承認して Woo アプリへのアクセス権を付与します。";
 
 /* Title of the local notification to remind the user to purchase a plan. */
 "🌟 Keep your business going!" = "🌟ビジネスを推し進めていきましょう !";

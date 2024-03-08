@@ -153,7 +153,6 @@ private extension ULAccountMismatchViewController {
 
     func configureExtraInfoButton() {
         extraInfoButton.applyLinkButtonStyle()
-        extraInfoButton.contentEdgeInsets = Constants.extraInfoCustomInsets
         extraInfoButton.setTitle(viewModel.auxiliaryButtonTitle, for: .normal)
         extraInfoButton.titleLabel?.numberOfLines = 0
         extraInfoButton.on(.touchUpInside) { [weak self] _ in

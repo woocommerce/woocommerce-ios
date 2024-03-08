@@ -415,9 +415,7 @@ private extension StoreStatsAndTopPerformersViewController {
         tabBar.equalWidthFill = .equalSpacing
         tabBar.equalWidthSpacing = TabBar.tabSpacing
 
-        if featureFlagService.isFeatureFlagEnabled(.customRangeInMyStoreAnalytics) {
-            addCustomViewToTabBar(customRangeButtonView)
-        }
+        addCustomViewToTabBar(customRangeButtonView)
 
         selectedTabSubscription = tabBar.$selectedIndex
             .print("🍎 tab switched")
@@ -435,10 +433,6 @@ private extension StoreStatsAndTopPerformersViewController {
 
     @MainActor
     func configureCustomRangeTab() async {
-        guard featureFlagService.isFeatureFlagEnabled(.customRangeInMyStoreAnalytics) else {
-            return
-        }
-
         guard let customRange = await loadTimeRangeForCustomRangeTab() else {
             return
         }
@@ -448,10 +442,6 @@ private extension StoreStatsAndTopPerformersViewController {
 
     @MainActor
     func loadTimeRangeForCustomRangeTab() async -> StatsTimeRangeV4? {
-        guard featureFlagService.isFeatureFlagEnabled(.customRangeInMyStoreAnalytics) else {
-            return nil
-        }
-
         return await withCheckedContinuation { continuation in
             stores.dispatch(AppSettingsAction.loadCustomStatsTimeRange(siteID: siteID) { timeRange in
                 continuation.resume(returning: timeRange)

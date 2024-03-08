@@ -458,6 +458,8 @@ private extension AnalyticsHubViewModel {
                                                                          usageTracksEventEmitter: self.usageTracksEventEmitter,
                                                                          analytics: self.analytics)
 
+                self.revenueCard.update(timeRange: newSelectionType)
+
                 // Update data on range selection change
                 Task.init {
                     await self.updateData()

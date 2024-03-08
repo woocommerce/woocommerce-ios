@@ -71,7 +71,7 @@ final class ReceiptViewController: UIViewController, WKNavigationDelegate {
         ServiceLocator.analytics.track(event: .InPersonPayments.receiptPrintTapped(countryCode: nil,
                                                                                    cardReaderModel: nil,
                                                                                    source: .backend))
-        guard let url = URL(string: viewModel.receiptURLString) else {
+        guard let _ = URL(string: viewModel.receiptURLString) else {
             return
         }
         let printController = UIPrintInteractionController.shared

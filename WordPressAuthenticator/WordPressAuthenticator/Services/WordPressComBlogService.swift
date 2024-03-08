@@ -43,7 +43,7 @@ class WordPressComBlogService {
 
             let site = WordPressComSiteInfo(remote: response)
             guard site.url != Constants.wordPressBlogURL else {
-                failure(WordPressOrgXMLRPCValidatorError.invalid)
+                failure(ServiceError.invalidWordPressAddress)
                 return
             }
             success(site)
@@ -63,5 +63,6 @@ extension WordPressComBlogService {
 
     enum ServiceError: Error {
         case unknown
+        case invalidWordPressAddress
     }
 }

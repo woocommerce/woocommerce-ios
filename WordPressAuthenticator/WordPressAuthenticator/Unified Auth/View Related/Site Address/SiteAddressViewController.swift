@@ -552,7 +552,7 @@ private extension SiteAddressViewController {
                     self?.navigationController?.pushViewController(customUI, animated: true)
                 }
             } else {
-                self.displayError(error, sourceTag: self.sourceTag)
+                self.displayError(message: Localization.invalidURL)
             }
         })
     }

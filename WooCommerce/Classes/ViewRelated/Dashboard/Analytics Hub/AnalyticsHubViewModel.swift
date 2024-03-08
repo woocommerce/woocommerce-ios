@@ -73,7 +73,8 @@ final class AnalyticsHubViewModel: ObservableObject {
         RevenueReportCardViewModel(currentPeriodStats: currentOrderStats,
                                    previousPeriodStats: previousOrderStats,
                                    timeRange: timeRangeSelectionType,
-                                   usageTracksEventEmitter: usageTracksEventEmitter)
+                                   usageTracksEventEmitter: usageTracksEventEmitter,
+                                   storeAdminURL: stores.sessionManager.defaultSite?.adminURL)
     }()
 
     /// Orders Card ViewModel

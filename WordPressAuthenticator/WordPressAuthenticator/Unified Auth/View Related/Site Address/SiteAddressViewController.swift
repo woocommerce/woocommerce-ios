@@ -541,12 +541,19 @@ private extension SiteAddressViewController {
             self.presentNextControllerIfPossible(siteInfo: siteInfo)
         }
 
-        service.fetchUnauthenticatedSiteInfoForAddress(for: baseSiteUrl, success: successBlock, failure: { [weak self] _ in
+        service.fetchUnauthenticatedSiteInfoForAddress(for: baseSiteUrl, success: successBlock, failure: { [weak self] error in
             self?.configureViewLoading(false)
             guard let self = self else {
                 return
             }
-            self.presentNextControllerIfPossible(siteInfo: nil)
+
+            if self.authenticationDelegate.shouldHandleError(error) {
+                self.authenticationDelegate.handleError(error) { [weak self] customUI in
+                    self?.navigationController?.pushViewController(customUI, animated: true)
+                }
+            } else {
+                self.displayError(error, sourceTag: self.sourceTag)
+            }
         })
     }
 

@@ -39,6 +39,12 @@ final class RevenueReportCardViewModel: AnalyticsReportCardProtocol {
     func redact() {
         isRedacted = true
     }
+
+    func update(currentPeriodStats: OrderStatsV4?, previousPeriodStats: OrderStatsV4?) {
+        self.currentPeriodStats = currentPeriodStats
+        self.previousPeriodStats = previousPeriodStats
+        isRedacted = false
+    }
 }
 
 // MARK: AnalyticsReportCardProtocol conformance

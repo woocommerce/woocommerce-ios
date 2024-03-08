@@ -117,7 +117,7 @@ final class AnalyticsHubViewModelTests: XCTestCase {
 
     func test_cards_viewmodels_redacted_while_updating_from_network() async {
         // Given
-        var loadingRevenueCard: AnalyticsReportCardProtocol?
+        var loadingRevenueCardRedacted: Bool = false
         var loadingOrdersCard: AnalyticsReportCardViewModel?
         var loadingProductsCard: AnalyticsProductsStatsCardViewModel?
         var loadingItemsSoldCard: AnalyticsItemsSoldViewModel?
@@ -126,7 +126,7 @@ final class AnalyticsHubViewModelTests: XCTestCase {
             switch action {
             case let .retrieveCustomStats(_, _, _, _, _, _, _, completion):
                 let stats = OrderStatsV4.fake().copy(totals: .fake().copy(totalOrders: 15, totalItemsSold: 5, grossRevenue: 62))
-                loadingRevenueCard = self.vm.revenueCard
+                loadingRevenueCardRedacted = self.vm.revenueCard.isRedacted
                 loadingOrdersCard = self.vm.ordersCard
                 loadingProductsCard = self.vm.productsStatsCard
                 loadingItemsSoldCard = self.vm.itemsSoldCard
@@ -147,7 +147,7 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         await vm.updateData()
 
         // Then
-        XCTAssertEqual(loadingRevenueCard?.isRedacted, true)
+        XCTAssertTrue(loadingRevenueCardRedacted)
         XCTAssertEqual(loadingOrdersCard?.isRedacted, true)
         XCTAssertEqual(loadingProductsCard?.isRedacted, true)
         XCTAssertEqual(loadingItemsSoldCard?.isRedacted, true)

@@ -79,7 +79,10 @@ final class AnalyticsHubViewModel: ObservableObject {
     /// Revenue Card ViewModel
     ///
     lazy var revenueCard: RevenueReportCardViewModel = {
-        revenueCard(currentPeriodStats: currentOrderStats, previousPeriodStats: previousOrderStats)
+        RevenueReportCardViewModel(currentPeriodStats: currentOrderStats,
+                                   previousPeriodStats: previousOrderStats,
+                                   timeRange: timeRangeSelectionType,
+                                   usageTracksEventEmitter: usageTracksEventEmitter)
     }()
 
     /// Orders Card ViewModel
@@ -421,8 +424,7 @@ private extension AnalyticsHubViewModel {
             .sink { [weak self] currentOrderStats, previousOrderStats in
                 guard let self else { return }
 
-                self.revenueCard = revenueCard(currentPeriodStats: currentOrderStats,
-                                               previousPeriodStats: previousOrderStats)
+                self.revenueCard.update(currentPeriodStats: currentOrderStats, previousPeriodStats: previousOrderStats)
                 self.ordersCard = AnalyticsHubViewModel.ordersCard(currentPeriodStats: currentOrderStats,
                                                                    previousPeriodStats: previousOrderStats,
                                                                    webReportViewModel: webReportVM(for: .orders))
@@ -477,14 +479,6 @@ private extension AnalyticsHubViewModel {
                     }
                 }
             }.store(in: &subscriptions)
-    }
-
-    func revenueCard(currentPeriodStats: OrderStatsV4?,
-                     previousPeriodStats: OrderStatsV4?) -> RevenueReportCardViewModel {
-        RevenueReportCardViewModel(currentPeriodStats: currentPeriodStats,
-                                   previousPeriodStats: previousPeriodStats,
-                                   timeRange: timeRangeSelectionType,
-                                   usageTracksEventEmitter: usageTracksEventEmitter)
     }
 
     static func ordersCard(currentPeriodStats: OrderStatsV4?,

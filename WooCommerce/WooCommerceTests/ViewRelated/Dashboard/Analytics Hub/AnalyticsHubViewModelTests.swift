@@ -115,7 +115,7 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         var loadingOrdersCardRedacted: Bool = false
         var loadingProductsCard: AnalyticsProductsStatsCardViewModel?
         var loadingItemsSoldCard: AnalyticsItemsSoldViewModel?
-        var loadingSessionsCard: AnalyticsReportCardProtocol?
+        var loadingSessionsCardRedacted: Bool = false
         stores.whenReceivingAction(ofType: StatsActionV4.self) { action in
             switch action {
             case let .retrieveCustomStats(_, _, _, _, _, _, _, completion):
@@ -130,7 +130,7 @@ final class AnalyticsHubViewModelTests: XCTestCase {
                 completion(.success(topEarners))
             case let .retrieveSiteSummaryStats(_, _, _, _, _, _, completion):
                 let siteStats = SiteSummaryStats.fake()
-                loadingSessionsCard = self.vm.sessionsCard
+                loadingSessionsCardRedacted = self.vm.sessionsCard.isRedacted
                 completion(.success(siteStats))
             default:
                 break
@@ -145,7 +145,7 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         XCTAssertTrue(loadingOrdersCardRedacted)
         XCTAssertEqual(loadingProductsCard?.isRedacted, true)
         XCTAssertEqual(loadingItemsSoldCard?.isRedacted, true)
-        XCTAssertEqual(loadingSessionsCard?.isRedacted, true)
+        XCTAssertTrue(loadingSessionsCardRedacted)
     }
 
     func test_session_card_is_hidden_for_custom_range() async {

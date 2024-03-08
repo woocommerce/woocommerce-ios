@@ -60,4 +60,18 @@ final class SessionsReportCardViewModelTests: XCTestCase {
         XCTAssertNil(vm.reportViewModel)
     }
 
+    func test_properties_updated_as_expected_after_stats_update() {
+        // Given
+        let vm = SessionsReportCardViewModel(currentOrderStats: nil, siteStats: nil)
+
+        // When
+        vm.update(currentOrderStats: OrderStatsV4.fake().copy(totals: .fake().copy(totalOrders: 5)),
+                  siteStats: SiteSummaryStats.fake().copy(visitors: 10, views: 60))
+
+        // Then
+        assertEqual("60", vm.leadingValue)
+        assertEqual("50%", vm.trailingValue)
+        XCTAssertFalse(vm.isRedacted)
+    }
+
 }

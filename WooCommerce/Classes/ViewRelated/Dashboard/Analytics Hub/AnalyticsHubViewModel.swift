@@ -97,8 +97,8 @@ final class AnalyticsHubViewModel: ObservableObject {
 
     /// Sessions Card ViewModel
     ///
-    lazy var sessionsCard: AnalyticsReportCardProtocol = {
-        sessionsCard(currentPeriodStats: currentOrderStats, siteStats: siteStats)
+    lazy var sessionsCard: SessionsReportCardViewModel = {
+        SessionsReportCardViewModel(currentOrderStats: currentOrderStats, siteStats: siteStats)
     }()
 
     /// View model for `AnalyticsHubCustomizeView`, to customize the cards in the Analytics Hub.
@@ -443,7 +443,7 @@ private extension AnalyticsHubViewModel {
             .sink { [weak self] (currentOrderStats, siteStats) in
                 guard let self else { return }
 
-                self.sessionsCard = sessionsCard(currentPeriodStats: currentOrderStats, siteStats: siteStats)
+                self.sessionsCard.update(currentOrderStats: currentOrderStats, siteStats: siteStats)
             }.store(in: &subscriptions)
 
         $timeRangeSelectionType
@@ -504,10 +504,6 @@ private extension AnalyticsHubViewModel {
         let showItemsSoldError = itemsSoldStats == nil
 
         return AnalyticsItemsSoldViewModel(itemsSoldData: itemSoldRows(from: itemsSoldStats), isRedacted: false, showItemsSoldError: showItemsSoldError)
-    }
-
-    func sessionsCard(currentPeriodStats: OrderStatsV4?, siteStats: SiteSummaryStats?) -> AnalyticsReportCardProtocol {
-        SessionsReportCardViewModel(currentOrderStats: currentPeriodStats, siteStats: siteStats)
     }
 
     /// Helper functions to create `TopPerformersRow.Data` items rom the provided `TopEarnerStats`.

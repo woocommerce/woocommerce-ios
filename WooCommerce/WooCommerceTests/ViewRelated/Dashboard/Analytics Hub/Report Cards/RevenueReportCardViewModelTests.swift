@@ -78,7 +78,7 @@ final class RevenueReportCardViewModelTests: XCTestCase {
 
     func test_redact_updates_properties_as_expected() {
         // Given
-        var vm = RevenueReportCardViewModel(currentPeriodStats: nil,
+        let vm = RevenueReportCardViewModel(currentPeriodStats: nil,
                                             previousPeriodStats: nil,
                                             timeRange: .monthToDate,
                                             usageTracksEventEmitter: eventEmitter,
@@ -98,6 +98,24 @@ final class RevenueReportCardViewModelTests: XCTestCase {
         XCTAssertTrue(vm.isRedacted)
         XCTAssertFalse(vm.showSyncError)
         XCTAssertNotNil(vm.reportViewModel)
+    }
+
+    func test_properties_updated_as_expected_after_update() {
+        // Given
+        let vm = RevenueReportCardViewModel(currentPeriodStats: nil,
+                                            previousPeriodStats: nil,
+                                            timeRange: .monthToDate,
+                                            usageTracksEventEmitter: eventEmitter,
+                                            storeAdminURL: sampleAdminURL)
+
+        // When
+        vm.update(currentPeriodStats: OrderStatsV4.fake().copy(totals: .fake().copy(grossRevenue: 60)),
+                  previousPeriodStats: OrderStatsV4.fake().copy(totals: .fake().copy(grossRevenue: 30)))
+
+        // Then
+        assertEqual("$60", vm.leadingValue)
+        assertEqual(DeltaPercentage(string: "+100%", direction: .positive), vm.leadingDelta)
+        XCTAssertFalse(vm.isRedacted)
     }
 
 }

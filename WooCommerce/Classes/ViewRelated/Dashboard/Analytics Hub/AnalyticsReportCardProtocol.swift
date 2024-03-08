@@ -56,10 +56,6 @@ protocol AnalyticsReportCardProtocol {
     /// View model for the web analytics report link
     ///
     var reportViewModel: AnalyticsReportLinkViewModel? { get }
-
-    /// Make redacted state of the card, replacing values with hardcoded placeholders
-    ///
-    mutating func redact()
 }
 
 /// Convenience extension to create an `AnalyticsReportCard` from a view model.

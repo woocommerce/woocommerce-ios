@@ -69,13 +69,16 @@ final class AnalyticsHubViewModel: ObservableObject {
 
     /// Revenue Card ViewModel
     ///
-    lazy var revenueCard: AnalyticsReportCardProtocol = {
-        revenueCard(currentPeriodStats: currentOrderStats, previousPeriodStats: previousOrderStats)
+    lazy var revenueCard: RevenueReportCardViewModel = {
+        RevenueReportCardViewModel(currentPeriodStats: currentOrderStats,
+                                   previousPeriodStats: previousOrderStats,
+                                   timeRange: timeRangeSelectionType,
+                                   usageTracksEventEmitter: usageTracksEventEmitter)
     }()
 
     /// Orders Card ViewModel
     ///
-    lazy var ordersCard: AnalyticsReportCardProtocol = {
+    lazy var ordersCard: OrdersReportCardViewModel = {
         ordersCard(currentPeriodStats: currentOrderStats, previousPeriodStats: previousOrderStats)
     }()
 
@@ -414,7 +417,7 @@ private extension AnalyticsHubViewModel {
             .sink { [weak self] currentOrderStats, previousOrderStats in
                 guard let self else { return }
 
-                self.revenueCard = revenueCard(currentPeriodStats: currentOrderStats, previousPeriodStats: previousOrderStats)
+                self.revenueCard.update(currentPeriodStats: currentOrderStats, previousPeriodStats: previousOrderStats)
                 self.ordersCard = ordersCard(currentPeriodStats: currentOrderStats, previousPeriodStats: previousOrderStats)
                 self.productsStatsCard = AnalyticsHubViewModel.productsStatsCard(currentPeriodStats: currentOrderStats,
                                                                                  previousPeriodStats: previousOrderStats,
@@ -446,6 +449,8 @@ private extension AnalyticsHubViewModel {
                                                                          usageTracksEventEmitter: self.usageTracksEventEmitter,
                                                                          analytics: self.analytics)
 
+                self.revenueCard.update(timeRange: newSelectionType)
+
                 // Update data on range selection change
                 Task.init {
                     await self.updateData()
@@ -469,16 +474,8 @@ private extension AnalyticsHubViewModel {
             }.store(in: &subscriptions)
     }
 
-    func revenueCard(currentPeriodStats: OrderStatsV4?,
-                     previousPeriodStats: OrderStatsV4?) -> AnalyticsReportCardProtocol {
-        RevenueReportCardViewModel(currentPeriodStats: currentPeriodStats,
-                                   previousPeriodStats: previousPeriodStats,
-                                   timeRange: timeRangeSelectionType,
-                                   usageTracksEventEmitter: usageTracksEventEmitter)
-    }
-
     func ordersCard(currentPeriodStats: OrderStatsV4?,
-                           previousPeriodStats: OrderStatsV4?) -> AnalyticsReportCardProtocol {
+                           previousPeriodStats: OrderStatsV4?) -> OrdersReportCardViewModel {
         OrdersReportCardViewModel(currentPeriodStats: currentPeriodStats,
                                   previousPeriodStats: previousPeriodStats,
                                   timeRange: timeRangeSelectionType,

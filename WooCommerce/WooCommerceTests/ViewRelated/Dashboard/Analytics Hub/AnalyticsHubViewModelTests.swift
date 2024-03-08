@@ -115,8 +115,8 @@ final class AnalyticsHubViewModelTests: XCTestCase {
 
     func test_cards_viewmodels_redacted_while_updating_from_network() async {
         // Given
-        var loadingRevenueCard: AnalyticsReportCardProtocol?
-        var loadingOrdersCard: AnalyticsReportCardProtocol?
+        var loadingRevenueCardRedacted: Bool = false
+        var loadingOrdersCard: OrdersReportCardViewModel?
         var loadingProductsCard: AnalyticsProductsStatsCardViewModel?
         var loadingItemsSoldCard: AnalyticsItemsSoldViewModel?
         var loadingSessionsCard: AnalyticsReportCardCurrentPeriodViewModel?
@@ -124,7 +124,7 @@ final class AnalyticsHubViewModelTests: XCTestCase {
             switch action {
             case let .retrieveCustomStats(_, _, _, _, _, _, _, completion):
                 let stats = OrderStatsV4.fake().copy(totals: .fake().copy(totalOrders: 15, totalItemsSold: 5, grossRevenue: 62))
-                loadingRevenueCard = self.vm.revenueCard
+                loadingRevenueCardRedacted = self.vm.revenueCard.isRedacted
                 loadingOrdersCard = self.vm.ordersCard
                 loadingProductsCard = self.vm.productsStatsCard
                 loadingItemsSoldCard = self.vm.itemsSoldCard
@@ -145,7 +145,7 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         await vm.updateData()
 
         // Then
-        XCTAssertEqual(loadingRevenueCard?.isRedacted, true)
+        XCTAssertTrue(loadingRevenueCardRedacted)
         XCTAssertEqual(loadingOrdersCard?.isRedacted, true)
         XCTAssertEqual(loadingProductsCard?.isRedacted, true)
         XCTAssertEqual(loadingItemsSoldCard?.isRedacted, true)
@@ -479,6 +479,24 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         // Then
         XCTAssertNotNil(loadingProductsCard?.reportViewModel?.initialURL)
         XCTAssertNotNil(vm.productsStatsCard.reportViewModel?.initialURL)
+    }
+
+    @MainActor
+    func test_card_report_URLs_contain_expected_period_after_new_timeRange_selection() async throws {
+        // Given
+        XCTAssertEqual(.monthToDate, vm.timeRangeSelectionType)
+
+        // When
+        vm.timeRangeSelectionType = .today
+
+        // Then
+        let revenueCardReportURL = try XCTUnwrap(vm.revenueCard.reportViewModel?.initialURL)
+
+        let revenueCardURLQueryItems = try XCTUnwrap(URLComponents(url: revenueCardReportURL, resolvingAgainstBaseURL: false)?.queryItems)
+
+        // Report URL contains expected time range period
+        let expectedPeriodQueryItem = URLQueryItem(name: "period", value: "today")
+        XCTAssertTrue(revenueCardURLQueryItems.contains(expectedPeriodQueryItem))
     }
 
     // MARK: Customized Analytics

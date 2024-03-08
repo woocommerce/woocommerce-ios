@@ -36,6 +36,8 @@ final class OrdersReportCardViewModel: AnalyticsReportCardProtocol {
         self.storeAdminURL = storeAdminURL
     }
 
+    /// Redacts the card content for a card loading state.
+    ///
     func redact() {
         isRedacted = true
     }

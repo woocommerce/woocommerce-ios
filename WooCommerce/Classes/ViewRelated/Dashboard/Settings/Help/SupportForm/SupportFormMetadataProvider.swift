@@ -204,6 +204,7 @@ private extension SupportFormMetadataProvider {
             }
         }()
 
+        // TODO: evaluate to not send anymore this information since this is deprecated and will not be replaced in the future by Apple.
         let networkCarrier = CTTelephonyNetworkInfo().serviceSubscriberCellularProviders?.first?.value
         let carrierName = networkCarrier?.carrierName ?? Constants.unknownValue
         let carrierCountryCode = networkCarrier?.isoCountryCode ?? Constants.unknownValue

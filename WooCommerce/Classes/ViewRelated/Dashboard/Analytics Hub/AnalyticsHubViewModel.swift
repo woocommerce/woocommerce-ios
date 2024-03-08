@@ -81,13 +81,17 @@ final class AnalyticsHubViewModel: ObservableObject {
     /// Products Stats Card ViewModel
     ///
     lazy var productsStatsCard: AnalyticsProductsStatsCardViewModel = {
-        productsStatsCard(currentPeriodStats: currentOrderStats, previousPeriodStats: previousOrderStats)
+        AnalyticsProductsStatsCardViewModel(currentPeriodStats: currentOrderStats,
+                                            previousPeriodStats: previousOrderStats,
+                                            timeRange: timeRangeSelectionType,
+                                            usageTracksEventEmitter: usageTracksEventEmitter,
+                                            storeAdminURL: stores.sessionManager.defaultSite?.adminURL)
     }()
 
     /// Items Sold Card ViewModel
     ///
     lazy var itemsSoldCard = {
-        productsItemsSoldCard(itemsSoldStats: itemsSoldStats)
+        AnalyticsItemsSoldViewModel(itemsSoldStats: itemsSoldStats)
     }()
 
     /// Sessions Card ViewModel
@@ -421,7 +425,7 @@ private extension AnalyticsHubViewModel {
 
                 self.revenueCard.update(currentPeriodStats: currentOrderStats, previousPeriodStats: previousOrderStats)
                 self.ordersCard.update(currentPeriodStats: currentOrderStats, previousPeriodStats: previousOrderStats)
-                self.productsStatsCard = productsStatsCard(currentPeriodStats: currentOrderStats, previousPeriodStats: previousOrderStats)
+                self.productsStatsCard.update(currentPeriodStats: currentOrderStats, previousPeriodStats: previousOrderStats)
 
             }.store(in: &subscriptions)
 
@@ -429,7 +433,7 @@ private extension AnalyticsHubViewModel {
             .sink { [weak self] itemsSoldStats in
                 guard let self else { return }
 
-                self.itemsSoldCard = productsItemsSoldCard(itemsSoldStats: itemsSoldStats)
+                self.itemsSoldCard.update(itemsSoldStats: itemsSoldStats)
             }.store(in: &subscriptions)
 
         $currentOrderStats.zip($siteStats)
@@ -451,6 +455,7 @@ private extension AnalyticsHubViewModel {
 
                 self.revenueCard.update(timeRange: newSelectionType)
                 self.ordersCard.update(timeRange: newSelectionType)
+                self.productsStatsCard.update(timeRange: newSelectionType)
 
                 // Update data on range selection change
                 Task.init {
@@ -473,23 +478,6 @@ private extension AnalyticsHubViewModel {
                     }
                 }
             }.store(in: &subscriptions)
-    }
-
-    /// Helper function to create a `AnalyticsProductsStatsCardViewModel` from the fetched stats.
-    ///
-    func productsStatsCard(currentPeriodStats: OrderStatsV4?,
-                           previousPeriodStats: OrderStatsV4?) -> AnalyticsProductsStatsCardViewModel {
-        AnalyticsProductsStatsCardViewModel(currentPeriodStats: currentPeriodStats,
-                                            previousPeriodStats: previousPeriodStats,
-                                            timeRange: timeRangeSelectionType,
-                                            usageTracksEventEmitter: usageTracksEventEmitter,
-                                            storeAdminURL: stores.sessionManager.defaultSite?.adminURL)
-    }
-
-    /// Helper function to create a `AnalyticsItemsSoldViewModel` from the fetched stats.
-    ///
-    func productsItemsSoldCard(itemsSoldStats: TopEarnerStats?) -> AnalyticsItemsSoldViewModel {
-        AnalyticsItemsSoldViewModel(itemsSoldStats: itemsSoldStats)
     }
 
     static func timeRangeCard(timeRangeSelection: AnalyticsHubTimeRangeSelection,

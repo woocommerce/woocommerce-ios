@@ -64,8 +64,8 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         // Given
         var loadingRevenueCardRedacted: Bool = false
         var loadingOrdersCardRedacted: Bool = false
-        var loadingProductsCard: AnalyticsProductsStatsCardViewModel?
-        var loadingItemsSoldCard: AnalyticsItemsSoldViewModel?
+        var loadingProductsStatsCardRedacted: Bool = false
+        var loadingItemsSoldCardRedacted: Bool = false
         var loadingSessionsCardRedacted: Bool = false
         stores.whenReceivingAction(ofType: StatsActionV4.self) { action in
             switch action {
@@ -73,8 +73,8 @@ final class AnalyticsHubViewModelTests: XCTestCase {
                 let stats = OrderStatsV4.fake().copy(totals: .fake().copy(totalOrders: 15, totalItemsSold: 5, grossRevenue: 62))
                 loadingRevenueCardRedacted = self.vm.revenueCard.isRedacted
                 loadingOrdersCardRedacted = self.vm.ordersCard.isRedacted
-                loadingProductsCard = self.vm.productsStatsCard
-                loadingItemsSoldCard = self.vm.itemsSoldCard
+                loadingProductsStatsCardRedacted = self.vm.productsStatsCard.isRedacted
+                loadingItemsSoldCardRedacted = self.vm.itemsSoldCard.isRedacted
                 completion(.success(stats))
             case let .retrieveTopEarnerStats(_, _, _, _, _, _, _, _, completion):
                 let topEarners = TopEarnerStats.fake().copy(items: [.fake()])
@@ -94,8 +94,8 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         // Then
         XCTAssertTrue(loadingRevenueCardRedacted)
         XCTAssertTrue(loadingOrdersCardRedacted)
-        XCTAssertEqual(loadingProductsCard?.isRedacted, true)
-        XCTAssertEqual(loadingItemsSoldCard?.isRedacted, true)
+        XCTAssertTrue(loadingProductsStatsCardRedacted)
+        XCTAssertTrue(loadingItemsSoldCardRedacted)
         XCTAssertTrue(loadingSessionsCardRedacted)
     }
 
@@ -354,6 +354,30 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         for event in expectedEvents {
             XCTAssert(analyticsProvider.receivedEvents.contains(event.rawValue), "Did not receive expected event: \(event.rawValue)")
         }
+    }
+
+    @MainActor
+    func test_card_report_URLs_contain_expected_period_after_new_timeRange_selection() async throws {
+        // Given
+        XCTAssertEqual(.monthToDate, vm.timeRangeSelectionType)
+
+        // When
+        vm.timeRangeSelectionType = .today
+
+        // Then
+        let revenueCardReportURL = try XCTUnwrap(vm.revenueCard.reportViewModel?.initialURL)
+        let ordersCardReportURL = try XCTUnwrap(vm.ordersCard.reportViewModel?.initialURL)
+        let productsStatsCardReportURL = try XCTUnwrap(vm.productsStatsCard.reportViewModel?.initialURL)
+
+        let revenueCardURLQueryItems = try XCTUnwrap(URLComponents(url: revenueCardReportURL, resolvingAgainstBaseURL: false)?.queryItems)
+        let ordersCardURLQueryItems = try XCTUnwrap(URLComponents(url: ordersCardReportURL, resolvingAgainstBaseURL: false)?.queryItems)
+        let productsStatsCardURLQueryItems = try XCTUnwrap(URLComponents(url: productsStatsCardReportURL, resolvingAgainstBaseURL: false)?.queryItems)
+
+        // Report URL contains expected time range period
+        let expectedPeriodQueryItem = URLQueryItem(name: "period", value: "today")
+        XCTAssertTrue(revenueCardURLQueryItems.contains(expectedPeriodQueryItem))
+        XCTAssertTrue(ordersCardURLQueryItems.contains(expectedPeriodQueryItem))
+        XCTAssertTrue(productsStatsCardURLQueryItems.contains(expectedPeriodQueryItem))
     }
 
     // MARK: Customized Analytics

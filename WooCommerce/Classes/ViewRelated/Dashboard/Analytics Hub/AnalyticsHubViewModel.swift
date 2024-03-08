@@ -79,7 +79,10 @@ final class AnalyticsHubViewModel: ObservableObject {
     /// Orders Card ViewModel
     ///
     lazy var ordersCard: OrdersReportCardViewModel = {
-        ordersCard(currentPeriodStats: currentOrderStats, previousPeriodStats: previousOrderStats)
+        OrdersReportCardViewModel(currentPeriodStats: currentOrderStats,
+                                  previousPeriodStats: previousOrderStats,
+                                  timeRange: timeRangeSelectionType,
+                                  usageTracksEventEmitter: usageTracksEventEmitter)
     }()
 
     /// Products Stats Card ViewModel
@@ -418,7 +421,7 @@ private extension AnalyticsHubViewModel {
                 guard let self else { return }
 
                 self.revenueCard.update(currentPeriodStats: currentOrderStats, previousPeriodStats: previousOrderStats)
-                self.ordersCard = ordersCard(currentPeriodStats: currentOrderStats, previousPeriodStats: previousOrderStats)
+                self.ordersCard.update(currentPeriodStats: currentOrderStats, previousPeriodStats: previousOrderStats)
                 self.productsStatsCard = AnalyticsHubViewModel.productsStatsCard(currentPeriodStats: currentOrderStats,
                                                                                  previousPeriodStats: previousOrderStats,
                                                                                  webReportViewModel: webReportVM(for: .products))
@@ -450,6 +453,7 @@ private extension AnalyticsHubViewModel {
                                                                          analytics: self.analytics)
 
                 self.revenueCard.update(timeRange: newSelectionType)
+                self.ordersCard.update(timeRange: newSelectionType)
 
                 // Update data on range selection change
                 Task.init {
@@ -472,14 +476,6 @@ private extension AnalyticsHubViewModel {
                     }
                 }
             }.store(in: &subscriptions)
-    }
-
-    func ordersCard(currentPeriodStats: OrderStatsV4?,
-                           previousPeriodStats: OrderStatsV4?) -> OrdersReportCardViewModel {
-        OrdersReportCardViewModel(currentPeriodStats: currentPeriodStats,
-                                  previousPeriodStats: previousPeriodStats,
-                                  timeRange: timeRangeSelectionType,
-                                  usageTracksEventEmitter: usageTracksEventEmitter)
     }
 
     /// Helper function to create a `AnalyticsProductsStatsCardViewModel` from the fetched stats.

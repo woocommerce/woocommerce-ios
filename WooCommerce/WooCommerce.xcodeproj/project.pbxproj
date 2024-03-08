@@ -941,7 +941,7 @@
 		26E7EE6A292D688900793045 /* AnalyticsHubViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26E7EE69292D688900793045 /* AnalyticsHubViewModel.swift */; };
 		26E7EE6E29300E8100793045 /* AnalyticsProductCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26E7EE6D29300E8100793045 /* AnalyticsProductCard.swift */; };
 		26E7EE7029300F6200793045 /* DeltaTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26E7EE6F29300F6200793045 /* DeltaTag.swift */; };
-		26E7EE7229301EBC00793045 /* AnalyticsProductCardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26E7EE7129301EBC00793045 /* AnalyticsProductCardViewModel.swift */; };
+		26E7EE7229301EBC00793045 /* ProductsReportCardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26E7EE7129301EBC00793045 /* ProductsReportCardViewModel.swift */; };
 		26E7EE7429365F0700793045 /* TopPerformersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26E7EE7329365F0700793045 /* TopPerformersView.swift */; };
 		26ED9660274328BC00FA00A1 /* SimplePaymentsSummaryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26ED965F274328BC00FA00A1 /* SimplePaymentsSummaryViewModel.swift */; };
 		26EE795F2AA795A000857293 /* Networking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B5C3B5E220D189E60072CB9D /* Networking.framework */; };
@@ -2078,6 +2078,7 @@
 		CEEF742C2B9A052300B03948 /* OrdersReportCardViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEEF742B2B9A052300B03948 /* OrdersReportCardViewModelTests.swift */; };
 		CEEF742E2B9A0BAA00B03948 /* SessionsReportCardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEEF742D2B9A0BAA00B03948 /* SessionsReportCardViewModel.swift */; };
 		CEEF74302B9A0E8900B03948 /* SessionsReportCardViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEEF742F2B9A0E8900B03948 /* SessionsReportCardViewModelTests.swift */; };
+		CEEF74322B9A2F9400B03948 /* ProductsReportCardViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEEF74312B9A2F9400B03948 /* ProductsReportCardViewModelTests.swift */; };
 		CEF2DD862B558E3E00A3DD0B /* AnalyticsCTACard.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEF2DD852B558E3E00A3DD0B /* AnalyticsCTACard.swift */; };
 		CEF5A28F2A68466E0059CFD3 /* stats_summary_day.json in Resources */ = {isa = PBXBuildFile; fileRef = CEF5A28E2A68466E0059CFD3 /* stats_summary_day.json */; };
 		CEF5A2912A68467C0059CFD3 /* stats_summary_week.json in Resources */ = {isa = PBXBuildFile; fileRef = CEF5A2902A68467C0059CFD3 /* stats_summary_week.json */; };
@@ -3655,7 +3656,7 @@
 		26E7EE69292D688900793045 /* AnalyticsHubViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsHubViewModel.swift; sourceTree = "<group>"; };
 		26E7EE6D29300E8100793045 /* AnalyticsProductCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsProductCard.swift; sourceTree = "<group>"; };
 		26E7EE6F29300F6200793045 /* DeltaTag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeltaTag.swift; sourceTree = "<group>"; };
-		26E7EE7129301EBC00793045 /* AnalyticsProductCardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsProductCardViewModel.swift; sourceTree = "<group>"; };
+		26E7EE7129301EBC00793045 /* ProductsReportCardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductsReportCardViewModel.swift; sourceTree = "<group>"; };
 		26E7EE7329365F0700793045 /* TopPerformersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopPerformersView.swift; sourceTree = "<group>"; };
 		26ED965F274328BC00FA00A1 /* SimplePaymentsSummaryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimplePaymentsSummaryViewModel.swift; sourceTree = "<group>"; };
 		26EE795E2AA7924700857293 /* NotificationExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = NotificationExtension.entitlements; sourceTree = "<group>"; };
@@ -4810,6 +4811,7 @@
 		CEEF742B2B9A052300B03948 /* OrdersReportCardViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrdersReportCardViewModelTests.swift; sourceTree = "<group>"; };
 		CEEF742D2B9A0BAA00B03948 /* SessionsReportCardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionsReportCardViewModel.swift; sourceTree = "<group>"; };
 		CEEF742F2B9A0E8900B03948 /* SessionsReportCardViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionsReportCardViewModelTests.swift; sourceTree = "<group>"; };
+		CEEF74312B9A2F9400B03948 /* ProductsReportCardViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductsReportCardViewModelTests.swift; sourceTree = "<group>"; };
 		CEF2DD852B558E3E00A3DD0B /* AnalyticsCTACard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsCTACard.swift; sourceTree = "<group>"; };
 		CEF5A28E2A68466E0059CFD3 /* stats_summary_day.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = stats_summary_day.json; sourceTree = "<group>"; };
 		CEF5A2902A68467C0059CFD3 /* stats_summary_week.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = stats_summary_week.json; sourceTree = "<group>"; };
@@ -7208,7 +7210,6 @@
 				B60B5025292D308A00178C26 /* AnalyticsTimeRangeCard.swift */,
 				B6A10E9B292E5DEE00790797 /* AnalyticsTimeRangeCardViewModel.swift */,
 				26E7EE6D29300E8100793045 /* AnalyticsProductCard.swift */,
-				26E7EE7129301EBC00793045 /* AnalyticsProductCardViewModel.swift */,
 				CEF2DD852B558E3E00A3DD0B /* AnalyticsCTACard.swift */,
 				CC41E70B29310C1F008B3FB9 /* AnalyticsLineChart.swift */,
 				CCA1D5FD293F537400B40560 /* DeltaPercentage.swift */,
@@ -10993,6 +10994,7 @@
 				CEEF74242B99EF1200B03948 /* RevenueReportCardViewModel.swift */,
 				CEEF74292B9A02EB00B03948 /* OrdersReportCardViewModel.swift */,
 				CEEF742D2B9A0BAA00B03948 /* SessionsReportCardViewModel.swift */,
+				26E7EE7129301EBC00793045 /* ProductsReportCardViewModel.swift */,
 			);
 			path = "Report Cards";
 			sourceTree = "<group>";
@@ -11003,6 +11005,7 @@
 				CEEF74272B99F57A00B03948 /* RevenueReportCardViewModelTests.swift */,
 				CEEF742B2B9A052300B03948 /* OrdersReportCardViewModelTests.swift */,
 				CEEF742F2B9A0E8900B03948 /* SessionsReportCardViewModelTests.swift */,
+				CEEF74312B9A2F9400B03948 /* ProductsReportCardViewModelTests.swift */,
 			);
 			path = "Report Cards";
 			sourceTree = "<group>";
@@ -13994,7 +13997,7 @@
 				E1E649E92846188C0070B194 /* BetaFeature.swift in Sources */,
 				0286B27B23C7051F003D784B /* ProductImagesCollectionViewController.swift in Sources */,
 				E107FCE126C12B2700BAF51B /* InPersonPaymentsCountryNotSupported.swift in Sources */,
-				26E7EE7229301EBC00793045 /* AnalyticsProductCardViewModel.swift in Sources */,
+				26E7EE7229301EBC00793045 /* ProductsReportCardViewModel.swift in Sources */,
 				027A2E142513124E00DA6ACB /* Keychain+Entries.swift in Sources */,
 				B97C6E562B15E51A008A2BF2 /* UpdateProductInventoryView.swift in Sources */,
 				268EC45F26CEA50C00716F5C /* EditCustomerNote.swift in Sources */,
@@ -14834,6 +14837,7 @@
 				26FE09E124DB8FA000B9BDF5 /* SurveyCoordinatorControllerTests.swift in Sources */,
 				CE91BEA029FBE9E100B6E1AF /* QuantityRulesViewModelTests.swift in Sources */,
 				0277AEAB256CAA5300F45C4A /* MockShippingLabelAddress.swift in Sources */,
+				CEEF74322B9A2F9400B03948 /* ProductsReportCardViewModelTests.swift in Sources */,
 				D83F593D225B4B5000626E75 /* ManualTrackingViewControllerTests.swift in Sources */,
 				CC53FB402759042600C4CA4F /* ProductSelectorViewModelTests.swift in Sources */,
 				DE0A2EB1281BED38007A8015 /* ProductCategorySelectorViewModelTests.swift in Sources */,

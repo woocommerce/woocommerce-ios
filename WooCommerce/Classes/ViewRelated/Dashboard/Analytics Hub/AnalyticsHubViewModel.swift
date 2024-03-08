@@ -52,15 +52,6 @@ final class AnalyticsHubViewModel: ObservableObject {
                                                                  analytics: analytics)
         self.usageTracksEventEmitter = usageTracksEventEmitter
 
-        let storeAdminURL = stores.sessionManager.defaultSite?.adminURL
-        let productsWebReportVM = AnalyticsHubViewModel.webReportVM(for: .products,
-                                                                    timeRange: selectedType,
-                                                                    storeAdminURL: storeAdminURL,
-                                                                    usageTracksEventEmitter: usageTracksEventEmitter)
-        self.productsStatsCard = AnalyticsHubViewModel.productsStatsCard(currentPeriodStats: nil,
-                                                                         previousPeriodStats: nil,
-                                                                         webReportViewModel: productsWebReportVM)
-
         bindViewModelsWithData()
         bindCardSettingsWithData()
     }
@@ -89,11 +80,19 @@ final class AnalyticsHubViewModel: ObservableObject {
 
     /// Products Stats Card ViewModel
     ///
-    @Published var productsStatsCard: AnalyticsProductsStatsCardViewModel
+    lazy var productsStatsCard: AnalyticsProductsStatsCardViewModel = {
+        AnalyticsProductsStatsCardViewModel(currentPeriodStats: currentOrderStats,
+                                            previousPeriodStats: previousOrderStats,
+                                            timeRange: timeRangeSelectionType,
+                                            usageTracksEventEmitter: usageTracksEventEmitter,
+                                            storeAdminURL: stores.sessionManager.defaultSite?.adminURL)
+    }()
 
     /// Items Sold Card ViewModel
     ///
-    @Published var itemsSoldCard = AnalyticsHubViewModel.productsItemsSoldCard(itemsSoldStats: nil)
+    lazy var itemsSoldCard = {
+        AnalyticsItemsSoldViewModel(itemsSoldStats: itemsSoldStats)
+    }()
 
     /// Sessions Card ViewModel
     ///
@@ -403,8 +402,8 @@ private extension AnalyticsHubViewModel {
             case .orders:
                 self.ordersCard.redact()
             case .products:
-                self.productsStatsCard = productsStatsCard.redacted
-                self.itemsSoldCard = itemsSoldCard.redacted
+                self.productsStatsCard.redact()
+                self.itemsSoldCard.redact()
             case .sessions:
                 self.sessionsCard.redact()
             }
@@ -426,9 +425,7 @@ private extension AnalyticsHubViewModel {
 
                 self.revenueCard.update(currentPeriodStats: currentOrderStats, previousPeriodStats: previousOrderStats)
                 self.ordersCard.update(currentPeriodStats: currentOrderStats, previousPeriodStats: previousOrderStats)
-                self.productsStatsCard = AnalyticsHubViewModel.productsStatsCard(currentPeriodStats: currentOrderStats,
-                                                                                 previousPeriodStats: previousOrderStats,
-                                                                                 webReportViewModel: webReportVM(for: .products))
+                self.productsStatsCard.update(currentPeriodStats: currentOrderStats, previousPeriodStats: previousOrderStats)
 
             }.store(in: &subscriptions)
 
@@ -436,7 +433,7 @@ private extension AnalyticsHubViewModel {
             .sink { [weak self] itemsSoldStats in
                 guard let self else { return }
 
-                self.itemsSoldCard = AnalyticsHubViewModel.productsItemsSoldCard(itemsSoldStats: itemsSoldStats)
+                self.itemsSoldCard.update(itemsSoldStats: itemsSoldStats)
             }.store(in: &subscriptions)
 
         $currentOrderStats.zip($siteStats)
@@ -458,6 +455,7 @@ private extension AnalyticsHubViewModel {
 
                 self.revenueCard.update(timeRange: newSelectionType)
                 self.ordersCard.update(timeRange: newSelectionType)
+                self.productsStatsCard.update(timeRange: newSelectionType)
 
                 // Update data on range selection change
                 Task.init {
@@ -482,45 +480,6 @@ private extension AnalyticsHubViewModel {
             }.store(in: &subscriptions)
     }
 
-    /// Helper function to create a `AnalyticsProductsStatsCardViewModel` from the fetched stats.
-    ///
-    static func productsStatsCard(currentPeriodStats: OrderStatsV4?,
-                                  previousPeriodStats: OrderStatsV4?,
-                                  webReportViewModel: AnalyticsReportLinkViewModel?) -> AnalyticsProductsStatsCardViewModel {
-        let showStatsError = currentPeriodStats == nil || previousPeriodStats == nil
-        let itemsSold = StatsDataTextFormatter.createItemsSoldText(orderStats: currentPeriodStats)
-        let itemsSoldDelta = StatsDataTextFormatter.createOrderItemsSoldDelta(from: previousPeriodStats, to: currentPeriodStats)
-
-        return AnalyticsProductsStatsCardViewModel(itemsSold: itemsSold,
-                                                   delta: itemsSoldDelta,
-                                                   isRedacted: false,
-                                                   showStatsError: showStatsError,
-                                                   reportViewModel: webReportViewModel)
-    }
-
-    /// Helper function to create a `AnalyticsItemsSoldViewModel` from the fetched stats.
-    ///
-    static func productsItemsSoldCard(itemsSoldStats: TopEarnerStats?) -> AnalyticsItemsSoldViewModel {
-        let showItemsSoldError = itemsSoldStats == nil
-
-        return AnalyticsItemsSoldViewModel(itemsSoldData: itemSoldRows(from: itemsSoldStats), isRedacted: false, showItemsSoldError: showItemsSoldError)
-    }
-
-    /// Helper functions to create `TopPerformersRow.Data` items rom the provided `TopEarnerStats`.
-    ///
-    static func itemSoldRows(from itemSoldStats: TopEarnerStats?) -> [TopPerformersRow.Data] {
-        guard let items = itemSoldStats?.items else {
-            return []
-        }
-
-        return items.map { item in
-            TopPerformersRow.Data(imageURL: URL(string: item.imageUrl ?? ""),
-                                  name: item.productName ?? "",
-                                  details: Localization.ProductCard.netSales(value: item.totalString),
-                                  value: "\(item.quantity)")
-        }
-    }
-
     static func timeRangeCard(timeRangeSelection: AnalyticsHubTimeRangeSelection,
                               usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter,
                               analytics: Analytics) -> AnalyticsTimeRangeCardViewModel {
@@ -535,41 +494,6 @@ private extension AnalyticsHubViewModel {
             usageTracksEventEmitter.interacted()
             analytics.track(event: .AnalyticsHub.dateRangeOptionSelected(selection.tracksIdentifier))
         })
-    }
-
-    /// Gets the view model to show a web analytics report, based on the provided report type and currently selected time range
-    ///
-    func webReportVM(for report: AnalyticsWebReport.ReportType) -> AnalyticsReportLinkViewModel? {
-        return AnalyticsHubViewModel.webReportVM(for: report,
-                                                 timeRange: timeRangeSelectionType,
-                                                 storeAdminURL: stores.sessionManager.defaultSite?.adminURL,
-                                                 usageTracksEventEmitter: usageTracksEventEmitter)
-    }
-
-    /// Gets the view model to show a web analytics report, based on the provided report type, time range, and store admin URL
-    ///
-    static func webReportVM(for report: AnalyticsWebReport.ReportType,
-                            timeRange: AnalyticsHubTimeRangeSelection.SelectionType,
-                            storeAdminURL: String?,
-                            usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter) -> AnalyticsReportLinkViewModel? {
-        guard let url = AnalyticsWebReport.getUrl(for: report, timeRange: timeRange, storeAdminURL: storeAdminURL) else {
-            return nil
-        }
-        let title = {
-            switch report {
-            case .revenue:
-                return ""
-            case .orders:
-                return ""
-            case .products:
-                return Localization.ProductCard.reportTitle
-            }
-        }()
-        return AnalyticsReportLinkViewModel(reportType: report,
-                                            period: timeRange,
-                                            webViewTitle: title,
-                                            reportURL: url,
-                                            usageTracksEventEmitter: usageTracksEventEmitter)
     }
 }
 
@@ -621,16 +545,6 @@ private extension AnalyticsHubViewModel {
     }
 
     enum Localization {
-        enum ProductCard {
-            static func netSales(value: String) -> String {
-                String.localizedStringWithFormat(NSLocalizedString("Net sales: %@", comment: "Label for the total sales of a product in the Analytics Hub"),
-                                                 value)
-            }
-            static let reportTitle = NSLocalizedString("analyticsHub.productCard.reportTitle",
-                                                       value: "Products Report",
-                                                       comment: "Title for the products analytics report linked in the Analytics Hub")
-        }
-
         static let timeRangeGeneratorError = NSLocalizedString("Sorry, something went wrong. We can't load analytics for the selected date range.",
                                                                comment: "Error shown when there is a problem retrieving the dates for the selected date range.")
         static let statsCTAError = NSLocalizedString("analyticsHub.jetpackStatsCTA.errorNotice",

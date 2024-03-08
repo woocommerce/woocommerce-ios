@@ -118,4 +118,21 @@ final class RevenueReportCardViewModelTests: XCTestCase {
         XCTAssertFalse(vm.isRedacted)
     }
 
+    func test_properties_updated_as_expected_after_timeRange_update() throws {
+        // Given
+        let vm = RevenueReportCardViewModel(currentPeriodStats: nil,
+                                            previousPeriodStats: nil,
+                                            timeRange: .monthToDate,
+                                            usageTracksEventEmitter: eventEmitter,
+                                            storeAdminURL: sampleAdminURL)
+
+        // When
+        vm.update(timeRange: .today)
+
+        // Then
+        let reportURL = try XCTUnwrap(vm.reportViewModel?.initialURL)
+        let queryItems = try XCTUnwrap(URLComponents(url: reportURL, resolvingAgainstBaseURL: false)?.queryItems)
+        XCTAssertTrue(queryItems.contains(URLQueryItem(name: "period", value: "today")))
+    }
+
 }

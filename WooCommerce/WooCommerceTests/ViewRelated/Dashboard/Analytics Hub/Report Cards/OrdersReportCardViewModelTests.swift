@@ -78,7 +78,7 @@ final class OrdersReportCardViewModelTests: XCTestCase {
 
     func test_redact_updates_properties_as_expected() {
         // Given
-        var vm = OrdersReportCardViewModel(currentPeriodStats: nil,
+        let vm = OrdersReportCardViewModel(currentPeriodStats: nil,
                                            previousPeriodStats: nil,
                                            timeRange: .monthToDate,
                                            usageTracksEventEmitter: eventEmitter,
@@ -98,6 +98,41 @@ final class OrdersReportCardViewModelTests: XCTestCase {
         XCTAssertTrue(vm.isRedacted)
         XCTAssertFalse(vm.showSyncError)
         XCTAssertNotNil(vm.reportViewModel)
+    }
+
+    func test_properties_updated_as_expected_after_stats_update() {
+        // Given
+        let vm = OrdersReportCardViewModel(currentPeriodStats: nil,
+                                           previousPeriodStats: nil,
+                                           timeRange: .monthToDate,
+                                           usageTracksEventEmitter: eventEmitter,
+                                           storeAdminURL: sampleAdminURL)
+
+        // When
+        vm.update(currentPeriodStats: OrderStatsV4.fake().copy(totals: .fake().copy(totalOrders: 60)),
+                  previousPeriodStats: OrderStatsV4.fake().copy(totals: .fake().copy(totalOrders: 30)))
+
+        // Then
+        assertEqual("60", vm.leadingValue)
+        assertEqual(DeltaPercentage(string: "+100%", direction: .positive), vm.leadingDelta)
+        XCTAssertFalse(vm.isRedacted)
+    }
+
+    func test_properties_updated_as_expected_after_timeRange_update() throws {
+        // Given
+        let vm = OrdersReportCardViewModel(currentPeriodStats: nil,
+                                           previousPeriodStats: nil,
+                                           timeRange: .monthToDate,
+                                           usageTracksEventEmitter: eventEmitter,
+                                           storeAdminURL: sampleAdminURL)
+
+        // When
+        vm.update(timeRange: .today)
+
+        // Then
+        let reportURL = try XCTUnwrap(vm.reportViewModel?.initialURL)
+        let queryItems = try XCTUnwrap(URLComponents(url: reportURL, resolvingAgainstBaseURL: false)?.queryItems)
+        XCTAssertTrue(queryItems.contains(URLQueryItem(name: "period", value: "today")))
     }
 
 }

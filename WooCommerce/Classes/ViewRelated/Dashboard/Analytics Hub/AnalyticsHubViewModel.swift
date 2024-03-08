@@ -83,7 +83,8 @@ final class AnalyticsHubViewModel: ObservableObject {
         OrdersReportCardViewModel(currentPeriodStats: currentOrderStats,
                                   previousPeriodStats: previousOrderStats,
                                   timeRange: timeRangeSelectionType,
-                                  usageTracksEventEmitter: usageTracksEventEmitter)
+                                  usageTracksEventEmitter: usageTracksEventEmitter,
+                                  storeAdminURL: stores.sessionManager.defaultSite?.adminURL)
     }()
 
     /// Products Stats Card ViewModel

@@ -9,6 +9,7 @@
 - [**] Performance: Add a connectivity tool to diagnose possible network failures [https://github.com/woocommerce/woocommerce-ios/pull/12240]
 - [internal] Performance: Retries orders timeout errors [https://github.com/woocommerce/woocommerce-ios/pull/12240]
 - [**] My Store Analytics: Now a custom date range can be added for analyzing store performance in any arbitrary time ranges. [https://github.com/woocommerce/woocommerce-ios/pull/12243]
+- [***] Orders: Side-by-side view for Order Creation or Editing on iPad and larger iPhones [https://github.com/woocommerce/woocommerce-ios/pull/12246]
 
 
 

@@ -42,6 +42,10 @@ class WordPressComBlogService {
             }
 
             let site = WordPressComSiteInfo(remote: response)
+            guard site.url != Constants.wordPressBlogURL else {
+                failure(ServiceError.invalidWordPressAddress)
+                return
+            }
             success(site)
         }, failure: { error in
             let result = error ?? ServiceError.unknown
@@ -53,8 +57,12 @@ class WordPressComBlogService {
 // MARK: - Nested Types
 //
 extension WordPressComBlogService {
+    enum Constants {
+        static let wordPressBlogURL = "https://wordpress.com/blog"
+    }
 
     enum ServiceError: Error {
         case unknown
+        case invalidWordPressAddress
     }
 }

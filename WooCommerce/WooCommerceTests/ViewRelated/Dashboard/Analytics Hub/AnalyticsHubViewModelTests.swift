@@ -80,7 +80,6 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         await vm.updateData()
 
         // Then
-        XCTAssertTrue(vm.revenueCard.showSyncError)
         XCTAssertTrue(vm.ordersCard.showSyncError)
         XCTAssertTrue(vm.productsStatsCard.showStatsError)
         XCTAssertTrue(vm.itemsSoldCard.showItemsSoldError)
@@ -107,7 +106,6 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         await vm.updateData()
 
         // Then
-        XCTAssertTrue(vm.revenueCard.showSyncError)
         XCTAssertTrue(vm.ordersCard.showSyncError)
         XCTAssertTrue(vm.productsStatsCard.showStatsError)
 
@@ -119,7 +117,7 @@ final class AnalyticsHubViewModelTests: XCTestCase {
 
     func test_cards_viewmodels_redacted_while_updating_from_network() async {
         // Given
-        var loadingRevenueCard: AnalyticsReportCardViewModel?
+        var loadingRevenueCardRedacted: Bool = false
         var loadingOrdersCard: AnalyticsReportCardViewModel?
         var loadingProductsCard: AnalyticsProductsStatsCardViewModel?
         var loadingItemsSoldCard: AnalyticsItemsSoldViewModel?
@@ -128,7 +126,7 @@ final class AnalyticsHubViewModelTests: XCTestCase {
             switch action {
             case let .retrieveCustomStats(_, _, _, _, _, _, _, completion):
                 let stats = OrderStatsV4.fake().copy(totals: .fake().copy(totalOrders: 15, totalItemsSold: 5, grossRevenue: 62))
-                loadingRevenueCard = self.vm.revenueCard
+                loadingRevenueCardRedacted = self.vm.revenueCard.isRedacted
                 loadingOrdersCard = self.vm.ordersCard
                 loadingProductsCard = self.vm.productsStatsCard
                 loadingItemsSoldCard = self.vm.itemsSoldCard
@@ -149,7 +147,7 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         await vm.updateData()
 
         // Then
-        XCTAssertEqual(loadingRevenueCard?.isRedacted, true)
+        XCTAssertTrue(loadingRevenueCardRedacted)
         XCTAssertEqual(loadingOrdersCard?.isRedacted, true)
         XCTAssertEqual(loadingProductsCard?.isRedacted, true)
         XCTAssertEqual(loadingItemsSoldCard?.isRedacted, true)
@@ -416,28 +414,23 @@ final class AnalyticsHubViewModelTests: XCTestCase {
     @MainActor
     func test_cards_viewmodels_contain_expected_reportURL_elements() async throws {
         // When
-        let revenueCardReportURL = try XCTUnwrap(vm.revenueCard.reportViewModel?.initialURL)
         let ordersCardReportURL = try XCTUnwrap(vm.ordersCard.reportViewModel?.initialURL)
         let productsCardReportURL = try XCTUnwrap(vm.productsStatsCard.reportViewModel?.initialURL)
 
-        let revenueCardURLQueryItems = try XCTUnwrap(URLComponents(url: revenueCardReportURL, resolvingAgainstBaseURL: false)?.queryItems)
         let ordersCardURLQueryItems = try XCTUnwrap(URLComponents(url: ordersCardReportURL, resolvingAgainstBaseURL: false)?.queryItems)
         let productsCardURLQueryItems = try XCTUnwrap(URLComponents(url: productsCardReportURL, resolvingAgainstBaseURL: false)?.queryItems)
 
         // Then
         // Report URL contains expected admin URL
-        XCTAssertTrue(revenueCardReportURL.relativeString.contains(sampleAdminURL))
         XCTAssertTrue(ordersCardReportURL.relativeString.contains(sampleAdminURL))
         XCTAssertTrue(productsCardReportURL.relativeString.contains(sampleAdminURL))
 
         // Report URL contains expected report path
-        XCTAssertTrue(revenueCardURLQueryItems.contains(URLQueryItem(name: "path", value: "/analytics/revenue")))
         XCTAssertTrue(ordersCardURLQueryItems.contains(URLQueryItem(name: "path", value: "/analytics/orders")))
         XCTAssertTrue(productsCardURLQueryItems.contains(URLQueryItem(name: "path", value: "/analytics/products")))
 
         // Report URL contains expected time range period
         let expectedPeriodQueryItem = URLQueryItem(name: "period", value: "month")
-        XCTAssertTrue(revenueCardURLQueryItems.contains(expectedPeriodQueryItem))
         XCTAssertTrue(ordersCardURLQueryItems.contains(expectedPeriodQueryItem))
         XCTAssertTrue(productsCardURLQueryItems.contains(expectedPeriodQueryItem))
     }
@@ -465,16 +458,13 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         await vm.updateData()
 
         // Then
-        let revenueCardReportURL = try XCTUnwrap(vm.revenueCard.reportViewModel?.initialURL)
         let ordersCardReportURL = try XCTUnwrap(vm.ordersCard.reportViewModel?.initialURL)
         let productsCardReportURL = try XCTUnwrap(vm.productsStatsCard.reportViewModel?.initialURL)
 
-        let revenueCardURLQueryItems = try XCTUnwrap(URLComponents(url: revenueCardReportURL, resolvingAgainstBaseURL: false)?.queryItems)
         let ordersCardURLQueryItems = try XCTUnwrap(URLComponents(url: ordersCardReportURL, resolvingAgainstBaseURL: false)?.queryItems)
         let productsCardURLQueryItems = try XCTUnwrap(URLComponents(url: productsCardReportURL, resolvingAgainstBaseURL: false)?.queryItems)
 
         // Report URL contains expected report path
-        XCTAssertTrue(revenueCardURLQueryItems.contains(URLQueryItem(name: "path", value: "/analytics/revenue")))
         XCTAssertTrue(ordersCardURLQueryItems.contains(URLQueryItem(name: "path", value: "/analytics/orders")))
         XCTAssertTrue(productsCardURLQueryItems.contains(URLQueryItem(name: "path", value: "/analytics/products")))
     }
@@ -482,13 +472,11 @@ final class AnalyticsHubViewModelTests: XCTestCase {
     @MainActor
     func test_cards_viewmodels_contain_non_nil_report_url_while_loading_and_after_error() async {
         // Given
-        var loadingRevenueCard: AnalyticsReportCardViewModel?
         var loadingOrdersCard: AnalyticsReportCardViewModel?
         var loadingProductsCard: AnalyticsProductsStatsCardViewModel?
         stores.whenReceivingAction(ofType: StatsActionV4.self) { action in
             switch action {
             case let .retrieveCustomStats(_, _, _, _, _, _, _, completion):
-                loadingRevenueCard = self.vm.revenueCard
                 loadingOrdersCard = self.vm.ordersCard
                 loadingProductsCard = self.vm.productsStatsCard
                 completion(.failure(NSError(domain: "Test", code: 1)))
@@ -505,13 +493,29 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         await vm.updateData()
 
         // Then
-        XCTAssertNotNil(loadingRevenueCard?.reportViewModel?.initialURL)
         XCTAssertNotNil(loadingOrdersCard?.reportViewModel?.initialURL)
         XCTAssertNotNil(loadingProductsCard?.reportViewModel?.initialURL)
 
-        XCTAssertNotNil(vm.revenueCard.reportViewModel?.initialURL)
         XCTAssertNotNil(vm.ordersCard.reportViewModel?.initialURL)
         XCTAssertNotNil(vm.productsStatsCard.reportViewModel?.initialURL)
+    }
+
+    @MainActor
+    func test_card_report_URLs_contain_expected_period_after_new_timeRange_selection() async throws {
+        // Given
+        XCTAssertEqual(.monthToDate, vm.timeRangeSelectionType)
+
+        // When
+        vm.timeRangeSelectionType = .today
+
+        // Then
+        let revenueCardReportURL = try XCTUnwrap(vm.revenueCard.reportViewModel?.initialURL)
+
+        let revenueCardURLQueryItems = try XCTUnwrap(URLComponents(url: revenueCardReportURL, resolvingAgainstBaseURL: false)?.queryItems)
+
+        // Report URL contains expected time range period
+        let expectedPeriodQueryItem = URLQueryItem(name: "period", value: "today")
+        XCTAssertTrue(revenueCardURLQueryItems.contains(expectedPeriodQueryItem))
     }
 
     // MARK: Customized Analytics

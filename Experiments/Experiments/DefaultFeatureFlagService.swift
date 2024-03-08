@@ -87,8 +87,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .splitViewInProductsTab:
             return true
-        case .customRangeInMyStoreAnalytics:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true
         }

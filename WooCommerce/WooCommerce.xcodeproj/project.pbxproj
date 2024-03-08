@@ -1917,7 +1917,6 @@
 		CC923A1D2847A8E0008EEEBE /* OrderStatusListViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC923A1C2847A8E0008EEEBE /* OrderStatusListViewModelTests.swift */; };
 		CCA0EF8829CCA89300A44E6F /* CompositeComponentOptionType+UI.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCA0EF8729CCA89300A44E6F /* CompositeComponentOptionType+UI.swift */; };
 		CCA1D5FE293F537400B40560 /* DeltaPercentage.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCA1D5FD293F537400B40560 /* DeltaPercentage.swift */; };
-		CCA1D6022943636100B40560 /* AnalyticsReportCardCurrentPeriodViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCA1D6012943636100B40560 /* AnalyticsReportCardCurrentPeriodViewModel.swift */; };
 		CCB366AF274518EC007D437A /* EditableOrderViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCB366AE274518EC007D437A /* EditableOrderViewModelTests.swift */; };
 		CCCC29DD25E5757C0046B96F /* RenameAttributesViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = CCCC29DC25E5757C0046B96F /* RenameAttributesViewController.xib */; };
 		CCCC29E325E576810046B96F /* RenameAttributesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCCC29E225E576810046B96F /* RenameAttributesViewController.swift */; };
@@ -2077,6 +2076,8 @@
 		CEEF74282B99F57A00B03948 /* RevenueReportCardViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEEF74272B99F57A00B03948 /* RevenueReportCardViewModelTests.swift */; };
 		CEEF742A2B9A02EB00B03948 /* OrdersReportCardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEEF74292B9A02EB00B03948 /* OrdersReportCardViewModel.swift */; };
 		CEEF742C2B9A052300B03948 /* OrdersReportCardViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEEF742B2B9A052300B03948 /* OrdersReportCardViewModelTests.swift */; };
+		CEEF742E2B9A0BAA00B03948 /* SessionsReportCardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEEF742D2B9A0BAA00B03948 /* SessionsReportCardViewModel.swift */; };
+		CEEF74302B9A0E8900B03948 /* SessionsReportCardViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEEF742F2B9A0E8900B03948 /* SessionsReportCardViewModelTests.swift */; };
 		CEF2DD862B558E3E00A3DD0B /* AnalyticsCTACard.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEF2DD852B558E3E00A3DD0B /* AnalyticsCTACard.swift */; };
 		CEF5A28F2A68466E0059CFD3 /* stats_summary_day.json in Resources */ = {isa = PBXBuildFile; fileRef = CEF5A28E2A68466E0059CFD3 /* stats_summary_day.json */; };
 		CEF5A2912A68467C0059CFD3 /* stats_summary_week.json in Resources */ = {isa = PBXBuildFile; fileRef = CEF5A2902A68467C0059CFD3 /* stats_summary_week.json */; };
@@ -4642,7 +4643,6 @@
 		CC923A1C2847A8E0008EEEBE /* OrderStatusListViewModelTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderStatusListViewModelTests.swift; sourceTree = "<group>"; };
 		CCA0EF8729CCA89300A44E6F /* CompositeComponentOptionType+UI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CompositeComponentOptionType+UI.swift"; sourceTree = "<group>"; };
 		CCA1D5FD293F537400B40560 /* DeltaPercentage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeltaPercentage.swift; sourceTree = "<group>"; };
-		CCA1D6012943636100B40560 /* AnalyticsReportCardCurrentPeriodViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsReportCardCurrentPeriodViewModel.swift; sourceTree = "<group>"; };
 		CCB366AE274518EC007D437A /* EditableOrderViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditableOrderViewModelTests.swift; sourceTree = "<group>"; };
 		CCCC29DC25E5757C0046B96F /* RenameAttributesViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RenameAttributesViewController.xib; sourceTree = "<group>"; };
 		CCCC29E225E576810046B96F /* RenameAttributesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenameAttributesViewController.swift; sourceTree = "<group>"; };
@@ -4808,6 +4808,8 @@
 		CEEF74272B99F57A00B03948 /* RevenueReportCardViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RevenueReportCardViewModelTests.swift; sourceTree = "<group>"; };
 		CEEF74292B9A02EB00B03948 /* OrdersReportCardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrdersReportCardViewModel.swift; sourceTree = "<group>"; };
 		CEEF742B2B9A052300B03948 /* OrdersReportCardViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrdersReportCardViewModelTests.swift; sourceTree = "<group>"; };
+		CEEF742D2B9A0BAA00B03948 /* SessionsReportCardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionsReportCardViewModel.swift; sourceTree = "<group>"; };
+		CEEF742F2B9A0E8900B03948 /* SessionsReportCardViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionsReportCardViewModelTests.swift; sourceTree = "<group>"; };
 		CEF2DD852B558E3E00A3DD0B /* AnalyticsCTACard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsCTACard.swift; sourceTree = "<group>"; };
 		CEF5A28E2A68466E0059CFD3 /* stats_summary_day.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = stats_summary_day.json; sourceTree = "<group>"; };
 		CEF5A2902A68467C0059CFD3 /* stats_summary_week.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = stats_summary_week.json; sourceTree = "<group>"; };
@@ -7203,7 +7205,6 @@
 				26E7EE69292D688900793045 /* AnalyticsHubViewModel.swift */,
 				2647F7B9292BE2F900D59FDF /* AnalyticsReportCard.swift */,
 				CEEF74212B99EC5800B03948 /* AnalyticsReportCardProtocol.swift */,
-				CCA1D6012943636100B40560 /* AnalyticsReportCardCurrentPeriodViewModel.swift */,
 				B60B5025292D308A00178C26 /* AnalyticsTimeRangeCard.swift */,
 				B6A10E9B292E5DEE00790797 /* AnalyticsTimeRangeCardViewModel.swift */,
 				26E7EE6D29300E8100793045 /* AnalyticsProductCard.swift */,
@@ -10991,6 +10992,7 @@
 			children = (
 				CEEF74242B99EF1200B03948 /* RevenueReportCardViewModel.swift */,
 				CEEF74292B9A02EB00B03948 /* OrdersReportCardViewModel.swift */,
+				CEEF742D2B9A0BAA00B03948 /* SessionsReportCardViewModel.swift */,
 			);
 			path = "Report Cards";
 			sourceTree = "<group>";
@@ -11000,6 +11002,7 @@
 			children = (
 				CEEF74272B99F57A00B03948 /* RevenueReportCardViewModelTests.swift */,
 				CEEF742B2B9A052300B03948 /* OrdersReportCardViewModelTests.swift */,
+				CEEF742F2B9A0E8900B03948 /* SessionsReportCardViewModelTests.swift */,
 			);
 			path = "Report Cards";
 			sourceTree = "<group>";
@@ -13220,6 +13223,7 @@
 				26ED9660274328BC00FA00A1 /* SimplePaymentsSummaryViewModel.swift in Sources */,
 				02D7E7C72A4CBC620003049A /* LocalAnnouncementViewModel.swift in Sources */,
 				024DF31E23743045006658FE /* TextList+AztecFormatting.swift in Sources */,
+				CEEF742E2B9A0BAA00B03948 /* SessionsReportCardViewModel.swift in Sources */,
 				0260F40123224E8100EDA10A /* ProductsViewController.swift in Sources */,
 				DE4D308928507B5B00E36ADD /* CouponCreationSuccess.swift in Sources */,
 				03BB9EA5292E2D0C00251E9E /* CardReaderConnectionController.swift in Sources */,
@@ -14078,7 +14082,6 @@
 				EEADF624281A421A001B40F1 /* DefaultShippingValueLocalizer.swift in Sources */,
 				0263E3BB290BB21800E5F88F /* WooAnalyticsEvent+StoreCreation.swift in Sources */,
 				4A68E3E32941D4CE004AC3DC /* WordPressLibraryLogger.swift in Sources */,
-				CCA1D6022943636100B40560 /* AnalyticsReportCardCurrentPeriodViewModel.swift in Sources */,
 				174CA86E27DBFD2D00126524 /* ShareAppTextItemActivitySource.swift in Sources */,
 				262C921F26EEF8B100011F92 /* Binding.swift in Sources */,
 				DE4FB7732812AE96003D20D6 /* FilterListView.swift in Sources */,
@@ -14749,6 +14752,7 @@
 				02952B5127808B08008E9BA3 /* StoreStatsPeriodViewModelTests.swift in Sources */,
 				B57C5C9F21B80E8300FF82B2 /* SampleError.swift in Sources */,
 				CEC8188E2A3C75DD00459843 /* AppStartupWaitingTimeTrackerTests.swift in Sources */,
+				CEEF74302B9A0E8900B03948 /* SessionsReportCardViewModelTests.swift in Sources */,
 				02C2756D24F4EEBF00286C04 /* ProductShippingSettingsViewModelTests.swift in Sources */,
 				CE55F2D82B23961B005D53D7 /* CollapsibleProductCardPriceSummaryViewModelTests.swift in Sources */,
 				025678052575EA1B009D7E6C /* ProductDetailsCellViewModelTests.swift in Sources */,

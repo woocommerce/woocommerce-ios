@@ -78,7 +78,7 @@ final class AnalyticsHubViewModel: ObservableObject {
 
     /// Revenue Card ViewModel
     ///
-    lazy var revenueCard: AnalyticsReportCardProtocol = {
+    lazy var revenueCard: RevenueReportCardViewModel = {
         revenueCard(currentPeriodStats: currentOrderStats, previousPeriodStats: previousOrderStats)
     }()
 
@@ -480,7 +480,7 @@ private extension AnalyticsHubViewModel {
     }
 
     func revenueCard(currentPeriodStats: OrderStatsV4?,
-                     previousPeriodStats: OrderStatsV4?) -> AnalyticsReportCardProtocol {
+                     previousPeriodStats: OrderStatsV4?) -> RevenueReportCardViewModel {
         RevenueReportCardViewModel(currentPeriodStats: currentPeriodStats,
                                    previousPeriodStats: previousPeriodStats,
                                    timeRange: timeRangeSelectionType,

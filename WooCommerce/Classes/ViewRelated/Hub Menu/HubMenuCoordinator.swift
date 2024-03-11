@@ -9,8 +9,8 @@ import protocol Yosemite.StoresManager
 
 /// Coordinator for the HubMenu tab.
 ///
-final class HubMenuCoordinator: Coordinator {
-    let navigationController: UINavigationController
+final class HubMenuCoordinator {
+    let rootViewController: TabContainerController
     var hubMenuController: HubMenuViewController?
 
     private let pushNotificationsManager: PushNotesManager
@@ -24,7 +24,7 @@ final class HubMenuCoordinator: Coordinator {
 
     private let tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker
 
-    init(navigationController: UINavigationController,
+    init(rootViewController: TabContainerController,
          pushNotificationsManager: PushNotesManager = ServiceLocator.pushNotesManager,
          storesManager: StoresManager = ServiceLocator.stores,
          noticePresenter: NoticePresenter = ServiceLocator.noticePresenter,
@@ -38,14 +38,14 @@ final class HubMenuCoordinator: Coordinator {
         self.switchStoreUseCase = switchStoreUseCase
         self.tapToPayBadgePromotionChecker = tapToPayBadgePromotionChecker
         self.willPresentReviewDetailsFromPushNotification = willPresentReviewDetailsFromPushNotification
-        self.navigationController = navigationController
+        self.rootViewController = rootViewController
     }
 
-    convenience init(navigationController: UINavigationController,
+    convenience init(rootViewController: TabContainerController,
                      tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker,
                      willPresentReviewDetailsFromPushNotification: @escaping () async -> Void) {
         let storesManager = ServiceLocator.stores
-        self.init(navigationController: navigationController,
+        self.init(rootViewController: rootViewController,
                   storesManager: storesManager,
                   switchStoreUseCase: SwitchStoreUseCase(stores: storesManager),
                   tapToPayBadgePromotionChecker: tapToPayBadgePromotionChecker,
@@ -62,12 +62,9 @@ final class HubMenuCoordinator: Coordinator {
 
     /// Replaces `start()` because the menu tab's navigation stack could be updated multiple times when site ID changes.
     func activate(siteID: Int64) {
-        hubMenuController = HubMenuViewController(siteID: siteID,
-                                                  navigationController: navigationController,
-                                                  tapToPayBadgePromotionChecker: tapToPayBadgePromotionChecker)
-        if let hubMenuController = hubMenuController {
-            navigationController.viewControllers = [hubMenuController]
-        }
+        let hubMenuController = HubMenuViewController(siteID: siteID, tapToPayBadgePromotionChecker: tapToPayBadgePromotionChecker)
+        rootViewController.wrappedController = hubMenuController
+        self.hubMenuController = hubMenuController
 
         if notificationsSubscription == nil {
             notificationsSubscription = Publishers

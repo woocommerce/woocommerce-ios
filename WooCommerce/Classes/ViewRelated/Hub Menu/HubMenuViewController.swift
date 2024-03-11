@@ -7,11 +7,8 @@ final class HubMenuViewController: UIHostingController<HubMenu> {
     private let viewModel: HubMenuViewModel
     private let tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker
 
-    init(siteID: Int64,
-         navigationController: UINavigationController?,
-         tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker) {
+    init(siteID: Int64, tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker) {
         self.viewModel = HubMenuViewModel(siteID: siteID,
-                                          navigationController: navigationController,
                                           tapToPayBadgePromotionChecker: tapToPayBadgePromotionChecker)
         self.tapToPayBadgePromotionChecker = tapToPayBadgePromotionChecker
         super.init(rootView: HubMenu(viewModel: viewModel))
@@ -35,26 +32,26 @@ final class HubMenuViewController: UIHostingController<HubMenu> {
     }
 
     func showPaymentsMenu() {
-        viewModel.showingPayments = true
+        viewModel.selectedMenuID = HubMenuViewModel.Payments.id
     }
 
     func showCoupons() {
-        let enhancedCouponListViewController = EnhancedCouponListViewController(siteID: viewModel.siteID)
-        show(enhancedCouponListViewController, sender: self)
+        viewModel.selectedMenuID = HubMenuViewModel.Coupons.id
     }
 
     /// Pushes the Settings & Privacy screen onto the navigation stack.
     ///
     func showPrivacySettings() {
-        guard let navigationController else {
-            return DDLogError("⛔️ Could not find a navigation controller context.")
-        }
-        guard let privacy = UIStoryboard.dashboard.instantiateViewController(ofClass: PrivacySettingsViewController.self) else {
-            return DDLogError("⛔️ Could not instantiate PrivacySettingsViewController")
-        }
-
-        let settings = SettingsViewController()
-        navigationController.setViewControllers(navigationController.viewControllers + [settings, privacy], animated: true)
+//        guard let navigationController else {
+//            return DDLogError("⛔️ Could not find a navigation controller context.")
+//        }
+//        guard let privacy = UIStoryboard.dashboard.instantiateViewController(ofClass: PrivacySettingsViewController.self) else {
+//            return DDLogError("⛔️ Could not instantiate PrivacySettingsViewController")
+//        }
+//
+//        let settings = SettingsViewController()
+//        navigationController.setViewControllers(navigationController.viewControllers + [settings, privacy], animated: true)
+        // TODO
     }
 
     override func viewWillAppear(_ animated: Bool) {

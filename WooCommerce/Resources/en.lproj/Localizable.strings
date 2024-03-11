@@ -414,7 +414,7 @@ which should be translated separately and considered part of this sentence. */
 
 /* Application's Active State
    Display label for the subscription status type
-   Status name of an active Blaze campaign
+   Status name of an approved Blaze campaign
    Status of coupons that are active */
 "Active" = "Active";
 
@@ -429,6 +429,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* No comment provided by engineer. */
 "Ad-free experience" = "Ad-free experience";
+
+/* Text for the 'Cancel' button that appears in the navigation bar, and closes the view */
+"adaptiveModalContainer.views.cancelButtonText" = "Cancel";
 
 /* Action for adding a Products' downloadable files' info remotely
    Add a note screen - button title to send the note
@@ -508,9 +511,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title text of the button that adds customer data when creating a new order */
 "Add Customer Details" = "Add Customer Details";
-
-/* Title of the order customer selection screen. */
-"Add customer details" = "Add customer details";
 
 /* Title for the button to add the Customer Provided Note in Order Details */
 "Add Customer Note" = "Add Customer Note";
@@ -1025,7 +1025,6 @@ which should be translated separately and considered part of this sentence. */
 "Approve" = "Approve";
 
 /* Display label for the review's approved status
-   Status name of an approved Blaze campaign
    Unapprove a comment */
 "Approved" = "Approved";
 
@@ -2489,8 +2488,7 @@ which should be translated separately and considered part of this sentence. */
 /* Third instruction on the test order screen */
 "Complete the payment and await a push notification about the order on your WooCommerce app." = "Complete the payment and await a push notification about the order on your WooCommerce app.";
 
-/* Display label for completed order status.
-   Status name of a completed Blaze campaign */
+/* Display label for completed order status. */
 "Completed" = "Completed";
 
 /* Title for the list of component options in the Component Settings view */
@@ -2535,6 +2533,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility hint for selecting a variable product to select product for filtering orders */
 "configurationForOrder.variableProductRowAccessibilityHint" = "Opens list of product variations.";
+
+/* Title of the order customer selection screen. */
+"configurationForOrderCustomerSection.customerSelectorTitle" = "Add customer details";
+
+/* Title for the screen to select customer in order filtering. */
+"configurationForOrderFilter.customerSelectorTitle" = "Choose a customer";
 
 /* My Store > Settings > Configure section title
    Text in the product row card to configure a bundle product */
@@ -3119,6 +3123,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* The footer of the text field coupon code in the view for adding or editing a coupon. */
 "Customers need to enter this code to use the coupon." = "Customers need to enter this code to use the coupon.";
+
+/* Message to prompt users to search for customers on the customer search screen */
+"customerSearchUICommand.emptyDefaultStateNoCreationMessage" = "Search for an existing customer";
+
+/* The label that can be shown optionally for guest customers */
+"customerSearchUICommand.guestLabel" = "Guest";
+
+/* Error message in the Add Customer to order screen when getting the customer information */
+"customerSelectorViewController.guestSelectionDisallowedError" = "This user is a guest, and guests can’t be used for filtering orders.";
 
 /* Title of the store onboarding task to customize the store domain. */
 "Customize your domain" = "Customize your domain";
@@ -4133,6 +4146,15 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Falkland Islands" = "Falkland Islands";
 
+/* Title of dismiss button for redaction information alert in Custom Range stats tab */
+"fancyAlertViewControllerStats.dismissButton" = "OK";
+
+/* Description for redaction information alert in Custom Range stats tab */
+"fancyAlertViewControllerStats.redactionInfoDescription" = "The stats feature does not support the display of visitors and conversions data for arbitrary date ranges. \n\nHowever, you can tap a value on the graph to see visitors and conversions for that specific range.";
+
+/* Title for redaction information alert in Custom Range stats tab */
+"fancyAlertViewControllerStats.redactionInfoTitle" = "Visitors and conversion data not available";
+
 /* Country option for a site address. */
 "Faroe Islands" = "Faroe Islands";
 
@@ -4194,6 +4216,9 @@ which should be translated separately and considered part of this sentence. */
 /* Header bar label on top of order list when filters are applied */
 "Filtered Orders" = "Filtered Orders";
 
+/* Row title for filtering orders by customer. */
+"filterOrderListViewModel.OrderListFilter.rowCustomer" = "Customer";
+
 /* Row title for filtering orders by Product. */
 "filterOrderListViewModel.OrderListFilter.rowTitleProduct" = "Product";
 
@@ -4218,6 +4243,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button to set up an in-person payments plugin after activating it */
 "Finish Setup in Store Admin" = "Finish Setup in Store Admin";
+
+/* Status name of a completed Blaze campaign */
+"Finished" = "Finished";
 
 /* Country option for a site address. */
 "Finland" = "Finland";
@@ -4729,9 +4757,6 @@ which should be translated separately and considered part of this sentence. */
 /* A fallback describing the contactless limit, shown on the About Tap to Pay screen. %1$@ will be replaced with the country name of the store, which is a trade off as it can't be contextually translated, however this string is only used when there's a problem decoding the limit, so it's acceptable. */
 "In %1$@, cards may only be used with Tap to Pay for transactions up to the contactless limit." = "In %1$@, cards may only be used with Tap to Pay for transactions up to the contactless limit.";
 
-/* Status name of a Blaze campaign under moderation */
-"In Moderation" = "In Moderation";
-
 /* Accessibility label for an indeterminate loading indicator */
 "In progress" = "In progress";
 
@@ -5006,6 +5031,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* An error message displayed when the user tries to log in to the app with a simple WP.com site. Reads like: It seems that your site google.com is a simple WordPress.com site that cannot install plugins. Please upgrade your plan to use WooCommerce. */
 "It seems that your site %@ is a simple WordPress.com site that cannot install plugins. Please upgrade your plan to use WooCommerce." = "It seems that your site %@ is a simple WordPress.com site that cannot install plugins. Please upgrade your plan to use WooCommerce.";
+
+/* Error message explaining login failure due to invalid credentials. */
+"It seems the username or password you entered doesn't quite match. Double-check your credentials and try again." = "It seems the username or password you entered doesn't quite match. Double-check your credentials and try again.";
 
 /* Accessibility label for italic button on formatting toolbar. */
 "Italic" = "Italic";
@@ -6664,7 +6692,8 @@ which should be translated separately and considered part of this sentence. */
 
 /* Display label for pending order status.
    Display label for the review's pending status
-   Display label for the subscription status type */
+   Display label for the subscription status type
+   Status name of an active Blaze campaign */
 "Pending" = "Pending";
 
 /* Display label for the subscription status type */
@@ -7102,8 +7131,7 @@ which should be translated separately and considered part of this sentence. */
 /* Display label for the product's private status */
 "Privately published" = "Privately published";
 
-/* Display label for processing order status.
-   Status name of a Blaze campaign under processing */
+/* Display label for processing order status. */
 "Processing" = "Processing";
 
 /* Alert title when processing a payment without a user name.
@@ -8644,6 +8672,21 @@ which should be translated separately and considered part of this sentence. */
 /* Error showed in Shipping Label Address Validation for the state field */
 "State missing" = "State missing";
 
+/* Display text for the daily granularity of store stats on the My Store screen */
+"statsGranularityV4.daily" = "By day";
+
+/* Display text for the hourly granularity of store stats on the My Store screen */
+"statsGranularityV4.hourly" = "By hour";
+
+/* Display text for the monthly granularity of store stats on the My Store screen */
+"statsGranularityV4.monthly" = "By month";
+
+/* Display text for the weekly granularity of store stats on the My Store screen */
+"statsGranularityV4.weekly" = "By week";
+
+/* Display text for the yearly granularity of store stats on the My Store screen */
+"statsGranularityV4.yearly" = "By year";
+
 /* Tab selector title that shows the statistics for today */
 "statsTimeRangeV4.tabTitle.custom" = "Custom Range";
 
@@ -9278,7 +9321,7 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when the card processor declines the payment. */
 "The card was declined by the payment processor - please try another means of payment" = "The card was declined by the payment processor - please try another means of payment";
 
-/* No comment provided by engineer. */
+/* Message for when the certificate for the server is invalid. The %@ placeholder will be replaced the a host name, received from the API. */
 "The certificate for this server is invalid. You might be connecting to a server that is pretending to be “%@” which could put your confidential information at risk.\n\nWould you like to trust the certificate anyway?" = "The certificate for this server is invalid. You might be connecting to a server that is pretending to be “%@” which could put your confidential information at risk.\n\nWould you like to trust the certificate anyway?";
 
 /* Message in the gift card input form when the code is not valid. */
@@ -11003,6 +11046,9 @@ which should be translated separately and considered part of this sentence. */
 /* Message to show when a request for a WP.com API endpoint is throttled */
 "wordpresskit.api.message.endpoint_throttled" = "Limit reached. You can try again in 1 minute. Trying again before that will only increase the time you have to wait before the ban is lifted. If you think this is in error, contact support.";
 
+/* Message to show to user when the app can't find WordPress.org REST API URL. */
+"wordpresskit.org-rest-api.not-found" = "Couldn't find your site's REST API URL. The app needs that in order to communicate with your site. Contact your host to solve this problem.";
+
 /* Placeholder text shown when loading media for the WordPress Media Library */
 "wordpressMediaLibraryPickerViewController.emptyContent.loading" = "Loading media...";
 
@@ -11179,7 +11225,7 @@ which should be translated separately and considered part of this sentence. */
 /* Error message shown when Tap to Pay on iPhone cannot be used because the device does not have a passcode set. */
 "You need to set a lock screen passcode to use Tap to Pay on iPhone" = "You need to set a lock screen passcode to use Tap to Pay on iPhone";
 
-/* No comment provided by engineer. */
+/* Error messaged show when a mobile plugin is redirecting traffict to their site, DudaMobile in particular */
 "You seem to have installed a mobile plugin from DudaMobile which is preventing the app to connect to your blog" = "You seem to have installed a mobile plugin from DudaMobile which is preventing the app to connect to your blog";
 
 /* Subtitle text in the store creation loading screen */

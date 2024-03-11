@@ -6,6 +6,7 @@ import Yosemite
 final class HubMenuViewController: UIHostingController<HubMenu> {
     private let viewModel: HubMenuViewModel
     private let tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker
+    private var storePickerCoordinator: StorePickerCoordinator?
 
     init(siteID: Int64, tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker) {
         self.viewModel = HubMenuViewModel(siteID: siteID,
@@ -13,6 +14,9 @@ final class HubMenuViewController: UIHostingController<HubMenu> {
         self.tapToPayBadgePromotionChecker = tapToPayBadgePromotionChecker
         super.init(rootView: HubMenu(viewModel: viewModel))
         configureTabBarItem()
+        rootView.switchStoreHandler = { [weak self] in
+            self?.presentSwitchStore()
+        }
     }
 
     required dynamic init?(coder aDecoder: NSCoder) {
@@ -54,9 +58,16 @@ final class HubMenuViewController: UIHostingController<HubMenu> {
         // TODO
     }
 
+    func presentSwitchStore() {
+        guard let navigationController else {
+            return
+        }
+        storePickerCoordinator = StorePickerCoordinator(navigationController, config: .switchingStores)
+        storePickerCoordinator?.start()
+    }
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-
         // We want to hide navigation bar *only* on HubMenu screen. But on iOS 16, the `navigationBarHidden(true)`
         // modifier on `HubMenu` view hides the navigation bar for the whole navigation stack.
         // Here we manually hide or show navigation bar when entering or leaving the HubMenu screen.

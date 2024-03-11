@@ -6,6 +6,9 @@ import Yosemite
 /// and will be the entry point of the `Menu` Tab.
 ///
 struct HubMenu: View {
+    /// Set from the hosting controller to handle switching store.
+    var switchStoreHandler: () -> Void = {}
+
     @ObservedObject private var iO = Inject.observer
 
     @ObservedObject private var viewModel: HubMenuViewModel
@@ -56,7 +59,8 @@ private extension HubMenu {
             // Store Section
             Section {
                 Button {
-                    viewModel.presentSwitchStore()
+                    ServiceLocator.analytics.track(.hubMenuSwitchStoreTapped)
+                    switchStoreHandler()
                 } label: {
                     Row(title: viewModel.storeTitle,
                         titleBadge: viewModel.planName,

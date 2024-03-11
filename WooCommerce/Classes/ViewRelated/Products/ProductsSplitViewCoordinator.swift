@@ -259,7 +259,8 @@ private extension ProductsSplitViewCoordinator {
     /// - The view controller to show in the primary navigation stack is the product list
     func willNavigateFromTheLastSecondaryViewControllerToProductListInCollapsedMode(_ navigationController: UINavigationController,
                                                                                     willShow viewController: UIViewController) -> Bool {
-        let isNavigatingToProductList = viewController == productsViewController || viewController is SearchViewController<ProductsTabProductTableViewCell, ProductSearchUICommand>
+        let isNavigatingToProductList = viewController == productsViewController ||
+        viewController is SearchViewController<ProductsTabProductTableViewCell, ProductSearchUICommand>
         return splitViewController.isCollapsed && navigationController == primaryNavigationController
             && contentTypes.isNotEmpty && isNavigatingToProductList
     }

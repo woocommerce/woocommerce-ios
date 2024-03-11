@@ -139,6 +139,10 @@ final class ProductSearchUICommand: SearchUICommand {
         onProductSelection(model)
     }
 
+    func shouldDeselectSearchResultOnSelection() -> Bool {
+        return false
+    }
+
     func searchResultsPredicate(keyword: String) -> NSPredicate? {
         guard isSearchProductsBySKUEnabled else {
             return NSPredicate(format: "ANY searchResults.keyword = %@", keyword)

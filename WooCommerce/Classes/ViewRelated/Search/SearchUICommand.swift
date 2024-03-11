@@ -109,6 +109,10 @@ protocol SearchUICommand {
     ///   - updateActionButton: called when action button update is necessary.
     func didSelectSearchResult(model: Model, from viewController: UIViewController, reloadData: () -> Void, updateActionButton: () -> Void)
 
+    /// Whether the selected search result should be deselected right away.
+    /// The default implementation is `true` and it can be disabled when the search view has split view support.
+    func shouldDeselectSearchResultOnSelection() -> Bool
+
     /// The Accessibility Identifier for the search bar
     var searchBarAccessibilityIdentifier: String { get }
 
@@ -186,5 +190,10 @@ extension SearchUICommand {
     func configureEmptyStateViewControllerBeforeDisplay(viewController: EmptyStateViewController,
                                                         searchKeyword: String) {
         // noop
+    }
+
+    /// Default implementation that deselects the selected search result right away.
+    func shouldDeselectSearchResultOnSelection() -> Bool {
+        true
     }
 }

@@ -217,7 +217,9 @@ where Cell.SearchModel == Command.CellViewModel {
     //
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
+        if searchUICommand.shouldDeselectSearchResultOnSelection() {
+            tableView.deselectRow(at: indexPath, animated: true)
+        }
         guard let model = resultsController.safeObject(at: indexPath) else {
             return
         }

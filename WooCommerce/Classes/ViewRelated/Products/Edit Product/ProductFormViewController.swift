@@ -2008,7 +2008,7 @@ private enum Localization {
         "Cannot duplicate product",
         comment: "The title of the alert when there is an error duplicating the product"
     )
-    static let defaultTitle = NSLocalizedString("Product", comment: "Product title")
+    static let defaultTitle = NSLocalizedString("productForm.defaultTitle", value: "Product", comment: "Product title")
 
     enum AITooltip {
         static let title = NSLocalizedString("Write with AI",

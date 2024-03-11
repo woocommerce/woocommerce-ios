@@ -81,7 +81,11 @@ private extension ProductsSplitViewCoordinator {
                 let searchViewController = SearchViewController(storeID: siteID,
                                                                 command: searchCommand,
                                                                 cellType: ProductsTabProductTableViewCell.self,
-                                                                cellSeparator: .none)
+                                                                cellSeparator: .none,
+                                                                selectedObject: selectedProduct,
+                                                                isSelectedObject: {
+                    $0.productID == $1?.productID
+                })
                 primaryNavigationController.viewControllers = [searchViewController]
         }
     }

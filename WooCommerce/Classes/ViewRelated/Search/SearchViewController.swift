@@ -102,17 +102,32 @@ where Cell.SearchModel == Command.CellViewModel {
     private var searchUICommand: Command
     private let tableViewSeparatorStyle: UITableViewCell.SeparatorStyle
 
+    private let onDataReloaded: PassthroughSubject<Void, Never> = .init()
+    private let selectedObject: AnyPublisher<Command.ResultsControllerModel.ReadOnlyType?, Never>?
+    private let isSelectedObject: ((_ object: Command.ResultsControllerModel, _ selectedObject: Command.ResultsControllerModel.ReadOnlyType?) -> Bool)?
+    private var subscriptions: Set<AnyCancellable> = []
 
     /// Designated Initializer
     ///
+    /// - Parameters:
+    ///   - storeID: The dotcom site ID of the store.
+    ///   - command: Handles UI commands.
+    ///   - cellType: The type of cell in the search results.
+    ///   - cellSeparator: The separator style in the search result cell.
+    ///   - selectedObject: Non-nil if the selected object can be triggered outside of cell tap events like split view.
+    ///   - isSelectedObject: Required when `selectedObject` is non-nil to compare whether two objects are the same.
     init(storeID: Int64,
          command: Command,
          cellType: Cell.Type,
-         cellSeparator: UITableViewCell.SeparatorStyle) {
+         cellSeparator: UITableViewCell.SeparatorStyle,
+         selectedObject: AnyPublisher<Command.ResultsControllerModel.ReadOnlyType?, Never>? = nil,
+         isSelectedObject: ((_ object: Command.ResultsControllerModel, _ selectedObject: Command.ResultsControllerModel.ReadOnlyType?) -> Bool)? = nil) {
         self.resultsController = command.createResultsController()
         self.resultsPredicate = resultsController.predicate
         self.searchUICommand = command
         self.storeID = storeID
+        self.selectedObject = selectedObject
+        self.isSelectedObject = isSelectedObject
         tableViewSeparatorStyle = cellSeparator
         super.init(nibName: "SearchViewController", bundle: nil)
     }
@@ -143,6 +158,7 @@ where Cell.SearchModel == Command.CellViewModel {
         configureResultsController()
         configureStarterViewController()
         configureSearchResync()
+        observeSelectedObjectAndDataLoadedStateToUpdateSelectedRow()
 
         if searchUICommand.adjustTableViewBottomInsetWhenKeyboardIsShown {
             startListeningToKeyboardNotifications()
@@ -355,6 +371,7 @@ private extension SearchViewController {
 
         tableView.reloadData()
         tableView.accessibilityIdentifier = "default-search-results-table-view"
+        onDataReloaded.send(())
     }
 
     /// Create and add `starterViewController` to the `view.`
@@ -421,6 +438,36 @@ private extension SearchViewController {
             self.synchronizeSearchResults(with: self.searchQuery)
         }
     }
+
+    func observeSelectedObjectAndDataLoadedStateToUpdateSelectedRow() {
+        guard let selectedObject else {
+            return
+        }
+        Publishers.CombineLatest(selectedObject,
+                                 // Giving it an initial value to enable the combined publisher from the beginning.
+                                 onDataReloaded.merge(with: Just<Void>(())))
+            .map { $0.0 }
+            .sink { [weak self] selectedObject in
+                guard let self else { return }
+
+                let currentSelectedIndexPath = tableView.indexPathForSelectedRow
+                let selectedIndexPath = selectedObject != nil ? resultsController.indexPath(forObjectMatching: { object in
+                    self.isSelectedObject?(object, selectedObject) ?? false
+                }): nil
+                if let selectedIndexPath {
+                    guard currentSelectedIndexPath != selectedIndexPath else {
+                        return
+                    }
+                    if let currentSelectedIndexPath {
+                        tableView.deselectRow(at: currentSelectedIndexPath, animated: false)
+                    }
+                    tableView.selectRow(at: selectedIndexPath, animated: false, scrollPosition: .none)
+                } else if let currentSelectedIndexPath {
+                    tableView.deselectRow(at: currentSelectedIndexPath, animated: false)
+                }
+            }
+            .store(in: &subscriptions)
+    }
 }
 
 
@@ -471,7 +518,9 @@ private extension SearchViewController {
         tableView.reloadData()
         tableView.accessibilityIdentifier = "updated-search-results-table-view"
 
-        syncingCoordinator.resynchronize()
+        syncingCoordinator.resynchronize { [weak self] in
+            self?.onDataReloaded.send(())
+        }
     }
 }
 

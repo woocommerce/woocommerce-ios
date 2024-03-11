@@ -76,6 +76,7 @@ final class ReceiptViewController: UIViewController, WKNavigationDelegate, UIPri
         let printInfo = UIPrintInfo(dictionary: nil)
         let formattedJobName = viewModel.formattedReceiptJobName(printInfo.jobName)
         printInfo.jobName = formattedJobName
+        printInfo.orientation = .portrait
         printController.printInfo = printInfo
 
         // Use the webview's print formatter to initialize print operation.

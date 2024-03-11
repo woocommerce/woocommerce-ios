@@ -125,14 +125,17 @@ struct OrderFormPresentationWrapper: View {
                         }
                     }
                 },
-                isShowingSecondaryView: $viewModel.isProductSelectorPresented,
-                onViewContainerDismiss: {
-                    // By only calling the dismissHandler here, we wouldn't sync the selected items on dismissal
-                    // this is normally done via a callback through the ProductSelector's onCloseButtonTapped(),
-                    // but on split views we move this responsibility to the AdaptiveModalContainer
-                    viewModel.syncOrderItemSelectionStateOnDismiss()
-                    dismissHandler()
-                })
+                dismissBarButton: {
+                    Button(OrderForm.Localization.cancelButton) {
+                        // By only calling the dismissHandler here, we wouldn't sync the selected items on dismissal
+                        // this is normally done via a callback through the ProductSelector's onCloseButtonTapped(),
+                        // but on split views we move this responsibility to the AdaptiveModalContainer
+                        viewModel.syncOrderItemSelectionStateOnDismiss()
+                        dismissHandler()
+                    }
+                    .accessibilityIdentifier(OrderForm.Accessibility.cancelButtonIdentifier)
+                },
+                isShowingSecondaryView: $viewModel.isProductSelectorPresented)
         } else {
             OrderForm(dismissHandler: dismissHandler, flow: flow, viewModel: viewModel, presentProductSelector: nil)
         }
@@ -195,9 +198,9 @@ struct OrderForm: View {
             }
     }
 
-    private func updateSelectionSyncApproach(for presentationStyle: AdaptiveModalContainerPresentationStyle) {
+    private func updateSelectionSyncApproach(for presentationStyle: AdaptiveModalContainerPresentationStyle?) {
         switch presentationStyle {
-        case .modalOnModal:
+        case .none, .modalOnModal:
             viewModel.selectionSyncApproach = .onSelectorButtonTap
         case .sideBySide:
             viewModel.selectionSyncApproach = .onRecalculateButtonTap
@@ -328,6 +331,7 @@ struct OrderForm: View {
                     }
                     .disabled(viewModel.disabled)
                 }
+                .accessibilityIdentifier(Accessibility.orderFormScrollViewIdentifier)
                 .background(Color(.listBackground).ignoresSafeArea())
                 .ignoresSafeArea(.container, edges: [.horizontal])
             }
@@ -383,6 +387,8 @@ struct OrderForm: View {
                     Button(Localization.recalculateButton) {
                         viewModel.onRecalculateTapped()
                     }
+                    .disabled(viewModel.shouldShowNonEditableIndicators)
+                    .accessibilityIdentifier(Accessibility.recalculateButtonIdentifier)
                 case .none:
                     EmptyView()
                 }
@@ -460,6 +466,7 @@ struct OrderForm: View {
             } label: {
                 Text(Localization.recalculateButton)
             }
+            .disabled(viewModel.shouldShowNonEditableIndicators)
             .buttonStyle(PrimaryLoadingButtonStyle(isLoading: loading))
         case .create(let loading):
             Button {
@@ -575,7 +582,7 @@ private struct ProductsSection: View {
     /// Environment variable that manages the presentation state of the AdaptiveModalContainer view
     /// which is used in the OrderForm for presenting either modally or side-by-side, based on device class size
     ///
-    @Environment(\.adaptiveModalContainerPresentationStyle) private var presentationStyle: AdaptiveModalContainerPresentationStyle
+    @Environment(\.adaptiveModalContainerPresentationStyle) private var presentationStyle: AdaptiveModalContainerPresentationStyle?
 
     private var layoutVerticalSpacing: CGFloat {
         if viewModel.shouldShowProductsSectionHeader {
@@ -659,7 +666,7 @@ private struct ProductsSection: View {
                         .id(addProductButton)
                         .accessibilityIdentifier(OrderForm.Accessibility.addProductButtonIdentifier)
                         .buttonStyle(PlusButtonStyle())
-                    } else if !ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm) && presentationStyle == .modalOnModal {
+                    } else if !ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm) {
                         Button(OrderForm.Localization.addProducts) {
                             viewModel.toggleProductSelectorVisibility()
                         }
@@ -668,7 +675,7 @@ private struct ProductsSection: View {
                         .buttonStyle(PlusButtonStyle())
                     }
                     scanProductButton
-                        .renderedIf(presentationStyle == .modalOnModal)
+                        .renderedIf(presentationStyle != .sideBySide)
                 }
                 .renderedIf(viewModel.shouldShowAddProductsButton)
             }
@@ -860,9 +867,11 @@ private extension OrderForm {
     enum Accessibility {
         static let createButtonIdentifier = "new-order-create-button"
         static let cancelButtonIdentifier = "new-order-cancel-button"
+        static let recalculateButtonIdentifier = "new-order-recalculate-button"
         static let doneButtonIdentifier = "edit-order-done-button"
         static let addProductButtonIdentifier = "new-order-add-product-button"
         static let addProductViaSKUScannerButtonIdentifier = "new-order-add-product-via-sku-scanner-button"
+        static let orderFormScrollViewIdentifier = "order-form-scroll-view"
     }
 }
 

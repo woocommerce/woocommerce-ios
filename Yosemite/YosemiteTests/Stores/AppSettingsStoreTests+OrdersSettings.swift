@@ -50,10 +50,13 @@ final class AppSettingsStoreTests_OrdersSettings: XCTestCase {
         let endDate = Date().yearEnd
         let dateRange = OrderDateRangeFilter(filter: .custom, startDate: startDate, endDate: endDate)
         let productFilter = FilterOrdersByProduct(id: 1, name: "Sample product")
+        let customerFilter = CustomerFilter(customer: Customer.fake().copy(customerID: 1))
         let orderSettings = StoredOrderSettings.Setting(siteID: siteID,
                                                         orderStatusesFilter: orderStatuses,
                                                         dateRangeFilter: dateRange,
-                                                        productFilter: productFilter)
+                                                        productFilter: productFilter,
+                                                        customerFilter: customerFilter
+        )
 
         // When
         let resultBeforeWriteAction: Result<StoredOrderSettings.Setting, Error> = waitFor { promise in
@@ -69,7 +72,8 @@ final class AppSettingsStoreTests_OrdersSettings: XCTestCase {
         let writeAction = AppSettingsAction.upsertOrdersSettings(siteID: siteID,
                                                                  orderStatusesFilter: orderStatuses,
                                                                  dateRangeFilter: dateRange,
-                                                                 productFilter: productFilter) { error in
+                                                                 productFilter: productFilter,
+                                                                 customerFilter: customerFilter) { error in
             XCTAssertNil(error)
         }
         subject.onAction(writeAction)
@@ -97,27 +101,32 @@ final class AppSettingsStoreTests_OrdersSettings: XCTestCase {
         let endDate = Date().yearEnd
         let dateRange = OrderDateRangeFilter(filter: .custom, startDate: startDate, endDate: endDate)
         let productFilter = FilterOrdersByProduct(id: 1, name: "Sample product 1")
+        let customerFilter = CustomerFilter(customer: Customer.fake().copy(customerID: 1))
 
         let orderStatuses2: [OrderStatusEnum] = [.pending, .cancelled]
         let startDate2 = Date().yearStart
         let endDate2 = Date().yearEnd
         let dateRange2 = OrderDateRangeFilter(filter: .custom, startDate: startDate2, endDate: endDate2)
         let productFilter2 = FilterOrdersByProduct(id: 2, name: "Sample product 2")
+        let customerFilter2 = CustomerFilter(customer: Customer.fake().copy(customerID: 2))
 
         let orderSettings1 = StoredOrderSettings.Setting(siteID: siteID1,
                                                         orderStatusesFilter: orderStatuses,
                                                         dateRangeFilter: dateRange,
-                                                         productFilter: productFilter)
+                                                         productFilter: productFilter,
+                                                         customerFilter: customerFilter)
         let orderSettings2 = StoredOrderSettings.Setting(siteID: siteID2,
                                                         orderStatusesFilter: orderStatuses2,
                                                         dateRangeFilter: dateRange2,
-                                                         productFilter: productFilter2)
+                                                         productFilter: productFilter2,
+                                                         customerFilter: customerFilter2)
 
         // When
         let writeAction1 = AppSettingsAction.upsertOrdersSettings(siteID: siteID1,
                                                                   orderStatusesFilter: orderStatuses,
                                                                   dateRangeFilter: dateRange,
-                                                                  productFilter: productFilter) { error in
+                                                                  productFilter: productFilter,
+                                                                  customerFilter: customerFilter) { error in
             XCTAssertNil(error)
         }
         subject.onAction(writeAction1)
@@ -125,7 +134,8 @@ final class AppSettingsStoreTests_OrdersSettings: XCTestCase {
         let writeAction2 = AppSettingsAction.upsertOrdersSettings(siteID: siteID2,
                                                                   orderStatusesFilter: orderStatuses2,
                                                                   dateRangeFilter: dateRange2,
-                                                                  productFilter: productFilter2) { error in
+                                                                  productFilter: productFilter2,
+                                                                  customerFilter: customerFilter2) { error in
             XCTAssertNil(error)
         }
         subject.onAction(writeAction2)

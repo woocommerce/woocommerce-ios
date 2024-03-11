@@ -295,6 +295,11 @@ private extension ProductInventorySettingsViewController {
         button.addAction(UIAction(handler: { [weak self] _ in
             self?.scanSKUButtonTapped()
         }), for: .touchUpInside)
+        button.accessibilityLabel = NSLocalizedString("Scan products", comment: "Scan Products")
+        button.accessibilityHint = NSLocalizedString(
+            "Scans barcodes that are associated with a product SKU for stock management.",
+            comment: "VoiceOver accessibility hint, informing the user the button can be used to scan products."
+        )
         cell.accessoryView = button
     }
 

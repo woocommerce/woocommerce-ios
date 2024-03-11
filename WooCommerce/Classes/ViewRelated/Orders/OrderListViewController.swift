@@ -234,10 +234,11 @@ final class OrderListViewController: UIViewController, GhostableViewController {
 
     /// Called when an order is shown and the order should be selected in the order list.
     /// - Parameter orderID: ID of the order to be selected in the order list.
-    func onOrderSelected(id orderID: Int64) {
+    /// - Parameter shouldScrollIfNeeded: Boolean flag to turn on scrolling if the newly selected row is not visible
+    func onOrderSelected(id orderID: Int64, shouldScrollIfNeeded: Bool = false) {
         selectedOrderID = orderID
         selectedIndexPath = indexPath(for: orderID)
-        highlightSelectedRowIfNeeded()
+        highlightSelectedRowIfNeeded(shouldScrollIfNeeded: shouldScrollIfNeeded)
     }
 
     /// Returns a function that creates cells for `dataSource`.
@@ -532,14 +533,18 @@ private extension OrderListViewController {
     /// Highlights the selected row if any row has been selected and the split view is not collapsed.
     /// Removes the selected state otherwise.
     ///
-    func highlightSelectedRowIfNeeded() {
+    func highlightSelectedRowIfNeeded(shouldScrollIfNeeded: Bool = false) {
         guard let selectedOrderID, let orderIndexPath = indexPath(for: selectedOrderID) else {
+            tableView.deselectSelectedRowWithAnimation(true)
             return
         }
         if splitViewController?.isCollapsed == true {
             tableView.deselectRow(at: orderIndexPath, animated: false)
         } else {
             tableView.selectRow(at: orderIndexPath, animated: false, scrollPosition: .none)
+            if shouldScrollIfNeeded {
+                tableView.scrollToRow(at: orderIndexPath, at: .none, animated: true)
+            }
         }
     }
 
@@ -615,13 +620,14 @@ extension OrderListViewController {
         return false
     }
 
-    func showOrderDetails(_ order: Order, onCompletion: ((Bool) -> Void)? = nil) {
+    func showOrderDetails(_ order: Order, shouldScrollIfNeeded: Bool = false, onCompletion: ((Bool) -> Void)? = nil) {
         let viewModel = OrderDetailsViewModel(order: order)
         switchDetailsHandler([viewModel], 0, true) { [weak self] hasBeenSelected in
             guard let self else { return }
             if hasBeenSelected {
-                onOrderSelected(id: order.orderID)
+                onOrderSelected(id: order.orderID, shouldScrollIfNeeded: shouldScrollIfNeeded)
             }
+            onCompletion?(hasBeenSelected)
         }
     }
 }
@@ -911,13 +917,9 @@ private extension OrderListViewController {
         onTroubleshootButtonPressed: { [weak self] in
             guard let self = self else { return }
 
-            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.connectivityTool) {
-                ServiceLocator.analytics.track(event: .ConnectivityTool.topBannerTroubleshootTapped())
-                let connectivityToolViewController = ConnectivityToolViewController()
-                self.show(connectivityToolViewController, sender: self)
-            } else {
-                WebviewHelper.launch(ErrorTopBannerFactory.troubleshootUrl(for: error), with: self)
-            }
+            ServiceLocator.analytics.track(event: .ConnectivityTool.topBannerTroubleshootTapped())
+            let connectivityToolViewController = ConnectivityToolViewController()
+            self.show(connectivityToolViewController, sender: self)
         },
         onContactSupportButtonPressed: { [weak self] in
             guard let self = self else { return }

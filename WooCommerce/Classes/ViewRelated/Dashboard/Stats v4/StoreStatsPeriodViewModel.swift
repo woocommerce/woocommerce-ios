@@ -226,6 +226,8 @@ private extension StoreStatsPeriodViewModel {
             return .redactedDueToJetpack
         case .hidden:
             return .redacted
+        case .redactedDueToCustomRange:
+            return .redactedDueToCustomRange
         }
     }
 
@@ -236,6 +238,8 @@ private extension StoreStatsPeriodViewModel {
         case .redactedDueToJetpack:
             return .redacted
         case .redacted:
+            return .redacted
+        case .redactedDueToCustomRange:
             return .redacted
         }
     }
@@ -281,9 +285,11 @@ private extension StoreStatsPeriodViewModel {
     func configureOrderStatsResultsController() {
         orderStatsResultsController.onDidChangeContent = { [weak self] in
             self?.updateOrderDataIfNeeded()
+            self?.updateSiteVisitDataIfNeeded()
         }
         orderStatsResultsController.onDidResetContent = { [weak self] in
             self?.updateOrderDataIfNeeded()
+            self?.updateSiteVisitDataIfNeeded()
         }
         try? orderStatsResultsController.performFetch()
     }
@@ -313,7 +319,33 @@ private extension StoreStatsPeriodViewModel {
 //
 private extension StoreStatsPeriodViewModel {
     func updateSiteVisitDataIfNeeded() {
-        siteStats = siteStatsResultsController.fetchedObjects.first
+        /// If granularity of site stats and order stats are not equivalent,
+        /// there can be discrepancy between site visit and order stats.
+        /// Hide all site stats in that case.
+        ///
+        guard timeRange.shouldSupportSelectingVisitStats else {
+            siteStats = nil
+            return
+        }
+
+        let siteStats = siteStatsResultsController.fetchedObjects.first
+        /// When the number of intervals for site visit stats is larger than order stats,
+        /// the index of the stats will mismatch causing a discrepancy in data.
+        /// Attempting to get only the last x items from site visit stats,
+        /// with x being the number of intervals available from order stats.
+        ///
+        if let orderStats = orderStatsResultsController.fetchedObjects.first,
+           orderStats.intervals.count > 0,
+           let items = siteStats?.items,
+           items.count > orderStats.intervals.count {
+            let sortedItems = items.sorted(by: { (lhs, rhs) -> Bool in
+                return lhs.period < rhs.period
+            })
+            let matchingItems = Array(sortedItems.suffix(orderStats.intervals.count))
+            self.siteStats = siteStats?.copy(items: matchingItems)
+        } else {
+            self.siteStats = siteStats
+        }
     }
 
     func updateSiteSummaryDataIfNeeded() {

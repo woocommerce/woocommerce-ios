@@ -887,8 +887,6 @@
 		DEC51AF92769A212009F3DF4 /* SystemStatus+Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC51AF82769A212009F3DF4 /* SystemStatus+Settings.swift */; };
 		DEC51AFB2769C66B009F3DF4 /* SystemStatusMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC51AFA2769C66B009F3DF4 /* SystemStatusMapperTests.swift */; };
 		DEC51B02276AFB35009F3DF4 /* SystemStatus+DropinMustUsePlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC51B01276AFB34009F3DF4 /* SystemStatus+DropinMustUsePlugin.swift */; };
-		DED91DDF2AD63C2800CDCC53 /* blaze-campaigns-success.json in Resources */ = {isa = PBXBuildFile; fileRef = DED91DDE2AD63C2800CDCC53 /* blaze-campaigns-success.json */; };
-		DED91DE32AD63EE300CDCC53 /* BlazeCampaignListMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED91DE22AD63EE300CDCC53 /* BlazeCampaignListMapperTests.swift */; };
 		DED91DE52AD64B2900CDCC53 /* BlazeRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED91DE42AD64B2900CDCC53 /* BlazeRemote.swift */; };
 		DED91DE72AD64ED500CDCC53 /* BlazeRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED91DE62AD64ED500CDCC53 /* BlazeRemoteTests.swift */; };
 		DEDA8D9B2B05BEF80076BF0F /* CreateProductVariationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEDA8D9A2B05BEF80076BF0F /* CreateProductVariationTests.swift */; };
@@ -934,11 +932,9 @@
 		EE078D932AD2F1E500C1199E /* JWTokenMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE078D922AD2F1E500C1199E /* JWTokenMapperTests.swift */; };
 		EE078D952AD2FCFA00C1199E /* jwt-token-expired-token.json in Resources */ = {isa = PBXBuildFile; fileRef = EE078D942AD2FCFA00C1199E /* jwt-token-expired-token.json */; };
 		EE1217DC2AFE04A500E6CAB1 /* ProductVariationEncoderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE1217DB2AFE04A500E6CAB1 /* ProductVariationEncoderTests.swift */; };
-		EE1CB8FF2B4BC85B00AD24D5 /* BlazeCampaign.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE1CB8FB2B4BC85B00AD24D5 /* BlazeCampaign.swift */; };
 		EE1CB9002B4BC85B00AD24D5 /* BlazeTargetOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE1CB8FC2B4BC85B00AD24D5 /* BlazeTargetOptions.swift */; };
 		EE1CB9012B4BC85B00AD24D5 /* CreateBlazeCampaign.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE1CB8FD2B4BC85B00AD24D5 /* CreateBlazeCampaign.swift */; };
 		EE1CB9022B4BC85B00AD24D5 /* BlazeImpressions.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE1CB8FE2B4BC85B00AD24D5 /* BlazeImpressions.swift */; };
-		EE1CB9082B4BC8C500AD24D5 /* BlazeCampaignListMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE1CB9042B4BC8C500AD24D5 /* BlazeCampaignListMapper.swift */; };
 		EE1CB9092B4BC8C500AD24D5 /* BlazeTargetOptionMappers.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE1CB9052B4BC8C500AD24D5 /* BlazeTargetOptionMappers.swift */; };
 		EE1CB90A2B4BC8C500AD24D5 /* CreateBlazeCampaignMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE1CB9062B4BC8C500AD24D5 /* CreateBlazeCampaignMapper.swift */; };
 		EE1CB90B2B4BC8C500AD24D5 /* BlazeImpressionsMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE1CB9072B4BC8C500AD24D5 /* BlazeImpressionsMapper.swift */; };
@@ -1964,8 +1960,6 @@
 		DEC51AF82769A212009F3DF4 /* SystemStatus+Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SystemStatus+Settings.swift"; sourceTree = "<group>"; };
 		DEC51AFA2769C66B009F3DF4 /* SystemStatusMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemStatusMapperTests.swift; sourceTree = "<group>"; };
 		DEC51B01276AFB34009F3DF4 /* SystemStatus+DropinMustUsePlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SystemStatus+DropinMustUsePlugin.swift"; sourceTree = "<group>"; };
-		DED91DDE2AD63C2800CDCC53 /* blaze-campaigns-success.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "blaze-campaigns-success.json"; sourceTree = "<group>"; };
-		DED91DE22AD63EE300CDCC53 /* BlazeCampaignListMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeCampaignListMapperTests.swift; sourceTree = "<group>"; };
 		DED91DE42AD64B2900CDCC53 /* BlazeRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeRemote.swift; sourceTree = "<group>"; };
 		DED91DE62AD64ED500CDCC53 /* BlazeRemoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeRemoteTests.swift; sourceTree = "<group>"; };
 		DEDA8D9A2B05BEF80076BF0F /* CreateProductVariationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateProductVariationTests.swift; sourceTree = "<group>"; };
@@ -2011,11 +2005,9 @@
 		EE078D922AD2F1E500C1199E /* JWTokenMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JWTokenMapperTests.swift; sourceTree = "<group>"; };
 		EE078D942AD2FCFA00C1199E /* jwt-token-expired-token.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "jwt-token-expired-token.json"; sourceTree = "<group>"; };
 		EE1217DB2AFE04A500E6CAB1 /* ProductVariationEncoderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductVariationEncoderTests.swift; sourceTree = "<group>"; };
-		EE1CB8FB2B4BC85B00AD24D5 /* BlazeCampaign.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BlazeCampaign.swift; sourceTree = "<group>"; };
 		EE1CB8FC2B4BC85B00AD24D5 /* BlazeTargetOptions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BlazeTargetOptions.swift; sourceTree = "<group>"; };
 		EE1CB8FD2B4BC85B00AD24D5 /* CreateBlazeCampaign.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreateBlazeCampaign.swift; sourceTree = "<group>"; };
 		EE1CB8FE2B4BC85B00AD24D5 /* BlazeImpressions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BlazeImpressions.swift; sourceTree = "<group>"; };
-		EE1CB9042B4BC8C500AD24D5 /* BlazeCampaignListMapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BlazeCampaignListMapper.swift; sourceTree = "<group>"; };
 		EE1CB9052B4BC8C500AD24D5 /* BlazeTargetOptionMappers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BlazeTargetOptionMappers.swift; sourceTree = "<group>"; };
 		EE1CB9062B4BC8C500AD24D5 /* CreateBlazeCampaignMapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreateBlazeCampaignMapper.swift; sourceTree = "<group>"; };
 		EE1CB9072B4BC8C500AD24D5 /* BlazeImpressionsMapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BlazeImpressionsMapper.swift; sourceTree = "<group>"; };
@@ -2717,7 +2709,6 @@
 				EE66BB012B2893AF00518DAF /* theme-install-success.json */,
 				DEDA8DB62B187E770076BF0F /* theme-mine-success.json */,
 				EE8C202A2B4786D500FE967B /* blaze-create-campaign-success.json */,
-				DED91DDE2AD63C2800CDCC53 /* blaze-campaigns-success.json */,
 				EE065ACD2B8E51AD009848CB /* blaze-campaigns-list-success.json */,
 				DEDA8DA42B1839320076BF0F /* theme-list-success.json */,
 				EE28C7D72AC17960004A69F4 /* generate-product-failure.json */,
@@ -3407,7 +3398,6 @@
 				6812FC002A6B27E100D7C625 /* InAppPurchasesTransactionMapperTests.swift */,
 				EEA1E2012AC18CD700A37ADD /* AIProductMapperTests.swift */,
 				EE078D922AD2F1E500C1199E /* JWTokenMapperTests.swift */,
-				DED91DE22AD63EE300CDCC53 /* BlazeCampaignListMapperTests.swift */,
 				EE065ACF2B8E56C2009848CB /* BlazeCampaignListItemsMapperTests.swift */,
 				DEDA8DA62B18399D0076BF0F /* WordPressThemeListMapperTests.swift */,
 				DEDA8DB82B187EC90076BF0F /* WordPressThemeMapperTests.swift */,
@@ -3514,7 +3504,6 @@
 			isa = PBXGroup;
 			children = (
 				EE1CB90C2B4BC96F00AD24D5 /* AI */,
-				EE1CB8FB2B4BC85B00AD24D5 /* BlazeCampaign.swift */,
 				EE1CB8FE2B4BC85B00AD24D5 /* BlazeImpressions.swift */,
 				EE1CB8FC2B4BC85B00AD24D5 /* BlazeTargetOptions.swift */,
 				EE1CB8FD2B4BC85B00AD24D5 /* CreateBlazeCampaign.swift */,
@@ -3527,7 +3516,6 @@
 		EE1CB9032B4BC88700AD24D5 /* Blaze */ = {
 			isa = PBXGroup;
 			children = (
-				EE1CB9042B4BC8C500AD24D5 /* BlazeCampaignListMapper.swift */,
 				DE02ABB42B563E96008E0AC4 /* BlazePaymentInfoMapper.swift */,
 				EE1CB9072B4BC8C500AD24D5 /* BlazeImpressionsMapper.swift */,
 				EE1CB9052B4BC8C500AD24D5 /* BlazeTargetOptionMappers.swift */,
@@ -3954,7 +3942,6 @@
 				03E6676927E0F62B00890E6F /* wcpay-charge-interac-present.json in Resources */,
 				453305ED2459E1AA00264E50 /* site-post.json in Resources */,
 				74749B99224135C4005C4CF2 /* product.json in Resources */,
-				DED91DDF2AD63C2800CDCC53 /* blaze-campaigns-success.json in Resources */,
 				4515281F257A89B90076B03C /* product-attribute-create.json in Resources */,
 				DE66C55B2977C1A000DAA978 /* order-shipping-labels-without-data.json in Resources */,
 				CEF88DAF233E9F7E00BED485 /* order-details-partially-refunded.json in Resources */,
@@ -4372,7 +4359,6 @@
 				26615475242D7C9500A31661 /* ProductCategoryListMapper.swift in Sources */,
 				EE3D1E962B8F0CF40016B132 /* BlazeCampaignListItem.swift in Sources */,
 				3178A49F2703E5CF00A8B4CA /* RemoteReaderLocationMapper.swift in Sources */,
-				EE1CB8FF2B4BC85B00AD24D5 /* BlazeCampaign.swift in Sources */,
 				45D685F823D0BC78005F87D0 /* ProductSkuMapper.swift in Sources */,
 				7412A8EA21B6E192005D182A /* ReportRemote.swift in Sources */,
 				CC01CE5A29B0FD61004FF537 /* ProductBundleItem.swift in Sources */,
@@ -4559,7 +4545,6 @@
 				314703082670222500EF253A /* PaymentGatewayAccount.swift in Sources */,
 				CCF48B282628A4EB0034EA83 /* ShippingLabelAccountSettingsMapper.swift in Sources */,
 				B5BB1D1220A255EC00112D92 /* OrderStatusEnum.swift in Sources */,
-				EE1CB9082B4BC8C500AD24D5 /* BlazeCampaignListMapper.swift in Sources */,
 				DE50295928C5BD0200551736 /* JetpackUser.swift in Sources */,
 				DE2E8EB529546648002E4B14 /* WooConstants.swift in Sources */,
 				0359EA1727AAC7740048DE2D /* WCPayCardFunding.swift in Sources */,
@@ -4765,7 +4750,6 @@
 				DEDA8DAB2B18407D0076BF0F /* WordPressThemeRemoteTests.swift in Sources */,
 				B505F6D720BEE58800BB1B69 /* AccountRemoteTests.swift in Sources */,
 				DE42F9632967C8B900D514C2 /* ReportOrderTotalsMapperTests.swift in Sources */,
-				DED91DE32AD63EE300CDCC53 /* BlazeCampaignListMapperTests.swift in Sources */,
 				453305EB2459E01A00264E50 /* PostMapperTests.swift in Sources */,
 				8617EDA62B3C093200BD9D1B /* BlazeImpressionsMapperTests.swift in Sources */,
 				CE0A0F1D22398D520075ED8D /* ProductListMapperTests.swift in Sources */,

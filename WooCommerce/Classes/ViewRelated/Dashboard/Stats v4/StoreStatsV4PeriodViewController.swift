@@ -1,7 +1,7 @@
 import Charts
 import Combine
 import UIKit
-import struct WordPressUI.GhostStyle
+import WordPressUI
 import Yosemite
 import WooFoundation
 
@@ -11,6 +11,7 @@ enum SiteVisitStatsMode {
     case `default`
     case redactedDueToJetpack
     case hidden
+    case redactedDueToCustomRange
 }
 
 /// Shows the store stats with v4 API for a time range.
@@ -41,6 +42,8 @@ final class StoreStatsV4PeriodViewController: UIViewController {
 
     private let usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter
 
+    private let stores: StoresManager
+
     // MARK: - Subviews
 
     @IBOutlet private weak var containerStackView: UIStackView!
@@ -59,6 +62,8 @@ final class StoreStatsV4PeriodViewController: UIViewController {
     @IBOutlet private weak var noRevenueView: UIView!
     @IBOutlet private weak var noRevenueLabel: UILabel!
     @IBOutlet private weak var timeRangeBarView: StatsTimeRangeBarView!
+    @IBOutlet private weak var visitorsStackView: UIStackView!
+    @IBOutlet private weak var conversionStackView: UIStackView!
 
     private var currencyCode: String {
         return ServiceLocator.currencySettings.symbol(from: ServiceLocator.currencySettings.currencyCode)
@@ -77,10 +82,26 @@ final class StoreStatsV4PeriodViewController: UIViewController {
 
     private var isInitialLoad: Bool = true  // Used in trackChangedTabIfNeeded()
 
+    // To check whether the tab is showing the visitors and conversion views as redacted for custom range.
+    // This redaction is only shown on Custom Range tab with WordPress.com or Jetpack connected sites,
+    // while Jetpack CP sites has its own redacted for Jetpack state, and non-Jetpack sites simply has them empty.
+    private var unavailableVisitStatsDueToCustomRange: Bool {
+        guard timeRange.isCustomTimeRange,
+              let site = stores.sessionManager.defaultSite,
+              site.isJetpackConnected,
+              site.isJetpackThePluginInstalled else {
+            return false
+        }
+        return true
+    }
+
     /// Placeholder: Mockup Charts View
     ///
     private lazy var placeholderChartsView: ChartPlaceholderView = ChartPlaceholderView.instantiateFromNib()
 
+    /// Information alert for custom range tab redaction
+    ///
+    private lazy var fancyAlert = FancyAlertViewController.makeCustomRangeRedactionInformationAlert()
 
     // MARK: - Computed Properties
 
@@ -133,6 +154,7 @@ final class StoreStatsV4PeriodViewController: UIViewController {
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter,
+         stores: StoresManager = ServiceLocator.stores,
          onEditCustomTimeRange: (() -> Void)?) {
         self.timeRange = timeRange
         self.granularity = timeRange.intervalGranularity
@@ -143,6 +165,7 @@ final class StoreStatsV4PeriodViewController: UIViewController {
                                                    currencyFormatter: currencyFormatter,
                                                    currencySettings: currencySettings)
         self.usageTracksEventEmitter = usageTracksEventEmitter
+        self.stores = stores
         self.editCustomTimeRangeHandler = onEditCustomTimeRange
         super.init(nibName: type(of: self).nibName, bundle: nil)
     }
@@ -349,6 +372,36 @@ private extension StoreStatsV4PeriodViewController {
         // Data
         updateStatsDataToDefaultStyles()
 
+        // Taps
+        if unavailableVisitStatsDueToCustomRange {
+            fancyAlert.modalPresentationStyle = .custom
+            fancyAlert.transitioningDelegate = AppDelegate.shared.tabBarController
+
+            let visitorsTapRecognizer = UITapGestureRecognizer()
+            visitorsTapRecognizer.on { [weak self] _ in
+                guard let self,
+                      siteVisitStatsMode == .redactedDueToCustomRange
+                else { return }
+
+                present(fancyAlert, animated: true)
+            }
+
+            let conversionTapRecognizer = UITapGestureRecognizer()
+            conversionTapRecognizer.on { [weak self] _ in
+                guard let self,
+                      siteVisitStatsMode == .redactedDueToCustomRange
+                else { return }
+
+                present(fancyAlert, animated: true)
+            }
+
+            visitorsStackView.addGestureRecognizer(visitorsTapRecognizer)
+            visitorsStackView.isUserInteractionEnabled = true
+
+            conversionStackView.addGestureRecognizer(conversionTapRecognizer)
+            conversionStackView.isUserInteractionEnabled = true
+        }
+
         // Accessibility elements
         xAxisAccessibilityView.isAccessibilityElement = true
         xAxisAccessibilityView.accessibilityTraits = .staticText
@@ -475,7 +528,11 @@ extension StoreStatsV4PeriodViewController: ChartViewDelegate {
         chartValueSelectedEventsSubject
             .debounce(for: .seconds(Constants.chartValueSelectedEventsDebounce), scheduler: DispatchQueue.main)
             .sink { [weak self] _ in
-                self?.usageTracksEventEmitter.interacted()
+                guard let self else { return }
+                if self.timeRange.isCustomTimeRange {
+                    ServiceLocator.analytics.track(event: .DashboardCustomRange.interacted())
+                }
+                self.usageTracksEventEmitter.interacted()
             }.store(in: &cancellables)
     }
 }
@@ -485,6 +542,22 @@ private extension StoreStatsV4PeriodViewController {
     ///
     /// - Parameter selectedIndex: the index of interval data for the bar chart. Nil if no bar is selected.
     func updateUI(selectedBarIndex selectedIndex: Int?) {
+
+        if unavailableVisitStatsDueToCustomRange {
+            // If time range is less than 2 days, redact data when selected and show when deselected.
+            // Otherwise, show data when selected and redact when deselected.
+            guard case let .custom(from, to) = timeRange,
+                  let differenceInDays = StatsTimeRangeV4.differenceInDays(startDate: from, endDate: to) else {
+                return
+            }
+
+            if differenceInDays == .lessThan2 {
+                siteVisitStatsMode = selectedIndex != nil ? .hidden : .default
+            } else {
+                siteVisitStatsMode = selectedIndex != nil ? .default : .redactedDueToCustomRange
+            }
+        }
+
         viewModel.selectedIntervalIndex = selectedIndex
     }
 }

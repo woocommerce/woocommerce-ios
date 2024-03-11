@@ -7,7 +7,5 @@ public enum StatGranularity: String, Decodable, GeneratedFakeable {
     case day
     case week
     case month
-    case quarter
     case year
-    case hour
 }

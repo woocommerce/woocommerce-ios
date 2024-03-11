@@ -2679,6 +2679,26 @@ final class MigrationTests: XCTestCase {
         XCTAssertNotNil(campaign.value(forKey: "spentBudget"))
     }
 
+    func test_migrating_from_107_to_108_removes_BlazeCampaign_entity() throws {
+        // Arrange
+        let sourceContainer = try startPersistentContainer("Model 107")
+        let sourceContext = sourceContainer.viewContext
+
+        insertBlazeCampaign(to: sourceContext, forModel: 107)
+        try sourceContext.save()
+
+        XCTAssertEqual(try sourceContext.count(entityName: "BlazeCampaign"), 1)
+
+        let sourceEntitiesNames = sourceContainer.managedObjectModel.entitiesByName.keys
+        XCTAssertTrue(sourceEntitiesNames.contains("BlazeCampaign"))
+
+        // Action
+        let targetContainer = try migrate(sourceContainer, to: "Model 108")
+        let targetEntitiesNames = targetContainer.managedObjectModel.entitiesByName.keys
+
+        // Assert
+        XCTAssertFalse(targetEntitiesNames.contains("BlazeCampaign"))
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations

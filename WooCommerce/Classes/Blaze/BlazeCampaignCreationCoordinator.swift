@@ -210,7 +210,7 @@ private extension BlazeCampaignCreationCoordinator {
         let controller: ProductSelectorViewController = {
             let productSelectorViewModel = ProductSelectorViewModel(
                 siteID: siteID,
-                onProductSelectionStateChanged: { [weak self] product in
+                onProductSelectionStateChanged: { [weak self] product, _ in
                     guard let self else { return }
 
                     // Navigate to Campaign Creation Form once any type of product is selected.

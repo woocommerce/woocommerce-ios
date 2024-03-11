@@ -373,7 +373,7 @@ final class FilterTabBar: UIControl {
 
     /// The index of the currently selected tab.
     ///
-    private(set) var selectedIndex: Int = 0 {
+    @Published private(set) var selectedIndex: Int = 0 {
         didSet {
             if selectedIndex != oldValue && oldValue < tabs.count {
                 let oldTab = tabs[oldValue]

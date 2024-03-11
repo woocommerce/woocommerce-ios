@@ -44,7 +44,7 @@ def keychain
 end
 
 def alamofire
-  pod 'Alamofire', '~> 4.8'
+  pod 'Alamofire', '~> 5.0'
 end
 
 def cocoa_lumberjack
@@ -85,13 +85,10 @@ target 'WooCommerce' do
   pod 'Gridicons', '~> 1.2.0'
 
   # To allow pod to pick up beta versions use -beta. E.g., 1.1.7-beta.1
-  pod 'WordPressAuthenticator', '~> 9.0'
+  # pod 'WordPressAuthenticator', '~> 9.0'
   # pod 'WordPressAuthenticator', git: 'https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git', branch: ''
-  # pod 'WordPressAuthenticator', git: 'https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git', commit: ''
+  pod 'WordPressAuthenticator', git: 'https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git', commit: '958e0c81a718fe35cc9d4f350c4a49cbf8e4458a'
   # pod 'WordPressAuthenticator', path: '../WordPressAuthenticator-iOS'
-
-  pod 'WordPressKit', '~> 13.1'
-  # pod 'WordPressKit', git: 'https://github.com/wordpress-mobile/WordPressKit-iOS.git', commit: ''
 
   wordpress_shared
 

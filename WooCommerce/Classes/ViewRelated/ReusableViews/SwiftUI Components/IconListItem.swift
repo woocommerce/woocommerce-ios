@@ -57,20 +57,15 @@ struct IconListItem: View {
     let icon: Icon?
 
     var body: some View {
-        HStack(alignment: .center, spacing: Layout.contentSpacing) {
-            VStack {
-                icon?.getImage()
-                    .frame(width: Layout.iconSize.width, height: Layout.iconSize.height)
-                    .accessibility(hidden: true)
-                Spacer()
-            }
+        HStack(alignment: .top, spacing: Layout.contentSpacing) {
+            icon?.getImage()
+                .frame(width: Layout.iconSize.width, height: Layout.iconSize.height)
+                .accessibility(hidden: true)
             VStack(alignment: .leading, spacing: Layout.innerSpacing) {
                 Text(title)
                     .headlineStyle()
-                    .fixedSize(horizontal: false, vertical: true)
                 Text(subtitle)
                     .secondaryBodyStyle()
-                    .fixedSize(horizontal: false, vertical: true)
             }
             Spacer()
         }

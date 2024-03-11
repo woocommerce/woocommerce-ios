@@ -1447,14 +1447,14 @@ private extension EditableOrderViewModel {
 
     /// Adds a selected product (from the product list) to the order.
     ///
-    func changeSelectionStateForProduct(_ product: Product) {
+    func changeSelectionStateForProduct(_ product: Product, to isSelected: Bool) {
         // Needed because `allProducts` is only updated at start, so product from new pages are not synced.
         allProducts.insert(product)
 
-        if !selectedProducts.contains(where: { $0.productID == product.productID }) {
+        if isSelected && !selectedProducts.contains(where: { $0.productID == product.productID }) {
             selectedProducts.append(product)
             analytics.track(event: WooAnalyticsEvent.Orders.orderCreationProductSelectorItemSelected(productType: .product))
-        } else {
+        } else if !isSelected {
             selectedProducts.removeAll(where: { $0.productID == product.productID })
             analytics.track(event: WooAnalyticsEvent.Orders.orderCreationProductSelectorItemUnselected(productType: .product))
         }
@@ -1462,15 +1462,15 @@ private extension EditableOrderViewModel {
 
     /// Adds a selected product variation (from the product list) to the order.
     ///
-    func changeSelectionStateForProductVariation(_ variation: ProductVariation, parent product: Product) {
+    func changeSelectionStateForProductVariation(_ variation: ProductVariation, parent product: Product, to isSelected: Bool) {
         // Needed because `allProducts` is only updated at start, so product from new pages are not synced.
         allProducts.insert(product)
         allProductVariations.insert(variation)
 
-        if !selectedProductVariations.contains(where: { $0.productVariationID == variation.productVariationID }) {
+        if isSelected && !selectedProductVariations.contains(where: { $0.productVariationID == variation.productVariationID }) {
             selectedProductVariations.append(variation)
             analytics.track(event: WooAnalyticsEvent.Orders.orderCreationProductSelectorItemSelected(productType: .variation))
-        } else {
+        } else if !isSelected {
             selectedProductVariations.removeAll(where: { $0.productVariationID == variation.productVariationID })
             analytics.track(event: WooAnalyticsEvent.Orders.orderCreationProductSelectorItemUnselected(productType: .variation))
         }
@@ -1824,14 +1824,15 @@ private extension EditableOrderViewModel {
                     topProductsProvider: TopProductsFromCachedOrdersProvider(),
                     syncApproach: selectionSyncApproach.productSelectorSyncApproach,
                     orderSyncState: orderSynchronizer.statePublisher,
-                    onProductSelectionStateChanged: { [weak self] product in
+                    shouldShowNonEditableIndicators: shouldShowNonEditableIndicators,
+                    onProductSelectionStateChanged: { [weak self] product, isSelected in
                         guard let self else { return }
-                        changeSelectionStateForProduct(product)
+                        changeSelectionStateForProduct(product, to: isSelected)
                         evaluateSelectionSync()
                     },
-                    onVariationSelectionStateChanged: { [weak self] variation, parentProduct in
+                    onVariationSelectionStateChanged: { [weak self] variation, parentProduct, isSelected in
                         guard let self else { return }
-                        changeSelectionStateForProductVariation(variation, parent: parentProduct)
+                        changeSelectionStateForProductVariation(variation, parent: parentProduct, to: isSelected)
                         evaluateSelectionSync()
                     }, onMultipleSelectionCompleted: { [weak self] _ in
                         guard let self else { return }

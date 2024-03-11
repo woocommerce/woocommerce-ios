@@ -65,7 +65,6 @@ class SupportFormMetadataProvider {
         [
             ZendeskFieldsIDs.appVersion: Bundle.main.version,
             ZendeskFieldsIDs.deviceFreeSpace: getDeviceFreeSpace(),
-            ZendeskFieldsIDs.networkInformation: getNetworkInformation(),
             ZendeskFieldsIDs.logs: getLogFile(),
             ZendeskFieldsIDs.legacyLogs: systemStatusReportViewModel.statusReport,
             ZendeskFieldsIDs.currentSite: getCurrentSiteDescription(),
@@ -190,33 +189,6 @@ private extension SupportFormMetadataProvider {
         return "\(site.url) (\(site.description))"
     }
 
-    /// Gets the current device network information. Network type, Carrier, and Country Code
-    ///
-    func getNetworkInformation() -> String {
-        let networkType: String = {
-            switch connectivityObserver.currentStatus {
-            case .reachable(let type) where type == .ethernetOrWiFi:
-                return Constants.networkWiFi
-            case .reachable(let type) where type == .cellular:
-                return Constants.networkWWAN
-            default:
-                return Constants.unknownValue
-            }
-        }()
-
-        // TODO: evaluate to not send anymore this information since this is deprecated and will not be replaced in the future by Apple.
-        let networkCarrier = CTTelephonyNetworkInfo().serviceSubscriberCellularProviders?.first?.value
-        let carrierName = networkCarrier?.carrierName ?? Constants.unknownValue
-        let carrierCountryCode = networkCarrier?.isoCountryCode ?? Constants.unknownValue
-
-        let networkInformation = [
-            "\(Constants.networkTypeLabel) \(networkType)",
-            "\(Constants.networkCarrierLabel) \(carrierName)",
-            "\(Constants.networkCountryCodeLabel) \(carrierCountryCode)"
-        ]
-
-        return networkInformation.joined(separator: "\n")
-    }
 }
 
 // MARK: Definitions
@@ -227,7 +199,6 @@ private extension SupportFormMetadataProvider {
     enum ZendeskFieldsIDs {
         static let appVersion: Int64 = 360000086866
         static let deviceFreeSpace: Int64 = 360000089123
-        static let networkInformation: Int64 = 360000086966
         static let legacyLogs: Int64 = 22871957
         static let logs: Int64 = 10901699622036
         static let currentSite: Int64 = 360000103103
@@ -246,9 +217,6 @@ private extension SupportFormMetadataProvider {
         static let logFieldCharacterLimit = 64000
         static let networkWiFi = "WiFi"
         static let networkWWAN = "Mobile"
-        static let networkTypeLabel = "Network Type:"
-        static let networkCarrierLabel = "Carrier:"
-        static let networkCountryCodeLabel = "Country Code:"
         static let sourcePlatform = "mobile_-_woo_ios"
     }
 

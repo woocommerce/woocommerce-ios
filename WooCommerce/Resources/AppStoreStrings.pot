@@ -61,9 +61,9 @@ msgctxt "app_store_promo_text"
 msgid "Run your store from anywhere"
 msgstr ""
 
-msgctxt "v17.6-whats-new"
+msgctxt "v17.7-whats-new"
 msgid ""
-"Connect with customers effortlessly using WhatsApp and Telegram directly from their orders! Plus, streamline your workflow with our new product-based order filtering. Experience enhanced multitasking with split view support in the Products tab and tailor your analytics dashboard to your needs in the revamped Analytics Hub. Update now for a smoother, more personalized WooCommerce experience!\n"
+"In this update, we've made it easier to find one customer's orders, with a new filter by customer option. Analyzing store performance just got more flexible too, with the ability to set custom date ranges for your reports. For iPad and larger iPhones, enjoy a side-by-side view for order creation or editing, maximizing productivity. Plus, we've amped up performance with a new connectivity tool, diagnosing any network hiccups. Download now and unlock smoother, more intuitive store management!\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.

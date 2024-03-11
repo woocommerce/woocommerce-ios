@@ -1,5 +1,9 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+17.8
+-----
+
+
 17.7
 -----
 - [***] [internal] Alamofire, which is the HTTP client library used in the app, has been updated to v5. [https://github.com/woocommerce/woocommerce-ios/pull/12125]

@@ -97,7 +97,7 @@ final class MainTabBarController: UITabBarController {
     private let productsNavigationController = WooTabNavigationController()
 
     private let reviewsNavigationController = WooTabNavigationController()
-    private let hubMenuContainerController = TabContainerController()
+    private let hubMenuNavigationController = WooTabNavigationController()
     private var hubMenuTabCoordinator: HubMenuCoordinator?
 
     private var cancellableSiteID: AnyCancellable?
@@ -515,7 +515,7 @@ private extension MainTabBarController {
             case .products:
                 return isProductsSplitViewFeatureFlagOn ? productsContainerController: productsNavigationController
             case .hubMenu:
-                return hubMenuContainerController
+                return hubMenuNavigationController
         }
     }
 
@@ -573,7 +573,7 @@ private extension MainTabBarController {
     }
 
     func createHubMenuTabCoordinator() -> HubMenuCoordinator {
-        HubMenuCoordinator(rootViewController: hubMenuContainerController,
+        HubMenuCoordinator(navigationController: hubMenuNavigationController,
                            tapToPayBadgePromotionChecker: viewModel.tapToPayBadgePromotionChecker,
                            willPresentReviewDetailsFromPushNotification: { [weak self] in
             await withCheckedContinuation { [weak self] continuation in

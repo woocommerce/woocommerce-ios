@@ -109,8 +109,15 @@ extension ReceiptViewController {
             DDLogInfo("Unable to retrieve inferred paper size from the web view. Using default paper provided by the system.")
             return paperList.first ?? UIPrintPaper()
         }
+
+        // Constraints the printFormatter
         printController.printFormatter?.maximumContentWidth = Constants.maximumReceiptContentWidth
         printController.printFormatter?.maximumContentHeight = Constants.maximumReceiptContentHeight
+        printController.printFormatter?.perPageContentInsets = .init(top: 0, 
+                                                                     left: Constants.margin,
+                                                                     bottom: 0,
+                                                                     right: Constants.margin)
+
         let paper = UIPrintPaper.bestPaper(forPageSize: inferPaperSize, withPapersFrom: paperList)
         return paper
     }
@@ -127,5 +134,6 @@ extension ReceiptViewController {
         static let pointsPerInch: Int = 72
         static let maximumReceiptContentWidth: CGFloat = CGFloat(4 * pointsPerInch)
         static let maximumReceiptContentHeight: CGFloat = CGFloat(11 * pointsPerInch)
+        static let margin: CGFloat = 16
     }
 }

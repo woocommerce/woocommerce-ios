@@ -173,6 +173,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
     }
 
+    func application(_ application: UIApplication, performActionFor shortcutItem: UIApplicationShortcutItem, completionHandler: @escaping (Bool) -> Void) {
+        guard let quickAction = QuickAction(rawValue: shortcutItem.type) else {
+            completionHandler(false)
+            return
+        }
+        switch quickAction {
+        case QuickAction.addProduct:
+            MainTabBarController.presentAddProductFlow()
+            completionHandler(true)
+        case QuickAction.addOrder:
+            MainTabBarController.presentOrderCreationFlow()
+            completionHandler(true)
+        }
+    }
+
     func applicationDidEnterBackground(_ application: UIApplication) {
         // Use this method to release shared resources, save user data, invalidate timers,
         // and store enough application state information to restore your application to its current state in case it is terminated later.
@@ -538,4 +553,11 @@ private extension AppDelegate {
 
         universalLinkRouter?.handle(url: linkURL)
     }
+}
+
+// MARK: - Home Screen Quick Actions
+
+enum QuickAction: String {
+    case addProduct = "AddProductAction"
+    case addOrder = "AddOrderAction"
 }

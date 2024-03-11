@@ -407,6 +407,19 @@ extension MainTabBarController {
         }
     }
 
+    static func presentAddProductFlow() {
+        switchToProductsTab {
+            let tabBar = AppDelegate.shared.tabBarController
+            let productsContainerController = tabBar?.productsContainerController
+
+            guard let productsSplitViewWrapperController = productsContainerController?.wrappedController as? ProductsSplitViewWrapperController else {
+                return
+            }
+
+            productsSplitViewWrapperController.startProductCreation()
+        }
+    }
+
     static func navigateToOrderDetails(with orderID: Int64, siteID: Int64) {
         showStore(with: siteID, onCompletion: { storeIsShown in
             switchToOrdersTab {

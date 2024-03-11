@@ -2,7 +2,7 @@ import UIKit
 import Foundation
 
 /// A universal link route, used to encapsulate a URL path and action
-/// 
+///
 protocol Route {
     /// Whether the route can handle a universal link subpath (without the /mobile segment) to be matched so this route can perform its navigation
     ///

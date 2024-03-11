@@ -32,7 +32,7 @@ final class BlazeAdDestinationSettingViewModelTests: XCTestCase {
             productURL: sampleProductURL,
             homeURL: sampleHomeURL,
             finalDestinationURL: finalDestinationURL,
-            onSave: { _ in }
+            onSave: { _, _ in }
         )
         // Then
         XCTAssertTrue(sut.shouldDisableSaveButton)
@@ -44,7 +44,7 @@ final class BlazeAdDestinationSettingViewModelTests: XCTestCase {
             productURL: sampleProductURL,
             homeURL: sampleHomeURL,
             finalDestinationURL: finalDestinationURL,
-            onSave: { _ in }
+            onSave: { _, _ in }
         )
 
         // When
@@ -70,7 +70,7 @@ final class BlazeAdDestinationSettingViewModelTests: XCTestCase {
             productURL: sampleProductURL,
             homeURL: sampleHomeURL,
             finalDestinationURL: sampleProductURL + "?" + maxLengthQueryString,
-            onSave: { _ in }
+            onSave: { _, _ in }
         )
 
         // Then
@@ -83,7 +83,7 @@ final class BlazeAdDestinationSettingViewModelTests: XCTestCase {
             productURL: sampleProductURL,
             homeURL: sampleHomeURL,
             finalDestinationURL: finalDestinationURL,
-            onSave: { _ in }
+            onSave: { _, _ in }
         )
 
         // When
@@ -102,7 +102,7 @@ final class BlazeAdDestinationSettingViewModelTests: XCTestCase {
             productURL: sampleProductURL,
             homeURL: sampleHomeURL,
             finalDestinationURL: finalDestinationURL,
-            onSave: { _ in }
+            onSave: { _, _ in }
         )
 
         // Then
@@ -115,7 +115,7 @@ final class BlazeAdDestinationSettingViewModelTests: XCTestCase {
             productURL: sampleProductURL,
             homeURL: sampleHomeURL,
             finalDestinationURL: finalDestinationURL,
-            onSave: { _ in }
+            onSave: { _, _ in }
         )
 
         // When
@@ -126,8 +126,51 @@ final class BlazeAdDestinationSettingViewModelTests: XCTestCase {
         XCTAssertEqual(sut.parameters.count, 2)
     }
 
-    // MARK: Analytics
+    // MARK: Completion block
 
+    func test_confirmSave_sends_url_in_completion_block() throws {
+        // Given
+        var receivedTargetUrl = ""
+
+        let viewModel = BlazeAdDestinationSettingViewModel(
+            productURL: sampleProductURL,
+            homeURL: sampleHomeURL,
+            finalDestinationURL: sampleProductURL,
+            analytics: analytics,
+            onSave: { targetUrl, _ in
+                receivedTargetUrl = targetUrl
+            }
+        )
+
+        // When
+        viewModel.confirmSave()
+
+        // Then
+        XCTAssertEqual(receivedTargetUrl, sampleProductURL)
+    }
+
+    func test_confirmSave_sends_params_in_completion_block() throws {
+        // Given
+        var receivedUrlParams = ""
+
+        let viewModel = BlazeAdDestinationSettingViewModel(
+            productURL: sampleProductURL,
+            homeURL: sampleHomeURL,
+            finalDestinationURL: finalDestinationURL,
+            analytics: analytics,
+            onSave: { _, urlParams in
+                receivedUrlParams = urlParams
+            }
+        )
+
+        // When
+        viewModel.confirmSave()
+
+        // Then
+        XCTAssertEqual(receivedUrlParams, threeParameters)
+    }
+
+    // MARK: Analytics
     func test_confirmSave_tracks_event() throws {
         // Given
         let viewModel = BlazeAdDestinationSettingViewModel(
@@ -135,7 +178,7 @@ final class BlazeAdDestinationSettingViewModelTests: XCTestCase {
             homeURL: sampleHomeURL,
             finalDestinationURL: finalDestinationURL,
             analytics: analytics,
-            onSave: { _ in }
+            onSave: { _, _ in }
         )
 
         // When

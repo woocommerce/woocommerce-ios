@@ -61,7 +61,7 @@ final class ProductCategoryListViewModel {
     @Published private(set) var selectedCategories: [ProductCategory]
 
     /// Search query from the search bar
-    /// 
+    ///
     @Published var searchQuery: String = ""
 
     private var searchQuerySubscription: AnyCancellable?

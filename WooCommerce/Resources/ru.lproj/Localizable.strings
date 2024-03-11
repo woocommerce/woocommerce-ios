@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-01-30 20:54:03+0000 */
+/* Translation-Revision-Date: 2024-02-27 11:54:04+0000 */
 /* Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ru */
@@ -47,11 +47,6 @@
 %1$@ is a placeholder that always replaced with \"Learn more\" string,
 which should be translated separately and considered part of this sentence. */
 "%1$@ about accepting payments with Tap to Pay on iPhone." = "%1$@ о том, как принимать платежи с помощью функции «Оплата в касание» на iPhone.";
-
-/* A label prompting users to learn more about card readers"
-%1$@ is a placeholder that always replaced with \"Learn more\" string,
-which should be translated separately and considered part of this sentence. */
-"%1$@ about accepting payments with your mobile device and ordering card readers" = "%1$@ о приёме платежей с помощью мобильного устройства и о заказе устройств чтения карт";
 
 /* A label prompting users to learn more about card readers. %1$@ is a placeholder that is always replaced with \"Learn more\" string, which should be translated separately and considered part of this sentence. */
 "%1$@ about accepting payments with your mobile device and ordering card readers." = "%1$@ о приёме платежей с помощью мобильного устройства и о заказе устройств чтения карт.";
@@ -337,9 +332,6 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle of the product form bottom sheet action for editing short description. */
 "A brief excerpt about your product" = "Краткое описание товара";
 
-/* Description of the Action sheet option when the user wants to change the Product type to grouped product */
-"A collection of related products" = "Коллекция сопутствующих товаров";
-
 /* Main message on the Print Customs Invoice screen of Shipping Label flow */
 "A customs form must be printed and included on this international shipment" = "Необходимо напечатать таможенную форму и включить ее в это международное отправление";
 
@@ -352,17 +344,8 @@ which should be translated separately and considered part of this sentence. */
 /* Error shown in Shipping Label Origin Address validation for phone number field */
 "A phone number is required" = "Укажите номер телефона";
 
-/* Description of the Action sheet option when the user wants to change the Product type to variable product */
-"A product with variations like color or size" = "Товар с вариантами исполнения, например по цвету или размеру";
-
 /* Message explaining that the site may have an invalid SSL certificate. */
 "A secure connection to the site could not be made. Please make sure that your site has a valid SSL certificate." = "Не удалось создать защищенное соединение. Убедитесь, что ваш сайт имеет действительный сертификат SSL.";
-
-/* Description of the Action sheet option when the user wants to change the Product type to simple virtual product */
-"A unique digital product like services, downloadable books, music or videos" = "Уникальный цифровой товар, например услуги, загружаемые книги, музыка или видео.";
-
-/* Description of the Action sheet option when the user wants to change the Product type to simple physical product */
-"A unique physical product that you may have to ship to the customer" = "Уникальный физический товар, который, возможно, потребуется отправить клиенту.";
 
 /* An error message. */
 "A valid email address is needed to mail an authentication link. Please return to the previous screen and provide a valid email address." = "Чтобы отправить ссылку для аутентификации, необходим действительный адрес эл. почты. Вернитесь на предыдущий экран и укажите действительный адрес эл. почты.";
@@ -573,9 +556,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Cell text in Add / Edit product when there are no images. */
 "Add a product image" = "Добавить изображение продукта";
-
-/* Description of the Action sheet option when the user wants to create a product manually */
-"Add a product manually" = "Добавление товара вручную";
 
 /* Description for the option to create product manually */
 "Add a product manually." = "Добавьте товар вручную.";
@@ -873,7 +853,7 @@ which should be translated separately and considered part of this sentence. */
 "An optional note to send the customer after purchase" = "Сообщение, отправляемое клиентку после покупки";
 
 /* Error message when an order already exists in the backend for a given receipt */
-"An order already exists for this receipt" = "Заказ, связанный с этим чеком, уже существует";
+"An order already exists for this receipt" = "Заказ по этому чеку уже существует";
 
 /* A failure reason for when the error that occured wasn't able to be determined. */
 "An unknown error occurred." = "Произошла неизвестная ошибка.";
@@ -1164,9 +1144,6 @@ which should be translated separately and considered part of this sentence. */
 /* Billing Information view Title */
 "Billing Information" = "Платёжные реквизиты";
 
-/* Action sheet option when the user wants to create a product manually */
-"Blank" = "Пустой";
-
 /* Title of the hub menu Blaze button */
 "Blaze" = "Blaze";
 
@@ -1369,6 +1346,7 @@ which should be translated separately and considered part of this sentence. */
    Button to dismiss the alert presented while the reader is being prepared.
    Button to dismiss the country search view in the store creation profiler
    Button to dismiss the error modal when a user without admin role tries to install Jetpack
+   Button to dismiss the screen
    Button to dismiss the site credential login screen
    Button to dismiss the store creation profiler flow
    Button to dismiss the store name screen
@@ -1888,6 +1866,9 @@ which should be translated separately and considered part of this sentence. */
 /* No comment provided by engineer. */
 "Connecting to WordPress.com" = "Идёт подключение к WordPress.com";
 
+/* Title for the WPCom servers connectivity tool card */
+"Connecting to WordPress.com Servers" = "Подключение к серверам WordPress.com";
+
 /* Title of alert for suggestion on how to connect to a WP.com sitePresented when a user logs in with an email that does not have access to a WP.com site */
 "Connecting to a WordPress.com site" = "Подключение к сайту WordPress.com";
 
@@ -1900,8 +1881,14 @@ which should be translated separately and considered part of this sentence. */
 /* Title when checking if WooCommerce Payments is supported */
 "Connecting to your account" = "Подключение к вашей учётной записи";
 
+/* Title for the Your Site connectivity tool card */
+"Connecting to your site" = "Подключение к вашему сайту...";
+
 /* Name of the step to connect the store to Jetpack */
 "Connecting your store" = "Подключение вашего магазина";
+
+/* Screen title for the connectivity tool */
+"Connectivity Test" = "Проверка подключения";
 
 /* Contact Customer action in Shipping Label Address Validation. */
 "Contact Customer" = "Связаться с клиентом";
@@ -1915,6 +1902,7 @@ which should be translated separately and considered part of this sentence. */
 /* Action button to contact support when Jetpack install fails
    Button to contact support for login
    Close Account error alert button title - navigates the user to contact support.
+   Contact support button in the connectivity tool screen
    Contact Support title
    Text for the button to contact support from the store picker error screen
    Title of the button to contact support for help accessing a store after Jetpack setup
@@ -2226,7 +2214,8 @@ which should be translated separately and considered part of this sentence. */
 "Currently creation is supported for 100 variations maximum. Generating variations for this product would create %d variations." = "Текущее максимальное количество создаваемых вариантов: 100. Количество вариантов, которые можно создать для этого продукта: %d.";
 
 /* Name of the section for custom shipment tracking carriers
-   Title of the Analytics Hub Custom selection range */
+   Title of the Analytics Hub Custom selection range
+   Top Performers section title - Custom */
 "Custom" = "Дополнительно";
 
 /* Navigation title on the add custom amount view in orders.
@@ -2773,9 +2762,6 @@ which should be translated separately and considered part of this sentence. */
 /* Label for yes/no switch - emailing the note to customer. */
 "Email note to customer" = "Отправить примечание клиенту по электронной почте";
 
-/* No comment provided by engineer. */
-"Email note to customer %@" = "Отправить по электронной почте примечание клиенту %@";
-
 /* Button to email receipts. Presented to users after a payment has been successfully collected */
 "Email receipt" = "Отправить чек по эл. почте";
 
@@ -3145,9 +3131,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title text in the store creation loading screen */
 "Extending store's capabilities" = "Расширение возможностей магазина";
 
-/* Action sheet option when the user wants to change the Product type to external product */
-"External product" = "Внешний товар";
-
 /* Display label for affiliate product type. */
 "External\/Affiliate" = "Сторонний\/партнерский";
 
@@ -3213,6 +3196,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Blocking indicator text when fetching existing variations prior generating them. */
 "Fetching Variations..." = "Получение вариантов...";
+
+/* Title for the Your Site Orders connectivity tool card */
+"Fetching your site orders" = "Получение заказов с вашего сайта";
 
 /* Country option for a site address. */
 "Fiji" = "Фиджи";
@@ -3538,9 +3524,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Navigation bar title for editing linked products for a grouped product */
 "Grouped Products" = "Товары в группе";
-
-/* Action sheet option when the user wants to change the Product type to grouped product */
-"Grouped product" = "Сгруппированный товар";
 
 /* Title for editing grouped products row on Product main screen for a grouped product */
 "Grouped products" = "Товары в группе";
@@ -3958,6 +3941,9 @@ which should be translated separately and considered part of this sentence. */
 /* No comment provided by engineer. */
 "International payments'" = "Международные платежи'";
 
+/* Title for the internet connection connectivity tool card */
+"Internet Connection" = "Подключение к Интернету";
+
 /* Title of an alert letting the user know the email address that they've entered isn't valid */
 "Invalid Email Address" = "Недействительный адрес электронной почты";
 
@@ -4048,6 +4034,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Message on enable analytics screen to notify that the module is disabled for the store */
 "It looks like you have analytics disabled." = "Кажется, у вас отключена аналитика.";
+
+/* Message when there is no internet connection in the recovery tool */
+"It looks like you're not connected to the internet.\n\nEnsure your Wi-Fi is turned on. If you're using mobile data, make sure it's enabled in your device settings." = "Похоже, вы не подключены к Интернету.\n\nУбедитесь, что ваш Wi-Fi включён. Если вы используете мобильные данные, убедитесь, что они включены в настройках вашего устройства.";
 
 /* Message on the error modal when a user without admin role tries to install Jetpack */
 "It looks like your user role doesn't allow you to install Jetpack.\nPlease contact your administrator for help." = "Кажется, ваша роль пользователя не позволяет вам устанавливать Jetpack.\nОбратитесь к администратору за помощью.";
@@ -4198,9 +4187,7 @@ which should be translated separately and considered part of this sentence. */
 /* Instructions for hazardous package shipping. The %1$@ is a tappable linkthat will direct the user to a website */
 "Learn how to securely package, label, and ship HAZMAT through USPS® at %1$@." = "Узнайте, как надёжно упаковать опасные вещества, выполнить адресацию и доставить их с помощью USPS® в %1$@.";
 
-/* A label prompting users to learn more about card readers.
-This part is the link to the website, and forms part of a longer sentence which it should be considered a part of.
-   Button title in the shipping label creation info screen
+/* Button title in the shipping label creation info screen
    Button to open the legal page for AI-generated contents on the product sharing message generation screen
    Label for the banner Learn more button
    Tappable text at the bottom of store onboarding payments setup screen that opens a webview.
@@ -4286,9 +4273,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the cell in Product Inventory Settings > Limit one per order */
 "Limit one per order" = "Ограничить одним на заказ";
 
-/* Message to show when a request for a WP.com API endpoint is throttled */
-"Limit reached. You can try again in 1 minute. Trying again before that will only increase the time you have to wait before the ban is lifted. If you think this is in error, contact support." = "Достигнут лимит попыток. Вы можете попробовать снова через 1 минуту. Если вы попытаетесь подключиться раньше, время ожидания только увеличится. Если вы считаете, что произошла ошибка, обратитесь в службу поддержки.";
-
 /* The required number of items in the cart to apply a coupon in singular form, reads like: Limited to 1 item in cart */
 "Limited to %1$d item in cart" = "Максимальное количество позиций в корзине: %1$d";
 
@@ -4301,9 +4285,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Label for the text of a link in the editor
    Navigation bar title for editing the text of a text link */
 "Link Text" = "Текст ссылки";
-
-/* Description of the Action sheet option when the user wants to change the Product type to external product */
-"Link a product to an external website" = "Связать товар с внешним веб-сайтом";
 
 /* Linked Products Settings navigation title */
 "Linked Products" = "Сопутствующие";
@@ -5064,9 +5045,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for order analytics section in the Analytics Hub */
 "ORDERS" = "ЗАКАЗЫ";
 
-/* Spoken label to indicate switch control is turned off. */
-"Off" = "Выключить";
-
 /* Accessibility announcement message when device goes offline
    Message for offline banner */
 "Offline - using cached data" = "Не в сети, используются кешированные данные";
@@ -5085,9 +5063,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Country option for a site address. */
 "Oman" = "Оман";
-
-/* Spoken label to indicate switch control is turned on */
-"On" = "Включить";
 
 /* Display label for the subscription status type */
 "On Hold" = "Отложен";
@@ -5108,8 +5083,23 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Content of the banner notice on the Payment Method screen when user does not have permission to change the payment method. %1$@ is a placeholder for the store owner's name. %2$@ is a placeholder for the store owner's username. */
 "Only the site owner can manage the shipping label payment methods. Please contact %1$@ (%2$@) to manage payment methods." = "Только владелец сайта может управлять способами оплаты транспортных этикеток. Чтобы управлять способами оплаты, свяжитесь с %1$@ %2$@.";
 
+/* Message when we can't reach WPCom in the recovery tool */
+"Oops! It seems we can't connect to WordPress.com at the moment.\n\nBut don't worry, our support team is here to help. Contact us and we will happily assist you." = "Ой! Похоже, в данный момент мы не можем подключиться к WordPress.com.\n\nНо не волнуйтесь: наши инженеры поддержки вам помогут. Свяжитесь с нами, и мы будем рады помочь.";
+
+/* Message when we there is a decoding error in the recovery tool */
+"Oops! It seems we can't work properly with your site's response.\n\nBut don't worry, our support team is here to help. Contact us and we will happily assist you." = "Ой! Похоже, мы не можем правильно работать с ответом вашего сайта.\n\nНо не волнуйтесь: наши инженеры поддержки вам помогут. Свяжитесь с нами, и мы будем рады помочь.";
+
+/* Message when we there is a jetpack error in the recovery tool */
+"Oops! There seems to be a problem with your jetpack connection.\n\nBut don't worry, our support team is here to help. Contact us and we will happily assist you." = "Ой! Похоже, возникла проблема с вашим подключением к Jetpack.\n\nНо не волнуйтесь: наши инженеры поддержки вам помогут. Свяжитесь с нами, и мы будем рады помочь.";
+
+/* Message when we there is a generic error in the recovery tool */
+"Oops! There seems to be a problem with your site.\n\nContact your hosting provider for further assistance." = "Ой! Похоже, с вашим сайтом возникла проблема.\n\nЧтобы решить эту проблему, обратитесь к своему хостинг-провайдеру.";
+
 /* Title of the alert when the store cannot be created in the store creation flow. */
 "Oops! We've hit a snag" = "Ой. У нас возникла проблема";
+
+/* Message when we there is a timeout error in the recovery tool */
+"Oops! Your site seems to be taking too long to respond.\n\nContact your hosting provider for further assistance." = "Ой! Похоже, ваш сайт отвечает слишком долго.\n\nЧтобы решить эту проблему, обратитесь к своему хостинг-провайдеру.";
 
 /* Message of the alert when the site cannot be launched from store onboarding > launch store screen. */
 "Oops, some unexpected errors happened." = "Произошли неожиданные ошибки.";
@@ -5172,9 +5162,6 @@ This part is the link to the website, and forms part of a longer sentence which 
    Text field placeholder in Shipping Label Address Validation when specified country has no state */
 "Optional" = "Необязательно";
 
-/* No comment provided by engineer. */
-"Optional Tracking Information" = "Дополнительная информация об отслеживании";
-
 /* Header of attributes section in Edit Product Attributes screen */
 "Options" = "Опции";
 
@@ -5233,6 +5220,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Label for the the row showing the total cost of the order */
 "Order total" = "Итог заказа";
+
+/* Text on the button title to see the order's receipt */
+"OrderDetailsDataSource.configureSeeReceipt.button.title" = "Смотреть чек";
+
+/* Notice that appears when no receipt can be retrieved upon tapping on 'See receipt' in the Order Details view. */
+"OrderDetailsViewModel.displayReceiptRetrievalErrorNotice.notice" = "Не удалось получить чек.";
 
 /* Accessibility label for Ordered list button on formatting toolbar. */
 "Ordered List" = "Упорядоченный список";
@@ -5445,7 +5438,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the Performance section on Coupons Details screen */
 "Performance" = "Производительность";
 
-/* No comment provided by engineer. */
+/* Indicates a feature is part of the performance plan. */
 "Performance plan only" = "Только тарифный план Performance";
 
 /* Close Account button title - confirms and closes user's WordPress.com account. */
@@ -6062,6 +6055,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Subtitle for Contact Support */
 "Reach our happiness engineers who can help answer tough questions" = "Обратитесь к инженерам поддержки за помощью при решении сложных вопросов";
+
+/* Action button title for a generic error on the connectivity tool */
+"Read More" = "Читать далее";
 
 /* Text for the button to navigate to troubleshooting tips from the store picker error screen */
 "Read our Troubleshooting Tips" = "Просмотрите советы по устранению неполадок";
@@ -7001,12 +6997,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Display label for simple product type. */
 "Simple" = "Обычный";
-
-/* Action sheet option when the user wants to change the Product type to simple physical product */
-"Simple physical product" = "Простой физический продукт";
-
-/* Action sheet option when the user wants to change the Product type to simple virtual product */
-"Simple virtual product" = "Простой виртуальный продукт";
 
 /* Country option for a site address. */
 "Singapore" = "Сингапур";
@@ -8888,9 +8878,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Display label for variable subscription product type. */
 "Variable Subscription" = "Переменная подписка";
 
-/* Action sheet option when the user wants to change the Product type to varible product */
-"Variable product" = "Вариативный товар";
-
 /* Navigation bar title for variation. Parameters: %1$@ - Product variation ID */
 "Variation #%1$@" = "Вариант #%1$@";
 
@@ -9557,6 +9544,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Header text of the site's domain list in domain settings. */
 "Your site domains" = "Домены вашего сайта";
 
+/* The title of the Error Loading Data banner when there is a Jetpack connection error */
+"Your site is taking a long time to respond" = "Ваш сайт отвечает долго";
+
 /* Title on the banner when the site's WooExpress plan has expired */
 "Your site plan has ended." = "Срок действия тарифного плана для сайта истёк.";
 
@@ -9627,6 +9617,30 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for the charge taxes toggle in the custom amounts screen. */
 "addCustomAmountView.chargeTaxesToggle.title" = "Удержать налог";
 
+/* Dismiss button on the alert asking to add an image for the Blaze campaign */
+"addProductWithAIActionSheet.manualOptionsTitle" = "Выбрать тип товара";
+
+/* Name for the Orders analytics card in the Customize Analytics screen */
+"analyticsHub.customize.orders" = "Заказы";
+
+/* Name for the Products analytics card in the Customize Analytics screen */
+"analyticsHub.customize.products" = "Товары";
+
+/* Name for the Revenue analytics card in the Customize Analytics screen */
+"analyticsHub.customize.revenue" = "Доход";
+
+/* Name for the Sessions analytics card in the Customize Analytics screen */
+"analyticsHub.customize.sessions" = "Сессии";
+
+/* Button to save changes on the Customize Analytics screen */
+"analyticsHub.customizeAnalytics.saveButton" = "Сохранить";
+
+/* Title for the screen to customize the analytics cards in the Analytics Hub */
+"analyticsHub.customizeAnalytics.title" = "Настроить аналитику";
+
+/* Label for button that opens a screen to customize the Analytics Hub */
+"analyticsHub.editButton.label" = "Редактировать";
+
 /* Label for button to enable Jetpack Stats */
 "analyticsHub.jetpackStatsCTA.buttonLabel" = "Включить статистику Jetpack";
 
@@ -9638,6 +9652,18 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title for sessions section in the Analytics Hub */
 "analyticsHub.jetpackStatsCTA.title" = "СЕАНСЫ";
+
+/* Title for the orders analytics report linked in the Analytics Hub */
+"analyticsHub.orderCard.reportTitle" = "Отчёт о заказах";
+
+/* Title for the products analytics report linked in the Analytics Hub */
+"analyticsHub.productCard.reportTitle" = "Отчёт о товарах";
+
+/* Button label to show an analytics report in the Analytics Hub */
+"analyticsHub.reportCard.webReport" = "Смотреть отчёт";
+
+/* Title for the revenue analytics report linked in the Analytics Hub */
+"analyticsHub.revenueCard.reportTitle" = "Отчёт о доходах";
 
 /* Button to dismiss the alert asking for confirmation to switch store. */
 "appCoordinator.storeReadyAlert.cancelButton" = "Отмена";
@@ -9822,6 +9848,16 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the celebration view when a Blaze campaign is successfully created. */
 "blazeCampaignCreationCoordinator.successTitle" = "Всё готово!";
 
+/* Message on the Blaze campaign creation error screen. Keep '
+' as-is as it signals a line break. */
+"blazeCampaignCreationError.failedToCreateCampaign" = "Что-то пошло не так.\nНе удалось создать кампанию.";
+
+/* Message on the Blaze campaign creation error screen. */
+"blazeCampaignCreationError.failedToFetchCampaignImage" = "Не удалось получить сведения об изображении кампании.";
+
+/* Message on the Blaze campaign creation error screen. */
+"blazeCampaignCreationError.failedToUploadCampaignImage" = "Не удалось загрузить изображение кампании.";
+
 /* Button to dismiss the flow on the Blaze campaign creation error screen. */
 "blazeCampaignCreationErrorView.cancel" = "Отменить кампанию";
 
@@ -9830,10 +9866,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Button to get support on the Blaze campaign creation error screen. */
 "blazeCampaignCreationErrorView.getSupport" = "Получить поддержку";
-
-/* Message on the Blaze campaign creation error screen. Keep '
-' as-is as it signals a line break. */
-"blazeCampaignCreationErrorView.message" = "Что-то пошло не так.\nНе удалось создать кампанию.";
 
 /* Message on the Blaze campaign creation error screen. */
 "blazeCampaignCreationErrorView.noPaymentTaken" = "Средства не списаны.";
@@ -9871,8 +9903,14 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the Devices field on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.devices" = "Устройства";
 
+/* Button to dismiss the support form from the Blaze campaign form screen. */
+"blazeCampaignCreationForm.done" = "Готово";
+
 /* Button to edit ad details on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.editAd" = "Редактировать рекламное объявление";
+
+/* Button to contact support on the Blaze campaign form screen. */
+"blazeCampaignCreationForm.help" = "Справка";
 
 /* Title of the Interests field on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.interests" = "Интересы";
@@ -9934,8 +9972,14 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Item to be charged on the Payment screen in the Blaze campaign creation flow */
 "blazeConfirmPaymentView.blazeCampaign" = "Кампания Blaze";
 
+/* Button to dismiss the support form from the Blaze confirm payment view screen. */
+"blazeConfirmPaymentView.done" = "Готово";
+
 /* Error message displayed when fetching payment methods failed on the Payment screen in the Blaze campaign creation flow. */
 "blazeConfirmPaymentView.errorMessage" = "Ошибка при загрузке способов оплаты";
+
+/* Button to contact support on the Blaze confirm payment view screen. */
+"blazeConfirmPaymentView.help" = "Справка";
 
 /* Link to guide for promoted posts on the Payment screen in the Blaze campaign creation flow. */
 "blazeConfirmPaymentView.learnMore" = "Подробнее";
@@ -10189,6 +10233,54 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Button to retry syncing data on the target topic picker for campaign creation */
 "blazeTargetTopicPickerView.tryAgain" = "Повторить попытку";
 
+/* Description of the Action sheet option when the user wants to change the Product type to external product */
+"bottomSheetProductType.affiliate.description" = "Связать товар с внешним веб-сайтом";
+
+/* Action sheet option when the user wants to change the Product type to external product */
+"bottomSheetProductType.affiliate.title" = "Внешний товар";
+
+/* Description of the Action sheet option when the user wants to create a product manually */
+"bottomSheetProductType.blank.description" = "Добавление товара вручную";
+
+/* Action sheet option when the user wants to create a product manually */
+"bottomSheetProductType.blank.title" = "Пустой";
+
+/* Description of the Action sheet option when the user wants to change the Product type to grouped product */
+"bottomSheetProductType.grouped.description" = "Коллекция сопутствующих товаров";
+
+/* Action sheet option when the user wants to change the Product type to grouped product */
+"bottomSheetProductType.grouped.title" = "Сгруппированный товар";
+
+/* Description of the Action sheet option when the user wants to change the Product type to simple physical product */
+"bottomSheetProductType.simple.description" = "Уникальный физический товар, который, возможно, потребуется отправить клиенту";
+
+/* Action sheet option when the user wants to change the Product type to simple physical product */
+"bottomSheetProductType.simple.title" = "Простой физический товар";
+
+/* Description of the Action sheet option when the user wants to change the Product type to simple virtual product */
+"bottomSheetProductType.simpleVirtual.description" = "Уникальный цифровой товар, например: услуги, загружаемые книги, музыка или видео";
+
+/* Action sheet option when the user wants to change the Product type to simple virtual product */
+"bottomSheetProductType.simpleVirtual.title" = "Простой виртуальный товар";
+
+/* Description of the Action sheet option when the user wants to change the Product type to Subscription product */
+"bottomSheetProductType.subscription.description" = "Подписка на уникальный товар, включающая регулярные платежи";
+
+/* Action sheet option when the user wants to change the Product type to Subscription product */
+"bottomSheetProductType.subscription.title" = "Товар по простой подписке";
+
+/* Description of the Action sheet option when the user wants to change the Product type to variable product */
+"bottomSheetProductType.variable.description" = "Товар с вариантами исполнения, например по цвету или размеру";
+
+/* Action sheet option when the user wants to change the Product type to varible product */
+"bottomSheetProductType.variable.title" = "Вариативный товар";
+
+/* Action sheet option when the user wants to change the Product type to Variable subscription product */
+"bottomSheetProductType.variableSubscription.description" = "Подписка на товар с вариантами";
+
+/* Action sheet option when the user wants to change the Product type to Variable subscription product */
+"bottomSheetProductType.variableSubscription.title" = "Товар с вариантами по подписке";
+
 /* Label for a cancel button */
 "cardPresent.builtIn.modalCheckingDeviceSupport.cancelButton" = "Отмена";
 
@@ -10309,6 +10401,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility title for the edit button on a custom amount row. */
 "customAmount.edit.button.accessibilityLabel" = "Изменить сумму";
+
+/* Button in date range picker to add a Custom Range tab */
+"customRangeTabCreationCoordinator.add" = "Добавить";
 
 /* Display label for a product's subscription period when it is a single day. */
 "day" = "день";
@@ -10452,6 +10547,15 @@ which should be translated separately and considered part of this sentence. */
 /* Later today */
 "later today" = "позже сегодня";
 
+/* A label prompting users to learn more about card readers.
+This part is the link to the website, and forms part of a longer sentence which it should be considered a part of. */
+"learnMore.link" = "Подробнее";
+
+/* A label prompting users to learn more about card readers"
+%1$@ is a placeholder that always replaced with \"Learn more\" string,
+which should be translated separately and considered part of this sentence. */
+"learnMore.text" = "%1$@ о приёме платежей с помощью мобильного устройства и о заказе устройств чтения карт";
+
 /* A hazardous material description stating when a package can fit into this category */
 "limited_quantity_category" = "Наземное отправление, ограниченное количество: аэрозоли, дезинфицирующие спреи, аэрозольная краска, спреи для волос, пропан, бутан, чистящие средства и т. д. - Духи, лак для ногтей, жидкость для снятия лака для ногтей, растворители, антисептики для рук, медицинский спирт, продукты на основе этанола и т. д. - Другие поверхностные вещества в ограниченном количестве (косметика, бытовая химия, краски и т. д.)";
 
@@ -10550,6 +10654,12 @@ which should be translated separately and considered part of this sentence. */
 /* Header for the search result section on a a multiple selection list */
 "multipleSelectionList.searchResults" = "Результаты поиска";
 
+/* Spoken label to indicate switch control is turned off. */
+"newNoteViewController.emailNoteSwitch.accessibilityLabel.off" = "Отправить примечание клиенту по электронной почте Выкл.";
+
+/* Spoken label to indicate switch control is turned on */
+"newNoteViewController.emailNoteSwitch.accessibilityLabel.on" = "Отправить примечание клиенту по электронной почте Вкл.";
+
 /* A error message when it's not possible toacquire the Analytics Hub previous selection range */
 "no previous period" = "нет предыдущего периода";
 
@@ -10583,14 +10693,68 @@ which should be translated separately and considered part of this sentence. */
 /* A 'Learn More' label text, which shows tax information upon being clicked. */
 "order.form.paymentSection.taxes.learnMore" = "Подробнее.";
 
+/* Label for the row showing the shipping tax. */
+"order.form.paymentSection.taxes.shippingTax" = "Налог на доставку";
+
 /* Title text of the button that adds shipping line when creating a new order */
 "order.form.shipping.add.button.title" = "Добавить доставку";
+
+/* Origin in Order Attribution Section on Order Details screen. */
+"orderAttributionInfo.direct" = "Прямые";
+
+/* Origin in Order Attribution Section on Order Details screen. */
+"orderAttributionInfo.mobileApp" = "Мобильное приложение";
+
+/* Origin in Order Attribution Section on Order Details screen.The placeholder is the source.Reads like: Organic: woo.com */
+"orderAttributionInfo.organic" = "Органические: %1$@";
+
+/* Origin in Order Attribution Section on Order Details screen.The placeholder is the source.Reads like: Referral: woo.com */
+"orderAttributionInfo.referral" = "Источник перехода: %1$@";
+
+/* Origin in Order Attribution Section on Order Details screen.The placeholder is the source.Reads like: Source: woo.com */
+"orderAttributionInfo.source" = "Источник: %1$@";
+
+/* Origin in Order Attribution Section on Order Details screen. */
+"orderAttributionInfo.unknown" = "Неизвестно";
+
+/* Origin in Order Attribution Section on Order Details screen. */
+"orderAttributionInfo.webAdmin" = "Веб-администратор";
+
+/* Title for the row to add tracking information. */
+"orderDetails.addTrackingRow.title" = "Дополнительная информация об отслеживании";
 
 /* Custom Amount section title if there is more than one custom amount. */
 "orderDetails.customAmounts.section.pluralTitle" = "Индивидуальные суммы";
 
 /* Subtitle of the custom amount row in order details */
 "orderDetails.customAmountsRow.subtitle" = "Индивидуальная сумма";
+
+/* Title in Order Attribution Section on Order Details screen. */
+"orderDetailsDataSource.attributionInfo.campaign" = "Кампания";
+
+/* Title in Order Attribution Section on Order Details screen. */
+"orderDetailsDataSource.attributionInfo.deviceType" = "Тип устройства";
+
+/* Title in Order Attribution Section on Order Details screen. */
+"orderDetailsDataSource.attributionInfo.medium" = "Устройство";
+
+/* Title of Order Attribution Section in Order Details screen. */
+"orderDetailsDataSource.attributionInfo.orderAttribution" = "Атрибуция заказа";
+
+/* Title in Order Attribution Section on Order Details screen. */
+"orderDetailsDataSource.attributionInfo.origin" = "Происхождение";
+
+/* Title in Order Attribution Section on Order Details screen. */
+"orderDetailsDataSource.attributionInfo.sessionPageViews" = "Просмотры страниц сеанса";
+
+/* Title in Order Attribution Section on Order Details screen. */
+"orderDetailsDataSource.attributionInfo.source" = "Источник";
+
+/* Title in Order Attribution Section on Order Details screen. */
+"orderDetailsDataSource.attributionInfo.sourceType" = "Тип источника";
+
+/* Origin in Order Attribution Section on Order Details screen. */
+"orderDetailsDataSource.attributionInfo.unknown" = "Неизвестно";
 
 /* Title text of the section that shows the Custom Amounts when creating or editing an order */
 "orderForm.customAmounts" = "Индивидуальные суммы";
@@ -10615,6 +10779,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility label for the barcode scanning button to add product */
 "orderForm.products.add.scan.button.accessibilityLabel" = "Сканировать штрихкод";
+
+/* Title for the barcode scanning button to add a product to an order */
+"orderForm.products.add.scan.row.title" = "Сканировать товар";
 
 /* Label for the row showing the cost of coupon in the order */
 "orderPaymentSection.coupon" = "Купон";
@@ -10666,18 +10833,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label shown on the launch store task. */
 "private" = "закрытым";
-
-/* Description of the Action sheet option when the user wants to change the Product type to Subscription product */
-"product.sheet.option.simpleSubscription.description" = "Уникальная подписка на продукт, включающая регулярные платежи";
-
-/* Action sheet option when the user wants to change the Product type to Subscription product */
-"product.sheet.option.simpleSubscription.title" = "Продукт по простой подписке";
-
-/* Action sheet option when the user wants to change the Product type to Variable subscription product */
-"product.sheet.option.variableSubscription.description" = "Подписка на продукт с вариантами";
-
-/* Action sheet option when the user wants to change the Product type to Variable subscription product */
-"product.sheet.option.variableSubscription.title" = "Продукт по подписке с вариантами";
 
 /* Description in Product Creation AI survey confirmation view. */
 "productCreationAISurveyConfirmationView.description" = "Есть свободная минутка? Оставьте краткий отзыв и помогите нам улучшить функции на базе ИИ.";
@@ -10742,6 +10897,15 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the cell in Product Price Settings > Sign-up Fee */
 "productPriceSettingsViewModel.signupFeeTitle" = "Регистрационный сбор";
 
+/* Text on the header of the Select Product screen when more than one products are selected. */
+"productSelectorViewModel.selectProductsTitle.pluralProductSelectedFormattedText" = "%ld тов. выбрано";
+
+/* Text on the header of the Select Product screen when no products are selected. */
+"productSelectorViewModel.selectProductsTitle.selectProductsTitle" = "Выбор товаров";
+
+/* Text on the header of the Select Product screen when one product is selected. */
+"productSelectorViewModel.selectProductsTitle.singularProductSelectedFormattedText" = "%ld товар выбран";
+
 /* Cancel button in the product downloadables alert */
 "productSettings.downloadableProductAlertCancel" = "Отмена";
 
@@ -10763,17 +10927,32 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the One time shipping product shipping setting. */
 "productShippingSettings.oneTimeShipping.title" = "Единовременная доставка";
 
+/* Message on the secondary view of the products tab split view before any product is selected. */
+"productsTab.emptySecondaryView.message" = "Ни один товар не выбран";
+
+/* Title of the Products tab — plural form of Product */
+"productsTab.tabTitle" = "Товары";
+
 /* Format of the number of product ratings in plural form */
 "rated %ld times" = "оценен несколько раз (%ld)";
 
 /* Format of the number of product ratings in singular form */
 "rated once" = "оценен один раз";
 
+/* The name of the job that appears in the 'Print Center' when printing a receiptReads as 'Woo: receipt for order #123' */
+"receiptViewModel.formattedReceiptJobName.receiptJobName" = "%1$@: чек заказа № %2$@";
+
+/* The name of the job that appears in the 'Print Center' when printing a receiptReads as 'Woo: receipt for order #123 on MyStoreName' */
+"receiptViewModel.formattedReceiptJobName.receiptJobNameWithStoreName" = "%1$@: чек заказа № %2$@ от %3$@";
+
 /* Title on the refund screen that lists the custom amounts total cost */
 "refundCustomAmountsDetails.totalTitle" = "Возврат индивидуальных сумм";
 
 /* Title of the switch in the IssueRefund screen to refund customAmounts */
 "refundIssue.customAmounts.title" = "Возместить индивидуальные суммы";
+
+/* The title for the cancel button in the search screen. */
+"searchViewController.cancelButton.tilet" = "Отмена";
 
 /* Settings > Set up Tap to Pay on iPhone > Try a Payment > After trying a payments, the merchant is shown an order confirmation screen, showing their payment was successful and allowing them to refund themselves. This is the navigation bar title for that screen. */
 "setUpTapToPayPaymentPromptView.paymentComplete.navigation.title" = "Платёж завершён";
@@ -10787,6 +10966,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Cancel button title for the Shipping Label purchase flow, shown in the nav bar */
 "shipping.label.navigationBar.cancel.button.title" = "Отмена";
+
+/* Tab selector title that shows the statistics for today */
+"statsTimeRangeV4.tabTitle.custom" = "Произвольный период";
 
 /* Widget description, displayed when selecting which widget to add */
 "storeWidgets.description" = "Статистика WooCommerce за сегодня";
@@ -11043,6 +11225,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Placeholder text shown when loading media for the WordPress Media Library */
 "wordpressMediaLibraryPickerViewController.emptyContent.loading" = "Загрузка медиафайлов…";
+
+/* Message to show when a request for a WP.com API endpoint is throttled */
+"wordpresskit.api.message.endpoint_throttled" = "Достигнут предел. Повторите попытку через 1 минуту. Не следует повторять попытку до истечения этого времени, так как это лишь увеличит время ожидания. Если вы считаете, что произошла ошибка, обратитесь в службу поддержки.";
 
 /* Button to enter security key on the WPCom 2FA login screen */
 "wpCom2FALoginView.securityKeyButton" = "Использовать ключ безопасности";

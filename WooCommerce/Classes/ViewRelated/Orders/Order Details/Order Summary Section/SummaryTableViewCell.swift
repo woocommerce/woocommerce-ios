@@ -170,7 +170,7 @@ private extension SummaryTableViewCell {
 }
 
 
-/// MARK: - VoiceOver
+// MARK: - VoiceOver
 ///
 private extension SummaryTableViewCell {
     func configureIconForVoiceOver() {
@@ -182,7 +182,7 @@ private extension SummaryTableViewCell {
     }
 }
 
-/// MARK: - Localization
+// MARK: - Localization
 
 private extension SummaryTableViewCellViewModel {
     enum Localization {

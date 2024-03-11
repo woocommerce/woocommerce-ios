@@ -1,11 +1,14 @@
 import Foundation
 import Yosemite
+import class Photos.PHAsset
 
 /// View model for `BlazeConfirmPaymentView`
 final class BlazeConfirmPaymentViewModel: ObservableObject {
 
+    private let productID: Int64
     private let siteID: Int64
     private let campaignInfo: CreateBlazeCampaign
+    private let image: MediaPickerImage
     private let stores: StoresManager
     private let analytics: Analytics
     private let completionHandler: () -> Void
@@ -72,17 +75,21 @@ final class BlazeConfirmPaymentViewModel: ObservableObject {
     @Published private(set) var cardName: String?
 
     @Published var shouldDisplayPaymentErrorAlert = false
-    @Published var shouldDisplayCampaignCreationError = false
+    @Published var campaignCreationError: BlazeCampaignCreationError? = nil
 
     @Published var isCreatingCampaign = false
 
-    init(siteID: Int64,
+    init(productID: Int64,
+         siteID: Int64,
          campaignInfo: CreateBlazeCampaign,
+         image: MediaPickerImage,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
          onCompletion: @escaping () -> Void) {
+        self.productID = productID
         self.siteID = siteID
         self.campaignInfo = campaignInfo
+        self.image = image
         self.stores = stores
         self.analytics = analytics
         self.completionHandler = onCompletion
@@ -112,23 +119,55 @@ final class BlazeConfirmPaymentViewModel: ObservableObject {
         }
 
         analytics.track(event: .Blaze.Payment.submitCampaignTapped())
-        shouldDisplayCampaignCreationError = false
+        campaignCreationError = nil
         isCreatingCampaign = true
         do {
-            let updatedDetails = campaignInfo.copy(paymentMethodID: selectedPaymentMethod.id)
-            try await requestCampaignCreation(details: updatedDetails)
+            // Prepare image for campaign
+            let campaignMedia = try await prepareImage()
+
+            // Set payment method ID, image URL and mimeType
+            let updatedDetails = campaignInfo
+                .copy(paymentMethodID: selectedPaymentMethod.id,
+                      mainImage: .init(url: campaignMedia.src, mimeType: campaignMedia.mimeType))
+
+            do {
+                try await requestCampaignCreation(details: updatedDetails)
+            } catch {
+                DDLogError("⛔️ Error creating Blaze campaign: \(error)")
+                throw BlazeCampaignCreationError.failedToCreateCampaign
+            }
             analytics.track(event: .Blaze.Payment.campaignCreationSuccess())
             completionHandler()
         } catch {
-            DDLogError("⛔️ Error creating Blaze campaign: \(error)")
             analytics.track(event: .Blaze.Payment.campaignCreationFailed())
-            shouldDisplayCampaignCreationError = true
+            campaignCreationError = error as? BlazeCampaignCreationError ?? .failedToCreateCampaign
         }
         isCreatingCampaign = false
     }
 }
 
 private extension BlazeConfirmPaymentViewModel {
+    func prepareImage() async throws -> Media {
+        switch image.source {
+        case .asset(let asset):
+            do {
+                return try await uploadPendingImage(asset)
+            } catch {
+                DDLogError("⛔️ Error uploading campaign image: \(error)")
+                throw BlazeCampaignCreationError.failedToUploadCampaignImage
+            }
+        case .media(let media):
+            return media
+        case .productImage(let image):
+            do {
+                return try await retrieveMedia(mediaID: image.imageID)
+            } catch {
+                DDLogError("⛔️ Error fetching product image's Media: \(error)")
+                throw BlazeCampaignCreationError.failedToFetchCampaignImage
+            }
+        }
+    }
+
     @MainActor
     func fetchPaymentInfo() async throws -> BlazePaymentInfo {
         try await withCheckedThrowingContinuation { continuation in
@@ -136,6 +175,43 @@ private extension BlazeConfirmPaymentViewModel {
                 continuation.resume(with: result)
             }))
         }
+    }
+
+    @MainActor
+    func retrieveMedia(mediaID: Int64) async throws -> Media {
+        try await withCheckedThrowingContinuation { continuation in
+            stores.dispatch(MediaAction.retrieveMedia(siteID: siteID,
+                                                      mediaID: mediaID,
+                                                      onCompletion: { result in
+                continuation.resume(with: result)
+            }))
+        }
+    }
+
+    @MainActor
+    func uploadPendingImage(_ asset: PHAsset) async throws -> Media {
+        func uploadAsset(_ asset: PHAsset) async throws -> Media {
+            try await withCheckedThrowingContinuation { continuation in
+                stores.dispatch(MediaAction.uploadMedia(siteID: siteID,
+                                                        productID: productID,
+                                                        mediaAsset: asset,
+                                                        altText: nil,
+                                                        filename: nil,
+                                                        onCompletion: { result in
+                    continuation.resume(with: result)
+                }))
+            }
+        }
+
+        let media = try await {
+            do {
+                return try await uploadAsset(asset)
+            } catch {
+                // Try again as image upload request can fail due to network issues
+                return try await uploadAsset(asset)
+            }
+        }()
+        return media
     }
 
     @MainActor

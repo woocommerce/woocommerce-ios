@@ -24,7 +24,7 @@ final class CouponsRemoteTests: XCTestCase {
     // MARK: - Load all Coupons tests
 
     /// Verifies that loadAllCoupons properly parses the `coupons-all` sample response.
-    /// 
+    ///
     func test_loadAllCoupons_returns_parsed_coupons() throws {
         // Given
         let remote = CouponsRemote(network: network)

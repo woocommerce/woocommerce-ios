@@ -8,7 +8,7 @@ import Foundation
 ///
 /// Current range: Jul 25 until Jul 31, 2022
 /// Formatted current range for UI: Jul 25 until Jul 29, 2022
-/// 
+///
 /// Previous range: Jul 18 until Jul 22, 2022
 /// Formatted previous range for UI: Jul 18 until Jul 22, 2022
 ///
@@ -17,7 +17,7 @@ import Foundation
 /// This behavior covers any time zone gap between the app and the store, always fetching as much data in “the future” as possible.
 ///
 /// For data consistency, the Analytics Hub should follow the same for this range,
-/// but only for the current one, the previous should remain using the today's date as the reference for the end date. 
+/// but only for the current one, the previous should remain using the today's date as the reference for the end date.
 ///
 struct AnalyticsHubWeekToDateRangeData: AnalyticsHubTimeRangeData {
     let currentDateStart: Date?

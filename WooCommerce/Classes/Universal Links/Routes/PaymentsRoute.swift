@@ -1,7 +1,7 @@
 import Foundation
 
 /// Links supported URLs with a /payments root path to various destinations in the Payments Hub Menu
-/// 
+///
 struct PaymentsRoute: Route {
     private let deepLinkNavigator: DeepLinkNavigator
 

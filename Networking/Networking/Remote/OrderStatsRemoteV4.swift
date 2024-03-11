@@ -28,12 +28,11 @@ public final class OrderStatsRemoteV4: Remote {
         let dateFormatter = DateFormatter.Defaults.iso8601WithoutTimeZone
         dateFormatter.timeZone = timeZone
 
-        let parameters: [String: Any] = [
+        var parameters: [String: Any] = [
             ParameterKeys.interval: unit.rawValue,
             ParameterKeys.after: dateFormatter.string(from: earliestDateToInclude),
             ParameterKeys.before: dateFormatter.string(from: latestDateToInclude),
             ParameterKeys.quantity: String(quantity),
-            ParameterKeys.forceRefresh: forceRefresh,
             // Product stats in `ProductsReportsRemote.loadTopProductsReport` are based on the order creation date, while the order/revenue
             // stats are based on a store option in the analytics settings with the order paid date as the default.
             // In WC version 8.6+, a new parameter `date_type` is available to override the date type so that we can
@@ -41,6 +40,11 @@ public final class OrderStatsRemoteV4: Remote {
             ParameterKeys.dateType: ParameterValues.dateType,
             ParameterKeys.fields: ParameterValues.fieldValues
         ]
+
+        if forceRefresh {
+            // includes this parameter only if it's true, otherwise the request fails
+            parameters[ParameterKeys.forceRefresh] = forceRefresh
+        }
 
         let request = JetpackRequest(wooApiVersion: .wcAnalytics,
                                      method: .get,

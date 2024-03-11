@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-01-30 11:54:04+0000 */
+/* Translation-Revision-Date: 2024-02-27 09:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ja_JP */
@@ -47,11 +47,6 @@
 %1$@ is a placeholder that always replaced with \"Learn more\" string,
 which should be translated separately and considered part of this sentence. */
 "%1$@ about accepting payments with Tap to Pay on iPhone." = "iPhone での Tap to Pay による支払いの受け取りについて%1$@。";
-
-/* A label prompting users to learn more about card readers"
-%1$@ is a placeholder that always replaced with \"Learn more\" string,
-which should be translated separately and considered part of this sentence. */
-"%1$@ about accepting payments with your mobile device and ordering card readers" = "モバイルデバイスや注文用カードリーダーでの支払いの受領方法について%1$@";
 
 /* A label prompting users to learn more about card readers. %1$@ is a placeholder that is always replaced with \"Learn more\" string, which should be translated separately and considered part of this sentence. */
 "%1$@ about accepting payments with your mobile device and ordering card readers." = "モバイルデバイスや注文用カードリーダーでの支払いの受領方法について%1$@。";
@@ -337,9 +332,6 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle of the product form bottom sheet action for editing short description. */
 "A brief excerpt about your product" = "商品に関する簡単な抜粋";
 
-/* Description of the Action sheet option when the user wants to change the Product type to grouped product */
-"A collection of related products" = "関連商品のコレクション";
-
 /* Main message on the Print Customs Invoice screen of Shipping Label flow */
 "A customs form must be printed and included on this international shipment" = "この国外配送では税関申告書を印刷して添付する必要があります";
 
@@ -352,17 +344,8 @@ which should be translated separately and considered part of this sentence. */
 /* Error shown in Shipping Label Origin Address validation for phone number field */
 "A phone number is required" = "電話番号は必須項目です";
 
-/* Description of the Action sheet option when the user wants to change the Product type to variable product */
-"A product with variations like color or size" = "色やサイズのバリエーションがある商品";
-
 /* Message explaining that the site may have an invalid SSL certificate. */
 "A secure connection to the site could not be made. Please make sure that your site has a valid SSL certificate." = "サイトへの安全な接続ができませんでした。 サイトに有効な SSL 証明書があることを確認してください。";
-
-/* Description of the Action sheet option when the user wants to change the Product type to simple virtual product */
-"A unique digital product like services, downloadable books, music or videos" = "サービス、ダウンロードできる書籍、音楽、動画などの独自のデジタル製品";
-
-/* Description of the Action sheet option when the user wants to change the Product type to simple physical product */
-"A unique physical product that you may have to ship to the customer" = "顧客に配送する必要がある可能性のある独自の物理的製品";
 
 /* An error message. */
 "A valid email address is needed to mail an authentication link. Please return to the previous screen and provide a valid email address." = "認証リンクをメールで送信するには、有効なメールアドレスが必要です。前の画面に戻り、有効なメールアドレスを入力してください。";
@@ -573,9 +556,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Cell text in Add / Edit product when there are no images. */
 "Add a product image" = "商品画像を追加";
-
-/* Description of the Action sheet option when the user wants to create a product manually */
-"Add a product manually" = "手動で商品を追加する";
 
 /* Description for the option to create product manually */
 "Add a product manually." = "手動で商品を追加します。";
@@ -1164,9 +1144,6 @@ which should be translated separately and considered part of this sentence. */
 /* Billing Information view Title */
 "Billing Information" = "お支払い情報";
 
-/* Action sheet option when the user wants to create a product manually */
-"Blank" = "空白";
-
 /* Title of the hub menu Blaze button */
 "Blaze" = "Blaze";
 
@@ -1369,6 +1346,7 @@ which should be translated separately and considered part of this sentence. */
    Button to dismiss the alert presented while the reader is being prepared.
    Button to dismiss the country search view in the store creation profiler
    Button to dismiss the error modal when a user without admin role tries to install Jetpack
+   Button to dismiss the screen
    Button to dismiss the site credential login screen
    Button to dismiss the store creation profiler flow
    Button to dismiss the store name screen
@@ -1888,6 +1866,9 @@ which should be translated separately and considered part of this sentence. */
 /* No comment provided by engineer. */
 "Connecting to WordPress.com" = "WordPress.com に接続中";
 
+/* Title for the WPCom servers connectivity tool card */
+"Connecting to WordPress.com Servers" = "WordPress.com サーバーに接続しています";
+
 /* Title of alert for suggestion on how to connect to a WP.com sitePresented when a user logs in with an email that does not have access to a WP.com site */
 "Connecting to a WordPress.com site" = "WordPress.com サイトと連携中";
 
@@ -1900,8 +1881,14 @@ which should be translated separately and considered part of this sentence. */
 /* Title when checking if WooCommerce Payments is supported */
 "Connecting to your account" = "アカウントへの接続";
 
+/* Title for the Your Site connectivity tool card */
+"Connecting to your site" = "サイトに接続しています";
+
 /* Name of the step to connect the store to Jetpack */
 "Connecting your store" = "ストアを接続しています";
+
+/* Screen title for the connectivity tool */
+"Connectivity Test" = "接続テスト";
 
 /* Contact Customer action in Shipping Label Address Validation. */
 "Contact Customer" = "顧客に連絡";
@@ -1915,6 +1902,7 @@ which should be translated separately and considered part of this sentence. */
 /* Action button to contact support when Jetpack install fails
    Button to contact support for login
    Close Account error alert button title - navigates the user to contact support.
+   Contact support button in the connectivity tool screen
    Contact Support title
    Text for the button to contact support from the store picker error screen
    Title of the button to contact support for help accessing a store after Jetpack setup
@@ -2226,7 +2214,8 @@ which should be translated separately and considered part of this sentence. */
 "Currently creation is supported for 100 variations maximum. Generating variations for this product would create %d variations." = "現在、作成がサポートされているのは、最大100件のバリエーションです。 この商品のバリエーションを生成すると、%d件のバリエーションが作成されます。";
 
 /* Name of the section for custom shipment tracking carriers
-   Title of the Analytics Hub Custom selection range */
+   Title of the Analytics Hub Custom selection range
+   Top Performers section title - Custom */
 "Custom" = "カスタム";
 
 /* Navigation title on the add custom amount view in orders.
@@ -2773,9 +2762,6 @@ which should be translated separately and considered part of this sentence. */
 /* Label for yes/no switch - emailing the note to customer. */
 "Email note to customer" = "顧客にメールでメモを送信";
 
-/* No comment provided by engineer. */
-"Email note to customer %@" = "顧客 %@ にメールでメモを送信";
-
 /* Button to email receipts. Presented to users after a payment has been successfully collected */
 "Email receipt" = "レシートをメールで送信";
 
@@ -3145,9 +3131,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title text in the store creation loading screen */
 "Extending store's capabilities" = "ストアの機能を拡張中";
 
-/* Action sheet option when the user wants to change the Product type to external product */
-"External product" = "外部商品";
-
 /* Display label for affiliate product type. */
 "External\/Affiliate" = "外部 \/ アフィリエイト";
 
@@ -3213,6 +3196,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Blocking indicator text when fetching existing variations prior generating them. */
 "Fetching Variations..." = "バリエーションを取得しています…";
+
+/* Title for the Your Site Orders connectivity tool card */
+"Fetching your site orders" = "サイトの注文を取得しています";
 
 /* Country option for a site address. */
 "Fiji" = "フィジー";
@@ -3538,9 +3524,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Navigation bar title for editing linked products for a grouped product */
 "Grouped Products" = "セット販売商品";
-
-/* Action sheet option when the user wants to change the Product type to grouped product */
-"Grouped product" = "グループ化された商品";
 
 /* Title for editing grouped products row on Product main screen for a grouped product */
 "Grouped products" = "セット販売商品";
@@ -3958,6 +3941,9 @@ which should be translated separately and considered part of this sentence. */
 /* No comment provided by engineer. */
 "International payments'" = "海外での支払い";
 
+/* Title for the internet connection connectivity tool card */
+"Internet Connection" = "インターネット接続";
+
 /* Title of an alert letting the user know the email address that they've entered isn't valid */
 "Invalid Email Address" = "無効なメールアドレスです";
 
@@ -4048,6 +4034,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Message on enable analytics screen to notify that the module is disabled for the store */
 "It looks like you have analytics disabled." = "分析が無効になっているようです。";
+
+/* Message when there is no internet connection in the recovery tool */
+"It looks like you're not connected to the internet.\n\nEnsure your Wi-Fi is turned on. If you're using mobile data, make sure it's enabled in your device settings." = "インターネットに接続されていないようです。\n\nWi-Fi がオンになっていることをご確認ください。 モバイルデータを使用している場合、デバイスの設定で有効になっていることを確認してください。 ";
 
 /* Message on the error modal when a user without admin role tries to install Jetpack */
 "It looks like your user role doesn't allow you to install Jetpack.\nPlease contact your administrator for help." = "ユーザー権限グループでは Jetpack のインストールが許可されていないようです。\nサポートをご希望の場合は管理者にお問い合わせください。";
@@ -4198,9 +4187,7 @@ which should be translated separately and considered part of this sentence. */
 /* Instructions for hazardous package shipping. The %1$@ is a tappable linkthat will direct the user to a website */
 "Learn how to securely package, label, and ship HAZMAT through USPS® at %1$@." = "USPS® (%1$@) で危険物を安全に梱包、ラベル付け、発送する方法についてご確認ください。";
 
-/* A label prompting users to learn more about card readers.
-This part is the link to the website, and forms part of a longer sentence which it should be considered a part of.
-   Button title in the shipping label creation info screen
+/* Button title in the shipping label creation info screen
    Button to open the legal page for AI-generated contents on the product sharing message generation screen
    Label for the banner Learn more button
    Tappable text at the bottom of store onboarding payments setup screen that opens a webview.
@@ -4286,9 +4273,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the cell in Product Inventory Settings > Limit one per order */
 "Limit one per order" = "1回の注文あたり1個に制限";
 
-/* Message to show when a request for a WP.com API endpoint is throttled */
-"Limit reached. You can try again in 1 minute. Trying again before that will only increase the time you have to wait before the ban is lifted. If you think this is in error, contact support." = "ログイン試行の上限に達しました。1分後にもう一度お試しいただけます。それ以前にログインしようとした場合、制限解除までの時間がさらに延長されます。エラーだと思われる場合はサポートにご連絡ください。";
-
 /* The required number of items in the cart to apply a coupon in singular form, reads like: Limited to 1 item in cart */
 "Limited to %1$d item in cart" = "お買い物カゴ内のアイテムを%1$d点に制限";
 
@@ -4301,9 +4285,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Label for the text of a link in the editor
    Navigation bar title for editing the text of a text link */
 "Link Text" = "リンク文字列";
-
-/* Description of the Action sheet option when the user wants to change the Product type to external product */
-"Link a product to an external website" = "商品を外部サイトにリンク";
 
 /* Linked Products Settings navigation title */
 "Linked Products" = "関連商品";
@@ -5064,9 +5045,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for order analytics section in the Analytics Hub */
 "ORDERS" = "注文";
 
-/* Spoken label to indicate switch control is turned off. */
-"Off" = "オフ";
-
 /* Accessibility announcement message when device goes offline
    Message for offline banner */
 "Offline - using cached data" = "オフライン - キャッシュされたデータを使用します";
@@ -5085,9 +5063,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Country option for a site address. */
 "Oman" = "オマーン";
-
-/* Spoken label to indicate switch control is turned on */
-"On" = "オン";
 
 /* Display label for the subscription status type */
 "On Hold" = "保留中";
@@ -5108,8 +5083,23 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Content of the banner notice on the Payment Method screen when user does not have permission to change the payment method. %1$@ is a placeholder for the store owner's name. %2$@ is a placeholder for the store owner's username. */
 "Only the site owner can manage the shipping label payment methods. Please contact %1$@ (%2$@) to manage payment methods." = "配送ラベルのお支払い方法を管理できるのは、サイトの所有者のみです。 お支払い方法を管理するには、%1$@ (%2$@) にお問い合わせください。";
 
+/* Message when we can't reach WPCom in the recovery tool */
+"Oops! It seems we can't connect to WordPress.com at the moment.\n\nBut don't worry, our support team is here to help. Contact us and we will happily assist you." = "エラーです。 現在 WordPress.com に接続できないようです。\n\nしかしご安心ください。サポートチームがお手伝いします。 いつでもお気軽にご相談ください。";
+
+/* Message when we there is a decoding error in the recovery tool */
+"Oops! It seems we can't work properly with your site's response.\n\nBut don't worry, our support team is here to help. Contact us and we will happily assist you." = "エラーです。 サイトの応答が正常に機能していないようです。\n\nしかしご安心ください。サポートチームがお手伝いします。 いつでもお気軽にご相談ください。";
+
+/* Message when we there is a jetpack error in the recovery tool */
+"Oops! There seems to be a problem with your jetpack connection.\n\nBut don't worry, our support team is here to help. Contact us and we will happily assist you." = "エラーです。 Jetpack 連携に問題があるようです。\n\nしかしご安心ください。サポートチームがお手伝いします。 いつでもお気軽にご相談ください。";
+
+/* Message when we there is a generic error in the recovery tool */
+"Oops! There seems to be a problem with your site.\n\nContact your hosting provider for further assistance." = "エラーです。 サイトに問題があるようです。\n\nホスティングサービスに連絡のうえサポートを受けてください。";
+
 /* Title of the alert when the store cannot be created in the store creation flow. */
 "Oops! We've hit a snag" = "エラー。 問題が発生しました";
+
+/* Message when we there is a timeout error in the recovery tool */
+"Oops! Your site seems to be taking too long to respond.\n\nContact your hosting provider for further assistance." = "エラーです。 サイトの応答が遅すぎるようです。\n\nホスティングサービスに連絡のうえサポートを受けてください。";
 
 /* Message of the alert when the site cannot be launched from store onboarding > launch store screen. */
 "Oops, some unexpected errors happened." = "予期しないエラーが発生しました。";
@@ -5172,9 +5162,6 @@ This part is the link to the website, and forms part of a longer sentence which 
    Text field placeholder in Shipping Label Address Validation when specified country has no state */
 "Optional" = "オプション";
 
-/* No comment provided by engineer. */
-"Optional Tracking Information" = "オプションのトラッキング情報";
-
 /* Header of attributes section in Edit Product Attributes screen */
 "Options" = "オプション";
 
@@ -5233,6 +5220,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Label for the the row showing the total cost of the order */
 "Order total" = "注文合計";
+
+/* Text on the button title to see the order's receipt */
+"OrderDetailsDataSource.configureSeeReceipt.button.title" = "レシートを確認";
+
+/* Notice that appears when no receipt can be retrieved upon tapping on 'See receipt' in the Order Details view. */
+"OrderDetailsViewModel.displayReceiptRetrievalErrorNotice.notice" = "領収書を取得できません。";
 
 /* Accessibility label for Ordered list button on formatting toolbar. */
 "Ordered List" = "順序付きリスト";
@@ -5445,7 +5438,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the Performance section on Coupons Details screen */
 "Performance" = "パフォーマンス";
 
-/* No comment provided by engineer. */
+/* Indicates a feature is part of the performance plan. */
 "Performance plan only" = "パフォーマンスプラン";
 
 /* Close Account button title - confirms and closes user's WordPress.com account. */
@@ -6062,6 +6055,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Subtitle for Contact Support */
 "Reach our happiness engineers who can help answer tough questions" = "サポートスタッフにお問い合わせください。難しい質問にもお答えします";
+
+/* Action button title for a generic error on the connectivity tool */
+"Read More" = "続きを読む";
 
 /* Text for the button to navigate to troubleshooting tips from the store picker error screen */
 "Read our Troubleshooting Tips" = "トラブルシューティングのヒントを参照";
@@ -7001,12 +6997,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Display label for simple product type. */
 "Simple" = "シンプル";
-
-/* Action sheet option when the user wants to change the Product type to simple physical product */
-"Simple physical product" = "シンプルな非物理的商品";
-
-/* Action sheet option when the user wants to change the Product type to simple virtual product */
-"Simple virtual product" = "シンプルな物理的商品";
 
 /* Country option for a site address. */
 "Singapore" = "シンガポール";
@@ -8888,9 +8878,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Display label for variable subscription product type. */
 "Variable Subscription" = "バリエーションのある定期購入";
 
-/* Action sheet option when the user wants to change the Product type to varible product */
-"Variable product" = "バリエーションのある商品";
-
 /* Navigation bar title for variation. Parameters: %1$@ - Product variation ID */
 "Variation #%1$@" = "バリエーション #%1$@";
 
@@ -9557,6 +9544,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Header text of the site's domain list in domain settings. */
 "Your site domains" = "あなたのサイトドメイン";
 
+/* The title of the Error Loading Data banner when there is a Jetpack connection error */
+"Your site is taking a long time to respond" = "サイトの応答に時間がかかっています";
+
 /* Title on the banner when the site's WooExpress plan has expired */
 "Your site plan has ended." = "ご登録のサイトプランは終了しました。";
 
@@ -9627,6 +9617,30 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for the charge taxes toggle in the custom amounts screen. */
 "addCustomAmountView.chargeTaxesToggle.title" = "税金を請求";
 
+/* Dismiss button on the alert asking to add an image for the Blaze campaign */
+"addProductWithAIActionSheet.manualOptionsTitle" = "商品タイプを選択";
+
+/* Name for the Orders analytics card in the Customize Analytics screen */
+"analyticsHub.customize.orders" = "注文";
+
+/* Name for the Products analytics card in the Customize Analytics screen */
+"analyticsHub.customize.products" = "商品";
+
+/* Name for the Revenue analytics card in the Customize Analytics screen */
+"analyticsHub.customize.revenue" = "収益";
+
+/* Name for the Sessions analytics card in the Customize Analytics screen */
+"analyticsHub.customize.sessions" = "セッション";
+
+/* Button to save changes on the Customize Analytics screen */
+"analyticsHub.customizeAnalytics.saveButton" = "保存";
+
+/* Title for the screen to customize the analytics cards in the Analytics Hub */
+"analyticsHub.customizeAnalytics.title" = "アナリティクスのカスタマイズ";
+
+/* Label for button that opens a screen to customize the Analytics Hub */
+"analyticsHub.editButton.label" = "編集";
+
 /* Label for button to enable Jetpack Stats */
 "analyticsHub.jetpackStatsCTA.buttonLabel" = "Jetpack 統計を有効化";
 
@@ -9638,6 +9652,18 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title for sessions section in the Analytics Hub */
 "analyticsHub.jetpackStatsCTA.title" = "セッション";
+
+/* Title for the orders analytics report linked in the Analytics Hub */
+"analyticsHub.orderCard.reportTitle" = "注文レポート";
+
+/* Title for the products analytics report linked in the Analytics Hub */
+"analyticsHub.productCard.reportTitle" = "商品レポート";
+
+/* Button label to show an analytics report in the Analytics Hub */
+"analyticsHub.reportCard.webReport" = "レポートを見る";
+
+/* Title for the revenue analytics report linked in the Analytics Hub */
+"analyticsHub.revenueCard.reportTitle" = "収益レポート";
 
 /* Button to dismiss the alert asking for confirmation to switch store. */
 "appCoordinator.storeReadyAlert.cancelButton" = "キャンセル";
@@ -9822,6 +9848,16 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the celebration view when a Blaze campaign is successfully created. */
 "blazeCampaignCreationCoordinator.successTitle" = "準備完了 !";
 
+/* Message on the Blaze campaign creation error screen. Keep '
+' as-is as it signals a line break. */
+"blazeCampaignCreationError.failedToCreateCampaign" = "問題が発生しました。\nキャンペーンを作成できませんでした。";
+
+/* Message on the Blaze campaign creation error screen. */
+"blazeCampaignCreationError.failedToFetchCampaignImage" = "キャンペーン画像の詳細を取得できませんでした。";
+
+/* Message on the Blaze campaign creation error screen. */
+"blazeCampaignCreationError.failedToUploadCampaignImage" = "キャンペーン画像のアップロードに失敗しました。";
+
 /* Button to dismiss the flow on the Blaze campaign creation error screen. */
 "blazeCampaignCreationErrorView.cancel" = "キャンペーンをキャンセル";
 
@@ -9830,10 +9866,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Button to get support on the Blaze campaign creation error screen. */
 "blazeCampaignCreationErrorView.getSupport" = "サポートを受ける";
-
-/* Message on the Blaze campaign creation error screen. Keep '
-' as-is as it signals a line break. */
-"blazeCampaignCreationErrorView.message" = "問題が発生しました。\nキャンペーンを作成できませんでした。";
 
 /* Message on the Blaze campaign creation error screen. */
 "blazeCampaignCreationErrorView.noPaymentTaken" = "支払いはされていません。";
@@ -9871,8 +9903,14 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the Devices field on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.devices" = "デバイス";
 
+/* Button to dismiss the support form from the Blaze campaign form screen. */
+"blazeCampaignCreationForm.done" = "完了";
+
 /* Button to edit ad details on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.editAd" = "広告を編集";
+
+/* Button to contact support on the Blaze campaign form screen. */
+"blazeCampaignCreationForm.help" = "ヘルプ";
 
 /* Title of the Interests field on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.interests" = "興味";
@@ -9934,8 +9972,14 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Item to be charged on the Payment screen in the Blaze campaign creation flow */
 "blazeConfirmPaymentView.blazeCampaign" = "Blaze キャンペーン";
 
+/* Button to dismiss the support form from the Blaze confirm payment view screen. */
+"blazeConfirmPaymentView.done" = "完了";
+
 /* Error message displayed when fetching payment methods failed on the Payment screen in the Blaze campaign creation flow. */
 "blazeConfirmPaymentView.errorMessage" = "お支払い方法の読み込みエラー";
+
+/* Button to contact support on the Blaze confirm payment view screen. */
+"blazeConfirmPaymentView.help" = "ヘルプ";
 
 /* Link to guide for promoted posts on the Payment screen in the Blaze campaign creation flow. */
 "blazeConfirmPaymentView.learnMore" = "さらに詳しく";
@@ -10189,6 +10233,54 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Button to retry syncing data on the target topic picker for campaign creation */
 "blazeTargetTopicPickerView.tryAgain" = "もう一度試す";
 
+/* Description of the Action sheet option when the user wants to change the Product type to external product */
+"bottomSheetProductType.affiliate.description" = "商品を外部サイトにリンクする";
+
+/* Action sheet option when the user wants to change the Product type to external product */
+"bottomSheetProductType.affiliate.title" = "外部商品";
+
+/* Description of the Action sheet option when the user wants to create a product manually */
+"bottomSheetProductType.blank.description" = "手動で商品を追加する";
+
+/* Action sheet option when the user wants to create a product manually */
+"bottomSheetProductType.blank.title" = "空白";
+
+/* Description of the Action sheet option when the user wants to change the Product type to grouped product */
+"bottomSheetProductType.grouped.description" = "関連商品のコレクション";
+
+/* Action sheet option when the user wants to change the Product type to grouped product */
+"bottomSheetProductType.grouped.title" = "グループ化された商品";
+
+/* Description of the Action sheet option when the user wants to change the Product type to simple physical product */
+"bottomSheetProductType.simple.description" = "顧客に配送する必要がある可能性のある独自の物理的商品";
+
+/* Action sheet option when the user wants to change the Product type to simple physical product */
+"bottomSheetProductType.simple.title" = "基本的な物理的商品";
+
+/* Description of the Action sheet option when the user wants to change the Product type to simple virtual product */
+"bottomSheetProductType.simpleVirtual.description" = "サービス、ダウンロードできる書籍、音楽、動画などの独自のデジタル商品";
+
+/* Action sheet option when the user wants to change the Product type to simple virtual product */
+"bottomSheetProductType.simpleVirtual.title" = "基本的な仮想商品";
+
+/* Description of the Action sheet option when the user wants to change the Product type to Subscription product */
+"bottomSheetProductType.subscription.description" = "定期支払いを可能にする独自商品の定期購入";
+
+/* Action sheet option when the user wants to change the Product type to Subscription product */
+"bottomSheetProductType.subscription.title" = "シンプルな定期購入商品";
+
+/* Description of the Action sheet option when the user wants to change the Product type to variable product */
+"bottomSheetProductType.variable.description" = "色やサイズのバリエーションがある商品";
+
+/* Action sheet option when the user wants to change the Product type to varible product */
+"bottomSheetProductType.variable.title" = "バリエーションのある商品";
+
+/* Action sheet option when the user wants to change the Product type to Variable subscription product */
+"bottomSheetProductType.variableSubscription.description" = "バリエーションのある商品の定期購入";
+
+/* Action sheet option when the user wants to change the Product type to Variable subscription product */
+"bottomSheetProductType.variableSubscription.title" = "バリエーションのある定期購入商品";
+
 /* Label for a cancel button */
 "cardPresent.builtIn.modalCheckingDeviceSupport.cancelButton" = " キャンセル";
 
@@ -10309,6 +10401,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility title for the edit button on a custom amount row. */
 "customAmount.edit.button.accessibilityLabel" = "金額を編集する";
+
+/* Button in date range picker to add a Custom Range tab */
+"customRangeTabCreationCoordinator.add" = "追加";
 
 /* Display label for a product's subscription period when it is a single day. */
 "day" = "日";
@@ -10452,6 +10547,15 @@ which should be translated separately and considered part of this sentence. */
 /* Later today */
 "later today" = "今日あとで";
 
+/* A label prompting users to learn more about card readers.
+This part is the link to the website, and forms part of a longer sentence which it should be considered a part of. */
+"learnMore.link" = "さらに詳しく";
+
+/* A label prompting users to learn more about card readers"
+%1$@ is a placeholder that always replaced with \"Learn more\" string,
+which should be translated separately and considered part of this sentence. */
+"learnMore.text" = "モバイルデバイスや注文用カードリーダーでの支払いの受領方法について%1$@";
+
 /* A hazardous material description stating when a package can fit into this category */
 "limited_quantity_category" = "数量限定の陸送便パッケージ - エアゾール、スプレー消毒剤、スプレー塗料、ヘアスプレー、プロパン、ブタン、洗浄剤など - フレグランス、マニキュア、除光液、溶剤、手指消毒剤、消毒用アルコール、エタノールベース製品など - その他数量限定の陸送物質 (化粧品、洗浄剤、塗料など)";
 
@@ -10550,6 +10654,12 @@ which should be translated separately and considered part of this sentence. */
 /* Header for the search result section on a a multiple selection list */
 "multipleSelectionList.searchResults" = "検索結果";
 
+/* Spoken label to indicate switch control is turned off. */
+"newNoteViewController.emailNoteSwitch.accessibilityLabel.off" = "「顧客にメールでメモを送信」がオフ";
+
+/* Spoken label to indicate switch control is turned on */
+"newNoteViewController.emailNoteSwitch.accessibilityLabel.on" = "「顧客にメールでメモを送信」がオン";
+
 /* A error message when it's not possible toacquire the Analytics Hub previous selection range */
 "no previous period" = "前の期間はありません";
 
@@ -10583,14 +10693,68 @@ which should be translated separately and considered part of this sentence. */
 /* A 'Learn More' label text, which shows tax information upon being clicked. */
 "order.form.paymentSection.taxes.learnMore" = "さらに詳しく。";
 
+/* Label for the row showing the shipping tax. */
+"order.form.paymentSection.taxes.shippingTax" = "送料の税額";
+
 /* Title text of the button that adds shipping line when creating a new order */
 "order.form.shipping.add.button.title" = "配送料を追加";
+
+/* Origin in Order Attribution Section on Order Details screen. */
+"orderAttributionInfo.direct" = "直接";
+
+/* Origin in Order Attribution Section on Order Details screen. */
+"orderAttributionInfo.mobileApp" = "モバイルアプリ";
+
+/* Origin in Order Attribution Section on Order Details screen.The placeholder is the source.Reads like: Organic: woo.com */
+"orderAttributionInfo.organic" = "オーガニック : %1$@";
+
+/* Origin in Order Attribution Section on Order Details screen.The placeholder is the source.Reads like: Referral: woo.com */
+"orderAttributionInfo.referral" = "リファラル : %1$@";
+
+/* Origin in Order Attribution Section on Order Details screen.The placeholder is the source.Reads like: Source: woo.com */
+"orderAttributionInfo.source" = "ソース : %1$@";
+
+/* Origin in Order Attribution Section on Order Details screen. */
+"orderAttributionInfo.unknown" = "不明";
+
+/* Origin in Order Attribution Section on Order Details screen. */
+"orderAttributionInfo.webAdmin" = "Web 管理者";
+
+/* Title for the row to add tracking information. */
+"orderDetails.addTrackingRow.title" = "オプションのトラッキング情報";
 
 /* Custom Amount section title if there is more than one custom amount. */
 "orderDetails.customAmounts.section.pluralTitle" = "カスタム金額";
 
 /* Subtitle of the custom amount row in order details */
 "orderDetails.customAmountsRow.subtitle" = "カスタム金額";
+
+/* Title in Order Attribution Section on Order Details screen. */
+"orderDetailsDataSource.attributionInfo.campaign" = "キャンペーン";
+
+/* Title in Order Attribution Section on Order Details screen. */
+"orderDetailsDataSource.attributionInfo.deviceType" = "デバイスタイプ";
+
+/* Title in Order Attribution Section on Order Details screen. */
+"orderDetailsDataSource.attributionInfo.medium" = "メディア";
+
+/* Title of Order Attribution Section in Order Details screen. */
+"orderDetailsDataSource.attributionInfo.orderAttribution" = "注文の属性";
+
+/* Title in Order Attribution Section on Order Details screen. */
+"orderDetailsDataSource.attributionInfo.origin" = "オリジン";
+
+/* Title in Order Attribution Section on Order Details screen. */
+"orderDetailsDataSource.attributionInfo.sessionPageViews" = "セッションページ表示数";
+
+/* Title in Order Attribution Section on Order Details screen. */
+"orderDetailsDataSource.attributionInfo.source" = "ソース";
+
+/* Title in Order Attribution Section on Order Details screen. */
+"orderDetailsDataSource.attributionInfo.sourceType" = "ソースタイプ";
+
+/* Origin in Order Attribution Section on Order Details screen. */
+"orderDetailsDataSource.attributionInfo.unknown" = "不明";
 
 /* Title text of the section that shows the Custom Amounts when creating or editing an order */
 "orderForm.customAmounts" = "カスタム金額";
@@ -10615,6 +10779,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility label for the barcode scanning button to add product */
 "orderForm.products.add.scan.button.accessibilityLabel" = "バーコードをスキャンする";
+
+/* Title for the barcode scanning button to add a product to an order */
+"orderForm.products.add.scan.row.title" = "商品をスキャン";
 
 /* Label for the row showing the cost of coupon in the order */
 "orderPaymentSection.coupon" = "クーポン";
@@ -10666,18 +10833,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label shown on the launch store task. */
 "private" = "非公開";
-
-/* Description of the Action sheet option when the user wants to change the Product type to Subscription product */
-"product.sheet.option.simpleSubscription.description" = "定期支払いを可能にする独自の商品の定期購入";
-
-/* Action sheet option when the user wants to change the Product type to Subscription product */
-"product.sheet.option.simpleSubscription.title" = "シンプルな定期購入商品";
-
-/* Action sheet option when the user wants to change the Product type to Variable subscription product */
-"product.sheet.option.variableSubscription.description" = "バリエーションのある商品の定期購入";
-
-/* Action sheet option when the user wants to change the Product type to Variable subscription product */
-"product.sheet.option.variableSubscription.title" = "バリエーションのある定期購入商品";
 
 /* Description in Product Creation AI survey confirmation view. */
 "productCreationAISurveyConfirmationView.description" = "少々お時間がございましたら、 簡単なフィードバックをお寄せいただき、AI 搭載機能の改善にご協力ください。";
@@ -10742,6 +10897,15 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the cell in Product Price Settings > Sign-up Fee */
 "productPriceSettingsViewModel.signupFeeTitle" = "登録費用";
 
+/* Text on the header of the Select Product screen when more than one products are selected. */
+"productSelectorViewModel.selectProductsTitle.pluralProductSelectedFormattedText" = "%ld件の商品を選択済み";
+
+/* Text on the header of the Select Product screen when no products are selected. */
+"productSelectorViewModel.selectProductsTitle.selectProductsTitle" = "商品を選択";
+
+/* Text on the header of the Select Product screen when one product is selected. */
+"productSelectorViewModel.selectProductsTitle.singularProductSelectedFormattedText" = "%ld件の商品を選択済み";
+
 /* Cancel button in the product downloadables alert */
 "productSettings.downloadableProductAlertCancel" = "キャンセル";
 
@@ -10763,17 +10927,32 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the One time shipping product shipping setting. */
 "productShippingSettings.oneTimeShipping.title" = "1回限りの発送";
 
+/* Message on the secondary view of the products tab split view before any product is selected. */
+"productsTab.emptySecondaryView.message" = "商品が選択されていません";
+
+/* Title of the Products tab — plural form of Product */
+"productsTab.tabTitle" = "商品";
+
 /* Format of the number of product ratings in plural form */
 "rated %ld times" = "評価回数%ld回";
 
 /* Format of the number of product ratings in singular form */
 "rated once" = "評価回数1回";
 
+/* The name of the job that appears in the 'Print Center' when printing a receiptReads as 'Woo: receipt for order #123' */
+"receiptViewModel.formattedReceiptJobName.receiptJobName" = "%1$@: 注文 #%2$@の領収書";
+
+/* The name of the job that appears in the 'Print Center' when printing a receiptReads as 'Woo: receipt for order #123 on MyStoreName' */
+"receiptViewModel.formattedReceiptJobName.receiptJobNameWithStoreName" = "%1$@: %3$@ での注文 #%2$@の領収書";
+
 /* Title on the refund screen that lists the custom amounts total cost */
 "refundCustomAmountsDetails.totalTitle" = "カスタム金額の返金";
 
 /* Title of the switch in the IssueRefund screen to refund customAmounts */
 "refundIssue.customAmounts.title" = "カスタム金額を返金";
+
+/* The title for the cancel button in the search screen. */
+"searchViewController.cancelButton.tilet" = "キャンセル";
 
 /* Settings > Set up Tap to Pay on iPhone > Try a Payment > After trying a payments, the merchant is shown an order confirmation screen, showing their payment was successful and allowing them to refund themselves. This is the navigation bar title for that screen. */
 "setUpTapToPayPaymentPromptView.paymentComplete.navigation.title" = "支払いが完了しました";
@@ -10787,6 +10966,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Cancel button title for the Shipping Label purchase flow, shown in the nav bar */
 "shipping.label.navigationBar.cancel.button.title" = "キャンセル";
+
+/* Tab selector title that shows the statistics for today */
+"statsTimeRangeV4.tabTitle.custom" = "カスタム範囲";
 
 /* Widget description, displayed when selecting which widget to add */
 "storeWidgets.description" = "WooCommerce Stats Today";
@@ -11043,6 +11225,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Placeholder text shown when loading media for the WordPress Media Library */
 "wordpressMediaLibraryPickerViewController.emptyContent.loading" = "メディアを読み込んでいます...";
+
+/* Message to show when a request for a WP.com API endpoint is throttled */
+"wordpresskit.api.message.endpoint_throttled" = "上限に達しました。 1分後に再度お試しください。 その前に試しても、禁止が解除されるまでの待機時間が長くなるだけです。 エラーの可能性がある場合、サポートにお問い合わせください。";
 
 /* Button to enter security key on the WPCom 2FA login screen */
 "wpCom2FALoginView.securityKeyButton" = "セキュリティキーを使用";

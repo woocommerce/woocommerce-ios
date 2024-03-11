@@ -132,7 +132,7 @@ final class InPersonPaymentsViewModel: ObservableObject, PaymentSettingsFlowPres
 
     private func shouldShow(for onboardingState: CardPresentPaymentOnboardingState) -> CardReaderSettingsTriState {
         switch onboardingState {
-        case .completed(_):
+        case .completed:
             return .isFalse
         default:
             return .isTrue

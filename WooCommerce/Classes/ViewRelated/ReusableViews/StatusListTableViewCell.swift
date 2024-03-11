@@ -24,6 +24,8 @@ final class StatusListTableViewCell: UITableViewCell {
     }
 
     override func prepareForReuse() {
+        super.prepareForReuse()
+
         textLabel?.text = nil
     }
 

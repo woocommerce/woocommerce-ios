@@ -137,7 +137,7 @@ extension TracksProvider: WPAnalyticsTracker {
     }
 
     public func track(_ stat: WPAnalyticsStat) {
-        // no op. 
+        // no op.
         track(stat, withProperties: nil)
     }
 

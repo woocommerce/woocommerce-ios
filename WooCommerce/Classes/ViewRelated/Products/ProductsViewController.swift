@@ -114,6 +114,8 @@ final class ProductsViewController: UIViewController, GhostableViewController {
         return resultsController
     }()
 
+    private var selectedProductListener: EntityListener<Product>?
+
     private var sortOrder: ProductsSortOrder = .default {
         didSet {
             if sortOrder != oldValue {
@@ -201,6 +203,7 @@ final class ProductsViewController: UIViewController, GhostableViewController {
     private let isSplitViewEnabled: Bool
     private let navigateToContent: (NavigationContentType) -> Void
     private let selectedProduct: AnyPublisher<Product?, Never>
+    private let onTableViewEditingEnd: PassthroughSubject<Void, Never> = .init()
     let onDataReloaded: PassthroughSubject<Void, Never> = .init()
 
     deinit {
@@ -244,6 +247,7 @@ final class ProductsViewController: UIViewController, GhostableViewController {
         showTopBannerViewIfNeeded()
         syncProductsSettings()
         observeSelectedProductAndDataLoadedStateToUpdateSelectedRow()
+        observeSelectedProductToAutoScrollWhenProductChanges()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -421,6 +425,7 @@ private extension ProductsViewController {
 
         viewModel.deselectAll()
         tableView.setEditing(false, animated: true)
+        onTableViewEditingEnd.send(())
 
         bulkEditButton.isEnabled = false
 
@@ -892,7 +897,6 @@ private extension ProductsViewController {
         }
 
         tableView.reloadData()
-        onDataReloaded.send(())
     }
 
     /// Set closure  to methods `onDidChangeContent` and `onDidResetContent
@@ -935,19 +939,34 @@ private extension ProductsViewController {
     ///
     func syncProductsSettings() {
         syncLocalProductsSettings { [weak self] (result) in
+            guard let self else { return }
+
             if result.isFailure {
-                self?.syncingCoordinator.resynchronize()
+                syncingCoordinator.resynchronize()
+            } else {
+                // Emits `onDataReloaded` when local product settings (filters & sort order) are loaded and synced, so that
+                // the first product selected in `selectFirstProductIfAvailable` is only triggered when the results match
+                // the product settings.
+                onDataReloaded.send(())
             }
         }
     }
 
     func observeSelectedProductAndDataLoadedStateToUpdateSelectedRow() {
-        Publishers.CombineLatest(selectedProduct, onDataReloaded)
-            .sink { [weak self] selectedProduct, _ in
+        Publishers.CombineLatest3(selectedProduct,
+                                  // Giving it an initial value to enable the combined publisher from the beginning.
+                                  onDataReloaded.merge(with: Just<Void>(())),
+                                  // Giving it an initial value to enable the combined publisher from the beginning.
+                                  onTableViewEditingEnd.merge(with: Just<Void>(())))
+            .map { $0.0 }
+            .withPrevious()
+            .sink { [weak self] previousSelectedProduct, selectedProduct in
                 guard let self else { return }
 
                 let currentSelectedIndexPath = tableView.indexPathForSelectedRow
-                let selectedIndexPath = selectedProduct != nil ? resultsController.indexPath(forObjectMatching: { $0.productID == selectedProduct?.productID }): nil
+                let selectedIndexPath = selectedProduct != nil ? resultsController.indexPath(forObjectMatching: {
+                    $0.productID == selectedProduct?.productID
+                }): nil
                 if let selectedIndexPath {
                     guard currentSelectedIndexPath != selectedIndexPath else {
                         return
@@ -955,14 +974,47 @@ private extension ProductsViewController {
                     if let currentSelectedIndexPath {
                         tableView.deselectRow(at: currentSelectedIndexPath, animated: false)
                     }
-                    let scrollPosition: UITableView.ScrollPosition = tableView.indexPathsForVisibleRows?.contains(selectedIndexPath) == true ?
-                        .none: .middle
+
+                    let scrollPosition: UITableView.ScrollPosition = {
+                        let hasSelectedProductChanged = (selectedProduct != previousSelectedProduct)
+                        guard hasSelectedProductChanged else { return .none }
+                        let isSelectedIndexPathVisible = self.isIndexPathVisible(selectedIndexPath)
+                        return isSelectedIndexPathVisible ? .none : .middle
+                    }()
+
                     tableView.selectRow(at: selectedIndexPath, animated: false, scrollPosition: scrollPosition)
                 } else if let currentSelectedIndexPath {
                     tableView.deselectRow(at: currentSelectedIndexPath, animated: false)
                 }
             }
             .store(in: &subscriptions)
+    }
+
+    func observeSelectedProductToAutoScrollWhenProductChanges() {
+        selectedProduct.compactMap { $0 }
+            .sink { [weak self] selectedProduct in
+                self?.listenToSelectedProductToAutoScrollWhenProductChanges(product: selectedProduct)
+            }
+            .store(in: &subscriptions)
+    }
+
+    func listenToSelectedProductToAutoScrollWhenProductChanges(product: Product) {
+        selectedProductListener = .init(storageManager: ServiceLocator.storageManager, readOnlyEntity: product)
+        selectedProductListener?.onUpsert = { [weak self] product in
+            guard let self,
+                  let selectedIndexPath = tableView.indexPathForSelectedRow,
+                  !isIndexPathVisible(selectedIndexPath) else {
+                return
+            }
+            tableView.scrollToRow(at: selectedIndexPath, at: .middle, animated: false)
+        }
+    }
+
+    func isIndexPathVisible(_ indexPath: IndexPath) -> Bool {
+        guard let indexPathsForVisibleRows = tableView.indexPathsForVisibleRows else {
+            return false
+        }
+        return indexPathsForVisibleRows.contains(indexPath)
     }
 }
 
@@ -1001,7 +1053,8 @@ extension ProductsViewController: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if splitViewController?.isCollapsed == true || !isSplitViewEnabled {
+        if (splitViewController?.isCollapsed == true || !isSplitViewEnabled) &&
+            !tableView.isEditing {
             tableView.deselectRow(at: indexPath, animated: true)
         }
 
@@ -1011,7 +1064,8 @@ extension ProductsViewController: UITableViewDelegate {
             viewModel.selectProduct(product)
             updatedSelectedItems()
         } else {
-            ServiceLocator.analytics.track(.productListProductTapped)
+            ServiceLocator.analytics.track(event:
+                    .Products.productListProductTapped(horizontalSizeClass: UITraitCollection.current.horizontalSizeClass))
 
             didSelectProduct(product: product)
         }
@@ -1047,6 +1101,10 @@ extension ProductsViewController: UITableViewDelegate {
                 tableView.deselectRow(at: indexPath, animated: false)
             }
         }
+    }
+
+    func tableView(_ tableView: UITableView, didEndEditingRowAt indexPath: IndexPath?) {
+        onTableViewEditingEnd.send(())
     }
 
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
@@ -1349,23 +1407,24 @@ extension ProductsViewController: SyncingCoordinatorDelegate {
         let action = AppSettingsAction.loadProductsSettings(siteID: siteID) { [weak self] (result) in
             switch result {
             case .success(let settings):
-                self?.syncProductCategoryFilterRemotely(from: settings) { settings in
+                self?.syncProductCategoryFilterRemotely(from: settings) { [weak self] settings in
+                    guard let self else { return }
                     if let sort = settings.sort {
-                        self?.sortOrder = ProductsSortOrder(rawValue: sort) ?? .default
+                        sortOrder = ProductsSortOrder(rawValue: sort) ?? .default
                     }
 
                     let promotableProductType = settings.productTypeFilter.map { PromotableProductType(productType: $0, isAvailable: true, promoteUrl: nil) }
-                    self?.filters = FilterProductListViewModel.Filters(stockStatus: settings.stockStatusFilter,
-                                                                       productStatus: settings.productStatusFilter,
-                                                                       promotableProductType: promotableProductType,
-                                                                       productCategory: settings.productCategoryFilter,
-                                                                       numberOfActiveFilters: settings.numberOfActiveFilters())
-
+                    filters = FilterProductListViewModel.Filters(stockStatus: settings.stockStatusFilter,
+                                                                 productStatus: settings.productStatusFilter,
+                                                                 promotableProductType: promotableProductType,
+                                                                 productCategory: settings.productCategoryFilter,
+                                                                 numberOfActiveFilters: settings.numberOfActiveFilters())
+                    onCompletion(result)
                 }
-            case .failure:
-                break
+            case let .failure(error):
+                DDLogError("⛔️ Error loading product settings: \(error)")
+                onCompletion(result)
             }
-            onCompletion(result)
         }
         ServiceLocator.stores.dispatch(action)
     }

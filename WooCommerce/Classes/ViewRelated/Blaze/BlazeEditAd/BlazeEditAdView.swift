@@ -26,6 +26,7 @@ struct BlazeEditAdView: View {
                 VStack(spacing: Layout.parentVerticalSpacing) {
                     imageBlock
                         .padding(insets: Layout.imageBlockInsets)
+                        .frame(maxWidth: Layout.imageBlockMaxWidth)
 
                     Divider()
                         .frame(height: Layout.strokeWidth)
@@ -63,6 +64,7 @@ struct BlazeEditAdView: View {
             .wooNavigationBarStyle()
             .navigationBarTitleDisplayMode(.inline)
         }
+        .navigationViewStyle(StackNavigationViewStyle())
     }
 }
 
@@ -285,6 +287,7 @@ private extension BlazeEditAdView {
 
 private enum Layout {
     static let imageBlockInsets: EdgeInsets = .init(top: 24, leading: 16, bottom: 0, trailing: 16)
+    static let imageBlockMaxWidth: CGFloat = 430
     static let textBlockInsets: EdgeInsets = .init(top: 0, leading: 16, bottom: 16, trailing: 16)
 
     static let parentVerticalSpacing: CGFloat = 24

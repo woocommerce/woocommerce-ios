@@ -40,6 +40,7 @@ final class AddProductCoordinator: Coordinator {
     private let isFirstProduct: Bool
     private let analytics: Analytics
     private let navigateToProductForm: ((UIViewController) -> Void)?
+    private let onDeleteCompletion: () -> Void
 
     /// ResultController to to track the current product count.
     ///
@@ -84,7 +85,8 @@ final class AddProductCoordinator: Coordinator {
          productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,
          analytics: Analytics = ServiceLocator.analytics,
          isFirstProduct: Bool,
-         navigateToProductForm: ((UIViewController) -> Void)? = nil) {
+         navigateToProductForm: ((UIViewController) -> Void)? = nil,
+         onDeleteCompletion: @escaping () -> Void = {}) {
         self.siteID = siteID
         self.source = source
         switch sourceView {
@@ -106,12 +108,15 @@ final class AddProductCoordinator: Coordinator {
         self.analytics = analytics
         self.isFirstProduct = isFirstProduct
         self.navigateToProductForm = navigateToProductForm
+        self.onDeleteCompletion = onDeleteCompletion
     }
 
     func start() {
         switch source {
         case .productsTab:
-            analytics.track(event: .ProductsOnboarding.productListAddProductButtonTapped(templateEligible: isTemplateOptionsEligible))
+            analytics.track(event: .ProductsOnboarding
+                .productListAddProductButtonTapped(templateEligible: isTemplateOptionsEligible,
+                                                   horizontalSizeClass: UITraitCollection.current.horizontalSizeClass))
         default:
             break
         }
@@ -366,7 +371,8 @@ private extension AddProductCoordinator {
                                                        eventLogger: ProductFormEventLogger(),
                                                        productImageActionHandler: productImageActionHandler,
                                                        currency: currency,
-                                                       presentationStyle: .navigationStack)
+                                                       presentationStyle: .navigationStack,
+                                                       onDeleteCompletion: onDeleteCompletion)
         // Since the Add Product UI could hold local changes, disables the bottom bar (tab bar) to simplify app states.
         viewController.hidesBottomBarWhenPushed = true
         if let navigateToProductForm {

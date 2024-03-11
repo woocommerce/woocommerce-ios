@@ -3,6 +3,9 @@ import XCTest
 
 final class PaginationTrackerTests: XCTestCase {
     private var paginationTracker: PaginationTracker!
+    // This instance is called delegate, but is not the delegate for the test class, so it can be retained at this level.
+    //
+    // swiftlint:disable:next weak_delegate
     private var mockDelegate: MockPaginationTrackerDelegate!
 
     override func setUp() {

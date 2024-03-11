@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-01-30 11:54:04+0000 */
+/* Translation-Revision-Date: 2024-02-27 09:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ko_KR */
@@ -47,11 +47,6 @@
 %1$@ is a placeholder that always replaced with \"Learn more\" string,
 which should be translated separately and considered part of this sentence. */
 "%1$@ about accepting payments with Tap to Pay on iPhone." = "iPhone에서 Tap to Pay를 통한 결제 수락에 대해 %1$@";
-
-/* A label prompting users to learn more about card readers"
-%1$@ is a placeholder that always replaced with \"Learn more\" string,
-which should be translated separately and considered part of this sentence. */
-"%1$@ about accepting payments with your mobile device and ordering card readers" = "모바일 장치로 결제 수락 및 카드 리더 주문에 대한 %1$@";
 
 /* A label prompting users to learn more about card readers. %1$@ is a placeholder that is always replaced with \"Learn more\" string, which should be translated separately and considered part of this sentence. */
 "%1$@ about accepting payments with your mobile device and ordering card readers." = "모바일 장치로 결제를 수락하고 카드 리더기를 주문하는 방법에 대해 %1$@";
@@ -337,9 +332,6 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle of the product form bottom sheet action for editing short description. */
 "A brief excerpt about your product" = "제품 요약문";
 
-/* Description of the Action sheet option when the user wants to change the Product type to grouped product */
-"A collection of related products" = "관련 제품 컬렉션";
-
 /* Main message on the Print Customs Invoice screen of Shipping Label flow */
 "A customs form must be printed and included on this international shipment" = "세관 양식을 인쇄하고 이 국제 배송에 포함해야 함";
 
@@ -352,17 +344,8 @@ which should be translated separately and considered part of this sentence. */
 /* Error shown in Shipping Label Origin Address validation for phone number field */
 "A phone number is required" = "전화번호는 필수 사항입니다.";
 
-/* Description of the Action sheet option when the user wants to change the Product type to variable product */
-"A product with variations like color or size" = "색상이나 크기와 같은 선택사항이 있는 제품";
-
 /* Message explaining that the site may have an invalid SSL certificate. */
 "A secure connection to the site could not be made. Please make sure that your site has a valid SSL certificate." = "사이트에 대한 보안 접속을 만들 수 없습니다. 유효한 SSL 인증서가 사이트에 있는지 확인하세요.";
-
-/* Description of the Action sheet option when the user wants to change the Product type to simple virtual product */
-"A unique digital product like services, downloadable books, music or videos" = "서비스, 다운로드 가능한 도서, 음악 또는 비디오 등 고유한 디지털 제품";
-
-/* Description of the Action sheet option when the user wants to change the Product type to simple physical product */
-"A unique physical product that you may have to ship to the customer" = "고객에게 배송해야 할 수 있는 고유한 실물 제품";
 
 /* An error message. */
 "A valid email address is needed to mail an authentication link. Please return to the previous screen and provide a valid email address." = "인증 링크를 메일로 발송하려면 유효한 이메일 주소가 필요합니다. 이전 화면으로 돌아가서 유효한 이메일 주소를 입력하세요.";
@@ -573,9 +556,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Cell text in Add / Edit product when there are no images. */
 "Add a product image" = "제품 이미지 추가";
-
-/* Description of the Action sheet option when the user wants to create a product manually */
-"Add a product manually" = "수동으로 상품 추가";
 
 /* Description for the option to create product manually */
 "Add a product manually." = "수동으로 상품을 추가합니다.";
@@ -1164,9 +1144,6 @@ which should be translated separately and considered part of this sentence. */
 /* Billing Information view Title */
 "Billing Information" = "청구지 정보";
 
-/* Action sheet option when the user wants to create a product manually */
-"Blank" = "공백";
-
 /* Title of the hub menu Blaze button */
 "Blaze" = "Blaze";
 
@@ -1369,6 +1346,7 @@ which should be translated separately and considered part of this sentence. */
    Button to dismiss the alert presented while the reader is being prepared.
    Button to dismiss the country search view in the store creation profiler
    Button to dismiss the error modal when a user without admin role tries to install Jetpack
+   Button to dismiss the screen
    Button to dismiss the site credential login screen
    Button to dismiss the store creation profiler flow
    Button to dismiss the store name screen
@@ -1888,6 +1866,9 @@ which should be translated separately and considered part of this sentence. */
 /* No comment provided by engineer. */
 "Connecting to WordPress.com" = "워드프레스닷컴에 접속 중입니다";
 
+/* Title for the WPCom servers connectivity tool card */
+"Connecting to WordPress.com Servers" = "워드프레스닷컴 서버에 연결하기";
+
 /* Title of alert for suggestion on how to connect to a WP.com sitePresented when a user logs in with an email that does not have access to a WP.com site */
 "Connecting to a WordPress.com site" = "워드프레스닷컴 사이트에 연결하기";
 
@@ -1900,8 +1881,14 @@ which should be translated separately and considered part of this sentence. */
 /* Title when checking if WooCommerce Payments is supported */
 "Connecting to your account" = "계정에 연결 중";
 
+/* Title for the Your Site connectivity tool card */
+"Connecting to your site" = "사이트에 연결하기";
+
 /* Name of the step to connect the store to Jetpack */
 "Connecting your store" = "스토어 연결 중";
+
+/* Screen title for the connectivity tool */
+"Connectivity Test" = "연결 테스트";
 
 /* Contact Customer action in Shipping Label Address Validation. */
 "Contact Customer" = "고객에게 문의";
@@ -1915,6 +1902,7 @@ which should be translated separately and considered part of this sentence. */
 /* Action button to contact support when Jetpack install fails
    Button to contact support for login
    Close Account error alert button title - navigates the user to contact support.
+   Contact support button in the connectivity tool screen
    Contact Support title
    Text for the button to contact support from the store picker error screen
    Title of the button to contact support for help accessing a store after Jetpack setup
@@ -2226,7 +2214,8 @@ which should be translated separately and considered part of this sentence. */
 "Currently creation is supported for 100 variations maximum. Generating variations for this product would create %d variations." = "현재 최대 100개 변형의 생성이 지원됩니다. 이 상품의 변형을 생성하면 %d개 변형이 생성됩니다.";
 
 /* Name of the section for custom shipment tracking carriers
-   Title of the Analytics Hub Custom selection range */
+   Title of the Analytics Hub Custom selection range
+   Top Performers section title - Custom */
 "Custom" = "사용자 정의";
 
 /* Navigation title on the add custom amount view in orders.
@@ -2773,9 +2762,6 @@ which should be translated separately and considered part of this sentence. */
 /* Label for yes/no switch - emailing the note to customer. */
 "Email note to customer" = "고객에게 이메일로 메모 보내기";
 
-/* No comment provided by engineer. */
-"Email note to customer %@" = "%@ 고객에게 이메일로 메모 보내기";
-
 /* Button to email receipts. Presented to users after a payment has been successfully collected */
 "Email receipt" = "이메일 영수증";
 
@@ -3145,9 +3131,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title text in the store creation loading screen */
 "Extending store's capabilities" = "스토어의 기능 확장하기";
 
-/* Action sheet option when the user wants to change the Product type to external product */
-"External product" = "외부 상품";
-
 /* Display label for affiliate product type. */
 "External\/Affiliate" = "외부\/연계";
 
@@ -3213,6 +3196,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Blocking indicator text when fetching existing variations prior generating them. */
 "Fetching Variations..." = "변형을 가져오는 중…";
+
+/* Title for the Your Site Orders connectivity tool card */
+"Fetching your site orders" = "사이트 주문 가져오기";
 
 /* Country option for a site address. */
 "Fiji" = "피지";
@@ -3538,9 +3524,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Navigation bar title for editing linked products for a grouped product */
 "Grouped Products" = "그룹화된 제품";
-
-/* Action sheet option when the user wants to change the Product type to grouped product */
-"Grouped product" = "그룹 상품";
 
 /* Title for editing grouped products row on Product main screen for a grouped product */
 "Grouped products" = "그룹화된 제품";
@@ -3958,6 +3941,9 @@ which should be translated separately and considered part of this sentence. */
 /* No comment provided by engineer. */
 "International payments'" = "해외 결제'";
 
+/* Title for the internet connection connectivity tool card */
+"Internet Connection" = "인터넷 연결";
+
 /* Title of an alert letting the user know the email address that they've entered isn't valid */
 "Invalid Email Address" = "유효하지 않은 이메일 주소";
 
@@ -4048,6 +4034,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Message on enable analytics screen to notify that the module is disabled for the store */
 "It looks like you have analytics disabled." = "분석을 비활성화하신 것 같습니다.";
+
+/* Message when there is no internet connection in the recovery tool */
+"It looks like you're not connected to the internet.\n\nEnsure your Wi-Fi is turned on. If you're using mobile data, make sure it's enabled in your device settings." = "인터넷에 연결되지 않은 것 같습니다.\n\n와이파이가 켜졌는지 확인하세요. 모바일 데이터를 사용 중이시라면 기기 설정에서 활성화되었는지 확인하세요.";
 
 /* Message on the error modal when a user without admin role tries to install Jetpack */
 "It looks like your user role doesn't allow you to install Jetpack.\nPlease contact your administrator for help." = "젯팩 설치가 허용되는 사용자 역할이 아닌 것 같습니다.\n도움말은 관리자에게 문의하세요.";
@@ -4198,9 +4187,7 @@ which should be translated separately and considered part of this sentence. */
 /* Instructions for hazardous package shipping. The %1$@ is a tappable linkthat will direct the user to a website */
 "Learn how to securely package, label, and ship HAZMAT through USPS® at %1$@." = "%1$@에서 USPS®를 통해 HAZMAT를 안전하게 포장하고, 레이블을 부착하고, 배송하는 방법을 알아보세요.";
 
-/* A label prompting users to learn more about card readers.
-This part is the link to the website, and forms part of a longer sentence which it should be considered a part of.
-   Button title in the shipping label creation info screen
+/* Button title in the shipping label creation info screen
    Button to open the legal page for AI-generated contents on the product sharing message generation screen
    Label for the banner Learn more button
    Tappable text at the bottom of store onboarding payments setup screen that opens a webview.
@@ -4286,9 +4273,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the cell in Product Inventory Settings > Limit one per order */
 "Limit one per order" = "주문당 1개 제한";
 
-/* Message to show when a request for a WP.com API endpoint is throttled */
-"Limit reached. You can try again in 1 minute. Trying again before that will only increase the time you have to wait before the ban is lifted. If you think this is in error, contact support." = "한계에 이르렀습니다. 1분 후에 다시 할 수 있습니다. 제한이 해제 되기까지 기다리는 시간을 증가시키기 전에 다시 해보세요. 이것이 에러라면 지원 센터에 연락하세요. ";
-
 /* The required number of items in the cart to apply a coupon in singular form, reads like: Limited to 1 item in cart */
 "Limited to %1$d item in cart" = "장바구니의 %1$d개 아이템으로 제한됨";
 
@@ -4301,9 +4285,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Label for the text of a link in the editor
    Navigation bar title for editing the text of a text link */
 "Link Text" = "링크 텍스트";
-
-/* Description of the Action sheet option when the user wants to change the Product type to external product */
-"Link a product to an external website" = "제품 외부 웹사이트로 연결";
 
 /* Linked Products Settings navigation title */
 "Linked Products" = "연결된 상품";
@@ -5064,9 +5045,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for order analytics section in the Analytics Hub */
 "ORDERS" = "주문";
 
-/* Spoken label to indicate switch control is turned off. */
-"Off" = "끔";
-
 /* Accessibility announcement message when device goes offline
    Message for offline banner */
 "Offline - using cached data" = "오프라인 - 캐시된 데이터 사용";
@@ -5085,9 +5063,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Country option for a site address. */
 "Oman" = "오만";
-
-/* Spoken label to indicate switch control is turned on */
-"On" = "켬";
 
 /* Display label for the subscription status type */
 "On Hold" = "보류 중";
@@ -5108,8 +5083,23 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Content of the banner notice on the Payment Method screen when user does not have permission to change the payment method. %1$@ is a placeholder for the store owner's name. %2$@ is a placeholder for the store owner's username. */
 "Only the site owner can manage the shipping label payment methods. Please contact %1$@ (%2$@) to manage payment methods." = "사이트 소유자만 배송 레이블 결제 수단을 관리할 수 있습니다. 결제 수단 관리는 %1$@(%2$@)에게 문의하세요.";
 
+/* Message when we can't reach WPCom in the recovery tool */
+"Oops! It seems we can't connect to WordPress.com at the moment.\n\nBut don't worry, our support team is here to help. Contact us and we will happily assist you." = "죄송합니다. 지금은 워드프레스닷컴에 연결할 수 없는 것 같습니다.\n\n걱정하지 마세요. 지원팀에서 도와드리겠습니다. 문의해 주시면 기꺼이 도와드리겠습니다.";
+
+/* Message when we there is a decoding error in the recovery tool */
+"Oops! It seems we can't work properly with your site's response.\n\nBut don't worry, our support team is here to help. Contact us and we will happily assist you." = "죄송합니다. 사이트의 응답이 제대로 작동하지 않는 것 같습니다.\n\n걱정하지 마세요. 지원팀에서 도와드리겠습니다. 문의해 주시면 기꺼이 도와드리겠습니다.";
+
+/* Message when we there is a jetpack error in the recovery tool */
+"Oops! There seems to be a problem with your jetpack connection.\n\nBut don't worry, our support team is here to help. Contact us and we will happily assist you." = "죄송합니다. 젯팩 연결에서 문제가 발생한 것 같습니다.\n\n걱정하지 마세요. 지원팀에서 도와드리겠습니다. 문의해 주시면 기꺼이 도와드리겠습니다.";
+
+/* Message when we there is a generic error in the recovery tool */
+"Oops! There seems to be a problem with your site.\n\nContact your hosting provider for further assistance." = "죄송합니다. 사이트에서 문제가 발생한 것 같습니다.\n\n자세한 내용은 호스팅 공급업체에 문의하세요.";
+
 /* Title of the alert when the store cannot be created in the store creation flow. */
 "Oops! We've hit a snag" = "죄송합니다! 문제가 발생했습니다.";
+
+/* Message when we there is a timeout error in the recovery tool */
+"Oops! Your site seems to be taking too long to respond.\n\nContact your hosting provider for further assistance." = "죄송합니다. 사이트의 응답이 너무 오래 걸리는 것 같습니다.\n\n자세한 내용은 호스팅 공급업체에 문의하세요.";
 
 /* Message of the alert when the site cannot be launched from store onboarding > launch store screen. */
 "Oops, some unexpected errors happened." = "죄송합니다. 예기치 않은 오류가 발생했습니다.";
@@ -5172,9 +5162,6 @@ This part is the link to the website, and forms part of a longer sentence which 
    Text field placeholder in Shipping Label Address Validation when specified country has no state */
 "Optional" = "선택 사항";
 
-/* No comment provided by engineer. */
-"Optional Tracking Information" = "선택적 추적 정보";
-
 /* Header of attributes section in Edit Product Attributes screen */
 "Options" = "옵션";
 
@@ -5233,6 +5220,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Label for the the row showing the total cost of the order */
 "Order total" = "주문 총계";
+
+/* Text on the button title to see the order's receipt */
+"OrderDetailsDataSource.configureSeeReceipt.button.title" = "영수증 확인";
+
+/* Notice that appears when no receipt can be retrieved upon tapping on 'See receipt' in the Order Details view. */
+"OrderDetailsViewModel.displayReceiptRetrievalErrorNotice.notice" = "영수증을 검색할 수 없습니다.";
 
 /* Accessibility label for Ordered list button on formatting toolbar. */
 "Ordered List" = "순서 있는 목록";
@@ -5445,7 +5438,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the Performance section on Coupons Details screen */
 "Performance" = "실적";
 
-/* No comment provided by engineer. */
+/* Indicates a feature is part of the performance plan. */
 "Performance plan only" = "성과 요금제 전용";
 
 /* Close Account button title - confirms and closes user's WordPress.com account. */
@@ -6062,6 +6055,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Subtitle for Contact Support */
 "Reach our happiness engineers who can help answer tough questions" = "해피니스 엔지니어에게 문의하여 어려운 질문에 대한 답변 받기";
+
+/* Action button title for a generic error on the connectivity tool */
+"Read More" = "더 보기";
 
 /* Text for the button to navigate to troubleshooting tips from the store picker error screen */
 "Read our Troubleshooting Tips" = "문제 해결 팁 읽기";
@@ -7001,12 +6997,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Display label for simple product type. */
 "Simple" = "심플";
-
-/* Action sheet option when the user wants to change the Product type to simple physical product */
-"Simple physical product" = "단순한 실제 제품";
-
-/* Action sheet option when the user wants to change the Product type to simple virtual product */
-"Simple virtual product" = "단순한 가상 제품";
 
 /* Country option for a site address. */
 "Singapore" = "싱가포르";
@@ -8888,9 +8878,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Display label for variable subscription product type. */
 "Variable Subscription" = "가변 구독";
 
-/* Action sheet option when the user wants to change the Product type to varible product */
-"Variable product" = "옵션 상품";
-
 /* Navigation bar title for variation. Parameters: %1$@ - Product variation ID */
 "Variation #%1$@" = "변형 #%1$@";
 
@@ -9557,6 +9544,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Header text of the site's domain list in domain settings. */
 "Your site domains" = "사이트 도메인";
 
+/* The title of the Error Loading Data banner when there is a Jetpack connection error */
+"Your site is taking a long time to respond" = "사이트가 응답하는 데 오랜 시간이 걸립니다.";
+
 /* Title on the banner when the site's WooExpress plan has expired */
 "Your site plan has ended." = "사이트 요금제가 종료되었습니다.";
 
@@ -9627,6 +9617,30 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for the charge taxes toggle in the custom amounts screen. */
 "addCustomAmountView.chargeTaxesToggle.title" = "세금 청구";
 
+/* Dismiss button on the alert asking to add an image for the Blaze campaign */
+"addProductWithAIActionSheet.manualOptionsTitle" = "상품 유형 선택";
+
+/* Name for the Orders analytics card in the Customize Analytics screen */
+"analyticsHub.customize.orders" = "주문";
+
+/* Name for the Products analytics card in the Customize Analytics screen */
+"analyticsHub.customize.products" = "상품";
+
+/* Name for the Revenue analytics card in the Customize Analytics screen */
+"analyticsHub.customize.revenue" = "수익";
+
+/* Name for the Sessions analytics card in the Customize Analytics screen */
+"analyticsHub.customize.sessions" = "세션";
+
+/* Button to save changes on the Customize Analytics screen */
+"analyticsHub.customizeAnalytics.saveButton" = "저장";
+
+/* Title for the screen to customize the analytics cards in the Analytics Hub */
+"analyticsHub.customizeAnalytics.title" = "애널리틱스 사용자 정의";
+
+/* Label for button that opens a screen to customize the Analytics Hub */
+"analyticsHub.editButton.label" = "편집";
+
 /* Label for button to enable Jetpack Stats */
 "analyticsHub.jetpackStatsCTA.buttonLabel" = "젯팩 통계 활성화";
 
@@ -9638,6 +9652,18 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title for sessions section in the Analytics Hub */
 "analyticsHub.jetpackStatsCTA.title" = "세션";
+
+/* Title for the orders analytics report linked in the Analytics Hub */
+"analyticsHub.orderCard.reportTitle" = "주문 보고서";
+
+/* Title for the products analytics report linked in the Analytics Hub */
+"analyticsHub.productCard.reportTitle" = "상품 보고서";
+
+/* Button label to show an analytics report in the Analytics Hub */
+"analyticsHub.reportCard.webReport" = "보고서 보기";
+
+/* Title for the revenue analytics report linked in the Analytics Hub */
+"analyticsHub.revenueCard.reportTitle" = "수익 보고서";
 
 /* Button to dismiss the alert asking for confirmation to switch store. */
 "appCoordinator.storeReadyAlert.cancelButton" = "취소";
@@ -9822,6 +9848,16 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the celebration view when a Blaze campaign is successfully created. */
 "blazeCampaignCreationCoordinator.successTitle" = "모든 준비를 마쳤습니다!";
 
+/* Message on the Blaze campaign creation error screen. Keep '
+' as-is as it signals a line break. */
+"blazeCampaignCreationError.failedToCreateCampaign" = "문제가 발생했습니다.\n캠페인을 생성할 수 없습니다.";
+
+/* Message on the Blaze campaign creation error screen. */
+"blazeCampaignCreationError.failedToFetchCampaignImage" = "캠페인 이미지 상세 정보를 가져오지 못했습니다.";
+
+/* Message on the Blaze campaign creation error screen. */
+"blazeCampaignCreationError.failedToUploadCampaignImage" = "캠페인 이미지를 업로드하지 못했습니다.";
+
 /* Button to dismiss the flow on the Blaze campaign creation error screen. */
 "blazeCampaignCreationErrorView.cancel" = "캠페인 취소";
 
@@ -9830,10 +9866,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Button to get support on the Blaze campaign creation error screen. */
 "blazeCampaignCreationErrorView.getSupport" = "지원받기";
-
-/* Message on the Blaze campaign creation error screen. Keep '
-' as-is as it signals a line break. */
-"blazeCampaignCreationErrorView.message" = "문제가 발생했습니다.\n캠페인을 생성할 수 없습니다.";
 
 /* Message on the Blaze campaign creation error screen. */
 "blazeCampaignCreationErrorView.noPaymentTaken" = "결제가 진행되지 않았습니다.";
@@ -9871,8 +9903,14 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the Devices field on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.devices" = "기기";
 
+/* Button to dismiss the support form from the Blaze campaign form screen. */
+"blazeCampaignCreationForm.done" = "완료";
+
 /* Button to edit ad details on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.editAd" = "광고 편집";
+
+/* Button to contact support on the Blaze campaign form screen. */
+"blazeCampaignCreationForm.help" = "도움말";
 
 /* Title of the Interests field on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.interests" = "관심 분야";
@@ -9934,8 +9972,14 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Item to be charged on the Payment screen in the Blaze campaign creation flow */
 "blazeConfirmPaymentView.blazeCampaign" = "Blaze 캠페인";
 
+/* Button to dismiss the support form from the Blaze confirm payment view screen. */
+"blazeConfirmPaymentView.done" = "완료";
+
 /* Error message displayed when fetching payment methods failed on the Payment screen in the Blaze campaign creation flow. */
 "blazeConfirmPaymentView.errorMessage" = "결제 수단 로드 오류";
+
+/* Button to contact support on the Blaze confirm payment view screen. */
+"blazeConfirmPaymentView.help" = "도움말";
 
 /* Link to guide for promoted posts on the Payment screen in the Blaze campaign creation flow. */
 "blazeConfirmPaymentView.learnMore" = "더 알아보기";
@@ -10189,6 +10233,54 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Button to retry syncing data on the target topic picker for campaign creation */
 "blazeTargetTopicPickerView.tryAgain" = "다시 시도";
 
+/* Description of the Action sheet option when the user wants to change the Product type to external product */
+"bottomSheetProductType.affiliate.description" = "상품을 외부 웹사이트로 연결";
+
+/* Action sheet option when the user wants to change the Product type to external product */
+"bottomSheetProductType.affiliate.title" = "외부 상품";
+
+/* Description of the Action sheet option when the user wants to create a product manually */
+"bottomSheetProductType.blank.description" = "수동으로 상품 추가";
+
+/* Action sheet option when the user wants to create a product manually */
+"bottomSheetProductType.blank.title" = "공백";
+
+/* Description of the Action sheet option when the user wants to change the Product type to grouped product */
+"bottomSheetProductType.grouped.description" = "관련 상품 컬렉션";
+
+/* Action sheet option when the user wants to change the Product type to grouped product */
+"bottomSheetProductType.grouped.title" = "그룹화된 상품";
+
+/* Description of the Action sheet option when the user wants to change the Product type to simple physical product */
+"bottomSheetProductType.simple.description" = "고객에게 배송해야 할 수 있는 고유한 실물 상품";
+
+/* Action sheet option when the user wants to change the Product type to simple physical product */
+"bottomSheetProductType.simple.title" = "단순 실물 상품";
+
+/* Description of the Action sheet option when the user wants to change the Product type to simple virtual product */
+"bottomSheetProductType.simpleVirtual.description" = "서비스, 다운로드 가능한 도서, 음악 또는 비디오 등 고유한 디지털 상품";
+
+/* Action sheet option when the user wants to change the Product type to simple virtual product */
+"bottomSheetProductType.simpleVirtual.title" = "단순 가상 상품";
+
+/* Description of the Action sheet option when the user wants to change the Product type to Subscription product */
+"bottomSheetProductType.subscription.description" = "반복 결제가 활성화된 고유 상품 구독";
+
+/* Action sheet option when the user wants to change the Product type to Subscription product */
+"bottomSheetProductType.subscription.title" = "단순 구독 상품";
+
+/* Description of the Action sheet option when the user wants to change the Product type to variable product */
+"bottomSheetProductType.variable.description" = "색상 또는 크기 등 변형이 있는 상품";
+
+/* Action sheet option when the user wants to change the Product type to varible product */
+"bottomSheetProductType.variable.title" = "변형 상품";
+
+/* Action sheet option when the user wants to change the Product type to Variable subscription product */
+"bottomSheetProductType.variableSubscription.description" = "변형이 있는 상품 구독";
+
+/* Action sheet option when the user wants to change the Product type to Variable subscription product */
+"bottomSheetProductType.variableSubscription.title" = "가변 구독 상품";
+
 /* Label for a cancel button */
 "cardPresent.builtIn.modalCheckingDeviceSupport.cancelButton" = "취소";
 
@@ -10309,6 +10401,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility title for the edit button on a custom amount row. */
 "customAmount.edit.button.accessibilityLabel" = "금액 편집";
+
+/* Button in date range picker to add a Custom Range tab */
+"customRangeTabCreationCoordinator.add" = "추가";
 
 /* Display label for a product's subscription period when it is a single day. */
 "day" = "일";
@@ -10452,6 +10547,15 @@ which should be translated separately and considered part of this sentence. */
 /* Later today */
 "later today" = "오늘 중";
 
+/* A label prompting users to learn more about card readers.
+This part is the link to the website, and forms part of a longer sentence which it should be considered a part of. */
+"learnMore.link" = "더 알아보기";
+
+/* A label prompting users to learn more about card readers"
+%1$@ is a placeholder that always replaced with \"Learn more\" string,
+which should be translated separately and considered part of this sentence. */
+"learnMore.text" = "모바일 장치로 결제 수락 및 카드 리더 주문에 대한 %1$@";
+
 /* A hazardous material description stating when a package can fit into this category */
 "limited_quantity_category" = "한정 수량 육상 패키지 - 에어로졸, 스프레이 소독제, 스프레이 페인트, 헤어스프레이, 프로판, 부탄, 세정제 등 - 향료, 매니큐어, 매니큐어 제거제, 용제, 손 소독제, 소독용 알코올, 에탄올 주성분 제품 등 - 기타 한정 수량 표면재(화장품, 세정제, 도료 등)";
 
@@ -10550,6 +10654,12 @@ which should be translated separately and considered part of this sentence. */
 /* Header for the search result section on a a multiple selection list */
 "multipleSelectionList.searchResults" = "검색 결과";
 
+/* Spoken label to indicate switch control is turned off. */
+"newNoteViewController.emailNoteSwitch.accessibilityLabel.off" = "고객에게 이메일로 메모 보내기 끄기";
+
+/* Spoken label to indicate switch control is turned on */
+"newNoteViewController.emailNoteSwitch.accessibilityLabel.on" = "고객에게 이메일로 메모 보내기 켜기";
+
 /* A error message when it's not possible toacquire the Analytics Hub previous selection range */
 "no previous period" = "이전 기간 없음";
 
@@ -10583,14 +10693,68 @@ which should be translated separately and considered part of this sentence. */
 /* A 'Learn More' label text, which shows tax information upon being clicked. */
 "order.form.paymentSection.taxes.learnMore" = "자세히 알아보세요.";
 
+/* Label for the row showing the shipping tax. */
+"order.form.paymentSection.taxes.shippingTax" = "운송세";
+
 /* Title text of the button that adds shipping line when creating a new order */
 "order.form.shipping.add.button.title" = "배송 추가";
+
+/* Origin in Order Attribution Section on Order Details screen. */
+"orderAttributionInfo.direct" = "직접";
+
+/* Origin in Order Attribution Section on Order Details screen. */
+"orderAttributionInfo.mobileApp" = "모바일 앱";
+
+/* Origin in Order Attribution Section on Order Details screen.The placeholder is the source.Reads like: Organic: woo.com */
+"orderAttributionInfo.organic" = "유기농: %1$@";
+
+/* Origin in Order Attribution Section on Order Details screen.The placeholder is the source.Reads like: Referral: woo.com */
+"orderAttributionInfo.referral" = "추천: %1$@";
+
+/* Origin in Order Attribution Section on Order Details screen.The placeholder is the source.Reads like: Source: woo.com */
+"orderAttributionInfo.source" = "소스: %1$@";
+
+/* Origin in Order Attribution Section on Order Details screen. */
+"orderAttributionInfo.unknown" = "알 수 없음";
+
+/* Origin in Order Attribution Section on Order Details screen. */
+"orderAttributionInfo.webAdmin" = "웹 관리자";
+
+/* Title for the row to add tracking information. */
+"orderDetails.addTrackingRow.title" = "선택적 추적 정보";
 
 /* Custom Amount section title if there is more than one custom amount. */
 "orderDetails.customAmounts.section.pluralTitle" = "사용자 정의 금액";
 
 /* Subtitle of the custom amount row in order details */
 "orderDetails.customAmountsRow.subtitle" = "사용자 정의 금액";
+
+/* Title in Order Attribution Section on Order Details screen. */
+"orderDetailsDataSource.attributionInfo.campaign" = "캠페인";
+
+/* Title in Order Attribution Section on Order Details screen. */
+"orderDetailsDataSource.attributionInfo.deviceType" = "기기 유형";
+
+/* Title in Order Attribution Section on Order Details screen. */
+"orderDetailsDataSource.attributionInfo.medium" = "미디어";
+
+/* Title of Order Attribution Section in Order Details screen. */
+"orderDetailsDataSource.attributionInfo.orderAttribution" = "주문 속성";
+
+/* Title in Order Attribution Section on Order Details screen. */
+"orderDetailsDataSource.attributionInfo.origin" = "원산지";
+
+/* Title in Order Attribution Section on Order Details screen. */
+"orderDetailsDataSource.attributionInfo.sessionPageViews" = "세션 페이지 조회수";
+
+/* Title in Order Attribution Section on Order Details screen. */
+"orderDetailsDataSource.attributionInfo.source" = "소스";
+
+/* Title in Order Attribution Section on Order Details screen. */
+"orderDetailsDataSource.attributionInfo.sourceType" = "소스 유형";
+
+/* Origin in Order Attribution Section on Order Details screen. */
+"orderDetailsDataSource.attributionInfo.unknown" = "알 수 없음";
 
 /* Title text of the section that shows the Custom Amounts when creating or editing an order */
 "orderForm.customAmounts" = "사용자 정의 금액";
@@ -10615,6 +10779,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility label for the barcode scanning button to add product */
 "orderForm.products.add.scan.button.accessibilityLabel" = "바코드 스캔";
+
+/* Title for the barcode scanning button to add a product to an order */
+"orderForm.products.add.scan.row.title" = "상품 스캔";
 
 /* Label for the row showing the cost of coupon in the order */
 "orderPaymentSection.coupon" = "쿠폰";
@@ -10666,18 +10833,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label shown on the launch store task. */
 "private" = "비공개";
-
-/* Description of the Action sheet option when the user wants to change the Product type to Subscription product */
-"product.sheet.option.simpleSubscription.description" = "반복 결제가 활성화된 고유 상품 구독";
-
-/* Action sheet option when the user wants to change the Product type to Subscription product */
-"product.sheet.option.simpleSubscription.title" = "단순 구독 상품";
-
-/* Action sheet option when the user wants to change the Product type to Variable subscription product */
-"product.sheet.option.variableSubscription.description" = "변형이 있는 상품 구독";
-
-/* Action sheet option when the user wants to change the Product type to Variable subscription product */
-"product.sheet.option.variableSubscription.title" = "가변 구독 상품";
 
 /* Description in Product Creation AI survey confirmation view. */
 "productCreationAISurveyConfirmationView.description" = "잠깐 시간 좀 내주시겠어요? 빠른 피드백으로 AI 도우미 기능 개선을 도와주세요.";
@@ -10742,6 +10897,15 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the cell in Product Price Settings > Sign-up Fee */
 "productPriceSettingsViewModel.signupFeeTitle" = "등록 수수료";
 
+/* Text on the header of the Select Product screen when more than one products are selected. */
+"productSelectorViewModel.selectProductsTitle.pluralProductSelectedFormattedText" = "%ld 상품 선택됨";
+
+/* Text on the header of the Select Product screen when no products are selected. */
+"productSelectorViewModel.selectProductsTitle.selectProductsTitle" = "상품 선택";
+
+/* Text on the header of the Select Product screen when one product is selected. */
+"productSelectorViewModel.selectProductsTitle.singularProductSelectedFormattedText" = "%ld 상품 선택됨";
+
 /* Cancel button in the product downloadables alert */
 "productSettings.downloadableProductAlertCancel" = "취소";
 
@@ -10763,17 +10927,32 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the One time shipping product shipping setting. */
 "productShippingSettings.oneTimeShipping.title" = "1회 배송";
 
+/* Message on the secondary view of the products tab split view before any product is selected. */
+"productsTab.emptySecondaryView.message" = "선택된 상품 없음";
+
+/* Title of the Products tab — plural form of Product */
+"productsTab.tabTitle" = "상품";
+
 /* Format of the number of product ratings in plural form */
 "rated %ld times" = "%ld번 평가됨";
 
 /* Format of the number of product ratings in singular form */
 "rated once" = "한 번 평가됨";
 
+/* The name of the job that appears in the 'Print Center' when printing a receiptReads as 'Woo: receipt for order #123' */
+"receiptViewModel.formattedReceiptJobName.receiptJobName" = "%1$@: #%2$@ 주문 영수증";
+
+/* The name of the job that appears in the 'Print Center' when printing a receiptReads as 'Woo: receipt for order #123 on MyStoreName' */
+"receiptViewModel.formattedReceiptJobName.receiptJobNameWithStoreName" = "%1$@: #%2$@ 주문 영수증(%3$@)";
+
 /* Title on the refund screen that lists the custom amounts total cost */
 "refundCustomAmountsDetails.totalTitle" = "사용자 정의 금액 환불";
 
 /* Title of the switch in the IssueRefund screen to refund customAmounts */
 "refundIssue.customAmounts.title" = "환불 사용자 정의 금액";
+
+/* The title for the cancel button in the search screen. */
+"searchViewController.cancelButton.tilet" = "취소";
 
 /* Settings > Set up Tap to Pay on iPhone > Try a Payment > After trying a payments, the merchant is shown an order confirmation screen, showing their payment was successful and allowing them to refund themselves. This is the navigation bar title for that screen. */
 "setUpTapToPayPaymentPromptView.paymentComplete.navigation.title" = "결제 완료됨";
@@ -10787,6 +10966,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Cancel button title for the Shipping Label purchase flow, shown in the nav bar */
 "shipping.label.navigationBar.cancel.button.title" = "취소";
+
+/* Tab selector title that shows the statistics for today */
+"statsTimeRangeV4.tabTitle.custom" = "사용자 정의 범위";
 
 /* Widget description, displayed when selecting which widget to add */
 "storeWidgets.description" = "우커머스 통계 오늘";
@@ -11043,6 +11225,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Placeholder text shown when loading media for the WordPress Media Library */
 "wordpressMediaLibraryPickerViewController.emptyContent.loading" = "미디어 로드 중...";
+
+/* Message to show when a request for a WP.com API endpoint is throttled */
+"wordpresskit.api.message.endpoint_throttled" = "제한에 도달했습니다. 1분 후에 다시 시도할 수 있습니다. 그 전에 다시 시도할 경우 제한이 해제될 때까지 기다려야 하는 시간이 늘어납니다. 오류라고 생각되면 지원 팀에 문의하세요.";
 
 /* Button to enter security key on the WPCom 2FA login screen */
 "wpCom2FALoginView.securityKeyButton" = "보안 키 사용";

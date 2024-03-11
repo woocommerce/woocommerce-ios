@@ -590,7 +590,7 @@ extension UIImage {
     }
 
     /// Set store name image
-    /// 
+    ///
     static var setStoreNameImage: UIImage {
         UIImage(systemName: "pencil.circle")!
     }
@@ -1503,6 +1503,10 @@ extension UIImage {
 
     static var feedbackOutlineIcon: UIImage {
         UIImage(named: "icon-feedback-outline")!
+    }
+
+    static var appPasswordTutorialImage: UIImage {
+        UIImage(named: "app-password-tutorial-1")!
     }
 }
 

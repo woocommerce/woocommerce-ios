@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-01-30 11:54:03+0000 */
+/* Translation-Revision-Date: 2024-02-27 09:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: id */
@@ -47,11 +47,6 @@
 %1$@ is a placeholder that always replaced with \"Learn more\" string,
 which should be translated separately and considered part of this sentence. */
 "%1$@ about accepting payments with Tap to Pay on iPhone." = "%1$@ tentang penerimaan pembayaran dengan Ketuk untuk Membayar di iPhone.";
-
-/* A label prompting users to learn more about card readers"
-%1$@ is a placeholder that always replaced with \"Learn more\" string,
-which should be translated separately and considered part of this sentence. */
-"%1$@ about accepting payments with your mobile device and ordering card readers" = "%1$@ tentang penerimaan pembayaran dengan perangkat seluler dan pemesanan pembaca kartu";
 
 /* A label prompting users to learn more about card readers. %1$@ is a placeholder that is always replaced with \"Learn more\" string, which should be translated separately and considered part of this sentence. */
 "%1$@ about accepting payments with your mobile device and ordering card readers." = "%1$@ tentang penerimaan pembayaran dengan perangkat seluler dan pemesanan pembaca kartu.";
@@ -337,9 +332,6 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle of the product form bottom sheet action for editing short description. */
 "A brief excerpt about your product" = "Kutipan singkat tentang produk Anda";
 
-/* Description of the Action sheet option when the user wants to change the Product type to grouped product */
-"A collection of related products" = "Kumpulan produk terkait";
-
 /* Main message on the Print Customs Invoice screen of Shipping Label flow */
 "A customs form must be printed and included on this international shipment" = "Formulir bea cukai harus dicetak dan disertakan pada pengiriman internasional ini";
 
@@ -352,17 +344,8 @@ which should be translated separately and considered part of this sentence. */
 /* Error shown in Shipping Label Origin Address validation for phone number field */
 "A phone number is required" = "Nomor telepon diperlukan";
 
-/* Description of the Action sheet option when the user wants to change the Product type to variable product */
-"A product with variations like color or size" = "Produk dengan variasi seperti warna atau ukuran";
-
 /* Message explaining that the site may have an invalid SSL certificate. */
 "A secure connection to the site could not be made. Please make sure that your site has a valid SSL certificate." = "Koneksi aman ke situs tidak dapat dibuat. Harap pastikan bahwa situs Anda memiliki sertifikat SSL yang valid.";
-
-/* Description of the Action sheet option when the user wants to change the Product type to simple virtual product */
-"A unique digital product like services, downloadable books, music or videos" = "Produk digital unik, seperti layanan atau buku, musik, dan video yang dapat diunduh";
-
-/* Description of the Action sheet option when the user wants to change the Product type to simple physical product */
-"A unique physical product that you may have to ship to the customer" = "Produk fisik unik yang mungkin perlu dikirimkan kepada pelanggan";
 
 /* An error message. */
 "A valid email address is needed to mail an authentication link. Please return to the previous screen and provide a valid email address." = "Alamat email valid diperlukan untuk mengirimkan tautan autentikasi. Kembali ke layar sebelumnya dan berikan alamat email yang valid.";
@@ -573,9 +556,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Cell text in Add / Edit product when there are no images. */
 "Add a product image" = "Tambahkan gambar produk";
-
-/* Description of the Action sheet option when the user wants to create a product manually */
-"Add a product manually" = "Tambahkan produk secara manual";
 
 /* Description for the option to create product manually */
 "Add a product manually." = "Tambahkan produk secara manual.";
@@ -1164,9 +1144,6 @@ which should be translated separately and considered part of this sentence. */
 /* Billing Information view Title */
 "Billing Information" = "Informasi Tagihan";
 
-/* Action sheet option when the user wants to create a product manually */
-"Blank" = "Kosong";
-
 /* Title of the hub menu Blaze button */
 "Blaze" = "Blaze";
 
@@ -1369,6 +1346,7 @@ which should be translated separately and considered part of this sentence. */
    Button to dismiss the alert presented while the reader is being prepared.
    Button to dismiss the country search view in the store creation profiler
    Button to dismiss the error modal when a user without admin role tries to install Jetpack
+   Button to dismiss the screen
    Button to dismiss the site credential login screen
    Button to dismiss the store creation profiler flow
    Button to dismiss the store name screen
@@ -1888,6 +1866,9 @@ which should be translated separately and considered part of this sentence. */
 /* No comment provided by engineer. */
 "Connecting to WordPress.com" = "Menghubungkan ke WordPress.com";
 
+/* Title for the WPCom servers connectivity tool card */
+"Connecting to WordPress.com Servers" = "Menyambungkan ke Server WordPress.com";
+
 /* Title of alert for suggestion on how to connect to a WP.com sitePresented when a user logs in with an email that does not have access to a WP.com site */
 "Connecting to a WordPress.com site" = "Menghubungkan ke situs WordPress.com";
 
@@ -1900,8 +1881,14 @@ which should be translated separately and considered part of this sentence. */
 /* Title when checking if WooCommerce Payments is supported */
 "Connecting to your account" = "Menghubungkan ke akun Anda";
 
+/* Title for the Your Site connectivity tool card */
+"Connecting to your site" = "Menyambungkan ke situs Anda";
+
 /* Name of the step to connect the store to Jetpack */
 "Connecting your store" = "Menyambungkan ke toko Anda";
+
+/* Screen title for the connectivity tool */
+"Connectivity Test" = "Uji Konektivitas";
 
 /* Contact Customer action in Shipping Label Address Validation. */
 "Contact Customer" = "Hubungi Pelanggan";
@@ -1915,6 +1902,7 @@ which should be translated separately and considered part of this sentence. */
 /* Action button to contact support when Jetpack install fails
    Button to contact support for login
    Close Account error alert button title - navigates the user to contact support.
+   Contact support button in the connectivity tool screen
    Contact Support title
    Text for the button to contact support from the store picker error screen
    Title of the button to contact support for help accessing a store after Jetpack setup
@@ -2226,7 +2214,8 @@ which should be translated separately and considered part of this sentence. */
 "Currently creation is supported for 100 variations maximum. Generating variations for this product would create %d variations." = "Saat ini, pembuatan mendukung maksimal 100 variasi. Pembuatan variasi untuk produk ini akan membuat %d variasi.";
 
 /* Name of the section for custom shipment tracking carriers
-   Title of the Analytics Hub Custom selection range */
+   Title of the Analytics Hub Custom selection range
+   Top Performers section title - Custom */
 "Custom" = "Kustom";
 
 /* Navigation title on the add custom amount view in orders.
@@ -2773,9 +2762,6 @@ which should be translated separately and considered part of this sentence. */
 /* Label for yes/no switch - emailing the note to customer. */
 "Email note to customer" = "Kirim catatan kepada pelanggan lewat email";
 
-/* No comment provided by engineer. */
-"Email note to customer %@" = "Kirim catatan kepada pelanggan lewat email %@";
-
 /* Button to email receipts. Presented to users after a payment has been successfully collected */
 "Email receipt" = "Email Tanda Terima";
 
@@ -3145,9 +3131,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title text in the store creation loading screen */
 "Extending store's capabilities" = "Memperluas kapabilitas toko";
 
-/* Action sheet option when the user wants to change the Product type to external product */
-"External product" = "Produk eksternal";
-
 /* Display label for affiliate product type. */
 "External\/Affiliate" = "Eksternal\/Afiliasi";
 
@@ -3213,6 +3196,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Blocking indicator text when fetching existing variations prior generating them. */
 "Fetching Variations..." = "Mengambil Variasi…";
+
+/* Title for the Your Site Orders connectivity tool card */
+"Fetching your site orders" = "Mengambil pesanan situs Anda";
 
 /* Country option for a site address. */
 "Fiji" = "Fiji";
@@ -3538,9 +3524,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Navigation bar title for editing linked products for a grouped product */
 "Grouped Products" = "Produk yang Dikelompokkan";
-
-/* Action sheet option when the user wants to change the Product type to grouped product */
-"Grouped product" = "Produk dikelompokkan";
 
 /* Title for editing grouped products row on Product main screen for a grouped product */
 "Grouped products" = "Produk yang dikelompokkan";
@@ -3958,6 +3941,9 @@ which should be translated separately and considered part of this sentence. */
 /* No comment provided by engineer. */
 "International payments'" = "Pembayaran internasional";
 
+/* Title for the internet connection connectivity tool card */
+"Internet Connection" = "Koneksi Internet";
+
 /* Title of an alert letting the user know the email address that they've entered isn't valid */
 "Invalid Email Address" = "Alamat Email Tidak Valid";
 
@@ -4048,6 +4034,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Message on enable analytics screen to notify that the module is disabled for the store */
 "It looks like you have analytics disabled." = "Sepertinya analitik Anda dinonaktifkan.";
+
+/* Message when there is no internet connection in the recovery tool */
+"It looks like you're not connected to the internet.\n\nEnsure your Wi-Fi is turned on. If you're using mobile data, make sure it's enabled in your device settings." = "Tampaknya Anda tidak terhubung ke internet.\n\nPastikan Wi-Fi Anda aktif. Jika Anda menggunakan data seluler, aktifkan di pengaturan perangkat Anda.";
 
 /* Message on the error modal when a user without admin role tries to install Jetpack */
 "It looks like your user role doesn't allow you to install Jetpack.\nPlease contact your administrator for help." = "Sepertinya peran pengguna Anda tidak mengizinkan Anda menginstal Jetpack.\nHubungi administrator Anda untuk mendapatkan bantuan.";
@@ -4198,9 +4187,7 @@ which should be translated separately and considered part of this sentence. */
 /* Instructions for hazardous package shipping. The %1$@ is a tappable linkthat will direct the user to a website */
 "Learn how to securely package, label, and ship HAZMAT through USPS® at %1$@." = "Pelajari cara mengemas, melabeli, dan mengirim HAZMAT secara aman dengan USPS® di %1$@.";
 
-/* A label prompting users to learn more about card readers.
-This part is the link to the website, and forms part of a longer sentence which it should be considered a part of.
-   Button title in the shipping label creation info screen
+/* Button title in the shipping label creation info screen
    Button to open the legal page for AI-generated contents on the product sharing message generation screen
    Label for the banner Learn more button
    Tappable text at the bottom of store onboarding payments setup screen that opens a webview.
@@ -4286,9 +4273,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the cell in Product Inventory Settings > Limit one per order */
 "Limit one per order" = "Batas per pesanan";
 
-/* Message to show when a request for a WP.com API endpoint is throttled */
-"Limit reached. You can try again in 1 minute. Trying again before that will only increase the time you have to wait before the ban is lifted. If you think this is in error, contact support." = "Melampaui Batas. Anda dapat coba lagi semenit kemudian. Mencoba sebelum semenit akan menambah waktu Anda harus menunggu sebelum ban dicabut. Jika Anda merasa ini sebuah kesalahan, silahkan kontak support.";
-
 /* The required number of items in the cart to apply a coupon in singular form, reads like: Limited to 1 item in cart */
 "Limited to %1$d item in cart" = "Dibatasi hingga %1$d item di keranjang";
 
@@ -4301,9 +4285,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Label for the text of a link in the editor
    Navigation bar title for editing the text of a text link */
 "Link Text" = "Teks Tautan";
-
-/* Description of the Action sheet option when the user wants to change the Product type to external product */
-"Link a product to an external website" = "Tautkan produk ke situs web eksternal";
 
 /* Linked Products Settings navigation title */
 "Linked Products" = "Produk Tertaut";
@@ -5064,9 +5045,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for order analytics section in the Analytics Hub */
 "ORDERS" = "PESANAN";
 
-/* Spoken label to indicate switch control is turned off. */
-"Off" = "Matikan";
-
 /* Accessibility announcement message when device goes offline
    Message for offline banner */
 "Offline - using cached data" = "Offline - menggunakan data cache";
@@ -5085,9 +5063,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Country option for a site address. */
 "Oman" = "Oman";
-
-/* Spoken label to indicate switch control is turned on */
-"On" = "Menyala";
 
 /* Display label for the subscription status type */
 "On Hold" = "Ditangguhkan";
@@ -5108,8 +5083,23 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Content of the banner notice on the Payment Method screen when user does not have permission to change the payment method. %1$@ is a placeholder for the store owner's name. %2$@ is a placeholder for the store owner's username. */
 "Only the site owner can manage the shipping label payment methods. Please contact %1$@ (%2$@) to manage payment methods." = "Hanya pemilik situs yang dapat mengelola metode pembayaran label pengiriman. Hubungi %1$@ (%2$@) untuk mengelola metode pembayaran.";
 
+/* Message when we can't reach WPCom in the recovery tool */
+"Oops! It seems we can't connect to WordPress.com at the moment.\n\nBut don't worry, our support team is here to help. Contact us and we will happily assist you." = "Ups! Tampaknya saat ini kami tidak dapat terhubung dengan WordPress.com.\n\nTenang, tim dukungan kami siap membantu. Hubungi kami dan kami siap membantu Anda.";
+
+/* Message when we there is a decoding error in the recovery tool */
+"Oops! It seems we can't work properly with your site's response.\n\nBut don't worry, our support team is here to help. Contact us and we will happily assist you." = "Ups! Tampaknya kami tidak dapat menangani respons situs Anda.\n\nTenang, tim dukungan kami siap membantu. Hubungi kami dan kami siap membantu Anda.";
+
+/* Message when we there is a jetpack error in the recovery tool */
+"Oops! There seems to be a problem with your jetpack connection.\n\nBut don't worry, our support team is here to help. Contact us and we will happily assist you." = "Ups! Tampaknya terjadi masalah dengan koneksi Jetpack Anda.\n\nTenang, tim dukungan kami siap membantu. Hubungi kami dan kami siap membantu Anda.";
+
+/* Message when we there is a generic error in the recovery tool */
+"Oops! There seems to be a problem with your site.\n\nContact your hosting provider for further assistance." = "Ups! Tampaknya situs Anda mengalami masalah.\n\nHubungi penyedia hosting Anda untuk mendapatkan bantuan lebih lanjut.";
+
 /* Title of the alert when the store cannot be created in the store creation flow. */
 "Oops! We've hit a snag" = "Waduh! Kami mengalami kendala";
+
+/* Message when we there is a timeout error in the recovery tool */
+"Oops! Your site seems to be taking too long to respond.\n\nContact your hosting provider for further assistance." = "Ups! Tampaknya situs Anda merespons terlalu lama.\n\nHubungi penyedia hosting Anda untuk mendapatkan bantuan lebih lanjut.";
 
 /* Message of the alert when the site cannot be launched from store onboarding > launch store screen. */
 "Oops, some unexpected errors happened." = "Waduh, terjadi error tak terduga.";
@@ -5172,9 +5162,6 @@ This part is the link to the website, and forms part of a longer sentence which 
    Text field placeholder in Shipping Label Address Validation when specified country has no state */
 "Optional" = "Opsional";
 
-/* No comment provided by engineer. */
-"Optional Tracking Information" = "Informasi Pelacakan Opsional";
-
 /* Header of attributes section in Edit Product Attributes screen */
 "Options" = "Opsi-opsi";
 
@@ -5233,6 +5220,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Label for the the row showing the total cost of the order */
 "Order total" = "Total Pesanan";
+
+/* Text on the button title to see the order's receipt */
+"OrderDetailsDataSource.configureSeeReceipt.button.title" = "Lihat Tanda Terima";
+
+/* Notice that appears when no receipt can be retrieved upon tapping on 'See receipt' in the Order Details view. */
+"OrderDetailsViewModel.displayReceiptRetrievalErrorNotice.notice" = "Tidak dapat mengambil tanda terima.";
 
 /* Accessibility label for Ordered list button on formatting toolbar. */
 "Ordered List" = "Daftar Berurutan";
@@ -5445,7 +5438,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the Performance section on Coupons Details screen */
 "Performance" = "Performa";
 
-/* No comment provided by engineer. */
+/* Indicates a feature is part of the performance plan. */
 "Performance plan only" = "Hanya paket performa";
 
 /* Close Account button title - confirms and closes user's WordPress.com account. */
@@ -6062,6 +6055,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Subtitle for Contact Support */
 "Reach our happiness engineers who can help answer tough questions" = "Hubungi Happiness Engineer kami yang dapat membantu menjawab pertanyaan sulit";
+
+/* Action button title for a generic error on the connectivity tool */
+"Read More" = "Baca selengkapnya";
 
 /* Text for the button to navigate to troubleshooting tips from the store picker error screen */
 "Read our Troubleshooting Tips" = "Baca Tips Pemecahan Masalah kami";
@@ -7001,12 +6997,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Display label for simple product type. */
 "Simple" = "Sederhana";
-
-/* Action sheet option when the user wants to change the Product type to simple physical product */
-"Simple physical product" = "Produk fisik sederhana";
-
-/* Action sheet option when the user wants to change the Product type to simple virtual product */
-"Simple virtual product" = "Produk virtual sederhana";
 
 /* Country option for a site address. */
 "Singapore" = "Singapura";
@@ -8888,9 +8878,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Display label for variable subscription product type. */
 "Variable Subscription" = "Langganan Variabel";
 
-/* Action sheet option when the user wants to change the Product type to varible product */
-"Variable product" = "Produk variabel";
-
 /* Navigation bar title for variation. Parameters: %1$@ - Product variation ID */
 "Variation #%1$@" = "Variasi #%1$@";
 
@@ -9557,6 +9544,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Header text of the site's domain list in domain settings. */
 "Your site domains" = "Domain situs Anda";
 
+/* The title of the Error Loading Data banner when there is a Jetpack connection error */
+"Your site is taking a long time to respond" = "Situs tidak kunjung merespons";
+
 /* Title on the banner when the site's WooExpress plan has expired */
 "Your site plan has ended." = "Paket situs Anda sudah berakhir.";
 
@@ -9627,6 +9617,30 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for the charge taxes toggle in the custom amounts screen. */
 "addCustomAmountView.chargeTaxesToggle.title" = "Kenakan Pajak";
 
+/* Dismiss button on the alert asking to add an image for the Blaze campaign */
+"addProductWithAIActionSheet.manualOptionsTitle" = "Pilih jenis produk";
+
+/* Name for the Orders analytics card in the Customize Analytics screen */
+"analyticsHub.customize.orders" = "Pesanan";
+
+/* Name for the Products analytics card in the Customize Analytics screen */
+"analyticsHub.customize.products" = "Produk";
+
+/* Name for the Revenue analytics card in the Customize Analytics screen */
+"analyticsHub.customize.revenue" = "Pendapatan";
+
+/* Name for the Sessions analytics card in the Customize Analytics screen */
+"analyticsHub.customize.sessions" = "Sesi";
+
+/* Button to save changes on the Customize Analytics screen */
+"analyticsHub.customizeAnalytics.saveButton" = "Simpan";
+
+/* Title for the screen to customize the analytics cards in the Analytics Hub */
+"analyticsHub.customizeAnalytics.title" = "Sesuaikan Analitik";
+
+/* Label for button that opens a screen to customize the Analytics Hub */
+"analyticsHub.editButton.label" = "Edit";
+
 /* Label for button to enable Jetpack Stats */
 "analyticsHub.jetpackStatsCTA.buttonLabel" = "Aktifkan Jetpack Stats";
 
@@ -9638,6 +9652,18 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title for sessions section in the Analytics Hub */
 "analyticsHub.jetpackStatsCTA.title" = "SESI";
+
+/* Title for the orders analytics report linked in the Analytics Hub */
+"analyticsHub.orderCard.reportTitle" = "Laporan Pesanan";
+
+/* Title for the products analytics report linked in the Analytics Hub */
+"analyticsHub.productCard.reportTitle" = "Laporan Produk";
+
+/* Button label to show an analytics report in the Analytics Hub */
+"analyticsHub.reportCard.webReport" = "Lihat Laporan";
+
+/* Title for the revenue analytics report linked in the Analytics Hub */
+"analyticsHub.revenueCard.reportTitle" = "Laporan Pendapatan";
 
 /* Button to dismiss the alert asking for confirmation to switch store. */
 "appCoordinator.storeReadyAlert.cancelButton" = "Batal";
@@ -9822,6 +9848,16 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the celebration view when a Blaze campaign is successfully created. */
 "blazeCampaignCreationCoordinator.successTitle" = "Semua Siap!";
 
+/* Message on the Blaze campaign creation error screen. Keep '
+' as-is as it signals a line break. */
+"blazeCampaignCreationError.failedToCreateCampaign" = "Terjadi kesalahan.\nKami tidak bisa membuat kampanye Anda.";
+
+/* Message on the Blaze campaign creation error screen. */
+"blazeCampaignCreationError.failedToFetchCampaignImage" = "Gagal mengambil detail gambar kampanye.";
+
+/* Message on the Blaze campaign creation error screen. */
+"blazeCampaignCreationError.failedToUploadCampaignImage" = "Gagal mengunggah gambar kampanye.";
+
 /* Button to dismiss the flow on the Blaze campaign creation error screen. */
 "blazeCampaignCreationErrorView.cancel" = "Batalkan Kampanye";
 
@@ -9830,10 +9866,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Button to get support on the Blaze campaign creation error screen. */
 "blazeCampaignCreationErrorView.getSupport" = "Dapatkan dukungan";
-
-/* Message on the Blaze campaign creation error screen. Keep '
-' as-is as it signals a line break. */
-"blazeCampaignCreationErrorView.message" = "Terjadi kesalahan.\nKami tidak bisa membuat kampanye Anda.";
 
 /* Message on the Blaze campaign creation error screen. */
 "blazeCampaignCreationErrorView.noPaymentTaken" = "Belum ada pembayaran.";
@@ -9871,8 +9903,14 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the Devices field on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.devices" = "Perangkat";
 
+/* Button to dismiss the support form from the Blaze campaign form screen. */
+"blazeCampaignCreationForm.done" = "Selesai";
+
 /* Button to edit ad details on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.editAd" = "Edit iklan";
+
+/* Button to contact support on the Blaze campaign form screen. */
+"blazeCampaignCreationForm.help" = "Bantuan";
 
 /* Title of the Interests field on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.interests" = "Minat";
@@ -9934,8 +9972,14 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Item to be charged on the Payment screen in the Blaze campaign creation flow */
 "blazeConfirmPaymentView.blazeCampaign" = "Kampanye Blaze";
 
+/* Button to dismiss the support form from the Blaze confirm payment view screen. */
+"blazeConfirmPaymentView.done" = "Selesai";
+
 /* Error message displayed when fetching payment methods failed on the Payment screen in the Blaze campaign creation flow. */
 "blazeConfirmPaymentView.errorMessage" = "Terjadi error saat memuat metode pembayaran Anda";
+
+/* Button to contact support on the Blaze confirm payment view screen. */
+"blazeConfirmPaymentView.help" = "Bantuan";
 
 /* Link to guide for promoted posts on the Payment screen in the Blaze campaign creation flow. */
 "blazeConfirmPaymentView.learnMore" = "Baca selengkapnya";
@@ -10189,6 +10233,54 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Button to retry syncing data on the target topic picker for campaign creation */
 "blazeTargetTopicPickerView.tryAgain" = "Coba Lagi";
 
+/* Description of the Action sheet option when the user wants to change the Product type to external product */
+"bottomSheetProductType.affiliate.description" = "Tautkan produk ke situs eksternal";
+
+/* Action sheet option when the user wants to change the Product type to external product */
+"bottomSheetProductType.affiliate.title" = "Produk eksternal";
+
+/* Description of the Action sheet option when the user wants to create a product manually */
+"bottomSheetProductType.blank.description" = "Tambahkan produk secara manual";
+
+/* Action sheet option when the user wants to create a product manually */
+"bottomSheetProductType.blank.title" = "Kosong";
+
+/* Description of the Action sheet option when the user wants to change the Product type to grouped product */
+"bottomSheetProductType.grouped.description" = "Kumpulan produk terkait";
+
+/* Action sheet option when the user wants to change the Product type to grouped product */
+"bottomSheetProductType.grouped.title" = "Produk yang dikelompokkan";
+
+/* Description of the Action sheet option when the user wants to change the Product type to simple physical product */
+"bottomSheetProductType.simple.description" = "Produk fisik unik yang mungkin perlu dikirimkan kepada pelanggan";
+
+/* Action sheet option when the user wants to change the Product type to simple physical product */
+"bottomSheetProductType.simple.title" = "Produk fisik sederhana";
+
+/* Description of the Action sheet option when the user wants to change the Product type to simple virtual product */
+"bottomSheetProductType.simpleVirtual.description" = "Produk digital unik, seperti layanan atau buku, musik, dan video yang dapat diunduh";
+
+/* Action sheet option when the user wants to change the Product type to simple virtual product */
+"bottomSheetProductType.simpleVirtual.title" = "Produk virtual sederhana";
+
+/* Description of the Action sheet option when the user wants to change the Product type to Subscription product */
+"bottomSheetProductType.subscription.description" = "Langganan produk unik yang memungkinkan pembayaran berulang";
+
+/* Action sheet option when the user wants to change the Product type to Subscription product */
+"bottomSheetProductType.subscription.title" = "Produk langganan sederhana";
+
+/* Description of the Action sheet option when the user wants to change the Product type to variable product */
+"bottomSheetProductType.variable.description" = "Produk dengan variasi, seperti warna atau ukuran";
+
+/* Action sheet option when the user wants to change the Product type to varible product */
+"bottomSheetProductType.variable.title" = "Produk variabel";
+
+/* Action sheet option when the user wants to change the Product type to Variable subscription product */
+"bottomSheetProductType.variableSubscription.description" = "Langganan produk dengan variasi";
+
+/* Action sheet option when the user wants to change the Product type to Variable subscription product */
+"bottomSheetProductType.variableSubscription.title" = "Produk langganan variabel";
+
 /* Label for a cancel button */
 "cardPresent.builtIn.modalCheckingDeviceSupport.cancelButton" = "Batal";
 
@@ -10309,6 +10401,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility title for the edit button on a custom amount row. */
 "customAmount.edit.button.accessibilityLabel" = "Edit jumlah";
+
+/* Button in date range picker to add a Custom Range tab */
+"customRangeTabCreationCoordinator.add" = "Tambah";
 
 /* Display label for a product's subscription period when it is a single day. */
 "day" = "hari";
@@ -10452,6 +10547,15 @@ which should be translated separately and considered part of this sentence. */
 /* Later today */
 "later today" = "belakangan hari ini";
 
+/* A label prompting users to learn more about card readers.
+This part is the link to the website, and forms part of a longer sentence which it should be considered a part of. */
+"learnMore.link" = "Baca selengkapnya";
+
+/* A label prompting users to learn more about card readers"
+%1$@ is a placeholder that always replaced with \"Learn more\" string,
+which should be translated separately and considered part of this sentence. */
+"learnMore.text" = "%1$@ tentang menerima pembayaran dengan perangkat seluler dan memesan pembaca kartu";
+
 /* A hazardous material description stating when a package can fit into this category */
 "limited_quantity_category" = "Paket Jalur Darat Kuantitas Terbatas - Aerosol, disinfektan semprot, cat semprot, hair spray, propana, butana, produk-produk kebersihan, dll. - Parfum, cat kuku, pembersih cat kuku, pelarut, penyanitasi tangan, alkohol medis, produk-produk berbahan dasar etanol, dll. - Bahan-bahan jalur darat kuantitas terbatas lainnya (kosmetik, produk-produk kebersihan, cat, dll.)";
 
@@ -10550,6 +10654,12 @@ which should be translated separately and considered part of this sentence. */
 /* Header for the search result section on a a multiple selection list */
 "multipleSelectionList.searchResults" = "Hasil pencarian";
 
+/* Spoken label to indicate switch control is turned off. */
+"newNoteViewController.emailNoteSwitch.accessibilityLabel.off" = "Email catatan ke pelanggan Nonaktif";
+
+/* Spoken label to indicate switch control is turned on */
+"newNoteViewController.emailNoteSwitch.accessibilityLabel.on" = "Email catatan ke pelanggan Aktif";
+
 /* A error message when it's not possible toacquire the Analytics Hub previous selection range */
 "no previous period" = "tidak ada periode sebelumnya";
 
@@ -10583,14 +10693,68 @@ which should be translated separately and considered part of this sentence. */
 /* A 'Learn More' label text, which shows tax information upon being clicked. */
 "order.form.paymentSection.taxes.learnMore" = "Baca Selengkapnya.";
 
+/* Label for the row showing the shipping tax. */
+"order.form.paymentSection.taxes.shippingTax" = "Pajak Pengiriman";
+
 /* Title text of the button that adds shipping line when creating a new order */
 "order.form.shipping.add.button.title" = "Tambahkan Pengiriman";
+
+/* Origin in Order Attribution Section on Order Details screen. */
+"orderAttributionInfo.direct" = "Langsung";
+
+/* Origin in Order Attribution Section on Order Details screen. */
+"orderAttributionInfo.mobileApp" = "Aplikasi Seluler";
+
+/* Origin in Order Attribution Section on Order Details screen.The placeholder is the source.Reads like: Organic: woo.com */
+"orderAttributionInfo.organic" = "Organik: %1$@";
+
+/* Origin in Order Attribution Section on Order Details screen.The placeholder is the source.Reads like: Referral: woo.com */
+"orderAttributionInfo.referral" = "Referensi: %1$@";
+
+/* Origin in Order Attribution Section on Order Details screen.The placeholder is the source.Reads like: Source: woo.com */
+"orderAttributionInfo.source" = "Sumber: %1$@";
+
+/* Origin in Order Attribution Section on Order Details screen. */
+"orderAttributionInfo.unknown" = "Tidak diketahui";
+
+/* Origin in Order Attribution Section on Order Details screen. */
+"orderAttributionInfo.webAdmin" = "Admin web";
+
+/* Title for the row to add tracking information. */
+"orderDetails.addTrackingRow.title" = "Informasi Pelacakan Opsional";
 
 /* Custom Amount section title if there is more than one custom amount. */
 "orderDetails.customAmounts.section.pluralTitle" = "Jumlah Kustom";
 
 /* Subtitle of the custom amount row in order details */
 "orderDetails.customAmountsRow.subtitle" = "Jumlah Kustom";
+
+/* Title in Order Attribution Section on Order Details screen. */
+"orderDetailsDataSource.attributionInfo.campaign" = "Kampanye";
+
+/* Title in Order Attribution Section on Order Details screen. */
+"orderDetailsDataSource.attributionInfo.deviceType" = "Jenis perangkat";
+
+/* Title in Order Attribution Section on Order Details screen. */
+"orderDetailsDataSource.attributionInfo.medium" = "Sedang";
+
+/* Title of Order Attribution Section in Order Details screen. */
+"orderDetailsDataSource.attributionInfo.orderAttribution" = "Atribusi pesanan";
+
+/* Title in Order Attribution Section on Order Details screen. */
+"orderDetailsDataSource.attributionInfo.origin" = "Asal";
+
+/* Title in Order Attribution Section on Order Details screen. */
+"orderDetailsDataSource.attributionInfo.sessionPageViews" = "Kunjungan halaman sesi";
+
+/* Title in Order Attribution Section on Order Details screen. */
+"orderDetailsDataSource.attributionInfo.source" = "Sumber";
+
+/* Title in Order Attribution Section on Order Details screen. */
+"orderDetailsDataSource.attributionInfo.sourceType" = "Jenis sumber";
+
+/* Origin in Order Attribution Section on Order Details screen. */
+"orderDetailsDataSource.attributionInfo.unknown" = "Tidak diketahui";
 
 /* Title text of the section that shows the Custom Amounts when creating or editing an order */
 "orderForm.customAmounts" = "Jumlah Kustom";
@@ -10615,6 +10779,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility label for the barcode scanning button to add product */
 "orderForm.products.add.scan.button.accessibilityLabel" = "Pindai barcode";
+
+/* Title for the barcode scanning button to add a product to an order */
+"orderForm.products.add.scan.row.title" = "Pindai Produk";
 
 /* Label for the row showing the cost of coupon in the order */
 "orderPaymentSection.coupon" = "Kupon";
@@ -10666,18 +10833,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label shown on the launch store task. */
 "private" = "pribadi";
-
-/* Description of the Action sheet option when the user wants to change the Product type to Subscription product */
-"product.sheet.option.simpleSubscription.description" = "Langganan produk unik yang memungkinkan pembayaran berulang";
-
-/* Action sheet option when the user wants to change the Product type to Subscription product */
-"product.sheet.option.simpleSubscription.title" = "Produk langganan sederhana";
-
-/* Action sheet option when the user wants to change the Product type to Variable subscription product */
-"product.sheet.option.variableSubscription.description" = "Langganan produk dengan variasi";
-
-/* Action sheet option when the user wants to change the Product type to Variable subscription product */
-"product.sheet.option.variableSubscription.title" = "Produk langganan variabel";
 
 /* Description in Product Creation AI survey confirmation view. */
 "productCreationAISurveyConfirmationView.description" = "Boleh minta waktunya sebentar? Bantu kami memperbaiki fitur berbantuan AI dengan feedback cepat.";
@@ -10742,6 +10897,15 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the cell in Product Price Settings > Sign-up Fee */
 "productPriceSettingsViewModel.signupFeeTitle" = "Biaya Pendaftaran";
 
+/* Text on the header of the Select Product screen when more than one products are selected. */
+"productSelectorViewModel.selectProductsTitle.pluralProductSelectedFormattedText" = "%ld produk dipilih";
+
+/* Text on the header of the Select Product screen when no products are selected. */
+"productSelectorViewModel.selectProductsTitle.selectProductsTitle" = "Pilih produk";
+
+/* Text on the header of the Select Product screen when one product is selected. */
+"productSelectorViewModel.selectProductsTitle.singularProductSelectedFormattedText" = "%ld produk dipilih";
+
 /* Cancel button in the product downloadables alert */
 "productSettings.downloadableProductAlertCancel" = "Batal";
 
@@ -10763,17 +10927,32 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the One time shipping product shipping setting. */
 "productShippingSettings.oneTimeShipping.title" = "Pengiriman satu kali saja";
 
+/* Message on the secondary view of the products tab split view before any product is selected. */
+"productsTab.emptySecondaryView.message" = "Tidak ada produk yang dipilih";
+
+/* Title of the Products tab — plural form of Product */
+"productsTab.tabTitle" = "Produk";
+
 /* Format of the number of product ratings in plural form */
 "rated %ld times" = "dinilai %ld kali";
 
 /* Format of the number of product ratings in singular form */
 "rated once" = "dinilai sekali";
 
+/* The name of the job that appears in the 'Print Center' when printing a receiptReads as 'Woo: receipt for order #123' */
+"receiptViewModel.formattedReceiptJobName.receiptJobName" = "%1$@: tanda terima untuk pesanan #%2$@";
+
+/* The name of the job that appears in the 'Print Center' when printing a receiptReads as 'Woo: receipt for order #123 on MyStoreName' */
+"receiptViewModel.formattedReceiptJobName.receiptJobNameWithStoreName" = "%1$@: tanda terima untuk pesanan #%2$@ di %3$@";
+
 /* Title on the refund screen that lists the custom amounts total cost */
 "refundCustomAmountsDetails.totalTitle" = "Pengembalian Dana Sebesar Jumlah Kustom";
 
 /* Title of the switch in the IssueRefund screen to refund customAmounts */
 "refundIssue.customAmounts.title" = "Kembalikan Dana Sebesar Jumlah Kustom";
+
+/* The title for the cancel button in the search screen. */
+"searchViewController.cancelButton.tilet" = "Batal";
 
 /* Settings > Set up Tap to Pay on iPhone > Try a Payment > After trying a payments, the merchant is shown an order confirmation screen, showing their payment was successful and allowing them to refund themselves. This is the navigation bar title for that screen. */
 "setUpTapToPayPaymentPromptView.paymentComplete.navigation.title" = "Pembayaran Selesai";
@@ -10787,6 +10966,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Cancel button title for the Shipping Label purchase flow, shown in the nav bar */
 "shipping.label.navigationBar.cancel.button.title" = "Batal";
+
+/* Tab selector title that shows the statistics for today */
+"statsTimeRangeV4.tabTitle.custom" = "Rentang Kustom";
 
 /* Widget description, displayed when selecting which widget to add */
 "storeWidgets.description" = "Statistik WooCommerce Hari Ini";
@@ -11043,6 +11225,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Placeholder text shown when loading media for the WordPress Media Library */
 "wordpressMediaLibraryPickerViewController.emptyContent.loading" = "Memuat media...";
+
+/* Message to show when a request for a WP.com API endpoint is throttled */
+"wordpresskit.api.message.endpoint_throttled" = "Sudah mencapai batas. Anda dapat mencoba lagi setelah 1 menit. Mencoba lagi sebelum waktu yang ditentukan hanya akan menambah waktu tunggu sebelum pemblokiran dicabut. Jika Anda merasa bahwa ini adalah kesalahan, hubungi pusat bantuan kami.";
 
 /* Button to enter security key on the WPCom 2FA login screen */
 "wpCom2FALoginView.securityKeyButton" = "Gunakan kunci keamanan";

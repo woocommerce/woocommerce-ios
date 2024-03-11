@@ -14,7 +14,7 @@ inhibit_all_warnings!
 use_frameworks! # Defaulting to use_frameworks! See pre_install hook below for static linking.
 use_modular_headers!
 
-app_ios_deployment_target = Gem::Version.new('15.0')
+app_ios_deployment_target = Gem::Version.new('16.0')
 
 platform :ios, app_ios_deployment_target.version
 workspace 'WooCommerce.xcworkspace'
@@ -23,9 +23,9 @@ workspace 'WooCommerce.xcworkspace'
 ## =====================================
 ##
 def aztec
-  # pod 'WordPress-Editor-iOS', '~> 1.19.9'
-  pod 'WordPress-Editor-iOS', git: 'https://github.com/wordpress-mobile/AztecEditor-iOS.git', commit: '950c7bc1bf98326986f10cccb2715ad86976f0fd'
-  pod 'WordPress-Aztec-iOS', git: 'https://github.com/wordpress-mobile/AztecEditor-iOS.git', commit: '950c7bc1bf98326986f10cccb2715ad86976f0fd'
+  pod 'WordPress-Editor-iOS', '~> 1.19'
+  # pod 'WordPress-Editor-iOS', git: 'https://github.com/wordpress-mobile/AztecEditor-iOS.git', commit: ''
+  # pod 'WordPress-Aztec-iOS', git: 'https://github.com/wordpress-mobile/AztecEditor-iOS.git', commit: ''
 end
 
 def tracks
@@ -85,22 +85,24 @@ target 'WooCommerce' do
   pod 'Gridicons', '~> 1.2.0'
 
   # To allow pod to pick up beta versions use -beta. E.g., 1.1.7-beta.1
-  # pod 'WordPressAuthenticator', '~> 9.0'
+  pod 'WordPressAuthenticator', '~> 9.0'
   # pod 'WordPressAuthenticator', git: 'https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git', branch: ''
-  pod 'WordPressAuthenticator', git: 'https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git', commit: 'fa06fca7178b268d382d91861752b3be0729e8a8'
+  # pod 'WordPressAuthenticator', git: 'https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git', commit: ''
   # pod 'WordPressAuthenticator', path: '../WordPressAuthenticator-iOS'
-  pod 'WordPressKit', git: 'https://github.com/wordpress-mobile/WordPressKit-iOS.git', commit: 'b5c2bd39ec8f478dd53ecb7533ad025aad48f42e'
+
+  pod 'WordPressKit', '~> 13.1'
+  # pod 'WordPressKit', git: 'https://github.com/wordpress-mobile/WordPressKit-iOS.git', commit: ''
 
   wordpress_shared
 
-  # pod 'WordPressUI', '~> 1.13'
+  pod 'WordPressUI', '~> 1.15'
   # pod 'WordPressUI', :git => 'https://github.com/wordpress-mobile/WordPressUI-iOS.git', :branch => ''
-  pod 'WordPressUI', git: 'https://github.com/wordpress-mobile/WordPressUI-iOS.git', commit: 'a0248ba6dabaed1d493416fd1273aa6718c76331'
+  # pod 'WordPressUI', git: 'https://github.com/wordpress-mobile/WordPressUI-iOS.git', commit: ''
 
   aztec
 
-  # pod 'WPMediaPicker', '~> 1.8.1'
-  pod 'WPMediaPicker', git: 'https://github.com/wordpress-mobile/MediaPicker-iOS.git', commit: '1dfb9cbbfbd60597befc057087f3e22ef571be5d'
+  pod 'WPMediaPicker', '~> 1.8'
+  # pod 'WPMediaPicker', git: 'https://github.com/wordpress-mobile/MediaPicker-iOS.git', commit: ''
 
   # External Libraries
   # ==================
@@ -288,6 +290,19 @@ target 'ExperimentsTests' do
   experiments_pods
 end
 
+# Tools
+# ==========
+#
+def swiftlint_version
+  require 'yaml'
+
+  YAML.load_file('.swiftlint.yml')['swiftlint_version']
+end
+
+abstract_target 'Tools' do
+  pod 'SwiftLint', swiftlint_version
+end
+
 # Workarounds:
 # ============
 #
@@ -385,4 +400,8 @@ post_install do |installer|
     end
   end
   # rubocop:enable Style/CombinableLoops
+
+  yellow_marker = "\033[33m"
+  reset_marker = "\033[0m"
+  puts "#{yellow_marker}The abstract target warning below is expected. Feel free to ignore it.#{reset_marker}"
 end

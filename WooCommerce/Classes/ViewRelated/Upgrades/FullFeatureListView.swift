@@ -77,11 +77,11 @@ private extension FullFeatureListView {
 
         static let performanceOnlyText = NSLocalizedString(
             "Performance plan only",
-            comment: "")
+            comment: "Indicates a feature is part of the performance plan.")
 
         static let paymentsDisclaimerText = NSLocalizedString(
             "1. Available as standard in WooCommerce Payments (restrictions apply)." +
-            "Additional extensions may be required for other payment providers." ,
+            "Additional extensions may be required for other payment providers.",
             comment: "Disclaimer regarding some of the features related to payments.")
 
         static let pluginsDisclaimerText = NSLocalizedString(

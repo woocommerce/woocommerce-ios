@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-02-02 15:01:59+0000 */
+/* Translation-Revision-Date: 2024-02-28 09:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: nl */
@@ -47,11 +47,6 @@
 %1$@ is a placeholder that always replaced with \"Learn more\" string,
 which should be translated separately and considered part of this sentence. */
 "%1$@ about accepting payments with Tap to Pay on iPhone." = "%1$@ over betalingen accepteren met Tap to Pay op iPhone.";
-
-/* A label prompting users to learn more about card readers"
-%1$@ is a placeholder that always replaced with \"Learn more\" string,
-which should be translated separately and considered part of this sentence. */
-"%1$@ about accepting payments with your mobile device and ordering card readers" = "%1$@ over het aannemen van betalingen met je mobiele apparaat en het bestellen van kaartlezers";
 
 /* A label prompting users to learn more about card readers. %1$@ is a placeholder that is always replaced with \"Learn more\" string, which should be translated separately and considered part of this sentence. */
 "%1$@ about accepting payments with your mobile device and ordering card readers." = "%1$@ over het aannemen van betalingen met je mobiele apparaat en het bestellen van kaartlezers.";
@@ -337,9 +332,6 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle of the product form bottom sheet action for editing short description. */
 "A brief excerpt about your product" = "Een korte samenvatting van je product.";
 
-/* Description of the Action sheet option when the user wants to change the Product type to grouped product */
-"A collection of related products" = "Een verzameling gerelateerde producten";
-
 /* Main message on the Print Customs Invoice screen of Shipping Label flow */
 "A customs form must be printed and included on this international shipment" = "Er moet een douaneformulier worden afgedrukt en worden bijgevoegd bij deze internationale verzending";
 
@@ -352,17 +344,8 @@ which should be translated separately and considered part of this sentence. */
 /* Error shown in Shipping Label Origin Address validation for phone number field */
 "A phone number is required" = "Een telefoonnummer is vereist";
 
-/* Description of the Action sheet option when the user wants to change the Product type to variable product */
-"A product with variations like color or size" = "Een product met variaties zoals kleur of maat";
-
 /* Message explaining that the site may have an invalid SSL certificate. */
 "A secure connection to the site could not be made. Please make sure that your site has a valid SSL certificate." = "Er kon geen beveiligde verbinding met de site tot stand worden gebracht. Zorg ervoor dat je site over een geldig SSL-certificaat beschikt.";
-
-/* Description of the Action sheet option when the user wants to change the Product type to simple virtual product */
-"A unique digital product like services, downloadable books, music or videos" = "Een unieke digitaal product zoals services, downloadbare boeken, muziek of video's";
-
-/* Description of the Action sheet option when the user wants to change the Product type to simple physical product */
-"A unique physical product that you may have to ship to the customer" = "Een uniek fysiek product dat je wellicht naar de klant moet verzenden";
 
 /* An error message. */
 "A valid email address is needed to mail an authentication link. Please return to the previous screen and provide a valid email address." = "Er is een geldig e-mailadres vereist om een verificatielink te mailen. Ga terug naar het vorige scherm en voer een geldig e-mailadres in.";
@@ -573,9 +556,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Cell text in Add / Edit product when there are no images. */
 "Add a product image" = "Voeg een productafbeelding toe";
-
-/* Description of the Action sheet option when the user wants to create a product manually */
-"Add a product manually" = "Handmatig een productafbeelding toevoegen";
 
 /* Description for the option to create product manually */
 "Add a product manually." = "Voeg handmatig een productafbeelding toe.";
@@ -1164,9 +1144,6 @@ which should be translated separately and considered part of this sentence. */
 /* Billing Information view Title */
 "Billing Information" = "Factuurgegevens";
 
-/* Action sheet option when the user wants to create a product manually */
-"Blank" = "Leeg";
-
 /* Title of the hub menu Blaze button */
 "Blaze" = "Blaze";
 
@@ -1369,6 +1346,7 @@ which should be translated separately and considered part of this sentence. */
    Button to dismiss the alert presented while the reader is being prepared.
    Button to dismiss the country search view in the store creation profiler
    Button to dismiss the error modal when a user without admin role tries to install Jetpack
+   Button to dismiss the screen
    Button to dismiss the site credential login screen
    Button to dismiss the store creation profiler flow
    Button to dismiss the store name screen
@@ -1888,6 +1866,9 @@ which should be translated separately and considered part of this sentence. */
 /* No comment provided by engineer. */
 "Connecting to WordPress.com" = "Verbinden met WordPress.com";
 
+/* Title for the WPCom servers connectivity tool card */
+"Connecting to WordPress.com Servers" = "Er wordt verbinding gemaakt met de servers van WordPress.com";
+
 /* Title of alert for suggestion on how to connect to a WP.com sitePresented when a user logs in with an email that does not have access to a WP.com site */
 "Connecting to a WordPress.com site" = "Verbinden met een WordPress.com site";
 
@@ -1900,8 +1881,14 @@ which should be translated separately and considered part of this sentence. */
 /* Title when checking if WooCommerce Payments is supported */
 "Connecting to your account" = "Je account koppelen";
 
+/* Title for the Your Site connectivity tool card */
+"Connecting to your site" = "Er wordt verbinding gemaakt met je site";
+
 /* Name of the step to connect the store to Jetpack */
 "Connecting your store" = "Je winkel koppelen";
+
+/* Screen title for the connectivity tool */
+"Connectivity Test" = "Connectiviteitstest";
 
 /* Contact Customer action in Shipping Label Address Validation. */
 "Contact Customer" = "Contact opnemen met klant";
@@ -1915,6 +1902,7 @@ which should be translated separately and considered part of this sentence. */
 /* Action button to contact support when Jetpack install fails
    Button to contact support for login
    Close Account error alert button title - navigates the user to contact support.
+   Contact support button in the connectivity tool screen
    Contact Support title
    Text for the button to contact support from the store picker error screen
    Title of the button to contact support for help accessing a store after Jetpack setup
@@ -2226,7 +2214,8 @@ which should be translated separately and considered part of this sentence. */
 "Currently creation is supported for 100 variations maximum. Generating variations for this product would create %d variations." = "Aanmaken wordt momenteel ondersteund voor maximaal 100 variaties. Het genereren van variaties voor dit product leidt tot het aanmaken van %d variaties.";
 
 /* Name of the section for custom shipment tracking carriers
-   Title of the Analytics Hub Custom selection range */
+   Title of the Analytics Hub Custom selection range
+   Top Performers section title - Custom */
 "Custom" = "Aangepast";
 
 /* Navigation title on the add custom amount view in orders.
@@ -2773,9 +2762,6 @@ which should be translated separately and considered part of this sentence. */
 /* Label for yes/no switch - emailing the note to customer. */
 "Email note to customer" = "E-mailbericht aan klant";
 
-/* No comment provided by engineer. */
-"Email note to customer %@" = "E-mailbericht aan klant %@";
-
 /* Button to email receipts. Presented to users after a payment has been successfully collected */
 "Email receipt" = "E-mailontvangst";
 
@@ -3145,9 +3131,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title text in the store creation loading screen */
 "Extending store's capabilities" = "Winkelmogelijkheden uitbreiden";
 
-/* Action sheet option when the user wants to change the Product type to external product */
-"External product" = "Extern product";
-
 /* Display label for affiliate product type. */
 "External\/Affiliate" = "Extern\/affiliate";
 
@@ -3213,6 +3196,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Blocking indicator text when fetching existing variations prior generating them. */
 "Fetching Variations..." = "Variaties ophalen...";
+
+/* Title for the Your Site Orders connectivity tool card */
+"Fetching your site orders" = "De bestellingen van je site worden opgehaald";
 
 /* Country option for a site address. */
 "Fiji" = "Fiji";
@@ -3538,9 +3524,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Navigation bar title for editing linked products for a grouped product */
 "Grouped Products" = "Gegroepeerd product";
-
-/* Action sheet option when the user wants to change the Product type to grouped product */
-"Grouped product" = "Gegroepeerd product";
 
 /* Title for editing grouped products row on Product main screen for a grouped product */
 "Grouped products" = "Gegroepeerde producten";
@@ -3958,6 +3941,9 @@ which should be translated separately and considered part of this sentence. */
 /* No comment provided by engineer. */
 "International payments'" = "Internationale betalingen";
 
+/* Title for the internet connection connectivity tool card */
+"Internet Connection" = "Internetverbinding";
+
 /* Title of an alert letting the user know the email address that they've entered isn't valid */
 "Invalid Email Address" = "Ongeldig e-mailadres";
 
@@ -4048,6 +4034,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Message on enable analytics screen to notify that the module is disabled for the store */
 "It looks like you have analytics disabled." = "Het lijkt erop dat je analyses hebt uitgeschakeld.";
+
+/* Message when there is no internet connection in the recovery tool */
+"It looks like you're not connected to the internet.\n\nEnsure your Wi-Fi is turned on. If you're using mobile data, make sure it's enabled in your device settings." = "Het lijkt erop dat je niet bent verbonden met het internet.\n\nZorg ervoor dat je wifi aan staat. Als je mobiele data gebruikt, zorg er dan voor dat deze is ingeschakeld in de instellingen van je apparaat.";
 
 /* Message on the error modal when a user without admin role tries to install Jetpack */
 "It looks like your user role doesn't allow you to install Jetpack.\nPlease contact your administrator for help." = "Het lijkt erop dat je gebruikersrol niet gemachtigd is om Jetpack te installeren.\nNeem contact op met je beheerder voor ondersteuning.";
@@ -4198,9 +4187,7 @@ which should be translated separately and considered part of this sentence. */
 /* Instructions for hazardous package shipping. The %1$@ is a tappable linkthat will direct the user to a website */
 "Learn how to securely package, label, and ship HAZMAT through USPS® at %1$@." = "Ontdek hoe je gevaarlijke goederen via USPS® kunt verpakken, labelen en verzenden op %1$@.";
 
-/* A label prompting users to learn more about card readers.
-This part is the link to the website, and forms part of a longer sentence which it should be considered a part of.
-   Button title in the shipping label creation info screen
+/* Button title in the shipping label creation info screen
    Button to open the legal page for AI-generated contents on the product sharing message generation screen
    Label for the banner Learn more button
    Tappable text at the bottom of store onboarding payments setup screen that opens a webview.
@@ -4286,9 +4273,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the cell in Product Inventory Settings > Limit one per order */
 "Limit one per order" = "Beperkt tot één per bestelling";
 
-/* Message to show when a request for a WP.com API endpoint is throttled */
-"Limit reached. You can try again in 1 minute. Trying again before that will only increase the time you have to wait before the ban is lifted. If you think this is in error, contact support." = "Limiet bereikt. Je kan het na 1 minuut nogmaals proberen. Als je het eerder probeert dan zul je langer moeten wachten totdat de ban wordt opgeheven. Neem contact op met de helpdesk wanneer je denk dat dit niet klopt.";
-
 /* The required number of items in the cart to apply a coupon in singular form, reads like: Limited to 1 item in cart */
 "Limited to %1$d item in cart" = "Beperkt tot %1$d artikel in winkelwagen";
 
@@ -4301,9 +4285,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Label for the text of a link in the editor
    Navigation bar title for editing the text of a text link */
 "Link Text" = "Linktekst";
-
-/* Description of the Action sheet option when the user wants to change the Product type to external product */
-"Link a product to an external website" = "Koppel een product aan een externe website";
 
 /* Linked Products Settings navigation title */
 "Linked Products" = "Gekoppelde producten";
@@ -5064,9 +5045,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for order analytics section in the Analytics Hub */
 "ORDERS" = "BESTELLINGEN";
 
-/* Spoken label to indicate switch control is turned off. */
-"Off" = "Uit";
-
 /* Accessibility announcement message when device goes offline
    Message for offline banner */
 "Offline - using cached data" = "Offline - met gecachete gegevens";
@@ -5085,9 +5063,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Country option for a site address. */
 "Oman" = "Oman";
-
-/* Spoken label to indicate switch control is turned on */
-"On" = "Aan";
 
 /* Display label for the subscription status type */
 "On Hold" = "In de wacht";
@@ -5108,8 +5083,23 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Content of the banner notice on the Payment Method screen when user does not have permission to change the payment method. %1$@ is a placeholder for the store owner's name. %2$@ is a placeholder for the store owner's username. */
 "Only the site owner can manage the shipping label payment methods. Please contact %1$@ (%2$@) to manage payment methods." = "Only the site owner can manage the shipping label payment methods. Please contact %1$@ (%2$@) to manage payment methods.\" = \"Alleen de site-eigenaar kan de betalingsmethoden voor verzendlabels beheren. Neem contact op met %1$@ (%2$@) om betalingsmethoden te beheren.";
 
+/* Message when we can't reach WPCom in the recovery tool */
+"Oops! It seems we can't connect to WordPress.com at the moment.\n\nBut don't worry, our support team is here to help. Contact us and we will happily assist you." = "Oeps! Het lijkt erop dat we op dit moment geen verbinding kunnen maken met WordPress.com.\n\nGeen zorgen, ons ondersteuningsteam staat klaar om te helpen. Neem contact met ons op, dan helpen we je graag verder.";
+
+/* Message when we there is a decoding error in the recovery tool */
+"Oops! It seems we can't work properly with your site's response.\n\nBut don't worry, our support team is here to help. Contact us and we will happily assist you." = "Oeps! De reactie van je site zorgt ervoor dat we niet goed kunnen werken.\n\nGeen zorgen, ons ondersteuningsteam staat klaar om te helpen. Neem contact met ons op, dan helpen we je graag verder.";
+
+/* Message when we there is a jetpack error in the recovery tool */
+"Oops! There seems to be a problem with your jetpack connection.\n\nBut don't worry, our support team is here to help. Contact us and we will happily assist you." = "Oeps! Er lijkt een probleem te zijn met je Jetpack-verbinding.\n\nGeen zorgen, ons ondersteuningsteam staat klaar om te helpen. Neem contact met ons op, dan helpen we je graag verder.";
+
+/* Message when we there is a generic error in the recovery tool */
+"Oops! There seems to be a problem with your site.\n\nContact your hosting provider for further assistance." = "Oeps! Er lijkt een probleem te zijn met je site.\n\nNeem contact op met je hostingprovider voor meer hulp.";
+
 /* Title of the alert when the store cannot be created in the store creation flow. */
 "Oops! We've hit a snag" = "Oeps! Er is een fout opgetreden";
+
+/* Message when we there is a timeout error in the recovery tool */
+"Oops! Your site seems to be taking too long to respond.\n\nContact your hosting provider for further assistance." = "Oeps! Je site doet er te lang over om te reageren.\n\nNeem contact op met je hostingprovider voor meer hulp.";
 
 /* Message of the alert when the site cannot be launched from store onboarding > launch store screen. */
 "Oops, some unexpected errors happened." = "Oeps, er zijn onverwachte fouten opgetreden.";
@@ -5172,9 +5162,6 @@ This part is the link to the website, and forms part of a longer sentence which 
    Text field placeholder in Shipping Label Address Validation when specified country has no state */
 "Optional" = "Optioneel";
 
-/* No comment provided by engineer. */
-"Optional Tracking Information" = "Optionele tracking-informatie";
-
 /* Header of attributes section in Edit Product Attributes screen */
 "Options" = "Opties";
 
@@ -5233,6 +5220,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Label for the the row showing the total cost of the order */
 "Order total" = "Totaalaantal bestellingen";
+
+/* Text on the button title to see the order's receipt */
+"OrderDetailsDataSource.configureSeeReceipt.button.title" = "Bekijk kwitantie";
+
+/* Notice that appears when no receipt can be retrieved upon tapping on 'See receipt' in the Order Details view. */
+"OrderDetailsViewModel.displayReceiptRetrievalErrorNotice.notice" = "Kan kwitantie niet ophalen.";
 
 /* Accessibility label for Ordered list button on formatting toolbar. */
 "Ordered List" = "Geordende lijst";
@@ -5445,7 +5438,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the Performance section on Coupons Details screen */
 "Performance" = "Prestatie";
 
-/* No comment provided by engineer. */
+/* Indicates a feature is part of the performance plan. */
 "Performance plan only" = "Alleen met het Prestatie-abonnement";
 
 /* Close Account button title - confirms and closes user's WordPress.com account. */
@@ -6062,6 +6055,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Subtitle for Contact Support */
 "Reach our happiness engineers who can help answer tough questions" = "Neem contact op met onze Happiness Engineers, die alle lastige vragen kunnen beantwoorden";
+
+/* Action button title for a generic error on the connectivity tool */
+"Read More" = "Meer informatie";
 
 /* Text for the button to navigate to troubleshooting tips from the store picker error screen */
 "Read our Troubleshooting Tips" = "Bekijk onze tips voor probleemoplossing";
@@ -7001,12 +6997,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Display label for simple product type. */
 "Simple" = "Simpel";
-
-/* Action sheet option when the user wants to change the Product type to simple physical product */
-"Simple physical product" = "Eenvoudig fysiek product";
-
-/* Action sheet option when the user wants to change the Product type to simple virtual product */
-"Simple virtual product" = "Eenvoudig virtueel product";
 
 /* Country option for a site address. */
 "Singapore" = "Singapore";
@@ -8888,9 +8878,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Display label for variable subscription product type. */
 "Variable Subscription" = "Variabel abonnement";
 
-/* Action sheet option when the user wants to change the Product type to varible product */
-"Variable product" = "Variabel product";
-
 /* Navigation bar title for variation. Parameters: %1$@ - Product variation ID */
 "Variation #%1$@" = "Variatie #%1$@";
 
@@ -9557,6 +9544,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Header text of the site's domain list in domain settings. */
 "Your site domains" = "Je sitedomeinen";
 
+/* The title of the Error Loading Data banner when there is a Jetpack connection error */
+"Your site is taking a long time to respond" = "Het duurt lang voordat je site reageert";
+
 /* Title on the banner when the site's WooExpress plan has expired */
 "Your site plan has ended." = "Je site-abonnement is beëindigd.";
 
@@ -9609,6 +9599,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Markdown content learn more link on the product creation action sheet. Please translate the words while keeping the markdown format and URL. */
 "[Learn more.](https:\/\/automattic.com\/ai-guidelines\/)" = "[Meer informatie.](https:\/\/automattic.com\/ai-guidelines\/)";
 
+/* Button title to delete the custom amount on the edit custom amount view in orders. */
+"addCustomAmount.deleteButton" = "Aangepast bedrag verwijderen";
+
 /* Button title to confirm the custom amount on the add custom amount view in orders. */
 "addCustomAmount.doneButton" = "Aangepast bedrag toevoegen";
 
@@ -9624,6 +9617,30 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for the charge taxes toggle in the custom amounts screen. */
 "addCustomAmountView.chargeTaxesToggle.title" = "Btw rekenen";
 
+/* Dismiss button on the alert asking to add an image for the Blaze campaign */
+"addProductWithAIActionSheet.manualOptionsTitle" = "Selecteer een producttype";
+
+/* Name for the Orders analytics card in the Customize Analytics screen */
+"analyticsHub.customize.orders" = "Bestellingen";
+
+/* Name for the Products analytics card in the Customize Analytics screen */
+"analyticsHub.customize.products" = "Producten";
+
+/* Name for the Revenue analytics card in the Customize Analytics screen */
+"analyticsHub.customize.revenue" = "Inkomsten";
+
+/* Name for the Sessions analytics card in the Customize Analytics screen */
+"analyticsHub.customize.sessions" = "Sessies";
+
+/* Button to save changes on the Customize Analytics screen */
+"analyticsHub.customizeAnalytics.saveButton" = "Opslaan";
+
+/* Title for the screen to customize the analytics cards in the Analytics Hub */
+"analyticsHub.customizeAnalytics.title" = "Analyses aanpassen";
+
+/* Label for button that opens a screen to customize the Analytics Hub */
+"analyticsHub.editButton.label" = "Bewerken";
+
 /* Label for button to enable Jetpack Stats */
 "analyticsHub.jetpackStatsCTA.buttonLabel" = "Schakel Jetpack-statistieken in";
 
@@ -9635,6 +9652,18 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title for sessions section in the Analytics Hub */
 "analyticsHub.jetpackStatsCTA.title" = "SESSIES";
+
+/* Title for the orders analytics report linked in the Analytics Hub */
+"analyticsHub.orderCard.reportTitle" = "Bestellingenrapport";
+
+/* Title for the products analytics report linked in the Analytics Hub */
+"analyticsHub.productCard.reportTitle" = "Productenrapport";
+
+/* Button label to show an analytics report in the Analytics Hub */
+"analyticsHub.reportCard.webReport" = "Rapport inzien";
+
+/* Title for the revenue analytics report linked in the Analytics Hub */
+"analyticsHub.revenueCard.reportTitle" = "Omzetrapport";
 
 /* Button to dismiss the alert asking for confirmation to switch store. */
 "appCoordinator.storeReadyAlert.cancelButton" = "Annuleren";
@@ -9819,6 +9848,16 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the celebration view when a Blaze campaign is successfully created. */
 "blazeCampaignCreationCoordinator.successTitle" = "Klaar voor de start!";
 
+/* Message on the Blaze campaign creation error screen. Keep '
+' as-is as it signals a line break. */
+"blazeCampaignCreationError.failedToCreateCampaign" = "Er klopt iets niet helemaal.\nWe kunnen je campagne niet aanmaken.";
+
+/* Message on the Blaze campaign creation error screen. */
+"blazeCampaignCreationError.failedToFetchCampaignImage" = "Ophalen van gegevens campagneafbeelding mislukt.";
+
+/* Message on the Blaze campaign creation error screen. */
+"blazeCampaignCreationError.failedToUploadCampaignImage" = "Uploaden van campagneafbeelding mislukt.";
+
 /* Button to dismiss the flow on the Blaze campaign creation error screen. */
 "blazeCampaignCreationErrorView.cancel" = "Campagne annuleren";
 
@@ -9827,10 +9866,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Button to get support on the Blaze campaign creation error screen. */
 "blazeCampaignCreationErrorView.getSupport" = "Vraag om hulp";
-
-/* Message on the Blaze campaign creation error screen. Keep '
-' as-is as it signals a line break. */
-"blazeCampaignCreationErrorView.message" = "Er klopt iets niet helemaal.\nWe konden je campagne niet maken.";
 
 /* Message on the Blaze campaign creation error screen. */
 "blazeCampaignCreationErrorView.noPaymentTaken" = "Er is geen betaling uitgevoerd.";
@@ -9868,8 +9903,14 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the Devices field on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.devices" = "Apparaten";
 
+/* Button to dismiss the support form from the Blaze campaign form screen. */
+"blazeCampaignCreationForm.done" = "Gereed";
+
 /* Button to edit ad details on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.editAd" = "Advertentie bewerken";
+
+/* Button to contact support on the Blaze campaign form screen. */
+"blazeCampaignCreationForm.help" = "Help";
 
 /* Title of the Interests field on the Blaze campaign creation screen */
 "blazeCampaignCreationForm.interests" = "Interesses";
@@ -9931,8 +9972,14 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Item to be charged on the Payment screen in the Blaze campaign creation flow */
 "blazeConfirmPaymentView.blazeCampaign" = "Blaze-campagne";
 
+/* Button to dismiss the support form from the Blaze confirm payment view screen. */
+"blazeConfirmPaymentView.done" = "Gereed";
+
 /* Error message displayed when fetching payment methods failed on the Payment screen in the Blaze campaign creation flow. */
 "blazeConfirmPaymentView.errorMessage" = "Fout bij het laden van je betaalmethodes";
+
+/* Button to contact support on the Blaze confirm payment view screen. */
+"blazeConfirmPaymentView.help" = "Help";
 
 /* Link to guide for promoted posts on the Payment screen in the Blaze campaign creation flow. */
 "blazeConfirmPaymentView.learnMore" = "Meer informatie";
@@ -10186,6 +10233,54 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Button to retry syncing data on the target topic picker for campaign creation */
 "blazeTargetTopicPickerView.tryAgain" = "Probeer opnieuw";
 
+/* Description of the Action sheet option when the user wants to change the Product type to external product */
+"bottomSheetProductType.affiliate.description" = "Koppel een product aan een externe website";
+
+/* Action sheet option when the user wants to change the Product type to external product */
+"bottomSheetProductType.affiliate.title" = "Extern product";
+
+/* Description of the Action sheet option when the user wants to create a product manually */
+"bottomSheetProductType.blank.description" = "Handmatig een productafbeelding toevoegen";
+
+/* Action sheet option when the user wants to create a product manually */
+"bottomSheetProductType.blank.title" = "Leeg";
+
+/* Description of the Action sheet option when the user wants to change the Product type to grouped product */
+"bottomSheetProductType.grouped.description" = "Een verzameling gerelateerde producten";
+
+/* Action sheet option when the user wants to change the Product type to grouped product */
+"bottomSheetProductType.grouped.title" = "Gegroepeerd product";
+
+/* Description of the Action sheet option when the user wants to change the Product type to simple physical product */
+"bottomSheetProductType.simple.description" = "Een uniek fysiek product dat je wellicht naar de klant moet verzenden";
+
+/* Action sheet option when the user wants to change the Product type to simple physical product */
+"bottomSheetProductType.simple.title" = "Eenvoudig fysiek product";
+
+/* Description of the Action sheet option when the user wants to change the Product type to simple virtual product */
+"bottomSheetProductType.simpleVirtual.description" = "Een uniek digitaal product zoals services, downloadbare boeken, muziek of video's";
+
+/* Action sheet option when the user wants to change the Product type to simple virtual product */
+"bottomSheetProductType.simpleVirtual.title" = "Eenvoudig virtueel product";
+
+/* Description of the Action sheet option when the user wants to change the Product type to Subscription product */
+"bottomSheetProductType.subscription.description" = "Een uniek productabonnement waarbij herhaaldelijke betalingen zijn ingeschakeld";
+
+/* Action sheet option when the user wants to change the Product type to Subscription product */
+"bottomSheetProductType.subscription.title" = "Eenvoudig productabonnement";
+
+/* Description of the Action sheet option when the user wants to change the Product type to variable product */
+"bottomSheetProductType.variable.description" = "Een product met variaties zoals kleur of maat";
+
+/* Action sheet option when the user wants to change the Product type to varible product */
+"bottomSheetProductType.variable.title" = "Variabel product";
+
+/* Action sheet option when the user wants to change the Product type to Variable subscription product */
+"bottomSheetProductType.variableSubscription.description" = "Een productabonnement met variaties";
+
+/* Action sheet option when the user wants to change the Product type to Variable subscription product */
+"bottomSheetProductType.variableSubscription.title" = "Variabel productabonnement";
+
 /* Label for a cancel button */
 "cardPresent.builtIn.modalCheckingDeviceSupport.cancelButton" = "Annuleren";
 
@@ -10306,6 +10401,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility title for the edit button on a custom amount row. */
 "customAmount.edit.button.accessibilityLabel" = "Bedrag bewerken";
+
+/* Button in date range picker to add a Custom Range tab */
+"customRangeTabCreationCoordinator.add" = "Toevoegen";
 
 /* Display label for a product's subscription period when it is a single day. */
 "day" = "dag";
@@ -10449,6 +10547,15 @@ which should be translated separately and considered part of this sentence. */
 /* Later today */
 "later today" = "later vandaag";
 
+/* A label prompting users to learn more about card readers.
+This part is the link to the website, and forms part of a longer sentence which it should be considered a part of. */
+"learnMore.link" = "Meer informatie";
+
+/* A label prompting users to learn more about card readers"
+%1$@ is a placeholder that always replaced with \"Learn more\" string,
+which should be translated separately and considered part of this sentence. */
+"learnMore.text" = "%1$@ over het aannemen van betalingen met je mobiele apparaat en het bestellen van kaartlezers";
+
 /* A hazardous material description stating when a package can fit into this category */
 "limited_quantity_category" = "Grondpakket LTD QTY - aerosolen, spuitontsmettingsmiddelen, spuitverf, haarspray, propaan, butaan, reinigingsproducten enz. - Parfums, nagellak, nagellakverwijderaar, oplosmiddelen, handreiniging, schoonmaakalcohol, ethanolproducten enz. - Andere oppervlaktematerialen in beperkte hoeveelheid (cosmetica, reinigingsproducten, verf enz.)";
 
@@ -10475,6 +10582,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the section related to card readers inside In-Person Payments settings */
 "menu.payments.cardReader.section.title" = "Kaartlezers";
+
+/* An accessibility label used when the balances are loading on the payments menu */
+"menu.payments.depositSummary.loading.accessibilityLabel" = "Saldo's laden ...";
 
 /* A label prompting users to learn more about card readers.
 This part is the link to the website, and forms part of a longer sentence which it should be considered a part of. */
@@ -10544,6 +10654,12 @@ which should be translated separately and considered part of this sentence. */
 /* Header for the search result section on a a multiple selection list */
 "multipleSelectionList.searchResults" = "Zoekresultaten";
 
+/* Spoken label to indicate switch control is turned off. */
+"newNoteViewController.emailNoteSwitch.accessibilityLabel.off" = "E-mailbericht aan klant Uit";
+
+/* Spoken label to indicate switch control is turned on */
+"newNoteViewController.emailNoteSwitch.accessibilityLabel.on" = "E-mailbericht aan klant Aan";
+
 /* A error message when it's not possible toacquire the Analytics Hub previous selection range */
 "no previous period" = "geen vorige periode";
 
@@ -10577,14 +10693,68 @@ which should be translated separately and considered part of this sentence. */
 /* A 'Learn More' label text, which shows tax information upon being clicked. */
 "order.form.paymentSection.taxes.learnMore" = "Meer informatie.";
 
+/* Label for the row showing the shipping tax. */
+"order.form.paymentSection.taxes.shippingTax" = "Belasting op verzending";
+
 /* Title text of the button that adds shipping line when creating a new order */
 "order.form.shipping.add.button.title" = "Verzending toevoegen";
+
+/* Origin in Order Attribution Section on Order Details screen. */
+"orderAttributionInfo.direct" = "Direct";
+
+/* Origin in Order Attribution Section on Order Details screen. */
+"orderAttributionInfo.mobileApp" = "Mobiele app";
+
+/* Origin in Order Attribution Section on Order Details screen.The placeholder is the source.Reads like: Organic: woo.com */
+"orderAttributionInfo.organic" = "Organisch: %1$@";
+
+/* Origin in Order Attribution Section on Order Details screen.The placeholder is the source.Reads like: Referral: woo.com */
+"orderAttributionInfo.referral" = "Doorverwezen: %1$@";
+
+/* Origin in Order Attribution Section on Order Details screen.The placeholder is the source.Reads like: Source: woo.com */
+"orderAttributionInfo.source" = "Bron: %1$@";
+
+/* Origin in Order Attribution Section on Order Details screen. */
+"orderAttributionInfo.unknown" = "Onbekend";
+
+/* Origin in Order Attribution Section on Order Details screen. */
+"orderAttributionInfo.webAdmin" = "Webbeheerder";
+
+/* Title for the row to add tracking information. */
+"orderDetails.addTrackingRow.title" = "Optionele tracking-informatie";
 
 /* Custom Amount section title if there is more than one custom amount. */
 "orderDetails.customAmounts.section.pluralTitle" = "Aangepaste bedragen";
 
 /* Subtitle of the custom amount row in order details */
 "orderDetails.customAmountsRow.subtitle" = "Aangepast bedrag";
+
+/* Title in Order Attribution Section on Order Details screen. */
+"orderDetailsDataSource.attributionInfo.campaign" = "Campagne";
+
+/* Title in Order Attribution Section on Order Details screen. */
+"orderDetailsDataSource.attributionInfo.deviceType" = "Apparaattype";
+
+/* Title in Order Attribution Section on Order Details screen. */
+"orderDetailsDataSource.attributionInfo.medium" = "Medium";
+
+/* Title of Order Attribution Section in Order Details screen. */
+"orderDetailsDataSource.attributionInfo.orderAttribution" = "Bestellingseigenschap";
+
+/* Title in Order Attribution Section on Order Details screen. */
+"orderDetailsDataSource.attributionInfo.origin" = "Oorsprong";
+
+/* Title in Order Attribution Section on Order Details screen. */
+"orderDetailsDataSource.attributionInfo.sessionPageViews" = "Paginaweergaven sessie";
+
+/* Title in Order Attribution Section on Order Details screen. */
+"orderDetailsDataSource.attributionInfo.source" = "Bron";
+
+/* Title in Order Attribution Section on Order Details screen. */
+"orderDetailsDataSource.attributionInfo.sourceType" = "Brontype";
+
+/* Origin in Order Attribution Section on Order Details screen. */
+"orderDetailsDataSource.attributionInfo.unknown" = "Onbekend";
 
 /* Title text of the section that shows the Custom Amounts when creating or editing an order */
 "orderForm.customAmounts" = "Aangepaste bedragen";
@@ -10594,6 +10764,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button title for the percentage option in the custom amounts option sheet. */
 "orderForm.customAmounts.addOptionsDialogPercentageButtonTitle" = "Of voer het percentage van het ordertotaal in";
+
+/* Title text of the confirmation dialog that shows the add custom amounts options. */
+"orderForm.customAmounts.addOptionsDialogTitle" = "Hoe wil je je aangepaste bedrag toevoegen?";
 
 /* Title of the primary button on the new order screen to collect payment, likely in-person. This button first creates the order, then presents a view for the merchant to choose a payment method. */
 "orderForm.payment.collect.button.title" = "Betaling innen";
@@ -10606,6 +10779,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility label for the barcode scanning button to add product */
 "orderForm.products.add.scan.button.accessibilityLabel" = "Streepjescode scannen";
+
+/* Title for the barcode scanning button to add a product to an order */
+"orderForm.products.add.scan.row.title" = "Product scannen";
 
 /* Label for the row showing the cost of coupon in the order */
 "orderPaymentSection.coupon" = "Coupon";
@@ -10657,18 +10833,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label shown on the launch store task. */
 "private" = "privé";
-
-/* Description of the Action sheet option when the user wants to change the Product type to Subscription product */
-"product.sheet.option.simpleSubscription.description" = "Een uniek productabonnement waarbij herhaaldelijke betalingen zijn ingeschakeld";
-
-/* Action sheet option when the user wants to change the Product type to Subscription product */
-"product.sheet.option.simpleSubscription.title" = "Eenvoudig productabonnement";
-
-/* Action sheet option when the user wants to change the Product type to Variable subscription product */
-"product.sheet.option.variableSubscription.description" = "Een productabonnement met variaties";
-
-/* Action sheet option when the user wants to change the Product type to Variable subscription product */
-"product.sheet.option.variableSubscription.title" = "Variabel productabonnement";
 
 /* Description in Product Creation AI survey confirmation view. */
 "productCreationAISurveyConfirmationView.description" = "Heb je een momentje? Help ons onze functies met AI te verbeteren met wat korte feedback.";
@@ -10733,6 +10897,15 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the cell in Product Price Settings > Sign-up Fee */
 "productPriceSettingsViewModel.signupFeeTitle" = "Aanmeldkosten";
 
+/* Text on the header of the Select Product screen when more than one products are selected. */
+"productSelectorViewModel.selectProductsTitle.pluralProductSelectedFormattedText" = "%ld producten geselecteerd";
+
+/* Text on the header of the Select Product screen when no products are selected. */
+"productSelectorViewModel.selectProductsTitle.selectProductsTitle" = "Producten selecteren";
+
+/* Text on the header of the Select Product screen when one product is selected. */
+"productSelectorViewModel.selectProductsTitle.singularProductSelectedFormattedText" = "%ld product geselecteerd";
+
 /* Cancel button in the product downloadables alert */
 "productSettings.downloadableProductAlertCancel" = "Annuleren";
 
@@ -10754,11 +10927,32 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the One time shipping product shipping setting. */
 "productShippingSettings.oneTimeShipping.title" = "Eenmalig verzenden";
 
+/* Message on the secondary view of the products tab split view before any product is selected. */
+"productsTab.emptySecondaryView.message" = "Geen product geselecteerd";
+
+/* Title of the Products tab — plural form of Product */
+"productsTab.tabTitle" = "Producten";
+
 /* Format of the number of product ratings in plural form */
 "rated %ld times" = "%ld keer beoordeeld";
 
 /* Format of the number of product ratings in singular form */
 "rated once" = "één keer beoordeeld";
+
+/* The name of the job that appears in the 'Print Center' when printing a receiptReads as 'Woo: receipt for order #123' */
+"receiptViewModel.formattedReceiptJobName.receiptJobName" = "%1$@: kwitantie voor bestelling #%2$@";
+
+/* The name of the job that appears in the 'Print Center' when printing a receiptReads as 'Woo: receipt for order #123 on MyStoreName' */
+"receiptViewModel.formattedReceiptJobName.receiptJobNameWithStoreName" = "%1$@: kwitantie voor bestelling #%2$@ op %3$@";
+
+/* Title on the refund screen that lists the custom amounts total cost */
+"refundCustomAmountsDetails.totalTitle" = "Restitutie voor aangepast bedrag";
+
+/* Title of the switch in the IssueRefund screen to refund customAmounts */
+"refundIssue.customAmounts.title" = "Aangepast bedrag restitueren";
+
+/* The title for the cancel button in the search screen. */
+"searchViewController.cancelButton.tilet" = "Annuleren";
 
 /* Settings > Set up Tap to Pay on iPhone > Try a Payment > After trying a payments, the merchant is shown an order confirmation screen, showing their payment was successful and allowing them to refund themselves. This is the navigation bar title for that screen. */
 "setUpTapToPayPaymentPromptView.paymentComplete.navigation.title" = "Betaling is gelukt";
@@ -10772,6 +10966,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Cancel button title for the Shipping Label purchase flow, shown in the nav bar */
 "shipping.label.navigationBar.cancel.button.title" = "Annuleren";
+
+/* Tab selector title that shows the statistics for today */
+"statsTimeRangeV4.tabTitle.custom" = "Aangepast bereik";
 
 /* Widget description, displayed when selecting which widget to add */
 "storeWidgets.description" = "WooCommerce-statistieken van vandaag";
@@ -11028,6 +11225,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Placeholder text shown when loading media for the WordPress Media Library */
 "wordpressMediaLibraryPickerViewController.emptyContent.loading" = "Media laden …";
+
+/* Message to show when a request for a WP.com API endpoint is throttled */
+"wordpresskit.api.message.endpoint_throttled" = "Limiet bereikt. Je kan het over 1 minuut nogmaals proberen. Als je het voor die tijd nog een keer probeert, duurt het alleen maar langer voordat de blokkering is opgeheven. Als je denkt dat dit een fout is, neem dan contact op met ondersteuning.";
 
 /* Button to enter security key on the WPCom 2FA login screen */
 "wpCom2FALoginView.securityKeyButton" = "Gebruik een beveiligingssleutel";

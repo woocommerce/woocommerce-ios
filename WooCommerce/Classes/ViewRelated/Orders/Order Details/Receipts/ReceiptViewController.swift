@@ -62,39 +62,11 @@ final class ReceiptViewController: UIViewController, WKNavigationDelegate, UIPri
     }
 
     private func configureNavigation() {
-        let shareButton = UIBarButtonItem(image: UIImage(systemName: "square.and.arrow.up"),
-                                          style: .plain,
-                                          target: self,
-                                          action: #selector(shareReceipt))
         let printButton = UIBarButtonItem(image: UIImage(systemName: "printer"),
                                           style: .plain,
                                           target: self,
                                           action: #selector(printReceipt))
-        navigationItem.rightBarButtonItems = [shareButton, printButton]
-    }
-
-    @objc private func shareReceipt() {
-        ServiceLocator.analytics.track(event: .InPersonPayments.receiptEmailTapped(countryCode: nil,
-                                                                                   cardReaderModel: nil,
-                                                                                   source: .backend))
-        guard let url = URL(string: viewModel.receiptURLString) else {
-            return
-        }
-        let activityViewController = UIActivityViewController(activityItems: [url],
-                                                applicationActivities: nil)
-        activityViewController.completionWithItemsHandler = { [weak self] _, success, _, error in
-            if let error = error {
-                ServiceLocator.analytics.track(event: .InPersonPayments.receiptEmailFailed(error: error, source: .backend))
-                DDLogError("Failed to share receipt for orderID \(String(describing: self?.viewModel.orderID)). Error: \(error)")
-            }
-            switch success {
-            case true:
-                ServiceLocator.analytics.track(event: .InPersonPayments.receiptEmailSuccess(countryCode: nil, cardReaderModel: nil, source: .backend))
-            case false:
-                ServiceLocator.analytics.track(event: .InPersonPayments.receiptEmailCanceled(countryCode: nil, cardReaderModel: nil, source: .backend))
-            }
-        }
-        present(activityViewController, animated: true)
+        navigationItem.rightBarButtonItems = [printButton]
     }
 
     @objc private func printReceipt() {

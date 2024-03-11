@@ -59,7 +59,7 @@ public struct OrderAttributionInfo: Equatable, GeneratedFakeable, GeneratedCopia
     }
 }
 
-private extension OrderAttributionInfo {
+extension OrderAttributionInfo {
     enum Keys: String {
         case sourceType = "_wc_order_attribution_source_type"
         case campaign = "_wc_order_attribution_utm_campaign"
@@ -67,5 +67,13 @@ private extension OrderAttributionInfo {
         case medium = "_wc_order_attribution_utm_medium"
         case deviceType = "_wc_order_attribution_device_type"
         case sessionPageViews = "_wc_order_attribution_session_pages"
+    }
+}
+
+public extension OrderAttributionInfo {
+    enum Values {
+        /// Sent in create order request to mark the order as created from mobile
+        ///
+        public static let mobileAppSourceType = "mobile_app"
     }
 }

@@ -1239,6 +1239,131 @@ extension AppSettingsStoreTests {
         // Then
         XCTAssertEqual(loadedTaxRateID, storedTaxRateID)
     }
+
+    func test_setAnalyticsHubCards_works_correctly() throws {
+        // Given
+        let analyticsCards = [
+            AnalyticsCard(type: .revenue, enabled: true),
+            AnalyticsCard(type: .orders, enabled: false),
+            AnalyticsCard(type: .products, enabled: true),
+            AnalyticsCard(type: .sessions, enabled: false)
+        ]
+        let existingSettings = GeneralStoreSettingsBySite(storeSettingsBySite: [TestConstants.siteID: GeneralStoreSettings()])
+        try fileStorage?.write(existingSettings, to: expectedGeneralStoreSettingsFileURL)
+
+        // When
+        let action = AppSettingsAction.setAnalyticsHubCards(siteID: TestConstants.siteID, cards: analyticsCards)
+        subject?.onAction(action)
+
+        // Then
+        let savedSettings: GeneralStoreSettingsBySite = try XCTUnwrap(fileStorage?.data(for: expectedGeneralStoreSettingsFileURL))
+        let settingsForSite = savedSettings.storeSettingsBySite[TestConstants.siteID]
+
+        assertEqual(analyticsCards, settingsForSite?.analyticsHubCards)
+    }
+
+    func test_loadAnalyticsHubCards_works_correctly() throws {
+        // Given
+        let storedAnalyticsCards = [
+            AnalyticsCard(type: .revenue, enabled: true),
+            AnalyticsCard(type: .orders, enabled: false),
+            AnalyticsCard(type: .products, enabled: true),
+            AnalyticsCard(type: .sessions, enabled: false)
+        ]
+        let storeSettings = GeneralStoreSettings(analyticsHubCards: storedAnalyticsCards)
+        let existingSettings = GeneralStoreSettingsBySite(storeSettingsBySite: [TestConstants.siteID: storeSettings])
+        try fileStorage?.write(existingSettings, to: expectedGeneralStoreSettingsFileURL)
+
+        // When
+        var loadedAnalyticsCards: [AnalyticsCard]?
+        let action = AppSettingsAction.loadAnalyticsHubCards(siteID: TestConstants.siteID) { cards in
+            loadedAnalyticsCards = cards
+        }
+        subject?.onAction(action)
+
+        // Then
+        assertEqual(storedAnalyticsCards, loadedAnalyticsCards)
+    }
+
+    func test_loadAnalyticsHubCards_returns_nil_when_no_cards_are_saved() throws {
+        // Given
+        let existingSettings = GeneralStoreSettingsBySite(storeSettingsBySite: [TestConstants.siteID: GeneralStoreSettings()])
+        try fileStorage?.write(existingSettings, to: expectedGeneralStoreSettingsFileURL)
+
+        // When
+        var loadedAnalyticsCards: [AnalyticsCard]?
+        let action = AppSettingsAction.loadAnalyticsHubCards(siteID: TestConstants.siteID) { cards in
+            loadedAnalyticsCards = cards
+        }
+        subject?.onAction(action)
+
+        // Then
+        XCTAssertNil(loadedAnalyticsCards)
+    }
+
+    // MARK: - custom time range tab
+
+    func test_setCustomStatsTimeRange_works_correctly() throws {
+        // Given
+        let siteID: Int64 = 1234
+
+        let fromDate = Date(timeIntervalSince1970: 1677486077) // Feb 27, 2023
+        let toDate = Date(timeIntervalSince1970: 1709022077) // Feb 27, 2024
+        let customTimeRange = StatsTimeRangeV4.custom(from: fromDate, to: toDate)
+
+        let existingSettings = GeneralStoreSettingsBySite(storeSettingsBySite: [siteID: GeneralStoreSettings()])
+        try fileStorage?.write(existingSettings, to: expectedGeneralStoreSettingsFileURL)
+
+        // When
+        let action = AppSettingsAction.setCustomStatsTimeRange(siteID: siteID, timeRange: customTimeRange)
+        subject?.onAction(action)
+
+        // Then
+        let savedSettings: GeneralStoreSettingsBySite = try XCTUnwrap(fileStorage?.data(for: expectedGeneralStoreSettingsFileURL))
+        let settingsForSite = savedSettings.storeSettingsBySite[siteID]
+
+        assertEqual(customTimeRange.rawValue, settingsForSite?.customStatsTimeRange)
+    }
+
+    func test_loadCustomStatsTimeRange_works_correctly() throws {
+        // Given
+        let siteID: Int64 = 1234
+
+        let fromDate = Date(timeIntervalSince1970: 1677486077) // Feb 27, 2023
+        let toDate = Date(timeIntervalSince1970: 1709022077) // Feb 27, 2024
+        let customTimeRange = StatsTimeRangeV4.custom(from: fromDate, to: toDate)
+
+        let storeSettings = GeneralStoreSettings(customStatsTimeRange: customTimeRange.rawValue)
+        let existingSettings = GeneralStoreSettingsBySite(storeSettingsBySite: [siteID: storeSettings])
+        try fileStorage?.write(existingSettings, to: expectedGeneralStoreSettingsFileURL)
+
+        // When
+        var loadedCustomTimeRange: StatsTimeRangeV4?
+        let action = AppSettingsAction.loadCustomStatsTimeRange(siteID: siteID) { timeRange in
+            loadedCustomTimeRange = timeRange
+        }
+        subject?.onAction(action)
+
+        // Then
+        assertEqual(customTimeRange, loadedCustomTimeRange)
+    }
+
+    func test_loadCustomStatsTimeRange_returns_nil_when_no_custom_range_is_saved() throws {
+        // Given
+        let siteID: Int64 = 1234
+        let existingSettings = GeneralStoreSettingsBySite(storeSettingsBySite: [siteID: GeneralStoreSettings()])
+        try fileStorage?.write(existingSettings, to: expectedGeneralStoreSettingsFileURL)
+
+        // When
+        var customTimeRange: StatsTimeRangeV4?
+        let action = AppSettingsAction.loadCustomStatsTimeRange(siteID: siteID) { timeRange in
+            customTimeRange = timeRange
+        }
+        subject?.onAction(action)
+
+        // Then
+        XCTAssertNil(customTimeRange)
+    }
 }
 
 // MARK: - Utils

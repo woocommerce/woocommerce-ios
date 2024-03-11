@@ -68,7 +68,7 @@ final class CouponLineDetailsViewModel: Identifiable, ObservableObject {
                 self?.notice = Notice(title: Localization.couponNotFoundNoticeTitle,
                                       feedbackType: .error)
                 onCompletion(false)
-            case .failure(_):
+            case .failure:
                 self?.notice = Notice(title: Localization.couponNotValidatedNoticeTitle,
                                       feedbackType: .error)
                 onCompletion(false)

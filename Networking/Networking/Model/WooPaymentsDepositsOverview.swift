@@ -129,7 +129,7 @@ public struct WooPaymentsManualDeposit: Codable, GeneratedFakeable, GeneratedCop
     }
 }
 
-/// originates from 
+/// originates from
 // https://github.com/Automattic/woocommerce-payments-server/blob/899963c61d9ad1c1aa5306087b8bb7ea253e66a0/server/
 // wp-content/rest-api-plugins/endpoints/wcpay/class-deposits-controller.php#L753
 public enum WooPaymentsDepositType: String, Codable, Equatable, GeneratedFakeable, GeneratedCopiable {
@@ -138,7 +138,7 @@ public enum WooPaymentsDepositType: String, Codable, Equatable, GeneratedFakeabl
 }
 
 /// originates from https://stripe.com/docs/api/payouts/object
-/// with additions in WooPayments e.g. 
+/// with additions in WooPayments e.g.
 // https://github.com/Automattic/woocommerce-payments-server/blob/899963c61d9ad1c1aa5306087b8bb7ea253e66a0/
 // server/wp-content/rest-api-plugins/endpoints/wcpay/utils/class-deposit-utils.php#L141
 public enum WooPaymentsDepositStatus: String, Codable, Equatable, GeneratedFakeable, GeneratedCopiable {

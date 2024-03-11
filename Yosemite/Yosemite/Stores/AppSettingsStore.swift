@@ -107,10 +107,12 @@ public class AppSettingsStore: Store {
         case .upsertOrdersSettings(let siteID,
                                    let orderStatusesFilter,
                                    let dateRangeFilter,
+                                   let productFilter,
                                    let onCompletion):
             upsertOrdersSettings(siteID: siteID,
                                  orderStatusesFilter: orderStatusesFilter,
                                  dateRangeFilter: dateRangeFilter,
+                                 productFilter: productFilter,
                                  onCompletion: onCompletion)
         case .resetOrdersSettings:
             resetOrdersSettings()
@@ -204,6 +206,14 @@ public class AppSettingsStore: Store {
             setSelectedTaxRateID(with: taxRateId, siteID: siteID)
         case .loadSelectedTaxRateID(let siteID, let onCompletion):
             loadSelectedTaxRateID(with: siteID, onCompletion: onCompletion)
+        case .setAnalyticsHubCards(let siteID, let cards):
+            setAnalyticsHubCards(siteID: siteID, cards: cards)
+        case .loadAnalyticsHubCards(let siteID, let onCompletion):
+            loadAnalyticsHubCards(siteID: siteID, onCompletion: onCompletion)
+        case let .loadCustomStatsTimeRange(siteID, onCompletion):
+            loadCustomStatsTimeRange(siteID: siteID, onCompletion: onCompletion)
+        case let .setCustomStatsTimeRange(siteID, timeRange):
+            setCustomStatsTimeRange(siteID: siteID, timeRange: timeRange)
         }
     }
 }
@@ -654,6 +664,7 @@ private extension AppSettingsStore {
     func upsertOrdersSettings(siteID: Int64,
                               orderStatusesFilter: [OrderStatusEnum]?,
                               dateRangeFilter: OrderDateRangeFilter?,
+                              productFilter: FilterOrdersByProduct?,
                               onCompletion: (Error?) -> Void) {
         var existingSettings: [Int64: StoredOrderSettings.Setting] = [:]
         if let storedSettings: StoredOrderSettings = try? fileStorage.data(for: ordersSettingsURL) {
@@ -662,7 +673,8 @@ private extension AppSettingsStore {
 
         let newSettings = StoredOrderSettings.Setting(siteID: siteID,
                                                       orderStatusesFilter: orderStatusesFilter,
-                                                      dateRangeFilter: dateRangeFilter)
+                                                      dateRangeFilter: dateRangeFilter,
+                                                      productFilter: productFilter)
         existingSettings[siteID] = newSettings
 
         let newStoredOrderSettings = StoredOrderSettings(settings: existingSettings)
@@ -883,6 +895,21 @@ private extension AppSettingsStore {
     }
 }
 
+private extension AppSettingsStore {
+    func setCustomStatsTimeRange(siteID: Int64, timeRange: StatsTimeRangeV4) {
+        let storeSettings = getStoreSettings(for: siteID)
+        let updatedSettings = storeSettings.copy(customStatsTimeRange: timeRange.rawValue)
+        setStoreSettings(settings: updatedSettings, for: siteID)
+    }
+
+    func loadCustomStatsTimeRange(siteID: Int64, onCompletion: @escaping (StatsTimeRangeV4?) -> Void) {
+        let storeSettings = getStoreSettings(for: siteID)
+        let timeRangeRawValue = storeSettings.customStatsTimeRange
+        let timeRange = StatsTimeRangeV4(rawValue: timeRangeRawValue)
+        onCompletion(timeRange)
+    }
+}
+
 // MARK: - Tax Rate
 
 private extension AppSettingsStore {
@@ -901,6 +928,20 @@ private extension AppSettingsStore {
 
     func loadSelectedTaxRateID(with siteID: Int64, onCompletion: (Int64?) -> Void) {
         onCompletion(getStoreSettings(for: siteID).selectedTaxRateID)
+    }
+}
+
+// MARK: - Analytics Hub Cards
+
+private extension AppSettingsStore {
+    func setAnalyticsHubCards(siteID: Int64, cards: [AnalyticsCard]) {
+        let storeSettings = getStoreSettings(for: siteID)
+        let updatedSettings = storeSettings.copy(analyticsHubCards: cards)
+        setStoreSettings(settings: updatedSettings, for: siteID)
+    }
+
+    func loadAnalyticsHubCards(siteID: Int64, onCompletion: ([AnalyticsCard]?) -> Void) {
+        onCompletion(getStoreSettings(for: siteID).analyticsHubCards)
     }
 }
 

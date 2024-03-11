@@ -27,6 +27,7 @@ struct ProductSelectorView: View {
         case couponForm
         case couponRestrictions
         case blaze
+        case orderFilter
     }
 
     let configuration: Configuration
@@ -37,13 +38,10 @@ struct ProductSelectorView: View {
     ///
     @Binding var isPresented: Bool
 
-    /// Defines whether a variation list is shown.
+    /// Defines whether the Product Selector View's width is less than the predefined row's width threshold
+    /// Used so we can render a different style despite the environment's size class
     ///
-    @State var isShowingVariationList: Bool = false
-
-    /// View model to use for the variation list, when it is shown.
-    ///
-    @State var variationListViewModel: ProductVariationSelectorViewModel?
+    @State var isViewWidthNarrowerThanConstantRowWidth: Bool = false
 
     /// View model to drive the view.
     ///
@@ -60,7 +58,9 @@ struct ProductSelectorView: View {
     /// Tracks whether the `orderFormBundleProductConfigureCTAShown` event has been tracked to prevent multiple events across view updates.
     @State private var hasTrackedBundleProductConfigureCTAShownEvent: Bool = false
 
-    @Environment(\.adaptiveModalContainerPresentationStyle) var presentationStyle
+    @Environment(\.horizontalSizeClass) var horizontalSizeClass
+
+    @ScaledMetric private var scale: CGFloat = 1.0
 
     /// Tracks the state for the 'Clear Selection' button
     ///
@@ -76,46 +76,30 @@ struct ProductSelectorView: View {
         guard viewModel.totalSelectedItemsCount > 0 else {
             return Localization.doneButton
         }
-        return String.pluralize(viewModel.totalSelectedItemsCount,
-                                singular: configuration.doneButtonTitleSingularFormat,
-                                plural: configuration.doneButtonTitlePluralFormat)
+        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm) else {
+            return viewModel.selectProductsTitle
+        }
+        return Localization.addProductsText
+    }
+
+    /// Title for the view's navigation
+    ///
+    private var navigationTitle: String {
+        let narrowView = (horizontalSizeClass == .compact || isViewWidthNarrowerThanConstantRowWidth)
+        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm),
+              narrowView else {
+            return configuration.title
+        }
+        return viewModel.selectProductsTitle
     }
 
     var body: some View {
         VStack(spacing: 0) {
-            SearchHeader(text: $viewModel.searchTerm, placeholder: Localization.searchPlaceholder, onEditingChanged: { isEditing in
-                searchHeaderisBeingEdited = isEditing
-            })
-                .padding(.horizontal, insets: safeAreaInsets)
-                .accessibilityIdentifier("product-selector-search-bar")
-            Picker(selection: $viewModel.productSearchFilter, label: EmptyView()) {
-                ForEach(ProductSearchFilter.allCases, id: \.self) { option in
-                    Text(option.title)
-                            }
-                        }
-                        .pickerStyle(.segmented)
-                        .padding(.leading)
-                        .padding(.trailing)
-                        .renderedIf(searchHeaderisBeingEdited)
-            HStack {
-                Button(Localization.clearSelection) {
-                    viewModel.clearSelection()
-                }
-                .buttonStyle(LinkButtonStyle())
-                .fixedSize()
-                .disabled(isClearSelectionDisabled)
-                .renderedIf(configuration.multipleSelectionEnabled)
-
-                Spacer()
-
-                Button(viewModel.filterButtonTitle) {
-                    showingFilters.toggle()
-                    ServiceLocator.analytics.track(event: .ProductListFilter.productListViewFilterOptionsTapped(source: source.filterAnalyticsSource))
-                }
-                .buttonStyle(LinkButtonStyle())
-                .fixedSize()
+            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm) {
+                productSelectorHeader
+            } else {
+                legacyProductSelectorHeader
             }
-            .padding(.horizontal, insets: safeAreaInsets)
 
             switch viewModel.syncStatus {
             case .results:
@@ -148,15 +132,15 @@ struct ProductSelectorView: View {
                     .buttonStyle(PrimaryButtonStyle())
                     .padding(Constants.defaultPadding)
                     .accessibilityIdentifier(Constants.doneButtonAccessibilityIdentifier)
-                    .renderedIf(configuration.multipleSelectionEnabled && !viewModel.syncChangesImmediately)
+                    .renderedIf(configuration.multipleSelectionEnabled && viewModel.syncApproach == .onButtonTap)
 
-                    if let variationListViewModel = variationListViewModel {
+                    if let variationListViewModel = viewModel.productVariationListViewModel {
                         LazyNavigationLink(destination: ProductVariationSelectorView(
                             isPresented: $isPresented,
                             viewModel: variationListViewModel,
                             onMultipleSelections: { selectedIDs in
                                 viewModel.updateSelectedVariations(productID: variationListViewModel.productID, selectedVariationIDs: selectedIDs)
-                            }), isActive: $isShowingVariationList) {
+                            }), isActive: $viewModel.isShowingProductVariationList) {
                                 EmptyView()
                             }
                             .renderedIf(configuration.treatsAllProductsAsSimple == false)
@@ -183,8 +167,7 @@ struct ProductSelectorView: View {
             }
         }
         .background(Color(configuration.searchHeaderBackgroundColor).ignoresSafeArea())
-        .ignoresSafeArea(.container, edges: .horizontal)
-        .navigationTitle(configuration.title)
+        .navigationTitle(navigationTitle)
         .navigationBarTitleDisplayMode(configuration.prefersLargeTitle ? .large : .inline)
         .toolbar {
             ToolbarItem(placement: .cancellationAction) {
@@ -198,8 +181,11 @@ struct ProductSelectorView: View {
         }
         .onAppear {
             viewModel.onLoadTrigger.send()
-            viewModel.syncChangesImmediately = presentationStyle == .sideBySide
+            updateSyncApproach(for: horizontalSizeClass)
         }
+        .onChange(of: horizontalSizeClass, perform: { newSizeClass in
+            updateSyncApproach(for: newSizeClass)
+        })
         .notice($viewModel.notice, autoDismiss: false)
         .sheet(isPresented: $showingFilters) {
             FilterListView(viewModel: viewModel.filterListViewModel) { filters in
@@ -215,26 +201,39 @@ struct ProductSelectorView: View {
         .interactiveDismissDisabled()
     }
 
+    private func updateSyncApproach(for horizontalSizeClass: UserInterfaceSizeClass?) {
+        guard let horizontalSizeClass,
+              ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm) else {
+            return
+        }
+
+        let newSyncApproach: ProductSelectorViewModel.SyncApproach
+        switch horizontalSizeClass {
+        case .regular:
+            newSyncApproach = .external
+        case .compact:
+            newSyncApproach = .onButtonTap
+        @unknown default:
+            DDLogWarn("Unknown size class used to determine product selector sync approach")
+            newSyncApproach = .onButtonTap
+        }
+        viewModel.syncApproach = newSyncApproach
+    }
+
     /// Creates the `ProductRow` for a product, depending on whether the product is variable.
     ///
     @ViewBuilder private func createProductRow(rowViewModel: ProductRowViewModel) -> some View {
-        if let variationListViewModel = viewModel.getVariationsViewModel(for: rowViewModel.productOrVariationID),
-            configuration.treatsAllProductsAsSimple == false {
+        if viewModel.isVariableProduct(productOrVariationID: rowViewModel.productOrVariationID),
+           configuration.treatsAllProductsAsSimple == false {
             HStack {
                 ProductRow(multipleSelectionsEnabled: true,
                            viewModel: rowViewModel,
                            onCheckboxSelected: {
-                    viewModel.toggleSelectionForAllVariations(of: rowViewModel.productOrVariationID)
-                    // Display the variations list if toggleSelectionForAllVariations is not allowed
-                    if !viewModel.toggleAllVariationsOnSelection {
-                        isShowingVariationList.toggle()
-                        self.variationListViewModel = variationListViewModel
-                    }
+                    viewModel.variationCheckboxTapped(for: rowViewModel.productOrVariationID)
                 })
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .onTapGesture {
-                    isShowingVariationList.toggle()
-                    self.variationListViewModel = variationListViewModel
+                    viewModel.variationRowTapped(for: rowViewModel.productOrVariationID)
                 }
                 .redacted(reason: viewModel.selectionDisabled ? .placeholder : [])
                 .disabled(viewModel.selectionDisabled)
@@ -283,6 +282,124 @@ struct ProductSelectorView: View {
     }
 }
 
+private extension ProductSelectorView {
+    @ViewBuilder var productSelectorHeader: some View {
+        if horizontalSizeClass == .regular {
+            productSelectorHeaderTitleRow
+            productSelectorHeaderSearchRow
+                .padding(.bottom, Constants.defaultPadding)
+                .background(Color(.listForeground(modal: false)))
+        } else {
+            productSelectorHeaderSearchRow
+            productSelectorHeaderTitleRow
+        }
+        Divider()
+    }
+
+    @ViewBuilder var legacyProductSelectorHeader: some View {
+        SearchHeader(text: $viewModel.searchTerm, placeholder: Localization.searchPlaceholder, onEditingChanged: { isEditing in
+            searchHeaderisBeingEdited = isEditing
+        })
+        .padding(.horizontal, insets: safeAreaInsets)
+        .accessibilityIdentifier("product-selector-search-bar")
+        Picker(selection: $viewModel.productSearchFilter, label: EmptyView()) {
+            ForEach(ProductSearchFilter.allCases, id: \.self) { option in Text(option.title) }
+        }
+        .pickerStyle(.segmented)
+        .padding(.leading)
+        .padding(.trailing)
+        .renderedIf(searchHeaderisBeingEdited)
+
+        HStack {
+            Button(Localization.clearSelection) {
+                viewModel.clearSelection()
+            }
+            .buttonStyle(LinkButtonStyle())
+            .fixedSize()
+            .disabled(isClearSelectionDisabled)
+            .renderedIf(configuration.multipleSelectionEnabled)
+
+            Spacer()
+
+            Button(viewModel.filterButtonTitle) {
+                showingFilters.toggle()
+                ServiceLocator.analytics.track(event: .ProductListFilter.productListViewFilterOptionsTapped(source: source.filterAnalyticsSource))
+            }
+            .buttonStyle(LinkButtonStyle())
+            .fixedSize()
+        }
+        .padding(.horizontal, insets: safeAreaInsets)
+    }
+
+    @ViewBuilder private var productSelectorHeaderTitleRow: some View {
+        GeometryReader { geometry in
+            HStack {
+                Text(viewModel.selectProductsTitle)
+                    .renderedIf(configuration.productHeaderTextEnabled && geometry.size.width > Constants.headerSearchRowWidth)
+                    .fixedSize()
+                    .padding(.leading)
+                Button(Localization.clearSelection) {
+                    viewModel.clearSelection()
+                }
+                .buttonStyle(LinkButtonStyle())
+                .fixedSize()
+                .disabled(isClearSelectionDisabled)
+                .renderedIf(configuration.multipleSelectionEnabled)
+
+                Spacer()
+
+                Button(viewModel.filterButtonTitle) {
+                    showingFilters.toggle()
+                    ServiceLocator.analytics.track(event: .ProductListFilter.productListViewFilterOptionsTapped(source: source.filterAnalyticsSource))
+                }
+                .buttonStyle(LinkButtonStyle())
+                .fixedSize()
+            }
+            .padding(.horizontal, insets: safeAreaInsets)
+            .onAppear(perform: {
+                adjustViewWidthIfNeeded(using: geometry.size.width)
+            })
+            .onChange(of: geometry.size.width) { newViewWidth in
+                adjustViewWidthIfNeeded(using: newViewWidth)
+            }
+        }
+        .frame(height: Constants.minimumRowHeight * scale)
+        .background(Color(.listForeground(modal: false)))
+    }
+
+    @ViewBuilder private var productSelectorHeaderSearchRow: some View {
+        GeometryReader { geometry in
+            HStack {
+                SearchHeader(text: $viewModel.searchTerm, placeholder: Localization.searchPlaceholder, onEditingChanged: { isEditing in
+                    searchHeaderisBeingEdited = isEditing
+                })
+                .accessibilityIdentifier("product-selector-search-bar")
+                Picker(selection: $viewModel.productSearchFilter, label: EmptyView()) {
+                    ForEach(ProductSearchFilter.allCases, id: \.self) { option in Text(option.title) }
+                }
+                .if(geometry.size.width <= Constants.headerSearchRowWidth) { $0.pickerStyle(.menu) }
+                .if(geometry.size.width > Constants.headerSearchRowWidth) { $0.pickerStyle(.segmented) }
+                .padding(.trailing)
+                .renderedIf(searchHeaderisBeingEdited)
+            }
+        }
+        // The GeometryReader will take all available space if not constrained vertically, while adjusting automatically horizontally,
+        // so we need to set a desired height for this view.
+        .frame(height: Constants.minimumRowHeight * scale)
+        .background(Color(.listForeground(modal: false)))
+    }
+}
+
+extension ProductSelectorView {
+    func adjustViewWidthIfNeeded(using viewWidth: CGFloat) {
+        if viewWidth <= Constants.headerSearchRowWidth {
+            isViewWidthNarrowerThanConstantRowWidth = true
+        } else {
+            isViewWidthNarrowerThanConstantRowWidth = false
+        }
+    }
+}
+
 extension ProductSelectorView {
     struct Configuration {
         /// Whether more than one product can be selected.
@@ -292,6 +409,7 @@ extension ProductSelectorView {
         /// Otherwise, the product itself is selected immediately.
         var treatsAllProductsAsSimple: Bool = false
 
+        var productHeaderTextEnabled: Bool = false
         var searchHeaderBackgroundColor: UIColor = .listForeground(modal: false)
         var prefersLargeTitle: Bool = true
         var doneButtonTitleSingularFormat: String = ""
@@ -307,6 +425,8 @@ private extension ProductSelectorView {
     enum Constants {
         static let dividerHeight: CGFloat = 1
         static let defaultPadding: CGFloat = 16
+        static let minimumRowHeight: CGFloat = 48
+        static let headerSearchRowWidth: CGFloat = 450
         static let doneButtonAccessibilityIdentifier: String = "product-multiple-selection-done-button"
         static let productRowAccessibilityIdentifier: String = "product-item"
     }
@@ -319,6 +439,10 @@ private extension ProductSelectorView {
                                                                      comment: "Accessibility label for placeholder rows while products are loading")
         static let clearSelection = NSLocalizedString("Clear selection", comment: "Button to clear selection on the Select Products screen")
         static let doneButton = NSLocalizedString("Done", comment: "Button to submit the product selector without any product selected.")
+        static let addProductsText = NSLocalizedString(
+            "productselectorview.doneButtonTitle.addProductsText",
+            value: "Add Products",
+            comment: "Button to submit selected products to the order, when some product has been selected.")
     }
 }
 
@@ -333,6 +457,8 @@ private extension ProductSelectorView.Source {
                 return .couponRestrictions
         case .blaze:
             return .blaze
+        case .orderFilter:
+            return .orderFilter
         }
     }
 }

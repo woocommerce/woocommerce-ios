@@ -41,13 +41,15 @@ final class StoreStatsAndTopPerformersPeriodViewController: UIViewController {
 
     /// Minimal time interval for data refresh
     var minimalIntervalBetweenSync: TimeInterval {
-        switch timeRange {
-        case .today:
+        switch timeRange.intervalGranularity {
+        case .hourly:
             return 60
-        case .thisWeek, .thisMonth:
+        case .daily, .weekly:
             return 60*60
-        case .thisYear:
+        case .monthly, .quarterly:
             return 60*60*12
+        case .yearly:
+            return 60*60*24
         }
     }
 
@@ -69,7 +71,11 @@ final class StoreStatsAndTopPerformersPeriodViewController: UIViewController {
         StoreStatsV4PeriodViewController(siteID: siteID,
                                          timeRange: timeRange,
                                          currentDate: currentDate,
-                                         usageTracksEventEmitter: usageTracksEventEmitter)
+                                         usageTracksEventEmitter: usageTracksEventEmitter,
+                                         onEditCustomTimeRange: { [weak self] in
+            guard let self else { return }
+            editCustomTimeRangeHandler?(timeRange)
+        })
     }()
 
     private lazy var inAppFeedbackCardViewController = InAppFeedbackCardViewController()
@@ -102,6 +108,8 @@ final class StoreStatsAndTopPerformersPeriodViewController: UIViewController {
 
     private var subscriptions = Set<AnyCancellable>()
 
+    private let editCustomTimeRangeHandler: ((StatsTimeRangeV4) -> Void)?
+
     /// Create an instance of `self`.
     ///
     /// - Parameter canDisplayInAppFeedbackCard: If applicable, present the in-app feedback card.
@@ -112,12 +120,14 @@ final class StoreStatsAndTopPerformersPeriodViewController: UIViewController {
          timeRange: StatsTimeRangeV4,
          currentDate: Date,
          canDisplayInAppFeedbackCard: Bool,
-         usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter) {
+         usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter,
+         onEditCustomTimeRange: ((StatsTimeRangeV4) -> Void)?) {
         self.siteID = siteID
         self.timeRange = timeRange
         self.currentDate = currentDate
         self.viewModel = StoreStatsAndTopPerformersPeriodViewModel(canDisplayInAppFeedbackCard: canDisplayInAppFeedbackCard)
         self.usageTracksEventEmitter = usageTracksEventEmitter
+        self.editCustomTimeRangeHandler = onEditCustomTimeRange
 
         super.init(nibName: nil, bundle: nil)
 

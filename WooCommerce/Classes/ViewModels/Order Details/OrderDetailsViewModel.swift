@@ -471,6 +471,11 @@ extension OrderDetailsViewModel {
             let countryCode = configurationLoader.configuration.countryCode
             ServiceLocator.analytics.track(event: .InPersonPayments.receiptViewTapped(countryCode: countryCode, source: .backend))
 
+            guard let cell = tableView.cellForRow(at: indexPath) as? TwoColumnHeadlineFootnoteTableViewCell else {
+                return
+            }
+            cell.startLoading()
+
             let action = ReceiptAction.retrieveReceipt(order: order) { [weak self] result in
                 guard let self else { return }
                 switch result {
@@ -482,9 +487,11 @@ extension OrderDetailsViewModel {
                                                             siteName: siteName)
                     let receiptViewController = ReceiptViewController(viewModel: receiptViewModel)
                     viewController.navigationController?.pushViewController(receiptViewController, animated: true)
+                    cell.stopLoading()
                 case let .failure(error):
                     ServiceLocator.analytics.track(event: .InPersonPayments.receiptFetchFailed(error: error))
                     self.displayReceiptRetrievalErrorNotice(for: order, with: error, in: viewController)
+                    cell.stopLoading()
                 }
             }
             ServiceLocator.stores.dispatch(action)

@@ -20,7 +20,7 @@ final class LocalNotificationScheduler {
     ///     If nil, the local notification is always scheduled.
     ///   - shouldSkipIfScheduled: Make sure that no pending notifications have the same identifier
     ///    before scheduling the notification.
-    ///    
+    ///
     @MainActor
     func schedule(notification: LocalNotification,
                   trigger: UNNotificationTrigger?,

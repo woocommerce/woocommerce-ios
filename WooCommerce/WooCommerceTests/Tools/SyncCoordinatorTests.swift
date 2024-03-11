@@ -31,6 +31,7 @@ class SyncCoordinatorTests: XCTestCase {
 
     /// Testing Delegate Wrapper
     ///
+    // swiftlint:disable:next weak_delegate - We can afford to store a delegaate strongly in the context of testing here  ¯\_(ツ)_/¯
     private let delegate = SyncingDelegateWrapper()
 
     /// Testing Sync Coordinator

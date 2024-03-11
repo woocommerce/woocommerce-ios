@@ -40,6 +40,10 @@ extension ErrorTopBannerFactory {
         ///
         case jetpackConnectionError
 
+        /// A URL timeout error
+        ///
+        case timeoutError
+
         /// Any other error
         ///
         case generalError
@@ -48,6 +52,8 @@ extension ErrorTopBannerFactory {
             switch self {
             case .jetpackConnectionError:
                 return Localization.jetpackConnectionTitle
+            case .timeoutError:
+                return Localization.timeoutTitle
             default:
                 return Localization.generalTitle
             }
@@ -59,7 +65,7 @@ extension ErrorTopBannerFactory {
                 return Localization.decodingInfo
             case .jetpackConnectionError:
                 return Localization.jetpackConnectionInfo
-            case .generalError:
+            case .timeoutError, .generalError:
                 return Localization.generalInfo
             }
         }
@@ -74,6 +80,11 @@ extension ErrorTopBannerFactory {
         }
 
         init(error: Error) {
+            if error.isTimeoutError {
+                self = .timeoutError
+                return
+            }
+
             if error is DecodingError {
                 self = .decodingError
             } else if error as? DotcomError == .jetpackNotConnected {
@@ -89,6 +100,8 @@ extension ErrorTopBannerFactory {
                                                     comment: "The title of the Error Loading Data banner")
         static let jetpackConnectionTitle = NSLocalizedString("We couldn't connect to your store",
                                                               comment: "The title of the Error Loading Data banner when there is a Jetpack connection error")
+        static let timeoutTitle = NSLocalizedString("Your site is taking a long time to respond",
+                                                    comment: "The title of the Error Loading Data banner when there is a Jetpack connection error")
         static let generalInfo = NSLocalizedString("Please try again later or reach out to us and we'll be happy to assist you!",
                                                    comment: "The info of the Error Loading Data banner")
         static let decodingInfo = NSLocalizedString("This could be related to a conflict with a plugin. " +

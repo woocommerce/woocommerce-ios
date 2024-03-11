@@ -128,7 +128,7 @@ final class UpgradesViewModel: ObservableObject {
             case .userCancelled:
                 /// `no-op` – if the user cancels, we remain in the `loaded` state.
                 return
-            case .success(.verified(_)):
+            case .success(.verified):
                 // refreshing the synchronizer removes the Upgrade Now banner by the time the flow is closed
                 storePlanSynchronizer.reloadPlan()
                 upgradeViewState = .completed(wooWPComPlan)

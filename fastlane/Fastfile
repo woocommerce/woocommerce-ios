@@ -182,7 +182,7 @@ platform :ios do
     # Check out the up-to-date default branch, the designated starting point for the code freeze
     Fastlane::Helper::GitHelper.checkout_and_pull(DEFAULT_BRANCH)
 
-    message = <<-MESSAGE
+    UI.important <<-MESSAGE
 
       Code Freeze:
       • New release branch from #{DEFAULT_BRANCH}: release/#{release_version_next}
@@ -190,8 +190,6 @@ platform :ios do
       • New release version and build code: #{release_version_next} (#{build_code_code_freeze}).
 
     MESSAGE
-
-    UI.important(message)
     unless options[:skip_confirm] || UI.confirm('Do you want to continue?')
       UI.user_error!("Terminating as requested. Don't forget to run the remainder of this automation manually.")
     end
@@ -318,40 +316,28 @@ platform :ios do
   # new_beta_release
   # -----------------------------------------------------------------------------------
   # This lane updates the release branch for a new beta release. It will update the
-  # current release branch by default. If you want to update a different branch
-  # (i.e. hotfix branch) pass the related version with the 'base_version' param
-  # (example: base_version:10.6.1 will work on the 10.6.1 branch)
+  # current release branch by default.
   # -----------------------------------------------------------------------------------
   # Usage:
-  # bundle exec fastlane new_beta_release [skip_confirm:<skip confirm>] [base_version:<version>]
+  # bundle exec fastlane new_beta_release [skip_confirm:<skip confirm>]
   #
   # Example:
   # bundle exec fastlane new_beta_release
   # bundle exec fastlane new_beta_release skip_confirm:true
-  # bundle exec fastlane new_beta_release base_version:10.6.1
   #####################################################################################
   desc 'Updates a release branch for a new beta release'
   lane :new_beta_release do |options|
     # Verify that there's nothing in progress in the working copy
     ensure_git_status_clean
 
-    # Check versions
-    message = <<-MESSAGE
+    ensure_git_branch_is_release_branch
+
+    UI.important <<-MESSAGE
 
       Current build code: #{build_code_current}
       New build code: #{build_code_next}
 
     MESSAGE
-
-    # Check branch
-    unless !options[:base_version].nil? || Fastlane::Helper::GitHelper.checkout_and_pull(release: release_version_current)
-      UI.user_error!("#{message}Release branch for version #{release_version_current} doesn't exist. Abort.")
-    end
-
-    # Check user override
-    override_default_release_branch(options[:base_version]) unless options[:base_version].nil?
-
-    UI.important(message)
     unless options[:skip_confirm] || UI.confirm('Do you want to continue?')
       UI.user_error!("Terminating as requested. Don't forget to run the remainder of this automation manually.")
     end
@@ -414,15 +400,13 @@ platform :ios do
     previous_version = VERSION_FORMATTER.release_version(VERSION_CALCULATOR.previous_patch_version(version: parsed_version))
 
     # Check versions
-    message = <<-MESSAGE
+    UI.important <<-MESSAGE
 
       New hotfix version: #{new_version}
       New build code: #{build_code_hotfix}
       Branching from tag: #{previous_version}
 
     MESSAGE
-
-    UI.important(message)
     unless options[:skip_confirm] || UI.confirm('Do you want to continue?')
       UI.user_error!("Terminating as requested. Don't forget to run the remainder of this automation manually.")
     end
@@ -694,7 +678,6 @@ platform :ios do
       distribute_external: true,
       # If there is a build waiting for beta review, we want to reject that so the new build can be submitted instead
       reject_build_waiting_for_review: true,
-      # These three groups are the same for iOS and Mac
       groups: ['Internal a8c beta testers', 'Public Beta Testers']
     )
     sh('cd .. && rm WooCommerce.ipa')

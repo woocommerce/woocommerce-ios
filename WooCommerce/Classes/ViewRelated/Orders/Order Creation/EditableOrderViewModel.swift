@@ -19,6 +19,8 @@ final class EditableOrderViewModel: ObservableObject {
     private let featureFlagService: FeatureFlagService
     private let permissionChecker: CaptureDevicePermissionChecker
 
+    @Published var syncRequired: Bool = false
+
     // MARK: - Product selector states
     @Published var productSelectorViewModel: ProductSelectorViewModel?
 
@@ -80,14 +82,15 @@ final class EditableOrderViewModel: ObservableObject {
         }
     }
 
+    var sideBySideViewFeatureFlagEnabled: Bool {
+        featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm)
+    }
+
     /// Indicates whether the cancel button is visible.
     ///
     var shouldShowCancelButton: Bool {
-        guard featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) else {
-            return false
-        }
         // The cancel button is handled by the AdaptiveModalContainer with the side-by-side view enabled, so this one should not be shown.
-        guard !featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm) else {
+        guard !sideBySideViewFeatureFlagEnabled else {
             return false
         }
         return flow == .creation
@@ -108,12 +111,6 @@ final class EditableOrderViewModel: ObservableObject {
         !featureFlagService.isFeatureFlagEnabled(.betterCustomerSelectionInOrder)
     }
 
-    /// Indicates whether adding a product to the order via SKU scanning is enabled
-    ///
-    var isAddProductToOrderViaSKUScannerEnabled: Bool {
-        featureFlagService.isFeatureFlagEnabled(.addProductToOrderViaSKUScanner)
-    }
-
     var enableAddingCustomAmountViaOrderTotalPercentage: Bool {
         orderSynchronizer.order.items.isNotEmpty || orderSynchronizer.order.fees.isNotEmpty
     }
@@ -131,6 +128,8 @@ final class EditableOrderViewModel: ObservableObject {
     /// Defaults to create button.
     ///
     @Published private(set) var navigationTrailingItem: NavigationItem?
+
+    @Published private(set) var doneButtonType: DoneButtonType = .done(loading: false)
 
     /// Tracks if a network request is being performed.
     ///
@@ -173,7 +172,7 @@ final class EditableOrderViewModel: ObservableObject {
 
     /// Indicates if the order status list (selector) should be shown or not.
     ///
-    @Published var shouldShowOrderStatusList: Bool = false
+    @Published var shouldShowOrderStatusListSheet: Bool = false
 
     /// Defines if the view should be disabled.
     @Published private(set) var disabled: Bool = false
@@ -184,7 +183,7 @@ final class EditableOrderViewModel: ObservableObject {
     @Published private(set) var shouldShowNonEditableIndicators: Bool = false
 
     /// Defines the tax based on setting to be displayed in the Taxes section.
-    /// 
+    ///
     @Published private var taxBasedOnSetting: TaxBasedOnSetting?
 
     /// Selected tax rate to apply to the order
@@ -254,7 +253,13 @@ final class EditableOrderViewModel: ObservableObject {
     ///
     @Published private(set) var multipleLinesMessage: String? = nil
 
-    @Published var syncChangesImmediately: Bool = false
+    @Published var selectionSyncApproach: OrderItemSelectionSyncApproach = .onSelectorButtonTap
+
+    enum OrderItemSelectionSyncApproach {
+        case immediate
+        case onRecalculateButtonTap
+        case onSelectorButtonTap
+    }
 
     /// Status Results Controller.
     ///
@@ -401,7 +406,7 @@ final class EditableOrderViewModel: ObservableObject {
     /// Saves a coupon line after an edition on it.
     ///
     /// - Parameter result: Contains the user action on the line: remove, add, or edit it changing the coupon code.
-    /// 
+    ///
     func saveCouponLine(result: CouponLineDetailsResult) {
         switch result {
         case let .removed(removeCode):
@@ -423,7 +428,7 @@ final class EditableOrderViewModel: ObservableObject {
     }
 
     /// Current OrderItems
-    /// 
+    ///
     var currentOrderItems: [OrderItem] {
         orderSynchronizer.order.items
     }
@@ -483,6 +488,7 @@ final class EditableOrderViewModel: ObservableObject {
         configureCollectPaymentDisabledState()
         configureOrderTotal()
         configureNavigationTrailingItem()
+        configureDoneButton()
         configureSyncErrors()
         configureStatusBadgeViewModel()
         configureProductRowViewModels()
@@ -498,6 +504,8 @@ final class EditableOrderViewModel: ObservableObject {
         configureGiftCardSupport()
         observeGiftCardStatesForAnalytics()
         observeProductSelectorPresentationStateForViewModel()
+        forwardSyncApproachToSynchronizer()
+        observeChangesFromProductSelectorButtonTapSelectionSync()
     }
 
     /// Checks the latest Order sync, and returns the current items that are in the Order
@@ -531,7 +539,7 @@ final class EditableOrderViewModel: ObservableObject {
     }
 
     /// Clears selected variations
-    /// 
+    ///
     private func clearSelectedVariations() {
         analytics.track(event: WooAnalyticsEvent.Orders.orderCreationProductSelectorClearSelectionButtonTapped(productType: .variation))
         selectedProductVariations.removeAll()
@@ -582,8 +590,13 @@ final class EditableOrderViewModel: ObservableObject {
             selectedProducts.removeAll(where: { $0.productID == item.productID })
         }
 
-        if syncChangesImmediately {
-            productSelectorViewModel?.removeSelection(id: item.productOrVariationID)
+        productSelectorViewModel?.removeSelection(id: item.productOrVariationID)
+
+        // When synching changes immediately, we need to update variations as well.
+        // If the variation list isn't showing, this will do nothing, but the model will still be accurate
+        // the next time the variation list is opened.
+        if let productVariationSelectorViewModel = productSelectorViewModel?.productVariationListViewModel {
+            productVariationSelectorViewModel.removeSelection(item.productOrVariationID)
         }
 
         analytics.track(event: WooAnalyticsEvent.Orders.orderProductRemove(flow: flow.analyticsFlow))
@@ -914,6 +927,10 @@ final class EditableOrderViewModel: ObservableObject {
         trackCollectPaymentTapped()
     }
 
+    func onRecalculateTapped() {
+        syncOrderItems(products: selectedProducts, variations: selectedProductVariations)
+    }
+
     func addCustomAmountViewModel(with option: OrderCustomAmountsSection.ConfirmationOption?) -> AddCustomAmountViewModel {
         let viewModel = AddCustomAmountViewModel(inputType: addCustomAmountInputType(from: option ?? .fixedAmount),
                                                  onCustomAmountDeleted: { [weak self] feeID in
@@ -948,8 +965,15 @@ extension EditableOrderViewModel {
     /// Representation of possible navigation bar trailing buttons
     ///
     enum NavigationItem: Equatable {
-        case create
         case loading
+        case recalculate
+        case create
+    }
+
+    enum DoneButtonType: Equatable {
+        case recalculate(loading: Bool)
+        case create(loading: Bool)
+        case done(loading: Bool)
     }
 
     /// Representation of order status display properties
@@ -1037,6 +1061,10 @@ extension EditableOrderViewModel {
         let shippingMethodTitle: String
         let shippingMethodTotal: String
 
+        // We show shipping tax if the amount is not zero
+        let shouldShowShippingTax: Bool
+        let shippingTax: String
+
         let shouldShowTotalCustomAmounts: Bool
         let customAmountsTotal: String
 
@@ -1084,6 +1112,7 @@ extension EditableOrderViewModel {
              shippingTotal: String = "0",
              shippingMethodTitle: String = "",
              shippingMethodTotal: String = "",
+             shippingTax: String = "0",
              shouldShowTotalCustomAmounts: Bool = false,
              customAmountsTotal: String = "0",
              taxesTotal: String = "0",
@@ -1120,6 +1149,8 @@ extension EditableOrderViewModel {
             self.shippingTotal = currencyFormatter.formatAmount(shippingTotal) ?? "0.00"
             self.shippingMethodTitle = shippingMethodTitle
             self.shippingMethodTotal = currencyFormatter.formatAmount(shippingMethodTotal) ?? "0.00"
+            self.shippingTax = currencyFormatter.formatAmount(shippingTax) ?? "0.00"
+            self.shouldShowShippingTax = !(currencyFormatter.convertToDecimal(shippingTax) ?? NSDecimalNumber(0.0)).isZero()
             self.shouldShowTotalCustomAmounts = shouldShowTotalCustomAmounts
             self.customAmountsTotal = currencyFormatter.formatAmount(customAmountsTotal) ?? "0.00"
             self.taxesTotal = currencyFormatter.formatAmount(taxesTotal) ?? "0.00"
@@ -1173,7 +1204,7 @@ extension EditableOrderViewModel {
 // MARK: - Helpers
 private extension EditableOrderViewModel {
     /// Converts the add custom amount UI input type to view models
-    /// 
+    ///
     func addCustomAmountInputType(from option: OrderCustomAmountsSection.ConfirmationOption) -> AddCustomAmountViewModel.InputType {
         switch option {
         case .fixedAmount:
@@ -1223,22 +1254,61 @@ private extension EditableOrderViewModel {
     /// Calculates what navigation trailing item should be shown depending on our internal state.
     ///
     func configureNavigationTrailingItem() {
-        Publishers.CombineLatest4(orderSynchronizer.orderPublisher, orderSynchronizer.statePublisher, $performingNetworkRequest, Just(flow))
-            .map { order, syncState, performingNetworkRequest, flow -> NavigationItem? in
+        let requestInProgress = Publishers.CombineLatest(orderSynchronizer.statePublisher, $performingNetworkRequest)
+            .map { syncState, performingNetworkRequest in
+                if case .syncing = syncState {
+                    return true
+                } else {
+                    return performingNetworkRequest
+                }
+            }
+
+        Publishers.CombineLatest4($syncRequired, requestInProgress, $selectionSyncApproach, Just(flow))
+            .map { syncRequired, performingNetworkRequest, syncApproach, flow -> NavigationItem? in
                 guard !performingNetworkRequest else {
                     return .loading
                 }
 
-                switch (flow, syncState) {
-                case (.creation, _):
-                    return .create
-                case (.editing, .syncing):
-                    return .loading
-                case (.editing, _):
+                switch flow {
+                case .creation:
+                    if syncRequired && syncApproach == .onRecalculateButtonTap {
+                        return .recalculate
+                    } else {
+                        return .create
+                    }
+                case .editing:
                     return .none
                 }
             }
             .assign(to: &$navigationTrailingItem)
+    }
+
+    /// Calculates what Call to Action button should be shown depending on our internal state.
+    ///
+    func configureDoneButton() {
+        let requestInProgress = Publishers.CombineLatest(orderSynchronizer.statePublisher, $performingNetworkRequest)
+            .map { syncState, performingNetworkRequest in
+                if case .syncing = syncState {
+                    return true
+                } else {
+                    return performingNetworkRequest
+                }
+            }
+
+        Publishers.CombineLatest4($syncRequired, requestInProgress, $selectionSyncApproach, Just(flow))
+            .map { syncRequired, requestInProgress, syncApproach, flow -> DoneButtonType in
+                if syncRequired && syncApproach == .onRecalculateButtonTap {
+                    return .recalculate(loading: requestInProgress)
+                }
+
+                switch flow {
+                case .creation:
+                    return .create(loading: requestInProgress)
+                case .editing:
+                    return .done(loading: requestInProgress)
+                }
+            }
+            .assign(to: &$doneButtonType)
     }
 
     /// Updates the notice based on the `orderSynchronizer` sync state.
@@ -1371,6 +1441,8 @@ private extension EditableOrderViewModel {
         if removedItemsToSync.isNotEmpty {
             analytics.track(event: WooAnalyticsEvent.Orders.orderProductRemove(flow: flow.analyticsFlow))
         }
+
+        syncRequired = false
     }
 
     /// Adds a selected product (from the product list) to the order.
@@ -1567,7 +1639,7 @@ private extension EditableOrderViewModel {
                         return true
                     }
                     // If no coupons have been applied, but there are order discounts (discounts added directly to products of an order), disable coupons
-                    if order.coupons.isEmpty && order.discountTotal != "0.00" {
+                    if order.coupons.isEmpty && isDiscountBiggerThanZero {
                         return true
                     }
                     return false
@@ -1580,6 +1652,7 @@ private extension EditableOrderViewModel {
                                             shippingTotal: order.shippingTotal.isNotEmpty ? order.shippingTotal : "0",
                                             shippingMethodTitle: shippingMethodTitle,
                                             shippingMethodTotal: order.shippingLines.first?.total ?? "0",
+                                            shippingTax: order.shippingTax.isNotEmpty ? order.shippingTax : "0",
                                             shouldShowTotalCustomAmounts: order.fees.filter { $0.name != nil }.isNotEmpty,
                                             customAmountsTotal: orderTotals.feesTotal.stringValue,
                                             taxesTotal: order.totalTax.isNotEmpty ? order.totalTax : "0",
@@ -1737,7 +1810,10 @@ private extension EditableOrderViewModel {
         $isProductSelectorPresented
             .removeDuplicates()
             .map { [weak self] isPresented in
-                guard let self else { return nil }
+                guard let self,
+                      isPresented else {
+                    return nil
+                }
                 return ProductSelectorViewModel(
                     siteID: siteID,
                     selectedItemIDs: selectedProductsAndVariationsIDs,
@@ -1746,37 +1822,88 @@ private extension EditableOrderViewModel {
                     stores: stores,
                     toggleAllVariationsOnSelection: false,
                     topProductsProvider: TopProductsFromCachedOrdersProvider(),
+                    syncApproach: selectionSyncApproach.productSelectorSyncApproach,
                     orderSyncState: orderSynchronizer.statePublisher,
                     onProductSelectionStateChanged: { [weak self] product in
-                        guard let self = self else { return }
-                        self.changeSelectionStateForProduct(product)
+                        guard let self else { return }
+                        changeSelectionStateForProduct(product)
+                        evaluateSelectionSync()
                     },
                     onVariationSelectionStateChanged: { [weak self] variation, parentProduct in
-                        guard let self = self else { return }
-                        self.changeSelectionStateForProductVariation(variation, parent: parentProduct)
+                        guard let self else { return }
+                        changeSelectionStateForProductVariation(variation, parent: parentProduct)
+                        evaluateSelectionSync()
                     }, onMultipleSelectionCompleted: { [weak self] _ in
-                        guard let self = self else { return }
-                        self.syncOrderItems(products: self.selectedProducts, variations: self.selectedProductVariations)
+                        guard let self else { return }
+                        syncOrderItems(products: self.selectedProducts, variations: self.selectedProductVariations)
                     }, onAllSelectionsCleared: { [weak self] in
-                        guard let self = self else { return }
-                        self.clearAllSelectedItems()
-                        self.trackClearAllSelectedItemsTapped()
+                        guard let self else { return }
+                        clearAllSelectedItems()
+                        trackClearAllSelectedItemsTapped()
+                        evaluateSelectionSync()
                     }, onSelectedVariationsCleared: { [weak self] in
-                        guard let self = self else { return }
-                        self.clearSelectedVariations()
+                        guard let self else { return }
+                        clearSelectedVariations()
+                        evaluateSelectionSync()
                     }, onCloseButtonTapped: { [weak self] in
-                        guard let self = self else { return }
-                        self.syncOrderItemSelectionStateOnDismiss()
+                        guard let self else { return }
+                        syncOrderItemSelectionStateOnDismiss()
+                        isProductSelectorPresented = false
                     }, onConfigureProductRow: { [weak self] product in
                         guard let self else { return }
                         productToConfigureViewModel = .init(product: product, orderItem: nil, childItems: [], onConfigure: { [weak self] configuration in
                             guard let self else { return }
-                            self.saveBundleConfigurationFromProductSelector(product: product, bundleConfiguration: configuration)
-                            self.productToConfigureViewModel = nil
+                            saveBundleConfigurationFromProductSelector(product: product, bundleConfiguration: configuration)
+                            productToConfigureViewModel = nil
+                            evaluateSelectionSync()
                         })
                     })
             }
             .assign(to: &$productSelectorViewModel)
+    }
+
+    func evaluateSelectionSync() {
+        guard sideBySideViewFeatureFlagEnabled else {
+            return
+        }
+        switch selectionSyncApproach {
+        case .immediate:
+            syncOrderItems(products: selectedProducts, variations: selectedProductVariations)
+        case .onRecalculateButtonTap:
+            syncRequired = true
+        case .onSelectorButtonTap:
+            return
+        }
+    }
+
+    func forwardSyncApproachToSynchronizer() {
+        $selectionSyncApproach
+            .sink { [weak self] selectionSyncApproach in
+                guard let self,
+                      sideBySideViewFeatureFlagEnabled else {
+                    return
+                }
+                orderSynchronizer.updateBlockingBehavior(selectionSyncApproach == .immediate ? .allUpdates : .majorUpdates)
+            }
+            .store(in: &cancellables)
+    }
+
+    func observeChangesFromProductSelectorButtonTapSelectionSync() {
+        $selectionSyncApproach
+            .removeDuplicates()
+            .sink { [weak self] selectionSyncApproach in
+                guard let self,
+                      sideBySideViewFeatureFlagEnabled else {
+                    return
+                }
+                if selectionSyncApproach != .onSelectorButtonTap || syncRequired {
+                    /// When we change from `onSelectorButtonTap`, we would lose unsynced changes if we do nothing.
+                    /// `syncRequired` indicates that we have unsynced side-by-side changes, which would be lost when
+                    /// moving to modal-on-modal.
+                    syncOrderItems(products: selectedProducts, variations: selectedProductVariations)
+                }
+            }
+            .store(in: &cancellables)
     }
 
     /// Tracks when customer details have been added
@@ -1967,7 +2094,7 @@ private extension EditableOrderViewModel {
     }
 
     /// Calculates the discount on an order item, that is, subtotal minus total
-    /// 
+    ///
     func currentDiscount(on item: OrderItem) -> Decimal {
         guard let subtotal = currencyFormatter.convertToDecimal(item.subtotal),
               let total = currencyFormatter.convertToDecimal(item.total) else {
@@ -2033,6 +2160,17 @@ private extension EditableOrderViewModel {
             return
         }
         orderSynchronizer.setProduct.send(productInput)
+    }
+}
+
+private extension EditableOrderViewModel.OrderItemSelectionSyncApproach {
+    var productSelectorSyncApproach: ProductSelectorViewModel.SyncApproach {
+        switch self {
+        case .immediate, .onRecalculateButtonTap:
+            return .external
+        case .onSelectorButtonTap:
+            return .onButtonTap
+        }
     }
 }
 

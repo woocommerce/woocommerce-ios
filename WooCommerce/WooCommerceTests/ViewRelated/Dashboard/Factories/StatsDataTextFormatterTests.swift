@@ -4,7 +4,7 @@ import WooFoundation
 @testable import WooCommerce
 
 /// `StatsDataTextFormatter` tests.
-/// 
+///
 final class StatsDataTextFormatterTests: XCTestCase {
 
     private let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings()) // Default is US

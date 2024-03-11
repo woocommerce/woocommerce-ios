@@ -18,10 +18,6 @@ public enum FeatureFlag: Int {
     ///
     case inbox
 
-    /// Displays the Orders tab in a split view
-    ///
-    case splitViewInOrdersTab
-
     /// Displays the OrderForm side by side with the Product Selector
     ///
     case sideBySideViewForOrderForm
@@ -149,7 +145,7 @@ public enum FeatureFlag: Int {
     case shareProductAI
 
     /// Enables the improvements in the customer selection logic when creating an order
-    /// 
+    ///
     case betterCustomerSelectionInOrder
 
     /// Enables the hazmat shipping selection during the Shipping Labels package details
@@ -169,7 +165,7 @@ public enum FeatureFlag: Int {
     case wooPaymentsDepositsOverviewInPaymentsMenu
 
     /// Enables Tap to Pay for UK Woo Payments stores
-    /// 
+    ///
     case tapToPayOnIPhoneInUK
 
     /// Enables bundle product configuration support in order creation/editing.
@@ -200,11 +196,19 @@ public enum FeatureFlag: Int {
     ///
     case splitViewInProductsTab
 
-    /// Enables customizing the cards in the Analytics Hub
+    /// Displays the option to add a custom date range in My Store Analytics
     ///
-    case customizeAnalyticsHub
+    case customRangeInMyStoreAnalytics
 
     /// Configures WordPressKit to send HTTP requests using URLSession instead of Alamofire.
     ///
     case useURLSessionInWordPressKit
+
+    /// Enables the connectivity tool when an order list error happens.
+    ///
+    case connectivityTool
+
+    /// Enables the Application Password tutorial
+    ///
+    case appPasswordTutorial
 }

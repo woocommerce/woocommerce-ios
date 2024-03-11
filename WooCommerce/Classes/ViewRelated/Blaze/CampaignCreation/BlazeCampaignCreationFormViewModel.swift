@@ -107,11 +107,18 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
         }
     }()
 
-    lazy private(set) var confirmPaymentViewModel: BlazeConfirmPaymentViewModel = {
-        BlazeConfirmPaymentViewModel(siteID: siteID, campaignInfo: campaignInfo, onCompletion: { [weak self] in
+    var confirmPaymentViewModel: BlazeConfirmPaymentViewModel? {
+        guard let image else {
+            return nil
+        }
+        return BlazeConfirmPaymentViewModel(productID: productID,
+                                            siteID: siteID,
+                                            campaignInfo: campaignInfo,
+                                            image: image,
+                                            onCompletion: { [weak self] in
             self?.completionHandler()
         })
-    }()
+    }
 
     var adDestinationViewModel: BlazeAdDestinationSettingViewModel? {
         // Only create viewModel (and thus show the ad destination setting) if these two URLs exist.
@@ -122,9 +129,10 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
         return BlazeAdDestinationSettingViewModel(
             productURL: productURL,
             homeURL: siteURL,
-            finalDestinationURL: finalDestinationURL) { [weak self] finalDestinationURL in
+            finalDestinationURL: finalDestinationURL) { [weak self] targetUrl, urlParams in
                 guard let self else { return }
-                self.finalDestinationURL = finalDestinationURL
+                self.targetUrl = targetUrl
+                self.urlParams = urlParams
         }
     }
 
@@ -137,7 +145,17 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
     @Published private(set) var targetDeviceText: String = ""
     @Published private(set) var targetTopicText: String = ""
     @Published private(set) var targetLocationText: String = ""
-    @Published private(set) var finalDestinationURL: String = ""
+
+    // Ad destination URL
+    @Published private var targetUrl: String = ""
+    @Published private var urlParams: String = ""
+    var finalDestinationURL: String {
+        guard urlParams.isNotEmpty else {
+            return targetUrl
+        }
+
+        return targetUrl + "?" + urlParams
+    }
 
     // AI Suggestions
     @Published private(set) var isLoadingAISuggestions: Bool = false
@@ -191,9 +209,9 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
                             totalBudget: dailyBudget * Double(duration),
                             siteName: tagline,
                             textSnippet: description,
-                            targetUrl: "", // TODO: update this
-                            urlParams: "", // TODO: update this
-                            mainImage: CreateBlazeCampaign.Image(url: "", mimeType: ""), // TODO: update this
+                            targetUrl: targetUrl,
+                            urlParams: urlParams,
+                            mainImage: CreateBlazeCampaign.Image(url: "", mimeType: ""), // Image info will be added by `BlazeConfirmPaymentViewModel`.
                             targeting: targetOptions,
                             targetUrn: targetUrn,
                             type: Constants.campaignType)
@@ -224,7 +242,7 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
         updateTargetDevicesText()
         updateTargetTopicText()
         updateTargetLocationText()
-        initializeAdFinalDestination()
+        initializeAdTargetUrl()
     }
 
     func onAppear() {
@@ -396,10 +414,10 @@ private extension BlazeCampaignCreationFormViewModel {
         }()
     }
 
-    func initializeAdFinalDestination() {
+    func initializeAdTargetUrl() {
         // Default to promoting Product URL at the beginning.
         if let productURL = productURL {
-            finalDestinationURL = productURL
+            targetUrl = productURL
         }
     }
 }

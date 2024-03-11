@@ -3,7 +3,6 @@ import Experiments
 
 struct MockFeatureFlagService: FeatureFlagService {
     private let isInboxOn: Bool
-    private let isSplitViewInOrdersTabOn: Bool
     private let isUpdateOrderOptimisticallyOn: Bool
     private let shippingLabelsOnboardingM1: Bool
     private let isDomainSettingsEnabled: Bool
@@ -14,7 +13,6 @@ struct MockFeatureFlagService: FeatureFlagService {
     private let isProductDescriptionAIFromStoreOnboardingEnabled: Bool
     private let isReadOnlyGiftCardsEnabled: Bool
     private let isHideStoreOnboardingTaskListFeatureEnabled: Bool
-    private let isAddProductToOrderViaSKUScannerEnabled: Bool
     private let isBlazeEnabled: Bool
     private let isShareProductAIEnabled: Bool
     private let betterCustomerSelectionInOrder: Bool
@@ -24,9 +22,9 @@ struct MockFeatureFlagService: FeatureFlagService {
     private let isScanToUpdateInventoryEnabled: Bool
     private let blazei3NativeCampaignCreation: Bool
     private let isBackendReceiptsEnabled: Bool
+    private let sideBySideViewForOrderForm: Bool
 
     init(isInboxOn: Bool = false,
-         isSplitViewInOrdersTabOn: Bool = false,
          isUpdateOrderOptimisticallyOn: Bool = false,
          shippingLabelsOnboardingM1: Bool = false,
          isDomainSettingsEnabled: Bool = false,
@@ -37,7 +35,6 @@ struct MockFeatureFlagService: FeatureFlagService {
          isProductDescriptionAIFromStoreOnboardingEnabled: Bool = false,
          isReadOnlyGiftCardsEnabled: Bool = false,
          isHideStoreOnboardingTaskListFeatureEnabled: Bool = false,
-         isAddProductToOrderViaSKUScannerEnabled: Bool = false,
          isBlazeEnabled: Bool = false,
          isShareProductAIEnabled: Bool = false,
          betterCustomerSelectionInOrder: Bool = false,
@@ -46,9 +43,9 @@ struct MockFeatureFlagService: FeatureFlagService {
          productBundlesInOrderForm: Bool = false,
          isScanToUpdateInventoryEnabled: Bool = false,
          blazei3NativeCampaignCreation: Bool = false,
-         isBackendReceiptsEnabled: Bool = false) {
+         isBackendReceiptsEnabled: Bool = false,
+         sideBySideViewForOrderForm: Bool = false) {
         self.isInboxOn = isInboxOn
-        self.isSplitViewInOrdersTabOn = isSplitViewInOrdersTabOn
         self.isUpdateOrderOptimisticallyOn = isUpdateOrderOptimisticallyOn
         self.shippingLabelsOnboardingM1 = shippingLabelsOnboardingM1
         self.isDomainSettingsEnabled = isDomainSettingsEnabled
@@ -59,7 +56,6 @@ struct MockFeatureFlagService: FeatureFlagService {
         self.isProductDescriptionAIFromStoreOnboardingEnabled = isProductDescriptionAIFromStoreOnboardingEnabled
         self.isReadOnlyGiftCardsEnabled = isReadOnlyGiftCardsEnabled
         self.isHideStoreOnboardingTaskListFeatureEnabled = isHideStoreOnboardingTaskListFeatureEnabled
-        self.isAddProductToOrderViaSKUScannerEnabled = isAddProductToOrderViaSKUScannerEnabled
         self.isBlazeEnabled = isBlazeEnabled
         self.isShareProductAIEnabled = isShareProductAIEnabled
         self.betterCustomerSelectionInOrder = betterCustomerSelectionInOrder
@@ -69,14 +65,13 @@ struct MockFeatureFlagService: FeatureFlagService {
         self.isScanToUpdateInventoryEnabled = isScanToUpdateInventoryEnabled
         self.blazei3NativeCampaignCreation = blazei3NativeCampaignCreation
         self.isBackendReceiptsEnabled = isBackendReceiptsEnabled
+        self.sideBySideViewForOrderForm = sideBySideViewForOrderForm
     }
 
     func isFeatureFlagEnabled(_ featureFlag: FeatureFlag) -> Bool {
         switch featureFlag {
         case .inbox:
             return isInboxOn
-        case .splitViewInOrdersTab:
-            return isSplitViewInOrdersTabOn
         case .updateOrderOptimistically:
             return isUpdateOrderOptimisticallyOn
         case .shippingLabelsOnboardingM1:
@@ -97,8 +92,6 @@ struct MockFeatureFlagService: FeatureFlagService {
             return isReadOnlyGiftCardsEnabled
         case .hideStoreOnboardingTaskList:
             return isHideStoreOnboardingTaskListFeatureEnabled
-        case .addProductToOrderViaSKUScanner:
-            return isAddProductToOrderViaSKUScannerEnabled
         case .shareProductAI:
             return isShareProductAIEnabled
         case .betterCustomerSelectionInOrder:
@@ -115,6 +108,8 @@ struct MockFeatureFlagService: FeatureFlagService {
             return blazei3NativeCampaignCreation
         case .backendReceipts:
             return isBackendReceiptsEnabled
+        case .sideBySideViewForOrderForm:
+            return sideBySideViewForOrderForm
         default:
             return false
         }

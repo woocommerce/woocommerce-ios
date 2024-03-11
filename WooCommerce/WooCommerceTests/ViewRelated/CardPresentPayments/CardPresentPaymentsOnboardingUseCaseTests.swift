@@ -44,9 +44,9 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
                 self.preferredInPersonPaymentGatewayBySite[siteID] = gateway
             case .getPreferredInPersonPaymentGateway(let siteID, let onCompletion):
                 onCompletion(self.preferredInPersonPaymentGatewayBySite[siteID])
-            case .forgetPreferredInPersonPaymentGateway(_):
+            case .forgetPreferredInPersonPaymentGateway:
                 break
-            case .setSkippedCashOnDeliveryOnboardingStep(_):
+            case .setSkippedCashOnDeliveryOnboardingStep:
                 break
             case .getSkippedCashOnDeliveryOnboardingStep(_, let completion):
                 completion(self.skippedCodOnboardingStep)

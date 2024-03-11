@@ -2,7 +2,7 @@ import Foundation
 import Yosemite
 
 /// View model for `ThemeSettingView`
-/// 
+///
 final class ThemeSettingViewModel: ObservableObject {
 
     @Published private(set) var currentThemeName: String = ""

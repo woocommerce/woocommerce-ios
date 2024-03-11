@@ -25,6 +25,62 @@ final class MediaRemoteTests: XCTestCase {
         network.removeAllSimulatedResponses()
     }
 
+    // MARK: - Load Media using site ID and media ID
+
+    /// Verifies that `loadMedia` properly parses the `media` sample response.
+    ///
+    func test_loadMedia_properly_returns_parsed_media() throws {
+        // Given
+        let remote = MediaRemote(network: network)
+        let mediaID: Int64 = 22
+        network.simulateResponse(requestUrlSuffix: "media/\(mediaID)", filename: "media")
+
+        // When
+        let result = waitFor { promise in
+            remote.loadMedia(siteID: self.sampleSiteID, mediaID: mediaID) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        let imageMedia = try XCTUnwrap(result.get())
+        XCTAssertEqual(imageMedia.mediaID, mediaID)
+        XCTAssertEqual(imageMedia.date, Date(timeIntervalSince1970: 1637546157))
+        XCTAssertEqual(imageMedia.slug, "img_0111-2")
+        XCTAssertEqual(imageMedia.mimeType, "image/jpeg")
+        XCTAssertEqual(imageMedia.src, "https://ninja.media/wp-content/uploads/2021/11/img_0111-2-scaled.jpeg")
+        XCTAssertEqual(imageMedia.alt, "Floral")
+        XCTAssertEqual(imageMedia.details?.width, 2560)
+        XCTAssertEqual(imageMedia.details?.height, 1920)
+        XCTAssertEqual(imageMedia.details?.fileName, "2021/11/img_0111-2-scaled.jpeg")
+        XCTAssertEqual(imageMedia.title, .init(rendered: "img_0111-2"))
+        XCTAssertEqual(imageMedia.details?.sizes?["thumbnail"],
+                       .init(fileName: "img_0111-2-150x150.jpeg",
+                             src: "https://ninja.media/wp-content/uploads/2021/11/img_0111-2-150x150.jpeg",
+                             width: 150,
+                             height: 150))
+    }
+
+    /// Verifies that `loadMedia` properly relays Networking Layer errors.
+    ///
+    func test_loadMedia_properly_relays_networking_errors() throws {
+        // Given
+        let remote = MediaRemote(network: network)
+        let mediaID: Int64 = 22
+        network.simulateError(requestUrlSuffix: "media/\(mediaID)", error: NetworkError.notFound(response: nil))
+
+        // When
+        let result = waitFor { promise in
+            remote.loadMedia(siteID: self.sampleSiteID, mediaID: mediaID) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        let error = try XCTUnwrap(result.failure)
+        XCTAssertEqual(error as? NetworkError, .notFound())
+    }
+
     // MARK: - Load Media From Media Library `loadMediaLibrary`
 
     func test_loadMediaLibrary_sends_mime_type_filter_if_imagesOnly_is_true() throws {

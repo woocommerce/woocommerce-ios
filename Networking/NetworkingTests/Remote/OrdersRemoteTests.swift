@@ -114,6 +114,52 @@ final class OrdersRemoteTests: XCTestCase {
         XCTAssertTrue(queryParameters.contains(expectedParam), "Expected to have param: \(expectedParam)")
     }
 
+    func test_loadAllOrders_includes_customer_parameter_when_provided() {
+        // Given
+        let remote = OrdersRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "orders", filename: "orders-load-all")
+        let expectedCustomerID: Int64 = 123
+
+        // When
+        _ = waitFor { promise in
+            remote.loadAllOrders(for: self.sampleSiteID, customerID: expectedCustomerID) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        guard let queryParameters = network.queryParameters else {
+            XCTFail("Cannot parse query from the API request")
+            return
+        }
+
+        let expectedParam = "customer=\(expectedCustomerID)"
+        XCTAssertTrue(queryParameters.contains(expectedParam), "Expected to have param: \(expectedParam)")
+    }
+
+    func test_loadAllOrders_includes_product_parameter_when_provided() {
+        // Given
+        let remote = OrdersRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "orders", filename: "orders-load-all")
+        let expectedProductID: Int64 = 13
+
+        // When
+        _ = waitFor { promise in
+            remote.loadAllOrders(for: self.sampleSiteID, productID: expectedProductID) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        guard let queryParameters = network.queryParameters else {
+            XCTFail("Cannot parse query from the API request")
+            return
+        }
+
+        let expectedParam = "product=\(expectedProductID)"
+        XCTAssertTrue(queryParameters.contains(expectedParam), "Expected to have param: \(expectedParam)")
+    }
+
     // MARK: - Load Order Tests
 
     /// Verifies that loadOrder properly parses the `order` sample response.
@@ -658,6 +704,23 @@ final class OrdersRemoteTests: XCTestCase {
         let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
         let received = try XCTUnwrap(request.parameters["gift_cards"] as? [[String: AnyHashable]])
         let expected: [[String: AnyHashable]] = [["code": "ABAE-DCCA"]]
+        assertEqual(received, expected)
+    }
+
+    func test_create_order_sets_mobile_app_as_source_type_meta_data() throws {
+        // Given
+        let remote = OrdersRemote(network: network)
+        let order = Order.fake()
+
+        // When
+        remote.createOrder(siteID: 123, order: order, giftCard: nil, fields: []) { result in }
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
+        let received = try XCTUnwrap(request.parameters["meta_data"] as? [[String: AnyHashable]])
+        let expected: [[String: AnyHashable]] = [["id": 0,
+                                                  "key": "_wc_order_attribution_source_type",
+                                                  "value": "mobile_app"]]
         assertEqual(received, expected)
     }
 

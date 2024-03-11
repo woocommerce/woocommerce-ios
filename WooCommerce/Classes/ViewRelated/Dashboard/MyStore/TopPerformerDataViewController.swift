@@ -49,19 +49,6 @@ final class TopPerformerDataViewController: UIViewController {
         resultsController?.fetchedObjects.first
     }
 
-    private var tabDescription: String {
-        switch granularity {
-        case .day:
-            return NSLocalizedString("Today", comment: "Top Performers section title - today")
-        case .week:
-            return NSLocalizedString("This Week", comment: "Top Performers section title - this week")
-        case .month:
-            return NSLocalizedString("This Month", comment: "Top Performers section title - this month")
-        case .year:
-            return NSLocalizedString("This Year", comment: "Top Performers section title - this year")
-        }
-    }
-
     // MARK: - Initialization
 
     /// Designated Initializer

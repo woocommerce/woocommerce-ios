@@ -7,11 +7,14 @@ struct BlazeCampaignCreationErrorView: View {
 
     @State private var isShowingSupport = false
 
+    private let error: BlazeCampaignCreationError
     private let onTryAgain: () -> Void
     private let onCancel: () -> Void
 
-    init(onTryAgain: @escaping () -> Void,
+    init(error: BlazeCampaignCreationError,
+         onTryAgain: @escaping () -> Void,
          onCancel: @escaping () -> Void) {
+        self.error = error
         self.onTryAgain = onTryAgain
         self.onCancel = onCancel
     }
@@ -30,7 +33,7 @@ struct BlazeCampaignCreationErrorView: View {
                     .largeTitleStyle()
 
                 VStack(alignment: .leading, spacing: Layout.contentPadding) {
-                    Text(Localization.message)
+                    Text(error.message)
                         .bodyStyle()
 
                     Text(Localization.noPaymentTaken)
@@ -104,12 +107,6 @@ private extension BlazeCampaignCreationErrorView {
             value: "Error creating campaign",
             comment: "Title of the Blaze campaign creation error screen."
         )
-        static let message = NSLocalizedString(
-            "blazeCampaignCreationErrorView.message",
-            value: "Something's not quite right.\nWe couldn't create your campaign.",
-            comment: "Message on the Blaze campaign creation error screen. " +
-            "Keep '\n' as-is as it signals a line break."
-        )
         static let noPaymentTaken = NSLocalizedString(
             "blazeCampaignCreationErrorView.noPaymentTaken",
             value: "No payment has been taken.",
@@ -143,6 +140,54 @@ private extension BlazeCampaignCreationErrorView {
     }
 }
 
-#Preview {
-    BlazeCampaignCreationErrorView(onTryAgain: {}, onCancel: {})
+enum BlazeCampaignCreationError: Error {
+    case failedToFetchCampaignImage
+    case failedToUploadCampaignImage
+    case failedToCreateCampaign
+
+    var message: String {
+        switch self {
+        case .failedToFetchCampaignImage:
+            NSLocalizedString(
+                "blazeCampaignCreationError.failedToFetchCampaignImage",
+                value: "Failed to fetch campaign image details.",
+                comment: "Message on the Blaze campaign creation error screen."
+            )
+        case .failedToUploadCampaignImage:
+            NSLocalizedString(
+                "blazeCampaignCreationError.failedToUploadCampaignImage",
+                value: "Failed to upload campaign image.",
+                comment: "Message on the Blaze campaign creation error screen."
+            )
+        case .failedToCreateCampaign:
+            NSLocalizedString(
+                "blazeCampaignCreationError.failedToCreateCampaign",
+                value: "Something's not quite right.\nWe couldn't create your campaign.",
+                comment: "Message on the Blaze campaign creation error screen. " +
+                "Keep '\n' as-is as it signals a line break."
+            )
+        }
+    }
+}
+
+extension BlazeCampaignCreationError: Identifiable {
+    var id: Self { self }
+}
+
+#Preview("Failed to fetch campaign image") {
+    BlazeCampaignCreationErrorView(error: .failedToFetchCampaignImage,
+                                   onTryAgain: {},
+                                   onCancel: {})
+}
+
+#Preview("Failed to upload campaign image") {
+    BlazeCampaignCreationErrorView(error: .failedToUploadCampaignImage,
+                                   onTryAgain: {},
+                                   onCancel: {})
+}
+
+#Preview("Failed to create campaign") {
+    BlazeCampaignCreationErrorView(error: .failedToCreateCampaign,
+                                   onTryAgain: {},
+                                   onCancel: {})
 }

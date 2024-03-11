@@ -1,9 +1,31 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+17.7
+-----
+
+
+17.6
+-----
+- Orders: Merchants can now contact their customers through WhatsApp and Telegram apps. [https://github.com/woocommerce/woocommerce-ios/pull/12099]
+- [internal] Blaze: Use v1.1 endpoint to load campaigns list. [https://github.com/woocommerce/woocommerce-ios/pull/12127]
+- Orders: Merchants can filter orders by selecting a product. [https://github.com/woocommerce/woocommerce-ios/pull/12129]
+- [**] Products tab: split view is now supported in the products tab. [https://github.com/woocommerce/woocommerce-ios/pull/12158]
+- [***] Stats: Merchants can now customize their analytics by enabling/disabling and reordering the cards in the Analytics Hub. [https://github.com/woocommerce/woocommerce-ios/pull/12156]
+
+
+17.5
+-----
+
+
+17.4
+-----
+- [***] Dropped iOS 15 support. From now we support iOS 16 and later. [https://github.com/woocommerce/woocommerce-ios/pull/11965]
+
 17.3
 -----
 - [***] Products: Cache product images to reduce network requests. [https://github.com/woocommerce/woocommerce-ios/pull/11902]
 - [***] Stats: The Analytics Hub now includes links to the full analytics report for each supported analytics card (Revenue, Orders, Products). [https://github.com/woocommerce/woocommerce-ios/pull/11920]
+- [**] Orders: Show the order attribution info in the order detail screen. [https://github.com/woocommerce/woocommerce-ios/pull/11963, https://github.com/woocommerce/woocommerce-ios/pull/11966]
 - [**] Orders: Orders have an associated receipt now. Receipts can be printed, or shared via other apps installed on device. The feature will become available for merchants with WooCommerce version of 8.7.0+. [https://github.com/woocommerce/woocommerce-ios/pull/11956]
 - [*] Products > product scanning: in wider devices, the product details after scanning a barcode does not show in split view with an empty secondary view anymore. Camera capture is also enabled when the app is in split mode with another app in iOS 16+ for supported devices. [https://github.com/woocommerce/woocommerce-ios/pull/11931]
 
@@ -13,6 +35,7 @@
 - [*] Orders: the placeholder cells shown in the loading state have the animated redacted content again. [https://github.com/woocommerce/woocommerce-ios/pull/11842]
 - [*] Fixed arrow directions for RTL locales. [https://github.com/woocommerce/woocommerce-ios/pull/11833]
 - [*] Update Product Creation AI prompt to avoid unexpected response from AI. [https://github.com/woocommerce/woocommerce-ios/pull/11853]
+- [*] Fixed incorrect site URL when creating Blaze campaigns after switching stores. [https://github.com/woocommerce/woocommerce-ios/pull/11872]
 - [*] Orders in split view: when the store has no orders and then an order is created, the order list is now shown instead of the empty view. [https://github.com/woocommerce/woocommerce-ios/pull/11849]
 - [*] Fixed a crash in product description. [https://github.com/woocommerce/woocommerce-ios/pull/11865]
 - [*] Products: attempted fix of a crash when adding images [https://github.com/woocommerce/woocommerce-ios/pull/11843]

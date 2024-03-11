@@ -183,7 +183,7 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
         if let site = stores.sessionManager.defaultSite,
            site.frameNonce.isNotEmpty,
             // Preview existing drafts or new products that can be saved as a draft
-           (canSaveAsDraft() || originalProductModel.status == .draft) {
+           canSaveAsDraft() || originalProductModel.status == .draft {
             buttons.insert(.preview, at: 0)
         }
 
@@ -674,7 +674,8 @@ extension ProductFormViewModel {
         let hasLinkedProducts = product.upsellIDs.isNotEmpty || product.crossSellIDs.isNotEmpty
         let hasMinMaxQuantityRules = product.hasQuantityRules
         analytics.track(event: WooAnalyticsEvent.ProductDetail.loaded(hasLinkedProducts: hasLinkedProducts,
-                                                                      hasMinMaxQuantityRules: hasMinMaxQuantityRules))
+                                                                      hasMinMaxQuantityRules: hasMinMaxQuantityRules,
+                                                                      horizontalSizeClass: UITraitCollection.current.horizontalSizeClass))
     }
 }
 

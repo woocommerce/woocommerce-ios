@@ -229,7 +229,7 @@ struct BlazeAdDestinationSettingView_Previews: PreviewProvider {
                     productURL: "https://woo.com/product",
                     homeURL: "https://woo.com/",
                     finalDestinationURL: "https://woo.com/product/?key1=value1&key2=value2",
-                    onSave: { _ in }
+                    onSave: { _, _ in }
                 )
             )
 
@@ -239,7 +239,7 @@ struct BlazeAdDestinationSettingView_Previews: PreviewProvider {
                     productURL: "https://woo.com/product",
                     homeURL: "https://woo.com/",
                     finalDestinationURL: "https://woo.com/?key1=value1&key2=value2",
-                    onSave: { _ in }
+                    onSave: { _, _ in }
                 )
             )
         }

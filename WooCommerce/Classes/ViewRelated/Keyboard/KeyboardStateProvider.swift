@@ -57,6 +57,10 @@ final class KeyboardStateProvider: KeyboardStateProviding {
         let notificationNames = [UIResponder.keyboardWillShowNotification, UIResponder.keyboardWillHideNotification]
 
         observations.append(contentsOf: notificationNames.map { notificationName in
+            // SwiftLint warns when observers are not retained.
+            // But the observers returned here are retained in the observations array.
+            //
+            // swiftlint:disable:next discarded_notification_center_observer
             notificationCenter.addObserver(forName: notificationName, object: nil, queue: nil) { [weak self] notification in
                 self?.updateState(from: notification)
             }

@@ -21,7 +21,7 @@ class StoreTableViewCell: UITableViewCell {
     @IBOutlet private var noticeContainerView: UIView!
 
     /// Image view: notice
-    /// 
+    ///
     @IBOutlet private var noticeImageView: UIImageView!
 
     /// Label: Name

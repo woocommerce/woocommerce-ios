@@ -3,6 +3,17 @@ import Foundation
 // MARK: - MediaAction: Defines media operations (supported by the MediaStore).
 //
 public enum MediaAction: Action {
+    /// Retrieves single Media item from the site's WP Media Library.
+    ///
+    /// - Parameters:
+    ///   - siteID: Site for which we'll load the media from.
+    ///   - mediaID: ID of Media to be retrieved
+    ///   - onCompletion: Closure to be executed upon completion.
+    ///
+    case retrieveMedia(siteID: Int64,
+                       mediaID: Int64,
+                       onCompletion: (Result<Media, Error>) -> Void)
+
     /// Retrieves media from the site's WP Media Library.
     ///
     /// - Parameters:

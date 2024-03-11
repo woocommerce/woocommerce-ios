@@ -207,6 +207,7 @@
 		CE4FD44C2350EB7600A16B31 /* OrderItemTaxRefund+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE4FD4442350EB7600A16B31 /* OrderItemTaxRefund+CoreDataProperties.swift */; };
 		CE4FD44D2350EB7600A16B31 /* Refund+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE4FD4452350EB7600A16B31 /* Refund+CoreDataClass.swift */; };
 		CE4FD44E2350EB7600A16B31 /* Refund+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE4FD4462350EB7600A16B31 /* Refund+CoreDataProperties.swift */; };
+		CEE482D32B83753100FAC8C5 /* AnalyticsCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEE482D22B83753100FAC8C5 /* AnalyticsCard.swift */; };
 		CEE9188929F7E8D2004B23FF /* OrderGiftCard+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEE9188729F7E8D2004B23FF /* OrderGiftCard+CoreDataClass.swift */; };
 		CEE9188A29F7E8D2004B23FF /* OrderGiftCard+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEE9188829F7E8D2004B23FF /* OrderGiftCard+CoreDataProperties.swift */; };
 		CEF88DB2233EAAF100BED485 /* OrderRefundCondensed+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEF88DB0233EAAF000BED485 /* OrderRefundCondensed+CoreDataClass.swift */; };
@@ -251,6 +252,8 @@
 		E16D3743284F1E76005676BC /* MockInMemoryStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = E16D3742284F1E76005676BC /* MockInMemoryStorage.swift */; };
 		E1BCBE842844D35E00087C33 /* GeneralStoreSettingsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BCBE832844D35E00087C33 /* GeneralStoreSettingsTests.swift */; };
 		E1E632C02846245D00878082 /* GeneralAppSettingsStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1E632BF2846245D00878082 /* GeneralAppSettingsStorage.swift */; };
+		EE3D1E8F2B8EAACB0016B132 /* BlazeCampaignListItem+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE3D1E8D2B8EAACB0016B132 /* BlazeCampaignListItem+CoreDataClass.swift */; };
+		EE3D1E902B8EAACB0016B132 /* BlazeCampaignListItem+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE3D1E8E2B8EAACB0016B132 /* BlazeCampaignListItem+CoreDataProperties.swift */; };
 		EE8A303E2B7352D3001D7C66 /* OrderAttributionInfo+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8A303C2B7352D0001D7C66 /* OrderAttributionInfo+CoreDataClass.swift */; };
 		EE8A303F2B7352D3001D7C66 /* OrderAttributionInfo+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8A303D2B7352D1001D7C66 /* OrderAttributionInfo+CoreDataProperties.swift */; };
 		FEDD70AD26A5DBDD00194C3A /* EligibilityErrorInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEDD70AC26A5DBDD00194C3A /* EligibilityErrorInfo.swift */; };
@@ -510,6 +513,7 @@
 		CE831FE12A14F6C800E8BEFB /* Model 87.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 87.xcdatamodel"; sourceTree = "<group>"; };
 		CEC963062B173F4700688EA3 /* Model 104.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 104.xcdatamodel"; sourceTree = "<group>"; };
 		CEDA78632B31D0E00076AA09 /* Model 105.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 105.xcdatamodel"; sourceTree = "<group>"; };
+		CEE482D22B83753100FAC8C5 /* AnalyticsCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsCard.swift; sourceTree = "<group>"; };
 		CEE9188229F7E60C004B23FF /* Model 85.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 85.xcdatamodel"; sourceTree = "<group>"; };
 		CEE9188729F7E8D2004B23FF /* OrderGiftCard+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderGiftCard+CoreDataClass.swift"; sourceTree = "<group>"; };
 		CEE9188829F7E8D2004B23FF /* OrderGiftCard+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderGiftCard+CoreDataProperties.swift"; sourceTree = "<group>"; };
@@ -620,6 +624,9 @@
 		E1BCBE832844D35E00087C33 /* GeneralStoreSettingsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralStoreSettingsTests.swift; sourceTree = "<group>"; };
 		E1E632BF2846245D00878082 /* GeneralAppSettingsStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralAppSettingsStorage.swift; sourceTree = "<group>"; };
 		EE319C522B14DCEE001AC211 /* Model 103.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 103.xcdatamodel"; sourceTree = "<group>"; };
+		EE3D1E7A2B8EA5110016B132 /* Model 107.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 107.xcdatamodel"; sourceTree = "<group>"; };
+		EE3D1E8D2B8EAACB0016B132 /* BlazeCampaignListItem+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlazeCampaignListItem+CoreDataClass.swift"; sourceTree = "<group>"; };
+		EE3D1E8E2B8EAACB0016B132 /* BlazeCampaignListItem+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlazeCampaignListItem+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		EE5B5BAF2AB30251009BCBD6 /* Model 98.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 98.xcdatamodel"; sourceTree = "<group>"; };
 		EE8A30332B734AFA001D7C66 /* Model 106.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 106.xcdatamodel"; sourceTree = "<group>"; };
 		EE8A303C2B7352D0001D7C66 /* OrderAttributionInfo+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "OrderAttributionInfo+CoreDataClass.swift"; sourceTree = "<group>"; };
@@ -762,6 +769,7 @@
 				746A9D20214078080013F6FF /* TopEarnerStatsItem+CoreDataProperties.swift */,
 				02DA64182313C2AA00284168 /* StatsVersion.swift */,
 				02D45648231CFB27008CF0A9 /* StatsVersionBannerVisibility.swift */,
+				CEE482D22B83753100FAC8C5 /* AnalyticsCard.swift */,
 			);
 			name = Stats;
 			sourceTree = "<group>";
@@ -915,14 +923,7 @@
 		B59E11D720A9CFF3004121A4 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				DED91DEB2AD66FCA00CDCC53 /* BlazeCampaign+CoreDataProperties.swift */,
-				DED91DE92AD66FC800CDCC53 /* BlazeCampaign+CoreDataClass.swift */,
-				DEA4938A2B3ACA3000EED015 /* BlazeTargetDevice+CoreDataClass.swift */,
-				DEA493872B3ACA3000EED015 /* BlazeTargetDevice+CoreDataProperties.swift */,
-				DEA493892B3ACA3000EED015 /* BlazeTargetLanguage+CoreDataClass.swift */,
-				DEA493862B3ACA3000EED015 /* BlazeTargetLanguage+CoreDataProperties.swift */,
-				DEA493882B3ACA3000EED015 /* BlazeTargetTopic+CoreDataClass.swift */,
-				DEA493852B3ACA3000EED015 /* BlazeTargetTopic+CoreDataProperties.swift */,
+				EE3D1E802B8EA93C0016B132 /* Blaze */,
 				B9B8B5032AA0D7F400B36811 /* TaxRate+CoreDataClass.swift */,
 				B9B8B5042AA0D7F400B36811 /* TaxRate+CoreDataProperties.swift */,
 				6889089728F66DED0081A07E /* Customer+CoreDataClass.swift */,
@@ -1121,6 +1122,23 @@
 				D87F615B2265AF190031A13B /* shipment-provider.plist */,
 			);
 			path = "Mock data";
+			sourceTree = "<group>";
+		};
+		EE3D1E802B8EA93C0016B132 /* Blaze */ = {
+			isa = PBXGroup;
+			children = (
+				EE3D1E8D2B8EAACB0016B132 /* BlazeCampaignListItem+CoreDataClass.swift */,
+				EE3D1E8E2B8EAACB0016B132 /* BlazeCampaignListItem+CoreDataProperties.swift */,
+				DED91DEB2AD66FCA00CDCC53 /* BlazeCampaign+CoreDataProperties.swift */,
+				DED91DE92AD66FC800CDCC53 /* BlazeCampaign+CoreDataClass.swift */,
+				DEA4938A2B3ACA3000EED015 /* BlazeTargetDevice+CoreDataClass.swift */,
+				DEA493872B3ACA3000EED015 /* BlazeTargetDevice+CoreDataProperties.swift */,
+				DEA493892B3ACA3000EED015 /* BlazeTargetLanguage+CoreDataClass.swift */,
+				DEA493862B3ACA3000EED015 /* BlazeTargetLanguage+CoreDataProperties.swift */,
+				DEA493882B3ACA3000EED015 /* BlazeTargetTopic+CoreDataClass.swift */,
+				DEA493852B3ACA3000EED015 /* BlazeTargetTopic+CoreDataProperties.swift */,
+			);
+			path = Blaze;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -1338,6 +1356,7 @@
 				457E6E8227D8B60F00173F69 /* Order+CoreDataClass.swift in Sources */,
 				021EAA4725493A1600AA8CCD /* OrderItemAttribute+CoreDataClass.swift in Sources */,
 				D4466F5626D524FC003E931B /* Feature.swift in Sources */,
+				EE3D1E902B8EAACB0016B132 /* BlazeCampaignListItem+CoreDataProperties.swift in Sources */,
 				268BF6DB2642CBA6003948D8 /* Models+Copiable.generated.swift in Sources */,
 				CC6A054428770933002C144E /* OrderMetaData+CoreDataProperties.swift in Sources */,
 				D4ABCACF26D6E7E400CD18F4 /* Announcement.swift in Sources */,
@@ -1437,6 +1456,7 @@
 				077F39C6269F1F7C00ABEADC /* SystemPlugin+CoreDataProperties.swift in Sources */,
 				CC2C0309262DCC6900928C9C /* ShippingLabelAccountSettings+CoreDataProperties.swift in Sources */,
 				31D9C8C826684AEC000AC134 /* PaymentGatewayAccount+CoreDataClass.swift in Sources */,
+				CEE482D32B83753100FAC8C5 /* AnalyticsCard.swift in Sources */,
 				B505F6DA20BEEA3200BB1B69 /* Account+CoreDataProperties.swift in Sources */,
 				CE4FD44D2350EB7600A16B31 /* Refund+CoreDataClass.swift in Sources */,
 				45E4620A2684BCEE00011BF2 /* Country+CoreDataClass.swift in Sources */,
@@ -1449,6 +1469,7 @@
 				DEFD6D432641B70400E51E0D /* SitePlugin+CoreDataClass.swift in Sources */,
 				CE3B7AD22225E62C0050FE4B /* OrderStatus+CoreDataClass.swift in Sources */,
 				027D3E6E23A0EEA4007D91B0 /* StorageType+Deletions.swift in Sources */,
+				EE3D1E8F2B8EAACB0016B132 /* BlazeCampaignListItem+CoreDataClass.swift in Sources */,
 				D8FBFF5922D66A06006E3336 /* OrderStatsV4+CoreDataClass.swift in Sources */,
 				031C1EA727AD3AFE00298699 /* WCPayCardPresentReceiptDetails+CoreDataClass.swift in Sources */,
 				74B7D6AE20F90CBB002667AC /* OrderNote+CoreDataProperties.swift in Sources */,
@@ -1607,7 +1628,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
@@ -1727,7 +1748,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -1786,7 +1807,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
@@ -1958,6 +1979,7 @@
 		DEC51AA4275B41BE009F3DF4 /* WooCommerce.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				EE3D1E7A2B8EA5110016B132 /* Model 107.xcdatamodel */,
 				EE8A30332B734AFA001D7C66 /* Model 106.xcdatamodel */,
 				CEDA78632B31D0E00076AA09 /* Model 105.xcdatamodel */,
 				CEC963062B173F4700688EA3 /* Model 104.xcdatamodel */,
@@ -2065,7 +2087,7 @@
 				DEC51ADE275B41BE009F3DF4 /* Model 47.xcdatamodel */,
 				DEC51ADF275B41BE009F3DF4 /* Model 19.xcdatamodel */,
 			);
-			currentVersion = EE8A30332B734AFA001D7C66 /* Model 106.xcdatamodel */;
+			currentVersion = EE3D1E7A2B8EA5110016B132 /* Model 107.xcdatamodel */;
 			path = WooCommerce.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

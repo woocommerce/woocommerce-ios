@@ -68,6 +68,30 @@ final class ApplicationPasswordAuthorizationWebViewController: UIViewController 
         configureProgressBar()
         configureActivityIndicator()
         fetchAuthorizationURL()
+
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.appPasswordTutorial) {
+            handleSwipeBackGesture()
+        }
+    }
+}
+
+extension ApplicationPasswordAuthorizationWebViewController {
+    override func shouldPopOnBackButton() -> Bool {
+        presentBackNavigationAlert()
+        return false
+    }
+
+    override func shouldPopOnSwipeBack() -> Bool {
+        return shouldPopOnBackButton()
+    }
+
+    private func presentBackNavigationAlert() {
+        UIAlertController.presentUnfinishedApplicationPasswordAlert(from: self) { [weak self] in
+            self?.navigationController?.popViewController(animated: true)
+            self?.analytics.track(event: .ApplicationPasswordAuthorization.loginDismissed())
+        }
+
+        analytics.track(event: .ApplicationPasswordAuthorization.loginExitConfirmation())
     }
 }
 

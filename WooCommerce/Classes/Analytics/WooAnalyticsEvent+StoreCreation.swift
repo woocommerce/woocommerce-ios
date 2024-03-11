@@ -107,7 +107,7 @@ extension WooAnalyticsEvent {
         }
 
         /// Tracked when the Retry button on the timeout screen is tapped.
-        /// 
+        ///
         static func siteCreationTimeoutRetried() -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .siteCreationTimeoutRetried, properties: [:])
         }

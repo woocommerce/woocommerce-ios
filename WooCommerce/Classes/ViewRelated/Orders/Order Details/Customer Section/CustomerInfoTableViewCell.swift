@@ -153,7 +153,7 @@ private extension CustomerInfoTableViewCell {
     }
 }
 
-/// MARK: - Testability
+// MARK: - Testability
 extension CustomerInfoTableViewCell {
     func getTitleLabel() -> UILabel {
         return titleLabel

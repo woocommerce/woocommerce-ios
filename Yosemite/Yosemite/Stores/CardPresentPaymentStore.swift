@@ -5,7 +5,7 @@ import Combine
 
 
 
-/// MARK: CardPresentPaymentStore
+// MARK: CardPresentPaymentStore
 ///
 public final class CardPresentPaymentStore: Store {
     // Retaining the reference to the card reader service might end up being problematic.
@@ -447,7 +447,7 @@ private extension CardPresentPaymentStore {
             case .failure(let loadError):
                 DDLogError("⛔️ Error synchronizing WCPay Account: \(loadError)")
                 error = loadError
-            case .success():
+            case .success:
                 break
             }
             group.leave()
@@ -459,7 +459,7 @@ private extension CardPresentPaymentStore {
             case .failure(let loadError):
                 DDLogError("⛔️ Error synchronizing Stripe Account: \(loadError)")
                 error = loadError
-            case .success():
+            case .success:
                 break
             }
             group.leave()
@@ -554,14 +554,14 @@ private extension CardPresentPaymentStore {
                     self.upsertCharge(readonlyCharge: charge)
                     completion(.success(charge))
                 case .failure(let error):
-                    if case .noSuchChargeError(_) = WCPayChargesError(underlyingError: error) {
+                    if case .noSuchChargeError = WCPayChargesError(underlyingError: error) {
                         self.deleteCharge(siteID: siteID, chargeID: chargeID)
                     }
                     completion(.failure(error))
                 }
             }
         case .stripe:
-            break; /// not implemented
+            break /// not implemented
         }
     }
 }

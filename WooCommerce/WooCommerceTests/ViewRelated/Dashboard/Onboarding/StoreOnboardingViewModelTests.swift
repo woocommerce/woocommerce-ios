@@ -1,8 +1,6 @@
 import XCTest
 import Yosemite
 @testable import WooCommerce
-@testable import Yosemite
-
 final class StoreOnboardingViewModelTests: XCTestCase {
     private var stores: MockStoresManager!
     private var defaults: UserDefaults!

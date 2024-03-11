@@ -1,4 +1,5 @@
 import Combine
+import Experiments
 import UIKit
 import Yosemite
 import class WidgetKit.WidgetCenter
@@ -9,9 +10,13 @@ import class WidgetKit.WidgetCenter
 final class StoreStatsAndTopPerformersViewController: TabbedViewController {
     // MARK: - DashboardUI protocol
 
+    var onDataReload: () -> Void = {}
+
     var displaySyncingError: (Error) -> Void = { _ in }
 
     var onPullToRefresh: @MainActor () async -> Void = {}
+
+    private var customRangeCoordinator: CustomRangeTabCreationCoordinator?
 
     // MARK: - Subviews
 
@@ -27,14 +32,15 @@ final class StoreStatsAndTopPerformersViewController: TabbedViewController {
 
     // MARK: - Private Properties
 
-    private let periodVCs: [StoreStatsAndTopPerformersPeriodViewController]
+    private var periodVCs: [StoreStatsAndTopPerformersPeriodViewController]
     private let siteID: Int64
     // A set of syncing time ranges is tracked instead of a single boolean so that the stats for each time range
     // can be synced when swiping or tapping to change the time range tab before the syncing finishes for the previously selected tab.
     private var syncingTimeRanges: Set<StatsTimeRangeV4> = []
     private let usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter
     private let dashboardViewModel: DashboardViewModel
-    private let timeRanges: [StatsTimeRangeV4] = [.today, .thisWeek, .thisMonth, .thisYear]
+    private var timeRanges: [StatsTimeRangeV4] = [.today, .thisWeek, .thisMonth, .thisYear]
+    private let featureFlagService: FeatureFlagService
 
     /// Because loading the last selected time range tab is async, the selected tab index is initially `nil` and set after the last selected value is loaded.
     /// We need to make sure any call to the public `reloadData` is after the selected time range is set to avoid making unnecessary API requests
@@ -52,25 +58,35 @@ final class StoreStatsAndTopPerformersViewController: TabbedViewController {
     private var localOrdersSubscription: AnyCancellable?
     private var remoteOrdersSubscription: AnyCancellable?
 
+    private lazy var customRangeButtonView = createCustomRangeButtonView()
+
+    private let stores: StoresManager
+
     // MARK: - View Lifecycle
 
     init(siteID: Int64,
          dashboardViewModel: DashboardViewModel,
          usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter,
-         pushNotificationsManager: PushNotesManager = ServiceLocator.pushNotesManager) {
+         pushNotificationsManager: PushNotesManager = ServiceLocator.pushNotesManager,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
+         stores: StoresManager = ServiceLocator.stores) {
         self.siteID = siteID
         self.dashboardViewModel = dashboardViewModel
         self.pushNotificationsManager = pushNotificationsManager
 
         self.usageTracksEventEmitter = usageTracksEventEmitter
+        self.featureFlagService = featureFlagService
+        self.stores = stores
 
         let currentDate = Date()
+
         let tabItems: [TabbedItem] = timeRanges.map { timeRange in
             let viewController = StoreStatsAndTopPerformersPeriodViewController(siteID: siteID,
                                                                                 timeRange: timeRange,
                                                                                 currentDate: currentDate,
                                                                                 canDisplayInAppFeedbackCard: timeRange == .today,
-                                                                                usageTracksEventEmitter: usageTracksEventEmitter)
+                                                                                usageTracksEventEmitter: usageTracksEventEmitter,
+                                                                                onEditCustomTimeRange: nil)
             return .init(title: timeRange.tabTitle,
                          viewController: viewController,
                          accessibilityIdentifier: "period-data-" + timeRange.rawValue + "-tab")
@@ -93,10 +109,10 @@ final class StoreStatsAndTopPerformersViewController: TabbedViewController {
         observeLocallyCreatedOrdersToResetLastSyncTimestamp()
 
         Task { @MainActor in
+            await configureCustomRangeTab()
             let selectedTimeRange = await loadLastTimeRange() ?? .today
-            guard let selectedTabIndex = timeRanges.firstIndex(of: selectedTimeRange) else {
-                return
-            }
+            // Defaults to the Today tab if cannot find the selected time range.
+            let selectedTabIndex = timeRanges.firstIndex(of: selectedTimeRange) ?? 0
             selection = selectedTabIndex
             observeSelectedTimeRangeIndex()
         }
@@ -105,24 +121,6 @@ final class StoreStatsAndTopPerformersViewController: TabbedViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         ensureGhostContentIsAnimated()
-    }
-
-    func observeSelectedTimeRangeIndex() {
-        let timeRangeCount = timeRanges.count
-        selectedTimeRangeIndexSubscription = $selectedTimeRangeIndex
-            .compactMap { $0 }
-            // It's possible to reach an out-of-bound index by swipe gesture, thus checking the index range here.
-            .filter { $0 >= 0 && $0 < timeRangeCount }
-            .removeDuplicates()
-            // Tapping to change to a farther tab could result in `updateIndicator` callback to be triggered for the middle tabs.
-            // A short debounce workaround is applied here to avoid making API requests for the middle tabs.
-            .debounce(for: .seconds(0.3), scheduler: DispatchQueue.main)
-            .sink { [weak self] timeRangeTabIndex in
-                guard let self else { return }
-                let periodViewController = self.periodVCs[timeRangeTabIndex]
-                self.saveLastTimeRange(periodViewController.timeRange)
-                self.syncStats(forced: false, viewControllerToSync: periodViewController)
-            }
     }
 }
 
@@ -144,6 +142,23 @@ extension StoreStatsAndTopPerformersViewController: DashboardUI {
 // MARK: - Syncing Data
 //
 private extension StoreStatsAndTopPerformersViewController {
+    func observeSelectedTimeRangeIndex() {
+        selectedTimeRangeIndexSubscription = $selectedTimeRangeIndex
+            .compactMap { $0 }
+            // It's possible to reach an out-of-bound index by swipe gesture, thus checking the index range here.
+            .filter { $0 >= 0 && $0 < self.timeRanges.count }
+            .removeDuplicates()
+            // Tapping to change to a farther tab could result in `updateIndicator` callback to be triggered for the middle tabs.
+            // A short debounce workaround is applied here to avoid making API requests for the middle tabs.
+            .debounce(for: .seconds(0.3), scheduler: DispatchQueue.main)
+            .sink { [weak self] timeRangeTabIndex in
+                guard let self else { return }
+                let periodViewController = self.periodVCs[timeRangeTabIndex]
+                self.saveLastTimeRange(periodViewController.timeRange)
+                self.syncStats(forced: false, viewControllerToSync: periodViewController)
+            }
+    }
+
     func syncAllStats(forced: Bool, onCompletion: ((Result<Void, Error>) -> Void)? = nil) {
         syncStats(forced: forced, viewControllerToSync: visibleChildViewController, onCompletion: onCompletion)
     }
@@ -161,6 +176,7 @@ private extension StoreStatsAndTopPerformersViewController {
 
         var syncError: Error? = nil
 
+        onDataReload()
         ensureGhostContentIsDisplayed(for: viewControllerToSync)
 
         defer {
@@ -303,7 +319,6 @@ private extension StoreStatsAndTopPerformersViewController {
         }
     }
 
-
     func observeRemotelyCreatedOrdersToResetLastSyncTimestamp() {
         let siteID = self.siteID
         remoteOrdersSubscription = Publishers
@@ -324,7 +339,7 @@ private extension StoreStatsAndTopPerformersViewController {
                     self.resetLastSyncTimestamp()
                 }
         }
-        ServiceLocator.stores.dispatch(action)
+        stores.dispatch(action)
     }
 
     func resetLastSyncTimestamp() {
@@ -385,18 +400,132 @@ private extension StoreStatsAndTopPerformersViewController {
             let action = AppSettingsAction.loadLastSelectedStatsTimeRange(siteID: siteID) { timeRange in
                 continuation.resume(returning: timeRange)
             }
-            ServiceLocator.stores.dispatch(action)
+            stores.dispatch(action)
         }
     }
 
     func saveLastTimeRange(_ timeRange: StatsTimeRangeV4) {
         let action = AppSettingsAction.setLastSelectedStatsTimeRange(siteID: siteID, timeRange: timeRange)
-        ServiceLocator.stores.dispatch(action)
+        stores.dispatch(action)
     }
 
     func configureTabBar() {
         tabBar.equalWidthFill = .equalSpacing
         tabBar.equalWidthSpacing = TabBar.tabSpacing
+
+        if featureFlagService.isFeatureFlagEnabled(.customRangeInMyStoreAnalytics) {
+            addCustomViewToTabBar(customRangeButtonView)
+        }
+    }
+
+    @MainActor
+    func configureCustomRangeTab() async {
+        guard featureFlagService.isFeatureFlagEnabled(.customRangeInMyStoreAnalytics) else {
+            return
+        }
+
+        guard let customRange = await loadTimeRangeForCustomRangeTab() else {
+            return
+        }
+
+        createCustomRangeTab(range: customRange)
+    }
+
+    @MainActor
+    func loadTimeRangeForCustomRangeTab() async -> StatsTimeRangeV4? {
+        guard featureFlagService.isFeatureFlagEnabled(.customRangeInMyStoreAnalytics) else {
+            return nil
+        }
+
+        return await withCheckedContinuation { continuation in
+            stores.dispatch(AppSettingsAction.loadCustomStatsTimeRange(siteID: siteID) { timeRange in
+                continuation.resume(returning: timeRange)
+            })
+        }
+    }
+
+    func saveTimeRangeForCustomRangeTab(timeRange: StatsTimeRangeV4) {
+        stores.dispatch(AppSettingsAction.setCustomStatsTimeRange(siteID: siteID, timeRange: timeRange))
+    }
+
+    func createCustomRangeButtonView() -> UIView {
+        let stackView = UIStackView()
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        stackView.axis = .vertical
+
+        let button = UIButton(configuration: .plain())
+        button.setImage(UIImage(systemName: "calendar.badge.plus"), for: .normal)
+        button.tintColor = .accent
+        button.frame = CGRect(origin: .zero, size: TabBar.customRangeButtonSize)
+        button.backgroundColor = .listForeground(modal: false)
+
+        button.on(.touchUpInside) { [weak self] _ in
+            self?.startCustomRangeTabCreation()
+        }
+
+        let separator = UIView()
+        separator.heightAnchor.constraint(equalToConstant: TabBar.customRangeViewSeparator).isActive = true
+        separator.backgroundColor = .systemColor(.separator)
+
+        stackView.addArrangedSubview(button)
+        stackView.addArrangedSubview(separator)
+        return stackView
+    }
+
+    func startCustomRangeTabCreation(startDate: Date? = nil, endDate: Date? = nil) {
+        guard let navigationController else { return }
+        customRangeCoordinator = CustomRangeTabCreationCoordinator(
+            startDate: startDate,
+            endDate: endDate,
+            navigationController: navigationController,
+            onDateRangeSelected: { [weak self] start, end in
+                let range = StatsTimeRangeV4.custom(from: start, to: end)
+                self?.saveTimeRangeForCustomRangeTab(timeRange: range)
+                self?.createCustomRangeTab(range: range)
+            }
+        )
+        customRangeCoordinator?.start()
+    }
+
+    func createCustomRangeTab(range: StatsTimeRangeV4) {
+        let currentDate = Date()
+
+        let customRangeVC = StoreStatsAndTopPerformersPeriodViewController(siteID: siteID,
+                                                                           timeRange: range,
+                                                                           currentDate: currentDate,
+                                                                           canDisplayInAppFeedbackCard: false,
+                                                                           usageTracksEventEmitter: usageTracksEventEmitter,
+                                                                           onEditCustomTimeRange: { [weak self] timeRange in
+            guard case let .custom(startDate, endDate) = timeRange else {
+                return
+            }
+            self?.startCustomRangeTabCreation(startDate: startDate, endDate: endDate)
+        })
+
+        let customRangeTabbedItem = TabbedItem(title: range.tabTitle,
+                                               viewController: customRangeVC,
+                                               accessibilityIdentifier: "period-data-" + range.rawValue + "-tab")
+
+        if let index = timeRanges.lastIndex(where: { $0.isCustomTimeRange }) {
+            periodVCs[index] = customRangeVC
+            timeRanges[index] = range
+            replaceTab(at: index, with: customRangeTabbedItem)
+        } else {
+            periodVCs.append(customRangeVC)
+            timeRanges.append(range)
+            appendToTabBar(customRangeTabbedItem)
+        }
+
+        // Once a custom range tab is created, do not show the "Custom Range" button anymore.
+        removeCustomViewFromTabBar()
+
+        // Get stats data for this tab
+        syncStats(forced: false, viewControllerToSync: customRangeVC)
+
+        // Add pull to refresh functionality
+        customRangeVC.onPullToRefresh = { [weak self] in
+            await self?.onPullToRefresh()
+        }
     }
 }
 
@@ -413,7 +542,7 @@ private extension StoreStatsAndTopPerformersViewController {
             updateSiteVisitors(mode: .hidden)
             trackDashboardStatsSyncComplete()
         case .statsModuleDisabled:
-            let defaultSite = ServiceLocator.stores.sessionManager.defaultSite
+            let defaultSite = stores.sessionManager.defaultSite
             if defaultSite?.isJetpackCPConnected == true {
                 updateSiteVisitors(mode: .redactedDueToJetpack)
             } else {
@@ -441,7 +570,7 @@ private extension StoreStatsAndTopPerformersViewController {
 //
 private extension StoreStatsAndTopPerformersViewController {
     func trackStatsLoaded(for timeRange: StatsTimeRangeV4) {
-        guard ServiceLocator.stores.isAuthenticated else {
+        guard stores.isAuthenticated else {
             return
         }
 
@@ -466,6 +595,8 @@ private extension StoreStatsAndTopPerformersViewController {
         /// With `equalSpacing` distribution, there is a default spacing ~16px even if `stackView.spacing = 0`.
         /// Setting a negative spacing offsets the default spacing to match the design more.
         static let tabSpacing: CGFloat = -8.0
+        static let customRangeButtonSize = CGSize(width: 24, height: 24)
+        static let customRangeViewSeparator: CGFloat = 0.5
     }
 
     enum Constants {

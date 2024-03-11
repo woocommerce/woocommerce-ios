@@ -654,7 +654,7 @@ private extension StripeCardReaderService {
         return Future() { [weak self] promise in
             /// Collect Payment method returns a cancellable
             /// Because we are chaining promises, we need to retain a reference
-            /// to this cancellable if we want to cancel 
+            /// to this cancellable if we want to cancel
             self?.paymentCancellable = Terminal.shared.collectPaymentMethod(intent) { (intent, error) in
                 if let error = error {
                     var underlyingError = UnderlyingError(with: error)

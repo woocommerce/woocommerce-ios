@@ -10,7 +10,7 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
         /// Shows placeholder views in redacted state.
         case loading
         /// Shows info about the latest Blaze campaign
-        case showCampaign(campaign: BlazeCampaign)
+        case showCampaign(campaign: BlazeCampaignListItem)
         /// Shows info about the latest published Product
         case showProduct(product: Product)
         /// When there is no campaign or published product
@@ -41,7 +41,11 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
     var onStateChange: (() -> Void)?
 
     let siteID: Int64
-    let siteURL: String
+
+    var siteURL: String {
+        stores.sessionManager.defaultSite?.url ?? ""
+    }
+
     private let stores: StoresManager
     private let storageManager: StorageManagerType
     private let analytics: Analytics
@@ -51,13 +55,13 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
     private let blazeEligibilityChecker: BlazeEligibilityCheckerProtocol
 
     /// Blaze campaign ResultsController.
-    private lazy var blazeCampaignResultsController: ResultsController<StorageBlazeCampaign> = {
+    private lazy var blazeCampaignResultsController: ResultsController<StorageBlazeCampaignListItem> = {
         let predicate = NSPredicate(format: "siteID == %lld", siteID)
-        let sortDescriptorByID = NSSortDescriptor(keyPath: \StorageBlazeCampaign.campaignID, ascending: false)
-        let resultsController = ResultsController<StorageBlazeCampaign>(storageManager: storageManager,
-                                                                        matching: predicate,
-                                                                        fetchLimit: 1,
-                                                                        sortedBy: [sortDescriptorByID])
+        let sortDescriptorByID = NSSortDescriptor(keyPath: \StorageBlazeCampaignListItem.campaignID, ascending: false)
+        let resultsController = ResultsController<StorageBlazeCampaignListItem>(storageManager: storageManager,
+                                                                                 matching: predicate,
+                                                                                 fetchLimit: 1,
+                                                                                 sortedBy: [sortDescriptorByID])
         return resultsController
     }()
 
@@ -79,14 +83,12 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
     private var subscriptions: Set<AnyCancellable> = []
 
     init(siteID: Int64,
-         siteURL: String = ServiceLocator.stores.sessionManager.defaultSite?.url ?? "",
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          analytics: Analytics = ServiceLocator.analytics,
          blazeEligibilityChecker: BlazeEligibilityCheckerProtocol = BlazeEligibilityChecker(),
          userDefaults: UserDefaults = .standard) {
         self.siteID = siteID
-        self.siteURL = siteURL
         self.stores = stores
         self.storageManager = storageManager
         self.analytics = analytics
@@ -128,7 +130,7 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
         analytics.track(event: .Blaze.blazeCampaignListEntryPointSelected(source: .myStoreSection))
     }
 
-    func didSelectCampaignDetails(_ campaign: BlazeCampaign) {
+    func didSelectCampaignDetails(_ campaign: BlazeCampaignListItem) {
         analytics.track(event: .Blaze.blazeCampaignDetailSelected(source: .myStoreSection))
 
         let path = String(format: Constants.campaignDetailsURLFormat,
@@ -153,7 +155,9 @@ private extension BlazeCampaignDashboardViewModel {
     @MainActor
     func synchronizeBlazeCampaigns() async {
         await withCheckedContinuation({ continuation in
-            stores.dispatch(BlazeAction.synchronizeCampaigns(siteID: siteID, pageNumber: Store.Default.firstPageNumber) { result in
+            stores.dispatch(BlazeAction.synchronizeCampaignsList(siteID: siteID,
+                                                                  skip: 0,
+                                                                  limit: PaginationTracker.Defaults.pageSize) { result in
                 if case .failure(let error) = result {
                     DDLogError("⛔️ Dashboard — Error synchronizing Blaze campaigns: \(error)")
                 }
@@ -286,6 +290,6 @@ private extension BlazeCampaignDashboardViewModel {
 
 private extension BlazeCampaignDashboardViewModel {
     enum Constants {
-        static let campaignDetailsURLFormat = "https://wordpress.com/advertising/campaigns/%d/%@?source=%@"
+        static let campaignDetailsURLFormat = "https://wordpress.com/advertising/campaigns/%@/%@?source=%@"
     }
 }

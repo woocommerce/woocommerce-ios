@@ -136,8 +136,6 @@ final class OrderListViewController: UIViewController, GhostableViewController {
     ///
     private var selectedOrderID: Int64?
 
-    private lazy var isSplitViewInOrdersTabEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab)
-
     /// Tracks if the swipe actions have been glanced to the user.
     ///
     private var swipeActionsGlanced = false
@@ -228,7 +226,7 @@ final class OrderListViewController: UIViewController, GhostableViewController {
 
     override func willTransition(to newCollection: UITraitCollection, with coordinator: UIViewControllerTransitionCoordinator) {
         super.willTransition(to: newCollection, with: coordinator)
-        if isSplitViewInOrdersTabEnabled, selectedIndexPath != nil {
+        if selectedIndexPath != nil {
             // Reload table view to update selected state on the list when changing rotation
             tableView.reloadData()
         }
@@ -290,7 +288,7 @@ private extension OrderListViewController {
 
             transitionToResultsUpdatedState()
 
-            if self.isSplitViewInOrdersTabEnabled, self.splitViewController?.isCollapsed == false {
+            if self.splitViewController?.isCollapsed == false {
                 self.checkSelectedItem()
             }
 
@@ -403,8 +401,16 @@ extension OrderListViewController {
 extension OrderListViewController: SyncingCoordinatorDelegate {
 
     /// Synchronizes the Orders for the Default Store (if any).
+    /// Sets `retryTimeout` as `true`.
     ///
-    func sync(pageNumber: Int, pageSize: Int, reason: String? = nil, onCompletion: ((Bool) -> Void)? = nil) {
+    func sync(pageNumber: Int, pageSize: Int, reason: String?, onCompletion: ((Bool) -> Void)?) {
+        sync(pageNumber: pageNumber, pageSize: pageSize, reason: reason, retryTimeout: true, onCompletion: onCompletion)
+    }
+
+    /// Synchronizes the Orders for the Default Store (if any).
+    /// When retry timeout is `true` it retires the request one time recursively when a timeout happens.
+    ///
+    func sync(pageNumber: Int, pageSize: Int, reason: String? = nil, retryTimeout: Bool, onCompletion: ((Bool) -> Void)? = nil) {
         if pageNumber == syncingCoordinator.pageFirstIndex,
            reason == SyncReason.viewWillAppear.rawValue,
            let lastFullSyncTimestamp = lastFullSyncTimestamp,
@@ -430,7 +436,16 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
                 if let error {
                     ServiceLocator.analytics.track(event: .ordersListLoadError(error))
                     DDLogError("⛔️ Error synchronizing orders: \(error)")
-                    self.viewModel.dataLoadingError = error
+
+                    // Recursively retries timeout errors when required.
+                    if error.isTimeoutError && retryTimeout {
+
+                        self.sync(pageNumber: pageNumber, pageSize: pageSize, reason: reason, retryTimeout: false, onCompletion: onCompletion)
+                        ServiceLocator.analytics.track(event: .ConnectivityTool.automaticTimeoutRetry())
+
+                    } else {
+                        self.viewModel.dataLoadingError = error
+                    }
                 } else {
                     if pageNumber == self.syncingCoordinator.pageFirstIndex {
                         // save timestamp of last successful update
@@ -530,7 +545,7 @@ private extension OrderListViewController {
 
     /// Checks to see if there is a selected order ID, and selects its order.
     /// Otherwise, try to select first item.
-    /// 
+    ///
     func checkSelectedItem() {
         guard let orderID = selectedOrderID else {
             selectFirstItemIfPossible()
@@ -754,7 +769,7 @@ private extension OrderListViewController {
 extension OrderListViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if splitViewController?.isCollapsed == true || !isSplitViewInOrdersTabEnabled {
+        if splitViewController?.isCollapsed == true {
             tableView.deselectRow(at: indexPath, animated: true)
         }
 
@@ -769,26 +784,20 @@ extension OrderListViewController: UITableViewDelegate {
 
         selectedIndexPath = indexPath
         let order = orderDetailsViewModel.order
-        ServiceLocator.analytics.track(event: WooAnalyticsEvent.Orders.orderOpen(order: order, horizontalSizeClass: UITraitCollection.current.horizontalSizeClass))
+        ServiceLocator.analytics.track(event: WooAnalyticsEvent.Orders.orderOpen(order: order,
+                                                                                 horizontalSizeClass: UITraitCollection.current.horizontalSizeClass))
         selectedOrderID = order.orderID
         let allViewModels = allViewModels()
         let currentIndex = allViewModels.firstIndex(where: { $0.order.orderID == order.orderID })
 
         guard let currentIndex = currentIndex else { return }
 
-        if isSplitViewInOrdersTabEnabled {
-            let allowOrderNavigation = splitViewController?.isCollapsed ?? true
-            // There is no point of having order navigation in the order details view when we have a split screen,
-            // because orders can be easily selected in the left view (orders list).
-            // Passing just one order (the selected one) disables navigation
-            allowOrderNavigation ? switchDetailsHandler(allViewModels, currentIndex, true, nil) :
-            switchDetailsHandler([orderDetailsViewModel], 0, true, nil)
-        } else {
-            let viewController = OrderDetailsViewController(viewModels: allViewModels,
-                                                            currentIndex: currentIndex,
-                                                            switchDetailsHandler: { _, _, _, _ in })
-            navigationController?.pushViewController(viewController, animated: true)
-        }
+        let allowOrderNavigation = splitViewController?.isCollapsed ?? true
+        // There is no point of having order navigation in the order details view when we have a split screen,
+        // because orders can be easily selected in the left view (orders list).
+        // Passing just one order (the selected one) disables navigation
+        allowOrderNavigation ? switchDetailsHandler(allViewModels, currentIndex, true, nil) :
+        switchDetailsHandler([orderDetailsViewModel], 0, true, nil)
     }
 
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
@@ -797,7 +806,7 @@ extension OrderListViewController: UITableViewDelegate {
         }
 
         syncingCoordinator.ensureNextPageIsSynchronized(lastVisibleIndex: itemIndex)
-        if isSplitViewInOrdersTabEnabled, indexPath == selectedIndexPath {
+        if indexPath == selectedIndexPath {
             highlightSelectedRowIfNeeded()
         }
     }
@@ -902,7 +911,13 @@ private extension OrderListViewController {
         onTroubleshootButtonPressed: { [weak self] in
             guard let self = self else { return }
 
-            WebviewHelper.launch(ErrorTopBannerFactory.troubleshootUrl(for: error), with: self)
+            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.connectivityTool) {
+                ServiceLocator.analytics.track(event: .ConnectivityTool.topBannerTroubleshootTapped())
+                let connectivityToolViewController = ConnectivityToolViewController()
+                self.show(connectivityToolViewController, sender: self)
+            } else {
+                WebviewHelper.launch(ErrorTopBannerFactory.troubleshootUrl(for: error), with: self)
+            }
         },
         onContactSupportButtonPressed: { [weak self] in
             guard let self = self else { return }

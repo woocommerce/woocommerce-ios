@@ -74,7 +74,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
                                                                      statusKey: (ProductStatus.published.rawValue),
                                                                      purchasable: true))
 
-        mockSynchronizeCampaigns()
+        mockSynchronizeCampaignsList()
 
         // When
         await sut.reload()
@@ -94,7 +94,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         mockSynchronizeProducts(insertProductToStorage: .fake().copy(siteID: sampleSiteID,
                                                                      statusKey: (ProductStatus.published.rawValue)))
 
-        mockSynchronizeCampaigns()
+        mockSynchronizeCampaignsList()
 
         // When
         await sut.reload()
@@ -113,7 +113,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
 
         mockSynchronizeProducts()
 
-        mockSynchronizeCampaigns()
+        mockSynchronizeCampaignsList()
 
         // When
         await sut.reload()
@@ -130,7 +130,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
     func test_it_shows_in_dashboard_if_blaze_campaign_available() async {
         // Given
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
-        let blazeCampaign = BlazeCampaign.fake().copy(siteID: sampleSiteID)
+        let BlazeCampaignListItem = BlazeCampaignListItem.fake().copy(siteID: sampleSiteID)
         let sut = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
                                                   stores: stores,
                                                   storageManager: storageManager,
@@ -138,8 +138,8 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
 
         stores.whenReceivingAction(ofType: BlazeAction.self) { [weak self] action in
             switch action {
-            case .synchronizeCampaigns(_, _, let onCompletion):
-                self?.insertCampaigns([blazeCampaign])
+            case .synchronizeCampaignsList(_, _, _, let onCompletion):
+                self?.insertCampaigns([BlazeCampaignListItem])
                 onCompletion(.success(false))
             default:
                 break
@@ -164,7 +164,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
                                                   blazeEligibilityChecker: checker)
 
         mockSynchronizeProducts()
-        mockSynchronizeCampaigns()
+        mockSynchronizeCampaignsList()
 
         // When
         await sut.reload()
@@ -186,7 +186,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         mockSynchronizeProducts(insertProductToStorage: .fake().copy(siteID: sampleSiteID,
                                                                      statusKey: (ProductStatus.published.rawValue),
                                                                      purchasable: true))
-        mockSynchronizeCampaigns()
+        mockSynchronizeCampaignsList()
 
         // When
         await sut.reload()
@@ -205,7 +205,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
                                                   blazeEligibilityChecker: checker)
 
         mockSynchronizeProducts()
-        mockSynchronizeCampaigns()
+        mockSynchronizeCampaignsList()
 
         // When
         await sut.reload()
@@ -232,7 +232,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
                                                   blazeEligibilityChecker: checker)
 
         mockSynchronizeProducts(insertProductToStorage: product2)
-        mockSynchronizeCampaigns()
+        mockSynchronizeCampaignsList()
 
         // When
         await sut.reload()
@@ -257,7 +257,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
 
         stores.whenReceivingAction(ofType: BlazeAction.self) { action in
             switch action {
-            case .synchronizeCampaigns(_, _, let onCompletion):
+            case .synchronizeCampaignsList(_, _, _, let onCompletion):
                 // Then
                 if case .loading = sut.state {
                     // Loading state as expected
@@ -292,13 +292,13 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
     func test_state_is_showCampaign_if_blaze_campaign_available() async {
         // Given
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
-        let fakeBlazeCampaign = BlazeCampaign.fake().copy(siteID: sampleSiteID)
+        let fakeBlazeCampaign = BlazeCampaignListItem.fake().copy(siteID: sampleSiteID)
         let sut = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
                                                   stores: stores,
                                                   storageManager: storageManager,
                                                   blazeEligibilityChecker: checker)
 
-        mockSynchronizeCampaigns(insertCampaignToStorage: fakeBlazeCampaign)
+        mockSynchronizeCampaignsList(insertCampaignToStorage: fakeBlazeCampaign)
         mockSynchronizeProducts()
 
         // When
@@ -324,7 +324,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
                                                   storageManager: storageManager,
                                                   blazeEligibilityChecker: checker)
 
-        mockSynchronizeCampaigns()
+        mockSynchronizeCampaignsList()
         mockSynchronizeProducts(insertProductToStorage: fakeProduct)
 
         // When
@@ -349,7 +349,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
                                                   storageManager: storageManager,
                                                   blazeEligibilityChecker: checker)
 
-        mockSynchronizeCampaigns()
+        mockSynchronizeCampaignsList()
         mockSynchronizeProducts(insertProductToStorage: fakeProduct)
 
         // When
@@ -371,7 +371,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
                                                   storageManager: storageManager,
                                                   blazeEligibilityChecker: checker)
 
-        mockSynchronizeCampaigns()
+        mockSynchronizeCampaignsList()
         mockSynchronizeProducts()
 
         // When
@@ -397,7 +397,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
 
         stores.whenReceivingAction(ofType: BlazeAction.self) { action in
             switch action {
-            case .synchronizeCampaigns(_, _, let onCompletion):
+            case .synchronizeCampaignsList(_, _, _, let onCompletion):
                 // Then
                 XCTAssertTrue(sut.shouldRedactView)
                 onCompletion(.success(false))
@@ -424,13 +424,13 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
     func test_shouldRedactView_is_false_after_reload_finishes_when_blaze_campaign_available() async {
         // Given
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
-        let fakeBlazeCampaign = BlazeCampaign.fake().copy(siteID: sampleSiteID)
+        let fakeBlazeCampaign = BlazeCampaignListItem.fake().copy(siteID: sampleSiteID)
         let sut = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
                                                   stores: stores,
                                                   storageManager: storageManager,
                                                   blazeEligibilityChecker: checker)
 
-        mockSynchronizeCampaigns(insertCampaignToStorage: fakeBlazeCampaign)
+        mockSynchronizeCampaignsList(insertCampaignToStorage: fakeBlazeCampaign)
         mockSynchronizeProducts()
 
         // When
@@ -452,7 +452,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
                                                   storageManager: storageManager,
                                                   blazeEligibilityChecker: checker)
 
-        mockSynchronizeCampaigns()
+        mockSynchronizeCampaignsList()
         mockSynchronizeProducts(insertProductToStorage: fakeProduct)
 
         // When
@@ -470,7 +470,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
                                                   storageManager: storageManager,
                                                   blazeEligibilityChecker: checker)
 
-        mockSynchronizeCampaigns()
+        mockSynchronizeCampaignsList()
         mockSynchronizeProducts()
 
         // When
@@ -492,7 +492,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
 
         stores.whenReceivingAction(ofType: BlazeAction.self) { action in
             switch action {
-            case .synchronizeCampaigns(_, _, let onCompletion):
+            case .synchronizeCampaignsList(_, _, _, let onCompletion):
                 // Then
                 XCTAssertFalse(sut.shouldShowShowAllCampaignsButton)
                 onCompletion(.success(false))
@@ -519,13 +519,13 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
     func test_shouldShowShowAllCampaignsButton_is_true_after_reload_finishes_when_blaze_campaign_available() async {
         // Given
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
-        let fakeBlazeCampaign = BlazeCampaign.fake().copy(siteID: sampleSiteID)
+        let fakeBlazeCampaign = BlazeCampaignListItem.fake().copy(siteID: sampleSiteID)
         let sut = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
                                                   stores: stores,
                                                   storageManager: storageManager,
                                                   blazeEligibilityChecker: checker)
 
-        mockSynchronizeCampaigns(insertCampaignToStorage: fakeBlazeCampaign)
+        mockSynchronizeCampaignsList(insertCampaignToStorage: fakeBlazeCampaign)
         mockSynchronizeProducts()
         // When
         await sut.reload()
@@ -545,7 +545,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
                                                   storageManager: storageManager,
                                                   blazeEligibilityChecker: checker)
 
-        mockSynchronizeCampaigns()
+        mockSynchronizeCampaignsList()
         mockSynchronizeProducts(insertProductToStorage: fakeProduct)
 
         // When
@@ -563,7 +563,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
                                                   storageManager: storageManager,
                                                   blazeEligibilityChecker: checker)
 
-        mockSynchronizeCampaigns()
+        mockSynchronizeCampaignsList()
         mockSynchronizeProducts()
 
         // When
@@ -578,13 +578,13 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
     func test_state_is_showCampaign_if_blaze_campaign_is_added_to_storage() async {
         // Given
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
-        let fakeBlazeCampaign = BlazeCampaign.fake().copy(siteID: sampleSiteID)
+        let fakeBlazeCampaign = BlazeCampaignListItem.fake().copy(siteID: sampleSiteID)
         let sut = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
                                                   stores: stores,
                                                   storageManager: storageManager,
                                                   blazeEligibilityChecker: checker)
 
-        mockSynchronizeCampaigns()
+        mockSynchronizeCampaignsList()
         mockSynchronizeProducts()
 
         await sut.reload()
@@ -617,7 +617,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
                                                   storageManager: storageManager,
                                                   blazeEligibilityChecker: checker)
 
-        mockSynchronizeCampaigns()
+        mockSynchronizeCampaignsList()
         mockSynchronizeProducts()
 
         await sut.reload()
@@ -687,10 +687,11 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
     func test_didSelectCampaignDetails_updates_selectedCampaignURL_correctly() {
         // Given
         let testURL = "https://example.com"
-        let campaign = BlazeCampaign.fake().copy(siteID: sampleSiteID, campaignID: 123)
+        let site = Site.fake().copy(siteID: sampleSiteID, url: testURL)
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: true, defaultSite: site))
+        let campaign = BlazeCampaignListItem.fake().copy(siteID: sampleSiteID, campaignID: "123")
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
         let viewModel = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
-                                                        siteURL: testURL,
                                                         stores: stores,
                                                         storageManager: storageManager,
                                                         blazeEligibilityChecker: checker)
@@ -784,14 +785,14 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
     func test_blazeEntryPointDisplayed_tracked_if_blaze_campaign_available() async throws {
         // Given
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
-        let fakeBlazeCampaign = BlazeCampaign.fake().copy(siteID: sampleSiteID)
+        let fakeBlazeCampaign = BlazeCampaignListItem.fake().copy(siteID: sampleSiteID)
         let sut = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
                                                   stores: stores,
                                                   storageManager: storageManager,
                                                   analytics: analytics,
                                                   blazeEligibilityChecker: checker)
 
-        mockSynchronizeCampaigns(insertCampaignToStorage: fakeBlazeCampaign)
+        mockSynchronizeCampaignsList(insertCampaignToStorage: fakeBlazeCampaign)
         mockSynchronizeProducts()
 
         // When
@@ -817,7 +818,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
                                                   analytics: analytics,
                                                   blazeEligibilityChecker: checker)
 
-        mockSynchronizeCampaigns()
+        mockSynchronizeCampaignsList()
         mockSynchronizeProducts(insertProductToStorage: fakeProduct)
 
         // When
@@ -842,7 +843,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
                                                   analytics: analytics,
                                                   blazeEligibilityChecker: checker)
 
-        mockSynchronizeCampaigns()
+        mockSynchronizeCampaignsList()
         mockSynchronizeProducts(insertProductToStorage: fakeProduct)
 
         // When
@@ -861,7 +862,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
                                                   analytics: analytics,
                                                   blazeEligibilityChecker: checker)
 
-        mockSynchronizeCampaigns()
+        mockSynchronizeCampaignsList()
         mockSynchronizeProducts()
 
         // When
@@ -874,14 +875,14 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
     func test_blazeEntryPointDisplayed_is_not_tracked_again_after_reload() async throws {
         // Given
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
-        let fakeBlazeCampaign = BlazeCampaign.fake().copy(siteID: sampleSiteID)
+        let fakeBlazeCampaign = BlazeCampaignListItem.fake().copy(siteID: sampleSiteID)
         let sut = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
                                                   stores: stores,
                                                   storageManager: storageManager,
                                                   analytics: analytics,
                                                   blazeEligibilityChecker: checker)
 
-        mockSynchronizeCampaigns(insertCampaignToStorage: fakeBlazeCampaign)
+        mockSynchronizeCampaignsList(insertCampaignToStorage: fakeBlazeCampaign)
         mockSynchronizeProducts()
 
         // When
@@ -908,8 +909,8 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
                                                         blazeEligibilityChecker: checker,
                                                         userDefaults: userDefaults)
 
-        let fakeBlazeCampaign = BlazeCampaign.fake().copy(siteID: sampleSiteID)
-        mockSynchronizeCampaigns(insertCampaignToStorage: fakeBlazeCampaign)
+        let fakeBlazeCampaign = BlazeCampaignListItem.fake().copy(siteID: sampleSiteID)
+        mockSynchronizeCampaignsList(insertCampaignToStorage: fakeBlazeCampaign)
         mockSynchronizeProducts()
 
         await viewModel.reload()
@@ -931,9 +932,9 @@ private extension BlazeCampaignDashboardViewModelTests {
         storage.saveIfNeeded()
     }
 
-    func insertCampaigns(_ readOnlyCampaigns: [BlazeCampaign]) {
+    func insertCampaigns(_ readOnlyCampaigns: [BlazeCampaignListItem]) {
         readOnlyCampaigns.forEach { campaign in
-            let newCampaign = storage.insertNewObject(ofType: StorageBlazeCampaign.self)
+            let newCampaign = storage.insertNewObject(ofType: StorageBlazeCampaignListItem.self)
             newCampaign.update(with: campaign)
         }
         storage.saveIfNeeded()
@@ -953,12 +954,12 @@ private extension BlazeCampaignDashboardViewModelTests {
         }
     }
 
-    func mockSynchronizeCampaigns(insertCampaignToStorage blazeCampaign: BlazeCampaign? = nil) {
+    func mockSynchronizeCampaignsList(insertCampaignToStorage BlazeCampaignListItem: BlazeCampaignListItem? = nil) {
         stores.whenReceivingAction(ofType: BlazeAction.self) { [weak self] action in
             switch action {
-            case .synchronizeCampaigns(_, _, let onCompletion):
-                if let blazeCampaign {
-                    self?.insertCampaigns([blazeCampaign])
+            case .synchronizeCampaignsList(_, _, _, let onCompletion):
+                if let BlazeCampaignListItem {
+                    self?.insertCampaigns([BlazeCampaignListItem])
                 }
                 onCompletion(.success(false))
             default:

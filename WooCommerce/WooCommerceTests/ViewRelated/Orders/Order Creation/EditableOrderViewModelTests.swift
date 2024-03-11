@@ -289,6 +289,75 @@ final class EditableOrderViewModelTests: XCTestCase {
                       "Product rows do not contain expected product")
     }
 
+    func test_view_model_is_updated_immediately_when_product_is_added_to_order_using_immediate_sync_approach() throws {
+        // Given
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, purchasable: true)
+        storageManager.insertSampleProduct(readOnlyProduct: product)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
+                                               storageManager: storageManager,
+                                               featureFlagService: MockFeatureFlagService(sideBySideViewForOrderForm: true))
+        viewModel.toggleProductSelectorVisibility()
+
+        viewModel.selectionSyncApproach = .immediate
+        let productSelectorViewModel = try XCTUnwrap(viewModel.productSelectorViewModel)
+
+        // When
+        productSelectorViewModel.changeSelectionStateForProduct(with: product.productID)
+
+        // Then
+        XCTAssertTrue(viewModel.productRows.map { $0.productRow }.contains(where: { $0.productOrVariationID == sampleProductID }),
+                      "Product rows do not contain expected product")
+    }
+
+    func test_button_changes_to_recalculate_when_product_is_added_to_order_using_onRecalculateButtonTap_sync_approach() throws {
+        // Given
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, purchasable: true)
+        storageManager.insertSampleProduct(readOnlyProduct: product)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
+                                               storageManager: storageManager,
+                                               featureFlagService: MockFeatureFlagService(sideBySideViewForOrderForm: true))
+        viewModel.toggleProductSelectorVisibility()
+
+        viewModel.selectionSyncApproach = .onRecalculateButtonTap
+        let productSelectorViewModel = try XCTUnwrap(viewModel.productSelectorViewModel)
+
+        // When
+        productSelectorViewModel.changeSelectionStateForProduct(with: product.productID)
+
+        // Then
+        switch viewModel.doneButtonType {
+        case .recalculate:
+            // Success – we just don't care about the `loading` parameter
+            break
+        default:
+            XCTFail("Unexpected doneButtonType")
+        }
+    }
+
+    func test_view_model_is_updated_when_product_is_added_to_order_using_buttonTap_sync_approach_then_changes_to_immediate() throws {
+        // Given
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, purchasable: true)
+        storageManager.insertSampleProduct(readOnlyProduct: product)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
+                                               storageManager: storageManager,
+                                               featureFlagService: MockFeatureFlagService(sideBySideViewForOrderForm: true))
+        viewModel.toggleProductSelectorVisibility()
+
+        viewModel.selectionSyncApproach = .onSelectorButtonTap
+        let productSelectorViewModel = try XCTUnwrap(viewModel.productSelectorViewModel)
+        productSelectorViewModel.changeSelectionStateForProduct(with: product.productID)
+
+        XCTAssertFalse(viewModel.productRows.map { $0.productRow }.contains(where: { $0.productOrVariationID == sampleProductID }),
+                      "Product rows unexpectedly contain product")
+
+        // When
+        viewModel.selectionSyncApproach = .immediate
+
+        // Then
+        XCTAssertTrue(viewModel.productRows.map { $0.productRow }.contains(where: { $0.productOrVariationID == sampleProductID }),
+                      "Product rows do not contain expected product")
+    }
+
     func test_order_details_are_updated_when_product_quantity_changes() throws {
         // Given
 
@@ -674,14 +743,17 @@ final class EditableOrderViewModelTests: XCTestCase {
 
         // When
         let paymentDataViewModel = EditableOrderViewModel.PaymentDataViewModel(itemsTotal: "20.00",
-                                                                          shippingTotal: "3.00",
+                                                                               shippingTotal: "3.00",
+                                                                               shippingTax: "0.30",
                                                                                customAmountsTotal: "2.00",
-                                                                          taxesTotal: "5.00",
-                                                                          currencyFormatter: CurrencyFormatter(currencySettings: currencySettings))
+                                                                               taxesTotal: "5.00",
+                                                                               currencyFormatter: CurrencyFormatter(currencySettings: currencySettings))
 
         // Then
         XCTAssertEqual(paymentDataViewModel.itemsTotal, "£20.00")
         XCTAssertEqual(paymentDataViewModel.shippingTotal, "£3.00")
+        XCTAssertEqual(paymentDataViewModel.shippingTax, "£0.30")
+        XCTAssertEqual(paymentDataViewModel.shouldShowShippingTax, true)
         XCTAssertEqual(paymentDataViewModel.customAmountsTotal, "£2.00")
         XCTAssertEqual(paymentDataViewModel.taxesTotal, "£5.00")
     }
@@ -696,6 +768,8 @@ final class EditableOrderViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(viewModel.paymentDataViewModel.itemsTotal, "£0.00")
         XCTAssertEqual(viewModel.paymentDataViewModel.shippingTotal, "£0.00")
+        XCTAssertEqual(viewModel.paymentDataViewModel.shippingTax, "£0.00")
+        XCTAssertEqual(viewModel.paymentDataViewModel.shouldShowShippingTax, false)
         XCTAssertEqual(viewModel.paymentDataViewModel.customAmountsTotal, "£0.00")
         XCTAssertEqual(viewModel.paymentDataViewModel.taxesTotal, "£0.00")
     }
@@ -764,22 +838,6 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(analytics.receivedEvents.first, WooAnalyticsStat.barcodeScanningFailure.rawValue)
         XCTAssertEqual(analytics.receivedProperties.first?["reason"] as? String, "camera_access_not_permitted")
         XCTAssertEqual(analytics.receivedProperties.first?["source"] as? String, "order_creation")
-    }
-
-    func test_add_product_to_order_via_sku_scanner_when_feature_flag_is_enabled_then_feature_support_returns_true() {
-        // Given
-        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, featureFlagService: MockFeatureFlagService(isAddProductToOrderViaSKUScannerEnabled: true))
-
-        // Then
-        XCTAssertTrue(viewModel.isAddProductToOrderViaSKUScannerEnabled)
-    }
-
-    func test_add_product_to_order_via_sku_scanner_feature_flag_is_disabled_then_feature_support_returns_false() {
-        // Given
-        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, featureFlagService: MockFeatureFlagService(isAddProductToOrderViaSKUScannerEnabled: false))
-
-        // Then
-        XCTAssertFalse(viewModel.isAddProductToOrderViaSKUScannerEnabled)
     }
 
     // MARK: - Payment Section Tests

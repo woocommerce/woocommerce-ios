@@ -9,7 +9,7 @@ struct ReceiptActionCoordinator {
                              cardReaderModel: String?,
                              stores: StoresManager,
                              analytics: Analytics = ServiceLocator.analytics) async {
-        analytics.track(event: .InPersonPayments.receiptPrintTapped(countryCode: countryCode, 
+        analytics.track(event: .InPersonPayments.receiptPrintTapped(countryCode: countryCode,
                                                                     cardReaderModel: cardReaderModel,
                                                                     source: .local))
 

@@ -37,8 +37,7 @@ final class BlazeBudgetSettingViewModelTests: XCTestCase {
 
         // When
         viewModel.dailyAmount = 80
-        viewModel.dayCount = 7
-        viewModel.startDate = expectedStartDate
+        viewModel.didTapApplyDuration(dayCount: 7, since: expectedStartDate)
         viewModel.confirmSettings()
 
         // Then
@@ -54,6 +53,7 @@ final class BlazeBudgetSettingViewModelTests: XCTestCase {
                                                     dailyBudget: 15,
                                                     duration: 3,
                                                     startDate: .now,
+                                                    locale: Locale(identifier: "en_US"),
                                                     stores: stores,
                                                     onCompletion: { _, _, _ in })
 
@@ -71,7 +71,7 @@ final class BlazeBudgetSettingViewModelTests: XCTestCase {
         await viewModel.updateImpressions(startDate: .now, dayCount: 3, dailyBudget: 15)
 
         // Then
-        XCTAssertEqual(viewModel.forecastedImpressionState, .result(formattedResult: "1000 - 5000"))
+        XCTAssertEqual(viewModel.forecastedImpressionState, .result(formattedResult: "1,000 - 5,000"))
     }
 
     func test_updateImpressions_updates_forecastedImpressionState_correctly_when_fetching_impression_fails() async {
@@ -128,8 +128,7 @@ final class BlazeBudgetSettingViewModelTests: XCTestCase {
             }
         }
         viewModel.dailyAmount = 20
-        viewModel.dayCount = 7
-        viewModel.startDate = expectedStartDate
+        viewModel.didTapApplyDuration(dayCount: 7, since: expectedStartDate)
         await viewModel.retryFetchingImpressions()
 
         // Then
@@ -173,8 +172,7 @@ final class BlazeBudgetSettingViewModelTests: XCTestCase {
 
 
         // When
-        viewModel.dayCount = 7
-        viewModel.didTapApplyDuration()
+        viewModel.didTapApplyDuration(dayCount: 7, since: .now)
 
         // Then
         let index = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(of: "blaze_creation_edit_budget_set_duration_applied"))

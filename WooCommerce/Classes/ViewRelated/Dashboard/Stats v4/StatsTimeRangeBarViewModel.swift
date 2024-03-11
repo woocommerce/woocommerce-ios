@@ -17,6 +17,11 @@ private extension StatsTimeRangeV4 {
             let endDateString = dateFormatter.string(from: endDate)
             let format = NSLocalizedString("%1$@ - %2$@", comment: "Displays a date range for a stats interval")
             return String.localizedStringWithFormat(format, startDateString, endDateString)
+        case .custom:
+            let startDateString = dateFormatter.string(from: startDate)
+            let endDateString = dateFormatter.string(from: endDate)
+            let format = NSLocalizedString("%1$@ - %2$@", comment: "Displays a date range for a custom stats interval")
+            return String.localizedStringWithFormat(format, startDateString, endDateString)
         }
     }
 
@@ -33,6 +38,11 @@ private extension StatsTimeRangeV4 {
             dateFormatter = DateFormatter.Charts.chartAxisFullMonthFormatter
         case .thisYear:
             dateFormatter = DateFormatter.Charts.chartAxisYearFormatter
+        case .custom:
+            let formatter = DateFormatter()
+            formatter.dateStyle = .medium
+            formatter.timeStyle = .none
+            return formatter
         }
         dateFormatter.timeZone = timezone
         return dateFormatter
@@ -41,12 +51,12 @@ private extension StatsTimeRangeV4 {
     /// Date formatter for a selected date for a time range.
     func timeRangeSelectedDateFormatter(timezone: TimeZone) -> DateFormatter {
         let dateFormatter: DateFormatter
-        switch self {
-        case .today:
+        switch intervalGranularity {
+        case .hourly:
             dateFormatter = DateFormatter.Charts.chartSelectedDateHourFormatter
-        case .thisWeek, .thisMonth:
+        case .daily, .weekly:
             dateFormatter = DateFormatter.Charts.chartAxisDayFormatter
-        case .thisYear:
+        case .monthly, .quarterly, .yearly:
             dateFormatter = DateFormatter.Charts.chartAxisFullMonthFormatter
         }
         dateFormatter.timeZone = timezone
@@ -57,11 +67,13 @@ private extension StatsTimeRangeV4 {
 /// View model for `StatsTimeRangeBarView`.
 struct StatsTimeRangeBarViewModel: Equatable {
     let timeRangeText: String
+    let isTimeRangeEditable: Bool
 
     init(startDate: Date,
          endDate: Date,
          timeRange: StatsTimeRangeV4,
          timezone: TimeZone) {
+        isTimeRangeEditable = timeRange.isCustomTimeRange
         timeRangeText = timeRange.timeRangeText(startDate: startDate,
                                                 endDate: endDate,
                                                 timezone: timezone)
@@ -72,6 +84,8 @@ struct StatsTimeRangeBarViewModel: Equatable {
          selectedDate: Date,
          timeRange: StatsTimeRangeV4,
          timezone: TimeZone) {
+        // Disable editing time range when selecting a specific date on the graph
+        isTimeRangeEditable = false
         timeRangeText = timeRange.timeRangeText(startDate: startDate,
                                                 endDate: endDate,
                                                 selectedDate: selectedDate,

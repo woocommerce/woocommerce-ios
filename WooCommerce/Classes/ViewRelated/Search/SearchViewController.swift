@@ -221,16 +221,7 @@ where Cell.SearchModel == Command.CellViewModel {
         guard let model = resultsController.safeObject(at: indexPath) else {
             return
         }
-        searchUICommand.didSelectSearchResult(model: model, from: self, reloadData: { [weak self] in
-            self?.tableView.reloadData()
-        }, updateActionButton: { [weak self] in
-            guard let self = self else {
-                return
-            }
-            self.searchUICommand.configureActionButton(self.cancelButton, onDismiss: { [weak self] in
-                self?.dismissWasPressed()
-            })
-        })
+        didSelect(object: model)
     }
 
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
@@ -264,6 +255,16 @@ where Cell.SearchModel == Command.CellViewModel {
         super.viewSafeAreaInsetsDidChange()
 
         applyAdditionalKeyboardFrameHeightTo(children)
+    }
+
+    // MARK: - Split view support
+
+    /// Selects the first object if one is available. Invoked when no object is selected in split view expanded mode.
+    func selectFirstObjectIfAvailable() {
+        guard let firstObject = resultsController.fetchedObjects.first else {
+            return
+        }
+        didSelect(object: firstObject)
     }
 }
 
@@ -680,6 +681,21 @@ private extension SearchViewController {
         }
 
         state = nextState
+    }
+}
+
+private extension SearchViewController {
+    func didSelect(object: Command.Model) {
+        searchUICommand.didSelectSearchResult(model: object, from: self, reloadData: { [weak self] in
+            self?.tableView.reloadData()
+        }, updateActionButton: { [weak self] in
+            guard let self = self else {
+                return
+            }
+            self.searchUICommand.configureActionButton(self.cancelButton, onDismiss: { [weak self] in
+                self?.dismissWasPressed()
+            })
+        })
     }
 }
 

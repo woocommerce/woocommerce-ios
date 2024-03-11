@@ -59,8 +59,6 @@ final class HubMenuViewModel: ObservableObject {
 
     private var productReviewFromNoteParcel: ProductReviewFromNoteParcel?
 
-    private var storePickerCoordinator: StorePickerCoordinator?
-
     @Published private(set) var shouldShowNewFeatureBadgeOnPayments: Bool = false
 
     @Published private var isSiteEligibleForBlaze: Bool = false
@@ -158,17 +156,6 @@ final class HubMenuViewModel: ObservableObject {
         } else {
             generalElements.removeAll(where: { $0.id == Blaze.id })
         }
-    }
-
-    /// Present the `StorePickerViewController` using the `StorePickerCoordinator`, passing the navigation controller from the entry point.
-    ///
-    func presentSwitchStore() {
-        ServiceLocator.analytics.track(.hubMenuSwitchStoreTapped)
-//        if let navigationController = navigationController {
-//            storePickerCoordinator = StorePickerCoordinator(navigationController, config: .switchingStores)
-//            storePickerCoordinator?.start()
-//        }
-        // TODO: handle store picker
     }
 
     func showReviewDetails(using parcel: ProductReviewFromNoteParcel) {

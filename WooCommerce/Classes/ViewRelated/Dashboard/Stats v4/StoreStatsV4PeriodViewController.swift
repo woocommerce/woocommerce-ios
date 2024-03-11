@@ -1,7 +1,7 @@
 import Charts
 import Combine
 import UIKit
-import struct WordPressUI.GhostStyle
+import WordPressUI
 import Yosemite
 import WooFoundation
 
@@ -62,6 +62,8 @@ final class StoreStatsV4PeriodViewController: UIViewController {
     @IBOutlet private weak var noRevenueView: UIView!
     @IBOutlet private weak var noRevenueLabel: UILabel!
     @IBOutlet private weak var timeRangeBarView: StatsTimeRangeBarView!
+    @IBOutlet private weak var visitorsStackView: UIStackView!
+    @IBOutlet private weak var conversionStackView: UIStackView!
 
     private var currencyCode: String {
         return ServiceLocator.currencySettings.symbol(from: ServiceLocator.currencySettings.currencyCode)
@@ -80,10 +82,26 @@ final class StoreStatsV4PeriodViewController: UIViewController {
 
     private var isInitialLoad: Bool = true  // Used in trackChangedTabIfNeeded()
 
+    // To check whether the tab is showing the visitors and conversion views as redacted for custom range.
+    // This redaction is only shown on Custom Range tab with WordPress.com or Jetpack connected sites,
+    // while Jetpack CP sites has its own redacted for Jetpack state, and non-Jetpack sites simply has them empty.
+    private var unavailableVisitStatsDueToCustomRange: Bool {
+        guard timeRange.isCustomTimeRange,
+              let site = stores.sessionManager.defaultSite,
+              site.isJetpackConnected,
+              site.isJetpackThePluginInstalled else {
+            return false
+        }
+        return true
+    }
+
     /// Placeholder: Mockup Charts View
     ///
     private lazy var placeholderChartsView: ChartPlaceholderView = ChartPlaceholderView.instantiateFromNib()
 
+    /// Information alert for custom range tab redaction
+    ///
+    private lazy var fancyAlert = FancyAlertViewController.makeCustomRangeRedactionInformationAlert()
 
     // MARK: - Computed Properties
 
@@ -354,6 +372,36 @@ private extension StoreStatsV4PeriodViewController {
         // Data
         updateStatsDataToDefaultStyles()
 
+        // Taps
+        if unavailableVisitStatsDueToCustomRange {
+            fancyAlert.modalPresentationStyle = .custom
+            fancyAlert.transitioningDelegate = AppDelegate.shared.tabBarController
+
+            let visitorsTapRecognizer = UITapGestureRecognizer()
+            visitorsTapRecognizer.on { [weak self] _ in
+                guard let self,
+                      siteVisitStatsMode == .redactedDueToCustomRange
+                else { return }
+
+                present(fancyAlert, animated: true)
+            }
+
+            let conversionTapRecognizer = UITapGestureRecognizer()
+            conversionTapRecognizer.on { [weak self] _ in
+                guard let self,
+                      siteVisitStatsMode == .redactedDueToCustomRange
+                else { return }
+
+                present(fancyAlert, animated: true)
+            }
+
+            visitorsStackView.addGestureRecognizer(visitorsTapRecognizer)
+            visitorsStackView.isUserInteractionEnabled = true
+
+            conversionStackView.addGestureRecognizer(conversionTapRecognizer)
+            conversionStackView.isUserInteractionEnabled = true
+        }
+
         // Accessibility elements
         xAxisAccessibilityView.isAccessibilityElement = true
         xAxisAccessibilityView.accessibilityTraits = .staticText
@@ -480,7 +528,11 @@ extension StoreStatsV4PeriodViewController: ChartViewDelegate {
         chartValueSelectedEventsSubject
             .debounce(for: .seconds(Constants.chartValueSelectedEventsDebounce), scheduler: DispatchQueue.main)
             .sink { [weak self] _ in
-                self?.usageTracksEventEmitter.interacted()
+                guard let self else { return }
+                if self.timeRange.isCustomTimeRange {
+                    ServiceLocator.analytics.track(event: .DashboardCustomRange.interacted())
+                }
+                self.usageTracksEventEmitter.interacted()
             }.store(in: &cancellables)
     }
 }
@@ -491,16 +543,17 @@ private extension StoreStatsV4PeriodViewController {
     /// - Parameter selectedIndex: the index of interval data for the bar chart. Nil if no bar is selected.
     func updateUI(selectedBarIndex selectedIndex: Int?) {
 
-        if timeRange.isCustomTimeRange {
-            // For WordPress.com sites or fully Jetpack-connected sites, toggle the visibility of visit data based on whether
-            // a custom range bar value is selected.
-            // If selected, display the visit data, as it's accurate for individual values.
-            // If deselected, hide the data, as it's inaccurate for the entire range.
-            // This doesn't apply to Jetpack CP sites or non-Jetpack self-hosted sites, as they don't have visitor data.
+        if unavailableVisitStatsDueToCustomRange {
+            // If time range is less than 2 days, redact data when selected and show when deselected.
+            // Otherwise, show data when selected and redact when deselected.
+            guard case let .custom(from, to) = timeRange,
+                  let differenceInDays = StatsTimeRangeV4.differenceInDays(startDate: from, endDate: to) else {
+                return
+            }
 
-            guard let site = stores.sessionManager.defaultSite else { return }
-
-            if site.isJetpackConnected && site.isJetpackThePluginInstalled {
+            if differenceInDays == .lessThan2 {
+                siteVisitStatsMode = selectedIndex != nil ? .hidden : .default
+            } else {
                 siteVisitStatsMode = selectedIndex != nil ? .default : .redactedDueToCustomRange
             }
         }

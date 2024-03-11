@@ -165,6 +165,13 @@ public enum WooAnalyticsStat: String {
     case dashboardTopPerformersWaitingTimeLoaded = "dashboard_top_performers_waiting_time_loaded"
     case dashboardStoreTimezoneDifferFromDevice = "dashboard_store_timezone_differ_from_device"
 
+    // MARK: Dashboard stats custom range
+    case dashboardStatsCustomRangeAddButtonTapped = "dashboard_stats_custom_range_add_button_tapped"
+    case dashboardStatsCustomRangeConfirmed = "dashboard_stats_custom_range_confirmed"
+    case dashboardStatsCustomRangeTabSelected = "dashboard_stats_custom_range_tab_selected"
+    case dashboardStatsCustomRangeEditButtonTapped = "dashboard_stats_custom_range_edit_button_tapped"
+    case dashboardStatsCustomRangeInteracted = "dashboard_stats_custom_range_interacted"
+
     // MARK: Dashboard Stats v3/v4 Events
     //
     case dashboardNewStatsAvailabilityBannerCancelTapped = "dashboard_new_stats_availability_banner_cancel_tapped"

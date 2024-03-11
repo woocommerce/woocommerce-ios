@@ -14,7 +14,6 @@ final class StoreStatsV4ChartAxisHelper {
         case .thisWeek:
             labelCount = 7
         case .custom:
-            // TODO: 11935 Update label count
             labelCount = 5
         }
         return labelCount

@@ -9,6 +9,10 @@ public final class UnifiedOrderScreen: ScreenObject {
         $0.buttons["new-order-create-button"]
     }
 
+    private let recalculateButtonGetter: (XCUIApplication) -> XCUIElement = {
+        $0.buttons["new-order-recalculate-button"]
+    }
+
     private let cancelButtonGetter: (XCUIApplication) -> XCUIElement = {
         $0.buttons["new-order-cancel-button"]
     }
@@ -50,6 +54,8 @@ public final class UnifiedOrderScreen: ScreenObject {
     }
 
     private var createButton: XCUIElement { createButtonGetter(app) }
+
+    private var recalculateButton: XCUIElement { recalculateButtonGetter(app) }
 
     /// Cancel button in the Navigation bar.
     ///
@@ -126,7 +132,10 @@ public final class UnifiedOrderScreen: ScreenObject {
     /// Opens the Add Product screen (to add a new product).
     /// - Returns: Add Product screen object.
     private func openAddProductScreen() throws -> AddProductScreen {
-        addProductButton.tap()
+        // on iPad, it will already be showing on the left of the side-by side view, and there's no addProductButton
+        if UIDevice.current.userInterfaceIdiom == .phone {
+            addProductButton.tap()
+        }
         return try AddProductScreen()
     }
 
@@ -163,6 +172,11 @@ public final class UnifiedOrderScreen: ScreenObject {
     /// Opens the Customer Note screen.
     /// - Returns: Customer Note screen object.
     public func openCustomerNoteScreen() throws -> CustomerNoteScreen {
+        /// The `scrollintoView` function doesn’t perform any scrolling on the iPad, because `isFullyVisibleOnScreen`
+        /// is returning true, even when the note button is hidden (just) below the expandable totals drawer.
+        /// Unfortunately, the button can't be tapped in this instance.
+        app.scrollViews["order-form-scroll-view"].swipeUp()
+
         addNoteButton.scrollIntoView()
         addNoteButton.tap()
         return try CustomerNoteScreen()
@@ -177,6 +191,12 @@ public final class UnifiedOrderScreen: ScreenObject {
         return try SingleOrderScreen()
     }
 
+    public func recalculateTotalIfRequired() {
+        if recalculateButton.exists {
+            recalculateButton.tap()
+        }
+    }
+
     /// Changes the new order status to the second status in the Order Status list.
     /// - Returns: Unified Order screen object.
     public func editOrderStatus() throws -> UnifiedOrderScreen {
@@ -187,8 +207,10 @@ public final class UnifiedOrderScreen: ScreenObject {
     /// Tap the first product from the addProductScreen
     /// - Returns: Unified Order screen object.
     public func addProduct(byName name: String) throws -> UnifiedOrderScreen {
-        return try openAddProductScreen()
+        try openAddProductScreen()
             .tapProduct(byName: name)
+        recalculateTotalIfRequired()
+        return try UnifiedOrderScreen()
     }
 
     /// Tap the first product from the addProductScreen

@@ -96,7 +96,7 @@ struct DotcomRequest: Request, RESTRequestConvertible {
     ///
     func asURLRequest() throws -> URLRequest {
         let dotcomURL = URL(string: Settings.wordpressApiBaseURL + wordpressApiVersion.path + path)!
-        let dotcomRequest = try URLRequest(url: dotcomURL, method: method, headers: headers)
+        let dotcomRequest = try URLRequest(url: dotcomURL, method: method, headers: .init(headers))
         return try encoding.encode(dotcomRequest, with: parameters)
     }
 

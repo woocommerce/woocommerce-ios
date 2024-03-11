@@ -113,7 +113,7 @@ extension ReceiptViewController {
         // Constraints the printFormatter
         printController.printFormatter?.maximumContentWidth = Constants.maximumReceiptContentWidth
         printController.printFormatter?.maximumContentHeight = Constants.maximumReceiptContentHeight
-        printController.printFormatter?.perPageContentInsets = .init(top: 0, 
+        printController.printFormatter?.perPageContentInsets = .init(top: 0,
                                                                      left: Constants.margin,
                                                                      bottom: 0,
                                                                      right: Constants.margin)

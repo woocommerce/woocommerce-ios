@@ -26,9 +26,6 @@ struct HubMenu: View {
             detailView(menuID: viewModel.selectedMenuID)
         })
         .navigationSplitViewStyle(.balanced)
-        .navigationDestination(isPresented: $viewModel.showingReviewDetail) {
-            viewModel.getReviewDetailDestination()
-        }
         .onAppear {
             viewModel.setupMenuElements()
         }
@@ -113,9 +110,17 @@ private extension HubMenu {
                 }
             }
         }
-        .navigationDestination(for: String.self, destination: { id in
+        .navigationDestination(for: String.self) { id in
             detailView(menuID: id)
-        })
+        }
+        .navigationDestination(isPresented: $viewModel.showingReviewDetail) {
+            viewModel.getReviewDetailDestination()
+        }
+        .navigationDestination(isPresented: $viewModel.showingPrivacySettings) {
+            PrivacySettingsView()
+                .navigationTitle(Localization.privacySettings)
+                .navigationBarTitleDisplayMode(.inline)
+        }
         .listStyle(.insetGrouped)
         .background(Color(.listBackground))
         .toolbar(.hidden, for: .navigationBar)
@@ -330,6 +335,11 @@ private extension HubMenu {
     enum Localization {
         static let settings = NSLocalizedString("Settings", comment: "Settings button in the hub menu")
         static let general = NSLocalizedString("General", comment: "General section title in the hub menu")
+        static let privacySettings = NSLocalizedString(
+            "hubMenu.privacySettings",
+            value: "Privacy Settings",
+            comment: "Privacy settings screen title"
+        )
     }
 }
 

@@ -36,6 +36,7 @@ final class ReceiptViewController: UIViewController, WKNavigationDelegate, UIPri
         super.viewDidLoad()
 
         configureContent()
+        configurePrintController()
         configureNavigation()
         configureActivityIndicator()
 
@@ -61,6 +62,14 @@ final class ReceiptViewController: UIViewController, WKNavigationDelegate, UIPri
         webView.load(receipt)
     }
 
+    private func configurePrintController() {
+        // Use the webview's print formatter to initialize print operation.
+        // UIPrintInteractionController printFormatter and printPageRenderer properties are mutually exclusive, in order to grab the
+        // webview's page renderer, first we need to assign it to the controller's formatter:
+        printController.printFormatter = webView.viewPrintFormatter()
+        printController.delegate = self
+    }
+
     private func configureNavigation() {
         let printButton = UIBarButtonItem(image: UIImage(systemName: "printer"),
                                           style: .plain,
@@ -78,12 +87,6 @@ final class ReceiptViewController: UIViewController, WKNavigationDelegate, UIPri
         printInfo.jobName = formattedJobName
         printInfo.orientation = .portrait
         printController.printInfo = printInfo
-
-        // Use the webview's print formatter to initialize print operation.
-        // UIPrintInteractionController printFormatter and printPageRenderer properties are mutually exclusive, in order to grab the
-        // webview's page renderer, first we need to assign it to the controller's formatter:
-        printController.printFormatter = webView.viewPrintFormatter()
-        printController.delegate = self
 
         printController.present(animated: true, completionHandler: { [weak self] _, isCompleted, error in
             if let error = error {

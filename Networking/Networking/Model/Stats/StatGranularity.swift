@@ -8,5 +8,4 @@ public enum StatGranularity: String, Decodable, GeneratedFakeable {
     case week
     case month
     case year
-    case hour
 }

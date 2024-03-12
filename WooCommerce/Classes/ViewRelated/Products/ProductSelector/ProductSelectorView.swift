@@ -237,7 +237,7 @@ struct ProductSelectorView: View {
                 .onTapGesture {
                     viewModel.variationRowTapped(for: rowViewModel.productOrVariationID)
                 }
-                .redacted(reason: viewModel.selectionDisabled ? .placeholder : [])
+                .redacted(reason: viewModel.showPlaceholders ? .placeholder : [])
                 .disabled(viewModel.selectionDisabled)
 
                 DisclosureIndicator()
@@ -279,7 +279,7 @@ struct ProductSelectorView: View {
                                                              selected: rowViewModel.selectedState != .selected)
                 }
             }
-            .redacted(reason: viewModel.selectionDisabled ? .placeholder : [])
+            .redacted(reason: viewModel.showPlaceholders ? .placeholder : [])
             .disabled(viewModel.selectionDisabled)
         }
     }

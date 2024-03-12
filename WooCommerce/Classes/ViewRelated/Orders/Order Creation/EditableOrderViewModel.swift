@@ -1824,6 +1824,7 @@ private extension EditableOrderViewModel {
                     topProductsProvider: TopProductsFromCachedOrdersProvider(),
                     syncApproach: selectionSyncApproach.productSelectorSyncApproach,
                     orderSyncState: orderSynchronizer.statePublisher,
+                    shouldShowNonEditableIndicators: shouldShowNonEditableIndicators,
                     onProductSelectionStateChanged: { [weak self] product, isSelected in
                         guard let self else { return }
                         changeSelectionStateForProduct(product, to: isSelected)

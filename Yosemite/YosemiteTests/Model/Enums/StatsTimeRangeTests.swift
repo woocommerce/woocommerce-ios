@@ -143,7 +143,7 @@ final class StatsTimeRangeTests: XCTestCase {
         let range: StatsTimeRangeV4 = .custom(from: fromDate, to: toDate)
 
         // Then
-        XCTAssertEqual(range.siteVisitStatsGranularity, .hour)
+        XCTAssertEqual(range.siteVisitStatsGranularity, .day)
     }
 
     // MARK: `topEarnerStatsGranularity` for custom range
@@ -210,7 +210,7 @@ final class StatsTimeRangeTests: XCTestCase {
         let range: StatsTimeRangeV4 = .custom(from: fromDate, to: toDate)
 
         // Then
-        XCTAssertEqual(range.topEarnerStatsGranularity, .hour)
+        XCTAssertEqual(range.topEarnerStatsGranularity, .day)
     }
 
     // MARK: `summaryStatsGranularity` for custom range
@@ -277,7 +277,7 @@ final class StatsTimeRangeTests: XCTestCase {
         let range: StatsTimeRangeV4 = .custom(from: fromDate, to: toDate)
 
         // Then
-        XCTAssertEqual(range.summaryStatsGranularity, .hour)
+        XCTAssertEqual(range.summaryStatsGranularity, .day)
     }
     // MARK: Custom range
 

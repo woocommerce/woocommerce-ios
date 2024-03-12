@@ -2379,6 +2379,7 @@
 		DE9A02A32A44441200193ABF /* RequirementsCheckerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE9A02A22A44441200193ABF /* RequirementsCheckerTests.swift */; };
 		DE9F2D292A1B1AB2004E5957 /* FirstProductCreatedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE9F2D282A1B1AB2004E5957 /* FirstProductCreatedView.swift */; };
 		DE9F2D2C2A1B1F5D004E5957 /* ConfettiSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = DE9F2D2B2A1B1F5D004E5957 /* ConfettiSwiftUI */; };
+		DEA0D0642BA06961007786F2 /* PrivacySettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA0D0632BA06961007786F2 /* PrivacySettingsView.swift */; };
 		DEA357132ADCC4C9006380BA /* BlazeCampaignListViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA357122ADCC4C9006380BA /* BlazeCampaignListViewModelTests.swift */; };
 		DEA4269A2875440500265B0C /* PaymentMethodsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA426992875440500265B0C /* PaymentMethodsScreen.swift */; };
 		DEA88F502AA9D0100037273B /* AddEditProductCategoryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA88F4F2AA9D0100037273B /* AddEditProductCategoryViewModel.swift */; };
@@ -5118,6 +5119,7 @@
 		DE971218290A9615000C0BD3 /* AddStoreFooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddStoreFooterView.swift; sourceTree = "<group>"; };
 		DE9A02A22A44441200193ABF /* RequirementsCheckerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequirementsCheckerTests.swift; sourceTree = "<group>"; };
 		DE9F2D282A1B1AB2004E5957 /* FirstProductCreatedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstProductCreatedView.swift; sourceTree = "<group>"; };
+		DEA0D0632BA06961007786F2 /* PrivacySettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacySettingsView.swift; sourceTree = "<group>"; };
 		DEA357122ADCC4C9006380BA /* BlazeCampaignListViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeCampaignListViewModelTests.swift; sourceTree = "<group>"; };
 		DEA426992875440500265B0C /* PaymentMethodsScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentMethodsScreen.swift; sourceTree = "<group>"; };
 		DEA88F4F2AA9D0100037273B /* AddEditProductCategoryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddEditProductCategoryViewModel.swift; sourceTree = "<group>"; };
@@ -10575,6 +10577,7 @@
 				26B233D02A14208800926EAD /* PrivacyBannerPresenter.swift */,
 				260979782A12E20900442249 /* PrivacyBannerPresentationUseCase.swift */,
 				269B46612A16D68A00ADA872 /* UpdateAnalyticsSettingsUseCase.swift */,
+				DEA0D0632BA06961007786F2 /* PrivacySettingsView.swift */,
 			);
 			path = Privacy;
 			sourceTree = "<group>";
@@ -14478,6 +14481,7 @@
 				D81F2D37225F0D160084BF9C /* EmptyListMessageWithActionView.swift in Sources */,
 				B99B87A72AEFCF0A006B8AB1 /* Order+Empty.swift in Sources */,
 				CE6A8FB62B725A690063564D /* AnalyticsReportLinkViewModel.swift in Sources */,
+				DEA0D0642BA06961007786F2 /* PrivacySettingsView.swift in Sources */,
 				684AB83C2873DF04003DFDD1 /* CardReaderManualsViewModel.swift in Sources */,
 				575472812452185300A94C3C /* PushNotification.swift in Sources */,
 				0396CFAD2981476900E91436 /* CardPresentModalBuiltInConnectingFailed.swift in Sources */,

@@ -22,6 +22,14 @@ struct HubMenu: View {
     var body: some View {
         NavigationSplitView(columnVisibility: $columnVisibility, sidebar: {
             sideBar
+                .navigationDestination(isPresented: $viewModel.showingReviewDetail) {
+                    viewModel.getReviewDetailDestination()
+                }
+                .navigationDestination(isPresented: $viewModel.showingPrivacySettings) {
+                    PrivacySettingsView()
+                        .navigationTitle(Localization.privacySettings)
+                        .navigationBarTitleDisplayMode(.inline)
+                }
         }, detail: {
             if let id = viewModel.selectedMenuID {
                 detailView(menuID: id)
@@ -37,7 +45,7 @@ struct HubMenu: View {
 // MARK: SubViews
 private extension HubMenu {
     var sideBar: some View {
-        List {
+        List(selection: $viewModel.selectedMenuID) {
             // Store Section
             Section {
                 Button {
@@ -78,10 +86,6 @@ private extension HubMenu {
                         }
                     }
                     .accessibilityIdentifier(menu.accessibilityIdentifier)
-                    .listRowBackground(viewModel.selectedMenuID == menu.id &&
-                                       horizontalSizeClass == .regular ?
-                                       Color(.listSelectedBackground) :
-                                        Color(.listForeground(modal: false)))
                 }
             }
 
@@ -105,27 +109,13 @@ private extension HubMenu {
                         }
                     }
                     .accessibilityIdentifier(menu.accessibilityIdentifier)
-                    .listRowBackground(viewModel.selectedMenuID == menu.id &&
-                                       horizontalSizeClass == .regular ?
-                                       Color(.listSelectedBackground) :
-                                        Color(.listForeground(modal: false)))
                 }
             }
-        }
-        .navigationDestination(for: String.self) { id in
-            detailView(menuID: id)
-        }
-        .navigationDestination(isPresented: $viewModel.showingReviewDetail) {
-            viewModel.getReviewDetailDestination()
-        }
-        .navigationDestination(isPresented: $viewModel.showingPrivacySettings) {
-            PrivacySettingsView()
-                .navigationTitle(Localization.privacySettings)
-                .navigationBarTitleDisplayMode(.inline)
         }
         .listStyle(.insetGrouped)
         .background(Color(.listBackground))
         .toolbar(.hidden, for: .navigationBar)
+        .accentColor(Color(.listSelectedBackground))
     }
 
     @ViewBuilder

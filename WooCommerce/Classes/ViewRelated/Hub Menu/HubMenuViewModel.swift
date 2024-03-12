@@ -46,6 +46,7 @@ final class HubMenuViewModel: ObservableObject {
     @Published private(set) var switchStoreEnabled = false
 
     @Published var showingReviewDetail = false
+    @Published var showingPrivacySettings = false
 
     @Published var selectedMenuID = HubMenuViewModel.Settings.id
 

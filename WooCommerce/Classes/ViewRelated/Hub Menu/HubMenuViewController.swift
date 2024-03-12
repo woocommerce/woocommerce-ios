@@ -43,19 +43,8 @@ final class HubMenuViewController: UIHostingController<HubMenu> {
         viewModel.selectedMenuID = HubMenuViewModel.Coupons.id
     }
 
-    /// Pushes the Settings & Privacy screen onto the navigation stack.
-    ///
     func showPrivacySettings() {
-//        guard let navigationController else {
-//            return DDLogError("⛔️ Could not find a navigation controller context.")
-//        }
-//        guard let privacy = UIStoryboard.dashboard.instantiateViewController(ofClass: PrivacySettingsViewController.self) else {
-//            return DDLogError("⛔️ Could not instantiate PrivacySettingsViewController")
-//        }
-//
-//        let settings = SettingsViewController()
-//        navigationController.setViewControllers(navigationController.viewControllers + [settings, privacy], animated: true)
-        // TODO
+        viewModel.showingPrivacySettings = true
     }
 
     func presentSwitchStore() {

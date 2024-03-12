@@ -455,6 +455,8 @@ private extension OrderDetailsViewController {
             editCustomerNoteTapped()
         case .editShippingAddress:
             editShippingAddressTapped()
+        case .trashOrder:
+            trashOrderTapped()
         }
     }
 
@@ -627,6 +629,10 @@ private extension OrderDetailsViewController {
         let editAddressViewController = EditOrderAddressHostingController(viewModel: viewModel)
         let navigationController = WooNavigationController(rootViewController: editAddressViewController)
         present(navigationController, animated: true, completion: nil)
+    }
+
+    func trashOrderTapped() {
+        //TODO: implement this method
     }
 
     @objc private func collectPaymentTapped() {

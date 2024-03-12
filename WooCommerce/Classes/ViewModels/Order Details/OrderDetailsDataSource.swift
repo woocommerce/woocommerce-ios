@@ -477,6 +477,8 @@ private extension OrderDetailsDataSource {
             configureAttributionDeviceType(cell: cell, at: indexPath)
         case let cell as TitleAndValueTableViewCell where row == .attributionSessionPageViews:
             configureAttributionSessionPageViews(cell: cell, at: indexPath)
+        case let cell as ButtonTableViewCell where row == .trashOrder:
+            configureTrashOrder(cell: cell, at: indexPath)
         default:
             fatalError("Unidentified customer info row type")
         }
@@ -1021,6 +1023,15 @@ private extension OrderDetailsDataSource {
         }
     }
 
+    private func configureTrashOrder(cell: ButtonTableViewCell, at indexPath: IndexPath) {
+        cell.configure(style: .secondary,
+                       title: Titles.trashOrder,
+                       accessibilityIdentifier: "order-details-trash-order-button") { [weak self] in
+            self?.onCellAction?(.trashOrder, indexPath)
+        }
+        cell.hideSeparator()
+    }
+
     /// Returns attributes that can be categorized as `Add-ons`.
     /// Returns an `empty` array if we can't find the product associated with order item.
     ///
@@ -1421,6 +1432,10 @@ extension OrderDetailsDataSource {
             return Section(category: .attribution, title: Title.orderAttribution, rows: rows)
         }()
 
+        let trashOrderSection: Section? = {
+            return Section(category: .trashOrder, rows: [.trashOrder])
+        }()
+
         sections = ([summary,
                      shippingNotice,
                      products,
@@ -1436,7 +1451,8 @@ extension OrderDetailsDataSource {
                      giftCards,
                      tracking,
                      addTracking,
-                     notes]).compactMap { $0 }
+                     notes,
+                    trashOrderSection]).compactMap { $0 }
 
         updateOrderNoteAsyncDictionary(orderNotes: orderNotes)
     }
@@ -1677,6 +1693,10 @@ extension OrderDetailsDataSource {
             value: "See Receipt",
             comment: "Text on the button title to see the order's receipt")
         static let seeLegacyReceipt = NSLocalizedString("See Receipt", comment: "Text on the button to see a saved receipt")
+        static let trashOrder = NSLocalizedString(
+                     "OrderDetailsDataSource.trashOrder.button.title",
+                     value: "Delete Order",
+                     comment: "Text on the button title to delete an order")
     }
 
     enum Icons {
@@ -1750,6 +1770,7 @@ extension OrderDetailsDataSource {
             case notes
             case customFields
             case attribution
+            case trashOrder
         }
 
         /// The table header style of a `Section`.
@@ -1862,6 +1883,7 @@ extension OrderDetailsDataSource {
         case attributionMedium
         case attributionDeviceType
         case attributionSessionPageViews
+        case trashOrder
 
         var reuseIdentifier: String {
             switch self {
@@ -1941,6 +1963,8 @@ extension OrderDetailsDataSource {
                     .attributionDeviceType,
                     .attributionSessionPageViews:
                 return TitleAndValueTableViewCell.reuseIdentifier
+            case .trashOrder:
+                return ButtonTableViewCell.reuseIdentifier
             }
         }
     }
@@ -1957,6 +1981,7 @@ extension OrderDetailsDataSource {
         case viewAddOns(addOns: [OrderItemProductAddOn])
         case editCustomerNote
         case editShippingAddress
+        case trashOrder
     }
 
     enum Constants {

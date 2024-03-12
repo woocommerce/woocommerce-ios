@@ -72,6 +72,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Components that require prior Auth
         setupZendesk()
 
+        setupStoresAfterDependenciesAreInitialized()
+
         // Yosemite Initialization
         synchronizeEntitiesIfPossible()
         listenToAuthenticationFailureNotifications()
@@ -279,6 +281,10 @@ private extension AppDelegate {
         appearance.primaryNormalBorderColor = .primaryButtonBorder
         appearance.primaryHighlightBackgroundColor = .primaryButtonDownBackground
         appearance.primaryHighlightBorderColor = .primaryButtonDownBorder
+    }
+
+    func setupStoresAfterDependenciesAreInitialized() {
+        ServiceLocator.stores.initializeAfterDependenciesAreInitialized()
     }
 
     /// Sets up the Zendesk SDK.

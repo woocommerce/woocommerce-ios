@@ -48,7 +48,7 @@ final class HubMenuViewModel: ObservableObject {
     @Published var showingReviewDetail = false
     @Published var showingPrivacySettings = false
 
-    @Published var selectedMenuID = HubMenuViewModel.Settings.id
+    @Published var selectedMenuID: String?
 
     @Published var showingCoupons = false
 

@@ -122,11 +122,27 @@
 		</dict>
 		<dict>
 			<key>UIApplicationShortcutItemType</key>
+			<string>OpenProductsAction</string>
+			<key>UIApplicationShortcutItemTitle</key>
+			<string>OpenProductsAction.Title</string>
+			<key>UIApplicationShortcutItemIconSymbolName</key>
+			<string>list.bullet</string>
+		</dict>
+		<dict>
+			<key>UIApplicationShortcutItemType</key>
 			<string>AddOrderAction</string>
 			<key>UIApplicationShortcutItemTitle</key>
 			<string>AddOrderAction.Title</string>
 			<key>UIApplicationShortcutItemIconSymbolName</key>
 			<string>plus</string>
+		</dict>
+		<dict>
+			<key>UIApplicationShortcutItemType</key>
+			<string>OpenOrdersAction</string>
+			<key>UIApplicationShortcutItemTitle</key>
+			<string>OpenOrdersAction.Title</string>
+			<key>UIApplicationShortcutItemIconSymbolName</key>
+			<string>list.bullet</string>
 		</dict>
 	</array>
 </dict>

@@ -182,8 +182,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         case QuickAction.addProduct:
             MainTabBarController.presentAddProductFlow()
             completionHandler(true)
+        case QuickAction.openProducts:
+            MainTabBarController.switchToProductsTab()
+            completionHandler(true)
         case QuickAction.addOrder:
             MainTabBarController.presentOrderCreationFlow()
+            completionHandler(true)
+        case QuickAction.openOrders:
+            MainTabBarController.switchToOrdersTab()
             completionHandler(true)
         }
     }
@@ -559,5 +565,7 @@ private extension AppDelegate {
 
 enum QuickAction: String {
     case addProduct = "AddProductAction"
+    case openProducts = "OpenProductsAction"
     case addOrder = "AddOrderAction"
+    case openOrders = "OpenOrdersAction"
 }

@@ -23,7 +23,9 @@ struct HubMenu: View {
         NavigationSplitView(columnVisibility: $columnVisibility, sidebar: {
             sideBar
         }, detail: {
-            detailView(menuID: viewModel.selectedMenuID)
+            if let id = viewModel.selectedMenuID {
+                detailView(menuID: id)
+            }
         })
         .navigationSplitViewStyle(.balanced)
         .onAppear {

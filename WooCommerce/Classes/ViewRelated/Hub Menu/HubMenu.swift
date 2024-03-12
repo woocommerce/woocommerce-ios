@@ -227,48 +227,36 @@ private extension HubMenu {
         var body: some View {
             HStack(spacing: HubMenu.Constants.padding) {
 
-                HStack(spacing: .zero) {
-                    /// iOS 16, aligns the list dividers to the first text position.
-                    /// This tricks the system by rendering an empty text and forcing the list to align the divider to it.
-                    /// Without this, the divider will be rendered from the title and will not cover the icon.
-                    /// Ideally we would want to use the `alignmentGuide` modifier but that is only available on iOS 16.
-                    ///
-                    Text("")
-
-                    ZStack {
-                        // Icon
-                        Group {
-                            switch icon {
-                            case .local(let asset):
-                                Circle()
-                                    .fill(Color(.init(light: .listBackground, dark: .secondaryButtonBackground)))
-                                    .frame(width: HubMenu.Constants.avatarSize, height: HubMenu.Constants.avatarSize)
-                                    .overlay {
-                                        Image(uiImage: asset)
-                                            .resizable()
-                                            .frame(width: HubMenu.Constants.iconSize, height: HubMenu.Constants.iconSize)
-                                    }
-
-                            case .remote(let url):
-                                KFImage(url)
-                                    .placeholder { Image(uiImage: .gravatarPlaceholderImage).resizable() }
+                // Icon
+                Group {
+                    switch icon {
+                    case .local(let asset):
+                        Circle()
+                            .fill(Color(.init(light: .listBackground, dark: .secondaryButtonBackground)))
+                            .frame(width: HubMenu.Constants.avatarSize, height: HubMenu.Constants.avatarSize)
+                            .overlay {
+                                Image(uiImage: asset)
                                     .resizable()
-                                    .frame(width: HubMenu.Constants.avatarSize, height: HubMenu.Constants.avatarSize)
-                                    .clipShape(Circle())
+                                    .frame(width: HubMenu.Constants.iconSize, height: HubMenu.Constants.iconSize)
                             }
-                        }
-                        .overlay(alignment: .topTrailing) {
-                            // Badge
-                            if case .dot = iconBadge {
-                                Circle()
-                                    .fill(Color(.accent))
-                                    .frame(width: HubMenu.Constants.dotBadgeSize)
-                                    .padding(HubMenu.Constants.dotBadgePadding)
-                            }
-                        }
+
+                    case .remote(let url):
+                        KFImage(url)
+                            .placeholder { Image(uiImage: .gravatarPlaceholderImage).resizable() }
+                            .resizable()
+                            .frame(width: HubMenu.Constants.avatarSize, height: HubMenu.Constants.avatarSize)
+                            .clipShape(Circle())
                     }
                 }
-
+                .overlay(alignment: .topTrailing) {
+                    // Badge
+                    if case .dot = iconBadge {
+                        Circle()
+                            .fill(Color(.accent))
+                            .frame(width: HubMenu.Constants.dotBadgeSize)
+                            .padding(HubMenu.Constants.dotBadgePadding)
+                    }
+                }
 
                 // Title & Description
                 VStack(alignment: .leading, spacing: HubMenu.Constants.topBarSpacing) {
@@ -297,6 +285,11 @@ private extension HubMenu {
                     .foregroundColor(Color(.textSubtle))
                     .accessibilityIdentifier(chevronAccessibilityID ?? "")
                     .renderedIf(chevron != .none)
+            }
+            .alignmentGuide(.listRowSeparatorLeading) { _ in
+                /// In iOS 16, List row separator insets automatically and aligns to the text.
+                /// Returning 0 makes the separator start from the leading edge.
+                return 0
             }
             .padding(.vertical, Constants.rowVerticalPadding)
         }

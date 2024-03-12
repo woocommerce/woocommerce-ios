@@ -124,6 +124,15 @@ extension ReceiptViewController {
         let paper = UIPrintPaper.bestPaper(forPageSize: inferPaperSize, withPapersFrom: paperList)
         return paper
     }
+
+    func printInteractionController(_ printInteractionController: UIPrintInteractionController, cutLengthFor paper: UIPrintPaper) -> CGFloat {
+        // Determines the length in which the content fits and return this value. When printed, the paper should be cut to this length.
+        guard let inferPaperSize = printController.printFormatter?.printPageRenderer?.paperRect.size else {
+            DDLogInfo("Unable to retrieve inferred paper size for the page renderer. Using default paper provided by the system.")
+            return paper.paperSize.height
+        }
+        return inferPaperSize.height - Constants.defaultRollCutterMargin
+    }
 }
 
 // MARK: - WKNavigation delegate
@@ -137,6 +146,7 @@ extension ReceiptViewController {
         static let pointsPerInch: Int = 72
         static let maximumReceiptContentWidth: CGFloat = CGFloat(4 * pointsPerInch)
         static let maximumReceiptContentHeight: CGFloat = CGFloat(11 * pointsPerInch)
+        static let defaultRollCutterMargin: CGFloat = CGFloat(1 * pointsPerInch)
         static let margin: CGFloat = 16
     }
 }

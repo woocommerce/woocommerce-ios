@@ -4,6 +4,7 @@ import Storage
 import class Networking.UserAgent
 import Experiments
 import class WidgetKit.WidgetCenter
+import protocol Yosemite.StoresManager
 
 import CocoaLumberjack
 import KeychainAccess
@@ -57,12 +58,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, willFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
         // Setup Components
+        let stores = ServiceLocator.stores
+        let analytics = ServiceLocator.analytics
+        let pushNotesManager = ServiceLocator.pushNotesManager
+        stores.initializeAfterDependenciesAreInitialized()
+        setupAnalytics(analytics)
+        setupPushNotificationsManagerIfPossible(pushNotesManager, stores: stores)
+
         setupStartupWaitingTimeTracker()
-        setupAnalytics()
         setupCocoaLumberjack()
         setupLibraryLogger()
         setupLogLevel(.verbose)
-        setupPushNotificationsManagerIfPossible()
         setupAppRatingManager()
         setupWormholy()
         setupKeyboardStateProvider()
@@ -71,8 +77,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         // Components that require prior Auth
         setupZendesk()
-
-        setupStoresAfterDependenciesAreInitialized()
 
         // Yosemite Initialization
         synchronizeEntitiesIfPossible()
@@ -283,10 +287,6 @@ private extension AppDelegate {
         appearance.primaryHighlightBorderColor = .primaryButtonDownBorder
     }
 
-    func setupStoresAfterDependenciesAreInitialized() {
-        ServiceLocator.stores.initializeAfterDependenciesAreInitialized()
-    }
-
     /// Sets up the Zendesk SDK.
     ///
     func setupZendesk() {
@@ -295,8 +295,8 @@ private extension AppDelegate {
 
     /// Sets up the WordPress Authenticator.
     ///
-    func setupAnalytics() {
-        ServiceLocator.analytics.initialize()
+    func setupAnalytics(_ analytics: Analytics) {
+        analytics.initialize()
     }
 
     /// Sets up CocoaLumberjack logging.
@@ -336,13 +336,12 @@ private extension AppDelegate {
 
     /// Push Notifications: Authorization + Registration!
     ///
-    func setupPushNotificationsManagerIfPossible() {
-        let stores = ServiceLocator.stores
+    func setupPushNotificationsManagerIfPossible(_ pushNotesManager: PushNotesManager, stores: StoresManager) {
         guard stores.isAuthenticated,
               stores.needsDefaultStore == false,
               stores.isAuthenticatedWithoutWPCom == false else {
             if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.storeCreationNotifications) {
-                ServiceLocator.pushNotesManager.ensureAuthorizationIsRequested(includesProvisionalAuth: true, onCompletion: nil)
+                pushNotesManager.ensureAuthorizationIsRequested(includesProvisionalAuth: true, onCompletion: nil)
             }
             return
         }
@@ -517,7 +516,7 @@ extension AppDelegate {
     /// Runs whenever the Authentication Flow is completed successfully.
     ///
     func authenticatorWasDismissed() {
-        setupPushNotificationsManagerIfPossible()
+        setupPushNotificationsManagerIfPossible(stores: ServiceLocator.stores)
         requirementsChecker.checkEligibilityForDefaultStore()
     }
 }

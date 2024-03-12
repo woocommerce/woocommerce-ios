@@ -149,6 +149,7 @@ private extension WooAboutScreenConfiguration {
         enum Subtitles {
             static let website          = "woocommerce.app"
             static let blog             = "woo.com/blog"
+            static let instagram        = "@woocommerce"
             static let twitter          = "@woocommerce"
             static let workWithUs       = NSLocalizedString("Join from anywhere",
                                                             comment: "Subtitle for button displaying the Automattic Work With Us web page, "

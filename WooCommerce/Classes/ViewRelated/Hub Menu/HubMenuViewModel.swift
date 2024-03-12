@@ -169,6 +169,22 @@ final class HubMenuViewModel: ObservableObject {
         return ReviewDetailView(productReview: parcel.review, product: parcel.product, notification: parcel.note)
     }
 
+    /// Handle navigation when tapping a list menu row.
+    ///
+    func trackSelection(menu: HubMenuItem) {
+        ServiceLocator.analytics.track(.hubMenuOptionTapped, withProperties: [
+            Constants.trackingOptionKey: menu.trackingOption
+        ])
+
+        if menu.id == HubMenuViewModel.Settings.id {
+            ServiceLocator.analytics.track(.hubMenuSettingsTapped)
+        } else if menu.id == HubMenuViewModel.Blaze.id {
+            ServiceLocator.analytics.track(event: .Blaze.blazeCampaignListEntryPointSelected(source: .menu))
+        }
+
+        selectedMenuID = menu.id
+    }
+
     private func observeSiteForUIUpdates() {
         stores.site
             .compactMap { site -> URL? in
@@ -240,6 +256,12 @@ final class HubMenuViewModel: ObservableObject {
 
     deinit {
         NotificationCenter.default.removeObserver(self, name: .setUpTapToPayViewDidAppear, object: nil)
+    }
+}
+
+private extension HubMenuViewModel {
+    enum Constants {
+        static let trackingOptionKey = "option"
     }
 }
 

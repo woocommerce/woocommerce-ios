@@ -10,11 +10,11 @@ final class WooAboutScreenConfiguration: AboutScreenConfiguration {
                 AboutItem(title: Localization.Titles.rateUs, action: { [weak self] context in
                     self?.present(url: Links.rateUs,
                                   from: context.viewController)
-                }, accessoryViewSystemImage: "star"),
+                }, accessoryViewSystemImage: (name: "star", tintColor: UIColor.wooCommercePurple(.shade0))),
                 AboutItem(title: Localization.Titles.share, action: { [weak self] context in
                     self?.presentShareSheet(from: context.viewController,
                                             sourceView: context.sourceView)
-                }, accessoryViewSystemImage: "square.and.arrow.up"),
+                }, accessoryViewSystemImage: (name: "square.and.arrow.up", tintColor: UIColor.wooCommercePurple(.shade0))),
                 AboutItem(title: Localization.Titles.instagram, subtitle: Localization.Subtitles.instagram, cellStyle: .value1, action: { [weak self] context in
                     self?.present(url: Links.instagram, from: context.viewController)
                 }),

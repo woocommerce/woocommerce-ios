@@ -252,6 +252,7 @@ private extension HubMenu {
                             .overlay {
                                 Image(uiImage: asset)
                                     .resizable()
+                                    .aspectRatio(contentMode: .fit)
                                     .frame(width: HubMenu.Constants.iconSize, height: HubMenu.Constants.iconSize)
                             }
 

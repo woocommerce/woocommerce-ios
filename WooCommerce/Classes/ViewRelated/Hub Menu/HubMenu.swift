@@ -12,7 +12,8 @@ struct HubMenu: View {
     @ObservedObject private var iO = Inject.observer
 
     @ObservedObject private var viewModel: HubMenuViewModel
-    @State private var columnVisibility = NavigationSplitViewVisibility.doubleColumn
+    @State private var columnVisibility = NavigationSplitViewVisibility.all
+    @Environment(\.horizontalSizeClass) var horizontalSizeClass
 
     init(viewModel: HubMenuViewModel) {
         self.viewModel = viewModel
@@ -22,8 +23,7 @@ struct HubMenu: View {
         NavigationSplitView(columnVisibility: $columnVisibility, sidebar: {
             sideBar
         }, detail: {
-            detailView
-                .navigationBarTitleDisplayMode(.inline)
+            detailView(menuID: viewModel.selectedMenuID)
         })
         .navigationSplitViewStyle(.balanced)
         .onAppear {
@@ -79,17 +79,15 @@ private extension HubMenu {
             // Settings Section
             Section(Localization.settings) {
                 ForEach(viewModel.settingsElements, id: \.id) { menu in
-                    Button {
-                        handleTap(menu: menu)
-                    } label: {
+                    NavigationLink(destination: detailView(menuID: menu.id), label: {
                         Row(title: menu.title,
                             titleBadge: nil,
                             iconBadge: menu.iconBadge,
                             description: menu.description,
                             icon: .local(menu.icon),
-                            chevron: .leading)
+                            chevron: .none)
                         .foregroundColor(Color(menu.iconColor))
-                    }
+                    })
                     .accessibilityIdentifier(menu.accessibilityIdentifier)
                 }
             }
@@ -97,17 +95,15 @@ private extension HubMenu {
             // General Section
             Section(Localization.general) {
                 ForEach(viewModel.generalElements, id: \.id) { menu in
-                    Button {
-                        handleTap(menu: menu)
-                    } label: {
+                    NavigationLink(destination: detailView(menuID: menu.id), label: {
                         Row(title: menu.title,
                             titleBadge: nil,
                             iconBadge: menu.iconBadge,
                             description: menu.description,
                             icon: .local(menu.icon),
-                            chevron: .leading)
+                            chevron: .none)
                         .foregroundColor(Color(menu.iconColor))
-                    }
+                    })
                     .accessibilityIdentifier(menu.accessibilityIdentifier)
                 }
             }
@@ -115,40 +111,47 @@ private extension HubMenu {
         .listStyle(.insetGrouped)
         .background(Color(.listBackground))
         .toolbar(.hidden, for: .navigationBar)
+        .accentColor(Color(.listSelectedBackground))
     }
 
     @ViewBuilder
-    var detailView: some View {
-        switch viewModel.selectedMenuID {
-        case HubMenuViewModel.Settings.id:
-            SettingsView()
-                .navigationTitle(HubMenuViewModel.Localization.settings)
-        case HubMenuViewModel.Payments.id:
-            InPersonPaymentsMenu(viewModel: viewModel.inPersonPaymentsMenuViewModel)
-                .navigationTitle(InPersonPaymentsView.Localization.title)
-        case HubMenuViewModel.Blaze.id:
-            BlazeCampaignListView(viewModel: .init(siteID: viewModel.siteID))
-        case HubMenuViewModel.WoocommerceAdmin.id:
-            webView(url: viewModel.woocommerceAdminURL,
-                    title: HubMenuViewModel.Localization.woocommerceAdmin,
-                    shouldAuthenticate: viewModel.shouldAuthenticateAdminPage)
-        case HubMenuViewModel.ViewStore.id:
-            webView(url: viewModel.storeURL,
-                    title: HubMenuViewModel.Localization.viewStore,
-                    shouldAuthenticate: false)
-        case HubMenuViewModel.Inbox.id:
-            Inbox(viewModel: .init(siteID: viewModel.siteID))
-        case HubMenuViewModel.Reviews.id:
-            ReviewsView(siteID: viewModel.siteID)
-        case HubMenuViewModel.Coupons.id:
-            EnhancedCouponListView(siteID: viewModel.siteID)
-        case HubMenuViewModel.InAppPurchases.id:
-            InAppPurchasesDebugView()
-        case HubMenuViewModel.Subscriptions.id:
-            SubscriptionsView(viewModel: .init())
-        default:
-            fatalError("🚨 Unsupported menu item")
+    func detailView(menuID: String) -> some View {
+        Group {
+            switch menuID {
+            case HubMenuViewModel.Settings.id:
+                SettingsView()
+                    .navigationTitle(HubMenuViewModel.Localization.settings)
+            case HubMenuViewModel.Payments.id:
+                InPersonPaymentsMenu(viewModel: viewModel.inPersonPaymentsMenuViewModel)
+                    .navigationTitle(InPersonPaymentsView.Localization.title)
+            case HubMenuViewModel.Blaze.id:
+                BlazeCampaignListView(viewModel: .init(siteID: viewModel.siteID))
+            case HubMenuViewModel.WoocommerceAdmin.id:
+                webView(url: viewModel.woocommerceAdminURL,
+                        title: HubMenuViewModel.Localization.woocommerceAdmin,
+                        shouldAuthenticate: viewModel.shouldAuthenticateAdminPage)
+            case HubMenuViewModel.ViewStore.id:
+                webView(url: viewModel.storeURL,
+                        title: HubMenuViewModel.Localization.viewStore,
+                        shouldAuthenticate: false)
+            case HubMenuViewModel.Inbox.id:
+                Inbox(viewModel: .init(siteID: viewModel.siteID))
+            case HubMenuViewModel.Reviews.id:
+                ReviewsView(siteID: viewModel.siteID)
+                    .navigationTitle(HubMenuViewModel.Localization.reviews)
+            case HubMenuViewModel.Coupons.id:
+                EnhancedCouponListView(siteID: viewModel.siteID)
+                    .navigationTitle(HubMenuViewModel.Localization.coupon)
+            case HubMenuViewModel.InAppPurchases.id:
+                InAppPurchasesDebugView()
+            case HubMenuViewModel.Subscriptions.id:
+                SubscriptionsView(viewModel: .init())
+            default:
+                fatalError("🚨 Unsupported menu item")
+            }
         }
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbarRole(horizontalSizeClass == .compact ? .editor : .navigationStack) // to hide the "Back" title on the back button.
     }
 
     @ViewBuilder

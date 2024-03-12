@@ -34,22 +34,6 @@ struct HubMenu: View {
             EmptyView()
         }
     }
-
-    /// Handle navigation when tapping a list menu row.
-    ///
-    private func handleTap(menu: HubMenuItem) {
-        ServiceLocator.analytics.track(.hubMenuOptionTapped, withProperties: [
-            Constants.trackingOptionKey: menu.trackingOption
-        ])
-
-        if menu.id == HubMenuViewModel.Settings.id {
-            ServiceLocator.analytics.track(.hubMenuSettingsTapped)
-        } else if menu.id == HubMenuViewModel.Blaze.id {
-            ServiceLocator.analytics.track(event: .Blaze.blazeCampaignListEntryPointSelected(source: .menu))
-        }
-
-        viewModel.selectedMenuID = menu.id
-    }
 }
 
 // MARK: SubViews
@@ -79,7 +63,9 @@ private extension HubMenu {
             // Settings Section
             Section(Localization.settings) {
                 ForEach(viewModel.settingsElements, id: \.id) { menu in
-                    NavigationLink(destination: detailView(menuID: menu.id), label: {
+                    Button(action: {
+                        viewModel.trackSelection(menu: menu)
+                    }, label: {
                         Row(title: menu.title,
                             titleBadge: nil,
                             iconBadge: menu.iconBadge,
@@ -88,14 +74,22 @@ private extension HubMenu {
                             chevron: .none)
                         .foregroundColor(Color(menu.iconColor))
                     })
+                    .overlay {
+                        NavigationLink(value: menu.id) {
+                            EmptyView()
+                        }
+                    }
                     .accessibilityIdentifier(menu.accessibilityIdentifier)
+                    .listRowBackground(viewModel.selectedMenuID == menu.id ? Color(.listSelectedBackground) : Color(.listForeground(modal: false)))
                 }
             }
 
             // General Section
             Section(Localization.general) {
                 ForEach(viewModel.generalElements, id: \.id) { menu in
-                    NavigationLink(destination: detailView(menuID: menu.id), label: {
+                    Button(action: {
+                        viewModel.trackSelection(menu: menu)
+                    }, label: {
                         Row(title: menu.title,
                             titleBadge: nil,
                             iconBadge: menu.iconBadge,
@@ -104,14 +98,22 @@ private extension HubMenu {
                             chevron: .none)
                         .foregroundColor(Color(menu.iconColor))
                     })
+                    .overlay {
+                        NavigationLink(value: menu.id) {
+                            EmptyView()
+                        }
+                    }
                     .accessibilityIdentifier(menu.accessibilityIdentifier)
+                    .listRowBackground(viewModel.selectedMenuID == menu.id ? Color(.listSelectedBackground) : Color(.listForeground(modal: false)))
                 }
             }
         }
+        .navigationDestination(for: String.self, destination: { id in
+            detailView(menuID: id)
+        })
         .listStyle(.insetGrouped)
         .background(Color(.listBackground))
         .toolbar(.hidden, for: .navigationBar)
-        .accentColor(Color(.listSelectedBackground))
     }
 
     @ViewBuilder
@@ -310,7 +312,6 @@ private extension HubMenu {
         static let avatarSize: CGFloat = 40
         static let chevronSize: CGFloat = 20
         static let iconSize: CGFloat = 20
-        static let trackingOptionKey = "option"
         static let dotBadgePadding = EdgeInsets(top: 6, leading: 0, bottom: 0, trailing: 2)
         static let dotBadgeSize: CGFloat = 6
 

@@ -633,6 +633,7 @@ private extension OrderDetailsViewController {
 
     func trashOrderTapped() {
         //TODO: implement this method
+        ServiceLocator.analytics.track(.orderDetailTrashButtonTapped)
     }
 
     @objc private func collectPaymentTapped() {

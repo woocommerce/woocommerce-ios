@@ -26,12 +26,11 @@ struct HubMenu: View {
             detailView(menuID: viewModel.selectedMenuID)
         })
         .navigationSplitViewStyle(.balanced)
+        .navigationDestination(isPresented: $viewModel.showingReviewDetail) {
+            viewModel.getReviewDetailDestination()
+        }
         .onAppear {
             viewModel.setupMenuElements()
-        }
-
-        LazyNavigationLink(destination: viewModel.getReviewDetailDestination(), isActive: $viewModel.showingReviewDetail) {
-            EmptyView()
         }
     }
 }
@@ -80,7 +79,10 @@ private extension HubMenu {
                         }
                     }
                     .accessibilityIdentifier(menu.accessibilityIdentifier)
-                    .listRowBackground(viewModel.selectedMenuID == menu.id ? Color(.listSelectedBackground) : Color(.listForeground(modal: false)))
+                    .listRowBackground(viewModel.selectedMenuID == menu.id &&
+                                       horizontalSizeClass == .regular ?
+                                       Color(.listSelectedBackground) :
+                                        Color(.listForeground(modal: false)))
                 }
             }
 
@@ -104,7 +106,10 @@ private extension HubMenu {
                         }
                     }
                     .accessibilityIdentifier(menu.accessibilityIdentifier)
-                    .listRowBackground(viewModel.selectedMenuID == menu.id ? Color(.listSelectedBackground) : Color(.listForeground(modal: false)))
+                    .listRowBackground(viewModel.selectedMenuID == menu.id &&
+                                       horizontalSizeClass == .regular ?
+                                       Color(.listSelectedBackground) :
+                                        Color(.listForeground(modal: false)))
                 }
             }
         }
@@ -289,7 +294,7 @@ private extension HubMenu {
                     .flipsForRightToLeftLayoutDirection(true)
                     .foregroundColor(Color(.textSubtle))
                     .accessibilityIdentifier(chevronAccessibilityID ?? "")
-                    .renderedIf(chevron != .none)
+                    .opacity(chevron == .none ? 0 : 1)
             }
             .alignmentGuide(.listRowSeparatorLeading) { _ in
                 /// In iOS 16, List row separator insets automatically and aligns to the text.

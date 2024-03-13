@@ -36,7 +36,8 @@ final class PluginListViewModel {
     }()
 
     var pluginNameList: [String] {
-        resultsController.fetchedObjects.map { $0.name }
+        // Plugin name can sometimes contain HTML tags and entities
+        resultsController.fetchedObjects.map { $0.name.strippedHTML }
     }
 
     init(siteID: Int64,

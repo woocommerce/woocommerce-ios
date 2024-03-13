@@ -604,7 +604,7 @@
 		0313651128AB81B100EEE571 /* InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0313651028AB81B100EEE571 /* InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpView.swift */; };
 		0313651328ABCB2D00EEE571 /* InPersonPaymentsOnboardingErrorMainContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0313651228ABCB2D00EEE571 /* InPersonPaymentsOnboardingErrorMainContentView.swift */; };
 		0313651728ACE9F400EEE571 /* InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0313651628ACE9F400EEE571 /* InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel.swift */; };
-		03191AE628E1DF0600670723 /* WooCommercePluginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03191AE528E1DF0600670723 /* WooCommercePluginViewModel.swift */; };
+		03191AE628E1DF0600670723 /* PluginDetailsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03191AE528E1DF0600670723 /* PluginDetailsViewModel.swift */; };
 		03191AE928E20C9200670723 /* PluginDetailsRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03191AE828E20C9200670723 /* PluginDetailsRowView.swift */; };
 		031B10E3274FE2AE007390BA /* CardPresentModalConnectionFailedUpdateAddress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031B10E2274FE2AE007390BA /* CardPresentModalConnectionFailedUpdateAddress.swift */; };
 		032E481D2982996E00469D92 /* CardPresentModalBuiltInConnectingFailedNonRetryable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 032E481C2982996E00469D92 /* CardPresentModalBuiltInConnectingFailedNonRetryable.swift */; };
@@ -3333,7 +3333,7 @@
 		03180BE52763AA8F00B938A8 /* Woo-Release-macOS.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Woo-Release-macOS.entitlements"; sourceTree = "<group>"; };
 		03180BE62763AA8F00B938A8 /* Woo-Alpha-macOS.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Woo-Alpha-macOS.entitlements"; sourceTree = "<group>"; };
 		03180BE72763AA9000B938A8 /* Woo-Debug-macOS.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Woo-Debug-macOS.entitlements"; sourceTree = "<group>"; };
-		03191AE528E1DF0600670723 /* WooCommercePluginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooCommercePluginViewModel.swift; sourceTree = "<group>"; };
+		03191AE528E1DF0600670723 /* PluginDetailsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PluginDetailsViewModel.swift; sourceTree = "<group>"; };
 		03191AE828E20C9200670723 /* PluginDetailsRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PluginDetailsRowView.swift; sourceTree = "<group>"; };
 		031B10E2274FE2AE007390BA /* CardPresentModalConnectionFailedUpdateAddress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalConnectionFailedUpdateAddress.swift; sourceTree = "<group>"; };
 		032E481C2982996E00469D92 /* CardPresentModalBuiltInConnectingFailedNonRetryable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardPresentModalBuiltInConnectingFailedNonRetryable.swift; sourceTree = "<group>"; };
@@ -11618,7 +11618,7 @@
 			isa = PBXGroup;
 			children = (
 				DE8C946D264699B600C94823 /* PluginListViewModel.swift */,
-				03191AE528E1DF0600670723 /* WooCommercePluginViewModel.swift */,
+				03191AE528E1DF0600670723 /* PluginDetailsViewModel.swift */,
 			);
 			path = Plugins;
 			sourceTree = "<group>";
@@ -14397,7 +14397,7 @@
 				B93E03262A94EE63009CA9C1 /* TaxLineViewModel.swift in Sources */,
 				DEC0293A29C41BC500FD0E2F /* ApplicationPasswordAuthorizationViewModel.swift in Sources */,
 				B933CCB22AA622AE00938F3F /* TaxRateViewModel.swift in Sources */,
-				03191AE628E1DF0600670723 /* WooCommercePluginViewModel.swift in Sources */,
+				03191AE628E1DF0600670723 /* PluginDetailsViewModel.swift in Sources */,
 				CE22709F2293052700C0626C /* WebviewHelper.swift in Sources */,
 				02BA12852461674B008D8325 /* Optional+String.swift in Sources */,
 				DEEDA239298A11FB0088256B /* SiteCredentialLoginUseCase.swift in Sources */,

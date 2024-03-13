@@ -33,7 +33,7 @@ final class PluginDetailsViewModel: ObservableObject {
             try resultsController.performFetch()
             plugin = resultsController.fetchedObjects.first
         } catch {
-            DDLogError("⛔️ Error fetching WooCommerce plugin details!")
+            DDLogError("⛔️ Error fetching \(pluginName) details!")
         }
         return resultsController
     }()
@@ -127,6 +127,6 @@ private enum Localization {
 
     static let unknownVersionValue = NSLocalizedString(
         "unknown",
-        comment: "Value for the WooCommerce plugin version detail row in settings, when the version is unknown. " +
+        comment: "Value for the plugin version detail row in settings, when the version is unknown. " +
         "This is in place of the current version number.")
 }

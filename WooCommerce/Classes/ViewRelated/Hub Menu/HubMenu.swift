@@ -146,9 +146,11 @@ private extension HubMenu {
         case HubMenuViewModel.Inbox.id:
             Inbox(viewModel: .init(siteID: viewModel.siteID))
         case HubMenuViewModel.Reviews.id:
-            ReviewsView(siteID: viewModel.siteID, navigationPublisher: viewModel.navigationPublisher)
+            ReviewsView(siteID: viewModel.siteID,
+                        navigationPublisher: viewModel.navigationPublisher)
         case HubMenuViewModel.Coupons.id:
-            EnhancedCouponListView(siteID: viewModel.siteID)
+            EnhancedCouponListView(siteID: viewModel.siteID,
+                                   navigationPublisher: viewModel.navigationPublisher)
         case HubMenuViewModel.InAppPurchases.id:
             InAppPurchasesDebugView()
         case HubMenuViewModel.Subscriptions.id:

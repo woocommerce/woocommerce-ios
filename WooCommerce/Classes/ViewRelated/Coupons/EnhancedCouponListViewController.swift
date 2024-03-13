@@ -1,3 +1,4 @@
+import Combine
 import Foundation
 import WordPressUI
 import UIKit
@@ -9,14 +10,19 @@ final class EnhancedCouponListViewController: UIViewController {
     private var couponListViewController: CouponListViewController?
     private let siteID: Int64
 
+    /// Publisher to handle popping the navigation controller to root when switching selections in split view
+    private let navigationPublisher: AnyPublisher<Void, Never>
+    private var navigationSubscription: AnyCancellable?
+
     private lazy var noticePresenter: DefaultNoticePresenter = {
         let noticePresenter = DefaultNoticePresenter()
         noticePresenter.presentingViewController = self
         return noticePresenter
     }()
 
-    init(siteID: Int64) {
+    init(siteID: Int64, navigationPublisher: AnyPublisher<Void, Never>) {
         self.siteID = siteID
+        self.navigationPublisher = navigationPublisher
 
         super.init(nibName: nil, bundle: nil)
     }
@@ -83,6 +89,11 @@ private extension EnhancedCouponListViewController {
 
     func configureNavigation() {
         title = Localization.title
+
+        navigationSubscription = navigationPublisher
+            .sink { [weak self] in
+                self?.navigationController?.popToRootViewController(animated: true)
+            }
     }
 
     func configureNavigationBarItems(hasCoupons: Bool) {

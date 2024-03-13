@@ -9,10 +9,14 @@ import Yosemite
 final class EnhancedCouponListViewController: UIViewController {
     private var couponListViewController: CouponListViewController?
     private let siteID: Int64
+    private let viewModel: CouponListViewModel
 
     /// Publisher to handle popping the navigation controller to root when switching selections in split view
     private let navigationPublisher: AnyPublisher<Void, Never>
-    private var navigationSubscription: AnyCancellable?
+    private var subscriptions = Set<AnyCancellable>()
+
+    private let searchActionPublisher: AnyPublisher<Void, Never>
+    private let addActionPublisher: AnyPublisher<Void, Never>
 
     private lazy var noticePresenter: DefaultNoticePresenter = {
         let noticePresenter = DefaultNoticePresenter()
@@ -20,9 +24,16 @@ final class EnhancedCouponListViewController: UIViewController {
         return noticePresenter
     }()
 
-    init(siteID: Int64, navigationPublisher: AnyPublisher<Void, Never>) {
+    init(siteID: Int64,
+         viewModel: CouponListViewModel,
+         navigationPublisher: AnyPublisher<Void, Never>,
+         searchActionPublisher: AnyPublisher<Void, Never>,
+         addActionPublisher: AnyPublisher<Void, Never>) {
         self.siteID = siteID
+        self.viewModel = viewModel
         self.navigationPublisher = navigationPublisher
+        self.searchActionPublisher = searchActionPublisher
+        self.addActionPublisher = addActionPublisher
 
         super.init(nibName: nil, bundle: nil)
     }
@@ -34,49 +45,33 @@ final class EnhancedCouponListViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        observeActions()
         configureNavigation()
         configureCouponListViewController()
     }
-
-    /// Create a `UIBarButtonItem` to be used as the search button on the top-left.
-    ///
-    private lazy var searchBarButtonItem: UIBarButtonItem = {
-        let button = UIBarButtonItem(image: .searchBarButtonItemImage,
-                                     style: .plain,
-                                     target: self,
-                                     action: #selector(displaySearchCoupons))
-        button.accessibilityTraits = .button
-        button.accessibilityLabel = Localization.accessibilityLabelSearchCoupons
-        button.accessibilityHint = Localization.accessibilityHintSearchCoupons
-        button.accessibilityIdentifier = "coupon-search-button"
-
-        return button
-    }()
-
-    /// Create a `UIBarButtonItem` to be used as the create coupon button on the top-right.
-    ///
-    private lazy var createCouponButtonItem: UIBarButtonItem = {
-        let button = UIBarButtonItem(image: .plusImage,
-                style: .plain,
-                target: self,
-                action: #selector(displayCouponTypeBottomSheet))
-        button.accessibilityTraits = .button
-        button.accessibilityLabel = Localization.accessibilityLabelCreateCoupons
-        button.accessibilityHint = Localization.accessibilityHintCreateCoupons
-        button.accessibilityIdentifier = "coupon-create-button"
-
-        return button
-    }()
 }
 
 private extension EnhancedCouponListViewController {
+    func observeActions() {
+        addActionPublisher
+            .sink { [weak self] in
+                self?.displayCouponTypeBottomSheet()
+            }
+            .store(in: &subscriptions)
+
+        searchActionPublisher
+            .sink { [weak self] in
+                self?.displaySearchCoupons()
+            }
+            .store(in: &subscriptions)
+    }
+
     func configureCouponListViewController() {
         let couponListViewController = CouponListViewController(siteID: siteID,
-                                                            showFeedbackBannerIfAppropriate: true,
-                                                            emptyStateActionTitle: Localization.createCouponAction,
-                                                            onDataLoaded: configureNavigationBarItems,
-                                                            emptyStateAction: displayCouponTypeBottomSheet,
-                                                            onCouponSelected: showDetails)
+                                                                viewModel: viewModel,
+                                                                emptyStateActionTitle: Localization.createCouponAction,
+                                                                emptyStateAction: displayCouponTypeBottomSheet,
+                                                                onCouponSelected: showDetails)
 
         couponListViewController.view.translatesAutoresizingMaskIntoConstraints = false
         addChild(couponListViewController)
@@ -90,23 +85,16 @@ private extension EnhancedCouponListViewController {
     func configureNavigation() {
         title = Localization.title
 
-        navigationSubscription = navigationPublisher
+        navigationPublisher
             .sink { [weak self] in
                 self?.navigationController?.popToRootViewController(animated: true)
             }
-    }
-
-    func configureNavigationBarItems(hasCoupons: Bool) {
-        if hasCoupons {
-            navigationItem.rightBarButtonItems = [createCouponButtonItem, searchBarButtonItem]
-        } else {
-            navigationItem.rightBarButtonItems = [createCouponButtonItem]
-        }
+            .store(in: &subscriptions)
     }
 
     /// Shows `SearchViewController`.
     ///
-    @objc private func displaySearchCoupons() {
+    func displaySearchCoupons() {
         ServiceLocator.analytics.track(.couponsListSearchTapped)
         let searchViewController = SearchViewController<TitleAndSubtitleAndStatusTableViewCell, CouponSearchUICommand>(
             storeID: siteID,
@@ -133,7 +121,7 @@ private extension EnhancedCouponListViewController {
         present(addEditHostingController, animated: true)
     }
 
-    @objc private func displayCouponTypeBottomSheet() {
+    private func displayCouponTypeBottomSheet() {
         ServiceLocator.analytics.track(.couponsListCreateTapped)
         let viewProperties = BottomSheetListSelectorViewProperties(subtitle: Localization.createCouponAction)
         let command = DiscountTypeBottomSheetListSelectorCommand(selected: nil) { [weak self] selectedType in

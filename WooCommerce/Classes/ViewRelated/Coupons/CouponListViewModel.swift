@@ -24,7 +24,7 @@ enum CouponListState {
     }
 }
 
-final class CouponListViewModel {
+final class CouponListViewModel: ObservableObject {
 
     typealias CellViewModel = TitleAndSubtitleAndStatusTableViewCell.ViewModel
 

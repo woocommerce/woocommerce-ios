@@ -8,8 +8,9 @@ struct CouponListView: UIViewControllerRepresentable {
     let onCouponSelected: ((Coupon) -> Void)
 
     func makeUIViewController(context: Self.Context) -> CouponListViewController {
+        let viewModel = CouponListViewModel(siteID: siteID, showFeedbackBannerIfAppropriate: false)
         let viewController = CouponListViewController(siteID: siteID,
-                                                      showFeedbackBannerIfAppropriate: false,
+                                                      viewModel: viewModel,
                                                       emptyStateActionTitle: emptyStateActionTitle,
                                                       emptyStateAction: emptyStateAction,
                                                       onCouponSelected: onCouponSelected)

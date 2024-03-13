@@ -145,6 +145,7 @@ private extension HubMenu {
                         navigationPublisher: viewModel.navigationPublisher)
         case HubMenuViewModel.Coupons.id:
             EnhancedCouponListView(siteID: viewModel.siteID,
+                                   viewModel: CouponListViewModel(siteID: viewModel.siteID, showFeedbackBannerIfAppropriate: true),
                                    navigationPublisher: viewModel.navigationPublisher)
         case HubMenuViewModel.InAppPurchases.id:
             InAppPurchasesDebugView()

@@ -37,7 +37,6 @@ public enum BottomSheetProductType: Hashable, Identifiable {
         }
     }
 
-
     /// Remote ProductType
     ///
     var productType: ProductType {
@@ -199,6 +198,19 @@ public enum BottomSheetProductType: Hashable, Identifiable {
         }
     }
 
+    /// Product creation category (for UI purposes).
+    ///
+    var productCreationCategory: ProductCreationCategory {
+        switch self {
+        case .simple, .blank, .variable:
+            return .standard
+        case .subscription, .variableSubscription:
+            return .subscription
+        case .custom, .grouped, .affiliate:
+            return .other
+        }
+    }
+
     init(productType: ProductType, isVirtual: Bool) {
         switch productType {
         case .simple:
@@ -221,6 +233,38 @@ public enum BottomSheetProductType: Hashable, Identifiable {
             self = .custom("composite")
         case .custom(let string):
             self = .custom(string)
+        }
+    }
+}
+
+/// Product creation option's category.
+/// Used to group the options on the product creation sheet.
+///
+enum ProductCreationCategory {
+    case standard
+    case subscription
+    case other
+
+    var description: String {
+        switch self {
+        case .standard:
+            return NSLocalizedString(
+                "bottomSheetProductType.productCreationCategory.standard",
+                value: "Standard",
+                comment: "Category label for standard product creation types"
+            )
+        case .subscription:
+            return NSLocalizedString(
+                "bottomSheetProductType.productCreationCategory.subscription",
+                value: "Subscription",
+                comment: "Category label for subscription product creation types"
+            )
+        case .other:
+            return NSLocalizedString(
+                "bottomSheetProductType.productCreationCategory.other",
+                value: "Other",
+                comment: "Category label for other product creation types"
+            )
         }
     }
 }

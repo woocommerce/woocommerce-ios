@@ -18,17 +18,13 @@ final class PluginListViewModel {
 
     /// Results controller for the plugin list
     ///
-    private lazy var resultsController: ResultsController<StorageSitePlugin> = {
+    private lazy var resultsController: ResultsController<StorageSystemPlugin> = {
         let predicate = NSPredicate(format: "siteID = %ld", self.siteID)
-        let nameDescriptor = NSSortDescriptor(keyPath: \StorageSitePlugin.name, ascending: true)
-        // Results need to be grouped in sections so sorting by section is required.
-        // Make sure this sort descriptor is first in the list to make grouping works.
-        let statusDescriptor = NSSortDescriptor(keyPath: \StorageSitePlugin.status, ascending: true)
-        let resultsController = ResultsController<StorageSitePlugin>(
+        let nameDescriptor = NSSortDescriptor(keyPath: \StorageSystemPlugin.name, ascending: true)
+        let resultsController = ResultsController<StorageSystemPlugin>(
             storageManager: storageManager,
-            sectionNameKeyPath: "status",
             matching: predicate,
-            sortedBy: [statusDescriptor, nameDescriptor]
+            sortedBy: [nameDescriptor]
         )
 
         do {
@@ -38,6 +34,10 @@ final class PluginListViewModel {
         }
         return resultsController
     }()
+
+    var pluginNameList: [String] {
+        resultsController.fetchedObjects.map { $0.name }
+    }
 
     init(siteID: Int64,
          storesManager: StoresManager = ServiceLocator.stores,
@@ -130,7 +130,7 @@ extension PluginListViewModel {
         // so it's best to be extra safe by removing them
         return PluginListCellViewModel(
             name: plugin.name.strippedHTML,
-            description: plugin.descriptionRaw.strippedHTML
+            description: ""
         )
     }
 }
@@ -155,6 +155,6 @@ private extension PluginListViewModel {
 // MARK: - Model for plugin list cells
 //
 struct PluginListCellViewModel {
-     let name: String
-     let description: String
+    let name: String
+    let description: String
  }

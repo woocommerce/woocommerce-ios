@@ -1,4 +1,5 @@
 import UIKit
+import Combine
 
 // MARK: - ReviewsViewController
 //
@@ -29,6 +30,9 @@ final class ReviewsViewController: UIViewController, GhostableViewController {
     }()
 
     private let viewModel: ViewModel
+    private let navigationPublisher: AnyPublisher<Void, Never>
+
+    private var navigationSubscription: AnyCancellable?
 
     /// Haptic Feedback!
     ///
@@ -102,15 +106,16 @@ final class ReviewsViewController: UIViewController, GhostableViewController {
 
     // MARK: - Initializers
     //
-    convenience init(siteID: Int64) {
+    convenience init(siteID: Int64, navigationPublisher: AnyPublisher<Void, Never>) {
         self.init(viewModel: ReviewsViewModel(siteID: siteID,
                                               data: ReviewsDataSource(siteID: siteID,
-                                                                             customizer: GlobalReviewsDataSourceCustomizer())))
+                                                                             customizer: GlobalReviewsDataSourceCustomizer())),
+                  navigationPublisher: navigationPublisher)
     }
 
-    init(viewModel: ViewModel) {
+    init(viewModel: ViewModel, navigationPublisher: AnyPublisher<Void, Never>) {
         self.viewModel = viewModel
-
+        self.navigationPublisher = navigationPublisher
         super.init(nibName: nil, bundle: nil)
 
         // This 👇 should be called in init so the tab is correctly localized when the app launches
@@ -136,6 +141,11 @@ final class ReviewsViewController: UIViewController, GhostableViewController {
 
         startListeningToNotifications()
         syncingCoordinator.resynchronize()
+
+        navigationSubscription = navigationPublisher
+            .sink { [weak self] in
+                self?.navigationController?.popToRootViewController(animated: true)
+            }
     }
 
     override func viewWillAppear(_ animated: Bool) {

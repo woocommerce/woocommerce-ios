@@ -16,11 +16,11 @@ NSBluetoothAlwaysUsageDescription = "This app uses Bluetooth to connect to suppo
 /* Title for Add Product home screen action */
 AddProductAction.Title = "Add a product";
 
-/* Title for Products home screen action */
-OpenProductsAction.Title = "Products";
-
 /* Title for Add Order home screen action */
 AddOrderAction.Title = "New Order";
 
 /* Title for Orders home screen action */
 OpenOrdersAction.Title = "Orders";
+
+/* Title for Payments home screen action */
+OpenPaymentsAction.Title = "Payments";

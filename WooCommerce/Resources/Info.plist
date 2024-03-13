@@ -114,22 +114,6 @@
 	<array>
 		<dict>
 			<key>UIApplicationShortcutItemType</key>
-			<string>AddProductAction</string>
-			<key>UIApplicationShortcutItemTitle</key>
-			<string>AddProductAction.Title</string>
-			<key>UIApplicationShortcutItemIconSymbolName</key>
-			<string>plus</string>
-		</dict>
-		<dict>
-			<key>UIApplicationShortcutItemType</key>
-			<string>OpenProductsAction</string>
-			<key>UIApplicationShortcutItemTitle</key>
-			<string>OpenProductsAction.Title</string>
-			<key>UIApplicationShortcutItemIconSymbolName</key>
-			<string>list.bullet</string>
-		</dict>
-		<dict>
-			<key>UIApplicationShortcutItemType</key>
 			<string>AddOrderAction</string>
 			<key>UIApplicationShortcutItemTitle</key>
 			<string>AddOrderAction.Title</string>
@@ -143,6 +127,22 @@
 			<string>OpenOrdersAction.Title</string>
 			<key>UIApplicationShortcutItemIconSymbolName</key>
 			<string>list.bullet</string>
+		</dict>
+		<dict>
+			<key>UIApplicationShortcutItemType</key>
+			<string>AddProductAction</string>
+			<key>UIApplicationShortcutItemTitle</key>
+			<string>AddProductAction.Title</string>
+			<key>UIApplicationShortcutItemIconSymbolName</key>
+			<string>plus</string>
+		</dict>
+		<dict>
+			<key>UIApplicationShortcutItemType</key>
+			<string>OpenPaymentsAction</string>
+			<key>UIApplicationShortcutItemTitle</key>
+			<string>OpenPaymentsAction.Title</string>
+			<key>UIApplicationShortcutItemIconFile</key>
+			<string>woo-payments-wallet</string>
 		</dict>
 	</array>
 </dict>

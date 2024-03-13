@@ -191,6 +191,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         case QuickAction.openOrders:
             MainTabBarController.switchToOrdersTab()
             completionHandler(true)
+        case QuickAction.openPayments:
+            MainTabBarController.presentPayments()
+            completionHandler(true)
         }
     }
 
@@ -568,4 +571,5 @@ enum QuickAction: String {
     case openProducts = "OpenProductsAction"
     case addOrder = "AddOrderAction"
     case openOrders = "OpenOrdersAction"
+    case openPayments = "OpenPaymentsAction"
 }

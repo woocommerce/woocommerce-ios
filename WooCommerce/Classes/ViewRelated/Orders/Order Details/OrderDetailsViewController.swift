@@ -632,8 +632,20 @@ private extension OrderDetailsViewController {
     }
 
     func trashOrderTapped() {
-        //TODO: implement this method
         ServiceLocator.analytics.track(.orderDetailTrashButtonTapped)
+        let action = OrderAction.deleteOrder(siteID: viewModel.order.siteID, order: viewModel.order, deletePermanently: false) { [weak self] result in
+            switch result {
+            case .success:
+                NotificationCenter.default.post(name: .ordersBadgeReloadRequired, object: nil)
+                self?.navigationController?.popToRootViewController(animated: true)
+                print("entra qui")
+                break
+            case .failure(let error):
+                DDLogError("⛔️ Order Trash Failure: [Order ID: \(self?.viewModel.order.orderID)]. Error: \(error)")
+            }
+          // self?.displayOrderStatusErrorNotice(orderID: viewModel.order.id, status: status)
+        }
+        ServiceLocator.stores.dispatch(action)
     }
 
     @objc private func collectPaymentTapped() {

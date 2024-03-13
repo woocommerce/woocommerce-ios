@@ -55,6 +55,7 @@ struct PluginDetailsRowContent: View {
                 HStack {
                     Text(viewModel.title)
                         .bodyStyle()
+                        .multilineTextAlignment(.leading)
                     Spacer()
                     Text(viewModel.version)
                         .secondaryBodyStyle()

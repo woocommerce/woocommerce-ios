@@ -2,7 +2,7 @@
 
 17.8
 -----
-
+- [internal] The dependency setup in `AppDelegate`'s `application(_:willFinishLaunchingWithOptions:)` was updated as an attempted fix for one of the top crashes. [https://github.com/woocommerce/woocommerce-ios/pull/12268]
 
 17.7
 -----

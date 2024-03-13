@@ -56,7 +56,7 @@ final class HubMenuViewModel: ObservableObject {
     private let featureFlagService: FeatureFlagService
     private let generalAppSettings: GeneralAppSettingsStorage
 
-    private var productReviewFromNoteParcel: ProductReviewFromNoteParcel?
+    private(set) var productReviewFromNoteParcel: ProductReviewFromNoteParcel?
 
     @Published private(set) var shouldShowNewFeatureBadgeOnPayments: Bool = false
 
@@ -162,24 +162,16 @@ final class HubMenuViewModel: ObservableObject {
         showingReviewDetail = true
     }
 
-    func getReviewDetailDestination() -> ReviewDetailView? {
-        guard let parcel = productReviewFromNoteParcel else {
-            return nil
-        }
-
-        return ReviewDetailView(productReview: parcel.review, product: parcel.product, notification: parcel.note)
-    }
-
-    /// Handle navigation when tapping a list menu row.
+    /// Handles tracking when tapping a list menu row.
     ///
     func trackSelection(menu: HubMenuItem) {
         ServiceLocator.analytics.track(.hubMenuOptionTapped, withProperties: [
             Constants.trackingOptionKey: menu.trackingOption
         ])
 
-        if menu.id == HubMenuViewModel.Settings.id {
+        if menu.id == Settings.id {
             ServiceLocator.analytics.track(.hubMenuSettingsTapped)
-        } else if menu.id == HubMenuViewModel.Blaze.id {
+        } else if menu.id == Blaze.id {
             ServiceLocator.analytics.track(event: .Blaze.blazeCampaignListEntryPointSelected(source: .menu))
         }
 

@@ -65,11 +65,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let pushNotesManager = ServiceLocator.pushNotesManager
         stores.initializeAfterDependenciesAreInitialized()
         setupAnalytics(analytics)
-        setupPushNotificationsManagerIfPossible(pushNotesManager, stores: stores)
 
         setupCocoaLumberjack()
         setupLibraryLogger()
         setupLogLevel(.verbose)
+        setupPushNotificationsManagerIfPossible(pushNotesManager, stores: stores)
         setupAppRatingManager()
         setupWormholy()
         setupKeyboardStateProvider()

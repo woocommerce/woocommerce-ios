@@ -88,52 +88,6 @@ extension PluginListViewModel {
     var errorStateActionTitle: String {
         Localization.errorStateAction
     }
-
-    /// Number of sections to display on the table view.
-    ///
-    var numberOfSections: Int {
-        resultsController.sections.count
-    }
-
-    /// Title of table view section at specified index.
-    ///
-    func titleForSection(at index: Int) -> String? {
-        guard let rawStatus = resultsController.sections[safe: index]?.name else {
-            return nil
-        }
-        let pluginStatus = SitePluginStatusEnum(rawValue: rawStatus)
-        let sectionTitle: String = {
-            switch pluginStatus {
-            case .active:
-                return Localization.activeSectionTitle
-            case .inactive:
-                return Localization.inactiveSectionTitle
-            case .networkActive:
-                return Localization.networkActiveSectionTitle
-            case .unknown:
-                return "" // This case should not happen
-            }
-        }()
-        return sectionTitle.capitalized
-    }
-
-    /// Number of rows in a specified table view section index.
-    ///
-    func numberOfRows(inSection sectionIndex: Int) -> Int {
-        resultsController.sections[safe: sectionIndex]?.objects.count ?? 0
-    }
-
-    /// View model for the table view cell at specified index path.
-    ///
-    func cellModelForRow(at indexPath: IndexPath) -> PluginListCellViewModel {
-        let plugin = resultsController.object(at: indexPath)
-        // Plugin name and description can sometimes contain HTML tags and entities
-        // so it's best to be extra safe by removing them
-        return PluginListCellViewModel(
-            name: plugin.name.strippedHTML,
-            description: ""
-        )
-    }
 }
 
 // MARK: - Localization

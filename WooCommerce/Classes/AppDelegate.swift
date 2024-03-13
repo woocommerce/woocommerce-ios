@@ -516,7 +516,7 @@ extension AppDelegate {
     /// Runs whenever the Authentication Flow is completed successfully.
     ///
     func authenticatorWasDismissed() {
-        setupPushNotificationsManagerIfPossible(stores: ServiceLocator.stores)
+        setupPushNotificationsManagerIfPossible(ServiceLocator.pushNotesManager, stores: ServiceLocator.stores)
         requirementsChecker.checkEligibilityForDefaultStore()
     }
 }

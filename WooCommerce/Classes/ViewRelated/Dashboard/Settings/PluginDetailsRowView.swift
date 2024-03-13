@@ -16,7 +16,6 @@ struct PluginListView: View {
         ScrollView {
             VStack {
                 Divider()
-                    .padding(.bottom)
                 ForEach(viewModel.pluginNameList, id: \.self) { pluginName in
                     PluginDetailsRowView(viewModel: PluginDetailsViewModel(siteID: siteID,
                                                                            pluginName: pluginName))

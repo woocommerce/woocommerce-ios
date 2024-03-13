@@ -1,42 +1,41 @@
 import SwiftUI
+import Combine
 
-/// SwiftUI conformance for `ReviewsViewController`
+/// SwiftUI view for the review list screen.
 ///
-struct ReviewsView: UIViewControllerRepresentable {
+struct ReviewsView: View {
     let siteID: Int64
+    let navigationPublisher: AnyPublisher<Void, Never>
 
-    typealias UIViewControllerType = ReviewsViewController
-
-    class Coordinator {
-        var parentObserver: NSKeyValueObservation?
-        var rightBarButtonItemObserver: NSKeyValueObservation?
+    var body: some View {
+        ReviewsWrapperView(siteID: siteID, navigationPublisher: navigationPublisher)
+            .navigationTitle(Localization.navigationTitle)
+            .navigationBarTitleDisplayMode(.inline)
     }
+}
 
-    /// This is a UIKit solution for fixing Navigation Title and Bar Button Items ignored in NavigationView.
-    /// This solution doesn't require making internal changes to the destination `UIViewController`
-    /// and should be called once, when wrapped.
-    /// Solution proposed here: https://stackoverflow.com/a/68567095/7241994
-    ///
+private extension ReviewsView {
+    enum Localization {
+        static let navigationTitle = NSLocalizedString(
+            "reviewsView.navigationTitle",
+            value: "Reviews",
+            comment: "Navigation title for the review list screen"
+        )
+    }
+}
+
+/// SwiftUI wrapper for `ReviewsViewController`
+///
+private struct ReviewsWrapperView: UIViewControllerRepresentable {
+    let siteID: Int64
+    let navigationPublisher: AnyPublisher<Void, Never>
+
     func makeUIViewController(context: Self.Context) -> ReviewsViewController {
-        let viewController = ReviewsViewController(siteID: siteID)
-        // This makes sure that the navigation item of the hosting controller
-        // is in sync with that of the wrapped controller.
-        context.coordinator.parentObserver = viewController.observe(\.parent, changeHandler: { vc, _ in
-            vc.parent?.navigationItem.title = vc.title
-            vc.parent?.navigationItem.rightBarButtonItems = vc.navigationItem.rightBarButtonItems
-        })
-
-        // This fixes the issue when `rightBarButtonItem` is updated in `ReviewsViewController`,
-        // the hosting controller should be updated to reflect the change.
-        context.coordinator.rightBarButtonItemObserver = viewController.observe(\.navigationItem.rightBarButtonItem, changeHandler: { vc, _ in
-            vc.parent?.navigationItem.rightBarButtonItem = vc.navigationItem.rightBarButtonItem
-        })
+        let viewController = ReviewsViewController(siteID: siteID, navigationPublisher: navigationPublisher)
         return viewController
     }
 
     func updateUIViewController(_ uiViewController: ReviewsViewController, context: Context) {
         // nothing to do here
     }
-
-    func makeCoordinator() -> Self.Coordinator { Coordinator() }
 }

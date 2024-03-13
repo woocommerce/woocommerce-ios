@@ -95,14 +95,6 @@ class PluginListViewModelTests: XCTestCase {
         // Then
         XCTAssertTrue(result.isFailure)
     }
-
-    func test_pluginNameListTitle() {
-        XCTFail()
-    }
-
-    func test_pluginNameListContains() {
-        XCTFail()
-    }
 }
 
 // MARK: - Storage helpers

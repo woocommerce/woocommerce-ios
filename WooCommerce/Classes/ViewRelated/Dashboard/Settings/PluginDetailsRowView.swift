@@ -13,11 +13,15 @@ struct PluginListView: View {
     }
 
     var body: some View {
-        VStack {
-            Text(viewModel.pluginListTitle)
-            ForEach(viewModel.pluginNameList, id: \.self) { name in
-                PluginDetailsRowView(viewModel: PluginDetailsViewModel(siteID: siteID,
-                                                                       pluginName: name))
+        ScrollView {
+            VStack {
+                Divider()
+                    .padding(.bottom)
+                ForEach(viewModel.pluginNameList, id: \.self) { pluginName in
+                    PluginDetailsRowView(viewModel: PluginDetailsViewModel(siteID: siteID,
+                                                                           pluginName: pluginName))
+                    Divider()
+                }
             }
         }
     }

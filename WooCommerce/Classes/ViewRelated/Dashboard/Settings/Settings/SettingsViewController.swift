@@ -373,7 +373,12 @@ private extension SettingsViewController {
         let pluginListViewModel = PluginListViewModel(siteID: siteID)
         let pluginListHostingController = UIHostingController(rootView: PluginListView(viewModel: pluginListViewModel))
 
-        present(pluginListHostingController, animated: true)
+        // Since UIHostingController does not have a navigation bar by itself, we need
+        // to wrap it into a navigation controller if we want to set a title in the resulting view
+        pluginListHostingController.title = Localization.plugins
+        let navigationController = UINavigationController(rootViewController: pluginListHostingController)
+
+        present(navigationController, animated: true)
     }
 
     func supportWasPressed() {

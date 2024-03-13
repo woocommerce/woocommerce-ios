@@ -70,10 +70,8 @@ final class HubMenuViewModel: ObservableObject {
 
     let tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker
 
-    @Published private var shouldResetNavigationStack = false
     var navigationPublisher: AnyPublisher<Void, Never> {
-        $shouldResetNavigationStack.combineLatest($showingReviewDetail, $showingPrivacySettings)
-            .filter { $0.0 || $0.1 || $0.2 }
+        $selectedMenuID.combineLatest($showingReviewDetail, $showingPrivacySettings)
             .map { (_, _, _) in () }
             .eraseToAnyPublisher()
     }
@@ -185,7 +183,6 @@ final class HubMenuViewModel: ObservableObject {
             ServiceLocator.analytics.track(event: .Blaze.blazeCampaignListEntryPointSelected(source: .menu))
         }
 
-        shouldResetNavigationStack = true
         selectedMenuID = menu.id
     }
 

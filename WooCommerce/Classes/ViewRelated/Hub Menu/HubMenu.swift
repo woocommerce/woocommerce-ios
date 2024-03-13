@@ -27,7 +27,7 @@ struct HubMenu: View {
                     if let id = viewModel.selectedMenuID {
                         detailView(menuID: id)
                     } else {
-                        SettingsView()
+                        SettingsView(navigationPublisher: viewModel.navigationPublisher)
                     }
                 }
                 .navigationBarTitleDisplayMode(.inline)
@@ -130,7 +130,7 @@ private extension HubMenu {
     func detailView(menuID: String) -> some View {
         switch menuID {
         case HubMenuViewModel.Settings.id:
-            SettingsView()
+            SettingsView(navigationPublisher: viewModel.navigationPublisher)
         case HubMenuViewModel.Payments.id:
             InPersonPaymentsMenu(viewModel: viewModel.inPersonPaymentsMenuViewModel)
         case HubMenuViewModel.Blaze.id:

@@ -1,32 +1,39 @@
 import SwiftUI
+import Combine
+
+/// SwiftUI view for App Settings
+///
+struct SettingsView: View {
+    let navigationPublisher: AnyPublisher<Void, Never>
+
+    var body: some View {
+        SettingsWrapperView(navigationPublisher: navigationPublisher)
+            .navigationTitle(Localization.navigationTitle)
+            .navigationBarTitleDisplayMode(.inline)
+    }
+}
+
+private extension SettingsView {
+    enum Localization {
+        static let navigationTitle = NSLocalizedString(
+            "settingsView.navigationTitle",
+            value: "Settings",
+            comment: "Settings navigation title"
+        )
+    }
+}
 
 /// SwiftUI wrapper for `SettingsViewController`
 ///
-struct SettingsView: UIViewControllerRepresentable {
+private struct SettingsWrapperView: UIViewControllerRepresentable {
+    let navigationPublisher: AnyPublisher<Void, Never>
 
-
-    class Coordinator {
-        var parentObserver: NSKeyValueObservation?
-    }
-
-    /// This is a UIKit solution for fixing Navigation Title and Bar Button Items ignored in NavigationView.
-    /// This solution doesn't require making internal changes to the destination `UIViewController`
-    /// and should be called once, when wrapped.
-    /// Solution proposed here: https://stackoverflow.com/a/68567095/7241994
-    ///
-    ///
     func makeUIViewController(context: Self.Context) -> SettingsViewController {
-        let viewController = SettingsViewController()
-        context.coordinator.parentObserver = viewController.observe(\.parent, changeHandler: { vc, _ in
-            vc.parent?.navigationItem.title = vc.title
-            vc.parent?.navigationItem.rightBarButtonItems = vc.navigationItem.rightBarButtonItems
-        })
+        let viewController = SettingsViewController(navigationPublisher: navigationPublisher)
         return viewController
     }
 
     func updateUIViewController(_ uiViewController: SettingsViewController, context: Context) {
         // nothing to do here
     }
-
-    func makeCoordinator() -> Self.Coordinator { Coordinator() }
 }

@@ -32,6 +32,7 @@ struct ManualProductTypeOptions: View {
                     .textCase(.uppercase)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.bottom, Constants.categoryVerticalSpacing)
+                    .padding(.horizontal, Constants.horizontalSpacing)
 
                 ForEach(productTypes, id: \.self) { productType in
                     HStack(alignment: .top, spacing: Constants.margin) {
@@ -45,11 +46,14 @@ struct ManualProductTypeOptions: View {
                             Text(productType.actionSheetDescription)
                                 .subheadlineStyle()
                         }
+                        .padding(.bottom, Constants.productBottomSpacing)
                         Spacer()
                     }
+                    .padding(.horizontal, Constants.horizontalSpacing)
                     .onTapGesture {
                         onOptionSelected(productType)
                     }
+
                 }
                 if category != orderedProductCategories.last {
                     Divider()
@@ -63,7 +67,9 @@ struct ManualProductTypeOptions: View {
 private extension ManualProductTypeOptions {
     enum Constants {
         static let verticalSpacing: CGFloat = 4
+        static let horizontalSpacing: CGFloat = 16
         static let categoryVerticalSpacing: CGFloat = 8
+        static let productBottomSpacing: CGFloat = 8
         static let margin: CGFloat = 16
     }
 }

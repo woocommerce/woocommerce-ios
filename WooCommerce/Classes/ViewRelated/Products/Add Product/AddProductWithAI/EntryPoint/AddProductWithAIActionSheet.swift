@@ -42,9 +42,19 @@ struct AddProductWithAIActionSheet: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: Constants.margin) {
-                Text(Localization.title)
-                    .subheadlineStyle()
-                    .padding(.top, Constants.margin)
+                Group {
+                    Text(Localization.title)
+                        .titleStyle()
+                        .bold()
+                        .padding(.top, Constants.titleTopSpacing)
+
+                    Text(Localization.subtitle)
+                        .subheadlineStyle()
+                }
+                .padding(.horizontal, Constants.horizontalSpacing)
+
+                Divider()
+                    .padding(.vertical, Constants.verticalSpacing)
 
                 // AI option
                 HStack(alignment: .top, spacing: Constants.margin) {
@@ -75,6 +85,7 @@ struct AddProductWithAIActionSheet: View {
                 .onTapGesture {
                     onAIOption()
                 }
+                .padding(.horizontal, Constants.horizontalSpacing)
 
                 Divider()
 
@@ -92,6 +103,7 @@ struct AddProductWithAIActionSheet: View {
                         }
                         Spacer()
                     }
+                    .padding(.horizontal, Constants.horizontalSpacing)
                     .onTapGesture {
                         withAnimation {
                             isShowingManualOptions = true
@@ -103,7 +115,7 @@ struct AddProductWithAIActionSheet: View {
 
                 Spacer()
             }
-            .padding(Constants.margin)
+            .padding(.vertical, Constants.margin)
             .safariSheet(url: $legalURL)
         }
     }
@@ -113,19 +125,22 @@ private extension AddProductWithAIActionSheet {
     enum Constants {
         static let sparkleIconSize: CGFloat = 24
         static let verticalSpacing: CGFloat = 4
+        static let horizontalSpacing: CGFloat = 16
+        static let titleTopSpacing: CGFloat = 16
         static let margin: CGFloat = 16
         static let legalURL = "https://automattic.com/ai-guidelines/"
     }
 
     enum Localization {
         static let title = NSLocalizedString(
-            "Add a product",
+            "addProductWithAIActionSheet.title",
+            value: "Create Product",
             comment: "Title on the action sheet to select an option for adding new product"
         )
-        static let manualOptionsTitle = NSLocalizedString(
-            "addProductWithAIActionSheet.manualOptionsTitle",
+        static let subtitle = NSLocalizedString(
+            "addProductWithAIActionSheet.subtitle",
             value: "Select a product type",
-            comment: "Dismiss button on the alert asking to add an image for the Blaze campaign"
+            comment: "Subitle on the action sheet to select an option for adding new product"
         )
         static let aiTitle = NSLocalizedString(
             "Create a product with AI",

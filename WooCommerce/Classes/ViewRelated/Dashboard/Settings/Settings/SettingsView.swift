@@ -1,11 +1,13 @@
 import SwiftUI
+import Combine
 
 /// SwiftUI view for App Settings
 ///
 struct SettingsView: View {
+    let navigationPublisher: AnyPublisher<Void, Never>
 
     var body: some View {
-        SettingsWrapperView()
+        SettingsWrapperView(navigationPublisher: navigationPublisher)
             .navigationTitle(Localization.navigationTitle)
             .navigationBarTitleDisplayMode(.inline)
     }
@@ -24,9 +26,10 @@ private extension SettingsView {
 /// SwiftUI wrapper for `SettingsViewController`
 ///
 private struct SettingsWrapperView: UIViewControllerRepresentable {
+    let navigationPublisher: AnyPublisher<Void, Never>
 
     func makeUIViewController(context: Self.Context) -> SettingsViewController {
-        let viewController = SettingsViewController()
+        let viewController = SettingsViewController(navigationPublisher: navigationPublisher)
         return viewController
     }
 

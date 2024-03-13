@@ -30,8 +30,9 @@ final class ReviewsViewController: UIViewController, GhostableViewController {
     }()
 
     private let viewModel: ViewModel
-    private let navigationPublisher: AnyPublisher<Void, Never>
 
+    /// Publisher to handle popping the navigation controller to root when switching selections in split view
+    private let navigationPublisher: AnyPublisher<Void, Never>
     private var navigationSubscription: AnyCancellable?
 
     /// Haptic Feedback!
@@ -134,6 +135,7 @@ final class ReviewsViewController: UIViewController, GhostableViewController {
 
         refreshTitle()
 
+        configureNavigation()
         configureSyncingCoordinator()
         configureTableView()
         configureTableViewCells()
@@ -141,11 +143,6 @@ final class ReviewsViewController: UIViewController, GhostableViewController {
 
         startListeningToNotifications()
         syncingCoordinator.resynchronize()
-
-        navigationSubscription = navigationPublisher
-            .sink { [weak self] in
-                self?.navigationController?.popToRootViewController(animated: true)
-            }
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -180,6 +177,13 @@ final class ReviewsViewController: UIViewController, GhostableViewController {
 // MARK: - User Interface Initialization
 //
 private extension ReviewsViewController {
+
+    func configureNavigation() {
+        navigationSubscription = navigationPublisher
+            .sink { [weak self] in
+                self?.navigationController?.popToRootViewController(animated: true)
+            }
+    }
 
     /// Setup: Sync'ing Coordinator
     ///

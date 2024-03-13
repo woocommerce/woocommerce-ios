@@ -98,10 +98,6 @@ struct AddProductWithAIActionSheet: View {
                         }
                     }
                 } else {
-                    Text(Localization.manualOptionsTitle)
-                        .subheadlineStyle()
-                        .padding(.top, Constants.margin)
-
                     ManualProductTypeOptions(productTypes: productTypes, onOptionSelected: onProductTypeOption)
                 }
 

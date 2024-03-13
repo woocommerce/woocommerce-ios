@@ -23,22 +23,17 @@ struct HubMenu: View {
             sideBar
         }, detail: {
             NavigationStack {
-                Group {
-                    if let id = viewModel.selectedMenuID {
-                        detailView(menuID: id)
-                    } else {
-                        SettingsView(navigationPublisher: viewModel.navigationPublisher)
-                    }
+                if let id = viewModel.selectedMenuID {
+                    detailView(menuID: id)
+                } else {
+                    SettingsView(navigationPublisher: viewModel.navigationPublisher)
                 }
-                .navigationBarTitleDisplayMode(.inline)
             }
             .navigationDestination(isPresented: $viewModel.showingReviewDetail) {
                 reviewDetailView
-                    .navigationBarTitleDisplayMode(.inline)
             }
             .navigationDestination(isPresented: $viewModel.showingPrivacySettings) {
-                privacySettingsView
-                    .navigationBarTitleDisplayMode(.inline)
+                PrivacySettingsView()
             }
         })
         .navigationSplitViewStyle(.balanced)
@@ -162,26 +157,25 @@ private extension HubMenu {
 
     @ViewBuilder
     func webView(url: URL, title: String, shouldAuthenticate: Bool) -> some View {
-        if shouldAuthenticate {
-            AuthenticatedWebView(isPresented: .constant(true),
-                                 url: url)
-            .navigationTitle(title)
-        } else {
-            WebView(isPresented: .constant(true),
+        Group {
+            if shouldAuthenticate {
+                AuthenticatedWebView(isPresented: .constant(true),
+                                     url: url)
+            } else {
+                WebView(isPresented: .constant(true),
                         url: url)
-            .navigationTitle(title)
+            }
         }
-    }
-
-    var privacySettingsView: some View {
-        PrivacySettingsView()
-            .navigationTitle(Localization.privacySettings)
+        .navigationTitle(title)
+        .navigationBarTitleDisplayMode(.inline)
     }
 
     @ViewBuilder
     var reviewDetailView: some View {
         if let parcel = viewModel.productReviewFromNoteParcel {
             ReviewDetailView(productReview: parcel.review, product: parcel.product, notification: parcel.note)
+                .navigationBarTitleDisplayMode(.inline)
+                .navigationTitle(Localization.productReview)
         }
     }
 
@@ -342,10 +336,10 @@ private extension HubMenu {
     enum Localization {
         static let settings = NSLocalizedString("Settings", comment: "Settings button in the hub menu")
         static let general = NSLocalizedString("General", comment: "General section title in the hub menu")
-        static let privacySettings = NSLocalizedString(
-            "hubMenu.privacySettings",
-            value: "Privacy Settings",
-            comment: "Privacy settings screen title"
+        static let productReview = NSLocalizedString(
+            "hubMenu.productReview",
+            value: "Product Review",
+            comment: "Title of the view containing a single Product Review"
         )
     }
 }

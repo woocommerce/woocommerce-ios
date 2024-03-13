@@ -93,6 +93,7 @@ struct Inbox: View {
                 }
             }
             .wooNavigationBarStyle()
+            .navigationBarTitleDisplayMode(.inline)
         }
     }
 }

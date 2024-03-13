@@ -68,6 +68,7 @@ final class HubMenuViewModel: ObservableObject {
 
     let tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker
 
+    /// Notifies sub view controllers of a navigation change to the split view.
     var navigationPublisher: AnyPublisher<Void, Never> {
         $selectedMenuID.combineLatest($showingReviewDetail, $showingPrivacySettings)
             .map { (_, _, _) in () }

@@ -214,6 +214,7 @@ struct InPersonPaymentsMenu: View {
             }
         }
         .navigationTitle(InPersonPaymentsView.Localization.title)
+        .navigationBarTitleDisplayMode(.inline)
     }
 
     @ViewBuilder

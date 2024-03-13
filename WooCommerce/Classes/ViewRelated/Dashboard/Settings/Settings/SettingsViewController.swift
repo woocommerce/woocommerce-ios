@@ -367,8 +367,13 @@ private extension SettingsViewController {
     }
 
     func sitePluginsWasPressed() {
-        let hc = UIHostingController(rootView: PluginListView())
-        present(hc, animated: true)
+        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
+            return DDLogError("⛔️ Cannot find ID for current site to load plugins for!")
+        }
+        let pluginListViewModel = PluginListViewModel(siteID: siteID)
+        let pluginListHostingController = UIHostingController(rootView: PluginListView(viewModel: pluginListViewModel))
+
+        present(pluginListHostingController, animated: true)
     }
 
     func supportWasPressed() {

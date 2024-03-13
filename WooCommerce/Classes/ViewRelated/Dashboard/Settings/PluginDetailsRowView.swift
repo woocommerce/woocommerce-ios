@@ -2,13 +2,21 @@ import SwiftUI
 import Yosemite
 
 struct PluginListView: View {
-    private let viewModel: PluginListViewModel = PluginListViewModel(siteID: ServiceLocator.stores.sessionManager.defaultStoreID ?? 0)
+    private let viewModel: PluginListViewModel
+
+    init(viewModel: PluginListViewModel) {
+        self.viewModel = viewModel
+    }
+
+    private var siteID: Int64 {
+        ServiceLocator.stores.sessionManager.defaultStoreID ?? 0
+    }
 
     var body: some View {
         VStack {
-            Text("Plugin List View")
+            Text(viewModel.pluginListTitle)
             ForEach(viewModel.pluginNameList, id: \.self) { name in
-                PluginDetailsRowView(viewModel: PluginDetailsViewModel(siteID: ServiceLocator.stores.sessionManager.defaultStoreID ?? 0,
+                PluginDetailsRowView(viewModel: PluginDetailsViewModel(siteID: siteID,
                                                                        pluginName: name))
             }
         }

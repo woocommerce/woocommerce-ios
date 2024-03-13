@@ -143,28 +143,34 @@ private extension AddProductWithAIActionSheet {
             comment: "Subitle on the action sheet to select an option for adding new product"
         )
         static let aiTitle = NSLocalizedString(
-            "Create a product with AI",
+            "addProductWithAIActionSheet.aiTitle",
+            value: "Create a product with AI",
             comment: "Title of the option to add new product with AI assistance"
         )
         static let aiDescription = NSLocalizedString(
-            "Quickly generate details for you",
+            "addProductWithAIActionSheet.aiDescription",
+            value: "Quickly generate details for you",
             comment: "Description of the option to add new product with AI assistance"
         )
         static let legalText = NSLocalizedString(
-            "Powered by AI.",
+            "addProductWithAIActionSheet.legalText",
+            value: "Powered by AI.",
             comment: "Label to indicate AI-generated content on the product creation action sheet."
         )
         static let learnMore = NSLocalizedString(
-            "[Learn more.](https://automattic.com/ai-guidelines/)",
+            "addProductWithAIActionSheet.learnMore",
+            value: "[Learn more.](https://automattic.com/ai-guidelines/)",
             comment: "Markdown content learn more link on the product creation action sheet. " +
             "Please translate the words while keeping the markdown format and URL."
         )
         static let manualTitle = NSLocalizedString(
-            "Add manually",
+            "addProductWithAIActionSheet.manualTitle",
+            value: "Add manually",
             comment: "Title of the option to add new product manually"
         )
         static let manualDescription = NSLocalizedString(
-            "Add a product and the details manually",
+            "addProductWithAIActionSheet.manualDescription",
+            value: "Add a product and the details manually",
             comment: "Description of the option to add new product manually"
         )
     }

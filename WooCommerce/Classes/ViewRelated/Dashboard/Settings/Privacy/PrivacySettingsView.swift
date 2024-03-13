@@ -1,7 +1,7 @@
 import SwiftUI
 
 /// SwiftUI view for privacy settings.
-/// 
+///
 struct PrivacySettingsView: View {
 
     var body: some View {

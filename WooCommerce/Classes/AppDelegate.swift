@@ -58,6 +58,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, willFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
         // Setup Components
+        setupStartupWaitingTimeTracker()
+
         let stores = ServiceLocator.stores
         let analytics = ServiceLocator.analytics
         let pushNotesManager = ServiceLocator.pushNotesManager
@@ -65,7 +67,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         setupAnalytics(analytics)
         setupPushNotificationsManagerIfPossible(pushNotesManager, stores: stores)
 
-        setupStartupWaitingTimeTracker()
         setupCocoaLumberjack()
         setupLibraryLogger()
         setupLogLevel(.verbose)

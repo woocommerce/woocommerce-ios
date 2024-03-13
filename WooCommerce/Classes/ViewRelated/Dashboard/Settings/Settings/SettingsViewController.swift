@@ -371,7 +371,7 @@ private extension SettingsViewController {
             return DDLogError("⛔️ Cannot find ID for current site to load plugins for!")
         }
         let pluginListViewModel = PluginListViewModel(siteID: siteID)
-        let pluginListHostingController = UIHostingController(rootView: PluginListView(viewModel: pluginListViewModel))
+        let pluginListHostingController = UIHostingController(rootView: PluginListView(siteID: siteID, viewModel: pluginListViewModel))
 
         // Since UIHostingController does not have a navigation bar by itself, we need
         // to wrap it into a navigation controller if we want to set a title in the resulting view

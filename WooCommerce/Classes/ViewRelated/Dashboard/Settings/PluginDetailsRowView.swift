@@ -2,14 +2,12 @@ import SwiftUI
 import Yosemite
 
 struct PluginListView: View {
+    private let siteID: Int64
     private let viewModel: PluginListViewModel
 
-    init(viewModel: PluginListViewModel) {
+    init(siteID: Int64, viewModel: PluginListViewModel) {
+        self.siteID = siteID
         self.viewModel = viewModel
-    }
-
-    private var siteID: Int64 {
-        ServiceLocator.stores.sessionManager.defaultStoreID ?? 0
     }
 
     var body: some View {

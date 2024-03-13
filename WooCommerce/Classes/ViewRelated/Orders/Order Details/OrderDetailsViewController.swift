@@ -291,7 +291,7 @@ private extension OrderDetailsViewController {
     /// Displays the `Unable to delete tracking` Notice.
     ///
     func displayDeleteErrorNotice(order: Order, tracking: ShipmentTracking) {
-        notices.displayDeleteErrorNotice(order: order, tracking: tracking) { [weak self] in
+        notices.displayDeleteTrackingErrorNotice(order: order, tracking: tracking) { [weak self] in
             self?.deleteTracking(tracking)
         }
     }
@@ -641,9 +641,9 @@ private extension OrderDetailsViewController {
                 print("entra qui")
                 break
             case .failure(let error):
+                self?.displayOrderStatusErrorNotice(orderID: viewModel.order.orderID, status: status)
                 DDLogError("⛔️ Order Trash Failure: [Order ID: \(self?.viewModel.order.orderID)]. Error: \(error)")
             }
-          // self?.displayOrderStatusErrorNotice(orderID: viewModel.order.id, status: status)
         }
         ServiceLocator.stores.dispatch(action)
     }

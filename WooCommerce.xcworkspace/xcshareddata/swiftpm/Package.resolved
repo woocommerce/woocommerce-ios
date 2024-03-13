@@ -5,9 +5,9 @@
         "package": "AutomatticAbout",
         "repositoryURL": "https://github.com/automattic/AutomatticAbout-swift",
         "state": {
-          "branch": "bozidarsevo/accessory-view-system-image",
-          "revision": "7a401f76f3b68ce4e49e3ce2d08024919b651c78",
-          "version": null
+          "branch": null,
+          "revision": "14b10de6d21b0d2e9ee41fc63b1cffc840d73003",
+          "version": "1.1.3"
         }
       },
       {

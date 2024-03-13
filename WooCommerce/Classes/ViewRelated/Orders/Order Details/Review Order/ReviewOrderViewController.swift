@@ -486,7 +486,7 @@ private extension ReviewOrderViewController {
     /// Displays the `Unable to delete tracking` Notice.
     ///
     func displayDeleteErrorNotice(order: Order, tracking: ShipmentTracking) {
-        notices.displayDeleteErrorNotice(order: order, tracking: tracking) { [weak self] in
+        notices.displayDeleteTrackingErrorNotice(order: order, tracking: tracking) { [weak self] in
             self?.deleteTracking(tracking)
         }
     }

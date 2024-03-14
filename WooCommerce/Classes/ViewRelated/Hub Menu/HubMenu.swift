@@ -28,6 +28,7 @@ struct HubMenu: View {
                         detailView(menuID: id)
                     }
                 }
+                .navigationBarTitleDisplayMode(.inline)
             }
         })
         .navigationSplitViewStyle(.balanced)
@@ -163,7 +164,6 @@ private extension HubMenu {
                         url: url)
             }
         }
-        .navigationBarTitleDisplayMode(.inline)
         .navigationTitle(title)
     }
 

@@ -22,18 +22,6 @@ final class SessionsReportCardViewModel: AnalyticsReportCardProtocol {
         self.siteStats = siteStats
         self.isRedacted = isRedacted
     }
-
-    func redact() {
-        isRedacted = true
-    }
-
-    /// Updates the stats used in the card metrics.
-    ///
-    func update(currentOrderStats: OrderStatsV4?, siteStats: SiteSummaryStats?) {
-        self.currentOrderStats = currentOrderStats
-        self.siteStats = siteStats
-        isRedacted = false
-    }
 }
 
 // MARK: AnalyticsReportCardProtocol conformance

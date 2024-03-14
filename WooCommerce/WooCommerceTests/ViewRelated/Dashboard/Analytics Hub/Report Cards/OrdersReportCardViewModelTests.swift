@@ -77,19 +77,16 @@ final class OrdersReportCardViewModelTests: XCTestCase {
         XCTAssertTrue(vm.showSyncError)
     }
 
-    func test_redact_updates_properties_as_expected() {
+    func test_it_provides_expected_values_when_redacted() {
         // Given
         let vm = OrdersReportCardViewModel(currentPeriodStats: nil,
                                            previousPeriodStats: nil,
                                            timeRange: .monthToDate,
+                                           isRedacted: true,
                                            usageTracksEventEmitter: eventEmitter,
                                            storeAdminURL: sampleAdminURL)
 
-        // When
-        vm.redact()
-
         // Then
-
         assertEqual("$1000", vm.leadingValue)
         assertEqual(DeltaPercentage(string: "0%", direction: .zero), vm.leadingDelta)
         assertEqual([], vm.leadingChartData)
@@ -99,41 +96,6 @@ final class OrdersReportCardViewModelTests: XCTestCase {
         XCTAssertTrue(vm.isRedacted)
         XCTAssertFalse(vm.showSyncError)
         XCTAssertNotNil(vm.reportViewModel)
-    }
-
-    func test_properties_updated_as_expected_after_stats_update() {
-        // Given
-        let vm = OrdersReportCardViewModel(currentPeriodStats: nil,
-                                           previousPeriodStats: nil,
-                                           timeRange: .monthToDate,
-                                           usageTracksEventEmitter: eventEmitter,
-                                           storeAdminURL: sampleAdminURL)
-
-        // When
-        vm.update(currentPeriodStats: OrderStatsV4.fake().copy(totals: .fake().copy(totalOrders: 60)),
-                  previousPeriodStats: OrderStatsV4.fake().copy(totals: .fake().copy(totalOrders: 30)))
-
-        // Then
-        assertEqual("60", vm.leadingValue)
-        assertEqual(DeltaPercentage(string: "+100%", direction: .positive), vm.leadingDelta)
-        XCTAssertFalse(vm.isRedacted)
-    }
-
-    func test_properties_updated_as_expected_after_timeRange_update() throws {
-        // Given
-        let vm = OrdersReportCardViewModel(currentPeriodStats: nil,
-                                           previousPeriodStats: nil,
-                                           timeRange: .monthToDate,
-                                           usageTracksEventEmitter: eventEmitter,
-                                           storeAdminURL: sampleAdminURL)
-
-        // When
-        vm.update(timeRange: .today)
-
-        // Then
-        let reportURL = try XCTUnwrap(vm.reportViewModel?.initialURL)
-        let queryItems = try XCTUnwrap(URLComponents(url: reportURL, resolvingAgainstBaseURL: false)?.queryItems)
-        XCTAssertTrue(queryItems.contains(URLQueryItem(name: "period", value: "today")))
     }
 
 }

@@ -81,16 +81,14 @@ final class ProductsReportCardViewModelTests: XCTestCase {
         XCTAssertTrue(vm.showStatsError)
     }
 
-    func test_AnalyticsProductsStatsCardViewModel_redact_updates_properties_as_expected() {
+    func test_AnalyticsProductsStatsCardViewModel_provides_expected_values_when_redacted() {
         // Given
         let vm = AnalyticsProductsStatsCardViewModel(currentPeriodStats: nil,
                                                      previousPeriodStats: nil,
                                                      timeRange: .monthToDate,
+                                                     isRedacted: true,
                                                      usageTracksEventEmitter: eventEmitter,
                                                      storeAdminURL: sampleAdminURL)
-
-        // When
-        vm.redact()
 
         // Then
 
@@ -99,41 +97,6 @@ final class ProductsReportCardViewModelTests: XCTestCase {
         XCTAssertTrue(vm.isRedacted)
         XCTAssertFalse(vm.showStatsError)
         XCTAssertNotNil(vm.reportViewModel)
-    }
-
-    func test_AnalyticsProductsStatsCardViewModel_properties_updated_as_expected_after_update() {
-        // Given
-        let vm = AnalyticsProductsStatsCardViewModel(currentPeriodStats: nil,
-                                            previousPeriodStats: nil,
-                                            timeRange: .monthToDate,
-                                            usageTracksEventEmitter: eventEmitter,
-                                            storeAdminURL: sampleAdminURL)
-
-        // When
-        vm.update(currentPeriodStats: OrderStatsV4.fake().copy(totals: .fake().copy(totalItemsSold: 60)),
-                  previousPeriodStats: OrderStatsV4.fake().copy(totals: .fake().copy(totalItemsSold: 30)))
-
-        // Then
-        assertEqual("60", vm.itemsSold)
-        assertEqual(DeltaPercentage(string: "+100%", direction: .positive), vm.delta)
-        XCTAssertFalse(vm.isRedacted)
-    }
-
-    func test_AnalyticsProductsStatsCardViewModel_properties_updated_as_expected_after_timeRange_update() throws {
-        // Given
-        let vm = AnalyticsProductsStatsCardViewModel(currentPeriodStats: nil,
-                                                     previousPeriodStats: nil,
-                                                     timeRange: .monthToDate,
-                                                     usageTracksEventEmitter: eventEmitter,
-                                                     storeAdminURL: sampleAdminURL)
-
-        // When
-        vm.update(timeRange: .today)
-
-        // Then
-        let reportURL = try XCTUnwrap(vm.reportViewModel?.initialURL)
-        let queryItems = try XCTUnwrap(URLComponents(url: reportURL, resolvingAgainstBaseURL: false)?.queryItems)
-        XCTAssertTrue(queryItems.contains(URLQueryItem(name: "period", value: "today")))
     }
 
     // MARK: - AnalyticsItemsSoldViewModel
@@ -164,12 +127,9 @@ final class ProductsReportCardViewModelTests: XCTestCase {
         XCTAssertTrue(vm.showItemsSoldError)
     }
 
-    func test_AnalyticsItemsSoldViewModel_redact_updates_properties_as_expected() {
+    func test_AnalyticsItemsSoldViewModel_provides_expected_values_when_redacted() {
         // Given
-        let vm = AnalyticsItemsSoldViewModel(itemsSoldStats: nil)
-
-        // When
-        vm.redact()
+        let vm = AnalyticsItemsSoldViewModel(itemsSoldStats: nil, isRedacted: true)
 
         // Then
         let expectedPlaceholder = TopPerformersRow.Data(imageURL: nil, name: "Product Name", details: "Net Sales", value: "$5678")
@@ -179,21 +139,6 @@ final class ProductsReportCardViewModelTests: XCTestCase {
         assertEqual(expectedPlaceholder.value, vm.itemsSoldData.first?.value)
         XCTAssertTrue(vm.isRedacted)
         XCTAssertFalse(vm.showItemsSoldError)
-    }
-
-    func test_AnalyticsItemsSoldViewModel_properties_updated_as_expected_after_stats_update() {
-        // Given
-        let vm = AnalyticsItemsSoldViewModel(itemsSoldStats: nil)
-
-        // When
-        let productName = "Woo!"
-        vm.update(itemsSoldStats: .fake().copy(items: [
-            .fake().copy(productName: productName, quantity: 5, total: 100, currency: "USD", imageUrl: "https://woo.com/woo.png")
-        ]))
-
-        // Then
-        assertEqual(productName, vm.itemsSoldData.first?.name)
-        XCTAssertFalse(vm.isRedacted)
     }
 
 }

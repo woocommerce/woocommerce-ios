@@ -39,26 +39,6 @@ final class RevenueReportCardViewModel: AnalyticsReportCardProtocol {
         self.usageTracksEventEmitter = usageTracksEventEmitter
         self.storeAdminURL = storeAdminURL
     }
-
-    /// Redacts the card content for a card loading state.
-    ///
-    func redact() {
-        isRedacted = true
-    }
-
-    /// Updates the stats used in the card metrics.
-    ///
-    func update(currentPeriodStats: OrderStatsV4?, previousPeriodStats: OrderStatsV4?) {
-        self.currentPeriodStats = currentPeriodStats
-        self.previousPeriodStats = previousPeriodStats
-        isRedacted = false
-    }
-
-    /// Updates the time range used in the card report link.
-    ///
-    func update(timeRange: AnalyticsHubTimeRangeSelection.SelectionType) {
-        self.timeRange = timeRange
-    }
 }
 
 // MARK: AnalyticsReportCardProtocol conformance

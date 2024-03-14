@@ -24,3 +24,6 @@ OpenOrdersAction.Title = "Orders";
 
 /* Title for Payments home screen action */
 OpenPaymentsAction.Title = "Payments";
+
+/* Title for Payments home screen action */
+CollectPaymentAction.Title = "Collect Payment";

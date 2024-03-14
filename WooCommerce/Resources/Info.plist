@@ -138,11 +138,11 @@
 		</dict>
 		<dict>
 			<key>UIApplicationShortcutItemType</key>
-			<string>OpenPaymentsAction</string>
+			<string>CollectPaymentAction</string>
 			<key>UIApplicationShortcutItemTitle</key>
-			<string>OpenPaymentsAction.Title</string>
+			<string>CollectPaymentAction.Title</string>
 			<key>UIApplicationShortcutItemIconFile</key>
-			<string>woo-payments-wallet</string>
+			<string>icon-money</string>
 		</dict>
 	</array>
 </dict>

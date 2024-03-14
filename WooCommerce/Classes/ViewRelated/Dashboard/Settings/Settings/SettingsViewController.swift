@@ -43,18 +43,12 @@ final class SettingsViewController: UIViewController {
     private let stores: StoresManager
     private let pushNotesManager: PushNotesManager
 
-    /// Publisher to handle popping the navigation controller to root when switching selections in split view
-    private let navigationPublisher: AnyPublisher<Void, Never>
-    private var navigationSubscription: AnyCancellable?
-
     private var jetpackSetupCoordinator: JetpackSetupCoordinator?
 
     init(viewModel: ViewModel = SettingsViewModel(),
-         navigationPublisher: AnyPublisher<Void, Never>,
          stores: StoresManager = ServiceLocator.stores,
          pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager) {
         self.viewModel = viewModel
-        self.navigationPublisher = navigationPublisher
         self.stores = stores
         self.pushNotesManager = pushNotesManager
         super.init(nibName: nil, bundle: nil)
@@ -96,10 +90,6 @@ private extension SettingsViewController {
 
     func configureNavigation() {
         title = Localization.navigationTitle
-        navigationSubscription = navigationPublisher
-            .sink { [weak self] in
-                self?.navigationController?.popToRootViewController(animated: true)
-            }
     }
 
     func configureMainView() {

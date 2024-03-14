@@ -6,13 +6,12 @@ import struct Yosemite.ProductReviewFromNoteParcel
 ///
 struct ReviewsView: View {
     let siteID: Int64
-    let navigationPublisher: AnyPublisher<Void, Never>
     let productReviewFromNoteParcel: ProductReviewFromNoteParcel?
 
     @Binding var showingReviewDetail: Bool
 
     var body: some View {
-        ReviewsWrapperView(siteID: siteID, navigationPublisher: navigationPublisher)
+        ReviewsWrapperView(siteID: siteID)
             .navigationTitle(Localization.navigationTitle)
             .navigationBarTitleDisplayMode(.inline)
             .navigationDestination(isPresented: $showingReviewDetail) {
@@ -39,10 +38,9 @@ private extension ReviewsView {
 ///
 private struct ReviewsWrapperView: UIViewControllerRepresentable {
     let siteID: Int64
-    let navigationPublisher: AnyPublisher<Void, Never>
 
     func makeUIViewController(context: Self.Context) -> ReviewsViewController {
-        let viewController = ReviewsViewController(siteID: siteID, navigationPublisher: navigationPublisher)
+        let viewController = ReviewsViewController(siteID: siteID)
         return viewController
     }
 

@@ -8,17 +8,11 @@ final class ReviewsViewControllerTests: XCTestCase {
     private var mockViewModel: MockReviewsViewModel!
     private var sut: ReviewsViewController!
 
-    private let mockSubject = PassthroughSubject<Void, Never>()
-    private var navigationPublisher: AnyPublisher<Void, Never> {
-        mockSubject.eraseToAnyPublisher()
-    }
-
     override func setUpWithError() throws {
         try super.setUpWithError()
 
         mockViewModel = MockReviewsViewModel(siteID: 123)
-        sut = ReviewsViewController(viewModel: mockViewModel,
-                                    navigationPublisher: navigationPublisher)
+        sut = ReviewsViewController(viewModel: mockViewModel)
     }
 
     override func tearDownWithError() throws {

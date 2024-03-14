@@ -1,5 +1,4 @@
 import UIKit
-import Combine
 
 // MARK: - ReviewsViewController
 //
@@ -30,10 +29,6 @@ final class ReviewsViewController: UIViewController, GhostableViewController {
     }()
 
     private let viewModel: ViewModel
-
-    /// Publisher to handle popping the navigation controller to root when switching selections in split view
-    private let navigationPublisher: AnyPublisher<Void, Never>
-    private var navigationSubscription: AnyCancellable?
 
     /// Haptic Feedback!
     ///
@@ -107,16 +102,14 @@ final class ReviewsViewController: UIViewController, GhostableViewController {
 
     // MARK: - Initializers
     //
-    convenience init(siteID: Int64, navigationPublisher: AnyPublisher<Void, Never>) {
+    convenience init(siteID: Int64) {
         self.init(viewModel: ReviewsViewModel(siteID: siteID,
                                               data: ReviewsDataSource(siteID: siteID,
-                                                                             customizer: GlobalReviewsDataSourceCustomizer())),
-                  navigationPublisher: navigationPublisher)
+                                                                             customizer: GlobalReviewsDataSourceCustomizer())))
     }
 
-    init(viewModel: ViewModel, navigationPublisher: AnyPublisher<Void, Never>) {
+    init(viewModel: ViewModel) {
         self.viewModel = viewModel
-        self.navigationPublisher = navigationPublisher
         super.init(nibName: nil, bundle: nil)
 
         // This 👇 should be called in init so the tab is correctly localized when the app launches
@@ -135,7 +128,6 @@ final class ReviewsViewController: UIViewController, GhostableViewController {
 
         refreshTitle()
 
-        configureNavigation()
         configureSyncingCoordinator()
         configureTableView()
         configureTableViewCells()
@@ -177,13 +169,6 @@ final class ReviewsViewController: UIViewController, GhostableViewController {
 // MARK: - User Interface Initialization
 //
 private extension ReviewsViewController {
-
-    func configureNavigation() {
-        navigationSubscription = navigationPublisher
-            .sink { [weak self] in
-                self?.navigationController?.popToRootViewController(animated: true)
-            }
-    }
 
     /// Setup: Sync'ing Coordinator
     ///

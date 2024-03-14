@@ -4,11 +4,10 @@ import Combine
 /// SwiftUI view for App Settings
 ///
 struct SettingsView: View {
-    let navigationPublisher: AnyPublisher<Void, Never>
     @Binding var showingPrivacySettings: Bool
 
     var body: some View {
-        SettingsWrapperView(navigationPublisher: navigationPublisher)
+        SettingsWrapperView()
             .navigationTitle(Localization.navigationTitle)
             .navigationBarTitleDisplayMode(.inline)
             .navigationDestination(isPresented: $showingPrivacySettings) {
@@ -36,10 +35,9 @@ private extension SettingsView {
 /// SwiftUI wrapper for `SettingsViewController`
 ///
 private struct SettingsWrapperView: UIViewControllerRepresentable {
-    let navigationPublisher: AnyPublisher<Void, Never>
 
     func makeUIViewController(context: Self.Context) -> SettingsViewController {
-        let viewController = SettingsViewController(navigationPublisher: navigationPublisher)
+        let viewController = SettingsViewController()
         return viewController
     }
 

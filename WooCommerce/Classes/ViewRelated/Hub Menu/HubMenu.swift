@@ -124,8 +124,7 @@ private extension HubMenu {
     func detailView(menuID: String) -> some View {
         switch menuID {
         case HubMenuViewModel.Settings.id:
-            SettingsView(navigationPublisher: viewModel.navigationPublisher,
-                         showingPrivacySettings: $viewModel.showingPrivacySettings)
+            SettingsView(showingPrivacySettings: $viewModel.showingPrivacySettings)
         case HubMenuViewModel.Payments.id:
             InPersonPaymentsMenu(viewModel: viewModel.inPersonPaymentsMenuViewModel)
         case HubMenuViewModel.Blaze.id:
@@ -142,7 +141,6 @@ private extension HubMenu {
             Inbox(viewModel: .init(siteID: viewModel.siteID))
         case HubMenuViewModel.Reviews.id:
             ReviewsView(siteID: viewModel.siteID,
-                        navigationPublisher: viewModel.navigationPublisher,
                         productReviewFromNoteParcel: viewModel.productReviewFromNoteParcel,
                         showingReviewDetail: $viewModel.showingReviewDetail)
         case HubMenuViewModel.Coupons.id:

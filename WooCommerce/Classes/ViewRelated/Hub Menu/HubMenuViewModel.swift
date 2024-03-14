@@ -70,12 +70,6 @@ final class HubMenuViewModel: ObservableObject {
 
     let tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker
 
-    var navigationPublisher: AnyPublisher<Void, Never> {
-        $selectedMenuID.combineLatest($showingReviewDetail, $showingPrivacySettings)
-            .map { (_, _, _) in () }
-            .eraseToAnyPublisher()
-    }
-
     lazy var inPersonPaymentsMenuViewModel: InPersonPaymentsMenuViewModel = {
         InPersonPaymentsMenuViewModel(
             siteID: siteID,

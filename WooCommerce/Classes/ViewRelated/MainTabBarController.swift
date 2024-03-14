@@ -490,7 +490,7 @@ extension MainTabBarController {
             hubMenuViewController.showPrivacySettings()
         }
     }
-    
+
     static func presentCollectPayment() {
         guard let tabBar = AppDelegate.shared.tabBarController else {
             return

@@ -117,7 +117,7 @@ struct HubMenu: View {
                        isActive: $showingReviews) {
             EmptyView()
         }.hidden()
-        NavigationLink(destination: EnhancedCouponListView(siteID: viewModel.siteID, 
+        NavigationLink(destination: EnhancedCouponListView(siteID: viewModel.siteID,
                                                            viewModel: CouponListViewModel(siteID: viewModel.siteID)),
                        isActive: $viewModel.showingCoupons) {
             EmptyView()

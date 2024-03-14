@@ -64,8 +64,7 @@ final class AnalyticsHubViewModel: ObservableObject {
         RevenueReportCardViewModel(currentPeriodStats: currentOrderStats,
                                    previousPeriodStats: previousOrderStats,
                                    timeRange: timeRangeSelectionType,
-                                   usageTracksEventEmitter: usageTracksEventEmitter,
-                                   storeAdminURL: stores.sessionManager.defaultSite?.adminURL)
+                                   usageTracksEventEmitter: usageTracksEventEmitter)
     }()
 
     /// Orders Card ViewModel
@@ -74,8 +73,7 @@ final class AnalyticsHubViewModel: ObservableObject {
         OrdersReportCardViewModel(currentPeriodStats: currentOrderStats,
                                   previousPeriodStats: previousOrderStats,
                                   timeRange: timeRangeSelectionType,
-                                  usageTracksEventEmitter: usageTracksEventEmitter,
-                                  storeAdminURL: stores.sessionManager.defaultSite?.adminURL)
+                                  usageTracksEventEmitter: usageTracksEventEmitter)
     }()
 
     /// Products Stats Card ViewModel
@@ -84,8 +82,7 @@ final class AnalyticsHubViewModel: ObservableObject {
         AnalyticsProductsStatsCardViewModel(currentPeriodStats: currentOrderStats,
                                             previousPeriodStats: previousOrderStats,
                                             timeRange: timeRangeSelectionType,
-                                            usageTracksEventEmitter: usageTracksEventEmitter,
-                                            storeAdminURL: stores.sessionManager.defaultSite?.adminURL)
+                                            usageTracksEventEmitter: usageTracksEventEmitter)
     }()
 
     /// Items Sold Card ViewModel

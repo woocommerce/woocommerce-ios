@@ -2,7 +2,7 @@
 
 17.8
 -----
-
+- [*] Products: The creation sheet is now simplified and categorized better [https://github.com/woocommerce/woocommerce-ios/pull/12273]
 
 17.7
 -----

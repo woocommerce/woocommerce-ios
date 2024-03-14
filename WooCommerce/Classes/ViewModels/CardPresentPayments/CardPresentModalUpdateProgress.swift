@@ -15,7 +15,7 @@ final class CardPresentModalUpdateProgress: CardPresentPaymentsModalViewModel, C
 
     let primaryButtonTitle: String? = nil
 
-    let secondaryButtonTitle: String? = Localization.cancel
+    var secondaryButtonTitle: String? = nil
 
     let auxiliaryButtonTitle: String? = nil
 
@@ -34,19 +34,28 @@ final class CardPresentModalUpdateProgress: CardPresentPaymentsModalViewModel, C
     init(requiredUpdate: Bool, progress: Float, cancel: (() -> Void)?) {
         self.progress = progress
         self.cancelAction = cancel
-        actionsMode = cancel != nil ? .secondaryOnlyAction : .none
+
+        actionsMode = .secondaryOnlyAction
         titleComplete = Localization.titleComplete
         titleInProgress = Localization.title
+        secondaryButtonTitle = Localization.dismissButtonText
 
         if !isComplete {
             messageInProgress = requiredUpdate ? Localization.messageRequired : Localization.messageOptional
+            secondaryButtonTitle = requiredUpdate ? Localization.cancelRequiredButtonText : Localization.cancelOptionalButtonText
         }
     }
 
     func didTapPrimaryButton(in viewController: UIViewController?) {}
 
     func didTapSecondaryButton(in viewController: UIViewController?) {
-        cancelAction?()
+        if !isComplete {
+            cancelAction?()
+        } else {
+            // The cancel action closure is triggered when we tap the button on a firmware complete scenario
+            // but since we cannot cancel an update that has already been completed, at some point it does not dismiss the view
+            debugPrint("Secondary button tapped, but firmware update completed.")
+        }
     }
 
     func didTapAuxiliaryButton(in viewController: UIViewController?) {}
@@ -74,9 +83,22 @@ private extension CardPresentModalUpdateProgress {
             comment: "Label that displays when an optional software update is happening"
         )
 
-        static let cancel = NSLocalizedString(
-            "Cancel",
-            comment: "Label for a cancel button"
+        static let cancelOptionalButtonText = NSLocalizedString(
+            "CardPresentModalUpdateProgress.button.cancelOptionalButtonText",
+            value: "Cancel",
+            comment: "Label for a cancel button when an optional software update is happening"
+        )
+
+        static let cancelRequiredButtonText = NSLocalizedString(
+            "CardPresentModalUpdateProgress.button.cancelRequiredButtonText",
+            value: "Cancel anyway",
+            comment: "Label for a cancel button when a mandatory software update is happening"
+        )
+
+        static let dismissButtonText = NSLocalizedString(
+            "CardPresentModalUpdateProgress.button.dismissButtonText",
+            value: "Dismiss",
+            comment: "Label for a dismiss button when a software update has finished"
         )
     }
 }

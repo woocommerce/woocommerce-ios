@@ -79,10 +79,9 @@ struct EnhancedCouponListView: View {
             }))
         }
         .notice($notice)
-
-        /// TODO-12258 fix this warning
-        NavigationLink(destination: couponDetailView, isActive: $showingCouponDetail, label: { EmptyView() })
-            .hidden()
+        .navigationDestination(isPresented: $showingCouponDetail) {
+            couponDetailView
+        }
     }
 }
 

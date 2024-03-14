@@ -23,22 +23,17 @@ struct HubMenu: View {
             sideBar
         }, detail: {
             NavigationStack {
-                Group {
-                    if let id = viewModel.selectedMenuID {
-                        detailView(menuID: id)
-                    } else {
-                        SettingsView(navigationPublisher: viewModel.navigationPublisher)
-                    }
+                if let id = viewModel.selectedMenuID {
+                    detailView(menuID: id)
+                } else {
+                    SettingsView(navigationPublisher: viewModel.navigationPublisher)
                 }
-                .navigationBarTitleDisplayMode(.inline)
             }
             .navigationDestination(isPresented: $viewModel.showingReviewDetail) {
                 reviewDetailView
-                    .navigationBarTitleDisplayMode(.inline)
             }
             .navigationDestination(isPresented: $viewModel.showingPrivacySettings) {
                 privacySettingsView
-                    .navigationBarTitleDisplayMode(.inline)
             }
         })
         .navigationSplitViewStyle(.balanced)
@@ -148,7 +143,8 @@ private extension HubMenu {
         case HubMenuViewModel.Reviews.id:
             ReviewsView(siteID: viewModel.siteID, navigationPublisher: viewModel.navigationPublisher)
         case HubMenuViewModel.Coupons.id:
-            EnhancedCouponListView(siteID: viewModel.siteID)
+            EnhancedCouponListView(siteID: viewModel.siteID,
+                                   viewModel: CouponListViewModel(siteID: viewModel.siteID))
         case HubMenuViewModel.InAppPurchases.id:
             InAppPurchasesDebugView()
         case HubMenuViewModel.Subscriptions.id:
@@ -160,20 +156,23 @@ private extension HubMenu {
 
     @ViewBuilder
     func webView(url: URL, title: String, shouldAuthenticate: Bool) -> some View {
-        if shouldAuthenticate {
-            AuthenticatedWebView(isPresented: .constant(true),
-                                 url: url)
-            .navigationTitle(title)
-        } else {
-            WebView(isPresented: .constant(true),
+        Group {
+            if shouldAuthenticate {
+                AuthenticatedWebView(isPresented: .constant(true),
+                                     url: url)
+            } else {
+                WebView(isPresented: .constant(true),
                         url: url)
-            .navigationTitle(title)
+            }
         }
+        .navigationBarTitleDisplayMode(.inline)
+        .navigationTitle(title)
     }
 
     var privacySettingsView: some View {
         PrivacySettingsView()
             .navigationTitle(Localization.privacySettings)
+            .navigationBarTitleDisplayMode(.inline)
     }
 
     @ViewBuilder

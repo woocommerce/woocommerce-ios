@@ -28,16 +28,18 @@ final class AnalyticsProductsStatsCardViewModel {
 
     /// Indicates if the values should be hidden (for loading state)
     ///
-    var isRedacted: Bool = false
+    var isRedacted: Bool
 
     init(currentPeriodStats: OrderStatsV4?,
          previousPeriodStats: OrderStatsV4?,
          timeRange: AnalyticsHubTimeRangeSelection.SelectionType,
+         isRedacted: Bool = false,
          usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter,
          storeAdminURL: String? = ServiceLocator.stores.sessionManager.defaultSite?.adminURL) {
         self.currentPeriodStats = currentPeriodStats
         self.previousPeriodStats = previousPeriodStats
         self.timeRange = timeRange
+        self.isRedacted = isRedacted
         self.usageTracksEventEmitter = usageTracksEventEmitter
         self.storeAdminURL = storeAdminURL
     }
@@ -74,10 +76,12 @@ final class AnalyticsItemsSoldViewModel {
 
     /// Indicates if the values should be hidden (for loading state)
     ///
-    var isRedacted: Bool = false
+    var isRedacted: Bool
 
-    init(itemsSoldStats: TopEarnerStats?) {
+    init(itemsSoldStats: TopEarnerStats?,
+         isRedacted: Bool = false) {
         self.itemsSoldStats = itemsSoldStats
+        self.isRedacted = isRedacted
     }
 
     /// Redacts the card content for a card loading state.

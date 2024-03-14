@@ -64,6 +64,7 @@ final class AnalyticsHubViewModel: ObservableObject {
         RevenueReportCardViewModel(currentPeriodStats: currentOrderStats,
                                    previousPeriodStats: previousOrderStats,
                                    timeRange: timeRangeSelectionType,
+                                   isRedacted: isLoadingOrderStats,
                                    usageTracksEventEmitter: usageTracksEventEmitter)
     }()
 
@@ -73,6 +74,7 @@ final class AnalyticsHubViewModel: ObservableObject {
         OrdersReportCardViewModel(currentPeriodStats: currentOrderStats,
                                   previousPeriodStats: previousOrderStats,
                                   timeRange: timeRangeSelectionType,
+                                  isRedacted: isLoadingOrderStats,
                                   usageTracksEventEmitter: usageTracksEventEmitter)
     }()
 
@@ -82,19 +84,23 @@ final class AnalyticsHubViewModel: ObservableObject {
         AnalyticsProductsStatsCardViewModel(currentPeriodStats: currentOrderStats,
                                             previousPeriodStats: previousOrderStats,
                                             timeRange: timeRangeSelectionType,
+                                            isRedacted: isLoadingOrderStats,
                                             usageTracksEventEmitter: usageTracksEventEmitter)
     }()
 
     /// Items Sold Card ViewModel
     ///
     lazy var itemsSoldCard = {
-        AnalyticsItemsSoldViewModel(itemsSoldStats: itemsSoldStats)
+        AnalyticsItemsSoldViewModel(itemsSoldStats: itemsSoldStats,
+                                    isRedacted: isLoadingItemsSoldStats)
     }()
 
     /// Sessions Card ViewModel
     ///
     lazy var sessionsCard: SessionsReportCardViewModel = {
-        SessionsReportCardViewModel(currentOrderStats: currentOrderStats, siteStats: siteStats)
+        SessionsReportCardViewModel(currentOrderStats: currentOrderStats,
+                                    siteStats: siteStats,
+                                    isRedacted: isLoadingOrderStats || isLoadingSiteStats)
     }()
 
     /// View model for `AnalyticsHubCustomizeView`, to customize the cards in the Analytics Hub.
@@ -178,6 +184,18 @@ final class AnalyticsHubViewModel: ObservableObject {
     /// Site summary stats for visitors and views. Used in the sessions card.
     ///
     @Published private var siteStats: SiteSummaryStats? = nil
+
+    /// Loading state for order stats.
+    ///
+    private var isLoadingOrderStats = false
+
+    /// Loading state for items sold stats.
+    ///
+    private var isLoadingItemsSoldStats = false
+
+    /// Loading state for site stats.
+    ///
+    private var isLoadingSiteStats = false
 
     /// Time Range selection data defining the current and previous time period
     ///

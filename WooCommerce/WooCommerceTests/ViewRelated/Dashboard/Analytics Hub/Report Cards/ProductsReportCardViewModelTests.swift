@@ -30,6 +30,7 @@ final class ProductsReportCardViewModelTests: XCTestCase {
                                                                                   subtotals: .fake().copy(totalItemsSold: 15))]),
             previousPeriodStats: OrderStatsV4.fake().copy(totals: .fake().copy(totalItemsSold: 30)),
             timeRange: .today,
+            isRedacted: false,
             usageTracksEventEmitter: eventEmitter,
             storeAdminURL: sampleAdminURL
         )
@@ -143,7 +144,8 @@ final class ProductsReportCardViewModelTests: XCTestCase {
         let imageUrl = "https://woo.com/woo.png"
         let vm = AnalyticsItemsSoldViewModel(itemsSoldStats: .fake().copy(items: [
             .fake().copy(productName: productName, quantity: 5, total: 100, currency: "USD", imageUrl: imageUrl)
-        ]))
+        ]),
+                                             isRedacted: false)
 
         // Then
         assertEqual(URL(string: imageUrl), vm.itemsSoldData.first?.imageURL)

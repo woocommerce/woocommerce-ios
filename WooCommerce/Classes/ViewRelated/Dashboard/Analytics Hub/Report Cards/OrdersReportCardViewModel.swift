@@ -22,16 +22,20 @@ final class OrdersReportCardViewModel: AnalyticsReportCardProtocol {
     ///
     private let storeAdminURL: String?
 
-    var isRedacted: Bool = false
+    /// Indicates if the values should be hidden (for loading state)
+    ///
+    var isRedacted: Bool
 
     init(currentPeriodStats: OrderStatsV4?,
          previousPeriodStats: OrderStatsV4?,
          timeRange: AnalyticsHubTimeRangeSelection.SelectionType,
+         isRedacted: Bool = false,
          usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter,
          storeAdminURL: String? = ServiceLocator.stores.sessionManager.defaultSite?.adminURL) {
         self.currentPeriodStats = currentPeriodStats
         self.previousPeriodStats = previousPeriodStats
         self.timeRange = timeRange
+        self.isRedacted = isRedacted
         self.usageTracksEventEmitter = usageTracksEventEmitter
         self.storeAdminURL = storeAdminURL
     }

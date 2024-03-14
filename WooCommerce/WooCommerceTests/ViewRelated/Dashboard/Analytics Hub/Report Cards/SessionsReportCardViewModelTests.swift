@@ -9,7 +9,8 @@ final class SessionsReportCardViewModelTests: XCTestCase {
         // Given
         let vm = SessionsReportCardViewModel(
             currentOrderStats: OrderStatsV4.fake().copy(totals: .fake().copy(totalOrders: 5)),
-            siteStats: SiteSummaryStats.fake().copy(visitors: 10, views: 60)
+            siteStats: SiteSummaryStats.fake().copy(visitors: 10, views: 60),
+            isRedacted: false
         )
 
         // Then

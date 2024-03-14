@@ -28,6 +28,7 @@ final class OrdersReportCardViewModelTests: XCTestCase {
                                                                                  subtotals: .fake().copy(totalOrders: 15, averageOrderValue: 5))]),
             previousPeriodStats: OrderStatsV4.fake().copy(totals: .fake().copy(totalOrders: 30, averageOrderValue: 30)),
             timeRange: .today,
+            isRedacted: false,
             usageTracksEventEmitter: eventEmitter,
             storeAdminURL: sampleAdminURL
         )

@@ -28,6 +28,7 @@ final class RevenueReportCardViewModelTests: XCTestCase {
                                                                                   subtotals: .fake().copy(grossRevenue: 15, netRevenue: 5))]),
             previousPeriodStats: OrderStatsV4.fake().copy(totals: .fake().copy(grossRevenue: 30, netRevenue: 30)),
             timeRange: .today,
+            isRedacted: false,
             usageTracksEventEmitter: eventEmitter,
             storeAdminURL: sampleAdminURL
         )

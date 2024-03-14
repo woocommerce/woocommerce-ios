@@ -4,22 +4,16 @@ import SwiftUI
 ///
 struct ManualProductTypeOptions: View {
     private let productTypes: [BottomSheetProductType]
-
-    // List of product categories. The ordering dictates how the categories are displayed.
-    private let orderedProductCategories: [ProductCreationCategory]
-
     private let onOptionSelected: (BottomSheetProductType) -> Void
 
     /// Grouped product types based on their product category
     private let groupedProductTypes: [(ProductCreationCategory, [BottomSheetProductType])]
 
     init(productTypes: [BottomSheetProductType],
-         orderedProductCategories: [ProductCreationCategory] = [.standard, .subscription, .other],
          onOptionSelected: @escaping (BottomSheetProductType) -> Void) {
         self.productTypes = productTypes
-        self.orderedProductCategories = orderedProductCategories
         self.onOptionSelected = onOptionSelected
-        self.groupedProductTypes = orderedProductCategories.map { category in
+        self.groupedProductTypes = Constants.productCategoriesOrder.map { category in
             return (category, productTypes.filter { $0.productCreationCategory == category })
         }
     }
@@ -55,7 +49,7 @@ struct ManualProductTypeOptions: View {
                     }
 
                 }
-                if category != orderedProductCategories.last {
+                if category != Constants.productCategoriesOrder.last {
                     Divider()
                         .padding(.vertical, Constants.categoryVerticalSpacing)
                 }
@@ -66,6 +60,8 @@ struct ManualProductTypeOptions: View {
 
 private extension ManualProductTypeOptions {
     enum Constants {
+        // List of product categories. The ordering dictates how the categories are displayed.
+        static let productCategoriesOrder: [ProductCreationCategory] = [.standard, .subscription, .other]
         static let verticalSpacing: CGFloat = 4
         static let horizontalSpacing: CGFloat = 16
         static let categoryVerticalSpacing: CGFloat = 8

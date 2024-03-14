@@ -1,16 +1,27 @@
 import SwiftUI
 import Combine
+import struct Yosemite.ProductReviewFromNoteParcel
 
 /// SwiftUI view for the review list screen.
 ///
 struct ReviewsView: View {
     let siteID: Int64
     let navigationPublisher: AnyPublisher<Void, Never>
+    let productReviewFromNoteParcel: ProductReviewFromNoteParcel?
+
+    @Binding var showingReviewDetail: Bool
 
     var body: some View {
         ReviewsWrapperView(siteID: siteID, navigationPublisher: navigationPublisher)
             .navigationTitle(Localization.navigationTitle)
             .navigationBarTitleDisplayMode(.inline)
+            .navigationDestination(isPresented: $showingReviewDetail) {
+                if let parcel = productReviewFromNoteParcel {
+                    ReviewDetailView(productReview: parcel.review,
+                                     product: parcel.product,
+                                     notification: parcel.note)
+                }
+            }
     }
 }
 

@@ -48,7 +48,7 @@ final class HubMenuViewModel: ObservableObject {
     @Published var showingReviewDetail = false
     @Published var showingPrivacySettings = false
 
-    @Published var selectedMenuID: String?
+    @Published var selectedMenuID: String? = Settings.id
 
     @Published var showingCoupons = false
 
@@ -167,6 +167,7 @@ final class HubMenuViewModel: ObservableObject {
 
     func showReviewDetails(using parcel: ProductReviewFromNoteParcel) {
         productReviewFromNoteParcel = parcel
+        selectedMenuID = Reviews.id
         showingReviewDetail = true
     }
 

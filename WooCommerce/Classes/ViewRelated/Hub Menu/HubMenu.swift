@@ -23,17 +23,11 @@ struct HubMenu: View {
             sideBar
         }, detail: {
             NavigationStack {
-                if let id = viewModel.selectedMenuID {
-                    detailView(menuID: id)
-                } else {
-                    SettingsView(navigationPublisher: viewModel.navigationPublisher)
+                Group {
+                    if let id = viewModel.selectedMenuID {
+                        detailView(menuID: id)
+                    }
                 }
-            }
-            .navigationDestination(isPresented: $viewModel.showingReviewDetail) {
-                reviewDetailView
-            }
-            .navigationDestination(isPresented: $viewModel.showingPrivacySettings) {
-                privacySettingsView
             }
         })
         .navigationSplitViewStyle(.balanced)
@@ -125,7 +119,8 @@ private extension HubMenu {
     func detailView(menuID: String) -> some View {
         switch menuID {
         case HubMenuViewModel.Settings.id:
-            SettingsView(navigationPublisher: viewModel.navigationPublisher)
+            SettingsView(navigationPublisher: viewModel.navigationPublisher,
+                         showingPrivacySettings: $viewModel.showingPrivacySettings)
         case HubMenuViewModel.Payments.id:
             InPersonPaymentsMenu(viewModel: viewModel.inPersonPaymentsMenuViewModel)
         case HubMenuViewModel.Blaze.id:
@@ -141,7 +136,10 @@ private extension HubMenu {
         case HubMenuViewModel.Inbox.id:
             Inbox(viewModel: .init(siteID: viewModel.siteID))
         case HubMenuViewModel.Reviews.id:
-            ReviewsView(siteID: viewModel.siteID, navigationPublisher: viewModel.navigationPublisher)
+            ReviewsView(siteID: viewModel.siteID,
+                        navigationPublisher: viewModel.navigationPublisher,
+                        productReviewFromNoteParcel: viewModel.productReviewFromNoteParcel,
+                        showingReviewDetail: $viewModel.showingReviewDetail)
         case HubMenuViewModel.Coupons.id:
             EnhancedCouponListView(siteID: viewModel.siteID,
                                    viewModel: CouponListViewModel(siteID: viewModel.siteID))
@@ -167,19 +165,6 @@ private extension HubMenu {
         }
         .navigationBarTitleDisplayMode(.inline)
         .navigationTitle(title)
-    }
-
-    var privacySettingsView: some View {
-        PrivacySettingsView()
-            .navigationTitle(Localization.privacySettings)
-            .navigationBarTitleDisplayMode(.inline)
-    }
-
-    @ViewBuilder
-    var reviewDetailView: some View {
-        if let parcel = viewModel.productReviewFromNoteParcel {
-            ReviewDetailView(productReview: parcel.review, product: parcel.product, notification: parcel.note)
-        }
     }
 
     /// Reusable List row for the hub menu
@@ -339,11 +324,6 @@ private extension HubMenu {
     enum Localization {
         static let settings = NSLocalizedString("Settings", comment: "Settings button in the hub menu")
         static let general = NSLocalizedString("General", comment: "General section title in the hub menu")
-        static let privacySettings = NSLocalizedString(
-            "hubMenu.privacySettings",
-            value: "Privacy Settings",
-            comment: "Privacy settings screen title"
-        )
     }
 }
 

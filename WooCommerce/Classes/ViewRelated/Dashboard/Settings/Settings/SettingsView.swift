@@ -5,11 +5,16 @@ import Combine
 ///
 struct SettingsView: View {
     let navigationPublisher: AnyPublisher<Void, Never>
+    @Binding var showingPrivacySettings: Bool
 
     var body: some View {
         SettingsWrapperView(navigationPublisher: navigationPublisher)
             .navigationTitle(Localization.navigationTitle)
             .navigationBarTitleDisplayMode(.inline)
+            .navigationDestination(isPresented: $showingPrivacySettings) {
+                PrivacySettingsView()
+                    .navigationTitle(Localization.privacySettings)
+            }
     }
 }
 
@@ -19,6 +24,11 @@ private extension SettingsView {
             "settingsView.navigationTitle",
             value: "Settings",
             comment: "Settings navigation title"
+        )
+        static let privacySettings = NSLocalizedString(
+            "settingsView.privacySettings",
+            value: "Privacy Settings",
+            comment: "Privacy settings screen title"
         )
     }
 }
@@ -35,5 +45,21 @@ private struct SettingsWrapperView: UIViewControllerRepresentable {
 
     func updateUIViewController(_ uiViewController: SettingsViewController, context: Context) {
         // nothing to do here
+    }
+}
+
+/// A SwiftUI wrapper for `PrivacySettingsViewController`.
+///
+struct PrivacySettingsView: UIViewControllerRepresentable {
+
+    func makeUIViewController(context: Context) -> PrivacySettingsViewController {
+        guard let privacy = UIStoryboard.dashboard.instantiateViewController(ofClass: PrivacySettingsViewController.self) else {
+            fatalError("⛔️ Could not instantiate PrivacySettingsViewController")
+        }
+        return privacy
+    }
+
+    func updateUIViewController(_ uiViewController: PrivacySettingsViewController, context: Context) {
+        // no-op
     }
 }

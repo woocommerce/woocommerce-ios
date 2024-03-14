@@ -52,9 +52,7 @@ final class CardPresentModalUpdateProgress: CardPresentPaymentsModalViewModel, C
         if !isComplete {
             cancelAction?()
         } else {
-            // The cancel action closure is triggered when we tap the button on a firmware complete scenario
-            // but since we cannot cancel an update that has already been completed, at some point it does not dismiss the view
-            debugPrint("Secondary button tapped, but firmware update completed.")
+            viewController?.dismiss(animated: true)
         }
     }
 

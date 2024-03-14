@@ -41,12 +41,13 @@ struct AddProductWithAIActionSheet: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: Constants.margin) {
+            VStack(alignment: .leading) {
                 Group {
                     Text(Localization.title)
                         .titleStyle()
                         .bold()
                         .padding(.top, Constants.titleTopSpacing)
+                        .padding(.bottom, Constants.verticalSpacing)
 
                     Text(Localization.subtitle)
                         .subheadlineStyle()
@@ -54,7 +55,8 @@ struct AddProductWithAIActionSheet: View {
                 .padding(.horizontal, Constants.horizontalSpacing)
 
                 Divider()
-                    .padding(.vertical, Constants.verticalSpacing)
+                    .padding(.vertical, Constants.margin)
+
 
                 // AI option
                 HStack(alignment: .top, spacing: Constants.margin) {
@@ -63,6 +65,8 @@ struct AddProductWithAIActionSheet: View {
                         .resizable()
                         .foregroundColor(.accentColor)
                         .frame(width: Constants.sparkleIconSize * scale, height: Constants.sparkleIconSize * scale)
+                        .padding(.top, Constants.productIconTopSpacing)
+
                     VStack(alignment: .leading, spacing: Constants.verticalSpacing) {
                         Text(Localization.aiTitle)
                             .bodyStyle()
@@ -88,6 +92,7 @@ struct AddProductWithAIActionSheet: View {
                 .padding(.horizontal, Constants.horizontalSpacing)
 
                 Divider()
+                    .padding(.vertical, Constants.margin)
 
                 // Manual option
                 if !isShowingManualOptions {
@@ -95,6 +100,8 @@ struct AddProductWithAIActionSheet: View {
                         Image(systemName: "plus.circle")
                             .font(.title3)
                             .foregroundColor(.secondary)
+                            .padding(.top, Constants.productIconTopSpacing)
+
                         VStack(alignment: .leading, spacing: Constants.verticalSpacing) {
                             Text(Localization.manualTitle)
                                 .bodyStyle()
@@ -127,6 +134,7 @@ private extension AddProductWithAIActionSheet {
         static let verticalSpacing: CGFloat = 4
         static let horizontalSpacing: CGFloat = 16
         static let titleTopSpacing: CGFloat = 16
+        static let productIconTopSpacing: CGFloat = 8
         static let margin: CGFloat = 16
         static let legalURL = "https://automattic.com/ai-guidelines/"
     }

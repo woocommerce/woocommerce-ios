@@ -32,7 +32,8 @@ struct ManualProductTypeOptions: View {
                     HStack(alignment: .top, spacing: Constants.margin) {
                         Image(uiImage: productType.actionSheetImage.withRenderingMode(.alwaysTemplate))
                             .font(.title3)
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(.primary)
+                            .padding(.top, Constants.productIconTopSpacing)
 
                         VStack(alignment: .leading, spacing: Constants.verticalSpacing) {
                             Text(productType.actionSheetTitle)
@@ -65,7 +66,8 @@ private extension ManualProductTypeOptions {
         static let verticalSpacing: CGFloat = 4
         static let horizontalSpacing: CGFloat = 16
         static let categoryVerticalSpacing: CGFloat = 8
-        static let productBottomSpacing: CGFloat = 8
+        static let productBottomSpacing: CGFloat = 16
+        static let productIconTopSpacing: CGFloat = 8
         static let margin: CGFloat = 16
     }
 }

@@ -13,8 +13,10 @@ struct ManualProductTypeOptions: View {
          onOptionSelected: @escaping (BottomSheetProductType) -> Void) {
         self.productTypes = productTypes
         self.onOptionSelected = onOptionSelected
-        self.groupedProductTypes = Constants.productCategoriesOrder.map { category in
-            return (category, productTypes.filter { $0.productCreationCategory == category })
+
+        self.groupedProductTypes = Constants.productCategoriesOrder.compactMap { category in
+            let currentCategoryProductTypes = productTypes.filter { $0.productCreationCategory == category }
+            return currentCategoryProductTypes.isEmpty ? nil : (category, currentCategoryProductTypes)
         }
     }
 

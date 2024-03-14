@@ -60,48 +60,48 @@ final class AnalyticsHubViewModel: ObservableObject {
 
     /// Revenue Card ViewModel
     ///
-    lazy var revenueCard: RevenueReportCardViewModel = {
+    var revenueCard: RevenueReportCardViewModel {
         RevenueReportCardViewModel(currentPeriodStats: currentOrderStats,
                                    previousPeriodStats: previousOrderStats,
                                    timeRange: timeRangeSelectionType,
                                    isRedacted: isLoadingOrderStats,
                                    usageTracksEventEmitter: usageTracksEventEmitter)
-    }()
+    }
 
     /// Orders Card ViewModel
     ///
-    lazy var ordersCard: OrdersReportCardViewModel = {
+    var ordersCard: OrdersReportCardViewModel {
         OrdersReportCardViewModel(currentPeriodStats: currentOrderStats,
                                   previousPeriodStats: previousOrderStats,
                                   timeRange: timeRangeSelectionType,
                                   isRedacted: isLoadingOrderStats,
                                   usageTracksEventEmitter: usageTracksEventEmitter)
-    }()
+    }
 
     /// Products Stats Card ViewModel
     ///
-    lazy var productsStatsCard: AnalyticsProductsStatsCardViewModel = {
+    var productsStatsCard: AnalyticsProductsStatsCardViewModel {
         AnalyticsProductsStatsCardViewModel(currentPeriodStats: currentOrderStats,
                                             previousPeriodStats: previousOrderStats,
                                             timeRange: timeRangeSelectionType,
                                             isRedacted: isLoadingOrderStats,
                                             usageTracksEventEmitter: usageTracksEventEmitter)
-    }()
+    }
 
     /// Items Sold Card ViewModel
     ///
-    lazy var itemsSoldCard = {
+    var itemsSoldCard: AnalyticsItemsSoldViewModel {
         AnalyticsItemsSoldViewModel(itemsSoldStats: itemsSoldStats,
                                     isRedacted: isLoadingItemsSoldStats)
-    }()
+    }
 
     /// Sessions Card ViewModel
     ///
-    lazy var sessionsCard: SessionsReportCardViewModel = {
+    var sessionsCard: SessionsReportCardViewModel {
         SessionsReportCardViewModel(currentOrderStats: currentOrderStats,
                                     siteStats: siteStats,
                                     isRedacted: isLoadingOrderStats || isLoadingSiteStats)
-    }()
+    }
 
     /// View model for `AnalyticsHubCustomizeView`, to customize the cards in the Analytics Hub.
     ///
@@ -187,15 +187,15 @@ final class AnalyticsHubViewModel: ObservableObject {
 
     /// Loading state for order stats.
     ///
-    private var isLoadingOrderStats = false
+    @Published private var isLoadingOrderStats = false
 
     /// Loading state for items sold stats.
     ///
-    private var isLoadingItemsSoldStats = false
+    @Published private var isLoadingItemsSoldStats = false
 
     /// Loading state for site stats.
     ///
-    private var isLoadingSiteStats = false
+    @Published private var isLoadingSiteStats = false
 
     /// Time Range selection data defining the current and previous time period
     ///
@@ -250,8 +250,6 @@ private extension AnalyticsHubViewModel {
 
     @MainActor
     func retrieveData(for cards: [AnalyticsCard.CardType]) async throws {
-        switchToLoadingState(cards)
-
         let currentTimeRange = try timeRangeSelection.unwrapCurrentTimeRange()
         let previousTimeRange = try timeRangeSelection.unwrapPreviousTimeRange()
 
@@ -279,6 +277,11 @@ private extension AnalyticsHubViewModel {
 
     @MainActor
     func retrieveOrderStats(currentTimeRange: AnalyticsHubTimeRange, previousTimeRange: AnalyticsHubTimeRange, timeZone: TimeZone) async {
+        isLoadingOrderStats = true
+        defer {
+            isLoadingOrderStats = false
+        }
+
         async let currentPeriodRequest = retrieveStats(timeZone: timeZone,
                                                        earliestDateToInclude: currentTimeRange.start,
                                                        latestDateToInclude: currentTimeRange.end,
@@ -296,6 +299,11 @@ private extension AnalyticsHubViewModel {
 
     @MainActor
     func retrieveItemsSoldStats(currentTimeRange: AnalyticsHubTimeRange, previousTimeRange: AnalyticsHubTimeRange) async {
+        isLoadingItemsSoldStats = true
+        defer {
+            isLoadingItemsSoldStats = false
+        }
+
         async let itemsSoldRequest = retrieveTopItemsSoldStats(earliestDateToInclude: currentTimeRange.start,
                                                                latestDateToInclude: currentTimeRange.end,
                                                                forceRefresh: true)
@@ -306,6 +314,11 @@ private extension AnalyticsHubViewModel {
     @MainActor
     func retrieveSiteStats(currentTimeRange: AnalyticsHubTimeRange) async {
         isJetpackStatsDisabled = false // Reset optimistically in case stats were enabled
+        isLoadingSiteStats = true
+        defer {
+            isLoadingSiteStats = false
+        }
+
         async let siteStatsRequest = retrieveSiteSummaryStats(latestDateToInclude: currentTimeRange.end)
 
         do {
@@ -409,23 +422,6 @@ private extension AnalyticsHubViewModel {
 private extension AnalyticsHubViewModel {
 
     @MainActor
-    func switchToLoadingState(_ cards: [AnalyticsCard.CardType]) {
-        cards.forEach { card in
-            switch card {
-            case .revenue:
-                self.revenueCard.redact()
-            case .orders:
-                self.ordersCard.redact()
-            case .products:
-                self.productsStatsCard.redact()
-                self.itemsSoldCard.redact()
-            case .sessions:
-                self.sessionsCard.redact()
-            }
-        }
-    }
-
-    @MainActor
     func switchToErrorState() {
         self.currentOrderStats = nil
         self.previousOrderStats = nil
@@ -434,30 +430,6 @@ private extension AnalyticsHubViewModel {
     }
 
     func bindViewModelsWithData() {
-        Publishers.CombineLatest($currentOrderStats, $previousOrderStats)
-            .sink { [weak self] currentOrderStats, previousOrderStats in
-                guard let self else { return }
-
-                self.revenueCard.update(currentPeriodStats: currentOrderStats, previousPeriodStats: previousOrderStats)
-                self.ordersCard.update(currentPeriodStats: currentOrderStats, previousPeriodStats: previousOrderStats)
-                self.productsStatsCard.update(currentPeriodStats: currentOrderStats, previousPeriodStats: previousOrderStats)
-
-            }.store(in: &subscriptions)
-
-        $itemsSoldStats
-            .sink { [weak self] itemsSoldStats in
-                guard let self else { return }
-
-                self.itemsSoldCard.update(itemsSoldStats: itemsSoldStats)
-            }.store(in: &subscriptions)
-
-        $currentOrderStats.zip($siteStats)
-            .sink { [weak self] (currentOrderStats, siteStats) in
-                guard let self else { return }
-
-                self.sessionsCard.update(currentOrderStats: currentOrderStats, siteStats: siteStats)
-            }.store(in: &subscriptions)
-
         $timeRangeSelectionType
             .dropFirst() // do not trigger refresh action on initial value
             .removeDuplicates()
@@ -467,10 +439,6 @@ private extension AnalyticsHubViewModel {
                 self.timeRangeCard = AnalyticsHubViewModel.timeRangeCard(timeRangeSelection: self.timeRangeSelection,
                                                                          usageTracksEventEmitter: self.usageTracksEventEmitter,
                                                                          analytics: self.analytics)
-
-                self.revenueCard.update(timeRange: newSelectionType)
-                self.ordersCard.update(timeRange: newSelectionType)
-                self.productsStatsCard.update(timeRange: newSelectionType)
 
                 // Update data on range selection change
                 Task.init {

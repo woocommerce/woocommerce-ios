@@ -13,6 +13,7 @@ struct HubMenu: View {
 
     @ObservedObject private var viewModel: HubMenuViewModel
     @State private var columnVisibility = NavigationSplitViewVisibility.all
+    @Environment(\.horizontalSizeClass) var horizontalSizeClass
 
     init(viewModel: HubMenuViewModel) {
         self.viewModel = viewModel
@@ -34,6 +35,9 @@ struct HubMenu: View {
         .navigationSplitViewStyle(.balanced)
         .onAppear {
             viewModel.setupMenuElements()
+            if horizontalSizeClass == .regular {
+                viewModel.selectedMenuID = HubMenuViewModel.Settings.id
+            }
         }
     }
 }

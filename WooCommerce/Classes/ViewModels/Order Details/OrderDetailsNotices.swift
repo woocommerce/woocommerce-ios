@@ -15,6 +15,20 @@ final class OrderDetailsNotices {
 
         ServiceLocator.noticePresenter.enqueue(notice: notice)
     }
+
+    /// Displays the `Unable to trash order` Notice.
+    ///
+    func displayTrashOrderErrorNotice(order: Order, onAction: @escaping () -> Void) {
+        let title = String.localizedStringWithFormat(Localization.trashOrder, order.orderID)
+        let notice = Notice(title: title,
+                            message: nil,
+                            feedbackType: .error,
+                            actionTitle: Localization.retry) {
+                                onAction()
+        }
+
+        ServiceLocator.noticePresenter.enqueue(notice: notice)
+    }
 }
 
 private extension OrderDetailsNotices {
@@ -27,7 +41,13 @@ private extension OrderDetailsNotices {
                      + "It reads: Unable to delete tracking for order #{order number}. "
                      + "Parameters: %1$d - order number")
         static let retry = NSLocalizedString("OrderDetail.retry.notice.button",
-                                             value:"Retry",
+                                             value: "Retry",
                                              comment: "Retry Action inside notice")
+        static let trashOrder = NSLocalizedString(
+                     "OrderDetail.trashOrder.notice.title",
+                     value: "Unable to trash the order #%1$d",
+                     comment: "Content of error presented when Trash Order Action Failed. "
+                     + "It reads: Unable to trash the order #{order number}. "
+                     + "Parameters: %1$d - order number")
     }
 }

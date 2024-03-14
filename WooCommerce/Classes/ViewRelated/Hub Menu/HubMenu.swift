@@ -80,13 +80,13 @@ private extension HubMenu {
                             chevron: .leading)
                         .foregroundColor(Color(menu.iconColor))
                     })
+                    .accessibilityIdentifier(menu.accessibilityIdentifier)
                     .overlay {
                         NavigationLink(value: menu.id) {
                             EmptyView()
                         }
                         .opacity(0)
                     }
-                    .accessibilityIdentifier(menu.accessibilityIdentifier)
                 }
             }
 
@@ -104,13 +104,13 @@ private extension HubMenu {
                             chevron: .leading)
                         .foregroundColor(Color(menu.iconColor))
                     })
+                    .accessibilityIdentifier(menu.accessibilityIdentifier)
                     .overlay {
                         NavigationLink(value: menu.id) {
                             EmptyView()
                         }
                         .opacity(0)
                     }
-                    .accessibilityIdentifier(menu.accessibilityIdentifier)
                 }
             }
         }

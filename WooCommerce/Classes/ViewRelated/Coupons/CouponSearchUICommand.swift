@@ -18,9 +18,11 @@ final class CouponSearchUICommand: SearchUICommand {
     var resynchronizeModels: (() -> Void) = {}
 
     private let siteID: Int64
+    private let onSelection: (Coupon) -> Void
 
-    init(siteID: Int64) {
+    init(siteID: Int64, onSelection: @escaping (Coupon) -> Void) {
         self.siteID = siteID
+        self.onSelection = onSelection
     }
 
     func createResultsController() -> ResultsController<StorageCoupon> {
@@ -57,18 +59,7 @@ final class CouponSearchUICommand: SearchUICommand {
     }
 
     func didSelectSearchResult(model: Coupon, from viewController: UIViewController, reloadData: () -> Void, updateActionButton: () -> Void) {
-        let detailsViewModel = CouponDetailsViewModel(coupon: model, onUpdate: { [weak self] in
-            try? self?.createResultsController().performFetch()
-        }, onDeletion: {
-            viewController.navigationController?.popViewController(animated: true)
-            let notice = Notice(title: Localization.couponDeleted, feedbackType: .success)
-            let noticePresenter = DefaultNoticePresenter()
-            noticePresenter.presentingViewController = viewController
-            noticePresenter.enqueue(notice: notice)
-        })
-        let couponDetails = CouponDetails(viewModel: detailsViewModel)
-        let hostingController = UIHostingController(rootView: couponDetails)
-        viewController.navigationController?.pushViewController(hostingController, animated: true)
+        onSelection(model)
     }
 
     func configureEmptyStateViewControllerBeforeDisplay(viewController: EmptyStateViewController,

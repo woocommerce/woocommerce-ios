@@ -12,6 +12,7 @@ struct EnhancedCouponListView: View {
     @State private var showingCouponTypeSheet = false
     @State private var selectedCouponType: Coupon.DiscountType?
     @State private var showingCouponDetail = false
+    @State private var showingSearchResult = false
     @State private var selectedCoupon: Coupon?
     @State private var notice: Notice?
 
@@ -57,7 +58,15 @@ struct EnhancedCouponListView: View {
             .accessibilityIdentifier("coupon-create-button")
         }
         .sheet(isPresented: $showingCouponSearch) {
-            CouponSearchView(siteID: siteID)
+            NavigationStack {
+                CouponSearchView(siteID: siteID) { coupon in
+                    selectedCoupon = coupon
+                    showingSearchResult = true
+                }
+                .navigationDestination(isPresented: $showingSearchResult) {
+                    couponDetailView
+                }
+            }
         }
         .sheet(isPresented: $showingCouponTypeSheet) {
             bottomSheet.presentationDetents([.medium])
@@ -147,11 +156,12 @@ private extension EnhancedCouponListView {
 ///
 private struct CouponSearchView: UIViewControllerRepresentable {
     let siteID: Int64
+    let onSelection: (Coupon) -> Void
 
     func makeUIViewController(context: Self.Context) -> SearchViewController<TitleAndSubtitleAndStatusTableViewCell, CouponSearchUICommand> {
         let searchViewController = SearchViewController<TitleAndSubtitleAndStatusTableViewCell, CouponSearchUICommand>(
             storeID: siteID,
-            command: CouponSearchUICommand(siteID: siteID),
+            command: CouponSearchUICommand(siteID: siteID, onSelection: onSelection),
             cellType: TitleAndSubtitleAndStatusTableViewCell.self,
             cellSeparator: .singleLine
         )

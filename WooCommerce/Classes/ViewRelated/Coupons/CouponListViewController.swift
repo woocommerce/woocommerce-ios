@@ -44,13 +44,13 @@ final class CouponListViewController: UIViewController, GhostableViewController 
     private let onCouponSelected: ((Coupon) -> Void)
 
     init(siteID: Int64,
-         showFeedbackBannerIfAppropriate: Bool,
+         viewModel: CouponListViewModel,
          emptyStateActionTitle: String,
          onDataLoaded: ((Bool) -> Void)? = nil,
          emptyStateAction: @escaping (() -> Void),
          onCouponSelected: @escaping ((Coupon) -> Void)) {
         self.siteID = siteID
-        self.viewModel = CouponListViewModel(siteID: siteID, showFeedbackBannerIfAppropriate: showFeedbackBannerIfAppropriate)
+        self.viewModel = viewModel
         self.onDataLoaded = onDataLoaded
         self.emptyStateAction = emptyStateAction
         self.emptyStateActionTitle = emptyStateActionTitle

@@ -81,11 +81,13 @@ public struct Coupon {
     /// Discount types supported by Core.
     /// There are other types supported by other plugins, but those are not supported for now.
     ///
-    public enum DiscountType: String {
+    public enum DiscountType: String, Identifiable {
         case percent
         case fixedCart = "fixed_cart"
         case fixedProduct = "fixed_product"
         case other
+
+        public var id: String { rawValue }
     }
 
     public init(siteID: Int64 = 0,

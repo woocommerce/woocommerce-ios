@@ -14,7 +14,6 @@ struct HubMenu: View {
     @State private var showingViewStore = false
     @State private var showingInbox = false
     @State private var showingReviews = false
-    @State private var showingCoupons = false
     @State private var showingIAPDebug = false
     @State private var showSettings = false
 
@@ -118,7 +117,9 @@ struct HubMenu: View {
                        isActive: $showingReviews) {
             EmptyView()
         }.hidden()
-        NavigationLink(destination: EnhancedCouponListView(siteID: viewModel.siteID), isActive: $showingCoupons) {
+        NavigationLink(destination: EnhancedCouponListView(siteID: viewModel.siteID, 
+                                                           viewModel: CouponListViewModel(siteID: viewModel.siteID)),
+                       isActive: $viewModel.showingCoupons) {
             EmptyView()
         }.hidden()
         NavigationLink(destination: InAppPurchasesDebugView(), isActive: $showingIAPDebug) {
@@ -153,7 +154,7 @@ struct HubMenu: View {
         case HubMenuViewModel.Reviews.id:
             showingReviews = true
         case HubMenuViewModel.Coupons.id:
-            showingCoupons = true
+            viewModel.showingCoupons = true
         case HubMenuViewModel.InAppPurchases.id:
             showingIAPDebug = true
         case HubMenuViewModel.Subscriptions.id:

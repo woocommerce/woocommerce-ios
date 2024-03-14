@@ -91,6 +91,8 @@ private extension AddOrderComponentsSection {
         .sheet(isPresented: $shouldShowAddCouponLineDetails) {
             NavigationView {
                 CouponListView(siteID: viewModel.siteID,
+                               viewModel: CouponListViewModel(siteID: viewModel.siteID,
+                                                              showFeedbackBannerIfAppropriate: false),
                                emptyStateActionTitle: Localization.goToCoupons,
                                emptyStateAction: {
                     shouldShowGoToCouponsAlert = true

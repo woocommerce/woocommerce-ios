@@ -1781,7 +1781,6 @@
 		B95112DA28BF79CA00D9578D /* PaymentsRoute.swift in Sources */ = {isa = PBXBuildFile; fileRef = B95112D928BF79CA00D9578D /* PaymentsRoute.swift */; };
 		B95700AC2A72C1E4001BADF2 /* CustomerSelectorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B95700AB2A72C1E4001BADF2 /* CustomerSelectorViewController.swift */; };
 		B95700AE2A72C39C001BADF2 /* CustomerSelectorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B95700AD2A72C39C001BADF2 /* CustomerSelectorView.swift */; };
-		B95864082A657D2F002C4C6E /* EnhancedCouponListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B95864072A657D2F002C4C6E /* EnhancedCouponListViewController.swift */; };
 		B958640A2A657F44002C4C6E /* EnhancedCouponListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B95864092A657F44002C4C6E /* EnhancedCouponListView.swift */; };
 		B958640C2A66847B002C4C6E /* CouponListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B958640B2A66847B002C4C6E /* CouponListView.swift */; };
 		B958A7C728B3D44A00823EEF /* UniversalLinkRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B958A7C628B3D44A00823EEF /* UniversalLinkRouter.swift */; };
@@ -4507,7 +4506,6 @@
 		B95112D928BF79CA00D9578D /* PaymentsRoute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentsRoute.swift; sourceTree = "<group>"; };
 		B95700AB2A72C1E4001BADF2 /* CustomerSelectorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerSelectorViewController.swift; sourceTree = "<group>"; };
 		B95700AD2A72C39C001BADF2 /* CustomerSelectorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerSelectorView.swift; sourceTree = "<group>"; };
-		B95864072A657D2F002C4C6E /* EnhancedCouponListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnhancedCouponListViewController.swift; sourceTree = "<group>"; };
 		B95864092A657F44002C4C6E /* EnhancedCouponListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnhancedCouponListView.swift; sourceTree = "<group>"; };
 		B958640B2A66847B002C4C6E /* CouponListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponListView.swift; sourceTree = "<group>"; };
 		B958A7C628B3D44A00823EEF /* UniversalLinkRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UniversalLinkRouter.swift; sourceTree = "<group>"; };
@@ -6929,7 +6927,6 @@
 				03FBDAA2263AED2F00ACE257 /* CouponListViewController.xib */,
 				03FBDAF1263EE47C00ACE257 /* CouponListViewModel.swift */,
 				DE7B478F27A153C20018742E /* CouponSearchUICommand.swift */,
-				B95864072A657D2F002C4C6E /* EnhancedCouponListViewController.swift */,
 				B95864092A657F44002C4C6E /* EnhancedCouponListView.swift */,
 				B958640B2A66847B002C4C6E /* CouponListView.swift */,
 			);
@@ -14651,7 +14648,6 @@
 				CC200BB127847DE300EC5884 /* OrderPaymentSection.swift in Sources */,
 				68E674A12A4DA0B30034BA1E /* InAppPurchasesError.swift in Sources */,
 				743E272021AEF20100D6DC82 /* FancyAlertViewController+Upgrade.swift in Sources */,
-				B95864082A657D2F002C4C6E /* EnhancedCouponListViewController.swift in Sources */,
 				CEA16F3A20FD0C8C0061B4E1 /* WooAnalytics.swift in Sources */,
 				023053492374528A00487A64 /* AztecBlockquoteFormatBarCommand.swift in Sources */,
 				201F5AC52AD4061800EF6C55 /* AboutTapToPayViewModel.swift in Sources */,

@@ -7,7 +7,7 @@ struct ManualProductTypeOptions: View {
     private let onOptionSelected: (BottomSheetProductType) -> Void
 
     /// Grouped product types based on their product category
-    private let groupedProductTypes: [(ProductCreationCategory, [BottomSheetProductType])]
+    private let groupedProductTypes: [(BottomSheetProductType.ProductCreationCategory, [BottomSheetProductType])]
 
     init(productTypes: [BottomSheetProductType],
          onOptionSelected: @escaping (BottomSheetProductType) -> Void) {
@@ -23,7 +23,7 @@ struct ManualProductTypeOptions: View {
     var body: some View {
         ForEach(groupedProductTypes, id: \.0) { (category, productTypes) in
             VStack {
-                Text(category.description)
+                Text(category.label)
                     .subheadlineStyle()
                     .textCase(.uppercase)
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -64,7 +64,7 @@ struct ManualProductTypeOptions: View {
 private extension ManualProductTypeOptions {
     enum Constants {
         // List of product categories. The ordering dictates how the categories are displayed.
-        static let productCategoriesOrder: [ProductCreationCategory] = [.standard, .subscription, .other]
+        static let productCategoriesOrder: [BottomSheetProductType.ProductCreationCategory] = [.standard, .subscription, .other]
         static let verticalSpacing: CGFloat = 4
         static let horizontalSpacing: CGFloat = 16
         static let categoryVerticalSpacing: CGFloat = 8

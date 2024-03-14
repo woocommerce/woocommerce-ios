@@ -235,36 +235,36 @@ public enum BottomSheetProductType: Hashable, Identifiable {
             self = .custom(string)
         }
     }
-}
 
-/// Product creation option's category.
-/// Used to group the options on the product creation sheet.
-///
-enum ProductCreationCategory {
-    case standard
-    case subscription
-    case other
+    /// Product creation option's category.
+    /// Used to group the options on the product creation sheet.
+    ///
+    enum ProductCreationCategory {
+        case standard
+        case subscription
+        case other
 
-    var description: String {
-        switch self {
-        case .standard:
-            return NSLocalizedString(
-                "bottomSheetProductType.productCreationCategory.standard",
-                value: "Standard",
-                comment: "Category label for standard product creation types"
-            )
-        case .subscription:
-            return NSLocalizedString(
-                "bottomSheetProductType.productCreationCategory.subscription",
-                value: "Subscription",
-                comment: "Category label for subscription product creation types"
-            )
-        case .other:
-            return NSLocalizedString(
-                "bottomSheetProductType.productCreationCategory.other",
-                value: "Other",
-                comment: "Category label for other product creation types"
-            )
+        var label: String {
+            switch self {
+            case .standard:
+                return NSLocalizedString(
+                    "bottomSheetProductType.productCreationCategory.standard",
+                    value: "Standard",
+                    comment: "Category label for standard product creation types"
+                )
+            case .subscription:
+                return NSLocalizedString(
+                    "bottomSheetProductType.productCreationCategory.subscription",
+                    value: "Subscription",
+                    comment: "Category label for subscription product creation types"
+                )
+            case .other:
+                return NSLocalizedString(
+                    "bottomSheetProductType.productCreationCategory.other",
+                    value: "Other",
+                    comment: "Category label for other product creation types"
+                )
+            }
         }
     }
 }

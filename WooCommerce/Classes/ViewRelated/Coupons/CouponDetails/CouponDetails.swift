@@ -172,11 +172,7 @@ struct CouponDetails: View {
                                         Text(amount)
                                             .font(.title)
                                     } else {
-                                        // Shimmering effect on mock data
-                                        Text("$0.00")
-                                            .font(.title)
-                                            .redacted(reason: .placeholder)
-                                            .shimmering()
+                                        ActivityIndicator(isAnimating: .constant(true), style: .medium)
                                     }
                                 }
                                 .frame(maxWidth: .infinity, alignment: .leading)

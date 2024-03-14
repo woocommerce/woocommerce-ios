@@ -1,0 +1,16 @@
+{
+   "Simulator Target Bundle": "com.automattic.woocommerce",
+   "aps" : {
+      "badge" : 1,
+      "alert": {
+         "title": "Test product review",
+         "subtitle": "Test subtitle for product review",
+         "body": "Test body for product review"
+      },
+   },
+   "messageID" : "ABCDEFGHIJ",
+   "note_id": 8023912537,
+   "blog": 194373765,
+   "type": "comment",
+   "subtype": "store_review"
+}

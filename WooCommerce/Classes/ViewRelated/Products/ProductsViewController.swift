@@ -25,7 +25,7 @@ final class ProductsViewController: UIViewController, GhostableViewController {
 
     /// Main TableView
     ///
-    @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak private var tableView: UITableView!
 
     private var barcodeScannerCoordinator: ProductSKUBarcodeScannerCoordinator?
 

@@ -109,6 +109,10 @@ protocol SearchUICommand {
     ///   - updateActionButton: called when action button update is necessary.
     func didSelectSearchResult(model: Model, from viewController: UIViewController, reloadData: () -> Void, updateActionButton: () -> Void)
 
+    /// Whether the selected search result should be deselected right away.
+    /// The default implementation is `true` and it can be disabled when the search view has split view support.
+    func shouldDeselectSearchResultOnSelection() -> Bool
+
     /// The Accessibility Identifier for the search bar
     var searchBarAccessibilityIdentifier: String { get }
 
@@ -126,6 +130,8 @@ protocol SearchUICommand {
     /// - Parameter keyword: search query.
     /// - Returns: predicate that is based on the search keyword. When the keyword is empty, `nil` can be returned as an example use case.
     func searchResultsPredicate(keyword: String) -> NSPredicate?
+
+    func cancel(from viewController: UIViewController)
 }
 
 // MARK: - Default implementation
@@ -163,6 +169,10 @@ extension SearchUICommand {
         // If not implemented, returns `nil` to not show the header.
         nil
     }
+
+    func cancel(from viewController: UIViewController) {
+        viewController.dismiss(animated: true, completion: nil)
+    }
 }
 
 // MARK: - SearchUICommand using EmptySearchResultsViewController
@@ -180,5 +190,10 @@ extension SearchUICommand {
     func configureEmptyStateViewControllerBeforeDisplay(viewController: EmptyStateViewController,
                                                         searchKeyword: String) {
         // noop
+    }
+
+    /// Default implementation that deselects the selected search result right away.
+    func shouldDeselectSearchResultOnSelection() -> Bool {
+        true
     }
 }

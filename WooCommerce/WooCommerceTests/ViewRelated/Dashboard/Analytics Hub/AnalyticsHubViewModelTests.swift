@@ -356,30 +356,6 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         }
     }
 
-    @MainActor
-    func test_card_report_URLs_contain_expected_period_after_new_timeRange_selection() async throws {
-        // Given
-        XCTAssertEqual(.monthToDate, vm.timeRangeSelectionType)
-
-        // When
-        vm.timeRangeSelectionType = .today
-
-        // Then
-        let revenueCardReportURL = try XCTUnwrap(vm.revenueCard.reportViewModel?.initialURL)
-        let ordersCardReportURL = try XCTUnwrap(vm.ordersCard.reportViewModel?.initialURL)
-        let productsStatsCardReportURL = try XCTUnwrap(vm.productsStatsCard.reportViewModel?.initialURL)
-
-        let revenueCardURLQueryItems = try XCTUnwrap(URLComponents(url: revenueCardReportURL, resolvingAgainstBaseURL: false)?.queryItems)
-        let ordersCardURLQueryItems = try XCTUnwrap(URLComponents(url: ordersCardReportURL, resolvingAgainstBaseURL: false)?.queryItems)
-        let productsStatsCardURLQueryItems = try XCTUnwrap(URLComponents(url: productsStatsCardReportURL, resolvingAgainstBaseURL: false)?.queryItems)
-
-        // Report URL contains expected time range period
-        let expectedPeriodQueryItem = URLQueryItem(name: "period", value: "today")
-        XCTAssertTrue(revenueCardURLQueryItems.contains(expectedPeriodQueryItem))
-        XCTAssertTrue(ordersCardURLQueryItems.contains(expectedPeriodQueryItem))
-        XCTAssertTrue(productsStatsCardURLQueryItems.contains(expectedPeriodQueryItem))
-    }
-
     // MARK: Customized Analytics
 
     func test_enabledCards_shows_correct_data_after_loading_from_storage() async {

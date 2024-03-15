@@ -161,7 +161,6 @@ private extension HubMenu {
             }
         }
         .navigationBarTitleDisplayMode(.inline)
-        .toolbarRole(.editor)
     }
 
     @ViewBuilder
@@ -184,7 +183,6 @@ private extension HubMenu {
             ReviewDetailView(productReview: parcel.review, product: parcel.product, notification: parcel.note)
                 .navigationBarTitleDisplayMode(.inline)
                 .navigationTitle(Localization.productReview)
-                .toolbarRole(.editor)
         }
     }
 

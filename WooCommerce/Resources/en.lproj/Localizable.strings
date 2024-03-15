@@ -11398,6 +11398,8 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the local notification to remind after three days. */
 "🧭 Still Exploring WooCommerce?" = "🧭 Still Exploring WooCommerce?";
 
+/* Product title */
+"productForm.defaultTitle" = "Product";
 
 /* MARK: - InfoPlist.strings */
 

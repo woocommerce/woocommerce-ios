@@ -12,7 +12,7 @@ struct BlazeAddParameterView: View {
     }
 
     var body: some View {
-        NavigationView {
+        NavigationStack {
             List {
                 Section {
                     AdaptiveStack(horizontalAlignment: .leading) {

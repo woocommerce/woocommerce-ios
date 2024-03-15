@@ -48,6 +48,8 @@ final class HubMenuViewModel: ObservableObject {
     @Published var selectedMenuID: String?
 
     @Published var showingReviewDetail = false
+    @Published var showingPayments = false
+    @Published var showingCoupons = false
 
     @Published var shouldAuthenticateAdminPage = false
 

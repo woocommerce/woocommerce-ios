@@ -19,12 +19,20 @@ struct HubMenu: View {
 
     var body: some View {
         NavigationStack {
+            /// TODO: switch to `navigationDestination(item:destination)`
+            /// when we drop support for iOS 16.
             menuList
                 .navigationDestination(for: String.self) { id in
                     detailView(menuID: id)
                 }
                 .navigationDestination(isPresented: $viewModel.showingReviewDetail) {
                     reviewDetailView
+                }
+                .navigationDestination(isPresented: $viewModel.showingPayments) {
+                    paymentsView
+                }
+                .navigationDestination(isPresented: $viewModel.showingCoupons) {
+                    couponListView
                 }
         }
         .onAppear {
@@ -135,7 +143,7 @@ private extension HubMenu {
             case HubMenuViewModel.Settings.id:
                 SettingsView()
             case HubMenuViewModel.Payments.id:
-                InPersonPaymentsMenu(viewModel: viewModel.inPersonPaymentsMenuViewModel)
+                paymentsView
             case HubMenuViewModel.Blaze.id:
                 BlazeCampaignListView(viewModel: .init(siteID: viewModel.siteID))
             case HubMenuViewModel.WoocommerceAdmin.id:
@@ -151,7 +159,7 @@ private extension HubMenu {
             case HubMenuViewModel.Reviews.id:
                 ReviewsView(siteID: viewModel.siteID)
             case HubMenuViewModel.Coupons.id:
-                EnhancedCouponListView(siteID: viewModel.siteID)
+                couponListView
             case HubMenuViewModel.InAppPurchases.id:
                 InAppPurchasesDebugView()
             case HubMenuViewModel.Subscriptions.id:
@@ -184,6 +192,16 @@ private extension HubMenu {
                 .navigationBarTitleDisplayMode(.inline)
                 .navigationTitle(Localization.productReview)
         }
+    }
+
+    var paymentsView: some View {
+        InPersonPaymentsMenu(viewModel: viewModel.inPersonPaymentsMenuViewModel)
+            .navigationBarTitleDisplayMode(.inline)
+    }
+
+    var couponListView: some View {
+        EnhancedCouponListView(siteID: viewModel.siteID)
+            .navigationBarTitleDisplayMode(.inline)
     }
 
     /// Reusable List row for the hub menu

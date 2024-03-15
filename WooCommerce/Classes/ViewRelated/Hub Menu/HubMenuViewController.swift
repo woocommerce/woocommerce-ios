@@ -39,11 +39,11 @@ final class HubMenuViewController: UIHostingController<HubMenu> {
     }
 
     func showPaymentsMenu() {
-        viewModel.selectedMenuID = HubMenuViewModel.Payments.id
+        viewModel.showingPayments = true
     }
 
     func showCoupons() {
-        viewModel.selectedMenuID = HubMenuViewModel.Coupons.id
+        viewModel.showingCoupons = true
     }
 
     /// Pushes the Settings & Privacy screen onto the navigation stack.

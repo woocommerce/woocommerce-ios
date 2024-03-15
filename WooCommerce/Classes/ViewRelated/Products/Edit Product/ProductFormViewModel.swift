@@ -308,6 +308,13 @@ extension ProductFormViewModel {
         return isSitePublic && formType != .add && productHasLinkToShare
     }
 
+    func canFavoriteProduct() -> Bool {
+        guard featureFlagService.isFeatureFlagEnabled(.favoriteProducts) else {
+            return false
+        }
+        return formType != .add
+    }
+
     /// Merchants can promote a product with Blaze if product and site are eligible, and there's no existing Blaze campaign for the product.
     func canPromoteWithBlaze() -> Bool {
         isEligibleForBlaze && !hasActiveBlazeCampaign
@@ -834,5 +841,22 @@ private extension ProductFormViewModel {
             ($0.productID == product.productID) &&
             ($0.status == .pending || $0.status == .scheduled || $0.status == .active)
         })
+    }
+}
+
+
+// MARK: Favorite
+//
+extension ProductFormViewModel {
+    func isFavorite() -> Bool {
+        favoriteProductsUseCase.isFavorite(productID: product.productID)
+    }
+
+    func markAsFavorite() {
+        favoriteProductsUseCase.markAsFavorite(productID: product.productID)
+    }
+
+    func removeFromFavorite() {
+        favoriteProductsUseCase.removeFromFavorite(productID: product.productID)
     }
 }

@@ -7,6 +7,8 @@ final class HubMenuViewController: UIHostingController<HubMenu> {
     private let viewModel: HubMenuViewModel
     private let tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker
 
+    private var storePickerCoordinator: StorePickerCoordinator?
+
     init(siteID: Int64,
          navigationController: UINavigationController?,
          tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker) {
@@ -16,6 +18,9 @@ final class HubMenuViewController: UIHostingController<HubMenu> {
         self.tapToPayBadgePromotionChecker = tapToPayBadgePromotionChecker
         super.init(rootView: HubMenu(viewModel: viewModel))
         configureTabBarItem()
+        rootView.switchStoreHandler = { [weak self] in
+            self?.presentSwitchStore()
+        }
     }
 
     required dynamic init?(coder aDecoder: NSCoder) {
@@ -72,6 +77,17 @@ final class HubMenuViewController: UIHostingController<HubMenu> {
 
         if #available(iOS 16.0, *) {
             self.navigationController?.setNavigationBarHidden(false, animated: animated)
+        }
+    }
+}
+
+private extension HubMenuViewController {
+    /// Present the `StorePickerViewController` using the `StorePickerCoordinator`, passing the navigation controller from the entry point.
+    ///
+    func presentSwitchStore() {
+        if let navigationController = navigationController {
+            storePickerCoordinator = StorePickerCoordinator(navigationController, config: .switchingStores)
+            storePickerCoordinator?.start()
         }
     }
 }

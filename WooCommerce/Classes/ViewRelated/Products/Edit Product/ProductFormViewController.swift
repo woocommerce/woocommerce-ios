@@ -337,6 +337,18 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
             }
         }
 
+        if viewModel.canFavoriteProduct() {
+            if viewModel.isFavorite() {
+                actionSheet.addDefaultActionWithTitle(ActionSheetStrings.Favorite.removeFromFavorite) { [weak self] _ in
+                    self?.viewModel.removeFromFavorite()
+                }
+            } else {
+                actionSheet.addDefaultActionWithTitle(ActionSheetStrings.Favorite.markAsFavorite) { [weak self] _ in
+                    self?.viewModel.markAsFavorite()
+                }
+            }
+        }
+
         if viewModel.canEditProductSettings() {
             actionSheet.addDefaultActionWithTitle(ActionSheetStrings.productSettings) { [weak self] _ in
                 ServiceLocator.analytics.track(.productDetailViewSettingsButtonTapped)
@@ -2026,6 +2038,20 @@ private enum ActionSheetStrings {
     static let viewProduct = NSLocalizedString("View Product in Store",
                                                comment: "Button title View product in store in Edit Product More Options Action Sheet")
     static let share = NSLocalizedString("Share", comment: "Button title Share in Edit Product More Options Action Sheet")
+
+    enum Favorite {
+        static let markAsFavorite = NSLocalizedString(
+            "productFormViewController.markAsFavorite",
+            value: "Mark as favorite",
+            comment: "Mark favorite button title in Edit Product More Options Action Sheet"
+        )
+        static let removeFromFavorite = NSLocalizedString(
+            "productFormViewController.removeAsFavorite",
+            value: "Remove from favorite",
+            comment: "Remove favorite button title in Edit Product More Options Action Sheet"
+        )
+    }
+
     static let promoteWithBlaze = NSLocalizedString("Promote with Blaze", comment: "Button title Promote with Blaze in Edit Product More Options Action Sheet")
     static let delete = NSLocalizedString("Delete", comment: "Button title Delete in Edit Product More Options Action Sheet")
     static let productSettings = NSLocalizedString("Product Settings", comment: "Button title Product Settings in Edit Product More Options Action Sheet")

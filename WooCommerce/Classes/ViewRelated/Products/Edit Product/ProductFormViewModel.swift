@@ -1,5 +1,6 @@
 import Combine
 import Yosemite
+import Experiments
 
 import protocol Storage.StorageManagerType
 
@@ -213,6 +214,8 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
 
     private let blazeEligibilityChecker: BlazeEligibilityCheckerProtocol
 
+    private let favoriteProductsUseCase: FavoriteProductsUseCase
+
     /// Assign this closure to be notified when a new product is saved remotely
     ///
     var onProductCreated: (Product) -> Void = { _ in }
@@ -221,6 +224,8 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
     ///
     private lazy var remoteActionUseCase = ProductFormRemoteActionUseCase(stores: stores)
 
+    private let featureFlagService: FeatureFlagService
+
     init(product: EditableProductModel,
          formType: ProductFormType,
          productImageActionHandler: ProductImageActionHandler,
@@ -228,7 +233,8 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          productImagesUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,
          analytics: Analytics = ServiceLocator.analytics,
-         blazeEligibilityChecker: BlazeEligibilityCheckerProtocol = BlazeEligibilityChecker()) {
+         blazeEligibilityChecker: BlazeEligibilityCheckerProtocol = BlazeEligibilityChecker(),
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.formType = formType
         self.productImageActionHandler = productImageActionHandler
         self.originalProduct = product
@@ -239,6 +245,8 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
         self.productImagesUploader = productImagesUploader
         self.analytics = analytics
         self.blazeEligibilityChecker = blazeEligibilityChecker
+        self.favoriteProductsUseCase = FavoriteProductsUseCase(siteID: product.siteID)
+        self.featureFlagService = featureFlagService
 
         self.cancellable = productImageActionHandler.addUpdateObserver(self) { [weak self] allStatuses in
             guard let self = self else { return }

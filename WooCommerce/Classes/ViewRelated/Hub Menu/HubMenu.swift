@@ -24,7 +24,6 @@ struct HubMenu: View {
 
     var body: some View {
         List {
-
             // Store Section
             Section {
                 Button {
@@ -249,6 +248,7 @@ private extension HubMenu {
                                     .overlay {
                                         Image(uiImage: asset)
                                             .resizable()
+                                            .aspectRatio(contentMode: .fit)
                                             .frame(width: HubMenu.Constants.iconSize, height: HubMenu.Constants.iconSize)
                                     }
 
@@ -256,6 +256,7 @@ private extension HubMenu {
                                 KFImage(url)
                                     .placeholder { Image(uiImage: .gravatarPlaceholderImage).resizable() }
                                     .resizable()
+                                    .aspectRatio(contentMode: .fit)
                                     .frame(width: HubMenu.Constants.avatarSize, height: HubMenu.Constants.avatarSize)
                                     .clipShape(Circle())
                             }

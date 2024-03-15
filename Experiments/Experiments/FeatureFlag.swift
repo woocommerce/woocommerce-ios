@@ -195,4 +195,8 @@ public enum FeatureFlag: Int {
     /// Displays the Products tab in a split view
     ///
     case splitViewInProductsTab
+
+    /// Allows marking product as favorite
+    ///
+    case favoriteProducts
 }

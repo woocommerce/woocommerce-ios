@@ -30,7 +30,7 @@ struct StoreNameSetupView: View {
     }
 
     var body: some View {
-        NavigationView {
+        NavigationStack {
             VStack {
                 HStack {
                     TextField(Localization.placeholder, text: $viewModel.name)

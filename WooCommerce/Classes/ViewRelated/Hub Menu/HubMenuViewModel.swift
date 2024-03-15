@@ -49,9 +49,9 @@ final class HubMenuViewModel: ObservableObject {
     ///
     @Published private(set) var switchStoreEnabled = false
 
-    @Published var showingReviewDetail = false
+    @Published var selectedMenuID: String?
 
-    @Published var showingPayments = false
+    @Published var showingReviewDetail = false
 
     @Published var shouldAuthenticateAdminPage = false
 
@@ -59,7 +59,7 @@ final class HubMenuViewModel: ObservableObject {
     private let featureFlagService: FeatureFlagService
     private let generalAppSettings: GeneralAppSettingsStorage
 
-    private var productReviewFromNoteParcel: ProductReviewFromNoteParcel?
+    private(set) var productReviewFromNoteParcel: ProductReviewFromNoteParcel?
 
     private var storePickerCoordinator: StorePickerCoordinator?
 
@@ -174,37 +174,9 @@ final class HubMenuViewModel: ObservableObject {
         }
     }
 
-    /// Presents the `Subscriptions` view from the view model's navigation controller property.
-    ///
-    func presentSubscriptions() {
-        let subscriptionController = SubscriptionsHostingController(siteID: siteID)
-        navigationController?.show(subscriptionController, sender: self)
-    }
-
     func showReviewDetails(using parcel: ProductReviewFromNoteParcel) {
         productReviewFromNoteParcel = parcel
         showingReviewDetail = true
-    }
-
-    func getReviewDetailDestination() -> ReviewDetailView? {
-        guard let parcel = productReviewFromNoteParcel else {
-            return nil
-        }
-
-        return ReviewDetailView(productReview: parcel.review, product: parcel.product, notification: parcel.note)
-    }
-
-    /// Navigates to show the Blaze view from the view model's navigation controller property.
-    ///
-    func showBlaze() {
-        guard let site = stores.sessionManager.defaultSite else {
-            return
-        }
-
-        // shows campaign list for the new Blaze experience.
-        let controller = BlazeCampaignListHostingController(viewModel: .init(siteID: site.siteID))
-        navigationController?.show(controller, sender: self)
-        ServiceLocator.analytics.track(event: .Blaze.blazeCampaignListEntryPointSelected(source: .menu))
     }
 
     private func observeSiteForUIUpdates() {

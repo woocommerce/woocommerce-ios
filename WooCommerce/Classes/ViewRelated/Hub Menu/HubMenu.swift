@@ -10,19 +10,46 @@ struct HubMenu: View {
 
     @ObservedObject private var viewModel: HubMenuViewModel
 
-    @State private var showingWooCommerceAdmin = false
-    @State private var showingViewStore = false
-    @State private var showingInbox = false
-    @State private var showingReviews = false
-    @State private var showingCoupons = false
-    @State private var showingIAPDebug = false
-    @State private var showSettings = false
-
     init(viewModel: HubMenuViewModel) {
         self.viewModel = viewModel
     }
 
     var body: some View {
+        NavigationStack {
+            menuList
+                .navigationDestination(for: String.self) { id in
+                    detailView(menuID: id)
+                }
+                .navigationDestination(isPresented: $viewModel.showingReviewDetail) {
+                    reviewDetailView
+                }
+        }
+        .onAppear {
+            viewModel.setupMenuElements()
+        }
+    }
+
+    /// Handle navigation when tapping a list menu row.
+    ///
+    private func handleTap(menu: HubMenuItem) {
+        ServiceLocator.analytics.track(.hubMenuOptionTapped, withProperties: [
+            Constants.trackingOptionKey: menu.trackingOption
+        ])
+
+        if menu.id == HubMenuViewModel.Settings.id {
+            ServiceLocator.analytics.track(.hubMenuSettingsTapped)
+        } else if menu.id == HubMenuViewModel.Blaze.id {
+            ServiceLocator.analytics.track(event: .Blaze.blazeCampaignListEntryPointSelected(source: .menu))
+        }
+
+        viewModel.selectedMenuID = menu.id
+    }
+}
+
+// MARK: SubViews
+private extension HubMenu {
+
+    var menuList: some View {
         List {
             // Store Section
             Section {
@@ -58,6 +85,12 @@ struct HubMenu: View {
                         .foregroundColor(Color(menu.iconColor))
                     }
                     .accessibilityIdentifier(menu.accessibilityIdentifier)
+                    .overlay {
+                        NavigationLink(value: menu.id) {
+                            EmptyView()
+                        }
+                        .opacity(0)
+                    }
                 }
             }
 
@@ -76,95 +109,80 @@ struct HubMenu: View {
                         .foregroundColor(Color(menu.iconColor))
                     }
                     .accessibilityIdentifier(menu.accessibilityIdentifier)
+                    .overlay {
+                        NavigationLink(value: menu.id) {
+                            EmptyView()
+                        }
+                        .opacity(0)
+                    }
                 }
             }
         }
-        .listStyle(.automatic)
-        .navigationBarHidden(true)
-        .background(Color(.listBackground).edgesIgnoringSafeArea(.all))
-        .onAppear {
-            viewModel.setupMenuElements()
-        }
-        .sheet(isPresented: $showingWooCommerceAdmin) {
-            WebViewSheet(viewModel: WebViewSheetViewModel(url: viewModel.woocommerceAdminURL,
-                                                          navigationTitle: HubMenuViewModel.Localization.woocommerceAdmin,
-                                                          authenticated: viewModel.shouldAuthenticateAdminPage)) {
-                showingWooCommerceAdmin = false
-            }
-        }
-        .sheet(isPresented: $showingViewStore) {
-            WebViewSheet(viewModel: WebViewSheetViewModel(url: viewModel.storeURL,
-                                                          navigationTitle: HubMenuViewModel.Localization.viewStore,
-                                                          authenticated: false)) {
-                showingViewStore = false
-            }
-        }
-        NavigationLink(destination: SettingsView(), isActive: $showSettings) {
-            EmptyView()
-        }.hidden()
-        NavigationLink(destination: InPersonPaymentsMenu(viewModel: viewModel.inPersonPaymentsMenuViewModel)
-            .navigationTitle(InPersonPaymentsView.Localization.title),
-                       isActive: $viewModel.showingPayments) {
-            EmptyView()
-        }.hidden()
-        NavigationLink(destination:
-                        Inbox(viewModel: .init(siteID: viewModel.siteID)),
-                       isActive: $showingInbox) {
-            EmptyView()
-        }.hidden()
-        NavigationLink(destination:
-                        ReviewsView(siteID: viewModel.siteID),
-                       isActive: $showingReviews) {
-            EmptyView()
-        }.hidden()
-        NavigationLink(destination: EnhancedCouponListView(siteID: viewModel.siteID), isActive: $showingCoupons) {
-            EmptyView()
-        }.hidden()
-        NavigationLink(destination: InAppPurchasesDebugView(), isActive: $showingIAPDebug) {
-            EmptyView()
-        }.hidden()
-        LazyNavigationLink(destination: viewModel.getReviewDetailDestination(), isActive: $viewModel.showingReviewDetail) {
-            EmptyView()
-        }
+        .listStyle(.insetGrouped)
+        .background(Color(.listBackground))
+        .toolbar(.hidden, for: .navigationBar)
+        .accentColor(Color(.listSelectedBackground))
     }
 
-    /// Handle navigation when tapping a list menu row.
-    ///
-    private func handleTap(menu: HubMenuItem) {
-        ServiceLocator.analytics.track(.hubMenuOptionTapped, withProperties: [
-            Constants.trackingOptionKey: menu.trackingOption
-        ])
+    @ViewBuilder
+    func detailView(menuID: String) -> some View {
+        Group {
+            switch menuID {
+            case HubMenuViewModel.Settings.id:
+                SettingsView()
+            case HubMenuViewModel.Payments.id:
+                InPersonPaymentsMenu(viewModel: viewModel.inPersonPaymentsMenuViewModel)
+            case HubMenuViewModel.Blaze.id:
+                BlazeCampaignListView(viewModel: .init(siteID: viewModel.siteID))
+            case HubMenuViewModel.WoocommerceAdmin.id:
+                webView(url: viewModel.woocommerceAdminURL,
+                        title: HubMenuViewModel.Localization.woocommerceAdmin,
+                        shouldAuthenticate: viewModel.shouldAuthenticateAdminPage)
+            case HubMenuViewModel.ViewStore.id:
+                webView(url: viewModel.storeURL,
+                        title: HubMenuViewModel.Localization.viewStore,
+                        shouldAuthenticate: false)
+            case HubMenuViewModel.Inbox.id:
+                Inbox(viewModel: .init(siteID: viewModel.siteID))
+            case HubMenuViewModel.Reviews.id:
+                ReviewsView(siteID: viewModel.siteID)
+            case HubMenuViewModel.Coupons.id:
+                EnhancedCouponListView(siteID: viewModel.siteID)
+            case HubMenuViewModel.InAppPurchases.id:
+                InAppPurchasesDebugView()
+            case HubMenuViewModel.Subscriptions.id:
+                SubscriptionsView(viewModel: .init())
+            default:
+                fatalError("🚨 Unsupported menu item")
+            }
+        }
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbarRole(.editor)
+    }
 
-        switch type(of: menu).id {
-        case HubMenuViewModel.Settings.id:
-            ServiceLocator.analytics.track(.hubMenuSettingsTapped)
-            showSettings = true
-        case HubMenuViewModel.Payments.id:
-            viewModel.showingPayments = true
-        case HubMenuViewModel.Blaze.id:
-            viewModel.showBlaze()
-        case HubMenuViewModel.WoocommerceAdmin.id:
-            showingWooCommerceAdmin = true
-        case HubMenuViewModel.ViewStore.id:
-            showingViewStore = true
-        case HubMenuViewModel.Inbox.id:
-            showingInbox = true
-        case HubMenuViewModel.Reviews.id:
-            showingReviews = true
-        case HubMenuViewModel.Coupons.id:
-            showingCoupons = true
-        case HubMenuViewModel.InAppPurchases.id:
-            showingIAPDebug = true
-        case HubMenuViewModel.Subscriptions.id:
-            viewModel.presentSubscriptions()
-        default:
-            break
+    @ViewBuilder
+    func webView(url: URL, title: String, shouldAuthenticate: Bool) -> some View {
+        Group {
+            if shouldAuthenticate {
+                AuthenticatedWebView(isPresented: .constant(true),
+                                     url: url)
+            } else {
+                WebView(isPresented: .constant(true),
+                        url: url)
+            }
+        }
+        .navigationTitle(title)
+    }
+
+    @ViewBuilder
+    var reviewDetailView: some View {
+        if let parcel = viewModel.productReviewFromNoteParcel {
+            ReviewDetailView(productReview: parcel.review, product: parcel.product, notification: parcel.note)
+                .navigationBarTitleDisplayMode(.inline)
+                .navigationTitle(Localization.productReview)
+                .toolbarRole(.editor)
         }
     }
-}
-
-// MARK: SubViews
-private extension HubMenu {
 
     /// Reusable List row for the hub menu
     ///
@@ -331,6 +349,11 @@ private extension HubMenu {
     enum Localization {
         static let settings = NSLocalizedString("Settings", comment: "Settings button in the hub menu")
         static let general = NSLocalizedString("General", comment: "General section title in the hub menu")
+        static let productReview = NSLocalizedString(
+            "hubMenu.productReview",
+            value: "Product Review",
+            comment: "Title of the view containing a single Product Review"
+        )
     }
 }
 

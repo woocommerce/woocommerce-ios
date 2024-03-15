@@ -124,6 +124,9 @@ final class ProductsViewController: UIViewController, GhostableViewController {
                                            filters: filters)
                 resultsController.updateSortOrder(sortOrder)
 
+                // Sort favorite orders using new sort order
+                favoriteProducts = favoriteProducts.sortUsing(sortOrder)
+
                 /// Reload data because `updateSortOrder` generates a new `predicate` which calls `performFetch`
                 tableView.reloadData()
 
@@ -207,6 +210,14 @@ final class ProductsViewController: UIViewController, GhostableViewController {
     private let onTableViewEditingEnd: PassthroughSubject<Void, Never> = .init()
     let onDataReloaded: PassthroughSubject<Void, Never> = .init()
 
+    /// Sections containing products
+    ///
+    private var sections: [ProductListViewSection] = []
+
+    private var isShowingFavoritesSection: Bool {
+        sections.contains(where: { $0.type == .favourites })
+    }
+
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
@@ -255,6 +266,7 @@ final class ProductsViewController: UIViewController, GhostableViewController {
         syncProductsSettings()
         observeSelectedProductAndDataLoadedStateToUpdateSelectedRow()
         observeSelectedProductToAutoScrollWhenProductChanges()
+        observeFavoriteProductIDChanges()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -916,6 +928,7 @@ private extension ProductsViewController {
     func reloadTableAndView() {
         showOrHideToolbar()
         addOrRemoveOverlay()
+        reloadSections()
         tableView.reloadData()
         onDataReloaded.send(())
     }
@@ -964,9 +977,13 @@ private extension ProductsViewController {
                 guard let self else { return }
 
                 let currentSelectedIndexPath = tableView.indexPathForSelectedRow
-                let selectedIndexPath = selectedProduct != nil ? resultsController.indexPath(forObjectMatching: {
-                    $0.productID == selectedProduct?.productID
-                }): nil
+                let selectedIndexPath: IndexPath? = { [weak self] in
+                    guard let selectedProduct else {
+                        return nil
+                    }
+                    return self?.indexPath(for: selectedProduct.productID)
+                }()
+
                 if let selectedIndexPath {
                     guard currentSelectedIndexPath != selectedIndexPath else {
                         return
@@ -1018,25 +1035,60 @@ private extension ProductsViewController {
     }
 }
 
+// MARK: - Favorite products
+//
+private extension ProductsViewController {
+    func observeFavoriteProductIDChanges() {
+        userDefaults.publisher(for: \.favoriteProductIDs)
+            .sink { _ in
+                Task { @MainActor [weak self] in
+                    guard let self else { return }
+
+                    await self.fetchFavoriteProducts()
+
+                    await MainActor.run {
+                        self.reloadTableAndView()
+                    }
+                }
+            }
+            .store(in: &subscriptions)
+    }
+
+    func fetchFavoriteProducts() async {
+        favoriteProducts = []
+
+        if let products = await viewModel.fetchFavoriteProducts() {
+            favoriteProducts = products.sortUsing(sortOrder)
+        }
+    }
+}
+
 // MARK: - UITableViewDataSource Conformance
 //
 extension ProductsViewController: UITableViewDataSource {
 
     func numberOfSections(in tableView: UITableView) -> Int {
-        resultsController.sections.count
+        sections.count
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        resultsController.sections[section].numberOfObjects
+        sections[section].products.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(ProductsTabProductTableViewCell.self, for: indexPath)
-        let product = resultsController.object(at: indexPath)
+        let product = product(for: indexPath)
         let viewModel = ProductsTabProductViewModel(product: product)
         cell.update(viewModel: viewModel, imageService: imageService)
 
         return cell
+    }
+
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        guard isShowingFavoritesSection else {
+            return nil
+        }
+        return sections[section].type.title
     }
 }
 
@@ -1058,9 +1110,14 @@ extension ProductsViewController: UITableViewDelegate {
             tableView.deselectRow(at: indexPath, animated: true)
         }
 
-        let product = resultsController.object(at: indexPath)
+        let product = product(for: indexPath)
 
         if tableView.isEditing {
+            // Favorite section rows should not be selectable while editing
+            guard sections[indexPath.section].type == .allProducts else {
+                tableView.deselectRow(at: indexPath, animated: true)
+                return
+            }
             viewModel.selectProduct(product)
             updatedSelectedItems()
         } else {
@@ -1076,7 +1133,7 @@ extension ProductsViewController: UITableViewDelegate {
             return
         }
 
-        let product = resultsController.object(at: indexPath)
+        let product = product(for: indexPath)
         viewModel.deselectProduct(product)
         updatedSelectedItems()
     }
@@ -1094,7 +1151,7 @@ extension ProductsViewController: UITableViewDelegate {
 
         // Restore cell selection state
         if tableView.isEditing {
-            let product = resultsController.object(at: indexPath)
+            let product = product(for: indexPath)
             if self.viewModel.productIsSelected(product) {
                 tableView.selectRow(at: indexPath, animated: false, scrollPosition: .none)
             } else {
@@ -1107,6 +1164,10 @@ extension ProductsViewController: UITableViewDelegate {
         onTableViewEditingEnd.send(())
     }
 
+    func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        sections[indexPath.section].type == .allProducts
+    }
+
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         hiddenScrollView.updateFromScrollViewDidScrollEventForLargeTitleWorkaround(scrollView)
     }
@@ -1114,7 +1175,7 @@ extension ProductsViewController: UITableViewDelegate {
     /// Provide an implementation to show cell swipe actions. Return `nil` to provide no action.
     ///
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-        let product = resultsController.object(at: indexPath)
+        let product = product(for: indexPath)
         guard ServiceLocator.stores.sessionManager.defaultSite?.isPublic == true,
               product.productStatus == .published,
               let url = URL(string: product.permalink),
@@ -1164,8 +1225,20 @@ private extension ProductsViewController {
     @objc private func pullToRefresh(sender: UIRefreshControl) {
         ServiceLocator.analytics.track(.productListPulledToRefresh)
 
-        syncingCoordinator.resynchronize {
-            sender.endRefreshing()
+        Task { [weak self] in
+            guard let self else { return }
+
+            await withTaskGroup(of: Void.self) { group in
+                await self.syncingCoordinator.resynchronize()
+
+                await self.fetchFavoriteProducts()
+            }
+
+            await MainActor.run {
+                // Reload to update fav products
+                self.reloadTableAndView()
+                sender.endRefreshing()
+            }
         }
     }
 
@@ -1565,6 +1638,32 @@ extension ProductsViewController {
     private func ensureFooterSpinnerIsStopped() {
         footerSpinnerView.stopAnimating()
         tableView.tableFooterView = footerEmptyView
+    }
+}
+
+private extension ProductsViewController {
+    func reloadSections() {
+        if favoriteProducts.isNotEmpty {
+            sections = [ProductListViewSection(type: .favourites, products: favoriteProducts),
+                        ProductListViewSection(type: .allProducts, products: resultsController.fetchedObjects)]
+        } else {
+            sections = [ProductListViewSection(type: .allProducts, products: resultsController.fetchedObjects)]
+        }
+    }
+
+    func indexPath(for productID: Int64) -> IndexPath? {
+        guard let allProductsSectionIndex = sections.firstIndex(where: {$0.type == .allProducts }),
+              let indexPath = resultsController.indexPath(forObjectMatching: {
+                  $0.productID == productID
+              }) else {
+            return nil
+        }
+        return IndexPath(row: indexPath.row, section: allProductsSectionIndex)
+    }
+
+    func product(for indexPath: IndexPath) -> Product {
+        let section = sections[indexPath.section]
+        return section.products[indexPath.row]
     }
 }
 

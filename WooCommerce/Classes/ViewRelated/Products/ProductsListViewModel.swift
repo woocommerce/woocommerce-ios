@@ -23,6 +23,7 @@ final class ProductListViewModel: ProductsListViewModelProtocol {
 
     private let barcodeSKUScannerItemFinder: BarcodeSKUScannerItemFinder
     private let featureFlagService: FeatureFlagService
+    let favoriteProductsUseCase: FavoriteProductsUseCase
 
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
@@ -33,6 +34,7 @@ final class ProductListViewModel: ProductsListViewModelProtocol {
         self.featureFlagService = featureFlagService
         self.wooSubscriptionProductsEligibilityChecker = WooSubscriptionProductsEligibilityChecker(siteID: siteID)
         self.barcodeSKUScannerItemFinder = barcodeSKUScannerItemFinder
+        self.favoriteProductsUseCase = FavoriteProductsUseCase(siteID: siteID)
     }
 
     var selectedProductsCount: Int {

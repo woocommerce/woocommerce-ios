@@ -295,6 +295,15 @@ private extension OrderDetailsViewController {
             self?.deleteTracking(tracking)
         }
     }
+
+    /// Displays the `Unable to trash order` Notice.
+    ///
+    func displayTrashOrderNotice(order: Order) {
+        notices.displayTrashOrderErrorNotice(order: order) {
+            [weak self] in
+            self?.trashOrderTapped()
+        }
+    }
 }
 
 // MARK: - Top Banner
@@ -633,19 +642,22 @@ private extension OrderDetailsViewController {
 
     func trashOrderTapped() {
         ServiceLocator.analytics.track(.orderDetailTrashButtonTapped)
-        let action = OrderAction.deleteOrder(siteID: viewModel.order.siteID, order: viewModel.order, deletePermanently: false) { [weak self] result in
+
+        let order = viewModel.order
+        viewModel.trashOrder { [weak self] result in
             switch result {
             case .success:
                 NotificationCenter.default.post(name: .ordersBadgeReloadRequired, object: nil)
-                self?.navigationController?.popToRootViewController(animated: true)
-                print("entra qui")
-                break
+                DispatchQueue.main.async {
+                    self?.navigationController?.popToRootViewController(animated: true)
+                }
             case .failure(let error):
-                self?.displayOrderStatusErrorNotice(orderID: viewModel.order.orderID, status: status)
-                DDLogError("⛔️ Order Trash Failure: [Order ID: \(self?.viewModel.order.orderID)]. Error: \(error)")
+                DispatchQueue.main.async {
+                    self?.displayTrashOrderNotice(order: order)
+                }
+                DDLogError("⛔️ Order Trash Failure: [Order ID: \(order.orderID)]. Error: \(error)")
             }
         }
-        ServiceLocator.stores.dispatch(action)
     }
 
     @objc private func collectPaymentTapped() {

@@ -18,10 +18,6 @@ final class HubMenuViewModel: ObservableObject {
 
     let siteID: Int64
 
-    /// The view controller that will be used for presenting the `StorePickerViewController` via `StorePickerCoordinator`
-    ///
-    private(set) unowned var navigationController: UINavigationController?
-
     var avatarURL: URL? {
         guard let urlString = stores.sessionManager.defaultAccount?.gravatarUrl, let url = URL(string: urlString) else {
             return nil
@@ -83,14 +79,12 @@ final class HubMenuViewModel: ObservableObject {
     }()
 
     init(siteID: Int64,
-         navigationController: UINavigationController? = nil,
          tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          stores: StoresManager = ServiceLocator.stores,
          generalAppSettings: GeneralAppSettingsStorage = ServiceLocator.generalAppSettings,
          blazeEligibilityChecker: BlazeEligibilityCheckerProtocol = BlazeEligibilityChecker()) {
         self.siteID = siteID
-        self.navigationController = navigationController
         self.tapToPayBadgePromotionChecker = tapToPayBadgePromotionChecker
         self.stores = stores
         self.featureFlagService = featureFlagService

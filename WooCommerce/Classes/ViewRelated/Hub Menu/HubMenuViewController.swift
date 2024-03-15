@@ -13,7 +13,6 @@ final class HubMenuViewController: UIHostingController<HubMenu> {
          navigationController: UINavigationController?,
          tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker) {
         self.viewModel = HubMenuViewModel(siteID: siteID,
-                                          navigationController: navigationController,
                                           tapToPayBadgePromotionChecker: tapToPayBadgePromotionChecker)
         self.tapToPayBadgePromotionChecker = tapToPayBadgePromotionChecker
         super.init(rootView: HubMenu(viewModel: viewModel))

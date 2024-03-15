@@ -7247,6 +7247,9 @@ which should be translated separately and considered part of this sentence. */
 /* Alert message about an unsupported file type when uploading file for a downloadable product. */
 "productDownloadListViewController.notice.unsupportedFileType" = "The selected file type is not supported.";
 
+/* Product title */
+"productForm.defaultTitle" = "Product";
+
 /* Description of the subscription period for a product. Reads like: 'every 2 months'. */
 "productFormDataModel.subscriptionPeriodFormat" = "every %1$@";
 
@@ -11398,8 +11401,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the local notification to remind after three days. */
 "🧭 Still Exploring WooCommerce?" = "🧭 Still Exploring WooCommerce?";
 
-/* Product title */
-"productForm.defaultTitle" = "Product";
 
 /* MARK: - InfoPlist.strings */
 

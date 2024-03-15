@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-03-05 17:54:03+0000 */
+/* Translation-Revision-Date: 2024-03-13 17:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: fr */
@@ -419,7 +419,7 @@ which should be translated separately and considered part of this sentence. */
 
 /* Application's Active State
    Display label for the subscription status type
-   Status name of an active Blaze campaign
+   Status name of an approved Blaze campaign
    Status of coupons that are active */
 "Active" = "Actif";
 
@@ -581,9 +581,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button title in the Shipping Label Payment Method screen */
 "Add credit card" = "Ajouter une carte de crédit";
-
-/* Title of the order customer selection screen. */
-"Add customer details" = "Ajouter les détails du client";
 
 /* Message of the product description AI local announcement. */
 "Add descriptions in a snap with AI. Try our feature today!" = "Ajoutez des descriptions en un clin d’œil grâce à l’IA. Essayez notre fonctionnalité dès aujourd’hui !";
@@ -930,7 +927,6 @@ which should be translated separately and considered part of this sentence. */
 "Approve" = "Approuver";
 
 /* Display label for the review's approved status
-   Status name of an approved Blaze campaign
    Unapprove a comment */
 "Approved" = "Approuvé";
 
@@ -1751,8 +1747,7 @@ which should be translated separately and considered part of this sentence. */
 /* Third instruction on the test order screen */
 "Complete the payment and await a push notification about the order on your WooCommerce app." = "Finalisez le paiement. Vous recevrez une notification push concernant la commande dans votre application WooCommerce.";
 
-/* Display label for completed order status.
-   Status name of a completed Blaze campaign */
+/* Display label for completed order status. */
 "Completed" = "Terminé";
 
 /* Title for the list of component options in the Component Settings view */
@@ -3261,6 +3256,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the error screen when an in-person payments plugin is active but not set up. %1$@ contains the plugin name. */
 "Finish setup for %1$@ in your store admin" = "Finir de configurer %1$@ sur la page d’administration de votre boutique";
 
+/* Status name of a completed Blaze campaign */
+"Finished" = "Terminé";
+
 /* Country option for a site address. */
 "Finland" = "Finlande";
 
@@ -3783,9 +3781,6 @@ which should be translated separately and considered part of this sentence. */
 /* A fallback describing the contactless limit, shown on the About Tap to Pay screen. %1$@ will be replaced with the country name of the store, which is a trade off as it can't be contextually translated, however this string is only used when there's a problem decoding the limit, so it's acceptable. */
 "In %1$@, cards may only be used with Tap to Pay for transactions up to the contactless limit." = "Chez %1$@, les cartes ne peuvent être utilisées avec Appuyer pour payer que pour les transactions n’excédant pas la limite de paiement sans contact.";
 
-/* Status name of a Blaze campaign under moderation */
-"In Moderation" = "En modération";
-
 /* Accessibility label for an indeterminate loading indicator */
 "In progress" = "En cours";
 
@@ -4060,6 +4055,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* An error message displayed when the user tries to log in to the app with a simple WP.com site. Reads like: It seems that your site google.com is a simple WordPress.com site that cannot install plugins. Please upgrade your plan to use WooCommerce. */
 "It seems that your site %@ is a simple WordPress.com site that cannot install plugins. Please upgrade your plan to use WooCommerce." = "Il semble que votre site %@ soit un site WordPress.com simple qui ne prend pas en charge les extensions. Veuillez choisir une option payante pour votre plan afin de pouvoir utiliser WooCommerce.";
+
+/* Error message explaining login failure due to invalid credentials. */
+"It seems the username or password you entered doesn't quite match. Double-check your credentials and try again." = "Il semble que l’identifiant ou le mot de passe saisi ne corresponde pas. Vérifiez vos identifiants de connexion et réessayez.";
 
 /* Accessibility label for italic button on formatting toolbar. */
 "Italic" = "Italique";
@@ -5422,7 +5420,8 @@ which should be translated separately and considered part of this sentence. */
 
 /* Display label for pending order status.
    Display label for the review's pending status
-   Display label for the subscription status type */
+   Display label for the subscription status type
+   Status name of an active Blaze campaign */
 "Pending" = "En attente";
 
 /* Display label for the subscription status type */
@@ -5848,8 +5847,7 @@ which should be translated separately and considered part of this sentence. */
 /* Display label for the product's private status */
 "Privately published" = "Publié en privé";
 
-/* Display label for processing order status.
-   Status name of a Blaze campaign under processing */
+/* Display label for processing order status. */
 "Processing" = "En cours";
 
 /* Alert title when processing a payment without a user name.
@@ -7756,7 +7754,7 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when the card processor declines the payment. */
 "The card was declined by the payment processor - please try another means of payment" = "La carte a été refusée par la plateforme de paiement. Essayez un autre moyen de paiement";
 
-/* No comment provided by engineer. */
+/* Message for when the certificate for the server is invalid. The %@ placeholder will be replaced the a host name, received from the API. */
 "The certificate for this server is invalid. You might be connecting to a server that is pretending to be “%@” which could put your confidential information at risk.\n\nWould you like to trust the certificate anyway?" = "Le certificat de ce serveur n’est pas valide. Le serveur auquel vous vous connectez prétend être « %@ », ce qui peut constituer un risque de sécurité pour vos données confidentielles.\n\nSouhaitez-vous faire confiance au certificat malgré tout ?";
 
 /* Message in the gift card input form when the code is not valid. */
@@ -9476,7 +9474,7 @@ which should be translated separately and considered part of this sentence. */
 /* Error message shown when Tap to Pay on iPhone cannot be used because the device does not have a passcode set. */
 "You need to set a lock screen passcode to use Tap to Pay on iPhone" = "Vous devez définir un code d’accès pour déverrouiller l’écran et utiliser le service Appuyer pour payer sur iPhone.";
 
-/* No comment provided by engineer. */
+/* Error messaged show when a mobile plugin is redirecting traffict to their site, DudaMobile in particular */
 "You seem to have installed a mobile plugin from DudaMobile which is preventing the app to connect to your blog" = "Il semble que vous ayez installé une extension mobile à partir de DudaMobile qui empêche l'application de se connecter à votre blog";
 
 /* Subtitle text in the store creation loading screen */
@@ -9614,6 +9612,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Markdown content learn more link on the product creation action sheet. Please translate the words while keeping the markdown format and URL. */
 "[Learn more.](https:\/\/automattic.com\/ai-guidelines\/)" = "[Lire la suite.](https:\/\/automattic.com\/ai-guidelines\/)";
+
+/* Text for the 'Cancel' button that appears in the navigation bar, and closes the view */
+"adaptiveModalContainer.views.cancelButtonText" = "Annuler";
 
 /* Button title to delete the custom amount on the edit custom amount view in orders. */
 "addCustomAmount.deleteButton" = "Supprimer le montant personnalisé";
@@ -10379,6 +10380,12 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility hint for selecting a variable product to select product for filtering orders */
 "configurationForOrder.variableProductRowAccessibilityHint" = "Ouvre une liste de variantes du produit.";
 
+/* Title of the order customer selection screen. */
+"configurationForOrderCustomerSection.customerSelectorTitle" = "Ajouter les détails du client";
+
+/* Title for the screen to select customer in order filtering. */
+"configurationForOrderFilter.customerSelectorTitle" = "Choisir un client";
+
 /* Action to toggle whether a bundle item is included when it is optional. */
 "configureBundleItem.add" = "Ajouter";
 
@@ -10444,6 +10451,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button in date range picker to add a Custom Range tab */
 "customRangeTabCreationCoordinator.add" = "Ajouter";
+
+/* Message to prompt users to search for customers on the customer search screen */
+"customerSearchUICommand.emptyDefaultStateNoCreationMessage" = "Rechercher un client existant";
+
+/* The label that can be shown optionally for guest customers */
+"customerSearchUICommand.guestLabel" = "Invité";
+
+/* Error message in the Add Customer to order screen when getting the customer information */
+"customerSelectorViewController.guestSelectionDisallowedError" = "Cet utilisateur est un invité et les invités ne peuvent pas être utilisés pour filtrer les commandes.";
 
 /* Display label for a product's subscription period when it is a single day. */
 "day" = "jour";
@@ -10562,6 +10578,18 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility label to expand an expandable bottom sheet */
 "expandableBottomSheet.chevron.expand" = "Afficher les détails";
+
+/* Title of dismiss button for redaction information alert in Custom Range stats tab */
+"fancyAlertViewControllerStats.dismissButton" = "OK";
+
+/* Description for redaction information alert in Custom Range stats tab */
+"fancyAlertViewControllerStats.redactionInfoDescription" = "La fonctionnalité de statistiques ne prend pas en charge l’affichage des visites et des données de conversion pour les plages de dates arbitraires. \n\nCependant, vous pouvez appuyer sur une valeur sur le graphique pour voir les visites et les conversions pour cette plage spécifique.";
+
+/* Title for redaction information alert in Custom Range stats tab */
+"fancyAlertViewControllerStats.redactionInfoTitle" = "Les visites et les données de conversion ne sont pas disponibles";
+
+/* Row title for filtering orders by customer. */
+"filterOrderListViewModel.OrderListFilter.rowCustomer" = "Client";
 
 /* Row title for filtering orders by Product. */
 "filterOrderListViewModel.OrderListFilter.rowTitleProduct" = "Produit";
@@ -10904,6 +10932,9 @@ which should be translated separately and considered part of this sentence. */
 /* Alert message about an unsupported file type when uploading file for a downloadable product. */
 "productDownloadListViewController.notice.unsupportedFileType" = "Le type de fichier sélectionné n’est pas pris en charge.";
 
+/* Product title */
+"productForm.defaultTitle" = "Produit";
+
 /* Description of the subscription period for a product. Reads like: 'every 2 months'. */
 "productFormDataModel.subscriptionPeriodFormat" = "tous les %1$@";
 
@@ -11024,6 +11055,21 @@ which should be translated separately and considered part of this sentence. */
 
 /* Cancel button title for the Shipping Label purchase flow, shown in the nav bar */
 "shipping.label.navigationBar.cancel.button.title" = "Annuler";
+
+/* Display text for the daily granularity of store stats on the My Store screen */
+"statsGranularityV4.daily" = "Par jour";
+
+/* Display text for the hourly granularity of store stats on the My Store screen */
+"statsGranularityV4.hourly" = "Par heure";
+
+/* Display text for the monthly granularity of store stats on the My Store screen */
+"statsGranularityV4.monthly" = "Par mois";
+
+/* Display text for the weekly granularity of store stats on the My Store screen */
+"statsGranularityV4.weekly" = "Par semaine";
+
+/* Display text for the yearly granularity of store stats on the My Store screen */
+"statsGranularityV4.yearly" = "Par an";
 
 /* Tab selector title that shows the statistics for today */
 "statsTimeRangeV4.tabTitle.custom" = "Plage personnalisée";
@@ -11286,6 +11332,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Message to show when a request for a WP.com API endpoint is throttled */
 "wordpresskit.api.message.endpoint_throttled" = "Limite atteinte. Vous pourrez réessayer dans 1 minute. Si vous faites une nouvelle tentative avant l’échéance du délai, vous ne ferez que repousser la levée de l’exclusion. Si vous pensez qu’il s’agit d’une erreur, veuillez contacter l’assistance.";
+
+/* Message to show to user when the app can't find WordPress.org REST API URL. */
+"wordpresskit.org-rest-api.not-found" = "Impossible de trouver l’URL de l’API REST de votre site. L’application en a besoin pour communiquer avec votre site. Contactez votre hébergeur pour résoudre ce problème.";
 
 /* Button to enter security key on the WPCom 2FA login screen */
 "wpCom2FALoginView.securityKeyButton" = "Utiliser une clé de sécurité";

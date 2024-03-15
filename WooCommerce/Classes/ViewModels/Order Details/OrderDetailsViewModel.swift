@@ -745,6 +745,20 @@ extension OrderDetailsViewModel {
         stores.dispatch(deleteTrackingAction)
     }
 
+    /// Put an order in the trash, without deleting it permanently.
+    ///
+    func trashOrder(_ onCompletion: @escaping (Result<Order, Error>) -> Void) {
+        let action = OrderAction.deleteOrder(siteID: order.siteID, order: order, deletePermanently: false) { result in
+            switch result {
+            case .success(let order):
+                onCompletion(.success(order))
+            case .failure(let error):
+                onCompletion(.failure(error))
+            }
+        }
+        stores.dispatch(action)
+    }
+
     /// Helper function that returns `true` in its callback if the provided plugin name is active on the order's store.
     /// Additionally it logs to tracks if the plugin store is accessed without it being in sync so we can handle that edge-case if it happens recurrently.
     ///

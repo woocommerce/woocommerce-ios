@@ -142,6 +142,7 @@ private extension HubMenu {
             switch menuID {
             case HubMenuViewModel.Settings.id:
                 SettingsView()
+                    .navigationTitle(HubMenuViewModel.Localization.settings)
             case HubMenuViewModel.Payments.id:
                 paymentsView
             case HubMenuViewModel.Blaze.id:

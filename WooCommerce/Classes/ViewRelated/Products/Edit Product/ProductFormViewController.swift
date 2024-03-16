@@ -340,10 +340,12 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         if viewModel.canFavoriteProduct() {
             if viewModel.isFavorite() {
                 actionSheet.addDefaultActionWithTitle(ActionSheetStrings.Favorite.removeFromFavorite) { [weak self] _ in
+                    ServiceLocator.analytics.track(event: .ProductForm.productDetailRemoveFromFavoriteButtonTapped())
                     self?.viewModel.removeFromFavorite()
                 }
             } else {
                 actionSheet.addDefaultActionWithTitle(ActionSheetStrings.Favorite.markAsFavorite) { [weak self] _ in
+                    ServiceLocator.analytics.track(event: .ProductForm.productDetailMarkAsFavoriteButtonTapped())
                     self?.viewModel.markAsFavorite()
                 }
             }

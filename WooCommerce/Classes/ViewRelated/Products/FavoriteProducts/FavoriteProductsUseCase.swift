@@ -21,7 +21,7 @@ struct FavoriteProductsUseCase {
     func markAsFavorite(productID: Int64) {
         if var productIdDict = productIdDict {
             let existingFavProductIDs = productIdDict[idAsString] ?? []
-            productIdDict[idAsString] = Array(Set(existingFavProductIDs + [productID]))
+            productIdDict[idAsString] = Array(Set(existingFavProductIDs + [productID])).suffix(Constants.favoriteProductsMaxLimit)
             userDefaults[.favoriteProductIDs] = productIdDict
         } else {
             userDefaults[.favoriteProductIDs] = [idAsString: [productID]]
@@ -59,6 +59,12 @@ struct FavoriteProductsUseCase {
             return nil
         }
         return savedFavProductIDs
+    }
+}
+
+private extension FavoriteProductsUseCase {
+    enum Constants {
+        static let favoriteProductsMaxLimit = 10
     }
 }
 

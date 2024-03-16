@@ -23,6 +23,7 @@ final class ProductListViewModel: ProductsListViewModelProtocol {
 
     private let barcodeSKUScannerItemFinder: BarcodeSKUScannerItemFinder
     private let featureFlagService: FeatureFlagService
+    let favoriteProductsUseCase: FavoriteProductsUseCase
 
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
@@ -33,6 +34,7 @@ final class ProductListViewModel: ProductsListViewModelProtocol {
         self.featureFlagService = featureFlagService
         self.wooSubscriptionProductsEligibilityChecker = WooSubscriptionProductsEligibilityChecker(siteID: siteID)
         self.barcodeSKUScannerItemFinder = barcodeSKUScannerItemFinder
+        self.favoriteProductsUseCase = FavoriteProductsUseCase(siteID: siteID)
     }
 
     var selectedProductsCount: Int {
@@ -213,5 +215,24 @@ final class ProductListViewModel: ProductsListViewModelProtocol {
             completion(plugin?.active == true)
         }
         stores.dispatch(action)
+    }
+
+    @MainActor
+    func fetchFavoriteProducts() async -> [Product]? {
+        guard let favProductIDs = favoriteProductsUseCase.favoriteProductIDs() else {
+            return nil
+        }
+        return await withCheckedContinuation { continuation in
+            stores.dispatch(ProductAction.retrieveProducts(siteID: siteID,
+                                                           productIDs: favProductIDs) { result in
+                switch result {
+                case .success((let products, _)):
+                    continuation.resume(returning: products)
+                case .failure(let error):
+                    DDLogError("⛔️ Error fetching favorite products: \(error)")
+                    continuation.resume(returning: nil)
+                }
+            })
+        }
     }
 }

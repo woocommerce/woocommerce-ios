@@ -1268,6 +1268,7 @@
 		45FDDD66267784AD00ADACE8 /* ShippingLabelSummaryTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 45FDDD64267784AD00ADACE8 /* ShippingLabelSummaryTableViewCell.xib */; };
 		4A68E3E32941D4CE004AC3DC /* WordPressLibraryLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A68E3E22941D4CE004AC3DC /* WordPressLibraryLogger.swift */; };
 		4A690C262BA7A08A00A8E0C5 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 4A690C252BA7A08500A8E0C5 /* PrivacyInfo.xcprivacy */; };
+		4A690C282BA7A5B400A8E0C5 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 4A690C272BA7A3F800A8E0C5 /* PrivacyInfo.xcprivacy */; };
 		53284299BA881E53CBF30F94 /* FreeTrialFeatures.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53284F5B35E9ED12097A1E88 /* FreeTrialFeatures.swift */; };
 		532842FC64B572D4545BD98E /* OrderFormCustomerNoteViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53284C9FD06F2BDABC554BEE /* OrderFormCustomerNoteViewModel.swift */; };
 		532846FAFFFCA93169B5E0BC /* WaitingTimeTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53284FB62FF7F94F18F0D3FF /* WaitingTimeTracker.swift */; };
@@ -3967,6 +3968,7 @@
 		45FDDD64267784AD00ADACE8 /* ShippingLabelSummaryTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ShippingLabelSummaryTableViewCell.xib; sourceTree = "<group>"; };
 		4A68E3E22941D4CE004AC3DC /* WordPressLibraryLogger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WordPressLibraryLogger.swift; sourceTree = "<group>"; };
 		4A690C252BA7A08500A8E0C5 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		4A690C272BA7A3F800A8E0C5 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		53284C9FD06F2BDABC554BEE /* OrderFormCustomerNoteViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderFormCustomerNoteViewModel.swift; sourceTree = "<group>"; };
 		53284F4A66A725F479CD9584 /* EUShippingNoticeTopBannerFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EUShippingNoticeTopBannerFactory.swift; sourceTree = "<group>"; };
 		53284F5B35E9ED12097A1E88 /* FreeTrialFeatures.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FreeTrialFeatures.swift; sourceTree = "<group>"; };
@@ -7636,6 +7638,7 @@
 				3F1FA84828B60126009E246C /* Assets.xcassets */,
 				26FFD32628C6A0A4002E5E5E /* Images.xcassets */,
 				3F1FA84A28B60126009E246C /* Info.plist */,
+				4A690C272BA7A3F800A8E0C5 /* PrivacyInfo.xcprivacy */,
 			);
 			path = StoreWidgets;
 			sourceTree = "<group>";
@@ -12618,6 +12621,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4A690C282BA7A5B400A8E0C5 /* PrivacyInfo.xcprivacy in Resources */,
 				3F1FA84928B60126009E246C /* Assets.xcassets in Resources */,
 				26BBEA8528C6ADAC00ED7F6C /* Images.xcassets in Resources */,
 			);

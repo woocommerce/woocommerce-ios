@@ -304,6 +304,16 @@ private extension OrderDetailsViewController {
             self?.trashOrderAction()
         }
     }
+    
+    /// Enqueues the `Order Trash` Notice. Whenever the `Undo` button gets pressed, we'll execute the `onUndoAction` closure.
+    ///
+    private func displayOrderTrashUndoNotice(onUndoAction: @escaping () -> Void) {
+        let message = NSLocalizedString("Order status updated", comment: "Order status update success notice")
+        let actionTitle = NSLocalizedString("Undo", comment: "Undo Action")
+        let notice = Notice(title: Localization.Notice.orderTrashActionTitle, feedbackType: .success, actionTitle: Localization.Notice.orderTrashActionTitle, actionHandler: onUndoAction)
+
+        ServiceLocator.noticePresenter.enqueue(notice: notice)
+    }
 }
 
 // MARK: - Top Banner
@@ -664,6 +674,9 @@ private extension OrderDetailsViewController {
             switch result {
             case .success:
                 NotificationCenter.default.post(name: .ordersBadgeReloadRequired, object: nil)
+                self?.displayOrderTrashUndoNotice {
+                    self?.undoTrashOrderAction()
+                }
                 DispatchQueue.main.async {
                     self?.navigationController?.popToRootViewController(animated: true)
                 }
@@ -674,6 +687,15 @@ private extension OrderDetailsViewController {
                 DDLogError("⛔️ Order Trash Failure: [Order ID: \(order.orderID)]. Error: \(error)")
             }
         }
+    }
+    
+    // It's possible to restore an order from the trash by simply resetting its status to the previous value it held.
+    func undoTrashOrderAction() {
+        let orderID = viewModel.order.orderID
+        let undoStatus = viewModel.order.status
+        let undo = updateOrderStatusAction(siteID: viewModel.order.siteID, orderID: viewModel.order.orderID, status: undoStatus)
+        
+        ServiceLocator.stores.dispatch(undo)
     }
 
     @objc private func collectPaymentTapped() {
@@ -967,6 +989,15 @@ private extension OrderDetailsViewController {
             NSLocalizedString("OrderDetail.trashOrder.alert.moveToTrashButton",
                               value: "Move to Trash", 
                               comment: "Confirmation button on the alert when the user is moving an order to the trash")
+        }
+        
+        enum Notice {
+            static let orderTrashUndoMessage = NSLocalizedString("OrderDetail.trashOrder.notice.undoMessage",
+                                                          value: "Order trashed",
+                                                          comment: "Order trashed success notice")
+            static let orderTrashActionTitle = NSLocalizedString("OrderDetail.trashOrder.notice.undoAction",
+                                                          value: "Undo",
+                                                          comment: "Undo Action")
         }
     }
 

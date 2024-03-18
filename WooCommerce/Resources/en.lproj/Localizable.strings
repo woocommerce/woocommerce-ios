@@ -10047,8 +10047,8 @@ which should be translated separately and considered part of this sentence. */
 /* Info text about the scanned text list on the add product from image form. */
 "Tweak your text: Unselect scans you don't need or tap to edit" = "Tweak your text: Unselect scans you don't need or tap to edit";
 
-/* Title of a button linking to the app's X profile */
-"X" = "X";
+/* Title of a button linking to the app's Twitter profile */
+"Twitter" = "Twitter";
 
 /* Placeholder of the search text field on the domain selector. */
 "Type a name for your store" = "Type a name for your store";

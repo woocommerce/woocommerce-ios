@@ -64,6 +64,7 @@ final class StoreStatsV4PeriodViewController: UIViewController {
     @IBOutlet private weak var timeRangeBarView: StatsTimeRangeBarView!
     @IBOutlet private weak var visitorsStackView: UIStackView!
     @IBOutlet private weak var conversionStackView: UIStackView!
+    @IBOutlet private weak var granularityLabel: UILabel!
 
     private var currencyCode: String {
         return ServiceLocator.currencySettings.symbol(from: ServiceLocator.currencySettings.currencyCode)
@@ -368,6 +369,12 @@ private extension StoreStatsV4PeriodViewController {
             label?.font = Constants.statsTitleFont
             label?.textColor = Constants.statsTextColor
         }
+
+        // Granularity text
+        granularityLabel.font = StyleManager.chartLabelFont
+        granularityLabel.textColor = .textSubtle
+        granularityLabel.text = granularity.displayText
+        granularityLabel.isHidden = timeRange.isCustomTimeRange == false
 
         // Data
         updateStatsDataToDefaultStyles()

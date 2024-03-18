@@ -678,8 +678,13 @@ private extension OrderDetailsViewController {
                 self?.displayOrderTrashUndoNotice {
                     self?.undoTrashOrderAction()
                 }
-                DispatchQueue.main.async {
-                    self?.navigationController?.popViewController(animated: true)
+
+                // Navigate back to the master view controller of the split view controller to display the order list.
+                if let splitViewController = self?.splitViewController,
+                    let navigationController = splitViewController.viewControllers.last as? UINavigationController {
+                    DispatchQueue.main.async {
+                        navigationController.popToRootViewController(animated: true)
+                    }
                 }
             case .failure(let error):
                 self?.displayTrashOrderErrorNotice(order: order)

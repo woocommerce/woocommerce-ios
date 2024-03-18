@@ -79,6 +79,8 @@ final class ProductsViewController: UIViewController, GhostableViewController {
     /// Top toolbar that shows the sort and filter CTAs.
     ///
     @IBOutlet private weak var toolbar: ToolbarView!
+    @IBOutlet private weak var toolbarBottomSeparator: UIView!
+    @IBOutlet private weak var toolbarBottomSeparatorHeightConstraint: NSLayoutConstraint!
 
     // Used to trick the navigation bar for large title (ref: issue 3 in p91TBi-45c-p2).
     private let hiddenScrollView = UIScrollView()
@@ -752,6 +754,9 @@ private extension ProductsViewController {
 
         toolbar.backgroundColor = .systemColor(.secondarySystemGroupedBackground)
         toolbar.setSubviews(leftViews: [sortButton], rightViews: [filterButton])
+
+        toolbarBottomSeparator.backgroundColor = .systemColor(.separator)
+        toolbarBottomSeparatorHeightConstraint.constant = 1.0 / UIScreen.main.scale
     }
 
     /// Setup: Sync'ing Coordinator

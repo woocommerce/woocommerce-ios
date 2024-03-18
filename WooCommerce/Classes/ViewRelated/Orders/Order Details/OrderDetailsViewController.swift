@@ -304,7 +304,7 @@ private extension OrderDetailsViewController {
             self?.trashOrderAction()
         }
     }
-    
+
     /// Enqueues the `Order Trash` Notice. Whenever the `Undo` button gets pressed, we'll execute the `onUndoAction` closure.
     ///
     private func displayOrderTrashUndoNotice(onUndoAction: @escaping () -> Void) {
@@ -652,7 +652,7 @@ private extension OrderDetailsViewController {
 
     func trashOrderTapped() {
         ServiceLocator.analytics.track(.orderDetailTrashButtonTapped)
-        
+
         let alertController = UIAlertController(title: Localization.Alert.orderTrashConfirmationTitle,
                                                 message: Localization.Alert.orderTrashConfirmationMessage,
                                                 preferredStyle: .alert)
@@ -667,7 +667,7 @@ private extension OrderDetailsViewController {
         alertController.addAction(confirm)
         present(alertController, animated: true)
     }
-    
+
     func trashOrderAction() {
         let order = viewModel.order
         viewModel.trashOrder { [weak self] result in
@@ -688,13 +688,13 @@ private extension OrderDetailsViewController {
             }
         }
     }
-    
+
     // It's possible to restore an order from the trash by simply resetting its status to the previous value it held.
     func undoTrashOrderAction() {
         let orderID = viewModel.order.orderID
         let undoStatus = viewModel.order.status
         let undo = updateOrderStatusAction(siteID: viewModel.order.siteID, orderID: viewModel.order.orderID, status: undoStatus)
-        
+
         ServiceLocator.stores.dispatch(undo)
     }
 
@@ -973,7 +973,7 @@ private extension OrderDetailsViewController {
             static let accessibilityLabel = NSLocalizedString("Order actions", comment: "Accessibility label for button triggering more actions menu sheet.")
             static let cancelAction = NSLocalizedString("Cancel", comment: "Cancel the main more actions menu sheet.")
         }
-        
+
         enum Alert {
             static let orderTrashConfirmationTitle = NSLocalizedString("OrderDetail.trashOrder.alert.title",
                                                                        value: "Remove order",
@@ -983,14 +983,14 @@ private extension OrderDetailsViewController {
                                                                          comment: "Body of the alert when a user is moving an order to the trash")
             static let orderTrashConfirmationCancelButton =
             NSLocalizedString("OrderDetail.trashOrder.alert.cancelButton",
-                              value: "Cancel", 
+                              value: "Cancel",
                               comment: "Cancel button on the alert when the user is cancelling the action on moving an order to the trash")
             static let orderTrashConfirmationConfirmButton =
             NSLocalizedString("OrderDetail.trashOrder.alert.moveToTrashButton",
-                              value: "Move to Trash", 
+                              value: "Move to Trash",
                               comment: "Confirmation button on the alert when the user is moving an order to the trash")
         }
-        
+
         enum Notice {
             static let orderTrashUndoMessage = NSLocalizedString("OrderDetail.trashOrder.notice.undoMessage",
                                                           value: "Order trashed",

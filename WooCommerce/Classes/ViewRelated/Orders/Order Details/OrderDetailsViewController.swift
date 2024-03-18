@@ -691,7 +691,6 @@ private extension OrderDetailsViewController {
 
     // It's possible to restore an order from the trash by simply resetting its status to the previous value it held.
     func undoTrashOrderAction() {
-        let orderID = viewModel.order.orderID
         let undoStatus = viewModel.order.status
         let undo = updateOrderStatusAction(siteID: viewModel.order.siteID, orderID: viewModel.order.orderID, status: undoStatus)
 

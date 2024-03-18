@@ -247,7 +247,7 @@
                             <rect key="frame" x="0.0" y="580" width="375" height="50"/>
                             <subviews>
                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pqY-Y5-2gN">
-                                    <rect key="frame" x="16" y="8" width="343" height="34"/>
+                                    <rect key="frame" x="16" y="16" width="343" height="34"/>
                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                     <nil key="textColor"/>
                                     <nil key="highlightedColor"/>
@@ -256,9 +256,9 @@
                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <constraints>
                                 <constraint firstItem="pqY-Y5-2gN" firstAttribute="leading" secondItem="vMl-Nb-2lN" secondAttribute="leading" constant="16" id="2fN-o9-Oa7"/>
-                                <constraint firstItem="pqY-Y5-2gN" firstAttribute="top" secondItem="vMl-Nb-2lN" secondAttribute="top" constant="8" id="U77-qg-Fy0"/>
+                                <constraint firstItem="pqY-Y5-2gN" firstAttribute="top" secondItem="vMl-Nb-2lN" secondAttribute="top" constant="16" id="U77-qg-Fy0"/>
                                 <constraint firstAttribute="trailing" secondItem="pqY-Y5-2gN" secondAttribute="trailing" constant="16" id="la8-eH-N3v"/>
-                                <constraint firstAttribute="bottom" secondItem="pqY-Y5-2gN" secondAttribute="bottom" constant="8" id="wYe-i2-rCW"/>
+                                <constraint firstAttribute="bottom" secondItem="pqY-Y5-2gN" secondAttribute="bottom" id="wYe-i2-rCW"/>
                             </constraints>
                         </view>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="8Ra-EQ-KPf" userLabel="Spacer View">

@@ -365,15 +365,14 @@ private extension StoreStatsV4PeriodViewController {
         conversionTitle.text = NSLocalizedString("Conversion", comment: "Conversion stat label on dashboard.")
         revenueTitle.text = NSLocalizedString("Revenue", comment: "Revenue stat label on dashboard.")
 
-        [visitorsTitle, ordersTitle, conversionTitle, revenueTitle].forEach { label in
+        [visitorsTitle, ordersTitle, conversionTitle, revenueTitle, granularityLabel].forEach { label in
             label?.font = Constants.statsTitleFont
             label?.textColor = Constants.statsTextColor
         }
 
         // Granularity text
-        granularityLabel.font = StyleManager.chartLabelFont
-        granularityLabel.textColor = .textSubtle
         granularityLabel.text = granularity.displayText
+        granularityLabel.textAlignment = .center
         granularityLabel.isHidden = timeRange.isCustomTimeRange == false
 
         // Data

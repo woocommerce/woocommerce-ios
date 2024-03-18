@@ -308,7 +308,7 @@ private extension OrderDetailsViewController {
     /// Enqueues the `Order Trash` Notice. Whenever the `Undo` button gets pressed, we'll execute the `onUndoAction` closure.
     ///
     private func displayOrderTrashUndoNotice(onUndoAction: @escaping () -> Void) {
-        let notice = Notice(title: Localization.Notice.orderTrashActionTitle, 
+        let notice = Notice(title: Localization.Notice.orderTrashActionTitle,
                             feedbackType: .success,
                             actionTitle: Localization.Notice.orderTrashActionTitle,
                             actionHandler: onUndoAction)

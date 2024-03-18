@@ -679,12 +679,10 @@ private extension OrderDetailsViewController {
                     self?.undoTrashOrderAction()
                 }
                 DispatchQueue.main.async {
-                    self?.navigationController?.popToRootViewController(animated: true)
+                    self?.navigationController?.popViewController(animated: true)
                 }
             case .failure(let error):
-                DispatchQueue.main.async {
-                    self?.displayTrashOrderErrorNotice(order: order)
-                }
+                self?.displayTrashOrderErrorNotice(order: order)
                 DDLogError("⛔️ Order Trash Failure: [Order ID: \(order.orderID)]. Error: \(error)")
             }
         }

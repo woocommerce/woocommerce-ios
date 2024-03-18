@@ -71,14 +71,12 @@ private extension StatsTimeRangeV4 {
 struct StatsTimeRangeBarViewModel: Equatable {
     let timeRangeText: String
     let isTimeRangeEditable: Bool
-    let granularityText: String?
 
     init(startDate: Date,
          endDate: Date,
          timeRange: StatsTimeRangeV4,
          timezone: TimeZone) {
         isTimeRangeEditable = timeRange.isCustomTimeRange
-        granularityText = timeRange.isCustomTimeRange ? timeRange.intervalGranularity.displayText : nil
         timeRangeText = timeRange.timeRangeText(startDate: startDate,
                                                 endDate: endDate,
                                                 timezone: timezone)
@@ -91,7 +89,6 @@ struct StatsTimeRangeBarViewModel: Equatable {
          timezone: TimeZone) {
         // Disable editing time range when selecting a specific date on the graph
         isTimeRangeEditable = false
-        granularityText = nil
         timeRangeText = timeRange.timeRangeText(startDate: startDate,
                                                 endDate: endDate,
                                                 selectedDate: selectedDate,

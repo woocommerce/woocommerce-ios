@@ -298,7 +298,7 @@ private extension OrderDetailsViewController {
 
     /// Displays the `Unable to trash order` Notice.
     ///
-    func displayTrashOrderNotice(order: Order) {
+    func displayTrashOrderErrorNotice(order: Order) {
         notices.displayTrashOrderErrorNotice(order: order) {
             [weak self] in
             self?.trashOrderTapped()
@@ -653,7 +653,7 @@ private extension OrderDetailsViewController {
                 }
             case .failure(let error):
                 DispatchQueue.main.async {
-                    self?.displayTrashOrderNotice(order: order)
+                    self?.displayTrashOrderErrorNotice(order: order)
                 }
                 DDLogError("⛔️ Order Trash Failure: [Order ID: \(order.orderID)]. Error: \(error)")
             }

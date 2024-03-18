@@ -301,7 +301,7 @@ private extension OrderDetailsViewController {
     func displayTrashOrderErrorNotice(order: Order) {
         notices.displayTrashOrderErrorNotice(order: order) {
             [weak self] in
-            self?.trashOrderTapped()
+            self?.trashOrderAction()
         }
     }
 }
@@ -642,7 +642,23 @@ private extension OrderDetailsViewController {
 
     func trashOrderTapped() {
         ServiceLocator.analytics.track(.orderDetailTrashButtonTapped)
-
+        
+        let alertController = UIAlertController(title: Localization.Alert.orderTrashConfirmationTitle,
+                                                message: Localization.Alert.orderTrashConfirmationMessage,
+                                                preferredStyle: .alert)
+        let cancel = UIAlertAction(title: Localization.Alert.orderTrashConfirmationCancelButton,
+                                   style: .cancel) { (action) in
+        }
+        let confirm = UIAlertAction(title: Localization.Alert.orderTrashConfirmationConfirmButton,
+                                    style: .default) { [weak self] (action) in
+            self?.trashOrderAction()
+        }
+        alertController.addAction(cancel)
+        alertController.addAction(confirm)
+        present(alertController, animated: true)
+    }
+    
+    func trashOrderAction() {
         let order = viewModel.order
         viewModel.trashOrder { [weak self] result in
             switch result {
@@ -934,6 +950,23 @@ private extension OrderDetailsViewController {
         enum ActionsMenu {
             static let accessibilityLabel = NSLocalizedString("Order actions", comment: "Accessibility label for button triggering more actions menu sheet.")
             static let cancelAction = NSLocalizedString("Cancel", comment: "Cancel the main more actions menu sheet.")
+        }
+        
+        enum Alert {
+            static let orderTrashConfirmationTitle = NSLocalizedString("OrderDetail.trashOrder.alert.title",
+                                                                       value: "Remove order",
+                                                                       comment: "Title of the alert when a user is moving an order to the trash")
+            static let orderTrashConfirmationMessage = NSLocalizedString("OrderDetail.trashOrder.alert.message",
+                                                                         value: "Do you want to move this order to the Trash?",
+                                                                         comment: "Body of the alert when a user is moving an order to the trash")
+            static let orderTrashConfirmationCancelButton =
+            NSLocalizedString("OrderDetail.trashOrder.alert.cancelButton",
+                              value: "Cancel", 
+                              comment: "Cancel button on the alert when the user is cancelling the action on moving an order to the trash")
+            static let orderTrashConfirmationConfirmButton =
+            NSLocalizedString("OrderDetail.trashOrder.alert.moveToTrashButton",
+                              value: "Move to Trash", 
+                              comment: "Confirmation button on the alert when the user is moving an order to the trash")
         }
     }
 

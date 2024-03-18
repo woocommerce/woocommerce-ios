@@ -1,7 +1,7 @@
 {
     "request": {
         "method": "GET",
-        "urlPath": "/rest/v1.1/connect/site-info/"
+        "urlPathPattern": "/rest/v1.1/connect/site-info?(.*)"
     },
     "response": {
         "status": 200,
@@ -12,7 +12,7 @@
             "isJetpackActive": true,
             "isJetpackConnected": true,
             "isWordPressDotCom": true,
-            "urlAfterRedirects": "https:\/\/automatticwidgets.wpcomstaging.com",
+            "urlAfterRedirects": "http:\/\/yourwoosite.com",
             "jetpackVersion": false
         },
         "headers": {

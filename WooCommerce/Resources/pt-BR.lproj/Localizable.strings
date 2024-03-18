@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-02-26 16:54:04+0000 */
+/* Translation-Revision-Date: 2024-03-14 09:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: pt_BR */
@@ -21,7 +21,8 @@
 /* Format for each Product attribute in plural form */
 "%1$@ (%2$ld options)" = "%1$@ (%2$ld opções)";
 
-/* Displays a date range for a stats interval */
+/* Displays a date range for a custom stats interval
+   Displays a date range for a stats interval */
 "%1$@ - %2$@" = "%1$@-%2$@";
 
 /* Labels an order note. The user know it's not visible to the customer. Reads like 05:30 PM - username (Private) */
@@ -418,7 +419,7 @@ which should be translated separately and considered part of this sentence. */
 
 /* Application's Active State
    Display label for the subscription status type
-   Status name of an active Blaze campaign
+   Status name of an approved Blaze campaign
    Status of coupons that are active */
 "Active" = "Ativo";
 
@@ -580,9 +581,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button title in the Shipping Label Payment Method screen */
 "Add credit card" = "Adicionar cartão de crédito";
-
-/* Title of the order customer selection screen. */
-"Add customer details" = "Adicionar detalhes do cliente";
 
 /* Message of the product description AI local announcement. */
 "Add descriptions in a snap with AI. Try our feature today!" = "Adicione descrições em um piscar de olhos com IA. Experimente nossa funcionalidade hoje mesmo!";
@@ -929,7 +927,6 @@ which should be translated separately and considered part of this sentence. */
 "Approve" = "Aprovar";
 
 /* Display label for the review's approved status
-   Status name of an approved Blaze campaign
    Unapprove a comment */
 "Approved" = "Aprovado";
 
@@ -1750,8 +1747,7 @@ which should be translated separately and considered part of this sentence. */
 /* Third instruction on the test order screen */
 "Complete the payment and await a push notification about the order on your WooCommerce app." = "Finalize o pagamento e espere uma notificação por push sobre o pedido no seu app do WooCommerce.";
 
-/* Display label for completed order status.
-   Status name of a completed Blaze campaign */
+/* Display label for completed order status. */
 "Completed" = "Operação concluída";
 
 /* Title for the list of component options in the Component Settings view */
@@ -1902,6 +1898,7 @@ which should be translated separately and considered part of this sentence. */
 /* Action button to contact support when Jetpack install fails
    Button to contact support for login
    Close Account error alert button title - navigates the user to contact support.
+   Contact Support button in the application password tutorial screen
    Contact support button in the connectivity tool screen
    Contact Support title
    Text for the button to contact support from the store picker error screen
@@ -1930,6 +1927,7 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button on the Store Picker screen to select a store
    Button to submit password on the WPCom password login screen of the Jetpack setup flow.
+   Continue button in the application password tutorial screen
    Continue button inside every cell inside Create Shipping Label form
    Continue button on the add product from image form.
    Continue button on the product name field
@@ -2214,8 +2212,7 @@ which should be translated separately and considered part of this sentence. */
 "Currently creation is supported for 100 variations maximum. Generating variations for this product would create %d variations." = "Atualmente, a criação é compatível com 100 variações no máximo. Gerar variações para este produto criaria %d variações.";
 
 /* Name of the section for custom shipment tracking carriers
-   Title of the Analytics Hub Custom selection range
-   Top Performers section title - Custom */
+   Title of the Analytics Hub Custom selection range */
 "Custom" = "Personalizada";
 
 /* Navigation title on the add custom amount view in orders.
@@ -3099,6 +3096,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the exclusions section in Coupon Usage Restrictions screen */
 "Exclusions" = "Exclusões";
 
+/* Button to exit the application password flow. */
+"Exit Anyway" = "Sair mesmo assim";
+
 /* Button to cancel installation on the Jetpack setup interrupted screen */
 "Exit Without Connecting" = "Sair sem conectar";
 
@@ -3255,6 +3255,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the error screen when an in-person payments plugin is active but not set up. %1$@ contains the plugin name. */
 "Finish setup for %1$@ in your store admin" = "Finalizar configuração de %1$@ na administração da loja";
+
+/* Status name of a completed Blaze campaign */
+"Finished" = "Concluído";
 
 /* Country option for a site address. */
 "Finland" = "Finlândia";
@@ -3766,6 +3769,9 @@ which should be translated separately and considered part of this sentence. */
 /* Legal disclaimer for signing up. The underscores _..._ denote underline. */
 "If you continue with Apple or Google and don't already have a WordPress.com account, you are creating an account and you agree to our _Terms of Service_." = "Ao prosseguir com a Apple ou o Google, se ainda não tiver uma conta do WordPress.com, você criará uma conta e concordará com os nossos _Termos de Serviço_.";
 
+/* Text to contact support in the application password tutorial screen */
+"If you encounter any problem, contact us and we will happily assist you!" = "Se tiver qualquer problema, entre em contato conosco e teremos o prazer em ajudar você!";
+
 /* Heading for the details pane showing the contactless limit on About Tap to Pay */
 "Important information" = "Informação importante";
 
@@ -3774,9 +3780,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* A fallback describing the contactless limit, shown on the About Tap to Pay screen. %1$@ will be replaced with the country name of the store, which is a trade off as it can't be contextually translated, however this string is only used when there's a problem decoding the limit, so it's acceptable. */
 "In %1$@, cards may only be used with Tap to Pay for transactions up to the contactless limit." = "Em %1$@, os cartões podem ser usados com o Tap to Pay apenas para transações até o limite do pagamento por aproximação.";
-
-/* Status name of a Blaze campaign under moderation */
-"In Moderation" = "Em moderação";
 
 /* Accessibility label for an indeterminate loading indicator */
 "In progress" = "Em andamento";
@@ -4044,11 +4047,17 @@ which should be translated separately and considered part of this sentence. */
 /* An error message shown when a wpcom user provides the wrong password. */
 "It seems like you've entered an incorrect password. Want to give it another try?" = "Parece que você digitou com uma senha incorreta. Quer tentar novamente?";
 
+/* Title for the unfinished application password alert */
+"It seems that you have not approved the app connection yet. Are you sure you want to exit?" = "Parece que você ainda não aprovou a conexão do aplicativo. Tem certeza de que deseja sair?";
+
 /* An error message displayed when the user tries to log in to the app with site credentials but has application password disabled. Reads like: It seems that your site google.com has Application Password disabled. Please enable it to use the WooCommerce app. */
 "It seems that your site %@ has Application Password disabled. Please enable it to use the WooCommerce app." = "Parece que seu site %@ está com a senha do aplicativo desativada. Ative-a para usar o aplicativo do WooCommerce.";
 
 /* An error message displayed when the user tries to log in to the app with a simple WP.com site. Reads like: It seems that your site google.com is a simple WordPress.com site that cannot install plugins. Please upgrade your plan to use WooCommerce. */
 "It seems that your site %@ is a simple WordPress.com site that cannot install plugins. Please upgrade your plan to use WooCommerce." = "Parece que seu site %@ é um WordPress.com simples não compatível com plugins. Faça upgrade em seu plano para usar o WooCommerce.";
+
+/* Error message explaining login failure due to invalid credentials. */
+"It seems the username or password you entered doesn't quite match. Double-check your credentials and try again." = "Parece que o nome de usuário e a senha que você inseriu não correspondem. Verifique suas credenciais e tente novamente.";
 
 /* Accessibility label for italic button on formatting toolbar. */
 "Italic" = "Itálico";
@@ -5411,7 +5420,8 @@ which should be translated separately and considered part of this sentence. */
 
 /* Display label for pending order status.
    Display label for the review's pending status
-   Display label for the subscription status type */
+   Display label for the subscription status type
+   Status name of an active Blaze campaign */
 "Pending" = "Pendente";
 
 /* Display label for the subscription status type */
@@ -5837,8 +5847,7 @@ which should be translated separately and considered part of this sentence. */
 /* Display label for the product's private status */
 "Privately published" = "Publicado de maneira privada";
 
-/* Display label for processing order status.
-   Status name of a Blaze campaign under processing */
+/* Display label for processing order status. */
 "Processing" = "Processando";
 
 /* Alert title when processing a payment without a user name.
@@ -7745,7 +7754,7 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when the card processor declines the payment. */
 "The card was declined by the payment processor - please try another means of payment" = "O cartão foi recusado pelo processador. Tente outro meio de pagamento.";
 
-/* No comment provided by engineer. */
+/* Message for when the certificate for the server is invalid. The %@ placeholder will be replaced the a host name, received from the API. */
 "The certificate for this server is invalid. You might be connecting to a server that is pretending to be “%@” which could put your confidential information at risk.\n\nWould you like to trust the certificate anyway?" = "O certificado para este servidor é inválido. Você talvez esteja conectando a um servidor que está fingindo ser \"%@\", o que poderia colocar suas informações confidenciais em risco.";
 
 /* Message in the gift card input form when the code is not valid. */
@@ -8005,19 +8014,16 @@ which should be translated separately and considered part of this sentence. */
    Title of button that displays information about the third party software libraries used in the creation of this app */
 "Third Party Licenses" = "Licenças de terceiros";
 
-/* Tab selector title that shows the statistics for this month
-   Top Performers section title - this month */
+/* Tab selector title that shows the statistics for this month */
 "This Month" = "Este mês";
 
 /* The message of the alert when there is an error updating the product SKU */
 "This SKU is used on another product or is invalid." = "O SKU foi usado em outro produto ou é inválido.";
 
-/* Tab selector title that shows the statistics for this week
-   Top Performers section title - this week */
+/* Tab selector title that shows the statistics for this week */
 "This Week" = "Esta semana";
 
-/* Tab selector title that shows the statistics for this year
-   Top Performers section title - this year */
+/* Tab selector title that shows the statistics for this year */
 "This Year" = "Este ano";
 
 /* Explanation in the alert presented when the user tries to connect a Bluetooth card reader with insufficient permissions */
@@ -8040,6 +8046,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error for missing package details on the Add New Custom Package screen in Shipping Label flow */
 "This field is required" = "Este campo é obrigatório";
+
+/* Generic reason for why the user could not login tin the application password tutorial screen */
+"This is because we got an unexpected response from your site." = "Isso é porque recebemos uma resposta inesperada do seu site.";
+
+/* Reason for why the user could not login tin the application password tutorial screen */
+"This is likely because your store has some extra security steps in place." = "Isso pode acontecer porque sua loja tem algumas etapas extras de segurança definidas.";
 
 /* Footer text in Product Slug screen */
 "This is the URL-friendly version of the product title" = "Esta é a versão compatível com URL para o título do produto";
@@ -8173,8 +8185,7 @@ which should be translated separately and considered part of this sentence. */
 /* Label for one of the filters in order date range
    Tab selector title that shows the statistics for today
    Title of the Analytics Hub Today's selection range
-   Today Section Header
-   Top Performers section title - today */
+   Today Section Header */
 "Today" = "Hoje";
 
 /* Accessibility hint for selecting a product in the Select Products screen */
@@ -9051,6 +9062,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the default store picker error screen */
 "We couldn't load your site" = "Não foi possível carregar seu site";
 
+/* Title for the application password tutorial screen */
+"We couldn't log in into your site! 😭" = "Não foi possível fazer login no seu site! 😭";
+
 /* A message displayed through a bottom notice letting the user know that the login from the app link failed */
 "We couldn't process your app login request" = "Não foi possível processar sua solicitação de login no app";
 
@@ -9460,7 +9474,7 @@ which should be translated separately and considered part of this sentence. */
 /* Error message shown when Tap to Pay on iPhone cannot be used because the device does not have a passcode set. */
 "You need to set a lock screen passcode to use Tap to Pay on iPhone" = "É necessário definir uma senha de tela de bloqueio para usar o Tap to Pay on iPhone";
 
-/* No comment provided by engineer. */
+/* Error messaged show when a mobile plugin is redirecting traffict to their site, DudaMobile in particular */
 "You seem to have installed a mobile plugin from DudaMobile which is preventing the app to connect to your blog" = "Parece que você instalou um plugin mobile proveniente de DudaMobile que está evitando o app de se conectar ao seu blog";
 
 /* Subtitle text in the store creation loading screen */
@@ -9599,6 +9613,9 @@ which should be translated separately and considered part of this sentence. */
 /* Markdown content learn more link on the product creation action sheet. Please translate the words while keeping the markdown format and URL. */
 "[Learn more.](https:\/\/automattic.com\/ai-guidelines\/)" = "[Saiba mais.](https:\/\/automattic.com\/ai-guidelines\/)";
 
+/* Text for the 'Cancel' button that appears in the navigation bar, and closes the view */
+"adaptiveModalContainer.views.cancelButtonText" = "Cancelar";
+
 /* Button title to delete the custom amount on the edit custom amount view in orders. */
 "addCustomAmount.deleteButton" = "Excluir valor personalizado";
 
@@ -9641,6 +9658,12 @@ which should be translated separately and considered part of this sentence. */
 /* Label for button that opens a screen to customize the Analytics Hub */
 "analyticsHub.editButton.label" = "Editar";
 
+/* Description when there are no analytics to display in the Analytics Hub. */
+"analyticsHub.emptyState.description" = "Selecione outro período ou toque em Editar para ativar mais análises.";
+
+/* Title when there are no analytics to display in the Analytics Hub. */
+"analyticsHub.emptyState.title" = "Nenhuma análise disponível";
+
 /* Label for button to enable Jetpack Stats */
 "analyticsHub.jetpackStatsCTA.buttonLabel" = "Ativar Estatísticas do Jetpack";
 
@@ -9682,6 +9705,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Widget title, displayed when selecting which widget to add */
 "appLinkWidget.displayName" = "Ícone";
+
+/* Button to send a message to a customer via Telegram */
+"billingInfoViewController.telegram" = "Enviar mensagem pelo Telegram";
+
+/* Button to send a message to a customer via WhatsApp */
+"billingInfoViewController.whatsapp" = "Enviar mensagem pelo WhatsApp";
 
 /* Message to display when a phone number or email address has been copied to clipboard */
 "billingInformationViewController.action.copied" = "Copiado para a área de transferência.";
@@ -10339,6 +10368,24 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility hint for selecting a variable product in the Add Product screen */
 "configurationForBlaze.variableProductRowAccessibilityHint" = "Abre a lista de variações do produto.";
 
+/* Accessibility hint for selecting a product from the order filter screen */
+"configurationForOrder.productRowAccessibilityHint" = "Seleciona o produto para ordem de filtro.";
+
+/* Text for the cancel button in the Product selector screen */
+"configurationForOrder.productSelectorCancel" = "Cancelar";
+
+/* Title for the screen to select product for filtering orders */
+"configurationForOrder.productSelectorTitle" = "Produto";
+
+/* Accessibility hint for selecting a variable product to select product for filtering orders */
+"configurationForOrder.variableProductRowAccessibilityHint" = "Abre a lista de variações do produto.";
+
+/* Title of the order customer selection screen. */
+"configurationForOrderCustomerSection.customerSelectorTitle" = "Adicionar detalhes do cliente";
+
+/* Title for the screen to select customer in order filtering. */
+"configurationForOrderFilter.customerSelectorTitle" = "Escolher um cliente";
+
 /* Action to toggle whether a bundle item is included when it is optional. */
 "configureBundleItem.add" = "Adicionar";
 
@@ -10404,6 +10451,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button in date range picker to add a Custom Range tab */
 "customRangeTabCreationCoordinator.add" = "Adicionar";
+
+/* Message to prompt users to search for customers on the customer search screen */
+"customerSearchUICommand.emptyDefaultStateNoCreationMessage" = "Pesquise um cliente existente";
+
+/* The label that can be shown optionally for guest customers */
+"customerSearchUICommand.guestLabel" = "Convidado";
+
+/* Error message in the Add Customer to order screen when getting the customer information */
+"customerSelectorViewController.guestSelectionDisallowedError" = "Este usuário é um convidado, e convidados não podem ser usados para filtrar pedidos.";
 
 /* Display label for a product's subscription period when it is a single day. */
 "day" = "dia";
@@ -10522,6 +10578,21 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility label to expand an expandable bottom sheet */
 "expandableBottomSheet.chevron.expand" = "Mostrar detalhes";
+
+/* Title of dismiss button for redaction information alert in Custom Range stats tab */
+"fancyAlertViewControllerStats.dismissButton" = "OK";
+
+/* Description for redaction information alert in Custom Range stats tab */
+"fancyAlertViewControllerStats.redactionInfoDescription" = "A funcionalidade de estatísticas não é compatível com a exibição dos dados de conversão e visitantes para intervalos arbitrários. \n\nNo entanto, você pode tocar em um valor no gráfico para ver as conversões e os visitantes daquele intervalo em questão.";
+
+/* Title for redaction information alert in Custom Range stats tab */
+"fancyAlertViewControllerStats.redactionInfoTitle" = "Dados de conversão e visitantes indisponíveis";
+
+/* Row title for filtering orders by customer. */
+"filterOrderListViewModel.OrderListFilter.rowCustomer" = "Cliente";
+
+/* Row title for filtering orders by Product. */
+"filterOrderListViewModel.OrderListFilter.rowTitleProduct" = "Produto";
 
 /* A message that tells the user why the app needs access to Bluetooth. */
 "infoplist.NSBluetoothAlwaysUsageDescription" = "Este aplicativo usa Bluetooth para se conectar a leitores de cartão compatíveis.";
@@ -10783,6 +10854,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the barcode scanning button to add a product to an order */
 "orderForm.products.add.scan.row.title" = "Verificar produto";
 
+/* Title of the primary button on the new order screen when changes need to be manually synced. Tapping the button will send changes to the server, and when complete the totals and taxes will be accurate. */
+"orderForm.recalculate.button.title" = "Recalcular";
+
 /* Label for the row showing the cost of coupon in the order */
 "orderPaymentSection.coupon" = "Cupom";
 
@@ -10857,6 +10931,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Alert message about an unsupported file type when uploading file for a downloadable product. */
 "productDownloadListViewController.notice.unsupportedFileType" = "O tipo de arquivo selecionado não é compatível.";
+
+/* Product title */
+"productForm.defaultTitle" = "Produto";
 
 /* Description of the subscription period for a product. Reads like: 'every 2 months'. */
 "productFormDataModel.subscriptionPeriodFormat" = "a cada %1$@";
@@ -10933,6 +11010,18 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Products tab — plural form of Product */
 "productsTab.tabTitle" = "Produtos";
 
+/* Button to submit selected products to the order, when some product has been selected. */
+"productselectorview.doneButtonTitle.addProductsText" = "Adicionar produtos";
+
+/* Button to dismiss the alert displayed when selecting an invalid time range for analytics */
+"rangedDatePicker.invalidTimeRangeAlert.action" = "Entendi";
+
+/* Message of the alert displayed when selecting an invalid time range for analytics */
+"rangedDatePicker.invalidTimeRangeAlert.message" = "A data de início deve ser anterior à data de término. Selecione um período diferente.";
+
+/* Title of the alert displayed when selecting an invalid time range for analytics */
+"rangedDatePicker.invalidTimeRangeAlert.title" = "Período inválido";
+
 /* Format of the number of product ratings in plural form */
 "rated %ld times" = "classificado %ld vezes";
 
@@ -10966,6 +11055,21 @@ which should be translated separately and considered part of this sentence. */
 
 /* Cancel button title for the Shipping Label purchase flow, shown in the nav bar */
 "shipping.label.navigationBar.cancel.button.title" = "Cancelar";
+
+/* Display text for the daily granularity of store stats on the My Store screen */
+"statsGranularityV4.daily" = "Por dia";
+
+/* Display text for the hourly granularity of store stats on the My Store screen */
+"statsGranularityV4.hourly" = "Por hora";
+
+/* Display text for the monthly granularity of store stats on the My Store screen */
+"statsGranularityV4.monthly" = "Por mês";
+
+/* Display text for the weekly granularity of store stats on the My Store screen */
+"statsGranularityV4.weekly" = "Por semana";
+
+/* Display text for the yearly granularity of store stats on the My Store screen */
+"statsGranularityV4.yearly" = "Por ano";
 
 /* Tab selector title that shows the statistics for today */
 "statsTimeRangeV4.tabTitle.custom" = "Período personalizado";
@@ -11229,6 +11333,9 @@ which should be translated separately and considered part of this sentence. */
 /* Message to show when a request for a WP.com API endpoint is throttled */
 "wordpresskit.api.message.endpoint_throttled" = "Limite atingido. Tente novamente em um minuto. Tentar novamente antes disso só aumentará o tempo de espera para o fim da restrição. Se acha que isso é um erro, fale com o suporte.";
 
+/* Message to show to user when the app can't find WordPress.org REST API URL. */
+"wordpresskit.org-rest-api.not-found" = "Não foi possível encontrar a URL da API REST do seu site. O aplicativo precisa disso para se comunicar com o seu site. Entre em contato com seu host para resolver este problema.";
+
 /* Button to enter security key on the WPCom 2FA login screen */
 "wpCom2FALoginView.securityKeyButton" = "Usar uma chave de segurança";
 
@@ -11277,6 +11384,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Åland Islands" = "Ilhas Aland";
+
+/* Tutorial steps on the application password tutorial screen */
+"⁃ Tap the continue button at the bottom to login directly into your site.\n\n⁃ Once logged in, approve the connection to give access to the woo app like the in the image below." = "⁃ Toque no botão Continuar na parte inferior para fazer login no seu site.\n\n⁃ Depois, aprove a conexão para dar acesso ao aplicativo do Woo como na imagem abaixo.";
 
 /* Title of the local notification to remind the user to purchase a plan. */
 "🌟 Keep your business going!" = "🌟Mantenha os negócios fluindo.";

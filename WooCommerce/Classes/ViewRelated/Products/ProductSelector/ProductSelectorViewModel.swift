@@ -232,6 +232,7 @@ final class ProductSelectorViewModel: ObservableObject {
          pageSize: Int = PaginationTracker.Defaults.pageSize,
          syncApproach: SyncApproach = .onButtonTap,
          orderSyncState: Published<OrderSyncState>.Publisher? = nil,
+         shouldShowNonEditableIndicators: Bool = false,
          onProductSelectionStateChanged: ((Product, Bool) -> Void)? = nil,
          onVariationSelectionStateChanged: ((ProductVariation, Product, Bool) -> Void)? = nil,
          onMultipleSelectionCompleted: (([Int64]) -> Void)? = nil,
@@ -254,6 +255,7 @@ final class ProductSelectorViewModel: ObservableObject {
         self.paginationTracker = PaginationTracker(pageFirstIndex: pageFirstIndex, pageSize: pageSize)
         self.syncApproach = syncApproach
         self.orderSyncState = orderSyncState
+        self.nonEditable = shouldShowNonEditableIndicators
         self.onAllSelectionsCleared = onAllSelectionsCleared
         self.onSelectedVariationsCleared = onSelectedVariationsCleared
         self.onCloseButtonTapped = onCloseButtonTapped
@@ -267,12 +269,27 @@ final class ProductSelectorViewModel: ObservableObject {
         refreshDataAndSync()
         configureFirstPageLoad()
         synchronizeProductFilterSearch()
+        bindShowPlaceholdersState()
         bindSelectionDisabledState()
     }
 
+    private let nonEditable: Bool
     @Published var selectionDisabled: Bool = false
+    @Published var showPlaceholders: Bool = false
 
     private func bindSelectionDisabledState() {
+        orderSyncState?.map({ [weak self] state in
+            switch state {
+            case .syncing(blocking: true):
+                return true
+            default:
+                return self?.nonEditable ?? false
+            }
+        })
+        .assign(to: &$selectionDisabled)
+    }
+
+    private func bindShowPlaceholdersState() {
         orderSyncState?.map({ state in
             switch state {
             case .syncing(blocking: true):
@@ -281,7 +298,7 @@ final class ProductSelectorViewModel: ObservableObject {
                 return false
             }
         })
-        .assign(to: &$selectionDisabled)
+        .assign(to: &$showPlaceholders)
     }
 
     /// Selects or unselects a product to add to the order

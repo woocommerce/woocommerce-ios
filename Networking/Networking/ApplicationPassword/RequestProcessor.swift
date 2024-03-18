@@ -3,8 +3,8 @@ import Foundation
 
 /// Authenticates and retries requests
 ///
-final class RequestProcessor {
-    private var requestsToRetry = [RequestRetryCompletion]()
+final class RequestProcessor: RequestInterceptor {
+    private var requestsToRetry = [(RetryResult) -> Void]()
 
     private var isAuthenticating = false
 
@@ -22,25 +22,23 @@ final class RequestProcessor {
 // MARK: Request Authentication
 //
 extension RequestProcessor: RequestAdapter {
-    func adapt(_ urlRequest: URLRequest) throws -> URLRequest {
-        return try requestAuthenticator.authenticate(urlRequest)
+    func adapt(_ urlRequest: URLRequest, for session: Session, completion: @escaping (Result<URLRequest, Error>) -> Void) {
+        let result = Result { try requestAuthenticator.authenticate(urlRequest) }
+        completion(result)
     }
 }
 
 // MARK: Retrying Request
 //
 extension RequestProcessor: RequestRetrier {
-    func should(_ manager: Alamofire.SessionManager,
-                retry request: Alamofire.Request,
-                with error: Error,
-                completion: @escaping Alamofire.RequestRetryCompletion) {
+    func retry(_ request: Alamofire.Request, for session: Session, dueTo error: Error, completion: @escaping (RetryResult) -> Void) {
         guard
             request.retryCount == 0, // Only retry once
             let urlRequest = request.request,
             requestAuthenticator.shouldRetry(urlRequest), // Retry only REST API requests that use application password
             shouldRetry(error) // Retry only specific errors
         else {
-            return completion(false, 0.0)
+            return completion(.doNotRetry)
         }
 
         requestsToRetry.append(completion)
@@ -91,8 +89,9 @@ private extension RequestProcessor {
     }
 
     func completeRequests(_ shouldRetry: Bool) {
+        let result: RetryResult = shouldRetry ? .retryWithDelay(0) : .doNotRetry
         requestsToRetry.forEach { (completion) in
-            completion(shouldRetry, 0.0)
+            completion(result)
         }
         requestsToRetry.removeAll()
     }

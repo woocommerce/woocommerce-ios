@@ -1,6 +1,9 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 17.7
+In this update, we've made it easier to find one customer's orders, with a new filter by customer option. Analyzing store performance just got more flexible too, with the ability to set custom date ranges for your reports. For iPad and larger iPhones, enjoy a side-by-side view for order creation or editing, maximizing productivity. Plus, we've amped up performance with a new connectivity tool, diagnosing any network hiccups. Download now and unlock smoother, more intuitive store management!
+
 ## 17.6
 Connect with customers effortlessly using WhatsApp and Telegram directly from their orders! Plus, streamline your workflow with our new product-based order filtering. Experience enhanced multitasking with split view support in the Products tab and tailor your analytics dashboard to your needs in the revamped Analytics Hub. Update now for a smoother, more personalized WooCommerce experience!
 
@@ -11,7 +14,7 @@ Our latest update brings under-the-hood improvements to enhance both stability a
 We've fine-tuned the loading of orders and polished up the login process to make your experience even smoother in our latest update. While we're all about moving forward and keeping things fresh, please note that we've had to wave goodbye to iOS 15 support. Dive in to enjoy these tweaks and keep your app experience breezy!
 
 ## 17.3
-We've turbocharged your WooCommerce experience! Now, product images load at lightning speed thanks to our new caching magic, making shopping smoother than ever. Dive deep into your business insights with direct links to full analytics reports right from the Analytics Hub! Plus, we're spilling the beans on where your orders are coming from with shiny new attribution info in order details. And guess what? Starting with WooCommerce 8.7.0, every order comes with a printable receipt. Get ready to zoom ahead! 
+We've turbocharged your WooCommerce experience! Now, product images load at lightning speed thanks to our new caching magic, making shopping smoother than ever. Dive deep into your business insights with direct links to full analytics reports right from the Analytics Hub! Plus, we're spilling the beans on where your orders are coming from with shiny new attribution info in order details. And guess what? Starting with WooCommerce 8.7.0, every order comes with a printable receipt. Get ready to zoom ahead!
 
 ## 17.2
 This version includes optimizations for speed and reliability, along with an exciting upgrade to our Product Creation AI—now smarter and quicker at turning your ideas into sellable products! We're committed to continuously improving the app, making managing your online store more efficient and hassle-free.
@@ -50,7 +53,7 @@ We've made a few updates to improve your WooCommerce app experience! Now, you'll
 In our latest update, we've enhanced your WooCommerce experience! We've optimized the order creation sections to provide a simpler, more intuitive flow. Plus, we've squashed a bug that was showing the wrong customer screen during order creation. Enjoy a smoother, more efficient WooCommerce journey!
 
 ## 16.0
-We're thrilled to roll out the latest updates! 
+We're thrilled to roll out the latest updates!
 
 In this update, we've enhanced the Blaze experience in 'My Store' for more streamlined campaign creation and management. We've also squashed a couple of bugs in our Orders feature, one that showed an incorrect tooltip during Order Creation, and another that displayed an inaccurate discounted total product value in certain scenarios. Excitingly, we've added a new feature that lets you add custom amounts to your orders.
 
@@ -90,7 +93,7 @@ We have made several improvements to help you get your business started. Keep yo
 We've enhanced the order creation process to provide a more streamlined experience. The process of selecting a customer when creating an order has been improved based on your valuable feedback. Your input drives our continuous improvements. Thank you!
 
 ## 14.8
-In this latest update, we're introducing several exciting enhancements to make your app experience even better! You can now filter products based on various new types, including subscription, variable subscription, bundle, and composite. For stores with expired WooExpress plans, upgrading within the app is more convenient than ever. Creating and managing your stores is easier with improved accessibility on the Upgrades screen. Update now to discover all the latest enhancements and improvements! 
+In this latest update, we're introducing several exciting enhancements to make your app experience even better! You can now filter products based on various new types, including subscription, variable subscription, bundle, and composite. For stores with expired WooExpress plans, upgrading within the app is more convenient than ever. Creating and managing your stores is easier with improved accessibility on the Upgrades screen. Update now to discover all the latest enhancements and improvements!
 
 ## 14.7
 Exciting news for new store owners! Firstly, you can now easily upgrade to all available plans. Secondly, gain hands-on experience in managing orders by creating test orders directly within the app!
@@ -116,7 +119,7 @@ Hot news—It's possible to automatically generate conversion-friendly & SEO-opt
 This release includes the option to add multiple coupons when creating an order. Did you know it's possible to generate conversion-friendly & SEO-optimized product descriptions for your WooCommerce products? Try it out! US stores subscribed to the free trial can now upgrade to a paid plan using in-app purchase.
 
 ## 14.2
-Did you know we’re working on a new feature for managing coupons? It's now possible to add coupons when creating an order from the app. You can also manage your coupons by heading over to the menu tab and clicking on the Coupons feature. 
+Did you know we’re working on a new feature for managing coupons? It's now possible to add coupons when creating an order from the app. You can also manage your coupons by heading over to the menu tab and clicking on the Coupons feature.
 
 Lastly, we’ve made some performance tweaks to improve speed of the orders section. But we’re not done. Keep an eye out for more enhancements in the future.
 
@@ -124,7 +127,7 @@ Lastly, we’ve made some performance tweaks to improve speed of the orders sect
 Several exciting developments this week! You can now scan a SKU barcode or QR code to search for a product when creating an order. It's also possible to automatically generate conversion-friendly & SEO-optimized product descriptions for your WooCommerce products and share them using AI. Do try it out and share your feedback!
 
 ## 14.0
-This release includes several bug fixes and improvements to help you get your business started and ensure a smooth experience. Stay tuned for more enhancements in the future. 
+This release includes several bug fixes and improvements to help you get your business started and ensure a smooth experience. Stay tuned for more enhancements in the future.
 
 ## 13.9
 In this update, we've made several improvements to enhance compatibility with third-party plugins, ensuring a smoother experience when loading order lists, product lists, and product variations. All that glitters is not gold — sometimes it's code!
@@ -184,7 +187,7 @@ We’ve made a few enhancements to manage your business. It’s now easier to se
 This release includes a few bug fixes and improvements to products and in person payments. Please continue to send us feedback – we are listening!
 
 ## 12.0
-It's now possible to bulk update product status and prices! Simply go to the Products tab and click on the multi select icon on the top to try it out. 
+It's now possible to bulk update product status and prices! Simply go to the Products tab and click on the multi select icon on the top to try it out.
 
 ## 11.9
 Exciting news! It's possible to generate every variation combinations from your attributes. Please try it out and share your feedback!
@@ -213,10 +216,10 @@ Merchants using the app for taking payments in person will be happy to hear of i
 For this release, we focused on polishing a few things and taking care of minor bugs that our team found, including the option to preview your products before publishing them. Don’t be fooled – we are working on some pretty cool stuff for you all! Keep sharing feedback 💜
 
 ## 11.1
-Have you tried to create or update an order from the app? It's now possible to search for customers when you do! Check it out and please share your feedback! 
+Have you tried to create or update an order from the app? It's now possible to search for customers when you do! Check it out and please share your feedback!
 
 ## 11.0
-Even though this release doesn’t have any surprising new features, we still put a lot of love into it! We fixed a few bugs and made several improvements to make your experience smoother. 
+Even though this release doesn’t have any surprising new features, we still put a lot of love into it! We fixed a few bugs and made several improvements to make your experience smoother.
 
 ## 10.9
 This release includes a lot more stability fixes to help you log in much easier. You can now connect your WordPress.com account with Jetpack and access your store that much faster. We've also updated our app to support devices with iOS 15+ only. Please update your device to iOS 15 to continue to use the app.
@@ -230,23 +233,23 @@ Exciting news! Now you can edit variation prices in bulk. All you need is to hav
 Keep your feedback rolling in; it helps us figure out what to work on next.
 
 ## 10.6
-Exciting news! It's now possible to search for a product by its SKU. All you need is to have the latest version of WooCommerce available on your store! We also focused on polishing a few things and taking care of minor bugs that our team found, like making it easier for you to login to the app and fixing a rare crash when selecting a store in the store picker. 
+Exciting news! It's now possible to search for a product by its SKU. All you need is to have the latest version of WooCommerce available on your store! We also focused on polishing a few things and taking care of minor bugs that our team found, like making it easier for you to login to the app and fixing a rare crash when selecting a store in the store picker.
 
 Keep your feedback rolling in; it helps us figure out what to work on next. 💜
 
 ## 10.5
 
-This release includes a lot of exciting features! It's now possible to duplicate a product from the app. Just tap on the More Menu available inside the Product detail screen. We have also added a new stats widget so now you can view your current day's stats without opening the app. Lastly, due to popular demand, we're bringing back the ability to add/edit customer notes and addresses from the main order screen. 
+This release includes a lot of exciting features! It's now possible to duplicate a product from the app. Just tap on the More Menu available inside the Product detail screen. We have also added a new stats widget so now you can view your current day's stats without opening the app. Lastly, due to popular demand, we're bringing back the ability to add/edit customer notes and addresses from the main order screen.
 
-We welcome your feedback on the app, especially the new features we’re working on. 
+We welcome your feedback on the app, especially the new features we’re working on.
 
 ## 10.4
 
-This release contains a handful of minor improvements to make your experience smoother. It's now possible to set up the Jetpack connection between your self-hosted site and your WP.com account. We continue to make small tweaks and enhancements to the in person payments feature. We hope you notice the love we put into our software. 
+This release contains a handful of minor improvements to make your experience smoother. It's now possible to set up the Jetpack connection between your self-hosted site and your WP.com account. We continue to make small tweaks and enhancements to the in person payments feature. We hope you notice the love we put into our software.
 
 ## 10.3
 
-More love for In-Person Payments and Analytics this time around. We fixed a bug which could prevent you from collecting payments in the app. Card reader connections are more stable. And we fixed an issue where your store's analytics are sometimes not updated. 
+More love for In-Person Payments and Analytics this time around. We fixed a bug which could prevent you from collecting payments in the app. Card reader connections are more stable. And we fixed an issue where your store's analytics are sometimes not updated.
 
 
 ## 10.2

@@ -1,6 +1,29 @@
 import SwiftUI
 import Yosemite
 
+struct PluginListView: View {
+    private let siteID: Int64
+    private let viewModel: PluginListViewModel
+
+    init(siteID: Int64, viewModel: PluginListViewModel) {
+        self.siteID = siteID
+        self.viewModel = viewModel
+    }
+
+    var body: some View {
+        ScrollView {
+            VStack {
+                Divider()
+                ForEach(viewModel.pluginNameList, id: \.self) { pluginName in
+                    PluginDetailsRowView(viewModel: PluginDetailsViewModel(siteID: siteID,
+                                                                           pluginName: pluginName))
+                    Divider()
+                }
+            }
+        }
+    }
+}
+
 struct PluginDetailsRowView: View {
     @ObservedObject var viewModel: PluginDetailsViewModel
 
@@ -32,6 +55,7 @@ struct PluginDetailsRowContent: View {
                 HStack {
                     Text(viewModel.title)
                         .bodyStyle()
+                        .multilineTextAlignment(.leading)
                     Spacer()
                     Text(viewModel.version)
                         .secondaryBodyStyle()

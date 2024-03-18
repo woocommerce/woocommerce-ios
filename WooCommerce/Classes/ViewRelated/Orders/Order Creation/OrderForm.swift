@@ -125,14 +125,17 @@ struct OrderFormPresentationWrapper: View {
                         }
                     }
                 },
-                isShowingSecondaryView: $viewModel.isProductSelectorPresented,
-                onViewContainerDismiss: {
-                    // By only calling the dismissHandler here, we wouldn't sync the selected items on dismissal
-                    // this is normally done via a callback through the ProductSelector's onCloseButtonTapped(),
-                    // but on split views we move this responsibility to the AdaptiveModalContainer
-                    viewModel.syncOrderItemSelectionStateOnDismiss()
-                    dismissHandler()
-                })
+                dismissBarButton: {
+                    Button(OrderForm.Localization.cancelButton) {
+                        // By only calling the dismissHandler here, we wouldn't sync the selected items on dismissal
+                        // this is normally done via a callback through the ProductSelector's onCloseButtonTapped(),
+                        // but on split views we move this responsibility to the AdaptiveModalContainer
+                        viewModel.syncOrderItemSelectionStateOnDismiss()
+                        dismissHandler()
+                    }
+                    .accessibilityIdentifier(OrderForm.Accessibility.cancelButtonIdentifier)
+                },
+                isShowingSecondaryView: $viewModel.isProductSelectorPresented)
         } else {
             OrderForm(dismissHandler: dismissHandler, flow: flow, viewModel: viewModel, presentProductSelector: nil)
         }
@@ -328,6 +331,7 @@ struct OrderForm: View {
                     }
                     .disabled(viewModel.disabled)
                 }
+                .accessibilityIdentifier(Accessibility.orderFormScrollViewIdentifier)
                 .background(Color(.listBackground).ignoresSafeArea())
                 .ignoresSafeArea(.container, edges: [.horizontal])
             }
@@ -383,6 +387,8 @@ struct OrderForm: View {
                     Button(Localization.recalculateButton) {
                         viewModel.onRecalculateTapped()
                     }
+                    .disabled(viewModel.shouldShowNonEditableIndicators)
+                    .accessibilityIdentifier(Accessibility.recalculateButtonIdentifier)
                 case .none:
                     EmptyView()
                 }
@@ -460,6 +466,7 @@ struct OrderForm: View {
             } label: {
                 Text(Localization.recalculateButton)
             }
+            .disabled(viewModel.shouldShowNonEditableIndicators)
             .buttonStyle(PrimaryLoadingButtonStyle(isLoading: loading))
         case .create(let loading):
             Button {
@@ -860,9 +867,11 @@ private extension OrderForm {
     enum Accessibility {
         static let createButtonIdentifier = "new-order-create-button"
         static let cancelButtonIdentifier = "new-order-cancel-button"
+        static let recalculateButtonIdentifier = "new-order-recalculate-button"
         static let doneButtonIdentifier = "edit-order-done-button"
         static let addProductButtonIdentifier = "new-order-add-product-button"
         static let addProductViaSKUScannerButtonIdentifier = "new-order-add-product-via-sku-scanner-button"
+        static let orderFormScrollViewIdentifier = "order-form-scroll-view"
     }
 }
 

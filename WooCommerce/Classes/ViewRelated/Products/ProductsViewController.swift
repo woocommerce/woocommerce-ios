@@ -14,6 +14,7 @@ final class ProductsViewController: UIViewController, GhostableViewController {
     enum NavigationContentType {
         case productForm(product: Product)
         case addProduct(sourceView: AddProductCoordinator.SourceView, isFirstProduct: Bool)
+        case search
     }
 
     let viewModel: ProductListViewModel
@@ -297,14 +298,7 @@ final class ProductsViewController: UIViewController, GhostableViewController {
 private extension ProductsViewController {
     @IBAction func displaySearchProducts() {
         ServiceLocator.analytics.track(.productListMenuSearchTapped)
-
-        let searchViewController = SearchViewController(storeID: siteID,
-                                                        command: ProductSearchUICommand(siteID: siteID),
-                                                        cellType: ProductsTabProductTableViewCell.self,
-                                                        cellSeparator: .none)
-        let navigationController = WooNavigationController(rootViewController: searchViewController)
-
-        present(navigationController, animated: true, completion: nil)
+        navigateToContent(.search)
     }
 
     @objc func scanProducts() {

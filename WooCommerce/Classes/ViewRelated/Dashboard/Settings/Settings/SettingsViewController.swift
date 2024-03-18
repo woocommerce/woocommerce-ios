@@ -367,13 +367,18 @@ private extension SettingsViewController {
     }
 
     func sitePluginsWasPressed() {
-        // TODO: do we need analytics to track tap here?
         guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
             return DDLogError("⛔️ Cannot find ID for current site to load plugins for!")
         }
-        let viewModel = PluginListViewModel(siteID: siteID)
-        let viewController = PluginListViewController(viewModel: viewModel)
-        show(viewController, sender: self)
+        let pluginListViewModel = PluginListViewModel(siteID: siteID)
+        let pluginListHostingController = UIHostingController(rootView: PluginListView(siteID: siteID, viewModel: pluginListViewModel))
+
+        // Since UIHostingController does not have a navigation bar by itself, we need
+        // to wrap it into a navigation controller if we want to set a title in the resulting view
+        pluginListHostingController.title = Localization.plugins
+        let navigationController = UINavigationController(rootViewController: pluginListHostingController)
+
+        present(navigationController, animated: true)
     }
 
     func supportWasPressed() {

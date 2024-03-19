@@ -10,15 +10,15 @@ final class WooAboutScreenConfiguration: AboutScreenConfiguration {
                 AboutItem(title: Localization.Titles.rateUs, action: { [weak self] context in
                     self?.present(url: Links.rateUs,
                                   from: context.viewController)
-                }),
+                }, accessoryViewSystemImage: (name: "star", tintColor: UIColor.withColorStudio(.wooCommercePurple))),
                 AboutItem(title: Localization.Titles.share, action: { [weak self] context in
                     self?.presentShareSheet(from: context.viewController,
                                             sourceView: context.sourceView)
-                }),
-                AboutItem(title: Localization.Titles.instagram, cellStyle: .value1, action: { [weak self] context in
+                }, accessoryViewSystemImage: (name: "square.and.arrow.up", tintColor: UIColor.withColorStudio(.wooCommercePurple))),
+                AboutItem(title: Localization.Titles.instagram, subtitle: Localization.Subtitles.instagram, cellStyle: .value1, action: { [weak self] context in
                     self?.present(url: Links.instagram, from: context.viewController)
                 }),
-                AboutItem(title: Localization.Titles.twitter, subtitle: Localization.Subtitles.twitter, cellStyle: .value1, action: { [weak self] context in
+                AboutItem(title: Localization.Titles.xCom, subtitle: Localization.Subtitles.twitter, cellStyle: .value1, action: { [weak self] context in
                     self?.present(url: Links.twitter, from: context.viewController)
                 }),
                 AboutItem(title: Localization.Titles.website, subtitle: Localization.Subtitles.website, cellStyle: .value1, action: { [weak self] context in
@@ -137,7 +137,7 @@ private extension WooAboutScreenConfiguration {
             static let share             = NSLocalizedString("Share with Friends", comment: "Title for button allowing users to share "
                                                              + "information about the app with friends, such as via Messages")
             static let instagram        = NSLocalizedString("Instagram", comment: "Title of a button linking to the app's Instagram profile")
-            static let twitter          = NSLocalizedString("Twitter", comment: "Title of a button linking to the app's Twitter profile")
+            static let xCom          = NSLocalizedString("X", comment: "Title of a button linking to the app's X profile")
             static let website          = NSLocalizedString("Website", comment: "Title of a button linking to the app's website")
             static let blog             = NSLocalizedString("Blog", comment: "Title of a button linking to the app's blog")
             static let legalAndMore     = NSLocalizedString("Legal and more", comment: "Title of a button linking to a list of legal documents "
@@ -149,6 +149,7 @@ private extension WooAboutScreenConfiguration {
         enum Subtitles {
             static let website          = "woocommerce.app"
             static let blog             = "woo.com/blog"
+            static let instagram        = "@woocommerce"
             static let twitter          = "@woocommerce"
             static let workWithUs       = NSLocalizedString("Join from anywhere",
                                                             comment: "Subtitle for button displaying the Automattic Work With Us web page, "

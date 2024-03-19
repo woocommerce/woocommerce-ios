@@ -285,6 +285,27 @@ private extension CustomerStore {
         }
     }
 
+    private func upsertWCAnalyticsCustomersAndSave(siteID: Int64,
+                                                   readOnlyCustomers: [WCAnalyticsCustomer],
+                                                   shouldDeleteExistingCustomers: Bool = false,
+                                                   keyword: String? = nil,
+                                                   in storage: StorageType,
+                                                   onCompletion: @escaping () -> Void) {
+        storage.perform { [weak self] in
+            if shouldDeleteExistingCustomers {
+                storage.deleteWCAnalyticsCustomers(siteID: siteID)
+            }
+
+            readOnlyCustomers.forEach {
+                self?.upsertWCAnalyticsCustomer(siteID: siteID, readOnlyCustomer: $0, keyword: keyword, in: storage)
+            }
+        }
+
+        storageManager.saveDerivedType(derivedStorage: storage) {
+            DispatchQueue.main.async(execute: onCompletion)
+        }
+    }
+
     /// Inserts or updates Customer entities into Storage
     ///
     private func upsertCustomer(siteID: Int64, readOnlyCustomer: StorageCustomerConvertible, keyword: String? = nil, in storage: StorageType) {
@@ -303,6 +324,31 @@ private extension CustomerStore {
         if let keyword = keyword {
             let storedSearchResult = self.sharedDerivedStorage.loadCustomerSearchResult(siteID: siteID, keyword: keyword) ??
             self.sharedDerivedStorage.insertNewObject(ofType: Storage.CustomerSearchResult.self)
+
+            storedSearchResult.siteID = siteID
+            storedSearchResult.keyword = keyword
+
+            storedSearchResult.addToCustomers(storageCustomer)
+        }
+
+        storageCustomer.update(with: readOnlyCustomer)
+    }
+
+    /// Inserts or update WCAnalyticsCustomer entities into Storage
+    ///
+    private func upsertWCAnalyticsCustomer(siteID: Int64, readOnlyCustomer: WCAnalyticsCustomer, keyword: String? = nil, in storage: StorageType) {
+        let storageCustomer: Storage.WCAnalyticsCustomer = {
+            if let storedCustomer = storage.loadWCAnalyticsCustomer(siteID: siteID, customerID: readOnlyCustomer.customerID) {
+                return storedCustomer
+            } else {
+                return storage.insertNewObject(ofType: Storage.WCAnalyticsCustomer.self)
+            }
+        }()
+
+        if let keyword {
+            let storedSearchResult = self.sharedDerivedStorage
+                .loadWCAnalyticsCustomerSearchResult(siteID: siteID, keyword: keyword) ??
+            self.sharedDerivedStorage.insertNewObject(ofType: Storage.WCAnalyticsCustomerSearchResult.self)
 
             storedSearchResult.siteID = siteID
             storedSearchResult.keyword = keyword

@@ -194,7 +194,7 @@ final class BlazeCampaignListViewModelTests: XCTestCase {
     func test_campaignModels_match_loaded_campaigns() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let campaign = BlazeCampaignListItem.fake().copy(siteID: sampleSiteID)
+        let campaign = BlazeCampaignListItem.fake().copy(siteID: sampleSiteID, budgetCurrency: "USD")
         stores.whenReceivingAction(ofType: BlazeAction.self) { action in
             guard case let .synchronizeCampaignsList(_, _, _, onCompletion) = action else {
                 return
@@ -232,8 +232,8 @@ final class BlazeCampaignListViewModelTests: XCTestCase {
     func test_campaignModels_are_sorted_by_id() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let campaignWithSmallerID = BlazeCampaignListItem.fake().copy(siteID: sampleSiteID, campaignID: "1")
-        let campaignWithLargerID = BlazeCampaignListItem.fake().copy(siteID: sampleSiteID, campaignID: "3")
+        let campaignWithSmallerID = BlazeCampaignListItem.fake().copy(siteID: sampleSiteID, campaignID: "1", budgetCurrency: "USD")
+        let campaignWithLargerID = BlazeCampaignListItem.fake().copy(siteID: sampleSiteID, campaignID: "3", budgetCurrency: "USD")
         stores.whenReceivingAction(ofType: BlazeAction.self) { action in
             guard case let .synchronizeCampaignsList(_, _, _, onCompletion) = action else {
                 return

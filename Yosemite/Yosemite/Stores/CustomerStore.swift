@@ -77,6 +77,8 @@ public final class CustomerStore: Store {
                                           order: order,
                                           filterEmpty: filterEmpty,
                                           onCompletion: onCompletion)
+        case let .synchronizeAllCustomers(siteID, pageNumber, pageSize, onCompletion):
+            synchronizeAllCustomers(siteID: siteID, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
         case .deleteAllCustomers(siteID: let siteID, onCompletion: let onCompletion):
             deleteAllCustomers(from: siteID, onCompletion: onCompletion)
         }
@@ -179,6 +181,26 @@ public final class CustomerStore: Store {
                     onCompletion(.success(!customers.isEmpty))
                 })
             case .failure(let error):
+                onCompletion(.failure(error))
+            }
+        }
+    }
+
+    func synchronizeAllCustomers(siteID: Int64,
+                                 pageNumber: Int,
+                                 pageSize: Int,
+                                 onCompletion: @escaping (Result<Bool, Error>) -> Void) {
+        wcAnalyticsCustomerRemote.loadCustomers(for: siteID, orderby: .dateLastActive, order: .desc) { [weak self] result in
+            guard let self else { return }
+            switch result {
+            case let .success(customers):
+                self.upsertWCAnalyticsCustomersAndSave(siteID: siteID,
+                                                       readOnlyCustomers: customers,
+                                                       shouldDeleteExistingCustomers: pageNumber == 1,
+                                                       in: self.sharedDerivedStorage) {
+                    onCompletion(.success(!customers.isEmpty))
+                }
+            case let .failure(error):
                 onCompletion(.failure(error))
             }
         }

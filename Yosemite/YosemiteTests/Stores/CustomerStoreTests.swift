@@ -265,4 +265,58 @@ final class CustomerStoreTests: XCTestCase {
 
         XCTAssertEqual(customersAfterDeleting.count, 0)
     }
+
+    func test_synchronizeAllCustomers_retrieves_and_stores_WCAnalyticsCustomers_upon_success() {
+        network.simulateResponse(requestUrlSuffix: "customers", filename: "wc-analytics-customers")
+
+        // When
+        let result = waitFor { promise in
+            let action = CustomerAction.synchronizeAllCustomers(siteID: self.dummySiteID,
+                                                                pageNumber: 1,
+                                                                pageSize: 2) { result in
+                promise(result)
+            }
+            self.dispatcher.dispatch(action)
+        }
+
+        let customers = viewStorage
+            .loadAllWCAnalyticsCustomers(siteID: dummySiteID)
+            .map { $0.toReadOnly() }
+            .sorted(by: { $0.customerID < $1.customerID })
+
+        guard case .success(let thereAreCustomers) = result else {
+            XCTFail()
+
+            return
+        }
+
+        XCTAssertTrue(thereAreCustomers)
+        assertEqual(4, customers.count)
+        assertEqual(0, customers[0].customerID)
+        assertEqual(1, customers[1].customerID)
+        assertEqual(2, customers[2].customerID)
+        assertEqual(3, customers[3].customerID)
+        assertEqual("Matt The Unregistered", customers[0].name)
+        assertEqual("John", customers[1].name)
+        assertEqual("Paul", customers[2].name)
+        assertEqual("John Doe", customers[3].name)
+    }
+
+    func test_synchronizeAllCustomers_returns_Error_upon_failure() {
+        // Given
+        let expectedError = NetworkError.notFound()
+        network.simulateError(requestUrlSuffix: "", error: expectedError)
+
+        // When
+        let result: Result<Bool, Error> = waitFor { promise in
+            let action = CustomerAction.synchronizeAllCustomers(siteID: self.dummySiteID, pageNumber: 1, pageSize: 2) { result in
+                promise(result)
+            }
+            self.store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        XCTAssertEqual(result.failure as? NetworkError, expectedError)
+    }
 }

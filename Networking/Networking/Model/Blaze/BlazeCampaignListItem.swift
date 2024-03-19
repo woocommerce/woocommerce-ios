@@ -48,7 +48,7 @@ public struct BlazeCampaignListItem: Decodable, Equatable, GeneratedFakeable, Ge
     /// Can be total or daily amount, so check `budgetMode` to identify this.
     public let budgetAmount: Double
 
-    /// Currency used in `budgetAmount`.
+    /// Currency used in `budgetAmount`. Default to be USD.
     public let budgetCurrency: String
 
     public init(siteID: Int64,
@@ -141,7 +141,7 @@ public extension BlazeCampaignListItem {
         Status(rawValue: uiStatus) ?? .unknown
     }
 
-    enum BudgetMode: String {
+    enum BudgetMode: String, GeneratedFakeable {
         case total
         case daily
     }

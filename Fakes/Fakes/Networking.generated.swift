@@ -200,6 +200,13 @@ extension Networking.BlazeCampaignListItem {
         )
     }
 }
+extension Networking.BlazeCampaignListItem.BudgetMode {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.BlazeCampaignListItem.BudgetMode {
+        .total
+    }
+}
 extension Networking.BlazeForecastedImpressionsInput {
     /// Returns a "ready to use" type filled with fake values.
     ///

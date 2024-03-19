@@ -510,6 +510,7 @@
 		CE4FD4462350EB7600A16B31 /* Refund+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Refund+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		CE831FE12A14F6C800E8BEFB /* Model 87.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 87.xcdatamodel"; sourceTree = "<group>"; };
 		CEC963062B173F4700688EA3 /* Model 104.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 104.xcdatamodel"; sourceTree = "<group>"; };
+		CECE6BB42BA9CA1700A57C1F /* Model 110.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 110.xcdatamodel"; sourceTree = "<group>"; };
 		CEDA78632B31D0E00076AA09 /* Model 105.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 105.xcdatamodel"; sourceTree = "<group>"; };
 		CEE482D22B83753100FAC8C5 /* AnalyticsCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsCard.swift; sourceTree = "<group>"; };
 		CEE9188229F7E60C004B23FF /* Model 85.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 85.xcdatamodel"; sourceTree = "<group>"; };
@@ -1973,6 +1974,7 @@
 		DEC51AA4275B41BE009F3DF4 /* WooCommerce.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				CECE6BB42BA9CA1700A57C1F /* Model 110.xcdatamodel */,
 				DEA0D0692BA953D3007786F2 /* Model 109.xcdatamodel */,
 				EE36A1722B96014C00EC0044 /* Model 108.xcdatamodel */,
 				EE3D1E7A2B8EA5110016B132 /* Model 107.xcdatamodel */,

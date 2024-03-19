@@ -24,13 +24,14 @@ extension Storage.BlazeCampaignListItem: ReadOnlyConvertible {
         clicks = campaign.clicks
         totalBudget = campaign.totalBudget
         spentBudget = campaign.spentBudget
-        // TODO-12301: map values between storage and networking models for budget fields
+        budgetAmount = campaign.budgetAmount
+        budgetCurrency = campaign.budgetCurrency
+        budgetMode = campaign.budgetMode.rawValue
     }
 
     /// Returns a ReadOnly (`Networking.BlazeCampaignListItem`) version of the `Storage.BlazeCampaignListItem`
     ///
     public func toReadOnly() -> BlazeCampaignListItem {
-        // TODO-12301: map values between storage and networking models for budget fields
         BlazeCampaignListItem(siteID: siteID,
                               campaignID: campaignID,
                               productID: productID?.int64Value,
@@ -43,8 +44,8 @@ extension Storage.BlazeCampaignListItem: ReadOnlyConvertible {
                               clicks: clicks,
                               totalBudget: totalBudget,
                               spentBudget: spentBudget,
-                              budgetMode: .total,
-                              budgetAmount: 0,
-                              budgetCurrency: "USD")
+                              budgetMode: BlazeCampaignListItem.BudgetMode(rawValue: budgetMode) ?? .total,
+                              budgetAmount: budgetAmount,
+                              budgetCurrency: budgetCurrency)
     }
 }

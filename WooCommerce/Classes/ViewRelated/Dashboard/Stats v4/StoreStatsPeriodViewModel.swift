@@ -204,9 +204,16 @@ private extension StoreStatsPeriodViewModel {
                 return nil
             }
         }
-
+        guard let selectedIndex = selectedIntervalIndex else {
+            return StatsTimeRangeBarViewModel(startDate: startDate,
+                                              endDate: endDate,
+                                              timeRange: timeRange,
+                                              timezone: siteTimezone)
+        }
+        let date = orderStatsIntervals[selectedIndex].dateStart(timeZone: siteTimezone)
         return StatsTimeRangeBarViewModel(startDate: startDate,
                                           endDate: endDate,
+                                          selectedDate: date,
                                           timeRange: timeRange,
                                           timezone: siteTimezone)
     }

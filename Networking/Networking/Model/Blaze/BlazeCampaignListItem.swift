@@ -120,7 +120,6 @@ public struct BlazeCampaignListItem: Decodable, Equatable, GeneratedFakeable, Ge
         }()
         budgetAmount = budget?.amount ?? totalBudget
         budgetCurrency = budget?.currency ?? "USD"
-        
     }
 }
 

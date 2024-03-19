@@ -104,32 +104,32 @@ extension StatsGranularityV4 {
         switch self {
         case .daily:
             NSLocalizedString(
-                "statsGranularityV4.daily",
-                value: "By day",
+                "statsGranularityV4.dailyInterval",
+                value: "Daily intervals",
                 comment: "Display text for the daily granularity of store stats on the My Store screen"
             )
         case .hourly:
             NSLocalizedString(
-                "statsGranularityV4.hourly",
-                value: "By hour",
+                "statsGranularityV4.hourlyInterval",
+                value: "Hourly intervals",
                 comment: "Display text for the hourly granularity of store stats on the My Store screen"
             )
         case .weekly:
             NSLocalizedString(
-                "statsGranularityV4.weekly",
-                value: "By week",
+                "statsGranularityV4.weeklyInterval",
+                value: "Weekly intervals",
                 comment: "Display text for the weekly granularity of store stats on the My Store screen"
             )
         case .monthly:
             NSLocalizedString(
-                "statsGranularityV4.monthly",
-                value: "By month",
+                "statsGranularityV4.monthlyInterval",
+                value: "Monthly intervals",
                 comment: "Display text for the monthly granularity of store stats on the My Store screen"
             )
         case .yearly:
             NSLocalizedString(
-                "statsGranularityV4.yearly",
-                value: "By year",
+                "statsGranularityV4.yearlyInterval",
+                value: "Yearly intervals",
                 comment: "Display text for the yearly granularity of store stats on the My Store screen"
             )
         }

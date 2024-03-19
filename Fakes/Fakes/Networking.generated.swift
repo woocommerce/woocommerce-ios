@@ -2264,10 +2264,20 @@ extension Networking.WCAnalyticsCustomer {
     public static func fake() -> Networking.WCAnalyticsCustomer {
         .init(
             siteID: .fake(),
+            customerID: .fake(),
             userID: .fake(),
             name: .fake(),
             email: .fake(),
-            username: .fake()
+            username: .fake(),
+            dateRegistered: .fake(),
+            dateLastActive: .fake(),
+            ordersCount: .fake(),
+            totalSpend: .fake(),
+            averageOrderValue: .fake(),
+            country: .fake(),
+            region: .fake(),
+            city: .fake(),
+            postcode: .fake()
         )
     }
 }

@@ -1,5 +1,10 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+17.9
+-----
+- [**] Orders: now it's possible to swiftly delete orders right from the Order Detail page.
+
+
 17.8
 -----
 

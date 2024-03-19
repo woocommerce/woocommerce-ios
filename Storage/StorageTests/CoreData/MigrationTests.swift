@@ -2699,6 +2699,37 @@ final class MigrationTests: XCTestCase {
         // Assert
         XCTAssertFalse(targetEntitiesNames.contains("BlazeCampaign"))
     }
+
+    func test_migrating_from_108_to_109_adds_new_budget_attributes_to_BlazeCampaignListItem() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 108")
+        let sourceContext = sourceContainer.viewContext
+
+        let campaign = insertBlazeCampaignListItem(to: sourceContext)
+        try sourceContext.save()
+
+        // Confidence check: new budget attributes are not present
+        XCTAssertNil(campaign.entity.attributesByName["budgetAmount"])
+        XCTAssertNil(campaign.entity.attributesByName["budgetCurrency"])
+        XCTAssertNil(campaign.entity.attributesByName["budgetMode"])
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 109")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+        let migratedEntity = try XCTUnwrap(targetContext.first(entityName: "BlazeCampaignListItem"))
+
+        // Check default values for new budget attributes
+        let budgetAmount = try XCTUnwrap(migratedEntity.value(forKey: "budgetAmount") as? Double)
+        XCTAssertEqual(budgetAmount, 0)
+
+        let budgetCurrency = try XCTUnwrap(migratedEntity.value(forKey: "budgetCurrency") as? String)
+        XCTAssertEqual(budgetCurrency, "USD")
+
+        let budgetMode = try XCTUnwrap(migratedEntity.value(forKey: "budgetMode") as? String)
+        XCTAssertEqual(budgetMode, "total")
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations

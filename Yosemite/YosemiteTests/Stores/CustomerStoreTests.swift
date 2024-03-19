@@ -96,7 +96,11 @@ final class CustomerStoreTests: XCTestCase {
 
         // When
         let result = waitFor { promise in
-            let action = CustomerAction.synchronizeLightCustomersData(siteID: self.dummySiteID, pageNumber: 1, pageSize: 2) { result in
+            let action = CustomerAction.synchronizeLightCustomersData(siteID: self.dummySiteID,
+                                                                      pageNumber: 1,
+                                                                      pageSize: 2,
+                                                                      orderby: .name,
+                                                                      order: .asc) { result in
                 promise(result)
             }
             self.dispatcher.dispatch(action)
@@ -139,6 +143,8 @@ final class CustomerStoreTests: XCTestCase {
                 siteID: self.dummySiteID,
                 pageNumber: 1,
                 pageSize: 25,
+                orderby: .name,
+                order: .asc,
                 keyword: self.dummyKeyword,
                 retrieveFullCustomersData: true,
                 filter: .name) { result in
@@ -165,6 +171,8 @@ final class CustomerStoreTests: XCTestCase {
             let action = CustomerAction.searchCustomers(siteID: self.dummySiteID,
                                                         pageNumber: 1,
                                                         pageSize: 25,
+                                                        orderby: .name,
+                                                        order: .asc,
                                                         keyword: self.dummyKeyword,
                                                         retrieveFullCustomersData: true,
                                                         filter: .name) { result in
@@ -220,6 +228,8 @@ final class CustomerStoreTests: XCTestCase {
             let action = CustomerAction.searchCustomers(siteID: self.dummySiteID,
                                                         pageNumber: 1,
                                                         pageSize: 25,
+                                                        orderby: .name,
+                                                        order: .asc,
                                                         keyword: self.dummyKeyword,
                                                         retrieveFullCustomersData: true,
                                                         filter: .name) { result in

@@ -71,14 +71,12 @@ private extension StatsTimeRangeV4 {
 struct StatsTimeRangeBarViewModel: Equatable {
     let timeRangeText: String
     let isTimeRangeEditable: Bool
-    let granularityText: String?
 
     init(startDate: Date,
          endDate: Date,
          timeRange: StatsTimeRangeV4,
          timezone: TimeZone) {
         isTimeRangeEditable = timeRange.isCustomTimeRange
-        granularityText = timeRange.isCustomTimeRange ? timeRange.intervalGranularity.displayText : nil
         timeRangeText = timeRange.timeRangeText(startDate: startDate,
                                                 endDate: endDate,
                                                 timezone: timezone)
@@ -91,47 +89,9 @@ struct StatsTimeRangeBarViewModel: Equatable {
          timezone: TimeZone) {
         // Disable editing time range when selecting a specific date on the graph
         isTimeRangeEditable = false
-        granularityText = nil
         timeRangeText = timeRange.timeRangeText(startDate: startDate,
                                                 endDate: endDate,
                                                 selectedDate: selectedDate,
                                                 timezone: timezone)
-    }
-}
-
-extension StatsGranularityV4 {
-    var displayText: String {
-        switch self {
-        case .daily:
-            NSLocalizedString(
-                "statsGranularityV4.dailyInterval",
-                value: "Daily intervals",
-                comment: "Display text for the daily granularity of store stats on the My Store screen"
-            )
-        case .hourly:
-            NSLocalizedString(
-                "statsGranularityV4.hourlyInterval",
-                value: "Hourly intervals",
-                comment: "Display text for the hourly granularity of store stats on the My Store screen"
-            )
-        case .weekly:
-            NSLocalizedString(
-                "statsGranularityV4.weeklyInterval",
-                value: "Weekly intervals",
-                comment: "Display text for the weekly granularity of store stats on the My Store screen"
-            )
-        case .monthly:
-            NSLocalizedString(
-                "statsGranularityV4.monthlyInterval",
-                value: "Monthly intervals",
-                comment: "Display text for the monthly granularity of store stats on the My Store screen"
-            )
-        case .yearly:
-            NSLocalizedString(
-                "statsGranularityV4.yearlyInterval",
-                value: "Yearly intervals",
-                comment: "Display text for the yearly granularity of store stats on the My Store screen"
-            )
-        }
     }
 }

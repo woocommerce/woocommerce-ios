@@ -1,4 +1,5 @@
 import Foundation
+import Networking
 
 /// The type of filter when searching for customers.
 public enum CustomerSearchFilter: String, Equatable, CaseIterable {
@@ -21,6 +22,9 @@ public enum CustomerAction: Action {
         siteID: Int64,
         pageNumber: Int,
         pageSize: Int,
+        orderby: WCAnalyticsCustomerRemote.OrderBy,
+        order: WCAnalyticsCustomerRemote.Order,
+        filterEmpty: WCAnalyticsCustomerRemote.FilterEmpty? = nil,
         onCompletion: (Result<Bool, Error>) -> Void)
 
     /// Searches for Customers by keyword. Currently, only searches by name.
@@ -39,9 +43,12 @@ public enum CustomerAction: Action {
         siteID: Int64,
         pageNumber: Int,
         pageSize: Int,
+        orderby: WCAnalyticsCustomerRemote.OrderBy,
+        order: WCAnalyticsCustomerRemote.Order,
         keyword: String,
         retrieveFullCustomersData: Bool,
         filter: CustomerSearchFilter,
+        filterEmpty: WCAnalyticsCustomerRemote.FilterEmpty? = nil,
         onCompletion: (Result<(), Error>) -> Void)
 
     /// Retrieves a single Customer from a site

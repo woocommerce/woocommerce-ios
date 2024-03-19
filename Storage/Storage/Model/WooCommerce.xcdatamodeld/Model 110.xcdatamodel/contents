@@ -956,6 +956,12 @@
         <attribute name="totalSpend" optional="YES" attributeType="Decimal" defaultValueString="0.0"/>
         <attribute name="userID" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="username" optional="YES" attributeType="String"/>
+        <relationship name="searchResults" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="WCAnalyticsCustomerSearchResult" inverseName="customers" inverseEntity="WCAnalyticsCustomerSearchResult"/>
+    </entity>
+    <entity name="WCAnalyticsCustomerSearchResult" representedClassName="WCAnalyticsCustomerSearchResult" syncable="YES">
+        <attribute name="keyword" optional="YES" attributeType="String"/>
+        <attribute name="siteID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <relationship name="customers" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="WCAnalyticsCustomer" inverseName="searchResults" inverseEntity="WCAnalyticsCustomer"/>
     </entity>
     <entity name="WCPayCardPaymentDetails" representedClassName="WCPayCardPaymentDetails" syncable="YES">
         <attribute name="brand" attributeType="String"/>

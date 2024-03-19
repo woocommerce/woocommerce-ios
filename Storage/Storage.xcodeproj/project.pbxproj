@@ -209,6 +209,8 @@
 		CE4FD44E2350EB7600A16B31 /* Refund+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE4FD4462350EB7600A16B31 /* Refund+CoreDataProperties.swift */; };
 		CECE6BB92BA9D03700A57C1F /* WCAnalyticsCustomer+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = CECE6BB52BA9D03700A57C1F /* WCAnalyticsCustomer+CoreDataClass.swift */; };
 		CECE6BBA2BA9D03700A57C1F /* WCAnalyticsCustomer+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = CECE6BB62BA9D03700A57C1F /* WCAnalyticsCustomer+CoreDataProperties.swift */; };
+		CECE6BBB2BA9D03700A57C1F /* WCAnalyticsCustomerSearchResult+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = CECE6BB72BA9D03700A57C1F /* WCAnalyticsCustomerSearchResult+CoreDataClass.swift */; };
+		CECE6BBC2BA9D03700A57C1F /* WCAnalyticsCustomerSearchResult+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = CECE6BB82BA9D03700A57C1F /* WCAnalyticsCustomerSearchResult+CoreDataProperties.swift */; };
 		CEE482D32B83753100FAC8C5 /* AnalyticsCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEE482D22B83753100FAC8C5 /* AnalyticsCard.swift */; };
 		CEE9188929F7E8D2004B23FF /* OrderGiftCard+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEE9188729F7E8D2004B23FF /* OrderGiftCard+CoreDataClass.swift */; };
 		CEE9188A29F7E8D2004B23FF /* OrderGiftCard+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEE9188829F7E8D2004B23FF /* OrderGiftCard+CoreDataProperties.swift */; };
@@ -515,6 +517,8 @@
 		CECE6BB42BA9CA1700A57C1F /* Model 110.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 110.xcdatamodel"; sourceTree = "<group>"; };
 		CECE6BB52BA9D03700A57C1F /* WCAnalyticsCustomer+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WCAnalyticsCustomer+CoreDataClass.swift"; sourceTree = "<group>"; };
 		CECE6BB62BA9D03700A57C1F /* WCAnalyticsCustomer+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WCAnalyticsCustomer+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		CECE6BB72BA9D03700A57C1F /* WCAnalyticsCustomerSearchResult+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WCAnalyticsCustomerSearchResult+CoreDataClass.swift"; sourceTree = "<group>"; };
+		CECE6BB82BA9D03700A57C1F /* WCAnalyticsCustomerSearchResult+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WCAnalyticsCustomerSearchResult+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		CEDA78632B31D0E00076AA09 /* Model 105.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 105.xcdatamodel"; sourceTree = "<group>"; };
 		CEE482D22B83753100FAC8C5 /* AnalyticsCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsCard.swift; sourceTree = "<group>"; };
 		CEE9188229F7E60C004B23FF /* Model 85.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 85.xcdatamodel"; sourceTree = "<group>"; };
@@ -935,6 +939,8 @@
 				6889089628F66DED0081A07E /* CustomerSearchResult+CoreDataProperties.swift */,
 				CECE6BB52BA9D03700A57C1F /* WCAnalyticsCustomer+CoreDataClass.swift */,
 				CECE6BB62BA9D03700A57C1F /* WCAnalyticsCustomer+CoreDataProperties.swift */,
+				CECE6BB72BA9D03700A57C1F /* WCAnalyticsCustomerSearchResult+CoreDataClass.swift */,
+				CECE6BB82BA9D03700A57C1F /* WCAnalyticsCustomerSearchResult+CoreDataProperties.swift */,
 				D4466F5426D524D1003E931B /* WhatsNew */,
 				268BF6D92642CBA5003948D8 /* Copiable */,
 				0371C37F28781D1F00277E2C /* Feature Announcements */,
@@ -1365,6 +1371,7 @@
 				CC6A054428770933002C144E /* OrderMetaData+CoreDataProperties.swift in Sources */,
 				D4ABCACF26D6E7E400CD18F4 /* Announcement.swift in Sources */,
 				AE93BE90272C0E9F001B55EA /* GeneralStoreSettings.swift in Sources */,
+				CECE6BBC2BA9D03700A57C1F /* WCAnalyticsCustomerSearchResult+CoreDataProperties.swift in Sources */,
 				031C1EA227AD3AFE00298699 /* WCPayCharge+CoreDataProperties.swift in Sources */,
 				D87F61552265AA900031A13B /* PListFileStorage.swift in Sources */,
 				CC80E406294B33C200D5FF45 /* SiteSummaryStats+CoreDataClass.swift in Sources */,
@@ -1506,6 +1513,7 @@
 				4501068B2399AC9B00E24722 /* TaxClass+CoreDataProperties.swift in Sources */,
 				74F009C02183B99B002B4566 /* Note+CoreDataClass.swift in Sources */,
 				031C1EA527AD3AFE00298699 /* WCPayCardPaymentDetails+CoreDataClass.swift in Sources */,
+				CECE6BBB2BA9D03700A57C1F /* WCAnalyticsCustomerSearchResult+CoreDataClass.swift in Sources */,
 				CC2C030B262DCC6900928C9C /* ShippingLabelAccountSettings+CoreDataClass.swift in Sources */,
 				7499FA44221C7A60004EC0B4 /* ShipmentTracking+CoreDataClass.swift in Sources */,
 				D87F61532265AA230031A13B /* FileStorage.swift in Sources */,

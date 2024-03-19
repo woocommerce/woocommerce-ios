@@ -207,6 +207,7 @@ struct OrderForm: View {
         }
         // Save: in-flight order details when there's size class changes
         viewModel.saveInflightCustomerDetails()
+        viewModel.saveInFlightOrderNotes()
     }
 
     @ViewBuilder private func orderFormSummary(_ presentProductSelector: (() -> Void)?) -> some View {

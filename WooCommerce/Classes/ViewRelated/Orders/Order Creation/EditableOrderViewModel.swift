@@ -822,6 +822,12 @@ final class EditableOrderViewModel: ObservableObject {
         trackCustomerNoteAdded()
     }
 
+    /// Saves the current contents of the Order Note
+    ///
+    func saveInFlightOrderNotes() {
+        updateCustomerNote()
+    }
+
     func orderTotalsExpansionChanged(expanded: Bool) {
         analytics.track(event: .Orders.orderTotalsExpansionChanged(flow: flow.analyticsFlow, expanded: expanded))
     }

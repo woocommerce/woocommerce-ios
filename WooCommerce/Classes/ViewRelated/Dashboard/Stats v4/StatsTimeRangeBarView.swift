@@ -6,6 +6,7 @@ final class StatsTimeRangeBarView: UIView {
     // MARK: Subviews
     private let stackView = UIStackView(frame: .zero)
     private let button = UIButton(frame: .zero)
+    private let selectedDateLabel = UILabel(frame: .zero)
 
     // To be updated externally to handle button tap
     var editCustomTimeRangeHandler: (() -> Void)?
@@ -21,6 +22,7 @@ final class StatsTimeRangeBarView: UIView {
         super.init(coder: aDecoder)
         configureStackView()
         configureButton()
+        configureSelectedDateLabel()
     }
 
     /// Updates the label with start/end dates, time range type, and site time zone.
@@ -38,6 +40,13 @@ final class StatsTimeRangeBarView: UIView {
         container.font = Constants.labelFont.bold
         container.foregroundColor = viewModel.isTimeRangeEditable ? .accent : Constants.labelColor
         configuration.attributedTitle = AttributedString(viewModel.timeRangeText, attributes: container)
+
+        if viewModel.selectedDateText != nil {
+            selectedDateLabel.text = viewModel.selectedDateText
+            selectedDateLabel.isHidden = false
+        } else {
+            selectedDateLabel.isHidden = true
+        }
 
         button.configuration = configuration
     }
@@ -61,6 +70,14 @@ private extension StatsTimeRangeBarView {
             self?.editCustomTimeRangeHandler?()
         }
         stackView.addArrangedSubview(button)
+    }
+
+    func configureSelectedDateLabel() {
+        selectedDateLabel.font = Constants.labelFont
+        selectedDateLabel.textColor = Constants.labelColor
+        selectedDateLabel.textAlignment = Constants.labelTextAlignment
+        selectedDateLabel.isHidden = true
+        stackView.addArrangedSubview(selectedDateLabel)
     }
 }
 

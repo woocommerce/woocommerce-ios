@@ -11,24 +11,16 @@ final class SessionsReportCardViewModel: AnalyticsReportCardProtocol {
     ///
     private var siteStats: SiteSummaryStats?
 
-    var isRedacted: Bool = false
+    /// Indicates if the values should be hidden (for loading state)
+    ///
+    var isRedacted: Bool
 
     init(currentOrderStats: OrderStatsV4?,
-         siteStats: SiteSummaryStats?) {
+         siteStats: SiteSummaryStats?,
+         isRedacted: Bool = false) {
         self.currentOrderStats = currentOrderStats
         self.siteStats = siteStats
-    }
-
-    func redact() {
-        isRedacted = true
-    }
-
-    /// Updates the stats used in the card metrics.
-    ///
-    func update(currentOrderStats: OrderStatsV4?, siteStats: SiteSummaryStats?) {
-        self.currentOrderStats = currentOrderStats
-        self.siteStats = siteStats
-        isRedacted = false
+        self.isRedacted = isRedacted
     }
 }
 

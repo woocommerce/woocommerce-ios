@@ -1,4 +1,5 @@
 import Foundation
+import Networking
 
 /// The type of filter when searching for customers.
 public enum CustomerSearchFilter: String, Equatable, CaseIterable {
@@ -21,7 +22,24 @@ public enum CustomerAction: Action {
         siteID: Int64,
         pageNumber: Int,
         pageSize: Int,
+        orderby: WCAnalyticsCustomerRemote.OrderBy,
+        order: WCAnalyticsCustomerRemote.Order,
+        filterEmpty: WCAnalyticsCustomerRemote.FilterEmpty? = nil,
         onCompletion: (Result<Bool, Error>) -> Void)
+
+    /// Synchronizes all customers (registered and unregistered) as `WCAnalyticsCustomer` objects.
+    /// When syncing the first page it resets (deletes) all the stored objects.
+    ///
+    /// - Parameters:
+    ///     - siteID: The site for which we will perform the search.
+    ///     - pageNumber: The number of the page you want to load.
+    ///     - pageSize: The size of the page you want to load.
+    ///     - onCompletion: Invoked when the operation finishes. Returns true if there are results synced.
+    ///
+    case synchronizeAllCustomers(siteID: Int64,
+                                 pageNumber: Int,
+                                 pageSize: Int,
+                                 onCompletion: (Result<Bool, Error>) -> Void)
 
     /// Searches for Customers by keyword. Currently, only searches by name.
     ///
@@ -39,10 +57,30 @@ public enum CustomerAction: Action {
         siteID: Int64,
         pageNumber: Int,
         pageSize: Int,
+        orderby: WCAnalyticsCustomerRemote.OrderBy,
+        order: WCAnalyticsCustomerRemote.Order,
         keyword: String,
         retrieveFullCustomersData: Bool,
         filter: CustomerSearchFilter,
+        filterEmpty: WCAnalyticsCustomerRemote.FilterEmpty? = nil,
         onCompletion: (Result<(), Error>) -> Void)
+
+    /// Searches for WCAnalyticsCustomers by keyword and stores the results.
+    ///
+    /// - Parameters:
+    ///     - siteID: The site for which we will perform the search.
+    ///     - pageNumber: The number of the page you want to load.
+    ///     - pageSize: The size of the page you want to load.
+    ///     - keyword: Keyword to perform the search.
+    ///     - filter: Filter to perform the search.
+    ///     - onCompletion: Invoked when the operation finishes.
+    ///
+    case searchWCAnalyticsCustomers(siteID: Int64,
+                                    pageNumber: Int,
+                                    pageSize: Int,
+                                    keyword: String,
+                                    filter: CustomerSearchFilter,
+                                    onCompletion: (Result<(), Error>) -> Void)
 
     /// Retrieves a single Customer from a site
     ///

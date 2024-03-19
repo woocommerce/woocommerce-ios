@@ -64,6 +64,7 @@ final class StoreStatsV4PeriodViewController: UIViewController {
     @IBOutlet private weak var timeRangeBarView: StatsTimeRangeBarView!
     @IBOutlet private weak var visitorsStackView: UIStackView!
     @IBOutlet private weak var conversionStackView: UIStackView!
+    @IBOutlet private weak var granularityLabel: UILabel!
 
     private var currencyCode: String {
         return ServiceLocator.currencySettings.symbol(from: ServiceLocator.currencySettings.currencyCode)
@@ -364,10 +365,15 @@ private extension StoreStatsV4PeriodViewController {
         conversionTitle.text = NSLocalizedString("Conversion", comment: "Conversion stat label on dashboard.")
         revenueTitle.text = NSLocalizedString("Revenue", comment: "Revenue stat label on dashboard.")
 
-        [visitorsTitle, ordersTitle, conversionTitle, revenueTitle].forEach { label in
+        [visitorsTitle, ordersTitle, conversionTitle, revenueTitle, granularityLabel].forEach { label in
             label?.font = Constants.statsTitleFont
             label?.textColor = Constants.statsTextColor
         }
+
+        // Granularity text
+        granularityLabel.text = granularity.displayText
+        granularityLabel.textAlignment = .center
+        granularityLabel.isHidden = timeRange.isCustomTimeRange == false
 
         // Data
         updateStatsDataToDefaultStyles()

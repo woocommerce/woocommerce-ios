@@ -18,11 +18,11 @@ public class WCAnalyticsCustomerRemote: Remote {
     public func searchCustomers(for siteID: Int64,
                                 pageNumber: Int = 1,
                                 pageSize: Int = 25,
-                                orderby: OrderBy = .name,
-                                order: Order = .asc,
+                                orderby: OrderBy,
+                                order: Order,
                                 keyword: String,
                                 filter: String,
-                                filterEmpty: FilterEmpty? = .email,
+                                filterEmpty: FilterEmpty?,
                                 completion: @escaping (Result<[WCAnalyticsCustomer], Error>) -> Void) {
         let parameters: [String: Any] = [
             ParameterKey.page: String(pageNumber),
@@ -42,9 +42,9 @@ public class WCAnalyticsCustomerRemote: Remote {
     public func loadCustomers(for siteID: Int64,
                               pageNumber: Int = 1,
                               pageSize: Int = 25,
-                              orderby: OrderBy = .name,
-                              order: Order = .asc,
-                              filterEmpty: FilterEmpty? = .email,
+                              orderby: OrderBy,
+                              order: Order,
+                              filterEmpty: FilterEmpty?,
                               completion: @escaping (Result<[WCAnalyticsCustomer], Error>) -> Void) {
         let parameters: [String: Any] = [
             ParameterKey.page: String(pageNumber),

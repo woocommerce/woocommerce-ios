@@ -47,24 +47,36 @@ public final class CustomerStore: Store {
             return
         }
         switch action {
-        case .searchCustomers(siteID: let siteID,
-                              pageNumber: let pageNumber,
-                              pageSize: let pageSize,
-                              keyword: let keyword,
-                              retrieveFullCustomersData: let retrieveFullCustomersData,
-                              filter: let filter,
-                              onCompletion: let onCompletion):
+        case let .searchCustomers(siteID: siteID,
+                                  pageNumber: pageNumber,
+                                  pageSize: pageSize,
+                                  orderby: orderby,
+                                  order: order,
+                                  keyword: keyword,
+                                  retrieveFullCustomersData: retrieveFullCustomersData,
+                                  filter: filter,
+                                  filterEmpty: filterEmpty,
+                                  onCompletion: onCompletion):
             searchCustomers(for: siteID,
                             pageNumber: pageNumber,
                             pageSize: pageSize,
+                            orderby: orderby,
+                            order: order,
                             keyword: keyword,
                             retrieveFullCustomersData: retrieveFullCustomersData,
                             filter: filter,
+                            filterEmpty: filterEmpty,
                             onCompletion: onCompletion)
         case .retrieveCustomer(siteID: let siteID, customerID: let customerID, onCompletion: let onCompletion):
             retrieveCustomer(for: siteID, with: customerID, onCompletion: onCompletion)
-        case .synchronizeLightCustomersData(siteID: let siteID, pageNumber: let pageNumber, pageSize: let pageSize, onCompletion: let onCompletion):
-            synchronizeLightCustomersData(siteID: siteID, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
+        case let .synchronizeLightCustomersData(siteID, pageNumber, pageSize, orderby, order, filterEmpty, onCompletion):
+            synchronizeLightCustomersData(siteID: siteID,
+                                          pageNumber: pageNumber,
+                                          pageSize: pageSize,
+                                          orderby: orderby,
+                                          order: order,
+                                          filterEmpty: filterEmpty,
+                                          onCompletion: onCompletion)
         case .deleteAllCustomers(siteID: let siteID, onCompletion: let onCompletion):
             deleteAllCustomers(from: siteID, onCompletion: onCompletion)
         }
@@ -83,15 +95,21 @@ public final class CustomerStore: Store {
         for siteID: Int64,
         pageNumber: Int,
         pageSize: Int,
+        orderby: WCAnalyticsCustomerRemote.OrderBy,
+        order: WCAnalyticsCustomerRemote.Order,
         keyword: String,
         retrieveFullCustomersData: Bool,
         filter: CustomerSearchFilter,
+        filterEmpty: WCAnalyticsCustomerRemote.FilterEmpty?,
         onCompletion: @escaping (Result<(), Error>) -> Void) {
             wcAnalyticsCustomerRemote.searchCustomers(for: siteID,
                                                       pageNumber: pageNumber,
                                                       pageSize: pageSize,
+                                                      orderby: orderby,
+                                                      order: order,
                                                       keyword: keyword,
-                                                      filter: filter.rawValue) { [weak self] result in
+                                                      filter: filter.rawValue,
+                                                      filterEmpty: filterEmpty) { [weak self] result in
                 guard let self else { return }
                 switch result {
                 case .success(let customers):
@@ -138,8 +156,19 @@ public final class CustomerStore: Store {
             }
     }
 
-    func synchronizeLightCustomersData(siteID: Int64, pageNumber: Int, pageSize: Int, onCompletion: @escaping (Result<Bool, Error>) -> Void) {
-        wcAnalyticsCustomerRemote.loadCustomers(for: siteID, pageNumber: pageNumber, pageSize: pageSize) { result in
+    func synchronizeLightCustomersData(siteID: Int64,
+                                       pageNumber: Int,
+                                       pageSize: Int,
+                                       orderby: WCAnalyticsCustomerRemote.OrderBy,
+                                       order: WCAnalyticsCustomerRemote.Order,
+                                       filterEmpty: WCAnalyticsCustomerRemote.FilterEmpty?,
+                                       onCompletion: @escaping (Result<Bool, Error>) -> Void) {
+        wcAnalyticsCustomerRemote.loadCustomers(for: siteID,
+                                                pageNumber: pageNumber,
+                                                pageSize: pageSize,
+                                                orderby: orderby,
+                                                order: order,
+                                                filterEmpty: filterEmpty) { result in
             switch result {
             case .success(let customers):
                 self.upsertCustomersAndSave(siteID: siteID,

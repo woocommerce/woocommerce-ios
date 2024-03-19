@@ -67,6 +67,8 @@ public final class CustomerStore: Store {
                             filter: filter,
                             filterEmpty: filterEmpty,
                             onCompletion: onCompletion)
+        case let .searchWCAnalyticsCustomers(siteID, pageNumber, pageSize, keyword, filter, onCompletion):
+            searchWCAnalyticsCustomers(for: siteID, pageNumber: pageNumber, pageSize: pageSize, keyword: keyword, filter: filter, onCompletion: onCompletion)
         case .retrieveCustomer(siteID: let siteID, customerID: let customerID, onCompletion: let onCompletion):
             retrieveCustomer(for: siteID, with: customerID, onCompletion: onCompletion)
         case let .synchronizeLightCustomersData(siteID, pageNumber, pageSize, orderby, order, filterEmpty, onCompletion):
@@ -131,6 +133,44 @@ public final class CustomerStore: Store {
                     onCompletion(.failure(error))
                 }
             }
+    }
+
+    /// Attempts to search Customers that match the given keyword, for a specific siteID.
+    /// Returns [Customer] upon success, or an Error.
+    /// Search results are persisted in local storage.
+    ///
+    /// - Parameters:
+    ///   - siteID: The site for which the array of Customers should be fetched.
+    ///   - keyword: Keyword that we pass to the `?query={keyword}` endpoint to perform the search
+    ///   - onCompletion: Invoked when the operation finishes.
+    ///
+    func searchWCAnalyticsCustomers(for siteID: Int64,
+                                    pageNumber: Int,
+                                    pageSize: Int,
+                                    keyword: String,
+                                    filter: CustomerSearchFilter,
+                                    onCompletion: @escaping (Result<(), Error>) -> Void) {
+        wcAnalyticsCustomerRemote.searchCustomers(for: siteID,
+                                                  pageNumber: pageNumber,
+                                                  pageSize: pageSize,
+                                                  orderby: .dateLastActive,
+                                                  order: .desc,
+                                                  keyword: keyword,
+                                                  filter: filter.rawValue) { [weak self] result in
+            guard let self else { return }
+            switch result {
+            case let .success(customers):
+                self.upsertWCAnalyticsCustomersAndSave(siteID: siteID,
+                                                       readOnlyCustomers: customers,
+                                                       shouldDeleteExistingCustomers: pageNumber == 1,
+                                                       keyword: keyword,
+                                                       in: self.sharedDerivedStorage) {
+                    onCompletion(.success(()))
+                }
+            case .failure(let error):
+                onCompletion(.failure(error))
+            }
+        }
     }
 
     /// Attempts to retrieve a single Customer from a site, returning the Customer object upon success, or an Error.

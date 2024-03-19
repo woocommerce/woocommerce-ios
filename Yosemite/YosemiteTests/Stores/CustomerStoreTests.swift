@@ -266,7 +266,7 @@ final class CustomerStoreTests: XCTestCase {
         XCTAssertEqual(customersAfterDeleting.count, 0)
     }
 
-    func test_synchronizeAllCustomers_retrieves_and_stores_WCAnalyticsCustomers_upon_success() {
+    func test_synchronizeAllCustomers_upserts_WCAnalyticsCustomers_upon_success() {
         network.simulateResponse(requestUrlSuffix: "customers", filename: "wc-analytics-customers")
 
         // When
@@ -316,6 +316,59 @@ final class CustomerStoreTests: XCTestCase {
         }
 
         // Then
+        XCTAssertTrue(result.isFailure)
+        XCTAssertEqual(result.failure as? NetworkError, expectedError)
+    }
+
+    func test_searchWCAnalyticsCustomers_upserts_the_returned_WCAnalyticsCustomerSearchResult() {
+        // Given
+        network.simulateResponse(requestUrlSuffix: "customers", filename: "wc-analytics-customers")
+
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.WCAnalyticsCustomerSearchResult.self), 0)
+
+        // When
+        let result: Result<(), Error> = waitFor { promise in
+            let action = CustomerAction.searchWCAnalyticsCustomers(siteID: self.dummySiteID,
+                                                                   pageNumber: 1,
+                                                                   pageSize: 25,
+                                                                   keyword: self.dummyKeyword,
+                                                                   filter: .name) { result in
+                promise(result)
+            }
+            self.dispatcher.dispatch(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.WCAnalyticsCustomer.self), 4)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.WCAnalyticsCustomerSearchResult.self), 1)
+
+        let storedCustomerSearchResults = viewStorage.loadWCAnalyticsCustomerSearchResult(siteID: dummySiteID, keyword: dummyKeyword)
+
+        XCTAssertNotNil(storedCustomerSearchResults)
+        XCTAssertEqual(storedCustomerSearchResults?.siteID, dummySiteID)
+        XCTAssertEqual(storedCustomerSearchResults?.keyword, dummyKeyword)
+        XCTAssertEqual(storedCustomerSearchResults?.customers?.count, 4)
+    }
+
+    func test_searchWCAnalyticsCustomers_returns_Error_upon_failure() {
+        // Given
+        let expectedError = NetworkError.notFound()
+        network.simulateError(requestUrlSuffix: "", error: expectedError)
+
+        // When
+        let result: Result<(), Error> = waitFor { promise in
+            let action = CustomerAction.searchWCAnalyticsCustomers(siteID: self.dummySiteID,
+                                                                   pageNumber: 1,
+                                                                   pageSize: 25,
+                                                                   keyword: self.dummyKeyword,
+                                                                   filter: .name) { result in
+                promise(result)
+            }
+            self.dispatcher.dispatch(action)
+        }
+
+        //Then
         XCTAssertTrue(result.isFailure)
         XCTAssertEqual(result.failure as? NetworkError, expectedError)
     }

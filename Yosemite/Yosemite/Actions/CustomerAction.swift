@@ -65,6 +65,23 @@ public enum CustomerAction: Action {
         filterEmpty: WCAnalyticsCustomerRemote.FilterEmpty? = nil,
         onCompletion: (Result<(), Error>) -> Void)
 
+    /// Searches for WCAnalyticsCustomers by keyword and stores the results.
+    ///
+    /// - Parameters:
+    ///     - siteID: The site for which we will perform the search.
+    ///     - pageNumber: The number of the page you want to load.
+    ///     - pageSize: The size of the page you want to load.
+    ///     - keyword: Keyword to perform the search.
+    ///     - filter: Filter to perform the search.
+    ///     - onCompletion: Invoked when the operation finishes.
+    ///
+    case searchWCAnalyticsCustomers(siteID: Int64,
+                                    pageNumber: Int,
+                                    pageSize: Int,
+                                    keyword: String,
+                                    filter: CustomerSearchFilter,
+                                    onCompletion: (Result<(), Error>) -> Void)
+
     /// Retrieves a single Customer from a site
     ///
     ///- `siteID`: The site for which customers should be fetched.

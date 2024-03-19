@@ -22,9 +22,9 @@ public enum CustomerAction: Action {
         siteID: Int64,
         pageNumber: Int,
         pageSize: Int,
-        orderby: WCAnalyticsCustomerRemote.OrderBy = .name,
-        order: WCAnalyticsCustomerRemote.Order = .asc,
-        filterEmpty: WCAnalyticsCustomerRemote.FilterEmpty? = .email,
+        orderby: WCAnalyticsCustomerRemote.OrderBy,
+        order: WCAnalyticsCustomerRemote.Order,
+        filterEmpty: WCAnalyticsCustomerRemote.FilterEmpty? = nil,
         onCompletion: (Result<Bool, Error>) -> Void)
 
     /// Searches for Customers by keyword. Currently, only searches by name.
@@ -43,12 +43,12 @@ public enum CustomerAction: Action {
         siteID: Int64,
         pageNumber: Int,
         pageSize: Int,
-        orderby: WCAnalyticsCustomerRemote.OrderBy = .name,
-        order: WCAnalyticsCustomerRemote.Order = .asc,
+        orderby: WCAnalyticsCustomerRemote.OrderBy,
+        order: WCAnalyticsCustomerRemote.Order,
         keyword: String,
         retrieveFullCustomersData: Bool,
         filter: CustomerSearchFilter,
-        filterEmpty: WCAnalyticsCustomerRemote.FilterEmpty? = .email,
+        filterEmpty: WCAnalyticsCustomerRemote.FilterEmpty? = nil,
         onCompletion: (Result<(), Error>) -> Void)
 
     /// Retrieves a single Customer from a site

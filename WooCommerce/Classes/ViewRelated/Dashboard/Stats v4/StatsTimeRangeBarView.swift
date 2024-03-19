@@ -32,8 +32,8 @@ final class StatsTimeRangeBarView: UIView {
 
         var configuration = UIButton.Configuration.plain()
         configuration.titleAlignment = .center
-        configuration.image = viewModel.isTimeRangeEditable ? UIImage(systemName: "calendar") : nil
-        configuration.imagePlacement = .leading
+        configuration.image = viewModel.isTimeRangeEditable ? UIImage(systemName: "pencil") : nil
+        configuration.imagePlacement = .trailing
         configuration.preferredSymbolConfigurationForImage = UIImage.SymbolConfiguration(font: Constants.labelFont)
         configuration.imagePadding = Constants.imagePadding
 

@@ -44,6 +44,6 @@ extension WCAnalyticsCustomer {
 
 }
 
-extension WCAnalyticsCustomer : Identifiable {
+extension WCAnalyticsCustomer: Identifiable {
 
 }

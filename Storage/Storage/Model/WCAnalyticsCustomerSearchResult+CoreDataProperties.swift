@@ -31,6 +31,6 @@ extension WCAnalyticsCustomerSearchResult {
 
 }
 
-extension WCAnalyticsCustomerSearchResult : Identifiable {
+extension WCAnalyticsCustomerSearchResult: Identifiable {
 
 }

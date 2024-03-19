@@ -268,6 +268,8 @@ final class ProductsViewController: UIViewController, GhostableViewController {
             self.removeGhostContent()
             self.displayGhostContent(over: tableView)
         }
+
+        navigationController?.navigationBar.removeShadow()
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -600,8 +602,6 @@ private extension ProductsViewController {
 
         configureNavigationBarLeftButtonItems()
         configureNavigationBarRightButtonItems()
-
-        navigationController?.navigationBar.removeShadow()
     }
 
     func configureNavigationBarLeftButtonItems() {

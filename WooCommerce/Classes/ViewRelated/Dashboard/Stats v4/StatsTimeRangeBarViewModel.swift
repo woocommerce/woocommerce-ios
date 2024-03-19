@@ -21,7 +21,7 @@ private extension StatsTimeRangeV4 {
             // Always display the exact date for custom range.
             let startDateString = dateFormatter.string(from: customStartDate)
             let endDateString = dateFormatter.string(from: customEndDate)
-            let format = NSLocalizedString("%1$@ - %2$@", comment: "Displays a date range for a custom stats interval")
+            let format = NSLocalizedString("%1$@ – %2$@", comment: "Displays a date range for a custom stats interval")
             return String.localizedStringWithFormat(format, startDateString, endDateString)
         }
     }

@@ -22,7 +22,7 @@ public class WCAnalyticsCustomerRemote: Remote {
                                 order: Order,
                                 keyword: String,
                                 filter: String,
-                                filterEmpty: FilterEmpty?,
+                                filterEmpty: FilterEmpty? = nil,
                                 completion: @escaping (Result<[WCAnalyticsCustomer], Error>) -> Void) {
         let parameters: [String: Any] = [
             ParameterKey.page: String(pageNumber),
@@ -44,7 +44,7 @@ public class WCAnalyticsCustomerRemote: Remote {
                               pageSize: Int = 25,
                               orderby: OrderBy,
                               order: Order,
-                              filterEmpty: FilterEmpty?,
+                              filterEmpty: FilterEmpty? = nil,
                               completion: @escaping (Result<[WCAnalyticsCustomer], Error>) -> Void) {
         let parameters: [String: Any] = [
             ParameterKey.page: String(pageNumber),

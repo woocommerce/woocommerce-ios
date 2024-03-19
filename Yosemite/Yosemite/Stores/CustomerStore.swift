@@ -67,6 +67,8 @@ public final class CustomerStore: Store {
                             filter: filter,
                             filterEmpty: filterEmpty,
                             onCompletion: onCompletion)
+        case let .searchWCAnalyticsCustomers(siteID, pageNumber, pageSize, keyword, filter, onCompletion):
+            searchWCAnalyticsCustomers(for: siteID, pageNumber: pageNumber, pageSize: pageSize, keyword: keyword, filter: filter, onCompletion: onCompletion)
         case .retrieveCustomer(siteID: let siteID, customerID: let customerID, onCompletion: let onCompletion):
             retrieveCustomer(for: siteID, with: customerID, onCompletion: onCompletion)
         case let .synchronizeLightCustomersData(siteID, pageNumber, pageSize, orderby, order, filterEmpty, onCompletion):
@@ -77,6 +79,8 @@ public final class CustomerStore: Store {
                                           order: order,
                                           filterEmpty: filterEmpty,
                                           onCompletion: onCompletion)
+        case let .synchronizeAllCustomers(siteID, pageNumber, pageSize, onCompletion):
+            synchronizeAllCustomers(siteID: siteID, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
         case .deleteAllCustomers(siteID: let siteID, onCompletion: let onCompletion):
             deleteAllCustomers(from: siteID, onCompletion: onCompletion)
         }
@@ -131,6 +135,44 @@ public final class CustomerStore: Store {
             }
     }
 
+    /// Attempts to search Customers that match the given keyword, for a specific siteID.
+    /// Returns [Customer] upon success, or an Error.
+    /// Search results are persisted in local storage.
+    ///
+    /// - Parameters:
+    ///   - siteID: The site for which the array of Customers should be fetched.
+    ///   - keyword: Keyword that we pass to the `?query={keyword}` endpoint to perform the search
+    ///   - onCompletion: Invoked when the operation finishes.
+    ///
+    func searchWCAnalyticsCustomers(for siteID: Int64,
+                                    pageNumber: Int,
+                                    pageSize: Int,
+                                    keyword: String,
+                                    filter: CustomerSearchFilter,
+                                    onCompletion: @escaping (Result<(), Error>) -> Void) {
+        wcAnalyticsCustomerRemote.searchCustomers(for: siteID,
+                                                  pageNumber: pageNumber,
+                                                  pageSize: pageSize,
+                                                  orderby: .dateLastActive,
+                                                  order: .desc,
+                                                  keyword: keyword,
+                                                  filter: filter.rawValue) { [weak self] result in
+            guard let self else { return }
+            switch result {
+            case let .success(customers):
+                self.upsertWCAnalyticsCustomersAndSave(siteID: siteID,
+                                                       readOnlyCustomers: customers,
+                                                       shouldDeleteExistingCustomers: pageNumber == 1,
+                                                       keyword: keyword,
+                                                       in: self.sharedDerivedStorage) {
+                    onCompletion(.success(()))
+                }
+            case .failure(let error):
+                onCompletion(.failure(error))
+            }
+        }
+    }
+
     /// Attempts to retrieve a single Customer from a site, returning the Customer object upon success, or an Error.
     /// The fetched Customer is persisted to the local storage.
     ///
@@ -179,6 +221,26 @@ public final class CustomerStore: Store {
                     onCompletion(.success(!customers.isEmpty))
                 })
             case .failure(let error):
+                onCompletion(.failure(error))
+            }
+        }
+    }
+
+    func synchronizeAllCustomers(siteID: Int64,
+                                 pageNumber: Int,
+                                 pageSize: Int,
+                                 onCompletion: @escaping (Result<Bool, Error>) -> Void) {
+        wcAnalyticsCustomerRemote.loadCustomers(for: siteID, orderby: .dateLastActive, order: .desc) { [weak self] result in
+            guard let self else { return }
+            switch result {
+            case let .success(customers):
+                self.upsertWCAnalyticsCustomersAndSave(siteID: siteID,
+                                                       readOnlyCustomers: customers,
+                                                       shouldDeleteExistingCustomers: pageNumber == 1,
+                                                       in: self.sharedDerivedStorage) {
+                    onCompletion(.success(!customers.isEmpty))
+                }
+            case let .failure(error):
                 onCompletion(.failure(error))
             }
         }
@@ -285,6 +347,27 @@ private extension CustomerStore {
         }
     }
 
+    private func upsertWCAnalyticsCustomersAndSave(siteID: Int64,
+                                                   readOnlyCustomers: [WCAnalyticsCustomer],
+                                                   shouldDeleteExistingCustomers: Bool = false,
+                                                   keyword: String? = nil,
+                                                   in storage: StorageType,
+                                                   onCompletion: @escaping () -> Void) {
+        storage.perform { [weak self] in
+            if shouldDeleteExistingCustomers {
+                storage.deleteWCAnalyticsCustomers(siteID: siteID)
+            }
+
+            readOnlyCustomers.forEach {
+                self?.upsertWCAnalyticsCustomer(siteID: siteID, readOnlyCustomer: $0, keyword: keyword, in: storage)
+            }
+        }
+
+        storageManager.saveDerivedType(derivedStorage: storage) {
+            DispatchQueue.main.async(execute: onCompletion)
+        }
+    }
+
     /// Inserts or updates Customer entities into Storage
     ///
     private func upsertCustomer(siteID: Int64, readOnlyCustomer: StorageCustomerConvertible, keyword: String? = nil, in storage: StorageType) {
@@ -303,6 +386,31 @@ private extension CustomerStore {
         if let keyword = keyword {
             let storedSearchResult = self.sharedDerivedStorage.loadCustomerSearchResult(siteID: siteID, keyword: keyword) ??
             self.sharedDerivedStorage.insertNewObject(ofType: Storage.CustomerSearchResult.self)
+
+            storedSearchResult.siteID = siteID
+            storedSearchResult.keyword = keyword
+
+            storedSearchResult.addToCustomers(storageCustomer)
+        }
+
+        storageCustomer.update(with: readOnlyCustomer)
+    }
+
+    /// Inserts or update WCAnalyticsCustomer entities into Storage
+    ///
+    private func upsertWCAnalyticsCustomer(siteID: Int64, readOnlyCustomer: WCAnalyticsCustomer, keyword: String? = nil, in storage: StorageType) {
+        let storageCustomer: Storage.WCAnalyticsCustomer = {
+            if let storedCustomer = storage.loadWCAnalyticsCustomer(siteID: siteID, customerID: readOnlyCustomer.customerID) {
+                return storedCustomer
+            } else {
+                return storage.insertNewObject(ofType: Storage.WCAnalyticsCustomer.self)
+            }
+        }()
+
+        if let keyword {
+            let storedSearchResult = self.sharedDerivedStorage
+                .loadWCAnalyticsCustomerSearchResult(siteID: siteID, keyword: keyword) ??
+            self.sharedDerivedStorage.insertNewObject(ofType: Storage.WCAnalyticsCustomerSearchResult.self)
 
             storedSearchResult.siteID = siteID
             storedSearchResult.keyword = keyword

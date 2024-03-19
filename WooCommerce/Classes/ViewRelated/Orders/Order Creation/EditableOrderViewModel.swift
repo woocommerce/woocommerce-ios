@@ -374,7 +374,7 @@ final class EditableOrderViewModel: ObservableObject {
 
     /// Keeps a reference to the latest Address form fields state
     ///
-    @Published private var latestAddressFormFields: AddressFormFields? = nil
+    @Published private(set) var latestAddressFormFields: AddressFormFields? = nil
 
     // MARK: Customer note properties
 

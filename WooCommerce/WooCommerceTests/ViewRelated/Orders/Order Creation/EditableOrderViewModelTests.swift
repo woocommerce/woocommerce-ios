@@ -3205,6 +3205,43 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertFalse(try XCTUnwrap(productRow.childProductRows[0]).isReadOnly, "Child product should not be read only")
         XCTAssertFalse(try XCTUnwrap(productRow.childProductRows[1]).isReadOnly, "Child product variation should not be read only")
     }
+
+    func test_when_saveInflightCustomerDetails_is_invoked_then_order_is_updated_with_latestAddressFormFields() {
+        // Given
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID)
+        let sampleAddress = sampleAddress1()
+        let expectedFullName = sampleAddress1().fullName
+
+        XCTAssertEqual(viewModel.latestAddressFormFields?.firstName, "", "Address form fields should be empty on initialization")
+        XCTAssertEqual(viewModel.latestAddressFormFields?.lastName, "", "Address form fields should be empty on initialization")
+
+        viewModel.addressFormViewModel.fields.firstName = sampleAddress.firstName
+        viewModel.addressFormViewModel.fields.lastName = sampleAddress.lastName
+
+        XCTAssertFalse(viewModel.customerDataViewModel.isDataAvailable)
+        XCTAssertNil(viewModel.customerDataViewModel.fullName, "No customer details have been added to the order")
+
+        // When
+        viewModel.saveInflightCustomerDetails()
+
+        // Then
+        XCTAssertTrue(viewModel.hasChanges)
+        XCTAssertTrue(viewModel.customerDataViewModel.isDataAvailable)
+        XCTAssertEqual(viewModel.customerDataViewModel.fullName, expectedFullName, "Customer details have been added to the order")
+
+    }
+
+    func test_when_saveInFlightOrderNotes_is_invoked_then_customer_note_is_updated() {
+        //Given
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID)
+        viewModel.noteViewModel.newNote = "This is a note"
+
+        // When
+        viewModel.saveInFlightOrderNotes()
+
+        //Then
+        XCTAssertTrue(viewModel.hasChanges)
+    }
 }
 
 private extension EditableOrderViewModelTests {

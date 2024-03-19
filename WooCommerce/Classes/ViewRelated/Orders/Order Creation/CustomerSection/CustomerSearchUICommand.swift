@@ -250,7 +250,12 @@ private extension CustomerSearchUICommand {
     }
 
     func synchronizeAllLightCustomersDataAction(siteID: Int64, pageNumber: Int, pageSize: Int, onCompletion: ((Bool) -> Void)?) -> CustomerAction {
-        CustomerAction.synchronizeLightCustomersData(siteID: siteID, pageNumber: pageNumber, pageSize: pageSize) { [weak self] result in
+        CustomerAction.synchronizeLightCustomersData(siteID: siteID,
+                                                     pageNumber: pageNumber,
+                                                     pageSize: pageSize,
+                                                     orderby: .name,
+                                                     order: .asc,
+                                                     filterEmpty: .email) { [weak self] result in
             switch result {
             case .success:
                 onCompletion?(result.isSuccess)
@@ -280,9 +285,12 @@ private extension CustomerSearchUICommand {
         return CustomerAction.searchCustomers(siteID: siteID,
                                               pageNumber: pageNumber,
                                               pageSize: pageSize,
+                                              orderby: .name,
+                                              order: .asc,
                                               keyword: keyword,
                                               retrieveFullCustomersData: !featureFlagService.isFeatureFlagEnabled(.betterCustomerSelectionInOrder),
-                                              filter: searchFilter) { result in
+                                              filter: searchFilter,
+                                              filterEmpty: .email) { result in
             switch result {
             case .success:
                 onCompletion?(result.isSuccess)

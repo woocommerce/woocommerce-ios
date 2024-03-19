@@ -526,6 +526,8 @@ extension OrderDetailsViewModel {
             //TODO: add analytics
             let wcShipInstallationFlowVC = Inject.ViewControllerHost(WCShipCTAHostingController())
             viewController.present(wcShipInstallationFlowVC, animated: true)
+        case .trashOrder:
+            onCellAction?(.trashOrder, indexPath)
         default:
             break
         }

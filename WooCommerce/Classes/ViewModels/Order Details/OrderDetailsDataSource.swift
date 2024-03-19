@@ -477,7 +477,7 @@ private extension OrderDetailsDataSource {
             configureAttributionDeviceType(cell: cell, at: indexPath)
         case let cell as TitleAndValueTableViewCell where row == .attributionSessionPageViews:
             configureAttributionSessionPageViews(cell: cell, at: indexPath)
-        case let cell as ButtonTableViewCell where row == .trashOrder:
+        case let cell as WooBasicTableViewCell where row == .trashOrder:
             configureTrashOrder(cell: cell, at: indexPath)
         default:
             fatalError("Unidentified customer info row type")
@@ -1023,13 +1023,17 @@ private extension OrderDetailsDataSource {
         }
     }
 
-    private func configureTrashOrder(cell: ButtonTableViewCell, at indexPath: IndexPath) {
-        cell.configure(style: .secondary,
-                       title: Titles.trashOrder,
-                       accessibilityIdentifier: "order-details-trash-order-button") { [weak self] in
-            self?.onCellAction?(.trashOrder, indexPath)
-        }
-        cell.hideSeparator()
+    private func configureTrashOrder(cell: WooBasicTableViewCell, at indexPath: IndexPath) {
+        cell.bodyLabel.textColor = .error
+        cell.bodyLabel?.text = Titles.trashOrder
+        cell.bodyLabel.textAlignment = .center
+        cell.accessoryType = .none
+        cell.selectionStyle = .default
+
+        cell.accessibilityTraits = .button
+        cell.accessibilityIdentifier = "order-details-trash-order-button"
+        cell.accessibilityLabel = Accessibility.trashOrderLabel
+        cell.accessibilityHint = Accessibility.trashOrderHint
     }
 
     /// Returns attributes that can be categorized as `Add-ons`.
@@ -1752,6 +1756,19 @@ extension OrderDetailsDataSource {
                                                                 comment: "Button on bottom of shipping label package card to show shipping details")
     }
 
+    enum Accessibility {
+        static let trashOrderLabel = NSLocalizedString(
+            "orderDetailsDataSource.trashOrder.accessibilityLabel",
+            value: "Trash Order Button",
+            comment: "Accessibility label for the 'Trash order' button"
+        )
+        static let trashOrderHint = NSLocalizedString(
+            "orderDetailsDataSource.trashOrder.accessibilityHint",
+            value: "Put this order in the trash.",
+            comment: "VoiceOver accessibility hint, informing the user that the button can be used to view the order custom fields information."
+        )
+    }
+
     struct Section {
         enum Category {
             case summary
@@ -1964,7 +1981,7 @@ extension OrderDetailsDataSource {
                     .attributionSessionPageViews:
                 return TitleAndValueTableViewCell.reuseIdentifier
             case .trashOrder:
-                return ButtonTableViewCell.reuseIdentifier
+                return WooBasicTableViewCell.reuseIdentifier
             }
         }
     }

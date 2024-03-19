@@ -3244,23 +3244,53 @@ extension Networking.User {
 extension Networking.WCAnalyticsCustomer {
     public func copy(
         siteID: CopiableProp<Int64> = .copy,
+        customerID: CopiableProp<Int64> = .copy,
         userID: CopiableProp<Int64> = .copy,
         name: NullableCopiableProp<String> = .copy,
         email: NullableCopiableProp<String> = .copy,
-        username: NullableCopiableProp<String> = .copy
+        username: NullableCopiableProp<String> = .copy,
+        dateRegistered: NullableCopiableProp<Date> = .copy,
+        dateLastActive: CopiableProp<Date> = .copy,
+        ordersCount: CopiableProp<Int> = .copy,
+        totalSpend: CopiableProp<Decimal> = .copy,
+        averageOrderValue: CopiableProp<Decimal> = .copy,
+        country: CopiableProp<String> = .copy,
+        region: CopiableProp<String> = .copy,
+        city: CopiableProp<String> = .copy,
+        postcode: CopiableProp<String> = .copy
     ) -> Networking.WCAnalyticsCustomer {
         let siteID = siteID ?? self.siteID
+        let customerID = customerID ?? self.customerID
         let userID = userID ?? self.userID
         let name = name ?? self.name
         let email = email ?? self.email
         let username = username ?? self.username
+        let dateRegistered = dateRegistered ?? self.dateRegistered
+        let dateLastActive = dateLastActive ?? self.dateLastActive
+        let ordersCount = ordersCount ?? self.ordersCount
+        let totalSpend = totalSpend ?? self.totalSpend
+        let averageOrderValue = averageOrderValue ?? self.averageOrderValue
+        let country = country ?? self.country
+        let region = region ?? self.region
+        let city = city ?? self.city
+        let postcode = postcode ?? self.postcode
 
         return Networking.WCAnalyticsCustomer(
             siteID: siteID,
+            customerID: customerID,
             userID: userID,
             name: name,
             email: email,
-            username: username
+            username: username,
+            dateRegistered: dateRegistered,
+            dateLastActive: dateLastActive,
+            ordersCount: ordersCount,
+            totalSpend: totalSpend,
+            averageOrderValue: averageOrderValue,
+            country: country,
+            region: region,
+            city: city,
+            postcode: postcode
         )
     }
 }

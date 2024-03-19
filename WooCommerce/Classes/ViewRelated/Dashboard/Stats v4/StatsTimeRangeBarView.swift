@@ -6,7 +6,6 @@ final class StatsTimeRangeBarView: UIView {
     // MARK: Subviews
     private let stackView = UIStackView(frame: .zero)
     private let button = UIButton(frame: .zero)
-    private let subtitleLabel = UILabel(frame: .zero)
 
     // To be updated externally to handle button tap
     var editCustomTimeRangeHandler: (() -> Void)?
@@ -16,14 +15,12 @@ final class StatsTimeRangeBarView: UIView {
         translatesAutoresizingMaskIntoConstraints = false
         configureStackView()
         configureButton()
-        configureSubtitleLabel()
     }
 
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         configureStackView()
         configureButton()
-        configureSubtitleLabel()
     }
 
     /// Updates the label with start/end dates, time range type, and site time zone.
@@ -43,7 +40,6 @@ final class StatsTimeRangeBarView: UIView {
         configuration.attributedTitle = AttributedString(viewModel.timeRangeText, attributes: container)
 
         button.configuration = configuration
-        subtitleLabel.text = viewModel.granularityText
     }
 }
 
@@ -65,14 +61,6 @@ private extension StatsTimeRangeBarView {
             self?.editCustomTimeRangeHandler?()
         }
         stackView.addArrangedSubview(button)
-    }
-
-    func configureSubtitleLabel() {
-        subtitleLabel.font = Constants.labelFont
-        subtitleLabel.textColor = Constants.labelColor
-        subtitleLabel.setContentCompressionResistancePriority(.required, for: .vertical)
-        subtitleLabel.translatesAutoresizingMaskIntoConstraints = false
-        stackView.addArrangedSubview(subtitleLabel)
     }
 }
 

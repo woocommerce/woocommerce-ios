@@ -15,7 +15,7 @@ private extension StatsTimeRangeV4 {
         case .thisWeek:
             let startDateString = dateFormatter.string(from: startDate)
             let endDateString = dateFormatter.string(from: endDate)
-            let format = NSLocalizedString("%1$@ - %2$@", comment: "Displays a date range for a stats interval")
+            let format = NSLocalizedString("%1$@ – %2$@", comment: "Displays a date range for a stats interval")
             return String.localizedStringWithFormat(format, startDateString, endDateString)
         case let .custom(customStartDate, customEndDate):
             // Always display the exact date for custom range.

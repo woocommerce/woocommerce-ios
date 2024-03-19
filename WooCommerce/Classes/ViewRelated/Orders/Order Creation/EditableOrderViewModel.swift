@@ -372,6 +372,10 @@ final class EditableOrderViewModel: ObservableObject {
     ///
     @Published private(set) var addressFormViewModel: CreateOrderAddressFormViewModel
 
+    /// Keeps a reference to the latest Address form fields state
+    ///
+    @Published private var latestAddressFormFields: AddressFormFields? = nil
+
     // MARK: Customer note properties
 
     /// Representation of customer note data display properties.
@@ -506,6 +510,16 @@ final class EditableOrderViewModel: ObservableObject {
         observeProductSelectorPresentationStateForViewModel()
         forwardSyncApproachToSynchronizer()
         observeChangesFromProductSelectorButtonTapSelectionSync()
+        observeChangesInCustomerDetails()
+    }
+
+    /// Observes and keeps track of changes within the Customer Details
+    ///
+    private func observeChangesInCustomerDetails() {
+        addressFormViewModel.fieldsPublisher.sink { [weak self] newValue in
+            self?.latestAddressFormFields = newValue
+        }
+        .store(in: &cancellables)
     }
 
     /// Checks the latest Order sync, and returns the current items that are in the Order
@@ -741,6 +755,25 @@ final class EditableOrderViewModel: ObservableObject {
             self?.orderSynchronizer.setAddresses.send(input)
             self?.trackCustomerDetailsAdded()
         })
+    }
+
+    /// Saves the latest Customer Details state if the view is dismissed. Eg: on IPads, automatic modal dismissal on size class change
+    ///
+    func saveInflightCustomerDetails() {
+        let address = Address(firstName: latestAddressFormFields?.firstName ?? "",
+                              lastName: latestAddressFormFields?.lastName ?? "",
+                              company: latestAddressFormFields?.company,
+                              address1: latestAddressFormFields?.address1 ?? "",
+                              address2: latestAddressFormFields?.address2,
+                              city: latestAddressFormFields?.city ?? "",
+                              state: latestAddressFormFields?.state ?? "",
+                              postcode: latestAddressFormFields?.postcode ?? "",
+                              country: latestAddressFormFields?.country ?? "",
+                              phone: latestAddressFormFields?.phone,
+                              email: latestAddressFormFields?.email)
+        let input = Self.createAddressesInputIfPossible(billingAddress: address, shippingAddress: address)
+        orderSynchronizer.setAddresses.send(input)
+        trackCustomerDetailsAdded()
     }
 
     func addCustomerAddressToOrder(customer: Customer) {

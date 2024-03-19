@@ -205,6 +205,8 @@ struct OrderForm: View {
         case .sideBySide:
             viewModel.selectionSyncApproach = .onRecalculateButtonTap
         }
+        // Save: in-flight order details when there's size class changes
+        viewModel.saveInflightCustomerDetails()
     }
 
     @ViewBuilder private func orderFormSummary(_ presentProductSelector: (() -> Void)?) -> some View {

@@ -193,7 +193,10 @@ extension Networking.BlazeCampaignListItem {
             impressions: .fake(),
             clicks: .fake(),
             totalBudget: .fake(),
-            spentBudget: .fake()
+            spentBudget: .fake(),
+            budgetMode: .fake(),
+            budgetAmount: .fake(),
+            budgetCurrency: .fake()
         )
     }
 }

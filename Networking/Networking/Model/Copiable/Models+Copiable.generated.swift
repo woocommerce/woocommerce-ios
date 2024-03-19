@@ -3,7 +3,6 @@
 import Codegen
 import Foundation
 
-
 extension Networking.AIProduct {
     public func copy(
         name: CopiableProp<String> = .copy,
@@ -206,7 +205,10 @@ extension Networking.BlazeCampaignListItem {
         impressions: CopiableProp<Int64> = .copy,
         clicks: CopiableProp<Int64> = .copy,
         totalBudget: CopiableProp<Double> = .copy,
-        spentBudget: CopiableProp<Double> = .copy
+        spentBudget: CopiableProp<Double> = .copy,
+        budgetMode: CopiableProp<BlazeCampaignListItem.BudgetMode> = .copy,
+        budgetAmount: CopiableProp<Double> = .copy,
+        budgetCurrency: CopiableProp<String> = .copy
     ) -> Networking.BlazeCampaignListItem {
         let siteID = siteID ?? self.siteID
         let campaignID = campaignID ?? self.campaignID
@@ -220,6 +222,9 @@ extension Networking.BlazeCampaignListItem {
         let clicks = clicks ?? self.clicks
         let totalBudget = totalBudget ?? self.totalBudget
         let spentBudget = spentBudget ?? self.spentBudget
+        let budgetMode = budgetMode ?? self.budgetMode
+        let budgetAmount = budgetAmount ?? self.budgetAmount
+        let budgetCurrency = budgetCurrency ?? self.budgetCurrency
 
         return Networking.BlazeCampaignListItem(
             siteID: siteID,
@@ -233,7 +238,10 @@ extension Networking.BlazeCampaignListItem {
             impressions: impressions,
             clicks: clicks,
             totalBudget: totalBudget,
-            spentBudget: spentBudget
+            spentBudget: spentBudget,
+            budgetMode: budgetMode,
+            budgetAmount: budgetAmount,
+            budgetCurrency: budgetCurrency
         )
     }
 }

@@ -48,6 +48,30 @@ final class CustomersListViewModel: ObservableObject {
         configurePaginationTracker()
     }
 
+    /// Returns the given customer name, formatted for display.
+    func displayName(for customer: WCAnalyticsCustomer) -> String {
+        guard let name = customer.name, name.trimmingCharacters(in: .whitespaces).isNotEmpty else {
+            return Localization.guestLabel
+        }
+        return name
+    }
+
+    /// Returns the given customer username for display, if available.
+    func displayUsername(for customer: WCAnalyticsCustomer) -> String? {
+        guard let username = customer.username, username.isNotEmpty else {
+            return nil
+        }
+        return username
+    }
+
+    /// Returns the given customer email for display, if available.
+    func displayEmail(for customer: WCAnalyticsCustomer) -> String? {
+        guard let email = customer.email, email.isNotEmpty else {
+            return nil
+        }
+        return email
+    }
+
     /// Called when the next page should be loaded.
     func onLoadNextPageAction() {
         paginationTracker.ensureNextPageIsSynced()
@@ -161,5 +185,13 @@ extension CustomersListViewModel {
                             region: "",
                             city: "",
                             postcode: "")
+    }
+}
+
+private extension CustomersListViewModel {
+    enum Localization {
+        static let guestLabel = NSLocalizedString("customersList.guestLabel",
+                                                  value: "Guest",
+                                                  comment: "Label for a customer with no name in the Customers list screen.")
     }
 }

@@ -4,13 +4,13 @@ import struct Yosemite.Product
 struct ProductListViewSection {
 
     enum ProductListViewSectionType {
-        case favourites
+        case favorites
 
         case allProducts
 
         var title: String {
             switch self {
-            case .favourites:
+            case .favorites:
                 return Localization.favoritesSectionTitle
             case .allProducts:
                 return Localization.allProductsSectionTitle

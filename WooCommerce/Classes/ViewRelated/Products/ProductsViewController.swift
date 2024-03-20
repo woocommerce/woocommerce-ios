@@ -215,7 +215,7 @@ final class ProductsViewController: UIViewController, GhostableViewController {
     private var sections: [ProductListViewSection] = []
 
     private var isShowingFavoritesSection: Bool {
-        sections.contains(where: { $0.type == .favourites })
+        sections.contains(where: { $0.type == .favorites })
     }
 
     deinit {
@@ -1644,7 +1644,7 @@ extension ProductsViewController {
 private extension ProductsViewController {
     func reloadSections() {
         if favoriteProducts.isNotEmpty {
-            sections = [ProductListViewSection(type: .favourites, products: favoriteProducts),
+            sections = [ProductListViewSection(type: .favorites, products: favoriteProducts),
                         ProductListViewSection(type: .allProducts, products: resultsController.fetchedObjects)]
         } else {
             sections = [ProductListViewSection(type: .allProducts, products: resultsController.fetchedObjects)]

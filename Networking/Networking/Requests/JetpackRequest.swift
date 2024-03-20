@@ -127,7 +127,7 @@ private extension JetpackRequest {
     var dotcomParams: [String: String] {
         var output = [
             "json": "true",
-            "path": jetpackPath + "&_method=" + method.rawValue.lowercased()
+            "path": jetpackPath + "&_method=" + method.rawValue.lowercased() + "&XDEBUG_SESSION_START"
         ]
 
         if let locale = locale {

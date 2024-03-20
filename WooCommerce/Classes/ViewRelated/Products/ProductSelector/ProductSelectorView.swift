@@ -188,6 +188,7 @@ struct ProductSelectorView: View {
         .onChange(of: horizontalSizeClass, perform: { newSizeClass in
             updateSyncApproach(for: newSizeClass)
         })
+        // On the order form, this is not connected; the OrderForm displays the notices.
         .notice($viewModel.notice, autoDismiss: false)
         .sheet(isPresented: $showingFilters) {
             FilterListView(viewModel: viewModel.filterListViewModel) { filters in

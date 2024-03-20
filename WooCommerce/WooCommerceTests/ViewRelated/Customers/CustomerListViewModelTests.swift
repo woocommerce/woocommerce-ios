@@ -242,6 +242,32 @@ final class CustomerListViewModelTests: XCTestCase {
         assertEqual(viewModel.customers[1].name, olderCustomer.name)
     }
 
+    // MARK: - `onRefreshAction`
+
+    func test_onRefreshAction_resyncs_the_first_page() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        var invocationCountOfSyncCustomers = 0
+        stores.whenReceivingAction(ofType: CustomerAction.self) { action in
+            guard case let .synchronizeAllCustomers(_, _, _, onCompletion) = action else {
+                return
+            }
+            invocationCountOfSyncCustomers += 1
+            onCompletion(.success(false))
+        }
+        let viewModel = CustomersListViewModel(siteID: sampleSiteID, stores: stores)
+
+        // When
+        waitFor { promise in
+            viewModel.onRefreshAction {
+                promise(())
+            }
+        }
+
+        // Then
+        XCTAssertEqual(invocationCountOfSyncCustomers, 1)
+    }
+
 }
 
 private extension CustomerListViewModelTests {

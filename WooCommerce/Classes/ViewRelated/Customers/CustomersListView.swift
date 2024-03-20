@@ -9,7 +9,8 @@ struct CustomersListView: View {
                 HStack {
                     TitleAndSubtitleAndDetailRow(title: customer.name ?? Localization.guestLabel,
                                                  detail: customer.username,
-                                                 subtitle: customer.email ?? "")
+                                                 subtitle: customer.email,
+                                                 subtitlePlaceholder: Localization.emailPlaceholder)
                     DisclosureIndicator()
                 }
             }
@@ -30,6 +31,9 @@ private extension CustomersListView {
         static let guestLabel = NSLocalizedString("customersList.guestLabel",
                                                   value: "Guest",
                                                   comment: "Label for a customer with no name in the Customers list screen.")
+        static let emailPlaceholder = NSLocalizedString("customersList.emailPlaceholder",
+                                                        value: "No email address",
+                                                        comment: "Placeholder for a customer with no email address in the Customers list screen.")
     }
 }
 

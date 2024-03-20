@@ -5,7 +5,8 @@ import SwiftUI
 struct TitleAndSubtitleAndDetailRow: View {
     let title: String
     var detail: String? = nil
-    let subtitle: String
+    let subtitle: String?
+    let subtitlePlaceholder: String
 
     var body: some View {
         HStack {
@@ -24,8 +25,14 @@ struct TitleAndSubtitleAndDetailRow: View {
                         .foregroundColor(Color(.textSubtle))
                     }
                 }
-                Text(subtitle)
-                    .captionStyle()
+                if let subtitle {
+                    Text(subtitle)
+                        .captionStyle()
+                } else {
+                    Text(subtitlePlaceholder)
+                        .font(.caption)
+                        .foregroundColor(Color(.textSubtle))
+                }
             }
             Spacer()
         }
@@ -40,9 +47,12 @@ private extension TitleAndSubtitleAndDetailRow {
 
 struct TitleAndSubtitleAndDetailRow_Previews: PreviewProvider {
     static var previews: some View {
-        TitleAndSubtitleAndDetailRow(title: "Title", subtitle: "My subtitle")
+        TitleAndSubtitleAndDetailRow(title: "Title", subtitle: "My subtitle", subtitlePlaceholder: "Subtitle placeholder")
             .previewLayout(.fixed(width: 375, height: 100))
-        TitleAndSubtitleAndDetailRow(title: "Title", detail: "Detail", subtitle: "My subtitle")
+        TitleAndSubtitleAndDetailRow(title: "Title",
+                                     detail: "Detail",
+                                     subtitle: nil,
+                                     subtitlePlaceholder: "Subtitle placeholder")
             .previewLayout(.fixed(width: 375, height: 100))
     }
 }

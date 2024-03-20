@@ -182,8 +182,18 @@ extension Networking.BlazeCampaignListItem {
             impressions: .fake(),
             clicks: .fake(),
             totalBudget: .fake(),
-            spentBudget: .fake()
+            spentBudget: .fake(),
+            budgetMode: .fake(),
+            budgetAmount: .fake(),
+            budgetCurrency: .fake()
         )
+    }
+}
+extension Networking.BlazeCampaignListItem.BudgetMode {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.BlazeCampaignListItem.BudgetMode {
+        .total
     }
 }
 extension Networking.BlazeForecastedImpressionsInput {
@@ -2242,10 +2252,20 @@ extension Networking.WCAnalyticsCustomer {
     public static func fake() -> Networking.WCAnalyticsCustomer {
         .init(
             siteID: .fake(),
+            customerID: .fake(),
             userID: .fake(),
             name: .fake(),
             email: .fake(),
-            username: .fake()
+            username: .fake(),
+            dateRegistered: .fake(),
+            dateLastActive: .fake(),
+            ordersCount: .fake(),
+            totalSpend: .fake(),
+            averageOrderValue: .fake(),
+            country: .fake(),
+            region: .fake(),
+            city: .fake(),
+            postcode: .fake()
         )
     }
 }

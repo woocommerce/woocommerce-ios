@@ -20,8 +20,8 @@ import protocol Storage.StorageManagerType
         isAmountEligibleForCardPayment &&
         isStatusEligibleForCardPayment &&
         isPaymentMethodEligibleForCardPayment &&
-        isCurrencyEligibleForCardPayment(cardPresentPaymentsConfiguration: cardPresentPaymentsConfiguration) &&
-        !containsAnySubscription(from: products)
+        isCurrencyEligibleForCardPayment(cardPresentPaymentsConfiguration: cardPresentPaymentsConfiguration)// &&
+//        !containsAnySubscription(from: products)
     }
 
     private var isAmountEligibleForCardPayment: Bool {

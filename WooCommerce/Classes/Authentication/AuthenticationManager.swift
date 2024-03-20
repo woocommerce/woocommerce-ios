@@ -1,4 +1,5 @@
 import Foundation
+import SafariServices
 import KeychainAccess
 import WordPressAuthenticator
 import WordPressUI
@@ -565,6 +566,14 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
                                                             navigationController: navigationController)
         self.loggedOutStoreCreationCoordinator = coordinator
         coordinator.start()
+    }
+
+    func showSiteCreationGuide(in navigationController: UINavigationController) {
+        guard let url = try? AuthenticationConstants.hostingURL.asURL() else {
+            return
+        }
+        let webView = SFSafariViewController(url: url)
+        navigationController.present(webView, animated: true)
     }
 }
 

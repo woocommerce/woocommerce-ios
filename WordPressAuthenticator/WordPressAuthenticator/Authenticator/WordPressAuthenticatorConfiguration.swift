@@ -174,6 +174,10 @@ public struct WordPressAuthenticatorConfiguration {
     ///
     let enableSiteAddressLoginOnlyInPrologue: Bool
 
+    /// If enabled, the prologue screen would display a link for site creation guide.
+    ///
+    let enableSiteCreationGuide: Bool
+
     /// Designated Initializer
     ///
     public init (wpcomClientId: String,
@@ -210,7 +214,8 @@ public struct WordPressAuthenticatorConfiguration {
                  enableManualSiteCredentialLogin: Bool = false,
                  enableManualErrorHandlingForSiteCredentialLogin: Bool = false,
                  useEnterEmailAddressAsStepValueForGetStartedVC: Bool = false,
-                 enableSiteAddressLoginOnlyInPrologue: Bool = false
+                 enableSiteAddressLoginOnlyInPrologue: Bool = false,
+                 enableSiteCreationGuide: Bool = false
     ) {
 
         self.wpcomClientId = wpcomClientId
@@ -248,5 +253,6 @@ public struct WordPressAuthenticatorConfiguration {
         self.enableManualErrorHandlingForSiteCredentialLogin = enableManualErrorHandlingForSiteCredentialLogin
         self.useEnterEmailAddressAsStepValueForGetStartedVC = useEnterEmailAddressAsStepValueForGetStartedVC
         self.enableSiteAddressLoginOnlyInPrologue = enableSiteAddressLoginOnlyInPrologue
+        self.enableSiteCreationGuide = enableSiteCreationGuide
     }
 }

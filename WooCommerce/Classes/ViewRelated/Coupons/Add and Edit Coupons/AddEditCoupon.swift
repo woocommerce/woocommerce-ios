@@ -1,4 +1,5 @@
 import SwiftUI
+import WordPressUI
 import Yosemite
 
 final class AddEditCouponHostingController: UIHostingController<AddEditCoupon> {
@@ -21,8 +22,9 @@ final class AddEditCouponHostingController: UIHostingController<AddEditCoupon> {
                 viewModel.discountType = selectedType
                 self.presentedViewController?.dismiss(animated: true, completion: nil)
             }
-            let presenter = BottomSheetListSelectorPresenter(viewProperties: viewProperties, command: command)
-            presenter.show(from: self, sourceView: self.view, sourceBarButtonItem: nil, arrowDirections: .any)
+            let bottomSheet = BottomSheetListSelectorViewController(viewProperties: viewProperties, command: command, onDismiss: nil)
+            let bottomSheetViewController = BottomSheetViewController(childViewController: bottomSheet)
+            bottomSheetViewController.show(from: self)
         }
     }
 
@@ -64,16 +66,14 @@ struct AddEditCoupon: View {
     ///
     var discountTypeHandler: (BottomSheetListSelectorViewProperties) -> Void = { _ in }
 
+    private let viewProperties = BottomSheetListSelectorViewProperties(subtitle: Localization.discountTypeSheetTitle)
+
     @ObservedObject private var viewModel: AddEditCouponViewModel
     @State private var showingEditDescription: Bool = false
     @State private var showingCouponExpiryDate: Bool = false
     @State private var showingCouponRestrictions: Bool = false
     @State private var showingSelectProducts: Bool = false
     @State private var showingSelectCategories: Bool = false
-    @State private var showingDiscountType: Bool = false
-
-    private var idiom: UIUserInterfaceIdiom { UIDevice.current.userInterfaceIdiom }
-    private let viewProperties = BottomSheetListSelectorViewProperties(subtitle: Localization.discountTypeSheetTitle)
 
     private let categorySelectorConfig = ProductCategorySelector.Configuration.categoriesForCoupons
     private let categoryListConfig = ProductCategoryListViewController.Configuration(searchEnabled: true, clearSelectionEnabled: true)
@@ -94,19 +94,8 @@ struct AddEditCoupon: View {
                                 TitleAndValueRow(title: Localization.discountType,
                                                  value: viewModel.discountTypeValue,
                                                  selectionStyle: .disclosure, action: {
-                                    // TODO: remove this workaround with `adaptiveSheetPresentationController` when we drop support for iOS 14
-                                    if idiom == .pad {
-                                        showingDiscountType.toggle()
-                                    } else {
-                                        discountTypeHandler(viewProperties)
-                                    }
-                                }).popover(isPresented: $showingDiscountType) {
-                                    let command = DiscountTypeBottomSheetListSelectorCommand(selected: viewModel.discountType) { selectedType in
-                                        viewModel.discountType = selectedType
-                                        showingDiscountType.toggle()
-                                    }
-                                    BottomSheetListSelector(viewProperties: viewProperties, command: command, onDismiss: nil)
-                                }
+                                    discountTypeHandler(viewProperties)
+                                })
 
                                 Divider()
                                     .padding(.leading, Constants.margin)

@@ -5,34 +5,10 @@ import Foundation
 public struct BlazePaymentInfo: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable {
 
     /// List of saved payment methods for Blaze campaign creation
-    public let savedPaymentMethods: [BlazePaymentMethod]
+    public let paymentMethods: [BlazePaymentMethod]
 
-    /// Info for adding new payment methods for Blaze campaign creation
-    public let addPaymentMethod: BlazeAddPaymentInfo
-
-    public init(savedPaymentMethods: [BlazePaymentMethod],
-                addPaymentMethod: BlazeAddPaymentInfo) {
-        self.savedPaymentMethods = savedPaymentMethods
-        self.addPaymentMethod = addPaymentMethod
-    }
-}
-
-/// Details for adding a new payment method for Blaze campaign creation.
-public struct BlazeAddPaymentInfo: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable {
-
-    /// URL to be opened for adding payment info
-    public let formUrl: String
-
-    /// URL to detect a success addition of payment info
-    public let successUrl: String
-
-    /// ID of the newly created payment method.
-    public let idUrlParameter: String
-
-    public init(formUrl: String, successUrl: String, idUrlParameter: String) {
-        self.formUrl = formUrl
-        self.successUrl = successUrl
-        self.idUrlParameter = idUrlParameter
+    public init(paymentMethods: [BlazePaymentMethod]) {
+        self.paymentMethods = paymentMethods
     }
 }
 

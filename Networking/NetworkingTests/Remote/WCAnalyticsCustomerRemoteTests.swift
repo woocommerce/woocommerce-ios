@@ -42,8 +42,11 @@ class WCAnalyticsCustomerRemoteTests: XCTestCase {
             self.remote.searchCustomers(for: self.sampleSiteID,
                                         pageNumber: pageNumber,
                                         pageSize: pageSize,
+                                        orderby: .name,
+                                        order: .asc,
                                         keyword: self.sampleCustomerName,
-                                        filter: filter) { result in
+                                        filter: filter,
+                                        filterEmpty: .email) { result in
                 promise(result)
             }
         }
@@ -56,6 +59,7 @@ class WCAnalyticsCustomerRemoteTests: XCTestCase {
         let hasPageSizeParameter = network.queryParameters?.contains(where: { $0 == "per_page=\(pageSize)" }) ?? false
         let hasOrderByParameter = network.queryParameters?.contains(where: { $0 == "orderby=name" }) ?? false
         let hasOrderParameter = network.queryParameters?.contains(where: { $0 == "order=asc" }) ?? false
+        let hasFilterEmptyParameter = network.queryParameters?.contains(where: { $0 == "filter_empty=email" }) ?? false
 
         XCTAssertTrue(hasSearchParameter)
         XCTAssertTrue(hasSearchByParameter)
@@ -63,6 +67,7 @@ class WCAnalyticsCustomerRemoteTests: XCTestCase {
         XCTAssertTrue(hasPageSizeParameter)
         XCTAssertTrue(hasOrderByParameter)
         XCTAssertTrue(hasOrderParameter)
+        XCTAssertTrue(hasFilterEmptyParameter)
 
         assertParsedResultsAreCorrect(with: customers)
     }
@@ -75,7 +80,12 @@ class WCAnalyticsCustomerRemoteTests: XCTestCase {
 
         // When
         let result = waitFor { promise in
-            self.remote.loadCustomers(for: self.sampleSiteID, pageNumber: 2, pageSize: pageSize) { result in
+            self.remote.loadCustomers(for: self.sampleSiteID,
+                                      pageNumber: 2,
+                                      pageSize: pageSize,
+                                      orderby: .name,
+                                      order: .asc,
+                                      filterEmpty: .email) { result in
                 promise(result)
             }
         }
@@ -104,7 +114,14 @@ class WCAnalyticsCustomerRemoteTests: XCTestCase {
 
         // When
         let result = waitFor { promise in
-            self.remote.searchCustomers(for: self.sampleSiteID, pageNumber: 1, pageSize: 25, keyword: self.sampleCustomerName, filter: "all") { result in
+            self.remote.searchCustomers(for: self.sampleSiteID,
+                                        pageNumber: 1,
+                                        pageSize: 25,
+                                        orderby: .name,
+                                        order: .asc,
+                                        keyword: self.sampleCustomerName,
+                                        filter: "all",
+                                        filterEmpty: nil) { result in
                 promise(result)
             }
         }
@@ -120,7 +137,14 @@ class WCAnalyticsCustomerRemoteTests: XCTestCase {
 
         // When
         let result = waitFor { promise in
-            self.remote.searchCustomers(for: self.sampleSiteID, pageNumber: 1, pageSize: 25, keyword: self.sampleCustomerName, filter: "all") { result in
+            self.remote.searchCustomers(for: self.sampleSiteID,
+                                        pageNumber: 1,
+                                        pageSize: 25,
+                                        orderby: .name,
+                                        order: .asc,
+                                        keyword: self.sampleCustomerName,
+                                        filter: "all",
+                                        filterEmpty: nil) { result in
                 promise(result)
             }
         }

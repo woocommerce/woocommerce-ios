@@ -54,6 +54,7 @@ public struct WordPressAuthenticatorDisplayStrings {
     public let signupTermsOfService: String
     public let whatIsWPComLinkTitle: String
     public let siteCreationButtonTitle: String
+    public let siteCreationGuideButtonTitle: String
 
 	/// Placeholder text for textfields.
 	///
@@ -109,7 +110,8 @@ public struct WordPressAuthenticatorDisplayStrings {
                 passwordPlaceholder: String = defaultStrings.passwordPlaceholder,
                 siteAddressPlaceholder: String = defaultStrings.siteAddressPlaceholder,
                 twoFactorCodePlaceholder: String = defaultStrings.twoFactorCodePlaceholder,
-                emailAddressPlaceholder: String = defaultStrings.emailAddressPlaceholder) {
+                emailAddressPlaceholder: String = defaultStrings.emailAddressPlaceholder,
+                siteCreationGuideButtonTitle: String = defaultStrings.siteCreationGuideButtonTitle) {
         self.emailLoginInstructions = emailLoginInstructions
         self.getStartedInstructions = getStartedInstructions
         self.jetpackLoginInstructions = jetpackLoginInstructions
@@ -155,6 +157,7 @@ public struct WordPressAuthenticatorDisplayStrings {
         self.siteAddressPlaceholder = siteAddressPlaceholder
         self.twoFactorCodePlaceholder = twoFactorCodePlaceholder
         self.emailAddressPlaceholder = emailAddressPlaceholder
+        self.siteCreationGuideButtonTitle = siteCreationGuideButtonTitle
     }
 }
 
@@ -245,7 +248,12 @@ public extension WordPressAuthenticatorDisplayStrings {
             twoFactorCodePlaceholder: NSLocalizedString("Authentication code",
                                                         comment: "Placeholder for the 2FA code textfield."),
             emailAddressPlaceholder: NSLocalizedString("Email address",
-                                                       comment: "Placeholder for the email address textfield.")
+                                                       comment: "Placeholder for the email address textfield."),
+            siteCreationGuideButtonTitle: NSLocalizedString(
+                "wordPressAuthenticatorDisplayStrings.default.siteCreationGuideButtonTitle",
+                value: "Starting a new site?",
+                comment: "Title for the link for site creation guide."
+            )
         )
     }
 }

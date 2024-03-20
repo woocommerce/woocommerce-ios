@@ -298,6 +298,8 @@ class LoginPrologueViewController: LoginViewController {
 
         let siteCreationGuideButton: StackedButton = {
             StackedButton(title: displayStrings.siteCreationGuideButtonTitle,
+                          isPrimary: false,
+                          configureBodyFontForTitle: true,
                           accessibilityIdentifier: "Prologue Site Creation Guide button",
                           style: NUXButtonStyle.linkButtonStyle,
                           onTap: siteCreationGuideCallback())

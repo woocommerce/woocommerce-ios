@@ -4,7 +4,7 @@ import SwiftUI
 ///
 struct TitleAndSubtitleAndDetailRow: View {
     let title: String
-    var detail: String? = nil
+    let detail: String?
     let subtitle: String?
     let subtitlePlaceholder: String
 
@@ -16,6 +16,7 @@ struct TitleAndSubtitleAndDetailRow: View {
                     Text(title)
                         .font(.callout)
                         .fontWeight(.medium)
+                        .layoutPriority(1)
                     if let detail {
                         Group {
                             Text("•")
@@ -23,11 +24,13 @@ struct TitleAndSubtitleAndDetailRow: View {
                         }
                         .font(.callout)
                         .foregroundColor(Color(.textSubtle))
+                        .lineLimit(1)
                     }
                 }
                 if let subtitle {
                     Text(subtitle)
                         .captionStyle()
+                        .lineLimit(1)
                 } else {
                     Text(subtitlePlaceholder)
                         .font(.caption)
@@ -47,12 +50,22 @@ private extension TitleAndSubtitleAndDetailRow {
 
 struct TitleAndSubtitleAndDetailRow_Previews: PreviewProvider {
     static var previews: some View {
-        TitleAndSubtitleAndDetailRow(title: "Title", subtitle: "My subtitle", subtitlePlaceholder: "Subtitle placeholder")
-            .previewLayout(.fixed(width: 375, height: 100))
         TitleAndSubtitleAndDetailRow(title: "Title",
                                      detail: "Detail",
+                                     subtitle: "My subtitle",
+                                     subtitlePlaceholder: "Subtitle placeholder")
+        .previewDisplayName("All fields")
+
+        TitleAndSubtitleAndDetailRow(title: "This is a long title with a lot of text",
+                                     detail: "With some detail",
+                                     subtitle: "And a really very long subtitle with quite a lot of text in it so we can see what happens",
+                                     subtitlePlaceholder: "Subtitle placeholder")
+        .previewDisplayName("Long strings")
+
+        TitleAndSubtitleAndDetailRow(title: "Title",
+                                     detail: nil,
                                      subtitle: nil,
                                      subtitlePlaceholder: "Subtitle placeholder")
-            .previewLayout(.fixed(width: 375, height: 100))
+        .previewDisplayName("Title only")
     }
 }

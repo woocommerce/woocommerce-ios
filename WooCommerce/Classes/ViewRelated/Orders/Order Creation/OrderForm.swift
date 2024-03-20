@@ -113,6 +113,12 @@ struct OrderFormPresentationWrapper: View {
                               flow: flow,
                               viewModel: viewModel,
                               presentProductSelector: presentProductSelector)
+                    // When we're modal-on-modal, show the notices on both screens so they're definitely visible
+                    .if(horizontalSizeClass == .compact, transform: {
+                        $0
+                            .notice($viewModel.autodismissableNotice)
+                            .notice($viewModel.fixedNotice, autoDismiss: false)
+                    })
                 },
                 secondaryView: { isShowingProductSelector in
                     if let productSelectorViewModel = viewModel.productSelectorViewModel {
@@ -123,6 +129,12 @@ struct OrderFormPresentationWrapper: View {
                         .sheet(item: $viewModel.productToConfigureViewModel) { viewModel in
                             ConfigurableBundleProductView(viewModel: viewModel)
                         }
+                        // When we're modal-on-modal, show the notices on both screens so they're definitely visible
+                        .if(horizontalSizeClass == .compact, transform: {
+                            $0
+                                .notice($viewModel.autodismissableNotice)
+                                .notice($viewModel.fixedNotice, autoDismiss: false)
+                        })
                     }
                 },
                 dismissBarButton: {
@@ -136,8 +148,12 @@ struct OrderFormPresentationWrapper: View {
                     .accessibilityIdentifier(OrderForm.Accessibility.cancelButtonIdentifier)
                 },
                 isShowingSecondaryView: $viewModel.isProductSelectorPresented)
-            .notice($viewModel.autodismissableNotice)
-            .notice($viewModel.fixedNotice, autoDismiss: false)
+            // When we're side-by-side, show the notices over the combined screen
+            .if(horizontalSizeClass == .regular, transform: {
+                $0
+                    .notice($viewModel.autodismissableNotice)
+                    .notice($viewModel.fixedNotice, autoDismiss: false)
+            })
         } else {
             OrderForm(dismissHandler: dismissHandler, flow: flow, viewModel: viewModel, presentProductSelector: nil)
         }

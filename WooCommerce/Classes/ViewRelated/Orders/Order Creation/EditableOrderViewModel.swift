@@ -1825,6 +1825,7 @@ private extension EditableOrderViewModel {
                     syncApproach: selectionSyncApproach.productSelectorSyncApproach,
                     orderSyncState: orderSynchronizer.statePublisher,
                     shouldShowNonEditableIndicators: shouldShowNonEditableIndicators,
+                    externalNoticePublisher: $autodismissableNotice,
                     onProductSelectionStateChanged: { [weak self] product, isSelected in
                         guard let self else { return }
                         changeSelectionStateForProduct(product, to: isSelected)

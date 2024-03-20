@@ -195,4 +195,8 @@ public enum FeatureFlag: Int {
     /// Displays the Products tab in a split view
     ///
     case splitViewInProductsTab
+
+    /// Removes the entry points to account and site creation.
+    ///
+    case noMoreWooExpressSignup
 }

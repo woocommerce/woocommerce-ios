@@ -116,7 +116,7 @@ public struct BlazeCampaignListItem: Decodable, Equatable, GeneratedFakeable, Ge
             guard let budget else {
                 return .total
             }
-            return BlazeCampaignBudget.Mode(rawValue: budget.mode) ?? .total
+            return budget.mode
         }()
         budgetAmount = budget?.amount ?? totalBudget
         budgetCurrency = budget?.currency ?? "USD"
@@ -172,17 +172,17 @@ private extension BlazeCampaignListItem {
 }
 
 public struct BlazeCampaignBudget: Codable, GeneratedFakeable, GeneratedCopiable {
-    public let mode: String
+    public let mode: Mode
     public let amount: Double
     public let currency: String
 
-    public init(mode: String, amount: Double, currency: String) {
+    public init(mode: Mode, amount: Double, currency: String) {
         self.mode = mode
         self.amount = amount
         self.currency = currency
     }
 
-    public enum Mode: String, GeneratedFakeable {
+    public enum Mode: String, Codable, GeneratedFakeable {
         case total
         case daily
     }

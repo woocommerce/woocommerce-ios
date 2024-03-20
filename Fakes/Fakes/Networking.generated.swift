@@ -422,7 +422,7 @@ extension Networking.CreateBlazeCampaign {
             startDate: .fake(),
             endDate: .fake(),
             timeZone: .fake(),
-            totalBudget: .fake(),
+            budget: .fake(),
             siteName: .fake(),
             textSnippet: .fake(),
             targetUrl: .fake(),

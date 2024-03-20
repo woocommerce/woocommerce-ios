@@ -194,7 +194,7 @@ extension Networking.BlazeAddPaymentInfo {
 
 extension Networking.BlazeCampaignBudget {
     public func copy(
-        mode: CopiableProp<String> = .copy,
+        mode: CopiableProp<BlazeCampaignBudget.Mode> = .copy,
         amount: CopiableProp<Double> = .copy,
         currency: CopiableProp<String> = .copy
     ) -> Networking.BlazeCampaignBudget {
@@ -557,7 +557,7 @@ extension Networking.CreateBlazeCampaign {
         startDate: CopiableProp<Date> = .copy,
         endDate: CopiableProp<Date> = .copy,
         timeZone: CopiableProp<String> = .copy,
-        totalBudget: CopiableProp<Double> = .copy,
+        budget: CopiableProp<BlazeCampaignBudget> = .copy,
         siteName: CopiableProp<String> = .copy,
         textSnippet: CopiableProp<String> = .copy,
         targetUrl: CopiableProp<String> = .copy,
@@ -573,7 +573,7 @@ extension Networking.CreateBlazeCampaign {
         let startDate = startDate ?? self.startDate
         let endDate = endDate ?? self.endDate
         let timeZone = timeZone ?? self.timeZone
-        let totalBudget = totalBudget ?? self.totalBudget
+        let budget = budget ?? self.budget
         let siteName = siteName ?? self.siteName
         let textSnippet = textSnippet ?? self.textSnippet
         let targetUrl = targetUrl ?? self.targetUrl
@@ -590,7 +590,7 @@ extension Networking.CreateBlazeCampaign {
             startDate: startDate,
             endDate: endDate,
             timeZone: timeZone,
-            totalBudget: totalBudget,
+            budget: budget,
             siteName: siteName,
             textSnippet: textSnippet,
             targetUrl: targetUrl,

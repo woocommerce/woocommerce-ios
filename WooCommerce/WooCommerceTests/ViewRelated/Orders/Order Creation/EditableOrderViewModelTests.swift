@@ -3,6 +3,7 @@ import XCTest
 import Yosemite
 import WooFoundation
 import Networking
+import Combine
 
 final class EditableOrderViewModelTests: XCTestCase {
     var viewModel: EditableOrderViewModel!
@@ -242,6 +243,54 @@ final class EditableOrderViewModelTests: XCTestCase {
 
         // Then
         XCTAssertNil(notice)
+    }
+
+    func test_viewModel_when_fixedNotice_is_set_then_emitted_notice_value_matches() {
+        // Given
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores)
+        let error = NSError(domain: "Error", code: 0)
+        let expectedNotice = EditableOrderViewModel.NoticeFactory.createOrderErrorNotice(error, order: .fake())
+        var cancellables: Set<AnyCancellable> = []
+        var emittedValues: [Notice?] = []
+        let expectation = XCTestExpectation(description: "Notice should be updated")
+
+        // When
+        viewModel.$notice.sink { notice in
+            emittedValues.append(notice)
+            expectation.fulfill()
+        }
+        .store(in: &cancellables)
+        viewModel.fixedNotice = expectedNotice
+
+        // Then
+        XCTAssertEqual(emittedValues.last, viewModel.notice, "The emitted value should match the expected notice")
+
+        // Tear down Cancellables, since we only use these in this test:
+        cancellables = []
+    }
+
+    func test_viewModel_when_autoDismissableNotice_is_set_then_emitted_notice_value_matches() {
+        // Given
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores)
+        let error = NSError(domain: "Error", code: 0)
+        let expectedNotice = EditableOrderViewModel.NoticeFactory.createOrderErrorNotice(error, order: .fake())
+        var cancellables: Set<AnyCancellable> = []
+        var emittedValues: [Notice?] = []
+        let expectation = XCTestExpectation(description: "Notice should be updated")
+
+        // When
+        viewModel.$notice.sink { notice in
+            emittedValues.append(notice)
+            expectation.fulfill()
+        }
+        .store(in: &cancellables)
+        viewModel.autodismissableNotice = expectedNotice
+
+        // Then
+        XCTAssertEqual(emittedValues.last, viewModel.notice, "The emitted value should match the expected notice")
+
+        // Tear down Cancellables, since we only use these in this test:
+        cancellables = []
     }
 
     func test_view_model_loads_synced_pending_order_status() {
@@ -2282,6 +2331,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(expectedError, .productNotFound)
         XCTAssertEqual(viewModel.autodismissableNotice, expectedNotice)
+        XCTAssertEqual(viewModel.notice, expectedNotice)
         XCTAssertEqual(analytics.receivedEvents.first, WooAnalyticsStat.barcodeScanningSuccess.rawValue)
         XCTAssertEqual(analytics.receivedProperties.first?["source"] as? String, "order_creation")
 

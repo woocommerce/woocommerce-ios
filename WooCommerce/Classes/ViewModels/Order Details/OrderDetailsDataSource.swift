@@ -1698,7 +1698,7 @@ extension OrderDetailsDataSource {
             comment: "Text on the button title to see the order's receipt")
         static let seeLegacyReceipt = NSLocalizedString("See Receipt", comment: "Text on the button to see a saved receipt")
         static let trashOrder = NSLocalizedString(
-                     "OrderDetailsDataSource.trashOrder.button.title",
+                     "orderDetailsDataSource.trashOrder.button.title",
                      value: "Move to trash",
                      comment: "Text on the button title to trash an order")
     }

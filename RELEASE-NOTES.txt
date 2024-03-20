@@ -2,7 +2,7 @@
 
 17.9
 -----
-
+- Added 4 home screen quick actions: "New Order", "Orders", "Add a product", "Collect Payment" [https://github.com/woocommerce/woocommerce-ios/pull/12264/]
 
 17.8
 -----

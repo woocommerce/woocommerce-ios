@@ -112,12 +112,7 @@ public struct BlazeCampaignListItem: Decodable, Equatable, GeneratedFakeable, Ge
         spentBudget = try container.decodeIfPresent(Double.self, forKey: .spentBudget) ?? 0
 
         let budget = try container.decodeIfPresent(BlazeCampaignBudget.self, forKey: .budget)
-        budgetMode = {
-            guard let budget else {
-                return .total
-            }
-            return budget.mode
-        }()
+        budgetMode = budget?.mode ?? .total
         budgetAmount = budget?.amount ?? totalBudget
         budgetCurrency = budget?.currency ?? "USD"
     }

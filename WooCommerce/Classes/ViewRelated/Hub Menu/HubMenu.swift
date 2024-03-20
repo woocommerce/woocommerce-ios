@@ -166,7 +166,7 @@ private extension HubMenu {
             case HubMenuViewModel.Subscriptions.id:
                 SubscriptionsView(viewModel: .init())
             case HubMenuViewModel.Customers.id:
-                EmptyView() // TODO-12294: Navigate to customer list
+                CustomersListView()
             default:
                 fatalError("🚨 Unsupported menu item")
             }

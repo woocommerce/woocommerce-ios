@@ -178,6 +178,70 @@ final class CustomerListViewModelTests: XCTestCase {
         XCTAssertEqual(invocationCountOfSyncCustomers, 2)
     }
 
+    // MARK: - Customer rows
+
+    func test_customers_match_loaded_customers() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let customer = WCAnalyticsCustomer.fake().copy(siteID: sampleSiteID, name: "Customer")
+        stores.whenReceivingAction(ofType: CustomerAction.self) { action in
+            guard case let .synchronizeAllCustomers(_, _, _, completion) = action else {
+                return
+            }
+            self.insertCustomers([customer])
+            completion(.success(true))
+        }
+        let viewModel = CustomersListViewModel(siteID: sampleSiteID, stores: stores, storageManager: storageManager)
+
+        // When
+        viewModel.loadCustomers()
+
+        // Then
+        XCTAssertEqual(viewModel.customers.first?.name, customer.name)
+    }
+
+    func test_customers_are_empty_when_loaded_customers_are_empty() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        stores.whenReceivingAction(ofType: CustomerAction.self) { action in
+            guard case let .synchronizeAllCustomers(_, _, _, completion) = action else {
+                return
+            }
+            completion(.success(false))
+        }
+        let viewModel = CustomersListViewModel(siteID: sampleSiteID, stores: stores, storageManager: storageManager)
+
+        // When
+        viewModel.loadCustomers()
+
+        // Then
+        XCTAssertEqual(viewModel.customers.count, 0)
+    }
+
+    func test_customers_are_sorted_by_lastActiveDate() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let olderCustomer = WCAnalyticsCustomer.fake().copy(siteID: sampleSiteID, name: "Customer", dateLastActive: Date())
+        let recentCustomer = WCAnalyticsCustomer.fake().copy(siteID: sampleSiteID, name: "Customer", dateLastActive: Date())
+        stores.whenReceivingAction(ofType: CustomerAction.self) { action in
+            guard case let .synchronizeAllCustomers(_, _, _, completion) = action else {
+                return
+            }
+            let items = [olderCustomer, recentCustomer]
+            self.insertCustomers(items)
+            completion(.success(false))
+        }
+        let viewModel = CustomersListViewModel(siteID: sampleSiteID, stores: stores, storageManager: storageManager)
+
+        // When
+        viewModel.loadCustomers()
+
+        // Then customers are first sorted by descending dateLastActive
+        XCTAssertEqual(viewModel.customers.count, 2)
+        assertEqual(viewModel.customers[0].name, recentCustomer.name)
+        assertEqual(viewModel.customers[1].name, olderCustomer.name)
+    }
+
 }
 
 private extension CustomerListViewModelTests {

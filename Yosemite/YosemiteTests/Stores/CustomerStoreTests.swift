@@ -273,7 +273,7 @@ final class CustomerStoreTests: XCTestCase {
         let result = waitFor { promise in
             let action = CustomerAction.synchronizeAllCustomers(siteID: self.dummySiteID,
                                                                 pageNumber: 1,
-                                                                pageSize: 2) { result in
+                                                                pageSize: 4) { result in
                 promise(result)
             }
             self.dispatcher.dispatch(action)
@@ -284,13 +284,13 @@ final class CustomerStoreTests: XCTestCase {
             .map { $0.toReadOnly() }
             .sorted(by: { $0.customerID < $1.customerID })
 
-        guard case .success(let thereAreCustomers) = result else {
+        guard case .success(let hasNextPage) = result else {
             XCTFail()
 
             return
         }
 
-        XCTAssertTrue(thereAreCustomers)
+        XCTAssertTrue(hasNextPage)
         assertEqual(4, customers.count)
         assertEqual(0, customers[0].customerID)
         assertEqual(1, customers[1].customerID)

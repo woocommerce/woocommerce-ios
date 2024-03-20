@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct CustomersListView: View {
-    @StateObject var viewModel = CustomersListViewModel()
+    @StateObject var viewModel: CustomersListViewModel
 
     var body: some View {
         List {
@@ -37,5 +37,5 @@ private extension CustomersListView {
 }
 
 #Preview {
-    CustomersListView()
+    CustomersListView(viewModel: .init(siteID: 0))
 }

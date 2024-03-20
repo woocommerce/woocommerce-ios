@@ -138,25 +138,12 @@ final class EditableOrderViewModel: ObservableObject {
     /// Defines the current notice that should be shown. It doesn't dismiss automatically
     /// Defaults to `nil`.
     ///
-    @Published var fixedNotice: Notice? {
-        didSet {
-            updateUnifiedNotice()
-        }
-    }
+    @Published var fixedNotice: Notice?
 
     /// Defines the current notice that should be shown. Autodismissable
     /// Defaults to `nil`.
     ///
-    @Published var autodismissableNotice: Notice? {
-        didSet {
-            updateUnifiedNotice()
-        }
-    }
-
-    /// Defines the current notice that should be shown. Unifies both autodismissable and non-autodismissable notices
-    /// Defaults to `nil`
-    ///
-    @Published var notice: Notice?
+    @Published var autodismissableNotice: Notice?
 
     /// Optional view model for configurable a bundle product from the product selector.
     /// When the value is non-nil, the bundle product configuration screen is shown.
@@ -519,12 +506,6 @@ final class EditableOrderViewModel: ObservableObject {
         observeProductSelectorPresentationStateForViewModel()
         forwardSyncApproachToSynchronizer()
         observeChangesFromProductSelectorButtonTapSelectionSync()
-    }
-
-    /// Sets the notice property either with a fixedNotice or an autodismissable one
-    ///
-    private func updateUnifiedNotice() {
-        notice = fixedNotice ?? autodismissableNotice
     }
 
     /// Checks the latest Order sync, and returns the current items that are in the Order

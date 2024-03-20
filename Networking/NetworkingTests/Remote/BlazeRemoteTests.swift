@@ -59,13 +59,14 @@ final class BlazeRemoteTests: XCTestCase {
                                            languages: ["en", "de"],
                                            devices: nil,
                                            pageTopics: ["IAB3", "IAB4"])
+        let budget = BlazeCampaignBudget(mode: .total, amount: 35, currency: "USD")
         let campaign = CreateBlazeCampaign.fake().copy(origin: "WooMobile",
                                                        originVersion: "1.0.1",
                                                        paymentMethodID: "payment-method-id-123",
                                                        startDate: startDate,
                                                        endDate: endDate,
                                                        timeZone: "America/New_York",
-                                                       totalBudget: 35.00,
+                                                       budget: budget,
                                                        siteName: "Unleash Your Brain's Potential",
                                                        textSnippet: "Discover the power of computer neural networks in unlocking your brain's full potential.",
                                                        targetUrl: "https://example.com/2023/06/25/unlocking-the-secrets-of-computer-neural-networks/",
@@ -86,7 +87,12 @@ final class BlazeRemoteTests: XCTestCase {
         XCTAssertEqual(request.parameters?["start_date"] as? String, startDateString)
         XCTAssertEqual(request.parameters?["end_date"] as? String, endDateString)
         XCTAssertEqual(request.parameters?["time_zone"] as? String, campaign.timeZone)
-        XCTAssertEqual(request.parameters?["total_budget"] as? Double, campaign.totalBudget)
+
+        let requestedBudget = try XCTUnwrap(request.parameters?["budget"] as? [String: Any])
+        XCTAssertEqual(requestedBudget["amount"] as? Double, budget.amount)
+        XCTAssertEqual(requestedBudget["currency"] as? String, budget.currency)
+        XCTAssertEqual(requestedBudget["mode"] as? String, budget.mode.rawValue)
+
         XCTAssertEqual(request.parameters?["site_name"] as? String, campaign.siteName)
         XCTAssertEqual(request.parameters?["text_snippet"] as? String, campaign.textSnippet)
         XCTAssertEqual(request.parameters?["target_url"] as? String, campaign.targetUrl)

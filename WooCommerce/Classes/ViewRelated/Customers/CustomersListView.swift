@@ -1,15 +1,17 @@
 import SwiftUI
 
 struct CustomersListView: View {
+    @StateObject var viewModel = CustomersListViewModel()
+
     var body: some View {
         List {
-            HStack {
-                TitleAndSubtitleAndDetailRow(title: "Guest", subtitle: "guest@example.com")
-                DisclosureIndicator()
-            }
-            HStack {
-                TitleAndSubtitleAndDetailRow(title: "John Smith", detail: "jsmith", subtitle: "jsmith@example.com")
-                DisclosureIndicator()
+            ForEach(viewModel.customers, id: \.customerID) { customer in
+                HStack {
+                    TitleAndSubtitleAndDetailRow(title: customer.name ?? Localization.guestLabel,
+                                                 detail: customer.username,
+                                                 subtitle: customer.email ?? "")
+                    DisclosureIndicator()
+                }
             }
         }
         .listStyle(.plain)
@@ -25,6 +27,9 @@ private extension CustomersListView {
         static let title = NSLocalizedString("customersList.title",
                                              value: "Customers",
                                              comment: "Title for Customers list screen")
+        static let guestLabel = NSLocalizedString("customersList.guestLabel",
+                                                  value: "Guest",
+                                                  comment: "Label for a customer with no name in the Customers list screen.")
     }
 }
 

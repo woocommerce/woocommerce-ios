@@ -2044,6 +2044,7 @@
 		CE5F462C23AACBC4006B1A5C /* RefundDetailsResultController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE5F462B23AACBC4006B1A5C /* RefundDetailsResultController.swift */; };
 		CE63023D2BAAEF2C00E3325C /* CustomersListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE63023C2BAAEF2C00E3325C /* CustomersListView.swift */; };
 		CE63023F2BAAF04600E3325C /* TitleAndSubtitleAndDetailRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE63023E2BAAF04600E3325C /* TitleAndSubtitleAndDetailRow.swift */; };
+		CE6302412BAAFB5E00E3325C /* CustomersListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE6302402BAAFB5E00E3325C /* CustomersListViewModel.swift */; };
 		CE6A8FB42B724D7C0063564D /* AnalyticsReportLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE6A8FB32B724D7C0063564D /* AnalyticsReportLink.swift */; };
 		CE6A8FB62B725A690063564D /* AnalyticsReportLinkViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE6A8FB52B725A690063564D /* AnalyticsReportLinkViewModel.swift */; };
 		CE6A8FB82B7291760063564D /* AnalyticsReportLinkViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE6A8FB72B7291760063564D /* AnalyticsReportLinkViewModelTests.swift */; };
@@ -4778,6 +4779,7 @@
 		CE5F462B23AACBC4006B1A5C /* RefundDetailsResultController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundDetailsResultController.swift; sourceTree = "<group>"; };
 		CE63023C2BAAEF2C00E3325C /* CustomersListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomersListView.swift; sourceTree = "<group>"; };
 		CE63023E2BAAF04600E3325C /* TitleAndSubtitleAndDetailRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitleAndSubtitleAndDetailRow.swift; sourceTree = "<group>"; };
+		CE6302402BAAFB5E00E3325C /* CustomersListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomersListViewModel.swift; sourceTree = "<group>"; };
 		CE6A8FB32B724D7C0063564D /* AnalyticsReportLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsReportLink.swift; sourceTree = "<group>"; };
 		CE6A8FB52B725A690063564D /* AnalyticsReportLinkViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsReportLinkViewModel.swift; sourceTree = "<group>"; };
 		CE6A8FB72B7291760063564D /* AnalyticsReportLinkViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsReportLinkViewModelTests.swift; sourceTree = "<group>"; };
@@ -10759,6 +10761,7 @@
 			isa = PBXGroup;
 			children = (
 				CE63023C2BAAEF2C00E3325C /* CustomersListView.swift */,
+				CE6302402BAAFB5E00E3325C /* CustomersListViewModel.swift */,
 			);
 			path = Customers;
 			sourceTree = "<group>";
@@ -13399,6 +13402,7 @@
 				CE63023D2BAAEF2C00E3325C /* CustomersListView.swift in Sources */,
 				CE583A0B2107937F00D73C1C /* TextViewTableViewCell.swift in Sources */,
 				45AE150224A23F03005AA948 /* ProductParentCategoriesViewController.swift in Sources */,
+				CE6302412BAAFB5E00E3325C /* CustomersListViewModel.swift in Sources */,
 				B557652B20F681E800185843 /* StoreTableViewCell.swift in Sources */,
 				029700EC24FE38C900D242F8 /* ScrollWatcher.swift in Sources */,
 				D8C11A4E22DD235F00D4A88D /* OrderDetailsResultsControllers.swift in Sources */,

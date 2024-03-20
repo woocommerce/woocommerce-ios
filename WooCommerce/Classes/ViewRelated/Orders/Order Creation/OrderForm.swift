@@ -399,9 +399,13 @@ struct OrderForm: View {
         .onTapGesture {
             shouldShowInformationalCouponTooltip = false
         }
-        // TODO: These notices need to be hidden when the split view is used, otherwise we'll see a duplicated notice in the order summary
-        //.notice($viewModel.autodismissableNotice)
-        //.notice($viewModel.fixedNotice, autoDismiss: false)
+        // Avoids Notice duplication when the feature flag is enabled. These can be removed when the flag is removed.
+        .if(!ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm), transform: {
+            $0.notice($viewModel.autodismissableNotice)
+        })
+        .if(!ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm), transform: {
+            $0.notice($viewModel.fixedNotice, autoDismiss: false)
+        })
     }
 
     @ViewBuilder private var storedTaxRateBottomSheetContent: some View {

@@ -206,7 +206,9 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
                             startDate: startDate,
                             endDate: startDate.addingTimeInterval(Constants.oneDayInSeconds * Double(duration)),
                             timeZone: TimeZone.current.identifier,
-                            totalBudget: dailyBudget * Double(duration),
+                            budget: BlazeCampaignBudget(mode: .total,
+                                                        amount: dailyBudget * Double(duration),
+                                                        currency: Constants.defaultCurrency),
                             siteName: tagline,
                             textSnippet: description,
                             targetUrl: targetUrl,
@@ -436,6 +438,7 @@ private extension BlazeCampaignCreationFormViewModel {
         static let campaignType = "product"
         static let oneDayInSeconds: Double = 86400
         static let targetUrnFormat = "urn:wpcom:post:%d:%d"
+        static let defaultCurrency = "USD"
     }
     enum Localization {
         static let budgetSingleDay = NSLocalizedString(

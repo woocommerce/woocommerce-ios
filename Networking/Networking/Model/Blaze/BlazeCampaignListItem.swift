@@ -43,7 +43,7 @@ public struct BlazeCampaignListItem: Decodable, Equatable, GeneratedFakeable, Ge
     public let spentBudget: Double
 
     /// Indicates whether the `budgetAmount` field is total or daily amount.
-    public let budgetMode: BudgetMode
+    public let budgetMode: BlazeCampaignBudget.Mode
 
     /// Can be total or daily amount, so check `budgetMode` to identify this.
     public let budgetAmount: Double
@@ -63,7 +63,7 @@ public struct BlazeCampaignListItem: Decodable, Equatable, GeneratedFakeable, Ge
                 clicks: Int64,
                 totalBudget: Double,
                 spentBudget: Double,
-                budgetMode: BudgetMode,
+                budgetMode: BlazeCampaignBudget.Mode,
                 budgetAmount: Double,
                 budgetCurrency: String) {
         self.siteID = siteID
@@ -111,13 +111,8 @@ public struct BlazeCampaignListItem: Decodable, Equatable, GeneratedFakeable, Ge
         totalBudget = try container.decode(Double.self, forKey: .totalBudget)
         spentBudget = try container.decodeIfPresent(Double.self, forKey: .spentBudget) ?? 0
 
-        let budget = try container.decodeIfPresent(Budget.self, forKey: .budget)
-        budgetMode = {
-            guard let budget else {
-                return .total
-            }
-            return BudgetMode(rawValue: budget.mode) ?? .total
-        }()
+        let budget = try container.decodeIfPresent(BlazeCampaignBudget.self, forKey: .budget)
+        budgetMode = budget?.mode ?? .total
         budgetAmount = budget?.amount ?? totalBudget
         budgetCurrency = budget?.currency ?? "USD"
     }
@@ -140,11 +135,6 @@ public extension BlazeCampaignListItem {
     var status: Status {
         Status(rawValue: uiStatus) ?? .unknown
     }
-
-    enum BudgetMode: String, GeneratedFakeable {
-        case total
-        case daily
-    }
 }
 
 // MARK: Private subtypes
@@ -165,12 +155,6 @@ private extension BlazeCampaignListItem {
         case budget
     }
 
-    struct Budget: Decodable {
-        public let mode: String
-        public let amount: Double
-        public let currency: String
-    }
-
     /// Private subtype for parsing image details.
     struct Image: Decodable {
         public let url: String?
@@ -179,5 +163,22 @@ private extension BlazeCampaignListItem {
     /// Decoding Errors
     enum DecodingError: Error {
         case missingSiteID
+    }
+}
+
+public struct BlazeCampaignBudget: Codable, GeneratedFakeable, GeneratedCopiable {
+    public let mode: Mode
+    public let amount: Double
+    public let currency: String
+
+    public init(mode: Mode, amount: Double, currency: String) {
+        self.mode = mode
+        self.amount = amount
+        self.currency = currency
+    }
+
+    public enum Mode: String, Codable, GeneratedFakeable {
+        case total
+        case daily
     }
 }

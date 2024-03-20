@@ -14,6 +14,7 @@ public typealias AIProduct = Networking.AIProduct
 public typealias Announcement = Networking.Announcement
 public typealias APNSDevice = Networking.APNSDevice
 public typealias BlazeCampaignListItem = Networking.BlazeCampaignListItem
+public typealias BlazeCampaignBudget = Networking.BlazeCampaignBudget
 public typealias BlazeForecastedImpressionsInput = Networking.BlazeForecastedImpressionsInput
 public typealias BlazeImpressions = Networking.BlazeImpressions
 public typealias BlazePaymentInfo = Networking.BlazePaymentInfo

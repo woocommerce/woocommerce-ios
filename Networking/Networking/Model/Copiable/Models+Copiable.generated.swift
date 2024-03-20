@@ -224,7 +224,7 @@ extension Networking.BlazeCampaignListItem {
         clicks: CopiableProp<Int64> = .copy,
         totalBudget: CopiableProp<Double> = .copy,
         spentBudget: CopiableProp<Double> = .copy,
-        budgetMode: CopiableProp<BlazeCampaignListItem.BudgetMode> = .copy,
+        budgetMode: CopiableProp<BlazeCampaignBudget.Mode> = .copy,
         budgetAmount: CopiableProp<Double> = .copy,
         budgetCurrency: CopiableProp<String> = .copy
     ) -> Networking.BlazeCampaignListItem {

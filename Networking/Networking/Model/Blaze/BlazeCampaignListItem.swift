@@ -43,7 +43,7 @@ public struct BlazeCampaignListItem: Decodable, Equatable, GeneratedFakeable, Ge
     public let spentBudget: Double
 
     /// Indicates whether the `budgetAmount` field is total or daily amount.
-    public let budgetMode: BudgetMode
+    public let budgetMode: BlazeCampaignBudget.Mode
 
     /// Can be total or daily amount, so check `budgetMode` to identify this.
     public let budgetAmount: Double
@@ -63,7 +63,7 @@ public struct BlazeCampaignListItem: Decodable, Equatable, GeneratedFakeable, Ge
                 clicks: Int64,
                 totalBudget: Double,
                 spentBudget: Double,
-                budgetMode: BudgetMode,
+                budgetMode: BlazeCampaignBudget.Mode,
                 budgetAmount: Double,
                 budgetCurrency: String) {
         self.siteID = siteID
@@ -116,7 +116,7 @@ public struct BlazeCampaignListItem: Decodable, Equatable, GeneratedFakeable, Ge
             guard let budget else {
                 return .total
             }
-            return BudgetMode(rawValue: budget.mode) ?? .total
+            return BlazeCampaignBudget.Mode(rawValue: budget.mode) ?? .total
         }()
         budgetAmount = budget?.amount ?? totalBudget
         budgetCurrency = budget?.currency ?? "USD"
@@ -139,11 +139,6 @@ public extension BlazeCampaignListItem {
     /// Status of the current campaign.
     var status: Status {
         Status(rawValue: uiStatus) ?? .unknown
-    }
-
-    enum BudgetMode: String, GeneratedFakeable {
-        case total
-        case daily
     }
 }
 
@@ -185,5 +180,10 @@ public struct BlazeCampaignBudget: Codable, GeneratedFakeable, GeneratedCopiable
         self.mode = mode
         self.amount = amount
         self.currency = currency
+    }
+
+    public enum Mode: String, GeneratedFakeable {
+        case total
+        case daily
     }
 }

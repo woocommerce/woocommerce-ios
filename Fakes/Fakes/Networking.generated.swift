@@ -188,6 +188,13 @@ extension Networking.BlazeCampaignBudget {
         )
     }
 }
+extension Networking.BlazeCampaignBudget.Mode {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.BlazeCampaignBudget.Mode {
+        .total
+    }
+}
 extension Networking.BlazeCampaignListItem {
     /// Returns a "ready to use" type filled with fake values.
     ///
@@ -209,13 +216,6 @@ extension Networking.BlazeCampaignListItem {
             budgetAmount: .fake(),
             budgetCurrency: .fake()
         )
-    }
-}
-extension Networking.BlazeCampaignListItem.BudgetMode {
-    /// Returns a "ready to use" type filled with fake values.
-    ///
-    public static func fake() -> Networking.BlazeCampaignListItem.BudgetMode {
-        .total
     }
 }
 extension Networking.BlazeForecastedImpressionsInput {

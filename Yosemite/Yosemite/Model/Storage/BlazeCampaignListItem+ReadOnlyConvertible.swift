@@ -44,7 +44,7 @@ extension Storage.BlazeCampaignListItem: ReadOnlyConvertible {
                               clicks: clicks,
                               totalBudget: totalBudget,
                               spentBudget: spentBudget,
-                              budgetMode: BlazeCampaignListItem.BudgetMode(rawValue: budgetMode) ?? .total,
+                              budgetMode: BlazeCampaignBudget.Mode(rawValue: budgetMode) ?? .total,
                               budgetAmount: budgetAmount,
                               budgetCurrency: budgetCurrency)
     }

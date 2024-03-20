@@ -45,7 +45,7 @@ class LoginPrologueViewController: LoginViewController {
     /// Return`true` to use new `NUXStackedButtonsViewController` instead of `NUXButtonViewController` to create buttons
     ///
     private var useStackedButtonsViewController: Bool {
-        configuration.enableWPComLoginOnlyInPrologue || 
+        configuration.enableWPComLoginOnlyInPrologue ||
         configuration.enableSiteCreation ||
         configuration.enableSiteAddressLoginOnlyInPrologue ||
         configuration.enableSiteCreationGuide

@@ -15,6 +15,7 @@ struct TitleAndSubtitleAndDetailRow: View {
                 HStack {
                     Text(title)
                         .font(.callout)
+                        .foregroundColor(Color(.text))
                         .fontWeight(.medium)
                         .layoutPriority(1)
                     if let detail {

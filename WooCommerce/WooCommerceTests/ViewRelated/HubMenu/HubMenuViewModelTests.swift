@@ -358,6 +358,21 @@ final class HubMenuViewModelTests: XCTestCase {
             item.id == HubMenuViewModel.Subscriptions.id
         }))
     }
+
+    func test_menuElements_do_not_include_customers_when_feature_flag_is_off() {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isCustomersInHubMenuEnabled: false)
+
+        // When
+        let viewModel = HubMenuViewModel(siteID: sampleSiteID,
+                                         tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
+                                         featureFlagService: featureFlagService)
+
+        // Then
+        XCTAssertNil(viewModel.generalElements.firstIndex(where: { item in
+            item.id == HubMenuViewModel.Customers.id
+        }))
+    }
 }
 
 private extension HubMenuViewModelTests {

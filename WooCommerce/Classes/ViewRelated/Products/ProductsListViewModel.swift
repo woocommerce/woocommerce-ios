@@ -23,7 +23,7 @@ final class ProductListViewModel: ProductsListViewModelProtocol {
 
     private let barcodeSKUScannerItemFinder: BarcodeSKUScannerItemFinder
     private let featureFlagService: FeatureFlagService
-    let favoriteProductsUseCase: FavoriteProductsUseCase
+    private let favoriteProductsUseCase: FavoriteProductsUseCase
 
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,

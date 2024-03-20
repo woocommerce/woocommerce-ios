@@ -6,13 +6,12 @@ struct CustomersListView: View {
     var body: some View {
         List {
             ForEach(viewModel.customers, id: \.customerID) { customer in
-                HStack {
+                LazyNavigationLink(destination: EmptyView(), label: {
                     TitleAndSubtitleAndDetailRow(title: customer.name ?? Localization.guestLabel,
                                                  detail: customer.username,
                                                  subtitle: customer.email,
                                                  subtitlePlaceholder: Localization.emailPlaceholder)
-                    DisclosureIndicator()
-                }
+                })
             }
         }
         .listStyle(.plain)

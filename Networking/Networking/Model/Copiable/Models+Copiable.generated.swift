@@ -174,6 +174,42 @@ extension Networking.BlazeAISuggestion {
     }
 }
 
+extension Networking.BlazeAddPaymentInfo {
+    public func copy(
+        formUrl: CopiableProp<String> = .copy,
+        successUrl: CopiableProp<String> = .copy,
+        idUrlParameter: CopiableProp<String> = .copy
+    ) -> Networking.BlazeAddPaymentInfo {
+        let formUrl = formUrl ?? self.formUrl
+        let successUrl = successUrl ?? self.successUrl
+        let idUrlParameter = idUrlParameter ?? self.idUrlParameter
+
+        return Networking.BlazeAddPaymentInfo(
+            formUrl: formUrl,
+            successUrl: successUrl,
+            idUrlParameter: idUrlParameter
+        )
+    }
+}
+
+extension Networking.BlazeCampaignBudget {
+    public func copy(
+        mode: CopiableProp<String> = .copy,
+        amount: CopiableProp<Double> = .copy,
+        currency: CopiableProp<String> = .copy
+    ) -> Networking.BlazeCampaignBudget {
+        let mode = mode ?? self.mode
+        let amount = amount ?? self.amount
+        let currency = currency ?? self.currency
+
+        return Networking.BlazeCampaignBudget(
+            mode: mode,
+            amount: amount,
+            currency: currency
+        )
+    }
+}
+
 extension Networking.BlazeCampaignListItem {
     public func copy(
         siteID: CopiableProp<Int64> = .copy,
@@ -245,12 +281,15 @@ extension Networking.BlazeImpressions {
 
 extension Networking.BlazePaymentInfo {
     public func copy(
-        paymentMethods: CopiableProp<[BlazePaymentMethod]> = .copy
+        savedPaymentMethods: CopiableProp<[BlazePaymentMethod]> = .copy,
+        addPaymentMethod: CopiableProp<BlazeAddPaymentInfo> = .copy
     ) -> Networking.BlazePaymentInfo {
-        let paymentMethods = paymentMethods ?? self.paymentMethods
+        let savedPaymentMethods = savedPaymentMethods ?? self.savedPaymentMethods
+        let addPaymentMethod = addPaymentMethod ?? self.addPaymentMethod
 
         return Networking.BlazePaymentInfo(
-            paymentMethods: paymentMethods
+            savedPaymentMethods: savedPaymentMethods,
+            addPaymentMethod: addPaymentMethod
         )
     }
 }

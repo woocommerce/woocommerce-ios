@@ -25,6 +25,25 @@ public struct NUXButtonStyle {
         self.highlighted = highlighted
         self.disabled = disabled
     }
+
+    public static var linkButtonStyle: NUXButtonStyle {
+        let backgroundColor = UIColor.clear
+        let buttonTitleColor = WordPressAuthenticator.shared.unifiedStyle?.textButtonColor ?? WordPressAuthenticator.shared.style.textButtonColor
+        let buttonHighlightColor = WordPressAuthenticator.shared.unifiedStyle?.textButtonHighlightColor ?? WordPressAuthenticator.shared.style.textButtonHighlightColor
+
+        let normalButtonStyle = ButtonStyle(backgroundColor: backgroundColor,
+                                            borderColor: backgroundColor,
+                                            titleColor: buttonTitleColor)
+        let highlightedButtonStyle = ButtonStyle(backgroundColor: backgroundColor,
+                                                 borderColor: backgroundColor,
+                                                 titleColor: buttonHighlightColor)
+        let disabledButtonStyle = ButtonStyle(backgroundColor: backgroundColor,
+                                              borderColor: backgroundColor,
+                                              titleColor: buttonTitleColor.withAlphaComponent(0.5))
+        return NUXButtonStyle(normal: normalButtonStyle,
+                              highlighted: highlightedButtonStyle,
+                              disabled: disabledButtonStyle)
+    }
 }
 /// A stylized button used by Login controllers. It also can display a `UIActivityIndicatorView`.
 @objc open class NUXButton: UIButton {

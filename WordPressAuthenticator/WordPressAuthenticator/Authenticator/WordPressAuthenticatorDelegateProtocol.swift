@@ -148,6 +148,14 @@ public protocol WordPressAuthenticatorDelegate: AnyObject {
     ///
     func showSiteCreation(in navigationController: UINavigationController)
 
+    /// Signals to the Host App to navigate to the site creation guide.
+    /// This method triggered only if `enableSiteCreationGuide` config is enabled.
+    ///
+    /// - Parameters:
+    ///     - navigationController: the current navigation stack of the login flow.
+    ///
+    func showSiteCreationGuide(in navigationController: UINavigationController)
+
     /// Signals the Host App that a given Analytics Event has occurred.
     ///
     func track(event: WPAnalyticsStat)
@@ -169,6 +177,10 @@ public extension WordPressAuthenticatorDelegate {
     }
 
     func showSiteCreation(in navigationController: UINavigationController) {
+        // No-op
+    }
+
+    func showSiteCreationGuide(in navigationController: UINavigationController) {
         // No-op
     }
 

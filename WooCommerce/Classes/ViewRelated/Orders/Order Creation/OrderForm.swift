@@ -135,7 +135,8 @@ struct OrderFormPresentationWrapper: View {
                     }
                     .accessibilityIdentifier(OrderForm.Accessibility.cancelButtonIdentifier)
                 },
-                isShowingSecondaryView: $viewModel.isProductSelectorPresented)
+                isShowingSecondaryView: $viewModel.isProductSelectorPresented,
+                notice: $viewModel.notice)
         } else {
             OrderForm(dismissHandler: dismissHandler, flow: flow, viewModel: viewModel, presentProductSelector: nil)
         }
@@ -398,8 +399,9 @@ struct OrderForm: View {
         .onTapGesture {
             shouldShowInformationalCouponTooltip = false
         }
-        .notice($viewModel.autodismissableNotice)
-        .notice($viewModel.fixedNotice, autoDismiss: false)
+        // TODO: These notices need to be hidden when the split view is used, otherwise we'll see a duplicated notice in the order summary
+        //.notice($viewModel.autodismissableNotice)
+        //.notice($viewModel.fixedNotice, autoDismiss: false)
     }
 
     @ViewBuilder private var storedTaxRateBottomSheetContent: some View {

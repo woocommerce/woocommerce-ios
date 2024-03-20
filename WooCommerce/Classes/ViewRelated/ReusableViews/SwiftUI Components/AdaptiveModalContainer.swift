@@ -19,19 +19,22 @@ struct AdaptiveModalContainer<PrimaryView: View, SecondaryView: View, DismissBut
     @ViewBuilder let secondaryView: (_ isPresented: Binding<Bool>) -> SecondaryView
     @ViewBuilder let dismissBarButton: () -> DismissButton
     @Binding var isShowingSecondaryView: Bool
+    @Binding var notice: Notice?
 
     var body: some View {
         if horizontalSizeClass == .compact {
             ModalOnModalView(primaryView: primaryView,
                              secondaryView: secondaryView,
                              dismissBarButton: dismissBarButton,
-                             isShowingSecondaryView: $isShowingSecondaryView)
+                             isShowingSecondaryView: $isShowingSecondaryView,
+                             notice: $notice)
                 .environment(\.adaptiveModalContainerPresentationStyle, .modalOnModal)
         } else {
             SideBySideView(primaryView: primaryView,
                            secondaryView: secondaryView,
                            dismissBarButton: dismissBarButton,
-                           isShowingSecondaryView: $isShowingSecondaryView)
+                           isShowingSecondaryView: $isShowingSecondaryView,
+                           notice: $notice)
                 .environment(\.adaptiveModalContainerPresentationStyle, .sideBySide)
         }
     }
@@ -41,6 +44,7 @@ struct AdaptiveModalContainer<PrimaryView: View, SecondaryView: View, DismissBut
         @ViewBuilder let secondaryView: (_ isPresented: Binding<Bool>) -> SecondaryView
         @ViewBuilder let dismissBarButton: () -> DismissButton
         @Binding var isShowingSecondaryView: Bool
+        @Binding var notice: Notice?
 
         var body: some View {
             NavigationView {
@@ -62,6 +66,7 @@ struct AdaptiveModalContainer<PrimaryView: View, SecondaryView: View, DismissBut
             .onAppear {
                 isShowingSecondaryView = false
             }
+            .notice($notice)
         }
     }
 
@@ -70,6 +75,7 @@ struct AdaptiveModalContainer<PrimaryView: View, SecondaryView: View, DismissBut
         @ViewBuilder let secondaryView: (_ isPresented: Binding<Bool>) -> SecondaryView
         @ViewBuilder let dismissBarButton: () -> DismissButton
         @Binding var isShowingSecondaryView: Bool
+        @Binding var notice: Notice?
 
         var body: some View {
             HStack(spacing: 0) {
@@ -95,6 +101,7 @@ struct AdaptiveModalContainer<PrimaryView: View, SecondaryView: View, DismissBut
             .onAppear {
                 isShowingSecondaryView = true
             }
+            .notice($notice)
         }
     }
 }

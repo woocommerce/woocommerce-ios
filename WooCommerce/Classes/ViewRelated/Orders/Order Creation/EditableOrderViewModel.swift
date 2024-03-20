@@ -138,12 +138,25 @@ final class EditableOrderViewModel: ObservableObject {
     /// Defines the current notice that should be shown. It doesn't dismiss automatically
     /// Defaults to `nil`.
     ///
-    @Published var fixedNotice: Notice?
+    @Published var fixedNotice: Notice? {
+        didSet {
+            updateUnifiedNotice()
+        }
+    }
 
     /// Defines the current notice that should be shown. Autodismissable
     /// Defaults to `nil`.
     ///
-    @Published var autodismissableNotice: Notice?
+    @Published var autodismissableNotice: Notice? {
+        didSet {
+            updateUnifiedNotice()
+        }
+    }
+
+    /// Defines the current notice that should be shown. Unifies both autodismissable and non-autodismissable notices
+    /// Defaults to `nil`
+    ///
+    @Published var notice: Notice?
 
     /// Optional view model for configurable a bundle product from the product selector.
     /// When the value is non-nil, the bundle product configuration screen is shown.
@@ -506,6 +519,14 @@ final class EditableOrderViewModel: ObservableObject {
         observeProductSelectorPresentationStateForViewModel()
         forwardSyncApproachToSynchronizer()
         observeChangesFromProductSelectorButtonTapSelectionSync()
+
+        forceSyncError()
+    }
+
+    /// Sets the notice property either with a fixedNotice or an autodismissable one
+    ///
+    private func updateUnifiedNotice() {
+        notice = fixedNotice ?? autodismissableNotice
     }
 
     /// Checks the latest Order sync, and returns the current items that are in the Order
@@ -1309,6 +1330,33 @@ private extension EditableOrderViewModel {
                 }
             }
             .assign(to: &$doneButtonType)
+    }
+
+    /// For testing: remove before merging:
+    func forceSyncError() {
+        // 1. Test for fixed notice
+        //fixedNotice = NoticeFactory.createDummyFixedErrorNotice()
+
+        // 2. Test for auto-dismissable notice
+        autodismissableNotice = NoticeFactory.createDummyDissmissableErrorNotice()
+
+        // 3. Test for system error notices
+        /*
+        orderSynchronizer.statePublisher.map { [weak self] state -> Notice? in
+            guard let self = self else { return nil }
+            switch state {
+            default:
+                let error = NSError(domain: "some error", code: 0)
+                return NoticeFactory.syncOrderErrorNotice(error, flow: self.flow, with: self.orderSynchronizer)
+            }
+        }.sink { [weak self] notice in
+            guard let self = self else { return }
+            if let notice = notice {
+                self.fixedNotice = notice
+            }
+        }
+        .store(in: &cancellables)
+         */
     }
 
     /// Updates the notice based on the `orderSynchronizer` sync state.
@@ -2381,6 +2429,15 @@ extension EditableOrderViewModel {
 extension EditableOrderViewModel {
 
     enum NoticeFactory {
+        static func createDummyFixedErrorNotice() -> Notice {
+            return Notice(title: "Error!", subtitle: "Some subtitle", message: "some error message")
+        }
+
+        static func createDummyDissmissableErrorNotice() -> Notice {
+            return Notice(title: "Error!", subtitle: "Some subtitle", message: "some error message", feedbackType: .error, actionTitle: "Retry?", actionHandler: {
+                debugPrint("Action tapped!")
+            })
+        }
         /// Returns a default order creation error notice.
         ///
         static func createOrderErrorNotice(_ error: Error, order: Order) -> Notice {

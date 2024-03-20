@@ -175,24 +175,6 @@ extension Networking.BlazeAISuggestion {
     }
 }
 
-extension Networking.BlazeAddPaymentInfo {
-    public func copy(
-        formUrl: CopiableProp<String> = .copy,
-        successUrl: CopiableProp<String> = .copy,
-        idUrlParameter: CopiableProp<String> = .copy
-    ) -> Networking.BlazeAddPaymentInfo {
-        let formUrl = formUrl ?? self.formUrl
-        let successUrl = successUrl ?? self.successUrl
-        let idUrlParameter = idUrlParameter ?? self.idUrlParameter
-
-        return Networking.BlazeAddPaymentInfo(
-            formUrl: formUrl,
-            successUrl: successUrl,
-            idUrlParameter: idUrlParameter
-        )
-    }
-}
-
 extension Networking.BlazeCampaignListItem {
     public func copy(
         siteID: CopiableProp<Int64> = .copy,
@@ -255,15 +237,12 @@ extension Networking.BlazeImpressions {
 
 extension Networking.BlazePaymentInfo {
     public func copy(
-        savedPaymentMethods: CopiableProp<[BlazePaymentMethod]> = .copy,
-        addPaymentMethod: CopiableProp<BlazeAddPaymentInfo> = .copy
+        paymentMethods: CopiableProp<[BlazePaymentMethod]> = .copy
     ) -> Networking.BlazePaymentInfo {
-        let savedPaymentMethods = savedPaymentMethods ?? self.savedPaymentMethods
-        let addPaymentMethod = addPaymentMethod ?? self.addPaymentMethod
+        let paymentMethods = paymentMethods ?? self.paymentMethods
 
         return Networking.BlazePaymentInfo(
-            savedPaymentMethods: savedPaymentMethods,
-            addPaymentMethod: addPaymentMethod
+            paymentMethods: paymentMethods
         )
     }
 }

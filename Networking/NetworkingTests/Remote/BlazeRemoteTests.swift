@@ -573,7 +573,7 @@ final class BlazeRemoteTests: XCTestCase {
 
         // Then
         XCTAssertEqual(result, BlazePaymentInfo(
-            savedPaymentMethods: [
+            paymentMethods: [
                 .init(id: "payment-method-id",
                       rawType: "credit_card",
                       name: "Visa **** 4689",
@@ -582,10 +582,7 @@ final class BlazeRemoteTests: XCTestCase {
                                   type: "Visa",
                                   nickname: "",
                                   cardholderName: "John Doe"))
-            ],
-            addPaymentMethod: .init(formUrl: "https://example.com/blaze-pm-add",
-                                    successUrl: "https://example.com/blaze-pm-success",
-                                    idUrlParameter: "pmid"))
+            ])
         )
     }
 

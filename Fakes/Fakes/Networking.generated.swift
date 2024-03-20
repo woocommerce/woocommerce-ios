@@ -166,17 +166,6 @@ extension Networking.BlazeAISuggestion {
         )
     }
 }
-extension Networking.BlazeAddPaymentInfo {
-    /// Returns a "ready to use" type filled with fake values.
-    ///
-    public static func fake() -> Networking.BlazeAddPaymentInfo {
-        .init(
-            formUrl: .fake(),
-            successUrl: .fake(),
-            idUrlParameter: .fake()
-        )
-    }
-}
 extension Networking.BlazeCampaignListItem {
     /// Returns a "ready to use" type filled with fake values.
     ///
@@ -225,8 +214,7 @@ extension Networking.BlazePaymentInfo {
     ///
     public static func fake() -> Networking.BlazePaymentInfo {
         .init(
-            savedPaymentMethods: .fake(),
-            addPaymentMethod: .fake()
+            paymentMethods: .fake()
         )
     }
 }

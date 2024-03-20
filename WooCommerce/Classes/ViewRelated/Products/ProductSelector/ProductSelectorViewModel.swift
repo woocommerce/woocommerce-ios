@@ -274,7 +274,7 @@ final class ProductSelectorViewModel: ObservableObject {
         synchronizeProductFilterSearch()
         bindShowPlaceholdersState()
         bindSelectionDisabledState()
-        
+
         if var externalNoticePublisher {
             self.$productNotice.assign(to: &externalNoticePublisher)
         } else {

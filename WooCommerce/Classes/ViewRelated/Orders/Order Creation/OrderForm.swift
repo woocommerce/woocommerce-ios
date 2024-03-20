@@ -135,8 +135,8 @@ struct OrderFormPresentationWrapper: View {
                     }
                     .accessibilityIdentifier(OrderForm.Accessibility.cancelButtonIdentifier)
                 },
-                isShowingSecondaryView: $viewModel.isProductSelectorPresented,
-                notice: $viewModel.notice)
+                isShowingSecondaryView: $viewModel.isProductSelectorPresented)
+            .notice($viewModel.notice)
         } else {
             OrderForm(dismissHandler: dismissHandler, flow: flow, viewModel: viewModel, presentProductSelector: nil)
         }

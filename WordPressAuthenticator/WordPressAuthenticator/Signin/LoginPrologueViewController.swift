@@ -271,13 +271,22 @@ class LoginPrologueViewController: LoginViewController {
         let displayStrings = WordPressAuthenticator.shared.displayStrings
         let buttons: [StackedButton]
 
-        let continueWithWPButton = StackedButton(title: displayStrings.continueWithWPButtonTitle,
-                                                 isPrimary: true,
-                                                 configureBodyFontForTitle: true,
-                                                 accessibilityIdentifier: "Prologue Continue Button",
-                                                 style: primaryButtonStyle,
-                                                 onTap: loginTapCallback())
-        let enterYourSiteAddressButton: StackedButton = {
+        let continueWithWPButton: StackedButton? = {
+            guard !configuration.enableSiteAddressLoginOnlyInPrologue else {
+                return nil
+            }
+            return StackedButton(title: displayStrings.continueWithWPButtonTitle,
+                                 isPrimary: true,
+                                 configureBodyFontForTitle: true,
+                                 accessibilityIdentifier: "Prologue Continue Button",
+                                 style: primaryButtonStyle,
+                                 onTap: loginTapCallback())
+        }()
+
+        let enterYourSiteAddressButton: StackedButton? = {
+            guard !configuration.enableWPComLoginOnlyInPrologue else {
+                return nil
+            }
             let isPrimary = configuration.enableSiteAddressLoginOnlyInPrologue && !configuration.enableSiteCreation
             return StackedButton(title: displayStrings.enterYourSiteAddressButtonTitle,
                                  isPrimary: isPrimary,
@@ -286,7 +295,11 @@ class LoginPrologueViewController: LoginViewController {
                                  style: secondaryButtonStyle,
                                  onTap: siteAddressTapCallback())
         }()
-        let createSiteButton: StackedButton = {
+
+        let createSiteButton: StackedButton? = {
+            guard configuration.enableSiteCreation else {
+                return nil
+            }
             let isPrimary = configuration.enableSiteAddressLoginOnlyInPrologue
             return StackedButton(title: displayStrings.siteCreationButtonTitle,
                                  isPrimary: isPrimary,
@@ -296,20 +309,32 @@ class LoginPrologueViewController: LoginViewController {
                                  onTap: simplifiedLoginSiteCreationCallback())
         }()
 
-        let siteCreationGuideButton: StackedButton = {
-            StackedButton(title: displayStrings.siteCreationGuideButtonTitle,
-                          isPrimary: false,
-                          configureBodyFontForTitle: true,
-                          accessibilityIdentifier: "Prologue Site Creation Guide button",
-                          style: NUXButtonStyle.linkButtonStyle,
-                          onTap: siteCreationGuideCallback())
+        let createSiteButtonForBottomStackView: StackedButton? = {
+            guard let createSiteButton else {
+                return nil
+            }
+            return StackedButton(using: createSiteButton, stackView: .bottom)
         }()
 
+        let siteCreationGuideButton: StackedButton? = {
+            guard configuration.enableSiteCreationGuide else {
+                return nil
+            }
+            return StackedButton(title: displayStrings.siteCreationGuideButtonTitle,
+                                 isPrimary: false,
+                                 configureBodyFontForTitle: true,
+                                 accessibilityIdentifier: "Prologue Site Creation Guide button",
+                                 style: NUXButtonStyle.linkButtonStyle,
+                                 onTap: siteCreationGuideCallback())
+        }()
+
+        let showBothLoginOptions = continueWithWPButton != nil && enterYourSiteAddressButton != nil
         buttons = [
-            configuration.enableWPComLoginOnlyInPrologue ? nil : enterYourSiteAddressButton,
-            configuration.enableSiteAddressLoginOnlyInPrologue ? nil : continueWithWPButton,
-            configuration.enableSiteCreation ? createSiteButton : nil,
-            configuration.enableSiteCreationGuide ? siteCreationGuideButton : nil
+            continueWithWPButton,
+            !showBothLoginOptions ? createSiteButton : nil,
+            enterYourSiteAddressButton,
+            showBothLoginOptions ? createSiteButtonForBottomStackView : nil,
+            siteCreationGuideButton
         ].compactMap { $0 }
 
         let showDivider = configuration.enableWPComLoginOnlyInPrologue == false &&

@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "cash-register.pdf",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

@@ -45,7 +45,10 @@ class LoginPrologueViewController: LoginViewController {
     /// Return`true` to use new `NUXStackedButtonsViewController` instead of `NUXButtonViewController` to create buttons
     ///
     private var useStackedButtonsViewController: Bool {
-        configuration.enableWPComLoginOnlyInPrologue || configuration.enableSiteCreation
+        configuration.enableWPComLoginOnlyInPrologue || 
+        configuration.enableSiteCreation ||
+        configuration.enableSiteAddressLoginOnlyInPrologue ||
+        configuration.enableSiteCreationGuide
     }
 
     // MARK: - Lifecycle Methods
@@ -293,25 +296,19 @@ class LoginPrologueViewController: LoginViewController {
                                  onTap: simplifiedLoginSiteCreationCallback())
         }()
 
-        if configuration.enableWPComLoginOnlyInPrologue && configuration.enableSiteCreation {
-            buttons = [continueWithWPButton,
-                       createSiteButton]
-        } else if configuration.enableWPComLoginOnlyInPrologue {
-            buttons = [continueWithWPButton]
-        } else if configuration.enableSiteAddressLoginOnlyInPrologue && configuration.enableSiteCreation {
-            buttons = [createSiteButton, enterYourSiteAddressButton]
-        } else if configuration.enableSiteAddressLoginOnlyInPrologue {
-            buttons = [enterYourSiteAddressButton]
-        } else if configuration.enableSiteCreation {
-            let createSiteButtonForBottomStackView = StackedButton(using: createSiteButton,
-                                                                   stackView: .bottom)
-            buttons = [continueWithWPButton,
-                       enterYourSiteAddressButton,
-                       createSiteButtonForBottomStackView]
-        } else {
-            WPAuthenticatorLogError("Failed to create `StackedButton`s in login prologue screen.")
-            buttons = []
-        }
+        let siteCreationGuideButton: StackedButton = {
+            StackedButton(title: displayStrings.siteCreationGuideButtonTitle,
+                          accessibilityIdentifier: "Prologue Site Creation Guide button",
+                          style: NUXButtonStyle.linkButtonStyle,
+                          onTap: siteCreationGuideCallback())
+        }()
+
+        buttons = [
+            configuration.enableWPComLoginOnlyInPrologue ? nil : enterYourSiteAddressButton,
+            configuration.enableSiteAddressLoginOnlyInPrologue ? nil : continueWithWPButton,
+            configuration.enableSiteCreation ? createSiteButton : nil,
+            configuration.enableSiteCreationGuide ? siteCreationGuideButton : nil
+        ].compactMap { $0 }
 
         let showDivider = configuration.enableWPComLoginOnlyInPrologue == false &&
             configuration.enableSiteCreation == true &&
@@ -342,6 +339,14 @@ class LoginPrologueViewController: LoginViewController {
             guard let self = self, let navigationController = self.navigationController else { return }
             // triggers the delegate to ask the host app to handle site creation
             WordPressAuthenticator.shared.delegate?.showSiteCreation(in: navigationController)
+        }
+    }
+
+    private func siteCreationGuideCallback() -> NUXButtonViewController.CallBackType {
+        { [weak self] in
+            guard let self, let navigationController else { return }
+            // triggers the delegate to ask the host app to handle site creation guide
+            WordPressAuthenticator.shared.delegate?.showSiteCreationGuide(in: navigationController)
         }
     }
 

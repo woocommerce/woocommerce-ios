@@ -162,7 +162,9 @@ extension CardPresentTransactionDetails {
                             brand: CardBrand = .unknown,
                             generatedCard: String? = "1230",
                             receipt: ReceiptDetails? = nil,
-                            emvAuthData: String? = nil) -> CardPresentTransactionDetails {
+                            emvAuthData: String? = nil,
+                            wallet: Wallet? = nil,
+                            network: NSNumber? = nil) -> CardPresentTransactionDetails {
         CardPresentTransactionDetails(last4: last4,
                                       expMonth: expMonth,
                                       expYear: expYear,
@@ -170,6 +172,8 @@ extension CardPresentTransactionDetails {
                                       brand: brand,
                                       generatedCard: generatedCard,
                                       receipt: receipt,
-                                      emvAuthData: emvAuthData)
+                                      emvAuthData: emvAuthData,
+                                      wallet: wallet,
+                                      network: network)
     }
 }

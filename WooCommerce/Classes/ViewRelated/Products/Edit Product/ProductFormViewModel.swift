@@ -1,5 +1,6 @@
 import Combine
 import Yosemite
+import Experiments
 
 import protocol Storage.StorageManagerType
 
@@ -213,6 +214,8 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
 
     private let blazeEligibilityChecker: BlazeEligibilityCheckerProtocol
 
+    private let favoriteProductsUseCase: FavoriteProductsUseCase
+
     /// Assign this closure to be notified when a new product is saved remotely
     ///
     var onProductCreated: (Product) -> Void = { _ in }
@@ -221,6 +224,8 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
     ///
     private lazy var remoteActionUseCase = ProductFormRemoteActionUseCase(stores: stores)
 
+    private let featureFlagService: FeatureFlagService
+
     init(product: EditableProductModel,
          formType: ProductFormType,
          productImageActionHandler: ProductImageActionHandler,
@@ -228,7 +233,8 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          productImagesUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,
          analytics: Analytics = ServiceLocator.analytics,
-         blazeEligibilityChecker: BlazeEligibilityCheckerProtocol = BlazeEligibilityChecker()) {
+         blazeEligibilityChecker: BlazeEligibilityCheckerProtocol = BlazeEligibilityChecker(),
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.formType = formType
         self.productImageActionHandler = productImageActionHandler
         self.originalProduct = product
@@ -239,6 +245,8 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
         self.productImagesUploader = productImagesUploader
         self.analytics = analytics
         self.blazeEligibilityChecker = blazeEligibilityChecker
+        self.favoriteProductsUseCase = FavoriteProductsUseCase(siteID: product.siteID)
+        self.featureFlagService = featureFlagService
 
         self.cancellable = productImageActionHandler.addUpdateObserver(self) { [weak self] allStatuses in
             guard let self = self else { return }
@@ -298,6 +306,13 @@ extension ProductFormViewModel {
         let isSitePublic = stores.sessionManager.defaultSite?.isPublic == true
         let productHasLinkToShare = URL(string: product.permalink) != nil
         return isSitePublic && formType != .add && productHasLinkToShare
+    }
+
+    func canFavoriteProduct() -> Bool {
+        guard featureFlagService.isFeatureFlagEnabled(.favoriteProducts) else {
+            return false
+        }
+        return formType != .add
     }
 
     /// Merchants can promote a product with Blaze if product and site are eligible, and there's no existing Blaze campaign for the product.
@@ -826,5 +841,22 @@ private extension ProductFormViewModel {
             ($0.productID == product.productID) &&
             ($0.status == .pending || $0.status == .scheduled || $0.status == .active)
         })
+    }
+}
+
+
+// MARK: Favorite
+//
+extension ProductFormViewModel {
+    func isFavorite() -> Bool {
+        favoriteProductsUseCase.isFavorite(productID: product.productID)
+    }
+
+    func markAsFavorite() {
+        favoriteProductsUseCase.markAsFavorite(productID: product.productID)
+    }
+
+    func removeFromFavorite() {
+        favoriteProductsUseCase.removeFromFavorite(productID: product.productID)
     }
 }

@@ -3,6 +3,7 @@ import XCTest
 @testable import WooCommerce
 import Yosemite
 import TestKit
+import Experiments
 
 final class ProductFormViewModelTests: XCTestCase {
 
@@ -220,7 +221,71 @@ final class ProductFormViewModelTests: XCTestCase {
                     viewModel.canPromoteWithBlaze() == false
                 }
             }
-        }
+    }
+
+    // MARK: - Favorite
+
+    func test_canFavoriteProduct_is_true_when_form_type_is_not_add() {
+        // Given
+        let product = Product.fake()
+        let viewModel = createViewModel(product: product,
+                                        formType: .edit,
+                                        featureFlagService: MockFeatureFlagService(favoriteProducts: true))
+
+        // When
+        XCTAssertTrue(viewModel.canFavoriteProduct())
+    }
+
+    func test_canFavoriteProduct_is_false_when_form_type_add() {
+        // Given
+        let product = Product.fake()
+        let viewModel = createViewModel(product: product,
+                                        formType: .add,
+                                        featureFlagService: MockFeatureFlagService(favoriteProducts: true))
+
+        // When
+        XCTAssertFalse(viewModel.canFavoriteProduct())
+    }
+
+    func test_canFavoriteProduct_is_false_when_feature_flag_off() {
+        // Given
+        let product = Product.fake()
+        let viewModel = createViewModel(product: product,
+                                        formType: .add,
+                                        featureFlagService: MockFeatureFlagService(favoriteProducts: false))
+
+        // When
+        XCTAssertFalse(viewModel.canFavoriteProduct())
+    }
+
+    func test_markAsFavorite_marks_product_as_favorite() {
+        // Given
+        let product = Product.fake()
+        let viewModel = createViewModel(product: product,
+                                        formType: .add,
+                                        featureFlagService: MockFeatureFlagService(favoriteProducts: true))
+
+        // When
+        viewModel.markAsFavorite()
+
+        // Then
+        XCTAssertTrue(viewModel.isFavorite())
+    }
+
+    func test_removeFromFavorite_removes_product_as_favorite() {
+        // Given
+        let product = Product.fake()
+        let viewModel = createViewModel(product: product,
+                                        formType: .add,
+                                        featureFlagService: MockFeatureFlagService(favoriteProducts: true))
+        viewModel.markAsFavorite()
+
+        // When
+        viewModel.removeFromFavorite()
+
+        // Then
+        XCTAssertFalse(viewModel.isFavorite())
+    }
 
     // MARK: `canDeleteProduct`
 
@@ -764,7 +829,8 @@ private extension ProductFormViewModelTests {
                          formType: ProductFormType,
                          stores: StoresManager = ServiceLocator.stores,
                          analytics: Analytics = ServiceLocator.analytics,
-                         blazeEligibilityChecker: BlazeEligibilityCheckerProtocol = BlazeEligibilityChecker()) -> ProductFormViewModel {
+                         blazeEligibilityChecker: BlazeEligibilityCheckerProtocol = BlazeEligibilityChecker(),
+                         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) -> ProductFormViewModel {
         let model = EditableProductModel(product: product)
         let productImageActionHandler = ProductImageActionHandler(siteID: 0, product: model)
         return ProductFormViewModel(product: model,
@@ -772,6 +838,7 @@ private extension ProductFormViewModelTests {
                                     productImageActionHandler: productImageActionHandler,
                                     stores: stores,
                                     analytics: analytics,
-                                    blazeEligibilityChecker: blazeEligibilityChecker)
+                                    blazeEligibilityChecker: blazeEligibilityChecker,
+                                    featureFlagService: featureFlagService)
     }
 }

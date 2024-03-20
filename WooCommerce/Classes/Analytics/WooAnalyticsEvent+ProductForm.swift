@@ -10,6 +10,18 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .productDetailShareButtonTapped,
                               properties: [Key.source: source.rawValue])
         }
+
+        /// Tracked when the user marks a product as a favorite
+        static func productDetailMarkAsFavoriteButtonTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productDetailMarkAsFavoriteButtonTapped,
+                              properties: [:])
+        }
+
+        /// Tracked when the user removes a product from favorite
+        static func productDetailRemoveFromFavoriteButtonTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productDetailRemoveFromFavoriteButtonTapped,
+                              properties: [:])
+        }
     }
 }
 

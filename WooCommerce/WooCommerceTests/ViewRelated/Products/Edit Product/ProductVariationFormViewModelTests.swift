@@ -167,6 +167,26 @@ final class ProductVariationFormViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.canPromoteWithBlaze())
     }
 
+    // MARK: - Favorite
+
+    func test_canFavoriteProduct_is_false() {
+        // Given
+        let product = ProductVariation.fake().copy(status: .published)
+        let viewModel = createViewModel(product: product, formType: .edit)
+
+        // When
+        XCTAssertFalse(viewModel.canFavoriteProduct())
+    }
+
+    func test_isFavorite_is_false() {
+        // Given
+        let product = ProductVariation.fake().copy(status: .published)
+        let viewModel = createViewModel(product: product, formType: .edit)
+
+        // When
+        XCTAssertFalse(viewModel.isFavorite())
+    }
+
     // MARK: Subscription Free trial
 
     func test_updateSubscriptionFreeTrialSettings_sets_subscription_free_trial_info() throws {

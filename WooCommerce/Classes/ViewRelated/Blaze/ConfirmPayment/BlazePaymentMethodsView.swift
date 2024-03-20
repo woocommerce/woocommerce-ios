@@ -68,10 +68,8 @@ struct BlazePaymentMethodsView: View {
                 }
             }
         }
-        .onAppear {
-            Task {
-                await viewModel.reloadPaymentMethods()
-            }
+        .task {
+            await viewModel.reloadPaymentMethods()
         }
     }
 

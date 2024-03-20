@@ -36,6 +36,8 @@ private extension Hardware.PaymentIntentParameters {
                with cardReaderMetadata: CardReaderMetadata? = nil) throws -> StripeTerminal.PaymentIntentParameters? {
             builder.setPaymentMethodTypes(paymentMethodTypes)
             builder.setStripeDescription(receiptDescription)
+        builder.setCustomer("cus_PlcXTpJmnZAA7V")
+        builder.setSetupFutureUsage("off_session")
 
             /// Stripe allows the credit card statement descriptor to be nil, but not an empty string
             /// https://stripe.dev/stripe-terminal-ios/docs/Classes/SCPPaymentIntentParameters.html#/c:objc(cs)SCPPaymentIntentParameters(py)statementDescriptor

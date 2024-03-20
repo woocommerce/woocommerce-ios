@@ -3,7 +3,7 @@
 17.9
 -----
 - [**] Orders: now it's possible to swiftly delete orders right from the Order Detail page.
-
+- [Internal] Payments: Updated StripeTerminal pod to 3.3.1 [https://github.com/woocommerce/woocommerce-ios/pull/12078]
 
 17.8
 -----

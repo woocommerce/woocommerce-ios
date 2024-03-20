@@ -40,7 +40,9 @@ extension Hardware.CardPresentTransactionDetails {
             brand: .fake(),
             generatedCard: .fake(),
             receipt: .fake(),
-            emvAuthData: .fake()
+            emvAuthData: .fake(),
+            wallet: .fake(),
+            network: .fake()
         )
     }
 }

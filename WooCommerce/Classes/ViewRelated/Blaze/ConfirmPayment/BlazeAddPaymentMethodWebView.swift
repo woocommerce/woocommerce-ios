@@ -11,13 +11,11 @@ struct BlazeAddPaymentMethodWebView: View {
     var body: some View {
         NavigationView {
             Group {
-                if let addPaymentMethodURL = viewModel.addPaymentMethodURL {
-                    AuthenticatedWebView(isPresented: .constant(true),
-                                         url: addPaymentMethodURL,
-                                         urlToTriggerExit: viewModel.addPaymentSuccessURL) { url in
-                        viewModel.didAddNewPaymentMethod(successURL: url)
-                        dismiss()
-                    }
+                AuthenticatedWebView(isPresented: .constant(true),
+                                     url: viewModel.addPaymentMethodURL,
+                                     urlToTriggerExit: viewModel.addPaymentSuccessURL) { _ in
+                    viewModel.didAddNewPaymentMethod()
+                    dismiss()
                 }
             }
             .toolbar {
@@ -55,11 +53,8 @@ private extension BlazeAddPaymentMethodWebView {
 
 struct BlazeAddPaymentWebView_Previews: PreviewProvider {
     static var previews: some View {
-
         let viewModel = BlazeAddPaymentMethodWebViewModel(siteID: 123,
-                                                    addPaymentMethodInfo: BlazePaymentMethodsViewModel.samplePaymentInfo().addPaymentMethod,
-                                                    completion: { newPaymentID in
-        })
+                                                          completion: { })
 
         BlazeAddPaymentMethodWebView(viewModel: viewModel)
     }

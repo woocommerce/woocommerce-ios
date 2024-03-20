@@ -112,6 +112,12 @@ extension UIImage {
             .withTintColor(.placeholderImage)
     }
 
+    /// Cash register image
+    ///
+    static var cashRegisterImage: UIImage {
+        return UIImage(named: "cash-register")!
+    }
+
     /// Product categories Icon
     ///
     static var categoriesIcon: UIImage {

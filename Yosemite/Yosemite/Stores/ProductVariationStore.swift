@@ -110,7 +110,7 @@ private extension ProductVariationStore {
                                         pageNumber: pageNumber,
                                         pageSize: pageSize) { [weak self] (productVariations, error) in
             guard let productVariations = productVariations else {
-                onCompletion(.failure(error ?? NSError()))
+                onCompletion(.failure(error ?? ProductVariationLoadError.unexpected))
                 return
             }
 

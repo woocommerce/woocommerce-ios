@@ -111,7 +111,7 @@ public struct BlazeCampaignListItem: Decodable, Equatable, GeneratedFakeable, Ge
         totalBudget = try container.decode(Double.self, forKey: .totalBudget)
         spentBudget = try container.decodeIfPresent(Double.self, forKey: .spentBudget) ?? 0
 
-        let budget = try container.decodeIfPresent(Budget.self, forKey: .budget)
+        let budget = try container.decodeIfPresent(BlazeCampaignBudget.self, forKey: .budget)
         budgetMode = {
             guard let budget else {
                 return .total
@@ -165,12 +165,6 @@ private extension BlazeCampaignListItem {
         case budget
     }
 
-    struct Budget: Decodable {
-        public let mode: String
-        public let amount: Double
-        public let currency: String
-    }
-
     /// Private subtype for parsing image details.
     struct Image: Decodable {
         public let url: String?
@@ -179,5 +173,17 @@ private extension BlazeCampaignListItem {
     /// Decoding Errors
     enum DecodingError: Error {
         case missingSiteID
+    }
+}
+
+public struct BlazeCampaignBudget: Codable, GeneratedFakeable, GeneratedCopiable {
+    public let mode: String
+    public let amount: Double
+    public let currency: String
+
+    public init(mode: String, amount: Double, currency: String) {
+        self.mode = mode
+        self.amount = amount
+        self.currency = currency
     }
 }

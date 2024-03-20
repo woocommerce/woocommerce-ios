@@ -1456,7 +1456,7 @@ extension OrderDetailsDataSource {
                      tracking,
                      addTracking,
                      notes,
-                    trashOrderSection]).compactMap { $0 }
+                     trashOrderSection]).compactMap { $0 }
 
         updateOrderNoteAsyncDictionary(orderNotes: orderNotes)
     }

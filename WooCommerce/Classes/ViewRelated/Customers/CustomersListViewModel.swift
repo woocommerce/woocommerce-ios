@@ -131,6 +131,7 @@ private extension CustomersListViewModel {
 
         do {
             try resultsController.performFetch()
+            updateResults()
         } catch {
             ServiceLocator.crashLogging.logError(error)
         }

@@ -182,17 +182,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         case QuickAction.addProduct:
             MainTabBarController.presentAddProductFlow()
             completionHandler(true)
-        case QuickAction.openProducts:
-            MainTabBarController.switchToProductsTab()
-            completionHandler(true)
         case QuickAction.addOrder:
             MainTabBarController.presentOrderCreationFlow()
             completionHandler(true)
         case QuickAction.openOrders:
             MainTabBarController.switchToOrdersTab()
-            completionHandler(true)
-        case QuickAction.openPayments:
-            MainTabBarController.presentPayments()
             completionHandler(true)
         case QuickAction.collectPayment:
             MainTabBarController.presentCollectPayment()
@@ -571,9 +565,7 @@ private extension AppDelegate {
 
 enum QuickAction: String {
     case addProduct = "AddProductAction"
-    case openProducts = "OpenProductsAction"
     case addOrder = "AddOrderAction"
     case openOrders = "OpenOrdersAction"
-    case openPayments = "OpenPaymentsAction"
     case collectPayment = "CollectPaymentAction"
 }

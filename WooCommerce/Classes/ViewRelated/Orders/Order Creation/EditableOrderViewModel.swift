@@ -215,7 +215,8 @@ final class EditableOrderViewModel: ObservableObject {
         return TaxRateViewModel(taxRate: storedTaxRate, showChevron: false)
     }
 
-    var editingFee: OrderFeeLine? = nil
+    private var editingFee: OrderFeeLine? = nil
+
     private var orderHasCoupons: Bool {
         orderSynchronizer.order.coupons.isNotEmpty
     }
@@ -372,9 +373,19 @@ final class EditableOrderViewModel: ObservableObject {
     ///
     @Published private(set) var addressFormViewModel: CreateOrderAddressFormViewModel
 
+    /// Reference to the current AddCustomAmountViewModel that is being edited
+    /// Other objects that have already been saved into the Order will be found in `customAmountRows: [CustomAmountRowViewModel]`
+    ///
+    @Published private(set) var addCustomAmountViewModel: AddCustomAmountViewModel
+
     /// Keeps a reference to the latest Address form fields state
     ///
     @Published private(set) var latestAddressFormFields: AddressFormFields? = nil
+
+    /// Keeps a reference to the latest custom amount form fields state.
+    /// For testing, for the moment, we just hold a reference to the custom amount name
+    ///
+    @Published private(set) var latestAmountName: String? = ""
 
     // MARK: Customer note properties
 
@@ -487,6 +498,8 @@ final class EditableOrderViewModel: ObservableObject {
         // Set a temporary initial view model, as a workaround to avoid making it optional.
         // Needs to be reset before the view model is used.
         self.addressFormViewModel = .init(siteID: siteID, addressData: .init(billingAddress: nil, shippingAddress: nil), onAddressUpdate: nil)
+        // Follows the same pattern as addressFormViewModel, so we do not need to make it optional for the moment
+        self.addCustomAmountViewModel = .init(inputType: .fixedAmount, onCustomAmountEntered: { _, _, _, _ in })
 
         configureDisabledState()
         configureCollectPaymentDisabledState()
@@ -511,6 +524,11 @@ final class EditableOrderViewModel: ObservableObject {
         forwardSyncApproachToSynchronizer()
         observeChangesFromProductSelectorButtonTapSelectionSync()
         observeChangesInCustomerDetails()
+        
+        // TODO:
+        // with: `OrderCustomAmountsSection.ConfirmationOption` should be passed in based on merchant selection
+        addCustomAmountViewModel = addCustomAmountViewModel(with: .fixedAmount)
+        observeChangesInCustomAmounts()
     }
 
     /// Observes and keeps track of changes within the Customer Details
@@ -520,6 +538,19 @@ final class EditableOrderViewModel: ObservableObject {
             self?.latestAddressFormFields = newValue
         }
         .store(in: &cancellables)
+    }
+    
+    private func observeChangesInCustomAmounts() {
+        addCustomAmountViewModel.namePublisher.sink { [weak self] newValue in
+            self?.latestAmountName = newValue
+        }
+        .store(in: &cancellables)
+    }
+    
+    func saveInflightAddCustomAmount() {
+        // TODO:
+        // with: `OrderCustomAmountsSection.ConfirmationOption` should be passed in based on merchant selection
+        addCustomAmountViewModel(with: .fixedAmount, latestAmountName: latestAmountName)
     }
 
     /// Checks the latest Order sync, and returns the current items that are in the Order
@@ -970,11 +1001,13 @@ final class EditableOrderViewModel: ObservableObject {
         syncOrderItems(products: selectedProducts, variations: selectedProductVariations)
     }
 
-    func addCustomAmountViewModel(with option: OrderCustomAmountsSection.ConfirmationOption?) -> AddCustomAmountViewModel {
-        let viewModel = AddCustomAmountViewModel(inputType: addCustomAmountInputType(from: option ?? .fixedAmount),
+    @discardableResult
+    func addCustomAmountViewModel(with option: OrderCustomAmountsSection.ConfirmationOption?, latestAmountName: String? = "") -> AddCustomAmountViewModel {
+        let inputType = addCustomAmountInputType(from: option ?? .fixedAmount)
+
+        let viewModel = AddCustomAmountViewModel(inputType: inputType,
                                                  onCustomAmountDeleted: { [weak self] feeID in
             self?.analytics.track(.orderCreationRemoveCustomAmountTapped)
-
             guard let match = self?.orderSynchronizer.order.fees.first(where: { $0.feeID == feeID}) else {
                 DDLogError("Failed attempt to delete feeID \(String(describing: feeID))")
                 return
@@ -982,11 +1015,17 @@ final class EditableOrderViewModel: ObservableObject {
             self?.removeFee(match)
         },
                                                  onCustomAmountEntered: { [weak self] amount, name, feeID, isTaxable in
+            let localAmountName: String
+            if let latestAmountName = latestAmountName {
+                localAmountName = latestAmountName
+            } else {
+                localAmountName = name
+            }
             let taxStatus: OrderFeeTaxStatus = isTaxable ? .taxable : .none
             if let feeID = feeID {
-                self?.updateFee(with: feeID, total: amount, name: name, taxStatus: taxStatus)
+                self?.updateFee(with: feeID, total: amount, name: localAmountName, taxStatus: taxStatus)
             } else {
-                self?.addFee(with: amount, name: name, taxStatus: taxStatus)
+                self?.addFee(with: amount, name: localAmountName, taxStatus: taxStatus)
             }
         })
 

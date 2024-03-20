@@ -86,6 +86,9 @@ final class AddCustomAmountViewModel: ObservableObject {
     @Published private(set) var shouldEnableDoneButton: Bool = false
     @Published var isTaxable: Bool = true
     private var feeID: Int64? = nil
+    
+    /// For testing, for the moment, we just listen to name publisher emissions
+    var namePublisher: Published<String>.Publisher { $name }
 
     var customAmountPlaceholder: String {
         Localization.customAmountPlaceholder

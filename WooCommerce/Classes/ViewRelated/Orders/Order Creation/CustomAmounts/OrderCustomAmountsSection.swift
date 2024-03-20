@@ -74,7 +74,11 @@ struct OrderCustomAmountsSection: View {
             viewModel.onDismissAddCustomAmountView()
             addCustomAmountOption = nil
         }, content: {
-            AddCustomAmountView(viewModel: viewModel.addCustomAmountViewModel(with: addCustomAmountOption))
+            /*
+             Each time the content view is recreated, the viewmodel is also recreated since addCustomAmountViewModel(:) returns a new model.
+             Instead, we would need to keep a reference in memory so we can hold the data if the modal is dismissed.
+             */
+            AddCustomAmountView(viewModel: viewModel.addCustomAmountViewModel)
         })
     }
 

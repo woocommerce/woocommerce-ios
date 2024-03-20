@@ -292,7 +292,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
     func test_state_is_showCampaign_if_blaze_campaign_available() async {
         // Given
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
-        let fakeBlazeCampaign = BlazeCampaignListItem.fake().copy(siteID: sampleSiteID)
+        let fakeBlazeCampaign = BlazeCampaignListItem.fake().copy(siteID: sampleSiteID, budgetCurrency: "USD")
         let sut = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
                                                   stores: stores,
                                                   storageManager: storageManager,
@@ -578,7 +578,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
     func test_state_is_showCampaign_if_blaze_campaign_is_added_to_storage() async {
         // Given
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
-        let fakeBlazeCampaign = BlazeCampaignListItem.fake().copy(siteID: sampleSiteID)
+        let fakeBlazeCampaign = BlazeCampaignListItem.fake().copy(siteID: sampleSiteID, budgetCurrency: "USD")
         let sut = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
                                                   stores: stores,
                                                   storageManager: storageManager,
@@ -909,7 +909,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
                                                         blazeEligibilityChecker: checker,
                                                         userDefaults: userDefaults)
 
-        let fakeBlazeCampaign = BlazeCampaignListItem.fake().copy(siteID: sampleSiteID)
+        let fakeBlazeCampaign = BlazeCampaignListItem.fake().copy(siteID: sampleSiteID, budgetCurrency: "USD")
         mockSynchronizeCampaignsList(insertCampaignToStorage: fakeBlazeCampaign)
         mockSynchronizeProducts()
 

@@ -90,7 +90,7 @@ final class BlazeConfirmPaymentViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.shouldDisableCampaignCreation)
 
         // When
-        mockPaymentFetch(with: .success(.fake().copy(savedPaymentMethods: [paymentMethod])))
+        mockPaymentFetch(with: .success(.fake().copy(paymentMethods: [paymentMethod])))
         await viewModel.updatePaymentInfo()
 
         // Then
@@ -114,7 +114,7 @@ final class BlazeConfirmPaymentViewModelTests: XCTestCase {
                                                            cardholderName: "Jane Doe"))
 
         // When
-        mockPaymentFetch(with: .success(.fake().copy(savedPaymentMethods: [paymentMethod])))
+        mockPaymentFetch(with: .success(.fake().copy(paymentMethods: [paymentMethod])))
         await viewModel.updatePaymentInfo()
 
         // Then
@@ -232,7 +232,7 @@ final class BlazeConfirmPaymentViewModelTests: XCTestCase {
         stores.whenReceivingAction(ofType: BlazeAction.self) { action in
             switch action {
             case let .fetchPaymentInfo(_, onCompletion):
-                onCompletion(.success(.fake().copy(savedPaymentMethods: [self.samplePaymentMethod])))
+                onCompletion(.success(.fake().copy(paymentMethods: [self.samplePaymentMethod])))
             case let .createCampaign(campaign, _, onCompletion):
                 submittedCampaign = campaign
                 onCompletion(.success(Void()))
@@ -287,7 +287,7 @@ final class BlazeConfirmPaymentViewModelTests: XCTestCase {
         stores.whenReceivingAction(ofType: BlazeAction.self) { action in
             switch action {
             case let .fetchPaymentInfo(_, onCompletion):
-                onCompletion(.success(.fake().copy(savedPaymentMethods: [self.samplePaymentMethod])))
+                onCompletion(.success(.fake().copy(paymentMethods: [self.samplePaymentMethod])))
             case let .createCampaign(campaign, _, onCompletion):
                 submittedCampaign = campaign
                 onCompletion(.success(Void()))
@@ -381,8 +381,7 @@ final class BlazeConfirmPaymentViewModelTests: XCTestCase {
         }
 
         // When
-        let successURL = try XCTUnwrap(URL(string: "\(samplePaymentInfo.addPaymentMethod.successUrl)?\(samplePaymentInfo.addPaymentMethod.idUrlParameter)=123"))
-        viewModel.addPaymentWebViewModel?.didAddNewPaymentMethod(successURL: successURL)
+        viewModel.addPaymentWebViewModel?.didAddNewPaymentMethod()
 
         // Then
         waitUntil {
@@ -546,7 +545,7 @@ private extension BlazeConfirmPaymentViewModelTests {
         stores.whenReceivingAction(ofType: BlazeAction.self) { action in
             switch action {
             case let .fetchPaymentInfo(_, onCompletion):
-                onCompletion(.success(.fake().copy(savedPaymentMethods: [self.samplePaymentMethod])))
+                onCompletion(.success(.fake().copy(paymentMethods: [self.samplePaymentMethod])))
             case let .createCampaign(_, _, onCompletion):
                 onCompletion(result)
             default:

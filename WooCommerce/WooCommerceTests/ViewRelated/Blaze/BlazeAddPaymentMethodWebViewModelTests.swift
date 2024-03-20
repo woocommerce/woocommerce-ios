@@ -23,45 +23,27 @@ final class BlazeAddPaymentMethodWebViewModelTests: XCTestCase {
 
     func test_addPaymentMethodURL_returns_formUrl() throws {
         // Given
-        let viewModel = BlazeAddPaymentMethodWebViewModel(siteID: sampleSiteID,
-                                                          addPaymentMethodInfo: samplePaymentInfo.addPaymentMethod) { _ in }
+        let viewModel = BlazeAddPaymentMethodWebViewModel(siteID: sampleSiteID) { }
 
         // Then
-        XCTAssertEqual(viewModel.addPaymentMethodURL, try XCTUnwrap(URL(string: "https://example.com/blaze-pm-add")))
+        XCTAssertEqual(viewModel.addPaymentMethodURL, try XCTUnwrap(URL(string: "https://wordpress.com/me/purchases/add-payment-method")))
     }
 
     func test_addPaymentSuccessURL_returns_successUrl() async throws {
         // Given
-        let viewModel = BlazeAddPaymentMethodWebViewModel(siteID: sampleSiteID,
-                                                          addPaymentMethodInfo: samplePaymentInfo.addPaymentMethod) { _ in }
+        let viewModel = BlazeAddPaymentMethodWebViewModel(siteID: sampleSiteID) { }
 
         // Then
-        XCTAssertEqual(viewModel.addPaymentSuccessURL, "https://example.com/blaze-pm-success")
-    }
-
-    func test_didAddNewPaymentMethod_sends_newly_added_payment_id_via_completion_handler() throws {
-        // Given
-        var selectedPaymentID = ""
-        let viewModel = BlazeAddPaymentMethodWebViewModel(siteID: sampleSiteID,
-                                                          addPaymentMethodInfo: samplePaymentInfo.addPaymentMethod) { id in
-            selectedPaymentID = id
-        }
-
-        let successURL = try XCTUnwrap(URL(string: "\(samplePaymentInfo.addPaymentMethod.successUrl)?\(samplePaymentInfo.addPaymentMethod.idUrlParameter)=123"))
-        viewModel.didAddNewPaymentMethod(successURL: successURL)
-
-        // Then
-        XCTAssertEqual(selectedPaymentID, "123")
+        XCTAssertEqual(viewModel.addPaymentSuccessURL, "me/purchases/payment-methods")
     }
 
     func test_didAddNewPaymentMethod_sets_notice() throws {
         // Given
-        let viewModel = BlazeAddPaymentMethodWebViewModel(siteID: sampleSiteID,
-                                                          addPaymentMethodInfo: samplePaymentInfo.addPaymentMethod) { _ in }
+        let viewModel = BlazeAddPaymentMethodWebViewModel(siteID: sampleSiteID) { }
         XCTAssertNil(viewModel.notice)
 
-        let successURL = try XCTUnwrap(URL(string: "\(samplePaymentInfo.addPaymentMethod.successUrl)?\(samplePaymentInfo.addPaymentMethod.idUrlParameter)=123"))
-        viewModel.didAddNewPaymentMethod(successURL: successURL)
+        // When
+        viewModel.didAddNewPaymentMethod()
 
         // Then
         XCTAssertNotNil(viewModel.notice)
@@ -71,8 +53,7 @@ final class BlazeAddPaymentMethodWebViewModelTests: XCTestCase {
     func test_onAppear_tracks_event() throws {
         // Given
         let viewModel = BlazeAddPaymentMethodWebViewModel(siteID: sampleSiteID,
-                                                          addPaymentMethodInfo: samplePaymentInfo.addPaymentMethod,
-                                                          analytics: analytics) { _ in }
+                                                          analytics: analytics) { }
         // When
         viewModel.onAppear()
 
@@ -83,11 +64,9 @@ final class BlazeAddPaymentMethodWebViewModelTests: XCTestCase {
     func test_didAddNewPaymentMethod_tracks_event() throws {
         // Given
         let viewModel = BlazeAddPaymentMethodWebViewModel(siteID: sampleSiteID,
-                                                          addPaymentMethodInfo: samplePaymentInfo.addPaymentMethod,
-                                                          analytics: analytics) { _ in }
+                                                          analytics: analytics) { }
         // When
-        let successURL = try XCTUnwrap(URL(string: "\(samplePaymentInfo.addPaymentMethod.successUrl)?\(samplePaymentInfo.addPaymentMethod.idUrlParameter)=123"))
-        viewModel.didAddNewPaymentMethod(successURL: successURL)
+        viewModel.didAddNewPaymentMethod()
 
         // Then
         XCTAssertTrue(analyticsProvider.receivedEvents.contains("blaze_creation_add_payment_method_success"))

@@ -2699,6 +2699,94 @@ final class MigrationTests: XCTestCase {
         // Assert
         XCTAssertFalse(targetEntitiesNames.contains("BlazeCampaign"))
     }
+
+    func test_migrating_from_108_to_109_adds_new_budget_attributes_to_BlazeCampaignListItem() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 108")
+        let sourceContext = sourceContainer.viewContext
+
+        let campaign = insertBlazeCampaignListItem(to: sourceContext)
+        try sourceContext.save()
+
+        // Confidence check: new budget attributes are not present
+        XCTAssertNil(campaign.entity.attributesByName["budgetAmount"])
+        XCTAssertNil(campaign.entity.attributesByName["budgetCurrency"])
+        XCTAssertNil(campaign.entity.attributesByName["budgetMode"])
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 109")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+        let migratedEntity = try XCTUnwrap(targetContext.first(entityName: "BlazeCampaignListItem"))
+
+        // Check default values for new budget attributes
+        let budgetAmount = try XCTUnwrap(migratedEntity.value(forKey: "budgetAmount") as? Double)
+        XCTAssertEqual(budgetAmount, 0)
+
+        let budgetCurrency = try XCTUnwrap(migratedEntity.value(forKey: "budgetCurrency") as? String)
+        XCTAssertEqual(budgetCurrency, "USD")
+
+        let budgetMode = try XCTUnwrap(migratedEntity.value(forKey: "budgetMode") as? String)
+        XCTAssertEqual(budgetMode, "total")
+    }
+
+    func test_migrating_from_109_to_110_adds_WCAnalyticsCustomer_and_WCAnalyticsCustomerSearchResult_entities() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 109")
+        let sourceContext = sourceContainer.viewContext
+
+        try sourceContext.save()
+
+        // Confidence Check. These entities should not exist in Model 109
+        XCTAssertNil(NSEntityDescription.entity(forEntityName: "WCAnalyticsCustomer", in: sourceContext))
+        XCTAssertNil(NSEntityDescription.entity(forEntityName: "WCAnalyticsCustomerSearchResult", in: sourceContext))
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 110")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+
+        // These entities should exist in Model 110
+        XCTAssertNotNil(NSEntityDescription.entity(forEntityName: "WCAnalyticsCustomer", in: targetContext))
+        XCTAssertNotNil(NSEntityDescription.entity(forEntityName: "WCAnalyticsCustomerSearchResult", in: targetContext))
+        XCTAssertEqual(try targetContext.count(entityName: "WCAnalyticsCustomer"), 0)
+        XCTAssertEqual(try targetContext.count(entityName: "WCAnalyticsCustomerSearchResult"), 0)
+
+        // Insert a new WCAnalyticsCustomer
+        let customer = insertWCAnalyticsCustomer(to: targetContext, forModel: 110)
+        XCTAssertEqual(try targetContext.count(entityName: "WCAnalyticsCustomer"), 1)
+        XCTAssertEqual(customer.value(forKey: "customerID") as? Int64, 1)
+
+        // Insert a new WCAnalyticsCustomerSearchResult
+        let customerSearchResult = targetContext.insert(
+            entityName: "WCAnalyticsCustomerSearchResult",
+            properties: [
+                "siteID": 1,
+                "keyword": ""
+            ]
+        )
+        XCTAssertEqual(try targetContext.count(entityName: "WCAnalyticsCustomerSearchResult"), 1)
+        XCTAssertEqual(customer.value(forKey: "customerID") as? Int64, 1)
+
+        // Check all attributes
+        XCTAssertNotNil(customerSearchResult.entity.attributesByName["siteID"])
+        XCTAssertNotNil(customerSearchResult.entity.attributesByName["keyword"])
+        XCTAssertNotNil(customer.entity.attributesByName["siteID"])
+        XCTAssertNotNil(customer.entity.attributesByName["userID"])
+        XCTAssertNotNil(customer.entity.attributesByName["name"])
+        XCTAssertNotNil(customer.entity.attributesByName["email"])
+        XCTAssertNotNil(customer.entity.attributesByName["username"])
+        XCTAssertNotNil(customer.entity.attributesByName["dateLastActive"])
+        XCTAssertNotNil(customer.entity.attributesByName["ordersCount"])
+        XCTAssertNotNil(customer.entity.attributesByName["totalSpend"])
+        XCTAssertNotNil(customer.entity.attributesByName["averageOrderValue"])
+        XCTAssertNotNil(customer.entity.attributesByName["country"])
+        XCTAssertNotNil(customer.entity.attributesByName["region"])
+        XCTAssertNotNil(customer.entity.attributesByName["city"])
+        XCTAssertNotNil(customer.entity.attributesByName["postcode"])
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations
@@ -3485,5 +3573,28 @@ private extension MigrationTests {
             "locale": "en"
         ])
         return topic
+    }
+
+    /// Inserts a `WCAnalyticsCustomer` entity, providing default values for the required properties.
+    @discardableResult
+    func insertWCAnalyticsCustomer(to context: NSManagedObjectContext, forModel modelVersion: Int) -> NSManagedObject {
+        let customer = context.insert(entityName: "WCAnalyticsCustomer", properties: [
+            "siteID": 1,
+            "customerID": 1,
+            "userID": 1,
+            "name": "John",
+            "email": "john.doe@example.com",
+            "username": "john",
+            "dateRegistered": nil,
+            "dateLastActive": Date(),
+            "ordersCount": 1,
+            "totalSpend": 10,
+            "averageOrderValue": 10,
+            "country": "US",
+            "city": "San Francisco",
+            "region": "CA",
+            "postcode": "94103"
+        ])
+        return customer
     }
 }

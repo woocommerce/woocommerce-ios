@@ -9,7 +9,8 @@ final class SessionsReportCardViewModelTests: XCTestCase {
         // Given
         let vm = SessionsReportCardViewModel(
             currentOrderStats: OrderStatsV4.fake().copy(totals: .fake().copy(totalOrders: 5)),
-            siteStats: SiteSummaryStats.fake().copy(visitors: 10, views: 60)
+            siteStats: SiteSummaryStats.fake().copy(visitors: 10, views: 60),
+            isRedacted: false
         )
 
         // Then
@@ -40,12 +41,9 @@ final class SessionsReportCardViewModelTests: XCTestCase {
         XCTAssertTrue(vm.showSyncError)
     }
 
-    func test_redact_updates_properties_as_expected() {
+    func test_it_provides_expected_values_when_redacted() {
         // Given
-        var vm = SessionsReportCardViewModel(currentOrderStats: nil, siteStats: nil)
-
-        // When
-        vm.redact()
+        var vm = SessionsReportCardViewModel(currentOrderStats: nil, siteStats: nil, isRedacted: true)
 
         // Then
 
@@ -58,20 +56,6 @@ final class SessionsReportCardViewModelTests: XCTestCase {
         XCTAssertTrue(vm.isRedacted)
         XCTAssertFalse(vm.showSyncError)
         XCTAssertNil(vm.reportViewModel)
-    }
-
-    func test_properties_updated_as_expected_after_stats_update() {
-        // Given
-        let vm = SessionsReportCardViewModel(currentOrderStats: nil, siteStats: nil)
-
-        // When
-        vm.update(currentOrderStats: OrderStatsV4.fake().copy(totals: .fake().copy(totalOrders: 5)),
-                  siteStats: SiteSummaryStats.fake().copy(visitors: 10, views: 60))
-
-        // Then
-        assertEqual("60", vm.leadingValue)
-        assertEqual("50%", vm.trailingValue)
-        XCTAssertFalse(vm.isRedacted)
     }
 
 }

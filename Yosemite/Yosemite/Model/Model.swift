@@ -18,7 +18,6 @@ public typealias BlazeForecastedImpressionsInput = Networking.BlazeForecastedImp
 public typealias BlazeImpressions = Networking.BlazeImpressions
 public typealias BlazePaymentInfo = Networking.BlazePaymentInfo
 public typealias BlazePaymentMethod = Networking.BlazePaymentMethod
-public typealias BlazeAddPaymentInfo = Networking.BlazeAddPaymentInfo
 public typealias BlazeTargetDevice = Networking.BlazeTargetDevice
 public typealias BlazeTargetLanguage = Networking.BlazeTargetLanguage
 public typealias BlazeTargetOptions = Networking.BlazeTargetOptions

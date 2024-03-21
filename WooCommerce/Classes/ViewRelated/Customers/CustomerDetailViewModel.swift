@@ -2,7 +2,7 @@ import Foundation
 import struct Yosemite.WCAnalyticsCustomer
 import WooFoundation
 
-struct CustomerDetailViewModel {
+final class CustomerDetailViewModel {
     /// Customer name
     let name: String
 
@@ -11,6 +11,11 @@ struct CustomerDetailViewModel {
 
     /// Customer email
     let email: String?
+
+    /// Whether the customer can be contacted via email
+    lazy var canEmailCustomer: Bool = {
+        email != nil
+    }()
 
     // MARK: Orders
 
@@ -45,22 +50,47 @@ struct CustomerDetailViewModel {
     /// Customer postal code
     let postcode: String?
 
-    init(customer: WCAnalyticsCustomer,
-         currencySettings: CurrencySettings = ServiceLocator.currencySettings) {
-        let currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
+    init(name: String?,
+         dateLastActive: String,
+         email: String?,
+         ordersCount: String,
+         totalSpend: String,
+         avgOrderValue: String,
+         username: String?,
+         dateRegistered: String?,
+         country: String?,
+         region: String?,
+         city: String?,
+         postcode: String?) {
+        self.name = name ?? Localization.guestName
+        self.dateLastActive = dateLastActive
+        self.email = email
+        self.ordersCount = ordersCount
+        self.totalSpend = totalSpend
+        self.avgOrderValue = avgOrderValue
+        self.username = username
+        self.dateRegistered = dateRegistered
+        self.country = country
+        self.region = region
+        self.city = city
+        self.postcode = postcode
+    }
 
-        name = customer.name?.nullifyIfEmptyOrWhitespace() ?? Localization.guestName
-        dateLastActive = DateFormatter.mediumLengthLocalizedDateFormatter.string(from: customer.dateLastActive)
-        email = customer.email?.nullifyIfEmptyOrWhitespace()
-        ordersCount = customer.ordersCount.description
-        totalSpend = currencyFormatter.formatAmount(customer.totalSpend) ?? customer.totalSpend.description
-        avgOrderValue = currencyFormatter.formatAmount(customer.averageOrderValue) ?? customer.averageOrderValue.description
-        username = customer.username?.nullifyIfEmptyOrWhitespace()
-        dateRegistered = customer.dateRegistered.map { DateFormatter.mediumLengthLocalizedDateFormatter.string(from: $0) }
-        country = customer.country.nullifyIfEmptyOrWhitespace()
-        region = customer.region.nullifyIfEmptyOrWhitespace()
-        city = customer.city.nullifyIfEmptyOrWhitespace()
-        postcode = customer.postcode.nullifyIfEmptyOrWhitespace()
+    convenience init(customer: WCAnalyticsCustomer,
+                     currencySettings: CurrencySettings = ServiceLocator.currencySettings) {
+        let currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
+        self.init(name: customer.name?.nullifyIfEmptyOrWhitespace(),
+                  dateLastActive: DateFormatter.mediumLengthLocalizedDateFormatter.string(from: customer.dateLastActive),
+                  email: customer.email?.nullifyIfEmptyOrWhitespace(),
+                  ordersCount: customer.ordersCount.description,
+                  totalSpend: currencyFormatter.formatAmount(customer.totalSpend) ?? customer.totalSpend.description,
+                  avgOrderValue: currencyFormatter.formatAmount(customer.averageOrderValue) ?? customer.averageOrderValue.description,
+                  username: customer.username?.nullifyIfEmptyOrWhitespace(),
+                  dateRegistered: customer.dateRegistered.map { DateFormatter.mediumLengthLocalizedDateFormatter.string(from: $0) },
+                  country: customer.country.nullifyIfEmptyOrWhitespace(),
+                  region: customer.region.nullifyIfEmptyOrWhitespace(),
+                  city: customer.city.nullifyIfEmptyOrWhitespace(),
+                  postcode: customer.postcode.nullifyIfEmptyOrWhitespace())
     }
 }
 
@@ -68,23 +98,6 @@ private extension String {
     /// Returns nil if the string is empty or only contains whitespace
     func nullifyIfEmptyOrWhitespace() -> Self? {
         self.trimmingCharacters(in: .whitespaces).isNotEmpty ? self : nil
-    }
-}
-
-extension CustomerDetailView {
-    init(viewModel: CustomerDetailViewModel) {
-        self.name = viewModel.name
-        self.email = viewModel.email
-        self.dateLastActive = viewModel.dateLastActive
-        self.ordersCount = viewModel.ordersCount
-        self.totalSpend = viewModel.totalSpend
-        self.avgOrderValue = viewModel.avgOrderValue
-        self.username = viewModel.username
-        self.dateRegistered = viewModel.dateRegistered
-        self.country = viewModel.country
-        self.region = viewModel.region
-        self.city = viewModel.city
-        self.postcode = viewModel.postcode
     }
 }
 

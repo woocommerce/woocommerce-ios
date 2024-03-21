@@ -1,77 +1,43 @@
 import SwiftUI
 
 struct CustomerDetailView: View {
-    /// Customer name
-    let name: String
-
-    /// Date the customer was last active
-    let dateLastActive: String
-
-    /// Customer email
-    let email: String?
-
-    /// Number of orders from the customer
-    let ordersCount: String
-
-    /// Customer's total spend
-    let totalSpend: String
-
-    /// Customer's average order value
-    let avgOrderValue: String
-
-    /// Customer username
-    let username: String?
-
-    /// Date the customer was registered on the store
-    let dateRegistered: String?
-
-    /// Customer country
-    let country: String?
-
-    /// Customer region
-    let region: String?
-
-    /// Customer city
-    let city: String?
-
-    /// Customer postal code
-    let postcode: String?
+    let viewModel: CustomerDetailViewModel
 
     var body: some View {
         List {
             Section(header: Text(Localization.customerSection)) {
-                Text(name)
+                Text(viewModel.name)
                 HStack {
-                    Text(email ?? Localization.emailPlaceholder)
-                        .style(for: email)
+                    Text(viewModel.email ?? Localization.emailPlaceholder)
+                        .style(for: viewModel.email)
                     Spacer()
                     Image(uiImage: .mailImage)
-                        .renderedIf(email != nil)
+                        .renderedIf(viewModel.canEmailCustomer)
                 }
-                customerDetailRow(label: Localization.dateLastActiveLabel, value: dateLastActive)
+                customerDetailRow(label: Localization.dateLastActiveLabel, value: viewModel.dateLastActive)
             }
 
             Section(header: Text(Localization.ordersSection)) {
-                customerDetailRow(label: Localization.ordersCountLabel, value: ordersCount)
-                customerDetailRow(label: Localization.totalSpendLabel, value: totalSpend)
-                customerDetailRow(label: Localization.avgOrderValueLabel, value: avgOrderValue)
+                customerDetailRow(label: Localization.ordersCountLabel, value: viewModel.ordersCount)
+                customerDetailRow(label: Localization.totalSpendLabel, value: viewModel.totalSpend)
+                customerDetailRow(label: Localization.avgOrderValueLabel, value: viewModel.avgOrderValue)
             }
 
             Section(header: Text(Localization.registrationSection)) {
-                customerDetailRow(label: Localization.usernameLabel, value: username)
-                customerDetailRow(label: Localization.dateRegisteredLabel, value: dateRegistered)
+                customerDetailRow(label: Localization.usernameLabel, value: viewModel.username)
+                customerDetailRow(label: Localization.dateRegisteredLabel, value: viewModel.dateRegistered)
             }
 
             Section(header: Text(Localization.locationSection)) {
-                customerDetailRow(label: Localization.countryLabel, value: country)
-                customerDetailRow(label: Localization.regionLabel, value: region)
-                customerDetailRow(label: Localization.cityLabel, value: city)
-                customerDetailRow(label: Localization.postcodeLabel, value: postcode)
+                customerDetailRow(label: Localization.countryLabel, value: viewModel.country)
+                customerDetailRow(label: Localization.regionLabel, value: viewModel.region)
+                customerDetailRow(label: Localization.cityLabel, value: viewModel.city)
+                customerDetailRow(label: Localization.postcodeLabel, value: viewModel.postcode)
             }
         }
         .listStyle(.plain)
         .background(Color(uiColor: .listBackground))
-        .navigationTitle(name)
+        .navigationTitle(viewModel.name)
         .navigationBarTitleDisplayMode(.inline)
         .wooNavigationBarStyle()
     }
@@ -158,31 +124,31 @@ private extension CustomerDetailView {
 }
 
 #Preview("Customer") {
-    CustomerDetailView(name: "Pat Smith",
-                       dateLastActive: "Jan 1, 2024",
-                       email: "patsmith@example.com",
-                       ordersCount: "3",
-                       totalSpend: "$81.75",
-                       avgOrderValue: "$27.25",
-                       username: "patsmith",
-                       dateRegistered: "Jan 1, 2023",
-                       country: "United States",
-                       region: "Oregon",
-                       city: "Portland",
-                       postcode: "12345")
+    CustomerDetailView(viewModel: CustomerDetailViewModel(name: "Pat Smith",
+                                                          dateLastActive: "Jan 1, 2024",
+                                                          email: "patsmith@example.com",
+                                                          ordersCount: "3",
+                                                          totalSpend: "$81.75",
+                                                          avgOrderValue: "$27.25",
+                                                          username: "patsmith",
+                                                          dateRegistered: "Jan 1, 2023",
+                                                          country: "United States",
+                                                          region: "Oregon",
+                                                          city: "Portland",
+                                                          postcode: "12345"))
 }
 
 #Preview("Customer with Placeholders") {
-    CustomerDetailView(name: "Guest",
-                       dateLastActive: "Jan 1, 2024",
-                       email: nil,
-                       ordersCount: "0",
-                       totalSpend: "$0.00",
-                       avgOrderValue: "$0.00",
-                       username: nil,
-                       dateRegistered: nil,
-                       country: nil,
-                       region: nil,
-                       city: nil,
-                       postcode: nil)
+    CustomerDetailView(viewModel: CustomerDetailViewModel(name: "Guest",
+                                                          dateLastActive: "Jan 1, 2024",
+                                                          email: nil,
+                                                          ordersCount: "0",
+                                                          totalSpend: "$0.00",
+                                                          avgOrderValue: "$0.00",
+                                                          username: nil,
+                                                          dateRegistered: nil,
+                                                          country: nil,
+                                                          region: nil,
+                                                          city: nil,
+                                                          postcode: nil))
 }

@@ -3,9 +3,20 @@ import SwiftUI
 struct CustomersListView: View {
     @StateObject var viewModel: CustomersListViewModel
 
+    @State private var isEditingSearchTerm: Bool = false
+
     var body: some View {
-        Group {
-            SearchHeader(text: $viewModel.searchTerm, placeholder: Localization.searchPlaceholder)
+        VStack(spacing: 0) {
+            SearchHeader(text: $viewModel.searchTerm, placeholder: Localization.searchPlaceholder) { isEditing in
+                isEditingSearchTerm = isEditing
+            }
+            Picker(selection: $viewModel.searchFilter, label: EmptyView()) {
+                ForEach(viewModel.searchFilters, id: \.self) { option in Text(option.title) }
+            }
+            .pickerStyle(.segmented)
+            .padding([.horizontal, .bottom])
+            .renderedIf(isEditingSearchTerm && !viewModel.showAdvancedSearch)
+
             switch viewModel.syncState {
             case .results:
                 RefreshableInfiniteScrollList(isLoading: viewModel.shouldShowBottomActivityIndicator,

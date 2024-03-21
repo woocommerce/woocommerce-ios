@@ -12,6 +12,17 @@ final class CustomersListViewModel: ObservableObject {
     /// Each update will trigger a remote customer search and sync.
     @Published var searchTerm: String = ""
 
+    /// Whether to show the advanced search.
+    /// If `false`, search filters should be provided.
+    @Published var showAdvancedSearch: Bool = false
+
+    /// Current search filter selected by the user.
+    /// Defaults to search the customer name (`name`).
+    @Published var searchFilter: CustomerSearchFilter = .name
+
+    /// Available filters for the customer search.
+    let searchFilters: [CustomerSearchFilter] = [.name, .username, .email]
+
     // MARK: Sync
 
     /// Current sync status; used to determine the view state.
@@ -61,7 +72,8 @@ final class CustomersListViewModel: ObservableObject {
 
         configureResultsController()
         configurePaginationTracker()
-        observeSearchTerm()
+        configureSearchHeader()
+        observeSearch()
     }
 
     /// Returns the given customer name, formatted for display.
@@ -110,15 +122,17 @@ extension CustomersListViewModel: PaginationTrackerDelegate {
         paginationTracker.syncFirstPage()
     }
 
-    /// Updates the customer results predicate & triggers a new sync when search term changes
+    /// Updates the customer results predicate & triggers a new sync when search term or filter changes
     ///
-    func observeSearchTerm() {
+    func observeSearch() {
         let searchTermPublisher = $searchTerm
             .removeDuplicates()
             .debounce(for: .milliseconds(500), scheduler: DispatchQueue.main)
 
-        searchTermPublisher
-            .sink { [weak self] searchTerm in
+        let searchFilterPublisher = $searchFilter.removeDuplicates()
+
+        searchTermPublisher.combineLatest(searchFilterPublisher)
+            .sink { [weak self] (searchTerm, searchFilter) in
                 guard let self else { return }
                 self.updatePredicate(searchTerm: searchTerm)
                 self.updateResults()
@@ -178,6 +192,29 @@ private extension CustomersListViewModel {
     /// Configures pagination tracker for infinite scroll.
     func configurePaginationTracker() {
         paginationTracker.delegate = self
+    }
+
+    /// Checks whether the store is eligible for searching all customer search filters at once.
+    func configureSearchHeader() {
+        isEligibleForAdvancedSearch { [weak self] isEligible in
+            self?.searchFilter = isEligible ? .all : .name
+            self?.showAdvancedSearch = isEligible
+        }
+    }
+
+    /// Checks whether the store is eligible for searching all customer search filters at once.
+    func isEligibleForAdvancedSearch(completion: @escaping (Bool) -> Void) {
+        // Fetches WC plugin.
+        let action = SystemStatusAction.fetchSystemPlugin(siteID: siteID, systemPluginName: Constants.wcPluginName) { wcPlugin in
+            guard let wcPlugin, wcPlugin.active else {
+                return completion(false)
+            }
+
+            let isCustomerAdvanceSearchSupportedByWCPlugin = VersionHelpers.isVersionSupported(version: wcPlugin.version,
+                                                                               minimumRequired: Constants.wcPluginMinimumVersion)
+            completion(isCustomerAdvanceSearchSupportedByWCPlugin)
+        }
+        stores.dispatch(action)
     }
 
     /// Performs initial fetch from storage and updates results.
@@ -261,10 +298,17 @@ extension CustomersListViewModel {
     }
 }
 
+// MARK: - Constants
+
 private extension CustomersListViewModel {
     enum Localization {
         static let guestLabel = NSLocalizedString("customersList.guestLabel",
                                                   value: "Guest",
                                                   comment: "Label for a customer with no name in the Customers list screen.")
+    }
+
+    enum Constants {
+        static let wcPluginName = "WooCommerce"
+        static let wcPluginMinimumVersion = "8.0.0-beta.1"
     }
 }

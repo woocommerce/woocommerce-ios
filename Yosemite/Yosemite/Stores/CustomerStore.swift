@@ -149,7 +149,7 @@ public final class CustomerStore: Store {
                                     pageSize: Int,
                                     keyword: String,
                                     filter: CustomerSearchFilter,
-                                    onCompletion: @escaping (Result<(), Error>) -> Void) {
+                                    onCompletion: @escaping (Result<Bool, Error>) -> Void) {
         wcAnalyticsCustomerRemote.searchCustomers(for: siteID,
                                                   pageNumber: pageNumber,
                                                   pageSize: pageSize,
@@ -162,10 +162,10 @@ public final class CustomerStore: Store {
             case let .success(customers):
                 self.upsertWCAnalyticsCustomersAndSave(siteID: siteID,
                                                        readOnlyCustomers: customers,
-                                                       shouldDeleteExistingCustomers: pageNumber == 1,
                                                        keyword: keyword,
                                                        in: self.sharedDerivedStorage) {
-                    onCompletion(.success(()))
+                    let hasNextPage = customers.count == pageSize
+                    onCompletion(.success(hasNextPage))
                 }
             case .failure(let error):
                 onCompletion(.failure(error))

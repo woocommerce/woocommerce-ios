@@ -320,14 +320,14 @@ final class CustomerStoreTests: XCTestCase {
         XCTAssertEqual(result.failure as? NetworkError, expectedError)
     }
 
-    func test_searchWCAnalyticsCustomers_upserts_the_returned_WCAnalyticsCustomerSearchResult() {
+    func test_searchWCAnalyticsCustomers_upserts_the_returned_WCAnalyticsCustomerSearchResult() throws {
         // Given
         network.simulateResponse(requestUrlSuffix: "customers", filename: "wc-analytics-customers")
 
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.WCAnalyticsCustomerSearchResult.self), 0)
 
         // When
-        let result: Result<(), Error> = waitFor { promise in
+        let result: Result<Bool, Error> = waitFor { promise in
             let action = CustomerAction.searchWCAnalyticsCustomers(siteID: self.dummySiteID,
                                                                    pageNumber: 1,
                                                                    pageSize: 25,
@@ -339,7 +339,9 @@ final class CustomerStoreTests: XCTestCase {
         }
 
         // Then
+        let hasMoreCustomers = try XCTUnwrap(result.get())
         XCTAssertTrue(result.isSuccess)
+        XCTAssertFalse(hasMoreCustomers)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.WCAnalyticsCustomer.self), 4)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.WCAnalyticsCustomerSearchResult.self), 1)
 
@@ -357,7 +359,7 @@ final class CustomerStoreTests: XCTestCase {
         network.simulateError(requestUrlSuffix: "", error: expectedError)
 
         // When
-        let result: Result<(), Error> = waitFor { promise in
+        let result: Result<Bool, Error> = waitFor { promise in
             let action = CustomerAction.searchWCAnalyticsCustomers(siteID: self.dummySiteID,
                                                                    pageNumber: 1,
                                                                    pageSize: 25,

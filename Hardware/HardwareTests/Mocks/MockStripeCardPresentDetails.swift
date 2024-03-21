@@ -12,9 +12,9 @@ struct MockStripeCardPresentDetails {
     public let generatedCard: String?
     public let receipt: StripeTerminal.ReceiptDetails?
     public let emvAuthData: String?
+    public let wallet: StripeTerminal.SCPWallet?
+    public let network: NSNumber?
 }
-
-extension MockStripeCardPresentDetails: StripeCardPresentDetails {}
 
 extension MockStripeCardPresentDetails {
     static func mock() -> Self {
@@ -25,6 +25,10 @@ extension MockStripeCardPresentDetails {
                                      brand: .JCB,
                                      generatedCard: "generatedCard",
                                      receipt: nil,
-                                     emvAuthData: "authdata")
+                                     emvAuthData: "authdata",
+                                     wallet: nil,
+                                     network: NSNumber(integerLiteral: 1))
     }
 }
+
+extension MockStripeCardPresentDetails: StripeCardPresentDetails {}

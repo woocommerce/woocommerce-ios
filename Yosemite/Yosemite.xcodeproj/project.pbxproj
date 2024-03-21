@@ -377,6 +377,7 @@
 		CE4FD4562350FD4800A16B31 /* Refund+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE4FD4552350FD4800A16B31 /* Refund+ReadOnlyConvertible.swift */; };
 		CE5F9A7A22B2D455001755E8 /* Array+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE5F9A7922B2D455001755E8 /* Array+Helpers.swift */; };
 		CECC504023675DF4004540EA /* RefundStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CECC503F23675DF4004540EA /* RefundStoreTests.swift */; };
+		CECE6BBE2BA9DE3200A57C1F /* WCAnalyticsCustomer+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = CECE6BBD2BA9DE3200A57C1F /* WCAnalyticsCustomer+ReadOnlyConvertible.swift */; };
 		CEE9188C29F7F68C004B23FF /* OrderGiftCard+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEE9188B29F7F68C004B23FF /* OrderGiftCard+ReadOnlyConvertible.swift */; };
 		CEF2DD992B56BEC500A3DD0B /* JetpackModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEF2DD982B56BEC500A3DD0B /* JetpackModule.swift */; };
 		CEF2DDA12B572D6F00A3DD0B /* JetpackSettingsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEF2DDA02B572D6F00A3DD0B /* JetpackSettingsStore.swift */; };
@@ -865,6 +866,7 @@
 		CE4FD4552350FD4800A16B31 /* Refund+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Refund+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		CE5F9A7922B2D455001755E8 /* Array+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+Helpers.swift"; sourceTree = "<group>"; };
 		CECC503F23675DF4004540EA /* RefundStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundStoreTests.swift; sourceTree = "<group>"; };
+		CECE6BBD2BA9DE3200A57C1F /* WCAnalyticsCustomer+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WCAnalyticsCustomer+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		CEE9188B29F7F68C004B23FF /* OrderGiftCard+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderGiftCard+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		CEF2DD982B56BEC500A3DD0B /* JetpackModule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JetpackModule.swift; sourceTree = "<group>"; };
 		CEF2DDA02B572D6F00A3DD0B /* JetpackSettingsStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JetpackSettingsStore.swift; sourceTree = "<group>"; };
@@ -1460,6 +1462,7 @@
 				DEFD6D962644423100E51E0D /* SitePlugin+ReadOnlyConvertible.swift */,
 				077F39E126A5AFCA00ABEADC /* SystemPlugin+ReadOnlyConvertible.swift */,
 				BAB3737827964A9500837B4A /* OrderTaxLine+ReadOnlyConvertible.swift */,
+				CECE6BBD2BA9DE3200A57C1F /* WCAnalyticsCustomer+ReadOnlyConvertible.swift */,
 				031C1EA927B1702800298699 /* WCPayCharge+ReadOnlyConvertible.swift */,
 				031C1EAB27B1873200298699 /* WCPayCardPresentReceiptDetails+ReadOnlyConvertible.swift */,
 				031C1EAF27B1879C00298699 /* WCPayCardPaymentDetails+ReadOnlyConvertible.swift */,
@@ -2124,6 +2127,7 @@
 				E138D4FA269EE5BD006EA5C6 /* CardPresentPaymentsOnboardingState.swift in Sources */,
 				02E3B625290267F2007E0F13 /* AccountCreationAction.swift in Sources */,
 				02C254FA2563B66600A04423 /* ShippingLabelRefund+ReadOnlyConvertible.swift in Sources */,
+				CECE6BBE2BA9DE3200A57C1F /* WCAnalyticsCustomer+ReadOnlyConvertible.swift in Sources */,
 				02FF054F23D983F30058E6E7 /* FileManager+URL.swift in Sources */,
 				03F3AFE728097D6400E328BE /* CardPresentPaymentsPlugin.swift in Sources */,
 				B52E0032211A440D00700FDE /* Order+ReadOnlyType.swift in Sources */,

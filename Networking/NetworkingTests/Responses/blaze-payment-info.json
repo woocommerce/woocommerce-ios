@@ -1,5 +1,5 @@
 {
-    "saved_payment_methods": [
+    "payment_methods": [
         {
              "id": "payment-method-id",
              "type": "credit_card",
@@ -15,10 +15,5 @@
                  "cardholder_name": "John Doe"
              }
          }
-    ],
-    "add_payment_method": {
-        "form_url": "https://example.com/blaze-pm-add",
-        "success_url": "https://example.com/blaze-pm-success",
-        "id_url_parameter": "pmid"
-    }
+    ]
 }

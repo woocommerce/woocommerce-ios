@@ -371,7 +371,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
         }()
 
         // Only show the tutorial if the error can be solved by the app password flow.
-        if featureFlagService.isFeatureFlagEnabled(.appPasswordTutorial) && isAppPasswordAuthError {
+        if isAppPasswordAuthError {
             presentAppPasswordTutorial(error: error, for: siteURL, in: viewController)
         } else {
             presentAppPasswordAlert(error: error, for: siteURL, in: viewController)
@@ -829,18 +829,9 @@ private extension AuthenticationManager {
     ///
     private func presentAppPasswordAlert(error: Error, for siteURL: String, in viewController: UIViewController) {
 
-        let isAppPasswordTutorialDisabled = !ServiceLocator.featureFlagService.isFeatureFlagEnabled(.appPasswordTutorial)
-        let defaultAction = isAppPasswordTutorialDisabled ? { [weak self] in
-            guard let self else { return }
-            let webViewController = self.applicationPasswordWebView(for: siteURL)
-            viewController.navigationController?.pushViewController(webViewController, animated: true)
-            self.presentApplicationPasswordWebView(for: siteURL, in: viewController)
-            self.analytics.track(.applicationPasswordAuthorizationButtonTapped)
-        } : nil
-
         let alertController = FancyAlertViewController.makeSiteCredentialLoginErrorAlert(
             message: (error as NSError).localizedDescription,
-            defaultAction: defaultAction
+            defaultAction: nil
         )
 
         viewController.present(alertController, animated: true)

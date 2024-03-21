@@ -25,6 +25,9 @@ final class BlazeCampaignListItemsMapperTests: XCTestCase {
         XCTAssertEqual(item.spentBudget, 5)
         XCTAssertEqual(item.clicks, 12)
         XCTAssertEqual(item.impressions, 34)
+        XCTAssertEqual(item.budgetMode, .total)
+        XCTAssertEqual(item.budgetAmount, 230)
+        XCTAssertEqual(item.budgetCurrency, "USD")
     }
 }
 

@@ -14,7 +14,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .inbox:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .sideBySideViewForOrderForm:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return true
         case .updateOrderOptimistically:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .shippingLabelsOnboardingM1:
@@ -87,11 +87,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .splitViewInProductsTab:
             return true
-        case .customRangeInMyStoreAnalytics:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .connectivityTool:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .appPasswordTutorial:
+        case .customersInHubMenu:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true

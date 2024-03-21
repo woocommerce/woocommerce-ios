@@ -2,7 +2,7 @@ import Foundation
 import class UIKit.UIColor
 
 /// Represents a formatted delta percentage string and its direction of change
-struct DeltaPercentage {
+struct DeltaPercentage: Equatable {
     /// The delta percentage formatted as a localized string (e.g. `+100%`)
     let string: String
 

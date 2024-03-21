@@ -196,15 +196,7 @@ public enum FeatureFlag: Int {
     ///
     case splitViewInProductsTab
 
-    /// Displays the option to add a custom date range in My Store Analytics
+    /// Displays a Customers section in the Hub menu.
     ///
-    case customRangeInMyStoreAnalytics
-
-    /// Enables the connectivity tool when an order list error happens.
-    ///
-    case connectivityTool
-
-    /// Enables the Application Password tutorial
-    ///
-    case appPasswordTutorial
+    case customersInHubMenu
 }

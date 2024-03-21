@@ -23,6 +23,11 @@ final class CustomersListViewModel: ObservableObject {
     /// Available filters for the customer search.
     let searchFilters: [CustomerSearchFilter] = [.name, .username, .email]
 
+    /// Whether the search header should be displayed.
+    var showSearchHeader: Bool {
+        customers.isNotEmpty || searchTerm.isNotEmpty
+    }
+
     // MARK: Sync
 
     /// Current sync status; used to determine the view state.

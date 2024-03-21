@@ -10,6 +10,7 @@ struct CustomersListView: View {
             SearchHeader(text: $viewModel.searchTerm, placeholder: Localization.searchPlaceholder) { isEditing in
                 isEditingSearchTerm = isEditing
             }
+            .renderedIf(viewModel.showSearchHeader)
             Picker(selection: $viewModel.searchFilter, label: EmptyView()) {
                 ForEach(viewModel.searchFilters, id: \.self) { option in Text(option.title) }
             }
@@ -54,10 +55,16 @@ struct CustomersListView: View {
                     }
                 }
             case .empty:
-                EmptyState(title: Localization.emptyStateTitle,
-                           description: Localization.emptyStateMessage,
-                           image: .cashRegisterImage)
+                if viewModel.searchTerm.isEmpty {
+                    EmptyState(title: Localization.emptyStateTitle,
+                               description: Localization.emptyStateMessage,
+                               image: .cashRegisterImage)
                     .frame(maxHeight: .infinity)
+                } else {
+                    EmptyState(title: Localization.emptySearchTitle,
+                               image: .searchNoResultImage)
+                    .frame(maxHeight: .infinity)
+                }
             }
         }
         .listStyle(.plain)
@@ -88,6 +95,9 @@ private extension CustomersListView {
         static let searchPlaceholder = NSLocalizedString("customersList.searchPlaceholder",
                                                          value: "Search for customers",
                                                          comment: "Placeholder in the search bar in the Customers list screen.")
+        static let emptySearchTitle = NSLocalizedString("customerList.emptySearchTitle",
+                                                        value: "No customers found",
+                                                        comment: "Title when there are no customers in the search results in the Customers list screen.")
     }
 }
 

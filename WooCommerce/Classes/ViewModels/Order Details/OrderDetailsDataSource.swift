@@ -477,6 +477,8 @@ private extension OrderDetailsDataSource {
             configureAttributionDeviceType(cell: cell, at: indexPath)
         case let cell as TitleAndValueTableViewCell where row == .attributionSessionPageViews:
             configureAttributionSessionPageViews(cell: cell, at: indexPath)
+        case let cell as WooBasicTableViewCell where row == .trashOrder:
+            configureTrashOrder(cell: cell, at: indexPath)
         default:
             fatalError("Unidentified customer info row type")
         }
@@ -1021,6 +1023,19 @@ private extension OrderDetailsDataSource {
         }
     }
 
+    private func configureTrashOrder(cell: WooBasicTableViewCell, at indexPath: IndexPath) {
+        cell.bodyLabel.textColor = .error
+        cell.bodyLabel?.text = Titles.trashOrder
+        cell.bodyLabel.textAlignment = .center
+        cell.accessoryType = .none
+        cell.selectionStyle = .default
+
+        cell.accessibilityTraits = .button
+        cell.accessibilityIdentifier = "order-details-trash-order-button"
+        cell.accessibilityLabel = Accessibility.trashOrderLabel
+        cell.accessibilityHint = Accessibility.trashOrderHint
+    }
+
     /// Returns attributes that can be categorized as `Add-ons`.
     /// Returns an `empty` array if we can't find the product associated with order item.
     ///
@@ -1421,6 +1436,10 @@ extension OrderDetailsDataSource {
             return Section(category: .attribution, title: Title.orderAttribution, rows: rows)
         }()
 
+        let trashOrderSection: Section? = {
+            return Section(category: .trashOrder, rows: [.trashOrder])
+        }()
+
         sections = ([summary,
                      shippingNotice,
                      products,
@@ -1436,7 +1455,8 @@ extension OrderDetailsDataSource {
                      giftCards,
                      tracking,
                      addTracking,
-                     notes]).compactMap { $0 }
+                     notes,
+                     trashOrderSection]).compactMap { $0 }
 
         updateOrderNoteAsyncDictionary(orderNotes: orderNotes)
     }
@@ -1677,6 +1697,10 @@ extension OrderDetailsDataSource {
             value: "See Receipt",
             comment: "Text on the button title to see the order's receipt")
         static let seeLegacyReceipt = NSLocalizedString("See Receipt", comment: "Text on the button to see a saved receipt")
+        static let trashOrder = NSLocalizedString(
+                     "orderDetailsDataSource.trashOrder.button.title",
+                     value: "Move to trash",
+                     comment: "Text on the button title to trash an order")
     }
 
     enum Icons {
@@ -1732,6 +1756,19 @@ extension OrderDetailsDataSource {
                                                                 comment: "Button on bottom of shipping label package card to show shipping details")
     }
 
+    enum Accessibility {
+        static let trashOrderLabel = NSLocalizedString(
+            "orderDetailsDataSource.trashOrder.accessibilityLabel",
+            value: "Trash Order Button",
+            comment: "Accessibility label for the 'Trash order' button"
+        )
+        static let trashOrderHint = NSLocalizedString(
+            "orderDetailsDataSource.trashOrder.accessibilityHint",
+            value: "Put this order in the trash.",
+            comment: "VoiceOver accessibility hint, informing the user that the button can be used to view the order custom fields information."
+        )
+    }
+
     struct Section {
         enum Category {
             case summary
@@ -1750,6 +1787,7 @@ extension OrderDetailsDataSource {
             case notes
             case customFields
             case attribution
+            case trashOrder
         }
 
         /// The table header style of a `Section`.
@@ -1862,6 +1900,7 @@ extension OrderDetailsDataSource {
         case attributionMedium
         case attributionDeviceType
         case attributionSessionPageViews
+        case trashOrder
 
         var reuseIdentifier: String {
             switch self {
@@ -1941,6 +1980,8 @@ extension OrderDetailsDataSource {
                     .attributionDeviceType,
                     .attributionSessionPageViews:
                 return TitleAndValueTableViewCell.reuseIdentifier
+            case .trashOrder:
+                return WooBasicTableViewCell.reuseIdentifier
             }
         }
     }
@@ -1957,6 +1998,7 @@ extension OrderDetailsDataSource {
         case viewAddOns(addOns: [OrderItemProductAddOn])
         case editCustomerNote
         case editShippingAddress
+        case trashOrder
     }
 
     enum Constants {

@@ -230,7 +230,11 @@ public final class CustomerStore: Store {
                                  pageNumber: Int,
                                  pageSize: Int,
                                  onCompletion: @escaping (Result<Bool, Error>) -> Void) {
-        wcAnalyticsCustomerRemote.loadCustomers(for: siteID, orderby: .dateLastActive, order: .desc) { [weak self] result in
+        wcAnalyticsCustomerRemote.loadCustomers(for: siteID,
+                                                pageNumber: pageNumber,
+                                                pageSize: pageSize,
+                                                orderby: .dateLastActive,
+                                                order: .desc) { [weak self] result in
             guard let self else { return }
             switch result {
             case let .success(customers):
@@ -238,7 +242,8 @@ public final class CustomerStore: Store {
                                                        readOnlyCustomers: customers,
                                                        shouldDeleteExistingCustomers: pageNumber == 1,
                                                        in: self.sharedDerivedStorage) {
-                    onCompletion(.success(!customers.isEmpty))
+                    let hasNextPage = customers.count == pageSize
+                    onCompletion(.success(hasNextPage))
                 }
             case let .failure(error):
                 onCompletion(.failure(error))

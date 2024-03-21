@@ -34,7 +34,7 @@ public enum CustomerAction: Action {
     ///     - siteID: The site for which we will perform the search.
     ///     - pageNumber: The number of the page you want to load.
     ///     - pageSize: The size of the page you want to load.
-    ///     - onCompletion: Invoked when the operation finishes. Returns true if there are results synced.
+    ///     - onCompletion: Invoked when the operation finishes. Returns true if there are more customers to be synced.
     ///
     case synchronizeAllCustomers(siteID: Int64,
                                  pageNumber: Int,

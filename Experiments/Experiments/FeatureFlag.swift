@@ -195,4 +195,8 @@ public enum FeatureFlag: Int {
     /// Displays the Products tab in a split view
     ///
     case splitViewInProductsTab
+
+    /// Displays a Customers section in the Hub menu.
+    ///
+    case customersInHubMenu
 }

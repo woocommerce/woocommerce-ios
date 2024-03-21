@@ -282,6 +282,7 @@ public typealias StorageTopEarnerStats = Storage.TopEarnerStats
 public typealias StorageTopEarnerStatsItem = Storage.TopEarnerStatsItem
 public typealias StorageTaxClass = Storage.TaxClass
 public typealias StorageTaxRate = Storage.TaxRate
+public typealias StorageWCAnalyticsCustomer = Storage.WCAnalyticsCustomer
 public typealias StorageWCPayCharge = Storage.WCPayCharge
 public typealias FeatureAnnouncementCampaign = Storage.FeatureAnnouncementCampaign
 public typealias FeatureAnnouncementCampaignSettings = Storage.FeatureAnnouncementCampaignSettings

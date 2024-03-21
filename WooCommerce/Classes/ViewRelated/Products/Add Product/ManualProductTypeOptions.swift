@@ -6,29 +6,56 @@ struct ManualProductTypeOptions: View {
     private let productTypes: [BottomSheetProductType]
     private let onOptionSelected: (BottomSheetProductType) -> Void
 
+    /// Grouped product types based on their product category
+    private let groupedProductTypes: [(BottomSheetProductType.ProductCreationCategory, [BottomSheetProductType])]
+
     init(productTypes: [BottomSheetProductType],
          onOptionSelected: @escaping (BottomSheetProductType) -> Void) {
         self.productTypes = productTypes
         self.onOptionSelected = onOptionSelected
+
+        self.groupedProductTypes = Constants.productCategoriesOrder.compactMap { category in
+            let currentCategoryProductTypes = productTypes.filter { $0.productCreationCategory == category }
+            return currentCategoryProductTypes.isEmpty ? nil : (category, currentCategoryProductTypes)
+        }
     }
 
     var body: some View {
-        ForEach(productTypes) { productType in
-            HStack(alignment: .top, spacing: Constants.margin) {
-                Image(uiImage: productType.actionSheetImage.withRenderingMode(.alwaysTemplate))
-                    .font(.title3)
-                    .foregroundStyle(.secondary)
+        ForEach(groupedProductTypes, id: \.0) { (category, productTypes) in
+            VStack {
+                Text(category.label)
+                    .subheadlineStyle()
+                    .textCase(.uppercase)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.bottom, Constants.categoryVerticalSpacing)
+                    .padding(.horizontal, Constants.horizontalSpacing)
 
-                VStack(alignment: .leading, spacing: Constants.verticalSpacing) {
-                    Text(productType.actionSheetTitle)
-                        .bodyStyle()
-                    Text(productType.actionSheetDescription)
-                        .subheadlineStyle()
+                ForEach(productTypes, id: \.self) { productType in
+                    HStack(alignment: .top, spacing: Constants.margin) {
+                        Image(uiImage: productType.actionSheetImage.withRenderingMode(.alwaysTemplate))
+                            .font(.title3)
+                            .foregroundStyle(.primary)
+                            .padding(.top, Constants.productIconTopSpacing)
+
+                        VStack(alignment: .leading, spacing: Constants.verticalSpacing) {
+                            Text(productType.actionSheetTitle)
+                                .bodyStyle()
+                            Text(productType.actionSheetDescription)
+                                .subheadlineStyle()
+                        }
+                        .padding(.bottom, Constants.productBottomSpacing)
+                        Spacer()
+                    }
+                    .padding(.horizontal, Constants.horizontalSpacing)
+                    .onTapGesture {
+                        onOptionSelected(productType)
+                    }
+
                 }
-                Spacer()
-            }
-            .onTapGesture {
-                onOptionSelected(productType)
+                if category != Constants.productCategoriesOrder.last {
+                    Divider()
+                        .padding(.vertical, Constants.categoryVerticalSpacing)
+                }
             }
         }
     }
@@ -36,7 +63,13 @@ struct ManualProductTypeOptions: View {
 
 private extension ManualProductTypeOptions {
     enum Constants {
+        // List of product categories. The ordering dictates how the categories are displayed.
+        static let productCategoriesOrder: [BottomSheetProductType.ProductCreationCategory] = [.standard, .subscription, .other]
         static let verticalSpacing: CGFloat = 4
+        static let horizontalSpacing: CGFloat = 16
+        static let categoryVerticalSpacing: CGFloat = 8
+        static let productBottomSpacing: CGFloat = 16
+        static let productIconTopSpacing: CGFloat = 8
         static let margin: CGFloat = 16
     }
 }

@@ -37,7 +37,6 @@ public enum BottomSheetProductType: Hashable, Identifiable {
         }
     }
 
-
     /// Remote ProductType
     ///
     var productType: ProductType {
@@ -77,13 +76,13 @@ public enum BottomSheetProductType: Hashable, Identifiable {
         case .simple(let isVirtual):
             if isVirtual {
                 return NSLocalizedString(
-                    "bottomSheetProductType.simpleVirtual.title",
-                    value: "Simple virtual product",
+                    "bottomSheetProductType.simpleVirtualProduct.title",
+                    value: "Virtual product",
                     comment: "Action sheet option when the user wants to change the Product type to simple virtual product")
             } else {
                 return NSLocalizedString(
-                    "bottomSheetProductType.simple.title",
-                    value: "Simple physical product",
+                    "bottomSheetProductType.simpleProduct.title",
+                    value: "Physical product",
                     comment: "Action sheet option when the user wants to change the Product type to simple physical product")
             }
         case .variable:
@@ -105,13 +104,13 @@ public enum BottomSheetProductType: Hashable, Identifiable {
             return title
         case .subscription:
             return NSLocalizedString(
-                "bottomSheetProductType.subscription.title",
-                value: "Simple subscription product",
+                "bottomSheetProductType.subscriptionProduct.title",
+                value: "Simple subscription",
                 comment: "Action sheet option when the user wants to change the Product type to Subscription product")
         case .variableSubscription:
             return NSLocalizedString(
-                "bottomSheetProductType.variableSubscription.title",
-                value: "Variable subscription product",
+                "bottomSheetProductType.variableSubscriptionProduct.title",
+                value: "Variable subscription",
                 comment: "Action sheet option when the user wants to change the Product type to Variable subscription product")
         case .blank:
             return NSLocalizedString(
@@ -199,6 +198,19 @@ public enum BottomSheetProductType: Hashable, Identifiable {
         }
     }
 
+    /// Product creation category (for UI purposes).
+    ///
+    var productCreationCategory: ProductCreationCategory {
+        switch self {
+        case .simple, .blank, .variable:
+            return .standard
+        case .subscription, .variableSubscription:
+            return .subscription
+        case .custom, .grouped, .affiliate:
+            return .other
+        }
+    }
+
     init(productType: ProductType, isVirtual: Bool) {
         switch productType {
         case .simple:
@@ -221,6 +233,38 @@ public enum BottomSheetProductType: Hashable, Identifiable {
             self = .custom("composite")
         case .custom(let string):
             self = .custom(string)
+        }
+    }
+
+    /// Product creation option's category.
+    /// Used to group the options on the product creation sheet.
+    ///
+    enum ProductCreationCategory {
+        case standard
+        case subscription
+        case other
+
+        var label: String {
+            switch self {
+            case .standard:
+                return NSLocalizedString(
+                    "bottomSheetProductType.productCreationCategory.standard",
+                    value: "Standard",
+                    comment: "Category label for standard product creation types"
+                )
+            case .subscription:
+                return NSLocalizedString(
+                    "bottomSheetProductType.productCreationCategory.subscription",
+                    value: "Subscription",
+                    comment: "Category label for subscription product creation types"
+                )
+            case .other:
+                return NSLocalizedString(
+                    "bottomSheetProductType.productCreationCategory.other",
+                    value: "Other",
+                    comment: "Category label for other product creation types"
+                )
+            }
         }
     }
 }

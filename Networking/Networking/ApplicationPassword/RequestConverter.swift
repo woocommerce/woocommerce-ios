@@ -15,6 +15,8 @@ struct RequestConverter {
                 return siteAddress
             case let .applicationPassword(_, _, siteAddress):
                 return siteAddress
+            case .wpcom:
+                return "https://test-jpc-site-pressable.mystagingwebsite.com"
             default:
                 return nil
             }

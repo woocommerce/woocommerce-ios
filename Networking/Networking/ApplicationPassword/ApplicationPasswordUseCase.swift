@@ -145,7 +145,9 @@ private extension DefaultApplicationPasswordUseCase {
         let passwordName = await applicationPasswordName
 
         let parameters = [ParameterKey.name: passwordName]
-        let request = RESTRequest(siteURL: siteAddress, method: .post, path: Path.applicationPasswords, parameters: parameters)
+
+        let request = JetpackRequest(wooApiVersion: .none, method: .post, siteID: 222741064, path: "wp/v2/users/me/application-passwords", parameters: parameters)
+        //let request = RESTRequest(siteURL: siteAddress, method: .post, path: Path.applicationPasswords, parameters: parameters)
         return try await withCheckedThrowingContinuation { continuation in
             network.responseData(for: request) { [weak self] result in
                 guard let self else { return }

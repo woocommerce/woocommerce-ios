@@ -4,6 +4,7 @@ import Gridicons
 import WordPressUI
 import Yosemite
 import SwiftUI
+import Networking
 
 // MARK: - DashboardViewController
 //
@@ -171,6 +172,17 @@ final class DashboardViewController: UIViewController {
         Task { @MainActor in
             await viewModel.syncAnnouncements(for: siteID)
         }
+
+//        DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
+//            
+//            let network = AlamofireNetwork(credentials: ServiceLocator.stores.sessionManager.defaultCredentials!)
+//            let useCase = try? DefaultApplicationPasswordUseCase(username: "", password: "", siteAddress: "", network: network)
+//
+//            Task { @MainActor in
+//                try? await useCase?.generateNewPassword()
+//            }
+//
+//        }
     }
 
     override func viewWillAppear(_ animated: Bool) {

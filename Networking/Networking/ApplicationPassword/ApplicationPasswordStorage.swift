@@ -14,8 +14,8 @@ struct ApplicationPasswordStorage {
     /// Returns the saved application password if available
     ///
     var applicationPassword: ApplicationPassword? {
+        let username = "test-jpc-site-pressable"
         guard let password = keychain.password,
-              let username = keychain.username,
               let uuid = keychain.uuid else {
             return nil
         }

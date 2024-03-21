@@ -12,7 +12,16 @@ struct ApplicationPasswordMapper: Mapper {
         decoder.userInfo = [
             .wpOrgUsername: wpOrgUsername
         ]
-        let password = try decoder.decode(ApplicationPassword.self, from: response)
-        return password
+
+        if hasDataEnvelope(in: response) {
+            return try decoder.decode(ApplicationPasswordEnvelope.self, from: response).data
+        } else {
+            return try decoder.decode(ApplicationPassword.self, from: response)
+        }
     }
 }
+
+private struct ApplicationPasswordEnvelope: Decodable {
+    let data: ApplicationPassword
+}
+

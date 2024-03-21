@@ -97,6 +97,8 @@ private extension DefaultRequestAuthenticator {
                 return siteAddress
             case let .applicationPassword(_, _, siteAddress):
                 return siteAddress
+            case .wpcom:
+                return "https://test-jpc-site-pressable.mystagingwebsite.com/"
             default:
                 return nil
             }
@@ -122,10 +124,9 @@ private extension DefaultRequestAuthenticator {
     /// Attempts creating a request with application password if possible.
     ///
     func authenticateUsingApplicationPasswordIfPossible(_ urlRequest: URLRequest) throws -> URLRequest {
-        guard let applicationPassword = applicationPasswordUseCase?.applicationPassword else {
+        guard let applicationPassword = OneTimeApplicationPasswordUseCase(siteAddress: "https://test-jpc-site-pressable.mystagingwebsite.com/").applicationPassword else {
             throw RequestAuthenticatorError.applicationPasswordNotAvailable
         }
-
         return AuthenticatedRESTRequest(applicationPassword: applicationPassword, request: urlRequest).asURLRequest()
     }
 }

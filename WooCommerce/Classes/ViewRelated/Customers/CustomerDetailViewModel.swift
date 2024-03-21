@@ -18,10 +18,10 @@ struct CustomerDetailViewModel {
     let ordersCount: String
 
     /// Customer's total spend
-    let totalSpend: String?
+    let totalSpend: String
 
     /// Customer's average order value
-    let avgOrderValue: String?
+    let avgOrderValue: String
 
     // MARK: Registration
 
@@ -74,17 +74,17 @@ private extension String {
 extension CustomerDetailView {
     init(viewModel: CustomerDetailViewModel) {
         self.name = viewModel.name
-        self.email = viewModel.email ?? ""
+        self.email = viewModel.email
         self.dateLastActive = viewModel.dateLastActive
         self.ordersCount = viewModel.ordersCount
-        self.totalSpend = viewModel.totalSpend ?? ""
-        self.avgOrderValue = viewModel.avgOrderValue ?? ""
-        self.username = viewModel.username ?? ""
-        self.dateRegistered = viewModel.dateRegistered ?? ""
-        self.country = viewModel.country ?? ""
-        self.region = viewModel.region ?? ""
-        self.city = viewModel.city ?? ""
-        self.postcode = viewModel.postcode ?? ""
+        self.totalSpend = viewModel.totalSpend
+        self.avgOrderValue = viewModel.avgOrderValue
+        self.username = viewModel.username
+        self.dateRegistered = viewModel.dateRegistered
+        self.country = viewModel.country
+        self.region = viewModel.region
+        self.city = viewModel.city
+        self.postcode = viewModel.postcode
     }
 }
 

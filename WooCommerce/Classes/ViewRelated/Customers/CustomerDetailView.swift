@@ -8,7 +8,7 @@ struct CustomerDetailView: View {
     let dateLastActive: String
 
     /// Customer email
-    let email: String
+    let email: String?
 
     /// Number of orders from the customer
     let ordersCount: String
@@ -20,28 +20,34 @@ struct CustomerDetailView: View {
     let avgOrderValue: String
 
     /// Customer username
-    let username: String
+    let username: String?
 
     /// Date the customer was registered on the store
-    let dateRegistered: String
+    let dateRegistered: String?
 
     /// Customer country
-    let country: String
+    let country: String?
 
     /// Customer region
-    let region: String
+    let region: String?
 
     /// Customer city
-    let city: String
+    let city: String?
 
     /// Customer postal code
-    let postcode: String
+    let postcode: String?
 
     var body: some View {
         List {
             Section(header: Text(Localization.customerSection)) {
                 Text(name)
-                Text(email)
+                HStack {
+                    Text(email ?? Localization.emailPlaceholder)
+                        .style(for: email)
+                    Spacer()
+                    Image(uiImage: .mailImage)
+                        .renderedIf(email != nil)
+                }
                 customerDetailRow(label: Localization.dateLastActiveLabel, value: dateLastActive)
             }
 
@@ -72,12 +78,24 @@ struct CustomerDetailView: View {
 }
 
 private extension CustomerDetailView {
-    @ViewBuilder
-    func customerDetailRow(label: String, value: String) -> some View {
+    @ViewBuilder func customerDetailRow(label: String, value: String?) -> some View {
         HStack {
             Text(label)
             Spacer()
-            Text(value)
+            Text(value ?? Localization.defaultPlaceholder)
+                .style(for: value)
+        }
+    }
+}
+
+private extension Text {
+    /// Styles the text based on whether there is a provided value.
+    ///
+    @ViewBuilder func style(for value: String?) -> some View {
+        if value != nil {
+            self.bodyStyle()
+        } else {
+            self.secondaryBodyStyle()
         }
     }
 }
@@ -129,10 +147,17 @@ private extension CustomerDetailView {
         static let postcodeLabel = NSLocalizedString("customerDetailView.postcodeLabel",
                                                           value: "Postal code",
                                                           comment: "Label for the customer's postal code in the Customer Details screen.")
+
+        static let defaultPlaceholder = NSLocalizedString("customerDetailView.defaultPlaceholder",
+                                                          value: "None",
+                                                          comment: "Default placeholder if a customer's details are not available in the Customer Details screen.")
+        static let emailPlaceholder = NSLocalizedString("customerDetailView.emailPlaceholder",
+                                                          value: "No email address",
+                                                          comment: "Placeholder if a customer's email address is not available in the Customer Details screen.")
     }
 }
 
-#Preview {
+#Preview("Customer") {
     CustomerDetailView(name: "Pat Smith",
                        dateLastActive: "Jan 1, 2024",
                        email: "patsmith@example.com",
@@ -145,4 +170,19 @@ private extension CustomerDetailView {
                        region: "Oregon",
                        city: "Portland",
                        postcode: "12345")
+}
+
+#Preview("Customer with Placeholders") {
+    CustomerDetailView(name: "Guest",
+                       dateLastActive: "Jan 1, 2024",
+                       email: nil,
+                       ordersCount: "0",
+                       totalSpend: "$0.00",
+                       avgOrderValue: "$0.00",
+                       username: nil,
+                       dateRegistered: nil,
+                       country: nil,
+                       region: nil,
+                       city: nil,
+                       postcode: nil)
 }

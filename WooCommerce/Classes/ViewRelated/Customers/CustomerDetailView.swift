@@ -5,7 +5,7 @@ struct CustomerDetailView: View {
     let name: String
 
     /// Date the customer was last active
-    let lastActiveDate: String
+    let dateLastActive: String
 
     /// Customer email
     let email: String
@@ -42,7 +42,7 @@ struct CustomerDetailView: View {
             Section(header: Text(Localization.customerSection)) {
                 Text(name)
                 Text(email)
-                customerDetailRow(label: Localization.lastActiveDateLabel, value: lastActiveDate)
+                customerDetailRow(label: Localization.dateLastActiveLabel, value: dateLastActive)
             }
 
             Section(header: Text(Localization.ordersSection)) {
@@ -87,7 +87,7 @@ private extension CustomerDetailView {
         static let customerSection = NSLocalizedString("customerDetailView.customerSection",
                                                        value: "CUSTOMER",
                                                        comment: "Heading for the section with general customer details in the Customer Details screen.")
-        static let lastActiveDateLabel = NSLocalizedString("customerDetailView.lastActiveDateLabel",
+        static let dateLastActiveLabel = NSLocalizedString("customerDetailView.dateLastActiveLabel",
                                                       value: "Last active",
                                                       comment: "Label for the date the customer was last active in the Customer Details screen.")
 
@@ -134,13 +134,13 @@ private extension CustomerDetailView {
 
 #Preview {
     CustomerDetailView(name: "Pat Smith",
-                       lastActiveDate: "1/1/24",
+                       dateLastActive: "Jan 1, 2024",
                        email: "patsmith@example.com",
                        ordersCount: "3",
-                       totalSpend: "$81",
-                       avgOrderValue: "$27",
+                       totalSpend: "$81.75",
+                       avgOrderValue: "$27.25",
                        username: "patsmith",
-                       dateRegistered: "1/1/23",
+                       dateRegistered: "Jan 1, 2023",
                        country: "United States",
                        region: "Oregon",
                        city: "Portland",

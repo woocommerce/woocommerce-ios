@@ -162,6 +162,7 @@ public final class CustomerStore: Store {
             case let .success(customers):
                 self.upsertWCAnalyticsCustomersAndSave(siteID: siteID,
                                                        readOnlyCustomers: customers,
+                                                       shouldDeleteExistingCustomers: filter != .all,
                                                        keyword: keyword,
                                                        in: self.sharedDerivedStorage) {
                     let hasNextPage = customers.count == pageSize

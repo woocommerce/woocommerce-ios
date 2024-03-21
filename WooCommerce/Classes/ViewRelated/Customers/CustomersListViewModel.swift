@@ -141,6 +141,7 @@ extension CustomersListViewModel: PaginationTrackerDelegate {
                 guard let self else { return }
                 self.updatePredicate(searchTerm: searchTerm)
                 self.updateResults()
+                self.searchFilter = searchFilter // Ensure latest filter is used in remote search
                 self.paginationTracker.resync()
             }.store(in: &subscriptions)
     }

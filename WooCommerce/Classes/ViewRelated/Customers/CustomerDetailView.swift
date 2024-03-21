@@ -22,6 +22,16 @@ struct CustomerDetailView: View {
                     }
                     .accessibilityLabel(Localization.emailAction)
                     .renderedIf(viewModel.email != nil)
+                    .confirmationDialog(Localization.emailAction, isPresented: $isPresentingEmailDialog) {
+                        Button(Localization.sendEmail) {
+                            isShowingEmailView.toggle()
+                        }
+                        .renderedIf(EmailView.canSendEmail())
+
+                        Button(Localization.copyEmail) {
+                            viewModel.copyEmail()
+                        }
+                    }
                 }
                 customerDetailRow(label: Localization.dateLastActiveLabel, value: viewModel.dateLastActive)
             }
@@ -52,16 +62,6 @@ struct CustomerDetailView: View {
         .sheet(isPresented: $isShowingEmailView) {
             EmailView(emailAddress: viewModel.email)
                 .ignoresSafeArea(edges: .bottom)
-        }
-        .confirmationDialog(Localization.emailAction, isPresented: $isPresentingEmailDialog) {
-            Button(Localization.sendEmail) {
-                isShowingEmailView.toggle()
-            }
-            .renderedIf(EmailView.canSendEmail())
-
-            Button(Localization.copyEmail) {
-                viewModel.copyEmail()
-            }
         }
     }
 }

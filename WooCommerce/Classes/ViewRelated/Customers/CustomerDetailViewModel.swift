@@ -12,11 +12,6 @@ final class CustomerDetailViewModel {
     /// Customer email
     let email: String?
 
-    /// Whether the customer can be contacted via email
-    lazy var canEmailCustomer: Bool = {
-        email != nil
-    }()
-
     // MARK: Orders
 
     /// Number of orders from the customer
@@ -91,6 +86,11 @@ final class CustomerDetailViewModel {
                   region: customer.region.nullifyIfEmptyOrWhitespace(),
                   city: customer.city.nullifyIfEmptyOrWhitespace(),
                   postcode: customer.postcode.nullifyIfEmptyOrWhitespace())
+    }
+
+    /// Copies the customer email to the pasteboard.
+    func copyEmail() {
+        email?.sendToPasteboard(includeTrailingNewline: false)
     }
 }
 

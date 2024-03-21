@@ -3,6 +3,9 @@ import SwiftUI
 struct CustomerDetailView: View {
     let viewModel: CustomerDetailViewModel
 
+    @State private var isPresentingEmailDialog: Bool = false
+    @State private var isShowingEmailView: Bool = false
+
     var body: some View {
         List {
             Section(header: Text(Localization.customerSection)) {
@@ -11,8 +14,14 @@ struct CustomerDetailView: View {
                     Text(viewModel.email ?? Localization.emailPlaceholder)
                         .style(for: viewModel.email)
                     Spacer()
-                    Image(uiImage: .mailImage)
-                        .renderedIf(viewModel.canEmailCustomer)
+                    Button {
+                        isPresentingEmailDialog.toggle()
+                    } label: {
+                        Image(uiImage: .mailImage)
+                            .foregroundColor(Color(.primary))
+                    }
+                    .accessibilityLabel(Localization.emailAction)
+                    .renderedIf(viewModel.email != nil)
                 }
                 customerDetailRow(label: Localization.dateLastActiveLabel, value: viewModel.dateLastActive)
             }
@@ -40,6 +49,20 @@ struct CustomerDetailView: View {
         .navigationTitle(viewModel.name)
         .navigationBarTitleDisplayMode(.inline)
         .wooNavigationBarStyle()
+        .sheet(isPresented: $isShowingEmailView) {
+            EmailView(emailAddress: viewModel.email)
+                .ignoresSafeArea(edges: .bottom)
+        }
+        .confirmationDialog(Localization.emailAction, isPresented: $isPresentingEmailDialog) {
+            Button(Localization.sendEmail) {
+                isShowingEmailView.toggle()
+            }
+            .renderedIf(EmailView.canSendEmail())
+
+            Button(Localization.copyEmail) {
+                viewModel.copyEmail()
+            }
+        }
     }
 }
 
@@ -120,6 +143,16 @@ private extension CustomerDetailView {
         static let emailPlaceholder = NSLocalizedString("customerDetailView.emailPlaceholder",
                                                           value: "No email address",
                                                           comment: "Placeholder if a customer's email address is not available in the Customer Details screen.")
+
+        static let emailAction = NSLocalizedString("customerDetailView.emailActionLabel",
+                                                   value: "Contact customer via email",
+                                                   comment: "Title for action to contact a customer via email.")
+        static let sendEmail = NSLocalizedString("customerDetailView.sendEmail",
+                                                 value: "Email",
+                                                 comment: "Button to email a customer in the Customer Details screen.")
+        static let copyEmail = NSLocalizedString("customerDetailView.copyEmail",
+                                                 value: "Copy email address",
+                                                 comment: "Button to copy a customer's email address in the Customer Details screen.")
     }
 }
 

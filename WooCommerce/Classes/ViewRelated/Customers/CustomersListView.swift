@@ -14,7 +14,7 @@ struct CustomersListView: View {
                 }) {
                     ForEach(viewModel.customers, id: \.customerID) { customer in
                         VStack(spacing: 0) {
-                            LazyNavigationLink(destination: EmptyView(), label: {
+                            LazyNavigationLink(destination: CustomerDetailView(viewModel: .init(customer: customer)), label: {
                                 HStack {
                                     TitleAndSubtitleAndDetailRow(title: viewModel.displayName(for: customer),
                                                                  detail: viewModel.displayUsername(for: customer),

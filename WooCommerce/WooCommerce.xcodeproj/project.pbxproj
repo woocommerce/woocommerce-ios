@@ -2049,6 +2049,7 @@
 		CE6302462BAB528900E3325C /* CustomerListViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE6302452BAB528900E3325C /* CustomerListViewModelTests.swift */; };
 		CE6302482BAB60AE00E3325C /* CustomerDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE6302472BAB60AE00E3325C /* CustomerDetailViewModel.swift */; };
 		CE63024A2BAC46A200E3325C /* CustomerDetailViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE6302492BAC46A200E3325C /* CustomerDetailViewModelTests.swift */; };
+		CE63024E2BAC664900E3325C /* EmailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE63024D2BAC664900E3325C /* EmailView.swift */; };
 		CE6A8FB42B724D7C0063564D /* AnalyticsReportLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE6A8FB32B724D7C0063564D /* AnalyticsReportLink.swift */; };
 		CE6A8FB62B725A690063564D /* AnalyticsReportLinkViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE6A8FB52B725A690063564D /* AnalyticsReportLinkViewModel.swift */; };
 		CE6A8FB82B7291760063564D /* AnalyticsReportLinkViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE6A8FB72B7291760063564D /* AnalyticsReportLinkViewModelTests.swift */; };
@@ -4788,6 +4789,7 @@
 		CE6302452BAB528900E3325C /* CustomerListViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerListViewModelTests.swift; sourceTree = "<group>"; };
 		CE6302472BAB60AE00E3325C /* CustomerDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerDetailViewModel.swift; sourceTree = "<group>"; };
 		CE6302492BAC46A200E3325C /* CustomerDetailViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerDetailViewModelTests.swift; sourceTree = "<group>"; };
+		CE63024D2BAC664900E3325C /* EmailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailView.swift; sourceTree = "<group>"; };
 		CE6A8FB32B724D7C0063564D /* AnalyticsReportLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsReportLink.swift; sourceTree = "<group>"; };
 		CE6A8FB52B725A690063564D /* AnalyticsReportLinkViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsReportLinkViewModel.swift; sourceTree = "<group>"; };
 		CE6A8FB72B7291760063564D /* AnalyticsReportLinkViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsReportLinkViewModelTests.swift; sourceTree = "<group>"; };
@@ -8179,6 +8181,7 @@
 				B9B7E37D2AF105EF00A959CA /* PencilEditButton.swift */,
 				20203AB12B31EEF1009D0C11 /* ExpandableBottomSheet.swift */,
 				20DA6DDA2B681175002AA0FB /* AdaptiveModalContainer.swift */,
+				CE63024D2BAC664900E3325C /* EmailView.swift */,
 			);
 			path = "SwiftUI Components";
 			sourceTree = "<group>";
@@ -14178,6 +14181,7 @@
 				02FADA9D2A5F20B000FE8683 /* AddProductFromImageScannedTextView.swift in Sources */,
 				022F2FA6295E77F4003A0A46 /* StoreCreationCountrySectionView.swift in Sources */,
 				CEE006052077D1280079161F /* SummaryTableViewCell.swift in Sources */,
+				CE63024E2BAC664900E3325C /* EmailView.swift in Sources */,
 				DE4B3B5826A7041800EEF2D8 /* EdgeInsets+Woo.swift in Sources */,
 				02CE4304276993DA0006EAEF /* CaptureDevicePermissionChecker.swift in Sources */,
 				DEF8CF1F29AC870A00800A60 /* WPComEmailLoginViewModel.swift in Sources */,

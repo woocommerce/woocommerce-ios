@@ -148,7 +148,6 @@ private extension NoticeView {
         actionButton.setTitleColor(Appearance.actionColor, for: .normal)
         actionButton.addTarget(self, action: #selector(actionButtonTapped), for: .touchUpInside)
         actionButton.setContentCompressionResistancePriority(.required, for: .horizontal)
-        actionButton.contentEdgeInsets = Metrics.actionButtonContentInsets
         actionButton.backgroundColor = Appearance.actionBackgroundColor
     }
 

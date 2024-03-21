@@ -80,7 +80,6 @@ private extension RefundItemTableViewCell {
     func applyRefundQuantityButtonStyle() {
         itemQuantityButton.applySecondaryButtonStyle()
         itemQuantityButton.titleLabel?.applyBodyStyle()
-        itemQuantityButton.contentEdgeInsets = Constants.quantityButtonInsets
 
         itemQuantityButton.accessibilityLabel = Localization.quantity
         itemQuantityButton.accessibilityHint = Localization.quantityHint

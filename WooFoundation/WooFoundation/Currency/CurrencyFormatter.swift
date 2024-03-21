@@ -109,12 +109,12 @@ public class CurrencyFormatter {
         let amount = amount.replacingOccurrences(of: "-", with: "")
 
         // We're relying on the phone's Locale to assist with language direction
-        let languageCode = locale.languageCode
+        let languageCode = locale.language.languageCode?.identifier
 
         // Detect the language direction
         var languageDirection: Locale.LanguageDirection = .unknown
         if let language = languageCode {
-            languageDirection = Locale.characterDirection(forLanguage: language)
+            languageDirection = Locale.Language(identifier: language).characterDirection
         }
 
         // For left-to-right languages, such as English

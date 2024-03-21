@@ -82,6 +82,10 @@ final class ReceiptViewController: UIViewController, WKNavigationDelegate, UIPri
         ServiceLocator.analytics.track(event: .InPersonPayments.receiptPrintTapped(countryCode: nil,
                                                                                    cardReaderModel: nil,
                                                                                    source: .backend))
+        guard let _ = URL(string: viewModel.receiptURLString) else {
+            return
+        }
+        let printController = UIPrintInteractionController.shared
         let printInfo = UIPrintInfo(dictionary: nil)
         let formattedJobName = viewModel.formattedReceiptJobName(printInfo.jobName)
         printInfo.jobName = formattedJobName

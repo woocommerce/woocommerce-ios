@@ -5,6 +5,7 @@ struct CustomersListView: View {
 
     var body: some View {
         Group {
+            SearchHeader(text: $viewModel.searchTerm, placeholder: Localization.searchPlaceholder)
             switch viewModel.syncState {
             case .results:
                 RefreshableInfiniteScrollList(isLoading: viewModel.shouldShowBottomActivityIndicator,
@@ -73,6 +74,9 @@ private extension CustomersListView {
         static let emptyStateMessage = NSLocalizedString("customerList.emptyStateMessage",
                                                          value: "Create an order to start gathering customer insights",
                                                          comment: "Message when there are no customers to show in the Customers list screen.")
+        static let searchPlaceholder = NSLocalizedString("customersList.searchPlaceholder",
+                                                         value: "Search for customers",
+                                                         comment: "Placeholder in the search bar in the Customers list screen.")
     }
 }
 

@@ -1,11 +1,16 @@
 import Foundation
 import Yosemite
 import protocol Storage.StorageManagerType
+import Combine
 
 final class CustomersListViewModel: ObservableObject {
 
     /// Customers to display in customer list.
     @Published private(set) var customers: [WCAnalyticsCustomer] = []
+
+    /// Current search term entered by the user.
+    /// Each update will trigger a remote customer search and sync.
+    @Published var searchTerm: String = ""
 
     // MARK: Sync
 
@@ -31,10 +36,20 @@ final class CustomersListViewModel: ObservableObject {
 
     /// Customers ResultsController.
     private lazy var resultsController: ResultsController<StorageWCAnalyticsCustomer> = {
-        let predicate = NSPredicate(format: "siteID == %lld", siteID)
+        let predicate = resultsPredicate
         let sortDescriptor = NSSortDescriptor(keyPath: \StorageWCAnalyticsCustomer.dateLastActive, ascending: false)
         return ResultsController<StorageWCAnalyticsCustomer>(storageManager: storageManager, matching: predicate, sortedBy: [sortDescriptor])
     }()
+
+    /// Default predicate for the results controller.
+    ///
+    private lazy var resultsPredicate: NSPredicate? = {
+        NSPredicate(format: "siteID == %lld", siteID)
+    }()
+
+    /// Store for publishers subscriptions
+    ///
+    private var subscriptions = Set<AnyCancellable>()
 
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
@@ -46,6 +61,7 @@ final class CustomersListViewModel: ObservableObject {
 
         configureResultsController()
         configurePaginationTracker()
+        observeSearchTerm()
     }
 
     /// Returns the given customer name, formatted for display.
@@ -94,9 +110,34 @@ extension CustomersListViewModel: PaginationTrackerDelegate {
         paginationTracker.syncFirstPage()
     }
 
+    /// Updates the customer results predicate & triggers a new sync when search term changes
+    ///
+    func observeSearchTerm() {
+        let searchTermPublisher = $searchTerm
+            .removeDuplicates()
+            .debounce(for: .milliseconds(500), scheduler: DispatchQueue.main)
+
+        searchTermPublisher
+            .sink { [weak self] searchTerm in
+                guard let self else { return }
+                self.updatePredicate(searchTerm: searchTerm)
+                self.updateResults()
+                self.paginationTracker.resync()
+            }.store(in: &subscriptions)
+    }
+
     /// Syncs the given page of customers from remote.
     func sync(pageNumber: Int, pageSize: Int, reason: String?, onCompletion: SyncCompletion?) {
         transitionToSyncingState()
+        if searchTerm.isEmpty {
+            synchronizeAllCustomers(pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
+        } else {
+            searchCustomers(keyword: searchTerm, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
+        }
+    }
+
+    /// Syncs all customers from remote.
+    private func synchronizeAllCustomers(pageNumber: Int, pageSize: Int, onCompletion: SyncCompletion?) {
         let action = CustomerAction.synchronizeAllCustomers(siteID: siteID, pageNumber: pageNumber, pageSize: pageSize) { [weak self] result in
             guard let self else { return }
             switch result {
@@ -107,6 +148,25 @@ extension CustomersListViewModel: PaginationTrackerDelegate {
                 onCompletion?(.failure(error))
             }
             self.updateResults()
+        }
+        stores.dispatch(action)
+    }
+
+    /// Searches all customers from remote.
+    private func searchCustomers(keyword: String, pageNumber: Int, pageSize: Int, onCompletion: SyncCompletion?) {
+        let action = CustomerAction.searchWCAnalyticsCustomers(siteID: siteID,
+                                                               pageNumber: pageNumber,
+                                                               pageSize: pageSize,
+                                                               keyword: keyword,
+                                                               filter: searchFilter) { [weak self] result in
+            guard let self else { return }
+            switch result {
+            case .success:
+                self.updateResults()
+            case let .failure(error):
+                DDLogError("⛔️ Error searching customers: \(error)")
+            }
+            onCompletion?(result)
         }
         stores.dispatch(action)
     }
@@ -141,6 +201,18 @@ private extension CustomersListViewModel {
     func updateResults() {
         customers = resultsController.fetchedObjects
         transitionToResultsUpdatedState()
+    }
+
+    func updatePredicate(searchTerm: String) {
+        if searchTerm.isNotEmpty {
+            // When the search query changes, also includes the original results predicate in addition to the search keyword.
+            let searchResultsPredicate = NSPredicate(format: "ANY searchResults.keyword = %@", searchTerm)
+            let subpredicates = [resultsPredicate, searchResultsPredicate].compactMap { $0 }
+            resultsController.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: subpredicates)
+        } else {
+            // Resets the results to the full customer list when there is no search query.
+            resultsController.predicate = resultsPredicate
+        }
     }
 }
 

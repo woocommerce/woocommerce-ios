@@ -2,7 +2,7 @@
 
 18.0
 -----
-
+- [**] Hub Menu: A new Customers section shows a searchable list of customers with their details, including the option to contact a customer via email. [https://github.com/woocommerce/woocommerce-ios/pull/12349]
 
 17.9
 -----

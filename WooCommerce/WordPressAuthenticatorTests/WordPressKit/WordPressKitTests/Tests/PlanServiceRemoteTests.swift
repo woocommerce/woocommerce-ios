@@ -327,7 +327,7 @@ class PlanServiceRemoteTests: RemoteTestCase, RESTTestable {
         case .failure(PlanServiceRemoteError.noMetadata):
             XCTAssertTrue(true)
         default:
-            XCTFail("Unexpected result: \(result)")
+            XCTFail("Unexpected result: \(String(describing: result))")
         }
     }
 }

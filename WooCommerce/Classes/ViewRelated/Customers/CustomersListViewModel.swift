@@ -132,11 +132,15 @@ extension CustomersListViewModel: PaginationTrackerDelegate {
     func observeSearch() {
         let searchTermPublisher = $searchTerm
             .removeDuplicates()
+            .dropFirst()
             .debounce(for: .milliseconds(500), scheduler: DispatchQueue.main)
 
-        let searchFilterPublisher = $searchFilter.removeDuplicates()
+        let searchFilterPublisher = $searchFilter
+            .removeDuplicates()
+            .dropFirst()
 
-        searchTermPublisher.combineLatest(searchFilterPublisher)
+        searchTermPublisher
+            .combineLatest(searchFilterPublisher.prepend(searchFilter)) // Use configured filter as initial value
             .sink { [weak self] (searchTerm, searchFilter) in
                 guard let self else { return }
                 self.updatePredicate(searchTerm: searchTerm)

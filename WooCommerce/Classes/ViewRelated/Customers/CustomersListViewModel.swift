@@ -117,6 +117,12 @@ final class CustomersListViewModel: ObservableObject {
             completion()
         }
     }
+
+    /// Called when a customer is selected.
+    func trackCustomerSelected(_ customer: WCAnalyticsCustomer) {
+        ServiceLocator.analytics.track(event: .CustomersHub.customerDetailOpened(registered: customer.userID != 0,
+                                                                                 hasEmail: customer.email?.isNotEmpty == true))
+    }
 }
 
 // MARK: - Remote Sync
@@ -166,9 +172,11 @@ extension CustomersListViewModel: PaginationTrackerDelegate {
             guard let self else { return }
             switch result {
             case let .success(hasNextPage):
+                ServiceLocator.analytics.track(event: .CustomersHub.customerListLoaded())
                 onCompletion?(.success(hasNextPage))
             case let .failure(error):
                 DDLogError("⛔️ Error synchronizing customers: \(error)")
+                ServiceLocator.analytics.track(event: .CustomersHub.customerListLoadFailed(withError: error))
                 onCompletion?(.failure(error))
             }
             self.updateResults()
@@ -178,6 +186,7 @@ extension CustomersListViewModel: PaginationTrackerDelegate {
 
     /// Searches all customers from remote.
     private func searchCustomers(keyword: String, pageNumber: Int, pageSize: Int, onCompletion: SyncCompletion?) {
+        ServiceLocator.analytics.track(event: .CustomersHub.customerListSearched(withFilter: searchFilter))
         let action = CustomerAction.searchWCAnalyticsCustomers(siteID: siteID,
                                                                pageNumber: pageNumber,
                                                                pageSize: pageSize,

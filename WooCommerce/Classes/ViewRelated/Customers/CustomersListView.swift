@@ -43,6 +43,9 @@ struct CustomersListView: View {
 
                             Divider().padding(.leading)
                         }
+                        .simultaneousGesture(TapGesture().onEnded { _ in
+                            viewModel.trackCustomerSelected(customer)
+                        })
                     }
                 }
             case .syncingFirstPage:

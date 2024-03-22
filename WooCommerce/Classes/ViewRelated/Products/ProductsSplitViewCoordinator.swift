@@ -61,6 +61,10 @@ final class ProductsSplitViewCoordinator: NSObject {
             showEmptyViewOrFirstProduct()
         }
     }
+
+    func startProductCreation() {
+        productsViewController.startProductCreation()
+    }
 }
 
 private extension ProductsSplitViewCoordinator {

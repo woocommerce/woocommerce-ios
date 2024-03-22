@@ -3,6 +3,7 @@ import XCTest
 import Yosemite
 import WooFoundation
 import Networking
+import Combine
 
 final class EditableOrderViewModelTests: XCTestCase {
     var viewModel: EditableOrderViewModel!

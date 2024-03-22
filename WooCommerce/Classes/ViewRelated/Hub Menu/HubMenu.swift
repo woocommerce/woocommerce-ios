@@ -165,6 +165,8 @@ private extension HubMenu {
                 InAppPurchasesDebugView()
             case HubMenuViewModel.Subscriptions.id:
                 SubscriptionsView(viewModel: .init())
+            case HubMenuViewModel.Customers.id:
+                CustomersListView(viewModel: .init(siteID: viewModel.siteID))
             default:
                 fatalError("🚨 Unsupported menu item")
             }

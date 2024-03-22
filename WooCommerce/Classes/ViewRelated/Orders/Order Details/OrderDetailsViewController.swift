@@ -595,9 +595,9 @@ private extension OrderDetailsViewController {
 
         actionSheet.addCancelActionWithTitle(Localization.ShippingLabelTrackingMoreMenu.cancelAction)
 
-        actionSheet.addDefaultActionWithTitle(Localization.ShippingLabelTrackingMoreMenu.copyTrackingNumberAction) { [weak self] _ in
+        actionSheet.addDefaultActionWithTitle(Localization.ShippingLabelTrackingMoreMenu.copyTrackingNumberAction) { _ in
             ServiceLocator.analytics.track(event: .shipmentTrackingMenu(action: .copy))
-            self?.viewModel.dataSource.sendToPasteboard(shippingLabel.trackingNumber, includeTrailingNewline: false)
+            shippingLabel.trackingNumber.sendToPasteboard(includeTrailingNewline: false)
         }
 
         // Only shows the tracking action when there is a tracking URL.

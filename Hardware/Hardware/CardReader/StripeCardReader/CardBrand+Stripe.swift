@@ -21,9 +21,13 @@ extension CardBrand {
             self = .dinersClub
         case .interac:
             self = .interac
+        case .unionPay:
+            self = .unionPay
+        case .eftposAu:
+            self = .eftposAu
         case .unknown:
             self = .unknown
-        default:
+        @unknown default:
             self = .unknown
         }
     }

@@ -16,6 +16,7 @@ struct CustomerDetailView: View {
                     Spacer()
                     Button {
                         isPresentingEmailDialog.toggle()
+                        viewModel.trackEmailMenuTapped()
                     } label: {
                         Image(uiImage: .mailImage)
                             .foregroundColor(Color(.primary))
@@ -25,6 +26,7 @@ struct CustomerDetailView: View {
                     .confirmationDialog(Localization.emailAction, isPresented: $isPresentingEmailDialog) {
                         Button(Localization.sendEmail) {
                             isShowingEmailView.toggle()
+                            viewModel.trackEmailOptionTapped()
                         }
                         .renderedIf(EmailView.canSendEmail())
 

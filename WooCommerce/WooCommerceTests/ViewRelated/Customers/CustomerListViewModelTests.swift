@@ -1,7 +1,6 @@
 import XCTest
 import Yosemite
-import protocol Storage.StorageManagerType
-import protocol Storage.StorageType
+@testable import Storage
 @testable import WooCommerce
 import Combine
 
@@ -146,8 +145,8 @@ final class CustomerListViewModelTests: XCTestCase {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
         var invocationCountOfSyncCustomers = 0
-        let firstPageItems = [WCAnalyticsCustomer](repeating: .fake().copy(siteID: sampleSiteID), count: 2)
-        let secondPageItems = [WCAnalyticsCustomer](repeating: .fake().copy(siteID: sampleSiteID), count: 1)
+        let firstPageItems = [Yosemite.WCAnalyticsCustomer](repeating: .fake().copy(siteID: sampleSiteID), count: 2)
+        let secondPageItems = [Yosemite.WCAnalyticsCustomer](repeating: .fake().copy(siteID: sampleSiteID), count: 1)
         stores.whenReceivingAction(ofType: CustomerAction.self) { action in
             guard case let .synchronizeAllCustomers(_, pageNumber, _, completion) = action else {
                 return
@@ -268,14 +267,152 @@ final class CustomerListViewModelTests: XCTestCase {
         XCTAssertEqual(invocationCountOfSyncCustomers, 1)
     }
 
+    // MARK: - Search
+
+    func test_searchTerm_is_clear_and_filter_is_set_to_default_on_init() {
+        // Given
+        let viewModel = CustomersListViewModel(siteID: sampleSiteID)
+
+        // Then
+        XCTAssertEqual(viewModel.searchTerm, "")
+        XCTAssertEqual(viewModel.searchFilter, .name)
+    }
+
+    func test_filter_is_updated_and_advanced_search_shows_when_store_is_eligible() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        var viewModel: CustomersListViewModel?
+
+        // When
+        _ = waitFor { promise in
+            stores.whenReceivingAction(ofType: SystemStatusAction.self) { action in
+                guard case let .fetchSystemPlugin(_, _, completion) = action else {
+                    return
+                }
+                completion(SystemPlugin.fake().copy(name: "WooCommerce", version: "8.0.0", active: true))
+                promise(true)
+            }
+            viewModel = CustomersListViewModel(siteID: self.sampleSiteID, stores: stores)
+        }
+
+        // Then
+        assertEqual(true, viewModel?.showAdvancedSearch)
+        assertEqual(.all, viewModel?.searchFilter)
+    }
+
+    func test_search_includes_searchTerm_and_selected_filter() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        var searchKeyword: String?
+        var searchFilter: CustomerSearchFilter?
+        let viewModel = CustomersListViewModel(siteID: sampleSiteID, stores: stores)
+
+        // When
+        _ = waitFor { promise in
+            stores.whenReceivingAction(ofType: CustomerAction.self) { action in
+                guard case let .searchWCAnalyticsCustomers(_, _, _, keyword, filter, completion) = action else {
+                    return
+                }
+                searchKeyword = keyword
+                searchFilter = filter
+                promise(true)
+            }
+            viewModel.searchTerm = "search"
+            viewModel.searchFilter = .username
+        }
+
+        // Then
+        assertEqual(viewModel.searchTerm, searchKeyword)
+        assertEqual(viewModel.searchFilter, searchFilter)
+    }
+
+    func test_state_is_syncingFirstPage_and_searchWCAnalyticsCustomers_is_dispatched_when_searchTerm_is_set() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let viewModel = CustomersListViewModel(siteID: sampleSiteID, stores: stores)
+
+        // When
+        let searchState: CustomersListViewModel.SyncState? = waitFor { promise in
+            stores.whenReceivingAction(ofType: CustomerAction.self) { action in
+                guard case .searchWCAnalyticsCustomers = action else {
+                    return
+                }
+                promise(viewModel.syncState)
+            }
+            viewModel.searchTerm = "search"
+        }
+
+        // Then
+        assertEqual(.syncingFirstPage, searchState)
+    }
+
+    func test_state_reset_to_empty_when_search_returns_no_results() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let viewModel = CustomersListViewModel(siteID: sampleSiteID, stores: stores)
+
+        // When
+        let searchComplete: Bool = waitFor { promise in
+            stores.whenReceivingAction(ofType: CustomerAction.self) { action in
+                guard case let .searchWCAnalyticsCustomers(_, _, _, _, _, completion) = action else {
+                    return
+                }
+                completion(.success(false))
+                promise(true)
+            }
+            viewModel.searchTerm = "search"
+        }
+
+        // Then
+        XCTAssertTrue(searchComplete)
+        assertEqual(.empty, viewModel.syncState)
+    }
+
+    func test_customers_updated_with_search_results() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let viewModel = CustomersListViewModel(siteID: sampleSiteID, stores: stores, storageManager: storageManager)
+
+        // When
+        _ = waitFor { promise in
+            stores.whenReceivingAction(ofType: CustomerAction.self) { action in
+                guard case let .searchWCAnalyticsCustomers(_, _, _, keyword, _, completion) = action else {
+                    return
+                }
+                self.insert([WCAnalyticsCustomer.fake().copy(siteID: self.sampleSiteID, name: "Pat")], withSearchTerm: keyword)
+                completion(.success(false))
+                promise(true)
+            }
+            viewModel.searchTerm = "Pat"
+        }
+
+        // Then
+        assertEqual(.results, viewModel.syncState)
+        assertEqual(1, viewModel.customers.count)
+    }
+
 }
 
 private extension CustomerListViewModelTests {
-    func insertCustomers(_ readOnlyCustomers: [WCAnalyticsCustomer]) {
+    func insertCustomers(_ readOnlyCustomers: [Yosemite.WCAnalyticsCustomer]) {
         readOnlyCustomers.forEach { customer in
             let newCustomer = storage.insertNewObject(ofType: StorageWCAnalyticsCustomer.self)
             newCustomer.update(with: customer)
         }
         storage.saveIfNeeded()
+    }
+
+    func insert(_ readOnlyCustomers: [Yosemite.WCAnalyticsCustomer], withSearchTerm keyword: String) {
+        insertCustomers(readOnlyCustomers)
+
+        readOnlyCustomers.forEach { customer in
+            let searchResult = storage.insertNewObject(ofType: WCAnalyticsCustomerSearchResult.self)
+            searchResult.siteID = sampleSiteID
+            searchResult.keyword = keyword
+
+            if let storedCustomer = storage.loadWCAnalyticsCustomer(siteID: customer.siteID, customerID: customer.customerID) {
+                searchResult.addToCustomers(storedCustomer)
+            }
+        }
     }
 }

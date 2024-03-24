@@ -246,7 +246,7 @@ extension ApplicationPasswordAuthorizationWebViewController: WKNavigationDelegat
         activityIndicator.startAnimating()
 
         analytics.track(.applicationPasswordAuthorizationApproved)
-        let applicationPassword = ApplicationPassword(wpOrgUsername: username, password: .init(password), uuid: appID)
+        let applicationPassword = ApplicationPassword(wpOrgUsername: username, siteURL: viewModel.siteURL, password: .init(password), uuid: appID)
         onSuccess(applicationPassword, navigationController)
         DDLogInfo("✅ Application password authorized")
         return .cancel

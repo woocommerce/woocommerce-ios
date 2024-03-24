@@ -15,6 +15,8 @@ struct RequestConverter {
                 return siteAddress
             case let .applicationPassword(_, _, siteAddress):
                 return siteAddress
+            case .wpcom:
+                return credentials?.appPasswordCompanion?.siteURL // TODO: Here I need to check if the app password is valid for that site id
             default:
                 return nil
             }

@@ -5,6 +5,10 @@ public struct ApplicationPassword: Decodable {
     ///
     public let wpOrgUsername: String
 
+    /// Site URL that the application password belongs to
+    ///
+    public let siteURL: String
+
     /// Application password
     ///
     public let password: Secret<String>
@@ -13,10 +17,11 @@ public struct ApplicationPassword: Decodable {
     ///
     public let uuid: String
 
-    public init(wpOrgUsername: String, password: Secret<String>, uuid: String) {
+    public init(wpOrgUsername: String, siteURL: String, password: Secret<String>, uuid: String) {
         self.password = password
         self.uuid = uuid
         self.wpOrgUsername = wpOrgUsername
+        self.siteURL = siteURL
     }
 
     public init(from decoder: Decoder) throws {
@@ -26,9 +31,13 @@ public struct ApplicationPassword: Decodable {
             throw ApplicationPasswordDecodingError.missingWpOrgUsername
         }
 
+        guard let siteURL = decoder.userInfo[.siteURL] as? String else {
+            throw ApplicationPasswordDecodingError.missingSiteURL
+        }
+
         let password = try container.decodeIfPresent(String.self, forKey: .password) ?? ""
         let uuid = try container.decode(String.self, forKey: .uuid)
-        self.init(wpOrgUsername: wpOrgUsername, password: Secret(password), uuid: uuid)
+        self.init(wpOrgUsername: wpOrgUsername, siteURL: siteURL, password: Secret(password), uuid: uuid)
     }
 
     enum CodingKeys: String, CodingKey {
@@ -41,4 +50,5 @@ public struct ApplicationPassword: Decodable {
 //
 enum ApplicationPasswordDecodingError: Error {
     case missingWpOrgUsername
+    case missingSiteURL
 }

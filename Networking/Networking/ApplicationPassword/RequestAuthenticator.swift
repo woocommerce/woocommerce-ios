@@ -43,15 +43,20 @@ public struct DefaultRequestAuthenticator: RequestAuthenticator {
         let useCase: ApplicationPasswordUseCase? = {
             if let applicationPasswordUseCase {
                 return applicationPasswordUseCase
-            } else if case let .wporg(username, password, siteAddress) = credentials {
-                return try? DefaultApplicationPasswordUseCase(username: username,
-                                                              password: password,
-                                                              siteAddress: siteAddress)
-            } else if let credentials,
-                      case .applicationPassword(_, _, let siteAddress) = credentials {
-                return OneTimeApplicationPasswordUseCase(siteAddress: siteAddress)
             } else {
-                return nil
+                switch credentials {
+                case let .wporg(username, password, siteAddress):
+                    return try? DefaultApplicationPasswordUseCase(username: username, password: password, siteAddress: siteAddress)
+                case let .applicationPassword(_, _, siteAddress):
+                    return OneTimeApplicationPasswordUseCase(siteAddress: siteAddress)
+                case .wpcom:
+                    if let passwordCompanion = credentials?.appPasswordCompanion {
+                        return OneTimeApplicationPasswordUseCase(siteAddress: passwordCompanion.siteURL)
+                    }
+                    fallthrough
+                default:
+                    return nil
+                }
             }
         }()
         self.applicationPasswordUseCase = useCase
@@ -97,6 +102,13 @@ private extension DefaultRequestAuthenticator {
                 return siteAddress
             case let .applicationPassword(_, _, siteAddress):
                 return siteAddress
+            case .wpcom:
+                guard let siteURL = credentials?.appPasswordCompanion?.siteURL,
+                      let host = urlRequest.url?.host(),
+                      siteURL.contains(host) else {
+                    return nil
+                }
+                return siteURL // Add docs
             default:
                 return nil
             }
@@ -122,6 +134,8 @@ private extension DefaultRequestAuthenticator {
     /// Attempts creating a request with application password if possible.
     ///
     func authenticateUsingApplicationPasswordIfPossible(_ urlRequest: URLRequest) throws -> URLRequest {
+
+        // TODO: check error here
         guard let applicationPassword = applicationPasswordUseCase?.applicationPassword else {
             throw RequestAuthenticatorError.applicationPasswordNotAvailable
         }

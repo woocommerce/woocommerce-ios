@@ -80,4 +80,24 @@ public extension Credentials {
             return password
         }
     }
+
+    /// TODO: Add docs
+    ///
+    var appPasswordCompanion: ApplicationPassword? {
+        switch self {
+        case .wpcom:
+            return ApplicationPasswordStorage().applicationPassword
+        default:
+            return nil
+        }
+    }
+
+    var supportsAppPasswordCompanion: Bool {
+        switch self {
+        case .wpcom:
+            return true
+        default:
+            return false
+        }
+    }
 }

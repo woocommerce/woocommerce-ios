@@ -7,6 +7,7 @@ import XCTest
 final class ApplicationPasswordMapperTests: XCTestCase {
 
     private let wpOrgUsername = "username"
+    private let siteURL = "https://address.com"
 
     /// Verifies that generate password using WPCOM token response is parsed properly
     ///
@@ -33,6 +34,6 @@ private extension ApplicationPasswordMapperTests {
             return nil
         }
 
-        return try? ApplicationPasswordMapper(wpOrgUsername: wpOrgUsername).map(response: response)
+        return try? ApplicationPasswordMapper(wpOrgUsername: wpOrgUsername, siteURL: siteURL).map(response: response)
     }
 }

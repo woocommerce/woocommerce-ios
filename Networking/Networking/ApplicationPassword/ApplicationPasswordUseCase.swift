@@ -34,6 +34,9 @@ final public class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase
     ///
     private let siteAddress: String
 
+    // Add documentation
+    private let siteID: Int64
+
     /// WPOrg username
     ///
     private let username: String
@@ -60,8 +63,10 @@ final public class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase
     public init(username: String,
                 password: String,
                 siteAddress: String,
+                siteID: Int64? = nil,
                 network: Network? = nil,
                 keychain: Keychain = Keychain(service: WooConstants.keychainServiceName)) throws {
+        self.siteID = siteID ?? .zero
         self.siteAddress = siteAddress
         self.username = username
         self.storage = ApplicationPasswordStorage(keychain: keychain)
@@ -101,7 +106,7 @@ final public class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase
                 return try await createApplicationPassword()
             } catch ApplicationPasswordUseCaseError.duplicateName {
                 do {
-                    try await deletePassword()
+                    try await deletePassword() // TEST THIS PATH
                 } catch ApplicationPasswordUseCaseError.unableToFindPasswordUUID {
                     // No password found with the `applicationPasswordName`
                     // We can proceed to the creation step
@@ -145,33 +150,44 @@ private extension DefaultApplicationPasswordUseCase {
         let passwordName = await applicationPasswordName
 
         let parameters = [ParameterKey.name: passwordName]
-        let request = RESTRequest(siteURL: siteAddress, method: .post, path: Path.applicationPasswords, parameters: parameters)
+
+        let request = JetpackRequest(wooApiVersion: .none, method: .post, siteID: siteID, path: Path.applicationPasswords, parameters: parameters, availableAsRESTRequest: true)
+        //let request = RESTRequest(siteURL: siteAddress, method: .post, path: Path.applicationPasswords, parameters: parameters)
         return try await withCheckedThrowingContinuation { continuation in
             network.responseData(for: request) { [weak self] result in
                 guard let self else { return }
                 switch result {
                 case .success(let data):
                     do {
-                        let mapper = ApplicationPasswordMapper(wpOrgUsername: self.username)
+                        let mapper = ApplicationPasswordMapper(wpOrgUsername: self.username, siteURL: siteAddress)
                         let password = try mapper.map(response: data)
                         continuation.resume(returning: password)
                     } catch {
                         continuation.resume(throwing: error)
                     }
                 case .failure(let error):
-                    guard let error = error as? AFError else {
-                        continuation.resume(throwing: error)
-                        return
-                    }
 
-                    switch error {
-                    case .responseValidationFailed(reason: .unacceptableStatusCode(code: ErrorCode.notFound)):
+                    // Extract error code from `AFErrors` or `NetworkErrors`
+                    // This is needed because this use case can accept different type of Network objects.
+                    let errorCode: Int? = {
+                        switch error {
+                        case NetworkError.unacceptableStatusCode(let statusCode, _):
+                            return statusCode
+                        case AFError.responseValidationFailed(reason: .unacceptableStatusCode(let code)):
+                            return code
+                        default:
+                            return nil
+                        }
+                    }()
+
+                    switch errorCode {
+                    case ErrorCode.notFound:
                         continuation.resume(throwing: ApplicationPasswordUseCaseError.applicationPasswordsDisabled)
-                    case .responseValidationFailed(reason: .unacceptableStatusCode(code: ErrorCode.applicationPasswordsDisabledErrorCode)):
+                    case ErrorCode.applicationPasswordsDisabledErrorCode:
                         continuation.resume(throwing: ApplicationPasswordUseCaseError.applicationPasswordsDisabled)
-                    case .responseValidationFailed(reason: .unacceptableStatusCode(code: ErrorCode.duplicateNameErrorCode)):
+                    case ErrorCode.duplicateNameErrorCode:
                         continuation.resume(throwing: ApplicationPasswordUseCaseError.duplicateName)
-                    case .responseValidationFailed(reason: .unacceptableStatusCode(code: ErrorCode.unauthorized)):
+                    case ErrorCode.unauthorized:
                         continuation.resume(throwing: ApplicationPasswordUseCaseError.unauthorizedRequest)
                     default:
                         continuation.resume(throwing: error)
@@ -184,7 +200,10 @@ private extension DefaultApplicationPasswordUseCase {
     /// Get the UUID of the application password
     ///
     func fetchUUIDForApplicationPassword(_ passwordName: String) async throws -> String {
-        let request = RESTRequest(siteURL: siteAddress, method: .get, path: Path.applicationPasswords)
+        // TEST THIS PATH
+        // CHANGE THIS for a jetpack request
+        //let request = RESTRequest(siteURL: siteAddress, method: .get, path: Path.applicationPasswords)
+        let request = JetpackRequest(wooApiVersion: .none, method: .get, siteID: siteID, path: Path.applicationPasswords, availableAsRESTRequest: true)
 
         return try await withCheckedThrowingContinuation { continuation in
             network.responseData(for: request) { result in
@@ -211,7 +230,10 @@ private extension DefaultApplicationPasswordUseCase {
     /// Deletes application password using UUID
     ///
     func deleteApplicationPassword(_ uuid: String) async throws {
-        let request = RESTRequest(siteURL: siteAddress, method: .delete, path: Path.applicationPasswords + "/" + uuid)
+        // TEST THIS PATH
+        // Change this for a jetpackrequest
+        //let request = RESTRequest(siteURL: siteAddress, method: .delete, path: Path.applicationPasswords + "/" + uuid)
+        let request = JetpackRequest(wooApiVersion: .none, method: .delete, siteID: siteID, path: Path.applicationPasswords + "/" + uuid, availableAsRESTRequest: true)
 
         try await withCheckedThrowingContinuation { continuation in
             network.responseData(for: request) { result in

@@ -192,7 +192,8 @@ final class SessionManager: SessionManagerProtocol {
     ///
     func deleteApplicationPassword() {
         let useCase: ApplicationPasswordUseCase? = {
-            switch loadCredentials() {
+            let credentials = loadCredentials()
+            switch credentials {
             case let .wporg(username, password, siteAddress):
                 return try? DefaultApplicationPasswordUseCase(username: username,
                                                               password: password,
@@ -200,6 +201,8 @@ final class SessionManager: SessionManagerProtocol {
                                                               keychain: keychain)
             case let .applicationPassword(_, _, siteAddress):
                 return OneTimeApplicationPasswordUseCase(siteAddress: siteAddress, keychain: keychain)
+            case .wpcom:
+                return credentials?.appPasswordCompanion.map { OneTimeApplicationPasswordUseCase(siteAddress: $0.siteURL, keychain: keychain) }
             default:
                 return nil
             }

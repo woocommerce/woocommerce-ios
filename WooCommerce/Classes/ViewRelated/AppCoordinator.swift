@@ -96,6 +96,7 @@ final class AppCoordinator {
                         self.displayLoggedInUI()
                         self.synchronizeAndShowWhatsNew()
                         self.checkPendingStoreCreation()
+                        self.generateAppPasswordCompanionIfPossible()
                     }
                 }
                 self.isLoggedIn = isLoggedIn
@@ -105,6 +106,87 @@ final class AppCoordinator {
             self?.handleLocalNotificationResponse(response)
         }
         updateSitePropertiesIfNeeded()
+    }
+}
+
+import struct Networking.ApplicationPassword
+import class Networking.DefaultApplicationPasswordUseCase
+import class Networking.AlamofireNetwork
+
+struct AppPasswordCompanionUseCase {
+
+    let stores: StoresManager
+
+    init(stores: StoresManager = ServiceLocator.stores) {
+        self.stores = stores
+    }
+
+    @MainActor
+    func generateAppPasswordCompanionIfNeeded() async -> ApplicationPassword? {
+
+        guard let siteAddress = stores.sessionManager.defaultSite?.url else {
+            return nil
+        }
+
+        // Add docs
+        guard let credentials = stores.sessionManager.defaultCredentials,
+              credentials.supportsAppPasswordCompanion  else {
+            return nil
+        }
+
+        // TODO check that the url matches
+        if let appPasswordCompanion = credentials.appPasswordCompanion, appPasswordCompanion.siteURL == siteAddress {
+            return nil
+        }
+
+        guard let user = await fetchUser() else {
+            return nil
+        }
+
+        return await generatePassword(user: user)
+    }
+
+    @MainActor
+    private func fetchUser() async -> User? {
+
+        guard let siteID = stores.sessionManager.defaultStoreID else {
+            return nil
+        }
+
+        return await withCheckedContinuation { continuation in
+            let action = UserAction.retrieveUser(siteID: siteID) { result in
+
+                if let error = result.failure {
+                    DDLogError("⛔️ Optional App Password: Unable to fetch user.\n\(error)")
+                }
+
+                continuation.resume(returning: try? result.get())
+            }
+
+            self.stores.dispatch(action)
+        }
+    }
+
+    @MainActor
+    private func generatePassword(user: User) async -> ApplicationPassword? {
+
+        guard let siteAddress = stores.sessionManager.defaultSite?.url,
+              let siteID = stores.sessionManager.defaultStoreID,
+              let credentials = stores.sessionManager.defaultCredentials else {
+            return nil
+        }
+
+        let network = AlamofireNetwork(credentials: credentials)
+        let useCase = try? DefaultApplicationPasswordUseCase(username: user.username, password: "", siteAddress: siteAddress, siteID: siteID, network: network)
+        let applicationPassword = try? await useCase?.generateNewPassword()
+
+        if applicationPassword == nil {
+            DDLogError("⛔️ Optional App Password: Unable to generate app password companion")
+        } else {
+            DDLogInfo("✅ Successfully created app password companion")
+        }
+
+        return applicationPassword
     }
 }
 
@@ -130,6 +212,14 @@ private extension AppCoordinator {
 // MARK: Store switching after store creation
 //
 private extension AppCoordinator {
+
+    func generateAppPasswordCompanionIfPossible() {
+        let useCase = AppPasswordCompanionUseCase()
+        Task {
+            await useCase.generateAppPasswordCompanionIfNeeded()
+        }
+    }
+
     func checkPendingStoreCreation() {
         guard storeSwitcher.isPendingStoreSwitch else {
             return

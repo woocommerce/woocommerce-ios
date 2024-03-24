@@ -16,10 +16,11 @@ struct ApplicationPasswordStorage {
     var applicationPassword: ApplicationPassword? {
         guard let password = keychain.password,
               let username = keychain.username,
-              let uuid = keychain.uuid else {
+              let uuid = keychain.uuid,
+              let siteURL = keychain.siteURL else {
             return nil
         }
-        return ApplicationPassword(wpOrgUsername: username, password: Secret(password), uuid: uuid)
+        return ApplicationPassword(wpOrgUsername: username, siteURL: siteURL, password: Secret(password), uuid: uuid)
     }
 
     /// Saves application password into keychain
@@ -30,6 +31,7 @@ struct ApplicationPasswordStorage {
         keychain.username = password.wpOrgUsername
         keychain.password = password.password.secretValue
         keychain.uuid = password.uuid
+        keychain.siteURL = password.siteURL
     }
 
     /// Removes the currently saved password from storage
@@ -39,6 +41,7 @@ struct ApplicationPasswordStorage {
         keychain.username = nil
         keychain.password = nil
         keychain.uuid = nil
+        keychain.siteURL = nil
     }
 }
 
@@ -48,6 +51,7 @@ private extension Keychain {
     private static let keychainApplicationPassword = "ApplicationPassword"
     private static let keychainApplicationPasswordUsername = "ApplicationPasswordUsername"
     private static let keychainApplicationPasswordUUID = "ApplicationPasswordUUID"
+    private static let keychainApplicationPasswordSiteURL = "ApplicationPasswordSiteURL"
 
     var password: String? {
         get { self[Keychain.keychainApplicationPassword] }
@@ -62,5 +66,10 @@ private extension Keychain {
     var uuid: String? {
         get { self[Keychain.keychainApplicationPasswordUUID] }
         set { self[Keychain.keychainApplicationPasswordUUID] = newValue }
+    }
+
+    var siteURL: String? {
+        get { self[Keychain.keychainApplicationPasswordSiteURL] }
+        set { self[Keychain.keychainApplicationPasswordSiteURL] = newValue }
     }
 }

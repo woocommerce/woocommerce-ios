@@ -36,4 +36,8 @@ extension CodingUserInfoKey {
     /// Used to store the WordPress org username within a Coder/Decoder's userInfo dictionary.
     ///
     public static let wpOrgUsername = CodingUserInfoKey(rawValue: "wpOrgUsername")!
+
+    /// Used to store the WordPress org site url within a Coder/Decoder's userInfo dictionary.
+    ///
+    public static let siteURL = CodingUserInfoKey(rawValue: "siteURL")!
 }

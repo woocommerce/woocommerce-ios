@@ -11,6 +11,7 @@ struct CustomersListView: View {
                 SearchHeader(text: $viewModel.searchTerm, placeholder: Localization.searchPlaceholder) { isEditing in
                     isEditingSearchTerm = isEditing
                 }
+                .submitLabel(.done)
                 Picker(selection: $viewModel.searchFilter, label: EmptyView()) {
                     ForEach(viewModel.searchFilters, id: \.self) { option in Text(option.title) }
                 }

@@ -18,10 +18,6 @@ final class HubMenuViewModel: ObservableObject {
 
     let siteID: Int64
 
-    /// The view controller that will be used for presenting the `StorePickerViewController` via `StorePickerCoordinator`
-    ///
-    private(set) unowned var navigationController: UINavigationController?
-
     var avatarURL: URL? {
         guard let urlString = stores.sessionManager.defaultAccount?.gravatarUrl, let url = URL(string: urlString) else {
             return nil
@@ -49,9 +45,11 @@ final class HubMenuViewModel: ObservableObject {
     ///
     @Published private(set) var switchStoreEnabled = false
 
-    @Published var showingReviewDetail = false
+    @Published var selectedMenuID: String?
 
+    @Published var showingReviewDetail = false
     @Published var showingPayments = false
+    @Published var showingCoupons = false
 
     @Published var shouldAuthenticateAdminPage = false
 
@@ -59,9 +57,7 @@ final class HubMenuViewModel: ObservableObject {
     private let featureFlagService: FeatureFlagService
     private let generalAppSettings: GeneralAppSettingsStorage
 
-    private var productReviewFromNoteParcel: ProductReviewFromNoteParcel?
-
-    private var storePickerCoordinator: StorePickerCoordinator?
+    private(set) var productReviewFromNoteParcel: ProductReviewFromNoteParcel?
 
     @Published private(set) var shouldShowNewFeatureBadgeOnPayments: Bool = false
 
@@ -85,14 +81,12 @@ final class HubMenuViewModel: ObservableObject {
     }()
 
     init(siteID: Int64,
-         navigationController: UINavigationController? = nil,
          tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          stores: StoresManager = ServiceLocator.stores,
          generalAppSettings: GeneralAppSettingsStorage = ServiceLocator.generalAppSettings,
          blazeEligibilityChecker: BlazeEligibilityCheckerProtocol = BlazeEligibilityChecker()) {
         self.siteID = siteID
-        self.navigationController = navigationController
         self.tapToPayBadgePromotionChecker = tapToPayBadgePromotionChecker
         self.stores = stores
         self.featureFlagService = featureFlagService
@@ -162,49 +156,15 @@ final class HubMenuViewModel: ObservableObject {
         } else {
             generalElements.removeAll(where: { $0.id == Blaze.id })
         }
-    }
 
-    /// Present the `StorePickerViewController` using the `StorePickerCoordinator`, passing the navigation controller from the entry point.
-    ///
-    func presentSwitchStore() {
-        ServiceLocator.analytics.track(.hubMenuSwitchStoreTapped)
-        if let navigationController = navigationController {
-            storePickerCoordinator = StorePickerCoordinator(navigationController, config: .switchingStores)
-            storePickerCoordinator?.start()
+        if featureFlagService.isFeatureFlagEnabled(.customersInHubMenu) {
+            generalElements.append(Customers())
         }
-    }
-
-    /// Presents the `Subscriptions` view from the view model's navigation controller property.
-    ///
-    func presentSubscriptions() {
-        let subscriptionController = SubscriptionsHostingController(siteID: siteID)
-        navigationController?.show(subscriptionController, sender: self)
     }
 
     func showReviewDetails(using parcel: ProductReviewFromNoteParcel) {
         productReviewFromNoteParcel = parcel
         showingReviewDetail = true
-    }
-
-    func getReviewDetailDestination() -> ReviewDetailView? {
-        guard let parcel = productReviewFromNoteParcel else {
-            return nil
-        }
-
-        return ReviewDetailView(productReview: parcel.review, product: parcel.product, notification: parcel.note)
-    }
-
-    /// Navigates to show the Blaze view from the view model's navigation controller property.
-    ///
-    func showBlaze() {
-        guard let site = stores.sessionManager.defaultSite else {
-            return
-        }
-
-        // shows campaign list for the new Blaze experience.
-        let controller = BlazeCampaignListHostingController(viewModel: .init(siteID: site.siteID))
-        navigationController?.show(controller, sender: self)
-        ServiceLocator.analytics.track(event: .Blaze.blazeCampaignListEntryPointSelected(source: .menu))
     }
 
     private func observeSiteForUIUpdates() {
@@ -426,6 +386,18 @@ extension HubMenuViewModel {
         let iconBadge: HubMenuBadgeType? = nil
     }
 
+    struct Customers: HubMenuItem {
+        static var id = "customers"
+
+        let title: String = Localization.customers
+        let description: String = Localization.customersDescription
+        let icon: UIImage = .multipleUsersImage.withRenderingMode(.alwaysTemplate)
+        let iconColor: UIColor = .primary
+        let accessibilityIdentifier: String = "menu-customers"
+        let trackingOption: String = "customers"
+        let iconBadge: HubMenuBadgeType? = nil
+    }
+
     enum Localization {
         static let settings = NSLocalizedString(
             "Settings",
@@ -501,6 +473,16 @@ extension HubMenuViewModel {
 
         static let subscriptionsDescription = NSLocalizedString(
             "Manage your subscription",
+            comment: "Description of one of the hub menu options")
+
+        static let customers = NSLocalizedString(
+            "hubMenu.customers",
+            value: "Customers",
+            comment: "Title of one of the hub menu options")
+
+        static let customersDescription = NSLocalizedString(
+            "hubMenu.customersDescription",
+            value: "Get customer insights",
             comment: "Description of one of the hub menu options")
     }
 }

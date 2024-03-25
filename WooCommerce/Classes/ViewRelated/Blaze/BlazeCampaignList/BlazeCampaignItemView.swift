@@ -138,17 +138,20 @@ private extension BlazeCampaignItemView {
 
 struct BlazeCampaignItemView_Previews: PreviewProvider {
     static let campaign: BlazeCampaignListItem = .init(siteID: 123,
-                                                        campaignID: "11",
-                                                        productID: 33,
-                                                        name: "Fluffy bunny pouch",
-                                                        textSnippet: "Buy now!",
-                                                        uiStatus: BlazeCampaignListItem.Status.finished.rawValue,
-                                                        imageURL: nil,
-                                                        targetUrl: nil,
-                                                        impressions: 112,
-                                                        clicks: 22,
-                                                        totalBudget: 35,
-                                                        spentBudget: 4)
+                                                       campaignID: "11",
+                                                       productID: 33,
+                                                       name: "Fluffy bunny pouch",
+                                                       textSnippet: "Buy now!",
+                                                       uiStatus: BlazeCampaignListItem.Status.finished.rawValue,
+                                                       imageURL: nil,
+                                                       targetUrl: nil,
+                                                       impressions: 112,
+                                                       clicks: 22,
+                                                       totalBudget: 35,
+                                                       spentBudget: 4,
+                                                       budgetMode: .total,
+                                                       budgetAmount: 0,
+                                                       budgetCurrency: "USD")
     static var previews: some View {
         BlazeCampaignItemView(campaign: campaign)
     }

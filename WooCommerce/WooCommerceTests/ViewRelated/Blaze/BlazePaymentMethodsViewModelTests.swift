@@ -28,24 +28,46 @@ final class BlazePaymentMethodsViewModelTests: XCTestCase {
                                                                                  username: sampleUsername))
     }
 
-    // MARK: `paymentMethods`
+    // MARK: Load payment methods
 
-    func test_paymentMethods_returns_savedPaymentMethods() async throws {
+    func test_reloadPaymentMethods_loads_paymentMethods() async throws {
         // Given
         let viewModel = BlazePaymentMethodsViewModel(siteID: sampleSiteID,
-                                                     paymentInfo: samplePaymentInfo,
                                                      selectedPaymentMethodID: "payment-method-1",
                                                      stores: stores) { _ in }
 
+        let paymentInfo = BlazePaymentInfo.fake().copy(paymentMethods: [BlazePaymentMethod.fake(), BlazePaymentMethod.fake()])
+
+        mockPaymentFetch(with: .success(samplePaymentInfo))
+
+        // When
+        await viewModel.reloadPaymentMethods()
+
         // Then
-        XCTAssertEqual(viewModel.paymentMethods, samplePaymentInfo.savedPaymentMethods)
+        XCTAssertEqual(viewModel.paymentMethods, samplePaymentInfo.paymentMethods)
+    }
+
+    func test_reloadPaymentMethods_shows_error_upon_failure() async throws {
+        // Given
+        let viewModel = BlazePaymentMethodsViewModel(siteID: sampleSiteID,
+                                                     selectedPaymentMethodID: "payment-method-1",
+                                                     stores: stores) { _ in }
+
+        let paymentInfo = BlazePaymentInfo.fake().copy(paymentMethods: [BlazePaymentMethod.fake(), BlazePaymentMethod.fake()])
+
+        mockPaymentFetch(with: .failure(NSError(domain: "test", code: 500)))
+
+        // When
+        await viewModel.reloadPaymentMethods()
+
+        // Then
+        XCTAssertTrue(viewModel.showLoadPaymentsErrorAlert)
     }
 
     // MARK: `selectedPaymentMethodID`
     func test_selectedPaymentMethodID_returns_injected_initial_value() async throws {
         // Given
         let viewModel = BlazePaymentMethodsViewModel(siteID: sampleSiteID,
-                                                     paymentInfo: samplePaymentInfo,
                                                      selectedPaymentMethodID: "payment-method-1",
                                                      stores: stores) { _ in }
 
@@ -57,7 +79,6 @@ final class BlazePaymentMethodsViewModelTests: XCTestCase {
     func test_account_details_reflect_the_logged_in_account() async throws {
         // Given
         let viewModel = BlazePaymentMethodsViewModel(siteID: sampleSiteID,
-                                                     paymentInfo: samplePaymentInfo,
                                                      selectedPaymentMethodID: "payment-method-1",
                                                      stores: stores) { _ in }
 
@@ -72,7 +93,6 @@ final class BlazePaymentMethodsViewModelTests: XCTestCase {
     func test_didSelectPaymentMethod_updates_selected_payment_method_id() async throws {
         // Given
         let viewModel = BlazePaymentMethodsViewModel(siteID: sampleSiteID,
-                                                     paymentInfo: samplePaymentInfo,
                                                      selectedPaymentMethodID: "payment-method-1",
                                                      stores: stores) { _ in }
 
@@ -89,7 +109,6 @@ final class BlazePaymentMethodsViewModelTests: XCTestCase {
         // Given
         var selectedPaymentID = ""
         let viewModel = BlazePaymentMethodsViewModel(siteID: sampleSiteID,
-                                                     paymentInfo: samplePaymentInfo,
                                                      selectedPaymentMethodID: "payment-method-1",
                                                      stores: stores) { id in
             selectedPaymentID = id

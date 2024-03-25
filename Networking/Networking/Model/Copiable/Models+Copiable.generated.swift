@@ -3,7 +3,6 @@
 import Codegen
 import Foundation
 
-
 extension Networking.AIProduct {
     public func copy(
         name: CopiableProp<String> = .copy,
@@ -175,20 +174,20 @@ extension Networking.BlazeAISuggestion {
     }
 }
 
-extension Networking.BlazeAddPaymentInfo {
+extension Networking.BlazeCampaignBudget {
     public func copy(
-        formUrl: CopiableProp<String> = .copy,
-        successUrl: CopiableProp<String> = .copy,
-        idUrlParameter: CopiableProp<String> = .copy
-    ) -> Networking.BlazeAddPaymentInfo {
-        let formUrl = formUrl ?? self.formUrl
-        let successUrl = successUrl ?? self.successUrl
-        let idUrlParameter = idUrlParameter ?? self.idUrlParameter
+        mode: CopiableProp<BlazeCampaignBudget.Mode> = .copy,
+        amount: CopiableProp<Double> = .copy,
+        currency: CopiableProp<String> = .copy
+    ) -> Networking.BlazeCampaignBudget {
+        let mode = mode ?? self.mode
+        let amount = amount ?? self.amount
+        let currency = currency ?? self.currency
 
-        return Networking.BlazeAddPaymentInfo(
-            formUrl: formUrl,
-            successUrl: successUrl,
-            idUrlParameter: idUrlParameter
+        return Networking.BlazeCampaignBudget(
+            mode: mode,
+            amount: amount,
+            currency: currency
         )
     }
 }
@@ -206,7 +205,10 @@ extension Networking.BlazeCampaignListItem {
         impressions: CopiableProp<Int64> = .copy,
         clicks: CopiableProp<Int64> = .copy,
         totalBudget: CopiableProp<Double> = .copy,
-        spentBudget: CopiableProp<Double> = .copy
+        spentBudget: CopiableProp<Double> = .copy,
+        budgetMode: CopiableProp<BlazeCampaignBudget.Mode> = .copy,
+        budgetAmount: CopiableProp<Double> = .copy,
+        budgetCurrency: CopiableProp<String> = .copy
     ) -> Networking.BlazeCampaignListItem {
         let siteID = siteID ?? self.siteID
         let campaignID = campaignID ?? self.campaignID
@@ -220,6 +222,9 @@ extension Networking.BlazeCampaignListItem {
         let clicks = clicks ?? self.clicks
         let totalBudget = totalBudget ?? self.totalBudget
         let spentBudget = spentBudget ?? self.spentBudget
+        let budgetMode = budgetMode ?? self.budgetMode
+        let budgetAmount = budgetAmount ?? self.budgetAmount
+        let budgetCurrency = budgetCurrency ?? self.budgetCurrency
 
         return Networking.BlazeCampaignListItem(
             siteID: siteID,
@@ -233,7 +238,10 @@ extension Networking.BlazeCampaignListItem {
             impressions: impressions,
             clicks: clicks,
             totalBudget: totalBudget,
-            spentBudget: spentBudget
+            spentBudget: spentBudget,
+            budgetMode: budgetMode,
+            budgetAmount: budgetAmount,
+            budgetCurrency: budgetCurrency
         )
     }
 }
@@ -255,15 +263,12 @@ extension Networking.BlazeImpressions {
 
 extension Networking.BlazePaymentInfo {
     public func copy(
-        savedPaymentMethods: CopiableProp<[BlazePaymentMethod]> = .copy,
-        addPaymentMethod: CopiableProp<BlazeAddPaymentInfo> = .copy
+        paymentMethods: CopiableProp<[BlazePaymentMethod]> = .copy
     ) -> Networking.BlazePaymentInfo {
-        let savedPaymentMethods = savedPaymentMethods ?? self.savedPaymentMethods
-        let addPaymentMethod = addPaymentMethod ?? self.addPaymentMethod
+        let paymentMethods = paymentMethods ?? self.paymentMethods
 
         return Networking.BlazePaymentInfo(
-            savedPaymentMethods: savedPaymentMethods,
-            addPaymentMethod: addPaymentMethod
+            paymentMethods: paymentMethods
         )
     }
 }
@@ -531,7 +536,7 @@ extension Networking.CreateBlazeCampaign {
         startDate: CopiableProp<Date> = .copy,
         endDate: CopiableProp<Date> = .copy,
         timeZone: CopiableProp<String> = .copy,
-        totalBudget: CopiableProp<Double> = .copy,
+        budget: CopiableProp<BlazeCampaignBudget> = .copy,
         siteName: CopiableProp<String> = .copy,
         textSnippet: CopiableProp<String> = .copy,
         targetUrl: CopiableProp<String> = .copy,
@@ -547,7 +552,7 @@ extension Networking.CreateBlazeCampaign {
         let startDate = startDate ?? self.startDate
         let endDate = endDate ?? self.endDate
         let timeZone = timeZone ?? self.timeZone
-        let totalBudget = totalBudget ?? self.totalBudget
+        let budget = budget ?? self.budget
         let siteName = siteName ?? self.siteName
         let textSnippet = textSnippet ?? self.textSnippet
         let targetUrl = targetUrl ?? self.targetUrl
@@ -564,7 +569,7 @@ extension Networking.CreateBlazeCampaign {
             startDate: startDate,
             endDate: endDate,
             timeZone: timeZone,
-            totalBudget: totalBudget,
+            budget: budget,
             siteName: siteName,
             textSnippet: textSnippet,
             targetUrl: targetUrl,
@@ -3244,23 +3249,53 @@ extension Networking.User {
 extension Networking.WCAnalyticsCustomer {
     public func copy(
         siteID: CopiableProp<Int64> = .copy,
+        customerID: CopiableProp<Int64> = .copy,
         userID: CopiableProp<Int64> = .copy,
         name: NullableCopiableProp<String> = .copy,
         email: NullableCopiableProp<String> = .copy,
-        username: NullableCopiableProp<String> = .copy
+        username: NullableCopiableProp<String> = .copy,
+        dateRegistered: NullableCopiableProp<Date> = .copy,
+        dateLastActive: CopiableProp<Date> = .copy,
+        ordersCount: CopiableProp<Int> = .copy,
+        totalSpend: CopiableProp<Decimal> = .copy,
+        averageOrderValue: CopiableProp<Decimal> = .copy,
+        country: CopiableProp<String> = .copy,
+        region: CopiableProp<String> = .copy,
+        city: CopiableProp<String> = .copy,
+        postcode: CopiableProp<String> = .copy
     ) -> Networking.WCAnalyticsCustomer {
         let siteID = siteID ?? self.siteID
+        let customerID = customerID ?? self.customerID
         let userID = userID ?? self.userID
         let name = name ?? self.name
         let email = email ?? self.email
         let username = username ?? self.username
+        let dateRegistered = dateRegistered ?? self.dateRegistered
+        let dateLastActive = dateLastActive ?? self.dateLastActive
+        let ordersCount = ordersCount ?? self.ordersCount
+        let totalSpend = totalSpend ?? self.totalSpend
+        let averageOrderValue = averageOrderValue ?? self.averageOrderValue
+        let country = country ?? self.country
+        let region = region ?? self.region
+        let city = city ?? self.city
+        let postcode = postcode ?? self.postcode
 
         return Networking.WCAnalyticsCustomer(
             siteID: siteID,
+            customerID: customerID,
             userID: userID,
             name: name,
             email: email,
-            username: username
+            username: username,
+            dateRegistered: dateRegistered,
+            dateLastActive: dateLastActive,
+            ordersCount: ordersCount,
+            totalSpend: totalSpend,
+            averageOrderValue: averageOrderValue,
+            country: country,
+            region: region,
+            city: city,
+            postcode: postcode
         )
     }
 }

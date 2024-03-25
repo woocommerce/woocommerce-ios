@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-03-04 18:54:04+0000 */
+/* Translation-Revision-Date: 2024-03-13 13:54:11+0000 */
 /* Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ar */
@@ -419,7 +419,7 @@ which should be translated separately and considered part of this sentence. */
 
 /* Application's Active State
    Display label for the subscription status type
-   Status name of an active Blaze campaign
+   Status name of an approved Blaze campaign
    Status of coupons that are active */
 "Active" = "نشط";
 
@@ -581,9 +581,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button title in the Shipping Label Payment Method screen */
 "Add credit card" = "إضافة بطاقة ائتمان";
-
-/* Title of the order customer selection screen. */
-"Add customer details" = "إضافة تفاصيل العميل";
 
 /* Message of the product description AI local announcement. */
 "Add descriptions in a snap with AI. Try our feature today!" = "أضف أوصاف في لمح البصر باستخدام الذكاء الاصطناعي. جرّب الميزة التي نطرحها الآن!";
@@ -930,7 +927,6 @@ which should be translated separately and considered part of this sentence. */
 "Approve" = "موافقة";
 
 /* Display label for the review's approved status
-   Status name of an approved Blaze campaign
    Unapprove a comment */
 "Approved" = "تمت الموافقة";
 
@@ -1751,8 +1747,7 @@ which should be translated separately and considered part of this sentence. */
 /* Third instruction on the test order screen */
 "Complete the payment and await a push notification about the order on your WooCommerce app." = "أكمل السداد وانتظر تلقي تنبيه حول الطلب على تطبيق WooCommerce الخاص بك.";
 
-/* Display label for completed order status.
-   Status name of a completed Blaze campaign */
+/* Display label for completed order status. */
 "Completed" = "اكتمال";
 
 /* Title for the list of component options in the Component Settings view */
@@ -3261,6 +3256,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the error screen when an in-person payments plugin is active but not set up. %1$@ contains the plugin name. */
 "Finish setup for %1$@ in your store admin" = "الانتهاء من إعداد %1$@ في مسؤول مخزنك";
 
+/* Status name of a completed Blaze campaign */
+"Finished" = "انتهى";
+
 /* Country option for a site address. */
 "Finland" = "فنلندا";
 
@@ -3783,9 +3781,6 @@ which should be translated separately and considered part of this sentence. */
 /* A fallback describing the contactless limit, shown on the About Tap to Pay screen. %1$@ will be replaced with the country name of the store, which is a trade off as it can't be contextually translated, however this string is only used when there's a problem decoding the limit, so it's acceptable. */
 "In %1$@, cards may only be used with Tap to Pay for transactions up to the contactless limit." = "في %1$@، لا يمكن استخدام البطاقات إلا من خلال ميزة Tap to Pay لإجراء معاملات تصل إلى الحد غير التلامسي.";
 
-/* Status name of a Blaze campaign under moderation */
-"In Moderation" = "قيد الإشراف";
-
 /* Accessibility label for an indeterminate loading indicator */
 "In progress" = "قيد التقدم";
 
@@ -4060,6 +4055,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* An error message displayed when the user tries to log in to the app with a simple WP.com site. Reads like: It seems that your site google.com is a simple WordPress.com site that cannot install plugins. Please upgrade your plan to use WooCommerce. */
 "It seems that your site %@ is a simple WordPress.com site that cannot install plugins. Please upgrade your plan to use WooCommerce." = "يبدو أن موقعك %@ عبارة عن موقع ووردبريس.كوم بسيط يتعذر عليه تثبيت إضافات. يرجى ترقية خطتك لاستخدام WooCommerce.";
+
+/* Error message explaining login failure due to invalid credentials. */
+"It seems the username or password you entered doesn't quite match. Double-check your credentials and try again." = "يبدو أن اسم المستخدم أو كلمة المرور التي أدخلتها غير متطابقة تمامًا. تحقق مجددًا من بيانات الاعتماد الخاصة بك وحاول مجددًا!";
 
 /* Accessibility label for italic button on formatting toolbar. */
 "Italic" = "مائل";
@@ -5422,7 +5420,8 @@ which should be translated separately and considered part of this sentence. */
 
 /* Display label for pending order status.
    Display label for the review's pending status
-   Display label for the subscription status type */
+   Display label for the subscription status type
+   Status name of an active Blaze campaign */
 "Pending" = "انتظار";
 
 /* Display label for the subscription status type */
@@ -5848,8 +5847,7 @@ which should be translated separately and considered part of this sentence. */
 /* Display label for the product's private status */
 "Privately published" = "تم النشر سرًا";
 
-/* Display label for processing order status.
-   Status name of a Blaze campaign under processing */
+/* Display label for processing order status. */
 "Processing" = "قيد المعالجة";
 
 /* Alert title when processing a payment without a user name.
@@ -7756,7 +7754,7 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when the card processor declines the payment. */
 "The card was declined by the payment processor - please try another means of payment" = "تم رفض البطاقة بواسطة مُعالج الدفع - يرجى تجربة وسائل دفع أخرى";
 
-/* No comment provided by engineer. */
+/* Message for when the certificate for the server is invalid. The %@ placeholder will be replaced the a host name, received from the API. */
 "The certificate for this server is invalid. You might be connecting to a server that is pretending to be “%@” which could put your confidential information at risk.\n\nWould you like to trust the certificate anyway?" = "شهادة هذا الخادم غير صالحة. قد تكون مرتبطًا بخادم يبدو &quot;%@&quot; والذي قد يجعل معلوماتك السرية في خطر.\n\nهل تريد أن تثق في الشهادة على أية حال؟";
 
 /* Message in the gift card input form when the code is not valid. */
@@ -9476,7 +9474,7 @@ which should be translated separately and considered part of this sentence. */
 /* Error message shown when Tap to Pay on iPhone cannot be used because the device does not have a passcode set. */
 "You need to set a lock screen passcode to use Tap to Pay on iPhone" = "يتعين عليك تعيين رمز مرور لشاشة القفل لاستخدام \"الضغط للدفع على iPhone\"";
 
-/* No comment provided by engineer. */
+/* Error messaged show when a mobile plugin is redirecting traffict to their site, DudaMobile in particular */
 "You seem to have installed a mobile plugin from DudaMobile which is preventing the app to connect to your blog" = "يبدو أنك قمت بتثبيت مكون إضافي للمحمول من DudaMobile الذي يمنع هذا التطبيق من الاتصال بالمدونة الخاصة بك";
 
 /* Subtitle text in the store creation loading screen */
@@ -9614,6 +9612,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Markdown content learn more link on the product creation action sheet. Please translate the words while keeping the markdown format and URL. */
 "[Learn more.](https:\/\/automattic.com\/ai-guidelines\/)" = "[معرفة المزيد.](https:\/\/automattic.com\/ai-guidelines\/)";
+
+/* Text for the 'Cancel' button that appears in the navigation bar, and closes the view */
+"adaptiveModalContainer.views.cancelButtonText" = "إلغاء";
 
 /* Button title to delete the custom amount on the edit custom amount view in orders. */
 "addCustomAmount.deleteButton" = "حذف المبلغ المخصص";
@@ -10379,6 +10380,12 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility hint for selecting a variable product to select product for filtering orders */
 "configurationForOrder.variableProductRowAccessibilityHint" = "يفتح قائمة أشكال المنتج.";
 
+/* Title of the order customer selection screen. */
+"configurationForOrderCustomerSection.customerSelectorTitle" = "إضافة تفاصيل العميل";
+
+/* Title for the screen to select customer in order filtering. */
+"configurationForOrderFilter.customerSelectorTitle" = "اختيار عميل";
+
 /* Action to toggle whether a bundle item is included when it is optional. */
 "configureBundleItem.add" = "إضافة";
 
@@ -10444,6 +10451,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button in date range picker to add a Custom Range tab */
 "customRangeTabCreationCoordinator.add" = "إضافة";
+
+/* Message to prompt users to search for customers on the customer search screen */
+"customerSearchUICommand.emptyDefaultStateNoCreationMessage" = "البحث عن عميل موجود";
+
+/* The label that can be shown optionally for guest customers */
+"customerSearchUICommand.guestLabel" = "ضيف";
+
+/* Error message in the Add Customer to order screen when getting the customer information */
+"customerSelectorViewController.guestSelectionDisallowedError" = "هذا المستخدم هو ضيف، ويتعذر استخدام الضيوف لتصفية الطلبات.";
 
 /* Display label for a product's subscription period when it is a single day. */
 "day" = "يوم";
@@ -10562,6 +10578,18 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility label to expand an expandable bottom sheet */
 "expandableBottomSheet.chevron.expand" = "عرض التفاصيل";
+
+/* Title of dismiss button for redaction information alert in Custom Range stats tab */
+"fancyAlertViewControllerStats.dismissButton" = "موافق";
+
+/* Description for redaction information alert in Custom Range stats tab */
+"fancyAlertViewControllerStats.redactionInfoDescription" = "لا تدعم ميزة الإحصاءات عرض بيانات الزائرين والتحويلات لنطاقات زمنية عشوائية. \n\nومع ذلك، يمكنك النقر على قيمة موجودة على الرسم البياني لرؤية الزائرين والتحويلات لذلك النطاق المحدد.";
+
+/* Title for redaction information alert in Custom Range stats tab */
+"fancyAlertViewControllerStats.redactionInfoTitle" = "بيانات الزائرين والتحويل غير متاحة";
+
+/* Row title for filtering orders by customer. */
+"filterOrderListViewModel.OrderListFilter.rowCustomer" = "العميل";
 
 /* Row title for filtering orders by Product. */
 "filterOrderListViewModel.OrderListFilter.rowTitleProduct" = "المنتج";
@@ -10904,6 +10932,9 @@ which should be translated separately and considered part of this sentence. */
 /* Alert message about an unsupported file type when uploading file for a downloadable product. */
 "productDownloadListViewController.notice.unsupportedFileType" = "نوع الملف المحدد غير مدعوم.";
 
+/* Product title */
+"productForm.defaultTitle" = "المنتج";
+
 /* Description of the subscription period for a product. Reads like: 'every 2 months'. */
 "productFormDataModel.subscriptionPeriodFormat" = "كل %1$@";
 
@@ -11024,6 +11055,21 @@ which should be translated separately and considered part of this sentence. */
 
 /* Cancel button title for the Shipping Label purchase flow, shown in the nav bar */
 "shipping.label.navigationBar.cancel.button.title" = "إلغاء";
+
+/* Display text for the daily granularity of store stats on the My Store screen */
+"statsGranularityV4.daily" = "حسب اليوم";
+
+/* Display text for the hourly granularity of store stats on the My Store screen */
+"statsGranularityV4.hourly" = "حسب الساعة";
+
+/* Display text for the monthly granularity of store stats on the My Store screen */
+"statsGranularityV4.monthly" = "حسب الشهر";
+
+/* Display text for the weekly granularity of store stats on the My Store screen */
+"statsGranularityV4.weekly" = "حسب الأسبوع";
+
+/* Display text for the yearly granularity of store stats on the My Store screen */
+"statsGranularityV4.yearly" = "حسب العام";
 
 /* Tab selector title that shows the statistics for today */
 "statsTimeRangeV4.tabTitle.custom" = "نطاق مخصص";
@@ -11286,6 +11332,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Message to show when a request for a WP.com API endpoint is throttled */
 "wordpresskit.api.message.endpoint_throttled" = "تم الوصول إلى الحد المسموح به. يمكنك المحاولة مرة أخرى في غضون دقيقة واحدة. ستؤدي المحاولة مرة أخرى قبل ذلك إلى زيادة الوقت الذي عليك انتظاره قبل رفع الحظر. إذا كنت تعتقد أن ذلك خطأ داخلي، فاتصل بالدعم.";
+
+/* Message to show to user when the app can't find WordPress.org REST API URL. */
+"wordpresskit.org-rest-api.not-found" = "يتعذر العثور على عنوان URL لـ REST API في موقعك. يحتاج التطبيق إلى ذلك للاتصال بموقعك. يُرجى الاتصال بالمضيف لحل هذه المشكلة.";
 
 /* Button to enter security key on the WPCom 2FA login screen */
 "wpCom2FALoginView.securityKeyButton" = "استخدام مفتاح الأمان";

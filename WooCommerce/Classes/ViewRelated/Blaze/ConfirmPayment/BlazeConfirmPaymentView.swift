@@ -361,7 +361,7 @@ private extension BlazeConfirmPaymentView {
                             startDate: Date(),
                             endDate: Date(),
                             timeZone: "US-NY",
-                            totalBudget: 35,
+                            budget: .init(mode: .total, amount: 35.0, currency: "USD"),
                             siteName: "iPhone 15",
                             textSnippet: "Fancy new phone",
                             targetUrl: "https://example.com",

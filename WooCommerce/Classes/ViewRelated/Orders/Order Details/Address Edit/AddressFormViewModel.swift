@@ -103,6 +103,10 @@ open class AddressFormViewModel: ObservableObject {
     ///
     @Published var fields: AddressFormFields
 
+    /// Emits changes to the AddressFormFields values
+    ///
+    var fieldsPublisher: Published<AddressFormFields>.Publisher { $fields }
+
     /// Secondary address form fields
     ///
     @Published var secondaryFields: AddressFormFields = .init()

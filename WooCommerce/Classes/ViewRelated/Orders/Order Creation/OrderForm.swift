@@ -148,6 +148,11 @@ struct OrderFormPresentationWrapper: View {
                     .accessibilityIdentifier(OrderForm.Accessibility.cancelButtonIdentifier)
                 },
                 isShowingSecondaryView: $viewModel.isProductSelectorPresented)
+            .onChange(of: horizontalSizeClass) { _ in
+                // Save: in-flight order details when there's size class changes
+                viewModel.saveInflightCustomerDetails()
+                viewModel.saveInFlightOrderNotes()
+            }
             // When we're side-by-side, show the notices over the combined screen
             .if(horizontalSizeClass == .regular, transform: {
                 $0

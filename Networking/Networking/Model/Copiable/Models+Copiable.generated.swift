@@ -2070,6 +2070,72 @@ extension Networking.ProductBundleItem {
     }
 }
 
+extension Networking.ProductBundleStats {
+    public func copy(
+        siteID: CopiableProp<Int64> = .copy,
+        granularity: CopiableProp<StatsGranularityV4> = .copy,
+        totals: CopiableProp<ProductBundleStatsTotals> = .copy,
+        intervals: CopiableProp<[ProductBundleStatsInterval]> = .copy
+    ) -> Networking.ProductBundleStats {
+        let siteID = siteID ?? self.siteID
+        let granularity = granularity ?? self.granularity
+        let totals = totals ?? self.totals
+        let intervals = intervals ?? self.intervals
+
+        return Networking.ProductBundleStats(
+            siteID: siteID,
+            granularity: granularity,
+            totals: totals,
+            intervals: intervals
+        )
+    }
+}
+
+extension Networking.ProductBundleStatsInterval {
+    public func copy(
+        interval: CopiableProp<String> = .copy,
+        dateStart: CopiableProp<String> = .copy,
+        dateEnd: CopiableProp<String> = .copy,
+        subtotals: CopiableProp<ProductBundleStatsTotals> = .copy
+    ) -> Networking.ProductBundleStatsInterval {
+        let interval = interval ?? self.interval
+        let dateStart = dateStart ?? self.dateStart
+        let dateEnd = dateEnd ?? self.dateEnd
+        let subtotals = subtotals ?? self.subtotals
+
+        return Networking.ProductBundleStatsInterval(
+            interval: interval,
+            dateStart: dateStart,
+            dateEnd: dateEnd,
+            subtotals: subtotals
+        )
+    }
+}
+
+extension Networking.ProductBundleStatsTotals {
+    public func copy(
+        totalItemsSold: CopiableProp<Int> = .copy,
+        totalBundledItemsSold: CopiableProp<Int> = .copy,
+        netRevenue: CopiableProp<Decimal> = .copy,
+        totalOrders: CopiableProp<Int> = .copy,
+        totalProducts: CopiableProp<Int> = .copy
+    ) -> Networking.ProductBundleStatsTotals {
+        let totalItemsSold = totalItemsSold ?? self.totalItemsSold
+        let totalBundledItemsSold = totalBundledItemsSold ?? self.totalBundledItemsSold
+        let netRevenue = netRevenue ?? self.netRevenue
+        let totalOrders = totalOrders ?? self.totalOrders
+        let totalProducts = totalProducts ?? self.totalProducts
+
+        return Networking.ProductBundleStatsTotals(
+            totalItemsSold: totalItemsSold,
+            totalBundledItemsSold: totalBundledItemsSold,
+            netRevenue: netRevenue,
+            totalOrders: totalOrders,
+            totalProducts: totalProducts
+        )
+    }
+}
+
 extension Networking.ProductCategory {
     public func copy(
         categoryID: CopiableProp<Int64> = .copy,

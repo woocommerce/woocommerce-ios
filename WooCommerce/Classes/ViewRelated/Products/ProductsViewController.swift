@@ -295,6 +295,10 @@ final class ProductsViewController: UIViewController, GhostableViewController {
         }
         didSelectProduct(product: firstProduct)
     }
+
+    func startProductCreation() {
+        addProduct(sourceBarButtonItem: addProductButton, isFirstProduct: false)
+    }
 }
 
 // MARK: - Navigation Bar Actions

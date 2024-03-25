@@ -20,6 +20,10 @@ final class ProductsSplitViewWrapperController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
 
+    func startProductCreation() {
+        coordinator.startProductCreation()
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
         configureChildViewController()

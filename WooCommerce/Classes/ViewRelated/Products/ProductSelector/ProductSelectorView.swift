@@ -377,6 +377,7 @@ private extension ProductSelectorView {
                 SearchHeader(text: $viewModel.searchTerm, placeholder: Localization.searchPlaceholder, onEditingChanged: { isEditing in
                     searchHeaderisBeingEdited = isEditing
                 })
+                .submitLabel(.done)
                 .accessibilityIdentifier("product-selector-search-bar")
                 Picker(selection: $viewModel.productSearchFilter, label: EmptyView()) {
                     ForEach(ProductSearchFilter.allCases, id: \.self) { option in Text(option.title) }

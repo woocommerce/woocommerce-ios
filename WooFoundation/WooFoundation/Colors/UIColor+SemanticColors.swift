@@ -420,7 +420,7 @@ public extension UIColor {
     /// List selected Background.
     ///
     static var listSelectedBackground: UIColor {
-        return UIColor.wooCommercePurple(.shade0)
+        return UIColor(light: UIColor.wooCommercePurple(.shade0), dark: UIColor.wooCommercePurple(.shade10))
     }
 
     /// List foreground.

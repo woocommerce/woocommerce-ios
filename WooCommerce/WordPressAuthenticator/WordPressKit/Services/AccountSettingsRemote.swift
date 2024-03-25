@@ -32,7 +32,7 @@ public class AccountSettingsRemote: ServiceRemoteWordPressComREST {
         let parameters = ["context": "edit"]
         let path = self.path(forEndpoint: endpoint, withVersion: ._1_1)
 
-        wordPressComRestApi.GET(path,
+        wordPressComRESTAPI.get(path,
                 parameters: parameters as [String: AnyObject]?,
                 success: {
                     responseObject, _ in
@@ -54,7 +54,7 @@ public class AccountSettingsRemote: ServiceRemoteWordPressComREST {
         let path = self.path(forEndpoint: endpoint, withVersion: ._1_1)
         let parameters = [fieldNameForChange(change): change.stringValue]
 
-        wordPressComRestApi.POST(path,
+        wordPressComRESTAPI.post(path,
             parameters: parameters as [String: AnyObject]?,
             success: {
                 _, _ in
@@ -79,7 +79,7 @@ public class AccountSettingsRemote: ServiceRemoteWordPressComREST {
 
         let path = self.path(forEndpoint: endpoint, withVersion: ._1_1)
 
-        wordPressComRestApi.POST(path,
+        wordPressComRESTAPI.post(path,
                                  parameters: parameters as [String: AnyObject]?,
                                  success: { _, _ in
                                     success()
@@ -99,7 +99,7 @@ public class AccountSettingsRemote: ServiceRemoteWordPressComREST {
         let endpoint = "me/username/validate/\(username)"
         let path = self.path(forEndpoint: endpoint, withVersion: ._1_1)
 
-        wordPressComRestApi.GET(path,
+        wordPressComRESTAPI.get(path,
                                 parameters: nil,
                                 success: { _, _ in
                                     // The success block needs to be changed if
@@ -116,7 +116,7 @@ public class AccountSettingsRemote: ServiceRemoteWordPressComREST {
         let endpoint = "wpcom/v2/users/username/suggestions"
         let parameters = ["name": base]
 
-        wordPressComRestApi.GET(endpoint, parameters: parameters as [String: AnyObject]?, success: { (responseObject, _) in
+        wordPressComRESTAPI.get(endpoint, parameters: parameters as [String: AnyObject]?, success: { (responseObject, _) in
             guard let response = responseObject as? [String: AnyObject],
                 let suggestions = response["suggestions"] as? [String] else {
                 finished([])
@@ -134,7 +134,7 @@ public class AccountSettingsRemote: ServiceRemoteWordPressComREST {
         let path = self.path(forEndpoint: endpoint, withVersion: ._1_1)
         let parameters = ["password": password]
 
-        wordPressComRestApi.POST(path,
+        wordPressComRESTAPI.post(path,
                                  parameters: parameters as [String: AnyObject]?,
                                  success: {
                                     _, _ in
@@ -149,14 +149,14 @@ public class AccountSettingsRemote: ServiceRemoteWordPressComREST {
         let endpoint = "me/account/close"
         let path = path(forEndpoint: endpoint, withVersion: ._1_1)
 
-        wordPressComRestApi.POST(path, parameters: nil) { _, _ in
+        wordPressComRESTAPI.post(path, parameters: nil) { _, _ in
             success()
         } failure: { error, _ in
             failure(error)
         }
     }
 
-    private func settingsFromResponse(_ responseObject: AnyObject) throws -> AccountSettings {
+    private func settingsFromResponse(_ responseObject: Any) throws -> AccountSettings {
         guard let response = responseObject as? [String: AnyObject],
             let firstName = response["first_name"] as? String,
             let lastName = response["last_name"] as? String,

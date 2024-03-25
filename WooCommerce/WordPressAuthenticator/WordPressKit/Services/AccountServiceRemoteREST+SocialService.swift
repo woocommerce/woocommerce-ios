@@ -37,7 +37,7 @@ extension AccountServiceRemoteREST {
             params.merge(connectParameters, uniquingKeysWith: { (current, _) in current })
         }
 
-        wordPressComRestApi.POST(path, parameters: params, success: { (_, _) in
+        wordPressComRESTAPI.post(path, parameters: params, success: { (_, _) in
             success()
         }, failure: { (error, _) in
             failure(error)
@@ -73,7 +73,7 @@ extension AccountServiceRemoteREST {
             "service": service.rawValue
         ] as [String: AnyObject]
 
-        wordPressComRestApi.POST(path, parameters: params, success: { (_, _) in
+        wordPressComRESTAPI.post(path, parameters: params, success: { (_, _) in
             success()
         }, failure: { (error, _) in
             failure(error)

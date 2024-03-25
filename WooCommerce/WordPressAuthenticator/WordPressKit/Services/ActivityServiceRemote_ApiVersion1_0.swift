@@ -28,11 +28,12 @@
             parameters["types"] = types.toDictionary() as AnyObject
         }
 
-        wordPressComRestApi.POST(path,
+        wordPressComRESTAPI.post(path,
                                  parameters: parameters,
                                  success: { response, _ in
-                                    guard let restoreID = response["restore_id"] as? Int,
-                                          let jobID = response["job_id"] as? Int else {
+                                    guard let responseDict = response as? [String: Any],
+                                          let restoreID = responseDict["restore_id"] as? Int,
+                                          let jobID = responseDict["job_id"] as? Int else {
                                         failure(ResponseError.decodingFailure)
                                         return
                                     }

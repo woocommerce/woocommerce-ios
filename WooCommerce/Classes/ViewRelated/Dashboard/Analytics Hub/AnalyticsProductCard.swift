@@ -89,11 +89,7 @@ struct AnalyticsProductCard: View {
             }
 
             if let reportViewModel {
-                VStack(spacing: Layout.cardPadding) {
-                    Divider()
-                        .padding(.horizontal, Layout.dividerPadding)
-                    AnalyticsReportLink(showingWebReport: $showingWebReport, reportViewModel: reportViewModel)
-                }
+                AnalyticsReportLink(showingWebReport: $showingWebReport, reportViewModel: reportViewModel)
             }
         }
         .padding(Layout.cardPadding)
@@ -115,7 +111,6 @@ private extension AnalyticsProductCard {
         static let titleSpacing: CGFloat = 24
         static let cardPadding: CGFloat = 16
         static let columnSpacing: CGFloat = 10
-        static let dividerPadding: CGFloat = -16
     }
 }
 

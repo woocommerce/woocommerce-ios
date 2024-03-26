@@ -71,20 +71,20 @@ extension RemotePostCreateParameters {
         if previous.authorID != authorID {
             changes.authorID = authorID
         }
-        if previous.title != title {
-            changes.title = title
+        if (previous.title ?? "") != (title ?? "") {
+            changes.title = (title ?? "")
         }
-        if previous.content != content {
-            changes.content = content
+        if (previous.content ?? "") != (content ?? "") {
+            changes.content = (content ?? "")
         }
         if previous.password != password {
             changes.password = password
         }
-        if previous.excerpt != excerpt {
-            changes.excerpt = excerpt
+        if (previous.excerpt ?? "") != (excerpt ?? "") {
+            changes.excerpt = (excerpt ?? "")
         }
-        if previous.slug != slug {
-            changes.slug = slug
+        if (previous.slug ?? "") != (slug ?? "") {
+            changes.slug = (slug ?? "")
         }
         if previous.featuredImageID != featuredImageID {
             changes.featuredImageID = featuredImageID

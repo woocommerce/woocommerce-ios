@@ -19,7 +19,7 @@ final class ConnectivityToolViewController: UIHostingController<ConnectivityTool
         let view = ConnectivityTool(cards: viewModel.cards)
         super.init(rootView: view)
         self.hidesBottomBarWhenPushed = true
-        self.title = NSLocalizedString("Connectivity Test", comment: "Screen title for the connectivity tool")
+        self.title = NSLocalizedString("Troubleshoot Connection", comment: "Screen title for the connectivity tool")
     }
 
     override func viewDidLoad() {
@@ -73,6 +73,9 @@ struct ConnectivityTool: View {
 
             Spacer()
 
+            Text(Localization.subtitle)
+                .secondaryBodyStyle()
+
             ScrollView {
                 ForEach(cards, id: \.title) { card in
                     ConnectivityToolCard(icon: card.icon, title: card.title, state: card.state)
@@ -85,7 +88,7 @@ struct ConnectivityTool: View {
             Button(Localization.contactSupport) {
                 onContactSupportTapped?()
             }
-            .buttonStyle(PrimaryButtonStyle())
+            .buttonStyle(SecondaryButtonStyle())
             .padding()
         }
         .background(Color(uiColor: .listBackground))
@@ -94,6 +97,8 @@ struct ConnectivityTool: View {
 
 private extension ConnectivityTool {
     enum Localization {
+        static let subtitle = NSLocalizedString("Please wait while we attempt to identify your connection issue.",
+                                                comment: "Subtitle on the connectivity tool screen")
         static let contactSupport = NSLocalizedString("Contact Support",
                                                       comment: "Contact support button in the connectivity tool screen")
     }

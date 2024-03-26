@@ -131,8 +131,8 @@ final class ConnectivityToolViewModel {
 
                 let state: ConnectivityToolCard.State = result.isSuccess ?
                     .success :
-                    .error(NSLocalizedString("Oops! It seems we can't connect to WordPress.com at the moment.\n\n" +
-                                             "But don't worry, our support team is here to help. Contact us and we will happily assist you.",
+                    .error(NSLocalizedString("We can’t connect to WordPress.com right now.\n\n" +
+                                             "Try again in a few minutes, or contact our support team and we will happily assist you.",
                                              comment: "Message when we can't reach WPCom in the recovery tool"), nil)
                 continuation.resume(returning: state)
             }
@@ -196,7 +196,7 @@ final class ConnectivityToolViewModel {
 
         // Handle timeout errors specially
         if error.isTimeoutError {
-            message = NSLocalizedString("Oops! Your site seems to be taking too long to respond.\n\nContact your hosting provider for further assistance.",
+            message = NSLocalizedString("Your site is taking too long to respond.\n\nPlease contact your hosting provider for further assistance.",
                                         comment: "Message when we there is a timeout error in the recovery tool")
             return .error(message, .init(title: readMore, action: generalTroubleshootAction))
         }
@@ -204,17 +204,17 @@ final class ConnectivityToolViewModel {
         // Handle all other types of errors.
         switch error {
         case is DecodingError:
-            message = NSLocalizedString("Oops! It seems we can't work properly with your site's response.\n\n" +
-                                        "But don't worry, our support team is here to help. Contact us and we will happily assist you.",
+            message = NSLocalizedString("We can't work properly with your site's response.\n\n" +
+                                        "Read more about it or contact our support team and we will happily assist you.",
                                         comment: "Message when we there is a decoding error in the recovery tool")
             errorAction = .init(title: readMore, action: generalTroubleshootAction)
         case DotcomError.jetpackNotConnected:
-            message = NSLocalizedString("Oops! There seems to be a problem with your jetpack connection.\n\n" +
-                                        "But don't worry, our support team is here to help. Contact us and we will happily assist you.",
+            message = NSLocalizedString("There is problem with your jetpack connection.\n\n" +
+                                        "Read more about it or contact our support team and we will happily assist you.",
                                         comment: "Message when we there is a jetpack error in the recovery tool")
             errorAction = .init(title: readMore, action: jetpackTroubleshootAction)
         default:
-            message = NSLocalizedString("Oops! There seems to be a problem with your site.\n\nContact your hosting provider for further assistance.",
+            message = NSLocalizedString("There seems to be a problem with your site.\n\nPlease contact your hosting provider for further assistance.",
                                         comment: "Message when we there is a generic error in the recovery tool")
             errorAction = .init(title: readMore, action: generalTroubleshootAction)
         }

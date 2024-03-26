@@ -145,7 +145,7 @@ struct ConnectivityToolCard: View {
                 Image(uiImage: .checkCircleImage)
                     .environment(\.colorScheme, .light)
             case .error:
-                Image(uiImage: .checkPartialCircleImage.withRenderingMode(.alwaysTemplate))
+                Image(uiImage: .exclamationFilledImage)
                     .foregroundColor(Color.init(uiColor: .error))
             }
         }

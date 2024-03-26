@@ -21,5 +21,6 @@ public struct AnalyticsCard: Codable, Hashable, Equatable, GeneratedCopiable {
         case orders
         case products
         case sessions
+        case bundles
     }
 }

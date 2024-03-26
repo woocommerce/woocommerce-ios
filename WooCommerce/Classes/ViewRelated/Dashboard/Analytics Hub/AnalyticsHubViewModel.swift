@@ -130,10 +130,23 @@ final class AnalyticsHubViewModel: ObservableObject {
     /// All analytics cards to display in the Analytics Hub.
     ///
     var enabledCards: [AnalyticsCard.CardType] {
-        return allCardsWithSettings.filter { card in
-            let canBeDisplayed = card.type == .sessions ? showSessionsCard : true
-            return card.enabled && canBeDisplayed
-        }.map { $0.type }
+        return allCardsWithSettings.compactMap { card in
+            guard card.enabled, canDisplayCard(ofType: card.type) else {
+                return nil
+            }
+            return card.type
+        }
+    }
+
+    private func canDisplayCard(ofType card: AnalyticsCard.CardType) -> Bool {
+        switch card {
+        case .sessions:
+            showSessionsCard
+        case .bundles:
+            isExpandedAnalyticsHubEnabled && isPluginActive(SitePlugin.SupportedPlugin.WCProductBundles)
+        default:
+            true
+        }
     }
 
     /// Sessions Card display state
@@ -538,7 +551,8 @@ extension AnalyticsHubViewModel {
     func customizeAnalytics() {
         // Exclude any cards the merchant/store is ineligible for.
         let cardsToExclude: [AnalyticsCard] = [
-            isEligibleForSessionsCard ? nil : allCardsWithSettings.first(where: { $0.type == .sessions })
+            isEligibleForSessionsCard ? nil : allCardsWithSettings.first(where: { $0.type == .sessions }),
+            canDisplayCard(ofType: .bundles) ? nil : allCardsWithSettings.first(where: { $0.type == .bundles }) // TODO-12161: Support when extension is inactive
         ].compactMap({ $0 })
 
         analytics.track(event: .AnalyticsHub.customizeAnalyticsOpened())

@@ -132,7 +132,7 @@ private extension AnalyticsHubView {
         case .orders:
             AnalyticsReportCard(viewModel: viewModel.ordersCard)
         case .products:
-            AnalyticsProductCard(statsViewModel: viewModel.productsStatsCard, itemsViewModel: viewModel.itemsSoldCard)
+            AnalyticsItemsSoldCard(statsViewModel: viewModel.productsStatsCard, itemsViewModel: viewModel.itemsSoldCard)
         case .sessions:
             if viewModel.showJetpackStatsCTA {
                 AnalyticsCTACard(title: Localization.sessionsCTATitle,

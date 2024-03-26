@@ -10,12 +10,14 @@ public final class StatsStoreV4: Store {
     private let orderStatsRemote: OrderStatsRemoteV4
     private let productsRemote: ProductsRemote
     private let productsReportsRemote: ProductsReportsRemote
+    private let productBundleStatsRemote: ProductBundleStatsRemote
 
     public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         self.siteStatsRemote = SiteStatsRemote(network: network)
         self.orderStatsRemote = OrderStatsRemoteV4(network: network)
         self.productsRemote = ProductsRemote(network: network)
         self.productsReportsRemote = ProductsReportsRemote(network: network)
+        self.productBundleStatsRemote = ProductBundleStatsRemote(network: network)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
 
@@ -110,6 +112,15 @@ public final class StatsStoreV4: Store {
                                      latestDateToInclude: latestDateToInclude,
                                      saveInStorage: saveInStorage,
                                      onCompletion: onCompletion)
+        case let .retrieveProductBundleStats(siteID, unit, timeZone, earliestDateToInclude, latestDateToInclude, quantity, forceRefresh, onCompletion):
+            retrieveProductBundleStats(siteID: siteID,
+                                       unit: unit,
+                                       timeZone: timeZone,
+                                       earliestDateToInclude: earliestDateToInclude,
+                                       latestDateToInclude: latestDateToInclude,
+                                       quantity: quantity,
+                                       forceRefresh: forceRefresh,
+                                       onCompletion: onCompletion)
         }
     }
 }
@@ -304,6 +315,32 @@ private extension StatsStoreV4 {
                                                    date: latestDateToInclude,
                                                    productsReport: productsReport,
                                                    quantity: quantity)
+    }
+
+    /// Retrieves the product bundle stats for the provided siteID, and time range, without saving them to the Storage layer.
+    ///
+    func retrieveProductBundleStats(siteID: Int64,
+                                    unit: StatsGranularityV4,
+                                    timeZone: TimeZone,
+                                    earliestDateToInclude: Date,
+                                    latestDateToInclude: Date,
+                                    quantity: Int,
+                                    forceRefresh: Bool,
+                                    onCompletion: @escaping (Result<ProductBundleStats, Error>) -> Void) {
+        Task { @MainActor in
+            do {
+                let bundleStats = try await productBundleStatsRemote.loadProductBundleStats(for: siteID,
+                                                                                            unit: unit,
+                                                                                            timeZone: timeZone,
+                                                                                            earliestDateToInclude: earliestDateToInclude,
+                                                                                            latestDateToInclude: latestDateToInclude,
+                                                                                            quantity: quantity,
+                                                                                            forceRefresh: forceRefresh)
+                onCompletion(.success(bundleStats))
+            } catch {
+                onCompletion(.failure(error))
+            }
+        }
     }
 }
 

@@ -62,4 +62,15 @@ public enum StatsActionV4: Action {
                                   latestDateToInclude: Date,
                                   saveInStorage: Bool,
                                   onCompletion: (Result<SiteSummaryStats, Error>) -> Void)
+
+    /// Retrieves the product bundle stats for the provided site ID and time range, without saving them to the Storage layer.
+    ///
+    case retrieveProductBundleStats(siteID: Int64,
+                                    unit: StatsGranularityV4,
+                                    timeZone: TimeZone,
+                                    earliestDateToInclude: Date,
+                                    latestDateToInclude: Date,
+                                    quantity: Int,
+                                    forceRefresh: Bool,
+                                    onCompletion: (Result<ProductBundleStats, Error>) -> Void)
 }

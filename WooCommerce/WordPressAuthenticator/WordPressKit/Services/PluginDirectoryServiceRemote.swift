@@ -58,7 +58,7 @@ public struct PluginDirectoryGetInformationEndpoint {
 
     func buildRequest() throws -> URLRequest {
         try HTTPRequestBuilder(url: PluginDirectoryRemoteConstants.getInformationEndpoint)
-            .append(percentEncodedPath: "\(slug).json")
+            .appendURLString("\(slug).json")
             .query(name: "fields", value: "icons,banners")
             .build()
     }

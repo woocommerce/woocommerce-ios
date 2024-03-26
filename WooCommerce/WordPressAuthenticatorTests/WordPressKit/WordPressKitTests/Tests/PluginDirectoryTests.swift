@@ -343,4 +343,16 @@ class PluginDirectoryTests: XCTestCase {
 
         XCTAssertTrue(lhs == rhs)
     }
+
+    func testUnconventionalPluginSlug() async throws {
+        let data = try MockPluginDirectoryProvider.getPluginDirectoryMockData(with: "plugin-directory-rename-xml-rpc", sender: type(of: self))
+        stub(condition: isHost("api.wordpress.org")) { _ in
+            HTTPStubsResponse(data: data, statusCode: 200, headers: ["Content-Type": "application/json"])
+        }
+
+        let _ = try await PluginDirectoryServiceRemote().getPluginInformation(slug: "%-is-not-allowed")
+        let _ = try await PluginDirectoryServiceRemote().getPluginInformation(slug: "中文")
+
+        // No assertion needed.
+    }
 }

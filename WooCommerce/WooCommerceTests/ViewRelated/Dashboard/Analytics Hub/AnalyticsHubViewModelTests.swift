@@ -590,7 +590,9 @@ final class AnalyticsHubViewModelTests: XCTestCase {
     func test_product_bundles_card_displayed_when_plugin_active() {
         // Given
         let storage = MockStorageManager()
-        storage.insertSampleSystemPlugin(readOnlySystemPlugin: .fake().copy(siteID: sampleSiteID, name: SitePlugin.SupportedPlugin.WCProductBundles.first, active: true))
+        storage.insertSampleSystemPlugin(readOnlySystemPlugin: .fake().copy(siteID: sampleSiteID,
+                                                                            name: SitePlugin.SupportedPlugin.WCProductBundles.first,
+                                                                            active: true))
         let vm = createViewModel(storage: storage)
 
         // Then

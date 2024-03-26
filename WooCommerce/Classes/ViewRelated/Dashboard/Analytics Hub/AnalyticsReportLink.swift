@@ -30,7 +30,7 @@ struct AnalyticsReportLink: View {
 private extension AnalyticsReportLink {
     enum Localization {
         static let seeReport = NSLocalizedString("analyticsHub.reportCard.webReport",
-                                                 value: "See Report",
+                                                 value: "See report",
                                                  comment: "Button label to show an analytics report in the Analytics Hub")
     }
 }

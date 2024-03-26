@@ -199,4 +199,8 @@ public enum FeatureFlag: Int {
     /// Displays a Customers section in the Hub menu.
     ///
     case customersInHubMenu
+
+    /// Displays analytics cards for extensions in the Analytics Hub.
+    ///
+    case expandedAnalyticsHub
 }

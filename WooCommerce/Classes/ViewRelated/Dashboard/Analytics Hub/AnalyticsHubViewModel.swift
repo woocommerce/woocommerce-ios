@@ -2,6 +2,7 @@ import Foundation
 import Yosemite
 import Combine
 import class UIKit.UIColor
+import protocol Storage.StorageManagerType
 
 /// Main View Model for the Analytics Hub.
 ///
@@ -9,6 +10,7 @@ final class AnalyticsHubViewModel: ObservableObject {
 
     private let siteID: Int64
     private let stores: StoresManager
+    private let storage: StorageManagerType
     private let timeZone: TimeZone
     private let analytics: Analytics
     private let noticePresenter: NoticePresenter
@@ -36,6 +38,7 @@ final class AnalyticsHubViewModel: ObservableObject {
          statsTimeRange: StatsTimeRangeV4,
          usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter,
          stores: StoresManager = ServiceLocator.stores,
+         storage: StorageManagerType = ServiceLocator.storageManager,
          analytics: Analytics = ServiceLocator.analytics,
          noticePresenter: NoticePresenter = ServiceLocator.noticePresenter,
          backendProcessingDelay: UInt64 = 500_000_000,
@@ -46,6 +49,7 @@ final class AnalyticsHubViewModel: ObservableObject {
         self.siteID = siteID
         self.timeZone = timeZone
         self.stores = stores
+        self.storage = storage
         self.userIsAdmin = stores.sessionManager.defaultRoles.contains(.administrator)
         self.analytics = analytics
         self.noticePresenter = noticePresenter
@@ -206,6 +210,19 @@ final class AnalyticsHubViewModel: ObservableObject {
     /// Time Range selection data defining the current and previous time period
     ///
     private var timeRangeSelection: AnalyticsHubTimeRangeSelection
+
+    /// Names of the active plugins on the store.
+    ///
+    private lazy var activePlugins: [String] = {
+        let predicate = NSPredicate(format: "siteID == %lld && active == true", siteID)
+        let resultsController = ResultsController<StorageSystemPlugin>(storageManager: storage, matching: predicate, sortedBy: [])
+        do {
+            try resultsController.performFetch()
+        } catch {
+            DDLogError("⛔️ Error fetching active plugins for Analytics Hub")
+        }
+        return resultsController.fetchedObjects.map { $0.name }
+    }()
 
     /// Request stats data from network
     /// - Parameter cards: Optionally limit the request to only the stats needed for a given set of cards.
@@ -421,6 +438,13 @@ private extension AnalyticsHubViewModel {
             }
             stores.dispatch(action)
         }
+    }
+
+    /// Helper function that returns `true` in its callback if the provided plugin name is active on the  store.
+    ///
+    /// - Parameter plugin: A list of names for the plugin (provide all possible names for plugins that have changed names).
+    private func isPluginActive(_ plugin: [String]) -> Bool {
+        activePlugins.contains(where: plugin.contains)
     }
 }
 

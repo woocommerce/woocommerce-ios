@@ -27,6 +27,10 @@ final class AnalyticsHubViewModel: ObservableObject {
     ///
     private let userIsAdmin: Bool
 
+    /// Feature flag for Expanded Analytics Hub (extension analytics)
+    ///
+    private let isExpandedAnalyticsHubEnabled: Bool
+
     init(siteID: Int64,
          timeZone: TimeZone = .siteTimezone,
          statsTimeRange: StatsTimeRangeV4,
@@ -34,7 +38,8 @@ final class AnalyticsHubViewModel: ObservableObject {
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
          noticePresenter: NoticePresenter = ServiceLocator.noticePresenter,
-         backendProcessingDelay: UInt64 = 500_000_000) {
+         backendProcessingDelay: UInt64 = 500_000_000,
+         isExpandedAnalyticsHubEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.expandedAnalyticsHub)) {
         let selectedType = AnalyticsHubTimeRangeSelection.SelectionType(statsTimeRange)
         let timeRangeSelection = AnalyticsHubTimeRangeSelection(selectionType: selectedType, timezone: timeZone)
 
@@ -45,6 +50,7 @@ final class AnalyticsHubViewModel: ObservableObject {
         self.analytics = analytics
         self.noticePresenter = noticePresenter
         self.backendProcessingDelay = backendProcessingDelay
+        self.isExpandedAnalyticsHubEnabled = isExpandedAnalyticsHubEnabled
         self.timeRangeSelectionType = selectedType
         self.timeRangeSelection = timeRangeSelection
         self.timeRangeCard = AnalyticsHubViewModel.timeRangeCard(timeRangeSelection: timeRangeSelection,

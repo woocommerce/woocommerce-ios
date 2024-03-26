@@ -22,8 +22,7 @@ public final class ProductBundleStatsRemote: Remote {
                                        earliestDateToInclude: Date,
                                        latestDateToInclude: Date,
                                        quantity: Int,
-                                       forceRefresh: Bool,
-                                       completion: @escaping (Result<ProductBundleStats, Error>) -> Void) {
+                                       forceRefresh: Bool) async throws -> ProductBundleStats {
         let dateFormatter = DateFormatter.Defaults.iso8601WithoutTimeZone
         dateFormatter.timeZone = timeZone
 
@@ -46,7 +45,8 @@ public final class ProductBundleStatsRemote: Remote {
                                      parameters: parameters,
                                      availableAsRESTRequest: true)
         let mapper = ProductBundleStatsMapper(siteID: siteID, granularity: unit)
-        enqueue(request, mapper: mapper, completion: completion)
+
+        return try await enqueue(request, mapper: mapper)
     }
 
     /// Fetch the top product bundles for a given site within the dates provided.

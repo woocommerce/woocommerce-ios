@@ -139,11 +139,11 @@ const NSInteger WPRestErrorCodeMediaNew = 10;
         if (remoteMedia.postID != nil && [remoteMedia.postID compare:@(0)] == NSOrderedDescending) {
             parameters[@"attrs[0][parent_id]"] = remoteMedia.postID;
         }
-        FilePart *filePart = [[FilePart alloc] initWithParameterName:@"media[]" url:remoteMedia.localURL filename:filename mimeType:type];
+        FilePart *filePart = [[FilePart alloc] initWithParameterName:@"media[]" url:remoteMedia.localURL fileName:filename mimeType:type];
         [fileParts addObject:filePart];
     }
 
-    [self.wordPressComRestApi multipartPOST:requestUrl
+    [self.wordPressComRESTAPI multipartPOST:requestUrl
                                  parameters:parameters
                                   fileParts:fileParts
                             requestEnqueued:^(NSNumber *taskID) {
@@ -203,8 +203,8 @@ const NSInteger WPRestErrorCodeMediaNew = 10;
         }
         return;
     }
-    FilePart *filePart = [[FilePart alloc] initWithParameterName:@"media[]" url:media.localURL filename:filename mimeType:type];
-    __block NSProgress *localProgress = [self.wordPressComRestApi multipartPOST:requestUrl
+    FilePart *filePart = [[FilePart alloc] initWithParameterName:@"media[]" url:media.localURL fileName:filename mimeType:type];
+    __block NSProgress *localProgress = [self.wordPressComRESTAPI multipartPOST:requestUrl
                                                                      parameters:parameters
                                                                       fileParts:@[filePart]
                                                                 requestEnqueued:nil

@@ -125,7 +125,7 @@ struct ConnectivityToolCard: View {
 
         /// Represents an action to could be performed when presenting an error.
         ///
-        struct ErrorAction {
+        struct Action {
             let title: String
             let systemImage: String
             let action: () -> ()
@@ -133,7 +133,7 @@ struct ConnectivityToolCard: View {
 
         case inProgress
         case success
-        case error(String, ErrorAction?)
+        case error(String, [Action])
 
         /// Builds the icon based on the state
         ///
@@ -212,14 +212,14 @@ struct ConnectivityToolCard: View {
                 state.buildIcon()
             }
 
-            if case let .error(message, buttonAction) = state {
+            if case let .error(message, actions) = state {
                 Text(message)
                     .foregroundColor(Color(uiColor: .text))
                     .subheadlineStyle()
                     .frame(maxWidth: .infinity, alignment: .leading)
 
-                if let buttonAction {
-                    Button(buttonAction.title, systemImage: buttonAction.systemImage, action: buttonAction.action)
+                ForEach(actions, id: \.title) { action in
+                    Button(action.title, systemImage: action.systemImage, action: action.action)
                         .foregroundColor(Color(uiColor: .accent))
                         .frame(maxWidth: .infinity, alignment: .leading)
                 }
@@ -236,7 +236,8 @@ struct ConnectivityToolCard: View {
             .init(title: "Connecting to your site",
                   icon: .system("storefront"),
                   state: .error("Your site is taking too long to respond.\n\nPlease contact your hosting provider for further assistance.",
-                    .init(title: "Read More", systemImage: "arrow.up.forward.app", action: {}))),
+                    [.init(title: "Retry connection", systemImage: "arrow.clockwise", action: {}),
+                     .init(title: "Read More", systemImage: "arrow.up.forward.app", action: {})])),
             .init(title: "Fetching your site orders", icon: .system("list.clipboard"), state: .inProgress)
         ])
             .navigationTitle("Connectivity Test")

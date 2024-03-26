@@ -13,6 +13,7 @@ final class AnalyticsHubViewModelTests: XCTestCase {
     private var noticePresenter: MockNoticePresenter!
     private var vm: AnalyticsHubViewModel!
 
+    private let sampleSiteID: Int64 = 123
     private let sampleAdminURL = "https://example.com/wp-admin/"
 
     override func setUp() {
@@ -417,7 +418,8 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         let expectedCards = [AnalyticsCard(type: .revenue, enabled: true),
                              AnalyticsCard(type: .orders, enabled: false),
                              AnalyticsCard(type: .products, enabled: false),
-                             AnalyticsCard(type: .sessions, enabled: false)]
+                             AnalyticsCard(type: .sessions, enabled: false),
+                             AnalyticsCard(type: .bundles, enabled: true)]
         assertEqual(expectedCards, storedAnalyticsCards)
     }
 
@@ -573,11 +575,8 @@ final class AnalyticsHubViewModelTests: XCTestCase {
 
         // Then
         let customizeAnalyticsVM = try XCTUnwrap(vm.customizeAnalyticsViewModel)
-        let expectedCards = [AnalyticsCard(type: .revenue, enabled: true),
-                             AnalyticsCard(type: .orders, enabled: true),
-                             AnalyticsCard(type: .products, enabled: true)]
         XCTAssertFalse(vm.enabledCards.contains(.sessions))
-        assertEqual(expectedCards, customizeAnalyticsVM.allCards)
+        XCTAssertFalse(customizeAnalyticsVM.allCards.contains(where: { $0.type == .sessions }))
     }
 
     func test_customizeAnalytics_tracks_expected_event() {
@@ -587,16 +586,42 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         // Then
         XCTAssert(analyticsProvider.receivedEvents.contains(WooAnalyticsStat.analyticsHubSettingsOpened.rawValue))
     }
+
+    func test_product_bundles_card_displayed_when_plugin_active() {
+        // Given
+        let storage = MockStorageManager()
+        storage.insertSampleSystemPlugin(readOnlySystemPlugin: .fake().copy(siteID: sampleSiteID,
+                                                                            name: SitePlugin.SupportedPlugin.WCProductBundles.first,
+                                                                            active: true))
+        let vm = createViewModel(storage: storage)
+
+        // Then
+        XCTAssertTrue(vm.enabledCards.contains(.bundles))
+    }
+
+    func test_product_bundles_card_not_displayed_when_plugin_inactive() {
+        // Given
+        let storage = MockStorageManager()
+        storage.insertSampleSystemPlugin(readOnlySystemPlugin: .fake().copy(siteID: sampleSiteID,
+                                                                            name: SitePlugin.SupportedPlugin.WCProductBundles.first,
+                                                                            active: false))
+        let vm = createViewModel(storage: storage)
+
+        // Then
+        XCTAssertFalse(vm.enabledCards.contains(.bundles))
+    }
 }
 
 private extension AnalyticsHubViewModelTests {
-    func createViewModel(stores: MockStoresManager? = nil) -> AnalyticsHubViewModel {
-        AnalyticsHubViewModel(siteID: 123,
+    func createViewModel(stores: MockStoresManager? = nil, storage: MockStorageManager? = nil) -> AnalyticsHubViewModel {
+        AnalyticsHubViewModel(siteID: sampleSiteID,
                               statsTimeRange: .thisMonth,
                               usageTracksEventEmitter: eventEmitter,
                               stores: stores ?? self.stores,
+                              storage: storage ?? MockStorageManager(),
                               analytics: analytics,
                               noticePresenter: noticePresenter,
-                              backendProcessingDelay: 0)
+                              backendProcessingDelay: 0,
+                              isExpandedAnalyticsHubEnabled: true)
     }
 }

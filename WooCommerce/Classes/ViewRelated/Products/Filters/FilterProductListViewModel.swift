@@ -157,7 +157,7 @@ extension FilterProductListViewModel.ProductListFilter {
         let activePluginNames = fetchActivePluginNames(siteID: siteID, storageManager: storageManager)
         let isSubscriptionsAvailable = Set(activePluginNames).intersection(SitePlugin.SupportedPlugin.WCSubscriptions).count > 0
         let isCompositeProductsAvailable = activePluginNames.contains(SitePlugin.SupportedPlugin.WCCompositeProducts)
-        let isProductBundlesAvailable = activePluginNames.contains(SitePlugin.SupportedPlugin.WCProductBundles)
+        let isProductBundlesAvailable = activePluginNames.contains(where: SitePlugin.SupportedPlugin.WCProductBundles.contains)
 
         return [nil,
                 .init(productType: .simple, isAvailable: true, promoteUrl: nil),

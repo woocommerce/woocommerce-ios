@@ -1530,6 +1530,19 @@ extension Networking.ProductVariationAttribute {
         )
     }
 }
+extension Networking.ProductsReportItem {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.ProductsReportItem {
+        .init(
+            productID: .fake(),
+            productName: .fake(),
+            quantity: .fake(),
+            total: .fake(),
+            imageUrl: .fake()
+        )
+    }
+}
 extension Networking.Receipt {
     /// Returns a "ready to use" type filled with fake values.
     ///

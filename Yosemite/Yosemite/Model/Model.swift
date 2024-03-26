@@ -89,6 +89,7 @@ public typealias ProductCompositeComponent = Networking.ProductCompositeComponen
 public typealias ProductReview = Networking.ProductReview
 public typealias ProductReviewStatus = Networking.ProductReviewStatus
 public typealias ProductShippingClass = Networking.ProductShippingClass
+public typealias ProductsReportItem = Networking.ProductsReportItem
 public typealias ProductStatus = Networking.ProductStatus
 public typealias ProductCatalogVisibility = Networking.ProductCatalogVisibility
 public typealias ProductStockStatus = Networking.ProductStockStatus

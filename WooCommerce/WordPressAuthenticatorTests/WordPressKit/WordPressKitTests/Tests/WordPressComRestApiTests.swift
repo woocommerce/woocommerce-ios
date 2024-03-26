@@ -295,7 +295,7 @@ class WordPressComRestApiTests: XCTestCase {
 
         let expect = self.expectation(description: "One callback should be invoked")
         let api = WordPressComRestApi(oAuthToken: "fakeToken")
-        let filePart = FilePart(parameterName: "file", url: URL(fileURLWithPath: "/a.txt") as URL, filename: "a.txt", mimeType: "image/jpeg")
+        let filePart = FilePart(parameterName: "file", url: URL(fileURLWithPath: "/a.txt") as URL, fileName: "a.txt", mimeType: "image/jpeg")
         api.multipartPOST(wordPressMediaNewEndpointPath, parameters: nil, fileParts: [filePart], success: { (_: AnyObject, _: HTTPURLResponse?) in
             expect.fulfill()
             XCTFail("This call should fail")
@@ -319,7 +319,7 @@ class WordPressComRestApiTests: XCTestCase {
         let mediaURL = URL(fileURLWithPath: mediaPath)
         let expect = self.expectation(description: "One callback should be invoked")
         let api = WordPressComRestApi(oAuthToken: "fakeToken")
-        let filePart = FilePart(parameterName: "media[]", url: mediaURL as URL, filename: "test-image.jpg", mimeType: "image/jpeg")
+        let filePart = FilePart(parameterName: "media[]", url: mediaURL as URL, fileName: "test-image.jpg", mimeType: "image/jpeg")
         let progress1 = api.multipartPOST(wordPressMediaNewEndpointPath, parameters: nil, fileParts: [filePart], success: { (_: AnyObject, _: HTTPURLResponse?) in
                 XCTFail("This call should fail")
             }, failure: { (error, _) in

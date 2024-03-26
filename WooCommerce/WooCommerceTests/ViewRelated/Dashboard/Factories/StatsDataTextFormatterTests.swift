@@ -542,4 +542,54 @@ final class StatsDataTextFormatterTests: XCTestCase {
         XCTAssertEqual(delta.string, "-23%")
         XCTAssertEqual(delta.direction, .negative)
     }
+
+    // MARK: Bundles Stats
+
+    func test_createBundlesSoldText_returns_placeholder_on_nil_stats() {
+        let text = StatsDataTextFormatter.createBundlesSoldText(bundleStats: nil)
+        XCTAssertEqual(text, "-")
+    }
+
+    func test_createBundlesSoldText_returns_formatted_value() {
+        // Given
+        let bundleStats = ProductBundleStats.fake().copy(totals: .fake().copy(totalItemsSold: 67890))
+
+        // When
+        let text = StatsDataTextFormatter.createBundlesSoldText(bundleStats: bundleStats)
+
+        // Then
+        XCTAssertEqual(text, "67.9k")
+    }
+
+    func test_createBundlesSoldDelta_returns_zero_on_nil_stats() {
+        let delta = StatsDataTextFormatter.createBundlesSoldDelta(from: nil, to: nil)
+        XCTAssertEqual(delta.string, "+0%")
+        XCTAssertEqual(delta.direction, .zero)
+    }
+
+    func test_createBundlesSoldDelta_returns_correct_positive_value() {
+        // Given
+        let previousStats = ProductBundleStats.fake().copy(totals: .fake().copy(totalItemsSold: 100))
+        let currentStats = ProductBundleStats.fake().copy(totals: .fake().copy(totalItemsSold: 133))
+
+        // When
+        let delta = StatsDataTextFormatter.createBundlesSoldDelta(from: previousStats, to: currentStats)
+
+        // Then
+        XCTAssertEqual(delta.string, "+33%")
+        XCTAssertEqual(delta.direction, .positive)
+    }
+
+    func test_createBundlesSoldDelta_returns_correct_negative_value() {
+        // Given
+        let previousStats = ProductBundleStats.fake().copy(totals: .fake().copy(totalItemsSold: 100))
+        let currentStats = ProductBundleStats.fake().copy(totals: .fake().copy(totalItemsSold: 77))
+
+        // When
+        let delta = StatsDataTextFormatter.createBundlesSoldDelta(from: previousStats, to: currentStats)
+
+        // Then
+        XCTAssertEqual(delta.string, "-23%")
+        XCTAssertEqual(delta.direction, .negative)
+    }
 }

@@ -85,6 +85,7 @@ public typealias ProductAddOnOption = Networking.ProductAddOnOption
 public typealias ProductBackordersSetting = Networking.ProductBackordersSetting
 public typealias ProductBundleItem = Networking.ProductBundleItem
 public typealias ProductBundleItemStockStatus = Networking.ProductBundleItemStockStatus
+public typealias ProductBundleStats = Networking.ProductBundleStats
 public typealias ProductCompositeComponent = Networking.ProductCompositeComponent
 public typealias ProductReview = Networking.ProductReview
 public typealias ProductReviewStatus = Networking.ProductReviewStatus

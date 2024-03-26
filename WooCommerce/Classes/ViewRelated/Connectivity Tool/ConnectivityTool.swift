@@ -68,20 +68,31 @@ struct ConnectivityTool: View {
     ///
     var onContactSupportTapped: (() -> ())?
 
+    /// Internal layout values
+    ///
+    private static let dividerVerticalSpacing = 8.0
+
     var body: some View {
         VStack(alignment: .center, spacing: .zero) {
 
             Spacer()
 
-            Text(Localization.subtitle)
-                .secondaryBodyStyle()
-
             ScrollView {
+
+                Text(Localization.subtitle)
+                    .calloutStyle()
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding()
+
                 ForEach(cards, id: \.title) { card in
                     ConnectivityToolCard(icon: card.icon, title: card.title, state: card.state)
+                        .padding(.horizontal)
+
+                    Divider()
+                        .padding(.leading)
+                        .padding(.vertical, Self.dividerVerticalSpacing)
                 }
             }
-            .padding(.horizontal)
 
             Divider().ignoresSafeArea()
 
@@ -116,6 +127,7 @@ struct ConnectivityToolCard: View {
         ///
         struct ErrorAction {
             let title: String
+            let systemImage: String
             let action: () -> ()
         }
 
@@ -182,25 +194,18 @@ struct ConnectivityToolCard: View {
 
     /// Internal layout values
     ///
-    @ScaledMetric private var iconSize = 40.0
-    private static let cornerRadius = 4.0
     private static let verticalSpacing = 16.0
-    private static let cardSpacing = 8.0
 
     var body: some View {
         VStack(spacing: Self.verticalSpacing) {
             HStack {
 
-                Circle()
-                    .fill(Color(uiColor: .listBackground))
-                    .overlay {
-                        icon.buildAsset()
-                            .foregroundColor(Color(uiColor: .primary))
-                    }
-                    .frame(width: iconSize, height: iconSize)
+                icon.buildAsset()
+                    .foregroundColor(Color(uiColor: .text))
 
                 Text(title)
                     .bodyStyle()
+                    .bold()
 
                 Spacer()
 
@@ -209,23 +214,17 @@ struct ConnectivityToolCard: View {
 
             if case let .error(message, buttonAction) = state {
                 Text(message)
-                    .foregroundColor(Color(uiColor: .error))
+                    .foregroundColor(Color(uiColor: .text))
                     .subheadlineStyle()
-                    .padding(.horizontal, 6)
                     .frame(maxWidth: .infinity, alignment: .leading)
 
                 if let buttonAction {
-                    Button(buttonAction.title, action: buttonAction.action)
-                        .buttonStyle(SecondaryButtonStyle())
+                    Button(buttonAction.title, systemImage: buttonAction.systemImage, action: buttonAction.action)
+                        .foregroundColor(Color(uiColor: .accent))
+                        .frame(maxWidth: .infinity, alignment: .leading)
                 }
             }
         }
-        .padding()
-        .background(Color(uiColor: .listForeground(modal: false)))
-        .cornerRadius(Self.cornerRadius)
-        .padding(.horizontal)
-        .padding(.vertical, Self.cardSpacing)
-
     }
 }
 
@@ -233,12 +232,12 @@ struct ConnectivityToolCard: View {
     NavigationView {
         ConnectivityTool(cards: [
             .init(title: "Internet Connection", icon: .system("wifi"), state: .success),
-            .init(title: "WordPress.com servers", icon: .system("server.rack"), state: .success),
-            .init(title: "Your Site",
+            .init(title: "Connecting to WordPress.com servers", icon: .system("server.rack"), state: .success),
+            .init(title: "Connecting to your site",
                   icon: .system("storefront"),
-                  state: .error("Your site is not responding properly\nPlease reach out to your host for further assistance",
-                    .init(title: "Read More", action: {}))),
-            .init(title: "Your site orders", icon: .system("list.clipboard"), state: .inProgress)
+                  state: .error("Your site is taking too long to respond.\n\nPlease contact your hosting provider for further assistance.",
+                    .init(title: "Read More", systemImage: "arrow.up.forward.app", action: {}))),
+            .init(title: "Fetching your site orders", icon: .system("list.clipboard"), state: .inProgress)
         ])
             .navigationTitle("Connectivity Test")
             .navigationBarTitleDisplayMode(.inline)

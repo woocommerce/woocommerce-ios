@@ -198,7 +198,7 @@ final class ConnectivityToolViewModel {
         if error.isTimeoutError {
             message = NSLocalizedString("Your site is taking too long to respond.\n\nPlease contact your hosting provider for further assistance.",
                                         comment: "Message when we there is a timeout error in the recovery tool")
-            return .error(message, .init(title: readMore, action: generalTroubleshootAction))
+            return .error(message, .init(title: readMore, systemImage: SystemImages.readMore.rawValue, action: generalTroubleshootAction))
         }
 
         // Handle all other types of errors.
@@ -207,16 +207,16 @@ final class ConnectivityToolViewModel {
             message = NSLocalizedString("We can't work properly with your site's response.\n\n" +
                                         "Read more about it or contact our support team and we will happily assist you.",
                                         comment: "Message when we there is a decoding error in the recovery tool")
-            errorAction = .init(title: readMore, action: generalTroubleshootAction)
+            errorAction = .init(title: readMore, systemImage: SystemImages.readMore.rawValue, action: generalTroubleshootAction)
         case DotcomError.jetpackNotConnected:
             message = NSLocalizedString("There is problem with your jetpack connection.\n\n" +
                                         "Read more about it or contact our support team and we will happily assist you.",
                                         comment: "Message when we there is a jetpack error in the recovery tool")
-            errorAction = .init(title: readMore, action: jetpackTroubleshootAction)
+            errorAction = .init(title: readMore, systemImage: SystemImages.readMore.rawValue, action: jetpackTroubleshootAction)
         default:
             message = NSLocalizedString("There seems to be a problem with your site.\n\nPlease contact your hosting provider for further assistance.",
                                         comment: "Message when we there is a generic error in the recovery tool")
-            errorAction = .init(title: readMore, action: generalTroubleshootAction)
+            errorAction = .init(title: readMore, systemImage: SystemImages.readMore.rawValue, action: generalTroubleshootAction)
         }
 
         return .error(message, errorAction)
@@ -238,6 +238,12 @@ final class ConnectivityToolViewModel {
 }
 
 private extension ConnectivityToolViewModel {
+
+    private enum SystemImages: String {
+        case retry = "arrow.clockwise"
+        case readMore = "arrow.up.forward.app"
+    }
+
     enum ConnectivityTest: CaseIterable {
         case internetConnection
         case wpComServers
@@ -277,6 +283,7 @@ private extension ConnectivityToolViewModel {
 }
 
 extension ConnectivityTool.Card {
+
     /// Updates a card state to a new given state.
     ///
     func updatingState(_ newState: ConnectivityToolCard.State) -> ConnectivityTool.Card {

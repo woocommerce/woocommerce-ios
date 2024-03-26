@@ -2063,6 +2063,7 @@
 		CE8CCD44239AC06E009DBD22 /* RefundDetailsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE8CCD42239AC06E009DBD22 /* RefundDetailsViewController.xib */; };
 		CE91BEA029FBE9E100B6E1AF /* QuantityRulesViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE91BE9F29FBE9E100B6E1AF /* QuantityRulesViewModelTests.swift */; };
 		CEA16F3A20FD0C8C0061B4E1 /* WooAnalytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA16F3920FD0C8C0061B4E1 /* WooAnalytics.swift */; };
+		CEA455C12BB3446D00D932CF /* BundlesReportCardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA455C02BB3446D00D932CF /* BundlesReportCardViewModel.swift */; };
 		CEA9C8E02B6D323A000FE114 /* AnalyticsWebReportTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA9C8DF2B6D323A000FE114 /* AnalyticsWebReportTests.swift */; };
 		CEC8188C2A3B7C8B00459843 /* AppStartupWaitingTimeTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEC8188B2A3B7C8B00459843 /* AppStartupWaitingTimeTracker.swift */; };
 		CEC8188E2A3C75DD00459843 /* AppStartupWaitingTimeTrackerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEC8188D2A3C75DD00459843 /* AppStartupWaitingTimeTrackerTests.swift */; };
@@ -4803,6 +4804,7 @@
 		CE8CCD42239AC06E009DBD22 /* RefundDetailsViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RefundDetailsViewController.xib; sourceTree = "<group>"; };
 		CE91BE9F29FBE9E100B6E1AF /* QuantityRulesViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuantityRulesViewModelTests.swift; sourceTree = "<group>"; };
 		CEA16F3920FD0C8C0061B4E1 /* WooAnalytics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooAnalytics.swift; sourceTree = "<group>"; };
+		CEA455C02BB3446D00D932CF /* BundlesReportCardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BundlesReportCardViewModel.swift; sourceTree = "<group>"; };
 		CEA9C8DF2B6D323A000FE114 /* AnalyticsWebReportTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsWebReportTests.swift; sourceTree = "<group>"; };
 		CEC8188B2A3B7C8B00459843 /* AppStartupWaitingTimeTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStartupWaitingTimeTracker.swift; sourceTree = "<group>"; };
 		CEC8188D2A3C75DD00459843 /* AppStartupWaitingTimeTrackerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStartupWaitingTimeTrackerTests.swift; sourceTree = "<group>"; };
@@ -11043,6 +11045,7 @@
 				CEEF74292B9A02EB00B03948 /* OrdersReportCardViewModel.swift */,
 				CEEF742D2B9A0BAA00B03948 /* SessionsReportCardViewModel.swift */,
 				26E7EE7129301EBC00793045 /* ProductsReportCardViewModel.swift */,
+				CEA455C02BB3446D00D932CF /* BundlesReportCardViewModel.swift */,
 			);
 			path = "Report Cards";
 			sourceTree = "<group>";
@@ -13389,6 +13392,7 @@
 				26C6439327B5DBE900DD00D1 /* OrderSynchronizer.swift in Sources */,
 				CE0F17D222A8308900964A63 /* FancyAlertController+PurchaseNote.swift in Sources */,
 				684AB83A2870677F003DFDD1 /* CardReaderManualsView.swift in Sources */,
+				CEA455C12BB3446D00D932CF /* BundlesReportCardViewModel.swift in Sources */,
 				E1BAAEA026BBECEF00F2C037 /* ButtonStyles.swift in Sources */,
 				CC13C0CB278E021300C0B5B5 /* ProductVariationSelectorViewModel.swift in Sources */,
 				020732042988AB7B000A53C2 /* DomainContactInfoForm.swift in Sources */,

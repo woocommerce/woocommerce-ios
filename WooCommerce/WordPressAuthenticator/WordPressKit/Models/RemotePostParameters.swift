@@ -227,7 +227,14 @@ struct RemotePostUpdateParametersWordPressComEncoder: Encodable {
         try container.encodeIfPresent(parameters.password, forKey: .password)
         try container.encodeIfPresent(parameters.excerpt, forKey: .excerpt)
         try container.encodeIfPresent(parameters.slug, forKey: .slug)
-        try container.encodeIfPresent(parameters.featuredImageID, forKey: .featuredImageID)
+        if let value = parameters.featuredImageID {
+            if let featuredImageID = value {
+                try container.encode(parameters.featuredImageID, forKey: .featuredImageID)
+            } else {
+                // Passing `null` doesn't work.
+                try container.encode("", forKey: .featuredImageID)
+            }
+        }
 
         // Pages
         if let parentPageID = parameters.parentPageID {
@@ -316,7 +323,14 @@ struct RemotePostUpdateParametersXMLRPCEncoder: Encodable {
         try container.encodeIfPresent(parameters.password, forKey: .password)
         try container.encodeIfPresent(parameters.excerpt, forKey: .excerpt)
         try container.encodeIfPresent(parameters.slug, forKey: .slug)
-        try container.encodeIfPresent(parameters.featuredImageID, forKey: .featuredImageID)
+        if let value = parameters.featuredImageID {
+            if let featuredImageID = value {
+                try container.encode(parameters.featuredImageID, forKey: .featuredImageID)
+            } else {
+                // Passing `null` doesn't work.
+                try container.encode("", forKey: .featuredImageID)
+            }
+        }
 
         // Pages
         if let parentPageID = parameters.parentPageID {

@@ -121,6 +121,13 @@ public final class StatsStoreV4: Store {
                                        quantity: quantity,
                                        forceRefresh: forceRefresh,
                                        onCompletion: onCompletion)
+        case let .retrieveTopProductBundles(siteID, timeZone, earliestDateToInclude, latestDateToInclude, quantity, onCompletion):
+            retrieveTopProductBundles(siteID: siteID,
+                                      timeZone: timeZone,
+                                      earliestDateToInclude: earliestDateToInclude,
+                                      latestDateToInclude: latestDateToInclude,
+                                      quantity: quantity,
+                                      onCompletion: onCompletion)
         }
     }
 }
@@ -337,6 +344,28 @@ private extension StatsStoreV4 {
                                                                                             quantity: quantity,
                                                                                             forceRefresh: forceRefresh)
                 onCompletion(.success(bundleStats))
+            } catch {
+                onCompletion(.failure(error))
+            }
+        }
+    }
+
+    /// Retrieves the top product bundles for the provided siteID, and time range, without saving them to the Storage layer.
+    ///
+    func retrieveTopProductBundles(siteID: Int64,
+                                   timeZone: TimeZone,
+                                   earliestDateToInclude: Date,
+                                   latestDateToInclude: Date,
+                                   quantity: Int,
+                                   onCompletion: @escaping (Result<[ProductsReportItem], Error>) -> Void) {
+        Task { @MainActor in
+            do {
+                let topBundles = try await productBundleStatsRemote.loadTopProductBundlesReport(for: siteID,
+                                                                                                timeZone: timeZone,
+                                                                                                earliestDateToInclude: earliestDateToInclude,
+                                                                                                latestDateToInclude: latestDateToInclude,
+                                                                                                quantity: quantity)
+                onCompletion(.success(topBundles))
             } catch {
                 onCompletion(.failure(error))
             }

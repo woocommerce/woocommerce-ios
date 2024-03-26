@@ -730,6 +730,79 @@ final class StatsStoreV4Tests: XCTestCase {
         // Then
         XCTAssertTrue(result.isFailure)
     }
+
+    // MARK: - StatsStoreV4.retrieveTopProductBundles
+
+    /// Verifies that `StatsActionV4.retrieveTopProductBundles` returns the retrieved product bundle report items.
+    ///
+    func test_retrieveTopProductBundles_returns_retrieved_product_bundles() throws {
+        // Given
+        let store = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "reports/bundles", filename: "product-bundle-top-bundles")
+
+        // When
+        let result: Result<[ProductsReportItem], Error> = waitFor { promise in
+            let action = StatsActionV4.retrieveTopProductBundles(siteID: self.sampleSiteID,
+                                                                 timeZone: .current,
+                                                                 earliestDateToInclude: Date(),
+                                                                 latestDateToInclude: Date(),
+                                                                 quantity: 5) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        let topBundles = try XCTUnwrap(result.get())
+        assertEqual(5, topBundles.count)
+        assertEqual(sampleTopBundle(), topBundles.first)
+    }
+
+    /// Verifies that `StatsActionV4.retrieveTopProductBundles` returns an error whenever there is an error response from the backend.
+    ///
+    func test_retrieveTopProductBundles_returns_error_upon_reponse_error() {
+        // Given
+        let store = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "reports/bundles", filename: "generic_error")
+
+        // When
+        let result: Result<[ProductsReportItem], Error> = waitFor { promise in
+            let action = StatsActionV4.retrieveTopProductBundles(siteID: self.sampleSiteID,
+                                                                 timeZone: .current,
+                                                                 earliestDateToInclude: Date(),
+                                                                 latestDateToInclude: Date(),
+                                                                 quantity: 5) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+    }
+
+    /// Verifies that `StatsActionV4.retrieveTopProductBundles` returns an error whenever there is no backend response.
+    ///
+    func test_retrieveTopProductBundles_returns_error_upon_empty_response() {
+        // Given
+        let store = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        // When
+        let result: Result<[ProductsReportItem], Error> = waitFor { promise in
+            let action = StatsActionV4.retrieveTopProductBundles(siteID: self.sampleSiteID,
+                                                                 timeZone: .current,
+                                                                 earliestDateToInclude: Date(),
+                                                                 latestDateToInclude: Date(),
+                                                                 quantity: 5) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+    }
 }
 
 
@@ -952,5 +1025,15 @@ private extension StatsStoreV4Tests {
                                                     netRevenue: 15,
                                                     totalOrders: 1,
                                                     totalProducts: 2))
+    }
+
+    // MARK: - Top Product Bundles Sample
+
+    func sampleTopBundle() -> Networking.ProductsReportItem {
+        ProductsReportItem(productID: 507,
+                            productName: "Awesome bundle",
+                            quantity: 6,
+                            total: 361,
+                            imageUrl: "https://example.com/wp-content/uploads/2023/01/logo-1-600x599.jpg")
     }
 }

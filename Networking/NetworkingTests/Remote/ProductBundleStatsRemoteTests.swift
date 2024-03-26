@@ -1,4 +1,5 @@
 import XCTest
+import TestKit
 @testable import Networking
 
 
@@ -68,5 +69,41 @@ class ProductBundleStatsRemoteTests: XCTestCase {
 
         // Then
         XCTAssertTrue(result.isFailure)
+    }
+
+    /// Verifies that loadTopProductBundlesReport properly parses the sample response.
+    ///
+    func test_loadTopProductBundlesReport_properly_returns_parsed_bundles() async throws {
+        // Given
+        let remote = ProductBundleStatsRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "reports/bundles", filename: "product-bundle-top-bundles")
+
+        // When
+        let topBundles = try await remote.loadTopProductBundlesReport(for: self.sampleSiteID,
+                                                                      timeZone: .gmt,
+                                                                      earliestDateToInclude: Date(),
+                                                                      latestDateToInclude: Date(),
+                                                                      quantity: 5)
+
+        // Then
+        XCTAssertEqual(topBundles.count, 5)
+    }
+
+    /// Verifies that loadTopProductBundlesReport properly relays Networking Layer errors.
+    ///
+    func test_loadTopProductBundlesReport_properly_relays_networking_errors() async {
+        // Given
+        let remote = ProductBundleStatsRemote(network: network)
+        let expectedError = NetworkError.unacceptableStatusCode(statusCode: 403)
+        network.simulateError(requestUrlSuffix: "reports/bundles", error: expectedError)
+
+        // When & Then
+        await assertThrowsError({
+            _ = try await remote.loadTopProductBundlesReport(for: self.sampleSiteID,
+                                                             timeZone: .gmt,
+                                                             earliestDateToInclude: Date(),
+                                                             latestDateToInclude: Date(),
+                                                             quantity: 5)
+        }, errorAssert: { ($0 as? NetworkError) == expectedError })
     }
 }

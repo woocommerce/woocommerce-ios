@@ -5,6 +5,7 @@
 - [**] Hub Menu: A new Customers section shows a searchable list of customers with their details, including the option to contact a customer via email. [https://github.com/woocommerce/woocommerce-ios/pull/12349]
 - [Internal] Update Woo Purple color palette [https://github.com/woocommerce/woocommerce-ios/pull/12330]
 - [internal] The dependency setup in `AppDelegate`'s `application(_:willFinishLaunchingWithOptions:)` was updated as an attempted fix for one of the top crashes. [https://github.com/woocommerce/woocommerce-ios/pull/12268]
+- [*] Order List: Speculative fix for a crash on the iPad when viewing orders [https://github.com/woocommerce/woocommerce-ios/pull/12369]
 
 17.9
 -----

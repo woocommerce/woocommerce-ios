@@ -13,7 +13,6 @@ extension Alamofire.MultipartFormData: MultipartFormData {
 public class AlamofireNetwork: Network {
     private lazy var alamofireSession: Alamofire.Session = {
         let sessionConfiguration = URLSessionConfiguration.default
-        sessionConfiguration.timeoutIntervalForRequest = 1
         let sessionManager = makeSession(configuration: sessionConfiguration)
         return sessionManager
     }()

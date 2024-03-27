@@ -28,6 +28,11 @@ final class AnalyticsHubViewModelTests: XCTestCase {
 
     func test_cards_viewmodels_show_correct_data_after_updating_from_network() async {
         // Given
+        let storage = MockStorageManager()
+        storage.insertSampleSystemPlugin(readOnlySystemPlugin: .fake().copy(siteID: sampleSiteID,
+                                                                            name: SitePlugin.SupportedPlugin.WCProductBundles.first,
+                                                                            active: true))
+        let vm = createViewModel(storage: storage)
         stores.whenReceivingAction(ofType: StatsActionV4.self) { action in
             switch action {
             case let .retrieveCustomStats(_, _, _, _, _, _, _, completion):
@@ -39,6 +44,12 @@ final class AnalyticsHubViewModelTests: XCTestCase {
             case let .retrieveSiteSummaryStats(_, _, _, _, _, _, completion):
                 let siteStats = SiteSummaryStats.fake().copy(visitors: 30, views: 53)
                 completion(.success(siteStats))
+            case let .retrieveProductBundleStats(_, _, _, _, _, _, _, completion):
+                let bundleStats = ProductBundleStats.fake().copy(totals: .fake().copy(totalItemsSold: 3))
+                completion(.success(bundleStats))
+            case let .retrieveTopProductBundles(_, _, _, _, _, completion):
+                let topBundle = ProductsReportItem.fake()
+                completion(.success([topBundle]))
             default:
                 break
             }
@@ -53,12 +64,15 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         XCTAssertFalse(vm.productsStatsCard.isRedacted)
         XCTAssertFalse(vm.itemsSoldCard.isRedacted)
         XCTAssertFalse(vm.sessionsCard.isRedacted)
+        XCTAssertFalse(vm.bundlesCard.isRedacted)
 
         XCTAssertEqual(vm.revenueCard.leadingValue, "$62")
         XCTAssertEqual(vm.ordersCard.leadingValue, "15")
         XCTAssertEqual(vm.productsStatsCard.itemsSold, "5")
         XCTAssertEqual(vm.itemsSoldCard.itemsSoldData.count, 1)
         XCTAssertEqual(vm.sessionsCard.leadingValue, "53")
+        XCTAssertEqual(vm.bundlesCard.bundlesSold, "3")
+        XCTAssertEqual(vm.bundlesCard.bundlesSoldData.count, 1)
     }
 
     func test_cards_viewmodels_redacted_while_updating_from_network() async {
@@ -68,22 +82,37 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         var loadingProductsStatsCardRedacted: Bool = false
         var loadingItemsSoldCardRedacted: Bool = false
         var loadingSessionsCardRedacted: Bool = false
+        var loadingBundlesStatsCardRedacted: Bool = false
+        var loadingBundlesSoldCardRedacted: Bool = false
+        let storage = MockStorageManager()
+        storage.insertSampleSystemPlugin(readOnlySystemPlugin: .fake().copy(siteID: sampleSiteID,
+                                                                            name: SitePlugin.SupportedPlugin.WCProductBundles.first,
+                                                                            active: true))
+        let vm = createViewModel(storage: storage)
         stores.whenReceivingAction(ofType: StatsActionV4.self) { action in
             switch action {
             case let .retrieveCustomStats(_, _, _, _, _, _, _, completion):
                 let stats = OrderStatsV4.fake().copy(totals: .fake().copy(totalOrders: 15, totalItemsSold: 5, grossRevenue: 62))
-                loadingRevenueCardRedacted = self.vm.revenueCard.isRedacted
-                loadingOrdersCardRedacted = self.vm.ordersCard.isRedacted
-                loadingProductsStatsCardRedacted = self.vm.productsStatsCard.isRedacted
-                loadingItemsSoldCardRedacted = self.vm.itemsSoldCard.isRedacted
+                loadingRevenueCardRedacted = vm.revenueCard.isRedacted
+                loadingOrdersCardRedacted = vm.ordersCard.isRedacted
+                loadingProductsStatsCardRedacted = vm.productsStatsCard.isRedacted
                 completion(.success(stats))
             case let .retrieveTopEarnerStats(_, _, _, _, _, _, _, _, completion):
                 let topEarners = TopEarnerStats.fake().copy(items: [.fake()])
+                loadingItemsSoldCardRedacted = vm.itemsSoldCard.isRedacted
                 completion(.success(topEarners))
             case let .retrieveSiteSummaryStats(_, _, _, _, _, _, completion):
                 let siteStats = SiteSummaryStats.fake()
-                loadingSessionsCardRedacted = self.vm.sessionsCard.isRedacted
+                loadingSessionsCardRedacted = vm.sessionsCard.isRedacted
                 completion(.success(siteStats))
+            case let .retrieveProductBundleStats(_, _, _, _, _, _, _, completion):
+                let bundleStats = ProductBundleStats.fake().copy(totals: .fake().copy(totalItemsSold: 3))
+                loadingBundlesStatsCardRedacted = vm.bundlesCard.isRedacted
+                completion(.success(bundleStats))
+            case let .retrieveTopProductBundles(_, _, _, _, _, completion):
+                let topBundle = ProductsReportItem.fake()
+                loadingBundlesSoldCardRedacted = vm.bundlesCard.isRedacted
+                completion(.success([topBundle]))
             default:
                 break
             }
@@ -98,6 +127,12 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         XCTAssertTrue(loadingProductsStatsCardRedacted)
         XCTAssertTrue(loadingItemsSoldCardRedacted)
         XCTAssertTrue(loadingSessionsCardRedacted)
+        XCTAssertTrue(loadingBundlesStatsCardRedacted)
+        XCTAssertTrue(loadingBundlesSoldCardRedacted)
+    }
+
+    func test_bundles_card_shows_correct_loading_state_and_data_with_network_update() {
+        // Given
     }
 
     func test_session_card_is_hidden_for_custom_range() async {

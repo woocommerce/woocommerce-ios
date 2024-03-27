@@ -113,6 +113,17 @@ final class AnalyticsHubViewModel: ObservableObject {
                                     isRedacted: isLoadingOrderStats || isLoadingSiteStats)
     }
 
+    /// Product Bundles Card ViewModel
+    ///
+    var bundlesCard: AnalyticsBundlesReportCardViewModel {
+        AnalyticsBundlesReportCardViewModel(currentPeriodStats: currentBundleStats,
+                                            previousPeriodStats: previousBundleStats,
+                                            bundlesSoldReport: bundlesSoldStats,
+                                            timeRange: timeRangeSelectionType,
+                                            isRedacted: isLoadingBundleStats,
+                                            usageTracksEventEmitter: usageTracksEventEmitter)
+    }
+
     /// View model for `AnalyticsHubCustomizeView`, to customize the cards in the Analytics Hub.
     ///
     @Published var customizeAnalyticsViewModel: AnalyticsHubCustomizeViewModel?
@@ -208,6 +219,18 @@ final class AnalyticsHubViewModel: ObservableObject {
     ///
     @Published private var siteStats: SiteSummaryStats? = nil
 
+    /// Product bundle stats for the current selected time period. Used in the bundles card.
+    ///
+    @Published private var currentBundleStats: ProductBundleStats? = nil
+
+    /// Product bundle stats for the previous selected time period. Used in the bundles card.
+    ///
+    @Published private var previousBundleStats: ProductBundleStats? = nil
+
+    /// Stats fo the current top bundles sold. Used in the bundles card.
+    ///
+    @Published private var bundlesSoldStats: [ProductsReportItem]? = nil
+
     /// Loading state for order stats.
     ///
     @Published private var isLoadingOrderStats = false
@@ -219,6 +242,10 @@ final class AnalyticsHubViewModel: ObservableObject {
     /// Loading state for site stats.
     ///
     @Published private var isLoadingSiteStats = false
+
+    /// Loading state for bundle stats.
+    ///
+    @Published private var isLoadingBundleStats = false
 
     /// Time Range selection data defining the current and previous time period
     ///
@@ -308,6 +335,12 @@ private extension AnalyticsHubViewModel {
                 }
                 await self.retrieveSiteStats(currentTimeRange: currentTimeRange)
             }
+            group.addTask {
+                guard cards.contains(.bundles) else {
+                    return
+                }
+                await self.retrieveBundleStats(currentTimeRange: currentTimeRange, previousTimeRange: previousTimeRange, timeZone: self.timeZone)
+            }
         }
     }
 
@@ -373,6 +406,32 @@ private extension AnalyticsHubViewModel {
     }
 
     @MainActor
+    func retrieveBundleStats(currentTimeRange: AnalyticsHubTimeRange, previousTimeRange: AnalyticsHubTimeRange, timeZone: TimeZone) async {
+        isLoadingBundleStats = true
+        defer {
+            isLoadingBundleStats = false
+        }
+
+        async let currentPeriodRequest = retrieveBundleStats(timeZone: timeZone,
+                                                             earliestDateToInclude: currentTimeRange.start,
+                                                             latestDateToInclude: currentTimeRange.end,
+                                                             forceRefresh: true)
+        async let previousPeriodRequest = retrieveBundleStats(timeZone: timeZone,
+                                                              earliestDateToInclude: previousTimeRange.start,
+                                                              latestDateToInclude: previousTimeRange.end,
+                                                              forceRefresh: true)
+        async let bundlesSoldRequest = retrieveTopBundlesSoldStats(earliestDateToInclude: currentTimeRange.start,
+                                                                   latestDateToInclude: currentTimeRange.end,
+                                                                   forceRefresh: true)
+
+        let allStats: (currentPeriodStats: ProductBundleStats, previousPeriodStats: ProductBundleStats, bundlesSold: [ProductsReportItem])?
+        allStats = try? await (currentPeriodRequest, previousPeriodRequest, bundlesSoldRequest)
+        self.currentBundleStats = allStats?.currentPeriodStats
+        self.previousBundleStats = allStats?.previousPeriodStats
+        self.bundlesSoldStats = allStats?.bundlesSold
+    }
+
+    @MainActor
     func retrieveStats(timeZone: TimeZone,
                        earliestDateToInclude: Date,
                        latestDateToInclude: Date,
@@ -426,6 +485,43 @@ private extension AnalyticsHubViewModel {
                                                                 quantity: timeRangeSelectionType.quantity,
                                                                 latestDateToInclude: latestDateToInclude,
                                                                 saveInStorage: false) { result in
+                continuation.resume(with: result)
+            }
+            stores.dispatch(action)
+        }
+    }
+
+    @MainActor
+    /// Retrieves product bundle stats using the `retrieveProductBundleStats` action.
+    ///
+    func retrieveBundleStats(timeZone: TimeZone,
+                             earliestDateToInclude: Date,
+                             latestDateToInclude: Date,
+                             forceRefresh: Bool) async throws -> ProductBundleStats {
+        try await withCheckedThrowingContinuation { continuation in
+            let action = StatsActionV4.retrieveProductBundleStats(siteID: siteID,
+                                                                  unit: timeRangeSelectionType.granularity,
+                                                                  timeZone: timeZone,
+                                                                  earliestDateToInclude: earliestDateToInclude,
+                                                                  latestDateToInclude: latestDateToInclude,
+                                                                  quantity: timeRangeSelectionType.intervalSize,
+                                                                  forceRefresh: forceRefresh) { result in
+                continuation.resume(with: result)
+            }
+            stores.dispatch(action)
+        }
+    }
+
+    @MainActor
+    /// Retrieves top bundles sold stats using the `retrieveTopProductBundles` action.
+    ///
+    func retrieveTopBundlesSoldStats(earliestDateToInclude: Date, latestDateToInclude: Date, forceRefresh: Bool) async throws -> [ProductsReportItem] {
+        return try await withCheckedThrowingContinuation { continuation in
+            let action = StatsActionV4.retrieveTopProductBundles(siteID: siteID,
+                                                                 timeZone: timeZone,
+                                                                 earliestDateToInclude: earliestDateToInclude,
+                                                                 latestDateToInclude: latestDateToInclude,
+                                                                 quantity: Constants.maxNumberOfTopItemsSold) { result in
                 continuation.resume(with: result)
             }
             stores.dispatch(action)

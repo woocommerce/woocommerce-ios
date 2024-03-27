@@ -19,7 +19,7 @@ final class ConnectivityToolViewController: UIHostingController<ConnectivityTool
         let view = ConnectivityTool(cards: viewModel.cards)
         super.init(rootView: view)
         self.hidesBottomBarWhenPushed = true
-        self.title = NSLocalizedString("Connectivity Test", comment: "Screen title for the connectivity tool")
+        self.title = NSLocalizedString("Troubleshoot Connection", comment: "Screen title for the connectivity tool")
     }
 
     override func viewDidLoad() {
@@ -68,24 +68,38 @@ struct ConnectivityTool: View {
     ///
     var onContactSupportTapped: (() -> ())?
 
+    /// Internal layout values
+    ///
+    private static let dividerVerticalSpacing = 8.0
+
     var body: some View {
         VStack(alignment: .center, spacing: .zero) {
 
             Spacer()
 
             ScrollView {
+
+                Text(Localization.subtitle)
+                    .calloutStyle()
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding()
+
                 ForEach(cards, id: \.title) { card in
                     ConnectivityToolCard(icon: card.icon, title: card.title, state: card.state)
+                        .padding(.horizontal)
+
+                    Divider()
+                        .padding(.leading)
+                        .padding(.vertical, Self.dividerVerticalSpacing)
                 }
             }
-            .padding(.horizontal)
 
             Divider().ignoresSafeArea()
 
             Button(Localization.contactSupport) {
                 onContactSupportTapped?()
             }
-            .buttonStyle(PrimaryButtonStyle())
+            .buttonStyle(SecondaryButtonStyle())
             .padding()
         }
         .background(Color(uiColor: .listBackground))
@@ -94,6 +108,8 @@ struct ConnectivityTool: View {
 
 private extension ConnectivityTool {
     enum Localization {
+        static let subtitle = NSLocalizedString("Please wait while we attempt to identify your connection issue.",
+                                                comment: "Subtitle on the connectivity tool screen")
         static let contactSupport = NSLocalizedString("Contact Support",
                                                       comment: "Contact support button in the connectivity tool screen")
     }
@@ -109,14 +125,16 @@ struct ConnectivityToolCard: View {
 
         /// Represents an action to could be performed when presenting an error.
         ///
-        struct ErrorAction {
+        struct Action {
             let title: String
+            let systemImage: String
             let action: () -> ()
         }
 
         case inProgress
         case success
-        case error(String, ErrorAction?)
+        case empty(String)
+        case error(String, [Action])
 
         /// Builds the icon based on the state
         ///
@@ -127,8 +145,10 @@ struct ConnectivityToolCard: View {
             case .success:
                 Image(uiImage: .checkCircleImage)
                     .environment(\.colorScheme, .light)
+            case .empty:
+                EmptyView()
             case .error:
-                Image(uiImage: .checkPartialCircleImage.withRenderingMode(.alwaysTemplate))
+                Image(uiImage: .exclamationFilledImage)
                     .foregroundColor(Color.init(uiColor: .error))
             }
         }
@@ -150,15 +170,18 @@ struct ConnectivityToolCard: View {
     enum Icon {
         case system(String)
         case uiImage(UIImage)
+        case empty
 
         /// Builds the asset based on the icon
         ///
-        func buildAsset() -> Image {
+        @ViewBuilder func buildAsset() -> some View {
             switch self {
             case .system(let name):
-                return Image(systemName: name)
+                Image(systemName: name)
             case .uiImage(let uiImage):
-                return Image(uiImage: uiImage)
+                Image(uiImage: uiImage)
+            case .empty:
+                EmptyView()
             }
         }
     }
@@ -177,50 +200,48 @@ struct ConnectivityToolCard: View {
 
     /// Internal layout values
     ///
-    @ScaledMetric private var iconSize = 40.0
-    private static let cornerRadius = 4.0
     private static let verticalSpacing = 16.0
-    private static let cardSpacing = 8.0
 
     var body: some View {
         VStack(spacing: Self.verticalSpacing) {
             HStack {
 
-                Circle()
-                    .fill(Color(uiColor: .listBackground))
-                    .overlay {
-                        icon.buildAsset()
-                            .foregroundColor(Color(uiColor: .primary))
-                    }
-                    .frame(width: iconSize, height: iconSize)
+                icon.buildAsset()
+                    .foregroundColor(Color(uiColor: .text))
 
                 Text(title)
                     .bodyStyle()
+                    .bold()
 
                 Spacer()
 
                 state.buildIcon()
             }
 
-            if case let .error(message, buttonAction) = state {
-                Text(message)
-                    .foregroundColor(Color(uiColor: .error))
-                    .subheadlineStyle()
-                    .padding(.horizontal, 6)
-                    .frame(maxWidth: .infinity, alignment: .leading)
+            switch state {
+            case .empty(let message):
+                cardMessage(message)
 
-                if let buttonAction {
-                    Button(buttonAction.title, action: buttonAction.action)
-                        .buttonStyle(SecondaryButtonStyle())
+            case let .error(message, actions):
+                cardMessage(message)
+
+                ForEach(actions, id: \.title) { action in
+                    Button(action.title, systemImage: action.systemImage, action: action.action)
+                        .foregroundColor(Color(uiColor: .accent))
+                        .frame(maxWidth: .infinity, alignment: .leading)
                 }
+
+            default:
+                EmptyView()
             }
         }
-        .padding()
-        .background(Color(uiColor: .listForeground(modal: false)))
-        .cornerRadius(Self.cornerRadius)
-        .padding(.horizontal)
-        .padding(.vertical, Self.cardSpacing)
+    }
 
+    @ViewBuilder func cardMessage(_ message: String) -> some View {
+        Text(message)
+            .foregroundColor(Color(uiColor: .text))
+            .subheadlineStyle()
+            .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
 
@@ -228,12 +249,14 @@ struct ConnectivityToolCard: View {
     NavigationView {
         ConnectivityTool(cards: [
             .init(title: "Internet Connection", icon: .system("wifi"), state: .success),
-            .init(title: "WordPress.com servers", icon: .system("server.rack"), state: .success),
-            .init(title: "Your Site",
+            .init(title: "Connecting to WordPress.com servers", icon: .system("server.rack"), state: .success),
+            .init(title: "Connecting to your site",
                   icon: .system("storefront"),
-                  state: .error("Your site is not responding properly\nPlease reach out to your host for further assistance",
-                    .init(title: "Read More", action: {}))),
-            .init(title: "Your site orders", icon: .system("list.clipboard"), state: .inProgress)
+                  state: .error("Your site is taking too long to respond.\n\nPlease contact your hosting provider for further assistance.",
+                    [.init(title: "Retry connection", systemImage: "arrow.clockwise", action: {}),
+                     .init(title: "Read More", systemImage: "arrow.up.forward.app", action: {})])),
+            .init(title: "Fetching your site orders", icon: .system("list.clipboard"), state: .inProgress),
+            .init(title: "No connection issues", icon: .empty, state: .empty("If your data still isn’t loading, contact our support team for assistance."))
         ])
             .navigationTitle("Connectivity Test")
             .navigationBarTitleDisplayMode(.inline)

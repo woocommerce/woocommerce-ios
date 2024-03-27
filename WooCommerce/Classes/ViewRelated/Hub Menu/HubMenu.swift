@@ -146,7 +146,7 @@ private extension HubMenu {
             case HubMenuViewModel.Payments.id:
                 paymentsView
             case HubMenuViewModel.Blaze.id:
-                BlazeCampaignListView(viewModel: .init(siteID: viewModel.siteID))
+                BlazeCampaignListHostingControllerRepresentable(siteID: viewModel.siteID)
             case HubMenuViewModel.WoocommerceAdmin.id:
                 webView(url: viewModel.woocommerceAdminURL,
                         title: HubMenuViewModel.Localization.woocommerceAdmin,

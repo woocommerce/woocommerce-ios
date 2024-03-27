@@ -6,6 +6,7 @@
 
 17.9
 -----
+- [***] Blaze: revamped the Blaze advertising flow with a native implementation to enhance user experience. This allows merchants to seamlessly create and manage their campaigns directly within the Woo mobile apps, without opening the flow in a webview. [https://github.com/woocommerce/woocommerce-ios/pull/12361]
 - [**] Added 4 home screen quick actions: "New Order", "Orders", "Add a product", "Collect Payment" [https://github.com/woocommerce/woocommerce-ios/pull/12264/]
 - [Internal] Payments: Updated StripeTerminal pod to 3.3.1 [https://github.com/woocommerce/woocommerce-ios/pull/12078]
 

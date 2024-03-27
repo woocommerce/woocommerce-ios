@@ -47,24 +47,13 @@ final class OrderListViewController: UIViewController, GhostableViewController {
     @IBOutlet weak var tableView: UITableView!
 
     /// The data source that is bound to `tableView`.
-    private lazy var dataSource: UITableViewDiffableDataSource<String, FetchResultSnapshotObjectID> = {
-        // Call loadViewIfNeeded to make sure IBOutlets are properly set when used in lazy vars
-        // - for normal app usage the call will not do anything since the views/IBOutlets will be setup before this call
-        // - when used for tests it is important to call it since IBOutlets might be nil in moment of using/creating dataSource
-        self.loadViewIfNeeded()
-        let dataSource = UITableViewDiffableDataSource<String, FetchResultSnapshotObjectID>(
-            tableView: self.tableView,
-            cellProvider: self.makeCellProvider()
-        )
-        dataSource.defaultRowAnimation = .fade
-        return dataSource
-    }()
+    private var dataSource: UITableViewDiffableDataSource<String, FetchResultSnapshotObjectID>?
 
     /// Returns the first Order in the OrderList datasource
     ///
     var firstAvailableOrder: Order? {
         let firstIndexPath = IndexPath(row: 0, section: 0)
-        guard let objectID = dataSource.itemIdentifier(for: firstIndexPath),
+        guard let objectID = dataSource?.itemIdentifier(for: firstIndexPath),
               let orderViewModel = viewModel.detailsViewModel(withID: objectID) else {
             return nil
         }
@@ -181,6 +170,7 @@ final class OrderListViewController: UIViewController, GhostableViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        createDataSource()
 
         registerUserActivity()
 
@@ -191,6 +181,20 @@ final class OrderListViewController: UIViewController, GhostableViewController {
         configureSyncingCoordinator()
 
         configureStorePlanBannerPresenter()
+    }
+
+    private func createDataSource() {
+        guard dataSource == nil else {
+            return
+        }
+
+        let dataSource = UITableViewDiffableDataSource<String, FetchResultSnapshotObjectID>(
+            tableView: tableView,
+            cellProvider: makeCellProvider()
+        )
+        dataSource.defaultRowAnimation = .fade
+
+        self.dataSource = dataSource
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -285,7 +289,7 @@ private extension OrderListViewController {
         /// Update the `dataSource` whenever there is a new snapshot.
         viewModel.snapshot.sink { [weak self] snapshot in
             guard let self = self else { return }
-            self.dataSource.apply(snapshot)
+            dataSource?.apply(snapshot)
 
             transitionToResultsUpdatedState()
 
@@ -513,7 +517,8 @@ extension OrderListViewController {
     /// Whenever we're sync'ing an Orders Page that's beyond what we're currently displaying, this method will return *true*.
     ///
     private func mustStartFooterSpinner() -> Bool {
-        guard let highestPageBeingSynced = syncingCoordinator.highestPageBeingSynced else {
+        guard let highestPageBeingSynced = syncingCoordinator.highestPageBeingSynced,
+              let dataSource else {
             return false
         }
 
@@ -568,7 +573,7 @@ private extension OrderListViewController {
     ///
     func selectFirstItemIfPossible() {
         let firstIndexPath = IndexPath(row: 0, section: 0)
-        guard let objectID = dataSource.itemIdentifier(for: firstIndexPath),
+        guard let objectID = dataSource?.itemIdentifier(for: firstIndexPath),
               let orderDetailsViewModel = viewModel.detailsViewModel(withID: objectID),
                 state != .empty else {
             selectedOrderID = nil
@@ -584,6 +589,9 @@ private extension OrderListViewController {
     }
 
     func indexPath(for orderID: Int64) -> IndexPath? {
+        guard let dataSource else {
+            return nil
+        }
         for identifier in dataSource.snapshot().itemIdentifiers {
             if let detailsViewModel = viewModel.detailsViewModel(withID: identifier),
                detailsViewModel.order.orderID == orderID,
@@ -601,6 +609,9 @@ extension OrderListViewController {
     /// - Parameter orderID: ID of the order to select in the list.
     /// - Returns: Whether the order to select is in the list already (i.e. the order has been fetched and exists locally).
     func selectOrderFromListIfPossible(for orderID: Int64) -> Bool {
+        guard let dataSource else {
+            return false
+        }
         for identifier in dataSource.snapshot().itemIdentifiers {
             if let detailsViewModel = viewModel.detailsViewModel(withID: identifier),
                detailsViewModel.order.orderID == orderID {
@@ -783,7 +794,7 @@ extension OrderListViewController: UITableViewDelegate {
             return
         }
 
-        guard let objectID = dataSource.itemIdentifier(for: indexPath),
+        guard let objectID = dataSource?.itemIdentifier(for: indexPath),
             let orderDetailsViewModel = viewModel.detailsViewModel(withID: objectID) else {
                 return
         }
@@ -807,7 +818,7 @@ extension OrderListViewController: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        guard let itemIndex = dataSource.indexOfItem(for: indexPath) else {
+        guard let itemIndex = dataSource?.indexOfItem(for: indexPath) else {
             return
         }
 
@@ -824,7 +835,7 @@ extension OrderListViewController: UITableViewDelegate {
         }
 
         header.leftText = {
-            guard let sectionIdentifier = dataSource.sectionIdentifier(for: section) else {
+            guard let sectionIdentifier = dataSource?.sectionIdentifier(for: section) else {
                 return nil
             }
 
@@ -844,7 +855,7 @@ extension OrderListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         /// Fetch the order view model and make sure the order is not marked as completed before proceeding.
         ///
-        guard let objectID = dataSource.itemIdentifier(for: indexPath),
+        guard let objectID = dataSource?.itemIdentifier(for: indexPath),
               let cellViewModel = viewModel.cellViewModel(withID: objectID),
               cellViewModel.status != .completed else {
                   return nil
@@ -894,6 +905,9 @@ private extension OrderListViewController {
     /// we've got cached results, or not.
     ///
     func transitionToSyncingState() {
+        guard let dataSource else {
+            return
+        }
         state = dataSource.isEmpty ? .placeholder : .syncing
     }
 
@@ -901,6 +915,9 @@ private extension OrderListViewController {
     /// Transitions to `.results` or `.empty`.
     ///
     func transitionToResultsUpdatedState() {
+        guard let dataSource else {
+            return
+        }
         state = dataSource.isEmpty ? .empty : .results
     }
 }
@@ -934,7 +951,7 @@ private extension OrderListViewController {
             .map { section in
                 (0...tableView.numberOfRows(inSection: section) - 1)
                     .compactMap { row in
-                        dataSource.itemIdentifier(for: IndexPath(row: row, section: section))
+                        dataSource?.itemIdentifier(for: IndexPath(row: row, section: section))
                     }
             }
 

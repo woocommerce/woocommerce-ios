@@ -569,6 +569,8 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     }
 
     func showSiteCreationGuide(in navigationController: UINavigationController) {
+        analytics.track(event: .StoreCreation.loginPrologueStartingANewStoreTapped())
+
         guard let url = try? AuthenticationConstants.hostingURL.asURL() else {
             return
         }

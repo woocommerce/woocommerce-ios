@@ -135,7 +135,7 @@ extension AnalyticsBundlesReportCardViewModel {
         return bundlesSold.map { bundle in
             TopPerformersRow.Data(imageURL: URL(string: bundle.imageUrl ?? ""),
                                   name: bundle.productName,
-                                  details: Localization.netSales(value: bundle.total.description),
+                                  details: Localization.netSales(value: bundle.totalString),
                                   value: bundle.quantity.description)
         }
     }

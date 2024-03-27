@@ -2064,6 +2064,7 @@
 		CE91BEA029FBE9E100B6E1AF /* QuantityRulesViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE91BE9F29FBE9E100B6E1AF /* QuantityRulesViewModelTests.swift */; };
 		CEA16F3A20FD0C8C0061B4E1 /* WooAnalytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA16F3920FD0C8C0061B4E1 /* WooAnalytics.swift */; };
 		CEA455C12BB3446D00D932CF /* BundlesReportCardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA455C02BB3446D00D932CF /* BundlesReportCardViewModel.swift */; };
+		CEA455C52BB44F9E00D932CF /* ProductsReportItem+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA455C42BB44F9E00D932CF /* ProductsReportItem+Woo.swift */; };
 		CEA9C8E02B6D323A000FE114 /* AnalyticsWebReportTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA9C8DF2B6D323A000FE114 /* AnalyticsWebReportTests.swift */; };
 		CEC8188C2A3B7C8B00459843 /* AppStartupWaitingTimeTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEC8188B2A3B7C8B00459843 /* AppStartupWaitingTimeTracker.swift */; };
 		CEC8188E2A3C75DD00459843 /* AppStartupWaitingTimeTrackerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEC8188D2A3C75DD00459843 /* AppStartupWaitingTimeTrackerTests.swift */; };
@@ -4805,6 +4806,7 @@
 		CE91BE9F29FBE9E100B6E1AF /* QuantityRulesViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuantityRulesViewModelTests.swift; sourceTree = "<group>"; };
 		CEA16F3920FD0C8C0061B4E1 /* WooAnalytics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooAnalytics.swift; sourceTree = "<group>"; };
 		CEA455C02BB3446D00D932CF /* BundlesReportCardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BundlesReportCardViewModel.swift; sourceTree = "<group>"; };
+		CEA455C42BB44F9E00D932CF /* ProductsReportItem+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductsReportItem+Woo.swift"; sourceTree = "<group>"; };
 		CEA9C8DF2B6D323A000FE114 /* AnalyticsWebReportTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsWebReportTests.swift; sourceTree = "<group>"; };
 		CEC8188B2A3B7C8B00459843 /* AppStartupWaitingTimeTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStartupWaitingTimeTracker.swift; sourceTree = "<group>"; };
 		CEC8188D2A3C75DD00459843 /* AppStartupWaitingTimeTrackerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStartupWaitingTimeTrackerTests.swift; sourceTree = "<group>"; };
@@ -9384,6 +9386,7 @@
 				CECC759423D6057E00486676 /* OrderItem+Woo.swift */,
 				CECC759623D607C900486676 /* OrderItemRefund+Woo.swift */,
 				7435E58D21C0151B00216F0F /* OrderNote+Woo.swift */,
+				CEA455C42BB44F9E00D932CF /* ProductsReportItem+Woo.swift */,
 				45E3C8F225E7D30300102E84 /* ShippingLabelAddress+Woo.swift */,
 				D8C2A28723190B2300F503E9 /* StorageProductReview+Woo.swift */,
 				B59D1EE92190AE96009D1978 /* StorageNote+Woo.swift */,
@@ -13921,6 +13924,7 @@
 				021125A52578E5730075AD2A /* BoldableTextView.swift in Sources */,
 				CE85FD5A20F7A7640080B73E /* TableFooterView.swift in Sources */,
 				CC254F2D26C17AB5005F3C82 /* BottomButtonView.swift in Sources */,
+				CEA455C52BB44F9E00D932CF /* ProductsReportItem+Woo.swift in Sources */,
 				DEF36DE92898D3CF00178AC2 /* AuthenticatedWebViewController.swift in Sources */,
 				68E674A72A4DAAA60034BA1E /* UpgradeWaitingView.swift in Sources */,
 				74334F36214AB130006D6AC5 /* ProductTableViewCell.swift in Sources */,

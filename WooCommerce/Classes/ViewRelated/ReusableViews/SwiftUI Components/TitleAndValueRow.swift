@@ -134,7 +134,7 @@ private extension Text {
         case (.content, true, true):
             self.modifier(HeadlineLinkStyle())
         case (.content, false, false):
-            self.modifier(BodyStyle(isEnabled: true))
+            self.modifier(BodyStyle(isEnabled: true, opacity: 1.0))
         case (.content, false, true):
             self.modifier(LinkStyle())
         }

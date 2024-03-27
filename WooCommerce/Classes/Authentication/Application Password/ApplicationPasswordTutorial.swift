@@ -65,42 +65,41 @@ struct ApplicationPasswordTutorial: View {
         VStack(spacing: .zero) {
             ScrollView {
                 Text(errorDescription)
-                    .subheadlineStyle()
-                    .multilineTextAlignment(.leading)
-                    .padding([.bottom, .top])
+                    .bodyStyle()
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding()
 
                 Divider()
+                    .padding(.leading)
+
 
                 Text(Localization.tutorial)
-                    .foregroundColor(Color(uiColor: .text))
-                    .footnoteStyle(isEnabled: true)
+                    .bodyStyle()
                     .multilineTextAlignment(.leading)
-                    .padding(.bottom)
+                    .padding([.horizontal, .top])
 
                 Image(uiImage: .appPasswordTutorialImage)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
-                    .padding(.horizontal, Layout.imagePadding)
 
                 Text(Localization.tutorial2)
-                    .foregroundColor(Color(uiColor: .text))
-                    .footnoteStyle(isEnabled: true)
+                    .bodyStyle()
                     .multilineTextAlignment(.leading)
-                    .padding(.bottom)
+                    .padding([.horizontal, .bottom])
 
                 Divider()
+                    .padding(.leading)
 
                 Text(Localization.contactSupport)
-                    .subheadlineStyle()
+                    .bodyStyle()
                     .multilineTextAlignment(.leading)
                     .padding()
             }
-            .padding(.horizontal)
 
             Divider()
                 .ignoresSafeArea()
 
-            VStack {
+            VStack(spacing: Layout.bottomButtonsSpacing) {
 
                 Button(Localization.continueTitle) {
                     continueButtonTapped?()
@@ -142,7 +141,7 @@ private extension ApplicationPasswordTutorial {
     }
 
     enum Layout {
-        static let imagePadding = 60.0
+        static let bottomButtonsSpacing: CGFloat = 16.0
     }
 }
 

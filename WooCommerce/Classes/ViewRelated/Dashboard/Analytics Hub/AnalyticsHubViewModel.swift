@@ -113,6 +113,17 @@ final class AnalyticsHubViewModel: ObservableObject {
                                     isRedacted: isLoadingOrderStats || isLoadingSiteStats)
     }
 
+    /// Product Bundles Card ViewModel
+    ///
+    var bundlesCard: AnalyticsBundlesReportCardViewModel {
+        AnalyticsBundlesReportCardViewModel(currentPeriodStats: currentBundleStats,
+                                            previousPeriodStats: previousBundleStats,
+                                            bundlesSoldReport: bundlesSoldStats,
+                                            timeRange: timeRangeSelectionType,
+                                            isRedacted: isLoadingBundleStats,
+                                            usageTracksEventEmitter: usageTracksEventEmitter)
+    }
+
     /// View model for `AnalyticsHubCustomizeView`, to customize the cards in the Analytics Hub.
     ///
     @Published var customizeAnalyticsViewModel: AnalyticsHubCustomizeViewModel?
@@ -208,6 +219,18 @@ final class AnalyticsHubViewModel: ObservableObject {
     ///
     @Published private var siteStats: SiteSummaryStats? = nil
 
+    /// Product bundle stats for the current selected time period. Used in the bundles card.
+    ///
+    @Published private var currentBundleStats: ProductBundleStats? = nil
+
+    /// Product bundle stats for the previous selected time period. Used in the bundles card.
+    ///
+    @Published private var previousBundleStats: ProductBundleStats? = nil
+
+    /// Stats fo the current top bundles sold. Used in the bundles card.
+    ///
+    @Published private var bundlesSoldStats: [ProductsReportItem]? = nil
+
     /// Loading state for order stats.
     ///
     @Published private var isLoadingOrderStats = false
@@ -219,6 +242,10 @@ final class AnalyticsHubViewModel: ObservableObject {
     /// Loading state for site stats.
     ///
     @Published private var isLoadingSiteStats = false
+
+    /// Loading state for bundle stats.
+    ///
+    @Published private var isLoadingBundleStats = false
 
     /// Time Range selection data defining the current and previous time period
     ///

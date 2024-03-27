@@ -133,6 +133,7 @@ struct ConnectivityToolCard: View {
 
         case inProgress
         case success
+        case empty(String)
         case error(String, [Action])
 
         /// Builds the icon based on the state
@@ -144,6 +145,8 @@ struct ConnectivityToolCard: View {
             case .success:
                 Image(uiImage: .checkCircleImage)
                     .environment(\.colorScheme, .light)
+            case .empty:
+                EmptyView()
             case .error:
                 Image(uiImage: .exclamationFilledImage)
                     .foregroundColor(Color.init(uiColor: .error))
@@ -167,15 +170,18 @@ struct ConnectivityToolCard: View {
     enum Icon {
         case system(String)
         case uiImage(UIImage)
+        case empty
 
         /// Builds the asset based on the icon
         ///
-        func buildAsset() -> Image {
+        @ViewBuilder func buildAsset() -> some View {
             switch self {
             case .system(let name):
-                return Image(systemName: name)
+                Image(systemName: name)
             case .uiImage(let uiImage):
-                return Image(uiImage: uiImage)
+                Image(uiImage: uiImage)
+            case .empty:
+                EmptyView()
             }
         }
     }
@@ -212,19 +218,30 @@ struct ConnectivityToolCard: View {
                 state.buildIcon()
             }
 
-            if case let .error(message, actions) = state {
-                Text(message)
-                    .foregroundColor(Color(uiColor: .text))
-                    .subheadlineStyle()
-                    .frame(maxWidth: .infinity, alignment: .leading)
+            switch state {
+            case .empty(let message):
+                cardMessage(message)
+
+            case let .error(message, actions):
+                cardMessage(message)
 
                 ForEach(actions, id: \.title) { action in
                     Button(action.title, systemImage: action.systemImage, action: action.action)
                         .foregroundColor(Color(uiColor: .accent))
                         .frame(maxWidth: .infinity, alignment: .leading)
                 }
+
+            default:
+                EmptyView()
             }
         }
+    }
+
+    @ViewBuilder func cardMessage(_ message: String) -> some View {
+        Text(message)
+            .foregroundColor(Color(uiColor: .text))
+            .subheadlineStyle()
+            .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
 
@@ -238,7 +255,8 @@ struct ConnectivityToolCard: View {
                   state: .error("Your site is taking too long to respond.\n\nPlease contact your hosting provider for further assistance.",
                     [.init(title: "Retry connection", systemImage: "arrow.clockwise", action: {}),
                      .init(title: "Read More", systemImage: "arrow.up.forward.app", action: {})])),
-            .init(title: "Fetching your site orders", icon: .system("list.clipboard"), state: .inProgress)
+            .init(title: "Fetching your site orders", icon: .system("list.clipboard"), state: .inProgress),
+            .init(title: "No connection issues", icon: .empty, state: .empty("If your data still isn’t loading, contact our support team for assistance."))
         ])
             .navigationTitle("Connectivity Test")
             .navigationBarTitleDisplayMode(.inline)

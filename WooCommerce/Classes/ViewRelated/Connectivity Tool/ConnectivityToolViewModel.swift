@@ -68,6 +68,9 @@ final class ConnectivityToolViewModel {
                 return // Exit connectivity test.
             }
         }
+
+        // Add no connections issues card if all tests are successful.
+        cards.append(noConnectionsIssueState())
     }
 
     /// Perform the test for a provided test case.
@@ -251,6 +254,13 @@ final class ConnectivityToolViewModel {
             }
         }()
         ServiceLocator.analytics.track(event: .ConnectivityTool.requestResponse(test: eventTest, success: success, timeTaken: timeTaken))
+    }
+
+    private func noConnectionsIssueState() -> ConnectivityTool.Card {
+        .init(title: NSLocalizedString("No connection issues", comment: "Title for when there are no connection issues in the connectivity tool screen"),
+              icon: .empty,
+              state: .empty(NSLocalizedString("If your data still isn’t loading, contact our support team for assistance.",
+                                              comment: "Info message when there are no connection issues in the connectivity tool screen")))
     }
 }
 

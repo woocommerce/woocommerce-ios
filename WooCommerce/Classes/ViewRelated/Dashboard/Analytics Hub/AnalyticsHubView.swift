@@ -147,7 +147,7 @@ private extension AnalyticsHubView {
                 AnalyticsReportCard(viewModel: viewModel.sessionsCard)
             }
         case .bundles:
-            EmptyView() // TODO-12160: Add bundles card UI
+            AnalyticsItemsSoldCard(bundlesViewModel: viewModel.bundlesCard)
         }
     }
 }

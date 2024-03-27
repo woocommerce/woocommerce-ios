@@ -32,9 +32,9 @@ final class AnalyticsHubCustomizeViewModel: ObservableObject, Identifiable {
     ///
     private let onSave: (([AnalyticsCard]) -> Void)?
 
-    /// Any cards that are excluded from display.
+    /// Any cards that are excluded from being selected or reordered.
     ///
-    private let excludedCards: [AnalyticsCard]
+    let excludedCards: [AnalyticsCard]
 
     /// - Parameters:
     ///   - allCards: An ordered list of all possible analytics cards, with their settings.
@@ -73,6 +73,17 @@ final class AnalyticsHubCustomizeViewModel: ObservableObject, Identifiable {
         updatedCards.append(contentsOf: excludedCards)
 
         onSave?(updatedCards)
+    }
+
+    func promoURL(for card: AnalyticsCard) -> URL? {
+        switch card.type {
+        case .bundles:
+            WooConstants.URLs.productBundlesExtension.asURL()
+        case .sessions:
+            nil // TODO-12161: Link to Jetpack or stop excluding this card
+        default:
+            nil
+        }
     }
 }
 

@@ -3,28 +3,47 @@ import SwiftUI
 struct AnalyticsHubCustomizeView: View {
     @ObservedObject var viewModel: AnalyticsHubCustomizeViewModel
 
+    @State private var selectedPromoURL: URL?
+
     /// Dismisses the view.
     ///
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
-        MultiSelectionReorderableList(contents: $viewModel.allCards, contentKeyPath: \.name, selectedItems: $viewModel.selectedCards)
-            .toolbar(content: {
-                ToolbarItem(placement: .confirmationAction) {
-                    Button {
-                        viewModel.saveChanges()
-                        dismiss()
-                    } label: {
-                        Text(Localization.saveButton)
-                    }
-                    .disabled(!viewModel.hasChanges)
+        VStack {
+            MultiSelectionReorderableList(contents: $viewModel.allCards,
+                                          contentKeyPath: \.name,
+                                          selectedItems: $viewModel.selectedCards,
+                                          disabledItems: viewModel.excludedCards,
+                                          disabledAccessoryView: { card in
+                Button {
+                    selectedPromoURL = viewModel.promoURL(for: card)
+                } label: {
+                    Text("Explore") // TODO-12161: Show localized label with background
                 }
             })
-            .navigationTitle(Localization.title)
-            .navigationBarTitleDisplayMode(.inline)
-            .background(Color(uiColor: .listBackground))
-            .wooNavigationBarStyle()
-            .closeButtonWithDiscardChangesPrompt(hasChanges: viewModel.hasChanges)
+                .toolbar(content: {
+                    ToolbarItem(placement: .confirmationAction) {
+                        Button {
+                            viewModel.saveChanges()
+                            dismiss()
+                        } label: {
+                            Text(Localization.saveButton)
+                        }
+                        .disabled(!viewModel.hasChanges)
+                    }
+                })
+        }
+        .navigationTitle(Localization.title)
+        .navigationBarTitleDisplayMode(.inline)
+        .background(Color(uiColor: .listBackground))
+        .wooNavigationBarStyle()
+        .closeButtonWithDiscardChangesPrompt(hasChanges: viewModel.hasChanges)
+        .sheet(item: $selectedPromoURL) { url in
+            WebViewSheet(viewModel: .init(url: url, navigationTitle: "", authenticated: false), done: {
+                selectedPromoURL = nil
+            })
+        }
     }
 }
 

@@ -20,7 +20,7 @@ final class BlazeBudgetSettingViewModel: ObservableObject {
     let dayCountSliderRange = Double(Constants.minimumDayCount)...Double(Constants.maximumDayCount)
 
     let minDayAllowedInPickerSelection = Date.now + 60 * 60 * 24 // Current date + 1 day
-    
+
     var dailyAmountText: String {
         let formattedAmount = String(format: "$%.0f", dailyAmount)
         return String.localizedStringWithFormat(Localization.dailyAmount, formattedAmount)

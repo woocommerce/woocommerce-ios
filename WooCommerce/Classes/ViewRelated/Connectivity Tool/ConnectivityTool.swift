@@ -80,7 +80,7 @@ struct ConnectivityTool: View {
             ScrollView {
 
                 Text(Localization.subtitle)
-                    .calloutStyle()
+                    .bodyStyle(opacity: 0.8)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding()
 

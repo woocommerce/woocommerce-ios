@@ -55,7 +55,7 @@ struct DeltaPercentage: Equatable {
             case .positive, .negative:
                 return .textInverted
             case .zero:
-                return .text
+                return .darkText
             }
         }
 

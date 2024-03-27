@@ -110,7 +110,7 @@ final class OrderListViewModel {
         return statusResultsController.fetchedObjects
     }
 
-    private lazy var snapshotsProvider: FetchResultSnapshotsProvider<StorageOrder> = .init(storageManager: self.storageManager, query: createQuery())
+    private let snapshotsProvider: FetchResultSnapshotsProvider<StorageOrder>
 
     /// Emits snapshots of orders that should be displayed in the table view.
     var snapshot: AnyPublisher<FetchResultSnapshot, Never> {
@@ -143,6 +143,9 @@ final class OrderListViewModel {
         self.notificationCenter = notificationCenter
         self.filters = filters
         self.featureFlagService = featureFlagService
+        self.snapshotsProvider = FetchResultSnapshotsProvider<StorageOrder>(storageManager: storageManager,
+                                                                            query: Self.createQuery(siteID: siteID,
+                                                                                                    filters: filters))
     }
 
     deinit {
@@ -227,7 +230,7 @@ final class OrderListViewModel {
         })
     }
 
-    private func createQuery() -> FetchResultSnapshotsProvider<StorageOrder>.Query {
+    private static func createQuery(siteID: Int64, filters: FilterOrderListViewModel.Filters?) -> FetchResultSnapshotsProvider<StorageOrder>.Query {
         let predicateStatus: NSPredicate = {
             let excludeSearchCache = NSPredicate(format: "exclusiveForSearch = false")
             let excludeNonMatchingStatus = filters?.orderStatus.map { NSPredicate(format: "statusKey IN %@", $0.map { $0.rawValue }) }

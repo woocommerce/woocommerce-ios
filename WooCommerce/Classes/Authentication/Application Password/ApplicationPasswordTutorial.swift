@@ -75,7 +75,7 @@ struct ApplicationPasswordTutorial: View {
 
                 Text(Localization.tutorial)
                     .bodyStyle(opacity: 0.8)
-                    .multilineTextAlignment(.leading)
+                    .frame(maxWidth: .infinity, alignment: .leading)
                     .padding([.horizontal, .top])
 
                 Image(uiImage: .appPasswordTutorialImage)
@@ -84,7 +84,7 @@ struct ApplicationPasswordTutorial: View {
 
                 Text(Localization.tutorial2)
                     .bodyStyle(opacity: 0.8)
-                    .multilineTextAlignment(.leading)
+                    .frame(maxWidth: .infinity, alignment: .leading)
                     .padding([.horizontal, .bottom])
 
                 Divider()
@@ -92,7 +92,7 @@ struct ApplicationPasswordTutorial: View {
 
                 Text(Localization.contactSupport)
                     .bodyStyle(opacity: 0.8)
-                    .multilineTextAlignment(.leading)
+                    .frame(maxWidth: .infinity, alignment: .leading)
                     .padding()
             }
 

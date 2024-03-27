@@ -66,9 +66,10 @@ struct ApplicationPasswordTutorial: View {
             ScrollView {
                 Text(errorDescription)
                     .subheadlineStyle()
-                    .multilineTextAlignment(.center)
+                    .multilineTextAlignment(.leading)
                     .padding([.bottom, .top])
 
+                Divider()
 
                 Text(Localization.tutorial)
                     .foregroundColor(Color(uiColor: .text))
@@ -81,9 +82,17 @@ struct ApplicationPasswordTutorial: View {
                     .aspectRatio(contentMode: .fit)
                     .padding(.horizontal, Layout.imagePadding)
 
+                Text(Localization.tutorial2)
+                    .foregroundColor(Color(uiColor: .text))
+                    .footnoteStyle(isEnabled: true)
+                    .multilineTextAlignment(.leading)
+                    .padding(.bottom)
+
+                Divider()
+
                 Text(Localization.contactSupport)
                     .subheadlineStyle()
-                    .multilineTextAlignment(.center)
+                    .multilineTextAlignment(.leading)
                     .padding()
             }
             .padding(.horizontal)
@@ -113,15 +122,20 @@ struct ApplicationPasswordTutorial: View {
 
 private extension ApplicationPasswordTutorial {
     enum Localization {
-        static let title = NSLocalizedString("We couldn't log in into your site! 😭", comment: "Title for the application password tutorial screen")
-        static let reason = NSLocalizedString("This is likely because your store has some extra security steps in place.",
+        static let title = NSLocalizedString("We couldn’t log in into your store", comment: "Title for the application password tutorial screen")
+        static let reason = NSLocalizedString("This could be because your store has some extra security steps in place.",
                                               comment: "Reason for why the user could not login tin the application password tutorial screen")
         static let tutorial = NSLocalizedString("""
-                                                ⁃ Tap the continue button at the bottom to login directly into your site.
+                                                Follow these steps to connect the Woo app directly to your store using an application password.
 
-                                                ⁃ Once logged in, approve the connection to give access to the woo app like the in the image below.
+                                                1. First, log in using your site credentials.
+
+                                                2. When prompted, approve the connection by tapping the confirmation button.
                                                 """, comment: "Tutorial steps on the application password tutorial screen")
-        static let contactSupport = NSLocalizedString("If you encounter any problem, contact us and we will happily assist you!",
+        static let tutorial2 = NSLocalizedString("""
+                                                3. When the connection is complete, you will be logged in to your store.
+                                                """, comment: "Tutorial steps on the application password tutorial screen")
+        static let contactSupport = NSLocalizedString("If you run into any issues, please contact our support team.",
                                                       comment: "Text to contact support in the application password tutorial screen")
         static let continueTitle = NSLocalizedString("Continue", comment: "Continue button in the application password tutorial screen")
         static let contactSupportTitle = NSLocalizedString("Contact Support", comment: "Contact Support button in the application password tutorial screen")
@@ -134,6 +148,6 @@ private extension ApplicationPasswordTutorial {
 
 #Preview {
     NavigationStack {
-        ApplicationPasswordTutorial(errorDescription: ApplicationPasswordTutorial.Localization.title)
+        ApplicationPasswordTutorial(errorDescription: ApplicationPasswordTutorial.Localization.reason)
     }
 }

@@ -9,7 +9,6 @@ struct BlazeBudgetSettingView: View {
     @State private var showingDurationSetting = false
     @State private var duration: Double = 0
     @State private var startDate = Date()
-    private var minDayAllowedInPickerSelection = Date.now + 60 * 60 * 24 // Current date + 1 day
 
     @ObservedObject private var viewModel: BlazeBudgetSettingViewModel
 
@@ -208,7 +207,7 @@ private extension BlazeBudgetSettingView {
 
                         Spacer()
 
-                        DatePicker(selection: $startDate, in: minDayAllowedInPickerSelection..., displayedComponents: [.date]) {
+                        DatePicker(selection: $startDate, in: viewModel.minDayAllowedInPickerSelection..., displayedComponents: [.date]) {
                             EmptyView()
                         }
                         .datePickerStyle(.compact)

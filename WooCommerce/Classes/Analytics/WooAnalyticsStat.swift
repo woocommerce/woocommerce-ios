@@ -265,6 +265,7 @@ public enum WooAnalyticsStat: String {
     case siteCreationPropertiesOutOfSync = "site_creation_properties_out_of_sync"
     case siteCreationFreeTrialCreatedSuccess = "site_creation_free_trial_created_success"
     case loginPrologueCreateSiteTapped = "login_prologue_create_site_tapped"
+    case loginPrologueStartingANewStoreTapped = "login_prologue_starting_a_new_store_tapped"
     case signupFormLoginTapped = "signup_login_button_tapped"
     case signupSubmitted = "signup_submitted"
     case signupSuccess = "signup_success"

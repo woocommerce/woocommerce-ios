@@ -195,10 +195,10 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
     override var shouldShowOfflineBanner: Bool {
         return true
     }
-    
+
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
-        
+
         updateNavigationBarTitle()
     }
 

@@ -8,6 +8,8 @@ final class ProductSearchUICommand: SearchUICommand {
 
     let searchBarPlaceholder = NSLocalizedString("Search products", comment: "Products Search Placeholder")
 
+    let returnKeyType = UIReturnKeyType.done
+
     let searchBarAccessibilityIdentifier = "product-search-screen-search-field"
 
     let cancelButtonAccessibilityIdentifier = "product-search-screen-cancel-button"

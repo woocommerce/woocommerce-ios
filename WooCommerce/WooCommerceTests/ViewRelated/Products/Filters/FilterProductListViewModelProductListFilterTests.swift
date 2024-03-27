@@ -108,7 +108,7 @@ final class FilterProductListViewModelProductListFilterTests: XCTestCase {
                                                                                 name: SitePlugin.SupportedPlugin.WCSubscriptions[0],
                                                                                 active: true))
         mockStorage.insertSampleSystemPlugin(readOnlySystemPlugin: .fake().copy(siteID: sampleSiteID,
-                                                                                name: SitePlugin.SupportedPlugin.WCProductBundles,
+                                                                                name: SitePlugin.SupportedPlugin.WCProductBundles[0],
                                                                                 active: true))
 
         // When

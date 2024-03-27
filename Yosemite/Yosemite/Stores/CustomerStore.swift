@@ -149,7 +149,7 @@ public final class CustomerStore: Store {
                                     pageSize: Int,
                                     keyword: String,
                                     filter: CustomerSearchFilter,
-                                    onCompletion: @escaping (Result<(), Error>) -> Void) {
+                                    onCompletion: @escaping (Result<Bool, Error>) -> Void) {
         wcAnalyticsCustomerRemote.searchCustomers(for: siteID,
                                                   pageNumber: pageNumber,
                                                   pageSize: pageSize,
@@ -162,10 +162,11 @@ public final class CustomerStore: Store {
             case let .success(customers):
                 self.upsertWCAnalyticsCustomersAndSave(siteID: siteID,
                                                        readOnlyCustomers: customers,
-                                                       shouldDeleteExistingCustomers: pageNumber == 1,
+                                                       shouldDeleteExistingCustomers: filter != .all,
                                                        keyword: keyword,
                                                        in: self.sharedDerivedStorage) {
-                    onCompletion(.success(()))
+                    let hasNextPage = customers.count == pageSize
+                    onCompletion(.success(hasNextPage))
                 }
             case .failure(let error):
                 onCompletion(.failure(error))
@@ -230,7 +231,11 @@ public final class CustomerStore: Store {
                                  pageNumber: Int,
                                  pageSize: Int,
                                  onCompletion: @escaping (Result<Bool, Error>) -> Void) {
-        wcAnalyticsCustomerRemote.loadCustomers(for: siteID, orderby: .dateLastActive, order: .desc) { [weak self] result in
+        wcAnalyticsCustomerRemote.loadCustomers(for: siteID,
+                                                pageNumber: pageNumber,
+                                                pageSize: pageSize,
+                                                orderby: .dateLastActive,
+                                                order: .desc) { [weak self] result in
             guard let self else { return }
             switch result {
             case let .success(customers):
@@ -238,7 +243,8 @@ public final class CustomerStore: Store {
                                                        readOnlyCustomers: customers,
                                                        shouldDeleteExistingCustomers: pageNumber == 1,
                                                        in: self.sharedDerivedStorage) {
-                    onCompletion(.success(!customers.isEmpty))
+                    let hasNextPage = customers.count == pageSize
+                    onCompletion(.success(hasNextPage))
                 }
             case let .failure(error):
                 onCompletion(.failure(error))

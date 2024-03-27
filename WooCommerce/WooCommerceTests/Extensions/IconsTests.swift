@@ -924,4 +924,8 @@ final class IconsTests: XCTestCase {
     func test_variableSubscriptionProductImage_icon_is_not_nil() {
         XCTAssertNotNil(UIImage.variableSubscriptionProductImage)
     }
+
+    func test_cashRegisterImage_is_not_nil() {
+        XCTAssertNotNil(UIImage.cashRegisterImage)
+    }
 }

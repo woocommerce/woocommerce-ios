@@ -1,12 +1,18 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+18.0
+-----
+- [**] Hub Menu: A new Customers section shows a searchable list of customers with their details, including the option to contact a customer via email. [https://github.com/woocommerce/woocommerce-ios/pull/12349]
+- [Internal] Update Woo Purple color palette [https://github.com/woocommerce/woocommerce-ios/pull/12330]
+- [internal] The dependency setup in `AppDelegate`'s `application(_:willFinishLaunchingWithOptions:)` was updated as an attempted fix for one of the top crashes. [https://github.com/woocommerce/woocommerce-ios/pull/12268]
+
 17.9
 -----
-
+- [**] Added 4 home screen quick actions: "New Order", "Orders", "Add a product", "Collect Payment" [https://github.com/woocommerce/woocommerce-ios/pull/12264/]
+- [Internal] Payments: Updated StripeTerminal pod to 3.3.1 [https://github.com/woocommerce/woocommerce-ios/pull/12078]
 
 17.8
 -----
-
 
 17.7
 -----

@@ -10,6 +10,8 @@ final class OrderSearchUICommand: SearchUICommand {
 
     let searchBarPlaceholder = NSLocalizedString("Search all orders", comment: "Orders Search Placeholder")
 
+    let returnKeyType = UIReturnKeyType.done
+
     let searchBarAccessibilityIdentifier = "order-search-screen-search-field"
 
     let cancelButtonAccessibilityIdentifier = "order-search-screen-cancel-button"

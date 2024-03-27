@@ -2,6 +2,7 @@ import Foundation
 import Yosemite
 import Combine
 import class UIKit.UIColor
+import protocol Storage.StorageManagerType
 
 /// Main View Model for the Analytics Hub.
 ///
@@ -9,6 +10,7 @@ final class AnalyticsHubViewModel: ObservableObject {
 
     private let siteID: Int64
     private let stores: StoresManager
+    private let storage: StorageManagerType
     private let timeZone: TimeZone
     private let analytics: Analytics
     private let noticePresenter: NoticePresenter
@@ -27,24 +29,32 @@ final class AnalyticsHubViewModel: ObservableObject {
     ///
     private let userIsAdmin: Bool
 
+    /// Feature flag for Expanded Analytics Hub (extension analytics)
+    ///
+    private let isExpandedAnalyticsHubEnabled: Bool
+
     init(siteID: Int64,
          timeZone: TimeZone = .siteTimezone,
          statsTimeRange: StatsTimeRangeV4,
          usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter,
          stores: StoresManager = ServiceLocator.stores,
+         storage: StorageManagerType = ServiceLocator.storageManager,
          analytics: Analytics = ServiceLocator.analytics,
          noticePresenter: NoticePresenter = ServiceLocator.noticePresenter,
-         backendProcessingDelay: UInt64 = 500_000_000) {
+         backendProcessingDelay: UInt64 = 500_000_000,
+         isExpandedAnalyticsHubEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.expandedAnalyticsHub)) {
         let selectedType = AnalyticsHubTimeRangeSelection.SelectionType(statsTimeRange)
         let timeRangeSelection = AnalyticsHubTimeRangeSelection(selectionType: selectedType, timezone: timeZone)
 
         self.siteID = siteID
         self.timeZone = timeZone
         self.stores = stores
+        self.storage = storage
         self.userIsAdmin = stores.sessionManager.defaultRoles.contains(.administrator)
         self.analytics = analytics
         self.noticePresenter = noticePresenter
         self.backendProcessingDelay = backendProcessingDelay
+        self.isExpandedAnalyticsHubEnabled = isExpandedAnalyticsHubEnabled
         self.timeRangeSelectionType = selectedType
         self.timeRangeSelection = timeRangeSelection
         self.timeRangeCard = AnalyticsHubViewModel.timeRangeCard(timeRangeSelection: timeRangeSelection,
@@ -120,10 +130,23 @@ final class AnalyticsHubViewModel: ObservableObject {
     /// All analytics cards to display in the Analytics Hub.
     ///
     var enabledCards: [AnalyticsCard.CardType] {
-        return allCardsWithSettings.filter { card in
-            let canBeDisplayed = card.type == .sessions ? showSessionsCard : true
-            return card.enabled && canBeDisplayed
-        }.map { $0.type }
+        return allCardsWithSettings.compactMap { card in
+            guard card.enabled, canDisplayCard(ofType: card.type) else {
+                return nil
+            }
+            return card.type
+        }
+    }
+
+    private func canDisplayCard(ofType card: AnalyticsCard.CardType) -> Bool {
+        switch card {
+        case .sessions:
+            showSessionsCard
+        case .bundles:
+            isExpandedAnalyticsHubEnabled && isPluginActive(SitePlugin.SupportedPlugin.WCProductBundles)
+        default:
+            true
+        }
     }
 
     /// Sessions Card display state
@@ -200,6 +223,19 @@ final class AnalyticsHubViewModel: ObservableObject {
     /// Time Range selection data defining the current and previous time period
     ///
     private var timeRangeSelection: AnalyticsHubTimeRangeSelection
+
+    /// Names of the active plugins on the store.
+    ///
+    private lazy var activePlugins: [String] = {
+        let predicate = NSPredicate(format: "siteID == %lld && active == true", siteID)
+        let resultsController = ResultsController<StorageSystemPlugin>(storageManager: storage, matching: predicate, sortedBy: [])
+        do {
+            try resultsController.performFetch()
+        } catch {
+            DDLogError("⛔️ Error fetching active plugins for Analytics Hub")
+        }
+        return resultsController.fetchedObjects.map { $0.name }
+    }()
 
     /// Request stats data from network
     /// - Parameter cards: Optionally limit the request to only the stats needed for a given set of cards.
@@ -416,6 +452,13 @@ private extension AnalyticsHubViewModel {
             stores.dispatch(action)
         }
     }
+
+    /// Helper function that returns `true` in its callback if the provided plugin name is active on the  store.
+    ///
+    /// - Parameter plugin: A list of names for the plugin (provide all possible names for plugins that have changed names).
+    private func isPluginActive(_ plugin: [String]) -> Bool {
+        activePlugins.contains(where: plugin.contains)
+    }
 }
 
 // MARK: Data - UI mapping
@@ -508,7 +551,8 @@ extension AnalyticsHubViewModel {
     func customizeAnalytics() {
         // Exclude any cards the merchant/store is ineligible for.
         let cardsToExclude: [AnalyticsCard] = [
-            isEligibleForSessionsCard ? nil : allCardsWithSettings.first(where: { $0.type == .sessions })
+            isEligibleForSessionsCard ? nil : allCardsWithSettings.first(where: { $0.type == .sessions }),
+            canDisplayCard(ofType: .bundles) ? nil : allCardsWithSettings.first(where: { $0.type == .bundles }) // TODO-12161: Support when extension is inactive
         ].compactMap({ $0 })
 
         analytics.track(event: .AnalyticsHub.customizeAnalyticsOpened())

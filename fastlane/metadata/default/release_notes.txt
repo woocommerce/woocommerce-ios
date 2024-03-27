@@ -1,1 +1,2 @@
 In this update, we've made it easier to find one customer's orders, with a new filter by customer option. Analyzing store performance just got more flexible too, with the ability to set custom date ranges for your reports. For iPad and larger iPhones, enjoy a side-by-side view for order creation or editing, maximizing productivity. Plus, we've amped up performance with a new connectivity tool, diagnosing any network hiccups. Download now and unlock smoother, more intuitive store management!
+

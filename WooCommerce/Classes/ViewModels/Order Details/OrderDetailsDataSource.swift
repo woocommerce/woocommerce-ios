@@ -16,10 +16,6 @@ final class OrderDetailsDataSource: NSObject {
     private(set) var order: Order
     private let couponLines: [OrderCouponLine]?
 
-    /// Haptic Feedback!
-    ///
-    private let hapticGenerator = UINotificationFeedbackGenerator()
-
     /// Sections to be rendered
     ///
     private(set) var sections = [Section]()
@@ -1540,32 +1536,12 @@ extension OrderDetailsDataSource {
 
         switch row {
         case .shippingAddress:
-            sendToPasteboard(order.shippingAddress?.fullNameWithCompanyAndAddress)
+            order.shippingAddress?.fullNameWithCompanyAndAddress.sendToPasteboard()
         case .tracking:
-            sendToPasteboard(orderTracking(at: indexPath)?.trackingNumber, includeTrailingNewline: false)
+            orderTracking(at: indexPath)?.trackingNumber.sendToPasteboard(includeTrailingNewline: false)
         default:
             break // We only send text to the pasteboard from the address rows right meow
         }
-    }
-
-    /// Sends the provided text to the general pasteboard and triggers a success haptic. If the text param
-    /// is nil, nothing is sent to the pasteboard.
-    ///
-    /// - Parameter
-    ///   - text: string value to send to the pasteboard
-    ///   - includeTrailingNewline: If true, insert a trailing newline; defaults to true
-    ///
-    func sendToPasteboard(_ text: String?, includeTrailingNewline: Bool = true) {
-        guard var text = text, text.isEmpty == false else {
-            return
-        }
-
-        if includeTrailingNewline {
-            text += "\n"
-        }
-
-        UIPasteboard.general.string = text
-        hapticGenerator.notificationOccurred(.success)
     }
 
     /// Checks if copying the row data at the provided indexPath is allowed

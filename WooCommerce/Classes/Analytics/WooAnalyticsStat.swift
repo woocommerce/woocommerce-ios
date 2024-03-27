@@ -1057,6 +1057,15 @@ public enum WooAnalyticsStat: String {
     case inboxNotesLoadedFailed = "inbox_notes_load_failed"
     case inboxNoteAction = "inbox_note_action"
 
+    // MARK: Customers
+    case customerHubLoaded = "customers_hub_loaded"
+    case customerHubLoadFailed = "customers_hub_load_failed"
+    case customersHubSearch = "customers_hub_customer_search"
+    case customersHubDetailOpen = "customers_hub_customer_detail_open"
+    case customersHubDetailEmailMenuTapped = "customers_hub_customer_detail_email_menu_tapped"
+    case customersHubDetailEmailOptionTapped = "customers_hub_customer_detail_email_option_tapped"
+    case customersHubDetailCopyEmailOptionTapped = "customers_hub_customer_detail_email_copy_option_tapped"
+
     // MARK: Close Account
     case closeAccountTapped = "close_account_tapped"
     case closeAccountSuccess = "close_account_success"

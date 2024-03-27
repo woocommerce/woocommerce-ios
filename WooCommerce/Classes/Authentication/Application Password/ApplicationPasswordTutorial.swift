@@ -65,7 +65,7 @@ struct ApplicationPasswordTutorial: View {
         VStack(spacing: .zero) {
             ScrollView {
                 Text(errorDescription)
-                    .bodyStyle()
+                    .bodyStyle(opacity: 0.8)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding()
 
@@ -74,7 +74,7 @@ struct ApplicationPasswordTutorial: View {
 
 
                 Text(Localization.tutorial)
-                    .bodyStyle()
+                    .bodyStyle(opacity: 0.8)
                     .multilineTextAlignment(.leading)
                     .padding([.horizontal, .top])
 
@@ -83,7 +83,7 @@ struct ApplicationPasswordTutorial: View {
                     .aspectRatio(contentMode: .fit)
 
                 Text(Localization.tutorial2)
-                    .bodyStyle()
+                    .bodyStyle(opacity: 0.8)
                     .multilineTextAlignment(.leading)
                     .padding([.horizontal, .bottom])
 
@@ -91,7 +91,7 @@ struct ApplicationPasswordTutorial: View {
                     .padding(.leading)
 
                 Text(Localization.contactSupport)
-                    .bodyStyle()
+                    .bodyStyle(opacity: 0.8)
                     .multilineTextAlignment(.leading)
                     .padding()
             }

@@ -17,12 +17,14 @@ final class NotWPAccountViewModel: ULErrorViewModel {
 
     let auxiliaryButtonTitle = AuthenticationConstants.whatIsWPComLinkTitle
 
-    let primaryButtonTitle: String
+    let primaryButtonTitle = Localization.restartLogin
 
-    let isPrimaryButtonHidden: Bool = false
+    let isPrimaryButtonHidden = false
 
-    let secondaryButtonTitle = Localization.tryAnotherAddress
-    let isSecondaryButtonHidden: Bool
+    let secondaryButtonTitle = ""
+
+    let isSecondaryButtonHidden = true
+
 
     private weak var viewController: UIViewController?
 
@@ -43,29 +45,18 @@ final class NotWPAccountViewModel: ULErrorViewModel {
     private let analytics: Analytics
     private var storePickerCoordinator: StorePickerCoordinator?
 
-    init(error: Error,
-         analytics: Analytics = ServiceLocator.analytics,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+    init(analytics: Analytics = ServiceLocator.analytics) {
         self.analytics = analytics
-        if let error = error as? SignInError,
-           case let .invalidWPComEmail(source) = error,
-           source == .wpComSiteAddress {
-            isSecondaryButtonHidden = true
-            primaryButtonTitle = Localization.restartLogin
-        } else {
-            isSecondaryButtonHidden = false
-            primaryButtonTitle = Localization.createAnAccount
-        }
     }
 
     // MARK: - Actions
     func didTapPrimaryButton(in viewController: UIViewController?) {
-        createAnAccountButtonTapped(in: viewController)
+        let refreshCommand = NavigateToRoot()
+        refreshCommand.execute(from: viewController)
     }
 
     func didTapSecondaryButton(in viewController: UIViewController?) {
-        let refreshCommand = NavigateToRoot()
-        refreshCommand.execute(from: viewController)
+        // NO-OP
     }
 
     func didTapAuxiliaryButton(in viewController: UIViewController?) {
@@ -93,20 +84,6 @@ private extension NotWPAccountViewModel {
         fancyAlert.transitioningDelegate = AppDelegate.shared.tabBarController
         viewController?.present(fancyAlert, animated: true)
     }
-
-    func createAnAccountButtonTapped(in viewController: UIViewController?) {
-        analytics.track(.createAccountOnInvalidEmailScreenTapped)
-        guard let viewController,
-              let navigationController = viewController.navigationController else {
-            DDLogWarn("⚠️ Unable to proceed with account creation as view controller/navigation controller is nil.")
-            return
-        }
-
-        let coordinator = LoggedOutStoreCreationCoordinator(source: .loginEmailError,
-                                                            navigationController: navigationController)
-        self.loggedOutStoreCreationCoordinator = coordinator
-        coordinator.start()
-    }
 }
 
 // MARK: - Private data structures
@@ -119,10 +96,6 @@ private extension NotWPAccountViewModel {
         static let needHelpFindingEmail = NSLocalizedString("Need help finding the required email?",
                                                             comment: "Button linking to webview that explains what Jetpack is"
                                                             + "Presented when logging in with a site address that does not have a valid Jetpack installation")
-
-        static let createAnAccount = NSLocalizedString("Create An Account",
-                                                       comment: "Action button linking to create WooCommerce store flow."
-                                                       + "Presented when logging in with an email address that is not a WordPress.com account")
 
         static let tryAnotherAddress = NSLocalizedString("Try Another Address",
                                                          comment: "Action button that will restart the login flow."

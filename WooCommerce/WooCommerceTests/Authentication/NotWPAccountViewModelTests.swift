@@ -69,19 +69,7 @@ final class NotWPAccountViewModelTests: XCTestCase {
 
     func test_viewmodel_provides_expected_title_for_primary_button() {
         // Given
-        let viewModel = NotWPAccountViewModel(error: SignInError.invalidWPComEmail(source: .wpCom))
-        // When
-        let primaryButtonTitle = viewModel.primaryButtonTitle
-
-        // Then
-        XCTAssertEqual(primaryButtonTitle, Expectations.createAnAccountTitle)
-    }
-
-    // MARK: - `primaryButtonTitle`
-
-    func test_primary_button_title_is_restart_login_for_invalidWPComEmail_from_site_address_error() {
-        // Given
-        let viewModel = NotWPAccountViewModel(error: SignInError.invalidWPComEmail(source: .wpComSiteAddress))
+        let viewModel = NotWPAccountViewModel()
 
         // When
         let primaryButtonTitle = viewModel.primaryButtonTitle
@@ -90,69 +78,31 @@ final class NotWPAccountViewModelTests: XCTestCase {
         XCTAssertEqual(primaryButtonTitle, Expectations.restartLoginTitle)
     }
 
-    func test_primary_button_title_is_create_an_account_for_invalidWPComEmail_from_wpCom_error() {
-        // Given
-        let viewModel = NotWPAccountViewModel(error: SignInError.invalidWPComEmail(source: .wpCom))
-        // When
-        let primaryButtonTitle = viewModel.primaryButtonTitle
-
-        // Then
-        XCTAssertEqual(primaryButtonTitle, Expectations.createAnAccountTitle)
-    }
-
     // MARK: - `isPrimaryButtonHidden`
 
-    func test_primary_button_is_not_hidden_for_invalidWPComEmail_from_site_address_error() {
+    func test_primary_button_is_not_hidden() {
         // Given
-        let viewModel = NotWPAccountViewModel(error: SignInError.invalidWPComEmail(source: .wpComSiteAddress))
+        let viewModel = NotWPAccountViewModel()
 
-        // Then
-        XCTAssertFalse(viewModel.isPrimaryButtonHidden)
-    }
-
-    func test_primary_button_is_not_hidden_for_invalidWPComEmail_from_wpCom_error() {
-        // Given
-        let viewModel = NotWPAccountViewModel(error: SignInError.invalidWPComEmail(source: .wpCom))
         // Then
         XCTAssertFalse(viewModel.isPrimaryButtonHidden)
     }
 
     // MARK: - `isSecondaryButtonHidden`
 
-    func test_secondary_button_is_hidden_for_invalidWPComEmail_from_site_address_error() {
+    func test_secondary_button_is_hidden() {
         // Given
-        let viewModel = NotWPAccountViewModel(error: SignInError.invalidWPComEmail(source: .wpComSiteAddress))
+        let viewModel = NotWPAccountViewModel()
 
         // Then
         XCTAssertTrue(viewModel.isSecondaryButtonHidden)
-    }
-
-    func test_secondary_button_is_not_hidden_for_invalidWPComEmail_from_wpCom_error() {
-        // Given
-        let viewModel = NotWPAccountViewModel(error: SignInError.invalidWPComEmail(source: .wpCom))
-
-        // Then
-        XCTAssertFalse(viewModel.isSecondaryButtonHidden)
-    }
-
-    // MARK: - `secondaryButtonTitle`
-
-    func test_viewmodel_provides_expected_title_for_secondary_button() {
-        // Given
-        let viewModel = NotWPAccountViewModel(error: SignInError.invalidWPComEmail(source: .wpCom))
-        // When
-        let secondaryButtonTitle = viewModel.secondaryButtonTitle
-
-        // Then
-        XCTAssertEqual(secondaryButtonTitle, Expectations.tryAnotherAddressTitle)
     }
 
     // MARK: - Analytics
 
     func test_viewModel_logs_an_event_when_viewDidLoad_is_triggered() throws {
         // Given
-        let viewModel = NotWPAccountViewModel(error: SignInError.invalidWPComEmail(source: .wpCom),
-                                              analytics: analytics)
+        let viewModel = NotWPAccountViewModel(analytics: analytics)
 
         assertEmpty(analyticsProvider.receivedEvents)
 
@@ -166,26 +116,13 @@ final class NotWPAccountViewModelTests: XCTestCase {
 
     func test_tapping_auxiliary_button_tracks_what__is_wordpress_com_event() {
         // Given
-        let viewModel = NotWPAccountViewModel(error: SignInError.invalidWPComEmail(source: .wpCom),
-                                              analytics: analytics)
+        let viewModel = NotWPAccountViewModel(analytics: analytics)
 
         // When
         viewModel.didTapAuxiliaryButton(in: nil)
 
         // Then
         XCTAssertNotNil(analyticsProvider.receivedEvents.first(where: { $0 == "what_is_wordpress_com_on_invalid_email_screen" }))
-    }
-
-    func test_tapping_primary_button_tracks_create_account_event() {
-        // Given
-        let viewModel = NotWPAccountViewModel(error: SignInError.invalidWPComEmail(source: .wpCom),
-                                              analytics: analytics)
-
-        // When
-        viewModel.didTapPrimaryButton(in: nil)
-
-        // Then
-        XCTAssertNotNil(analyticsProvider.receivedEvents.first(where: { $0 == "create_account_on_invalid_email_screen" }))
     }
 }
 
@@ -212,11 +149,5 @@ private extension NotWPAccountViewModelTests {
         static let tryAnotherAddressTitle = NSLocalizedString("Try Another Address",
                                                          comment: "Action button that will restart the login flow."
                                                          + "Presented when logging in with an email address that does not match a WordPress.com account")
-    }
-}
-
-private extension NotWPAccountViewModel {
-    convenience init() {
-        self.init(error: SignInError.invalidWPComEmail(source: .wpCom))
     }
 }

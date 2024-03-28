@@ -12,32 +12,32 @@ struct MultiSelectionReorderableList<T: Hashable, Content: View>: View {
     @Binding private var selectedItems: Set<T>
 
     /// Items in addition to the list of `contents` that can't be moved or selected.
-    private let disabledItems: [T]
+    private let inactiveItems: [T]
 
-    /// Accessory view to display next to disabled contents
-    @ViewBuilder private let disabledAccessoryView: (T) -> Content
+    /// Accessory view to display next to inactive items.
+    @ViewBuilder private let inactiveAccessoryView: (T) -> Content
 
     init(contents: Binding<[T]>,
          contentKeyPath: KeyPath<T, String>,
          selectedItems: Binding<Set<T>>,
-         disabledItems: [T] = [],
-         disabledAccessoryView: @escaping (T) -> Content) {
+         inactiveItems: [T] = [],
+         inactiveAccessoryView: @escaping (T) -> Content) {
         self._contents = contents
         self.contentKeyPath = contentKeyPath
         self._selectedItems = selectedItems
-        self.disabledItems = disabledItems
-        self.disabledAccessoryView = disabledAccessoryView
+        self.inactiveItems = inactiveItems
+        self.inactiveAccessoryView = inactiveAccessoryView
     }
 
     init(contents: Binding<[T]>,
          contentKeyPath: KeyPath<T, String>,
          selectedItems: Binding<Set<T>>,
-         disabledItems: [T] = []) where Content == EmptyView {
+         inactiveItems: [T] = []) where Content == EmptyView {
         self.init(contents: contents,
                   contentKeyPath: contentKeyPath,
                   selectedItems: selectedItems,
-                  disabledItems: disabledItems,
-                  disabledAccessoryView: { _ in EmptyView() })
+                  inactiveItems: inactiveItems,
+                  inactiveAccessoryView: { _ in EmptyView() })
     }
 
     var body: some View {
@@ -57,15 +57,15 @@ struct MultiSelectionReorderableList<T: Hashable, Content: View>: View {
                 .onMove(perform: moveItem)
             }
             Section {
-                ForEach(disabledItems, id: contentKeyPath) { item in
+                ForEach(inactiveItems, id: contentKeyPath) { item in
                     HStack(spacing: 0) {
                         Text(item[keyPath: contentKeyPath])
                         Spacer()
-                        disabledAccessoryView(item)
+                        inactiveAccessoryView(item)
                     }
                 }
-                .frame(height: Layout.disabledRowHeight)
-                .listRowInsets(.init(top: 0, leading: Layout.disabledRowLeadingInset, bottom: 0, trailing: Layout.disabledRowTrailingInset))
+                .frame(height: Layout.inactiveRowHeight)
+                .listRowInsets(.init(top: 0, leading: Layout.inactiveRowLeadingInset, bottom: 0, trailing: Layout.inactiveRowTrailingInset))
             }
         }
         .listStyle(.plain)
@@ -103,18 +103,18 @@ private extension MultiSelectionReorderableList {
 
 // MARK: - Constants
 private enum Layout {
-    static let disabledRowPadding: CGFloat = 10
-    static let disabledRowHeight: CGFloat = 52
-    static let disabledRowLeadingInset: CGFloat = 48
-    static let disabledRowTrailingInset: CGFloat = 20
+    static let inactiveRowPadding: CGFloat = 10
+    static let inactiveRowHeight: CGFloat = 52
+    static let inactiveRowLeadingInset: CGFloat = 48
+    static let inactiveRowTrailingInset: CGFloat = 20
 }
 
 #Preview("List") {
     MultiSelectionReorderableList(contents: .constant(["🥪", "🥓", "🥗"]),
                                   contentKeyPath: \.self,
                                   selectedItems: .constant(["🥗", "🥓"]),
-                                  disabledItems: ["🥫"],
-                                  disabledAccessoryView: { item in
+                                  inactiveItems: ["🥫"],
+                                  inactiveAccessoryView: { item in
         Text("Learn more about \(item)")
     })
 }

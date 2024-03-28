@@ -14,8 +14,8 @@ struct AnalyticsHubCustomizeView: View {
             MultiSelectionReorderableList(contents: $viewModel.allCards,
                                           contentKeyPath: \.name,
                                           selectedItems: $viewModel.selectedCards,
-                                          disabledItems: viewModel.excludedCards,
-                                          disabledAccessoryView: { card in
+                                          inactiveItems: viewModel.excludedCards,
+                                          inactiveAccessoryView: { card in
                 exploreButton(with: viewModel.promoURL(for: card))
             })
                 .toolbar(content: {

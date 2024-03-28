@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-03-14 13:54:03+0000 */
+/* Translation-Revision-Date: 2024-03-26 13:54:04+0000 */
 /* Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ru */
@@ -12,7 +12,8 @@
 /* Label that describes the completed progress of an update being installed (e.g. 15% complete). Keep the %.0f%% exactly as is */
 "%.0f%% complete" = "Выполнено %.0f%%";
 
-/* In Shipping Labels Package Details, the pattern used to show the weight of a product. For example, “1lbs”. */
+/* In Shipping Labels Package Details, the pattern used to show the weight of a product. For example, “1lbs”.
+   Title for the plugin detail row in settings. %1$@ is a placeholder for the plugin name. This is displayed with the current version number, and whether an update is available. */
 "%1$@" = "%1$@";
 
 /* Format for each Product attribute in singular form */
@@ -40,9 +41,6 @@
 
 /* The default name for a duplicated product, with %1$@ being the original name. Reads like: Ramen Copy */
 "%1$@ Copy" = "%1$@ Копия";
-
-/* Title for the plugin version detail row in settings. %1$@ is a placeholder for the plugin name. This is displayed with the current version number, and whether an update is available. */
-"%1$@ Version" = "Версия %1$@";
 
 /* A label prompting users to learn more about Tap to Pay on iPhone"
 %1$@ is a placeholder that always replaced with \"Learn more\" string,
@@ -422,9 +420,6 @@ which should be translated separately and considered part of this sentence. */
    Status name of an approved Blaze campaign
    Status of coupons that are active */
 "Active" = "Активно";
-
-/* Title for table view section of active plugins */
-"Active Plugins" = "Активные плагины";
 
 /* The plugin is active on the site and has not enabled automatic updates */
 "Active, Autoupdates off" = "Активен, автообновление выключено";
@@ -1487,6 +1482,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message when the card is removed from the reader prematurely. */
 "Card was removed too soon - please try transaction again" = "Карта извлечена слишком быстро. Повторите транзакцию";
+
+/* Label for a cancel button when an optional software update is happening */
+"CardPresentModalUpdateProgress.button.cancelOptionalButtonText" = "Отмена";
+
+/* Label for a cancel button when a mandatory software update is happening */
+"CardPresentModalUpdateProgress.button.cancelRequiredButtonText" = "Всё равно отменить";
+
+/* Label for a dismiss button when a software update has finished */
+"CardPresentModalUpdateProgress.button.dismissButtonText" = "Закрыть";
 
 /* Navigation bar title of shipping label carrier and rates screen */
 "Carrier and Rates" = "Перевозчик и тарифы";
@@ -3824,9 +3828,6 @@ which should be translated separately and considered part of this sentence. */
 /* Application's Inactive State */
 "Inactive" = "Неактивно";
 
-/* Title for table view section of inactive plugins */
-"Inactive Plugins" = "Неактивные плагины";
-
 /* The plugin is not active on the site and has not enabled automatic updates */
 "Inactive, Autoupdates off" = "Неактивен, автообновления выключено";
 
@@ -4785,9 +4786,6 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Netherlands" = "Нидерланды";
 
-/* Title for table view section of network active plugins */
-"Network Active Plugins" = "Активные сетевые плагины";
-
 /* Error message when session cookie has expired. */
 "NetworkError.invalidCookieNonce" = "Время вашей сессии истекло. Пожалуйста, войдите заново.";
 
@@ -5692,8 +5690,7 @@ which should be translated separately and considered part of this sentence. */
 "Please, add a new payment method" = "Добавьте способ оплаты";
 
 /* My Store > Settings > Plugins section title
-   Navigates to Plugins screen.
-   Title of the Plugin List screen */
+   Navigates to Plugins screen. */
 "Plugins" = "Плагины";
 
 /* Country option for a site address. */
@@ -7065,8 +7062,7 @@ which should be translated separately and considered part of this sentence. */
 /* Indicates the reviewer does not have a name. It reads { Someone left a review} */
 "Someone" = "Кто-то";
 
-/* Error message presented to users after a failure occurs
-   The text on the placeholder overlay when there is issue syncing site plugins */
+/* Error message presented to users after a failure occurs */
 "Something went wrong" = "Что-то пошло не так";
 
 /* Description of an unknown error after purchasing a plan */
@@ -7943,9 +7939,6 @@ which should be translated separately and considered part of this sentence. */
 /* Error message informing the user that there was a problem clearing the block on site preventing its posts from displaying in the reader. */
 "There was a problem removing the block for specified site." = "При снятии блокировки для указанного веб-сайта произошла ошибка.";
 
-/* The details on the placeholder overlay when there is issue syncing site plugins */
-"There was a problem while trying to load plugins. Check your internet and try again." = "При попытке загрузить плагины возникли проблемы. Проверьте подключение к Интернету и повторите попытку.";
-
 /* Message to be displayed when there's an error communicating with the remote site during Jetpack setup */
 "There was an error communicating with your site." = "Во время обмена данными с вашим веб-сайтом произошла ошибка.";
 
@@ -8332,8 +8325,7 @@ which should be translated separately and considered part of this sentence. */
 /* Title shown on the test order screen */
 "Try a test order" = "Используйте тестовый заказ";
 
-/* Action to resync on the placeholder overlay when there is issue syncing site plugins
-   Button to dismiss the alert presented when connecting to a specific reader fails. This allows the search to continue.
+/* Button to dismiss the alert presented when connecting to a specific reader fails. This allows the search to continue.
    Button to dismiss the alert presented when starting Tap to Pay on iPhone fails. This allows the search to continue.
    Title of the try again action when the site cannot be launched from store onboarding > launch store screen. */
 "Try again" = "Попробуйте снова";
@@ -8397,9 +8389,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Info text about the scanned text list on the add product from image form. */
 "Tweak your text: Unselect scans you don't need or tap to edit" = "Меняйте текст: отмените выбор ненужных отсканированных страниц или нажмите, чтобы отредактировать текст";
-
-/* Title of a button linking to the app's Twitter profile */
-"Twitter" = "Twitter";
 
 /* Placeholder of the search text field on the domain selector. */
 "Type a name for your store" = "Введите название магазина";
@@ -9362,6 +9351,9 @@ which should be translated separately and considered part of this sentence. */
 /* Prompt asking users if the logged in to the wrong account.Presented when logging in with a store address that does not match the account entered. */
 "Wrong account?" = "Не та учётная запись?";
 
+/* Title of a button linking to the app's X profile */
+"X" = "X";
+
 /* Placeholder of the gift card code text field in the order form. */
 "XXXX-XXXX-XXXX-XXXX" = "XXXX-XXXX-XXXX-XXXX";
 
@@ -10157,6 +10149,15 @@ which should be translated separately and considered part of this sentence. */
 /* Label for the email receipts toggle in Payment Method screen. %1$@ is a placeholder for the account display name. %2$@ is a placeholder for the username. %3$@ is a placeholder for the WordPress.com email address. */
 "blazePaymentMethodsView.emailReceipt" = "Отправить квитанции о покупке %1$@ (%2$@) на %3$@";
 
+/* Dismiss button on the error alert displayed on the Blaze payment method list screen */
+"blazePaymentMethodsView.loadPaymentMethodsErrorAlert.cancel" = "Отмена";
+
+/* Error message indicating that loading payment methods failed */
+"blazePaymentMethodsView.loadPaymentMethodsErrorAlert.paymentMethods" = "Ошибка при загрузке способов оплаты";
+
+/* Button on the error alert displayed on the payment method list screen */
+"blazePaymentMethodsView.loadPaymentMethodsErrorAlert.retry" = "Повторить";
+
 /* Navigation bar title in the Blaze Payment Method screen */
 "blazePaymentMethodsView.navigationBarTitle" = "Способ оплаты";
 
@@ -10452,6 +10453,72 @@ which should be translated separately and considered part of this sentence. */
 /* Button in date range picker to add a Custom Range tab */
 "customRangeTabCreationCoordinator.add" = "Добавить";
 
+/* Label for a customer with no name in the Customer detail screen. */
+"customerDetail.guestName" = "Гость";
+
+/* Label for the customer's average order value in the Customer Details screen. */
+"customerDetailView.avgOrderValueLabel" = "Средняя стоимость заказа";
+
+/* Label for the customer's city in the Customer Details screen. */
+"customerDetailView.cityLabel" = "Город";
+
+/* Button to copy a customer's email address in the Customer Details screen. */
+"customerDetailView.copyEmail" = "Копировать адрес электронной почты";
+
+/* Label for the customer's country in the Customer Details screen. */
+"customerDetailView.countryLabel" = "Страна";
+
+/* Heading for the section with general customer details in the Customer Details screen. */
+"customerDetailView.customerSection" = "КЛИЕНТ";
+
+/* Label for the date the customer was last active in the Customer Details screen. */
+"customerDetailView.dateLastActiveLabel" = "Последнее действие";
+
+/* Label for the customer's registration date in the Customer Details screen. */
+"customerDetailView.dateRegisteredLabel" = "Дата регистрации";
+
+/* Default placeholder if a customer's details are not available in the Customer Details screen. */
+"customerDetailView.defaultPlaceholder" = "Нет";
+
+/* Title for action to contact a customer via email. */
+"customerDetailView.emailActionLabel" = "Связаться с клиентом по электронной почте";
+
+/* Placeholder if a customer's email address is not available in the Customer Details screen. */
+"customerDetailView.emailPlaceholder" = "Отсутствует адрес электронной почты";
+
+/* Heading for the section with customer location details in the Customer Details screen. */
+"customerDetailView.locationSection" = "МЕСТОПОЛОЖЕНИЕ";
+
+/* Label for the number of orders in the Customer Details screen. */
+"customerDetailView.ordersCountLabel" = "Заказы";
+
+/* Heading for the section with customer order stats in the Customer Details screen. */
+"customerDetailView.ordersSection" = "ЗАКАЗЫ";
+
+/* Label for the customer's postal code in the Customer Details screen. */
+"customerDetailView.postcodeLabel" = "Почтовый индекс";
+
+/* Label for the customer's region in the Customer Details screen. */
+"customerDetailView.regionLabel" = "Регион";
+
+/* Heading for the section with customer registration details in the Customer Details screen. */
+"customerDetailView.registrationSection" = "РЕГИСТРАЦИЯ";
+
+/* Button to email a customer in the Customer Details screen. */
+"customerDetailView.sendEmail" = "Электронная почта";
+
+/* Label for the customer's total spend in the Customer Details screen. */
+"customerDetailView.totalSpendLabel" = "Общие расходы";
+
+/* Label for the customer's username in the Customer Details screen. */
+"customerDetailView.usernameLabel" = "Имя пользователя";
+
+/* Message when there are no customers to show in the Customers list screen. */
+"customerList.emptyStateMessage" = "Создайте заказ, чтобы начать сбор аналитики по клиентам";
+
+/* Title when there are no customers to show in the Customers list screen. */
+"customerList.emptyStateTitle" = "Нет клиентов";
+
 /* Message to prompt users to search for customers on the customer search screen */
 "customerSearchUICommand.emptyDefaultStateNoCreationMessage" = "Поиск имеющегося клиента";
 
@@ -10460,6 +10527,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message in the Add Customer to order screen when getting the customer information */
 "customerSelectorViewController.guestSelectionDisallowedError" = "Этот пользователь — гость, а гостевой статус не позволяет фильтровать заказы.";
+
+/* Placeholder for a customer with no email address in the Customers list screen. */
+"customersList.emailPlaceholder" = "Отсутствует адрес электронной почты";
+
+/* Label for a customer with no name in the Customers list screen. */
+"customersList.guestLabel" = "Гость";
+
+/* Title for Customers list screen */
+"customersList.title" = "Клиенты";
 
 /* Display label for a product's subscription period when it is a single day. */
 "day" = "день";
@@ -10593,6 +10669,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Row title for filtering orders by Product. */
 "filterOrderListViewModel.OrderListFilter.rowTitleProduct" = "Товар";
+
+/* Title of one of the hub menu options */
+"hubMenu.customers" = "Клиенты";
+
+/* Description of one of the hub menu options */
+"hubMenu.customersDescription" = "Аналитика по клиентам";
+
+/* Title of the view containing a single Product Review */
+"hubMenu.productReview" = "Обзор товара";
 
 /* A message that tells the user why the app needs access to Bluetooth. */
 "infoplist.NSBluetoothAlwaysUsageDescription" = "Это приложение использует Bluetooth для подключения к платёжным терминалам.";
@@ -10899,6 +10984,12 @@ which should be translated separately and considered part of this sentence. */
 /* Shown with a 'Current:' label, but when we don't know what the plan that ended was */
 "plan ended" = "действие тарифного плана закончилось";
 
+/* Title for the Close button within the Plugin List view. */
+"pluginListView.button.close" = "Закрыть";
+
+/* Title for the Plugin List view. */
+"pluginListView.title.plugins" = "Плагины";
+
 /* Close title for the navigation bar button on the Print Shipping Label view. */
 "print.shipping.label.close.button.title" = "Закрыть";
 
@@ -11057,19 +11148,19 @@ which should be translated separately and considered part of this sentence. */
 "shipping.label.navigationBar.cancel.button.title" = "Отмена";
 
 /* Display text for the daily granularity of store stats on the My Store screen */
-"statsGranularityV4.daily" = "По дню";
+"statsGranularityV4.dailyMetrics" = "Периоды по дням";
 
 /* Display text for the hourly granularity of store stats on the My Store screen */
-"statsGranularityV4.hourly" = "По часу";
+"statsGranularityV4.hourlyMetrics" = "Периоды по часам";
 
 /* Display text for the monthly granularity of store stats on the My Store screen */
-"statsGranularityV4.monthly" = "По месяцу";
+"statsGranularityV4.monthlyMetrics" = "Периоды по месяцам";
 
 /* Display text for the weekly granularity of store stats on the My Store screen */
-"statsGranularityV4.weekly" = "По неделе";
+"statsGranularityV4.weeklyMetrics" = "Периоды по неделям";
 
 /* Display text for the yearly granularity of store stats on the My Store screen */
-"statsGranularityV4.yearly" = "По году";
+"statsGranularityV4.yearlyMetrics" = "Периоды по годам";
 
 /* Tab selector title that shows the statistics for today */
 "statsTimeRangeV4.tabTitle.custom" = "Произвольный период";
@@ -11270,7 +11361,7 @@ which should be translated separately and considered part of this sentence. */
 /* Button in theme preview screen to pick a theme. The placeholder is the theme name. Reads like: Use Tsubaki */
 "themesPreviewViewModel.useThisThemeButton" = "Использовать %1$@";
 
-/* Value for the WooCommerce plugin version detail row in settings, when the version is unknown. This is in place of the current version number. */
+/* Value for the plugin version detail row in settings, when the version is unknown. This is in place of the current version number. */
 "unknown" = "неизвестно";
 
 /* Used when the response doesn't have a valid url to display */

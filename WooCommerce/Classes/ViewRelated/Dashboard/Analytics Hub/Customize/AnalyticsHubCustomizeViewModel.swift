@@ -38,7 +38,7 @@ final class AnalyticsHubCustomizeViewModel: ObservableObject, Identifiable {
 
     /// - Parameters:
     ///   - allCards: An ordered list of all possible analytics cards, with their settings.
-    ///   - cardsToExclude: Optional list of analytics cards to exclude from display, e.g. because the user or store is not eligible to view them.
+    ///   - cardsToExclude: Optional list of analytics cards to exclude from selecting/reordering, because their analytics are not available for the store.
     ///   - onSave: Optional closure to perform when the changes are saved.
     init(allCards: [AnalyticsCard],
          cardsToExclude: [AnalyticsCard] = [],

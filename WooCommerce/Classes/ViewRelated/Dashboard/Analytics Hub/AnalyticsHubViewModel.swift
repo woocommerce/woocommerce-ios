@@ -646,9 +646,10 @@ extension AnalyticsHubViewModel {
     ///
     func customizeAnalytics() {
         // Exclude any cards the merchant/store is ineligible for.
+        // Excluded cards are displayed but can't be customized.
         let cardsToExclude: [AnalyticsCard] = [
             isEligibleForSessionsCard ? nil : allCardsWithSettings.first(where: { $0.type == .sessions }),
-            canDisplayCard(ofType: .bundles) ? nil : allCardsWithSettings.first(where: { $0.type == .bundles }) // TODO-12161: Support when extension is inactive
+            canDisplayCard(ofType: .bundles) ? nil : allCardsWithSettings.first(where: { $0.type == .bundles })
         ].compactMap({ $0 })
 
         analytics.track(event: .AnalyticsHub.customizeAnalyticsOpened())

@@ -11,7 +11,6 @@ struct ScanToPayView: View {
 
     var body: some View {
         ZStack {
-            Color.black.opacity(Layout.backgroundOpacity).edgesIgnoringSafeArea(.all)
             VStack {
                 VStack(alignment: .center, spacing: Layout.scanToPayBoxSpacing) {
                     if let qrCodeImage = viewModel.generateQRCodeImage() {

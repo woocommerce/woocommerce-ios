@@ -106,7 +106,7 @@ private enum Layout {
     static let disabledRowPadding: CGFloat = 10
     static let disabledRowHeight: CGFloat = 52
     static let disabledRowLeadingInset: CGFloat = 48
-    static let disabledRowTrailingInset: CGFloat = 24
+    static let disabledRowTrailingInset: CGFloat = 20
 }
 
 #Preview("List") {

@@ -96,7 +96,7 @@ final class OrderDetailsViewModelTests: XCTestCase {
         storesManager.reset()
         XCTAssertEqual(storesManager.receivedActions.count, 0)
 
-        let plugin = insertSystemPlugin(name: SitePlugin.SupportedPlugin.WCShip, siteID: order.siteID, isActive: true)
+        let plugin = insertSystemPlugin(name: SitePlugin.SupportedPlugin.LegacyWCShip, siteID: order.siteID, isActive: true)
         whenFetchingSystemPlugin(thenReturn: plugin)
         whenSyncingShippingLabels(thenReturn: .success(()))
 
@@ -114,7 +114,7 @@ final class OrderDetailsViewModelTests: XCTestCase {
         }
 
         XCTAssertEqual(siteID, order.siteID)
-        XCTAssertEqual(systemPluginNameList, [SitePlugin.SupportedPlugin.WCShip])
+        XCTAssertEqual(systemPluginNameList, [SitePlugin.SupportedPlugin.LegacyWCShip])
 
         // ShippingLabelAction.synchronizeShippingLabels
         let secondAction = try XCTUnwrap(storesManager.receivedActions.last as? ShippingLabelAction)
@@ -143,7 +143,7 @@ final class OrderDetailsViewModelTests: XCTestCase {
     func test_checkShippingLabelCreationEligibility_with_a_non_virtual_product_returns_value_from_action() async throws {
         // Given
         configureOrderWithProductsInStorage(products: [.fake().copy(productID: 6, virtual: false)])
-        let plugin = insertSystemPlugin(name: SitePlugin.SupportedPlugin.WCShip, siteID: order.siteID, isActive: true)
+        let plugin = insertSystemPlugin(name: SitePlugin.SupportedPlugin.LegacyWCShip, siteID: order.siteID, isActive: true)
         whenFetchingSystemPlugin(thenReturn: plugin)
         whenCheckingShippingLabelCreationEligibility(thenReturn: true)
 
@@ -174,7 +174,7 @@ final class OrderDetailsViewModelTests: XCTestCase {
         XCTAssertEqual(storesManager.receivedActions.count, 0)
 
         // Make sure the are plugins synced
-        let plugin = insertSystemPlugin(name: SitePlugin.SupportedPlugin.WCShip, siteID: order.siteID, isActive: true)
+        let plugin = insertSystemPlugin(name: SitePlugin.SupportedPlugin.LegacyWCShip, siteID: order.siteID, isActive: true)
         whenFetchingSystemPlugin(thenReturn: plugin)
         whenCheckingShippingLabelCreationEligibility(thenReturn: true)
 
@@ -192,7 +192,7 @@ final class OrderDetailsViewModelTests: XCTestCase {
         }
 
         XCTAssertEqual(siteID, order.siteID)
-        XCTAssertEqual(systemPluginNameList, [SitePlugin.SupportedPlugin.WCShip])
+        XCTAssertEqual(systemPluginNameList, [SitePlugin.SupportedPlugin.LegacyWCShip])
 
         // ShippingLabelAction.synchronizeShippingLabels
         let secondAction = try XCTUnwrap(storesManager.receivedActions.last as? ShippingLabelAction)

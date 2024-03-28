@@ -152,24 +152,11 @@ final class AnalyticsHubViewModel: ObservableObject {
     private func canDisplayCard(ofType card: AnalyticsCard.CardType) -> Bool {
         switch card {
         case .sessions:
-            showSessionsCard
+            isEligibleForSessionsCard
         case .bundles:
             isExpandedAnalyticsHubEnabled && isPluginActive(SitePlugin.SupportedPlugin.WCProductBundles)
         default:
             true
-        }
-    }
-
-    /// Sessions Card display state
-    ///
-    private var showSessionsCard: Bool {
-        guard isEligibleForSessionsCard else {
-            return false
-        }
-        if case .custom = timeRangeSelectionType {
-            return false
-        } else {
-            return true
         }
     }
 
@@ -645,12 +632,9 @@ extension AnalyticsHubViewModel {
     /// Setting this view model opens the view.
     ///
     func customizeAnalytics() {
-        // Identify any cards the merchant/store is ineligible for.
-        // Inactive cards are displayed in the list with a promo link but can't be customized.
-        let inactiveCards: [AnalyticsCard] = [
-            isEligibleForSessionsCard ? nil : allCardsWithSettings.first(where: { $0.type == .sessions }),
-            canDisplayCard(ofType: .bundles) ? nil : allCardsWithSettings.first(where: { $0.type == .bundles })
-        ].compactMap({ $0 })
+        // Identify any inactive cards (that can't be displayed in the Analytics Hub).
+        // Inactive cards are displayed in the customize list with a promo link but can't be customized.
+        let inactiveCards: [AnalyticsCard] = allCardsWithSettings.filter { !canDisplayCard(ofType: $0.type) }
 
         analytics.track(event: .AnalyticsHub.customizeAnalyticsOpened())
         customizeAnalyticsViewModel = AnalyticsHubCustomizeViewModel(allCards: allCardsWithSettings,

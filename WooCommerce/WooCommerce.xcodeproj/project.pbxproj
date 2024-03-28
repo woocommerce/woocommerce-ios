@@ -2065,6 +2065,7 @@
 		CEA16F3A20FD0C8C0061B4E1 /* WooAnalytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA16F3920FD0C8C0061B4E1 /* WooAnalytics.swift */; };
 		CEA455C12BB3446D00D932CF /* BundlesReportCardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA455C02BB3446D00D932CF /* BundlesReportCardViewModel.swift */; };
 		CEA455C52BB44F9E00D932CF /* ProductsReportItem+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA455C42BB44F9E00D932CF /* ProductsReportItem+Woo.swift */; };
+		CEA455C72BB5CA5E00D932CF /* AnalyticsSessionsUnavailableCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA455C62BB5CA5E00D932CF /* AnalyticsSessionsUnavailableCard.swift */; };
 		CEA9C8E02B6D323A000FE114 /* AnalyticsWebReportTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA9C8DF2B6D323A000FE114 /* AnalyticsWebReportTests.swift */; };
 		CEC8188C2A3B7C8B00459843 /* AppStartupWaitingTimeTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEC8188B2A3B7C8B00459843 /* AppStartupWaitingTimeTracker.swift */; };
 		CEC8188E2A3C75DD00459843 /* AppStartupWaitingTimeTrackerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEC8188D2A3C75DD00459843 /* AppStartupWaitingTimeTrackerTests.swift */; };
@@ -4807,6 +4808,7 @@
 		CEA16F3920FD0C8C0061B4E1 /* WooAnalytics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooAnalytics.swift; sourceTree = "<group>"; };
 		CEA455C02BB3446D00D932CF /* BundlesReportCardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BundlesReportCardViewModel.swift; sourceTree = "<group>"; };
 		CEA455C42BB44F9E00D932CF /* ProductsReportItem+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductsReportItem+Woo.swift"; sourceTree = "<group>"; };
+		CEA455C62BB5CA5E00D932CF /* AnalyticsSessionsUnavailableCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsSessionsUnavailableCard.swift; sourceTree = "<group>"; };
 		CEA9C8DF2B6D323A000FE114 /* AnalyticsWebReportTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsWebReportTests.swift; sourceTree = "<group>"; };
 		CEC8188B2A3B7C8B00459843 /* AppStartupWaitingTimeTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStartupWaitingTimeTracker.swift; sourceTree = "<group>"; };
 		CEC8188D2A3C75DD00459843 /* AppStartupWaitingTimeTrackerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStartupWaitingTimeTrackerTests.swift; sourceTree = "<group>"; };
@@ -11043,6 +11045,7 @@
 				2647F7B9292BE2F900D59FDF /* AnalyticsReportCard.swift */,
 				26E7EE6D29300E8100793045 /* AnalyticsItemsSoldCard.swift */,
 				CEF2DD852B558E3E00A3DD0B /* AnalyticsCTACard.swift */,
+				CEA455C62BB5CA5E00D932CF /* AnalyticsSessionsUnavailableCard.swift */,
 				CEEF74212B99EC5800B03948 /* AnalyticsReportCardProtocol.swift */,
 				CEEF74242B99EF1200B03948 /* RevenueReportCardViewModel.swift */,
 				CEEF74292B9A02EB00B03948 /* OrdersReportCardViewModel.swift */,
@@ -14033,6 +14036,7 @@
 				0204F0CA29C047A400CFC78F /* SelfSizingHostingController.swift in Sources */,
 				7441EBC9226A71AA008BF83D /* TitleBodyTableViewCell.swift in Sources */,
 				EECB6D1E2AFBFE0000040BC9 /* WooSubscriptionProductsEligibilityChecker.swift in Sources */,
+				CEA455C72BB5CA5E00D932CF /* AnalyticsSessionsUnavailableCard.swift in Sources */,
 				EE45E29D2A381A250085F227 /* ProductDescriptionGenerationCelebrationView.swift in Sources */,
 				0260B1B12805321B00FCFE8C /* OrderDetailsPaymentAlertsProtocol.swift in Sources */,
 				4556ED38270645A6005CBC0D /* ShippingLabelCarrierSectionHeader.swift in Sources */,

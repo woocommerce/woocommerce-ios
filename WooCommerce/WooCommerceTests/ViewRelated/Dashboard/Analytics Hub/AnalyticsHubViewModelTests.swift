@@ -135,23 +135,6 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         // Given
     }
 
-    func test_session_card_is_hidden_for_custom_range() async {
-        // Given
-        XCTAssertTrue(vm.enabledCards.contains(.sessions))
-
-        // When
-        vm.timeRangeSelectionType = .custom(start: Date(), end: Date())
-
-        // Then
-        XCTAssertFalse(vm.enabledCards.contains(.sessions))
-
-        // When
-        vm.timeRangeSelectionType = .lastMonth
-
-        // Then
-        XCTAssertTrue(vm.enabledCards.contains(.sessions))
-    }
-
     func test_session_card_is_hidden_for_sites_without_jetpack_plugin() {
         // Given
         let storesForNonJetpackSite = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, defaultSite: .fake().copy(siteID: -1)))

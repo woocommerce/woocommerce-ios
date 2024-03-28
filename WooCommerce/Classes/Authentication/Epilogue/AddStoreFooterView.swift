@@ -34,6 +34,13 @@ final class AddStoreFooterView: UIView {
                                             trailing: Constants.horizontalPadding)
         addStoreButton.configuration = configuration
 
+        NSLayoutConstraint.activate([
+            addStoreButton.leadingAnchor.constraint(equalTo: leadingAnchor),
+            trailingAnchor.constraint(equalTo: addStoreButton.trailingAnchor),
+            addStoreButton.topAnchor.constraint(equalTo: topAnchor),
+            bottomAnchor.constraint(equalTo: addStoreButton.bottomAnchor),
+        ])
+
         addStoreButton.addAction(UIAction { [weak self] _ in
             self?.addStoreHandler()
         }, for: .touchUpInside)

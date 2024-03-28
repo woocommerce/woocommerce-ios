@@ -34,6 +34,9 @@ final class OrderDetailsViewModel {
         self.stores = stores
         self.storageManager = storageManager
         self.currencyFormatter = currencyFormatter
+        self.configurationLoader = CardPresentConfigurationLoader(stores: stores)
+        self.dataSource = OrderDetailsDataSource(order: order,
+                                                 cardPresentPaymentsConfiguration: configurationLoader.configuration)
     }
 
     func update(order newOrder: Order) {
@@ -99,14 +102,11 @@ final class OrderDetailsViewModel {
     }
 
     /// IPP Configuration loader
-    private lazy var configurationLoader = CardPresentConfigurationLoader(stores: stores)
+    private let configurationLoader: CardPresentConfigurationLoader
 
     /// The datasource that will be used to render the Order Details screen
     ///
-    private(set) lazy var dataSource: OrderDetailsDataSource = {
-        return OrderDetailsDataSource(order: order,
-                                      cardPresentPaymentsConfiguration: configurationLoader.configuration)
-    }()
+    let dataSource: OrderDetailsDataSource
 
     private(set) lazy var editNoteViewModel: EditCustomerNoteViewModel = {
         return EditCustomerNoteViewModel(order: order)

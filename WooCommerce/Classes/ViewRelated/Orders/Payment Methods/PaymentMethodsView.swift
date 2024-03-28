@@ -132,7 +132,7 @@ struct PaymentMethodsView: View {
                 }
             }
         }
-        .fullScreenCover(isPresented: $showingScanToPayView) {
+        .sheet(isPresented: $showingScanToPayView) {
             ScanToPayView(viewModel: ScanToPayViewModel(paymentURL: viewModel.paymentLink)) {
                 dismiss()
                 viewModel.performScanToPayFinishedTasks()

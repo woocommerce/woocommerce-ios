@@ -10,26 +10,24 @@ struct AnalyticsHubCustomizeView: View {
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
-        VStack {
-            MultiSelectionReorderableList(contents: $viewModel.allCards,
-                                          contentKeyPath: \.name,
-                                          selectedItems: $viewModel.selectedCards,
-                                          inactiveItems: viewModel.inactiveCards,
-                                          inactiveAccessoryView: { card in
-                exploreButton(with: viewModel.promoURL(for: card))
-            })
-                .toolbar(content: {
-                    ToolbarItem(placement: .confirmationAction) {
-                        Button {
-                            viewModel.saveChanges()
-                            dismiss()
-                        } label: {
-                            Text(Localization.saveButton)
-                        }
-                        .disabled(!viewModel.hasChanges)
-                    }
-                })
-        }
+        MultiSelectionReorderableList(contents: $viewModel.allCards,
+                                      contentKeyPath: \.name,
+                                      selectedItems: $viewModel.selectedCards,
+                                      inactiveItems: viewModel.inactiveCards,
+                                      inactiveAccessoryView: { card in
+            exploreButton(with: viewModel.promoURL(for: card))
+        })
+        .toolbar(content: {
+            ToolbarItem(placement: .confirmationAction) {
+                Button {
+                    viewModel.saveChanges()
+                    dismiss()
+                } label: {
+                    Text(Localization.saveButton)
+                }
+                .disabled(!viewModel.hasChanges)
+            }
+        })
         .navigationTitle(Localization.title)
         .navigationBarTitleDisplayMode(.inline)
         .background(Color(uiColor: .listBackground))

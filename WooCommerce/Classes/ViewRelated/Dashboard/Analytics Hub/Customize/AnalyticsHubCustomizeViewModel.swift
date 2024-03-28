@@ -80,7 +80,7 @@ final class AnalyticsHubCustomizeViewModel: ObservableObject, Identifiable {
         case .bundles:
             WooConstants.URLs.productBundlesExtension.asURL()
         case .sessions:
-            nil // TODO-12161: Link to Jetpack or stop excluding this card
+            WooConstants.URLs.jetpackStats.asURL()
         default:
             nil
         }

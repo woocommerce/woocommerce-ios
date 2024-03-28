@@ -600,7 +600,7 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         customizeAnalytics.saveChanges()
     }
 
-    func test_customizeAnalytics_excludes_sessions_card_when_ineligible() throws {
+    func test_sessions_card_is_inactive_in_customizeAnalytics_when_ineligible() throws {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, defaultSite: .fake().copy(siteID: -1)))
         let vm = createViewModel(stores: stores)
@@ -611,10 +611,10 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         // Then
         let customizeAnalyticsVM = try XCTUnwrap(vm.customizeAnalyticsViewModel)
         XCTAssertFalse(vm.enabledCards.contains(.sessions))
-        XCTAssertTrue(customizeAnalyticsVM.excludedCards.contains(where: { $0.type == .sessions }))
+        XCTAssertTrue(customizeAnalyticsVM.inactiveCards.contains(where: { $0.type == .sessions }))
     }
 
-    func test_customizeAnalytics_excludes_bundles_card_when_extension_is_inactive() throws {
+    func test_bundles_card_is_inactive_in_customizeAnalytics_when_extension_is_inactive() throws {
         // Given
         let storage = MockStorageManager()
         storage.insertSampleSystemPlugin(readOnlySystemPlugin: .fake().copy(siteID: sampleSiteID,
@@ -628,7 +628,7 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         // Then
         let customizeAnalyticsVM = try XCTUnwrap(vm.customizeAnalyticsViewModel)
         XCTAssertFalse(vm.enabledCards.contains(.bundles))
-        XCTAssertTrue(customizeAnalyticsVM.excludedCards.contains(where: { $0.type == .bundles }))
+        XCTAssertTrue(customizeAnalyticsVM.inactiveCards.contains(where: { $0.type == .bundles }))
     }
 
     func test_customizeAnalytics_tracks_expected_event() {

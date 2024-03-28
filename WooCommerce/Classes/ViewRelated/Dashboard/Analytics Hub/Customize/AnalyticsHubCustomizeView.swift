@@ -14,7 +14,7 @@ struct AnalyticsHubCustomizeView: View {
             MultiSelectionReorderableList(contents: $viewModel.allCards,
                                           contentKeyPath: \.name,
                                           selectedItems: $viewModel.selectedCards,
-                                          inactiveItems: viewModel.excludedCards,
+                                          inactiveItems: viewModel.inactiveCards,
                                           inactiveAccessoryView: { card in
                 exploreButton(with: viewModel.promoURL(for: card))
             })
@@ -86,6 +86,6 @@ private extension AnalyticsHubCustomizeView {
 
 #Preview("Inactive cards") {
     NavigationView {
-        AnalyticsHubCustomizeView(viewModel: AnalyticsHubCustomizeViewModel(allCards: [], cardsToExclude: AnalyticsHubCustomizeViewModel.sampleCards))
+        AnalyticsHubCustomizeView(viewModel: AnalyticsHubCustomizeViewModel(allCards: [], inactiveCards: AnalyticsHubCustomizeViewModel.sampleCards))
     }
 }

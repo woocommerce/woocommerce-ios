@@ -364,31 +364,6 @@ private extension StorePickerViewController {
         ServiceLocator.authenticationManager.presentSupport(from: self, screen: .storePicker)
     }
 
-    func presentAddStoreActionSheet(from view: UIView) {
-        let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-        actionSheet.view.tintColor = .text
-        let createStoreAction = UIAlertAction(title: Localization.createStore, style: .default) { [weak self] _ in
-            // TODO: add tracks for site creation
-            self?.createStoreButtonPressed()
-        }
-        let addExistingStoreAction = UIAlertAction(title: Localization.connectExistingStore, style: .default) { [weak self] _ in
-            ServiceLocator.analytics.track(.sitePickerConnectExistingStoreTapped)
-            self?.presentSiteDiscovery()
-        }
-        let cancelAction = UIAlertAction(title: Localization.cancel, style: .cancel)
-
-        actionSheet.addAction(createStoreAction)
-        actionSheet.addAction(addExistingStoreAction)
-        actionSheet.addAction(cancelAction)
-
-        if let popoverController = actionSheet.popoverPresentationController {
-            popoverController.sourceView = view
-            popoverController.sourceRect = view.bounds
-        }
-
-        present(actionSheet, animated: true)
-    }
-
     func presentSiteDiscovery() {
         guard let viewController = WordPressAuthenticator.siteDiscoveryUI() else {
             return
@@ -679,12 +654,11 @@ private extension StorePickerViewController {
         }
     }
 
-    /// Presents a screen to enter a store address to connect,
-    /// or the add store action sheet for simplified login.
+    /// Button to allow connecting to an existing store.
     ///
     @IBAction private func addStoreWasPressed() {
-        ServiceLocator.analytics.track(.sitePickerAddStoreTapped)
-        presentAddStoreActionSheet(from: addStoreButton)
+        ServiceLocator.analytics.track(.sitePickerConnectExistingStoreTapped)
+        self.presentSiteDiscovery()
     }
 
     /// Proceeds with the Logout Flow.
@@ -885,8 +859,9 @@ private extension StorePickerViewController {
                                                             comment: "Button to connect to an existing store from the store picker")
         static let cancel = NSLocalizedString("Cancel",
                                               comment: "Button to dismiss the action sheet on the store picker")
-        static let addStoreButton = NSLocalizedString("Add a Store",
-                                                      comment: "Button title on the store picker for store creation")
+        static let addStoreButton = NSLocalizedString("storePickerViewController.addStoreButton",
+                                                      value: "Connect existing store",
+                                                      comment: "Button title on the store picker for store connection")
         enum ActionMenu {
             static let logOut = NSLocalizedString("Log out",
                                                   comment: "Button to log out from the current account from the store picker")

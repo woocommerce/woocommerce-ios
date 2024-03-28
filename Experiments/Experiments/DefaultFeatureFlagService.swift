@@ -93,6 +93,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .expandedAnalyticsHub:
             return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .migrateSimplePaymentsToOrderCreation:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true
         }

@@ -73,14 +73,14 @@ public enum CustomerAction: Action {
     ///     - pageSize: The size of the page you want to load.
     ///     - keyword: Keyword to perform the search.
     ///     - filter: Filter to perform the search.
-    ///     - onCompletion: Invoked when the operation finishes.
+    ///     - onCompletion: Invoked when the operation finishes. Returns true if there are more customers to be synced in the search results.
     ///
     case searchWCAnalyticsCustomers(siteID: Int64,
                                     pageNumber: Int,
                                     pageSize: Int,
                                     keyword: String,
                                     filter: CustomerSearchFilter,
-                                    onCompletion: (Result<(), Error>) -> Void)
+                                    onCompletion: (Result<Bool, Error>) -> Void)
 
     /// Retrieves a single Customer from a site
     ///

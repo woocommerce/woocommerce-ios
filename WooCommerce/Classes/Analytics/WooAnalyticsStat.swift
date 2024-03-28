@@ -265,6 +265,7 @@ public enum WooAnalyticsStat: String {
     case siteCreationPropertiesOutOfSync = "site_creation_properties_out_of_sync"
     case siteCreationFreeTrialCreatedSuccess = "site_creation_free_trial_created_success"
     case loginPrologueCreateSiteTapped = "login_prologue_create_site_tapped"
+    case loginPrologueStartingANewStoreTapped = "login_prologue_starting_a_new_store_tapped"
     case signupFormLoginTapped = "signup_login_button_tapped"
     case signupSubmitted = "signup_submitted"
     case signupSuccess = "signup_success"
@@ -1055,6 +1056,15 @@ public enum WooAnalyticsStat: String {
     case inboxNotesLoaded = "inbox_notes_loaded"
     case inboxNotesLoadedFailed = "inbox_notes_load_failed"
     case inboxNoteAction = "inbox_note_action"
+
+    // MARK: Customers
+    case customerHubLoaded = "customers_hub_loaded"
+    case customerHubLoadFailed = "customers_hub_load_failed"
+    case customersHubSearch = "customers_hub_customer_search"
+    case customersHubDetailOpen = "customers_hub_customer_detail_open"
+    case customersHubDetailEmailMenuTapped = "customers_hub_customer_detail_email_menu_tapped"
+    case customersHubDetailEmailOptionTapped = "customers_hub_customer_detail_email_option_tapped"
+    case customersHubDetailCopyEmailOptionTapped = "customers_hub_customer_detail_email_copy_option_tapped"
 
     // MARK: Close Account
     case closeAccountTapped = "close_account_tapped"

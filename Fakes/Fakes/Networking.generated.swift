@@ -1244,6 +1244,43 @@ extension Networking.ProductBundleItemStockStatus {
         .inStock
     }
 }
+extension Networking.ProductBundleStats {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.ProductBundleStats {
+        .init(
+            siteID: .fake(),
+            granularity: .fake(),
+            totals: .fake(),
+            intervals: .fake()
+        )
+    }
+}
+extension Networking.ProductBundleStatsInterval {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.ProductBundleStatsInterval {
+        .init(
+            interval: .fake(),
+            dateStart: .fake(),
+            dateEnd: .fake(),
+            subtotals: .fake()
+        )
+    }
+}
+extension Networking.ProductBundleStatsTotals {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.ProductBundleStatsTotals {
+        .init(
+            totalItemsSold: .fake(),
+            totalBundledItemsSold: .fake(),
+            netRevenue: .fake(),
+            totalOrders: .fake(),
+            totalProducts: .fake()
+        )
+    }
+}
 extension Networking.ProductCatalogVisibility {
     /// Returns a "ready to use" type filled with fake values.
     ///
@@ -1490,6 +1527,19 @@ extension Networking.ProductVariationAttribute {
             id: .fake(),
             name: .fake(),
             option: .fake()
+        )
+    }
+}
+extension Networking.ProductsReportItem {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.ProductsReportItem {
+        .init(
+            productID: .fake(),
+            productName: .fake(),
+            quantity: .fake(),
+            total: .fake(),
+            imageUrl: .fake()
         )
     }
 }

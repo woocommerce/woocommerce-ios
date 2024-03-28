@@ -87,10 +87,7 @@ private extension BlazeStore {
                         onCompletion: @escaping (Result<Void, Error>) -> Void) {
         Task { @MainActor in
             do {
-                // TODO-11540: remove stubbed result when the API is ready.
-                try await mockResponse(stubbedResult: (), onExecution: {
-                    try await remote.createCampaign(campaign, siteID: siteID)
-                })
+                try await remote.createCampaign(campaign, siteID: siteID)
                 onCompletion(.success(()))
             } catch {
                 onCompletion(.failure(error))

@@ -83,12 +83,16 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .scanToUpdateInventory:
             return true
         case .blazei3NativeCampaignCreation:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return true
         case .backendReceipts:
             return true
         case .splitViewInProductsTab:
             return true
+        case .noMoreWooExpressSignup:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         case .customersInHubMenu:
+            return true
+        case .expandedAnalyticsHub:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true

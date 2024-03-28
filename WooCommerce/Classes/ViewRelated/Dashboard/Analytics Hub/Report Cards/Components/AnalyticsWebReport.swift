@@ -8,6 +8,7 @@ struct AnalyticsWebReport {
         case revenue
         case orders
         case products
+        case bundles
     }
 
     /// Provides the URL for a web analytics report
@@ -56,6 +57,8 @@ struct AnalyticsWebReport {
             return "/analytics/orders"
         case .products:
             return "/analytics/products"
+        case .bundles:
+            return "/analytics/bundles"
         }
     }
 

@@ -11,14 +11,20 @@ public struct BodyStyle: ViewModifier {
     ///
     var isEnabled: Bool
 
-    public init(isEnabled: Bool) {
+    /// View opacity
+    ///
+    var opacity: Double
+
+    public init(isEnabled: Bool, opacity: Double) {
         self.isEnabled = isEnabled
+        self.opacity = opacity
     }
 
     public func body(content: Content) -> some View {
         content
             .font(.body)
             .foregroundColor(isEnabled ? Color(.text) : Color(.textTertiary))
+            .opacity(opacity)
     }
 }
 
@@ -190,8 +196,8 @@ public struct HeadlineLinkStyle: ViewModifier {
 public extension View {
     /// - Parameters:
     ///     - isEnabled: Whether the view is enabled (to apply specific styles for disabled view)
-    func bodyStyle(_ isEnabled: Bool = true) -> some View {
-        self.modifier(BodyStyle(isEnabled: isEnabled))
+    func bodyStyle(_ isEnabled: Bool = true, opacity: Double = 1.0) -> some View {
+        self.modifier(BodyStyle(isEnabled: isEnabled, opacity: opacity))
     }
 
     func secondaryBodyStyle() -> some View {

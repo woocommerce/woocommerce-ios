@@ -91,6 +91,17 @@ final class CustomerDetailViewModel {
     /// Copies the customer email to the pasteboard.
     func copyEmail() {
         email?.sendToPasteboard(includeTrailingNewline: false)
+        ServiceLocator.analytics.track(event: .CustomersHub.customerDetailCopyEmailOptionTapped())
+    }
+
+    /// Tracks when the email menu is opened.
+    func trackEmailMenuTapped() {
+        ServiceLocator.analytics.track(event: .CustomersHub.customerDetailEmailMenuTapped())
+    }
+
+    /// Tracks when the option to send an email is tapped.
+    func trackEmailOptionTapped() {
+        ServiceLocator.analytics.track(event: .CustomersHub.customerDetailEmailOptionTapped())
     }
 }
 

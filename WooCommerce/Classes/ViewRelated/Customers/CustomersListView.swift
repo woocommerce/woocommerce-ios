@@ -3,8 +3,24 @@ import SwiftUI
 struct CustomersListView: View {
     @StateObject var viewModel: CustomersListViewModel
 
+    @State private var isEditingSearchTerm: Bool = false
+
     var body: some View {
-        Group {
+        VStack(spacing: 0) {
+            Group {
+                SearchHeader(text: $viewModel.searchTerm, placeholder: Localization.searchPlaceholder) { isEditing in
+                    isEditingSearchTerm = isEditing
+                }
+                .submitLabel(.done)
+                Picker(selection: $viewModel.searchFilter, label: EmptyView()) {
+                    ForEach(viewModel.searchFilters, id: \.self) { option in Text(option.title) }
+                }
+                .pickerStyle(.segmented)
+                .padding([.horizontal, .bottom])
+                .renderedIf(isEditingSearchTerm && !viewModel.showAdvancedSearch)
+            }
+            .renderedIf(viewModel.showSearchHeader)
+
             switch viewModel.syncState {
             case .results:
                 RefreshableInfiniteScrollList(isLoading: viewModel.shouldShowBottomActivityIndicator,
@@ -28,6 +44,9 @@ struct CustomersListView: View {
 
                             Divider().padding(.leading)
                         }
+                        .simultaneousGesture(TapGesture().onEnded { _ in
+                            viewModel.trackCustomerSelected(customer)
+                        })
                     }
                 }
             case .syncingFirstPage:
@@ -42,10 +61,16 @@ struct CustomersListView: View {
                     }
                 }
             case .empty:
-                EmptyState(title: Localization.emptyStateTitle,
-                           description: Localization.emptyStateMessage,
-                           image: .cashRegisterImage)
+                if viewModel.searchTerm.isEmpty {
+                    EmptyState(title: Localization.emptyStateTitle,
+                               description: Localization.emptyStateMessage,
+                               image: .cashRegisterImage)
                     .frame(maxHeight: .infinity)
+                } else {
+                    EmptyState(title: Localization.emptySearchTitle,
+                               image: .searchNoResultImage)
+                    .frame(maxHeight: .infinity)
+                }
             }
         }
         .listStyle(.plain)
@@ -73,6 +98,12 @@ private extension CustomersListView {
         static let emptyStateMessage = NSLocalizedString("customerList.emptyStateMessage",
                                                          value: "Create an order to start gathering customer insights",
                                                          comment: "Message when there are no customers to show in the Customers list screen.")
+        static let searchPlaceholder = NSLocalizedString("customersList.searchPlaceholder",
+                                                         value: "Search for customers",
+                                                         comment: "Placeholder in the search bar in the Customers list screen.")
+        static let emptySearchTitle = NSLocalizedString("customerList.emptySearchTitle",
+                                                        value: "No customers found",
+                                                        comment: "Title when there are no customers in the search results in the Customers list screen.")
     }
 }
 

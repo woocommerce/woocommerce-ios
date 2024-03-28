@@ -928,4 +928,8 @@ final class IconsTests: XCTestCase {
     func test_cashRegisterImage_is_not_nil() {
         XCTAssertNotNil(UIImage.cashRegisterImage)
     }
+
+    func test_exclamationFilledImage_is_not_nil() {
+        XCTAssertNotNil(UIImage.exclamationFilledImage)
+    }
 }

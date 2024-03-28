@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-03-13 15:54:03+0000 */
+/* Translation-Revision-Date: 2024-03-27 09:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: he_IL */
@@ -12,7 +12,8 @@
 /* Label that describes the completed progress of an update being installed (e.g. 15% complete). Keep the %.0f%% exactly as is */
 "%.0f%% complete" = "%.0f%% הושלמו";
 
-/* In Shipping Labels Package Details, the pattern used to show the weight of a product. For example, “1lbs”. */
+/* In Shipping Labels Package Details, the pattern used to show the weight of a product. For example, “1lbs”.
+   Title for the plugin detail row in settings. %1$@ is a placeholder for the plugin name. This is displayed with the current version number, and whether an update is available. */
 "%1$@" = "%1$@";
 
 /* Format for each Product attribute in singular form */
@@ -40,9 +41,6 @@
 
 /* The default name for a duplicated product, with %1$@ being the original name. Reads like: Ramen Copy */
 "%1$@ Copy" = "להעתיק את %1$@";
-
-/* Title for the plugin version detail row in settings. %1$@ is a placeholder for the plugin name. This is displayed with the current version number, and whether an update is available. */
-"%1$@ Version" = "גרסת %1$@";
 
 /* A label prompting users to learn more about Tap to Pay on iPhone"
 %1$@ is a placeholder that always replaced with \"Learn more\" string,
@@ -422,9 +420,6 @@ which should be translated separately and considered part of this sentence. */
    Status name of an approved Blaze campaign
    Status of coupons that are active */
 "Active" = "פעיל";
-
-/* Title for table view section of active plugins */
-"Active Plugins" = "תוספים פעילים";
 
 /* The plugin is active on the site and has not enabled automatic updates */
 "Active, Autoupdates off" = "פעיל, עדכונים אוטומטיים מושבתים";
@@ -1487,6 +1482,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message when the card is removed from the reader prematurely. */
 "Card was removed too soon - please try transaction again" = "הסרת את הכרטיס מהר מדי – יש לנסות לבצע את העסקה שוב";
+
+/* Label for a cancel button when an optional software update is happening */
+"CardPresentModalUpdateProgress.button.cancelOptionalButtonText" = "ביטול";
+
+/* Label for a cancel button when a mandatory software update is happening */
+"CardPresentModalUpdateProgress.button.cancelRequiredButtonText" = "לבטל בכל זאת";
+
+/* Label for a dismiss button when a software update has finished */
+"CardPresentModalUpdateProgress.button.dismissButtonText" = "לבטל";
 
 /* Navigation bar title of shipping label carrier and rates screen */
 "Carrier and Rates" = "ספק משלוח ותעריפים";
@@ -3824,9 +3828,6 @@ which should be translated separately and considered part of this sentence. */
 /* Application's Inactive State */
 "Inactive" = "לא פעיל";
 
-/* Title for table view section of inactive plugins */
-"Inactive Plugins" = "תוספים לא פעילים";
-
 /* The plugin is not active on the site and has not enabled automatic updates */
 "Inactive, Autoupdates off" = "לא פעיל, עדכונים אוטומטיים מושבתים";
 
@@ -4785,9 +4786,6 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Netherlands" = "הולנד";
 
-/* Title for table view section of network active plugins */
-"Network Active Plugins" = "תוספים פעילים ברשת";
-
 /* Error message when session cookie has expired. */
 "NetworkError.invalidCookieNonce" = "מצטערים , תוקף ההפעלה פג. נא להתחבר מחדש.";
 
@@ -5692,8 +5690,7 @@ which should be translated separately and considered part of this sentence. */
 "Please, add a new payment method" = "יש להוסיף אמצעי תשלום חדש";
 
 /* My Store > Settings > Plugins section title
-   Navigates to Plugins screen.
-   Title of the Plugin List screen */
+   Navigates to Plugins screen. */
 "Plugins" = "תוספים";
 
 /* Country option for a site address. */
@@ -7065,8 +7062,7 @@ which should be translated separately and considered part of this sentence. */
 /* Indicates the reviewer does not have a name. It reads { Someone left a review} */
 "Someone" = "לא ידוע";
 
-/* Error message presented to users after a failure occurs
-   The text on the placeholder overlay when there is issue syncing site plugins */
+/* Error message presented to users after a failure occurs */
 "Something went wrong" = "משהו השתבש";
 
 /* Description of an unknown error after purchasing a plan */
@@ -7943,9 +7939,6 @@ which should be translated separately and considered part of this sentence. */
 /* Error message informing the user that there was a problem clearing the block on site preventing its posts from displaying in the reader. */
 "There was a problem removing the block for specified site." = "אירעה בעיה בעת הסרת הבלוק עבור האתר שצוין.";
 
-/* The details on the placeholder overlay when there is issue syncing site plugins */
-"There was a problem while trying to load plugins. Check your internet and try again." = "אירעה בעיה בטעינת התוספים. יש לבדוק את החיבור לאינטרנט ולנסות שוב.";
-
 /* Message to be displayed when there's an error communicating with the remote site during Jetpack setup */
 "There was an error communicating with your site." = "אירעה שגיאה בתקשורת עם האתר שלך.";
 
@@ -8332,8 +8325,7 @@ which should be translated separately and considered part of this sentence. */
 /* Title shown on the test order screen */
 "Try a test order" = "לנסות הזמנה לבדיקה";
 
-/* Action to resync on the placeholder overlay when there is issue syncing site plugins
-   Button to dismiss the alert presented when connecting to a specific reader fails. This allows the search to continue.
+/* Button to dismiss the alert presented when connecting to a specific reader fails. This allows the search to continue.
    Button to dismiss the alert presented when starting Tap to Pay on iPhone fails. This allows the search to continue.
    Title of the try again action when the site cannot be launched from store onboarding > launch store screen. */
 "Try again" = "לנסות שוב";
@@ -8397,9 +8389,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Info text about the scanned text list on the add product from image form. */
 "Tweak your text: Unselect scans you don't need or tap to edit" = "להתאים את הטקסט: לבטל את הבחירה בסריקות שאין לך בהן צורך או להקיש כדי לערוך";
-
-/* Title of a button linking to the app's Twitter profile */
-"Twitter" = "טוויטר";
 
 /* Placeholder of the search text field on the domain selector. */
 "Type a name for your store" = "יש להקליד את השם של החנות שלך";
@@ -9362,6 +9351,9 @@ which should be translated separately and considered part of this sentence. */
 /* Prompt asking users if the logged in to the wrong account.Presented when logging in with a store address that does not match the account entered. */
 "Wrong account?" = "חשבון שגוי?";
 
+/* Title of a button linking to the app's X profile */
+"X" = "X";
+
 /* Placeholder of the gift card code text field in the order form. */
 "XXXX-XXXX-XXXX-XXXX" = "XXXX-XXXX-XXXX-XXXX";
 
@@ -10157,6 +10149,15 @@ which should be translated separately and considered part of this sentence. */
 /* Label for the email receipts toggle in Payment Method screen. %1$@ is a placeholder for the account display name. %2$@ is a placeholder for the username. %3$@ is a placeholder for the WordPress.com email address. */
 "blazePaymentMethodsView.emailReceipt" = "לשלוח את הקבלות על רכישת התווית באימייל אל %1$@ (%2$@) בכתובת %3$@";
 
+/* Dismiss button on the error alert displayed on the Blaze payment method list screen */
+"blazePaymentMethodsView.loadPaymentMethodsErrorAlert.cancel" = "ביטול";
+
+/* Error message indicating that loading payment methods failed */
+"blazePaymentMethodsView.loadPaymentMethodsErrorAlert.paymentMethods" = "שגיאה בטעינת אמצעי התשלום שלך";
+
+/* Button on the error alert displayed on the payment method list screen */
+"blazePaymentMethodsView.loadPaymentMethodsErrorAlert.retry" = "יש לנסות שוב";
+
 /* Navigation bar title in the Blaze Payment Method screen */
 "blazePaymentMethodsView.navigationBarTitle" = "אמצעי תשלום";
 
@@ -10452,6 +10453,72 @@ which should be translated separately and considered part of this sentence. */
 /* Button in date range picker to add a Custom Range tab */
 "customRangeTabCreationCoordinator.add" = "להוסיף";
 
+/* Label for a customer with no name in the Customer detail screen. */
+"customerDetail.guestName" = "אורח";
+
+/* Label for the customer's average order value in the Customer Details screen. */
+"customerDetailView.avgOrderValueLabel" = "ערך הזמנה ממוצע";
+
+/* Label for the customer's city in the Customer Details screen. */
+"customerDetailView.cityLabel" = "עיר";
+
+/* Button to copy a customer's email address in the Customer Details screen. */
+"customerDetailView.copyEmail" = "להעתיק את כתובת האימייל";
+
+/* Label for the customer's country in the Customer Details screen. */
+"customerDetailView.countryLabel" = "מדינה";
+
+/* Heading for the section with general customer details in the Customer Details screen. */
+"customerDetailView.customerSection" = "לקוח";
+
+/* Label for the date the customer was last active in the Customer Details screen. */
+"customerDetailView.dateLastActiveLabel" = "מועד פעילות אחרון";
+
+/* Label for the customer's registration date in the Customer Details screen. */
+"customerDetailView.dateRegisteredLabel" = "תאריך הרישום";
+
+/* Default placeholder if a customer's details are not available in the Customer Details screen. */
+"customerDetailView.defaultPlaceholder" = "ללא";
+
+/* Title for action to contact a customer via email. */
+"customerDetailView.emailActionLabel" = "ליצור קשר עם הלקוח באימייל";
+
+/* Placeholder if a customer's email address is not available in the Customer Details screen. */
+"customerDetailView.emailPlaceholder" = "כתובת אימייל לא קיימת";
+
+/* Heading for the section with customer location details in the Customer Details screen. */
+"customerDetailView.locationSection" = "מיקום";
+
+/* Label for the number of orders in the Customer Details screen. */
+"customerDetailView.ordersCountLabel" = "הזמנות";
+
+/* Heading for the section with customer order stats in the Customer Details screen. */
+"customerDetailView.ordersSection" = "הזמנות";
+
+/* Label for the customer's postal code in the Customer Details screen. */
+"customerDetailView.postcodeLabel" = "מיקוד";
+
+/* Label for the customer's region in the Customer Details screen. */
+"customerDetailView.regionLabel" = "אזור";
+
+/* Heading for the section with customer registration details in the Customer Details screen. */
+"customerDetailView.registrationSection" = "רישום";
+
+/* Button to email a customer in the Customer Details screen. */
+"customerDetailView.sendEmail" = "אימייל";
+
+/* Label for the customer's total spend in the Customer Details screen. */
+"customerDetailView.totalSpendLabel" = "הוצאה כוללת";
+
+/* Label for the customer's username in the Customer Details screen. */
+"customerDetailView.usernameLabel" = "שם משתמש";
+
+/* Message when there are no customers to show in the Customers list screen. */
+"customerList.emptyStateMessage" = "יש ליצור הזמנה כדי להתחיל לאסוף תובנות על לקוחות";
+
+/* Title when there are no customers to show in the Customers list screen. */
+"customerList.emptyStateTitle" = "עדיין אין לקוחות";
+
 /* Message to prompt users to search for customers on the customer search screen */
 "customerSearchUICommand.emptyDefaultStateNoCreationMessage" = "לחפש לקוח קיים";
 
@@ -10460,6 +10527,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message in the Add Customer to order screen when getting the customer information */
 "customerSelectorViewController.guestSelectionDisallowedError" = "המשתמש הזה הוא אורח, ולא ניתן להשתמש באורחים לסינון הזמנות.";
+
+/* Placeholder for a customer with no email address in the Customers list screen. */
+"customersList.emailPlaceholder" = "כתובת אימייל לא קיימת";
+
+/* Label for a customer with no name in the Customers list screen. */
+"customersList.guestLabel" = "אורח";
+
+/* Title for Customers list screen */
+"customersList.title" = "לקוחות";
 
 /* Display label for a product's subscription period when it is a single day. */
 "day" = "יום";
@@ -10593,6 +10669,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Row title for filtering orders by Product. */
 "filterOrderListViewModel.OrderListFilter.rowTitleProduct" = "מוצר";
+
+/* Title of one of the hub menu options */
+"hubMenu.customers" = "לקוחות";
+
+/* Description of one of the hub menu options */
+"hubMenu.customersDescription" = "לקבל תובנות על הלקוח";
+
+/* Title of the view containing a single Product Review */
+"hubMenu.productReview" = "חוות דעת על מוצר";
 
 /* A message that tells the user why the app needs access to Bluetooth. */
 "infoplist.NSBluetoothAlwaysUsageDescription" = "האפליקציה הזו משתמשת ב-Bluetooth כדי להתחבר לקוראי הכרטיסים הנתמכים.";
@@ -10899,6 +10984,12 @@ which should be translated separately and considered part of this sentence. */
 /* Shown with a 'Current:' label, but when we don't know what the plan that ended was */
 "plan ended" = "התוכנית הסתיימה";
 
+/* Title for the Close button within the Plugin List view. */
+"pluginListView.button.close" = "לסגור";
+
+/* Title for the Plugin List view. */
+"pluginListView.title.plugins" = "תוספים";
+
 /* Close title for the navigation bar button on the Print Shipping Label view. */
 "print.shipping.label.close.button.title" = "לסגור";
 
@@ -11057,19 +11148,19 @@ which should be translated separately and considered part of this sentence. */
 "shipping.label.navigationBar.cancel.button.title" = "ביטול";
 
 /* Display text for the daily granularity of store stats on the My Store screen */
-"statsGranularityV4.daily" = "לפי יום";
+"statsGranularityV4.dailyMetrics" = "תדירות יומית";
 
 /* Display text for the hourly granularity of store stats on the My Store screen */
-"statsGranularityV4.hourly" = "לפי שעה";
+"statsGranularityV4.hourlyMetrics" = "תדירות שעתית";
 
 /* Display text for the monthly granularity of store stats on the My Store screen */
-"statsGranularityV4.monthly" = "לפי חודש";
+"statsGranularityV4.monthlyMetrics" = "תדירות חודשית";
 
 /* Display text for the weekly granularity of store stats on the My Store screen */
-"statsGranularityV4.weekly" = "לפי שבוע";
+"statsGranularityV4.weeklyMetrics" = "תדירות שבועית";
 
 /* Display text for the yearly granularity of store stats on the My Store screen */
-"statsGranularityV4.yearly" = "לפי שנה";
+"statsGranularityV4.yearlyMetrics" = "תדירות שנתית";
 
 /* Tab selector title that shows the statistics for today */
 "statsTimeRangeV4.tabTitle.custom" = "טווח מותאם";
@@ -11270,7 +11361,7 @@ which should be translated separately and considered part of this sentence. */
 /* Button in theme preview screen to pick a theme. The placeholder is the theme name. Reads like: Use Tsubaki */
 "themesPreviewViewModel.useThisThemeButton" = "להשתמש בערכת העיצוב %1$@";
 
-/* Value for the WooCommerce plugin version detail row in settings, when the version is unknown. This is in place of the current version number. */
+/* Value for the plugin version detail row in settings, when the version is unknown. This is in place of the current version number. */
 "unknown" = "לא ידוע";
 
 /* Used when the response doesn't have a valid url to display */

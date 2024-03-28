@@ -23,7 +23,7 @@ struct InPersonPaymentsMenu: View {
                         .onTapGesture {
                             viewModel.collectPaymentTapped()
                         }
-                        .sheet(isPresented: $viewModel.presentCollectPayment,
+                        .sheet(isPresented: $viewModel.presentCollectPaymentWithSimplePayments,
                                onDismiss: {
                             Task { @MainActor in
                                 await viewModel.onAppear()

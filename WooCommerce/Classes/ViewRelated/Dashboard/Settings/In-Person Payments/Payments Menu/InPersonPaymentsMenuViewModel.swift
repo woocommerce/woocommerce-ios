@@ -20,6 +20,7 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
     @Published var presentManagePaymentGateways: Bool = false
     @Published private(set) var selectedPaymentGatewayName: String?
     @Published private(set) var selectedPaymentGatewayPlugin: CardPresentPaymentsPlugin?
+    @Published var presentCollectPaymentWithSimplePayments: Bool = false
     @Published var presentCollectPayment: Bool = false
     @Published var presentSetUpTryOutTapToPay: Bool = false
     @Published var presentAboutTapToPay: Bool = false
@@ -145,9 +146,13 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
     }
 
     func collectPaymentTapped() {
+        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.migrateSimplePaymentsToOrderCreation) else {
+            presentCollectPaymentWithSimplePayments = true
+            analytics.track(event: WooAnalyticsEvent.SimplePayments.simplePaymentsFlowStarted())
+            analytics.track(.paymentsMenuCollectPaymentTapped)
+            return
+        }
         presentCollectPayment = true
-
-        analytics.track(event: WooAnalyticsEvent.SimplePayments.simplePaymentsFlowStarted())
         analytics.track(.paymentsMenuCollectPaymentTapped)
     }
 

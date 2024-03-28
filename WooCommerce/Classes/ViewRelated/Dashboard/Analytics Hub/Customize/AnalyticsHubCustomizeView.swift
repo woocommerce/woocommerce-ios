@@ -16,11 +16,7 @@ struct AnalyticsHubCustomizeView: View {
                                           selectedItems: $viewModel.selectedCards,
                                           disabledItems: viewModel.excludedCards,
                                           disabledAccessoryView: { card in
-                Button {
-                    selectedPromoURL = viewModel.promoURL(for: card)
-                } label: {
-                    Text("Explore") // TODO-12161: Show localized label with background
-                }
+                exploreButton(with: viewModel.promoURL(for: card))
             })
                 .toolbar(content: {
                     ToolbarItem(placement: .confirmationAction) {
@@ -47,6 +43,26 @@ struct AnalyticsHubCustomizeView: View {
     }
 }
 
+private extension AnalyticsHubCustomizeView {
+    /// Creates a button with a link to the provided promo URL, to explore inactive extensions.
+    ///
+    @ViewBuilder func exploreButton(with promoURL: URL?) -> some View {
+        if let promoURL {
+            Button {
+                selectedPromoURL = promoURL
+            } label: {
+                Text(Localization.explore)
+                    .foregroundColor(Color(.primary))
+            }
+            .buttonStyle(.bordered)
+            .buttonBorderShape(.roundedRectangle)
+            .controlSize(.mini)
+        } else {
+            EmptyView()
+        }
+    }
+}
+
 // MARK: - Constants
 private extension AnalyticsHubCustomizeView {
     enum Localization {
@@ -56,11 +72,20 @@ private extension AnalyticsHubCustomizeView {
         static let saveButton = NSLocalizedString("analyticsHub.customizeAnalytics.saveButton",
                                                   value: "Save",
                                                   comment: "Button to save changes on the Customize Analytics screen")
+        static let explore = NSLocalizedString("analyticsHub.customizeAnalytics.exploreButton",
+                                               value: "Explore",
+                                               comment: "Button title to explore an extension that isn't installed")
     }
 }
 
 #Preview {
     NavigationView {
         AnalyticsHubCustomizeView(viewModel: AnalyticsHubCustomizeViewModel(allCards: AnalyticsHubCustomizeViewModel.sampleCards))
+    }
+}
+
+#Preview("Inactive cards") {
+    NavigationView {
+        AnalyticsHubCustomizeView(viewModel: AnalyticsHubCustomizeViewModel(allCards: [], cardsToExclude: AnalyticsHubCustomizeViewModel.sampleCards))
     }
 }

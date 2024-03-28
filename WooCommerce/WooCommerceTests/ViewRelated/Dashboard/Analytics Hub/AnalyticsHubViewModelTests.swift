@@ -611,7 +611,24 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         // Then
         let customizeAnalyticsVM = try XCTUnwrap(vm.customizeAnalyticsViewModel)
         XCTAssertFalse(vm.enabledCards.contains(.sessions))
-        XCTAssertFalse(customizeAnalyticsVM.allCards.contains(where: { $0.type == .sessions }))
+        XCTAssertTrue(customizeAnalyticsVM.excludedCards.contains(where: { $0.type == .sessions }))
+    }
+
+    func test_customizeAnalytics_excludes_bundles_card_when_extension_is_inactive() throws {
+        // Given
+        let storage = MockStorageManager()
+        storage.insertSampleSystemPlugin(readOnlySystemPlugin: .fake().copy(siteID: sampleSiteID,
+                                                                            name: SitePlugin.SupportedPlugin.WCProductBundles.first,
+                                                                            active: false))
+        let vm = createViewModel(storage: storage)
+
+        // When
+        vm.customizeAnalytics()
+
+        // Then
+        let customizeAnalyticsVM = try XCTUnwrap(vm.customizeAnalyticsViewModel)
+        XCTAssertFalse(vm.enabledCards.contains(.bundles))
+        XCTAssertTrue(customizeAnalyticsVM.excludedCards.contains(where: { $0.type == .bundles }))
     }
 
     func test_customizeAnalytics_tracks_expected_event() {

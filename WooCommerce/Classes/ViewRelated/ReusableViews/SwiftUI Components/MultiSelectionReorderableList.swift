@@ -1,7 +1,7 @@
 import SwiftUI
 
 /// View to select multiple items from a list and drag-and-drop to reorder them.
-struct MultiSelectionReorderableList<T: Hashable>: View {
+struct MultiSelectionReorderableList<T: Hashable, Content: View>: View {
     /// Ordered array of contents to be displayed in the list.
     @Binding private var contents: [T]
 
@@ -11,28 +11,62 @@ struct MultiSelectionReorderableList<T: Hashable>: View {
     /// Items selected from the list of `contents`.
     @Binding private var selectedItems: Set<T>
 
+    /// Items in addition to the list of `contents` that can't be moved or selected.
+    private let inactiveItems: [T]
+
+    /// Accessory view to display next to inactive items.
+    @ViewBuilder private let inactiveAccessoryView: (T) -> Content
+
     init(contents: Binding<[T]>,
          contentKeyPath: KeyPath<T, String>,
-         selectedItems: Binding<Set<T>>) {
+         selectedItems: Binding<Set<T>>,
+         inactiveItems: [T] = [],
+         inactiveAccessoryView: @escaping (T) -> Content) {
         self._contents = contents
         self.contentKeyPath = contentKeyPath
         self._selectedItems = selectedItems
+        self.inactiveItems = inactiveItems
+        self.inactiveAccessoryView = inactiveAccessoryView
+    }
+
+    init(contents: Binding<[T]>,
+         contentKeyPath: KeyPath<T, String>,
+         selectedItems: Binding<Set<T>>,
+         inactiveItems: [T] = []) where Content == EmptyView {
+        self.init(contents: contents,
+                  contentKeyPath: contentKeyPath,
+                  selectedItems: selectedItems,
+                  inactiveItems: inactiveItems,
+                  inactiveAccessoryView: { _ in EmptyView() })
     }
 
     var body: some View {
         List {
-            ForEach(contents, id: contentKeyPath) { item in
-                SelectableItemRow(title: item[keyPath: contentKeyPath],
-                                  selected: isSelected(item),
-                                  displayMode: .compact,
-                                  selectionStyle: .checkcircle)
+            Section {
+                ForEach(contents, id: contentKeyPath) { item in
+                    SelectableItemRow(title: item[keyPath: contentKeyPath],
+                                      selected: isSelected(item),
+                                      displayMode: .compact,
+                                      selectionStyle: .checkcircle)
                     .listRowInsets(.zero)
                     .onTapGesture {
                         toggleItem(item)
                     }
                     .disabled(isLastSelected(item))
+                }
+                .onMove(perform: moveItem)
             }
-            .onMove(perform: moveItem)
+            Section {
+                ForEach(inactiveItems, id: contentKeyPath) { item in
+                    HStack(spacing: 0) {
+                        Text(item[keyPath: contentKeyPath])
+                        Spacer()
+                        inactiveAccessoryView(item)
+                    }
+                }
+                .frame(height: Layout.inactiveRowHeight)
+                .listRowInsets(.init(top: 0, leading: Layout.inactiveRowLeadingInset, bottom: 0, trailing: Layout.inactiveRowTrailingInset))
+            }
         }
         .listStyle(.plain)
         .environment(\.editMode, .constant(.active)) // Always allow reordering
@@ -67,10 +101,22 @@ private extension MultiSelectionReorderableList {
     }
 }
 
+// MARK: - Constants
+private enum Layout {
+    static let inactiveRowPadding: CGFloat = 10
+    static let inactiveRowHeight: CGFloat = 52
+    static let inactiveRowLeadingInset: CGFloat = 48
+    static let inactiveRowTrailingInset: CGFloat = 20
+}
+
 #Preview("List") {
     MultiSelectionReorderableList(contents: .constant(["🥪", "🥓", "🥗"]),
                                   contentKeyPath: \.self,
-                                  selectedItems: .constant(["🥗", "🥓"]))
+                                  selectedItems: .constant(["🥗", "🥓"]),
+                                  inactiveItems: ["🥫"],
+                                  inactiveAccessoryView: { item in
+        Text("Learn more about \(item)")
+    })
 }
 
 #Preview("Last selected item") {

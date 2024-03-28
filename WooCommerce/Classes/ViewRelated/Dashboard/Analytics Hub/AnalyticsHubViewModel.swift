@@ -645,15 +645,16 @@ extension AnalyticsHubViewModel {
     /// Setting this view model opens the view.
     ///
     func customizeAnalytics() {
-        // Exclude any cards the merchant/store is ineligible for.
-        let cardsToExclude: [AnalyticsCard] = [
+        // Identify any cards the merchant/store is ineligible for.
+        // Inactive cards are displayed in the list with a promo link but can't be customized.
+        let inactiveCards: [AnalyticsCard] = [
             isEligibleForSessionsCard ? nil : allCardsWithSettings.first(where: { $0.type == .sessions }),
-            canDisplayCard(ofType: .bundles) ? nil : allCardsWithSettings.first(where: { $0.type == .bundles }) // TODO-12161: Support when extension is inactive
+            canDisplayCard(ofType: .bundles) ? nil : allCardsWithSettings.first(where: { $0.type == .bundles })
         ].compactMap({ $0 })
 
         analytics.track(event: .AnalyticsHub.customizeAnalyticsOpened())
         customizeAnalyticsViewModel = AnalyticsHubCustomizeViewModel(allCards: allCardsWithSettings,
-                                                                     cardsToExclude: cardsToExclude) { [weak self] updatedCards in
+                                                                     inactiveCards: inactiveCards) { [weak self] updatedCards in
             guard let self else { return }
             self.allCardsWithSettings = updatedCards
             self.storeAnalyticsCardSettings(updatedCards)

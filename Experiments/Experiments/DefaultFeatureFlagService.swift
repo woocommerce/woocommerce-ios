@@ -94,7 +94,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .expandedAnalyticsHub:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .migrateSimplePaymentsToOrderCreation:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return (buildConfig == .localDeveloper || buildConfig == .alpha) && !isUITesting
         default:
             return true
         }

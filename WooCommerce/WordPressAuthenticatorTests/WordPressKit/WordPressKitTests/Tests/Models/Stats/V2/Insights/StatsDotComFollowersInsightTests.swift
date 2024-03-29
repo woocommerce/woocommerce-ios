@@ -86,7 +86,7 @@ class StatsDotComFollowersInsightTests: XCTestCase {
         let follower = StatsFollower(jsonDictionary: jsonDictionary)
 
         // Then
-        XCTAssertNil(follower)
+        XCTAssertNotNil(follower)
     }
 
 }

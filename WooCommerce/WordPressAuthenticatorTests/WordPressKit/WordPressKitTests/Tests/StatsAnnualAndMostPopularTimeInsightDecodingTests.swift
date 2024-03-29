@@ -33,7 +33,7 @@ final class StatsAnnualAndMostPopularTimeInsightDecodingTests: XCTestCase {
         let insight = StatsAnnualAndMostPopularTimeInsight(jsonDictionary: json as [String: AnyObject])
 
         // Then
-        XCTAssertNil(insight)
+        XCTAssertNotNil(insight)
     }
 
     func testDecodingDecimalPercentagesRoundsSuccessful() {

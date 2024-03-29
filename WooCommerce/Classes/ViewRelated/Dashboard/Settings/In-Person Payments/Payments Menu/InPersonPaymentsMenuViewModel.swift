@@ -382,6 +382,9 @@ extension InPersonPaymentsMenuViewModel: DeepLinkNavigator {
         }
         switch paymentsDestination {
         case .collectPayment:
+            guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.migrateSimplePaymentsToOrderCreation) else {
+                return presentCollectPaymentWithSimplePayments = true
+            }
             presentCollectPayment = true
         case .tapToPay:
             presentSetUpTryOutTapToPay = true

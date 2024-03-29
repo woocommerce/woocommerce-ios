@@ -27,9 +27,6 @@ protocol StorePickerViewControllerDelegate: AnyObject {
 
     /// Notifies the delegate to dismiss the store picker and restart authentication.
     func restartAuthentication()
-
-    /// Notifies the delegate to create a store.
-    func createStore()
 }
 
 
@@ -665,29 +662,6 @@ private extension StorePickerViewController {
     ///
     @IBAction func secondaryActionWasPressed() {
         restartAuthentication()
-    }
-
-    func createStoreButtonPressed() {
-        let source: WooAnalyticsEvent.StoreCreation.StorePickerSource = {
-            switch configuration {
-            case .switchingStores:
-                return .switchStores
-            case .login, .standard:
-                return .login
-            case .storeCreationFromLogin(let loggedOutSource):
-                switch loggedOutSource {
-                case .prologue:
-                    return .loginPrologue
-                case .loginEmailError:
-                    return .other
-                }
-            default:
-                return .other
-            }
-        }()
-        ServiceLocator.analytics.track(event: .StoreCreation.sitePickerCreateSiteTapped(source: source))
-
-        delegate?.createStore()
     }
 }
 

@@ -853,10 +853,6 @@ private extension StorePickerViewController {
         static let continueButton = NSLocalizedString("Continue", comment: "Button on the Store Picker screen to select a store")
         static let tryAnotherAccount = NSLocalizedString("Log In With Another Account",
                                                          comment: "Button to trigger connection to another account in store picker")
-        static let createStore = NSLocalizedString("Create a new store",
-                                                   comment: "Button to create a new store from the store picker")
-        static let connectExistingStore = NSLocalizedString("Connect an existing store",
-                                                            comment: "Button to connect to an existing store from the store picker")
         static let cancel = NSLocalizedString("Cancel",
                                               comment: "Button to dismiss the action sheet on the store picker")
         static let addStoreButton = NSLocalizedString("storePickerViewController.addStoreButton",

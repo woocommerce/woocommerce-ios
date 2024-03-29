@@ -61,7 +61,21 @@ static NSString * const TopicNotFoundMarker = @"-notfound-";
 
 - (void)fetchFollowedSitesWithSuccess:(void(^)(NSArray *sites))success failure:(void(^)(NSError *error))failure
 {
-    NSString *path = @"read/following/mine?meta=site,feed";
+    void (^wrappedSuccess)(NSNumber *, NSArray<RemoteReaderSiteInfo *> *) = ^(NSNumber *totalSites, NSArray<RemoteReaderSiteInfo *> *sites) {
+        if (success) {
+            success(sites);
+        }
+    };
+
+    [self fetchFollowedSitesForPage:0 number:0 success:wrappedSuccess failure:failure];
+}
+
+- (void)fetchFollowedSitesForPage:(NSUInteger)page
+                           number:(NSUInteger)number
+                          success:(void(^)(NSNumber *totalSites, NSArray<RemoteReaderSiteInfo *> *sites))success
+                          failure:(void(^)(NSError *error))failure
+{
+    NSString *path = [self pathForFollowedSitesWithPage:page number:number];
     NSString *requestUrl = [self pathForEndpoint:path
                                      withVersion:ServiceRemoteWordPressComRESTApiVersion_1_2];
 
@@ -70,14 +84,14 @@ static NSString * const TopicNotFoundMarker = @"-notfound-";
             return;
         }
         NSDictionary *response = (NSDictionary *)responseObject;
+        NSNumber *totalSites = [response numberForKey:@"total_subscriptions"];
         NSArray *subscriptions = [response arrayForKey:@"subscriptions"];
         NSMutableArray *sites = [NSMutableArray array];
         for (NSDictionary *dict in subscriptions) {
             RemoteReaderSiteInfo *siteInfo = [self siteInfoFromFollowedSiteDictionary:dict];
             [sites addObject:siteInfo];
         }
-        success(sites);
-
+        success(totalSites, sites);
     } failure:^(NSError *error, NSHTTPURLResponse *httpResponse) {
         if (failure) {
             failure(error);
@@ -298,6 +312,19 @@ static NSString * const TopicNotFoundMarker = @"-notfound-";
     RemoteReaderTopic *topic = [[RemoteReaderTopic alloc] initWithDictionary:topicDict subscribed:subscribed recommended:recommended];
     topic.isMenuItem = YES;
     return topic;
+}
+
+- (NSString *)pathForFollowedSitesWithPage:(NSUInteger)page number:(NSUInteger)number
+{
+    NSString *path = @"read/following/mine?meta=site,feed";
+    if (page > 0) {
+        path = [path stringByAppendingFormat:@"&page=%lu", (unsigned long)page];
+    }
+    if (number > 0) {
+        path = [path stringByAppendingFormat:@"&number=%lu", (unsigned long)number];
+    }
+
+    return path;
 }
 
 @end

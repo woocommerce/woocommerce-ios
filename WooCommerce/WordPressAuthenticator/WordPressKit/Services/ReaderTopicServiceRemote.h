@@ -19,13 +19,26 @@ extern NSString * const WordPressComReaderEndpointURL;
                          failure:(void (^)(NSError *error))failure;
 
 /**
- Get a list of the sites the user follows.
+ Get a list of the sites the user follows with the default API parameters.
 
  @param success block called on a successful fetch.
  @param failure block called if there is any error. `error` can be any underlying network error.
  */
 - (void)fetchFollowedSitesWithSuccess:(void(^)(NSArray *sites))success
-                              failure:(void(^)(NSError *error))failure;
+                              failure:(void(^)(NSError *error))failure DEPRECATED_MSG_ATTRIBUTE("Use fetchFollowedSitesForPage:number:success:failure: instead.");
+
+/**
+ Get a list of the sites the user follows with the specified API parameters.
+
+ @param page The page number to fetch.
+ @param number The number of sites to fetch per page.
+ @param success block called on a successful fetch.
+ @param failure block called if there is any error. `error` can be any underlying network error.
+ */
+- (void)fetchFollowedSitesForPage:(NSUInteger)page
+                           number:(NSUInteger)number
+                          success:(void(^)(NSNumber *totalSites, NSArray<RemoteReaderSiteInfo *> *sites))success
+                          failure:(void(^)(NSError *error))failure;
 
 /**
  Unfollows the topic with the specified slug.

@@ -1,3 +1,4 @@
+import Experiments
 import Foundation
 import SwiftUI
 import Yosemite
@@ -49,6 +50,7 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
         let wooPaymentsDepositService: WooPaymentsDepositServiceProtocol
         let analytics: Analytics
         let systemStatusService: SystemStatusServiceProtocol
+        let featureFlagService: FeatureFlagService
 
         init(cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration,
              onboardingUseCase: CardPresentPaymentsOnboardingUseCaseProtocol,
@@ -56,7 +58,8 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
              tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker = TapToPayBadgePromotionChecker(),
              wooPaymentsDepositService: WooPaymentsDepositServiceProtocol,
              systemStatusService: SystemStatusServiceProtocol = SystemStatusService(stores: ServiceLocator.stores),
-             analytics: Analytics = ServiceLocator.analytics) {
+             analytics: Analytics = ServiceLocator.analytics,
+             featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
             self.cardPresentPaymentsConfiguration = cardPresentPaymentsConfiguration
             self.onboardingUseCase = onboardingUseCase
             self.cardReaderSupportDeterminer = cardReaderSupportDeterminer
@@ -64,6 +67,7 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
             self.wooPaymentsDepositService = wooPaymentsDepositService
             self.systemStatusService = systemStatusService
             self.analytics = analytics
+            self.featureFlagService = featureFlagService
         }
     }
 
@@ -146,7 +150,7 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
     }
 
     func collectPaymentTapped() {
-        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.migrateSimplePaymentsToOrderCreation) else {
+        guard dependencies.featureFlagService.isFeatureFlagEnabled(.migrateSimplePaymentsToOrderCreation) else {
             presentCollectPaymentWithSimplePayments = true
             analytics.track(event: WooAnalyticsEvent.SimplePayments.simplePaymentsFlowStarted())
             analytics.track(.paymentsMenuCollectPaymentTapped)
@@ -382,7 +386,7 @@ extension InPersonPaymentsMenuViewModel: DeepLinkNavigator {
         }
         switch paymentsDestination {
         case .collectPayment:
-            guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.migrateSimplePaymentsToOrderCreation) else {
+            guard dependencies.featureFlagService.isFeatureFlagEnabled(.migrateSimplePaymentsToOrderCreation) else {
                 return presentCollectPaymentWithSimplePayments = true
             }
             presentCollectPayment = true

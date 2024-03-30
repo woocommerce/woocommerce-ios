@@ -9,8 +9,7 @@ final class StatsAnnualAndMostPopularTimeInsightDecodingTests: XCTestCase {
             "highest_hour": 1,
             "highest_hour_percent": 1,
             "highest_day_of_week": 1,
-            "highest_day_percent": 1,
-            "years": [["year": "2022"]]
+            "highest_day_percent": 1
         ]
 
         // When
@@ -25,15 +24,14 @@ final class StatsAnnualAndMostPopularTimeInsightDecodingTests: XCTestCase {
         let json: [String: Any] = [
             "highest_hour": 1,
             "highest_hour_percent": 1,
-            "highest_day_of_week": 1,
-            "highest_day_percent": 1
+            "highest_day_of_week": 1
         ]
 
         // When
         let insight = StatsAnnualAndMostPopularTimeInsight(jsonDictionary: json as [String: AnyObject])
 
         // Then
-        XCTAssertNotNil(insight)
+        XCTAssertNil(insight)
     }
 
     func testDecodingDecimalPercentagesRoundsSuccessful() {

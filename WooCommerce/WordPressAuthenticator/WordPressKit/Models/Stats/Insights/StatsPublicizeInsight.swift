@@ -1,8 +1,12 @@
-public struct StatsPublicizeInsight {
+public struct StatsPublicizeInsight: Codable {
     public let publicizeServices: [StatsPublicizeService]
 
     public init(publicizeServices: [StatsPublicizeService]) {
         self.publicizeServices = publicizeServices
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case publicizeServices = "services"
     }
 }
 
@@ -12,22 +16,9 @@ extension StatsPublicizeInsight: StatsInsightData {
     public static var pathComponent: String {
         return "stats/publicize"
     }
-
-    public init?(jsonDictionary: [String: AnyObject]) {
-        guard
-            let subscribers = jsonDictionary["services"] as? [[String: AnyObject]]
-            else {
-                return nil
-        }
-
-        let followers = subscribers.compactMap { StatsPublicizeService(publicizeServiceDictionary: $0) }
-
-        self.publicizeServices = followers
-    }
-
 }
 
-public struct StatsPublicizeService {
+public struct StatsPublicizeService: Codable {
     public let name: String
     public let followers: Int
     public let iconURL: URL?
@@ -39,20 +30,14 @@ public struct StatsPublicizeService {
         self.followers = followers
         self.iconURL = iconURL
     }
+
+    private enum CodingKeys: String, CodingKey {
+        case name = "service"
+        case followers
+    }
 }
 
 private extension StatsPublicizeService {
-
-    init?(publicizeServiceDictionary dictionary: [String: AnyObject]) {
-        guard
-            let name = dictionary["service"] as? String,
-            let followersCount = dictionary["followers"] as? Int else {
-                return nil
-        }
-
-        self.init(name: name, followers: followersCount)
-    }
-
     init(name: String, followers: Int) {
         let niceName: String
         let icon: URL?
@@ -84,5 +69,15 @@ private extension StatsPublicizeService {
         self.name = niceName
         self.followers = followers
         self.iconURL = icon
+    }
+}
+
+public extension StatsPublicizeService {
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        let name = try container.decode(String.self, forKey: .name)
+        let followers = (try? container.decodeIfPresent(Int.self, forKey: .followers)) ?? 0
+
+        self.init(name: name, followers: followers)
     }
 }

@@ -1,12 +1,16 @@
-public struct StatsAllAnnualInsight {
+public struct StatsAllAnnualInsight: Codable {
     public let allAnnualInsights: [StatsAnnualInsight]
 
     public init(allAnnualInsights: [StatsAnnualInsight]) {
         self.allAnnualInsights = allAnnualInsights
     }
+
+    private enum CodingKeys: String, CodingKey {
+        case allAnnualInsights = "years"
+    }
 }
 
-public struct StatsAnnualInsight {
+public struct StatsAnnualInsight: Codable {
     public let year: Int
     public let totalPostsCount: Int
     public let totalWordsCount: Int
@@ -39,36 +43,42 @@ public struct StatsAnnualInsight {
         self.totalImagesCount = totalImagesCount
         self.averageImagesCount = averageImagesCount
     }
+
+    private enum CodingKeys: String, CodingKey {
+        case year
+        case totalPostsCount = "total_posts"
+        case totalWordsCount = "total_words"
+        case averageWordsCount = "avg_words"
+        case totalLikesCount = "total_likes"
+        case averageLikesCount = "avg_likes"
+        case totalCommentsCount = "total_comments"
+        case averageCommentsCount = "avg_comments"
+        case totalImagesCount = "total_images"
+        case averageImagesCount = "avg_images"
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+
+        if let year = Int(try container.decode(String.self, forKey: .year)) {
+            self.year = year
+        } else {
+            throw DecodingError.dataCorruptedError(forKey: .year, in: container, debugDescription: "Year cannot be parsed into number.")
+        }
+        totalPostsCount = (try? container.decodeIfPresent(Int.self, forKey: .totalPostsCount)) ?? 0
+        totalWordsCount = (try? container.decodeIfPresent(Int.self, forKey: .totalWordsCount)) ?? 0
+        averageWordsCount = (try? container.decodeIfPresent(Double.self, forKey: .averageWordsCount)) ?? 0
+        totalLikesCount = (try? container.decodeIfPresent(Int.self, forKey: .totalLikesCount)) ?? 0
+        averageLikesCount = (try? container.decodeIfPresent(Double.self, forKey: .averageLikesCount)) ?? 0
+        totalCommentsCount = (try? container.decodeIfPresent(Int.self, forKey: .totalCommentsCount)) ?? 0
+        averageCommentsCount = (try? container.decodeIfPresent(Double.self, forKey: .averageCommentsCount)) ?? 0
+        totalImagesCount = (try? container.decodeIfPresent(Int.self, forKey: .totalImagesCount)) ?? 0
+        averageImagesCount = (try? container.decodeIfPresent(Double.self, forKey: .averageImagesCount)) ?? 0
+    }
 }
 
 extension StatsAllAnnualInsight: StatsInsightData {
     public static var pathComponent: String {
         return "stats/insights"
-    }
-
-    public init?(jsonDictionary: [String: AnyObject]) {
-        guard let yearlyInsights = jsonDictionary["years"] as? [[String: AnyObject]] else {
-            return nil
-        }
-
-        let allAnnualInsights: [StatsAnnualInsight] = yearlyInsights.compactMap {
-            guard let yearString = $0["year"] as? String,
-                let year = Int(yearString) else {
-                    return nil
-            }
-
-            return StatsAnnualInsight(year: year,
-                                      totalPostsCount: $0["total_posts"] as? Int ?? 0,
-                                      totalWordsCount: $0["total_words"] as? Int ?? 0,
-                                      averageWordsCount: $0["avg_words"] as? Double ?? 0,
-                                      totalLikesCount: $0["total_likes"] as? Int ?? 0,
-                                      averageLikesCount: $0["avg_likes"] as? Double ?? 0,
-                                      totalCommentsCount: $0["total_comments"] as? Int ?? 0,
-                                      averageCommentsCount: $0["avg_comments"] as? Double ?? 0,
-                                      totalImagesCount: $0["total_images"] as? Int ?? 0,
-                                      averageImagesCount: $0["avg_images"] as? Double ?? 0)
-        }
-
-        self.allAnnualInsights = allAnnualInsights
     }
 }

@@ -1,39 +1,109 @@
-public struct StatsPostingStreakInsight {
-    public let currentStreakStart: Date
-    public let currentStreakEnd: Date
-    public let currentStreakLength: Int
-    public let longestStreakStart: Date
-    public let longestStreakEnd: Date
-    public let longestStreakLength: Int
-
+public struct StatsPostingStreakInsight: Codable {
+    public let streaks: PostingStreaks
     public let postingEvents: [PostingStreakEvent]
 
-    public init(currentStreakStart: Date,
-                currentStreakEnd: Date,
-                currentStreakLength: Int,
-                longestStreakStart: Date,
-                longestStreakEnd: Date,
-                longestStreakLength: Int,
-                postingEvents: [PostingStreakEvent]) {
-        self.currentStreakStart = currentStreakStart
-        self.currentStreakEnd = currentStreakEnd
-        self.currentStreakLength = currentStreakLength
+    public var currentStreakStart: Date? {
+        streaks.current?.start
+    }
 
-        self.longestStreakStart = longestStreakStart
-        self.longestStreakEnd = longestStreakEnd
-        self.longestStreakLength = longestStreakLength
+    public var currentStreakEnd: Date? {
+        streaks.current?.end
+    }
+    public var currentStreakLength: Int? {
+        streaks.current?.length
+    }
 
-        self.postingEvents = postingEvents
+    public var longestStreakStart: Date? {
+        streaks.long?.start ?? currentStreakStart
+    }
+    public var longestStreakEnd: Date? {
+        streaks.long?.end ?? currentStreakEnd
+    }
+
+    public var longestStreakLength: Int? {
+        streaks.long?.length ?? currentStreakLength
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case streaks = "streak"
+        case postingEvents = "data"
+    }
+
+    public init(from decoder: any Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.streaks = try container.decode(PostingStreaks.self, forKey: .streaks)
+        let postsData = (try? container.decodeIfPresent([String: Int].self, forKey: .postingEvents)) ?? [:]
+
+        let postingDates = postsData.keys
+            .compactMap { Double($0) }
+            .map { Date(timeIntervalSince1970: $0) }
+            .map { Calendar.autoupdatingCurrent.startOfDay(for: $0) }
+
+        if postingDates.isEmpty {
+            self.postingEvents = []
+        } else {
+            let countedPosts = NSCountedSet(array: postingDates)
+            self.postingEvents = countedPosts.compactMap { value in
+                if let date = value as? Date {
+                    return PostingStreakEvent(date: date, postCount: countedPosts.count(for: value))
+                } else {
+                    return nil
+                }
+            }
+        }
     }
 }
 
-public struct PostingStreakEvent {
+public struct PostingStreakEvent: Codable {
     public let date: Date
     public let postCount: Int
 
     public init(date: Date, postCount: Int) {
         self.date = date
         self.postCount = postCount
+    }
+}
+
+public struct PostingStreaks: Codable {
+    public let long: PostingStreak?
+    public let current: PostingStreak?
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+
+        self.long = try? container.decodeIfPresent(PostingStreak.self, forKey: .long)
+        self.current = try? container.decodeIfPresent(PostingStreak.self, forKey: .current)
+    }
+}
+
+public struct PostingStreak: Codable {
+    public let start: Date
+    public let end: Date
+    public let length: Int
+
+    private enum CodingKeys: String, CodingKey {
+        case start
+        case end
+        case length
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        let startValue = try container.decode(String.self, forKey: .start)
+        if let start = StatsPostingStreakInsight.dateFormatter.date(from: startValue) {
+            self.start = start
+        } else {
+            throw DecodingError.dataCorruptedError(forKey: .start, in: container, debugDescription: "Start date string doesn't match expected format")
+        }
+
+        let endValue = try container.decode(String.self, forKey: .end)
+        if let end = StatsPostingStreakInsight.dateFormatter.date(from: endValue) {
+            self.end = end
+        } else {
+            throw DecodingError.dataCorruptedError(forKey: .end, in: container, debugDescription: "End date string doesn't match expected format")
+        }
+
+        length = try container.decodeIfPresent(Int.self, forKey: .length) ?? 0
     }
 }
 
@@ -70,57 +140,9 @@ extension StatsPostingStreakInsight: StatsInsightData {
                 "max": "5000"]
     }
 
-    public init?(jsonDictionary: [String: AnyObject]) {
-        guard
-            let postsData = jsonDictionary["data"] as? [String: AnyObject],
-            let streaks = jsonDictionary["streak"] as? [String: AnyObject],
-            let longestData = streaks["long"] as? [String: AnyObject],
-            let currentData = streaks["current"] as? [String: AnyObject],
-            let currentStart = currentData["start"] as? String,
-            let currentStartDate = StatsPostingStreakInsight.dateFormatter.date(from: currentStart),
-            let currentEnd = currentData["end"] as? String,
-            let currentEndDate = StatsPostingStreakInsight.dateFormatter.date(from: currentEnd),
-            let currentLength = currentData["length"] as? Int
-            else {
-                return nil
-        }
-
-        let postingDates = postsData.keys
-            .compactMap { Double($0) }
-            .map { Date(timeIntervalSince1970: $0) }
-            .map { Calendar.autoupdatingCurrent.startOfDay(for: $0) }
-
-        let countedPosts = NSCountedSet(array: postingDates)
-
-        let postingEvents = countedPosts.map {
-            PostingStreakEvent(date: $0 as! Date, postCount: countedPosts.count(for: $0))
-        }
-
-        self.postingEvents = postingEvents
-        self.currentStreakStart = currentStartDate
-        self.currentStreakEnd = currentEndDate
-        self.currentStreakLength = currentLength
-
-        // If there is no longest streak, use the current.
-        if let longestStart = longestData["start"] as? String,
-            let longestStartDate = StatsPostingStreakInsight.dateFormatter.date(from: longestStart),
-            let longestEnd = longestData["end"] as? String,
-            let longestEndDate = StatsPostingStreakInsight.dateFormatter.date(from: longestEnd),
-            let longestLength = longestData["length"] as? Int {
-            self.longestStreakStart = longestStartDate
-            self.longestStreakEnd = longestEndDate
-            self.longestStreakLength = longestLength
-        } else {
-            self.longestStreakStart = currentStartDate
-            self.longestStreakEnd = currentEndDate
-            self.longestStreakLength = currentLength
-        }
-    }
-
-    private static var dateFormatter: DateFormatter {
+    fileprivate static var dateFormatter: DateFormatter {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd"
         return formatter
     }
-
 }

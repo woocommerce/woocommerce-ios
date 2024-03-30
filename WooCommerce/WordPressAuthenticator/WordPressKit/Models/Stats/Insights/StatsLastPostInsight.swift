@@ -1,10 +1,10 @@
-public struct StatsLastPostInsight {
+public struct StatsLastPostInsight: Decodable {
     public let title: String
     public let url: URL
     public let publishedDate: Date
     public let likesCount: Int
     public let commentsCount: Int
-    public let viewsCount: Int
+    public private(set) var viewsCount: Int = 0
     public let postID: Int
     public let featuredImageURL: URL?
 
@@ -42,7 +42,7 @@ extension StatsLastPostInsight: StatsInsightData {
     }
 
     public init?(jsonDictionary: [String: AnyObject]) {
-        fatalError("This shouldn't be ever called, instead init?(jsonDictionary:_ views:_) be called instead.")
+        self.init(jsonDictionary: jsonDictionary, views: 0)
     }
 
     // MARK: -
@@ -50,34 +50,47 @@ extension StatsLastPostInsight: StatsInsightData {
     private static let dateFormatter = ISO8601DateFormatter()
 
     public init?(jsonDictionary: [String: AnyObject], views: Int) {
-
-        guard
-            let title = jsonDictionary["title"] as? String,
-            let dateString = jsonDictionary["date"] as? String,
-            let date = StatsLastPostInsight.dateFormatter.date(from: dateString),
-            let urlString = jsonDictionary["URL"] as? String,
-            let url = URL(string: urlString),
-            let likesCount = jsonDictionary["like_count"] as? Int,
-            let postID = jsonDictionary["ID"] as? Int,
-            let discussionDict = jsonDictionary["discussion"] as? [String: Any],
-            let commentsCount = discussionDict["comment_count"] as? Int
-            else {
-                return nil
+        do {
+            let jsonData = try JSONSerialization.data(withJSONObject: jsonDictionary, options: [])
+            let decoder = JSONDecoder()
+            self = try decoder.decode(StatsLastPostInsight.self, from: jsonData)
+            self.viewsCount = views
+        } catch {
+            return nil
         }
+    }
+}
 
-        self.title = title.trimmingCharacters(in: CharacterSet.whitespaces).stringByDecodingXMLCharacters()
-        self.url = url
-        self.publishedDate = date
-        self.likesCount = likesCount
-        self.commentsCount = commentsCount
-        self.viewsCount = views
-        self.postID = postID
+extension StatsLastPostInsight {
+    private enum CodingKeys: String, CodingKey {
+        case title
+        case url = "URL"
+        case publishedDate = "date"
+        case likesCount = "like_count"
+        case commentsCount
+        case postID = "ID"
+        case featuredImageURL = "featured_image"
+        case discussion
+    }
 
-        if let featuredImage = jsonDictionary["featured_image"] as? String,
-           let featuredURL = URL(string: featuredImage) {
-            self.featuredImageURL = featuredURL
-        } else {
-            self.featuredImageURL = nil
+    private enum DiscussionKeys: String, CodingKey {
+        case commentsCount = "comment_count"
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        title = try container.decode(String.self, forKey: .title).trimmingCharacters(in: .whitespaces).stringByDecodingXMLCharacters()
+        url = try container.decode(URL.self, forKey: .url)
+        let dateString = try container.decode(String.self, forKey: .publishedDate)
+        guard let date = StatsLastPostInsight.dateFormatter.date(from: dateString) else {
+            throw DecodingError.dataCorruptedError(forKey: .publishedDate, in: container, debugDescription: "Date string does not match format expected by formatter.")
         }
+        publishedDate = date
+        likesCount = (try? container.decodeIfPresent(Int.self, forKey: .likesCount)) ?? 0
+        postID = try container.decode(Int.self, forKey: .postID)
+        featuredImageURL = try? container.decodeIfPresent(URL.self, forKey: .featuredImageURL)
+
+        let discussionContainer = try container.nestedContainer(keyedBy: DiscussionKeys.self, forKey: .discussion)
+        commentsCount = (try? discussionContainer.decodeIfPresent(Int.self, forKey: .commentsCount)) ?? 0
     }
 }

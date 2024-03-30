@@ -1,8 +1,8 @@
-public struct StatsTagsAndCategoriesInsight {
+public struct StatsTagsAndCategoriesInsight: Codable {
     public let topTagsAndCategories: [StatsTagAndCategory]
 
-    public init(topTagsAndCategories: [StatsTagAndCategory]) {
-        self.topTagsAndCategories = topTagsAndCategories
+    private enum CodingKeys: String, CodingKey {
+        case topTagsAndCategories = "tags"
     }
 }
 
@@ -10,24 +10,10 @@ extension StatsTagsAndCategoriesInsight: StatsInsightData {
     public static var pathComponent: String {
         return "stats/tags"
     }
-
-    public init?(jsonDictionary: [String: AnyObject]) {
-        guard
-            let outerTags = jsonDictionary["tags"] as? [[String: AnyObject]]
-            // The shape of the API response here leaves... something to be desired.
-            else {
-                return nil
-        }
-
-        let tags = outerTags.compactMap { StatsTagAndCategory(tagsGroup: $0)}
-
-        self.topTagsAndCategories = tags
-    }
 }
 
-public struct StatsTagAndCategory {
-
-    public enum Kind {
+public struct StatsTagAndCategory: Codable {
+    public enum Kind: String, Codable {
         case tag
         case category
         case folder
@@ -39,6 +25,14 @@ public struct StatsTagAndCategory {
     public let viewsCount: Int?
     public let children: [StatsTagAndCategory]
 
+    private enum CodingKeys: String, CodingKey {
+        case name
+        case kind = "type"
+        case url = "link"
+        case viewsCount = "views"
+        case children = "tags"
+    }
+
     public init(name: String, kind: Kind, url: URL?, viewsCount: Int?, children: [StatsTagAndCategory]) {
         self.name = name
         self.kind = kind
@@ -46,57 +40,46 @@ public struct StatsTagAndCategory {
         self.viewsCount = viewsCount
         self.children = children
     }
-
 }
 
 extension StatsTagAndCategory {
-    init?(tagsGroup: [String: AnyObject]) {
-        guard
-            let innerTags = tagsGroup["tags"] as? [[String: AnyObject]]
-            else {
-                return nil
-        }
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+
+        let innerTags = try container.decodeIfPresent([StatsTagAndCategory].self, forKey: .children) ?? []
+        let viewsCount = try container.decodeIfPresent(Int.self, forKey: .viewsCount)
 
         // This gets kinda complicated. The API collects some tags/categories
         // into groups, and we have to handle that.
-        if innerTags.count == 1 {
-            let tag = innerTags.first!
-            let views = tagsGroup["views"] as? Int
-
-            self.init(singleTag: tag, viewsCount: views)
-            return
+        if innerTags.isEmpty {
+            self.init(
+                name: try container.decode(String.self, forKey: .name),
+                kind: try container.decode(Kind.self, forKey: .kind),
+                url: try container.decodeIfPresent(URL.self, forKey: .url),
+                viewsCount: nil,
+                children: []
+            )
+        } else if innerTags.count == 1, let tag = innerTags.first {
+            self.init(singleTag: tag, viewsCount: viewsCount)
+        } else {
+            let mappedChildren = innerTags.compactMap { StatsTagAndCategory(singleTag: $0) }
+            let label = mappedChildren.map { $0.name }.joined(separator: ", ")
+            self.init(name: label, kind: .folder, url: nil, viewsCount: viewsCount, children: mappedChildren)
         }
-
-        guard let views = tagsGroup["views"] as? Int else {
-            return nil
-        }
-
-        let mappedChildren = innerTags.compactMap { StatsTagAndCategory(singleTag: $0) }
-        let label = mappedChildren.map { $0.name }.joined(separator: ", ")
-
-        self.init(name: label, kind: .folder, url: nil, viewsCount: views, children: mappedChildren)
     }
 
-    init?(singleTag tag: [String: AnyObject], viewsCount: Int? = 0) {
-        guard
-            let name = tag["name"] as? String,
-            let type = tag["type"] as? String,
-            let url = tag["link"] as? String
-            else {
-                return nil
-        }
-
+    init(singleTag tag: StatsTagAndCategory, viewsCount: Int? = 0) {
         let kind: Kind
 
-        switch type {
-        case "category":
+        switch tag.kind {
+        case .category:
             kind = .category
-        case "tag":
+        case .tag:
             kind = .tag
         default:
             kind = .category
         }
 
-        self.init(name: name, kind: kind, url: URL(string: url), viewsCount: viewsCount, children: [])
+        self.init(name: tag.name, kind: kind, url: tag.url, viewsCount: viewsCount, children: [])
     }
 }

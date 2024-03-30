@@ -1,4 +1,4 @@
-public struct StatsAllTimesInsight {
+public struct StatsAllTimesInsight: Codable {
     public let postsCount: Int
     public let viewsCount: Int
     public let bestViewsDay: Date
@@ -16,23 +16,31 @@ public struct StatsAllTimesInsight {
         self.visitorsCount = visitorsCount
         self.bestViewsPerDayCount = bestViewsPerDayCount
     }
+
+    private enum CodingKeys: String, CodingKey {
+        case postsCount = "posts"
+        case viewsCount = "views"
+        case bestViewsDay = "views_best_day"
+        case visitorsCount = "visitors"
+        case bestViewsPerDayCount = "views_best_day_total"
+    }
+
+    private enum RootKeys: String, CodingKey {
+        case stats
+    }
 }
 
 extension StatsAllTimesInsight: StatsInsightData {
+    public init (from decoder: Decoder) throws {
+        let rootContainer = try decoder.container(keyedBy: RootKeys.self)
+        let container = try rootContainer.nestedContainer(keyedBy: CodingKeys.self, forKey: .stats)
 
-    // MARK: - StatsInsightData Conformance
-    public init?(jsonDictionary: [String: AnyObject]) {
-        guard
-            let statsDict = jsonDictionary["stats"] as? [String: AnyObject],
-            let bestViewsDayString = statsDict["views_best_day"] as? String
-            else {
-                return nil
-        }
+        self.postsCount = try container.decodeIfPresent(Int.self, forKey: .postsCount) ?? 0
+        self.bestViewsPerDayCount = try container.decode(Int.self, forKey: .bestViewsPerDayCount)
+        self.visitorsCount = try container.decodeIfPresent(Int.self, forKey: .visitorsCount) ?? 0
 
-        self.postsCount = statsDict["posts"] as? Int ?? 0
-        self.bestViewsPerDayCount = statsDict["views_best_day_total"] as? Int ?? 0
-        self.visitorsCount = statsDict["visitors"] as? Int ?? 0
-        self.viewsCount = statsDict["views"] as? Int ?? 0
+        self.viewsCount = try container.decodeIfPresent(Int.self, forKey: .viewsCount) ?? 0
+        let bestViewsDayString = try container.decodeIfPresent(String.self, forKey: .bestViewsDay) ?? ""
         self.bestViewsDay = StatsAllTimesInsight.dateFormatter.date(from: bestViewsDayString) ?? Date()
     }
 

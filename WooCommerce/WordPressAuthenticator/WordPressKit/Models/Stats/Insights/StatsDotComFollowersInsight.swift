@@ -1,4 +1,4 @@
-public struct StatsDotComFollowersInsight {
+public struct StatsDotComFollowersInsight: Codable {
     public let dotComFollowersCount: Int
     public let topDotComFollowers: [StatsFollower]
 
@@ -6,6 +6,11 @@ public struct StatsDotComFollowersInsight {
                  topDotComFollowers: [StatsFollower]) {
         self.dotComFollowersCount = dotComFollowersCount
         self.topDotComFollowers = topDotComFollowers
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case dotComFollowersCount = "total_wpcom"
+        case topDotComFollowers = "subscribers"
     }
 }
 
@@ -21,25 +26,10 @@ extension StatsDotComFollowersInsight: StatsInsightData {
         return "stats/followers"
     }
 
-    public init?(jsonDictionary: [String: AnyObject]) {
-        guard
-            let subscribersCount = jsonDictionary["total_wpcom"] as? Int,
-            let subscribers = jsonDictionary["subscribers"] as? [[String: AnyObject]]
-            else {
-                return nil
-        }
-
-        let followers = subscribers.compactMap { StatsFollower(jsonDictionary: $0) }
-
-        self.dotComFollowersCount = subscribersCount
-        self.topDotComFollowers = followers
-    }
-
-    // MARK: -
     fileprivate static let dateFormatter = ISO8601DateFormatter()
 }
 
-public struct StatsFollower {
+public struct StatsFollower: Codable {
     public let id: String?
     public let name: String
     public let subscribedDate: Date
@@ -54,39 +44,50 @@ public struct StatsFollower {
         self.avatarURL = avatarURL
         self.id = id
     }
+
+    private enum CodingKeys: String, CodingKey {
+        case id = "ID"
+        case name = "label"
+        case subscribedDate = "date_subscribed"
+        case avatarURL = "avatar"
+    }
 }
 
 extension StatsFollower {
-
-    init?(jsonDictionary: [String: AnyObject]) {
-        guard
-            let name = jsonDictionary["label"] as? String,
-            let avatar = jsonDictionary["avatar"] as? String,
-            let dateString = jsonDictionary["date_subscribed"] as? String
-            else {
-                return nil
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.name = try container.decode(String.self, forKey: .name)
+        if let id = try? container.decodeIfPresent(Int.self, forKey: .id) {
+            self.id = "\(id)"
+        } else if let id = try? container.decodeIfPresent(String.self, forKey: .id) {
+            self.id = id
+        } else {
+            self.id = nil
         }
-        let id = jsonDictionary["ID"] as? String
-        self.init(name: name, avatar: avatar, date: dateString, id: id)
+
+        let avatar = try? container.decodeIfPresent(String.self, forKey: .avatarURL)
+        if let avatar, var components = URLComponents(string: avatar) {
+            components.query = "d=mm&s=60" // to get a properly-sized avatar.
+            self.avatarURL = components.url
+        } else {
+            self.avatarURL = nil
+        }
+
+        let dateString = try container.decode(String.self, forKey: .subscribedDate)
+        if let date = StatsDotComFollowersInsight.dateFormatter.date(from: dateString) {
+            self.subscribedDate = date
+        } else {
+            throw DecodingError.dataCorruptedError(forKey: .subscribedDate, in: container, debugDescription: "Date string does not match format expected by formatter.")
+        }
     }
 
-    init?(name: String, avatar: String, date: String, id: String? = nil) {
-        guard let date = StatsDotComFollowersInsight.dateFormatter.date(from: date) else {
+    init?(jsonDictionary: [String: AnyObject]) {
+        do {
+            let jsonData = try JSONSerialization.data(withJSONObject: jsonDictionary, options: [])
+            let decoder = JSONDecoder()
+            self = try decoder.decode(StatsFollower.self, from: jsonData)
+        } catch {
             return nil
         }
-
-        let url: URL?
-
-        if var components = URLComponents(string: avatar) {
-            components.query = "d=mm&s=60" // to get a properly-sized avatar.
-            url = components.url
-        } else {
-            url = nil
-        }
-
-        self.name = name
-        self.subscribedDate = date
-        self.avatarURL = url
-        self.id = id
     }
 }

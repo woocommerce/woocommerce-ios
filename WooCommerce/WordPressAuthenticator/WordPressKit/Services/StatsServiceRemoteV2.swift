@@ -411,3 +411,15 @@ extension StatsInsightData {
         return "stats/"
     }
 }
+
+public extension StatsInsightData where Self: Codable {
+    init?(jsonDictionary: [String: AnyObject]) {
+        do {
+            let jsonData = try JSONSerialization.data(withJSONObject: jsonDictionary, options: [])
+            let decoder = JSONDecoder()
+            self = try decoder.decode(Self.self, from: jsonData)
+        } catch {
+            return nil
+        }
+    }
+}

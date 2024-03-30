@@ -1,4 +1,4 @@
-public struct StatsEmailFollowersInsight {
+public struct StatsEmailFollowersInsight: Codable {
     public let emailFollowersCount: Int
     public let topEmailFollowers: [StatsFollower]
 
@@ -6,6 +6,11 @@ public struct StatsEmailFollowersInsight {
                 topEmailFollowers: [StatsFollower]) {
         self.emailFollowersCount = emailFollowersCount
         self.topEmailFollowers = topEmailFollowers
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case emailFollowersCount = "total_email"
+        case topEmailFollowers = "subscribers"
     }
 }
 
@@ -20,19 +25,4 @@ extension StatsEmailFollowersInsight: StatsInsightData {
     public static var pathComponent: String {
         return "stats/followers"
     }
-
-    public init?(jsonDictionary: [String: AnyObject]) {
-        guard
-            let subscribersCount = jsonDictionary["total_email"] as? Int,
-            let subscribers = jsonDictionary["subscribers"] as? [[String: AnyObject]]
-            else {
-                return nil
-        }
-
-        let followers = subscribers.compactMap { StatsFollower(jsonDictionary: $0) }
-
-        self.emailFollowersCount = subscribersCount
-        self.topEmailFollowers = followers
-    }
-
 }

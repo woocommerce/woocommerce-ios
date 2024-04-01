@@ -6,12 +6,13 @@ struct SimplePaymentsMigrationView: View {
 
     var body: some View {
         VStack(spacing: Layout.defaultVerticalSpacing) {
-            Image(uiImage: .bellImage)
             Spacer()
                 .frame(height: 8)
+            Image(uiImage: .bell)
             Text(Localization.title)
                 .titleStyle()
                 .bold()
+                .fixedSize(horizontal: false, vertical: true)
             Text(.init(Localization.subtitle))
                 .bodyStyle()
             Text(Localization.detail)

@@ -195,8 +195,24 @@ struct InPersonPaymentsMenu: View {
                 },
                                              flow: .creation,
                                              dismissLabel: .backButton,
-                                             viewModel: EditableOrderViewModel(siteID: viewModel.siteID))
+                                             viewModel: viewModel.orderViewModel)
                 .navigationBarHidden(true)
+                .sheet(isPresented: $viewModel.presentCollectPaymentMigrationSheet, onDismiss: {
+                    if viewModel.presentCustomAmountAfterDismissingCollectPaymentMigrationSheet {
+                        viewModel.orderViewModel.addCustomAmount()
+                    }
+                }) {
+                    SimplePaymentsMigrationView {
+                        viewModel.presentCustomAmountAfterDismissingCollectPaymentMigrationSheet = true
+                        viewModel.presentCollectPaymentMigrationSheet = false
+                    }
+                    .presentationDetents([.medium, .large])
+                }
+                .onAppear {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                        viewModel.presentCollectPaymentMigrationSheet = true
+                    }
+                }
             }
 
             if let onboardingNotice = viewModel.cardPresentPaymentsOnboardingNotice {

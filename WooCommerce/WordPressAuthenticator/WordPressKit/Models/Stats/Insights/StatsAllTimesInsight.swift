@@ -35,11 +35,11 @@ extension StatsAllTimesInsight: StatsInsightData {
         let rootContainer = try decoder.container(keyedBy: RootKeys.self)
         let container = try rootContainer.nestedContainer(keyedBy: CodingKeys.self, forKey: .stats)
 
-        self.postsCount = try container.decodeIfPresent(Int.self, forKey: .postsCount) ?? 0
-        self.bestViewsPerDayCount = try container.decode(Int.self, forKey: .bestViewsPerDayCount)
-        self.visitorsCount = try container.decodeIfPresent(Int.self, forKey: .visitorsCount) ?? 0
+        self.postsCount = (try? container.decodeIfPresent(Int.self, forKey: .postsCount)) ?? 0
+        self.bestViewsPerDayCount = (try? container.decodeIfPresent(Int.self, forKey: .bestViewsPerDayCount)) ?? 0
+        self.visitorsCount = (try? container.decodeIfPresent(Int.self, forKey: .visitorsCount)) ?? 0
 
-        self.viewsCount = try container.decodeIfPresent(Int.self, forKey: .viewsCount) ?? 0
+        self.viewsCount = (try? container.decodeIfPresent(Int.self, forKey: .viewsCount)) ?? 0
         let bestViewsDayString = try container.decodeIfPresent(String.self, forKey: .bestViewsDay) ?? ""
         self.bestViewsDay = StatsAllTimesInsight.dateFormatter.date(from: bestViewsDayString) ?? Date()
     }

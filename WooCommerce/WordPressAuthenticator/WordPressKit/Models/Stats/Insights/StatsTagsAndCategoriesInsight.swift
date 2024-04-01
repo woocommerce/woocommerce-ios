@@ -47,7 +47,7 @@ extension StatsTagAndCategory {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
         let innerTags = try container.decodeIfPresent([StatsTagAndCategory].self, forKey: .children) ?? []
-        let viewsCount = try container.decodeIfPresent(Int.self, forKey: .viewsCount)
+        let viewsCount = (try? container.decodeIfPresent(Int.self, forKey: .viewsCount)) ?? 0
 
         // This gets kinda complicated. The API collects some tags/categories
         // into groups, and we have to handle that.

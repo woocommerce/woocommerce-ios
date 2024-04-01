@@ -54,17 +54,17 @@ private extension StoreOnboardingTask.TaskType {
         case .addFirstProduct:
             return 0
         case .storeDetails:
-            return 2
+            return 1
         case .woocommercePayments:
-            return 3
+            return 2
         case .launchStore:
-            return 4
+            return 3
         case .customizeDomains:
-            return 5
+            return 4
         case .payments:
-            return 6
+            return 5
         case .unsupported:
-            return 7
+            return 6
         }
     }
 }

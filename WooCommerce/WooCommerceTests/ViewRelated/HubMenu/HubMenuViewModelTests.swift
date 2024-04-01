@@ -325,7 +325,7 @@ final class HubMenuViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.shouldAuthenticateAdminPage)
     }
 
-    func test_menuElements_include_subscriptions_on_wp_com_sites() {
+    func test_menuElements_include_subscriptions_on_wp_com_sites_if_not_free_trial() {
         // Given
         let sessionManager = SessionManager.testingInstance
         sessionManager.defaultSite = Site.fake().copy(isWordPressComStore: true)
@@ -338,6 +338,24 @@ final class HubMenuViewModelTests: XCTestCase {
         viewModel.setupMenuElements()
 
         XCTAssertNotNil(viewModel.settingsElements.firstIndex(where: { item in
+            item.id == HubMenuViewModel.Subscriptions.id
+        }))
+    }
+
+    func test_menuElements_does_not_include_subscriptions_on_wp_com_free_trial_sites() {
+        // Given
+        let freeTrialPlanSlug = "ecommerce-trial-bundle-monthly"
+        let sessionManager = SessionManager.testingInstance
+        sessionManager.defaultSite = Site.fake().copy(plan: freeTrialPlanSlug, isWordPressComStore: true)
+        let stores = MockStoresManager(sessionManager: sessionManager)
+
+        // When
+        let viewModel = HubMenuViewModel(siteID: sampleSiteID,
+                                         tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
+                                         stores: stores)
+        viewModel.setupMenuElements()
+
+        XCTAssertNil(viewModel.settingsElements.firstIndex(where: { item in
             item.id == HubMenuViewModel.Subscriptions.id
         }))
     }

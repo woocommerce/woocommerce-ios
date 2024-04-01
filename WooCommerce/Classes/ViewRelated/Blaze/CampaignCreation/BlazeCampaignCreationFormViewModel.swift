@@ -29,7 +29,7 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
     @Published private(set) var description: String = ""
 
     // Budget details
-    private var startDate = Date.now
+    private var startDate = Date.now + 60 * 60 * 24 // Current date + 1 day
     private var dailyBudget = BlazeBudgetSettingViewModel.Constants.minimumDailyAmount
     private var duration = BlazeBudgetSettingViewModel.Constants.defaultDayCount
 

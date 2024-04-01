@@ -135,23 +135,6 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         // Given
     }
 
-    func test_session_card_is_hidden_for_custom_range() async {
-        // Given
-        XCTAssertTrue(vm.enabledCards.contains(.sessions))
-
-        // When
-        vm.timeRangeSelectionType = .custom(start: Date(), end: Date())
-
-        // Then
-        XCTAssertFalse(vm.enabledCards.contains(.sessions))
-
-        // When
-        vm.timeRangeSelectionType = .lastMonth
-
-        // Then
-        XCTAssertTrue(vm.enabledCards.contains(.sessions))
-    }
-
     func test_session_card_is_hidden_for_sites_without_jetpack_plugin() {
         // Given
         let storesForNonJetpackSite = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, defaultSite: .fake().copy(siteID: -1)))
@@ -600,7 +583,7 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         customizeAnalytics.saveChanges()
     }
 
-    func test_customizeAnalytics_excludes_sessions_card_when_ineligible() throws {
+    func test_sessions_card_is_inactive_in_customizeAnalytics_when_ineligible() throws {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, defaultSite: .fake().copy(siteID: -1)))
         let vm = createViewModel(stores: stores)
@@ -611,7 +594,24 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         // Then
         let customizeAnalyticsVM = try XCTUnwrap(vm.customizeAnalyticsViewModel)
         XCTAssertFalse(vm.enabledCards.contains(.sessions))
-        XCTAssertFalse(customizeAnalyticsVM.allCards.contains(where: { $0.type == .sessions }))
+        XCTAssertTrue(customizeAnalyticsVM.inactiveCards.contains(where: { $0.type == .sessions }))
+    }
+
+    func test_bundles_card_is_inactive_in_customizeAnalytics_when_extension_is_inactive() throws {
+        // Given
+        let storage = MockStorageManager()
+        storage.insertSampleSystemPlugin(readOnlySystemPlugin: .fake().copy(siteID: sampleSiteID,
+                                                                            name: SitePlugin.SupportedPlugin.WCProductBundles.first,
+                                                                            active: false))
+        let vm = createViewModel(storage: storage)
+
+        // When
+        vm.customizeAnalytics()
+
+        // Then
+        let customizeAnalyticsVM = try XCTUnwrap(vm.customizeAnalyticsViewModel)
+        XCTAssertFalse(vm.enabledCards.contains(.bundles))
+        XCTAssertTrue(customizeAnalyticsVM.inactiveCards.contains(where: { $0.type == .bundles }))
     }
 
     func test_customizeAnalytics_tracks_expected_event() {

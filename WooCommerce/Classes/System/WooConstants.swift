@@ -339,6 +339,10 @@ extension WooConstants {
 
         case wooPaymentsDepositSchedule = "https://woo.com/document/woopayments/deposits/deposit-schedule/"
 
+        /// URL to learn more about Jetpack Stats
+        ///
+        case jetpackStats = "https://jetpack.com/stats/"
+
         /// Returns the URL version of the receiver
         ///
         func asURL() -> URL {

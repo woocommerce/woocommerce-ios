@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-03-14 13:54:03+0000 */
+/* Translation-Revision-Date: 2024-03-26 13:54:03+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_TW */
@@ -12,7 +12,8 @@
 /* Label that describes the completed progress of an update being installed (e.g. 15% complete). Keep the %.0f%% exactly as is */
 "%.0f%% complete" = "已完成 %.0f%%";
 
-/* In Shipping Labels Package Details, the pattern used to show the weight of a product. For example, “1lbs”. */
+/* In Shipping Labels Package Details, the pattern used to show the weight of a product. For example, “1lbs”.
+   Title for the plugin detail row in settings. %1$@ is a placeholder for the plugin name. This is displayed with the current version number, and whether an update is available. */
 "%1$@" = "%1$@";
 
 /* Format for each Product attribute in singular form */
@@ -40,9 +41,6 @@
 
 /* The default name for a duplicated product, with %1$@ being the original name. Reads like: Ramen Copy */
 "%1$@ Copy" = "%1$@ 複本";
-
-/* Title for the plugin version detail row in settings. %1$@ is a placeholder for the plugin name. This is displayed with the current version number, and whether an update is available. */
-"%1$@ Version" = "版本 %1$@";
 
 /* A label prompting users to learn more about Tap to Pay on iPhone"
 %1$@ is a placeholder that always replaced with \"Learn more\" string,
@@ -422,9 +420,6 @@ which should be translated separately and considered part of this sentence. */
    Status name of an approved Blaze campaign
    Status of coupons that are active */
 "Active" = "啟用";
-
-/* Title for table view section of active plugins */
-"Active Plugins" = "啟用中的外掛程式";
 
 /* The plugin is active on the site and has not enabled automatic updates */
 "Active, Autoupdates off" = "已啟用，關閉自動更新";
@@ -1487,6 +1482,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message when the card is removed from the reader prematurely. */
 "Card was removed too soon - please try transaction again" = "太快移除卡片 - 請重新交易";
+
+/* Label for a cancel button when an optional software update is happening */
+"CardPresentModalUpdateProgress.button.cancelOptionalButtonText" = "取消";
+
+/* Label for a cancel button when a mandatory software update is happening */
+"CardPresentModalUpdateProgress.button.cancelRequiredButtonText" = "仍然要取消";
+
+/* Label for a dismiss button when a software update has finished */
+"CardPresentModalUpdateProgress.button.dismissButtonText" = "關閉";
 
 /* Navigation bar title of shipping label carrier and rates screen */
 "Carrier and Rates" = "貨運業者和費率";
@@ -3824,9 +3828,6 @@ which should be translated separately and considered part of this sentence. */
 /* Application's Inactive State */
 "Inactive" = "未啟用";
 
-/* Title for table view section of inactive plugins */
-"Inactive Plugins" = "未啟用的外掛程式";
-
 /* The plugin is not active on the site and has not enabled automatic updates */
 "Inactive, Autoupdates off" = "未啟用，關閉自動更新";
 
@@ -4785,9 +4786,6 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Netherlands" = "荷蘭";
 
-/* Title for table view section of network active plugins */
-"Network Active Plugins" = "網路啟用中的外掛程式";
-
 /* Error message when session cookie has expired. */
 "NetworkError.invalidCookieNonce" = "很抱歉，您的連線已經逾期。 請再登入一次。";
 
@@ -5692,8 +5690,7 @@ which should be translated separately and considered part of this sentence. */
 "Please, add a new payment method" = "請新增付款方式";
 
 /* My Store > Settings > Plugins section title
-   Navigates to Plugins screen.
-   Title of the Plugin List screen */
+   Navigates to Plugins screen. */
 "Plugins" = "外掛程式";
 
 /* Country option for a site address. */
@@ -7065,8 +7062,7 @@ which should be translated separately and considered part of this sentence. */
 /* Indicates the reviewer does not have a name. It reads { Someone left a review} */
 "Someone" = "某人";
 
-/* Error message presented to users after a failure occurs
-   The text on the placeholder overlay when there is issue syncing site plugins */
+/* Error message presented to users after a failure occurs */
 "Something went wrong" = "發生錯誤";
 
 /* Description of an unknown error after purchasing a plan */
@@ -7943,9 +7939,6 @@ which should be translated separately and considered part of this sentence. */
 /* Error message informing the user that there was a problem clearing the block on site preventing its posts from displaying in the reader. */
 "There was a problem removing the block for specified site." = "移除指定網站的封鎖時發生問題。";
 
-/* The details on the placeholder overlay when there is issue syncing site plugins */
-"There was a problem while trying to load plugins. Check your internet and try again." = "嘗試載入外掛程式時出現問題。 請檢查你的網際網路，然後再試一次。";
-
 /* Message to be displayed when there's an error communicating with the remote site during Jetpack setup */
 "There was an error communicating with your site." = "與你的網站通訊時發生錯誤。";
 
@@ -8332,8 +8325,7 @@ which should be translated separately and considered part of this sentence. */
 /* Title shown on the test order screen */
 "Try a test order" = "試用測試訂單";
 
-/* Action to resync on the placeholder overlay when there is issue syncing site plugins
-   Button to dismiss the alert presented when connecting to a specific reader fails. This allows the search to continue.
+/* Button to dismiss the alert presented when connecting to a specific reader fails. This allows the search to continue.
    Button to dismiss the alert presented when starting Tap to Pay on iPhone fails. This allows the search to continue.
    Title of the try again action when the site cannot be launched from store onboarding > launch store screen. */
 "Try again" = "再試一次";
@@ -8397,9 +8389,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Info text about the scanned text list on the add product from image form. */
 "Tweak your text: Unselect scans you don't need or tap to edit" = "微調你的文字：取消選取你不需要的掃瞄項目，或點一下即可編輯";
-
-/* Title of a button linking to the app's Twitter profile */
-"Twitter" = "Twitter";
 
 /* Placeholder of the search text field on the domain selector. */
 "Type a name for your store" = "輸入你的商店名稱";
@@ -9362,6 +9351,9 @@ which should be translated separately and considered part of this sentence. */
 /* Prompt asking users if the logged in to the wrong account.Presented when logging in with a store address that does not match the account entered. */
 "Wrong account?" = "是否帳號有誤？";
 
+/* Title of a button linking to the app's X profile */
+"X" = "X";
+
 /* Placeholder of the gift card code text field in the order form. */
 "XXXX-XXXX-XXXX-XXXX" = "XXXX-XXXX-XXXX-XXXX";
 
@@ -10157,6 +10149,15 @@ which should be translated separately and considered part of this sentence. */
 /* Label for the email receipts toggle in Payment Method screen. %1$@ is a placeholder for the account display name. %2$@ is a placeholder for the username. %3$@ is a placeholder for the WordPress.com email address. */
 "blazePaymentMethodsView.emailReceipt" = "透過電子郵件傳送標籤購買收據給「%1$@」(%2$@)，電子郵件地址是 %3$@";
 
+/* Dismiss button on the error alert displayed on the Blaze payment method list screen */
+"blazePaymentMethodsView.loadPaymentMethodsErrorAlert.cancel" = "取消";
+
+/* Error message indicating that loading payment methods failed */
+"blazePaymentMethodsView.loadPaymentMethodsErrorAlert.paymentMethods" = "載入付款方式時發生錯誤";
+
+/* Button on the error alert displayed on the payment method list screen */
+"blazePaymentMethodsView.loadPaymentMethodsErrorAlert.retry" = "重試";
+
 /* Navigation bar title in the Blaze Payment Method screen */
 "blazePaymentMethodsView.navigationBarTitle" = "付款方式";
 
@@ -10452,6 +10453,72 @@ which should be translated separately and considered part of this sentence. */
 /* Button in date range picker to add a Custom Range tab */
 "customRangeTabCreationCoordinator.add" = "新增";
 
+/* Label for a customer with no name in the Customer detail screen. */
+"customerDetail.guestName" = "訪客";
+
+/* Label for the customer's average order value in the Customer Details screen. */
+"customerDetailView.avgOrderValueLabel" = "平均訂單金額";
+
+/* Label for the customer's city in the Customer Details screen. */
+"customerDetailView.cityLabel" = "城市";
+
+/* Button to copy a customer's email address in the Customer Details screen. */
+"customerDetailView.copyEmail" = "複製電子郵件地址";
+
+/* Label for the customer's country in the Customer Details screen. */
+"customerDetailView.countryLabel" = "國家\/地區";
+
+/* Heading for the section with general customer details in the Customer Details screen. */
+"customerDetailView.customerSection" = "顧客";
+
+/* Label for the date the customer was last active in the Customer Details screen. */
+"customerDetailView.dateLastActiveLabel" = "上次活動時間";
+
+/* Label for the customer's registration date in the Customer Details screen. */
+"customerDetailView.dateRegisteredLabel" = "註冊日期";
+
+/* Default placeholder if a customer's details are not available in the Customer Details screen. */
+"customerDetailView.defaultPlaceholder" = "無";
+
+/* Title for action to contact a customer via email. */
+"customerDetailView.emailActionLabel" = "透過電子郵件聯絡顧客";
+
+/* Placeholder if a customer's email address is not available in the Customer Details screen. */
+"customerDetailView.emailPlaceholder" = "無電子郵件地址";
+
+/* Heading for the section with customer location details in the Customer Details screen. */
+"customerDetailView.locationSection" = "地點";
+
+/* Label for the number of orders in the Customer Details screen. */
+"customerDetailView.ordersCountLabel" = "訂單";
+
+/* Heading for the section with customer order stats in the Customer Details screen. */
+"customerDetailView.ordersSection" = "訂單";
+
+/* Label for the customer's postal code in the Customer Details screen. */
+"customerDetailView.postcodeLabel" = "郵遞區號";
+
+/* Label for the customer's region in the Customer Details screen. */
+"customerDetailView.regionLabel" = "區域";
+
+/* Heading for the section with customer registration details in the Customer Details screen. */
+"customerDetailView.registrationSection" = "註冊";
+
+/* Button to email a customer in the Customer Details screen. */
+"customerDetailView.sendEmail" = "電子郵件地址";
+
+/* Label for the customer's total spend in the Customer Details screen. */
+"customerDetailView.totalSpendLabel" = "總預算";
+
+/* Label for the customer's username in the Customer Details screen. */
+"customerDetailView.usernameLabel" = "使用者名稱";
+
+/* Message when there are no customers to show in the Customers list screen. */
+"customerList.emptyStateMessage" = "建立訂單，開始收集顧客洞察報告";
+
+/* Title when there are no customers to show in the Customers list screen. */
+"customerList.emptyStateTitle" = "目前尚無顧客";
+
 /* Message to prompt users to search for customers on the customer search screen */
 "customerSearchUICommand.emptyDefaultStateNoCreationMessage" = "搜尋現有顧客";
 
@@ -10460,6 +10527,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message in the Add Customer to order screen when getting the customer information */
 "customerSelectorViewController.guestSelectionDisallowedError" = "此使用者是訪客，而訪客無法用於篩選訂單。";
+
+/* Placeholder for a customer with no email address in the Customers list screen. */
+"customersList.emailPlaceholder" = "無電子郵件地址";
+
+/* Label for a customer with no name in the Customers list screen. */
+"customersList.guestLabel" = "訪客";
+
+/* Title for Customers list screen */
+"customersList.title" = "顧客";
 
 /* Display label for a product's subscription period when it is a single day. */
 "day" = "天";
@@ -10593,6 +10669,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Row title for filtering orders by Product. */
 "filterOrderListViewModel.OrderListFilter.rowTitleProduct" = "商品";
+
+/* Title of one of the hub menu options */
+"hubMenu.customers" = "顧客";
+
+/* Description of one of the hub menu options */
+"hubMenu.customersDescription" = "取得顧客洞察報告";
+
+/* Title of the view containing a single Product Review */
+"hubMenu.productReview" = "商品評論";
 
 /* A message that tells the user why the app needs access to Bluetooth. */
 "infoplist.NSBluetoothAlwaysUsageDescription" = "此應用程式使用藍牙來與支援的讀卡機連線。";
@@ -10899,6 +10984,12 @@ which should be translated separately and considered part of this sentence. */
 /* Shown with a 'Current:' label, but when we don't know what the plan that ended was */
 "plan ended" = "方案已結束";
 
+/* Title for the Close button within the Plugin List view. */
+"pluginListView.button.close" = "關閉";
+
+/* Title for the Plugin List view. */
+"pluginListView.title.plugins" = "外掛程式";
+
 /* Close title for the navigation bar button on the Print Shipping Label view. */
 "print.shipping.label.close.button.title" = "關閉";
 
@@ -11057,19 +11148,19 @@ which should be translated separately and considered part of this sentence. */
 "shipping.label.navigationBar.cancel.button.title" = "取消";
 
 /* Display text for the daily granularity of store stats on the My Store screen */
-"statsGranularityV4.daily" = "依天";
+"statsGranularityV4.dailyMetrics" = "每日間隔";
 
 /* Display text for the hourly granularity of store stats on the My Store screen */
-"statsGranularityV4.hourly" = "依小時";
+"statsGranularityV4.hourlyMetrics" = "每小時間隔";
 
 /* Display text for the monthly granularity of store stats on the My Store screen */
-"statsGranularityV4.monthly" = "依月";
+"statsGranularityV4.monthlyMetrics" = "每月間隔";
 
 /* Display text for the weekly granularity of store stats on the My Store screen */
-"statsGranularityV4.weekly" = "依週";
+"statsGranularityV4.weeklyMetrics" = "每週間隔";
 
 /* Display text for the yearly granularity of store stats on the My Store screen */
-"statsGranularityV4.yearly" = "依年份";
+"statsGranularityV4.yearlyMetrics" = "每年間隔";
 
 /* Tab selector title that shows the statistics for today */
 "statsTimeRangeV4.tabTitle.custom" = "自訂範圍";
@@ -11270,7 +11361,7 @@ which should be translated separately and considered part of this sentence. */
 /* Button in theme preview screen to pick a theme. The placeholder is the theme name. Reads like: Use Tsubaki */
 "themesPreviewViewModel.useThisThemeButton" = "使用 %1$@";
 
-/* Value for the WooCommerce plugin version detail row in settings, when the version is unknown. This is in place of the current version number. */
+/* Value for the plugin version detail row in settings, when the version is unknown. This is in place of the current version number. */
 "unknown" = "未知";
 
 /* Used when the response doesn't have a valid url to display */

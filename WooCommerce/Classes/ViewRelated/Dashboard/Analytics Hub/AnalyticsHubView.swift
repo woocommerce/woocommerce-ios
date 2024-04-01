@@ -143,6 +143,8 @@ private extension AnalyticsHubView {
                     await viewModel.enableJetpackStats()
                     isEnablingJetpackStats = false
                 }
+            } else if case .custom = viewModel.timeRangeSelectionType {
+                AnalyticsSessionsUnavailableCard()
             } else {
                 AnalyticsReportCard(viewModel: viewModel.sessionsCard)
             }

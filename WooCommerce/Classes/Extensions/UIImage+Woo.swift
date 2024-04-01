@@ -1519,6 +1519,10 @@ extension UIImage {
         UIImage(systemName: "exclamationmark.circle.fill", withConfiguration: Configurations.barButtonItemSymbol)!.withRenderingMode(.alwaysTemplate)
     }
 
+    static var exclamationImage: UIImage {
+        UIImage(systemName: "exclamationmark.circle", withConfiguration: Configurations.barButtonItemSymbol)!.withRenderingMode(.alwaysTemplate)
+    }
+
 
 }
 

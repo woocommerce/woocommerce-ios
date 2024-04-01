@@ -1,4 +1,4 @@
-public struct StatsLastPostInsight: Decodable {
+public struct StatsLastPostInsight: Equatable, Decodable {
     public let title: String
     public let url: URL
     public let publishedDate: Date

@@ -1,4 +1,4 @@
-public struct StatsPostDetails {
+public struct StatsPostDetails: Equatable {
     public let fetchedDate: Date
     public let totalViewsCount: Int
 
@@ -8,7 +8,7 @@ public struct StatsPostDetails {
     public let lastTwoWeeks: [StatsPostViews]
 }
 
-public struct StatsWeeklyBreakdown {
+public struct StatsWeeklyBreakdown: Equatable {
     public let startDay: DateComponents
     public let endDay: DateComponents
 
@@ -19,7 +19,7 @@ public struct StatsWeeklyBreakdown {
     public let days: [StatsPostViews]
 }
 
-public struct StatsPostViews {
+public struct StatsPostViews: Equatable {
     public let period: StatsPeriodUnit
     public let date: DateComponents
     public let viewsCount: Int

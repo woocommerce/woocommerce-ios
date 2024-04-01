@@ -1,4 +1,4 @@
-public struct StatsPostingStreakInsight: Codable {
+public struct StatsPostingStreakInsight: Equatable, Codable {
     public let streaks: PostingStreaks
     public let postingEvents: [PostingStreakEvent]
 
@@ -54,7 +54,7 @@ public struct StatsPostingStreakInsight: Codable {
     }
 }
 
-public struct PostingStreakEvent: Codable {
+public struct PostingStreakEvent: Equatable, Codable {
     public let date: Date
     public let postCount: Int
 
@@ -64,7 +64,7 @@ public struct PostingStreakEvent: Codable {
     }
 }
 
-public struct PostingStreaks: Codable {
+public struct PostingStreaks: Equatable, Codable {
     public let long: PostingStreak?
     public let current: PostingStreak?
 
@@ -76,7 +76,7 @@ public struct PostingStreaks: Codable {
     }
 }
 
-public struct PostingStreak: Codable {
+public struct PostingStreak: Equatable, Codable {
     public let start: Date
     public let end: Date
     public let length: Int

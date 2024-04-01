@@ -71,7 +71,6 @@ private extension StatsTimeRangeBarView {
         selectedDateLabel.font = Constants.labelFont
         selectedDateLabel.textColor = Constants.labelColor
         selectedDateLabel.textAlignment = Constants.labelTextAlignment
-        selectedDateLabel.isHidden = true
         stackView.addArrangedSubview(selectedDateLabel)
     }
 }

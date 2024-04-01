@@ -41,12 +41,7 @@ final class StatsTimeRangeBarView: UIView {
         container.foregroundColor = viewModel.isTimeRangeEditable ? .accent : Constants.labelColor
         configuration.attributedTitle = AttributedString(viewModel.timeRangeText, attributes: container)
 
-        if viewModel.selectedDateText != nil {
-            selectedDateLabel.text = viewModel.selectedDateText
-            selectedDateLabel.isHidden = false
-        } else {
-            selectedDateLabel.isHidden = true
-        }
+        selectedDateLabel.text = viewModel.selectedDateText
 
         button.configuration = configuration
     }

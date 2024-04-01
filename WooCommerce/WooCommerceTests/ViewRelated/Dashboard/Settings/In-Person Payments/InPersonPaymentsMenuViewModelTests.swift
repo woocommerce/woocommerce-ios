@@ -4,7 +4,8 @@ import TestKit
 @testable import WooCommerce
 
 /// Temporarily removed pending a rewrite for the new InPersonPaymentsMenuViewModel #11168
-class InPersonPaymentsMenuViewModelTests: XCTestCase {
+@MainActor
+final class InPersonPaymentsMenuViewModelTests: XCTestCase {
 
     private var sut: InPersonPaymentsMenuViewModel!
 
@@ -316,5 +317,28 @@ class InPersonPaymentsMenuViewModelTests: XCTestCase {
 
         // Then
         XCTAssertTrue(sut.presentCollectPayment)
+    }
+
+    func test_collectPaymentTapped_sets_orderViewModel_to_a_new_value() {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isMigrateSimplePaymentsToOrderCreationEnabled: true)
+        let dependencies = InPersonPaymentsMenuViewModel.Dependencies(cardPresentPaymentsConfiguration: .init(country: .US),
+                                                                      onboardingUseCase: mockOnboardingUseCase,
+                                                                      cardReaderSupportDeterminer: MockCardReaderSupportDeterminer(),
+                                                                      wooPaymentsDepositService: mockDepositService,
+                                                                      featureFlagService: featureFlagService)
+        sut = InPersonPaymentsMenuViewModel(siteID: sampleStoreID,
+                                            dependencies: dependencies)
+        let originalOrderViewModel = sut.orderViewModel
+        // Because `EditableOrderViewModel` does not conform to `Equatable`, a random mutable property is set to assert that
+        // the two order view models are different.
+        originalOrderViewModel.syncRequired = true
+
+        // When
+        sut.collectPaymentTapped()
+        sut.orderViewModel.syncRequired = false
+
+        // Then
+        XCTAssertTrue(originalOrderViewModel.syncRequired != sut.orderViewModel.syncRequired)
     }
 }

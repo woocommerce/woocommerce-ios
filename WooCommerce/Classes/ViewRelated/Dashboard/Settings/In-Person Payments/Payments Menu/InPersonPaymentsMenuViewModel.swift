@@ -23,6 +23,8 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
     @Published private(set) var selectedPaymentGatewayPlugin: CardPresentPaymentsPlugin?
     @Published var presentCollectPaymentWithSimplePayments: Bool = false
     @Published var presentCollectPayment: Bool = false
+    @Published var presentCollectPaymentMigrationSheet: Bool = false
+    @Published var presentCustomAmountAfterDismissingCollectPaymentMigrationSheet: Bool = false
     @Published var presentSetUpTryOutTapToPay: Bool = false
     @Published var presentAboutTapToPay: Bool = false
     @Published var presentTapToPayFeedback: Bool = false
@@ -35,6 +37,8 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
     @Published var isLoadingDepositSummary: Bool = false
 
     var shouldAlwaysHideSetUpButtonOnAboutTapToPay: Bool = false
+
+    private(set) var orderViewModel: EditableOrderViewModel
 
     private(set) var simplePaymentsNoticePublisher: AnyPublisher<SimplePaymentsNotice, Never>
 
@@ -94,6 +98,7 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
         self.dependencies = dependencies
         self.payInPersonToggleViewModel = payInPersonToggleViewModel
         self.simplePaymentsNoticePublisher = PassthroughSubject<SimplePaymentsNotice, Never>().eraseToAnyPublisher()
+        self.orderViewModel = .init(siteID: siteID)
         observeOnboardingChanges()
         runCardPresentPaymentsOnboardingIfPossible()
 
@@ -156,6 +161,7 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
             analytics.track(.paymentsMenuCollectPaymentTapped)
             return
         }
+        orderViewModel = EditableOrderViewModel(siteID: siteID)
         presentCollectPayment = true
         analytics.track(.paymentsMenuCollectPaymentTapped)
     }

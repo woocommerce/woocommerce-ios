@@ -3206,6 +3206,18 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertFalse(try XCTUnwrap(productRow.childProductRows[0]).isReadOnly, "Child product should not be read only")
         XCTAssertFalse(try XCTUnwrap(productRow.childProductRows[1]).isReadOnly, "Child product variation should not be read only")
     }
+
+    func test_addCustomAmount_toggles_showAddCustomAmount_to_true_when_order_is_new() {
+        // Given
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
+        XCTAssertFalse(viewModel.customAmountsSectionViewModel.showAddCustomAmount)
+
+        // When
+        viewModel.addCustomAmount()
+
+        // Then
+        XCTAssertTrue(viewModel.customAmountsSectionViewModel.showAddCustomAmount)
+    }
 }
 
 private extension EditableOrderViewModelTests {

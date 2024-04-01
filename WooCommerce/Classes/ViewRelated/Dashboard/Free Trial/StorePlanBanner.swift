@@ -5,10 +5,8 @@ import SwiftUI
 final class StorePlanBannerHostingViewController: UIHostingController<StorePlanBanner> {
     /// Designated initializer.
     ///
-    init(actionText: String, mainText: String, onLearnMoreTapped: @escaping () -> Void) {
-        super.init(rootView: StorePlanBanner(actionText: actionText,
-                                             mainText: mainText,
-                                             onLearnMoreTapped: onLearnMoreTapped))
+    init(mainText: String) {
+        super.init(rootView: StorePlanBanner(mainText: mainText))
     }
 
     /// Needed for protocol conformance.
@@ -21,18 +19,9 @@ final class StorePlanBannerHostingViewController: UIHostingController<StorePlanB
 /// Store Plan Banner. To be used inside the Dashboard.
 ///
 struct StorePlanBanner: View {
-
-    /// Text to be rendered as the banner action button
-    ///
-    let actionText: String
-
     /// Text to be rendered next to the info image.
     ///
     let mainText: String
-
-    /// Closure invoked when the merchants taps on the `Learn More` button.
-    ///
-    let onLearnMoreTapped: () -> Void
 
     var body: some View {
         VStack(spacing: .zero) {
@@ -45,12 +34,6 @@ struct StorePlanBanner: View {
                 AdaptiveStack(verticalAlignment: .center, spacing: Layout.spacing) {
                     Text(mainText)
                         .bodyStyle()
-
-                    Text(actionText)
-                        .underline(true)
-                        .linkStyle()
-                        .onTapGesture(perform: onLearnMoreTapped)
-                        .accessibilityAddTraits(.isButton)
                 }
             }
             .padding()
@@ -75,7 +58,7 @@ extension StorePlanBanner {
 
 struct StorePlanBanner_Preview: PreviewProvider {
     static var previews: some View {
-        StorePlanBanner(actionText: "Upgrade now", mainText: "Your Free trial has ended", onLearnMoreTapped: { })
+        StorePlanBanner(mainText: "Your Free trial has ended")
             .previewLayout(.sizeThatFits)
     }
 }

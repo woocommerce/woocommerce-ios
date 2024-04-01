@@ -123,17 +123,6 @@ private extension StorePlanBannerPresenter {
         .store(in: &subscriptions)
     }
 
-    /// String for the banner action button text
-    /// Will display different CTA text depending if IAP is supported and is enabled
-    ///
-    private func setupBannerText() async -> String {
-        if await inAppPurchasesManager.inAppPurchasesAreSupported() {
-            return Localization.upgradeNow
-        } else {
-            return Localization.learnMore
-        }
-    }
-
     /// Adds a Free Trial bar at the bottom of the container view.
     ///
     @MainActor
@@ -143,11 +132,7 @@ private extension StorePlanBannerPresenter {
         // Remove any previous banner.
         storePlanBanner?.removeFromSuperview()
 
-        let bannerActionText = await setupBannerText()
-
-        let storePlanViewController = StorePlanBannerHostingViewController(actionText: bannerActionText, mainText: contentText) { [weak self] in
-            self?.showUpgradesView()
-        }
+        let storePlanViewController = StorePlanBannerHostingViewController(mainText: contentText)
         storePlanViewController.view.translatesAutoresizingMaskIntoConstraints = false
 
         containerView.addSubview(storePlanViewController.view)
@@ -174,20 +159,10 @@ private extension StorePlanBannerPresenter {
         onLayoutUpdated(.zero)
         self.storePlanBanner = nil
     }
-
-    /// Shows a view for the merchant to upgrade their site's plan.
-    ///
-    func showUpgradesView() {
-        guard let viewController else { return }
-
-        UpgradesViewPresentationCoordinator().presentUpgrades(for: siteID, from: viewController)
-    }
 }
 
 private extension StorePlanBannerPresenter {
     enum Localization {
-        static let learnMore = NSLocalizedString("Learn more", comment: "Title on the button to learn more about the free trial plan.")
-        static let upgradeNow = NSLocalizedString("Upgrade Now", comment: "Title on the button to upgrade a free trial plan.")
         static let expiredPlan = NSLocalizedString("Your site plan has ended.", comment: "Title on the banner when the site's WooExpress plan has expired")
     }
 }

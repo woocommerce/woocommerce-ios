@@ -282,7 +282,7 @@ struct OrderForm: View {
                             }
                             .renderedIf(viewModel.shouldSplitProductsAndCustomAmountsSections)
 
-                            OrderCustomAmountsSection(viewModel: viewModel)
+                            OrderCustomAmountsSection(viewModel: viewModel, sectionViewModel: viewModel.customAmountsSectionViewModel)
                                 .disabled(viewModel.shouldShowNonEditableIndicators)
 
                             Divider()

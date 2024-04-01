@@ -194,6 +194,7 @@ struct InPersonPaymentsMenu: View {
                     }
                 },
                                              flow: .creation,
+                                             dismissLabel: .backButton,
                                              viewModel: EditableOrderViewModel(siteID: viewModel.siteID))
                 .navigationBarHidden(true)
             }

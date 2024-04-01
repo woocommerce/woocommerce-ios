@@ -90,12 +90,21 @@ struct StatsTimeRangeBarViewModel: Equatable {
          timeRange: StatsTimeRangeV4,
          timezone: TimeZone) {
         isTimeRangeEditable = timeRange.isCustomTimeRange
-        timeRangeText = timeRange.timeRangeText(startDate: startDate,
-                                                endDate: endDate,
-                                                timezone: timezone)
-        selectedDateText = timeRange.timeRangeText(startDate: startDate,
-                                                endDate: endDate,
-                                                selectedDate: selectedDate,
-                                                timezone: timezone)
+        if timeRange.isCustomTimeRange {
+            timeRangeText = timeRange.timeRangeText(startDate: startDate,
+                                                    endDate: endDate,
+                                                    timezone: timezone)
+            selectedDateText = timeRange.timeRangeText(startDate: startDate,
+                                                       endDate: endDate,
+                                                       selectedDate: selectedDate,
+                                                       timezone: timezone)
+        } else {
+            /// Shows the selected date in place of the time range label for non-custom range tabs.
+            timeRangeText = timeRange.timeRangeText(startDate: startDate,
+                                                    endDate: endDate,
+                                                    selectedDate: selectedDate,
+                                                    timezone: timezone)
+            selectedDateText = nil
+        }
     }
 }

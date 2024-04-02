@@ -803,6 +803,84 @@ final class StatsStoreV4Tests: XCTestCase {
         // Then
         XCTAssertTrue(result.isFailure)
     }
+
+    // MARK: - StatsStoreV4.retrieveUsedGiftCardStats
+
+    /// Verifies that `StatsActionV4.retrieveUsedGiftCardStats` returns the retrieved bundle stats.
+    ///
+    func test_retrieveUsedGiftCardStats_returns_retrieved_stats() throws {
+        // Given
+        let store = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "reports/giftcards/used/stats", filename: "gift-card-stats")
+
+        // When
+        let result: Result<GiftCardStats, Error> = waitFor { promise in
+            let action = StatsActionV4.retrieveUsedGiftCardStats(siteID: self.sampleSiteID,
+                                                                 unit: .daily,
+                                                                 timeZone: .current,
+                                                                 earliestDateToInclude: Date(),
+                                                                 latestDateToInclude: Date(),
+                                                                 quantity: 2,
+                                                                 forceRefresh: false) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        let giftCardStats = try XCTUnwrap(result.get())
+        assertEqual(sampleGiftCardStats(), giftCardStats)
+    }
+
+    /// Verifies that `StatsActionV4.retrieveUsedGiftCardStats` returns an error whenever there is an error response from the backend.
+    ///
+    func test_retrieveUsedGiftCardStats_returns_error_upon_reponse_error() {
+        // Given
+        let store = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "reports/giftcards/used/stats", filename: "generic_error")
+
+        // When
+        let result: Result<GiftCardStats, Error> = waitFor { promise in
+            let action = StatsActionV4.retrieveUsedGiftCardStats(siteID: self.sampleSiteID,
+                                                                 unit: .daily,
+                                                                 timeZone: .current,
+                                                                 earliestDateToInclude: Date(),
+                                                                 latestDateToInclude: Date(),
+                                                                 quantity: 2,
+                                                                 forceRefresh: false) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+    }
+
+    /// Verifies that `StatsActionV4.retrieveUsedGiftCardStats` returns an error whenever there is no backend response.
+    ///
+    func test_retrieveUsedGiftCardStats_returns_error_upon_empty_response() {
+        // Given
+        let store = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        // When
+        let result: Result<GiftCardStats, Error> = waitFor { promise in
+            let action = StatsActionV4.retrieveUsedGiftCardStats(siteID: self.sampleSiteID,
+                                                                 unit: .daily,
+                                                                 timeZone: .current,
+                                                                 earliestDateToInclude: Date(),
+                                                                 latestDateToInclude: Date(),
+                                                                 quantity: 2,
+                                                                 forceRefresh: false) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+    }
 }
 
 
@@ -1035,5 +1113,28 @@ private extension StatsStoreV4Tests {
                             quantity: 6,
                             total: 361,
                             imageUrl: "https://example.com/wp-content/uploads/2023/01/logo-1-600x599.jpg")
+    }
+
+    // MARK: - Gift Card Stats Sample
+
+    func sampleGiftCardStats() -> Networking.GiftCardStats {
+        GiftCardStats(siteID: sampleSiteID,
+                      granularity: .daily,
+                      totals: sampleGiftCardStatsTotals(),
+                      intervals: [sampleGiftCardStatsInterval()])
+    }
+
+    func sampleGiftCardStatsTotals() -> Networking.GiftCardStatsTotals {
+        GiftCardStatsTotals(giftCardsCount: 1,
+                            usedAmount: 20,
+                            refundedAmount: 0,
+                            netAmount: 20)
+    }
+
+    func sampleGiftCardStatsInterval() -> Networking.GiftCardStatsInterval {
+        GiftCardStatsInterval(interval: "2024-02",
+                                   dateStart: "2024-01-08 00:00:00",
+                                   dateEnd: "2024-01-14 23:59:59",
+                                   subtotals: sampleGiftCardStatsTotals())
     }
 }

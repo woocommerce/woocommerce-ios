@@ -18,7 +18,12 @@ private extension StatsTimeRangeV4 {
             let format = NSLocalizedString("%1$@ – %2$@", comment: "Displays a date range for a stats interval")
             return String.localizedStringWithFormat(format, startDateString, endDateString)
         case let .custom(customStartDate, customEndDate):
-            // Always display the exact date for custom range.
+            let differenceInDay = StatsTimeRangeV4.differenceInDays(startDate: customStartDate, endDate: customEndDate)
+            if differenceInDay == .sameDay {
+                // Return only the day if it's the same day.
+                return dateFormatter.string(from: startDate)
+            }
+            // Always display the exact dates for custom range otherwise.
             let startDateString = dateFormatter.string(from: customStartDate)
             let endDateString = dateFormatter.string(from: customEndDate)
             let format = NSLocalizedString("%1$@ – %2$@", comment: "Displays a date range for a custom stats interval")

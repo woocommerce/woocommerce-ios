@@ -43,8 +43,9 @@ enum LoginProloguePageType: CaseIterable {
             return NSLocalizedString("We enable you to process them effortlessly.",
                                      comment: "Subtitle displayed in promotional screens shown during the login flow.")
         case .getStarted:
-            return NSLocalizedString("Start with our 14-day free trial, no credit card needed. "
-                                     + "Join 3.4M stores thriving with Woo, from first sale to millions.",
+            return NSLocalizedString("loginProloguePageType.getStartedText",
+                                     value: "From your first sale to millions in revenue, Woo is with you. "
+                                     + "See why merchants trust us to power 3.9 million online stores.",
                                      comment: "Subtitle displayed in the simplified prologue screen")
         default:
             return nil

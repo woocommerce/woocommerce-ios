@@ -125,8 +125,7 @@ final class StorePickerViewController: UIViewController {
     private lazy var addStoreFooterView: AddStoreFooterView = {
        AddStoreFooterView(addStoreHandler: { [weak self] in
            guard let self else { return }
-           ServiceLocator.analytics.track(.sitePickerConnectExistingStoreTapped)
-           self.presentSiteDiscovery()
+           addStoreWasPressed()
        })
     }()
 

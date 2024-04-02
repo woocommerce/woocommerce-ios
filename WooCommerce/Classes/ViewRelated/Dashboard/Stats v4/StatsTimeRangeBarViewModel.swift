@@ -15,13 +15,13 @@ private extension StatsTimeRangeV4 {
         case .thisWeek:
             let startDateString = dateFormatter.string(from: startDate)
             let endDateString = dateFormatter.string(from: endDate)
-            let format = NSLocalizedString("%1$@ - %2$@", comment: "Displays a date range for a stats interval")
+            let format = NSLocalizedString("%1$@ – %2$@", comment: "Displays a date range for a stats interval")
             return String.localizedStringWithFormat(format, startDateString, endDateString)
         case let .custom(customStartDate, customEndDate):
             // Always display the exact date for custom range.
             let startDateString = dateFormatter.string(from: customStartDate)
             let endDateString = dateFormatter.string(from: customEndDate)
-            let format = NSLocalizedString("%1$@ - %2$@", comment: "Displays a date range for a custom stats interval")
+            let format = NSLocalizedString("%1$@ – %2$@", comment: "Displays a date range for a custom stats interval")
             return String.localizedStringWithFormat(format, startDateString, endDateString)
         }
     }
@@ -70,6 +70,7 @@ private extension StatsTimeRangeV4 {
 /// View model for `StatsTimeRangeBarView`.
 struct StatsTimeRangeBarViewModel: Equatable {
     let timeRangeText: String
+    let selectedDateText: String?
     let isTimeRangeEditable: Bool
 
     init(startDate: Date,
@@ -80,6 +81,7 @@ struct StatsTimeRangeBarViewModel: Equatable {
         timeRangeText = timeRange.timeRangeText(startDate: startDate,
                                                 endDate: endDate,
                                                 timezone: timezone)
+        selectedDateText = nil
     }
 
     init(startDate: Date,
@@ -87,11 +89,22 @@ struct StatsTimeRangeBarViewModel: Equatable {
          selectedDate: Date,
          timeRange: StatsTimeRangeV4,
          timezone: TimeZone) {
-        // Disable editing time range when selecting a specific date on the graph
-        isTimeRangeEditable = false
-        timeRangeText = timeRange.timeRangeText(startDate: startDate,
-                                                endDate: endDate,
-                                                selectedDate: selectedDate,
-                                                timezone: timezone)
+        isTimeRangeEditable = timeRange.isCustomTimeRange
+        if timeRange.isCustomTimeRange {
+            timeRangeText = timeRange.timeRangeText(startDate: startDate,
+                                                    endDate: endDate,
+                                                    timezone: timezone)
+            selectedDateText = timeRange.timeRangeText(startDate: startDate,
+                                                       endDate: endDate,
+                                                       selectedDate: selectedDate,
+                                                       timezone: timezone)
+        } else {
+            /// Shows the selected date in place of the time range label for non-custom range tabs.
+            timeRangeText = timeRange.timeRangeText(startDate: startDate,
+                                                    endDate: endDate,
+                                                    selectedDate: selectedDate,
+                                                    timezone: timezone)
+            selectedDateText = nil
+        }
     }
 }

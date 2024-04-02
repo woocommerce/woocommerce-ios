@@ -271,12 +271,12 @@ final class StoreStatsPeriodViewModelTests: XCTestCase {
                                                                dateEnd: "2022-01-05 23:59:59")])
         insertOrderStats(orderStats, timeRange: timeRange)
 
-        XCTAssertEqual(timeRangeBarViewModels.map { $0.timeRangeText }, ["Jan 3 - Jan 5"])
+        XCTAssertEqual(timeRangeBarViewModels.map { $0.timeRangeText }, ["Jan 3 – Jan 5"])
 
         viewModel.selectedIntervalIndex = 1
 
         // Then
-        XCTAssertEqual(timeRangeBarViewModels.map { $0.timeRangeText }, ["Jan 3 - Jan 5", "Jan 5"])
+        XCTAssertEqual(timeRangeBarViewModels.map { $0.timeRangeText }, ["Jan 3 – Jan 5", "Jan 5"])
     }
 
     func test_timeRangeBarViewModel_for_thisMonth_is_emitted_twice_after_order_and_visitor_stats_updated_and_selecting_interval() {

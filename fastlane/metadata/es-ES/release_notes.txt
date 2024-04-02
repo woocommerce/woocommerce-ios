@@ -1,1 +1,2 @@
-Nuestra última actualización hace una puesta a punto de todos los engranajes para mejorar la estabilidad y el rendimiento. Y aún más, hemos trabajado sin descanso en algunas funciones nuevas que estamos deseando compartir con todos en futuras versiones. Sigue atento a todo lo nuevo que está por venir para que disfrutes de la mejor experiencia posible.
+En esta última actualización, ¡hemos mejorado tu experiencia con WooCommerce!
+Hemos añadido algunas acciones rápidas cuando pulsas el icono de la aplicación, de modo que ahora puedes empezar a crear un pedido nuevo, obtener la lista de pedidos, añadir un producto nuevo o empezar a cobrar un pago. Ve a la función específica de la aplicación más fácil y rápidamente usando una de las acciones.

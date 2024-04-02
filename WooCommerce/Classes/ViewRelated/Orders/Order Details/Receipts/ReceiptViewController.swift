@@ -1,8 +1,10 @@
 import WebKit
 
 /// Previews a backend-generated receipt
-final class ReceiptViewController: UIViewController, WKNavigationDelegate {
+final class ReceiptViewController: UIViewController, WKNavigationDelegate, UIPrintInteractionControllerDelegate {
     @IBOutlet private weak var webView: WKWebView!
+
+    private var printController: UIPrintInteractionController = UIPrintInteractionController.shared
 
     private lazy var activityIndicator: UIActivityIndicatorView = {
         let indicator = UIActivityIndicatorView(style: .medium)
@@ -34,6 +36,7 @@ final class ReceiptViewController: UIViewController, WKNavigationDelegate {
         super.viewDidLoad()
 
         configureContent()
+        configurePrintController()
         configureNavigation()
         configureActivityIndicator()
 
@@ -59,6 +62,14 @@ final class ReceiptViewController: UIViewController, WKNavigationDelegate {
         webView.load(receipt)
     }
 
+    private func configurePrintController() {
+        // Use the webview's print formatter to initialize print operation.
+        // UIPrintInteractionController printFormatter and printPageRenderer properties are mutually exclusive, in order to grab the
+        // webview's page renderer, first we need to assign it to the controller's formatter:
+        printController.printFormatter = webView.viewPrintFormatter()
+        printController.delegate = self
+    }
+
     private func configureNavigation() {
         let printButton = UIBarButtonItem(image: UIImage(systemName: "printer"),
                                           style: .plain,
@@ -79,9 +90,8 @@ final class ReceiptViewController: UIViewController, WKNavigationDelegate {
         let printInfo = UIPrintInfo(dictionary: nil)
         let formattedJobName = viewModel.formattedReceiptJobName(printInfo.jobName)
         printInfo.jobName = formattedJobName
-
+        printInfo.orientation = .portrait
         printController.printInfo = printInfo
-        printController.printFormatter = webView.viewPrintFormatter()
 
         printController.present(animated: true, completionHandler: { [weak self] _, isCompleted, error in
             if let error = error {
@@ -99,9 +109,49 @@ final class ReceiptViewController: UIViewController, WKNavigationDelegate {
     }
 }
 
+// MARK: - UIPrintInteractionControllerDelegate delegate
+extension ReceiptViewController {
+    func printInteractionController(_ printInteractionController: UIPrintInteractionController, choosePaper paperList: [UIPrintPaper]) -> UIPrintPaper {
+        // Attempts to infer the paper size from a given content in order to optimize printing surface.
+        guard let inferPaperSize = printController.printFormatter?.printPageRenderer?.paperRect.size else {
+            DDLogInfo("Unable to retrieve inferred paper size from the web view. Using default paper provided by the system.")
+            return paperList.first ?? UIPrintPaper()
+        }
+
+        // Constraints the printFormatter
+        printController.printFormatter?.maximumContentWidth = Constants.maximumReceiptContentWidth
+        printController.printFormatter?.maximumContentHeight = Constants.maximumReceiptContentHeight
+        printController.printFormatter?.perPageContentInsets = .init(top: 0,
+                                                                     left: Constants.margin,
+                                                                     bottom: 0,
+                                                                     right: Constants.margin)
+
+        let paper = UIPrintPaper.bestPaper(forPageSize: inferPaperSize, withPapersFrom: paperList)
+        return paper
+    }
+
+    func printInteractionController(_ printInteractionController: UIPrintInteractionController, cutLengthFor paper: UIPrintPaper) -> CGFloat {
+        // Determines the length in which the content fits and return this value. When printed, the paper should be cut to this length.
+        guard let inferPaperSize = printController.printFormatter?.printPageRenderer?.paperRect.size else {
+            DDLogInfo("Unable to retrieve inferred paper size for the page renderer. Using default paper provided by the system.")
+            return paper.paperSize.height
+        }
+        return inferPaperSize.height - Constants.defaultRollCutterMargin
+    }
+}
+
 // MARK: - WKNavigation delegate
 extension ReceiptViewController {
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         activityIndicator.stopAnimating()
+    }
+}
+extension ReceiptViewController {
+    enum Constants {
+        static let pointsPerInch: Int = 72
+        static let maximumReceiptContentWidth: CGFloat = CGFloat(4 * pointsPerInch)
+        static let maximumReceiptContentHeight: CGFloat = CGFloat(11 * pointsPerInch)
+        static let defaultRollCutterMargin: CGFloat = CGFloat(1 * pointsPerInch)
+        static let margin: CGFloat = 16
     }
 }

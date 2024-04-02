@@ -17,6 +17,8 @@ struct ProductRow: View {
     // Tracks the scale of the view due to accessibility changes
     @ScaledMetric private var scale: CGFloat = 1
 
+    @Environment(\.isEnabled) private var isEnabled
+
     /// Accessibility hint describing the product row tap gesture.
     /// Avoids overwriting the product stepper accessibility hint, when the stepper is rendered.
     ///
@@ -75,7 +77,7 @@ struct ProductRow: View {
     private var checkbox: some View {
         Image(uiImage: viewModel.selectedState.image)
             .frame(width: Layout.checkImageSize * scale, height: Layout.checkImageSize * scale)
-            .foregroundColor(.init(UIColor.brand))
+            .foregroundColor(isEnabled ? .init(UIColor.brand) : .gray)
     }
 }
 

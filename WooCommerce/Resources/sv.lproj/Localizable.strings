@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-02-27 15:54:06+0000 */
+/* Translation-Revision-Date: 2024-03-26 11:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: sv_SE */
@@ -12,7 +12,8 @@
 /* Label that describes the completed progress of an update being installed (e.g. 15% complete). Keep the %.0f%% exactly as is */
 "%.0f%% complete" = "%.0f%% slutfört";
 
-/* In Shipping Labels Package Details, the pattern used to show the weight of a product. For example, “1lbs”. */
+/* In Shipping Labels Package Details, the pattern used to show the weight of a product. For example, “1lbs”.
+   Title for the plugin detail row in settings. %1$@ is a placeholder for the plugin name. This is displayed with the current version number, and whether an update is available. */
 "%1$@" = "%1$@";
 
 /* Format for each Product attribute in singular form */
@@ -21,7 +22,8 @@
 /* Format for each Product attribute in plural form */
 "%1$@ (%2$ld options)" = "%1$@ (%2$ld alternativ)";
 
-/* Displays a date range for a stats interval */
+/* Displays a date range for a custom stats interval
+   Displays a date range for a stats interval */
 "%1$@ - %2$@" = "%1$@-%2$@";
 
 /* Labels an order note. The user know it's not visible to the customer. Reads like 05:30 PM - username (Private) */
@@ -39,9 +41,6 @@
 
 /* The default name for a duplicated product, with %1$@ being the original name. Reads like: Ramen Copy */
 "%1$@ Copy" = "Kopia av %1$@";
-
-/* Title for the plugin version detail row in settings. %1$@ is a placeholder for the plugin name. This is displayed with the current version number, and whether an update is available. */
-"%1$@ Version" = "%1$@-version";
 
 /* A label prompting users to learn more about Tap to Pay on iPhone"
 %1$@ is a placeholder that always replaced with \"Learn more\" string,
@@ -418,12 +417,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Application's Active State
    Display label for the subscription status type
-   Status name of an active Blaze campaign
+   Status name of an approved Blaze campaign
    Status of coupons that are active */
 "Active" = "Aktiv";
-
-/* Title for table view section of active plugins */
-"Active Plugins" = "Aktiva tillägg";
 
 /* The plugin is active on the site and has not enabled automatic updates */
 "Active, Autoupdates off" = "Aktiv, automatiska uppdateringar avstängda";
@@ -580,9 +576,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button title in the Shipping Label Payment Method screen */
 "Add credit card" = "Lägg till kreditkort";
-
-/* Title of the order customer selection screen. */
-"Add customer details" = "Lägg till kunduppgifter";
 
 /* Message of the product description AI local announcement. */
 "Add descriptions in a snap with AI. Try our feature today!" = "Lägg till beskrivningar på nolltid med AI. Prova vår funktion idag.";
@@ -929,7 +922,6 @@ which should be translated separately and considered part of this sentence. */
 "Approve" = "Godkänn";
 
 /* Display label for the review's approved status
-   Status name of an approved Blaze campaign
    Unapprove a comment */
 "Approved" = "Godkänd";
 
@@ -1491,6 +1483,15 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when the card is removed from the reader prematurely. */
 "Card was removed too soon - please try transaction again" = "Kortet togs bort för snabbt – försök genomföra transaktionen igen";
 
+/* Label for a cancel button when an optional software update is happening */
+"CardPresentModalUpdateProgress.button.cancelOptionalButtonText" = "Avbryt";
+
+/* Label for a cancel button when a mandatory software update is happening */
+"CardPresentModalUpdateProgress.button.cancelRequiredButtonText" = "Avbryt ändå";
+
+/* Label for a dismiss button when a software update has finished */
+"CardPresentModalUpdateProgress.button.dismissButtonText" = "Avfärda";
+
 /* Navigation bar title of shipping label carrier and rates screen */
 "Carrier and Rates" = "Transportföretag och avgifter";
 
@@ -1750,8 +1751,7 @@ which should be translated separately and considered part of this sentence. */
 /* Third instruction on the test order screen */
 "Complete the payment and await a push notification about the order on your WooCommerce app." = "Slutför betalningen och vänta på en push-avisering om beställningen i din WooCommerce-app.";
 
-/* Display label for completed order status.
-   Status name of a completed Blaze campaign */
+/* Display label for completed order status. */
 "Completed" = "Färdig";
 
 /* Title for the list of component options in the Component Settings view */
@@ -1902,6 +1902,7 @@ which should be translated separately and considered part of this sentence. */
 /* Action button to contact support when Jetpack install fails
    Button to contact support for login
    Close Account error alert button title - navigates the user to contact support.
+   Contact Support button in the application password tutorial screen
    Contact support button in the connectivity tool screen
    Contact Support title
    Text for the button to contact support from the store picker error screen
@@ -1930,6 +1931,7 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button on the Store Picker screen to select a store
    Button to submit password on the WPCom password login screen of the Jetpack setup flow.
+   Continue button in the application password tutorial screen
    Continue button inside every cell inside Create Shipping Label form
    Continue button on the add product from image form.
    Continue button on the product name field
@@ -2214,8 +2216,7 @@ which should be translated separately and considered part of this sentence. */
 "Currently creation is supported for 100 variations maximum. Generating variations for this product would create %d variations." = "Skapande stöds för närvarande för högst 100 variationer. Att generera variationer för den här produkten skulle skapa %d variationer.";
 
 /* Name of the section for custom shipment tracking carriers
-   Title of the Analytics Hub Custom selection range
-   Top Performers section title - Custom */
+   Title of the Analytics Hub Custom selection range */
 "Custom" = "Anpassad";
 
 /* Navigation title on the add custom amount view in orders.
@@ -3099,6 +3100,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the exclusions section in Coupon Usage Restrictions screen */
 "Exclusions" = "Exkluderingar";
 
+/* Button to exit the application password flow. */
+"Exit Anyway" = "Lämna sidan ändå";
+
 /* Button to cancel installation on the Jetpack setup interrupted screen */
 "Exit Without Connecting" = "Lämna utan att ansluta";
 
@@ -3255,6 +3259,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the error screen when an in-person payments plugin is active but not set up. %1$@ contains the plugin name. */
 "Finish setup for %1$@ in your store admin" = "Slutför konfigurationen av %1$@ i adminpanelen för din butik";
+
+/* Status name of a completed Blaze campaign */
+"Finished" = "Klar";
 
 /* Country option for a site address. */
 "Finland" = "Finland";
@@ -3766,6 +3773,9 @@ which should be translated separately and considered part of this sentence. */
 /* Legal disclaimer for signing up. The underscores _..._ denote underline. */
 "If you continue with Apple or Google and don't already have a WordPress.com account, you are creating an account and you agree to our _Terms of Service_." = "Om du fortsätter med Apple eller Google och inte redan har ett WordPress.com-konto, skapar du ett konto och samtycker till våra _användarvillkor_.";
 
+/* Text to contact support in the application password tutorial screen */
+"If you encounter any problem, contact us and we will happily assist you!" = "Om du stöter på problem, kontakta oss så hjälper vi dig.";
+
 /* Heading for the details pane showing the contactless limit on About Tap to Pay */
 "Important information" = "Viktig information";
 
@@ -3774,9 +3784,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* A fallback describing the contactless limit, shown on the About Tap to Pay screen. %1$@ will be replaced with the country name of the store, which is a trade off as it can't be contextually translated, however this string is only used when there's a problem decoding the limit, so it's acceptable. */
 "In %1$@, cards may only be used with Tap to Pay for transactions up to the contactless limit." = "I %1$@ får kort endast användas med Tryck för att betala för transaktioner upp till gränsen för kontaktlös betalning.";
-
-/* Status name of a Blaze campaign under moderation */
-"In Moderation" = "Under granskning";
 
 /* Accessibility label for an indeterminate loading indicator */
 "In progress" = "Pågår";
@@ -3820,9 +3827,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Application's Inactive State */
 "Inactive" = "Inaktiv";
-
-/* Title for table view section of inactive plugins */
-"Inactive Plugins" = "Inaktiva tillägg";
 
 /* The plugin is not active on the site and has not enabled automatic updates */
 "Inactive, Autoupdates off" = "Inaktiv, automatiska uppdateringar avstängda";
@@ -4044,11 +4048,17 @@ which should be translated separately and considered part of this sentence. */
 /* An error message shown when a wpcom user provides the wrong password. */
 "It seems like you've entered an incorrect password. Want to give it another try?" = "Du verkar ha skrivit fel lösenord. Vill du försöka en gång till?";
 
+/* Title for the unfinished application password alert */
+"It seems that you have not approved the app connection yet. Are you sure you want to exit?" = "Det verkar som att du inte har godkänt appanslutningen än. Är du säker på att du vill lämna sidan?";
+
 /* An error message displayed when the user tries to log in to the app with site credentials but has application password disabled. Reads like: It seems that your site google.com has Application Password disabled. Please enable it to use the WooCommerce app. */
 "It seems that your site %@ has Application Password disabled. Please enable it to use the WooCommerce app." = "Det verkar som att Applikationslösenord är inaktiverat för din webbplats %@. Aktivera det om du vill använda WooCommerce-appen.";
 
 /* An error message displayed when the user tries to log in to the app with a simple WP.com site. Reads like: It seems that your site google.com is a simple WordPress.com site that cannot install plugins. Please upgrade your plan to use WooCommerce. */
 "It seems that your site %@ is a simple WordPress.com site that cannot install plugins. Please upgrade your plan to use WooCommerce." = "Det verkar som om din webbplats %@ är en enkel WordPress.com-webbplats som inte kan installera tillägg. Uppgradera ditt paket för att använda WooCommerce.";
+
+/* Error message explaining login failure due to invalid credentials. */
+"It seems the username or password you entered doesn't quite match. Double-check your credentials and try again." = "Det verkar som att användarnamnet eller lösenordet som du angav är felaktigt. Dubbelkolla dina autentiseringsuppgifter och försök igen.";
 
 /* Accessibility label for italic button on formatting toolbar. */
 "Italic" = "Kursiv";
@@ -4776,9 +4786,6 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Netherlands" = "Nederländerna";
 
-/* Title for table view section of network active plugins */
-"Network Active Plugins" = "Nätverksaktiva tillägg";
-
 /* Error message when session cookie has expired. */
 "NetworkError.invalidCookieNonce" = "Din session har löpt ut. Logga in igen.";
 
@@ -5411,7 +5418,8 @@ which should be translated separately and considered part of this sentence. */
 
 /* Display label for pending order status.
    Display label for the review's pending status
-   Display label for the subscription status type */
+   Display label for the subscription status type
+   Status name of an active Blaze campaign */
 "Pending" = "Inväntar granskning";
 
 /* Display label for the subscription status type */
@@ -5682,8 +5690,7 @@ which should be translated separately and considered part of this sentence. */
 "Please, add a new payment method" = "Lägg till en ny betalningsmetod";
 
 /* My Store > Settings > Plugins section title
-   Navigates to Plugins screen.
-   Title of the Plugin List screen */
+   Navigates to Plugins screen. */
 "Plugins" = "Tillägg";
 
 /* Country option for a site address. */
@@ -5837,8 +5844,7 @@ which should be translated separately and considered part of this sentence. */
 /* Display label for the product's private status */
 "Privately published" = "Publicerat privat";
 
-/* Display label for processing order status.
-   Status name of a Blaze campaign under processing */
+/* Display label for processing order status. */
 "Processing" = "Behandlas";
 
 /* Alert title when processing a payment without a user name.
@@ -7056,8 +7062,7 @@ which should be translated separately and considered part of this sentence. */
 /* Indicates the reviewer does not have a name. It reads { Someone left a review} */
 "Someone" = "Någon";
 
-/* Error message presented to users after a failure occurs
-   The text on the placeholder overlay when there is issue syncing site plugins */
+/* Error message presented to users after a failure occurs */
 "Something went wrong" = "Något gick fel";
 
 /* Description of an unknown error after purchasing a plan */
@@ -7745,7 +7750,7 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when the card processor declines the payment. */
 "The card was declined by the payment processor - please try another means of payment" = "Kortet avvisades av betalningsbehandlaren – prova en annan betalningsmetod";
 
-/* No comment provided by engineer. */
+/* Message for when the certificate for the server is invalid. The %@ placeholder will be replaced the a host name, received from the API. */
 "The certificate for this server is invalid. You might be connecting to a server that is pretending to be “%@” which could put your confidential information at risk.\n\nWould you like to trust the certificate anyway?" = "Certifikatet för den här servern är inte giltigt. Det kan hända att du ansluter till en server som påstår sig vara \"%@\", vilket kan försätta din sekretessbelagda information i fara.\n\nVill du lita på certifikatet i alla fall?";
 
 /* Message in the gift card input form when the code is not valid. */
@@ -7934,9 +7939,6 @@ which should be translated separately and considered part of this sentence. */
 /* Error message informing the user that there was a problem clearing the block on site preventing its posts from displaying in the reader. */
 "There was a problem removing the block for specified site." = "Blockeringar för angiven webbplats kunde inte tas bort.";
 
-/* The details on the placeholder overlay when there is issue syncing site plugins */
-"There was a problem while trying to load plugins. Check your internet and try again." = "Det var ett problem vid försöket att ladda tilläggen. Kontrollera ditt internet och försök igen.";
-
 /* Message to be displayed when there's an error communicating with the remote site during Jetpack setup */
 "There was an error communicating with your site." = "Ett fel uppstod vid kommunikationen med din webbplats.";
 
@@ -8005,19 +8007,16 @@ which should be translated separately and considered part of this sentence. */
    Title of button that displays information about the third party software libraries used in the creation of this app */
 "Third Party Licenses" = "Tredjepartslicenser";
 
-/* Tab selector title that shows the statistics for this month
-   Top Performers section title - this month */
+/* Tab selector title that shows the statistics for this month */
 "This Month" = "Den här månaden";
 
 /* The message of the alert when there is an error updating the product SKU */
 "This SKU is used on another product or is invalid." = "Detta SKU används för en annan produkt eller är ogiltigt.";
 
-/* Tab selector title that shows the statistics for this week
-   Top Performers section title - this week */
+/* Tab selector title that shows the statistics for this week */
 "This Week" = "Den här veckan";
 
-/* Tab selector title that shows the statistics for this year
-   Top Performers section title - this year */
+/* Tab selector title that shows the statistics for this year */
 "This Year" = "Det här året";
 
 /* Explanation in the alert presented when the user tries to connect a Bluetooth card reader with insufficient permissions */
@@ -8040,6 +8039,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error for missing package details on the Add New Custom Package screen in Shipping Label flow */
 "This field is required" = "Detta fält är obligatoriskt";
+
+/* Generic reason for why the user could not login tin the application password tutorial screen */
+"This is because we got an unexpected response from your site." = "Detta beror på att vi fick ett oväntat svar från din webbplats.";
+
+/* Reason for why the user could not login tin the application password tutorial screen */
+"This is likely because your store has some extra security steps in place." = "Detta beror troligen på att din butik har några extra säkerhetssteg på plats.";
 
 /* Footer text in Product Slug screen */
 "This is the URL-friendly version of the product title" = "Detta är den URL-vänliga versionen av produktens rubrik";
@@ -8173,8 +8178,7 @@ which should be translated separately and considered part of this sentence. */
 /* Label for one of the filters in order date range
    Tab selector title that shows the statistics for today
    Title of the Analytics Hub Today's selection range
-   Today Section Header
-   Top Performers section title - today */
+   Today Section Header */
 "Today" = "Idag";
 
 /* Accessibility hint for selecting a product in the Select Products screen */
@@ -8321,8 +8325,7 @@ which should be translated separately and considered part of this sentence. */
 /* Title shown on the test order screen */
 "Try a test order" = "Prova en testbeställning";
 
-/* Action to resync on the placeholder overlay when there is issue syncing site plugins
-   Button to dismiss the alert presented when connecting to a specific reader fails. This allows the search to continue.
+/* Button to dismiss the alert presented when connecting to a specific reader fails. This allows the search to continue.
    Button to dismiss the alert presented when starting Tap to Pay on iPhone fails. This allows the search to continue.
    Title of the try again action when the site cannot be launched from store onboarding > launch store screen. */
 "Try again" = "Försök igen";
@@ -8386,9 +8389,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Info text about the scanned text list on the add product from image form. */
 "Tweak your text: Unselect scans you don't need or tap to edit" = "Justera din text: Avmarkera skanningar som du inte behöver eller tryck för att redigera";
-
-/* Title of a button linking to the app's Twitter profile */
-"Twitter" = "Twitter";
 
 /* Placeholder of the search text field on the domain selector. */
 "Type a name for your store" = "Skriv ett namn för din butik";
@@ -9051,6 +9051,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the default store picker error screen */
 "We couldn't load your site" = "Vi kunde inte ladda din webbplats";
 
+/* Title for the application password tutorial screen */
+"We couldn't log in into your site! 😭" = "Vi kunde inte logga in på din webbplats. 😭";
+
 /* A message displayed through a bottom notice letting the user know that the login from the app link failed */
 "We couldn't process your app login request" = "Vi kunde inte behandla din begäran om inloggning i appen";
 
@@ -9348,6 +9351,9 @@ which should be translated separately and considered part of this sentence. */
 /* Prompt asking users if the logged in to the wrong account.Presented when logging in with a store address that does not match the account entered. */
 "Wrong account?" = "Fel konto?";
 
+/* Title of a button linking to the app's X profile */
+"X" = "X";
+
 /* Placeholder of the gift card code text field in the order form. */
 "XXXX-XXXX-XXXX-XXXX" = "XXXX-XXXX-XXXX-XXXX";
 
@@ -9460,7 +9466,7 @@ which should be translated separately and considered part of this sentence. */
 /* Error message shown when Tap to Pay on iPhone cannot be used because the device does not have a passcode set. */
 "You need to set a lock screen passcode to use Tap to Pay on iPhone" = "Du behöver ställa in en låsskärmslösenkod för att använda Tryck för att betala på iPhone";
 
-/* No comment provided by engineer. */
+/* Error messaged show when a mobile plugin is redirecting traffict to their site, DudaMobile in particular */
 "You seem to have installed a mobile plugin from DudaMobile which is preventing the app to connect to your blog" = "Det verkar som att du har installerat ett mobiltillägg från DudaMobile som förhindrar att appen ansluter till din blogg";
 
 /* Subtitle text in the store creation loading screen */
@@ -9599,6 +9605,9 @@ which should be translated separately and considered part of this sentence. */
 /* Markdown content learn more link on the product creation action sheet. Please translate the words while keeping the markdown format and URL. */
 "[Learn more.](https:\/\/automattic.com\/ai-guidelines\/)" = "[Lär dig mer.](https:\/\/automattic.com\/ai-guidelines\/)";
 
+/* Text for the 'Cancel' button that appears in the navigation bar, and closes the view */
+"adaptiveModalContainer.views.cancelButtonText" = "Avbryt";
+
 /* Button title to delete the custom amount on the edit custom amount view in orders. */
 "addCustomAmount.deleteButton" = "Radera anpassat belopp";
 
@@ -9641,6 +9650,12 @@ which should be translated separately and considered part of this sentence. */
 /* Label for button that opens a screen to customize the Analytics Hub */
 "analyticsHub.editButton.label" = "Redigera";
 
+/* Description when there are no analytics to display in the Analytics Hub. */
+"analyticsHub.emptyState.description" = "Välj ett annat datumintervall eller tryck på Redigera för att aktivera fler analyser.";
+
+/* Title when there are no analytics to display in the Analytics Hub. */
+"analyticsHub.emptyState.title" = "Inga analyser tillgängliga";
+
 /* Label for button to enable Jetpack Stats */
 "analyticsHub.jetpackStatsCTA.buttonLabel" = "Aktivera Jetpack Stats";
 
@@ -9682,6 +9697,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Widget title, displayed when selecting which widget to add */
 "appLinkWidget.displayName" = "Ikon";
+
+/* Button to send a message to a customer via Telegram */
+"billingInfoViewController.telegram" = "Skicka Telegram-meddelande";
+
+/* Button to send a message to a customer via WhatsApp */
+"billingInfoViewController.whatsapp" = "Skicka WhatsApp-meddelande";
 
 /* Message to display when a phone number or email address has been copied to clipboard */
 "billingInformationViewController.action.copied" = "Kopierat till urklipp.";
@@ -10128,6 +10149,15 @@ which should be translated separately and considered part of this sentence. */
 /* Label for the email receipts toggle in Payment Method screen. %1$@ is a placeholder for the account display name. %2$@ is a placeholder for the username. %3$@ is a placeholder for the WordPress.com email address. */
 "blazePaymentMethodsView.emailReceipt" = "E-posta inköpskvitton för etiketten till %1$@ (%2$@) på %3$@";
 
+/* Dismiss button on the error alert displayed on the Blaze payment method list screen */
+"blazePaymentMethodsView.loadPaymentMethodsErrorAlert.cancel" = "Avbryt";
+
+/* Error message indicating that loading payment methods failed */
+"blazePaymentMethodsView.loadPaymentMethodsErrorAlert.paymentMethods" = "Det gick inte att läsa in dina betalningsmetoder";
+
+/* Button on the error alert displayed on the payment method list screen */
+"blazePaymentMethodsView.loadPaymentMethodsErrorAlert.retry" = "Försök igen";
+
 /* Navigation bar title in the Blaze Payment Method screen */
 "blazePaymentMethodsView.navigationBarTitle" = "Betalningsmetod";
 
@@ -10339,6 +10369,24 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility hint for selecting a variable product in the Add Product screen */
 "configurationForBlaze.variableProductRowAccessibilityHint" = "Öppnar lista över produktvarianter.";
 
+/* Accessibility hint for selecting a product from the order filter screen */
+"configurationForOrder.productRowAccessibilityHint" = "Väljer produkt för filtrering av beställning.";
+
+/* Text for the cancel button in the Product selector screen */
+"configurationForOrder.productSelectorCancel" = "Avbryt";
+
+/* Title for the screen to select product for filtering orders */
+"configurationForOrder.productSelectorTitle" = "Produkt";
+
+/* Accessibility hint for selecting a variable product to select product for filtering orders */
+"configurationForOrder.variableProductRowAccessibilityHint" = "Öppna lista med produktvariationer.";
+
+/* Title of the order customer selection screen. */
+"configurationForOrderCustomerSection.customerSelectorTitle" = "Lägg till kunddetaljer";
+
+/* Title for the screen to select customer in order filtering. */
+"configurationForOrderFilter.customerSelectorTitle" = "Välj en kund";
+
 /* Action to toggle whether a bundle item is included when it is optional. */
 "configureBundleItem.add" = "Lägg till";
 
@@ -10404,6 +10452,90 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button in date range picker to add a Custom Range tab */
 "customRangeTabCreationCoordinator.add" = "Lägg till";
+
+/* Label for a customer with no name in the Customer detail screen. */
+"customerDetail.guestName" = "Gäst";
+
+/* Label for the customer's average order value in the Customer Details screen. */
+"customerDetailView.avgOrderValueLabel" = "Genomsnittligt beställningsvärde";
+
+/* Label for the customer's city in the Customer Details screen. */
+"customerDetailView.cityLabel" = "Ort";
+
+/* Button to copy a customer's email address in the Customer Details screen. */
+"customerDetailView.copyEmail" = "Kopiera e-postadress";
+
+/* Label for the customer's country in the Customer Details screen. */
+"customerDetailView.countryLabel" = "Land";
+
+/* Heading for the section with general customer details in the Customer Details screen. */
+"customerDetailView.customerSection" = "KUND";
+
+/* Label for the date the customer was last active in the Customer Details screen. */
+"customerDetailView.dateLastActiveLabel" = "Senast aktiv";
+
+/* Label for the customer's registration date in the Customer Details screen. */
+"customerDetailView.dateRegisteredLabel" = "Datum för registrering";
+
+/* Default placeholder if a customer's details are not available in the Customer Details screen. */
+"customerDetailView.defaultPlaceholder" = "Inget";
+
+/* Title for action to contact a customer via email. */
+"customerDetailView.emailActionLabel" = "Kontakta kund via e-post";
+
+/* Placeholder if a customer's email address is not available in the Customer Details screen. */
+"customerDetailView.emailPlaceholder" = "Ingen e-postadress";
+
+/* Heading for the section with customer location details in the Customer Details screen. */
+"customerDetailView.locationSection" = "PLATS";
+
+/* Label for the number of orders in the Customer Details screen. */
+"customerDetailView.ordersCountLabel" = "Beställningar";
+
+/* Heading for the section with customer order stats in the Customer Details screen. */
+"customerDetailView.ordersSection" = "BESTÄLLNINGAR";
+
+/* Label for the customer's postal code in the Customer Details screen. */
+"customerDetailView.postcodeLabel" = "Postnummer";
+
+/* Label for the customer's region in the Customer Details screen. */
+"customerDetailView.regionLabel" = "Region";
+
+/* Heading for the section with customer registration details in the Customer Details screen. */
+"customerDetailView.registrationSection" = "REGISTRERING";
+
+/* Button to email a customer in the Customer Details screen. */
+"customerDetailView.sendEmail" = "E-post";
+
+/* Label for the customer's total spend in the Customer Details screen. */
+"customerDetailView.totalSpendLabel" = "Totalt spenderat belopp";
+
+/* Label for the customer's username in the Customer Details screen. */
+"customerDetailView.usernameLabel" = "Användarnamn";
+
+/* Message when there are no customers to show in the Customers list screen. */
+"customerList.emptyStateMessage" = "Skapa en beställning för att börja samla in kundinsikter";
+
+/* Title when there are no customers to show in the Customers list screen. */
+"customerList.emptyStateTitle" = "Inga kunder ännu";
+
+/* Message to prompt users to search for customers on the customer search screen */
+"customerSearchUICommand.emptyDefaultStateNoCreationMessage" = "Sök efter en befintlig kund";
+
+/* The label that can be shown optionally for guest customers */
+"customerSearchUICommand.guestLabel" = "Gäst";
+
+/* Error message in the Add Customer to order screen when getting the customer information */
+"customerSelectorViewController.guestSelectionDisallowedError" = "Denna användare är en gäst och gäster kan inte användas för att filtrera beställningar.";
+
+/* Placeholder for a customer with no email address in the Customers list screen. */
+"customersList.emailPlaceholder" = "Ingen e-postadress";
+
+/* Label for a customer with no name in the Customers list screen. */
+"customersList.guestLabel" = "Gäst";
+
+/* Title for Customers list screen */
+"customersList.title" = "Kunder";
 
 /* Display label for a product's subscription period when it is a single day. */
 "day" = "dag";
@@ -10522,6 +10654,30 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility label to expand an expandable bottom sheet */
 "expandableBottomSheet.chevron.expand" = "Visa detaljer";
+
+/* Title of dismiss button for redaction information alert in Custom Range stats tab */
+"fancyAlertViewControllerStats.dismissButton" = "OK";
+
+/* Description for redaction information alert in Custom Range stats tab */
+"fancyAlertViewControllerStats.redactionInfoDescription" = "Statistikfunktionen stöder inte visning av besökar- och konverteringsdata för godtyckliga datumintervall. \n\nDu kan dock trycka på ett värde i diagrammet för att se besökare och konverteringar för specifika intervall.";
+
+/* Title for redaction information alert in Custom Range stats tab */
+"fancyAlertViewControllerStats.redactionInfoTitle" = "Besökar- och konverteringsdata är inte tillgängliga";
+
+/* Row title for filtering orders by customer. */
+"filterOrderListViewModel.OrderListFilter.rowCustomer" = "Kund";
+
+/* Row title for filtering orders by Product. */
+"filterOrderListViewModel.OrderListFilter.rowTitleProduct" = "Produkt";
+
+/* Title of one of the hub menu options */
+"hubMenu.customers" = "Kunder";
+
+/* Description of one of the hub menu options */
+"hubMenu.customersDescription" = "Få kundinsikter";
+
+/* Title of the view containing a single Product Review */
+"hubMenu.productReview" = "Produktrecension";
 
 /* A message that tells the user why the app needs access to Bluetooth. */
 "infoplist.NSBluetoothAlwaysUsageDescription" = "Denna app använder Bluetooth för att ansluta till kortläsare som stöds.";
@@ -10783,6 +10939,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the barcode scanning button to add a product to an order */
 "orderForm.products.add.scan.row.title" = "Skanna produkt";
 
+/* Title of the primary button on the new order screen when changes need to be manually synced. Tapping the button will send changes to the server, and when complete the totals and taxes will be accurate. */
+"orderForm.recalculate.button.title" = "Räkna om";
+
 /* Label for the row showing the cost of coupon in the order */
 "orderPaymentSection.coupon" = "Rabattkod";
 
@@ -10825,6 +10984,12 @@ which should be translated separately and considered part of this sentence. */
 /* Shown with a 'Current:' label, but when we don't know what the plan that ended was */
 "plan ended" = "paketet har avslutats";
 
+/* Title for the Close button within the Plugin List view. */
+"pluginListView.button.close" = "Stäng";
+
+/* Title for the Plugin List view. */
+"pluginListView.title.plugins" = "Tillägg";
+
 /* Close title for the navigation bar button on the Print Shipping Label view. */
 "print.shipping.label.close.button.title" = "Stäng";
 
@@ -10857,6 +11022,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Alert message about an unsupported file type when uploading file for a downloadable product. */
 "productDownloadListViewController.notice.unsupportedFileType" = "Den valda filtypen stöds inte.";
+
+/* Product title */
+"productForm.defaultTitle" = "Produkt";
 
 /* Description of the subscription period for a product. Reads like: 'every 2 months'. */
 "productFormDataModel.subscriptionPeriodFormat" = "varje %1$@";
@@ -10933,6 +11101,18 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Products tab — plural form of Product */
 "productsTab.tabTitle" = "Produkter";
 
+/* Button to submit selected products to the order, when some product has been selected. */
+"productselectorview.doneButtonTitle.addProductsText" = "Lägg till produkter";
+
+/* Button to dismiss the alert displayed when selecting an invalid time range for analytics */
+"rangedDatePicker.invalidTimeRangeAlert.action" = "Jag förstår";
+
+/* Message of the alert displayed when selecting an invalid time range for analytics */
+"rangedDatePicker.invalidTimeRangeAlert.message" = "Startdatumet måste ligga före slutdatumet. Välj ett annat tidsintervall.";
+
+/* Title of the alert displayed when selecting an invalid time range for analytics */
+"rangedDatePicker.invalidTimeRangeAlert.title" = "Ogiltigt tidsintervall";
+
 /* Format of the number of product ratings in plural form */
 "rated %ld times" = "betygsatt %ld gånger";
 
@@ -10966,6 +11146,21 @@ which should be translated separately and considered part of this sentence. */
 
 /* Cancel button title for the Shipping Label purchase flow, shown in the nav bar */
 "shipping.label.navigationBar.cancel.button.title" = "Avbryt";
+
+/* Display text for the daily granularity of store stats on the My Store screen */
+"statsGranularityV4.dailyMetrics" = "Dagliga intervaller";
+
+/* Display text for the hourly granularity of store stats on the My Store screen */
+"statsGranularityV4.hourlyMetrics" = "Timvisa intervaller";
+
+/* Display text for the monthly granularity of store stats on the My Store screen */
+"statsGranularityV4.monthlyMetrics" = "Månatliga intervaller";
+
+/* Display text for the weekly granularity of store stats on the My Store screen */
+"statsGranularityV4.weeklyMetrics" = "Veckovisa intervaller";
+
+/* Display text for the yearly granularity of store stats on the My Store screen */
+"statsGranularityV4.yearlyMetrics" = "Årliga intervaller";
 
 /* Tab selector title that shows the statistics for today */
 "statsTimeRangeV4.tabTitle.custom" = "Anpassat intervall";
@@ -11166,7 +11361,7 @@ which should be translated separately and considered part of this sentence. */
 /* Button in theme preview screen to pick a theme. The placeholder is the theme name. Reads like: Use Tsubaki */
 "themesPreviewViewModel.useThisThemeButton" = "Använd %1$@";
 
-/* Value for the WooCommerce plugin version detail row in settings, when the version is unknown. This is in place of the current version number. */
+/* Value for the plugin version detail row in settings, when the version is unknown. This is in place of the current version number. */
 "unknown" = "okänt";
 
 /* Used when the response doesn't have a valid url to display */
@@ -11229,6 +11424,9 @@ which should be translated separately and considered part of this sentence. */
 /* Message to show when a request for a WP.com API endpoint is throttled */
 "wordpresskit.api.message.endpoint_throttled" = "Gräns uppnådd. Du kan försöka igen om en minut. Att försöka igen innan dess kommer bara att öka den tid du måste vänta innan begränsningen upphävs. Om du tror att det här är fel, kontakta supporten.";
 
+/* Message to show to user when the app can't find WordPress.org REST API URL. */
+"wordpresskit.org-rest-api.not-found" = "Kunde inte hitta din webbplats REST API-URL. Appen behöver det för att kunna kommunicera med din webbplats. Kontakta ditt webbhotell för att lösa detta problem.";
+
 /* Button to enter security key on the WPCom 2FA login screen */
 "wpCom2FALoginView.securityKeyButton" = "Använd en säkerhetsnyckel";
 
@@ -11277,6 +11475,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Åland Islands" = "Åland";
+
+/* Tutorial steps on the application password tutorial screen */
+"⁃ Tap the continue button at the bottom to login directly into your site.\n\n⁃ Once logged in, approve the connection to give access to the woo app like the in the image below." = "⁃ Tryck på knappen Fortsätt längst ner för att logga in direkt på din webbplats.\n\n⁃ När du är inloggad, godkänn anslutningen för att ge åtkomst till Woo-appen som på bilden nedan.";
 
 /* Title of the local notification to remind the user to purchase a plan. */
 "🌟 Keep your business going!" = "🌟 Håll igång din verksamhet.";

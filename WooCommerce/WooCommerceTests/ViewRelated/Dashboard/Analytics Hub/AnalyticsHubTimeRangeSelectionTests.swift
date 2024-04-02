@@ -226,8 +226,8 @@ final class AnalyticsHubTimeRangeSelectionTests: XCTestCase {
         let previousRangeDescription = timeRange.previousRangeDescription
 
         // Then
-        XCTAssertEqual(currentRangeDescription, "Jan 1 - Jul 1, 2022")
-        XCTAssertEqual(previousRangeDescription, "Jan 1 - Jul 1, 2021")
+        XCTAssertEqual(currentRangeDescription, "Jan 1 – Jul 1, 2022")
+        XCTAssertEqual(previousRangeDescription, "Jan 1 – Jul 1, 2021")
     }
 
     func test_when_time_range_inits_with_lastYear_then_generate_expected_descriptions() throws {
@@ -243,8 +243,8 @@ final class AnalyticsHubTimeRangeSelectionTests: XCTestCase {
         let previousRangeDescription = timeRange.previousRangeDescription
 
         // Then
-        XCTAssertEqual(currentRangeDescription, "Jan 1 - Dec 31, 2021")
-        XCTAssertEqual(previousRangeDescription, "Jan 1 - Dec 31, 2020")
+        XCTAssertEqual(currentRangeDescription, "Jan 1 – Dec 31, 2021")
+        XCTAssertEqual(previousRangeDescription, "Jan 1 – Dec 31, 2020")
     }
 
     func test_when_time_range_inits_with_quarterToDate_then_generate_expected_descriptions() throws {
@@ -260,8 +260,8 @@ final class AnalyticsHubTimeRangeSelectionTests: XCTestCase {
         let previousRangeDescription = timeRange.previousRangeDescription
 
         // Then
-        XCTAssertEqual(currentRangeDescription, "Jan 1 - Feb 15, 2022")
-        XCTAssertEqual(previousRangeDescription, "Oct 1 - Nov 15, 2021")
+        XCTAssertEqual(currentRangeDescription, "Jan 1 – Feb 15, 2022")
+        XCTAssertEqual(previousRangeDescription, "Oct 1 – Nov 15, 2021")
     }
 
     func test_when_time_range_inits_with_lastQuarter_then_generate_expected_descriptions() throws {
@@ -277,8 +277,8 @@ final class AnalyticsHubTimeRangeSelectionTests: XCTestCase {
         let previousRangeDescription = timeRange.previousRangeDescription
 
         // Then
-        XCTAssertEqual(currentRangeDescription, "Jan 1 - Mar 31, 2022")
-        XCTAssertEqual(previousRangeDescription, "Oct 1 - Dec 31, 2021")
+        XCTAssertEqual(currentRangeDescription, "Jan 1 – Mar 31, 2022")
+        XCTAssertEqual(previousRangeDescription, "Oct 1 – Dec 31, 2021")
     }
 
     func test_when_time_range_inits_with_monthToDate_in_month_last_day_then_generate_expected_descriptions() throws {
@@ -294,8 +294,8 @@ final class AnalyticsHubTimeRangeSelectionTests: XCTestCase {
         let previousRangeDescription = timeRange.previousRangeDescription
 
         // Then
-        XCTAssertEqual(currentRangeDescription, "Jul 1 - 31, 2022")
-        XCTAssertEqual(previousRangeDescription, "Jun 1 - 30, 2022")
+        XCTAssertEqual(currentRangeDescription, "Jul 1 – 31, 2022")
+        XCTAssertEqual(previousRangeDescription, "Jun 1 – 30, 2022")
     }
 
     func test_when_time_range_inits_with_monthToDate_then_generate_expected_descriptions() throws {
@@ -311,8 +311,8 @@ final class AnalyticsHubTimeRangeSelectionTests: XCTestCase {
         let previousRangeDescription = timeRange.previousRangeDescription
 
         // Then
-        XCTAssertEqual(currentRangeDescription, "Jul 1 - 20, 2022")
-        XCTAssertEqual(previousRangeDescription, "Jun 1 - 20, 2022")
+        XCTAssertEqual(currentRangeDescription, "Jul 1 – 20, 2022")
+        XCTAssertEqual(previousRangeDescription, "Jun 1 – 20, 2022")
     }
 
     func test_when_time_range_inits_with_lastMonth_then_generate_expected_descriptions() throws {
@@ -328,8 +328,8 @@ final class AnalyticsHubTimeRangeSelectionTests: XCTestCase {
         let previousRangeDescription = timeRange.previousRangeDescription
 
         // Then
-        XCTAssertEqual(currentRangeDescription, "Jun 1 - 30, 2022")
-        XCTAssertEqual(previousRangeDescription, "May 1 - 31, 2022")
+        XCTAssertEqual(currentRangeDescription, "Jun 1 – 30, 2022")
+        XCTAssertEqual(previousRangeDescription, "May 1 – 31, 2022")
     }
 
     func test_when_time_range_inits_with_weekToDate_then_generate_expected_descriptions() throws {
@@ -345,8 +345,8 @@ final class AnalyticsHubTimeRangeSelectionTests: XCTestCase {
         let previousRangeDescription = timeRange.previousRangeDescription
 
         // Then
-        XCTAssertEqual(currentRangeDescription, "Jul 25 - 29, 2022")
-        XCTAssertEqual(previousRangeDescription, "Jul 18 - 22, 2022")
+        XCTAssertEqual(currentRangeDescription, "Jul 25 – 29, 2022")
+        XCTAssertEqual(previousRangeDescription, "Jul 18 – 22, 2022")
     }
 
     func test_when_time_range_inits_with_weekToDate_with_different_months_then_generate_expected_descriptions() throws {
@@ -362,8 +362,8 @@ final class AnalyticsHubTimeRangeSelectionTests: XCTestCase {
         let previousRangeDescription = timeRange.previousRangeDescription
 
         // Then
-        XCTAssertEqual(currentRangeDescription, "Jun 27 - Jul 2, 2022")
-        XCTAssertEqual(previousRangeDescription, "Jun 20 - 25, 2022")
+        XCTAssertEqual(currentRangeDescription, "Jun 27 – Jul 2, 2022")
+        XCTAssertEqual(previousRangeDescription, "Jun 20 – 25, 2022")
     }
 
     func test_when_time_range_inits_with_lastWeek_then_generate_expected_descriptions() throws {
@@ -379,8 +379,8 @@ final class AnalyticsHubTimeRangeSelectionTests: XCTestCase {
         let previousRangeDescription = timeRange.previousRangeDescription
 
         // Then
-        XCTAssertEqual(currentRangeDescription, "Jul 18 - 24, 2022")
-        XCTAssertEqual(previousRangeDescription, "Jul 11 - 17, 2022")
+        XCTAssertEqual(currentRangeDescription, "Jul 18 – 24, 2022")
+        XCTAssertEqual(previousRangeDescription, "Jul 11 – 17, 2022")
     }
 
     func test_when_time_range_inits_with_lastWeek_with_different_months_then_generate_expected_descriptions() throws {
@@ -396,8 +396,8 @@ final class AnalyticsHubTimeRangeSelectionTests: XCTestCase {
         let previousRangeDescription = timeRange.previousRangeDescription
 
         // Then
-        XCTAssertEqual(currentRangeDescription, "Jun 27 - Jul 3, 2022")
-        XCTAssertEqual(previousRangeDescription, "Jun 20 - 26, 2022")
+        XCTAssertEqual(currentRangeDescription, "Jun 27 – Jul 3, 2022")
+        XCTAssertEqual(previousRangeDescription, "Jun 20 – 26, 2022")
     }
 
     func test_when_time_range_inits_with_today_then_generate_expected_descriptions() throws {
@@ -447,8 +447,8 @@ final class AnalyticsHubTimeRangeSelectionTests: XCTestCase {
         let previousRangeDescription = timeRange.previousRangeDescription
 
         // Then
-        XCTAssertEqual(currentRangeDescription, "Dec 5 - 7, 2022")
-        XCTAssertEqual(previousRangeDescription, "Dec 2 - 4, 2022")
+        XCTAssertEqual(currentRangeDescription, "Dec 5 – 7, 2022")
+        XCTAssertEqual(previousRangeDescription, "Dec 2 – 4, 2022")
     }
 
     private func currentDate(from date: String) -> Date {

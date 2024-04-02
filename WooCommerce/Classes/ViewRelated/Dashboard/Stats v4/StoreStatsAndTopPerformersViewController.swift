@@ -415,9 +415,7 @@ private extension StoreStatsAndTopPerformersViewController {
         tabBar.equalWidthFill = .equalSpacing
         tabBar.equalWidthSpacing = TabBar.tabSpacing
 
-        if featureFlagService.isFeatureFlagEnabled(.customRangeInMyStoreAnalytics) {
-            addCustomViewToTabBar(customRangeButtonView)
-        }
+        addCustomViewToTabBar(customRangeButtonView)
 
         selectedTabSubscription = tabBar.$selectedIndex
             .print("🍎 tab switched")
@@ -435,10 +433,6 @@ private extension StoreStatsAndTopPerformersViewController {
 
     @MainActor
     func configureCustomRangeTab() async {
-        guard featureFlagService.isFeatureFlagEnabled(.customRangeInMyStoreAnalytics) else {
-            return
-        }
-
         guard let customRange = await loadTimeRangeForCustomRangeTab() else {
             return
         }
@@ -448,10 +442,6 @@ private extension StoreStatsAndTopPerformersViewController {
 
     @MainActor
     func loadTimeRangeForCustomRangeTab() async -> StatsTimeRangeV4? {
-        guard featureFlagService.isFeatureFlagEnabled(.customRangeInMyStoreAnalytics) else {
-            return nil
-        }
-
         return await withCheckedContinuation { continuation in
             stores.dispatch(AppSettingsAction.loadCustomStatsTimeRange(siteID: siteID) { timeRange in
                 continuation.resume(returning: timeRange)
@@ -521,21 +511,25 @@ private extension StoreStatsAndTopPerformersViewController {
             self?.startCustomRangeTabCreation(startDate: startDate, endDate: endDate)
         })
 
-        // Set redaction state for the site visit stats.
-        // - .hidden for self-hosted sites without Jetpack
-        // - .redactedDueToJetpack for Jetpack CP Sites
-        // - .redactedDueToCustomRange for WordPress.com sites or Jetpack connected sites
-        guard let site = stores.sessionManager.defaultSite else { return }
+        // Initial redaction state logic for site visit stats.
+        // If a) Site is WordPress.com site or self-hosted site with Jetpack:
+        //       - if date range is < 2 days, we can show the visit stats (because the data will be correct)
+        //       - else, set as `.redactedDueToCustomRange`
+        //    b). Site is Jetpack CP, set as `.redactedDueToJetpack`
+        //    c). Site is a non-Jetpack site: set as `.hidden`
+        guard let site = stores.sessionManager.defaultSite,
+              case let .custom(startDate, endDate) = range else { return }
 
-        if site.isNonJetpackSite {
-            customRangeVC.siteVisitStatsMode = .hidden
+        var siteVisitStatsMode: SiteVisitStatsMode
+        if site.isJetpackConnected && site.isJetpackThePluginInstalled {
+            let differenceInDay = StatsTimeRangeV4.differenceInDays(startDate: startDate, endDate: endDate)
+            siteVisitStatsMode = differenceInDay == .lessThan2 ? .default : .redactedDueToCustomRange
+        } else if site.isJetpackCPConnected {
+            siteVisitStatsMode = .redactedDueToJetpack
         } else {
-            if site.isJetpackCPConnected {
-                customRangeVC.siteVisitStatsMode = .redactedDueToJetpack
-            } else {
-                customRangeVC.siteVisitStatsMode = .redactedDueToCustomRange
-            }
+            siteVisitStatsMode = .hidden
         }
+        customRangeVC.siteVisitStatsMode = siteVisitStatsMode
 
         let customRangeTabbedItem = TabbedItem(title: range.tabTitle,
                                                viewController: customRangeVC,

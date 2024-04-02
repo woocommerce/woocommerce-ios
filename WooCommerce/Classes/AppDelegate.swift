@@ -4,6 +4,7 @@ import Storage
 import class Networking.UserAgent
 import Experiments
 import class WidgetKit.WidgetCenter
+import protocol Yosemite.StoresManager
 
 import CocoaLumberjack
 import KeychainAccess
@@ -58,11 +59,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, willFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
         // Setup Components
         setupStartupWaitingTimeTracker()
-        setupAnalytics()
+
+        let stores = ServiceLocator.stores
+        let analytics = ServiceLocator.analytics
+        let pushNotesManager = ServiceLocator.pushNotesManager
+        stores.initializeAfterDependenciesAreInitialized()
+        setupAnalytics(analytics)
+
         setupCocoaLumberjack()
         setupLibraryLogger()
         setupLogLevel(.verbose)
-        setupPushNotificationsManagerIfPossible()
+        setupPushNotificationsManagerIfPossible(pushNotesManager, stores: stores)
         setupAppRatingManager()
         setupWormholy()
         setupKeyboardStateProvider()
@@ -170,6 +177,27 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
             // add our notification request
             UNUserNotificationCenter.current().add(request)
+        }
+    }
+
+    func application(_ application: UIApplication, performActionFor shortcutItem: UIApplicationShortcutItem, completionHandler: @escaping (Bool) -> Void) {
+        guard let quickAction = QuickAction(rawValue: shortcutItem.type) else {
+            completionHandler(false)
+            return
+        }
+        switch quickAction {
+        case QuickAction.addProduct:
+            MainTabBarController.presentAddProductFlow()
+            completionHandler(true)
+        case QuickAction.addOrder:
+            MainTabBarController.presentOrderCreationFlow()
+            completionHandler(true)
+        case QuickAction.openOrders:
+            MainTabBarController.switchToOrdersTab()
+            completionHandler(true)
+        case QuickAction.collectPayment:
+            MainTabBarController.presentCollectPayment()
+            completionHandler(true)
         }
     }
 
@@ -289,8 +317,8 @@ private extension AppDelegate {
 
     /// Sets up the WordPress Authenticator.
     ///
-    func setupAnalytics() {
-        ServiceLocator.analytics.initialize()
+    func setupAnalytics(_ analytics: Analytics) {
+        analytics.initialize()
     }
 
     /// Sets up CocoaLumberjack logging.
@@ -330,13 +358,12 @@ private extension AppDelegate {
 
     /// Push Notifications: Authorization + Registration!
     ///
-    func setupPushNotificationsManagerIfPossible() {
-        let stores = ServiceLocator.stores
+    func setupPushNotificationsManagerIfPossible(_ pushNotesManager: PushNotesManager, stores: StoresManager) {
         guard stores.isAuthenticated,
               stores.needsDefaultStore == false,
               stores.isAuthenticatedWithoutWPCom == false else {
             if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.storeCreationNotifications) {
-                ServiceLocator.pushNotesManager.ensureAuthorizationIsRequested(includesProvisionalAuth: true, onCompletion: nil)
+                pushNotesManager.ensureAuthorizationIsRequested(includesProvisionalAuth: true, onCompletion: nil)
             }
             return
         }
@@ -511,7 +538,7 @@ extension AppDelegate {
     /// Runs whenever the Authentication Flow is completed successfully.
     ///
     func authenticatorWasDismissed() {
-        setupPushNotificationsManagerIfPossible()
+        setupPushNotificationsManagerIfPossible(ServiceLocator.pushNotesManager, stores: ServiceLocator.stores)
         requirementsChecker.checkEligibilityForDefaultStore()
     }
 }
@@ -538,4 +565,13 @@ private extension AppDelegate {
 
         universalLinkRouter?.handle(url: linkURL)
     }
+}
+
+// MARK: - Home Screen Quick Actions
+
+enum QuickAction: String {
+    case addProduct = "AddProductAction"
+    case addOrder = "AddOrderAction"
+    case openOrders = "OpenOrdersAction"
+    case collectPayment = "CollectPaymentAction"
 }

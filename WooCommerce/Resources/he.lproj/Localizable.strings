@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-02-26 16:54:04+0000 */
+/* Translation-Revision-Date: 2024-03-27 09:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: he_IL */
@@ -12,7 +12,8 @@
 /* Label that describes the completed progress of an update being installed (e.g. 15% complete). Keep the %.0f%% exactly as is */
 "%.0f%% complete" = "%.0f%% הושלמו";
 
-/* In Shipping Labels Package Details, the pattern used to show the weight of a product. For example, “1lbs”. */
+/* In Shipping Labels Package Details, the pattern used to show the weight of a product. For example, “1lbs”.
+   Title for the plugin detail row in settings. %1$@ is a placeholder for the plugin name. This is displayed with the current version number, and whether an update is available. */
 "%1$@" = "%1$@";
 
 /* Format for each Product attribute in singular form */
@@ -21,7 +22,8 @@
 /* Format for each Product attribute in plural form */
 "%1$@ (%2$ld options)" = "%1$@ (%2$ld אפשרויות)";
 
-/* Displays a date range for a stats interval */
+/* Displays a date range for a custom stats interval
+   Displays a date range for a stats interval */
 "%1$@ - %2$@" = "%1$@-%2$@";
 
 /* Labels an order note. The user know it's not visible to the customer. Reads like 05:30 PM - username (Private) */
@@ -39,9 +41,6 @@
 
 /* The default name for a duplicated product, with %1$@ being the original name. Reads like: Ramen Copy */
 "%1$@ Copy" = "להעתיק את %1$@";
-
-/* Title for the plugin version detail row in settings. %1$@ is a placeholder for the plugin name. This is displayed with the current version number, and whether an update is available. */
-"%1$@ Version" = "גרסת %1$@";
 
 /* A label prompting users to learn more about Tap to Pay on iPhone"
 %1$@ is a placeholder that always replaced with \"Learn more\" string,
@@ -418,12 +417,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Application's Active State
    Display label for the subscription status type
-   Status name of an active Blaze campaign
+   Status name of an approved Blaze campaign
    Status of coupons that are active */
 "Active" = "פעיל";
-
-/* Title for table view section of active plugins */
-"Active Plugins" = "תוספים פעילים";
 
 /* The plugin is active on the site and has not enabled automatic updates */
 "Active, Autoupdates off" = "פעיל, עדכונים אוטומטיים מושבתים";
@@ -580,9 +576,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button title in the Shipping Label Payment Method screen */
 "Add credit card" = "להוסיף כרטיס אשראי";
-
-/* Title of the order customer selection screen. */
-"Add customer details" = "הוספה של פרטי לקוחות";
 
 /* Message of the product description AI local announcement. */
 "Add descriptions in a snap with AI. Try our feature today!" = "להוסיף תיאורים במהירות בעזרת בינה מלאכותית. כדאי לנסות את האפשרות כבר היום!";
@@ -929,7 +922,6 @@ which should be translated separately and considered part of this sentence. */
 "Approve" = "אישור";
 
 /* Display label for the review's approved status
-   Status name of an approved Blaze campaign
    Unapprove a comment */
 "Approved" = "מאושר";
 
@@ -1491,6 +1483,15 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when the card is removed from the reader prematurely. */
 "Card was removed too soon - please try transaction again" = "הסרת את הכרטיס מהר מדי – יש לנסות לבצע את העסקה שוב";
 
+/* Label for a cancel button when an optional software update is happening */
+"CardPresentModalUpdateProgress.button.cancelOptionalButtonText" = "ביטול";
+
+/* Label for a cancel button when a mandatory software update is happening */
+"CardPresentModalUpdateProgress.button.cancelRequiredButtonText" = "לבטל בכל זאת";
+
+/* Label for a dismiss button when a software update has finished */
+"CardPresentModalUpdateProgress.button.dismissButtonText" = "לבטל";
+
 /* Navigation bar title of shipping label carrier and rates screen */
 "Carrier and Rates" = "ספק משלוח ותעריפים";
 
@@ -1750,8 +1751,7 @@ which should be translated separately and considered part of this sentence. */
 /* Third instruction on the test order screen */
 "Complete the payment and await a push notification about the order on your WooCommerce app." = "יש להשלים את התשלום ולהמתין להודעה בדחיפה לגבי ההזמנה שלך באפליקציה של WooCommerce.";
 
-/* Display label for completed order status.
-   Status name of a completed Blaze campaign */
+/* Display label for completed order status. */
 "Completed" = "הושלמה";
 
 /* Title for the list of component options in the Component Settings view */
@@ -1902,6 +1902,7 @@ which should be translated separately and considered part of this sentence. */
 /* Action button to contact support when Jetpack install fails
    Button to contact support for login
    Close Account error alert button title - navigates the user to contact support.
+   Contact Support button in the application password tutorial screen
    Contact support button in the connectivity tool screen
    Contact Support title
    Text for the button to contact support from the store picker error screen
@@ -1930,6 +1931,7 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button on the Store Picker screen to select a store
    Button to submit password on the WPCom password login screen of the Jetpack setup flow.
+   Continue button in the application password tutorial screen
    Continue button inside every cell inside Create Shipping Label form
    Continue button on the add product from image form.
    Continue button on the product name field
@@ -2214,8 +2216,7 @@ which should be translated separately and considered part of this sentence. */
 "Currently creation is supported for 100 variations maximum. Generating variations for this product would create %d variations." = "נכון לעכשיו, אנחנו תומכים ביצירה של 100 סוגים לכל היותר. פעולת היצירה של סוגים למוצר הזה תיצור %d סוגים.";
 
 /* Name of the section for custom shipment tracking carriers
-   Title of the Analytics Hub Custom selection range
-   Top Performers section title - Custom */
+   Title of the Analytics Hub Custom selection range */
 "Custom" = "התאמה אישית";
 
 /* Navigation title on the add custom amount view in orders.
@@ -3099,6 +3100,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the exclusions section in Coupon Usage Restrictions screen */
 "Exclusions" = "החרגות";
 
+/* Button to exit the application password flow. */
+"Exit Anyway" = "לצאת בכל מקרה";
+
 /* Button to cancel installation on the Jetpack setup interrupted screen */
 "Exit Without Connecting" = "לצאת בלי להתחבר";
 
@@ -3255,6 +3259,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the error screen when an in-person payments plugin is active but not set up. %1$@ contains the plugin name. */
 "Finish setup for %1$@ in your store admin" = "יש לסיים את ההגדרה של %1$@ במנהל החנות שלך";
+
+/* Status name of a completed Blaze campaign */
+"Finished" = "הסתיים";
 
 /* Country option for a site address. */
 "Finland" = "פינלנד";
@@ -3766,6 +3773,9 @@ which should be translated separately and considered part of this sentence. */
 /* Legal disclaimer for signing up. The underscores _..._ denote underline. */
 "If you continue with Apple or Google and don't already have a WordPress.com account, you are creating an account and you agree to our _Terms of Service_." = "אם בחרת להמשיך עם Apple או עם Google ועדיין אין לך חשבון ב-WordPress.com, חשבון ייווצר עבורך ויש הסכמה מצידך לתנאי השירות שלנו.";
 
+/* Text to contact support in the application password tutorial screen */
+"If you encounter any problem, contact us and we will happily assist you!" = "אם נתקלת בבעיה, אפשר ליצור איתנו קשר ונשמח לעזור!";
+
 /* Heading for the details pane showing the contactless limit on About Tap to Pay */
 "Important information" = "מידע חשוב";
 
@@ -3774,9 +3784,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* A fallback describing the contactless limit, shown on the About Tap to Pay screen. %1$@ will be replaced with the country name of the store, which is a trade off as it can't be contextually translated, however this string is only used when there's a problem decoding the limit, so it's acceptable. */
 "In %1$@, cards may only be used with Tap to Pay for transactions up to the contactless limit." = "ב-%1$@, מותר להשתמש בכרטיסים עם Tap To Pay רק עבור עסקאות עד למגבלת ללא מגע.";
-
-/* Status name of a Blaze campaign under moderation */
-"In Moderation" = "בתהליך אישור";
 
 /* Accessibility label for an indeterminate loading indicator */
 "In progress" = "בתהליך";
@@ -3820,9 +3827,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Application's Inactive State */
 "Inactive" = "לא פעיל";
-
-/* Title for table view section of inactive plugins */
-"Inactive Plugins" = "תוספים לא פעילים";
 
 /* The plugin is not active on the site and has not enabled automatic updates */
 "Inactive, Autoupdates off" = "לא פעיל, עדכונים אוטומטיים מושבתים";
@@ -4044,11 +4048,17 @@ which should be translated separately and considered part of this sentence. */
 /* An error message shown when a wpcom user provides the wrong password. */
 "It seems like you've entered an incorrect password. Want to give it another try?" = "כנראה שהזנת סיסמה שגויה. רוצה לנסות שוב?";
 
+/* Title for the unfinished application password alert */
+"It seems that you have not approved the app connection yet. Are you sure you want to exit?" = "נראה שעדיין לא אישרת את החיבור לאפליקציה. האם ברצונך לצאת?";
+
 /* An error message displayed when the user tries to log in to the app with site credentials but has application password disabled. Reads like: It seems that your site google.com has Application Password disabled. Please enable it to use the WooCommerce app. */
 "It seems that your site %@ has Application Password disabled. Please enable it to use the WooCommerce app." = "נראה ש'סיסמת האפליקציה' באתר שלך, %@, מושבתת. יש להפעיל אותה כדי להשתמש באפליקציית WooCommerce.";
 
 /* An error message displayed when the user tries to log in to the app with a simple WP.com site. Reads like: It seems that your site google.com is a simple WordPress.com site that cannot install plugins. Please upgrade your plan to use WooCommerce. */
 "It seems that your site %@ is a simple WordPress.com site that cannot install plugins. Please upgrade your plan to use WooCommerce." = "נראה שהאתר שלך, %@, הוא אתר WordPress.com פשוט שלא יכול להתקין תוספים. עליך לשדרג את התוכנית שלך כדי להשתמש ב-WooCommerce.";
+
+/* Error message explaining login failure due to invalid credentials. */
+"It seems the username or password you entered doesn't quite match. Double-check your credentials and try again." = "נראה ששם המשתמש והסיסמה שהזנת לא תואמים. יש לבדוק את פרטי הכניסה ולנסות שוב.";
 
 /* Accessibility label for italic button on formatting toolbar. */
 "Italic" = "נטוי";
@@ -4776,9 +4786,6 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Netherlands" = "הולנד";
 
-/* Title for table view section of network active plugins */
-"Network Active Plugins" = "תוספים פעילים ברשת";
-
 /* Error message when session cookie has expired. */
 "NetworkError.invalidCookieNonce" = "מצטערים , תוקף ההפעלה פג. נא להתחבר מחדש.";
 
@@ -5411,7 +5418,8 @@ which should be translated separately and considered part of this sentence. */
 
 /* Display label for pending order status.
    Display label for the review's pending status
-   Display label for the subscription status type */
+   Display label for the subscription status type
+   Status name of an active Blaze campaign */
 "Pending" = "ממתין לאישור";
 
 /* Display label for the subscription status type */
@@ -5682,8 +5690,7 @@ which should be translated separately and considered part of this sentence. */
 "Please, add a new payment method" = "יש להוסיף אמצעי תשלום חדש";
 
 /* My Store > Settings > Plugins section title
-   Navigates to Plugins screen.
-   Title of the Plugin List screen */
+   Navigates to Plugins screen. */
 "Plugins" = "תוספים";
 
 /* Country option for a site address. */
@@ -5837,8 +5844,7 @@ which should be translated separately and considered part of this sentence. */
 /* Display label for the product's private status */
 "Privately published" = "פורסם כפרטי";
 
-/* Display label for processing order status.
-   Status name of a Blaze campaign under processing */
+/* Display label for processing order status. */
 "Processing" = "בטיפול";
 
 /* Alert title when processing a payment without a user name.
@@ -7056,8 +7062,7 @@ which should be translated separately and considered part of this sentence. */
 /* Indicates the reviewer does not have a name. It reads { Someone left a review} */
 "Someone" = "לא ידוע";
 
-/* Error message presented to users after a failure occurs
-   The text on the placeholder overlay when there is issue syncing site plugins */
+/* Error message presented to users after a failure occurs */
 "Something went wrong" = "משהו השתבש";
 
 /* Description of an unknown error after purchasing a plan */
@@ -7745,7 +7750,7 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when the card processor declines the payment. */
 "The card was declined by the payment processor - please try another means of payment" = "הכרטיס נדחה על ידי מעבד התשלומים – יש לנסות אמצעי תשלום אחר";
 
-/* No comment provided by engineer. */
+/* Message for when the certificate for the server is invalid. The %@ placeholder will be replaced the a host name, received from the API. */
 "The certificate for this server is invalid. You might be connecting to a server that is pretending to be “%@” which could put your confidential information at risk.\n\nWould you like to trust the certificate anyway?" = "האישור עבור שרת זה אינו חוקי. ייתכן שאתה מתחבר לשרת שמתחזה ל-&quot;%@&quot;, מה שעלול לסכן את המידע הסודי שלך.\n\nלבטוח באישור בכל מקרה?";
 
 /* Message in the gift card input form when the code is not valid. */
@@ -7934,9 +7939,6 @@ which should be translated separately and considered part of this sentence. */
 /* Error message informing the user that there was a problem clearing the block on site preventing its posts from displaying in the reader. */
 "There was a problem removing the block for specified site." = "אירעה בעיה בעת הסרת הבלוק עבור האתר שצוין.";
 
-/* The details on the placeholder overlay when there is issue syncing site plugins */
-"There was a problem while trying to load plugins. Check your internet and try again." = "אירעה בעיה בטעינת התוספים. יש לבדוק את החיבור לאינטרנט ולנסות שוב.";
-
 /* Message to be displayed when there's an error communicating with the remote site during Jetpack setup */
 "There was an error communicating with your site." = "אירעה שגיאה בתקשורת עם האתר שלך.";
 
@@ -8005,19 +8007,16 @@ which should be translated separately and considered part of this sentence. */
    Title of button that displays information about the third party software libraries used in the creation of this app */
 "Third Party Licenses" = "רישיונות של צד שלישי";
 
-/* Tab selector title that shows the statistics for this month
-   Top Performers section title - this month */
+/* Tab selector title that shows the statistics for this month */
 "This Month" = "החודש";
 
 /* The message of the alert when there is an error updating the product SKU */
 "This SKU is used on another product or is invalid." = "הקוד של SKU נמצא בשימוש של מוצר אחר או שאינו חוקי.";
 
-/* Tab selector title that shows the statistics for this week
-   Top Performers section title - this week */
+/* Tab selector title that shows the statistics for this week */
 "This Week" = "השבוע";
 
-/* Tab selector title that shows the statistics for this year
-   Top Performers section title - this year */
+/* Tab selector title that shows the statistics for this year */
 "This Year" = "השנה";
 
 /* Explanation in the alert presented when the user tries to connect a Bluetooth card reader with insufficient permissions */
@@ -8040,6 +8039,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error for missing package details on the Add New Custom Package screen in Shipping Label flow */
 "This field is required" = "זהו שדה חובה";
+
+/* Generic reason for why the user could not login tin the application password tutorial screen */
+"This is because we got an unexpected response from your site." = "ההתחברות נכשלה מאחר שקיבלנו תגובה לא צפויה מהאתר שלך.";
+
+/* Reason for why the user could not login tin the application password tutorial screen */
+"This is likely because your store has some extra security steps in place." = "כנראה שבחנות שלך הוגדרו כמה שלבים נוספים לצורך אבטחה.";
 
 /* Footer text in Product Slug screen */
 "This is the URL-friendly version of the product title" = "זאת גרסה ידידותית לכתובות URL בכותרת המוצר";
@@ -8173,8 +8178,7 @@ which should be translated separately and considered part of this sentence. */
 /* Label for one of the filters in order date range
    Tab selector title that shows the statistics for today
    Title of the Analytics Hub Today's selection range
-   Today Section Header
-   Top Performers section title - today */
+   Today Section Header */
 "Today" = "היום";
 
 /* Accessibility hint for selecting a product in the Select Products screen */
@@ -8321,8 +8325,7 @@ which should be translated separately and considered part of this sentence. */
 /* Title shown on the test order screen */
 "Try a test order" = "לנסות הזמנה לבדיקה";
 
-/* Action to resync on the placeholder overlay when there is issue syncing site plugins
-   Button to dismiss the alert presented when connecting to a specific reader fails. This allows the search to continue.
+/* Button to dismiss the alert presented when connecting to a specific reader fails. This allows the search to continue.
    Button to dismiss the alert presented when starting Tap to Pay on iPhone fails. This allows the search to continue.
    Title of the try again action when the site cannot be launched from store onboarding > launch store screen. */
 "Try again" = "לנסות שוב";
@@ -8386,9 +8389,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Info text about the scanned text list on the add product from image form. */
 "Tweak your text: Unselect scans you don't need or tap to edit" = "להתאים את הטקסט: לבטל את הבחירה בסריקות שאין לך בהן צורך או להקיש כדי לערוך";
-
-/* Title of a button linking to the app's Twitter profile */
-"Twitter" = "טוויטר";
 
 /* Placeholder of the search text field on the domain selector. */
 "Type a name for your store" = "יש להקליד את השם של החנות שלך";
@@ -9051,6 +9051,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the default store picker error screen */
 "We couldn't load your site" = "לא הצלחנו לטעון את האתר שלך";
 
+/* Title for the application password tutorial screen */
+"We couldn't log in into your site! 😭" = "לא הצלחנו לחבר אותך לאתר שלך! 😭";
+
 /* A message displayed through a bottom notice letting the user know that the login from the app link failed */
 "We couldn't process your app login request" = "לא הצלחנו לעבד את בקשת הכניסה לאפליקציה";
 
@@ -9348,6 +9351,9 @@ which should be translated separately and considered part of this sentence. */
 /* Prompt asking users if the logged in to the wrong account.Presented when logging in with a store address that does not match the account entered. */
 "Wrong account?" = "חשבון שגוי?";
 
+/* Title of a button linking to the app's X profile */
+"X" = "X";
+
 /* Placeholder of the gift card code text field in the order form. */
 "XXXX-XXXX-XXXX-XXXX" = "XXXX-XXXX-XXXX-XXXX";
 
@@ -9460,7 +9466,7 @@ which should be translated separately and considered part of this sentence. */
 /* Error message shown when Tap to Pay on iPhone cannot be used because the device does not have a passcode set. */
 "You need to set a lock screen passcode to use Tap to Pay on iPhone" = "עליך להגדיר קוד סיסמה למסך הנעילה כדי להשתמש ב-Tap to Pay ב-iPhone";
 
-/* No comment provided by engineer. */
+/* Error messaged show when a mobile plugin is redirecting traffict to their site, DudaMobile in particular */
 "You seem to have installed a mobile plugin from DudaMobile which is preventing the app to connect to your blog" = "נראה שהתקנת תוסף למכשירים ניידים מ-DudaMobile שמונע מהאפליקציה להתחבר לבלוג שלך";
 
 /* Subtitle text in the store creation loading screen */
@@ -9599,6 +9605,9 @@ which should be translated separately and considered part of this sentence. */
 /* Markdown content learn more link on the product creation action sheet. Please translate the words while keeping the markdown format and URL. */
 "[Learn more.](https:\/\/automattic.com\/ai-guidelines\/)" = "[למידע נוסף‏.](https:\/\/automattic.com\/ai-guidelines\/‎)";
 
+/* Text for the 'Cancel' button that appears in the navigation bar, and closes the view */
+"adaptiveModalContainer.views.cancelButtonText" = "ביטול";
+
 /* Button title to delete the custom amount on the edit custom amount view in orders. */
 "addCustomAmount.deleteButton" = "למחוק סכום בהתאמה אישית";
 
@@ -9641,6 +9650,12 @@ which should be translated separately and considered part of this sentence. */
 /* Label for button that opens a screen to customize the Analytics Hub */
 "analyticsHub.editButton.label" = "לערוך";
 
+/* Description when there are no analytics to display in the Analytics Hub. */
+"analyticsHub.emptyState.description" = "עליך לבחור טווח תאריכים אחר או להקיש על 'לערוך' כדי להפעיל נתונים אנליטיים נוספים.";
+
+/* Title when there are no analytics to display in the Analytics Hub. */
+"analyticsHub.emptyState.title" = "אין נתונים אנליטיים זמינים";
+
 /* Label for button to enable Jetpack Stats */
 "analyticsHub.jetpackStatsCTA.buttonLabel" = "להפעיל את Jetpack Stats";
 
@@ -9682,6 +9697,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Widget title, displayed when selecting which widget to add */
 "appLinkWidget.displayName" = "סמל";
+
+/* Button to send a message to a customer via Telegram */
+"billingInfoViewController.telegram" = "לשלוח הודעת Telegram";
+
+/* Button to send a message to a customer via WhatsApp */
+"billingInfoViewController.whatsapp" = "לשלוח הודעת WhatsApp";
 
 /* Message to display when a phone number or email address has been copied to clipboard */
 "billingInformationViewController.action.copied" = "הועתק ללוח.";
@@ -10128,6 +10149,15 @@ which should be translated separately and considered part of this sentence. */
 /* Label for the email receipts toggle in Payment Method screen. %1$@ is a placeholder for the account display name. %2$@ is a placeholder for the username. %3$@ is a placeholder for the WordPress.com email address. */
 "blazePaymentMethodsView.emailReceipt" = "לשלוח את הקבלות על רכישת התווית באימייל אל %1$@ (%2$@) בכתובת %3$@";
 
+/* Dismiss button on the error alert displayed on the Blaze payment method list screen */
+"blazePaymentMethodsView.loadPaymentMethodsErrorAlert.cancel" = "ביטול";
+
+/* Error message indicating that loading payment methods failed */
+"blazePaymentMethodsView.loadPaymentMethodsErrorAlert.paymentMethods" = "שגיאה בטעינת אמצעי התשלום שלך";
+
+/* Button on the error alert displayed on the payment method list screen */
+"blazePaymentMethodsView.loadPaymentMethodsErrorAlert.retry" = "יש לנסות שוב";
+
 /* Navigation bar title in the Blaze Payment Method screen */
 "blazePaymentMethodsView.navigationBarTitle" = "אמצעי תשלום";
 
@@ -10339,6 +10369,24 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility hint for selecting a variable product in the Add Product screen */
 "configurationForBlaze.variableProductRowAccessibilityHint" = "פותח רשימה של סוגי המוצר.";
 
+/* Accessibility hint for selecting a product from the order filter screen */
+"configurationForOrder.productRowAccessibilityHint" = "בוחר מוצר עבור סדר הסינון.";
+
+/* Text for the cancel button in the Product selector screen */
+"configurationForOrder.productSelectorCancel" = "ביטול";
+
+/* Title for the screen to select product for filtering orders */
+"configurationForOrder.productSelectorTitle" = "מוצר";
+
+/* Accessibility hint for selecting a variable product to select product for filtering orders */
+"configurationForOrder.variableProductRowAccessibilityHint" = "פותח רשימה של סוגי המוצר.";
+
+/* Title of the order customer selection screen. */
+"configurationForOrderCustomerSection.customerSelectorTitle" = "הוספה של פרטי לקוחות";
+
+/* Title for the screen to select customer in order filtering. */
+"configurationForOrderFilter.customerSelectorTitle" = "לבחור לקוח";
+
 /* Action to toggle whether a bundle item is included when it is optional. */
 "configureBundleItem.add" = "להוסיף";
 
@@ -10404,6 +10452,90 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button in date range picker to add a Custom Range tab */
 "customRangeTabCreationCoordinator.add" = "להוסיף";
+
+/* Label for a customer with no name in the Customer detail screen. */
+"customerDetail.guestName" = "אורח";
+
+/* Label for the customer's average order value in the Customer Details screen. */
+"customerDetailView.avgOrderValueLabel" = "ערך הזמנה ממוצע";
+
+/* Label for the customer's city in the Customer Details screen. */
+"customerDetailView.cityLabel" = "עיר";
+
+/* Button to copy a customer's email address in the Customer Details screen. */
+"customerDetailView.copyEmail" = "להעתיק את כתובת האימייל";
+
+/* Label for the customer's country in the Customer Details screen. */
+"customerDetailView.countryLabel" = "מדינה";
+
+/* Heading for the section with general customer details in the Customer Details screen. */
+"customerDetailView.customerSection" = "לקוח";
+
+/* Label for the date the customer was last active in the Customer Details screen. */
+"customerDetailView.dateLastActiveLabel" = "מועד פעילות אחרון";
+
+/* Label for the customer's registration date in the Customer Details screen. */
+"customerDetailView.dateRegisteredLabel" = "תאריך הרישום";
+
+/* Default placeholder if a customer's details are not available in the Customer Details screen. */
+"customerDetailView.defaultPlaceholder" = "ללא";
+
+/* Title for action to contact a customer via email. */
+"customerDetailView.emailActionLabel" = "ליצור קשר עם הלקוח באימייל";
+
+/* Placeholder if a customer's email address is not available in the Customer Details screen. */
+"customerDetailView.emailPlaceholder" = "כתובת אימייל לא קיימת";
+
+/* Heading for the section with customer location details in the Customer Details screen. */
+"customerDetailView.locationSection" = "מיקום";
+
+/* Label for the number of orders in the Customer Details screen. */
+"customerDetailView.ordersCountLabel" = "הזמנות";
+
+/* Heading for the section with customer order stats in the Customer Details screen. */
+"customerDetailView.ordersSection" = "הזמנות";
+
+/* Label for the customer's postal code in the Customer Details screen. */
+"customerDetailView.postcodeLabel" = "מיקוד";
+
+/* Label for the customer's region in the Customer Details screen. */
+"customerDetailView.regionLabel" = "אזור";
+
+/* Heading for the section with customer registration details in the Customer Details screen. */
+"customerDetailView.registrationSection" = "רישום";
+
+/* Button to email a customer in the Customer Details screen. */
+"customerDetailView.sendEmail" = "אימייל";
+
+/* Label for the customer's total spend in the Customer Details screen. */
+"customerDetailView.totalSpendLabel" = "הוצאה כוללת";
+
+/* Label for the customer's username in the Customer Details screen. */
+"customerDetailView.usernameLabel" = "שם משתמש";
+
+/* Message when there are no customers to show in the Customers list screen. */
+"customerList.emptyStateMessage" = "יש ליצור הזמנה כדי להתחיל לאסוף תובנות על לקוחות";
+
+/* Title when there are no customers to show in the Customers list screen. */
+"customerList.emptyStateTitle" = "עדיין אין לקוחות";
+
+/* Message to prompt users to search for customers on the customer search screen */
+"customerSearchUICommand.emptyDefaultStateNoCreationMessage" = "לחפש לקוח קיים";
+
+/* The label that can be shown optionally for guest customers */
+"customerSearchUICommand.guestLabel" = "אורח";
+
+/* Error message in the Add Customer to order screen when getting the customer information */
+"customerSelectorViewController.guestSelectionDisallowedError" = "המשתמש הזה הוא אורח, ולא ניתן להשתמש באורחים לסינון הזמנות.";
+
+/* Placeholder for a customer with no email address in the Customers list screen. */
+"customersList.emailPlaceholder" = "כתובת אימייל לא קיימת";
+
+/* Label for a customer with no name in the Customers list screen. */
+"customersList.guestLabel" = "אורח";
+
+/* Title for Customers list screen */
+"customersList.title" = "לקוחות";
 
 /* Display label for a product's subscription period when it is a single day. */
 "day" = "יום";
@@ -10522,6 +10654,30 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility label to expand an expandable bottom sheet */
 "expandableBottomSheet.chevron.expand" = "להציג פרטים";
+
+/* Title of dismiss button for redaction information alert in Custom Range stats tab */
+"fancyAlertViewControllerStats.dismissButton" = "אישור";
+
+/* Description for redaction information alert in Custom Range stats tab */
+"fancyAlertViewControllerStats.redactionInfoDescription" = "האפשרות של הנתונים הסטטיסטיים לא תומכת בתצוגת הנתונים של מבקרים והמרות עבור טווחי תאריכים שרירותיים. \n\nעם זאת, אפשר להקיש על ערך בגרף כדי לראות מבקרים והמרות בטווח תאריכים ספציפי.";
+
+/* Title for redaction information alert in Custom Range stats tab */
+"fancyAlertViewControllerStats.redactionInfoTitle" = "הנתונים של המבקרים וההמרות לא זמינים";
+
+/* Row title for filtering orders by customer. */
+"filterOrderListViewModel.OrderListFilter.rowCustomer" = "לקוח";
+
+/* Row title for filtering orders by Product. */
+"filterOrderListViewModel.OrderListFilter.rowTitleProduct" = "מוצר";
+
+/* Title of one of the hub menu options */
+"hubMenu.customers" = "לקוחות";
+
+/* Description of one of the hub menu options */
+"hubMenu.customersDescription" = "לקבל תובנות על הלקוח";
+
+/* Title of the view containing a single Product Review */
+"hubMenu.productReview" = "חוות דעת על מוצר";
 
 /* A message that tells the user why the app needs access to Bluetooth. */
 "infoplist.NSBluetoothAlwaysUsageDescription" = "האפליקציה הזו משתמשת ב-Bluetooth כדי להתחבר לקוראי הכרטיסים הנתמכים.";
@@ -10783,6 +10939,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the barcode scanning button to add a product to an order */
 "orderForm.products.add.scan.row.title" = "לסרוק מוצר";
 
+/* Title of the primary button on the new order screen when changes need to be manually synced. Tapping the button will send changes to the server, and when complete the totals and taxes will be accurate. */
+"orderForm.recalculate.button.title" = "לחשב מחדש";
+
 /* Label for the row showing the cost of coupon in the order */
 "orderPaymentSection.coupon" = "קופון";
 
@@ -10825,6 +10984,12 @@ which should be translated separately and considered part of this sentence. */
 /* Shown with a 'Current:' label, but when we don't know what the plan that ended was */
 "plan ended" = "התוכנית הסתיימה";
 
+/* Title for the Close button within the Plugin List view. */
+"pluginListView.button.close" = "לסגור";
+
+/* Title for the Plugin List view. */
+"pluginListView.title.plugins" = "תוספים";
+
 /* Close title for the navigation bar button on the Print Shipping Label view. */
 "print.shipping.label.close.button.title" = "לסגור";
 
@@ -10857,6 +11022,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Alert message about an unsupported file type when uploading file for a downloadable product. */
 "productDownloadListViewController.notice.unsupportedFileType" = "סוג הקובץ שמבחר אינו נתמך.";
+
+/* Product title */
+"productForm.defaultTitle" = "מוצר";
 
 /* Description of the subscription period for a product. Reads like: 'every 2 months'. */
 "productFormDataModel.subscriptionPeriodFormat" = "כל %1$@";
@@ -10933,6 +11101,18 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Products tab — plural form of Product */
 "productsTab.tabTitle" = "מוצרים";
 
+/* Button to submit selected products to the order, when some product has been selected. */
+"productselectorview.doneButtonTitle.addProductsText" = "להוסיף מוצרים";
+
+/* Button to dismiss the alert displayed when selecting an invalid time range for analytics */
+"rangedDatePicker.invalidTimeRangeAlert.action" = "הבנתי";
+
+/* Message of the alert displayed when selecting an invalid time range for analytics */
+"rangedDatePicker.invalidTimeRangeAlert.message" = "תאריך ההתחלה חייב להיות לפני תאריך הסיום. יש לבחור טווח מועדים אחר.";
+
+/* Title of the alert displayed when selecting an invalid time range for analytics */
+"rangedDatePicker.invalidTimeRangeAlert.title" = "טווח מועדים לא תקין";
+
 /* Format of the number of product ratings in plural form */
 "rated %ld times" = "דורג %ld פעמים";
 
@@ -10966,6 +11146,21 @@ which should be translated separately and considered part of this sentence. */
 
 /* Cancel button title for the Shipping Label purchase flow, shown in the nav bar */
 "shipping.label.navigationBar.cancel.button.title" = "ביטול";
+
+/* Display text for the daily granularity of store stats on the My Store screen */
+"statsGranularityV4.dailyMetrics" = "תדירות יומית";
+
+/* Display text for the hourly granularity of store stats on the My Store screen */
+"statsGranularityV4.hourlyMetrics" = "תדירות שעתית";
+
+/* Display text for the monthly granularity of store stats on the My Store screen */
+"statsGranularityV4.monthlyMetrics" = "תדירות חודשית";
+
+/* Display text for the weekly granularity of store stats on the My Store screen */
+"statsGranularityV4.weeklyMetrics" = "תדירות שבועית";
+
+/* Display text for the yearly granularity of store stats on the My Store screen */
+"statsGranularityV4.yearlyMetrics" = "תדירות שנתית";
 
 /* Tab selector title that shows the statistics for today */
 "statsTimeRangeV4.tabTitle.custom" = "טווח מותאם";
@@ -11166,7 +11361,7 @@ which should be translated separately and considered part of this sentence. */
 /* Button in theme preview screen to pick a theme. The placeholder is the theme name. Reads like: Use Tsubaki */
 "themesPreviewViewModel.useThisThemeButton" = "להשתמש בערכת העיצוב %1$@";
 
-/* Value for the WooCommerce plugin version detail row in settings, when the version is unknown. This is in place of the current version number. */
+/* Value for the plugin version detail row in settings, when the version is unknown. This is in place of the current version number. */
 "unknown" = "לא ידוע";
 
 /* Used when the response doesn't have a valid url to display */
@@ -11229,6 +11424,9 @@ which should be translated separately and considered part of this sentence. */
 /* Message to show when a request for a WP.com API endpoint is throttled */
 "wordpresskit.api.message.endpoint_throttled" = "הגעת למגבלה המותרת. אפשר לנסות שוב בעוד דקה אחת. ניסיון נוסף לפני כן רק יגדיל את זמן ההמתנה עד לביטול החסימה. אם לדעתך זוהי שגיאה, כדאי לפנות לתמיכה.";
 
+/* Message to show to user when the app can't find WordPress.org REST API URL. */
+"wordpresskit.org-rest-api.not-found" = "לא הצלחנו למצוא את כתובת ה-URL של REST API לאתר שלך. כדי שהאפליקציה תוכל לבצע התקשרות עם האתר שלך, יש להפעיל אפשרות זו. יש ליצור קשר עם חברת האחסון שלך כדי לפתור בעיה זו.";
+
 /* Button to enter security key on the WPCom 2FA login screen */
 "wpCom2FALoginView.securityKeyButton" = "להשתמש במפתח אבטחה";
 
@@ -11277,6 +11475,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Åland Islands" = "איי אולנד";
+
+/* Tutorial steps on the application password tutorial screen */
+"⁃ Tap the continue button at the bottom to login directly into your site.\n\n⁃ Once logged in, approve the connection to give access to the woo app like the in the image below." = "⁃ יש להקיש על כפתור ההמשך בתחתית כדי להתחבר לאתר שלך ישירות.\n\n⁃ לאחר שהתחברת, יש לאשר את החיבור כדי להעניק גישה לאפליקציה של Woo, כמו בתמונה שבהמשך.";
 
 /* Title of the local notification to remind the user to purchase a plan. */
 "🌟 Keep your business going!" = "🌟 להמשיך לתפעל את העסק!";

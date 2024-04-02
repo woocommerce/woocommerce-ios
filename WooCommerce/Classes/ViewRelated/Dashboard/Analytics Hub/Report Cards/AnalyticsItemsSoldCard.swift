@@ -1,8 +1,16 @@
 import SwiftUI
 
-/// Products Card on the Analytics Hub
+/// Card to display items sold on the Analytics Hub
 ///
-struct AnalyticsProductCard: View {
+struct AnalyticsItemsSoldCard: View {
+
+    /// Title for the items sold card.
+    ///
+    let title: String
+
+    /// Title for the items sold metric.
+    ///
+    let itemsSoldTitle: String
 
     /// Items sold quantity. Needs to be formatted.
     ///
@@ -25,6 +33,10 @@ struct AnalyticsProductCard: View {
     ///
     let showStatsError: Bool
 
+    /// Error message to display if there was an error loading stats part of the card.
+    ///
+    let statsErrorMessage: String
+
     /// Items Solds data to render.
     ///
     let itemsSoldData: [TopPerformersRow.Data]
@@ -37,6 +49,10 @@ struct AnalyticsProductCard: View {
     ///
     let showItemsSoldError: Bool
 
+    /// Error message to display if there was an error loading items sold part of the card.
+    ///
+    let itemsSoldErrorMessage: String
+
     /// URL for the products analytics web report
     ///
     let reportViewModel: AnalyticsReportLinkViewModel?
@@ -45,11 +61,11 @@ struct AnalyticsProductCard: View {
     var body: some View {
         VStack(alignment: .leading) {
 
-            Text(Localization.title)
+            Text(title)
                 .foregroundColor(Color(.text))
                 .footnoteStyle()
 
-            Text(Localization.itemsSold)
+            Text(itemsSoldTitle)
                 .headlineStyle()
                 .padding(.top, Layout.titleSpacing)
                 .padding(.bottom, Layout.columnSpacing)
@@ -67,21 +83,21 @@ struct AnalyticsProductCard: View {
             }
 
             if showStatsError {
-                Text(Localization.noProducts)
+                Text(statsErrorMessage)
                     .foregroundColor(Color(.text))
                     .subheadlineStyle()
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.top, Layout.columnSpacing)
             }
 
-            TopPerformersView(itemTitle: Localization.title.localizedCapitalized,
-                              valueTitle: Localization.itemsSold,
+            TopPerformersView(itemTitle: title.localizedCapitalized,
+                              valueTitle: itemsSoldTitle,
                               rows: itemsSoldData,
                               isRedacted: isItemsSoldRedacted)
                 .padding(.vertical, Layout.columnSpacing)
 
             if showItemsSoldError {
-                Text(Localization.noItemsSold)
+                Text(itemsSoldErrorMessage)
                     .foregroundColor(Color(.text))
                     .subheadlineStyle()
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -89,11 +105,7 @@ struct AnalyticsProductCard: View {
             }
 
             if let reportViewModel {
-                VStack(spacing: Layout.cardPadding) {
-                    Divider()
-                        .padding(.horizontal, Layout.dividerPadding)
-                    AnalyticsReportLink(showingWebReport: $showingWebReport, reportViewModel: reportViewModel)
-                }
+                AnalyticsReportLink(showingWebReport: $showingWebReport, reportViewModel: reportViewModel)
             }
         }
         .padding(Layout.cardPadding)
@@ -101,64 +113,62 @@ struct AnalyticsProductCard: View {
 }
 
 // MARK: Constants
-private extension AnalyticsProductCard {
-    enum Localization {
-        static let title = NSLocalizedString("Products", comment: "Title for the products card on the analytics hub screen.").localizedUppercase
-        static let itemsSold = NSLocalizedString("Items Sold", comment: "Title for the items sold column on the products card on the analytics hub screen.")
-        static let noProducts = NSLocalizedString("Unable to load product analytics",
-                                                  comment: "Text displayed when there is an error loading product stats data.")
-        static let noItemsSold = NSLocalizedString("Unable to load product items sold analytics",
-                                                   comment: "Text displayed when there is an error loading items sold stats data.")
-    }
-
+private extension AnalyticsItemsSoldCard {
     enum Layout {
         static let titleSpacing: CGFloat = 24
         static let cardPadding: CGFloat = 16
         static let columnSpacing: CGFloat = 10
-        static let dividerPadding: CGFloat = -16
     }
 }
 
 
 // MARK: Previews
-struct AnalyticsProductCardPreviews: PreviewProvider {
+struct AnalyticsItemsSoldCardPreviews: PreviewProvider {
     static var previews: some View {
         let imageURL = URL(string: "https://s0.wordpress.com/i/store/mobile/plans-premium.png")
-        AnalyticsProductCard(itemsSold: "2,234",
-                             delta: "+23%",
-                             deltaBackgroundColor: .withColorStudio(.green, shade: .shade50),
-                             deltaTextColor: .textInverted,
-                             isStatsRedacted: false,
-                             showStatsError: false,
-                             itemsSoldData: [
+        AnalyticsItemsSoldCard(title: "Products",
+                               itemsSoldTitle: "Items Sold",
+                               itemsSold: "2,234",
+                               delta: "+23%",
+                               deltaBackgroundColor: .withColorStudio(.green, shade: .shade50),
+                               deltaTextColor: .textInverted,
+                               isStatsRedacted: false,
+                               showStatsError: false,
+                               statsErrorMessage: "Unable to load product analytics",
+                               itemsSoldData: [
                                 .init(imageURL: imageURL, name: "Tabletop Photos", details: "Net Sales: $1,232", value: "32"),
                                 .init(imageURL: imageURL, name: "Kentya Palm", details: "Net Sales: $800", value: "10"),
                                 .init(imageURL: imageURL, name: "Love Ficus", details: "Net Sales: $599", value: "5"),
                                 .init(imageURL: imageURL, name: "Bird Of Paradise", details: "Net Sales: $23.50", value: "2"),
-                             ],
-                             isItemsSoldRedacted: false,
-                             showItemsSoldError: false,
-                             reportViewModel: .init(reportType: .products,
-                                                    period: .today,
-                                                    webViewTitle: "Products Report",
-                                                    reportURL: URL(string: "https://woo.com")!,
-                                                    usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter()))
+                               ],
+                               isItemsSoldRedacted: false,
+                               showItemsSoldError: false,
+                               itemsSoldErrorMessage: "Unable to load product items sold analytics",
+                               reportViewModel: .init(reportType: .products,
+                                                      period: .today,
+                                                      webViewTitle: "Products Report",
+                                                      reportURL: URL(string: "https://woo.com")!,
+                                                      usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter()))
             .previewLayout(.sizeThatFits)
 
-        AnalyticsProductCard(itemsSold: "-",
-                             delta: "0%",
-                             deltaBackgroundColor: .withColorStudio(.gray, shade: .shade0),
-                             deltaTextColor: .text,
-                             isStatsRedacted: false,
-                             showStatsError: true,
-                             itemsSoldData: [],
-                             isItemsSoldRedacted: false,
-                             showItemsSoldError: true,
-                             reportViewModel: .init(reportType: .products,
-                                                    period: .today,
-                                                    webViewTitle: "Products Report",
-                                                    reportURL: URL(string: "https://woo.com")!,
-                                                    usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter()))
+        AnalyticsItemsSoldCard(title: "Products",
+                               itemsSoldTitle: "Items Sold",
+                               itemsSold: "-",
+                               delta: "0%",
+                               deltaBackgroundColor: .withColorStudio(.gray, shade: .shade0),
+                               deltaTextColor: .text,
+                               isStatsRedacted: false,
+                               showStatsError: true,
+                               statsErrorMessage: "Unable to load product analytics",
+                               itemsSoldData: [],
+                               isItemsSoldRedacted: false,
+                               showItemsSoldError: true,
+                               itemsSoldErrorMessage: "Unable to load product items sold analytics",
+                               reportViewModel: .init(reportType: .products,
+                                                      period: .today,
+                                                      webViewTitle: "Products Report",
+                                                      reportURL: URL(string: "https://woo.com")!,
+                                                      usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter()))
             .previewLayout(.sizeThatFits)
             .previewDisplayName("No data")
     }

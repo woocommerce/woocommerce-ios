@@ -1,10 +1,36 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+18.1
+-----
+
+
+18.0
+-----
+- [**] Hub Menu: A new Customers section shows a searchable list of customers with their details, including the option to contact a customer via email. [https://github.com/woocommerce/woocommerce-ios/pull/12349]
+- [Internal] Update Woo Purple color palette [https://github.com/woocommerce/woocommerce-ios/pull/12330]
+- [internal] The dependency setup in `AppDelegate`'s `application(_:willFinishLaunchingWithOptions:)` was updated as an attempted fix for one of the top crashes. [https://github.com/woocommerce/woocommerce-ios/pull/12268]
+- [*] Order List: Speculative fix for a crash on the iPad when viewing orders [https://github.com/woocommerce/woocommerce-ios/pull/12369]
+
+17.9
+-----
+- [***] Blaze: revamped the Blaze advertising flow with a native implementation to enhance user experience. This allows merchants to seamlessly create and manage their campaigns directly within the Woo mobile apps, without opening the flow in a webview. [https://github.com/woocommerce/woocommerce-ios/pull/12361]
+- [**] Added 4 home screen quick actions: "New Order", "Orders", "Add a product", "Collect Payment" [https://github.com/woocommerce/woocommerce-ios/pull/12264/]
+- [Internal] Payments: Updated StripeTerminal pod to 3.3.1 [https://github.com/woocommerce/woocommerce-ios/pull/12078]
+
+17.8
+-----
+
 17.7
 -----
 - [***] [internal] Alamofire, which is the HTTP client library used in the app, has been updated to v5. [https://github.com/woocommerce/woocommerce-ios/pull/12125]
 - [internal] Blaze: Update campaign status values to match v1.1 endpoint. [https://github.com/woocommerce/woocommerce-ios/pull/12207]
-- Orders: Merchants can filter orders by selecting a customer [https://github.com/woocommerce/woocommerce-ios/pull/12100]
+- [**] Orders: Merchants can filter orders by selecting a customer [https://github.com/woocommerce/woocommerce-ios/pull/12100]
+- [**] Login: Adds a small tutorial before presenting the web view application password authentication screen. [https://github.com/woocommerce/woocommerce-ios/pull/12240]
+- [**] Performance: Add a connectivity tool to diagnose possible network failures [https://github.com/woocommerce/woocommerce-ios/pull/12240]
+- [internal] Performance: Retries orders timeout errors [https://github.com/woocommerce/woocommerce-ios/pull/12240]
+- [**] My Store Analytics: Now a custom date range can be added for analyzing store performance in any arbitrary time ranges. [https://github.com/woocommerce/woocommerce-ios/pull/12243]
+- [***] Orders: Side-by-side view for Order Creation or Editing on iPad and larger iPhones [https://github.com/woocommerce/woocommerce-ios/pull/12246]
+
 
 
 17.6

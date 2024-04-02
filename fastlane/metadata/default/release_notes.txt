@@ -1,1 +1,2 @@
-Our latest update brings under-the-hood improvements to enhance both stability and performance. But that's not all – we're also hard at work on some cool new features that we can't wait to share with you in future releases. Stay tuned for future updates as we continue to fine-tune and elevate your experience!
+In our latest update, we've enhanced your WooCommerce experience!
+We added few quick actions when you touch and hold the app icon, you can now start creating new order, get list of orders, add a new product or start collecting payment. Get to the specific feature of the app easier and faster by using one of the actions!

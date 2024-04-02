@@ -1,4 +1,5 @@
 import Foundation
+import SafariServices
 import KeychainAccess
 import WordPressAuthenticator
 import WordPressUI
@@ -371,7 +372,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
         }()
 
         // Only show the tutorial if the error can be solved by the app password flow.
-        if featureFlagService.isFeatureFlagEnabled(.appPasswordTutorial) && isAppPasswordAuthError {
+        if isAppPasswordAuthError {
             presentAppPasswordTutorial(error: error, for: siteURL, in: viewController)
         } else {
             presentAppPasswordAlert(error: error, for: siteURL, in: viewController)
@@ -565,6 +566,16 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
                                                             navigationController: navigationController)
         self.loggedOutStoreCreationCoordinator = coordinator
         coordinator.start()
+    }
+
+    func showSiteCreationGuide(in navigationController: UINavigationController) {
+        analytics.track(event: .StoreCreation.loginPrologueStartingANewStoreTapped())
+
+        guard let url = try? AuthenticationConstants.hostingURL.asURL() else {
+            return
+        }
+        let webView = SFSafariViewController(url: url)
+        navigationController.present(webView, animated: true)
     }
 }
 
@@ -829,18 +840,9 @@ private extension AuthenticationManager {
     ///
     private func presentAppPasswordAlert(error: Error, for siteURL: String, in viewController: UIViewController) {
 
-        let isAppPasswordTutorialDisabled = !ServiceLocator.featureFlagService.isFeatureFlagEnabled(.appPasswordTutorial)
-        let defaultAction = isAppPasswordTutorialDisabled ? { [weak self] in
-            guard let self else { return }
-            let webViewController = self.applicationPasswordWebView(for: siteURL)
-            viewController.navigationController?.pushViewController(webViewController, animated: true)
-            self.presentApplicationPasswordWebView(for: siteURL, in: viewController)
-            self.analytics.track(.applicationPasswordAuthorizationButtonTapped)
-        } : nil
-
         let alertController = FancyAlertViewController.makeSiteCredentialLoginErrorAlert(
             message: (error as NSError).localizedDescription,
-            defaultAction: defaultAction
+            defaultAction: nil
         )
 
         viewController.present(alertController, animated: true)
@@ -862,7 +864,7 @@ extension AuthenticationManager {
 
         switch wooAuthError {
         case .emailDoesNotMatchWPAccount, .invalidEmailFromWPComLogin, .invalidEmailFromSiteAddressLogin:
-            return NotWPAccountViewModel(error: error)
+            return NotWPAccountViewModel()
         case .notWPSite,
              .notValidAddress:
             return NotWPErrorViewModel()

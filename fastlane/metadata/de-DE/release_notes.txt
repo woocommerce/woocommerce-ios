@@ -1,1 +1,2 @@
-Unser neuestes Update beinhaltet grundlegende Verbesserungen, die sowohl die Stabilität als auch die Performance steigern. Aber das ist noch nicht alles – wir arbeiten intensiv an einigen coolen neuen Funktionen, die wir in zukünftigen Veröffentlichungen mit dir teilen werden. Also bleib dran und freue dich auf künftige Updates, mit denen wir dein Erlebnis noch weiter verbessern möchten.
+Im Rahmen unseres letzten Updates wurde dein WooCommerce-Erlebnis verbessert!
+Durch das Berühren und Halten des App-Icons kannst du jetzt neue Schnellaktionen nutzen, über die du eine neue Bestellung erstellen, Bestelllisten abrufen, ein neues Produkt hinzufügen oder Zahlungen empfangen kannst. Mit diesen Aktion gelangst du noch schneller und einfacher zu bestimmten Funktionen der App!

@@ -196,15 +196,15 @@ public enum FeatureFlag: Int {
     ///
     case splitViewInProductsTab
 
-    /// Displays the option to add a custom date range in My Store Analytics
+    /// Removes the entry points to account and site creation.
     ///
-    case customRangeInMyStoreAnalytics
+    case noMoreWooExpressSignup
 
-    /// Enables the connectivity tool when an order list error happens.
+    /// Displays a Customers section in the Hub menu.
     ///
-    case connectivityTool
+    case customersInHubMenu
 
-    /// Enables the Application Password tutorial
+    /// Displays analytics cards for extensions in the Analytics Hub.
     ///
-    case appPasswordTutorial
+    case expandedAnalyticsHub
 }

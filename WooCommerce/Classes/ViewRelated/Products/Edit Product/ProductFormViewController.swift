@@ -196,6 +196,12 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         return true
     }
 
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+
+        updateNavigationBarTitle()
+    }
+
     // MARK: - Navigation actions handling
 
     override func shouldPopOnBackButton() -> Bool {
@@ -1183,8 +1189,13 @@ private extension ProductFormViewController {
     }
 
     func updateNavigationBarTitle() {
+        guard traitCollection.horizontalSizeClass != .compact else {
+            title = nil
+            return
+        }
         // Update navigation bar title with variation ID for variation page
         guard let variationID = viewModel.productionVariationID else {
+            title = Localization.defaultTitle
             return
         }
         title = Localization.variationViewTitle(variationID: "\(variationID)")
@@ -2007,6 +2018,7 @@ private enum Localization {
         "Cannot duplicate product",
         comment: "The title of the alert when there is an error duplicating the product"
     )
+    static let defaultTitle = NSLocalizedString("productForm.defaultTitle", value: "Product", comment: "Product title")
 
     enum AITooltip {
         static let title = NSLocalizedString("Write with AI",

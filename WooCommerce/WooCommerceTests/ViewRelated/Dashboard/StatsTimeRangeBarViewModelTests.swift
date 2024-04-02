@@ -67,8 +67,8 @@ final class StatsTimeRangeBarViewModelTests: XCTestCase {
         let formatter = DateFormatter()
         formatter.setLocalizedDateFormatFromTemplate("MMM d")
         formatter.timeZone = timezone
-        // "Jul 28 - Aug 3" in en-US locale.
-        let expectedText = String.localizedStringWithFormat(NSLocalizedString("%1$@ - %2$@", comment: "Displays a date range for a stats interval"),
+        // "Jul 28 – Aug 3" in en-US locale.
+        let expectedText = String.localizedStringWithFormat(NSLocalizedString("%1$@ – %2$@", comment: "Displays a date range for a stats interval"),
                                                             formatter.string(from: startDate),
                                                             formatter.string(from: endDate))
         XCTAssertEqual(viewModel.timeRangeText, expectedText)
@@ -210,8 +210,8 @@ final class StatsTimeRangeBarViewModelTests: XCTestCase {
         formatter.dateStyle = .medium
         formatter.timeStyle = .none
         formatter.timeZone = timezone
-        // "July 25, 2019 - August 6, 2019" in en-US locale.
-        let expectedText = String(format: "%1$@ - %2$@",
+        // "July 25, 2019 – August 6, 2019" in en-US locale.
+        let expectedText = String(format: "%1$@ – %2$@",
                                   formatter.string(from: actualStartDate),
                                   formatter.string(from: actualEndDate))
         XCTAssertEqual(viewModel.timeRangeText, expectedText)
@@ -239,7 +239,8 @@ final class StatsTimeRangeBarViewModelTests: XCTestCase {
         formatter.timeZone = timezone
         // "Monday, March 4 12:00 PM"
         let expectedDate = formatter.string(from: selectedDate)
-        XCTAssertEqual(viewModel.timeRangeText, expectedDate)
+        XCTAssertNotNil(viewModel.selectedDateText)
+        XCTAssertEqual(viewModel.selectedDateText, expectedDate)
     }
 
     func test_custom_range_with_selected_date_for_daily_granularity() {
@@ -264,8 +265,8 @@ final class StatsTimeRangeBarViewModelTests: XCTestCase {
         formatter.timeZone = timezone
         // "Mar 4"
         let expectedDate = formatter.string(from: selectedDate)
-        XCTAssertEqual(viewModel.timeRangeText, expectedDate)
-    }
+        XCTAssertNotNil(viewModel.selectedDateText)
+        XCTAssertEqual(viewModel.selectedDateText, expectedDate)    }
 
     func test_custom_range_with_selected_date_for_weekly_granularity() {
         // Given
@@ -289,7 +290,8 @@ final class StatsTimeRangeBarViewModelTests: XCTestCase {
         formatter.timeZone = timezone
         // "Mar 4"
         let expectedDate = formatter.string(from: selectedDate)
-        XCTAssertEqual(viewModel.timeRangeText, expectedDate)
+        XCTAssertNotNil(viewModel.selectedDateText)
+        XCTAssertEqual(viewModel.selectedDateText, expectedDate)
     }
 
     func test_custom_range_with_selected_date_for_monthly_granularity() {
@@ -314,63 +316,7 @@ final class StatsTimeRangeBarViewModelTests: XCTestCase {
         formatter.timeZone = timezone
         // "March 2024"
         let expectedDate = formatter.string(from: selectedDate)
-        XCTAssertEqual(viewModel.timeRangeText, expectedDate)
-    }
-
-    func test_granularityText_is_non_nil_for_custom_range_without_selected_date() {
-        // Given
-        // GMT: May 28 2023 00:00:00 AM
-        let startDate = Date(timeIntervalSince1970: 1685232000)
-        // GMT: March 5 2024 00:00:00 AM
-        let endDate = Date(timeIntervalSince1970: 1709596800)
-        let timezone = TimeZone(identifier: "GMT") ?? .current
-
-        // When
-        let viewModel = StatsTimeRangeBarViewModel(startDate: startDate,
-                                                   endDate: endDate,
-                                                   timeRange: .custom(from: startDate, to: endDate),
-                                                   timezone: timezone)
-
-        // Then
-        XCTAssertEqual(viewModel.granularityText, StatsGranularityV4.monthly.displayText)
-    }
-
-    func test_granularityText_is_nil_for_custom_range_with_selected_date() {
-        // Given
-        // GMT: May 28 2023 00:00:00 AM
-        let startDate = Date(timeIntervalSince1970: 1685232000)
-        // GMT: March 5 2024 00:00:00 AM
-        let endDate = Date(timeIntervalSince1970: 1709596800)
-        // GMT: March 4 2024 12:00:00 PM
-        let selectedDate = Date(timeIntervalSince1970: 1709553600)
-        let timezone = TimeZone(identifier: "GMT") ?? .current
-
-        // When
-        let viewModel = StatsTimeRangeBarViewModel(startDate: startDate,
-                                                   endDate: endDate,
-                                                   selectedDate: selectedDate,
-                                                   timeRange: .custom(from: startDate, to: endDate),
-                                                   timezone: timezone)
-
-        // Then
-        XCTAssertNil(viewModel.granularityText)
-    }
-
-    func test_granularityText_is_nil_for_today_range() {
-        // Given
-        // GMT: Thursday, August 15, 2019 6:14:35 PM
-        let startDate = Date(timeIntervalSince1970: 1565892875)
-        // GMT: Friday, August 16, 2019 2:14:35 AM
-        let endDate = Date(timeIntervalSince1970: 1565921675)
-        let timezone = TimeZone(identifier: "GMT") ?? .current
-
-        // When
-        let viewModel = StatsTimeRangeBarViewModel(startDate: startDate,
-                                                   endDate: endDate,
-                                                   timeRange: .today,
-                                                   timezone: timezone)
-
-        // Then
-        XCTAssertNil(viewModel.granularityText)
+        XCTAssertNotNil(viewModel.selectedDateText)
+        XCTAssertEqual(viewModel.selectedDateText, expectedDate)
     }
 }

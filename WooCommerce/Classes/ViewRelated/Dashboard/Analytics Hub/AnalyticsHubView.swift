@@ -132,7 +132,7 @@ private extension AnalyticsHubView {
         case .orders:
             AnalyticsReportCard(viewModel: viewModel.ordersCard)
         case .products:
-            AnalyticsProductCard(statsViewModel: viewModel.productsStatsCard, itemsViewModel: viewModel.itemsSoldCard)
+            AnalyticsItemsSoldCard(statsViewModel: viewModel.productsStatsCard, itemsViewModel: viewModel.itemsSoldCard)
         case .sessions:
             if viewModel.showJetpackStatsCTA {
                 AnalyticsCTACard(title: Localization.sessionsCTATitle,
@@ -143,9 +143,13 @@ private extension AnalyticsHubView {
                     await viewModel.enableJetpackStats()
                     isEnablingJetpackStats = false
                 }
+            } else if case .custom = viewModel.timeRangeSelectionType {
+                AnalyticsSessionsUnavailableCard()
             } else {
                 AnalyticsReportCard(viewModel: viewModel.sessionsCard)
             }
+        case .bundles:
+            AnalyticsItemsSoldCard(bundlesViewModel: viewModel.bundlesCard)
         }
     }
 }

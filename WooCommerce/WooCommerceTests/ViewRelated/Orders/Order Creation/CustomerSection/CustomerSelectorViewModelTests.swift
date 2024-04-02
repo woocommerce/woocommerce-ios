@@ -2,6 +2,7 @@ import Foundation
 import XCTest
 @testable import WooCommerce
 import Yosemite
+import Networking
 
 final class CustomerSelectorViewModelTests: XCTestCase {
     var viewModel: CustomerSelectorViewModel!
@@ -142,13 +143,19 @@ final class CustomerSelectorViewModelTests: XCTestCase {
         var passedSiteID: Int64?
         var passedPageNumber: Int?
         var passedPageSize: Int?
+        var passedOrderBy: WCAnalyticsCustomerRemote.OrderBy?
+        var passedOrder: WCAnalyticsCustomerRemote.Order?
+        var passedFilterEmpty: WCAnalyticsCustomerRemote.FilterEmpty?
 
         stores.whenReceivingAction(ofType: CustomerAction.self) { action in
             switch action {
-            case let .synchronizeLightCustomersData(siteID, pageNumber, pageSize, onCompletion):
+            case let .synchronizeLightCustomersData(siteID, pageNumber, pageSize, orderby, order, filterEmpty, onCompletion):
                 passedSiteID = siteID
                 passedPageNumber = pageNumber
                 passedPageSize = pageSize
+                passedOrderBy = orderby
+                passedOrder = order
+                passedFilterEmpty = filterEmpty
                 onCompletion(.success(true))
             default:
                 XCTFail("Received unsupported action: \(action)")
@@ -166,6 +173,9 @@ final class CustomerSelectorViewModelTests: XCTestCase {
         XCTAssertEqual(passedSiteID, sampleSiteID)
         XCTAssertEqual(passedPageNumber, 1)
         XCTAssertEqual(passedPageSize, 25)
+        XCTAssertEqual(passedOrderBy, .name)
+        XCTAssertEqual(passedOrder, .asc)
+        XCTAssertEqual(passedFilterEmpty, .email)
     }
 
     func test_loadCustomersListData_calls_to_synchronizeLightCustomersData_and_passes_error() {
@@ -175,7 +185,7 @@ final class CustomerSelectorViewModelTests: XCTestCase {
 
         stores.whenReceivingAction(ofType: CustomerAction.self) { action in
             switch action {
-            case let .synchronizeLightCustomersData(_, _, _, onCompletion):
+            case let .synchronizeLightCustomersData(_, _, _, _, _, _, onCompletion):
                 onCompletion(.failure(error))
             default:
                 XCTFail("Received unsupported action: \(action)")

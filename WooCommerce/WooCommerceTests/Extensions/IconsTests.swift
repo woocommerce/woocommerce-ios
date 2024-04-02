@@ -324,10 +324,6 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.getPaidImage)
     }
 
-    func test_setStoreNameImage_is_not_nil() {
-        XCTAssertNotNil(UIImage.setStoreNameImage)
-    }
-
     func test_storeSummaryImage_is_not_nil() {
         XCTAssertNotNil(UIImage.storeSummaryImage)
     }
@@ -923,5 +919,17 @@ final class IconsTests: XCTestCase {
 
     func test_variableSubscriptionProductImage_icon_is_not_nil() {
         XCTAssertNotNil(UIImage.variableSubscriptionProductImage)
+    }
+
+    func test_cashRegisterImage_is_not_nil() {
+        XCTAssertNotNil(UIImage.cashRegisterImage)
+    }
+
+    func test_exclamationFilledImage_is_not_nil() {
+        XCTAssertNotNil(UIImage.exclamationFilledImage)
+    }
+
+    func test_exclamationImage_is_not_nil() {
+        XCTAssertNotNil(UIImage.exclamationImage)
     }
 }

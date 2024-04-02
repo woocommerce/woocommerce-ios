@@ -112,6 +112,12 @@ extension UIImage {
             .withTintColor(.placeholderImage)
     }
 
+    /// Cash register image
+    ///
+    static var cashRegisterImage: UIImage {
+        return UIImage(named: "cash-register")!
+    }
+
     /// Product categories Icon
     ///
     static var categoriesIcon: UIImage {
@@ -587,12 +593,6 @@ extension UIImage {
     ///
     static var getPaidImage: UIImage {
         UIImage(named: "icon-get-paid")!
-    }
-
-    /// Set store name image
-    ///
-    static var setStoreNameImage: UIImage {
-        UIImage(systemName: "pencil.circle")!
     }
 
     /// Store summary image used in the store creation flow.
@@ -1508,6 +1508,16 @@ extension UIImage {
     static var appPasswordTutorialImage: UIImage {
         UIImage(named: "app-password-tutorial-1")!
     }
+
+    static var exclamationFilledImage: UIImage {
+        UIImage(systemName: "exclamationmark.circle.fill", withConfiguration: Configurations.barButtonItemSymbol)!.withRenderingMode(.alwaysTemplate)
+    }
+
+    static var exclamationImage: UIImage {
+        UIImage(systemName: "exclamationmark.circle", withConfiguration: Configurations.barButtonItemSymbol)!.withRenderingMode(.alwaysTemplate)
+    }
+
+
 }
 
 private extension UIImage {

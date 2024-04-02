@@ -10,12 +10,14 @@ public final class StatsStoreV4: Store {
     private let orderStatsRemote: OrderStatsRemoteV4
     private let productsRemote: ProductsRemote
     private let productsReportsRemote: ProductsReportsRemote
+    private let productBundleStatsRemote: ProductBundleStatsRemote
 
     public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         self.siteStatsRemote = SiteStatsRemote(network: network)
         self.orderStatsRemote = OrderStatsRemoteV4(network: network)
         self.productsRemote = ProductsRemote(network: network)
         self.productsReportsRemote = ProductsReportsRemote(network: network)
+        self.productBundleStatsRemote = ProductBundleStatsRemote(network: network)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
 
@@ -110,6 +112,22 @@ public final class StatsStoreV4: Store {
                                      latestDateToInclude: latestDateToInclude,
                                      saveInStorage: saveInStorage,
                                      onCompletion: onCompletion)
+        case let .retrieveProductBundleStats(siteID, unit, timeZone, earliestDateToInclude, latestDateToInclude, quantity, forceRefresh, onCompletion):
+            retrieveProductBundleStats(siteID: siteID,
+                                       unit: unit,
+                                       timeZone: timeZone,
+                                       earliestDateToInclude: earliestDateToInclude,
+                                       latestDateToInclude: latestDateToInclude,
+                                       quantity: quantity,
+                                       forceRefresh: forceRefresh,
+                                       onCompletion: onCompletion)
+        case let .retrieveTopProductBundles(siteID, timeZone, earliestDateToInclude, latestDateToInclude, quantity, onCompletion):
+            retrieveTopProductBundles(siteID: siteID,
+                                      timeZone: timeZone,
+                                      earliestDateToInclude: earliestDateToInclude,
+                                      latestDateToInclude: latestDateToInclude,
+                                      quantity: quantity,
+                                      onCompletion: onCompletion)
         }
     }
 }
@@ -305,6 +323,54 @@ private extension StatsStoreV4 {
                                                    productsReport: productsReport,
                                                    quantity: quantity)
     }
+
+    /// Retrieves the product bundle stats for the provided siteID, and time range, without saving them to the Storage layer.
+    ///
+    func retrieveProductBundleStats(siteID: Int64,
+                                    unit: StatsGranularityV4,
+                                    timeZone: TimeZone,
+                                    earliestDateToInclude: Date,
+                                    latestDateToInclude: Date,
+                                    quantity: Int,
+                                    forceRefresh: Bool,
+                                    onCompletion: @escaping (Result<ProductBundleStats, Error>) -> Void) {
+        Task { @MainActor in
+            do {
+                let bundleStats = try await productBundleStatsRemote.loadProductBundleStats(for: siteID,
+                                                                                            unit: unit,
+                                                                                            timeZone: timeZone,
+                                                                                            earliestDateToInclude: earliestDateToInclude,
+                                                                                            latestDateToInclude: latestDateToInclude,
+                                                                                            quantity: quantity,
+                                                                                            forceRefresh: forceRefresh)
+                onCompletion(.success(bundleStats))
+            } catch {
+                onCompletion(.failure(error))
+            }
+        }
+    }
+
+    /// Retrieves the top product bundles for the provided siteID, and time range, without saving them to the Storage layer.
+    ///
+    func retrieveTopProductBundles(siteID: Int64,
+                                   timeZone: TimeZone,
+                                   earliestDateToInclude: Date,
+                                   latestDateToInclude: Date,
+                                   quantity: Int,
+                                   onCompletion: @escaping (Result<[ProductsReportItem], Error>) -> Void) {
+        Task { @MainActor in
+            do {
+                let topBundles = try await productBundleStatsRemote.loadTopProductBundlesReport(for: siteID,
+                                                                                                timeZone: timeZone,
+                                                                                                earliestDateToInclude: earliestDateToInclude,
+                                                                                                latestDateToInclude: latestDateToInclude,
+                                                                                                quantity: quantity)
+                onCompletion(.success(topBundles))
+            } catch {
+                onCompletion(.failure(error))
+            }
+        }
+    }
 }
 
 
@@ -487,11 +553,6 @@ public extension StatsStoreV4 {
     ///
     static func buildDateString(from date: Date, with granularity: StatGranularity) -> String {
         switch granularity {
-        case .hour:
-            let dateFormatter = DateFormatter()
-            dateFormatter.dateStyle = .short
-            dateFormatter.timeStyle = .short
-            return dateFormatter.string(from: date)
         case .day:
             return DateFormatter.Stats.statsDayFormatter.string(from: date)
         case .week:

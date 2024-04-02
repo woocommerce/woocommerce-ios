@@ -213,6 +213,7 @@ struct InPersonPaymentsMenu: View {
                                   style: .medium)
             }
         }
+        .navigationTitle(InPersonPaymentsView.Localization.title)
     }
 
     @ViewBuilder

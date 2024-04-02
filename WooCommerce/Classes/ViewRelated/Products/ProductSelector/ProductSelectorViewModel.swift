@@ -93,9 +93,11 @@ final class ProductSelectorViewModel: ObservableObject {
         }
     }
 
-    /// Defines the current notice that should be shown.
+    /// Defines the current notice that should be shown. Only for internal use as it may be routed different ways.
     /// Defaults to `nil`.
     ///
+    @Published private var productNotice: Notice?
+
     @Published var notice: Notice?
 
     /// All products that can be added to an order.
@@ -232,6 +234,8 @@ final class ProductSelectorViewModel: ObservableObject {
          pageSize: Int = PaginationTracker.Defaults.pageSize,
          syncApproach: SyncApproach = .onButtonTap,
          orderSyncState: Published<OrderSyncState>.Publisher? = nil,
+         shouldShowNonEditableIndicators: Bool = false,
+         externalNoticePublisher: Published<Notice?>.Publisher? = nil,
          onProductSelectionStateChanged: ((Product, Bool) -> Void)? = nil,
          onVariationSelectionStateChanged: ((ProductVariation, Product, Bool) -> Void)? = nil,
          onMultipleSelectionCompleted: (([Int64]) -> Void)? = nil,
@@ -254,6 +258,7 @@ final class ProductSelectorViewModel: ObservableObject {
         self.paginationTracker = PaginationTracker(pageFirstIndex: pageFirstIndex, pageSize: pageSize)
         self.syncApproach = syncApproach
         self.orderSyncState = orderSyncState
+        self.nonEditable = shouldShowNonEditableIndicators
         self.onAllSelectionsCleared = onAllSelectionsCleared
         self.onSelectedVariationsCleared = onSelectedVariationsCleared
         self.onCloseButtonTapped = onCloseButtonTapped
@@ -267,12 +272,33 @@ final class ProductSelectorViewModel: ObservableObject {
         refreshDataAndSync()
         configureFirstPageLoad()
         synchronizeProductFilterSearch()
+        bindShowPlaceholdersState()
         bindSelectionDisabledState()
+
+        if var externalNoticePublisher {
+            self.$productNotice.assign(to: &externalNoticePublisher)
+        } else {
+            self.$productNotice.assign(to: &$notice)
+        }
     }
 
+    private let nonEditable: Bool
     @Published var selectionDisabled: Bool = false
+    @Published var showPlaceholders: Bool = false
 
     private func bindSelectionDisabledState() {
+        orderSyncState?.map({ [weak self] state in
+            switch state {
+            case .syncing(blocking: true):
+                return true
+            default:
+                return self?.nonEditable ?? false
+            }
+        })
+        .assign(to: &$selectionDisabled)
+    }
+
+    private func bindShowPlaceholdersState() {
         orderSyncState?.map({ state in
             switch state {
             case .syncing(blocking: true):
@@ -281,7 +307,7 @@ final class ProductSelectorViewModel: ObservableObject {
                 return false
             }
         })
-        .assign(to: &$selectionDisabled)
+        .assign(to: &$showPlaceholders)
     }
 
     /// Selects or unselects a product to add to the order
@@ -478,7 +504,7 @@ extension ProductSelectorViewModel: PaginationTrackerDelegate {
             case .success:
                 self.reloadData()
             case .failure(let error):
-                self.notice = NoticeFactory.productSyncNotice() { [weak self] in
+                self.productNotice = NoticeFactory.productSyncNotice() { [weak self] in
                     self?.sync(pageNumber: pageNumber, pageSize: pageSize, onCompletion: nil)
                 }
                 DDLogError("⛔️ Error synchronizing products during order creation: \(error)")
@@ -515,7 +541,7 @@ extension ProductSelectorViewModel: PaginationTrackerDelegate {
                 self.reloadData()
             case .failure(let error):
                 self.tracker.trackSearchFailureIfNecessary(with: error)
-                self.notice = NoticeFactory.productSearchNotice() { [weak self] in
+                self.productNotice = NoticeFactory.productSearchNotice() { [weak self] in
                     self?.searchProducts(siteID: siteID, keyword: keyword, pageNumber: pageNumber, pageSize: pageSize, onCompletion: nil)
                 }
                 DDLogError("⛔️ Error searching products during order creation: \(error)")
@@ -576,7 +602,7 @@ private extension ProductSelectorViewModel {
     ///
     func transitionToSyncingState(pageNumber: Int) {
         shouldShowScrollIndicator = true
-        notice = nil
+        productNotice = nil
 
         if shouldShowLoadingScreen(pageNumber: pageNumber) {
             syncStatus = .loading

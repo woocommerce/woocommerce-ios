@@ -681,6 +681,27 @@ public extension StorageType {
         return firstObject(ofType: CustomerSearchResult.self, matching: predicate)
     }
 
+    // MARK: - WCAnalytics Customers
+
+    /// Returns a single WCAnalyticsCustomer given a `siteID` and `customerID`
+    ///
+    func loadWCAnalyticsCustomer(siteID: Int64, customerID: Int64) -> WCAnalyticsCustomer? {
+        let predicate = \WCAnalyticsCustomer.siteID == siteID && \WCAnalyticsCustomer.customerID == customerID
+        return firstObject(ofType: WCAnalyticsCustomer.self, matching: predicate)
+    }
+
+    func loadAllWCAnalyticsCustomers(siteID: Int64) -> [WCAnalyticsCustomer] {
+        let predicate = \WCAnalyticsCustomer.siteID == siteID
+        return allObjects(ofType: WCAnalyticsCustomer.self, matching: predicate, sortedBy: [])
+    }
+
+    /// Returns a WCAnalyticsCustomerSearchResult given a `siteID` and a `keyword`
+    ///
+    func loadWCAnalyticsCustomerSearchResult(siteID: Int64, keyword: String) -> WCAnalyticsCustomerSearchResult? {
+        let predicate = \WCAnalyticsCustomerSearchResult.siteID == siteID && \WCAnalyticsCustomerSearchResult.keyword == keyword
+        return firstObject(ofType: WCAnalyticsCustomerSearchResult.self, matching: predicate)
+    }
+
     // MARK: - System plugins
 
     /// Returns all stored system plugins for a provided `siteID`.

@@ -68,17 +68,6 @@ class StoreOnboardingViewModel: ObservableObject {
 
     private let waitingTimeTracker: AppStartupWaitingTimeTracker
 
-    private var isFreeTrialStore: Bool {
-        guard let site = stores.sessionManager.defaultSite else {
-            return false
-        }
-        return site.isFreeTrialSite
-    }
-
-    private var siteHasDefaultTitle: Bool {
-        stores.sessionManager.defaultSite?.name == WooConstants.defaultStoreName
-    }
-
     /// Emits when there are no tasks available for display after reload.
     /// i.e. When (request failed && No previously loaded local data available)
     ///
@@ -145,19 +134,7 @@ class StoreOnboardingViewModel: ObservableObject {
 private extension StoreOnboardingViewModel {
     @MainActor
     func loadTasks() async throws -> [StoreOnboardingTaskViewModel] {
-
-        let localTasks: [StoreOnboardingTask] = {
-            var tasks: [StoreOnboardingTask] = []
-            if isFreeTrialStore {
-                tasks.append(.init(isComplete: false, type: .launchStore))
-                tasks.append(.init(isComplete: !siteHasDefaultTitle, type: .storeName))
-            }
-            return tasks
-        }()
-
-        let tasksFromServer: [StoreOnboardingTask] = try await fetchTasks()
-
-        return (tasksFromServer + localTasks)
+        try await fetchTasks()
             .sorted()
             .map { .init(task: $0, badgeText: nil) }
     }

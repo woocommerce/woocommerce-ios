@@ -1,1 +1,2 @@
-Kami hadirkan perbaikan internal di pembaruan terkini untuk meningkatkan stabilitas dan performa. Kami juga berupaya keras membuat fitur-fitur baru yang keren untuk dibagikan pada rilis yang akan datang. Nantikan pembaruan berikutnya dari kami yang terus menyempurnakan dan meningkatkan pengalaman Anda.
+Pembaruan terkini kami menyempurnakan pengalaman WooCommerce Anda.
+Kami menambahkan sejumlah tindakan cepat saat ikon aplikasi ditekan dan ditahan: Anda sekarang dapat membuat pesanan baru, memperoleh daftar pesanan, menambahkan produk baru, atau menarik pembayaran. Fitur-fitur tersebut jadi lebih mudah diakses dengan tindakan cepat yang tersedia!

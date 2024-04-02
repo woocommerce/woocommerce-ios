@@ -660,6 +660,8 @@
 		CE070A2A2BBC3C0A00017578 /* GiftCardStats.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE070A292BBC3C0A00017578 /* GiftCardStats.swift */; };
 		CE070A2C2BBC3C2B00017578 /* GiftCardStatsInterval.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE070A2B2BBC3C2B00017578 /* GiftCardStatsInterval.swift */; };
 		CE070A2E2BBC3C3500017578 /* GiftCardStatsTotals.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE070A2D2BBC3C3500017578 /* GiftCardStatsTotals.swift */; };
+		CE070A302BBC527900017578 /* gift-card-stats.json in Resources */ = {isa = PBXBuildFile; fileRef = CE070A2F2BBC527900017578 /* gift-card-stats.json */; };
+		CE070A342BBC52B200017578 /* gift-card-stats-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = CE070A332BBC52B200017578 /* gift-card-stats-without-data.json */; };
 		CE0A0F13223942D90075ED8D /* ProductImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE0A0F12223942D90075ED8D /* ProductImage.swift */; };
 		CE0A0F1522396BF00075ED8D /* ProductAttribute.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE0A0F1422396BF00075ED8D /* ProductAttribute.swift */; };
 		CE0A0F17223970E80075ED8D /* ProductDefaultAttribute.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE0A0F16223970E80075ED8D /* ProductDefaultAttribute.swift */; };
@@ -1746,6 +1748,8 @@
 		CE070A292BBC3C0A00017578 /* GiftCardStats.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GiftCardStats.swift; sourceTree = "<group>"; };
 		CE070A2B2BBC3C2B00017578 /* GiftCardStatsInterval.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GiftCardStatsInterval.swift; sourceTree = "<group>"; };
 		CE070A2D2BBC3C3500017578 /* GiftCardStatsTotals.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GiftCardStatsTotals.swift; sourceTree = "<group>"; };
+		CE070A2F2BBC527900017578 /* gift-card-stats.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "gift-card-stats.json"; sourceTree = "<group>"; };
+		CE070A332BBC52B200017578 /* gift-card-stats-without-data.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "gift-card-stats-without-data.json"; sourceTree = "<group>"; };
 		CE0A0F12223942D90075ED8D /* ProductImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductImage.swift; sourceTree = "<group>"; };
 		CE0A0F1422396BF00075ED8D /* ProductAttribute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductAttribute.swift; sourceTree = "<group>"; };
 		CE0A0F16223970E80075ED8D /* ProductDefaultAttribute.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProductDefaultAttribute.swift; sourceTree = "<group>"; };
@@ -3151,6 +3155,8 @@
 				CEB9BF302BB190590007978A /* product-bundle-stats.json */,
 				CEB9BF342BB190960007978A /* product-bundle-stats-without-data.json */,
 				CEA455B62BB2D64400D932CF /* product-bundle-top-bundles.json */,
+				CE070A2F2BBC527900017578 /* gift-card-stats.json */,
+				CE070A332BBC52B200017578 /* gift-card-stats-without-data.json */,
 			);
 			path = Responses;
 			sourceTree = "<group>";
@@ -3840,6 +3846,7 @@
 				26BD9FCD2965EC3C004E0D15 /* product-variations-bulk-create.json in Resources */,
 				02C43260298A55D100F14AEE /* validate-domain-contact-info-failure.json in Resources */,
 				B9DFE4C22AA22B6F00174004 /* taxes.json in Resources */,
+				CE070A302BBC527900017578 /* gift-card-stats.json in Resources */,
 				EE57C13C297FBECB00BC31E7 /* product-tags-all-without-data.json in Resources */,
 				028CB718290223CB00331C09 /* account-username-suggestions.json in Resources */,
 				0282DD91233A120A006A5FDB /* products-search-photo.json in Resources */,
@@ -3927,6 +3934,7 @@
 				DEA493722B3997ED00EED015 /* blaze-target-languages.json in Resources */,
 				02698CF624C17FC1005337C4 /* product-alternative-types.json in Resources */,
 				03EB99962907F03000F06A39 /* empty-data-array.json in Resources */,
+				CE070A342BBC52B200017578 /* gift-card-stats-without-data.json in Resources */,
 				57BE08D82409B63800F6DCED /* reviews-missing-avatar-urls.json in Resources */,
 				EEFC4C962A5E996C004C5A83 /* jwt-token-failure.json in Resources */,
 				3158FE8026129EC300E566B9 /* wcpay-account-restricted-overdue.json in Resources */,

@@ -128,10 +128,7 @@ private extension AnalyticsHubView {
         case .products:
             AnalyticsItemsSoldCard(statsViewModel: viewModel.productsStatsCard, itemsViewModel: viewModel.itemsSoldCard)
         case .sessions:
-            AnalyticsSessionsReportCard(showJetpackStatsCTA: viewModel.showJetpackStatsCTA,
-                                        enableJetpackStats: viewModel.enableJetpackStats,
-                                        trackJetpackStatsCTAShown: viewModel.trackJetpackStatsCTAShown,
-                                        isSessionsDataAvailable: viewModel.isSessionsDataAvailable,
+            AnalyticsSessionsReportCard(isSessionsDataAvailable: viewModel.isSessionsDataAvailable,
                                         viewModel: viewModel.sessionsCard)
         case .bundles:
             AnalyticsItemsSoldCard(bundlesViewModel: viewModel.bundlesCard)

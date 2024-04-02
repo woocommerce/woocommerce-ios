@@ -1,18 +1,6 @@
 import SwiftUI
 
 struct AnalyticsSessionsReportCard: View {
-    /// Whether to show the call to action to enable Jetpack Stats.
-    ///
-    let showJetpackStatsCTA: Bool
-
-    /// Enables Jetpack Stats remotely.
-    ///
-    let enableJetpackStats: () async -> Void
-
-    /// Tracks when the Jetpack Stats CTA is shown.
-    ///
-    let trackJetpackStatsCTAShown: () -> Void
-
     /// Whether sessions data is available.
     ///
     let isSessionsDataAvailable: Bool
@@ -24,16 +12,16 @@ struct AnalyticsSessionsReportCard: View {
     @State private var isEnablingJetpackStats = false
 
     var body: some View {
-        if showJetpackStatsCTA {
+        if viewModel.showJetpackStatsCTA {
             AnalyticsCTACard(title: Localization.title,
                              message: Localization.sessionsCTAMessage,
                              buttonLabel: Localization.sessionsCTAButton,
                              isLoading: $isEnablingJetpackStats) {
                 isEnablingJetpackStats = true
-                await enableJetpackStats()
+                await viewModel.enableJetpackStats()
                 isEnablingJetpackStats = false
             }.onAppear {
-                trackJetpackStatsCTAShown()
+                viewModel.trackJetpackStatsCTAShown()
             }
         } else if !isSessionsDataAvailable {
             AnalyticsSessionsUnavailableCard()
@@ -56,10 +44,10 @@ private extension AnalyticsSessionsReportCard {
 }
 
 #Preview("Sessions report card") {
-    AnalyticsSessionsReportCard(showJetpackStatsCTA: false,
-                                enableJetpackStats: {},
-                                trackJetpackStatsCTAShown: {},
-                                isSessionsDataAvailable: true,
-                                viewModel: .init(currentOrderStats: nil,
-                                                 siteStats: nil))
+    AnalyticsSessionsReportCard(isSessionsDataAvailable: true,
+                                viewModel: .init(siteID: 123,
+                                                 currentOrderStats: SessionsReportCardViewModel.sampleOrderStats(),
+                                                 siteStats: SessionsReportCardViewModel.sampleSiteStats(),
+                                                 isJetpackStatsDisabled: false,
+                                                 updateSiteStatsData: {}))
 }

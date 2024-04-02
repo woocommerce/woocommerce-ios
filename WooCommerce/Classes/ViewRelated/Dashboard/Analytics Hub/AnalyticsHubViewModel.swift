@@ -13,11 +13,6 @@ final class AnalyticsHubViewModel: ObservableObject {
     private let storage: StorageManagerType
     private let timeZone: TimeZone
     private let analytics: Analytics
-    private let noticePresenter: NoticePresenter
-
-    /// Delay to allow the backend to process enabling the Jetpack Stats module.
-    /// Defaults to 0.5 seconds.
-    private let backendProcessingDelay: UInt64
 
     private var subscriptions = Set<AnyCancellable>()
 
@@ -40,8 +35,6 @@ final class AnalyticsHubViewModel: ObservableObject {
          stores: StoresManager = ServiceLocator.stores,
          storage: StorageManagerType = ServiceLocator.storageManager,
          analytics: Analytics = ServiceLocator.analytics,
-         noticePresenter: NoticePresenter = ServiceLocator.noticePresenter,
-         backendProcessingDelay: UInt64 = 500_000_000,
          isExpandedAnalyticsHubEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.expandedAnalyticsHub)) {
         let selectedType = AnalyticsHubTimeRangeSelection.SelectionType(statsTimeRange)
         let timeRangeSelection = AnalyticsHubTimeRangeSelection(selectionType: selectedType, timezone: timeZone)
@@ -52,8 +45,6 @@ final class AnalyticsHubViewModel: ObservableObject {
         self.storage = storage
         self.userIsAdmin = stores.sessionManager.defaultRoles.contains(.administrator)
         self.analytics = analytics
-        self.noticePresenter = noticePresenter
-        self.backendProcessingDelay = backendProcessingDelay
         self.isExpandedAnalyticsHubEnabled = isExpandedAnalyticsHubEnabled
         self.timeRangeSelectionType = selectedType
         self.timeRangeSelection = timeRangeSelection
@@ -108,9 +99,14 @@ final class AnalyticsHubViewModel: ObservableObject {
     /// Sessions Card ViewModel
     ///
     var sessionsCard: SessionsReportCardViewModel {
-        SessionsReportCardViewModel(currentOrderStats: currentOrderStats,
+        SessionsReportCardViewModel(siteID: siteID,
+                                    currentOrderStats: currentOrderStats,
                                     siteStats: siteStats,
-                                    isRedacted: isLoadingOrderStats || isLoadingSiteStats)
+                                    isJetpackStatsDisabled: isJetpackStatsDisabled,
+                                    isRedacted: isLoadingOrderStats || isLoadingSiteStats,
+                                    updateSiteStatsData: { [weak self] in
+            await self?.updateData(for: [.sessions])
+        })
     }
 
     /// Product Bundles Card ViewModel
@@ -171,12 +167,6 @@ final class AnalyticsHubViewModel: ObservableObject {
     /// Whether Jetpack Stats are disabled on the store
     ///
     private var isJetpackStatsDisabled = false
-
-    /// Whether to show the call to action to enable Jetpack Stats
-    ///
-    var showJetpackStatsCTA: Bool {
-        isJetpackStatsDisabled && userIsAdmin
-    }
 
     /// Whether sessions data is available to display; `false` if a custom time range is selected.
     ///
@@ -285,29 +275,6 @@ final class AnalyticsHubViewModel: ObservableObject {
     ///
     func trackAnalyticsInteraction() {
         usageTracksEventEmitter.interacted()
-    }
-
-    /// Enables the Jetpack Status module on the store and requests new stats data
-    ///
-    @MainActor
-    func enableJetpackStats() async -> Void {
-        analytics.track(event: .AnalyticsHub.jetpackStatsCTATapped())
-
-        do {
-            try await remoteEnableJetpackStats()
-            // Wait for backend to enable the module (it is not ready for stats to be requested immediately after a success response)
-            try await Task.sleep(nanoseconds: backendProcessingDelay)
-            await updateData(for: [.sessions])
-        } catch {
-            noticePresenter.enqueue(notice: .init(title: Localization.statsCTAError))
-            DDLogError("⚠️ Error enabling Jetpack Stats: \(error)")
-        }
-    }
-
-    /// Tracks when the call to action to enable Jetpack Stats is shown.
-    ///
-    func trackJetpackStatsCTAShown() {
-        analytics.track(event: .AnalyticsHub.jetpackStatsCTAShown())
     }
 }
 
@@ -528,27 +495,6 @@ private extension AnalyticsHubViewModel {
         }
     }
 
-    @MainActor
-    /// Makes the remote request to enable the Jetpack Stats module on the site.
-    ///
-    func remoteEnableJetpackStats() async throws {
-        try await withCheckedThrowingContinuation { continuation in
-            let action = JetpackSettingsAction.enableJetpackModule(.stats, siteID: siteID) { [weak self] result in
-                switch result {
-                case .success:
-                    self?.isJetpackStatsDisabled = false
-                    self?.analytics.track(event: .AnalyticsHub.enableJetpackStatsSuccess())
-                    continuation.resume()
-                case let .failure(error):
-                    self?.isJetpackStatsDisabled = true
-                    self?.analytics.track(event: .AnalyticsHub.enableJetpackStatsFailed(error: error))
-                    continuation.resume(throwing: error)
-                }
-            }
-            stores.dispatch(action)
-        }
-    }
-
     /// Helper function that returns `true` in its callback if the provided plugin name is active on the  store.
     ///
     /// - Parameter plugin: A list of names for the plugin (provide all possible names for plugins that have changed names).
@@ -668,9 +614,6 @@ private extension AnalyticsHubViewModel {
     enum Localization {
         static let timeRangeGeneratorError = NSLocalizedString("Sorry, something went wrong. We can't load analytics for the selected date range.",
                                                                comment: "Error shown when there is a problem retrieving the dates for the selected date range.")
-        static let statsCTAError = NSLocalizedString("analyticsHub.jetpackStatsCTA.errorNotice",
-                                                     value: "We couldn't enable Jetpack Stats on your store",
-                                                     comment: "Error shown when Jetpack Stats can't be enabled in the Analytics Hub.")
     }
 
     /// Set of enabled analytics cards in default order.

@@ -248,7 +248,6 @@ public enum WooAnalyticsStat: String {
 
     // MARK: Site creation
     //
-    case sitePickerCreateSiteTapped = "site_picker_create_site_tapped"
     case siteCreated = "login_woocommerce_site_created"
     case siteCreationFailed = "site_creation_failed"
     case siteCreationDismissed = "site_creation_dismissed"

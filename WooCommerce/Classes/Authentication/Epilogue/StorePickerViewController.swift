@@ -27,9 +27,6 @@ protocol StorePickerViewControllerDelegate: AnyObject {
 
     /// Notifies the delegate to dismiss the store picker and restart authentication.
     func restartAuthentication()
-
-    /// Notifies the delegate to create a store.
-    func createStore()
 }
 
 
@@ -128,8 +125,7 @@ final class StorePickerViewController: UIViewController {
     private lazy var addStoreFooterView: AddStoreFooterView = {
        AddStoreFooterView(addStoreHandler: { [weak self] in
            guard let self else { return }
-           ServiceLocator.analytics.track(.sitePickerAddStoreTapped)
-           self.presentAddStoreActionSheet(from: self.addStoreFooterView)
+           addStoreWasPressed()
        })
     }()
 
@@ -362,31 +358,6 @@ private extension StorePickerViewController {
 
     func presentHelp() {
         ServiceLocator.authenticationManager.presentSupport(from: self, screen: .storePicker)
-    }
-
-    func presentAddStoreActionSheet(from view: UIView) {
-        let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-        actionSheet.view.tintColor = .text
-        let createStoreAction = UIAlertAction(title: Localization.createStore, style: .default) { [weak self] _ in
-            // TODO: add tracks for site creation
-            self?.createStoreButtonPressed()
-        }
-        let addExistingStoreAction = UIAlertAction(title: Localization.connectExistingStore, style: .default) { [weak self] _ in
-            ServiceLocator.analytics.track(.sitePickerConnectExistingStoreTapped)
-            self?.presentSiteDiscovery()
-        }
-        let cancelAction = UIAlertAction(title: Localization.cancel, style: .cancel)
-
-        actionSheet.addAction(createStoreAction)
-        actionSheet.addAction(addExistingStoreAction)
-        actionSheet.addAction(cancelAction)
-
-        if let popoverController = actionSheet.popoverPresentationController {
-            popoverController.sourceView = view
-            popoverController.sourceRect = view.bounds
-        }
-
-        present(actionSheet, animated: true)
     }
 
     func presentSiteDiscovery() {
@@ -679,41 +650,17 @@ private extension StorePickerViewController {
         }
     }
 
-    /// Presents a screen to enter a store address to connect,
-    /// or the add store action sheet for simplified login.
+    /// Button to allow connecting to an existing store.
     ///
     @IBAction private func addStoreWasPressed() {
-        ServiceLocator.analytics.track(.sitePickerAddStoreTapped)
-        presentAddStoreActionSheet(from: addStoreButton)
+        ServiceLocator.analytics.track(.sitePickerConnectExistingStoreTapped)
+        self.presentSiteDiscovery()
     }
 
     /// Proceeds with the Logout Flow.
     ///
     @IBAction func secondaryActionWasPressed() {
         restartAuthentication()
-    }
-
-    func createStoreButtonPressed() {
-        let source: WooAnalyticsEvent.StoreCreation.StorePickerSource = {
-            switch configuration {
-            case .switchingStores:
-                return .switchStores
-            case .login, .standard:
-                return .login
-            case .storeCreationFromLogin(let loggedOutSource):
-                switch loggedOutSource {
-                case .prologue:
-                    return .loginPrologue
-                case .loginEmailError:
-                    return .other
-                }
-            default:
-                return .other
-            }
-        }()
-        ServiceLocator.analytics.track(event: .StoreCreation.sitePickerCreateSiteTapped(source: source))
-
-        delegate?.createStore()
     }
 }
 
@@ -879,14 +826,11 @@ private extension StorePickerViewController {
         static let continueButton = NSLocalizedString("Continue", comment: "Button on the Store Picker screen to select a store")
         static let tryAnotherAccount = NSLocalizedString("Log In With Another Account",
                                                          comment: "Button to trigger connection to another account in store picker")
-        static let createStore = NSLocalizedString("Create a new store",
-                                                   comment: "Button to create a new store from the store picker")
-        static let connectExistingStore = NSLocalizedString("Connect an existing store",
-                                                            comment: "Button to connect to an existing store from the store picker")
         static let cancel = NSLocalizedString("Cancel",
                                               comment: "Button to dismiss the action sheet on the store picker")
-        static let addStoreButton = NSLocalizedString("Add a Store",
-                                                      comment: "Button title on the store picker for store creation")
+        static let addStoreButton = NSLocalizedString("storePickerViewController.addStoreButton",
+                                                      value: "Connect existing store",
+                                                      comment: "Button title on the store picker for store connection")
         enum ActionMenu {
             static let logOut = NSLocalizedString("Log out",
                                                   comment: "Button to log out from the current account from the store picker")

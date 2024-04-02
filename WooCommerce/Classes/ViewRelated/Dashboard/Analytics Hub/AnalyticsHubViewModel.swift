@@ -211,6 +211,14 @@ final class AnalyticsHubViewModel: ObservableObject {
     ///
     @Published private var bundlesSoldStats: [ProductsReportItem]? = nil
 
+    /// Gift card stats for the current selected time period. Used in the gift cards card.
+    ///
+    @Published private var currentGiftCardStats: GiftCardStats? = nil
+
+    /// Gift card stats for the previous selected time period. Used in the gift cards card.
+    ///
+    @Published private var previousGiftCardStats: GiftCardStats? = nil
+
     /// Loading state for order stats.
     ///
     @Published private var isLoadingOrderStats = false
@@ -226,6 +234,10 @@ final class AnalyticsHubViewModel: ObservableObject {
     /// Loading state for bundle stats.
     ///
     @Published private var isLoadingBundleStats = false
+
+    /// Loading stats for gift card stats.
+    ///
+    @Published private var isLoadingGiftCardStats = false
 
     /// Time Range selection data defining the current and previous time period
     ///
@@ -303,6 +315,12 @@ private extension AnalyticsHubViewModel {
                     return
                 }
                 await self.retrieveBundleStats(currentTimeRange: currentTimeRange, previousTimeRange: previousTimeRange, timeZone: self.timeZone)
+            }
+            group.addTask {
+                guard cards.contains(.giftCards) else {
+                    return
+                }
+                await self.retrieveGiftCardStats(currentTimeRange: currentTimeRange, previousTimeRange: previousTimeRange, timeZone: self.timeZone)
             }
         }
     }
@@ -389,6 +407,28 @@ private extension AnalyticsHubViewModel {
         self.currentBundleStats = allStats?.currentPeriodStats
         self.previousBundleStats = allStats?.previousPeriodStats
         self.bundlesSoldStats = allStats?.bundlesSold
+    }
+
+    @MainActor
+    func retrieveGiftCardStats(currentTimeRange: AnalyticsHubTimeRange, previousTimeRange: AnalyticsHubTimeRange, timeZone: TimeZone) async {
+        isLoadingGiftCardStats = true
+        defer {
+            isLoadingGiftCardStats = false
+        }
+
+        async let currentPeriodRequest = retrieveGiftCardStats(timeZone: timeZone,
+                                                               earliestDateToInclude: currentTimeRange.start,
+                                                               latestDateToInclude: currentTimeRange.end,
+                                                               forceRefresh: true)
+        async let previousPeriodRequest = retrieveGiftCardStats(timeZone: timeZone,
+                                                                earliestDateToInclude: previousTimeRange.start,
+                                                                latestDateToInclude: previousTimeRange.end,
+                                                                forceRefresh: true)
+
+        let allStats: (currentPeriodStats: GiftCardStats, previousPeriodStats: GiftCardStats)?
+        allStats = try? await (currentPeriodRequest, previousPeriodRequest)
+        self.currentGiftCardStats = allStats?.currentPeriodStats
+        self.previousGiftCardStats = allStats?.previousPeriodStats
     }
 
     @MainActor
@@ -482,6 +522,27 @@ private extension AnalyticsHubViewModel {
                                                                  earliestDateToInclude: earliestDateToInclude,
                                                                  latestDateToInclude: latestDateToInclude,
                                                                  quantity: Constants.maxNumberOfTopItemsSold) { result in
+                continuation.resume(with: result)
+            }
+            stores.dispatch(action)
+        }
+    }
+
+    @MainActor
+    /// Retrieves gift card stats using the `retrieveUsedGiftCardStats` action.
+    ///
+    func retrieveGiftCardStats(timeZone: TimeZone,
+                               earliestDateToInclude: Date,
+                               latestDateToInclude: Date,
+                               forceRefresh: Bool) async throws -> GiftCardStats {
+        try await withCheckedThrowingContinuation { continuation in
+            let action = StatsActionV4.retrieveUsedGiftCardStats(siteID: siteID,
+                                                                 unit: timeRangeSelectionType.granularity,
+                                                                 timeZone: timeZone,
+                                                                 earliestDateToInclude: earliestDateToInclude,
+                                                                 latestDateToInclude: latestDateToInclude,
+                                                                 quantity: timeRangeSelectionType.intervalSize,
+                                                                 forceRefresh: forceRefresh) { result in
                 continuation.resume(with: result)
             }
             stores.dispatch(action)

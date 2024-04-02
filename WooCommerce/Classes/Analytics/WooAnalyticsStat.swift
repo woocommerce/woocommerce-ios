@@ -418,6 +418,7 @@ public enum WooAnalyticsStat: String {
     case orderDetailEditFlowCanceled = "order_detail_edit_flow_canceled"
     case orderDetailEditFlowFailed = "order_detail_edit_flow_failed"
     case orderDetailPaymentLinkShared = "order_detail_payment_link_shared"
+    case orderDetailTrashButtonTapped = "order_detail_trash_tapped"
 
     // MARK: Test order
     //

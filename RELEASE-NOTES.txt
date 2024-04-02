@@ -2,6 +2,7 @@
 
 18.1
 -----
+- [**] Orders: now it's possible to swiftly delete orders right from the Order Detail page.
 
 
 18.0

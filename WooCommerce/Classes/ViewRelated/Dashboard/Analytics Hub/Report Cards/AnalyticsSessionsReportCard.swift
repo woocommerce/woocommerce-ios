@@ -1,10 +1,6 @@
 import SwiftUI
 
 struct AnalyticsSessionsReportCard: View {
-    /// Whether sessions data is available.
-    ///
-    let isSessionsDataAvailable: Bool
-
     /// View model for the Sessions report card, when data is available.
     ///
     let viewModel: SessionsReportCardViewModel
@@ -23,7 +19,7 @@ struct AnalyticsSessionsReportCard: View {
             }.onAppear {
                 viewModel.trackJetpackStatsCTAShown()
             }
-        } else if !isSessionsDataAvailable {
+        } else if !viewModel.isSessionsDataAvailable {
             AnalyticsSessionsUnavailableCard()
         } else {
             AnalyticsReportCard(viewModel: viewModel)
@@ -44,10 +40,10 @@ private extension AnalyticsSessionsReportCard {
 }
 
 #Preview("Sessions report card") {
-    AnalyticsSessionsReportCard(isSessionsDataAvailable: true,
-                                viewModel: .init(siteID: 123,
+    AnalyticsSessionsReportCard(viewModel: .init(siteID: 123,
                                                  currentOrderStats: SessionsReportCardViewModel.sampleOrderStats(),
                                                  siteStats: SessionsReportCardViewModel.sampleSiteStats(),
+                                                 timeRange: .today,
                                                  isJetpackStatsDisabled: false,
                                                  updateSiteStatsData: {}))
 }

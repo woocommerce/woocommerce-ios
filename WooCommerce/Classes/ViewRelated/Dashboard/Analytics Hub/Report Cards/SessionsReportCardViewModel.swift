@@ -19,6 +19,10 @@ final class SessionsReportCardViewModel: AnalyticsReportCardProtocol {
     ///
     private var siteStats: SiteSummaryStats?
 
+    /// Selected time range
+    ///
+    private var timeRange: AnalyticsHubTimeRangeSelection.SelectionType
+
     /// Whether the Jetpack Stats module is disabled
     ///
     private var isJetpackStatsDisabled: Bool
@@ -33,6 +37,16 @@ final class SessionsReportCardViewModel: AnalyticsReportCardProtocol {
         isJetpackStatsDisabled && userIsAdmin
     }
 
+    /// Whether sessions data is available to display; `false` if the time range is custom.
+    ///
+    var isSessionsDataAvailable: Bool {
+        if case .custom = timeRange {
+            return false
+        } else {
+            return true
+        }
+    }
+
     /// Indicates if the values should be hidden (for loading state)
     ///
     var isRedacted: Bool
@@ -44,6 +58,7 @@ final class SessionsReportCardViewModel: AnalyticsReportCardProtocol {
     init(siteID: Int64,
          currentOrderStats: OrderStatsV4?,
          siteStats: SiteSummaryStats?,
+         timeRange: AnalyticsHubTimeRangeSelection.SelectionType,
          isJetpackStatsDisabled: Bool,
          isRedacted: Bool = false,
          stores: StoresManager = ServiceLocator.stores,
@@ -54,6 +69,7 @@ final class SessionsReportCardViewModel: AnalyticsReportCardProtocol {
         self.siteID = siteID
         self.currentOrderStats = currentOrderStats
         self.siteStats = siteStats
+        self.timeRange = timeRange
         self.isJetpackStatsDisabled = isJetpackStatsDisabled
         self.userIsAdmin = stores.sessionManager.defaultRoles.contains(.administrator)
         self.isRedacted = isRedacted

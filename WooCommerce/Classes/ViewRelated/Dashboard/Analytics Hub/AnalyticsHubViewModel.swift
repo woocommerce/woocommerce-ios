@@ -102,6 +102,7 @@ final class AnalyticsHubViewModel: ObservableObject {
         SessionsReportCardViewModel(siteID: siteID,
                                     currentOrderStats: currentOrderStats,
                                     siteStats: siteStats,
+                                    timeRange: timeRangeSelectionType,
                                     isJetpackStatsDisabled: isJetpackStatsDisabled,
                                     isRedacted: isLoadingOrderStats || isLoadingSiteStats,
                                     updateSiteStatsData: { [weak self] in
@@ -167,16 +168,6 @@ final class AnalyticsHubViewModel: ObservableObject {
     /// Whether Jetpack Stats are disabled on the store
     ///
     private var isJetpackStatsDisabled = false
-
-    /// Whether sessions data is available to display; `false` if a custom time range is selected.
-    ///
-    var isSessionsDataAvailable: Bool {
-        if case .custom = timeRangeSelectionType {
-            return false
-        } else {
-            return true
-        }
-    }
 
     /// Defines a notice that, when set, dismisses the view and is then displayed.
     /// Defaults to `nil`.

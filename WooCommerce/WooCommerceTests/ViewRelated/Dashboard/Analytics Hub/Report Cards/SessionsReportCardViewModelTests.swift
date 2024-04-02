@@ -24,6 +24,7 @@ final class SessionsReportCardViewModelTests: XCTestCase {
             siteID: sampleSiteID,
             currentOrderStats: OrderStatsV4.fake().copy(totals: .fake().copy(totalOrders: 5)),
             siteStats: SiteSummaryStats.fake().copy(visitors: 10, views: 60),
+            timeRange: .today,
             isJetpackStatsDisabled: false,
             isRedacted: false,
             updateSiteStatsData: {}
@@ -46,6 +47,7 @@ final class SessionsReportCardViewModelTests: XCTestCase {
         let vm = SessionsReportCardViewModel(siteID: sampleSiteID,
                                              currentOrderStats: nil,
                                              siteStats: .fake(),
+                                             timeRange: .today,
                                              isJetpackStatsDisabled: false,
                                              updateSiteStatsData: {})
 
@@ -58,6 +60,7 @@ final class SessionsReportCardViewModelTests: XCTestCase {
         let vm = SessionsReportCardViewModel(siteID: sampleSiteID,
                                              currentOrderStats: .fake(),
                                              siteStats: nil,
+                                             timeRange: .today,
                                              isJetpackStatsDisabled: false,
                                              updateSiteStatsData: {})
 
@@ -70,6 +73,7 @@ final class SessionsReportCardViewModelTests: XCTestCase {
         let vm = SessionsReportCardViewModel(siteID: sampleSiteID,
                                              currentOrderStats: nil,
                                              siteStats: nil,
+                                             timeRange: .today,
                                              isJetpackStatsDisabled: false,
                                              isRedacted: true,
                                              updateSiteStatsData: {})
@@ -87,6 +91,34 @@ final class SessionsReportCardViewModelTests: XCTestCase {
         XCTAssertNil(vm.reportViewModel)
     }
 
+    // MARK: Sessions Data Availability
+
+    func test_sessions_data_available_when_custom_time_range_not_selected() {
+        // Given
+        let vm = SessionsReportCardViewModel(siteID: sampleSiteID,
+                                             currentOrderStats: nil,
+                                             siteStats: nil,
+                                             timeRange: .today,
+                                             isJetpackStatsDisabled: false,
+                                             updateSiteStatsData: {})
+
+        // Then
+        XCTAssertTrue(vm.isSessionsDataAvailable)
+    }
+
+    func test_sessions_data_not_available_when_custom_time_range_selected() {
+        // Given
+        let vm = SessionsReportCardViewModel(siteID: sampleSiteID,
+                                             currentOrderStats: nil,
+                                             siteStats: nil,
+                                             timeRange: .custom(start: Date(), end: Date()),
+                                             isJetpackStatsDisabled: false,
+                                             updateSiteStatsData: {})
+
+        // Then
+        XCTAssertFalse(vm.isSessionsDataAvailable)
+    }
+
     // MARK: Jetpack Stats CTA
 
     @MainActor
@@ -95,6 +127,7 @@ final class SessionsReportCardViewModelTests: XCTestCase {
         let vm = SessionsReportCardViewModel(siteID: sampleSiteID,
                                              currentOrderStats: nil,
                                              siteStats: .fake(),
+                                             timeRange: .today,
                                              isJetpackStatsDisabled: true,
                                              stores: stores,
                                              updateSiteStatsData: {})
@@ -109,6 +142,7 @@ final class SessionsReportCardViewModelTests: XCTestCase {
         let vm = SessionsReportCardViewModel(siteID: sampleSiteID,
                                              currentOrderStats: nil,
                                              siteStats: .fake(),
+                                             timeRange: .today,
                                              isJetpackStatsDisabled: true,
                                              stores: stores,
                                              updateSiteStatsData: {})
@@ -132,6 +166,7 @@ final class SessionsReportCardViewModelTests: XCTestCase {
         let vm = SessionsReportCardViewModel(siteID: sampleSiteID,
                                              currentOrderStats: nil,
                                              siteStats: .fake(),
+                                             timeRange: .today,
                                              isJetpackStatsDisabled: true,
                                              stores: stores,
                                              noticePresenter: noticePresenter,
@@ -156,6 +191,7 @@ final class SessionsReportCardViewModelTests: XCTestCase {
         let vm = SessionsReportCardViewModel(siteID: sampleSiteID,
                                              currentOrderStats: nil,
                                              siteStats: .fake(),
+                                             timeRange: .today,
                                              isJetpackStatsDisabled: true,
                                              stores: stores,
                                              analytics: analytics,
@@ -187,6 +223,7 @@ final class SessionsReportCardViewModelTests: XCTestCase {
         let vm = SessionsReportCardViewModel(siteID: sampleSiteID,
                                              currentOrderStats: nil,
                                              siteStats: .fake(),
+                                             timeRange: .today,
                                              isJetpackStatsDisabled: true,
                                              stores: stores,
                                              analytics: analytics,

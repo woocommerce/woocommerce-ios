@@ -86,7 +86,6 @@ final class ReceiptViewController: UIViewController, WKNavigationDelegate, UIPri
             return
         }
         let printController = UIPrintInteractionController.shared
-
         let printInfo = UIPrintInfo(dictionary: nil)
         let formattedJobName = viewModel.formattedReceiptJobName(printInfo.jobName)
         printInfo.jobName = formattedJobName

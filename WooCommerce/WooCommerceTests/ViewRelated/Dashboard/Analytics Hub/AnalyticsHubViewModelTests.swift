@@ -10,7 +10,6 @@ final class AnalyticsHubViewModelTests: XCTestCase {
     private var eventEmitter: StoreStatsUsageTracksEventEmitter!
     private var analyticsProvider: MockAnalyticsProvider!
     private var analytics: Analytics!
-    private var noticePresenter: MockNoticePresenter!
     private var vm: AnalyticsHubViewModel!
 
     private let sampleSiteID: Int64 = 123
@@ -21,7 +20,6 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         analyticsProvider = MockAnalyticsProvider()
         analytics = WooAnalytics(analyticsProvider: analyticsProvider)
         eventEmitter = StoreStatsUsageTracksEventEmitter(analytics: analytics)
-        noticePresenter = MockNoticePresenter()
         ServiceLocator.setCurrencySettings(CurrencySettings()) // Default is US
         vm = createViewModel()
     }
@@ -151,7 +149,7 @@ final class AnalyticsHubViewModelTests: XCTestCase {
     }
 
     @MainActor
-    func test_session_card_and_stats_CTA_are_hidden_for_shop_manager_when_stats_module_disabled() async {
+    func test_session_card_is_hidden_for_shop_manager_when_stats_module_disabled() async {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(defaultRoles: [.shopManager]))
         let vm = createViewModel(stores: stores)
@@ -172,7 +170,6 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         await vm.updateData()
 
         // Then
-        XCTAssertFalse(vm.showJetpackStatsCTA)
         XCTAssertFalse(vm.enabledCards.contains(.sessions))
     }
 
@@ -207,172 +204,6 @@ final class AnalyticsHubViewModelTests: XCTestCase {
 
         // Then
         XCTAssert(analyticsProvider.receivedEvents.contains(WooAnalyticsStat.analyticsHubWaitingTimeLoaded.rawValue))
-    }
-
-    @MainActor
-    func test_showJetpackStatsCTA_true_for_admin_when_stats_module_disabled() async {
-        // Given
-        stores.whenReceivingAction(ofType: StatsActionV4.self) { action in
-            switch action {
-            case let .retrieveCustomStats(_, _, _, _, _, _, _, completion):
-                completion(.success(.fake()))
-            case let .retrieveTopEarnerStats(_, _, _, _, _, _, _, _, completion):
-                completion(.success(.fake()))
-            case let .retrieveSiteSummaryStats(_, _, _, _, _, _, completion):
-                completion(.failure(SiteStatsStoreError.statsModuleDisabled))
-            default:
-                break
-            }
-        }
-        XCTAssertFalse(vm.showJetpackStatsCTA)
-
-        // When
-        await vm.updateData()
-
-        // Then
-        XCTAssertTrue(vm.showJetpackStatsCTA)
-    }
-
-    @MainActor
-    func test_showJetpackStatsCTA_false_for_admin_when_stats_request_fails_and_stats_module_enabled() async {
-        // Given
-        stores.whenReceivingAction(ofType: StatsActionV4.self) { action in
-            switch action {
-            case let .retrieveCustomStats(_, _, _, _, _, _, _, completion):
-                completion(.success(.fake()))
-            case let .retrieveTopEarnerStats(_, _, _, _, _, _, _, _, completion):
-                completion(.success(.fake()))
-            case let .retrieveSiteSummaryStats(_, _, _, _, _, _, completion):
-                completion(.failure(NSError(domain: "Test", code: 1)))
-            default:
-                break
-            }
-        }
-
-        // When
-        await vm.updateData()
-
-        // Then
-        XCTAssertFalse(vm.showJetpackStatsCTA)
-    }
-
-    @MainActor
-    func test_enableJetpackStats_hides_call_to_action_after_successfully_enabling_stats() async {
-        // Given
-        stores.whenReceivingAction(ofType: JetpackSettingsAction.self) { action in
-            switch action {
-            case let .enableJetpackModule(_, _, completion):
-                completion(.success(()))
-            }
-        }
-        stores.whenReceivingAction(ofType: StatsActionV4.self) { action in
-            switch action {
-            case let .retrieveCustomStats(_, _, _, _, _, _, _, completion):
-                completion(.success(.fake()))
-            case let .retrieveTopEarnerStats(_, _, _, _, _, _, _, _, completion):
-                completion(.success(.fake()))
-            case let .retrieveSiteSummaryStats(_, _, _, _, _, _, completion):
-                completion(.success(.fake()))
-            default:
-                break
-            }
-        }
-
-        // When
-        await vm.enableJetpackStats()
-
-        // Then
-        XCTAssertFalse(vm.showJetpackStatsCTA)
-    }
-
-    @MainActor
-    func test_enableJetpackStats_shows_error_and_call_to_action_after_failing_to_enable_stats() async {
-        // Given
-        stores.whenReceivingAction(ofType: JetpackSettingsAction.self) { action in
-            switch action {
-            case let .enableJetpackModule(_, _, completion):
-                completion(.failure(NSError(domain: "Test", code: 1)))
-            }
-        }
-
-        // When
-        await vm.enableJetpackStats()
-
-        // Then
-        XCTAssertEqual(noticePresenter.queuedNotices.count, 1)
-        XCTAssertTrue(vm.showJetpackStatsCTA)
-    }
-
-    func test_it_tracks_expected_jetpack_stats_CTA_success_events() async {
-        // Given
-        stores.whenReceivingAction(ofType: StatsActionV4.self) { action in
-            switch action {
-            case let .retrieveCustomStats(_, _, _, _, _, _, _, completion):
-                completion(.success(.fake()))
-            case let .retrieveTopEarnerStats(_, _, _, _, _, _, _, _, completion):
-                completion(.success(.fake()))
-            case let .retrieveSiteSummaryStats(_, _, _, _, _, _, completion):
-                completion(.failure(SiteStatsStoreError.statsModuleDisabled))
-            default:
-                break
-            }
-        }
-        stores.whenReceivingAction(ofType: JetpackSettingsAction.self) { action in
-            switch action {
-            case let .enableJetpackModule(_, _, completion):
-                completion(.success(()))
-            }
-        }
-
-        // When
-        await vm.updateData()
-        await vm.enableJetpackStats()
-
-        // Then
-        let expectedEvents: [WooAnalyticsStat] = [
-            .analyticsHubEnableJetpackStatsShown,
-            .analyticsHubEnableJetpackStatsTapped,
-            .analyticsHubEnableJetpackStatsSuccess
-        ]
-        for event in expectedEvents {
-            XCTAssert(analyticsProvider.receivedEvents.contains(event.rawValue), "Did not receive expected event: \(event.rawValue)")
-        }
-    }
-
-    func test_it_tracks_expected_jetpack_stats_CTA_failure_events() async {
-        // Given
-        stores.whenReceivingAction(ofType: StatsActionV4.self) { action in
-            switch action {
-            case let .retrieveCustomStats(_, _, _, _, _, _, _, completion):
-                completion(.success(.fake()))
-            case let .retrieveTopEarnerStats(_, _, _, _, _, _, _, _, completion):
-                completion(.success(.fake()))
-            case let .retrieveSiteSummaryStats(_, _, _, _, _, _, completion):
-                completion(.failure(SiteStatsStoreError.statsModuleDisabled))
-            default:
-                break
-            }
-        }
-        stores.whenReceivingAction(ofType: JetpackSettingsAction.self) { action in
-            switch action {
-            case let .enableJetpackModule(_, _, completion):
-                completion(.failure(NSError(domain: "Test", code: 1)))
-            }
-        }
-
-        // When
-        await vm.updateData()
-        await vm.enableJetpackStats()
-
-        // Then
-        let expectedEvents: [WooAnalyticsStat] = [
-            .analyticsHubEnableJetpackStatsShown,
-            .analyticsHubEnableJetpackStatsTapped,
-            .analyticsHubEnableJetpackStatsFailed
-        ]
-        for event in expectedEvents {
-            XCTAssert(analyticsProvider.receivedEvents.contains(event.rawValue), "Did not receive expected event: \(event.rawValue)")
-        }
     }
 
     // MARK: Customized Analytics
@@ -655,8 +486,6 @@ private extension AnalyticsHubViewModelTests {
                               stores: stores ?? self.stores,
                               storage: storage ?? MockStorageManager(),
                               analytics: analytics,
-                              noticePresenter: noticePresenter,
-                              backendProcessingDelay: 0,
                               isExpandedAnalyticsHubEnabled: true)
     }
 }

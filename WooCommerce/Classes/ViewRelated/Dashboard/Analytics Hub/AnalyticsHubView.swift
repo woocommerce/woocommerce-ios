@@ -58,8 +58,6 @@ struct AnalyticsHubView: View {
 
     @StateObject var viewModel: AnalyticsHubViewModel
 
-    @State private var isEnablingJetpackStats = false
-
     var body: some View {
         RefreshablePlainList(action: {
             viewModel.trackAnalyticsInteraction()
@@ -72,15 +70,11 @@ struct AnalyticsHubView: View {
                 .background(Color(uiColor: .listForeground(modal: false)))
                 .addingTopAndBottomDividers()
 
-                if viewModel.enabledCards.isNotEmpty {
-                    ForEach(viewModel.enabledCards, id: \.self) { card in
-                        analyticsCard(type: card)
-                            .padding(.horizontal, insets: safeAreaInsets)
-                            .background(Color(uiColor: .listForeground(modal: false)))
-                            .addingTopAndBottomDividers()
-                    }
-                } else {
-                    EmptyState(title: Localization.emptyStateTitle, description: Localization.emptyStateDescription, image: .enableAnalyticsImage)
+                ForEach(viewModel.enabledCards, id: \.self) { card in
+                    analyticsCard(type: card)
+                        .padding(.horizontal, insets: safeAreaInsets)
+                        .background(Color(uiColor: .listForeground(modal: false)))
+                        .addingTopAndBottomDividers()
                 }
 
                 Spacer()
@@ -134,20 +128,7 @@ private extension AnalyticsHubView {
         case .products:
             AnalyticsItemsSoldCard(statsViewModel: viewModel.productsStatsCard, itemsViewModel: viewModel.itemsSoldCard)
         case .sessions:
-            if viewModel.showJetpackStatsCTA {
-                AnalyticsCTACard(title: Localization.sessionsCTATitle,
-                                 message: Localization.sessionsCTAMessage,
-                                 buttonLabel: Localization.sessionsCTAButton,
-                                 isLoading: $isEnablingJetpackStats) {
-                    isEnablingJetpackStats = true
-                    await viewModel.enableJetpackStats()
-                    isEnablingJetpackStats = false
-                }
-            } else if case .custom = viewModel.timeRangeSelectionType {
-                AnalyticsSessionsUnavailableCard()
-            } else {
-                AnalyticsReportCard(viewModel: viewModel.sessionsCard)
-            }
+            AnalyticsSessionsReportCard(viewModel: viewModel.sessionsCard)
         case .bundles:
             AnalyticsItemsSoldCard(bundlesViewModel: viewModel.bundlesCard)
         }
@@ -159,27 +140,9 @@ private extension AnalyticsHubView {
 private extension AnalyticsHubView {
     struct Localization {
         static let title = NSLocalizedString("Analytics", comment: "Title for the Analytics Hub screen.")
-
-
-        static let sessionsCTATitle = NSLocalizedString("analyticsHub.jetpackStatsCTA.title",
-                                                        value: "SESSIONS",
-                                                        comment: "Title for sessions section in the Analytics Hub")
-        static let sessionsCTAMessage = NSLocalizedString("analyticsHub.jetpackStatsCTA.message",
-                                                          value: "Enable Jetpack Stats to see your store's session analytics.",
-                                                          comment: "Text displayed in the Analytics Hub when the Jetpack Stats module is disabled")
-        static let sessionsCTAButton = NSLocalizedString("analyticsHub.jetpackStatsCTA.buttonLabel",
-                                                         value: "Enable Jetpack Stats",
-                                                         comment: "Label for button to enable Jetpack Stats")
         static let editButton = NSLocalizedString("analyticsHub.editButton.label",
                                                   value: "Edit",
                                                   comment: "Label for button that opens a screen to customize the Analytics Hub")
-
-        static let emptyStateTitle = NSLocalizedString("analyticsHub.emptyState.title",
-                                                       value: "No analytics available",
-                                                       comment: "Title when there are no analytics to display in the Analytics Hub.")
-        static let emptyStateDescription = NSLocalizedString("analyticsHub.emptyState.description",
-                                                             value: "Please select another date range or tap Edit to enable more analytics.",
-                                                             comment: "Description when there are no analytics to display in the Analytics Hub.")
     }
 
     struct Layout {

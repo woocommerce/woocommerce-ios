@@ -6,20 +6,22 @@ struct SimplePaymentsMigrationView: View {
 
     var body: some View {
         VStack(spacing: Layout.defaultVerticalSpacing) {
-            Spacer()
+            VStack(spacing: Layout.verticalSpacingBetweenElements) {
+                Image(uiImage: .bell)
+                Text(Localization.title)
+                    .titleStyle()
+                    .bold()
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            VStack(spacing: Layout.verticalSpacingBetweenElements) {
+                Text(.init(Localization.subtitle))
+                    .bodyStyle()
+                Text(Localization.detail)
+                    .foregroundColor(Color(.secondaryLabel))
+                    .bodyStyle()
+            }
+            Color.clear
                 .frame(height: 8)
-            Image(uiImage: .bell)
-            Text(Localization.title)
-                .titleStyle()
-                .bold()
-                .fixedSize(horizontal: false, vertical: true)
-            Text(.init(Localization.subtitle))
-                .bodyStyle()
-            Text(Localization.detail)
-                .foregroundColor(Color(.secondaryLabel))
-                .bodyStyle()
-            Spacer()
-                .frame(height: 24)
             Button(Localization.addCustomAmount) {
                 addCustomAmount()
             }
@@ -55,8 +57,9 @@ private extension SimplePaymentsMigrationView {
     }
 
     enum Layout {
-        static let padding = EdgeInsets(top: 16, leading: 16, bottom: 16, trailing: 16)
+        static let padding = EdgeInsets(top: 27, leading: 16, bottom: 16, trailing: 16)
         static let defaultVerticalSpacing: CGFloat = 16
+        static let verticalSpacingBetweenElements: CGFloat = 24
     }
 }
 

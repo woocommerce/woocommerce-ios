@@ -64,7 +64,7 @@ private extension RefundDetailsViewController {
         tableView.rowHeight = UITableView.automaticDimension
 
         tableView.dataSource = viewModel.dataSource
-        
+
         let maxWidthConstraint = tableView.widthAnchor.constraint(lessThanOrEqualToConstant: Constants.maxWidth)
         maxWidthConstraint.priority = .required
         NSLayoutConstraint.activate([maxWidthConstraint])

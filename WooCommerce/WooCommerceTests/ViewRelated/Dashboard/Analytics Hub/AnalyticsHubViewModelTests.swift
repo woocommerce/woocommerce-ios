@@ -326,6 +326,7 @@ final class AnalyticsHubViewModelTests: XCTestCase {
 
         // When
         await vm.updateData()
+        vm.trackJetpackStatsCTAShown()
         await vm.enableJetpackStats()
 
         // Then
@@ -362,6 +363,7 @@ final class AnalyticsHubViewModelTests: XCTestCase {
 
         // When
         await vm.updateData()
+        vm.trackJetpackStatsCTAShown()
         await vm.enableJetpackStats()
 
         // Then

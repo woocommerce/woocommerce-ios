@@ -178,6 +178,16 @@ final class AnalyticsHubViewModel: ObservableObject {
         isJetpackStatsDisabled && userIsAdmin
     }
 
+    /// Whether sessions data is available to display; `false` if a custom time range is selected.
+    ///
+    var isSessionsDataAvailable: Bool {
+        if case .custom = timeRangeSelectionType {
+            return false
+        } else {
+            return true
+        }
+    }
+
     /// Defines a notice that, when set, dismisses the view and is then displayed.
     /// Defaults to `nil`.
     ///
@@ -280,7 +290,7 @@ final class AnalyticsHubViewModel: ObservableObject {
     /// Enables the Jetpack Status module on the store and requests new stats data
     ///
     @MainActor
-    func enableJetpackStats() async {
+    func enableJetpackStats() async -> Void {
         analytics.track(event: .AnalyticsHub.jetpackStatsCTATapped())
 
         do {
@@ -292,6 +302,12 @@ final class AnalyticsHubViewModel: ObservableObject {
             noticePresenter.enqueue(notice: .init(title: Localization.statsCTAError))
             DDLogError("⚠️ Error enabling Jetpack Stats: \(error)")
         }
+    }
+
+    /// Tracks when the call to action to enable Jetpack Stats is shown.
+    ///
+    func trackJetpackStatsCTAShown() {
+        analytics.track(event: .AnalyticsHub.jetpackStatsCTAShown())
     }
 }
 
@@ -382,9 +398,6 @@ private extension AnalyticsHubViewModel {
         } catch SiteStatsStoreError.statsModuleDisabled {
             self.isJetpackStatsDisabled = true
             self.siteStats = nil
-            if showJetpackStatsCTA {
-                analytics.track(event: .AnalyticsHub.jetpackStatsCTAShown())
-            }
             DDLogError("⚠️ Analytics Hub Sessions card can't be loaded: Jetpack stats are disabled")
         } catch {
             self.siteStats = nil

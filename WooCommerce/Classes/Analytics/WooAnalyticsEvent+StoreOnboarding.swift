@@ -59,8 +59,6 @@ private extension StoreOnboardingTask.TaskType {
             return "payments"
         case .woocommercePayments:
             return "woocommerce-payments"
-        case .storeName:
-            return "store_name"
         case .unsupported(let task):
             return task
         }

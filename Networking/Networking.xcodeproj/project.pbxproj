@@ -662,6 +662,8 @@
 		CE070A2E2BBC3C3500017578 /* GiftCardStatsTotals.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE070A2D2BBC3C3500017578 /* GiftCardStatsTotals.swift */; };
 		CE070A302BBC527900017578 /* gift-card-stats.json in Resources */ = {isa = PBXBuildFile; fileRef = CE070A2F2BBC527900017578 /* gift-card-stats.json */; };
 		CE070A342BBC52B200017578 /* gift-card-stats-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = CE070A332BBC52B200017578 /* gift-card-stats-without-data.json */; };
+		CE070A362BBC53D100017578 /* GiftCardStatsMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE070A352BBC53D100017578 /* GiftCardStatsMapper.swift */; };
+		CE070A382BBC543200017578 /* GiftCardStatsMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE070A372BBC543200017578 /* GiftCardStatsMapperTests.swift */; };
 		CE0A0F13223942D90075ED8D /* ProductImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE0A0F12223942D90075ED8D /* ProductImage.swift */; };
 		CE0A0F1522396BF00075ED8D /* ProductAttribute.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE0A0F1422396BF00075ED8D /* ProductAttribute.swift */; };
 		CE0A0F17223970E80075ED8D /* ProductDefaultAttribute.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE0A0F16223970E80075ED8D /* ProductDefaultAttribute.swift */; };
@@ -1750,6 +1752,8 @@
 		CE070A2D2BBC3C3500017578 /* GiftCardStatsTotals.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GiftCardStatsTotals.swift; sourceTree = "<group>"; };
 		CE070A2F2BBC527900017578 /* gift-card-stats.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "gift-card-stats.json"; sourceTree = "<group>"; };
 		CE070A332BBC52B200017578 /* gift-card-stats-without-data.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "gift-card-stats-without-data.json"; sourceTree = "<group>"; };
+		CE070A352BBC53D100017578 /* GiftCardStatsMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GiftCardStatsMapper.swift; sourceTree = "<group>"; };
+		CE070A372BBC543200017578 /* GiftCardStatsMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GiftCardStatsMapperTests.swift; sourceTree = "<group>"; };
 		CE0A0F12223942D90075ED8D /* ProductImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductImage.swift; sourceTree = "<group>"; };
 		CE0A0F1422396BF00075ED8D /* ProductAttribute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductAttribute.swift; sourceTree = "<group>"; };
 		CE0A0F16223970E80075ED8D /* ProductDefaultAttribute.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProductDefaultAttribute.swift; sourceTree = "<group>"; };
@@ -3180,6 +3184,7 @@
 				B524193E21AC5FE400D6FC0A /* DotcomDeviceMapper.swift */,
 				CE865A9C2A41E1480049B03C /* EntityDateModifiedMapper.swift */,
 				2676F4CD290AE6BB00C7A15B /* EntityIDMapper.swift */,
+				CE070A352BBC53D100017578 /* GiftCardStatsMapper.swift */,
 				DE50295C28C6068B00551736 /* JetpackUserMapper.swift */,
 				AEF9458A27297FF6001DCCFB /* IgnoringResponseMapper.swift */,
 				E18152BF28F85D4A0011A0EC /* InAppPurchasesProductMapper.swift */,
@@ -3369,6 +3374,7 @@
 				45150A9F26837357006922EA /* CountryListMapperTests.swift */,
 				B524194221AC622500D6FC0A /* DotcomDeviceMapperTests.swift */,
 				CE865AA42A4209A70049B03C /* EntityDateModifiedMapperTests.swift */,
+				CE070A372BBC543200017578 /* GiftCardStatsMapperTests.swift */,
 				AED8AEBB272A997500663FCC /* IgnoringResponseMapperTests.swift */,
 				E18152C328F85E5C0011A0EC /* InAppPurchasesProductsMapperTests.swift */,
 				E1A5C27128F93ED900081046 /* InAppPurchaseOrderResultMapperTests.swift */,
@@ -4360,6 +4366,7 @@
 				457453E725A72C9700276508 /* CreateProductVariation.swift in Sources */,
 				45E461BC26837CC500011BF2 /* DataRemote.swift in Sources */,
 				B505F6EA20BEFC3700BB1B69 /* MockNetwork.swift in Sources */,
+				CE070A362BBC53D100017578 /* GiftCardStatsMapper.swift in Sources */,
 				CC9A24A32641BCF2005DE56E /* ShippingLabelCreationEligibilityResponse.swift in Sources */,
 				CE0A0F17223970E80075ED8D /* ProductDefaultAttribute.swift in Sources */,
 				EE1CB90E2B4BC99E00AD24D5 /* BlazeAISuggestion.swift in Sources */,
@@ -4721,6 +4728,7 @@
 				02BDB83723EA9C4D00BCC63E /* String+HTMLTests.swift in Sources */,
 				74CF5E8421402C04000CED0A /* TopEarnerStatsRemoteTests.swift in Sources */,
 				45B204BA24890A8C00FE6526 /* ProductCategoryMapperTests.swift in Sources */,
+				CE070A382BBC543200017578 /* GiftCardStatsMapperTests.swift in Sources */,
 				EE8DE432294B17CD005054E7 /* DefaultApplicationPasswordUseCaseTests.swift in Sources */,
 				74749B9522413119005C4CF2 /* ProductsRemoteTests.swift in Sources */,
 				B524194321AC622500D6FC0A /* DotcomDeviceMapperTests.swift in Sources */,

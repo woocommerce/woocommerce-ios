@@ -60,6 +60,20 @@ private extension BlazeCampaignListHostingController {
     }
 }
 
+/// To be used in case we want to present BlazeCampaignListView from a SwiftUI view.
+///
+struct BlazeCampaignListHostingControllerRepresentable: UIViewControllerRepresentable {
+    let siteID: Int64
+
+    func makeUIViewController(context: Context) -> BlazeCampaignListHostingController {
+        let viewModel = BlazeCampaignListViewModel(siteID: siteID)
+        return BlazeCampaignListHostingController(viewModel: viewModel)
+    }
+
+    func updateUIViewController(_ uiViewController: BlazeCampaignListHostingController, context: Context) {
+    }
+}
+
 /// View for showing a list of campaigns.
 ///
 struct BlazeCampaignListView: View {

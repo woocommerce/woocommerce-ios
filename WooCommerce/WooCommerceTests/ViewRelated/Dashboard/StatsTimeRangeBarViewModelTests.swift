@@ -67,8 +67,8 @@ final class StatsTimeRangeBarViewModelTests: XCTestCase {
         let formatter = DateFormatter()
         formatter.setLocalizedDateFormatFromTemplate("MMM d")
         formatter.timeZone = timezone
-        // "Jul 28 - Aug 3" in en-US locale.
-        let expectedText = String.localizedStringWithFormat(NSLocalizedString("%1$@ - %2$@", comment: "Displays a date range for a stats interval"),
+        // "Jul 28 – Aug 3" in en-US locale.
+        let expectedText = String.localizedStringWithFormat(NSLocalizedString("%1$@ – %2$@", comment: "Displays a date range for a stats interval"),
                                                             formatter.string(from: startDate),
                                                             formatter.string(from: endDate))
         XCTAssertEqual(viewModel.timeRangeText, expectedText)
@@ -210,8 +210,8 @@ final class StatsTimeRangeBarViewModelTests: XCTestCase {
         formatter.dateStyle = .medium
         formatter.timeStyle = .none
         formatter.timeZone = timezone
-        // "July 25, 2019 - August 6, 2019" in en-US locale.
-        let expectedText = String(format: "%1$@ - %2$@",
+        // "July 25, 2019 – August 6, 2019" in en-US locale.
+        let expectedText = String(format: "%1$@ – %2$@",
                                   formatter.string(from: actualStartDate),
                                   formatter.string(from: actualEndDate))
         XCTAssertEqual(viewModel.timeRangeText, expectedText)
@@ -239,7 +239,8 @@ final class StatsTimeRangeBarViewModelTests: XCTestCase {
         formatter.timeZone = timezone
         // "Monday, March 4 12:00 PM"
         let expectedDate = formatter.string(from: selectedDate)
-        XCTAssertEqual(viewModel.timeRangeText, expectedDate)
+        XCTAssertNotNil(viewModel.selectedDateText)
+        XCTAssertEqual(viewModel.selectedDateText, expectedDate)
     }
 
     func test_custom_range_with_selected_date_for_daily_granularity() {
@@ -264,8 +265,8 @@ final class StatsTimeRangeBarViewModelTests: XCTestCase {
         formatter.timeZone = timezone
         // "Mar 4"
         let expectedDate = formatter.string(from: selectedDate)
-        XCTAssertEqual(viewModel.timeRangeText, expectedDate)
-    }
+        XCTAssertNotNil(viewModel.selectedDateText)
+        XCTAssertEqual(viewModel.selectedDateText, expectedDate)    }
 
     func test_custom_range_with_selected_date_for_weekly_granularity() {
         // Given
@@ -289,7 +290,8 @@ final class StatsTimeRangeBarViewModelTests: XCTestCase {
         formatter.timeZone = timezone
         // "Mar 4"
         let expectedDate = formatter.string(from: selectedDate)
-        XCTAssertEqual(viewModel.timeRangeText, expectedDate)
+        XCTAssertNotNil(viewModel.selectedDateText)
+        XCTAssertEqual(viewModel.selectedDateText, expectedDate)
     }
 
     func test_custom_range_with_selected_date_for_monthly_granularity() {
@@ -314,6 +316,7 @@ final class StatsTimeRangeBarViewModelTests: XCTestCase {
         formatter.timeZone = timezone
         // "March 2024"
         let expectedDate = formatter.string(from: selectedDate)
-        XCTAssertEqual(viewModel.timeRangeText, expectedDate)
+        XCTAssertNotNil(viewModel.selectedDateText)
+        XCTAssertEqual(viewModel.selectedDateText, expectedDate)
     }
 }

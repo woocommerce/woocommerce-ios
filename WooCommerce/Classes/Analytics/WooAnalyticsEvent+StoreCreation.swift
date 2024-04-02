@@ -20,12 +20,6 @@ extension WooAnalyticsEvent {
             static let initialDomain = "initial_domain"
         }
 
-        /// Tracked when the user taps on the CTA in store picker (logged in to WPCOM) to create a store.
-        static func sitePickerCreateSiteTapped(source: StorePickerSource) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .sitePickerCreateSiteTapped,
-                              properties: [Key.source: source.rawValue])
-        }
-
         static func siteCreationFlowStarted(source: Source) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .siteCreationFlowStarted,
                               properties: [Key.source: source.rawValue])
@@ -122,6 +116,12 @@ extension WooAnalyticsEvent {
         static func loginPrologueCreateSiteTapped(isFreeTrial: Bool) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .loginPrologueCreateSiteTapped,
                               properties: [Key.isFreeTrial: isFreeTrial])
+        }
+
+        /// Tracked when the user taps on the "Staring a new store?" button in login prologue (logged out).
+        static func loginPrologueStartingANewStoreTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .loginPrologueStartingANewStoreTapped,
+                              properties: [:])
         }
 
         /// Tracked when the user taps on the CTA in the account creation form to log in instead.

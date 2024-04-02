@@ -112,10 +112,14 @@ final class HubMenuViewModel: ObservableObject {
     private func setupSettingsElements() {
         settingsElements = [Settings()]
 
-        // Only show the upgrades menu on WPCom sites
-        if stores.sessionManager.defaultSite?.isWordPressComStore == true {
-            settingsElements.append(Subscriptions())
+        guard let site = stores.sessionManager.defaultSite,
+              // Only show the upgrades menu on WPCom sites and non free trial sites
+              site.isWordPressComStore,
+              !site.isFreeTrialSite else {
+            return
         }
+
+        settingsElements.append(Subscriptions())
     }
 
     private func setupGeneralElements() {

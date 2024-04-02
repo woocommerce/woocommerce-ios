@@ -18,6 +18,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .updateOrderOptimistically:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .shippingLabelsOnboardingM1:
+            // We need to adapt this functionality to the new Woo Shipping plugin before enabling it
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .searchProductsBySKU:
             return true
@@ -82,12 +83,16 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .scanToUpdateInventory:
             return true
         case .blazei3NativeCampaignCreation:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return true
         case .backendReceipts:
             return true
         case .splitViewInProductsTab:
             return true
+        case .noMoreWooExpressSignup:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         case .customersInHubMenu:
+            return true
+        case .expandedAnalyticsHub:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true

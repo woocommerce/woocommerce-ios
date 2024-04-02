@@ -129,7 +129,7 @@ final class ProductsViewController: UIViewController, GhostableViewController {
                 /// Reload data because `updateSortOrder` generates a new `predicate` which calls `performFetch`
                 tableView.reloadData()
 
-                syncingCoordinator.resynchronize {}
+                paginationTracker.resync()
             }
         }
     }
@@ -144,9 +144,10 @@ final class ProductsViewController: UIViewController, GhostableViewController {
         resultsController.isEmpty
     }
 
-    /// SyncCoordinator: Keeps tracks of which pages have been refreshed, and encapsulates the "What should we sync now" logic.
-    ///
-    private let syncingCoordinator = SyncingCoordinator()
+    /// Supports infinite scroll.
+    private let scrollWatcher = ScrollWatcher()
+    private let paginationTracker: PaginationTracker
+    private var scrollWatcherSubscription: AnyCancellable?
 
     private lazy var stateCoordinator: PaginatedListViewControllerStateCoordinator = {
         let stateCoordinator = PaginatedListViewControllerStateCoordinator(onLeavingState: { [weak self] state in
@@ -161,9 +162,8 @@ final class ProductsViewController: UIViewController, GhostableViewController {
 
     private var filters: FilterProductListViewModel.Filters = FilterProductListViewModel.Filters() {
         didSet {
-            let contentIsNotSyncedYet = syncingCoordinator.highestPageBeingSynced ?? 0 == 0
             if filters != oldValue ||
-                contentIsNotSyncedYet {
+                categoryHasChangedRemotely {
                 updateLocalProductSettings(sort: sortOrder,
                                            filters: filters)
                 updateFilterButtonTitle(filters: filters)
@@ -176,10 +176,13 @@ final class ProductsViewController: UIViewController, GhostableViewController {
                 /// Reload because `updatePredicate` calls `performFetch` when creating a new predicate
                 tableView.reloadData()
 
-                syncingCoordinator.resynchronize {}
+                paginationTracker.resync()
             }
         }
     }
+
+    /// Set to `true` when a category is applied to the product filters and the value has changed after a remote sync.
+    private var categoryHasChangedRemotely: Bool = false
 
     /// Set when an empty state view controller is displayed.
     ///
@@ -224,6 +227,7 @@ final class ProductsViewController: UIViewController, GhostableViewController {
         self.selectedProduct = selectedProduct
         self.isSplitViewEnabled = featureFlagService.isFeatureFlagEnabled(.splitViewInProductsTab)
         self.navigateToContent = navigateToContent
+        self.paginationTracker = PaginationTracker()
         super.init(nibName: type(of: self).nibName, bundle: nil)
 
         configureTabBarItem()
@@ -243,7 +247,8 @@ final class ProductsViewController: UIViewController, GhostableViewController {
         configureTableView()
         configureHiddenScrollView()
         configureToolbar()
-        configureSyncingCoordinator()
+        configureScrollWatcher()
+        configurePaginationTracker()
         configureStorePlanBannerPresenter()
         registerTableViewCells()
 
@@ -294,6 +299,10 @@ final class ProductsViewController: UIViewController, GhostableViewController {
             return
         }
         didSelectProduct(product: firstProduct)
+    }
+
+    func startProductCreation() {
+        addProduct(sourceBarButtonItem: addProductButton, isFirstProduct: false)
     }
 }
 
@@ -759,10 +768,15 @@ private extension ProductsViewController {
         toolbarBottomSeparatorHeightConstraint.constant = 1.0 / UIScreen.main.scale
     }
 
-    /// Setup: Sync'ing Coordinator
-    ///
-    func configureSyncingCoordinator() {
-        syncingCoordinator.delegate = self
+    func configureScrollWatcher() {
+        scrollWatcher.startObservingScrollPosition(tableView: tableView)
+    }
+
+    func configurePaginationTracker() {
+        paginationTracker.delegate = self
+        scrollWatcherSubscription = scrollWatcher.trigger.sink { [weak self] _ in
+            self?.paginationTracker.ensureNextPageIsSynced()
+        }
     }
 
     /// Register table cells.
@@ -942,7 +956,7 @@ private extension ProductsViewController {
             guard let self else { return }
 
             if result.isFailure {
-                syncingCoordinator.resynchronize()
+                paginationTracker.resync()
             } else {
                 // Emits `onDataReloaded` when local product settings (filters & sort order) are loaded and synced, so that
                 // the first product selected in `selectFirstProductIfAvailable` is only triggered when the results match
@@ -1083,7 +1097,6 @@ extension ProductsViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         let productIndex = resultsController.objectIndex(from: indexPath)
-        syncingCoordinator.ensureNextPageIsSynchronized(lastVisibleIndex: productIndex)
 
         // Preserve the Cell Height
         // Why: Because Autosizing Cells, upon reload, will need to be laid yout yet again. This might cause
@@ -1164,7 +1177,7 @@ private extension ProductsViewController {
     @objc private func pullToRefresh(sender: UIRefreshControl) {
         ServiceLocator.analytics.track(.productListPulledToRefresh)
 
-        syncingCoordinator.resynchronize {
+        paginationTracker.resync {
             sender.endRefreshing()
         }
     }
@@ -1345,11 +1358,11 @@ private extension ProductsViewController {
 
 // MARK: - Sync'ing Helpers
 //
-extension ProductsViewController: SyncingCoordinatorDelegate {
+extension ProductsViewController: PaginationTrackerDelegate {
 
     /// Synchronizes the Products for the Default Store (if any).
     ///
-    func sync(pageNumber: Int, pageSize: Int, reason: String? = nil, onCompletion: ((Bool) -> Void)? = nil) {
+    func sync(pageNumber: Int, pageSize: Int, reason: String?, onCompletion: SyncCompletion?) {
         transitionToSyncingState(pageNumber: pageNumber)
         dataLoadingError = nil
 
@@ -1381,7 +1394,7 @@ extension ProductsViewController: SyncingCoordinatorDelegate {
                                     }
 
                                     self.transitionToResultsUpdatedState()
-                                    onCompletion?(result.isSuccess)
+                                    onCompletion?(result)
         }
 
         ServiceLocator.stores.dispatch(action)
@@ -1434,12 +1447,14 @@ extension ProductsViewController: SyncingCoordinatorDelegate {
     ///
     private func syncProductCategoryFilterRemotely(from settings: StoredProductSettings.Setting,
                                                    onCompletion: @escaping (StoredProductSettings.Setting) -> Void) {
+        categoryHasChangedRemotely = false
         guard let productCategory = settings.productCategoryFilter else {
             onCompletion(settings)
             return
         }
 
-        let action = ProductCategoryAction.synchronizeProductCategory(siteID: siteID, categoryID: productCategory.categoryID) { result in
+        let action = ProductCategoryAction.synchronizeProductCategory(siteID: siteID, categoryID: productCategory.categoryID) { [weak self] result in
+            guard let self else { return }
             var updatingProductCategory: ProductCategory? = productCategory
 
             switch result {
@@ -1455,6 +1470,7 @@ extension ProductsViewController: SyncingCoordinatorDelegate {
 
             var completionSettings = settings
             if updatingProductCategory != productCategory {
+                categoryHasChangedRemotely = true
                 completionSettings = StoredProductSettings.Setting(siteID: settings.siteID,
                                                                 sort: settings.sort,
                                                                 stockStatusFilter: settings.stockStatusFilter,
@@ -1537,27 +1553,13 @@ private extension ProductsViewController {
 
 // MARK: - Spinner Helpers
 //
-extension ProductsViewController {
+private extension ProductsViewController {
 
     /// Starts the Footer Spinner animation, whenever `mustStartFooterSpinner` returns *true*.
     ///
-    private func ensureFooterSpinnerIsStarted() {
-        guard mustStartFooterSpinner() else {
-            return
-        }
-
+    func ensureFooterSpinnerIsStarted() {
         tableView.tableFooterView = footerSpinnerView
         footerSpinnerView.startAnimating()
-    }
-
-    /// Whenever we're sync'ing an Products Page that's beyond what we're currently displaying, this method will return *true*.
-    ///
-    private func mustStartFooterSpinner() -> Bool {
-        guard let highestPageBeingSynced = syncingCoordinator.highestPageBeingSynced else {
-            return false
-        }
-
-        return highestPageBeingSynced * SyncingCoordinator.Defaults.pageSize > resultsController.numberOfObjects
     }
 
     /// Stops animating the Footer Spinner.

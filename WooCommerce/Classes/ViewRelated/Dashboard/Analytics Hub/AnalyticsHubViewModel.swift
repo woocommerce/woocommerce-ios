@@ -2,6 +2,7 @@ import Foundation
 import Yosemite
 import Combine
 import class UIKit.UIColor
+import protocol Storage.StorageManagerType
 
 /// Main View Model for the Analytics Hub.
 ///
@@ -9,6 +10,7 @@ final class AnalyticsHubViewModel: ObservableObject {
 
     private let siteID: Int64
     private let stores: StoresManager
+    private let storage: StorageManagerType
     private let timeZone: TimeZone
     private let analytics: Analytics
     private let noticePresenter: NoticePresenter
@@ -27,24 +29,32 @@ final class AnalyticsHubViewModel: ObservableObject {
     ///
     private let userIsAdmin: Bool
 
+    /// Feature flag for Expanded Analytics Hub (extension analytics)
+    ///
+    private let isExpandedAnalyticsHubEnabled: Bool
+
     init(siteID: Int64,
          timeZone: TimeZone = .siteTimezone,
          statsTimeRange: StatsTimeRangeV4,
          usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter,
          stores: StoresManager = ServiceLocator.stores,
+         storage: StorageManagerType = ServiceLocator.storageManager,
          analytics: Analytics = ServiceLocator.analytics,
          noticePresenter: NoticePresenter = ServiceLocator.noticePresenter,
-         backendProcessingDelay: UInt64 = 500_000_000) {
+         backendProcessingDelay: UInt64 = 500_000_000,
+         isExpandedAnalyticsHubEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.expandedAnalyticsHub)) {
         let selectedType = AnalyticsHubTimeRangeSelection.SelectionType(statsTimeRange)
         let timeRangeSelection = AnalyticsHubTimeRangeSelection(selectionType: selectedType, timezone: timeZone)
 
         self.siteID = siteID
         self.timeZone = timeZone
         self.stores = stores
+        self.storage = storage
         self.userIsAdmin = stores.sessionManager.defaultRoles.contains(.administrator)
         self.analytics = analytics
         self.noticePresenter = noticePresenter
         self.backendProcessingDelay = backendProcessingDelay
+        self.isExpandedAnalyticsHubEnabled = isExpandedAnalyticsHubEnabled
         self.timeRangeSelectionType = selectedType
         self.timeRangeSelection = timeRangeSelection
         self.timeRangeCard = AnalyticsHubViewModel.timeRangeCard(timeRangeSelection: timeRangeSelection,
@@ -103,6 +113,17 @@ final class AnalyticsHubViewModel: ObservableObject {
                                     isRedacted: isLoadingOrderStats || isLoadingSiteStats)
     }
 
+    /// Product Bundles Card ViewModel
+    ///
+    var bundlesCard: AnalyticsBundlesReportCardViewModel {
+        AnalyticsBundlesReportCardViewModel(currentPeriodStats: currentBundleStats,
+                                            previousPeriodStats: previousBundleStats,
+                                            bundlesSoldReport: bundlesSoldStats,
+                                            timeRange: timeRangeSelectionType,
+                                            isRedacted: isLoadingBundleStats,
+                                            usageTracksEventEmitter: usageTracksEventEmitter)
+    }
+
     /// View model for `AnalyticsHubCustomizeView`, to customize the cards in the Analytics Hub.
     ///
     @Published var customizeAnalyticsViewModel: AnalyticsHubCustomizeViewModel?
@@ -120,22 +141,22 @@ final class AnalyticsHubViewModel: ObservableObject {
     /// All analytics cards to display in the Analytics Hub.
     ///
     var enabledCards: [AnalyticsCard.CardType] {
-        return allCardsWithSettings.filter { card in
-            let canBeDisplayed = card.type == .sessions ? showSessionsCard : true
-            return card.enabled && canBeDisplayed
-        }.map { $0.type }
+        return allCardsWithSettings.compactMap { card in
+            guard card.enabled, canDisplayCard(ofType: card.type) else {
+                return nil
+            }
+            return card.type
+        }
     }
 
-    /// Sessions Card display state
-    ///
-    private var showSessionsCard: Bool {
-        guard isEligibleForSessionsCard else {
-            return false
-        }
-        if case .custom = timeRangeSelectionType {
-            return false
-        } else {
-            return true
+    private func canDisplayCard(ofType card: AnalyticsCard.CardType) -> Bool {
+        switch card {
+        case .sessions:
+            isEligibleForSessionsCard
+        case .bundles:
+            isExpandedAnalyticsHubEnabled && isPluginActive(SitePlugin.SupportedPlugin.WCProductBundles)
+        default:
+            true
         }
     }
 
@@ -185,6 +206,18 @@ final class AnalyticsHubViewModel: ObservableObject {
     ///
     @Published private var siteStats: SiteSummaryStats? = nil
 
+    /// Product bundle stats for the current selected time period. Used in the bundles card.
+    ///
+    @Published private var currentBundleStats: ProductBundleStats? = nil
+
+    /// Product bundle stats for the previous selected time period. Used in the bundles card.
+    ///
+    @Published private var previousBundleStats: ProductBundleStats? = nil
+
+    /// Stats fo the current top bundles sold. Used in the bundles card.
+    ///
+    @Published private var bundlesSoldStats: [ProductsReportItem]? = nil
+
     /// Loading state for order stats.
     ///
     @Published private var isLoadingOrderStats = false
@@ -197,9 +230,26 @@ final class AnalyticsHubViewModel: ObservableObject {
     ///
     @Published private var isLoadingSiteStats = false
 
+    /// Loading state for bundle stats.
+    ///
+    @Published private var isLoadingBundleStats = false
+
     /// Time Range selection data defining the current and previous time period
     ///
     private var timeRangeSelection: AnalyticsHubTimeRangeSelection
+
+    /// Names of the active plugins on the store.
+    ///
+    private lazy var activePlugins: [String] = {
+        let predicate = NSPredicate(format: "siteID == %lld && active == true", siteID)
+        let resultsController = ResultsController<StorageSystemPlugin>(storageManager: storage, matching: predicate, sortedBy: [])
+        do {
+            try resultsController.performFetch()
+        } catch {
+            DDLogError("⛔️ Error fetching active plugins for Analytics Hub")
+        }
+        return resultsController.fetchedObjects.map { $0.name }
+    }()
 
     /// Request stats data from network
     /// - Parameter cards: Optionally limit the request to only the stats needed for a given set of cards.
@@ -272,6 +322,12 @@ private extension AnalyticsHubViewModel {
                 }
                 await self.retrieveSiteStats(currentTimeRange: currentTimeRange)
             }
+            group.addTask {
+                guard cards.contains(.bundles) else {
+                    return
+                }
+                await self.retrieveBundleStats(currentTimeRange: currentTimeRange, previousTimeRange: previousTimeRange, timeZone: self.timeZone)
+            }
         }
     }
 
@@ -337,6 +393,32 @@ private extension AnalyticsHubViewModel {
     }
 
     @MainActor
+    func retrieveBundleStats(currentTimeRange: AnalyticsHubTimeRange, previousTimeRange: AnalyticsHubTimeRange, timeZone: TimeZone) async {
+        isLoadingBundleStats = true
+        defer {
+            isLoadingBundleStats = false
+        }
+
+        async let currentPeriodRequest = retrieveBundleStats(timeZone: timeZone,
+                                                             earliestDateToInclude: currentTimeRange.start,
+                                                             latestDateToInclude: currentTimeRange.end,
+                                                             forceRefresh: true)
+        async let previousPeriodRequest = retrieveBundleStats(timeZone: timeZone,
+                                                              earliestDateToInclude: previousTimeRange.start,
+                                                              latestDateToInclude: previousTimeRange.end,
+                                                              forceRefresh: true)
+        async let bundlesSoldRequest = retrieveTopBundlesSoldStats(earliestDateToInclude: currentTimeRange.start,
+                                                                   latestDateToInclude: currentTimeRange.end,
+                                                                   forceRefresh: true)
+
+        let allStats: (currentPeriodStats: ProductBundleStats, previousPeriodStats: ProductBundleStats, bundlesSold: [ProductsReportItem])?
+        allStats = try? await (currentPeriodRequest, previousPeriodRequest, bundlesSoldRequest)
+        self.currentBundleStats = allStats?.currentPeriodStats
+        self.previousBundleStats = allStats?.previousPeriodStats
+        self.bundlesSoldStats = allStats?.bundlesSold
+    }
+
+    @MainActor
     func retrieveStats(timeZone: TimeZone,
                        earliestDateToInclude: Date,
                        latestDateToInclude: Date,
@@ -397,6 +479,43 @@ private extension AnalyticsHubViewModel {
     }
 
     @MainActor
+    /// Retrieves product bundle stats using the `retrieveProductBundleStats` action.
+    ///
+    func retrieveBundleStats(timeZone: TimeZone,
+                             earliestDateToInclude: Date,
+                             latestDateToInclude: Date,
+                             forceRefresh: Bool) async throws -> ProductBundleStats {
+        try await withCheckedThrowingContinuation { continuation in
+            let action = StatsActionV4.retrieveProductBundleStats(siteID: siteID,
+                                                                  unit: timeRangeSelectionType.granularity,
+                                                                  timeZone: timeZone,
+                                                                  earliestDateToInclude: earliestDateToInclude,
+                                                                  latestDateToInclude: latestDateToInclude,
+                                                                  quantity: timeRangeSelectionType.intervalSize,
+                                                                  forceRefresh: forceRefresh) { result in
+                continuation.resume(with: result)
+            }
+            stores.dispatch(action)
+        }
+    }
+
+    @MainActor
+    /// Retrieves top bundles sold stats using the `retrieveTopProductBundles` action.
+    ///
+    func retrieveTopBundlesSoldStats(earliestDateToInclude: Date, latestDateToInclude: Date, forceRefresh: Bool) async throws -> [ProductsReportItem] {
+        return try await withCheckedThrowingContinuation { continuation in
+            let action = StatsActionV4.retrieveTopProductBundles(siteID: siteID,
+                                                                 timeZone: timeZone,
+                                                                 earliestDateToInclude: earliestDateToInclude,
+                                                                 latestDateToInclude: latestDateToInclude,
+                                                                 quantity: Constants.maxNumberOfTopItemsSold) { result in
+                continuation.resume(with: result)
+            }
+            stores.dispatch(action)
+        }
+    }
+
+    @MainActor
     /// Makes the remote request to enable the Jetpack Stats module on the site.
     ///
     func remoteEnableJetpackStats() async throws {
@@ -415,6 +534,13 @@ private extension AnalyticsHubViewModel {
             }
             stores.dispatch(action)
         }
+    }
+
+    /// Helper function that returns `true` in its callback if the provided plugin name is active on the  store.
+    ///
+    /// - Parameter plugin: A list of names for the plugin (provide all possible names for plugins that have changed names).
+    private func isPluginActive(_ plugin: [String]) -> Bool {
+        activePlugins.contains(where: plugin.contains)
     }
 }
 
@@ -506,14 +632,13 @@ extension AnalyticsHubViewModel {
     /// Setting this view model opens the view.
     ///
     func customizeAnalytics() {
-        // Exclude any cards the merchant/store is ineligible for.
-        let cardsToExclude: [AnalyticsCard] = [
-            isEligibleForSessionsCard ? nil : allCardsWithSettings.first(where: { $0.type == .sessions })
-        ].compactMap({ $0 })
+        // Identify any inactive cards (that can't be displayed in the Analytics Hub).
+        // Inactive cards are displayed in the customize list with a promo link but can't be customized.
+        let inactiveCards: [AnalyticsCard] = allCardsWithSettings.filter { !canDisplayCard(ofType: $0.type) }
 
         analytics.track(event: .AnalyticsHub.customizeAnalyticsOpened())
         customizeAnalyticsViewModel = AnalyticsHubCustomizeViewModel(allCards: allCardsWithSettings,
-                                                                     cardsToExclude: cardsToExclude) { [weak self] updatedCards in
+                                                                     inactiveCards: inactiveCards) { [weak self] updatedCards in
             guard let self else { return }
             self.allCardsWithSettings = updatedCards
             self.storeAnalyticsCardSettings(updatedCards)

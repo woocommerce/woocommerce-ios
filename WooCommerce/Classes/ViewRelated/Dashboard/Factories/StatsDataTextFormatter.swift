@@ -174,6 +174,28 @@ struct StatsDataTextFormatter {
         let currentItemsSold = Double(currentPeriod.totals.totalItemsSold)
         return createDeltaPercentage(from: previousItemsSold, to: currentItemsSold)
     }
+
+    // MARK: Bundles Stats
+
+    /// Creates the text to display for bundles sold value.
+    ///
+    static func createBundlesSoldText(bundleStats: ProductBundleStats?) -> String {
+        guard let bundleStats else {
+            return Constants.placeholderText
+        }
+        return Double(bundleStats.totals.totalItemsSold).humanReadableString()
+    }
+
+    /// Creates the text to display for the bundles sold delta.
+    ///
+    static func createBundlesSoldDelta(from previousPeriod: ProductBundleStats?, to currentPeriod: ProductBundleStats?) -> DeltaPercentage {
+        guard let previousPeriod, let currentPeriod else {
+            return DeltaPercentage(value: 0, formatter: deltaNumberFormatter) // Missing data: 0% change
+        }
+        let previousItemsSold = Double(previousPeriod.totals.totalItemsSold)
+        let currentItemsSold = Double(currentPeriod.totals.totalItemsSold)
+        return createDeltaPercentage(from: previousItemsSold, to: currentItemsSold)
+    }
 }
 
 extension StatsDataTextFormatter {

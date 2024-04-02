@@ -1,0 +1,109 @@
+{
+    "data": [
+        {
+            "product_id": 507,
+            "items_sold": 6,
+            "bundled_items_sold": 12,
+            "net_revenue": 361,
+            "orders_count": 4,
+            "extended_info": {
+                "name": "Awesome bundle",
+                "price": 48,
+                "image": "<img width=\"450\" height=\"450\" src=\"https://example.com/wp-content/uploads/2023/01/logo-1-600x599.jpg\" class=\"attachment-woocommerce_thumbnail size-woocommerce_thumbnail\" alt=\"\" decoding=\"async\" loading=\"lazy\" srcset=\"https://example.com/wp-content/uploads/2023/01/logo-1-600x599.jpg 600w, https://example.com/wp-content/uploads/2023/01/logo-1-300x300.jpg 300w, https://example.com/wp-content/uploads/2023/01/logo-1-100x100.jpg?crop=1 100w, https://example.com/wp-content/uploads/2023/01/logo-1-150x150.jpg?crop=1 150w, https://example.com/wp-content/uploads/2023/01/logo-1-768x767.jpg 768w, https://example.com/wp-content/uploads/2023/01/logo-1-400x400.jpg?crop=1 400w, https://example.com/wp-content/uploads/2023/01/logo-1-200x200.jpg?crop=1 200w, https://example.com/wp-content/uploads/2023/01/logo-1.jpg 800w\" sizes=\"(max-width: 450px) 100vw, 450px\" data-attachment-id=\"60\" data-permalink=\"https://example.com/?attachment_id=60\" data-orig-file=\"https://example.com/wp-content/uploads/2023/01/logo-1.jpg\" data-orig-size=\"800,799\" data-comments-opened=\"1\" data-image-meta=\"{&quot;aperture&quot;:&quot;0&quot;,&quot;credit&quot;:&quot;&quot;,&quot;camera&quot;:&quot;&quot;,&quot;caption&quot;:&quot;&quot;,&quot;created_timestamp&quot;:&quot;0&quot;,&quot;copyright&quot;:&quot;&quot;,&quot;focal_length&quot;:&quot;0&quot;,&quot;iso&quot;:&quot;0&quot;,&quot;shutter_speed&quot;:&quot;0&quot;,&quot;title&quot;:&quot;&quot;,&quot;orientation&quot;:&quot;0&quot;}\" data-image-title=\"logo-1.jpg\" data-image-description=\"\" data-image-caption=\"\" data-medium-file=\"https://example.com/wp-content/uploads/2023/01/logo-1-300x300.jpg\" data-large-file=\"https://example.com/wp-content/uploads/2023/01/logo-1.jpg\" />",
+                "permalink": "https://example.com/product/awesome-bundle/",
+                "stock_status": "instock",
+                "sku": ""
+            },
+            "_links": {
+                "product": [
+                    {
+                        "href": "https://example.com/wp-json/wc-analytics/products/507"
+                    }
+                ]
+            }
+        },
+        {
+            "product_id": 129,
+            "items_sold": 4,
+            "bundled_items_sold": 7,
+            "net_revenue": 477.11,
+            "orders_count": 1,
+            "extended_info": {
+                "name": "Subscription Bundle",
+                "price": 0,
+                "image": "<img width=\"450\" height=\"450\" src=\"https://example.com/wp-content/uploads/2023/01/gift-box-present-gift-card-800x800.jpeg?crop=1\" class=\"attachment-woocommerce_thumbnail size-woocommerce_thumbnail\" alt=\"\" decoding=\"async\" loading=\"lazy\" srcset=\"https://example.com/wp-content/uploads/2023/01/gift-box-present-gift-card-800x800.jpeg?crop=1 800w, https://example.com/wp-content/uploads/2023/01/gift-box-present-gift-card-150x150.jpeg?crop=1 150w, https://example.com/wp-content/uploads/2023/01/gift-box-present-gift-card-1200x1200.jpeg?crop=1 1200w, https://example.com/wp-content/uploads/2023/01/gift-box-present-gift-card-400x400.jpeg?crop=1 400w, https://example.com/wp-content/uploads/2023/01/gift-box-present-gift-card-200x200.jpeg?crop=1 200w, https://example.com/wp-content/uploads/2023/01/gift-box-present-gift-card-300x300.jpeg 300w, https://example.com/wp-content/uploads/2023/01/gift-box-present-gift-card-100x100.jpeg?crop=1 100w\" sizes=\"(max-width: 450px) 100vw, 450px\" data-attachment-id=\"69\" data-permalink=\"https://example.com/?attachment_id=69\" data-orig-file=\"https://example.com/wp-content/uploads/2023/01/gift-box-present-gift-card.jpeg\" data-orig-size=\"1920,1280\" data-comments-opened=\"1\" data-image-meta=\"{&quot;aperture&quot;:&quot;0&quot;,&quot;credit&quot;:&quot;&quot;,&quot;camera&quot;:&quot;&quot;,&quot;caption&quot;:&quot;&quot;,&quot;created_timestamp&quot;:&quot;0&quot;,&quot;copyright&quot;:&quot;&quot;,&quot;focal_length&quot;:&quot;0&quot;,&quot;iso&quot;:&quot;0&quot;,&quot;shutter_speed&quot;:&quot;0&quot;,&quot;title&quot;:&quot;&quot;,&quot;orientation&quot;:&quot;0&quot;}\" data-image-title=\"gift-box-present-gift-card\" data-image-description=\"\" data-image-caption=\"\" data-medium-file=\"https://example.com/wp-content/uploads/2023/01/gift-box-present-gift-card-300x200.jpeg\" data-large-file=\"https://example.com/wp-content/uploads/2023/01/gift-box-present-gift-card-1024x683.jpeg\" />",
+                "permalink": "https://example.com/product/my-test-product-bundle/",
+                "stock_status": "insufficientstock",
+                "sku": ""
+            },
+            "_links": {
+                "product": [
+                    {
+                        "href": "https://example.com/wp-json/wc-analytics/products/129"
+                    }
+                ]
+            }
+        },
+        {
+            "product_id": 190,
+            "items_sold": 4,
+            "bundled_items_sold": 10,
+            "net_revenue": 261.5,
+            "orders_count": 4,
+            "extended_info": {
+                "name": "Super Awesome Bundle (Deleted)"
+            },
+            "_links": {
+                "product": [
+                    {
+                        "href": "https://example.com/wp-json/wc-analytics/products/190"
+                    }
+                ]
+            }
+        },
+        {
+            "product_id": 404,
+            "items_sold": 3,
+            "bundled_items_sold": 25,
+            "net_revenue": 405,
+            "orders_count": 3,
+            "extended_info": {
+                "name": "A bundle ⚡️",
+                "price": 15,
+                "image": "<img width=\"450\" height=\"450\" src=\"https://example.com/wp-content/uploads/2023/01/logo-1-600x599.jpg\" class=\"attachment-woocommerce_thumbnail size-woocommerce_thumbnail\" alt=\"\" decoding=\"async\" loading=\"lazy\" srcset=\"https://example.com/wp-content/uploads/2023/01/logo-1-600x599.jpg 600w, https://example.com/wp-content/uploads/2023/01/logo-1-300x300.jpg 300w, https://example.com/wp-content/uploads/2023/01/logo-1-100x100.jpg?crop=1 100w, https://example.com/wp-content/uploads/2023/01/logo-1-150x150.jpg?crop=1 150w, https://example.com/wp-content/uploads/2023/01/logo-1-768x767.jpg 768w, https://example.com/wp-content/uploads/2023/01/logo-1-400x400.jpg?crop=1 400w, https://example.com/wp-content/uploads/2023/01/logo-1-200x200.jpg?crop=1 200w, https://example.com/wp-content/uploads/2023/01/logo-1.jpg 800w\" sizes=\"(max-width: 450px) 100vw, 450px\" data-attachment-id=\"60\" data-permalink=\"https://example.com/?attachment_id=60\" data-orig-file=\"https://example.com/wp-content/uploads/2023/01/logo-1.jpg\" data-orig-size=\"800,799\" data-comments-opened=\"1\" data-image-meta=\"{&quot;aperture&quot;:&quot;0&quot;,&quot;credit&quot;:&quot;&quot;,&quot;camera&quot;:&quot;&quot;,&quot;caption&quot;:&quot;&quot;,&quot;created_timestamp&quot;:&quot;0&quot;,&quot;copyright&quot;:&quot;&quot;,&quot;focal_length&quot;:&quot;0&quot;,&quot;iso&quot;:&quot;0&quot;,&quot;shutter_speed&quot;:&quot;0&quot;,&quot;title&quot;:&quot;&quot;,&quot;orientation&quot;:&quot;0&quot;}\" data-image-title=\"logo-1.jpg\" data-image-description=\"\" data-image-caption=\"\" data-medium-file=\"https://example.com/wp-content/uploads/2023/01/logo-1-300x300.jpg\" data-large-file=\"https://example.com/wp-content/uploads/2023/01/logo-1.jpg\" />",
+                "permalink": "https://example.com/product/a-bundle/",
+                "stock_status": "instock",
+                "sku": "bundle-lightning"
+            },
+            "_links": {
+                "product": [
+                    {
+                        "href": "https://example.com/wp-json/wc-analytics/products/404"
+                    }
+                ]
+            }
+        },
+        {
+            "product_id": 100,
+            "items_sold": 1,
+            "bundled_items_sold": 1,
+            "net_revenue": 12,
+            "orders_count": 1,
+            "extended_info": {
+                "name": "Small Bundle",
+                "price": 12,
+                "image": "<img width=\"450\" height=\"450\" src=\"https://example.com/wp-content/uploads/2023/01/logo-1-600x599.jpg\" class=\"attachment-woocommerce_thumbnail size-woocommerce_thumbnail\" alt=\"\" decoding=\"async\" loading=\"lazy\" srcset=\"https://example.com/wp-content/uploads/2023/01/logo-1-600x599.jpg 600w, https://example.com/wp-content/uploads/2023/01/logo-1-300x300.jpg 300w, https://example.com/wp-content/uploads/2023/01/logo-1-100x100.jpg?crop=1 100w, https://example.com/wp-content/uploads/2023/01/logo-1-150x150.jpg?crop=1 150w, https://example.com/wp-content/uploads/2023/01/logo-1-768x767.jpg 768w, https://example.com/wp-content/uploads/2023/01/logo-1-400x400.jpg?crop=1 400w, https://example.com/wp-content/uploads/2023/01/logo-1-200x200.jpg?crop=1 200w, https://example.com/wp-content/uploads/2023/01/logo-1.jpg 800w\" sizes=\"(max-width: 450px) 100vw, 450px\" data-attachment-id=\"60\" data-permalink=\"https://example.com/?attachment_id=60\" data-orig-file=\"https://example.com/wp-content/uploads/2023/01/logo-1.jpg\" data-orig-size=\"800,799\" data-comments-opened=\"1\" data-image-meta=\"{&quot;aperture&quot;:&quot;0&quot;,&quot;credit&quot;:&quot;&quot;,&quot;camera&quot;:&quot;&quot;,&quot;caption&quot;:&quot;&quot;,&quot;created_timestamp&quot;:&quot;0&quot;,&quot;copyright&quot;:&quot;&quot;,&quot;focal_length&quot;:&quot;0&quot;,&quot;iso&quot;:&quot;0&quot;,&quot;shutter_speed&quot;:&quot;0&quot;,&quot;title&quot;:&quot;&quot;,&quot;orientation&quot;:&quot;0&quot;}\" data-image-title=\"logo-1.jpg\" data-image-description=\"\" data-image-caption=\"\" data-medium-file=\"https://example.com/wp-content/uploads/2023/01/logo-1-300x300.jpg\" data-large-file=\"https://example.com/wp-content/uploads/2023/01/logo-1.jpg\" />",
+                "permalink": "https://example.com/product/small-bundle/",
+                "stock_status": "instock",
+                "sku": "small-bundle"
+            },
+            "_links": {
+                "product": [
+                    {
+                        "href": "https://example.com/wp-json/wc-analytics/products/100"
+                    }
+                ]
+            }
+        }
+    ]
+}

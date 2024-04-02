@@ -18,6 +18,8 @@ final class CustomerSearchUICommand: SearchUICommand {
         return showSearchFilters ? Localization.customerFiltersSearchBarPlaceHolder : Localization.customerSelectorSearchBarPlaceHolder
     }
 
+    let returnKeyType = UIReturnKeyType.done
+
     var searchBarAccessibilityIdentifier: String = "customer-search-screen-search-field"
 
     var cancelButtonAccessibilityIdentifier: String = "customer-search-screen-cancel-button"

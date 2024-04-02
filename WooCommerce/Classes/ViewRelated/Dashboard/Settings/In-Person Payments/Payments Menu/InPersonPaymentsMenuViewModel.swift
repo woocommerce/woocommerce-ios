@@ -22,8 +22,13 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
     @Published private(set) var selectedPaymentGatewayName: String?
     @Published private(set) var selectedPaymentGatewayPlugin: CardPresentPaymentsPlugin?
     @Published var presentCollectPaymentWithSimplePayments: Bool = false
+    /// Whether the payment collection flow is shown, bound to the order creation screen.
     @Published var presentCollectPayment: Bool = false
+    /// Whether the payment collection migration sheet is presented, bound to the migration sheet.
     @Published var presentCollectPaymentMigrationSheet: Bool = false
+    /// Whether the migration sheet has been presented per payment collection session.
+    @Published var hasPresentedCollectPaymentMigrationSheet: Bool = false
+    /// Whether the custom amount flow should be presented after dismissing the payment collection migration sheet.
     @Published var presentCustomAmountAfterDismissingCollectPaymentMigrationSheet: Bool = false
     @Published var presentSetUpTryOutTapToPay: Bool = false
     @Published var presentAboutTapToPay: Bool = false
@@ -162,6 +167,8 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
             return
         }
         orderViewModel = EditableOrderViewModel(siteID: siteID)
+        presentCustomAmountAfterDismissingCollectPaymentMigrationSheet = false
+        hasPresentedCollectPaymentMigrationSheet = false
         presentCollectPayment = true
         analytics.track(.paymentsMenuCollectPaymentTapped)
     }

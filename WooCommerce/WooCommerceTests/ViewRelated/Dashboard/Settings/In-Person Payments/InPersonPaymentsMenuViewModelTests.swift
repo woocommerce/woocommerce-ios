@@ -341,4 +341,19 @@ final class InPersonPaymentsMenuViewModelTests: XCTestCase {
         // Then
         XCTAssertTrue(originalOrderViewModel.syncRequired != sut.orderViewModel.syncRequired)
     }
+
+    func test_collectPaymentTapped_resets_presentCustomAmountAfterDismissingCollectPaymentMigrationSheet_and_hasPresentedCollectPaymentMigrationSheet_to_false() {
+        // Given
+        XCTAssertFalse(sut.presentCustomAmountAfterDismissingCollectPaymentMigrationSheet)
+        XCTAssertFalse(sut.hasPresentedCollectPaymentMigrationSheet)
+
+        // When
+        sut.presentCustomAmountAfterDismissingCollectPaymentMigrationSheet = true
+        sut.hasPresentedCollectPaymentMigrationSheet = true
+        sut.collectPaymentTapped()
+
+        // Then
+        XCTAssertFalse(sut.presentCustomAmountAfterDismissingCollectPaymentMigrationSheet)
+        XCTAssertFalse(sut.hasPresentedCollectPaymentMigrationSheet)
+    }
 }

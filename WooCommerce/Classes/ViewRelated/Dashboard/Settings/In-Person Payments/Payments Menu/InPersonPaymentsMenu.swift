@@ -198,6 +198,7 @@ struct InPersonPaymentsMenu: View {
                                              viewModel: viewModel.orderViewModel)
                 .navigationBarHidden(true)
                 .sheet(isPresented: $viewModel.presentCollectPaymentMigrationSheet, onDismiss: {
+                    // Custom amount sheet needs to be presented when the migration sheet is dismissed to avoid conflicting modals.
                     if viewModel.presentCustomAmountAfterDismissingCollectPaymentMigrationSheet {
                         viewModel.orderViewModel.addCustomAmount()
                     }
@@ -210,7 +211,11 @@ struct InPersonPaymentsMenu: View {
                 }
                 .onAppear {
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                        guard viewModel.hasPresentedCollectPaymentMigrationSheet == false else {
+                            return
+                        }
                         viewModel.presentCollectPaymentMigrationSheet = true
+                        viewModel.hasPresentedCollectPaymentMigrationSheet = true
                     }
                 }
             }

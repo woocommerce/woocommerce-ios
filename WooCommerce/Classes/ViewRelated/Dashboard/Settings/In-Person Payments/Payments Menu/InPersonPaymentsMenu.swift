@@ -414,6 +414,8 @@ struct InPersonPaymentsMenu_Previews: PreviewProvider {
             cardReaderSupportDeterminer: CardReaderSupportDeterminer(siteID: 0),
             wooPaymentsDepositService: WooPaymentsDepositService(siteID: 0, credentials: .init(authToken: ""))))
     static var previews: some View {
-        InPersonPaymentsMenu(viewModel: viewModel)
+        NavigationStack {
+            InPersonPaymentsMenu(viewModel: viewModel)
+        }
     }
 }

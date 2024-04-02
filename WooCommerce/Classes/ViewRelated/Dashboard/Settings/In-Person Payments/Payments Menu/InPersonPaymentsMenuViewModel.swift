@@ -167,6 +167,9 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
             return
         }
         orderViewModel = EditableOrderViewModel(siteID: siteID)
+        orderViewModel.onFinished = { [weak self] _ in
+            self?.presentCollectPayment = false
+        }
         presentCustomAmountAfterDismissingCollectPaymentMigrationSheet = false
         hasPresentedCollectPaymentMigrationSheet = false
         presentCollectPayment = true

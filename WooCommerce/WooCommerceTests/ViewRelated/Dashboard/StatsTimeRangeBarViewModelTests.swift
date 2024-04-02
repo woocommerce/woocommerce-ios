@@ -219,11 +219,11 @@ final class StatsTimeRangeBarViewModelTests: XCTestCase {
 
     func test_custom_range_with_selected_date_for_hourly_granularity() {
         // Given
-        // GMT: March 4 2024 00:00:00 AM
+        // GMT: March 4 2024 00:00:00
         let startDate = Date(timeIntervalSince1970: 1709510400)
-        // GMT: March 5 2024 00:00:00 AM
-        let endDate = Date(timeIntervalSince1970: 1709596800)
-        // GMT: March 4 2024 12:00:00 PM
+        // GMT: March 4 2024 23:59:59
+        let endDate = Date(timeIntervalSince1970: 1709596799)
+        // GMT: March 4 2024 12:00:00
         let selectedDate = Date(timeIntervalSince1970: 1709553600)
         let timezone = TimeZone(identifier: "GMT") ?? .current
 

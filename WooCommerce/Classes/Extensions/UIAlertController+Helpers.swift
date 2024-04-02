@@ -97,12 +97,12 @@ extension UIAlertController {
     }
 
     static func presentExpiredWPComPlanAlert(from viewController: UIViewController,
-                                             onUpgrade: @escaping () -> Void) {
+                                             onDismiss: (() -> Void)? = nil) {
         let alertController = UIAlertController(title: ExpiredWPComPlanAlert.title,
                                                 message: ExpiredWPComPlanAlert.message,
                                                 preferredStyle: .alert)
-        let action = UIAlertAction(title: ExpiredWPComPlanAlert.upgrade, style: .default) { _ in
-            onUpgrade()
+        let action = UIAlertAction(title: ExpiredWPComPlanAlert.dismiss, style: .default) { _ in
+            onDismiss?()
         }
         alertController.addAction(action)
         viewController.present(alertController, animated: true)
@@ -163,10 +163,10 @@ private enum BarcodeScannerNoCameraPermissionAlert {
 private enum ExpiredWPComPlanAlert {
     static let title = NSLocalizedString("Site plan expired", comment: "Title of the expired WPCom plan alert")
     static let message = NSLocalizedString(
-        "We have paused your store, but you can continue by picking a plan that suits you best.",
+        "We have paused your store. You can purchase another plan by logging in to WordPress.com on your browser.",
         comment: "Message on the expired WPCom plan alert"
     )
-    static let upgrade = NSLocalizedString("Upgrade", comment: "Button to upgrade a WPCom plan on the expired WPCom plan alert")
+    static let dismiss = NSLocalizedString("OK", comment: "Button to dismiss expired WPCom plan alert")
 }
 
 private enum UnfinishedApplicationPasswordAlert {

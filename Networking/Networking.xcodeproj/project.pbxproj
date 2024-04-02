@@ -664,6 +664,8 @@
 		CE070A342BBC52B200017578 /* gift-card-stats-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = CE070A332BBC52B200017578 /* gift-card-stats-without-data.json */; };
 		CE070A362BBC53D100017578 /* GiftCardStatsMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE070A352BBC53D100017578 /* GiftCardStatsMapper.swift */; };
 		CE070A382BBC543200017578 /* GiftCardStatsMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE070A372BBC543200017578 /* GiftCardStatsMapperTests.swift */; };
+		CE070A3A2BBC56CC00017578 /* GiftCardStatsRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE070A392BBC56CC00017578 /* GiftCardStatsRemote.swift */; };
+		CE070A3C2BBC577700017578 /* GiftCardStatsRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE070A3B2BBC577700017578 /* GiftCardStatsRemoteTests.swift */; };
 		CE0A0F13223942D90075ED8D /* ProductImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE0A0F12223942D90075ED8D /* ProductImage.swift */; };
 		CE0A0F1522396BF00075ED8D /* ProductAttribute.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE0A0F1422396BF00075ED8D /* ProductAttribute.swift */; };
 		CE0A0F17223970E80075ED8D /* ProductDefaultAttribute.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE0A0F16223970E80075ED8D /* ProductDefaultAttribute.swift */; };
@@ -1754,6 +1756,8 @@
 		CE070A332BBC52B200017578 /* gift-card-stats-without-data.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "gift-card-stats-without-data.json"; sourceTree = "<group>"; };
 		CE070A352BBC53D100017578 /* GiftCardStatsMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GiftCardStatsMapper.swift; sourceTree = "<group>"; };
 		CE070A372BBC543200017578 /* GiftCardStatsMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GiftCardStatsMapperTests.swift; sourceTree = "<group>"; };
+		CE070A392BBC56CC00017578 /* GiftCardStatsRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GiftCardStatsRemote.swift; sourceTree = "<group>"; };
+		CE070A3B2BBC577700017578 /* GiftCardStatsRemoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GiftCardStatsRemoteTests.swift; sourceTree = "<group>"; };
 		CE0A0F12223942D90075ED8D /* ProductImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductImage.swift; sourceTree = "<group>"; };
 		CE0A0F1422396BF00075ED8D /* ProductAttribute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductAttribute.swift; sourceTree = "<group>"; };
 		CE0A0F16223970E80075ED8D /* ProductDefaultAttribute.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProductDefaultAttribute.swift; sourceTree = "<group>"; };
@@ -2390,6 +2394,7 @@
 				45E461BD26837DB900011BF2 /* DataRemoteTests.swift */,
 				B524194821AC659500D6FC0A /* DevicesRemoteTests.swift */,
 				24F98C5F2502EF8200F49B68 /* FeatureFlagRemoteTests.swift */,
+				CE070A3B2BBC577700017578 /* GiftCardStatsRemoteTests.swift */,
 				4513382127A8409000AE5E78 /* InboxNotesRemoteTests.swift */,
 				E13BAD5228F8625600217769 /* InAppPurchasesRemoteTests.swift */,
 				263659DD2A2694A000607A0D /* IPLocationRemoteTests.swift */,
@@ -2549,6 +2554,7 @@
 				45E461BB26837CC500011BF2 /* DataRemote.swift */,
 				B572F69921AC475C003EEFF0 /* DevicesRemote.swift */,
 				24F98C512502E79800F49B68 /* FeatureFlagRemote.swift */,
+				CE070A392BBC56CC00017578 /* GiftCardStatsRemote.swift */,
 				E18152BD28F85B5B0011A0EC /* InAppPurchasesRemote.swift */,
 				4513381F27A8227F00AE5E78 /* InboxNotesRemote.swift */,
 				263659DB2A264A3E00607A0D /* IPLocationRemote.swift */,
@@ -4557,6 +4563,7 @@
 				45CCFCE227A2C9BF0012E8CB /* InboxNote.swift in Sources */,
 				311D412C2783BF7400052F64 /* StripeAccount.swift in Sources */,
 				B518662420A099BF00037A38 /* AlamofireNetwork.swift in Sources */,
+				CE070A3A2BBC56CC00017578 /* GiftCardStatsRemote.swift in Sources */,
 				311D412E2783C07D00052F64 /* StripeAccountMapper.swift in Sources */,
 				DE78DE482B2AEBEC002E58DE /* WordPressPageMapper.swift in Sources */,
 				CE430676234BA7920073CBFF /* RefundListMapper.swift in Sources */,
@@ -4741,6 +4748,7 @@
 				EE8C202D2B47886500FE967B /* CreateBlazeCampaignMapperTests.swift in Sources */,
 				CE6D666F2379E82A007835A1 /* ArrayWooTests.swift in Sources */,
 				DE2E8EAD295418D8002E4B14 /* WordPressSiteRemoteTests.swift in Sources */,
+				CE070A3C2BBC577700017578 /* GiftCardStatsRemoteTests.swift in Sources */,
 				45D685FC23D0C739005F87D0 /* ProductSkuMapperTests.swift in Sources */,
 				CEC4BF95234E7F34008D9195 /* RefundListMapperTests.swift in Sources */,
 				74A7B4BC217A807400E85A8B /* SiteSettingsMapperTests.swift in Sources */,

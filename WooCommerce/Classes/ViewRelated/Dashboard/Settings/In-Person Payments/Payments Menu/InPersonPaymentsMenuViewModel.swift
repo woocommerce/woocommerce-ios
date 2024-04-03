@@ -30,6 +30,8 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
     @Published var hasPresentedCollectPaymentMigrationSheet: Bool = false
     /// Whether the custom amount flow should be presented after dismissing the payment collection migration sheet.
     @Published var presentCustomAmountAfterDismissingCollectPaymentMigrationSheet: Bool = false
+    /// Whether the payment methods view is shown after creating an order.
+    @Published var presentPaymentMethods: Bool = false
     @Published var presentSetUpTryOutTapToPay: Bool = false
     @Published var presentAboutTapToPay: Bool = false
     @Published var presentTapToPayFeedback: Bool = false
@@ -49,6 +51,9 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
 
     var payInPersonToggleViewModel: InPersonPaymentsCashOnDeliveryToggleRowViewModelProtocol
 
+    private(set) var paymentMethodsViewModel: PaymentMethodsViewModel?
+    private var paymentMethodsNoticeSubscription: AnyCancellable?
+
     struct Dependencies {
         let cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration
         let onboardingUseCase: CardPresentPaymentsOnboardingUseCaseProtocol
@@ -57,6 +62,7 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
         let wooPaymentsDepositService: WooPaymentsDepositServiceProtocol
         let analytics: Analytics
         let systemStatusService: SystemStatusServiceProtocol
+        let noticePresenter: NoticePresenter
         let featureFlagService: FeatureFlagService
 
         init(cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration,
@@ -66,6 +72,7 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
              wooPaymentsDepositService: WooPaymentsDepositServiceProtocol,
              systemStatusService: SystemStatusServiceProtocol = SystemStatusService(stores: ServiceLocator.stores),
              analytics: Analytics = ServiceLocator.analytics,
+             noticePresenter: NoticePresenter = ServiceLocator.noticePresenter,
              featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
             self.cardPresentPaymentsConfiguration = cardPresentPaymentsConfiguration
             self.onboardingUseCase = onboardingUseCase
@@ -74,6 +81,7 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
             self.wooPaymentsDepositService = wooPaymentsDepositService
             self.systemStatusService = systemStatusService
             self.analytics = analytics
+            self.noticePresenter = noticePresenter
             self.featureFlagService = featureFlagService
         }
     }
@@ -167,6 +175,25 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
         orderViewModel.onFinished = { [weak self] _ in
             self?.presentCollectPayment = false
         }
+        orderViewModel.onFinishAndCollectPayment = { [weak self] order, paymentMethodsViewModel in
+            guard let self else { return }
+            self.paymentMethodsViewModel = paymentMethodsViewModel
+            paymentMethodsNoticeSubscription = paymentMethodsViewModel.notice
+                .compactMap { $0 }
+                .sink { [weak self] notice in
+                    guard let self else { return }
+                    switch notice {
+                        case .created:
+                            dependencies.noticePresenter.enqueue(notice: .init(title: Localization.orderCreated, feedbackType: .success))
+                        case .completed:
+                            dependencies.noticePresenter.enqueue(notice: .init(title: Localization.orderCompleted, feedbackType: .success))
+                        case .error(let description):
+                            dependencies.noticePresenter.enqueue(notice: .init(title: description, feedbackType: .error))
+                    }
+                }
+            presentPaymentMethods = true
+        }
+
         presentCustomAmountAfterDismissingCollectPaymentMigrationSheet = false
         hasPresentedCollectPaymentMigrationSheet = false
         presentCollectPayment = true
@@ -436,6 +463,16 @@ private extension InPersonPaymentsMenuViewModel {
             "menu.payments.inPersonPayments.setup.incomplete.notice.button.title",
             value: "Continue setup",
             comment: "Call to Action to finish the setup of In-Person Payments in the Menu"
+        )
+        static let orderCreated = NSLocalizedString(
+            "menu.payments.inPersonPayments.collectPayment.notice.orderCreated",
+            value: "🎉 Order created",
+            comment: "Notice text after creating an order from In-Person Payments in the Menu"
+        )
+        static let orderCompleted = NSLocalizedString(
+            "menu.payments.inPersonPayments.collectPayment.notice.orderCompleted",
+            value: "🎉 Order completed",
+            comment: "Notice text after completing a payment order from In-Person Payments in the Menu"
         )
     }
 }

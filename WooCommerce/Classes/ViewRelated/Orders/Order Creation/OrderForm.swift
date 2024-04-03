@@ -20,7 +20,7 @@ final class OrderFormHostingController: UIHostingController<OrderFormPresentatio
                     return .editing
             }
         }()
-        super.init(rootView: OrderFormPresentationWrapper(flow: flow, viewModel: viewModel))
+        super.init(rootView: OrderFormPresentationWrapper(flow: flow, dismissLabel: .cancelButton, viewModel: viewModel))
 
         // Needed because a `SwiftUI` cannot be dismissed when being presented by a UIHostingController
         rootView.dismissHandler = { [weak self] in
@@ -95,11 +95,21 @@ private extension OrderFormHostingController {
 }
 
 struct OrderFormPresentationWrapper: View {
+    /// Style of the dismiss button label.
+    enum DismissLabel {
+        /// Text label with Cancel copy.
+        case cancelButton
+        /// Backward chevron image.
+        case backButton
+    }
+
     /// Set this closure with UIKit dismiss code. Needed because we need access to the UIHostingController `dismiss` method.
     ///
     var dismissHandler: (() -> Void) = {}
 
     let flow: WooAnalyticsEvent.Orders.Flow
+
+    let dismissLabel: DismissLabel
 
     @ObservedObject var viewModel: EditableOrderViewModel
 
@@ -138,12 +148,20 @@ struct OrderFormPresentationWrapper: View {
                     }
                 },
                 dismissBarButton: {
-                    Button(OrderForm.Localization.cancelButton) {
+                    Button {
                         // By only calling the dismissHandler here, we wouldn't sync the selected items on dismissal
                         // this is normally done via a callback through the ProductSelector's onCloseButtonTapped(),
                         // but on split views we move this responsibility to the AdaptiveModalContainer
                         viewModel.syncOrderItemSelectionStateOnDismiss()
                         dismissHandler()
+                    } label: {
+                        switch dismissLabel {
+                            case .cancelButton:
+                                Text(OrderForm.Localization.cancelButton)
+                            case .backButton:
+                                Image(systemName: "chevron.backward")
+                                    .headlineLinkStyle()
+                        }
                     }
                     .accessibilityIdentifier(OrderForm.Accessibility.cancelButtonIdentifier)
                 },

@@ -207,4 +207,8 @@ public enum FeatureFlag: Int {
     /// Displays analytics cards for extensions in the Analytics Hub.
     ///
     case expandedAnalyticsHub
+
+    /// Enables migration from simple payments to order creation.
+    ///
+    case migrateSimplePaymentsToOrderCreation
 }

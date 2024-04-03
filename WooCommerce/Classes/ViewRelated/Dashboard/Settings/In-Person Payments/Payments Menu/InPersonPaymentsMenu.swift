@@ -23,7 +23,7 @@ struct InPersonPaymentsMenu: View {
                         .onTapGesture {
                             viewModel.collectPaymentTapped()
                         }
-                        .sheet(isPresented: $viewModel.presentCollectPayment,
+                        .sheet(isPresented: $viewModel.presentCollectPaymentWithSimplePayments,
                                onDismiss: {
                             Task { @MainActor in
                                 await viewModel.onAppear()
@@ -183,12 +183,21 @@ struct InPersonPaymentsMenu: View {
             }
             .scrollViewSectionStyle(.insetGrouped)
             .safariSheet(url: $viewModel.safariSheetURL)
-
-            NavigationLink(isActive: $viewModel.shouldShowOnboarding) {
+            .navigationDestination(isPresented: $viewModel.shouldShowOnboarding) {
                 InPersonPaymentsView(viewModel: viewModel.onboardingViewModel)
-            } label: {
-                EmptyView()
-            }.hidden()
+            }
+            .navigationDestination(isPresented: $viewModel.presentCollectPayment) {
+                OrderFormPresentationWrapper(dismissHandler: {
+                    viewModel.presentCollectPayment = false
+                    Task { @MainActor in
+                        await viewModel.onAppear()
+                    }
+                },
+                                             flow: .creation,
+                                             dismissLabel: .backButton,
+                                             viewModel: EditableOrderViewModel(siteID: viewModel.siteID))
+                .navigationBarHidden(true)
+            }
 
             if let onboardingNotice = viewModel.cardPresentPaymentsOnboardingNotice {
                 PermanentNoticeView(notice: onboardingNotice)

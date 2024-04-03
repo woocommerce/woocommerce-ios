@@ -243,4 +243,78 @@ class InPersonPaymentsMenuViewModelTests: XCTestCase {
         // Then
         XCTAssertFalse(sut.shouldShowTapToPaySection)
     }
+
+    // MARK: - Collect Payment tests
+
+    func test_collectPaymentTapped_sets_presentCollectPaymentWithSimplePayments_to_true_when_feature_is_disabled() {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isMigrateSimplePaymentsToOrderCreationEnabled: false)
+        let dependencies = InPersonPaymentsMenuViewModel.Dependencies(cardPresentPaymentsConfiguration: .init(country: .US),
+                                                                      onboardingUseCase: mockOnboardingUseCase,
+                                                                      cardReaderSupportDeterminer: MockCardReaderSupportDeterminer(),
+                                                                      wooPaymentsDepositService: mockDepositService,
+                                                                      featureFlagService: featureFlagService)
+        sut = InPersonPaymentsMenuViewModel(siteID: sampleStoreID,
+                                            dependencies: dependencies)
+
+        // When
+        sut.collectPaymentTapped()
+
+        // Then
+        XCTAssertTrue(sut.presentCollectPaymentWithSimplePayments)
+    }
+
+    func test_collectPaymentTapped_sets_presentCollectPayment_to_true() {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isMigrateSimplePaymentsToOrderCreationEnabled: true)
+        let dependencies = InPersonPaymentsMenuViewModel.Dependencies(cardPresentPaymentsConfiguration: .init(country: .US),
+                                                                      onboardingUseCase: mockOnboardingUseCase,
+                                                                      cardReaderSupportDeterminer: MockCardReaderSupportDeterminer(),
+                                                                      wooPaymentsDepositService: mockDepositService,
+                                                                      featureFlagService: featureFlagService)
+        sut = InPersonPaymentsMenuViewModel(siteID: sampleStoreID,
+                                            dependencies: dependencies)
+
+        // When
+        sut.collectPaymentTapped()
+
+        // Then
+        XCTAssertTrue(sut.presentCollectPayment)
+    }
+
+    func test_navigate_to_collectPayment_sets_presentCollectPaymentWithSimplePayments_to_true_when_feature_is_disabled() {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isMigrateSimplePaymentsToOrderCreationEnabled: false)
+        let dependencies = InPersonPaymentsMenuViewModel.Dependencies(cardPresentPaymentsConfiguration: .init(country: .US),
+                                                                      onboardingUseCase: mockOnboardingUseCase,
+                                                                      cardReaderSupportDeterminer: MockCardReaderSupportDeterminer(),
+                                                                      wooPaymentsDepositService: mockDepositService,
+                                                                      featureFlagService: featureFlagService)
+        sut = InPersonPaymentsMenuViewModel(siteID: sampleStoreID,
+                                            dependencies: dependencies)
+
+        // When
+        sut.navigate(to: PaymentsMenuDestination.collectPayment)
+
+        // Then
+        XCTAssertTrue(sut.presentCollectPaymentWithSimplePayments)
+    }
+
+    func test_navigate_to_collectPayment_sets_presentCollectPayment_to_true() {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isMigrateSimplePaymentsToOrderCreationEnabled: true)
+        let dependencies = InPersonPaymentsMenuViewModel.Dependencies(cardPresentPaymentsConfiguration: .init(country: .US),
+                                                                      onboardingUseCase: mockOnboardingUseCase,
+                                                                      cardReaderSupportDeterminer: MockCardReaderSupportDeterminer(),
+                                                                      wooPaymentsDepositService: mockDepositService,
+                                                                      featureFlagService: featureFlagService)
+        sut = InPersonPaymentsMenuViewModel(siteID: sampleStoreID,
+                                            dependencies: dependencies)
+
+        // When
+        sut.navigate(to: PaymentsMenuDestination.collectPayment)
+
+        // Then
+        XCTAssertTrue(sut.presentCollectPayment)
+    }
 }

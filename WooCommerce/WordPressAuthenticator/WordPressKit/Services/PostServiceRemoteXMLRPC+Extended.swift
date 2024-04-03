@@ -34,6 +34,23 @@ extension PostServiceRemoteXMLRPC: PostServiceRemoteExtended {
         }
     }
 
+    public func deletePost(withID postID: Int) async throws {
+        let parameters = xmlrpcArguments(withExtra: postID) as [AnyObject]
+        let result = await api.call(method: "wp.deletePost", parameters: parameters)
+        switch result {
+        case .success:
+            return
+        case .failure(let error):
+            guard case .endpointError(let error) = error else {
+                throw error
+            }
+            switch error.code ?? 0 {
+            case 404: throw PostServiceRemoteUpdatePostError.notFound
+            default: throw error
+            }
+        }
+    }
+
     private func getPost(withID postID: NSNumber) async throws -> RemotePost {
         try await withUnsafeThrowingContinuation { continuation in
             getPostWithID(postID) { post in

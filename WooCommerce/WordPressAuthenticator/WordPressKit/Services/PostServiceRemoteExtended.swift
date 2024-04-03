@@ -9,6 +9,12 @@ public protocol PostServiceRemoteExtended: PostServiceRemote {
     /// - throws: ``PostServiceRemoteUpdatePostError`` or oher underlying errors
     /// (see ``WordPressAPIError``)
     func patchPost(withID postID: Int, parameters: RemotePostUpdateParameters) async throws -> RemotePost
+
+    /// Permanently deletes a post with the given ID.
+    ///
+    /// - throws: ``PostServiceRemoteUpdatePostError`` or oher underlying errors
+    /// (see ``WordPressAPIError``)
+    func deletePost(withID postID: Int) async throws
 }
 
 public enum PostServiceRemoteUpdatePostError: Error {

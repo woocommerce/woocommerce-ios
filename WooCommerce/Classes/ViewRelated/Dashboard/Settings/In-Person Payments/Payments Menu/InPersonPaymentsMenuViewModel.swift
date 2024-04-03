@@ -45,8 +45,6 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
 
     private(set) var orderViewModel: EditableOrderViewModel
 
-    private(set) var simplePaymentsNoticePublisher: AnyPublisher<SimplePaymentsNotice, Never>
-
     let siteID: Int64
 
     var payInPersonToggleViewModel: InPersonPaymentsCashOnDeliveryToggleRowViewModelProtocol
@@ -102,7 +100,6 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
         self.siteID = siteID
         self.dependencies = dependencies
         self.payInPersonToggleViewModel = payInPersonToggleViewModel
-        self.simplePaymentsNoticePublisher = PassthroughSubject<SimplePaymentsNotice, Never>().eraseToAnyPublisher()
         self.orderViewModel = .init(siteID: siteID)
         observeOnboardingChanges()
         runCardPresentPaymentsOnboardingIfPossible()

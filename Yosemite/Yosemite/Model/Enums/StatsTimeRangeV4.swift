@@ -114,9 +114,9 @@ extension StatsTimeRangeV4 {
                 return .hourly
             }
             switch differenceInDays {
-            case .lessThan2:
+            case .sameDay:
                 return .hourly
-            case .from2To28:
+            case .from1To28:
                 return .daily
             case .from29To90:
                 return .weekly
@@ -140,7 +140,7 @@ extension StatsTimeRangeV4 {
                 return .day
             }
             switch differenceInDays {
-            case .lessThan2, .from2To28:
+            case .sameDay, .from1To28:
                 return .day
             case .from29To90:
                 return .week
@@ -168,7 +168,7 @@ extension StatsTimeRangeV4 {
                 return .day
             }
             switch differenceInDays {
-            case .lessThan2, .from2To28:
+            case .sameDay, .from1To28:
                 return .day
             case .from29To90:
                 return .week
@@ -196,7 +196,7 @@ extension StatsTimeRangeV4 {
                 return .day
             }
             switch differenceInDays {
-            case .lessThan2, .from2To28:
+            case .sameDay, .from1To28:
                 return .day
             case .from29To90:
                 return .week
@@ -262,8 +262,8 @@ public extension StatsTimeRangeV4 {
         case greaterThan3Years
         case from91daysTo3Years
         case from29To90
-        case from2To28
-        case lessThan2
+        case from1To28
+        case sameDay
     }
 
     /// Based on WooCommerce Core
@@ -286,10 +286,10 @@ public extension StatsTimeRangeV4 {
             return .from91daysTo3Years
         case 29...90:
             return .from29To90
-        case 2...28:
-            return .from2To28
-        case 0..<2:
-            return .lessThan2
+        case 1...28:
+            return .from1To28
+        case 0:
+            return .sameDay
         default:
             return nil
         }

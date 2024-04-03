@@ -523,7 +523,7 @@ private extension StoreStatsAndTopPerformersViewController {
         var siteVisitStatsMode: SiteVisitStatsMode
         if site.isJetpackConnected && site.isJetpackThePluginInstalled {
             let differenceInDay = StatsTimeRangeV4.differenceInDays(startDate: startDate, endDate: endDate)
-            siteVisitStatsMode = differenceInDay == .lessThan2 ? .default : .redactedDueToCustomRange
+            siteVisitStatsMode = differenceInDay == .sameDay ? .default : .redactedDueToCustomRange
         } else if site.isJetpackCPConnected {
             siteVisitStatsMode = .redactedDueToJetpack
         } else {

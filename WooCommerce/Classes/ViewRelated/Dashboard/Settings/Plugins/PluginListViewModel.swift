@@ -46,6 +46,8 @@ final class PluginListViewModel {
         self.siteID = siteID
         self.storesManager = storesManager
         self.storageManager = storageManager
+
+        trackOutOfDatePluginsIfAny()
     }
 
     /// Start fetching and observing plugin data from local storage.
@@ -59,5 +61,18 @@ final class PluginListViewModel {
     func syncPlugins(onCompletion: @escaping (Result<Void, Error>) -> Void) {
         let action = SitePluginAction.synchronizeSitePlugins(siteID: siteID, onCompletion: onCompletion)
         storesManager.dispatch(action)
+    }
+}
+
+private extension PluginListViewModel {
+    /// Tracks outdated plugins and their versions, if any
+    ///
+    func trackOutOfDatePluginsIfAny() {
+        let outOfDatePlugins = resultsController.fetchedObjects.filter { $0.version != $0.versionLatest }
+        guard outOfDatePlugins.isNotEmpty else {
+            return
+        }
+        let pluginNamesAndVersions = outOfDatePlugins.map { "\($0.name) - \($0.version)" }
+        ServiceLocator.analytics.track(event: .logOutOfDatePlugins(pluginNamesAndVersions))
     }
 }

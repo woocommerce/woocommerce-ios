@@ -3114,3 +3114,13 @@ extension WooAnalyticsEvent {
         }
     }
 }
+
+// MARK: - Plugin events
+//
+extension WooAnalyticsEvent {
+    static func logOutOfDatePlugins(_ pluginList: [String]) -> WooAnalyticsEvent {
+        WooAnalyticsEvent(statName: .outOfDatePluginList, properties: [
+            "plugins": "\(pluginList)"
+        ])
+    }
+}

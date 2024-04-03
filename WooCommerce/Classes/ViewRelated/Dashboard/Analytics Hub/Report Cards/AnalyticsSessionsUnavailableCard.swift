@@ -20,6 +20,7 @@ struct AnalyticsSessionsUnavailableCard: View {
                         .bodyStyle()
                 }
             }
+            .frame(maxWidth: .infinity, alignment: .leading)
             .padding(Layout.cardPadding)
             .overlay(RoundedRectangle(cornerRadius: Layout.cornerRadius)
                 .stroke(Color(.systemGray4)))

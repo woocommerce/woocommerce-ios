@@ -12,31 +12,14 @@ struct StatsIntervalDataParser {
         }) ?? []
     }
 
-    /// Returns the requested stats total data values for every interval in the provided order stats.
+    /// Returns the requested stats total data values for every interval in the provided stats.
     ///
     /// Used to create a line chart with the returned values.
     ///
-    static func getChartData(for statsTotal: OrderStatsTotalData, from orderStats: OrderStatsV4?) -> [Double] {
-        let intervals = sortStatsIntervals(from: orderStats)
+    static func getChartData<Stats: WCAnalyticsStats>(for statsTotal: Stats.Interval.Totals.TotalData, from stats: Stats?) -> [Double] {
+        let intervals = sortStatsIntervals(from: stats)
         return intervals.map { interval in
-            switch statsTotal {
-            case .totalRevenue:
-                return (interval.subtotals.grossRevenue as NSNumber).doubleValue
-            case .netRevenue:
-                return (interval.subtotals.netRevenue as NSNumber).doubleValue
-            case .orderCount:
-                return Double(interval.subtotals.totalOrders)
-            case .averageOrderValue:
-                return (interval.subtotals.averageOrderValue as NSNumber).doubleValue
-            }
+            interval.subtotals.getDoubleValue(for: statsTotal)
         }
-    }
-
-    /// Represents a type of stats total data
-    enum OrderStatsTotalData {
-        case totalRevenue
-        case netRevenue
-        case orderCount
-        case averageOrderValue
     }
 }

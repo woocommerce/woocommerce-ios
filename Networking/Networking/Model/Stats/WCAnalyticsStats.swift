@@ -24,6 +24,11 @@ public protocol WCAnalyticsStats {
 public protocol WCAnalyticsStatsTotals {
     // The stats totals will vary depending on the specific stats type.
     // These may be counts, currency amounts, etc.
+
+    /// Represents the types of stats total data
+    associatedtype TotalData: RawRepresentable
+
+    func getDoubleValue(for data: TotalData) -> Double
 }
 
 /// Protocol for stats intervals (represents a single order stat within a larger period) returned from a `wc-analytics` endpoint.

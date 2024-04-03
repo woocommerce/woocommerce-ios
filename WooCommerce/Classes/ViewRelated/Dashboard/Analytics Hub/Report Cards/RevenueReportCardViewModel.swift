@@ -65,7 +65,7 @@ extension RevenueReportCardViewModel {
     }
 
     var leadingChartData: [Double] {
-        isRedacted ? [] : StatsIntervalDataParser.getChartData(for: .totalRevenue, from: currentPeriodStats)
+        isRedacted ? [] : StatsIntervalDataParser.getChartData(for: OrderStatsV4Totals.TotalData.grossRevenue, from: currentPeriodStats)
     }
 
     // MARK: Net Revenue metric

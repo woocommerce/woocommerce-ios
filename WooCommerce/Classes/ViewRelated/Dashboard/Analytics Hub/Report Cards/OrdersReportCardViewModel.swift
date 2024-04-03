@@ -65,7 +65,7 @@ extension OrdersReportCardViewModel {
     }
 
     var leadingChartData: [Double] {
-        isRedacted ? [] : StatsIntervalDataParser.getChartData(for: .orderCount, from: currentPeriodStats)
+        isRedacted ? [] : StatsIntervalDataParser.getChartData(for: .totalOrders, from: currentPeriodStats)
     }
 
     // MARK: Average Order Value metric

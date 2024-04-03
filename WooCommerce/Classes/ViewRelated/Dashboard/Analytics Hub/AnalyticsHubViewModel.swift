@@ -24,18 +24,13 @@ final class AnalyticsHubViewModel: ObservableObject {
     ///
     private let userIsAdmin: Bool
 
-    /// Feature flag for Expanded Analytics Hub (extension analytics)
-    ///
-    private let isExpandedAnalyticsHubEnabled: Bool
-
     init(siteID: Int64,
          timeZone: TimeZone = .siteTimezone,
          statsTimeRange: StatsTimeRangeV4,
          usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter,
          stores: StoresManager = ServiceLocator.stores,
          storage: StorageManagerType = ServiceLocator.storageManager,
-         analytics: Analytics = ServiceLocator.analytics,
-         isExpandedAnalyticsHubEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.expandedAnalyticsHub)) {
+         analytics: Analytics = ServiceLocator.analytics) {
         let selectedType = AnalyticsHubTimeRangeSelection.SelectionType(statsTimeRange)
         let timeRangeSelection = AnalyticsHubTimeRangeSelection(selectionType: selectedType, timezone: timeZone)
 
@@ -45,7 +40,6 @@ final class AnalyticsHubViewModel: ObservableObject {
         self.storage = storage
         self.userIsAdmin = stores.sessionManager.defaultRoles.contains(.administrator)
         self.analytics = analytics
-        self.isExpandedAnalyticsHubEnabled = isExpandedAnalyticsHubEnabled
         self.timeRangeSelectionType = selectedType
         self.timeRangeSelection = timeRangeSelection
         self.timeRangeCard = AnalyticsHubViewModel.timeRangeCard(timeRangeSelection: timeRangeSelection,
@@ -161,9 +155,9 @@ final class AnalyticsHubViewModel: ObservableObject {
         case .sessions:
             isEligibleForSessionsCard
         case .bundles:
-            isExpandedAnalyticsHubEnabled && isPluginActive(SitePlugin.SupportedPlugin.WCProductBundles)
+            isPluginActive(SitePlugin.SupportedPlugin.WCProductBundles)
         case .giftCards:
-            isExpandedAnalyticsHubEnabled && isPluginActive(SitePlugin.SupportedPlugin.WCGiftCards)
+            isPluginActive(SitePlugin.SupportedPlugin.WCGiftCards)
         default:
             true
         }

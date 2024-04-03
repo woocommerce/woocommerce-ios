@@ -562,8 +562,7 @@ private extension AnalyticsHubViewModelTests {
                               usageTracksEventEmitter: eventEmitter,
                               stores: stores ?? self.stores,
                               storage: storage ?? MockStorageManager(),
-                              analytics: analytics,
-                              isExpandedAnalyticsHubEnabled: true)
+                              analytics: analytics)
     }
 
     func insertActivePlugins(_ pluginNames: [String?], to storage: MockStorageManager) {

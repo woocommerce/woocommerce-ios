@@ -1,7 +1,7 @@
 import Codegen
 
 /// Represents the data associated with gift card stats over a specific period.
-public struct GiftCardStatsTotals: Decodable, Equatable, GeneratedCopiable, GeneratedFakeable {
+public struct GiftCardStatsTotals: Decodable, Equatable, GeneratedCopiable, GeneratedFakeable, WCAnalyticsStatsTotals {
     /// Number of Gift Cards
     public let giftCardsCount: Int
 

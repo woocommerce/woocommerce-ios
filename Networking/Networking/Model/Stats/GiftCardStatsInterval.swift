@@ -1,7 +1,7 @@
 import Codegen
 
 /// Represents gift card stats for a specific period.
-public struct GiftCardStatsInterval: Decodable, Equatable, GeneratedCopiable, GeneratedFakeable {
+public struct GiftCardStatsInterval: Decodable, Equatable, GeneratedCopiable, GeneratedFakeable, WCAnalyticsStatsInterval {
     public let interval: String
     /// Interval start date string in the site time zone.
     public let dateStart: String

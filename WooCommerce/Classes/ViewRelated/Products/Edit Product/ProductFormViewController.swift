@@ -358,7 +358,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         }
 
         if viewModel.canDeleteProduct() {
-            actionSheet.addDestructiveActionWithTitle(ActionSheetStrings.delete) { [weak self] _ in
+            actionSheet.addDestructiveActionWithTitle(ActionSheetStrings.trashProduct) { [weak self] _ in
                 self?.displayDeleteProductAlert()
             }
         }
@@ -2037,7 +2037,9 @@ private enum ActionSheetStrings {
                                                comment: "Button title View product in store in Edit Product More Options Action Sheet")
     static let share = NSLocalizedString("Share", comment: "Button title Share in Edit Product More Options Action Sheet")
     static let promoteWithBlaze = NSLocalizedString("Promote with Blaze", comment: "Button title Promote with Blaze in Edit Product More Options Action Sheet")
-    static let delete = NSLocalizedString("Delete", comment: "Button title Delete in Edit Product More Options Action Sheet")
+    static let trashProduct = NSLocalizedString("productForm.bottomSheet.trashAction",
+                                                value: "Trash product",
+                                                comment: "Button title Trash product in Edit Product More Options Action Sheet")
     static let productSettings = NSLocalizedString("Product Settings", comment: "Button title Product Settings in Edit Product More Options Action Sheet")
     static let cancel = NSLocalizedString("Cancel", comment: "Button title Cancel in Edit Product More Options Action Sheet")
     static let duplicate = NSLocalizedString("Duplicate", comment: "Button title to duplicate a product in Product More Options Action Sheet")

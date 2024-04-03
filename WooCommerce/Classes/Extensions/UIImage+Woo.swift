@@ -601,12 +601,6 @@ extension UIImage {
         UIImage(named: "icon-get-paid")!
     }
 
-    /// Set store name image
-    ///
-    static var setStoreNameImage: UIImage {
-        UIImage(systemName: "pencil.circle")!
-    }
-
     /// Store summary image used in the store creation flow.
     ///
     static var storeSummaryImage: UIImage {

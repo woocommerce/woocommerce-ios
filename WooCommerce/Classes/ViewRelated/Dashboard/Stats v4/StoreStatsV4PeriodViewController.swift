@@ -557,7 +557,7 @@ private extension StoreStatsV4PeriodViewController {
                 return
             }
 
-            if differenceInDays == .lessThan2 {
+            if differenceInDays == .sameDay {
                 siteVisitStatsMode = selectedIndex != nil ? .hidden : .default
             } else {
                 siteVisitStatsMode = selectedIndex != nil ? .default : .redactedDueToCustomRange

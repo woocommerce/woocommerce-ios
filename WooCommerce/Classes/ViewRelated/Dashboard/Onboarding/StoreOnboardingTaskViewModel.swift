@@ -41,10 +41,6 @@ struct StoreOnboardingTaskViewModel: Identifiable, Equatable {
             icon = .getPaidImage
             title = Localization.Payments.title
             subtitle = Localization.Payments.subtitle
-        case .storeName:
-            icon = .setStoreNameImage
-            title = Localization.StoreTitle.title
-            subtitle = Localization.StoreTitle.subtitle
         case .unsupported:
             icon = .checkCircleImage
             title = ""
@@ -119,14 +115,6 @@ extension StoreOnboardingTaskViewModel {
             static let subtitle = NSLocalizedString(
                 "Give your customers an easy and convenient way to pay!",
                 comment: "Subtitle of the store onboarding task to get paid."
-            )
-        }
-
-        enum StoreTitle {
-            static let title = NSLocalizedString("Name your store", comment: "Title of the store onboarding task to update store title")
-            static let subtitle = NSLocalizedString(
-                "Customizing your store name can also help your store search engine optimization.",
-                comment: "Subtitle of the store onboarding task to update store title"
             )
         }
     }

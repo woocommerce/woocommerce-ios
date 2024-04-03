@@ -118,7 +118,7 @@ struct RangedDatePicker: View {
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button(action: {
-                        guard startDate < endDate else {
+                        guard startDate <= endDate else {
                             shouldShowInvalidDateRangeAlert = true
                             return
                         }
@@ -167,7 +167,7 @@ private extension RangedDatePicker {
             )
             static let message = NSLocalizedString(
                 "rangedDatePicker.invalidTimeRangeAlert.message",
-                value: "The start date should be earlier than the end date. Please select a different time range.",
+                value: "The start date should not be later than the end date. Please select a different time range.",
                 comment: "Message of the alert displayed when selecting an invalid time range for analytics"
             )
             static let action = NSLocalizedString(

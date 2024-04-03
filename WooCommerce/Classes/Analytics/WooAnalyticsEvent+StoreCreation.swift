@@ -20,12 +20,6 @@ extension WooAnalyticsEvent {
             static let initialDomain = "initial_domain"
         }
 
-        /// Tracked when the user taps on the CTA in store picker (logged in to WPCOM) to create a store.
-        static func sitePickerCreateSiteTapped(source: StorePickerSource) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .sitePickerCreateSiteTapped,
-                              properties: [Key.source: source.rawValue])
-        }
-
         static func siteCreationFlowStarted(source: Source) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .siteCreationFlowStarted,
                               properties: [Key.source: source.rawValue])

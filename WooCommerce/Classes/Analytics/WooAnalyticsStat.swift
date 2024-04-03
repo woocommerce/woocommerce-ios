@@ -80,7 +80,6 @@ public enum WooAnalyticsStat: String {
     case twoFactorSentSMS = "two_factor_sent_sms"
     case loginInvalidEmailScreenViewed = "login_invalid_email_screen_viewed"
     case whatIsWPComOnInvalidEmailScreenTapped = "what_is_wordpress_com_on_invalid_email_screen"
-    case createAccountOnInvalidEmailScreenTapped = "create_account_on_invalid_email_screen"
     case loginInsufficientRole = "login_insufficient_role"
 
     // MARK: REST API login
@@ -249,7 +248,6 @@ public enum WooAnalyticsStat: String {
 
     // MARK: Site creation
     //
-    case sitePickerCreateSiteTapped = "site_picker_create_site_tapped"
     case siteCreated = "login_woocommerce_site_created"
     case siteCreationFailed = "site_creation_failed"
     case siteCreationDismissed = "site_creation_dismissed"
@@ -420,6 +418,7 @@ public enum WooAnalyticsStat: String {
     case orderDetailEditFlowCanceled = "order_detail_edit_flow_canceled"
     case orderDetailEditFlowFailed = "order_detail_edit_flow_failed"
     case orderDetailPaymentLinkShared = "order_detail_payment_link_shared"
+    case orderDetailTrashButtonTapped = "order_detail_trash_tapped"
 
     // MARK: Test order
     //

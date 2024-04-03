@@ -5,8 +5,8 @@ import SwiftUI
 final class StorePlanBannerHostingViewController: UIHostingController<StorePlanBanner> {
     /// Designated initializer.
     ///
-    init(mainText: String) {
-        super.init(rootView: StorePlanBanner(mainText: mainText))
+    init(text: String) {
+        super.init(rootView: StorePlanBanner(text: text))
     }
 
     /// Needed for protocol conformance.
@@ -21,7 +21,7 @@ final class StorePlanBannerHostingViewController: UIHostingController<StorePlanB
 struct StorePlanBanner: View {
     /// Text to be rendered next to the info image.
     ///
-    let mainText: String
+    let text: String
 
     var body: some View {
         VStack(spacing: .zero) {
@@ -32,7 +32,7 @@ struct StorePlanBanner: View {
                     .accessibilityHidden(true)
 
                 AdaptiveStack(verticalAlignment: .center, spacing: Layout.spacing) {
-                    Text(mainText)
+                    Text(text)
                         .bodyStyle()
                 }
             }
@@ -58,7 +58,7 @@ extension StorePlanBanner {
 
 struct StorePlanBanner_Preview: PreviewProvider {
     static var previews: some View {
-        StorePlanBanner(mainText: "Your Free trial has ended")
+        StorePlanBanner(text: "Your Free trial has ended")
             .previewLayout(.sizeThatFits)
     }
 }

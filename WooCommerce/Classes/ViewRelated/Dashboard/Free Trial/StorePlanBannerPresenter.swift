@@ -132,7 +132,7 @@ private extension StorePlanBannerPresenter {
         // Remove any previous banner.
         storePlanBanner?.removeFromSuperview()
 
-        let storePlanViewController = StorePlanBannerHostingViewController(mainText: contentText)
+        let storePlanViewController = StorePlanBannerHostingViewController(text: contentText)
         storePlanViewController.view.translatesAutoresizingMaskIntoConstraints = false
 
         containerView.addSubview(storePlanViewController.view)

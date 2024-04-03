@@ -328,6 +328,8 @@ extension WooConstants {
 
         case compositeProductsExtension = "https://woo.com/products/composite-products/"
 
+        case giftCardsExtension = "https://woo.com/products/gift-cards/"
+
         case wooPaymentsStartupGuide = "https://woo.com/document/woopayments/startup-guide/"
 
         // swiftlint:disable:next line_length

@@ -152,6 +152,8 @@ final class AnalyticsHubViewModel: ObservableObject {
             isEligibleForSessionsCard
         case .bundles:
             isExpandedAnalyticsHubEnabled && isPluginActive(SitePlugin.SupportedPlugin.WCProductBundles)
+        case .giftCards:
+            isExpandedAnalyticsHubEnabled && isPluginActive(SitePlugin.SupportedPlugin.WCGiftCards)
         default:
             true
         }

@@ -131,6 +131,8 @@ private extension AnalyticsHubView {
             AnalyticsSessionsReportCard(viewModel: viewModel.sessionsCard)
         case .bundles:
             AnalyticsItemsSoldCard(bundlesViewModel: viewModel.bundlesCard)
+        case .giftCards:
+            EmptyView() // TODO-12165: Show gift cards analytics report card
         }
     }
 }

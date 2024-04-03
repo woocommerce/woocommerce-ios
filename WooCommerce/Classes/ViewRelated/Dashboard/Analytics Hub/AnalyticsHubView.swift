@@ -132,7 +132,7 @@ private extension AnalyticsHubView {
         case .bundles:
             AnalyticsItemsSoldCard(bundlesViewModel: viewModel.bundlesCard)
         case .giftCards:
-            EmptyView() // TODO-12165: Show gift cards analytics report card
+            AnalyticsReportCard(viewModel: viewModel.giftCardsCard)
         }
     }
 }

@@ -27,9 +27,7 @@ final class AnalyticsHubViewModelTests: XCTestCase {
     func test_cards_viewmodels_show_correct_data_after_updating_from_network() async {
         // Given
         let storage = MockStorageManager()
-        storage.insertSampleSystemPlugin(readOnlySystemPlugin: .fake().copy(siteID: sampleSiteID,
-                                                                            name: SitePlugin.SupportedPlugin.WCProductBundles.first,
-                                                                            active: true))
+        insertActivePlugins([SitePlugin.SupportedPlugin.WCProductBundles.first, SitePlugin.SupportedPlugin.WCGiftCards.first], to: storage)
         let vm = createViewModel(storage: storage)
         stores.whenReceivingAction(ofType: StatsActionV4.self) { action in
             switch action {
@@ -48,6 +46,9 @@ final class AnalyticsHubViewModelTests: XCTestCase {
             case let .retrieveTopProductBundles(_, _, _, _, _, completion):
                 let topBundle = ProductsReportItem.fake()
                 completion(.success([topBundle]))
+            case let .retrieveUsedGiftCardStats(_, _, _, _, _, _, _, completion):
+                let giftCardStats = GiftCardStats.fake().copy(totals: .fake().copy(giftCardsCount: 20))
+                completion(.success(giftCardStats))
             default:
                 break
             }
@@ -63,6 +64,7 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         XCTAssertFalse(vm.itemsSoldCard.isRedacted)
         XCTAssertFalse(vm.sessionsCard.isRedacted)
         XCTAssertFalse(vm.bundlesCard.isRedacted)
+        XCTAssertFalse(vm.giftCardsCard.isRedacted)
 
         XCTAssertEqual(vm.revenueCard.leadingValue, "$62")
         XCTAssertEqual(vm.ordersCard.leadingValue, "15")
@@ -71,6 +73,7 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         XCTAssertEqual(vm.sessionsCard.leadingValue, "53")
         XCTAssertEqual(vm.bundlesCard.bundlesSold, "3")
         XCTAssertEqual(vm.bundlesCard.bundlesSoldData.count, 1)
+        XCTAssertEqual(vm.giftCardsCard.leadingValue, "20")
     }
 
     func test_cards_viewmodels_redacted_while_updating_from_network() async {
@@ -82,10 +85,9 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         var loadingSessionsCardRedacted: Bool = false
         var loadingBundlesStatsCardRedacted: Bool = false
         var loadingBundlesSoldCardRedacted: Bool = false
+        var loadingGiftCardsCardRedacted: Bool = false
         let storage = MockStorageManager()
-        storage.insertSampleSystemPlugin(readOnlySystemPlugin: .fake().copy(siteID: sampleSiteID,
-                                                                            name: SitePlugin.SupportedPlugin.WCProductBundles.first,
-                                                                            active: true))
+        insertActivePlugins([SitePlugin.SupportedPlugin.WCProductBundles.first, SitePlugin.SupportedPlugin.WCGiftCards.first], to: storage)
         let vm = createViewModel(storage: storage)
         stores.whenReceivingAction(ofType: StatsActionV4.self) { action in
             switch action {
@@ -111,6 +113,10 @@ final class AnalyticsHubViewModelTests: XCTestCase {
                 let topBundle = ProductsReportItem.fake()
                 loadingBundlesSoldCardRedacted = vm.bundlesCard.isRedacted
                 completion(.success([topBundle]))
+            case let .retrieveUsedGiftCardStats(_, _, _, _, _, _, _, completion):
+                let giftCardStats = GiftCardStats.fake()
+                loadingGiftCardsCardRedacted = vm.giftCardsCard.isRedacted
+                completion(.success(giftCardStats))
             default:
                 break
             }
@@ -127,6 +133,7 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         XCTAssertTrue(loadingSessionsCardRedacted)
         XCTAssertTrue(loadingBundlesStatsCardRedacted)
         XCTAssertTrue(loadingBundlesSoldCardRedacted)
+        XCTAssertTrue(loadingGiftCardsCardRedacted)
     }
 
     func test_bundles_card_shows_correct_loading_state_and_data_with_network_update() {
@@ -529,5 +536,11 @@ private extension AnalyticsHubViewModelTests {
                               storage: storage ?? MockStorageManager(),
                               analytics: analytics,
                               isExpandedAnalyticsHubEnabled: true)
+    }
+
+    func insertActivePlugins(_ pluginNames: [String?], to storage: MockStorageManager) {
+        pluginNames.forEach { pluginName in
+            storage.insertSampleSystemPlugin(readOnlySystemPlugin: .fake().copy(siteID: sampleSiteID, name: pluginName, active: true))
+        }
     }
 }

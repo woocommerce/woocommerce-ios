@@ -121,6 +121,16 @@ final class AnalyticsHubViewModel: ObservableObject {
                                             usageTracksEventEmitter: usageTracksEventEmitter)
     }
 
+    /// Gift Cards Card ViewModel
+    ///
+    var giftCardsCard: GiftCardsReportCardViewModel {
+        GiftCardsReportCardViewModel(currentPeriodStats: currentGiftCardStats,
+                                     previousPeriodStats: previousGiftCardStats,
+                                     timeRange: timeRangeSelectionType,
+                                     isRedacted: isLoadingGiftCardStats,
+                                     usageTracksEventEmitter: usageTracksEventEmitter)
+    }
+
     /// View model for `AnalyticsHubCustomizeView`, to customize the cards in the Analytics Hub.
     ///
     @Published var customizeAnalyticsViewModel: AnalyticsHubCustomizeViewModel?

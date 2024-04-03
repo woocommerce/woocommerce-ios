@@ -258,7 +258,7 @@ private extension StatsDataTextFormatter {
     /// Retrieves the order count for the provided order stats and, optionally, a specific interval.
     ///
     static func orderCount(at selectedIndex: Int?, orderStats: OrderStatsV4?) -> Double? {
-        let orderStatsIntervals = StatsIntervalDataParser.sortOrderStatsIntervals(from: orderStats)
+        let orderStatsIntervals = StatsIntervalDataParser.sortStatsIntervals(from: orderStats)
         if let selectedIndex, selectedIndex < orderStatsIntervals.count {
             let orderStats = orderStatsIntervals[selectedIndex]
             return Double(orderStats.subtotals.totalOrders)
@@ -282,7 +282,7 @@ private extension StatsDataTextFormatter {
     /// Retrieves the total revenue from the provided order stats and, optionally, a specific interval.
     ///
     static func totalRevenue(at selectedIndex: Int?, orderStats: OrderStatsV4?) -> Decimal? {
-        let orderStatsIntervals = StatsIntervalDataParser.sortOrderStatsIntervals(from: orderStats)
+        let orderStatsIntervals = StatsIntervalDataParser.sortStatsIntervals(from: orderStats)
         if let selectedIndex, selectedIndex < orderStatsIntervals.count {
             let orderStats = orderStatsIntervals[selectedIndex]
             return orderStats.subtotals.grossRevenue

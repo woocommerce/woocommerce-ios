@@ -1,13 +1,12 @@
 import Foundation
-import struct Yosemite.OrderStatsV4
-import struct Yosemite.OrderStatsV4Interval
+import Yosemite
 
 struct StatsIntervalDataParser {
 
-    /// Returns the order stats intervals, ordered by date.
+    /// Returns the stats intervals, ordered by date.
     ///
-    static func sortOrderStatsIntervals(from orderStats: OrderStatsV4?) -> [OrderStatsV4Interval] {
-        return orderStats?.intervals.sorted(by: { (lhs, rhs) -> Bool in
+    static func sortStatsIntervals<Stats: WCAnalyticsStats>(from stats: Stats?) -> [Stats.Interval] {
+        return stats?.intervals.sorted(by: { (lhs, rhs) -> Bool in
             let siteTimezone = TimeZone.siteTimezone
             return lhs.dateStart(timeZone: siteTimezone) < rhs.dateStart(timeZone: siteTimezone)
         }) ?? []
@@ -17,8 +16,8 @@ struct StatsIntervalDataParser {
     ///
     /// Used to create a line chart with the returned values.
     ///
-    static func getChartData(for statsTotal: StatsTotalData, from orderStats: OrderStatsV4?) -> [Double] {
-        let intervals = sortOrderStatsIntervals(from: orderStats)
+    static func getChartData(for statsTotal: OrderStatsTotalData, from orderStats: OrderStatsV4?) -> [Double] {
+        let intervals = sortStatsIntervals(from: orderStats)
         return intervals.map { interval in
             switch statsTotal {
             case .totalRevenue:
@@ -34,7 +33,7 @@ struct StatsIntervalDataParser {
     }
 
     /// Represents a type of stats total data
-    enum StatsTotalData {
+    enum OrderStatsTotalData {
         case totalRevenue
         case netRevenue
         case orderCount

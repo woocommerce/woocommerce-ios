@@ -61,7 +61,7 @@ extension OrdersReportCardViewModel {
 
     var leadingDelta: DeltaPercentage? {
         isRedacted ? DeltaPercentage(string: "0%", direction: .zero)
-        : StatsDataTextFormatter.createOrderCountDelta(from: previousPeriodStats, to: currentPeriodStats)
+        : StatsDataTextFormatter.createDelta(for: .totalOrders, from: previousPeriodStats, to: currentPeriodStats)
     }
 
     var leadingChartData: [Double] {
@@ -80,7 +80,7 @@ extension OrdersReportCardViewModel {
 
     var trailingDelta: DeltaPercentage? {
         isRedacted ? DeltaPercentage(string: "0%", direction: .zero)
-        : StatsDataTextFormatter.createAverageOrderValueDelta(from: previousPeriodStats, to: currentPeriodStats)
+        : StatsDataTextFormatter.createDelta(for: .averageOrderValue, from: previousPeriodStats, to: currentPeriodStats)
     }
 
     var trailingChartData: [Double] {

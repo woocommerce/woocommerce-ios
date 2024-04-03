@@ -61,7 +61,7 @@ extension RevenueReportCardViewModel {
 
     var leadingDelta: DeltaPercentage? {
         isRedacted ? DeltaPercentage(string: "0%", direction: .zero)
-        : StatsDataTextFormatter.createTotalRevenueDelta(from: previousPeriodStats, to: currentPeriodStats)
+        : StatsDataTextFormatter.createDelta(for: .grossRevenue, from: previousPeriodStats, to: currentPeriodStats)
     }
 
     var leadingChartData: [Double] {
@@ -80,7 +80,7 @@ extension RevenueReportCardViewModel {
 
     var trailingDelta: DeltaPercentage? {
         isRedacted ? DeltaPercentage(string: "0%", direction: .zero)
-        : StatsDataTextFormatter.createNetRevenueDelta(from: previousPeriodStats, to: currentPeriodStats)
+        : StatsDataTextFormatter.createDelta(for: .netRevenue, from: previousPeriodStats, to: currentPeriodStats)
     }
 
     var trailingChartData: [Double] {

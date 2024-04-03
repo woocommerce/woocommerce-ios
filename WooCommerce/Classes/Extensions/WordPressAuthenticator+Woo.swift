@@ -8,7 +8,7 @@ extension WordPressAuthenticator {
                                             featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         let isWPComMagicLinkShownAsSecondaryActionOnPasswordScreen = true
         let isManualErrorHandlingEnabled = featureFlagService.isFeatureFlagEnabled(.manualErrorHandlingForSiteCredentialLogin)
-        let noMoreWooExpressSignup = featureFlagService.isFeatureFlagEnabled(.noMoreWooExpressSignup)
+        let noMoreWooExpressSignup = true
         let configuration = WordPressAuthenticatorConfiguration(wpcomClientId: ApiCredentials.dotcomAppId,
                                                                 wpcomSecret: ApiCredentials.dotcomSecret,
                                                                 wpcomScheme: dotcomAuthScheme,

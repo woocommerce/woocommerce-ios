@@ -122,6 +122,9 @@ private extension ULAccountMismatchViewController {
     func configureLogOutButton() {
         logOutButton.applyLinkButtonStyle()
         logOutButton.setTitle(viewModel.logOutButtonTitle, for: .normal)
+        var configuration = UIButton.Configuration.plain()
+        configuration.contentInsets = .zero
+        logOutButton.configuration = configuration
         logOutButton.on(.touchUpInside) { [weak self] _ in
             self?.didTapLogOutButton()
         }
@@ -153,6 +156,9 @@ private extension ULAccountMismatchViewController {
 
     func configureExtraInfoButton() {
         extraInfoButton.applyLinkButtonStyle()
+        var configuration = UIButton.Configuration.plain()
+        configuration.contentInsets = Constants.extraInfoCustomInsets
+        extraInfoButton.configuration = configuration
         extraInfoButton.setTitle(viewModel.auxiliaryButtonTitle, for: .normal)
         extraInfoButton.titleLabel?.numberOfLines = 0
         extraInfoButton.on(.touchUpInside) { [weak self] _ in
@@ -243,7 +249,7 @@ private extension ULAccountMismatchViewController {
 // MARK: - Constants
 private extension ULAccountMismatchViewController {
     enum Constants {
-        static let extraInfoCustomInsets = UIEdgeInsets(top: 12, left: 10, bottom: 12, right: 10)
+        static let extraInfoCustomInsets = NSDirectionalEdgeInsets(top: 12, leading: 10, bottom: 12, trailing: 10)
     }
 }
 

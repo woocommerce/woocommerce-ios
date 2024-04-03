@@ -148,6 +148,9 @@ private extension NoticeView {
         actionButton.setTitleColor(Appearance.actionColor, for: .normal)
         actionButton.addTarget(self, action: #selector(actionButtonTapped), for: .touchUpInside)
         actionButton.setContentCompressionResistancePriority(.required, for: .horizontal)
+        var configuration = UIButton.Configuration.plain()
+        configuration.contentInsets = Metrics.actionButtonContentInsets
+        actionButton.configuration = configuration
         actionButton.backgroundColor = Appearance.actionBackgroundColor
     }
 
@@ -213,7 +216,7 @@ private extension NoticeView {
     enum Metrics {
         static let cornerRadius: CGFloat = 13.0
         static let layoutMargins = UIEdgeInsets(top: 16.0, left: 16.0, bottom: 16.0, right: 16.0)
-        static let actionButtonContentInsets = UIEdgeInsets(top: 22.0, left: 16.0, bottom: 22.0, right: 16.0)
+        static let actionButtonContentInsets = NSDirectionalEdgeInsets(top: 22.0, leading: 16.0, bottom: 22.0, trailing: 16.0)
         static let labelLineSpacing: CGFloat = 18.0
     }
 

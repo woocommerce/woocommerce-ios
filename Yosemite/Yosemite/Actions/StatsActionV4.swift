@@ -82,4 +82,15 @@ public enum StatsActionV4: Action {
                                    latestDateToInclude: Date,
                                    quantity: Int,
                                    onCompletion: (Result<[ProductsReportItem], Error>) -> Void)
+
+    /// Retrieves the used gift card stats for the provided site ID and time range, without saving them to the Storage layer.
+    ///
+    case retrieveUsedGiftCardStats(siteID: Int64,
+                                   unit: StatsGranularityV4,
+                                   timeZone: TimeZone,
+                                   earliestDateToInclude: Date,
+                                   latestDateToInclude: Date,
+                                   quantity: Int,
+                                   forceRefresh: Bool,
+                                   onCompletion: (Result<GiftCardStats, Error>) -> Void)
 }

@@ -594,4 +594,106 @@ final class StatsDataTextFormatterTests: XCTestCase {
         XCTAssertEqual(delta.string, "-23%")
         XCTAssertEqual(delta.direction, .negative)
     }
+
+    // MARK: Gift Card Stats
+
+    func test_createGiftCardsUsedText_returns_placeholder_on_nil_stats() {
+        let text = StatsDataTextFormatter.createGiftCardsUsedText(giftCardStats: nil)
+        XCTAssertEqual(text, "-")
+    }
+
+    func test_createGiftCardsUsedText_returns_formatted_value() {
+        // Given
+        let giftCardStats = GiftCardStats.fake().copy(totals: .fake().copy(giftCardsCount: 67890))
+
+        // When
+        let text = StatsDataTextFormatter.createGiftCardsUsedText(giftCardStats: giftCardStats)
+
+        // Then
+        XCTAssertEqual(text, "67.9k")
+    }
+
+    func test_createDelta_for_giftCardsCount_returns_zero_on_nil_stats() {
+        let stats: GiftCardStats? = nil
+        let delta = StatsDataTextFormatter.createDelta(for: .giftCardsCount, from: stats, to: stats)
+        XCTAssertEqual(delta.string, "+0%")
+        XCTAssertEqual(delta.direction, .zero)
+    }
+
+    func test_createDelta_for_giftCardsCount_returns_correct_positive_value() {
+        // Given
+        let previousStats = GiftCardStats.fake().copy(totals: .fake().copy(giftCardsCount: 100))
+        let currentStats = GiftCardStats.fake().copy(totals: .fake().copy(giftCardsCount: 133))
+
+        // When
+        let delta = StatsDataTextFormatter.createDelta(for: .giftCardsCount, from: previousStats, to: currentStats)
+
+        // Then
+        XCTAssertEqual(delta.string, "+33%")
+        XCTAssertEqual(delta.direction, .positive)
+    }
+
+    func test_createDelta_for_giftCardsCount_returns_correct_negative_value() {
+        // Given
+        let previousStats = GiftCardStats.fake().copy(totals: .fake().copy(giftCardsCount: 100))
+        let currentStats = GiftCardStats.fake().copy(totals: .fake().copy(giftCardsCount: 77))
+
+        // When
+        let delta = StatsDataTextFormatter.createDelta(for: .giftCardsCount, from: previousStats, to: currentStats)
+
+        // Then
+        XCTAssertEqual(delta.string, "-23%")
+        XCTAssertEqual(delta.direction, .negative)
+    }
+
+    func test_createGiftCardsNetAmountText_returns_placeholder_on_nil_stats() {
+        let text = StatsDataTextFormatter.createGiftCardsNetAmountText(giftCardStats: nil)
+        XCTAssertEqual(text, "-")
+    }
+
+    func test_createGiftCardsNetAmountText_returns_formatted_value() {
+        // Given
+        let giftCardStats = GiftCardStats.fake().copy(totals: .fake().copy(netAmount: 62.856))
+
+        // When
+        let text = StatsDataTextFormatter.createGiftCardsNetAmountText(giftCardStats: giftCardStats,
+                                                                       currencyFormatter: currencyFormatter,
+                                                                       currencyCode: currencyCode.rawValue)
+
+        // Then
+        XCTAssertEqual(text, "$62.86")
+    }
+
+    func test_createDelta_for_GiftCardsStats_netAmount_returns_zero_on_nil_stats() {
+        let stats: GiftCardStats? = nil
+        let delta = StatsDataTextFormatter.createDelta(for: .netAmount, from: stats, to: stats)
+        XCTAssertEqual(delta.string, "+0%")
+        XCTAssertEqual(delta.direction, .zero)
+    }
+
+    func test_createDelta_for_GiftCardsStats_netAmount_returns_correct_positive_value() {
+        // Given
+        let previousStats = GiftCardStats.fake().copy(totals: .fake().copy(netAmount: 100))
+        let currentStats = GiftCardStats.fake().copy(totals: .fake().copy(netAmount: 133))
+
+        // When
+        let delta = StatsDataTextFormatter.createDelta(for: .netAmount, from: previousStats, to: currentStats)
+
+        // Then
+        XCTAssertEqual(delta.string, "+33%")
+        XCTAssertEqual(delta.direction, .positive)
+    }
+
+    func test_createDelta_for_GiftCardsStats_netAmount_returns_correct_negative_value() {
+        // Given
+        let previousStats = GiftCardStats.fake().copy(totals: .fake().copy(netAmount: 100))
+        let currentStats = GiftCardStats.fake().copy(totals: .fake().copy(netAmount: 77))
+
+        // When
+        let delta = StatsDataTextFormatter.createDelta(for: .netAmount, from: previousStats, to: currentStats)
+
+        // Then
+        XCTAssertEqual(delta.string, "-23%")
+        XCTAssertEqual(delta.direction, .negative)
+    }
 }

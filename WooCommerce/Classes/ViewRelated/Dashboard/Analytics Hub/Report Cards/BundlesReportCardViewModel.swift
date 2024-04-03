@@ -77,7 +77,7 @@ extension AnalyticsBundlesReportCardViewModel {
     ///
     var delta: DeltaPercentage {
         isRedacted ? DeltaPercentage(string: "0%", direction: .zero)
-        : StatsDataTextFormatter.createBundlesSoldDelta(from: previousPeriodStats, to: currentPeriodStats)
+        : StatsDataTextFormatter.createDelta(for: .totalItemsSold, from: previousPeriodStats, to: currentPeriodStats)
     }
 
     /// Indicates if there was an error loading stats part of the card.

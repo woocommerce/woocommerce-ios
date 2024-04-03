@@ -2,7 +2,7 @@ import Foundation
 import Codegen
 
 /// Represents gift card stats over a specific period.
-public struct GiftCardStats: Decodable, Equatable, GeneratedCopiable, GeneratedFakeable {
+public struct GiftCardStats: Decodable, Equatable, GeneratedCopiable, GeneratedFakeable, WCAnalyticsStats {
     public let siteID: Int64
     public let granularity: StatsGranularityV4
     public let totals: GiftCardStatsTotals

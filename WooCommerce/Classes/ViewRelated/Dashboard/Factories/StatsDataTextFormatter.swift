@@ -142,6 +142,32 @@ struct StatsDataTextFormatter {
         }
         return Double(bundleStats.totals.totalItemsSold).humanReadableString()
     }
+
+    // MARK: Gift Card Stats
+
+    /// Creates the text to display for gift cards used value.
+    ///
+    static func createGiftCardsUsedText(giftCardStats: GiftCardStats?) -> String {
+        guard let giftCardStats else {
+            return Constants.placeholderText
+        }
+        return Double(giftCardStats.totals.giftCardsCount).humanReadableString()
+    }
+
+    /// Creates the text to display for gift cards net amount value.
+    ///
+    static func createGiftCardsNetAmountText(giftCardStats: GiftCardStats?,
+                                             currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
+                                             currencyCode: String = ServiceLocator.currencySettings.currencyCode.rawValue,
+                                             numberOfFractionDigits: Int = ServiceLocator.currencySettings.fractionDigits) -> String {
+        guard let giftCardStats else {
+            return Constants.placeholderText
+        }
+        // If net amount is an integer, no decimal points are shown.
+        let netAmount = giftCardStats.totals.netAmount
+        let numberOfDecimals: Int? = netAmount.rounded(.plain, scale: numberOfFractionDigits).isInteger ? 0 : nil
+        return currencyFormatter.formatAmount(netAmount, with: currencyCode, numberOfDecimals: numberOfDecimals) ?? String()
+    }
 }
 
 extension StatsDataTextFormatter {

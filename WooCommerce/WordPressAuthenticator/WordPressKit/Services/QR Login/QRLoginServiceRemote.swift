@@ -7,7 +7,7 @@ open class QRLoginServiceRemote: ServiceRemoteWordPressComREST {
         let path = self.path(forEndpoint: "auth/qr-code/validate", withVersion: ._2_0)
         let parameters = [ "token": token, "data": data ] as [String: AnyObject]
 
-        wordPressComRestApi.POST(path, parameters: parameters as [String: AnyObject], success: { (response, _) in
+        wordPressComRESTAPI.post(path, parameters: parameters as [String: AnyObject], success: { (response, _) in
             do {
                 let decoder = JSONDecoder.apiDecoder
                 let data = try JSONSerialization.data(withJSONObject: response, options: [])
@@ -33,8 +33,9 @@ open class QRLoginServiceRemote: ServiceRemoteWordPressComREST {
         let path = self.path(forEndpoint: "auth/qr-code/authenticate", withVersion: ._2_0)
         let parameters = [ "token": token, "data": data ] as [String: AnyObject]
 
-        wordPressComRestApi.POST(path, parameters: parameters, success: { (response, _) in
-            guard let authenticated = response["authenticated"] as? Bool else {
+        wordPressComRESTAPI.post(path, parameters: parameters, success: { (response, _) in
+            guard let responseDict = response as? [String: Any],
+                let authenticated = responseDict["authenticated"] as? Bool else {
                 success(false)
                 return
             }

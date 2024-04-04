@@ -118,7 +118,7 @@ extension WooAnalyticsEvent {
                               properties: [Key.isFreeTrial: isFreeTrial])
         }
 
-        /// Tracked when the user taps on the "Staring a new store?" button in login prologue (logged out).
+        /// Tracked when the user taps on the "Starting a new store?" button in login prologue (logged out).
         static func loginPrologueStartingANewStoreTapped() -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .loginPrologueStartingANewStoreTapped,
                               properties: [:])

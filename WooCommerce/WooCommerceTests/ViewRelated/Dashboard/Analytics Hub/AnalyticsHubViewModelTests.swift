@@ -236,6 +236,30 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         assertEqual([.revenue], vm.enabledCards)
     }
 
+    func test_enabledCards_contains_new_cards_not_in_stored_customizations_when_extensions_are_active() async {
+        // Given
+        let storage = MockStorageManager()
+        insertActivePlugins([SitePlugin.SupportedPlugin.WCProductBundles.first, SitePlugin.SupportedPlugin.WCGiftCards.first], to: storage)
+        let vm = createViewModel(storage: storage)
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+            case let .loadAnalyticsHubCards(_, completion):
+                completion([AnalyticsCard(type: .orders, enabled: true),
+                            AnalyticsCard(type: .revenue, enabled: true),
+                            AnalyticsCard(type: .products, enabled: false),
+                            AnalyticsCard(type: .sessions, enabled: false)])
+            default:
+                break
+            }
+        }
+
+        // When
+        await vm.loadAnalyticsCardSettings()
+
+        // Then
+        assertEqual([.orders, .revenue, .bundles, .giftCards], vm.enabledCards)
+    }
+
     func test_it_updates_enabledCards_when_saved() async throws {
         // Given
         assertEqual([.revenue, .orders, .products, .sessions], vm.enabledCards)
@@ -362,7 +386,9 @@ final class AnalyticsHubViewModelTests: XCTestCase {
                 completion([AnalyticsCard(type: .revenue, enabled: true),
                             AnalyticsCard(type: .orders, enabled: true),
                             AnalyticsCard(type: .products, enabled: false),
-                            AnalyticsCard(type: .sessions, enabled: false)])
+                            AnalyticsCard(type: .sessions, enabled: false),
+                            AnalyticsCard(type: .bundles, enabled: false),
+                            AnalyticsCard(type: .giftCards, enabled: false)])
             default:
                 break
             }
@@ -403,7 +429,9 @@ final class AnalyticsHubViewModelTests: XCTestCase {
                 completion([AnalyticsCard(type: .revenue, enabled: true),
                             AnalyticsCard(type: .orders, enabled: true),
                             AnalyticsCard(type: .products, enabled: false),
-                            AnalyticsCard(type: .sessions, enabled: false)])
+                            AnalyticsCard(type: .sessions, enabled: false),
+                            AnalyticsCard(type: .bundles, enabled: false),
+                            AnalyticsCard(type: .giftCards, enabled: false)])
             default:
                 break
             }

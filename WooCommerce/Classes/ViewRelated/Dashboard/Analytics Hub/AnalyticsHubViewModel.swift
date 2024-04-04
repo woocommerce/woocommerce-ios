@@ -636,12 +636,23 @@ extension AnalyticsHubViewModel {
     ///
     @MainActor
     func loadAnalyticsCardSettings() async {
-        allCardsWithSettings = await withCheckedContinuation { continuation in
+        let storedCards = await withCheckedContinuation { continuation in
             let action = AppSettingsAction.loadAnalyticsHubCards(siteID: siteID) { cards in
-                continuation.resume(returning: cards ?? AnalyticsHubViewModel.defaultCards)
+                continuation.resume(returning: cards)
             }
             stores.dispatch(action)
         }
+
+        guard let storedCards else {
+            return allCardsWithSettings = AnalyticsHubViewModel.defaultCards
+        }
+
+        // Any new cards added to the analytics hub since the stored cards were saved.
+        let newCards = AnalyticsHubViewModel.defaultCards.filter { defaultCard in
+            !storedCards.contains(where: { $0.type == defaultCard.type })
+        }
+
+        allCardsWithSettings = storedCards + newCards
     }
 
     /// Sets analytics card settings in storage

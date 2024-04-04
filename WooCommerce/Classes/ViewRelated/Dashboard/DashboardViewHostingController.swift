@@ -5,15 +5,19 @@ import struct Yosemite.Site
 ///
 final class DashboardViewHostingController: UIHostingController<DashboardView> {
 
+    private let siteID: Int64
     private let viewModel: DashboardViewModel
     private var storeOnboardingCoordinator: StoreOnboardingCoordinator?
+    private var blazeCampaignCreationCoordinator: BlazeCampaignCreationCoordinator?
 
     init(siteID: Int64) {
         let viewModel = DashboardViewModel(siteID: siteID)
         self.viewModel = viewModel
+        self.siteID = siteID
         super.init(rootView: DashboardView(viewModel: viewModel))
         configureTabBarItem()
         configureStoreOnboarding()
+        configureBlazeSection()
     }
 
     @available(*, unavailable)
@@ -24,6 +28,7 @@ final class DashboardViewHostingController: UIHostingController<DashboardView> {
     override func viewDidLoad() {
         super.viewDidLoad()
         registerUserActivity()
+        reloadAllCards()
     }
 }
 
@@ -35,6 +40,29 @@ private extension DashboardViewHostingController {
         tabBarItem.accessibilityIdentifier = "tab-bar-my-store-item"
     }
 
+    func reloadAllCards() {
+        Task { @MainActor in
+            await withTaskGroup(of: Void.self) { group in
+                group.addTask { [weak self] in
+                    guard let self else { return }
+                    await self.viewModel.syncAnnouncements(for: self.siteID)
+                }
+//                group.addTask { [weak self] in
+//                    await self?.reloadDashboardUIStatsVersion(forced: true)
+//                }
+                group.addTask { [weak self] in
+                    await self?.viewModel.reloadStoreOnboardingTasks()
+                }
+                group.addTask { [weak self] in
+                    await self?.viewModel.reloadBlazeCampaignView()
+                }
+            }
+        }
+    }
+}
+
+// MARK: Store onboarding
+private extension DashboardViewHostingController {
     func configureStoreOnboarding() {
         rootView.onboardingTaskTapped = { [weak self] site, task in
             guard let self, !task.isComplete else { return }
@@ -75,6 +103,39 @@ private extension DashboardViewHostingController {
     func reloadOnboardingTask() {
         Task {
             await viewModel.storeOnboardingViewModel.reloadTasks()
+        }
+    }
+}
+
+// MARK: Blaze section
+private extension DashboardViewHostingController {
+    func configureBlazeSection() {
+        rootView.showAllBlazeCampaignsTapped = { [weak self] in
+            guard let self, let navigationController else { return }
+            let controller = BlazeCampaignListHostingController(viewModel: .init(siteID: siteID))
+            navigationController.show(controller, sender: self)
+        }
+
+        rootView.createBlazeCampaignTapped = { [weak self] productID in
+            guard let self, let navigationController else { return }
+            let coordinator = BlazeCampaignCreationCoordinator(
+                siteID: viewModel.blazeCampaignDashboardViewModel.siteID,
+                siteURL: viewModel.blazeCampaignDashboardViewModel.siteURL,
+                productID: productID,
+                source: .myStoreSection,
+                shouldShowIntro: viewModel.blazeCampaignDashboardViewModel.shouldShowIntroView,
+                navigationController: navigationController,
+                onCampaignCreated: handlePostCreation
+            )
+            coordinator.start()
+            self.blazeCampaignCreationCoordinator = coordinator
+        }
+    }
+
+    /// Reloads data.
+    func handlePostCreation() {
+        Task {
+            await viewModel.blazeCampaignDashboardViewModel.reload()
         }
     }
 }

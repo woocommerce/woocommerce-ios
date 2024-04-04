@@ -67,6 +67,12 @@ final class StoreOnboardingViewHostingController: SelfSizingHostingController<St
         configureNavigationBarAppearance()
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
+        reloadTasks()
+    }
+
     private func reloadTasks() {
         Task { @MainActor in
             await viewModel.reloadTasks()
@@ -158,9 +164,6 @@ struct StoreOnboardingView: View {
             .padding(insets: viewModel.shouldShowViewAllButton ?
                      Layout.insetsWithViewAllButton: Layout.insetsWithoutViewAllButton)
             .if(!viewModel.isExpanded) { $0.background(Color(uiColor: .listForeground(modal: false))) }
-            .task {
-                await viewModel.reloadTasks()
-            }
         }
     }
 }

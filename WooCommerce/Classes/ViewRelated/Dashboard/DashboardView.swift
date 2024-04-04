@@ -5,7 +5,7 @@ import struct Yosemite.StoreOnboardingTask
 /// View for the dashboard screen
 ///
 struct DashboardView: View {
-    @StateObject private var viewModel: DashboardViewModel
+    @ObservedObject private var viewModel: DashboardViewModel
     @State private var currentSite: Site?
 
     /// Set externally in the hosting controller.
@@ -15,21 +15,28 @@ struct DashboardView: View {
     /// Set externally in the hosting controller.
     var onboardingShareFeedbackAction: (() -> Void)?
 
+    /// Set externally in the hosting controller.
+    var showAllBlazeCampaignsTapped: (() -> Void)?
+    /// Set externally in the hosting controller.
+    var createBlazeCampaignTapped: ((_ productID: Int64?) -> Void)?
+
     init(viewModel: DashboardViewModel) {
-        self._viewModel = StateObject(wrappedValue: viewModel)
+        self.viewModel = viewModel
     }
 
     var body: some View {
         ScrollView {
             // Store title
             Text(currentSite?.name ?? Localization.title)
-                .secondaryBodyStyle()
-                .padding(.horizontal, Layout.horizontalPadding)
+                .subheadlineStyle()
+                .padding([.horizontal, .bottom], Layout.padding)
                 .frame(maxWidth: .infinity, alignment: .leading)
+                .background(Color(.listForeground(modal: false)))
 
             // Card views
             dashboardCards
         }
+        .background(Color(.listBackground))
         .navigationTitle(Localization.title)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
@@ -50,7 +57,7 @@ struct DashboardView: View {
 //
 private extension DashboardView {
     var dashboardCards: some View {
-        ForEach(viewModel.dashboardCards) { card in
+        ForEach(viewModel.dashboardCards, id: \.self) { card in
             switch card {
             case .onboarding:
                 StoreOnboardingView(viewModel: viewModel.storeOnboardingViewModel, onTaskTapped: { task in
@@ -62,7 +69,11 @@ private extension DashboardView {
                 }, shareFeedbackAction: {
                     onboardingShareFeedbackAction?()
                 })
-            case .blaze, .stats, .topPerformers:
+            case .blaze:
+                BlazeCampaignDashboardView(viewModel: viewModel.blazeCampaignDashboardViewModel,
+                                           showAllCampaignsTapped: showAllBlazeCampaignsTapped,
+                                           createCampaignTapped: createBlazeCampaignTapped)
+            case .stats, .topPerformers:
                 EmptyView()
             }
         }
@@ -72,7 +83,7 @@ private extension DashboardView {
 // MARK: Subtypes
 private extension DashboardView {
     enum Layout {
-        static let horizontalPadding: CGFloat = 16
+        static let padding: CGFloat = 16
     }
     enum Localization {
         static let title = NSLocalizedString(

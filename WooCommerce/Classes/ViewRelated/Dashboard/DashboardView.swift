@@ -1,26 +1,36 @@
 import SwiftUI
+import struct Yosemite.Site
 
 /// View for the dashboard screen
 ///
 struct DashboardView: View {
     @StateObject private var viewModel: DashboardViewModel
+    @State private var currentSite: Site?
 
     init(siteID: Int64) {
         self._viewModel = StateObject(wrappedValue: DashboardViewModel(siteID: siteID))
     }
 
     var body: some View {
-        Text("Hello, World!")
-            .navigationTitle(Localization.title)
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    if let url = viewModel.siteURLToShare {
-                        ShareLink(item: url) {
-                            Image(systemName: "square.and.arrow.up")
-                        }
+        ScrollView {
+            Text(currentSite?.name ?? Localization.title)
+                .secondaryBodyStyle()
+                .padding(.horizontal, Layout.horizontalPadding)
+                .frame(maxWidth: .infinity, alignment: .leading)
+        }
+        .navigationTitle(Localization.title)
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                if let url = viewModel.siteURLToShare {
+                    ShareLink(item: url) {
+                        Image(systemName: "square.and.arrow.up")
                     }
                 }
             }
+        }
+        .onReceive(ServiceLocator.stores.site) { currentSite in
+            self.currentSite = currentSite
+        }
     }
 }
 
@@ -32,6 +42,9 @@ private extension DashboardView {
 
 // MARK: Subtypes
 private extension DashboardView {
+    enum Layout {
+        static let horizontalPadding: CGFloat = 16
+    }
     enum Localization {
         static let title = NSLocalizedString(
             "dashboardView.title",

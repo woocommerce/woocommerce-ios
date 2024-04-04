@@ -201,7 +201,7 @@ public extension WordPressComServiceRemote {
             return
         }
 
-        wordPressComRestApi.POST(
+        wordPressComRESTAPI.post(
             path,
             parameters: requestParameters,
             success: { [weak self] responseObject, httpResponse in
@@ -247,7 +247,7 @@ private extension WordPressComServiceRemote {
         return requestParameters
     }
 
-    func decodeResponse(responseObject: AnyObject) throws -> SiteCreationResponse {
+    func decodeResponse(responseObject: Any) throws -> SiteCreationResponse {
 
         let decoder = JSONDecoder()
 

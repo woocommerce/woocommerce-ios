@@ -92,7 +92,7 @@ public extension WordPressComServiceRemote {
             return
         }
 
-        wordPressComRestApi.GET(
+        wordPressComRESTAPI.get(
             path,
             parameters: requestParameters,
             success: { [weak self] responseObject, httpResponse in
@@ -138,7 +138,7 @@ private extension WordPressComServiceRemote {
         return requestParameters
     }
 
-    func decodeResponse(responseObject: AnyObject) throws -> [SiteVertical] {
+    func decodeResponse(responseObject: Any) throws -> [SiteVertical] {
 
         let decoder = JSONDecoder()
 

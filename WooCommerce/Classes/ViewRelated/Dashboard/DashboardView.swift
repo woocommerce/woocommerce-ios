@@ -20,8 +20,12 @@ struct DashboardView: View {
     /// Set externally in the hosting controller.
     var createBlazeCampaignTapped: ((_ productID: Int64?) -> Void)?
 
-    init(viewModel: DashboardViewModel) {
+    private let usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter
+
+    init(viewModel: DashboardViewModel,
+         usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter) {
         self.viewModel = viewModel
+        self.usageTracksEventEmitter = usageTracksEventEmitter
     }
 
     var body: some View {
@@ -73,8 +77,20 @@ private extension DashboardView {
                 BlazeCampaignDashboardView(viewModel: viewModel.blazeCampaignDashboardViewModel,
                                            showAllCampaignsTapped: showAllBlazeCampaignsTapped,
                                            createCampaignTapped: createBlazeCampaignTapped)
-            case .stats, .topPerformers:
-                EmptyView()
+            case .stats:
+                if viewModel.statsVersion == .v4 {
+                    ViewControllerContainer(
+                        StoreStatsAndTopPerformersViewController(siteID: viewModel.siteID,
+                                                                 dashboardViewModel: viewModel,
+                                                                 usageTracksEventEmitter: usageTracksEventEmitter)
+                    )
+                    .frame(maxHeight: .infinity)
+                } else {
+                    ViewControllerContainer(DeprecatedDashboardStatsViewController())
+                        .frame(maxHeight: .infinity)
+                }
+            case .topPerformers:
+                EmptyView() // TODO-12403: handle this after separating stats and top performers
             }
         }
     }
@@ -95,5 +111,5 @@ private extension DashboardView {
 }
 
 #Preview {
-    DashboardView(viewModel: DashboardViewModel(siteID: 123))
+    DashboardView(viewModel: DashboardViewModel(siteID: 123), usageTracksEventEmitter: .init())
 }

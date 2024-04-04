@@ -34,7 +34,7 @@ final class DashboardViewModel: ObservableObject {
     @Published private(set) var showBlazeCampaignView: Bool = false
     @Published private(set) var dashboardCards: [DashboardCard] = [.stats, .topPerformers]
 
-    private let siteID: Int64
+    let siteID: Int64
     private let stores: StoresManager
     private let featureFlagService: FeatureFlagService
     private let analytics: Analytics

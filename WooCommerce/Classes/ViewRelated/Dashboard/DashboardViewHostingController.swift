@@ -5,16 +5,19 @@ import struct Yosemite.Site
 ///
 final class DashboardViewHostingController: UIHostingController<DashboardView> {
 
-    private let siteID: Int64
     private let viewModel: DashboardViewModel
+    private let usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter
     private var storeOnboardingCoordinator: StoreOnboardingCoordinator?
     private var blazeCampaignCreationCoordinator: BlazeCampaignCreationCoordinator?
 
     init(siteID: Int64) {
         let viewModel = DashboardViewModel(siteID: siteID)
+        let usageTracksEventEmitter = StoreStatsUsageTracksEventEmitter()
         self.viewModel = viewModel
-        self.siteID = siteID
-        super.init(rootView: DashboardView(viewModel: viewModel))
+        self.usageTracksEventEmitter = usageTracksEventEmitter
+
+        super.init(rootView: DashboardView(viewModel: viewModel, usageTracksEventEmitter: usageTracksEventEmitter))
+
         configureTabBarItem()
         configureStoreOnboarding()
         configureBlazeSection()
@@ -45,7 +48,7 @@ private extension DashboardViewHostingController {
             await withTaskGroup(of: Void.self) { group in
                 group.addTask { [weak self] in
                     guard let self else { return }
-                    await self.viewModel.syncAnnouncements(for: self.siteID)
+                    await self.viewModel.syncAnnouncements(for: self.viewModel.siteID)
                 }
                 group.addTask { [weak self] in
                     await self?.viewModel.reloadStoreOnboardingTasks()
@@ -109,7 +112,7 @@ private extension DashboardViewHostingController {
     func configureBlazeSection() {
         rootView.showAllBlazeCampaignsTapped = { [weak self] in
             guard let self, let navigationController else { return }
-            let controller = BlazeCampaignListHostingController(viewModel: .init(siteID: siteID))
+            let controller = BlazeCampaignListHostingController(viewModel: .init(siteID: viewModel.siteID))
             navigationController.show(controller, sender: self)
         }
 

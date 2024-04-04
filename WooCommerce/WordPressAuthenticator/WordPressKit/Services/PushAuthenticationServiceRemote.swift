@@ -20,11 +20,11 @@ import Foundation
             "push_token": token
         ]
 
-        wordPressComRestApi.POST(requestUrl, parameters: parameters as [String: AnyObject],
-                                 success: { (_: AnyObject, _: HTTPURLResponse?) -> Void in
+        wordPressComRESTAPI.post(requestUrl, parameters: parameters,
+                                 success: { _, _ in
                                     success?()
                                  },
-                                 failure: { (_: NSError, _: HTTPURLResponse?) -> Void in
+                                 failure: { _, _ in
                                     failure?()
                                  })
     }

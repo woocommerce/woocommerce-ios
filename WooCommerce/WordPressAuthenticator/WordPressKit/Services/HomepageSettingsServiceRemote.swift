@@ -26,7 +26,7 @@ public class HomepageSettingsServiceRemote: ServiceRemoteWordPressComREST {
             parameters[Keys.pageForPostsID] = postsPageID as AnyObject
         }
 
-        wordPressComRestApi.POST(path, parameters: parameters,
+        wordPressComRESTAPI.post(path, parameters: parameters,
                                 success: { _, _ in
             success()
         }, failure: { error, _ in

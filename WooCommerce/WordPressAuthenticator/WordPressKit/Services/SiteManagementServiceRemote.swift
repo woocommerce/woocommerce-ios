@@ -14,7 +14,7 @@ open class SiteManagementServiceRemote: ServiceRemoteWordPressComREST {
         let endpoint = "sites/\(siteID)/delete"
         let path = self.path(forEndpoint: endpoint, withVersion: ._1_1)
 
-        wordPressComRestApi.POST(path,
+        wordPressComRESTAPI.post(path,
             parameters: nil,
             success: { response, _ in
                 guard let results = response as? [String: AnyObject] else {
@@ -33,7 +33,7 @@ open class SiteManagementServiceRemote: ServiceRemoteWordPressComREST {
                 success?()
             },
             failure: { error, _ in
-                failure?(error)
+                failure?(error as NSError)
             })
     }
 
@@ -50,7 +50,7 @@ open class SiteManagementServiceRemote: ServiceRemoteWordPressComREST {
         let endpoint = "sites/\(siteID)/exports/start"
         let path = self.path(forEndpoint: endpoint, withVersion: ._1_1)
 
-        wordPressComRestApi.POST(path,
+        wordPressComRESTAPI.post(path,
             parameters: nil,
             success: { response, _ in
                 guard let results = response as? [String: AnyObject] else {
@@ -69,7 +69,7 @@ open class SiteManagementServiceRemote: ServiceRemoteWordPressComREST {
                 success?()
             },
             failure: { error, _ in
-                failure?(error)
+                failure?(error as NSError)
         })
     }
 
@@ -84,7 +84,7 @@ open class SiteManagementServiceRemote: ServiceRemoteWordPressComREST {
         let endpoint = "sites/\(siteID)/purchases"
         let path = self.path(forEndpoint: endpoint, withVersion: ._1_1)
 
-        wordPressComRestApi.GET(path,
+        wordPressComRESTAPI.get(path,
             parameters: nil,
             success: { response, _ in
                 guard let results = response as? [SitePurchase] else {
@@ -96,7 +96,7 @@ open class SiteManagementServiceRemote: ServiceRemoteWordPressComREST {
                 success?(actives)
             },
             failure: { error, _ in
-                failure?(error)
+                failure?(error as NSError)
         })
     }
 
@@ -112,13 +112,13 @@ open class SiteManagementServiceRemote: ServiceRemoteWordPressComREST {
         let path = self.path(forEndpoint: endpoint, withVersion: ._1_1)
         let parameters = ["variant": "next-steps"] as [String: AnyObject]
 
-        wordPressComRestApi.POST(path,
+        wordPressComRESTAPI.post(path,
                                  parameters: parameters,
                                  success: { _, _ in
                                     success?()
         },
                                  failure: { error, _ in
-                                    failure?(error)
+                                    failure?(error as NSError)
         })
     }
 

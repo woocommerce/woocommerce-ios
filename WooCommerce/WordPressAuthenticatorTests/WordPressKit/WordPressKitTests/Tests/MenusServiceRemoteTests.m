@@ -23,7 +23,7 @@
 
     NSString *endpoint = [NSString stringWithFormat:@"sites/%@/menus/new", dotComID];
     NSString *url = [service pathForEndpoint:endpoint
-                                 withVersion:ServiceRemoteWordPressComRESTApiVersion_1_1];
+                                 withVersion:WordPressComRESTAPIVersion_1_1];
     NSString *name = @"SomeName";
     
     BOOL (^parametersCheckBlock)(id obj) = ^BOOL(NSDictionary *parameters) {
@@ -57,7 +57,7 @@
 
     NSString *endpoint = [NSString stringWithFormat:@"sites/%@/menus/%@", dotComID, menu.menuID];
     NSString *url = [service pathForEndpoint:endpoint
-                                 withVersion:ServiceRemoteWordPressComRESTApiVersion_1_1];
+                                 withVersion:WordPressComRESTAPIVersion_1_1];
 
     OCMStub([api post:[OCMArg isEqual:url]
            parameters:[OCMArg isKindOfClass:[NSDictionary class]]
@@ -87,7 +87,7 @@
 
     NSString *endpoint = [NSString stringWithFormat:@"sites/%@/menus/%@/delete", dotComID, menu.menuID];
     NSString *url = [service pathForEndpoint:endpoint
-                                 withVersion:ServiceRemoteWordPressComRESTApiVersion_1_1];
+                                 withVersion:WordPressComRESTAPIVersion_1_1];
 
     OCMStub([api post:[OCMArg isEqual:url]
            parameters:[OCMArg isNil]
@@ -110,7 +110,7 @@
 
     NSString *endpoint = [NSString stringWithFormat:@"sites/%@/menus", dotComID];
     NSString *url = [service pathForEndpoint:endpoint
-                                 withVersion:ServiceRemoteWordPressComRESTApiVersion_1_1];
+                                 withVersion:WordPressComRESTAPIVersion_1_1];
 
     OCMStub([api get:[OCMArg isEqual:url]
           parameters:[OCMArg isNil]

@@ -38,7 +38,7 @@
     NSNumber *postID = @1;
     NSString *endpoint = [NSString stringWithFormat:@"sites/%@/posts/%@", dotComID, postID];
     NSString *url = [service pathForEndpoint:endpoint
-                                 withVersion:ServiceRemoteWordPressComRESTApiVersion_1_1];
+                                 withVersion:WordPressComRESTAPIVersion_1_1];
 
     OCMStub([api get:[OCMArg isEqual:url]
           parameters:[OCMArg isNotNil]
@@ -74,7 +74,7 @@
 
     NSString *endpoint = [NSString stringWithFormat:@"sites/%@/posts", dotComID];
     NSString *url = [service pathForEndpoint:endpoint
-                                 withVersion:ServiceRemoteWordPressComRESTApiVersion_1_2];
+                                 withVersion:WordPressComRESTAPIVersion_1_2];
 
     BOOL (^parametersCheckBlock)(id obj) = ^BOOL(NSDictionary *parameters) {
         
@@ -105,7 +105,7 @@
 
     NSString *endpoint = [NSString stringWithFormat:@"sites/%@/posts", dotComID];
     NSString *url = [service pathForEndpoint:endpoint
-                                 withVersion:ServiceRemoteWordPressComRESTApiVersion_1_2];
+                                 withVersion:WordPressComRESTAPIVersion_1_2];
 
     NSString *testOptionKey = @"SomeKey";
     NSString *testOptionValue = @"SomeValue";
@@ -151,7 +151,7 @@
 
     NSString *endpoint = [NSString stringWithFormat:@"sites/%@/posts/new?context=edit", dotComID];
     NSString *url = [service pathForEndpoint:endpoint
-                                 withVersion:ServiceRemoteWordPressComRESTApiVersion_1_2];
+                                 withVersion:WordPressComRESTAPIVersion_1_2];
 
     OCMStub([api post:[OCMArg isEqual:url]
            parameters:[OCMArg isKindOfClass:[NSDictionary class]]
@@ -196,7 +196,7 @@
 
     NSString *endpoint = [NSString stringWithFormat:@"sites/%@/posts/%@?context=edit", dotComID, post.postID];
     NSString *url = [service pathForEndpoint:endpoint
-                                 withVersion:ServiceRemoteWordPressComRESTApiVersion_1_2];
+                                 withVersion:WordPressComRESTAPIVersion_1_2];
 
     OCMStub([api post:[OCMArg isEqual:url]
            parameters:[OCMArg isKindOfClass:[NSDictionary class]]
@@ -241,7 +241,7 @@
     
     NSString *endpoint = [NSString stringWithFormat:@"sites/%@/posts/%@/autosave", dotComID, post.postID];
     NSString *url = [service pathForEndpoint:endpoint
-                                 withVersion:ServiceRemoteWordPressComRESTApiVersion_1_1];
+                                 withVersion:WordPressComRESTAPIVersion_1_1];
     
     OCMStub([api post:[OCMArg isEqual:url]
            parameters:[OCMArg isKindOfClass:[NSDictionary class]]
@@ -274,7 +274,7 @@
     
     NSString *endpoint = [NSString stringWithFormat:@"sites/%@/posts/%@/autosave", dotComID, post.postID];
     NSString *url = [service pathForEndpoint:endpoint
-                                 withVersion:ServiceRemoteWordPressComRESTApiVersion_1_1];
+                                 withVersion:WordPressComRESTAPIVersion_1_1];
     
     OCMStub([api get:[OCMArg isEqual:url]
           parameters:[OCMArg isNotNil]
@@ -302,7 +302,7 @@
 
     NSString *endpoint = [NSString stringWithFormat:@"sites/%@/posts/%@/delete", dotComID, post.postID];
     NSString *url = [service pathForEndpoint:endpoint
-                                 withVersion:ServiceRemoteWordPressComRESTApiVersion_1_1];
+                                 withVersion:WordPressComRESTAPIVersion_1_1];
     
     OCMStub([api post:[OCMArg isEqual:url]
            parameters:[OCMArg isNil]
@@ -339,7 +339,7 @@
 
     NSString *endpoint = [NSString stringWithFormat:@"sites/%@/posts/%@/delete?context=edit", dotComID, post.postID];
     NSString *url = [service pathForEndpoint:endpoint
-                                 withVersion:ServiceRemoteWordPressComRESTApiVersion_1_1];
+                                 withVersion:WordPressComRESTAPIVersion_1_1];
 
     OCMStub([api post:[OCMArg isEqual:url]
            parameters:[OCMArg isNil]
@@ -376,7 +376,7 @@
 
     NSString *endpoint = [NSString stringWithFormat:@"sites/%@/posts/%@/restore?context=edit", dotComID, post.postID];
     NSString *url = [service pathForEndpoint:endpoint
-                                 withVersion:ServiceRemoteWordPressComRESTApiVersion_1_1];
+                                 withVersion:WordPressComRESTAPIVersion_1_1];
 
     OCMStub([api post:[OCMArg isEqual:url]
            parameters:[OCMArg isNil]

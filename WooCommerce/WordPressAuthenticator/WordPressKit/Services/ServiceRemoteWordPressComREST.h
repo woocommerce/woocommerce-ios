@@ -1,15 +1,8 @@
 #import <Foundation/Foundation.h>
 #import <WordPressKit/WordPressComRESTAPIInterfacing.h>
+#import <WordPressKit/WordPressComRESTAPIVersion.h>
 
 @class WordPressComRestApi;
-
-typedef NS_ENUM(NSInteger, WordPressComRESTAPIVersion) {
-    WordPressComRESTAPIVersion_1_0 = 1000,
-    WordPressComRESTAPIVersion_1_1 = 1001,
-    WordPressComRESTAPIVersion_1_2 = 1002,
-    WordPressComRESTAPIVersion_1_3 = 1003,
-    WordPressComRESTAPIVersion_2_0 = 2000
-};
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -18,7 +11,6 @@ NS_ASSUME_NONNULL_BEGIN
  *  @brief  Parent class for all REST service classes.
  */
 @interface ServiceRemoteWordPressComREST : NSObject
-
 
 /**
  *  @brief      The API object to use for communications.

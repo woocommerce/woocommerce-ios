@@ -38,6 +38,29 @@ public struct GiftCardStatsTotals: Decodable, Equatable, GeneratedCopiable, Gene
     }
 }
 
+extension GiftCardStatsTotals: WCAnalyticsStatsTotals {
+    /// Represents a type of gift cards total data
+    public enum TotalData: Double {
+        case giftCardsCount
+        case usedAmount
+        case refundedAmount
+        case netAmount
+    }
+
+    public func getDoubleValue(for data: TotalData) -> Double {
+        switch data {
+        case .giftCardsCount:
+            return Double(giftCardsCount)
+        case .usedAmount:
+            return (usedAmount as NSNumber).doubleValue
+        case .refundedAmount:
+            return (refundedAmount as NSNumber).doubleValue
+        case .netAmount:
+            return (netAmount as NSNumber).doubleValue
+        }
+    }
+}
+
 
 // MARK: - Constants!
 //

@@ -666,6 +666,7 @@
 		CE070A382BBC543200017578 /* GiftCardStatsMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE070A372BBC543200017578 /* GiftCardStatsMapperTests.swift */; };
 		CE070A3A2BBC56CC00017578 /* GiftCardStatsRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE070A392BBC56CC00017578 /* GiftCardStatsRemote.swift */; };
 		CE070A3C2BBC577700017578 /* GiftCardStatsRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE070A3B2BBC577700017578 /* GiftCardStatsRemoteTests.swift */; };
+		CE070A402BBD6E8E00017578 /* WCAnalyticsStats.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE070A3F2BBD6E8E00017578 /* WCAnalyticsStats.swift */; };
 		CE0A0F13223942D90075ED8D /* ProductImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE0A0F12223942D90075ED8D /* ProductImage.swift */; };
 		CE0A0F1522396BF00075ED8D /* ProductAttribute.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE0A0F1422396BF00075ED8D /* ProductAttribute.swift */; };
 		CE0A0F17223970E80075ED8D /* ProductDefaultAttribute.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE0A0F16223970E80075ED8D /* ProductDefaultAttribute.swift */; };
@@ -1758,6 +1759,7 @@
 		CE070A372BBC543200017578 /* GiftCardStatsMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GiftCardStatsMapperTests.swift; sourceTree = "<group>"; };
 		CE070A392BBC56CC00017578 /* GiftCardStatsRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GiftCardStatsRemote.swift; sourceTree = "<group>"; };
 		CE070A3B2BBC577700017578 /* GiftCardStatsRemoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GiftCardStatsRemoteTests.swift; sourceTree = "<group>"; };
+		CE070A3F2BBD6E8E00017578 /* WCAnalyticsStats.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WCAnalyticsStats.swift; sourceTree = "<group>"; };
 		CE0A0F12223942D90075ED8D /* ProductImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductImage.swift; sourceTree = "<group>"; };
 		CE0A0F1422396BF00075ED8D /* ProductAttribute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductAttribute.swift; sourceTree = "<group>"; };
 		CE0A0F16223970E80075ED8D /* ProductDefaultAttribute.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProductDefaultAttribute.swift; sourceTree = "<group>"; };
@@ -2332,6 +2334,7 @@
 				74ABA1CC213F1B6B00FFAD30 /* TopEarnerStats.swift */,
 				74ABA1CE213F1D1600FFAD30 /* TopEarnerStatsItem.swift */,
 				D8FBFF0C22D3AF4A006E3336 /* StatsGranularityV4.swift */,
+				CE070A3F2BBD6E8E00017578 /* WCAnalyticsStats.swift */,
 				D8FBFF1922D4DF7A006E3336 /* OrderStatsV4.swift */,
 				D8FBFF1F22D52553006E3336 /* OrderStatsV4Totals.swift */,
 				D8FBFF2122D5266E006E3336 /* OrderStatsV4Interval.swift */,
@@ -4469,6 +4472,7 @@
 				CE1BE7062A2A5E9A00C6B53B /* IdentifiableObject.swift in Sources */,
 				74A1D26F21189EA100931DFA /* SiteStatsRemote.swift in Sources */,
 				029BA4F4255D72EC006171FD /* ShippingLabelPrintData.swift in Sources */,
+				CE070A402BBD6E8E00017578 /* WCAnalyticsStats.swift in Sources */,
 				02AF07EA27492DBC00B2D81E /* WordPressMedia.swift in Sources */,
 				B557DA1D20979E7D005962F4 /* Order.swift in Sources */,
 				68F48B0928E3AF750045C15B /* WCAnalyticsCustomer.swift in Sources */,

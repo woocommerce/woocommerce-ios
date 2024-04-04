@@ -1,7 +1,7 @@
 import Foundation
 import WooFoundation
 
-extension OrderStatsV4Interval {
+extension WCAnalyticsStatsInterval {
     /// Returns the interval start date by parsing the `dateStart` string.
     public func dateStart(timeZone: TimeZone) -> Date {
         guard let date = createDateFormatter(timeZone: timeZone).date(from: dateStart) else {
@@ -19,7 +19,7 @@ extension OrderStatsV4Interval {
     }
 }
 
-private extension OrderStatsV4Interval {
+private extension WCAnalyticsStatsInterval {
     func createDateFormatter(timeZone: TimeZone) -> DateFormatter {
         let dateFormatter = DateFormatter.Stats.dateTimeFormatter
         dateFormatter.calendar = Calendar(identifier: .iso8601)

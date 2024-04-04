@@ -6,7 +6,7 @@ public class EditorServiceRemote: ServiceRemoteWordPressComREST {
         let endpoint = "sites/\(siteID)/gutenberg?platform=mobile&editor=\(editor.rawValue)"
         let path = self.path(forEndpoint: endpoint, withVersion: ._2_0)
 
-        wordPressComRestApi.POST(path, parameters: nil, success: { (responseObject, _) in
+        wordPressComRESTAPI.post(path, parameters: nil, success: { (responseObject, _) in
             do {
                 let settings = try EditorSettings(with: responseObject)
                 success(settings)
@@ -28,7 +28,7 @@ public class EditorServiceRemote: ServiceRemoteWordPressComREST {
             "set_only_if_empty": setOnlyIfEmpty
         ] as [String: AnyObject]
 
-        wordPressComRestApi.POST(path, parameters: parameters, success: { (responseObject, _) in
+        wordPressComRESTAPI.post(path, parameters: parameters, success: { (responseObject, _) in
             guard let response = responseObject as? [String: String] else {
                 if let boolResponse = responseObject as? Bool, boolResponse == false {
                     return failure(EditorSettings.Error.badRequest)
@@ -51,7 +51,7 @@ public class EditorServiceRemote: ServiceRemoteWordPressComREST {
         let endpoint = "sites/\(siteID)/gutenberg"
         let path = self.path(forEndpoint: endpoint, withVersion: ._2_0)
 
-        wordPressComRestApi.GET(path, parameters: nil, success: { (responseObject, _) in
+        wordPressComRESTAPI.get(path, parameters: nil, success: { (responseObject, _) in
             do {
                 let settings = try EditorSettings(with: responseObject)
                 success(settings)

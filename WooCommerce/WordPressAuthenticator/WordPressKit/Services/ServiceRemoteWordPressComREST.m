@@ -14,9 +14,6 @@ static NSString* const ServiceRemoteWordPressComRESTApiVersionString_1_2 = @"res
 static NSString* const ServiceRemoteWordPressComRESTApiVersionString_1_3 = @"rest/v1.3";
 static NSString* const ServiceRemoteWordPressComRESTApiVersionString_2_0 = @"wpcom/v2";
 
-@interface ServiceRemoteWordPressComREST ()
-@end
-
 @implementation ServiceRemoteWordPressComREST
 
 - (instancetype)initWithWordPressComRestApi:(WordPressComRestApi *)wordPressComRestApi {
@@ -78,13 +75,6 @@ static NSString* const ServiceRemoteWordPressComRESTApiVersionString_2_0 = @"wpc
     NSString *apiVersionString = [self apiVersionStringWithEnumValue:apiVersion];
     
     return [NSString stringWithFormat:@"%@/%@", apiVersionString, resourceUrl];
-}
-
-+ (WordPressComRestApi *)anonymousWordPressComRestApiWithUserAgent:(NSString *)userAgent {
-
-    return [[WordPressComRestApi alloc] initWithOAuthToken:nil
-                                                 userAgent:userAgent
-            ];
 }
 
 @end

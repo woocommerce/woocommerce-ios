@@ -52,13 +52,6 @@ NS_ASSUME_NONNULL_BEGIN
 - (NSString *)pathForEndpoint:(NSString *)endpoint
                   withVersion:(ServiceRemoteWordPressComRESTApiVersion)apiVersion;
 
-/**
- *  @brief      An anonoymous API object to use for communications where authentication is not needed.
- *
- *  @param      userAgent       The user agent string to use on all requests
- */
-+ (WordPressComRestApi *)anonymousWordPressComRestApiWithUserAgent:(NSString *)userAgent;
-
 @end
 
 NS_ASSUME_NONNULL_END

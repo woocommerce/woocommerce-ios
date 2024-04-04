@@ -3,7 +3,7 @@
 18.1
 -----
 - [**] Orders: now it's possible to swiftly delete orders right from the Order Detail page.
-
+- [*] Login: Fix issues in Jetpack installation feature. [https://github.com/woocommerce/woocommerce-ios/pull/12426]
 
 18.0
 -----

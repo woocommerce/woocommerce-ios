@@ -211,4 +211,8 @@ public enum FeatureFlag: Int {
     /// Enables migration from simple payments to order creation.
     ///
     case migrateSimplePaymentsToOrderCreation
+
+    /// Enables customization for the layout of the dashboard screen.
+    ///
+    case dynamicDashboard
 }

@@ -96,6 +96,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .migrateSimplePaymentsToOrderCreation:
             return (buildConfig == .localDeveloper || buildConfig == .alpha) && !isUITesting
+        case .dynamicDashboard:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true
         }

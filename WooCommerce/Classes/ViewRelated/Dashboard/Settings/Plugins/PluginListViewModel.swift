@@ -72,7 +72,7 @@ private extension PluginListViewModel {
         guard outOfDatePlugins.isNotEmpty else {
             return
         }
-        let pluginNamesAndVersions = outOfDatePlugins.map { "\($0.name) - \($0.version)" }
-        ServiceLocator.analytics.track(event: .logOutOfDatePlugins(pluginNamesAndVersions))
+        let pluginNamesAndVersions = outOfDatePlugins.map { "\($0.name) - \($0.version)" }.joined(separator: ", ")
+        ServiceLocator.analytics.track(event: .logOutOfDatePlugins(outOfDatePlugins.count, pluginNamesAndVersions))
     }
 }

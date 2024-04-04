@@ -59,7 +59,7 @@
                              };
     
     NSString *requestUrl = [self pathForEndpoint:@"users/new"
-                                     withVersion:ServiceRemoteWordPressComRESTApiVersion_1_1];
+                                     withVersion:WordPressComRESTAPIVersion_1_1];
     
     [self.wordPressComRESTAPI post:requestUrl parameters:params success:successBlock failure:failureBlock];
 }
@@ -115,7 +115,7 @@
         failure(errorWithLocalizedMessage);
     };
 
-    NSString *requestUrl = [self pathForEndpoint:@"users/social/new" withVersion:ServiceRemoteWordPressComRESTApiVersion_1_0];
+    NSString *requestUrl = [self pathForEndpoint:@"users/social/new" withVersion:WordPressComRESTAPIVersion_1_0];
     [self.wordPressComRESTAPI post:requestUrl parameters:params success:successBlock failure:failureBlock];
 }
 
@@ -220,7 +220,7 @@
     
     
     NSString *requestUrl = [self pathForEndpoint:@"sites/new"
-                                     withVersion:ServiceRemoteWordPressComRESTApiVersion_1_1];
+                                     withVersion:WordPressComRESTAPIVersion_1_1];
     
     [self.wordPressComRESTAPI post:requestUrl parameters:params success:successBlock failure:failureBlock];
 }

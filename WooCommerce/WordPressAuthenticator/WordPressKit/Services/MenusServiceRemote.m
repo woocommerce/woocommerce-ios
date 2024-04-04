@@ -37,7 +37,7 @@ NSString * const MenusRemoteKeyClasses = @"classes";
     
     NSString *path = [NSString stringWithFormat:@"sites/%@/menus/new", siteID];
     NSString *requestURL = [self pathForEndpoint:path
-                                     withVersion:ServiceRemoteWordPressComRESTApiVersion_1_1];
+                                     withVersion:WordPressComRESTAPIVersion_1_1];
     
     [self.wordPressComRESTAPI post:requestURL
         parameters:@{MenusRemoteKeyName: menuName}
@@ -77,7 +77,7 @@ NSString * const MenusRemoteKeyClasses = @"classes";
     
     NSString *path = [NSString stringWithFormat:@"sites/%@/menus/%@", siteID, menuID];
     NSString *requestURL = [self pathForEndpoint:path
-                                     withVersion:ServiceRemoteWordPressComRESTApiVersion_1_1];
+                                     withVersion:WordPressComRESTAPIVersion_1_1];
     
     NSMutableDictionary *params = [NSMutableDictionary dictionaryWithCapacity:2];
     if (updatedName.length) {
@@ -130,7 +130,7 @@ NSString * const MenusRemoteKeyClasses = @"classes";
     
     NSString *path = [NSString stringWithFormat:@"sites/%@/menus/%@/delete", siteID, menuID];
     NSString *requestURL = [self pathForEndpoint:path
-                                     withVersion:ServiceRemoteWordPressComRESTApiVersion_1_1];
+                                     withVersion:WordPressComRESTAPIVersion_1_1];
     [self.wordPressComRESTAPI post:requestURL
         parameters:nil
            success:^(id  _Nonnull responseObject, NSHTTPURLResponse *httpResponse) {
@@ -167,7 +167,7 @@ NSString * const MenusRemoteKeyClasses = @"classes";
     
     NSString *path = [NSString stringWithFormat:@"sites/%@/menus", siteID];
     NSString *requestURL = [self pathForEndpoint:path
-                                     withVersion:ServiceRemoteWordPressComRESTApiVersion_1_1];
+                                     withVersion:WordPressComRESTAPIVersion_1_1];
     
     [self.wordPressComRESTAPI get:requestURL
        parameters:nil

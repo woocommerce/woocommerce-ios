@@ -14,7 +14,7 @@ const NSInteger WPRestErrorCodeMediaNew = 10;
 {
     NSString *apiPath = [NSString stringWithFormat:@"sites/%@/media/%@", self.siteID, mediaID];
     NSString *requestUrl = [self pathForEndpoint:apiPath
-                                     withVersion:ServiceRemoteWordPressComRESTApiVersion_1_1];
+                                     withVersion:WordPressComRESTAPIVersion_1_1];
     
     NSDictionary * parameters = @{};
     
@@ -58,7 +58,7 @@ const NSInteger WPRestErrorCodeMediaNew = 10;
     }
     
     NSString *requestUrl = [self pathForEndpoint:path
-                                     withVersion:ServiceRemoteWordPressComRESTApiVersion_1_1];
+                                     withVersion:WordPressComRESTAPIVersion_1_1];
     
     [self.wordPressComRESTAPI get:requestUrl
        parameters:[NSDictionary dictionaryWithDictionary:parameters]
@@ -97,7 +97,7 @@ const NSInteger WPRestErrorCodeMediaNew = 10;
 {
     NSString *path = [NSString stringWithFormat:@"sites/%@/media", self.siteID];
     NSString *requestUrl = [self pathForEndpoint:path
-                                     withVersion:ServiceRemoteWordPressComRESTApiVersion_1_1];
+                                     withVersion:WordPressComRESTAPIVersion_1_1];
     
     NSMutableDictionary *parameters = [NSMutableDictionary dictionaryWithDictionary:@{ @"number" : @1 }];
     if (mediaType) {
@@ -129,7 +129,7 @@ const NSInteger WPRestErrorCodeMediaNew = 10;
 
     NSString *apiPath = [NSString stringWithFormat:@"sites/%@/media/new", self.siteID];
     NSString *requestUrl = [self pathForEndpoint:apiPath
-                                     withVersion:ServiceRemoteWordPressComRESTApiVersion_1_1];
+                                     withVersion:WordPressComRESTAPIVersion_1_1];
     NSMutableDictionary *parameters = [NSMutableDictionary dictionaryWithDictionary:@{}];
     NSMutableArray *fileParts = [NSMutableArray array];
 
@@ -190,7 +190,7 @@ const NSInteger WPRestErrorCodeMediaNew = 10;
 
     NSString *apiPath = [NSString stringWithFormat:@"sites/%@/media/new", self.siteID];
     NSString *requestUrl = [self pathForEndpoint:apiPath
-                                     withVersion:ServiceRemoteWordPressComRESTApiVersion_1_1];
+                                     withVersion:WordPressComRESTAPIVersion_1_1];
 
     NSDictionary *parameters = [self parametersForUploadMedia:media];
 
@@ -257,7 +257,7 @@ const NSInteger WPRestErrorCodeMediaNew = 10;
 
     NSString *path = [NSString stringWithFormat:@"sites/%@/media/%@", self.siteID, media.mediaID];
     NSString *requestUrl = [self pathForEndpoint:path
-                                     withVersion:ServiceRemoteWordPressComRESTApiVersion_1_1];
+                                     withVersion:WordPressComRESTAPIVersion_1_1];
 
     NSDictionary *parameters = [self parametersFromRemoteMedia:media];
 
@@ -283,7 +283,7 @@ const NSInteger WPRestErrorCodeMediaNew = 10;
 
     NSString *path = [NSString stringWithFormat:@"sites/%@/media/%@/delete", self.siteID, media.mediaID];
     NSString *requestUrl = [self pathForEndpoint:path
-                                     withVersion:ServiceRemoteWordPressComRESTApiVersion_1_1];
+                                     withVersion:WordPressComRESTAPIVersion_1_1];
 
     [self.wordPressComRESTAPI post:requestUrl
                         parameters:nil
@@ -316,7 +316,7 @@ const NSInteger WPRestErrorCodeMediaNew = 10;
 {
     NSString *path = [NSString stringWithFormat:@"videos/%@", videoPressID];
     NSString *requestUrl = [self pathForEndpoint:path
-                                     withVersion:ServiceRemoteWordPressComRESTApiVersion_1_1];
+                                     withVersion:WordPressComRESTAPIVersion_1_1];
     
     [self.wordPressComRESTAPI get:requestUrl
                        parameters:nil
@@ -356,7 +356,7 @@ const NSInteger WPRestErrorCodeMediaNew = 10;
     
     NSString *path = [NSString stringWithFormat:@"sites/%@/media/videopress-playback-jwt/%@", self.siteID, videoPressID];
     NSString *requestUrl = [self pathForEndpoint:path
-                                     withVersion:ServiceRemoteWordPressComRESTApiVersion_2_0];
+                                     withVersion:WordPressComRESTAPIVersion_2_0];
 
     [self.wordPressComRESTAPI post:requestUrl
                         parameters:nil

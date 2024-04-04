@@ -184,7 +184,7 @@ static NSUInteger const TaxonomyRESTNumberMaxValue = 1000;
                        failure:(nullable void (^)(NSError *error))failure
 {
     NSString *path = [NSString stringWithFormat:@"sites/%@/%@/new?context=edit", self.siteID, typeIdentifier];
-    NSString *requestUrl = [self pathForEndpoint:path withVersion:ServiceRemoteWordPressComRESTApiVersion_1_1];
+    NSString *requestUrl = [self pathForEndpoint:path withVersion:WordPressComRESTAPIVersion_1_1];
     
     [self.wordPressComRESTAPI post:requestUrl
                         parameters:parameters
@@ -209,7 +209,7 @@ static NSUInteger const TaxonomyRESTNumberMaxValue = 1000;
 {
     NSString *path = [NSString stringWithFormat:@"sites/%@/%@?context=edit", self.siteID, typeIdentifier];
     NSString *requestUrl = [self pathForEndpoint:path
-                                     withVersion:ServiceRemoteWordPressComRESTApiVersion_1_1];
+                                     withVersion:WordPressComRESTAPIVersion_1_1];
     
     [self.wordPressComRESTAPI get:requestUrl
                        parameters:parameters
@@ -234,7 +234,7 @@ static NSUInteger const TaxonomyRESTNumberMaxValue = 1000;
 {
     NSString *path = [NSString stringWithFormat:@"sites/%@/%@/slug:%@/delete?context=edit", self.siteID, typeIdentifier, parameters[TaxonomyRESTSlugParameter]];
     NSString *requestUrl = [self pathForEndpoint:path
-                                     withVersion:ServiceRemoteWordPressComRESTApiVersion_1_1];
+                                     withVersion:WordPressComRESTAPIVersion_1_1];
     
     [self.wordPressComRESTAPI post:requestUrl
                         parameters:nil
@@ -259,7 +259,7 @@ static NSUInteger const TaxonomyRESTNumberMaxValue = 1000;
 {
     NSString *path = [NSString stringWithFormat:@"sites/%@/%@/slug:%@?context=edit", self.siteID, typeIdentifier, parameters[TaxonomyRESTSlugParameter]];
     NSString *requestUrl = [self pathForEndpoint:path
-                                     withVersion:ServiceRemoteWordPressComRESTApiVersion_1_1];
+                                     withVersion:WordPressComRESTAPIVersion_1_1];
     
     [self.wordPressComRESTAPI post:requestUrl
                         parameters:parameters

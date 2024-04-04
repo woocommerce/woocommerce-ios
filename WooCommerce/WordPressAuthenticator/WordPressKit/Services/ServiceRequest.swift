@@ -13,7 +13,7 @@ protocol ServiceRequest {
     var path: String { get }
 
     /// Returns the used API version
-    var apiVersion: ServiceRemoteWordPressComRESTApiVersion { get }
+    var apiVersion: WordPressComRESTAPIVersion { get }
 }
 
 /// Reader Topic Service request
@@ -24,7 +24,7 @@ enum ReaderTopicServiceSubscriptionsRequest {
 }
 
 extension ReaderTopicServiceSubscriptionsRequest: ServiceRequest {
-    var apiVersion: ServiceRemoteWordPressComRESTApiVersion {
+    var apiVersion: WordPressComRESTAPIVersion {
         switch self {
         case .notifications: return ._2_0
         case .postsEmail: return ._1_2

@@ -26,7 +26,7 @@ static NSString* const ThemeRequestPageKey = @"page";
 
     NSString *path = [NSString stringWithFormat:@"sites/%@/themes/mine", blogId];
     NSString *requestUrl = [self pathForEndpoint:path
-                                     withVersion:ServiceRemoteWordPressComRESTApiVersion_1_1];
+                                     withVersion:WordPressComRESTAPIVersion_1_1];
     
     NSProgress *progress = [self.wordPressComRESTAPI get:requestUrl
                                               parameters:nil
@@ -53,7 +53,7 @@ static NSString* const ThemeRequestPageKey = @"page";
     
     NSString *path = [NSString stringWithFormat:@"sites/%@/themes/purchased", blogId];
     NSString *requestUrl = [self pathForEndpoint:path
-                                     withVersion:ServiceRemoteWordPressComRESTApiVersion_1_1];
+                                     withVersion:WordPressComRESTAPIVersion_1_1];
     
     NSProgress *progress = [self.wordPressComRESTAPI get:requestUrl
                                 parameters:nil
@@ -79,7 +79,7 @@ static NSString* const ThemeRequestPageKey = @"page";
     
     NSString *path = [NSString stringWithFormat:@"themes/%@", themeId];
     NSString *requestUrl = [self pathForEndpoint:path
-                                     withVersion:ServiceRemoteWordPressComRESTApiVersion_1_1];
+                                     withVersion:WordPressComRESTAPIVersion_1_1];
     
     NSProgress *progress = [self.wordPressComRESTAPI get:requestUrl
                                 parameters:nil
@@ -105,7 +105,7 @@ static NSString* const ThemeRequestPageKey = @"page";
     NSParameterAssert(page > 0);
 
     NSString *requestUrl = [self pathForEndpoint:@"themes"
-                                     withVersion:ServiceRemoteWordPressComRESTApiVersion_1_2];
+                                     withVersion:WordPressComRESTAPIVersion_1_2];
 
     NSDictionary *parameters = @{ThemeRequestTierKey: freeOnly ? ThemeRequestTierFreeValue : ThemeRequestTierAllValue,
                                  ThemeRequestNumberKey: @(ThemeRequestNumberValue),
@@ -128,7 +128,7 @@ static NSString* const ThemeRequestPageKey = @"page";
     NSParameterAssert([path isKindOfClass:[NSString class]]);
 
     NSString *requestUrl = [self pathForEndpoint:path
-                                     withVersion:ServiceRemoteWordPressComRESTApiVersion_1_2];
+                                     withVersion:WordPressComRESTAPIVersion_1_2];
 
     NSDictionary *parameters = @{ThemeRequestTierKey: ThemeRequestTierAllValue,
                                  ThemeRequestNumberKey: @(ThemeRequestNumberValue),
@@ -152,7 +152,7 @@ static NSString* const ThemeRequestPageKey = @"page";
 
     NSProgress *progress = [self getThemesForBlogId:blogId
                                                page:page
-                                         apiVersion:ServiceRemoteWordPressComRESTApiVersion_1_2
+                                         apiVersion:WordPressComRESTAPIVersion_1_2
                                              params:@{ThemeRequestTierKey: ThemeRequestTierAllValue}
                                             success:success
                                             failure:failure];
@@ -169,7 +169,7 @@ static NSString* const ThemeRequestPageKey = @"page";
 
     NSProgress *progress = [self getThemesForBlogId:blogId
                                                page:1
-                                         apiVersion:ServiceRemoteWordPressComRESTApiVersion_1_0
+                                         apiVersion:WordPressComRESTAPIVersion_1_0
                                              params:@{}
                                             success:success
                                             failure:failure];
@@ -179,7 +179,7 @@ static NSString* const ThemeRequestPageKey = @"page";
 
 - (NSProgress *)getThemesForBlogId:(NSNumber *)blogId
                               page:(NSInteger)page
-                        apiVersion:(ServiceRemoteWordPressComRESTApiVersion) apiVersion
+                        apiVersion:(WordPressComRESTAPIVersion) apiVersion
                             params:(NSDictionary *)params
                            success:(ThemeServiceRemoteThemesRequestSuccessBlock)success
                            failure:(ThemeServiceRemoteFailureBlock)failure
@@ -212,7 +212,7 @@ static NSString* const ThemeRequestPageKey = @"page";
 
     NSString *path = [NSString stringWithFormat:@"themes/?filter=starting-%@", category];
     NSString *requestUrl = [self pathForEndpoint:path
-                                     withVersion:ServiceRemoteWordPressComRESTApiVersion_1_2];
+                                     withVersion:WordPressComRESTAPIVersion_1_2];
     
     NSDictionary *parameters = @{
                                  ThemeRequestNumberKey: @(ThemeRequestNumberValue),
@@ -266,7 +266,7 @@ static NSString* const ThemeRequestPageKey = @"page";
     
     NSString* const path = [NSString stringWithFormat:@"sites/%@/themes/mine", blogId];
     NSString *requestUrl = [self pathForEndpoint:path
-                                     withVersion:ServiceRemoteWordPressComRESTApiVersion_1_1];
+                                     withVersion:WordPressComRESTAPIVersion_1_1];
     
     NSDictionary* parameters = @{@"theme": themeId};
     
@@ -297,7 +297,7 @@ static NSString* const ThemeRequestPageKey = @"page";
 
     NSString* const path = [NSString stringWithFormat:@"sites/%@/themes/%@/install", blogId, themeId];
     NSString *requestUrl = [self pathForEndpoint:path
-                                     withVersion:ServiceRemoteWordPressComRESTApiVersion_1_1];
+                                     withVersion:WordPressComRESTAPIVersion_1_1];
 
     NSProgress *progress = [self.wordPressComRESTAPI post:requestUrl
                                                parameters:nil

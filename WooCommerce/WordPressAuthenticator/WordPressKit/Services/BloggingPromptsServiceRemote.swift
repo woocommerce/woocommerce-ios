@@ -108,7 +108,7 @@ open class BloggingPromptsServiceRemote: ServiceRemoteWordPressComREST {
             return
         }
 
-        wordPressComRestApi.POST(path, parameters: parameters) { responseObject, _ in
+        wordPressComRESTAPI.post(path, parameters: parameters) { responseObject, _ in
             do {
                 let data = try JSONSerialization.data(withJSONObject: responseObject)
                 let response = try JSONDecoder().decode(UpdateBloggingPromptsSettingsResponse.self, from: data)

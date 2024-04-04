@@ -131,9 +131,7 @@ private extension ULErrorViewController {
         }
 
         extraInfoButton.applyLinkButtonStyle()
-        var configuration = UIButton.Configuration.plain()
-        configuration.contentInsets = Constants.extraInfoCustomInsets
-        extraInfoButton.configuration = configuration
+        extraInfoButton.configuration?.contentInsets = Constants.extraInfoCustomInsets
         extraInfoButton.setTitle(viewModel.auxiliaryButtonTitle, for: .normal)
         extraInfoButton.titleLabel?.textAlignment = .center
         extraInfoButton.on(.touchUpInside) { [weak self] _ in

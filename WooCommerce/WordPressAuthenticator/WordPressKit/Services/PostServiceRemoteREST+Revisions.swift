@@ -7,7 +7,7 @@ public extension PostServiceRemoteREST {
                                  failure: @escaping (Error?) -> Void) {
         let endpoint = "sites/\(siteId)/post/\(postId)/diffs"
         let path = self.path(forEndpoint: endpoint, withVersion: ._1_1)
-        wordPressComRestApi.GET(path,
+        wordPressComRESTAPI.get(path,
                                 parameters: nil,
                                 success: { (response, _) in
                                     do {
@@ -31,7 +31,7 @@ public extension PostServiceRemoteREST {
     func getPostLatestRevisionID(for postId: NSNumber, success: @escaping (NSNumber?) -> Void, failure: @escaping (Error?) -> Void) {
         let endpoint = "sites/\(siteID)/posts/\(postId)"
         let path = self.path(forEndpoint: endpoint, withVersion: ._1_1)
-        wordPressComRestApi.GET(
+        wordPressComRESTAPI.get(
             path,
             parameters: [
                 "context": "edit",

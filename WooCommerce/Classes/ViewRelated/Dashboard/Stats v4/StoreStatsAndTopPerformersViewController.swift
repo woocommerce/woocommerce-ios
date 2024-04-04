@@ -428,7 +428,6 @@ private extension StoreStatsAndTopPerformersViewController {
         addCustomViewToTabBar(customRangeButtonView)
 
         selectedTabSubscription = tabBar.$selectedIndex
-            .print("🍎 tab switched")
             .dropFirst() // ignore first event to take into account only manual selection
             .sink { [weak self] index in
                 guard let self, let range = timeRanges[safe: index] else {

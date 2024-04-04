@@ -84,10 +84,8 @@ private extension DashboardView {
                                                                  dashboardViewModel: viewModel,
                                                                  usageTracksEventEmitter: usageTracksEventEmitter)
                     )
-                    .frame(maxHeight: .infinity)
                 } else {
                     ViewControllerContainer(DeprecatedDashboardStatsViewController())
-                        .frame(maxHeight: .infinity)
                 }
             case .topPerformers:
                 EmptyView() // TODO-12403: handle this after separating stats and top performers

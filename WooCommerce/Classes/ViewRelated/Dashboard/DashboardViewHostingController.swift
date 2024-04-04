@@ -31,7 +31,9 @@ final class DashboardViewHostingController: UIHostingController<DashboardView> {
     override func viewDidLoad() {
         super.viewDidLoad()
         registerUserActivity()
-        reloadAllCards()
+        Task {
+            await viewModel.reloadAllData()
+        }
     }
 }
 
@@ -41,23 +43,6 @@ private extension DashboardViewHostingController {
         tabBarItem.image = .statsAltImage
         tabBarItem.title = Localization.title
         tabBarItem.accessibilityIdentifier = "tab-bar-my-store-item"
-    }
-
-    func reloadAllCards() {
-        Task { @MainActor in
-            await withTaskGroup(of: Void.self) { group in
-                group.addTask { [weak self] in
-                    guard let self else { return }
-                    await self.viewModel.syncAnnouncements(for: self.viewModel.siteID)
-                }
-                group.addTask { [weak self] in
-                    await self?.viewModel.reloadStoreOnboardingTasks()
-                }
-                group.addTask { [weak self] in
-                    await self?.viewModel.reloadBlazeCampaignView()
-                }
-            }
-        }
     }
 }
 

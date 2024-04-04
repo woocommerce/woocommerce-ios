@@ -83,6 +83,22 @@ final class DashboardViewModel: ObservableObject {
         await storeCreationProfilerUploadAnswersUseCase.uploadAnswers()
     }
 
+    @MainActor
+    func reloadAllData() async {
+        await withTaskGroup(of: Void.self) { group in
+            group.addTask { [weak self] in
+                guard let self else { return }
+                await self.syncAnnouncements(for: self.siteID)
+            }
+            group.addTask { [weak self] in
+                await self?.reloadStoreOnboardingTasks()
+            }
+            group.addTask { [weak self] in
+                await self?.reloadBlazeCampaignView()
+            }
+        }
+    }
+
     /// Reloads store onboarding tasks
     ///
     @MainActor

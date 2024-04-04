@@ -20,12 +20,16 @@ struct DashboardView: View {
     /// Set externally in the hosting controller.
     var createBlazeCampaignTapped: ((_ productID: Int64?) -> Void)?
 
-    private let usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter
+    private let storeStatsAndTopPerformersViewController: StoreStatsAndTopPerformersViewController
 
     init(viewModel: DashboardViewModel,
          usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter) {
         self.viewModel = viewModel
-        self.usageTracksEventEmitter = usageTracksEventEmitter
+        self.storeStatsAndTopPerformersViewController = StoreStatsAndTopPerformersViewController(
+            siteID: viewModel.siteID,
+            dashboardViewModel: viewModel,
+            usageTracksEventEmitter: usageTracksEventEmitter
+        )
     }
 
     var body: some View {
@@ -54,6 +58,13 @@ struct DashboardView: View {
         .onReceive(ServiceLocator.stores.site) { currentSite in
             self.currentSite = currentSite
         }
+        .refreshable {
+            Task { @MainActor in
+                ServiceLocator.analytics.track(.dashboardPulledToRefresh)
+                await viewModel.reloadAllData()
+                await storeStatsAndTopPerformersViewController.reloadData(forced: true)
+            }
+        }
     }
 }
 
@@ -79,11 +90,7 @@ private extension DashboardView {
                                            createCampaignTapped: createBlazeCampaignTapped)
             case .stats:
                 if viewModel.statsVersion == .v4 {
-                    ViewControllerContainer(
-                        StoreStatsAndTopPerformersViewController(siteID: viewModel.siteID,
-                                                                 dashboardViewModel: viewModel,
-                                                                 usageTracksEventEmitter: usageTracksEventEmitter)
-                    )
+                    ViewControllerContainer(storeStatsAndTopPerformersViewController)
                 } else {
                     ViewControllerContainer(DeprecatedDashboardStatsViewController())
                 }

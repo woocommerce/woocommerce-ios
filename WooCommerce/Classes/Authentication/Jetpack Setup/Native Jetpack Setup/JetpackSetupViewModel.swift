@@ -1,5 +1,6 @@
 import Foundation
 import Yosemite
+import enum Alamofire.AFError
 import enum Networking.NetworkError
 
 /// View model for `JetpackSetupView`.
@@ -59,6 +60,16 @@ final class JetpackSetupViewModel: ObservableObject {
     private var setupError: Error? {
         didSet {
             updateErrorMessage()
+        }
+    }
+
+    private var setupErrorCode: Int? {
+        if let error = setupError as? NetworkError, let code = error.responseCode {
+            return code
+        } else if let error = setupError as? AFError, let code = error.responseCode {
+            return code
+        } else {
+            return (setupError as? NSError)?.code
         }
     }
 

@@ -9,6 +9,9 @@ struct ViewControllerContainer: UIViewControllerRepresentable {
     }
 
     func makeUIViewController(context: Context) -> UIViewController {
+        // Makes sure the contents are fully displayed.
+        let size = content.view.systemLayoutSizeFitting(UIView.layoutFittingExpandedSize)
+        content.preferredContentSize = size
         return content
     }
 

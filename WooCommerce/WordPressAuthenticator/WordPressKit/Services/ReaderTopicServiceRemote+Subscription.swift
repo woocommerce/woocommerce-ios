@@ -84,7 +84,7 @@ extension ReaderTopicServiceRemote {
 
         WPKitLogInfo("URL: \(urlRequest)")
 
-        wordPressComRestApi.POST(urlRequest, parameters: parameters, success: { (_, response) in
+        wordPressComRESTAPI.post(urlRequest, parameters: parameters, success: { (_, response) in
             WPKitLogInfo("Success \(response?.url?.absoluteString ?? "unknown url")")
             success()
         }) { (error, response) in

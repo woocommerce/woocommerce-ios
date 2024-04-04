@@ -26,7 +26,7 @@ public class JetpackProxyServiceRemote: ServiceRemoteWordPressComREST {
                              method: DotComMethod,
                              parameters: [String: AnyHashable] = [:],
                              locale: String? = nil,
-                             completion: @escaping (Result<AnyObject, Error>) -> Void) -> Progress? {
+                             completion: @escaping (Result<Any, Error>) -> Void) -> Progress? {
         let urlString = self.path(forEndpoint: "jetpack-blogs/\(siteID)/rest-api", withVersion: ._1_1)
 
         // Construct the request parameters to be forwarded to the actual endpoint.
@@ -49,7 +49,7 @@ public class JetpackProxyServiceRemote: ServiceRemoteWordPressComREST {
             requestParams["locale"] = locale
         }
 
-        return wordPressComRestApi.POST(urlString, parameters: requestParams as [String: AnyObject]) { response, _ in
+        return wordPressComRESTAPI.post(urlString, parameters: requestParams) { response, _ in
             completion(.success(response))
         } failure: { error, _ in
             completion(.failure(error))

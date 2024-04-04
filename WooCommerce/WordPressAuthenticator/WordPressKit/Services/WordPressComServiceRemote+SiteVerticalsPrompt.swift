@@ -45,7 +45,7 @@ public extension WordPressComServiceRemote {
             "segment_id": request as AnyObject
         ]
 
-        wordPressComRestApi.GET(
+        wordPressComRESTAPI.get(
             path,
             parameters: requestParameters,
             success: { [weak self] responseObject, httpResponse in
@@ -74,7 +74,7 @@ public extension WordPressComServiceRemote {
 //
 private extension WordPressComServiceRemote {
 
-    func decodeResponse(responseObject: AnyObject) throws -> SiteVerticalsPrompt {
+    func decodeResponse(responseObject: Any) throws -> SiteVerticalsPrompt {
 
         let decoder = JSONDecoder()
 

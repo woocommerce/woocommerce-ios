@@ -24,7 +24,7 @@ extension ReaderPostServiceRemote {
             "size_global": count
         ] as [String: AnyObject]
 
-        wordPressComRestApi.GET(
+        wordPressComRESTAPI.get(
             path,
             parameters: parameters,
             success: { (response, _) in

@@ -3,7 +3,7 @@ import Foundation
 public class AtomicAuthenticationServiceRemote: ServiceRemoteWordPressComREST {
 
     public enum ResponseError: Error {
-        case responseIsNotADictionary(response: AnyObject)
+        case responseIsNotADictionary(response: Any)
         case decodingFailure(response: [String: AnyObject])
         case couldNotInstantiateCookie(name: String, value: String, domain: String, path: String, expires: Date)
     }
@@ -16,11 +16,9 @@ public class AtomicAuthenticationServiceRemote: ServiceRemoteWordPressComREST {
         let endpoint = "sites/\(siteID)/atomic-auth-proxy/read-access-cookies"
         let path = self.path(forEndpoint: endpoint, withVersion: ._2_0)
 
-        wordPressComRestApi.GET(path,
+        wordPressComRESTAPI.get(path,
                 parameters: nil,
-                success: {
-                    responseObject, _ in
-
+                success: { responseObject, _ in
                     do {
                         let settings = try self.cookie(from: responseObject)
                         success(settings)
@@ -39,7 +37,7 @@ public class AtomicAuthenticationServiceRemote: ServiceRemoteWordPressComREST {
         return Date(timeIntervalSince1970: TimeInterval(expiration))
     }
 
-    private func cookie(from responseObject: AnyObject) throws -> HTTPCookie {
+    private func cookie(from responseObject: Any) throws -> HTTPCookie {
         guard let response = responseObject as? [String: AnyObject] else {
             let error = ResponseError.responseIsNotADictionary(response: responseObject)
             WPKitLogError("❗️Error: \(error)")

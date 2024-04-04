@@ -16,7 +16,7 @@ import WordPressShared
         let endPoint = "me/transactions/supported-countries/"
         let servicePath = path(forEndpoint: endPoint, withVersion: ._1_1)
 
-        wordPressComRestApi.GET(servicePath,
+        wordPressComRESTAPI.get(servicePath,
                                 parameters: nil,
                                 success: {
                                     response, _ in
@@ -69,7 +69,7 @@ import WordPressShared
         let parameters: [String: AnyObject] = ["temporary": (temporary ? "true" : "false") as AnyObject,
                                                "products": productsDictionary as AnyObject]
 
-        wordPressComRestApi.POST(urlPath,
+        wordPressComRESTAPI.post(urlPath,
                                  parameters: parameters,
                                  success: { (response, _) in
 
@@ -104,7 +104,7 @@ import WordPressShared
                                                "cart": cart.jsonRepresentation() as AnyObject,
                                                "payment": paymentDict as AnyObject]
 
-        wordPressComRestApi.POST(urlPath, parameters: parameters, success: { (_, _) in
+        wordPressComRESTAPI.post(urlPath, parameters: parameters, success: { (_, _) in
             success()
         }) { (error, _) in
             failure(error)

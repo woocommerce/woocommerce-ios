@@ -28,7 +28,7 @@ extension ReaderPostServiceRemote {
                                               failure: @escaping (Error?) -> Void) {
         let path = self.path(forEndpoint: "sites/\(siteID)/posts/\(postID)/subscribers/mine", withVersion: ._1_1)
 
-        wordPressComRestApi.GET(path, parameters: nil, success: { response, _ in
+        wordPressComRESTAPI.get(path, parameters: nil, success: { response, _ in
             do {
                 guard let responseObject = response as? [String: AnyObject],
                     let isSubscribed = responseObject[Constants.isSubscribed] as? Bool else {
@@ -58,7 +58,7 @@ extension ReaderPostServiceRemote {
                                       failure: @escaping (Error?) -> Void) {
         let path = self.path(forEndpoint: "sites/\(siteID)/posts/\(postID)/subscribers/new", withVersion: ._1_1)
 
-        wordPressComRestApi.POST(path, parameters: nil, success: { response, _ in
+        wordPressComRESTAPI.post(path, parameters: nil, success: { response, _ in
             do {
                 guard let responseObject = response as? [String: AnyObject],
                     let subscribed = responseObject[Constants.success] as? Bool else {
@@ -88,7 +88,7 @@ extension ReaderPostServiceRemote {
                                           failure: @escaping (Error) -> Void) {
         let path = self.path(forEndpoint: "sites/\(siteID)/posts/\(postID)/subscribers/mine/delete", withVersion: ._1_1)
 
-        wordPressComRestApi.POST(path, parameters: nil, success: { response, _ in
+        wordPressComRESTAPI.post(path, parameters: nil, success: { response, _ in
             do {
                 guard let responseObject = response as? [String: AnyObject],
                     let unsubscribed = responseObject[Constants.success] as? Bool else {
@@ -125,7 +125,7 @@ extension ReaderPostServiceRemote {
                                                       failure: @escaping (Error?) -> Void) {
         let path = self.path(forEndpoint: "sites/\(siteID)/posts/\(postID)/subscribers/mine/update", withVersion: ._1_1)
 
-        wordPressComRestApi.POST(path,
+        wordPressComRESTAPI.post(path,
                                  parameters: [Constants.receiveNotificationsRequestKey: receiveNotifications] as [String: AnyObject],
                                  success: { response, _ in
             guard let responseObject = response as? [String: AnyObject],

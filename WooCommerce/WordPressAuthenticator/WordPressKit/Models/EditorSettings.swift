@@ -36,7 +36,7 @@ public struct EditorSettings {
 }
 
 extension EditorSettings {
-    init(with response: AnyObject) throws {
+    init(with response: Any) throws {
         guard let response = response as? [String: AnyObject] else {
             throw NSError(domain: NSURLErrorDomain, code: NSURLErrorBadServerResponse, userInfo: nil)
         }

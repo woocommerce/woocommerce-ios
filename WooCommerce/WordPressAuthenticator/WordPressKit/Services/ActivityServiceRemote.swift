@@ -59,7 +59,7 @@ open class ActivityServiceRemote: ServiceRemoteWordPressComREST {
 
         let finalPath = self.path(forEndpoint: endpoint, withVersion: ._2_0)
 
-        wordPressComRestApi.GET(finalPath,
+        wordPressComRESTAPI.get(finalPath,
                                 parameters: nil,
                                 success: { response, _ in
                                     do {
@@ -105,7 +105,7 @@ open class ActivityServiceRemote: ServiceRemoteWordPressComREST {
             parameters["on"] = formatter.string(from: on) as AnyObject
         }
 
-        wordPressComRestApi.GET(path,
+        wordPressComRESTAPI.get(path,
                                 parameters: parameters,
                                 success: { response, _ in
                                     do {
@@ -135,7 +135,7 @@ open class ActivityServiceRemote: ServiceRemoteWordPressComREST {
         let endpoint = "sites/\(siteID)/rewind"
         let path = self.path(forEndpoint: endpoint, withVersion: ._2_0)
 
-        wordPressComRestApi.GET(path,
+        wordPressComRESTAPI.get(path,
                                 parameters: nil,
                                 success: { response, _ in
                                     guard let rewindStatus = response as? [String: AnyObject] else {
@@ -154,12 +154,17 @@ open class ActivityServiceRemote: ServiceRemoteWordPressComREST {
                                 }, failure: { error, _ in
                                     // FIXME: A hack to support free WPCom sites and Rewind. Should be obsolote as soon as the backend
                                     // stops returning 412's for those sites.
-                                    if error.domain == WordPressComRestApiEndpointError.errorDomain, error.code == WordPressComRestApiErrorCode.preconditionFailure.rawValue {
-                                        let status = RewindStatus(state: .unavailable)
-                                        success(status)
+                                    let nsError = error as NSError
+
+                                    guard nsError.domain == WordPressComRestApiEndpointError.errorDomain,
+                                       nsError.code == WordPressComRestApiErrorCode.preconditionFailure.rawValue else {
+                                        failure(error)
                                         return
                                     }
-                                    failure(error)
+
+                                    let status = RewindStatus(state: .unavailable)
+                                    success(status)
+                                    return
                                 })
     }
 
@@ -167,7 +172,7 @@ open class ActivityServiceRemote: ServiceRemoteWordPressComREST {
 
 private extension ActivityServiceRemote {
 
-    func mapActivitiesResponse(_ response: AnyObject) throws -> ([Activity], Int) {
+    func mapActivitiesResponse(_ response: Any) throws -> ([Activity], Int) {
 
         guard let json = response as? [String: AnyObject],
               let totalItems = json["totalItems"] as? Int else {
@@ -196,7 +201,7 @@ private extension ActivityServiceRemote {
         }
     }
 
-    func mapActivityGroupsResponse(_ response: AnyObject) throws -> ([ActivityGroup]) {
+    func mapActivityGroupsResponse(_ response: Any) throws -> ([ActivityGroup]) {
         guard let json = response as? [String: AnyObject],
               let totalItems = json["totalItems"] as? Int, totalItems > 0 else {
             return []

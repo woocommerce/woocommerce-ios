@@ -23,7 +23,7 @@ public final class AtomicSiteServiceRemote: ServiceRemoteWordPressComREST {
         if let scrollID {
             parameters["scroll_id"] = scrollID
         }
-        wordPressComRestApi.GET(path, parameters: parameters as [String: AnyObject]) { responseObject, httpResponse in
+        wordPressComRESTAPI.get(path, parameters: parameters as [String: AnyObject]) { responseObject, httpResponse in
             guard (200..<300).contains(httpResponse?.statusCode ?? 0),
                   let data = (responseObject as? [String: AnyObject])?["data"],
                   JSONSerialization.isValidJSONObject(data) else {
@@ -67,7 +67,7 @@ public final class AtomicSiteServiceRemote: ServiceRemoteWordPressComREST {
         if let scrollID {
             parameters["scroll_id"] = scrollID
         }
-        wordPressComRestApi.GET(path, parameters: parameters as [String: AnyObject]) { responseObject, httpResponse in
+        wordPressComRESTAPI.get(path, parameters: parameters as [String: AnyObject]) { responseObject, httpResponse in
             guard (200..<300).contains(httpResponse?.statusCode ?? 0),
                   let data = (responseObject as? [String: AnyObject])?["data"],
                   JSONSerialization.isValidJSONObject(data) else {

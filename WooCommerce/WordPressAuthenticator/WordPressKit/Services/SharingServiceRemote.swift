@@ -44,7 +44,7 @@ open class SharingServiceRemote: ServiceRemoteWordPressComREST {
         let path = self.path(forEndpoint: endpoint, withVersion: ._1_1)
         let params = ["type": "publicize"]
 
-        wordPressComRestApi.GET(path, parameters: params as [String: AnyObject]?) { responseObject, httpResponse in
+        wordPressComRESTAPI.get(path, parameters: params as [String: AnyObject]?) { responseObject, httpResponse in
             guard let responseDict = responseObject as? NSDictionary else {
                 failure?(self.errorForUnexpectedResponse(httpResponse))
                 return
@@ -53,7 +53,7 @@ open class SharingServiceRemote: ServiceRemoteWordPressComREST {
             success?(self.remotePublicizeServicesFromDictionary(responseDict))
 
         } failure: { error, _ in
-            failure?(error)
+            failure?(error as NSError)
         }
     }
 
@@ -69,7 +69,7 @@ open class SharingServiceRemote: ServiceRemoteWordPressComREST {
         let path = path(forEndpoint: "sites/\(siteID)/external-services", withVersion: ._2_0)
         let params = ["type": "publicize" as AnyObject]
 
-        wordPressComRestApi.GET(
+        wordPressComRESTAPI.get(
             path,
             parameters: params,
             success: { response, httpResponse in
@@ -96,9 +96,9 @@ open class SharingServiceRemote: ServiceRemoteWordPressComREST {
         let endpoint = "me/keyring-connections"
         let path = self.path(forEndpoint: endpoint, withVersion: ._1_1)
 
-        wordPressComRestApi.GET(path,
+        wordPressComRESTAPI.get(path,
             parameters: nil,
-            success: { (responseObject: AnyObject, httpResponse: HTTPURLResponse?) in
+            success: { responseObject, httpResponse in
                 guard let onSuccess = success else {
                     return
                 }
@@ -133,8 +133,8 @@ open class SharingServiceRemote: ServiceRemoteWordPressComREST {
 
                 onSuccess(keyringConnections)
             },
-            failure: { (error: NSError, _: HTTPURLResponse?) in
-                failure?(error)
+            failure: { error, _ in
+                failure?(error as NSError)
         })
     }
 
@@ -170,9 +170,9 @@ open class SharingServiceRemote: ServiceRemoteWordPressComREST {
         let endpoint = "sites/\(siteID)/publicize-connections"
         let path = self.path(forEndpoint: endpoint, withVersion: ._1_1)
 
-        wordPressComRestApi.GET(path,
+        wordPressComRESTAPI.get(path,
             parameters: nil,
-            success: { (responseObject: AnyObject, httpResponse: HTTPURLResponse?) in
+            success: { responseObject, httpResponse in
                 guard let onSuccess = success else {
                     return
                 }
@@ -190,8 +190,8 @@ open class SharingServiceRemote: ServiceRemoteWordPressComREST {
 
                 onSuccess(publicizeConnections)
             },
-            failure: { (error: NSError, _: HTTPURLResponse?) in
-                failure?(error)
+            failure: { error, _ in
+                failure?(error as NSError)
         })
     }
 
@@ -218,9 +218,9 @@ open class SharingServiceRemote: ServiceRemoteWordPressComREST {
                 parameters[PublicizeConnectionParams.externalUserID] = userID as AnyObject?
             }
 
-            wordPressComRestApi.POST(path,
+            wordPressComRESTAPI.post(path,
                 parameters: parameters,
-                success: { (responseObject: AnyObject, httpResponse: HTTPURLResponse?) in
+                success: { responseObject, httpResponse in
                     guard let onSuccess = success else {
                         return
                     }
@@ -233,8 +233,8 @@ open class SharingServiceRemote: ServiceRemoteWordPressComREST {
 
                     onSuccess(conn)
                 },
-                failure: { (error: NSError, _: HTTPURLResponse?) in
-                    failure?(error)
+                failure: { error, _ in
+                    failure?(error as NSError)
             })
     }
 
@@ -262,9 +262,9 @@ open class SharingServiceRemote: ServiceRemoteWordPressComREST {
                 PublicizeConnectionParams.externalUserID: externalUserID
             ]
 
-            wordPressComRestApi.POST(path,
+            wordPressComRESTAPI.post(path,
                 parameters: parameters as [String: AnyObject]?,
-                success: { (responseObject: AnyObject, httpResponse: HTTPURLResponse?) in
+                success: { responseObject, httpResponse in
                     guard let onSuccess = success else {
                         return
                     }
@@ -277,8 +277,8 @@ open class SharingServiceRemote: ServiceRemoteWordPressComREST {
 
                     onSuccess(conn)
                 },
-                failure: { (error: NSError, _: HTTPURLResponse?) in
-                    failure?(error)
+                failure: { error, _ in
+                    failure?(error as NSError)
             })
     }
 
@@ -302,9 +302,9 @@ open class SharingServiceRemote: ServiceRemoteWordPressComREST {
                 PublicizeConnectionParams.shared: shared
             ]
 
-            wordPressComRestApi.POST(path,
+            wordPressComRESTAPI.post(path,
                 parameters: parameters as [String: AnyObject]?,
-                success: { (responseObject: AnyObject, httpResponse: HTTPURLResponse?) in
+                success: { responseObject, httpResponse in
                     guard let onSuccess = success else {
                         return
                     }
@@ -317,8 +317,8 @@ open class SharingServiceRemote: ServiceRemoteWordPressComREST {
 
                     onSuccess(conn)
                 },
-                failure: { (error: NSError, _: HTTPURLResponse?) in
-                    failure?(error)
+                failure: { error, _ in
+                    failure?(error as NSError)
             })
     }
 
@@ -334,13 +334,13 @@ open class SharingServiceRemote: ServiceRemoteWordPressComREST {
         let endpoint = "sites/\(siteID)/publicize-connections/\(connectionID)/delete"
         let path = self.path(forEndpoint: endpoint, withVersion: ._1_1)
 
-        wordPressComRestApi.POST(path,
+        wordPressComRESTAPI.post(path,
             parameters: nil,
-            success: { (_: AnyObject, _: HTTPURLResponse?) in
+            success: { _, _ in
                 success?()
             },
-            failure: { (error: NSError, _: HTTPURLResponse?) in
-                failure?(error)
+            failure: { error, _ in
+                failure?(error as NSError)
         })
     }
 
@@ -405,9 +405,9 @@ open class SharingServiceRemote: ServiceRemoteWordPressComREST {
         let endpoint = "sites/\(siteID)/sharing-buttons"
         let path = self.path(forEndpoint: endpoint, withVersion: ._1_1)
 
-        wordPressComRestApi.GET(path,
+        wordPressComRESTAPI.get(path,
             parameters: nil,
-            success: { (responseObject: AnyObject, httpResponse: HTTPURLResponse?) in
+            success: { responseObject, httpResponse in
                 guard let onSuccess = success else {
                     return
                 }
@@ -422,8 +422,8 @@ open class SharingServiceRemote: ServiceRemoteWordPressComREST {
 
                 onSuccess(sharingButtons)
             },
-            failure: { (error: NSError, _: HTTPURLResponse?) in
-                failure?(error)
+            failure: { error, _ in
+                failure?(error as NSError)
         })
     }
 
@@ -441,9 +441,9 @@ open class SharingServiceRemote: ServiceRemoteWordPressComREST {
         let buttons = dictionariesFromRemoteSharingButtons(sharingButtons)
         let parameters = [SharingButtonsKeys.sharingButtons: buttons]
 
-        wordPressComRestApi.POST(path,
+        wordPressComRESTAPI.post(path,
             parameters: parameters as [String: AnyObject]?,
-            success: { (responseObject: AnyObject, httpResponse: HTTPURLResponse?) in
+            success: { responseObject, httpResponse in
                 guard let onSuccess = success else {
                     return
                 }
@@ -458,8 +458,8 @@ open class SharingServiceRemote: ServiceRemoteWordPressComREST {
 
                 onSuccess(sharingButtons)
             },
-            failure: { (error: NSError, _: HTTPURLResponse?) in
-                failure?(error)
+            failure: { error, _ in
+                failure?(error as NSError)
         })
     }
 

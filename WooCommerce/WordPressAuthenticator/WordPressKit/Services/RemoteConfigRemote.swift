@@ -14,7 +14,7 @@ open class RemoteConfigRemote: ServiceRemoteWordPressComREST {
         let endpoint = "mobile/remote-config"
         let path = self.path(forEndpoint: endpoint, withVersion: ._2_0)
 
-        wordPressComRestApi.GET(path,
+        wordPressComRESTAPI.get(path,
                                 parameters: nil,
                                 success: { response, _ in
             if let remoteConfigDictionary = response as? [String: Any] {

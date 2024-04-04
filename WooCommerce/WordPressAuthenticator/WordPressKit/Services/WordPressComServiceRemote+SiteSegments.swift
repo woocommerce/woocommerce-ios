@@ -93,7 +93,7 @@ public extension WordPressComServiceRemote {
         let endpoint = "segments"
         let remotePath = path(forEndpoint: endpoint, withVersion: ._2_0)
 
-        wordPressComRestApi.GET(
+        wordPressComRESTAPI.get(
             remotePath,
             parameters: nil,
             success: { [weak self] responseObject, httpResponse in
@@ -122,7 +122,7 @@ public extension WordPressComServiceRemote {
 // MARK: - Serialization support
 
 private extension WordPressComServiceRemote {
-    private func decodeResponse(responseObject: AnyObject) throws -> [SiteSegment] {
+    private func decodeResponse(responseObject: Any) throws -> [SiteSegment] {
         let decoder = JSONDecoder()
         let data = try JSONSerialization.data(withJSONObject: responseObject, options: [])
         let response = try decoder.decode([SiteSegment].self, from: data)

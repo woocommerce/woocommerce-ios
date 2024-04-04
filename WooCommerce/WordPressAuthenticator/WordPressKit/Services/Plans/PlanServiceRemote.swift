@@ -23,7 +23,7 @@ public class PlanServiceRemote: ServiceRemoteWordPressComREST {
         let endpoint = "plans/mobile"
         let path = self.path(forEndpoint: endpoint, withVersion: ._2_0)
 
-        wordPressComRestApi.GET(path,
+        wordPressComRESTAPI.get(path,
                                 parameters: nil,
                                 success: {
                                     response, _ in
@@ -56,7 +56,7 @@ public class PlanServiceRemote: ServiceRemoteWordPressComREST {
             "locale": locale
         ]
 
-        wordPressComRestApi.GET(path,
+        wordPressComRESTAPI.get(path,
                                 parameters: parameters as [String: AnyObject],
                                 success: {
                                     response, _ in

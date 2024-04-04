@@ -9,7 +9,7 @@ public class TimeZoneServiceRemote: ServiceRemoteWordPressComREST {
     public func getTimezones(success: @escaping (([TimeZoneGroup]) -> Void), failure: @escaping ((Error) -> Void)) {
         let endpoint = "timezones"
         let path = self.path(forEndpoint: endpoint, withVersion: ._2_0)
-        wordPressComRestApi.GET(path, parameters: nil, success: { (response, _) in
+        wordPressComRESTAPI.get(path, parameters: nil, success: { (response, _) in
             do {
                 let groups = try self.timezoneGroupsFromResponse(response)
                 success(groups)
@@ -23,7 +23,7 @@ public class TimeZoneServiceRemote: ServiceRemoteWordPressComREST {
 }
 
 private extension TimeZoneServiceRemote {
-    func timezoneGroupsFromResponse(_ response: AnyObject) throws -> [TimeZoneGroup] {
+    func timezoneGroupsFromResponse(_ response: Any) throws -> [TimeZoneGroup] {
         guard let response = response as? [String: Any],
             let timeZonesByContinent = response["timezones_by_continent"] as? [String: [[String: String]]],
             let manualUTCOffsets = response["manual_utc_offsets"] as? [[String: String]] else {

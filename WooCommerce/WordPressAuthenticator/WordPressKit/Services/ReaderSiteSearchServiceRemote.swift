@@ -34,7 +34,7 @@ public class ReaderSiteSearchServiceRemote: ServiceRemoteWordPressComREST {
             "q": query as AnyObject
         ]
 
-        wordPressComRestApi.GET(path,
+        wordPressComRESTAPI.get(path,
                                 parameters: parameters,
                                 success: { response, _ in
                                     do {
@@ -53,7 +53,7 @@ public class ReaderSiteSearchServiceRemote: ServiceRemoteWordPressComREST {
 
 private extension ReaderSiteSearchServiceRemote {
 
-    func mapSearchResponse(_ response: AnyObject) throws -> ([ReaderFeed], Int) {
+    func mapSearchResponse(_ response: Any) throws -> ([ReaderFeed], Int) {
         do {
             let decoder = JSONDecoder()
             let data = try JSONSerialization.data(withJSONObject: response, options: [])

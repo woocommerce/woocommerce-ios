@@ -88,7 +88,7 @@ public class NotificationSyncServiceRemote: ServiceRemoteWordPressComREST {
 
         let parameters = ["counts": notifications]
 
-        wordPressComRestApi.POST(requestUrl, parameters: parameters as [String: AnyObject]?, success: { (response, _)  in
+        wordPressComRESTAPI.post(requestUrl, parameters: parameters as [String: AnyObject]?, success: { (response, _)  in
             let error = self.errorFromResponse(response)
             completion(error)
 
@@ -111,7 +111,7 @@ public class NotificationSyncServiceRemote: ServiceRemoteWordPressComREST {
             "time": timestamp
         ]
 
-        wordPressComRestApi.POST(requestUrl, parameters: parameters as [String: AnyObject]?, success: { (response, _)  in
+        wordPressComRESTAPI.post(requestUrl, parameters: parameters as [String: AnyObject]?, success: { (response, _)  in
             let error = self.errorFromResponse(response)
             completion(error)
 
@@ -131,7 +131,7 @@ private extension NotificationSyncServiceRemote {
     ///
     /// - Returns: SyncError.failed whenever the success field is either missing, or set to false.
     ///
-    func errorFromResponse(_ response: AnyObject) -> Error? {
+    func errorFromResponse(_ response: Any) -> Error? {
         let document = response as? [String: AnyObject]
         let success = document?["success"] as? Bool
         guard success != true else {
@@ -166,7 +166,7 @@ private extension NotificationSyncServiceRemote {
             parameters["fields"] = fields as AnyObject?
         }
 
-        wordPressComRestApi.GET(requestUrl, parameters: parameters, success: { response, _  in
+        wordPressComRESTAPI.get(requestUrl, parameters: parameters, success: { response, _  in
             let document = response as? [String: AnyObject]
             let notes = document?["notes"] as? [[String: AnyObject]]
             let parsed = notes?.compactMap { RemoteNotification(document: $0) }

@@ -2378,6 +2378,7 @@
 		DE86E9292A4C213A00A89A5B /* WooAnalyticsEvent+AIFeedback.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE86E9282A4C213A00A89A5B /* WooAnalyticsEvent+AIFeedback.swift */; };
 		DE8AA0B12BBE50CF0084D2CC /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8AA0B02BBE50CF0084D2CC /* DashboardView.swift */; };
 		DE8AA0B32BBE55E40084D2CC /* DashboardViewHostingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8AA0B22BBE55E40084D2CC /* DashboardViewHostingController.swift */; };
+		DE8AA0B52BBEBE590084D2CC /* ViewControllerContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8AA0B42BBEBE590084D2CC /* ViewControllerContainer.swift */; };
 		DE8BEB8A2AB83F4F00F5E56C /* ProductNameGenerationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8BEB892AB83F4F00F5E56C /* ProductNameGenerationViewModel.swift */; };
 		DE8BEB8C2AB840DD00F5E56C /* ProductNameGenerationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8BEB8B2AB840DD00F5E56C /* ProductNameGenerationView.swift */; };
 		DE8BEB8E2ABAC96700F5E56C /* ProductNameGenerationViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8BEB8D2ABAC96700F5E56C /* ProductNameGenerationViewModelTests.swift */; };
@@ -5132,6 +5133,7 @@
 		DE86E9282A4C213A00A89A5B /* WooAnalyticsEvent+AIFeedback.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WooAnalyticsEvent+AIFeedback.swift"; sourceTree = "<group>"; };
 		DE8AA0B02BBE50CF0084D2CC /* DashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardView.swift; sourceTree = "<group>"; };
 		DE8AA0B22BBE55E40084D2CC /* DashboardViewHostingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardViewHostingController.swift; sourceTree = "<group>"; };
+		DE8AA0B42BBEBE590084D2CC /* ViewControllerContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewControllerContainer.swift; sourceTree = "<group>"; };
 		DE8BEB892AB83F4F00F5E56C /* ProductNameGenerationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductNameGenerationViewModel.swift; sourceTree = "<group>"; };
 		DE8BEB8B2AB840DD00F5E56C /* ProductNameGenerationView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProductNameGenerationView.swift; sourceTree = "<group>"; };
 		DE8BEB8D2ABAC96700F5E56C /* ProductNameGenerationViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductNameGenerationViewModelTests.swift; sourceTree = "<group>"; };
@@ -8185,6 +8187,7 @@
 				20203AB12B31EEF1009D0C11 /* ExpandableBottomSheet.swift */,
 				20DA6DDA2B681175002AA0FB /* AdaptiveModalContainer.swift */,
 				CE63024D2BAC664900E3325C /* EmailView.swift */,
+				DE8AA0B42BBEBE590084D2CC /* ViewControllerContainer.swift */,
 			);
 			path = "SwiftUI Components";
 			sourceTree = "<group>";
@@ -13443,6 +13446,7 @@
 				E1C47209267A1ECC00D06DA1 /* CrashLoggingStack.swift in Sources */,
 				B991F5382B7BCA27001ADF83 /* LocallyStoredStateNameRetriever.swift in Sources */,
 				CCF87BBE279047BC00461C43 /* InfiniteScrollList.swift in Sources */,
+				DE8AA0B52BBEBE590084D2CC /* ViewControllerContainer.swift in Sources */,
 				DE7E5E8C2B4E9353002E28D2 /* ErrorStateView.swift in Sources */,
 				DE63115B2AF1E13200587641 /* WPComLoginCoordinator.swift in Sources */,
 				EE3B17B62AA03837004D3E0C /* CelebrationView.swift in Sources */,

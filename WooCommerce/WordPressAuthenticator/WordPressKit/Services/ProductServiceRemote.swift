@@ -41,7 +41,7 @@ open class ProductServiceRemote {
     open func getProducts(completion: @escaping (Result<[Product], Error>) -> Void) {
         let path = serviceRemote.path(forEndpoint: "products", withVersion: ._1_1)
 
-        serviceRemote.wordPressComRestApi.GET(
+        serviceRemote.wordPressComRESTAPI.get(
             path,
             parameters: [:],
             success: { responseProducts, _ in

@@ -585,7 +585,11 @@ private extension MainTabBarController {
     }
 
     func createDashboardViewController(siteID: Int64) -> UIViewController {
-        DashboardViewController(siteID: siteID)
+        if featureFlagService.isFeatureFlagEnabled(.dynamicDashboard) {
+            DashboardViewHostingController(siteID: siteID)
+        } else {
+            DashboardViewController(siteID: siteID)
+        }
     }
 
     func createOrdersViewController(siteID: Int64) -> UIViewController {

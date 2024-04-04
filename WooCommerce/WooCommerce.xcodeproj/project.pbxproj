@@ -2376,6 +2376,7 @@
 		DE85E4ED2AB416F5008789E1 /* AddProductWithAIActionSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE85E4EC2AB416F5008789E1 /* AddProductWithAIActionSheet.swift */; };
 		DE86E9272A4BEA2500A89A5B /* FeedbackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE86E9262A4BEA2500A89A5B /* FeedbackView.swift */; };
 		DE86E9292A4C213A00A89A5B /* WooAnalyticsEvent+AIFeedback.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE86E9282A4C213A00A89A5B /* WooAnalyticsEvent+AIFeedback.swift */; };
+		DE8AA0B12BBE50CF0084D2CC /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8AA0B02BBE50CF0084D2CC /* DashboardView.swift */; };
 		DE8BEB8A2AB83F4F00F5E56C /* ProductNameGenerationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8BEB892AB83F4F00F5E56C /* ProductNameGenerationViewModel.swift */; };
 		DE8BEB8C2AB840DD00F5E56C /* ProductNameGenerationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8BEB8B2AB840DD00F5E56C /* ProductNameGenerationView.swift */; };
 		DE8BEB8E2ABAC96700F5E56C /* ProductNameGenerationViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8BEB8D2ABAC96700F5E56C /* ProductNameGenerationViewModelTests.swift */; };
@@ -5128,6 +5129,7 @@
 		DE85E4EC2AB416F5008789E1 /* AddProductWithAIActionSheet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddProductWithAIActionSheet.swift; sourceTree = "<group>"; };
 		DE86E9262A4BEA2500A89A5B /* FeedbackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedbackView.swift; sourceTree = "<group>"; };
 		DE86E9282A4C213A00A89A5B /* WooAnalyticsEvent+AIFeedback.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WooAnalyticsEvent+AIFeedback.swift"; sourceTree = "<group>"; };
+		DE8AA0B02BBE50CF0084D2CC /* DashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardView.swift; sourceTree = "<group>"; };
 		DE8BEB892AB83F4F00F5E56C /* ProductNameGenerationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductNameGenerationViewModel.swift; sourceTree = "<group>"; };
 		DE8BEB8B2AB840DD00F5E56C /* ProductNameGenerationView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProductNameGenerationView.swift; sourceTree = "<group>"; };
 		DE8BEB8D2ABAC96700F5E56C /* ProductNameGenerationViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductNameGenerationViewModelTests.swift; sourceTree = "<group>"; };
@@ -10823,6 +10825,7 @@
 				26C98F9929C18ABF00F96503 /* Free Trial */,
 				CE85FD5220F677770080B73E /* Dashboard.storyboard */,
 				B509112D2049E27A007D25DC /* DashboardViewController.swift */,
+				DE8AA0B02BBE50CF0084D2CC /* DashboardView.swift */,
 				028E1F6F2833DD0A001F8829 /* DashboardViewModel.swift */,
 				029D444822F13F8A00DEFA8A /* DashboardUI.swift */,
 				B946881129B8DD41000646B0 /* DashboardViewController+Activity.swift */,
@@ -14598,6 +14601,7 @@
 				B958640A2A657F44002C4C6E /* EnhancedCouponListView.swift in Sources */,
 				B9E4364E287589E200883CFA /* BadgeView.swift in Sources */,
 				CC254F3826C43B52005F3C82 /* ShippingLabelCustomPackageFormViewModel.swift in Sources */,
+				DE8AA0B12BBE50CF0084D2CC /* DashboardView.swift in Sources */,
 				02F49ADC23BF3A0100FA0BFA /* ErrorSectionHeaderView.swift in Sources */,
 				DE4D239E29B073B1003A4B5D /* WPComMagicLinkViewModel.swift in Sources */,
 				3178C1F726409216000D771A /* BluetoothCardReaderSettingsConnectedViewModel.swift in Sources */,

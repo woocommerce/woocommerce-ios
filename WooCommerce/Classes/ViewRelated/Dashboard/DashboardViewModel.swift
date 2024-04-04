@@ -14,7 +14,7 @@ enum DashboardCard: CaseIterable {
 }
 
 /// Syncs data for dashboard stats UI and determines the state of the dashboard UI based on stats version.
-final class DashboardViewModel {
+final class DashboardViewModel: ObservableObject {
     /// Stats v4 is shown by default, then falls back to v3 if store stats are unavailable.
     @Published private(set) var statsVersion: StatsVersion = .v4
 

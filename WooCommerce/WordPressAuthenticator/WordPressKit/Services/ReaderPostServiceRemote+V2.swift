@@ -15,11 +15,12 @@ extension ReaderPostServiceRemote {
             return
         }
 
-        wordPressComRestApi.GET(requestUrl,
+        wordPressComRESTAPI.get(requestUrl,
                                 parameters: nil,
                                 success: { response, _ in
-                                    let nextPageHandle = response["next_page_handle"] as? String
-                                    let postsDictionary = response["posts"] as? [[String: Any]]
+                                    let responseDict = response as? [String: Any]
+                                    let nextPageHandle = responseDict?["next_page_handle"] as? String
+                                    let postsDictionary = responseDict?["posts"] as? [[String: Any]]
                                     let posts = postsDictionary?.compactMap { RemoteReaderPost(dictionary: $0) } ?? []
                                     success(posts, nextPageHandle)
         }, failure: { error, _ in
@@ -99,7 +100,7 @@ extension ReaderPostServiceRemote {
 
         let path = self.path(forEndpoint: endpoint, withVersion: ._2_0)
 
-        wordPressComRestApi.POST(path, parameters: params, success: { (responseObject, _) in
+        wordPressComRESTAPI.post(path, parameters: params, success: { (responseObject, _) in
             guard let response = responseObject as? [String: AnyObject],
                   let status = response["status"] as? Bool,
                   status == true else {

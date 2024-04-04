@@ -47,9 +47,6 @@ private extension DashboardViewHostingController {
                     guard let self else { return }
                     await self.viewModel.syncAnnouncements(for: self.siteID)
                 }
-//                group.addTask { [weak self] in
-//                    await self?.reloadDashboardUIStatsVersion(forced: true)
-//                }
                 group.addTask { [weak self] in
                     await self?.viewModel.reloadStoreOnboardingTasks()
                 }

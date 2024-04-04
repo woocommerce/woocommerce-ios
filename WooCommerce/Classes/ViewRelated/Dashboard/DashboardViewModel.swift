@@ -85,12 +85,14 @@ final class DashboardViewModel: ObservableObject {
 
     /// Reloads store onboarding tasks
     ///
+    @MainActor
     func reloadStoreOnboardingTasks() async {
         await storeOnboardingViewModel.reloadTasks()
     }
 
     /// Reloads Blaze dashboard campaign view
     ///
+    @MainActor
     func reloadBlazeCampaignView() async {
         await blazeCampaignDashboardViewModel.reload()
     }
@@ -216,6 +218,7 @@ final class DashboardViewModel: ObservableObject {
 
     /// Checks for announcements to show on the dashboard
     ///
+    @MainActor
     func syncAnnouncements(for siteID: Int64) async {
         await syncJustInTimeMessages(for: siteID)
         await loadLocalAnnouncement()
@@ -237,6 +240,7 @@ final class DashboardViewModel: ObservableObject {
 private extension DashboardViewModel {
     /// Checks for Just In Time Messages and prepares the announcement if needed.
     ///
+    @MainActor
     func syncJustInTimeMessages(for siteID: Int64) async {
         let viewModel = try? await justInTimeMessagesManager.loadMessage(for: .dashboard, siteID: siteID)
         viewModel?.$showWebViewSheet.assign(to: &self.$showWebViewSheet)
@@ -294,6 +298,7 @@ private extension DashboardViewModel {
                     showBlazeCampaignView ? .blaze : nil
                 ].compactMap { $0 }
             }
+            .receive(on: RunLoop.main)
             .assign(to: &$dashboardCards)
     }
 }

@@ -11,7 +11,7 @@ public class PluginServiceRemote: ServiceRemoteWordPressComREST {
     public func getFeaturedPlugins(success: @escaping ([PluginDirectoryEntry]) -> Void, failure: @escaping (Error) -> Void) {
         let endpoint = "wpcom/v2/plugins/featured"
 
-        wordPressComRestApi.GET(endpoint, parameters: nil, success: { (responseObject, _) in
+        wordPressComRESTAPI.get(endpoint, parameters: nil, success: { (responseObject, _) in
             guard let response = responseObject as? [[String: AnyObject]] else {
                 failure(ResponseError.decodingFailure)
                 return
@@ -33,7 +33,7 @@ public class PluginServiceRemote: ServiceRemoteWordPressComREST {
         let path = self.path(forEndpoint: endpoint, withVersion: ._1_2)
         let parameters = [String: AnyObject]()
 
-        wordPressComRestApi.GET(path, parameters: parameters, success: { (responseObject, _) in
+        wordPressComRESTAPI.get(path, parameters: parameters, success: { (responseObject, _) in
             guard let response = responseObject as? [String: AnyObject] else {
                 failure(ResponseError.decodingFailure)
                 return
@@ -59,7 +59,7 @@ public class PluginServiceRemote: ServiceRemoteWordPressComREST {
         let path = self.path(forEndpoint: endpoint, withVersion: ._1_2)
         let parameters = [String: AnyObject]()
 
-        wordPressComRestApi.POST(
+        wordPressComRESTAPI.post(
             path,
             parameters: parameters,
             success: { (responseObject, _)  in
@@ -120,7 +120,7 @@ public class PluginServiceRemote: ServiceRemoteWordPressComREST {
         let endpoint = "sites/\(siteID)/plugins/\(pluginSlug)/install"
         let path = self.path(forEndpoint: endpoint, withVersion: ._1_2)
 
-        wordPressComRestApi.POST(
+        wordPressComRESTAPI.post(
             path,
             parameters: nil,
             success: { responseObject, _  in
@@ -148,7 +148,7 @@ public class PluginServiceRemote: ServiceRemoteWordPressComREST {
         let endpoint = "sites/\(siteID)/plugins/\(escapedPluginID)/delete"
         let path = self.path(forEndpoint: endpoint, withVersion: ._1_2)
 
-        wordPressComRestApi.POST(
+        wordPressComRESTAPI.post(
             path,
             parameters: nil,
             success: { _, _  in
@@ -167,7 +167,7 @@ public class PluginServiceRemote: ServiceRemoteWordPressComREST {
         let endpoint = "sites/\(siteID)/plugins/\(escapedPluginID)"
         let path = self.path(forEndpoint: endpoint, withVersion: ._1_2)
 
-        wordPressComRestApi.POST(
+        wordPressComRESTAPI.post(
             path,
             parameters: parameters,
             success: { _, _  in

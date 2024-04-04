@@ -11,11 +11,10 @@ import WordPressShared
         let endpoint = "sites/\(siteID)/plans"
         let path = self.path(forEndpoint: endpoint, withVersion: ._1_3)
 
-        wordPressComRestApi.GET(
+        wordPressComRESTAPI.get(
             path,
             parameters: nil,
-            success: {
-                response, _ in
+            success: { response, _ in
                 do {
                     try success(PlanServiceRemote_ApiVersion1_3.mapPlansResponse(response))
                 } catch {
@@ -25,14 +24,13 @@ import WordPressShared
                     failure(error)
                 }
             },
-            failure: {
-                error, _ in
+            failure: { error, _ in
                 failure(error)
             }
         )
     }
 
-    private static func mapPlansResponse(_ response: AnyObject) throws
+    private static func mapPlansResponse(_ response: Any) throws
         -> (activePlan: RemotePlan_ApiVersion1_3, availablePlans: [RemotePlan_ApiVersion1_3]) {
 
         guard let json = response as? [String: AnyObject] else {

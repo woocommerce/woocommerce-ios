@@ -1,5 +1,6 @@
 import SwiftUI
 import struct Yosemite.Site
+import struct Yosemite.StoreOnboardingTask
 
 /// View for the dashboard screen
 ///
@@ -7,16 +8,27 @@ struct DashboardView: View {
     @StateObject private var viewModel: DashboardViewModel
     @State private var currentSite: Site?
 
-    init(siteID: Int64) {
-        self._viewModel = StateObject(wrappedValue: DashboardViewModel(siteID: siteID))
+    /// Set externally in the hosting controller.
+    var onboardingTaskTapped: ((Site, StoreOnboardingTask) -> Void)?
+    /// Set externally in the hosting controller.
+    var viewAllOnboardingTasksTapped: ((Site) -> Void)?
+    /// Set externally in the hosting controller.
+    var onboardingShareFeedbackAction: (() -> Void)?
+
+    init(viewModel: DashboardViewModel) {
+        self._viewModel = StateObject(wrappedValue: viewModel)
     }
 
     var body: some View {
         ScrollView {
+            // Store title
             Text(currentSite?.name ?? Localization.title)
                 .secondaryBodyStyle()
                 .padding(.horizontal, Layout.horizontalPadding)
                 .frame(maxWidth: .infinity, alignment: .leading)
+
+            // Card views
+            dashboardCards
         }
         .navigationTitle(Localization.title)
         .toolbar {
@@ -37,7 +49,24 @@ struct DashboardView: View {
 // MARK: Private helpers
 //
 private extension DashboardView {
-    // TODO
+    var dashboardCards: some View {
+        ForEach(viewModel.dashboardCards) { card in
+            switch card {
+            case .onboarding:
+                StoreOnboardingView(viewModel: viewModel.storeOnboardingViewModel, onTaskTapped: { task in
+                    guard let currentSite else { return }
+                    onboardingTaskTapped?(currentSite, task)
+                }, onViewAllTapped: {
+                    guard let currentSite else { return }
+                    viewAllOnboardingTasksTapped?(currentSite)
+                }, shareFeedbackAction: {
+                    onboardingShareFeedbackAction?()
+                })
+            case .blaze, .stats, .topPerformers:
+                EmptyView()
+            }
+        }
+    }
 }
 
 // MARK: Subtypes
@@ -55,5 +84,5 @@ private extension DashboardView {
 }
 
 #Preview {
-    DashboardView(siteID: 123)
+    DashboardView(viewModel: DashboardViewModel(siteID: 123))
 }

@@ -67,12 +67,6 @@ final class StoreOnboardingViewHostingController: SelfSizingHostingController<St
         configureNavigationBarAppearance()
     }
 
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-
-        reloadTasks()
-    }
-
     private func reloadTasks() {
         Task { @MainActor in
             await viewModel.reloadTasks()
@@ -98,7 +92,7 @@ final class StoreOnboardingViewHostingController: SelfSizingHostingController<St
 /// Shows a list of onboarding tasks for store setup with completion state.
 struct StoreOnboardingView: View {
     /// Set externally in the hosting controller.
-    var taskTapped: (StoreOnboardingTask) -> Void = { _ in }
+    var taskTapped: ((StoreOnboardingTask) -> Void)?
     /// Set externally in the hosting controller.
     var viewAllTapped: (() -> Void)?
 
@@ -107,8 +101,12 @@ struct StoreOnboardingView: View {
     private let shareFeedbackAction: (() -> Void)?
 
     init(viewModel: StoreOnboardingViewModel,
+         onTaskTapped: ((StoreOnboardingTask) -> Void)? = nil,
+         onViewAllTapped: (() -> Void)? = nil,
          shareFeedbackAction: (() -> Void)? = nil) {
         self.viewModel = viewModel
+        self.taskTapped = onTaskTapped
+        self.viewAllTapped = onViewAllTapped
         self.shareFeedbackAction = shareFeedbackAction
     }
 
@@ -144,7 +142,7 @@ struct StoreOnboardingView: View {
                         StoreOnboardingTaskView(viewModel: taskViewModel,
                                                 showDivider: !isLastTask,
                                                 isRedacted: viewModel.isRedacted) { task in
-                            taskTapped(task)
+                            taskTapped?(task)
                         }
                                                 .shimmering(active: viewModel.isRedacted)
                     }
@@ -160,6 +158,9 @@ struct StoreOnboardingView: View {
             .padding(insets: viewModel.shouldShowViewAllButton ?
                      Layout.insetsWithViewAllButton: Layout.insetsWithoutViewAllButton)
             .if(!viewModel.isExpanded) { $0.background(Color(uiColor: .listForeground(modal: false))) }
+            .task {
+                await viewModel.reloadTasks()
+            }
         }
     }
 }

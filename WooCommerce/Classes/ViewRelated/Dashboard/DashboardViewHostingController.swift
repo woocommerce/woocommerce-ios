@@ -1,11 +1,19 @@
 import SwiftUI
+import struct Yosemite.Site
 
 /// Hosting view for `DashboardView`
 ///
 final class DashboardViewHostingController: UIHostingController<DashboardView> {
+
+    private let viewModel: DashboardViewModel
+    private var storeOnboardingCoordinator: StoreOnboardingCoordinator?
+
     init(siteID: Int64) {
-        super.init(rootView: DashboardView(siteID: siteID))
+        let viewModel = DashboardViewModel(siteID: siteID)
+        self.viewModel = viewModel
+        super.init(rootView: DashboardView(viewModel: viewModel))
         configureTabBarItem()
+        configureStoreOnboarding()
     }
 
     @available(*, unavailable)
@@ -25,6 +33,49 @@ private extension DashboardViewHostingController {
         tabBarItem.image = .statsAltImage
         tabBarItem.title = Localization.title
         tabBarItem.accessibilityIdentifier = "tab-bar-my-store-item"
+    }
+
+    func configureStoreOnboarding() {
+        rootView.onboardingTaskTapped = { [weak self] site, task in
+            guard let self, !task.isComplete else { return }
+            updateStoreOnboardingCoordinatorIfNeeded(with: site)
+            ServiceLocator.analytics.track(event: .StoreOnboarding.storeOnboardingTaskTapped(task: task.type))
+            storeOnboardingCoordinator?.start(task: task)
+        }
+
+        rootView.viewAllOnboardingTasksTapped = { [weak self] site in
+            guard let self else { return }
+            updateStoreOnboardingCoordinatorIfNeeded(with: site)
+            storeOnboardingCoordinator?.start()
+        }
+
+        rootView.onboardingShareFeedbackAction = { [weak self] in
+            let navigationController = SurveyCoordinatingController(survey: .storeSetup)
+            self?.present(navigationController, animated: true, completion: nil)
+        }
+    }
+
+    func updateStoreOnboardingCoordinatorIfNeeded(with site: Site) {
+        guard let navigationController, storeOnboardingCoordinator?.site != site else {
+            return
+        }
+        let coordinator = StoreOnboardingCoordinator(navigationController: navigationController,
+                                                     site: site,
+                                                     onTaskCompleted: { [weak self] task in
+            self?.reloadOnboardingTask()
+            ServiceLocator.analytics.track(event: .StoreOnboarding.storeOnboardingTaskCompleted(task: task))
+        }, reloadTasks: { [weak self] in
+            self?.reloadOnboardingTask()
+        }, onUpgradePlan: {
+            // TODO: maybe remove this
+        })
+        self.storeOnboardingCoordinator = coordinator
+    }
+
+    func reloadOnboardingTask() {
+        Task {
+            await viewModel.storeOnboardingViewModel.reloadTasks()
+        }
     }
 }
 

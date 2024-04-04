@@ -6,11 +6,13 @@ import protocol Experiments.FeatureFlagService
 
 /// Contents to be displayed on the dashboard.
 ///
-enum DashboardCard: CaseIterable {
+enum DashboardCard: Int, CaseIterable, Identifiable {
     case onboarding
     case stats
     case topPerformers
     case blaze
+
+    var id: Int { rawValue }
 }
 
 /// Syncs data for dashboard stats UI and determines the state of the dashboard UI based on stats version.

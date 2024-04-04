@@ -23,7 +23,7 @@ extension AccountServiceRemoteREST {
                                        oAuthClientID: String,
                                        oAuthClientSecret: String,
                                        success: @escaping (() -> Void),
-                                       failure: @escaping ((NSError) -> Void)) {
+                                       failure: @escaping ((Error) -> Void)) {
         let path = self.path(forEndpoint: "me/social-login/connect", withVersion: ._1_1)
 
         var params = [
@@ -37,7 +37,7 @@ extension AccountServiceRemoteREST {
             params.merge(connectParameters, uniquingKeysWith: { (current, _) in current })
         }
 
-        wordPressComRestApi.POST(path, parameters: params, success: { (_, _) in
+        wordPressComRESTAPI.post(path, parameters: params, success: { (_, _) in
             success()
         }, failure: { (error, _) in
             failure(error)
@@ -65,7 +65,7 @@ extension AccountServiceRemoteREST {
     ///     - oAuthClientSecret The WPCOM REST API client secret.
     ///     - success The block that will be executed on success.
     ///     - failure The block that will be executed on failure.
-    public func disconnectFromSocialService(_ service: SocialServiceName, oAuthClientID: String, oAuthClientSecret: String, success: @escaping(() -> Void), failure: @escaping((NSError) -> Void)) {
+    public func disconnectFromSocialService(_ service: SocialServiceName, oAuthClientID: String, oAuthClientSecret: String, success: @escaping(() -> Void), failure: @escaping((Error) -> Void)) {
         let path = self.path(forEndpoint: "me/social-login/disconnect", withVersion: ._1_1)
         let params = [
             "client_id": oAuthClientID,
@@ -73,7 +73,7 @@ extension AccountServiceRemoteREST {
             "service": service.rawValue
         ] as [String: AnyObject]
 
-        wordPressComRestApi.POST(path, parameters: params, success: { (_, _) in
+        wordPressComRESTAPI.post(path, parameters: params, success: { (_, _) in
             success()
         }, failure: { (error, _) in
             failure(error)

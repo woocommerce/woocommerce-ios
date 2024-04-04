@@ -112,7 +112,7 @@ public class DomainsServiceRemote: ServiceRemoteWordPressComREST {
         let endpoint = "sites/\(siteID)/domains"
         let path = self.path(forEndpoint: endpoint, withVersion: ._1_1)
 
-        wordPressComRestApi.GET(path, parameters: nil,
+        wordPressComRESTAPI.get(path, parameters: nil,
             success: {
                 response, _ in
                 do {
@@ -133,7 +133,7 @@ public class DomainsServiceRemote: ServiceRemoteWordPressComREST {
 
         let parameters: [String: AnyObject] = ["domain": domain as AnyObject]
 
-        wordPressComRestApi.POST(path, parameters: parameters,
+        wordPressComRESTAPI.post(path, parameters: parameters,
                                 success: { _, _ in
 
             success()
@@ -149,7 +149,7 @@ public class DomainsServiceRemote: ServiceRemoteWordPressComREST {
         let endPoint = "domains/supported-states/\(countryCode)"
         let servicePath = path(forEndpoint: endPoint, withVersion: ._1_1)
 
-        wordPressComRestApi.GET(
+        wordPressComRESTAPI.get(
             servicePath,
             parameters: nil,
             success: {
@@ -175,7 +175,7 @@ public class DomainsServiceRemote: ServiceRemoteWordPressComREST {
         let endPoint = "me/domain-contact-information"
         let servicePath = path(forEndpoint: endPoint, withVersion: ._1_1)
 
-        wordPressComRestApi.GET(
+        wordPressComRESTAPI.get(
             servicePath,
             parameters: nil,
             success: { (response, _) in
@@ -201,7 +201,7 @@ public class DomainsServiceRemote: ServiceRemoteWordPressComREST {
 
         let parameters: [String: AnyObject] = ["contact_information": contactInformation as AnyObject,
                                                "domain_names": domainNames as AnyObject]
-        wordPressComRestApi.POST(
+        wordPressComRESTAPI.post(
             servicePath,
             parameters: parameters,
             success: { response, _ in
@@ -239,7 +239,7 @@ public class DomainsServiceRemote: ServiceRemoteWordPressComREST {
             parameters["quantity"] = quantity as AnyObject
         }
 
-        wordPressComRestApi.GET(servicePath,
+        wordPressComRESTAPI.get(servicePath,
                                 parameters: parameters,
                                 success: {
                                     response, _ in
@@ -257,7 +257,7 @@ public class DomainsServiceRemote: ServiceRemoteWordPressComREST {
     }
 }
 
-private func map(suggestions response: AnyObject) throws -> [DomainSuggestion] {
+private func map(suggestions response: Any) throws -> [DomainSuggestion] {
     guard let jsonSuggestions = response as? [[String: AnyObject]] else {
         throw DomainsServiceRemote.ResponseError.decodingFailed
     }
@@ -272,7 +272,7 @@ private func map(suggestions response: AnyObject) throws -> [DomainSuggestion] {
     return suggestions
 }
 
-private func mapDomainsResponse(_ response: AnyObject) throws -> [RemoteDomain] {
+private func mapDomainsResponse(_ response: Any) throws -> [RemoteDomain] {
     guard let json = response as? [String: AnyObject],
         let domainsJson = json["domains"] as? [[String: AnyObject]] else {
             throw DomainsServiceRemote.ResponseError.decodingFailed

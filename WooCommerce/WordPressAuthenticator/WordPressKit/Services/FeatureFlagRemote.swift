@@ -21,7 +21,7 @@ open class FeatureFlagRemote: ServiceRemoteWordPressComREST {
             return
         }
 
-        wordPressComRestApi.GET(path,
+        wordPressComRESTAPI.get(path,
                                 parameters: dictionary,
                                 success: { response, _ in
 

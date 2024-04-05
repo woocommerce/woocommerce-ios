@@ -170,7 +170,7 @@ private extension DashboardView {
     }
 
     func errorTopBanner(for error: Error) -> some View {
-        ErrorTopBanner(error: error, expandedStateChangeHandler: {}, onTroubleshootButtonPressed: {
+        ErrorTopBanner(error: error, onTroubleshootButtonPressed: {
             troubleShootURL = ErrorTopBannerFactory.troubleshootUrl(for: error)
         }, onContactSupportButtonPressed: {
             showingSupportForm = true

@@ -4,18 +4,15 @@ import SwiftUI
 /// TODO: if needed - convert this view to a reusable top banner.
 struct ErrorTopBanner: View {
     private let errorType: ErrorTopBannerFactory.ErrorType
-    private let expandedStateChangeHandler: () -> Void
     private let onTroubleshootButtonPressed: () -> Void
     private let onContactSupportButtonPressed: () -> Void
 
     @State private var isExpanding = true
 
     init(error: Error,
-         expandedStateChangeHandler: @escaping () -> Void,
          onTroubleshootButtonPressed: @escaping () -> Void,
          onContactSupportButtonPressed: @escaping () -> Void) {
         self.errorType = ErrorTopBannerFactory.ErrorType(error: error)
-        self.expandedStateChangeHandler = expandedStateChangeHandler
         self.onTroubleshootButtonPressed = onTroubleshootButtonPressed
         self.onContactSupportButtonPressed = onContactSupportButtonPressed
     }

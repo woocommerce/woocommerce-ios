@@ -11,6 +11,9 @@ final class DashboardViewHostingController: UIHostingController<DashboardView> {
     private var blazeCampaignCreationCoordinator: BlazeCampaignCreationCoordinator?
     private var jetpackSetupCoordinator: JetpackSetupCoordinator?
 
+    /// Presenter for the privacy choices banner
+    private lazy var privacyBannerPresenter = PrivacyBannerPresenter()
+
     init(siteID: Int64) {
         let viewModel = DashboardViewModel(siteID: siteID)
         let usageTracksEventEmitter = StoreStatsUsageTracksEventEmitter()
@@ -33,6 +36,7 @@ final class DashboardViewHostingController: UIHostingController<DashboardView> {
     override func viewDidLoad() {
         super.viewDidLoad()
         registerUserActivity()
+        presentPrivacyBannerIfNeeded()
         Task {
             await viewModel.reloadAllData()
         }
@@ -49,6 +53,12 @@ private extension DashboardViewHostingController {
         tabBarItem.image = .statsAltImage
         tabBarItem.title = Localization.title
         tabBarItem.accessibilityIdentifier = "tab-bar-my-store-item"
+    }
+
+    /// Presents the privacy banner if needed.
+    ///
+    func presentPrivacyBannerIfNeeded() {
+        privacyBannerPresenter.presentIfNeeded(from: self)
     }
 }
 

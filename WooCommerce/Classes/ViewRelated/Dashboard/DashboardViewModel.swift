@@ -34,6 +34,8 @@ final class DashboardViewModel: ObservableObject {
     @Published private(set) var showBlazeCampaignView: Bool = false
     @Published private(set) var dashboardCards: [DashboardCard] = [.stats, .topPerformers]
 
+    @Published private(set) var jetpackBannerVisibleFromAppSettings = false
+
     let siteID: Int64
     private let stores: StoresManager
     private let featureFlagService: FeatureFlagService
@@ -95,6 +97,9 @@ final class DashboardViewModel: ObservableObject {
             }
             group.addTask { [weak self] in
                 await self?.reloadBlazeCampaignView()
+            }
+            group.addTask { [weak self] in
+                await self?.updateJetpackBannerVisibilityFromAppSettings()
             }
         }
     }
@@ -250,6 +255,11 @@ final class DashboardViewModel: ObservableObject {
 
         analytics.track(event: .Dashboard.dashboardTimezonesDiffers(localTimezone: localGMTOffsetInHours, storeTimezone: siteGMTOffset))
     }
+
+    func saveJetpackBenefitBannerDismissedTime() {
+        let dismissAction = AppSettingsAction.setJetpackBenefitsBannerLastDismissedTime(time: Date())
+        stores.dispatch(dismissAction)
+    }
 }
 
 // MARK: Private helpers
@@ -316,6 +326,21 @@ private extension DashboardViewModel {
             }
             .receive(on: RunLoop.main)
             .assign(to: &$dashboardCards)
+    }
+
+    @MainActor
+    func loadJetpackBannerVisibilityFromAppSettings() async -> Bool {
+        await withCheckedContinuation { continuation in
+            stores.dispatch(AppSettingsAction.loadJetpackBenefitsBannerVisibility(currentTime: Date(),
+                                                                               calendar: .current) {  isVisibleFromAppSettings in
+                continuation.resume(returning: isVisibleFromAppSettings)
+            })
+        }
+    }
+
+    @MainActor
+    func updateJetpackBannerVisibilityFromAppSettings() async {
+        jetpackBannerVisibleFromAppSettings = await loadJetpackBannerVisibilityFromAppSettings()
     }
 }
 

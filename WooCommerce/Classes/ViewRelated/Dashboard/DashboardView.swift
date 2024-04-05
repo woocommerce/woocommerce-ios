@@ -7,6 +7,7 @@ import struct Yosemite.StoreOnboardingTask
 struct DashboardView: View {
     @ObservedObject private var viewModel: DashboardViewModel
     @State private var currentSite: Site?
+    @State private var dismissedJetpackBenefitBanner = false
 
     /// Set externally in the hosting controller.
     var onboardingTaskTapped: ((Site, StoreOnboardingTask) -> Void)?
@@ -20,7 +21,17 @@ struct DashboardView: View {
     /// Set externally in the hosting controller.
     var createBlazeCampaignTapped: ((_ productID: Int64?) -> Void)?
 
+    var jetpackBenefitsBannerTapped: ((Site) -> Void)?
+
     private let storeStatsAndTopPerformersViewController: StoreStatsAndTopPerformersViewController
+
+    private var shouldShowJetpackBenefitsBanner: Bool {
+        let isJetpackCPSite = currentSite?.isJetpackCPConnected == true
+        let isNonJetpackSite = currentSite?.isNonJetpackSite == true
+        return (isJetpackCPSite || isNonJetpackSite) && 
+            viewModel.jetpackBannerVisibleFromAppSettings &&
+            dismissedJetpackBenefitBanner == false
+    }
 
     init(viewModel: DashboardViewModel,
          usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter) {
@@ -65,6 +76,10 @@ struct DashboardView: View {
                 await storeStatsAndTopPerformersViewController.reloadData(forced: true)
             }
         }
+        .safeAreaInset(edge: .bottom) {
+            jetpackBenefitBanner
+                .renderedIf(shouldShowJetpackBenefitsBanner)
+        }
     }
 }
 
@@ -98,6 +113,18 @@ private extension DashboardView {
                 EmptyView() // TODO-12403: handle this after separating stats and top performers
             }
         }
+    }
+
+    var jetpackBenefitBanner: some View {
+        JetpackBenefitsBanner(tapAction: {
+            ServiceLocator.analytics.track(event: .jetpackBenefitsBanner(action: .tapped))
+            guard let currentSite else { return }
+            jetpackBenefitsBannerTapped?(currentSite)
+        }, dismissAction: {
+            ServiceLocator.analytics.track(event: .jetpackBenefitsBanner(action: .dismissed))
+            viewModel.saveJetpackBenefitBannerDismissedTime()
+            dismissedJetpackBenefitBanner = true
+        })
     }
 }
 

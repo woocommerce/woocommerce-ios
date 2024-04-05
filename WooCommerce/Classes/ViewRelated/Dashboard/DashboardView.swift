@@ -72,6 +72,9 @@ struct DashboardView: View {
                 errorTopBanner(for: error)
             }
 
+            // Feature announcement if any.
+            featureAnnouncementCard
+
             // Card views
             dashboardCards
         }
@@ -113,6 +116,11 @@ struct DashboardView: View {
             supportForm
         }
         .safariSheet(url: $troubleShootURL)
+        .sheet(item: $viewModel.showWebViewSheet) { webViewModel in
+            WebViewSheet(viewModel: webViewModel) {
+                viewModel.maybeSyncAnnouncementsAfterWebViewDismissed()
+            }
+        }
     }
 }
 
@@ -191,6 +199,16 @@ private extension DashboardView {
             } else if plan.isFreePlan && currentSite?.wasEcommerceTrial == true {
                 StorePlanBanner(text: Localization.expiredPlan)
             }
+        }
+    }
+
+    @ViewBuilder
+    var featureAnnouncementCard: some View {
+        if let announcementViewModel = viewModel.announcementViewModel, 
+            viewModel.dashboardCards.contains(.onboarding) == false {
+            FeatureAnnouncementCardView(viewModel: announcementViewModel, dismiss: {
+                viewModel.announcementViewModel = nil
+            })
         }
     }
 }

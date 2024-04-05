@@ -28,7 +28,7 @@ final class DashboardViewModel: ObservableObject {
 
     let blazeCampaignDashboardViewModel: BlazeCampaignDashboardViewModel
 
-    @Published private(set) var showWebViewSheet: WebViewSheetViewModel? = nil
+    @Published var showWebViewSheet: WebViewSheetViewModel? = nil
 
     @Published private(set) var showOnboarding: Bool = false
     @Published private(set) var showBlazeCampaignView: Bool = false
@@ -260,6 +260,16 @@ final class DashboardViewModel: ObservableObject {
     func saveJetpackBenefitBannerDismissedTime() {
         let dismissAction = AppSettingsAction.setJetpackBenefitsBannerLastDismissedTime(time: Date())
         stores.dispatch(dismissAction)
+    }
+
+    func maybeSyncAnnouncementsAfterWebViewDismissed() {
+        // If the web view was opened from a modal JITM, it was dismissed before the webview
+        // was presented. Syncing in that situation would result in it showing again.
+        if modalJustInTimeMessageViewModel == nil {
+            Task {
+                await syncAnnouncements(for: siteID)
+            }
+        }
     }
 }
 

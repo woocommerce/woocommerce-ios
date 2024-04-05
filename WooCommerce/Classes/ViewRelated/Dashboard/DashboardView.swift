@@ -10,6 +10,8 @@ struct DashboardView: View {
     @State private var dismissedJetpackBenefitBanner = false
     @State private var showingSupportForm = false
     @State private var troubleShootURL: URL?
+    @State private var storePlanState: StorePlanSyncState = .loading
+    @State private var connectivityStatus: ConnectivityStatus = .notReachable
 
     /// Set externally in the hosting controller.
     var onboardingTaskTapped: ((Site, StoreOnboardingTask) -> Void)?
@@ -27,6 +29,8 @@ struct DashboardView: View {
     var jetpackBenefitsBannerTapped: ((Site) -> Void)?
 
     private let storeStatsAndTopPerformersViewController: StoreStatsAndTopPerformersViewController
+    private let storePlanSynchronizer = ServiceLocator.storePlanSynchronizer
+    private let connectivityObserver = ServiceLocator.connectivityObserver
 
     private var shouldShowJetpackBenefitsBanner: Bool {
         let isJetpackCPSite = currentSite?.isJetpackCPConnected == true
@@ -85,6 +89,12 @@ struct DashboardView: View {
         .onReceive(ServiceLocator.stores.site) { currentSite in
             self.currentSite = currentSite
         }
+        .onReceive(storePlanSynchronizer.planStatePublisher.removeDuplicates()) { state in
+            storePlanState = state
+        }
+        .onReceive(connectivityObserver.statusPublisher) { status in
+            connectivityStatus = status
+        }
         .refreshable {
             Task { @MainActor in
                 ServiceLocator.analytics.track(.dashboardPulledToRefresh)
@@ -95,18 +105,12 @@ struct DashboardView: View {
         .safeAreaInset(edge: .bottom) {
             jetpackBenefitBanner
                 .renderedIf(shouldShowJetpackBenefitsBanner)
+
+            storePlanBanner
+                .renderedIf(connectivityStatus != .notReachable)
         }
         .sheet(isPresented: $showingSupportForm) {
-            NavigationStack {
-                SupportForm(isPresented: .constant(true), viewModel: .init())
-                    .toolbar {
-                        ToolbarItem(placement: .confirmationAction) {
-                            Button(Localization.done) {
-                                showingSupportForm = false
-                            }
-                        }
-                    }
-            }
+            supportForm
         }
         .safariSheet(url: $troubleShootURL)
     }
@@ -164,6 +168,31 @@ private extension DashboardView {
         })
         .background(Color(.listForeground(modal: false)))
     }
+
+    var supportForm: some View {
+        NavigationStack {
+            SupportForm(isPresented: .constant(true), viewModel: .init())
+                .toolbar {
+                    ToolbarItem(placement: .confirmationAction) {
+                        Button(Localization.done) {
+                            showingSupportForm = false
+                        }
+                    }
+                }
+        }
+    }
+
+    @ViewBuilder
+    var storePlanBanner: some View {
+        if case .loaded(let plan) = storePlanState {
+            if plan.isFreeTrial {
+                let bannerViewModel = FreeTrialBannerViewModel(sitePlan: plan)
+                StorePlanBanner(text: bannerViewModel.message)
+            } else if plan.isFreePlan && currentSite?.wasEcommerceTrial == true {
+                StorePlanBanner(text: Localization.expiredPlan)
+            }
+        }
+    }
 }
 
 // MARK: Subtypes
@@ -181,6 +210,11 @@ private extension DashboardView {
             "dashboardView.supportForm.done",
             value: "Done",
             comment: "Button to dismiss the support form from the Blaze confirm payment view screen."
+        )
+        static let expiredPlan = NSLocalizedString(
+            "dashboardView.storePlanBanner.expired",
+            value: "Your site plan has ended.",
+            comment: "Title on the banner when the site's WooExpress plan has expired"
         )
     }
 }

@@ -37,7 +37,7 @@ static NSString * const RemoteOptionValueOrderByPostID = @"ID";
 
     NSString *path = [NSString stringWithFormat:@"sites/%@/posts/%@", self.siteID, postID];
     NSString *requestUrl = [self pathForEndpoint:path
-                                     withVersion:ServiceRemoteWordPressComRESTApiVersion_1_1];
+                                     withVersion:WordPressComRESTAPIVersion_1_1];
     
     NSDictionary *parameters = @{ @"context": @"edit" };
     
@@ -70,7 +70,7 @@ static NSString * const RemoteOptionValueOrderByPostID = @"ID";
 
     NSString *path = [NSString stringWithFormat:@"sites/%@/posts", self.siteID];
     NSString *requestUrl = [self pathForEndpoint:path
-                                     withVersion:ServiceRemoteWordPressComRESTApiVersion_1_2];
+                                     withVersion:WordPressComRESTAPIVersion_1_2];
     
     NSDictionary *parameters = @{
                                  @"status": @"any,trash",
@@ -102,7 +102,7 @@ static NSString * const RemoteOptionValueOrderByPostID = @"ID";
 {
     NSString *path = [NSString stringWithFormat:@"sites/%@/posts/%@/autosave", self.siteID, post.postID];
     NSString *requestUrl = [self pathForEndpoint:path
-                                     withVersion:ServiceRemoteWordPressComRESTApiVersion_1_1];
+                                     withVersion:WordPressComRESTAPIVersion_1_1];
     
     NSDictionary *parameters = [self parametersWithRemotePost:post];
     
@@ -128,7 +128,7 @@ static NSString * const RemoteOptionValueOrderByPostID = @"ID";
 
     NSString *path = [NSString stringWithFormat:@"sites/%@/posts/new?context=edit", self.siteID];
     NSString *requestUrl = [self pathForEndpoint:path
-                                     withVersion:ServiceRemoteWordPressComRESTApiVersion_1_2];
+                                     withVersion:WordPressComRESTAPIVersion_1_2];
     
     NSDictionary *parameters = [self parametersWithRemotePost:post];
 
@@ -158,7 +158,7 @@ static NSString * const RemoteOptionValueOrderByPostID = @"ID";
     NSString *filename = media.file;
     NSString *path = [NSString stringWithFormat:@"sites/%@/posts/new", self.siteID];
     NSString *requestUrl = [self pathForEndpoint:path
-                                     withVersion:ServiceRemoteWordPressComRESTApiVersion_1_2];
+                                     withVersion:WordPressComRESTAPIVersion_1_2];
 
     NSMutableDictionary *parameters = [NSMutableDictionary dictionaryWithDictionary:@{}];
     parameters[@"content"] = post.content;
@@ -192,7 +192,7 @@ static NSString * const RemoteOptionValueOrderByPostID = @"ID";
 
     NSString *path = [NSString stringWithFormat:@"sites/%@/posts/%@?context=edit", self.siteID, post.postID];
     NSString *requestUrl = [self pathForEndpoint:path
-                                     withVersion:ServiceRemoteWordPressComRESTApiVersion_1_2];
+                                     withVersion:WordPressComRESTAPIVersion_1_2];
     
     NSDictionary *parameters = [self parametersWithRemotePost:post];
 
@@ -218,7 +218,7 @@ static NSString * const RemoteOptionValueOrderByPostID = @"ID";
     
     NSString *path = [NSString stringWithFormat:@"sites/%@/posts/%@/autosave", self.siteID, post.postID];
     NSString *requestUrl = [self pathForEndpoint:path
-                                     withVersion:ServiceRemoteWordPressComRESTApiVersion_1_1];
+                                     withVersion:WordPressComRESTAPIVersion_1_1];
     
     NSDictionary *parameters = [self parametersWithRemotePost:post];
     
@@ -245,7 +245,7 @@ static NSString * const RemoteOptionValueOrderByPostID = @"ID";
 
     NSString *path = [NSString stringWithFormat:@"sites/%@/posts/%@/delete", self.siteID, post.postID];
     NSString *requestUrl = [self pathForEndpoint:path
-                                     withVersion:ServiceRemoteWordPressComRESTApiVersion_1_1];
+                                     withVersion:WordPressComRESTAPIVersion_1_1];
     
     [self.wordPressComRESTAPI post:requestUrl
         parameters:nil
@@ -269,7 +269,7 @@ static NSString * const RemoteOptionValueOrderByPostID = @"ID";
     // The parameters are passed as part of the string here because AlamoFire doesn't encode parameters on POST requests.
     NSString *path = [NSString stringWithFormat:@"sites/%@/posts/%@/delete?context=edit", self.siteID, post.postID];
     NSString *requestUrl = [self pathForEndpoint:path
-                                     withVersion:ServiceRemoteWordPressComRESTApiVersion_1_1];
+                                     withVersion:WordPressComRESTAPIVersion_1_1];
     
     [self.wordPressComRESTAPI post:requestUrl
         parameters:nil
@@ -295,7 +295,7 @@ static NSString * const RemoteOptionValueOrderByPostID = @"ID";
     // https://github.com/wordpress-mobile/WordPressKit-iOS/pull/385
     NSString *path = [NSString stringWithFormat:@"sites/%@/posts/%@/restore?context=edit", self.siteID, post.postID];
     NSString *requestUrl = [self pathForEndpoint:path
-                                     withVersion:ServiceRemoteWordPressComRESTApiVersion_1_1];
+                                     withVersion:WordPressComRESTAPIVersion_1_1];
     
     [self.wordPressComRESTAPI post:requestUrl
         parameters:nil
@@ -322,7 +322,7 @@ static NSString * const RemoteOptionValueOrderByPostID = @"ID";
 
     NSString *path = [NSString stringWithFormat:@"sites/%@/posts/%@/likes", self.siteID, postID];
     NSString *requestUrl = [self pathForEndpoint:path
-                                     withVersion:ServiceRemoteWordPressComRESTApiVersion_1_2];
+                                     withVersion:WordPressComRESTAPIVersion_1_2];
     NSNumber *siteID = self.siteID;
 
     // If no count provided, default to endpoint max.

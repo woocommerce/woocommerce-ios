@@ -17,7 +17,7 @@ static NSString * const TopicNotFoundMarker = @"-notfound-";
 {
     NSString *path = @"read/menu";
     NSString *requestUrl = [self pathForEndpoint:path
-                                     withVersion:ServiceRemoteWordPressComRESTApiVersion_1_3];
+                                     withVersion:WordPressComRESTAPIVersion_1_3];
 
     [self.wordPressComRESTAPI get:requestUrl parameters:nil success:^(NSDictionary *response, NSHTTPURLResponse *httpResponse) {
         if (!success) {
@@ -77,7 +77,7 @@ static NSString * const TopicNotFoundMarker = @"-notfound-";
 {
     NSString *path = [self pathForFollowedSitesWithPage:page number:number];
     NSString *requestUrl = [self pathForEndpoint:path
-                                     withVersion:ServiceRemoteWordPressComRESTApiVersion_1_2];
+                                     withVersion:WordPressComRESTAPIVersion_1_2];
 
     [self.wordPressComRESTAPI get:requestUrl parameters:nil success:^(id responseObject, NSHTTPURLResponse *httpResponse) {
         if (!success) {
@@ -105,7 +105,7 @@ static NSString * const TopicNotFoundMarker = @"-notfound-";
 {
     NSString *path = [NSString stringWithFormat:@"read/tags/%@/mine/delete", slug];
     NSString *requestUrl = [self pathForEndpoint:path
-                                     withVersion:ServiceRemoteWordPressComRESTApiVersion_1_1];
+                                     withVersion:WordPressComRESTAPIVersion_1_1];
 
     [self.wordPressComRESTAPI post:requestUrl parameters:nil success:^(NSDictionary *responseObject, NSHTTPURLResponse *httpResponse) {
         if (!success) {
@@ -136,7 +136,7 @@ static NSString * const TopicNotFoundMarker = @"-notfound-";
     NSString *path = [NSString stringWithFormat:@"read/tags/%@/mine/new", slug];
     path = [path stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLPathAllowedCharacterSet]];
     NSString *requestUrl = [self pathForEndpoint:path
-                                     withVersion:ServiceRemoteWordPressComRESTApiVersion_1_1];
+                                     withVersion:WordPressComRESTAPIVersion_1_1];
 
     [self.wordPressComRESTAPI post:requestUrl parameters:nil success:^(id responseObject, NSHTTPURLResponse *httpResponse) {
         if (!success) {
@@ -158,7 +158,7 @@ static NSString * const TopicNotFoundMarker = @"-notfound-";
 {
     NSString *path = [NSString stringWithFormat:@"read/tags/%@", slug];
     NSString *requestUrl = [self pathForEndpoint:path
-                                     withVersion:ServiceRemoteWordPressComRESTApiVersion_1_2];
+                                     withVersion:WordPressComRESTAPIVersion_1_2];
 
     [self.wordPressComRESTAPI get:requestUrl parameters:nil success:^(id responseObject, NSHTTPURLResponse *httpResponse) {
         if (!success) {
@@ -187,11 +187,11 @@ static NSString * const TopicNotFoundMarker = @"-notfound-";
     if (isFeed) {
         NSString *path = [NSString stringWithFormat:@"read/feed/%@", siteID];
         requestUrl = [self pathForEndpoint:path
-                               withVersion:ServiceRemoteWordPressComRESTApiVersion_1_1];
+                               withVersion:WordPressComRESTAPIVersion_1_1];
     } else {
         NSString *path = [NSString stringWithFormat:@"read/sites/%@", siteID];
         requestUrl = [self pathForEndpoint:path
-                               withVersion:ServiceRemoteWordPressComRESTApiVersion_1_2];
+                               withVersion:WordPressComRESTAPIVersion_1_2];
     }
     
     [self.wordPressComRESTAPI get:requestUrl parameters:nil success:^(id responseObject, NSHTTPURLResponse *httpResponse) {
@@ -234,7 +234,7 @@ static NSString * const TopicNotFoundMarker = @"-notfound-";
 
 - (NSString *)endpointUrlForPath:(NSString *)endpoint
 {
-    NSString *absolutePath = [self pathForEndpoint:endpoint withVersion:ServiceRemoteWordPressComRESTApiVersion_1_2];
+    NSString *absolutePath = [self pathForEndpoint:endpoint withVersion:WordPressComRESTAPIVersion_1_2];
     NSURL *url = [NSURL URLWithString:absolutePath relativeToURL:self.wordPressComRESTAPI.baseURL];
     return [url absoluteString];
 }

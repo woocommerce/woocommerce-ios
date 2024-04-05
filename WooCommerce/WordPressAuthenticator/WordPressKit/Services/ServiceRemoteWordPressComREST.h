@@ -1,14 +1,8 @@
 #import <Foundation/Foundation.h>
 #import <WordPressKit/WordPressComRESTAPIInterfacing.h>
+#import <WordPressKit/WordPressComRESTAPIVersion.h>
 
 @class WordPressComRestApi;
-
-typedef NSInteger NS_TYPED_ENUM ServiceRemoteWordPressComRESTApiVersion;
-extern ServiceRemoteWordPressComRESTApiVersion const ServiceRemoteWordPressComRESTApiVersion_1_0;
-extern ServiceRemoteWordPressComRESTApiVersion const ServiceRemoteWordPressComRESTApiVersion_1_1;
-extern ServiceRemoteWordPressComRESTApiVersion const ServiceRemoteWordPressComRESTApiVersion_1_2;
-extern ServiceRemoteWordPressComRESTApiVersion const ServiceRemoteWordPressComRESTApiVersion_1_3;
-extern ServiceRemoteWordPressComRESTApiVersion const ServiceRemoteWordPressComRESTApiVersion_2_0;
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -17,7 +11,6 @@ NS_ASSUME_NONNULL_BEGIN
  *  @brief  Parent class for all REST service classes.
  */
 @interface ServiceRemoteWordPressComREST : NSObject
-
 
 /**
  *  @brief      The API object to use for communications.
@@ -50,14 +43,8 @@ NS_ASSUME_NONNULL_BEGIN
  *  @returns    The request URL.
  */
 - (NSString *)pathForEndpoint:(NSString *)endpoint
-                  withVersion:(ServiceRemoteWordPressComRESTApiVersion)apiVersion;
-
-/**
- *  @brief      An anonoymous API object to use for communications where authentication is not needed.
- *
- *  @param      userAgent       The user agent string to use on all requests
- */
-+ (WordPressComRestApi *)anonymousWordPressComRestApiWithUserAgent:(NSString *)userAgent;
+                  withVersion:(WordPressComRESTAPIVersion)apiVersion
+NS_SWIFT_NAME(path(forEndpoint:withVersion:));
 
 @end
 

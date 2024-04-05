@@ -54,7 +54,7 @@ MagicLinkFlow const MagicLinkFlowSignup = @"signup";
                              failure:(void (^)(NSError *error))failure
 {
     NSString *requestUrl = [self pathForEndpoint:@"me"
-                                     withVersion:ServiceRemoteWordPressComRESTApiVersion_1_1];
+                                     withVersion:WordPressComRESTAPIVersion_1_1];
     
     [self.wordPressComRESTAPI get:requestUrl
        parameters:nil
@@ -107,7 +107,7 @@ MagicLinkFlow const MagicLinkFlowSignup = @"signup";
                                  @"sites": sites
                                  };
     NSString *path = [self pathForEndpoint:@"me/sites"
-                               withVersion:ServiceRemoteWordPressComRESTApiVersion_1_1];
+                               withVersion:WordPressComRESTAPIVersion_1_1];
     [self.wordPressComRESTAPI post:path
         parameters:parameters
            success:^(id responseObject, NSHTTPURLResponse *httpResponse) {
@@ -126,7 +126,7 @@ MagicLinkFlow const MagicLinkFlowSignup = @"signup";
     NSString *encodedIdentifier = [identifier stringByAddingPercentEncodingWithAllowedCharacters:NSCharacterSet.URLPathRFC3986AllowedCharacterSet];
 
     NSString *path = [self pathForEndpoint:[NSString stringWithFormat:@"users/%@/auth-options", encodedIdentifier]
-                               withVersion:ServiceRemoteWordPressComRESTApiVersion_1_1];
+                               withVersion:WordPressComRESTAPIVersion_1_1];
     [self.wordPressComRESTAPI get:path
                        parameters:nil
                           success:^(id responseObject, NSHTTPURLResponse *httpResponse) {
@@ -249,7 +249,7 @@ MagicLinkFlow const MagicLinkFlowSignup = @"signup";
                              failure:(void (^)(NSError *error))failure
 {
     NSString *path = [self pathForEndpoint:@"auth/send-login-email"
-                               withVersion:ServiceRemoteWordPressComRESTApiVersion_1_3];
+                               withVersion:WordPressComRESTAPIVersion_1_3];
     
     NSDictionary *extraParams = @{
         MagicLinkParameterFlow: MagicLinkFlowLogin,
@@ -275,7 +275,7 @@ MagicLinkFlow const MagicLinkFlowSignup = @"signup";
 {
     
     NSString *path = [self pathForEndpoint:@"auth/send-signup-email"
-                               withVersion:ServiceRemoteWordPressComRESTApiVersion_1_1];
+                               withVersion:WordPressComRESTAPIVersion_1_1];
     
     NSDictionary *extraParams = @{
         @"signup_flow_name": @"mobile-ios",
@@ -334,7 +334,7 @@ MagicLinkFlow const MagicLinkFlowSignup = @"signup";
                                     failure:(void (^)(NSError *))failure
 {
     NSString *path = [self pathForEndpoint:@"me/send-verification-email"
-                               withVersion:ServiceRemoteWordPressComRESTApiVersion_1_1];
+                               withVersion:WordPressComRESTAPIVersion_1_1];
 
     [self.wordPressComRESTAPI post:path parameters:nil success:^(id _Nonnull responseObject, NSHTTPURLResponse * _Nullable httpResponse) {
         if (success) {
@@ -354,7 +354,7 @@ MagicLinkFlow const MagicLinkFlowSignup = @"signup";
                        failure:(void (^)(NSError *))failure
 {
     NSString *requestUrl = [self pathForEndpoint:@"me/sites"
-                                     withVersion:ServiceRemoteWordPressComRESTApiVersion_1_2];
+                                     withVersion:WordPressComRESTAPIVersion_1_2];
     [self.wordPressComRESTAPI get:requestUrl
                        parameters:parameters
                           success:^(id responseObject, NSHTTPURLResponse *httpResponse) {

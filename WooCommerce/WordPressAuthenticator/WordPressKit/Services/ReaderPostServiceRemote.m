@@ -70,7 +70,7 @@ NSString * const ParamKeyMetaValue = @"site,feed";
     NSString *path = [NSString stringWithFormat:@"read/%@/%lu/posts/%lu/?meta=site", feedType, (unsigned long)siteID, (unsigned long)postID];
 
     NSString *requestUrl = [self pathForEndpoint:path
-                                     withVersion:ServiceRemoteWordPressComRESTApiVersion_1_2];
+                                     withVersion:WordPressComRESTAPIVersion_1_2];
     
     [self.wordPressComRESTAPI get:requestUrl
            parameters:nil
@@ -142,7 +142,7 @@ NSString * const ParamKeyMetaValue = @"site,feed";
 {
     NSString *path = [NSString stringWithFormat:@"sites/%lu/posts/%lu/likes/new", (unsigned long)siteID, (unsigned long)postID];
     NSString *requestUrl = [self pathForEndpoint:path
-                                     withVersion:ServiceRemoteWordPressComRESTApiVersion_1_1];
+                                     withVersion:WordPressComRESTAPIVersion_1_1];
     
     [self.wordPressComRESTAPI post:requestUrl parameters:nil success:^(id responseObject, NSHTTPURLResponse *httpResponse) {
         if (success) {
@@ -162,7 +162,7 @@ NSString * const ParamKeyMetaValue = @"site,feed";
 {
     NSString *path = [NSString stringWithFormat:@"sites/%lu/posts/%lu/likes/mine/delete", (unsigned long)siteID, (unsigned long)postID];
     NSString *requestUrl = [self pathForEndpoint:path
-                                     withVersion:ServiceRemoteWordPressComRESTApiVersion_1_1];
+                                     withVersion:WordPressComRESTAPIVersion_1_1];
     
     [self.wordPressComRESTAPI post:requestUrl parameters:nil success:^(id responseObject, NSHTTPURLResponse *httpResponse) {
         if (success) {
@@ -180,7 +180,7 @@ NSString * const ParamKeyMetaValue = @"site,feed";
     NSAssert([phrase length] > 0, @"A search phrase is required.");
 
     NSString *endpoint = [NSString stringWithFormat:@"read/search?q=%@", [phrase stringByUrlEncoding]];
-    NSString *absolutePath = [self pathForEndpoint:endpoint withVersion:ServiceRemoteWordPressComRESTApiVersion_1_2];
+    NSString *absolutePath = [self pathForEndpoint:endpoint withVersion:WordPressComRESTAPIVersion_1_2];
     NSURL *url = [NSURL URLWithString:absolutePath relativeToURL:self.wordPressComRESTAPI.baseURL];
     return [url absoluteString];
 }
@@ -267,7 +267,7 @@ NSString * const ParamKeyMetaValue = @"site,feed";
     NSString *path = [NSString stringWithFormat:@"sites/%@/posts/slug:%@?meta=site,likes", hostname, slug];
 
     return [self pathForEndpoint:path
-                     withVersion:ServiceRemoteWordPressComRESTApiVersion_1_1];
+                     withVersion:WordPressComRESTAPIVersion_1_1];
 }
 
 @end

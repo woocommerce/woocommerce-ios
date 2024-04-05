@@ -104,7 +104,7 @@ static NSInteger const RemoteBlogUncategorizedCategory                      = 1;
     
     NSString *path = [self pathForUsers];
     NSString *requestUrl = [self pathForEndpoint:path
-                                     withVersion:ServiceRemoteWordPressComRESTApiVersion_1_1];
+                                     withVersion:WordPressComRESTAPIVersion_1_1];
 
     [self.wordPressComRESTAPI get:requestUrl
                        parameters:parameters
@@ -136,7 +136,7 @@ static NSInteger const RemoteBlogUncategorizedCategory                      = 1;
 {
     NSString *path = [self pathForPostTypes];
     NSString *requestUrl = [self pathForEndpoint:path
-                                     withVersion:ServiceRemoteWordPressComRESTApiVersion_1_1];
+                                     withVersion:WordPressComRESTAPIVersion_1_1];
     NSDictionary *parameters = @{@"context": @"edit"};
     [self.wordPressComRESTAPI get:requestUrl
        parameters:parameters
@@ -166,7 +166,7 @@ static NSInteger const RemoteBlogUncategorizedCategory                      = 1;
 {
     NSString *path = [self pathForPostFormats];
     NSString *requestUrl = [self pathForEndpoint:path
-                                     withVersion:ServiceRemoteWordPressComRESTApiVersion_1_1];
+                                     withVersion:WordPressComRESTAPIVersion_1_1];
     
     [self.wordPressComRESTAPI get:requestUrl
        parameters:nil
@@ -187,7 +187,7 @@ static NSInteger const RemoteBlogUncategorizedCategory                      = 1;
 {
     NSString *path = [self pathForSite];
     NSString *requestUrl = [self pathForEndpoint:path
-                                     withVersion:ServiceRemoteWordPressComRESTApiVersion_1_1];
+                                     withVersion:WordPressComRESTAPIVersion_1_1];
 
     [self.wordPressComRESTAPI get:requestUrl
                        parameters:nil
@@ -208,7 +208,7 @@ static NSInteger const RemoteBlogUncategorizedCategory                      = 1;
                         failure:(void (^)(NSError *error))failure
 {
     NSString *path = [self pathForSettings];
-    NSString *requestUrl = [self pathForEndpoint:path withVersion:ServiceRemoteWordPressComRESTApiVersion_1_1];
+    NSString *requestUrl = [self pathForEndpoint:path withVersion:WordPressComRESTAPIVersion_1_1];
     
     [self.wordPressComRESTAPI get:requestUrl
        parameters:nil
@@ -238,7 +238,7 @@ static NSInteger const RemoteBlogUncategorizedCategory                      = 1;
 
     NSDictionary *parameters = [self remoteSettingsToDictionary:settings];
     NSString *path = [NSString stringWithFormat:@"sites/%@/settings?context=edit", self.siteID];
-    NSString *requestUrl = [self pathForEndpoint:path withVersion:ServiceRemoteWordPressComRESTApiVersion_1_1];
+    NSString *requestUrl = [self pathForEndpoint:path withVersion:WordPressComRESTAPIVersion_1_1];
     
     [self.wordPressComRESTAPI post:requestUrl
         parameters:parameters
@@ -270,7 +270,7 @@ static NSInteger const RemoteBlogUncategorizedCategory                      = 1;
 {
     NSString *path = [NSString stringWithFormat:@"sites/%@", siteAddress];
     NSString *requestUrl = [self pathForEndpoint:path
-                                     withVersion:ServiceRemoteWordPressComRESTApiVersion_1_1];
+                                     withVersion:WordPressComRESTAPIVersion_1_1];
 
     [self.wordPressComRESTAPI get:requestUrl
                        parameters:nil
@@ -290,7 +290,7 @@ static NSInteger const RemoteBlogUncategorizedCategory                      = 1;
                         success:(void(^)(NSDictionary *siteInfoDict))success
                         failure:(void (^)(NSError *error))failure
 {
-    NSString *path = [self pathForEndpoint:@"connect/site-info" withVersion:ServiceRemoteWordPressComRESTApiVersion_1_1];
+    NSString *path = [self pathForEndpoint:@"connect/site-info" withVersion:WordPressComRESTAPIVersion_1_1];
     NSURL *siteURL = [NSURL URLWithString:siteAddress];
 
     [self.wordPressComRESTAPI get:path

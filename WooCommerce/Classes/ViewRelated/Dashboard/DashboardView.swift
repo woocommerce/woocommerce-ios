@@ -118,13 +118,9 @@ struct DashboardView: View {
         .safariSheet(url: $troubleShootURL)
         .sheet(item: $viewModel.showWebViewSheet) { webViewModel in
             WebViewSheet(viewModel: webViewModel) {
+                viewModel.showWebViewSheet = nil
                 viewModel.maybeSyncAnnouncementsAfterWebViewDismissed()
             }
-        }
-        .sheet(item: $viewModel.modalJustInTimeMessageViewModel) { modalJITMViewModel in
-            JustInTimeMessageModal_UIKit(onDismiss: {
-                viewModel.modalJustInTimeMessageViewModel = nil
-            }, viewModel: modalJITMViewModel)
         }
     }
 }
@@ -209,11 +205,12 @@ private extension DashboardView {
 
     @ViewBuilder
     var featureAnnouncementCard: some View {
-        if let announcementViewModel = viewModel.announcementViewModel, 
+        if let announcementViewModel = viewModel.announcementViewModel,
             viewModel.dashboardCards.contains(.onboarding) == false {
             FeatureAnnouncementCardView(viewModel: announcementViewModel, dismiss: {
                 viewModel.announcementViewModel = nil
             })
+            .background(Color(.listForeground(modal: false)))
         }
     }
 }

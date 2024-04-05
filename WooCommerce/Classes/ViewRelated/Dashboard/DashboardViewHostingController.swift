@@ -1,3 +1,4 @@
+import Combine
 import SwiftUI
 import struct Yosemite.Site
 
@@ -10,9 +11,12 @@ final class DashboardViewHostingController: UIHostingController<DashboardView> {
     private var storeOnboardingCoordinator: StoreOnboardingCoordinator?
     private var blazeCampaignCreationCoordinator: BlazeCampaignCreationCoordinator?
     private var jetpackSetupCoordinator: JetpackSetupCoordinator?
+    private var modalJustInTimeMessageHostingController: ConstraintsUpdatingHostingController<JustInTimeMessageModal_UIKit>?
 
     /// Presenter for the privacy choices banner
     private lazy var privacyBannerPresenter = PrivacyBannerPresenter()
+
+    private var subscriptions: Set<AnyCancellable> = []
 
     init(siteID: Int64) {
         let viewModel = DashboardViewModel(siteID: siteID)
@@ -26,6 +30,7 @@ final class DashboardViewHostingController: UIHostingController<DashboardView> {
         configureStoreOnboarding()
         configureBlazeSection()
         configureJetpackBenefitBanner()
+
     }
 
     @available(*, unavailable)
@@ -37,6 +42,8 @@ final class DashboardViewHostingController: UIHostingController<DashboardView> {
         super.viewDidLoad()
         registerUserActivity()
         presentPrivacyBannerIfNeeded()
+        observeModalJustInTimeMessages()
+
         Task {
             await viewModel.reloadAllData()
         }
@@ -59,6 +66,27 @@ private extension DashboardViewHostingController {
     ///
     func presentPrivacyBannerIfNeeded() {
         privacyBannerPresenter.presentIfNeeded(from: self)
+    }
+
+    private func observeModalJustInTimeMessages() {
+        viewModel.$modalJustInTimeMessageViewModel.sink { [weak self] viewModel in
+            guard let viewModel, let self else {
+                return
+            }
+
+            let modalController = ConstraintsUpdatingHostingController(
+                rootView: JustInTimeMessageModal_UIKit(
+                    onDismiss: { [weak self] in
+                        self?.dismiss(animated: true)
+                    },
+                    viewModel: viewModel))
+
+            modalJustInTimeMessageHostingController = modalController
+            modalController.view.backgroundColor = .clear
+            modalController.modalPresentationStyle = .overFullScreen
+            present(modalController, animated: true)
+        }
+        .store(in: &subscriptions)
     }
 }
 

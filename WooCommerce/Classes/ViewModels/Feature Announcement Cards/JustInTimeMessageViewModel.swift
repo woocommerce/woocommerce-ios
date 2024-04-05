@@ -4,6 +4,10 @@ import UIKit
 import Yosemite
 import Combine
 
+extension JustInTimeMessageViewModel: Identifiable {
+    var id: String { UUID().uuidString }
+}
+
 final class JustInTimeMessageViewModel {
     private let siteID: Int64
 

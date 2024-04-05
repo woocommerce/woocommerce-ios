@@ -121,6 +121,11 @@ struct DashboardView: View {
                 viewModel.maybeSyncAnnouncementsAfterWebViewDismissed()
             }
         }
+        .sheet(item: $viewModel.modalJustInTimeMessageViewModel) { modalJITMViewModel in
+            JustInTimeMessageModal_UIKit(onDismiss: {
+                viewModel.modalJustInTimeMessageViewModel = nil
+            }, viewModel: modalJITMViewModel)
+        }
     }
 }
 

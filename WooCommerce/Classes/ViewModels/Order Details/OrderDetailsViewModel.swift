@@ -704,6 +704,7 @@ extension OrderDetailsViewModel {
         }
     }
 
+    @MainActor
     func localRequirementsForShippingLabelsAreFulfilled() async -> Bool {
         guard !orderContainsOnlyVirtualProducts else {
             return false

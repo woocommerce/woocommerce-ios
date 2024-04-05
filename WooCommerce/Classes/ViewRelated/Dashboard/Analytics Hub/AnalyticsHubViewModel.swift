@@ -24,18 +24,13 @@ final class AnalyticsHubViewModel: ObservableObject {
     ///
     private let userIsAdmin: Bool
 
-    /// Feature flag for Expanded Analytics Hub (extension analytics)
-    ///
-    private let isExpandedAnalyticsHubEnabled: Bool
-
     init(siteID: Int64,
          timeZone: TimeZone = .siteTimezone,
          statsTimeRange: StatsTimeRangeV4,
          usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter,
          stores: StoresManager = ServiceLocator.stores,
          storage: StorageManagerType = ServiceLocator.storageManager,
-         analytics: Analytics = ServiceLocator.analytics,
-         isExpandedAnalyticsHubEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.expandedAnalyticsHub)) {
+         analytics: Analytics = ServiceLocator.analytics) {
         let selectedType = AnalyticsHubTimeRangeSelection.SelectionType(statsTimeRange)
         let timeRangeSelection = AnalyticsHubTimeRangeSelection(selectionType: selectedType, timezone: timeZone)
 
@@ -45,7 +40,6 @@ final class AnalyticsHubViewModel: ObservableObject {
         self.storage = storage
         self.userIsAdmin = stores.sessionManager.defaultRoles.contains(.administrator)
         self.analytics = analytics
-        self.isExpandedAnalyticsHubEnabled = isExpandedAnalyticsHubEnabled
         self.timeRangeSelectionType = selectedType
         self.timeRangeSelection = timeRangeSelection
         self.timeRangeCard = AnalyticsHubViewModel.timeRangeCard(timeRangeSelection: timeRangeSelection,
@@ -161,9 +155,9 @@ final class AnalyticsHubViewModel: ObservableObject {
         case .sessions:
             isEligibleForSessionsCard
         case .bundles:
-            isExpandedAnalyticsHubEnabled && isPluginActive(SitePlugin.SupportedPlugin.WCProductBundles)
+            isPluginActive(SitePlugin.SupportedPlugin.WCProductBundles)
         case .giftCards:
-            isExpandedAnalyticsHubEnabled && isPluginActive(SitePlugin.SupportedPlugin.WCGiftCards)
+            isPluginActive(SitePlugin.SupportedPlugin.WCGiftCards)
         default:
             true
         }
@@ -636,12 +630,23 @@ extension AnalyticsHubViewModel {
     ///
     @MainActor
     func loadAnalyticsCardSettings() async {
-        allCardsWithSettings = await withCheckedContinuation { continuation in
+        let storedCards = await withCheckedContinuation { continuation in
             let action = AppSettingsAction.loadAnalyticsHubCards(siteID: siteID) { cards in
-                continuation.resume(returning: cards ?? AnalyticsHubViewModel.defaultCards)
+                continuation.resume(returning: cards)
             }
             stores.dispatch(action)
         }
+
+        guard let storedCards else {
+            return allCardsWithSettings = AnalyticsHubViewModel.defaultCards
+        }
+
+        // Any new cards added to the analytics hub since the stored cards were saved.
+        let newCards = AnalyticsHubViewModel.defaultCards.filter { defaultCard in
+            !storedCards.contains(where: { $0.type == defaultCard.type })
+        }
+
+        allCardsWithSettings = storedCards + newCards
     }
 
     /// Sets analytics card settings in storage

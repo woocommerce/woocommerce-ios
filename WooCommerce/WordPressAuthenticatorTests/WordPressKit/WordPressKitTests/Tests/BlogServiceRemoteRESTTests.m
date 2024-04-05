@@ -35,7 +35,7 @@ static NSTimeInterval const TestExpectationTimeout = 5;
 
     NSString *endpoint = [NSString stringWithFormat:@"sites/%@/users", blog.blogID];
     NSString *url = [service pathForEndpoint:endpoint
-                                 withVersion:ServiceRemoteWordPressComRESTApiVersion_1_1];
+                                 withVersion:WordPressComRESTAPIVersion_1_1];
 
     OCMStub([api get:[OCMArg isEqual:url]
           parameters:[OCMArg isKindOfClass:[NSDictionary class]]
@@ -60,7 +60,7 @@ static NSTimeInterval const TestExpectationTimeout = 5;
 
     NSString *endpoint = [NSString stringWithFormat:@"sites/%@", blog.blogID];
     NSString *url = [service pathForEndpoint:endpoint
-                                 withVersion:ServiceRemoteWordPressComRESTApiVersion_1_1];
+                                 withVersion:WordPressComRESTAPIVersion_1_1];
 
     OCMStub([api get:[OCMArg isEqual:url]
           parameters:[OCMArg isNil]
@@ -85,7 +85,7 @@ static NSTimeInterval const TestExpectationTimeout = 5;
 
     NSString *endpoint = [NSString stringWithFormat:@"sites/%@/post-types", blog.blogID];
     NSString *url = [service pathForEndpoint:endpoint
-                                 withVersion:ServiceRemoteWordPressComRESTApiVersion_1_1];
+                                 withVersion:WordPressComRESTAPIVersion_1_1];
 
     NSDictionary *parameters = @{@"context": @"edit"};
     OCMStub([api get:[OCMArg isEqual:url]
@@ -111,7 +111,7 @@ static NSTimeInterval const TestExpectationTimeout = 5;
 
     NSString *endpoint = [NSString stringWithFormat:@"sites/%@/post-formats", blog.blogID];
     NSString *url = [service pathForEndpoint:endpoint
-                                 withVersion:ServiceRemoteWordPressComRESTApiVersion_1_1];
+                                 withVersion:WordPressComRESTAPIVersion_1_1];
 
     OCMStub([api get:[OCMArg isEqual:url]
           parameters:[OCMArg isNil]

@@ -6,7 +6,7 @@ struct MockServiceRequest: ServiceRequest {
         return "localhost/path/"
     }
 
-    var apiVersion: ServiceRemoteWordPressComRESTApiVersion {
+    var apiVersion: WordPressComRESTAPIVersion {
         return ._1_2
     }
 }

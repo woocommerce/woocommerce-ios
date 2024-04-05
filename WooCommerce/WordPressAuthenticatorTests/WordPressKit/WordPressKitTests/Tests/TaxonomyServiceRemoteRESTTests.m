@@ -36,7 +36,7 @@
 {
     NSString *endpoint = [NSString stringWithFormat:@"sites/%@/%@?context=edit", self.service.siteID, taxonomyTypeIdentifier];
     NSString *url = [self.service pathForEndpoint:endpoint
-                                      withVersion:ServiceRemoteWordPressComRESTApiVersion_1_1];
+                                      withVersion:WordPressComRESTAPIVersion_1_1];
     return url;
 }
 
@@ -50,7 +50,7 @@
 
     NSString *endpoint = [NSString stringWithFormat:@"sites/%@/%@/new?context=edit", self.service.siteID, @"categories"];
     NSString *url = [self.service pathForEndpoint:endpoint
-                                      withVersion:ServiceRemoteWordPressComRESTApiVersion_1_1];
+                                      withVersion:WordPressComRESTAPIVersion_1_1];
 
     BOOL (^parametersCheckBlock)(id obj) = ^BOOL(NSDictionary *parameters) {
         return ([parameters isKindOfClass:[NSDictionary class]] && [[parameters objectForKey:@"name"] isEqualToString:category.name]);
@@ -210,7 +210,7 @@
 
     NSString *endpoint = [NSString stringWithFormat:@"sites/%@/%@/new?context=edit", self.service.siteID, @"tags"];
     NSString *url = [self.service pathForEndpoint:endpoint
-                                      withVersion:ServiceRemoteWordPressComRESTApiVersion_1_1];
+                                      withVersion:WordPressComRESTAPIVersion_1_1];
     
     BOOL (^parametersCheckBlock)(id obj) = ^BOOL(NSDictionary *parameters) {
         return ([parameters isKindOfClass:[NSDictionary class]] && [[parameters objectForKey:@"name"] isEqualToString:tag.name]);

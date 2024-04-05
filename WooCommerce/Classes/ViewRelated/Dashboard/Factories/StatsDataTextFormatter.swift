@@ -24,14 +24,6 @@ struct StatsDataTextFormatter {
         }
     }
 
-    /// Creates the text to display for the total revenue delta.
-    ///
-    static func createTotalRevenueDelta(from previousPeriod: OrderStatsV4?, to currentPeriod: OrderStatsV4?) -> DeltaPercentage {
-        let previousRevenue = totalRevenue(at: nil, orderStats: previousPeriod)
-        let currentRevenue = totalRevenue(at: nil, orderStats: currentPeriod)
-        return createDeltaPercentage(from: previousRevenue, to: currentRevenue)
-    }
-
     /// Creates the text to display for the net revenue.
     ///
     static func createNetRevenueText(orderStats: OrderStatsV4?,
@@ -47,14 +39,6 @@ struct StatsDataTextFormatter {
         return currencyFormatter.formatAmount(revenue, with: currencyCode, numberOfDecimals: numberOfDecimals) ?? String()
     }
 
-    /// Creates the text to display for the net revenue delta.
-    ///
-    static func createNetRevenueDelta(from previousPeriod: OrderStatsV4?, to currentPeriod: OrderStatsV4?) -> DeltaPercentage {
-        let previousRevenue = previousPeriod?.totals.netRevenue
-        let currentRevenue = currentPeriod?.totals.netRevenue
-        return createDeltaPercentage(from: previousRevenue, to: currentRevenue)
-    }
-
     // MARK: Orders Stats
 
     /// Creates the text to display for the order count.
@@ -65,14 +49,6 @@ struct StatsDataTextFormatter {
         } else {
             return Constants.placeholderText
         }
-    }
-
-    /// Creates the text to display for the order count delta.
-    ///
-    static func createOrderCountDelta(from previousPeriod: OrderStatsV4?, to currentPeriod: OrderStatsV4?) -> DeltaPercentage {
-        let previousCount = orderCount(at: nil, orderStats: previousPeriod)
-        let currentCount = orderCount(at: nil, orderStats: currentPeriod)
-        return createDeltaPercentage(from: previousCount, to: currentCount)
     }
 
     /// Creates the text to display for the average order value.
@@ -88,14 +64,6 @@ struct StatsDataTextFormatter {
         } else {
             return Constants.placeholderText
         }
-    }
-
-    /// Creates the text to display for the average order value delta.
-    ///
-    static func createAverageOrderValueDelta(from previousPeriod: OrderStatsV4?, to currentPeriod: OrderStatsV4?) -> DeltaPercentage {
-        let previousAverage = averageOrderValue(orderStats: previousPeriod)
-        let currentAverage = averageOrderValue(orderStats: currentPeriod)
-        return createDeltaPercentage(from: previousAverage, to: currentAverage)
     }
 
     // MARK: Views and Visitors Stats
@@ -164,17 +132,6 @@ struct StatsDataTextFormatter {
         return Double(orderStats.totals.totalItemsSold).humanReadableString()
     }
 
-    /// Creates the text to display for the orders item sold delta.
-    ///
-    static func createOrderItemsSoldDelta(from previousPeriod: OrderStatsV4?, to currentPeriod: OrderStatsV4?) -> DeltaPercentage {
-        guard let previousPeriod, let currentPeriod else {
-            return DeltaPercentage(value: 0, formatter: deltaNumberFormatter) // Missing data: 0% change
-        }
-        let previousItemsSold = Double(previousPeriod.totals.totalItemsSold)
-        let currentItemsSold = Double(currentPeriod.totals.totalItemsSold)
-        return createDeltaPercentage(from: previousItemsSold, to: currentItemsSold)
-    }
-
     // MARK: Bundles Stats
 
     /// Creates the text to display for bundles sold value.
@@ -186,21 +143,47 @@ struct StatsDataTextFormatter {
         return Double(bundleStats.totals.totalItemsSold).humanReadableString()
     }
 
-    /// Creates the text to display for the bundles sold delta.
+    // MARK: Gift Card Stats
+
+    /// Creates the text to display for gift cards used value.
     ///
-    static func createBundlesSoldDelta(from previousPeriod: ProductBundleStats?, to currentPeriod: ProductBundleStats?) -> DeltaPercentage {
-        guard let previousPeriod, let currentPeriod else {
-            return DeltaPercentage(value: 0, formatter: deltaNumberFormatter) // Missing data: 0% change
+    static func createGiftCardsUsedText(giftCardStats: GiftCardStats?) -> String {
+        guard let giftCardStats else {
+            return Constants.placeholderText
         }
-        let previousItemsSold = Double(previousPeriod.totals.totalItemsSold)
-        let currentItemsSold = Double(currentPeriod.totals.totalItemsSold)
-        return createDeltaPercentage(from: previousItemsSold, to: currentItemsSold)
+        return Double(giftCardStats.totals.giftCardsCount).humanReadableString()
+    }
+
+    /// Creates the text to display for gift cards net amount value.
+    ///
+    static func createGiftCardsNetAmountText(giftCardStats: GiftCardStats?,
+                                             currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
+                                             currencyCode: String = ServiceLocator.currencySettings.currencyCode.rawValue,
+                                             numberOfFractionDigits: Int = ServiceLocator.currencySettings.fractionDigits) -> String {
+        guard let giftCardStats else {
+            return Constants.placeholderText
+        }
+        // If net amount is an integer, no decimal points are shown.
+        let netAmount = giftCardStats.totals.netAmount
+        let numberOfDecimals: Int? = netAmount.rounded(.plain, scale: numberOfFractionDigits).isInteger ? 0 : nil
+        return currencyFormatter.formatAmount(netAmount, with: currencyCode, numberOfDecimals: numberOfDecimals) ?? String()
     }
 }
 
 extension StatsDataTextFormatter {
 
     // MARK: Delta Calculations
+
+    static func createDelta<Stats: WCAnalyticsStats>(for totalData: Stats.Totals.TotalData,
+                                                     from previousPeriod: Stats?,
+                                                     to currentPeriod: Stats?) -> DeltaPercentage {
+        guard let previousPeriod, let currentPeriod else {
+            return DeltaPercentage(value: 0, formatter: deltaNumberFormatter) // Missing data: 0% change
+        }
+        let previousTotal = previousPeriod.totals.getDoubleValue(for: totalData)
+        let currentTotal = currentPeriod.totals.getDoubleValue(for: totalData)
+        return createDeltaPercentage(from: previousTotal, to: currentTotal)
+    }
 
     /// Creates the `DeltaPercentage` for the percent change from the previous `Decimal` value to the current `Decimal` value
     ///
@@ -258,7 +241,7 @@ private extension StatsDataTextFormatter {
     /// Retrieves the order count for the provided order stats and, optionally, a specific interval.
     ///
     static func orderCount(at selectedIndex: Int?, orderStats: OrderStatsV4?) -> Double? {
-        let orderStatsIntervals = StatsIntervalDataParser.sortOrderStatsIntervals(from: orderStats)
+        let orderStatsIntervals = StatsIntervalDataParser.sortStatsIntervals(from: orderStats)
         if let selectedIndex, selectedIndex < orderStatsIntervals.count {
             let orderStats = orderStatsIntervals[selectedIndex]
             return Double(orderStats.subtotals.totalOrders)
@@ -282,7 +265,7 @@ private extension StatsDataTextFormatter {
     /// Retrieves the total revenue from the provided order stats and, optionally, a specific interval.
     ///
     static func totalRevenue(at selectedIndex: Int?, orderStats: OrderStatsV4?) -> Decimal? {
-        let orderStatsIntervals = StatsIntervalDataParser.sortOrderStatsIntervals(from: orderStats)
+        let orderStatsIntervals = StatsIntervalDataParser.sortStatsIntervals(from: orderStats)
         if let selectedIndex, selectedIndex < orderStatsIntervals.count {
             let orderStats = orderStatsIntervals[selectedIndex]
             return orderStats.subtotals.grossRevenue

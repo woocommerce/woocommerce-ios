@@ -1,17 +1,17 @@
 import Foundation
 import Codegen
 
-/// Represents product bundle stats over a specific period.
-public struct ProductBundleStats: Decodable, Equatable, GeneratedCopiable, GeneratedFakeable, WCAnalyticsStats {
+/// Represents gift card stats over a specific period.
+public struct GiftCardStats: Decodable, Equatable, GeneratedCopiable, GeneratedFakeable, WCAnalyticsStats {
     public let siteID: Int64
     public let granularity: StatsGranularityV4
-    public let totals: ProductBundleStatsTotals
-    public let intervals: [ProductBundleStatsInterval]
+    public let totals: GiftCardStatsTotals
+    public let intervals: [GiftCardStatsInterval]
 
     public init(siteID: Int64,
                 granularity: StatsGranularityV4,
-                totals: ProductBundleStatsTotals,
-                intervals: [ProductBundleStatsInterval]) {
+                totals: GiftCardStatsTotals,
+                intervals: [GiftCardStatsInterval]) {
         self.siteID = siteID
         self.granularity = granularity
         self.totals = totals
@@ -20,16 +20,16 @@ public struct ProductBundleStats: Decodable, Equatable, GeneratedCopiable, Gener
 
     public init(from decoder: Decoder) throws {
         guard let siteID = decoder.userInfo[.siteID] as? Int64 else {
-            throw ProductBundleStatsAPIError.missingSiteID
+            throw GiftCardStatsAPIError.missingSiteID
         }
 
         guard let granularity = decoder.userInfo[.granularity] as? StatsGranularityV4 else {
-            throw ProductBundleStatsAPIError.missingGranularity
+            throw GiftCardStatsAPIError.missingGranularity
         }
 
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        let totals = try container.decode(ProductBundleStatsTotals.self, forKey: .totals)
-        let intervals = try container.decode([ProductBundleStatsInterval].self, forKey: .intervals)
+        let totals = try container.decode(GiftCardStatsTotals.self, forKey: .totals)
+        let intervals = try container.decode([GiftCardStatsInterval].self, forKey: .intervals)
 
         self.init(siteID: siteID,
                   granularity: granularity,
@@ -41,7 +41,7 @@ public struct ProductBundleStats: Decodable, Equatable, GeneratedCopiable, Gener
 
 // MARK: - Constants!
 //
-private extension ProductBundleStats {
+private extension GiftCardStats {
 
     enum CodingKeys: String, CodingKey {
         case totals = "totals"
@@ -51,7 +51,7 @@ private extension ProductBundleStats {
 
 // MARK: - Decoding Errors
 //
-enum ProductBundleStatsAPIError: Error {
+enum GiftCardStatsAPIError: Error {
     case missingSiteID
     case missingGranularity
 }

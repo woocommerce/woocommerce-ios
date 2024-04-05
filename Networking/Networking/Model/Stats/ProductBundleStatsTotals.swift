@@ -36,6 +36,32 @@ public struct ProductBundleStatsTotals: Decodable, Equatable, GeneratedCopiable,
     }
 }
 
+extension ProductBundleStatsTotals: WCAnalyticsStatsTotals {
+    /// Represents a type of product bundles total data
+    public enum TotalData: String {
+        case totalItemsSold
+        case totalBundledItemsSold
+        case netRevenue
+        case totalOrders
+        case totalProducts
+    }
+
+    public func getDoubleValue(for data: TotalData) -> Double {
+        switch data {
+        case .totalItemsSold:
+            return Double(totalItemsSold)
+        case .totalBundledItemsSold:
+            return Double(totalBundledItemsSold)
+        case .netRevenue:
+            return (netRevenue as NSNumber).doubleValue
+        case .totalOrders:
+            return Double(totalOrders)
+        case .totalProducts:
+            return Double(totalProducts)
+        }
+    }
+}
+
 
 // MARK: - Constants!
 //

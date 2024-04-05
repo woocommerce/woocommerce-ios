@@ -535,6 +535,42 @@ extension Networking.FeatureIcon {
         )
     }
 }
+extension Networking.GiftCardStats {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.GiftCardStats {
+        .init(
+            siteID: .fake(),
+            granularity: .fake(),
+            totals: .fake(),
+            intervals: .fake()
+        )
+    }
+}
+extension Networking.GiftCardStatsInterval {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.GiftCardStatsInterval {
+        .init(
+            interval: .fake(),
+            dateStart: .fake(),
+            dateEnd: .fake(),
+            subtotals: .fake()
+        )
+    }
+}
+extension Networking.GiftCardStatsTotals {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.GiftCardStatsTotals {
+        .init(
+            giftCardsCount: .fake(),
+            usedAmount: .fake(),
+            refundedAmount: .fake(),
+            netAmount: .fake()
+        )
+    }
+}
 extension Networking.InboxAction {
     /// Returns a "ready to use" type filled with fake values.
     ///

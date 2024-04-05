@@ -738,6 +738,69 @@ extension Networking.FeatureIcon {
     }
 }
 
+extension Networking.GiftCardStats {
+    public func copy(
+        siteID: CopiableProp<Int64> = .copy,
+        granularity: CopiableProp<StatsGranularityV4> = .copy,
+        totals: CopiableProp<GiftCardStatsTotals> = .copy,
+        intervals: CopiableProp<[GiftCardStatsInterval]> = .copy
+    ) -> Networking.GiftCardStats {
+        let siteID = siteID ?? self.siteID
+        let granularity = granularity ?? self.granularity
+        let totals = totals ?? self.totals
+        let intervals = intervals ?? self.intervals
+
+        return Networking.GiftCardStats(
+            siteID: siteID,
+            granularity: granularity,
+            totals: totals,
+            intervals: intervals
+        )
+    }
+}
+
+extension Networking.GiftCardStatsInterval {
+    public func copy(
+        interval: CopiableProp<String> = .copy,
+        dateStart: CopiableProp<String> = .copy,
+        dateEnd: CopiableProp<String> = .copy,
+        subtotals: CopiableProp<GiftCardStatsTotals> = .copy
+    ) -> Networking.GiftCardStatsInterval {
+        let interval = interval ?? self.interval
+        let dateStart = dateStart ?? self.dateStart
+        let dateEnd = dateEnd ?? self.dateEnd
+        let subtotals = subtotals ?? self.subtotals
+
+        return Networking.GiftCardStatsInterval(
+            interval: interval,
+            dateStart: dateStart,
+            dateEnd: dateEnd,
+            subtotals: subtotals
+        )
+    }
+}
+
+extension Networking.GiftCardStatsTotals {
+    public func copy(
+        giftCardsCount: CopiableProp<Int> = .copy,
+        usedAmount: CopiableProp<Decimal> = .copy,
+        refundedAmount: CopiableProp<Decimal> = .copy,
+        netAmount: CopiableProp<Decimal> = .copy
+    ) -> Networking.GiftCardStatsTotals {
+        let giftCardsCount = giftCardsCount ?? self.giftCardsCount
+        let usedAmount = usedAmount ?? self.usedAmount
+        let refundedAmount = refundedAmount ?? self.refundedAmount
+        let netAmount = netAmount ?? self.netAmount
+
+        return Networking.GiftCardStatsTotals(
+            giftCardsCount: giftCardsCount,
+            usedAmount: usedAmount,
+            refundedAmount: refundedAmount,
+            netAmount: netAmount
+        )
+    }
+}
+
 extension Networking.InboxAction {
     public func copy(
         id: CopiableProp<Int64> = .copy,

@@ -88,12 +88,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .splitViewInProductsTab:
             return true
-        case .noMoreWooExpressSignup:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
         case .customersInHubMenu:
             return true
-        case .expandedAnalyticsHub:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
         case .migrateSimplePaymentsToOrderCreation:
             return (buildConfig == .localDeveloper || buildConfig == .alpha) && !isUITesting
         case .dynamicDashboard:

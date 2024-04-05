@@ -178,6 +178,11 @@ open class NUXButtonViewController: UIViewController {
         bottomButtonConfig = buttonConfigFor(socialService: socialService, onTap: callback)
     }
 
+    func setupTertiaryButton(attributedTitle: NSAttributedString, isPrimary: Bool = false, accessibilityIdentifier: String? = nil, onTap callback: @escaping CallBackType) {
+        tertiaryButton?.isHidden = false
+        tertiaryButtonConfig = NUXButtonConfig(attributedTitle: attributedTitle, isPrimary: isPrimary, accessibilityIdentifier: accessibilityIdentifier, callback: callback)
+    }
+
     func setupTertiaryButton(title: String, isPrimary: Bool = false, accessibilityIdentifier: String? = nil, onTap callback: @escaping CallBackType) {
         tertiaryButton?.isHidden = false
         tertiaryButtonConfig = NUXButtonConfig(title: title, isPrimary: isPrimary, accessibilityIdentifier: accessibilityIdentifier, callback: callback)

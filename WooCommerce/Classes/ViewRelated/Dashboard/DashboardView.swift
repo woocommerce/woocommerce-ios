@@ -8,6 +8,8 @@ struct DashboardView: View {
     @ObservedObject private var viewModel: DashboardViewModel
     @State private var currentSite: Site?
     @State private var dismissedJetpackBenefitBanner = false
+    @State private var showingSupportForm = false
+    @State private var troubleShootURL: URL?
 
     /// Set externally in the hosting controller.
     var onboardingTaskTapped: ((Site, StoreOnboardingTask) -> Void)?
@@ -42,6 +44,14 @@ struct DashboardView: View {
             dashboardViewModel: viewModel,
             usageTracksEventEmitter: usageTracksEventEmitter
         )
+
+        storeStatsAndTopPerformersViewController.onDataReload = {
+            viewModel.statSyncingError = nil
+        }
+
+        storeStatsAndTopPerformersViewController.displaySyncingError = { error in
+            viewModel.statSyncingError = error
+        }
     }
 
     var body: some View {
@@ -52,6 +62,11 @@ struct DashboardView: View {
                 .padding([.horizontal, .bottom], Layout.padding)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .background(Color(.listForeground(modal: false)))
+
+            // Error banner
+            if let error = viewModel.statSyncingError {
+                errorTopBanner(for: error)
+            }
 
             // Card views
             dashboardCards
@@ -81,6 +96,19 @@ struct DashboardView: View {
             jetpackBenefitBanner
                 .renderedIf(shouldShowJetpackBenefitsBanner)
         }
+        .sheet(isPresented: $showingSupportForm) {
+            NavigationStack {
+                SupportForm(isPresented: .constant(true), viewModel: .init())
+                    .toolbar {
+                        ToolbarItem(placement: .confirmationAction) {
+                            Button(Localization.done) {
+                                showingSupportForm = false
+                            }
+                        }
+                    }
+            }
+        }
+        .safariSheet(url: $troubleShootURL)
     }
 }
 
@@ -127,6 +155,15 @@ private extension DashboardView {
             dismissedJetpackBenefitBanner = true
         })
     }
+
+    func errorTopBanner(for error: Error) -> some View {
+        ErrorTopBanner(error: error, expandedStateChangeHandler: {}, onTroubleshootButtonPressed: {
+            troubleShootURL = ErrorTopBannerFactory.troubleshootUrl(for: error)
+        }, onContactSupportButtonPressed: {
+            showingSupportForm = true
+        })
+        .background(Color(.listForeground(modal: false)))
+    }
 }
 
 // MARK: Subtypes
@@ -139,6 +176,11 @@ private extension DashboardView {
             "dashboardView.title",
             value: "My store",
             comment: "Title of the bottom tab item that presents the user's store dashboard, and default title for the store dashboard"
+        )
+        static let done = NSLocalizedString(
+            "dashboardView.supportForm.done",
+            value: "Done",
+            comment: "Button to dismiss the support form from the Blaze confirm payment view screen."
         )
     }
 }

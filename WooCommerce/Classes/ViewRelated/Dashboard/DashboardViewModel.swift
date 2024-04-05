@@ -35,6 +35,7 @@ final class DashboardViewModel: ObservableObject {
     @Published private(set) var dashboardCards: [DashboardCard] = [.stats, .topPerformers]
 
     @Published private(set) var jetpackBannerVisibleFromAppSettings = false
+    @Published var statSyncingError: Error?
 
     let siteID: Int64
     private let stores: StoresManager

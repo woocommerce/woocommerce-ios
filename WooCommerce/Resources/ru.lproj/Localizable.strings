@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-03-26 13:54:04+0000 */
+/* Translation-Revision-Date: 2024-04-03 16:54:04+0000 */
 /* Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ru */
@@ -303,6 +303,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Step 3 of the 'How it works' list, instructing the merchant to present the phone to the shopper */
 "3. Present your iPhone to the customer." = "3. Покажите покупателю ваш iPhone.";
+
+/* Tutorial steps on the application password tutorial screen */
+"3. When the connection is complete, you will be logged in to your store." = "3. После установки подключения вы автоматически выполните вход в свой магазин.";
 
 /* Estimated setup time text shown on the Woo payments setup instructions screen. */
 "4-6 minutes" = "4–6 минут";
@@ -1221,6 +1224,12 @@ which should be translated separately and considered part of this sentence. */
 /* Title for Bundled Products row in the product form screen. */
 "Bundled products" = "Товары в комплекте";
 
+/* Title for the product bundles card on the analytics hub screen. */
+"Bundles" = "Комплекты";
+
+/* Title for the bundles sold column on the product bundles card on the analytics hub screen. */
+"Bundles Sold" = "Продано комплектов";
+
 /* Country option for a site address. */
 "Burkina Faso" = "Буркина-Фасо";
 
@@ -1886,9 +1895,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Name of the step to connect the store to Jetpack */
 "Connecting your store" = "Подключение вашего магазина";
-
-/* Screen title for the connectivity tool */
-"Connectivity Test" = "Проверка подключения";
 
 /* Contact Customer action in Shipping Label Address Validation. */
 "Contact Customer" = "Связаться с клиентом";
@@ -3287,6 +3293,9 @@ which should be translated separately and considered part of this sentence. */
 /* Label asking users to follow the on-screen Tap to Pay on iPhone instructions. Presented when a payment is going to be collected using Tap to Pay on iPhone, which results in an Apple-provided screen being shown with instructions for payment. */
 "Follow the on-screen instructions to pay" = "Для оплаты следуйте инструкциям на экране";
 
+/* Tutorial steps on the application password tutorial screen */
+"Follow these steps to connect the Woo app directly to your store using an application password.\n\n1. First, log in using your site credentials.\n\n2. When prompted, approve the connection by tapping the confirmation button." = "Следуйте этой процедуре, чтобы напрямую подключить приложение Woo к вашему магазину при помощи пароля приложения.\n\n1. Сначала войдите с учётными данными вашего сайта.\n\n2. Когда появится запрос, подтвердите подключение, нажав кнопку подтверждения.";
+
 /* User role badge */
 "Follower" = "Читатель";
 
@@ -3774,7 +3783,10 @@ which should be translated separately and considered part of this sentence. */
 "If you continue with Apple or Google and don't already have a WordPress.com account, you are creating an account and you agree to our _Terms of Service_." = "Если у вас нет учетной записи WordPress.com и вы продолжаете работу в учетной записи Apple или Google, вы принимаете _Условия предоставления услуг_ и для вас создается учетная запись.";
 
 /* Text to contact support in the application password tutorial screen */
-"If you encounter any problem, contact us and we will happily assist you!" = "Обращайтесь к нам с любой возникшей проблемой и мы будем рады вам помочь!";
+"If you run into any issues, please contact our support team." = "Если у вас возникают проблемы, обратитесь в нашу службу поддержки.";
+
+/* Info message when there are no connection issues in the connectivity tool screen */
+"If your data still isn’t loading, contact our support team for assistance." = "Если ваши данные по-прежнему не загружаются, обратитесь за помощью в службу поддержки.";
 
 /* Heading for the details pane showing the contactless limit on About Tap to Pay */
 "Important information" = "Важная информация";
@@ -4885,6 +4897,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the error screen when there was a network error checking In-Person Payments requirements. */
 "No connection" = "Нет подключения";
 
+/* Title for when there are no connection issues in the connectivity tool screen */
+"No connection issues" = "Проблем с подключением нет";
+
 /* Error message when there is no connection to the Internet. */
 "No connection to the Internet - please connect to the Internet and try again" = "Отсутствует подключение к Интернету. Подключитесь к Интернету и повторите попытку";
 
@@ -5090,23 +5105,8 @@ which should be translated separately and considered part of this sentence. */
 /* Content of the banner notice on the Payment Method screen when user does not have permission to change the payment method. %1$@ is a placeholder for the store owner's name. %2$@ is a placeholder for the store owner's username. */
 "Only the site owner can manage the shipping label payment methods. Please contact %1$@ (%2$@) to manage payment methods." = "Только владелец сайта может управлять способами оплаты транспортных этикеток. Чтобы управлять способами оплаты, свяжитесь с %1$@ %2$@.";
 
-/* Message when we can't reach WPCom in the recovery tool */
-"Oops! It seems we can't connect to WordPress.com at the moment.\n\nBut don't worry, our support team is here to help. Contact us and we will happily assist you." = "Ой! Похоже, в данный момент мы не можем подключиться к WordPress.com.\n\nНо не волнуйтесь: наши инженеры поддержки вам помогут. Свяжитесь с нами, и мы будем рады помочь.";
-
-/* Message when we there is a decoding error in the recovery tool */
-"Oops! It seems we can't work properly with your site's response.\n\nBut don't worry, our support team is here to help. Contact us and we will happily assist you." = "Ой! Похоже, мы не можем правильно работать с ответом вашего сайта.\n\nНо не волнуйтесь: наши инженеры поддержки вам помогут. Свяжитесь с нами, и мы будем рады помочь.";
-
-/* Message when we there is a jetpack error in the recovery tool */
-"Oops! There seems to be a problem with your jetpack connection.\n\nBut don't worry, our support team is here to help. Contact us and we will happily assist you." = "Ой! Похоже, возникла проблема с вашим подключением к Jetpack.\n\nНо не волнуйтесь: наши инженеры поддержки вам помогут. Свяжитесь с нами, и мы будем рады помочь.";
-
-/* Message when we there is a generic error in the recovery tool */
-"Oops! There seems to be a problem with your site.\n\nContact your hosting provider for further assistance." = "Ой! Похоже, с вашим сайтом возникла проблема.\n\nЧтобы решить эту проблему, обратитесь к своему хостинг-провайдеру.";
-
 /* Title of the alert when the store cannot be created in the store creation flow. */
 "Oops! We've hit a snag" = "Ой. У нас возникла проблема";
-
-/* Message when we there is a timeout error in the recovery tool */
-"Oops! Your site seems to be taking too long to respond.\n\nContact your hosting provider for further assistance." = "Ой! Похоже, ваш сайт отвечает слишком долго.\n\nЧтобы решить эту проблему, обратитесь к своему хостинг-провайдеру.";
 
 /* Message of the alert when the site cannot be launched from store onboarding > launch store screen. */
 "Oops, some unexpected errors happened." = "Произошли неожиданные ошибки.";
@@ -5653,6 +5653,9 @@ which should be translated separately and considered part of this sentence. */
    VoiceOver Accessibility label for the instruction */
 "Please wait" = "Подождите немного";
 
+/* Subtitle on the connectivity tool screen */
+"Please wait while we attempt to identify your connection issue." = "Подождите. Нам необходимо определить вашу проблему с подключением.";
+
 /* Message on the Jetpack Install Progress screen. The %1$@ is the site address. */
 "Please wait while we connect your site %1$@ with Jetpack." = "Подождите, мы подключаем сайт %1$@ к Jetpack.";
 
@@ -6063,7 +6066,7 @@ which should be translated separately and considered part of this sentence. */
 "Reach our happiness engineers who can help answer tough questions" = "Обратитесь к инженерам поддержки за помощью при решении сложных вопросов";
 
 /* Action button title for a generic error on the connectivity tool */
-"Read More" = "Читать далее";
+"Read more" = "Читать далее";
 
 /* Text for the button to navigate to troubleshooting tips from the store picker error screen */
 "Read our Troubleshooting Tips" = "Просмотрите советы по устранению неполадок";
@@ -6101,6 +6104,9 @@ which should be translated separately and considered part of this sentence. */
 /* Button to reload plugin data after updating a Card Present Payments extension plugin
    Button to reload plugin data after updating a card present payments plugin settings */
 "Refresh After Updating" = "Перезагрузить после обновления";
+
+/* The info of the time out error banner */
+"Refresh the screen to try again, or troubleshoot the connection. Contact support if your issue persists." = "Перезагрузите экран и попробуйте ещё раз или попытайтесь устранить неполадку с подключением. Если проблема не устранена, обратитесь в службу поддержки.";
 
 /* The title of the button to confirm the refund. */
 "Refund" = "Возврат";
@@ -6343,6 +6349,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Action button to check site's connection again. */
 "Retry Connection" = "Повторить попытку подключения";
+
+/* Retry connection button in the connectivity tool screen */
+"Retry connection" = "Повторить попытку подключения";
 
 /* Title of the secondary button displayed when activating the purchased plan fails, so the merchant can exit the flow. */
 "Return to My Store" = "Вернуться в мой магазин";
@@ -7927,6 +7936,12 @@ which should be translated separately and considered part of this sentence. */
 /* The info on the Error Loading Data banner when there was a Jetpack connection error. */
 "There is a problem with your store's Jetpack connection. Please reconnect Jetpack or reach out to us and we'll be happy to assist you!" = "Возникла проблема с подключением Jetpack для вашего магазина. Переподключите Jetpack или свяжитесь с нами. Мы будем рады помочь!";
 
+/* Message when we there is a jetpack error in the recovery tool */
+"There is problem with your jetpack connection.\n\nRead more about it or contact our support team and we will happily assist you." = "Возникла проблема с подключением к Jetpack\n\nУзнайте подробнее, в чём дело, или обратитесь в службу поддержки, и мы будем рады вам помочь.";
+
+/* Message when we there is a generic error in the recovery tool */
+"There seems to be a problem with your site.\n\nPlease contact your hosting provider for further assistance." = "Похоже, с вашим сайтом возникла проблема.\n\nЧтобы решить эту проблему, обратитесь к своему хостинг-провайдеру.";
+
 /* Error message informing the user that there was a problem blocking posts from a site from their reader. */
 "There was a problem blocking posts from the specified site." = "При блокировке записей на указанном веб-сайте произошла ошибка.";
 
@@ -8031,6 +8046,9 @@ which should be translated separately and considered part of this sentence. */
 /* Message when a card requires a PIN code and we have no means of entering such a code. */
 "This card requires a PIN code and thus cannot be processed. Try another means of payment" = "Для этой карты требуется PIN-код, поэтому её нельзя обработать. Попробуйте другое средство платежа";
 
+/* Reason for why the user could not login tin the application password tutorial screen */
+"This could be because your store has some extra security steps in place." = "Возможно, это потому, что в вашем магазине действуют дополнительные меры безопасности.";
+
 /* The info on the Error Loading Data banner when there was a decoding error. */
 "This could be related to a conflict with a plugin. Please try again later or reach out to us and we'll be happy to assist you!" = "Возможно, дело в конфликте с плагином. Повторите попытку позже или свяжитесь с нами. Мы будем рады помочь!";
 
@@ -8042,9 +8060,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Generic reason for why the user could not login tin the application password tutorial screen */
 "This is because we got an unexpected response from your site." = "Это потому, что от вашего сайта был получен непредвиденный ответ.";
-
-/* Reason for why the user could not login tin the application password tutorial screen */
-"This is likely because your store has some extra security steps in place." = "Возможно, это потому, что в вашем магазине действуют дополнительные меры безопасности.";
 
 /* Footer text in Product Slug screen */
 "This is the URL-friendly version of the product title" = "Это сокращенная версия названия продукта для включения в URL-адрес";
@@ -8262,6 +8277,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* The title of the button to get troubleshooting information in the Error Loading Data banner */
 "Troubleshoot" = "Решение проблемы";
+
+/* Screen title for the connectivity tool */
+"Troubleshoot Connection" = "Устранение неполадок при подключении";
 
 /* Title for the section to contact support on the subscriptions view. Uppercased */
 "Troubleshooting" = "Устранение неполадок";
@@ -8492,6 +8510,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Load Product Attributes Action Failed */
 "Unable to load product attributes" = "Не удалось загрузить атрибуты продукта";
+
+/* Text displayed when there is an error loading product bundles stats data. */
+"Unable to load product bundle analytics" = "Не удалось загрузить данные анализа комплектов товаров";
+
+/* Text displayed when there is an error loading product bundles sold stats data. */
+"Unable to load product bundles sold analytics" = "Не удалось загрузить данные анализа проданных комплектов товаров";
 
 /* Text displayed when there is an error loading items sold stats data. */
 "Unable to load product items sold analytics" = "Не удалось загрузить данные анализа проданных товаров";
@@ -9029,8 +9053,14 @@ which should be translated separately and considered part of this sentence. */
 /* Content of the banner notice in the add-ons view */
 "We are working on making it easier for you to see product add-ons from your device! For now, you’ll be able to see the add-ons for your orders. You can create and edit these add-ons in your web dashboard." = "Мы стараемся упростить процедуру просмотра дополнений к товару с вашего устройства. В настоящее время вы можете просматривать дополнения для своих заказов. Такие дополнения можно создавать и редактировать в веб-консоли.";
 
+/* Message when we there is a decoding error in the recovery tool */
+"We can't work properly with your site's response.\n\nRead more about it or contact our support team and we will happily assist you." = "Нам не удаётся правильно работать с ответом вашего сайта.\n\nУзнайте подробнее, в чём дело, или обратитесь в службу поддержки, и мы будем рады вам помочь.";
+
 /* Error message displayed when there is no store matching the site URL that is associated with the user's account */
 "We cannot load the store at the moment." = "Не удаётся загрузить магазин в данный момент.";
+
+/* Message when we can't reach WPCom in the recovery tool */
+"We can’t connect to WordPress.com right now.\n\nTry again in a few minutes, or contact our support team and we will happily assist you." = "Не удалось подключиться к WordPress.com.\n\nПовторите попытку через несколько минут или обратитесь в службу поддержки, и мы будем рады вам помочь.";
 
 /* Title when we can't show stats because user is on a deprecated WC Version */
 "We can’t display your store’s analytics" = "Невозможно отображать аналитику вашего магазина";
@@ -9051,14 +9081,14 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the default store picker error screen */
 "We couldn't load your site" = "Не удалось загрузить сайт";
 
-/* Title for the application password tutorial screen */
-"We couldn't log in into your site! 😭" = "Не удалось войти на сайт! 😭";
-
 /* A message displayed through a bottom notice letting the user know that the login from the app link failed */
 "We couldn't process your app login request" = "Не удалось обработать запрос на вход в приложение";
 
 /* Title for the empty state on the Tax Rates selector screen */
 "We couldn’t find any tax rates" = "Налоговые ставки не найдены";
+
+/* Title for the application password tutorial screen */
+"We couldn’t log in into your store" = "Не удалось войти в ваш магазин";
 
 /* Error message. Presented to users when updating the card reader software fails */
 "We couldn’t update your reader’s software" = "Не удалось обновить ПО вашего платёжного терминала";
@@ -9553,6 +9583,9 @@ which should be translated separately and considered part of this sentence. */
 /* The title of the Error Loading Data banner when there is a Jetpack connection error */
 "Your site is taking a long time to respond" = "Ваш сайт отвечает долго";
 
+/* Message when we there is a timeout error in the recovery tool */
+"Your site is taking too long to respond.\n\nPlease contact your hosting provider for further assistance." = "Ваш сайт отвечает слишком долго.\n\nЧтобы решить эту проблему, обратитесь к своему хостинг-провайдеру.";
+
 /* Title on the banner when the site's WooExpress plan has expired */
 "Your site plan has ended." = "Срок действия тарифного плана для сайта истёк.";
 
@@ -9629,6 +9662,12 @@ which should be translated separately and considered part of this sentence. */
 /* Dismiss button on the alert asking to add an image for the Blaze campaign */
 "addProductWithAIActionSheet.manualOptionsTitle" = "Выбрать тип товара";
 
+/* Title for the product bundles analytics report linked in the Analytics Hub */
+"analyticsHub.bundlesCard.reportTitle" = "Отчёт о комплектах товаров";
+
+/* Name for the Product Bundles analytics card in the Customize Analytics screen */
+"analyticsHub.customize.bundles" = "Комплекты";
+
 /* Name for the Orders analytics card in the Customize Analytics screen */
 "analyticsHub.customize.orders" = "Заказы";
 
@@ -9640,6 +9679,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Name for the Sessions analytics card in the Customize Analytics screen */
 "analyticsHub.customize.sessions" = "Сессии";
+
+/* Button title to explore an extension that isn't installed */
+"analyticsHub.customizeAnalytics.exploreButton" = "Просмотр";
 
 /* Button to save changes on the Customize Analytics screen */
 "analyticsHub.customizeAnalytics.saveButton" = "Сохранить";
@@ -9680,6 +9722,15 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the revenue analytics report linked in the Analytics Hub */
 "analyticsHub.revenueCard.reportTitle" = "Отчёт о доходах";
 
+/* Title for sessions section in the Analytics Hub */
+"analyticsHub.sessionsCard.Title" = "СЕАНСЫ";
+
+/* Description when session data is unavailable in the Analytics Hub */
+"analyticsHub.sessionsCard.dataUnavailable.Description" = "Аналитические данные сеанса основываются на количестве уникальных посетителей, которое невозможно определить для произвольных временных промежутков.";
+
+/* Message when session data is unavailable in the Analytics Hub */
+"analyticsHub.sessionsCard.dataUnavailable.Message" = "Данные сеанса недоступны";
+
 /* Button to dismiss the alert asking for confirmation to switch store. */
 "appCoordinator.storeReadyAlert.cancelButton" = "Отмена";
 
@@ -9697,6 +9748,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Widget title, displayed when selecting which widget to add */
 "appLinkWidget.displayName" = "Иконка";
+
+/* Title for the link for site creation guide. */
+"authenticationConstants.siteCreationGuideButtonTitle" = "Запускаете новый магазин?";
 
 /* Button to send a message to a customer via Telegram */
 "billingInfoViewController.telegram" = "Отправить сообщение Telegram";
@@ -10513,6 +10567,9 @@ which should be translated separately and considered part of this sentence. */
 /* Label for the customer's username in the Customer Details screen. */
 "customerDetailView.usernameLabel" = "Имя пользователя";
 
+/* Title when there are no customers in the search results in the Customers list screen. */
+"customerList.emptySearchTitle" = "Клиенты не найдены";
+
 /* Message when there are no customers to show in the Customers list screen. */
 "customerList.emptyStateMessage" = "Создайте заказ, чтобы начать сбор аналитики по клиентам";
 
@@ -10533,6 +10590,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label for a customer with no name in the Customers list screen. */
 "customersList.guestLabel" = "Гость";
+
+/* Placeholder in the search bar in the Customers list screen. */
+"customersList.searchPlaceholder" = "Поиск клиентов";
 
 /* Title for Customers list screen */
 "customersList.title" = "Клиенты";
@@ -11415,6 +11475,9 @@ which should be translated separately and considered part of this sentence. */
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Products' tab. */
 "woocommerce, woo, products, categories, new product, search products" = "woocommerce, woo, товары, рубрики, новый товар, поиск товаров";
 
+/* Title for the link for site creation guide. */
+"wordPressAuthenticatorDisplayStrings.default.siteCreationGuideButtonTitle" = "Хотите создать новый сайт?";
+
 /* Error message that describes an unknown error had occured */
 "wordpress-api.error.unknown" = "Произошла ошибка. Повторите попытку позже.";
 
@@ -11475,9 +11538,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Åland Islands" = "Аландские острова";
-
-/* Tutorial steps on the application password tutorial screen */
-"⁃ Tap the continue button at the bottom to login directly into your site.\n\n⁃ Once logged in, approve the connection to give access to the woo app like the in the image below." = "- Нажмите кнопку «Продолжить» ниже, чтобы войти сразу на свой сайт.\n\n- Войдя в систему, одобрите соединение, чтобы разрешить доступ к приложению woo, как показано на изображении ниже.";
 
 /* Title of the local notification to remind the user to purchase a plan. */
 "🌟 Keep your business going!" = "🌟 Поддержите свой бизнес!";

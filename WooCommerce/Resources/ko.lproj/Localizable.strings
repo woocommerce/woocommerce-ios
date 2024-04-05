@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-03-26 09:54:04+0000 */
+/* Translation-Revision-Date: 2024-04-02 09:54:18+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ko_KR */
@@ -303,6 +303,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Step 3 of the 'How it works' list, instructing the merchant to present the phone to the shopper */
 "3. Present your iPhone to the customer." = "3. iPhone을 고객에게 내밉니다.";
+
+/* Tutorial steps on the application password tutorial screen */
+"3. When the connection is complete, you will be logged in to your store." = "3. 연결이 완료되면 스토어에 로그인됩니다.";
 
 /* Estimated setup time text shown on the Woo payments setup instructions screen. */
 "4-6 minutes" = "4~6분";
@@ -1221,6 +1224,12 @@ which should be translated separately and considered part of this sentence. */
 /* Title for Bundled Products row in the product form screen. */
 "Bundled products" = "번들 제품";
 
+/* Title for the product bundles card on the analytics hub screen. */
+"Bundles" = "번들";
+
+/* Title for the bundles sold column on the product bundles card on the analytics hub screen. */
+"Bundles Sold" = "판매된 번들";
+
 /* Country option for a site address. */
 "Burkina Faso" = "부르키나파소";
 
@@ -1886,9 +1895,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Name of the step to connect the store to Jetpack */
 "Connecting your store" = "스토어 연결 중";
-
-/* Screen title for the connectivity tool */
-"Connectivity Test" = "연결 테스트";
 
 /* Contact Customer action in Shipping Label Address Validation. */
 "Contact Customer" = "고객에게 문의";
@@ -3287,6 +3293,9 @@ which should be translated separately and considered part of this sentence. */
 /* Label asking users to follow the on-screen Tap to Pay on iPhone instructions. Presented when a payment is going to be collected using Tap to Pay on iPhone, which results in an Apple-provided screen being shown with instructions for payment. */
 "Follow the on-screen instructions to pay" = "화면의 지침에 따라 결제";
 
+/* Tutorial steps on the application password tutorial screen */
+"Follow these steps to connect the Woo app directly to your store using an application password.\n\n1. First, log in using your site credentials.\n\n2. When prompted, approve the connection by tapping the confirmation button." = "애플리케이션 비밀번호를 사용하여 다음과 같은 단계에 따라 Woo 앱을 스토어에 직접 연결하세요.\n\n1. 먼저 사이트 자격 증명을 사용하여 로그인합니다.\n\n2. 메시지가 표시되면 확인 버튼을 눌러 연결을 승인합니다.";
+
 /* User role badge */
 "Follower" = "팔로워";
 
@@ -3774,7 +3783,10 @@ which should be translated separately and considered part of this sentence. */
 "If you continue with Apple or Google and don't already have a WordPress.com account, you are creating an account and you agree to our _Terms of Service_." = "워드프레스닷컴 계정이 없는 경우 Apple 또는 Google을 계속 사용하면 계정이 만들어지고 _서비스 약관_에 동의하는 것으로 간주합니다.";
 
 /* Text to contact support in the application password tutorial screen */
-"If you encounter any problem, contact us and we will happily assist you!" = "문제가 발생하는 경우 문의해 주시면 기꺼이 도와드리겠습니다.";
+"If you run into any issues, please contact our support team." = "문제가 발생하면 지원팀에 문의해 주세요.";
+
+/* Info message when there are no connection issues in the connectivity tool screen */
+"If your data still isn’t loading, contact our support team for assistance." = "데이터가 여전히 로드되고 있으면 지원팀에 도움을 문의하세요.";
 
 /* Heading for the details pane showing the contactless limit on About Tap to Pay */
 "Important information" = "중요 정보";
@@ -4885,6 +4897,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the error screen when there was a network error checking In-Person Payments requirements. */
 "No connection" = "연결 없음";
 
+/* Title for when there are no connection issues in the connectivity tool screen */
+"No connection issues" = "연결 문제 없음";
+
 /* Error message when there is no connection to the Internet. */
 "No connection to the Internet - please connect to the Internet and try again" = "인터넷에 연결되지 않음 - 인터넷에 연결하고 다시 시도하세요.";
 
@@ -5090,23 +5105,8 @@ which should be translated separately and considered part of this sentence. */
 /* Content of the banner notice on the Payment Method screen when user does not have permission to change the payment method. %1$@ is a placeholder for the store owner's name. %2$@ is a placeholder for the store owner's username. */
 "Only the site owner can manage the shipping label payment methods. Please contact %1$@ (%2$@) to manage payment methods." = "사이트 소유자만 배송 레이블 결제 수단을 관리할 수 있습니다. 결제 수단 관리는 %1$@(%2$@)에게 문의하세요.";
 
-/* Message when we can't reach WPCom in the recovery tool */
-"Oops! It seems we can't connect to WordPress.com at the moment.\n\nBut don't worry, our support team is here to help. Contact us and we will happily assist you." = "죄송합니다. 지금은 워드프레스닷컴에 연결할 수 없는 것 같습니다.\n\n걱정하지 마세요. 지원팀에서 도와드리겠습니다. 문의해 주시면 기꺼이 도와드리겠습니다.";
-
-/* Message when we there is a decoding error in the recovery tool */
-"Oops! It seems we can't work properly with your site's response.\n\nBut don't worry, our support team is here to help. Contact us and we will happily assist you." = "죄송합니다. 사이트의 응답이 제대로 작동하지 않는 것 같습니다.\n\n걱정하지 마세요. 지원팀에서 도와드리겠습니다. 문의해 주시면 기꺼이 도와드리겠습니다.";
-
-/* Message when we there is a jetpack error in the recovery tool */
-"Oops! There seems to be a problem with your jetpack connection.\n\nBut don't worry, our support team is here to help. Contact us and we will happily assist you." = "죄송합니다. 젯팩 연결에서 문제가 발생한 것 같습니다.\n\n걱정하지 마세요. 지원팀에서 도와드리겠습니다. 문의해 주시면 기꺼이 도와드리겠습니다.";
-
-/* Message when we there is a generic error in the recovery tool */
-"Oops! There seems to be a problem with your site.\n\nContact your hosting provider for further assistance." = "죄송합니다. 사이트에서 문제가 발생한 것 같습니다.\n\n자세한 내용은 호스팅 공급업체에 문의하세요.";
-
 /* Title of the alert when the store cannot be created in the store creation flow. */
 "Oops! We've hit a snag" = "죄송합니다! 문제가 발생했습니다.";
-
-/* Message when we there is a timeout error in the recovery tool */
-"Oops! Your site seems to be taking too long to respond.\n\nContact your hosting provider for further assistance." = "죄송합니다. 사이트의 응답이 너무 오래 걸리는 것 같습니다.\n\n자세한 내용은 호스팅 공급업체에 문의하세요.";
 
 /* Message of the alert when the site cannot be launched from store onboarding > launch store screen. */
 "Oops, some unexpected errors happened." = "죄송합니다. 예기치 않은 오류가 발생했습니다.";
@@ -5653,6 +5653,9 @@ which should be translated separately and considered part of this sentence. */
    VoiceOver Accessibility label for the instruction */
 "Please wait" = "기다려 주세요.";
 
+/* Subtitle on the connectivity tool screen */
+"Please wait while we attempt to identify your connection issue." = "연결 문제를 식별하려고 시도하는 동안 기다려 주세요.";
+
 /* Message on the Jetpack Install Progress screen. The %1$@ is the site address. */
 "Please wait while we connect your site %1$@ with Jetpack." = "%1$@ 사이트 젯팩과 연결하는 동안 기다려 주세요.";
 
@@ -6063,7 +6066,7 @@ which should be translated separately and considered part of this sentence. */
 "Reach our happiness engineers who can help answer tough questions" = "해피니스 엔지니어에게 문의하여 어려운 질문에 대한 답변 받기";
 
 /* Action button title for a generic error on the connectivity tool */
-"Read More" = "더 보기";
+"Read more" = "더 보기";
 
 /* Text for the button to navigate to troubleshooting tips from the store picker error screen */
 "Read our Troubleshooting Tips" = "문제 해결 팁 읽기";
@@ -6101,6 +6104,9 @@ which should be translated separately and considered part of this sentence. */
 /* Button to reload plugin data after updating a Card Present Payments extension plugin
    Button to reload plugin data after updating a card present payments plugin settings */
 "Refresh After Updating" = "업데이트 후 새로 고침";
+
+/* The info of the time out error banner */
+"Refresh the screen to try again, or troubleshoot the connection. Contact support if your issue persists." = "화면을 새로 고쳐 다시 시도하거나 연결 문제를 해결하세요. 문제가 지속되면 지원팀에 문의하세요.";
 
 /* The title of the button to confirm the refund. */
 "Refund" = "환불";
@@ -6343,6 +6349,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Action button to check site's connection again. */
 "Retry Connection" = "연결 재시도";
+
+/* Retry connection button in the connectivity tool screen */
+"Retry connection" = "연결 재시도";
 
 /* Title of the secondary button displayed when activating the purchased plan fails, so the merchant can exit the flow. */
 "Return to My Store" = "내 스토어로 돌아가기";
@@ -7927,6 +7936,12 @@ which should be translated separately and considered part of this sentence. */
 /* The info on the Error Loading Data banner when there was a Jetpack connection error. */
 "There is a problem with your store's Jetpack connection. Please reconnect Jetpack or reach out to us and we'll be happy to assist you!" = "스토어의 젯팩 연결에서 문제가 발생했습니다. 젯팩을 다시 연결해 보세요. 또는 당사에 연락하면 기꺼이 도와드리겠습니다!";
 
+/* Message when we there is a jetpack error in the recovery tool */
+"There is problem with your jetpack connection.\n\nRead more about it or contact our support team and we will happily assist you." = "젯팩 연결에서 문제가 발생했습니다.\n\n이 문제에 대해 자세히 알아보세요. 또는 지원팀에 문의하시면 기꺼이 도와드리겠습니다.";
+
+/* Message when we there is a generic error in the recovery tool */
+"There seems to be a problem with your site.\n\nPlease contact your hosting provider for further assistance." = "사이트에서 문제가 발생한 것 같습니다.\n\n자세한 내용은 호스팅 공급업체에 문의하시길 바랍니다.";
+
 /* Error message informing the user that there was a problem blocking posts from a site from their reader. */
 "There was a problem blocking posts from the specified site." = "지정된 사이트에서 게시물 차단 중 문제가 발생했습니다.";
 
@@ -8031,6 +8046,9 @@ which should be translated separately and considered part of this sentence. */
 /* Message when a card requires a PIN code and we have no means of entering such a code. */
 "This card requires a PIN code and thus cannot be processed. Try another means of payment" = "이 카드는 PIN 코드가 필요하여 처리할 수 없습니다. 다른 결제 수단 시도";
 
+/* Reason for why the user could not login tin the application password tutorial screen */
+"This could be because your store has some extra security steps in place." = "스토어에 몇 가지 추가 보안 단계가 설정되었기 때문일 수 있습니다.";
+
 /* The info on the Error Loading Data banner when there was a decoding error. */
 "This could be related to a conflict with a plugin. Please try again later or reach out to us and we'll be happy to assist you!" = "플러그인 충돌과 관련이 있을 수 있습니다. 나중에 다시 시도해 보세요. 또는 당사에 연락하면 기꺼이 도와드리겠습니다!";
 
@@ -8042,9 +8060,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Generic reason for why the user could not login tin the application password tutorial screen */
 "This is because we got an unexpected response from your site." = "사이트에서 예기치 않은 응답이 발생했기 때문일 수 있습니다.";
-
-/* Reason for why the user could not login tin the application password tutorial screen */
-"This is likely because your store has some extra security steps in place." = "스토어에 몇 가지 추가 보안 단계가 설정되었기 때문일 수 있습니다.";
 
 /* Footer text in Product Slug screen */
 "This is the URL-friendly version of the product title" = "제품 제목의 URL 친화적인 버전";
@@ -8262,6 +8277,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* The title of the button to get troubleshooting information in the Error Loading Data banner */
 "Troubleshoot" = "문제 해결";
+
+/* Screen title for the connectivity tool */
+"Troubleshoot Connection" = "연결 문제 해결";
 
 /* Title for the section to contact support on the subscriptions view. Uppercased */
 "Troubleshooting" = "문제 해결";
@@ -8492,6 +8510,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Load Product Attributes Action Failed */
 "Unable to load product attributes" = "제품 속성을 로드할 수 없음";
+
+/* Text displayed when there is an error loading product bundles stats data. */
+"Unable to load product bundle analytics" = "상품 번들 분석을 로드할 수 없음";
+
+/* Text displayed when there is an error loading product bundles sold stats data. */
+"Unable to load product bundles sold analytics" = "판매한 상품 번들 분석을 로드할 수 없음";
 
 /* Text displayed when there is an error loading items sold stats data. */
 "Unable to load product items sold analytics" = "판매한 상품 아이템 분석을 로드할 수 없음";
@@ -9029,8 +9053,14 @@ which should be translated separately and considered part of this sentence. */
 /* Content of the banner notice in the add-ons view */
 "We are working on making it easier for you to see product add-ons from your device! For now, you’ll be able to see the add-ons for your orders. You can create and edit these add-ons in your web dashboard." = "기기에서 제품 애드온을 더 쉽게 보실 수 있도록 하려고 작업하는 중입니다. 지금 당장은 주문에 대한 애드온을 보실 수 있습니다. 웹 대시보드에서 이러한 애드온을 생성하고 편집하실 수 있습니다.";
 
+/* Message when we there is a decoding error in the recovery tool */
+"We can't work properly with your site's response.\n\nRead more about it or contact our support team and we will happily assist you." = "사이트의 응답을 제대로 처리할 수 없습니다.\n\n이 문제에 대해 자세히 알아보세요. 또는 지원팀에 문의하시면 기꺼이 도와드리겠습니다.";
+
 /* Error message displayed when there is no store matching the site URL that is associated with the user's account */
 "We cannot load the store at the moment." = "지금은 스토어를 로드할 수 없습니다.";
+
+/* Message when we can't reach WPCom in the recovery tool */
+"We can’t connect to WordPress.com right now.\n\nTry again in a few minutes, or contact our support team and we will happily assist you." = "지금은 워드프레스닷컴에 연결할 수 없습니다.\n\n몇 분 후에 다시 시도하세요. 또는 지원팀에 문의하시면 기꺼이 도와드리겠습니다.";
 
 /* Title when we can't show stats because user is on a deprecated WC Version */
 "We can’t display your store’s analytics" = "스토어 분석을 표시할 수 없습니다.";
@@ -9051,14 +9081,14 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the default store picker error screen */
 "We couldn't load your site" = "사이트를 로드할 수 없음";
 
-/* Title for the application password tutorial screen */
-"We couldn't log in into your site! 😭" = "사이트에 로그인되지 않습니다! 😭";
-
 /* A message displayed through a bottom notice letting the user know that the login from the app link failed */
 "We couldn't process your app login request" = "앱 로그인 요청을 처리하지 못했습니다.";
 
 /* Title for the empty state on the Tax Rates selector screen */
 "We couldn’t find any tax rates" = "어떠한 세율도 찾을 수 없음";
+
+/* Title for the application password tutorial screen */
+"We couldn’t log in into your store" = "사이트에 로그인할 수 없음";
 
 /* Error message. Presented to users when updating the card reader software fails */
 "We couldn’t update your reader’s software" = "리더의 소프트웨어를 업데이트할 수 없습니다.";
@@ -9553,6 +9583,9 @@ which should be translated separately and considered part of this sentence. */
 /* The title of the Error Loading Data banner when there is a Jetpack connection error */
 "Your site is taking a long time to respond" = "사이트가 응답하는 데 오랜 시간이 걸립니다.";
 
+/* Message when we there is a timeout error in the recovery tool */
+"Your site is taking too long to respond.\n\nPlease contact your hosting provider for further assistance." = "사이트의 응답이 너무 오래 걸립니다.\n\n자세한 내용은 호스팅 공급업체에 문의하시길 바랍니다.";
+
 /* Title on the banner when the site's WooExpress plan has expired */
 "Your site plan has ended." = "사이트 요금제가 종료되었습니다.";
 
@@ -9629,6 +9662,12 @@ which should be translated separately and considered part of this sentence. */
 /* Dismiss button on the alert asking to add an image for the Blaze campaign */
 "addProductWithAIActionSheet.manualOptionsTitle" = "상품 유형 선택";
 
+/* Title for the product bundles analytics report linked in the Analytics Hub */
+"analyticsHub.bundlesCard.reportTitle" = "상품 번들 보고서";
+
+/* Name for the Product Bundles analytics card in the Customize Analytics screen */
+"analyticsHub.customize.bundles" = "번들";
+
 /* Name for the Orders analytics card in the Customize Analytics screen */
 "analyticsHub.customize.orders" = "주문";
 
@@ -9640,6 +9679,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Name for the Sessions analytics card in the Customize Analytics screen */
 "analyticsHub.customize.sessions" = "세션";
+
+/* Button title to explore an extension that isn't installed */
+"analyticsHub.customizeAnalytics.exploreButton" = "둘러보기";
 
 /* Button to save changes on the Customize Analytics screen */
 "analyticsHub.customizeAnalytics.saveButton" = "저장";
@@ -9680,6 +9722,15 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the revenue analytics report linked in the Analytics Hub */
 "analyticsHub.revenueCard.reportTitle" = "수익 보고서";
 
+/* Title for sessions section in the Analytics Hub */
+"analyticsHub.sessionsCard.Title" = "세션";
+
+/* Description when session data is unavailable in the Analytics Hub */
+"analyticsHub.sessionsCard.dataUnavailable.Description" = "세션 분석에서는 사용자 정의 범위에 사용할 수 없는 고유 방문자 수를 이용합니다.";
+
+/* Message when session data is unavailable in the Analytics Hub */
+"analyticsHub.sessionsCard.dataUnavailable.Message" = "세션 데이터 사용 불가";
+
 /* Button to dismiss the alert asking for confirmation to switch store. */
 "appCoordinator.storeReadyAlert.cancelButton" = "취소";
 
@@ -9697,6 +9748,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Widget title, displayed when selecting which widget to add */
 "appLinkWidget.displayName" = "아이콘";
+
+/* Title for the link for site creation guide. */
+"authenticationConstants.siteCreationGuideButtonTitle" = "새 스토어를 시작하시나요?";
 
 /* Button to send a message to a customer via Telegram */
 "billingInfoViewController.telegram" = "Telegram 메시지 보내기";
@@ -10513,6 +10567,9 @@ which should be translated separately and considered part of this sentence. */
 /* Label for the customer's username in the Customer Details screen. */
 "customerDetailView.usernameLabel" = "사용자명";
 
+/* Title when there are no customers in the search results in the Customers list screen. */
+"customerList.emptySearchTitle" = "고객을 찾을 수 없음";
+
 /* Message when there are no customers to show in the Customers list screen. */
 "customerList.emptyStateMessage" = "고객 인사이트 수집을 시작할 주문 생성";
 
@@ -10533,6 +10590,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label for a customer with no name in the Customers list screen. */
 "customersList.guestLabel" = "비회원";
+
+/* Placeholder in the search bar in the Customers list screen. */
+"customersList.searchPlaceholder" = "고객 검색";
 
 /* Title for Customers list screen */
 "customersList.title" = "고객";
@@ -11415,6 +11475,9 @@ which should be translated separately and considered part of this sentence. */
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Products' tab. */
 "woocommerce, woo, products, categories, new product, search products" = "우커머스, 우, 제품, 카테고리, 신규 제품, 제품 검색";
 
+/* Title for the link for site creation guide. */
+"wordPressAuthenticatorDisplayStrings.default.siteCreationGuideButtonTitle" = "새 사이트를 시작하시나요?";
+
 /* Error message that describes an unknown error had occured */
 "wordpress-api.error.unknown" = "문제가 발생했습니다. 나중에 다시 시도하세요.";
 
@@ -11475,9 +11538,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Åland Islands" = "올란드 제도";
-
-/* Tutorial steps on the application password tutorial screen */
-"⁃ Tap the continue button at the bottom to login directly into your site.\n\n⁃ Once logged in, approve the connection to give access to the woo app like the in the image below." = "⁃ 하단의 계속 버튼을 눌러 사이트에 바로 로그인하세요.\n\n- 로그인하면 아래 이미지와 같이 연결을 승인하여 Woo 앱 접근 권한을 부여하세요.";
 
 /* Title of the local notification to remind the user to purchase a plan. */
 "🌟 Keep your business going!" = "🌟 비즈니스를 계속 운영하세요!";

@@ -79,8 +79,6 @@ private extension DashboardViewHostingController {
             ServiceLocator.analytics.track(event: .StoreOnboarding.storeOnboardingTaskCompleted(task: task))
         }, reloadTasks: { [weak self] in
             self?.reloadOnboardingTask()
-        }, onUpgradePlan: {
-            // TODO: maybe remove this
         })
         self.storeOnboardingCoordinator = coordinator
     }

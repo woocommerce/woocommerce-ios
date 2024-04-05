@@ -291,6 +291,11 @@ public enum WooAnalyticsStat: String {
     case supportSSROpened = "support_ssr_opened"
     case supportSSRCopyButtonTapped = "support_ssr_copy_button_tapped"
 
+    // MARK: Settings Plugin List Events
+    //
+    case settingsPluginListTapped = "settings_plugin_list_tapped"
+    case outOfDatePluginList = "out_of_date_plugin_list"
+
     // MARK: Settings View Events
     //
     case settingsTapped = "main_menu_settings_tapped"

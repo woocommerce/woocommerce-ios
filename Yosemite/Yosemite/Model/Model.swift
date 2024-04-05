@@ -43,6 +43,8 @@ public typealias DotcomDevice = Networking.DotcomDevice
 public typealias DotcomUser = Networking.DotcomUser
 public typealias Feature = Networking.Feature
 public typealias FreeDomainSuggestion = Networking.FreeDomainSuggestion
+public typealias GiftCardStats = Networking.GiftCardStats
+public typealias GiftCardStatsInterval = Networking.GiftCardStatsInterval
 public typealias SiteDomain = Networking.SiteDomain
 public typealias InboxNote = Networking.InboxNote
 public typealias InboxAction = Networking.InboxAction
@@ -204,6 +206,8 @@ public typealias WooPaymentsDepositInterval = Networking.WooPaymentsDepositInter
 public typealias WooPaymentsDepositStatus = Networking.WooPaymentsDepositStatus
 public typealias StoreOnboardingTask = Networking.StoreOnboardingTask
 public typealias WCAnalyticsCustomer = Networking.WCAnalyticsCustomer
+public typealias WCAnalyticsStats = Networking.WCAnalyticsStats
+public typealias WCAnalyticsStatsInterval = Networking.WCAnalyticsStatsInterval
 public typealias WordPressPage = Networking.WordPressPage
 public typealias WordPressTheme = Networking.WordPressTheme
 

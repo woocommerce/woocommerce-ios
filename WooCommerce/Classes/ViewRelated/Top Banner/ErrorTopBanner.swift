@@ -74,7 +74,6 @@ private extension ErrorTopBanner {
 
 #Preview {
     ErrorTopBanner(error: NSError(domain: "Test", code: 1, userInfo: nil),
-                   expandedStateChangeHandler: {},
                    onTroubleshootButtonPressed: {},
                    onContactSupportButtonPressed: {})
 }

@@ -187,7 +187,7 @@ private extension StoreOnboardingView {
 private extension StoreOnboardingView {
     enum Layout {
         static let insetsWithViewAllButton: EdgeInsets = .init(top: 16, leading: 16, bottom: 16, trailing: 16)
-        static let insetsWithoutViewAllButton: EdgeInsets = .init(top: 16, leading: 16, bottom: 0, trailing: 16)
+        static let insetsWithoutViewAllButton: EdgeInsets = .init(top: 16, leading: 16, bottom: 1, trailing: 16)
         enum VerticalSpacing {
             static let collapsedMode: CGFloat = 16
             static let expandedMode: CGFloat = 40

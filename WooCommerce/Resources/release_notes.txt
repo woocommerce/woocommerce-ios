@@ -1,1 +1,6 @@
-Discover our newest update for the WooCommerce app! Introducing a newly added Customers section in the Hub Menu. Now you can easily search and view customer details at your fingertips, even contact them directly via email. We've implemented crucial application dependency updates to enhance performance and reduce crashes, providing a smoother, more stable user experience. Also, iPad users can now enjoy a more reliable experience when viewing orders with our speculative fix. Dive in and explore these exciting new improvements!
+- [**] Orders: now it's possible to swiftly delete orders right from the Order Detail page.
+- [**] Stats: The Analytics Hub now includes analytics for Product Bundles and Gift Cards, when those extensions are active. [https://github.com/woocommerce/woocommerce-ios/pull/12425]
+- [*] Login: Fix issues in Jetpack installation feature. [https://github.com/woocommerce/woocommerce-ios/pull/12426]
+- [Internal] WooExpress: Site creation with WooExpress is now disabled. [https://github.com/woocommerce/woocommerce-ios/issues/12323]
+
+

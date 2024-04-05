@@ -21,6 +21,7 @@ struct DashboardView: View {
     /// Set externally in the hosting controller.
     var createBlazeCampaignTapped: ((_ productID: Int64?) -> Void)?
 
+    /// Set externally in the hosting controller.
     var jetpackBenefitsBannerTapped: ((Site) -> Void)?
 
     private let storeStatsAndTopPerformersViewController: StoreStatsAndTopPerformersViewController
@@ -28,7 +29,7 @@ struct DashboardView: View {
     private var shouldShowJetpackBenefitsBanner: Bool {
         let isJetpackCPSite = currentSite?.isJetpackCPConnected == true
         let isNonJetpackSite = currentSite?.isNonJetpackSite == true
-        return (isJetpackCPSite || isNonJetpackSite) && 
+        return (isJetpackCPSite || isNonJetpackSite) &&
             viewModel.jetpackBannerVisibleFromAppSettings &&
             dismissedJetpackBenefitBanner == false
     }

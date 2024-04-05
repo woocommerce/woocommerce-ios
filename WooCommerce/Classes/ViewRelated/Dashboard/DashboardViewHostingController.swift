@@ -9,6 +9,7 @@ final class DashboardViewHostingController: UIHostingController<DashboardView> {
     private let usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter
     private var storeOnboardingCoordinator: StoreOnboardingCoordinator?
     private var blazeCampaignCreationCoordinator: BlazeCampaignCreationCoordinator?
+    private var jetpackSetupCoordinator: JetpackSetupCoordinator?
 
     init(siteID: Int64) {
         let viewModel = DashboardViewModel(siteID: siteID)
@@ -21,6 +22,7 @@ final class DashboardViewHostingController: UIHostingController<DashboardView> {
         configureTabBarItem()
         configureStoreOnboarding()
         configureBlazeSection()
+        configureJetpackBenefitBanner()
     }
 
     @available(*, unavailable)
@@ -121,6 +123,21 @@ private extension DashboardViewHostingController {
     func handlePostCreation() {
         Task {
             await viewModel.blazeCampaignDashboardViewModel.reload()
+        }
+    }
+}
+
+// MARK: Jetpack benefit banner
+private extension DashboardViewHostingController {
+    func configureJetpackBenefitBanner() {
+        rootView.jetpackBenefitsBannerTapped = { [weak self] site in
+            guard let self, let navigationController else {
+                return
+            }
+            let coordinator = JetpackSetupCoordinator(site: site,
+                                                      rootViewController: navigationController)
+            jetpackSetupCoordinator = coordinator
+            coordinator.showBenefitModal()
         }
     }
 }

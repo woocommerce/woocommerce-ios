@@ -263,8 +263,7 @@ final class DashboardViewModel: ObservableObject {
     }
 
     func maybeSyncAnnouncementsAfterWebViewDismissed() {
-        // If the web view was opened from a modal JITM, it was dismissed before the webview
-        // was presented. Syncing in that situation would result in it showing again.
+        // Sync announcements again only when the JITM modal has been dismissed to avoid showing duplicated modals.
         if modalJustInTimeMessageViewModel == nil {
             Task {
                 await syncAnnouncements(for: siteID)

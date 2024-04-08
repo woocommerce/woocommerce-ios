@@ -55,7 +55,7 @@ final class OrderShippingLabelListMapperTests: XCTestCase {
                                                        destinationAddress: destinationAddress,
                                                        productIDs: [3013],
                                                        productNames: ["Password protected!"],
-                                                       commercialInvoiceURL: "https://woo.com")
+                                                       commercialInvoiceURL: "https://woocommerce.com")
         let shippingLabelWithRefund = ShippingLabel(siteID: sampleSiteID,
                                                        orderID: sampleOrderID,
                                                        shippingLabelID: 2511668,

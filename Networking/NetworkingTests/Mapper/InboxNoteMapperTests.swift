@@ -36,7 +36,7 @@ final class InboxNoteMapperTests: XCTestCase {
 
         // When
         let dateFormatter = DateFormatter.Defaults.dateTimeFormatter
-        let url = "https://woo.com/products/woocommerce-bookings/"
+        let url = "https://woocommerce.com/products/woocommerce-bookings/"
         let content = "Your subscription expired on October 22nd. Get a new subscription to continue receiving updates and access to support."
         let expectedInboxNote = InboxNote(siteID: dummySiteID,
                                           id: 296,

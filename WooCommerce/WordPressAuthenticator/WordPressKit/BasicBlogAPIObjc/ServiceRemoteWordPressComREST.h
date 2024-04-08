@@ -49,4 +49,12 @@ NS_SWIFT_NAME(path(forEndpoint:withVersion:));
 
 @end
 
+@interface WordPressComRESTVersionedPathBuilder: NSObject
+
++ (NSString *)pathForEndpoint:(NSString *)endpoint
+                  withVersion:(WordPressComRESTAPIVersion)apiVersion
+NS_SWIFT_NAME(path(forEndpoint:withVersion:));
+
+@end
+
 NS_ASSUME_NONNULL_END

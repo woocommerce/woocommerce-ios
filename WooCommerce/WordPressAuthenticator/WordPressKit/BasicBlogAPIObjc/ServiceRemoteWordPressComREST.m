@@ -1,13 +1,6 @@
 #import "ServiceRemoteWordPressComREST.h"
 #import "WPKit-Swift.h"
 
-static NSString* const ServiceRemoteWordPressComRESTApiVersionStringInvalid = @"invalid_api_version";
-static NSString* const ServiceRemoteWordPressComRESTApiVersionString_1_0 = @"rest/v1";
-static NSString* const ServiceRemoteWordPressComRESTApiVersionString_1_1 = @"rest/v1.1";
-static NSString* const ServiceRemoteWordPressComRESTApiVersionString_1_2 = @"rest/v1.2";
-static NSString* const ServiceRemoteWordPressComRESTApiVersionString_1_3 = @"rest/v1.3";
-static NSString* const ServiceRemoteWordPressComRESTApiVersionString_2_0 = @"wpcom/v2";
-
 @implementation ServiceRemoteWordPressComREST
 
 - (instancetype)initWithWordPressComRestApi:(WordPressComRestApi *)wordPressComRestApi {
@@ -22,13 +15,39 @@ static NSString* const ServiceRemoteWordPressComRESTApiVersionString_2_0 = @"wpc
     return self;
 }
 
+#pragma mark - Request URL construction
 
-#pragma mark - API Version
+- (NSString *)pathForEndpoint:(NSString *)resourceUrl
+                  withVersion:(WordPressComRESTAPIVersion)apiVersion
+{
+    NSParameterAssert([resourceUrl isKindOfClass:[NSString class]]);
 
-- (NSString *)apiVersionStringWithEnumValue:(WordPressComRESTAPIVersion)apiVersion
+    return [WordPressComRESTVersionedPathBuilder pathForEndpoint:resourceUrl
+                                                     withVersion:apiVersion];
+}
+
+@end
+
+static NSString* const ServiceRemoteWordPressComRESTApiVersionStringInvalid = @"invalid_api_version";
+static NSString* const ServiceRemoteWordPressComRESTApiVersionString_1_0 = @"rest/v1";
+static NSString* const ServiceRemoteWordPressComRESTApiVersionString_1_1 = @"rest/v1.1";
+static NSString* const ServiceRemoteWordPressComRESTApiVersionString_1_2 = @"rest/v1.2";
+static NSString* const ServiceRemoteWordPressComRESTApiVersionString_1_3 = @"rest/v1.3";
+static NSString* const ServiceRemoteWordPressComRESTApiVersionString_2_0 = @"wpcom/v2";
+
+@implementation WordPressComRESTVersionedPathBuilder
+
++ (NSString *)pathForEndpoint:(NSString *)endpoint withVersion:(WordPressComRESTAPIVersion)apiVersion
+{
+    NSString *apiVersionString = [self apiVersionStringWithEnumValue:apiVersion];
+
+    return [NSString stringWithFormat:@"%@/%@", apiVersionString, endpoint];
+}
+
++ (NSString *)apiVersionStringWithEnumValue:(WordPressComRESTAPIVersion)apiVersion
 {
     NSString *result = nil;
-    
+
     switch (apiVersion) {
         case WordPressComRESTAPIVersion_1_0:
             result = ServiceRemoteWordPressComRESTApiVersionString_1_0;
@@ -37,7 +56,7 @@ static NSString* const ServiceRemoteWordPressComRESTApiVersionString_2_0 = @"wpc
         case WordPressComRESTAPIVersion_1_1:
             result = ServiceRemoteWordPressComRESTApiVersionString_1_1;
             break;
-            
+
         case WordPressComRESTAPIVersion_1_2:
             result = ServiceRemoteWordPressComRESTApiVersionString_1_2;
             break;
@@ -55,20 +74,7 @@ static NSString* const ServiceRemoteWordPressComRESTApiVersionString_2_0 = @"wpc
             result = ServiceRemoteWordPressComRESTApiVersionStringInvalid;
             break;
     }
-    
+
     return result;
 }
-
-#pragma mark - Request URL construction
-
-- (NSString *)pathForEndpoint:(NSString *)resourceUrl
-                  withVersion:(WordPressComRESTAPIVersion)apiVersion
-{
-    NSParameterAssert([resourceUrl isKindOfClass:[NSString class]]);
-    
-    NSString *apiVersionString = [self apiVersionStringWithEnumValue:apiVersion];
-    
-    return [NSString stringWithFormat:@"%@/%@", apiVersionString, resourceUrl];
-}
-
 @end

@@ -135,6 +135,6 @@ private extension JetpackErrorViewModel {
     }
 
     enum Strings {
-        static let instructionsURLString = "https://woo.com/document/jetpack-setup-instructions-for-the-woocommerce-mobile-app/"
+        static let instructionsURLString = "https://woocommerce.com/document/jetpack-setup-instructions-for-the-woocommerce-mobile-app/"
     }
 }

@@ -28,6 +28,23 @@ extension PostServiceRemoteREST: PostServiceRemoteExtended {
             }
         }
     }
+
+    public func deletePost(withID postID: Int) async throws {
+        let path = self.path(forEndpoint: "sites/\(siteID)/posts/\(postID)/delete", withVersion: ._1_1)
+        let result = await wordPressComRestApi.perform(.post, URLString: path)
+        switch result {
+        case .success:
+            return
+        case .failure(let error):
+            guard case .endpointError(let error) = error else {
+                throw error
+            }
+            switch error.apiErrorCode ?? "" {
+            case "unknown_post": throw PostServiceRemoteUpdatePostError.notFound
+            default: throw error
+            }
+        }
+    }
 }
 
 // Decodes the post in the background.

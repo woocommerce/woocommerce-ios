@@ -4,8 +4,17 @@ import enum Networking.DotcomError
 import enum Storage.StatsVersion
 import protocol Experiments.FeatureFlagService
 
+/// Contents to be displayed on the dashboard.
+///
+enum DashboardCard: Int, CaseIterable {
+    case onboarding
+    case stats
+    case topPerformers
+    case blaze
+}
+
 /// Syncs data for dashboard stats UI and determines the state of the dashboard UI based on stats version.
-final class DashboardViewModel {
+final class DashboardViewModel: ObservableObject {
     /// Stats v4 is shown by default, then falls back to v3 if store stats are unavailable.
     @Published private(set) var statsVersion: StatsVersion = .v4
 
@@ -22,10 +31,10 @@ final class DashboardViewModel {
     @Published private(set) var showWebViewSheet: WebViewSheetViewModel? = nil
 
     @Published private(set) var showOnboarding: Bool = false
-
     @Published private(set) var showBlazeCampaignView: Bool = false
+    @Published private(set) var dashboardCards: [DashboardCard] = [.stats, .topPerformers]
 
-    private let siteID: Int64
+    let siteID: Int64
     private let stores: StoresManager
     private let featureFlagService: FeatureFlagService
     private let analytics: Analytics
@@ -64,6 +73,7 @@ final class DashboardViewModel {
         self.themeInstaller = themeInstaller
         setupObserverForShowOnboarding()
         setupObserverForBlazeCampaignView()
+        setupDashboardCards()
         installPendingThemeIfNeeded()
     }
 
@@ -73,14 +83,32 @@ final class DashboardViewModel {
         await storeCreationProfilerUploadAnswersUseCase.uploadAnswers()
     }
 
+    @MainActor
+    func reloadAllData() async {
+        await withTaskGroup(of: Void.self) { group in
+            group.addTask { [weak self] in
+                guard let self else { return }
+                await self.syncAnnouncements(for: self.siteID)
+            }
+            group.addTask { [weak self] in
+                await self?.reloadStoreOnboardingTasks()
+            }
+            group.addTask { [weak self] in
+                await self?.reloadBlazeCampaignView()
+            }
+        }
+    }
+
     /// Reloads store onboarding tasks
     ///
+    @MainActor
     func reloadStoreOnboardingTasks() async {
         await storeOnboardingViewModel.reloadTasks()
     }
 
     /// Reloads Blaze dashboard campaign view
     ///
+    @MainActor
     func reloadBlazeCampaignView() async {
         await blazeCampaignDashboardViewModel.reload()
     }
@@ -206,6 +234,7 @@ final class DashboardViewModel {
 
     /// Checks for announcements to show on the dashboard
     ///
+    @MainActor
     func syncAnnouncements(for siteID: Int64) async {
         await syncJustInTimeMessages(for: siteID)
         await loadLocalAnnouncement()
@@ -221,10 +250,14 @@ final class DashboardViewModel {
 
         analytics.track(event: .Dashboard.dashboardTimezonesDiffers(localTimezone: localGMTOffsetInHours, storeTimezone: siteGMTOffset))
     }
+}
 
+// MARK: Private helpers
+private extension DashboardViewModel {
     /// Checks for Just In Time Messages and prepares the announcement if needed.
     ///
-    private func syncJustInTimeMessages(for siteID: Int64) async {
+    @MainActor
+    func syncJustInTimeMessages(for siteID: Int64) async {
         let viewModel = try? await justInTimeMessagesManager.loadMessage(for: .dashboard, siteID: siteID)
         viewModel?.$showWebViewSheet.assign(to: &self.$showWebViewSheet)
         switch viewModel?.template {
@@ -241,7 +274,7 @@ final class DashboardViewModel {
     @MainActor
     /// If JITM modal isn't displayed, it loads a local announcement to be displayed modally if available.
     /// When a local announcement is available, the view model is set. Otherwise, the view model is set to `nil`.
-    private func loadLocalAnnouncement() async {
+    func loadLocalAnnouncement() async {
         // Local announcement modal can only be shown when JITM modal is not shown.
         guard modalJustInTimeMessageViewModel == nil else {
             return
@@ -255,7 +288,7 @@ final class DashboardViewModel {
 
     /// Sets up observer to decide store onboarding task lists visibility
     ///
-    private func setupObserverForShowOnboarding() {
+    func setupObserverForShowOnboarding() {
         guard featureFlagService.isFeatureFlagEnabled(.dashboardOnboarding) else {
             return
         }
@@ -266,9 +299,23 @@ final class DashboardViewModel {
 
     /// Sets up observer to decide Blaze campaign view visibility
     ///
-    private func setupObserverForBlazeCampaignView() {
+    func setupObserverForBlazeCampaignView() {
         blazeCampaignDashboardViewModel.$shouldShowInDashboard
             .assign(to: &$showBlazeCampaignView)
+    }
+
+    func setupDashboardCards() {
+        $showOnboarding.combineLatest($showBlazeCampaignView)
+            .map { showOnboarding, showBlazeCampaignView -> [DashboardCard] in
+                [
+                    showOnboarding ? .onboarding : nil,
+                    .stats,
+                    .topPerformers,
+                    showBlazeCampaignView ? .blaze : nil
+                ].compactMap { $0 }
+            }
+            .receive(on: RunLoop.main)
+            .assign(to: &$dashboardCards)
     }
 }
 

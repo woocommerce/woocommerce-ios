@@ -73,32 +73,23 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     var subscriptionDetailsLabel: String {
         let currency = ServiceLocator.currencySettings.symbol(from: ServiceLocator.currencySettings.currencyCode)
 
-        var formattedString: String = ""
-        if let subscriptionPrice = productSubscriptionDetails?.price {
-            // 1. Format price
-            let formattedPrice = currencyFormatter.formatAmount(subscriptionPrice, with: currency) ?? ""
-
-            formattedString += formattedPrice
+        guard let subscriptionPrice = productSubscriptionDetails?.price,
+              let subscriptionInterval = productSubscriptionDetails?.periodInterval,
+              let subscriptionPeriod = productSubscriptionDetails?.period,
+              let formattedPrice = currencyFormatter.formatAmount(subscriptionPrice, with: currency) else {
+            return ""
         }
-        // 2. Format interval, and period
-        formattedString += "/"
-        if let subscriptionInterval = productSubscriptionDetails?.periodInterval,
-           let subscriptionPeriod = productSubscriptionDetails?.period {
-            formattedString += " "
-            formattedString += subscriptionInterval
-            formattedString += " "
 
-            let subscriptionFrequency = {
-                switch subscriptionInterval {
-                case "1":
-                    return subscriptionPeriod.descriptionSingular
-                default:
-                    return subscriptionPeriod.descriptionPlural
-                }
+        let subscriptionFrequency = {
+            switch subscriptionInterval {
+            case "1":
+                return subscriptionPeriod.descriptionSingular
+            default:
+                return subscriptionPeriod.descriptionPlural
             }
-            formattedString += subscriptionFrequency()
         }
-        return formattedString
+        return String.localizedStringWithFormat(Localization.formattedProductSubscription,
+                                                formattedPrice, subscriptionInterval, subscriptionFrequency())
     }
 
     /// Stock or variation attributes label.
@@ -459,5 +450,10 @@ private extension ProductRowViewModel {
                                                        comment: "Label for one product variation when showing details about a variable product")
         static let pluralVariations = NSLocalizedString("%ld variations",
                                                         comment: "Label for multiple product variations when showing details about a variable product")
+        static let formattedProductSubscription = NSLocalizedString(
+            "ProductRowViewModel.formattedProductSubscription",
+            value: "%1$@ / %2$@ %3$@",
+            comment: "Description of the subscription price for a product, with price and billing frequency. " +
+            "Reads as: '$60.00 / 2 months'.")
     }
 }

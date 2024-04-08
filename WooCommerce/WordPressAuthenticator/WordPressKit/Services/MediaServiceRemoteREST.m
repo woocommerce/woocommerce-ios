@@ -244,7 +244,8 @@ const NSInteger WPRestErrorCodeMediaNew = 10;
             errorMessage = errorInfo[@"message"];
         }
         NSDictionary *errorDictionary = @{NSLocalizedDescriptionKey: errorMessage};
-        error = [NSError errorWithDomain:WordPressComRestApiErrorDomain code:WordPressComRestApiErrorCodeUploadFailed userInfo:errorDictionary];
+        error = [NSError wordPressComRestApiErrorWithCode:WordPressComRestApiErrorCodeUploadFailed
+                                                 userInfo:errorDictionary];
     }
     return error;
 }
@@ -296,9 +297,8 @@ const NSInteger WPRestErrorCodeMediaNew = 10;
                                    }
                                } else {
                                    if (failure) {
-                                       NSError *error = [NSError errorWithDomain:WordPressComRestApiErrorDomain
-                                                                            code:WordPressComRestApiErrorCodeUnknown
-                                                                        userInfo:nil];
+                                       NSError *error = [NSError wordPressComRestApiErrorWithCode:WordPressComRestApiErrorCodeUnknown
+                                                                                         userInfo:nil];
                                        failure(error);
                                    }
                                }
@@ -369,9 +369,8 @@ const NSInteger WPRestErrorCodeMediaNew = 10;
                                    }
                                } else {
                                    if (failure) {
-                                       NSError *error = [NSError errorWithDomain:WordPressComRestApiErrorDomain
-                                                                            code:WordPressComRestApiErrorCodeUnknown
-                                                                        userInfo:nil];
+                                       NSError *error = [NSError wordPressComRestApiErrorWithCode:WordPressComRestApiErrorCodeUnknown
+                                                                                         userInfo:nil];
                                        failure(error);
                                    }
                                }

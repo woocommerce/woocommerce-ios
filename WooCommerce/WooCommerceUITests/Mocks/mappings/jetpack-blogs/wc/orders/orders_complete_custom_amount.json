@@ -3,7 +3,8 @@
         "method": "POST",
         "urlPath": "/rest/v1.1/jetpack-blogs/161477129/rest-api/",
         "bodyPatterns": [
-            { "matches": ".*path=/wc/v3/orders.*" }
+            { "matches": ".*path=/wc/v3/orders.*" },
+            { "contains": "%22Custom%20amount%22" }
         ]
     },
     "response": {

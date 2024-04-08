@@ -61,10 +61,14 @@ struct ProductRow: View {
                     .subheadlineStyle()
                     .renderedIf(viewModel.productDetailsLabel.isNotEmpty)
                 if let _ = viewModel.productSubscriptionDetails {
-                    HStack {
-                        Text(viewModel.subscriptionDetailsLabel)
+                    VStack(alignment: .leading) {
+                        Text(viewModel.subscriptionConditionsLabel)
+                            .subheadlineStyle()
+                            .renderedIf(viewModel.subscriptionConditionsLabel.isNotEmpty)
+                        Text(viewModel.subscriptionBillingDetailsLabel)
+                            .font(.subheadline)
+                            .foregroundColor(Color(.text))
                     }
-                    .subheadlineStyle()
                 }
                 Text(viewModel.secondaryProductDetailsLabel)
                     .subheadlineStyle()

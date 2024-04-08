@@ -338,6 +338,14 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
             imageURL = nil
         }
 
+        // Checks if the product variation contains Subscription-type Product meta data
+        let productSubscriptionDetails: ProductSubscription?
+        if productVariation.subscription != nil {
+            productSubscriptionDetails = productVariation.subscription
+        } else {
+            productSubscriptionDetails = nil
+        }
+
         self.init(id: id,
                   productOrVariationID: productVariation.productVariationID,
                   name: name,
@@ -350,6 +358,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                   quantity: quantity,
                   imageURL: imageURL,
                   variationDisplayMode: displayMode,
+                  productSubscriptionDetails: productSubscriptionDetails,
                   selectedState: selectedState,
                   pricedIndividually: pricedIndividually,
                   isConfigurable: false,

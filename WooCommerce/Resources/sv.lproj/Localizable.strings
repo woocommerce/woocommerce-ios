@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-03-26 11:54:04+0000 */
+/* Translation-Revision-Date: 2024-04-02 13:54:15+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: sv_SE */
@@ -303,6 +303,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Step 3 of the 'How it works' list, instructing the merchant to present the phone to the shopper */
 "3. Present your iPhone to the customer." = "3. Håll fram din iPhone till kunden.";
+
+/* Tutorial steps on the application password tutorial screen */
+"3. When the connection is complete, you will be logged in to your store." = "3. När anslutningen är klar kommer du att loggas in i din butik.";
 
 /* Estimated setup time text shown on the Woo payments setup instructions screen. */
 "4-6 minutes" = "4-6 minuter";
@@ -1221,6 +1224,12 @@ which should be translated separately and considered part of this sentence. */
 /* Title for Bundled Products row in the product form screen. */
 "Bundled products" = "Paketprodukter";
 
+/* Title for the product bundles card on the analytics hub screen. */
+"Bundles" = "Paket";
+
+/* Title for the bundles sold column on the product bundles card on the analytics hub screen. */
+"Bundles Sold" = "Paket sålda";
+
 /* Country option for a site address. */
 "Burkina Faso" = "Burkina Faso";
 
@@ -1886,9 +1895,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Name of the step to connect the store to Jetpack */
 "Connecting your store" = "Ansluter din butik";
-
-/* Screen title for the connectivity tool */
-"Connectivity Test" = "Anslutningstest";
 
 /* Contact Customer action in Shipping Label Address Validation. */
 "Contact Customer" = "Kontakta kund";
@@ -3287,6 +3293,9 @@ which should be translated separately and considered part of this sentence. */
 /* Label asking users to follow the on-screen Tap to Pay on iPhone instructions. Presented when a payment is going to be collected using Tap to Pay on iPhone, which results in an Apple-provided screen being shown with instructions for payment. */
 "Follow the on-screen instructions to pay" = "Följ anvisningarna på skärmen för att betala";
 
+/* Tutorial steps on the application password tutorial screen */
+"Follow these steps to connect the Woo app directly to your store using an application password.\n\n1. First, log in using your site credentials.\n\n2. When prompted, approve the connection by tapping the confirmation button." = "Följ dessa steg för att ansluta Woo-appen direkt till din butik med ett applikationslösenord.\n\n1. Börja med att logga in med dina webbplatsautentiseringsuppgifter.\n\n2. När du uppmanas till det, godkänn anslutningen genom att trycka på bekräftelseknappen.";
+
 /* User role badge */
 "Follower" = "Följare";
 
@@ -3774,7 +3783,10 @@ which should be translated separately and considered part of this sentence. */
 "If you continue with Apple or Google and don't already have a WordPress.com account, you are creating an account and you agree to our _Terms of Service_." = "Om du fortsätter med Apple eller Google och inte redan har ett WordPress.com-konto, skapar du ett konto och samtycker till våra _användarvillkor_.";
 
 /* Text to contact support in the application password tutorial screen */
-"If you encounter any problem, contact us and we will happily assist you!" = "Om du stöter på problem, kontakta oss så hjälper vi dig.";
+"If you run into any issues, please contact our support team." = "Om du stöter på problem, kontakta vårt supportteam.";
+
+/* Info message when there are no connection issues in the connectivity tool screen */
+"If your data still isn’t loading, contact our support team for assistance." = "Om dina data fortfarande inte laddas, kontakta vårt supportteam för att få hjälp.";
 
 /* Heading for the details pane showing the contactless limit on About Tap to Pay */
 "Important information" = "Viktig information";
@@ -4885,6 +4897,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the error screen when there was a network error checking In-Person Payments requirements. */
 "No connection" = "Ingen anslutning";
 
+/* Title for when there are no connection issues in the connectivity tool screen */
+"No connection issues" = "Inga anslutningsproblem";
+
 /* Error message when there is no connection to the Internet. */
 "No connection to the Internet - please connect to the Internet and try again" = "Ingen anslutning till Internet – anslut till Internet och försök igen";
 
@@ -5090,23 +5105,8 @@ which should be translated separately and considered part of this sentence. */
 /* Content of the banner notice on the Payment Method screen when user does not have permission to change the payment method. %1$@ is a placeholder for the store owner's name. %2$@ is a placeholder for the store owner's username. */
 "Only the site owner can manage the shipping label payment methods. Please contact %1$@ (%2$@) to manage payment methods." = "Det är bara webbplatsens ägare som kan hantera betalningsmetoderna för fraktetiketter. Kontakta %1$@ (%2$@) för att hantera betalningsmetoder.";
 
-/* Message when we can't reach WPCom in the recovery tool */
-"Oops! It seems we can't connect to WordPress.com at the moment.\n\nBut don't worry, our support team is here to help. Contact us and we will happily assist you." = "Hoppsan! Det verkar som att vi inte kan ansluta till WordPress.com för tillfället.\n\nMen oroa dig inte, vårt supportteam finns här om du behöver hjälp. Kontakta oss så hjälper vi dig.";
-
-/* Message when we there is a decoding error in the recovery tool */
-"Oops! It seems we can't work properly with your site's response.\n\nBut don't worry, our support team is here to help. Contact us and we will happily assist you." = "Hoppsan! Det verkar som att vi inte kan arbeta korrekt med din webbplats svar.\n\nMen oroa dig inte, vårt supportteam finns här om du behöver hjälp. Kontakta oss så hjälper vi dig.";
-
-/* Message when we there is a jetpack error in the recovery tool */
-"Oops! There seems to be a problem with your jetpack connection.\n\nBut don't worry, our support team is here to help. Contact us and we will happily assist you." = "Hoppsan! Det verkar vara ett problem med din jetpack-anslutning.\n\nMen oroa dig inte, vårt supportteam är här för att hjälpa dig. Kontakta oss så hjälper vi dig gärna.";
-
-/* Message when we there is a generic error in the recovery tool */
-"Oops! There seems to be a problem with your site.\n\nContact your hosting provider for further assistance." = "Hoppsan! Det verkar vara problem med din webbplats.\n\nKontakta ditt webbhotell för att få ytterligare hjälp.";
-
 /* Title of the alert when the store cannot be created in the store creation flow. */
 "Oops! We've hit a snag" = "Hoppsan. Vi stötte på ett problem";
-
-/* Message when we there is a timeout error in the recovery tool */
-"Oops! Your site seems to be taking too long to respond.\n\nContact your hosting provider for further assistance." = "Hoppsan! Det verkar ta för lång tid för din webbplats att svara.\n\nKontakta ditt webbhotell för att få ytterligare hjälp.";
 
 /* Message of the alert when the site cannot be launched from store onboarding > launch store screen. */
 "Oops, some unexpected errors happened." = "Hoppsan, det uppstod några oväntade fel.";
@@ -5653,6 +5653,9 @@ which should be translated separately and considered part of this sentence. */
    VoiceOver Accessibility label for the instruction */
 "Please wait" = "Vänta";
 
+/* Subtitle on the connectivity tool screen */
+"Please wait while we attempt to identify your connection issue." = "Vänta medan vi försöker identifiera ditt anslutningsproblem.";
+
 /* Message on the Jetpack Install Progress screen. The %1$@ is the site address. */
 "Please wait while we connect your site %1$@ with Jetpack." = "Vänta medan vi ansluter din webbplats %1$@ till Jetpack.";
 
@@ -6063,7 +6066,7 @@ which should be translated separately and considered part of this sentence. */
 "Reach our happiness engineers who can help answer tough questions" = "Kontakta våra supporttekniker för att få svar på svåra frågor";
 
 /* Action button title for a generic error on the connectivity tool */
-"Read More" = "Läs mer";
+"Read more" = "Läs mer";
 
 /* Text for the button to navigate to troubleshooting tips from the store picker error screen */
 "Read our Troubleshooting Tips" = "Läs våra tips på felsökning";
@@ -6101,6 +6104,9 @@ which should be translated separately and considered part of this sentence. */
 /* Button to reload plugin data after updating a Card Present Payments extension plugin
    Button to reload plugin data after updating a card present payments plugin settings */
 "Refresh After Updating" = "Uppdatera efter uppdatering";
+
+/* The info of the time out error banner */
+"Refresh the screen to try again, or troubleshoot the connection. Contact support if your issue persists." = "Uppdatera skärmen för att försöka igen, eller felsök anslutningen. Kontakta supporten om ditt problem kvarstår.";
 
 /* The title of the button to confirm the refund. */
 "Refund" = "Återbetalning";
@@ -6343,6 +6349,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Action button to check site's connection again. */
 "Retry Connection" = "Försök ansluta igen";
+
+/* Retry connection button in the connectivity tool screen */
+"Retry connection" = "Försök ansluta igen";
 
 /* Title of the secondary button displayed when activating the purchased plan fails, so the merchant can exit the flow. */
 "Return to My Store" = "Tillbaka till min butik";
@@ -7927,6 +7936,12 @@ which should be translated separately and considered part of this sentence. */
 /* The info on the Error Loading Data banner when there was a Jetpack connection error. */
 "There is a problem with your store's Jetpack connection. Please reconnect Jetpack or reach out to us and we'll be happy to assist you!" = "Det har uppstått ett problem med din butiks Jetpack-anslutning. Försök att återansluta Jetpack eller kontakta oss så hjälper vi dig gärna.";
 
+/* Message when we there is a jetpack error in the recovery tool */
+"There is problem with your jetpack connection.\n\nRead more about it or contact our support team and we will happily assist you." = "Det har uppstått ett problem med din Jetpack-anslutning.\n\nLäs mer om problemet, eller kontakta vårt supportteam så hjälper vi dig.";
+
+/* Message when we there is a generic error in the recovery tool */
+"There seems to be a problem with your site.\n\nPlease contact your hosting provider for further assistance." = "Det verkar vara problem med din webbplats.\n\nKontakta ditt webbhotell för att få ytterligare hjälp.";
+
 /* Error message informing the user that there was a problem blocking posts from a site from their reader. */
 "There was a problem blocking posts from the specified site." = "Det gick inte att blockera inlägg från angiven webbplats.";
 
@@ -8031,6 +8046,9 @@ which should be translated separately and considered part of this sentence. */
 /* Message when a card requires a PIN code and we have no means of entering such a code. */
 "This card requires a PIN code and thus cannot be processed. Try another means of payment" = "Detta kort kräver en PIN-kod och kan därför inte behandlas. Prova en annan betalningsmetod";
 
+/* Reason for why the user could not login tin the application password tutorial screen */
+"This could be because your store has some extra security steps in place." = "Detta kan bero på att din butik har några extra säkerhetssteg på plats.";
+
 /* The info on the Error Loading Data banner when there was a decoding error. */
 "This could be related to a conflict with a plugin. Please try again later or reach out to us and we'll be happy to assist you!" = "Detta kan vara relaterat till en konflikt med ett tillägg. Försök igen senare eller kontakta oss så hjälper vi dig gärna!";
 
@@ -8042,9 +8060,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Generic reason for why the user could not login tin the application password tutorial screen */
 "This is because we got an unexpected response from your site." = "Detta beror på att vi fick ett oväntat svar från din webbplats.";
-
-/* Reason for why the user could not login tin the application password tutorial screen */
-"This is likely because your store has some extra security steps in place." = "Detta beror troligen på att din butik har några extra säkerhetssteg på plats.";
 
 /* Footer text in Product Slug screen */
 "This is the URL-friendly version of the product title" = "Detta är den URL-vänliga versionen av produktens rubrik";
@@ -8262,6 +8277,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* The title of the button to get troubleshooting information in the Error Loading Data banner */
 "Troubleshoot" = "Felsök";
+
+/* Screen title for the connectivity tool */
+"Troubleshoot Connection" = "Felsök anslutning";
 
 /* Title for the section to contact support on the subscriptions view. Uppercased */
 "Troubleshooting" = "Felsökning";
@@ -8492,6 +8510,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Load Product Attributes Action Failed */
 "Unable to load product attributes" = "Det gick inte att läsa in produktattributen";
+
+/* Text displayed when there is an error loading product bundles stats data. */
+"Unable to load product bundle analytics" = "Det gick inte att ladda produktpaketanalysen";
+
+/* Text displayed when there is an error loading product bundles sold stats data. */
+"Unable to load product bundles sold analytics" = "Det gick inte att ladda analysen över sålda produktpaket";
 
 /* Text displayed when there is an error loading items sold stats data. */
 "Unable to load product items sold analytics" = "Det gick inte att ladda analysen över sålda produktartiklar";
@@ -9029,8 +9053,14 @@ which should be translated separately and considered part of this sentence. */
 /* Content of the banner notice in the add-ons view */
 "We are working on making it easier for you to see product add-ons from your device! For now, you’ll be able to see the add-ons for your orders. You can create and edit these add-ons in your web dashboard." = "Vi arbetar på att göra det enklare för dig att se produkttillägg från din enhet! För tillfället kan du endast se tilläggen för dina beställningar. Du kan skapa och redigera dessa tillägg i din webbadminpanel.";
 
+/* Message when we there is a decoding error in the recovery tool */
+"We can't work properly with your site's response.\n\nRead more about it or contact our support team and we will happily assist you." = "Vi kan inte arbeta korrekt med din webbplats svar.\n\nLäs mer om problemet, eller kontakta vårt supportteam så hjälper vi dig.";
+
 /* Error message displayed when there is no store matching the site URL that is associated with the user's account */
 "We cannot load the store at the moment." = "Vi kan inte ladda butiken just nu.";
+
+/* Message when we can't reach WPCom in the recovery tool */
+"We can’t connect to WordPress.com right now.\n\nTry again in a few minutes, or contact our support team and we will happily assist you." = "Vi kan inte ansluta till WordPress.com för tillfället.\n\nFörsök igen om några minuter, eller kontakta vårt supportteam så hjälper vi dig.";
 
 /* Title when we can't show stats because user is on a deprecated WC Version */
 "We can’t display your store’s analytics" = "Vi kan inte visa din butiks analys";
@@ -9051,14 +9081,14 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the default store picker error screen */
 "We couldn't load your site" = "Vi kunde inte ladda din webbplats";
 
-/* Title for the application password tutorial screen */
-"We couldn't log in into your site! 😭" = "Vi kunde inte logga in på din webbplats. 😭";
-
 /* A message displayed through a bottom notice letting the user know that the login from the app link failed */
 "We couldn't process your app login request" = "Vi kunde inte behandla din begäran om inloggning i appen";
 
 /* Title for the empty state on the Tax Rates selector screen */
 "We couldn’t find any tax rates" = "Vi kunde inte hitta några momssatser";
+
+/* Title for the application password tutorial screen */
+"We couldn’t log in into your store" = "Vi kunde inte logga in i din butik";
 
 /* Error message. Presented to users when updating the card reader software fails */
 "We couldn’t update your reader’s software" = "Vi kunde inte uppdatera din läsares programvara";
@@ -9553,6 +9583,9 @@ which should be translated separately and considered part of this sentence. */
 /* The title of the Error Loading Data banner when there is a Jetpack connection error */
 "Your site is taking a long time to respond" = "Det tar lång tid för din webbplats att svara";
 
+/* Message when we there is a timeout error in the recovery tool */
+"Your site is taking too long to respond.\n\nPlease contact your hosting provider for further assistance." = "Det tar för lång tid för din webbplats att svara.\n\nKontakta ditt webbhotell för att få ytterligare hjälp.";
+
 /* Title on the banner when the site's WooExpress plan has expired */
 "Your site plan has ended." = "Ditt webbplatspaket är slut.";
 
@@ -9629,6 +9662,12 @@ which should be translated separately and considered part of this sentence. */
 /* Dismiss button on the alert asking to add an image for the Blaze campaign */
 "addProductWithAIActionSheet.manualOptionsTitle" = "Välj en produkttyp";
 
+/* Title for the product bundles analytics report linked in the Analytics Hub */
+"analyticsHub.bundlesCard.reportTitle" = "Produktpaketrapport";
+
+/* Name for the Product Bundles analytics card in the Customize Analytics screen */
+"analyticsHub.customize.bundles" = "Paket";
+
 /* Name for the Orders analytics card in the Customize Analytics screen */
 "analyticsHub.customize.orders" = "Beställningar";
 
@@ -9640,6 +9679,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Name for the Sessions analytics card in the Customize Analytics screen */
 "analyticsHub.customize.sessions" = "Sessioner";
+
+/* Button title to explore an extension that isn't installed */
+"analyticsHub.customizeAnalytics.exploreButton" = "Utforska";
 
 /* Button to save changes on the Customize Analytics screen */
 "analyticsHub.customizeAnalytics.saveButton" = "Spara";
@@ -9680,6 +9722,15 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the revenue analytics report linked in the Analytics Hub */
 "analyticsHub.revenueCard.reportTitle" = "Intäktsrapport";
 
+/* Title for sessions section in the Analytics Hub */
+"analyticsHub.sessionsCard.Title" = "SESSIONER";
+
+/* Description when session data is unavailable in the Analytics Hub */
+"analyticsHub.sessionsCard.dataUnavailable.Description" = "Sessionsanalysen bygger på antalet unika besökare, vilket inte är tillgängligt för anpassade datumintervall.";
+
+/* Message when session data is unavailable in the Analytics Hub */
+"analyticsHub.sessionsCard.dataUnavailable.Message" = "Sessionsdata ej tillgänglig";
+
 /* Button to dismiss the alert asking for confirmation to switch store. */
 "appCoordinator.storeReadyAlert.cancelButton" = "Avbryt";
 
@@ -9697,6 +9748,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Widget title, displayed when selecting which widget to add */
 "appLinkWidget.displayName" = "Ikon";
+
+/* Title for the link for site creation guide. */
+"authenticationConstants.siteCreationGuideButtonTitle" = "Ska du starta en ny butik?";
 
 /* Button to send a message to a customer via Telegram */
 "billingInfoViewController.telegram" = "Skicka Telegram-meddelande";
@@ -10513,6 +10567,9 @@ which should be translated separately and considered part of this sentence. */
 /* Label for the customer's username in the Customer Details screen. */
 "customerDetailView.usernameLabel" = "Användarnamn";
 
+/* Title when there are no customers in the search results in the Customers list screen. */
+"customerList.emptySearchTitle" = "Inga kunder hittades";
+
 /* Message when there are no customers to show in the Customers list screen. */
 "customerList.emptyStateMessage" = "Skapa en beställning för att börja samla in kundinsikter";
 
@@ -10533,6 +10590,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label for a customer with no name in the Customers list screen. */
 "customersList.guestLabel" = "Gäst";
+
+/* Placeholder in the search bar in the Customers list screen. */
+"customersList.searchPlaceholder" = "Sök efter kunder";
 
 /* Title for Customers list screen */
 "customersList.title" = "Kunder";
@@ -11415,6 +11475,9 @@ which should be translated separately and considered part of this sentence. */
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Products' tab. */
 "woocommerce, woo, products, categories, new product, search products" = "woocommerce, woo, produkter, kategorier, ny produkt, sök produkter";
 
+/* Title for the link for site creation guide. */
+"wordPressAuthenticatorDisplayStrings.default.siteCreationGuideButtonTitle" = "Ska du starta en ny webbplats?";
+
 /* Error message that describes an unknown error had occured */
 "wordpress-api.error.unknown" = "Något gick fel, försök igen senare.";
 
@@ -11475,9 +11538,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Åland Islands" = "Åland";
-
-/* Tutorial steps on the application password tutorial screen */
-"⁃ Tap the continue button at the bottom to login directly into your site.\n\n⁃ Once logged in, approve the connection to give access to the woo app like the in the image below." = "⁃ Tryck på knappen Fortsätt längst ner för att logga in direkt på din webbplats.\n\n⁃ När du är inloggad, godkänn anslutningen för att ge åtkomst till Woo-appen som på bilden nedan.";
 
 /* Title of the local notification to remind the user to purchase a plan. */
 "🌟 Keep your business going!" = "🌟 Håll igång din verksamhet.";

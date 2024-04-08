@@ -1,0 +1,25 @@
+{
+    "data": {
+        "totals": {
+            "giftcards_count": 1,
+            "used_amount": 20,
+            "refunded_amount": 0,
+            "net_amount": 20
+        },
+        "intervals": [
+            {
+                "interval": "2024-02",
+                "date_start": "2024-01-08 00:00:00",
+                "date_start_gmt": "2024-01-08 00:00:00",
+                "date_end": "2024-01-14 23:59:59",
+                "date_end_gmt": "2024-01-14 23:59:59",
+                "subtotals": {
+                    "giftcards_count": 1,
+                    "used_amount": 20,
+                    "refunded_amount": 0,
+                    "net_amount": 20
+                }
+            }
+        ]
+    }
+}

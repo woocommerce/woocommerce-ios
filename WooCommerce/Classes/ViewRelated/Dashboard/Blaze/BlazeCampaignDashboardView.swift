@@ -75,8 +75,12 @@ struct BlazeCampaignDashboardView: View {
 
     @ObservedObject private var viewModel: BlazeCampaignDashboardViewModel
 
-    init(viewModel: BlazeCampaignDashboardViewModel) {
+    init(viewModel: BlazeCampaignDashboardViewModel,
+         showAllCampaignsTapped: (() -> Void)? = nil,
+         createCampaignTapped: ((_ productID: Int64?) -> Void)? = nil) {
         self.viewModel = viewModel
+        self.showAllCampaignsTapped = showAllCampaignsTapped
+        self.createCampaignTapped = createCampaignTapped
     }
 
     var body: some View {

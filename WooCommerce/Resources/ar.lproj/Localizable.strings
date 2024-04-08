@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-03-26 17:54:08+0000 */
+/* Translation-Revision-Date: 2024-04-02 11:54:17+0000 */
 /* Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ar */
@@ -303,6 +303,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Step 3 of the 'How it works' list, instructing the merchant to present the phone to the shopper */
 "3. Present your iPhone to the customer." = "3. اعرض iPhone الخاص بك للعميل.";
+
+/* Tutorial steps on the application password tutorial screen */
+"3. When the connection is complete, you will be logged in to your store." = "3. عند اكتمال الربط، سيتم تسجيل دخولك إلى متجرك.";
 
 /* Estimated setup time text shown on the Woo payments setup instructions screen. */
 "4-6 minutes" = "من 4 إلى 6 دقائق";
@@ -1221,6 +1224,12 @@ which should be translated separately and considered part of this sentence. */
 /* Title for Bundled Products row in the product form screen. */
 "Bundled products" = "المنتجات المجمعة";
 
+/* Title for the product bundles card on the analytics hub screen. */
+"Bundles" = "الحزم";
+
+/* Title for the bundles sold column on the product bundles card on the analytics hub screen. */
+"Bundles Sold" = "الحزم المبيعة";
+
 /* Country option for a site address. */
 "Burkina Faso" = "بوركينا فاسو";
 
@@ -1886,9 +1895,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Name of the step to connect the store to Jetpack */
 "Connecting your store" = "الاتصال بمتجرك";
-
-/* Screen title for the connectivity tool */
-"Connectivity Test" = "اختبار إمكانية الربط";
 
 /* Contact Customer action in Shipping Label Address Validation. */
 "Contact Customer" = "الاتصال بالعميل";
@@ -3287,6 +3293,9 @@ which should be translated separately and considered part of this sentence. */
 /* Label asking users to follow the on-screen Tap to Pay on iPhone instructions. Presented when a payment is going to be collected using Tap to Pay on iPhone, which results in an Apple-provided screen being shown with instructions for payment. */
 "Follow the on-screen instructions to pay" = "اتباع التعليمات على الشاشة للدفع";
 
+/* Tutorial steps on the application password tutorial screen */
+"Follow these steps to connect the Woo app directly to your store using an application password.\n\n1. First, log in using your site credentials.\n\n2. When prompted, approve the connection by tapping the confirmation button." = "اتبع هذه الخطوات لربط بتطبيق Woo مباشرة بمتجرك باستخدام كلمة مرور التطبيق.\n \n1. أولاً، سجِّل الدخول باستخدام صلاحيات الموقع الخاصة بك.\n\n2. عند المطالبة بذلك، وافق على الربط من خلال النقر على زر التأكيد.";
+
 /* User role badge */
 "Follower" = "متابع";
 
@@ -3774,7 +3783,10 @@ which should be translated separately and considered part of this sentence. */
 "If you continue with Apple or Google and don't already have a WordPress.com account, you are creating an account and you agree to our _Terms of Service_." = "إذا استمررت في استخدام Apple أو غوغل وليس لديك حساب على ووردبريس.كوم بالفعل، فستنشئ حسابًا جديدًا، وتوافق على شروط الخدمة التي نقرها.";
 
 /* Text to contact support in the application password tutorial screen */
-"If you encounter any problem, contact us and we will happily assist you!" = "إذا واجهت أي مشكلة، فاتصل بنا وستسعدنا مساعدتك!";
+"If you run into any issues, please contact our support team." = "إذا واجهت أي مشكلات، فيرجى الاتصال بفريق الدعم لدينا.";
+
+/* Info message when there are no connection issues in the connectivity tool screen */
+"If your data still isn’t loading, contact our support team for assistance." = "إذا لم يتم تحميل بياناتك، فاتصل بفريق الدعم لديك للحصول على المساعدة.";
 
 /* Heading for the details pane showing the contactless limit on About Tap to Pay */
 "Important information" = "معلومات مهمة";
@@ -4885,6 +4897,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the error screen when there was a network error checking In-Person Payments requirements. */
 "No connection" = "لا يوجد اتصال";
 
+/* Title for when there are no connection issues in the connectivity tool screen */
+"No connection issues" = "لا توجد مشكلات في الاتصال";
+
 /* Error message when there is no connection to the Internet. */
 "No connection to the Internet - please connect to the Internet and try again" = "لا يوجد اتصال بالإنترنت - يرجى الاتصال بالإنترنت والمحاولة مجددًا";
 
@@ -5090,23 +5105,8 @@ which should be translated separately and considered part of this sentence. */
 /* Content of the banner notice on the Payment Method screen when user does not have permission to change the payment method. %1$@ is a placeholder for the store owner's name. %2$@ is a placeholder for the store owner's username. */
 "Only the site owner can manage the shipping label payment methods. Please contact %1$@ (%2$@) to manage payment methods." = "يمكن لمالك الموقع فقط إدارة طرق دفع ملصقات الشحن. يرجى الاتصال بـ %1$@ (%2$@) لإدارة طرق الدفع.";
 
-/* Message when we can't reach WPCom in the recovery tool */
-"Oops! It seems we can't connect to WordPress.com at the moment.\n\nBut don't worry, our support team is here to help. Contact us and we will happily assist you." = "عفوًا! يبدو أنه يتعذر علينا الربط بووردبريس.كوم في الوقت الحالي.\n\nلكن لا داعي للقلق، فريق الدعم لدينا موجود هنا لمساعدتك. اتصل بنا وستسعدنا مساعدتك.";
-
-/* Message when we there is a decoding error in the recovery tool */
-"Oops! It seems we can't work properly with your site's response.\n\nBut don't worry, our support team is here to help. Contact us and we will happily assist you." = "عفوًا! يبدو أنه يتعذر علينا التعامل بشكل صحيح مع استجابة موقعك. \n\nلكن لا داعي للقلق، فريق الدعم لدينا موجود هنا لمساعدتك. اتصل بنا وستسعدنا مساعدتك.";
-
-/* Message when we there is a jetpack error in the recovery tool */
-"Oops! There seems to be a problem with your jetpack connection.\n\nBut don't worry, our support team is here to help. Contact us and we will happily assist you." = "عفوًا! يبدو أن هناك مشكلة في الربط بـ Jetpack الخاص بك.\n\nلكن لا داعي للقلق، فريق الدعم لدينا موجود هنا لمساعدتك. اتصل بنا وستسعدنا مساعدتك.";
-
-/* Message when we there is a generic error in the recovery tool */
-"Oops! There seems to be a problem with your site.\n\nContact your hosting provider for further assistance." = "عفوًا! يبدو أن هناك مشكلة في موقعك.\n\nاتصل بمزوّد خدمة الاستضافة للحصول على مزيد من المساعدة.";
-
 /* Title of the alert when the store cannot be created in the store creation flow. */
 "Oops! We've hit a snag" = "عذرًا! لقد واجهنا مشكلة";
-
-/* Message when we there is a timeout error in the recovery tool */
-"Oops! Your site seems to be taking too long to respond.\n\nContact your hosting provider for further assistance." = "عذرًا! يبدو أن موقعك يستغرق وقتًا طويلاً للغاية لكي يستجيب.\n\nاتصل بمزوّد خدمة الاستضافة للحصول على مزيد من المساعدة.";
 
 /* Message of the alert when the site cannot be launched from store onboarding > launch store screen. */
 "Oops, some unexpected errors happened." = "عذرًا، حدثت بعض الأخطاء غير المتوقعة.";
@@ -5653,6 +5653,9 @@ which should be translated separately and considered part of this sentence. */
    VoiceOver Accessibility label for the instruction */
 "Please wait" = "يُرجى الانتظار";
 
+/* Subtitle on the connectivity tool screen */
+"Please wait while we attempt to identify your connection issue." = "يرجى الانتظار بينما نحاول تحديد مشكلة الاتصال الخاصة بك.";
+
 /* Message on the Jetpack Install Progress screen. The %1$@ is the site address. */
 "Please wait while we connect your site %1$@ with Jetpack." = "يرجى الانتظار بينما نقوم بربط موقعك %1$@ بـ Jetpack.";
 
@@ -6063,7 +6066,7 @@ which should be translated separately and considered part of this sentence. */
 "Reach our happiness engineers who can help answer tough questions" = "يمكنك الوصول إلى مهندسينا الذين تسرهم مساعدتك في الإجابة عن الأسئلة الصعبة";
 
 /* Action button title for a generic error on the connectivity tool */
-"Read More" = "قراءة المزيد";
+"Read more" = "قراءة المزيد";
 
 /* Text for the button to navigate to troubleshooting tips from the store picker error screen */
 "Read our Troubleshooting Tips" = "قراءة نصائح حل المشكلات";
@@ -6101,6 +6104,9 @@ which should be translated separately and considered part of this sentence. */
 /* Button to reload plugin data after updating a Card Present Payments extension plugin
    Button to reload plugin data after updating a card present payments plugin settings */
 "Refresh After Updating" = "التنشيط بعد التحديث";
+
+/* The info of the time out error banner */
+"Refresh the screen to try again, or troubleshoot the connection. Contact support if your issue persists." = "يمكنك تحديث الشاشة للمحاولة مجددًا أو حل مشكلات الاتصال. اتصل بالدعم إذا استمرت المشكلة التي تواجهها.";
 
 /* The title of the button to confirm the refund. */
 "Refund" = "إعادة المبلغ";
@@ -6343,6 +6349,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Action button to check site's connection again. */
 "Retry Connection" = "إعادة محاولة الاتصال";
+
+/* Retry connection button in the connectivity tool screen */
+"Retry connection" = "إعادة محاولة الاتصال";
 
 /* Title of the secondary button displayed when activating the purchased plan fails, so the merchant can exit the flow. */
 "Return to My Store" = "العودة إلى متجري";
@@ -7927,6 +7936,12 @@ which should be translated separately and considered part of this sentence. */
 /* The info on the Error Loading Data banner when there was a Jetpack connection error. */
 "There is a problem with your store's Jetpack connection. Please reconnect Jetpack or reach out to us and we'll be happy to assist you!" = "هناك مشكلة في الاتصال Jetpack الخاص بمتجرك. ترجى إعادة الاتصال بـ Jetpack أو التواصل معنا وستسرنا مساعدتك!";
 
+/* Message when we there is a jetpack error in the recovery tool */
+"There is problem with your jetpack connection.\n\nRead more about it or contact our support team and we will happily assist you." = "هناك مشكلة في اتصالك بـ Jetpack.\n\nاقرأ المزيد حول ذلك الأمر أو اتصل بفريق الدعم لدينا وستسعدنا مساعدتك.";
+
+/* Message when we there is a generic error in the recovery tool */
+"There seems to be a problem with your site.\n\nPlease contact your hosting provider for further assistance." = "يبدو أن هناك مشكلة في موقعك.\n\nيرجى الاتصال بمزوّد خدمة الاستضافة لديك للحصول على مزيد من المساعدة.";
+
 /* Error message informing the user that there was a problem blocking posts from a site from their reader. */
 "There was a problem blocking posts from the specified site." = "حدثت مشكلة أثناء حظر المقالات من الموقع المحدد.";
 
@@ -8031,6 +8046,9 @@ which should be translated separately and considered part of this sentence. */
 /* Message when a card requires a PIN code and we have no means of entering such a code. */
 "This card requires a PIN code and thus cannot be processed. Try another means of payment" = "تتطلب هذه البطاقة رمز PIN، ولهذا السبب تتعذر معالجتها. تجربة وسائل دفع أخرى";
 
+/* Reason for why the user could not login tin the application password tutorial screen */
+"This could be because your store has some extra security steps in place." = "من المحتمل أن يرجع ذلك إلى وجود بعض الخطوات الإضافية المتعلقة بالأمان في متجرك.";
+
 /* The info on the Error Loading Data banner when there was a decoding error. */
 "This could be related to a conflict with a plugin. Please try again later or reach out to us and we'll be happy to assist you!" = "قد يرتبط ذلك بنزاع مع الاضافة. ترجى المحاولة مرة أخرى لاحقًا أو التواصل معنا وستسرنا مساعدتك!";
 
@@ -8042,9 +8060,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Generic reason for why the user could not login tin the application password tutorial screen */
 "This is because we got an unexpected response from your site." = "يرجع لك إلى أننا تلقينا استجابة غير متوقعة من موقعك.";
-
-/* Reason for why the user could not login tin the application password tutorial screen */
-"This is likely because your store has some extra security steps in place." = "من المحتمل أن يرجع ذلك إلى وجود بعض الخطوات الإضافية المتعلقة بالأمان في متجرك.";
 
 /* Footer text in Product Slug screen */
 "This is the URL-friendly version of the product title" = "هذا هو إصدار عنوان المنتج المألوف لعنوان URL";
@@ -8262,6 +8277,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* The title of the button to get troubleshooting information in the Error Loading Data banner */
 "Troubleshoot" = "حل المشكلات";
+
+/* Screen title for the connectivity tool */
+"Troubleshoot Connection" = "حل مشكلات الاتصال";
 
 /* Title for the section to contact support on the subscriptions view. Uppercased */
 "Troubleshooting" = "حل المشكلات";
@@ -8492,6 +8510,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Load Product Attributes Action Failed */
 "Unable to load product attributes" = "يتعذر تحميل سمات المنتج";
+
+/* Text displayed when there is an error loading product bundles stats data. */
+"Unable to load product bundle analytics" = "يتعذر تحميل تحليلات حزم المنتجات";
+
+/* Text displayed when there is an error loading product bundles sold stats data. */
+"Unable to load product bundles sold analytics" = "يتعذر تحميل تحليلات حزم المنتجات المبيعة";
 
 /* Text displayed when there is an error loading items sold stats data. */
 "Unable to load product items sold analytics" = "يتعذر تحميل تحليلات عناصر المنتج المبيعة";
@@ -9029,8 +9053,14 @@ which should be translated separately and considered part of this sentence. */
 /* Content of the banner notice in the add-ons view */
 "We are working on making it easier for you to see product add-ons from your device! For now, you’ll be able to see the add-ons for your orders. You can create and edit these add-ons in your web dashboard." = "نعمل على تسهيل اطلاعك على الوظائف الإضافية للمنتج مباشرةً من جهازك! في الوقت الحالي، ستتمكن من الاطلاع على الوظائف الإضافية لطلباتك. يمكنك إنشاء هذه الوظائف الإضافية وتحريرها في لوحة تحكم الويب الخاصة بك.";
 
+/* Message when we there is a decoding error in the recovery tool */
+"We can't work properly with your site's response.\n\nRead more about it or contact our support team and we will happily assist you." = "يتعذر علينا التعامل بشكل صحيح مع استجابة موقعك. \n\nاقرأ المزيد حول ذلك الأمر أو اتصل بفريق الدعم لدينا وستسعدنا مساعدتك.";
+
 /* Error message displayed when there is no store matching the site URL that is associated with the user's account */
 "We cannot load the store at the moment." = "يتعذر علينا تحميل المتجر في الوقت الحالي.";
+
+/* Message when we can't reach WPCom in the recovery tool */
+"We can’t connect to WordPress.com right now.\n\nTry again in a few minutes, or contact our support team and we will happily assist you." = "يتعذر علينا الاتصال بووردبريس.كوم الآن.\n\nحاول مجددًا في غضون دقائق، أو اتصل بفريق الدعم لدينا وستسعدنا مساعدتك.";
 
 /* Title when we can't show stats because user is on a deprecated WC Version */
 "We can’t display your store’s analytics" = "يتعذر علينا عرض تحليلات مخزنك";
@@ -9051,14 +9081,14 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the default store picker error screen */
 "We couldn't load your site" = "تعذر علينا تحميل موقعك";
 
-/* Title for the application password tutorial screen */
-"We couldn't log in into your site! 😭" = "تعذر علينا تسجيل الدخول إلى موقعك! 😭";
-
 /* A message displayed through a bottom notice letting the user know that the login from the app link failed */
 "We couldn't process your app login request" = "تتعذر علينا معالجة طلب تسجيل الدخول إلى تطبيقك";
 
 /* Title for the empty state on the Tax Rates selector screen */
 "We couldn’t find any tax rates" = "يتعذر علينا إيجاد أي معدلات ضرائب";
+
+/* Title for the application password tutorial screen */
+"We couldn’t log in into your store" = "تعذر علينا تسجيل الدخول إلى متجرك";
 
 /* Error message. Presented to users when updating the card reader software fails */
 "We couldn’t update your reader’s software" = "يتعذر علينا تحديث برنامج القارئ الخاص بك";
@@ -9553,6 +9583,9 @@ which should be translated separately and considered part of this sentence. */
 /* The title of the Error Loading Data banner when there is a Jetpack connection error */
 "Your site is taking a long time to respond" = "يستغرق موقعك فترة طويلة للاستجابة";
 
+/* Message when we there is a timeout error in the recovery tool */
+"Your site is taking too long to respond.\n\nPlease contact your hosting provider for further assistance." = "يستغرق موقعك وقتًا طويلاً للغاية لكي يستجيب.\n\nيرجى الاتصال بمزوّد خدمة الاستضافة لديك للحصول على مزيد من المساعدة.";
+
 /* Title on the banner when the site's WooExpress plan has expired */
 "Your site plan has ended." = "انتهت خطة موقعك.";
 
@@ -9629,6 +9662,12 @@ which should be translated separately and considered part of this sentence. */
 /* Dismiss button on the alert asking to add an image for the Blaze campaign */
 "addProductWithAIActionSheet.manualOptionsTitle" = "تحديد نوع المنتج";
 
+/* Title for the product bundles analytics report linked in the Analytics Hub */
+"analyticsHub.bundlesCard.reportTitle" = "تقرير حزم المنتجات";
+
+/* Name for the Product Bundles analytics card in the Customize Analytics screen */
+"analyticsHub.customize.bundles" = "الحزم";
+
 /* Name for the Orders analytics card in the Customize Analytics screen */
 "analyticsHub.customize.orders" = "الطلبات";
 
@@ -9640,6 +9679,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Name for the Sessions analytics card in the Customize Analytics screen */
 "analyticsHub.customize.sessions" = "الجلسات";
+
+/* Button title to explore an extension that isn't installed */
+"analyticsHub.customizeAnalytics.exploreButton" = "استكشاف";
 
 /* Button to save changes on the Customize Analytics screen */
 "analyticsHub.customizeAnalytics.saveButton" = "حفظ";
@@ -9680,6 +9722,15 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the revenue analytics report linked in the Analytics Hub */
 "analyticsHub.revenueCard.reportTitle" = "تقرير حول الإيرادات";
 
+/* Title for sessions section in the Analytics Hub */
+"analyticsHub.sessionsCard.Title" = "الجلسات";
+
+/* Description when session data is unavailable in the Analytics Hub */
+"analyticsHub.sessionsCard.dataUnavailable.Description" = "تعتمد تحليلات الجلسة على أعداد الزائرين الفريدة غير المتاحة لنطاقات التواريخ المخصصة.";
+
+/* Message when session data is unavailable in the Analytics Hub */
+"analyticsHub.sessionsCard.dataUnavailable.Message" = "بيانات الجلسة غير متاحة";
+
 /* Button to dismiss the alert asking for confirmation to switch store. */
 "appCoordinator.storeReadyAlert.cancelButton" = "إلغاء";
 
@@ -9697,6 +9748,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Widget title, displayed when selecting which widget to add */
 "appLinkWidget.displayName" = "أيقونة";
+
+/* Title for the link for site creation guide. */
+"authenticationConstants.siteCreationGuideButtonTitle" = "هل تريد بدء متجر جديد؟";
 
 /* Button to send a message to a customer via Telegram */
 "billingInfoViewController.telegram" = "إرسال رسالة عبر Telegram";
@@ -10513,6 +10567,9 @@ which should be translated separately and considered part of this sentence. */
 /* Label for the customer's username in the Customer Details screen. */
 "customerDetailView.usernameLabel" = "اسم المستخدم";
 
+/* Title when there are no customers in the search results in the Customers list screen. */
+"customerList.emptySearchTitle" = "لم يتم العثور على عملاء";
+
 /* Message when there are no customers to show in the Customers list screen. */
 "customerList.emptyStateMessage" = "إنشاء طلب لبدء جمع رؤى العملاء";
 
@@ -10533,6 +10590,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label for a customer with no name in the Customers list screen. */
 "customersList.guestLabel" = "ضيف";
+
+/* Placeholder in the search bar in the Customers list screen. */
+"customersList.searchPlaceholder" = "البحث عن العملاء";
 
 /* Title for Customers list screen */
 "customersList.title" = "العملاء";
@@ -11415,6 +11475,9 @@ which should be translated separately and considered part of this sentence. */
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Products' tab. */
 "woocommerce, woo, products, categories, new product, search products" = "woocommerce، woo، المنتجات، التصنيفات، المنتج الجديد، البحث عن المنتجات";
 
+/* Title for the link for site creation guide. */
+"wordPressAuthenticatorDisplayStrings.default.siteCreationGuideButtonTitle" = "هل تريد بدء موقع جديد؟";
+
 /* Error message that describes an unknown error had occured */
 "wordpress-api.error.unknown" = "حدث خطأ ما، ترجى المحاولة مجددًا في وقت لاحق.";
 
@@ -11475,9 +11538,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Åland Islands" = "جزر آلاند";
-
-/* Tutorial steps on the application password tutorial screen */
-"⁃ Tap the continue button at the bottom to login directly into your site.\n\n⁃ Once logged in, approve the connection to give access to the woo app like the in the image below." = "- انقر على زر \"استمرار\" الموجود في الأسفل لتسجيل الدخول مباشرة إلى موقعك.\n\n- بمجرد تسجيل الدخول، وافق على الربط لمنح حق الوصول إلى تطبيق woo مثلما هو الحال في الصورة أدناه.";
 
 /* Title of the local notification to remind the user to purchase a plan. */
 "🌟 Keep your business going!" = "🌟 واصل القيام بأعمالك!";

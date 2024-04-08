@@ -63,6 +63,10 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     ///
     private let variationDisplayMode: VariationDisplayMode?
 
+    /// Subscription settings extracted from product meta data for a Subscription-type Product, if any
+    ///
+    private(set) var productSubscriptionDetails: ProductSubscription?
+
     /// Stock or variation attributes label.
     /// Provides stock label for non-variations; uses variation display mode to determine the label for variations.
     ///
@@ -195,6 +199,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
          imageURL: URL?,
          numberOfVariations: Int = 0,
          variationDisplayMode: VariationDisplayMode? = nil,
+         productSubscriptionDetails: ProductSubscription? = nil,
          selectedState: ProductRow.SelectedState = .notSelected,
          pricedIndividually: Bool = true,
          isConfigurable: Bool,
@@ -220,6 +225,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         self.analytics = analytics
         self.numberOfVariations = numberOfVariations
         self.variationDisplayMode = variationDisplayMode
+        self.productSubscriptionDetails = productSubscriptionDetails
         self.configure = configure
     }
 
@@ -284,6 +290,13 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
 
         let productTypeLabel: String? = isConfigurable ? product.productType.description: nil
 
+        let productSubscriptionDetails: ProductSubscription?
+        if product.productType == .subscription || product.productType == .variableSubscription {
+            productSubscriptionDetails = product.subscription
+        } else {
+            productSubscriptionDetails = nil
+        }
+
         self.init(id: id,
                   productOrVariationID: product.productID,
                   name: product.name,
@@ -297,6 +310,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                   quantity: quantity,
                   imageURL: product.imageURL,
                   numberOfVariations: product.variations.count,
+                  productSubscriptionDetails: productSubscriptionDetails,
                   selectedState: selectedState,
                   pricedIndividually: pricedIndividually,
                   isConfigurable: isConfigurable,

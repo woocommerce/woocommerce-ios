@@ -152,14 +152,12 @@ private extension DashboardView {
                 BlazeCampaignDashboardView(viewModel: viewModel.blazeCampaignDashboardViewModel,
                                            showAllCampaignsTapped: showAllBlazeCampaignsTapped,
                                            createCampaignTapped: createBlazeCampaignTapped)
-            case .stats:
+            case .statsAndTopPerformers:
                 if viewModel.statsVersion == .v4 {
                     ViewControllerContainer(storeStatsAndTopPerformersViewController)
                 } else {
                     ViewControllerContainer(DeprecatedDashboardStatsViewController())
                 }
-            case .topPerformers:
-                EmptyView() // TODO-12403: handle this after separating stats and top performers
             }
         }
     }

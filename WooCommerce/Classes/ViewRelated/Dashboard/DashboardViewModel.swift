@@ -8,8 +8,7 @@ import protocol Experiments.FeatureFlagService
 ///
 enum DashboardCard: Int, CaseIterable {
     case onboarding
-    case stats
-    case topPerformers
+    case statsAndTopPerformers // TODO-12403: separate stats and top performers if needed
     case blaze
 }
 
@@ -32,7 +31,7 @@ final class DashboardViewModel: ObservableObject {
 
     @Published private(set) var showOnboarding: Bool = false
     @Published private(set) var showBlazeCampaignView: Bool = false
-    @Published private(set) var dashboardCards: [DashboardCard] = [.stats, .topPerformers]
+    @Published private(set) var dashboardCards: [DashboardCard] = [.statsAndTopPerformers]
 
     @Published private(set) var jetpackBannerVisibleFromAppSettings = false
     @Published var statSyncingError: Error?
@@ -330,8 +329,7 @@ private extension DashboardViewModel {
             .map { showOnboarding, showBlazeCampaignView -> [DashboardCard] in
                 [
                     showOnboarding ? .onboarding : nil,
-                    .stats,
-                    .topPerformers,
+                    .statsAndTopPerformers,
                     showBlazeCampaignView ? .blaze : nil
                 ].compactMap { $0 }
             }

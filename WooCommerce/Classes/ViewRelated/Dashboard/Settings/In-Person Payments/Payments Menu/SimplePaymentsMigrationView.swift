@@ -25,6 +25,7 @@ struct SimplePaymentsMigrationView: View {
             }
             .buttonStyle(PrimaryButtonStyle())
             .padding(.top, Layout.extraButtonTopPadding)
+            .accessibilityIdentifier("simple-payments-migration-add-custom-amount")
         }
         .multilineTextAlignment(.center)
         .padding(Layout.padding)

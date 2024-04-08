@@ -15,6 +15,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  *  @brief      The API object to use for communications.
  */
+// TODO: This needs to go before being able to put this ObjC in a package.
 @property (nonatomic, strong, readonly) WordPressComRestApi *wordPressComRestApi;
 
 /**

@@ -160,7 +160,7 @@ struct PrintCustomsFormsView_Previews: PreviewProvider {
             .previewDevice(PreviewDevice(rawValue: "iPhone 12"))
             .previewDisplayName("iPhone 12")
 
-        PrintCustomsFormsView(invoiceURLs: ["https://woo.com", "https://wordpress.com"])
+        PrintCustomsFormsView(invoiceURLs: ["https://woocommerce.com", "https://wordpress.com"])
             .previewDevice(PreviewDevice(rawValue: "iPhone 12 Pro Max"))
             .previewDisplayName("iPhone 12 Pro Max")
     }

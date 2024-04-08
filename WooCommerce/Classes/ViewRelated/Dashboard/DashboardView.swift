@@ -116,9 +116,9 @@ struct DashboardView: View {
             supportForm
         }
         .safariSheet(url: $troubleShootURL)
-        .sheet(item: $viewModel.showWebViewSheet) { webViewModel in
+        .sheet(item: $viewModel.justInTimeMessagesWebViewModel) { webViewModel in
             WebViewSheet(viewModel: webViewModel) {
-                viewModel.showWebViewSheet = nil
+                viewModel.justInTimeMessagesWebViewModel = nil
                 viewModel.maybeSyncAnnouncementsAfterWebViewDismissed()
             }
         }

@@ -24,6 +24,11 @@ struct ProductRow: View {
     ///
     let accessibilityHint: String
 
+    var isSubscriptionsInOrderCreationSupportEnabled: Bool {
+        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.subscriptionsInOrderCreationUI) &&
+        viewModel.productSubscriptionDetails != nil
+    }
+
     init(multipleSelectionsEnabled: Bool = false,
          viewModel: ProductRowViewModel,
          accessibilityHint: String = "",
@@ -60,7 +65,6 @@ struct ProductRow: View {
                 Text(viewModel.productDetailsLabel)
                     .subheadlineStyle()
                     .renderedIf(viewModel.productDetailsLabel.isNotEmpty)
-                if let _ = viewModel.productSubscriptionDetails {
                     VStack(alignment: .leading) {
                         Text(viewModel.subscriptionConditionsLabel)
                             .subheadlineStyle()
@@ -69,7 +73,7 @@ struct ProductRow: View {
                             .font(.subheadline)
                             .foregroundColor(Color(.text))
                     }
-                }
+                    .renderedIf(isSubscriptionsInOrderCreationSupportEnabled)
                 Text(viewModel.secondaryProductDetailsLabel)
                     .subheadlineStyle()
                     .renderedIf(viewModel.secondaryProductDetailsLabel.isNotEmpty)

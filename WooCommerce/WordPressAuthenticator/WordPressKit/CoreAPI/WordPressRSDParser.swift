@@ -47,7 +47,7 @@ open class WordPressRSDParser: NSObject, XMLParserDelegate {
     }
 
     open func parser(_ parser: XMLParser, parseErrorOccurred parseError: Error) {
-        WPKitLogInfo("Error parsing RSD: \(parseError)")
+        // WPKitLogInfo("Error parsing RSD: \(parseError)")
     }
 
 }

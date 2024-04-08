@@ -187,7 +187,7 @@ public final class WordPressComOAuthClient: NSObject {
             .mapSuccess { response in
                 let responseObject = try JSONSerialization.jsonObject(with: response.body)
 
-                WPKitLogVerbose("Received OAuth2 response: \(self.cleanedUpResponseForLogging(responseObject as AnyObject? ?? "nil" as AnyObject))")
+                // WPKitLogVerbose("Received OAuth2 response: \(self.cleanedUpResponseForLogging(responseObject as AnyObject? ?? "nil" as AnyObject))")
 
                 guard let responseDictionary = responseObject as? [String: AnyObject] else {
                     throw URLError(.cannotParseResponse)
@@ -380,7 +380,7 @@ public final class WordPressComOAuthClient: NSObject {
             .perform(request: builder, errorType: AuthenticationFailure.self)
             .mapUnacceptableStatusCodeError(AuthenticationFailure.init(response:body:))
             .mapSuccess { response in
-                WPKitLogVerbose("Received Social Login Oauth response.")
+                // WPKitLogVerbose("Received Social Login Oauth response.")
 
                 // Make sure we received expected data.
                 let responseObject = try? JSONSerialization.jsonObject(with: response.body)
@@ -700,7 +700,7 @@ public final class WordPressComOAuthClient: NSObject {
             .mapSuccess { response in
                 let responseObject = try JSONSerialization.jsonObject(with: response.body)
 
-                WPKitLogVerbose("Received Social Login Oauth response: \(self.cleanedUpResponseForLogging(responseObject as AnyObject? ?? "nil" as AnyObject))")
+                // WPKitLogVerbose("Received Social Login Oauth response: \(self.cleanedUpResponseForLogging(responseObject as AnyObject? ?? "nil" as AnyObject))")
                 guard let responseDictionary = responseObject as? [String: AnyObject],
                     let responseData = responseDictionary["data"] as? [String: AnyObject],
                     let authToken = responseData["bearer_token"] as? String else {

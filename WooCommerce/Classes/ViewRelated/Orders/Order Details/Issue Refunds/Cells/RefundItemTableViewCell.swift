@@ -80,8 +80,7 @@ private extension RefundItemTableViewCell {
     func applyRefundQuantityButtonStyle() {
         itemQuantityButton.applySecondaryButtonStyle()
         itemQuantityButton.titleLabel?.applyBodyStyle()
-        itemQuantityButton.contentEdgeInsets = Constants.quantityButtonInsets
-
+        itemQuantityButton.configuration?.contentInsets = Constants.quantityButtonInsets
         itemQuantityButton.accessibilityLabel = Localization.quantity
         itemQuantityButton.accessibilityHint = Localization.quantityHint
     }
@@ -144,7 +143,7 @@ private extension RefundItemTableViewCell {
     enum Constants {
         static let itemImageViewHeight: CGFloat = 39.0
         static let itemImageViewBorderWidth: CGFloat = 0.5
-        static let quantityButtonInsets = UIEdgeInsets(top: 8, left: 22, bottom: 8, right: 22)
+        static let quantityButtonInsets = NSDirectionalEdgeInsets(top: 8, leading: 22, bottom: 8, trailing: 22)
     }
 
     enum Localization {

@@ -221,13 +221,13 @@
                 "id": 10737,
                 "name": "learn-more",
                 "label": "Learn more",
-                "query": "https:\/\/woo.com\/products\/bbpos-chipper2xbt-card-reader?utm_source=inbox&utm_medium=product&utm_campaign=bbpos-chipper-launch",
+                "query": "https:\/\/woocommerce.com\/products\/bbpos-chipper2xbt-card-reader?utm_source=inbox&utm_medium=product&utm_campaign=bbpos-chipper-launch",
                 "status": "unactioned",
                 "primary": true,
                 "actioned_text": "",
                 "nonce_action": null,
                 "nonce_name": null,
-                "url": "https:\/\/woo.com\/products\/bbpos-chipper2xbt-card-reader?utm_source=inbox&utm_medium=product&utm_campaign=bbpos-chipper-launch"
+                "url": "https:\/\/woocommerce.com\/products\/bbpos-chipper2xbt-card-reader?utm_source=inbox&utm_medium=product&utm_campaign=bbpos-chipper-launch"
             }],
             "layout": "plain",
             "image": "",

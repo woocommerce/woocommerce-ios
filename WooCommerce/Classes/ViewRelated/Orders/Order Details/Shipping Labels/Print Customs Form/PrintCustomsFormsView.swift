@@ -156,7 +156,7 @@ private extension PrintCustomsFormsView {
 
 struct PrintCustomsFormsView_Previews: PreviewProvider {
     static var previews: some View {
-        PrintCustomsFormsView(invoiceURLs: ["https://woo.com"])
+        PrintCustomsFormsView(invoiceURLs: ["https://woocommerce.com"])
             .previewDevice(PreviewDevice(rawValue: "iPhone 12"))
             .previewDisplayName("iPhone 12")
 

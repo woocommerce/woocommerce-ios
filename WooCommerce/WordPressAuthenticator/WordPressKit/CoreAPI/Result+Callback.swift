@@ -1,4 +1,4 @@
-extension Swift.Result {
+public extension Swift.Result {
 
     // Notice there are no explicit unit tests for this utility because it is implicitly tested via the consuming code's tests.
     func execute(onSuccess: (Success) -> Void, onFailure: (Failure) -> Void) {

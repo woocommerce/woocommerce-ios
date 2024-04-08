@@ -319,12 +319,9 @@ class URLSessionHelperTests: XCTestCase {
     // This functions finds temp files that are used for uploading multipart form.
     // The implementation relies on an internal implementation detail of building multipart form content.
     private func existingMultipartFormTempFiles() throws -> Set<String> {
-        let uuidRegex = try NSRegularExpression(pattern: "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89ab][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$")
         let fm = FileManager.default
         let files = try fm.contentsOfDirectory(atPath: fm.temporaryDirectory.path)
-            .filter {
-                uuidRegex.numberOfMatches(in: $0, range: NSMakeRange(0, $0.count)) == 1
-            }
+            .filter { UUID(uuidString: $0) != nil }
         return Set(files)
     }
 

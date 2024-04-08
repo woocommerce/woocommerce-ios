@@ -426,6 +426,69 @@ final class ProductRowViewModelTests: XCTestCase {
             XCTAssertFalse(viewModel.isConfigurable)
         }
     }
+
+    // MARK: - `productSubscriptionDetails`
+    //
+    func test_productRow_when_product_type_is_subscription_and_contains_subscription_metadata_then_productRow_has_subscription_metadata() {
+        // Given
+        let rowID = Int64(0)
+        let subs: ProductSubscription = .fake()
+        let productTypeKey = "subscription"
+
+        let product = Product.fake().copy(productID: 12,
+                                          name: "A subscription product",
+                                          productTypeKey: productTypeKey,
+                                          subscription: subs)
+
+        // When
+        let viewModel = ProductRowViewModel(id: rowID, product: product, productSubscriptionDetails: subs)
+
+        // Then
+        XCTAssertEqual(viewModel.id, rowID)
+        XCTAssertEqual(viewModel.productOrVariationID, product.productID)
+        XCTAssertEqual(viewModel.name, product.name)
+        XCTAssertNotNil(viewModel.productSubscriptionDetails)
+    }
+
+    func test_productRow_variation_when_product_type_is_subscription_and_contains_subscription_metadata_then_productRow_variation_has_subscription_metadata() {
+        // Given
+        let rowID = Int64(0)
+        let subs: ProductSubscription = .fake()
+        let name = "Blue - Any Size"
+        let productVariation = ProductVariation.fake().copy(productVariationID: 12,
+                                                            attributes: [ProductVariationAttribute(id: 1, name: "Color", option: "Blue")],
+                                                            subscription: subs)
+
+        // When
+        let viewModel = ProductRowViewModel(id: rowID, productVariation: productVariation, name: name, displayMode: .stock)
+
+        // Then
+        XCTAssertEqual(viewModel.id, rowID)
+        XCTAssertEqual(viewModel.productOrVariationID, productVariation.productVariationID)
+        XCTAssertEqual(viewModel.name, name)
+        XCTAssertNotNil(viewModel.productSubscriptionDetails)
+    }
+
+    func test_productRow_when_product_type_is_not_subscription_but_contains_subscription_metadata_then_productRow_has_no_subscription_metadata() {
+        // Given
+        let rowID = Int64(0)
+        let subs: ProductSubscription = .fake()
+        let productTypeKey = "simple"
+
+        let product = Product.fake().copy(productID: 12,
+                                          name: "Not a subscription product anymore, but might have subscription metadata",
+                                          productTypeKey: productTypeKey,
+                                          subscription: subs)
+
+        // When
+        let viewModel = ProductRowViewModel(id: rowID, product: product, productSubscriptionDetails: subs)
+
+        // Then
+        XCTAssertEqual(viewModel.id, rowID)
+        XCTAssertEqual(viewModel.productOrVariationID, product.productID)
+        XCTAssertEqual(viewModel.name, product.name)
+        XCTAssertNil(viewModel.productSubscriptionDetails)
+    }
 }
 
 private extension ProductRowViewModelTests {

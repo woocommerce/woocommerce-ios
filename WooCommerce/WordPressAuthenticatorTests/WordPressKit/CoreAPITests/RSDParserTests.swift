@@ -1,7 +1,10 @@
 import Foundation
 import XCTest
-
+#if SWIFT_PACKAGE
+@testable import CoreAPI
+#else
 @testable import WordPressKit
+#endif
 
 class RSDParserTests: XCTestCase {
 

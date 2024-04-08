@@ -1,8 +1,13 @@
-import Foundation
 import XCTest
 import OHHTTPStubs
 import WordPressShared
+#if SWIFT_PACKAGE
+import APIInterface
+@testable import CoreAPI
+import OHHTTPStubsSwift
+#else
 @testable import WordPressKit
+#endif
 
 class WordPressComRestApiTests: XCTestCase {
 
@@ -113,7 +118,7 @@ class WordPressComRestApiTests: XCTestCase {
 
     func testSuccessfullCall() throws {
         let stubPath = try XCTUnwrap(
-            OHPathForFile("WordPressComRestApiMedia.json", type(of: self))
+            OHPathForFileInBundle("WordPressComRestApiMedia.json", Bundle.coreAPITestsBundle)
         )
         stub(condition: isRestAPIRequest()) { _ in
             return fixture(filePath: stubPath, headers: ["Content-Type" as NSObject: "application/json" as AnyObject])
@@ -170,7 +175,7 @@ class WordPressComRestApiTests: XCTestCase {
 
     func testInvalidTokenFailedCall() throws {
         let stubPath = try XCTUnwrap(
-            OHPathForFile("WordPressComRestApiFailRequestInvalidToken.json", type(of: self))
+            OHPathForFileInBundle("WordPressComRestApiFailRequestInvalidToken.json", Bundle.coreAPITestsBundle)
         )
         stub(condition: isRestAPIRequest()) { _ in
             return fixture(filePath: stubPath, status: 400, headers: ["Content-Type" as NSObject: "application/json" as AnyObject])
@@ -191,7 +196,7 @@ class WordPressComRestApiTests: XCTestCase {
 
     func testInvalidJSONReceivedFailedCall() throws {
         let stubPath = try XCTUnwrap(
-            OHPathForFile("WordPressComRestApiFailInvalidJSON.json", type(of: self))
+            OHPathForFileInBundle("WordPressComRestApiFailInvalidJSON.json", Bundle.coreAPITestsBundle)
         )
         stub(condition: isRestAPIRequest()) { _ in
             return fixture(filePath: stubPath, status: 200, headers: ["Content-Type" as NSObject: "application/json" as AnyObject])
@@ -211,7 +216,7 @@ class WordPressComRestApiTests: XCTestCase {
 
     func testInvalidJSONSentFailedCall() throws {
         let stubPath = try XCTUnwrap(
-            OHPathForFile("WordPressComRestApiFailInvalidInput.json", type(of: self))
+            OHPathForFileInBundle("WordPressComRestApiFailInvalidInput.json", Bundle.coreAPITestsBundle)
         )
         stub(condition: isRestAPIMediaNewRequest()) { _ in
             return fixture(filePath: stubPath, status: 400, headers: ["Content-Type" as NSObject: "application/json" as AnyObject])
@@ -231,7 +236,7 @@ class WordPressComRestApiTests: XCTestCase {
 
     func testUnauthorizedFailedCall() throws {
         let stubPath = try XCTUnwrap(
-            OHPathForFile("WordPressComRestApiFailUnauthorized.json", type(of: self))
+            OHPathForFileInBundle("WordPressComRestApiFailUnauthorized.json", Bundle.coreAPITestsBundle)
         )
         stub(condition: isRestAPIMediaNewRequest()) { _ in
             return fixture(filePath: stubPath, status: 403, headers: ["Content-Type" as NSObject: "application/json" as AnyObject])
@@ -250,7 +255,7 @@ class WordPressComRestApiTests: XCTestCase {
     }
 
     func testMultipleErrorsFailedCall() throws {
-        let stubPath = try XCTUnwrap(OHPathForFile("WordPressComRestApiMultipleErrors.json", type(of: self)))
+        let stubPath = try XCTUnwrap(OHPathForFileInBundle("WordPressComRestApiMultipleErrors.json", Bundle.coreAPITestsBundle))
         stub(condition: isRestAPIMediaNewRequest()) { _ in
             return fixture(filePath: stubPath, status: 403, headers: ["Content-Type" as NSObject: "application/json" as AnyObject])
         }
@@ -269,7 +274,7 @@ class WordPressComRestApiTests: XCTestCase {
 
     func testMultipleErrorsFailedMultiPartPostCall() throws {
         let stubPath = try XCTUnwrap(
-            OHPathForFile("WordPressComRestApiMultipleErrors.json", type(of: self))
+            OHPathForFileInBundle("WordPressComRestApiMultipleErrors.json", Bundle.coreAPITestsBundle)
         )
         stub(condition: isRestAPIMediaNewRequest()) { _ in
             return fixture(filePath: stubPath, status: 403, headers: ["Content-Type" as NSObject: "application/json" as AnyObject])
@@ -288,7 +293,7 @@ class WordPressComRestApiTests: XCTestCase {
     }
 
     func testStreamMethodCallWithInvalidFile() throws {
-        let stubPath = try XCTUnwrap(OHPathForFile("WordPressComRestApiMedia.json", type(of: self)))
+        let stubPath = try XCTUnwrap(OHPathForFileInBundle("WordPressComRestApiMedia.json", Bundle.coreAPITestsBundle))
         stub(condition: isRestAPIMediaNewRequest()) { _ in
             return fixture(filePath: stubPath, headers: ["Content-Type" as NSObject: "application/json" as AnyObject])
         }
@@ -307,12 +312,12 @@ class WordPressComRestApiTests: XCTestCase {
     }
 
     func testStreamMethodParallelCalls() throws {
-        let stubPath = try XCTUnwrap(OHPathForFile("WordPressComRestApiMedia.json", type(of: self)))
+        let stubPath = try XCTUnwrap(OHPathForFileInBundle("WordPressComRestApiMedia.json", Bundle.coreAPITestsBundle))
         stub(condition: isRestAPIMediaNewRequest()) { _ in
             return fixture(filePath: stubPath, headers: ["Content-Type" as NSObject: "application/json" as AnyObject])
         }
         guard
-            let mediaPath = OHPathForFile("test-image.jpg", type(of: self))
+            let mediaPath = OHPathForFileInBundle("test-image.jpg", Bundle.coreAPITestsBundle)
         else {
             return
         }
@@ -357,7 +362,7 @@ class WordPressComRestApiTests: XCTestCase {
     }
 
     func testSuccessfullCallCommonGETStructure() throws {
-        let stubPath = try XCTUnwrap(OHPathForFile("WordPressComRestApiMedia.json", type(of: self)))
+        let stubPath = try XCTUnwrap(OHPathForFileInBundle("WordPressComRestApiMedia.json", Bundle.coreAPITestsBundle))
         stub(condition: isRestAPIRequest()) { _ in
             return fixture(filePath: stubPath, headers: ["Content-Type" as NSObject: "application/json" as AnyObject])
         }
@@ -377,7 +382,7 @@ class WordPressComRestApiTests: XCTestCase {
 
     func testFailureCallCommonGETStructure() throws {
         let stubPath = try XCTUnwrap(
-            OHPathForFile("WordPressComRestApiFailInvalidJSON.json", type(of: self))
+            OHPathForFileInBundle("WordPressComRestApiFailInvalidJSON.json", Bundle.coreAPITestsBundle)
         )
         stub(condition: isRestAPIRequest()) { _ in
             return fixture(filePath: stubPath, status: 200, headers: ["Content-Type" as NSObject: "application/json" as AnyObject])
@@ -447,7 +452,7 @@ class WordPressComRestApiTests: XCTestCase {
 
     func testTooManyRequestError() throws {
         let stubPath = try XCTUnwrap(
-            OHPathForFile("WordPressComRestApiFailThrottled.json", type(of: self))
+            OHPathForFileInBundle("WordPressComRestApiFailThrottled.json", Bundle.coreAPITestsBundle)
         )
         stub(condition: isAbsoluteURLString("https://public-api.wordpress.com/rest/v1/foo?locale=en")) { _ in
             return fixture(filePath: stubPath, status: 500, headers: ["Content-Type" as NSObject: "application/html" as AnyObject])

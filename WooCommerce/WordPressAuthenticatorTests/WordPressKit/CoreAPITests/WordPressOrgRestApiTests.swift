@@ -1,7 +1,11 @@
-import Foundation
 import XCTest
 import OHHTTPStubs
+#if SWIFT_PACKAGE
+@testable import CoreAPI
+import OHHTTPStubsSwift
+#else
 @testable import WordPressKit
+#endif
 
 class WordPressOrgRestApiTests: XCTestCase {
 
@@ -23,7 +27,7 @@ class WordPressOrgRestApiTests: XCTestCase {
     }
 
     func testUnauthorizedCall() async throws {
-        let stubPath = try XCTUnwrap(OHPathForFile("wp-forbidden.json", type(of: self)))
+        let stubPath = try XCTUnwrap(OHPathForFileInBundle("wp-forbidden.json", Bundle.coreAPITestsBundle))
         stub(condition: isAPIRequest()) { _ in
             return fixture(filePath: stubPath, status: 401, headers: ["Content-Type" as NSObject: "application/json" as AnyObject])
         }
@@ -38,7 +42,7 @@ class WordPressOrgRestApiTests: XCTestCase {
     }
 
     func testSuccessfulGetCall() async throws {
-        let stubPath = try XCTUnwrap(OHPathForFile("wp-pages.json", type(of: self)))
+        let stubPath = try XCTUnwrap(OHPathForFileInBundle("wp-pages.json", Bundle.coreAPITestsBundle))
         stub(condition: isAPIRequest()) { _ in
             return fixture(filePath: stubPath, headers: ["Content-Type" as NSObject: "application/json" as AnyObject])
         }
@@ -48,7 +52,7 @@ class WordPressOrgRestApiTests: XCTestCase {
     }
 
     func testSuccessfulPostCall() async throws {
-        let stubPath = try XCTUnwrap(OHPathForFile("wp-reusable-blocks.json", type(of: self)))
+        let stubPath = try XCTUnwrap(OHPathForFileInBundle("wp-reusable-blocks.json", Bundle.coreAPITestsBundle))
         stub(condition: isAPIRequest()) { _ in
             return fixture(filePath: stubPath, headers: ["Content-Type" as NSObject: "application/json" as AnyObject])
         }

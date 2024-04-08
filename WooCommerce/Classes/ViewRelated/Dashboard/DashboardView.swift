@@ -137,7 +137,7 @@ struct DashboardView: View {
 private extension DashboardView {
     var dashboardCards: some View {
         ForEach(viewModel.dashboardCards, id: \.self) { card in
-            switch card {
+            switch card.type {
             case .onboarding:
                 StoreOnboardingView(viewModel: viewModel.storeOnboardingViewModel, onTaskTapped: { task in
                     guard let currentSite else { return }
@@ -211,7 +211,7 @@ private extension DashboardView {
     @ViewBuilder
     var featureAnnouncementCard: some View {
         if let announcementViewModel = viewModel.announcementViewModel,
-            viewModel.dashboardCards.contains(.onboarding) == false {
+           viewModel.dashboardCards.contains(where: { $0.type == .onboarding }) == false {
             FeatureAnnouncementCardView(viewModel: announcementViewModel, dismiss: {
                 viewModel.announcementViewModel = nil
             })

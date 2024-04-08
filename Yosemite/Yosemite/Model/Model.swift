@@ -294,6 +294,7 @@ public typealias FeatureAnnouncementCampaign = Storage.FeatureAnnouncementCampai
 public typealias FeatureAnnouncementCampaignSettings = Storage.FeatureAnnouncementCampaignSettings
 public typealias LocalAnnouncement = Storage.LocalAnnouncement
 public typealias AnalyticsCard = Storage.AnalyticsCard
+public typealias DashboardCard = Storage.DashboardCard
 
 // MARK: - Internal ReadOnly Models
 

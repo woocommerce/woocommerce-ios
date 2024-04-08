@@ -4,14 +4,6 @@ import enum Networking.DotcomError
 import enum Storage.StatsVersion
 import protocol Experiments.FeatureFlagService
 
-/// Contents to be displayed on the dashboard.
-///
-enum DashboardCard: Int, CaseIterable {
-    case onboarding
-    case statsAndTopPerformers // TODO-12403: separate stats and top performers if needed
-    case blaze
-}
-
 /// Syncs data for dashboard stats UI and determines the state of the dashboard UI based on stats version.
 final class DashboardViewModel: ObservableObject {
     /// Stats v4 is shown by default, then falls back to v3 if store stats are unavailable.
@@ -31,7 +23,8 @@ final class DashboardViewModel: ObservableObject {
 
     @Published private(set) var showOnboarding: Bool = false
     @Published private(set) var showBlazeCampaignView: Bool = false
-    @Published private(set) var dashboardCards: [DashboardCard] = [.statsAndTopPerformers]
+
+    @Published private(set) var dashboardCards: [DashboardCard] = [DashboardCard(type: .statsAndTopPerformers, enabled: true)]
 
     @Published private(set) var jetpackBannerVisibleFromAppSettings = false
     @Published var statSyncingError: Error?
@@ -328,9 +321,9 @@ private extension DashboardViewModel {
         $showOnboarding.combineLatest($showBlazeCampaignView)
             .map { showOnboarding, showBlazeCampaignView -> [DashboardCard] in
                 [
-                    showOnboarding ? .onboarding : nil,
-                    .statsAndTopPerformers,
-                    showBlazeCampaignView ? .blaze : nil
+                    showOnboarding ? DashboardCard(type: .onboarding, enabled: true) : nil,
+                    DashboardCard(type: .statsAndTopPerformers, enabled: true),
+                    showBlazeCampaignView ? DashboardCard(type: .blaze, enabled: true) : nil
                 ].compactMap { $0 }
             }
             .receive(on: RunLoop.main)

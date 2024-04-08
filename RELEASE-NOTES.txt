@@ -2,7 +2,7 @@
 
 18.2
 -----
-
+- [internal] Updated all `woo.com` URLs to use `woocommerce.com` domain
 
 18.1
 -----

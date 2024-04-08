@@ -23,9 +23,9 @@ final class DomainSettingsViewModelTests: XCTestCase {
     func test_onAppear_sets_freeStagingDomain_from_first_domain_matching_isWPCOMStagingDomain() async throws {
         // Given
         mockLoadDomains(result: .success([
-            .init(name: "woo.dm", isPrimary: false, isWPCOMStagingDomain: false, type: .mapping),
-            .init(name: "woo.wpcomstaging.com", isPrimary: true, isWPCOMStagingDomain: true, type: .mapping),
-            .init(name: "another.woo.wpcomstaging.com", isPrimary: true, isWPCOMStagingDomain: false, type: .wpcom)
+            .init(name: "woocommerce.dm", isPrimary: false, isWPCOMStagingDomain: false, type: .mapping),
+            .init(name: "woocommerce.wpcomstaging.com", isPrimary: true, isWPCOMStagingDomain: true, type: .mapping),
+            .init(name: "another.woocommerce.wpcomstaging.com", isPrimary: true, isWPCOMStagingDomain: false, type: .wpcom)
         ]))
         mockLoadSiteCurrentPlan(result: .success(.init(hasDomainCredit: false)))
 
@@ -33,7 +33,7 @@ final class DomainSettingsViewModelTests: XCTestCase {
         await viewModel.onAppear()
 
         // Then
-        XCTAssertEqual(viewModel.freeStagingDomain, .init(isPrimary: true, name: "woo.wpcomstaging.com"))
+        XCTAssertEqual(viewModel.freeStagingDomain, .init(isPrimary: true, name: "woocommerce.wpcomstaging.com"))
     }
 
     func test_onAppear_sets_freeStagingDomain_from_first_domain_matching_type() async throws {

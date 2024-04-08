@@ -2490,7 +2490,7 @@ final class MigrationTests: XCTestCase {
             "price": 4.99,
             "total": 4.99,
             "currency": "USD",
-            "imageUrl": "https://example.com/woo.jpg"
+            "imageUrl": "https://example.com/woocommerce.jpg"
         ])
         try sourceContext.save()
 
@@ -3421,7 +3421,7 @@ private extension MigrationTests {
         context.insert(entityName: "ProductCompositeComponent", properties: [
             "componentID": "1679310855",
             "title": "Camera Body",
-            "imageURL": "https://example.com/woo.jpg",
+            "imageURL": "https://example.com/woocommerce.jpg",
             "optionType": "product_ids",
             "optionIDs": [413, 412]
         ])

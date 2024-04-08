@@ -20,12 +20,11 @@ struct SimplePaymentsMigrationView: View {
                     .foregroundColor(Color(.secondaryLabel))
                     .bodyStyle()
             }
-            Color.clear
-                .frame(height: 8)
             Button(Localization.addCustomAmount) {
                 addCustomAmount()
             }
             .buttonStyle(PrimaryButtonStyle())
+            .padding(.top, Layout.extraButtonTopPadding)
         }
         .multilineTextAlignment(.center)
         .padding(Layout.padding)
@@ -60,6 +59,7 @@ private extension SimplePaymentsMigrationView {
         static let padding = EdgeInsets(top: 27, leading: 16, bottom: 16, trailing: 16)
         static let defaultVerticalSpacing: CGFloat = 16
         static let verticalSpacingBetweenElements: CGFloat = 24
+        static let extraButtonTopPadding: CGFloat = 24
     }
 }
 

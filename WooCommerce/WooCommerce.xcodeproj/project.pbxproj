@@ -2292,6 +2292,7 @@
 		DE3877E4283E35E80075D87E /* DiscountTypeBottomSheetListSelectorCommandTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3877E3283E35E80075D87E /* DiscountTypeBottomSheetListSelectorCommandTests.swift */; };
 		DE3C5B1F286B18520049E6AA /* CardPresentPaymentsModalScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3C5B1E286B18520049E6AA /* CardPresentPaymentsModalScreen.swift */; };
 		DE46133926B2BEB8001DE59C /* ShippingLabelCountryListSelectorCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE46133826B2BEB8001DE59C /* ShippingLabelCountryListSelectorCommand.swift */; };
+		DE49C7922BBFB8C500A45AEB /* ErrorTopBanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE49C7912BBFB8C500A45AEB /* ErrorTopBanner.swift */; };
 		DE4A33552A45A4DC00795DA9 /* WPComSitePlan+SimpleSite.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE4A33542A45A4DC00795DA9 /* WPComSitePlan+SimpleSite.swift */; };
 		DE4B3B2C2692DC2200EEF2D8 /* ReviewOrderViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE4B3B2B2692DC2200EEF2D8 /* ReviewOrderViewModelTests.swift */; };
 		DE4B3B2E269455D400EEF2D8 /* MockShipmentActionStoresManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE4B3B2D269455D400EEF2D8 /* MockShipmentActionStoresManager.swift */; };
@@ -5047,6 +5048,7 @@
 		DE3877E3283E35E80075D87E /* DiscountTypeBottomSheetListSelectorCommandTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscountTypeBottomSheetListSelectorCommandTests.swift; sourceTree = "<group>"; };
 		DE3C5B1E286B18520049E6AA /* CardPresentPaymentsModalScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentsModalScreen.swift; sourceTree = "<group>"; };
 		DE46133826B2BEB8001DE59C /* ShippingLabelCountryListSelectorCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelCountryListSelectorCommand.swift; sourceTree = "<group>"; };
+		DE49C7912BBFB8C500A45AEB /* ErrorTopBanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorTopBanner.swift; sourceTree = "<group>"; };
 		DE4A33542A45A4DC00795DA9 /* WPComSitePlan+SimpleSite.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WPComSitePlan+SimpleSite.swift"; sourceTree = "<group>"; };
 		DE4B3B2B2692DC2200EEF2D8 /* ReviewOrderViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewOrderViewModelTests.swift; sourceTree = "<group>"; };
 		DE4B3B2D269455D400EEF2D8 /* MockShipmentActionStoresManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockShipmentActionStoresManager.swift; sourceTree = "<group>"; };
@@ -5963,6 +5965,7 @@
 				020F41E323163C0100776C4D /* TopBannerViewModel.swift */,
 				26E0ADF02631D94D00A5EB3B /* TopBannerWrapperView.swift */,
 				CC078530266E706300BA9AC1 /* ErrorTopBannerFactory.swift */,
+				DE49C7912BBFB8C500A45AEB /* ErrorTopBanner.swift */,
 			);
 			path = "Top Banner";
 			sourceTree = "<group>";
@@ -13849,6 +13852,7 @@
 				DE6906E527D7439C00735E3B /* OrdersSplitViewWrapperController.swift in Sources */,
 				AEC12B7A2758D55900845F97 /* OrderStatusList.swift in Sources */,
 				0230535B2374FB6800487A64 /* AztecSourceCodeFormatBarCommand.swift in Sources */,
+				DE49C7922BBFB8C500A45AEB /* ErrorTopBanner.swift in Sources */,
 				DE3650682B5128CE001569A7 /* BlazeTargetLocationPickerViewModel.swift in Sources */,
 				B958640C2A66847B002C4C6E /* CouponListView.swift in Sources */,
 				DEDA8DBE2B19952B0076BF0F /* ThemeSettingViewModel.swift in Sources */,

@@ -445,7 +445,7 @@ private extension DashboardViewController {
     }
 
     func observeShowWebViewSheet() {
-        viewModel.$showWebViewSheet.sink { [weak self] viewModel in
+        viewModel.$justInTimeMessagesWebViewModel.sink { [weak self] viewModel in
             guard let self else { return }
             guard let viewModel else { return }
             Task { @MainActor in

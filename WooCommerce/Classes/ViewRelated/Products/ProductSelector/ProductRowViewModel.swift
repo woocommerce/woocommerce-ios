@@ -67,6 +67,40 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     ///
     private(set) var productSubscriptionDetails: ProductSubscription?
 
+    /// Description of the subscription details for a Subscription-type Product
+    /// eg: "$60.00 / 2 months"
+    ///
+    var subscriptionDetailsLabel: String {
+        let currency = ServiceLocator.currencySettings.symbol(from: ServiceLocator.currencySettings.currencyCode)
+
+        var formattedString: String = ""
+        if let subscriptionPrice = productSubscriptionDetails?.price {
+            // 1. Format price
+            let formattedPrice = currencyFormatter.formatAmount(subscriptionPrice, with: currency) ?? ""
+
+            formattedString += formattedPrice
+        }
+        // 2. Format interval, and period
+        formattedString += "/"
+        if let subscriptionInterval = productSubscriptionDetails?.periodInterval,
+           let subscriptionPeriod = productSubscriptionDetails?.period {
+            formattedString += " "
+            formattedString += subscriptionInterval
+            formattedString += " "
+
+            let subscriptionFrequency = {
+                switch subscriptionInterval {
+                case "1":
+                    return subscriptionPeriod.descriptionSingular
+                default:
+                    return subscriptionPeriod.descriptionPlural
+                }
+            }
+            formattedString += subscriptionFrequency()
+        }
+        return formattedString
+    }
+
     /// Stock or variation attributes label.
     /// Provides stock label for non-variations; uses variation display mode to determine the label for variations.
     ///

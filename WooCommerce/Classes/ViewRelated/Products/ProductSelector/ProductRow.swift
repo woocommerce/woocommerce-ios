@@ -60,10 +60,9 @@ struct ProductRow: View {
                 Text(viewModel.productDetailsLabel)
                     .subheadlineStyle()
                     .renderedIf(viewModel.productDetailsLabel.isNotEmpty)
-                if let isSubscriptionProduct = viewModel.productSubscriptionDetails {
+                if let _ = viewModel.productSubscriptionDetails {
                     HStack {
-                        Text("$\(isSubscriptionProduct.price) / " )
-                        Text("\(isSubscriptionProduct.periodInterval) \(isSubscriptionProduct.period.rawValue)")
+                        Text(viewModel.subscriptionDetailsLabel)
                     }
                     .subheadlineStyle()
                 }

@@ -22,6 +22,7 @@ public struct RemotePostCreateParameters: Equatable {
     public var isSticky = false
     public var tags: [String] = []
     public var categoryIDs: [Int] = []
+    public var metadata: Set<RemotePostMetadataItem> = []
 
     public init(type: String, status: String) {
         self.type = type
@@ -51,8 +52,21 @@ public struct RemotePostUpdateParameters: Equatable {
     public var isSticky: Bool?
     public var tags: [String]?
     public var categoryIDs: [Int]?
+    public var metadata: Set<RemotePostMetadataItem>?
 
     public init() {}
+}
+
+public struct RemotePostMetadataItem: Hashable {
+    public var id: String?
+    public var key: String?
+    public var value: String?
+
+    public init(id: String?, key: String?, value: String?) {
+        self.id = id
+        self.key = key
+        self.value = value
+    }
 }
 
 // MARK: - Diff
@@ -104,6 +118,9 @@ extension RemotePostCreateParameters {
         if previous.categoryIDs != categoryIDs {
             changes.categoryIDs = categoryIDs
         }
+        if previous.metadata != metadata {
+            changes.metadata = metadata
+        }
         return changes
     }
 
@@ -151,6 +168,9 @@ extension RemotePostCreateParameters {
         if let categoryIDs = changes.categoryIDs {
             self.categoryIDs = categoryIDs
         }
+        if let metadata = changes.metadata {
+            self.metadata = metadata
+        }
     }
 }
 
@@ -173,6 +193,7 @@ private enum RemotePostWordPressComCodingKeys: String, CodingKey {
     case format
     case isSticky = "sticky"
     case categoryIDs = "categories_by_id"
+    case metadata
 
     static let postTags = "post_tag"
 }
@@ -192,6 +213,10 @@ struct RemotePostCreateParametersWordPressComEncoder: Encodable {
         try container.encodeIfPresent(parameters.excerpt, forKey: .excerpt)
         try container.encodeIfPresent(parameters.slug, forKey: .slug)
         try container.encodeIfPresent(parameters.featuredImageID, forKey: .featuredImageID)
+        if !parameters.metadata.isEmpty {
+            let metadata = parameters.metadata.map(RemotePostUpdateParametersWordPressComMetadata.init)
+            try container.encode(metadata, forKey: .metadata)
+        }
 
         // Pages
         if let parentPageID = parameters.parentPageID {
@@ -209,6 +234,50 @@ struct RemotePostCreateParametersWordPressComEncoder: Encodable {
         if parameters.isSticky {
             try container.encode(parameters.isSticky, forKey: .isSticky)
         }
+    }
+
+    // - warning: fixme
+    static func encodeMetadata(_ metadata: Set<RemotePostMetadataItem>) -> [[String: Any]] {
+        metadata.map { item in
+            var operation = "update"
+            if item.key == nil {
+                if item.id != nil && item.value == nil {
+                    operation = "delete"
+                } else if item.id == nil && item.value != nil {
+                    operation = "add"
+                }
+            }
+            var dictionary: [String: Any] = [:]
+            if let id = item.id { dictionary["id"] = id }
+            if let value = item.value { dictionary["value"] = value }
+            if let key = item.key { dictionary["key"] = key }
+            dictionary["operation"] = operation
+            return dictionary
+        }
+    }
+}
+
+struct RemotePostUpdateParametersWordPressComMetadata: Encodable {
+    let id: String?
+    let operation: String
+    let key: String?
+    let value: String?
+
+    init(_ item: RemotePostMetadataItem) {
+        if item.key == nil {
+            if item.id != nil && item.value == nil {
+                self.operation = "delete"
+            } else if item.id == nil && item.value != nil {
+                self.operation = "add"
+            } else {
+                self.operation = "update"
+            }
+        } else {
+            self.operation = "update"
+        }
+        self.id = item.id
+        self.key = item.key
+        self.value = item.value
     }
 }
 
@@ -229,11 +298,15 @@ struct RemotePostUpdateParametersWordPressComEncoder: Encodable {
         try container.encodeIfPresent(parameters.slug, forKey: .slug)
         if let value = parameters.featuredImageID {
             if let featuredImageID = value {
-                try container.encode(parameters.featuredImageID, forKey: .featuredImageID)
+                try container.encode(featuredImageID, forKey: .featuredImageID)
             } else {
                 // Passing `null` doesn't work.
                 try container.encode("", forKey: .featuredImageID)
             }
+        }
+        if let metadata = parameters.metadata, !metadata.isEmpty {
+            let metadata = metadata.map(RemotePostUpdateParametersWordPressComMetadata.init)
+            try container.encode(metadata, forKey: .metadata)
         }
 
         // Pages
@@ -270,6 +343,7 @@ private enum RemotePostXMLRPCCodingKeys: String, CodingKey {
     case format = "wp_post_format"
     case isSticky = "sticky"
     case categoryIDs = "categories"
+    case metadata = "custom_fields"
 
     static let postTags = "post_tag"
 }
@@ -289,6 +363,10 @@ struct RemotePostCreateParametersXMLRPCEncoder: Encodable {
         try container.encodeIfPresent(parameters.excerpt, forKey: .excerpt)
         try container.encodeIfPresent(parameters.slug, forKey: .slug)
         try container.encodeIfPresent(parameters.featuredImageID, forKey: .featuredImageID)
+        if !parameters.metadata.isEmpty {
+            let metadata = parameters.metadata.map(RemotePostUpdateParametersXMLRPCMetadata.init)
+            try container.encode(metadata, forKey: .metadata)
+        }
 
         // Pages
         if let parentPageID = parameters.parentPageID {
@@ -325,11 +403,15 @@ struct RemotePostUpdateParametersXMLRPCEncoder: Encodable {
         try container.encodeIfPresent(parameters.slug, forKey: .slug)
         if let value = parameters.featuredImageID {
             if let featuredImageID = value {
-                try container.encode(parameters.featuredImageID, forKey: .featuredImageID)
+                try container.encode(featuredImageID, forKey: .featuredImageID)
             } else {
                 // Passing `null` doesn't work.
                 try container.encode("", forKey: .featuredImageID)
             }
+        }
+        if let metadata = parameters.metadata, !metadata.isEmpty {
+            let metadata = metadata.map(RemotePostUpdateParametersXMLRPCMetadata.init)
+            try container.encode(metadata, forKey: .metadata)
         }
 
         // Pages
@@ -344,5 +426,17 @@ struct RemotePostUpdateParametersXMLRPCEncoder: Encodable {
         }
         try container.encodeIfPresent(parameters.categoryIDs, forKey: .categoryIDs)
         try container.encodeIfPresent(parameters.isSticky, forKey: .isSticky)
+    }
+}
+
+struct RemotePostUpdateParametersXMLRPCMetadata: Encodable {
+    let id: String?
+    let key: String?
+    let value: String?
+
+    init(_ item: RemotePostMetadataItem) {
+        self.id = item.id
+        self.key = item.key
+        self.value = item.value
     }
 }

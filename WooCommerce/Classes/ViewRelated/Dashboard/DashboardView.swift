@@ -9,7 +9,7 @@ struct DashboardView: View {
     @State private var currentSite: Site?
     @State private var dismissedJetpackBenefitBanner = false
     @State private var showingSupportForm = false
-    @State private var troubleShootURL: URL?
+    @State private var troubleshootURL: URL?
     @State private var storePlanState: StorePlanSyncState = .loading
     @State private var connectivityStatus: ConnectivityStatus = .notReachable
 
@@ -115,7 +115,7 @@ struct DashboardView: View {
         .sheet(isPresented: $showingSupportForm) {
             supportForm
         }
-        .safariSheet(url: $troubleShootURL)
+        .safariSheet(url: $troubleshootURL)
         .sheet(item: $viewModel.justInTimeMessagesWebViewModel) { webViewModel in
             WebViewSheet(viewModel: webViewModel) {
                 viewModel.justInTimeMessagesWebViewModel = nil
@@ -171,7 +171,7 @@ private extension DashboardView {
 
     func errorTopBanner(for error: Error) -> some View {
         ErrorTopBanner(error: error, onTroubleshootButtonPressed: {
-            troubleShootURL = ErrorTopBannerFactory.troubleshootUrl(for: error)
+            troubleshootURL = ErrorTopBannerFactory.troubleshootUrl(for: error)
         }, onContactSupportButtonPressed: {
             showingSupportForm = true
         })

@@ -158,9 +158,16 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     /// Label showing product details. Can include stock status or attributes, price, and variations (if any).
     ///
     var productDetailsLabel: String {
-        [stockOrAttributesLabel, priceAndDiscountsLabel, variationsLabel]
-            .compactMap({ $0 })
-            .joined(separator: " • ")
+        if productSubscriptionDetails != nil {
+            [stockOrAttributesLabel, skuLabel, variationsLabel]
+                .compactMap({ $0 })
+                .filter { $0.isNotEmpty }
+                .joined(separator: " • ")
+        } else {
+            [stockOrAttributesLabel, priceAndDiscountsLabel, variationsLabel]
+                .compactMap({ $0 })
+                .joined(separator: " • ")
+        }
     }
 
     /// Label showing secondary product details. Can include product type (if the row is configurable), and SKU (if available).

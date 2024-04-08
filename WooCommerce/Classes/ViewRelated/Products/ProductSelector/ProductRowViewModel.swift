@@ -120,10 +120,9 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         }
 
         if formattedTrialDetails().isEmpty {
-            return String.localizedStringWithFormat(Localization.formattedProductSubscriptionConditionsWithoutTrial,
-                                                    formattedSignUpFee)
+            return String.localizedStringWithFormat(Localization.formattedProductSubscriptionConditionsWithoutTrial, formattedSignUpFee)
         } else {
-            return String.localizedStringWithFormat(Localization.formattedProductSubscriptionConditions, 
+            return String.localizedStringWithFormat(Localization.formattedProductSubscriptionConditions,
                                                     formattedSignUpFee, trialLength, formattedTrialDetails())
         }
     }

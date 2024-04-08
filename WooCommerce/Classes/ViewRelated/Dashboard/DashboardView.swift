@@ -88,6 +88,13 @@ struct DashboardView: View {
                     }
                 }
             }
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    // TODO
+                } label: {
+                    Image(systemName: "gearshape")
+                }
+            }
         }
         .onReceive(ServiceLocator.stores.site) { currentSite in
             self.currentSite = currentSite

@@ -203,4 +203,8 @@ public enum FeatureFlag: Int {
     /// Enables migration from simple payments to order creation.
     ///
     case migrateSimplePaymentsToOrderCreation
+
+    /// Enables visibility of Subscription product details when creating an order, within product selection, and order details.
+    ///
+    case subscriptionsInOrderCreationUI
 }

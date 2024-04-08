@@ -24,18 +24,13 @@ final class AnalyticsHubViewModel: ObservableObject {
     ///
     private let userIsAdmin: Bool
 
-    /// Feature flag for Expanded Analytics Hub (extension analytics)
-    ///
-    private let isExpandedAnalyticsHubEnabled: Bool
-
     init(siteID: Int64,
          timeZone: TimeZone = .siteTimezone,
          statsTimeRange: StatsTimeRangeV4,
          usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter,
          stores: StoresManager = ServiceLocator.stores,
          storage: StorageManagerType = ServiceLocator.storageManager,
-         analytics: Analytics = ServiceLocator.analytics,
-         isExpandedAnalyticsHubEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.expandedAnalyticsHub)) {
+         analytics: Analytics = ServiceLocator.analytics) {
         let selectedType = AnalyticsHubTimeRangeSelection.SelectionType(statsTimeRange)
         let timeRangeSelection = AnalyticsHubTimeRangeSelection(selectionType: selectedType, timezone: timeZone)
 
@@ -45,7 +40,6 @@ final class AnalyticsHubViewModel: ObservableObject {
         self.storage = storage
         self.userIsAdmin = stores.sessionManager.defaultRoles.contains(.administrator)
         self.analytics = analytics
-        self.isExpandedAnalyticsHubEnabled = isExpandedAnalyticsHubEnabled
         self.timeRangeSelectionType = selectedType
         self.timeRangeSelection = timeRangeSelection
         self.timeRangeCard = AnalyticsHubViewModel.timeRangeCard(timeRangeSelection: timeRangeSelection,
@@ -121,6 +115,16 @@ final class AnalyticsHubViewModel: ObservableObject {
                                             usageTracksEventEmitter: usageTracksEventEmitter)
     }
 
+    /// Gift Cards Card ViewModel
+    ///
+    var giftCardsCard: GiftCardsReportCardViewModel {
+        GiftCardsReportCardViewModel(currentPeriodStats: currentGiftCardStats,
+                                     previousPeriodStats: previousGiftCardStats,
+                                     timeRange: timeRangeSelectionType,
+                                     isRedacted: isLoadingGiftCardStats,
+                                     usageTracksEventEmitter: usageTracksEventEmitter)
+    }
+
     /// View model for `AnalyticsHubCustomizeView`, to customize the cards in the Analytics Hub.
     ///
     @Published var customizeAnalyticsViewModel: AnalyticsHubCustomizeViewModel?
@@ -151,7 +155,9 @@ final class AnalyticsHubViewModel: ObservableObject {
         case .sessions:
             isEligibleForSessionsCard
         case .bundles:
-            isExpandedAnalyticsHubEnabled && isPluginActive(SitePlugin.SupportedPlugin.WCProductBundles)
+            isPluginActive(SitePlugin.SupportedPlugin.WCProductBundles)
+        case .giftCards:
+            isPluginActive(SitePlugin.SupportedPlugin.WCGiftCards)
         default:
             true
         }
@@ -209,6 +215,14 @@ final class AnalyticsHubViewModel: ObservableObject {
     ///
     @Published private var bundlesSoldStats: [ProductsReportItem]? = nil
 
+    /// Gift card stats for the current selected time period. Used in the gift cards card.
+    ///
+    @Published private var currentGiftCardStats: GiftCardStats? = nil
+
+    /// Gift card stats for the previous selected time period. Used in the gift cards card.
+    ///
+    @Published private var previousGiftCardStats: GiftCardStats? = nil
+
     /// Loading state for order stats.
     ///
     @Published private var isLoadingOrderStats = false
@@ -224,6 +238,10 @@ final class AnalyticsHubViewModel: ObservableObject {
     /// Loading state for bundle stats.
     ///
     @Published private var isLoadingBundleStats = false
+
+    /// Loading stats for gift card stats.
+    ///
+    @Published private var isLoadingGiftCardStats = false
 
     /// Time Range selection data defining the current and previous time period
     ///
@@ -301,6 +319,12 @@ private extension AnalyticsHubViewModel {
                     return
                 }
                 await self.retrieveBundleStats(currentTimeRange: currentTimeRange, previousTimeRange: previousTimeRange, timeZone: self.timeZone)
+            }
+            group.addTask {
+                guard cards.contains(.giftCards) else {
+                    return
+                }
+                await self.retrieveGiftCardStats(currentTimeRange: currentTimeRange, previousTimeRange: previousTimeRange, timeZone: self.timeZone)
             }
         }
     }
@@ -387,6 +411,28 @@ private extension AnalyticsHubViewModel {
         self.currentBundleStats = allStats?.currentPeriodStats
         self.previousBundleStats = allStats?.previousPeriodStats
         self.bundlesSoldStats = allStats?.bundlesSold
+    }
+
+    @MainActor
+    func retrieveGiftCardStats(currentTimeRange: AnalyticsHubTimeRange, previousTimeRange: AnalyticsHubTimeRange, timeZone: TimeZone) async {
+        isLoadingGiftCardStats = true
+        defer {
+            isLoadingGiftCardStats = false
+        }
+
+        async let currentPeriodRequest = retrieveGiftCardStats(timeZone: timeZone,
+                                                               earliestDateToInclude: currentTimeRange.start,
+                                                               latestDateToInclude: currentTimeRange.end,
+                                                               forceRefresh: true)
+        async let previousPeriodRequest = retrieveGiftCardStats(timeZone: timeZone,
+                                                                earliestDateToInclude: previousTimeRange.start,
+                                                                latestDateToInclude: previousTimeRange.end,
+                                                                forceRefresh: true)
+
+        let allStats: (currentPeriodStats: GiftCardStats, previousPeriodStats: GiftCardStats)?
+        allStats = try? await (currentPeriodRequest, previousPeriodRequest)
+        self.currentGiftCardStats = allStats?.currentPeriodStats
+        self.previousGiftCardStats = allStats?.previousPeriodStats
     }
 
     @MainActor
@@ -486,6 +532,27 @@ private extension AnalyticsHubViewModel {
         }
     }
 
+    @MainActor
+    /// Retrieves gift card stats using the `retrieveUsedGiftCardStats` action.
+    ///
+    func retrieveGiftCardStats(timeZone: TimeZone,
+                               earliestDateToInclude: Date,
+                               latestDateToInclude: Date,
+                               forceRefresh: Bool) async throws -> GiftCardStats {
+        try await withCheckedThrowingContinuation { continuation in
+            let action = StatsActionV4.retrieveUsedGiftCardStats(siteID: siteID,
+                                                                 unit: timeRangeSelectionType.granularity,
+                                                                 timeZone: timeZone,
+                                                                 earliestDateToInclude: earliestDateToInclude,
+                                                                 latestDateToInclude: latestDateToInclude,
+                                                                 quantity: timeRangeSelectionType.intervalSize,
+                                                                 forceRefresh: forceRefresh) { result in
+                continuation.resume(with: result)
+            }
+            stores.dispatch(action)
+        }
+    }
+
     /// Helper function that returns `true` in its callback if the provided plugin name is active on the  store.
     ///
     /// - Parameter plugin: A list of names for the plugin (provide all possible names for plugins that have changed names).
@@ -563,12 +630,23 @@ extension AnalyticsHubViewModel {
     ///
     @MainActor
     func loadAnalyticsCardSettings() async {
-        allCardsWithSettings = await withCheckedContinuation { continuation in
+        let storedCards = await withCheckedContinuation { continuation in
             let action = AppSettingsAction.loadAnalyticsHubCards(siteID: siteID) { cards in
-                continuation.resume(returning: cards ?? AnalyticsHubViewModel.defaultCards)
+                continuation.resume(returning: cards)
             }
             stores.dispatch(action)
         }
+
+        guard let storedCards else {
+            return allCardsWithSettings = AnalyticsHubViewModel.defaultCards
+        }
+
+        // Any new cards added to the analytics hub since the stored cards were saved.
+        let newCards = AnalyticsHubViewModel.defaultCards.filter { defaultCard in
+            !storedCards.contains(where: { $0.type == defaultCard.type })
+        }
+
+        allCardsWithSettings = storedCards + newCards
     }
 
     /// Sets analytics card settings in storage

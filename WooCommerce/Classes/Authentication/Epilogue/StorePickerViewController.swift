@@ -608,17 +608,7 @@ private extension StorePickerViewController {
     }
 
     func displayExpiredWPComPlanAlert(site: Site) {
-        UIAlertController.presentExpiredWPComPlanAlert(from: self) { [weak self] in
-            guard let self else { return }
-            if site.wasEcommerceTrial {
-                /// If site once ran a trial WooExpress plan, attempt show IAP if possible.
-                UpgradesViewPresentationCoordinator().presentUpgrades(for: site.siteID, from: self.topmostPresentedViewController)
-            } else {
-                /// If the site never ran a WooExpress plan, show the appropriate plans on the web.
-                let controller = UpgradePlanCoordinatingController(siteID: site.siteID, source: .expiredWPComPlanAlert)
-                self.topmostPresentedViewController.present(controller, animated: true)
-            }
-        }
+        UIAlertController.presentExpiredWPComPlanAlert(from: self)
     }
 }
 

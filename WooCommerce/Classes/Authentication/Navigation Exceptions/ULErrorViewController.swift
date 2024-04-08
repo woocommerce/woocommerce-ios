@@ -131,7 +131,7 @@ private extension ULErrorViewController {
         }
 
         extraInfoButton.applyLinkButtonStyle()
-        extraInfoButton.contentEdgeInsets = Constants.extraInfoCustomInsets
+        extraInfoButton.configuration?.contentInsets = Constants.extraInfoCustomInsets
         extraInfoButton.setTitle(viewModel.auxiliaryButtonTitle, for: .normal)
         extraInfoButton.titleLabel?.textAlignment = .center
         extraInfoButton.on(.touchUpInside) { [weak self] _ in
@@ -281,7 +281,7 @@ private extension ULErrorViewController {
 // MARK: - Constants
 private extension ULErrorViewController {
     enum Constants {
-        static let extraInfoCustomInsets = UIEdgeInsets(top: 12, left: 10, bottom: 12, right: 10)
+        static let extraInfoCustomInsets = NSDirectionalEdgeInsets(top: 12, leading: 10, bottom: 12, trailing: 10)
     }
 }
 

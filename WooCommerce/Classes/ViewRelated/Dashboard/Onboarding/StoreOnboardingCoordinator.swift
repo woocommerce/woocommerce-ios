@@ -17,7 +17,7 @@ final class StoreOnboardingCoordinator: Coordinator {
     private var paymentsSetupCoordinator: StoreOnboardingPaymentsSetupCoordinator?
     private var wooPaySetupCelebrationViewBottomSheetPresenter: BottomSheetPresenter?
 
-    private let site: Site
+    let site: Site
     private let onTaskCompleted: (_ task: TaskType) -> Void
     private let reloadTasks: () -> Void
     private let onUpgradePlan: (() -> Void)?

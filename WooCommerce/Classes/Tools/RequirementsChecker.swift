@@ -100,16 +100,7 @@ private extension RequirementsChecker {
         guard let baseViewController else {
             return
         }
-        UIAlertController.presentExpiredWPComPlanAlert(from: baseViewController) {
-            if site.wasEcommerceTrial {
-                /// If site once ran a trial WooExpress plan, attempt show IAP if possible.
-                UpgradesViewPresentationCoordinator().presentUpgrades(for: site.siteID, from: baseViewController)
-            } else {
-                /// If the site never ran a WooExpress plan, show the appropriate plans on the web.
-                let controller = UpgradePlanCoordinatingController(siteID: site.siteID, source: .expiredWPComPlanAlert)
-                baseViewController.present(controller, animated: true)
-            }
-        }
+        UIAlertController.presentExpiredWPComPlanAlert(from: baseViewController)
     }
 
     /// This function simply checks the provided site's API version. No warning will be displayed to the user.

@@ -1,5 +1,4 @@
 import UIKit
-import Gravatar
 
 /// GravatarEmailTableViewCell: Gravatar image + Email address in a UITableViewCell.
 ///
@@ -38,7 +37,7 @@ class GravatarEmailTableViewCell: UITableViewCell {
                 return
         }
 
-        gravatarImageView?.gravatar.setImage(avatarID: .email(email), placeholder: placeholderImage ?? gridicon)
+        gravatarImageView?.downloadGravatarWithEmail(email, placeholderImage: placeholderImage ?? gridicon)
 
         gravatarImageViewSizeConstraints.forEach { constraint in
             constraint.constant = gridicon.size.width

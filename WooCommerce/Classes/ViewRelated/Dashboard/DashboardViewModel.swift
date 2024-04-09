@@ -25,6 +25,7 @@ final class DashboardViewModel: ObservableObject {
     @Published private(set) var showBlazeCampaignView: Bool = false
 
     @Published private(set) var dashboardCards: [DashboardCard] = [DashboardCard(type: .statsAndTopPerformers, enabled: true)]
+    @Published private(set) var unavailableDashboardCards: [DashboardCard] = []
 
     @Published private(set) var jetpackBannerVisibleFromAppSettings = false
     @Published var statSyncingError: Error?
@@ -38,6 +39,7 @@ final class DashboardViewModel: ObservableObject {
     private let userDefaults: UserDefaults
     private let storeCreationProfilerUploadAnswersUseCase: StoreCreationProfilerUploadAnswersUseCaseProtocol
     private let themeInstaller: ThemeInstaller
+    private var subscriptions: Set<AnyCancellable> = []
 
     var siteURLToShare: URL? {
         if let site = stores.sessionManager.defaultSite,
@@ -319,15 +321,38 @@ private extension DashboardViewModel {
 
     func setupDashboardCards() {
         $showOnboarding.combineLatest($showBlazeCampaignView)
-            .map { showOnboarding, showBlazeCampaignView -> [DashboardCard] in
-                [
-                    showOnboarding ? DashboardCard(type: .onboarding, enabled: true) : nil,
-                    DashboardCard(type: .statsAndTopPerformers, enabled: true),
-                    showBlazeCampaignView ? DashboardCard(type: .blaze, enabled: true) : nil
-                ].compactMap { $0 }
-            }
             .receive(on: RunLoop.main)
-            .assign(to: &$dashboardCards)
+            .sink { [weak self] showOnboarding, showBlazeCampaignView in
+                self?.updateDashboardCards(showOnboarding: showOnboarding,
+                                           showBlazeCampaignView: showBlazeCampaignView)
+            }
+            .store(in: &subscriptions)
+    }
+
+    /// TODO-12403: Update persistence for dashboard cards.
+    /// We are using separate user defaults for different cards - 
+    /// this should be updated to general app settings.
+    func updateDashboardCards(showOnboarding: Bool, showBlazeCampaignView: Bool) {
+        dashboardCards = []
+        unavailableDashboardCards = []
+
+        if showOnboarding {
+            dashboardCards.append(DashboardCard(type: .onboarding, enabled: true))
+        } else if userDefaults.shouldHideStoreOnboardingTaskList {
+            dashboardCards.append(DashboardCard(type: .onboarding, enabled: false))
+        } else {
+            unavailableDashboardCards.append(DashboardCard(type: .onboarding, enabled: false))
+        }
+
+        dashboardCards.append(DashboardCard(type: .statsAndTopPerformers, enabled: true))
+
+        if showBlazeCampaignView {
+            dashboardCards.append(DashboardCard(type: .blaze, enabled: true))
+        } else if userDefaults.hasDismissedBlazeSectionOnMyStore {
+            dashboardCards.append(DashboardCard(type: .blaze, enabled: false))
+        } else {
+            unavailableDashboardCards.append(DashboardCard(type: .blaze, enabled: false))
+        }
     }
 
     @MainActor

@@ -9,6 +9,7 @@ struct DashboardView: View {
     @State private var currentSite: Site?
     @State private var dismissedJetpackBenefitBanner = false
     @State private var showingSupportForm = false
+    @State private var showingCustomization = false
     @State private var troubleShootURL: URL?
     @State private var storePlanState: StorePlanSyncState = .loading
     @State private var connectivityStatus: ConnectivityStatus = .notReachable
@@ -90,7 +91,7 @@ struct DashboardView: View {
             }
             ToolbarItem(placement: .topBarTrailing) {
                 Button {
-                    // TODO
+                    showingCustomization = true
                 } label: {
                     Image(systemName: "gearshape")
                 }
@@ -129,34 +130,43 @@ struct DashboardView: View {
                 viewModel.maybeSyncAnnouncementsAfterWebViewDismissed()
             }
         }
+        .sheet(isPresented: $showingCustomization) {
+            DashboardCustomizationView(viewModel: DashboardCustomizationViewModel(
+                allCards: viewModel.dashboardCards,
+                inactiveCards: viewModel.unavailableDashboardCards
+            ))
+        }
     }
 }
 
 // MARK: Private helpers
 //
 private extension DashboardView {
+    @ViewBuilder
     var dashboardCards: some View {
         ForEach(viewModel.dashboardCards, id: \.self) { card in
-            switch card.type {
-            case .onboarding:
-                StoreOnboardingView(viewModel: viewModel.storeOnboardingViewModel, onTaskTapped: { task in
-                    guard let currentSite else { return }
-                    onboardingTaskTapped?(currentSite, task)
-                }, onViewAllTapped: {
-                    guard let currentSite else { return }
-                    viewAllOnboardingTasksTapped?(currentSite)
-                }, shareFeedbackAction: {
-                    onboardingShareFeedbackAction?()
-                })
-            case .blaze:
-                BlazeCampaignDashboardView(viewModel: viewModel.blazeCampaignDashboardViewModel,
-                                           showAllCampaignsTapped: showAllBlazeCampaignsTapped,
-                                           createCampaignTapped: createBlazeCampaignTapped)
-            case .statsAndTopPerformers:
-                if viewModel.statsVersion == .v4 {
-                    ViewControllerContainer(storeStatsAndTopPerformersViewController)
-                } else {
-                    ViewControllerContainer(DeprecatedDashboardStatsViewController())
+            if card.enabled {
+                switch card.type {
+                case .onboarding:
+                    StoreOnboardingView(viewModel: viewModel.storeOnboardingViewModel, onTaskTapped: { task in
+                        guard let currentSite else { return }
+                        onboardingTaskTapped?(currentSite, task)
+                    }, onViewAllTapped: {
+                        guard let currentSite else { return }
+                        viewAllOnboardingTasksTapped?(currentSite)
+                    }, shareFeedbackAction: {
+                        onboardingShareFeedbackAction?()
+                    })
+                case .blaze:
+                    BlazeCampaignDashboardView(viewModel: viewModel.blazeCampaignDashboardViewModel,
+                                               showAllCampaignsTapped: showAllBlazeCampaignsTapped,
+                                               createCampaignTapped: createBlazeCampaignTapped)
+                case .statsAndTopPerformers:
+                    if viewModel.statsVersion == .v4 {
+                        ViewControllerContainer(storeStatsAndTopPerformersViewController)
+                    } else {
+                        ViewControllerContainer(DeprecatedDashboardStatsViewController())
+                    }
                 }
             }
         }

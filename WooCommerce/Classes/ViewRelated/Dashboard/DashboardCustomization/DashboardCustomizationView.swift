@@ -1,7 +1,7 @@
 import SwiftUI
 
 /// View for customizing layout for the Dashboard screen.
-/// 
+///
 struct DashboardCustomizationView: View {
     @ObservedObject private var viewModel: DashboardCustomizationViewModel
     @Environment(\.dismiss) private var dismiss
@@ -11,7 +11,14 @@ struct DashboardCustomizationView: View {
     }
 
     var body: some View {
-        Text("Hello, World!")
+        NavigationStack {
+            MultiSelectionReorderableList(contents: $viewModel.allCards,
+                                          contentKeyPath: \.name,
+                                          selectedItems: $viewModel.selectedCards,
+                                          inactiveItems: viewModel.inactiveCards,
+                                          inactiveAccessoryView: { card in
+                Text(Localization.unavailable)
+            })
             .toolbar(content: {
                 ToolbarItem(placement: .confirmationAction) {
                     Button {
@@ -20,28 +27,38 @@ struct DashboardCustomizationView: View {
                     } label: {
                         Text(Localization.saveButton)
                     }
-//                    .disabled(!viewModel.hasChanges)
+                    .disabled(!viewModel.hasChanges)
                 }
             })
             .navigationTitle(Localization.title)
             .navigationBarTitleDisplayMode(.inline)
             .background(Color(uiColor: .listBackground))
-//            .closeButtonWithDiscardChangesPrompt(hasChanges: viewModel.hasChanges)
+            .closeButtonWithDiscardChangesPrompt(hasChanges: viewModel.hasChanges)
+        }
     }
 }
 
 // MARK: - Constants
 private extension DashboardCustomizationView {
     enum Localization {
-        static let title = NSLocalizedString("dashboardCustomization.title",
-                                             value: "Customize Dashboard",
-                                             comment: "Title for the screen to customize the dashboard screen")
-        static let saveButton = NSLocalizedString("dashboardCustomization.saveButton",
-                                                  value: "Save",
-                                                  comment: "Button to save changes on the Customize Dashboard screen")
+        static let title = NSLocalizedString(
+            "dashboardCustomization.title",
+            value: "Customize Dashboard",
+            comment: "Title for the screen to customize the dashboard screen"
+        )
+        static let saveButton = NSLocalizedString(
+            "dashboardCustomization.saveButton",
+            value: "Save",
+            comment: "Button to save changes on the Customize Dashboard screen"
+        )
+        static let unavailable = NSLocalizedString(
+            "dashboardCustomization.unavailable",
+            value: "Unavailable",
+            comment: "Text on unavailable dashboard card on the Customize Dashboard screen"
+        )
     }
 }
 
 #Preview {
-    DashboardCustomizationView(viewModel: DashboardCustomizationViewModel())
+    DashboardCustomizationView(viewModel: DashboardCustomizationViewModel(allCards: DashboardCustomizationViewModel.sampleCards))
 }

@@ -1,9 +1,11 @@
 import SwiftUI
 
-struct WebViewSheetViewModel {
+struct WebViewSheetViewModel: Identifiable {
     let url: URL
     let navigationTitle: String
     let authenticated: Bool
+
+    var id: String { UUID().uuidString }
 }
 
 struct WebViewSheet: View {

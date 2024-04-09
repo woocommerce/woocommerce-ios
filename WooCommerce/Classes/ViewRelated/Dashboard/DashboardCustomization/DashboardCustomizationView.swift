@@ -17,7 +17,10 @@ struct DashboardCustomizationView: View {
                                           selectedItems: $viewModel.selectedCards,
                                           inactiveItems: viewModel.inactiveCards,
                                           inactiveAccessoryView: { card in
-                Text(Localization.unavailable)
+                BadgeView(text: Localization.unavailable,
+                          customizations: BadgeView.Customizations(textColor: Color(.secondaryLabel),
+                                                                   backgroundColor: Color(.secondaryButtonBackground))
+                          )
             })
             .toolbar(content: {
                 ToolbarItem(placement: .confirmationAction) {

@@ -253,7 +253,10 @@ private extension GenerativeContentRemote {
         }()
 
         let expectedJsonFormat =
-        "Your response should be in JSON format and don't send anything extra. Don't include the word JSON in your response:" + "\n" + (jsonResponseFormatDict.toJSONEncoded() ?? "")
+        "Your response should be in JSON format and don't send anything extra. " +
+        "Don't include the word JSON in your response:" +
+        "\n" +
+        (jsonResponseFormatDict.toJSONEncoded() ?? "")
 
         let prompt = input + "\n" + expectedJsonFormat
 

@@ -119,7 +119,8 @@ private struct CollapsibleProductRowCard: View {
     }
 
     private var shouldShowProductSubscriptionsDetails: Bool {
-         ServiceLocator.featureFlagService.isFeatureFlagEnabled(.subscriptionsInOrderCreationUI)
+        viewModel.productSubscriptionDetails != nil &&
+        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.subscriptionsInOrderCreationUI)
      }
 
     init(viewModel: CollapsibleProductRowCardViewModel,

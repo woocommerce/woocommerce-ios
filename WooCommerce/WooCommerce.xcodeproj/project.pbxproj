@@ -2430,6 +2430,7 @@
 		DEC75CC22BC4E53800763801 /* DashboardCustomizationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC75CC12BC4E53800763801 /* DashboardCustomizationView.swift */; };
 		DEC75CC42BC4E55A00763801 /* DashboardCustomizationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC75CC32BC4E55A00763801 /* DashboardCustomizationViewModel.swift */; };
 		DEC75CC62BC4ED2100763801 /* DashboardCard+UI.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC75CC52BC4ED2100763801 /* DashboardCard+UI.swift */; };
+		DEC75CC82BC518D900763801 /* DashboardCustomizationViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC75CC72BC518D900763801 /* DashboardCustomizationViewModelTests.swift */; };
 		DECE13FB27993F6500816ECD /* TitleAndSubtitleAndStatusTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DECE13F927993F6500816ECD /* TitleAndSubtitleAndStatusTableViewCell.swift */; };
 		DECE13FC27993F6500816ECD /* TitleAndSubtitleAndStatusTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = DECE13FA27993F6500816ECD /* TitleAndSubtitleAndStatusTableViewCell.xib */; };
 		DECE1400279A595200816ECD /* Coupon+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = DECE13FF279A595200816ECD /* Coupon+Woo.swift */; };
@@ -5189,6 +5190,7 @@
 		DEC75CC12BC4E53800763801 /* DashboardCustomizationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardCustomizationView.swift; sourceTree = "<group>"; };
 		DEC75CC32BC4E55A00763801 /* DashboardCustomizationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardCustomizationViewModel.swift; sourceTree = "<group>"; };
 		DEC75CC52BC4ED2100763801 /* DashboardCard+UI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DashboardCard+UI.swift"; sourceTree = "<group>"; };
+		DEC75CC72BC518D900763801 /* DashboardCustomizationViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardCustomizationViewModelTests.swift; sourceTree = "<group>"; };
 		DECE13F927993F6500816ECD /* TitleAndSubtitleAndStatusTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitleAndSubtitleAndStatusTableViewCell.swift; sourceTree = "<group>"; };
 		DECE13FA27993F6500816ECD /* TitleAndSubtitleAndStatusTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TitleAndSubtitleAndStatusTableViewCell.xib; sourceTree = "<group>"; };
 		DECE13FF279A595200816ECD /* Coupon+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Coupon+Woo.swift"; sourceTree = "<group>"; };
@@ -6791,6 +6793,7 @@
 				02AB40812784297C00929CF3 /* ProductTableViewCellViewModelTests.swift */,
 				028E1F712833E954001F8829 /* DashboardViewModelTests.swift */,
 				027F83EE29B048E2002688C6 /* DashboardTopPerformersViewModelTests.swift */,
+				DEC75CC72BC518D900763801 /* DashboardCustomizationViewModelTests.swift */,
 			);
 			path = Dashboard;
 			sourceTree = "<group>";
@@ -15125,6 +15128,7 @@
 				CE070A422BBDAED200017578 /* GiftCardsReportCardViewModelTests.swift in Sources */,
 				31F21B60263CB78A0035B50A /* MockCardReader.swift in Sources */,
 				D8F82AC522AF903700B67E4B /* IconsTests.swift in Sources */,
+				DEC75CC82BC518D900763801 /* DashboardCustomizationViewModelTests.swift in Sources */,
 				DE7E5E832B4C1574002E28D2 /* BlazeTargetLanguagePickerViewModelTests.swift in Sources */,
 				2667BFE92530ECE4008099D4 /* RefundProductsTotalViewModelTests.swift in Sources */,
 				D810F8F82639EDE900437C67 /* CardPresentPaymentsModalViewControllerTests.swift in Sources */,

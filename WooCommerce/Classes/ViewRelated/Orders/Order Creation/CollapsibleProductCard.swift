@@ -161,17 +161,24 @@ private struct CollapsibleProductRowCard: View {
                         Text(viewModel.subscriptionConditionsDetailsLabel)
                             .subheadlineStyle()
                             .renderedIf(shouldShowProductSubscriptionsDetails && isCollapsed)
-                        Text(viewModel.subscriptionBillingDetailsLabel)
-                            .font(.subheadline)
-                            .foregroundColor(Color(.text))
-                            .renderedIf(shouldShowProductSubscriptionsDetails && isCollapsed)
+                        HStack {
+                            Text(viewModel.subscriptionBillingDetailsLabel)
+                                .font(.subheadline)
+                                .foregroundColor(Color(.text))
+                                .renderedIf(shouldShowProductSubscriptionsDetails && isCollapsed)
+                            Spacer()
+                            Text(viewModel.subscriptionPriceValue ?? "")
+                                .font(.subheadline)
+                                .foregroundColor(Color(.text))
+                                .renderedIf(shouldShowProductSubscriptionsDetails && isCollapsed)
+                        }
                         Text(viewModel.skuLabel)
                             .font(.subheadline)
                             .foregroundColor(Color(.text))
                             .renderedIf(!isCollapsed)
                         CollapsibleProductCardPriceSummary(viewModel: viewModel.priceSummaryViewModel)
                             .font(.subheadline)
-                            .renderedIf(isCollapsed)
+                            .renderedIf(!shouldShowProductSubscriptionsDetails && isCollapsed)
                     }
                 }
             }

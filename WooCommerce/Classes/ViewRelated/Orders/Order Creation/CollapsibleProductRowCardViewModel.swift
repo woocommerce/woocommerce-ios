@@ -74,13 +74,33 @@ struct CollapsibleProductRowCardViewModel: Identifiable {
 
     /// Subscription settings extracted from product meta data for a Subscription-type Product, if any
     ///
-    private var productSubscriptionDetails: ProductSubscription?
+    private(set) var productSubscriptionDetails: ProductSubscription?
 
     private let currencyFormatter: CurrencyFormatter
     private let analytics: Analytics
 
     var subscriptionBillingDetailsLabel: String {
-        "$\(productSubscriptionDetails?.price ?? "0") / \(productSubscriptionDetails?.periodInterval ?? "") \(productSubscriptionDetails?.period ?? .day )"
+        guard let periodInterval = productSubscriptionDetails?.periodInterval,
+                let period = productSubscriptionDetails?.period else {
+            return ""
+        }
+
+        let pluralizedPeriod = {
+            switch periodInterval {
+            case "1":
+                return period.descriptionSingular
+            default:
+                return period.descriptionPlural
+            }
+        }
+
+        return String.localizedStringWithFormat(Localization.formattedSubscriptionBillingDetailsLabel,
+                                                periodInterval,
+                                                pluralizedPeriod())
+    }
+
+    var subscriptionPriceValue: String? {
+        "$\(productSubscriptionDetails?.price ?? "")"
     }
 
     var subscriptionConditionsSignupValue: String? {
@@ -246,5 +266,10 @@ private extension CollapsibleProductRowCardViewModel {
         static let skuFormat = NSLocalizedString("CollapsibleProductRowCardViewModel.skuFormat",
                                                  value: "SKU: %1$@",
                                                  comment: "SKU label for a product in an order. The variable shows the SKU of the product.")
+        static let formattedSubscriptionBillingDetailsLabel = NSLocalizedString(
+            "CollapsibleProductRowCardViewModel.formattedSubscriptionBillingDetailsLabel",
+            value: "Every %1$@ %2$@",
+            comment: "Description of the billing and billing frequency for a subscription product. " +
+            "Reads as: 'Every 2 months'.")
     }
 }

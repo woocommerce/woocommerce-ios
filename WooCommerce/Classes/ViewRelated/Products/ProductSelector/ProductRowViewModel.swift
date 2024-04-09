@@ -93,25 +93,37 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     }
 
     /// Description of the subscription conditions for a Subscription-type Product
+    /// These are separate from each other, a subscription could have any, all, or none
     /// eg: "$25.00 signup · 1 month free"
     ///
     var subscriptionConditionsLabel: String {
+        let currency = ServiceLocator.currencySettings.symbol(from: ServiceLocator.currencySettings.currencyCode)
+
+        // Signup fees
         guard let signUpFee = productSubscriptionDetails?.signUpFee else {
             return ""
         }
+        var formattedSignUpFee: String = ""
+        if signUpFee.isEmpty {
+            formattedSignUpFee = ""
+        } else {
+            formattedSignUpFee = currencyFormatter.formatAmount(signUpFee, with: currency) ?? ""
+        }
+
+        // Trial periods
         guard let trialLength = productSubscriptionDetails?.trialLength,
               let trialPeriod = productSubscriptionDetails?.trialPeriod else {
             return ""
         }
 
-        let currency = ServiceLocator.currencySettings.symbol(from: ServiceLocator.currencySettings.currencyCode)
-        guard let formattedSignUpFee = currencyFormatter.formatAmount(signUpFee, with: currency) else {
-            return ""
-        }
         let formattedTrialDetails = {
             switch trialLength {
-            case "0":
+            case "":
+                // The API allows an empty value for trial length, with a non-nil trial period.
                 return ""
+            case "0":
+                // The API allows to input a 0-length trial length, with a non-nil trial period.
+                return "0"
             case "1":
                 return trialPeriod.descriptionSingular
             default:
@@ -119,9 +131,14 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
             }
         }
 
-        if formattedTrialDetails().isEmpty {
+        switch (formattedSignUpFee.isEmpty, formattedTrialDetails().isEmpty) {
+        case (true, true):
+            return ""
+        case (true, false):
+            return String.localizedStringWithFormat(Localization.formattedProductSubscriptionConditionsWithoutSignup, trialLength, formattedTrialDetails())
+        case (false, true):
             return String.localizedStringWithFormat(Localization.formattedProductSubscriptionConditionsWithoutTrial, formattedSignUpFee)
-        } else {
+        case (false, false):
             return String.localizedStringWithFormat(Localization.formattedProductSubscriptionConditions,
                                                     formattedSignUpFee, trialLength, formattedTrialDetails())
         }
@@ -502,6 +519,11 @@ private extension ProductRowViewModel {
             value: "%1$@ signup · %2$@ %3$@ free",
             comment: "Description of the subscription conditions for a subscription product, with signup fees and free trials." +
             "Reads as: '$25.00 signup · 1 month free'.")
+        static let formattedProductSubscriptionConditionsWithoutSignup = NSLocalizedString(
+            "ProductRowViewModel.formattedProductSubscriptionConditionsWithoutSignup",
+            value: "%1$@ %2$@ free",
+            comment: "Description of the subscription conditions for a subscription product, with only free trial." +
+            "Reads as: '1 month free'.")
         static let formattedProductSubscriptionConditionsWithoutTrial = NSLocalizedString(
             "ProductRowViewModel.formattedProductSubscriptionConditionsWithoutTrial",
             value: "%1$@ signup",

@@ -432,7 +432,7 @@ final class ProductRowViewModelTests: XCTestCase {
     func test_productRow_when_product_type_is_subscription_and_contains_subscription_metadata_then_productRow_has_subscription_metadata() {
         // Given
         let rowID = Int64(0)
-        let subs: ProductSubscription = .fake()
+        let subs: ProductSubscription = createFakeSubscription()
         let productTypeKey = "subscription"
 
         let product = Product.fake().copy(productID: 12,
@@ -453,7 +453,7 @@ final class ProductRowViewModelTests: XCTestCase {
     func test_productRow_variation_when_product_type_is_subscription_and_contains_subscription_metadata_then_productRow_variation_has_subscription_metadata() {
         // Given
         let rowID = Int64(0)
-        let subs: ProductSubscription = .fake()
+        let subs: ProductSubscription = createFakeSubscription()
         let name = "Blue - Any Size"
         let productVariation = ProductVariation.fake().copy(productVariationID: 12,
                                                             attributes: [ProductVariationAttribute(id: 1, name: "Color", option: "Blue")],
@@ -472,7 +472,7 @@ final class ProductRowViewModelTests: XCTestCase {
     func test_productRow_when_product_type_is_not_subscription_but_contains_subscription_metadata_then_productRow_has_no_subscription_metadata() {
         // Given
         let rowID = Int64(0)
-        let subs: ProductSubscription = .fake()
+        let subs: ProductSubscription = createFakeSubscription()
         let productTypeKey = "simple"
 
         let product = Product.fake().copy(productID: 12,
@@ -489,10 +489,130 @@ final class ProductRowViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.name, product.name)
         XCTAssertNil(viewModel.productSubscriptionDetails)
     }
+
+    func test_subscriptionBillingDetailsLabel_when_periodInterval_is_1_then_returns_singular_details() {
+        // Given
+        let rowID = Int64(0)
+        let subs: ProductSubscription = createFakeSubscription()
+        let productTypeKey = "subscription"
+
+        let product = Product.fake().copy(productID: 12,
+                                          name: "A subscription product",
+                                          productTypeKey: productTypeKey,
+                                          subscription: subs)
+
+        // When
+        let viewModel = ProductRowViewModel(id: rowID, product: product, productSubscriptionDetails: subs)
+
+        // Then
+        XCTAssertEqual(viewModel.subscriptionBillingDetailsLabel, "$5.00 / 1 month")
+    }
+
+    func test_subscriptionBillingDetailsLabel_when_periodInterval_is_more_than_1_then_returns_pluralized_details() {
+        // Given
+        let rowID = Int64(0)
+        let subs: ProductSubscription = createFakeSubscription(periodInterval: "3")
+        let productTypeKey = "subscription"
+
+        let product = Product.fake().copy(productID: 12,
+                                          name: "A subscription product",
+                                          productTypeKey: productTypeKey,
+                                          subscription: subs)
+
+        // When
+        let viewModel = ProductRowViewModel(id: rowID, product: product, productSubscriptionDetails: subs)
+
+        // Then
+        XCTAssertEqual(viewModel.subscriptionBillingDetailsLabel, "$5.00 / 3 months")
+    }
+
+    func test_subscriptionConditionsLabel_when_has_signup_fees_and_trial_period_then_returns_expected_details() {
+        // Given
+        let rowID = Int64(0)
+        let subs: ProductSubscription = createFakeSubscription(periodInterval: "3")
+        let productTypeKey = "subscription"
+
+        let product = Product.fake().copy(productID: 12,
+                                          name: "A subscription product",
+                                          productTypeKey: productTypeKey,
+                                          subscription: subs)
+
+        // When
+        let viewModel = ProductRowViewModel(id: rowID, product: product, productSubscriptionDetails: subs)
+
+        // Then
+        XCTAssertEqual(viewModel.subscriptionConditionsLabel, "$0.60 signup · 1 week free")
+    }
+
+    func test_subscriptionConditionsLabel_when_has_no_signup_fees_then_returns_expected_details() {
+        // Given
+        let rowID = Int64(0)
+        let subs: ProductSubscription = createFakeSubscription(periodInterval: "3", signUpFee: nil)
+        let productTypeKey = "subscription"
+
+        let product = Product.fake().copy(productID: 12,
+                                          name: "A subscription product",
+                                          productTypeKey: productTypeKey,
+                                          subscription: subs)
+
+        // When
+        let viewModel = ProductRowViewModel(id: rowID, product: product, productSubscriptionDetails: subs)
+
+        // Then
+        XCTAssertEqual(viewModel.subscriptionConditionsLabel, "1 week free")
+    }
+
+    func test_subscriptionConditionsLabel_when_has_no_free_trial_then_returns_expected_details() {
+        // Given
+        let rowID = Int64(0)
+        let subs: ProductSubscription = createFakeSubscription(periodInterval: "3", trialLength: nil, trialPeriod: nil)
+        let productTypeKey = "subscription"
+
+        let product = Product.fake().copy(productID: 12,
+                                          name: "A subscription product",
+                                          productTypeKey: productTypeKey,
+                                          subscription: subs)
+
+        // When
+        let viewModel = ProductRowViewModel(id: rowID, product: product, productSubscriptionDetails: subs)
+
+        // Then
+        XCTAssertEqual(viewModel.subscriptionConditionsLabel, "$0.60 signup")
+    }
+
+    func test_subscriptionConditionsLabel_when_has_no_signup_fee_and_no_free_trial_then_returns_expected_details() {
+        // Given
+        let rowID = Int64(0)
+        let subs: ProductSubscription = createFakeSubscription(periodInterval: "3", signUpFee: nil, trialLength: nil, trialPeriod: nil)
+        let productTypeKey = "subscription"
+
+        let product = Product.fake().copy(productID: 12,
+                                          name: "A subscription product",
+                                          productTypeKey: productTypeKey,
+                                          subscription: subs)
+
+        // When
+        let viewModel = ProductRowViewModel(id: rowID, product: product, productSubscriptionDetails: subs)
+
+        // Then
+        XCTAssertTrue(viewModel.subscriptionConditionsLabel.isEmpty)
+    }
 }
 
 private extension ProductRowViewModelTests {
     func createFeatureFlagService(productBundles: Bool = true, productBundlesInOrderForm: Bool = false) -> FeatureFlagService {
         MockFeatureFlagService(productBundles: productBundles, productBundlesInOrderForm: productBundlesInOrderForm)
+    }
+
+    func createFakeSubscription(periodInterval: String? = "1",
+                                signUpFee: String? = "0.6",
+                                trialLength: String? = "1", trialPeriod: SubscriptionPeriod? = .week) -> ProductSubscription {
+        ProductSubscription.fake().copy(length: "2",
+                                        period: .month,
+                                        periodInterval: periodInterval,
+                                        price: "5",
+                                        signUpFee: signUpFee,
+                                        trialLength: trialLength,
+                                        trialPeriod: trialPeriod)
     }
 }

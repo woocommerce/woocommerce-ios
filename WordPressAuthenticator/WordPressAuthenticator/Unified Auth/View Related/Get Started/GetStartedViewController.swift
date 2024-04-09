@@ -825,13 +825,14 @@ private extension GetStartedViewController {
                 self?.handleSiteCredentialsButtonTapped()
             }
         } else {
-            // Add a "Continue" button here as the `continueButton` at the top
-            // will not be displayed for `signInUsingSiteCredentials` screen mode.
+            // Add a "Continue" button here as the `continueButton` at the top will be hidden
             //
-            buttonViewController.setupTopButton(title: ButtonConfiguration.Continue.title,
-                                                isPrimary: true,
-                                                accessibilityIdentifier: ButtonConfiguration.Continue.accessibilityIdentifier) { [weak self] in
-                self?.handleSubmitButtonTapped()
+            if showsContinueButtonAtTheBottom {
+                buttonViewController.setupTopButton(title: ButtonConfiguration.Continue.title,
+                                                    isPrimary: true,
+                                                    accessibilityIdentifier: ButtonConfiguration.Continue.accessibilityIdentifier) { [weak self] in
+                    self?.handleSubmitButtonTapped()
+                }
             }
 
             // Setup Sign in with site credentials button

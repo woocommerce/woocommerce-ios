@@ -11593,7 +11593,7 @@ which should be translated separately and considered part of this sentence. */
 "infoplist.NSBluetoothAlwaysUsageDescription" = "This app uses Bluetooth to connect to supported card readers.";
 
 /* Title for Add Product home screen action */
-AddProductAction.Title = "Add a product";
+"infoplist.AddProductAction.Title" = "Add a product";
 
 /* Title for Add Order home screen action */
 "infoplist.AddOrderAction.Title" = "New Order";

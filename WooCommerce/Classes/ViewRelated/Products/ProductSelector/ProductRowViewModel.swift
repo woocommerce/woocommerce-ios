@@ -120,9 +120,11 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
             switch trialLength {
             case "":
                 // The API allows an empty value for trial length, with a non-nil trial period.
+                // eg: every -empty- days
                 return ""
             case "0":
                 // The API allows to input a 0-length trial length, with a non-nil trial period.
+                // eg: every zero days
                 return "0"
             case "1":
                 return trialPeriod.descriptionSingular
@@ -131,7 +133,10 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
             }
         }
 
-        switch (formattedSignUpFee.isEmpty, formattedTrialDetails().isEmpty) {
+        let hasNoSignUpFees = formattedSignUpFee.isEmpty || formattedSignUpFee == "0"
+        let hasNoFreeTrial = formattedTrialDetails().isEmpty || formattedTrialDetails() == "0"
+
+        switch (hasNoSignUpFees, hasNoFreeTrial) {
         case (true, true):
             return ""
         case (true, false):

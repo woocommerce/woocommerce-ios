@@ -124,8 +124,7 @@ class GetStartedViewController: LoginViewController, NUXKeyboardResponder {
     }()
 
     private var showsContinueButtonAtTheBottom: Bool {
-        screenMode == .signInUsingSiteCredentials ||
-            configuration.enableSocialLogin == false
+        configuration.enableSocialLogin == false
     }
 
     override open var sourceTag: WordPressSupportSourceTag {
@@ -811,20 +810,32 @@ private extension GetStartedViewController {
 
         buttonViewController.hideShadowView()
 
-        // Add a "Continue" button here as the `continueButton` at the top
-        // will not be displayed for `signInUsingSiteCredentials` screen mode.
-        //
-        buttonViewController.setupTopButton(title: ButtonConfiguration.Continue.title,
-                                            isPrimary: true,
-                                            accessibilityIdentifier: ButtonConfiguration.Continue.accessibilityIdentifier) { [weak self] in
-            self?.handleSubmitButtonTapped()
-        }
+        if configuration.enableSocialLogin {
+            configureSocialButtons()
 
-        // Setup Sign in with site credentials button
-        buttonViewController.setupBottomButton(attributedTitle: WPStyleGuide.formattedSignInWithSiteCredentialsString(),
-                                               isPrimary: false,
-                                               accessibilityIdentifier: ButtonConfiguration.SignInWithSiteCredentials.accessibilityIdentifier) { [weak self] in
-            self?.handleSiteCredentialsButtonTapped()
+            // Setup Sign in with site credentials button
+            buttonViewController.setupTertiaryButton(attributedTitle: WPStyleGuide.formattedSignInWithSiteCredentialsString(),
+                                                   isPrimary: false,
+                                                   accessibilityIdentifier: ButtonConfiguration.SignInWithSiteCredentials.accessibilityIdentifier) { [weak self] in
+                self?.handleSiteCredentialsButtonTapped()
+            }
+        } else {
+            // Add a "Continue" button here as the `continueButton` at the top will be hidden
+            //
+            if showsContinueButtonAtTheBottom {
+                buttonViewController.setupTopButton(title: ButtonConfiguration.Continue.title,
+                                                    isPrimary: true,
+                                                    accessibilityIdentifier: ButtonConfiguration.Continue.accessibilityIdentifier) { [weak self] in
+                    self?.handleSubmitButtonTapped()
+                }
+            }
+
+            // Setup Sign in with site credentials button
+            buttonViewController.setupBottomButton(attributedTitle: WPStyleGuide.formattedSignInWithSiteCredentialsString(),
+                                                   isPrimary: false,
+                                                   accessibilityIdentifier: ButtonConfiguration.SignInWithSiteCredentials.accessibilityIdentifier) { [weak self] in
+                self?.handleSiteCredentialsButtonTapped()
+            }
         }
     }
 
@@ -835,12 +846,14 @@ private extension GetStartedViewController {
 
         buttonViewController.hideShadowView()
 
-        // Add a "Continue" button here as the `continueButton` at the top will be hidden
-        //
-        buttonViewController.setupTopButton(title: ButtonConfiguration.Continue.title,
-                                            isPrimary: true,
-                                            accessibilityIdentifier: ButtonConfiguration.Continue.accessibilityIdentifier) { [weak self] in
-            self?.handleSubmitButtonTapped()
+        if showsContinueButtonAtTheBottom {
+            // Add a "Continue" button here as the `continueButton` at the top will be hidden
+            //
+            buttonViewController.setupTopButton(title: ButtonConfiguration.Continue.title,
+                                                isPrimary: true,
+                                                accessibilityIdentifier: ButtonConfiguration.Continue.accessibilityIdentifier) { [weak self] in
+                self?.handleSubmitButtonTapped()
+            }
         }
     }
 

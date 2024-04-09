@@ -75,6 +75,14 @@ struct CollapsibleProductRowCardViewModel: Identifiable {
     private let currencyFormatter: CurrencyFormatter
     private let analytics: Analytics
 
+    var subscriptionBillingDetailsLabel: String {
+        "$60.00 / 2 months"
+    }
+
+    var subscriptionConditionsDetailsLabel: String {
+        "$25.00 signup · 1 month free"
+    }
+
     init(id: Int64,
          productOrVariationID: Int64,
          hasParentProduct: Bool = false,

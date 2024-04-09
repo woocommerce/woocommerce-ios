@@ -118,6 +118,10 @@ private struct CollapsibleProductRowCard: View {
         }
     }
 
+    private var shouldShowProductSubscriptionsDetails: Bool {
+         ServiceLocator.featureFlagService.isFeatureFlagEnabled(.subscriptionsInOrderCreationUI)
+     }
+
     init(viewModel: CollapsibleProductRowCardViewModel,
          flow: WooAnalyticsEvent.Orders.Flow,
          shouldDisableDiscountEditing: Bool,
@@ -153,6 +157,13 @@ private struct CollapsibleProductRowCard: View {
                         Text(viewModel.productDetailsLabel)
                             .font(.subheadline)
                             .foregroundColor(isCollapsed ? Color(.textSubtle) : Color(.text))
+                        Text(viewModel.subscriptionConditionsDetailsLabel)
+                            .subheadlineStyle()
+                            .renderedIf(shouldShowProductSubscriptionsDetails && isCollapsed)
+                        Text(viewModel.subscriptionBillingDetailsLabel)
+                            .font(.subheadline)
+                            .foregroundColor(Color(.text))
+                            .renderedIf(shouldShowProductSubscriptionsDetails && isCollapsed)
                         Text(viewModel.skuLabel)
                             .font(.subheadline)
                             .foregroundColor(Color(.text))
@@ -172,6 +183,7 @@ private struct CollapsibleProductRowCard: View {
 
                 HStack {
                     Text(Localization.orderCountLabel)
+                        .subheadlineStyle()
                     Spacer()
                     ProductStepper(viewModel: viewModel.stepperViewModel)
                 }
@@ -179,9 +191,42 @@ private struct CollapsibleProductRowCard: View {
 
                 HStack {
                     Text(Localization.priceLabel)
+                        .subheadlineStyle()
+                    Spacer()
                     CollapsibleProductCardPriceSummary(viewModel: viewModel.priceSummaryViewModel)
                 }
                 .frame(minHeight: Layout.rowMinHeight)
+
+                // New Subscription details section:
+                VStack {
+                    // 1.
+                    HStack {
+                        Text("Interval")
+                            .subheadlineStyle()
+                        Spacer()
+                        Text(viewModel.subscriptionBillingDetailsLabel)
+                            .font(.subheadline)
+                            .foregroundColor(Color(.text))
+                    }
+                    // 2.
+                    HStack {
+                        Text("Free trial")
+                            .subheadlineStyle()
+                        Spacer()
+                        Text("12 months free")
+                            .font(.subheadline)
+                            .foregroundColor(Color(.text))
+                    }
+                    // 3.
+                    HStack {
+                        Text("Signup fee")
+                            .subheadlineStyle()
+                        Spacer()
+                        Text("$25.00")
+                            .font(.subheadline)
+                            .foregroundColor(Color(.text))
+                    }
+                }
 
                 Divider()
 

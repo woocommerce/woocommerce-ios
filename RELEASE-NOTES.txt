@@ -2,7 +2,7 @@
 
 18.2
 -----
-- [*] Login: Allow login using site credentials for Jetpack connected stores.
+- [*] Login: Allow login using site credentials for Jetpack connected stores. [https://github.com/woocommerce/woocommerce-ios/issues/12429]
 
 
 18.1

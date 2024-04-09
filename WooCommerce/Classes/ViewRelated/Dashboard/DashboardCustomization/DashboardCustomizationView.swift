@@ -18,8 +18,8 @@ struct DashboardCustomizationView: View {
                                           inactiveItems: viewModel.inactiveCards,
                                           inactiveAccessoryView: { card in
                 BadgeView(text: Localization.unavailable,
-                          customizations: BadgeView.Customizations(textColor: Color(.secondaryLabel),
-                                                                   backgroundColor: Color(.secondaryButtonBackground))
+                          customizations: BadgeView.Customizations(textColor: .white,
+                                                                   backgroundColor: .gray)
                           )
             })
             .toolbar(content: {

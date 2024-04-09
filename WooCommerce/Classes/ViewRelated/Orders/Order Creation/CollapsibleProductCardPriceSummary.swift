@@ -13,6 +13,7 @@ struct CollapsibleProductCardPriceSummary: View {
             HStack {
                 Text(viewModel.priceQuantityLine)
                     .foregroundColor(.secondary)
+                Spacer()
             }
             if let price = viewModel.priceBeforeDiscountsLabel {
                 Text(price)

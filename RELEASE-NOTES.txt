@@ -2,7 +2,7 @@
 
 18.2
 -----
-
+- [*] Menu > Payments > Collect Payment: the simple payments flow has been migrated to order form with custom amount. [https://github.com/woocommerce/woocommerce-ios/pull/12455]
 
 18.1
 -----

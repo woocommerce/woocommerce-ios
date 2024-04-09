@@ -1,5 +1,4 @@
 import SwiftUI
-import Kingfisher
 
 /// Represent a single product or variation row in the Product section of a New Order or in the ProductSelectorView
 ///
@@ -116,12 +115,15 @@ extension ProductRow {
     }
 }
 
-private enum Layout {
-    static let productImageSize: CGFloat = 48.0
-    static let cornerRadius: CGFloat = 4.0
-    static let checkImageSize: CGFloat = 24.0
+private extension ProductRow {
+    enum Layout {
+        static let productImageSize: CGFloat = 48.0
+        static let cornerRadius: CGFloat = 4.0
+        static let checkImageSize: CGFloat = 24.0
+    }
 }
 
+#if DEBUG
 struct ProductRow_Previews: PreviewProvider {
     static var previews: some View {
         let viewModel = ProductRowViewModel(productOrVariationID: 1,
@@ -156,3 +158,4 @@ struct ProductRow_Previews: PreviewProvider {
             .previewLayout(.sizeThatFits)
     }
 }
+#endif

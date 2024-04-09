@@ -2,6 +2,7 @@
 
 18.2
 -----
+- [*] Login: Allow login using site credentials for Jetpack connected stores.
 
 
 18.1
@@ -10,7 +11,6 @@
 - [**] Stats: The Analytics Hub now includes analytics for Product Bundles and Gift Cards, when those extensions are active. [https://github.com/woocommerce/woocommerce-ios/pull/12425]
 - [*] Login: Fix issues in Jetpack installation feature. [https://github.com/woocommerce/woocommerce-ios/pull/12426]
 - [Internal] WooExpress: Site creation with WooExpress is now disabled. [https://github.com/woocommerce/woocommerce-ios/issues/12323]
-- [*] Login: Allow login using site credentials for Jetpack connected stores.
 
 18.0
 -----

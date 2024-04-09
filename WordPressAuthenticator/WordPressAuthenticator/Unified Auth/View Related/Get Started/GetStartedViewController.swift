@@ -124,12 +124,7 @@ class GetStartedViewController: LoginViewController, NUXKeyboardResponder {
     }()
 
     private var showsContinueButtonAtTheBottom: Bool {
-        switch screenMode {
-        case .signInUsingSiteCredentials:
-            configuration.enableSocialLogin == false
-        case .signInUsingWordPressComOrSocialAccounts:
-            configuration.enableSocialLogin == false
-        }
+        configuration.enableSocialLogin == false
     }
 
     override open var sourceTag: WordPressSupportSourceTag {

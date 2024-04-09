@@ -2111,7 +2111,7 @@ which should be translated separately and considered part of this sentence. */
    Close Account error alert button title - dismisses error alert.
    Close the action sheet
    Dismiss button on the alert when the user taps to delete a Product image
-   Label for a button that when tapped, cancels the process of connecting to a card reader 
+   Label for a button that when tapped, cancels the process of connecting to a card reader
    Label for a cancel button
    Option to cancel the email app selection when logging in with magic links
    Settings > Set up Tap to Pay on iPhone > Information > Cancel button
@@ -11593,17 +11593,16 @@ which should be translated separately and considered part of this sentence. */
 "infoplist.NSBluetoothAlwaysUsageDescription" = "This app uses Bluetooth to connect to supported card readers.";
 
 /* Title for Add Product home screen action */
-AddProductAction.Title = "Add a product";
+"AddProductAction.Title" = "Add a product";
 
 /* Title for Add Order home screen action */
-AddOrderAction.Title = "New Order";
+"AddOrderAction.Title" = "New Order";
 
 /* Title for Orders home screen action */
-OpenOrdersAction.Title = "Orders";
+"OpenOrdersAction.Title" = "Orders";
 
 /* Title for Payments home screen action */
-OpenPaymentsAction.Title = "Payments";
+"OpenPaymentsAction.Title" = "Payments";
 
 /* Title for Payments home screen action */
-CollectPaymentAction.Title = "Collect Payment";
-
+"CollectPaymentAction.Title" = "Collect Payment";

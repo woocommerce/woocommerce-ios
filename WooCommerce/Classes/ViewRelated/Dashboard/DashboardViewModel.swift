@@ -28,11 +28,14 @@ final class DashboardViewModel: ObservableObject {
 
     let blazeCampaignDashboardViewModel: BlazeCampaignDashboardViewModel
 
-    @Published private(set) var showWebViewSheet: WebViewSheetViewModel? = nil
+    @Published var justInTimeMessagesWebViewModel: WebViewSheetViewModel? = nil
 
     @Published private(set) var showOnboarding: Bool = false
     @Published private(set) var showBlazeCampaignView: Bool = false
     @Published private(set) var dashboardCards: [DashboardCard] = [.stats, .topPerformers]
+
+    @Published private(set) var jetpackBannerVisibleFromAppSettings = false
+    @Published var statSyncingError: Error?
 
     let siteID: Int64
     private let stores: StoresManager
@@ -95,6 +98,9 @@ final class DashboardViewModel: ObservableObject {
             }
             group.addTask { [weak self] in
                 await self?.reloadBlazeCampaignView()
+            }
+            group.addTask { [weak self] in
+                await self?.updateJetpackBannerVisibilityFromAppSettings()
             }
         }
     }
@@ -250,6 +256,20 @@ final class DashboardViewModel: ObservableObject {
 
         analytics.track(event: .Dashboard.dashboardTimezonesDiffers(localTimezone: localGMTOffsetInHours, storeTimezone: siteGMTOffset))
     }
+
+    func saveJetpackBenefitBannerDismissedTime() {
+        let dismissAction = AppSettingsAction.setJetpackBenefitsBannerLastDismissedTime(time: Date())
+        stores.dispatch(dismissAction)
+    }
+
+    func maybeSyncAnnouncementsAfterWebViewDismissed() {
+        // Sync announcements again only when the JITM modal has been dismissed to avoid showing duplicated modals.
+        if modalJustInTimeMessageViewModel == nil {
+            Task {
+                await syncAnnouncements(for: siteID)
+            }
+        }
+    }
 }
 
 // MARK: Private helpers
@@ -259,7 +279,7 @@ private extension DashboardViewModel {
     @MainActor
     func syncJustInTimeMessages(for siteID: Int64) async {
         let viewModel = try? await justInTimeMessagesManager.loadMessage(for: .dashboard, siteID: siteID)
-        viewModel?.$showWebViewSheet.assign(to: &self.$showWebViewSheet)
+        viewModel?.$showWebViewSheet.assign(to: &self.$justInTimeMessagesWebViewModel)
         switch viewModel?.template {
         case .some(.banner):
             announcementViewModel = viewModel
@@ -316,6 +336,21 @@ private extension DashboardViewModel {
             }
             .receive(on: RunLoop.main)
             .assign(to: &$dashboardCards)
+    }
+
+    @MainActor
+    func loadJetpackBannerVisibilityFromAppSettings() async -> Bool {
+        await withCheckedContinuation { continuation in
+            stores.dispatch(AppSettingsAction.loadJetpackBenefitsBannerVisibility(currentTime: Date(),
+                                                                               calendar: .current) {  isVisibleFromAppSettings in
+                continuation.resume(returning: isVisibleFromAppSettings)
+            })
+        }
+    }
+
+    @MainActor
+    func updateJetpackBannerVisibilityFromAppSettings() async {
+        jetpackBannerVisibleFromAppSettings = await loadJetpackBannerVisibilityFromAppSettings()
     }
 }
 

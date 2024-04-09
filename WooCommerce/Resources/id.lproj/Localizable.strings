@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-04-02 11:54:04+0000 */
+/* Translation-Revision-Date: 2024-04-09 09:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: id */
@@ -21,10 +21,6 @@
 
 /* Format for each Product attribute in plural form */
 "%1$@ (%2$ld options)" = "%1$@ (Pilihan %2$ld)";
-
-/* Displays a date range for a custom stats interval
-   Displays a date range for a stats interval */
-"%1$@ - %2$@" = "%1$@-%2$@";
 
 /* Labels an order note. The user know it's not visible to the customer. Reads like 05:30 PM - username (Private) */
 "%1$@ - %2$@ (Private)" = "%1$@ - %2$@ (Pribadi)";
@@ -92,6 +88,10 @@ which should be translated separately and considered part of this sentence. */
 
 /* In Order Details, the pattern used to show the quantity multiplied by the price. For example, “23 × $400.00”. The %1$@ is the quantity. The %2$@ is the formatted price with currency (e.g. $400.00). Please take care to use the multiplication symbol ×, not a letter x, where appropriate. */
 "%1$@ × %2$@" = "%1$@ × %2$@";
+
+/* Displays a date range for a custom stats interval
+   Displays a date range for a stats interval */
+"%1$@ – %2$@" = "%1$@-%2$@";
 
 /* Order refunded shipping label title. The first variable shows the refunded amount (e.g. $12.90). The second variable shows the requested date (e.g. Jan 12, 2020 12:34 PM). */
 "%1$@ • %2$@" = "%1$@• %2$@";
@@ -522,9 +522,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title on empty state button when the product has attributes but no variations
    Title on the bottom sheet to choose what variation process to start */
 "Add Variation" = "Tambahkan Variasi";
-
-/* Button title on the store picker for store creation */
-"Add a Store" = "Tambahkan Toko";
 
 /* Title for the Add a Different Address switch in the Address form */
 "Add a different shipping address" = "Tambahkan alamat pengiriman lain";
@@ -1836,9 +1833,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Jetpack setup required screen */
 "Connect Store" = "Hubungkan Toko";
 
-/* Button to connect to an existing store from the store picker */
-"Connect an existing store" = "Sambungkan toko yang sudah ada";
-
 /* Name of the connection step on the Jetpack setup screen */
 "Connect store to Jetpack" = "Sambungkan toko ke Jetpack";
 
@@ -2101,9 +2095,6 @@ which should be translated separately and considered part of this sentence. */
 /* The button title text for creating a new account. */
 "Create Account" = "Buat Akun";
 
-/* Action button linking to create WooCommerce store flow.Presented when logging in with an email address that is not a WordPress.com account */
-"Create An Account" = "Buat Akun";
-
 /* Title of the create coupon button on the coupon list screen when it's empty */
 "Create Coupon" = "Buat Kupon";
 
@@ -2129,9 +2120,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description for fixed cart discount type on the action sheet presented from Add or Edit coupon screen */
 "Create a fixed total discount for the entire cart" = "Buat diskon total tetap untuk seluruh isi keranjang";
-
-/* Button to create a new store from the store picker */
-"Create a new store" = "Buat toko baru";
 
 /* Description for percentage discount type on the action sheet presented from Add or Edit coupon screen */
 "Create a percentage discount for selected products" = "Buat persentase diskon untuk produk yang dipilih";
@@ -2294,9 +2282,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the store onboarding task to customize the store domain. */
 "Customize your domain" = "Sesuaikan domain Anda";
 
-/* Subtitle of the store onboarding task to update store title */
-"Customizing your store name can also help your store search engine optimization." = "Menyesuaikan nama toko Anda juga dapat membantu optimisasi mesin pencari toko Anda.";
-
 /* Navigation title for Customs screen in Shipping Label flow
    Title of the cell Customs inside Create Shipping Label form */
 "Customs" = "Bea cukai";
@@ -2350,7 +2335,6 @@ which should be translated separately and considered part of this sentence. */
 "Default Option" = "Pilihan Default";
 
 /* Button title Delete in Downloadable File Options Action Sheet
-   Button title Delete in Edit Product More Options Action Sheet
    Button to delete a product category
    Title for the action button on the confirm alert for deleting coupon on the Coupon Details screen */
 "Delete" = "Hapus";
@@ -4750,9 +4734,6 @@ which should be translated separately and considered part of this sentence. */
 /* Error showed in Shipping Label Address Validation for the name field */
 "Name missing" = "Nama belum diisi";
 
-/* Title of the store onboarding task to update store title */
-"Name your store" = "Beri nama untuk toko Anda";
-
 /* Country option for a site address. */
 "Namibia" = "Namibia";
 
@@ -5049,6 +5030,7 @@ which should be translated separately and considered part of this sentence. */
    Alert dismissal title
    Button text to confirm that we want to generate all variations
    Button title. An acknowledgement of the message displayed in a prompt.
+   Button to dismiss expired WPCom plan alert
    Button to dismiss the error alert on the site credential login screen
    Dismiss button on the alert when there is an error creating a new product category
    Dismiss button on the alert when there is an error creating new product tags.
@@ -5227,6 +5209,30 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label for the the row showing the total cost of the order */
 "Order total" = "Total Pesanan";
+
+/* Retry Action inside notice */
+"OrderDetail.retry.notice.button" = "Coba lagi";
+
+/* Cancel button on the alert when the user is cancelling the action on moving an order to the trash */
+"OrderDetail.trashOrder.alert.cancelButton" = "Batalkan";
+
+/* Body of the alert when a user is moving an order to the trash */
+"OrderDetail.trashOrder.alert.message" = "Ingin memindahkan pesanan ini ke Tempat Sampah?";
+
+/* Confirmation button on the alert when the user is moving an order to the trash */
+"OrderDetail.trashOrder.alert.moveToTrashButton" = "Pindahkan ke Tempat Sampah";
+
+/* Title of the alert when a user is moving an order to the trash */
+"OrderDetail.trashOrder.alert.title" = "Hapus pesanan";
+
+/* Content of error presented when Trash Order Action Failed. It reads: Unable to trash the order #{order number}. Parameters: %1$d - order number */
+"OrderDetail.trashOrder.notice.title" = "Tidak dapat memindahkan pesanan #%1$d ke tempat sampah";
+
+/* Undo Action */
+"OrderDetail.trashOrder.notice.undoAction" = "Batal";
+
+/* Order trashed success notice */
+"OrderDetail.trashOrder.notice.undoMessage" = "Pesanan dipindahkan ke tempat sampah";
 
 /* Text on the button title to see the order's receipt */
 "OrderDetailsDataSource.configureSeeReceipt.button.title" = "Lihat Tanda Terima";
@@ -7231,9 +7237,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the option to create a template product */
 "Start with a template" = "Mulai dengan templat";
 
-/* Subtitle displayed in the simplified prologue screen */
-"Start with our 14-day free trial, no credit card needed. Join 3.4M stores thriving with Woo, from first sale to millions." = "Coba sekarang dengan percobaan gratis 14 hari. Tak perlu kartu kredit. Bersama 3,4 juta toko mitra Woo, jual barang pertama Anda sampai raih omzet luar biasa.";
-
 /* VoiceOver accessibility value, informs the user about the X-axis min/max values. It reads: Starting date {date}, ending date {date}. */
 "Starting period %@, ending period %@" = "Periode awal %1$@, periode akhir %2$@";
 
@@ -7276,9 +7279,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Navigates to the Store name setup screen */
 "Store Name" = "Nama toko";
-
-/* Title on the notice presented when the store name is updated */
-"Store Name Set!" = "Nama Toko Sudah Jadi!";
 
 /* Title of the secondary button on the store creation success screen to preview the newly created store. */
 "Store Preview" = "Pratinjau Toko";
@@ -8151,9 +8151,6 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle on the variations list screen when there are no variations and attributes */
 "To add a variation, you'll need to set its attributes (ie \"Color\", \"Size\") first" = "Untuk menambahkan variasi, Anda perlu mengatur atributnya (yaitu \"Warna\", \"Ukuran\") terlebih dahulu";
 
-/* Subtitle on the notice presented when the store name is updated */
-"To change again, visit Store Settings." = "Untuk mengubah kembali, kunjungi Pengaturan Toko.";
-
 /* Error message displayed when unable to close user account due to having active atomic site. */
 "To close this account now, contact our support team." = "Untuk menutup akun ini sekarang juga, hubungi tim dukungan kami.";
 
@@ -8468,9 +8465,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error title for when we can't create variations remotely. */
 "Unable to create variations" = "Tidak dapat membuat variasi";
-
-/* Content of error presented when Delete Shipment Tracking Action Failed. It reads: Unable to delete tracking for order #{order number}. Parameters: %1$d - order number */
-"Unable to delete tracking for order #%1$d" = "Tidak dapat menghapus pelacakan untuk pesanan #%1$d";
 
 /* Unable to fetch countries action failed in Shipping Label Form */
 "Unable to fetch countries." = "Tidak dapat memuat negara.";
@@ -8798,13 +8792,8 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the in-progress UI while bulk updating selected products remotely */
 "Updating your products..." = "Memperbarui produk Anda...";
 
-/* Button to upgrade a WPCom plan on the expired WPCom plan alert
-   Navigation title for the Upgrades screen */
+/* Navigation title for the Upgrades screen */
 "Upgrade" = "Upgrade";
-
-/* Title for the WebView when upgrading a free trial plan
-   Title on the button to upgrade a free trial plan. */
-"Upgrade Now" = "Upgrade Sekarang";
 
 /* Cell title for Upsells products in Linked Products Settings screen
    Navigation bar title for editing linked products for upsell products */
@@ -9121,7 +9110,7 @@ which should be translated separately and considered part of this sentence. */
 "We found that the store has already launched." = "Kami mendapati bahwa toko telah diluncurkan.";
 
 /* Message on the expired WPCom plan alert */
-"We have paused your store, but you can continue by picking a plan that suits you best." = "Kami menjeda operasi toko Anda. Anda dapat melanjutkannya dengan memilih paket yang paling sesuai untuk Anda.";
+"We have paused your store. You can purchase another plan by logging in to WordPress.com on your browser." = "Kami menghentikan sementara toko Anda. Anda dapat membeli paket lain dengan masuk ke WordPress.com via browser.";
 
 /* Banner caption in Shipping Label Address when there is a suggested address. */
 "We have slightly modified the address entered. If correct, please use the suggested address to ensure accurate delivery." = "Kami sedikit mengubah alamat yang dimasukkan. Jika sudah benar, gunakan alamat yang disarankan untuk memastikan pengiriman yang akurat.";
@@ -9662,11 +9651,17 @@ which should be translated separately and considered part of this sentence. */
 /* Dismiss button on the alert asking to add an image for the Blaze campaign */
 "addProductWithAIActionSheet.manualOptionsTitle" = "Pilih jenis produk";
 
+/* Button title on the store picker for store connection */
+"addStoreFooterView.connectExistingStoreButton" = "Sambungkan toko yang sudah ada";
+
 /* Title for the product bundles analytics report linked in the Analytics Hub */
 "analyticsHub.bundlesCard.reportTitle" = "Laporan Paket Produk";
 
 /* Name for the Product Bundles analytics card in the Customize Analytics screen */
 "analyticsHub.customize.bundles" = "Paket";
+
+/* Name for the Gift Cards analytics card in the Customize Analytics screen */
+"analyticsHub.customize.giftCards" = "Kartu Hadiah";
 
 /* Name for the Orders analytics card in the Customize Analytics screen */
 "analyticsHub.customize.orders" = "Pesanan";
@@ -9692,11 +9687,20 @@ which should be translated separately and considered part of this sentence. */
 /* Label for button that opens a screen to customize the Analytics Hub */
 "analyticsHub.editButton.label" = "Edit";
 
-/* Description when there are no analytics to display in the Analytics Hub. */
-"analyticsHub.emptyState.description" = "Pilih rentang tanggal lain atau ketuk Edit untuk mengaktifkan analitik lainnya.";
+/* Label for used gift cards in the Analytics Hub */
+"analyticsHub.giftCardsCard.leadingTitle" = "Digunakan";
 
-/* Title when there are no analytics to display in the Analytics Hub. */
-"analyticsHub.emptyState.title" = "Analitik tidak tersedia";
+/* Title for the gift cards analytics report linked in the Analytics Hub */
+"analyticsHub.giftCardsCard.reportTitle" = "Laporan Kartu Hadiah";
+
+/* Text displayed when there is an error loading gift card stats data. */
+"analyticsHub.giftCardsCard.syncErrorMessage" = "Tidak dapat memuat analitik kartu hadiah";
+
+/* Title for gift cards analytics section in the Analytics Hub */
+"analyticsHub.giftCardsCard.title" = "KARTU HADIAH";
+
+/* Label for net amount used for gift cards in the Analytics Hub */
+"analyticsHub.giftCardsCard.trailingTitle" = "Jumlah Bersih";
 
 /* Label for button to enable Jetpack Stats */
 "analyticsHub.jetpackStatsCTA.buttonLabel" = "Aktifkan Jetpack Stats";
@@ -9706,9 +9710,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text displayed in the Analytics Hub when the Jetpack Stats module is disabled */
 "analyticsHub.jetpackStatsCTA.message" = "Aktifkan Jetpack Stats untuk melihat data analitik sesi toko Anda.";
-
-/* Title for sessions section in the Analytics Hub */
-"analyticsHub.jetpackStatsCTA.title" = "SESI";
 
 /* Title for the orders analytics report linked in the Analytics Hub */
 "analyticsHub.orderCard.reportTitle" = "Laporan Pesanan";
@@ -10775,6 +10776,9 @@ which should be translated separately and considered part of this sentence. */
 /* A hazardous material description stating when a package can fit into this category */
 "limited_quantity_category" = "Paket Jalur Darat Kuantitas Terbatas - Aerosol, disinfektan semprot, cat semprot, hair spray, propana, butana, produk-produk kebersihan, dll. - Parfum, cat kuku, pembersih cat kuku, pelarut, penyanitasi tangan, alkohol medis, produk-produk berbahan dasar etanol, dll. - Bahan-bahan jalur darat kuantitas terbatas lainnya (kosmetik, produk-produk kebersihan, cat, dll.)";
 
+/* Subtitle displayed in the simplified prologue screen */
+"loginProloguePageType.getStartedText" = "Woo siap mendukung Anda melalui seluruh proses bisnis Anda. Inilah alasan kami dipercaya para penjual untuk mendukung 3,9 juta toko online mereka.";
+
 /* A manual refund is one where the store owner has given the purchaser alternative funds (cash, check, ACH) instead of using the payment gateway to create a refund (credit card or debit card was refunded) */
 "manual refund" = "pengembalian dana manual";
 
@@ -10936,6 +10940,9 @@ which should be translated separately and considered part of this sentence. */
 /* Origin in Order Attribution Section on Order Details screen. */
 "orderAttributionInfo.webAdmin" = "Admin web";
 
+/* Content of error presented when Delete Shipment Tracking Action Failed. It reads: Unable to delete tracking for order #{order number}. Parameters: %1$d - order number */
+"orderDetail.deleteTracking.notice.title" = "Tidak dapat menghapus pelacakan untuk pesanan #%1$d";
+
 /* Title for the row to add tracking information. */
 "orderDetails.addTrackingRow.title" = "Informasi Pelacakan Opsional";
 
@@ -10971,6 +10978,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Origin in Order Attribution Section on Order Details screen. */
 "orderDetailsDataSource.attributionInfo.unknown" = "Tidak diketahui";
+
+/* VoiceOver accessibility hint, informing the user that the button can be used to view the order custom fields information. */
+"orderDetailsDataSource.trashOrder.accessibilityHint" = "Pindahkan pesanan ini ke tempat sampah.";
+
+/* Accessibility label for the 'Trash order' button */
+"orderDetailsDataSource.trashOrder.accessibilityLabel" = "Tombol Buang Pesanan";
+
+/* Text on the button title to trash an order */
+"orderDetailsDataSource.trashOrder.button.title" = "Pindahkan ke tempat sampah";
 
 /* Title text of the section that shows the Custom Amounts when creating or editing an order */
 "orderForm.customAmounts" = "Jumlah Kustom";
@@ -11082,6 +11098,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Alert message about an unsupported file type when uploading file for a downloadable product. */
 "productDownloadListViewController.notice.unsupportedFileType" = "Jenis berkas yang dipilih tidak didukung.";
+
+/* Button title Trash product in Edit Product More Options Action Sheet */
+"productForm.bottomSheet.trashAction" = "Buang produk";
 
 /* Product title */
 "productForm.defaultTitle" = "Produk";
@@ -11224,6 +11243,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Tab selector title that shows the statistics for today */
 "statsTimeRangeV4.tabTitle.custom" = "Rentang Kustom";
+
+/* Button title on the store picker for store connection */
+"storePickerViewController.addStoreButton" = "Sambungkan toko yang sudah ada";
 
 /* Widget description, displayed when selecting which widget to add */
 "storeWidgets.description" = "Statistik WooCommerce Hari Ini";

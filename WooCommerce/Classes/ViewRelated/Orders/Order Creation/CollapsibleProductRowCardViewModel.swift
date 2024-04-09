@@ -72,19 +72,27 @@ struct CollapsibleProductRowCardViewModel: Identifiable {
     let stepperViewModel: ProductStepperViewModel
     let priceSummaryViewModel: CollapsibleProductCardPriceSummaryViewModel
 
+    /// Subscription settings extracted from product meta data for a Subscription-type Product, if any
+    ///
+    private var productSubscriptionDetails: ProductSubscription?
+
     private let currencyFormatter: CurrencyFormatter
     private let analytics: Analytics
 
     var subscriptionBillingDetailsLabel: String {
-        "$60.00 / 2 months"
+        "$\(productSubscriptionDetails?.price ?? "0") / \(productSubscriptionDetails?.periodInterval ?? "") \(productSubscriptionDetails?.period ?? .day )"
+    }
+
+    var subscriptionConditionsSignupValue: String? {
+        "$\(productSubscriptionDetails?.signUpFee ?? "")"
     }
 
     var subscriptionConditionsSignupLabel: String? {
-        "$25.00 signup"
+        "$\(productSubscriptionDetails?.signUpFee ?? "") signup"
     }
 
     var subscriptionConditionsFreeTrialLabel: String? {
-        "1 month free"
+        "\(productSubscriptionDetails?.trialLength ?? "") \(productSubscriptionDetails?.trialPeriod ?? .day) free"
     }
 
     var subscriptionConditionsDetailsLabel: String {
@@ -99,6 +107,7 @@ struct CollapsibleProductRowCardViewModel: Identifiable {
          hasParentProduct: Bool = false,
          isReadOnly: Bool = false,
          isConfigurable: Bool = false,
+         productSubscriptionDetails: ProductSubscription? = nil,
          imageURL: URL?,
          name: String,
          sku: String?,
@@ -119,6 +128,7 @@ struct CollapsibleProductRowCardViewModel: Identifiable {
         self.hasParentProduct = hasParentProduct
         self.isReadOnly = isReadOnly
         self.isConfigurable = configure != nil ? isConfigurable : false
+        self.productSubscriptionDetails = productSubscriptionDetails
         self.configure = configure
         self.imageURL = imageURL
         self.name = name

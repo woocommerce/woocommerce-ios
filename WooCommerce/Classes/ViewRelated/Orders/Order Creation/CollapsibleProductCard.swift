@@ -209,25 +209,27 @@ private struct CollapsibleProductRowCard: View {
                             .foregroundColor(Color(.text))
                     }
                     // 2.
-                    if let hasFreeTrial = viewModel.subscriptionConditionsFreeTrialLabel {
+                    if let freeTrial = viewModel.subscriptionConditionsFreeTrialLabel {
                         HStack {
                             Text(Localization.subscriptionFreeTrialLabel)
                                 .subheadlineStyle()
                             Spacer()
-                            Text(hasFreeTrial)
+                            Text(freeTrial)
                                 .font(.subheadline)
                                 .foregroundColor(Color(.text))
                         }
                     }
 
                     // 3.
-                    HStack {
-                        Text(Localization.subscriptionSignUpFeeLabel)
-                            .subheadlineStyle()
-                        Spacer()
-                        Text("$25.00")
-                            .font(.subheadline)
-                            .foregroundColor(Color(.text))
+                    if let signupFee = viewModel.subscriptionConditionsSignupValue {
+                        HStack {
+                            Text(Localization.subscriptionSignUpFeeLabel)
+                                .subheadlineStyle()
+                            Spacer()
+                            Text(signupFee)
+                                .font(.subheadline)
+                                .foregroundColor(Color(.text))
+                        }
                     }
                 }
 

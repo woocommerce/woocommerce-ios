@@ -79,8 +79,19 @@ struct CollapsibleProductRowCardViewModel: Identifiable {
         "$60.00 / 2 months"
     }
 
+    var subscriptionConditionsSignupLabel: String? {
+        "$25.00 signup"
+    }
+
+    var subscriptionConditionsFreeTrialLabel: String? {
+        "1 month free"
+    }
+
     var subscriptionConditionsDetailsLabel: String {
-        "$25.00 signup · 1 month free"
+        [subscriptionConditionsSignupLabel, subscriptionConditionsFreeTrialLabel]
+            .compactMap({ $0 })
+            .filter({ $0.isNotEmpty })
+            .joined(separator: " · ")
     }
 
     init(id: Int64,

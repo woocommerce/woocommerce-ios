@@ -167,7 +167,7 @@ private struct CollapsibleProductRowCard: View {
                                 .foregroundColor(Color(.text))
                                 .renderedIf(shouldShowProductSubscriptionsDetails && isCollapsed)
                             Spacer()
-                            Text(viewModel.subscriptionPriceValue ?? "")
+                            Text(viewModel.subscriptionPrice)
                                 .font(.subheadline)
                                 .foregroundColor(Color(.text))
                                 .renderedIf(shouldShowProductSubscriptionsDetails && isCollapsed)
@@ -229,7 +229,7 @@ private struct CollapsibleProductRowCard: View {
                     }
 
                     // 3.
-                    if let signupFee = viewModel.subscriptionConditionsSignupValue {
+                    if let signupFee = viewModel.subscriptionConditionsSignupFee {
                         HStack {
                             Text(Localization.subscriptionSignUpFeeLabel)
                                 .subheadlineStyle()

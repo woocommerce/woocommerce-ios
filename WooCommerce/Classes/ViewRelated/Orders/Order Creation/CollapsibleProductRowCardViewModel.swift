@@ -99,12 +99,25 @@ struct CollapsibleProductRowCardViewModel: Identifiable {
                                                 pluralizedPeriod())
     }
 
-    var subscriptionPriceValue: String? {
-        "$\(productSubscriptionDetails?.price ?? "")"
+    var subscriptionPrice: String {
+        let currency = ServiceLocator.currencySettings.symbol(from: ServiceLocator.currencySettings.currencyCode)
+
+        guard let price = productSubscriptionDetails?.price,
+              let formattedPrice = currencyFormatter.formatAmount(price, with: currency) else {
+            return ""
+        }
+
+        return formattedPrice
     }
 
-    var subscriptionConditionsSignupValue: String? {
-        "$\(productSubscriptionDetails?.signUpFee ?? "")"
+    var subscriptionConditionsSignupFee: String? {
+        let currency = ServiceLocator.currencySettings.symbol(from: ServiceLocator.currencySettings.currencyCode)
+        guard let signupFee = productSubscriptionDetails?.signUpFee else {
+            return nil
+        }
+
+        let formattedSignupFee = currencyFormatter.formatAmount(signupFee, with: currency)
+        return formattedSignupFee
     }
 
     var subscriptionConditionsSignupLabel: String? {

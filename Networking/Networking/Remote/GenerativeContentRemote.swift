@@ -201,8 +201,7 @@ private extension GenerativeContentRemote {
                            token: JWToken) async throws -> AIProduct {
         let input = [
             "You are a WooCommerce SEO and marketing expert, perform in-depth research about the product " +
-            "using the provided name, keywords and tone.",
-            "Your response should be in JSON format and don't send anything extra.",
+            "using the provided name, keywords and tone, and give your response in the below JSON format.",
             "name: ```\(productName)```",
             "keywords: ```\(keywords)```",
             "tone: ```\(tone)```",
@@ -254,7 +253,7 @@ private extension GenerativeContentRemote {
         }()
 
         let expectedJsonFormat =
-        "Expected json response format:" + "\n" + (jsonResponseFormatDict.toJSONEncoded() ?? "")
+        "Your response should be in JSON format and don't send anything extra. Don't include the word JSON in your response:" + "\n" + (jsonResponseFormatDict.toJSONEncoded() ?? "")
 
         let prompt = input + "\n" + expectedJsonFormat
 

@@ -129,7 +129,23 @@ struct CollapsibleProductRowCardViewModel: Identifiable {
     }
 
     var subscriptionConditionsFreeTrialLabel: String? {
-        "\(productSubscriptionDetails?.trialLength ?? "") \(productSubscriptionDetails?.trialPeriod ?? .day) free"
+        guard let trialLength = productSubscriptionDetails?.trialLength,
+              let trialPeriod = productSubscriptionDetails?.trialPeriod else {
+            return nil
+        }
+
+        let pluralizedTrialPeriod = {
+            switch trialLength {
+            case "1":
+                return trialPeriod.descriptionSingular
+            default:
+                return trialPeriod.descriptionPlural
+            }
+        }
+
+        return String.localizedStringWithFormat(Localization.formattedSubscriptionFreeTrialLabel,
+                                                trialLength,
+                                                pluralizedTrialPeriod())
     }
 
     var subscriptionConditionsDetailsLabel: String {
@@ -293,5 +309,10 @@ private extension CollapsibleProductRowCardViewModel {
             value: "%1$@ signup",
             comment: "Description of the signup fees for a subscription product. " +
             "Reads as: '$5.00 signup'.")
+        static let formattedSubscriptionFreeTrialLabel = NSLocalizedString(
+            "CollapsibleProductRowCardViewModel.formattedSubscriptionFreeTrialLabel",
+            value: "%1$@ %2$@ free",
+            comment: "Description of the free trial conditions for a subscription product. " +
+            "Reads as: '3 days free'.")
     }
 }

@@ -121,7 +121,11 @@ struct CollapsibleProductRowCardViewModel: Identifiable {
     }
 
     var subscriptionConditionsSignupLabel: String? {
-        "$\(productSubscriptionDetails?.signUpFee ?? "") signup"
+        guard let subscriptionConditionsSignupFee else {
+            return nil
+        }
+        return String.localizedStringWithFormat(Localization.formattedSubscriptionSignUpFeeLabel,
+                                                subscriptionConditionsSignupFee)
     }
 
     var subscriptionConditionsFreeTrialLabel: String? {
@@ -284,5 +288,10 @@ private extension CollapsibleProductRowCardViewModel {
             value: "Every %1$@ %2$@",
             comment: "Description of the billing and billing frequency for a subscription product. " +
             "Reads as: 'Every 2 months'.")
+        static let formattedSubscriptionSignUpFeeLabel = NSLocalizedString(
+            "CollapsibleProductRowCardViewModel.formattedSubscriptionSignUpFeeLabel",
+            value: "%1$@ signup",
+            comment: "Description of the signup fees for a subscription product. " +
+            "Reads as: '$5.00 signup'.")
     }
 }

@@ -337,25 +337,18 @@ private extension DashboardViewModel {
     /// We are using separate user defaults for different cards -
     /// this should be updated to general app settings.
     func updateDashboardCards(showOnboarding: Bool, showBlazeCampaignView: Bool) {
-        dashboardCards = []
+        let onboardingCard = DashboardCard(type: .onboarding, enabled: showOnboarding)
+        let statsCard = DashboardCard(type: .statsAndTopPerformers, enabled: true)
+        let blazeCard = DashboardCard(type: .blaze, enabled: showBlazeCampaignView)
+        dashboardCards = [onboardingCard, statsCard, blazeCard]
         unavailableDashboardCards = []
 
-        if showOnboarding {
-            dashboardCards.append(DashboardCard(type: .onboarding, enabled: true))
-        } else if userDefaults.shouldHideStoreOnboardingTaskList {
-            dashboardCards.append(DashboardCard(type: .onboarding, enabled: false))
-        } else {
-            unavailableDashboardCards.append(DashboardCard(type: .onboarding, enabled: false))
+        if !showOnboarding && !userDefaults.shouldHideStoreOnboardingTaskList {
+            unavailableDashboardCards.append(onboardingCard)
         }
 
-        dashboardCards.append(DashboardCard(type: .statsAndTopPerformers, enabled: true))
-
-        if showBlazeCampaignView {
-            dashboardCards.append(DashboardCard(type: .blaze, enabled: true))
-        } else if userDefaults.hasDismissedBlazeSectionOnMyStore {
-            dashboardCards.append(DashboardCard(type: .blaze, enabled: false))
-        } else {
-            unavailableDashboardCards.append(DashboardCard(type: .blaze, enabled: false))
+        if !showBlazeCampaignView && !userDefaults.hasDismissedBlazeSectionOnMyStore {
+            unavailableDashboardCards.append(blazeCard)
         }
     }
 

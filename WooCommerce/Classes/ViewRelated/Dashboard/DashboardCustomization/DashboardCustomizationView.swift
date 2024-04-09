@@ -22,7 +22,7 @@ struct DashboardCustomizationView: View {
             .toolbar(content: {
                 ToolbarItem(placement: .confirmationAction) {
                     Button {
-                        // TODO: save changes
+                        viewModel.saveChanges()
                         dismiss()
                     } label: {
                         Text(Localization.saveButton)

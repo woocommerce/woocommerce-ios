@@ -133,7 +133,8 @@ struct DashboardView: View {
         .sheet(isPresented: $showingCustomization) {
             DashboardCustomizationView(viewModel: DashboardCustomizationViewModel(
                 allCards: viewModel.dashboardCards,
-                inactiveCards: viewModel.unavailableDashboardCards
+                inactiveCards: viewModel.unavailableDashboardCards,
+                onSave: { viewModel.didCustomizeDashboardCards($0) }
             ))
         }
     }
@@ -144,7 +145,7 @@ struct DashboardView: View {
 private extension DashboardView {
     @ViewBuilder
     var dashboardCards: some View {
-        ForEach(viewModel.dashboardCards, id: \.self) { card in
+        ForEach(viewModel.dashboardCards, id: \.hashValue) { card in
             if card.enabled {
                 switch card.type {
                 case .onboarding:

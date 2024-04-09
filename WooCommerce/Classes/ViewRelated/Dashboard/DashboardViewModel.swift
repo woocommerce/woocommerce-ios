@@ -265,6 +265,10 @@ final class DashboardViewModel: ObservableObject {
             }
         }
     }
+
+    func didCustomizeDashboardCards(_ cards: [DashboardCard]) {
+        dashboardCards = cards
+    }
 }
 
 // MARK: Private helpers
@@ -330,7 +334,7 @@ private extension DashboardViewModel {
     }
 
     /// TODO-12403: Update persistence for dashboard cards.
-    /// We are using separate user defaults for different cards - 
+    /// We are using separate user defaults for different cards -
     /// this should be updated to general app settings.
     func updateDashboardCards(showOnboarding: Bool, showBlazeCampaignView: Bool) {
         dashboardCards = []

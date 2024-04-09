@@ -517,6 +517,7 @@ struct OrderForm: View {
             }
             .buttonStyle(PrimaryLoadingButtonStyle(isLoading: loading))
             .disabled(viewModel.collectPaymentDisabled)
+            .accessibilityIdentifier("order-form-collect-payment")
         case .done(let loading):
             Button {
                 viewModel.finishEditing()

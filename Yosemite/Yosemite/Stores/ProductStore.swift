@@ -656,7 +656,10 @@ private extension ProductStore {
         ].joined(separator: "\n")
         Task { @MainActor in
             do {
-                let jsonString = try await generativeContentRemote.generateText(siteID: siteID, base: prompt, feature: .productDetailsFromScannedTexts)
+                let jsonString = try await generativeContentRemote.generateText(siteID: siteID,
+                                                                                base: prompt,
+                                                                                feature: .productDetailsFromScannedTexts,
+                                                                                responseFormat: .json)
                 guard let jsonData = jsonString.data(using: .utf8) else {
                     return completion(.failure(DotcomError.resourceDoesNotExist))
                 }

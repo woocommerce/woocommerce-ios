@@ -2536,6 +2536,31 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertEqual(feature, GenerativeContentRemoteFeature.productDetailsFromScannedTexts)
     }
 
+    func test_generateProductDetails_uses_correct_response_format() throws {
+        // Given
+        let generativeContentRemote = MockGenerativeContentRemote()
+        generativeContentRemote.whenGeneratingText(thenReturn: .success(""))
+        let productStore = ProductStore(dispatcher: dispatcher,
+                                        storageManager: storageManager,
+                                        network: network,
+                                        remote: MockProductsRemote(),
+                                        generativeContentRemote: generativeContentRemote)
+
+        // When
+        waitFor { promise in
+            productStore.onAction(ProductAction.generateProductDetails(siteID: self.sampleSiteID,
+                                                                       productName: nil,
+                                                                       scannedTexts: [""],
+                                                                       language: "en") { _ in
+                promise(())
+            })
+        }
+
+        // Then
+        let format = try XCTUnwrap(generativeContentRemote.generateTextResponseFormat)
+        XCTAssertEqual(format, .json)
+    }
+
     // MARK: - `generateProductName`
 
     func test_generateProductName_returns_product_details_on_success() throws {

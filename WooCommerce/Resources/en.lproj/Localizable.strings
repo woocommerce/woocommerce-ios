@@ -11593,17 +11593,17 @@ which should be translated separately and considered part of this sentence. */
 "infoplist.NSBluetoothAlwaysUsageDescription" = "This app uses Bluetooth to connect to supported card readers.";
 
 /* Title for Add Product home screen action */
-AddProductAction.Title = "Add a product";
+"infoplist.AddProductAction.Title" = "Add a product";
 
 /* Title for Add Order home screen action */
-AddOrderAction.Title = "New Order";
+"infoplist.AddOrderAction.Title" = "New Order";
 
 /* Title for Orders home screen action */
-OpenOrdersAction.Title = "Orders";
+"infoplist.OpenOrdersAction.Title" = "Orders";
 
 /* Title for Payments home screen action */
-OpenPaymentsAction.Title = "Payments";
+"infoplist.OpenPaymentsAction.Title" = "Payments";
 
 /* Title for Payments home screen action */
-CollectPaymentAction.Title = "Collect Payment";
+"infoplist.CollectPaymentAction.Title" = "Collect Payment";
 

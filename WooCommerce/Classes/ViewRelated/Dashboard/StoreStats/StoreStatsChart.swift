@@ -21,7 +21,7 @@ struct StoreStatsChart: View {
         Chart(viewModel.intervals) { item in
             LineMark(x: .value(Localization.xValue, item.date),
                      y: .value(Localization.yValue, item.revenue))
-            .foregroundStyle(Color(Constants.chartLineColor))
+            .foregroundStyle(Constants.chartLineColor)
 
             if !viewModel.hasRevenue {
                 RuleMark(y: .value(Localization.zeroRevenue, 0))
@@ -35,18 +35,19 @@ struct StoreStatsChart: View {
 
             AreaMark(x: .value(Localization.xValue, item.date),
                      y: .value(Localization.yValue, item.revenue))
-            .foregroundStyle(.linearGradient(colors: [Color(Constants.chartGradientTopColor), Color(Constants.chartGradientBottomColor)],
+            .foregroundStyle(.linearGradient(colors: [Constants.chartGradientTopColor,
+                                                      Constants.chartGradientBottomColor],
                                              startPoint: .top,
                                              endPoint: .bottom))
 
             if let selectedDate = selectedDate, viewModel.hasRevenue {
                 RuleMark(x: .value(Localization.xSelectedValue, selectedDate))
-                    .foregroundStyle(Color(Constants.chartHighlightLineColor))
+                    .foregroundStyle(Constants.chartHighlightLineColor)
 
                 if let selectedRevenue = selectedRevenue {
                     PointMark(x: .value(Localization.xSelectedValue, selectedDate),
                               y: .value(Localization.ySelectedValue, selectedRevenue))
-                    .foregroundStyle(Color(Constants.chartHighlightLineColor))
+                    .foregroundStyle(Constants.chartHighlightLineColor)
                 }
             }
         }
@@ -135,14 +136,16 @@ private extension StoreStatsChart {
     }
 
     enum Constants {
-        static var chartLineColor: UIColor {
-            UIColor(light: .withColorStudio(.wooCommercePurple, shade: .shade50),
-                    dark: .withColorStudio(.wooCommercePurple, shade: .shade30))
-        }
-        static let chartHighlightLineColor: UIColor = .withColorStudio(.pink)
-        static let chartGradientTopColor: UIColor = UIColor(light: .withColorStudio(.wooCommercePurple, shade: .shade50).withAlphaComponent(0.1),
-                                                            dark: UIColor(red: 204.0/256, green: 204.0/256, blue: 204.0/256, alpha: 0.3))
-        static let chartGradientBottomColor: UIColor = .clear.withAlphaComponent(0)
+        static var chartLineColor = Color(
+            light: .withColorStudio(name: .wooCommercePurple, shade: .shade50),
+            dark: .withColorStudio(name: .wooCommercePurple, shade: .shade30)
+        )
+        static let chartHighlightLineColor = Color.withColorStudio(name: .pink, shade: .shade50)
+        static let chartGradientTopColor = Color(
+            light: .withColorStudio(name: .wooCommercePurple, shade: .shade50).opacity(0.1),
+            dark: Color(UIColor(red: 204.0/256, green: 204.0/256, blue: 204.0/256, alpha: 0.3))
+        )
+        static let chartGradientBottomColor = Color.clear
         static let chartPadding: CGFloat = 8
         static let annotationPadding: CGFloat = 4
     }

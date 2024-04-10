@@ -10740,6 +10740,15 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the view containing a single Product Review */
 "hubMenu.productReview" = "Produktrecension";
 
+/* Title for Add Order home screen action */
+"infoplist.AddOrderAction.Title" = "Ny beställning";
+
+/* Title for Add Product home screen action */
+"infoplist.AddProductAction.Title" = "Lägg till en produkt";
+
+/* Title for Payments home screen action */
+"infoplist.CollectPaymentAction.Title" = "Ta emot betalning";
+
 /* A message that tells the user why the app needs access to Bluetooth. */
 "infoplist.NSBluetoothAlwaysUsageDescription" = "Denna app använder Bluetooth för att ansluta till kortläsare som stöds.";
 
@@ -10754,6 +10763,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* A message that tells the user why the app is requesting access to the user’s photo library. */
 "infoplist.NSPhotoLibraryUsageDescription" = "För att spara foton från kameran för produktbilder, eller för att lägga till foton eller videoklipp till dina produkter eller supportärenden.";
+
+/* Title for Orders home screen action */
+"infoplist.OpenOrdersAction.Title" = "Beställningar";
+
+/* Title for Payments home screen action */
+"infoplist.OpenPaymentsAction.Title" = "Betalningar";
 
 /* Title for the WPCom login screens when Jetpack is not connected yet */
 "jetpackSetupCoordinator.loginSubtitle" = "Anslut Jetpack";

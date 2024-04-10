@@ -285,7 +285,7 @@ struct ThemesPreviewView_Previews: PreviewProvider {
                                 id: "123",
                                 description: "Woo Theme",
                                 name: "Woo",
-                                demoURI: "https://woo.com")),
+                                demoURI: "https://woocommerce.com")),
             onSelectedTheme: { })
     }
 }

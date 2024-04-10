@@ -25,7 +25,7 @@ final class ComponentSettingsViewModelTests: XCTestCase {
 
     func test_component_image_and_description_visible_when_set() throws {
         // Given
-        let imageURL = try XCTUnwrap(URL(string: "https://woo.com/woo.jpg"))
+        let imageURL = try XCTUnwrap(URL(string: "https://woocommerce.com/woocommerce.jpg"))
         let viewModel = ComponentSettingsViewModel(title: "",
                                                    description: "Description",
                                                    imageURL: imageURL,
@@ -51,7 +51,7 @@ final class ComponentSettingsViewModelTests: XCTestCase {
         // Given
         let component = sampleComponent(id: "1",
                                         title: "Camera Body",
-                                        imageURL: URL(string: "https://woo.com/woo.jpg"),
+                                        imageURL: URL(string: "https://woocommerce.com/woocommerce.jpg"),
                                         description: "Choose between the Nikon D600 or the powerful Canon EOS 5D Mark IV.",
                                         optionType: .productIDs,
                                         optionIDs: [],
@@ -115,7 +115,7 @@ final class ComponentSettingsViewModelTests: XCTestCase {
         let expectedProduct = Product.fake().copy(siteID: sampleSiteID,
                                                   productID: 11,
                                                   name: "Nikon D600 Digital SLR Camera Body",
-                                                  images: [.fake().copy(src: "https://woo.com/woo.jpg")])
+                                                  images: [.fake().copy(src: "https://woocommerce.com/woocommerce.jpg")])
         self.stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
             case let .retrieveProducts(_, _, _, _, onCompletion):

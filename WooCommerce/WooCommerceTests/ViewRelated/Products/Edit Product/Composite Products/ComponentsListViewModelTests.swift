@@ -11,7 +11,7 @@ final class ComponentsListViewModelTests: XCTestCase {
         let compositeComponent = ProductCompositeComponent.fake().copy(componentID: "1",
                                                                        title: "Camera Body",
                                                                        description: "Choose between the Nikon D600 or the powerful Canon EOS 5D Mark IV.",
-                                                                       imageURL: "https://woo.com/woo.jpg",
+                                                                       imageURL: "https://woocommerce.com/woocommerce.jpg",
                                                                        optionType: .productIDs)
 
         // When

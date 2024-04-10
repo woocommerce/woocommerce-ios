@@ -86,7 +86,7 @@ private extension WCShipCTAView {
         static let topMargin: CGFloat = 64
         static let horizontalMargin: CGFloat = 32
         static let verticalSpacing: CGFloat = 16
-        static let whatIsWCShipURL: URL = URL(string: "https://woo.com/document/woocommerce-shipping-and-tax/")!
+        static let whatIsWCShipURL: URL = URL(string: "https://woocommerce.com/document/woocommerce-shipping-and-tax/")!
     }
 
     enum Localization {

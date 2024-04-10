@@ -2,6 +2,7 @@ import Charts
 import SwiftUI
 
 /// Chart for store performance built with Swift Charts.
+/// Technical notes: paNNhX-tA-p2
 ///
 struct StoreStatsChart: View {
     @ObservedObject private var viewModel: StoreStatsChartViewModel
@@ -18,12 +19,12 @@ struct StoreStatsChart: View {
 
     var body: some View {
         Chart(viewModel.intervals) { item in
-            LineMark(x: .value("Date", item.date),
-                     y: .value("Revenue", item.revenue))
+            LineMark(x: .value(Localization.xValue, item.date),
+                     y: .value(Localization.yValue, item.revenue))
             .foregroundStyle(Color(Constants.chartLineColor))
 
             if !viewModel.hasRevenue {
-                RuleMark(y: .value("Zero revenue", 0))
+                RuleMark(y: .value(Localization.zeroRevenue, 0))
                     .annotation(position: .overlay, alignment: .center) {
                         Text("No revenue this period")
                             .font(.footnote)
@@ -32,19 +33,19 @@ struct StoreStatsChart: View {
                     }
             }
 
-            AreaMark(x: .value("Date", item.date),
-                     y: .value("Revenue", item.revenue))
+            AreaMark(x: .value(Localization.xValue, item.date),
+                     y: .value(Localization.yValue, item.revenue))
             .foregroundStyle(.linearGradient(colors: [Color(Constants.chartGradientTopColor), Color(Constants.chartGradientBottomColor)],
                                              startPoint: .top,
                                              endPoint: .bottom))
 
             if let selectedDate = selectedDate, viewModel.hasRevenue {
-                RuleMark(x: .value("Selected date", selectedDate))
+                RuleMark(x: .value(Localization.xSelectedValue, selectedDate))
                     .foregroundStyle(Color(Constants.chartHighlightLineColor))
 
                 if let selectedRevenue = selectedRevenue {
-                    PointMark(x: .value("Selected date", selectedDate),
-                              y: .value("Selected revenue", selectedRevenue))
+                    PointMark(x: .value(Localization.xSelectedValue, selectedDate),
+                              y: .value(Localization.ySelectedValue, selectedRevenue))
                     .foregroundStyle(Color(Constants.chartHighlightLineColor))
                 }
             }
@@ -100,6 +101,39 @@ struct StoreStatsChart: View {
 }
 
 private extension StoreStatsChart {
+    enum Localization {
+        static let xValue = NSLocalizedString(
+            "storeStatsChart.xValue",
+            value: "Date",
+            comment: "Value for the x-Axis of the store stats chart on the Dashboard screen"
+        )
+        static let yValue = NSLocalizedString(
+            "storeStatsChart.yValue",
+            value: "Revenue",
+            comment: "Value for the y-Axis of the store stats chart on the Dashboard screen"
+        )
+        static let zeroRevenue = NSLocalizedString(
+            "storeStatsChart.zeroRevenue",
+            value: "Zero revenue",
+            comment: "Value for the y-Axis of the store stats chart on the Dashboard screen when there is no revenue"
+        )
+        static let noRevenueText = NSLocalizedString(
+            "storeStatsChart.noRevenueText",
+            value: "No revenue this period",
+            comment: "Text on the store stats chart on the Dashboard screen when there is no revenue"
+        )
+        static let xSelectedValue = NSLocalizedString(
+            "storeStatsChart.xSelectedValue",
+            value: "Selected date",
+            comment: "Value for the x-Axis of any selected point on the store stats chart on the Dashboard screen"
+        )
+        static let ySelectedValue = NSLocalizedString(
+            "storeStatsChart.ySelectedValue",
+            value: "Selected revenue",
+            comment: "Value for the y-Axis of any selected point on the store stats chart on the Dashboard screen"
+        )
+    }
+
     enum Constants {
         static var chartLineColor: UIColor {
             UIColor(light: .withColorStudio(.wooCommercePurple, shade: .shade50),

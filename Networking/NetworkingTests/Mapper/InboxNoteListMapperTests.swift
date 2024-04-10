@@ -41,7 +41,7 @@ final class InboxNoteListMapperTests: XCTestCase {
 
         // When
         let dateFormatter = DateFormatter.Defaults.dateTimeFormatter
-        let url = "https://woo.com/posts/pre-launch-checklist-the-essentials/?utm_source=inbox&utm_medium=product"
+        let url = "https://woocommerce.com/posts/pre-launch-checklist-the-essentials/?utm_source=inbox&utm_medium=product"
         let content = "To make sure you never get that sinking \"what did I forget\" feeling, we've put together the essential pre-launch checklist."
         let expectedInboxNote = InboxNote(siteID: dummySiteID,
                                           id: 291,

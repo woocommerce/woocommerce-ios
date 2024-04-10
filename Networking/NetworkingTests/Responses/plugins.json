@@ -52,12 +52,12 @@
             "plugin": "woocommerce/woocommerce",
             "status": "active",
             "name": "WooCommerce",
-            "plugin_uri": "https://woo.com/",
+            "plugin_uri": "https://woocommerce.com/",
             "author": "Automattic",
-            "author_uri": "https://woo.com",
+            "author_uri": "https://woocommerce.com",
             "description": {
                 "raw": "An eCommerce toolkit that helps you sell anything. Beautifully.",
-                "rendered": "An eCommerce toolkit that helps you sell anything. Beautifully. <cite>By <a href=\"https://woo.com\">Automattic</a>.</cite>"
+                "rendered": "An eCommerce toolkit that helps you sell anything. Beautifully. <cite>By <a href=\"https://woocommerce.com\">Automattic</a>.</cite>"
             },
             "version": "5.1.0",
             "network_only": false,
@@ -76,12 +76,12 @@
             "plugin": "woocommerce-payments/woocommerce-payments",
             "status": "active",
             "name": "WooCommerce Payments",
-            "plugin_uri": "https://woo.com/payments/",
+            "plugin_uri": "https://woocommerce.com/payments/",
             "author": "Automattic",
-            "author_uri": "https://woo.com/",
+            "author_uri": "https://woocommerce.com/",
             "description": {
                 "raw": "Accept payments via credit card. Manage transactions within WordPress.",
-                "rendered": "Accept payments via credit card. Manage transactions within WordPress. <cite>By <a href=\"https://woo.com/\">Automattic</a>.</cite>"
+                "rendered": "Accept payments via credit card. Manage transactions within WordPress. <cite>By <a href=\"https://woocommerce.com/\">Automattic</a>.</cite>"
             },
             "version": "2.1.0",
             "network_only": false,
@@ -100,9 +100,9 @@
             "plugin": "woocommerce-subscriptions/woocommerce-subscriptions",
             "status": "active",
             "name": "WooCommerce Subscriptions",
-            "plugin_uri": "https://www.woo.com/products/woocommerce-subscriptions/",
+            "plugin_uri": "https://www.woocommerce.com/products/woocommerce-subscriptions/",
             "author": "WooCommerce",
-            "author_uri": "https://woo.com/",
+            "author_uri": "https://woocommerce.com/",
             "description": {
                 "raw": "Sell products and services...",
                 "rendered": "Sell products and services with recurring payments..."

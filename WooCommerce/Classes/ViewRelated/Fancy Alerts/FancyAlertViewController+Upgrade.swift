@@ -102,7 +102,7 @@ private extension FancyAlertViewController {
             comment: "Update instructions button title shown in alert warning users to upgrade to WC 3.5."
         )
 
-        static let moreInfoURLString = "https://woo.com/document/how-to-update-woocommerce/"
+        static let moreInfoURLString = "https://woocommerce.com/document/how-to-update-woocommerce/"
 
         static let dismissButtonText = NSLocalizedString(
             "Dismiss",

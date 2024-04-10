@@ -9,7 +9,7 @@ final class ProductRowViewModelTests: XCTestCase {
     func test_viewModel_is_created_with_correct_initial_values_from_product() {
         // Given
         let rowID = Int64(0)
-        let imageURLString = "https://woo.com/woo.jpg"
+        let imageURLString = "https://woocommerce.com/woocommerce.jpg"
         let product = Product.fake().copy(productID: 12,
                                           name: "Test Product",
                                           images: [ProductImage.fake().copy(src: imageURLString)])
@@ -40,7 +40,7 @@ final class ProductRowViewModelTests: XCTestCase {
     func test_viewModel_is_created_with_correct_initial_values_from_product_variation() {
         // Given
         let rowID = Int64(0)
-        let imageURLString = "https://woo.com/woo.jpg"
+        let imageURLString = "https://woocommerce.com/woocommerce.jpg"
         let name = "Blue - Any Size"
         let productVariation = ProductVariation.fake().copy(productVariationID: 12,
                                                             attributes: [ProductVariationAttribute(id: 1, name: "Color", option: "Blue")],

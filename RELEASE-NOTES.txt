@@ -3,7 +3,7 @@
 18.2
 -----
 - [*] Login: Allow login using site credentials for Jetpack connected stores. [https://github.com/woocommerce/woocommerce-ios/issues/12429]
-
+- [internal] Updated all `woo.com` URLs to use `woocommerce.com` domain. [https://github.com/woocommerce/woocommerce-ios/pull/12452]
 
 18.1
 -----

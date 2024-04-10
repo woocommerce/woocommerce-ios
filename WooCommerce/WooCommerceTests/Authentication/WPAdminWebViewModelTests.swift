@@ -12,16 +12,16 @@ final class WPAdminWebViewModelTests: XCTestCase {
 
     func test_initialURL_is_set_from_init() throws {
         // Given
-        let url = try XCTUnwrap(URL(string: "https://woo.com"))
+        let url = try XCTUnwrap(URL(string: "https://woocommerce.com"))
         let viewModel = WPAdminWebViewModel(initialURL: url)
 
         // Then
-        XCTAssertEqual(viewModel.initialURL?.absoluteString, "https://woo.com")
+        XCTAssertEqual(viewModel.initialURL?.absoluteString, "https://woocommerce.com")
     }
 
     func test_redirecting_to_wpcom_invokes_reloadWebview() throws {
         // Given
-        let url = try XCTUnwrap(URL(string: "https://woo.com"))
+        let url = try XCTUnwrap(URL(string: "https://woocommerce.com"))
         let urlAfterWPComAuth = try XCTUnwrap(URL(string: URLs.urlAfterWPComAuth))
         let viewModel = WPAdminWebViewModel(initialURL: url)
 
@@ -52,7 +52,7 @@ final class WPAdminWebViewModelTests: XCTestCase {
 
     func test_redirecting_to_non_wpcom_does_not_invoke_reloadWebview() throws {
         // Given
-        let url = try XCTUnwrap(URL(string: "https://woo.com"))
+        let url = try XCTUnwrap(URL(string: "https://woocommerce.com"))
         let nonWPComAuthURL = try XCTUnwrap(URL(string: "https://example.com"))
         let viewModel = WPAdminWebViewModel(initialURL: url)
 

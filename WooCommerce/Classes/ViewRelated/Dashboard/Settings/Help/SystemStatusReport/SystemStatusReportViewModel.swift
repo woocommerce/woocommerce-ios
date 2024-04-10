@@ -178,7 +178,7 @@ private extension SystemStatusReportViewModel {
                     lines.append("\(content.key) (\(content.value))")
                 }
             }
-            lines.append("\nConnected to Woo.com: \((settings.woocommerceCOMConnected != "no").stringRepresentable)")
+            lines.append("\nConnected to WooCommerce.com: \((settings.woocommerceCOMConnected != "no").stringRepresentable)")
         }
 
         // Pages

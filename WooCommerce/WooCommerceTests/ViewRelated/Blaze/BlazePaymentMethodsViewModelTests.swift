@@ -35,9 +35,6 @@ final class BlazePaymentMethodsViewModelTests: XCTestCase {
         let viewModel = BlazePaymentMethodsViewModel(siteID: sampleSiteID,
                                                      selectedPaymentMethodID: "payment-method-1",
                                                      stores: stores) { _ in }
-
-        let paymentInfo = BlazePaymentInfo.fake().copy(paymentMethods: [BlazePaymentMethod.fake(), BlazePaymentMethod.fake()])
-
         mockPaymentFetch(with: .success(samplePaymentInfo))
 
         // When
@@ -52,8 +49,6 @@ final class BlazePaymentMethodsViewModelTests: XCTestCase {
         let viewModel = BlazePaymentMethodsViewModel(siteID: sampleSiteID,
                                                      selectedPaymentMethodID: "payment-method-1",
                                                      stores: stores) { _ in }
-
-        let paymentInfo = BlazePaymentInfo.fake().copy(paymentMethods: [BlazePaymentMethod.fake(), BlazePaymentMethod.fake()])
 
         mockPaymentFetch(with: .failure(NSError(domain: "test", code: 500)))
 

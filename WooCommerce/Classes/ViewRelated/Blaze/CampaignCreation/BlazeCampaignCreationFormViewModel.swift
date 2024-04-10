@@ -182,6 +182,7 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
     }
 
     @Published var isShowingMissingImageErrorAlert: Bool = false
+    @Published var shouldDisplayImageSizeErrorAlert = false
     @Published var isShowingPaymentInfo: Bool = false
 
     /// ResultController to get the product for the given product ID
@@ -297,8 +298,12 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
     }
 
     func didTapConfirmDetails() {
-        guard image != nil else {
+        guard let image else {
             return isShowingMissingImageErrorAlert = true
+        }
+
+        guard image.image.size.width >= editAdViewModel.minImageSize.width || image.image.size.height >= editAdViewModel.minImageSize.height else {
+            return shouldDisplayImageSizeErrorAlert = true
         }
 
         let taglineMatching = suggestions.map { $0.siteName }.contains { $0 == tagline }

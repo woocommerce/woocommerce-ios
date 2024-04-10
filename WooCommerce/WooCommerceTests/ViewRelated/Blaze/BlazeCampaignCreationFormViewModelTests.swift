@@ -20,7 +20,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
                      images: [.fake().copy(imageID: 1)])
     }
 
-    private let sampleImage = UIImage.addOutlineImage
+    private let sampleImage = UIImage.gridicon(.calendar, size: .init(width: 500, height: 500))
 
     private let sampleAISuggestions = [BlazeAISuggestion(siteName: "First suggested tagline", textSnippet: "First suggested description"),
                                        BlazeAISuggestion(siteName: "Second suggested tagline", textSnippet: "Second suggested description"),
@@ -356,6 +356,35 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         // Then
         XCTAssertTrue(viewModel.description.isEmpty)
         XCTAssertFalse(viewModel.canConfirmDetails)
+    }
+
+    func test_error_alert_is_displayed_when_image_size_invalid() async throws {
+        // Given
+        insertProduct(sampleProduct)
+        mockAISuggestionsSuccess(sampleAISuggestions)
+
+        // Image less than expected size 500*500
+        mockDownloadImage(UIImage.gridicon(.calendar, size: .init(width: 100, height: 100)))
+
+        let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
+                                                           productID: sampleProductID,
+                                                           stores: stores,
+                                                           storage: storageManager,
+                                                           productImageLoader: imageLoader,
+                                                           onCompletion: {})
+        // Sets non-nil product image
+        await viewModel.downloadProductImage()
+
+        await viewModel.loadAISuggestions()
+
+        let editAdViewModel = viewModel.editAdViewModel
+        editAdViewModel.tagline = "Custom tagline"
+        editAdViewModel.didTapSave()
+
+        // When
+        viewModel.didTapConfirmDetails()
+
+        XCTAssertTrue(viewModel.shouldDisplayImageSizeErrorAlert)
     }
 
     // MARK: Analytics

@@ -597,7 +597,7 @@ private extension ProductStore {
 
         Task { @MainActor in
             let result = await Result {
-                let description = try await generativeContentRemote.generateText(siteID: siteID, base: prompt, feature: .productDescription)
+                let description = try await generativeContentRemote.generateText(siteID: siteID, base: prompt, feature: .productDescription, responseFormat: .text)
                 return description
             }
             completion(result)
@@ -624,7 +624,7 @@ private extension ProductStore {
 
         Task { @MainActor in
             let result = await Result {
-                let message = try await generativeContentRemote.generateText(siteID: siteID, base: prompt, feature: .productSharing)
+                let message = try await generativeContentRemote.generateText(siteID: siteID, base: prompt, feature: .productSharing, responseFormat: .text)
                     .trimmingCharacters(in: CharacterSet(["\""]))  // Trims quotation mark
                 return message
             }
@@ -685,7 +685,7 @@ private extension ProductStore {
 
         Task { @MainActor in
             let result = await Result {
-                let description = try await generativeContentRemote.generateText(siteID: siteID, base: prompt, feature: .productName)
+                let description = try await generativeContentRemote.generateText(siteID: siteID, base: prompt, feature: .productName, responseFormat: .text)
                 return description
             }
             completion(result)

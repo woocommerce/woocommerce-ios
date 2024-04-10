@@ -9,6 +9,11 @@ public enum GenerativeContentRemoteFeature: String {
     case productCreation = "woo_ios_product_creation"
 }
 
+public enum GenerativeContentRemoteResponseFormat: String {
+    case json = "json_object"
+    case text = "text"
+}
+
 /// Protocol for `GenerativeContentRemote` mainly used for mocking.
 ///
 public protocol GenerativeContentRemoteProtocol {

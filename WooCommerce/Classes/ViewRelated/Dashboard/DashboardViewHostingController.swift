@@ -68,7 +68,7 @@ private extension DashboardViewHostingController {
         privacyBannerPresenter.presentIfNeeded(from: self)
     }
 
-    private func observeModalJustInTimeMessages() {
+    func observeModalJustInTimeMessages() {
         viewModel.$modalJustInTimeMessageViewModel.sink { [weak self] viewModel in
             guard let viewModel, let self else {
                 return

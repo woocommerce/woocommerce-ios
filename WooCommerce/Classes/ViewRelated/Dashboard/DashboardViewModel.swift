@@ -19,7 +19,7 @@ final class DashboardViewModel: ObservableObject {
 
     let blazeCampaignDashboardViewModel: BlazeCampaignDashboardViewModel
 
-    @Published var showWebViewSheet: WebViewSheetViewModel? = nil
+    @Published var justInTimeMessagesWebViewModel: WebViewSheetViewModel? = nil
 
     @Published private(set) var showOnboarding: Bool = false
     @Published private(set) var showBlazeCampaignView: Bool = false
@@ -257,8 +257,7 @@ final class DashboardViewModel: ObservableObject {
     }
 
     func maybeSyncAnnouncementsAfterWebViewDismissed() {
-        // If the web view was opened from a modal JITM, it was dismissed before the webview
-        // was presented. Syncing in that situation would result in it showing again.
+        // Sync announcements again only when the JITM modal has been dismissed to avoid showing duplicated modals.
         if modalJustInTimeMessageViewModel == nil {
             Task {
                 await syncAnnouncements(for: siteID)
@@ -278,7 +277,7 @@ private extension DashboardViewModel {
     @MainActor
     func syncJustInTimeMessages(for siteID: Int64) async {
         let viewModel = try? await justInTimeMessagesManager.loadMessage(for: .dashboard, siteID: siteID)
-        viewModel?.$showWebViewSheet.assign(to: &self.$showWebViewSheet)
+        viewModel?.$showWebViewSheet.assign(to: &self.$justInTimeMessagesWebViewModel)
         switch viewModel?.template {
         case .some(.banner):
             announcementViewModel = viewModel

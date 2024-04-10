@@ -1,2 +1,1 @@
-En yeni güncellememizde WooCommerce deneyiminizi geliştirdik!
-Uygulama simgesine dokunup basılı tuttuğunuzda ortaya çıkan birkaç hızlı işlem ekledik. Artık yeni siparişler oluşturmaya, siparişlerin listesini almaya, yeni bir ürün eklemeye veya ödeme almaya başlayabilirsiniz. İşlemlerden birini kullanarak uygulamanın belirli bir özelliğine daha kolay ve hızlı bir şekilde ulaşın!
+En son güncellememizle yönetiminizi kolaylaştırın! Hareket halindeyken siparişleri kolaylıkla silin, Ürün Paketleri ve Hediye Kartları için yeni analizlere dalın ve daha pürüzsüz bir Jetpack kurulumunun keyfini çıkarın. Daha verimli bir WooCommerce deneyimi için hemen güncelleyin!

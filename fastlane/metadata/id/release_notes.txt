@@ -1,2 +1,1 @@
-Pembaruan terkini kami menyempurnakan pengalaman WooCommerce Anda.
-Kami menambahkan sejumlah tindakan cepat saat ikon aplikasi ditekan dan ditahan: Anda sekarang dapat membuat pesanan baru, memperoleh daftar pesanan, menambahkan produk baru, atau menarik pembayaran. Fitur-fitur tersebut jadi lebih mudah diakses dengan tindakan cepat yang tersedia!
+Jadikan manajemen bisnis Anda kian efisien dengan pembaruan dari kami! Hapus pesanan dengan mudah kapan saja, manfaatkan analitik yang baru untuk Paket Produk dan Kartu Hadiah, dan instal Jetpack tanpa repot. Perbarui sekarang untuk pengalaman yang lebih efisien di WooCommerce!

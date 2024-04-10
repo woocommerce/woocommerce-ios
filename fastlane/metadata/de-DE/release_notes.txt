@@ -1,2 +1,1 @@
-Im Rahmen unseres letzten Updates wurde dein WooCommerce-Erlebnis verbessert!
-Durch das Berühren und Halten des App-Icons kannst du jetzt neue Schnellaktionen nutzen, über die du eine neue Bestellung erstellen, Bestelllisten abrufen, ein neues Produkt hinzufügen oder Zahlungen empfangen kannst. Mit diesen Aktion gelangst du noch schneller und einfacher zu bestimmten Funktionen der App!
+Optimiere dein Management mit unserem neuesten Update! Lösche Bestellungen im Handumdrehen von unterwegs aus, schau dir die neuen Analysen für Produktpakete und Geschenkkarten an und profitiere von einer reibungsloseren Jetpack-Installation. Führe jetzt ein Update durch, um von einem effizienteren WooCommerce-Erlebnis zu profitieren!

@@ -114,7 +114,9 @@ private extension BillingAddressTableViewCell {
 
     func configureEditButton() {
         editButton.applyIconButtonStyle(icon: .pencilImage)
-        editButton.contentEdgeInsets = UIEdgeInsets(top: 12, left: 12, bottom: 12, right: 12)
+        var configuration = UIButton.Configuration.plain()
+        configuration.contentInsets = .init(top: 12, leading: 12, bottom: 12, trailing: 12)
+        editButton.configuration = configuration
         editButton.addTarget(self, action: #selector(editButtonTapped), for: .touchUpInside)
     }
 

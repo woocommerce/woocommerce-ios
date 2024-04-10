@@ -1,2 +1,1 @@
-בעדכון האחרון שפורסם, שיפרנו את חוויית השימוש ב-WooCommerce!
-הוספנו כמה פעולות מהירות דרך נגיעה ממושכת בסמל של האפליקציה: אפשר להתחיל ליצור הזמנה חדשה, לקבל רשימת הזמנות, להוסיף מוצר חדש או להתחיל לאסוף תשלומים. ניתן להגיע לאפשרות מסוימת באפליקציה בצורה קלה ומהירה יותר באמצעות אחת הפעולות האלו!
+Streamline your management with our latest update! Easily delete orders on-the-go, dive into new analytics for Product Bundles and Gift Cards, and enjoy a smoother Jetpack installation. כדאי לעדכן כעת כדי ליהנות מחוויה יעילה יותר באפליקציה של WooCommerce לנייד!

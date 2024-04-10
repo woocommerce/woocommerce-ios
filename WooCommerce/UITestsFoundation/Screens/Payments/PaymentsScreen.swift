@@ -98,8 +98,7 @@ public final class PaymentsScreen: ScreenObject {
     public func takeCashPayment() throws -> Self {
         orderFormCollectPaymentButton.waitAndTap()
         cashPaymentButton.waitAndTap()
-
-        markAsPaidButton.tap()
+        markAsPaidButton.waitAndTap()
         return self
     }
 

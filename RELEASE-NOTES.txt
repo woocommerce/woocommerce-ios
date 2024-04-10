@@ -4,6 +4,7 @@
 -----
 - [*] Login: Allow login using site credentials for Jetpack connected stores. [https://github.com/woocommerce/woocommerce-ios/issues/12429]
 - [internal] Updated all `woo.com` URLs to use `woocommerce.com` domain. [https://github.com/woocommerce/woocommerce-ios/pull/12452]
+- [*] Blaze: Validate that campaign image has minimum expected dimensions. [https://github.com/woocommerce/woocommerce-ios/issues/12470]
 
 18.1
 -----

@@ -2,6 +2,20 @@ import Foundation
 import wpxmlrpc
 
 extension PostServiceRemoteXMLRPC: PostServiceRemoteExtended {
+    public func post(withID postID: Int) async throws -> RemotePost {
+        let parameters = xmlrpcArguments(withExtra: postID) as [AnyObject]
+        let result = await api.call(method: "wp.getPost", parameters: parameters)
+        switch result {
+        case .success(let response):
+            return try await decodePost(from: response.body)
+        case .failure(let error):
+            if case .endpointError(let error) = error, error.code == 404 {
+                throw PostServiceRemoteError.notFound
+            }
+            throw error
+        }
+    }
+
     public func createPost(with parameters: RemotePostCreateParameters) async throws -> RemotePost {
         let dictionary = try makeParameters(from: RemotePostCreateParametersXMLRPCEncoder(parameters: parameters))
         let parameters = xmlrpcArguments(withExtra: dictionary) as [AnyObject]
@@ -9,7 +23,7 @@ extension PostServiceRemoteXMLRPC: PostServiceRemoteExtended {
         guard let postID = (response.body as? NSObject)?.numericValue() else {
             throw URLError(.unknown) // Should never happen
         }
-        return try await getPost(withID: postID)
+        return try await post(withID: postID.intValue)
     }
 
     public func patchPost(withID postID: Int, parameters: RemotePostUpdateParameters) async throws -> RemotePost {
@@ -21,14 +35,14 @@ extension PostServiceRemoteXMLRPC: PostServiceRemoteExtended {
         let result = await api.call(method: "metaWeblog.editPost", parameters: parameters)
         switch result {
         case .success:
-            return try await getPost(withID: postID as NSNumber)
+            return try await post(withID: postID)
         case .failure(let error):
             guard case .endpointError(let error) = error else {
                 throw error
             }
             switch error.code ?? 0 {
-            case 404: throw PostServiceRemoteUpdatePostError.notFound
-            case 409: throw PostServiceRemoteUpdatePostError.conflict
+            case 404: throw PostServiceRemoteError.notFound
+            case 409: throw PostServiceRemoteError.conflict
             default: throw error
             }
         }
@@ -41,28 +55,19 @@ extension PostServiceRemoteXMLRPC: PostServiceRemoteExtended {
         case .success:
             return
         case .failure(let error):
-            guard case .endpointError(let error) = error else {
-                throw error
+            if case .endpointError(let error) = error, error.code == 404 {
+                throw PostServiceRemoteError.notFound
             }
-            switch error.code ?? 0 {
-            case 404: throw PostServiceRemoteUpdatePostError.notFound
-            default: throw error
-            }
+            throw error
         }
     }
+}
 
-    private func getPost(withID postID: NSNumber) async throws -> RemotePost {
-        try await withUnsafeThrowingContinuation { continuation in
-            getPostWithID(postID) { post in
-                guard let post else {
-                    return continuation.resume(throwing: URLError(.unknown)) // Should never happen
-                }
-                continuation.resume(returning: post)
-            } failure: { error in
-                continuation.resume(throwing: error ?? URLError(.unknown))
-            }
-        }
+private func decodePost(from object: AnyObject) async throws -> RemotePost {
+    guard let dictionary = object as? [AnyHashable: Any] else {
+        throw WordPressAPIError<WordPressComRestApiEndpointError>.unparsableResponse(response: nil, body: nil)
     }
+    return PostServiceRemoteXMLRPC.remotePost(fromXMLRPCDictionary: dictionary)
 }
 
 private func makeParameters<T: Encodable>(from value: T) throws -> [String: AnyObject] {

@@ -200,41 +200,7 @@ private struct CollapsibleProductRowCard: View {
                 }
                 .frame(minHeight: Layout.rowMinHeight)
 
-                // New Subscription details section:
-                VStack {
-                    // 1.
-                    HStack {
-                        Text(Localization.Subscription.intervalLabel)
-                            .subheadlineStyle()
-                        Spacer()
-                        Text(viewModel.subscriptionBillingDetailsLabel)
-                            .font(.subheadline)
-                            .foregroundColor(Color(.text))
-                    }
-                    // 2.
-                    if let freeTrial = viewModel.subscriptionConditionsFreeTrialLabel {
-                        HStack {
-                            Text(Localization.Subscription.freeTrialLabel)
-                                .subheadlineStyle()
-                            Spacer()
-                            Text(freeTrial)
-                                .font(.subheadline)
-                                .foregroundColor(Color(.text))
-                        }
-                    }
-
-                    // 3.
-                    if let signupFee = viewModel.subscriptionConditionsSignupFee {
-                        HStack {
-                            Text(Localization.Subscription.signUpFeeLabel)
-                                .subheadlineStyle()
-                            Spacer()
-                            Text(signupFee)
-                                .font(.subheadline)
-                                .foregroundColor(Color(.text))
-                        }
-                    }
-                }
+                subscriptionDetailsSection
 
                 Divider()
 
@@ -313,6 +279,42 @@ private extension CollapsibleProductRowCard {
 }
 
 private extension CollapsibleProductRowCard {
+    // Subscription details section. Renders all elements for a Subscription-type product
+    @ViewBuilder var subscriptionDetailsSection: some View {
+        VStack {
+            HStack {
+                Text(Localization.Subscription.intervalLabel)
+                    .subheadlineStyle()
+                Spacer()
+                Text(viewModel.subscriptionBillingDetailsLabel)
+                    .font(.subheadline)
+                    .foregroundColor(Color(.text))
+            }
+
+            if let freeTrial = viewModel.subscriptionConditionsFreeTrialLabel {
+                HStack {
+                    Text(Localization.Subscription.freeTrialLabel)
+                        .subheadlineStyle()
+                    Spacer()
+                    Text(freeTrial)
+                        .font(.subheadline)
+                        .foregroundColor(Color(.text))
+                }
+            }
+
+            if let signupFee = viewModel.subscriptionConditionsSignupFee {
+                HStack {
+                    Text(Localization.Subscription.signUpFeeLabel)
+                        .subheadlineStyle()
+                    Spacer()
+                    Text(signupFee)
+                        .font(.subheadline)
+                        .foregroundColor(Color(.text))
+                }
+            }
+        }
+    }
+
     @ViewBuilder var discountRow: some View {
         HStack {
             if !viewModel.hasDiscount || shouldDisallowDiscounts {

@@ -101,7 +101,7 @@ struct CollapsibleProductRowCardViewModel: Identifiable {
             }
         }
 
-        return String.localizedStringWithFormat(Localization.formattedSubscriptionBillingDetailsLabel,
+        return String.localizedStringWithFormat(Localization.Subscription.formattedBillingDetails,
                                                 periodInterval,
                                                 pluralizedPeriod())
     }
@@ -131,7 +131,7 @@ struct CollapsibleProductRowCardViewModel: Identifiable {
         guard let subscriptionConditionsSignupFee else {
             return nil
         }
-        return String.localizedStringWithFormat(Localization.formattedSubscriptionSignUpFeeLabel,
+        return String.localizedStringWithFormat(Localization.Subscription.formattedSignUpFee,
                                                 subscriptionConditionsSignupFee)
     }
 
@@ -150,7 +150,7 @@ struct CollapsibleProductRowCardViewModel: Identifiable {
             }
         }
 
-        return String.localizedStringWithFormat(Localization.formattedSubscriptionFreeTrialLabel,
+        return String.localizedStringWithFormat(Localization.Subscription.formattedFreeTrial,
                                                 trialLength,
                                                 pluralizedTrialPeriod())
     }
@@ -306,20 +306,22 @@ private extension CollapsibleProductRowCardViewModel {
         static let skuFormat = NSLocalizedString("CollapsibleProductRowCardViewModel.skuFormat",
                                                  value: "SKU: %1$@",
                                                  comment: "SKU label for a product in an order. The variable shows the SKU of the product.")
-        static let formattedSubscriptionBillingDetailsLabel = NSLocalizedString(
-            "CollapsibleProductRowCardViewModel.formattedSubscriptionBillingDetailsLabel",
-            value: "Every %1$@ %2$@",
-            comment: "Description of the billing and billing frequency for a subscription product. " +
-            "Reads as: 'Every 2 months'.")
-        static let formattedSubscriptionSignUpFeeLabel = NSLocalizedString(
-            "CollapsibleProductRowCardViewModel.formattedSubscriptionSignUpFeeLabel",
-            value: "%1$@ signup",
-            comment: "Description of the signup fees for a subscription product. " +
-            "Reads as: '$5.00 signup'.")
-        static let formattedSubscriptionFreeTrialLabel = NSLocalizedString(
-            "CollapsibleProductRowCardViewModel.formattedSubscriptionFreeTrialLabel",
-            value: "%1$@ %2$@ free",
-            comment: "Description of the free trial conditions for a subscription product. " +
-            "Reads as: '3 days free'.")
+        enum Subscription {
+            static let formattedBillingDetails = NSLocalizedString(
+                "CollapsibleProductRowCardViewModel.formattedBillingDetails",
+                value: "Every %1$@ %2$@",
+                comment: "Description of the billing and billing frequency for a subscription product. " +
+                "Reads as: 'Every 2 months'.")
+            static let formattedSignUpFee = NSLocalizedString(
+                "CollapsibleProductRowCardViewModel.formattedSignUpFee",
+                value: "%1$@ signup",
+                comment: "Description of the signup fees for a subscription product. " +
+                "Reads as: '$5.00 signup'.")
+            static let formattedFreeTrial = NSLocalizedString(
+                "CollapsibleProductRowCardViewModel.formattedFreeTrial",
+                value: "%1$@ %2$@ free",
+                comment: "Description of the free trial conditions for a subscription product. " +
+                "Reads as: '3 days free'.")
+        }
     }
 }

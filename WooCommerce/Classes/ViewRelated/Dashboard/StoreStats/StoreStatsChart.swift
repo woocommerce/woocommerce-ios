@@ -156,9 +156,24 @@ private extension StoreStatsChart {
     }
 }
 
-#Preview {
-    StoreStatsChart(viewModel: .init(intervals: [
-        .init(date: Date(), revenue: 1299),
-        .init(date: Date().addingTimeInterval(3000), revenue: 3245),
-    ], timeRange: .thisWeek)) { _ in }
+#if DEBUG
+
+private extension StoreStatsChartViewModel {
+    static let sampleDataForThisWeek: [StoreStatsChartData] = {
+        let startOfWeek = Date().startOfWeek(timezone: .current)!
+        var data = [StoreStatsChartData]()
+        var day = 0
+        while day < 7 {
+            data.append(StoreStatsChartData(date: startOfWeek.adding(days: day)!, revenue: Double.random(in: 0...1000)))
+            day += 1
+        }
+        return data
+    }()
 }
+
+#Preview {
+    StoreStatsChart(viewModel: .init(intervals: StoreStatsChartViewModel.sampleDataForThisWeek,
+                                     timeRange: .thisWeek)) { _ in }
+}
+
+#endif

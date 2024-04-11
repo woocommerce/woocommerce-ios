@@ -68,9 +68,9 @@ extension StoreStatsChartViewModel {
         case .today:
             return 5
         case .thisWeek:
-            return 7
+            return 1
         case .thisMonth:
-            return 6
+            return 5
         case .thisYear:
             return 4
         case .custom(from: let from, to: let to):
@@ -84,20 +84,20 @@ extension StoreStatsChartViewModel {
             return .dateTime.hour()
         case .thisWeek, .thisMonth:
             if date == intervals.first?.date {
-                return .dateTime.month(.abbreviated).day(.twoDigits)
+                return .dateTime.month(.abbreviated).day(.defaultDigits)
             }
-            return .dateTime.day(.twoDigits)
+            return .dateTime.day(.defaultDigits)
         case .thisYear:
             return .dateTime.month(.abbreviated)
         case .custom(from: let from, to: let to):
             switch timeRange.intervalGranularity {
-            case .daily:
+            case .hourly:
                 return .dateTime.hour()
-            case .hourly, .weekly:
+            case .daily, .weekly:
                 if date == intervals.first?.date {
-                    return .dateTime.month(.abbreviated).day(.twoDigits)
+                    return .dateTime.month(.abbreviated).day(.defaultDigits)
                 }
-                return .dateTime.day(.twoDigits)
+                return .dateTime.day(.defaultDigits)
             case .monthly:
                 return .dateTime.month(.abbreviated)
             case .yearly:

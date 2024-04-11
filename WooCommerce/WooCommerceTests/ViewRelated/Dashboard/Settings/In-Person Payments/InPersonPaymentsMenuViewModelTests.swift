@@ -4,7 +4,8 @@ import TestKit
 @testable import WooCommerce
 
 /// Temporarily removed pending a rewrite for the new InPersonPaymentsMenuViewModel #11168
-class InPersonPaymentsMenuViewModelTests: XCTestCase {
+@MainActor
+final class InPersonPaymentsMenuViewModelTests: XCTestCase {
 
     private var sut: InPersonPaymentsMenuViewModel!
 
@@ -316,5 +317,42 @@ class InPersonPaymentsMenuViewModelTests: XCTestCase {
 
         // Then
         XCTAssertTrue(sut.presentCollectPayment)
+    }
+
+    func test_collectPaymentTapped_sets_orderViewModel() throws {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isMigrateSimplePaymentsToOrderCreationEnabled: true)
+        let dependencies = InPersonPaymentsMenuViewModel.Dependencies(cardPresentPaymentsConfiguration: .init(country: .US),
+                                                                      onboardingUseCase: mockOnboardingUseCase,
+                                                                      cardReaderSupportDeterminer: MockCardReaderSupportDeterminer(),
+                                                                      wooPaymentsDepositService: mockDepositService,
+                                                                      featureFlagService: featureFlagService)
+        sut = InPersonPaymentsMenuViewModel(siteID: sampleStoreID,
+                                            dependencies: dependencies)
+        XCTAssertNil(sut.orderViewModel)
+
+        // When
+        sut.collectPaymentTapped()
+        XCTAssertNotNil(sut.orderViewModel)
+        sut.orderViewModel?.syncRequired = true
+
+        // Then
+        let originalOrderViewModel = try XCTUnwrap(sut.orderViewModel)
+        XCTAssertTrue(originalOrderViewModel.syncRequired)
+    }
+
+    func test_collectPaymentTapped_resets_presentCustomAmountAfterDismissingCollectPaymentMigrationSheet_and_hasPresentedCollectPaymentMigrationSheet_to_false() {
+        // Given
+        XCTAssertFalse(sut.presentCustomAmountAfterDismissingCollectPaymentMigrationSheet)
+        XCTAssertFalse(sut.hasPresentedCollectPaymentMigrationSheet)
+
+        // When
+        sut.presentCustomAmountAfterDismissingCollectPaymentMigrationSheet = true
+        sut.hasPresentedCollectPaymentMigrationSheet = true
+        sut.collectPaymentTapped()
+
+        // Then
+        XCTAssertFalse(sut.presentCustomAmountAfterDismissingCollectPaymentMigrationSheet)
+        XCTAssertFalse(sut.hasPresentedCollectPaymentMigrationSheet)
     }
 }

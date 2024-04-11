@@ -5,7 +5,8 @@ import Yosemite
 import WooFoundation
 import Combine
 
-class InPersonPaymentsMenuViewModel: ObservableObject {
+@MainActor
+final class InPersonPaymentsMenuViewModel: ObservableObject {
     @Published private(set) var shouldShowTapToPaySection: Bool = true
     @Published private(set) var shouldShowCardReaderSection: Bool = true
     @Published private(set) var shouldShowPaymentOptionsSection: Bool = false
@@ -22,7 +23,14 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
     @Published private(set) var selectedPaymentGatewayName: String?
     @Published private(set) var selectedPaymentGatewayPlugin: CardPresentPaymentsPlugin?
     @Published var presentCollectPaymentWithSimplePayments: Bool = false
+    /// Whether the payment collection flow is shown, bound to the order creation screen.
     @Published var presentCollectPayment: Bool = false
+    /// Whether the payment collection migration sheet is presented, bound to the migration sheet.
+    @Published var presentCollectPaymentMigrationSheet: Bool = false
+    /// Whether the migration sheet has been presented per payment collection session.
+    @Published var hasPresentedCollectPaymentMigrationSheet: Bool = false
+    /// Whether the custom amount flow should be presented after dismissing the payment collection migration sheet.
+    @Published var presentCustomAmountAfterDismissingCollectPaymentMigrationSheet: Bool = false
     @Published var presentSetUpTryOutTapToPay: Bool = false
     @Published var presentAboutTapToPay: Bool = false
     @Published var presentTapToPayFeedback: Bool = false
@@ -35,6 +43,9 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
     @Published var isLoadingDepositSummary: Bool = false
 
     var shouldAlwaysHideSetUpButtonOnAboutTapToPay: Bool = false
+
+    /// Set to a non-nil value when order form is shown.
+    private(set) var orderViewModel: EditableOrderViewModel?
 
     private(set) var simplePaymentsNoticePublisher: AnyPublisher<SimplePaymentsNotice, Never>
 
@@ -108,7 +119,6 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
         }
     }
 
-    @MainActor
     private func updateOutputProperties() async {
         payInPersonToggleViewModel.refreshState()
         updateCardReadersSection()
@@ -116,7 +126,6 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
         await refreshDepositSummary()
     }
 
-    @MainActor
     private func refreshDepositSummary() async {
         guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.wooPaymentsDepositsOverviewInPaymentsMenu),
         await dependencies.systemStatusService.fetchSystemPluginWithPath(siteID: siteID,
@@ -143,7 +152,6 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
         }
     }
 
-    @MainActor
     func onAppear() async {
         runCardPresentPaymentsOnboardingIfPossible()
         await updateOutputProperties()
@@ -156,6 +164,13 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
             analytics.track(.paymentsMenuCollectPaymentTapped)
             return
         }
+        let orderViewModel = EditableOrderViewModel(siteID: siteID)
+        self.orderViewModel = orderViewModel
+        orderViewModel.onFinished = { [weak self] _ in
+            self?.presentCollectPayment = false
+        }
+        presentCustomAmountAfterDismissingCollectPaymentMigrationSheet = false
+        hasPresentedCollectPaymentMigrationSheet = false
         presentCollectPayment = true
         analytics.track(.paymentsMenuCollectPaymentTapped)
     }
@@ -343,7 +358,6 @@ private extension InPersonPaymentsMenuViewModel {
 // MARK: - Tap to Pay visibility
 
 private extension InPersonPaymentsMenuViewModel {
-    @MainActor
     func updateTapToPaySection() async {
         let deviceSupportsTapToPay = await dependencies.cardReaderSupportDeterminer.deviceSupportsLocalMobileReader()
 
@@ -359,7 +373,6 @@ private extension InPersonPaymentsMenuViewModel {
         cardPresentPaymentsConfiguration.supportedReaders.contains(.appleBuiltIn)
     }
 
-    @MainActor
     func updateSetUpTryTapToPay() async {
         let tapToPayWasPreviouslyUsed = await dependencies.cardReaderSupportDeterminer.hasPreviousTapToPayUsage()
 
@@ -367,7 +380,6 @@ private extension InPersonPaymentsMenuViewModel {
         shouldAlwaysHideSetUpButtonOnAboutTapToPay = tapToPayWasPreviouslyUsed
     }
 
-    @MainActor
     func updateTapToPayFeedbackRowVisibility() async {
         guard let firstTapToPayTransactionDate = await dependencies.cardReaderSupportDeterminer.firstTapToPayTransactionDate(),
               let thirtyDaysAgo = Calendar.current.date(byAdding: DateComponents(day: -30), to: Date()) else {

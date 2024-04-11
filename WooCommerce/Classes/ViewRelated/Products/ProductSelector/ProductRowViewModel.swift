@@ -110,12 +110,12 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         }
 
         // Trial periods
-        guard let trialLength = productSubscriptionDetails?.trialLength,
-              let trialPeriod = productSubscriptionDetails?.trialPeriod else {
-            return ""
-        }
+        let trialLength = productSubscriptionDetails?.trialLength ?? ""
+        let trialPeriod = productSubscriptionDetails?.trialPeriod
 
         let formattedTrialDetails = {
+            // If trial period is missing, we can skip formatting the rest
+            guard let trialPeriod = trialPeriod else { return "" }
             switch trialLength {
             case "":
                 // The API allows an empty value for trial length, with a non-nil trial period.

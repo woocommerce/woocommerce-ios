@@ -14,6 +14,7 @@ struct SimplePaymentsMigrationView: View {
                     .fixedSize(horizontal: false, vertical: true)
             }
             VStack(spacing: Layout.verticalSpacingBetweenElements) {
+                // The subtitle is in an `.init` in order to support markdown.
                 Text(.init(Localization.subtitle))
                     .bodyStyle()
                 Text(Localization.detail)

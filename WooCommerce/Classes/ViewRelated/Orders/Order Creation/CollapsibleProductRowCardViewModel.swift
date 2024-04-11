@@ -106,12 +106,10 @@ struct CollapsibleProductRowCardViewModel: Identifiable {
                                                 pluralizedPeriod)
     }
 
-    var subscriptionPrice: String {
-        let currency = ServiceLocator.currencySettings.symbol(from: ServiceLocator.currencySettings.currencyCode)
-
+    var subscriptionPrice: String? {
         guard let price = productSubscriptionDetails?.price,
-              let formattedPrice = currencyFormatter.formatAmount(price, with: currency) else {
-            return ""
+              let formattedPrice = currencyFormatter.formatAmount(price) else {
+            return nil
         }
 
         return formattedPrice

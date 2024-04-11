@@ -164,10 +164,12 @@ private struct CollapsibleProductRowCard: View {
                                     .renderedIf(viewModel.shouldShowProductSubscriptionsDetails && isCollapsed)
                             }
                             Spacer()
-                            Text(viewModel.subscriptionPrice)
-                                .font(.subheadline)
-                                .foregroundColor(Color(.text))
-                                .renderedIf(viewModel.shouldShowProductSubscriptionsDetails && isCollapsed)
+                            if let subscriptionPrice = viewModel.subscriptionPrice {
+                                Text(subscriptionPrice)
+                                    .font(.subheadline)
+                                    .foregroundColor(Color(.text))
+                                    .renderedIf(viewModel.shouldShowProductSubscriptionsDetails && isCollapsed)
+                            }
                         }
                         Text(viewModel.skuLabel)
                             .font(.subheadline)

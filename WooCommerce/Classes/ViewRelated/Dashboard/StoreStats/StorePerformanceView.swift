@@ -1,9 +1,12 @@
 import SwiftUI
+import enum Yosemite.StatsTimeRangeV4
 
 /// View for store performance on Dashboard screen
 ///
 struct StorePerformanceView: View {
     @ObservedObject private var viewModel: StorePerformanceViewModel
+
+    let timeRanges: [StatsTimeRangeV4] = [.custom(from: Date(), to: Date().addingTimeInterval(1)), .thisYear, .thisMonth, .thisWeek, .today]
 
     init(viewModel: StorePerformanceViewModel) {
         self.viewModel = viewModel
@@ -12,6 +15,7 @@ struct StorePerformanceView: View {
     var body: some View {
         VStack(alignment: .leading) {
             header
+            timeRangeBar
         }
         .padding(Layout.padding)
         .overlay {
@@ -23,11 +27,9 @@ struct StorePerformanceView: View {
 
 private extension StorePerformanceView {
     var header: some View {
-        HStack {
-            VStack(alignment: .leading) {
-                Text(Localization.title)
-                    .headlineStyle()
-            }
+        HStack(alignment: .top) {
+            Text(Localization.title)
+                .headlineStyle()
             Spacer()
             Menu {
                 Button(Localization.hideCard) {
@@ -38,6 +40,33 @@ private extension StorePerformanceView {
                     .foregroundStyle(Color.secondary)
             }
         }
+    }
+
+    var timeRangeBar: some View {
+        HStack(alignment: .top) {
+            Text(viewModel.timeRange.tabTitle)
+                .subheadlineStyle()
+            Spacer()
+            Menu {
+                ForEach(timeRanges, id: \.rawValue) { range in
+                    Button {
+                        // TODO
+                    } label: {
+                        SelectableItemRow(title: range.tabTitle, selected: isTimeRangeSelected(range))
+                    }
+                }
+            } label: {
+                Image(systemName: "calendar")
+                    .foregroundStyle(Color.accentColor)
+            }
+        }
+    }
+
+    func isTimeRangeSelected(_ range: StatsTimeRangeV4) -> Bool {
+        if range.isCustomTimeRange && viewModel.timeRange.isCustomTimeRange {
+            return true
+        }
+        return range == viewModel.timeRange
     }
 }
 

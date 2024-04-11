@@ -500,8 +500,11 @@ final class ProductRowViewModelTests: XCTestCase {
         let rowID = Int64(0)
         let expectedPrice = "5"
         let expectedPeriodInterval = "1"
+        let expectedPeriod = SubscriptionPeriod.month
         let expectedBillingDetailsLabel = "$5.00 / 1 month"
-        let fakeSubscription: ProductSubscription = createFakeSubscription()
+        let fakeSubscription: ProductSubscription = createFakeSubscription(price: expectedPrice,
+                                                                           periodInterval: expectedPeriodInterval,
+                                                                           period: expectedPeriod)
         let productTypeKey = "subscription"
 
         let product = Product.fake().copy(productID: 12,
@@ -521,9 +524,11 @@ final class ProductRowViewModelTests: XCTestCase {
         let rowID = Int64(0)
         let expectedPrice = "5"
         let expectedPeriodInterval = "3"
+        let expectedPeriod = SubscriptionPeriod.month
         let expectedBillingDetailsLabel = "$5.00 / 3 months"
         let fakeSubscription: ProductSubscription = createFakeSubscription(price: expectedPrice,
-                                                                           periodInterval: expectedPeriodInterval)
+                                                                           periodInterval: expectedPeriodInterval,
+                                                                           period: expectedPeriod)
         let productTypeKey = "subscription"
 
         let product = Product.fake().copy(productID: 12,
@@ -545,8 +550,8 @@ final class ProductRowViewModelTests: XCTestCase {
         let expectedTrialLength = "1"
         let expectedTrialPeriod = SubscriptionPeriod.week
         let expectedConditionsLabel = "$0.60 signup · 1 week free"
-        let subs: ProductSubscription = createFakeSubscription(signUpFee: expectedSignUpFee, trialLength:
-                                                                expectedTrialLength,
+        let subs: ProductSubscription = createFakeSubscription(signUpFee: expectedSignUpFee,
+                                                               trialLength: expectedTrialLength,
                                                                trialPeriod: expectedTrialPeriod)
         let productTypeKey = "subscription"
 
@@ -633,11 +638,12 @@ private extension ProductRowViewModelTests {
 
     func createFakeSubscription(price: String? = "5",
                                 periodInterval: String? = "1",
+                                period: SubscriptionPeriod? = .month,
                                 signUpFee: String? = "0.6",
                                 trialLength: String? = "1",
                                 trialPeriod: SubscriptionPeriod? = .week) -> ProductSubscription {
         ProductSubscription.fake().copy(length: "2",
-                                        period: .month,
+                                        period: period,
                                         periodInterval: periodInterval,
                                         price: price,
                                         signUpFee: signUpFee,

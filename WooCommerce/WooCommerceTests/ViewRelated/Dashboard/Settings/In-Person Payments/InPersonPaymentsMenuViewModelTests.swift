@@ -319,7 +319,7 @@ final class InPersonPaymentsMenuViewModelTests: XCTestCase {
         XCTAssertTrue(sut.presentCollectPayment)
     }
 
-    func test_collectPaymentTapped_sets_orderViewModel_to_a_new_value() {
+    func test_collectPaymentTapped_sets_orderViewModel() throws {
         // Given
         let featureFlagService = MockFeatureFlagService(isMigrateSimplePaymentsToOrderCreationEnabled: true)
         let dependencies = InPersonPaymentsMenuViewModel.Dependencies(cardPresentPaymentsConfiguration: .init(country: .US),
@@ -329,17 +329,16 @@ final class InPersonPaymentsMenuViewModelTests: XCTestCase {
                                                                       featureFlagService: featureFlagService)
         sut = InPersonPaymentsMenuViewModel(siteID: sampleStoreID,
                                             dependencies: dependencies)
-        let originalOrderViewModel = sut.orderViewModel
-        // Because `EditableOrderViewModel` does not conform to `Equatable`, a random mutable property is set to assert that
-        // the two order view models are different.
-        originalOrderViewModel.syncRequired = true
+        XCTAssertNil(sut.orderViewModel)
 
         // When
         sut.collectPaymentTapped()
-        sut.orderViewModel.syncRequired = false
+        XCTAssertNotNil(sut.orderViewModel)
+        sut.orderViewModel?.syncRequired = true
 
         // Then
-        XCTAssertTrue(originalOrderViewModel.syncRequired != sut.orderViewModel.syncRequired)
+        let originalOrderViewModel = try XCTUnwrap(sut.orderViewModel)
+        XCTAssertTrue(originalOrderViewModel.syncRequired)
     }
 
     func test_collectPaymentTapped_resets_presentCustomAmountAfterDismissingCollectPaymentMigrationSheet_and_hasPresentedCollectPaymentMigrationSheet_to_false() {

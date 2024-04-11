@@ -14,4 +14,8 @@ final class StorePerformanceViewModel: ObservableObject {
         self.siteID = siteID
         self.stores = stores
     }
+
+    func didSelectTimeRange(_ newTimeRange: StatsTimeRangeV4) {
+        timeRange = newTimeRange
+    }
 }

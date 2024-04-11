@@ -1,12 +1,9 @@
 import SwiftUI
-import enum Yosemite.StatsTimeRangeV4
 
 /// View for store performance on Dashboard screen
 ///
 struct StorePerformanceView: View {
     @ObservedObject private var viewModel: StorePerformanceViewModel
-
-    let timeRanges: [StatsTimeRangeV4] = [.custom(from: Date(), to: Date().addingTimeInterval(1)), .thisYear, .thisMonth, .thisWeek, .today]
 
     init(viewModel: StorePerformanceViewModel) {
         self.viewModel = viewModel
@@ -15,13 +12,18 @@ struct StorePerformanceView: View {
     var body: some View {
         VStack(alignment: .leading) {
             header
+                .padding(.horizontal, Layout.padding)
+
             timeRangeBar
+                .padding(.horizontal, Layout.padding)
+
+            Divider()
+
         }
-        .padding(Layout.padding)
-        .overlay {
-            RoundedRectangle(cornerRadius: Layout.cornerRadius)
-                .stroke(Color(uiColor: .separator), lineWidth: Layout.strokeWidth)
-        }
+        .padding(.vertical, Layout.padding)
+        .background(Color(.listForeground(modal: false)))
+        .clipShape(RoundedRectangle(cornerSize: Layout.cornerSize))
+        .padding(.horizontal, Layout.padding)
     }
 }
 
@@ -44,36 +46,26 @@ private extension StorePerformanceView {
 
     var timeRangeBar: some View {
         HStack(alignment: .top) {
-            Text(viewModel.timeRange.tabTitle)
-                .subheadlineStyle()
+            AdaptiveStack {
+                Text(viewModel.timeRange.tabTitle)
+                    .subheadlineStyle()
+            }
             Spacer()
-            Menu {
-                ForEach(timeRanges, id: \.rawValue) { range in
-                    Button {
-                        // TODO
-                    } label: {
-                        SelectableItemRow(title: range.tabTitle, selected: isTimeRangeSelected(range))
-                    }
+            StatsTimeRangePicker(currentTimeRange: viewModel.timeRange) { newTimeRange in
+                if newTimeRange.isCustomTimeRange {
+                    // TODO: show date picker
+                } else {
+                    viewModel.didSelectTimeRange(newTimeRange)
                 }
-            } label: {
-                Image(systemName: "calendar")
-                    .foregroundStyle(Color.accentColor)
             }
         }
-    }
-
-    func isTimeRangeSelected(_ range: StatsTimeRangeV4) -> Bool {
-        if range.isCustomTimeRange && viewModel.timeRange.isCustomTimeRange {
-            return true
-        }
-        return range == viewModel.timeRange
     }
 }
 
 private extension StorePerformanceView {
     enum Layout {
         static let padding: CGFloat = 16
-        static let cornerRadius: CGFloat = 8
+        static let cornerSize = CGSize(width: 8.0, height: 8.0)
         static let strokeWidth: CGFloat = 0.5
     }
 
@@ -92,5 +84,5 @@ private extension StorePerformanceView {
 }
 
 #Preview {
-    StorePerformanceView(viewModel: StorePerformanceViewModel())
+    StorePerformanceView(viewModel: StorePerformanceViewModel(siteID: 123))
 }

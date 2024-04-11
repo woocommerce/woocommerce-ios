@@ -517,7 +517,7 @@ platform :ios do
       repository: GITHUB_REPO,
       branch: "release/#{version}"
     )
-    setfrozentag(
+    set_milestone_frozen_marker(
       repository: GITHUB_REPO,
       milestone: version,
       freeze: false

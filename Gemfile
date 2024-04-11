@@ -16,11 +16,7 @@ gem 'fastlane-plugin-sentry', '~> 1.0'
 # This comment avoids typing to switch to a development version for testing.
 #
 # gem 'fastlane-plugin-wpmreleasetoolkit', git: 'git@github.com:wordpress-mobile/release-toolkit', branch: ''
-#
-# The 9.0.1 version includes a fix for the pot file generation.
-# We want to resolve to any 9.x compatible version, _starting from_ 9.0.1.
-# Using '~> 9.0.1' would resolve to 9.0.x compatible version, missing out on any new feature release.
-gem 'fastlane-plugin-wpmreleasetoolkit', '~> 9.3'
+gem 'fastlane-plugin-wpmreleasetoolkit', '~> 10.0'
 gem 'rake', '~> 12.3'
 gem 'rubocop', '~> 1.60'
 gem 'rubocop-rake', '~> 0.6'

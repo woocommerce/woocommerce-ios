@@ -92,9 +92,9 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
             default:
                 return subscriptionPeriod.descriptionPlural
             }
-        }
+        }()
         return String.localizedStringWithFormat(Localization.formattedProductSubscriptionBilling,
-                                                formattedPrice, subscriptionInterval, subscriptionFrequency())
+                                                formattedPrice, subscriptionInterval, subscriptionFrequency)
     }
 
     /// Description of the subscription conditions for a Subscription-type Product
@@ -134,21 +134,21 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
             default:
                 return trialPeriod.descriptionPlural
             }
-        }
+        }()
 
         let hasNoSignUpFees = formattedSignUpFee.isEmpty || formattedSignUpFee == "0"
-        let hasNoFreeTrial = formattedTrialDetails().isEmpty || formattedTrialDetails() == "0"
+        let hasNoFreeTrial = formattedTrialDetails.isEmpty || formattedTrialDetails == "0"
 
         switch (hasNoSignUpFees, hasNoFreeTrial) {
         case (true, true):
             return ""
         case (true, false):
-            return String.localizedStringWithFormat(Localization.formattedProductSubscriptionConditionsWithoutSignup, trialLength, formattedTrialDetails())
+            return String.localizedStringWithFormat(Localization.formattedProductSubscriptionConditionsWithoutSignup, trialLength, formattedTrialDetails)
         case (false, true):
             return String.localizedStringWithFormat(Localization.formattedProductSubscriptionConditionsWithoutTrial, formattedSignUpFee)
         case (false, false):
             return String.localizedStringWithFormat(Localization.formattedProductSubscriptionConditions,
-                                                    formattedSignUpFee, trialLength, formattedTrialDetails())
+                                                    formattedSignUpFee, trialLength, formattedTrialDetails)
         }
     }
 

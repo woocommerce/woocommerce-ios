@@ -210,6 +210,15 @@ struct InPersonPaymentsMenu: View {
                         }
                         .presentationDetents([.medium, .large])
                     }
+                    .navigationDestination(isPresented: $viewModel.presentPaymentMethods) {
+                        if let paymentMethodsViewModel = viewModel.paymentMethodsViewModel {
+                            PaymentMethodsView(dismiss: {
+                                viewModel.presentCollectPayment = false
+                            }, viewModel: paymentMethodsViewModel)
+                        } else {
+                            EmptyView()
+                        }
+                    }
                     .onAppear {
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                             guard viewModel.hasPresentedCollectPaymentMigrationSheet == false else {

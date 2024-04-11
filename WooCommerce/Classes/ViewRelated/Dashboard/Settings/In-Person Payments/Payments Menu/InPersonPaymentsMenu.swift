@@ -187,36 +187,40 @@ struct InPersonPaymentsMenu: View {
                 InPersonPaymentsView(viewModel: viewModel.onboardingViewModel)
             }
             .navigationDestination(isPresented: $viewModel.presentCollectPayment) {
-                OrderFormPresentationWrapper(dismissHandler: {
-                    viewModel.presentCollectPayment = false
-                    Task { @MainActor in
-                        await viewModel.onAppear()
-                    }
-                },
-                                             flow: .creation,
-                                             dismissLabel: .backButton,
-                                             viewModel: viewModel.orderViewModel)
-                .navigationBarHidden(true)
-                .sheet(isPresented: $viewModel.presentCollectPaymentMigrationSheet, onDismiss: {
-                    // Custom amount sheet needs to be presented when the migration sheet is dismissed to avoid conflicting modals.
-                    if viewModel.presentCustomAmountAfterDismissingCollectPaymentMigrationSheet {
-                        viewModel.orderViewModel.addCustomAmount()
-                    }
-                }) {
-                    SimplePaymentsMigrationView {
-                        viewModel.presentCustomAmountAfterDismissingCollectPaymentMigrationSheet = true
-                        viewModel.presentCollectPaymentMigrationSheet = false
-                    }
-                    .presentationDetents([.medium, .large])
-                }
-                .onAppear {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                        guard viewModel.hasPresentedCollectPaymentMigrationSheet == false else {
-                            return
+                if let orderViewModel = viewModel.orderViewModel {
+                    OrderFormPresentationWrapper(dismissHandler: {
+                        viewModel.presentCollectPayment = false
+                        Task { @MainActor in
+                            await viewModel.onAppear()
                         }
-                        viewModel.presentCollectPaymentMigrationSheet = true
-                        viewModel.hasPresentedCollectPaymentMigrationSheet = true
+                    },
+                                                 flow: .creation,
+                                                 dismissLabel: .backButton,
+                                                 viewModel: orderViewModel)
+                    .navigationBarHidden(true)
+                    .sheet(isPresented: $viewModel.presentCollectPaymentMigrationSheet, onDismiss: {
+                        // Custom amount sheet needs to be presented when the migration sheet is dismissed to avoid conflicting modals.
+                        if viewModel.presentCustomAmountAfterDismissingCollectPaymentMigrationSheet {
+                            orderViewModel.addCustomAmount()
+                        }
+                    }) {
+                        SimplePaymentsMigrationView {
+                            viewModel.presentCustomAmountAfterDismissingCollectPaymentMigrationSheet = true
+                            viewModel.presentCollectPaymentMigrationSheet = false
+                        }
+                        .presentationDetents([.medium, .large])
                     }
+                    .onAppear {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                            guard viewModel.hasPresentedCollectPaymentMigrationSheet == false else {
+                                return
+                            }
+                            viewModel.presentCollectPaymentMigrationSheet = true
+                            viewModel.hasPresentedCollectPaymentMigrationSheet = true
+                        }
+                    }
+                } else {
+                    EmptyView()
                 }
             }
 

@@ -44,7 +44,8 @@ final class InPersonPaymentsMenuViewModel: ObservableObject {
 
     var shouldAlwaysHideSetUpButtonOnAboutTapToPay: Bool = false
 
-    private(set) var orderViewModel: EditableOrderViewModel
+    /// Set to a non-nil value when order form is shown.
+    private(set) var orderViewModel: EditableOrderViewModel?
 
     private(set) var simplePaymentsNoticePublisher: AnyPublisher<SimplePaymentsNotice, Never>
 
@@ -104,7 +105,6 @@ final class InPersonPaymentsMenuViewModel: ObservableObject {
         self.dependencies = dependencies
         self.payInPersonToggleViewModel = payInPersonToggleViewModel
         self.simplePaymentsNoticePublisher = PassthroughSubject<SimplePaymentsNotice, Never>().eraseToAnyPublisher()
-        self.orderViewModel = .init(siteID: siteID)
         observeOnboardingChanges()
         runCardPresentPaymentsOnboardingIfPossible()
 
@@ -164,7 +164,8 @@ final class InPersonPaymentsMenuViewModel: ObservableObject {
             analytics.track(.paymentsMenuCollectPaymentTapped)
             return
         }
-        orderViewModel = EditableOrderViewModel(siteID: siteID)
+        let orderViewModel = EditableOrderViewModel(siteID: siteID)
+        self.orderViewModel = orderViewModel
         orderViewModel.onFinished = { [weak self] _ in
             self?.presentCollectPayment = false
         }

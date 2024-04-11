@@ -17,9 +17,9 @@ final class BlazeEditAdViewModel: ObservableObject {
 
     @Published var shouldDisplayImageSizeErrorAlert = false
 
-    /// API expects the image dimensions to be minimum 500*500
+    /// API expects the image dimensions to be minimum 600*600
     ///
-    let minImageSize = CGSize(width: 500, height: 500)
+    let minImageSize = CGSize(width: 600, height: 600)
 
     // Tagline
     @Published var tagline: String = ""
@@ -160,7 +160,7 @@ final class BlazeEditAdViewModel: ObservableObject {
             guard let image = await onAddImage(source) else {
                 return imageState = previousState
             }
-            guard image.image.size.width >= minImageSize.width || image.image.size.height >= minImageSize.height else {
+            guard image.image.size.width * image.image.scale >= minImageSize.width && image.image.size.height * image.image.scale >= minImageSize.height else {
                 shouldDisplayImageSizeErrorAlert = true
                 return imageState = previousState
             }

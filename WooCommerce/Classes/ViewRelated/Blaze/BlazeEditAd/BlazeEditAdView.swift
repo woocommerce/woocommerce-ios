@@ -257,7 +257,7 @@ private extension BlazeEditAdView {
             )
             static let imageSizeError = NSLocalizedString(
                 "blazeEditAdView.image.imageSizeError",
-                value: "Please select an image with minimum dimensions of 500 * 500.",
+                value: "Please select an image with minimum dimensions of 600 * 600.",
                 comment: "Error message displayed when selected campaign image is not large enough."
             )
             static let ok = NSLocalizedString(

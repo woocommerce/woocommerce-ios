@@ -41,7 +41,7 @@ final class BlazeEditAdViewModelTests: XCTestCase {
 
         // When
         sut.onAddImage = { _ in
-            // Image less than expected size 500*500
+            // Image less than expected size 600*600
             MediaPickerImage(image: UIImage.gridicon(.calendar, size: .init(width: 100, height: 100)),
                              source: .media(media: .fake()))
         }
@@ -222,7 +222,7 @@ final class BlazeEditAdViewModelTests: XCTestCase {
 
         // When
         sut.onAddImage = { _ in
-            MediaPickerImage(image: UIImage.gridicon(.calendar, size: .init(width: 500, height: 500)),
+            MediaPickerImage(image: UIImage.gridicon(.calendar, size: .init(width: 600, height: 600)),
                              source: .media(media: .fake()))
         }
 

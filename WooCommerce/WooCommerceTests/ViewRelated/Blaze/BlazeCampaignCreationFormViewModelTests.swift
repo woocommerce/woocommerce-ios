@@ -358,35 +358,6 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.canConfirmDetails)
     }
 
-    func test_error_alert_is_displayed_when_image_size_invalid() async throws {
-        // Given
-        insertProduct(sampleProduct)
-        mockAISuggestionsSuccess(sampleAISuggestions)
-
-        // Image less than expected size 500*500
-        mockDownloadImage(UIImage.gridicon(.calendar, size: .init(width: 100, height: 100)))
-
-        let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
-                                                           productID: sampleProductID,
-                                                           stores: stores,
-                                                           storage: storageManager,
-                                                           productImageLoader: imageLoader,
-                                                           onCompletion: {})
-        // Sets non-nil product image
-        await viewModel.downloadProductImage()
-
-        await viewModel.loadAISuggestions()
-
-        let editAdViewModel = viewModel.editAdViewModel
-        editAdViewModel.tagline = "Custom tagline"
-        editAdViewModel.didTapSave()
-
-        // When
-        viewModel.didTapConfirmDetails()
-
-        XCTAssertTrue(viewModel.shouldDisplayImageSizeErrorAlert)
-    }
-
     // MARK: Analytics
     func test_event_is_tracked_on_appear() async throws {
         // Given

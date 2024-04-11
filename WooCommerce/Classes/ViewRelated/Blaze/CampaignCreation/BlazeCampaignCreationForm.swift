@@ -200,9 +200,6 @@ struct BlazeCampaignCreationForm: View {
                 viewModel.didTapEditAd()
             }
         }
-        .alert(Localization.ImageSizeErrorAlert.imageSizeError, isPresented: $viewModel.shouldDisplayImageSizeErrorAlert) {
-            Button(Localization.ImageSizeErrorAlert.ok, role: .cancel) { }
-        }
         .onAppear() {
             viewModel.onAppear()
         }
@@ -445,19 +442,6 @@ private extension BlazeCampaignCreationForm {
                 "blazeCampaignCreationForm.noImageErrorAlert.addImage",
                 value: "Add Image",
                 comment: "Button on the alert to add an image for the Blaze campaign"
-            )
-        }
-
-        enum ImageSizeErrorAlert {
-            static let imageSizeError = NSLocalizedString(
-                "blazeCampaignCreationForm.ImageSizeErrorAlert.imageSizeError",
-                value: "Please select an image with minimum dimensions of 500 * 500.",
-                comment: "Error message displayed when selected campaign image is not large enough."
-            )
-            static let ok = NSLocalizedString(
-                "blazeCampaignCreationForm.ImageSizeErrorAlert.ok",
-                value: "OK",
-                comment: "Button to dismiss the image view alert."
             )
         }
 

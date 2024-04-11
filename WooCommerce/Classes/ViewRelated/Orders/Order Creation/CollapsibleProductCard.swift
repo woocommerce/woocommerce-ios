@@ -204,7 +204,7 @@ private struct CollapsibleProductRowCard: View {
                 VStack {
                     // 1.
                     HStack {
-                        Text(Localization.subscriptionIntervalLabel)
+                        Text(Localization.Subscription.intervalLabel)
                             .subheadlineStyle()
                         Spacer()
                         Text(viewModel.subscriptionBillingDetailsLabel)
@@ -214,7 +214,7 @@ private struct CollapsibleProductRowCard: View {
                     // 2.
                     if let freeTrial = viewModel.subscriptionConditionsFreeTrialLabel {
                         HStack {
-                            Text(Localization.subscriptionFreeTrialLabel)
+                            Text(Localization.Subscription.freeTrialLabel)
                                 .subheadlineStyle()
                             Spacer()
                             Text(freeTrial)
@@ -226,7 +226,7 @@ private struct CollapsibleProductRowCard: View {
                     // 3.
                     if let signupFee = viewModel.subscriptionConditionsSignupFee {
                         HStack {
-                            Text(Localization.subscriptionSignUpFeeLabel)
+                            Text(Localization.Subscription.signUpFeeLabel)
                                 .subheadlineStyle()
                             Spacer()
                             Text(signupFee)
@@ -401,18 +401,20 @@ private extension CollapsibleProductRowCard {
         static let orderCountLabel = NSLocalizedString(
             "Order Count",
             comment: "Text in the product row card that indicates the product quantity in an order")
-        static let subscriptionIntervalLabel = NSLocalizedString(
-            "CollapsibleProductRowCard.text.interval",
-            value: "Interval",
-            comment: "The label points to the charge interval for product subscriptions")
-        static let subscriptionFreeTrialLabel = NSLocalizedString(
-            "CollapsibleProductRowCard.text.freetrial",
-            value: "Free trial",
-            comment: "The label points to the free trial conditions for product subscriptions")
-        static let subscriptionSignUpFeeLabel = NSLocalizedString(
-            "CollapsibleProductRowCard.text.signupfee",
-            value: "Signup fee",
-            comment: "The label points to the sign up fee conditions for product subscriptions")
+        enum Subscription {
+            static let intervalLabel = NSLocalizedString(
+                "CollapsibleProductRowCard.text.interval",
+                value: "Interval",
+                comment: "The label points to the charge interval for product subscriptions")
+            static let freeTrialLabel = NSLocalizedString(
+                "CollapsibleProductRowCard.text.freetrial",
+                value: "Free trial",
+                comment: "The label points to the free trial conditions for product subscriptions")
+            static let signUpFeeLabel = NSLocalizedString(
+                "CollapsibleProductRowCard.text.signupfee",
+                value: "Signup fee",
+                comment: "The label points to the sign up fee conditions for product subscriptions")
+        }
     }
 }
 

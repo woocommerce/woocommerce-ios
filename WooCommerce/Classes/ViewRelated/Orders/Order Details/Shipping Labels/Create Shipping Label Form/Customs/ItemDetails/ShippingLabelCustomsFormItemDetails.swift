@@ -178,7 +178,7 @@ private extension ShippingLabelCustomsFormItemDetails {
     enum Constants {
         static let horizontalSpacing: CGFloat = 16
         static let verticalSpacing: CGFloat = 8
-        static let hsTariffURL: URL? = .init(string: "https://woo.com/document/woocommerce-shipping-and-tax/woocommerce-shipping/#section-29")
+        static let hsTariffURL: URL? = .init(string: "https://woocommerce.com/document/woocommerce-shipping-and-tax/woocommerce-shipping/#section-29")
     }
 
     enum Localization {

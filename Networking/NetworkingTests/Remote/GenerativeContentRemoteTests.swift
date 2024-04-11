@@ -30,12 +30,31 @@ final class GenerativeContentRemoteTests: XCTestCase {
         // When
         _ = try await remote.generateText(siteID: sampleSiteID,
                                           base: "generate a product description for wapuu pencil",
-                                          feature: .productDescription)
+                                          feature: .productDescription,
+                                          responseFormat: .text)
 
         // Then
         let request = try XCTUnwrap(network.requestsForResponseData.last as? DotcomRequest)
         let fieldsValue = try XCTUnwrap(request.parameters?["_fields"] as? String)
         XCTAssertEqual("completion", fieldsValue)
+    }
+
+    func test_generateText_sends_correct_response_format_value() async throws {
+        // Given
+        let remote = GenerativeContentRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/jetpack-openai-query/jwt", filename: "jwt-token-success")
+        network.simulateResponse(requestUrlSuffix: "text-completion", filename: "generative-text-success")
+
+        // When
+        _ = try await remote.generateText(siteID: sampleSiteID,
+                                          base: "generate a product description for wapuu pencil",
+                                          feature: .productDescription,
+                                          responseFormat: .text)
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? DotcomRequest)
+        let responseFormatValue = try XCTUnwrap(request.parameters?["response_format"] as? String)
+        XCTAssertEqual("text", responseFormatValue)
     }
 
     func test_generateText_with_success_returns_generated_text() async throws {
@@ -47,7 +66,8 @@ final class GenerativeContentRemoteTests: XCTestCase {
         // When
         let generatedText = try await remote.generateText(siteID: sampleSiteID,
                                                           base: "generate a product description for wapuu pencil",
-                                                          feature: .productDescription)
+                                                          feature: .productDescription,
+                                                          responseFormat: .text)
 
         // Then
         XCTAssertEqual(generatedText, "The Wapuu Pencil is a perfect writing tool for those who love cute things.")
@@ -63,7 +83,8 @@ final class GenerativeContentRemoteTests: XCTestCase {
         await assertThrowsError {
             _ = try await remote.generateText(siteID: sampleSiteID,
                                               base: "generate a product description for wapuu pencil",
-                                              feature: .productDescription)
+                                              feature: .productDescription,
+                                              responseFormat: .text)
         } errorAssert: { error in
             // Then
             error as? WordPressApiError == .unknown(code: "inactive", message: "OpenAI features have been disabled")
@@ -80,7 +101,8 @@ final class GenerativeContentRemoteTests: XCTestCase {
         await assertThrowsError {
             _ = try await remote.generateText(siteID: sampleSiteID,
                                               base: "generate a product description for wapuu pencil",
-                                              feature: .productDescription)
+                                              feature: .productDescription,
+                                              responseFormat: .text)
         } errorAssert: { error in
             // Then
             error as? WordPressApiError == .unknown(code: "oauth2_invalid_token", message: "The OAuth2 token is invalid.")
@@ -98,14 +120,16 @@ final class GenerativeContentRemoteTests: XCTestCase {
         // When
         _ = try await remote.generateText(siteID: sampleSiteID,
                                           base: "generate a product description for wapuu pencil",
-                                          feature: .productDescription)
+                                          feature: .productDescription,
+                                          responseFormat: .text)
         // Then
         XCTAssertEqual(numberOfJwtRequests(in: network.requestsForResponseData), 1)
 
         // When
         _ = try await remote.generateText(siteID: sampleSiteID,
                                           base: "generate a product description for wapuu pencil",
-                                          feature: .productDescription)
+                                          feature: .productDescription,
+                                          responseFormat: .text)
 
         // Then
         // Ensures that JWT is not requested again
@@ -116,7 +140,8 @@ final class GenerativeContentRemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: textCompletionPath, filename: "generative-text-invalid-token")
         _ = try? await remote.generateText(siteID: sampleSiteID,
                                            base: "generate a product description for wapuu pencil",
-                                           feature: .productDescription)
+                                           feature: .productDescription,
+                                           responseFormat: .text)
 
         // Then
         XCTAssertEqual(numberOfJwtRequests(in: network.requestsForResponseData), 2)
@@ -134,14 +159,16 @@ final class GenerativeContentRemoteTests: XCTestCase {
         // When
         _ = try await remote.generateText(siteID: sampleSiteID,
                                           base: "generate a product description for wapuu pencil",
-                                          feature: .productDescription)
+                                          feature: .productDescription,
+                                          responseFormat: .text)
         // Then
         XCTAssertEqual(numberOfJwtRequests(in: network.requestsForResponseData), 1)
 
         // When
         _ = try await remote.generateText(siteID: sampleSiteID,
                                           base: "generate a product description for wapuu pencil",
-                                          feature: .productDescription)
+                                          feature: .productDescription,
+                                          responseFormat: .text)
 
         // Then
         // Ensures that token is requested again

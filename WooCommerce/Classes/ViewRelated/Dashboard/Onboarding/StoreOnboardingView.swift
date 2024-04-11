@@ -98,7 +98,7 @@ final class StoreOnboardingViewHostingController: SelfSizingHostingController<St
 /// Shows a list of onboarding tasks for store setup with completion state.
 struct StoreOnboardingView: View {
     /// Set externally in the hosting controller.
-    var taskTapped: (StoreOnboardingTask) -> Void = { _ in }
+    var taskTapped: ((StoreOnboardingTask) -> Void)?
     /// Set externally in the hosting controller.
     var viewAllTapped: (() -> Void)?
 
@@ -107,8 +107,12 @@ struct StoreOnboardingView: View {
     private let shareFeedbackAction: (() -> Void)?
 
     init(viewModel: StoreOnboardingViewModel,
+         onTaskTapped: ((StoreOnboardingTask) -> Void)? = nil,
+         onViewAllTapped: (() -> Void)? = nil,
          shareFeedbackAction: (() -> Void)? = nil) {
         self.viewModel = viewModel
+        self.taskTapped = onTaskTapped
+        self.viewAllTapped = onViewAllTapped
         self.shareFeedbackAction = shareFeedbackAction
     }
 
@@ -144,7 +148,7 @@ struct StoreOnboardingView: View {
                         StoreOnboardingTaskView(viewModel: taskViewModel,
                                                 showDivider: !isLastTask,
                                                 isRedacted: viewModel.isRedacted) { task in
-                            taskTapped(task)
+                            taskTapped?(task)
                         }
                                                 .shimmering(active: viewModel.isRedacted)
                     }
@@ -183,7 +187,7 @@ private extension StoreOnboardingView {
 private extension StoreOnboardingView {
     enum Layout {
         static let insetsWithViewAllButton: EdgeInsets = .init(top: 16, leading: 16, bottom: 16, trailing: 16)
-        static let insetsWithoutViewAllButton: EdgeInsets = .init(top: 16, leading: 16, bottom: 0, trailing: 16)
+        static let insetsWithoutViewAllButton: EdgeInsets = .init(top: 16, leading: 16, bottom: 1, trailing: 16)
         enum VerticalSpacing {
             static let collapsedMode: CGFloat = 16
             static let expandedMode: CGFloat = 40

@@ -38,6 +38,6 @@ private extension RefundItemViewModelTests {
     }
 
     func sampleProductImage() -> ProductImage {
-        ProductImage(imageID: 0, dateCreated: Date(), dateModified: nil, src: "https://www.woo.com/img.jpg", name: nil, alt: nil)
+        ProductImage(imageID: 0, dateCreated: Date(), dateModified: nil, src: "https://www.woocommerce.com/img.jpg", name: nil, alt: nil)
     }
 }

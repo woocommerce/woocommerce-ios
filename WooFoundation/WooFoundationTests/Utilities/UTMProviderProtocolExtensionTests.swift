@@ -99,7 +99,7 @@ final class UTMProviderProtocolExtensionTests: XCTestCase {
                                                         .source: "source_name",
                                                         .content: nil,
                                                         .term: nil])
-        sut.limitToHosts = ["wordpress.com", "woo.com"]
+        sut.limitToHosts = ["wordpress.com", "woo.com", "woocommerce.com"]
 
         let urlString = "https://example.com"
 
@@ -137,7 +137,7 @@ final class UTMProviderProtocolExtensionTests: XCTestCase {
                                                         .source: "source_name",
                                                         .content: nil,
                                                         .term: nil])
-        sut.limitToHosts = ["woo.com", "example.com"]
+        sut.limitToHosts = ["woocommerce.com", "example.com"]
 
         let urlString = "https://example.com"
 

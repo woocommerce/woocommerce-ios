@@ -506,7 +506,7 @@ final class OrderMapperTests: XCTestCase {
         // Then
         XCTAssertEqual(attributionInfo.sourceType, "referral")
         XCTAssertEqual(attributionInfo.campaign, "sale")
-        XCTAssertEqual(attributionInfo.source, "woo.com")
+        XCTAssertEqual(attributionInfo.source, "woocommerce.com")
         XCTAssertEqual(attributionInfo.medium, "referral")
         XCTAssertEqual(attributionInfo.deviceType, "Desktop")
         XCTAssertEqual(attributionInfo.sessionPageViews, "2")

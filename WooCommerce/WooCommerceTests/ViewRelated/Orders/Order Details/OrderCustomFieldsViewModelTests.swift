@@ -7,7 +7,7 @@ class OrderCustomFieldsViewModelTests: XCTestCase {
 
     func test_view_model_inits_with_expected_values() throws {
         // Given
-        let url = URL(string: "https://woo.com/")
+        let url = URL(string: "https://woocommerce.com/")
         let viewModel = OrderCustomFieldsViewModel(id: 1, title: "First Metadata", content: "First Content", contentURL: url)
 
         // Then
@@ -30,7 +30,7 @@ class OrderCustomFieldsViewModelTests: XCTestCase {
 
     func test_init_with_OrderMetaData_creates_contentURL_from_metadata_value() throws {
         // Given
-        let urlString = "https://woo.com/"
+        let urlString = "https://woocommerce.com/"
         let metadata = OrderMetaData(metadataID: 0, key: "URL Metadata", value: urlString)
 
         // When

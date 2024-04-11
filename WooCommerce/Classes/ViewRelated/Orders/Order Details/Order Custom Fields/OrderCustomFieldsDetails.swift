@@ -117,7 +117,7 @@ struct OrderCustomFieldsDetails_Previews: PreviewProvider {
     static var previews: some View {
         OrderCustomFieldsDetails(customFields: [
             OrderCustomFieldsViewModel(id: 0, title: "First Title", content: "First Content"),
-            OrderCustomFieldsViewModel(id: 1, title: "Second Title", content: "Second Content", contentURL: URL(string: "https://woo.com/"))
+            OrderCustomFieldsViewModel(id: 1, title: "Second Title", content: "Second Content", contentURL: URL(string: "https://woocommerce.com/"))
         ])
     }
 }

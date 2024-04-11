@@ -263,7 +263,7 @@ private extension String {
     /// Gets contents between HTML tags with regex.
     ///
     func findLoginErrorMessage() -> String? {
-        let pattern = "<div[^>]*id=\"login_error\">([\\s\\S]+?)</div>"
+        let pattern = "<div[^>]*id=\"login_error\"[^>]*>([\\s\\S]+?)</div>"
         let urlPattern = "<a href=\".*\">[^~]*?</a>"
         let regexOptions = NSRegularExpression.Options.caseInsensitive
         let matchOptions = NSRegularExpression.MatchingOptions(rawValue: UInt(0))

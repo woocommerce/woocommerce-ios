@@ -138,5 +138,5 @@ struct AuthenticationConstants {
         comment: "Title for the link for site creation guide."
     )
 
-    static let hostingURL = "https://woo.com/hosting-solutions/"
+    static let hostingURL = "https://woocommerce.com/hosting-solutions/"
 }

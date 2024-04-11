@@ -239,7 +239,7 @@ private extension ProductFormActionsFactory_ReadonlyProductTests {
         // Affiliate product with data so that all rows are shown
         static let affiliateProduct = simpleProduct.copy(name: "Affiliate",
                                                          productTypeKey: ProductType.affiliate.rawValue,
-                                                         externalURL: "woo.com")
+                                                         externalURL: "woocommerce.com")
         // Affiliate product without external URL and SKU
         static let affiliateProductWithoutExternalURLAndSKU = affiliateProduct.copy(sku: "",
                                                                                     externalURL: "")

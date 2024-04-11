@@ -109,7 +109,7 @@
                 ],
                 "default_option_id": "413",
                 "thumbnail_id": "",
-                "thumbnail_src": "https://example.com/woo.jpg",
+                "thumbnail_src": "https://example.com/woocommerce.jpg",
                 "quantity_min": 1,
                 "quantity_max": 1,
                 "priced_individually": false,

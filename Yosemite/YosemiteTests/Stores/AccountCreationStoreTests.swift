@@ -25,7 +25,7 @@ final class AccountCreationStoreTests: XCTestCase {
 
         // When
         let result: Result<CreateAccountResult, CreateAccountError> = waitFor { promise in
-            let action = AccountCreationAction.createAccount(email: "test@woo.com", password: "wow") { result in
+            let action = AccountCreationAction.createAccount(email: "test@woocommerce.com", password: "wow") { result in
                 promise(result)
             }
             self.store.onAction(action)
@@ -42,7 +42,7 @@ final class AccountCreationStoreTests: XCTestCase {
 
         // When
         let result: Result<CreateAccountResult, CreateAccountError> = waitFor { promise in
-            let action = AccountCreationAction.createAccount(email: "test@woo.com", password: "wow") { result in
+            let action = AccountCreationAction.createAccount(email: "test@woocommerce.com", password: "wow") { result in
                 promise(result)
             }
             self.store.onAction(action)
@@ -59,7 +59,7 @@ final class AccountCreationStoreTests: XCTestCase {
 
         // When
         let result: Result<CreateAccountResult, CreateAccountError> = waitFor { promise in
-            let action = AccountCreationAction.createAccount(email: "test@woo.com", password: "wow") { result in
+            let action = AccountCreationAction.createAccount(email: "test@woocommerce.com", password: "wow") { result in
                 promise(result)
             }
             self.store.onAction(action)
@@ -77,7 +77,7 @@ final class AccountCreationStoreTests: XCTestCase {
 
         // When
         let result: Result<CreateAccountResult, CreateAccountError> = waitFor { promise in
-            let action = AccountCreationAction.createAccount(email: "test@woo.com", password: "wow") { result in
+            let action = AccountCreationAction.createAccount(email: "test@woocommerce.com", password: "wow") { result in
                 promise(result)
             }
             self.store.onAction(action)

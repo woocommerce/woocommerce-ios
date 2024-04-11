@@ -110,18 +110,18 @@
                     "name": "WooCommerce Payments",
                     "version": "3.3.0",
                     "version_latest": "3.3.0",
-                    "url": "https:\/\/woo.com\/payments\/",
+                    "url": "https:\/\/woocommerce.com\/payments\/",
                     "author_name": "Automattic",
-                    "author_url": "https:\/\/woo.com\/",
+                    "author_url": "https:\/\/woocommerce.com\/",
                     "network_activated": false
                 }, {
                     "plugin": "woocommerce\/woocommerce.php",
                     "name": "WooCommerce",
                     "version": "6.3.0",
                     "version_latest": "6.3.0",
-                    "url": "https:\/\/woo.com\/",
+                    "url": "https:\/\/woocommerce.com\/",
                     "author_name": "Automattic",
-                    "author_url": "https:\/\/woo.com",
+                    "author_url": "https:\/\/woocommerce.com",
                     "network_activated": false
                 }],
                 "inactive_plugins": [{

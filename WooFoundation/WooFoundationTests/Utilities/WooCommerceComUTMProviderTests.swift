@@ -13,7 +13,7 @@ final class WooCommerceComUTMProviderTests: XCTestCase {
                                             content: "content_details",
                                             siteID: 12345)
 
-        let urlString = "https://woo.com"
+        let urlString = "https://woocommerce.com"
 
         // When
         let url = try XCTUnwrap(sut.urlWithUtmParams(string: urlString))

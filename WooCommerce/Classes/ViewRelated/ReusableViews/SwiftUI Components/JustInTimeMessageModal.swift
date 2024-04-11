@@ -71,7 +71,7 @@ struct JustInTimeMessageModal_Previews: PreviewProvider {
         title: "Hey merchants!",
         detail: "Take a look at this new feature...",
         buttonTitle: "Try it out",
-        url: "https://woo.com/mobile/payments",
+        url: "https://woocommerce.com/mobile/payments",
         backgroundImageUrl: nil,
         backgroundImageDarkUrl: nil,
         badgeImageUrl: nil,

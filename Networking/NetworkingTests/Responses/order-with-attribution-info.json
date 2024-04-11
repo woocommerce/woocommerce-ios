@@ -152,7 +152,7 @@
             {
                 "id": 4104,
                 "key": "_wc_order_attribution_referrer",
-                "value": "https://woo.com/"
+                "value": "https://woocommerce.com/"
             },
             {
                 "id": 4111,
@@ -197,7 +197,7 @@
             {
                 "id": 4105,
                 "key": "_wc_order_attribution_utm_source",
-                "value": "woo.com"
+                "value": "woocommerce.com"
             },
             {
                 "id": 4075,

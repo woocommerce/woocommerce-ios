@@ -187,7 +187,7 @@ private extension PrivacySettingsViewController {
         cell.imageView?.image = nil
         cell.update(style: .subheadline,
                     headline: NSLocalizedString("Web Options", comment: "More Privacy Options section title in the privacy screen."),
-                    body: NSLocalizedString("More privacy options available for woo.com users. Check here to learn more.",
+                    body: NSLocalizedString("More privacy options available for woocommerce.com users. Check here to learn more.",
                                             comment: "More Privacy toggle section in the privacy screen."))
         cell.accessoryType = .disclosureIndicator
     }

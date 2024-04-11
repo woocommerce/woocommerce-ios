@@ -233,7 +233,14 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     /// Label showing secondary product details. Can include product type (if the row is configurable), and SKU (if available).
     ///
     var secondaryProductDetailsLabel: String {
-        [productTypeLabel, skuLabel]
+        var labels = [productTypeLabel]
+        // Only add the SKU label to the secondary product details when there are no
+        // product subscription details
+        if productSubscriptionDetails == nil {
+            labels.append(skuLabel)
+        }
+
+        return labels
             .compactMap({ $0 })
             .filter { $0.isNotEmpty }
             .joined(separator: " • ")

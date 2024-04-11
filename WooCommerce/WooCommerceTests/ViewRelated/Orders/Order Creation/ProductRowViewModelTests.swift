@@ -634,7 +634,7 @@ private extension ProductRowViewModelTests {
     func createFakeSubscription(price: String? = "5",
                                 periodInterval: String? = "1",
                                 signUpFee: String? = "0.6",
-                                trialLength: String? = "1", 
+                                trialLength: String? = "1",
                                 trialPeriod: SubscriptionPeriod? = .week) -> ProductSubscription {
         ProductSubscription.fake().copy(length: "2",
                                         period: .month,

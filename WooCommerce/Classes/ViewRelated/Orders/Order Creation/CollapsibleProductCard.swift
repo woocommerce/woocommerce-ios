@@ -118,11 +118,6 @@ private struct CollapsibleProductRowCard: View {
         }
     }
 
-    private var shouldShowProductSubscriptionsDetails: Bool {
-        viewModel.productSubscriptionDetails != nil &&
-        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.subscriptionsInOrderCreationUI)
-     }
-
     init(viewModel: CollapsibleProductRowCardViewModel,
          flow: WooAnalyticsEvent.Orders.Flow,
          shouldDisableDiscountEditing: Bool,
@@ -160,17 +155,17 @@ private struct CollapsibleProductRowCard: View {
                             .foregroundColor(isCollapsed ? Color(.textSubtle) : Color(.text))
                         Text(viewModel.subscriptionConditionsDetailsLabel)
                             .subheadlineStyle()
-                            .renderedIf(shouldShowProductSubscriptionsDetails && isCollapsed)
+                            .renderedIf(viewModel.shouldShowProductSubscriptionsDetails && isCollapsed)
                         HStack {
                             Text(viewModel.subscriptionBillingDetailsLabel)
                                 .font(.subheadline)
                                 .foregroundColor(Color(.text))
-                                .renderedIf(shouldShowProductSubscriptionsDetails && isCollapsed)
+                                .renderedIf(viewModel.shouldShowProductSubscriptionsDetails && isCollapsed)
                             Spacer()
                             Text(viewModel.subscriptionPrice)
                                 .font(.subheadline)
                                 .foregroundColor(Color(.text))
-                                .renderedIf(shouldShowProductSubscriptionsDetails && isCollapsed)
+                                .renderedIf(viewModel.shouldShowProductSubscriptionsDetails && isCollapsed)
                         }
                         Text(viewModel.skuLabel)
                             .font(.subheadline)
@@ -178,7 +173,7 @@ private struct CollapsibleProductRowCard: View {
                             .renderedIf(!isCollapsed)
                         CollapsibleProductCardPriceSummary(viewModel: viewModel.priceSummaryViewModel)
                             .font(.subheadline)
-                            .renderedIf(!shouldShowProductSubscriptionsDetails && isCollapsed)
+                            .renderedIf(!viewModel.shouldShowProductSubscriptionsDetails && isCollapsed)
                     }
                 }
             }

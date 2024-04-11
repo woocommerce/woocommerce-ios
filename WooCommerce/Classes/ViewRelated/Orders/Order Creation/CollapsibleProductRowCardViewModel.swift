@@ -79,6 +79,13 @@ struct CollapsibleProductRowCardViewModel: Identifiable {
     private let currencyFormatter: CurrencyFormatter
     private let analytics: Analytics
 
+    /// Determines if Subscription-type product details should be shown
+    ///
+    var shouldShowProductSubscriptionsDetails: Bool {
+        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.subscriptionsInOrderCreationUI) &&
+        productSubscriptionDetails != nil
+    }
+
     var subscriptionBillingDetailsLabel: String {
         guard let periodInterval = productSubscriptionDetails?.periodInterval,
                 let period = productSubscriptionDetails?.period else {

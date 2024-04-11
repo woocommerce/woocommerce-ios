@@ -63,6 +63,13 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     ///
     private let variationDisplayMode: VariationDisplayMode?
 
+    /// Determines if Subscription-type product details should be shown
+    ///
+    var shouldShowProductSubscriptionsDetails: Bool {
+        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.subscriptionsInOrderCreationUI) &&
+        productSubscriptionDetails != nil
+    }
+
     /// Subscription settings extracted from product meta data for a Subscription-type Product, if any
     ///
     private(set) var productSubscriptionDetails: ProductSubscription?

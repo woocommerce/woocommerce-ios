@@ -133,8 +133,10 @@ struct CollapsibleProductRowCardViewModel: Identifiable {
     }
 
     var subscriptionConditionsFreeTrialLabel: String? {
+        // If either the trial length or period are nil, or the length is zero, the free trial conditions should be nil.
         guard let trialLength = productSubscriptionDetails?.trialLength,
-              let trialPeriod = productSubscriptionDetails?.trialPeriod else {
+              let trialPeriod = productSubscriptionDetails?.trialPeriod,
+                trialLength != "0" else {
             return nil
         }
 
@@ -145,11 +147,11 @@ struct CollapsibleProductRowCardViewModel: Identifiable {
             default:
                 return trialPeriod.descriptionPlural
             }
-        }
+        }()
 
         return String.localizedStringWithFormat(Localization.Subscription.formattedFreeTrial,
                                                 trialLength,
-                                                pluralizedTrialPeriod())
+                                                pluralizedTrialPeriod)
     }
 
     var subscriptionConditionsDetailsLabel: String {

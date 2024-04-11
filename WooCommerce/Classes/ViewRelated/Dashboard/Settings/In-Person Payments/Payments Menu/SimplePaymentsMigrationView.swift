@@ -2,7 +2,11 @@ import SwiftUI
 
 /// Shows information about the migration from simple payments to order creation in Menu tab > Payments > Collect Payment.
 struct SimplePaymentsMigrationView: View {
-    let addCustomAmount: () -> Void
+    private let addCustomAmount: () -> Void
+
+    init(addCustomAmount: @escaping () -> Void) {
+        self.addCustomAmount = addCustomAmount
+    }
 
     var body: some View {
         VStack(spacing: Layout.defaultVerticalSpacing) {

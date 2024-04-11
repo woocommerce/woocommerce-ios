@@ -28,6 +28,6 @@ private extension SitePreviewView {
 
 struct SitePreviewView_Previews: PreviewProvider {
     static var previews: some View {
-        SitePreviewView(siteURL: URL(string: "https://woo.com")!)
+        SitePreviewView(siteURL: URL(string: "https://woocommerce.com")!)
     }
 }

@@ -51,12 +51,12 @@
         "plugin": "woocommerce/woocommerce",
         "status": "active",
         "name": "WooCommerce",
-        "plugin_uri": "https://woo.com/",
+        "plugin_uri": "https://woocommerce.com/",
         "author": "Automattic",
-        "author_uri": "https://woo.com",
+        "author_uri": "https://woocommerce.com",
         "description": {
             "raw": "An eCommerce toolkit that helps you sell anything. Beautifully.",
-            "rendered": "An eCommerce toolkit that helps you sell anything. Beautifully. <cite>By <a href=\"https://woo.com\">Automattic</a>.</cite>"
+            "rendered": "An eCommerce toolkit that helps you sell anything. Beautifully. <cite>By <a href=\"https://woocommerce.com\">Automattic</a>.</cite>"
         },
         "version": "5.1.0",
         "network_only": false,

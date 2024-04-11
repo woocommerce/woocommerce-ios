@@ -6,8 +6,8 @@ import XCTest
 final class ProductUIImageLoaderTests: XCTestCase {
     private let testImage = UIImage.productPlaceholderImage
 
-    private let imageURL = URL(string: "https://woo.com/fun")!
-    private let imageURLStringWithSpecialChars = "https://woo.com/тест-图像"
+    private let imageURL = URL(string: "https://woocommerce.com/fun")!
+    private let imageURLStringWithSpecialChars = "https://woocommerce.com/тест-图像"
 
     private var imageService: ImageService!
 

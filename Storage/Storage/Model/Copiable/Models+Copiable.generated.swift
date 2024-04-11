@@ -19,6 +19,21 @@ extension Storage.AnalyticsCard {
     }
 }
 
+extension Storage.DashboardCard {
+    public func copy(
+        type: CopiableProp<DashboardCard.CardType> = .copy,
+        enabled: CopiableProp<Bool> = .copy
+    ) -> Storage.DashboardCard {
+        let type = type ?? self.type
+        let enabled = enabled ?? self.enabled
+
+        return Storage.DashboardCard(
+            type: type,
+            enabled: enabled
+        )
+    }
+}
+
 extension Storage.FeatureAnnouncementCampaignSettings {
     public func copy(
         dismissedDate: NullableCopiableProp<Date> = .copy,

@@ -1,3 +1,4 @@
+import Combine
 import SwiftUI
 import struct Yosemite.Site
 
@@ -9,6 +10,13 @@ final class DashboardViewHostingController: UIHostingController<DashboardView> {
     private let usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter
     private var storeOnboardingCoordinator: StoreOnboardingCoordinator?
     private var blazeCampaignCreationCoordinator: BlazeCampaignCreationCoordinator?
+    private var jetpackSetupCoordinator: JetpackSetupCoordinator?
+    private var modalJustInTimeMessageHostingController: ConstraintsUpdatingHostingController<JustInTimeMessageModal_UIKit>?
+
+    /// Presenter for the privacy choices banner
+    private lazy var privacyBannerPresenter = PrivacyBannerPresenter()
+
+    private var subscriptions: Set<AnyCancellable> = []
 
     init(siteID: Int64) {
         let viewModel = DashboardViewModel(siteID: siteID)
@@ -21,6 +29,8 @@ final class DashboardViewHostingController: UIHostingController<DashboardView> {
         configureTabBarItem()
         configureStoreOnboarding()
         configureBlazeSection()
+        configureJetpackBenefitBanner()
+
     }
 
     @available(*, unavailable)
@@ -31,9 +41,16 @@ final class DashboardViewHostingController: UIHostingController<DashboardView> {
     override func viewDidLoad() {
         super.viewDidLoad()
         registerUserActivity()
+        presentPrivacyBannerIfNeeded()
+        observeModalJustInTimeMessages()
+
         Task {
             await viewModel.reloadAllData()
         }
+    }
+
+    override var shouldShowOfflineBanner: Bool {
+        return true
     }
 }
 
@@ -43,6 +60,33 @@ private extension DashboardViewHostingController {
         tabBarItem.image = .statsAltImage
         tabBarItem.title = Localization.title
         tabBarItem.accessibilityIdentifier = "tab-bar-my-store-item"
+    }
+
+    /// Presents the privacy banner if needed.
+    ///
+    func presentPrivacyBannerIfNeeded() {
+        privacyBannerPresenter.presentIfNeeded(from: self)
+    }
+
+    func observeModalJustInTimeMessages() {
+        viewModel.$modalJustInTimeMessageViewModel.sink { [weak self] viewModel in
+            guard let viewModel, let self else {
+                return
+            }
+
+            let modalController = ConstraintsUpdatingHostingController(
+                rootView: JustInTimeMessageModal_UIKit(
+                    onDismiss: { [weak self] in
+                        self?.dismiss(animated: true)
+                    },
+                    viewModel: viewModel))
+
+            modalJustInTimeMessageHostingController = modalController
+            modalController.view.backgroundColor = .clear
+            modalController.modalPresentationStyle = .overFullScreen
+            present(modalController, animated: true)
+        }
+        .store(in: &subscriptions)
     }
 }
 
@@ -119,6 +163,21 @@ private extension DashboardViewHostingController {
     func handlePostCreation() {
         Task {
             await viewModel.blazeCampaignDashboardViewModel.reload()
+        }
+    }
+}
+
+// MARK: Jetpack benefit banner
+private extension DashboardViewHostingController {
+    func configureJetpackBenefitBanner() {
+        rootView.jetpackBenefitsBannerTapped = { [weak self] site in
+            guard let self, let navigationController else {
+                return
+            }
+            let coordinator = JetpackSetupCoordinator(site: site,
+                                                      rootViewController: navigationController)
+            jetpackSetupCoordinator = coordinator
+            coordinator.showBenefitModal()
         }
     }
 }

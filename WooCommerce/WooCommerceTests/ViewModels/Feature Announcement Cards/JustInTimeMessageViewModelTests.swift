@@ -43,7 +43,7 @@ final class JustInTimeMessageViewModelTests: XCTestCase {
         // Given
         setUp(with: Yosemite.JustInTimeMessage.fake().copy(messageID: "message_id",
                                                            featureClass: "feature_class",
-                                                           url: "https://woo.com/take-action"))
+                                                           url: "https://woocommerce.com/take-action"))
 
         // When
         sut.ctaTapped()
@@ -59,7 +59,7 @@ final class JustInTimeMessageViewModelTests: XCTestCase {
 
     func test_ctaTapped_presents_an_authenticated_webview_for_woocommerce() throws {
         // Given
-        setUp(with: Yosemite.JustInTimeMessage.fake().copy(url: "https://woo.com/take-action"))
+        setUp(with: Yosemite.JustInTimeMessage.fake().copy(url: "https://woocommerce.com/take-action"))
 
         // When
         sut.ctaTapped()

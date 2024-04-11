@@ -4,13 +4,13 @@ import XCTest
 final class WebCheckoutViewModelTests: XCTestCase {
     func test_initialURL_contains_site_slug() {
         // Given
-        let siteSlug = "woo.com"
+        let siteSlug = "woocommerce.com"
 
         // When
         let viewModel = WebCheckoutViewModel(siteSlug: siteSlug) {}
 
         // Then
-        XCTAssertEqual(viewModel.initialURL?.absoluteString, "https://wordpress.com/checkout/woo.com")
+        XCTAssertEqual(viewModel.initialURL?.absoluteString, "https://wordpress.com/checkout/woocommerce.com")
     }
 
     func test_completion_is_only_invoked_once_when_handling_redirects_to_success_URL_multiple_times() throws {

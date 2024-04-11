@@ -184,6 +184,7 @@
 		023EC2E224DA8BAB0021DA91 /* MockProductSKUValidationStoresManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 023EC2E124DA8BAB0021DA91 /* MockProductSKUValidationStoresManager.swift */; };
 		023EC2E424DA95DB0021DA91 /* ProductInventorySettingsViewModel+VariationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 023EC2E324DA95DB0021DA91 /* ProductInventorySettingsViewModel+VariationTests.swift */; };
 		023EC2E624DAB1270021DA91 /* EditableProductVariationModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 023EC2E524DAB1270021DA91 /* EditableProductVariationModelTests.swift */; };
+		024073802BBAAF7400C00441 /* SimplePaymentsMigrationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0240737F2BBAAF7400C00441 /* SimplePaymentsMigrationView.swift */; };
 		0240B3AC230A910C000A866C /* StoreStatsV4ChartAxisHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0240B3AB230A910C000A866C /* StoreStatsV4ChartAxisHelper.swift */; };
 		024124842AC54C3D0035A247 /* ConfigurableBundleItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 024124832AC54C3D0035A247 /* ConfigurableBundleItemView.swift */; };
 		0242CFB629F278010080F500 /* ProductFormAIEligibilityChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0242CFB529F278010080F500 /* ProductFormAIEligibilityChecker.swift */; };
@@ -2029,6 +2030,7 @@
 		CE4296B920A5E9E400B2AFBD /* CNContact+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE4296B820A5E9E400B2AFBD /* CNContact+Helpers.swift */; };
 		CE4DA5C821DD759400074607 /* CurrencyFormatterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE4DA5C721DD759400074607 /* CurrencyFormatterTests.swift */; };
 		CE4DDB7B20DD312400D32EC8 /* DateFormatter+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE4DDB7A20DD312400D32EC8 /* DateFormatter+Helpers.swift */; };
+		CE4ECA582BC5B66A005F9386 /* WCAnalyticsStatsTotals+UI.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE4ECA572BC5B66A005F9386 /* WCAnalyticsStatsTotals+UI.swift */; };
 		CE4FE7D82B7D306200F66DD5 /* MultiSelectionReorderableList.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE4FE7D72B7D306200F66DD5 /* MultiSelectionReorderableList.swift */; };
 		CE4FE7DA2B7E2E9400F66DD5 /* AnalyticsHubCustomizeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE4FE7D92B7E2E9400F66DD5 /* AnalyticsHubCustomizeViewModel.swift */; };
 		CE55F2D42B238C04005D53D7 /* CollapsibleProductCardPriceSummaryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE55F2D32B238C04005D53D7 /* CollapsibleProductCardPriceSummaryViewModel.swift */; };
@@ -2932,6 +2934,7 @@
 		023EC2E124DA8BAB0021DA91 /* MockProductSKUValidationStoresManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockProductSKUValidationStoresManager.swift; sourceTree = "<group>"; };
 		023EC2E324DA95DB0021DA91 /* ProductInventorySettingsViewModel+VariationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductInventorySettingsViewModel+VariationTests.swift"; sourceTree = "<group>"; };
 		023EC2E524DAB1270021DA91 /* EditableProductVariationModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditableProductVariationModelTests.swift; sourceTree = "<group>"; };
+		0240737F2BBAAF7400C00441 /* SimplePaymentsMigrationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimplePaymentsMigrationView.swift; sourceTree = "<group>"; };
 		0240B3AB230A910C000A866C /* StoreStatsV4ChartAxisHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreStatsV4ChartAxisHelper.swift; sourceTree = "<group>"; };
 		024124832AC54C3D0035A247 /* ConfigurableBundleItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigurableBundleItemView.swift; sourceTree = "<group>"; };
 		0242CFB529F278010080F500 /* ProductFormAIEligibilityChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductFormAIEligibilityChecker.swift; sourceTree = "<group>"; };
@@ -4782,6 +4785,7 @@
 		CE4296B820A5E9E400B2AFBD /* CNContact+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CNContact+Helpers.swift"; sourceTree = "<group>"; };
 		CE4DA5C721DD759400074607 /* CurrencyFormatterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencyFormatterTests.swift; sourceTree = "<group>"; };
 		CE4DDB7A20DD312400D32EC8 /* DateFormatter+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DateFormatter+Helpers.swift"; sourceTree = "<group>"; };
+		CE4ECA572BC5B66A005F9386 /* WCAnalyticsStatsTotals+UI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WCAnalyticsStatsTotals+UI.swift"; sourceTree = "<group>"; };
 		CE4FE7D72B7D306200F66DD5 /* MultiSelectionReorderableList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiSelectionReorderableList.swift; sourceTree = "<group>"; };
 		CE4FE7D92B7E2E9400F66DD5 /* AnalyticsHubCustomizeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsHubCustomizeViewModel.swift; sourceTree = "<group>"; };
 		CE55F2D32B238C04005D53D7 /* CollapsibleProductCardPriceSummaryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollapsibleProductCardPriceSummaryViewModel.swift; sourceTree = "<group>"; };
@@ -6544,6 +6548,7 @@
 			children = (
 				CC04918C292BB74500F719D8 /* StatsDataTextFormatter.swift */,
 				CCCFFC592934EF5E006130AF /* StatsIntervalDataParser.swift */,
+				CE4ECA572BC5B66A005F9386 /* WCAnalyticsStatsTotals+UI.swift */,
 			);
 			path = Factories;
 			sourceTree = "<group>";
@@ -7094,6 +7099,7 @@
 				20CC1EDC2AFA99DF006BD429 /* InPersonPaymentsMenuViewModel.swift */,
 				20D5CB502AFCF856009A39C3 /* PaymentsRow.swift */,
 				20D5CB522AFCF8E7009A39C3 /* PaymentsToggleRow.swift */,
+				0240737F2BBAAF7400C00441 /* SimplePaymentsMigrationView.swift */,
 			);
 			path = "Payments Menu";
 			sourceTree = "<group>";
@@ -13354,6 +13360,7 @@
 				26B71DB6293FE490004D8052 /* RangedDatePicker.swift in Sources */,
 				74460D4222289C7A00D7316A /* StorePickerCoordinator.swift in Sources */,
 				FEDD70AF26A7223500194C3A /* StorageEligibilityErrorInfo+Woo.swift in Sources */,
+				024073802BBAAF7400C00441 /* SimplePaymentsMigrationView.swift in Sources */,
 				DE653EAD2A70D09F00937C78 /* CreateTestOrderView.swift in Sources */,
 				AE9E04752776213E003FA09E /* OrderCustomerSection.swift in Sources */,
 				CE15524A21FFB10100EAA690 /* ApplicationLogViewController.swift in Sources */,
@@ -14216,6 +14223,7 @@
 				02645D7D27BA027B0065DC68 /* Inbox.swift in Sources */,
 				D81D9228222E7F0800FFA585 /* OrderStatusListViewController.swift in Sources */,
 				CEE006082077D14C0079161F /* OrderDetailsViewController.swift in Sources */,
+				CE4ECA582BC5B66A005F9386 /* WCAnalyticsStatsTotals+UI.swift in Sources */,
 				AEB73C0C25CD734200A8454A /* AttributePickerViewModel.swift in Sources */,
 				D8752EF7265E60F4008ACC80 /* PaymentCaptureCelebration.swift in Sources */,
 				B98BA12D2AE90023006F1E4A /* OrderCustomAmountsSection.swift in Sources */,

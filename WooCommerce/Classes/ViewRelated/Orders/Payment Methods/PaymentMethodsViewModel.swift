@@ -67,6 +67,10 @@ final class PaymentMethodsViewModel: ObservableObject {
     ///
     private let presentNoticeSubject: PassthroughSubject<SimplePaymentsNotice, Never>
 
+    var notice: AnyPublisher<SimplePaymentsNotice, Never> {
+        presentNoticeSubject.eraseToAnyPublisher()
+    }
+
     /// Store manager to update order.
     ///
     private let stores: StoresManager

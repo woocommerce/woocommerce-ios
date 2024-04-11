@@ -5,7 +5,8 @@ import Yosemite
 import WooFoundation
 import Combine
 
-class InPersonPaymentsMenuViewModel: ObservableObject {
+@MainActor
+final class InPersonPaymentsMenuViewModel: ObservableObject {
     @Published private(set) var shouldShowTapToPaySection: Bool = true
     @Published private(set) var shouldShowCardReaderSection: Bool = true
     @Published private(set) var shouldShowPaymentOptionsSection: Bool = false
@@ -118,7 +119,6 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
         }
     }
 
-    @MainActor
     private func updateOutputProperties() async {
         payInPersonToggleViewModel.refreshState()
         updateCardReadersSection()
@@ -126,7 +126,6 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
         await refreshDepositSummary()
     }
 
-    @MainActor
     private func refreshDepositSummary() async {
         guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.wooPaymentsDepositsOverviewInPaymentsMenu),
         await dependencies.systemStatusService.fetchSystemPluginWithPath(siteID: siteID,
@@ -153,7 +152,6 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
         }
     }
 
-    @MainActor
     func onAppear() async {
         runCardPresentPaymentsOnboardingIfPossible()
         await updateOutputProperties()
@@ -359,7 +357,6 @@ private extension InPersonPaymentsMenuViewModel {
 // MARK: - Tap to Pay visibility
 
 private extension InPersonPaymentsMenuViewModel {
-    @MainActor
     func updateTapToPaySection() async {
         let deviceSupportsTapToPay = await dependencies.cardReaderSupportDeterminer.deviceSupportsLocalMobileReader()
 
@@ -375,7 +372,6 @@ private extension InPersonPaymentsMenuViewModel {
         cardPresentPaymentsConfiguration.supportedReaders.contains(.appleBuiltIn)
     }
 
-    @MainActor
     func updateSetUpTryTapToPay() async {
         let tapToPayWasPreviouslyUsed = await dependencies.cardReaderSupportDeterminer.hasPreviousTapToPayUsage()
 
@@ -383,7 +379,6 @@ private extension InPersonPaymentsMenuViewModel {
         shouldAlwaysHideSetUpButtonOnAboutTapToPay = tapToPayWasPreviouslyUsed
     }
 
-    @MainActor
     func updateTapToPayFeedbackRowVisibility() async {
         guard let firstTapToPayTransactionDate = await dependencies.cardReaderSupportDeterminer.firstTapToPayTransactionDate(),
               let thirtyDaysAgo = Calendar.current.date(byAdding: DateComponents(day: -30), to: Date()) else {

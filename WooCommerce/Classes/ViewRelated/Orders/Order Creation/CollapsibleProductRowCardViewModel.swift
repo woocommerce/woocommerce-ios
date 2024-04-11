@@ -86,10 +86,10 @@ struct CollapsibleProductRowCardViewModel: Identifiable {
         productSubscriptionDetails != nil
     }
 
-    var subscriptionBillingDetailsLabel: String {
+    var subscriptionBillingDetailsLabel: String? {
         guard let periodInterval = productSubscriptionDetails?.periodInterval,
                 let period = productSubscriptionDetails?.period else {
-            return ""
+            return nil
         }
 
         let pluralizedPeriod = {
@@ -99,11 +99,11 @@ struct CollapsibleProductRowCardViewModel: Identifiable {
             default:
                 return period.descriptionPlural
             }
-        }
+        }()
 
         return String.localizedStringWithFormat(Localization.Subscription.formattedBillingDetails,
                                                 periodInterval,
-                                                pluralizedPeriod())
+                                                pluralizedPeriod)
     }
 
     var subscriptionPrice: String {

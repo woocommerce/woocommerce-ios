@@ -157,10 +157,12 @@ private struct CollapsibleProductRowCard: View {
                             .subheadlineStyle()
                             .renderedIf(viewModel.shouldShowProductSubscriptionsDetails && isCollapsed)
                         HStack {
-                            Text(viewModel.subscriptionBillingDetailsLabel)
-                                .font(.subheadline)
-                                .foregroundColor(Color(.text))
-                                .renderedIf(viewModel.shouldShowProductSubscriptionsDetails && isCollapsed)
+                            if let subscriptionDetails = viewModel.subscriptionBillingDetailsLabel {
+                                Text(subscriptionDetails)
+                                    .font(.subheadline)
+                                    .foregroundColor(Color(.text))
+                                    .renderedIf(viewModel.shouldShowProductSubscriptionsDetails && isCollapsed)
+                            }
                             Spacer()
                             Text(viewModel.subscriptionPrice)
                                 .font(.subheadline)
@@ -283,12 +285,14 @@ private extension CollapsibleProductRowCard {
     @ViewBuilder var subscriptionDetailsSection: some View {
         VStack {
             HStack {
-                Text(Localization.Subscription.intervalLabel)
-                    .subheadlineStyle()
-                Spacer()
-                Text(viewModel.subscriptionBillingDetailsLabel)
-                    .font(.subheadline)
-                    .foregroundColor(Color(.text))
+                if let subscriptionDetails = viewModel.subscriptionBillingDetailsLabel {
+                    Text(Localization.Subscription.intervalLabel)
+                        .subheadlineStyle()
+                    Spacer()
+                    Text(subscriptionDetails)
+                        .font(.subheadline)
+                        .foregroundColor(Color(.text))
+                }
             }
 
             if let freeTrial = viewModel.subscriptionConditionsFreeTrialLabel {

@@ -35,8 +35,8 @@ public struct RemotePostUpdateParameters: Equatable {
     public var ifNotModifiedSince: Date?
 
     public var status: String?
-    public var date: Date??
-    public var authorID: Int??
+    public var date: Date?
+    public var authorID: Int?
     public var title: String??
     public var content: String??
     public var password: String??
@@ -393,14 +393,14 @@ struct RemotePostUpdateParametersXMLRPCEncoder: Encodable {
     func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: RemotePostXMLRPCCodingKeys.self)
         try container.encodeIfPresent(parameters.ifNotModifiedSince, forKey: .ifNotModifiedSince)
-        try container.encodeIfPresent(parameters.status, forKey: .postStatus)
+        try container.encodeStringIfPresent(parameters.status, forKey: .postStatus)
         try container.encodeIfPresent(parameters.date, forKey: .date)
         try container.encodeIfPresent(parameters.authorID, forKey: .authorID)
-        try container.encodeIfPresent(parameters.title, forKey: .title)
-        try container.encodeIfPresent(parameters.content, forKey: .content)
-        try container.encodeIfPresent(parameters.password, forKey: .password)
-        try container.encodeIfPresent(parameters.excerpt, forKey: .excerpt)
-        try container.encodeIfPresent(parameters.slug, forKey: .slug)
+        try container.encodeStringIfPresent(parameters.title, forKey: .title)
+        try container.encodeStringIfPresent(parameters.content, forKey: .content)
+        try container.encodeStringIfPresent(parameters.password, forKey: .password)
+        try container.encodeStringIfPresent(parameters.excerpt, forKey: .excerpt)
+        try container.encodeStringIfPresent(parameters.slug, forKey: .slug)
         if let value = parameters.featuredImageID {
             if let featuredImageID = value {
                 try container.encode(featuredImageID, forKey: .featuredImageID)
@@ -420,7 +420,7 @@ struct RemotePostUpdateParametersXMLRPCEncoder: Encodable {
         }
 
         // Posts
-        try container.encodeIfPresent(parameters.format, forKey: .format)
+        try container.encodeStringIfPresent(parameters.format, forKey: .format)
         if let tags = parameters.tags {
             try container.encode(tags, forKey: .tags)
         }
@@ -438,5 +438,12 @@ struct RemotePostUpdateParametersXMLRPCMetadata: Encodable {
         self.id = item.id
         self.key = item.key
         self.value = item.value
+    }
+}
+
+private extension KeyedEncodingContainer {
+    mutating func encodeStringIfPresent(_ value: String??, forKey key: Key) throws {
+        guard let value else { return }
+        try encode(value ?? "", forKey: key)
     }
 }

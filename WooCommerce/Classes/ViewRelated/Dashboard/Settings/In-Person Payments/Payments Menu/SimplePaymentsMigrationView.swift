@@ -2,7 +2,11 @@ import SwiftUI
 
 /// Shows information about the migration from simple payments to order creation in Menu tab > Payments > Collect Payment.
 struct SimplePaymentsMigrationView: View {
-    let addCustomAmount: () -> Void
+    private let addCustomAmount: () -> Void
+
+    init(addCustomAmount: @escaping () -> Void) {
+        self.addCustomAmount = addCustomAmount
+    }
 
     var body: some View {
         VStack(spacing: Layout.defaultVerticalSpacing) {
@@ -14,6 +18,7 @@ struct SimplePaymentsMigrationView: View {
                     .fixedSize(horizontal: false, vertical: true)
             }
             VStack(spacing: Layout.verticalSpacingBetweenElements) {
+                // The subtitle is in an `.init` in order to support markdown.
                 Text(.init(Localization.subtitle))
                     .bodyStyle()
                 Text(Localization.detail)
@@ -45,7 +50,7 @@ private extension SimplePaymentsMigrationView {
         )
         static let subtitle = NSLocalizedString(
             "simplePaymentsMigrationSheet.subtitle",
-            value: " We’ve combined payment collection with order creation, making it more accessible *and* more powerful.",
+            value: "We’ve combined payment collection with order creation, making it more accessible *and* more powerful.",
             comment: "Title for the simple payments migration view. Text in the asterisks is italic."
         )
         static let detail = NSLocalizedString(

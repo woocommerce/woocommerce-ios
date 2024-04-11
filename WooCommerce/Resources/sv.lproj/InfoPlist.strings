@@ -3,6 +3,12 @@
 <!--Warning: Auto-generated file, do not edit.-->
 <plist version="1.0">
   <dict>
+    <key>AddOrderAction.Title</key>
+    <string>Ny beställning</string>
+    <key>AddProductAction.Title</key>
+    <string>Lägg till en produkt</string>
+    <key>CollectPaymentAction.Title</key>
+    <string>Ta emot betalning</string>
     <key>NSBluetoothAlwaysUsageDescription</key>
     <string>Denna app använder Bluetooth för att ansluta till kortläsare som stöds.</string>
     <key>NSBluetoothPeripheralUsageDescription</key>
@@ -13,5 +19,9 @@
     <string>Platsåtkomst krävs för att ta emot betalningar.</string>
     <key>NSPhotoLibraryUsageDescription</key>
     <string>För att spara foton från kameran för produktbilder, eller för att lägga till foton eller videoklipp till dina produkter eller supportärenden.</string>
+    <key>OpenOrdersAction.Title</key>
+    <string>Beställningar</string>
+    <key>OpenPaymentsAction.Title</key>
+    <string>Betalningar</string>
   </dict>
 </plist>

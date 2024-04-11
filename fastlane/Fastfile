@@ -236,7 +236,8 @@ platform :ios do
       repository: GITHUB_REPO,
       milestone: new_version
     )
-    ios_check_beta_deps(podfile: File.join(PROJECT_ROOT_FOLDER, 'Podfile'))
+
+    check_pods_references
   end
 
   #####################################################################################
@@ -517,7 +518,7 @@ platform :ios do
       repository: GITHUB_REPO,
       branch: "release/#{version}"
     )
-    setfrozentag(
+    set_milestone_frozen_marker(
       repository: GITHUB_REPO,
       milestone: version,
       freeze: false
@@ -1465,4 +1466,13 @@ end
 def ensure_git_branch_is_release_branch
   # Verify that the current branch is a release branch. Notice that `ensure_git_branch` expects a RegEx parameter
   ensure_git_branch(branch: '^release/')
+end
+
+def check_pods_references
+  result = ios_check_beta_deps(lockfile: File.join(PROJECT_ROOT_FOLDER, 'Podfile.lock'))
+
+  # Will crash if :pods doesn't exist in result.
+  # Seems fair, given the shape of the result Hash should not change unless via a major version bump.
+  style = result[:pods].empty? ? 'success' : 'warning'
+  buildkite_annotate(context: 'pods-check', style: style, message: result[:message]) if is_ci
 end

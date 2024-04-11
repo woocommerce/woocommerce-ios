@@ -258,4 +258,14 @@ public enum AppSettingsAction: Action {
     /// Loads the stored, ordered array of cards for the Analytics Hub.
     ///
     case loadAnalyticsHubCards(siteID: Int64, onCompletion: ([AnalyticsCard]?) -> Void)
+
+    // MARK: - Dashboard Cards
+
+    /// Stores an ordered array of cards for the Dashboard screen.
+    ///
+    case setDashboardCards(siteID: Int64, cards: [DashboardCard])
+
+    /// Loads the stored, ordered array of cards for the Dashboard screen.
+    ///
+    case loadDashboardCards(siteID: Int64, onCompletion: ([DashboardCard]?) -> Void)
 }

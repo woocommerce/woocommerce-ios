@@ -1364,6 +1364,66 @@ extension AppSettingsStoreTests {
         // Then
         XCTAssertNil(customTimeRange)
     }
+
+    // MARK: - dashboard cards
+    func test_setDashboardCards_works_correctly() throws {
+        // Given
+        let dashboardCards = [
+            DashboardCard(type: .onboarding, enabled: false),
+            DashboardCard(type: .statsAndTopPerformers, enabled: true),
+            DashboardCard(type: .blaze, enabled: true)
+        ]
+        let existingSettings = GeneralStoreSettingsBySite(storeSettingsBySite: [TestConstants.siteID: GeneralStoreSettings()])
+        try fileStorage?.write(existingSettings, to: expectedGeneralStoreSettingsFileURL)
+
+        // When
+        let action = AppSettingsAction.setDashboardCards(siteID: TestConstants.siteID, cards: dashboardCards)
+        subject?.onAction(action)
+
+        // Then
+        let savedSettings: GeneralStoreSettingsBySite = try XCTUnwrap(fileStorage?.data(for: expectedGeneralStoreSettingsFileURL))
+        let settingsForSite = savedSettings.storeSettingsBySite[TestConstants.siteID]
+
+        assertEqual(dashboardCards, settingsForSite?.dashboardCards)
+    }
+
+    func test_loadDashboardCards_works_correctly() throws {
+        // Given
+        let storedDashboardCards = [
+            DashboardCard(type: .onboarding, enabled: false),
+            DashboardCard(type: .statsAndTopPerformers, enabled: true),
+            DashboardCard(type: .blaze, enabled: true)
+        ]
+        let storeSettings = GeneralStoreSettings(dashboardCards: storedDashboardCards)
+        let existingSettings = GeneralStoreSettingsBySite(storeSettingsBySite: [TestConstants.siteID: storeSettings])
+        try fileStorage?.write(existingSettings, to: expectedGeneralStoreSettingsFileURL)
+
+        // When
+        var loadedDashboardCards: [DashboardCard]?
+        let action = AppSettingsAction.loadDashboardCards(siteID: TestConstants.siteID) { cards in
+            loadedDashboardCards = cards
+        }
+        subject?.onAction(action)
+
+        // Then
+        assertEqual(storedDashboardCards, loadedDashboardCards)
+    }
+
+    func test_loadDashboardCards_returns_nil_when_no_cards_are_saved() throws {
+        // Given
+        let existingSettings = GeneralStoreSettingsBySite(storeSettingsBySite: [TestConstants.siteID: GeneralStoreSettings()])
+        try fileStorage?.write(existingSettings, to: expectedGeneralStoreSettingsFileURL)
+
+        // When
+        var loadedDashboardCards: [DashboardCard]?
+        let action = AppSettingsAction.loadDashboardCards(siteID: TestConstants.siteID) { cards in
+            loadedDashboardCards = cards
+        }
+        subject?.onAction(action)
+
+        // Then
+        XCTAssertNil(loadedDashboardCards)
+    }
 }
 
 // MARK: - Utils

@@ -310,7 +310,6 @@ private extension WrongAccountErrorViewModel {
     }
 
     enum Strings {
-        static let instructionsURLString = "https://woo.com/document/jetpack-setup-instructions-for-the-woocommerce-mobile-app/"
         static let jetpackTermsURL = "https://jetpack.com/redirect/?source=wpcom-tos&site="
         static let jetpackShareDetailsURL = "https://jetpack.com/redirect/?source=jetpack-support-what-data-does-jetpack-sync&site="
     }

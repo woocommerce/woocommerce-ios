@@ -2490,7 +2490,7 @@ final class MigrationTests: XCTestCase {
             "price": 4.99,
             "total": 4.99,
             "currency": "USD",
-            "imageUrl": "https://example.com/woo.jpg"
+            "imageUrl": "https://example.com/woocommerce.jpg"
         ])
         try sourceContext.save()
 
@@ -2959,7 +2959,7 @@ private extension MigrationTests {
             "amount": "2.00",
             "code": "2off2021",
             "usedBy": ["me@example.com"],
-            "emailRestrictions": ["*@woo.com"],
+            "emailRestrictions": ["*@woocommerce.com"],
             "siteID": 1212,
             "products": [1231, 111],
             "excludedProducts": [19182, 192],
@@ -2995,7 +2995,7 @@ private extension MigrationTests {
             "name": "renew-subscription",
             "label": "Renew Subscription",
             "status": "actioned",
-            "url": "https://woo.com/products/woocommerce-bookings/"
+            "url": "https://woocommerce.com/products/woocommerce-bookings/"
         ])
     }
 
@@ -3421,7 +3421,7 @@ private extension MigrationTests {
         context.insert(entityName: "ProductCompositeComponent", properties: [
             "componentID": "1679310855",
             "title": "Camera Body",
-            "imageURL": "https://example.com/woo.jpg",
+            "imageURL": "https://example.com/woocommerce.jpg",
             "optionType": "product_ids",
             "optionIDs": [413, 412]
         ])
@@ -3454,7 +3454,7 @@ private extension MigrationTests {
         context.insert(entityName: "OrderAttributionInfo", properties: [
             "sourceType": "referral",
             "campaign": "sale",
-            "source": "woo.com",
+            "source": "woocommerce.com",
             "medium": "referral",
             "deviceType": "Desktop",
             "sessionPageViews": "2"

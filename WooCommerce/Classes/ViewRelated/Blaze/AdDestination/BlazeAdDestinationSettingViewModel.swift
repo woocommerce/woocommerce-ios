@@ -186,7 +186,7 @@ private extension BlazeAdDestinationSettingViewModel {
             value: "Destination: %1$@",
             comment: "Blaze Ad Destination: The final URl destination including optional parameters. " +
             "%1$@ will be replaced by the URL text. " +
-            "Read like: Destination: https://woo.com/2022/04/11/product/?parameterkey=parametervalue"
+            "Read like: Destination: https://woocommerce.com/2022/04/11/product/?parameterkey=parametervalue"
         )
     }
 }

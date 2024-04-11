@@ -4,15 +4,6 @@ import enum Networking.DotcomError
 import enum Storage.StatsVersion
 import protocol Experiments.FeatureFlagService
 
-/// Contents to be displayed on the dashboard.
-///
-enum DashboardCard: Int, CaseIterable {
-    case onboarding
-    case stats
-    case topPerformers
-    case blaze
-}
-
 /// Syncs data for dashboard stats UI and determines the state of the dashboard UI based on stats version.
 final class DashboardViewModel: ObservableObject {
     /// Stats v4 is shown by default, then falls back to v3 if store stats are unavailable.
@@ -28,11 +19,16 @@ final class DashboardViewModel: ObservableObject {
 
     let blazeCampaignDashboardViewModel: BlazeCampaignDashboardViewModel
 
-    @Published private(set) var showWebViewSheet: WebViewSheetViewModel? = nil
+    @Published var justInTimeMessagesWebViewModel: WebViewSheetViewModel? = nil
 
     @Published private(set) var showOnboarding: Bool = false
     @Published private(set) var showBlazeCampaignView: Bool = false
-    @Published private(set) var dashboardCards: [DashboardCard] = [.stats, .topPerformers]
+
+    @Published private(set) var dashboardCards: [DashboardCard] = [DashboardCard(type: .statsAndTopPerformers, enabled: true)]
+    @Published private(set) var unavailableDashboardCards: [DashboardCard] = []
+
+    @Published private(set) var jetpackBannerVisibleFromAppSettings = false
+    @Published var statSyncingError: Error?
 
     let siteID: Int64
     private let stores: StoresManager
@@ -43,6 +39,7 @@ final class DashboardViewModel: ObservableObject {
     private let userDefaults: UserDefaults
     private let storeCreationProfilerUploadAnswersUseCase: StoreCreationProfilerUploadAnswersUseCaseProtocol
     private let themeInstaller: ThemeInstaller
+    private var subscriptions: Set<AnyCancellable> = []
 
     var siteURLToShare: URL? {
         if let site = stores.sessionManager.defaultSite,
@@ -95,6 +92,9 @@ final class DashboardViewModel: ObservableObject {
             }
             group.addTask { [weak self] in
                 await self?.reloadBlazeCampaignView()
+            }
+            group.addTask { [weak self] in
+                await self?.updateJetpackBannerVisibilityFromAppSettings()
             }
         }
     }
@@ -250,6 +250,24 @@ final class DashboardViewModel: ObservableObject {
 
         analytics.track(event: .Dashboard.dashboardTimezonesDiffers(localTimezone: localGMTOffsetInHours, storeTimezone: siteGMTOffset))
     }
+
+    func saveJetpackBenefitBannerDismissedTime() {
+        let dismissAction = AppSettingsAction.setJetpackBenefitsBannerLastDismissedTime(time: Date())
+        stores.dispatch(dismissAction)
+    }
+
+    func maybeSyncAnnouncementsAfterWebViewDismissed() {
+        // Sync announcements again only when the JITM modal has been dismissed to avoid showing duplicated modals.
+        if modalJustInTimeMessageViewModel == nil {
+            Task {
+                await syncAnnouncements(for: siteID)
+            }
+        }
+    }
+
+    func didCustomizeDashboardCards(_ cards: [DashboardCard]) {
+        dashboardCards = cards
+    }
 }
 
 // MARK: Private helpers
@@ -259,7 +277,7 @@ private extension DashboardViewModel {
     @MainActor
     func syncJustInTimeMessages(for siteID: Int64) async {
         let viewModel = try? await justInTimeMessagesManager.loadMessage(for: .dashboard, siteID: siteID)
-        viewModel?.$showWebViewSheet.assign(to: &self.$showWebViewSheet)
+        viewModel?.$showWebViewSheet.assign(to: &self.$justInTimeMessagesWebViewModel)
         switch viewModel?.template {
         case .some(.banner):
             announcementViewModel = viewModel
@@ -306,16 +324,46 @@ private extension DashboardViewModel {
 
     func setupDashboardCards() {
         $showOnboarding.combineLatest($showBlazeCampaignView)
-            .map { showOnboarding, showBlazeCampaignView -> [DashboardCard] in
-                [
-                    showOnboarding ? .onboarding : nil,
-                    .stats,
-                    .topPerformers,
-                    showBlazeCampaignView ? .blaze : nil
-                ].compactMap { $0 }
-            }
             .receive(on: RunLoop.main)
-            .assign(to: &$dashboardCards)
+            .sink { [weak self] showOnboarding, showBlazeCampaignView in
+                self?.updateDashboardCards(showOnboarding: showOnboarding,
+                                           showBlazeCampaignView: showBlazeCampaignView)
+            }
+            .store(in: &subscriptions)
+    }
+
+    /// TODO-12403: Update persistence for dashboard cards.
+    /// We are using separate user defaults for different cards -
+    /// this should be updated to general app settings.
+    func updateDashboardCards(showOnboarding: Bool, showBlazeCampaignView: Bool) {
+        let onboardingCard = DashboardCard(type: .onboarding, enabled: showOnboarding)
+        let statsCard = DashboardCard(type: .statsAndTopPerformers, enabled: true)
+        let blazeCard = DashboardCard(type: .blaze, enabled: showBlazeCampaignView)
+        dashboardCards = [onboardingCard, statsCard, blazeCard]
+        unavailableDashboardCards = []
+
+        if !showOnboarding && !userDefaults.shouldHideStoreOnboardingTaskList {
+            unavailableDashboardCards.append(onboardingCard)
+        }
+
+        if !showBlazeCampaignView && !userDefaults.hasDismissedBlazeSectionOnMyStore {
+            unavailableDashboardCards.append(blazeCard)
+        }
+    }
+
+    @MainActor
+    func loadJetpackBannerVisibilityFromAppSettings() async -> Bool {
+        await withCheckedContinuation { continuation in
+            stores.dispatch(AppSettingsAction.loadJetpackBenefitsBannerVisibility(currentTime: Date(),
+                                                                               calendar: .current) {  isVisibleFromAppSettings in
+                continuation.resume(returning: isVisibleFromAppSettings)
+            })
+        }
+    }
+
+    @MainActor
+    func updateJetpackBannerVisibilityFromAppSettings() async {
+        jetpackBannerVisibleFromAppSettings = await loadJetpackBannerVisibilityFromAppSettings()
     }
 }
 

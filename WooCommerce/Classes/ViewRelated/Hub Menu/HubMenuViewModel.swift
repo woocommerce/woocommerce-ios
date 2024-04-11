@@ -14,6 +14,7 @@ extension NSNotification.Name {
 
 /// View model for `HubMenu`.
 ///
+@MainActor
 final class HubMenuViewModel: ObservableObject {
 
     let siteID: Int64

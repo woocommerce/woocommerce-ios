@@ -126,7 +126,7 @@ private extension WooAboutScreenConfiguration {
         static let instagram        = URL(string: "http://instagram.com/woocommerce")!
         static let twitter          = URL(string: "http://twitter.com/woocommerce")!
         static let website          = URL(string: "https://woocommerce.app/")!
-        static let blog             = URL(string: "https://woo.com/blog/")!
+        static let blog             = URL(string: "https://woocommerce.com/blog/")!
         static let automatticFamily = URL(string: "https://automattic.com")!
         static let workWithUs       = URL(string: "https://automattic.com/work-with-us")!
     }
@@ -148,7 +148,7 @@ private extension WooAboutScreenConfiguration {
 
         enum Subtitles {
             static let website          = "woocommerce.app"
-            static let blog             = "woo.com/blog"
+            static let blog             = "woocommerce.com/blog"
             static let instagram        = "@woocommerce"
             static let twitter          = "@woocommerce"
             static let workWithUs       = NSLocalizedString("Join from anywhere",

@@ -14,16 +14,16 @@ NSBluetoothPeripheralUsageDescription = "Bluetooth access is required in order t
 NSBluetoothAlwaysUsageDescription = "This app uses Bluetooth to connect to supported card readers.";
 
 /* Title for Add Product home screen action */
-AddProductAction.Title = "Add a product";
+"AddProductAction.Title" = "Add a product";
 
 /* Title for Add Order home screen action */
-AddOrderAction.Title = "New Order";
+"AddOrderAction.Title" = "New Order";
 
 /* Title for Orders home screen action */
-OpenOrdersAction.Title = "Orders";
+"OpenOrdersAction.Title" = "Orders";
 
 /* Title for Payments home screen action */
-OpenPaymentsAction.Title = "Payments";
+"OpenPaymentsAction.Title" = "Payments";
 
 /* Title for Payments home screen action */
-CollectPaymentAction.Title = "Collect Payment";
+"CollectPaymentAction.Title" = "Collect Payment";

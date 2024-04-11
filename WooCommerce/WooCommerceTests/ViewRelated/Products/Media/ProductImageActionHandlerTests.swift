@@ -132,11 +132,11 @@ final class ProductImageActionHandlerTests: XCTestCase {
                 promise((filename: filename, altText: altText))
             }
 
-            productImageActionHandler.uploadMediaAssetToSiteMediaLibrary(asset: .uiImage(image: .init(), filename: "woo.jpg", altText: "cool product"))
+            productImageActionHandler.uploadMediaAssetToSiteMediaLibrary(asset: .uiImage(image: .init(), filename: "woocommerce.jpg", altText: "cool product"))
         }
 
         // Then
-        XCTAssertEqual(mediaMetadata.filename, "woo.jpg")
+        XCTAssertEqual(mediaMetadata.filename, "woocommerce.jpg")
         XCTAssertEqual(mediaMetadata.altText, "cool product")
     }
 
@@ -152,7 +152,7 @@ final class ProductImageActionHandlerTests: XCTestCase {
 
         // When
         let statuses: [ProductImageStatus] = waitFor { promise in
-            productImageActionHandler.uploadMediaAssetToSiteMediaLibrary(asset: .uiImage(image: mockImage, filename: "woo.jpg", altText: "cool product"))
+            productImageActionHandler.uploadMediaAssetToSiteMediaLibrary(asset: .uiImage(image: mockImage, filename: "woocommerce.jpg", altText: "cool product"))
             self.productImageStatusesSubscription = productImageActionHandler.addUpdateObserver(self) { (productImageStatuses, error) in
                 XCTAssertTrue(Thread.current.isMainThread)
                 promise(productImageStatuses)
@@ -160,7 +160,7 @@ final class ProductImageActionHandlerTests: XCTestCase {
         }
 
         // Then
-        assertEqual(statuses, [.uploading(asset: .uiImage(image: mockImage, filename: "woo.jpg", altText: "cool product"))])
+        assertEqual(statuses, [.uploading(asset: .uiImage(image: mockImage, filename: "woocommerce.jpg", altText: "cool product"))])
     }
 
     func testDeletingProductImage() {

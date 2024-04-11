@@ -93,7 +93,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                 return subscriptionPeriod.descriptionPlural
             }
         }()
-        return String.localizedStringWithFormat(Localization.formattedProductSubscriptionBilling,
+        return String.localizedStringWithFormat(Localization.Subscription.formattedBilling,
                                                 formattedPrice, subscriptionInterval, subscriptionFrequency)
     }
 
@@ -143,11 +143,11 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         case (true, true):
             return ""
         case (true, false):
-            return String.localizedStringWithFormat(Localization.formattedProductSubscriptionConditionsWithoutSignup, trialLength, formattedTrialDetails)
+            return String.localizedStringWithFormat(Localization.Subscription.formattedConditionsWithoutSignup, trialLength, formattedTrialDetails)
         case (false, true):
-            return String.localizedStringWithFormat(Localization.formattedProductSubscriptionConditionsWithoutTrial, formattedSignUpFee)
+            return String.localizedStringWithFormat(Localization.Subscription.formattedConditionsWithoutTrial, formattedSignUpFee)
         case (false, false):
-            return String.localizedStringWithFormat(Localization.formattedProductSubscriptionConditions,
+            return String.localizedStringWithFormat(Localization.Subscription.formattedConditions,
                                                     formattedSignUpFee, trialLength, formattedTrialDetails)
         }
     }
@@ -517,25 +517,28 @@ private extension ProductRowViewModel {
                                                        comment: "Label for one product variation when showing details about a variable product")
         static let pluralVariations = NSLocalizedString("%ld variations",
                                                         comment: "Label for multiple product variations when showing details about a variable product")
-        static let formattedProductSubscriptionBilling = NSLocalizedString(
-            "ProductRowViewModel.formattedProductSubscriptionBilling",
-            value: "%1$@ / %2$@ %3$@",
-            comment: "Description of the subscription price for a product, with price and billing frequency. " +
-            "Reads as: '$60.00 / 2 months'.")
-        static let formattedProductSubscriptionConditions = NSLocalizedString(
-            "ProductRowViewModel.formattedProductSubscriptionConditions",
-            value: "%1$@ signup · %2$@ %3$@ free",
-            comment: "Description of the subscription conditions for a subscription product, with signup fees and free trials." +
-            "Reads as: '$25.00 signup · 1 month free'.")
-        static let formattedProductSubscriptionConditionsWithoutSignup = NSLocalizedString(
-            "ProductRowViewModel.formattedProductSubscriptionConditionsWithoutSignup",
-            value: "%1$@ %2$@ free",
-            comment: "Description of the subscription conditions for a subscription product, with only free trial." +
-            "Reads as: '1 month free'.")
-        static let formattedProductSubscriptionConditionsWithoutTrial = NSLocalizedString(
-            "ProductRowViewModel.formattedProductSubscriptionConditionsWithoutTrial",
-            value: "%1$@ signup",
-            comment: "Description of the subscription conditions for a subscription product, with signup fees but no trial." +
-            "Reads as: '$25.00 signup'.")
+
+        enum Subscription {
+            static let formattedBilling = NSLocalizedString(
+                "ProductRowViewModel.formattedProductSubscriptionBilling",
+                value: "%1$@ / %2$@ %3$@",
+                comment: "Description of the subscription price for a product, with price and billing frequency. " +
+                "Reads as: '$60.00 / 2 months'.")
+            static let formattedConditions = NSLocalizedString(
+                "ProductRowViewModel.formattedProductSubscriptionConditions",
+                value: "%1$@ signup · %2$@ %3$@ free",
+                comment: "Description of the subscription conditions for a subscription product, with signup fees and free trials." +
+                "Reads as: '$25.00 signup · 1 month free'.")
+            static let formattedConditionsWithoutSignup = NSLocalizedString(
+                "ProductRowViewModel.formattedProductSubscriptionConditionsWithoutSignup",
+                value: "%1$@ %2$@ free",
+                comment: "Description of the subscription conditions for a subscription product, with only free trial." +
+                "Reads as: '1 month free'.")
+            static let formattedConditionsWithoutTrial = NSLocalizedString(
+                "ProductRowViewModel.formattedProductSubscriptionConditionsWithoutTrial",
+                value: "%1$@ signup",
+                comment: "Description of the subscription conditions for a subscription product, with signup fees but no trial." +
+                "Reads as: '$25.00 signup'.")
+        }
     }
 }

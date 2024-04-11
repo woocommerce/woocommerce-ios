@@ -24,8 +24,6 @@ struct ProductRow: View {
     ///
     let accessibilityHint: String
 
-
-
     init(multipleSelectionsEnabled: Bool = false,
          viewModel: ProductRowViewModel,
          accessibilityHint: String = "",

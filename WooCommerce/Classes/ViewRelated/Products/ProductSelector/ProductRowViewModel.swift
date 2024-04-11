@@ -78,12 +78,10 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     /// eg: "$60.00 / 2 months"
     ///
     var subscriptionBillingDetailsLabel: String {
-        let currency = ServiceLocator.currencySettings.symbol(from: ServiceLocator.currencySettings.currencyCode)
-
         guard let subscriptionPrice = productSubscriptionDetails?.price,
               let subscriptionInterval = productSubscriptionDetails?.periodInterval,
               let subscriptionPeriod = productSubscriptionDetails?.period,
-              let formattedPrice = currencyFormatter.formatAmount(subscriptionPrice, with: currency) else {
+              let formattedPrice = currencyFormatter.formatAmount(subscriptionPrice) else {
             return ""
         }
 
@@ -104,8 +102,6 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     /// eg: "$25.00 signup · 1 month free"
     ///
     var subscriptionConditionsLabel: String {
-        let currency = ServiceLocator.currencySettings.symbol(from: ServiceLocator.currencySettings.currencyCode)
-
         // Signup fees
         guard let signUpFee = productSubscriptionDetails?.signUpFee else {
             return ""
@@ -114,7 +110,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         if signUpFee.isEmpty {
             formattedSignUpFee = ""
         } else {
-            formattedSignUpFee = currencyFormatter.formatAmount(signUpFee, with: currency) ?? ""
+            formattedSignUpFee = currencyFormatter.formatAmount(signUpFee) ?? ""
         }
 
         // Trial periods

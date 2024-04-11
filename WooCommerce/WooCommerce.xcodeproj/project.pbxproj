@@ -2437,6 +2437,7 @@
 		DECE13FB27993F6500816ECD /* TitleAndSubtitleAndStatusTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DECE13F927993F6500816ECD /* TitleAndSubtitleAndStatusTableViewCell.swift */; };
 		DECE13FC27993F6500816ECD /* TitleAndSubtitleAndStatusTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = DECE13FA27993F6500816ECD /* TitleAndSubtitleAndStatusTableViewCell.xib */; };
 		DECE1400279A595200816ECD /* Coupon+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = DECE13FF279A595200816ECD /* Coupon+Woo.swift */; };
+		DED039272BC7934F005D0571 /* StoreStatsChartViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED039262BC7934F005D0571 /* StoreStatsChartViewModelTests.swift */; };
 		DED91DFA2AD78A3A00CDCC53 /* BlazeCampaignItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED91DF92AD78A3A00CDCC53 /* BlazeCampaignItemView.swift */; };
 		DED9740B2AD7D09E00122EB4 /* BlazeCampaignListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED9740A2AD7D09E00122EB4 /* BlazeCampaignListView.swift */; };
 		DED9740D2AD7D27000122EB4 /* BlazeCampaignListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED9740C2AD7D27000122EB4 /* BlazeCampaignListViewModel.swift */; };
@@ -5199,6 +5200,7 @@
 		DECE13F927993F6500816ECD /* TitleAndSubtitleAndStatusTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitleAndSubtitleAndStatusTableViewCell.swift; sourceTree = "<group>"; };
 		DECE13FA27993F6500816ECD /* TitleAndSubtitleAndStatusTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TitleAndSubtitleAndStatusTableViewCell.xib; sourceTree = "<group>"; };
 		DECE13FF279A595200816ECD /* Coupon+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Coupon+Woo.swift"; sourceTree = "<group>"; };
+		DED039262BC7934F005D0571 /* StoreStatsChartViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreStatsChartViewModelTests.swift; sourceTree = "<group>"; };
 		DED91DF92AD78A3A00CDCC53 /* BlazeCampaignItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeCampaignItemView.swift; sourceTree = "<group>"; };
 		DED9740A2AD7D09E00122EB4 /* BlazeCampaignListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeCampaignListView.swift; sourceTree = "<group>"; };
 		DED9740C2AD7D27000122EB4 /* BlazeCampaignListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeCampaignListViewModel.swift; sourceTree = "<group>"; };
@@ -6800,6 +6802,7 @@
 				028E1F712833E954001F8829 /* DashboardViewModelTests.swift */,
 				027F83EE29B048E2002688C6 /* DashboardTopPerformersViewModelTests.swift */,
 				DEC75CC72BC518D900763801 /* DashboardCustomizationViewModelTests.swift */,
+				DED039252BC79339005D0571 /* StoreStats */,
 			);
 			path = Dashboard;
 			sourceTree = "<group>";
@@ -11780,6 +11783,14 @@
 			path = DashboardCustomization;
 			sourceTree = "<group>";
 		};
+		DED039252BC79339005D0571 /* StoreStats */ = {
+			isa = PBXGroup;
+			children = (
+				DED039262BC7934F005D0571 /* StoreStatsChartViewModelTests.swift */,
+			);
+			path = StoreStats;
+			sourceTree = "<group>";
+		};
 		DED91DF72AD78A0C00CDCC53 /* Blaze */ = {
 			isa = PBXGroup;
 			children = (
@@ -15083,6 +15094,7 @@
 				0271E1642509C66200633F7A /* DefaultProductFormTableViewModelTests.swift in Sources */,
 				2602A64827BDBF8000B347F1 /* ProductInputTransformerTests.swift in Sources */,
 				02C27BD0282CDF9E0065471A /* CardPresentPaymentReceiptEmailCoordinatorTests.swift in Sources */,
+				DED039272BC7934F005D0571 /* StoreStatsChartViewModelTests.swift in Sources */,
 				2024966A2B0CC97100EE527D /* MockWooPaymentsDepositService.swift in Sources */,
 				DE61978D289A5326005E4362 /* WooSetupWebViewModelTests.swift in Sources */,
 				DE02ABAF2B5545C8008E0AC4 /* BlazeTargetLocationPickerViewModelTests.swift in Sources */,

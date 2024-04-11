@@ -19,10 +19,12 @@ struct StoreStatsChart: View {
 
     var body: some View {
         Chart(viewModel.intervals) { item in
+            // Line for the chart
             LineMark(x: .value(Localization.xValue, item.date),
                      y: .value(Localization.yValue, item.revenue))
             .foregroundStyle(Constants.chartLineColor)
 
+            // No revenue text and horizontal line
             if !viewModel.hasRevenue {
                 RuleMark(y: .value(Localization.zeroRevenue, 0))
                     .annotation(position: .overlay, alignment: .center) {
@@ -33,6 +35,7 @@ struct StoreStatsChart: View {
                     }
             }
 
+            // Gradient area
             AreaMark(x: .value(Localization.xValue, item.date),
                      y: .value(Localization.yValue, item.revenue))
             .foregroundStyle(.linearGradient(colors: [Constants.chartGradientTopColor,
@@ -40,6 +43,7 @@ struct StoreStatsChart: View {
                                              startPoint: .top,
                                              endPoint: .bottom))
 
+            // Vertical line for a selected point
             if let selectedDate = selectedDate, viewModel.hasRevenue {
                 RuleMark(x: .value(Localization.xSelectedValue, selectedDate))
                     .foregroundStyle(Constants.chartHighlightLineColor)
@@ -65,6 +69,7 @@ struct StoreStatsChart: View {
         }
         .chartYAxis(viewModel.hasRevenue ? .visible : .hidden)
         .chartOverlay { proxy in
+            // Overlay to handle tap and drag gestures
             GeometryReader { geometry in
                 Rectangle().fill(.clear).contentShape(Rectangle())
                     .gesture(DragGesture()

@@ -103,13 +103,9 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     ///
     var subscriptionConditionsLabel: String {
         // Signup fees
-        guard let signUpFee = productSubscriptionDetails?.signUpFee else {
-            return ""
-        }
         var formattedSignUpFee: String = ""
-        if signUpFee.isEmpty {
-            formattedSignUpFee = ""
-        } else {
+
+        if let signUpFee = productSubscriptionDetails?.signUpFee, !signUpFee.isEmpty {
             formattedSignUpFee = currencyFormatter.formatAmount(signUpFee) ?? ""
         }
 

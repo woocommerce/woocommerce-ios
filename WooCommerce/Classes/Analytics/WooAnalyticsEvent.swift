@@ -1207,6 +1207,14 @@ extension WooAnalyticsEvent {
         static func simplePaymentsFlowTaxesToggled(isOn: Bool) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .simplePaymentsFlowTaxesToggled, properties: [Keys.state: isOn ? "on" : "off"])
         }
+
+        static func simplePaymentsMigrationSheetAddCustomAmount() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .simplePaymentsMigrationSheetAddCustomAmount, properties: [:])
+        }
+
+        static func simplePaymentsMigrationSheetShown() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .simplePaymentsMigrationSheetShown, properties: [:])
+        }
     }
 }
 

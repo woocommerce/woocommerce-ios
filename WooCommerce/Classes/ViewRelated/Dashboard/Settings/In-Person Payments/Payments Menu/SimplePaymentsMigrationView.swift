@@ -27,6 +27,7 @@ struct SimplePaymentsMigrationView: View {
             }
             Button(Localization.addCustomAmount) {
                 addCustomAmount()
+                ServiceLocator.analytics.track(event: .SimplePayments.simplePaymentsMigrationSheetAddCustomAmount())
             }
             .buttonStyle(PrimaryButtonStyle())
             .padding(.top, Layout.extraButtonTopPadding)
@@ -34,6 +35,9 @@ struct SimplePaymentsMigrationView: View {
         }
         .multilineTextAlignment(.center)
         .padding(Layout.padding)
+        .onAppear {
+            ServiceLocator.analytics.track(event: .SimplePayments.simplePaymentsMigrationSheetShown())
+        }
     }
 }
 

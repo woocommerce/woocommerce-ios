@@ -2030,6 +2030,7 @@
 		CE4296B920A5E9E400B2AFBD /* CNContact+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE4296B820A5E9E400B2AFBD /* CNContact+Helpers.swift */; };
 		CE4DA5C821DD759400074607 /* CurrencyFormatterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE4DA5C721DD759400074607 /* CurrencyFormatterTests.swift */; };
 		CE4DDB7B20DD312400D32EC8 /* DateFormatter+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE4DDB7A20DD312400D32EC8 /* DateFormatter+Helpers.swift */; };
+		CE4ECA582BC5B66A005F9386 /* WCAnalyticsStatsTotals+UI.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE4ECA572BC5B66A005F9386 /* WCAnalyticsStatsTotals+UI.swift */; };
 		CE4FE7D82B7D306200F66DD5 /* MultiSelectionReorderableList.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE4FE7D72B7D306200F66DD5 /* MultiSelectionReorderableList.swift */; };
 		CE4FE7DA2B7E2E9400F66DD5 /* AnalyticsHubCustomizeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE4FE7D92B7E2E9400F66DD5 /* AnalyticsHubCustomizeViewModel.swift */; };
 		CE55F2D42B238C04005D53D7 /* CollapsibleProductCardPriceSummaryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE55F2D32B238C04005D53D7 /* CollapsibleProductCardPriceSummaryViewModel.swift */; };
@@ -4784,6 +4785,7 @@
 		CE4296B820A5E9E400B2AFBD /* CNContact+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CNContact+Helpers.swift"; sourceTree = "<group>"; };
 		CE4DA5C721DD759400074607 /* CurrencyFormatterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencyFormatterTests.swift; sourceTree = "<group>"; };
 		CE4DDB7A20DD312400D32EC8 /* DateFormatter+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DateFormatter+Helpers.swift"; sourceTree = "<group>"; };
+		CE4ECA572BC5B66A005F9386 /* WCAnalyticsStatsTotals+UI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WCAnalyticsStatsTotals+UI.swift"; sourceTree = "<group>"; };
 		CE4FE7D72B7D306200F66DD5 /* MultiSelectionReorderableList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiSelectionReorderableList.swift; sourceTree = "<group>"; };
 		CE4FE7D92B7E2E9400F66DD5 /* AnalyticsHubCustomizeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsHubCustomizeViewModel.swift; sourceTree = "<group>"; };
 		CE55F2D32B238C04005D53D7 /* CollapsibleProductCardPriceSummaryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollapsibleProductCardPriceSummaryViewModel.swift; sourceTree = "<group>"; };
@@ -6546,6 +6548,7 @@
 			children = (
 				CC04918C292BB74500F719D8 /* StatsDataTextFormatter.swift */,
 				CCCFFC592934EF5E006130AF /* StatsIntervalDataParser.swift */,
+				CE4ECA572BC5B66A005F9386 /* WCAnalyticsStatsTotals+UI.swift */,
 			);
 			path = Factories;
 			sourceTree = "<group>";
@@ -14220,6 +14223,7 @@
 				02645D7D27BA027B0065DC68 /* Inbox.swift in Sources */,
 				D81D9228222E7F0800FFA585 /* OrderStatusListViewController.swift in Sources */,
 				CEE006082077D14C0079161F /* OrderDetailsViewController.swift in Sources */,
+				CE4ECA582BC5B66A005F9386 /* WCAnalyticsStatsTotals+UI.swift in Sources */,
 				AEB73C0C25CD734200A8454A /* AttributePickerViewModel.swift in Sources */,
 				D8752EF7265E60F4008ACC80 /* PaymentCaptureCelebration.swift in Sources */,
 				B98BA12D2AE90023006F1E4A /* OrderCustomAmountsSection.swift in Sources */,

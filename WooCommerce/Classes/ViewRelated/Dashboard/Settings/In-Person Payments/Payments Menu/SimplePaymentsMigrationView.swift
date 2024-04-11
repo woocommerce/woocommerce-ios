@@ -40,7 +40,7 @@ private extension SimplePaymentsMigrationView {
         )
         static let subtitle = NSLocalizedString(
             "simplePaymentsMigrationSheet.subtitle",
-            value: " We’ve combined payment collection with order creation, making it more accessible *and* more powerful.",
+            value: "We’ve combined payment collection with order creation, making it more accessible *and* more powerful.",
             comment: "Title for the simple payments migration view. Text in the asterisks is italic."
         )
         static let detail = NSLocalizedString(

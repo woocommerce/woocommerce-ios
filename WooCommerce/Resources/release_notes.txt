@@ -1,1 +1,5 @@
-Streamline your management with our latest update! Easily delete orders on-the-go, dive into new analytics for Product Bundles and Gift Cards, and enjoy a smoother Jetpack installation. Update now for a more efficient WooCommerce experience!
+- [*] Menu > Payments > Collect Payment: the simple payments flow has been migrated to order form with custom amount. [https://github.com/woocommerce/woocommerce-ios/pull/12455]
+- [*] Login: Allow login using site credentials for Jetpack connected stores. [https://github.com/woocommerce/woocommerce-ios/issues/12429]
+- [internal] Updated all `woo.com` URLs to use `woocommerce.com` domain. [https://github.com/woocommerce/woocommerce-ios/pull/12452]
+- [*] Blaze: Validate that campaign image has minimum expected dimensions. [https://github.com/woocommerce/woocommerce-ios/issues/12470]
+

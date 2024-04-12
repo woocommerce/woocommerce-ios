@@ -4,10 +4,10 @@ PODS:
     - Sentry (~> 8.0)
     - Sodium (>= 0.9.1)
     - UIDeviceIdentifier (~> 2.0)
-  - CocoaLumberjack (3.7.4):
-    - CocoaLumberjack/Core (= 3.7.4)
-  - CocoaLumberjack/Core (3.7.4)
-  - CocoaLumberjack/Swift (3.7.4):
+  - CocoaLumberjack (3.8.5):
+    - CocoaLumberjack/Core (= 3.8.5)
+  - CocoaLumberjack/Core (3.8.5)
+  - CocoaLumberjack/Swift (3.8.5):
     - CocoaLumberjack/Core
   - Gridicons (1.2.0)
   - KeychainAccess (4.2.2)
@@ -63,8 +63,8 @@ PODS:
 DEPENDENCIES:
   - Alamofire (~> 5.0)
   - Automattic-Tracks-iOS (~> 3.0)
-  - CocoaLumberjack (~> 3.7.4)
-  - CocoaLumberjack/Swift (~> 3.7.4)
+  - CocoaLumberjack (~> 3.8.5)
+  - CocoaLumberjack/Swift (~> 3.8.5)
   - Gridicons (~> 1.2.0)
   - KeychainAccess (~> 4.2.2)
   - Kingfisher (~> 7.6.2)
@@ -127,7 +127,7 @@ CHECKOUT OPTIONS:
 SPEC CHECKSUMS:
   Alamofire: 3ca42e259043ee0dc5c0cdd76c4bc568b8e42af7
   Automattic-Tracks-iOS: f30bf3362a77010ccb9fe9aded453645089f6ccb
-  CocoaLumberjack: 543c79c114dadc3b1aba95641d8738b06b05b646
+  CocoaLumberjack: 6a459bc897d6d80bd1b8c78482ec7ad05dffc3f0
   Gridicons: 4455b9f366960121430e45997e32112ae49ffe1d
   KeychainAccess: c0c4f7f38f6fc7bbe58f5702e25f7bd2f65abf51
   Kingfisher: 6c5449c6450c5239166510ba04afe374a98afc4f
@@ -158,6 +158,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: 685b5d185af47ced0ec40564ec46355c838bbd06
   ZendeskSupportSDK: 92e6f9d334e81e9186f8a17583862350460a5393
 
-PODFILE CHECKSUM: 8fa09ddfb35e606b01e4ea137df174aa9ea0b1ec
+PODFILE CHECKSUM: a4a1b5a1d9226900cb13b3b39161c6b0e452f9a9
 
 COCOAPODS: 1.14.0

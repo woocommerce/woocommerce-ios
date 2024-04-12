@@ -29,7 +29,7 @@ PODS:
   - WordPress-Aztec-iOS (1.19.10)
   - WordPress-Editor-iOS (1.19.10):
     - WordPress-Aztec-iOS (= 1.19.10)
-  - WordPressAuthenticator (9.0.6):
+  - WordPressAuthenticator (9.0.7):
     - Gridicons (~> 1.0)
     - "NSURL+IDN (= 0.4)"
     - SVProgressHUD (~> 2.2.5)
@@ -72,7 +72,7 @@ DEPENDENCIES:
   - StripeTerminal (~> 3.3.1)
   - SwiftLint (= 0.54.0)
   - WordPress-Editor-iOS (~> 1.19)
-  - WordPressAuthenticator (from `https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git`, commit `c879d53fc3a53a88de5a878dadd5d3896bcb1baa`)
+  - WordPressAuthenticator (~> 9.0.7)
   - WordPressShared (~> 2.1)
   - WordPressUI (~> 1.15)
   - Wormholy (~> 1.6.6)
@@ -101,6 +101,7 @@ SPEC REPOS:
     - UIDeviceIdentifier
     - WordPress-Aztec-iOS
     - WordPress-Editor-iOS
+    - WordPressAuthenticator
     - WordPressShared
     - WordPressUI
     - Wormholy
@@ -113,16 +114,6 @@ SPEC REPOS:
     - ZendeskSDKConfigurationsSDK
     - ZendeskSupportProvidersSDK
     - ZendeskSupportSDK
-
-EXTERNAL SOURCES:
-  WordPressAuthenticator:
-    :commit: c879d53fc3a53a88de5a878dadd5d3896bcb1baa
-    :git: https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git
-
-CHECKOUT OPTIONS:
-  WordPressAuthenticator:
-    :commit: c879d53fc3a53a88de5a878dadd5d3896bcb1baa
-    :git: https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git
 
 SPEC CHECKSUMS:
   Alamofire: 3ca42e259043ee0dc5c0cdd76c4bc568b8e42af7
@@ -143,7 +134,7 @@ SPEC CHECKSUMS:
   UIDeviceIdentifier: 442b65b4ff1832d4ca9c2a157815cb29ad981b17
   WordPress-Aztec-iOS: 8eaa928fb3a5694924ed3befac64beaae5656e12
   WordPress-Editor-iOS: 98ce1fc542c3a09e48ddc9423405b1d1e48240f1
-  WordPressAuthenticator: 0c5cc3fb336855cb82022aa25897de4b0e4cf934
+  WordPressAuthenticator: 81dc761a9e309bf80e9c302eb36fcacc66660e91
   WordPressKit: fbdbd5445e38a2401d4f4f9f50ca33f980151069
   WordPressShared: 0aa459e5257a77184db87805a998f447443c9706
   WordPressUI: 700e3ec5a9f77b6920c8104c338c85788036ab3c
@@ -158,6 +149,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: 685b5d185af47ced0ec40564ec46355c838bbd06
   ZendeskSupportSDK: 92e6f9d334e81e9186f8a17583862350460a5393
 
-PODFILE CHECKSUM: 8fa09ddfb35e606b01e4ea137df174aa9ea0b1ec
+PODFILE CHECKSUM: 1c4b207bc3b19b13dfacd7888c7a79db6d9df667
 
 COCOAPODS: 1.14.0

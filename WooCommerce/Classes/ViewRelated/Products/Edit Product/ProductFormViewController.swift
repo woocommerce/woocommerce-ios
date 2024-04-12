@@ -96,6 +96,8 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
 
     private let onDeleteCompletion: () -> Void
 
+    private let userDefaults: UserDefaults
+
     init(viewModel: ViewModel,
          isAIContent: Bool = false,
          eventLogger: ProductFormEventLoggerProtocol,
@@ -103,6 +105,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
          currency: String = ServiceLocator.currencySettings.symbol(from: ServiceLocator.currencySettings.currencyCode),
          presentationStyle: ProductFormPresentationStyle,
          productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,
+         userDefaults: UserDefaults = .standard,
          onDeleteCompletion: @escaping () -> Void = {}) {
         self.viewModel = viewModel
         self.isAIContent = isAIContent
@@ -112,6 +115,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         self.productImageActionHandler = productImageActionHandler
         self.productUIImageLoader = DefaultProductUIImageLoader(productImageActionHandler: productImageActionHandler,
                                                                 phAssetImageLoaderProvider: { PHImageManager.default() })
+        self.userDefaults = userDefaults
         self.productImageUploader = productImageUploader
         self.onDeleteCompletion = onDeleteCompletion
         self.aiEligibilityChecker = .init(site: ServiceLocator.stores.sessionManager.defaultSite)
@@ -1149,7 +1153,9 @@ private extension ProductFormViewController {
             source: .productDetailPromoteButton,
             shouldShowIntro: viewModel.shouldShowBlazeIntroView,
             navigationController: navigationController,
-            onCampaignCreated: {}
+            onCampaignCreated: { [weak self] in
+                self?.userDefaults.restoreBlazeSectionOnMyStore(for: site.siteID)
+            }
         )
         coordinator.start()
         blazeCampaignCreationCoordinator = coordinator

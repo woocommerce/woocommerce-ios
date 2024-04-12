@@ -20,7 +20,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
                      images: [.fake().copy(imageID: 1)])
     }
 
-    private let sampleImage = UIImage.addOutlineImage
+    private let sampleImage = UIImage.gridicon(.calendar, size: .init(width: 600, height: 600))
 
     private let sampleAISuggestions = [BlazeAISuggestion(siteName: "First suggested tagline", textSnippet: "First suggested description"),
                                        BlazeAISuggestion(siteName: "Second suggested tagline", textSnippet: "Second suggested description"),

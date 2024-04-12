@@ -50,9 +50,7 @@ final class BlazeCampaignDashboardViewHostingController: SelfSizingHostingContro
 private extension BlazeCampaignDashboardViewHostingController {
     /// Reloads data.
     func handlePostCreation() {
-        Task {
-            await viewModel.reload()
-        }
+        viewModel.didCreateCampaign()
     }
 
     /// Navigates to the campaign list.

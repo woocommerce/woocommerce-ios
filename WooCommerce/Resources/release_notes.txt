@@ -1,5 +1,1 @@
-- [*] Menu > Payments > Collect Payment: the simple payments flow has been migrated to order form with custom amount. [https://github.com/woocommerce/woocommerce-ios/pull/12455]
-- [*] Login: Allow login using site credentials for Jetpack connected stores. [https://github.com/woocommerce/woocommerce-ios/issues/12429]
-- [internal] Updated all `woo.com` URLs to use `woocommerce.com` domain. [https://github.com/woocommerce/woocommerce-ios/pull/12452]
-- [*] Blaze: Validate that campaign image has minimum expected dimensions. [https://github.com/woocommerce/woocommerce-ios/issues/12470]
-
+Discover the latest updates in our WooCommerce app! Enjoy a seamless payment process, log in effortlessly with site credentials, and create Blaze campaigns faster without errors. Upgrade now for an enhanced shop management experience!

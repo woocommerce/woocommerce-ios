@@ -393,7 +393,7 @@ struct RemotePostUpdateParametersXMLRPCEncoder: Encodable {
     func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: RemotePostXMLRPCCodingKeys.self)
         try container.encodeIfPresent(parameters.ifNotModifiedSince, forKey: .ifNotModifiedSince)
-        try container.encodeStringIfPresent(parameters.status, forKey: .postStatus)
+        try container.encodeIfPresent(parameters.status, forKey: .postStatus)
         try container.encodeIfPresent(parameters.date, forKey: .date)
         try container.encodeIfPresent(parameters.authorID, forKey: .authorID)
         try container.encodeStringIfPresent(parameters.title, forKey: .title)

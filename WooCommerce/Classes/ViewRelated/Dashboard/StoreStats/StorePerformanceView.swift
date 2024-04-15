@@ -1,4 +1,5 @@
 import SwiftUI
+import enum Yosemite.StatsTimeRangeV4
 
 /// View for store performance on Dashboard screen
 ///
@@ -11,8 +12,13 @@ struct StorePerformanceView: View {
         Color(shouldHighlightStats ? .statsHighlighted : .text)
     }
 
-    init(viewModel: StorePerformanceViewModel) {
+    private let onViewAllAnalytics: (_ siteID: Int64,
+                                     _ timeZone: TimeZone,
+                                     _ timeRange: StatsTimeRangeV4) -> Void
+
+    init(viewModel: StorePerformanceViewModel, onViewAllAnalytics: @escaping (Int64, TimeZone, StatsTimeRangeV4) -> Void) {
         self.viewModel = viewModel
+        self.onViewAllAnalytics = onViewAllAnalytics
     }
 
     var body: some View {
@@ -36,6 +42,13 @@ struct StorePerformanceView: View {
                     .shimmering(active: viewModel.syncingData)
 
                 chartView
+                    .redacted(reason: viewModel.syncingData ? [.placeholder] : [])
+                    .shimmering(active: viewModel.syncingData)
+
+                Divider()
+
+                viewAllAnalyticsButton
+                    .padding([.top, .horizontal], Layout.padding)
                     .redacted(reason: viewModel.syncingData ? [.placeholder] : [])
                     .shimmering(active: viewModel.syncingData)
 
@@ -138,6 +151,20 @@ private extension StorePerformanceView {
         }
         .frame(height: Layout.chartViewHeight)
     }
+
+    var viewAllAnalyticsButton: some View {
+        Button {
+            onViewAllAnalytics(viewModel.siteID, viewModel.siteTimezone, viewModel.timeRange)
+        } label: {
+            HStack {
+                Text(Localization.viewAll)
+                Spacer()
+                Image(systemName: "chevron.forward")
+                    .foregroundStyle(Color.secondary)
+                    .bold()
+            }
+        }
+    }
 }
 
 private extension StorePerformanceView {
@@ -179,6 +206,11 @@ private extension StorePerformanceView {
             value: "Conversion",
             comment: "Conversion stat label on dashboard."
         )
+        static let viewAll = NSLocalizedString(
+            "storePerformanceView.viewAll",
+            value: "View all store analytics",
+            comment: "Button to navigate to Analytics Hub."
+        )
     }
 
     /// Specific `DatesFormatter` for the `RangedDatePicker` when presented in the analytics hub module.
@@ -191,5 +223,5 @@ private extension StorePerformanceView {
 }
 
 #Preview {
-    StorePerformanceView(viewModel: StorePerformanceViewModel(siteID: 123))
+    StorePerformanceView(viewModel: StorePerformanceViewModel(siteID: 123)) { _, _, _ in }
 }

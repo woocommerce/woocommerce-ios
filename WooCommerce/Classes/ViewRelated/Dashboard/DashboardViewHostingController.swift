@@ -30,7 +30,7 @@ final class DashboardViewHostingController: UIHostingController<DashboardView> {
         configureStoreOnboarding()
         configureBlazeSection()
         configureJetpackBenefitBanner()
-
+        configureStorePerformanceView()
     }
 
     @available(*, unavailable)
@@ -87,6 +87,17 @@ private extension DashboardViewHostingController {
             present(modalController, animated: true)
         }
         .store(in: &subscriptions)
+    }
+
+    func configureStorePerformanceView() {
+        rootView.onViewAllAnalytics = { [weak self] siteID, siteTimeZone, timeRange in
+            guard let self else { return }
+            let analyticsHubVC = AnalyticsHubHostingViewController(siteID: siteID,
+                                                                   timeZone: siteTimeZone,
+                                                                   timeRange: timeRange,
+                                                                   usageTracksEventEmitter: usageTracksEventEmitter)
+            show(analyticsHubVC, sender: self)
+        }
     }
 }
 

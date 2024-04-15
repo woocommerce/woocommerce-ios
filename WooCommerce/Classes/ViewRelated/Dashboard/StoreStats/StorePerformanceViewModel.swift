@@ -22,8 +22,8 @@ final class StorePerformanceViewModel: ObservableObject {
     @Published private(set) var siteVisitStatMode = SiteVisitStatsMode.hidden
     @Published private(set) var statsVersion: StatsVersion = .v4
 
-    private let siteID: Int64
-    private let siteTimezone: TimeZone
+    let siteID: Int64
+    let siteTimezone: TimeZone
     private let stores: StoresManager
     private let storageManager: StorageManagerType
     private let currencyFormatter: CurrencyFormatter

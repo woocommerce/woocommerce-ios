@@ -57,6 +57,7 @@ final class StorePerformanceViewModel: ObservableObject {
                                                          storageManager: storageManager)
 
         observePeriodViewModel()
+        observeTimeRange()
     }
 
     func didSelectTimeRange(_ newTimeRange: StatsTimeRangeV4) {
@@ -125,8 +126,12 @@ private extension StorePerformanceViewModel {
                                                  storageManager: storageManager)
             }
             .sink { [weak self] viewModel in
-                self?.periodViewModel = viewModel
-                self?.observePeriodViewModel()
+                guard let self else { return }
+                periodViewModel = viewModel
+                observePeriodViewModel()
+                Task { [weak self] in
+                    await self?.reloadData()
+                }
             }
             .store(in: &subscriptions)
     }

@@ -45,6 +45,7 @@ public typealias Feature = Networking.Feature
 public typealias FreeDomainSuggestion = Networking.FreeDomainSuggestion
 public typealias GiftCardStats = Networking.GiftCardStats
 public typealias GiftCardStatsInterval = Networking.GiftCardStatsInterval
+public typealias GiftCardStatsTotals = Networking.GiftCardStatsTotals
 public typealias SiteDomain = Networking.SiteDomain
 public typealias InboxNote = Networking.InboxNote
 public typealias InboxAction = Networking.InboxAction
@@ -88,6 +89,7 @@ public typealias ProductBackordersSetting = Networking.ProductBackordersSetting
 public typealias ProductBundleItem = Networking.ProductBundleItem
 public typealias ProductBundleItemStockStatus = Networking.ProductBundleItemStockStatus
 public typealias ProductBundleStats = Networking.ProductBundleStats
+public typealias ProductBundleStatsTotals = Networking.ProductBundleStatsTotals
 public typealias ProductCompositeComponent = Networking.ProductCompositeComponent
 public typealias ProductReview = Networking.ProductReview
 public typealias ProductReviewStatus = Networking.ProductReviewStatus
@@ -208,6 +210,7 @@ public typealias StoreOnboardingTask = Networking.StoreOnboardingTask
 public typealias WCAnalyticsCustomer = Networking.WCAnalyticsCustomer
 public typealias WCAnalyticsStats = Networking.WCAnalyticsStats
 public typealias WCAnalyticsStatsInterval = Networking.WCAnalyticsStatsInterval
+public typealias WCAnalyticsStatsTotals = Networking.WCAnalyticsStatsTotals
 public typealias WordPressPage = Networking.WordPressPage
 public typealias WordPressTheme = Networking.WordPressTheme
 
@@ -294,6 +297,7 @@ public typealias FeatureAnnouncementCampaign = Storage.FeatureAnnouncementCampai
 public typealias FeatureAnnouncementCampaignSettings = Storage.FeatureAnnouncementCampaignSettings
 public typealias LocalAnnouncement = Storage.LocalAnnouncement
 public typealias AnalyticsCard = Storage.AnalyticsCard
+public typealias DashboardCard = Storage.DashboardCard
 
 // MARK: - Internal ReadOnly Models
 

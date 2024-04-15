@@ -1,5 +1,14 @@
 import SwiftUI
 
+/// View model for `OrderCustomAmountsSection` that controls the visibility states of modals from various sources.
+final class OrderCustomAmountsSectionViewModel: ObservableObject {
+    /// Defines whether the new custom amount modal is presented.
+    @Published var showAddCustomAmount: Bool = false
+
+    /// Defines whether the new custom amount options dialog is presented.
+    @Published var showAddCustomAmountOptionsDialog: Bool = false
+}
+
 struct OrderCustomAmountsSection: View {
     enum ConfirmationOption {
         case fixedAmount
@@ -9,12 +18,11 @@ struct OrderCustomAmountsSection: View {
     /// View model to drive the view content
     @ObservedObject var viewModel: EditableOrderViewModel
 
-    /// Defines whether the new custom amount modal is presented.
-    ///
-    @State private var showAddCustomAmount: Bool = false
-    @State private var showAddCustomAmountAfterOptionsDialog = false
+    @ObservedObject var sectionViewModel: OrderCustomAmountsSectionViewModel
 
-    @State private var showAddCustomAmountOptionsDialog: Bool = false
+    /// Defines whether the new custom amount modal is presented after selecting an option from the dialog.
+    ///
+    @State private var showAddCustomAmountAfterOptionsDialog = false
 
     @State private var addCustomAmountOption: ConfirmationOption?
 
@@ -63,13 +71,13 @@ struct OrderCustomAmountsSection: View {
         .if(viewModel.customAmountRows.isEmpty, transform: { $0.padding([.leading, .trailing]) })
         .if(!viewModel.customAmountRows.isEmpty, transform: { $0.padding() })
         .background(Color(.listForeground(modal: true)))
-        .sheet(isPresented: $showAddCustomAmountOptionsDialog, onDismiss: onDismissOptionsDialog) {
+        .sheet(isPresented: $sectionViewModel.showAddCustomAmountOptionsDialog, onDismiss: onDismissOptionsDialog) {
             optionsWithDetentsBottomSheetContent
         }
         .sheet(isPresented: $viewModel.showEditCustomAmount, onDismiss: onDismissOptionsDialog) {
             optionsWithDetentsBottomSheetContent
         }
-        .sheet(isPresented: $showAddCustomAmount,
+        .sheet(isPresented: $sectionViewModel.showAddCustomAmount,
                onDismiss: {
             viewModel.onDismissAddCustomAmountView()
             addCustomAmountOption = nil
@@ -133,19 +141,18 @@ struct OrderCustomAmountsSection: View {
 private extension OrderCustomAmountsSection {
     func onAddCustomAmountRequested() {
         viewModel.onAddCustomAmountButtonTapped()
-        viewModel.enableAddingCustomAmountViaOrderTotalPercentage ? showAddCustomAmountOptionsDialog.toggle() : showAddCustomAmount.toggle()
     }
 
     func onDismissOptionsDialog() {
         if showAddCustomAmountAfterOptionsDialog {
             showAddCustomAmountAfterOptionsDialog = false
-            showAddCustomAmount = true
+            sectionViewModel.showAddCustomAmount = true
         }
     }
 
     func showAddCustomAmountsAfterOptionsDialog() {
         showAddCustomAmountAfterOptionsDialog = true
-        showAddCustomAmountOptionsDialog = false
+        sectionViewModel.showAddCustomAmountOptionsDialog = false
         viewModel.showEditCustomAmount = false
     }
 }

@@ -1,6 +1,6 @@
 import UIKit
 import Yosemite
-import Charts
+import DGCharts
 import Experiments
 import SwiftUI
 import WordPressUI

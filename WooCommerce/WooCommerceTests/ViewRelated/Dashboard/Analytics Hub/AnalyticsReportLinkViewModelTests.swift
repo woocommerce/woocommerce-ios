@@ -18,7 +18,7 @@ final class AnalyticsReportLinkViewModelTests: XCTestCase {
         let vm = AnalyticsReportLinkViewModel(reportType: .revenue,
                                               period: .weekToDate,
                                               webViewTitle: "",
-                                              reportURL: try XCTUnwrap(URL(string: "https://woo.com/")),
+                                              reportURL: try XCTUnwrap(URL(string: "https://woocommerce.com/")),
                                               usageTracksEventEmitter: eventEmitter,
                                               analytics: analytics)
 
@@ -38,7 +38,7 @@ final class AnalyticsReportLinkViewModelTests: XCTestCase {
         let vm = AnalyticsReportLinkViewModel(reportType: .revenue,
                                               period: .weekToDate,
                                               webViewTitle: "",
-                                              reportURL: try XCTUnwrap(URL(string: "https://woo.com/")),
+                                              reportURL: try XCTUnwrap(URL(string: "https://woocommerce.com/")),
                                               usageTracksEventEmitter: eventEmitter,
                                               analytics: analytics)
 

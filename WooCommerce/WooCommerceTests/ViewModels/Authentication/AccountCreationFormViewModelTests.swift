@@ -42,7 +42,7 @@ final class AccountCreationFormViewModelTests: XCTestCase {
 
     func test_isEmailValid_is_true_after_entering_valid_email() {
         // When
-        viewModel.email = "notanemail@woo.com"
+        viewModel.email = "notanemail@woocommerce.com"
 
         // Then
         waitUntil {
@@ -159,7 +159,7 @@ final class AccountCreationFormViewModelTests: XCTestCase {
 
         // When
         await viewModel.createAccount()
-        viewModel.email = "real@woo.com"
+        viewModel.email = "real@woocommerce.com"
 
         // Then
         waitUntil {

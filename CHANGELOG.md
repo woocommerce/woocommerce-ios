@@ -1,6 +1,15 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 18.2
+Discover the latest updates in our WooCommerce app! Enjoy a seamless payment process, log in effortlessly with site credentials, and create Blaze campaigns faster without errors. Upgrade now for an enhanced shop management experience!
+
+## 18.1
+Streamline your management with our latest update! Easily delete orders on-the-go, dive into new analytics for Product Bundles and Gift Cards, and enjoy a smoother Jetpack installation. Update now for a more efficient WooCommerce experience!
+
+## 18.0
+Discover our newest update for the WooCommerce app! Introducing a newly added Customers section in the Hub Menu. Now you can easily search and view customer details at your fingertips, even contact them directly via email. We've implemented crucial application dependency updates to enhance performance and reduce crashes, providing a smoother, more stable user experience. Also, iPad users can now enjoy a more reliable experience when viewing orders with our speculative fix. Dive in and explore these exciting new improvements!
+
 ## 17.9
 In our latest update, we've enhanced your WooCommerce experience!
 We added few quick actions when you touch and hold the app icon, you can now start creating new order, get list of orders, add a new product or start collecting payment. Get to the specific feature of the app easier and faster by using one of the actions!

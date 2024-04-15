@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-03-27 09:54:04+0000 */
+/* Translation-Revision-Date: 2024-04-10 15:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: he_IL */
@@ -21,10 +21,6 @@
 
 /* Format for each Product attribute in plural form */
 "%1$@ (%2$ld options)" = "%1$@ (%2$ld אפשרויות)";
-
-/* Displays a date range for a custom stats interval
-   Displays a date range for a stats interval */
-"%1$@ - %2$@" = "%1$@-%2$@";
 
 /* Labels an order note. The user know it's not visible to the customer. Reads like 05:30 PM - username (Private) */
 "%1$@ - %2$@ (Private)" = "%1$@ - %2$@ (פרטי)";
@@ -92,6 +88,10 @@ which should be translated separately and considered part of this sentence. */
 
 /* In Order Details, the pattern used to show the quantity multiplied by the price. For example, “23 × $400.00”. The %1$@ is the quantity. The %2$@ is the formatted price with currency (e.g. $400.00). Please take care to use the multiplication symbol ×, not a letter x, where appropriate. */
 "%1$@ × %2$@" = "%1$@ × %2$@";
+
+/* Displays a date range for a custom stats interval
+   Displays a date range for a stats interval */
+"%1$@ – %2$@" = "%1$@-%2$@";
 
 /* Order refunded shipping label title. The first variable shows the refunded amount (e.g. $12.90). The second variable shows the requested date (e.g. Jan 12, 2020 12:34 PM). */
 "%1$@ • %2$@" = "%1$@• %2$@";
@@ -303,6 +303,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Step 3 of the 'How it works' list, instructing the merchant to present the phone to the shopper */
 "3. Present your iPhone to the customer." = "3. יש לתת ללקוח את ה-iPhone.";
+
+/* Tutorial steps on the application password tutorial screen */
+"3. When the connection is complete, you will be logged in to your store." = "3. כאשר החיבור הושלם, החשבון שלך יחובר לחנות שלך.";
 
 /* Estimated setup time text shown on the Woo payments setup instructions screen. */
 "4-6 minutes" = "4-6 דקות";
@@ -519,9 +522,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title on empty state button when the product has attributes but no variations
    Title on the bottom sheet to choose what variation process to start */
 "Add Variation" = "להוסיף סוג";
-
-/* Button title on the store picker for store creation */
-"Add a Store" = "להוסיף חנות";
 
 /* Title for the Add a Different Address switch in the Address form */
 "Add a different shipping address" = "להוסיף כתובת שונה למשלוח";
@@ -1221,6 +1221,12 @@ which should be translated separately and considered part of this sentence. */
 /* Title for Bundled Products row in the product form screen. */
 "Bundled products" = "מוצרים בחבילות";
 
+/* Title for the product bundles card on the analytics hub screen. */
+"Bundles" = "חבילות";
+
+/* Title for the bundles sold column on the product bundles card on the analytics hub screen. */
+"Bundles Sold" = "חבילות שנמכרו";
+
 /* Country option for a site address. */
 "Burkina Faso" = "בורקינה פאסו";
 
@@ -1827,9 +1833,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Jetpack setup required screen */
 "Connect Store" = "לחבר את החנות";
 
-/* Button to connect to an existing store from the store picker */
-"Connect an existing store" = "לחבר חנות קיימת";
-
 /* Name of the connection step on the Jetpack setup screen */
 "Connect store to Jetpack" = "לחבר את החנות שלך אל Jetpack";
 
@@ -1886,9 +1889,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Name of the step to connect the store to Jetpack */
 "Connecting your store" = "מחבר את החנות שלך";
-
-/* Screen title for the connectivity tool */
-"Connectivity Test" = "בדיקת קישוריות";
 
 /* Contact Customer action in Shipping Label Address Validation. */
 "Contact Customer" = "ליצור קשר עם הלקוח";
@@ -2095,9 +2095,6 @@ which should be translated separately and considered part of this sentence. */
 /* The button title text for creating a new account. */
 "Create Account" = "ליצור חשבון";
 
-/* Action button linking to create WooCommerce store flow.Presented when logging in with an email address that is not a WordPress.com account */
-"Create An Account" = "ליצור חשבון";
-
 /* Title of the create coupon button on the coupon list screen when it's empty */
 "Create Coupon" = "ליצור קופון";
 
@@ -2123,9 +2120,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description for fixed cart discount type on the action sheet presented from Add or Edit coupon screen */
 "Create a fixed total discount for the entire cart" = "ליצור הנחה של סכום כולל קבוע עבור עגלת הקניות במלואה";
-
-/* Button to create a new store from the store picker */
-"Create a new store" = "ליצור חנות חדשה";
 
 /* Description for percentage discount type on the action sheet presented from Add or Edit coupon screen */
 "Create a percentage discount for selected products" = "ליצור הנחה באחוזים עבור המוצרים הנבחרים";
@@ -2288,9 +2282,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the store onboarding task to customize the store domain. */
 "Customize your domain" = "להתאים אישית את הדומיין שלך";
 
-/* Subtitle of the store onboarding task to update store title */
-"Customizing your store name can also help your store search engine optimization." = "התאמה אישית של שם החנות יכולה גם לעזור למיטוב של החנות במנועי החיפוש.";
-
 /* Navigation title for Customs screen in Shipping Label flow
    Title of the cell Customs inside Create Shipping Label form */
 "Customs" = "מכס";
@@ -2344,7 +2335,6 @@ which should be translated separately and considered part of this sentence. */
 "Default Option" = "אפשרות בברירת מחדל";
 
 /* Button title Delete in Downloadable File Options Action Sheet
-   Button title Delete in Edit Product More Options Action Sheet
    Button to delete a product category
    Title for the action button on the confirm alert for deleting coupon on the Coupon Details screen */
 "Delete" = "מחיקה";
@@ -3287,6 +3277,9 @@ which should be translated separately and considered part of this sentence. */
 /* Label asking users to follow the on-screen Tap to Pay on iPhone instructions. Presented when a payment is going to be collected using Tap to Pay on iPhone, which results in an Apple-provided screen being shown with instructions for payment. */
 "Follow the on-screen instructions to pay" = "יש לעקוב אחר ההוראות שמופיעות על המסך כדי לשלם";
 
+/* Tutorial steps on the application password tutorial screen */
+"Follow these steps to connect the Woo app directly to your store using an application password.\n\n1. First, log in using your site credentials.\n\n2. When prompted, approve the connection by tapping the confirmation button." = "יש לבצע את השלבים הבאים כדי לחבר את אפליקציית Woo ישירות לחנות באמצעות הסיסמה של האפליקציה.\n\n1. ראשית, יש להתחבר עם פרטי הכניסה של האתר.\n\n2. כאשר הבקשה מופיעה, יש לאשר את החיבור באמצעות הקשה על כפתור האישור.";
+
 /* User role badge */
 "Follower" = "עוקב";
 
@@ -3774,7 +3767,10 @@ which should be translated separately and considered part of this sentence. */
 "If you continue with Apple or Google and don't already have a WordPress.com account, you are creating an account and you agree to our _Terms of Service_." = "אם בחרת להמשיך עם Apple או עם Google ועדיין אין לך חשבון ב-WordPress.com, חשבון ייווצר עבורך ויש הסכמה מצידך לתנאי השירות שלנו.";
 
 /* Text to contact support in the application password tutorial screen */
-"If you encounter any problem, contact us and we will happily assist you!" = "אם נתקלת בבעיה, אפשר ליצור איתנו קשר ונשמח לעזור!";
+"If you run into any issues, please contact our support team." = "אם נתקלת בבעיות, יש לפנות לצוות התמיכה שלנו.";
+
+/* Info message when there are no connection issues in the connectivity tool screen */
+"If your data still isn’t loading, contact our support team for assistance." = "אם הנתונים עדיין לא נטענים, יש ליצור קשר עם צוות התמיכה שלנו לסיוע.";
 
 /* Heading for the details pane showing the contactless limit on About Tap to Pay */
 "Important information" = "מידע חשוב";
@@ -4738,9 +4734,6 @@ which should be translated separately and considered part of this sentence. */
 /* Error showed in Shipping Label Address Validation for the name field */
 "Name missing" = "השם חסר";
 
-/* Title of the store onboarding task to update store title */
-"Name your store" = "יש לציין שם לחנות שלך";
-
 /* Country option for a site address. */
 "Namibia" = "נמיביה";
 
@@ -4884,6 +4877,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the error screen when there was a network error checking In-Person Payments requirements. */
 "No connection" = "אין חיבור";
+
+/* Title for when there are no connection issues in the connectivity tool screen */
+"No connection issues" = "לא נמצאו בעיות בחיבור";
 
 /* Error message when there is no connection to the Internet. */
 "No connection to the Internet - please connect to the Internet and try again" = "אין חיבור לאינטרנט – יש להתחבר לאינטרנט ולנסות שוב";
@@ -5034,6 +5030,7 @@ which should be translated separately and considered part of this sentence. */
    Alert dismissal title
    Button text to confirm that we want to generate all variations
    Button title. An acknowledgement of the message displayed in a prompt.
+   Button to dismiss expired WPCom plan alert
    Button to dismiss the error alert on the site credential login screen
    Dismiss button on the alert when there is an error creating a new product category
    Dismiss button on the alert when there is an error creating new product tags.
@@ -5090,23 +5087,8 @@ which should be translated separately and considered part of this sentence. */
 /* Content of the banner notice on the Payment Method screen when user does not have permission to change the payment method. %1$@ is a placeholder for the store owner's name. %2$@ is a placeholder for the store owner's username. */
 "Only the site owner can manage the shipping label payment methods. Please contact %1$@ (%2$@) to manage payment methods." = "רק בעלי האתר יכולים לנהל את אמצעי התשלום של תוויות המשלוח. יש ליצור קשר עם %1$@ (%2$@) כדי לנהל את אמצעי התשלום.";
 
-/* Message when we can't reach WPCom in the recovery tool */
-"Oops! It seems we can't connect to WordPress.com at the moment.\n\nBut don't worry, our support team is here to help. Contact us and we will happily assist you." = "אופס! נראה שאנחנו לא יכולים להתחבר אל WordPress.com כרגע.\n\nאל דאגה, צוות התמיכה שלנו כאן לעזור. ניתן ליצור איתנו קשר ונשמח לסייע.";
-
-/* Message when we there is a decoding error in the recovery tool */
-"Oops! It seems we can't work properly with your site's response.\n\nBut don't worry, our support team is here to help. Contact us and we will happily assist you." = "אופס! נראה שאנחנו לא יכולים לאפשר פעילות תקינה עם התגובה של האתר שלך.\n\nאל דאגה, צוות התמיכה שלנו כאן לעזור. ניתן ליצור איתנו קשר ונשמח לסייע.";
-
-/* Message when we there is a jetpack error in the recovery tool */
-"Oops! There seems to be a problem with your jetpack connection.\n\nBut don't worry, our support team is here to help. Contact us and we will happily assist you." = "אופס! נראה שיש בעיה עם החיבור שלך ל-Jetpack.\n\nאל דאגה, צוות התמיכה שלנו כאן לעזור. ניתן ליצור איתנו קשר ונשמח לסייע.";
-
-/* Message when we there is a generic error in the recovery tool */
-"Oops! There seems to be a problem with your site.\n\nContact your hosting provider for further assistance." = "אופס! נראה שיש בעיה באתר שלך.\n\nיש לפנות לספקית האחסון להמשך עזרה.";
-
 /* Title of the alert when the store cannot be created in the store creation flow. */
 "Oops! We've hit a snag" = "אופס! יש לנו פנצ'ר";
-
-/* Message when we there is a timeout error in the recovery tool */
-"Oops! Your site seems to be taking too long to respond.\n\nContact your hosting provider for further assistance." = "אופס! זמן התגובה של האתר שלך היה ארוך מדי.\n\nיש לפנות לספקית האחסון להמשך עזרה.";
 
 /* Message of the alert when the site cannot be launched from store onboarding > launch store screen. */
 "Oops, some unexpected errors happened." = "אופס, אירעו כמה שגיאות לא צפויות.";
@@ -5227,6 +5209,30 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label for the the row showing the total cost of the order */
 "Order total" = "סה\"כ הזמנה";
+
+/* Retry Action inside notice */
+"OrderDetail.retry.notice.button" = "לנסות שוב";
+
+/* Cancel button on the alert when the user is cancelling the action on moving an order to the trash */
+"OrderDetail.trashOrder.alert.cancelButton" = "ביטול";
+
+/* Body of the alert when a user is moving an order to the trash */
+"OrderDetail.trashOrder.alert.message" = "האם ברצונך להעביר את ההזמנה הזאת לפח?";
+
+/* Confirmation button on the alert when the user is moving an order to the trash */
+"OrderDetail.trashOrder.alert.moveToTrashButton" = "להעביר לפח";
+
+/* Title of the alert when a user is moving an order to the trash */
+"OrderDetail.trashOrder.alert.title" = "להסיר את ההזמנה";
+
+/* Content of error presented when Trash Order Action Failed. It reads: Unable to trash the order #{order number}. Parameters: %1$d - order number */
+"OrderDetail.trashOrder.notice.title" = "לא ניתן להעביר לפח את הזמנה מס' ⁦%1$d⁩";
+
+/* Undo Action */
+"OrderDetail.trashOrder.notice.undoAction" = "לבטל פעולה אחרונה";
+
+/* Order trashed success notice */
+"OrderDetail.trashOrder.notice.undoMessage" = "ההזמנה הועברה לפח";
 
 /* Text on the button title to see the order's receipt */
 "OrderDetailsDataSource.configureSeeReceipt.button.title" = "להצגת הקבלה";
@@ -5653,6 +5659,9 @@ which should be translated separately and considered part of this sentence. */
    VoiceOver Accessibility label for the instruction */
 "Please wait" = "רק רגע";
 
+/* Subtitle on the connectivity tool screen */
+"Please wait while we attempt to identify your connection issue." = "רק רגע, אנחנו מנסים לזהות את הבעיה עם החיבור שלך.";
+
 /* Message on the Jetpack Install Progress screen. The %1$@ is the site address. */
 "Please wait while we connect your site %1$@ with Jetpack." = "רק רגע, אנחנו מחברים האתר שלך %1$@ אל Jetpack ‎.";
 
@@ -6063,7 +6072,7 @@ which should be translated separately and considered part of this sentence. */
 "Reach our happiness engineers who can help answer tough questions" = "יצירת קשר עם נציגי התמיכה שלנו שיכולים לענות על שאלות קשות";
 
 /* Action button title for a generic error on the connectivity tool */
-"Read More" = "לקרוא עוד";
+"Read more" = "לקרוא עוד";
 
 /* Text for the button to navigate to troubleshooting tips from the store picker error screen */
 "Read our Troubleshooting Tips" = "לעיון בעצות שלנו לפתרון בעיות";
@@ -6101,6 +6110,9 @@ which should be translated separately and considered part of this sentence. */
 /* Button to reload plugin data after updating a Card Present Payments extension plugin
    Button to reload plugin data after updating a card present payments plugin settings */
 "Refresh After Updating" = "לרענן לאחר עדכון";
+
+/* The info of the time out error banner */
+"Refresh the screen to try again, or troubleshoot the connection. Contact support if your issue persists." = "יש לרענן את המסך כדי לנסות שוב או להתחיל פתרון בעיות לחיבור. אם הבעיה נמשכת, ניתן לפנות לתמיכה.";
 
 /* The title of the button to confirm the refund. */
 "Refund" = "החזר כספי";
@@ -6343,6 +6355,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Action button to check site's connection again. */
 "Retry Connection" = "לנסות שוב את החיבור";
+
+/* Retry connection button in the connectivity tool screen */
+"Retry connection" = "לנסות שוב את החיבור";
 
 /* Title of the secondary button displayed when activating the purchased plan fails, so the merchant can exit the flow. */
 "Return to My Store" = "חזרה ל'חנות שלי'";
@@ -7222,9 +7237,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the option to create a template product */
 "Start with a template" = "להתחיל עם תבנית";
 
-/* Subtitle displayed in the simplified prologue screen */
-"Start with our 14-day free trial, no credit card needed. Join 3.4M stores thriving with Woo, from first sale to millions." = "ניתן להתחיל עם תקופת ניסיון למשך 14 ימים, אין צורך בכרטיס אשראי. להצטרף אל 3.4 מיליון חנויות שמצליחות עם WooCommerce, מהמכירה הראשונה ועד מיליוני מכירות.";
-
 /* VoiceOver accessibility value, informs the user about the X-axis min/max values. It reads: Starting date {date}, ending date {date}. */
 "Starting period %@, ending period %@" = "תקופת התחלה: %1$@, תקופת סיום: %2$@";
 
@@ -7267,9 +7279,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Navigates to the Store name setup screen */
 "Store Name" = "שם החנות";
-
-/* Title on the notice presented when the store name is updated */
-"Store Name Set!" = "שם החנות הוגדר!";
 
 /* Title of the secondary button on the store creation success screen to preview the newly created store. */
 "Store Preview" = "תצוגה מקדימה של החנות";
@@ -7927,6 +7936,12 @@ which should be translated separately and considered part of this sentence. */
 /* The info on the Error Loading Data banner when there was a Jetpack connection error. */
 "There is a problem with your store's Jetpack connection. Please reconnect Jetpack or reach out to us and we'll be happy to assist you!" = "קיימת בעיה עם החיבור של החנות שלך אל Jetpack. יש להתחבר אל Jetpack שוב או לפנות אלינו בכל עת ואנחנו נשמח לעזור!";
 
+/* Message when we there is a jetpack error in the recovery tool */
+"There is problem with your jetpack connection.\n\nRead more about it or contact our support team and we will happily assist you." = "קיימת בעיה עם החיבור שלך אל Jetpack.\n\nניתן לקרוא מידע נוסף על השגיאה או לפנות לצוות התמיכה שלנו כדי שנוכל לעזור.";
+
+/* Message when we there is a generic error in the recovery tool */
+"There seems to be a problem with your site.\n\nPlease contact your hosting provider for further assistance." = "נראה שיש בעיה באתר שלך.\n\nיש לפנות לספקית האחסון להמשך עזרה.";
+
 /* Error message informing the user that there was a problem blocking posts from a site from their reader. */
 "There was a problem blocking posts from the specified site." = "אירעה בעיה בעת חסימת רשומות מהאתר שצוין.";
 
@@ -8031,6 +8046,9 @@ which should be translated separately and considered part of this sentence. */
 /* Message when a card requires a PIN code and we have no means of entering such a code. */
 "This card requires a PIN code and thus cannot be processed. Try another means of payment" = "לכרטיס זה נדרש קוד PIN ולכן אין אפשרות לעבד אותו. יש לנסות אמצעי תשלום אחר";
 
+/* Reason for why the user could not login tin the application password tutorial screen */
+"This could be because your store has some extra security steps in place." = "ייתכן שבחנות שלך הוגדרו כמה שלבים נוספים לצורך אבטחה.";
+
 /* The info on the Error Loading Data banner when there was a decoding error. */
 "This could be related to a conflict with a plugin. Please try again later or reach out to us and we'll be happy to assist you!" = "ייתכן שזה קשור להתנגשות עם תוסף. יש לנסות שוב מאוחר יותר או לפנות אלינו בכל עת ואנחנו נשמח לעזור!";
 
@@ -8042,9 +8060,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Generic reason for why the user could not login tin the application password tutorial screen */
 "This is because we got an unexpected response from your site." = "ההתחברות נכשלה מאחר שקיבלנו תגובה לא צפויה מהאתר שלך.";
-
-/* Reason for why the user could not login tin the application password tutorial screen */
-"This is likely because your store has some extra security steps in place." = "כנראה שבחנות שלך הוגדרו כמה שלבים נוספים לצורך אבטחה.";
 
 /* Footer text in Product Slug screen */
 "This is the URL-friendly version of the product title" = "זאת גרסה ידידותית לכתובות URL בכותרת המוצר";
@@ -8135,9 +8150,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Subtitle on the variations list screen when there are no variations and attributes */
 "To add a variation, you'll need to set its attributes (ie \"Color\", \"Size\") first" = "כדי להוסיף סוג, עליך קודם כל להגדיר את המאפיינים שלו (למשל, 'צבע', 'מידה')";
-
-/* Subtitle on the notice presented when the store name is updated */
-"To change again, visit Store Settings." = "כדי לשנות את ההגדרה שוב, יש לעבור אל 'הגדרות החנות'.";
 
 /* Error message displayed when unable to close user account due to having active atomic site. */
 "To close this account now, contact our support team." = "לסגירת חשבון זה כעת, עליך לפנות לצוות התמיכה שלנו.";
@@ -8262,6 +8274,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* The title of the button to get troubleshooting information in the Error Loading Data banner */
 "Troubleshoot" = "פתרון בעיות";
+
+/* Screen title for the connectivity tool */
+"Troubleshoot Connection" = "פתרון בעיות לחיבור";
 
 /* Title for the section to contact support on the subscriptions view. Uppercased */
 "Troubleshooting" = "פתרון בעיות";
@@ -8451,9 +8466,6 @@ which should be translated separately and considered part of this sentence. */
 /* Error title for when we can't create variations remotely. */
 "Unable to create variations" = "אין אפשרות ליצור את הסוגים";
 
-/* Content of error presented when Delete Shipment Tracking Action Failed. It reads: Unable to delete tracking for order #{order number}. Parameters: %1$d - order number */
-"Unable to delete tracking for order #%1$d" = "אין אפשרות למחוק את המעקב אחר ההזמנה ⁦%1$d⁩#";
-
 /* Unable to fetch countries action failed in Shipping Label Form */
 "Unable to fetch countries." = "אין אפשרות למצא את המדינות.";
 
@@ -8492,6 +8504,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Load Product Attributes Action Failed */
 "Unable to load product attributes" = "לא ניתן היה לטעון את מאפייני המוצר";
+
+/* Text displayed when there is an error loading product bundles stats data. */
+"Unable to load product bundle analytics" = "לא ניתן לטעון נתונים אנליטיים של חבילת מוצרים";
+
+/* Text displayed when there is an error loading product bundles sold stats data. */
+"Unable to load product bundles sold analytics" = "לא ניתן לטעון נתונים אנליטיים של חבילות מוצרים שנמכרו";
 
 /* Text displayed when there is an error loading items sold stats data. */
 "Unable to load product items sold analytics" = "לא ניתן לטעון נתונים אנליטיים של פריטי המוצרים שנמכרו";
@@ -8774,13 +8792,8 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the in-progress UI while bulk updating selected products remotely */
 "Updating your products..." = "מעדכן את המוצר...";
 
-/* Button to upgrade a WPCom plan on the expired WPCom plan alert
-   Navigation title for the Upgrades screen */
+/* Navigation title for the Upgrades screen */
 "Upgrade" = "לשדרג";
-
-/* Title for the WebView when upgrading a free trial plan
-   Title on the button to upgrade a free trial plan. */
-"Upgrade Now" = "זה הזמן לשדרג";
 
 /* Cell title for Upsells products in Linked Products Settings screen
    Navigation bar title for editing linked products for upsell products */
@@ -9029,8 +9042,14 @@ which should be translated separately and considered part of this sentence. */
 /* Content of the banner notice in the add-ons view */
 "We are working on making it easier for you to see product add-ons from your device! For now, you’ll be able to see the add-ons for your orders. You can create and edit these add-ons in your web dashboard." = "אנחנו עובדים על שיפור התהליך של צפייה בהרחבות המוצרים מהמכשיר שלך! לעת עתה, יש לך אפשרות לראות את ההרחבות שבהזמנות שלך. אפשר ליצור ולערוך את ההרחבות האלה דרך לוח הבקרה במחשב.";
 
+/* Message when we there is a decoding error in the recovery tool */
+"We can't work properly with your site's response.\n\nRead more about it or contact our support team and we will happily assist you." = "אנחנו לא יכולים לאפשר פעילות תקינה עם התגובה של האתר שלך.\n\nניתן לקרוא מידע נוסף על השגיאה או לפנות לצוות התמיכה שלנו כדי שנוכל לעזור.";
+
 /* Error message displayed when there is no store matching the site URL that is associated with the user's account */
 "We cannot load the store at the moment." = "אין לנו אפשרות לטעון את החנות כרגע.";
+
+/* Message when we can't reach WPCom in the recovery tool */
+"We can’t connect to WordPress.com right now.\n\nTry again in a few minutes, or contact our support team and we will happily assist you." = "אנחנו לא יכולים להתחבר אל WordPress.com כרגע.\n\nיש לנסות שוב בעוד דקות אחדות או לפנות לצוות התמיכה שלנו כדי שנוכל לעזור.";
 
 /* Title when we can't show stats because user is on a deprecated WC Version */
 "We can’t display your store’s analytics" = "אין לנו אפשרות להציג את הניתוח האנליטי של החנות שלך";
@@ -9051,14 +9070,14 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the default store picker error screen */
 "We couldn't load your site" = "לא הצלחנו לטעון את האתר שלך";
 
-/* Title for the application password tutorial screen */
-"We couldn't log in into your site! 😭" = "לא הצלחנו לחבר אותך לאתר שלך! 😭";
-
 /* A message displayed through a bottom notice letting the user know that the login from the app link failed */
 "We couldn't process your app login request" = "לא הצלחנו לעבד את בקשת הכניסה לאפליקציה";
 
 /* Title for the empty state on the Tax Rates selector screen */
 "We couldn’t find any tax rates" = "לא הצלחנו למצוא שיעורי מיסים";
+
+/* Title for the application password tutorial screen */
+"We couldn’t log in into your store" = "לא הצלחנו להתחבר לחנות שלך";
 
 /* Error message. Presented to users when updating the card reader software fails */
 "We couldn’t update your reader’s software" = "לא הצלחנו לעדכן את התוכנה של קורא הכרטיסים שלך";
@@ -9091,7 +9110,7 @@ which should be translated separately and considered part of this sentence. */
 "We found that the store has already launched." = "בדקנו וראינו שהחנות כבר הושקה.";
 
 /* Message on the expired WPCom plan alert */
-"We have paused your store, but you can continue by picking a plan that suits you best." = "השהינו את החנות שלך, אבל באפשרותך להמשיך על ידי בחירת התוכנית שמתאימה לך.";
+"We have paused your store. You can purchase another plan by logging in to WordPress.com on your browser." = "השהינו את החנות שלך. אפשר לרכוש תוכנית אחרת על ידי התחברות אל WordPress.com בדפדפן.";
 
 /* Banner caption in Shipping Label Address when there is a suggested address. */
 "We have slightly modified the address entered. If correct, please use the suggested address to ensure accurate delivery." = "שינינו מעט את הכתובת שהוזנה. אם הכתובת נכונה, אנחנו מציעים להשתמש בכתובת המומלצת כדי לוודא שהיעד למשלוח מדויק.";
@@ -9553,6 +9572,9 @@ which should be translated separately and considered part of this sentence. */
 /* The title of the Error Loading Data banner when there is a Jetpack connection error */
 "Your site is taking a long time to respond" = "זמן התגובה של האתר שלך איטי מדי";
 
+/* Message when we there is a timeout error in the recovery tool */
+"Your site is taking too long to respond.\n\nPlease contact your hosting provider for further assistance." = "זמן התגובה של האתר שלך ארוך מדי.\n\nיש לפנות לספקית האחסון להמשך עזרה.";
+
 /* Title on the banner when the site's WooExpress plan has expired */
 "Your site plan has ended." = "התוכנית של האתר שלך הסתיימה.";
 
@@ -9629,6 +9651,18 @@ which should be translated separately and considered part of this sentence. */
 /* Dismiss button on the alert asking to add an image for the Blaze campaign */
 "addProductWithAIActionSheet.manualOptionsTitle" = "יש לבחור את סוג המוצר";
 
+/* Button title on the store picker for store connection */
+"addStoreFooterView.connectExistingStoreButton" = "לחבר חנות קיימת";
+
+/* Title for the product bundles analytics report linked in the Analytics Hub */
+"analyticsHub.bundlesCard.reportTitle" = "דוח של Product Bundles";
+
+/* Name for the Product Bundles analytics card in the Customize Analytics screen */
+"analyticsHub.customize.bundles" = "חבילות";
+
+/* Name for the Gift Cards analytics card in the Customize Analytics screen */
+"analyticsHub.customize.giftCards" = "שוברי מתנה";
+
 /* Name for the Orders analytics card in the Customize Analytics screen */
 "analyticsHub.customize.orders" = "הזמנות";
 
@@ -9641,6 +9675,9 @@ which should be translated separately and considered part of this sentence. */
 /* Name for the Sessions analytics card in the Customize Analytics screen */
 "analyticsHub.customize.sessions" = "הפעלות";
 
+/* Button title to explore an extension that isn't installed */
+"analyticsHub.customizeAnalytics.exploreButton" = "לעיין";
+
 /* Button to save changes on the Customize Analytics screen */
 "analyticsHub.customizeAnalytics.saveButton" = "לשמור";
 
@@ -9650,11 +9687,20 @@ which should be translated separately and considered part of this sentence. */
 /* Label for button that opens a screen to customize the Analytics Hub */
 "analyticsHub.editButton.label" = "לערוך";
 
-/* Description when there are no analytics to display in the Analytics Hub. */
-"analyticsHub.emptyState.description" = "עליך לבחור טווח תאריכים אחר או להקיש על 'לערוך' כדי להפעיל נתונים אנליטיים נוספים.";
+/* Label for used gift cards in the Analytics Hub */
+"analyticsHub.giftCardsCard.leadingTitle" = "נוצל";
 
-/* Title when there are no analytics to display in the Analytics Hub. */
-"analyticsHub.emptyState.title" = "אין נתונים אנליטיים זמינים";
+/* Title for the gift cards analytics report linked in the Analytics Hub */
+"analyticsHub.giftCardsCard.reportTitle" = "דוח של שוברי מתנה";
+
+/* Text displayed when there is an error loading gift card stats data. */
+"analyticsHub.giftCardsCard.syncErrorMessage" = "אין אפשרות לטעון נתונים אנליטיים של שוברי מתנה";
+
+/* Title for gift cards analytics section in the Analytics Hub */
+"analyticsHub.giftCardsCard.title" = "שוברי מתנה";
+
+/* Label for net amount used for gift cards in the Analytics Hub */
+"analyticsHub.giftCardsCard.trailingTitle" = "סכום נטו";
 
 /* Label for button to enable Jetpack Stats */
 "analyticsHub.jetpackStatsCTA.buttonLabel" = "להפעיל את Jetpack Stats";
@@ -9664,9 +9710,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text displayed in the Analytics Hub when the Jetpack Stats module is disabled */
 "analyticsHub.jetpackStatsCTA.message" = "יש להפעיל את Jetpack Stats כדי לראות את הנתונים האנליטיים להפעלה של החנות.";
-
-/* Title for sessions section in the Analytics Hub */
-"analyticsHub.jetpackStatsCTA.title" = "הפעלות";
 
 /* Title for the orders analytics report linked in the Analytics Hub */
 "analyticsHub.orderCard.reportTitle" = "דוח הזמנות";
@@ -9679,6 +9722,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the revenue analytics report linked in the Analytics Hub */
 "analyticsHub.revenueCard.reportTitle" = "דוח רווחים";
+
+/* Title for sessions section in the Analytics Hub */
+"analyticsHub.sessionsCard.Title" = "הפעלות";
+
+/* Description when session data is unavailable in the Analytics Hub */
+"analyticsHub.sessionsCard.dataUnavailable.Description" = "נתונים אנליטיים של הפעלות מסתמכים על מספר המבקרים הייחודיים, והם לא זמינים בטווח תאריכים מותאם אישית.";
+
+/* Message when session data is unavailable in the Analytics Hub */
+"analyticsHub.sessionsCard.dataUnavailable.Message" = "הנתונים של ההפעלה לא זמינים";
 
 /* Button to dismiss the alert asking for confirmation to switch store. */
 "appCoordinator.storeReadyAlert.cancelButton" = "ביטול";
@@ -9697,6 +9749,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Widget title, displayed when selecting which widget to add */
 "appLinkWidget.displayName" = "סמל";
+
+/* Title for the link for site creation guide. */
+"authenticationConstants.siteCreationGuideButtonTitle" = "רוצה לפתוח חנות חדשה?";
 
 /* Button to send a message to a customer via Telegram */
 "billingInfoViewController.telegram" = "לשלוח הודעת Telegram";
@@ -10513,6 +10568,9 @@ which should be translated separately and considered part of this sentence. */
 /* Label for the customer's username in the Customer Details screen. */
 "customerDetailView.usernameLabel" = "שם משתמש";
 
+/* Title when there are no customers in the search results in the Customers list screen. */
+"customerList.emptySearchTitle" = "לא נמצאו לקוחות";
+
 /* Message when there are no customers to show in the Customers list screen. */
 "customerList.emptyStateMessage" = "יש ליצור הזמנה כדי להתחיל לאסוף תובנות על לקוחות";
 
@@ -10533,6 +10591,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label for a customer with no name in the Customers list screen. */
 "customersList.guestLabel" = "אורח";
+
+/* Placeholder in the search bar in the Customers list screen. */
+"customersList.searchPlaceholder" = "לחפש לקוחות";
 
 /* Title for Customers list screen */
 "customersList.title" = "לקוחות";
@@ -10715,6 +10776,9 @@ which should be translated separately and considered part of this sentence. */
 /* A hazardous material description stating when a package can fit into this category */
 "limited_quantity_category" = "חבילה להובלה יבשתית עם כמויות מוגבלות – תרסיסים, חומרי חיטוי במכל התזה, צבע במכל התזה, ספריי לשיער, פרופן, בוטאן, חומרי ניקוי וכו'. - בשמים, לק לציפורניים, מסיר לק לציפורניים, חומרים ממסים, נוזל חיטוי לידיים, אלכוהול רפואי, מוצרים המבוססים על אתנול וכו'. - מוצרים אחרים למשטחים בכמות מוגבלת (קוסמטיקה, חומרי ניקוי, צבעים וכו').";
 
+/* Subtitle displayed in the simplified prologue screen */
+"loginProloguePageType.getStartedText" = "מהמכירה הראשונה עד מחזור רווחים של מיליונים, השירות של Woo עומד לצדך. כדאי להתרשם למה סוחרים סומכים עלינו בהפעלת 3.9 מיליון חנויות מקוונות.";
+
 /* A manual refund is one where the store owner has given the purchaser alternative funds (cash, check, ACH) instead of using the payment gateway to create a refund (credit card or debit card was refunded) */
 "manual refund" = "החזר כספי ידני";
 
@@ -10876,6 +10940,9 @@ which should be translated separately and considered part of this sentence. */
 /* Origin in Order Attribution Section on Order Details screen. */
 "orderAttributionInfo.webAdmin" = "מנהל מערכת אינטרנט";
 
+/* Content of error presented when Delete Shipment Tracking Action Failed. It reads: Unable to delete tracking for order #{order number}. Parameters: %1$d - order number */
+"orderDetail.deleteTracking.notice.title" = "אין אפשרות למחוק את המעקב אחר הזמנה מס' ⁦%1$d⁩";
+
 /* Title for the row to add tracking information. */
 "orderDetails.addTrackingRow.title" = "מידע על מעקב אופציונלי";
 
@@ -10911,6 +10978,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Origin in Order Attribution Section on Order Details screen. */
 "orderDetailsDataSource.attributionInfo.unknown" = "לא ידוע";
+
+/* VoiceOver accessibility hint, informing the user that the button can be used to view the order custom fields information. */
+"orderDetailsDataSource.trashOrder.accessibilityHint" = "להעביר את ההזמנה לפח.";
+
+/* Accessibility label for the 'Trash order' button */
+"orderDetailsDataSource.trashOrder.accessibilityLabel" = "הכפתור 'להעביר הזמנה לפח'";
+
+/* Text on the button title to trash an order */
+"orderDetailsDataSource.trashOrder.button.title" = "להעביר לפח";
 
 /* Title text of the section that shows the Custom Amounts when creating or editing an order */
 "orderForm.customAmounts" = "סכומים בהתאמה אישית";
@@ -11023,6 +11099,9 @@ which should be translated separately and considered part of this sentence. */
 /* Alert message about an unsupported file type when uploading file for a downloadable product. */
 "productDownloadListViewController.notice.unsupportedFileType" = "סוג הקובץ שמבחר אינו נתמך.";
 
+/* Button title Trash product in Edit Product More Options Action Sheet */
+"productForm.bottomSheet.trashAction" = "להעביר מוצר לפח";
+
 /* Product title */
 "productForm.defaultTitle" = "מוצר";
 
@@ -11108,7 +11187,7 @@ which should be translated separately and considered part of this sentence. */
 "rangedDatePicker.invalidTimeRangeAlert.action" = "הבנתי";
 
 /* Message of the alert displayed when selecting an invalid time range for analytics */
-"rangedDatePicker.invalidTimeRangeAlert.message" = "תאריך ההתחלה חייב להיות לפני תאריך הסיום. יש לבחור טווח מועדים אחר.";
+"rangedDatePicker.invalidTimeRangeAlert.message" = "תאריך ההתחלה לא יכול להיות אחרי תאריך הסיום. יש לבחור טווח מועדים אחר.";
 
 /* Title of the alert displayed when selecting an invalid time range for analytics */
 "rangedDatePicker.invalidTimeRangeAlert.title" = "טווח מועדים לא תקין";
@@ -11164,6 +11243,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Tab selector title that shows the statistics for today */
 "statsTimeRangeV4.tabTitle.custom" = "טווח מותאם";
+
+/* Button title on the store picker for store connection */
+"storePickerViewController.addStoreButton" = "לחבר חנות קיימת";
 
 /* Widget description, displayed when selecting which widget to add */
 "storeWidgets.description" = "WooCommerce Stats Today";
@@ -11415,6 +11497,9 @@ which should be translated separately and considered part of this sentence. */
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Products' tab. */
 "woocommerce, woo, products, categories, new product, search products" = "WooCommerce, ‏Woo, מוצרים, קטגוריות, מוצר חדש, חיפוש מוצרים";
 
+/* Title for the link for site creation guide. */
+"wordPressAuthenticatorDisplayStrings.default.siteCreationGuideButtonTitle" = "רוצה ליצור אתר חדש?";
+
 /* Error message that describes an unknown error had occured */
 "wordpress-api.error.unknown" = "משהו השתבש, יש לנסות שוב מאוחר יותר.";
 
@@ -11475,9 +11560,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Åland Islands" = "איי אולנד";
-
-/* Tutorial steps on the application password tutorial screen */
-"⁃ Tap the continue button at the bottom to login directly into your site.\n\n⁃ Once logged in, approve the connection to give access to the woo app like the in the image below." = "⁃ יש להקיש על כפתור ההמשך בתחתית כדי להתחבר לאתר שלך ישירות.\n\n⁃ לאחר שהתחברת, יש לאשר את החיבור כדי להעניק גישה לאפליקציה של Woo, כמו בתמונה שבהמשך.";
 
 /* Title of the local notification to remind the user to purchase a plan. */
 "🌟 Keep your business going!" = "🌟 להמשיך לתפעל את העסק!";

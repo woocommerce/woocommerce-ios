@@ -1,2 +1,1 @@
-I vår senaste uppdatering har vi förbättrat din WooCommerce-upplevelse.
-Vi har lagt till några snabbåtgärder. När du håller in appikonen kan du nu börja skapa en ny beställning, få en lista över beställningar, lägga till en ny produkt eller börja ta betalt. Kom till den specifika funktionen i appen enklare och snabbare genom att använda någon av åtgärderna.
+Effektivisera din hantering med vår senaste uppdatering. Ta enkelt bort beställningar i farten, få nya analyser för produktpaket och presentkort och njut av en smidigare Jetpack-installation. Uppdatera nu för en mer effektiv WooCommerce-upplevelse.

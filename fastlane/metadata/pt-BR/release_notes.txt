@@ -1,2 +1,1 @@
-Em nossa última atualização, aprimoramos sua experiência no WooCommerce.
-Adicionamos algumas ações rápidas que aparecem ao pressionar o ícone do aplicativo. Agora você pode criar um novo pedido, ver uma lista de pedidos, adicionar um novo produto ou receber pagamentos. Acesse uma funcionalidade específica do aplicativo com mais facilidade e rapidez usando uma das ações.
+Simplifique o gerenciamento com nossa atualização mais recente. Exclua pedidos facilmente de onde estiver, mergulhe em novas análises sobre os pacotes de produtos e vales-presentes e aproveite uma instalação do Jetpack mais simples. Atualize agora mesmo e tenha uma experiência mais eficiente do WooCommerce!

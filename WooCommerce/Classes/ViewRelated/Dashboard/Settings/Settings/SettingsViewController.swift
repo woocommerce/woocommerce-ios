@@ -367,6 +367,7 @@ private extension SettingsViewController {
     }
 
     func sitePluginsWasPressed() {
+        ServiceLocator.analytics.track(.settingsPluginListTapped)
         guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
             return DDLogError("⛔️ Cannot find ID for current site to load plugins for!")
         }

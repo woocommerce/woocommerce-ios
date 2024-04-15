@@ -1,2 +1,1 @@
-In our latest update, we've enhanced your WooCommerce experience!
-We added few quick actions when you touch and hold the app icon, you can now start creating new order, get list of orders, add a new product or start collecting payment. Get to the specific feature of the app easier and faster by using one of the actions!
+Streamline your management with our latest update! Easily delete orders on-the-go, dive into new analytics for Product Bundles and Gift Cards, and enjoy a smoother Jetpack installation. Update now for a more efficient WooCommerce experience!

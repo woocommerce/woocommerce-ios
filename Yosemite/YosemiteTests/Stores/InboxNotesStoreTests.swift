@@ -423,7 +423,7 @@ final class InboxNotesStoreTests: XCTestCase {
 private extension InboxNotesStoreTests {
     func sampleInboxNote(id: Int64) -> Networking.InboxNote {
         let dateFormatter = DateFormatter.Defaults.dateTimeFormatter
-        let url = "https://woo.com/products/woocommerce-bookings/"
+        let url = "https://woocommerce.com/products/woocommerce-bookings/"
         let content = "Get a new subscription to continue receiving updates and access to support."
         return InboxNote(siteID: sampleSiteID,
                          id: id,

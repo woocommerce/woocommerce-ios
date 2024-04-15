@@ -248,6 +248,7 @@
 		DEA4938F2B3ACA3000EED015 /* BlazeTargetLanguage+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA493892B3ACA3000EED015 /* BlazeTargetLanguage+CoreDataClass.swift */; };
 		DEA493902B3ACA3000EED015 /* BlazeTargetDevice+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA4938A2B3ACA3000EED015 /* BlazeTargetDevice+CoreDataClass.swift */; };
 		DEC51AE0275B41BE009F3DF4 /* WooCommerce.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = DEC51AA4275B41BE009F3DF4 /* WooCommerce.xcdatamodeld */; };
+		DEC75CBE2BC3D40E00763801 /* DashboardCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC75CBD2BC3D40E00763801 /* DashboardCard.swift */; };
 		DEFD6D422641B70400E51E0D /* SitePlugin+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEFD6D412641B70400E51E0D /* SitePlugin+CoreDataProperties.swift */; };
 		DEFD6D432641B70400E51E0D /* SitePlugin+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEFD6D402641B70400E51E0D /* SitePlugin+CoreDataClass.swift */; };
 		E16D3741284F1CDA005676BC /* GeneralAppSettingsStorageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E16D3740284F1CDA005676BC /* GeneralAppSettingsStorageTests.swift */; };
@@ -621,6 +622,7 @@
 		DEC51ADD275B41BE009F3DF4 /* Model 37.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 37.xcdatamodel"; sourceTree = "<group>"; };
 		DEC51ADE275B41BE009F3DF4 /* Model 47.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 47.xcdatamodel"; sourceTree = "<group>"; };
 		DEC51ADF275B41BE009F3DF4 /* Model 19.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 19.xcdatamodel"; sourceTree = "<group>"; };
+		DEC75CBD2BC3D40E00763801 /* DashboardCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardCard.swift; sourceTree = "<group>"; };
 		DED91DE82AD66AA600CDCC53 /* Model 100.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 100.xcdatamodel"; sourceTree = "<group>"; };
 		DEFD6D402641B70400E51E0D /* SitePlugin+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SitePlugin+CoreDataClass.swift"; sourceTree = "<group>"; };
 		DEFD6D412641B70400E51E0D /* SitePlugin+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SitePlugin+CoreDataProperties.swift"; sourceTree = "<group>"; };
@@ -777,6 +779,7 @@
 				02DA64182313C2AA00284168 /* StatsVersion.swift */,
 				02D45648231CFB27008CF0A9 /* StatsVersionBannerVisibility.swift */,
 				CEE482D22B83753100FAC8C5 /* AnalyticsCard.swift */,
+				DEC75CBD2BC3D40E00763801 /* DashboardCard.swift */,
 			);
 			name = Stats;
 			sourceTree = "<group>";
@@ -1424,6 +1427,7 @@
 				26EA01D124EC3AEA00176A57 /* FeedbackType.swift in Sources */,
 				452C23B427B4129300822986 /* InboxAction+CoreDataClass.swift in Sources */,
 				7426A05420F69DA4002A4E07 /* OrderItem+CoreDataClass.swift in Sources */,
+				DEC75CBE2BC3D40E00763801 /* DashboardCard.swift in Sources */,
 				028296F4237D404F00E84012 /* GenericAttribute+CoreDataClass.swift in Sources */,
 				262B270E2621412000A421CF /* ProductAddOn+CoreDataProperties.swift in Sources */,
 				7492FAD6217FA9C100ED2C69 /* SiteSetting+CoreDataClass.swift in Sources */,

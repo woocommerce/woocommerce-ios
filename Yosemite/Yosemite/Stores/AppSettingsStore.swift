@@ -216,6 +216,10 @@ public class AppSettingsStore: Store {
             loadCustomStatsTimeRange(siteID: siteID, onCompletion: onCompletion)
         case let .setCustomStatsTimeRange(siteID, timeRange):
             setCustomStatsTimeRange(siteID: siteID, timeRange: timeRange)
+        case let .loadDashboardCards(siteID, onCompletion):
+            loadDashboardCards(siteID: siteID, onCompletion: onCompletion)
+        case let .setDashboardCards(siteID, cards):
+            setDashboardCards(siteID: siteID, cards: cards)
         }
     }
 }
@@ -946,6 +950,20 @@ private extension AppSettingsStore {
 
     func loadAnalyticsHubCards(siteID: Int64, onCompletion: ([AnalyticsCard]?) -> Void) {
         onCompletion(getStoreSettings(for: siteID).analyticsHubCards)
+    }
+}
+
+// MARK: - Dashboard Cards
+
+private extension AppSettingsStore {
+    func setDashboardCards(siteID: Int64, cards: [DashboardCard]) {
+        let storeSettings = getStoreSettings(for: siteID)
+        let updatedSettings = storeSettings.copy(dashboardCards: cards)
+        setStoreSettings(settings: updatedSettings, for: siteID)
+    }
+
+    func loadDashboardCards(siteID: Int64, onCompletion: ([DashboardCard]?) -> Void) {
+        onCompletion(getStoreSettings(for: siteID).dashboardCards)
     }
 }
 

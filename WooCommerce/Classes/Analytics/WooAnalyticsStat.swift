@@ -291,6 +291,11 @@ public enum WooAnalyticsStat: String {
     case supportSSROpened = "support_ssr_opened"
     case supportSSRCopyButtonTapped = "support_ssr_copy_button_tapped"
 
+    // MARK: Settings Plugin List Events
+    //
+    case settingsPluginListTapped = "settings_plugin_list_tapped"
+    case outOfDatePluginList = "out_of_date_plugin_list"
+
     // MARK: Settings View Events
     //
     case settingsTapped = "main_menu_settings_tapped"
@@ -1005,6 +1010,8 @@ public enum WooAnalyticsStat: String {
     case simplePaymentsFlowStarted = "simple_payments_flow_started"
     case simplePaymentsFlowNoteAdded = "simple_payments_flow_note_added"
     case simplePaymentsFlowTaxesToggled = "simple_payments_flow_taxes_toggled"
+    case simplePaymentsMigrationSheetAddCustomAmount = "simple_payments_migration_sheet_add_custom_amount"
+    case simplePaymentsMigrationSheetShown = "simple_payments_migration_sheet_shown"
 
     // MARK: Payment Methods events
     //

@@ -33,7 +33,7 @@ extension OrderAttributionInfo {
             value: "Source: %1$@",
             comment: "Origin in Order Attribution Section on Order Details screen." +
             "The placeholder is the source." +
-            "Reads like: Source: woo.com"
+            "Reads like: Source: woocommerce.com"
         )
 
         static let organic = NSLocalizedString(
@@ -41,7 +41,7 @@ extension OrderAttributionInfo {
             value: "Organic: %1$@",
             comment: "Origin in Order Attribution Section on Order Details screen." +
             "The placeholder is the source." +
-            "Reads like: Organic: woo.com"
+            "Reads like: Organic: woocommerce.com"
         )
 
         static let referral = NSLocalizedString(
@@ -49,7 +49,7 @@ extension OrderAttributionInfo {
             value: "Referral: %1$@",
             comment: "Origin in Order Attribution Section on Order Details screen." +
             "The placeholder is the source." +
-            "Reads like: Referral: woo.com"
+            "Reads like: Referral: woocommerce.com"
         )
 
         static let direct = NSLocalizedString(

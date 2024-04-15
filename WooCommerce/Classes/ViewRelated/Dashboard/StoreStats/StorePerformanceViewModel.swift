@@ -10,7 +10,13 @@ import enum Networking.DotcomError
 ///
 final class StorePerformanceViewModel: ObservableObject {
     @Published private(set) var timeRange: StatsTimeRangeV4
+
     @Published private(set) var timeRangeText = ""
+    @Published private(set) var revenueStatsText = ""
+    @Published private(set) var orderStatsText = ""
+    @Published private(set) var visitorStatsText = ""
+    @Published private(set) var conversionStatsText = ""
+    
     @Published private(set) var syncingData = false
     @Published private(set) var siteVisitStatMode = SiteVisitStatsMode.hidden
     @Published private(set) var statsVersion: StatsVersion = .v4
@@ -140,6 +146,18 @@ private extension StorePerformanceViewModel {
         periodViewModel.timeRangeBarViewModel
             .map { $0.timeRangeText }
             .assign(to: &$timeRangeText)
+
+        periodViewModel.revenueStatsText
+            .assign(to: &$revenueStatsText)
+
+        periodViewModel.orderStatsText
+            .assign(to: &$orderStatsText)
+
+        periodViewModel.visitorStatsText
+            .assign(to: &$visitorStatsText)
+
+        periodViewModel.conversionStatsText
+            .assign(to: &$conversionStatsText)
     }
 }
 

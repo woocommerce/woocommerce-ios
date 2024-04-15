@@ -9,7 +9,7 @@ import enum Networking.DotcomError
 /// View model for `StorePerformanceView`.
 ///
 final class StorePerformanceViewModel: ObservableObject {
-    @Published private(set) var timeRange: StatsTimeRangeV4
+    @Published private(set) var timeRange = StatsTimeRangeV4.today
     @Published private(set) var statsIntervalData: [StoreStatsChartData] = []
 
     @Published private(set) var timeRangeText = ""
@@ -29,7 +29,7 @@ final class StorePerformanceViewModel: ObservableObject {
     private let currencyFormatter: CurrencyFormatter
     private let currencySettings: CurrencySettings
 
-    private var periodViewModel: StoreStatsPeriodViewModel
+    private var periodViewModel: StoreStatsPeriodViewModel?
 
     // Set externally to trigger callback when data is being synced.
     var onDataReload: () -> Void = {}
@@ -53,26 +53,20 @@ final class StorePerformanceViewModel: ObservableObject {
         self.currencyFormatter = currencyFormatter
         self.currencySettings = currencySettings
 
-        let timeRange = StatsTimeRangeV4.today
-        self.timeRange = timeRange
-        self.periodViewModel = StoreStatsPeriodViewModel(siteID: siteID,
-                                                         timeRange: timeRange,
-                                                         siteTimezone: siteTimezone,
-                                                         currentDate: currentDate,
-                                                         currencyFormatter: currencyFormatter,
-                                                         currencySettings: currencySettings,
-                                                         storageManager: storageManager)
-
-        observePeriodViewModel()
         observeTimeRange()
+
+        Task { @MainActor in
+            self.timeRange = await loadLastTimeRange() ?? .today
+        }
     }
 
     func didSelectTimeRange(_ newTimeRange: StatsTimeRangeV4) {
         timeRange = newTimeRange
+        saveLastTimeRange(timeRange)
     }
 
     func didSelectStatsInterval(at index: Int?) {
-        periodViewModel.selectedIntervalIndex = index
+        periodViewModel?.selectedIntervalIndex = index
     }
 
     @MainActor
@@ -155,6 +149,9 @@ private extension StorePerformanceViewModel {
     }
 
     func observePeriodViewModel() {
+        guard let periodViewModel else {
+            return
+        }
         periodViewModel.timeRangeBarViewModel
             .map { $0.timeRangeText }
             .assign(to: &$timeRangeText)
@@ -189,6 +186,21 @@ private extension StorePerformanceViewModel {
                     .init(date: x, revenue: y)
                 }
         }
+
+    @MainActor
+    func loadLastTimeRange() async -> StatsTimeRangeV4? {
+        await withCheckedContinuation { continuation in
+            let action = AppSettingsAction.loadLastSelectedStatsTimeRange(siteID: siteID) { timeRange in
+                continuation.resume(returning: timeRange)
+            }
+            stores.dispatch(action)
+        }
+    }
+
+    func saveLastTimeRange(_ timeRange: StatsTimeRangeV4) {
+        let action = AppSettingsAction.setLastSelectedStatsTimeRange(siteID: siteID, timeRange: timeRange)
+        stores.dispatch(action)
+    }
 }
 
 // MARK: - Syncing data

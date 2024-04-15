@@ -295,7 +295,7 @@ private extension StorePerformanceViewModel {
         let timezoneForSync = TimeZone.siteTimezone
         let latestDateToInclude = timeRange.latestDate(currentDate: currentDate, siteTimezone: timezoneForSync)
 
-        await withThrowingTaskGroup(of: Void.self) { group in
+        try await withThrowingTaskGroup(of: Void.self) { group in
             group.addTask { @MainActor [weak self] in
                 guard let self else { return }
                 statsVersion = await syncStats(latestDateToInclude: latestDateToInclude)
@@ -308,6 +308,8 @@ private extension StorePerformanceViewModel {
             group.addTask { [weak self] in
                 try await self?.syncSiteSummaryStats(latestDateToInclude: latestDateToInclude)
             }
+
+            try await group.next()
         }
     }
 

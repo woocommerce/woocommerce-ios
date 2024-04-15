@@ -9,7 +9,7 @@ import enum Networking.DotcomError
 /// View model for `StorePerformanceView`.
 ///
 final class StorePerformanceViewModel: ObservableObject {
-    @Published private(set) var timeRange: StatsTimeRangeV4
+    @Published private(set) var timeRange = StatsTimeRangeV4.today
     @Published private(set) var timeRangeText = ""
     @Published private(set) var syncingData = false
     @Published private(set) var siteVisitStatMode = SiteVisitStatsMode.hidden
@@ -22,7 +22,7 @@ final class StorePerformanceViewModel: ObservableObject {
     private let currencyFormatter: CurrencyFormatter
     private let currencySettings: CurrencySettings
 
-    private var periodViewModel: StoreStatsPeriodViewModel
+    private var periodViewModel: StoreStatsPeriodViewModel?
 
     // Set externally to trigger callback when data is being synced.
     var onDataReload: () -> Void = {}
@@ -45,16 +45,6 @@ final class StorePerformanceViewModel: ObservableObject {
         self.storageManager = storageManager
         self.currencyFormatter = currencyFormatter
         self.currencySettings = currencySettings
-
-        let timeRange = StatsTimeRangeV4.today
-        self.timeRange = timeRange
-        self.periodViewModel = StoreStatsPeriodViewModel(siteID: siteID,
-                                                         timeRange: timeRange,
-                                                         siteTimezone: siteTimezone,
-                                                         currentDate: currentDate,
-                                                         currencyFormatter: currencyFormatter,
-                                                         currencySettings: currencySettings,
-                                                         storageManager: storageManager)
 
         observePeriodViewModel()
         observeTimeRange()
@@ -137,6 +127,10 @@ private extension StorePerformanceViewModel {
     }
 
     func observePeriodViewModel() {
+        guard let periodViewModel else {
+            return
+        }
+
         periodViewModel.timeRangeBarViewModel
             .map { $0.timeRangeText }
             .assign(to: &$timeRangeText)

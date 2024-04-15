@@ -5,6 +5,11 @@ import SwiftUI
 struct StorePerformanceView: View {
     @ObservedObject private var viewModel: StorePerformanceViewModel
     @State private var showingCustomRangePicker = false
+    @State private var shouldHighlightStats = false
+
+    var statsValueColor: Color {
+        Color(shouldHighlightStats ? .statsHighlighted : .text)
+    }
 
     init(viewModel: StorePerformanceViewModel) {
         self.viewModel = viewModel
@@ -96,7 +101,9 @@ private extension StorePerformanceView {
             VStack {
                 Text(viewModel.revenueStatsText)
                     .fontWeight(.semibold)
+                    .foregroundStyle(statsValueColor)
                     .largeTitleStyle()
+
                 Text(Localization.revenue)
                     .font(Font(StyleManager.statsTitleFont))
             }
@@ -118,6 +125,7 @@ private extension StorePerformanceView {
         VStack {
             Text(value)
                 .font(Font(StyleManager.statsFont))
+                .foregroundStyle(statsValueColor)
             Text(title)
                 .font(Font(StyleManager.statsTitleFont))
         }
@@ -126,6 +134,7 @@ private extension StorePerformanceView {
     var chartView: some View {
         StoreStatsChart(viewModel: viewModel.chartViewModel) { selectedIndex in
             viewModel.didSelectStatsInterval(at: selectedIndex)
+            shouldHighlightStats = selectedIndex != nil
         }
         .frame(height: Layout.chartViewHeight)
     }

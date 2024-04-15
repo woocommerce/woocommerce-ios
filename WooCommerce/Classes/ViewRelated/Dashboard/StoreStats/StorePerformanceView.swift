@@ -26,7 +26,7 @@ struct StorePerformanceView: View {
         .clipShape(RoundedRectangle(cornerSize: Layout.cornerSize))
         .padding(.horizontal, Layout.padding)
         .sheet(isPresented: $showingCustomRangePicker) {
-            RangedDatePicker(startDate: viewModel.startDateForCustomRange, 
+            RangedDatePicker(startDate: viewModel.startDateForCustomRange,
                              endDate: viewModel.endDateForCustomRange,
                              datesFormatter: DatesFormatter(),
                              customApplyButtonTitle: viewModel.buttonTitleForCustomRange,

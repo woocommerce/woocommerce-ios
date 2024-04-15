@@ -39,9 +39,9 @@ extension StorePerformanceViewModel {
 
     var buttonTitleForCustomRange: String? {
         if case .custom = timeRange {
-            return Localization.addCustomRange
+            return nil
         }
-        return nil
+        return Localization.addCustomRange
     }
 }
 

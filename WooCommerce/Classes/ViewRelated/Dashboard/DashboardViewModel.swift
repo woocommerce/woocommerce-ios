@@ -19,6 +19,8 @@ final class DashboardViewModel: ObservableObject {
 
     let blazeCampaignDashboardViewModel: BlazeCampaignDashboardViewModel
 
+    let storePerformanceViewModel: StorePerformanceViewModel
+
     @Published var justInTimeMessagesWebViewModel: WebViewSheetViewModel? = nil
 
     @Published private(set) var showOnboarding: Bool = false
@@ -66,6 +68,7 @@ final class DashboardViewModel: ObservableObject {
         self.localAnnouncementsProvider = .init(stores: stores, analytics: analytics, featureFlagService: featureFlags)
         self.storeOnboardingViewModel = .init(siteID: siteID, isExpanded: false, stores: stores, defaults: userDefaults)
         self.blazeCampaignDashboardViewModel = .init(siteID: siteID)
+        self.storePerformanceViewModel = .init(siteID: siteID)
         self.storeCreationProfilerUploadAnswersUseCase = storeCreationProfilerUploadAnswersUseCase ?? StoreCreationProfilerUploadAnswersUseCase(siteID: siteID)
         self.themeInstaller = themeInstaller
         setupObserverForShowOnboarding()

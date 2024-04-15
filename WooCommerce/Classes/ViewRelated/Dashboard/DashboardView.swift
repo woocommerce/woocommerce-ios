@@ -164,7 +164,7 @@ private extension DashboardView {
                                                createCampaignTapped: createBlazeCampaignTapped)
                 case .statsAndTopPerformers:
                     if viewModel.statsVersion == .v4 {
-                        ViewControllerContainer(storeStatsAndTopPerformersViewController)
+                        StorePerformanceView(viewModel: viewModel.storePerformanceViewModel)
                     } else {
                         ViewControllerContainer(DeprecatedDashboardStatsViewController())
                     }

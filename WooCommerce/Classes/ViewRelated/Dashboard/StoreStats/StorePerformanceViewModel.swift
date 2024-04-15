@@ -152,6 +152,7 @@ private extension StorePerformanceViewModel {
         guard let periodViewModel else {
             return
         }
+
         periodViewModel.timeRangeBarViewModel
             .map { $0.timeRangeText }
             .assign(to: &$timeRangeText)

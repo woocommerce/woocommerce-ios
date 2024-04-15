@@ -10,13 +10,14 @@ import enum Networking.DotcomError
 ///
 final class StorePerformanceViewModel: ObservableObject {
     @Published private(set) var timeRange: StatsTimeRangeV4
+    @Published private(set) var statsIntervalData: [StoreStatsChartData] = []
 
     @Published private(set) var timeRangeText = ""
     @Published private(set) var revenueStatsText = ""
     @Published private(set) var orderStatsText = ""
     @Published private(set) var visitorStatsText = ""
     @Published private(set) var conversionStatsText = ""
-    
+
     @Published private(set) var syncingData = false
     @Published private(set) var siteVisitStatMode = SiteVisitStatsMode.hidden
     @Published private(set) var statsVersion: StatsVersion = .v4
@@ -70,6 +71,10 @@ final class StorePerformanceViewModel: ObservableObject {
         timeRange = newTimeRange
     }
 
+    func didSelectStatsInterval(at index: Int?) {
+        periodViewModel.selectedIntervalIndex = index
+    }
+
     @MainActor
     func reloadData() async {
         onDataReload()
@@ -111,6 +116,13 @@ extension StorePerformanceViewModel {
             return nil
         }
         return Localization.addCustomRange
+    }
+
+    var chartViewModel: StoreStatsChartViewModel {
+        StoreStatsChartViewModel(intervals: statsIntervalData,
+                                 timeRange: timeRange,
+                                 currencySettings: currencySettings,
+                                 currencyFormatter: currencyFormatter)
     }
 }
 
@@ -158,7 +170,25 @@ private extension StorePerformanceViewModel {
 
         periodViewModel.conversionStatsText
             .assign(to: &$conversionStatsText)
+
+        periodViewModel.orderStatsIntervals
+            .map { [weak self] intervals in
+                guard let self else {
+                    return []
+                }
+                return createOrderStatsIntervalData(orderStatsIntervals: intervals)
+            }
+            .assign(to: &$statsIntervalData)
     }
+
+    func createOrderStatsIntervalData(orderStatsIntervals: [OrderStatsV4Interval]) -> [StoreStatsChartData] {
+            let intervalDates = orderStatsIntervals.map { $0.dateStart(timeZone: siteTimezone) }
+            let revenues = orderStatsIntervals.map { ($0.revenueValue as NSDecimalNumber).doubleValue }
+            return zip(intervalDates, revenues)
+                .map { x, y -> StoreStatsChartData in
+                    .init(date: x, revenue: y)
+                }
+        }
 }
 
 // MARK: - Syncing data

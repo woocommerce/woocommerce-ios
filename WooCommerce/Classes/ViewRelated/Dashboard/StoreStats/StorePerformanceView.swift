@@ -30,6 +30,10 @@ struct StorePerformanceView: View {
                     .redacted(reason: viewModel.syncingData ? [.placeholder] : [])
                     .shimmering(active: viewModel.syncingData)
 
+                chartView
+                    .redacted(reason: viewModel.syncingData ? [.placeholder] : [])
+                    .shimmering(active: viewModel.syncingData)
+
             }
             .padding(.vertical, Layout.padding)
             .background(Color(.listForeground(modal: false)))
@@ -118,6 +122,13 @@ private extension StorePerformanceView {
                 .font(Font(StyleManager.statsTitleFont))
         }
     }
+
+    var chartView: some View {
+        StoreStatsChart(viewModel: viewModel.chartViewModel) { selectedIndex in
+            viewModel.didSelectStatsInterval(at: selectedIndex)
+        }
+        .frame(height: Layout.chartViewHeight)
+    }
 }
 
 private extension StorePerformanceView {
@@ -125,6 +136,7 @@ private extension StorePerformanceView {
         static let padding: CGFloat = 16
         static let cornerSize = CGSize(width: 8.0, height: 8.0)
         static let strokeWidth: CGFloat = 0.5
+        static let chartViewHeight: CGFloat = 176
     }
 
     enum Localization {

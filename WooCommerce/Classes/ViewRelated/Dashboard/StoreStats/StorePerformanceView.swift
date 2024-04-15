@@ -11,28 +11,36 @@ struct StorePerformanceView: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading) {
-            header
-                .padding(.horizontal, Layout.padding)
+        if viewModel.statsVersion == .v4 {
+            VStack(alignment: .leading) {
+                header
+                    .padding(.horizontal, Layout.padding)
+                    .redacted(reason: viewModel.syncingData ? [.placeholder] : [])
+                    .shimmering(active: viewModel.syncingData)
 
-            timeRangeBar
-                .padding(.horizontal, Layout.padding)
+                timeRangeBar
+                    .padding(.horizontal, Layout.padding)
+                    .redacted(reason: viewModel.syncingData ? [.placeholder] : [])
+                    .shimmering(active: viewModel.syncingData)
 
-            Divider()
+                Divider()
 
-        }
-        .padding(.vertical, Layout.padding)
-        .background(Color(.listForeground(modal: false)))
-        .clipShape(RoundedRectangle(cornerSize: Layout.cornerSize))
-        .padding(.horizontal, Layout.padding)
-        .sheet(isPresented: $showingCustomRangePicker) {
-            RangedDatePicker(startDate: viewModel.startDateForCustomRange,
-                             endDate: viewModel.endDateForCustomRange,
-                             datesFormatter: DatesFormatter(),
-                             customApplyButtonTitle: viewModel.buttonTitleForCustomRange,
-                             datesSelected: { start, end in
-                viewModel.didSelectTimeRange(.custom(from: start, to: end))
-            })
+            }
+            .padding(.vertical, Layout.padding)
+            .background(Color(.listForeground(modal: false)))
+            .clipShape(RoundedRectangle(cornerSize: Layout.cornerSize))
+            .padding(.horizontal, Layout.padding)
+            .sheet(isPresented: $showingCustomRangePicker) {
+                RangedDatePicker(startDate: viewModel.startDateForCustomRange,
+                                 endDate: viewModel.endDateForCustomRange,
+                                 datesFormatter: DatesFormatter(),
+                                 customApplyButtonTitle: viewModel.buttonTitleForCustomRange,
+                                 datesSelected: { start, end in
+                    viewModel.didSelectTimeRange(.custom(from: start, to: end))
+                })
+            }
+        } else {
+            ViewControllerContainer(DeprecatedDashboardStatsViewController())
         }
     }
 }
@@ -58,6 +66,9 @@ private extension StorePerformanceView {
         HStack(alignment: .top) {
             AdaptiveStack {
                 Text(viewModel.timeRange.tabTitle)
+                    .subheadlineStyle()
+                Text(viewModel.timeRangeText)
+                    .foregroundStyle(Color(.text))
                     .subheadlineStyle()
             }
             Spacer()

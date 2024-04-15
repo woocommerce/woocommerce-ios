@@ -48,8 +48,8 @@ def alamofire
 end
 
 def cocoa_lumberjack
-  pod 'CocoaLumberjack', '~> 3.7.4'
-  pod 'CocoaLumberjack/Swift', '~> 3.7.4'
+  pod 'CocoaLumberjack', '~> 3.8.5'
+  pod 'CocoaLumberjack/Swift', '~> 3.8.5'
 end
 
 def stripe_terminal

@@ -75,6 +75,7 @@ final class DashboardViewModel: ObservableObject {
         setupObserverForBlazeCampaignView()
         setupDashboardCards()
         installPendingThemeIfNeeded()
+        configureStorePerformanceViewModel()
     }
 
     /// Uploads the answers from the store creation profiler flow
@@ -98,6 +99,11 @@ final class DashboardViewModel: ObservableObject {
             }
             group.addTask { [weak self] in
                 await self?.updateJetpackBannerVisibilityFromAppSettings()
+            }
+            if featureFlagService.isFeatureFlagEnabled(.dynamicDashboard) {
+                group.addTask { [weak self] in
+                    await self?.storePerformanceViewModel.reloadData()
+                }
             }
         }
     }
@@ -275,6 +281,16 @@ final class DashboardViewModel: ObservableObject {
 
 // MARK: Private helpers
 private extension DashboardViewModel {
+    func configureStorePerformanceViewModel() {
+        storePerformanceViewModel.onDataReload = { [weak self] in
+            self?.statSyncingError = nil
+        }
+
+        storePerformanceViewModel.onSyncingError = { [weak self] error in
+            self?.statSyncingError = error
+        }
+    }
+
     /// Checks for Just In Time Messages and prepares the announcement if needed.
     ///
     @MainActor

@@ -31,6 +31,8 @@ struct DashboardView: View {
     var jetpackBenefitsBannerTapped: ((Site) -> Void)?
 
     /// Set externally in the hosting controller.
+    var onCustomRangeRedactedViewTap: (() -> Void)?
+    /// Set externally in the hosting controller.
     var onViewAllAnalytics: ((_ siteID: Int64,
                               _ timeZone: TimeZone,
                               _ timeRange: StatsTimeRangeV4) -> Void)?
@@ -154,9 +156,11 @@ private extension DashboardView {
                                                showAllCampaignsTapped: showAllBlazeCampaignsTapped,
                                                createCampaignTapped: createBlazeCampaignTapped)
                 case .statsAndTopPerformers:
-                    StorePerformanceView(viewModel: viewModel.storePerformanceViewModel) { siteID, siteTimeZone, timeRange in
+                    StorePerformanceView(viewModel: viewModel.storePerformanceViewModel, onCustomRangeRedactedViewTap: {
+                        onCustomRangeRedactedViewTap?()
+                    }, onViewAllAnalytics: { siteID, siteTimeZone, timeRange in
                         onViewAllAnalytics?(siteID, siteTimeZone, timeRange)
-                    }
+                    })
                 }
             }
         }

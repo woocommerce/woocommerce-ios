@@ -1,5 +1,6 @@
 import Combine
 import SwiftUI
+import WordPressUI
 import struct Yosemite.Site
 
 /// Hosting view for `DashboardView`
@@ -15,6 +16,15 @@ final class DashboardViewHostingController: UIHostingController<DashboardView> {
 
     /// Presenter for the privacy choices banner
     private lazy var privacyBannerPresenter = PrivacyBannerPresenter()
+
+    /// Information alert for custom range tab redaction
+    ///
+    private lazy var fancyAlert: FancyAlertViewController = {
+        let alert = FancyAlertViewController.makeCustomRangeRedactionInformationAlert()
+        alert.modalPresentationStyle = .custom
+        alert.transitioningDelegate = AppDelegate.shared.tabBarController
+        return alert
+    }()
 
     private var subscriptions: Set<AnyCancellable> = []
 
@@ -90,6 +100,11 @@ private extension DashboardViewHostingController {
     }
 
     func configureStorePerformanceView() {
+        rootView.onCustomRangeRedactedViewTap = { [weak self] in
+            guard let self else { return }
+            present(fancyAlert, animated: true)
+        }
+
         rootView.onViewAllAnalytics = { [weak self] siteID, siteTimeZone, timeRange in
             guard let self else { return }
             let analyticsHubVC = AnalyticsHubHostingViewController(siteID: siteID,

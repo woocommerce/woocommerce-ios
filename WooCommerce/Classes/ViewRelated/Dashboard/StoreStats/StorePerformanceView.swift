@@ -12,12 +12,16 @@ struct StorePerformanceView: View {
         Color(shouldHighlightStats ? .statsHighlighted : .text)
     }
 
+    private let onCustomRangeRedactedViewTap: () -> Void
     private let onViewAllAnalytics: (_ siteID: Int64,
                                      _ timeZone: TimeZone,
                                      _ timeRange: StatsTimeRangeV4) -> Void
 
-    init(viewModel: StorePerformanceViewModel, onViewAllAnalytics: @escaping (Int64, TimeZone, StatsTimeRangeV4) -> Void) {
+    init(viewModel: StorePerformanceViewModel,
+         onCustomRangeRedactedViewTap: @escaping () -> Void,
+         onViewAllAnalytics: @escaping (Int64, TimeZone, StatsTimeRangeV4) -> Void) {
         self.viewModel = viewModel
+        self.onCustomRangeRedactedViewTap = onCustomRangeRedactedViewTap
         self.onViewAllAnalytics = onViewAllAnalytics
     }
 
@@ -157,6 +161,15 @@ private extension StorePerformanceView {
             Text(title)
                 .font(Font(StyleManager.statsTitleFont))
         }
+        .contentShape(Rectangle())
+        .onTapGesture {
+            guard redactMode != .none,
+                viewModel.unavailableVisitStatsDueToCustomRange,
+                viewModel.siteVisitStatMode == .redactedDueToCustomRange else {
+                return
+            }
+            onCustomRangeRedactedViewTap()
+        }
     }
 
     func statValueRedactedView(withIcon: Bool) -> some View {
@@ -204,7 +217,7 @@ private extension StorePerformanceView {
                 Spacer()
                 Image(systemName: "chevron.forward")
                     .foregroundStyle(Color.secondary)
-                    .bold()
+                    .fontWeight(.semibold)
             }
         }
     }
@@ -279,5 +292,7 @@ private extension StorePerformanceView {
 }
 
 #Preview {
-    StorePerformanceView(viewModel: StorePerformanceViewModel(siteID: 123)) { _, _, _ in }
+    StorePerformanceView(viewModel: StorePerformanceViewModel(siteID: 123),
+                         onCustomRangeRedactedViewTap: {},
+                         onViewAllAnalytics: { _, _, _ in })
 }

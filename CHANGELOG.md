@@ -1,6 +1,9 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 18.2
+Discover the latest updates in our WooCommerce app! Enjoy a seamless payment process, log in effortlessly with site credentials, and create Blaze campaigns faster without errors. Upgrade now for an enhanced shop management experience!
+
 ## 18.1
 Streamline your management with our latest update! Easily delete orders on-the-go, dive into new analytics for Product Bundles and Gift Cards, and enjoy a smoother Jetpack installation. Update now for a more efficient WooCommerce experience!
 

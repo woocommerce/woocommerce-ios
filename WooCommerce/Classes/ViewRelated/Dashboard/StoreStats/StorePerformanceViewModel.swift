@@ -18,6 +18,8 @@ final class StorePerformanceViewModel: ObservableObject {
     @Published private(set) var visitorStatsText = ""
     @Published private(set) var conversionStatsText = ""
 
+    @Published private(set) var selectedDateText: String?
+
     @Published private(set) var syncingData = false
     @Published private(set) var siteVisitStatMode = SiteVisitStatsMode.hidden
     @Published private(set) var statsVersion: StatsVersion = .v4
@@ -118,6 +120,13 @@ extension StorePerformanceViewModel {
                                  currencySettings: currencySettings,
                                  currencyFormatter: currencyFormatter)
     }
+
+    var granularityText: String? {
+        guard case .custom = timeRange else {
+            return nil
+        }
+        return timeRange.intervalGranularity.displayText
+    }
 }
 
 // MARK: - Private helpers
@@ -156,6 +165,10 @@ private extension StorePerformanceViewModel {
         periodViewModel.timeRangeBarViewModel
             .map { $0.timeRangeText }
             .assign(to: &$timeRangeText)
+
+        periodViewModel.timeRangeBarViewModel
+            .map { $0.selectedDateText }
+            .assign(to: &$selectedDateText)
 
         periodViewModel.revenueStatsText
             .assign(to: &$revenueStatsText)

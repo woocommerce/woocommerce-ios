@@ -95,8 +95,13 @@ private extension StorePerformanceView {
                 Text(viewModel.timeRange.tabTitle)
                     .foregroundStyle(Color(.text))
                     .subheadlineStyle()
-                Text(viewModel.timeRangeText)
-                    .subheadlineStyle()
+                if let selectedDateText = viewModel.selectedDateText {
+                    Text(selectedDateText)
+                        .subheadlineStyle()
+                } else {
+                    Text(viewModel.timeRangeText)
+                        .subheadlineStyle()
+                }
             }
             Spacer()
             StatsTimeRangePicker(currentTimeRange: viewModel.timeRange) { newTimeRange in
@@ -145,11 +150,18 @@ private extension StorePerformanceView {
     }
 
     var chartView: some View {
-        StoreStatsChart(viewModel: viewModel.chartViewModel) { selectedIndex in
-            viewModel.didSelectStatsInterval(at: selectedIndex)
-            shouldHighlightStats = selectedIndex != nil
+        VStack {
+            StoreStatsChart(viewModel: viewModel.chartViewModel) { selectedIndex in
+                viewModel.didSelectStatsInterval(at: selectedIndex)
+                shouldHighlightStats = selectedIndex != nil
+            }
+            .frame(height: Layout.chartViewHeight)
+
+            if let granularityText = viewModel.granularityText {
+                Text(granularityText)
+                    .font(Font(StyleManager.statsTitleFont))
+            }
         }
-        .frame(height: Layout.chartViewHeight)
     }
 
     var viewAllAnalyticsButton: some View {

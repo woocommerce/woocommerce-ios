@@ -76,7 +76,7 @@ final class StorePerformanceViewModel: ObservableObject {
                 WidgetCenter.shared.reloadTimelines(ofKind: WooConstants.storeInfoWidgetKind)
             }
         } catch {
-            DDLogError("⛔️ Error loading dashboard: \(error)")
+            DDLogError("⛔️ Error loading store stats: \(error)")
             handleSyncError(error: error)
         }
         syncingData = false

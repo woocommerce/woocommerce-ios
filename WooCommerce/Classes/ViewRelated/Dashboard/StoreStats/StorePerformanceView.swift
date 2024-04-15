@@ -66,9 +66,9 @@ private extension StorePerformanceView {
         HStack(alignment: .top) {
             AdaptiveStack {
                 Text(viewModel.timeRange.tabTitle)
+                    .foregroundStyle(Color(.text))
                     .subheadlineStyle()
                 Text(viewModel.timeRangeText)
-                    .foregroundStyle(Color(.text))
                     .subheadlineStyle()
             }
             Spacer()

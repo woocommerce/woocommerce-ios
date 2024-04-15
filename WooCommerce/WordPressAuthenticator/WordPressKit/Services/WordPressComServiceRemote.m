@@ -179,9 +179,9 @@
             NSMutableDictionary *userInfo = [[NSMutableDictionary alloc] init];
             userInfo[WordPressComRestApi.ErrorKeyErrorMessage] = localizedErrorMessage;
             userInfo[NSLocalizedDescriptionKey] = localizedErrorMessage;
-            NSError *errorWithLocalizedMessage = [NSError wordPressComRestApiErrorWithCode:WordPressComRestApiErrorCodeUnknown
-                                                                                  userInfo:userInfo];
-
+            NSError *errorWithLocalizedMessage = [[NSError alloc] initWithDomain:WordPressComRestApiErrorDomain
+                                                                            code:WordPressComRestApiErrorCodeUnknown
+                                                                        userInfo:userInfo];
             failure(errorWithLocalizedMessage);
         } else {
             success(responseObject);
@@ -228,7 +228,7 @@
 
 - (NSError *)errorWithLocalizedMessage:(NSError *)error {
     NSError *errorWithLocalizedMessage = error;
-    if ([error hasWordPressComRestApiErrorDomain] &&
+    if ([error.domain isEqual:WordPressComRestApiErrorDomain] &&
         [error.userInfo objectForKey:WordPressComRestApi.ErrorKeyErrorCode] != nil) {
 
         NSString *localizedErrorMessage = [self errorMessageForError:error];

@@ -25,6 +25,11 @@ struct StorePerformanceView: View {
 
                 Divider()
 
+                statsView
+                    .padding(.vertical, Layout.padding)
+                    .redacted(reason: viewModel.syncingData ? [.placeholder] : [])
+                    .shimmering(active: viewModel.syncingData)
+
             }
             .padding(.vertical, Layout.padding)
             .background(Color(.listForeground(modal: false)))
@@ -81,6 +86,38 @@ private extension StorePerformanceView {
             }
         }
     }
+
+    var statsView: some View {
+        VStack(spacing: Layout.padding) {
+            VStack {
+                Text(viewModel.revenueStatsText)
+                    .fontWeight(.semibold)
+                    .largeTitleStyle()
+                Text(Localization.revenue)
+                    .font(Font(StyleManager.statsTitleFont))
+            }
+
+            HStack {
+                statsItemView(title: Localization.orders, value: viewModel.orderStatsText)
+                    .frame(maxWidth: .infinity)
+
+                statsItemView(title: Localization.visitors, value: viewModel.visitorStatsText)
+                    .frame(maxWidth: .infinity)
+
+                statsItemView(title: Localization.conversion, value: viewModel.conversionStatsText)
+                    .frame(maxWidth: .infinity)
+            }
+        }
+    }
+
+    func statsItemView(title: String, value: String) -> some View {
+        VStack {
+            Text(value)
+                .font(Font(StyleManager.statsFont))
+            Text(title)
+                .font(Font(StyleManager.statsTitleFont))
+        }
+    }
 }
 
 private extension StorePerformanceView {
@@ -100,6 +137,26 @@ private extension StorePerformanceView {
             "storePerformanceView.hideCard",
             value: "Hide this card",
             comment: "Menu item to dismiss the store performance section on the Dashboard screen"
+        )
+        static let revenue = NSLocalizedString(
+            "storePerformanceView.revenue",
+            value: "Revenue",
+            comment: "Revenue stat label on dashboard."
+        )
+        static let orders = NSLocalizedString(
+            "storePerformanceView.orders",
+            value: "Orders",
+            comment: "Orders stat label on dashboard - should be plural."
+        )
+        static let visitors = NSLocalizedString(
+            "storePerformanceView.visitors",
+            value: "Visitors",
+            comment: "Visitors stat label on dashboard - should be plural."
+        )
+        static let conversion = NSLocalizedString(
+            "storePerformanceView.conversion",
+            value: "Conversion",
+            comment: "Conversion stat label on dashboard."
         )
     }
 

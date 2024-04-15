@@ -28,12 +28,12 @@ struct StoreStatsChart: View {
             // No revenue text and horizontal line
             if !viewModel.hasRevenue {
                 RuleMark(y: .value(Localization.zeroRevenue, 0))
-                    .foregroundStyle(Color(.separator))
+                    .foregroundStyle(Constants.noRevenueLineColor)
                     .annotation(position: .overlay, alignment: .center) {
                         Text("No revenue this period")
                             .font(.footnote)
                             .padding(Constants.annotationPadding)
-                            .background(Color(UIColor.systemBackground))
+                            .background(Color(.listForeground(modal: false)))
                     }
             }
 
@@ -155,6 +155,10 @@ private extension StoreStatsChart {
     }
 
     enum Constants {
+        static var noRevenueLineColor = Color(
+            light: Color.withColorStudio(name: .gray, shade: .shade5),
+            dark: Color.withColorStudio(name: .gray, shade: .shade80)
+        )
         static var chartLineColor = Color(
             light: .withColorStudio(name: .wooCommercePurple, shade: .shade50),
             dark: .withColorStudio(name: .wooCommercePurple, shade: .shade30)

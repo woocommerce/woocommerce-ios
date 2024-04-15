@@ -4,6 +4,7 @@ import SwiftUI
 ///
 struct StorePerformanceView: View {
     @ObservedObject private var viewModel: StorePerformanceViewModel
+    @State private var showingCustomRangePicker = false
 
     init(viewModel: StorePerformanceViewModel) {
         self.viewModel = viewModel
@@ -24,6 +25,15 @@ struct StorePerformanceView: View {
         .background(Color(.listForeground(modal: false)))
         .clipShape(RoundedRectangle(cornerSize: Layout.cornerSize))
         .padding(.horizontal, Layout.padding)
+        .sheet(isPresented: $showingCustomRangePicker) {
+            RangedDatePicker(startDate: viewModel.startDateForCustomRange, 
+                             endDate: viewModel.endDateForCustomRange,
+                             datesFormatter: DatesFormatter(),
+                             customApplyButtonTitle: viewModel.buttonTitleForCustomRange,
+                             datesSelected: { start, end in
+                viewModel.didSelectTimeRange(.custom(from: start, to: end))
+            })
+        }
     }
 }
 
@@ -53,7 +63,7 @@ private extension StorePerformanceView {
             Spacer()
             StatsTimeRangePicker(currentTimeRange: viewModel.timeRange) { newTimeRange in
                 if newTimeRange.isCustomTimeRange {
-                    // TODO: show date picker
+                    showingCustomRangePicker = true
                 } else {
                     viewModel.didSelectTimeRange(newTimeRange)
                 }
@@ -80,6 +90,14 @@ private extension StorePerformanceView {
             value: "Hide this card",
             comment: "Menu item to dismiss the store performance section on the Dashboard screen"
         )
+    }
+
+    /// Specific `DatesFormatter` for the `RangedDatePicker` when presented in the analytics hub module.
+    ///
+    struct DatesFormatter: RangedDateTextFormatter {
+        func format(start: Date, end: Date) -> String {
+            start.formatAsRange(with: end, timezone: .current, calendar: Locale.current.calendar)
+        }
     }
 }
 

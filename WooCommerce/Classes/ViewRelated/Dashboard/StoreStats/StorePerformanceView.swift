@@ -116,7 +116,7 @@ private extension StorePerformanceView {
 
     var statsView: some View {
         VStack(spacing: Layout.padding) {
-            VStack {
+            VStack(spacing: Layout.statValuePadding) {
                 Text(viewModel.revenueStatsText)
                     .fontWeight(.semibold)
                     .foregroundStyle(statsValueColor)
@@ -126,26 +126,57 @@ private extension StorePerformanceView {
                     .font(Font(StyleManager.statsTitleFont))
             }
 
-            HStack {
-                statsItemView(title: Localization.orders, value: viewModel.orderStatsText)
+            HStack(alignment: .bottom) {
+                statsItemView(title: Localization.orders,
+                              value: viewModel.orderStatsText,
+                              redactMode: .none)
                     .frame(maxWidth: .infinity)
 
-                statsItemView(title: Localization.visitors, value: viewModel.visitorStatsText)
+                statsItemView(title: Localization.visitors,
+                              value: viewModel.visitorStatsText,
+                              redactMode: .withIcon)
                     .frame(maxWidth: .infinity)
 
-                statsItemView(title: Localization.conversion, value: viewModel.conversionStatsText)
+                statsItemView(title: Localization.conversion,
+                              value: viewModel.conversionStatsText,
+                              redactMode: .withoutIcon)
                     .frame(maxWidth: .infinity)
             }
         }
     }
 
-    func statsItemView(title: String, value: String) -> some View {
-        VStack {
-            Text(value)
-                .font(Font(StyleManager.statsFont))
-                .foregroundStyle(statsValueColor)
+    func statsItemView(title: String, value: String, redactMode: RedactMode) -> some View {
+        VStack(spacing: Layout.statValuePadding) {
+            if redactMode == .none || viewModel.siteVisitStatMode == .default {
+                Text(value)
+                    .font(Font(StyleManager.statsFont))
+                    .foregroundStyle(statsValueColor)
+            } else {
+                statValueRedactedView(withIcon: redactMode == .withIcon)
+            }
             Text(title)
                 .font(Font(StyleManager.statsTitleFont))
+        }
+    }
+
+    func statValueRedactedView(withIcon: Bool) -> some View {
+        VStack(alignment: .trailing, spacing: 0) {
+            Group {
+                if let image = viewModel.redactedViewIcon, withIcon {
+                    Image(uiImage: image)
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .foregroundStyle(Color(viewModel.redactedViewIconColor))
+                } else {
+                    EmptyView()
+                }
+            }
+            .frame(width: Layout.redactedViewIconSize, height: Layout.redactedViewIconSize)
+            .offset(Layout.redactedViewIconOffset)
+
+            Color(.systemColor(.secondarySystemBackground))
+                .frame(width: Layout.redactedViewWidth, height: Layout.redactedViewHeight)
+                .clipShape(RoundedRectangle(cornerSize: Layout.redactedViewCornerSize))
         }
     }
 
@@ -180,11 +211,24 @@ private extension StorePerformanceView {
 }
 
 private extension StorePerformanceView {
+    /// Redact modes for stat values.
+    enum RedactMode {
+        case none
+        case withIcon
+        case withoutIcon
+    }
+
     enum Layout {
         static let padding: CGFloat = 16
         static let cornerSize = CGSize(width: 8.0, height: 8.0)
         static let strokeWidth: CGFloat = 0.5
         static let chartViewHeight: CGFloat = 176
+        static let statValuePadding: CGFloat = 8
+        static let redactedViewCornerSize = CGSize(width: 2.0, height: 2.0)
+        static let redactedViewWidth: CGFloat = 32
+        static let redactedViewHeight: CGFloat = 10
+        static let redactedViewIconSize: CGFloat = 14
+        static let redactedViewIconOffset = CGSize(width: 16, height: 0)
     }
 
     enum Localization {

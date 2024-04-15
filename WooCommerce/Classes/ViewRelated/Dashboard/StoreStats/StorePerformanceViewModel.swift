@@ -42,6 +42,19 @@ final class StorePerformanceViewModel: ObservableObject {
     private var subscriptions: Set<AnyCancellable> = []
     private var currentDate = Date()
 
+    // To check whether the tab is showing the visitors and conversion views as redacted for custom range.
+    // This redaction is only shown on Custom Range tab with WordPress.com or Jetpack connected sites,
+    // while Jetpack CP sites has its own redacted for Jetpack state, and non-Jetpack sites simply has them empty.
+    var unavailableVisitStatsDueToCustomRange: Bool {
+        guard timeRange.isCustomTimeRange,
+              let site = stores.sessionManager.defaultSite,
+              site.isJetpackConnected,
+              site.isJetpackThePluginInstalled else {
+            return false
+        }
+        return true
+    }
+
     init(siteID: Int64,
          siteTimezone: TimeZone = .siteTimezone,
          stores: StoresManager = ServiceLocator.stores,
@@ -69,6 +82,21 @@ final class StorePerformanceViewModel: ObservableObject {
 
     func didSelectStatsInterval(at index: Int?) {
         periodViewModel?.selectedIntervalIndex = index
+
+        if unavailableVisitStatsDueToCustomRange {
+            // If time range is less than 2 days, redact data when selected and show when deselected.
+            // Otherwise, show data when selected and redact when deselected.
+            guard case let .custom(from, to) = timeRange,
+                  let differenceInDays = StatsTimeRangeV4.differenceInDays(startDate: from, endDate: to) else {
+                return
+            }
+
+            if differenceInDays == .sameDay {
+                siteVisitStatMode = index != nil ? .hidden : .default
+            } else {
+                siteVisitStatMode = index != nil ? .default : .redactedDueToCustomRange
+            }
+        }
     }
 
     @MainActor
@@ -77,10 +105,16 @@ final class StorePerformanceViewModel: ObservableObject {
         syncingData = true
         do {
             try await syncAllStats()
-            siteVisitStatMode = .default
             trackDashboardStatsSyncComplete()
-            if timeRange == .today {
+            switch timeRange {
+            case .custom:
+                updateSiteVisitStatModeForCustomRange()
+            case .today:
+                // Reload the Store Info Widget after syncing the today's stats.
                 WidgetCenter.shared.reloadTimelines(ofKind: WooConstants.storeInfoWidgetKind)
+                fallthrough
+            case .thisWeek, .thisMonth, .thisYear:
+                siteVisitStatMode = .default
             }
         } catch {
             DDLogError("⛔️ Error loading store stats: \(error)")
@@ -126,6 +160,21 @@ extension StorePerformanceViewModel {
             return nil
         }
         return timeRange.intervalGranularity.displayText
+    }
+
+    var redactedViewIcon: UIImage? {
+        switch siteVisitStatMode {
+        case .redactedDueToJetpack:
+            UIImage.jetpackLogoImage.withRenderingMode(.alwaysTemplate)
+        case .redactedDueToCustomRange:
+            UIImage.infoOutlineImage.withRenderingMode(.alwaysTemplate)
+        case .default, .hidden:
+            nil
+        }
+    }
+
+    var redactedViewIconColor: UIColor {
+        siteVisitStatMode == .redactedDueToJetpack ? .jetpackGreen : .accent
     }
 }
 
@@ -214,6 +263,26 @@ private extension StorePerformanceViewModel {
     func saveLastTimeRange(_ timeRange: StatsTimeRangeV4) {
         let action = AppSettingsAction.setLastSelectedStatsTimeRange(siteID: siteID, timeRange: timeRange)
         stores.dispatch(action)
+    }
+
+    /// Initial redaction state logic for site visit stats.
+    /// If a) Site is WordPress.com site or self-hosted site with Jetpack:
+    ///       - if date range is < 2 days, we can show the visit stats (because the data will be correct)
+    ///       - else, set as `.redactedDueToCustomRange`
+    ///    b). Site is Jetpack CP, set as `.redactedDueToJetpack`
+    ///    c). Site is a non-Jetpack site: set as `.hidden`
+    func updateSiteVisitStatModeForCustomRange() {
+        guard let site = stores.sessionManager.defaultSite,
+              case let .custom(startDate, endDate) = timeRange else { return }
+
+        if site.isJetpackConnected && site.isJetpackThePluginInstalled {
+            let differenceInDay = StatsTimeRangeV4.differenceInDays(startDate: startDate, endDate: endDate)
+            siteVisitStatMode = differenceInDay == .sameDay ? .default : .redactedDueToCustomRange
+        } else if site.isJetpackCPConnected {
+            siteVisitStatMode = .redactedDueToJetpack
+        } else {
+            siteVisitStatMode = .hidden
+        }
     }
 }
 

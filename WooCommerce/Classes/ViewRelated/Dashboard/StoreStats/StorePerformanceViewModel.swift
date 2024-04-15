@@ -46,7 +46,6 @@ final class StorePerformanceViewModel: ObservableObject {
         self.currencyFormatter = currencyFormatter
         self.currencySettings = currencySettings
 
-        observePeriodViewModel()
         observeTimeRange()
     }
 

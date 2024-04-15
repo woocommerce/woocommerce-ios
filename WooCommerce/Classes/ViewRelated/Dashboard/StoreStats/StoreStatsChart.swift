@@ -6,13 +6,14 @@ import SwiftUI
 ///
 struct StoreStatsChart: View {
     @ObservedObject private var viewModel: StoreStatsChartViewModel
-    let onIntervalSelected: (Int) -> Void
+    let onIntervalSelected: (Int?) -> Void
 
     @State private var selectedDate: Date?
     @State private var selectedRevenue: Double?
+    @State private var selectedIndex: Int?
 
     init(viewModel: StoreStatsChartViewModel,
-         onIntervalSelected: @escaping (Int) -> Void) {
+         onIntervalSelected: @escaping (Int?) -> Void) {
         self.viewModel = viewModel
         self.onIntervalSelected = onIntervalSelected
     }
@@ -27,6 +28,7 @@ struct StoreStatsChart: View {
             // No revenue text and horizontal line
             if !viewModel.hasRevenue {
                 RuleMark(y: .value(Localization.zeroRevenue, 0))
+                    .foregroundStyle(Color(.separator))
                     .annotation(position: .overlay, alignment: .center) {
                         Text("No revenue this period")
                             .font(.footnote)
@@ -90,6 +92,10 @@ struct StoreStatsChart: View {
     }
 
     private func updateSelectedDate(at location: CGPoint, proxy: ChartProxy, geometry: GeometryProxy) {
+        guard viewModel.hasRevenue else {
+            return
+        }
+
         let xPosition = location.x - geometry[proxy.plotAreaFrame].origin.x
         guard let date: Date = proxy.value(atX: xPosition) else {
             return
@@ -101,7 +107,15 @@ struct StoreStatsChart: View {
             .first?.date
         selectedRevenue = viewModel.intervals.first(where: { $0.date == selectedDate })?.revenue
         if let index = viewModel.intervals.firstIndex(where: { $0.date == selectedDate }) {
-            onIntervalSelected(index)
+            if index == selectedIndex {
+                onIntervalSelected(nil)
+                selectedIndex = nil
+                selectedDate = nil
+                selectedRevenue = nil
+            } else {
+                selectedIndex = index
+                onIntervalSelected(index)
+            }
         }
     }
 }

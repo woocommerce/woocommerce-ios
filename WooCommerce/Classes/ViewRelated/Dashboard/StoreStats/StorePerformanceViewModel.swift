@@ -117,9 +117,11 @@ final class StorePerformanceViewModel: ObservableObject {
     func reloadData() async {
         onDataReload()
         syncingData = true
+        let waitingTracker = WaitingTimeTracker(trackScenario: .dashboardMainStats)
         do {
             try await syncAllStats()
             trackDashboardStatsSyncComplete()
+            statsVersion = .v4
             switch timeRange {
             case .custom:
                 updateSiteVisitStatModeForCustomRange()
@@ -130,11 +132,15 @@ final class StorePerformanceViewModel: ObservableObject {
             case .thisWeek, .thisMonth, .thisYear:
                 siteVisitStatMode = .default
             }
+        } catch DotcomError.noRestRoute {
+            statsVersion = .v3
         } catch {
+            statsVersion = .v4
             DDLogError("⛔️ Error loading store stats: \(error)")
             handleSyncError(error: error)
         }
         syncingData = false
+        waitingTracker.end()
     }
 }
 
@@ -328,9 +334,8 @@ private extension StorePerformanceViewModel {
         let latestDateToInclude = timeRange.latestDate(currentDate: currentDate, siteTimezone: timezoneForSync)
 
         try await withThrowingTaskGroup(of: Void.self) { group in
-            group.addTask { @MainActor [weak self] in
-                guard let self else { return }
-                statsVersion = await syncStats(latestDateToInclude: latestDateToInclude)
+            group.addTask { [weak self] in
+                try await self?.syncStats(latestDateToInclude: latestDateToInclude)
             }
 
             group.addTask { [weak self] in
@@ -350,10 +355,9 @@ private extension StorePerformanceViewModel {
 
     /// Syncs store stats for dashboard UI.
     @MainActor
-    func syncStats(latestDateToInclude: Date) async -> StatsVersion {
-        let waitingTracker = WaitingTimeTracker(trackScenario: .dashboardMainStats)
+    func syncStats(latestDateToInclude: Date) async throws {
         let earliestDateToInclude = timeRange.earliestDate(latestDate: latestDateToInclude, siteTimezone: siteTimezone)
-        return await withCheckedContinuation { continuation in
+        try await withCheckedThrowingContinuation { continuation in
             stores.dispatch(StatsActionV4.retrieveStats(siteID: siteID,
                                                         timeRange: timeRange,
                                                         timeZone: siteTimezone,
@@ -362,18 +366,7 @@ private extension StorePerformanceViewModel {
                                                         quantity: timeRange.maxNumberOfIntervals,
                                                         forceRefresh: true,
                                                         onCompletion: { result in
-                switch result {
-                case .success:
-                    waitingTracker.end()
-                    continuation.resume(returning: StatsVersion.v4)
-                case .failure(let error):
-                    DDLogError("⛔️ Dashboard (Order Stats) — Error synchronizing order stats v4: \(error)")
-                    if error as? DotcomError == .noRestRoute {
-                        continuation.resume(returning: StatsVersion.v3)
-                    } else {
-                        continuation.resume(returning: StatsVersion.v4)
-                    }
-                }
+                continuation.resume(with: result)
             }))
         }
     }

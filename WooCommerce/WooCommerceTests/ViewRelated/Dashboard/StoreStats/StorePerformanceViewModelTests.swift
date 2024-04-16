@@ -1,5 +1,7 @@
 import XCTest
 import Yosemite
+import enum Storage.StatsVersion
+import enum Networking.DotcomError
 @testable import WooCommerce
 
 final class StorePerformanceViewModelTests: XCTestCase {
@@ -98,5 +100,39 @@ final class StorePerformanceViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(savedTimeRange, .thisYear)
+    }
+}
+
+// MARK: - Private helpers
+//
+private extension StorePerformanceViewModelTests {
+    func mockSyncAllStats(with stores: MockStoresManager,
+                          toReturn statsVersion: StatsVersion = .v4,
+                          visitorStatsError: Error? = nil,
+                          siteSummaryStatsError: Error? = nil) {
+        stores.whenReceivingAction(ofType: StatsActionV4.self) { action in
+            switch action {
+            case let .retrieveStats(_, _, _, _, _, _, _, onCompletion):
+                if statsVersion == .v4 {
+                    onCompletion(.success(()))
+                } else {
+                    onCompletion(.failure(DotcomError.noRestRoute))
+                }
+            case let .retrieveSiteVisitStats(_, _, _, _, onCompletion):
+                if let visitorStatsError {
+                    onCompletion(.failure(visitorStatsError))
+                } else {
+                    onCompletion(.success(()))
+                }
+            case let .retrieveSiteSummaryStats(_, _, _, _, _, _, onCompletion):
+                if let siteSummaryStatsError {
+                    onCompletion(.failure(siteSummaryStatsError))
+                } else {
+                    onCompletion(.success(.fake()))
+                }
+            default:
+                break
+            }
+        }
     }
 }

@@ -72,7 +72,7 @@ extension StoreStatsChartViewModel {
         case .thisMonth:
             return 5
         case .thisYear:
-            return 4
+            return 3
         case .custom:
             return 5
         }

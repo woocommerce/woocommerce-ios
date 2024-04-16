@@ -67,7 +67,7 @@
             "carrier_id": "usps",
             "service_name": "USPS - Priority Mail International",
             "status": "PURCHASED",
-            "commercial_invoice_url": "https://woo.com",
+            "commercial_invoice_url": "https://woocommerce.com",
             "package_name": "box",
             "product_names": [
                 "Password protected!"

@@ -2,7 +2,7 @@ import Codegen
 
 /// Represents the data associated with order stats over a specific period.
 /// v4
-public struct OrderStatsV4Totals: Decodable, Equatable, GeneratedCopiable, GeneratedFakeable {
+public struct OrderStatsV4Totals: Decodable, Equatable, GeneratedCopiable, GeneratedFakeable, WCAnalyticsStatsTotals {
     public let totalOrders: Int
     public let totalItemsSold: Int
     public let grossRevenue: Decimal
@@ -34,32 +34,6 @@ public struct OrderStatsV4Totals: Decodable, Equatable, GeneratedCopiable, Gener
                   grossRevenue: grossRevenue,
                   netRevenue: netRevenue,
                   averageOrderValue: averageOrderValue)
-    }
-}
-
-extension OrderStatsV4Totals: WCAnalyticsStatsTotals {
-    /// Represents a type of orders total data
-    public enum TotalData: String {
-        case totalOrders
-        case totalItemsSold
-        case grossRevenue
-        case netRevenue
-        case averageOrderValue
-    }
-
-    public func getDoubleValue(for data: TotalData) -> Double {
-        switch data {
-        case .totalOrders:
-            return Double(totalOrders)
-        case .totalItemsSold:
-            return Double(totalItemsSold)
-        case .grossRevenue:
-            return (grossRevenue as NSNumber).doubleValue
-        case .netRevenue:
-            return (netRevenue as NSNumber).doubleValue
-        case .averageOrderValue:
-            return (averageOrderValue as NSNumber).doubleValue
-        }
     }
 }
 

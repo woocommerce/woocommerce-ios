@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-04-09 13:54:03+0000 */
+/* Translation-Revision-Date: 2024-04-10 15:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: he_IL */
@@ -5211,7 +5211,7 @@ which should be translated separately and considered part of this sentence. */
 "Order total" = "סה\"כ הזמנה";
 
 /* Retry Action inside notice */
-"OrderDetail.retry.notice.button" = "יש לנסות שוב";
+"OrderDetail.retry.notice.button" = "לנסות שוב";
 
 /* Cancel button on the alert when the user is cancelling the action on moving an order to the trash */
 "OrderDetail.trashOrder.alert.cancelButton" = "ביטול";
@@ -5223,10 +5223,10 @@ which should be translated separately and considered part of this sentence. */
 "OrderDetail.trashOrder.alert.moveToTrashButton" = "להעביר לפח";
 
 /* Title of the alert when a user is moving an order to the trash */
-"OrderDetail.trashOrder.alert.title" = "להסיר את המסנן 'הזמנות'";
+"OrderDetail.trashOrder.alert.title" = "להסיר את ההזמנה";
 
 /* Content of error presented when Trash Order Action Failed. It reads: Unable to trash the order #{order number}. Parameters: %1$d - order number */
-"OrderDetail.trashOrder.notice.title" = "לא ניתן להוסיף להזמנה⁦%1$d⁩";
+"OrderDetail.trashOrder.notice.title" = "לא ניתן להעביר לפח את הזמנה מס' ⁦%1$d⁩";
 
 /* Undo Action */
 "OrderDetail.trashOrder.notice.undoAction" = "לבטל פעולה אחרונה";
@@ -9110,7 +9110,7 @@ which should be translated separately and considered part of this sentence. */
 "We found that the store has already launched." = "בדקנו וראינו שהחנות כבר הושקה.";
 
 /* Message on the expired WPCom plan alert */
-"We have paused your store. You can purchase another plan by logging in to WordPress.com on your browser." = "We have paused your store. You can purchase another plan by logging in to WordPress.com on your browser.";
+"We have paused your store. You can purchase another plan by logging in to WordPress.com on your browser." = "השהינו את החנות שלך. אפשר לרכוש תוכנית אחרת על ידי התחברות אל WordPress.com בדפדפן.";
 
 /* Banner caption in Shipping Label Address when there is a suggested address. */
 "We have slightly modified the address entered. If correct, please use the suggested address to ensure accurate delivery." = "שינינו מעט את הכתובת שהוזנה. אם הכתובת נכונה, אנחנו מציעים להשתמש בכתובת המומלצת כדי לוודא שהיעד למשלוח מדויק.";
@@ -9691,10 +9691,10 @@ which should be translated separately and considered part of this sentence. */
 "analyticsHub.giftCardsCard.leadingTitle" = "נוצל";
 
 /* Title for the gift cards analytics report linked in the Analytics Hub */
-"analyticsHub.giftCardsCard.reportTitle" = "Gift Cards Report";
+"analyticsHub.giftCardsCard.reportTitle" = "דוח של שוברי מתנה";
 
 /* Text displayed when there is an error loading gift card stats data. */
-"analyticsHub.giftCardsCard.syncErrorMessage" = "אין אפשרות להעלות את הנתונים האנליטיים של ההפעלה";
+"analyticsHub.giftCardsCard.syncErrorMessage" = "אין אפשרות לטעון נתונים אנליטיים של שוברי מתנה";
 
 /* Title for gift cards analytics section in the Analytics Hub */
 "analyticsHub.giftCardsCard.title" = "שוברי מתנה";
@@ -10777,7 +10777,7 @@ which should be translated separately and considered part of this sentence. */
 "limited_quantity_category" = "חבילה להובלה יבשתית עם כמויות מוגבלות – תרסיסים, חומרי חיטוי במכל התזה, צבע במכל התזה, ספריי לשיער, פרופן, בוטאן, חומרי ניקוי וכו'. - בשמים, לק לציפורניים, מסיר לק לציפורניים, חומרים ממסים, נוזל חיטוי לידיים, אלכוהול רפואי, מוצרים המבוססים על אתנול וכו'. - מוצרים אחרים למשטחים בכמות מוגבלת (קוסמטיקה, חומרי ניקוי, צבעים וכו').";
 
 /* Subtitle displayed in the simplified prologue screen */
-"loginProloguePageType.getStartedText" = "מהמכירה הראשונה עד מחזור רווחים של מיליונים, השירות של WooCommerce עומד לצדך. כדאי להתרשם למה סוחרים סומכים עלינו בהפעלת 3.9 מיליון חנויות מקוונות.";
+"loginProloguePageType.getStartedText" = "מהמכירה הראשונה עד מחזור רווחים של מיליונים, השירות של Woo עומד לצדך. כדאי להתרשם למה סוחרים סומכים עלינו בהפעלת 3.9 מיליון חנויות מקוונות.";
 
 /* A manual refund is one where the store owner has given the purchaser alternative funds (cash, check, ACH) instead of using the payment gateway to create a refund (credit card or debit card was refunded) */
 "manual refund" = "החזר כספי ידני";
@@ -10941,7 +10941,7 @@ which should be translated separately and considered part of this sentence. */
 "orderAttributionInfo.webAdmin" = "מנהל מערכת אינטרנט";
 
 /* Content of error presented when Delete Shipment Tracking Action Failed. It reads: Unable to delete tracking for order #{order number}. Parameters: %1$d - order number */
-"orderDetail.deleteTracking.notice.title" = "אין אפשרות למחוק את המעקב אחר ההזמנה ⁦%1$d⁩#";
+"orderDetail.deleteTracking.notice.title" = "אין אפשרות למחוק את המעקב אחר הזמנה מס' ⁦%1$d⁩";
 
 /* Title for the row to add tracking information. */
 "orderDetails.addTrackingRow.title" = "מידע על מעקב אופציונלי";
@@ -10980,10 +10980,10 @@ which should be translated separately and considered part of this sentence. */
 "orderDetailsDataSource.attributionInfo.unknown" = "לא ידוע";
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to view the order custom fields information. */
-"orderDetailsDataSource.trashOrder.accessibilityHint" = "Put this order in the trash.";
+"orderDetailsDataSource.trashOrder.accessibilityHint" = "להעביר את ההזמנה לפח.";
 
 /* Accessibility label for the 'Trash order' button */
-"orderDetailsDataSource.trashOrder.accessibilityLabel" = "Trash Order Button";
+"orderDetailsDataSource.trashOrder.accessibilityLabel" = "הכפתור 'להעביר הזמנה לפח'";
 
 /* Text on the button title to trash an order */
 "orderDetailsDataSource.trashOrder.button.title" = "להעביר לפח";
@@ -11187,7 +11187,7 @@ which should be translated separately and considered part of this sentence. */
 "rangedDatePicker.invalidTimeRangeAlert.action" = "הבנתי";
 
 /* Message of the alert displayed when selecting an invalid time range for analytics */
-"rangedDatePicker.invalidTimeRangeAlert.message" = "תאריך ההתחלה חייב להיות לפני תאריך הסיום. יש לבחור טווח מועדים אחר.";
+"rangedDatePicker.invalidTimeRangeAlert.message" = "תאריך ההתחלה לא יכול להיות אחרי תאריך הסיום. יש לבחור טווח מועדים אחר.";
 
 /* Title of the alert displayed when selecting an invalid time range for analytics */
 "rangedDatePicker.invalidTimeRangeAlert.title" = "טווח מועדים לא תקין";

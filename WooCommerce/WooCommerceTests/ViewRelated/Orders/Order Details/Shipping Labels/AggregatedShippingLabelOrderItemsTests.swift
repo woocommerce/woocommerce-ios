@@ -36,7 +36,7 @@ final class AggregatedShippingLabelOrderItemsTests: XCTestCase {
         // Given
         let shippingLabel = MockShippingLabel.emptyLabel().copy(productIDs: [2020, 3013, 3013, 3013],
                                                                 productNames: ["Woo", "PW", "PW", "PW"])
-        let imageURL1 = URL(string: "woo.com/woo.jpeg")!
+        let imageURL1 = URL(string: "woocommerce.com/woocommerce.jpeg")!
         let product1 = Product.fake().copy(productID: 2020, name: "Whoa", price: "25.9", images: [createProductImage(src: imageURL1.absoluteString)])
         let product2 = Product.fake().copy(productID: 3013, name: "Password", price: "25.9")
         let orderItem1 = MockOrderItem.sampleItem(itemID: 1, name: "Woooo", productID: 2020, price: 59.2, sku: "woo")
@@ -84,7 +84,7 @@ final class AggregatedShippingLabelOrderItemsTests: XCTestCase {
     func test_order_items_from_shipping_label_with_matching_ProductVariation_and_OrderItem_have_expected_properties() {
         // Given
         let shippingLabel = MockShippingLabel.emptyLabel().copy(productIDs: [3013], productNames: ["Password protected!"])
-        let imageURL = URL(string: "woo.com/woo.jpeg")!
+        let imageURL = URL(string: "woocommerce.com/woocommerce.jpeg")!
         let variation = MockProductVariation().productVariation()
             .copy(productID: 100,
                   productVariationID: 3013,
@@ -129,7 +129,7 @@ final class AggregatedShippingLabelOrderItemsTests: XCTestCase {
     func test_order_items_from_shipping_label_with_matching_ProductVariation_and_without_OrderItem_have_expected_properties() {
         // Given
         let shippingLabel = MockShippingLabel.emptyLabel().copy(productIDs: [3013], productNames: ["Password protected!"])
-        let imageURL = URL(string: "woo.com/woo.jpeg")!
+        let imageURL = URL(string: "woocommerce.com/woocommerce.jpeg")!
         let variation = MockProductVariation().productVariation()
             .copy(productID: 100,
                   productVariationID: 3013,

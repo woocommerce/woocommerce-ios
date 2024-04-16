@@ -314,7 +314,12 @@ extension BlazeCampaignCreationFormViewModel {
     @MainActor
     func downloadProductImage() async {
         isLoadingProductImage = true
-        image = await loadProductImage()
+        if let productImage = await loadProductImage(),
+           // Validate the image has expected dimensions
+           productImage.image.size.width * productImage.image.scale >= editAdViewModel.minImageSize.width,
+           productImage.image.size.height * productImage.image.scale >= editAdViewModel.minImageSize.height {
+            image = productImage
+        }
         isLoadingProductImage = false
     }
 }

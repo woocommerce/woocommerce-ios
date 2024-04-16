@@ -6,7 +6,7 @@ import XCTest
 final class DefaultImageServiceTests: XCTestCase {
     private let testImage = UIImage.productPlaceholderImage
 
-    private let url = URL(string: "https://woo.com/fun")!
+    private let url = URL(string: "https://woocommerce.com/fun")!
 
     private var imageService: ImageService!
 
@@ -117,7 +117,7 @@ final class DefaultImageServiceTests: XCTestCase {
 
         let mockCache = MockImageCache(name: "Testing")
 
-        let urlStringWithSpecialChars = "https://woo.com/тест-图像"
+        let urlStringWithSpecialChars = "https://woocommerce.com/тест-图像"
         let encodedURLStringWithSpecialChars = urlStringWithSpecialChars.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!
         let encodedURL = URL(string: encodedURLStringWithSpecialChars)!
 

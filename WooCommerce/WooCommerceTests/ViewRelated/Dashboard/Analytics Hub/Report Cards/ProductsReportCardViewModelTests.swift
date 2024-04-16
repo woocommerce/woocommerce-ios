@@ -104,7 +104,7 @@ final class ProductsReportCardViewModelTests: XCTestCase {
     func test_AnalyticsItemsSoldViewModel_inits_with_expected_values() {
         // Given
         let productName = "Woo!"
-        let imageUrl = "https://woo.com/woo.png"
+        let imageUrl = "https://woocommerce.com/woocommerce.png"
         let vm = AnalyticsItemsSoldViewModel(itemsSoldStats: .fake().copy(items: [
             .fake().copy(productName: productName, quantity: 5, total: 100, currency: "USD", imageUrl: imageUrl)
         ]),

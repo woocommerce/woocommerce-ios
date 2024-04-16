@@ -31,11 +31,11 @@
             "slug": "woocommerce",
             "active": true,
             "name": "WooCommerce",
-            "plugin_url": "https://woo.com/",
+            "plugin_url": "https://woocommerce.com/",
             "version": "7.7.0",
             "description": "An eCommerce toolkit that helps you sell anything. Beautifully.",
             "author": "Automattic",
-            "author_url": "https://woo.com",
+            "author_url": "https://woocommerce.com",
             "network": false,
             "autoupdate": false,
             "action_links": {

@@ -119,8 +119,8 @@ public struct CardPresentPaymentsConfiguration: Equatable {
 }
 
 private enum Constants {
-    static let fallbackInPersonPaymentsUrl = URL(string: "https://woo.com/in-person-payments/")!
-    static let purchaseReaderForCountryUrlBase = "https://woo.com/products/hardware/"
+    static let fallbackInPersonPaymentsUrl = URL(string: "https://woocommerce.com/in-person-payments/")!
+    static let purchaseReaderForCountryUrlBase = "https://woocommerce.com/products/hardware/"
 }
 
 extension OperatingSystemVersion: Equatable {

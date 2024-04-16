@@ -187,9 +187,7 @@ private extension DashboardViewHostingController {
 
     /// Reloads data.
     func handlePostCreation() {
-        Task {
-            await viewModel.blazeCampaignDashboardViewModel.reload()
-        }
+        viewModel.blazeCampaignDashboardViewModel.didCreateCampaign()
     }
 }
 

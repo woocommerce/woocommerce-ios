@@ -9,8 +9,8 @@ public final class ExternalAppScreen {
     }
 
     let universalLinks = [
-        "payments": "https://woo.com/mobile/payments",
-        "orders": "https://www.woo.com/mobile/orders/details?blog_id=161477129&order_id=3337"
+        "payments": "https://woocommerce.com/mobile/payments",
+        "orders": "https://www.woocommerce.com/mobile/orders/details?blog_id=161477129&order_id=3337"
     ]
 
     // To open universal links listed in mocked HTML file

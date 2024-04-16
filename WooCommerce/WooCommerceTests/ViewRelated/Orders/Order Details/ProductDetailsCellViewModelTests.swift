@@ -46,7 +46,7 @@ final class ProductDetailsCellViewModelTests: XCTestCase {
                                           price: 3.5,
                                           total: 7,
                                           sku: sku,
-                                          imageURL: URL(string: "woo.com/woo.jpeg"),
+                                          imageURL: URL(string: "woocommerce.com/woocommerce.jpeg"),
                                           attributes: [
                                             .init(metaID: 2, name: "Woo", value: "Wao"),
                                             .init(metaID: 25, name: "Wooo", value: "Waoo")

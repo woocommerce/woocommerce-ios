@@ -69,7 +69,7 @@ struct DomainSettingsListView_Previews: PreviewProvider {
         DomainSettingsListView(domains: [
             .init(isPrimary: true, name: "play.store", autoRenewalDate: .distantFuture),
             .init(isPrimary: false, name: "app.store", autoRenewalDate: nil),
-            .init(isPrimary: false, name: "woo.store", autoRenewalDate: .now)
+            .init(isPrimary: false, name: "woocommerce.store", autoRenewalDate: .now)
         ], addDomain: {})
     }
 }

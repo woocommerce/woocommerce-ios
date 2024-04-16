@@ -32,4 +32,71 @@ final class StorePerformanceViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.startDateForCustomRange, startDate)
         XCTAssertEqual(viewModel.endDateForCustomRange, endDate)
     }
+
+    func test_granularityText_is_nil_for_non_custom_time_range() {
+        // Given
+        let viewModel = StorePerformanceViewModel(siteID: 123, usageTracksEventEmitter: .init())
+
+        // When
+        viewModel.didSelectTimeRange(.thisWeek)
+
+        // Then
+        XCTAssertNil(viewModel.granularityText)
+    }
+
+    func test_granularityText_is_not_nil_for_custom_time_range() throws {
+        // Given
+        let viewModel = StorePerformanceViewModel(siteID: 123, usageTracksEventEmitter: .init())
+
+        // When
+        let startDate = try XCTUnwrap(Date().adding(days: -100))
+        let endDate = try XCTUnwrap(Date().adding(days: -10))
+        viewModel.didSelectTimeRange(.custom(from: startDate, to: endDate))
+
+        // Then
+        XCTAssertNotNil(viewModel.granularityText)
+    }
+
+    func test_loadLastTimeRange_is_fetched_upon_initialization() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+            case let .loadLastSelectedStatsTimeRange(_, onCompletion):
+                onCompletion(StatsTimeRangeV4.thisWeek)
+            default:
+                break
+            }
+        }
+
+        // When
+        let viewModel = StorePerformanceViewModel(siteID: 123, stores: stores, usageTracksEventEmitter: .init())
+
+        // Then
+        XCTAssertEqual(viewModel.timeRange, .today) // initial value
+        waitUntil {
+            viewModel.timeRange == .thisWeek
+        }
+    }
+
+    func test_saveLastTimeRange_is_triggered_when_updating_time_range() {
+        // Given
+        var savedTimeRange: StatsTimeRangeV4?
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+            case let .setLastSelectedStatsTimeRange(_, timeRange):
+                savedTimeRange = timeRange
+            default:
+                break
+            }
+        }
+        let viewModel = StorePerformanceViewModel(siteID: 123, stores: stores, usageTracksEventEmitter: .init())
+
+        // When
+        viewModel.didSelectTimeRange(.thisYear)
+
+        // Then
+        XCTAssertEqual(savedTimeRange, .thisYear)
+    }
 }

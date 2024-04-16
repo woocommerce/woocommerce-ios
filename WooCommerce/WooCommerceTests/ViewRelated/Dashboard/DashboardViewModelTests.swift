@@ -251,11 +251,8 @@ final class DashboardViewModelTests: XCTestCase {
 
         let viewModel = DashboardViewModel(siteID: 0, stores: stores, featureFlags: featureFlagService)
         stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
-            switch action {
-            case .getLocalAnnouncementVisibility:
+            if case .getLocalAnnouncementVisibility = action {
                 XCTFail("Local announcement should not be loaded when JITM is available.")
-            default:
-                XCTFail("Received unsupported action: \(action)")
             }
         }
 
@@ -279,11 +276,8 @@ final class DashboardViewModelTests: XCTestCase {
 
         let viewModel = DashboardViewModel(siteID: 0, stores: stores, featureFlags: featureFlagService)
         stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
-            switch action {
-            case let .getLocalAnnouncementVisibility(_, completion):
+            if case let .getLocalAnnouncementVisibility(_, completion) = action {
                 completion(true)
-            default:
-                XCTFail("Received unsupported action: \(action)")
             }
         }
 
@@ -572,6 +566,53 @@ final class DashboardViewModelTests: XCTestCase {
         // Then
         XCTAssertTrue(siteVisitStatsResult.isSuccess)
         XCTAssertTrue(siteSummaryStatsResult.isSuccess)
+    }
+
+    // MARK: Dashboard cards
+
+    func test_dashboard_cards_are_loaded_from_app_settings() async throws {
+        // Given
+        let uuid = UUID().uuidString
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
+        let viewModel = DashboardViewModel(siteID: 0,
+                                           stores: stores,
+                                           userDefaults: defaults)
+
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            if case let .loadDashboardCards(_, completion) = action {
+                completion([.init(type: .statsAndTopPerformers, enabled: true),
+                            .init(type: .blaze, enabled: true)])
+            }
+        }
+
+        // Then
+        waitUntil {
+            viewModel.dashboardCards == [.init(type: .statsAndTopPerformers, enabled: true),
+                                         .init(type: .blaze, enabled: true)]
+        }
+    }
+
+    func test_dashboard_cards_are_saved_to_app_settings() async throws {
+        // Given
+        let uuid = UUID().uuidString
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
+        defaults[.completedAllStoreOnboardingTasks] = true
+        let viewModel = DashboardViewModel(siteID: 0,
+                                           stores: stores,
+                                           userDefaults: defaults)
+        var setDashboardCardsActionCalled = false
+
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            if case .setDashboardCards = action {
+                setDashboardCardsActionCalled = true
+            }
+        }
+
+        // When
+        viewModel.didCustomizeDashboardCards([.init(type: .statsAndTopPerformers, enabled: true)])
+
+        // Then
+        XCTAssertTrue(setDashboardCardsActionCalled)
     }
 
     // MARK: Profiler answers

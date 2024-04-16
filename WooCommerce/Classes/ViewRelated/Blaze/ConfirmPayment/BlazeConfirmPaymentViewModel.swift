@@ -1,6 +1,7 @@
 import Foundation
 import Yosemite
 import class Photos.PHAsset
+import enum Networking.NetworkError
 
 /// View model for `BlazeConfirmPaymentView`
 final class BlazeConfirmPaymentViewModel: ObservableObject {
@@ -122,7 +123,11 @@ final class BlazeConfirmPaymentViewModel: ObservableObject {
                 try await requestCampaignCreation(details: updatedDetails)
             } catch {
                 DDLogError("⛔️ Error creating Blaze campaign: \(error)")
-                throw BlazeCampaignCreationError.failedToCreateCampaign
+                if error.isInsuffientImageSizeError {
+                    throw BlazeCampaignCreationError.insufficientImageSize
+                } else {
+                    throw BlazeCampaignCreationError.failedToCreateCampaign
+                }
             }
             analytics.track(event: .Blaze.Payment.campaignCreationSuccess())
             completionHandler()
@@ -223,5 +228,20 @@ private extension BlazeConfirmPaymentViewModel {
         cardIcon = cardType.icon
         cardTypeName = paymentMethod.info.type
         cardName = paymentMethod.name
+    }
+}
+
+private extension Error {
+    /// Error when campaign image size is not sufficient
+    ///
+    var isInsuffientImageSizeError: Bool {
+        let errorCode = {
+            if let error = self as? NetworkError, let code = error.responseCode {
+                return code
+            } else {
+                return (self as NSError).code
+            }
+        }()
+        return errorCode == 422
     }
 }

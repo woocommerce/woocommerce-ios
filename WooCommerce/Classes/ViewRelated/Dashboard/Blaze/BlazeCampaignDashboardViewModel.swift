@@ -148,6 +148,13 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
         userDefaults.setDismissedBlazeSectionOnMyStore(for: siteID)
         analytics.track(event: .Blaze.blazeViewDismissed(source: .myStoreSection))
     }
+
+    func didCreateCampaign() {
+        userDefaults.restoreBlazeSectionOnMyStore(for: siteID)
+        Task {
+            await reload()
+        }
+    }
 }
 
 // MARK: - Blaze campaigns

@@ -36,7 +36,7 @@ final class BlazeCampaignCreationCoordinatorTests: XCTestCase {
         // Given
         let featureFlagService = MockFeatureFlagService(blazei3NativeCampaignCreation: false)
         let sut = BlazeCampaignCreationCoordinator(siteID: 1,
-                                                   siteURL: "https://woo.com/",
+                                                   siteURL: "https://woocommerce.com/",
                                                    source: .myStoreSection,
                                                    shouldShowIntro: true,
                                                    featureFlagService: featureFlagService,
@@ -54,7 +54,7 @@ final class BlazeCampaignCreationCoordinatorTests: XCTestCase {
         // Given
         let featureFlagService = MockFeatureFlagService(blazei3NativeCampaignCreation: true)
         let sut = BlazeCampaignCreationCoordinator(siteID: 1,
-                                                   siteURL: "https://woo.com/",
+                                                   siteURL: "https://woocommerce.com/",
                                                    source: .myStoreSection,
                                                    shouldShowIntro: true,
                                                    featureFlagService: featureFlagService,
@@ -72,7 +72,7 @@ final class BlazeCampaignCreationCoordinatorTests: XCTestCase {
         // Given
         let featureFlagService = MockFeatureFlagService(blazei3NativeCampaignCreation: false)
         let sut = BlazeCampaignCreationCoordinator(siteID: 1,
-                                                   siteURL: "https://woo.com/",
+                                                   siteURL: "https://woocommerce.com/",
                                                    source: .campaignList,
                                                    shouldShowIntro: false,
                                                    featureFlagService: featureFlagService,
@@ -94,7 +94,7 @@ final class BlazeCampaignCreationCoordinatorTests: XCTestCase {
 
         let featureFlagService = MockFeatureFlagService(blazei3NativeCampaignCreation: true)
         let sut = BlazeCampaignCreationCoordinator(siteID: 1,
-                                                   siteURL: "https://woo.com/",
+                                                   siteURL: "https://woocommerce.com/",
                                                    productID: 2,
                                                    source: .campaignList,
                                                    shouldShowIntro: false,
@@ -120,7 +120,7 @@ final class BlazeCampaignCreationCoordinatorTests: XCTestCase {
                                    purchasable: true))
 
         let sut = BlazeCampaignCreationCoordinator(siteID: 1,
-                                                   siteURL: "https://woo.com/",
+                                                   siteURL: "https://woocommerce.com/",
                                                    source: .campaignList,
                                                    shouldShowIntro: false,
                                                    storageManager: storageManager,
@@ -147,7 +147,7 @@ final class BlazeCampaignCreationCoordinatorTests: XCTestCase {
                                    statusKey: (ProductStatus.published.rawValue)))
 
         let sut = BlazeCampaignCreationCoordinator(siteID: 1,
-                                                   siteURL: "https://woo.com/",
+                                                   siteURL: "https://woocommerce.com/",
                                                    source: .campaignList,
                                                    shouldShowIntro: false,
                                                    storageManager: storageManager,
@@ -175,7 +175,7 @@ final class BlazeCampaignCreationCoordinatorTests: XCTestCase {
                                    statusKey: (ProductStatus.draft.rawValue)))
 
         let sut = BlazeCampaignCreationCoordinator(siteID: 1,
-                                                   siteURL: "https://woo.com/",
+                                                   siteURL: "https://woocommerce.com/",
                                                    source: .campaignList,
                                                    shouldShowIntro: false,
                                                    storageManager: storageManager,

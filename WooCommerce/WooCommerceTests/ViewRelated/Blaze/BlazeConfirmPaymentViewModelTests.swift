@@ -193,6 +193,25 @@ final class BlazeConfirmPaymentViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.campaignCreationError, .failedToCreateCampaign)
     }
 
+    func test_campaignCreationError_is_correct_when_image_size_error_happens() async {
+        // Given
+        let viewModel = BlazeConfirmPaymentViewModel(productID: sampleProductID,
+                                                     siteID: sampleSiteID,
+                                                     campaignInfo: .fake(),
+                                                     image: .init(image: .init(), source: .productImage(image: .fake())),
+                                                     stores: stores) {}
+        XCTAssertNil(viewModel.campaignCreationError)
+
+        // When
+        mockRetrieveMedia(with: .success(.fake()))
+        mockCampaignCreation(with: .failure(NetworkError.unacceptableStatusCode(statusCode: 422, response: nil)))
+        await viewModel.updatePaymentInfo()
+        await viewModel.submitCampaign()
+
+        // Then
+        XCTAssertEqual(viewModel.campaignCreationError, .insufficientImageSize)
+    }
+
     func test_onCompletion_is_triggered_when_campaign_creation_succeeds() async {
         // Given
         var completionHandlerTriggered = false

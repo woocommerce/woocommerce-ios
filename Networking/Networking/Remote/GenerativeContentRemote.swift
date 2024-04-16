@@ -9,6 +9,11 @@ public enum GenerativeContentRemoteFeature: String {
     case productCreation = "woo_ios_product_creation"
 }
 
+public enum GenerativeContentRemoteResponseFormat: String {
+    case json = "json_object"
+    case text = "text"
+}
+
 /// Protocol for `GenerativeContentRemote` mainly used for mocking.
 ///
 public protocol GenerativeContentRemoteProtocol {
@@ -17,10 +22,12 @@ public protocol GenerativeContentRemoteProtocol {
     ///   - siteID: WPCOM ID of the site.
     ///   - base: Prompt for the AI-generated text.
     ///   - feature: Used by backend to track AI-generation usage and measure costs
+    ///   - responseFormat: enum parameter to specify response format.
     /// - Returns: AI-generated text based on the prompt if Jetpack AI is enabled.
     func generateText(siteID: Int64,
                       base: String,
-                      feature: GenerativeContentRemoteFeature) async throws -> String
+                      feature: GenerativeContentRemoteFeature,
+                      responseFormat: GenerativeContentRemoteResponseFormat) async throws -> String
 
     /// Identifies the language from the given string
     /// - Parameters:
@@ -68,17 +75,18 @@ public final class GenerativeContentRemote: Remote, GenerativeContentRemoteProto
 
     public func generateText(siteID: Int64,
                              base: String,
-                             feature: GenerativeContentRemoteFeature) async throws -> String {
+                             feature: GenerativeContentRemoteFeature,
+                             responseFormat: GenerativeContentRemoteResponseFormat) async throws -> String {
         do {
             guard let token, token.isTokenValid(for: siteID) else {
                 throw GenerativeContentRemoteError.tokenNotFound
             }
-            return try await generateText(siteID: siteID, base: base, feature: feature, token: token)
+            return try await generateText(siteID: siteID, base: base, feature: feature, responseFormat: responseFormat, token: token)
         } catch GenerativeContentRemoteError.tokenNotFound,
                 WordPressApiError.unknown(code: TokenExpiredError.code, message: TokenExpiredError.message) {
             let token = try await fetchToken(siteID: siteID)
             self.token = token
-            return try await generateText(siteID: siteID, base: base, feature: feature, token: token)
+            return try await generateText(siteID: siteID, base: base, feature: feature, responseFormat: responseFormat, token: token)
         }
     }
 
@@ -154,11 +162,13 @@ private extension GenerativeContentRemote {
     func generateText(siteID: Int64,
                       base: String,
                       feature: GenerativeContentRemoteFeature,
+                      responseFormat: GenerativeContentRemoteResponseFormat?,
                       token: JWToken) async throws -> String {
         let parameters = [ParameterKey.token: token.token,
                           ParameterKey.prompt: base,
                           ParameterKey.feature: feature.rawValue,
-                          ParameterKey.fields: ParameterValue.completion]
+                          ParameterKey.fields: ParameterValue.completion,
+                          ParameterKey.responseFormat: responseFormat?.rawValue].compactMapValues { $0 }
         let request = DotcomRequest(wordpressApiVersion: .wpcomMark2,
                                     method: .post,
                                     path: Path.textCompletion,
@@ -287,6 +297,7 @@ private extension GenerativeContentRemote {
         static let prompt = "prompt"
         static let feature = "feature"
         static let fields = "_fields"
+        static let responseFormat = "response_format"
     }
 
     enum ParameterValue {

@@ -1991,6 +1991,31 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertEqual(feature, GenerativeContentRemoteFeature.productDescription)
     }
 
+    func test_generateProductDescription_uses_correct_response_format() throws {
+        // Given
+        let generativeContentRemote = MockGenerativeContentRemote()
+        generativeContentRemote.whenGeneratingText(thenReturn: .success(""))
+        let productStore = ProductStore(dispatcher: dispatcher,
+                                        storageManager: storageManager,
+                                        network: network,
+                                        remote: MockProductsRemote(),
+                                        generativeContentRemote: generativeContentRemote)
+
+        // When
+        waitFor { promise in
+            productStore.onAction(ProductAction.generateProductDescription(siteID: self.sampleSiteID,
+                                                                           name: "A product name",
+                                                                           features: "Trendy, cool, fun",
+                                                                           language: "en") { _ in
+                promise(())
+            })
+        }
+
+        // Then
+        let format = try XCTUnwrap(generativeContentRemote.generateTextResponseFormat)
+        XCTAssertEqual(format, .text)
+    }
+
     // MARK: - ProductAction.generateProductSharingMessage
 
     func test_generateProductSharingMessage_returns_text_on_success() throws {
@@ -2142,6 +2167,34 @@ final class ProductStoreTests: XCTestCase {
         // Then
         let feature = try XCTUnwrap(generativeContentRemote.generateTextFeature)
         XCTAssertEqual(feature, GenerativeContentRemoteFeature.productSharing)
+    }
+
+    func test_generateProductSharingMessage_uses_correct_response_format() throws {
+        // Given
+        let generativeContentRemote = MockGenerativeContentRemote()
+        generativeContentRemote.whenGeneratingText(thenReturn: .success(""))
+        let productStore = ProductStore(dispatcher: dispatcher,
+                                        storageManager: storageManager,
+                                        network: network,
+                                        remote: MockProductsRemote(),
+                                        generativeContentRemote: generativeContentRemote)
+
+        // When
+        waitFor { promise in
+            productStore.onAction(ProductAction.generateProductSharingMessage(
+                siteID: self.sampleSiteID,
+                url: "https://example.com",
+                name: "Sample product",
+                description: "Sample description",
+                language: "en"
+            ) { result in
+                promise(())
+            })
+        }
+
+        // Then
+        let format = try XCTUnwrap(generativeContentRemote.generateTextResponseFormat)
+        XCTAssertEqual(format, .text)
     }
 
     // MARK: - ProductAction.identifyLanguage
@@ -2536,6 +2589,31 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertEqual(feature, GenerativeContentRemoteFeature.productDetailsFromScannedTexts)
     }
 
+    func test_generateProductDetails_uses_correct_response_format() throws {
+        // Given
+        let generativeContentRemote = MockGenerativeContentRemote()
+        generativeContentRemote.whenGeneratingText(thenReturn: .success(""))
+        let productStore = ProductStore(dispatcher: dispatcher,
+                                        storageManager: storageManager,
+                                        network: network,
+                                        remote: MockProductsRemote(),
+                                        generativeContentRemote: generativeContentRemote)
+
+        // When
+        waitFor { promise in
+            productStore.onAction(ProductAction.generateProductDetails(siteID: self.sampleSiteID,
+                                                                       productName: nil,
+                                                                       scannedTexts: [""],
+                                                                       language: "en") { _ in
+                promise(())
+            })
+        }
+
+        // Then
+        let format = try XCTUnwrap(generativeContentRemote.generateTextResponseFormat)
+        XCTAssertEqual(format, .json)
+    }
+
     // MARK: - `generateProductName`
 
     func test_generateProductName_returns_product_details_on_success() throws {
@@ -2626,6 +2704,28 @@ final class ProductStoreTests: XCTestCase {
         // Then
         let feature = try XCTUnwrap(generativeContentRemote.generateTextFeature)
         XCTAssertEqual(feature, GenerativeContentRemoteFeature.productName)
+    }
+
+    func test_generateProductName_uses_correct_response_format() throws {
+        // Given
+        let generativeContentRemote = MockGenerativeContentRemote()
+        generativeContentRemote.whenGeneratingText(thenReturn: .success(""))
+        let productStore = ProductStore(dispatcher: dispatcher,
+                                        storageManager: storageManager,
+                                        network: network,
+                                        remote: MockProductsRemote(),
+                                        generativeContentRemote: generativeContentRemote)
+
+        // When
+        waitFor { promise in
+            productStore.onAction(ProductAction.generateProductName(siteID: 123, keywords: "keyword", language: "en") { _ in
+                promise(())
+            })
+        }
+
+        // Then
+        let format = try XCTUnwrap(generativeContentRemote.generateTextResponseFormat)
+        XCTAssertEqual(format, .text)
     }
 
     // MARK: - `fetchNumberOfProducts`

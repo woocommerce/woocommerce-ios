@@ -149,6 +149,8 @@ final class EditableOrderViewModel: ObservableObject {
     /// When the value is non-nil, the bundle product configuration screen is shown.
     @Published var productToConfigureViewModel: ConfigurableBundleProductViewModel?
 
+    @Published private(set) var customAmountsSectionViewModel: OrderCustomAmountsSectionViewModel = .init()
+
     // MARK: Status properties
 
     /// Order creation date. For new order flow it's always current date.
@@ -897,8 +899,15 @@ final class EditableOrderViewModel: ObservableObject {
     }
 
     func onAddCustomAmountButtonTapped() {
-        editingFee = nil
         analytics.track(.orderCreationAddCustomAmountTapped)
+        addCustomAmount()
+    }
+
+    /// Starts the flow to add a custom amount.
+    func addCustomAmount() {
+        editingFee = nil
+        enableAddingCustomAmountViaOrderTotalPercentage ?
+        customAmountsSectionViewModel.showAddCustomAmountOptionsDialog.toggle() : customAmountsSectionViewModel.showAddCustomAmount.toggle()
     }
 
     func onCreateOrderTapped() {

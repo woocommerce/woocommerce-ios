@@ -294,6 +294,10 @@ static NSString * const RemoteOptionValueOrderByPostID = @"ID";
 }
 
 - (RemotePost *)remotePostFromXMLRPCDictionary:(NSDictionary *)xmlrpcDictionary {
+    return [PostServiceRemoteXMLRPC remotePostFromXMLRPCDictionary:xmlrpcDictionary];
+}
+
++ (RemotePost *)remotePostFromXMLRPCDictionary:(NSDictionary *)xmlrpcDictionary {
     RemotePost *post = [RemotePost new];
 
     post.postID = [xmlrpcDictionary numberForKey:@"post_id"];
@@ -339,7 +343,7 @@ static NSString * const RemoteOptionValueOrderByPostID = @"ID";
     return post;
 }
 
-- (NSString *)statusForPostStatus:(NSString *)status andDate:(NSDate *)date
++ (NSString *)statusForPostStatus:(NSString *)status andDate:(NSDate *)date
 {
     // Scheduled posts are synced with a post_status of 'publish' but we want to
     // work with a status of 'future' from within the app.
@@ -349,12 +353,12 @@ static NSString * const RemoteOptionValueOrderByPostID = @"ID";
     return status;
 }
 
-- (NSArray *)tagsFromXMLRPCTermsArray:(NSArray *)terms {
++ (NSArray *)tagsFromXMLRPCTermsArray:(NSArray *)terms {
     NSArray *tags = [terms filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"taxonomy = 'post_tag' AND name != NIL"]];
     return [tags valueForKey:@"name"];
 }
 
-- (NSArray *)remoteCategoriesFromXMLRPCTermsArray:(NSArray *)terms {
++ (NSArray *)remoteCategoriesFromXMLRPCTermsArray:(NSArray *)terms {
     return [[terms wp_filter:^BOOL(NSDictionary *category) {
         return [[category stringForKey:@"taxonomy"] isEqualToString:@"category"];
     }] wp_map:^id(NSDictionary *category) {
@@ -362,7 +366,7 @@ static NSString * const RemoteOptionValueOrderByPostID = @"ID";
     }];
 }
 
-- (RemotePostCategory *)remoteCategoryFromXMLRPCDictionary:(NSDictionary *)xmlrpcCategory {
++ (RemotePostCategory *)remoteCategoryFromXMLRPCDictionary:(NSDictionary *)xmlrpcCategory {
     RemotePostCategory *category = [RemotePostCategory new];
     category.categoryID = [xmlrpcCategory numberForKey:@"term_id"];
     category.name = [xmlrpcCategory stringForKey:@"name"];

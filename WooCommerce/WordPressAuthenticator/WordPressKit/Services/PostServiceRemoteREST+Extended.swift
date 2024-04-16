@@ -1,6 +1,20 @@
 import Foundation
 
 extension PostServiceRemoteREST: PostServiceRemoteExtended {
+    public func post(withID postID: Int) async throws -> RemotePost {
+        let path = self.path(forEndpoint: "sites/\(siteID)/posts/\(postID)?context=edit", withVersion: ._1_1)
+        let result = await wordPressComRestApi.perform(.get, URLString: path)
+        switch result {
+        case .success(let response):
+            return try await decodePost(from: response.body)
+        case .failure(let error):
+            if case .endpointError(let error) = error, error.apiErrorCode == "unknown_post" {
+                throw PostServiceRemoteError.notFound
+            }
+            throw error
+        }
+    }
+
     public func createPost(with parameters: RemotePostCreateParameters) async throws -> RemotePost {
         let path = self.path(forEndpoint: "sites/\(siteID)/posts/new?context=edit", withVersion: ._1_2)
         let parameters = try makeParameters(from: RemotePostCreateParametersWordPressComEncoder(parameters: parameters))
@@ -22,8 +36,8 @@ extension PostServiceRemoteREST: PostServiceRemoteExtended {
                 throw error
             }
             switch error.apiErrorCode ?? "" {
-            case "unknown_post": throw PostServiceRemoteUpdatePostError.notFound
-            case "old-revision": throw PostServiceRemoteUpdatePostError.conflict
+            case "unknown_post": throw PostServiceRemoteError.notFound
+            case "old-revision": throw PostServiceRemoteError.conflict
             default: throw error
             }
         }
@@ -40,7 +54,7 @@ extension PostServiceRemoteREST: PostServiceRemoteExtended {
                 throw error
             }
             switch error.apiErrorCode ?? "" {
-            case "unknown_post": throw PostServiceRemoteUpdatePostError.notFound
+            case "unknown_post": throw PostServiceRemoteError.notFound
             default: throw error
             }
         }

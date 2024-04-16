@@ -30,6 +30,8 @@ final class StorePerformanceViewModel: ObservableObject {
     private let storageManager: StorageManagerType
     private let currencyFormatter: CurrencyFormatter
     private let currencySettings: CurrencySettings
+    private let usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter
+    private let analytics: Analytics
 
     private var periodViewModel: StoreStatsPeriodViewModel?
 
@@ -41,6 +43,7 @@ final class StorePerformanceViewModel: ObservableObject {
 
     private var subscriptions: Set<AnyCancellable> = []
     private var currentDate = Date()
+    private let chartValueSelectedEventsSubject = PassthroughSubject<Void, Never>()
 
     // To check whether the tab is showing the visitors and conversion views as redacted for custom range.
     // This redaction is only shown on Custom Range tab with WordPress.com or Jetpack connected sites,
@@ -60,15 +63,20 @@ final class StorePerformanceViewModel: ObservableObject {
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
-         currencySettings: CurrencySettings = ServiceLocator.currencySettings) {
+         currencySettings: CurrencySettings = ServiceLocator.currencySettings,
+         usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter,
+         analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
         self.stores = stores
         self.siteTimezone = siteTimezone
         self.storageManager = storageManager
         self.currencyFormatter = currencyFormatter
         self.currencySettings = currencySettings
+        self.usageTracksEventEmitter = usageTracksEventEmitter
+        self.analytics = analytics
 
         observeTimeRange()
+        observeChartValueSelectedEvents()
 
         Task { @MainActor in
             self.timeRange = await loadLastTimeRange() ?? .today
@@ -78,10 +86,13 @@ final class StorePerformanceViewModel: ObservableObject {
     func didSelectTimeRange(_ newTimeRange: StatsTimeRangeV4) {
         timeRange = newTimeRange
         saveLastTimeRange(timeRange)
+        usageTracksEventEmitter.interacted()
+        analytics.track(event: .Dashboard.dashboardMainStatsDate(timeRange: timeRange))
     }
 
     func didSelectStatsInterval(at index: Int?) {
         periodViewModel?.selectedIntervalIndex = index
+        chartValueSelectedEventsSubject.send(())
 
         if unavailableVisitStatsDueToCustomRange {
             // If time range is less than 2 days, redact data when selected and show when deselected.
@@ -284,6 +295,24 @@ private extension StorePerformanceViewModel {
             siteVisitStatMode = .hidden
         }
     }
+
+    /// Observe `chartValueSelected` events and call `StoreStatsUsageTracksEventEmitter.interacted()` when
+    /// no similar events have been received after some time.
+    ///
+    /// We debounce it because there are just too many events received from `chartValueSelected()` when
+    /// the user holds and drags on the chart. Having too many events might skew the
+    /// `StoreStatsUsageTracksEventEmitter` algorithm.
+    private func observeChartValueSelectedEvents() {
+        chartValueSelectedEventsSubject
+            .debounce(for: .seconds(Constants.chartValueSelectedEventsDebounce), scheduler: DispatchQueue.main)
+            .sink { [weak self] _ in
+                guard let self else { return }
+                if timeRange.isCustomTimeRange {
+                    analytics.track(event: .DashboardCustomRange.interacted())
+                }
+                usageTracksEventEmitter.interacted()
+            }.store(in: &subscriptions)
+    }
 }
 
 // MARK: - Syncing data
@@ -433,6 +462,9 @@ private extension StorePerformanceViewModel {
 private extension StorePerformanceViewModel {
     enum Constants {
         static let thirtyDaysInSeconds: TimeInterval = 86400*30
+
+        /// The wait time before the `StoreStatsUsageTracksEventEmitter.interacted()` is called.
+        static let chartValueSelectedEventsDebounce: TimeInterval = 1.0
     }
     enum Localization {
         static let addCustomRange = NSLocalizedString(

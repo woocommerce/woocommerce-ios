@@ -292,7 +292,8 @@ private extension StorePerformanceView {
 }
 
 #Preview {
-    StorePerformanceView(viewModel: StorePerformanceViewModel(siteID: 123),
+    StorePerformanceView(viewModel: StorePerformanceViewModel(siteID: 123,
+                                                              usageTracksEventEmitter: .init()),
                          onCustomRangeRedactedViewTap: {},
                          onViewAllAnalytics: { _, _, _ in })
 }

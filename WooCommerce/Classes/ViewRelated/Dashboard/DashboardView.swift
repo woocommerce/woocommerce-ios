@@ -48,8 +48,7 @@ struct DashboardView: View {
             dismissedJetpackBenefitBanner == false
     }
 
-    init(viewModel: DashboardViewModel,
-         usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter) {
+    init(viewModel: DashboardViewModel) {
         self.viewModel = viewModel
     }
 
@@ -249,5 +248,5 @@ private extension DashboardView {
 }
 
 #Preview {
-    DashboardView(viewModel: DashboardViewModel(siteID: 123), usageTracksEventEmitter: .init())
+    DashboardView(viewModel: DashboardViewModel(siteID: 123, usageTracksEventEmitter: .init()))
 }

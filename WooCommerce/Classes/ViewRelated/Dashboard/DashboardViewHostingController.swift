@@ -29,12 +29,12 @@ final class DashboardViewHostingController: UIHostingController<DashboardView> {
     private var subscriptions: Set<AnyCancellable> = []
 
     init(siteID: Int64) {
-        let viewModel = DashboardViewModel(siteID: siteID)
         let usageTracksEventEmitter = StoreStatsUsageTracksEventEmitter()
+        let viewModel = DashboardViewModel(siteID: siteID, usageTracksEventEmitter: usageTracksEventEmitter)
         self.viewModel = viewModel
         self.usageTracksEventEmitter = usageTracksEventEmitter
 
-        super.init(rootView: DashboardView(viewModel: viewModel, usageTracksEventEmitter: usageTracksEventEmitter))
+        super.init(rootView: DashboardView(viewModel: viewModel))
 
         configureTabBarItem()
         configureStoreOnboarding()

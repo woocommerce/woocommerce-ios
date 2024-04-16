@@ -59,7 +59,7 @@ final class DashboardViewModel: ObservableObject {
          userDefaults: UserDefaults = .standard,
          storeCreationProfilerUploadAnswersUseCase: StoreCreationProfilerUploadAnswersUseCaseProtocol? = nil,
          themeInstaller: ThemeInstaller = DefaultThemeInstaller(),
-         usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter) {
+         usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter = StoreStatsUsageTracksEventEmitter()) {
         self.siteID = siteID
         self.stores = stores
         self.featureFlagService = featureFlags

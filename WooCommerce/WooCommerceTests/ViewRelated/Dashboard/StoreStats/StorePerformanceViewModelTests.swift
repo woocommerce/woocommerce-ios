@@ -4,7 +4,6 @@ import enum Storage.StatsVersion
 import enum Networking.DotcomError
 @testable import WooCommerce
 
-@MainActor
 final class StorePerformanceViewModelTests: XCTestCase {
 
     func test_dates_for_custom_range_are_correct_for_non_custom_time_range() throws {
@@ -103,6 +102,36 @@ final class StorePerformanceViewModelTests: XCTestCase {
         XCTAssertEqual(savedTimeRange, .thisYear)
     }
 
+    func test_shouldHighlightStats_is_updated_correctly() {
+        // Given
+        let viewModel = StorePerformanceViewModel(siteID: 123, usageTracksEventEmitter: .init())
+
+        // When
+        viewModel.didSelectStatsInterval(at: 1)
+
+        // Then
+        XCTAssertTrue(viewModel.shouldHighlightStats)
+
+        // When
+        viewModel.didSelectStatsInterval(at: nil)
+
+        // Then
+        XCTAssertFalse(viewModel.shouldHighlightStats)
+
+        // When
+        viewModel.didSelectStatsInterval(at: 2)
+
+        // Then
+        XCTAssertTrue(viewModel.shouldHighlightStats)
+
+        // When
+        viewModel.didSelectTimeRange(.thisMonth)
+
+        // Then
+        XCTAssertFalse(viewModel.shouldHighlightStats)
+    }
+
+    @MainActor
     func test_statsVersion_is_updated_correctly_when_sync_stats_failed_with_noRestRoute_error() async {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
@@ -117,6 +146,7 @@ final class StorePerformanceViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.statsVersion, .v3)
     }
 
+    @MainActor
     func test_siteVisitStatMode_is_default_if_syncing_stats_succeeds_for_non_custom_time_range() async {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
@@ -131,6 +161,7 @@ final class StorePerformanceViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.siteVisitStatMode, .default)
     }
 
+    @MainActor
     func test_siteVisitStatMode_is_default_if_syncing_stats_succeeds_with_custom_time_range_of_same_day_for_jetpack_site() async throws {
         // Given
         let defaultSite = Site.fake().copy(isJetpackThePluginInstalled: true,
@@ -149,6 +180,7 @@ final class StorePerformanceViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.siteVisitStatMode, .default)
     }
 
+    @MainActor
     func test_siteVisitStatMode_is_redactedDueToCustomRange_if_syncing_stats_succeeds_with_custom_time_range_longer_than_1_day_for_jetpack_site() async throws {
         // Given
         let defaultSite = Site.fake().copy(isJetpackThePluginInstalled: true,
@@ -167,6 +199,7 @@ final class StorePerformanceViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.siteVisitStatMode, .redactedDueToCustomRange)
     }
 
+    @MainActor
     func test_siteVisitStatMode_is_redactedDueToJetpack_if_syncing_stats_succeeds_with_custom_time_range_for_jcp_site() async throws {
         // Given
         let defaultSite = Site.fake().copy(isJetpackThePluginInstalled: false,
@@ -185,6 +218,7 @@ final class StorePerformanceViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.siteVisitStatMode, .redactedDueToJetpack)
     }
 
+    @MainActor
     func test_siteVisitStatMode_is_hidden_if_syncing_stats_succeeds_with_custom_time_range_for_non_jetpack_site() async throws {
         // Given
         let defaultSite = Site.fake().copy(isJetpackThePluginInstalled: false,
@@ -203,6 +237,7 @@ final class StorePerformanceViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.siteVisitStatMode, .hidden)
     }
 
+    @MainActor
     func test_siteVisitStatMode_is_hidden_if_syncing_stats_failed_with_noPermission_error() async {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
@@ -216,6 +251,7 @@ final class StorePerformanceViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.siteVisitStatMode, .hidden)
     }
 
+    @MainActor
     func test_siteVisitStatMode_is_hidden_if_syncing_stats_failed_with_statsModuleDisabled_error_for_non_JCP_site() async {
         // Given
         let defaultSite = Site.fake().copy(isJetpackThePluginInstalled: false,
@@ -231,6 +267,7 @@ final class StorePerformanceViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.siteVisitStatMode, .hidden)
     }
 
+    @MainActor
     func test_siteVisitStatMode_is_redactedDueToJetpack_if_syncing_stats_failed_with_statsModuleDisabled_error_for_JCP_site() async {
         // Given
         let defaultSite = Site.fake().copy(isJetpackThePluginInstalled: false,

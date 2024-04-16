@@ -115,7 +115,7 @@ extension RemotePostCreateParameters {
         if previous.tags != tags {
             changes.tags = tags
         }
-        if previous.categoryIDs != categoryIDs {
+        if Set(previous.categoryIDs) != Set(categoryIDs) {
             changes.categoryIDs = categoryIDs
         }
         if previous.metadata != metadata {

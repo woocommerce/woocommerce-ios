@@ -330,22 +330,23 @@ private enum RemotePostXMLRPCCodingKeys: String, CodingKey {
     case ifNotModifiedSince = "if_not_modified_since"
     case type = "post_type"
     case postStatus = "post_status"
-    case date = "date_created_gmt"
-    case authorID = "wp_author_id"
-    case title
-    case content = "description"
-    case password = "wp_password"
-    case excerpt = "mt_excerpt"
-    case slug = "wp_slug"
-    case featuredImageID = "wp_post_thumbnail"
-    case parentPageID = "wp_page_parent_id"
-    case tags = "mt_keywords"
-    case format = "wp_post_format"
+    case date = "post_date"
+    case authorID = "post_author"
+    case title = "post_title"
+    case content = "post_content"
+    case password = "post_password"
+    case excerpt = "post_excerpt"
+    case slug = "post_name"
+    case featuredImageID = "post_thumbnail"
+    case parentPageID = "post_parent"
+    case terms = "terms"
+    case termNames = "terms_names"
+    case format = "post_format"
     case isSticky = "sticky"
-    case categoryIDs = "categories"
     case metadata = "custom_fields"
 
-    static let postTags = "post_tag"
+    static let taxonomyTag = "post_tag"
+    static let taxonomyCategory = "category"
 }
 
 struct RemotePostCreateParametersXMLRPCEncoder: Encodable {
@@ -376,10 +377,10 @@ struct RemotePostCreateParametersXMLRPCEncoder: Encodable {
         // Posts
         try container.encodeIfPresent(parameters.format, forKey: .format)
         if !parameters.tags.isEmpty {
-            try container.encode(parameters.tags, forKey: .tags)
+            try container.encode([RemotePostXMLRPCCodingKeys.taxonomyTag: parameters.tags], forKey: .termNames)
         }
         if !parameters.categoryIDs.isEmpty {
-            try container.encodeIfPresent(parameters.categoryIDs, forKey: .categoryIDs)
+            try container.encode([RemotePostXMLRPCCodingKeys.taxonomyCategory: parameters.categoryIDs], forKey: .terms)
         }
         if parameters.isSticky {
             try container.encode(parameters.isSticky, forKey: .isSticky)
@@ -422,14 +423,16 @@ struct RemotePostUpdateParametersXMLRPCEncoder: Encodable {
         // Posts
         try container.encodeStringIfPresent(parameters.format, forKey: .format)
         if let tags = parameters.tags {
-            try container.encode(tags, forKey: .tags)
+            try container.encode([RemotePostXMLRPCCodingKeys.taxonomyTag: tags], forKey: .termNames)
         }
-        try container.encodeIfPresent(parameters.categoryIDs, forKey: .categoryIDs)
+        if let categoryIDs = parameters.categoryIDs {
+            try container.encode([RemotePostXMLRPCCodingKeys.taxonomyCategory: categoryIDs], forKey: .terms)
+        }
         try container.encodeIfPresent(parameters.isSticky, forKey: .isSticky)
     }
 }
 
-struct RemotePostUpdateParametersXMLRPCMetadata: Encodable {
+private struct RemotePostUpdateParametersXMLRPCMetadata: Encodable {
     let id: String?
     let key: String?
     let value: String?

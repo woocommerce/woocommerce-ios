@@ -6,10 +6,9 @@ import enum Yosemite.StatsTimeRangeV4
 struct StorePerformanceView: View {
     @ObservedObject private var viewModel: StorePerformanceViewModel
     @State private var showingCustomRangePicker = false
-    @State private var shouldHighlightStats = false
 
     var statsValueColor: Color {
-        Color(shouldHighlightStats ? .statsHighlighted : .text)
+        Color(viewModel.shouldHighlightStats ? .statsHighlighted : .text)
     }
 
     private let onCustomRangeRedactedViewTap: () -> Void
@@ -197,7 +196,6 @@ private extension StorePerformanceView {
         VStack {
             StoreStatsChart(viewModel: viewModel.chartViewModel) { selectedIndex in
                 viewModel.didSelectStatsInterval(at: selectedIndex)
-                shouldHighlightStats = selectedIndex != nil
             }
             .frame(height: Layout.chartViewHeight)
 

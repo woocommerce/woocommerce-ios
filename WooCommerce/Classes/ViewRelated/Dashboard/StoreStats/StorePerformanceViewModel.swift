@@ -19,6 +19,7 @@ final class StorePerformanceViewModel: ObservableObject {
     @Published private(set) var conversionStatsText = ""
 
     @Published private(set) var selectedDateText: String?
+    @Published private(set) var shouldHighlightStats = false
 
     @Published private(set) var syncingData = false
     @Published private(set) var siteVisitStatMode = SiteVisitStatsMode.hidden
@@ -86,6 +87,7 @@ final class StorePerformanceViewModel: ObservableObject {
     func didSelectTimeRange(_ newTimeRange: StatsTimeRangeV4) {
         timeRange = newTimeRange
         saveLastTimeRange(timeRange)
+        shouldHighlightStats = false
         usageTracksEventEmitter.interacted()
         analytics.track(event: .Dashboard.dashboardMainStatsDate(timeRange: timeRange))
     }
@@ -93,6 +95,7 @@ final class StorePerformanceViewModel: ObservableObject {
     func didSelectStatsInterval(at index: Int?) {
         periodViewModel?.selectedIntervalIndex = index
         chartValueSelectedEventsSubject.send(())
+        shouldHighlightStats = index != nil
 
         if unavailableVisitStatsDueToCustomRange {
             // If time range is less than 2 days, redact data when selected and show when deselected.

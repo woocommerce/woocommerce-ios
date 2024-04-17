@@ -29,7 +29,7 @@ final class LocalNotificationSchedulerTests: XCTestCase {
         }
 
         // When
-        let notification = LocalNotification(scenario: .storeCreationComplete(siteID: 123))
+        let notification = LocalNotification(scenario: .unknown(siteID: 123))
         await scheduler.schedule(notification: notification, trigger: nil, remoteFeatureFlag: .storeCreationCompleteNotification)
 
         // Then
@@ -49,7 +49,7 @@ final class LocalNotificationSchedulerTests: XCTestCase {
         }
 
         // When
-        let notification = LocalNotification(scenario: .storeCreationComplete(siteID: 123))
+        let notification = LocalNotification(scenario: .unknown(siteID: 123))
         await scheduler.schedule(notification: notification, trigger: nil, remoteFeatureFlag: .storeCreationCompleteNotification)
 
         // Then
@@ -62,7 +62,7 @@ final class LocalNotificationSchedulerTests: XCTestCase {
         let scheduler = LocalNotificationScheduler(pushNotesManager: pushNotesManager, stores: stores)
 
         // When
-        let notification = LocalNotification(scenario: .storeCreationComplete(siteID: 123))
+        let notification = LocalNotification(scenario: .unknown(siteID: 123))
         await scheduler.schedule(notification: notification, trigger: nil, remoteFeatureFlag: nil)
 
         // Then
@@ -82,7 +82,7 @@ final class LocalNotificationSchedulerTests: XCTestCase {
         }
 
         // When
-        let notification = LocalNotification(scenario: .storeCreationComplete(siteID: 123))
+        let notification = LocalNotification(scenario: .unknown(siteID: 123))
         await scheduler.schedule(notification: notification,
                                  trigger: nil,
                                  remoteFeatureFlag: .storeCreationCompleteNotification,
@@ -107,10 +107,8 @@ extension LocalNotification: Equatable {
 extension LocalNotification.Scenario: Equatable {
     public static func ==(lhs: LocalNotification.Scenario, rhs: LocalNotification.Scenario) -> Bool {
         switch (lhs, rhs) {
-        case (.storeCreationComplete, .storeCreationComplete):
+        case (.unknown, .unknown):
             return true
-        default:
-            return false
         }
     }
 }

@@ -132,10 +132,6 @@ public enum FeatureFlag: Int {
     ///
     case readOnlyMinMaxQuantities
 
-    /// Local notifications for store creation
-    ///
-    case storeCreationNotifications
-
     /// Enables EU Bound notifications inside the Shipping Labels feature
     ///
     case euShippingNotification

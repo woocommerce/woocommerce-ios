@@ -22,10 +22,8 @@ final class AppCoordinator {
 
     private var storePickerCoordinator: StorePickerCoordinator?
     private var authStatesSubscription: AnyCancellable?
-    private var localNotificationResponsesSubscription: AnyCancellable?
     private var isLoggedIn: Bool = false
     private var storeCreationCoordinator: StoreCreationCoordinator?
-    private var freeTrialSurveyCoorindator: FreeTrialSurveyCoordinator?
     private let storeSwitcher: StoreCreationStoreSwitchScheduler
     private let themeInstaller: ThemeInstaller
 
@@ -101,9 +99,6 @@ final class AppCoordinator {
                 self.isLoggedIn = isLoggedIn
             }
 
-        localNotificationResponsesSubscription = pushNotesManager.localNotificationUserResponses.sink { [weak self] response in
-            self?.handleLocalNotificationResponse(response)
-        }
         updateSitePropertiesIfNeeded()
     }
 }
@@ -415,90 +410,6 @@ private extension AppCoordinator {
             onSuccess()
         }
         stores.dispatch(action)
-    }
-
-    func handleLocalNotificationResponse(_ response: UNNotificationResponse) {
-        let identifier = response.notification.request.identifier
-        let storeCreationComplete = LocalNotification.Scenario.Identifier.Prefix.storeCreationComplete
-        let sixHoursAfterFreeTrialSubscribed = LocalNotification.Scenario.Identifier.Prefix.sixHoursAfterFreeTrialSubscribed
-        let freeTrialSurvey24hAfterFreeTrialSubscribed = LocalNotification.Scenario.Identifier.Prefix.freeTrialSurvey24hAfterFreeTrialSubscribed
-
-        let userInfo = response.notification.request.content.userInfo
-        guard response.actionIdentifier != UNNotificationDismissActionIdentifier else {
-            analytics.track(event: .LocalNotification.dismissed(type: LocalNotification.Scenario.identifierForAnalytics(identifier),
-                                                                                 userInfo: userInfo))
-            return
-        }
-
-        analytics.track(event: .LocalNotification.tapped(type: LocalNotification.Scenario.identifierForAnalytics(identifier),
-                                                                          userInfo: userInfo))
-
-        switch identifier {
-        case let identifier where identifier.hasPrefix(storeCreationComplete):
-            guard response.actionIdentifier == UNNotificationDefaultActionIdentifier,
-                  let siteID = Int64(identifier.replacingOccurrences(of: storeCreationComplete, with: "")) else {
-                return
-            }
-            switchStoreUseCase.switchStore(with: siteID) { _ in }
-        case let identifier where identifier.hasPrefix(sixHoursAfterFreeTrialSubscribed):
-            guard response.actionIdentifier == UNNotificationDefaultActionIdentifier,
-                  let siteID = Int64(identifier.replacingOccurrences(of: sixHoursAfterFreeTrialSubscribed, with: "")) else {
-                return
-            }
-            showUpgradesView(siteID: siteID)
-        case let identifier where identifier.hasPrefix(freeTrialSurvey24hAfterFreeTrialSubscribed):
-            guard response.actionIdentifier == UNNotificationDefaultActionIdentifier else {
-                return
-            }
-            showFreeTrialSurvey()
-        default:
-            // TODO: 9665 - handle actions on other local notifications
-            break
-        }
-    }
-}
-
-/// Local notification handling helper methods.
-private extension AppCoordinator {
-    func showFreeTrialSurvey() {
-        guard let navigationController = getNavigationController() else {
-            return
-        }
-
-        let coordinator = FreeTrialSurveyCoordinator(source: .freeTrialSurvey24hAfterFreeTrialSubscribed,
-                                                     navigationController: navigationController)
-        freeTrialSurveyCoorindator = coordinator
-        coordinator.start()
-    }
-
-    func showUpgradesView(siteID: Int64) {
-        switchStoreUseCase.switchStore(with: siteID) { [weak self] _ in
-            guard let self,
-            let topViewController = self.window.rootViewController?.topmostPresentedViewController
-            else {
-                return
-            }
-            self.upgradesViewPresentationCoordinator.presentUpgrades(for: siteID, from: topViewController)
-        }
-    }
-
-    func getNavigationController() -> UINavigationController? {
-        // Fetch the navigation controller for store selected or not selected cases
-        guard let navigationController: UINavigationController = {
-            // If logged in with a valid store, tab bar will have a viewcontroller selected.
-            if let navigationController = tabBarController.selectedViewController as? UINavigationController {
-                return navigationController
-            } // If logged in with no valid stores, store picker will be displayed.
-            else if let navigationController = window.rootViewController?.topmostPresentedViewController as? UINavigationController {
-                return navigationController
-            } else {
-                return nil
-            }
-        }() else {
-            return nil
-        }
-
-        return navigationController
     }
 }
 

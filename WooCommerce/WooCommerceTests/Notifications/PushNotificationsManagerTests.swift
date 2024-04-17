@@ -594,7 +594,7 @@ final class PushNotificationsManagerTests: XCTestCase {
             userNotificationsCenter: mockCenter
         ))
         let siteID: Int64 = 123
-        let notification = LocalNotification(scenario: .freeTrialSurvey24hAfterFreeTrialSubscribed(siteID: siteID))
+        let notification = LocalNotification(scenario: .unknown(siteID: siteID))
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: Date().timeIntervalSinceNow + 1, repeats: false)
 
         // When
@@ -604,7 +604,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         let requests = await mockCenter.pendingNotificationRequests()
         assertEqual(1, requests.count)
         let firstRequest = try XCTUnwrap(requests.first)
-        assertEqual(firstRequest.identifier, LocalNotification.Scenario.Identifier.Prefix.freeTrialSurvey24hAfterFreeTrialSubscribed + "\(siteID)")
+        assertEqual(firstRequest.identifier, LocalNotification.Scenario.Identifier.Prefix.unknown + "\(siteID)")
     }
 
     func test_requestLocalNotificationIfNeeded_skips_adding_notification_with_the_same_idenfier() async throws {
@@ -617,7 +617,7 @@ final class PushNotificationsManagerTests: XCTestCase {
             userNotificationsCenter: mockCenter
         ))
         let siteID: Int64 = 123
-        let notification = LocalNotification(scenario: .freeTrialSurvey24hAfterFreeTrialSubscribed(siteID: siteID))
+        let notification = LocalNotification(scenario: .unknown(siteID: siteID))
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: Date().timeIntervalSinceNow + 1, repeats: false)
 
         // When
@@ -628,7 +628,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         let requests = await mockCenter.pendingNotificationRequests()
         assertEqual(1, requests.count)
         let firstRequest = try XCTUnwrap(requests.first)
-        assertEqual(firstRequest.identifier, LocalNotification.Scenario.Identifier.Prefix.freeTrialSurvey24hAfterFreeTrialSubscribed + "\(siteID)")
+        assertEqual(firstRequest.identifier, LocalNotification.Scenario.Identifier.Prefix.unknown + "\(siteID)")
     }
 
     func test_requestLocalNotification_tracks_local_notification_scheduled() async throws {
@@ -642,7 +642,7 @@ final class PushNotificationsManagerTests: XCTestCase {
             userNotificationsCenter: mockCenter
         ), analytics: WooAnalytics(analyticsProvider: analytics))
         let siteID: Int64 = 123
-        let notification = LocalNotification(scenario: .freeTrialSurvey24hAfterFreeTrialSubscribed(siteID: siteID),
+        let notification = LocalNotification(scenario: .unknown(siteID: siteID),
                                              userInfo: [LocalNotification.UserInfoKey.isIAPAvailable: true])
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: Date().timeIntervalSinceNow + 1, repeats: false)
 
@@ -652,7 +652,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         // Then
         let indexOfEvent = try XCTUnwrap(analytics.receivedEvents.firstIndex(where: { $0 == WooAnalyticsStat.localNotificationScheduled.rawValue }))
         let eventProperties = try XCTUnwrap(analytics.receivedProperties[indexOfEvent])
-        assertEqual(LocalNotification.Scenario.Identifier.Prefix.freeTrialSurvey24hAfterFreeTrialSubscribed, eventProperties["type"] as? String)
+        assertEqual(LocalNotification.Scenario.Identifier.Prefix.unknown, eventProperties["type"] as? String)
         XCTAssertTrue(try XCTUnwrap(eventProperties["is_iap_available"] as? Bool))
     }
 
@@ -668,18 +668,18 @@ final class PushNotificationsManagerTests: XCTestCase {
         ), analytics: WooAnalytics(analyticsProvider: analytics))
 
         let siteID: Int64 = 123
-        let notification = LocalNotification(scenario: .freeTrialSurvey24hAfterFreeTrialSubscribed(siteID: siteID),
+        let notification = LocalNotification(scenario: .unknown(siteID: siteID),
                                              userInfo: [LocalNotification.UserInfoKey.isIAPAvailable: true])
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: Date().timeIntervalSinceNow + 1, repeats: false)
         await manager.requestLocalNotification(notification, trigger: trigger)
 
         // When
-        await manager.cancelLocalNotification(scenarios: [.freeTrialSurvey24hAfterFreeTrialSubscribed(siteID: siteID)])
+        await manager.cancelLocalNotification(scenarios: [.unknown(siteID: siteID)])
 
         // Then
         let indexOfEvent = try XCTUnwrap(analytics.receivedEvents.firstIndex(where: { $0 == WooAnalyticsStat.localNotificationCanceled.rawValue }))
         let eventProperties = try XCTUnwrap(analytics.receivedProperties[indexOfEvent])
-        assertEqual(LocalNotification.Scenario.Identifier.Prefix.freeTrialSurvey24hAfterFreeTrialSubscribed, eventProperties["type"] as? String)
+        assertEqual(LocalNotification.Scenario.Identifier.Prefix.unknown, eventProperties["type"] as? String)
         XCTAssertTrue(try XCTUnwrap(eventProperties["is_iap_available"] as? Bool))
     }
 
@@ -694,7 +694,7 @@ final class PushNotificationsManagerTests: XCTestCase {
             userNotificationsCenter: mockCenter
         ), analytics: WooAnalytics(analyticsProvider: analytics))
         let siteID: Int64 = 123
-        let notification = LocalNotification(scenario: .freeTrialSurvey24hAfterFreeTrialSubscribed(siteID: siteID),
+        let notification = LocalNotification(scenario: .unknown(siteID: siteID),
                                              userInfo: [LocalNotification.UserInfoKey.isIAPAvailable: true])
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: Date().timeIntervalSinceNow + 1, repeats: false)
 
@@ -705,7 +705,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         // Then
         let indexOfEvent = try XCTUnwrap(analytics.receivedEvents.firstIndex(where: { $0 == WooAnalyticsStat.localNotificationCanceled.rawValue }))
         let eventProperties = try XCTUnwrap(analytics.receivedProperties[indexOfEvent])
-        assertEqual(LocalNotification.Scenario.Identifier.Prefix.freeTrialSurvey24hAfterFreeTrialSubscribed, eventProperties["type"] as? String)
+        assertEqual(LocalNotification.Scenario.Identifier.Prefix.unknown, eventProperties["type"] as? String)
         XCTAssertTrue(try XCTUnwrap(eventProperties["is_iap_available"] as? Bool))
     }
 }

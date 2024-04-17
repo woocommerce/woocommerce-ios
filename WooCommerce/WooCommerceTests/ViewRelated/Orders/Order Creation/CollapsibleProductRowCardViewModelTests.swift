@@ -279,6 +279,111 @@ final class CollapsibleProductRowCardViewModelTests: XCTestCase {
         assertEqual(emptyString, emptySKUviewModel.skuLabel)
         assertEqual(emptyString, nilSKUViewModel.skuLabel)
     }
+
+    func test_productRow_when_initialized_with_product_subscription_type_then_contains_product_subscription_details() {
+        // Given
+        let productSubscription: ProductSubscription = createFakeSubscription()
+        let product = Product.fake().copy(productID: 12,
+                                          name: "A subscription product",
+                                          subscription: productSubscription)
+
+        // When
+        let viewModel = createViewModel(id: product.productID,
+                                        productSubscriptionDetails: product.subscription,
+                                        name: product.name)
+
+        // Then
+        XCTAssertEqual(viewModel.productSubscriptionDetails?.length, productSubscription.length)
+        XCTAssertEqual(viewModel.productSubscriptionDetails?.period, productSubscription.period)
+        XCTAssertEqual(viewModel.productSubscriptionDetails?.price, productSubscription.price)
+        XCTAssertEqual(viewModel.productSubscriptionDetails?.signUpFee, productSubscription.signUpFee)
+        XCTAssertEqual(viewModel.productSubscriptionDetails?.trialLength, productSubscription.trialLength)
+        XCTAssertEqual(viewModel.productSubscriptionDetails?.trialPeriod, productSubscription.trialPeriod)
+    }
+
+    func test_productRow_when_has_product_subscription_then_shouldShowProductSubscriptionsDetails() {
+        // Given
+        let productSubscription: ProductSubscription = createFakeSubscription()
+        let product = Product.fake().copy(productID: 12,
+                                          name: "A subscription product",
+                                          subscription: productSubscription)
+
+        // When
+        let defaultViewModel = createViewModel()
+        let viewModelWithSubscriptionProduct = createViewModel(id: product.productID,
+                                                               productSubscriptionDetails: product.subscription,
+                                                               name: product.name)
+
+        // Then
+        XCTAssertFalse(defaultViewModel.shouldShowProductSubscriptionsDetails)
+        XCTAssertTrue(viewModelWithSubscriptionProduct.shouldShowProductSubscriptionsDetails)
+    }
+
+    func test_productRow_when_has_no_product_subscription_then_subscriptionBillingDetailsLabel_is_nil() {
+        // Given, When
+        let viewModel = createViewModel()
+
+        // Then
+        XCTAssertNil(viewModel.subscriptionBillingDetailsLabel)
+    }
+
+    func test_productRow_when_expectedPeriodInterval_is_zero_then_subscriptionBillingDetailsLabel_is_nil() {
+        // Handles the edge case of the Subscriptions API allowing a zero-period value billing interval
+        // to be passed to the subscription details. In this case, we won't render Subscription details.
+
+        // Given
+        let expectedPeriodInterval = "0"
+        let expectedPeriod = SubscriptionPeriod.month
+        let productSubscription: ProductSubscription = createFakeSubscription(periodInterval: expectedPeriodInterval,
+                                                                              period: expectedPeriod)
+        let product = Product.fake().copy(productID: 12,
+                                          name: "A subscription product",
+                                          subscription: productSubscription)
+        // When
+        let viewModel = createViewModel(id: product.productID,
+                                        productSubscriptionDetails: product.subscription,
+                                        name: product.name)
+        // Then
+        XCTAssertNil(viewModel.subscriptionBillingDetailsLabel)
+    }
+
+    func test_productRow_when_expectedPeriodInterval_is_one_then_subscriptionBillingDetailsLabel_is_singular() {
+        // Given
+        let expectedPeriodInterval = "1"
+        let expectedPeriod = SubscriptionPeriod.month
+        let productSubscription: ProductSubscription = createFakeSubscription(periodInterval: expectedPeriodInterval,
+                                                                              period: expectedPeriod)
+        let product = Product.fake().copy(productID: 12,
+                                          name: "A subscription product",
+                                          subscription: productSubscription)
+        // When
+        let viewModel = createViewModel(id: product.productID,
+                                        productSubscriptionDetails: product.subscription,
+                                        name: product.name)
+        // Then
+        XCTAssertEqual(viewModel.subscriptionBillingDetailsLabel, "Every 1 month")
+    }
+
+    func test_productRow_when_expectedPeriodInterval_is_more_than_one_then_subscriptionBillingDetailsLabel_is_plural() {
+        // Given
+        let expectedPeriodInterval = "2"
+        let expectedPeriod = SubscriptionPeriod.month
+        let productSubscription: ProductSubscription = createFakeSubscription(periodInterval: expectedPeriodInterval,
+                                                                              period: expectedPeriod)
+        let product = Product.fake().copy(productID: 12,
+                                          name: "A subscription product",
+                                          subscription: productSubscription)
+        // When
+        let viewModel = createViewModel(id: product.productID,
+                                        productSubscriptionDetails: product.subscription,
+                                        name: product.name)
+        // Then
+        XCTAssertEqual(viewModel.subscriptionBillingDetailsLabel, "Every 2 months")
+    }
+
+    func test_subscriptionPrice() {}
+
+    func test_subscriptionConditionsSignupFee() {}
 }
 
 private extension CollapsibleProductRowCardViewModelTests {
@@ -287,6 +392,7 @@ private extension CollapsibleProductRowCardViewModelTests {
                          hasParentProduct: Bool = false,
                          isReadOnly: Bool = false,
                          isConfigurable: Bool = false,
+                         productSubscriptionDetails: ProductSubscription? = nil,
                          imageURL: URL? = nil,
                          name: String = "",
                          sku: String? = nil,
@@ -306,6 +412,7 @@ private extension CollapsibleProductRowCardViewModelTests {
                                            hasParentProduct: hasParentProduct,
                                            isReadOnly: isReadOnly,
                                            isConfigurable: isConfigurable,
+                                           productSubscriptionDetails: productSubscriptionDetails,
                                            imageURL: imageURL,
                                            name: name,
                                            sku: sku,
@@ -320,5 +427,20 @@ private extension CollapsibleProductRowCardViewModelTests {
                                            currencyFormatter: currencyFormatter,
                                            analytics: analytics,
                                            configure: configure)
+    }
+
+    func createFakeSubscription(price: String? = "5",
+                                periodInterval: String? = "1",
+                                period: SubscriptionPeriod? = .month,
+                                signUpFee: String? = "0.6",
+                                trialLength: String? = "1",
+                                trialPeriod: SubscriptionPeriod? = .week) -> ProductSubscription {
+        ProductSubscription.fake().copy(length: "2",
+                                        period: period,
+                                        periodInterval: periodInterval,
+                                        price: price,
+                                        signUpFee: signUpFee,
+                                        trialLength: trialLength,
+                                        trialPeriod: trialPeriod)
     }
 }

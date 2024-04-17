@@ -156,12 +156,15 @@ private extension DashboardView {
                     BlazeCampaignDashboardView(viewModel: viewModel.blazeCampaignDashboardViewModel,
                                                showAllCampaignsTapped: showAllBlazeCampaignsTapped,
                                                createCampaignTapped: createBlazeCampaignTapped)
-                case .statsAndTopPerformers:
+                case .performance:
                     StorePerformanceView(viewModel: viewModel.storePerformanceViewModel, onCustomRangeRedactedViewTap: {
                         onCustomRangeRedactedViewTap?()
                     }, onViewAllAnalytics: { siteID, siteTimeZone, timeRange in
                         onViewAllAnalytics?(siteID, siteTimeZone, timeRange)
                     })
+
+                case .topPerformers:
+                    EmptyView() // TODO-12403: add updated top performers card
                 }
             }
         }

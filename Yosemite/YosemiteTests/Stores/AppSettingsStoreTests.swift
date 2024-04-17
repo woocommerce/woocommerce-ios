@@ -1370,7 +1370,7 @@ extension AppSettingsStoreTests {
         // Given
         let dashboardCards = [
             DashboardCard(type: .onboarding, enabled: false),
-            DashboardCard(type: .statsAndTopPerformers, enabled: true),
+            DashboardCard(type: .performance, enabled: true),
             DashboardCard(type: .blaze, enabled: true)
         ]
         let existingSettings = GeneralStoreSettingsBySite(storeSettingsBySite: [TestConstants.siteID: GeneralStoreSettings()])
@@ -1391,7 +1391,7 @@ extension AppSettingsStoreTests {
         // Given
         let storedDashboardCards = [
             DashboardCard(type: .onboarding, enabled: false),
-            DashboardCard(type: .statsAndTopPerformers, enabled: true),
+            DashboardCard(type: .performance, enabled: true),
             DashboardCard(type: .blaze, enabled: true)
         ]
         let storeSettings = GeneralStoreSettings(dashboardCards: storedDashboardCards)

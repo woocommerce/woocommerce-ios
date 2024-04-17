@@ -77,7 +77,7 @@ struct StorePerformanceView: View {
 
 private extension StorePerformanceView {
     var header: some View {
-        HStack(alignment: .top) {
+        HStack {
             Text(Localization.title)
                 .headlineStyle()
             Spacer()
@@ -88,13 +88,14 @@ private extension StorePerformanceView {
             } label: {
                 Image(systemName: "ellipsis")
                     .foregroundStyle(Color.secondary)
+                    .padding([.vertical, .leading], Layout.padding)
             }
         }
     }
 
     var timeRangeBar: some View {
         HStack(alignment: .top) {
-            AdaptiveStack {
+            AdaptiveStack(horizontalAlignment: .leading) {
                 Text(viewModel.timeRange.tabTitle)
                     .foregroundStyle(Color(.text))
                     .subheadlineStyle()
@@ -250,7 +251,7 @@ private extension StorePerformanceView {
         )
         static let hideCard = NSLocalizedString(
             "storePerformanceView.hideCard",
-            value: "Hide this card",
+            value: "Hide Performance",
             comment: "Menu item to dismiss the store performance section on the Dashboard screen"
         )
         static let revenue = NSLocalizedString(

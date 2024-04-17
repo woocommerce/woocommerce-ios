@@ -35,10 +35,9 @@ final class TopPerformersDashboardViewModel: ObservableObject {
         self.analytics = analytics
         self.usageTracksEventEmitter = usageTracksEventEmitter
 
-        observeTimeRange()
-
         Task { @MainActor in
             self.timeRange = await loadLastTimeRange() ?? .today
+            await reloadData()
         }
     }
 
@@ -47,6 +46,25 @@ final class TopPerformersDashboardViewModel: ObservableObject {
         saveLastTimeRange(timeRange)
         usageTracksEventEmitter.interacted()
         analytics.track(event: .Dashboard.dashboardMainStatsDate(timeRange: timeRange))
+
+        Task { [weak self] in
+            await self?.reloadData()
+        }
+    }
+
+    @MainActor
+    func reloadData() async {
+        syncingData = true
+        do {
+            let currentDate = Date()
+            let latestDateToInclude = timeRange.latestDate(currentDate: currentDate, siteTimezone: siteTimezone)
+            try await syncTopEarnersStats(latestDateToInclude: latestDateToInclude)
+            ServiceLocator.analytics.track(event:
+                    .Dashboard.dashboardTopPerformersLoaded(timeRange: timeRange))
+        } catch {
+            DDLogError("⛔️ Dashboard (Top Performers) — Error synchronizing top earner stats: \(error)")
+        }
+        syncingData = false
     }
 }
 
@@ -85,9 +103,6 @@ extension TopPerformersDashboardViewModel {
 // MARK: - Private helpers
 //
 private extension TopPerformersDashboardViewModel {
-    func observeTimeRange() {
-        // TODO
-    }
 
     @MainActor
     func loadLastTimeRange() async -> StatsTimeRangeV4? {
@@ -103,6 +118,27 @@ private extension TopPerformersDashboardViewModel {
         let action = AppSettingsAction.setLastSelectedStatsTimeRange(siteID: siteID, timeRange: timeRange)
         stores.dispatch(action)
     }
+
+    @MainActor
+    func syncTopEarnersStats(latestDateToInclude: Date) async throws {
+        let waitingTracker = WaitingTimeTracker(trackScenario: .dashboardTopPerformers)
+        let earliestDateToInclude = timeRange.earliestDate(latestDate: latestDateToInclude, siteTimezone: siteTimezone)
+        try await withCheckedThrowingContinuation { continuation in
+            stores.dispatch(StatsActionV4.retrieveTopEarnerStats(siteID: siteID,
+                                                                 timeRange: timeRange,
+                                                                 timeZone: siteTimezone,
+                                                                 earliestDateToInclude: earliestDateToInclude,
+                                                                 latestDateToInclude: latestDateToInclude,
+                                                                 quantity: Constants.topEarnerStatsLimit,
+                                                                 forceRefresh: true,
+                                                                 saveInStorage: true,
+                                                                 onCompletion: { result in
+                waitingTracker.end()
+                let voidResult = result.map { _ in () } // Caller expects no entity in the result.
+                continuation.resume(with: voidResult)
+            }))
+        }
+    }
 }
 
 // MARK: Constants
@@ -110,6 +146,7 @@ private extension TopPerformersDashboardViewModel {
 private extension TopPerformersDashboardViewModel {
     enum Constants {
         static let thirtyDaysInSeconds: TimeInterval = 86400*30
+        static let topEarnerStatsLimit: Int = 5
     }
     enum Localization {
         static let addCustomRange = NSLocalizedString(

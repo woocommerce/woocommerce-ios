@@ -8548,8 +8548,6 @@
 				74AAF6A4212A04A900C612B0 /* ChartMarker.swift */,
 				02AB407A27827C9100929CF3 /* ChartPlaceholderView.swift */,
 				02AB407927827C9000929CF3 /* ChartPlaceholderView.xib */,
-				02E4908C29AF216E005942AE /* DashboardTopPerformersView.swift */,
-				027F83EC29B046D2002688C6 /* DashboardTopPerformersViewModel.swift */,
 			);
 			path = MyStore;
 			sourceTree = "<group>";
@@ -11647,6 +11645,8 @@
 		DE74A4502BCF86F60009C415 /* TopPerformers */ = {
 			isa = PBXGroup;
 			children = (
+				02E4908C29AF216E005942AE /* DashboardTopPerformersView.swift */,
+				027F83EC29B046D2002688C6 /* DashboardTopPerformersViewModel.swift */,
 				748D34E02148291E00E21A2F /* TopPerformerDataViewController.swift */,
 				26E7EE7329365F0700793045 /* TopPerformersView.swift */,
 				02E4908829AE49B9005942AE /* TopPerformersEmptyView.swift */,

@@ -7,8 +7,6 @@ import WordPressUI
 import class AutomatticTracks.CrashLogging
 import protocol Storage.StorageManagerType
 
-
-
 final class TopPerformerDataViewController: UIViewController {
 
     // MARK: - Properties

@@ -15,7 +15,7 @@ final class TopPerformersDashboardViewModel: ObservableObject {
     private let storageManager: StorageManagerType
     private let currencyFormatter: CurrencyFormatter
     private let currencySettings: CurrencySettings
-    private let usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter
+    let usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter
     private let analytics: Analytics
 
     init(siteID: Int64,

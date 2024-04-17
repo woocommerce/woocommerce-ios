@@ -31,7 +31,7 @@ struct TopPerformersDashboardView: View {
 
             Divider()
 
-            // TODO
+            topPerformersList
 
             Divider()
 
@@ -110,6 +110,16 @@ private extension TopPerformersDashboardView {
                     .fontWeight(.semibold)
             }
         }
+    }
+
+    var topPerformersList: some View {
+        ViewControllerContainer(
+            TopPerformerDataViewController(siteID: viewModel.siteID,
+                                           siteTimeZone: viewModel.siteTimezone,
+                                           currentDate: Date(),
+                                           timeRange: viewModel.timeRange,
+                                           usageTracksEventEmitter: viewModel.usageTracksEventEmitter)
+        )
     }
 }
 

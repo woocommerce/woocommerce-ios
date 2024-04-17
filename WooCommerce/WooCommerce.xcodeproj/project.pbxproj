@@ -2351,6 +2351,7 @@
 		DE69C54F27BCB4B7000BB888 /* CouponRestrictionsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE69C54E27BCB4B6000BB888 /* CouponRestrictionsViewModelTests.swift */; };
 		DE69C55527C5E317000BB888 /* ShippingLabelSampleData.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE69C55427C5E317000BB888 /* ShippingLabelSampleData.swift */; };
 		DE74A44F2BCE2FCF0009C415 /* StorePerformanceViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE74A44E2BCE2FCF0009C415 /* StorePerformanceViewModelTests.swift */; };
+		DE74A4522BCF87120009C415 /* TopPerformersDashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE74A4512BCF87120009C415 /* TopPerformersDashboardView.swift */; };
 		DE74F2A327E41D650002FE59 /* EnableAnalyticsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE74F2A227E41D650002FE59 /* EnableAnalyticsViewModel.swift */; };
 		DE74F2A527E41D740002FE59 /* EnableAnalyticsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE74F2A427E41D740002FE59 /* EnableAnalyticsView.swift */; };
 		DE74F2A727E47F620002FE59 /* EnableAnalyticsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE74F2A627E47F620002FE59 /* EnableAnalyticsViewModelTests.swift */; };
@@ -5122,6 +5123,7 @@
 		DE69C54E27BCB4B6000BB888 /* CouponRestrictionsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponRestrictionsViewModelTests.swift; sourceTree = "<group>"; };
 		DE69C55427C5E317000BB888 /* ShippingLabelSampleData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelSampleData.swift; sourceTree = "<group>"; };
 		DE74A44E2BCE2FCF0009C415 /* StorePerformanceViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorePerformanceViewModelTests.swift; sourceTree = "<group>"; };
+		DE74A4512BCF87120009C415 /* TopPerformersDashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopPerformersDashboardView.swift; sourceTree = "<group>"; };
 		DE74F2A227E41D650002FE59 /* EnableAnalyticsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnableAnalyticsViewModel.swift; sourceTree = "<group>"; };
 		DE74F2A427E41D740002FE59 /* EnableAnalyticsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnableAnalyticsView.swift; sourceTree = "<group>"; };
 		DE74F2A627E47F620002FE59 /* EnableAnalyticsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnableAnalyticsViewModelTests.swift; sourceTree = "<group>"; };
@@ -8541,9 +8543,6 @@
 				74AAF6A4212A04A900C612B0 /* ChartMarker.swift */,
 				02AB407A27827C9100929CF3 /* ChartPlaceholderView.swift */,
 				02AB407927827C9000929CF3 /* ChartPlaceholderView.xib */,
-				748D34E02148291E00E21A2F /* TopPerformerDataViewController.swift */,
-				26E7EE7329365F0700793045 /* TopPerformersView.swift */,
-				02E4908829AE49B9005942AE /* TopPerformersEmptyView.swift */,
 				02E4908C29AF216E005942AE /* DashboardTopPerformersView.swift */,
 				027F83EC29B046D2002688C6 /* DashboardTopPerformersViewModel.swift */,
 			);
@@ -10871,6 +10870,7 @@
 				028E1F6F2833DD0A001F8829 /* DashboardViewModel.swift */,
 				029D444822F13F8A00DEFA8A /* DashboardUI.swift */,
 				B946881129B8DD41000646B0 /* DashboardViewController+Activity.swift */,
+				DE74A4502BCF86F60009C415 /* TopPerformers */,
 				DEA6BCAD2BC6A9A50017D671 /* StoreStats */,
 				DEC75CC02BC4E4E600763801 /* DashboardCustomization */,
 			);
@@ -11637,6 +11637,17 @@
 				DEDB2D252845D31900CE7D35 /* CouponAllowedEmailsViewModel.swift */,
 			);
 			path = UsageDetails;
+			sourceTree = "<group>";
+		};
+		DE74A4502BCF86F60009C415 /* TopPerformers */ = {
+			isa = PBXGroup;
+			children = (
+				748D34E02148291E00E21A2F /* TopPerformerDataViewController.swift */,
+				26E7EE7329365F0700793045 /* TopPerformersView.swift */,
+				02E4908829AE49B9005942AE /* TopPerformersEmptyView.swift */,
+				DE74A4512BCF87120009C415 /* TopPerformersDashboardView.swift */,
+			);
+			path = TopPerformers;
 			sourceTree = "<group>";
 		};
 		DE74F2A127E41D4F0002FE59 /* EnableAnalytics */ = {
@@ -14246,6 +14257,7 @@
 				262C921F26EEF8B100011F92 /* Binding.swift in Sources */,
 				DE4FB7732812AE96003D20D6 /* FilterListView.swift in Sources */,
 				02521E11243DC3C400DC7810 /* CancellableMedia.swift in Sources */,
+				DE74A4522BCF87120009C415 /* TopPerformersDashboardView.swift in Sources */,
 				CCCC29E325E576810046B96F /* RenameAttributesViewController.swift in Sources */,
 				0300201029C0EBA400B09777 /* ReaderConnectionUnderlyingErrorDisplaying.swift in Sources */,
 				EEB4E2DA29B5F8FC00371C3C /* CouponLineDetailsViewModel.swift in Sources */,

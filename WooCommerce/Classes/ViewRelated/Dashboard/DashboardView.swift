@@ -1,4 +1,5 @@
 import SwiftUI
+import enum Yosemite.StatsTimeRangeV4
 import struct Yosemite.Site
 import struct Yosemite.StoreOnboardingTask
 
@@ -6,6 +7,7 @@ import struct Yosemite.StoreOnboardingTask
 ///
 struct DashboardView: View {
     @ObservedObject private var viewModel: DashboardViewModel
+    @Environment(\.verticalSizeClass) private var verticalSizeClass
     @State private var currentSite: Site?
     @State private var dismissedJetpackBenefitBanner = false
     @State private var showingSupportForm = false
@@ -29,6 +31,13 @@ struct DashboardView: View {
     /// Set externally in the hosting controller.
     var jetpackBenefitsBannerTapped: ((Site) -> Void)?
 
+    /// Set externally in the hosting controller.
+    var onCustomRangeRedactedViewTap: (() -> Void)?
+    /// Set externally in the hosting controller.
+    var onViewAllAnalytics: ((_ siteID: Int64,
+                              _ timeZone: TimeZone,
+                              _ timeRange: StatsTimeRangeV4) -> Void)?
+
     private let storePlanSynchronizer = ServiceLocator.storePlanSynchronizer
     private let connectivityObserver = ServiceLocator.connectivityObserver
 
@@ -40,8 +49,7 @@ struct DashboardView: View {
             dismissedJetpackBenefitBanner == false
     }
 
-    init(viewModel: DashboardViewModel,
-         usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter) {
+    init(viewModel: DashboardViewModel) {
         self.viewModel = viewModel
     }
 
@@ -53,6 +61,7 @@ struct DashboardView: View {
                 .padding([.horizontal, .bottom], Layout.padding)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .background(Color(.listForeground(modal: false)))
+                .renderedIf(verticalSizeClass == .regular)
 
             // Error banner
             if let error = viewModel.statSyncingError {
@@ -148,7 +157,11 @@ private extension DashboardView {
                                                showAllCampaignsTapped: showAllBlazeCampaignsTapped,
                                                createCampaignTapped: createBlazeCampaignTapped)
                 case .statsAndTopPerformers:
-                    StorePerformanceView(viewModel: viewModel.storePerformanceViewModel)
+                    StorePerformanceView(viewModel: viewModel.storePerformanceViewModel, onCustomRangeRedactedViewTap: {
+                        onCustomRangeRedactedViewTap?()
+                    }, onViewAllAnalytics: { siteID, siteTimeZone, timeRange in
+                        onViewAllAnalytics?(siteID, siteTimeZone, timeRange)
+                    })
                 }
             }
         }
@@ -237,5 +250,5 @@ private extension DashboardView {
 }
 
 #Preview {
-    DashboardView(viewModel: DashboardViewModel(siteID: 123), usageTracksEventEmitter: .init())
+    DashboardView(viewModel: DashboardViewModel(siteID: 123, usageTracksEventEmitter: .init()))
 }

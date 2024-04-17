@@ -10,17 +10,29 @@ import enum Networking.DotcomError
 ///
 final class StorePerformanceViewModel: ObservableObject {
     @Published private(set) var timeRange = StatsTimeRangeV4.today
+    @Published private(set) var statsIntervalData: [StoreStatsChartData] = []
+
     @Published private(set) var timeRangeText = ""
+    @Published private(set) var revenueStatsText = ""
+    @Published private(set) var orderStatsText = ""
+    @Published private(set) var visitorStatsText = ""
+    @Published private(set) var conversionStatsText = ""
+
+    @Published private(set) var selectedDateText: String?
+    @Published private(set) var shouldHighlightStats = false
+
     @Published private(set) var syncingData = false
     @Published private(set) var siteVisitStatMode = SiteVisitStatsMode.hidden
     @Published private(set) var statsVersion: StatsVersion = .v4
 
-    private let siteID: Int64
-    private let siteTimezone: TimeZone
+    let siteID: Int64
+    let siteTimezone: TimeZone
     private let stores: StoresManager
     private let storageManager: StorageManagerType
     private let currencyFormatter: CurrencyFormatter
     private let currencySettings: CurrencySettings
+    private let usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter
+    private let analytics: Analytics
 
     private var periodViewModel: StoreStatsPeriodViewModel?
 
@@ -32,43 +44,86 @@ final class StorePerformanceViewModel: ObservableObject {
 
     private var subscriptions: Set<AnyCancellable> = []
     private var currentDate = Date()
+    private let chartValueSelectedEventsSubject = PassthroughSubject<Int?, Never>()
+
+    // To check whether the tab is showing the visitors and conversion views as redacted for custom range.
+    // This redaction is only shown on Custom Range tab with WordPress.com or Jetpack connected sites,
+    // while Jetpack CP sites has its own redacted for Jetpack state, and non-Jetpack sites simply has them empty.
+    var unavailableVisitStatsDueToCustomRange: Bool {
+        guard timeRange.isCustomTimeRange,
+              let site = stores.sessionManager.defaultSite,
+              site.isJetpackConnected,
+              site.isJetpackThePluginInstalled else {
+            return false
+        }
+        return true
+    }
 
     init(siteID: Int64,
          siteTimezone: TimeZone = .siteTimezone,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
-         currencySettings: CurrencySettings = ServiceLocator.currencySettings) {
+         currencySettings: CurrencySettings = ServiceLocator.currencySettings,
+         usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter,
+         analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
         self.stores = stores
         self.siteTimezone = siteTimezone
         self.storageManager = storageManager
         self.currencyFormatter = currencyFormatter
         self.currencySettings = currencySettings
+        self.usageTracksEventEmitter = usageTracksEventEmitter
+        self.analytics = analytics
 
         observeTimeRange()
+        observeChartValueSelectedEvents()
+
+        Task { @MainActor in
+            self.timeRange = await loadLastTimeRange() ?? .today
+        }
     }
 
     func didSelectTimeRange(_ newTimeRange: StatsTimeRangeV4) {
         timeRange = newTimeRange
+        saveLastTimeRange(timeRange)
+        shouldHighlightStats = false
+        usageTracksEventEmitter.interacted()
+        analytics.track(event: .Dashboard.dashboardMainStatsDate(timeRange: timeRange))
+    }
+
+    func didSelectStatsInterval(at index: Int?) {
+        chartValueSelectedEventsSubject.send(index)
     }
 
     @MainActor
     func reloadData() async {
         onDataReload()
         syncingData = true
+        let waitingTracker = WaitingTimeTracker(trackScenario: .dashboardMainStats)
         do {
             try await syncAllStats()
-            siteVisitStatMode = .default
             trackDashboardStatsSyncComplete()
-            if timeRange == .today {
+            statsVersion = .v4
+            switch timeRange {
+            case .custom:
+                updateSiteVisitStatModeForCustomRange()
+            case .today:
+                // Reload the Store Info Widget after syncing the today's stats.
                 WidgetCenter.shared.reloadTimelines(ofKind: WooConstants.storeInfoWidgetKind)
+                fallthrough
+            case .thisWeek, .thisMonth, .thisYear:
+                siteVisitStatMode = .default
             }
+        } catch DotcomError.noRestRoute {
+            statsVersion = .v3
         } catch {
+            statsVersion = .v4
             DDLogError("⛔️ Error loading store stats: \(error)")
             handleSyncError(error: error)
         }
         syncingData = false
+        waitingTracker.end()
     }
 }
 
@@ -94,6 +149,35 @@ extension StorePerformanceViewModel {
             return nil
         }
         return Localization.addCustomRange
+    }
+
+    var chartViewModel: StoreStatsChartViewModel {
+        StoreStatsChartViewModel(intervals: statsIntervalData,
+                                 timeRange: timeRange,
+                                 currencySettings: currencySettings,
+                                 currencyFormatter: currencyFormatter)
+    }
+
+    var granularityText: String? {
+        guard case .custom = timeRange else {
+            return nil
+        }
+        return timeRange.intervalGranularity.displayText
+    }
+
+    var redactedViewIcon: UIImage? {
+        switch siteVisitStatMode {
+        case .redactedDueToJetpack:
+            UIImage.jetpackLogoImage.withRenderingMode(.alwaysTemplate)
+        case .redactedDueToCustomRange:
+            UIImage.infoOutlineImage.withRenderingMode(.alwaysTemplate)
+        case .default, .hidden:
+            nil
+        }
+    }
+
+    var redactedViewIconColor: UIColor {
+        siteVisitStatMode == .redactedDueToJetpack ? .jetpackGreen : .accent
     }
 }
 
@@ -133,6 +217,115 @@ private extension StorePerformanceViewModel {
         periodViewModel.timeRangeBarViewModel
             .map { $0.timeRangeText }
             .assign(to: &$timeRangeText)
+
+        periodViewModel.timeRangeBarViewModel
+            .map { $0.selectedDateText }
+            .assign(to: &$selectedDateText)
+
+        periodViewModel.revenueStatsText
+            .assign(to: &$revenueStatsText)
+
+        periodViewModel.orderStatsText
+            .assign(to: &$orderStatsText)
+
+        periodViewModel.visitorStatsText
+            .assign(to: &$visitorStatsText)
+
+        periodViewModel.conversionStatsText
+            .assign(to: &$conversionStatsText)
+
+        periodViewModel.orderStatsIntervals
+            .map { [weak self] intervals in
+                guard let self else {
+                    return []
+                }
+                return createOrderStatsIntervalData(orderStatsIntervals: intervals)
+            }
+            .assign(to: &$statsIntervalData)
+    }
+
+    func createOrderStatsIntervalData(orderStatsIntervals: [OrderStatsV4Interval]) -> [StoreStatsChartData] {
+            let intervalDates = orderStatsIntervals.map { $0.dateStart(timeZone: siteTimezone) }
+            let revenues = orderStatsIntervals.map { ($0.revenueValue as NSDecimalNumber).doubleValue }
+            return zip(intervalDates, revenues)
+                .map { x, y -> StoreStatsChartData in
+                    .init(date: x, revenue: y)
+                }
+        }
+
+    @MainActor
+    func loadLastTimeRange() async -> StatsTimeRangeV4? {
+        await withCheckedContinuation { continuation in
+            let action = AppSettingsAction.loadLastSelectedStatsTimeRange(siteID: siteID) { timeRange in
+                continuation.resume(returning: timeRange)
+            }
+            stores.dispatch(action)
+        }
+    }
+
+    func saveLastTimeRange(_ timeRange: StatsTimeRangeV4) {
+        let action = AppSettingsAction.setLastSelectedStatsTimeRange(siteID: siteID, timeRange: timeRange)
+        stores.dispatch(action)
+    }
+
+    /// Initial redaction state logic for site visit stats.
+    /// If a) Site is WordPress.com site or self-hosted site with Jetpack:
+    ///       - if date range is < 2 days, we can show the visit stats (because the data will be correct)
+    ///       - else, set as `.redactedDueToCustomRange`
+    ///    b). Site is Jetpack CP, set as `.redactedDueToJetpack`
+    ///    c). Site is a non-Jetpack site: set as `.hidden`
+    func updateSiteVisitStatModeForCustomRange() {
+        guard let site = stores.sessionManager.defaultSite,
+              case let .custom(startDate, endDate) = timeRange else { return }
+
+        if site.isJetpackConnected && site.isJetpackThePluginInstalled {
+            let differenceInDay = StatsTimeRangeV4.differenceInDays(startDate: startDate, endDate: endDate)
+            siteVisitStatMode = differenceInDay == .sameDay ? .default : .redactedDueToCustomRange
+        } else if site.isJetpackCPConnected {
+            siteVisitStatMode = .redactedDueToJetpack
+        } else {
+            siteVisitStatMode = .hidden
+        }
+    }
+
+    /// Observe `chartValueSelected` events and call `StoreStatsUsageTracksEventEmitter.interacted()` when
+    /// no similar events have been received after some time.
+    ///
+    /// We debounce it because there are just too many events received from `chartValueSelected()` when
+    /// the user holds and drags on the chart. Having too many events might skew the
+    /// `StoreStatsUsageTracksEventEmitter` algorithm.
+    func observeChartValueSelectedEvents() {
+        chartValueSelectedEventsSubject
+            .debounce(for: .seconds(Constants.chartValueSelectedEventsDebounce), scheduler: DispatchQueue.main)
+            .sink { [weak self] index in
+                self?.handleSelectedChartValue(at: index)
+            }
+            .store(in: &subscriptions)
+    }
+
+    func handleSelectedChartValue(at index: Int?) {
+        periodViewModel?.selectedIntervalIndex = index
+        shouldHighlightStats = index != nil
+
+        if unavailableVisitStatsDueToCustomRange {
+            // If time range is less than 2 days, redact data when selected and show when deselected.
+            // Otherwise, show data when selected and redact when deselected.
+            guard case let .custom(from, to) = timeRange,
+                  let differenceInDays = StatsTimeRangeV4.differenceInDays(startDate: from, endDate: to) else {
+                return
+            }
+
+            if differenceInDays == .sameDay {
+                siteVisitStatMode = index != nil ? .hidden : .default
+            } else {
+                siteVisitStatMode = index != nil ? .default : .redactedDueToCustomRange
+            }
+        }
+
+        if timeRange.isCustomTimeRange {
+            analytics.track(event: .DashboardCustomRange.interacted())
+        }
+        usageTracksEventEmitter.interacted()
     }
 }
 
@@ -146,9 +339,8 @@ private extension StorePerformanceViewModel {
         let latestDateToInclude = timeRange.latestDate(currentDate: currentDate, siteTimezone: timezoneForSync)
 
         try await withThrowingTaskGroup(of: Void.self) { group in
-            group.addTask { @MainActor [weak self] in
-                guard let self else { return }
-                statsVersion = await syncStats(latestDateToInclude: latestDateToInclude)
+            group.addTask { [weak self] in
+                try await self?.syncStats(latestDateToInclude: latestDateToInclude)
             }
 
             group.addTask { [weak self] in
@@ -168,10 +360,9 @@ private extension StorePerformanceViewModel {
 
     /// Syncs store stats for dashboard UI.
     @MainActor
-    func syncStats(latestDateToInclude: Date) async -> StatsVersion {
-        let waitingTracker = WaitingTimeTracker(trackScenario: .dashboardMainStats)
+    func syncStats(latestDateToInclude: Date) async throws {
         let earliestDateToInclude = timeRange.earliestDate(latestDate: latestDateToInclude, siteTimezone: siteTimezone)
-        return await withCheckedContinuation { continuation in
+        try await withCheckedThrowingContinuation { continuation in
             stores.dispatch(StatsActionV4.retrieveStats(siteID: siteID,
                                                         timeRange: timeRange,
                                                         timeZone: siteTimezone,
@@ -180,18 +371,7 @@ private extension StorePerformanceViewModel {
                                                         quantity: timeRange.maxNumberOfIntervals,
                                                         forceRefresh: true,
                                                         onCompletion: { result in
-                switch result {
-                case .success:
-                    waitingTracker.end()
-                    continuation.resume(returning: StatsVersion.v4)
-                case .failure(let error):
-                    DDLogError("⛔️ Dashboard (Performance) — Error synchronizing order stats v4: \(error)")
-                    if error as? DotcomError == .noRestRoute {
-                        continuation.resume(returning: StatsVersion.v3)
-                    } else {
-                        continuation.resume(returning: StatsVersion.v4)
-                    }
-                }
+                continuation.resume(with: result)
             }))
         }
     }
@@ -286,6 +466,9 @@ private extension StorePerformanceViewModel {
 private extension StorePerformanceViewModel {
     enum Constants {
         static let thirtyDaysInSeconds: TimeInterval = 86400*30
+
+        /// The wait time before the `StoreStatsUsageTracksEventEmitter.interacted()` is called.
+        static let chartValueSelectedEventsDebounce: TimeInterval = 1.0
     }
     enum Localization {
         static let addCustomRange = NSLocalizedString(

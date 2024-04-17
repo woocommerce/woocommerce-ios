@@ -72,8 +72,8 @@ extension StoreStatsChartViewModel {
         case .thisMonth:
             return 5
         case .thisYear:
-            return 4
-        case .custom(from: let from, to: let to):
+            return 3
+        case .custom:
             return 5
         }
     }
@@ -89,7 +89,7 @@ extension StoreStatsChartViewModel {
             return .dateTime.day(.defaultDigits)
         case .thisYear:
             return .dateTime.month(.abbreviated)
-        case .custom(from: let from, to: let to):
+        case .custom:
             switch timeRange.intervalGranularity {
             case .hourly:
                 return .dateTime.hour()

@@ -71,7 +71,7 @@ final class StoreStatsChartViewModelTests: XCTestCase {
             .today: 5,
             .thisWeek: 1,
             .thisMonth: 5,
-            .thisYear: 4,
+            .thisYear: 3,
             .custom(from: Date(), to: Date().adding(days: 0)!): 5,
         ]
 

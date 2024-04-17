@@ -6,13 +6,14 @@ import SwiftUI
 ///
 struct StoreStatsChart: View {
     @ObservedObject private var viewModel: StoreStatsChartViewModel
-    let onIntervalSelected: (Int) -> Void
+    let onIntervalSelected: (Int?) -> Void
 
     @State private var selectedDate: Date?
     @State private var selectedRevenue: Double?
+    @State private var selectedIndex: Int?
 
     init(viewModel: StoreStatsChartViewModel,
-         onIntervalSelected: @escaping (Int) -> Void) {
+         onIntervalSelected: @escaping (Int?) -> Void) {
         self.viewModel = viewModel
         self.onIntervalSelected = onIntervalSelected
     }
@@ -27,11 +28,12 @@ struct StoreStatsChart: View {
             // No revenue text and horizontal line
             if !viewModel.hasRevenue {
                 RuleMark(y: .value(Localization.zeroRevenue, 0))
+                    .foregroundStyle(Constants.noRevenueLineColor)
                     .annotation(position: .overlay, alignment: .center) {
                         Text("No revenue this period")
                             .font(.footnote)
                             .padding(Constants.annotationPadding)
-                            .background(Color(UIColor.systemBackground))
+                            .background(Color(.listForeground(modal: false)))
                     }
             }
 
@@ -90,6 +92,10 @@ struct StoreStatsChart: View {
     }
 
     private func updateSelectedDate(at location: CGPoint, proxy: ChartProxy, geometry: GeometryProxy) {
+        guard viewModel.hasRevenue else {
+            return
+        }
+
         let xPosition = location.x - geometry[proxy.plotAreaFrame].origin.x
         guard let date: Date = proxy.value(atX: xPosition) else {
             return
@@ -101,7 +107,15 @@ struct StoreStatsChart: View {
             .first?.date
         selectedRevenue = viewModel.intervals.first(where: { $0.date == selectedDate })?.revenue
         if let index = viewModel.intervals.firstIndex(where: { $0.date == selectedDate }) {
-            onIntervalSelected(index)
+            if index == selectedIndex {
+                onIntervalSelected(nil)
+                selectedIndex = nil
+                selectedDate = nil
+                selectedRevenue = nil
+            } else {
+                selectedIndex = index
+                onIntervalSelected(index)
+            }
         }
     }
 }
@@ -141,6 +155,10 @@ private extension StoreStatsChart {
     }
 
     enum Constants {
+        static var noRevenueLineColor = Color(
+            light: Color.withColorStudio(name: .gray, shade: .shade5),
+            dark: Color.withColorStudio(name: .gray, shade: .shade80)
+        )
         static var chartLineColor = Color(
             light: .withColorStudio(name: .wooCommercePurple, shade: .shade50),
             dark: .withColorStudio(name: .wooCommercePurple, shade: .shade30)

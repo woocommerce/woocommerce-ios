@@ -1,5 +1,6 @@
 import Combine
 import SwiftUI
+import WordPressUI
 import struct Yosemite.Site
 
 /// Hosting view for `DashboardView`
@@ -16,21 +17,30 @@ final class DashboardViewHostingController: UIHostingController<DashboardView> {
     /// Presenter for the privacy choices banner
     private lazy var privacyBannerPresenter = PrivacyBannerPresenter()
 
+    /// Information alert for custom range tab redaction
+    ///
+    private lazy var fancyAlert: FancyAlertViewController = {
+        let alert = FancyAlertViewController.makeCustomRangeRedactionInformationAlert()
+        alert.modalPresentationStyle = .custom
+        alert.transitioningDelegate = AppDelegate.shared.tabBarController
+        return alert
+    }()
+
     private var subscriptions: Set<AnyCancellable> = []
 
     init(siteID: Int64) {
-        let viewModel = DashboardViewModel(siteID: siteID)
         let usageTracksEventEmitter = StoreStatsUsageTracksEventEmitter()
+        let viewModel = DashboardViewModel(siteID: siteID, usageTracksEventEmitter: usageTracksEventEmitter)
         self.viewModel = viewModel
         self.usageTracksEventEmitter = usageTracksEventEmitter
 
-        super.init(rootView: DashboardView(viewModel: viewModel, usageTracksEventEmitter: usageTracksEventEmitter))
+        super.init(rootView: DashboardView(viewModel: viewModel))
 
         configureTabBarItem()
         configureStoreOnboarding()
         configureBlazeSection()
         configureJetpackBenefitBanner()
-
+        configureStorePerformanceView()
     }
 
     @available(*, unavailable)
@@ -87,6 +97,22 @@ private extension DashboardViewHostingController {
             present(modalController, animated: true)
         }
         .store(in: &subscriptions)
+    }
+
+    func configureStorePerformanceView() {
+        rootView.onCustomRangeRedactedViewTap = { [weak self] in
+            guard let self else { return }
+            present(fancyAlert, animated: true)
+        }
+
+        rootView.onViewAllAnalytics = { [weak self] siteID, siteTimeZone, timeRange in
+            guard let self else { return }
+            let analyticsHubVC = AnalyticsHubHostingViewController(siteID: siteID,
+                                                                   timeZone: siteTimeZone,
+                                                                   timeRange: timeRange,
+                                                                   usageTracksEventEmitter: usageTracksEventEmitter)
+            show(analyticsHubVC, sender: self)
+        }
     }
 }
 

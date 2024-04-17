@@ -94,7 +94,7 @@ final class StorePerformanceViewModel: ObservableObject {
 
     func didSelectStatsInterval(at index: Int?) {
         periodViewModel?.selectedIntervalIndex = index
-        chartValueSelectedEventsSubject.send(())
+        chartValueSelectedEventsSubject.send()
         shouldHighlightStats = index != nil
 
         if unavailableVisitStatsDueToCustomRange {

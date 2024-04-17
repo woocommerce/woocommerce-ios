@@ -88,13 +88,15 @@ private extension StorePerformanceView {
             } label: {
                 Image(systemName: "ellipsis")
                     .foregroundStyle(Color.secondary)
-                    .padding([.vertical, .leading], Layout.padding)
+                    .padding(.leading, Layout.padding)
+                    .padding(.vertical, Layout.hideIconVerticalPadding)
             }
+            .disabled(viewModel.syncingData)
         }
     }
 
     var timeRangeBar: some View {
-        HStack(alignment: .top) {
+        HStack {
             AdaptiveStack(horizontalAlignment: .leading) {
                 Text(viewModel.timeRange.tabTitle)
                     .foregroundStyle(Color(.text))
@@ -115,6 +117,7 @@ private extension StorePerformanceView {
                     viewModel.didSelectTimeRange(newTimeRange)
                 }
             }
+            .disabled(viewModel.syncingData)
         }
     }
 
@@ -241,6 +244,7 @@ private extension StorePerformanceView {
         static let redactedViewHeight: CGFloat = 10
         static let redactedViewIconSize: CGFloat = 14
         static let redactedViewIconOffset = CGSize(width: 16, height: 0)
+        static let hideIconVerticalPadding: CGFloat = 8
     }
 
     enum Localization {

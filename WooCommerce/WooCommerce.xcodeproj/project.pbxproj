@@ -2353,6 +2353,7 @@
 		DE74A44F2BCE2FCF0009C415 /* StorePerformanceViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE74A44E2BCE2FCF0009C415 /* StorePerformanceViewModelTests.swift */; };
 		DE74A4522BCF87120009C415 /* TopPerformersDashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE74A4512BCF87120009C415 /* TopPerformersDashboardView.swift */; };
 		DE74A4542BCF88420009C415 /* TopPerformersDashboardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE74A4532BCF88420009C415 /* TopPerformersDashboardViewModel.swift */; };
+		DE74A4572BCFB59F0009C415 /* TopPerformersDashboardViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE74A4562BCFB59F0009C415 /* TopPerformersDashboardViewModelTests.swift */; };
 		DE74F2A327E41D650002FE59 /* EnableAnalyticsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE74F2A227E41D650002FE59 /* EnableAnalyticsViewModel.swift */; };
 		DE74F2A527E41D740002FE59 /* EnableAnalyticsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE74F2A427E41D740002FE59 /* EnableAnalyticsView.swift */; };
 		DE74F2A727E47F620002FE59 /* EnableAnalyticsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE74F2A627E47F620002FE59 /* EnableAnalyticsViewModelTests.swift */; };
@@ -5126,6 +5127,7 @@
 		DE74A44E2BCE2FCF0009C415 /* StorePerformanceViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorePerformanceViewModelTests.swift; sourceTree = "<group>"; };
 		DE74A4512BCF87120009C415 /* TopPerformersDashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopPerformersDashboardView.swift; sourceTree = "<group>"; };
 		DE74A4532BCF88420009C415 /* TopPerformersDashboardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopPerformersDashboardViewModel.swift; sourceTree = "<group>"; };
+		DE74A4562BCFB59F0009C415 /* TopPerformersDashboardViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopPerformersDashboardViewModelTests.swift; sourceTree = "<group>"; };
 		DE74F2A227E41D650002FE59 /* EnableAnalyticsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnableAnalyticsViewModel.swift; sourceTree = "<group>"; };
 		DE74F2A427E41D740002FE59 /* EnableAnalyticsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnableAnalyticsView.swift; sourceTree = "<group>"; };
 		DE74F2A627E47F620002FE59 /* EnableAnalyticsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnableAnalyticsViewModelTests.swift; sourceTree = "<group>"; };
@@ -6819,6 +6821,7 @@
 				028E1F712833E954001F8829 /* DashboardViewModelTests.swift */,
 				027F83EE29B048E2002688C6 /* DashboardTopPerformersViewModelTests.swift */,
 				DEC75CC72BC518D900763801 /* DashboardCustomizationViewModelTests.swift */,
+				DE74A4552BCFB5890009C415 /* TopPerformers */,
 				DED039252BC79339005D0571 /* StoreStats */,
 			);
 			path = Dashboard;
@@ -11653,6 +11656,14 @@
 			path = TopPerformers;
 			sourceTree = "<group>";
 		};
+		DE74A4552BCFB5890009C415 /* TopPerformers */ = {
+			isa = PBXGroup;
+			children = (
+				DE74A4562BCFB59F0009C415 /* TopPerformersDashboardViewModelTests.swift */,
+			);
+			path = TopPerformers;
+			sourceTree = "<group>";
+		};
 		DE74F2A127E41D4F0002FE59 /* EnableAnalytics */ = {
 			isa = PBXGroup;
 			children = (
@@ -15189,6 +15200,7 @@
 				2655905B27863D1300BB8457 /* MockCollectOrderPaymentUseCase.swift in Sources */,
 				027F83EF29B048E2002688C6 /* DashboardTopPerformersViewModelTests.swift in Sources */,
 				D8053BCE231F98DA00CE60C2 /* ReviewAgeTests.swift in Sources */,
+				DE74A4572BCFB59F0009C415 /* TopPerformersDashboardViewModelTests.swift in Sources */,
 				DEA357132ADCC4C9006380BA /* BlazeCampaignListViewModelTests.swift in Sources */,
 				CC09A91229CB1ADB00D6C4AD /* ComponentsListViewModelTests.swift in Sources */,
 				A650BE862578E76600C655E0 /* MockStorageManager+Sample.swift in Sources */,

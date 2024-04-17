@@ -44,7 +44,7 @@ final class StorePerformanceViewModel: ObservableObject {
 
     private var subscriptions: Set<AnyCancellable> = []
     private var currentDate = Date()
-    private let chartValueSelectedEventsSubject = PassthroughSubject<Void, Never>()
+    private let chartValueSelectedEventsSubject = PassthroughSubject<Int?, Never>()
 
     // To check whether the tab is showing the visitors and conversion views as redacted for custom range.
     // This redaction is only shown on Custom Range tab with WordPress.com or Jetpack connected sites,
@@ -93,24 +93,7 @@ final class StorePerformanceViewModel: ObservableObject {
     }
 
     func didSelectStatsInterval(at index: Int?) {
-        periodViewModel?.selectedIntervalIndex = index
-        chartValueSelectedEventsSubject.send()
-        shouldHighlightStats = index != nil
-
-        if unavailableVisitStatsDueToCustomRange {
-            // If time range is less than 2 days, redact data when selected and show when deselected.
-            // Otherwise, show data when selected and redact when deselected.
-            guard case let .custom(from, to) = timeRange,
-                  let differenceInDays = StatsTimeRangeV4.differenceInDays(startDate: from, endDate: to) else {
-                return
-            }
-
-            if differenceInDays == .sameDay {
-                siteVisitStatMode = index != nil ? .hidden : .default
-            } else {
-                siteVisitStatMode = index != nil ? .default : .redactedDueToCustomRange
-            }
-        }
+        chartValueSelectedEventsSubject.send(index)
     }
 
     @MainActor
@@ -311,16 +294,38 @@ private extension StorePerformanceViewModel {
     /// We debounce it because there are just too many events received from `chartValueSelected()` when
     /// the user holds and drags on the chart. Having too many events might skew the
     /// `StoreStatsUsageTracksEventEmitter` algorithm.
-    private func observeChartValueSelectedEvents() {
+    func observeChartValueSelectedEvents() {
         chartValueSelectedEventsSubject
             .debounce(for: .seconds(Constants.chartValueSelectedEventsDebounce), scheduler: DispatchQueue.main)
-            .sink { [weak self] _ in
-                guard let self else { return }
-                if timeRange.isCustomTimeRange {
-                    analytics.track(event: .DashboardCustomRange.interacted())
-                }
-                usageTracksEventEmitter.interacted()
-            }.store(in: &subscriptions)
+            .sink { [weak self] index in
+                self?.handleSelectedChartValue(at: index)
+            }
+            .store(in: &subscriptions)
+    }
+
+    func handleSelectedChartValue(at index: Int?) {
+        periodViewModel?.selectedIntervalIndex = index
+        shouldHighlightStats = index != nil
+
+        if unavailableVisitStatsDueToCustomRange {
+            // If time range is less than 2 days, redact data when selected and show when deselected.
+            // Otherwise, show data when selected and redact when deselected.
+            guard case let .custom(from, to) = timeRange,
+                  let differenceInDays = StatsTimeRangeV4.differenceInDays(startDate: from, endDate: to) else {
+                return
+            }
+
+            if differenceInDays == .sameDay {
+                siteVisitStatMode = index != nil ? .hidden : .default
+            } else {
+                siteVisitStatMode = index != nil ? .default : .redactedDueToCustomRange
+            }
+        }
+
+        if timeRange.isCustomTimeRange {
+            analytics.track(event: .DashboardCustomRange.interacted())
+        }
+        usageTracksEventEmitter.interacted()
     }
 }
 

@@ -1,7 +1,7 @@
 import XCTest
 @testable import WooCommerce
 
-final class DashboardTopPerformersViewModelTests: XCTestCase {
+final class TopPerformersPeriodViewModelTests: XCTestCase {
     // MARK: - Initializer in different states
 
     func test_init_with_loading_state_sets_isRedacted_and_placeholder_rows() throws {

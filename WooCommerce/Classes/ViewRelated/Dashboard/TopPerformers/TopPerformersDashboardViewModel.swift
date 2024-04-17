@@ -53,6 +53,49 @@ final class TopPerformersDashboardViewModel: ObservableObject {
 // MARK: - Data for `TopPerformersDashboardView`
 //
 extension TopPerformersDashboardViewModel {
+    var timeRangeText: String {
+        let now = Date()
+        let startDate: Date? = {
+            switch timeRange {
+            case .today:
+                now.startOfDay(timezone: siteTimezone)
+            case .thisWeek:
+                now.startOfWeek(timezone: siteTimezone)
+            case .thisMonth:
+                now.startOfMonth(timezone: siteTimezone)
+            case .thisYear:
+                now.startOfYear(timezone: siteTimezone)
+            case let .custom(start, _):
+                start
+            }
+        }()
+
+        let endDate: Date? = {
+            switch timeRange {
+            case .today:
+                now.endOfDay(timezone: siteTimezone)
+            case .thisWeek:
+                now.endOfWeek(timezone: siteTimezone)
+            case .thisMonth:
+                now.endOfMonth(timezone: siteTimezone)
+            case .thisYear:
+                now.endOfYear(timezone: siteTimezone)
+            case let .custom(_, end):
+                end
+            }
+        }()
+
+        guard let startDate, let endDate else {
+            return ""
+        }
+
+        let timeRangeViewModel = StatsTimeRangeBarViewModel(startDate: startDate,
+                                                            endDate: endDate,
+                                                            timeRange: timeRange,
+                                                            timezone: siteTimezone)
+        return timeRangeViewModel.timeRangeText
+    }
+
     var startDateForCustomRange: Date {
         if case let .custom(startDate, _) = timeRange {
             return startDate

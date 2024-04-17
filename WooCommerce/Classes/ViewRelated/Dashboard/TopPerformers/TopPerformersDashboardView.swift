@@ -79,9 +79,14 @@ private extension TopPerformersDashboardView {
 
     var timeRangeBar: some View {
         HStack {
-            Text(viewModel.timeRange.tabTitle)
-                .foregroundStyle(Color(.text))
-                .subheadlineStyle()
+            AdaptiveStack(horizontalAlignment: .leading) {
+                Text(viewModel.timeRange.tabTitle)
+                    .foregroundStyle(Color(.text))
+                    .subheadlineStyle()
+
+                Text(viewModel.timeRangeText)
+                    .subheadlineStyle()
+            }
             Spacer()
             StatsTimeRangePicker(currentTimeRange: viewModel.timeRange) { newTimeRange in
                 if newTimeRange.isCustomTimeRange {

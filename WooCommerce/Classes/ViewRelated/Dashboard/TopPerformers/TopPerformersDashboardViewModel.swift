@@ -2,9 +2,9 @@ import WooFoundation
 import Yosemite
 import protocol Storage.StorageManagerType
 
-/// View model for `TopPerformerDashboardView`
+/// View model for `TopPerformersDashboardView`
 ///
-final class TopPerformerDashboardViewModel: ObservableObject {
+final class TopPerformersDashboardViewModel: ObservableObject {
 
     @Published private(set) var timeRange = StatsTimeRangeV4.today
     @Published private(set) var syncingData = false
@@ -50,9 +50,9 @@ final class TopPerformerDashboardViewModel: ObservableObject {
     }
 }
 
-// MARK: - Data for `TopPerformerDashboardView`
+// MARK: - Data for `TopPerformersDashboardView`
 //
-extension TopPerformerDashboardViewModel {
+extension TopPerformersDashboardViewModel {
     var startDateForCustomRange: Date {
         if case let .custom(startDate, _) = timeRange {
             return startDate
@@ -77,7 +77,7 @@ extension TopPerformerDashboardViewModel {
 
 // MARK: - Private helpers
 //
-private extension TopPerformerDashboardViewModel {
+private extension TopPerformersDashboardViewModel {
     func observeTimeRange() {
         // TODO
     }
@@ -100,7 +100,7 @@ private extension TopPerformerDashboardViewModel {
 
 // MARK: Constants
 //
-private extension TopPerformerDashboardViewModel {
+private extension TopPerformersDashboardViewModel {
     enum Constants {
         static let thirtyDaysInSeconds: TimeInterval = 86400*30
     }

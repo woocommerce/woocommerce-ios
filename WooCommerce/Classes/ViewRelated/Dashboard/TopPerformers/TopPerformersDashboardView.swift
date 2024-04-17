@@ -4,14 +4,14 @@ import enum Yosemite.StatsTimeRangeV4
 /// SwiftUI view for the Top Performers dashboard card.
 ///
 struct TopPerformersDashboardView: View {
-    @ObservedObject private var viewModel: TopPerformerDashboardViewModel
+    @ObservedObject private var viewModel: TopPerformersDashboardViewModel
     @State private var showingCustomRangePicker = false
 
     private let onViewAllAnalytics: (_ siteID: Int64,
                                      _ timeZone: TimeZone,
                                      _ timeRange: StatsTimeRangeV4) -> Void
 
-    init(viewModel: TopPerformerDashboardViewModel,
+    init(viewModel: TopPerformersDashboardViewModel,
          onViewAllAnalytics: @escaping (Int64, TimeZone, StatsTimeRangeV4) -> Void) {
         self.viewModel = viewModel
         self.onViewAllAnalytics = onViewAllAnalytics

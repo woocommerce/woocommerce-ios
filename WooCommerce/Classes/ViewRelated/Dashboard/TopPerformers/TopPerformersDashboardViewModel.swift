@@ -8,6 +8,7 @@ final class TopPerformersDashboardViewModel: ObservableObject {
 
     @Published private(set) var timeRange = StatsTimeRangeV4.today
     @Published private(set) var syncingData = false
+    @Published var selectedItem: TopEarnerStatsItem?
 
     let siteID: Int64
     let siteTimezone: TimeZone
@@ -15,8 +16,24 @@ final class TopPerformersDashboardViewModel: ObservableObject {
     private let storageManager: StorageManagerType
     private let currencyFormatter: CurrencyFormatter
     private let currencySettings: CurrencySettings
-    let usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter
+    private let usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter
     private let analytics: Analytics
+
+    private var resultsController: ResultsController<StorageTopEarnerStats>?
+
+    private var currentDate: Date {
+        Date()
+    }
+
+    lazy var dataViewModel = DashboardTopPerformersViewModel(state: .loading) { [weak self] topPerformersItem in
+        guard let self else { return }
+        usageTracksEventEmitter.interacted()
+        selectedItem = topPerformersItem
+    }
+
+    private var topEarnerStats: TopEarnerStats? {
+        resultsController?.fetchedObjects.first
+    }
 
     init(siteID: Int64,
          siteTimezone: TimeZone = .siteTimezone,
@@ -37,6 +54,7 @@ final class TopPerformersDashboardViewModel: ObservableObject {
 
         Task { @MainActor in
             self.timeRange = await loadLastTimeRange() ?? .today
+            updateResultsController()
             await reloadData()
         }
     }
@@ -46,6 +64,7 @@ final class TopPerformersDashboardViewModel: ObservableObject {
         saveLastTimeRange(timeRange)
         usageTracksEventEmitter.interacted()
         analytics.track(event: .Dashboard.dashboardMainStatsDate(timeRange: timeRange))
+        updateResultsController()
 
         Task { [weak self] in
             await self?.reloadData()
@@ -55,16 +74,16 @@ final class TopPerformersDashboardViewModel: ObservableObject {
     @MainActor
     func reloadData() async {
         syncingData = true
+        updateUIInLoadingState()
         do {
-            let currentDate = Date()
-            let latestDateToInclude = timeRange.latestDate(currentDate: currentDate, siteTimezone: siteTimezone)
-            try await syncTopEarnersStats(latestDateToInclude: latestDateToInclude)
+            try await syncTopEarnersStats()
             ServiceLocator.analytics.track(event:
                     .Dashboard.dashboardTopPerformersLoaded(timeRange: timeRange))
         } catch {
             DDLogError("⛔️ Dashboard (Top Performers) — Error synchronizing top earner stats: \(error)")
         }
         syncingData = false
+        updateUIInLoadedState()
     }
 }
 
@@ -119,11 +138,55 @@ private extension TopPerformersDashboardViewModel {
         stores.dispatch(action)
     }
 
+    func updateResultsController() {
+        let resultsController = createResultsController(timeRange: timeRange)
+        self.resultsController = resultsController
+        resultsController.onDidChangeContent = { [weak self] in
+            self?.updateUIInLoadedState()
+        }
+        resultsController.onDidResetContent = { [weak self] in
+            self?.updateUIInLoadedState()
+        }
+
+        do {
+            try resultsController.performFetch()
+        } catch {
+            ServiceLocator.crashLogging.logError(error)
+        }
+    }
+
+    func updateUIInLoadingState() {
+        dataViewModel.update(state: .loading)
+    }
+
+    func updateUIInLoadedState() {
+        guard !syncingData else {
+            return
+        }
+        guard let items = topEarnerStats?.items?.sorted(by: >), items.isNotEmpty else {
+            return dataViewModel.update(state: .loaded(rows: []))
+        }
+        dataViewModel.update(state: .loaded(rows: items))
+    }
+
+    func createResultsController(timeRange: StatsTimeRangeV4) -> ResultsController<StorageTopEarnerStats> {
+        let granularity = timeRange.topEarnerStatsGranularity
+        let formattedDateString: String = {
+            let date = timeRange.latestDate(currentDate: currentDate, siteTimezone: siteTimezone)
+            return StatsStoreV4.buildDateString(from: date, with: granularity)
+        }()
+        let predicate = NSPredicate(format: "granularity = %@ AND date = %@ AND siteID = %ld", granularity.rawValue, formattedDateString, siteID)
+        let descriptor = NSSortDescriptor(key: "date", ascending: true)
+
+        return ResultsController<StorageTopEarnerStats>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
+    }
+
     @MainActor
-    func syncTopEarnersStats(latestDateToInclude: Date) async throws {
-        let waitingTracker = WaitingTimeTracker(trackScenario: .dashboardTopPerformers)
+    func syncTopEarnersStats() async throws {
+        let latestDateToInclude = timeRange.latestDate(currentDate: currentDate, siteTimezone: siteTimezone)
         let earliestDateToInclude = timeRange.earliestDate(latestDate: latestDateToInclude, siteTimezone: siteTimezone)
         try await withCheckedThrowingContinuation { continuation in
+            let waitingTracker = WaitingTimeTracker(trackScenario: .dashboardTopPerformers)
             stores.dispatch(StatsActionV4.retrieveTopEarnerStats(siteID: siteID,
                                                                  timeRange: timeRange,
                                                                  timeZone: siteTimezone,

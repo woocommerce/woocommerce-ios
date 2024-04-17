@@ -113,13 +113,8 @@ private extension TopPerformersDashboardView {
     }
 
     var topPerformersList: some View {
-        ViewControllerContainer(
-            TopPerformerDataViewController(siteID: viewModel.siteID,
-                                           siteTimeZone: viewModel.siteTimezone,
-                                           currentDate: Date(),
-                                           timeRange: viewModel.timeRange,
-                                           usageTracksEventEmitter: viewModel.usageTracksEventEmitter)
-        )
+        DashboardTopPerformersView(viewModel: viewModel.dataViewModel)
+            .frame(maxWidth: .infinity)
     }
 }
 

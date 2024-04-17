@@ -100,7 +100,6 @@ final class StorePerformanceViewModel: ObservableObject {
     func reloadData() async {
         onDataReload()
         syncingData = true
-        let waitingTracker = WaitingTimeTracker(trackScenario: .dashboardMainStats)
         do {
             try await syncAllStats()
             trackDashboardStatsSyncComplete()
@@ -123,7 +122,6 @@ final class StorePerformanceViewModel: ObservableObject {
             handleSyncError(error: error)
         }
         syncingData = false
-        waitingTracker.end()
     }
 }
 
@@ -362,6 +360,7 @@ private extension StorePerformanceViewModel {
     func syncStats(latestDateToInclude: Date) async throws {
         let earliestDateToInclude = timeRange.earliestDate(latestDate: latestDateToInclude, siteTimezone: siteTimezone)
         try await withCheckedThrowingContinuation { continuation in
+            let waitingTracker = WaitingTimeTracker(trackScenario: .dashboardMainStats)
             stores.dispatch(StatsActionV4.retrieveStats(siteID: siteID,
                                                         timeRange: timeRange,
                                                         timeZone: siteTimezone,
@@ -370,6 +369,7 @@ private extension StorePerformanceViewModel {
                                                         quantity: timeRange.maxNumberOfIntervals,
                                                         forceRefresh: true,
                                                         onCompletion: { result in
+                waitingTracker.end()
                 continuation.resume(with: result)
             }))
         }

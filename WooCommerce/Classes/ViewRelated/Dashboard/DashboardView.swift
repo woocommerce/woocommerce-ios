@@ -29,7 +29,6 @@ struct DashboardView: View {
     /// Set externally in the hosting controller.
     var jetpackBenefitsBannerTapped: ((Site) -> Void)?
 
-    private let storeStatsAndTopPerformersViewController: StoreStatsAndTopPerformersViewController
     private let storePlanSynchronizer = ServiceLocator.storePlanSynchronizer
     private let connectivityObserver = ServiceLocator.connectivityObserver
 
@@ -44,19 +43,6 @@ struct DashboardView: View {
     init(viewModel: DashboardViewModel,
          usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter) {
         self.viewModel = viewModel
-        self.storeStatsAndTopPerformersViewController = StoreStatsAndTopPerformersViewController(
-            siteID: viewModel.siteID,
-            dashboardViewModel: viewModel,
-            usageTracksEventEmitter: usageTracksEventEmitter
-        )
-
-        storeStatsAndTopPerformersViewController.onDataReload = {
-            viewModel.statSyncingError = nil
-        }
-
-        storeStatsAndTopPerformersViewController.displaySyncingError = { error in
-            viewModel.statSyncingError = error
-        }
     }
 
     var body: some View {
@@ -110,7 +96,6 @@ struct DashboardView: View {
             Task { @MainActor in
                 ServiceLocator.analytics.track(.dashboardPulledToRefresh)
                 await viewModel.reloadAllData()
-                await storeStatsAndTopPerformersViewController.reloadData(forced: true)
             }
         }
         .safeAreaInset(edge: .bottom) {
@@ -163,11 +148,7 @@ private extension DashboardView {
                                                showAllCampaignsTapped: showAllBlazeCampaignsTapped,
                                                createCampaignTapped: createBlazeCampaignTapped)
                 case .statsAndTopPerformers:
-                    if viewModel.statsVersion == .v4 {
-                        ViewControllerContainer(storeStatsAndTopPerformersViewController)
-                    } else {
-                        ViewControllerContainer(DeprecatedDashboardStatsViewController())
-                    }
+                    StorePerformanceView(viewModel: viewModel.storePerformanceViewModel)
                 }
             }
         }

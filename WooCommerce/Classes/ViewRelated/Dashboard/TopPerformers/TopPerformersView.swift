@@ -27,6 +27,10 @@ struct TopPerformersView: View {
     ///
     @State private var rowTextMargin: CGFloat = 0
 
+    private var titleColor: Color {
+        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.dynamicDashboard) ? .secondary : .primary
+    }
+
     var body: some View {
         VStack() {
 
@@ -37,7 +41,7 @@ struct TopPerformersView: View {
                 Text(valueTitle)
             }
             .font(.subheadline.bold())
-            .foregroundColor(Color(.text))
+            .foregroundColor(titleColor)
             .padding(.bottom, Layout.tableSpacing)
 
             // Rows

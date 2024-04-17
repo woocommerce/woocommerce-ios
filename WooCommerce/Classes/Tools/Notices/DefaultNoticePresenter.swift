@@ -346,6 +346,8 @@ private class NoticeContainerView: UIView {
             paddingWidthConstraint,
             leftPaddingView.widthAnchor.constraint(equalTo: rightPaddingView.widthAnchor)
         ])
+
+        activateNoticeWidthIfNeeded()
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -360,10 +362,14 @@ private class NoticeContainerView: UIView {
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
 
-        let isRegularWidth = traitCollection.containsTraits(in: UITraitCollection(horizontalSizeClass: .regular))
-        noticeWidthConstraint.isActive = isRegularWidth
+        activateNoticeWidthIfNeeded()
 
         layoutIfNeeded()
+    }
+
+    private func activateNoticeWidthIfNeeded() {
+        let isRegularWidth = traitCollection.containsTraits(in: UITraitCollection(horizontalSizeClass: .regular))
+        noticeWidthConstraint.isActive = isRegularWidth
     }
 }
 

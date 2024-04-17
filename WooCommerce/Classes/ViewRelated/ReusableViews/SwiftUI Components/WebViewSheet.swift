@@ -32,8 +32,8 @@ struct WebViewSheet_Previews: PreviewProvider {
     static var previews: some View {
         WebViewSheet(
             viewModel: WebViewSheetViewModel.init(
-                url: URL(string: "https://woo.com")!,
-                navigationTitle: "Woo.com",
+                url: URL(string: "https://woocommerce.com")!,
+                navigationTitle: "WooCommerce.com",
                 authenticated: true),
             done: { })
     }

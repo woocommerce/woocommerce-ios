@@ -19,12 +19,15 @@ final class DashboardViewModel: ObservableObject {
 
     let blazeCampaignDashboardViewModel: BlazeCampaignDashboardViewModel
 
+    let storePerformanceViewModel: StorePerformanceViewModel
+
     @Published var justInTimeMessagesWebViewModel: WebViewSheetViewModel? = nil
 
     @Published private(set) var showOnboarding: Bool = false
     @Published private(set) var showBlazeCampaignView: Bool = false
 
     @Published private(set) var dashboardCards: [DashboardCard] = [DashboardCard(type: .statsAndTopPerformers, enabled: true)]
+    @Published private(set) var unavailableDashboardCards: [DashboardCard] = []
 
     @Published private(set) var jetpackBannerVisibleFromAppSettings = false
     @Published var statSyncingError: Error?
@@ -38,6 +41,7 @@ final class DashboardViewModel: ObservableObject {
     private let userDefaults: UserDefaults
     private let storeCreationProfilerUploadAnswersUseCase: StoreCreationProfilerUploadAnswersUseCaseProtocol
     private let themeInstaller: ThemeInstaller
+    private var subscriptions: Set<AnyCancellable> = []
 
     var siteURLToShare: URL? {
         if let site = stores.sessionManager.defaultSite,
@@ -54,7 +58,8 @@ final class DashboardViewModel: ObservableObject {
          analytics: Analytics = ServiceLocator.analytics,
          userDefaults: UserDefaults = .standard,
          storeCreationProfilerUploadAnswersUseCase: StoreCreationProfilerUploadAnswersUseCaseProtocol? = nil,
-         themeInstaller: ThemeInstaller = DefaultThemeInstaller()) {
+         themeInstaller: ThemeInstaller = DefaultThemeInstaller(),
+         usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter = StoreStatsUsageTracksEventEmitter()) {
         self.siteID = siteID
         self.stores = stores
         self.featureFlagService = featureFlags
@@ -64,12 +69,15 @@ final class DashboardViewModel: ObservableObject {
         self.localAnnouncementsProvider = .init(stores: stores, analytics: analytics, featureFlagService: featureFlags)
         self.storeOnboardingViewModel = .init(siteID: siteID, isExpanded: false, stores: stores, defaults: userDefaults)
         self.blazeCampaignDashboardViewModel = .init(siteID: siteID)
+        self.storePerformanceViewModel = .init(siteID: siteID,
+                                               usageTracksEventEmitter: usageTracksEventEmitter)
         self.storeCreationProfilerUploadAnswersUseCase = storeCreationProfilerUploadAnswersUseCase ?? StoreCreationProfilerUploadAnswersUseCase(siteID: siteID)
         self.themeInstaller = themeInstaller
         setupObserverForShowOnboarding()
         setupObserverForBlazeCampaignView()
         setupDashboardCards()
         installPendingThemeIfNeeded()
+        configureStorePerformanceViewModel()
     }
 
     /// Uploads the answers from the store creation profiler flow
@@ -93,6 +101,11 @@ final class DashboardViewModel: ObservableObject {
             }
             group.addTask { [weak self] in
                 await self?.updateJetpackBannerVisibilityFromAppSettings()
+            }
+            if featureFlagService.isFeatureFlagEnabled(.dynamicDashboard) {
+                group.addTask { [weak self] in
+                    await self?.storePerformanceViewModel.reloadData()
+                }
             }
         }
     }
@@ -262,10 +275,25 @@ final class DashboardViewModel: ObservableObject {
             }
         }
     }
+
+    func didCustomizeDashboardCards(_ cards: [DashboardCard]) {
+        stores.dispatch(AppSettingsAction.setDashboardCards(siteID: siteID, cards: cards))
+        dashboardCards = cards
+    }
 }
 
 // MARK: Private helpers
 private extension DashboardViewModel {
+    func configureStorePerformanceViewModel() {
+        storePerformanceViewModel.onDataReload = { [weak self] in
+            self?.statSyncingError = nil
+        }
+
+        storePerformanceViewModel.onSyncingError = { [weak self] error in
+            self?.statSyncingError = error
+        }
+    }
+
     /// Checks for Just In Time Messages and prepares the announcement if needed.
     ///
     @MainActor
@@ -318,15 +346,43 @@ private extension DashboardViewModel {
 
     func setupDashboardCards() {
         $showOnboarding.combineLatest($showBlazeCampaignView)
-            .map { showOnboarding, showBlazeCampaignView -> [DashboardCard] in
-                [
-                    showOnboarding ? DashboardCard(type: .onboarding, enabled: true) : nil,
-                    DashboardCard(type: .statsAndTopPerformers, enabled: true),
-                    showBlazeCampaignView ? DashboardCard(type: .blaze, enabled: true) : nil
-                ].compactMap { $0 }
-            }
             .receive(on: RunLoop.main)
-            .assign(to: &$dashboardCards)
+            .sink { [weak self] showOnboarding, showBlazeCampaignView in
+                guard let self else { return }
+                Task {
+                    await self.updateDashboardCards(showOnboarding: showOnboarding,
+                                               showBlazeCampaignView: showBlazeCampaignView)
+                }
+            }
+            .store(in: &subscriptions)
+    }
+
+    /// We are using separate user defaults for different cards -
+    /// this should be updated to general app settings.
+    ///
+    @MainActor
+    func updateDashboardCards(showOnboarding: Bool, showBlazeCampaignView: Bool) async {
+        dashboardCards = await {
+            if let stored = await loadDashboardCards() {
+                return stored
+            } else {
+                return [DashboardCard(type: .onboarding, enabled: showOnboarding),
+                        DashboardCard(type: .statsAndTopPerformers, enabled: true),
+                        DashboardCard(type: .blaze, enabled: showBlazeCampaignView)]
+            }
+        }()
+
+        unavailableDashboardCards = []
+
+        if let onboardingCard = dashboardCards.first(where: { $0.type == .onboarding }),
+           !showOnboarding && !userDefaults.shouldHideStoreOnboardingTaskList {
+            unavailableDashboardCards.append(onboardingCard)
+        }
+
+        if let blazeCard = dashboardCards.first(where: { $0.type == .blaze }),
+           !showBlazeCampaignView && !userDefaults.hasDismissedBlazeSectionOnMyStore {
+            unavailableDashboardCards.append(blazeCard)
+        }
     }
 
     @MainActor
@@ -342,6 +398,15 @@ private extension DashboardViewModel {
     @MainActor
     func updateJetpackBannerVisibilityFromAppSettings() async {
         jetpackBannerVisibleFromAppSettings = await loadJetpackBannerVisibilityFromAppSettings()
+    }
+
+    @MainActor
+    func loadDashboardCards() async -> [DashboardCard]? {
+        await withCheckedContinuation { continuation in
+            stores.dispatch(AppSettingsAction.loadDashboardCards(siteID: siteID, onCompletion: { cards in
+                continuation.resume(returning: cards)
+            }))
+        }
     }
 }
 

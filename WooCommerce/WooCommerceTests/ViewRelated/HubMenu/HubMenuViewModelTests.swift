@@ -3,6 +3,7 @@ import XCTest
 @testable import WooCommerce
 @testable import Yosemite
 
+@MainActor
 final class HubMenuViewModelTests: XCTestCase {
     private let sampleSiteID: Int64 = 606
 

@@ -176,7 +176,7 @@ extension StatsDataTextFormatter {
 
     static func createDelta<Stats: WCAnalyticsStats>(for totalData: Stats.Totals.TotalData,
                                                      from previousPeriod: Stats?,
-                                                     to currentPeriod: Stats?) -> DeltaPercentage {
+                                                     to currentPeriod: Stats?) -> DeltaPercentage where Stats.Totals: ParsableStatsTotals {
         guard let previousPeriod, let currentPeriod else {
             return DeltaPercentage(value: 0, formatter: deltaNumberFormatter) // Missing data: 0% change
         }

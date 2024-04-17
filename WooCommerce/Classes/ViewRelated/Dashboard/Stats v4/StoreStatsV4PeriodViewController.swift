@@ -1,4 +1,4 @@
-import Charts
+import DGCharts
 import Combine
 import UIKit
 import WordPressUI

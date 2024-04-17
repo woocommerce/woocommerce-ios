@@ -68,8 +68,7 @@ extension ProductReviewsViewModel {
         let action = ProductReviewAction.synchronizeProductReviews(siteID: siteID,
                                                                    pageNumber: pageNumber,
                                                                    pageSize: pageSize,
-                                                                   products: [productID],
-                                                                   status: .approved) { result in
+                                                                   products: [productID]) { result in
             switch result {
             case .failure(let error):
                 DDLogError("⛔️ Error synchronizing reviews for product ID :\(productID). Error: \(error)")
@@ -101,10 +100,13 @@ final class ProductReviewsDataSourceCustomizer: ReviewsDataSourceCustomizing {
     }
 
     func reviewsFilterPredicate(with sitePredicate: NSPredicate) -> NSPredicate {
-        let statusPredicate = NSPredicate(format: "statusKey ==[c] %@ AND productID == %lld",
+        let statusPredicate = NSPredicate(format: "statusKey ==[c] %@ OR statusKey ==[c] %@",
                                           ProductReviewStatus.approved.rawValue,
+                                          ProductReviewStatus.hold.rawValue)
+
+        let productPredicate = NSPredicate(format: "productID == %lld",
                                           product.productID)
 
-        return  NSCompoundPredicate(andPredicateWithSubpredicates: [sitePredicate, statusPredicate])
+        return  NSCompoundPredicate(andPredicateWithSubpredicates: [sitePredicate, statusPredicate, productPredicate])
     }
 }

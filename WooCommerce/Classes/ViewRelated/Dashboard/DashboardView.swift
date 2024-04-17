@@ -73,6 +73,9 @@ struct DashboardView: View {
 
             // Card views
             dashboardCards
+
+            Spacer()
+                .frame(height: Layout.padding)
         }
         .background(Color(.listBackground))
         .navigationTitle(Localization.title)
@@ -162,6 +165,7 @@ private extension DashboardView {
                     }, onViewAllAnalytics: { siteID, siteTimeZone, timeRange in
                         onViewAllAnalytics?(siteID, siteTimeZone, timeRange)
                     })
+                    .padding(.vertical, Layout.padding)
                 }
             }
         }

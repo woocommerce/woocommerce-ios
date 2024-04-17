@@ -185,7 +185,7 @@ private extension StorePerformanceViewModel {
                     waitingTracker.end()
                     continuation.resume(returning: StatsVersion.v4)
                 case .failure(let error):
-                    DDLogError("⛔️ Dashboard (Order Stats) — Error synchronizing order stats v4: \(error)")
+                    DDLogError("⛔️ Dashboard (Performance) — Error synchronizing order stats v4: \(error)")
                     if error as? DotcomError == .noRestRoute {
                         continuation.resume(returning: StatsVersion.v3)
                     } else {

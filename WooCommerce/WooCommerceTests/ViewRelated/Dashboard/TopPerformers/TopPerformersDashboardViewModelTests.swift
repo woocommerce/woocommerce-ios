@@ -3,7 +3,7 @@ import Yosemite
 @testable import WooCommerce
 
 final class TopPerformersDashboardViewModelTests: XCTestCase {
-    
+
     func test_dates_for_custom_range_are_correct_for_non_custom_time_range() throws {
         // Given
         let viewModel = TopPerformersDashboardViewModel(siteID: 123, usageTracksEventEmitter: .init())

@@ -216,7 +216,7 @@ private extension BlazeCampaignDashboardView {
 
     enum Localization {
         static let title = NSLocalizedString(
-            "🔥 Blaze campaign",
+            "Blaze",
             comment: "Title of the Blaze campaign view."
         )
 

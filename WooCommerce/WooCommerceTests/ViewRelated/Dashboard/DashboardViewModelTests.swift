@@ -580,14 +580,14 @@ final class DashboardViewModelTests: XCTestCase {
 
         stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
             if case let .loadDashboardCards(_, completion) = action {
-                completion([.init(type: .statsAndTopPerformers, enabled: true),
+                completion([.init(type: .performance, enabled: true),
                             .init(type: .blaze, enabled: true)])
             }
         }
 
         // Then
         waitUntil {
-            viewModel.dashboardCards == [.init(type: .statsAndTopPerformers, enabled: true),
+            viewModel.dashboardCards == [.init(type: .performance, enabled: true),
                                          .init(type: .blaze, enabled: true)]
         }
     }
@@ -609,7 +609,7 @@ final class DashboardViewModelTests: XCTestCase {
         }
 
         // When
-        viewModel.didCustomizeDashboardCards([.init(type: .statsAndTopPerformers, enabled: true)])
+        viewModel.didCustomizeDashboardCards([.init(type: .performance, enabled: true)])
 
         // Then
         XCTAssertTrue(setDashboardCardsActionCalled)

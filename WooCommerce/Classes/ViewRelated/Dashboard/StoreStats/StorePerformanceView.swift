@@ -65,7 +65,7 @@ private extension StorePerformanceView {
 
     var timeRangeBar: some View {
         HStack(alignment: .top) {
-            AdaptiveStack {
+            AdaptiveStack(horizontalAlignment: .leading) {
                 Text(viewModel.timeRange.tabTitle)
                     .foregroundStyle(Color(.text))
                     .subheadlineStyle()

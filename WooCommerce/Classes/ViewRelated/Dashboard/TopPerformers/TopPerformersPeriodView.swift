@@ -1,10 +1,10 @@
 import SwiftUI
 
 /// Shows top performing products for a site in a given time range on the dashboard.
-struct DashboardTopPerformersView: View {
-    @ObservedObject private var viewModel: DashboardTopPerformersViewModel
+struct TopPerformersPeriodView: View {
+    @ObservedObject private var viewModel: TopPerformersPeriodViewModel
 
-    init(viewModel: DashboardTopPerformersViewModel) {
+    init(viewModel: TopPerformersPeriodViewModel) {
         self.viewModel = viewModel
     }
 
@@ -27,7 +27,7 @@ struct DashboardTopPerformersView: View {
     }
 }
 
-private extension DashboardTopPerformersView {
+private extension TopPerformersPeriodView {
     enum Localization {
         static let productsTitle = NSLocalizedString(
             "Products",
@@ -47,8 +47,8 @@ private extension DashboardTopPerformersView {
 
 struct DashboardTopPerformersView_Previews: PreviewProvider {
     static var previews: some View {
-        DashboardTopPerformersView(viewModel: .init(state: .loading, onTap: { _ in }))
-        DashboardTopPerformersView(viewModel: .init(state: .loaded(rows: [.init(productID: 12,
+        TopPerformersPeriodView(viewModel: .init(state: .loading, onTap: { _ in }))
+        TopPerformersPeriodView(viewModel: .init(state: .loaded(rows: [.init(productID: 12,
                                                                                 productName: "Fun product",
                                                                                 quantity: 6,
                                                                                 total: 16.8,

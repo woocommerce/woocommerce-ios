@@ -1,8 +1,8 @@
 import SwiftUI
 import struct Yosemite.TopEarnerStatsItem
 
-/// View model for `DashboardTopPerformersView`.
-final class DashboardTopPerformersViewModel: ObservableObject {
+/// View model for `TopPerformersPeriodView`.
+final class TopPerformersPeriodViewModel: ObservableObject {
     /// UI state of the dashboard top performers.
     enum State {
         /// Shows placeholder rows.
@@ -51,7 +51,7 @@ final class DashboardTopPerformersViewModel: ObservableObject {
     }
 }
 
-private extension DashboardTopPerformersViewModel {
+private extension TopPerformersPeriodViewModel {
     enum Localization {
         static func netSales(value: String) -> String {
             String.localizedStringWithFormat(NSLocalizedString("Net sales: %@", comment: "Label for the total sales of a product in the Analytics Hub"),

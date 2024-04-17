@@ -25,7 +25,7 @@ final class TopPerformersDashboardViewModel: ObservableObject {
         Date()
     }
 
-    lazy var dataViewModel = DashboardTopPerformersViewModel(state: .loading) { [weak self] topPerformersItem in
+    lazy var periodViewModel = TopPerformersPeriodViewModel(state: .loading) { [weak self] topPerformersItem in
         guard let self else { return }
         usageTracksEventEmitter.interacted()
         selectedItem = topPerformersItem
@@ -156,7 +156,7 @@ private extension TopPerformersDashboardViewModel {
     }
 
     func updateUIInLoadingState() {
-        dataViewModel.update(state: .loading)
+        periodViewModel.update(state: .loading)
     }
 
     func updateUIInLoadedState() {
@@ -164,9 +164,9 @@ private extension TopPerformersDashboardViewModel {
             return
         }
         guard let items = topEarnerStats?.items?.sorted(by: >), items.isNotEmpty else {
-            return dataViewModel.update(state: .loaded(rows: []))
+            return periodViewModel.update(state: .loaded(rows: []))
         }
-        dataViewModel.update(state: .loaded(rows: items))
+        periodViewModel.update(state: .loaded(rows: items))
     }
 
     func createResultsController(timeRange: StatsTimeRangeV4) -> ResultsController<StorageTopEarnerStats> {

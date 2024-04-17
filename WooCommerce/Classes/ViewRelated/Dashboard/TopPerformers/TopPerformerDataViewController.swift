@@ -28,14 +28,14 @@ final class TopPerformerDataViewController: UIViewController {
 
     private var isInitialLoad: Bool = true  // Used in trackChangedTabIfNeeded()
 
-    private var hostingController: UIHostingController<DashboardTopPerformersView>?
+    private var hostingController: UIHostingController<TopPerformersPeriodView>?
 
     private let imageService: ImageService = ServiceLocator.imageService
 
     private let storageManager: StorageManagerType
     private let usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter
 
-    private lazy var viewModel = DashboardTopPerformersViewModel(state: .loading) { [weak self] topPerformersItem in
+    private lazy var viewModel = TopPerformersPeriodViewModel(state: .loading) { [weak self] topPerformersItem in
         guard let self else { return }
         self.usageTracksEventEmitter.interacted()
         self.presentProductDetails(statsItem: topPerformersItem)
@@ -127,7 +127,7 @@ private extension TopPerformerDataViewController {
     }
 
     func configureTopPerformersView() {
-        let hostingController = SelfSizingHostingController(rootView: DashboardTopPerformersView(viewModel: viewModel))
+        let hostingController = SelfSizingHostingController(rootView: TopPerformersPeriodView(viewModel: viewModel))
         self.hostingController = hostingController
         addChild(hostingController)
         view.addSubview(hostingController.view)

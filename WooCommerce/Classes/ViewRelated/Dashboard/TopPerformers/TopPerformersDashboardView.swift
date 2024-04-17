@@ -117,7 +117,7 @@ private extension TopPerformersDashboardView {
     }
 
     var topPerformersList: some View {
-        DashboardTopPerformersView(viewModel: viewModel.dataViewModel)
+        TopPerformersPeriodView(viewModel: viewModel.dataViewModel)
             .frame(maxWidth: .infinity)
     }
 

@@ -164,7 +164,10 @@ private extension DashboardView {
                     })
 
                 case .topPerformers:
-                    EmptyView() // TODO-12403: add updated top performers card
+                    TopPerformersDashboardView(viewModel: viewModel.topPerformersViewModel,
+                                               onViewAllAnalytics: { siteID, siteTimeZone, timeRange in
+                        onViewAllAnalytics?(siteID, siteTimeZone, timeRange)
+                    })
                 }
             }
         }

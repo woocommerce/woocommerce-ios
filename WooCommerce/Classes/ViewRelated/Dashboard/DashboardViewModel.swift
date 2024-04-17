@@ -20,6 +20,7 @@ final class DashboardViewModel: ObservableObject {
     let blazeCampaignDashboardViewModel: BlazeCampaignDashboardViewModel
 
     let storePerformanceViewModel: StorePerformanceViewModel
+    let topPerformersViewModel: TopPerformersDashboardViewModel
 
     @Published var justInTimeMessagesWebViewModel: WebViewSheetViewModel? = nil
 
@@ -74,6 +75,8 @@ final class DashboardViewModel: ObservableObject {
         self.blazeCampaignDashboardViewModel = .init(siteID: siteID)
         self.storePerformanceViewModel = .init(siteID: siteID,
                                                usageTracksEventEmitter: usageTracksEventEmitter)
+        self.topPerformersViewModel = .init(siteID: siteID,
+                                            usageTracksEventEmitter: usageTracksEventEmitter)
         self.storeCreationProfilerUploadAnswersUseCase = storeCreationProfilerUploadAnswersUseCase ?? StoreCreationProfilerUploadAnswersUseCase(siteID: siteID)
         self.themeInstaller = themeInstaller
         setupObserverForShowOnboarding()

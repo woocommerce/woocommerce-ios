@@ -99,7 +99,7 @@ private extension StorePerformanceView {
         )
         static let hideCard = NSLocalizedString(
             "storePerformanceView.hideCard",
-            value: "Hide this card",
+            value: "Hide Performance",
             comment: "Menu item to dismiss the store performance section on the Dashboard screen"
         )
     }

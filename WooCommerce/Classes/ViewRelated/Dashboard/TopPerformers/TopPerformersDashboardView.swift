@@ -48,7 +48,6 @@ struct TopPerformersDashboardView: View {
         .sheet(isPresented: $showingCustomRangePicker) {
             RangedDatePicker(startDate: viewModel.startDateForCustomRange,
                              endDate: viewModel.endDateForCustomRange,
-                             datesFormatter: DatesFormatter(),
                              customApplyButtonTitle: viewModel.buttonTitleForCustomRange,
                              datesSelected: { start, end in
                 viewModel.didSelectTimeRange(.custom(from: start, to: end))
@@ -129,7 +128,7 @@ private extension TopPerformersDashboardView {
         )
         static let hideCard = NSLocalizedString(
             "topPerformersDashboardView.hideCard",
-            value: "Hide Performance",
+            value: "Hide Top Performers",
             comment: "Menu item to dismiss the Top Performers section on the Dashboard screen"
         )
         static let viewAll = NSLocalizedString(
@@ -137,14 +136,6 @@ private extension TopPerformersDashboardView {
             value: "View all store analytics",
             comment: "Button to navigate to Analytics Hub."
         )
-    }
-
-    /// Specific `DatesFormatter` for the `RangedDatePicker` when presented in the analytics hub module.
-    ///
-    struct DatesFormatter: RangedDateTextFormatter {
-        func format(start: Date, end: Date) -> String {
-            start.formatAsRange(with: end, timezone: .current, calendar: Locale.current.calendar)
-        }
     }
 }
 

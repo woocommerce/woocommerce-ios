@@ -63,7 +63,6 @@ struct StorePerformanceView: View {
             .sheet(isPresented: $showingCustomRangePicker) {
                 RangedDatePicker(startDate: viewModel.startDateForCustomRange,
                                  endDate: viewModel.endDateForCustomRange,
-                                 datesFormatter: DatesFormatter(),
                                  customApplyButtonTitle: viewModel.buttonTitleForCustomRange,
                                  datesSelected: { start, end in
                     viewModel.didSelectTimeRange(.custom(from: start, to: end))
@@ -283,14 +282,6 @@ private extension StorePerformanceView {
             value: "View all store analytics",
             comment: "Button to navigate to Analytics Hub."
         )
-    }
-
-    /// Specific `DatesFormatter` for the `RangedDatePicker` when presented in the analytics hub module.
-    ///
-    struct DatesFormatter: RangedDateTextFormatter {
-        func format(start: Date, end: Date) -> String {
-            start.formatAsRange(with: end, timezone: .current, calendar: Locale.current.calendar)
-        }
     }
 }
 

@@ -32,7 +32,6 @@ private extension CustomRangeTabCreationCoordinator {
         let controller = RangedDatePickerHostingController(
             startDate: startDate,
             endDate: endDate,
-            datesFormatter: DatesFormatter(),
             customApplyButtonTitle: buttonTitle,
             datesSelected: { [weak self] start, end in
                 self?.onDateRangeSelected(start, end)
@@ -40,14 +39,6 @@ private extension CustomRangeTabCreationCoordinator {
         )
 
         navigationController.present(controller, animated: true)
-    }
-
-    /// Specific `DatesFormatter` for the `RangedDatePicker` when presented in the analytics hub module.
-    ///
-    struct DatesFormatter: RangedDateTextFormatter {
-        func format(start: Date, end: Date) -> String {
-            start.formatAsRange(with: end, timezone: .current, calendar: Locale.current.calendar)
-        }
     }
 }
 

@@ -64,6 +64,8 @@ private extension BlazeCampaignDashboardViewHostingController {
 
 /// Blaze campaigns in dashboard screen.
 struct BlazeCampaignDashboardView: View {
+    /// Scale of the view based on accessibility changes
+    @ScaledMetric private var scale: CGFloat = 1.0
 
     /// Set externally in the hosting controller.
     var showAllCampaignsTapped: (() -> Void)?
@@ -85,9 +87,14 @@ struct BlazeCampaignDashboardView: View {
         VStack(alignment: .leading, spacing: Layout.verticalSpacing) {
             VStack(alignment: .leading, spacing: Layout.HeadingBlock.verticalSpacing) {
                 // Title
-                Text(Localization.title)
-                    .fontWeight(.semibold)
-                    .bodyStyle()
+                HStack {
+                    Image(uiImage: .blaze)
+                        .resizable()
+                        .frame(width: Layout.logoSize * scale, height: Layout.logoSize * scale)
+                    Text("Blaze")
+                        .fontWeight(.semibold)
+                        .bodyStyle()
+                }
 
                 // Subtitle
                 Text(Localization.subtitle)
@@ -212,14 +219,10 @@ private extension BlazeCampaignDashboardView {
         }
         static let insets: EdgeInsets = .init(top: 16, leading: 16, bottom: 16, trailing: 16)
         static let cornerRadius: CGFloat = 8
+        static let logoSize: CGFloat = 20
     }
 
     enum Localization {
-        static let title = NSLocalizedString(
-            "Blaze",
-            comment: "Title of the Blaze campaign view."
-        )
-
         static let subtitle = NSLocalizedString(
             "Increase visibility and get your products sold quickly.",
             comment: "Subtitle of the Blaze campaign view."

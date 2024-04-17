@@ -118,14 +118,6 @@ private extension TopPerformersDashboardView {
     enum Layout {
         static let padding: CGFloat = 16
         static let cornerSize = CGSize(width: 8.0, height: 8.0)
-        static let strokeWidth: CGFloat = 0.5
-        static let chartViewHeight: CGFloat = 176
-        static let statValuePadding: CGFloat = 8
-        static let redactedViewCornerSize = CGSize(width: 2.0, height: 2.0)
-        static let redactedViewWidth: CGFloat = 32
-        static let redactedViewHeight: CGFloat = 10
-        static let redactedViewIconSize: CGFloat = 14
-        static let redactedViewIconOffset = CGSize(width: 16, height: 0)
         static let hideIconVerticalPadding: CGFloat = 8
     }
 

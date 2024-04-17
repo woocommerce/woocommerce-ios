@@ -7,6 +7,7 @@ import struct Yosemite.StoreOnboardingTask
 ///
 struct DashboardView: View {
     @ObservedObject private var viewModel: DashboardViewModel
+    @Environment(\.verticalSizeClass) private var verticalSizeClass
     @State private var currentSite: Site?
     @State private var dismissedJetpackBenefitBanner = false
     @State private var showingSupportForm = false
@@ -60,6 +61,7 @@ struct DashboardView: View {
                 .padding([.horizontal, .bottom], Layout.padding)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .background(Color(.listForeground(modal: false)))
+                .renderedIf(verticalSizeClass == .regular)
 
             // Error banner
             if let error = viewModel.statSyncingError {

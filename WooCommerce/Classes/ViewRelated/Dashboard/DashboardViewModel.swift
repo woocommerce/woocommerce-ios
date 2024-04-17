@@ -109,8 +109,16 @@ final class DashboardViewModel: ObservableObject {
                 await self?.updateJetpackBannerVisibilityFromAppSettings()
             }
             if featureFlagService.isFeatureFlagEnabled(.dynamicDashboard) {
-                group.addTask { [weak self] in
-                    await self?.storePerformanceViewModel.reloadData()
+                if dashboardCards.contains(where: { $0.type == .performance }) {
+                    group.addTask { [weak self] in
+                        await self?.storePerformanceViewModel.reloadData()
+                    }
+                }
+
+                if dashboardCards.contains(where: { $0.type == .topPerformers }) {
+                    group.addTask { [weak self] in
+                        await self?.topPerformersViewModel.reloadData()
+                    }
                 }
             }
         }

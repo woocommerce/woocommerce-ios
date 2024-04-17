@@ -47,7 +47,7 @@ struct StorePerformanceView: View {
 
 private extension StorePerformanceView {
     var header: some View {
-        HStack(alignment: .top) {
+        HStack {
             Text(Localization.title)
                 .headlineStyle()
             Spacer()
@@ -58,6 +58,7 @@ private extension StorePerformanceView {
             } label: {
                 Image(systemName: "ellipsis")
                     .foregroundStyle(Color.secondary)
+                    .padding([.vertical, .leading], Layout.padding)
             }
         }
     }

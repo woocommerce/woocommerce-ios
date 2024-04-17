@@ -110,25 +110,33 @@ final class StorePerformanceViewModelTests: XCTestCase {
         viewModel.didSelectStatsInterval(at: 1)
 
         // Then
-        XCTAssertTrue(viewModel.shouldHighlightStats)
+        waitUntil {
+            viewModel.shouldHighlightStats == true
+        }
 
         // When
         viewModel.didSelectStatsInterval(at: nil)
 
         // Then
-        XCTAssertFalse(viewModel.shouldHighlightStats)
+        waitUntil {
+            viewModel.shouldHighlightStats == false
+        }
 
         // When
         viewModel.didSelectStatsInterval(at: 2)
 
         // Then
-        XCTAssertTrue(viewModel.shouldHighlightStats)
+        waitUntil {
+            viewModel.shouldHighlightStats == true
+        }
 
         // When
         viewModel.didSelectTimeRange(.thisMonth)
 
         // Then
-        XCTAssertFalse(viewModel.shouldHighlightStats)
+        waitUntil {
+            viewModel.shouldHighlightStats == false
+        }
     }
 
     @MainActor

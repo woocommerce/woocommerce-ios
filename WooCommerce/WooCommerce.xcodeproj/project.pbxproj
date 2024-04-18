@@ -2437,7 +2437,6 @@
 		DEDA8DBC2B1983570076BF0F /* ThemeSettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEDA8DBB2B1983570076BF0F /* ThemeSettingView.swift */; };
 		DEDA8DBE2B19952B0076BF0F /* ThemeSettingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEDA8DBD2B19952B0076BF0F /* ThemeSettingViewModel.swift */; };
 		DEDA8DC02B19CDC50076BF0F /* ThemeSettingViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEDA8DBF2B19CDC50076BF0F /* ThemeSettingViewModelTests.swift */; };
-		DEDAE30B2A0B523F00F9635F /* LocalNotificationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEDAE30A2A0B523F00F9635F /* LocalNotificationTests.swift */; };
 		DEDB2D262845D31900CE7D35 /* CouponAllowedEmailsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEDB2D252845D31900CE7D35 /* CouponAllowedEmailsViewModel.swift */; };
 		DEDB886B26E8531E00981595 /* ShippingLabelPackageAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEDB886A26E8531E00981595 /* ShippingLabelPackageAttributes.swift */; };
 		DEE183ED292BD900008818AB /* JetpackSetupViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEE183EC292BD900008818AB /* JetpackSetupViewModelTests.swift */; };
@@ -5183,7 +5182,6 @@
 		DEDA8DBB2B1983570076BF0F /* ThemeSettingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeSettingView.swift; sourceTree = "<group>"; };
 		DEDA8DBD2B19952B0076BF0F /* ThemeSettingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeSettingViewModel.swift; sourceTree = "<group>"; };
 		DEDA8DBF2B19CDC50076BF0F /* ThemeSettingViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeSettingViewModelTests.swift; sourceTree = "<group>"; };
-		DEDAE30A2A0B523F00F9635F /* LocalNotificationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalNotificationTests.swift; sourceTree = "<group>"; };
 		DEDB2D252845D31900CE7D35 /* CouponAllowedEmailsViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CouponAllowedEmailsViewModel.swift; sourceTree = "<group>"; };
 		DEDB886A26E8531E00981595 /* ShippingLabelPackageAttributes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelPackageAttributes.swift; sourceTree = "<group>"; };
 		DEE183EC292BD900008818AB /* JetpackSetupViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JetpackSetupViewModelTests.swift; sourceTree = "<group>"; };
@@ -9356,7 +9354,6 @@
 			isa = PBXGroup;
 			children = (
 				B5718D6421B56B3F0026C9F0 /* PushNotificationsManagerTests.swift */,
-				DEDAE30A2A0B523F00F9635F /* LocalNotificationTests.swift */,
 				026D684A2A0E0A9600D8C22C /* LocalNotificationSchedulerTests.swift */,
 				26A280D52B45F00F00ACEE87 /* OrderNotificationViewModelTests.swift */,
 			);
@@ -14942,7 +14939,6 @@
 				26A280D62B45F00F00ACEE87 /* OrderNotificationViewModelTests.swift in Sources */,
 				EE45E2C22A42C9D80085F227 /* ProductDescriptionAITooltipUseCaseTests.swift in Sources */,
 				CEEF74282B99F57A00B03948 /* RevenueReportCardViewModelTests.swift in Sources */,
-				DEDAE30B2A0B523F00F9635F /* LocalNotificationTests.swift in Sources */,
 				B935D35F2A9F4EDA0067B927 /* WPAdminTaxSettingsURLProviderTests.swift in Sources */,
 				02ADC7CE23978EAA008D4BED /* PaginatedProductShippingClassListSelectorDataSourceTests.swift in Sources */,
 				86023FAD2B16D83000A28F07 /* ThemeEligibilityUseCaseTests.swift in Sources */,

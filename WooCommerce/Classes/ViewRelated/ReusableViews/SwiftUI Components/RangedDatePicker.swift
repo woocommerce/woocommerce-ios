@@ -12,7 +12,7 @@ protocol RangedDateTextFormatter {
 final class RangedDatePickerHostingController: UIHostingController<RangedDatePicker> {
     init(startDate: Date? = nil,
          endDate: Date? = nil,
-         datesFormatter: RangedDateTextFormatter,
+         datesFormatter: RangedDateTextFormatter = RangedDatePicker.DatesFormatter(),
          customApplyButtonTitle: String? = nil,
          datesSelected: ((_ start: Date, _ end: Date) -> Void)? = nil) {
         super.init(rootView: RangedDatePicker(startDate: startDate,
@@ -63,7 +63,7 @@ struct RangedDatePicker: View {
     ///
     init(startDate: Date? = nil,
          endDate: Date? = nil,
-         datesFormatter: RangedDateTextFormatter,
+         datesFormatter: RangedDateTextFormatter = DatesFormatter(),
          customApplyButtonTitle: String? = nil,
          datesSelected: ((_ start: Date, _ end: Date) -> Void)? = nil) {
         self._startDate = State(initialValue: startDate ?? Date())
@@ -180,6 +180,14 @@ private extension RangedDatePicker {
     enum Layout {
         static let titleSpacing: CGFloat = 4.0
         static let calendarPadding: CGFloat = -8.0
+    }
+
+    /// Specific `DatesFormatter` for the `RangedDatePicker` when presented in the analytics hub module.
+    ///
+    struct DatesFormatter: RangedDateTextFormatter {
+        func format(start: Date, end: Date) -> String {
+            start.formatAsRange(with: end, timezone: .current, calendar: Locale.current.calendar)
+        }
     }
 }
 

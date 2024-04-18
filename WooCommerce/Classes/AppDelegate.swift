@@ -74,7 +74,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         setupWormholy()
         setupKeyboardStateProvider()
         handleLaunchArguments()
-        setupUserNotificationCenter()
 
         // Components that require prior Auth
         setupZendesk()
@@ -359,15 +358,6 @@ private extension AppDelegate {
     /// Push Notifications: Authorization + Registration!
     ///
     func setupPushNotificationsManagerIfPossible(_ pushNotesManager: PushNotesManager, stores: StoresManager) {
-        guard stores.isAuthenticated,
-              stores.needsDefaultStore == false,
-              stores.isAuthenticatedWithoutWPCom == false else {
-            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.storeCreationNotifications) {
-                pushNotesManager.ensureAuthorizationIsRequested(includesProvisionalAuth: true, onCompletion: nil)
-            }
-            return
-        }
-
         #if targetEnvironment(simulator)
             DDLogVerbose("👀 Push Notifications are not supported in the Simulator!")
         #else
@@ -375,13 +365,6 @@ private extension AppDelegate {
             pushNotesManager.registerForRemoteNotifications()
             pushNotesManager.ensureAuthorizationIsRequested(includesProvisionalAuth: false, onCompletion: nil)
         #endif
-    }
-
-    func setupUserNotificationCenter() {
-        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.storeCreationNotifications) else {
-            return
-        }
-        UNUserNotificationCenter.current().delegate = self
     }
 
     func setupUniversalLinkRouter() {

@@ -26,7 +26,7 @@ struct StorePerformanceView: View {
 
     var body: some View {
         if viewModel.statsVersion == .v4 {
-            VStack(alignment: .leading) {
+            VStack(alignment: .leading, spacing: Layout.padding) {
                 header
                     .padding(.horizontal, Layout.padding)
                     .redacted(reason: viewModel.syncingData ? [.placeholder] : [])
@@ -49,9 +49,10 @@ struct StorePerformanceView: View {
                     .shimmering(active: viewModel.syncingData)
 
                 Divider()
+                    .padding(.leading, Layout.padding)
 
                 viewAllAnalyticsButton
-                    .padding([.top, .horizontal], Layout.padding)
+                    .padding(.horizontal, Layout.padding)
                     .redacted(reason: viewModel.syncingData ? [.placeholder] : [])
                     .shimmering(active: viewModel.syncingData)
 
@@ -63,7 +64,6 @@ struct StorePerformanceView: View {
             .sheet(isPresented: $showingCustomRangePicker) {
                 RangedDatePicker(startDate: viewModel.startDateForCustomRange,
                                  endDate: viewModel.endDateForCustomRange,
-                                 datesFormatter: DatesFormatter(),
                                  customApplyButtonTitle: viewModel.buttonTitleForCustomRange,
                                  datesSelected: { start, end in
                     viewModel.didSelectTimeRange(.custom(from: start, to: end))
@@ -283,14 +283,6 @@ private extension StorePerformanceView {
             value: "View all store analytics",
             comment: "Button to navigate to Analytics Hub."
         )
-    }
-
-    /// Specific `DatesFormatter` for the `RangedDatePicker` when presented in the analytics hub module.
-    ///
-    struct DatesFormatter: RangedDateTextFormatter {
-        func format(start: Date, end: Date) -> String {
-            start.formatAsRange(with: end, timezone: .current, calendar: Locale.current.calendar)
-        }
     }
 }
 

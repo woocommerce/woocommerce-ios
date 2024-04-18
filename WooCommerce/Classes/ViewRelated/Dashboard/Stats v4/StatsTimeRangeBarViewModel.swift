@@ -112,4 +112,47 @@ struct StatsTimeRangeBarViewModel: Equatable {
             selectedDateText = nil
         }
     }
+
+    init?(timeRange: StatsTimeRangeV4,
+          timezone: TimeZone) {
+        let now = Date()
+        let startDate: Date? = {
+            switch timeRange {
+            case .today:
+                now.startOfDay(timezone: timezone)
+            case .thisWeek:
+                now.startOfWeek(timezone: timezone)
+            case .thisMonth:
+                now.startOfMonth(timezone: timezone)
+            case .thisYear:
+                now.startOfYear(timezone: timezone)
+            case let .custom(start, _):
+                start
+            }
+        }()
+
+        let endDate: Date? = {
+            switch timeRange {
+            case .today:
+                now.endOfDay(timezone: timezone)
+            case .thisWeek:
+                now.endOfWeek(timezone: timezone)
+            case .thisMonth:
+                now.endOfMonth(timezone: timezone)
+            case .thisYear:
+                now.endOfYear(timezone: timezone)
+            case let .custom(_, end):
+                end
+            }
+        }()
+
+        guard let startDate, let endDate else {
+            return nil
+        }
+
+        self.init(startDate: startDate,
+                  endDate: endDate,
+                  timeRange: timeRange,
+                  timezone: timezone)
+    }
 }

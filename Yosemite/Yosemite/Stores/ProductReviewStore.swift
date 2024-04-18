@@ -37,12 +37,11 @@ public final class ProductReviewStore: Store {
         switch action {
         case .resetStoredProductReviews(let onCompletion):
             resetStoredProductReviews(onCompletion: onCompletion)
-        case .synchronizeProductReviews(let siteID, let pageNumber, let pageSize, let products, let status, let onCompletion):
+        case .synchronizeProductReviews(let siteID, let pageNumber, let pageSize, let products, let onCompletion):
             synchronizeProductReviews(siteID: siteID,
                                       pageNumber: pageNumber,
                                       pageSize: pageSize,
                                       products: products,
-                                      status: status,
                                       onCompletion: onCompletion)
         case .retrieveProductReview(let siteID, let reviewID, let onCompletion):
             retrieveProductReview(siteID: siteID, reviewID: reviewID, onCompletion: onCompletion)
@@ -81,8 +80,7 @@ private extension ProductReviewStore {
         remote.loadAllProductReviews(for: siteID,
                                      pageNumber: pageNumber,
                                      pageSize: pageSize,
-                                     products: products,
-                                     status: status) { [weak self] result in
+                                     products: products) { [weak self] result in
             switch result {
             case .failure(let error):
                 onCompletion(.failure(error))

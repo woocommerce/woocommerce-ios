@@ -256,7 +256,7 @@ private extension StorePerformanceViewModel {
     @MainActor
     func loadLastTimeRange() async -> StatsTimeRangeV4? {
         await withCheckedContinuation { continuation in
-            let action = AppSettingsAction.loadLastSelectedStatsTimeRange(siteID: siteID) { timeRange in
+            let action = AppSettingsAction.loadLastSelectedPerformanceTimeRange(siteID: siteID) { timeRange in
                 continuation.resume(returning: timeRange)
             }
             stores.dispatch(action)
@@ -264,7 +264,7 @@ private extension StorePerformanceViewModel {
     }
 
     func saveLastTimeRange(_ timeRange: StatsTimeRangeV4) {
-        let action = AppSettingsAction.setLastSelectedStatsTimeRange(siteID: siteID, timeRange: timeRange)
+        let action = AppSettingsAction.setLastSelectedPerformanceTimeRange(siteID: siteID, timeRange: timeRange)
         stores.dispatch(action)
     }
 

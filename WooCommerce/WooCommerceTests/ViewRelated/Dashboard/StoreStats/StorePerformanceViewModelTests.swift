@@ -64,7 +64,7 @@ final class StorePerformanceViewModelTests: XCTestCase {
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
             switch action {
-            case let .loadLastSelectedStatsTimeRange(_, onCompletion):
+            case let .loadLastSelectedPerformanceTimeRange(_, onCompletion):
                 onCompletion(StatsTimeRangeV4.thisWeek)
             default:
                 break
@@ -87,7 +87,7 @@ final class StorePerformanceViewModelTests: XCTestCase {
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
             switch action {
-            case let .setLastSelectedStatsTimeRange(_, timeRange):
+            case let .setLastSelectedPerformanceTimeRange(_, timeRange):
                 savedTimeRange = timeRange
             default:
                 break

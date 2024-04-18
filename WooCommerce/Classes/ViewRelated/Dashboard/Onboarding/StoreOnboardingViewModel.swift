@@ -72,6 +72,9 @@ class StoreOnboardingViewModel: ObservableObject {
 
     private let waitingTimeTracker: AppStartupWaitingTimeTracker
 
+    /// Set externally to trigger the closure upon hiding the card.
+    var onDismiss: (() -> Void)?
+
     /// Emits when there are no tasks available for display after reload.
     /// i.e. When (request failed && No previously loaded local data available)
     ///
@@ -136,7 +139,11 @@ class StoreOnboardingViewModel: ObservableObject {
         analytics.track(event: .StoreOnboarding.storeOnboardingShowOrHideList(isHiding: true,
                                                                               source: .onboardingList,
                                                                               pendingTasks: pending))
-        defaults[.shouldHideStoreOnboardingTaskList] = true
+        if featureFlagService.isFeatureFlagEnabled(.dynamicDashboard) {
+            onDismiss?()
+        } else {
+            defaults[.shouldHideStoreOnboardingTaskList] = true
+        }
     }
 }
 

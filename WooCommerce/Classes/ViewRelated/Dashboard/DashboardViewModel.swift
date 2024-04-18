@@ -359,6 +359,10 @@ private extension DashboardViewModel {
     }
 
     func setupDashboardCards() {
+        storeOnboardingViewModel.onDismiss = { [weak self] in
+            self?.hideDashboardCard(type: .onboarding)
+        }
+        
         storeOnboardingViewModel.$canShowInDashboard
             .combineLatest(blazeCampaignDashboardViewModel.$canShowInDashboard)
             .receive(on: RunLoop.main)
@@ -370,6 +374,12 @@ private extension DashboardViewModel {
                 }
             }
             .store(in: &subscriptions)
+    }
+
+    func hideDashboardCard(type: DashboardCard.CardType) {
+        if let index = dashboardCards.firstIndex(where: { $0.type == type }) {
+            dashboardCards[index] = dashboardCards[index].copy(enabled: false)
+        }
     }
 
     /// We are using separate user defaults for different cards -

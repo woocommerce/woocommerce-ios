@@ -359,13 +359,14 @@ private extension DashboardViewModel {
     }
 
     func setupDashboardCards() {
-        $showOnboarding.combineLatest($showBlazeCampaignView)
+        storeOnboardingViewModel.$canShowInDashboard
+            .combineLatest(blazeCampaignDashboardViewModel.$canShowInDashboard)
             .receive(on: RunLoop.main)
-            .sink { [weak self] showOnboarding, showBlazeCampaignView in
+            .sink { [weak self] canShowOnboarding, canShowBlaze in
                 guard let self else { return }
                 Task {
-                    await self.updateDashboardCards(showOnboarding: showOnboarding,
-                                               showBlazeCampaignView: showBlazeCampaignView)
+                    await self.updateDashboardCards(canShowOnboarding: canShowOnboarding,
+                                                    canShowBlaze: canShowBlaze)
                 }
             }
             .store(in: &subscriptions)
@@ -375,27 +376,27 @@ private extension DashboardViewModel {
     /// this should be updated to general app settings.
     ///
     @MainActor
-    func updateDashboardCards(showOnboarding: Bool, showBlazeCampaignView: Bool) async {
+    func updateDashboardCards(canShowOnboarding: Bool, canShowBlaze: Bool) async {
         dashboardCards = await {
             if let stored = await loadDashboardCards() {
                 return stored
             } else {
-                return [DashboardCard(type: .onboarding, enabled: showOnboarding),
+                return [DashboardCard(type: .onboarding, enabled: canShowOnboarding),
                         DashboardCard(type: .performance, enabled: true),
                         DashboardCard(type: .topPerformers, enabled: true),
-                        DashboardCard(type: .blaze, enabled: showBlazeCampaignView)]
+                        DashboardCard(type: .blaze, enabled: canShowBlaze)]
             }
         }()
 
         unavailableDashboardCards = []
 
         if let onboardingCard = dashboardCards.first(where: { $0.type == .onboarding }),
-           !showOnboarding && !userDefaults.shouldHideStoreOnboardingTaskList {
+           !canShowOnboarding {
             unavailableDashboardCards.append(onboardingCard)
         }
 
         if let blazeCard = dashboardCards.first(where: { $0.type == .blaze }),
-           !showBlazeCampaignView && !userDefaults.hasDismissedBlazeSectionOnMyStore {
+           !canShowBlaze {
             unavailableDashboardCards.append(blazeCard)
         }
     }

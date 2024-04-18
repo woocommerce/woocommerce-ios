@@ -82,7 +82,7 @@ private extension StorePerformanceView {
             Spacer()
             Menu {
                 Button(Localization.hideCard) {
-                    // TODO
+                    viewModel.hideStorePerformance()
                 }
             } label: {
                 Image(systemName: "ellipsis")

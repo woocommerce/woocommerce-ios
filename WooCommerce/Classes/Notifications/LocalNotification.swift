@@ -24,21 +24,12 @@ struct LocalNotification {
         var identifier: String {
             switch self {
             case let .unknown(siteID):
-                return "unknown" + "\(siteID)"
-            }
-        }
-
-        enum Identifier {
-            enum Prefix {
-                static let unknown = "unknown"
+                return "unknown_" + "\(siteID)"
             }
         }
 
         /// Helper method to remove postfix from notification identifiers if needed.
         static func identifierForAnalytics(_ identifier: String) -> String {
-            if identifier.hasPrefix(Identifier.Prefix.unknown) {
-                return Identifier.Prefix.unknown
-            }
             return identifier
         }
     }
@@ -87,8 +78,8 @@ extension LocalNotification {
 
         switch scenario {
         case .unknown:
-            title = Localization.unknown
-            body = Localization.unknown
+            title = ""
+            body = ""
         }
 
         self.init(title: title,
@@ -96,15 +87,5 @@ extension LocalNotification {
                   scenario: scenario,
                   actions: actions,
                   userInfo: userInfo)
-    }
-}
-
-extension LocalNotification {
-    enum Localization {
-        static let unknown = NSLocalizedString(
-            "localNotification.Unknown",
-            value: "Unknown",
-            comment: "A placeholder value for local notification"
-        )
     }
 }

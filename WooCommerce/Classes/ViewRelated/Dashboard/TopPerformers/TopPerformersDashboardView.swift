@@ -68,7 +68,7 @@ private extension TopPerformersDashboardView {
             Spacer()
             Menu {
                 Button(Localization.hideCard) {
-                    // TODO
+                    viewModel.dismissTopPerformers()
                 }
             } label: {
                 Image(systemName: "ellipsis")

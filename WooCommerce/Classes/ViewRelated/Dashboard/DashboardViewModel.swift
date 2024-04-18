@@ -370,6 +370,10 @@ private extension DashboardViewModel {
         storePerformanceViewModel.onDismiss = { [weak self] in
             self?.hideDashboardCard(type: .performance)
         }
+
+        topPerformersViewModel.onDismiss = { [weak self] in
+            self?.hideDashboardCard(type: .topPerformers)
+        }
         
         storeOnboardingViewModel.$canShowInDashboard
             .combineLatest(blazeCampaignDashboardViewModel.$canShowInDashboard)

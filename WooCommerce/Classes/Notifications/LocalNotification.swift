@@ -34,7 +34,7 @@ struct LocalNotification {
             }
         }
 
-        /// Helper method to remove postfix from nitificatio identifiers if needed.
+        /// Helper method to remove postfix from notification identifiers if needed.
         static func identifierForAnalytics(_ identifier: String) -> String {
             if identifier.hasPrefix(Identifier.Prefix.unknown) {
                 return Identifier.Prefix.unknown

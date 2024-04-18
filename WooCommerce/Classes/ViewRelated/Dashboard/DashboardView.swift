@@ -140,34 +140,36 @@ struct DashboardView: View {
 private extension DashboardView {
     @ViewBuilder
     var dashboardCards: some View {
-        ForEach(viewModel.dashboardCards, id: \.hashValue) { card in
-            if card.enabled {
-                switch card.type {
-                case .onboarding:
-                    StoreOnboardingView(viewModel: viewModel.storeOnboardingViewModel, onTaskTapped: { task in
-                        guard let currentSite else { return }
-                        onboardingTaskTapped?(currentSite, task)
-                    }, onViewAllTapped: {
-                        guard let currentSite else { return }
-                        viewAllOnboardingTasksTapped?(currentSite)
-                    }, shareFeedbackAction: {
-                        onboardingShareFeedbackAction?()
-                    })
-                case .blaze:
-                    BlazeCampaignDashboardView(viewModel: viewModel.blazeCampaignDashboardViewModel,
-                                               showAllCampaignsTapped: showAllBlazeCampaignsTapped,
-                                               createCampaignTapped: createBlazeCampaignTapped)
-                case .performance:
-                    StorePerformanceView(viewModel: viewModel.storePerformanceViewModel, onCustomRangeRedactedViewTap: {
-                        onCustomRangeRedactedViewTap?()
-                    }, onViewAllAnalytics: { siteID, siteTimeZone, timeRange in
-                        onViewAllAnalytics?(siteID, siteTimeZone, timeRange)
-                    })
-                case .topPerformers:
-                    TopPerformersDashboardView(viewModel: viewModel.topPerformersViewModel,
-                                               onViewAllAnalytics: { siteID, siteTimeZone, timeRange in
-                        onViewAllAnalytics?(siteID, siteTimeZone, timeRange)
-                    })
+        VStack(spacing: Layout.padding) {
+            ForEach(viewModel.dashboardCards, id: \.hashValue) { card in
+                if card.enabled {
+                    switch card.type {
+                    case .onboarding:
+                        StoreOnboardingView(viewModel: viewModel.storeOnboardingViewModel, onTaskTapped: { task in
+                            guard let currentSite else { return }
+                            onboardingTaskTapped?(currentSite, task)
+                        }, onViewAllTapped: {
+                            guard let currentSite else { return }
+                            viewAllOnboardingTasksTapped?(currentSite)
+                        }, shareFeedbackAction: {
+                            onboardingShareFeedbackAction?()
+                        })
+                    case .blaze:
+                        BlazeCampaignDashboardView(viewModel: viewModel.blazeCampaignDashboardViewModel,
+                                                   showAllCampaignsTapped: showAllBlazeCampaignsTapped,
+                                                   createCampaignTapped: createBlazeCampaignTapped)
+                    case .performance:
+                        StorePerformanceView(viewModel: viewModel.storePerformanceViewModel, onCustomRangeRedactedViewTap: {
+                            onCustomRangeRedactedViewTap?()
+                        }, onViewAllAnalytics: { siteID, siteTimeZone, timeRange in
+                            onViewAllAnalytics?(siteID, siteTimeZone, timeRange)
+                        })
+                    case .topPerformers:
+                        TopPerformersDashboardView(viewModel: viewModel.topPerformersViewModel,
+                                                   onViewAllAnalytics: { siteID, siteTimeZone, timeRange in
+                            onViewAllAnalytics?(siteID, siteTimeZone, timeRange)
+                        })
+                    }
                 }
             }
         }

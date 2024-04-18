@@ -217,8 +217,7 @@ private extension StorePerformanceView {
                 Text(Localization.viewAll)
                 Spacer()
                 Image(systemName: "chevron.forward")
-                    .foregroundStyle(Color.secondary)
-                    .fontWeight(.semibold)
+                    .foregroundStyle(Color(.tertiaryLabel))
             }
         }
     }

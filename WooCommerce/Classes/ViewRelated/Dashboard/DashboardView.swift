@@ -73,9 +73,7 @@ struct DashboardView: View {
 
             // Card views
             dashboardCards
-
-            Spacer()
-                .frame(height: Layout.padding)
+                .padding(.vertical, Layout.padding)
         }
         .background(Color(.listBackground))
         .navigationTitle(Localization.title)

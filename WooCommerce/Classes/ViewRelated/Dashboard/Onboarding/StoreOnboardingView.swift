@@ -158,6 +158,7 @@ struct StoreOnboardingView: View {
 
                 Divider()
                     .renderedIf(viewModel.shouldShowViewAllButton)
+                    .padding(.leading, Layout.padding)
 
                 // View all button
                 viewAllButton(action: viewAllTapped, text: String(format: Localization.viewAll, viewModel.taskViewModels.count))

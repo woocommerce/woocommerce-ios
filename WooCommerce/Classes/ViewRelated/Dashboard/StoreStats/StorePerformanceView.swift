@@ -26,7 +26,7 @@ struct StorePerformanceView: View {
 
     var body: some View {
         if viewModel.statsVersion == .v4 {
-            VStack(alignment: .leading) {
+            VStack(alignment: .leading, spacing: Layout.padding) {
                 header
                     .padding(.horizontal, Layout.padding)
                     .redacted(reason: viewModel.syncingData ? [.placeholder] : [])
@@ -49,9 +49,10 @@ struct StorePerformanceView: View {
                     .shimmering(active: viewModel.syncingData)
 
                 Divider()
+                    .padding(.leading, Layout.padding)
 
                 viewAllAnalyticsButton
-                    .padding([.top, .horizontal], Layout.padding)
+                    .padding(.horizontal, Layout.padding)
                     .redacted(reason: viewModel.syncingData ? [.placeholder] : [])
                     .shimmering(active: viewModel.syncingData)
 

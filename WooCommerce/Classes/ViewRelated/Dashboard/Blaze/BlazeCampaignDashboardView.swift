@@ -64,6 +64,8 @@ private extension BlazeCampaignDashboardViewHostingController {
 
 /// Blaze campaigns in dashboard screen.
 struct BlazeCampaignDashboardView: View {
+    /// Scale of the view based on accessibility changes
+    @ScaledMetric private var scale: CGFloat = 1.0
 
     /// Set externally in the hosting controller.
     var showAllCampaignsTapped: (() -> Void)?
@@ -83,27 +85,19 @@ struct BlazeCampaignDashboardView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: Layout.verticalSpacing) {
-            VStack(alignment: .leading, spacing: Layout.HeadingBlock.verticalSpacing) {
-                // Title
-                Text(Localization.title)
-                    .fontWeight(.semibold)
-                    .bodyStyle()
-
-                // Subtitle
-                Text(Localization.subtitle)
-                    .fontWeight(.regular)
-                    .subheadlineStyle()
-                    .renderedIf(!viewModel.shouldShowShowAllCampaignsButton)
-            }
-            .redacted(reason: viewModel.shouldRedactView ? .placeholder : [])
+            header
+                .padding(.horizontal, Layout.padding)
+                .redacted(reason: viewModel.shouldRedactView ? .placeholder : [])
 
             if case .showProduct(let product) = viewModel.state {
                 ProductInfoView(product: product)
+                    .padding(.horizontal, Layout.padding)
                     .onTapGesture {
                         createCampaignTapped?(product.productID)
                     }
             } else if case .showCampaign(let campaign) = viewModel.state {
                 BlazeCampaignItemView(campaign: campaign, showBudget: false)
+                    .padding(.horizontal, Layout.padding)
                     .onTapGesture {
                         viewModel.didSelectCampaignDetails(campaign)
                     }
@@ -111,43 +105,53 @@ struct BlazeCampaignDashboardView: View {
 
             // Show All Campaigns button
             showAllCampaignsButton
+                .padding(.horizontal, Layout.padding)
                 .renderedIf(viewModel.shouldShowShowAllCampaignsButton)
-
-            Divider()
 
             // Create campaign button
             createCampaignButton
+                .padding(.horizontal, Layout.padding)
                 .redacted(reason: viewModel.shouldRedactView ? .placeholder : [])
         }
-        .padding(insets: Layout.insets)
-        .background(Color(uiColor: .listForeground(modal: false)))
+        .padding(.vertical, Layout.padding)
+        .background(Color(.listForeground(modal: false)))
+        .clipShape(RoundedRectangle(cornerSize: Layout.cornerSize))
+        .padding(.horizontal, Layout.padding)
         .sheet(item: $viewModel.selectedCampaignURL) { url in
             campaignDetailView(url: url)
-        }
-        .overlay {
-            topRightMenu
-                .renderedIf(viewModel.shouldRedactView == false)
         }
     }
 }
 
 private extension BlazeCampaignDashboardView {
-    var topRightMenu: some View {
-        VStack {
+    var header: some View {
+        VStack(alignment: .leading, spacing: Layout.HeadingBlock.verticalSpacing) {
+            // Title
             HStack {
+                Image(uiImage: .blaze)
+                    .resizable()
+                    .frame(width: Layout.logoSize * scale, height: Layout.logoSize * scale)
+                Text("Blaze")
+                    .headlineStyle()
                 Spacer()
                 Menu {
                     Button(Localization.hideBlaze) {
-                        viewModel.dismissBlazeSection()
+                        // TODO
                     }
                 } label: {
-                    Image(uiImage: .ellipsisImage)
-                        .foregroundColor(Color(.textTertiary))
+                    Image(systemName: "ellipsis")
+                        .foregroundStyle(Color.secondary)
+                        .padding(.leading, Layout.padding)
+                        .padding(.vertical, Layout.hideIconVerticalPadding)
                 }
             }
-            Spacer()
+            // Subtitle
+            Text(Localization.subtitle)
+                .fontWeight(.regular)
+                .subheadlineStyle()
+                .renderedIf(!viewModel.shouldShowShowAllCampaignsButton)
         }
-        .padding(Layout.insets)
+
     }
 
     var createCampaignButton: some View {
@@ -155,7 +159,6 @@ private extension BlazeCampaignDashboardView {
             createCampaignTapped?(nil)
         } label: {
             Text(Localization.promote)
-                .fontWeight(.semibold)
                 .foregroundColor(.init(uiColor: .accent))
                 .bodyStyle()
         }
@@ -206,20 +209,19 @@ private extension BlazeCampaignDashboardView {
 
 private extension BlazeCampaignDashboardView {
     enum Layout {
+        static let padding: CGFloat = 16
+        static let cornerSize = CGSize(width: 8.0, height: 8.0)
         static let verticalSpacing: CGFloat = 16
         enum HeadingBlock {
             static let verticalSpacing: CGFloat = 8
         }
         static let insets: EdgeInsets = .init(top: 16, leading: 16, bottom: 16, trailing: 16)
         static let cornerRadius: CGFloat = 8
+        static let logoSize: CGFloat = 20
+        static let hideIconVerticalPadding: CGFloat = 8
     }
 
     enum Localization {
-        static let title = NSLocalizedString(
-            "🔥 Blaze campaign",
-            comment: "Title of the Blaze campaign view."
-        )
-
         static let subtitle = NSLocalizedString(
             "Increase visibility and get your products sold quickly.",
             comment: "Subtitle of the Blaze campaign view."

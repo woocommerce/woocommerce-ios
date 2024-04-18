@@ -59,7 +59,7 @@ final class ProductReviewsViewModel {
 // MARK: - Fetching data
 extension ProductReviewsViewModel {
 
-    /// Synchronizes the approved Reviews associated to the current store, for a specific Product ID.
+    /// Synchronizes the Reviews associated to the current store, for a specific Product ID.
     ///
     func synchronizeReviews(pageNumber: Int,
                             pageSize: Int,

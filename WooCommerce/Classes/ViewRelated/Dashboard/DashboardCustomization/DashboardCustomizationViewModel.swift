@@ -99,7 +99,8 @@ extension DashboardCustomizationViewModel {
     ///
     static let sampleCards = [
         DashboardCard(type: .onboarding, enabled: true),
-        DashboardCard(type: .statsAndTopPerformers, enabled: false),
+        DashboardCard(type: .performance, enabled: true),
+        DashboardCard(type: .topPerformers, enabled: false),
         DashboardCard(type: .blaze, enabled: true),
     ]
 }

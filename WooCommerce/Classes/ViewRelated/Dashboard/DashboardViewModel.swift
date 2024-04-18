@@ -20,13 +20,17 @@ final class DashboardViewModel: ObservableObject {
     let blazeCampaignDashboardViewModel: BlazeCampaignDashboardViewModel
 
     let storePerformanceViewModel: StorePerformanceViewModel
+    let topPerformersViewModel: TopPerformersDashboardViewModel
 
     @Published var justInTimeMessagesWebViewModel: WebViewSheetViewModel? = nil
 
     @Published private(set) var showOnboarding: Bool = false
     @Published private(set) var showBlazeCampaignView: Bool = false
 
-    @Published private(set) var dashboardCards: [DashboardCard] = [DashboardCard(type: .statsAndTopPerformers, enabled: true)]
+    @Published private(set) var dashboardCards: [DashboardCard] = [
+        DashboardCard(type: .performance, enabled: true),
+        DashboardCard(type: .topPerformers, enabled: true)
+    ]
     @Published private(set) var unavailableDashboardCards: [DashboardCard] = []
 
     @Published private(set) var jetpackBannerVisibleFromAppSettings = false
@@ -71,6 +75,8 @@ final class DashboardViewModel: ObservableObject {
         self.blazeCampaignDashboardViewModel = .init(siteID: siteID)
         self.storePerformanceViewModel = .init(siteID: siteID,
                                                usageTracksEventEmitter: usageTracksEventEmitter)
+        self.topPerformersViewModel = .init(siteID: siteID,
+                                            usageTracksEventEmitter: usageTracksEventEmitter)
         self.storeCreationProfilerUploadAnswersUseCase = storeCreationProfilerUploadAnswersUseCase ?? StoreCreationProfilerUploadAnswersUseCase(siteID: siteID)
         self.themeInstaller = themeInstaller
         setupObserverForShowOnboarding()
@@ -367,7 +373,8 @@ private extension DashboardViewModel {
                 return stored
             } else {
                 return [DashboardCard(type: .onboarding, enabled: showOnboarding),
-                        DashboardCard(type: .statsAndTopPerformers, enabled: true),
+                        DashboardCard(type: .performance, enabled: true),
+                        DashboardCard(type: .topPerformers, enabled: true),
                         DashboardCard(type: .blaze, enabled: showBlazeCampaignView)]
             }
         }()

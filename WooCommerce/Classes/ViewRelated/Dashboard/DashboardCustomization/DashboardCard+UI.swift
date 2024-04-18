@@ -6,8 +6,10 @@ extension DashboardCard {
         switch type {
         case .onboarding:
             Localization.onboarding
-        case .statsAndTopPerformers:
-            Localization.statsAndTopPerformers
+        case .performance:
+            Localization.performance
+        case .topPerformers:
+            Localization.topPerformers
         case .blaze:
             Localization.blaze
         }
@@ -21,10 +23,15 @@ private extension DashboardCard {
             value: "Store Onboarding",
             comment: "Name for the Store Onboarding dashboard card in the Customize Dashboard screen"
         )
-        static let statsAndTopPerformers = NSLocalizedString(
-            "dashboardCard.name.statsAndTopPerformers",
-            value: "Store Stats and Top Performers",
-            comment: "Name for the Store Stats and Top Performers dashboard card in the Customize Dashboard screen"
+        static let performance = NSLocalizedString(
+            "dashboardCard.name.performance",
+            value: "Performance",
+            comment: "Name for the Performance dashboard card in the Customize Dashboard screen"
+        )
+        static let topPerformers = NSLocalizedString(
+            "dashboardCard.name.topPerformers",
+            value: "Top Performers",
+            comment: "Name for the Top Performers dashboard card in the Customize Dashboard screen"
         )
         static let blaze = NSLocalizedString(
             "dashboardCard.name.blaze",

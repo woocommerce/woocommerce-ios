@@ -92,6 +92,12 @@ final class DashboardViewModel: ObservableObject {
         await storeCreationProfilerUploadAnswersUseCase.uploadAnswers()
     }
 
+    func hideDashboardCard(type: DashboardCard.CardType) {
+        if let index = dashboardCards.firstIndex(where: { $0.type == type }) {
+            dashboardCards[index] = dashboardCards[index].copy(enabled: false)
+        }
+    }
+
     @MainActor
     func reloadAllData() async {
         await withTaskGroup(of: Void.self) { group in
@@ -362,6 +368,10 @@ private extension DashboardViewModel {
         storeOnboardingViewModel.onDismiss = { [weak self] in
             self?.hideDashboardCard(type: .onboarding)
         }
+
+        blazeCampaignDashboardViewModel.onDismiss = { [weak self] in
+            self?.hideDashboardCard(type: .blaze)
+        }
         
         storeOnboardingViewModel.$canShowInDashboard
             .combineLatest(blazeCampaignDashboardViewModel.$canShowInDashboard)
@@ -374,12 +384,6 @@ private extension DashboardViewModel {
                 }
             }
             .store(in: &subscriptions)
-    }
-
-    func hideDashboardCard(type: DashboardCard.CardType) {
-        if let index = dashboardCards.firstIndex(where: { $0.type == type }) {
-            dashboardCards[index] = dashboardCards[index].copy(enabled: false)
-        }
     }
 
     /// We are using separate user defaults for different cards -

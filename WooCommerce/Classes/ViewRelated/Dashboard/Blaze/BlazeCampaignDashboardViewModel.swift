@@ -42,6 +42,9 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
     /// Set externally in the hosting controller to invalidate the SwiftUI `BlazeCampaignDashboardView`'s intrinsic content size as a workaround with UIKit.
     var onStateChange: (() -> Void)?
 
+    /// Set externally to trigger when dismissing the card.
+    var onDismiss: (() -> Void)?
+
     let siteID: Int64
 
     var siteURL: String {
@@ -147,7 +150,11 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
     }
 
     func dismissBlazeSection() {
-        userDefaults.setDismissedBlazeSectionOnMyStore(for: siteID)
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.dynamicDashboard) {
+            onDismiss?()
+        } else {
+            userDefaults.setDismissedBlazeSectionOnMyStore(for: siteID)
+        }
         analytics.track(event: .Blaze.blazeViewDismissed(source: .myStoreSection))
     }
 

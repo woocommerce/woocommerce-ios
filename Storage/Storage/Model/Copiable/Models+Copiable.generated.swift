@@ -104,7 +104,9 @@ extension Storage.GeneralStoreSettings {
         firstInPersonPaymentsTransactionsByReaderType: CopiableProp<[CardReaderType: Date]> = .copy,
         selectedTaxRateID: NullableCopiableProp<Int64> = .copy,
         analyticsHubCards: NullableCopiableProp<[AnalyticsCard]> = .copy,
-        dashboardCards: NullableCopiableProp<[DashboardCard]> = .copy
+        dashboardCards: NullableCopiableProp<[DashboardCard]> = .copy,
+        lastSelectedPerformanceTimeRange: CopiableProp<String> = .copy,
+        lastSelectedTopPerformersTimeRange: CopiableProp<String> = .copy
     ) -> Storage.GeneralStoreSettings {
         let storeID = storeID ?? self.storeID
         let isTelemetryAvailable = isTelemetryAvailable ?? self.isTelemetryAvailable
@@ -118,6 +120,8 @@ extension Storage.GeneralStoreSettings {
         let selectedTaxRateID = selectedTaxRateID ?? self.selectedTaxRateID
         let analyticsHubCards = analyticsHubCards ?? self.analyticsHubCards
         let dashboardCards = dashboardCards ?? self.dashboardCards
+        let lastSelectedPerformanceTimeRange = lastSelectedPerformanceTimeRange ?? self.lastSelectedPerformanceTimeRange
+        let lastSelectedTopPerformersTimeRange = lastSelectedTopPerformersTimeRange ?? self.lastSelectedTopPerformersTimeRange
 
         return Storage.GeneralStoreSettings(
             storeID: storeID,
@@ -131,7 +135,9 @@ extension Storage.GeneralStoreSettings {
             firstInPersonPaymentsTransactionsByReaderType: firstInPersonPaymentsTransactionsByReaderType,
             selectedTaxRateID: selectedTaxRateID,
             analyticsHubCards: analyticsHubCards,
-            dashboardCards: dashboardCards
+            dashboardCards: dashboardCards,
+            lastSelectedPerformanceTimeRange: lastSelectedPerformanceTimeRange,
+            lastSelectedTopPerformersTimeRange: lastSelectedTopPerformersTimeRange
         )
     }
 }

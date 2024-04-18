@@ -139,6 +139,7 @@ struct StoreOnboardingView: View {
                                        hideTaskListAction: viewModel.hideTaskList,
                                        isRedacted: viewModel.isRedacted,
                                        isHideStoreOnboardingTaskListFeatureEnabled: viewModel.isHideStoreOnboardingTaskListFeatureEnabled)
+                .padding(.horizontal, Layout.padding)
 
                 // Task list
                 VStack(alignment: .leading, spacing: 0) {
@@ -153,17 +154,28 @@ struct StoreOnboardingView: View {
                                                 .shimmering(active: viewModel.isRedacted)
                     }
                 }
+                .padding(.horizontal, Layout.padding)
+
+                Divider()
+                    .renderedIf(viewModel.shouldShowViewAllButton)
 
                 // View all button
                 viewAllButton(action: viewAllTapped, text: String(format: Localization.viewAll, viewModel.taskViewModels.count))
                     .renderedIf(viewModel.shouldShowViewAllButton)
+                    .padding(.horizontal, Layout.padding)
 
                 Spacer()
                     .renderedIf(viewModel.isExpanded)
             }
-            .padding(insets: viewModel.shouldShowViewAllButton ?
-                     Layout.insetsWithViewAllButton: Layout.insetsWithoutViewAllButton)
-            .if(!viewModel.isExpanded) { $0.background(Color(uiColor: .listForeground(modal: false))) }
+            .padding(.top, Layout.padding)
+            .padding(.bottom, viewModel.shouldShowViewAllButton ?
+                                 Layout.padding: Layout.bottomPaddingWithoutViewAllButton)
+
+            .if(!viewModel.isExpanded) { view in
+                view.background(Color(uiColor: .listForeground(modal: false)))
+                    .clipShape(RoundedRectangle(cornerSize: Layout.cornerSize))
+                    .padding(.horizontal, Layout.padding)
+            }
         }
     }
 }
@@ -176,18 +188,23 @@ private extension StoreOnboardingView {
         Button {
             action?()
         } label: {
-            Text(text)
-                .fontWeight(.semibold)
-                .foregroundColor(.init(uiColor: .accent))
-                .subheadlineStyle()
+            HStack {
+                Text(text)
+                    .foregroundStyle(Color.accentColor)
+                    .bodyStyle()
+                Spacer()
+                Image(systemName: "chevron.forward")
+                    .foregroundStyle(Color(.tertiaryLabel))
+            }
         }
     }
 }
 
 private extension StoreOnboardingView {
     enum Layout {
-        static let insetsWithViewAllButton: EdgeInsets = .init(top: 16, leading: 16, bottom: 16, trailing: 16)
-        static let insetsWithoutViewAllButton: EdgeInsets = .init(top: 16, leading: 16, bottom: 1, trailing: 16)
+        static let padding: CGFloat = 16
+        static let cornerSize = CGSize(width: 8.0, height: 8.0)
+        static let bottomPaddingWithoutViewAllButton: CGFloat = 1
         enum VerticalSpacing {
             static let collapsedMode: CGFloat = 16
             static let expandedMode: CGFloat = 40
@@ -196,7 +213,8 @@ private extension StoreOnboardingView {
 
     enum Localization {
         static let viewAll = NSLocalizedString(
-            "View all (%1$d)",
+            "storeOnboardingCardView.viewAll",
+            value: "View all %1$d tasks",
             comment: "Button when tapped will show a screen with all the store setup tasks." +
             "%1$d represents the total number of tasks."
         )

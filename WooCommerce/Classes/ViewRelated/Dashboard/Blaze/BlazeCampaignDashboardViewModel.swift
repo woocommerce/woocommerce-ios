@@ -21,6 +21,8 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
 
     @Published private(set) var shouldShowInDashboard: Bool = false
 
+    @Published private(set) var canShowInDashboard = false
+
     var shouldShowIntroView: Bool {
         blazeCampaignResultsController.numberOfObjects == 0
     }
@@ -217,6 +219,8 @@ private extension BlazeCampaignDashboardViewModel {
     }
 
     func updateResults() {
+        canShowInDashboard = isSiteEligibleForBlaze && latestPublishedProduct != nil
+
         guard isSiteEligibleForBlaze else {
             return update(state: .empty)
         }

@@ -126,7 +126,7 @@ private extension TopPerformersDashboardViewModel {
     @MainActor
     func loadLastTimeRange() async -> StatsTimeRangeV4? {
         await withCheckedContinuation { continuation in
-            let action = AppSettingsAction.loadLastSelectedStatsTimeRange(siteID: siteID) { timeRange in
+            let action = AppSettingsAction.loadLastSelectedTopPerformersTimeRange(siteID: siteID) { timeRange in
                 continuation.resume(returning: timeRange)
             }
             stores.dispatch(action)
@@ -134,7 +134,7 @@ private extension TopPerformersDashboardViewModel {
     }
 
     func saveLastTimeRange(_ timeRange: StatsTimeRangeV4) {
-        let action = AppSettingsAction.setLastSelectedStatsTimeRange(siteID: siteID, timeRange: timeRange)
+        let action = AppSettingsAction.setLastSelectedTopPerformersTimeRange(siteID: siteID, timeRange: timeRange)
         stores.dispatch(action)
     }
 

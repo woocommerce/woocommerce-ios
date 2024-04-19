@@ -268,4 +268,20 @@ public enum AppSettingsAction: Action {
     /// Loads the stored, ordered array of cards for the Dashboard screen.
     ///
     case loadDashboardCards(siteID: Int64, onCompletion: ([DashboardCard]?) -> Void)
+
+    /// Stores the last selected time range for the Performance dashboard card.
+    ///
+    case setLastSelectedPerformanceTimeRange(siteID: Int64, timeRange: StatsTimeRangeV4)
+
+    /// Loads the last selected time range for the Performance dashboard card.
+    ///
+    case loadLastSelectedPerformanceTimeRange(siteID: Int64, onCompletion: (StatsTimeRangeV4?) -> Void)
+
+    /// Stores the last selected time range for the Top Performers dashboard card.
+    ///
+    case setLastSelectedTopPerformersTimeRange(siteID: Int64, timeRange: StatsTimeRangeV4)
+
+    /// Loads the last selected time range for the Top Performers dashboard card.
+    ///
+    case loadLastSelectedTopPerformersTimeRange(siteID: Int64, onCompletion: (StatsTimeRangeV4?) -> Void)
 }

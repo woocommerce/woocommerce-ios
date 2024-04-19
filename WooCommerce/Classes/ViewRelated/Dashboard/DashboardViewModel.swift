@@ -390,6 +390,16 @@ private extension DashboardViewModel {
 
         unavailableDashboardCards = []
 
+        if let performanceCard = dashboardCards.first(where: { $0.type == .performance }),
+            !showAnalyticsCards {
+            unavailableDashboardCards.append(performanceCard)
+        }
+
+        if let topPerformersCard = dashboardCards.first(where: { $0.type == .topPerformers }),
+            !showAnalyticsCards {
+            unavailableDashboardCards.append(topPerformersCard)
+        }
+
         if let onboardingCard = dashboardCards.first(where: { $0.type == .onboarding }),
            !showOnboarding && !userDefaults.shouldHideStoreOnboardingTaskList {
             unavailableDashboardCards.append(onboardingCard)

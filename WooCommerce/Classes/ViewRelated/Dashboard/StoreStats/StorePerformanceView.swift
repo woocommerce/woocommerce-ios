@@ -11,14 +11,17 @@ struct StorePerformanceView: View {
         Color(viewModel.shouldHighlightStats ? .statsHighlighted : .text)
     }
 
+    private let canHideCard: Bool
     private let onCustomRangeRedactedViewTap: () -> Void
     private let onViewAllAnalytics: (_ siteID: Int64,
                                      _ timeZone: TimeZone,
                                      _ timeRange: StatsTimeRangeV4) -> Void
 
-    init(viewModel: StorePerformanceViewModel,
+    init(canHideCard: Bool,
+         viewModel: StorePerformanceViewModel,
          onCustomRangeRedactedViewTap: @escaping () -> Void,
          onViewAllAnalytics: @escaping (Int64, TimeZone, StatsTimeRangeV4) -> Void) {
+        self.canHideCard = canHideCard
         self.viewModel = viewModel
         self.onCustomRangeRedactedViewTap = onCustomRangeRedactedViewTap
         self.onViewAllAnalytics = onViewAllAnalytics
@@ -92,6 +95,7 @@ private extension StorePerformanceView {
                     .padding(.vertical, Layout.hideIconVerticalPadding)
             }
             .disabled(viewModel.syncingData)
+            .renderedIf(canHideCard)
         }
     }
 
@@ -286,7 +290,8 @@ private extension StorePerformanceView {
 }
 
 #Preview {
-    StorePerformanceView(viewModel: StorePerformanceViewModel(siteID: 123,
+    StorePerformanceView(canHideCard: true,
+                         viewModel: StorePerformanceViewModel(siteID: 123,
                                                               usageTracksEventEmitter: .init()),
                          onCustomRangeRedactedViewTap: {},
                          onViewAllAnalytics: { _, _, _ in })

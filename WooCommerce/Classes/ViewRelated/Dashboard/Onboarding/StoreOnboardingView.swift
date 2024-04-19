@@ -31,7 +31,8 @@ final class StoreOnboardingViewHostingController: SelfSizingHostingController<St
         self.sourceNavigationController = navigationController
         self.site = site
         self.onUpgradePlan = onUpgradePlan
-        super.init(rootView: StoreOnboardingView(viewModel: viewModel,
+        super.init(rootView: StoreOnboardingView(canHideCard: true,
+                                                 viewModel: viewModel,
                                                  shareFeedbackAction: shareFeedbackAction))
         if #unavailable(iOS 16.0) {
             viewModel.onStateChange = { [weak self] in
@@ -104,12 +105,15 @@ struct StoreOnboardingView: View {
 
     @ObservedObject private var viewModel: StoreOnboardingViewModel
 
+    private let canHideCard: Bool
     private let shareFeedbackAction: (() -> Void)?
 
-    init(viewModel: StoreOnboardingViewModel,
+    init(canHideCard: Bool,
+         viewModel: StoreOnboardingViewModel,
          onTaskTapped: ((StoreOnboardingTask) -> Void)? = nil,
          onViewAllTapped: (() -> Void)? = nil,
          shareFeedbackAction: (() -> Void)? = nil) {
+        self.canHideCard = canHideCard
         self.viewModel = viewModel
         self.taskTapped = onTaskTapped
         self.viewAllTapped = onViewAllTapped
@@ -138,7 +142,7 @@ struct StoreOnboardingView: View {
                                        shareFeedbackAction: shareFeedbackAction,
                                        hideTaskListAction: viewModel.hideTaskList,
                                        isRedacted: viewModel.isRedacted,
-                                       isHideStoreOnboardingTaskListFeatureEnabled: viewModel.isHideStoreOnboardingTaskListFeatureEnabled)
+                                       isHideStoreOnboardingTaskListFeatureEnabled: canHideCard)
                 .padding(.horizontal, Layout.padding)
 
                 // Task list
@@ -224,8 +228,8 @@ private extension StoreOnboardingView {
 
 struct StoreOnboardingCardView_Previews: PreviewProvider {
     static var previews: some View {
-        StoreOnboardingView(viewModel: .init(siteID: 0, isExpanded: false))
+        StoreOnboardingView(canHideCard: true, viewModel: .init(siteID: 0, isExpanded: false))
 
-        StoreOnboardingView(viewModel: .init(siteID: 0, isExpanded: true))
+        StoreOnboardingView(canHideCard: true, viewModel: .init(siteID: 0, isExpanded: true))
     }
 }

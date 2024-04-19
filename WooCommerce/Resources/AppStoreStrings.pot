@@ -61,9 +61,10 @@ msgctxt "app_store_promo_text"
 msgid "Run your store from anywhere"
 msgstr ""
 
-msgctxt "v18.2-whats-new"
+msgctxt "v18.3-whats-new"
 msgid ""
-"Discover the latest updates in our WooCommerce app! Enjoy a seamless payment process, log in effortlessly with site credentials, and create Blaze campaigns faster without errors. Upgrade now for an enhanced shop management experience!\n"
+"Squashed a pesky bug to ensure the "Reset Activity Log" button works like a charm, cleaning the slate completely for a fresh start. Dive into a more seamless WooCommerce experience. Update now!\n"
+"\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.

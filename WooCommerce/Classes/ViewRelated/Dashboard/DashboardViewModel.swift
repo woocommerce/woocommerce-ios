@@ -365,7 +365,8 @@ private extension DashboardViewModel {
             .assign(to: &$showBlazeCampaignView)
     }
 
-    func setupDashboardCards() {\        storeOnboardingViewModel.onDismiss = { [weak self] in
+    func setupDashboardCards() {
+        storeOnboardingViewModel.onDismiss = { [weak self] in
             self?.hideDashboardCard(type: .onboarding)
         }
 
@@ -380,16 +381,16 @@ private extension DashboardViewModel {
         topPerformersViewModel.onDismiss = { [weak self] in
             self?.hideDashboardCard(type: .topPerformers)
         }
-        
+
         storeOnboardingViewModel.$canShowInDashboard
             .combineLatest(blazeCampaignDashboardViewModel.$canShowInDashboard, $hasOrders)
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] showOnboarding, showBlazeCampaignView, hasOrders in
+            .sink { [weak self] canShowOnboarding, canShowBlaze, hasOrders in
                 guard let self else { return }
                 Task {
                     await self.updateDashboardCards(canShowOnboarding: canShowOnboarding,
                                                     canShowBlaze: canShowBlaze,
-                                                    showAnalyticsCards: hasOrders
+                                                    canShowAnalytics: hasOrders
                     )
                 }
             }
@@ -414,14 +415,14 @@ private extension DashboardViewModel {
     @MainActor
     func updateDashboardCards(canShowOnboarding: Bool,
                               canShowBlaze: Bool,
-                              showAnalyticsCards: Bool) async {
+                              canShowAnalytics: Bool) async {
         dashboardCards = await {
             if let stored = await loadDashboardCards() {
                 return stored
             } else {
                 return [DashboardCard(type: .onboarding, enabled: canShowOnboarding),
-                        DashboardCard(type: .performance, enabled: showAnalyticsCards),
-                        DashboardCard(type: .topPerformers, enabled: showAnalyticsCards),
+                        DashboardCard(type: .performance, enabled: canShowAnalytics),
+                        DashboardCard(type: .topPerformers, enabled: canShowAnalytics),
                         DashboardCard(type: .blaze, enabled: canShowBlaze)]
             }
         }()
@@ -429,12 +430,12 @@ private extension DashboardViewModel {
         unavailableDashboardCards = []
 
         if let performanceCard = dashboardCards.first(where: { $0.type == .performance }),
-            !showAnalyticsCards {
+            !canShowAnalytics {
             unavailableDashboardCards.append(performanceCard)
         }
 
         if let topPerformersCard = dashboardCards.first(where: { $0.type == .topPerformers }),
-            !showAnalyticsCards {
+            !canShowAnalytics {
             unavailableDashboardCards.append(topPerformersCard)
         }
 

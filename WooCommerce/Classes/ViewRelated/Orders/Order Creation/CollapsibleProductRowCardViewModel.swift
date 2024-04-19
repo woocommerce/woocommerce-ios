@@ -86,10 +86,10 @@ struct CollapsibleProductRowCardViewModel: Identifiable {
         productSubscriptionDetails != nil
     }
 
-    /// Description of the subscription billing details for a Subscription-type Product
+    /// Description of the subscription billing interval for a Subscription-type Product
     /// eg: "Every 2 months"
     ///
-    var subscriptionBillingDetailsLabel: String? {
+    var subscriptionBillingIntervalLabel: String? {
         guard let periodInterval = productSubscriptionDetails?.periodInterval,
               periodInterval != "0",
               let period = productSubscriptionDetails?.period else {

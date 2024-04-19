@@ -324,7 +324,7 @@ final class CollapsibleProductRowCardViewModelTests: XCTestCase {
         let viewModel = createViewModel()
 
         // Then
-        XCTAssertNil(viewModel.subscriptionBillingDetailsLabel)
+        XCTAssertNil(viewModel.subscriptionBillingIntervalLabel)
     }
 
     func test_productRow_when_expectedPeriodInterval_is_zero_then_subscriptionBillingDetailsLabel_is_nil() {
@@ -344,7 +344,7 @@ final class CollapsibleProductRowCardViewModelTests: XCTestCase {
                                         productSubscriptionDetails: product.subscription,
                                         name: product.name)
         // Then
-        XCTAssertNil(viewModel.subscriptionBillingDetailsLabel)
+        XCTAssertNil(viewModel.subscriptionBillingIntervalLabel)
     }
 
     func test_productRow_when_expectedPeriodInterval_is_one_then_subscriptionBillingDetailsLabel_is_singular() {
@@ -361,7 +361,7 @@ final class CollapsibleProductRowCardViewModelTests: XCTestCase {
                                         productSubscriptionDetails: product.subscription,
                                         name: product.name)
         // Then
-        XCTAssertEqual(viewModel.subscriptionBillingDetailsLabel, "Every 1 month")
+        XCTAssertEqual(viewModel.subscriptionBillingIntervalLabel, "Every 1 month")
     }
 
     func test_productRow_when_expectedPeriodInterval_is_more_than_one_then_subscriptionBillingDetailsLabel_is_plural() {
@@ -378,7 +378,7 @@ final class CollapsibleProductRowCardViewModelTests: XCTestCase {
                                         productSubscriptionDetails: product.subscription,
                                         name: product.name)
         // Then
-        XCTAssertEqual(viewModel.subscriptionBillingDetailsLabel, "Every 2 months")
+        XCTAssertEqual(viewModel.subscriptionBillingIntervalLabel, "Every 2 months")
     }
 
     func test_subscriptionPrice() {}

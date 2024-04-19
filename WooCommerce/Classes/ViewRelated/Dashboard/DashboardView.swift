@@ -77,7 +77,7 @@ struct DashboardView: View {
         .background(Color(.listBackground))
         .navigationTitle(Localization.title)
         .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
+            ToolbarItem(placement: .topBarLeading) {
                 if let url = viewModel.siteURLToShare {
                     ShareLink(item: url) {
                         Image(systemName: "square.and.arrow.up")
@@ -85,10 +85,8 @@ struct DashboardView: View {
                 }
             }
             ToolbarItem(placement: .topBarTrailing) {
-                Button {
+                Button(Localization.edit) {
                     showingCustomization = true
-                } label: {
-                    Image(systemName: "gearshape")
                 }
             }
         }
@@ -260,6 +258,11 @@ private extension DashboardView {
             "dashboardView.storePlanBanner.expired",
             value: "Your site plan has ended.",
             comment: "Title on the banner when the site's WooExpress plan has expired"
+        )
+        static let edit = NSLocalizedString(
+            "dashboardView.edit",
+            value: "Edit",
+            comment: "Title of the button to edit the layout of the Dashboard screen."
         )
     }
 }

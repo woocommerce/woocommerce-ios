@@ -110,6 +110,9 @@ final class DashboardViewModel: ObservableObject {
             group.addTask { [weak self] in
                 await self?.updateJetpackBannerVisibilityFromAppSettings()
             }
+            group.addTask { [weak self] in
+                await self?.updateHasOrdersStatus()
+            }
             if featureFlagService.isFeatureFlagEnabled(.dynamicDashboard) {
                 group.addTask { [weak self] in
                     await self?.storePerformanceViewModel.reloadData()
@@ -395,6 +398,28 @@ private extension DashboardViewModel {
         if let blazeCard = dashboardCards.first(where: { $0.type == .blaze }),
            !showBlazeCampaignView && !userDefaults.hasDismissedBlazeSectionOnMyStore {
             unavailableDashboardCards.append(blazeCard)
+        }
+    }
+
+    @MainActor
+    func updateHasOrdersStatus() async {
+        hasOrders = await loadHasOrdersStatus()
+    }
+
+    @MainActor
+    func loadHasOrdersStatus() async -> Bool {
+        await withCheckedContinuation { continuation in
+            stores.dispatch(OrderAction.checkIfStoreHasOrders(siteID: self.siteID, onCompletion: { [weak self] result in
+                guard let self else { return }
+
+                switch result {
+                case .success(let hasOrders):
+                    continuation.resume(returning: hasOrders)
+                case .failure(let error):
+                    DDLogError("⛔️ Dashboard (Share Your Store) — Error checking if site has orders: \(error)")
+                    continuation.resume(returning: self.hasOrders) // Use original value on error
+                }
+            }))
         }
     }
 

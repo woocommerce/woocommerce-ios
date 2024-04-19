@@ -220,6 +220,14 @@ public class AppSettingsStore: Store {
             loadDashboardCards(siteID: siteID, onCompletion: onCompletion)
         case let .setDashboardCards(siteID, cards):
             setDashboardCards(siteID: siteID, cards: cards)
+        case let .setLastSelectedPerformanceTimeRange(siteID, timeRange):
+            setLastSelectedPerformanceTimeRange(siteID: siteID, timeRange: timeRange)
+        case let .loadLastSelectedPerformanceTimeRange(siteID, onCompletion):
+            loadLastSelectedPerformanceTimeRange(siteID: siteID, onCompletion: onCompletion)
+        case let .setLastSelectedTopPerformersTimeRange(siteID, timeRange):
+            setLastSelectedTopPerformersTimeRange(siteID: siteID, timeRange: timeRange)
+        case let .loadLastSelectedTopPerformersTimeRange(siteID, onCompletion):
+            loadLastSelectedTopPerformersTimeRange(siteID: siteID, onCompletion: onCompletion)
         }
     }
 }
@@ -926,7 +934,7 @@ private extension AppSettingsStore {
 
         let updatedSettings: GeneralStoreSettings
         if let taxRateID = id {
-            updatedSettings = storeSettings.copy(selectedTaxRateID: id)
+            updatedSettings = storeSettings.copy(selectedTaxRateID: taxRateID)
         } else {
             updatedSettings = storeSettings.erasingSelectedTaxRateID()
         }
@@ -964,6 +972,32 @@ private extension AppSettingsStore {
 
     func loadDashboardCards(siteID: Int64, onCompletion: ([DashboardCard]?) -> Void) {
         onCompletion(getStoreSettings(for: siteID).dashboardCards)
+    }
+
+    func setLastSelectedPerformanceTimeRange(siteID: Int64, timeRange: StatsTimeRangeV4) {
+        let storeSettings = getStoreSettings(for: siteID)
+        let updatedSettings = storeSettings.copy(lastSelectedPerformanceTimeRange: timeRange.rawValue)
+        setStoreSettings(settings: updatedSettings, for: siteID)
+    }
+
+    func loadLastSelectedPerformanceTimeRange(siteID: Int64, onCompletion: (StatsTimeRangeV4?) -> Void) {
+        let storeSettings = getStoreSettings(for: siteID)
+        let timeRangeRawValue = storeSettings.lastSelectedPerformanceTimeRange
+        let timeRange = StatsTimeRangeV4(rawValue: timeRangeRawValue)
+        onCompletion(timeRange)
+    }
+
+    func setLastSelectedTopPerformersTimeRange(siteID: Int64, timeRange: StatsTimeRangeV4) {
+        let storeSettings = getStoreSettings(for: siteID)
+        let updatedSettings = storeSettings.copy(lastSelectedTopPerformersTimeRange: timeRange.rawValue)
+        setStoreSettings(settings: updatedSettings, for: siteID)
+    }
+
+    func loadLastSelectedTopPerformersTimeRange(siteID: Int64, onCompletion: (StatsTimeRangeV4?) -> Void) {
+        let storeSettings = getStoreSettings(for: siteID)
+        let timeRangeRawValue = storeSettings.lastSelectedTopPerformersTimeRange
+        let timeRange = StatsTimeRangeV4(rawValue: timeRangeRawValue)
+        onCompletion(timeRange)
     }
 }
 

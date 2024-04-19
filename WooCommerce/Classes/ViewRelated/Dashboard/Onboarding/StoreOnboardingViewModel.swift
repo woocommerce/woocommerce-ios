@@ -23,6 +23,10 @@ class StoreOnboardingViewModel: ObservableObject {
     ///
     @Published private(set) var shouldShowInDashboard: Bool = false
 
+    /// Used to determine whether the task list can be displayed in dashboard.
+    ///
+    @Published private(set) var canShowInDashboard = false
+
     /// Set externally in the hosting controller to invalidate the SwiftUI `StoreOnboardingView`'s intrinsic content size as a workaround with UIKit.
     var onStateChange: (() -> Void)?
 
@@ -68,6 +72,9 @@ class StoreOnboardingViewModel: ObservableObject {
 
     private let waitingTimeTracker: AppStartupWaitingTimeTracker
 
+    /// Set externally to trigger the closure upon hiding the card.
+    var onDismiss: (() -> Void)?
+
     /// Emits when there are no tasks available for display after reload.
     /// i.e. When (request failed && No previously loaded local data available)
     ///
@@ -100,6 +107,11 @@ class StoreOnboardingViewModel: ObservableObject {
                                   defaults.publisher(for: \.shouldHideStoreOnboardingTaskList))
         .map { !($0 || $1 || $2) }
         .assign(to: &$shouldShowInDashboard)
+
+        $noTasksAvailableForDisplay
+            .combineLatest(defaults.publisher(for: \.completedAllStoreOnboardingTasks))
+        .map { !($0 || $1) }
+        .assign(to: &$canShowInDashboard)
     }
 
     func reloadTasks() async {
@@ -127,7 +139,11 @@ class StoreOnboardingViewModel: ObservableObject {
         analytics.track(event: .StoreOnboarding.storeOnboardingShowOrHideList(isHiding: true,
                                                                               source: .onboardingList,
                                                                               pendingTasks: pending))
-        defaults[.shouldHideStoreOnboardingTaskList] = true
+        if featureFlagService.isFeatureFlagEnabled(.dynamicDashboard) {
+            onDismiss?()
+        } else {
+            defaults[.shouldHideStoreOnboardingTaskList] = true
+        }
     }
 }
 

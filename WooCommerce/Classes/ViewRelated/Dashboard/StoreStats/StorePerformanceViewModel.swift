@@ -42,6 +42,9 @@ final class StorePerformanceViewModel: ObservableObject {
     // Set externally to trigger callback when syncing fails.
     var onSyncingError: (Error) -> Void = { _ in }
 
+    // Set externally to trigger callback when hiding the card.
+    var onDismiss: (() -> Void)?
+
     private var subscriptions: Set<AnyCancellable> = []
     private var currentDate = Date()
     private let chartValueSelectedEventsSubject = PassthroughSubject<Int?, Never>()
@@ -124,6 +127,11 @@ final class StorePerformanceViewModel: ObservableObject {
         }
         syncingData = false
         waitingTracker.end()
+    }
+
+    func hideStorePerformance() {
+        // TODO: add tracking
+        onDismiss?()
     }
 }
 
@@ -256,7 +264,7 @@ private extension StorePerformanceViewModel {
     @MainActor
     func loadLastTimeRange() async -> StatsTimeRangeV4? {
         await withCheckedContinuation { continuation in
-            let action = AppSettingsAction.loadLastSelectedStatsTimeRange(siteID: siteID) { timeRange in
+            let action = AppSettingsAction.loadLastSelectedPerformanceTimeRange(siteID: siteID) { timeRange in
                 continuation.resume(returning: timeRange)
             }
             stores.dispatch(action)
@@ -264,7 +272,7 @@ private extension StorePerformanceViewModel {
     }
 
     func saveLastTimeRange(_ timeRange: StatsTimeRangeV4) {
-        let action = AppSettingsAction.setLastSelectedStatsTimeRange(siteID: siteID, timeRange: timeRange)
+        let action = AppSettingsAction.setLastSelectedPerformanceTimeRange(siteID: siteID, timeRange: timeRange)
         stores.dispatch(action)
     }
 
@@ -335,8 +343,7 @@ private extension StorePerformanceViewModel {
     @MainActor
     func syncAllStats() async throws {
         currentDate = Date()
-        let timezoneForSync = TimeZone.siteTimezone
-        let latestDateToInclude = timeRange.latestDate(currentDate: currentDate, siteTimezone: timezoneForSync)
+        let latestDateToInclude = timeRange.latestDate(currentDate: currentDate, siteTimezone: siteTimezone)
 
         try await withThrowingTaskGroup(of: Void.self) { group in
             group.addTask { [weak self] in

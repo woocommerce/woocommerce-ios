@@ -38,6 +38,8 @@ final class DashboardViewModel: ObservableObject {
 
     @Published private(set) var hasOrders: Bool = true
 
+    @Published private(set) var canHideMoreDashboardCards = false
+
     let siteID: Int64
     private let stores: StoresManager
     private let featureFlagService: FeatureFlagService
@@ -114,8 +116,16 @@ final class DashboardViewModel: ObservableObject {
                 await self?.updateHasOrdersStatus()
             }
             if featureFlagService.isFeatureFlagEnabled(.dynamicDashboard) {
-                group.addTask { [weak self] in
-                    await self?.storePerformanceViewModel.reloadData()
+                if dashboardCards.contains(where: { $0.type == .performance }) {
+                    group.addTask { [weak self] in
+                        await self?.storePerformanceViewModel.reloadData()
+                    }
+                }
+
+                if dashboardCards.contains(where: { $0.type == .topPerformers }) {
+                    group.addTask { [weak self] in
+                        await self?.topPerformersViewModel.reloadData()
+                    }
                 }
             }
         }
@@ -355,36 +365,64 @@ private extension DashboardViewModel {
             .assign(to: &$showBlazeCampaignView)
     }
 
-    func setupDashboardCards() {
-        $showOnboarding.combineLatest($showBlazeCampaignView, $hasOrders)
-            .receive(on: RunLoop.main)
+    func setupDashboardCards() {\        storeOnboardingViewModel.onDismiss = { [weak self] in
+            self?.hideDashboardCard(type: .onboarding)
+        }
+
+        blazeCampaignDashboardViewModel.onDismiss = { [weak self] in
+            self?.hideDashboardCard(type: .blaze)
+        }
+
+        storePerformanceViewModel.onDismiss = { [weak self] in
+            self?.hideDashboardCard(type: .performance)
+        }
+
+        topPerformersViewModel.onDismiss = { [weak self] in
+            self?.hideDashboardCard(type: .topPerformers)
+        }
+        
+        storeOnboardingViewModel.$canShowInDashboard
+            .combineLatest(blazeCampaignDashboardViewModel.$canShowInDashboard, $hasOrders)
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] showOnboarding, showBlazeCampaignView, hasOrders in
                 guard let self else { return }
                 Task {
-                    await self.updateDashboardCards(showOnboarding: showOnboarding,
-                                                    showBlazeCampaignView: showBlazeCampaignView,
+                    await self.updateDashboardCards(canShowOnboarding: canShowOnboarding,
+                                                    canShowBlaze: canShowBlaze,
                                                     showAnalyticsCards: hasOrders
                     )
                 }
             }
             .store(in: &subscriptions)
+
+        $dashboardCards
+            .receive(on: DispatchQueue.main)
+            .map { $0.filter({ $0.enabled }).count > 1 }
+            .assign(to: &$canHideMoreDashboardCards)
+    }
+
+    func hideDashboardCard(type: DashboardCard.CardType) {
+        if let index = dashboardCards.firstIndex(where: { $0.type == type }) {
+            dashboardCards[index] = dashboardCards[index].copy(enabled: false)
+        }
+        stores.dispatch(AppSettingsAction.setDashboardCards(siteID: siteID, cards: dashboardCards))
     }
 
     /// We are using separate user defaults for different cards -
     /// this should be updated to general app settings.
     ///
     @MainActor
-    func updateDashboardCards(showOnboarding: Bool,
-                              showBlazeCampaignView: Bool,
+    func updateDashboardCards(canShowOnboarding: Bool,
+                              canShowBlaze: Bool,
                               showAnalyticsCards: Bool) async {
         dashboardCards = await {
             if let stored = await loadDashboardCards() {
                 return stored
             } else {
-                return [DashboardCard(type: .onboarding, enabled: showOnboarding),
+                return [DashboardCard(type: .onboarding, enabled: canShowOnboarding),
                         DashboardCard(type: .performance, enabled: showAnalyticsCards),
                         DashboardCard(type: .topPerformers, enabled: showAnalyticsCards),
-                        DashboardCard(type: .blaze, enabled: showBlazeCampaignView)]
+                        DashboardCard(type: .blaze, enabled: canShowBlaze)]
             }
         }()
 
@@ -401,12 +439,12 @@ private extension DashboardViewModel {
         }
 
         if let onboardingCard = dashboardCards.first(where: { $0.type == .onboarding }),
-           !showOnboarding && !userDefaults.shouldHideStoreOnboardingTaskList {
+           !canShowOnboarding {
             unavailableDashboardCards.append(onboardingCard)
         }
 
         if let blazeCard = dashboardCards.first(where: { $0.type == .blaze }),
-           !showBlazeCampaignView && !userDefaults.hasDismissedBlazeSectionOnMyStore {
+           !canShowBlaze {
             unavailableDashboardCards.append(blazeCard)
         }
     }

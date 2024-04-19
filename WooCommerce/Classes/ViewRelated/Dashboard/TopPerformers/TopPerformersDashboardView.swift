@@ -1,5 +1,6 @@
 import SwiftUI
 import enum Yosemite.StatsTimeRangeV4
+import struct Yosemite.TopEarnerStatsItem
 
 /// SwiftUI view for the Top Performers dashboard card.
 ///
@@ -7,13 +8,16 @@ struct TopPerformersDashboardView: View {
     @ObservedObject private var viewModel: TopPerformersDashboardViewModel
     @State private var showingCustomRangePicker = false
 
+    private let canHideCard: Bool
     private let onViewAllAnalytics: (_ siteID: Int64,
                                      _ timeZone: TimeZone,
                                      _ timeRange: StatsTimeRangeV4) -> Void
 
-    init(viewModel: TopPerformersDashboardViewModel,
+    init(canHideCard: Bool,
+         viewModel: TopPerformersDashboardViewModel,
          onViewAllAnalytics: @escaping (Int64, TimeZone, StatsTimeRangeV4) -> Void) {
         self.viewModel = viewModel
+        self.canHideCard = canHideCard
         self.onViewAllAnalytics = onViewAllAnalytics
     }
 
@@ -31,7 +35,7 @@ struct TopPerformersDashboardView: View {
 
             Divider()
 
-            // TODO
+            topPerformersList
 
             Divider()
                 .padding(.leading, Layout.padding)
@@ -54,6 +58,9 @@ struct TopPerformersDashboardView: View {
                 viewModel.didSelectTimeRange(.custom(from: start, to: end))
             })
         }
+        .sheet(item: $viewModel.selectedItem) { item in
+            ViewControllerContainer(productDetailView(for: item))
+        }
     }
 }
 
@@ -65,7 +72,7 @@ private extension TopPerformersDashboardView {
             Spacer()
             Menu {
                 Button(Localization.hideCard) {
-                    // TODO
+                    viewModel.dismissTopPerformers()
                 }
             } label: {
                 Image(systemName: "ellipsis")
@@ -74,6 +81,7 @@ private extension TopPerformersDashboardView {
                     .padding(.vertical, Layout.hideIconVerticalPadding)
             }
             .disabled(viewModel.syncingData)
+            .renderedIf(canHideCard)
         }
     }
 
@@ -107,10 +115,21 @@ private extension TopPerformersDashboardView {
                 Text(Localization.viewAll)
                 Spacer()
                 Image(systemName: "chevron.forward")
-                    .foregroundStyle(Color.secondary)
-                    .fontWeight(.semibold)
+                    .foregroundStyle(Color(.tertiaryLabel))
             }
         }
+    }
+
+    var topPerformersList: some View {
+        TopPerformersPeriodView(viewModel: viewModel.periodViewModel)
+            .frame(maxWidth: .infinity)
+    }
+
+    func productDetailView(for item: TopEarnerStatsItem) -> UIViewController {
+        let loaderViewController = ProductLoaderViewController(model: .init(topEarnerStatsItem: item),
+                                                               siteID: viewModel.siteID,
+                                                               forceReadOnly: false)
+        return WooNavigationController(rootViewController: loaderViewController)
     }
 }
 
@@ -141,6 +160,7 @@ private extension TopPerformersDashboardView {
 }
 
 #Preview {
-    TopPerformersDashboardView(viewModel: .init(siteID: 123, usageTracksEventEmitter: .init()),
+    TopPerformersDashboardView(canHideCard: true,
+                               viewModel: .init(siteID: 123, usageTracksEventEmitter: .init()),
                                onViewAllAnalytics: { _, _, _ in })
 }

@@ -182,12 +182,34 @@ private extension DashboardView {
     var shareStoreCard: some View {
         VStack {
             Image(uiImage: .blazeSuccessImage)
+                .padding(Layout.elementPadding)
+
             Text(Localization.ShareStoreCard.title)
+                .headlineStyle()
+                .multilineTextAlignment(.center)
+
             Text(Localization.ShareStoreCard.subtitle)
+                .bodyStyle()
+                .multilineTextAlignment(.center)
+                .padding(.horizontal, Layout.elementPadding)
+                .padding(.vertical, Layout.textPadding)
+
             Button(Localization.ShareStoreCard.shareButtonLabel) {
                 // TODO
             }
+            .buttonStyle(PrimaryButtonStyle())
+            .padding(.horizontal, Layout.elementPadding)
+            .padding(.top, Layout.padding)
+            .padding(.bottom, Layout.elementPadding)
         }
+        .background(Color(.clear))
+        .cornerRadius(Layout.cornerRadius)
+        .overlay(
+            RoundedRectangle(cornerRadius: Layout.cornerRadius)
+                .stroke(Color(.border), lineWidth: 1)
+        )
+        .padding(.vertical, Layout.padding)
+        .padding(.horizontal, Layout.padding)
     }
 
     var jetpackBenefitBanner: some View {
@@ -252,6 +274,9 @@ private extension DashboardView {
 private extension DashboardView {
     enum Layout {
         static let padding: CGFloat = 16
+        static let elementPadding: CGFloat = 32
+        static let textPadding: CGFloat = 8
+        static let cornerRadius: CGFloat = 8
     }
     enum Localization {
         static let title = NSLocalizedString(

@@ -72,7 +72,7 @@ struct DashboardView: View {
             featureAnnouncementCard
 
             // Card views
-            dashboardCards
+            dashboardCards(showShareCard: !viewModel.hasOrders)
                 .padding(.vertical, Layout.padding)
         }
         .background(Color(.listBackground))
@@ -139,7 +139,7 @@ struct DashboardView: View {
 //
 private extension DashboardView {
     @ViewBuilder
-    var dashboardCards: some View {
+    func dashboardCards(showShareCard: Bool) -> some View {
         VStack(spacing: Layout.padding) {
             ForEach(viewModel.dashboardCards, id: \.hashValue) { card in
                 if card.enabled {
@@ -171,6 +171,21 @@ private extension DashboardView {
                         })
                     }
                 }
+            }
+
+            if showShareCard {
+                shareStoreCard
+            }
+        }
+    }
+
+    var shareStoreCard: some View {
+        VStack {
+            Image(uiImage: .blazeSuccessImage)
+            Text(Localization.ShareStoreCard.title)
+            Text(Localization.ShareStoreCard.subtitle)
+            Button(Localization.ShareStoreCard.shareButtonLabel) {
+                // TODO
             }
         }
     }
@@ -254,6 +269,26 @@ private extension DashboardView {
             value: "Your site plan has ended.",
             comment: "Title on the banner when the site's WooExpress plan has expired"
         )
+
+        enum ShareStoreCard {
+            static let title = NSLocalizedString(
+                "dashboardView.shareStoreCard.title",
+                value: "Get the word out!",
+                comment: "Title of the Share Your Store card"
+            )
+
+            static let subtitle = NSLocalizedString(
+                "dashboardView.shareStoreCard.subtitle",
+                value: "Use email or social media to spread the word about your store",
+                comment: "Subtitle of the Share Your Store card"
+            )
+
+            static let shareButtonLabel = NSLocalizedString(
+                "dashboardView.shareStoreCard.shareButtonLabel",
+                value: "Share Your Store",
+                comment: "Label of the button to share the store"
+            )
+        }
     }
 }
 

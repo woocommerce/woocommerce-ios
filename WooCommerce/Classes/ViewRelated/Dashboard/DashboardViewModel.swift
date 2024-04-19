@@ -36,6 +36,8 @@ final class DashboardViewModel: ObservableObject {
     @Published private(set) var jetpackBannerVisibleFromAppSettings = false
     @Published var statSyncingError: Error?
 
+    @Published private(set) var hasOrders: Bool = true
+
     let siteID: Int64
     private let stores: StoresManager
     private let featureFlagService: FeatureFlagService

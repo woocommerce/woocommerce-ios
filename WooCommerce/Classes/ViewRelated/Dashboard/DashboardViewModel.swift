@@ -36,6 +36,8 @@ final class DashboardViewModel: ObservableObject {
     @Published private(set) var jetpackBannerVisibleFromAppSettings = false
     @Published var statSyncingError: Error?
 
+    @Published private(set) var canHideMoreDashboardCards = false
+
     let siteID: Int64
     private let stores: StoresManager
     private let featureFlagService: FeatureFlagService
@@ -377,7 +379,7 @@ private extension DashboardViewModel {
 
         storeOnboardingViewModel.$canShowInDashboard
             .combineLatest(blazeCampaignDashboardViewModel.$canShowInDashboard)
-            .receive(on: RunLoop.main)
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] canShowOnboarding, canShowBlaze in
                 guard let self else { return }
                 Task {
@@ -386,12 +388,18 @@ private extension DashboardViewModel {
                 }
             }
             .store(in: &subscriptions)
+
+        $dashboardCards
+            .receive(on: DispatchQueue.main)
+            .map { $0.filter({ $0.enabled }).count > 1 }
+            .assign(to: &$canHideMoreDashboardCards)
     }
 
     func hideDashboardCard(type: DashboardCard.CardType) {
         if let index = dashboardCards.firstIndex(where: { $0.type == type }) {
             dashboardCards[index] = dashboardCards[index].copy(enabled: false)
         }
+        stores.dispatch(AppSettingsAction.setDashboardCards(siteID: siteID, cards: dashboardCards))
     }
 
     /// We are using separate user defaults for different cards -

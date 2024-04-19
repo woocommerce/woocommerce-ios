@@ -169,6 +169,7 @@ private extension StorePerformanceView {
         .contentShape(Rectangle())
         .onTapGesture {
             guard redactMode != .none,
+                !viewModel.syncingData,
                 viewModel.unavailableVisitStatsDueToCustomRange,
                 viewModel.siteVisitStatMode == .redactedDueToCustomRange else {
                 return
@@ -223,6 +224,7 @@ private extension StorePerformanceView {
                     .foregroundStyle(Color(.tertiaryLabel))
             }
         }
+        .disabled(viewModel.syncingData)
     }
 }
 

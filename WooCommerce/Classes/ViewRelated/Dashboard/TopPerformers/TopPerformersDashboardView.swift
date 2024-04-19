@@ -116,6 +116,7 @@ private extension TopPerformersDashboardView {
                     .foregroundStyle(Color(.tertiaryLabel))
             }
         }
+        .disabled(viewModel.syncingData)
     }
 
     var topPerformersList: some View {

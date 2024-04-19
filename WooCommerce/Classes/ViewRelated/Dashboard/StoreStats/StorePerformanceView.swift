@@ -83,6 +83,11 @@ struct StorePerformanceView: View {
 private extension StorePerformanceView {
     var header: some View {
         HStack {
+            Image(systemName: "exclamationmark.circle")
+                .foregroundStyle(Color.secondary)
+                .headlineStyle()
+                .renderedIf(viewModel.statsVersion == .v3) // and in error state too
+
             Text(Localization.title)
                 .headlineStyle()
             Spacer()

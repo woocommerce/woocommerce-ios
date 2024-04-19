@@ -1,1 +1,2 @@
-Discover the latest updates in our WooCommerce app! Enjoy a seamless payment process, log in effortlessly with site credentials, and create Blaze campaigns faster without errors. Upgrade now for an enhanced shop management experience!
+- [*] Fixed an issue where the "Reset Activity log" button did not clear the current day's log files, ensuring all logs are now properly reset when the button is pressed. [https://github.com/woocommerce/woocommerce-ios/pull/12479]
+

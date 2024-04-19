@@ -1138,10 +1138,6 @@ public enum WooAnalyticsStat: String {
     case planUpgradeSuccess = "plan_upgrade_success"
     case planUpgradeAbandoned = "plan_upgrade_abandoned"
 
-    // MARK: Free Trial Survey
-    case freeTrialSurveyDisplayed = "free_trial_survey_displayed"
-    case freeTrialSurveySent = "free_trial_survey_sent"
-
     // MARK: In-App Purchases
     case planUpgradePurchaseButtonTapped = "plan_upgrade_purchase_button_tapped"
     case planUpgradeScreenLoaded = "plan_upgrade_screen_loaded"

@@ -19,7 +19,7 @@ struct TopPerformersDashboardView: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading) {
+        VStack(alignment: .leading, spacing: Layout.padding) {
             header
                 .padding(.horizontal, Layout.padding)
                 .redacted(reason: viewModel.syncingData ? [.placeholder] : [])
@@ -35,9 +35,10 @@ struct TopPerformersDashboardView: View {
             topPerformersList
 
             Divider()
+                .padding(.leading, Layout.padding)
 
             viewAllAnalyticsButton
-                .padding([.top, .horizontal], Layout.padding)
+                .padding(.horizontal, Layout.padding)
                 .redacted(reason: viewModel.syncingData ? [.placeholder] : [])
                 .shimmering(active: viewModel.syncingData)
 

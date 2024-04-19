@@ -56,8 +56,6 @@ final class OrderDetailsViewController: UIViewController {
         viewModels[currentIndex]
     }
 
-    private let notices = OrderDetailsNotices()
-
     private let currentIndex: Int
 
     /// Callback closure when a different order is selected like from the quick navigation arrows.
@@ -291,7 +289,7 @@ private extension OrderDetailsViewController {
     /// Displays the `Unable to delete tracking` Notice.
     ///
     func displayDeleteErrorNotice(order: Order, tracking: ShipmentTracking) {
-        notices.displayDeleteTrackingErrorNotice(order: order, tracking: tracking) { [weak self] in
+        OrderDetailsNotices.shared.displayDeleteTrackingErrorNotice(order: order, tracking: tracking) { [weak self] in
             self?.deleteTracking(tracking)
         }
     }
@@ -299,7 +297,7 @@ private extension OrderDetailsViewController {
     /// Displays the `Unable to trash order` Notice.
     ///
     func displayTrashOrderErrorNotice(order: Order) {
-        notices.displayTrashOrderErrorNotice(order: order) {
+        OrderDetailsNotices.shared.displayTrashOrderErrorNotice(order: order) {
             [weak self] in
             self?.trashOrderAction()
         }
@@ -307,7 +305,7 @@ private extension OrderDetailsViewController {
 
     /// Enqueues the `Order Trash` Notice. Whenever the `Undo` button gets pressed, we'll execute the `onUndoAction` closure.
     ///
-    private func displayOrderTrashUndoNotice(onUndoAction: @escaping () -> Void) {
+    private static func displayOrderTrashUndoNotice(order: Order, onUndoAction: @escaping () -> Void) {
         let notice = Notice(title: Localization.Notice.orderTrashUndoMessage,
                             feedbackType: .success,
                             actionTitle: Localization.Notice.orderTrashActionTitle,
@@ -670,13 +668,14 @@ private extension OrderDetailsViewController {
     }
 
     func trashOrderAction() {
+        let viewModel = viewModel
         let order = viewModel.order
         viewModel.trashOrder { [weak self] result in
             switch result {
-            case .success:
+            case .success(let order):
                 NotificationCenter.default.post(name: .ordersBadgeReloadRequired, object: nil)
-                self?.displayOrderTrashUndoNotice {
-                    self?.undoTrashOrderAction()
+                OrderDetailsViewController.displayOrderTrashUndoNotice(order: order) {
+                    OrderDetailsViewController.undoTrashOrderAction(viewModel: viewModel, order: order)
                 }
 
                 // Navigate back to the master view controller of the split view controller to display the order list.
@@ -694,9 +693,9 @@ private extension OrderDetailsViewController {
     }
 
     // It's possible to restore an order from the trash by simply resetting its status to the previous value it held.
-    func undoTrashOrderAction() {
-        let undoStatus = viewModel.order.status
-        let undo = updateOrderStatusAction(siteID: viewModel.order.siteID, orderID: viewModel.order.orderID, status: undoStatus)
+    static func undoTrashOrderAction(viewModel: OrderDetailsViewModel, order: Order) {
+        let undoStatus = order.status
+        let undo = updateOrderStatusAction(viewModel: viewModel, siteID: order.siteID, orderID: order.orderID, status: undoStatus)
 
         ServiceLocator.stores.dispatch(undo)
     }
@@ -851,9 +850,11 @@ private extension OrderDetailsViewController {
             statusList?.dismiss(animated: true, completion: nil)
         }
 
+        let viewModel = self.viewModel
+
         statusListViewModel.didApplySelection = { [weak statusList] (selectedStatus) in
             statusList?.dismiss(animated: true) {
-                self.setOrderStatus(to: selectedStatus)
+                OrderDetailsViewController.setOrderStatus(to: selectedStatus, viewModel: viewModel)
             }
         }
 
@@ -862,11 +863,17 @@ private extension OrderDetailsViewController {
         present(navigationController, animated: true)
     }
 
-    func setOrderStatus(to newStatus: OrderStatusEnum) {
+    static func setOrderStatus(to newStatus: OrderStatusEnum, viewModel: OrderDetailsViewModel) {
         let orderID = viewModel.order.orderID
         let undoStatus = viewModel.order.status
-        let done = updateOrderStatusAction(siteID: viewModel.order.siteID, orderID: viewModel.order.orderID, status: newStatus)
-        let undo = updateOrderStatusAction(siteID: viewModel.order.siteID, orderID: viewModel.order.orderID, status: undoStatus)
+        let done = updateOrderStatusAction(viewModel: viewModel,
+                                           siteID: viewModel.order.siteID,
+                                           orderID: viewModel.order.orderID,
+                                           status: newStatus)
+        let undo = updateOrderStatusAction(viewModel: viewModel,
+                                           siteID: viewModel.order.siteID,
+                                           orderID: viewModel.order.orderID,
+                                           status: undoStatus)
 
         ServiceLocator.stores.dispatch(done)
         ServiceLocator.analytics.track(event: WooAnalyticsEvent.Orders.orderStatusChange(flow: .editing, orderID: orderID, from: undoStatus, to: newStatus))
@@ -879,11 +886,11 @@ private extension OrderDetailsViewController {
 
     /// Returns an Order Update Action that will result in the specified Order Status updated accordingly.
     ///
-    private func updateOrderStatusAction(siteID: Int64, orderID: Int64, status: OrderStatusEnum) -> Action {
-        return OrderAction.updateOrderStatus(siteID: siteID, orderID: orderID, status: status, onCompletion: { [weak self] error in
+    private static func updateOrderStatusAction(viewModel: OrderDetailsViewModel, siteID: Int64, orderID: Int64, status: OrderStatusEnum) -> Action {
+        return OrderAction.updateOrderStatus(siteID: siteID, orderID: orderID, status: status, onCompletion: { error in
             guard let error = error else {
                 NotificationCenter.default.post(name: .ordersBadgeReloadRequired, object: nil)
-                self?.viewModel.syncNotes()
+                viewModel.syncNotes()
                 ServiceLocator.analytics.track(.orderStatusChangeSuccess)
                 return
             }
@@ -891,13 +898,13 @@ private extension OrderDetailsViewController {
             ServiceLocator.analytics.track(.orderStatusChangeFailed, withError: error)
             DDLogError("⛔️ Order Update Failure: [\(orderID).status = \(status)]. Error: \(error)")
 
-            self?.displayOrderStatusErrorNotice(orderID: orderID, status: status)
+            OrderDetailsViewController.displayOrderStatusErrorNotice(viewModel: viewModel, orderID: orderID, status: status)
         })
     }
 
     /// Enqueues the `Order Updated` Notice. Whenever the `Undo` button gets pressed, we'll execute the `onUndoAction` closure.
     ///
-    private func displayOrderStatusUpdatedNotice(onUndoAction: @escaping () -> Void) {
+    private static func displayOrderStatusUpdatedNotice(onUndoAction: @escaping () -> Void) {
         let message = NSLocalizedString("Order status updated", comment: "Order status update success notice")
         let actionTitle = NSLocalizedString("Undo", comment: "Undo Action")
         let notice = Notice(title: message, feedbackType: .success, actionTitle: actionTitle, actionHandler: onUndoAction)
@@ -907,7 +914,7 @@ private extension OrderDetailsViewController {
 
     /// Enqueues the `Unable to Change Status of Order` Notice.
     ///
-    private func displayOrderStatusErrorNotice(orderID: Int64, status: OrderStatusEnum) {
+    private static func displayOrderStatusErrorNotice(viewModel: OrderDetailsViewModel, orderID: Int64, status: OrderStatusEnum) {
         let titleFormat = NSLocalizedString(
             "Unable to change status of order #%1$d",
             comment: "Content of error presented when updating the status of an Order fails. "
@@ -916,8 +923,8 @@ private extension OrderDetailsViewController {
         )
         let title = String.localizedStringWithFormat(titleFormat, orderID)
         let actionTitle = NSLocalizedString("Retry", comment: "Retry Action")
-        let notice = Notice(title: title, message: nil, feedbackType: .error, actionTitle: actionTitle) { [weak self] in
-            self?.setOrderStatus(to: status)
+        let notice = Notice(title: title, message: nil, feedbackType: .error, actionTitle: actionTitle) {
+            OrderDetailsViewController.setOrderStatus(to: status, viewModel: viewModel)
         }
 
         ServiceLocator.noticePresenter.enqueue(notice: notice)

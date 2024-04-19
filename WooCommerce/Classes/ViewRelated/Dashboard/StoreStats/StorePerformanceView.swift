@@ -6,6 +6,7 @@ import enum Yosemite.StatsTimeRangeV4
 struct StorePerformanceView: View {
     @ObservedObject private var viewModel: StorePerformanceViewModel
     @State private var showingCustomRangePicker = false
+    @State private var showingSupportForm = false
 
     var statsValueColor: Color {
         Color(viewModel.shouldHighlightStats ? .statsHighlighted : .text)
@@ -72,6 +73,9 @@ struct StorePerformanceView: View {
                              datesSelected: { start, end in
                 viewModel.didSelectTimeRange(.custom(from: start, to: end))
             })
+        }
+        .sheet(isPresented: $showingSupportForm) {
+            supportForm
         }
     }
 }
@@ -234,11 +238,26 @@ private extension StorePerformanceView {
                 .bodyStyle()
                 .multilineTextAlignment(.center)
             Button(Localization.ContentUnavailable.buttonTitle) {
-                // TODO: show support form
+                showingSupportForm = true
             }
             .buttonStyle(SecondaryButtonStyle())
         }
         .frame(maxWidth: .infinity)
+    }
+
+    var supportForm: some View {
+        NavigationView {
+            SupportForm(isPresented: $showingSupportForm,
+                        viewModel: SupportFormViewModel())
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button(Localization.ContentUnavailable.done) {
+                        showingSupportForm = false
+                    }
+                }
+            }
+        }
+        .navigationViewStyle(.stack)
     }
 }
 
@@ -315,6 +334,11 @@ private extension StorePerformanceView {
                 "storePerformanceView.contentUnavailable.buttonTitle",
                 value: "Still need help? Contact us",
                 comment: "Button title to contact support to get help with deprecated stats module"
+            )
+            static let done = NSLocalizedString(
+                "storePerformanceView.contentUnavailable.dismissSupport",
+                value: "Done",
+                comment: "Button to dismiss the support form from the Dashboard stats error screen."
             )
         }
     }

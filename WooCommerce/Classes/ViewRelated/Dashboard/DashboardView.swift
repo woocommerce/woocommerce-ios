@@ -72,7 +72,7 @@ struct DashboardView: View {
             featureAnnouncementCard
 
             // Card views
-            dashboardCards(showShareCard: !viewModel.hasOrders)
+            dashboardCards(canShowShareCard: viewModel.canShowShareStoreCard)
                 .padding(.vertical, Layout.padding)
         }
         .background(Color(.listBackground))
@@ -139,7 +139,7 @@ struct DashboardView: View {
 //
 private extension DashboardView {
     @ViewBuilder
-    func dashboardCards(showShareCard: Bool) -> some View {
+    func dashboardCards(canShowShareCard: Bool) -> some View {
         VStack(spacing: Layout.padding) {
             ForEach(viewModel.dashboardCards, id: \.hashValue) { card in
                 if card.enabled {
@@ -179,7 +179,7 @@ private extension DashboardView {
                 }
             }
 
-            if showShareCard {
+            if canShowShareCard {
                 shareStoreCard
             }
         }
@@ -200,12 +200,14 @@ private extension DashboardView {
                 .padding(.horizontal, Layout.elementPadding)
                 .padding(.top, Layout.textPadding)
 
-            Button(Localization.ShareStoreCard.shareButtonLabel) {
-                // TODO
+            if let url = viewModel.siteURLToShare {
+                ShareLink(item: url) {
+                    Text(Localization.ShareStoreCard.shareButtonLabel)
+                }
+                .buttonStyle(PrimaryButtonStyle())
+                .padding(.horizontal, Layout.elementPadding)
+                .padding(.vertical, Layout.elementPadding)
             }
-            .buttonStyle(PrimaryButtonStyle())
-            .padding(.horizontal, Layout.elementPadding)
-            .padding(.vertical, Layout.elementPadding)
         }
         .background(Color(.clear))
         .cornerRadius(Layout.cornerRadius)

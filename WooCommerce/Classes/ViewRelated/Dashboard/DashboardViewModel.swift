@@ -40,6 +40,10 @@ final class DashboardViewModel: ObservableObject {
 
     @Published private(set) var canHideMoreDashboardCards = false
 
+    var canShowShareStoreCard: Bool {
+        return !hasOrders && siteURLToShare != nil
+    }
+
     let siteID: Int64
     private let stores: StoresManager
     private let featureFlagService: FeatureFlagService
@@ -53,7 +57,7 @@ final class DashboardViewModel: ObservableObject {
 
     var siteURLToShare: URL? {
         if let site = stores.sessionManager.defaultSite,
-           site.isPublic, // only show share button if the site is public.
+           !site.isWordPressComStore || site.isPublic, // only show share button if it's a .org site or a public .com site
            let url = URL(string: site.url) {
             return url
         }

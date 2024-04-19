@@ -32,8 +32,6 @@ struct StorePerformanceView: View {
             VStack(alignment: .leading, spacing: Layout.padding) {
                 header
                     .padding(.horizontal, Layout.padding)
-                    .redacted(reason: viewModel.syncingData ? [.placeholder] : [])
-                    .shimmering(active: viewModel.syncingData)
 
                 timeRangeBar
                     .padding(.horizontal, Layout.padding)

@@ -475,7 +475,7 @@ private extension StorePerformanceViewModel {
         static let thirtyDaysInSeconds: TimeInterval = 86400*30
 
         /// The wait time before the `StoreStatsUsageTracksEventEmitter.interacted()` is called.
-        static let chartValueSelectedEventsDebounce: TimeInterval = 1.0
+        static let chartValueSelectedEventsDebounce: TimeInterval = 0.5
     }
     enum Localization {
         static let addCustomRange = NSLocalizedString(

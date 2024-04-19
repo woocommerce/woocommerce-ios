@@ -1,2 +1,2 @@
-- [*] Fixed an issue where the "Reset Activity log" button did not clear the current day's log files, ensuring all logs are now properly reset when the button is pressed. [https://github.com/woocommerce/woocommerce-ios/pull/12479]
+Squashed a pesky bug to ensure the "Reset Activity Log" button works like a charm, cleaning the slate completely for a fresh start. Dive into a more seamless WooCommerce experience. Update now!
 

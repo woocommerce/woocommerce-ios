@@ -1,5 +1,6 @@
 import SwiftUI
 import enum Yosemite.StatsTimeRangeV4
+import struct Yosemite.TopEarnerStatsItem
 
 /// SwiftUI view for the Top Performers dashboard card.
 ///
@@ -31,7 +32,7 @@ struct TopPerformersDashboardView: View {
 
             Divider()
 
-            // TODO
+            topPerformersList
 
             Divider()
                 .padding(.leading, Layout.padding)
@@ -53,6 +54,9 @@ struct TopPerformersDashboardView: View {
                              datesSelected: { start, end in
                 viewModel.didSelectTimeRange(.custom(from: start, to: end))
             })
+        }
+        .sheet(item: $viewModel.selectedItem) { item in
+            ViewControllerContainer(productDetailView(for: item))
         }
     }
 }
@@ -111,6 +115,18 @@ private extension TopPerformersDashboardView {
                     .fontWeight(.semibold)
             }
         }
+    }
+
+    var topPerformersList: some View {
+        TopPerformersPeriodView(viewModel: viewModel.periodViewModel)
+            .frame(maxWidth: .infinity)
+    }
+
+    func productDetailView(for item: TopEarnerStatsItem) -> UIViewController {
+        let loaderViewController = ProductLoaderViewController(model: .init(topEarnerStatsItem: item),
+                                                               siteID: viewModel.siteID,
+                                                               forceReadOnly: false)
+        return WooNavigationController(rootViewController: loaderViewController)
     }
 }
 

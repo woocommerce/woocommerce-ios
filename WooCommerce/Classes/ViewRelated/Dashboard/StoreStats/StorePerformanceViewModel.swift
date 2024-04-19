@@ -335,8 +335,7 @@ private extension StorePerformanceViewModel {
     @MainActor
     func syncAllStats() async throws {
         currentDate = Date()
-        let timezoneForSync = TimeZone.siteTimezone
-        let latestDateToInclude = timeRange.latestDate(currentDate: currentDate, siteTimezone: timezoneForSync)
+        let latestDateToInclude = timeRange.latestDate(currentDate: currentDate, siteTimezone: siteTimezone)
 
         try await withThrowingTaskGroup(of: Void.self) { group in
             group.addTask { [weak self] in

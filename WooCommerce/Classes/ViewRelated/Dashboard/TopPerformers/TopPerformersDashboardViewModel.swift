@@ -8,6 +8,7 @@ final class TopPerformersDashboardViewModel: ObservableObject {
 
     @Published private(set) var timeRange = StatsTimeRangeV4.today
     @Published private(set) var syncingData = false
+    @Published var selectedItem: TopEarnerStatsItem?
 
     let siteID: Int64
     let siteTimezone: TimeZone
@@ -17,6 +18,22 @@ final class TopPerformersDashboardViewModel: ObservableObject {
     private let currencySettings: CurrencySettings
     private let usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter
     private let analytics: Analytics
+
+    private var resultsController: ResultsController<StorageTopEarnerStats>?
+
+    private var currentDate: Date {
+        Date()
+    }
+
+    lazy var periodViewModel = TopPerformersPeriodViewModel(state: .loading) { [weak self] topPerformersItem in
+        guard let self else { return }
+        usageTracksEventEmitter.interacted()
+        selectedItem = topPerformersItem
+    }
+
+    private var topEarnerStats: TopEarnerStats? {
+        resultsController?.fetchedObjects.first
+    }
 
     init(siteID: Int64,
          siteTimezone: TimeZone = .siteTimezone,
@@ -35,10 +52,10 @@ final class TopPerformersDashboardViewModel: ObservableObject {
         self.analytics = analytics
         self.usageTracksEventEmitter = usageTracksEventEmitter
 
-        observeTimeRange()
-
         Task { @MainActor in
             self.timeRange = await loadLastTimeRange() ?? .today
+            updateResultsController()
+            await reloadData()
         }
     }
 
@@ -47,6 +64,26 @@ final class TopPerformersDashboardViewModel: ObservableObject {
         saveLastTimeRange(timeRange)
         usageTracksEventEmitter.interacted()
         analytics.track(event: .Dashboard.dashboardMainStatsDate(timeRange: timeRange))
+        updateResultsController()
+
+        Task { [weak self] in
+            await self?.reloadData()
+        }
+    }
+
+    @MainActor
+    func reloadData() async {
+        syncingData = true
+        updateUIInLoadingState()
+        do {
+            try await syncTopEarnersStats()
+            ServiceLocator.analytics.track(event:
+                    .Dashboard.dashboardTopPerformersLoaded(timeRange: timeRange))
+        } catch {
+            DDLogError("⛔️ Dashboard (Top Performers) — Error synchronizing top earner stats: \(error)")
+        }
+        syncingData = false
+        updateUIInLoadedState()
     }
 }
 
@@ -85,9 +122,6 @@ extension TopPerformersDashboardViewModel {
 // MARK: - Private helpers
 //
 private extension TopPerformersDashboardViewModel {
-    func observeTimeRange() {
-        // TODO
-    }
 
     @MainActor
     func loadLastTimeRange() async -> StatsTimeRangeV4? {
@@ -103,6 +137,71 @@ private extension TopPerformersDashboardViewModel {
         let action = AppSettingsAction.setLastSelectedStatsTimeRange(siteID: siteID, timeRange: timeRange)
         stores.dispatch(action)
     }
+
+    func updateResultsController() {
+        let resultsController = createResultsController(timeRange: timeRange)
+        self.resultsController = resultsController
+        resultsController.onDidChangeContent = { [weak self] in
+            self?.updateUIInLoadedState()
+        }
+        resultsController.onDidResetContent = { [weak self] in
+            self?.updateUIInLoadedState()
+        }
+
+        do {
+            try resultsController.performFetch()
+        } catch {
+            ServiceLocator.crashLogging.logError(error)
+        }
+    }
+
+    func updateUIInLoadingState() {
+        periodViewModel.update(state: .loading)
+    }
+
+    func updateUIInLoadedState() {
+        guard !syncingData else {
+            return
+        }
+        guard let items = topEarnerStats?.items?.sorted(by: >), items.isNotEmpty else {
+            return periodViewModel.update(state: .loaded(rows: []))
+        }
+        periodViewModel.update(state: .loaded(rows: items))
+    }
+
+    func createResultsController(timeRange: StatsTimeRangeV4) -> ResultsController<StorageTopEarnerStats> {
+        let granularity = timeRange.topEarnerStatsGranularity
+        let formattedDateString: String = {
+            let date = timeRange.latestDate(currentDate: currentDate, siteTimezone: siteTimezone)
+            return StatsStoreV4.buildDateString(from: date, with: granularity)
+        }()
+        let predicate = NSPredicate(format: "granularity = %@ AND date = %@ AND siteID = %ld", granularity.rawValue, formattedDateString, siteID)
+        let descriptor = NSSortDescriptor(key: "date", ascending: true)
+
+        return ResultsController<StorageTopEarnerStats>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
+    }
+
+    @MainActor
+    func syncTopEarnersStats() async throws {
+        let latestDateToInclude = timeRange.latestDate(currentDate: currentDate, siteTimezone: siteTimezone)
+        let earliestDateToInclude = timeRange.earliestDate(latestDate: latestDateToInclude, siteTimezone: siteTimezone)
+        try await withCheckedThrowingContinuation { continuation in
+            let waitingTracker = WaitingTimeTracker(trackScenario: .dashboardTopPerformers)
+            stores.dispatch(StatsActionV4.retrieveTopEarnerStats(siteID: siteID,
+                                                                 timeRange: timeRange,
+                                                                 timeZone: siteTimezone,
+                                                                 earliestDateToInclude: earliestDateToInclude,
+                                                                 latestDateToInclude: latestDateToInclude,
+                                                                 quantity: Constants.topEarnerStatsLimit,
+                                                                 forceRefresh: true,
+                                                                 saveInStorage: true,
+                                                                 onCompletion: { result in
+                waitingTracker.end()
+                let voidResult = result.map { _ in () } // Caller expects no entity in the result.
+                continuation.resume(with: voidResult)
+            }))
+        }
+    }
 }
 
 // MARK: Constants
@@ -110,6 +209,7 @@ private extension TopPerformersDashboardViewModel {
 private extension TopPerformersDashboardViewModel {
     enum Constants {
         static let thirtyDaysInSeconds: TimeInterval = 86400*30
+        static let topEarnerStatsLimit: Int = 5
     }
     enum Localization {
         static let addCustomRange = NSLocalizedString(

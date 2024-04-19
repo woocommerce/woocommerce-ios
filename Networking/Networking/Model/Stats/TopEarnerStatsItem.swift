@@ -65,3 +65,11 @@ extension TopEarnerStatsItem: Comparable {
             (lhs.quantity == rhs.quantity && lhs.total < rhs.total)
     }
 }
+
+// MARK: - Identifiable Conformance
+//
+extension TopEarnerStatsItem: Identifiable {
+    public var id: Int64 {
+        productID
+    }
+}

@@ -290,6 +290,21 @@ final class StorePerformanceViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(viewModel.siteVisitStatMode, .redactedDueToJetpack)
     }
+
+    func test_hideStorePerformance_triggers_onDismiss() {
+        // Given
+        let viewModel = StorePerformanceViewModel(siteID: 123, usageTracksEventEmitter: .init())
+        var onDismissTriggered = false
+        viewModel.onDismiss = {
+            onDismissTriggered = true
+        }
+
+        // When
+        viewModel.hideStorePerformance()
+
+        // Then
+        XCTAssertTrue(onDismissTriggered)
+    }
 }
 
 // MARK: - Private helpers

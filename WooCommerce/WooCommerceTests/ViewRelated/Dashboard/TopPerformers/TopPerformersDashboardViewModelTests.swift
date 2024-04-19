@@ -75,4 +75,19 @@ final class TopPerformersDashboardViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(savedTimeRange, .thisYear)
     }
+
+    func test_dismissTopPerformers_triggers_onDismiss() {
+        // Given
+        let viewModel = TopPerformersDashboardViewModel(siteID: 123, usageTracksEventEmitter: .init())
+        var onDismissTriggered = false
+        viewModel.onDismiss = {
+            onDismissTriggered = true
+        }
+
+        // When
+        viewModel.dismissTopPerformers()
+
+        // Then
+        XCTAssertTrue(onDismissTriggered)
+    }
 }

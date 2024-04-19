@@ -6,6 +6,9 @@ import protocol Storage.StorageManagerType
 ///
 final class TopPerformersDashboardViewModel: ObservableObject {
 
+    // Set externally to trigger callback upon hiding the Top Performers card.
+    var onDismiss: (() -> Void)?
+
     @Published private(set) var timeRange = StatsTimeRangeV4.today
     @Published private(set) var syncingData = false
     @Published var selectedItem: TopEarnerStatsItem?
@@ -84,6 +87,11 @@ final class TopPerformersDashboardViewModel: ObservableObject {
         }
         syncingData = false
         updateUIInLoadedState()
+    }
+
+    func dismissTopPerformers() {
+        // TODO: add tracking
+        onDismiss?()
     }
 }
 

@@ -42,6 +42,9 @@ final class StorePerformanceViewModel: ObservableObject {
     // Set externally to trigger callback when syncing fails.
     var onSyncingError: (Error) -> Void = { _ in }
 
+    // Set externally to trigger callback when hiding the card.
+    var onDismiss: (() -> Void)?
+
     private var subscriptions: Set<AnyCancellable> = []
     private var currentDate = Date()
     private let chartValueSelectedEventsSubject = PassthroughSubject<Int?, Never>()
@@ -124,6 +127,11 @@ final class StorePerformanceViewModel: ObservableObject {
         }
         syncingData = false
         waitingTracker.end()
+    }
+
+    func hideStorePerformance() {
+        // TODO: add tracking
+        onDismiss?()
     }
 }
 

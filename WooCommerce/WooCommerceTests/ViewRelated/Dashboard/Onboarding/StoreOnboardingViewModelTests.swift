@@ -708,22 +708,79 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         XCTAssertFalse(sut.shouldShowInDashboard)
     }
 
-    // MARK: - hideTaskList
+    // MARK: - canShowInDashboard
 
-    func test_hideTaskList_updates_userdefaults() async {
+    func test_canShowInDashboard_is_false_when_no_tasks_available_due_to_network_error() async {
         // Given
-        defaults[UserDefaults.Key.shouldHideStoreOnboardingTaskList] = nil
+        mockLoadOnboardingTasks(result: .failure(MockError()))
+        let sut = StoreOnboardingViewModel(siteID: 0,
+                                           isExpanded: false,
+                                           stores: stores,
+                                           defaults: defaults)
+        // When
+        await sut.reloadTasks()
+
+        // Then
+        XCTAssertFalse(sut.canShowInDashboard)
+    }
+
+    func test_canShowInDashboard_is_false_when_no_tasks_received_in_success_response() async {
+        // Given
+        mockLoadOnboardingTasks(result: .success([]))
+        let sut = StoreOnboardingViewModel(siteID: 0,
+                                           isExpanded: false,
+                                           stores: stores,
+                                           defaults: defaults)
+        // When
+        await sut.reloadTasks()
+
+        // Then
+        XCTAssertFalse(sut.canShowInDashboard)
+    }
+
+    func test_canShowInDashboard_is_true_when_pending_tasks_received_in_response() async {
+        // Given
+        let tasks: [StoreOnboardingTask] = [
+            .init(isComplete: false, type: .addFirstProduct),
+            .init(isComplete: true, type: .launchStore),
+            .init(isComplete: false, type: .customizeDomains),
+            .init(isComplete: true, type: .payments)
+        ]
+        mockLoadOnboardingTasks(result: .success(tasks))
         let sut = StoreOnboardingViewModel(siteID: 0,
                                            isExpanded: false,
                                            stores: stores,
                                            defaults: defaults)
 
         // When
-        sut.hideTaskList()
+        await sut.reloadTasks()
 
         // Then
-        XCTAssertTrue(try XCTUnwrap(defaults[UserDefaults.Key.shouldHideStoreOnboardingTaskList] as? Bool))
+        XCTAssertTrue(sut.canShowInDashboard)
     }
+
+    func test_canShowInDashboard_is_false_when_all_tasks_are_complete() async {
+        // Given
+        let tasks: [StoreOnboardingTask] = [
+            .init(isComplete: true, type: .addFirstProduct),
+            .init(isComplete: true, type: .launchStore),
+            .init(isComplete: true, type: .customizeDomains),
+            .init(isComplete: true, type: .payments)
+        ]
+        mockLoadOnboardingTasks(result: .success(tasks))
+        let sut = StoreOnboardingViewModel(siteID: 0,
+                                           isExpanded: false,
+                                           stores: stores,
+                                           defaults: defaults)
+
+        // When
+        await sut.reloadTasks()
+
+        // Then
+        XCTAssertFalse(sut.canShowInDashboard)
+    }
+
+    // MARK: - hideTaskList
 
     func test_hideTaskList_tracks_hide_list_event() async throws {
         // Given

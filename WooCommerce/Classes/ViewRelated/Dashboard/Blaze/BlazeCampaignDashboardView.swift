@@ -14,7 +14,7 @@ final class BlazeCampaignDashboardViewHostingController: SelfSizingHostingContro
         self.viewModel = viewModel
         self.parentNavigationController = parentNavigationController
 
-        super.init(rootView: BlazeCampaignDashboardView(viewModel: viewModel))
+        super.init(rootView: BlazeCampaignDashboardView(canHideCard: true, viewModel: viewModel))
         if #unavailable(iOS 16.0) {
             viewModel.onStateChange = { [weak self] in
                 self?.view.invalidateIntrinsicContentSize()
@@ -75,10 +75,14 @@ struct BlazeCampaignDashboardView: View {
 
     @ObservedObject private var viewModel: BlazeCampaignDashboardViewModel
 
-    init(viewModel: BlazeCampaignDashboardViewModel,
+    private let canHideCard: Bool
+
+    init(canHideCard: Bool,
+         viewModel: BlazeCampaignDashboardViewModel,
          showAllCampaignsTapped: (() -> Void)? = nil,
          createCampaignTapped: ((_ productID: Int64?) -> Void)? = nil) {
         self.viewModel = viewModel
+        self.canHideCard = canHideCard
         self.showAllCampaignsTapped = showAllCampaignsTapped
         self.createCampaignTapped = createCampaignTapped
     }
@@ -136,7 +140,7 @@ private extension BlazeCampaignDashboardView {
                 Spacer()
                 Menu {
                     Button(Localization.hideBlaze) {
-                        // TODO
+                        viewModel.dismissBlazeSection()
                     }
                 } label: {
                     Image(systemName: "ellipsis")
@@ -144,6 +148,8 @@ private extension BlazeCampaignDashboardView {
                         .padding(.leading, Layout.padding)
                         .padding(.vertical, Layout.hideIconVerticalPadding)
                 }
+                .disabled(viewModel.shouldRedactView)
+                .renderedIf(canHideCard)
             }
             // Subtitle
             Text(Localization.subtitle)
@@ -310,6 +316,6 @@ private struct ProductInfoView: View {
 
 struct BlazeCampaignDashboardView_Previews: PreviewProvider {
     static var previews: some View {
-        BlazeCampaignDashboardView(viewModel: .init(siteID: 0))
+        BlazeCampaignDashboardView(canHideCard: true, viewModel: .init(siteID: 0))
     }
 }

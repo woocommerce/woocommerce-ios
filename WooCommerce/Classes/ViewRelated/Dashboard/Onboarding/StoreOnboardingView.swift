@@ -31,7 +31,8 @@ final class StoreOnboardingViewHostingController: SelfSizingHostingController<St
         self.sourceNavigationController = navigationController
         self.site = site
         self.onUpgradePlan = onUpgradePlan
-        super.init(rootView: StoreOnboardingView(viewModel: viewModel,
+        super.init(rootView: StoreOnboardingView(canHideCard: true,
+                                                 viewModel: viewModel,
                                                  shareFeedbackAction: shareFeedbackAction))
         if #unavailable(iOS 16.0) {
             viewModel.onStateChange = { [weak self] in
@@ -104,12 +105,15 @@ struct StoreOnboardingView: View {
 
     @ObservedObject private var viewModel: StoreOnboardingViewModel
 
+    private let canHideCard: Bool
     private let shareFeedbackAction: (() -> Void)?
 
-    init(viewModel: StoreOnboardingViewModel,
+    init(canHideCard: Bool,
+         viewModel: StoreOnboardingViewModel,
          onTaskTapped: ((StoreOnboardingTask) -> Void)? = nil,
          onViewAllTapped: (() -> Void)? = nil,
          shareFeedbackAction: (() -> Void)? = nil) {
+        self.canHideCard = canHideCard
         self.viewModel = viewModel
         self.taskTapped = onTaskTapped
         self.viewAllTapped = onViewAllTapped
@@ -138,7 +142,8 @@ struct StoreOnboardingView: View {
                                        shareFeedbackAction: shareFeedbackAction,
                                        hideTaskListAction: viewModel.hideTaskList,
                                        isRedacted: viewModel.isRedacted,
-                                       isHideStoreOnboardingTaskListFeatureEnabled: viewModel.isHideStoreOnboardingTaskListFeatureEnabled)
+                                       isHideStoreOnboardingTaskListFeatureEnabled: canHideCard)
+                .padding(.horizontal, Layout.padding)
 
                 // Task list
                 VStack(alignment: .leading, spacing: 0) {
@@ -153,17 +158,29 @@ struct StoreOnboardingView: View {
                                                 .shimmering(active: viewModel.isRedacted)
                     }
                 }
+                .padding(.horizontal, Layout.padding)
+
+                Divider()
+                    .renderedIf(viewModel.shouldShowViewAllButton)
+                    .padding(.leading, Layout.padding)
 
                 // View all button
                 viewAllButton(action: viewAllTapped, text: String(format: Localization.viewAll, viewModel.taskViewModels.count))
                     .renderedIf(viewModel.shouldShowViewAllButton)
+                    .padding(.horizontal, Layout.padding)
 
                 Spacer()
                     .renderedIf(viewModel.isExpanded)
             }
-            .padding(insets: viewModel.shouldShowViewAllButton ?
-                     Layout.insetsWithViewAllButton: Layout.insetsWithoutViewAllButton)
-            .if(!viewModel.isExpanded) { $0.background(Color(uiColor: .listForeground(modal: false))) }
+            .padding(.top, Layout.padding)
+            .padding(.bottom, viewModel.shouldShowViewAllButton ?
+                                 Layout.padding: Layout.bottomPaddingWithoutViewAllButton)
+
+            .if(!viewModel.isExpanded) { view in
+                view.background(Color(uiColor: .listForeground(modal: false)))
+                    .clipShape(RoundedRectangle(cornerSize: Layout.cornerSize))
+                    .padding(.horizontal, Layout.padding)
+            }
         }
     }
 }
@@ -176,18 +193,23 @@ private extension StoreOnboardingView {
         Button {
             action?()
         } label: {
-            Text(text)
-                .fontWeight(.semibold)
-                .foregroundColor(.init(uiColor: .accent))
-                .subheadlineStyle()
+            HStack {
+                Text(text)
+                    .foregroundStyle(Color.accentColor)
+                    .bodyStyle()
+                Spacer()
+                Image(systemName: "chevron.forward")
+                    .foregroundStyle(Color(.tertiaryLabel))
+            }
         }
     }
 }
 
 private extension StoreOnboardingView {
     enum Layout {
-        static let insetsWithViewAllButton: EdgeInsets = .init(top: 16, leading: 16, bottom: 16, trailing: 16)
-        static let insetsWithoutViewAllButton: EdgeInsets = .init(top: 16, leading: 16, bottom: 1, trailing: 16)
+        static let padding: CGFloat = 16
+        static let cornerSize = CGSize(width: 8.0, height: 8.0)
+        static let bottomPaddingWithoutViewAllButton: CGFloat = 1
         enum VerticalSpacing {
             static let collapsedMode: CGFloat = 16
             static let expandedMode: CGFloat = 40
@@ -196,7 +218,8 @@ private extension StoreOnboardingView {
 
     enum Localization {
         static let viewAll = NSLocalizedString(
-            "View all (%1$d)",
+            "storeOnboardingCardView.viewAll",
+            value: "View all %1$d tasks",
             comment: "Button when tapped will show a screen with all the store setup tasks." +
             "%1$d represents the total number of tasks."
         )
@@ -205,8 +228,8 @@ private extension StoreOnboardingView {
 
 struct StoreOnboardingCardView_Previews: PreviewProvider {
     static var previews: some View {
-        StoreOnboardingView(viewModel: .init(siteID: 0, isExpanded: false))
+        StoreOnboardingView(canHideCard: true, viewModel: .init(siteID: 0, isExpanded: false))
 
-        StoreOnboardingView(viewModel: .init(siteID: 0, isExpanded: true))
+        StoreOnboardingView(canHideCard: true, viewModel: .init(siteID: 0, isExpanded: true))
     }
 }

@@ -145,7 +145,9 @@ private extension DashboardView {
                 if card.enabled {
                     switch card.type {
                     case .onboarding:
-                        StoreOnboardingView(viewModel: viewModel.storeOnboardingViewModel, onTaskTapped: { task in
+                        StoreOnboardingView(canHideCard: viewModel.canHideMoreDashboardCards,
+                                            viewModel: viewModel.storeOnboardingViewModel,
+                                            onTaskTapped: { task in
                             guard let currentSite else { return }
                             onboardingTaskTapped?(currentSite, task)
                         }, onViewAllTapped: {
@@ -155,17 +157,21 @@ private extension DashboardView {
                             onboardingShareFeedbackAction?()
                         })
                     case .blaze:
-                        BlazeCampaignDashboardView(viewModel: viewModel.blazeCampaignDashboardViewModel,
+                        BlazeCampaignDashboardView(canHideCard: viewModel.canHideMoreDashboardCards,
+                                                   viewModel: viewModel.blazeCampaignDashboardViewModel,
                                                    showAllCampaignsTapped: showAllBlazeCampaignsTapped,
                                                    createCampaignTapped: createBlazeCampaignTapped)
                     case .performance:
-                        StorePerformanceView(viewModel: viewModel.storePerformanceViewModel, onCustomRangeRedactedViewTap: {
+                        StorePerformanceView(canHideCard: viewModel.canHideMoreDashboardCards,
+                                             viewModel: viewModel.storePerformanceViewModel,
+                                             onCustomRangeRedactedViewTap: {
                             onCustomRangeRedactedViewTap?()
                         }, onViewAllAnalytics: { siteID, siteTimeZone, timeRange in
                             onViewAllAnalytics?(siteID, siteTimeZone, timeRange)
                         })
                     case .topPerformers:
-                        TopPerformersDashboardView(viewModel: viewModel.topPerformersViewModel,
+                        TopPerformersDashboardView(canHideCard: viewModel.canHideMoreDashboardCards,
+                                                   viewModel: viewModel.topPerformersViewModel,
                                                    onViewAllAnalytics: { siteID, siteTimeZone, timeRange in
                             onViewAllAnalytics?(siteID, siteTimeZone, timeRange)
                         })

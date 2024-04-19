@@ -182,7 +182,7 @@ private extension DashboardView {
     var shareStoreCard: some View {
         VStack {
             Image(uiImage: .blazeSuccessImage)
-                .padding(Layout.elementPadding)
+                .padding(Layout.imagePadding)
 
             Text(Localization.ShareStoreCard.title)
                 .headlineStyle()
@@ -192,15 +192,14 @@ private extension DashboardView {
                 .bodyStyle()
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, Layout.elementPadding)
-                .padding(.vertical, Layout.textPadding)
+                .padding(.top, Layout.textPadding)
 
             Button(Localization.ShareStoreCard.shareButtonLabel) {
                 // TODO
             }
             .buttonStyle(PrimaryButtonStyle())
             .padding(.horizontal, Layout.elementPadding)
-            .padding(.top, Layout.padding)
-            .padding(.bottom, Layout.elementPadding)
+            .padding(.vertical, Layout.elementPadding)
         }
         .background(Color(.clear))
         .cornerRadius(Layout.cornerRadius)
@@ -274,7 +273,8 @@ private extension DashboardView {
 private extension DashboardView {
     enum Layout {
         static let padding: CGFloat = 16
-        static let elementPadding: CGFloat = 32
+        static let elementPadding: CGFloat = 24
+        static let imagePadding: CGFloat = 32
         static let textPadding: CGFloat = 8
         static let cornerRadius: CGFloat = 8
     }

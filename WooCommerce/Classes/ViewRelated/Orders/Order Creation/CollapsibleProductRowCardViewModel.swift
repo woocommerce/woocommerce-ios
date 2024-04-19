@@ -110,8 +110,12 @@ struct CollapsibleProductRowCardViewModel: Identifiable {
                                                 pluralizedPeriod)
     }
 
+    /// Description of the regular subscription price for a Subscription-type Product
+    /// eg: "$3.00 "
+    ///
     var subscriptionPrice: String? {
         guard let price = productSubscriptionDetails?.price,
+              price != "0",
               let formattedPrice = currencyFormatter.formatAmount(price) else {
             return nil
         }

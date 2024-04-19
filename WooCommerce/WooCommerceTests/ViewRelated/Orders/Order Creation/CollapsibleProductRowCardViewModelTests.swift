@@ -381,7 +381,86 @@ final class CollapsibleProductRowCardViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.subscriptionBillingIntervalLabel, "Every 2 months")
     }
 
-    func test_subscriptionPrice() {}
+    func test_productRow_when_subscriptionPrice_is_nil_then_productSubscriptionDetails_is_nil() {
+        // Given
+        let productPrice = "10"
+        let nilProductSubscription: ProductSubscription? = nil
+        let product = Product.fake().copy(productID: 12,
+                                          name: "Not a subscription product",
+                                          price: productPrice,
+                                          subscription: nilProductSubscription)
+
+        // When
+        let viewModel = createViewModel(id: product.productID,
+                                        productSubscriptionDetails: product.subscription,
+                                        name: product.name,
+                                        price: productPrice)
+
+        XCTAssertEqual(viewModel.price, productPrice)
+        XCTAssertEqual(viewModel.subscriptionPrice, nil)
+        XCTAssertEqual(viewModel.productSubscriptionDetails, nil)
+    }
+
+    func test_productRow_when_subscriptionPrice_is_zero_then_productSubscriptionDetails_is_nil() {
+        // Given
+        let productPrice = "10"
+        let zeroPriceProductSubscription: ProductSubscription? = createFakeSubscription(price: "0")
+        let product = Product.fake().copy(productID: 12,
+                                          name: "A zero-priced subscription product",
+                                          price: productPrice,
+                                          subscription: zeroPriceProductSubscription)
+
+        // When
+        let viewModel = createViewModel(id: product.productID,
+                                        productSubscriptionDetails: product.subscription,
+                                        name: product.name,
+                                        price: productPrice)
+
+        XCTAssertEqual(viewModel.price, productPrice)
+        XCTAssertEqual(viewModel.subscriptionPrice, nil)
+        XCTAssertEqual(viewModel.productSubscriptionDetails, zeroPriceProductSubscription)
+    }
+
+    func test_productRow_when_subscriptionPrice_is_not_zero_then_productSubscriptionDetails_is_formatted_price() {
+        // Given
+        let productPrice = "17"
+        let expectedFormattedPrice = "$17.00"
+        let productSubscription: ProductSubscription? = createFakeSubscription(price: productPrice)
+        let product = Product.fake().copy(productID: 12,
+                                          name: "A subscription product",
+                                          price: productPrice,
+                                          subscription: productSubscription)
+
+        // When
+        let viewModel = createViewModel(id: product.productID,
+                                        productSubscriptionDetails: product.subscription,
+                                        name: product.name,
+                                        price: productPrice)
+
+        XCTAssertEqual(viewModel.price, productPrice)
+        XCTAssertEqual(viewModel.subscriptionPrice, expectedFormattedPrice)
+        XCTAssertEqual(viewModel.productSubscriptionDetails, productSubscription)
+    }
+
+    func test_productRow_when_price_and_subscriptionPrice_are_different_then_are_assigned_correctly() {
+        // Given
+        let productPrice = "17"
+        let subscriptionPrice = "10"
+        let productSubscription: ProductSubscription? = createFakeSubscription(price: subscriptionPrice)
+        let product = Product.fake().copy(productID: 12,
+                                          name: "A subscription product",
+                                          price: productPrice,
+                                          subscription: productSubscription)
+
+        // When
+        let viewModel = createViewModel(id: product.productID,
+                                        productSubscriptionDetails: product.subscription,
+                                        name: product.name,
+                                        price: productPrice)
+
+        XCTAssertEqual(viewModel.price, productPrice)
+        XCTAssertEqual(viewModel.productSubscriptionDetails?.price, subscriptionPrice)
+    }
 
     func test_subscriptionConditionsSignupFee() {}
 }

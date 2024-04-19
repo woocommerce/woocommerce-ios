@@ -353,13 +353,15 @@ private extension DashboardViewModel {
     }
 
     func setupDashboardCards() {
-        $showOnboarding.combineLatest($showBlazeCampaignView)
+        $showOnboarding.combineLatest($showBlazeCampaignView, $hasOrders)
             .receive(on: RunLoop.main)
-            .sink { [weak self] showOnboarding, showBlazeCampaignView in
+            .sink { [weak self] showOnboarding, showBlazeCampaignView, hasOrders in
                 guard let self else { return }
                 Task {
                     await self.updateDashboardCards(showOnboarding: showOnboarding,
-                                               showBlazeCampaignView: showBlazeCampaignView)
+                                                    showBlazeCampaignView: showBlazeCampaignView,
+                                                    showAnalyticsCards: hasOrders
+                    )
                 }
             }
             .store(in: &subscriptions)
@@ -369,14 +371,16 @@ private extension DashboardViewModel {
     /// this should be updated to general app settings.
     ///
     @MainActor
-    func updateDashboardCards(showOnboarding: Bool, showBlazeCampaignView: Bool) async {
+    func updateDashboardCards(showOnboarding: Bool,
+                              showBlazeCampaignView: Bool,
+                              showAnalyticsCards: Bool) async {
         dashboardCards = await {
             if let stored = await loadDashboardCards() {
                 return stored
             } else {
                 return [DashboardCard(type: .onboarding, enabled: showOnboarding),
-                        DashboardCard(type: .performance, enabled: true),
-                        DashboardCard(type: .topPerformers, enabled: true),
+                        DashboardCard(type: .performance, enabled: showAnalyticsCards),
+                        DashboardCard(type: .topPerformers, enabled: showAnalyticsCards),
                         DashboardCard(type: .blaze, enabled: showBlazeCampaignView)]
             }
         }()

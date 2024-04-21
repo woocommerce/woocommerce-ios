@@ -316,6 +316,33 @@ private extension StatsServiceRemoteV2 {
     }
 }
 
+// MARK: - Emails Summary
+
+public extension StatsServiceRemoteV2 {
+    public func getData(quantity: Int, 
+                        sortField: StatsEmailsSummaryData.SortField = .opens,
+                        sortOrder: StatsEmailsSummaryData.SortOrder = .descending,
+                        completion: @escaping ((Result<StatsEmailsSummaryData, Error>) -> Void)) {
+        let pathComponent = StatsEmailsSummaryData.pathComponent
+        let path = self.path(forEndpoint: "sites/\(siteID)/\(pathComponent)/", withVersion: ._1_1)
+        let properties = StatsEmailsSummaryData.queryProperties(quantity: quantity, sortField: sortField, sortOrder: sortOrder) as [String: AnyObject]
+
+        wordPressComRESTAPI.get(path, parameters: properties, success: { [weak self] (response, _) in
+            guard let self,
+                  let jsonResponse = response as? [String: AnyObject],
+                  let emailsSummaryData = StatsEmailsSummaryData(jsonDictionary: jsonResponse)
+            else {
+                completion(.failure(ResponseError.decodingFailure))
+                return
+            }
+
+            completion(.success(emailsSummaryData))
+        }, failure: { (error, _) in
+            completion(.failure(error))
+        })
+    }
+}
+
 // This serves both as a way to get the query properties in a "nice" way,
 // but also as a way to narrow down the generic type in `getInsight(completion:)` method.
 public protocol StatsInsightData {

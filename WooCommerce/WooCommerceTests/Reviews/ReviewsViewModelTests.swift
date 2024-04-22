@@ -79,7 +79,7 @@ final class ReviewsViewModelTests: XCTestCase {
         let storesManager = MockStoresManager(sessionManager: .testingInstance)
         storesManager.whenReceivingAction(ofType: ProductReviewAction.self) { action in
             switch action {
-            case .synchronizeProductReviews(_, _, _, _, _, let onCompletion):
+            case .synchronizeProductReviews(_, _, _, _, let onCompletion):
                 onCompletion(.success([ProductReview.fake()]))
             default:
                 return
@@ -101,7 +101,7 @@ final class ReviewsViewModelTests: XCTestCase {
         let storesManager = MockStoresManager(sessionManager: .testingInstance)
         storesManager.whenReceivingAction(ofType: ProductReviewAction.self) { action in
             switch action {
-            case .synchronizeProductReviews(_, _, _, _, _, let onCompletion):
+            case .synchronizeProductReviews(_, _, _, _, let onCompletion):
                 onCompletion(.failure(SampleError.first))
             default:
                 return
@@ -129,7 +129,7 @@ final class ReviewsViewModelTests: XCTestCase {
         let mockStores = MockStoresManager(sessionManager: .makeForTesting())
         mockStores.whenReceivingAction(ofType: ProductReviewAction.self) { action in
             switch action {
-            case let .synchronizeProductReviews(_, _, _, _, _, onCompletion):
+            case let .synchronizeProductReviews(_, _, _, _, onCompletion):
                 onCompletion(.success(sampleReviews))
             default:
                 break
@@ -263,7 +263,7 @@ final class MockReviewsStoresManager: DefaultStoresManager {
 
     private func onReviewAction(_ action: ProductReviewAction) {
         switch action {
-        case .synchronizeProductReviews(_, _, _, _, _, let onCompletion):
+        case .synchronizeProductReviews(_, _, _, _, let onCompletion):
             syncReviewsIsHit = true
             onCompletion(.success([ProductReview.fake()]))
         default:

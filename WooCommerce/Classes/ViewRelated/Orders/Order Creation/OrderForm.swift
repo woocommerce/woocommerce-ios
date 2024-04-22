@@ -282,7 +282,7 @@ struct OrderForm: View {
                             }
                             .renderedIf(viewModel.shouldSplitProductsAndCustomAmountsSections)
 
-                            OrderCustomAmountsSection(viewModel: viewModel)
+                            OrderCustomAmountsSection(viewModel: viewModel, sectionViewModel: viewModel.customAmountsSectionViewModel)
                                 .disabled(viewModel.shouldShowNonEditableIndicators)
 
                             Divider()
@@ -517,6 +517,7 @@ struct OrderForm: View {
             }
             .buttonStyle(PrimaryLoadingButtonStyle(isLoading: loading))
             .disabled(viewModel.collectPaymentDisabled)
+            .accessibilityIdentifier("order-form-collect-payment")
         case .done(let loading):
             Button {
                 viewModel.finishEditing()

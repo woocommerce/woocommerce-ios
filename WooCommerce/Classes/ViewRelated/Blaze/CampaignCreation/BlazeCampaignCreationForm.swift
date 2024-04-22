@@ -445,7 +445,6 @@ private extension BlazeCampaignCreationForm {
             )
         }
 
-
         static let help = NSLocalizedString(
             "blazeCampaignCreationForm.help",
             value: "Help",

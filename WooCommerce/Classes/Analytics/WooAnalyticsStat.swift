@@ -1010,6 +1010,8 @@ public enum WooAnalyticsStat: String {
     case simplePaymentsFlowStarted = "simple_payments_flow_started"
     case simplePaymentsFlowNoteAdded = "simple_payments_flow_note_added"
     case simplePaymentsFlowTaxesToggled = "simple_payments_flow_taxes_toggled"
+    case simplePaymentsMigrationSheetAddCustomAmount = "simple_payments_migration_sheet_add_custom_amount"
+    case simplePaymentsMigrationSheetShown = "simple_payments_migration_sheet_shown"
 
     // MARK: Payment Methods events
     //
@@ -1135,10 +1137,6 @@ public enum WooAnalyticsStat: String {
     case freeTrialUpgradeNowTapped = "free_trial_upgrade_now_tapped"
     case planUpgradeSuccess = "plan_upgrade_success"
     case planUpgradeAbandoned = "plan_upgrade_abandoned"
-
-    // MARK: Free Trial Survey
-    case freeTrialSurveyDisplayed = "free_trial_survey_displayed"
-    case freeTrialSurveySent = "free_trial_survey_sent"
 
     // MARK: In-App Purchases
     case planUpgradePurchaseButtonTapped = "plan_upgrade_purchase_button_tapped"

@@ -54,13 +54,18 @@ struct StoreSetupProgressView: View {
                 }
 
                 Button(Localization.hideStoreSetupListButton) {
-                    showingHideStoreSetupListAlert = true
+                    if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.dynamicDashboard) {
+                        hideTaskListAction()
+                    } else {
+                        showingHideStoreSetupListAlert = true
+                    }
                 }
                 .renderedIf(isHideStoreOnboardingTaskListFeatureEnabled)
             } label: {
-                Image(uiImage: .ellipsisImage)
-                    .flipsForRightToLeftLayoutDirection(true)
-                    .foregroundColor(Color(.textTertiary))
+                Image(systemName: "ellipsis")
+                    .foregroundStyle(Color.secondary)
+                    .padding(.leading, Layout.horizontalSpacing)
+                    .padding(.vertical, Layout.verticalSpacing)
             }
             .renderedIf(!isExpanded)
         }

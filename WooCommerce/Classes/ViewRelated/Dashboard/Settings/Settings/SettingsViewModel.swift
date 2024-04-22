@@ -289,8 +289,9 @@ private extension SettingsViewModel {
                 rows.append(.installJetpack)
             }
 
-            if !defaults.completedAllStoreOnboardingTasks,
-                featureFlagService.isFeatureFlagEnabled(.hideStoreOnboardingTaskList) {
+            if !featureFlagService.isFeatureFlagEnabled(.dynamicDashboard), // The store setup list visibility and arrangement can be controlled from dashboard
+               !defaults.completedAllStoreOnboardingTasks,
+               featureFlagService.isFeatureFlagEnabled(.hideStoreOnboardingTaskList) {
                 rows.append(.storeSetupList)
             }
 

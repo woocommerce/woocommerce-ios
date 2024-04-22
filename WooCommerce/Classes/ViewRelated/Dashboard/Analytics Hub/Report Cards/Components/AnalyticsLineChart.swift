@@ -1,5 +1,5 @@
 import SwiftUI
-import Charts
+import DGCharts
 
 /// `SwiftUI` representable type for `LineChartView` to use in the Analytics Hub
 struct AnalyticsLineChart: UIViewRepresentable {

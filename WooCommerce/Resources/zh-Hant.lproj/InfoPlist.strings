@@ -3,6 +3,12 @@
 <!--Warning: Auto-generated file, do not edit.-->
 <plist version="1.0">
   <dict>
+    <key>AddOrderAction.Title</key>
+    <string>新訂單</string>
+    <key>AddProductAction.Title</key>
+    <string>新增商品</string>
+    <key>CollectPaymentAction.Title</key>
+    <string>收取款項</string>
     <key>NSBluetoothAlwaysUsageDescription</key>
     <string>此應用程式使用藍牙來與支援的讀卡機連線。</string>
     <key>NSBluetoothPeripheralUsageDescription</key>
@@ -13,5 +19,9 @@
     <string>須提供定位權限才能接受付款。</string>
     <key>NSPhotoLibraryUsageDescription</key>
     <string>用於儲存相機照片做為商品圖片，或為商品或支援票證新增照片或影片。</string>
+    <key>OpenOrdersAction.Title</key>
+    <string>訂單</string>
+    <key>OpenPaymentsAction.Title</key>
+    <string>付款</string>
   </dict>
 </plist>

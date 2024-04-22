@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-04-09 15:54:04+0000 */
+/* Translation-Revision-Date: 2024-04-15 21:54:04+0000 */
 /* Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ar */
@@ -4676,7 +4676,7 @@ which should be translated separately and considered part of this sentence. */
 "More options" = "مزيد من الخيارات";
 
 /* More Privacy toggle section in the privacy screen. */
-"More privacy options available for woo.com users. Check here to learn more." = "يتوافر مزيد من خيارات الخصوصية لمستخدمي woo.com. تحقق هنا للتعرف على المزيد.";
+"More privacy options available for woocommerce.com users. Check here to learn more." = "يتوفر مزيد من خيارات الخصوصية لمستخدمي woocommerce.com. تحقق هنا للتعرف على المزيد.";
 
 /* Country option for a site address. */
 "Morocco" = "المغرب";
@@ -5941,6 +5941,18 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message when the scanner cannot find a matching product. %@ is the SKU code. */
 "Product with SKU \"%@\" not found." = "لم يتم العثور على منتج يحمل وحدة SKU \"%@\".";
+
+/* Description of the subscription price for a product, with price and billing frequency. Reads as: '$60.00 / 2 months'. */
+"ProductRowViewModel.formattedProductSubscriptionBilling" = "%1$@ \/ %2$@ %3$@";
+
+/* Description of the subscription conditions for a subscription product, with signup fees and free trials.Reads as: '$25.00 signup · 1 month free'. */
+"ProductRowViewModel.formattedProductSubscriptionConditions" = "التسجيل في %1$@ · %2$@ %3$@ مجاني";
+
+/* Description of the subscription conditions for a subscription product, with only free trial.Reads as: '1 month free'. */
+"ProductRowViewModel.formattedProductSubscriptionConditionsWithoutSignup" = "%1$@ %2$@ مجاني";
+
+/* Description of the subscription conditions for a subscription product, with signup fees but no trial.Reads as: '$25.00 signup'. */
+"ProductRowViewModel.formattedProductSubscriptionConditionsWithoutTrial" = "التسجيل في %1$@";
 
 /* Display label for the composite product's component option type
    Product section title if there is more than one product.
@@ -9765,7 +9777,7 @@ which should be translated separately and considered part of this sentence. */
 /* Button to copy phone number to clipboard */
 "billingInformationViewController.action.copyPhoneNumber" = "نسخ الرقم";
 
-/* Blaze Ad Destination: The final URl destination including optional parameters. %1$@ will be replaced by the URL text. Read like: Destination: https://woo.com/2022/04/11/product/?parameterkey=parametervalue */
+/* Blaze Ad Destination: The final URl destination including optional parameters. %1$@ will be replaced by the URL text. Read like: Destination: https://woocommerce.com/2022/04/11/product/?parameterkey=parametervalue */
 "blazeAdDestinationSettingVieModel.finalDestination" = "الوجهة: %1$@";
 
 /* Blaze Ad Destination: Plural form for characters limit label. %1$d will be replaced by a number. Read like: 10 characters remaining */
@@ -9933,6 +9945,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Message on the Blaze campaign creation error screen. */
 "blazeCampaignCreationError.failedToUploadCampaignImage" = "فشل رفع صورة الحملة.";
+
+/* Message on the Blaze campaign creation error screen. */
+"blazeCampaignCreationError.insufficientImageSize" = "حجم الصورة غير كافٍ للاقتصاص. يرجى تحديد صورة حملة مختلفة.";
 
 /* Button to dismiss the flow on the Blaze campaign creation error screen. */
 "blazeCampaignCreationErrorView.cancel" = "إلغاء الحملة";
@@ -10125,6 +10140,10 @@ which should be translated separately and considered part of this sentence. */
 
 /* Change image button title in the Blaze Edit Ad screen. */
 "blazeEditAdView.image.changeImage" = "تغيير الصورة";
+
+/* Button to dismiss the image view alert.
+   Error message displayed when selected campaign image is not large enough. */
+"blazeEditAdView.image.imageSizeError" = "يرجى تحديد صورة بأبعاد 600×600 بكسل بحد أدنى.";
 
 /* Save button in the Blaze Edit Ad screen. */
 "blazeEditAdView.save" = "حفظ";
@@ -10598,6 +10617,36 @@ which should be translated separately and considered part of this sentence. */
 /* Title for Customers list screen */
 "customersList.title" = "العملاء";
 
+/* Name for the Blaze dashboard card in the Customize Dashboard screen */
+"dashboardCard.name.blaze" = "التوهج";
+
+/* Name for the Store Onboarding dashboard card in the Customize Dashboard screen */
+"dashboardCard.name.onboarding" = "إعداد المتجر";
+
+/* Name for the Store Stats and Top Performers dashboard card in the Customize Dashboard screen */
+"dashboardCard.name.statsAndTopPerformers" = "إحصاءات المتجر وأهم المؤدِّين";
+
+/* Button to save changes on the Customize Dashboard screen */
+"dashboardCustomization.saveButton" = "حفظ";
+
+/* Title for the screen to customize the dashboard screen */
+"dashboardCustomization.title" = "تخصيص لوحة التحكم";
+
+/* Text on unavailable dashboard card on the Customize Dashboard screen */
+"dashboardCustomization.unavailable" = "غير متاح";
+
+/* Title on the banner when the site's WooExpress plan has expired */
+"dashboardView.storePlanBanner.expired" = "انتهت خطة موقعك.";
+
+/* Button to dismiss the support form from the Blaze confirm payment view screen. */
+"dashboardView.supportForm.done" = "تم";
+
+/* Title of the bottom tab item that presents the user's store dashboard, and default title for the store dashboard */
+"dashboardView.title" = "متجري";
+
+/* Title of the bottom tab item that presents the user's store dashboard, and default title for the store dashboard */
+"dashboardViewHostingController.title" = "متجري";
+
 /* Display label for a product's subscription period when it is a single day. */
 "day" = "يوم";
 
@@ -10740,6 +10789,15 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the view containing a single Product Review */
 "hubMenu.productReview" = "مراجعة المنتج";
 
+/* Title for Add Order home screen action */
+"infoplist.AddOrderAction.Title" = "طلب جديد";
+
+/* Title for Add Product home screen action */
+"infoplist.AddProductAction.Title" = "إضافة منتج";
+
+/* Title for Payments home screen action */
+"infoplist.CollectPaymentAction.Title" = "تحصيل المدفوعات";
+
 /* A message that tells the user why the app needs access to Bluetooth. */
 "infoplist.NSBluetoothAlwaysUsageDescription" = "يستخدم هذا التطبيق تقنية Bluetooth للربط بأجهزة قارئ البطاقة المدعومة.";
 
@@ -10754,6 +10812,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* A message that tells the user why the app is requesting access to the user’s photo library. */
 "infoplist.NSPhotoLibraryUsageDescription" = "لحفظ الصور من كاميرا خاصة بصور المنتجات أو لإضافة صور أو مقاطع فيديو إلى منتجاتك أو تذاكر الدعم الخاصة بك.";
+
+/* Title for Orders home screen action */
+"infoplist.OpenOrdersAction.Title" = "الطلبات";
+
+/* Title for Payments home screen action */
+"infoplist.OpenPaymentsAction.Title" = "المدفوعات";
 
 /* Title for the WPCom login screens when Jetpack is not connected yet */
 "jetpackSetupCoordinator.loginSubtitle" = "الاتصال بـ Jetpack";
@@ -10805,6 +10869,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* An accessibility label used when the balances are loading on the payments menu */
 "menu.payments.depositSummary.loading.accessibilityLabel" = "جارٍ تحميل الأرصدة...";
+
+/* Notice text after completing a payment order from In-Person Payments in the Menu */
+"menu.payments.inPersonPayments.collectPayment.notice.orderCompleted" = "🎉 تم اكتمال الطلب";
+
+/* Notice text after creating an order from In-Person Payments in the Menu */
+"menu.payments.inPersonPayments.collectPayment.notice.orderCreated" = "🎉 تم إنشاء طلب";
 
 /* A label prompting users to learn more about card readers.
 This part is the link to the website, and forms part of a longer sentence which it should be considered a part of. */
@@ -10925,13 +10995,13 @@ which should be translated separately and considered part of this sentence. */
 /* Origin in Order Attribution Section on Order Details screen. */
 "orderAttributionInfo.mobileApp" = "تطبيق للهواتف المحمولة";
 
-/* Origin in Order Attribution Section on Order Details screen.The placeholder is the source.Reads like: Organic: woo.com */
+/* Origin in Order Attribution Section on Order Details screen.The placeholder is the source.Reads like: Organic: woocommerce.com */
 "orderAttributionInfo.organic" = "أساسي: %1$@";
 
-/* Origin in Order Attribution Section on Order Details screen.The placeholder is the source.Reads like: Referral: woo.com */
+/* Origin in Order Attribution Section on Order Details screen.The placeholder is the source.Reads like: Referral: woocommerce.com */
 "orderAttributionInfo.referral" = "التوجيه: %1$@";
 
-/* Origin in Order Attribution Section on Order Details screen.The placeholder is the source.Reads like: Source: woo.com */
+/* Origin in Order Attribution Section on Order Details screen.The placeholder is the source.Reads like: Source: woocommerce.com */
 "orderAttributionInfo.source" = "المصدر: %1$@";
 
 /* Origin in Order Attribution Section on Order Details screen. */
@@ -11225,6 +11295,18 @@ which should be translated separately and considered part of this sentence. */
 
 /* Cancel button title for the Shipping Label purchase flow, shown in the nav bar */
 "shipping.label.navigationBar.cancel.button.title" = "إلغاء";
+
+/* Action to add a custom amount in the simple payments migration view. */
+"simplePaymentsMigrationSheet.addCustomAmount" = "إضافة مبلغ مخصص";
+
+/* Detail for the simple payments migration view. */
+"simplePaymentsMigrationSheet.detail" = "لتعيين مبلغ الدفع، أضف مبلغًا مخصصًا إلى طلبك الجديد.";
+
+/* Title for the simple payments migration view. Text in the asterisks is italic. */
+"simplePaymentsMigrationSheet.subtitle" = "قمنا بدمج تحصيل المدفوعات مع إنشاء الطلبات، ما يجعل الأمر أكثر سهولة *وأكثر* فاعلية.";
+
+/* Title for the simple payments migration view. */
+"simplePaymentsMigrationSheet.title" = "تم نقل تحصيل المدفوعات";
 
 /* Display text for the daily granularity of store stats on the My Store screen */
 "statsGranularityV4.dailyMetrics" = "الفواصل الزمنية يوميًا";

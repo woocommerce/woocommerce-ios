@@ -3,6 +3,12 @@
 <!--Warning: Auto-generated file, do not edit.-->
 <plist version="1.0">
   <dict>
+    <key>AddOrderAction.Title</key>
+    <string>Yeni Sipariş</string>
+    <key>AddProductAction.Title</key>
+    <string>Ürün ekleyin</string>
+    <key>CollectPaymentAction.Title</key>
+    <string>Ödeme Alın</string>
     <key>NSBluetoothAlwaysUsageDescription</key>
     <string>Bu uygulama, desteklenen kart okuyuculara bağlanmak için Bluetooth kullanır.</string>
     <key>NSBluetoothPeripheralUsageDescription</key>
@@ -13,5 +19,9 @@
     <string>Ödemeleri kabul etmek için konum erişimi gereklidir.</string>
     <key>NSPhotoLibraryUsageDescription</key>
     <string>Ürün görselleri için kameradan fotoğraf kaydetmek veya Ürünlerinize ya da destek biletlerinize fotoğraf veya video eklemek için.</string>
+    <key>OpenOrdersAction.Title</key>
+    <string>Siparişler</string>
+    <key>OpenPaymentsAction.Title</key>
+    <string>Ödemeler</string>
   </dict>
 </plist>

@@ -16,7 +16,8 @@ struct StatsIntervalDataParser {
     ///
     /// Used to create a line chart with the returned values.
     ///
-    static func getChartData<Stats: WCAnalyticsStats>(for statsTotal: Stats.Interval.Totals.TotalData, from stats: Stats?) -> [Double] {
+    static func getChartData<Stats: WCAnalyticsStats>(for statsTotal: Stats.Interval.Totals.TotalData,
+                                                      from stats: Stats?) -> [Double] where Stats.Interval.Totals: ParsableStatsTotals {
         let intervals = sortStatsIntervals(from: stats)
         return intervals.map { interval in
             interval.subtotals.getDoubleValue(for: statsTotal)

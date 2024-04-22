@@ -30,6 +30,29 @@ final class BlazeEditAdViewModelTests: XCTestCase {
         super.tearDown()
     }
 
+    // MARK: Image size error
+
+    func test_shouldDisplayImageSizeErrorAlert_turns_false_upon_selecting_image_with_invalid_size() {
+        // Given
+        let sut = BlazeEditAdViewModel(siteID: 123,
+                                       adData: sampleAdData,
+                                       suggestions: [.fake()],
+                                       onSave: { _ in })
+
+        // When
+        sut.onAddImage = { _ in
+            // Image less than expected size 600*600
+            MediaPickerImage(image: UIImage.gridicon(.calendar, size: .init(width: 100, height: 100)),
+                             source: .media(media: .fake()))
+        }
+
+        // Then
+        sut.addImage(from: .siteMediaLibrary)
+        waitUntil {
+            sut.shouldDisplayImageSizeErrorAlert == true
+        }
+    }
+
     // MARK: Tagline
     func test_tagline_footer_text_is_plural_when_multiple_characters_remaining() {
         // Given
@@ -199,7 +222,7 @@ final class BlazeEditAdViewModelTests: XCTestCase {
 
         // When
         sut.onAddImage = { _ in
-            MediaPickerImage(image: UIImage.calendar,
+            MediaPickerImage(image: UIImage.gridicon(.calendar, size: .init(width: 600, height: 600)),
                              source: .media(media: .fake()))
         }
 

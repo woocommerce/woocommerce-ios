@@ -52,7 +52,7 @@ private extension BlazeCampaignListHostingController {
             shouldShowIntro: viewModel.shouldShowIntroView,
             navigationController: navigationController,
             onCampaignCreated: { [weak self] in
-                self?.viewModel.loadCampaigns()
+                self?.viewModel.didCreateCampaign()
             }
         )
         self.coordinator = coordinator

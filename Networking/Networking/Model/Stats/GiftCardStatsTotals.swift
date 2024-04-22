@@ -1,7 +1,7 @@
 import Codegen
 
 /// Represents the data associated with gift card stats over a specific period.
-public struct GiftCardStatsTotals: Decodable, Equatable, GeneratedCopiable, GeneratedFakeable {
+public struct GiftCardStatsTotals: Decodable, Equatable, GeneratedCopiable, GeneratedFakeable, WCAnalyticsStatsTotals {
     /// Number of Gift Cards
     public let giftCardsCount: Int
 
@@ -35,29 +35,6 @@ public struct GiftCardStatsTotals: Decodable, Equatable, GeneratedCopiable, Gene
                   usedAmount: usedAmount,
                   refundedAmount: refundedAmount,
                   netAmount: netAmount)
-    }
-}
-
-extension GiftCardStatsTotals: WCAnalyticsStatsTotals {
-    /// Represents a type of gift cards total data
-    public enum TotalData: Double {
-        case giftCardsCount
-        case usedAmount
-        case refundedAmount
-        case netAmount
-    }
-
-    public func getDoubleValue(for data: TotalData) -> Double {
-        switch data {
-        case .giftCardsCount:
-            return Double(giftCardsCount)
-        case .usedAmount:
-            return (usedAmount as NSNumber).doubleValue
-        case .refundedAmount:
-            return (refundedAmount as NSNumber).doubleValue
-        case .netAmount:
-            return (netAmount as NSNumber).doubleValue
-        }
     }
 }
 

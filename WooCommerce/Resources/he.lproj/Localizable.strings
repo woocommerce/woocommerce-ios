@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-04-09 13:54:03+0000 */
+/* Translation-Revision-Date: 2024-04-16 15:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: he_IL */
@@ -4676,7 +4676,7 @@ which should be translated separately and considered part of this sentence. */
 "More options" = "עוד אפשרויות";
 
 /* More Privacy toggle section in the privacy screen. */
-"More privacy options available for woo.com users. Check here to learn more." = "אפשרויות פרטיות נוספות עבור משתמשי woo.com. לרשותך כאן מידע נוסף.";
+"More privacy options available for woocommerce.com users. Check here to learn more." = "למשתמשי WooCommerce.com יש אפשרויות פרטיות נוספות. לרשותך כאן מידע נוסף.";
 
 /* Country option for a site address. */
 "Morocco" = "מרוקו";
@@ -5211,7 +5211,7 @@ which should be translated separately and considered part of this sentence. */
 "Order total" = "סה\"כ הזמנה";
 
 /* Retry Action inside notice */
-"OrderDetail.retry.notice.button" = "יש לנסות שוב";
+"OrderDetail.retry.notice.button" = "לנסות שוב";
 
 /* Cancel button on the alert when the user is cancelling the action on moving an order to the trash */
 "OrderDetail.trashOrder.alert.cancelButton" = "ביטול";
@@ -5223,10 +5223,10 @@ which should be translated separately and considered part of this sentence. */
 "OrderDetail.trashOrder.alert.moveToTrashButton" = "להעביר לפח";
 
 /* Title of the alert when a user is moving an order to the trash */
-"OrderDetail.trashOrder.alert.title" = "להסיר את המסנן 'הזמנות'";
+"OrderDetail.trashOrder.alert.title" = "להסיר את ההזמנה";
 
 /* Content of error presented when Trash Order Action Failed. It reads: Unable to trash the order #{order number}. Parameters: %1$d - order number */
-"OrderDetail.trashOrder.notice.title" = "לא ניתן להוסיף להזמנה⁦%1$d⁩";
+"OrderDetail.trashOrder.notice.title" = "לא ניתן להעביר לפח את הזמנה מס' ⁦%1$d⁩";
 
 /* Undo Action */
 "OrderDetail.trashOrder.notice.undoAction" = "לבטל פעולה אחרונה";
@@ -5941,6 +5941,18 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message when the scanner cannot find a matching product. %@ is the SKU code. */
 "Product with SKU \"%@\" not found." = "לא ניתן למצוא מוצר עם SKU \"%@\".";
+
+/* Description of the subscription price for a product, with price and billing frequency. Reads as: '$60.00 / 2 months'. */
+"ProductRowViewModel.formattedProductSubscriptionBilling" = "‎%1$@ \/ %2$@ %3$@‎";
+
+/* Description of the subscription conditions for a subscription product, with signup fees and free trials.Reads as: '$25.00 signup · 1 month free'. */
+"ProductRowViewModel.formattedProductSubscriptionConditions" = "%1$@ הרשמה · %2$@ %3$@ בחינם";
+
+/* Description of the subscription conditions for a subscription product, with only free trial.Reads as: '1 month free'. */
+"ProductRowViewModel.formattedProductSubscriptionConditionsWithoutSignup" = "%1$@ %2$@ בחינם";
+
+/* Description of the subscription conditions for a subscription product, with signup fees but no trial.Reads as: '$25.00 signup'. */
+"ProductRowViewModel.formattedProductSubscriptionConditionsWithoutTrial" = "%1$@ הרשמה";
 
 /* Display label for the composite product's component option type
    Product section title if there is more than one product.
@@ -9110,7 +9122,7 @@ which should be translated separately and considered part of this sentence. */
 "We found that the store has already launched." = "בדקנו וראינו שהחנות כבר הושקה.";
 
 /* Message on the expired WPCom plan alert */
-"We have paused your store. You can purchase another plan by logging in to WordPress.com on your browser." = "We have paused your store. You can purchase another plan by logging in to WordPress.com on your browser.";
+"We have paused your store. You can purchase another plan by logging in to WordPress.com on your browser." = "השהינו את החנות שלך. אפשר לרכוש תוכנית אחרת על ידי התחברות אל WordPress.com בדפדפן.";
 
 /* Banner caption in Shipping Label Address when there is a suggested address. */
 "We have slightly modified the address entered. If correct, please use the suggested address to ensure accurate delivery." = "שינינו מעט את הכתובת שהוזנה. אם הכתובת נכונה, אנחנו מציעים להשתמש בכתובת המומלצת כדי לוודא שהיעד למשלוח מדויק.";
@@ -9691,10 +9703,10 @@ which should be translated separately and considered part of this sentence. */
 "analyticsHub.giftCardsCard.leadingTitle" = "נוצל";
 
 /* Title for the gift cards analytics report linked in the Analytics Hub */
-"analyticsHub.giftCardsCard.reportTitle" = "Gift Cards Report";
+"analyticsHub.giftCardsCard.reportTitle" = "דוח של שוברי מתנה";
 
 /* Text displayed when there is an error loading gift card stats data. */
-"analyticsHub.giftCardsCard.syncErrorMessage" = "אין אפשרות להעלות את הנתונים האנליטיים של ההפעלה";
+"analyticsHub.giftCardsCard.syncErrorMessage" = "אין אפשרות לטעון נתונים אנליטיים של שוברי מתנה";
 
 /* Title for gift cards analytics section in the Analytics Hub */
 "analyticsHub.giftCardsCard.title" = "שוברי מתנה";
@@ -9765,7 +9777,7 @@ which should be translated separately and considered part of this sentence. */
 /* Button to copy phone number to clipboard */
 "billingInformationViewController.action.copyPhoneNumber" = "להעתיק את המספר";
 
-/* Blaze Ad Destination: The final URl destination including optional parameters. %1$@ will be replaced by the URL text. Read like: Destination: https://woo.com/2022/04/11/product/?parameterkey=parametervalue */
+/* Blaze Ad Destination: The final URl destination including optional parameters. %1$@ will be replaced by the URL text. Read like: Destination: https://woocommerce.com/2022/04/11/product/?parameterkey=parametervalue */
 "blazeAdDestinationSettingVieModel.finalDestination" = "יעד: %1$@";
 
 /* Blaze Ad Destination: Plural form for characters limit label. %1$d will be replaced by a number. Read like: 10 characters remaining */
@@ -9933,6 +9945,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Message on the Blaze campaign creation error screen. */
 "blazeCampaignCreationError.failedToUploadCampaignImage" = "העלאת התמונה של הקמפיין נכשלה.";
+
+/* Message on the Blaze campaign creation error screen. */
+"blazeCampaignCreationError.insufficientImageSize" = "גודל התמונה אינו מספיק לחיתוך. יש לבחור תמונה אחרת לקמפיין.";
 
 /* Button to dismiss the flow on the Blaze campaign creation error screen. */
 "blazeCampaignCreationErrorView.cancel" = "לבטל את הקמפיין";
@@ -10125,6 +10140,10 @@ which should be translated separately and considered part of this sentence. */
 
 /* Change image button title in the Blaze Edit Ad screen. */
 "blazeEditAdView.image.changeImage" = "להחליף תמונה";
+
+/* Button to dismiss the image view alert.
+   Error message displayed when selected campaign image is not large enough. */
+"blazeEditAdView.image.imageSizeError" = "יש לבחור תמונה עם ממדים מינמליים של 600 ‏x ‏600 פיקסלים.";
 
 /* Save button in the Blaze Edit Ad screen. */
 "blazeEditAdView.save" = "לשמור";
@@ -10598,6 +10617,36 @@ which should be translated separately and considered part of this sentence. */
 /* Title for Customers list screen */
 "customersList.title" = "לקוחות";
 
+/* Name for the Blaze dashboard card in the Customize Dashboard screen */
+"dashboardCard.name.blaze" = "Blaze";
+
+/* Name for the Store Onboarding dashboard card in the Customize Dashboard screen */
+"dashboardCard.name.onboarding" = "הצטרפות לחנות";
+
+/* Name for the Store Stats and Top Performers dashboard card in the Customize Dashboard screen */
+"dashboardCard.name.statsAndTopPerformers" = "נתונים סטטיסטיים של החנות והביצועים הטובים ביותר";
+
+/* Button to save changes on the Customize Dashboard screen */
+"dashboardCustomization.saveButton" = "לשמור";
+
+/* Title for the screen to customize the dashboard screen */
+"dashboardCustomization.title" = "להתאים אישית את לוח הבקרה";
+
+/* Text on unavailable dashboard card on the Customize Dashboard screen */
+"dashboardCustomization.unavailable" = "לא זמין";
+
+/* Title on the banner when the site's WooExpress plan has expired */
+"dashboardView.storePlanBanner.expired" = "התוכנית של האתר שלך הסתיימה.";
+
+/* Button to dismiss the support form from the Blaze confirm payment view screen. */
+"dashboardView.supportForm.done" = "סיימתי";
+
+/* Title of the bottom tab item that presents the user's store dashboard, and default title for the store dashboard */
+"dashboardView.title" = "החנות שלי";
+
+/* Title of the bottom tab item that presents the user's store dashboard, and default title for the store dashboard */
+"dashboardViewHostingController.title" = "החנות שלי";
+
 /* Display label for a product's subscription period when it is a single day. */
 "day" = "יום";
 
@@ -10740,6 +10789,15 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the view containing a single Product Review */
 "hubMenu.productReview" = "חוות דעת על מוצר";
 
+/* Title for Add Order home screen action */
+"infoplist.AddOrderAction.Title" = "הזמנה חדשה";
+
+/* Title for Add Product home screen action */
+"infoplist.AddProductAction.Title" = "להוסיף מוצר";
+
+/* Title for Payments home screen action */
+"infoplist.CollectPaymentAction.Title" = "לגבות תשלום";
+
 /* A message that tells the user why the app needs access to Bluetooth. */
 "infoplist.NSBluetoothAlwaysUsageDescription" = "האפליקציה הזו משתמשת ב-Bluetooth כדי להתחבר לקוראי הכרטיסים הנתמכים.";
 
@@ -10754,6 +10812,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* A message that tells the user why the app is requesting access to the user’s photo library. */
 "infoplist.NSPhotoLibraryUsageDescription" = "כדי לשמור תמונות מהמצלמה לצורך תמונות של מוצרים, או כדי להוסיף תמונות או סרטוני וידאו למוצרים או לכרטיסי תמיכה.";
+
+/* Title for Orders home screen action */
+"infoplist.OpenOrdersAction.Title" = "הזמנות";
+
+/* Title for Payments home screen action */
+"infoplist.OpenPaymentsAction.Title" = "תשלומים";
 
 /* Title for the WPCom login screens when Jetpack is not connected yet */
 "jetpackSetupCoordinator.loginSubtitle" = "לחבר את Jetpack";
@@ -10777,7 +10841,7 @@ which should be translated separately and considered part of this sentence. */
 "limited_quantity_category" = "חבילה להובלה יבשתית עם כמויות מוגבלות – תרסיסים, חומרי חיטוי במכל התזה, צבע במכל התזה, ספריי לשיער, פרופן, בוטאן, חומרי ניקוי וכו'. - בשמים, לק לציפורניים, מסיר לק לציפורניים, חומרים ממסים, נוזל חיטוי לידיים, אלכוהול רפואי, מוצרים המבוססים על אתנול וכו'. - מוצרים אחרים למשטחים בכמות מוגבלת (קוסמטיקה, חומרי ניקוי, צבעים וכו').";
 
 /* Subtitle displayed in the simplified prologue screen */
-"loginProloguePageType.getStartedText" = "מהמכירה הראשונה עד מחזור רווחים של מיליונים, השירות של WooCommerce עומד לצדך. כדאי להתרשם למה סוחרים סומכים עלינו בהפעלת 3.9 מיליון חנויות מקוונות.";
+"loginProloguePageType.getStartedText" = "מהמכירה הראשונה עד מחזור רווחים של מיליונים, השירות של Woo עומד לצדך. כדאי להתרשם למה סוחרים סומכים עלינו בהפעלת 3.9 מיליון חנויות מקוונות.";
 
 /* A manual refund is one where the store owner has given the purchaser alternative funds (cash, check, ACH) instead of using the payment gateway to create a refund (credit card or debit card was refunded) */
 "manual refund" = "החזר כספי ידני";
@@ -10805,6 +10869,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* An accessibility label used when the balances are loading on the payments menu */
 "menu.payments.depositSummary.loading.accessibilityLabel" = "טוען יתרות...";
+
+/* Notice text after completing a payment order from In-Person Payments in the Menu */
+"menu.payments.inPersonPayments.collectPayment.notice.orderCompleted" = "🎉 ההזמנה הושלמה";
+
+/* Notice text after creating an order from In-Person Payments in the Menu */
+"menu.payments.inPersonPayments.collectPayment.notice.orderCreated" = "🎉 ההזמנה נוצרה";
 
 /* A label prompting users to learn more about card readers.
 This part is the link to the website, and forms part of a longer sentence which it should be considered a part of. */
@@ -10925,13 +10995,13 @@ which should be translated separately and considered part of this sentence. */
 /* Origin in Order Attribution Section on Order Details screen. */
 "orderAttributionInfo.mobileApp" = "אפליקציה לנייד";
 
-/* Origin in Order Attribution Section on Order Details screen.The placeholder is the source.Reads like: Organic: woo.com */
+/* Origin in Order Attribution Section on Order Details screen.The placeholder is the source.Reads like: Organic: woocommerce.com */
 "orderAttributionInfo.organic" = "אורגני: %1$@";
 
-/* Origin in Order Attribution Section on Order Details screen.The placeholder is the source.Reads like: Referral: woo.com */
+/* Origin in Order Attribution Section on Order Details screen.The placeholder is the source.Reads like: Referral: woocommerce.com */
 "orderAttributionInfo.referral" = "הפניה: %1$@";
 
-/* Origin in Order Attribution Section on Order Details screen.The placeholder is the source.Reads like: Source: woo.com */
+/* Origin in Order Attribution Section on Order Details screen.The placeholder is the source.Reads like: Source: woocommerce.com */
 "orderAttributionInfo.source" = "מקור: %1$@";
 
 /* Origin in Order Attribution Section on Order Details screen. */
@@ -10941,7 +11011,7 @@ which should be translated separately and considered part of this sentence. */
 "orderAttributionInfo.webAdmin" = "מנהל מערכת אינטרנט";
 
 /* Content of error presented when Delete Shipment Tracking Action Failed. It reads: Unable to delete tracking for order #{order number}. Parameters: %1$d - order number */
-"orderDetail.deleteTracking.notice.title" = "אין אפשרות למחוק את המעקב אחר ההזמנה ⁦%1$d⁩#";
+"orderDetail.deleteTracking.notice.title" = "אין אפשרות למחוק את המעקב אחר הזמנה מס' ⁦%1$d⁩";
 
 /* Title for the row to add tracking information. */
 "orderDetails.addTrackingRow.title" = "מידע על מעקב אופציונלי";
@@ -10980,10 +11050,10 @@ which should be translated separately and considered part of this sentence. */
 "orderDetailsDataSource.attributionInfo.unknown" = "לא ידוע";
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to view the order custom fields information. */
-"orderDetailsDataSource.trashOrder.accessibilityHint" = "Put this order in the trash.";
+"orderDetailsDataSource.trashOrder.accessibilityHint" = "להעביר את ההזמנה לפח.";
 
 /* Accessibility label for the 'Trash order' button */
-"orderDetailsDataSource.trashOrder.accessibilityLabel" = "Trash Order Button";
+"orderDetailsDataSource.trashOrder.accessibilityLabel" = "הכפתור 'להעביר הזמנה לפח'";
 
 /* Text on the button title to trash an order */
 "orderDetailsDataSource.trashOrder.button.title" = "להעביר לפח";
@@ -11187,7 +11257,7 @@ which should be translated separately and considered part of this sentence. */
 "rangedDatePicker.invalidTimeRangeAlert.action" = "הבנתי";
 
 /* Message of the alert displayed when selecting an invalid time range for analytics */
-"rangedDatePicker.invalidTimeRangeAlert.message" = "תאריך ההתחלה חייב להיות לפני תאריך הסיום. יש לבחור טווח מועדים אחר.";
+"rangedDatePicker.invalidTimeRangeAlert.message" = "תאריך ההתחלה לא יכול להיות אחרי תאריך הסיום. יש לבחור טווח מועדים אחר.";
 
 /* Title of the alert displayed when selecting an invalid time range for analytics */
 "rangedDatePicker.invalidTimeRangeAlert.title" = "טווח מועדים לא תקין";
@@ -11225,6 +11295,18 @@ which should be translated separately and considered part of this sentence. */
 
 /* Cancel button title for the Shipping Label purchase flow, shown in the nav bar */
 "shipping.label.navigationBar.cancel.button.title" = "ביטול";
+
+/* Action to add a custom amount in the simple payments migration view. */
+"simplePaymentsMigrationSheet.addCustomAmount" = "להוסיף סכום בהתאמה אישית";
+
+/* Detail for the simple payments migration view. */
+"simplePaymentsMigrationSheet.detail" = "כדי לקבוע סכום לתשלום, ניתן להוסיף סכום בהתאמה אישית להזמנה חדשה.";
+
+/* Title for the simple payments migration view. Text in the asterisks is italic. */
+"simplePaymentsMigrationSheet.subtitle" = "שילבנו את גביית התשלום בתהליך של יצירת ההזמנה כדי לשפר את הנגישות *וגם* את היכולות.";
+
+/* Title for the simple payments migration view. */
+"simplePaymentsMigrationSheet.title" = "האפשרות 'לגבות תשלום' הועברה";
 
 /* Display text for the daily granularity of store stats on the My Store screen */
 "statsGranularityV4.dailyMetrics" = "תדירות יומית";

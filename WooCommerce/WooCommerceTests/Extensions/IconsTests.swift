@@ -23,6 +23,10 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.analyticsImage)
     }
 
+    func test_bell_image_is_not_nil() {
+        XCTAssertNotNil(UIImage.bell)
+    }
+
     func test_blaze_image_is_not_nil() {
         XCTAssertNotNil(UIImage.blaze)
     }

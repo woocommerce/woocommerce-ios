@@ -286,6 +286,24 @@ final class SettingsViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.storeSetupList) })
     }
 
+    func test_store_setup_list_row_is_hidden_when_dynamic_dashboard_feature_is_on() {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isHideStoreOnboardingTaskListFeatureEnabled: true,
+                                                        isDynamicDashboardEnabled: true)
+        sessionManager.defaultSite = Site.fake()
+        defaults[UserDefaults.Key.completedAllStoreOnboardingTasks] = false
+        let viewModel = SettingsViewModel(stores: stores,
+                                          storageManager: storageManager,
+                                          featureFlagService: featureFlagService,
+                                          defaults: defaults)
+
+        // When
+        viewModel.onViewDidLoad()
+
+        // Then
+        XCTAssertFalse(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.storeSetupList) })
+    }
+
     // MARK: - `isStoreSetupSettingSwitchOn`
 
     func test_isStoreSetupSettingSwitchOn_is_true_when_shouldHideStoreOnboardingTaskList_is_false() {

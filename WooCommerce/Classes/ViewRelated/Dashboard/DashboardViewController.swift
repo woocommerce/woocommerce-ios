@@ -122,7 +122,7 @@ final class DashboardViewController: UIViewController {
 
     private let viewModel: DashboardViewModel
 
-    private let usageTracksEventEmitter = StoreStatsUsageTracksEventEmitter()
+    private let usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter
 
     private var subscriptions = Set<AnyCancellable>()
     private var navbarObserverSubscription: AnyCancellable?
@@ -139,7 +139,9 @@ final class DashboardViewController: UIViewController {
 
     init(siteID: Int64) {
         self.siteID = siteID
-        self.viewModel = .init(siteID: siteID)
+        let usageTracksEventEmitter = StoreStatsUsageTracksEventEmitter()
+        self.usageTracksEventEmitter = usageTracksEventEmitter
+        self.viewModel = .init(siteID: siteID, usageTracksEventEmitter: usageTracksEventEmitter)
         super.init(nibName: nil, bundle: nil)
         configureTabBarItem()
     }

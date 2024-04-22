@@ -11,7 +11,6 @@ public enum ProductReviewAction: Action {
         pageNumber: Int,
         pageSize: Int,
         products: [Int64]? = nil,
-        status: ProductReviewStatus? = nil,
         onCompletion: (Result<[ProductReview], Error>) -> Void)
 
     /// Retrieves the specified ProductReview.

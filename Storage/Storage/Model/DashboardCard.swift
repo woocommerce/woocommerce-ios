@@ -18,7 +18,8 @@ public struct DashboardCard: Codable, Hashable, Equatable, GeneratedCopiable {
     /// The order of the cases in this enum defines the default order.
     public enum CardType: String, Codable, CaseIterable {
         case onboarding
-        case statsAndTopPerformers // TODO-12403: separate stats and top performers if needed
+        case performance
+        case topPerformers
         case blaze
     }
 }

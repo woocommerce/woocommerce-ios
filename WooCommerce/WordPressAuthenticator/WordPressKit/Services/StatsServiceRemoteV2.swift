@@ -319,10 +319,10 @@ private extension StatsServiceRemoteV2 {
 // MARK: - Emails Summary
 
 public extension StatsServiceRemoteV2 {
-    public func getData(quantity: Int, 
-                        sortField: StatsEmailsSummaryData.SortField = .opens,
-                        sortOrder: StatsEmailsSummaryData.SortOrder = .descending,
-                        completion: @escaping ((Result<StatsEmailsSummaryData, Error>) -> Void)) {
+    func getData(quantity: Int,
+                 sortField: StatsEmailsSummaryData.SortField = .opens,
+                 sortOrder: StatsEmailsSummaryData.SortOrder = .descending,
+                 completion: @escaping ((Result<StatsEmailsSummaryData, Error>) -> Void)) {
         let pathComponent = StatsEmailsSummaryData.pathComponent
         let path = self.path(forEndpoint: "sites/\(siteID)/\(pathComponent)/", withVersion: ._1_1)
         let properties = StatsEmailsSummaryData.queryProperties(quantity: quantity, sortField: sortField, sortOrder: sortOrder) as [String: AnyObject]

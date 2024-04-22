@@ -72,14 +72,119 @@ struct CollapsibleProductRowCardViewModel: Identifiable {
     let stepperViewModel: ProductStepperViewModel
     let priceSummaryViewModel: CollapsibleProductCardPriceSummaryViewModel
 
+    /// Subscription settings extracted from product meta data for a Subscription-type Product, if any
+    ///
+    private(set) var productSubscriptionDetails: ProductSubscription?
+
     private let currencyFormatter: CurrencyFormatter
     private let analytics: Analytics
+
+    /// Determines if Subscription-type product details should be shown
+    ///
+    var shouldShowProductSubscriptionsDetails: Bool {
+        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.subscriptionsInOrderCreationUI) &&
+        productSubscriptionDetails != nil
+    }
+
+    /// Description of the subscription billing interval for a Subscription-type Product
+    /// eg: "Every 2 months"
+    ///
+    var subscriptionBillingIntervalLabel: String? {
+        guard let periodInterval = productSubscriptionDetails?.periodInterval,
+              periodInterval != "0",
+              let period = productSubscriptionDetails?.period else {
+            return nil
+        }
+
+        let pluralizedPeriod = {
+            switch periodInterval {
+            case "1":
+                return period.descriptionSingular
+            default:
+                return period.descriptionPlural
+            }
+        }()
+
+        return String.localizedStringWithFormat(Localization.Subscription.formattedBillingDetails,
+                                                periodInterval,
+                                                pluralizedPeriod)
+    }
+
+    /// Description of the regular subscription price for a Subscription-type Product
+    /// eg: "$3.00"
+    ///
+    var subscriptionPrice: String? {
+        guard let price = productSubscriptionDetails?.price,
+              price != "0",
+              let formattedPrice = currencyFormatter.formatAmount(price) else {
+            return nil
+        }
+
+        return formattedPrice
+    }
+
+    /// Description of the subscription sign up fee for a Subscription-type Product
+    /// eg: "$0.50"
+    ///
+    var subscriptionConditionsSignupFee: String? {
+        guard let signupFee = productSubscriptionDetails?.signUpFee,
+              signupFee.isNotEmpty,
+              signupFee != "0" else {
+            return nil
+        }
+
+        let formattedSignupFee = currencyFormatter.formatAmount(signupFee)
+        return formattedSignupFee
+    }
+
+    /// Label of the subscription sign up fee for a Subscription-type Product
+    /// eg: "$0.50 signup"
+    ///
+    var subscriptionConditionsSignupLabel: String? {
+        guard let subscriptionConditionsSignupFee else {
+            return nil
+        }
+        return String.localizedStringWithFormat(Localization.Subscription.formattedSignUpFee,
+                                                subscriptionConditionsSignupFee)
+    }
+
+    var subscriptionConditionsFreeTrialLabel: String? {
+        // Trial length or period could be nil. Trial length could be zero or empty.
+        // In both cases, the free trial conditions are invalid and should return no label.
+        guard let trialLength = productSubscriptionDetails?.trialLength,
+              let trialPeriod = productSubscriptionDetails?.trialPeriod,
+              trialLength.isNotEmpty,
+              trialLength != "0" else {
+            return nil
+        }
+
+        let pluralizedTrialPeriod = {
+            switch trialLength {
+            case "1":
+                return trialPeriod.descriptionSingular
+            default:
+                return trialPeriod.descriptionPlural
+            }
+        }()
+
+        return String.localizedStringWithFormat(Localization.Subscription.formattedFreeTrial,
+                                                trialLength,
+                                                pluralizedTrialPeriod)
+    }
+
+    var subscriptionConditionsDetailsLabel: String {
+        [subscriptionConditionsSignupLabel, subscriptionConditionsFreeTrialLabel]
+            .compactMap({ $0 })
+            .filter({ $0.isNotEmpty })
+            .joined(separator: " · ")
+    }
 
     init(id: Int64,
          productOrVariationID: Int64,
          hasParentProduct: Bool = false,
          isReadOnly: Bool = false,
          isConfigurable: Bool = false,
+         productSubscriptionDetails: ProductSubscription? = nil,
          imageURL: URL?,
          name: String,
          sku: String?,
@@ -100,6 +205,7 @@ struct CollapsibleProductRowCardViewModel: Identifiable {
         self.hasParentProduct = hasParentProduct
         self.isReadOnly = isReadOnly
         self.isConfigurable = configure != nil ? isConfigurable : false
+        self.productSubscriptionDetails = productSubscriptionDetails
         self.configure = configure
         self.imageURL = imageURL
         self.name = name
@@ -217,5 +323,22 @@ private extension CollapsibleProductRowCardViewModel {
         static let skuFormat = NSLocalizedString("CollapsibleProductRowCardViewModel.skuFormat",
                                                  value: "SKU: %1$@",
                                                  comment: "SKU label for a product in an order. The variable shows the SKU of the product.")
+        enum Subscription {
+            static let formattedBillingDetails = NSLocalizedString(
+                "CollapsibleProductRowCardViewModel.formattedBillingDetails",
+                value: "Every %1$@ %2$@",
+                comment: "Description of the billing and billing frequency for a subscription product. " +
+                "Reads as: 'Every 2 months'.")
+            static let formattedSignUpFee = NSLocalizedString(
+                "CollapsibleProductRowCardViewModel.formattedSignUpFee",
+                value: "%1$@ signup",
+                comment: "Description of the signup fees for a subscription product. " +
+                "Reads as: '$5.00 signup'.")
+            static let formattedFreeTrial = NSLocalizedString(
+                "CollapsibleProductRowCardViewModel.formattedFreeTrial",
+                value: "%1$@ %2$@ free",
+                comment: "Description of the free trial conditions for a subscription product. " +
+                "Reads as: '3 days free'.")
+        }
     }
 }

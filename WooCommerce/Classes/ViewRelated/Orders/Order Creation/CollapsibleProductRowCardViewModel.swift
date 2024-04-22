@@ -127,7 +127,9 @@ struct CollapsibleProductRowCardViewModel: Identifiable {
     /// eg: "$0.50"
     ///
     var subscriptionConditionsSignupFee: String? {
-        guard let signupFee = productSubscriptionDetails?.signUpFee else {
+        guard let signupFee = productSubscriptionDetails?.signUpFee,
+              signupFee.isNotEmpty,
+              signupFee != "0" else {
             return nil
         }
 

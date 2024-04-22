@@ -567,7 +567,7 @@ final class ProductRowViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.subscriptionConditionsLabel, expectedConditionsLabel)
     }
 
-    func test_subscriptionConditionsLabel_when_has_no_signup_fees_and_but_trial_period_then_returns_expected_details() {
+    func test_subscriptionConditionsLabel_when_has_no_signup_fees_but_has_trial_period_then_returns_expected_details() {
         // Given
         let rowID = Int64(0)
         let expectedTrialLength = "1"
@@ -628,6 +628,29 @@ final class ProductRowViewModelTests: XCTestCase {
 
         // Then
         XCTAssertTrue(viewModel.subscriptionConditionsLabel.isEmpty)
+    }
+
+    func test_subscriptionConditionsLabel_when_signup_fee_is_zero_then_returns_no_signup_fee_in_label() {
+        // Given
+        let rowID = Int64(0)
+        let signupFee = "0"
+        let expectedTrialLength = "1"
+        let expectedTrialPeriod = SubscriptionPeriod.week
+        let expectedConditionsLabel = "1 week free"
+
+        let subs: ProductSubscription = createFakeSubscription(signUpFee: signupFee,
+                                                               trialLength: expectedTrialLength,
+                                                               trialPeriod: expectedTrialPeriod)
+        let product = Product.fake().copy(productID: 12,
+                                          name: "A subscription product with zero signup fee",
+                                          productTypeKey: "subscription",
+                                          subscription: subs)
+
+        // When
+        let viewModel = ProductRowViewModel(id: rowID, product: product, productSubscriptionDetails: subs)
+
+        // Then
+        XCTAssertEqual(viewModel.subscriptionConditionsLabel, expectedConditionsLabel)
     }
 }
 

@@ -111,7 +111,7 @@ struct CollapsibleProductRowCardViewModel: Identifiable {
     }
 
     /// Description of the regular subscription price for a Subscription-type Product
-    /// eg: "$3.00 "
+    /// eg: "$3.00"
     ///
     var subscriptionPrice: String? {
         guard let price = productSubscriptionDetails?.price,
@@ -123,6 +123,9 @@ struct CollapsibleProductRowCardViewModel: Identifiable {
         return formattedPrice
     }
 
+    /// Description of the subscription sign up fee for a Subscription-type Product
+    /// eg: "$0.50"
+    ///
     var subscriptionConditionsSignupFee: String? {
         guard let signupFee = productSubscriptionDetails?.signUpFee else {
             return nil
@@ -132,6 +135,9 @@ struct CollapsibleProductRowCardViewModel: Identifiable {
         return formattedSignupFee
     }
 
+    /// Label of the subscription sign up fee for a Subscription-type Product
+    /// eg: "$0.50 signup"
+    ///
     var subscriptionConditionsSignupLabel: String? {
         guard let subscriptionConditionsSignupFee else {
             return nil

@@ -462,7 +462,42 @@ final class CollapsibleProductRowCardViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.productSubscriptionDetails?.price, subscriptionPrice)
     }
 
-    func test_subscriptionConditionsSignupFee() {}
+    func test_productRow_when_subscription_signupFee_is_nil_then_subscriptionConditionsSignupLabel_is_nil() {
+        // Given
+        let productSubscription = createFakeSubscription(signUpFee: nil)
+
+        // When
+        let viewModel = createViewModel(productSubscriptionDetails: productSubscription)
+
+        // Then
+        XCTAssertNil(viewModel.subscriptionConditionsSignupLabel)
+    }
+
+    func test_productRow_when_subscription_signupFee_is_not_nil_then_signUpFee_is_formatted() {
+        // Given
+        let signUpFee = "0.60"
+        let expectedSignUpFee = "$0.60"
+        let productSubscription = createFakeSubscription(signUpFee: signUpFee)
+
+        // When
+        let viewModel = createViewModel(productSubscriptionDetails: productSubscription)
+
+        // Then
+        XCTAssertEqual(viewModel.subscriptionConditionsSignupFee, expectedSignUpFee)
+    }
+
+    func test_productRow_when_subscription_signupFee_is_not_nil_then_signUpFee_label_is_formatted() {
+        // Given
+        let signUpFee = "0.60"
+        let expectedSignUpFeeLabel = "$0.60 signup"
+        let productSubscription = createFakeSubscription(signUpFee: signUpFee)
+
+        // When
+        let viewModel = createViewModel(productSubscriptionDetails: productSubscription)
+
+        // Then
+        XCTAssertEqual(viewModel.subscriptionConditionsSignupLabel, expectedSignUpFeeLabel)
+    }
 }
 
 private extension CollapsibleProductRowCardViewModelTests {

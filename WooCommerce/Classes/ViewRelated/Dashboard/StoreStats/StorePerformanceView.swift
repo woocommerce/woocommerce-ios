@@ -332,7 +332,8 @@ private extension StorePerformanceView {
             )
             static let details = NSLocalizedString(
                 "storePerformanceView.contentUnavailable.details",
-                value: "Make sure you are running the latest version of WooCommerce on your site.",
+                value: "Make sure you are running the latest version of WooCommerce on your site" +
+                " and enabling Analytics in WooCommerce Settings.",
                 comment: "Text that explains how to update WooCommerce to get the latest stats"
             )
             static let buttonTitle = NSLocalizedString(

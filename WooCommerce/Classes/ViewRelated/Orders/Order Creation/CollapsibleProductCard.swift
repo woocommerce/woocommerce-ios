@@ -153,9 +153,11 @@ private struct CollapsibleProductRowCard: View {
                         Text(viewModel.productDetailsLabel)
                             .font(.subheadline)
                             .foregroundColor(isCollapsed ? Color(.textSubtle) : Color(.text))
-                        Text(viewModel.subscriptionConditionsDetailsLabel)
-                            .subheadlineStyle()
-                            .renderedIf(viewModel.shouldShowProductSubscriptionsDetails && isCollapsed)
+                        if let subscriptionConditionsDetailsLabel = viewModel.subscriptionConditionsDetailsLabel {
+                            Text(subscriptionConditionsDetailsLabel)
+                                .subheadlineStyle()
+                                .renderedIf(viewModel.shouldShowProductSubscriptionsDetails && isCollapsed)
+                        }
                         HStack {
                             if let billingInterval = viewModel.subscriptionBillingIntervalLabel {
                                 Text(billingInterval)

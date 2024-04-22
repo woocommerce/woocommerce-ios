@@ -172,7 +172,7 @@ struct CollapsibleProductRowCardViewModel: Identifiable {
                                                 pluralizedTrialPeriod)
     }
 
-    var subscriptionConditionsDetailsLabel: String {
+    var subscriptionConditionsDetailsLabel: String? {
         [subscriptionConditionsSignupLabel, subscriptionConditionsFreeTrialLabel]
             .compactMap({ $0 })
             .filter({ $0.isNotEmpty })

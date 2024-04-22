@@ -498,6 +498,53 @@ final class CollapsibleProductRowCardViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(viewModel.subscriptionConditionsSignupLabel, expectedSignUpFeeLabel)
     }
+
+    func test_productRow_when_subscription_free_trial_is_nil_or_zero_then_subscriptionConditionsFreeTrialLabel_is_nil() {
+        // Given
+        let subscriptions = [
+            createFakeSubscription(trialLength: nil),
+            createFakeSubscription(trialLength: "0"),
+            createFakeSubscription(trialLength: ""),
+        ]
+
+        for productSubscription in subscriptions.makeIterator() {
+            // When
+            let viewModel = createViewModel(productSubscriptionDetails: productSubscription)
+
+            // Then
+            XCTAssertNil(viewModel.subscriptionConditionsFreeTrialLabel)
+        }
+    }
+
+    func test_productRow_when_subscription_free_trialLength_is_one_then_subscriptionConditionsFreeTrialLabel_is_singular() {
+        // Given
+        let trialLength = "1"
+        let trialPeriod = SubscriptionPeriod.week
+        let expectedFreeTrialLabel = "1 week free"
+        let productSubscription = createFakeSubscription(trialLength: trialLength, trialPeriod: trialPeriod)
+
+        // When
+        let viewModel = createViewModel(productSubscriptionDetails: productSubscription)
+
+        // Then
+        XCTAssertEqual(viewModel.subscriptionConditionsFreeTrialLabel, expectedFreeTrialLabel)
+
+    }
+
+    func test_productRow_when_subscription_free_trialLength_is_more_than_one_then_subscriptionConditionsFreeTrialLabel_is_plural() {
+        // Given
+        let trialLength = "5"
+        let trialPeriod = SubscriptionPeriod.day
+        let expectedFreeTrialLabel = "5 days free"
+        let productSubscription = createFakeSubscription(trialLength: trialLength, trialPeriod: trialPeriod)
+
+        // When
+        let viewModel = createViewModel(productSubscriptionDetails: productSubscription)
+
+        // Then
+        XCTAssertEqual(viewModel.subscriptionConditionsFreeTrialLabel, expectedFreeTrialLabel)
+
+    }
 }
 
 private extension CollapsibleProductRowCardViewModelTests {

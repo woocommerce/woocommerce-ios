@@ -147,10 +147,12 @@ struct CollapsibleProductRowCardViewModel: Identifiable {
     }
 
     var subscriptionConditionsFreeTrialLabel: String? {
-        // If either the trial length or period are nil, or the length is zero, the free trial conditions should be nil.
+        // Trial length or period could be nil. Trial length could be zero or empty.
+        // In both cases, the free trial conditions are invalid and should return no label.
         guard let trialLength = productSubscriptionDetails?.trialLength,
               let trialPeriod = productSubscriptionDetails?.trialPeriod,
-                trialLength != "0" else {
+              trialLength.isNotEmpty,
+              trialLength != "0" else {
             return nil
         }
 

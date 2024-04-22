@@ -14,6 +14,9 @@ struct MultiSelectionReorderableList<T: Hashable, Content: View>: View {
     /// Items in addition to the list of `contents` that can't be moved or selected.
     private let inactiveItems: [T]
 
+    /// Optional closure to provide a tap gesture for inactive item rows.
+    private let inactiveItemTapGesture: ((T) -> Void)?
+
     /// Accessory view to display next to inactive items.
     @ViewBuilder private let inactiveAccessoryView: (T) -> Content
 
@@ -21,22 +24,26 @@ struct MultiSelectionReorderableList<T: Hashable, Content: View>: View {
          contentKeyPath: KeyPath<T, String>,
          selectedItems: Binding<Set<T>>,
          inactiveItems: [T] = [],
+         inactiveItemTapGesture: ((T) -> Void)? = nil,
          inactiveAccessoryView: @escaping (T) -> Content) {
         self._contents = contents
         self.contentKeyPath = contentKeyPath
         self._selectedItems = selectedItems
         self.inactiveItems = inactiveItems
+        self.inactiveItemTapGesture = inactiveItemTapGesture
         self.inactiveAccessoryView = inactiveAccessoryView
     }
 
     init(contents: Binding<[T]>,
          contentKeyPath: KeyPath<T, String>,
          selectedItems: Binding<Set<T>>,
-         inactiveItems: [T] = []) where Content == EmptyView {
+         inactiveItems: [T] = [],
+         inactiveItemTapGesture: ((T) -> Void)? = nil) where Content == EmptyView {
         self.init(contents: contents,
                   contentKeyPath: contentKeyPath,
                   selectedItems: selectedItems,
                   inactiveItems: inactiveItems,
+                  inactiveItemTapGesture: inactiveItemTapGesture,
                   inactiveAccessoryView: { _ in EmptyView() })
     }
 
@@ -62,6 +69,10 @@ struct MultiSelectionReorderableList<T: Hashable, Content: View>: View {
                         Text(item[keyPath: contentKeyPath])
                         Spacer()
                         inactiveAccessoryView(item)
+                    }
+                    .contentShape(Rectangle())
+                    .onTapGesture {
+                        inactiveItemTapGesture?(item)
                     }
                 }
                 .frame(height: Layout.inactiveRowHeight)

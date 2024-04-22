@@ -14,6 +14,9 @@ struct AnalyticsHubCustomizeView: View {
                                       contentKeyPath: \.name,
                                       selectedItems: $viewModel.selectedCards,
                                       inactiveItems: viewModel.inactiveCards,
+                                      inactiveItemTapGesture: { card in
+            openWebview(for: viewModel.promoURL(for: card))
+        },
                                       inactiveAccessoryView: { card in
             exploreButton(with: viewModel.promoURL(for: card))
         })
@@ -47,7 +50,7 @@ private extension AnalyticsHubCustomizeView {
     @ViewBuilder func exploreButton(with promoURL: URL?) -> some View {
         if let promoURL {
             Button {
-                selectedPromoURL = promoURL
+                openWebview(for: promoURL)
             } label: {
                 Text(Localization.explore)
                     .foregroundColor(Color(.primary))
@@ -58,6 +61,12 @@ private extension AnalyticsHubCustomizeView {
         } else {
             EmptyView()
         }
+    }
+
+    /// Opens the provided URL in a webview.
+    ///
+    func openWebview(for promoURL: URL?) {
+        selectedPromoURL = promoURL
     }
 }
 

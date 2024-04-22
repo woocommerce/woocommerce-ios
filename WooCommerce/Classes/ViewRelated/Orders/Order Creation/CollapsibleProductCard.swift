@@ -153,8 +153,8 @@ private struct CollapsibleProductRowCard: View {
                         Text(viewModel.productDetailsLabel)
                             .font(.subheadline)
                             .foregroundColor(isCollapsed ? Color(.textSubtle) : Color(.text))
-                        if let subscriptionConditionsDetailsLabel = viewModel.subscriptionConditionsDetailsLabel {
-                            Text(subscriptionConditionsDetailsLabel)
+                        if !viewModel.subscriptionConditionsDetailsLabel.isEmpty {
+                            Text(viewModel.subscriptionConditionsDetailsLabel)
                                 .subheadlineStyle()
                                 .renderedIf(viewModel.shouldShowProductSubscriptionsDetails && isCollapsed)
                         }

@@ -1,7 +1,7 @@
 import Foundation
 import WordPressShared
 
-public struct StatsEmailsSummaryData: Decodable {
+public struct StatsEmailsSummaryData: Decodable, Equatable {
     public let posts: [Post]
 
     public init(posts: [Post]) {
@@ -17,14 +17,24 @@ public struct StatsEmailsSummaryData: Decodable {
         posts = try container.decode([Post].self, forKey: .posts)
     }
 
-    public struct Post: Codable {
-        let id: Int
-        let link: URL
-        let date: Date
-        let title: String
-        let type: PostType
-        let opens: Int
-        let clicks: Int
+    public struct Post: Codable, Equatable {
+        public let id: Int
+        public let link: URL
+        public let date: Date
+        public let title: String
+        public let type: PostType
+        public let opens: Int
+        public let clicks: Int
+
+        public init(id: Int, link: URL, date: Date, title: String, type: PostType, opens: Int, clicks: Int) {
+            self.id = id
+            self.link = link
+            self.date = date
+            self.title = title
+            self.type = type
+            self.opens = opens
+            self.clicks = clicks
+        }
 
         public enum PostType: String, Codable {
             case post = "post"

@@ -73,8 +73,24 @@ extension StoreStatsChartViewModel {
             return 5
         case .thisYear:
             return 3
-        case .custom:
-            return 5
+        case let .custom(start, end):
+            let difference: Int = {
+                var calendar = Calendar.current
+                calendar.timeZone = .siteTimezone
+                switch xAxisStride {
+                case .year:
+                    return calendar.dateComponents([.year], from: start, to: end).year ?? 0
+                case .month:
+                    return calendar.dateComponents([.month], from: start, to: end).month ?? 0
+                case .day:
+                    return calendar.dateComponents([.day], from: start, to: end).day ?? 0
+                case .hour:
+                    return calendar.dateComponents([.hour], from: start, to: end).hour ?? 0
+                default:
+                    return 0
+                }
+            }()
+            return difference <= Constants.maximumItemsForXAxis ? 1 : difference / Constants.maximumItemsForXAxis
         }
     }
 
@@ -124,5 +140,11 @@ extension StoreStatsChartViewModel {
                                 currencySymbol: currencySymbol,
                                 isNegative: revenue.sign == .minus)
         }
+    }
+}
+
+private extension StoreStatsChartViewModel {
+    enum Constants {
+        static let maximumItemsForXAxis = 5
     }
 }

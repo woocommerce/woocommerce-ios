@@ -456,21 +456,22 @@ private extension DashboardViewModel {
 
     @MainActor
     func updateHasOrdersStatus() async {
-        hasOrders = await loadHasOrdersStatus()
+        do {
+            hasOrders = try await loadHasOrdersStatus()
+        } catch {
+            DDLogError("⛔️ Dashboard (Share Your Store) — Error checking if site has orders: \(error)")
+        }
     }
 
     @MainActor
-    func loadHasOrdersStatus() async -> Bool {
-        await withCheckedContinuation { continuation in
-            stores.dispatch(OrderAction.checkIfStoreHasOrders(siteID: self.siteID, onCompletion: { [weak self] result in
-                guard let self else { return }
-
+    func loadHasOrdersStatus() async throws -> Bool {
+        return try await withCheckedThrowingContinuation { continuation in
+            stores.dispatch(OrderAction.checkIfStoreHasOrders(siteID: self.siteID, onCompletion: { result in
                 switch result {
                 case .success(let hasOrders):
                     continuation.resume(returning: hasOrders)
                 case .failure(let error):
-                    DDLogError("⛔️ Dashboard (Share Your Store) — Error checking if site has orders: \(error)")
-                    continuation.resume(returning: self.hasOrders) // Use original value on error
+                    continuation.resume(throwing: error)
                 }
             }))
         }

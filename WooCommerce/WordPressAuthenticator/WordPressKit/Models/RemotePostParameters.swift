@@ -219,9 +219,7 @@ struct RemotePostCreateParametersWordPressComEncoder: Encodable {
         }
 
         // Pages
-        if let parentPageID = parameters.parentPageID {
-            try container.encodeIfPresent(parentPageID, forKey: .parentPageID)
-        }
+        try container.encodeIfPresent(parameters.parentPageID, forKey: .parentPageID)
 
         // Posts
         try container.encodeIfPresent(parameters.format, forKey: .format)
@@ -297,12 +295,7 @@ struct RemotePostUpdateParametersWordPressComEncoder: Encodable {
         try container.encodeIfPresent(parameters.excerpt, forKey: .excerpt)
         try container.encodeIfPresent(parameters.slug, forKey: .slug)
         if let value = parameters.featuredImageID {
-            if let featuredImageID = value {
-                try container.encode(featuredImageID, forKey: .featuredImageID)
-            } else {
-                // Passing `null` doesn't work.
-                try container.encode("", forKey: .featuredImageID)
-            }
+            try container.encodeNullableID(value, forKey: .featuredImageID)
         }
         if let metadata = parameters.metadata, !metadata.isEmpty {
             let metadata = metadata.map(RemotePostUpdateParametersWordPressComMetadata.init)
@@ -311,7 +304,7 @@ struct RemotePostUpdateParametersWordPressComEncoder: Encodable {
 
         // Pages
         if let parentPageID = parameters.parentPageID {
-            try container.encodeIfPresent(parentPageID, forKey: .parentPageID)
+            try container.encodeNullableID(parentPageID, forKey: .parentPageID)
         }
 
         // Posts
@@ -370,9 +363,7 @@ struct RemotePostCreateParametersXMLRPCEncoder: Encodable {
         }
 
         // Pages
-        if let parentPageID = parameters.parentPageID {
-            try container.encodeIfPresent(parentPageID, forKey: .parentPageID)
-        }
+        try container.encodeIfPresent(parameters.parentPageID, forKey: .parentPageID)
 
         // Posts
         try container.encodeIfPresent(parameters.format, forKey: .format)
@@ -403,12 +394,7 @@ struct RemotePostUpdateParametersXMLRPCEncoder: Encodable {
         try container.encodeStringIfPresent(parameters.excerpt, forKey: .excerpt)
         try container.encodeStringIfPresent(parameters.slug, forKey: .slug)
         if let value = parameters.featuredImageID {
-            if let featuredImageID = value {
-                try container.encode(featuredImageID, forKey: .featuredImageID)
-            } else {
-                // Passing `null` doesn't work.
-                try container.encode("", forKey: .featuredImageID)
-            }
+            try container.encodeNullableID(value, forKey: .featuredImageID)
         }
         if let metadata = parameters.metadata, !metadata.isEmpty {
             let metadata = metadata.map(RemotePostUpdateParametersXMLRPCMetadata.init)
@@ -417,7 +403,7 @@ struct RemotePostUpdateParametersXMLRPCEncoder: Encodable {
 
         // Pages
         if let parentPageID = parameters.parentPageID {
-            try container.encodeIfPresent(parentPageID, forKey: .parentPageID)
+            try container.encodeNullableID(parentPageID, forKey: .parentPageID)
         }
 
         // Posts
@@ -448,5 +434,15 @@ private extension KeyedEncodingContainer {
     mutating func encodeStringIfPresent(_ value: String??, forKey key: Key) throws {
         guard let value else { return }
         try encode(value ?? "", forKey: key)
+    }
+
+    /// - note: Some IDs are passed as integers, but, to reset them, you need to pass
+    /// an empty string (passing `nil` does not work)
+    mutating func encodeNullableID(_ value: Int?, forKey key: Key) throws {
+        if let value {
+            try encode(value, forKey: key)
+        } else {
+            try encode("", forKey: key)
+        }
     }
 }

@@ -58,8 +58,10 @@ struct StoreStatsChart: View {
             }
         }
         .chartXAxis {
-            AxisMarks(values: .stride(by: viewModel.xAxisStride,
-                                      count: viewModel.xAxisStrideCount)) { date in
+            AxisMarks(preset: .aligned, values: .stride(by: viewModel.xAxisStride,
+                                                        count: viewModel.xAxisStrideCount,
+                                                        roundLowerBound: true,
+                                                        roundUpperBound: true)) { date in
                 AxisValueLabel(format: viewModel.xAxisLabelFormatStyle(for: date.as(Date.self) ?? Date()))
             }
         }

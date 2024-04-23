@@ -2,7 +2,7 @@
 common_params:
   # Common plugin settings to use with the `plugins` key.
   - &common_plugins
-    - automattic/a8c-ci-toolkit#3.1.0
+    - automattic/a8c-ci-toolkit#3.3.0
   # Common environment values to use with the `env` key.
   - &common_env
     # Be sure to also update the `.xcode-version` file when updating the Xcode image/version here
@@ -54,13 +54,12 @@ steps:
   - group: Linters
     steps:
       - label: ":swift: SwiftLint"
-        command: run_swiftlint --strict
-        plugins: *common_plugins
+        command: swiftlint
         notify:
           - github_commit_status:
               context: "SwiftLint"
         agents:
-          queue: "default"
+          queue: "linter"
 
       - label: "🧹 Lint Translations"
         command: "gplint /workdir/WooCommerce/Resources/AppStoreStrings.pot"

@@ -90,7 +90,7 @@ struct DashboardView: View {
                 }
             }
         }
-        .toolbarBackground(Color(.listBackground), for: .navigationBar)
+        .toolbarBackground(Color.clear, for: .navigationBar)
         .toolbar(.visible, for: .navigationBar)
         .onReceive(ServiceLocator.stores.site) { currentSite in
             self.currentSite = currentSite

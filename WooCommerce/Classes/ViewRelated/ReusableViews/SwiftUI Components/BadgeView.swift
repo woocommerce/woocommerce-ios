@@ -127,7 +127,7 @@ private extension BadgeView {
         static let horizontalPadding: CGFloat = 6
         static let verticalPadding: CGFloat = 4
         static let borderLineWidth: CGFloat = 1
-        static var cornerRadius: CGFloat { 8 }
+        static let cornerRadius: CGFloat = 8
     }
 }
 

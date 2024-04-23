@@ -151,10 +151,10 @@ private struct CollapsibleProductRowCard: View {
                                           foregroundColor: Color(UIColor.listSmallIcon))
                     .padding(.leading, viewModel.hasParentProduct ? Layout.childLeadingPadding : 0)
                     .overlay(alignment: .topTrailing) {
-                        BadgeView(text: "\(viewModel.stepperViewModel.quantity)",
-                                  customizations: .init(textColor: .white, backgroundColor: .black),
-                                  backgroundShape: .circle)
-                        .offset(x: 8, y: -8)
+                        BadgeView(text: badgeQuantity,
+                                  customizations: .init(textColor: Color(.textInverted), backgroundColor: .black),
+                                  backgroundShape: badgeStyle)
+                        .offset(x: Layout.badgeOffset, y: -Layout.badgeOffset)
                         .renderedIf(shouldShowBadgeCounter)
                     }
                     VStack(alignment: .leading) {
@@ -381,6 +381,26 @@ private extension CollapsibleProductRowCard {
 }
 
 private extension CollapsibleProductRowCard {
+    /// Displays the product quantity in the product card badge while is within 2 digits,
+    /// for higher quantities displays "99+"
+    var badgeQuantity: String {
+        if viewModel.stepperViewModel.quantity < 100 {
+           return "\(viewModel.stepperViewModel.quantity)"
+        } else {
+            return "99+"
+        }
+    }
+
+    /// Displays a different badge background shape based on the product quantity
+    /// Circular for 2-digit quantities, rounded for 3-digit quantities or more
+    var badgeStyle: BadgeView.BackgroundShape {
+        if viewModel.stepperViewModel.quantity < 100 {
+            return .circle
+        } else {
+            return .roundedRectangle(cornerRadius: Layout.badgeOffset)
+        }
+    }
+
     enum Layout {
         static let padding: CGFloat = 16
         static let childLeadingPadding: CGFloat = 16.0
@@ -392,6 +412,7 @@ private extension CollapsibleProductRowCard {
         static let iconSize: CGFloat = 16
         static let deleteIconSize: CGFloat = 24.0
         static let rowMinHeight: CGFloat = 40.0
+        static let badgeOffset: CGFloat = 8.0
     }
 
     enum Localization {

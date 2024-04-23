@@ -72,7 +72,7 @@ struct DashboardView: View {
             featureAnnouncementCard
 
             // Card views
-            dashboardCards(canShowShareCard: viewModel.canShowShareStoreCard)
+            dashboardCards
                 .padding(.vertical, Layout.padding)
         }
         .background(Color(.listBackground))
@@ -139,7 +139,7 @@ struct DashboardView: View {
 //
 private extension DashboardView {
     @ViewBuilder
-    func dashboardCards(canShowShareCard: Bool) -> some View {
+    var dashboardCards: some View {
         VStack(spacing: Layout.padding) {
             ForEach(viewModel.dashboardCards, id: \.hashValue) { card in
                 if card.enabled {
@@ -179,7 +179,7 @@ private extension DashboardView {
                 }
             }
 
-            if canShowShareCard {
+            if viewModel.canShowShareStoreCard {
                 shareStoreCard
             }
         }

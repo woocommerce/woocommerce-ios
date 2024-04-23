@@ -109,12 +109,21 @@ private extension StorePerformanceView {
     var timeRangeBar: some View {
         HStack {
             AdaptiveStack(horizontalAlignment: .leading) {
-                Text(viewModel.timeRange.tabTitle)
+                Text(viewModel.timeRange.isCustomTimeRange ?
+                     Localization.custom : viewModel.timeRange.tabTitle)
                     .foregroundStyle(Color(.text))
                     .subheadlineStyle()
-                if let selectedDateText = viewModel.selectedDateText {
-                    Text(selectedDateText)
+                if viewModel.timeRange.isCustomTimeRange {
+                    Button {
+                        showingCustomRangePicker = true
+                    } label: {
+                        HStack {
+                            Text(viewModel.timeRangeText)
+                            Image(systemName: "pencil")
+                        }
+                        .foregroundStyle(Color.accentColor)
                         .subheadlineStyle()
+                    }
                 } else {
                     Text(viewModel.timeRangeText)
                         .subheadlineStyle()
@@ -135,6 +144,11 @@ private extension StorePerformanceView {
     var statsView: some View {
         VStack(spacing: Layout.padding) {
             VStack(spacing: Layout.contentVerticalSpacing) {
+                if let selectedDateText = viewModel.selectedDateText {
+                    Text(selectedDateText)
+                        .font(Font(StyleManager.statsTitleFont))
+                }
+
                 Text(viewModel.revenueStatsText)
                     .fontWeight(.semibold)
                     .foregroundStyle(statsValueColor)
@@ -300,6 +314,11 @@ private extension StorePerformanceView {
             "storePerformanceView.hideCard",
             value: "Hide Performance",
             comment: "Menu item to dismiss the store performance section on the Dashboard screen"
+        )
+        static let custom = NSLocalizedString(
+            "storePerformanceView.custom",
+            value: "Custom",
+            comment: "Title of the custom time range on the store performance card on the Dashboard screen"
         )
         static let revenue = NSLocalizedString(
             "storePerformanceView.revenue",

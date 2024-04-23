@@ -396,6 +396,7 @@ final class CollapsibleProductRowCardViewModelTests: XCTestCase {
                                         name: product.name,
                                         price: productPrice)
 
+        // Then
         XCTAssertEqual(viewModel.price, productPrice)
         XCTAssertEqual(viewModel.subscriptionPrice, nil)
         XCTAssertEqual(viewModel.productSubscriptionDetails, nil)
@@ -416,6 +417,7 @@ final class CollapsibleProductRowCardViewModelTests: XCTestCase {
                                         name: product.name,
                                         price: productPrice)
 
+        // Then
         XCTAssertEqual(viewModel.price, productPrice)
         XCTAssertEqual(viewModel.subscriptionPrice, nil)
         XCTAssertEqual(viewModel.productSubscriptionDetails, zeroPriceProductSubscription)
@@ -437,6 +439,62 @@ final class CollapsibleProductRowCardViewModelTests: XCTestCase {
                                         name: product.name,
                                         price: productPrice)
 
+        // Then
+        XCTAssertEqual(viewModel.price, productPrice)
+        XCTAssertEqual(viewModel.subscriptionPrice, expectedFormattedPrice)
+        XCTAssertEqual(viewModel.productSubscriptionDetails, productSubscription)
+    }
+
+    func test_productRow_when_item_has_product_price_different_than_subscription_price_then_product_price_is_used() {
+        // Given
+        let productPrice = "5"
+        let subscriptionPrice = "10"
+        let productQuantity = Decimal(10)
+        let expectedFormattedPrice = "$50.00"
+
+        let productSubscription: ProductSubscription? = createFakeSubscription(price: subscriptionPrice)
+        let product = Product.fake().copy(productID: 12,
+                                          name: "A subscription product",
+                                          price: productPrice,
+                                          subscription: productSubscription)
+
+        // When
+        let viewModel = createViewModel(id: product.productID,
+                                        productSubscriptionDetails: product.subscription,
+                                        name: product.name,
+                                        price: productPrice,
+                                        stepperViewModel: .init(quantity: productQuantity,
+                                                                name: "",
+                                                                quantityUpdatedCallback: { _ in }))
+
+        // Then
+        XCTAssertEqual(viewModel.price, productPrice)
+        XCTAssertEqual(viewModel.subscriptionPrice, expectedFormattedPrice)
+        XCTAssertEqual(viewModel.productSubscriptionDetails, productSubscription)
+    }
+
+    func test_productRow_when_item_has_more_than_one_quantity_then_subscriptionPrice_is_formatted_properly() {
+        // Given
+        let productPrice = "10"
+        let productQuantity = Decimal(10)
+        let expectedFormattedPrice = "$100.00"
+
+        let productSubscription = createFakeSubscription(price: productPrice)
+        let product = Product.fake().copy(productID: 12,
+                                          name: "A subscription product",
+                                          price: productPrice,
+                                          subscription: productSubscription)
+
+        // When
+        let viewModel = createViewModel(id: product.productID,
+                                        productSubscriptionDetails: product.subscription,
+                                        name: product.name,
+                                        price: productPrice,
+                                        stepperViewModel: .init(quantity: productQuantity,
+                                                                name: "",
+                                                                quantityUpdatedCallback: { _ in }))
+
+        // Then
         XCTAssertEqual(viewModel.price, productPrice)
         XCTAssertEqual(viewModel.subscriptionPrice, expectedFormattedPrice)
         XCTAssertEqual(viewModel.productSubscriptionDetails, productSubscription)
@@ -458,6 +516,7 @@ final class CollapsibleProductRowCardViewModelTests: XCTestCase {
                                         name: product.name,
                                         price: productPrice)
 
+        // Then
         XCTAssertEqual(viewModel.price, productPrice)
         XCTAssertEqual(viewModel.productSubscriptionDetails?.price, subscriptionPrice)
     }

@@ -219,9 +219,7 @@ struct RemotePostCreateParametersWordPressComEncoder: Encodable {
         }
 
         // Pages
-        if let parentPageID = parameters.parentPageID {
-            try container.encodeIfPresent(parentPageID, forKey: .parentPageID)
-        }
+        try container.encodeIfPresent(parameters.parentPageID, forKey: .parentPageID)
 
         // Posts
         try container.encodeIfPresent(parameters.format, forKey: .format)
@@ -365,9 +363,7 @@ struct RemotePostCreateParametersXMLRPCEncoder: Encodable {
         }
 
         // Pages
-        if let parentPageID = parameters.parentPageID {
-            try container.encodeNullableID(parentPageID, forKey: .parentPageID)
-        }
+        try container.encodeIfPresent(parameters.parentPageID, forKey: .parentPageID)
 
         // Posts
         try container.encodeIfPresent(parameters.format, forKey: .format)
@@ -407,7 +403,7 @@ struct RemotePostUpdateParametersXMLRPCEncoder: Encodable {
 
         // Pages
         if let parentPageID = parameters.parentPageID {
-            try container.encodeIfPresent(parentPageID, forKey: .parentPageID)
+            try container.encodeNullableID(parentPageID, forKey: .parentPageID)
         }
 
         // Posts

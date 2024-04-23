@@ -105,7 +105,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         // Signup fees
         var formattedSignUpFee: String = ""
 
-        if let signUpFee = productSubscriptionDetails?.signUpFee, !signUpFee.isEmpty {
+        if let signUpFee = productSubscriptionDetails?.signUpFee, !signUpFee.isEmpty, signUpFee != "0" {
             formattedSignUpFee = currencyFormatter.formatAmount(signUpFee) ?? ""
         }
 
@@ -117,14 +117,10 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
             // If trial period is missing, we can skip formatting the rest
             guard let trialPeriod = trialPeriod else { return "" }
             switch trialLength {
-            case "":
-                // The API allows an empty value for trial length, with a non-nil trial period.
-                // eg: every -empty- days
+            case "", "0":
+                // The API allows empty and 0 as values for trial length, with a non-nil trial period.
+                // eg: "every -empty- days", or "every 0 days"
                 return ""
-            case "0":
-                // The API allows to input a 0-length trial length, with a non-nil trial period.
-                // eg: every zero days
-                return "0"
             case "1":
                 return trialPeriod.descriptionSingular
             default:
@@ -132,8 +128,8 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
             }
         }()
 
-        let hasNoSignUpFees = formattedSignUpFee.isEmpty || formattedSignUpFee == "0"
-        let hasNoFreeTrial = formattedTrialDetails.isEmpty || formattedTrialDetails == "0"
+        let hasNoSignUpFees = formattedSignUpFee.isEmpty
+        let hasNoFreeTrial = formattedTrialDetails.isEmpty
 
         switch (hasNoSignUpFees, hasNoFreeTrial) {
         case (true, true):

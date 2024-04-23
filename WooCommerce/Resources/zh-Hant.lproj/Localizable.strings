@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-04-09 13:54:03+0000 */
+/* Translation-Revision-Date: 2024-04-16 13:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_TW */
@@ -4676,7 +4676,7 @@ which should be translated separately and considered part of this sentence. */
 "More options" = "更多選項";
 
 /* More Privacy toggle section in the privacy screen. */
-"More privacy options available for woo.com users. Check here to learn more." = "woo.com 為使用者提供更多隱私權選項。 如要瞭解詳情，請查看此處。";
+"More privacy options available for woocommerce.com users. Check here to learn more." = "woocommerce.com 為使用者提供更多隱私權選項。 若想深入了解，請查看此處。";
 
 /* Country option for a site address. */
 "Morocco" = "摩洛哥";
@@ -5941,6 +5941,18 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message when the scanner cannot find a matching product. %@ is the SKU code. */
 "Product with SKU \"%@\" not found." = "找不到貨號為「%@」的產品。";
+
+/* Description of the subscription price for a product, with price and billing frequency. Reads as: '$60.00 / 2 months'. */
+"ProductRowViewModel.formattedProductSubscriptionBilling" = "%2$@ %3$@只需 %1$@";
+
+/* Description of the subscription conditions for a subscription product, with signup fees and free trials.Reads as: '$25.00 signup · 1 month free'. */
+"ProductRowViewModel.formattedProductSubscriptionConditions" = "註冊費只需 %1$@ · %2$@ %3$@免費";
+
+/* Description of the subscription conditions for a subscription product, with only free trial.Reads as: '1 month free'. */
+"ProductRowViewModel.formattedProductSubscriptionConditionsWithoutSignup" = "%1$@ %2$@免費";
+
+/* Description of the subscription conditions for a subscription product, with signup fees but no trial.Reads as: '$25.00 signup'. */
+"ProductRowViewModel.formattedProductSubscriptionConditionsWithoutTrial" = "註冊費只需 %1$@";
 
 /* Display label for the composite product's component option type
    Product section title if there is more than one product.
@@ -9765,7 +9777,7 @@ which should be translated separately and considered part of this sentence. */
 /* Button to copy phone number to clipboard */
 "billingInformationViewController.action.copyPhoneNumber" = "複製電話號碼";
 
-/* Blaze Ad Destination: The final URl destination including optional parameters. %1$@ will be replaced by the URL text. Read like: Destination: https://woo.com/2022/04/11/product/?parameterkey=parametervalue */
+/* Blaze Ad Destination: The final URl destination including optional parameters. %1$@ will be replaced by the URL text. Read like: Destination: https://woocommerce.com/2022/04/11/product/?parameterkey=parametervalue */
 "blazeAdDestinationSettingVieModel.finalDestination" = "目的地：%1$@";
 
 /* Blaze Ad Destination: Plural form for characters limit label. %1$d will be replaced by a number. Read like: 10 characters remaining */
@@ -9933,6 +9945,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Message on the Blaze campaign creation error screen. */
 "blazeCampaignCreationError.failedToUploadCampaignImage" = "無法上傳行銷活動圖片。";
+
+/* Message on the Blaze campaign creation error screen. */
+"blazeCampaignCreationError.insufficientImageSize" = "圖片尺寸不足以裁切。 請選取其他行銷活動的圖片。";
 
 /* Button to dismiss the flow on the Blaze campaign creation error screen. */
 "blazeCampaignCreationErrorView.cancel" = "取消行銷活動";
@@ -10125,6 +10140,10 @@ which should be translated separately and considered part of this sentence. */
 
 /* Change image button title in the Blaze Edit Ad screen. */
 "blazeEditAdView.image.changeImage" = "變更圖片";
+
+/* Button to dismiss the image view alert.
+   Error message displayed when selected campaign image is not large enough. */
+"blazeEditAdView.image.imageSizeError" = "請選取並使用最小尺寸為 600x600 像素的圖片。";
 
 /* Save button in the Blaze Edit Ad screen. */
 "blazeEditAdView.save" = "儲存";
@@ -10598,6 +10617,36 @@ which should be translated separately and considered part of this sentence. */
 /* Title for Customers list screen */
 "customersList.title" = "顧客";
 
+/* Name for the Blaze dashboard card in the Customize Dashboard screen */
+"dashboardCard.name.blaze" = "Blaze";
+
+/* Name for the Store Onboarding dashboard card in the Customize Dashboard screen */
+"dashboardCard.name.onboarding" = "商店申請";
+
+/* Name for the Store Stats and Top Performers dashboard card in the Customize Dashboard screen */
+"dashboardCard.name.statsAndTopPerformers" = "商店統計與成效最佳者";
+
+/* Button to save changes on the Customize Dashboard screen */
+"dashboardCustomization.saveButton" = "儲存";
+
+/* Title for the screen to customize the dashboard screen */
+"dashboardCustomization.title" = "自訂儀表板";
+
+/* Text on unavailable dashboard card on the Customize Dashboard screen */
+"dashboardCustomization.unavailable" = "無法使用";
+
+/* Title on the banner when the site's WooExpress plan has expired */
+"dashboardView.storePlanBanner.expired" = "你的網站方案已結束。";
+
+/* Button to dismiss the support form from the Blaze confirm payment view screen. */
+"dashboardView.supportForm.done" = "完成";
+
+/* Title of the bottom tab item that presents the user's store dashboard, and default title for the store dashboard */
+"dashboardView.title" = "我的商店";
+
+/* Title of the bottom tab item that presents the user's store dashboard, and default title for the store dashboard */
+"dashboardViewHostingController.title" = "我的商店";
+
 /* Display label for a product's subscription period when it is a single day. */
 "day" = "天";
 
@@ -10740,6 +10789,15 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the view containing a single Product Review */
 "hubMenu.productReview" = "商品評論";
 
+/* Title for Add Order home screen action */
+"infoplist.AddOrderAction.Title" = "新訂單";
+
+/* Title for Add Product home screen action */
+"infoplist.AddProductAction.Title" = "新增商品";
+
+/* Title for Payments home screen action */
+"infoplist.CollectPaymentAction.Title" = "收取款項";
+
 /* A message that tells the user why the app needs access to Bluetooth. */
 "infoplist.NSBluetoothAlwaysUsageDescription" = "此應用程式使用藍牙來與支援的讀卡機連線。";
 
@@ -10754,6 +10812,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* A message that tells the user why the app is requesting access to the user’s photo library. */
 "infoplist.NSPhotoLibraryUsageDescription" = "用於儲存相機照片做為商品圖片，或為商品或支援票證新增照片或影片。";
+
+/* Title for Orders home screen action */
+"infoplist.OpenOrdersAction.Title" = "訂單";
+
+/* Title for Payments home screen action */
+"infoplist.OpenPaymentsAction.Title" = "付款";
 
 /* Title for the WPCom login screens when Jetpack is not connected yet */
 "jetpackSetupCoordinator.loginSubtitle" = "連結 Jetpack";
@@ -10805,6 +10869,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* An accessibility label used when the balances are loading on the payments menu */
 "menu.payments.depositSummary.loading.accessibilityLabel" = "正在載入餘額…";
+
+/* Notice text after completing a payment order from In-Person Payments in the Menu */
+"menu.payments.inPersonPayments.collectPayment.notice.orderCompleted" = "🎉 已完成訂單";
+
+/* Notice text after creating an order from In-Person Payments in the Menu */
+"menu.payments.inPersonPayments.collectPayment.notice.orderCreated" = "🎉 已建立訂單";
 
 /* A label prompting users to learn more about card readers.
 This part is the link to the website, and forms part of a longer sentence which it should be considered a part of. */
@@ -10925,13 +10995,13 @@ which should be translated separately and considered part of this sentence. */
 /* Origin in Order Attribution Section on Order Details screen. */
 "orderAttributionInfo.mobileApp" = "行動應用程式";
 
-/* Origin in Order Attribution Section on Order Details screen.The placeholder is the source.Reads like: Organic: woo.com */
+/* Origin in Order Attribution Section on Order Details screen.The placeholder is the source.Reads like: Organic: woocommerce.com */
 "orderAttributionInfo.organic" = "有機：%1$@";
 
-/* Origin in Order Attribution Section on Order Details screen.The placeholder is the source.Reads like: Referral: woo.com */
+/* Origin in Order Attribution Section on Order Details screen.The placeholder is the source.Reads like: Referral: woocommerce.com */
 "orderAttributionInfo.referral" = "推薦：%1$@";
 
-/* Origin in Order Attribution Section on Order Details screen.The placeholder is the source.Reads like: Source: woo.com */
+/* Origin in Order Attribution Section on Order Details screen.The placeholder is the source.Reads like: Source: woocommerce.com */
 "orderAttributionInfo.source" = "來源：%1$@";
 
 /* Origin in Order Attribution Section on Order Details screen. */
@@ -11225,6 +11295,18 @@ which should be translated separately and considered part of this sentence. */
 
 /* Cancel button title for the Shipping Label purchase flow, shown in the nav bar */
 "shipping.label.navigationBar.cancel.button.title" = "取消";
+
+/* Action to add a custom amount in the simple payments migration view. */
+"simplePaymentsMigrationSheet.addCustomAmount" = "新增自訂金額";
+
+/* Detail for the simple payments migration view. */
+"simplePaymentsMigrationSheet.detail" = "若要設定付款金額，可將自訂金額新增至新訂單。";
+
+/* Title for the simple payments migration view. Text in the asterisks is italic. */
+"simplePaymentsMigrationSheet.subtitle" = "我們結合了款項收取和訂單建立，讓功能變得更方便存取「也」更強大。";
+
+/* Title for the simple payments migration view. */
+"simplePaymentsMigrationSheet.title" = "「收取款項」已移動";
 
 /* Display text for the daily granularity of store stats on the My Store screen */
 "statsGranularityV4.dailyMetrics" = "每日間隔";

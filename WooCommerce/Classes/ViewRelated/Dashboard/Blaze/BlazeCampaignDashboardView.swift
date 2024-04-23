@@ -91,7 +91,6 @@ struct BlazeCampaignDashboardView: View {
         VStack(alignment: .leading, spacing: Layout.verticalSpacing) {
             header
                 .padding(.horizontal, Layout.padding)
-                .redacted(reason: viewModel.shouldRedactView ? .placeholder : [])
 
             if case .showProduct(let product) = viewModel.state {
                 ProductInfoView(product: product)

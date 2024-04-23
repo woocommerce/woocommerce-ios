@@ -6,6 +6,7 @@ import enum Yosemite.StatsTimeRangeV4
 struct StorePerformanceView: View {
     @ObservedObject private var viewModel: StorePerformanceViewModel
     @State private var showingCustomRangePicker = false
+    @State private var showingSupportForm = false
 
     var statsValueColor: Color {
         Color(viewModel.shouldHighlightStats ? .statsHighlighted : .text)
@@ -28,13 +29,11 @@ struct StorePerformanceView: View {
     }
 
     var body: some View {
-        if viewModel.statsVersion == .v4 {
-            VStack(alignment: .leading, spacing: Layout.padding) {
-                header
-                    .padding(.horizontal, Layout.padding)
-                    .redacted(reason: viewModel.syncingData ? [.placeholder] : [])
-                    .shimmering(active: viewModel.syncingData)
+        VStack(alignment: .leading, spacing: Layout.padding) {
+            header
+                .padding(.horizontal, Layout.padding)
 
+            if viewModel.statsVersion == .v4 {
                 timeRangeBar
                     .padding(.horizontal, Layout.padding)
                     .redacted(reason: viewModel.syncingData ? [.placeholder] : [])
@@ -58,22 +57,25 @@ struct StorePerformanceView: View {
                     .padding(.horizontal, Layout.padding)
                     .redacted(reason: viewModel.syncingData ? [.placeholder] : [])
                     .shimmering(active: viewModel.syncingData)
-
+            } else {
+                contentUnavailableView
+                    .padding(.horizontal, Layout.padding)
             }
-            .padding(.vertical, Layout.padding)
-            .background(Color(.listForeground(modal: false)))
-            .clipShape(RoundedRectangle(cornerSize: Layout.cornerSize))
-            .padding(.horizontal, Layout.padding)
-            .sheet(isPresented: $showingCustomRangePicker) {
-                RangedDatePicker(startDate: viewModel.startDateForCustomRange,
-                                 endDate: viewModel.endDateForCustomRange,
-                                 customApplyButtonTitle: viewModel.buttonTitleForCustomRange,
-                                 datesSelected: { start, end in
-                    viewModel.didSelectTimeRange(.custom(from: start, to: end))
-                })
-            }
-        } else {
-            ViewControllerContainer(DeprecatedDashboardStatsViewController())
+        }
+        .padding(.vertical, Layout.padding)
+        .background(Color(.listForeground(modal: false)))
+        .clipShape(RoundedRectangle(cornerSize: Layout.cornerSize))
+        .padding(.horizontal, Layout.padding)
+        .sheet(isPresented: $showingCustomRangePicker) {
+            RangedDatePicker(startDate: viewModel.startDateForCustomRange,
+                             endDate: viewModel.endDateForCustomRange,
+                             customApplyButtonTitle: viewModel.buttonTitleForCustomRange,
+                             datesSelected: { start, end in
+                viewModel.didSelectTimeRange(.custom(from: start, to: end))
+            })
+        }
+        .sheet(isPresented: $showingSupportForm) {
+            supportForm
         }
     }
 }
@@ -81,6 +83,11 @@ struct StorePerformanceView: View {
 private extension StorePerformanceView {
     var header: some View {
         HStack {
+            Image(systemName: "exclamationmark.circle")
+                .foregroundStyle(Color.secondary)
+                .headlineStyle()
+                .renderedIf(viewModel.statsVersion == .v3) // and in error state too
+
             Text(Localization.title)
                 .headlineStyle()
             Spacer()
@@ -102,12 +109,21 @@ private extension StorePerformanceView {
     var timeRangeBar: some View {
         HStack {
             AdaptiveStack(horizontalAlignment: .leading) {
-                Text(viewModel.timeRange.tabTitle)
+                Text(viewModel.timeRange.isCustomTimeRange ?
+                     Localization.custom : viewModel.timeRange.tabTitle)
                     .foregroundStyle(Color(.text))
                     .subheadlineStyle()
-                if let selectedDateText = viewModel.selectedDateText {
-                    Text(selectedDateText)
+                if viewModel.timeRange.isCustomTimeRange {
+                    Button {
+                        showingCustomRangePicker = true
+                    } label: {
+                        HStack {
+                            Text(viewModel.timeRangeText)
+                            Image(systemName: "pencil")
+                        }
+                        .foregroundStyle(Color.accentColor)
                         .subheadlineStyle()
+                    }
                 } else {
                     Text(viewModel.timeRangeText)
                         .subheadlineStyle()
@@ -127,7 +143,12 @@ private extension StorePerformanceView {
 
     var statsView: some View {
         VStack(spacing: Layout.padding) {
-            VStack(spacing: Layout.statValuePadding) {
+            VStack(spacing: Layout.contentVerticalSpacing) {
+                if let selectedDateText = viewModel.selectedDateText {
+                    Text(selectedDateText)
+                        .font(Font(StyleManager.statsTitleFont))
+                }
+
                 Text(viewModel.revenueStatsText)
                     .fontWeight(.semibold)
                     .foregroundStyle(statsValueColor)
@@ -157,7 +178,7 @@ private extension StorePerformanceView {
     }
 
     func statsItemView(title: String, value: String, redactMode: RedactMode) -> some View {
-        VStack(spacing: Layout.statValuePadding) {
+        VStack(spacing: Layout.contentVerticalSpacing) {
             if redactMode == .none || viewModel.siteVisitStatMode == .default {
                 Text(value)
                     .font(Font(StyleManager.statsFont))
@@ -171,6 +192,7 @@ private extension StorePerformanceView {
         .contentShape(Rectangle())
         .onTapGesture {
             guard redactMode != .none,
+                !viewModel.syncingData,
                 viewModel.unavailableVisitStatsDueToCustomRange,
                 viewModel.siteVisitStatMode == .redactedDueToCustomRange else {
                 return
@@ -225,6 +247,38 @@ private extension StorePerformanceView {
                     .foregroundStyle(Color(.tertiaryLabel))
             }
         }
+        .disabled(viewModel.syncingData)
+    }
+
+    var contentUnavailableView: some View {
+        VStack(alignment: .center, spacing: Layout.padding) {
+            Image(uiImage: .noStoreImage)
+            Text(Localization.ContentUnavailable.title)
+                .headlineStyle()
+            Text(Localization.ContentUnavailable.details)
+                .bodyStyle()
+                .multilineTextAlignment(.center)
+            Button(Localization.ContentUnavailable.buttonTitle) {
+                showingSupportForm = true
+            }
+            .buttonStyle(SecondaryButtonStyle())
+        }
+        .frame(maxWidth: .infinity)
+    }
+
+    var supportForm: some View {
+        NavigationView {
+            SupportForm(isPresented: $showingSupportForm,
+                        viewModel: SupportFormViewModel())
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button(Localization.ContentUnavailable.done) {
+                        showingSupportForm = false
+                    }
+                }
+            }
+        }
+        .navigationViewStyle(.stack)
     }
 }
 
@@ -241,7 +295,7 @@ private extension StorePerformanceView {
         static let cornerSize = CGSize(width: 8.0, height: 8.0)
         static let strokeWidth: CGFloat = 0.5
         static let chartViewHeight: CGFloat = 176
-        static let statValuePadding: CGFloat = 8
+        static let contentVerticalSpacing: CGFloat = 8
         static let redactedViewCornerSize = CGSize(width: 2.0, height: 2.0)
         static let redactedViewWidth: CGFloat = 32
         static let redactedViewHeight: CGFloat = 10
@@ -260,6 +314,11 @@ private extension StorePerformanceView {
             "storePerformanceView.hideCard",
             value: "Hide Performance",
             comment: "Menu item to dismiss the store performance section on the Dashboard screen"
+        )
+        static let custom = NSLocalizedString(
+            "storePerformanceView.custom",
+            value: "Custom",
+            comment: "Title of the custom time range on the store performance card on the Dashboard screen"
         )
         static let revenue = NSLocalizedString(
             "storePerformanceView.revenue",
@@ -286,6 +345,29 @@ private extension StorePerformanceView {
             value: "View all store analytics",
             comment: "Button to navigate to Analytics Hub."
         )
+        enum ContentUnavailable {
+            static let title = NSLocalizedString(
+                "storePerformanceView.contentUnavailable.title",
+                value: "We can’t display your store’s analytics",
+                comment: "Title when we can't show stats because user is on a deprecated WooCommerce Version"
+            )
+            static let details = NSLocalizedString(
+                "storePerformanceView.contentUnavailable.details",
+                value: "Make sure you are running the latest version of WooCommerce on your site" +
+                " and enabling Analytics in WooCommerce Settings.",
+                comment: "Text that explains how to update WooCommerce to get the latest stats"
+            )
+            static let buttonTitle = NSLocalizedString(
+                "storePerformanceView.contentUnavailable.buttonTitle",
+                value: "Still need help? Contact us",
+                comment: "Button title to contact support to get help with deprecated stats module"
+            )
+            static let done = NSLocalizedString(
+                "storePerformanceView.contentUnavailable.dismissSupport",
+                value: "Done",
+                comment: "Button to dismiss the support form from the Dashboard stats error screen."
+            )
+        }
     }
 }
 

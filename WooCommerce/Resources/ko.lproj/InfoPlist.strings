@@ -3,6 +3,12 @@
 <!--Warning: Auto-generated file, do not edit.-->
 <plist version="1.0">
   <dict>
+    <key>AddOrderAction.Title</key>
+    <string>새 주문</string>
+    <key>AddProductAction.Title</key>
+    <string>상품 추가</string>
+    <key>CollectPaymentAction.Title</key>
+    <string>결제 수령</string>
     <key>NSBluetoothAlwaysUsageDescription</key>
     <string>이 앱에서는 블루투스를 사용하여 지원되는 카드 리더에 연결합니다.</string>
     <key>NSBluetoothPeripheralUsageDescription</key>
@@ -13,5 +19,9 @@
     <string>결제를 수락하려면 위치 접근 권한이 필요합니다.</string>
     <key>NSPhotoLibraryUsageDescription</key>
     <string>상품 이미지의 카메라 사진을 저장하거나 사진 또는 비디오를 상품 또는 지원 티켓에 추가하는 방법입니다.</string>
+    <key>OpenOrdersAction.Title</key>
+    <string>주문</string>
+    <key>OpenPaymentsAction.Title</key>
+    <string>결제</string>
   </dict>
 </plist>

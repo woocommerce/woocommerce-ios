@@ -20,6 +20,16 @@ struct BadgeView: View {
             }
         }
     }
+    
+    /// Internal background shape of the badge
+    enum BackgroundShape {
+        case roundedRectangle(cornerRadius: CGFloat)
+        case circle
+
+        static var defaultShape: BackgroundShape {
+            .roundedRectangle(cornerRadius: 8)
+        }
+    }
 
     /// UI customizations for the badge.
     struct Customizations {
@@ -35,15 +45,20 @@ struct BadgeView: View {
 
     private let type: BadgeType
     private let customizations: Customizations
+    private let backgroundShape: BackgroundShape
 
     init(type: BadgeType) {
         self.type = type
         self.customizations = .init()
+        self.backgroundShape = BackgroundShape.defaultShape
     }
 
-    init(text: String, customizations: Customizations = .init()) {
+    init(text: String,
+         customizations: Customizations = .init(),
+         backgroundShape: BackgroundShape = BackgroundShape.defaultShape) {
         self.type = .customText(text: text)
         self.customizations = customizations
+        self.backgroundShape = backgroundShape
     }
 
     var body: some View {
@@ -56,9 +71,7 @@ struct BadgeView: View {
                 .padding(.trailing, Layout.horizontalPadding)
                 .padding(.top, Layout.verticalPadding)
                 .padding(.bottom, Layout.verticalPadding)
-                .background(RoundedRectangle(cornerRadius: Layout.cornerRadius)
-                    .fill(customizations.backgroundColor)
-                )
+                .background(backgroundView())
         } else if case .remoteImage(let lightUrl, let darkUrl) = type {
             AdaptiveAsyncImage(anyAppearanceUrl: lightUrl, darkUrl: darkUrl, scale: 3) { imagePhase in
                 switch imagePhase {
@@ -78,6 +91,30 @@ struct BadgeView: View {
     }
 }
 
+private extension BadgeView {
+    @ViewBuilder
+    func backgroundView() -> some View {
+        switch backgroundShape {
+        case .circle:
+            if #available(iOS 17, *) {
+                Circle()
+                    .fill(customizations.backgroundColor)
+                    .stroke(Color.white, lineWidth: 1)
+            } else {
+                ZStack {
+                    Circle()
+                        .fill(customizations.backgroundColor)
+                    Circle()
+                        .stroke(Color.white, lineWidth: 1)
+                }
+            }
+        case .roundedRectangle(let cornerRadius):
+            RoundedRectangle(cornerRadius: cornerRadius)
+                .fill(customizations.backgroundColor)
+        }
+    }
+}
+
 private extension BadgeView.BadgeType {
     enum Localization {
         static let newTitle = NSLocalizedString("New", comment: "Title of the badge shown when advertising a new feature")
@@ -93,6 +130,7 @@ private extension BadgeView {
     }
 }
 
+#if DEBUG
 struct BadgeView_Previews: PreviewProvider {
     static var previews: some View {
         VStack {
@@ -103,3 +141,4 @@ struct BadgeView_Previews: PreviewProvider {
         }
     }
 }
+#endif

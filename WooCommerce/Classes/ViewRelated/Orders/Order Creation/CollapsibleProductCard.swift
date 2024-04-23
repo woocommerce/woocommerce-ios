@@ -118,6 +118,10 @@ private struct CollapsibleProductRowCard: View {
         }
     }
 
+    private var shouldShowBadgeCounter: Bool {
+        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.subscriptionsInOrderCreationUI)
+    }
+
     init(viewModel: CollapsibleProductRowCardViewModel,
          flow: WooAnalyticsEvent.Orders.Flow,
          shouldDisableDiscountEditing: Bool,
@@ -146,6 +150,13 @@ private struct CollapsibleProductRowCard: View {
                                           productImageCornerRadius: Layout.productImageCornerRadius,
                                           foregroundColor: Color(UIColor.listSmallIcon))
                     .padding(.leading, viewModel.hasParentProduct ? Layout.childLeadingPadding : 0)
+                    .overlay(alignment: .topTrailing) {
+                        BadgeView(text: "\(viewModel.stepperViewModel.quantity)",
+                                  customizations: .init(textColor: .white, backgroundColor: .black),
+                                  backgroundShape: .circle)
+                        .offset(x: 8, y: -8)
+                        .renderedIf(shouldShowBadgeCounter)
+                    }
                     VStack(alignment: .leading) {
                         Text(viewModel.name)
                             .font(viewModel.hasParentProduct ? .subheadline : .none)

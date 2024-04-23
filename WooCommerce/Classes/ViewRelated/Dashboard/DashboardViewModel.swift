@@ -2,6 +2,7 @@ import Yosemite
 import Combine
 import enum Networking.DotcomError
 import enum Storage.StatsVersion
+import protocol Storage.StorageManagerType
 import protocol Experiments.FeatureFlagService
 
 /// Syncs data for dashboard stats UI and determines the state of the dashboard UI based on stats version.
@@ -40,10 +41,6 @@ final class DashboardViewModel: ObservableObject {
 
     @Published private(set) var canHideMoreDashboardCards = false
 
-    var canShowShareStoreCard: Bool {
-        return !hasOrders && siteURLToShare != nil
-    }
-
     let siteID: Int64
     private let stores: StoresManager
     private let featureFlagService: FeatureFlagService
@@ -53,6 +50,7 @@ final class DashboardViewModel: ObservableObject {
     private let userDefaults: UserDefaults
     private let storeCreationProfilerUploadAnswersUseCase: StoreCreationProfilerUploadAnswersUseCaseProtocol
     private let themeInstaller: ThemeInstaller
+    private let storageManager: StorageManagerType
     private var subscriptions: Set<AnyCancellable> = []
 
     var siteURLToShare: URL? {
@@ -64,8 +62,20 @@ final class DashboardViewModel: ObservableObject {
         return nil
     }
 
+    private lazy var ordersResultsController: ResultsController<StorageOrder> = {
+        let storageManager = ServiceLocator.storageManager
+        let predicate = NSPredicate(format: "siteID == %lld", siteID)
+        let sortDescriptorByID = NSSortDescriptor(keyPath: \StorageOrder.orderID, ascending: false)
+        let resultsController = ResultsController<StorageOrder>(storageManager: storageManager,
+                                                                matching: predicate,
+                                                                fetchLimit: 1,
+                                                                sortedBy: [sortDescriptorByID])
+        return resultsController
+    }()
+
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
+         storageManager: StorageManagerType = ServiceLocator.storageManager,
          featureFlags: FeatureFlagService = ServiceLocator.featureFlagService,
          analytics: Analytics = ServiceLocator.analytics,
          userDefaults: UserDefaults = .standard,
@@ -74,6 +84,7 @@ final class DashboardViewModel: ObservableObject {
          usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter = StoreStatsUsageTracksEventEmitter()) {
         self.siteID = siteID
         self.stores = stores
+        self.storageManager = storageManager
         self.featureFlagService = featureFlags
         self.analytics = analytics
         self.userDefaults = userDefaults
@@ -89,6 +100,7 @@ final class DashboardViewModel: ObservableObject {
         self.themeInstaller = themeInstaller
         setupObserverForShowOnboarding()
         setupObserverForBlazeCampaignView()
+        configureOrdersResultController()
         setupDashboardCards()
         installPendingThemeIfNeeded()
         configureStorePerformanceViewModel()
@@ -367,6 +379,25 @@ private extension DashboardViewModel {
     func setupObserverForBlazeCampaignView() {
         blazeCampaignDashboardViewModel.$shouldShowInDashboard
             .assign(to: &$showBlazeCampaignView)
+    }
+
+    func configureOrdersResultController() {
+        ordersResultsController.onDidChangeContent = { [weak self] in
+            self?.updateResults()
+        }
+        ordersResultsController.onDidResetContent = { [weak self] in
+            self?.updateResults()
+        }
+
+        do {
+            try ordersResultsController.performFetch()
+        } catch {
+            ServiceLocator.crashLogging.logError(error)
+        }
+    }
+
+    func updateResults() {
+        hasOrders = ordersResultsController.fetchedObjects.isNotEmpty
     }
 
     func setupDashboardCards() {

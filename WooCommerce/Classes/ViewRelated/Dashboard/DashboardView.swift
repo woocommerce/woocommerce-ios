@@ -179,7 +179,7 @@ private extension DashboardView {
                 }
             }
 
-            if viewModel.canShowShareStoreCard {
+            if !viewModel.hasOrders {
                 shareStoreCard
             }
         }

@@ -47,7 +47,7 @@ struct StorePerformanceView: View {
                     .shimmering(active: viewModel.syncingData)
 
                 chartView
-                    .padding(.vertical, Layout.padding)
+                    .padding(.horizontal, Layout.padding)
                     .redacted(reason: viewModel.syncingData ? [.placeholder] : [])
                     .shimmering(active: viewModel.syncingData)
 

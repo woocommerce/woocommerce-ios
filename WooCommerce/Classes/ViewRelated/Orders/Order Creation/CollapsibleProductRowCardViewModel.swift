@@ -110,16 +110,33 @@ struct CollapsibleProductRowCardViewModel: Identifiable {
                                                 pluralizedPeriod)
     }
 
-    /// Description of the regular subscription price for a Subscription-type Product
-    /// eg: "$3.00"
+    /// Subscription final price for a Subscription-type Product. Acounts for pricing modifications like "on-sale" pricing, and quantity
+    /// eg: Displays "$30.00" for 10 subscriptions of "$3.00" of regular price each
+    /// eg: Displays "$20.00" for 10 subscriptions of "$2.00" of on-sale price each
     ///
     var subscriptionPrice: String? {
-        guard let price = productSubscriptionDetails?.price,
-              price != "0",
-              let formattedPrice = currencyFormatter.formatAmount(price) else {
+        // The price could be different from the subscription price if there are price modifiers, like on sale pricing.
+        // In this case, we use the product price, not the subscription price within the subscription metadata
+        var pricePerUnit: String
+        guard let subscriptionRegularPrice = productSubscriptionDetails?.price,
+              subscriptionRegularPrice != "0",
+              let productPrice = price else {
+            return nil
+        }
+        if productPrice != subscriptionRegularPrice {
+            pricePerUnit = productPrice
+        } else {
+            pricePerUnit = subscriptionRegularPrice
+        }
+
+        // Multiply price per unit by the currently selected quantity
+        let quantity = stepperViewModel.quantity
+        guard let decimalPrice = currencyFormatter.convertToDecimal(pricePerUnit)?.decimalValue,
+              let stringTotal = currencyFormatter.formatHumanReadableAmount(decimalPrice * quantity) else {
             return nil
         }
 
+        let formattedPrice = currencyFormatter.formatAmount(stringTotal)
         return formattedPrice
     }
 

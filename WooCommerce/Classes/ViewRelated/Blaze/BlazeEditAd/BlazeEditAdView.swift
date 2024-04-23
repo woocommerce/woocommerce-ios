@@ -261,7 +261,7 @@ private extension BlazeEditAdView {
                 comment: "Error message displayed when selected campaign image is not large enough."
             )
             static let ok = NSLocalizedString(
-                "blazeEditAdView.image.imageSizeError",
+                "blazeEditAdView.image.ok",
                 value: "OK",
                 comment: "Button to dismiss the image view alert."
             )

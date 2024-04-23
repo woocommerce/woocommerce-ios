@@ -2,6 +2,7 @@
 
 18.4
 -----
+- [internal] Blaze: Change campaign image minimum expected dimensions. [https://github.com/woocommerce/woocommerce-ios/pull/12544]
 
 
 18.3
@@ -11,9 +12,9 @@
 18.2
 -----
 - [*] Menu > Payments > Collect Payment: the simple payments flow has been migrated to order form with custom amount. [https://github.com/woocommerce/woocommerce-ios/pull/12455]
-- [*] Login: Allow login using site credentials for Jetpack connected stores. [https://github.com/woocommerce/woocommerce-ios/issues/12429]
+- [*] Login: Allow login using site credentials for Jetpack connected stores. [https://github.com/woocommerce/woocommerce-ios/pull/12429]
 - [internal] Updated all `woo.com` URLs to use `woocommerce.com` domain. [https://github.com/woocommerce/woocommerce-ios/pull/12452]
-- [*] Blaze: Validate that campaign image has minimum expected dimensions. [https://github.com/woocommerce/woocommerce-ios/issues/12470]
+- [*] Blaze: Validate that campaign image has minimum expected dimensions. [https://github.com/woocommerce/woocommerce-ios/pull/12470]
 
 18.1
 -----

@@ -15,7 +15,7 @@ struct DashboardCustomizationView: View {
             MultiSelectionReorderableList(contents: $viewModel.allCards,
                                           contentKeyPath: \.name,
                                           selectedItems: $viewModel.selectedCards,
-                                          inactiveItems: viewModel.inactiveCards,
+                                          inactiveItems: [], // Intentionally empty to not show inactive cards.
                                           inactiveAccessoryView: { card in
                 BadgeView(text: Localization.unavailable,
                           customizations: BadgeView.Customizations(textColor: .white,

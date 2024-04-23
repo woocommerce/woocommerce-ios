@@ -127,7 +127,6 @@ struct DashboardView: View {
         .sheet(isPresented: $showingCustomization) {
             DashboardCustomizationView(viewModel: DashboardCustomizationViewModel(
                 allCards: viewModel.dashboardCards,
-                inactiveCards: viewModel.unavailableDashboardCards,
                 onSave: { viewModel.didCustomizeDashboardCards($0) }
             ))
         }

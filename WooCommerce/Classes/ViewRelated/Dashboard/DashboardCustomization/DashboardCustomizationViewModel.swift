@@ -30,21 +30,14 @@ final class DashboardCustomizationViewModel: ObservableObject {
     ///
     private let onSave: (([DashboardCard]) -> Void)?
 
-    /// Inactive dashboard cards. These cards are excluded from being selected or reordered.
-    ///
-    let inactiveCards: [DashboardCard]
-
     /// - Parameters:
     ///   - allCards: An ordered list of all possible dashboard cards, with their settings.
     ///   - inactiveCards: Optional list of inactive (unavailable) dashboard cards, to exclude them from selecting/reordering.
     ///   - onSave: Optional closure to perform when the changes are saved.
     init(allCards: [DashboardCard],
-         inactiveCards: [DashboardCard] = [],
          analytics: Analytics = ServiceLocator.analytics,
          onSave: (([DashboardCard]) -> Void)? = nil) {
-        self.inactiveCards = inactiveCards
-
-        let availableCards = DashboardCustomizationViewModel.availableCards(from: allCards, excluding: inactiveCards)
+        let availableCards = allCards
         let groupedCards = DashboardCustomizationViewModel.groupSelectedCards(in: availableCards)
         self.allCards = groupedCards
         self.originalCards = groupedCards
@@ -67,22 +60,11 @@ final class DashboardCustomizationViewModel: ObservableObject {
 
         // TODO: add tracking
 
-        // Add back any inactive cards
-        updatedCards.append(contentsOf: inactiveCards)
-
         onSave?(updatedCards)
     }
 }
 
 private extension DashboardCustomizationViewModel {
-    /// Removes inactive cards from the list of all cards to display in the view.
-    ///
-    static func availableCards(from allCards: [DashboardCard], excluding inactiveCards: [DashboardCard]) -> [DashboardCard] {
-        var allCardsToDisplay = allCards
-        allCardsToDisplay.removeAll(where: inactiveCards.contains)
-        return allCardsToDisplay
-    }
-
     /// Groups the selected cards at the start of the list of all cards.
     /// This preserves the relative order of selected and unselected cards.
     ///

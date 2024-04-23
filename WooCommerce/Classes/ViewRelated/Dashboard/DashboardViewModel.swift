@@ -32,8 +32,6 @@ final class DashboardViewModel: ObservableObject {
         DashboardCard(type: .performance, enabled: true),
         DashboardCard(type: .topPerformers, enabled: true)
     ]
-    @Published private(set) var unavailableDashboardCards: [DashboardCard] = []
-
     @Published private(set) var jetpackBannerVisibleFromAppSettings = false
     @Published var statSyncingError: Error?
 
@@ -451,38 +449,38 @@ private extension DashboardViewModel {
     func updateDashboardCards(canShowOnboarding: Bool,
                               canShowBlaze: Bool,
                               canShowAnalytics: Bool) async {
-        dashboardCards = await {
-            if let stored = await loadDashboardCards() {
-                return stored
-            } else {
-                return [DashboardCard(type: .onboarding, enabled: canShowOnboarding),
-                        DashboardCard(type: .performance, enabled: canShowAnalytics),
-                        DashboardCard(type: .topPerformers, enabled: canShowAnalytics),
-                        DashboardCard(type: .blaze, enabled: canShowBlaze)]
+        // Define the card types that should be shown
+        var activeCardTypes: Set<DashboardCard.CardType> = []
+        if canShowOnboarding {
+            activeCardTypes.insert(.onboarding)
+        }
+        if canShowAnalytics {
+            activeCardTypes.insert(.performance)
+            activeCardTypes.insert(.topPerformers)
+        }
+        if canShowBlaze {
+            activeCardTypes.insert(.blaze)
+        }
+
+        // Load saved cards first if any
+        var dashboardCards: [DashboardCard] = await loadDashboardCards() ?? []
+
+
+        // Add missing card(s) that should be active
+        activeCardTypes.forEach { type in
+            if !dashboardCards.contains(where: { $0.type == type }) {
+                dashboardCards.append(DashboardCard(type: type, enabled: true))
             }
-        }()
-
-        unavailableDashboardCards = []
-
-        if let performanceCard = dashboardCards.first(where: { $0.type == .performance }),
-            !canShowAnalytics {
-            unavailableDashboardCards.append(performanceCard)
         }
 
-        if let topPerformersCard = dashboardCards.first(where: { $0.type == .topPerformers }),
-            !canShowAnalytics {
-            unavailableDashboardCards.append(topPerformersCard)
+        // Filter out card(s) that should be inactive
+        dashboardCards = dashboardCards.filter { card in
+            activeCardTypes.contains(card.type)
         }
 
-        if let onboardingCard = dashboardCards.first(where: { $0.type == .onboarding }),
-           !canShowOnboarding {
-            unavailableDashboardCards.append(onboardingCard)
-        }
-
-        if let blazeCard = dashboardCards.first(where: { $0.type == .blaze }),
-           !canShowBlaze {
-            unavailableDashboardCards.append(blazeCard)
-        }
+        // Save the latest state of the cards after the update
+        stores.dispatch(AppSettingsAction.setDashboardCards(siteID: siteID, cards: dashboardCards))
+        self.dashboardCards = dashboardCards
     }
 
     @MainActor

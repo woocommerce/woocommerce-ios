@@ -73,8 +73,24 @@ extension StoreStatsChartViewModel {
             return 5
         case .thisYear:
             return 3
-        case .custom:
-            return 5
+        case let .custom(start, end):
+            let difference: Int = {
+                var calendar = Calendar.current
+                calendar.timeZone = .siteTimezone
+                switch xAxisStride {
+                case .year:
+                    return calendar.dateComponents([.year], from: start, to: end).year ?? 0
+                case .month:
+                    return calendar.dateComponents([.month], from: start, to: end).month ?? 0
+                case .day:
+                    return calendar.dateComponents([.day], from: start, to: end).day ?? 0
+                case .hour:
+                    return 24 // only same day range has hour strides, so default to 24 hours.
+                default:
+                    return 0
+                }
+            }()
+            return difference <= Constants.maximumItemsForXAxis ? 1 : difference / Constants.maximumItemsForXAxis
         }
     }
 
@@ -89,12 +105,15 @@ extension StoreStatsChartViewModel {
             return .dateTime.day(.defaultDigits)
         case .thisYear:
             return .dateTime.month(.abbreviated)
-        case .custom:
+        case let .custom(start, end):
             switch timeRange.intervalGranularity {
             case .hourly:
                 return .dateTime.hour()
             case .daily, .weekly:
-                if date == intervals.first?.date {
+                var calendar = Calendar.current
+                calendar.timeZone = .siteTimezone
+                let sameMonth = start.isSameMonth(as: end) && start.isSameYear(as: end)
+                if date == intervals.first?.date || !sameMonth {
                     return .dateTime.month(.abbreviated).day(.defaultDigits)
                 }
                 return .dateTime.day(.defaultDigits)
@@ -124,5 +143,11 @@ extension StoreStatsChartViewModel {
                                 currencySymbol: currencySymbol,
                                 isNegative: revenue.sign == .minus)
         }
+    }
+}
+
+private extension StoreStatsChartViewModel {
+    enum Constants {
+        static let maximumItemsForXAxis = 4
     }
 }

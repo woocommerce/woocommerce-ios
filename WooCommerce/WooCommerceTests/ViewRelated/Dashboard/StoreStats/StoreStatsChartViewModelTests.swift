@@ -72,7 +72,7 @@ final class StoreStatsChartViewModelTests: XCTestCase {
             .thisWeek: 1,
             .thisMonth: 5,
             .thisYear: 3,
-            .custom(from: Date(), to: Date().adding(days: 0)!): 5,
+            .custom(from: Date(), to: Date().adding(days: 0)!): 6,
         ]
 
         for timeRange in timeRangesWithXAxisStrideCount.keys {

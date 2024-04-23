@@ -27,7 +27,7 @@ struct BadgeView: View {
         case circle
 
         static var defaultShape: BackgroundShape {
-            .roundedRectangle(cornerRadius: 8)
+            .roundedRectangle(cornerRadius: Layout.cornerRadius)
         }
     }
 
@@ -99,13 +99,13 @@ private extension BadgeView {
             if #available(iOS 17, *) {
                 Circle()
                     .fill(customizations.backgroundColor)
-                    .stroke(Color.white, lineWidth: 1)
+                    .stroke(Color.white, lineWidth: Layout.borderLineWidth)
             } else {
                 ZStack {
                     Circle()
                         .fill(customizations.backgroundColor)
                     Circle()
-                        .stroke(Color.white, lineWidth: 1)
+                        .stroke(Color.white, lineWidth: Layout.borderLineWidth)
                 }
             }
         case .roundedRectangle(let cornerRadius):
@@ -126,7 +126,8 @@ private extension BadgeView {
     enum Layout {
         static let horizontalPadding: CGFloat = 6
         static let verticalPadding: CGFloat = 4
-        static let cornerRadius: CGFloat = 8
+        static let borderLineWidth: CGFloat = 1
+        static var cornerRadius: CGFloat { 8 }
     }
 }
 

@@ -319,10 +319,11 @@ private extension StatsServiceRemoteV2 {
 // MARK: - Subscribers Data
 
 public extension StatsServiceRemoteV2 {
-    func getSubscribers(completion: @escaping ((Result<StatsSubscribersSummaryData, Error>) -> Void)) {
+    func getSubscribers(unit: StatsSubscribersSummaryData.Unit,
+                        completion: @escaping ((Result<StatsSubscribersSummaryData, Error>) -> Void)) {
         let pathComponent = StatsSubscribersSummaryData.pathComponent
         let path = self.path(forEndpoint: "sites/\(siteID)/\(pathComponent)/", withVersion: ._1_1)
-        let properties = StatsSubscribersSummaryData.queryProperties(quantity: 30, unit: "day") as [String: AnyObject]
+        let properties = StatsSubscribersSummaryData.queryProperties(quantity: 30, unit: unit) as [String: AnyObject]
 
         wordPressComRESTAPI.get(path, parameters: properties, success: { [weak self] (response, _) in
             guard let self,

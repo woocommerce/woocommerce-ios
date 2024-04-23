@@ -2,7 +2,11 @@ import Foundation
 import WordPressShared
 
 public struct StatsSubscribersSummaryData: Decodable, Equatable {
-    let history: [SubscriberData]
+    public let history: [SubscriberData]
+
+    public init(history: [SubscriberData]) {
+        self.history = history
+    }
 
     private enum CodingKeys: String, CodingKey {
         case history = "data"
@@ -14,8 +18,13 @@ public struct StatsSubscribersSummaryData: Decodable, Equatable {
     }
 
     public struct SubscriberData: Decodable, Equatable {
-        let date: Date
-        let count: Int
+        public let date: Date
+        public let count: Int
+
+        public init(date: Date, count: Int) {
+            self.date = date
+            self.count = count
+        }
 
         private enum CodingKeys: Int, CodingKey {
             case date = 0
@@ -46,7 +55,11 @@ extension StatsSubscribersSummaryData {
         }
     }
 
-    public static func queryProperties(quantity: Int, unit: String) -> [String: String] {
-        return ["quantity": String(quantity), "unit": unit]
+    public static func queryProperties(quantity: Int, unit: StatsSubscribersSummaryData.Unit) -> [String: String] {
+        return ["quantity": String(quantity), "unit": unit.rawValue]
+    }
+
+    public enum Unit: String {
+        case day = "day"
     }
 }

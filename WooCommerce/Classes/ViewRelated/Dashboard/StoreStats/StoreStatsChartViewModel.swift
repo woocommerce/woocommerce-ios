@@ -85,7 +85,7 @@ extension StoreStatsChartViewModel {
                 case .day:
                     return calendar.dateComponents([.day], from: start, to: end).day ?? 0
                 case .hour:
-                    return calendar.dateComponents([.hour], from: start, to: end).hour ?? 0
+                    return 24 // only same day range has hour strides, so default to 24 hours.
                 default:
                     return 0
                 }
@@ -105,12 +105,15 @@ extension StoreStatsChartViewModel {
             return .dateTime.day(.defaultDigits)
         case .thisYear:
             return .dateTime.month(.abbreviated)
-        case .custom:
+        case let .custom(start, end):
             switch timeRange.intervalGranularity {
             case .hourly:
                 return .dateTime.hour()
             case .daily, .weekly:
-                if date == intervals.first?.date {
+                var calendar = Calendar.current
+                calendar.timeZone = .siteTimezone
+                let sameMonth = start.isSameMonth(as: end) && start.isSameYear(as: end)
+                if date == intervals.first?.date || !sameMonth {
                     return .dateTime.month(.abbreviated).day(.defaultDigits)
                 }
                 return .dateTime.day(.defaultDigits)
@@ -145,6 +148,6 @@ extension StoreStatsChartViewModel {
 
 private extension StoreStatsChartViewModel {
     enum Constants {
-        static let maximumItemsForXAxis = 5
+        static let maximumItemsForXAxis = 4
     }
 }

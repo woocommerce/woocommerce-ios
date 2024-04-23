@@ -20,7 +20,7 @@ struct BadgeView: View {
             }
         }
     }
-    
+
     /// Internal background shape of the badge
     enum BackgroundShape {
         case roundedRectangle(cornerRadius: CGFloat)

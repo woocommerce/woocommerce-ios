@@ -97,6 +97,23 @@ final class StorePerformanceViewModel: ObservableObject {
 
     func didSelectStatsInterval(at index: Int?) {
         chartValueSelectedEventsSubject.send(index)
+        periodViewModel?.selectedIntervalIndex = index
+        shouldHighlightStats = index != nil
+
+        if unavailableVisitStatsDueToCustomRange {
+            // If time range is less than 2 days, redact data when selected and show when deselected.
+            // Otherwise, show data when selected and redact when deselected.
+            guard case let .custom(from, to) = timeRange,
+                  let differenceInDays = StatsTimeRangeV4.differenceInDays(startDate: from, endDate: to) else {
+                return
+            }
+
+            if differenceInDays == .sameDay {
+                siteVisitStatMode = index != nil ? .hidden : .default
+            } else {
+                siteVisitStatMode = index != nil ? .default : .redactedDueToCustomRange
+            }
+        }
     }
 
     @MainActor
@@ -312,24 +329,6 @@ private extension StorePerformanceViewModel {
     }
 
     func handleSelectedChartValue(at index: Int?) {
-        periodViewModel?.selectedIntervalIndex = index
-        shouldHighlightStats = index != nil
-
-        if unavailableVisitStatsDueToCustomRange {
-            // If time range is less than 2 days, redact data when selected and show when deselected.
-            // Otherwise, show data when selected and redact when deselected.
-            guard case let .custom(from, to) = timeRange,
-                  let differenceInDays = StatsTimeRangeV4.differenceInDays(startDate: from, endDate: to) else {
-                return
-            }
-
-            if differenceInDays == .sameDay {
-                siteVisitStatMode = index != nil ? .hidden : .default
-            } else {
-                siteVisitStatMode = index != nil ? .default : .redactedDueToCustomRange
-            }
-        }
-
         if timeRange.isCustomTimeRange {
             analytics.track(event: .DashboardCustomRange.interacted())
         }

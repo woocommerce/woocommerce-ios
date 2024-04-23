@@ -77,7 +77,7 @@ struct DashboardView: View {
         .background(Color(.listBackground))
         .navigationTitle(Localization.title)
         .toolbar {
-            ToolbarItem(placement: .topBarLeading) {
+            ToolbarItem(placement: .topBarTrailing) {
                 if let url = viewModel.siteURLToShare {
                     ShareLink(item: url) {
                         Image(systemName: "square.and.arrow.up")

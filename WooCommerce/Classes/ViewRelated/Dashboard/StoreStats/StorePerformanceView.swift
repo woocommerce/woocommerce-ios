@@ -32,8 +32,6 @@ struct StorePerformanceView: View {
             VStack(alignment: .leading, spacing: Layout.padding) {
                 header
                     .padding(.horizontal, Layout.padding)
-                    .redacted(reason: viewModel.syncingData ? [.placeholder] : [])
-                    .shimmering(active: viewModel.syncingData)
 
                 timeRangeBar
                     .padding(.horizontal, Layout.padding)
@@ -171,6 +169,7 @@ private extension StorePerformanceView {
         .contentShape(Rectangle())
         .onTapGesture {
             guard redactMode != .none,
+                !viewModel.syncingData,
                 viewModel.unavailableVisitStatsDueToCustomRange,
                 viewModel.siteVisitStatMode == .redactedDueToCustomRange else {
                 return
@@ -225,6 +224,7 @@ private extension StorePerformanceView {
                     .foregroundStyle(Color(.tertiaryLabel))
             }
         }
+        .disabled(viewModel.syncingData)
     }
 }
 

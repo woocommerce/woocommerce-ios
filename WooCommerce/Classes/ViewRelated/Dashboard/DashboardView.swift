@@ -60,7 +60,6 @@ struct DashboardView: View {
                 .subheadlineStyle()
                 .padding([.horizontal, .bottom], Layout.padding)
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .background(Color(.listForeground(modal: false)))
                 .renderedIf(verticalSizeClass == .regular)
 
             // Error banner
@@ -73,7 +72,7 @@ struct DashboardView: View {
 
             // Card views
             dashboardCards
-                .padding(.vertical, Layout.padding)
+                .padding(.bottom, Layout.padding)
         }
         .background(Color(.listBackground))
         .navigationTitle(Localization.title)
@@ -86,13 +85,13 @@ struct DashboardView: View {
                 }
             }
             ToolbarItem(placement: .topBarTrailing) {
-                Button {
+                Button(Localization.edit) {
                     showingCustomization = true
-                } label: {
-                    Image(systemName: "gearshape")
                 }
             }
         }
+        .toolbarBackground(Color(.listBackground), for: .navigationBar)
+        .toolbar(.visible, for: .navigationBar)
         .onReceive(ServiceLocator.stores.site) { currentSite in
             self.currentSite = currentSite
         }
@@ -259,6 +258,11 @@ private extension DashboardView {
             "dashboardView.storePlanBanner.expired",
             value: "Your site plan has ended.",
             comment: "Title on the banner when the site's WooExpress plan has expired"
+        )
+        static let edit = NSLocalizedString(
+            "dashboardView.edit",
+            value: "Edit",
+            comment: "Title of the button to edit the layout of the Dashboard screen."
         )
     }
 }

@@ -283,7 +283,7 @@ final class InPersonPaymentsMenuViewModelTests: XCTestCase {
         XCTAssertTrue(sut.presentCollectPayment)
     }
 
-    func test_navigate_to_collectPayment_sets_presentCollectPaymentWithSimplePayments_to_true_when_feature_is_disabled() {
+    func test_navigate_to_collectPayment_sets_presentCollectPaymentWithSimplePayments_to_true_when_feature_is_disabled_and_view_appears() {
         // Given
         let featureFlagService = MockFeatureFlagService(isMigrateSimplePaymentsToOrderCreationEnabled: false)
         let dependencies = InPersonPaymentsMenuViewModel.Dependencies(cardPresentPaymentsConfiguration: .init(country: .US),
@@ -294,14 +294,20 @@ final class InPersonPaymentsMenuViewModelTests: XCTestCase {
         sut = InPersonPaymentsMenuViewModel(siteID: sampleStoreID,
                                             dependencies: dependencies)
 
-        // When
+        // When view has not appeared
         sut.navigate(to: PaymentsMenuDestination.collectPayment)
+
+        // Then
+        XCTAssertFalse(sut.presentCollectPaymentWithSimplePayments)
+
+        // When view appears
+        sut.onAppearSubject.send(())
 
         // Then
         XCTAssertTrue(sut.presentCollectPaymentWithSimplePayments)
     }
 
-    func test_navigate_to_collectPayment_sets_presentCollectPayment_to_true() {
+    func test_navigate_to_collectPayment_sets_presentCollectPayment_to_true_when_view_appears() {
         // Given
         let featureFlagService = MockFeatureFlagService(isMigrateSimplePaymentsToOrderCreationEnabled: true)
         let dependencies = InPersonPaymentsMenuViewModel.Dependencies(cardPresentPaymentsConfiguration: .init(country: .US),
@@ -312,8 +318,14 @@ final class InPersonPaymentsMenuViewModelTests: XCTestCase {
         sut = InPersonPaymentsMenuViewModel(siteID: sampleStoreID,
                                             dependencies: dependencies)
 
-        // When
+        // When view has not appeared
         sut.navigate(to: PaymentsMenuDestination.collectPayment)
+
+        // Then
+        XCTAssertFalse(sut.presentCollectPayment)
+
+        // When view appears
+        sut.onAppearSubject.send(())
 
         // Then
         XCTAssertTrue(sut.presentCollectPayment)

@@ -5,7 +5,7 @@ final class StatsSubscribersSummaryDataTests: XCTestCase {
     func testEmailsSummaryDecoding() throws {
         let json = getJSON("stats-subscribers")
 
-        let summary = StatsSubscribersSummaryData(jsonDictionary: json)
+        let summary = StatsSubscribersSummaryData(date: Date(), period: .day, jsonDictionary: json)
         XCTAssertNotNil(summary, "StatsSubscribersSummaryData not decoded as expected")
         let history = summary!.history
         let mostRecentDay = history.last!

@@ -34,7 +34,6 @@ final class DashboardViewModel: ObservableObject {
     @Published private(set) var unavailableDashboardCards: [DashboardCard] = []
 
     @Published private(set) var jetpackBannerVisibleFromAppSettings = false
-    @Published var statSyncingError: Error?
 
     @Published private(set) var canHideMoreDashboardCards = false
 
@@ -85,7 +84,6 @@ final class DashboardViewModel: ObservableObject {
         setupObserverForBlazeCampaignView()
         setupDashboardCards()
         installPendingThemeIfNeeded()
-        configureStorePerformanceViewModel()
     }
 
     /// Uploads the answers from the store creation profiler flow
@@ -300,15 +298,6 @@ final class DashboardViewModel: ObservableObject {
 
 // MARK: Private helpers
 private extension DashboardViewModel {
-    func configureStorePerformanceViewModel() {
-        storePerformanceViewModel.onDataReload = { [weak self] in
-            self?.statSyncingError = nil
-        }
-
-        storePerformanceViewModel.onSyncingError = { [weak self] error in
-            self?.statSyncingError = error
-        }
-    }
 
     /// Checks for Just In Time Messages and prepares the announcement if needed.
     ///

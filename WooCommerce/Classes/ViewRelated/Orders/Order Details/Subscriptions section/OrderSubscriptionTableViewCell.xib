@@ -20,7 +20,7 @@
                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="X9K-b7-WIE" userLabel="Vertical Stack View">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="108"/>
                         <subviews>
-                            <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Anc-n2-aki" userLabel="Horizontal Stack View">
+                            <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Anc-n2-aki" userLabel="Subscription Status View">
                                 <rect key="frame" x="0.0" y="0.0" width="414" height="92.333333333333329"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="zMs-pE-M0s" userLabel="Subscription Container View">
@@ -55,11 +55,17 @@
                                     </view>
                                 </subviews>
                             </stackView>
-                            <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="CPI-8F-8yE" userLabel="Horizontal Stack View">
+                            <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="CPI-8F-8yE" userLabel="Subscription Price View">
                                 <rect key="frame" x="0.0" y="92.333333333333329" width="414" height="15.666666666666671"/>
                                 <subviews>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="$60.00 / 2 months" textAlignment="right" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ST2-VM-y7a" userLabel="Price Label">
-                                        <rect key="frame" x="0.0" y="0.0" width="414" height="15.666666666666664"/>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Every 2 months" textAlignment="right" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ST2-VM-y7a" userLabel="Interval Label">
+                                        <rect key="frame" x="0.0" y="0.0" width="207" height="15.666666666666666"/>
+                                        <fontDescription key="fontDescription" style="UICTFontTextStyleFootnote"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="$60.00" textAlignment="right" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lZs-h5-O0u" userLabel="Price Label">
+                                        <rect key="frame" x="207" y="0.0" width="207" height="15.666666666666666"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleFootnote"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
@@ -79,7 +85,8 @@
             <viewLayoutGuide key="safeArea" id="ap5-Xn-M0c"/>
             <connections>
                 <outlet property="dateLabel" destination="ZBr-dk-9QF" id="9oP-s1-WI5"/>
-                <outlet property="priceLabel" destination="ST2-VM-y7a" id="ui4-yE-pFJ"/>
+                <outlet property="intervalLabel" destination="ST2-VM-y7a" id="wra-dW-dE4"/>
+                <outlet property="priceLabel" destination="lZs-h5-O0u" id="Unz-Vs-tmC"/>
                 <outlet property="statusLabel" destination="awc-Dj-9km" id="4Ag-Pb-Ge6"/>
                 <outlet property="titleLabel" destination="73c-DT-LQB" id="fKs-MF-r1H"/>
             </connections>

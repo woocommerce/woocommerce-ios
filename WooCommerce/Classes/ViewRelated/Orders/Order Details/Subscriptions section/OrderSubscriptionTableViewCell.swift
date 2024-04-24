@@ -49,14 +49,10 @@ struct OrderSubscriptionTableViewCellViewModel {
         subscription.startDate.formatAsRange(with: subscription.endDate, timezone: timeZone, calendar: calendar)
     }
 
-    /// The subscription price, with the total, billing interval, and billing period. Example: "$60.00 / 2 months"
+    /// The subscription billing interval, and period
+    /// Eg: "Every 2 months"
     ///
-    var subscriptionPrice: String {
-        let currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
-        guard subscription.total.isNotEmpty, let formattedPrice = currencyFormatter.formatAmount(subscription.total) else {
-            return ""
-        }
-
+    var subscriptionInterval: String {
         let billingFrequency = {
             switch subscription.billingInterval {
             case "1":
@@ -65,8 +61,18 @@ struct OrderSubscriptionTableViewCellViewModel {
                 return "\(subscription.billingInterval) \(subscription.billingPeriod.descriptionPlural)"
             }
         }()
+        return "Every \(subscription.billingInterval) \(billingFrequency)"
+    }
 
-        return String.localizedStringWithFormat(Localization.priceFormat, formattedPrice, billingFrequency)
+    /// The formatted subscription price
+    /// Eg: "$60.00"
+    ///
+    var subscriptionPrice: String {
+        let currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
+        guard subscription.total.isNotEmpty, let formattedPrice = currencyFormatter.formatAmount(subscription.total) else {
+            return ""
+        }
+        return String.localizedStringWithFormat(Localization.priceFormat, formattedPrice)
     }
 
     /// The status badge color and text
@@ -92,6 +98,10 @@ final class OrderSubscriptionTableViewCell: UITableViewCell {
     ///
     @IBOutlet private weak var statusLabel: PaddedLabel!
 
+    /// Shows the subscription interval.
+    ///
+    @IBOutlet private weak var intervalLabel: UILabel!
+
     /// Shows the subscription price.
     ///
     @IBOutlet private weak var priceLabel: UILabel!
@@ -100,6 +110,7 @@ final class OrderSubscriptionTableViewCell: UITableViewCell {
         dateLabel.text = viewModel.subscriptionDates
         titleLabel.text = viewModel.subscriptionTitle
         priceLabel.text = viewModel.subscriptionPrice
+        intervalLabel.text = viewModel.subscriptionInterval
 
         display(presentation: viewModel.statusPresentation)
     }
@@ -146,6 +157,7 @@ private extension OrderSubscriptionTableViewCell {
         titleLabel.applyBodyStyle()
         dateLabel.applyFootnoteStyle()
         priceLabel.applyBodyStyle()
+        intervalLabel.applyBodyStyle()
         configureStatusLabel()
     }
 
@@ -169,9 +181,9 @@ private extension OrderSubscriptionTableViewCellViewModel {
     enum Localization {
         static let titleFormat: String = NSLocalizedString("Subscription #%d",
                                                            comment: "Subscription title with subscription number. Reads like: 'Subscription #123'")
-        static let priceFormat = NSLocalizedString("%1$@ / %2$@",
-                                                   comment: "Description of the subscription price for a product, with the price and billing frequency. " +
-                                                   "Reads like: '$60.00 / 2 months'.")
+        static let priceFormat = NSLocalizedString("%1$@",
+                                                   comment: "Description of the subscription price for a product" +
+                                                   "Reads like: '$60.00'.")
 
         static func statusLabel(for status: SubscriptionStatus) -> String {
             switch status {

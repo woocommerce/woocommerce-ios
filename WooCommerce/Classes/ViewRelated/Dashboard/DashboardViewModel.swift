@@ -63,7 +63,6 @@ final class DashboardViewModel: ObservableObject {
     }
 
     private lazy var ordersResultsController: ResultsController<StorageOrder> = {
-        let storageManager = ServiceLocator.storageManager
         let predicate = NSPredicate(format: "siteID == %lld", siteID)
         let sortDescriptorByID = NSSortDescriptor(keyPath: \StorageOrder.orderID, ascending: false)
         let resultsController = ResultsController<StorageOrder>(storageManager: storageManager,
@@ -129,7 +128,7 @@ final class DashboardViewModel: ObservableObject {
                 await self?.updateJetpackBannerVisibilityFromAppSettings()
             }
             group.addTask { [weak self] in
-                await self?.updateHasOrdersStatus()
+                await self?.syncOrders()
             }
             if featureFlagService.isFeatureFlagEnabled(.dynamicDashboard) {
                 if dashboardCards.contains(where: { $0.type == .performance }) {
@@ -391,6 +390,7 @@ private extension DashboardViewModel {
 
         do {
             try ordersResultsController.performFetch()
+            self.updateResults()
         } catch {
             ServiceLocator.crashLogging.logError(error)
         }
@@ -486,26 +486,12 @@ private extension DashboardViewModel {
     }
 
     @MainActor
-    func updateHasOrdersStatus() async {
-        do {
-            hasOrders = try await loadHasOrdersStatus()
-        } catch {
-            DDLogError("⛔️ Dashboard (Share Your Store) — Error checking if site has orders: \(error)")
-        }
-    }
-
-    @MainActor
-    func loadHasOrdersStatus() async throws -> Bool {
-        return try await withCheckedThrowingContinuation { continuation in
-            stores.dispatch(OrderAction.checkIfStoreHasOrders(siteID: self.siteID, onCompletion: { result in
-                switch result {
-                case .success(let hasOrders):
-                    continuation.resume(returning: hasOrders)
-                case .failure(let error):
-                    continuation.resume(throwing: error)
-                }
-            }))
-        }
+    func syncOrders() {
+        let action = OrderAction.synchronizeOrders(siteID: self.siteID,
+                                               statuses: nil,
+                                               pageNumber: Constants.orderPageNumber,
+                                               pageSize: Constants.orderPageSize) {_, _ in }
+        stores.dispatch(action)
     }
 
     @MainActor
@@ -555,5 +541,7 @@ private extension DashboardViewModel {
     enum Constants {
         static let topEarnerStatsLimit: Int = 5
         static let dashboardScreenName = "my_store"
+        static let orderPageNumber = 1
+        static let orderPageSize = 75
     }
 }

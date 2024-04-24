@@ -8,10 +8,10 @@ final class StatsSubscribersSummaryDataTests: XCTestCase {
         let summary = StatsSubscribersSummaryData(jsonDictionary: json)
         XCTAssertNotNil(summary, "StatsSubscribersSummaryData not decoded as expected")
         let history = summary!.history
-        let firstDay = history[0]
+        let mostRecentDay = history.last!
 
-        XCTAssertEqual(firstDay.date, ISO8601DateFormatter().date(from: "2024-04-22"))
-        XCTAssertEqual(firstDay.count, 77)
+        XCTAssertEqual(mostRecentDay.date, StatsSubscribersSummaryData.dateFormatter.date(from: "2024-04-22"))
+        XCTAssertEqual(mostRecentDay.count, 77)
     }
 }
 

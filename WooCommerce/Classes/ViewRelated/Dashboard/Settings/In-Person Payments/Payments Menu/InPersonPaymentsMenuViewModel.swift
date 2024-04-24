@@ -22,6 +22,11 @@ final class InPersonPaymentsMenuViewModel: ObservableObject {
     @Published var presentManagePaymentGateways: Bool = false
     @Published private(set) var selectedPaymentGatewayName: String?
     @Published private(set) var selectedPaymentGatewayPlugin: CardPresentPaymentsPlugin?
+
+    // MARK: - Collect payment
+
+    let onAppearSubject: PassthroughSubject<Void, Never> = .init()
+    private var onAppearSubscription: AnyCancellable?
     @Published var presentCollectPaymentWithSimplePayments: Bool = false
     /// Whether the payment collection flow is shown, bound to the order creation screen.
     @Published var presentCollectPayment: Bool = false
@@ -33,6 +38,7 @@ final class InPersonPaymentsMenuViewModel: ObservableObject {
     @Published var presentCustomAmountAfterDismissingCollectPaymentMigrationSheet: Bool = false
     /// Whether the payment methods view is shown after creating an order.
     @Published var presentPaymentMethods: Bool = false
+
     @Published var presentSetUpTryOutTapToPay: Bool = false
     @Published var presentAboutTapToPay: Bool = false
     @Published var presentTapToPayFeedback: Bool = false
@@ -426,18 +432,23 @@ private extension InPersonPaymentsMenuViewModel {
 // MARK: - Deeplink navigation
 extension InPersonPaymentsMenuViewModel: DeepLinkNavigator {
     func navigate(to destination: any DeepLinkDestinationProtocol) {
-        guard let paymentsDestination = destination as? PaymentsMenuDestination else {
-            return
-        }
-        switch paymentsDestination {
-        case .collectPayment:
-            guard dependencies.featureFlagService.isFeatureFlagEnabled(.migrateSimplePaymentsToOrderCreation) else {
-                return presentCollectPaymentWithSimplePayments = true
+        onAppearSubscription = onAppearSubject
+            .first()
+            .sink { [weak self] in
+                guard let self else { return }
+                guard let paymentsDestination = destination as? PaymentsMenuDestination else {
+                    return
+                }
+                switch paymentsDestination {
+                case .collectPayment:
+                    guard dependencies.featureFlagService.isFeatureFlagEnabled(.migrateSimplePaymentsToOrderCreation) else {
+                        return presentCollectPaymentWithSimplePayments = true
+                    }
+                    collectPayment()
+                case .tapToPay:
+                    presentSetUpTryOutTapToPay = true
+                }
             }
-            presentCollectPayment = true
-        case .tapToPay:
-            presentSetUpTryOutTapToPay = true
-        }
     }
 }
 

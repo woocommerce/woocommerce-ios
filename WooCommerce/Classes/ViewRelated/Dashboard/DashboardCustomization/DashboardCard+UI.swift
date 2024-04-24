@@ -21,7 +21,7 @@ private extension DashboardCard {
         static let onboarding = NSLocalizedString(
             "dashboardCard.name.onboarding",
             value: "Store setup",
-            comment: "Name for the Store Onboarding dashboard card in the Customize Dashboard screen"
+            comment: "Name for the Store setup dashboard card in the Customize Dashboard screen"
         )
         static let performance = NSLocalizedString(
             "dashboardCard.name.performance",

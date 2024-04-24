@@ -326,8 +326,7 @@ public extension StatsServiceRemoteV2 {
         let properties = StatsSubscribersSummaryData.queryProperties(quantity: 30, unit: unit) as [String: AnyObject]
 
         wordPressComRESTAPI.get(path, parameters: properties, success: { [weak self] (response, _) in
-            guard let self,
-                  let jsonResponse = response as? [String: AnyObject],
+            guard let jsonResponse = response as? [String: AnyObject],
                   let subscribersSummaryData = StatsSubscribersSummaryData(jsonDictionary: jsonResponse)
             else {
                 completion(.failure(ResponseError.decodingFailure))

@@ -37,14 +37,14 @@ struct TopPerformersDashboardView: View {
                     .padding(.horizontal, Layout.padding)
                     .redacted(reason: viewModel.syncingData ? [.placeholder] : [])
                     .shimmering(active: viewModel.syncingData)
-                
+
                 Divider()
-                
+
                 topPerformersList
-                
+
                 Divider()
                     .padding(.leading, Layout.padding)
-                
+
                 viewAllAnalyticsButton
                     .padding(.horizontal, Layout.padding)
                     .redacted(reason: viewModel.syncingData ? [.placeholder] : [])

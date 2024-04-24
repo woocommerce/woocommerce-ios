@@ -26,22 +26,30 @@ struct TopPerformersDashboardView: View {
             header
                 .padding(.horizontal, Layout.padding)
 
-            timeRangeBar
-                .padding(.horizontal, Layout.padding)
-                .redacted(reason: viewModel.syncingData ? [.placeholder] : [])
-                .shimmering(active: viewModel.syncingData)
-
-            Divider()
-
-            topPerformersList
-
-            Divider()
-                .padding(.leading, Layout.padding)
-
-            viewAllAnalyticsButton
-                .padding(.horizontal, Layout.padding)
-                .redacted(reason: viewModel.syncingData ? [.placeholder] : [])
-                .shimmering(active: viewModel.syncingData)
+            if viewModel.syncingError != nil {
+                DashboardCardErrorView(onRetry: {
+                    Task {
+                        await viewModel.reloadData()
+                    }
+                })
+            } else {
+                timeRangeBar
+                    .padding(.horizontal, Layout.padding)
+                    .redacted(reason: viewModel.syncingData ? [.placeholder] : [])
+                    .shimmering(active: viewModel.syncingData)
+                
+                Divider()
+                
+                topPerformersList
+                
+                Divider()
+                    .padding(.leading, Layout.padding)
+                
+                viewAllAnalyticsButton
+                    .padding(.horizontal, Layout.padding)
+                    .redacted(reason: viewModel.syncingData ? [.placeholder] : [])
+                    .shimmering(active: viewModel.syncingData)
+            }
 
         }
         .padding(.vertical, Layout.padding)
@@ -65,6 +73,10 @@ struct TopPerformersDashboardView: View {
 private extension TopPerformersDashboardView {
     var header: some View {
         HStack {
+            Image(systemName: "exclamationmark.circle")
+                .foregroundStyle(Color.secondary)
+                .headlineStyle()
+                .renderedIf(viewModel.syncingError != nil)
             Text(Localization.title)
                 .headlineStyle()
             Spacer()

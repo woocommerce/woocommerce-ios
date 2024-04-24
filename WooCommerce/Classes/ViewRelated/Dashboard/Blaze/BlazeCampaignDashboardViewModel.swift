@@ -39,6 +39,15 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
         }
     }
 
+    var shouldShowSubtitle: Bool {
+        switch state {
+        case .showCampaign, .empty:
+            return false
+        case .loading, .showProduct:
+            return true
+        }
+    }
+
     /// Set externally in the hosting controller to invalidate the SwiftUI `BlazeCampaignDashboardView`'s intrinsic content size as a workaround with UIKit.
     var onStateChange: (() -> Void)?
 

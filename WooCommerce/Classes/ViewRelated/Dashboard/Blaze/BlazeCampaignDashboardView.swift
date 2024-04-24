@@ -92,18 +92,28 @@ struct BlazeCampaignDashboardView: View {
             header
                 .padding(.horizontal, Layout.padding)
 
-            if case .showProduct(let product) = viewModel.state {
+            switch viewModel.state {
+            case .showProduct(let product):
                 ProductInfoView(product: product)
                     .padding(.horizontal, Layout.padding)
                     .onTapGesture {
                         createCampaignTapped?(product.productID)
                     }
-            } else if case .showCampaign(let campaign) = viewModel.state {
+            case .showCampaign(let campaign):
                 BlazeCampaignItemView(campaign: campaign, showBudget: false)
                     .padding(.horizontal, Layout.padding)
                     .onTapGesture {
                         viewModel.didSelectCampaignDetails(campaign)
                     }
+            case .empty:
+                DashboardCardErrorView(onRetry: {
+                    Task {
+                        await viewModel.reload()
+                    }
+                })
+                .padding(Layout.padding)
+            case .loading:
+                EmptyView()
             }
 
             // Show All Campaigns button
@@ -115,6 +125,8 @@ struct BlazeCampaignDashboardView: View {
             createCampaignButton
                 .padding(.horizontal, Layout.padding)
                 .redacted(reason: viewModel.shouldRedactView ? .placeholder : [])
+                .shimmering(active: viewModel.shouldRedactView)
+                .renderedIf(viewModel.state != .empty)
         }
         .padding(.vertical, Layout.padding)
         .background(Color(.listForeground(modal: false)))
@@ -154,7 +166,7 @@ private extension BlazeCampaignDashboardView {
             Text(Localization.subtitle)
                 .fontWeight(.regular)
                 .subheadlineStyle()
-                .renderedIf(!viewModel.shouldShowShowAllCampaignsButton)
+                .renderedIf(viewModel.shouldShowSubtitle)
         }
 
     }

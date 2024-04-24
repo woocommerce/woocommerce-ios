@@ -11,7 +11,6 @@ struct DashboardView: View {
     @State private var currentSite: Site?
     @State private var dismissedJetpackBenefitBanner = false
     @State private var showingSupportForm = false
-    @State private var showingCustomization = false
     @State private var troubleshootURL: URL?
     @State private var storePlanState: StorePlanSyncState = .loading
     @State private var connectivityStatus: ConnectivityStatus = .notReachable
@@ -86,7 +85,7 @@ struct DashboardView: View {
             }
             ToolbarItem(placement: .topBarTrailing) {
                 Button(Localization.edit) {
-                    showingCustomization = true
+                    viewModel.showingCustomization = true
                 }
             }
         }
@@ -124,7 +123,7 @@ struct DashboardView: View {
                 viewModel.maybeSyncAnnouncementsAfterWebViewDismissed()
             }
         }
-        .sheet(isPresented: $showingCustomization) {
+        .sheet(isPresented: $viewModel.showingCustomization) {
             DashboardCustomizationView(viewModel: DashboardCustomizationViewModel(
                 allCards: viewModel.dashboardCards,
                 inactiveCards: viewModel.unavailableDashboardCards,

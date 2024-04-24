@@ -38,6 +38,8 @@ final class DashboardViewModel: ObservableObject {
 
     @Published private(set) var canHideMoreDashboardCards = false
 
+    @Published var showingCustomization = false
+
     let siteID: Int64
     private let stores: StoresManager
     private let featureFlagService: FeatureFlagService

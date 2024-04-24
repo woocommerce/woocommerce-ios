@@ -5,7 +5,6 @@
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22130"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
-        <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -58,7 +57,6 @@
                             </stackView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dVa-kj-ySN" userLabel="Separator">
                                 <rect key="frame" x="0.0" y="74" width="382" height="1"/>
-                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="1" id="Ccm-tC-P8t"/>
                                 </constraints>
@@ -66,7 +64,7 @@
                             <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="CPI-8F-8yE" userLabel="Subscription Price Container">
                                 <rect key="frame" x="0.0" y="44.333333333333336" width="382" height="15.666666666666664"/>
                                 <subviews>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Every 2 months" textAlignment="right" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ST2-VM-y7a" userLabel="Interval Label">
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Every 2 months" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ST2-VM-y7a" userLabel="Interval Label">
                                         <rect key="frame" x="0.0" y="0.0" width="191" height="15.666666666666666"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleFootnote"/>
                                         <nil key="textColor"/>
@@ -82,6 +80,7 @@
                             </stackView>
                         </subviews>
                         <constraints>
+                            <constraint firstItem="ST2-VM-y7a" firstAttribute="leading" secondItem="X9K-b7-WIE" secondAttribute="leading" id="4ZN-Ch-smq"/>
                             <constraint firstItem="CPI-8F-8yE" firstAttribute="top" secondItem="dVa-kj-ySN" secondAttribute="bottom" constant="16" id="Ta0-pE-xEc"/>
                             <constraint firstItem="dVa-kj-ySN" firstAttribute="top" secondItem="Anc-n2-aki" secondAttribute="bottom" constant="16" id="YKE-x6-58R"/>
                             <constraint firstAttribute="bottom" secondItem="CPI-8F-8yE" secondAttribute="bottom" constant="16" id="y6K-Pt-LGZ"/>
@@ -107,9 +106,4 @@
             <point key="canvasLocation" x="141" y="20"/>
         </tableViewCell>
     </objects>
-    <resources>
-        <systemColor name="systemBackgroundColor">
-            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-        </systemColor>
-    </resources>
 </document>

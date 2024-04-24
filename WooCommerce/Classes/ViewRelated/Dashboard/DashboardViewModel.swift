@@ -390,7 +390,7 @@ private extension DashboardViewModel {
 
         do {
             try ordersResultsController.performFetch()
-            self.updateResults()
+            updateResults()
         } catch {
             ServiceLocator.crashLogging.logError(error)
         }

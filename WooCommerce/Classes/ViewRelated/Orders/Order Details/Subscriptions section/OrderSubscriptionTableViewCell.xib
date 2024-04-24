@@ -17,7 +17,7 @@
                 <rect key="frame" x="0.0" y="0.0" width="414" height="108"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="X9K-b7-WIE" userLabel="Vertical Stack View">
+                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="X9K-b7-WIE" userLabel="Vertical Stack View">
                         <rect key="frame" x="16" y="16" width="382" height="76"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Anc-n2-aki" userLabel="Subscription Details Container">
@@ -44,7 +44,7 @@
                                         <rect key="frame" x="145" y="0.0" width="237" height="58"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="740" text="Active" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="awc-Dj-9km" userLabel="Status Label" customClass="PaddedLabel" customModule="WooCommerce" customModuleProvider="target">
-                                                <rect key="frame" x="199" y="0.0" width="38" height="16"/>
+                                                <rect key="frame" x="199.33333333333331" y="0.0" width="37.666666666666657" height="15.666666666666666"/>
                                                 <fontDescription key="fontDescription" style="UICTFontTextStyleFootnote"/>
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
@@ -64,13 +64,13 @@
                                 </constraints>
                             </stackView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dVa-kj-ySN" userLabel="Separator">
-                                <rect key="frame" x="0.0" y="74" width="382" height="1"/>
+                                <rect key="frame" x="0.0" y="74" width="382" height="0.6666666666666714"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="1" id="Ccm-tC-P8t"/>
+                                    <constraint firstAttribute="height" constant="0.5" id="Ccm-tC-P8t"/>
                                 </constraints>
                             </view>
                             <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="CPI-8F-8yE" userLabel="Subscription Price Container">
-                                <rect key="frame" x="0.0" y="44.333333333333336" width="382" height="15.666666666666664"/>
+                                <rect key="frame" x="0.0" y="90.666666666666671" width="382" height="15.666666666666671"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Every 2 months" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ST2-VM-y7a" userLabel="Interval Label">
                                         <rect key="frame" x="0.0" y="0.0" width="191" height="15.666666666666666"/>
@@ -90,8 +90,6 @@
                         <constraints>
                             <constraint firstItem="ST2-VM-y7a" firstAttribute="leading" secondItem="X9K-b7-WIE" secondAttribute="leading" id="4ZN-Ch-smq"/>
                             <constraint firstAttribute="trailing" secondItem="O2Y-SY-AYY" secondAttribute="trailing" id="R8b-w7-03e"/>
-                            <constraint firstItem="CPI-8F-8yE" firstAttribute="top" secondItem="dVa-kj-ySN" secondAttribute="bottom" constant="16" id="Ta0-pE-xEc"/>
-                            <constraint firstItem="dVa-kj-ySN" firstAttribute="top" secondItem="Anc-n2-aki" secondAttribute="bottom" constant="16" id="YKE-x6-58R"/>
                             <constraint firstAttribute="bottom" secondItem="CPI-8F-8yE" secondAttribute="bottom" constant="16" id="y6K-Pt-LGZ"/>
                         </constraints>
                     </stackView>

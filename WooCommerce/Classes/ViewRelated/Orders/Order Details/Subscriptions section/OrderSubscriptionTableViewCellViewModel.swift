@@ -65,10 +65,10 @@ struct OrderSubscriptionTableViewCellViewModel {
             case "1":
                 return subscription.billingPeriod.descriptionSingular
             default:
-                return "\(subscription.billingInterval) \(subscription.billingPeriod.descriptionPlural)"
+                return subscription.billingPeriod.descriptionPlural
             }
         }()
-        return "Every \(subscription.billingInterval) \(billingFrequency)"
+        return String.localizedStringWithFormat(Localization.billingInterval, subscription.billingInterval, billingFrequency)
     }
 
     /// The formatted subscription price
@@ -103,6 +103,10 @@ private extension OrderSubscriptionTableViewCellViewModel {
             "OrderSubscriptionTableViewCellViewModel.priceFormat",
             value: "%1$@",
             comment: "Description of the subscription price for a product. Reads like: '$60.00'.")
+        static let billingInterval = NSLocalizedString(
+            "OrderSubscriptionTableViewCellViewModel.billingInterval",
+            value: "Every %1$@ %2$@",
+            comment: "Description of the subscription billing interval for a product. Reads like: 'Every 2 months'.")
 
         static func statusLabel(for status: SubscriptionStatus) -> String {
             switch status {

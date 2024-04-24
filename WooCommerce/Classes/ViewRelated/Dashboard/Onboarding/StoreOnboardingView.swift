@@ -142,32 +142,41 @@ struct StoreOnboardingView: View {
                                        shareFeedbackAction: shareFeedbackAction,
                                        hideTaskListAction: viewModel.hideTaskList,
                                        isRedacted: viewModel.isRedacted,
+                                       failedToLoadTasks: viewModel.failedToLoadTasks,
                                        isHideStoreOnboardingTaskListFeatureEnabled: canHideCard)
                 .padding(.horizontal, Layout.padding)
 
-                // Task list
-                VStack(alignment: .leading, spacing: 0) {
-                    ForEach(viewModel.tasksForDisplay) { taskViewModel in
-                        let isLastTask = taskViewModel == viewModel.tasksForDisplay.last
-
-                        StoreOnboardingTaskView(viewModel: taskViewModel,
-                                                showDivider: !isLastTask,
-                                                isRedacted: viewModel.isRedacted) { task in
-                            taskTapped?(task)
+                if viewModel.failedToLoadTasks && !viewModel.isExpanded {
+                    DashboardCardErrorView(onRetry: {
+                        Task {
+                            await viewModel.reloadTasks()
                         }
-                                                .shimmering(active: viewModel.isRedacted)
+                    })
+                } else {
+                    // Task list
+                    VStack(alignment: .leading, spacing: 0) {
+                        ForEach(viewModel.tasksForDisplay) { taskViewModel in
+                            let isLastTask = taskViewModel == viewModel.tasksForDisplay.last
+                            
+                            StoreOnboardingTaskView(viewModel: taskViewModel,
+                                                    showDivider: !isLastTask,
+                                                    isRedacted: viewModel.isRedacted) { task in
+                                taskTapped?(task)
+                            }
+                                                    .shimmering(active: viewModel.isRedacted)
+                        }
                     }
-                }
-                .padding(.horizontal, Layout.padding)
-
-                Divider()
-                    .renderedIf(viewModel.shouldShowViewAllButton)
-                    .padding(.leading, Layout.padding)
-
-                // View all button
-                viewAllButton(action: viewAllTapped, text: String(format: Localization.viewAll, viewModel.taskViewModels.count))
-                    .renderedIf(viewModel.shouldShowViewAllButton)
                     .padding(.horizontal, Layout.padding)
+                    
+                    Divider()
+                        .renderedIf(viewModel.shouldShowViewAllButton)
+                        .padding(.leading, Layout.padding)
+                    
+                    // View all button
+                    viewAllButton(action: viewAllTapped, text: String(format: Localization.viewAll, viewModel.taskViewModels.count))
+                        .renderedIf(viewModel.shouldShowViewAllButton)
+                        .padding(.horizontal, Layout.padding)
+                }
 
                 Spacer()
                     .renderedIf(viewModel.isExpanded)

@@ -18,6 +18,7 @@ class StoreOnboardingViewModel: ObservableObject {
 
     @Published private(set) var isRedacted: Bool = true
     @Published private(set) var taskViewModels: [StoreOnboardingTaskViewModel] = []
+    @Published private(set) var failedToLoadTasks = false
 
     /// Used to determine whether the task list should be displayed in dashboard
     ///
@@ -160,7 +161,9 @@ private extension StoreOnboardingViewModel {
         switch state {
         case .loading:
             isRedacted = true
+            failedToLoadTasks = false
         case .loaded(let items):
+            failedToLoadTasks = false
             isRedacted = false
             taskViewModels = items
             if hasPendingTasks(items) {
@@ -170,6 +173,7 @@ private extension StoreOnboardingViewModel {
             isRedacted = false
             taskViewModels = []
             noTasksAvailableForDisplay = true
+            failedToLoadTasks = true
         }
         onStateChange?()
     }

@@ -39,7 +39,15 @@ struct OrderSubscriptionTableViewCellViewModel {
     /// The subscription title with the subscription ID. Example: "Subscription #123"
     ///
     var subscriptionTitle: String {
-        String.localizedStringWithFormat(Localization.titleFormat, subscription.subscriptionID)
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        formatter.usesGroupingSeparator = false
+
+        // Attempts to format the subscriptionID to remove localized grouping separators
+        guard let formattedSubscriptionID = formatter.string(from: NSNumber(value: subscription.subscriptionID)) else {
+            return String.localizedStringWithFormat(Localization.subscriptionTitle, subscription.subscriptionID)
+        }
+        return String.localizedStringWithFormat(Localization.formattedSubscriptionTitle, formattedSubscriptionID)
     }
 
     /// The subscription start and end dates. Example: “Jan 31 - Apr 25, 2023”
@@ -83,12 +91,18 @@ struct OrderSubscriptionTableViewCellViewModel {
 
 private extension OrderSubscriptionTableViewCellViewModel {
     enum Localization {
-        // TODO: Proper formatting. %d not. use value.
-        static let titleFormat: String = NSLocalizedString("Subscription #%d",
-                                                           comment: "Subscription title with subscription number. Reads like: 'Subscription #123'")
-        static let priceFormat = NSLocalizedString("%1$@",
-                                                   comment: "Description of the subscription price for a product" +
-                                                   "Reads like: '$60.00'.")
+        static let subscriptionTitle: String = NSLocalizedString(
+            "OrderSubscriptionTableViewCellViewModel.subscriptionTitle",
+            value: "Subscription #%d",
+            comment: "Subscription title with subscription number. Reads like: 'Subscription #123'")
+        static let formattedSubscriptionTitle: String = NSLocalizedString(
+            "OrderSubscriptionTableViewCellViewModel.formattedSubscriptionTitle",
+            value: "Subscription #%1$@",
+            comment: "Formatted subscription title with subscription number. Reads like: 'Subscription #123'")
+        static let priceFormat = NSLocalizedString(
+            "OrderSubscriptionTableViewCellViewModel.priceFormat",
+            value: "%1$@",
+            comment: "Description of the subscription price for a product. Reads like: '$60.00'.")
 
         static func statusLabel(for status: SubscriptionStatus) -> String {
             switch status {

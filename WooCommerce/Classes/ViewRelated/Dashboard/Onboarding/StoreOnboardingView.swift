@@ -158,7 +158,7 @@ struct StoreOnboardingView: View {
                     VStack(alignment: .leading, spacing: 0) {
                         ForEach(viewModel.tasksForDisplay) { taskViewModel in
                             let isLastTask = taskViewModel == viewModel.tasksForDisplay.last
-                            
+
                             StoreOnboardingTaskView(viewModel: taskViewModel,
                                                     showDivider: !isLastTask,
                                                     isRedacted: viewModel.isRedacted) { task in
@@ -168,11 +168,11 @@ struct StoreOnboardingView: View {
                         }
                     }
                     .padding(.horizontal, Layout.padding)
-                    
+
                     Divider()
                         .renderedIf(viewModel.shouldShowViewAllButton)
                         .padding(.leading, Layout.padding)
-                    
+
                     // View all button
                     viewAllButton(action: viewAllTapped, text: String(format: Localization.viewAll, viewModel.taskViewModels.count))
                         .renderedIf(viewModel.shouldShowViewAllButton)

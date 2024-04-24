@@ -169,33 +169,7 @@ final class InPersonPaymentsMenuViewModel: ObservableObject {
             analytics.track(.paymentsMenuCollectPaymentTapped)
             return
         }
-        let orderViewModel = EditableOrderViewModel(siteID: siteID)
-        self.orderViewModel = orderViewModel
-        orderViewModel.onFinished = { [weak self] _ in
-            self?.presentCollectPayment = false
-        }
-        orderViewModel.onFinishAndCollectPayment = { [weak self] order, paymentMethodsViewModel in
-            guard let self else { return }
-            self.paymentMethodsViewModel = paymentMethodsViewModel
-            paymentMethodsNoticeSubscription = paymentMethodsViewModel.notice
-                .compactMap { $0 }
-                .sink { [weak self] notice in
-                    guard let self else { return }
-                    switch notice {
-                        case .created:
-                            dependencies.noticePresenter.enqueue(notice: .init(title: Localization.orderCreated, feedbackType: .success))
-                        case .completed:
-                            dependencies.noticePresenter.enqueue(notice: .init(title: Localization.orderCompleted, feedbackType: .success))
-                        case .error(let description):
-                            dependencies.noticePresenter.enqueue(notice: .init(title: description, feedbackType: .error))
-                    }
-                }
-            presentPaymentMethods = true
-        }
-
-        presentCustomAmountAfterDismissingCollectPaymentMigrationSheet = false
-        hasPresentedCollectPaymentMigrationSheet = false
-        presentCollectPayment = true
+        collectPayment()
         analytics.track(.paymentsMenuCollectPaymentTapped)
     }
 
@@ -268,6 +242,41 @@ final class InPersonPaymentsMenuViewModel: ObservableObject {
         }
         return onboardingViewModel
     }()
+}
+
+// MARK: - Collect payment
+
+private extension InPersonPaymentsMenuViewModel {
+    func collectPayment() {
+        let orderViewModel = EditableOrderViewModel(siteID: siteID)
+        self.orderViewModel = orderViewModel
+        orderViewModel.onFinished = { [weak self] _ in
+            self?.presentCollectPayment = false
+        }
+        orderViewModel.onFinishAndCollectPayment = { [weak self] order, paymentMethodsViewModel in
+            guard let self else { return }
+            self.paymentMethodsViewModel = paymentMethodsViewModel
+            paymentMethodsNoticeSubscription = paymentMethodsViewModel.notice
+                .compactMap { $0 }
+                .sink { [weak self] notice in
+                    guard let self else { return }
+                    switch notice {
+                        case .created:
+                            dependencies.noticePresenter.enqueue(notice: .init(title: Localization.orderCreated, feedbackType: .success))
+                        case .completed:
+                            dependencies.noticePresenter.enqueue(notice: .init(title: Localization.orderCompleted, feedbackType: .success))
+                        case .error(let description):
+                            dependencies.noticePresenter.enqueue(notice: .init(title: description, feedbackType: .error))
+                    }
+                }
+            presentPaymentMethods = true
+        }
+
+        presentCustomAmountAfterDismissingCollectPaymentMigrationSheet = false
+        hasPresentedCollectPaymentMigrationSheet = false
+        presentPaymentMethods = false
+        presentCollectPayment = true
+    }
 }
 
 // MARK: - Background onboarding

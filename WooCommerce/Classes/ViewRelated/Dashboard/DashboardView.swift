@@ -209,7 +209,6 @@ private extension DashboardView {
                 .padding(.vertical, Layout.elementPadding)
             }
         }
-        .cornerRadius(Layout.cornerRadius)
         .overlay(
             RoundedRectangle(cornerRadius: Layout.cornerRadius)
                 .stroke(Color(.border), lineWidth: 1)

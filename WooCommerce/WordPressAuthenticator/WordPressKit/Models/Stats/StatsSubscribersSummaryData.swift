@@ -7,15 +7,19 @@ public struct StatsSubscribersSummaryData: Decodable, Equatable {
     public init(history: [SubscriberData]) {
         self.history = history
     }
+}
 
-    private enum CodingKeys: String, CodingKey {
-        case history = "data"
+extension StatsSubscribersSummaryData {
+    public static var pathComponent: String {
+        return "stats/subscribers"
     }
 
-    public init(from decoder: any Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        history = try container.decode([SubscriberData].self, forKey: .history)
-    }
+    static var dateFormatter: DateFormatter = {
+        let df = DateFormatter()
+        df.locale = Locale(identifier: "en_US_POS")
+        df.dateFormat = "yyyy-MM-dd"
+        return df
+    }()
 
     public struct SubscriberData: Decodable, Equatable {
         public let date: Date
@@ -25,34 +29,32 @@ public struct StatsSubscribersSummaryData: Decodable, Equatable {
             self.date = date
             self.count = count
         }
-
-        private enum CodingKeys: Int, CodingKey {
-            case date = 0
-            case count = 1
-        }
-
-        public init(from decoder: any Decoder) throws {
-            var container = try decoder.unkeyedContainer()
-
-            date = ISO8601DateFormatter().date(from: try container.decode(String.self)) ?? Date()
-            count = try container.decode(Int.self)
-        }
-    }
-}
-
-extension StatsSubscribersSummaryData {
-    public static var pathComponent: String {
-        return "stats/subscribers"
     }
 
     public init?(jsonDictionary: [String: AnyObject]) {
-        do {
-            let jsonData = try JSONSerialization.data(withJSONObject: jsonDictionary, options: [])
-            let decoder = JSONDecoder.apiDecoder
-            self = try decoder.decode(Self.self, from: jsonData)
-        } catch {
+        guard
+            let fields = jsonDictionary["fields"] as? [String],
+            let data = jsonDictionary["data"] as? [[Any]],
+            let dateIndex = fields.firstIndex(of: "period"),
+            let countIndex = fields.firstIndex(of: "subscribers")
+        else {
             return nil
         }
+
+        let history: [SubscriberData?] = data.map { elements in
+            guard elements.indices.contains(dateIndex) && elements.indices.contains(countIndex),
+                let dateString = elements[dateIndex] as? String,
+                let date = StatsSubscribersSummaryData.dateFormatter.date(from: dateString),
+                let count = elements[countIndex] as? Int
+            else {
+                return nil
+            }
+
+            return SubscriberData(date: date, count: count)
+        }
+
+        let sorted = history.compactMap { $0 }.sorted(by: { $0.date.compare($1.date) == .orderedAscending })
+        self = .init(history: sorted)
     }
 
     public static func queryProperties(quantity: Int, unit: StatsSubscribersSummaryData.Unit) -> [String: String] {

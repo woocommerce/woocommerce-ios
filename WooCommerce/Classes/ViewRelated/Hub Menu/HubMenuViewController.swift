@@ -95,8 +95,12 @@ extension HubMenuViewController: DeepLinkNavigator {
     func navigate(to destination: any DeepLinkDestinationProtocol) {
         switch destination {
         case is PaymentsMenuDestination:
+            let isShowingPayments = viewModel.showingPayments
             showPaymentsMenu()
             viewModel.inPersonPaymentsMenuViewModel.navigate(to: destination)
+            if isShowingPayments {
+                viewModel.inPersonPaymentsMenuViewModel.onAppearSubject.send(())
+            }
         case is HubMenuDestination:
             handleHubMenuDeepLink(to: destination)
         default:

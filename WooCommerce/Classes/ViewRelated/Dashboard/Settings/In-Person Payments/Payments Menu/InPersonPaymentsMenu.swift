@@ -257,9 +257,6 @@ struct InPersonPaymentsMenu: View {
             }
         }
         .navigationTitle(InPersonPaymentsView.Localization.title)
-        .onAppear {
-            viewModel.onAppearSubject.send(())
-        }
     }
 
     @ViewBuilder

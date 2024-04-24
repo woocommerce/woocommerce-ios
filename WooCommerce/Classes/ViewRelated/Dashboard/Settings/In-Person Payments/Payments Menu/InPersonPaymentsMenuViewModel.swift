@@ -166,6 +166,7 @@ final class InPersonPaymentsMenuViewModel: ObservableObject {
     func onAppear() async {
         runCardPresentPaymentsOnboardingIfPossible()
         await updateOutputProperties()
+        onAppearSubject.send(())
     }
 
     func collectPaymentTapped() {

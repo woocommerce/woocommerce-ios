@@ -20,20 +20,20 @@
                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="X9K-b7-WIE" userLabel="Vertical Stack View">
                         <rect key="frame" x="16" y="16" width="382" height="76"/>
                         <subviews>
-                            <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Anc-n2-aki" userLabel="Subscription Status Container">
+                            <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Anc-n2-aki" userLabel="Subscription Details Container">
                                 <rect key="frame" x="0.0" y="0.0" width="382" height="58"/>
                                 <subviews>
-                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="zMs-pE-M0s" userLabel="Subscription Vertical Container">
-                                        <rect key="frame" x="0.0" y="0.0" width="113" height="58"/>
+                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="zMs-pE-M0s" userLabel="Date and title container">
+                                        <rect key="frame" x="0.0" y="0.0" width="145" height="58"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Jan 31 - Apr 23, 2023" textAlignment="natural" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ZBr-dk-9QF" userLabel="Date Label">
-                                                <rect key="frame" x="0.0" y="0.0" width="113" height="15.666666666666666"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="145" height="15.666666666666666"/>
                                                 <fontDescription key="fontDescription" style="UICTFontTextStyleFootnote"/>
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" text="Subscription #123" textAlignment="natural" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="73c-DT-LQB" userLabel="Title Label">
-                                                <rect key="frame" x="0.0" y="15.666666666666668" width="113" height="42.333333333333329"/>
+                                                <rect key="frame" x="0.0" y="15.666666666666668" width="145" height="42.333333333333329"/>
                                                 <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
@@ -41,19 +41,27 @@
                                         </subviews>
                                     </stackView>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="O2Y-SY-AYY" userLabel="Status Container View">
-                                        <rect key="frame" x="113" y="0.0" width="269" height="58"/>
+                                        <rect key="frame" x="145" y="0.0" width="237" height="58"/>
                                         <subviews>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="740" fixedFrame="YES" text="Active" textAlignment="natural" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="awc-Dj-9km" userLabel="Status Label" customClass="PaddedLabel" customModule="WooCommerce" customModuleProvider="target">
-                                                <rect key="frame" x="0.0" y="0.0" width="37.666666666666664" height="15.666666666666666"/>
-                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="740" text="Active" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="awc-Dj-9km" userLabel="Status Label" customClass="PaddedLabel" customModule="WooCommerce" customModuleProvider="target">
+                                                <rect key="frame" x="199" y="0.0" width="38" height="16"/>
                                                 <fontDescription key="fontDescription" style="UICTFontTextStyleFootnote"/>
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                         </subviews>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <constraints>
+                                            <constraint firstItem="awc-Dj-9km" firstAttribute="top" secondItem="O2Y-SY-AYY" secondAttribute="top" id="ezL-N6-kln"/>
+                                            <constraint firstAttribute="trailing" secondItem="awc-Dj-9km" secondAttribute="trailing" id="n6v-s7-XLR"/>
+                                        </constraints>
                                     </view>
                                 </subviews>
+                                <constraints>
+                                    <constraint firstItem="zMs-pE-M0s" firstAttribute="centerY" secondItem="Anc-n2-aki" secondAttribute="centerY" id="3Sy-IR-i68"/>
+                                    <constraint firstItem="zMs-pE-M0s" firstAttribute="leading" secondItem="Anc-n2-aki" secondAttribute="leading" id="A6E-rE-jqc"/>
+                                    <constraint firstItem="O2Y-SY-AYY" firstAttribute="centerY" secondItem="Anc-n2-aki" secondAttribute="centerY" id="MJM-iu-oNO"/>
+                                </constraints>
                             </stackView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dVa-kj-ySN" userLabel="Separator">
                                 <rect key="frame" x="0.0" y="74" width="382" height="1"/>
@@ -81,6 +89,7 @@
                         </subviews>
                         <constraints>
                             <constraint firstItem="ST2-VM-y7a" firstAttribute="leading" secondItem="X9K-b7-WIE" secondAttribute="leading" id="4ZN-Ch-smq"/>
+                            <constraint firstAttribute="trailing" secondItem="O2Y-SY-AYY" secondAttribute="trailing" id="R8b-w7-03e"/>
                             <constraint firstItem="CPI-8F-8yE" firstAttribute="top" secondItem="dVa-kj-ySN" secondAttribute="bottom" constant="16" id="Ta0-pE-xEc"/>
                             <constraint firstItem="dVa-kj-ySN" firstAttribute="top" secondItem="Anc-n2-aki" secondAttribute="bottom" constant="16" id="YKE-x6-58R"/>
                             <constraint firstAttribute="bottom" secondItem="CPI-8F-8yE" secondAttribute="bottom" constant="16" id="y6K-Pt-LGZ"/>
@@ -103,7 +112,7 @@
                 <outlet property="statusLabel" destination="awc-Dj-9km" id="4Ag-Pb-Ge6"/>
                 <outlet property="titleLabel" destination="73c-DT-LQB" id="fKs-MF-r1H"/>
             </connections>
-            <point key="canvasLocation" x="141" y="20"/>
+            <point key="canvasLocation" x="140.45801526717557" y="19.718309859154932"/>
         </tableViewCell>
     </objects>
 </document>

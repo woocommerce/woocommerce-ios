@@ -152,6 +152,7 @@ struct StoreOnboardingView: View {
                             await viewModel.reloadTasks()
                         }
                     })
+                    .padding(Layout.padding)
                 } else {
                     // Task list
                     VStack(alignment: .leading, spacing: 0) {

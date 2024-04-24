@@ -34,9 +34,8 @@ struct StorePerformanceView: View {
                 .padding(.horizontal, Layout.padding)
 
             if viewModel.loadingError != nil {
-
                 errorStateView
-
+                    .padding(.leading, Layout.padding)
             } else if viewModel.statsVersion == .v4 {
                 timeRangeBar
                     .padding(.horizontal, Layout.padding)

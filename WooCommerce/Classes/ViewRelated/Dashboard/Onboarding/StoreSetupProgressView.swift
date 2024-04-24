@@ -24,7 +24,7 @@ struct StoreSetupProgressView: View {
             Image(systemName: "exclamationmark.circle")
                 .foregroundStyle(Color.secondary)
                 .headlineStyle()
-                .renderedIf(!failedToLoadTasks)
+                .renderedIf(failedToLoadTasks)
 
             VStack(alignment: isExpanded ? .center : .leading, spacing: Layout.verticalSpacing) {
                 // Title label

@@ -64,13 +64,13 @@
                                 </constraints>
                             </stackView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dVa-kj-ySN" userLabel="Separator">
-                                <rect key="frame" x="0.0" y="74" width="382" height="0.6666666666666714"/>
+                                <rect key="frame" x="0.0" y="74" width="382" height="1"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="0.5" id="Ccm-tC-P8t"/>
+                                    <constraint firstAttribute="height" constant="1" id="Ccm-tC-P8t"/>
                                 </constraints>
                             </view>
                             <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="CPI-8F-8yE" userLabel="Subscription Price Container">
-                                <rect key="frame" x="0.0" y="90.666666666666671" width="382" height="15.666666666666671"/>
+                                <rect key="frame" x="0.0" y="91" width="382" height="15.666666666666671"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Every 2 months" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ST2-VM-y7a" userLabel="Interval Label">
                                         <rect key="frame" x="0.0" y="0.0" width="191" height="15.666666666666666"/>

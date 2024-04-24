@@ -78,18 +78,23 @@ private extension OrderSubscriptionTableViewCell {
 
     func configureSeparator() {
         separatorLine.backgroundColor = .systemColor(.separator)
+
+        NSLayoutConstraint.activate([
+            separatorLine.heightAnchor.constraint(equalToConstant: Constants.separatorHeight)
+        ])
     }
 
     func configureStatusLabel() {
         statusLabel.applyPaddedLabelDefaultStyles()
         statusLabel.textColor = .black
         statusLabel.layer.masksToBounds = true
-        statusLabel.layer.borderWidth = Constants.StatusLabel.borderWidth
+        statusLabel.layer.borderWidth = Constants.borderWidth
     }
+}
 
+private extension OrderSubscriptionTableViewCell {
     enum Constants {
-        enum StatusLabel {
-            static let borderWidth = CGFloat(0.0)
-        }
+        static let borderWidth: CGFloat = 0
+        static let separatorHeight: CGFloat = 0.5
     }
 }

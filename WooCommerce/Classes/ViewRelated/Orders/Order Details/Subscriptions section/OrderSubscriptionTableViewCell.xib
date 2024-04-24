@@ -19,22 +19,22 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="X9K-b7-WIE" userLabel="Vertical Stack View">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="108"/>
+                        <rect key="frame" x="16" y="16" width="382" height="76"/>
                         <subviews>
-                            <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Anc-n2-aki" userLabel="Subscription Status View">
-                                <rect key="frame" x="0.0" y="0.0" width="414" height="36"/>
+                            <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Anc-n2-aki" userLabel="Subscription Status Container">
+                                <rect key="frame" x="0.0" y="0.0" width="382" height="58"/>
                                 <subviews>
-                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="zMs-pE-M0s" userLabel="Subscription Container View">
-                                        <rect key="frame" x="0.0" y="0.0" width="145" height="36"/>
+                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="zMs-pE-M0s" userLabel="Subscription Vertical Container">
+                                        <rect key="frame" x="0.0" y="0.0" width="113" height="58"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Jan 31 - Apr 23, 2023" textAlignment="natural" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ZBr-dk-9QF" userLabel="Date Label">
-                                                <rect key="frame" x="0.0" y="0.0" width="145" height="15.666666666666666"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="113" height="15.666666666666666"/>
                                                 <fontDescription key="fontDescription" style="UICTFontTextStyleFootnote"/>
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" text="Subscription #123" textAlignment="natural" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="73c-DT-LQB" userLabel="Title Label">
-                                                <rect key="frame" x="0.0" y="15.666666666666666" width="145" height="20.333333333333336"/>
+                                                <rect key="frame" x="0.0" y="15.666666666666668" width="113" height="42.333333333333329"/>
                                                 <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
@@ -42,7 +42,7 @@
                                         </subviews>
                                     </stackView>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="O2Y-SY-AYY" userLabel="Status Container View">
-                                        <rect key="frame" x="145" y="0.0" width="269" height="36"/>
+                                        <rect key="frame" x="113" y="0.0" width="269" height="58"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="740" fixedFrame="YES" text="Active" textAlignment="natural" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="awc-Dj-9km" userLabel="Status Label" customClass="PaddedLabel" customModule="WooCommerce" customModuleProvider="target">
                                                 <rect key="frame" x="0.0" y="0.0" width="37.666666666666664" height="15.666666666666666"/>
@@ -57,20 +57,23 @@
                                 </subviews>
                             </stackView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dVa-kj-ySN" userLabel="Separator">
-                                <rect key="frame" x="0.0" y="36" width="414" height="56.333333333333343"/>
+                                <rect key="frame" x="0.0" y="74" width="382" height="1"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="1" id="Ccm-tC-P8t"/>
+                                </constraints>
                             </view>
-                            <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="CPI-8F-8yE" userLabel="Subscription Price View">
-                                <rect key="frame" x="0.0" y="92.333333333333329" width="414" height="15.666666666666671"/>
+                            <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="CPI-8F-8yE" userLabel="Subscription Price Container">
+                                <rect key="frame" x="0.0" y="44.333333333333336" width="382" height="15.666666666666664"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Every 2 months" textAlignment="right" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ST2-VM-y7a" userLabel="Interval Label">
-                                        <rect key="frame" x="0.0" y="0.0" width="207" height="15.666666666666666"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="191" height="15.666666666666666"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleFootnote"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="$60.00" textAlignment="right" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lZs-h5-O0u" userLabel="Price Label">
-                                        <rect key="frame" x="207" y="0.0" width="207" height="15.666666666666666"/>
+                                        <rect key="frame" x="191" y="0.0" width="191" height="15.666666666666666"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleFootnote"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
@@ -78,13 +81,18 @@
                                 </subviews>
                             </stackView>
                         </subviews>
+                        <constraints>
+                            <constraint firstItem="CPI-8F-8yE" firstAttribute="top" secondItem="dVa-kj-ySN" secondAttribute="bottom" constant="16" id="Ta0-pE-xEc"/>
+                            <constraint firstItem="dVa-kj-ySN" firstAttribute="top" secondItem="Anc-n2-aki" secondAttribute="bottom" constant="16" id="YKE-x6-58R"/>
+                            <constraint firstAttribute="bottom" secondItem="CPI-8F-8yE" secondAttribute="bottom" constant="16" id="y6K-Pt-LGZ"/>
+                        </constraints>
                     </stackView>
                 </subviews>
                 <constraints>
-                    <constraint firstAttribute="bottom" secondItem="X9K-b7-WIE" secondAttribute="bottom" id="57e-Xj-vJW"/>
-                    <constraint firstItem="X9K-b7-WIE" firstAttribute="leading" secondItem="jvk-gF-wVO" secondAttribute="leading" id="9jq-cT-2gA"/>
-                    <constraint firstAttribute="trailing" secondItem="X9K-b7-WIE" secondAttribute="trailing" id="EOi-St-Iad"/>
-                    <constraint firstItem="X9K-b7-WIE" firstAttribute="top" secondItem="jvk-gF-wVO" secondAttribute="top" id="gj3-Hh-OxJ"/>
+                    <constraint firstItem="X9K-b7-WIE" firstAttribute="top" secondItem="jvk-gF-wVO" secondAttribute="top" constant="16" id="Il4-b2-IYg"/>
+                    <constraint firstItem="X9K-b7-WIE" firstAttribute="leading" secondItem="jvk-gF-wVO" secondAttribute="leading" constant="16" id="Jbv-4Z-RKs"/>
+                    <constraint firstAttribute="trailing" secondItem="X9K-b7-WIE" secondAttribute="trailing" constant="16" id="nk2-Ey-DnI"/>
+                    <constraint firstAttribute="bottom" secondItem="X9K-b7-WIE" secondAttribute="bottom" constant="16" id="yzm-3J-TS3"/>
                 </constraints>
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="ap5-Xn-M0c"/>

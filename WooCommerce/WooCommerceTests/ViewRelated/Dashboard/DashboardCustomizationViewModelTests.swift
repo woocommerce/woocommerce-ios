@@ -9,7 +9,7 @@ final class DashboardCustomizationViewModelTests: XCTestCase {
         let onboarding = DashboardCard(type: .onboarding, enabled: false)
         let stats = DashboardCard(type: .performance, enabled: true)
         let blaze = DashboardCard(type: .blaze, enabled: false)
-        let vm = DashboardCustomizationViewModel(allCards: [onboarding, stats, blaze], inactiveCards: [blaze])
+        let vm = DashboardCustomizationViewModel(allCards: [onboarding, stats, blaze])
 
         // Then
         assertEqual([stats, onboarding], vm.allCards)
@@ -62,8 +62,7 @@ final class DashboardCustomizationViewModelTests: XCTestCase {
 
         // When
         let actualCards = waitFor { promise in
-            let vm = DashboardCustomizationViewModel(allCards: [onboarding, stats, blaze],
-                                                    inactiveCards: [blaze]) { updatedCards in
+            let vm = DashboardCustomizationViewModel(allCards: [onboarding, stats, blaze]) { updatedCards in
                 promise(updatedCards)
             }
 
@@ -73,7 +72,7 @@ final class DashboardCustomizationViewModelTests: XCTestCase {
         }
 
         // Then
-        let expectedCards = [stats.copy(enabled: true), onboarding.copy(enabled: false), blaze]
+        let expectedCards = [stats.copy(enabled: true), onboarding.copy(enabled: false)]
         assertEqual(expectedCards, actualCards)
     }
 

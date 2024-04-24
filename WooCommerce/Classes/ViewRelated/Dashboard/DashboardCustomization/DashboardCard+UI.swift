@@ -20,7 +20,7 @@ private extension DashboardCard {
     enum Localization {
         static let onboarding = NSLocalizedString(
             "dashboardCard.name.onboarding",
-            value: "Store Onboarding",
+            value: "Store setup",
             comment: "Name for the Store Onboarding dashboard card in the Customize Dashboard screen"
         )
         static let performance = NSLocalizedString(

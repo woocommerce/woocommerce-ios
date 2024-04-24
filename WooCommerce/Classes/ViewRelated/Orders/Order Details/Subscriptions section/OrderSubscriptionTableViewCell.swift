@@ -24,6 +24,8 @@ final class OrderSubscriptionTableViewCell: UITableViewCell {
     ///
     @IBOutlet private weak var priceLabel: UILabel!
 
+    @IBOutlet private weak var separatorLine: UIView!
+
     func configure(_ viewModel: OrderSubscriptionTableViewCellViewModel) {
         dateLabel.text = viewModel.subscriptionDates
         titleLabel.text = viewModel.subscriptionTitle
@@ -38,6 +40,7 @@ final class OrderSubscriptionTableViewCell: UITableViewCell {
 
         configureBackground()
         configureLabels()
+        configureSeparator()
     }
 
     override func prepareForReuse() {
@@ -71,6 +74,10 @@ private extension OrderSubscriptionTableViewCell {
         priceLabel.applyBodyStyle()
         intervalLabel.applyBodyStyle()
         configureStatusLabel()
+    }
+
+    func configureSeparator() {
+        separatorLine.backgroundColor = .systemColor(.separator)
     }
 
     func configureStatusLabel() {

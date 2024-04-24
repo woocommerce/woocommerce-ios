@@ -12,23 +12,6 @@ struct StorePerformanceView: View {
         Color(viewModel.shouldHighlightStats ? .statsHighlighted : .text)
     }
 
-    var errorMessage: NSAttributedString {
-        let contactSupportText = Localization.LoadingError.contactSupport
-        let content = String.localizedStringWithFormat(Localization.LoadingError.errorMessage, contactSupportText)
-        let paragraph = NSMutableParagraphStyle()
-        paragraph.alignment = .center
-
-        let mutableAttributedText = NSMutableAttributedString(
-            string: content,
-            attributes: [.font: UIFont.body,
-                         .foregroundColor: UIColor.text,
-                         .paragraphStyle: paragraph]
-        )
-
-        mutableAttributedText.highlightSubstring(textToFind: contactSupportText)
-        return mutableAttributedText
-    }
-
     private let canHideCard: Bool
     private let onCustomRangeRedactedViewTap: () -> Void
     private let onViewAllAnalytics: (_ siteID: Int64,
@@ -289,23 +272,11 @@ private extension StorePerformanceView {
     }
 
     var errorStateView: some View {
-        VStack(alignment: .center, spacing: Layout.padding) {
-            Image(uiImage: .noConnectionImage)
-            Text(Localization.LoadingError.errorTitle)
-                .headlineStyle()
-            AttributedText(errorMessage)
-                .contentShape(Rectangle())
-                .onTapGesture {
-                    showingSupportForm = true
-                }
-            Button(Localization.LoadingError.retry) {
-                Task {
-                    await viewModel.reloadData()
-                }
+        DashboardCardErrorView(onRetry: {
+            Task {
+                await viewModel.reloadData()
             }
-            .buttonStyle(SecondaryButtonStyle())
-        }
-        .frame(maxWidth: .infinity)
+        })
     }
 
     var supportForm: some View {
@@ -387,30 +358,6 @@ private extension StorePerformanceView {
             value: "View all store analytics",
             comment: "Button to navigate to Analytics Hub."
         )
-        enum LoadingError {
-            static let errorTitle = NSLocalizedString(
-                "storePerformanceView.loadingError.errorTitle",
-                value: "Unable to load data",
-                comment: "The title of the error view when failed to load store statistics on the Dashboard screen"
-            )
-            static let errorMessage = NSLocalizedString(
-                "storePerformanceView.loadingError.errorMessage",
-                value: "Try reloading this card. If the issue persists, please %1$@.",
-                comment: "The info of the error view when failed to load store statistics on the Dashboard screen. " +
-                "The placeholder is a link to contact support. " +
-                "Reads as: Try reloading this card. If the issue persists, please contact us."
-            )
-            static let contactSupport = NSLocalizedString(
-                "storePerformanceView.loadingError.contactSupport",
-                value: "contact support",
-                comment: "Link to open the support form. Should be lowercased."
-            )
-            static let retry = NSLocalizedString(
-                "storePerformanceView.loadingError.retry",
-                value: "Retry",
-                comment: "Button to reload the Performance card on the Dashboard screen"
-            )
-        }
         enum ContentUnavailable {
             static let title = NSLocalizedString(
                 "storePerformanceView.contentUnavailable.title",

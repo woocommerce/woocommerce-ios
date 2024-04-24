@@ -108,7 +108,7 @@ private extension StorePerformanceView {
             Image(systemName: "exclamationmark.circle")
                 .foregroundStyle(Color.secondary)
                 .headlineStyle()
-                .renderedIf(viewModel.statsVersion == .v3) // and in error state too
+                .renderedIf(viewModel.statsVersion == .v3 || viewModel.loadingError != nil)
 
             Text(Localization.title)
                 .headlineStyle()
@@ -294,6 +294,10 @@ private extension StorePerformanceView {
             Text(Localization.LoadingError.errorTitle)
                 .headlineStyle()
             AttributedText(errorMessage)
+                .contentShape(Rectangle())
+                .onTapGesture {
+                    showingSupportForm = true
+                }
             Button(Localization.LoadingError.retry) {
                 Task {
                     await viewModel.reloadData()

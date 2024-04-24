@@ -488,9 +488,9 @@ private extension DashboardViewModel {
     @MainActor
     func syncOrders() {
         let action = OrderAction.synchronizeOrders(siteID: self.siteID,
-                                               statuses: nil,
-                                               pageNumber: Constants.orderPageNumber,
-                                               pageSize: Constants.orderPageSize) {_, _ in }
+                                                   statuses: nil,
+                                                   pageNumber: Constants.orderPageNumber,
+                                                   pageSize: Constants.orderPageSize) {_, _ in }
         stores.dispatch(action)
     }
 
@@ -542,6 +542,6 @@ private extension DashboardViewModel {
         static let topEarnerStatsLimit: Int = 5
         static let dashboardScreenName = "my_store"
         static let orderPageNumber = 1
-        static let orderPageSize = 75
+        static let orderPageSize = 1
     }
 }

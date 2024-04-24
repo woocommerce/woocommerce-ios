@@ -1,15 +1,19 @@
 import Foundation
 import WordPressShared
 
-public struct StatsSubscribersSummaryData: Decodable, Equatable {
+public struct StatsSubscribersSummaryData: Equatable {
     public let history: [SubscriberData]
+    public let period: StatsPeriodUnit
+    public let periodEndDate: Date
 
-    public init(history: [SubscriberData]) {
+    public init(history: [SubscriberData], period: StatsPeriodUnit, periodEndDate: Date) {
         self.history = history
+        self.period = period
+        self.periodEndDate = periodEndDate
     }
 }
 
-extension StatsSubscribersSummaryData {
+extension StatsSubscribersSummaryData: StatsTimeIntervalData {
     public static var pathComponent: String {
         return "stats/subscribers"
     }
@@ -21,7 +25,14 @@ extension StatsSubscribersSummaryData {
         return df
     }()
 
-    public struct SubscriberData: Decodable, Equatable {
+    static var weeksDateFormatter: DateFormatter = {
+        let df = DateFormatter()
+        df.locale = Locale(identifier: "en_US_POS")
+        df.dateFormat = "yyyy'W'MM'W'dd"
+        return df
+    }()
+
+    public struct SubscriberData: Equatable {
         public let date: Date
         public let count: Int
 
@@ -31,7 +42,7 @@ extension StatsSubscribersSummaryData {
         }
     }
 
-    public init?(jsonDictionary: [String: AnyObject]) {
+    public init?(date: Date, period: StatsPeriodUnit, jsonDictionary: [String: AnyObject]) {
         guard
             let fields = jsonDictionary["fields"] as? [String],
             let data = jsonDictionary["data"] as? [[Any]],
@@ -43,9 +54,9 @@ extension StatsSubscribersSummaryData {
 
         let history: [SubscriberData?] = data.map { elements in
             guard elements.indices.contains(dateIndex) && elements.indices.contains(countIndex),
-                let dateString = elements[dateIndex] as? String,
-                let date = StatsSubscribersSummaryData.dateFormatter.date(from: dateString),
-                let count = elements[countIndex] as? Int
+                  let dateString = elements[dateIndex] as? String,
+                  let date = StatsSubscribersSummaryData.parsedDate(from: dateString, for: period),
+                  let count = elements[countIndex] as? Int
             else {
                 return nil
             }
@@ -54,14 +65,20 @@ extension StatsSubscribersSummaryData {
         }
 
         let sorted = history.compactMap { $0 }.sorted(by: { $0.date.compare($1.date) == .orderedAscending })
-        self = .init(history: sorted)
+
+        self = .init(history: sorted, period: period, periodEndDate: date)
     }
 
-    public static func queryProperties(quantity: Int, unit: StatsSubscribersSummaryData.Unit) -> [String: String] {
-        return ["quantity": String(quantity), "unit": unit.rawValue]
+    private static func parsedDate(from dateString: String, for period: StatsPeriodUnit) -> Date? {
+        switch period {
+        case .week:
+            return self.weeksDateFormatter.date(from: dateString)
+        case .day, .month, .year:
+            return self.dateFormatter.date(from: dateString)
+        }
     }
 
-    public enum Unit: String {
-        case day = "day"
+    public static func queryProperties(with date: Date, period: StatsPeriodUnit, maxCount: Int) -> [String: String] {
+        return ["quantity": String(maxCount), "unit": period.stringValue]
     }
 }

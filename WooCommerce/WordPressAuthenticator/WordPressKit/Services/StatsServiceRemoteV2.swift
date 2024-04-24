@@ -316,30 +316,6 @@ private extension StatsServiceRemoteV2 {
     }
 }
 
-// MARK: - Subscribers Data
-
-public extension StatsServiceRemoteV2 {
-    func getSubscribers(unit: StatsSubscribersSummaryData.Unit,
-                        completion: @escaping ((Result<StatsSubscribersSummaryData, Error>) -> Void)) {
-        let pathComponent = StatsSubscribersSummaryData.pathComponent
-        let path = self.path(forEndpoint: "sites/\(siteID)/\(pathComponent)/", withVersion: ._1_1)
-        let properties = StatsSubscribersSummaryData.queryProperties(quantity: 30, unit: unit) as [String: AnyObject]
-
-        wordPressComRESTAPI.get(path, parameters: properties, success: { (response, _) in
-            guard let jsonResponse = response as? [String: AnyObject],
-                  let subscribersSummaryData = StatsSubscribersSummaryData(jsonDictionary: jsonResponse)
-            else {
-                completion(.failure(ResponseError.decodingFailure))
-                return
-            }
-
-            completion(.success(subscribersSummaryData))
-        }, failure: { (error, _) in
-            completion(.failure(error))
-        })
-    }
-}
-
 // MARK: - Emails Summary
 
 public extension StatsServiceRemoteV2 {

@@ -325,7 +325,7 @@ public extension StatsServiceRemoteV2 {
         let path = self.path(forEndpoint: "sites/\(siteID)/\(pathComponent)/", withVersion: ._1_1)
         let properties = StatsSubscribersSummaryData.queryProperties(quantity: 30, unit: unit) as [String: AnyObject]
 
-        wordPressComRESTAPI.get(path, parameters: properties, success: { [weak self] (response, _) in
+        wordPressComRESTAPI.get(path, parameters: properties, success: { (response, _) in
             guard let jsonResponse = response as? [String: AnyObject],
                   let subscribersSummaryData = StatsSubscribersSummaryData(jsonDictionary: jsonResponse)
             else {

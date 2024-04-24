@@ -142,8 +142,8 @@ private extension TopPerformersDashboardView {
     enum Localization {
         static let title = NSLocalizedString(
             "topPerformersDashboardView.title",
-            value: "Top Performers",
-            comment: "Title of the Top Performers section on the Dashboard screen"
+            value: "Top performers",
+            comment: "Title of the Top performers section on the Dashboard screen"
         )
         static let hideCard = NSLocalizedString(
             "topPerformersDashboardView.hideCard",

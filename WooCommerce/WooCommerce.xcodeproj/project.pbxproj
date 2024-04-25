@@ -2357,6 +2357,7 @@
 		DE74A4522BCF87120009C415 /* TopPerformersDashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE74A4512BCF87120009C415 /* TopPerformersDashboardView.swift */; };
 		DE74A4542BCF88420009C415 /* TopPerformersDashboardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE74A4532BCF88420009C415 /* TopPerformersDashboardViewModel.swift */; };
 		DE74A4572BCFB59F0009C415 /* TopPerformersDashboardViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE74A4562BCFB59F0009C415 /* TopPerformersDashboardViewModelTests.swift */; };
+		DE74A45D2BDA203E0009C415 /* WooAnalyticsEvent+DynamicDashboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE74A45C2BDA203E0009C415 /* WooAnalyticsEvent+DynamicDashboard.swift */; };
 		DE74F2A327E41D650002FE59 /* EnableAnalyticsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE74F2A227E41D650002FE59 /* EnableAnalyticsViewModel.swift */; };
 		DE74F2A527E41D740002FE59 /* EnableAnalyticsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE74F2A427E41D740002FE59 /* EnableAnalyticsView.swift */; };
 		DE74F2A727E47F620002FE59 /* EnableAnalyticsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE74F2A627E47F620002FE59 /* EnableAnalyticsViewModelTests.swift */; };
@@ -5127,6 +5128,7 @@
 		DE74A4512BCF87120009C415 /* TopPerformersDashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopPerformersDashboardView.swift; sourceTree = "<group>"; };
 		DE74A4532BCF88420009C415 /* TopPerformersDashboardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopPerformersDashboardViewModel.swift; sourceTree = "<group>"; };
 		DE74A4562BCFB59F0009C415 /* TopPerformersDashboardViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopPerformersDashboardViewModelTests.swift; sourceTree = "<group>"; };
+		DE74A45C2BDA203E0009C415 /* WooAnalyticsEvent+DynamicDashboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WooAnalyticsEvent+DynamicDashboard.swift"; sourceTree = "<group>"; };
 		DE74F2A227E41D650002FE59 /* EnableAnalyticsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnableAnalyticsViewModel.swift; sourceTree = "<group>"; };
 		DE74F2A427E41D740002FE59 /* EnableAnalyticsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnableAnalyticsView.swift; sourceTree = "<group>"; };
 		DE74F2A627E47F620002FE59 /* EnableAnalyticsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnableAnalyticsViewModelTests.swift; sourceTree = "<group>"; };
@@ -8694,6 +8696,7 @@
 				EE9D03112B89DF760077CED1 /* WooAnalyticsEvent+OrdersListFilter.swift */,
 				0204E3612B8CD40B00F1B5FD /* WooAnalyticsEvent+Products.swift */,
 				DE12BED82B95C30800B19C01 /* WooAnalyticsEvent+DashboardCustomRange.swift */,
+				DE74A45C2BDA203E0009C415 /* WooAnalyticsEvent+DynamicDashboard.swift */,
 			);
 			path = Analytics;
 			sourceTree = "<group>";
@@ -14786,6 +14789,7 @@
 				03AFDE02282C0B82003B67CD /* InPersonPaymentsCompletedView.swift in Sources */,
 				D449C52626DFBBDB00D75B02 /* WhatsNewFactory.swift in Sources */,
 				028FA46C257E0D9F00F88A48 /* PlainTextSectionHeaderView.swift in Sources */,
+				DE74A45D2BDA203E0009C415 /* WooAnalyticsEvent+DynamicDashboard.swift in Sources */,
 				0235595924496D70004BE2B8 /* ProductsSortOrderBottomSheetListSelectorCommand.swift in Sources */,
 				AE3AA88D290C30E800BE422D /* WebProgressView.swift in Sources */,
 				DE7B479327A38ADA0018742E /* CouponDetails.swift in Sources */,

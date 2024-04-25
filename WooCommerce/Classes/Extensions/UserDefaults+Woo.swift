@@ -43,9 +43,6 @@ extension UserDefaults {
         // AI prompt tone
         case aiPromptTone
 
-        // Whether the Blaze section on My Store screen has been dismissed
-        case hasDismissedBlazeSectionOnMyStore
-
         // Product Creation AI
         case numberOfTimesProductCreationAISurveySuggested
         case didStartProductCreationAISurvey

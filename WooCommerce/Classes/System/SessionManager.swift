@@ -179,7 +179,6 @@ final class SessionManager: SessionManagerProtocol {
         defaults[.numberOfTimesWriteWithAITooltipIsShown] = nil
         defaults[.storeProfilerAnswers] = nil
         defaults[.aiPromptTone] = nil
-        defaults[.hasDismissedBlazeSectionOnMyStore] = nil
         defaults[.numberOfTimesProductCreationAISurveySuggested] = nil
         defaults[.didStartProductCreationAISurvey] = nil
         defaults[.themesPendingInstall] = nil

@@ -25,7 +25,10 @@ final class DashboardViewModel: ObservableObject {
 
     @Published var justInTimeMessagesWebViewModel: WebViewSheetViewModel? = nil
 
+    // TODO: remove this legacy property when removing `DashboardViewController`
     @Published private(set) var showOnboarding: Bool = false
+
+    // TODO: remove this legacy property when removing `DashboardViewController`
     @Published private(set) var showBlazeCampaignView: Bool = false
 
     @Published private(set) var dashboardCards: [DashboardCard] = [
@@ -99,7 +102,6 @@ final class DashboardViewModel: ObservableObject {
         self.storeCreationProfilerUploadAnswersUseCase = storeCreationProfilerUploadAnswersUseCase ?? StoreCreationProfilerUploadAnswersUseCase(siteID: siteID)
         self.themeInstaller = themeInstaller
         setupObserverForShowOnboarding()
-        setupObserverForBlazeCampaignView()
         configureOrdersResultController()
         setupDashboardCards()
         installPendingThemeIfNeeded()
@@ -368,13 +370,6 @@ private extension DashboardViewModel {
 
         storeOnboardingViewModel.$shouldShowInDashboard
             .assign(to: &$showOnboarding)
-    }
-
-    /// Sets up observer to decide Blaze campaign view visibility
-    ///
-    func setupObserverForBlazeCampaignView() {
-        blazeCampaignDashboardViewModel.$shouldShowInDashboard
-            .assign(to: &$showBlazeCampaignView)
     }
 
     func configureOrdersResultController() {

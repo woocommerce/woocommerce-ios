@@ -17,7 +17,7 @@
                 <rect key="frame" x="0.0" y="0.0" width="414" height="108"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="X9K-b7-WIE" userLabel="Vertical Stack View">
+                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="X9K-b7-WIE" userLabel="Vertical Stack View">
                         <rect key="frame" x="16" y="16" width="382" height="76"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Anc-n2-aki" userLabel="Subscription Details Container">
@@ -63,14 +63,8 @@
                                     <constraint firstItem="O2Y-SY-AYY" firstAttribute="centerY" secondItem="Anc-n2-aki" secondAttribute="centerY" id="MJM-iu-oNO"/>
                                 </constraints>
                             </stackView>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dVa-kj-ySN" userLabel="Separator">
-                                <rect key="frame" x="0.0" y="74" width="382" height="1"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="1" id="Ccm-tC-P8t"/>
-                                </constraints>
-                            </view>
                             <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="CPI-8F-8yE" userLabel="Subscription Price Container">
-                                <rect key="frame" x="0.0" y="91" width="382" height="15.666666666666671"/>
+                                <rect key="frame" x="0.0" y="66" width="382" height="15.666666666666671"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Every 2 months" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ST2-VM-y7a" userLabel="Interval Label">
                                         <rect key="frame" x="0.0" y="0.0" width="191" height="15.666666666666666"/>
@@ -106,7 +100,6 @@
                 <outlet property="dateLabel" destination="ZBr-dk-9QF" id="9oP-s1-WI5"/>
                 <outlet property="intervalLabel" destination="ST2-VM-y7a" id="wra-dW-dE4"/>
                 <outlet property="priceLabel" destination="lZs-h5-O0u" id="Unz-Vs-tmC"/>
-                <outlet property="separatorLine" destination="dVa-kj-ySN" id="YcI-mK-BXf"/>
                 <outlet property="statusLabel" destination="awc-Dj-9km" id="4Ag-Pb-Ge6"/>
                 <outlet property="titleLabel" destination="73c-DT-LQB" id="fKs-MF-r1H"/>
             </connections>

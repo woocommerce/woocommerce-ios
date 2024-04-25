@@ -364,19 +364,27 @@ private extension DashboardViewModel {
 
     func setupDashboardCards() {
         storeOnboardingViewModel.onDismiss = { [weak self] in
-            self?.showCustomizationScreen()
+            guard let self else { return }
+            analytics.track(event: .DynamicDashboard.editorHideSection(type: .onboarding))
+            showCustomizationScreen()
         }
 
         blazeCampaignDashboardViewModel.onDismiss = { [weak self] in
-            self?.showCustomizationScreen()
+            guard let self else { return }
+            analytics.track(event: .DynamicDashboard.editorHideSection(type: .blaze))
+            showCustomizationScreen()
         }
 
         storePerformanceViewModel.onDismiss = { [weak self] in
-            self?.showCustomizationScreen()
+            guard let self else { return }
+            analytics.track(event: .DynamicDashboard.editorHideSection(type: .performance))
+            showCustomizationScreen()
         }
 
         topPerformersViewModel.onDismiss = { [weak self] in
-            self?.showCustomizationScreen()
+            guard let self else { return }
+            analytics.track(event: .DynamicDashboard.editorHideSection(type: .topPerformers))
+            showCustomizationScreen()
         }
 
         storeOnboardingViewModel.$canShowInDashboard

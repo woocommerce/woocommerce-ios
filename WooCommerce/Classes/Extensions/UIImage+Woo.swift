@@ -1244,6 +1244,12 @@ extension UIImage {
         return UIImage(imageLiteralResourceName: "woo-no-store").imageFlippedForRightToLeftLayoutDirection()
     }
 
+    /// No connection image
+    ///
+    static var noConnectionImage: UIImage {
+        UIImage(imageLiteralResourceName: "connection-icon")
+    }
+
     /// Upgrade plan error
     ///
     static var planUpgradeError: UIImage {

@@ -33,7 +33,10 @@ struct StorePerformanceView: View {
             header
                 .padding(.horizontal, Layout.padding)
 
-            if viewModel.statsVersion == .v4 {
+            if viewModel.loadingError != nil {
+                errorStateView
+                    .padding(.leading, Layout.padding)
+            } else if viewModel.statsVersion == .v4 {
                 timeRangeBar
                     .padding(.horizontal, Layout.padding)
                     .redacted(reason: viewModel.syncingData ? [.placeholder] : [])
@@ -87,7 +90,7 @@ private extension StorePerformanceView {
             Image(systemName: "exclamationmark.circle")
                 .foregroundStyle(Color.secondary)
                 .headlineStyle()
-                .renderedIf(viewModel.statsVersion == .v3) // and in error state too
+                .renderedIf(viewModel.statsVersion == .v3 || viewModel.loadingError != nil)
 
             Text(Localization.title)
                 .headlineStyle()
@@ -265,6 +268,14 @@ private extension StorePerformanceView {
             .buttonStyle(SecondaryButtonStyle())
         }
         .frame(maxWidth: .infinity)
+    }
+
+    var errorStateView: some View {
+        DashboardCardErrorView(onRetry: {
+            Task {
+                await viewModel.reloadData()
+            }
+        })
     }
 
     var supportForm: some View {

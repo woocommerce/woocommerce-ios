@@ -689,6 +689,10 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.noStoreImage)
     }
 
+    func test_no_connection_image_is_not_nil() {
+        XCTAssertNotNil(UIImage.noConnectionImage)
+    }
+
     func test_megaphoneIcon_is_not_nil() {
         XCTAssertNotNil(UIImage.megaphoneIcon)
     }

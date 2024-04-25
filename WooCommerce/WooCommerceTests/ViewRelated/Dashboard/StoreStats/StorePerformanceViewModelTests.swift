@@ -305,6 +305,21 @@ final class StorePerformanceViewModelTests: XCTestCase {
         // Then
         XCTAssertTrue(onDismissTriggered)
     }
+
+    func test_hideStorePerformance_triggers_tracking_event() throws {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+        let viewModel = StorePerformanceViewModel(siteID: 123, usageTracksEventEmitter: .init(), analytics: analytics)
+
+        // When
+        viewModel.hideStorePerformance()
+
+        // Then
+        let index = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "dynamic_dashboard_hide_card_tapped" }))
+        let properties = analyticsProvider.receivedProperties[index] as? [String: AnyHashable]
+        XCTAssertEqual(properties?["type"], "performance")
+    }
 }
 
 // MARK: - Private helpers

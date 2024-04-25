@@ -29,7 +29,7 @@ extension StatsDotComFollowersInsight: StatsInsightData {
     fileprivate static let dateFormatter = ISO8601DateFormatter()
 }
 
-public struct StatsFollower: Codable {
+public struct StatsFollower: Codable, Equatable {
     public let id: String?
     public let name: String
     public let subscribedDate: Date

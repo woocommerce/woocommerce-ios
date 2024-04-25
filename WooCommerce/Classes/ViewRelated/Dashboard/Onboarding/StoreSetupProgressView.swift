@@ -17,8 +17,6 @@ struct StoreSetupProgressView: View {
 
     let isHideStoreOnboardingTaskListFeatureEnabled: Bool
 
-    @State private var showingHideStoreSetupListAlert: Bool = false
-
     var body: some View {
         HStack(alignment: .top) {
             Image(systemName: "exclamationmark.circle")
@@ -62,11 +60,7 @@ struct StoreSetupProgressView: View {
                 }
 
                 Button(Localization.hideStoreSetupListButton) {
-                    if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.dynamicDashboard) {
-                        hideTaskListAction()
-                    } else {
-                        showingHideStoreSetupListAlert = true
-                    }
+                    hideTaskListAction()
                 }
                 .renderedIf(isHideStoreOnboardingTaskListFeatureEnabled)
             } label: {
@@ -77,12 +71,6 @@ struct StoreSetupProgressView: View {
             }
             .renderedIf(!isExpanded)
         }
-        .alert(isPresented: $showingHideStoreSetupListAlert, content: {
-            Alert(title: Text(Localization.HideStoreSetupListAlert.title),
-                  message: Text(Localization.HideStoreSetupListAlert.message),
-                  primaryButton: .destructive(Text(Localization.HideStoreSetupListAlert.removeButton), action: hideTaskListAction),
-                  secondaryButton: .cancel())
-        })
     }
 }
 
@@ -129,23 +117,6 @@ private extension StoreSetupProgressView {
             "Hide store setup list",
             comment: "Title of the Hide store setup list button in the action sheet."
         )
-
-        enum HideStoreSetupListAlert {
-            static let title = NSLocalizedString(
-                "Hide store setup list",
-                comment: "Action title for hiding store onboarding task list"
-            )
-
-            static let message = NSLocalizedString(
-                "You can show it when you need it by going to Menu > Settings > Store",
-                comment: "Confirm message for hiding store onboarding task list"
-            )
-
-            static let removeButton = NSLocalizedString(
-                "Remove",
-                comment: "Title for the action button on the confirm alert for hiding store onboarding task list"
-            )
-        }
     }
 }
 

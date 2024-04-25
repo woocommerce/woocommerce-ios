@@ -200,10 +200,6 @@ public enum FeatureFlag: Int {
     ///
     case migrateSimplePaymentsToOrderCreation
 
-    /// Enables customization for the layout of the dashboard screen.
-    ///
-    case dynamicDashboard
-
     /// Enables visibility of Subscription product details when creating an order, within product selection, and order details.
     ///
     case subscriptionsInOrderCreationUI

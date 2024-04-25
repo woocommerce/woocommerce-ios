@@ -50,10 +50,6 @@ protocol SettingsViewModelActionsHandler {
     /// Reloads settings. This can be used to show or hide content depending on their visibility logic.
     ///
     func reloadSettings()
-
-    /// Updates store setup list visibility setting in user defaults
-    ///
-    func updateStoreSetupListVisibility(_ switchValue: Bool) async
 }
 
 protocol SettingsViewModelInput: AnyObject {
@@ -195,37 +191,9 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
         configureSections()
         presenter?.refreshViewContent()
     }
-
-    /// Updates store setup list visibility setting in user defaults
-    ///
-    @MainActor
-    func updateStoreSetupListVisibility(_ switchValue: Bool) async {
-        defaults[.shouldHideStoreOnboardingTaskList] = !switchValue
-
-        await trackShowOrHideStoreOnboardingListEvent()
-    }
 }
 
 private extension SettingsViewModel {
-    func trackShowOrHideStoreOnboardingListEvent() async {
-        guard let siteID = stores.sessionManager.defaultSite?.siteID else {
-            return
-        }
-
-        let viewModel = StoreOnboardingViewModel(siteID: siteID,
-                                                 isExpanded: false,
-                                                 stores: stores,
-                                                 defaults: defaults,
-                                                 analytics: analytics)
-        await viewModel.reloadTasks()
-
-        let pending = viewModel.taskViewModels
-            .filter { !$0.isComplete }
-            .map { $0.task.type }
-        analytics.track(event: .StoreOnboarding.storeOnboardingShowOrHideList(isHiding: defaults.shouldHideStoreOnboardingTaskList,
-                                                                              source: .settings,
-                                                                              pendingTasks: pending))
-    }
 
     func loadWhatsNewOnWooCommerce() {
         stores.dispatch(AnnouncementsAction.loadSavedAnnouncement(onCompletion: { [weak self] result in
@@ -287,12 +255,6 @@ private extension SettingsViewModel {
                 (site.isNonJetpackSite == true &&
                  featureFlagService.isFeatureFlagEnabled(.jetpackSetupWithApplicationPassword)) {
                 rows.append(.installJetpack)
-            }
-
-            if !featureFlagService.isFeatureFlagEnabled(.dynamicDashboard), // The store setup list visibility and arrangement can be controlled from dashboard
-               !defaults.completedAllStoreOnboardingTasks,
-               featureFlagService.isFeatureFlagEnabled(.hideStoreOnboardingTaskList) {
-                rows.append(.storeSetupList)
             }
 
             let themesUseCase = ThemeEligibilityUseCase()

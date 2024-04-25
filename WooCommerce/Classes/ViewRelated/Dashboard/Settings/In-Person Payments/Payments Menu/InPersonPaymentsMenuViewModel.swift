@@ -8,6 +8,7 @@ import Combine
 @MainActor
 final class InPersonPaymentsMenuViewModel: ObservableObject {
     @Binding var navigationPath: NavigationPath
+    private var navigationPathBeforePaymentCollection: NavigationPath?
 
     @Published private(set) var shouldShowTapToPaySection: Bool = true
     @Published private(set) var shouldShowCardReaderSection: Bool = true
@@ -129,8 +130,9 @@ final class InPersonPaymentsMenuViewModel: ObservableObject {
 
     /// Called when payment collection is shown to leave the payment collection flow.
     func dismissPaymentCollection() {
-        // TODO: not the best solution if navigationPath has other views after payment collection
-        navigationPath.removeLast()
+        while navigationPath != navigationPathBeforePaymentCollection {
+            navigationPath.removeLast()
+        }
     }
 
     private func updateOutputProperties() async {
@@ -284,6 +286,7 @@ private extension InPersonPaymentsMenuViewModel {
         presentCustomAmountAfterDismissingCollectPaymentMigrationSheet = false
         hasPresentedCollectPaymentMigrationSheet = false
         presentPaymentMethods = false
+        navigationPathBeforePaymentCollection = navigationPath
         navigationPath.append(InPersonPaymentsMenuNavigationDestination.collectPayment)
     }
 }

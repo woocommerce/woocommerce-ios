@@ -20,8 +20,8 @@ private extension DashboardCard {
     enum Localization {
         static let onboarding = NSLocalizedString(
             "dashboardCard.name.onboarding",
-            value: "Store Onboarding",
-            comment: "Name for the Store Onboarding dashboard card in the Customize Dashboard screen"
+            value: "Store setup",
+            comment: "Name for the Store setup dashboard card in the Customize Dashboard screen"
         )
         static let performance = NSLocalizedString(
             "dashboardCard.name.performance",
@@ -30,8 +30,8 @@ private extension DashboardCard {
         )
         static let topPerformers = NSLocalizedString(
             "dashboardCard.name.topPerformers",
-            value: "Top Performers",
-            comment: "Name for the Top Performers dashboard card in the Customize Dashboard screen"
+            value: "Top performers",
+            comment: "Name for the Top performers dashboard card in the Customize Dashboard screen"
         )
         static let blaze = NSLocalizedString(
             "dashboardCard.name.blaze",

@@ -46,7 +46,7 @@ private extension DashboardCustomizationView {
     enum Localization {
         static let title = NSLocalizedString(
             "dashboardCustomization.title",
-            value: "Customize Dashboard",
+            value: "Customize",
             comment: "Title for the screen to customize the dashboard screen"
         )
         static let saveButton = NSLocalizedString(

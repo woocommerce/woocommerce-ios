@@ -1262,17 +1262,11 @@ extension OrderDetailsDataSource {
 
         let customerInformation: Section? = {
             var rows: [Row] = []
-
-            /// Customer Note
-            /// Always visible to allow adding & editing.
-            rows.append(.customerNote)
-
             /// Shipping Address
             /// Almost always visible to allow editing.
             let orderContainsOnlyVirtualProducts = self.products.filter { (product) -> Bool in
                 return items.first(where: { $0.productID == product.productID}) != nil
             }.allSatisfy { $0.virtual == true }
-
 
             if order.shippingAddress != nil && orderContainsOnlyVirtualProducts == false {
                 rows.append(.shippingAddress)
@@ -1286,6 +1280,10 @@ extension OrderDetailsDataSource {
             /// Billing Address
             /// Always visible to allow editing.
             rows.append(.billingDetail)
+
+            /// Customer Note
+            /// Always visible to allow adding & editing.
+            rows.append(.customerNote)
 
             /// Return `nil` if there is no rows to display.
             guard rows.isNotEmpty else {

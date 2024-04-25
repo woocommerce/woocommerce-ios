@@ -101,7 +101,6 @@ final class DashboardViewModel: ObservableObject {
                                             usageTracksEventEmitter: usageTracksEventEmitter)
         self.storeCreationProfilerUploadAnswersUseCase = storeCreationProfilerUploadAnswersUseCase ?? StoreCreationProfilerUploadAnswersUseCase(siteID: siteID)
         self.themeInstaller = themeInstaller
-        setupObserverForShowOnboarding()
         configureOrdersResultController()
         setupDashboardCards()
         installPendingThemeIfNeeded()
@@ -359,17 +358,6 @@ private extension DashboardViewModel {
             return
         }
         localAnnouncementViewModel = viewModel
-    }
-
-    /// Sets up observer to decide store onboarding task lists visibility
-    ///
-    func setupObserverForShowOnboarding() {
-        guard featureFlagService.isFeatureFlagEnabled(.dashboardOnboarding) else {
-            return
-        }
-
-        storeOnboardingViewModel.$shouldShowInDashboard
-            .assign(to: &$showOnboarding)
     }
 
     func configureOrdersResultController() {

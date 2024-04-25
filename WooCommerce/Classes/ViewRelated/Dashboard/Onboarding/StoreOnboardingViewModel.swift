@@ -20,10 +20,6 @@ class StoreOnboardingViewModel: ObservableObject {
     @Published private(set) var taskViewModels: [StoreOnboardingTaskViewModel] = []
     @Published private(set) var failedToLoadTasks = false
 
-    /// Used to determine whether the task list should be displayed in dashboard
-    ///
-    @Published private(set) var shouldShowInDashboard: Bool = false
-
     /// Used to determine whether the task list can be displayed in dashboard.
     ///
     @Published private(set) var canShowInDashboard = false
@@ -102,12 +98,6 @@ class StoreOnboardingViewModel: ObservableObject {
         self.featureFlagService = featureFlagService
         isHideStoreOnboardingTaskListFeatureEnabled = featureFlagService.isFeatureFlagEnabled(.hideStoreOnboardingTaskList)
         self.waitingTimeTracker = waitingTimeTracker
-
-        Publishers.CombineLatest3($noTasksAvailableForDisplay,
-                                  defaults.publisher(for: \.completedAllStoreOnboardingTasks),
-                                  defaults.publisher(for: \.shouldHideStoreOnboardingTaskList))
-        .map { !($0 || $1 || $2) }
-        .assign(to: &$shouldShowInDashboard)
 
         $noTasksAvailableForDisplay
             .combineLatest(defaults.publisher(for: \.completedAllStoreOnboardingTasks))
@@ -254,11 +244,7 @@ private extension StoreOnboardingTaskViewModel {
 }
 
 extension UserDefaults {
-     @objc dynamic var completedAllStoreOnboardingTasks: Bool {
-         bool(forKey: Key.completedAllStoreOnboardingTasks.rawValue)
-     }
-
-    @objc dynamic var shouldHideStoreOnboardingTaskList: Bool {
-        bool(forKey: Key.shouldHideStoreOnboardingTaskList.rawValue)
+    @objc dynamic var completedAllStoreOnboardingTasks: Bool {
+        bool(forKey: Key.completedAllStoreOnboardingTasks.rawValue)
     }
- }
+}

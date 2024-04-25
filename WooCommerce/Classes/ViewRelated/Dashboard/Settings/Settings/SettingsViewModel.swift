@@ -26,10 +26,6 @@ protocol SettingsViewModelOutput {
     /// Main Site's URL
     ///
     var siteUrl: String? { get }
-
-    /// For Store Setup List Setting Switch value
-    ///
-    var isStoreSetupSettingSwitchOn: Bool { get }
 }
 
 protocol SettingsViewModelActionsHandler {
@@ -87,12 +83,6 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
     var siteUrl: String? {
         let urlString = stores.sessionManager.defaultSite?.url as String?
         return urlString?.removingPrefix("https://").removingPrefix("http://")
-    }
-
-    /// For Store Setup List Setting Switch value
-    ///
-    var isStoreSetupSettingSwitchOn: Bool {
-        !defaults.shouldHideStoreOnboardingTaskList
     }
 
     /// Sites pulled from the results controlelr

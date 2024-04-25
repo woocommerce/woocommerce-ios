@@ -1599,155 +1599,8 @@ extension OrderDetailsDataSource {
     }
 }
 
-
-// MARK: - Constants
+// MARK: - TableView configuration helpers
 extension OrderDetailsDataSource {
-    enum Localization {
-        enum AttributionInfo {
-            static let origin = NSLocalizedString(
-                "orderDetailsDataSource.attributionInfo.origin",
-                value: "Origin",
-                comment: "Title in Order Attribution Section on Order Details screen."
-            )
-            static let unknown = NSLocalizedString(
-                "orderDetailsDataSource.attributionInfo.unknown",
-                value: "Unknown",
-                comment: "Origin in Order Attribution Section on Order Details screen."
-            )
-            static let sourceType = NSLocalizedString(
-                "orderDetailsDataSource.attributionInfo.sourceType",
-                value: "Source type",
-                comment: "Title in Order Attribution Section on Order Details screen."
-            )
-            static let campaign = NSLocalizedString(
-                "orderDetailsDataSource.attributionInfo.campaign",
-                value: "Campaign",
-                comment: "Title in Order Attribution Section on Order Details screen."
-            )
-            static let source = NSLocalizedString(
-                "orderDetailsDataSource.attributionInfo.source",
-                value: "Source",
-                comment: "Title in Order Attribution Section on Order Details screen."
-            )
-            static let medium = NSLocalizedString(
-                "orderDetailsDataSource.attributionInfo.medium",
-                value: "Medium",
-                comment: "Title in Order Attribution Section on Order Details screen."
-            )
-            static let deviceType = NSLocalizedString(
-                "orderDetailsDataSource.attributionInfo.deviceType",
-                value: "Device type",
-                comment: "Title in Order Attribution Section on Order Details screen."
-            )
-            static let sessionPageViews = NSLocalizedString(
-                "orderDetailsDataSource.attributionInfo.sessionPageViews",
-                value: "Session page views",
-                comment: "Title in Order Attribution Section on Order Details screen."
-            )
-        }
-    }
-
-    enum Titles {
-        static let markComplete = NSLocalizedString("Mark Order Complete", comment: "Fulfill Order Action Button")
-        static let addNoteText = NSLocalizedString("Add a note",
-                                                   comment: "Button text for adding a new order note")
-        static let paidByCustomer = NSLocalizedString("Paid",
-                                                      comment: "The title for the customer payment cell")
-        static let refunded = NSLocalizedString("Refunded",
-                                                comment: "The title for the refunded amount cell")
-        static let netAmount = NSLocalizedString("Net Payment", comment: "The title for the net amount paid cell")
-        static let collectPayment = NSLocalizedString("Collect Payment", comment: "Text on the button that starts collecting a card present payment.")
-        static let createShippingLabel = NSLocalizedString("Create Shipping Label", comment: "Text on the button that starts shipping label creation")
-        static let reprintShippingLabel = NSLocalizedString("Print Shipping Label", comment: "Text on the button that prints a shipping label")
-        static let seeReceipt = NSLocalizedString(
-            "OrderDetailsDataSource.configureSeeReceipt.button.title",
-            value: "See Receipt",
-            comment: "Text on the button title to see the order's receipt")
-        static let seeLegacyReceipt = NSLocalizedString("See Receipt", comment: "Text on the button to see a saved receipt")
-        static let trashOrder = NSLocalizedString(
-                     "orderDetailsDataSource.trashOrder.button.title",
-                     value: "Move to trash",
-                     comment: "Text on the button title to trash an order")
-    }
-
-    enum Icons {
-        static let shippingNoticeIcon = UIImage.noticeImage
-        static let plusImage = UIImage.plusImage
-    }
-
-    enum Title {
-        static let products = NSLocalizedString("Products", comment: "Product section title if there is more than one product.")
-        static let customAmounts = NSLocalizedString("orderDetails.customAmounts.section.pluralTitle",
-                                                     value: "Custom Amounts",
-                                                     comment: "Custom Amount section title if there is more than one custom amount.")
-        static let refundedProducts = NSLocalizedString("Refunded Products", comment: "Section title")
-        static let subscriptions = NSLocalizedString("Subscriptions", comment: "Subscriptions section title")
-        static let giftCards = NSLocalizedString("Gift Cards", comment: "Gift Cards section title")
-        static let tracking = NSLocalizedString("Tracking", comment: "Order tracking section title")
-        static let customerNote = NSLocalizedString("Customer Provided Note", comment: "Customer note section title")
-        static let shippingAddress = NSLocalizedString("Shipping Details",
-                                                       comment: "Shipping title for customer info cell")
-        static let information = NSLocalizedString("Customer", comment: "Customer info section title")
-        static let payment = NSLocalizedString("Payment Totals", comment: "Payment section title")
-        static let notes = NSLocalizedString("Order Notes", comment: "Order notes section title")
-        static let customFields = NSLocalizedString("View Custom Fields", comment: "Custom Fields section title")
-        static let shippingLabelCreationInfoAction =
-            NSLocalizedString("Learn more about creating labels with your mobile device",
-                              comment: "Title of button in order details > info link for creating a shipping label on the mobile device.")
-        static let shippingLabelPackageFormat =
-            NSLocalizedString("Package %d",
-                              comment: "Order shipping label package section title format. The number indicates the index of the shipping label package.")
-        static let shippingLabelTrackingNumberTitle = NSLocalizedString("Tracking number", comment: "Order shipping label tracking number row title.")
-        static let shippingLabelRefundedDetailsFormat =
-            NSLocalizedString("%1$@ • %2$@",
-                              comment: "Order refunded shipping label title. The first variable shows the refunded amount (e.g. $12.90). " +
-                                "The second variable shows the requested date (e.g. Jan 12, 2020 12:34 PM).")
-        static let shippingLabelRefundedTitleFormat =
-            NSLocalizedString("%@ label refund requested",
-                              comment: "Order refunded shipping label title. The string variable shows the shipping label service name (e.g. USPS).")
-        static let shippingLabelPrintingInfoAction =
-            NSLocalizedString("Don’t know how to print from your mobile device?",
-                              comment: "Title of button in order details > shipping label that shows the instructions on how to print " +
-                                "a shipping label on the mobile device.")
-        static let orderAttribution = NSLocalizedString(
-            "orderDetailsDataSource.attributionInfo.orderAttribution",
-            value: "Order attribution",
-            comment: "Title of Order Attribution Section in Order Details screen."
-        )
-    }
-
-    enum Footer {
-        static let showBilling = NSLocalizedString(
-            "orderDetailsDataSource.footer.showBilling",
-            value: "View billing details",
-            comment: "Button on bottom of Customer's information to show the billing details")
-        static let showShippingLabelDetails = NSLocalizedString("View Shipment Details",
-                                                                comment: "Button on bottom of shipping label package card to show shipping details")
-    }
-
-    enum Accessibility {
-        static let trashOrderLabel = NSLocalizedString(
-            "orderDetailsDataSource.trashOrder.accessibilityLabel",
-            value: "Trash Order Button",
-            comment: "Accessibility label for the 'Trash order' button"
-        )
-        static let trashOrderHint = NSLocalizedString(
-            "orderDetailsDataSource.trashOrder.accessibilityHint",
-            value: "Put this order in the trash.",
-            comment: "VoiceOver accessibility hint, informing the user that the button can be used to view the order custom fields information."
-        )
-        static let billingDetailsLabel = NSLocalizedString(
-            "orderDetailsDataSource.billingDetails.accessibilityLabel",
-            value: "View billing details",
-            comment: "Accessibility label for the 'View billing details' button"
-        )
-        static let billingDetailsHint = NSLocalizedString(
-            "orderDetailsDataSource.billingDetails.accessibilityHint",
-            value: "Show the billing details for this order.",
-            comment: "VoiceOver accessibility hint, informing the user that the button can be used to view billing information."
-        )
-    }
-
     struct Section {
         enum Category {
             case summary
@@ -1979,10 +1832,162 @@ extension OrderDetailsDataSource {
         case editShippingAddress
         case trashOrder
     }
+}
 
+// MARK: - Constants
+private extension OrderDetailsDataSource {
     enum Constants {
         static let addOrderCell = 1
         static let paymentCell = 1
         static let paidByCustomerCell = 1
+    }
+}
+
+// MARK: - Localization
+private extension OrderDetailsDataSource {
+    enum Localization {
+        enum AttributionInfo {
+            static let origin = NSLocalizedString(
+                "orderDetailsDataSource.attributionInfo.origin",
+                value: "Origin",
+                comment: "Title in Order Attribution Section on Order Details screen."
+            )
+            static let unknown = NSLocalizedString(
+                "orderDetailsDataSource.attributionInfo.unknown",
+                value: "Unknown",
+                comment: "Origin in Order Attribution Section on Order Details screen."
+            )
+            static let sourceType = NSLocalizedString(
+                "orderDetailsDataSource.attributionInfo.sourceType",
+                value: "Source type",
+                comment: "Title in Order Attribution Section on Order Details screen."
+            )
+            static let campaign = NSLocalizedString(
+                "orderDetailsDataSource.attributionInfo.campaign",
+                value: "Campaign",
+                comment: "Title in Order Attribution Section on Order Details screen."
+            )
+            static let source = NSLocalizedString(
+                "orderDetailsDataSource.attributionInfo.source",
+                value: "Source",
+                comment: "Title in Order Attribution Section on Order Details screen."
+            )
+            static let medium = NSLocalizedString(
+                "orderDetailsDataSource.attributionInfo.medium",
+                value: "Medium",
+                comment: "Title in Order Attribution Section on Order Details screen."
+            )
+            static let deviceType = NSLocalizedString(
+                "orderDetailsDataSource.attributionInfo.deviceType",
+                value: "Device type",
+                comment: "Title in Order Attribution Section on Order Details screen."
+            )
+            static let sessionPageViews = NSLocalizedString(
+                "orderDetailsDataSource.attributionInfo.sessionPageViews",
+                value: "Session page views",
+                comment: "Title in Order Attribution Section on Order Details screen."
+            )
+        }
+    }
+
+    enum Titles {
+        static let markComplete = NSLocalizedString("Mark Order Complete", comment: "Fulfill Order Action Button")
+        static let addNoteText = NSLocalizedString("Add a note",
+                                                   comment: "Button text for adding a new order note")
+        static let paidByCustomer = NSLocalizedString("Paid",
+                                                      comment: "The title for the customer payment cell")
+        static let refunded = NSLocalizedString("Refunded",
+                                                comment: "The title for the refunded amount cell")
+        static let netAmount = NSLocalizedString("Net Payment", comment: "The title for the net amount paid cell")
+        static let collectPayment = NSLocalizedString("Collect Payment", comment: "Text on the button that starts collecting a card present payment.")
+        static let createShippingLabel = NSLocalizedString("Create Shipping Label", comment: "Text on the button that starts shipping label creation")
+        static let reprintShippingLabel = NSLocalizedString("Print Shipping Label", comment: "Text on the button that prints a shipping label")
+        static let seeReceipt = NSLocalizedString(
+            "OrderDetailsDataSource.configureSeeReceipt.button.title",
+            value: "See Receipt",
+            comment: "Text on the button title to see the order's receipt")
+        static let seeLegacyReceipt = NSLocalizedString("See Receipt", comment: "Text on the button to see a saved receipt")
+        static let trashOrder = NSLocalizedString(
+                     "orderDetailsDataSource.trashOrder.button.title",
+                     value: "Move to trash",
+                     comment: "Text on the button title to trash an order")
+    }
+
+    enum Icons {
+        static let shippingNoticeIcon = UIImage.noticeImage
+        static let plusImage = UIImage.plusImage
+    }
+
+    enum Title {
+        static let products = NSLocalizedString("Products", comment: "Product section title if there is more than one product.")
+        static let customAmounts = NSLocalizedString("orderDetails.customAmounts.section.pluralTitle",
+                                                     value: "Custom Amounts",
+                                                     comment: "Custom Amount section title if there is more than one custom amount.")
+        static let refundedProducts = NSLocalizedString("Refunded Products", comment: "Section title")
+        static let subscriptions = NSLocalizedString("Subscriptions", comment: "Subscriptions section title")
+        static let giftCards = NSLocalizedString("Gift Cards", comment: "Gift Cards section title")
+        static let tracking = NSLocalizedString("Tracking", comment: "Order tracking section title")
+        static let customerNote = NSLocalizedString("Customer Provided Note", comment: "Customer note section title")
+        static let shippingAddress = NSLocalizedString("Shipping Details",
+                                                       comment: "Shipping title for customer info cell")
+        static let information = NSLocalizedString("Customer", comment: "Customer info section title")
+        static let payment = NSLocalizedString("Payment Totals", comment: "Payment section title")
+        static let notes = NSLocalizedString("Order Notes", comment: "Order notes section title")
+        static let customFields = NSLocalizedString("View Custom Fields", comment: "Custom Fields section title")
+        static let shippingLabelCreationInfoAction =
+            NSLocalizedString("Learn more about creating labels with your mobile device",
+                              comment: "Title of button in order details > info link for creating a shipping label on the mobile device.")
+        static let shippingLabelPackageFormat =
+            NSLocalizedString("Package %d",
+                              comment: "Order shipping label package section title format. The number indicates the index of the shipping label package.")
+        static let shippingLabelTrackingNumberTitle = NSLocalizedString("Tracking number", comment: "Order shipping label tracking number row title.")
+        static let shippingLabelRefundedDetailsFormat =
+            NSLocalizedString("%1$@ • %2$@",
+                              comment: "Order refunded shipping label title. The first variable shows the refunded amount (e.g. $12.90). " +
+                                "The second variable shows the requested date (e.g. Jan 12, 2020 12:34 PM).")
+        static let shippingLabelRefundedTitleFormat =
+            NSLocalizedString("%@ label refund requested",
+                              comment: "Order refunded shipping label title. The string variable shows the shipping label service name (e.g. USPS).")
+        static let shippingLabelPrintingInfoAction =
+            NSLocalizedString("Don’t know how to print from your mobile device?",
+                              comment: "Title of button in order details > shipping label that shows the instructions on how to print " +
+                                "a shipping label on the mobile device.")
+        static let orderAttribution = NSLocalizedString(
+            "orderDetailsDataSource.attributionInfo.orderAttribution",
+            value: "Order attribution",
+            comment: "Title of Order Attribution Section in Order Details screen."
+        )
+    }
+
+    enum Footer {
+        static let showBilling = NSLocalizedString(
+            "orderDetailsDataSource.footer.showBilling",
+            value: "View billing details",
+            comment: "Button on bottom of Customer's information to show the billing details")
+        static let showShippingLabelDetails = NSLocalizedString("View Shipment Details",
+                                                                comment: "Button on bottom of shipping label package card to show shipping details")
+    }
+
+    enum Accessibility {
+        static let trashOrderLabel = NSLocalizedString(
+            "orderDetailsDataSource.trashOrder.accessibilityLabel",
+            value: "Trash Order Button",
+            comment: "Accessibility label for the 'Trash order' button"
+        )
+        static let trashOrderHint = NSLocalizedString(
+            "orderDetailsDataSource.trashOrder.accessibilityHint",
+            value: "Put this order in the trash.",
+            comment: "VoiceOver accessibility hint, informing the user that the button can be used to view the order custom fields information."
+        )
+        static let billingDetailsLabel = NSLocalizedString(
+            "orderDetailsDataSource.billingDetails.accessibilityLabel",
+            value: "View billing details",
+            comment: "Accessibility label for the 'View billing details' button"
+        )
+        static let billingDetailsHint = NSLocalizedString(
+            "orderDetailsDataSource.billingDetails.accessibilityHint",
+            value: "Show the billing details for this order.",
+            comment: "VoiceOver accessibility hint, informing the user that the button can be used to view billing information."
+        )
     }
 }

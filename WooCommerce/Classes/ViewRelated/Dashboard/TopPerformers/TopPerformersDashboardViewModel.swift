@@ -93,7 +93,7 @@ final class TopPerformersDashboardViewModel: ObservableObject {
     }
 
     func dismissTopPerformers() {
-        // TODO: add tracking
+        analytics.track(event: .DynamicDashboard.hideCardTapped(type: .topPerformers))
         onDismiss?()
     }
 }

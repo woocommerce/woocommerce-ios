@@ -992,8 +992,7 @@ private extension OrderDetailsDataSource {
     }
 
     private func configureShippingMethod(cell: CustomerNoteTableViewCell) {
-        cell.headline = NSLocalizedString("Shipping Method",
-                                          comment: "Shipping method title for customer info cell")
+        cell.headline = Title.shippingMethod
         cell.body = shippingMethod.strippedHTML
         cell.selectionStyle = .none
     }
@@ -1928,8 +1927,14 @@ private extension OrderDetailsDataSource {
         static let giftCards = NSLocalizedString("Gift Cards", comment: "Gift Cards section title")
         static let tracking = NSLocalizedString("Tracking", comment: "Order tracking section title")
         static let customerNote = NSLocalizedString("Customer Provided Note", comment: "Customer note section title")
-        static let shippingAddress = NSLocalizedString("Shipping Details",
-                                                       comment: "Shipping title for customer info cell")
+        static let shippingAddress = NSLocalizedString(
+            "orderDetailsDataSource.title.shippingAddress",
+            value: "Shipping address",
+            comment: "Title for the shipping address row, within the customer information section")
+        static let shippingMethod = NSLocalizedString(
+            "orderDetailsDataSource.title.shippingAddress",
+            value: "Shipping method",
+            comment: "Title for the shipping method row, within the customer information section")
         static let information = NSLocalizedString("Customer", comment: "Customer info section title")
         static let payment = NSLocalizedString("Payment Totals", comment: "Payment section title")
         static let notes = NSLocalizedString("Order Notes", comment: "Order notes section title")

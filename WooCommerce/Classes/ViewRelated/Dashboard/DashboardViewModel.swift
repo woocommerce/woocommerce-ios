@@ -397,23 +397,19 @@ private extension DashboardViewModel {
 
     func setupDashboardCards() {
         storeOnboardingViewModel.onDismiss = { [weak self] in
-            guard let self else { return }
-            showCustomizationScreen()
+            self?.showCustomizationScreen()
         }
 
         blazeCampaignDashboardViewModel.onDismiss = { [weak self] in
-            guard let self else { return }
-            showCustomizationScreen()
+            self?.showCustomizationScreen()
         }
 
         storePerformanceViewModel.onDismiss = { [weak self] in
-            guard let self else { return }
-            showCustomizationScreen()
+            self?.showCustomizationScreen()
         }
 
         topPerformersViewModel.onDismiss = { [weak self] in
-            guard let self else { return }
-            showCustomizationScreen()
+            self?.showCustomizationScreen()
         }
 
         storeOnboardingViewModel.$canShowInDashboard

@@ -2,6 +2,7 @@ import Yosemite
 import Combine
 import enum Networking.DotcomError
 import enum Storage.StatsVersion
+import protocol Storage.StorageManagerType
 import protocol Experiments.FeatureFlagService
 
 /// Syncs data for dashboard stats UI and determines the state of the dashboard UI based on stats version.
@@ -35,6 +36,8 @@ final class DashboardViewModel: ObservableObject {
 
     @Published private(set) var jetpackBannerVisibleFromAppSettings = false
 
+    @Published private(set) var hasOrders: Bool = true
+
     @Published private(set) var canHideMoreDashboardCards = false
 
     @Published var showingCustomization = false
@@ -48,19 +51,31 @@ final class DashboardViewModel: ObservableObject {
     private let userDefaults: UserDefaults
     private let storeCreationProfilerUploadAnswersUseCase: StoreCreationProfilerUploadAnswersUseCaseProtocol
     private let themeInstaller: ThemeInstaller
+    private let storageManager: StorageManagerType
     private var subscriptions: Set<AnyCancellable> = []
 
     var siteURLToShare: URL? {
         if let site = stores.sessionManager.defaultSite,
-           site.isPublic, // only show share button if the site is public.
+           !site.isWordPressComStore || site.isPublic, // only show share button if it's a .org site or a public .com site
            let url = URL(string: site.url) {
             return url
         }
         return nil
     }
 
+    private lazy var ordersResultsController: ResultsController<StorageOrder> = {
+        let predicate = NSPredicate(format: "siteID == %lld", siteID)
+        let sortDescriptorByID = NSSortDescriptor(keyPath: \StorageOrder.orderID, ascending: false)
+        let resultsController = ResultsController<StorageOrder>(storageManager: storageManager,
+                                                                matching: predicate,
+                                                                fetchLimit: 1,
+                                                                sortedBy: [sortDescriptorByID])
+        return resultsController
+    }()
+
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
+         storageManager: StorageManagerType = ServiceLocator.storageManager,
          featureFlags: FeatureFlagService = ServiceLocator.featureFlagService,
          analytics: Analytics = ServiceLocator.analytics,
          userDefaults: UserDefaults = .standard,
@@ -69,6 +84,7 @@ final class DashboardViewModel: ObservableObject {
          usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter = StoreStatsUsageTracksEventEmitter()) {
         self.siteID = siteID
         self.stores = stores
+        self.storageManager = storageManager
         self.featureFlagService = featureFlags
         self.analytics = analytics
         self.userDefaults = userDefaults
@@ -84,6 +100,7 @@ final class DashboardViewModel: ObservableObject {
         self.themeInstaller = themeInstaller
         setupObserverForShowOnboarding()
         setupObserverForBlazeCampaignView()
+        configureOrdersResultController()
         setupDashboardCards()
         installPendingThemeIfNeeded()
     }
@@ -109,6 +126,9 @@ final class DashboardViewModel: ObservableObject {
             }
             group.addTask { [weak self] in
                 await self?.updateJetpackBannerVisibilityFromAppSettings()
+            }
+            group.addTask { [weak self] in
+                await self?.updateHasOrdersStatus()
             }
             if featureFlagService.isFeatureFlagEnabled(.dynamicDashboard) {
                 if dashboardCards.contains(where: { $0.type == .performance }) {
@@ -351,6 +371,26 @@ private extension DashboardViewModel {
             .assign(to: &$showBlazeCampaignView)
     }
 
+    func configureOrdersResultController() {
+        ordersResultsController.onDidChangeContent = { [weak self] in
+            self?.updateResults()
+        }
+        ordersResultsController.onDidResetContent = { [weak self] in
+            self?.updateResults()
+        }
+
+        do {
+            try ordersResultsController.performFetch()
+            updateResults()
+        } catch {
+            ServiceLocator.crashLogging.logError(error)
+        }
+    }
+
+    func updateResults() {
+        hasOrders = ordersResultsController.fetchedObjects.isNotEmpty
+    }
+
     func setupDashboardCards() {
         storeOnboardingViewModel.onDismiss = { [weak self] in
             self?.showCustomizationScreen()
@@ -369,13 +409,15 @@ private extension DashboardViewModel {
         }
 
         storeOnboardingViewModel.$canShowInDashboard
-            .combineLatest(blazeCampaignDashboardViewModel.$canShowInDashboard)
+            .combineLatest(blazeCampaignDashboardViewModel.$canShowInDashboard, $hasOrders)
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] canShowOnboarding, canShowBlaze in
+            .sink { [weak self] canShowOnboarding, canShowBlaze, hasOrders in
                 guard let self else { return }
                 Task {
                     await self.updateDashboardCards(canShowOnboarding: canShowOnboarding,
-                                                    canShowBlaze: canShowBlaze)
+                                                    canShowBlaze: canShowBlaze,
+                                                    canShowAnalytics: hasOrders
+                    )
                 }
             }
             .store(in: &subscriptions)
@@ -394,19 +436,31 @@ private extension DashboardViewModel {
     /// this should be updated to general app settings.
     ///
     @MainActor
-    func updateDashboardCards(canShowOnboarding: Bool, canShowBlaze: Bool) async {
+    func updateDashboardCards(canShowOnboarding: Bool,
+                              canShowBlaze: Bool,
+                              canShowAnalytics: Bool) async {
         dashboardCards = await {
             if let stored = await loadDashboardCards() {
                 return stored
             } else {
                 return [DashboardCard(type: .onboarding, enabled: canShowOnboarding),
-                        DashboardCard(type: .performance, enabled: true),
-                        DashboardCard(type: .topPerformers, enabled: true),
+                        DashboardCard(type: .performance, enabled: canShowAnalytics),
+                        DashboardCard(type: .topPerformers, enabled: canShowAnalytics),
                         DashboardCard(type: .blaze, enabled: canShowBlaze)]
             }
         }()
 
         unavailableDashboardCards = []
+
+        if let performanceCard = dashboardCards.first(where: { $0.type == .performance }),
+            !canShowAnalytics {
+            unavailableDashboardCards.append(performanceCard)
+        }
+
+        if let topPerformersCard = dashboardCards.first(where: { $0.type == .topPerformers }),
+            !canShowAnalytics {
+            unavailableDashboardCards.append(topPerformersCard)
+        }
 
         if let onboardingCard = dashboardCards.first(where: { $0.type == .onboarding }),
            !canShowOnboarding {
@@ -416,6 +470,29 @@ private extension DashboardViewModel {
         if let blazeCard = dashboardCards.first(where: { $0.type == .blaze }),
            !canShowBlaze {
             unavailableDashboardCards.append(blazeCard)
+        }
+    }
+
+    @MainActor
+    func updateHasOrdersStatus() async {
+        do {
+            hasOrders = try await loadHasOrdersStatus()
+        } catch {
+            DDLogError("⛔️ Dashboard (Share Your Store) — Error checking if site has orders: \(error)")
+        }
+    }
+
+    @MainActor
+    func loadHasOrdersStatus() async throws -> Bool {
+        return try await withCheckedThrowingContinuation { continuation in
+            stores.dispatch(OrderAction.checkIfStoreHasOrders(siteID: self.siteID, onCompletion: { result in
+                switch result {
+                case .success(let hasOrders):
+                    continuation.resume(returning: hasOrders)
+                case .failure(let error):
+                    continuation.resume(throwing: error)
+                }
+            }))
         }
     }
 
@@ -466,5 +543,7 @@ private extension DashboardViewModel {
     enum Constants {
         static let topEarnerStatsLimit: Int = 5
         static let dashboardScreenName = "my_store"
+        static let orderPageNumber = 1
+        static let orderPageSize = 1
     }
 }

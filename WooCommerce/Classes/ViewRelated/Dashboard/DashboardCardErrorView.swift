@@ -90,7 +90,7 @@ private extension DashboardCardErrorView {
         static let retry = NSLocalizedString(
             "dashboardCardErrorView.retry",
             value: "Retry",
-            comment: "Button to reload the Performance card on the Dashboard screen"
+            comment: "Button to reload the dashboard card on the Dashboard screen"
         )
         static let done = NSLocalizedString(
             "dashboardCardErrorView.dismissSupport",

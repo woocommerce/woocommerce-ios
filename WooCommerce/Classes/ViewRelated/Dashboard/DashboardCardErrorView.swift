@@ -73,7 +73,7 @@ private extension DashboardCardErrorView {
         static let errorTitle = NSLocalizedString(
             "dashboardCardErrorView.errorTitle",
             value: "Unable to load data",
-            comment: "The title of the error view when failed to load store statistics on the Dashboard screen"
+            comment: "The title of the error view when failed to load a Dashboard card"
         )
         static let errorMessage = NSLocalizedString(
             "dashboardCardErrorView.errorMessage",

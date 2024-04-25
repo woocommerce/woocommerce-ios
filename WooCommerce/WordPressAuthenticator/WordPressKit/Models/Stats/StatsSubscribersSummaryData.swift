@@ -64,7 +64,7 @@ extension StatsSubscribersSummaryData: StatsTimeIntervalData {
             return SubscriberData(date: date, count: count)
         }
 
-        let sorted = history.compactMap { $0 }.sorted(by: { $0.date.compare($1.date) == .orderedAscending })
+        let sorted = history.compactMap { $0 }.sorted { $0.date < $1.date }
 
         self = .init(history: sorted, period: period, periodEndDate: date)
     }

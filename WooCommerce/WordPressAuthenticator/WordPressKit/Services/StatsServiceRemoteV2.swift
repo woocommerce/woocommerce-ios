@@ -395,7 +395,7 @@ extension StatsTimeIntervalData {
 
 // We'll bring `StatsPeriodUnit` into this file when the "old" `WPStatsServiceRemote` gets removed.
 // For now we can piggy-back off the old type and add this as an extension.
-extension StatsPeriodUnit {
+public extension StatsPeriodUnit {
     var stringValue: String {
         switch self {
         case .day:

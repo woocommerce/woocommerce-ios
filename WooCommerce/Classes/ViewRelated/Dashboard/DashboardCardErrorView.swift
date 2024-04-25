@@ -95,7 +95,7 @@ private extension DashboardCardErrorView {
         static let done = NSLocalizedString(
             "dashboardCardErrorView.dismissSupport",
             value: "Done",
-            comment: "Button to dismiss the support form from the Dashboard stats error screen."
+            comment: "Button to dismiss the support form from the Dashboard generic error card."
         )
     }
 }

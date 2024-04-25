@@ -128,7 +128,7 @@ final class DashboardViewModel: ObservableObject {
                 await self?.updateJetpackBannerVisibilityFromAppSettings()
             }
             group.addTask { [weak self] in
-                await self?.syncOrders()
+                await self?.updateHasOrdersStatus()
             }
             if featureFlagService.isFeatureFlagEnabled(.dynamicDashboard) {
                 if dashboardCards.contains(where: { $0.type == .performance }) {
@@ -486,12 +486,26 @@ private extension DashboardViewModel {
     }
 
     @MainActor
-    func syncOrders() {
-        let action = OrderAction.synchronizeOrders(siteID: self.siteID,
-                                                   statuses: nil,
-                                                   pageNumber: Constants.orderPageNumber,
-                                                   pageSize: Constants.orderPageSize) {_, _ in }
-        stores.dispatch(action)
+    func updateHasOrdersStatus() async {
+        do {
+            hasOrders = try await loadHasOrdersStatus()
+        } catch {
+            DDLogError("⛔️ Dashboard (Share Your Store) — Error checking if site has orders: \(error)")
+        }
+    }
+
+    @MainActor
+    func loadHasOrdersStatus() async throws -> Bool {
+        return try await withCheckedThrowingContinuation { continuation in
+            stores.dispatch(OrderAction.checkIfStoreHasOrders(siteID: self.siteID, onCompletion: { result in
+                switch result {
+                case .success(let hasOrders):
+                    continuation.resume(returning: hasOrders)
+                case .failure(let error):
+                    continuation.resume(throwing: error)
+                }
+            }))
+        }
     }
 
     @MainActor

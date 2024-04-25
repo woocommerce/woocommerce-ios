@@ -38,6 +38,8 @@ final class DashboardViewModel: ObservableObject {
 
     @Published private(set) var canHideMoreDashboardCards = false
 
+    @Published var showingCustomization = false
+
     let siteID: Int64
     private let stores: StoresManager
     private let featureFlagService: FeatureFlagService
@@ -362,19 +364,19 @@ private extension DashboardViewModel {
 
     func setupDashboardCards() {
         storeOnboardingViewModel.onDismiss = { [weak self] in
-            self?.hideDashboardCard(type: .onboarding)
+            self?.showCustomizationScreen()
         }
 
         blazeCampaignDashboardViewModel.onDismiss = { [weak self] in
-            self?.hideDashboardCard(type: .blaze)
+            self?.showCustomizationScreen()
         }
 
         storePerformanceViewModel.onDismiss = { [weak self] in
-            self?.hideDashboardCard(type: .performance)
+            self?.showCustomizationScreen()
         }
 
         topPerformersViewModel.onDismiss = { [weak self] in
-            self?.hideDashboardCard(type: .topPerformers)
+            self?.showCustomizationScreen()
         }
 
         storeOnboardingViewModel.$canShowInDashboard
@@ -395,11 +397,8 @@ private extension DashboardViewModel {
             .assign(to: &$canHideMoreDashboardCards)
     }
 
-    func hideDashboardCard(type: DashboardCard.CardType) {
-        if let index = dashboardCards.firstIndex(where: { $0.type == type }) {
-            dashboardCards[index] = dashboardCards[index].copy(enabled: false)
-        }
-        stores.dispatch(AppSettingsAction.setDashboardCards(siteID: siteID, cards: dashboardCards))
+    func showCustomizationScreen() {
+        showingCustomization = true
     }
 
     /// We are using separate user defaults for different cards -

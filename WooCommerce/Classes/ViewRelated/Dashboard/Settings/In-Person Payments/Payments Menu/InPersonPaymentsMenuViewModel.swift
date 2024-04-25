@@ -7,6 +7,8 @@ import Combine
 
 @MainActor
 final class InPersonPaymentsMenuViewModel: ObservableObject {
+    @Binding var navigationPath: NavigationPath
+
     @Published private(set) var shouldShowTapToPaySection: Bool = true
     @Published private(set) var shouldShowCardReaderSection: Bool = true
     @Published private(set) var shouldShowPaymentOptionsSection: Bool = false
@@ -106,9 +108,11 @@ final class InPersonPaymentsMenuViewModel: ObservableObject {
 
     init(siteID: Int64,
          dependencies: Dependencies,
+         navigationPath: Binding<NavigationPath>,
          payInPersonToggleViewModel: InPersonPaymentsCashOnDeliveryToggleRowViewModelProtocol = InPersonPaymentsCashOnDeliveryToggleRowViewModel()) {
         self.siteID = siteID
         self.dependencies = dependencies
+        self._navigationPath = navigationPath
         self.payInPersonToggleViewModel = payInPersonToggleViewModel
         observeOnboardingChanges()
         runCardPresentPaymentsOnboardingIfPossible()

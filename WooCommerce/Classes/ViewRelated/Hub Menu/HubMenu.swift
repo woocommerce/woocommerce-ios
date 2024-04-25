@@ -18,7 +18,7 @@ struct HubMenu: View {
     }
 
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $viewModel.navigationPath) {
             /// TODO: switch to `navigationDestination(item:destination)`
             /// when we drop support for iOS 16.
             menuList

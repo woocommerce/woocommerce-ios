@@ -26,6 +26,8 @@ final class HubMenuViewModel: ObservableObject {
         return url
     }
 
+    @Published var navigationPath = NavigationPath()
+
     @Published private(set) var storeTitle = Localization.myStore
 
     @Published private(set) var planName = ""
@@ -71,14 +73,24 @@ final class HubMenuViewModel: ObservableObject {
     let tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker
 
     lazy var inPersonPaymentsMenuViewModel: InPersonPaymentsMenuViewModel = {
-        InPersonPaymentsMenuViewModel(
+        // There is no straightforward way to convert a @Published var to a Binding value because we cannot use $self.
+        let navigationPathBinding = Binding(
+            get: { [weak self] in
+                self?.navigationPath ?? NavigationPath()
+            },
+            set: { [weak self] in
+                self?.navigationPath = $0
+            }
+        )
+        return InPersonPaymentsMenuViewModel(
             siteID: siteID,
             dependencies: .init(
                 cardPresentPaymentsConfiguration: CardPresentConfigurationLoader().configuration,
                 onboardingUseCase: CardPresentPaymentsOnboardingUseCase(),
                 cardReaderSupportDeterminer: CardReaderSupportDeterminer(siteID: siteID),
                 wooPaymentsDepositService: WooPaymentsDepositService(siteID: siteID,
-                                                                      credentials: ServiceLocator.stores.sessionManager.defaultCredentials!)))
+                                                                     credentials: ServiceLocator.stores.sessionManager.defaultCredentials!)),
+            navigationPath: navigationPathBinding)
     }()
 
     init(siteID: Int64,

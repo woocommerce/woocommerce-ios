@@ -29,7 +29,7 @@ extension WooAnalyticsEvent {
         /// When the user taps the Retry button on the error state view of any dashboard card.
         static func cardRetryTapped(type: DashboardCard.CardType) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .dynamicDashboardCardRetryTapped,
-                              properties: Keys.type.rawValue: type.analyticName)
+                              properties: [Keys.type.rawValue: type.analyticName])
         }
     }
 }

@@ -107,6 +107,7 @@ struct BlazeCampaignDashboardView: View {
                     }
             case .empty:
                 DashboardCardErrorView(onRetry: {
+                    ServiceLocator.analytics.track(event: .DynamicDashboard.cardRetryTapped(type: .blaze))
                     Task {
                         await viewModel.reload()
                     }

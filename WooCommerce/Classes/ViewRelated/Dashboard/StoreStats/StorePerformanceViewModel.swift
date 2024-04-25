@@ -25,6 +25,8 @@ final class StorePerformanceViewModel: ObservableObject {
     @Published private(set) var siteVisitStatMode = SiteVisitStatsMode.hidden
     @Published private(set) var statsVersion: StatsVersion = .v4
 
+    @Published private(set) var loadingError: Error?
+
     let siteID: Int64
     let siteTimezone: TimeZone
     private let stores: StoresManager
@@ -35,12 +37,6 @@ final class StorePerformanceViewModel: ObservableObject {
     private let analytics: Analytics
 
     private var periodViewModel: StoreStatsPeriodViewModel?
-
-    // Set externally to trigger callback when data is being synced.
-    var onDataReload: () -> Void = {}
-
-    // Set externally to trigger callback when syncing fails.
-    var onSyncingError: (Error) -> Void = { _ in }
 
     // Set externally to trigger callback when hiding the card.
     var onDismiss: (() -> Void)?
@@ -118,8 +114,8 @@ final class StorePerformanceViewModel: ObservableObject {
 
     @MainActor
     func reloadData() async {
-        onDataReload()
         syncingData = true
+        loadingError = nil
         let waitingTracker = WaitingTimeTracker(trackScenario: .dashboardMainStats)
         do {
             try await syncAllStats()
@@ -432,7 +428,7 @@ private extension StorePerformanceViewModel {
         case let siteStatsStoreError as SiteStatsStoreError:
             handleSiteStatsStoreError(error: siteStatsStoreError)
         default:
-            onSyncingError(error)
+            loadingError = error
             trackDashboardStatsSyncComplete(withError: error)
         }
     }
@@ -451,7 +447,7 @@ private extension StorePerformanceViewModel {
             }
             trackDashboardStatsSyncComplete()
         default:
-            onSyncingError(error)
+            loadingError = error
             trackDashboardStatsSyncComplete(withError: error)
         }
     }

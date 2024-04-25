@@ -61,11 +61,6 @@ struct DashboardView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .renderedIf(verticalSizeClass == .regular)
 
-            // Error banner
-            if let error = viewModel.statSyncingError {
-                errorTopBanner(for: error)
-            }
-
             // Feature announcement if any.
             featureAnnouncementCard
 
@@ -189,15 +184,6 @@ private extension DashboardView {
             viewModel.saveJetpackBenefitBannerDismissedTime()
             dismissedJetpackBenefitBanner = true
         })
-    }
-
-    func errorTopBanner(for error: Error) -> some View {
-        ErrorTopBanner(error: error, onTroubleshootButtonPressed: {
-            troubleshootURL = ErrorTopBannerFactory.troubleshootUrl(for: error)
-        }, onContactSupportButtonPressed: {
-            showingSupportForm = true
-        })
-        .background(Color(.listForeground(modal: false)))
     }
 
     var supportForm: some View {

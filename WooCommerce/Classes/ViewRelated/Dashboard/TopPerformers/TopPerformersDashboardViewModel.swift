@@ -12,6 +12,7 @@ final class TopPerformersDashboardViewModel: ObservableObject {
     @Published private(set) var timeRange = StatsTimeRangeV4.today
     @Published private(set) var syncingData = false
     @Published var selectedItem: TopEarnerStatsItem?
+    @Published private(set) var syncingError: Error?
 
     let siteID: Int64
     let siteTimezone: TimeZone
@@ -77,12 +78,14 @@ final class TopPerformersDashboardViewModel: ObservableObject {
     @MainActor
     func reloadData() async {
         syncingData = true
+        syncingError = nil
         updateUIInLoadingState()
         do {
             try await syncTopEarnersStats()
             ServiceLocator.analytics.track(event:
                     .Dashboard.dashboardTopPerformersLoaded(timeRange: timeRange))
         } catch {
+            syncingError = error
             DDLogError("⛔️ Dashboard (Top Performers) — Error synchronizing top earner stats: \(error)")
         }
         syncingData = false

@@ -55,11 +55,12 @@ extension StatsSubscribersSummaryData: StatsTimeIntervalData {
         let history: [SubscriberData?] = data.map { elements in
             guard elements.indices.contains(dateIndex) && elements.indices.contains(countIndex),
                   let dateString = elements[dateIndex] as? String,
-                  let date = StatsSubscribersSummaryData.parsedDate(from: dateString, for: period),
-                  let count = elements[countIndex] as? Int
+                  let date = StatsSubscribersSummaryData.parsedDate(from: dateString, for: period)
             else {
                 return nil
             }
+
+            let count = elements[countIndex] as? Int ?? 0
 
             return SubscriberData(date: date, count: count)
         }

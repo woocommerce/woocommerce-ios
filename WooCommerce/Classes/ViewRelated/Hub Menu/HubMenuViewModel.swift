@@ -12,6 +12,11 @@ extension NSNotification.Name {
     public static let hubMenuViewDidAppear = Foundation.Notification.Name(rawValue: "com.woocommerce.ios.hubMenuViewDidAppear")
 }
 
+/// Destination views that the hub menu can navigate to.
+enum HubMenuNavigationDestination {
+    case payments
+}
+
 /// View model for `HubMenu`.
 ///
 @MainActor
@@ -51,7 +56,6 @@ final class HubMenuViewModel: ObservableObject {
     @Published var selectedMenuID: String?
 
     @Published var showingReviewDetail = false
-    @Published var showingPayments = false
     @Published var showingCoupons = false
 
     @Published var shouldAuthenticateAdminPage = false
@@ -120,6 +124,12 @@ final class HubMenuViewModel: ObservableObject {
     func setupMenuElements() {
         setupSettingsElements()
         setupGeneralElements()
+    }
+
+    /// Shows the payments menu from the hub menu root view.
+    func showPayments() {
+        navigationPath = .init()
+        navigationPath.append(HubMenuNavigationDestination.payments)
     }
 
     private func setupSettingsElements() {

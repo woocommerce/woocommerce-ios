@@ -25,11 +25,11 @@ struct HubMenu: View {
                 .navigationDestination(for: String.self) { id in
                     detailView(menuID: id)
                 }
+                .navigationDestination(for: HubMenuNavigationDestination.self) { destination in
+                    detailView(destination: destination)
+                }
                 .navigationDestination(isPresented: $viewModel.showingReviewDetail) {
                     reviewDetailView
-                }
-                .navigationDestination(isPresented: $viewModel.showingPayments) {
-                    paymentsView
                 }
                 .navigationDestination(isPresented: $viewModel.showingCoupons) {
                     couponListView
@@ -169,6 +169,17 @@ private extension HubMenu {
                 CustomersListView(viewModel: .init(siteID: viewModel.siteID))
             default:
                 fatalError("🚨 Unsupported menu item")
+            }
+        }
+        .navigationBarTitleDisplayMode(.inline)
+    }
+
+    @ViewBuilder
+    func detailView(destination: HubMenuNavigationDestination) -> some View {
+        Group {
+            switch destination {
+                case .payments:
+                    paymentsView
             }
         }
         .navigationBarTitleDisplayMode(.inline)

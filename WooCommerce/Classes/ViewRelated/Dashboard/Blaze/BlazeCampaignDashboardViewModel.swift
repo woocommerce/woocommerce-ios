@@ -39,6 +39,13 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
         }
     }
 
+    var shouldShowCreateCampaignButton: Bool {
+        if case .empty = state {
+            return false
+        }
+        return true
+    }
+
     var shouldShowSubtitle: Bool {
         switch state {
         case .showCampaign, .empty:

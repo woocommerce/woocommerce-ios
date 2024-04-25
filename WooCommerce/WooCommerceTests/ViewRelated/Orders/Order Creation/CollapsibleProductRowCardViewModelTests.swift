@@ -551,6 +551,23 @@ final class CollapsibleProductRowCardViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.subscriptionConditionsSignupFee, expectedSignUpFee)
     }
 
+    func test_productRow_when_subscription_has_signupFee_and_order_has_multiple_items_then_signupFees_are_multiplied_and_formatted() {
+        // Given
+        let signUpFee = "0.60"
+        let quantity = 10
+        let expectedSignUpFees = "$6.00"
+        let productSubscription = createFakeSubscription(signUpFee: signUpFee)
+
+        // When
+        let viewModel = createViewModel(productSubscriptionDetails: productSubscription,
+                                        stepperViewModel: .init(quantity: Decimal(quantity),
+                                                                name: "",
+                                                                quantityUpdatedCallback: { _ in }))
+
+        // Then
+        XCTAssertEqual(viewModel.subscriptionConditionsSignupFee, expectedSignUpFees)
+    }
+
     func test_productRow_when_subscription_signupFee_is_not_nil_then_signUpFee_label_is_formatted() {
         // Given
         let signUpFee = "0.60"

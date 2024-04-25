@@ -150,7 +150,13 @@ struct CollapsibleProductRowCardViewModel: Identifiable {
             return nil
         }
 
-        let formattedSignupFee = currencyFormatter.formatAmount(signupFee)
+        // Multiply signup fees by the currently selected quantity
+        let quantity = stepperViewModel.quantity
+        guard let decimalSignUpFee = currencyFormatter.convertToDecimal(signupFee)?.decimalValue,
+              let stringTotal = currencyFormatter.formatHumanReadableAmount(decimalSignUpFee * quantity, roundSmallNumbers: false) else {
+            return nil
+        }
+        let formattedSignupFee = currencyFormatter.formatAmount(stringTotal)
         return formattedSignupFee
     }
 

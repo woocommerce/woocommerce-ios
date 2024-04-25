@@ -365,25 +365,25 @@ private extension DashboardViewModel {
     func setupDashboardCards() {
         storeOnboardingViewModel.onDismiss = { [weak self] in
             guard let self else { return }
-            analytics.track(event: .DynamicDashboard.editorHideSection(type: .onboarding))
+            analytics.track(event: .DynamicDashboard.hideCardTapped(type: .onboarding))
             showCustomizationScreen()
         }
 
         blazeCampaignDashboardViewModel.onDismiss = { [weak self] in
             guard let self else { return }
-            analytics.track(event: .DynamicDashboard.editorHideSection(type: .blaze))
+            analytics.track(event: .DynamicDashboard.hideCardTapped(type: .blaze))
             showCustomizationScreen()
         }
 
         storePerformanceViewModel.onDismiss = { [weak self] in
             guard let self else { return }
-            analytics.track(event: .DynamicDashboard.editorHideSection(type: .performance))
+            analytics.track(event: .DynamicDashboard.hideCardTapped(type: .performance))
             showCustomizationScreen()
         }
 
         topPerformersViewModel.onDismiss = { [weak self] in
             guard let self else { return }
-            analytics.track(event: .DynamicDashboard.editorHideSection(type: .topPerformers))
+            analytics.track(event: .DynamicDashboard.hideCardTapped(type: .topPerformers))
             showCustomizationScreen()
         }
 

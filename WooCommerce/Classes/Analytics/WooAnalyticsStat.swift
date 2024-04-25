@@ -181,11 +181,9 @@ public enum WooAnalyticsStat: String {
 
     // MARK: Dynamic Dashboard Events
     case dynamicDashboardEditLayoutButtonTapped = "dynamic_dashboard_edit_layout_button_tapped"
-    case dynamicDashboardHideSectionTapped = "dynamic_dashboard_hide_section_tapped"
-    case dynamicDashboardEditorReorderSection = "dynamic_dashboard_editor_reorder_section"
-    case dynamicDashboardEditorShowSection = "dynamic_dashboard_editor_show_section"
-    case dynamicDashboardEditorHideSection = "dynamic_dashboard_editor_hide_section"
+    case dynamicDashboardHideCardTapped = "dynamic_dashboard_hide_card_tapped"
     case dynamicDashboardEditorSaveTapped = "dynamic_dashboard_editor_save_tapped"
+    case dynamicDashboardCardRetryTapped = "dynamic_dashboard_card_retry_tapped"
     
     // MARK: Analytics Hub Events
     //

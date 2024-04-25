@@ -179,6 +179,14 @@ public enum WooAnalyticsStat: String {
     case dashboardNewStatsRevertedBannerLearnMoreTapped = "dashboard_new_stats_reverted_banner_learn_more_tapped"
     case usedAnalytics = "used_analytics"
 
+    // MARK: Dynamic Dashboard Events
+    case dynamicDashboardEditLayoutButtonTapped = "dynamic_dashboard_edit_layout_button_tapped"
+    case dynamicDashboardHideSectionTapped = "dynamic_dashboard_hide_section_tapped"
+    case dynamicDashboardEditorReorderSection = "dynamic_dashboard_editor_reorder_section"
+    case dynamicDashboardEditorShowSection = "dynamic_dashboard_editor_show_section"
+    case dynamicDashboardEditorHideSection = "dynamic_dashboard_editor_hide_section"
+    case dynamicDashboardEditorSaveTapped = "dynamic_dashboard_editor_save_tapped"
+    
     // MARK: Analytics Hub Events
     //
     case analyticsHubDateRangeButtonTapped = "analytics_hub_date_range_button_tapped"

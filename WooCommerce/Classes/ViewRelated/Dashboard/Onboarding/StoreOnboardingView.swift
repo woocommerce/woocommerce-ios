@@ -146,6 +146,7 @@ struct StoreOnboardingView: View {
                                        isHideStoreOnboardingTaskListFeatureEnabled: canHideCard)
                 .padding(.horizontal, Layout.padding)
 
+                /// We want to show the dashboard card error view only on the dashboard screen.
                 if viewModel.failedToLoadTasks && !viewModel.isExpanded {
                     DashboardCardErrorView(onRetry: {
                         Task {

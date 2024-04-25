@@ -1444,10 +1444,10 @@ extension OrderDetailsDataSource {
                      installWCShipSection,
                      refundedProducts] +
                     shippingLabelSections +
-                    [payment,
+                    [subscriptions,
+                     payment,
                      customerInformation,
                      attribution,
-                     subscriptions,
                      giftCards,
                      tracking,
                      addTracking,

@@ -526,15 +526,8 @@ private extension OrderDetailsDataSource {
         cell.selectionStyle = .default
 
         cell.accessibilityTraits = .button
-        cell.accessibilityLabel = NSLocalizedString(
-            "View Billing Information",
-            comment: "Accessibility label for the 'View Billing Information' button"
-        )
-
-        cell.accessibilityHint = NSLocalizedString(
-            "Show the billing details for this order.",
-            comment: "VoiceOver accessibility hint, informing the user that the button can be used to view billing information."
-        )
+        cell.accessibilityLabel = Accessibility.billingDetailsLabel
+        cell.accessibilityHint = Accessibility.billingDetailsHint
     }
 
     private func configureShippingNotice(cell: ImageAndTitleAndTextTableViewCell) {
@@ -1724,8 +1717,10 @@ extension OrderDetailsDataSource {
     }
 
     enum Footer {
-        static let showBilling = NSLocalizedString("View Billing Information",
-                                                   comment: "Button on bottom of Customer's information to show the billing details")
+        static let showBilling = NSLocalizedString(
+            "orderDetailsDataSource.footer.showBilling",
+            value: "View billing details",
+            comment: "Button on bottom of Customer's information to show the billing details")
         static let showShippingLabelDetails = NSLocalizedString("View Shipment Details",
                                                                 comment: "Button on bottom of shipping label package card to show shipping details")
     }
@@ -1740,6 +1735,16 @@ extension OrderDetailsDataSource {
             "orderDetailsDataSource.trashOrder.accessibilityHint",
             value: "Put this order in the trash.",
             comment: "VoiceOver accessibility hint, informing the user that the button can be used to view the order custom fields information."
+        )
+        static let billingDetailsLabel = NSLocalizedString(
+            "orderDetailsDataSource.billingDetails.accessibilityLabel",
+            value: "View billing details",
+            comment: "Accessibility label for the 'View billing details' button"
+        )
+        static let billingDetailsHint = NSLocalizedString(
+            "orderDetailsDataSource.billingDetails.accessibilityHint",
+            value: "Show the billing details for this order.",
+            comment: "VoiceOver accessibility hint, informing the user that the button can be used to view billing information."
         )
     }
 

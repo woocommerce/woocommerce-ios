@@ -30,10 +30,7 @@ struct StoreStatsChart: View {
                 RuleMark(y: .value(Localization.zeroRevenue, 0))
                     .foregroundStyle(Constants.noRevenueLineColor)
                     .annotation(position: .overlay, alignment: .center) {
-                        Text("No revenue this period")
-                            .font(.footnote)
-                            .padding(Constants.annotationPadding)
-                            .background(Color(.listForeground(modal: false)))
+                        Image(.magnifyingGlassNotFound)
                     }
             }
 
@@ -150,11 +147,6 @@ private extension StoreStatsChart {
             value: "Zero revenue",
             comment: "Value for the y-Axis of the store stats chart on the Dashboard screen when there is no revenue"
         )
-        static let noRevenueText = NSLocalizedString(
-            "storeStatsChart.noRevenueText",
-            value: "No revenue this period",
-            comment: "Text on the store stats chart on the Dashboard screen when there is no revenue"
-        )
         static let xSelectedValue = NSLocalizedString(
             "storeStatsChart.xSelectedValue",
             value: "Selected date",
@@ -183,7 +175,6 @@ private extension StoreStatsChart {
         )
         static let chartGradientBottomColor = Color.clear
         static let chartPadding: CGFloat = 8
-        static let annotationPadding: CGFloat = 4
     }
 }
 

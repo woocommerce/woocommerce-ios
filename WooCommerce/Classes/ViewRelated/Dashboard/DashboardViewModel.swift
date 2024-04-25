@@ -432,44 +432,84 @@ private extension DashboardViewModel {
         showingCustomization = true
     }
 
-    /// We are using separate user defaults for different cards -
-    /// this should be updated to general app settings.
-    ///
+    /**
+     Updates dashboard cards' visibility based on provided parameters.
+
+     Each card has two possible states on the Dashboard screen:
+     - Shown: when `DashboardCard.enabled` is true
+     - Not shown: when `DashboardCard.enabled` is false
+
+     Each card has three potential states on the Customization screen:
+     - Available: Visible and customizable
+     - Unavailable: Visible but not customizable
+     - Hidden: Not visible
+
+     Each card type has two out of three possible states:
+     - Performance and Top Performers cards: Available or Unavailable (based on `canShowAnalytics`)
+     - Onboarding card: Available or Hidden (based on `canShowOnboarding`)
+     - Blaze card: Available or Hidden (based on `canShowBlaze`)
+
+     This function also takes into account locally saved DashboardCards setting and try to respect enabled/disabled setting
+     when updating.
+     */
     @MainActor
-    func updateDashboardCards(canShowOnboarding: Bool,
-                              canShowBlaze: Bool,
-                              canShowAnalytics: Bool) async {
-        dashboardCards = await {
-            if let stored = await loadDashboardCards() {
-                return stored
-            } else {
-                return [DashboardCard(type: .onboarding, enabled: canShowOnboarding),
-                        DashboardCard(type: .performance, enabled: canShowAnalytics),
-                        DashboardCard(type: .topPerformers, enabled: canShowAnalytics),
-                        DashboardCard(type: .blaze, enabled: canShowBlaze)]
+    func updateDashboardCards(canShowOnboarding: Bool, canShowBlaze: Bool, canShowAnalytics: Bool) async {
+        enum CustomizerCardState {
+            case available
+            case unavailable
+            case hidden
+        }
+
+        let cardStates: [DashboardCard.CardType: CustomizerCardState] = [
+            .onboarding: canShowOnboarding ? .available : .hidden,
+            .blaze: canShowBlaze ? .available : .hidden,
+            .performance: canShowAnalytics ? .available : .unavailable,
+            .topPerformers: canShowAnalytics ? .available : .unavailable
+        ]
+
+        // Load saved cards first if any
+        let loadedCards: [DashboardCard] = await loadDashboardCards() ?? []
+        var tempDashboardCards = [DashboardCard]()
+
+        // Update saved cards based on latest state.
+        // Keep if available, disable if unavailable, remove if hidden.
+        loadedCards.forEach { card in
+            if let state = cardStates[card.type] {
+                switch state {
+                case .available:
+                    tempDashboardCards.append(card)
+                case .unavailable:
+                    tempDashboardCards.append(card.copy(enabled: false))
+                case .hidden:
+                    break
+                }
             }
-        }()
+        }
 
+        // Add missing cards if they're not hidden
+        for (type, state) in cardStates {
+            if !tempDashboardCards.contains(where: { $0.type == type }) {
+                switch state {
+                case .available, .unavailable:
+                    let card = DashboardCard(type: type, enabled: state == .available)
+                    tempDashboardCards.append(card)
+                case .hidden:
+                    // No need to add hidden card
+                    break
+                }
+            }
+        }
+
+        // Save the latest state of the cards after the update
+        stores.dispatch(AppSettingsAction.setDashboardCards(siteID: siteID, cards: tempDashboardCards))
+        dashboardCards = tempDashboardCards
+
+        // Update unavailable dashboard cards, to be used by Customization screen
         unavailableDashboardCards = []
-
-        if let performanceCard = dashboardCards.first(where: { $0.type == .performance }),
-            !canShowAnalytics {
-            unavailableDashboardCards.append(performanceCard)
-        }
-
-        if let topPerformersCard = dashboardCards.first(where: { $0.type == .topPerformers }),
-            !canShowAnalytics {
-            unavailableDashboardCards.append(topPerformersCard)
-        }
-
-        if let onboardingCard = dashboardCards.first(where: { $0.type == .onboarding }),
-           !canShowOnboarding {
-            unavailableDashboardCards.append(onboardingCard)
-        }
-
-        if let blazeCard = dashboardCards.first(where: { $0.type == .blaze }),
-           !canShowBlaze {
-            unavailableDashboardCards.append(blazeCard)
+        tempDashboardCards.forEach { card in
+            if let state = cardStates[card.type], state == .unavailable {
+                unavailableDashboardCards.append(card)
+            }
         }
     }
 

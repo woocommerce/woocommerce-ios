@@ -280,6 +280,7 @@ final class OrdersRootViewController: UIViewController {
                 case let .failure(error):
                     self.displayScannedProductErrorNotice(error, code: scannedBarcode)
                 }
+                navigationItem.leftBarButtonItem = createAddOrderByProductScanningButtonItem()
             }
         }, onPermissionsDenied: { [weak self] in
             self?.analytics.track(event: WooAnalyticsEvent.BarcodeScanning.barcodeScanningFailure(from: .orderList, reason: .cameraAccessNotPermitted))

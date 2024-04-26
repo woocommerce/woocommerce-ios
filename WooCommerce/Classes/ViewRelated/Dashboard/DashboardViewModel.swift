@@ -445,8 +445,14 @@ private extension DashboardViewModel {
                               canShowAnalytics: Bool) async {
         dashboardCards = await {
             if let stored = await loadDashboardCards() {
-                return stored
+                var mutableStored = stored
+                // Remove saved analytics cards if they should not be shown anymore.
+                if !canShowAnalytics {
+                    mutableStored.removeAll { $0.type == .performance || $0.type == .topPerformers }
+                }
+                return mutableStored
             } else {
+                // Start with default values, cards will be removed further below as needed.
                 return [DashboardCard(type: .onboarding, enabled: canShowOnboarding),
                         DashboardCard(type: .performance, enabled: canShowAnalytics),
                         DashboardCard(type: .topPerformers, enabled: canShowAnalytics),
@@ -454,26 +460,23 @@ private extension DashboardViewModel {
             }
         }()
 
+        // If should not be shown, ensure Onboarding is not visible on Dashboard
+        if !canShowOnboarding {
+            dashboardCards.removeAll { $0.type == .onboarding }
+        }
+
+        // If should not be shown, ensure Blaze is not visible on Dashboard
+        if !canShowBlaze {
+            dashboardCards.removeAll { $0.type == .blaze }
+        }
+
+        // Set cards to show "Unavailable" state in Customize screen when should not be shown.
+        // Currently this applies to Top Performers and Performance cards.
+        // For the other cards, when they should not be shown, they are simply not shown in Customize.
         unavailableDashboardCards = []
-
-        if let performanceCard = dashboardCards.first(where: { $0.type == .performance }),
-            !canShowAnalytics {
-            unavailableDashboardCards.append(performanceCard)
-        }
-
-        if let topPerformersCard = dashboardCards.first(where: { $0.type == .topPerformers }),
-            !canShowAnalytics {
-            unavailableDashboardCards.append(topPerformersCard)
-        }
-
-        if let onboardingCard = dashboardCards.first(where: { $0.type == .onboarding }),
-           !canShowOnboarding {
-            unavailableDashboardCards.append(onboardingCard)
-        }
-
-        if let blazeCard = dashboardCards.first(where: { $0.type == .blaze }),
-           !canShowBlaze {
-            unavailableDashboardCards.append(blazeCard)
+        if !canShowAnalytics {
+            unavailableDashboardCards.append(DashboardCard(type: .performance, enabled: false))
+            unavailableDashboardCards.append(DashboardCard(type: .topPerformers, enabled: false))
         }
     }
 

@@ -119,15 +119,11 @@ final class DashboardViewModel: ObservableObject {
                 guard let self else { return }
                 await self.syncAnnouncements(for: self.siteID)
             }
-            if dashboardCards.contains(where: { $0.type == .onboarding }) {
-                group.addTask { [weak self] in
-                    await self?.reloadStoreOnboardingTasks()
-                }
+            group.addTask { [weak self] in
+                await self?.reloadStoreOnboardingTasks()
             }
-            if dashboardCards.contains(where: { $0.type == .blaze }) {
-                group.addTask { [weak self] in
-                    await self?.reloadBlazeCampaignView()
-                }
+            group.addTask { [weak self] in
+                await self?.reloadBlazeCampaignView()
             }
             group.addTask { [weak self] in
                 await self?.updateJetpackBannerVisibilityFromAppSettings()
@@ -135,16 +131,11 @@ final class DashboardViewModel: ObservableObject {
             group.addTask { [weak self] in
                 await self?.updateHasOrdersStatus()
             }
-            if dashboardCards.contains(where: { $0.type == .performance }) {
-                group.addTask { [weak self] in
-                    await self?.storePerformanceViewModel.reloadData()
-                }
+            group.addTask { [weak self] in
+                await self?.storePerformanceViewModel.reloadData()
             }
-
-            if dashboardCards.contains(where: { $0.type == .topPerformers }) {
-                group.addTask { [weak self] in
-                    await self?.topPerformersViewModel.reloadData()
-                }
+            group.addTask { [weak self] in
+                await self?.topPerformersViewModel.reloadData()
             }
         }
     }

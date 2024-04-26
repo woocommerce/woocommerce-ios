@@ -1530,6 +1530,12 @@ private extension EditableOrderViewModel {
             return
         }
 
+        updateOrderWithBaseItem(item)
+    }
+
+    /// Updates the Order with the given product from SKU scanning
+    ///
+    func updateOrderWithBaseItem(_ item: OrderBaseItem) {
         if case .product(let product) = item,
            product.variations.isNotEmpty {
             autodismissableNotice = Notice(title: Localization.parentProductScannedNoticeTitle,
@@ -1537,12 +1543,6 @@ private extension EditableOrderViewModel {
             return
         }
 
-        updateOrderWithBaseItem(item)
-    }
-
-    /// Updates the Order with the given product from SKU scanning
-    ///
-    func updateOrderWithBaseItem(_ item: OrderBaseItem) {
         // When a scanned product is a bundle product, the bundle configuration view is shown first.
         if case let .product(product) = item, product.productType == .bundle {
             configurableScannedProductViewModel = .init(product: product,

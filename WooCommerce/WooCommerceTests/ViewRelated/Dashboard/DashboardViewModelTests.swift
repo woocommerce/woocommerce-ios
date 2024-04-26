@@ -446,7 +446,7 @@ final class DashboardViewModelTests: XCTestCase {
     }
 
     // MARK: Dashboard cards
-
+    @MainActor
     func test_dashboard_cards_are_loaded_from_app_settings() async throws {
         // Given
         let uuid = UUID().uuidString

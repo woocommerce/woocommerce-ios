@@ -445,7 +445,6 @@ private extension DashboardViewModel {
             unavailableDashboardCards.append(DashboardCard(type: .topPerformers, enabled: false))
         }
     }
-
     @MainActor
     func updateHasOrdersStatus() async {
         do {

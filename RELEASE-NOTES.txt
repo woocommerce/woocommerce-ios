@@ -1,5 +1,9 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+18.5
+-----
+
+
 18.4
 -----
 - [*] Bug fix: tapping on the "Collect payment" quick action (long press on the app icon) or deeplink (http://woo.com/mobile/payments/collect-payment) now shows the order form instead of a blank view. [https://github.com/woocommerce/woocommerce-ios/pull/12559]

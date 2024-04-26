@@ -246,7 +246,8 @@ private extension StorePerformanceView {
             }
             .frame(height: Layout.chartViewHeight)
 
-            if let granularityText = viewModel.granularityText {
+            if viewModel.chartViewModel.hasRevenue,
+               let granularityText = viewModel.granularityText {
                 Text(granularityText)
                     .font(Font(StyleManager.statsTitleFont))
             }

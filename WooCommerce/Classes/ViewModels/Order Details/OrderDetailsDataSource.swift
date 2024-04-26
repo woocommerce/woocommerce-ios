@@ -1843,7 +1843,7 @@ private extension OrderDetailsDataSource {
 }
 
 // MARK: - Localization
-private extension OrderDetailsDataSource {
+extension OrderDetailsDataSource {
     enum Localization {
         enum AttributionInfo {
             static let origin = NSLocalizedString(

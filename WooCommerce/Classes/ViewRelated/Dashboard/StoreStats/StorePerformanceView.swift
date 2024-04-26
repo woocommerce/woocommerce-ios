@@ -8,8 +8,11 @@ struct StorePerformanceView: View {
     @State private var showingCustomRangePicker = false
     @State private var showingSupportForm = false
 
-    var statsValueColor: Color {
-        Color(viewModel.shouldHighlightStats ? .statsHighlighted : .text)
+    private var statsValueColor: Color {
+        guard viewModel.chartViewModel.hasRevenue else {
+            return Color(.textSubtle)
+        }
+        return Color(viewModel.shouldHighlightStats ? .statsHighlighted : .text)
     }
 
     private let canHideCard: Bool
@@ -159,24 +162,34 @@ private extension StorePerformanceView {
                     .largeTitleStyle()
 
                 Text(Localization.revenue)
+                    .if(!viewModel.chartViewModel.hasRevenue) { $0.foregroundStyle(Color(.textSubtle)) }
                     .font(Font(StyleManager.statsTitleFont))
             }
 
             HStack(alignment: .bottom) {
-                statsItemView(title: Localization.orders,
-                              value: viewModel.orderStatsText,
-                              redactMode: .none)
-                    .frame(maxWidth: .infinity)
+                Group {
+                    statsItemView(title: Localization.orders,
+                                  value: viewModel.orderStatsText,
+                                  redactMode: .none)
+                        .frame(maxWidth: .infinity)
 
-                statsItemView(title: Localization.visitors,
-                              value: viewModel.visitorStatsText,
-                              redactMode: .withIcon)
-                    .frame(maxWidth: .infinity)
+                    statsItemView(title: Localization.visitors,
+                                  value: viewModel.visitorStatsText,
+                                  redactMode: .withIcon)
+                        .frame(maxWidth: .infinity)
 
-                statsItemView(title: Localization.conversion,
-                              value: viewModel.conversionStatsText,
-                              redactMode: .withoutIcon)
+                    statsItemView(title: Localization.conversion,
+                                  value: viewModel.conversionStatsText,
+                                  redactMode: .withoutIcon)
+                        .frame(maxWidth: .infinity)
+
+                }
+                .renderedIf(viewModel.chartViewModel.hasRevenue)
+
+                Text(Localization.noRevenueText)
+                    .subheadlineStyle()
                     .frame(maxWidth: .infinity)
+                    .renderedIf(!viewModel.chartViewModel.hasRevenue)
             }
         }
     }
@@ -233,7 +246,8 @@ private extension StorePerformanceView {
             }
             .frame(height: Layout.chartViewHeight)
 
-            if let granularityText = viewModel.granularityText {
+            if viewModel.chartViewModel.hasRevenue,
+               let granularityText = viewModel.granularityText {
                 Text(granularityText)
                     .font(Font(StyleManager.statsTitleFont))
             }
@@ -337,6 +351,11 @@ private extension StorePerformanceView {
             "storePerformanceView.revenue",
             value: "Revenue",
             comment: "Revenue stat label on dashboard."
+        )
+        static let noRevenueText = NSLocalizedString(
+            "storePerformanceView.noRevenueText",
+            value: "No revenue for selected dates",
+            comment: "Text on the store stats chart on the Dashboard screen when there is no revenue"
         )
         static let orders = NSLocalizedString(
             "storePerformanceView.orders",

@@ -8,17 +8,13 @@ struct TopPerformersPeriodView: View {
         self.viewModel = viewModel
     }
 
-    private var padding: EdgeInsets {
-        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.dynamicDashboard) ? Layout.padding : Layout.legacyPadding
-    }
-
     var body: some View {
         if viewModel.rows.isNotEmpty {
             TopPerformersView(itemTitle: Localization.productsTitle,
                               valueTitle: Localization.itemsSoldTitle,
                               rows: viewModel.rows,
                               isRedacted: viewModel.isRedacted)
-            .padding(padding)
+            .padding(Layout.padding)
             .redacted(reason: viewModel.isRedacted ? .placeholder : [])
             .shimmering(active: viewModel.isRedacted)
         } else {
@@ -40,7 +36,6 @@ private extension TopPerformersPeriodView {
     }
 
     enum Layout {
-        static let legacyPadding = EdgeInsets(top: 16, leading: 16, bottom: 16, trailing: 16)
         static let padding = EdgeInsets(top: 8, leading: 16, bottom: 0, trailing: 16)
     }
 }

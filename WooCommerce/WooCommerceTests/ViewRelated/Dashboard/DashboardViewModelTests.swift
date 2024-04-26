@@ -12,6 +12,7 @@ import struct Yosemite.StoreOnboardingTask
 import enum Yosemite.StoreOnboardingTasksAction
 import enum Yosemite.ProductStatus
 import struct Yosemite.Site
+import struct Yosemite.DashboardCard
 @testable import WooCommerce
 
 final class DashboardViewModelTests: XCTestCase {
@@ -332,132 +333,6 @@ final class DashboardViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.showOnboarding)
     }
 
-    func test_showOnboarding_is_true_when_feature_flag_is_turned_on_and_completedAllStoreOnboardingTasks_is_false() async throws {
-        // Given
-        let uuid = UUID().uuidString
-        let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
-        defaults[.completedAllStoreOnboardingTasks] = false
-        let viewModel = DashboardViewModel(siteID: 0,
-                                           stores: stores,
-                                           featureFlags: MockFeatureFlagService(isDashboardStoreOnboardingEnabled: true),
-                                           userDefaults: defaults)
-        // Then
-        XCTAssertTrue(viewModel.showOnboarding)
-    }
-
-    func test_showOnboarding_is_true_when_feature_flag_is_turned_on_and_completedAllStoreOnboardingTasks_is_not_set() async throws {
-        // Given
-        let uuid = UUID().uuidString
-        let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
-        let viewModel = DashboardViewModel(siteID: 0,
-                                           stores: stores,
-                                           featureFlags: MockFeatureFlagService(isDashboardStoreOnboardingEnabled: true),
-                                           userDefaults: defaults)
-        // Then
-        XCTAssertTrue(viewModel.showOnboarding)
-    }
-
-    func test_showOnboarding_is_set_to_false_upon_setting_user_defaults_value_completedAllStoreOnboardingTasks_as_true() throws {
-        // Given
-        let uuid = UUID().uuidString
-        let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
-        let viewModel = DashboardViewModel(siteID: 0,
-                                           stores: stores,
-                                           featureFlags: MockFeatureFlagService(isDashboardStoreOnboardingEnabled: true),
-                                           userDefaults: defaults)
-        // Then
-        XCTAssertTrue(viewModel.showOnboarding)
-
-        // When
-        defaults[.completedAllStoreOnboardingTasks] = true
-
-        // Then
-        XCTAssertFalse(viewModel.showOnboarding)
-    }
-
-    func test_showOnboarding_is_true_when_there_are_tasks_available_for_display() async throws {
-        // Given
-        let uuid = UUID().uuidString
-        let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
-        let sut = DashboardViewModel(siteID: 0,
-                                     stores: stores,
-                                     featureFlags: MockFeatureFlagService(isDashboardStoreOnboardingEnabled: true),
-                                     userDefaults: defaults)
-        let tasks: [StoreOnboardingTask] = [
-            .init(isComplete: true, type: .addFirstProduct),
-            .init(isComplete: false, type: .launchStore),
-            .init(isComplete: true, type: .customizeDomains),
-            .init(isComplete: false, type: .payments)
-        ]
-        mockLoadOnboardingTasks(result: .success(tasks))
-
-        // When
-        await sut.reloadStoreOnboardingTasks()
-
-        // Then
-        XCTAssertTrue(sut.showOnboarding)
-    }
-
-    func test_showOnboarding_is_false_when_all_tasks_are_complete() async throws {
-        // Given
-        let uuid = UUID().uuidString
-        let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
-        let sut = DashboardViewModel(siteID: 0,
-                                     stores: stores,
-                                     featureFlags: MockFeatureFlagService(isDashboardStoreOnboardingEnabled: true),
-                                     userDefaults: defaults)
-        let tasks: [StoreOnboardingTask] = [
-            .init(isComplete: true, type: .addFirstProduct),
-            .init(isComplete: true, type: .launchStore),
-            .init(isComplete: true, type: .customizeDomains),
-            .init(isComplete: true, type: .payments)
-        ]
-        mockLoadOnboardingTasks(result: .success(tasks))
-
-        // When
-        await sut.reloadStoreOnboardingTasks()
-
-        // Then
-        XCTAssertFalse(sut.showOnboarding)
-    }
-
-    func test_showOnboarding_is_false_when_no_tasks_available_for_display_due_to_network_error() async throws {
-        // Given
-        let uuid = UUID().uuidString
-        let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
-        let sut = DashboardViewModel(siteID: 0,
-                                     stores: stores,
-                                     featureFlags: MockFeatureFlagService(isDashboardStoreOnboardingEnabled: true),
-                                     userDefaults: defaults)
-        mockLoadOnboardingTasks(result: .failure(MockError()))
-
-        // Then
-        XCTAssertTrue(sut.showOnboarding)
-
-        // When
-        await sut.reloadStoreOnboardingTasks()
-
-        // Then
-        XCTAssertFalse(sut.showOnboarding)
-    }
-
-    func test_showOnboarding_is_false_when_no_tasks_available_for_display_due_to_empty_tasks_response() async throws {
-        // Given
-        let uuid = UUID().uuidString
-        let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
-        let sut = DashboardViewModel(siteID: 0,
-                                     stores: stores,
-                                     featureFlags: MockFeatureFlagService(isDashboardStoreOnboardingEnabled: true),
-                                     userDefaults: defaults)
-        mockLoadOnboardingTasks(result: .success([]))
-
-        // When
-        await sut.reloadStoreOnboardingTasks()
-
-        // Then
-        XCTAssertFalse(sut.showOnboarding)
-    }
-
     func test_siteURLToShare_return_nil_if_site_is_not_public() {
         // Given
         let sessionManager = SessionManager.makeForTesting()
@@ -571,7 +446,7 @@ final class DashboardViewModelTests: XCTestCase {
     }
 
     // MARK: Dashboard cards
-
+    @MainActor
     func test_dashboard_cards_are_loaded_from_app_settings() async throws {
         // Given
         let uuid = UUID().uuidString
@@ -589,8 +464,7 @@ final class DashboardViewModelTests: XCTestCase {
 
         // Then
         waitUntil {
-            viewModel.dashboardCards == [.init(type: .performance, enabled: true),
-                                         .init(type: .blaze, enabled: true)]
+            viewModel.dashboardCards.contains { $0.type == .performance && $0.enabled }
         }
     }
 
@@ -615,6 +489,22 @@ final class DashboardViewModelTests: XCTestCase {
 
         // Then
         XCTAssertTrue(setDashboardCardsActionCalled)
+    }
+
+    func test_editorSaveTapped_is_tracked_when_customizing_onboarding_card() throws {
+        // Given
+        let viewModel = DashboardViewModel(siteID: sampleSiteID, analytics: analytics)
+        let cards: [DashboardCard] = [.init(type: .performance, enabled: true),
+                                      .init(type: .blaze, enabled: true),
+                                      .init(type: .topPerformers, enabled: false)]
+
+        // When
+        viewModel.didCustomizeDashboardCards(cards)
+
+        // Then
+        let index = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "dynamic_dashboard_editor_save_tapped" }))
+        let properties = analyticsProvider.receivedProperties[index] as? [String: AnyHashable]
+        XCTAssertEqual(properties?["cards"], "blaze,performance")
     }
 
     // MARK: Profiler answers

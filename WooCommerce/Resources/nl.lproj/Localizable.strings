@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-04-19 09:33:23+0000 */
+/* Translation-Revision-Date: 2024-04-23 13:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: nl */
@@ -1348,7 +1348,6 @@ which should be translated separately and considered part of this sentence. */
    Button to dismiss the site credential login screen
    Button to dismiss the store creation profiler flow
    Button to dismiss the store name screen
-   Button to dismiss the survey screen.
    Button to dismiss the view or error alerts of the application password authorization web view
    Button to dismiss. Presented to users when updating the card reader software fails
    Cancel button in the More Options action sheet
@@ -2421,9 +2420,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title text for the product discount row informational tooltip */
 "Discounts unavailable" = "Kortingen niet beschikbaar";
-
-/* Message on the local notification to remind the user to purchase a plan. */
-"Discover advanced features and personalized recommendations for your store! Tap to pick a plan that suits you best." = "Ontdek geavanceerde functies en gepersonaliseerde aanbevelingen voor jouw winkel! Tik op het abonnement dat het beste bij je past.";
 
 /* Details on the store onboarding payments setup screen. */
 "Discover other payment providers and choose a payment provider." = "Ontdek andere betalingsproviders en kies een betalingsprovider.";
@@ -3653,14 +3649,8 @@ which should be translated separately and considered part of this sentence. */
 /* Browse our help documentation website title */
 "Help Center" = "Help Center";
 
-/* Title in Free trail survey screen. */
-"Help us understand your subscription decisions. Your feedback matters." = "Help ons begrijpen wat jouw beslissingen omtrent abonnementen beïnvloed. Jouw feedback is belangrijk.";
-
 /* Text used when sharing a link to the app with a friend. */
 "Hey! Here is a link to download the WooCommerce app. I'm really enjoying it and thought you might too." = "Hallo! Alsjeblieft, een downloadlink voor de WooCommerce-app. Ik vind hem geweldig en ik dacht, jij vast ook.";
-
-/* Message on the local notification about a newly created store.The placeholder is the name of the user. */
-"Hi %1$@, Welcome to your 14-day free trial of Woo Express – everything you need to start and grow a successful online business, all in one place. Ready to explore?" = "Hoi %1$@, welkom bij je 14-daagse proefabonnement van Woo Express. Op deze centrale plek vind je alles wat je nodig hebt om een succesvolle online onderneming te starten en te laten groeien. Klaar om op ontdekkingsreis te gaan?";
 
 /* Accessibility value if login page's password field is hiding the password (i.e. with asterisks).
    Display label for the product's catalog visibility */
@@ -3703,23 +3693,11 @@ which should be translated separately and considered part of this sentence. */
 /* Option in the store creation selling status question. */
 "I am already selling online" = "Ik verkoop al online";
 
-/* Text for Free trial survey answer. */
-"I am evaluating and comparing your service with others on the market" = "Ik beoordeel jullie service door deze te vergelijken met vergelijkbare producten op de markt.";
-
 /* Option in the store creation selling status question. */
 "I am just starting to sell" = "Ik ben net begonnen met verkopen";
 
-/* Text for Free trial survey answer. */
-"I am part of a team, and we need to make the decision collectively." = "Ik ben onderdeel van een team en we nemen de beslissing samen.";
-
 /* Option in the store creation selling status question. */
 "I am selling offline" = "Ik verkoop online";
-
-/* Text for Free trial survey answer. */
-"I am still exploring and assessing the features and benefits of the app." = "Ik ben nog bezig met alle functies en voordelen van de app te ontdekken en te beoordelen.";
-
-/* Text for Free trial survey answer. */
-"I find the price of the service to be a significant factor in my decision." = "Ik vind de prijs van de service een doorslaggevende factor bij mijn beslissing.";
 
 /* Text on the support form to refer to what area the user has problem with. */
 "I need help with" = "Ik heb hulp nodig met";
@@ -4958,9 +4936,6 @@ which should be translated separately and considered part of this sentence. */
 /* Text displayed when no order data are available for the selected time range. */
 "No revenue this period" = "Geen omzet deze periode";
 
-/* Message on the local notification to remind after three days. */
-"No rush, take your time! If you have any questions or need assistance, we're always here to help. Happy exploring!" = "Geen haast, neem je tijd! Als je nog vragen hebt of anderszins hulp nodig hebt, staan we altijd voor je klaar. Veel plezier op deze ontdekkingstocht!";
-
 /* The text on the placeholder overlay when there are no shipping classes on the Shipping Class list picker */
 "No shipping classes yet" = "Nog geen verzendingsklassen";
 
@@ -5269,9 +5244,6 @@ which should be translated separately and considered part of this sentence. */
    Restriction type Other for contents declared in the customs form for Shipping Label flow
    Type Other of content to be declared for the customs form in Shipping Label flow */
 "Other" = "Overige";
-
-/* Placeholder text for Free trial survey. */
-"Other (please specify)." = "Overig (graag nader omschrijven).";
 
 /* Title of the Other Plugin support area option */
 "Other Extension \/ Plugin" = "Andere extensie \/ plugin";
@@ -6747,8 +6719,7 @@ which should be translated separately and considered part of this sentence. */
 /* Text for the send button in the product review reply screen */
 "Send" = "Verzenden";
 
-/* CTA button title which sends survey feedback.
-   Presents a survey to gather feedback from the user. */
+/* Presents a survey to gather feedback from the user. */
 "Send Feedback" = "Stuur feedback";
 
 /* Title of a button. The text should be uppercase.  Clicking requests a hyperlink be emailed ot the user. */
@@ -8986,9 +8957,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the banner notice in the add-ons view */
 "View add-ons from your device!" = "Bekijk extra opties vanaf je apparaat!";
 
-/* Button when tapped will show a screen with all the store setup tasks.%1$d represents the total number of tasks. */
-"View all (%1$d)" = "Alles weergeven (%1$d)";
-
 /* Title of the feedback banner on the coupon list screen */
 "View and edit coupons" = "Coupons bekijken en bewerken";
 
@@ -9222,9 +9190,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Subtitle of the Store details task to add details about the store. */
 "We’ll use the info to get a head start on your shipping, tax, and payments settings." = "We gebruiken deze gegevens om alvast te beginnen met het instellen van betalingen, verzendingen en belastingen.";
-
-/* Message on the local notification to ask for Free trial survey. */
-"We’re interested in your decision-making journey. Could you please tell us about your current status?" = "We willen graag weten hoe jij tot een beslissing komt. Kan je ons vertellen over je huidige status?";
 
 /* Content of the feedback banner on the coupon list screen */
 "We’ve been working on making it possible to view and edit coupons from your device!" = "We hebben hard gewerkt zodat jij coupons vanuit je apparaat kunt bekijken en bewerken!";
@@ -10620,17 +10585,11 @@ which should be translated separately and considered part of this sentence. */
 /* Name for the Blaze dashboard card in the Customize Dashboard screen */
 "dashboardCard.name.blaze" = "Blaze";
 
-/* Name for the Store Onboarding dashboard card in the Customize Dashboard screen */
-"dashboardCard.name.onboarding" = "Winkel-onboarding";
-
-/* Name for the Store Stats and Top Performers dashboard card in the Customize Dashboard screen */
-"dashboardCard.name.statsAndTopPerformers" = "Winkelstatistieken en toppresteerders";
+/* Name for the Performance dashboard card in the Customize Dashboard screen */
+"dashboardCard.name.performance" = "Prestaties";
 
 /* Button to save changes on the Customize Dashboard screen */
 "dashboardCustomization.saveButton" = "Opslaan";
-
-/* Title for the screen to customize the dashboard screen */
-"dashboardCustomization.title" = "Dashboard aanpassen";
 
 /* Text on unavailable dashboard card on the Customize Dashboard screen */
 "dashboardCustomization.unavailable" = "Niet beschikbaar";
@@ -11326,8 +11285,53 @@ which should be translated separately and considered part of this sentence. */
 /* Tab selector title that shows the statistics for today */
 "statsTimeRangeV4.tabTitle.custom" = "Aangepast bereik";
 
+/* Button when tapped will show a screen with all the store setup tasks.%1$d represents the total number of tasks. */
+"storeOnboardingCardView.viewAll" = "Alle %1$d taken bekijken";
+
+/* Conversion stat label on dashboard. */
+"storePerformanceView.conversion" = "Conversie";
+
+/* Menu item to dismiss the store performance section on the Dashboard screen */
+"storePerformanceView.hideCard" = "Prestaties verbergen";
+
+/* Orders stat label on dashboard - should be plural. */
+"storePerformanceView.orders" = "Bestellingen";
+
+/* Revenue stat label on dashboard. */
+"storePerformanceView.revenue" = "Inkomsten";
+
+/* Title of the store performance section on the Dashboard screen */
+"storePerformanceView.title" = "Prestaties";
+
+/* Button to navigate to Analytics Hub. */
+"storePerformanceView.viewAll" = "Alle winkelanalyses bekijken";
+
+/* Visitors stat label on dashboard - should be plural. */
+"storePerformanceView.visitors" = "Bezoekers";
+
+/* Button in date range picker to add a Custom Range tab */
+"storePerformanceViewModel.addCustomRange" = "Toevoegen";
+
 /* Button title on the store picker for store connection */
 "storePickerViewController.addStoreButton" = "Een bestaande winkel koppelen";
+
+/* Text on the store stats chart on the Dashboard screen when there is no revenue */
+"storeStatsChart.noRevenueText" = "Geen inkomsten deze periode";
+
+/* Value for the x-Axis of any selected point on the store stats chart on the Dashboard screen */
+"storeStatsChart.xSelectedValue" = "Geselecteerde datum";
+
+/* Value for the x-Axis of the store stats chart on the Dashboard screen */
+"storeStatsChart.xValue" = "Datum";
+
+/* Value for the y-Axis of any selected point on the store stats chart on the Dashboard screen */
+"storeStatsChart.ySelectedValue" = "Geselecteerde inkomsten";
+
+/* Value for the y-Axis of the store stats chart on the Dashboard screen */
+"storeStatsChart.yValue" = "Inkomsten";
+
+/* Value for the y-Axis of the store stats chart on the Dashboard screen when there is no revenue */
+"storeStatsChart.zeroRevenue" = "Geen inkomsten";
 
 /* Widget description, displayed when selecting which widget to add */
 "storeWidgets.description" = "WooCommerce-statistieken van vandaag";
@@ -11525,6 +11529,15 @@ which should be translated separately and considered part of this sentence. */
 /* Button in theme preview screen to pick a theme. The placeholder is the theme name. Reads like: Use Tsubaki */
 "themesPreviewViewModel.useThisThemeButton" = "Gebruik %1$@";
 
+/* Button in date range picker to add a Custom Range tab */
+"topPerformerDashboardViewModel.addCustomRange" = "Toevoegen";
+
+/* Menu item to dismiss the Top Performers section on the Dashboard screen */
+"topPerformersDashboardView.hideCard" = "Toppresteerders verbergen";
+
+/* Button to navigate to Analytics Hub. */
+"topPerformersDashboardView.viewAll" = "Alle winkelanalyses bekijken";
+
 /* Value for the plugin version detail row in settings, when the version is unknown. This is in place of the current version number. */
 "unknown" = "Onbekend";
 
@@ -11643,9 +11656,6 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Åland Islands" = "Åland";
 
-/* Title of the local notification to remind the user to purchase a plan. */
-"🌟 Keep your business going!" = "🌟 Blijf aan de slag!";
-
 /* Message when a tax rate is set */
 "🎉 New tax rate set" = "🎉 Nieuw belastingtarief ingesteld";
 
@@ -11660,16 +11670,4 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text of the notice that is displayed after the refund is created. */
 "🎉 Products successfully refunded" = "🎉 Producten zijn terugbetaald";
-
-/* Title of the local notification about a newly created store */
-"🎉 Your store is ready!" = "🎉 Je winkel is klaar!";
-
-/* Title of the local notification to ask for Free trial survey. */
-"💡Help Us Understand Your Subscription Decision" = "💡Help ons begrijpen wat jouw beslissingen omtrent abonnementen beïnvloed";
-
-/* Title of the Blaze campaign view. */
-"🔥 Blaze campaign" = "🔥 Blaze-campagne";
-
-/* Title of the local notification to remind after three days. */
-"🧭 Still Exploring WooCommerce?" = "🧭 Nog bezig met WooCommerce ontdekken?";
 

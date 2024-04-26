@@ -143,7 +143,7 @@ final class StorePerformanceViewModel: ObservableObject {
     }
 
     func hideStorePerformance() {
-        // TODO: add tracking
+        analytics.track(event: .DynamicDashboard.hideCardTapped(type: .performance))
         onDismiss?()
     }
 }

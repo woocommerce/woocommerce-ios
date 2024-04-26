@@ -19,8 +19,6 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
 
     @Published private(set) var state: State
 
-    @Published private(set) var shouldShowInDashboard: Bool = false
-
     @Published private(set) var canShowInDashboard = false
 
     var shouldShowIntroView: Bool {
@@ -125,8 +123,7 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
         update(state: .loading)
         isSiteEligibleForBlaze = await blazeEligibilityChecker.isSiteEligible()
 
-        guard !userDefaults.hasDismissedBlazeSectionOnMyStore(for: siteID),
-              isSiteEligibleForBlaze else {
+        guard isSiteEligibleForBlaze else {
             update(state: .empty)
             return
         }
@@ -166,16 +163,13 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
     }
 
     func dismissBlazeSection() {
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.dynamicDashboard) {
-            onDismiss?()
-        } else {
-            userDefaults.setDismissedBlazeSectionOnMyStore(for: siteID)
-        }
+        onDismiss?()
+        analytics.track(event: .DynamicDashboard.hideCardTapped(type: .blaze))
         analytics.track(event: .Blaze.blazeViewDismissed(source: .myStoreSection))
     }
 
     func didCreateCampaign() {
-        userDefaults.restoreBlazeSectionOnMyStore(for: siteID)
+        // TODO: restore blaze card on dashboard screen
         Task {
             await reload()
         }
@@ -230,13 +224,10 @@ private extension BlazeCampaignDashboardViewModel {
         switch state {
         case .loading:
             shouldRedactView = true
-            shouldShowInDashboard = true
         case .showCampaign, .showProduct:
             shouldRedactView = false
-            shouldShowInDashboard = true
         case .empty:
             shouldRedactView = true
-            shouldShowInDashboard = false
         }
         onStateChange?()
     }
@@ -296,27 +287,6 @@ private extension BlazeCampaignDashboardViewModel {
             .removeDuplicates()
             .sink { [weak self] _ in
                 self?.analytics.track(event: .Blaze.blazeEntryPointDisplayed(source: .myStoreSection))
-            }
-            .store(in: &subscriptions)
-
-        userDefaults.publisher(for: \.hasDismissedBlazeSectionOnMyStore)
-            .dropFirst() // ignores first event because data is already loaded initially.
-            .map { [weak self] _ -> Bool in
-                guard let self else {
-                    return false
-                }
-                return self.userDefaults.hasDismissedBlazeSectionOnMyStore(for: self.siteID)
-            }
-            .removeDuplicates()
-            .sink { [weak self] hasDismissed in
-                guard let self else { return }
-                guard !hasDismissed else {
-                    self.update(state: .empty)
-                    return
-                }
-                Task {
-                    await self.reload()
-                }
             }
             .store(in: &subscriptions)
     }

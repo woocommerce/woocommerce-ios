@@ -128,16 +128,7 @@ struct CollapsibleProductRowCardViewModel: Identifiable {
         } else {
             pricePerUnit = subscriptionRegularPrice
         }
-
-        // Multiply price per unit by the currently selected quantity
-        let quantity = stepperViewModel.quantity
-        guard let decimalPrice = currencyFormatter.convertToDecimal(pricePerUnit)?.decimalValue,
-              let stringTotal = currencyFormatter.formatHumanReadableAmount(decimalPrice * quantity) else {
-            return nil
-        }
-
-        let formattedPrice = currencyFormatter.formatAmount(stringTotal)
-        return formattedPrice
+        return pricePerQuantity(price: pricePerUnit)
     }
 
     /// Description of the subscription sign up fee for a Subscription-type Product
@@ -149,15 +140,7 @@ struct CollapsibleProductRowCardViewModel: Identifiable {
               signupFee != "0" else {
             return nil
         }
-
-        // Multiply signup fees by the currently selected quantity
-        let quantity = stepperViewModel.quantity
-        guard let decimalSignUpFee = currencyFormatter.convertToDecimal(signupFee)?.decimalValue,
-              let stringTotal = currencyFormatter.formatHumanReadableAmount(decimalSignUpFee * quantity, roundSmallNumbers: false) else {
-            return nil
-        }
-        let formattedSignupFee = currencyFormatter.formatAmount(stringTotal)
-        return formattedSignupFee
+        return pricePerQuantity(price: signupFee)
     }
 
     /// Summary of the subscription sign up fees for a Subscription-type Product when an order has more than one
@@ -274,6 +257,18 @@ struct CollapsibleProductRowCardViewModel: Identifiable {
 }
 
 extension CollapsibleProductRowCardViewModel {
+    /// Returns the total price by multiplying price per quantity
+    ///
+    private func pricePerQuantity(price: String) -> String? {
+        let quantity = stepperViewModel.quantity
+        guard let decimalPrice = currencyFormatter.convertToDecimal(price)?.decimalValue,
+              let stringTotal =  currencyFormatter.formatHumanReadableAmount(decimalPrice * quantity, roundSmallNumbers: false) else {
+            return nil
+        }
+        let formattedPrice = currencyFormatter.formatAmount(stringTotal)
+        return formattedPrice
+    }
+
     /// Formatted price label based on a product's price and quantity. Accounting for discounts, if any.
     /// e.g: If price is $5, quantity is 10, and discount is $1, outputs "$49.00"
     ///

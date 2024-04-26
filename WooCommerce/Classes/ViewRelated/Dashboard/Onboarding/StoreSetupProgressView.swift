@@ -15,8 +15,6 @@ struct StoreSetupProgressView: View {
 
     let failedToLoadTasks: Bool
 
-    let isHideStoreOnboardingTaskListFeatureEnabled: Bool
-
     var body: some View {
         HStack(alignment: .top) {
             Image(systemName: "exclamationmark.circle")
@@ -62,7 +60,6 @@ struct StoreSetupProgressView: View {
                 Button(Localization.hideStoreSetupListButton) {
                     hideTaskListAction()
                 }
-                .renderedIf(isHideStoreOnboardingTaskListFeatureEnabled)
             } label: {
                 Image(systemName: "ellipsis")
                     .foregroundStyle(Color.secondary)
@@ -129,8 +126,7 @@ struct StoreSetupProgressView_Previews: PreviewProvider {
                                shareFeedbackAction: nil,
                                hideTaskListAction: {},
                                isRedacted: false,
-                               failedToLoadTasks: false,
-                               isHideStoreOnboardingTaskListFeatureEnabled: true)
+                               failedToLoadTasks: false)
 
         StoreSetupProgressView(isExpanded: true,
                                totalNumberOfTasks: 5,
@@ -138,7 +134,6 @@ struct StoreSetupProgressView_Previews: PreviewProvider {
                                shareFeedbackAction: nil,
                                hideTaskListAction: {},
                                isRedacted: false,
-                               failedToLoadTasks: false,
-                               isHideStoreOnboardingTaskListFeatureEnabled: true)
+                               failedToLoadTasks: false)
     }
 }

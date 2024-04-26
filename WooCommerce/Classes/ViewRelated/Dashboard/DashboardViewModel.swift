@@ -41,8 +41,6 @@ final class DashboardViewModel: ObservableObject {
 
     @Published private(set) var hasOrders: Bool = true
 
-    @Published private(set) var canHideMoreDashboardCards = false
-
     @Published var showingCustomization = false
 
     let siteID: Int64
@@ -401,11 +399,6 @@ private extension DashboardViewModel {
                 }
             }
             .store(in: &subscriptions)
-
-        $dashboardCards
-            .receive(on: DispatchQueue.main)
-            .map { $0.filter({ $0.enabled }).count > 1 }
-            .assign(to: &$canHideMoreDashboardCards)
     }
 
     func showCustomizationScreen() {

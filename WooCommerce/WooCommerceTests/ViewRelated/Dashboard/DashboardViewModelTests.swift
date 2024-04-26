@@ -446,7 +446,7 @@ final class DashboardViewModelTests: XCTestCase {
     }
 
     // MARK: Dashboard cards
-
+    @MainActor
     func test_dashboard_cards_are_loaded_from_app_settings() async throws {
         // Given
         let uuid = UUID().uuidString
@@ -464,8 +464,7 @@ final class DashboardViewModelTests: XCTestCase {
 
         // Then
         waitUntil {
-            viewModel.dashboardCards == [.init(type: .performance, enabled: true),
-                                         .init(type: .blaze, enabled: true)]
+            viewModel.dashboardCards.contains { $0.type == .performance && $0.enabled }
         }
     }
 

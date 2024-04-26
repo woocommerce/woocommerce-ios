@@ -160,6 +160,19 @@ struct CollapsibleProductRowCardViewModel: Identifiable {
         return formattedSignupFee
     }
 
+    /// Summary of the subscription sign up fees for a Subscription-type Product when an order has more than one
+    /// eg: "3 x $0.60"
+    ///
+    var signupFeeSummary: String? {
+        guard let subscriptionConditionsSignupFee, stepperViewModel.quantity > 1 else {
+            return nil
+        }
+        let quantity = stepperViewModel.quantity.formatted()
+        return String.localizedStringWithFormat(Localization.Subscription.signupFeeSummary,
+                                                quantity,
+                                                subscriptionConditionsSignupFee)
+    }
+
     /// Label of the subscription sign up fee for a Subscription-type Product
     /// eg: "$0.50 signup"
     ///
@@ -362,6 +375,11 @@ private extension CollapsibleProductRowCardViewModel {
                 value: "%1$@ %2$@ free",
                 comment: "Description of the free trial conditions for a subscription product. " +
                 "Reads as: '3 days free'.")
+            static let signupFeeSummary = NSLocalizedString(
+                "CollapsibleProductRowCardViewModel.signupFeeSummary",
+                value: "%1$@ x %2$@",
+                comment: "Summary of quantity and signup fees for a subscription product when multiple are selected." +
+                "Reads as: '3 x $0.60'.")
         }
     }
 }

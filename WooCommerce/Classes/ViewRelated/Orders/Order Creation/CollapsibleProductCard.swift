@@ -326,6 +326,10 @@ private extension CollapsibleProductRowCard {
                     Text(Localization.Subscription.signUpFeeLabel)
                         .subheadlineStyle()
                     Spacer()
+                    if let signupFeeSummary = viewModel.signupFeeSummary {
+                        Text(signupFeeSummary)
+                            .foregroundColor(.secondary)
+                    }
                     Text(signupFee)
                         .font(.subheadline)
                         .foregroundColor(Color(.text))

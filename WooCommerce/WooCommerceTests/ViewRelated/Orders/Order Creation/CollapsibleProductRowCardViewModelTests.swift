@@ -542,6 +542,7 @@ final class CollapsibleProductRowCardViewModelTests: XCTestCase {
         // Given
         let signUpFee = "0.60"
         let expectedSignUpFee = "$0.60"
+        let expectedSignUpFeeSummary: String? = nil
         let productSubscription = createFakeSubscription(signUpFee: signUpFee)
 
         // When
@@ -549,13 +550,15 @@ final class CollapsibleProductRowCardViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(viewModel.subscriptionConditionsSignupFee, expectedSignUpFee)
+        XCTAssertEqual(viewModel.signupFeeSummary, expectedSignUpFeeSummary)
     }
 
-    func test_productRow_when_subscription_has_signupFee_and_order_has_multiple_items_then_signupFees_are_multiplied_and_formatted() {
+    func test_productRow_when_subscription_has_signupFee_and_order_has_single_item_then_expectedSignUpFeeSummary_is_nil() {
         // Given
         let signUpFee = "0.60"
-        let quantity = 10
-        let expectedSignUpFees = "$6.00"
+        let quantity = 1
+        let expectedSignUpFees = "$0.60"
+        let expectedSignUpFeeSummary: String? = nil
         let productSubscription = createFakeSubscription(signUpFee: signUpFee)
 
         // When
@@ -566,6 +569,26 @@ final class CollapsibleProductRowCardViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(viewModel.subscriptionConditionsSignupFee, expectedSignUpFees)
+        XCTAssertEqual(viewModel.signupFeeSummary, expectedSignUpFeeSummary)
+    }
+
+    func test_productRow_when_subscription_has_signupFee_and_order_has_multiple_items_then_signupFees_are_multiplied_and_formatted() {
+        // Given
+        let signUpFee = "0.60"
+        let quantity = 10
+        let expectedSignUpFees = "$6.00"
+        let expectedSignUpFeeSummary = "10 x $6.00"
+        let productSubscription = createFakeSubscription(signUpFee: signUpFee)
+
+        // When
+        let viewModel = createViewModel(productSubscriptionDetails: productSubscription,
+                                        stepperViewModel: .init(quantity: Decimal(quantity),
+                                                                name: "",
+                                                                quantityUpdatedCallback: { _ in }))
+
+        // Then
+        XCTAssertEqual(viewModel.subscriptionConditionsSignupFee, expectedSignUpFees)
+        XCTAssertEqual(viewModel.signupFeeSummary, expectedSignUpFeeSummary)
     }
 
     func test_productRow_when_subscription_signupFee_is_not_nil_then_signUpFee_label_is_formatted() {

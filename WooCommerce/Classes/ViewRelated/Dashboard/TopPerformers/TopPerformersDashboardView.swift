@@ -28,6 +28,7 @@ struct TopPerformersDashboardView: View {
 
             if viewModel.syncingError != nil {
                 DashboardCardErrorView(onRetry: {
+                    ServiceLocator.analytics.track(event: .DynamicDashboard.cardRetryTapped(type: .topPerformers))
                     Task {
                         await viewModel.reloadData()
                     }

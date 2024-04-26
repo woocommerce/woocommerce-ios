@@ -80,6 +80,7 @@ struct DashboardView: View {
             }
             ToolbarItem(placement: .topBarTrailing) {
                 Button(Localization.edit) {
+                    ServiceLocator.analytics.track(event: .DynamicDashboard.editLayoutButtonTapped())
                     viewModel.showingCustomization = true
                 }
             }

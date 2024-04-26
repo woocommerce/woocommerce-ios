@@ -313,6 +313,10 @@ final class DashboardViewModel: ObservableObject {
     }
 
     func didCustomizeDashboardCards(_ cards: [DashboardCard]) {
+        let activeCardTypes = cards
+            .filter { $0.enabled }
+            .map(\.type)
+        analytics.track(event: .DynamicDashboard.editorSaveTapped(types: activeCardTypes))
         stores.dispatch(AppSettingsAction.setDashboardCards(siteID: siteID, cards: cards))
         dashboardCards = cards
     }

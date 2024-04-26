@@ -870,6 +870,22 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         // Then
         XCTAssertFalse(tracker.startupActionsPending.contains(.loadOnboardingTasks))
     }
+
+    /// Skipped until the feature flag is on for dynamic dashboard.
+    func skipped_test_hideTaskList_triggers_tracking_event() throws {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+        let viewModel = StoreOnboardingViewModel(siteID: 123, isExpanded: false, analytics: analytics)
+
+        // When
+        viewModel.hideTaskList()
+
+        // Then
+        let index = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "dynamic_dashboard_hide_card_tapped" }))
+        let properties = analyticsProvider.receivedProperties[index] as? [String: AnyHashable]
+        XCTAssertEqual(properties?["type"], "store_setup")
+    }
 }
 
 private extension StoreOnboardingViewModelTests {

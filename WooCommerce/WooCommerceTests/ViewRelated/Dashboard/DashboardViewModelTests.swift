@@ -12,6 +12,7 @@ import struct Yosemite.StoreOnboardingTask
 import enum Yosemite.StoreOnboardingTasksAction
 import enum Yosemite.ProductStatus
 import struct Yosemite.Site
+import struct Yosemite.DashboardCard
 @testable import WooCommerce
 
 final class DashboardViewModelTests: XCTestCase {
@@ -615,6 +616,22 @@ final class DashboardViewModelTests: XCTestCase {
 
         // Then
         XCTAssertTrue(setDashboardCardsActionCalled)
+    }
+
+    func test_editorSaveTapped_is_tracked_when_customizing_onboarding_card() throws {
+        // Given
+        let viewModel = DashboardViewModel(siteID: sampleSiteID, analytics: analytics)
+        let cards: [DashboardCard] = [.init(type: .performance, enabled: true),
+                                      .init(type: .blaze, enabled: true),
+                                      .init(type: .topPerformers, enabled: false)]
+
+        // When
+        viewModel.didCustomizeDashboardCards(cards)
+
+        // Then
+        let index = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "dynamic_dashboard_editor_save_tapped" }))
+        let properties = analyticsProvider.receivedProperties[index] as? [String: AnyHashable]
+        XCTAssertEqual(properties?["cards"], "blaze,performance")
     }
 
     // MARK: Profiler answers

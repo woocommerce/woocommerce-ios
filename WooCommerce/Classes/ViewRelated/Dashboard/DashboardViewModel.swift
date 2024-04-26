@@ -25,7 +25,10 @@ final class DashboardViewModel: ObservableObject {
 
     @Published var justInTimeMessagesWebViewModel: WebViewSheetViewModel? = nil
 
+    // TODO: remove this legacy property when removing `DashboardViewController`
     @Published private(set) var showOnboarding: Bool = false
+
+    // TODO: remove this legacy property when removing `DashboardViewController`
     @Published private(set) var showBlazeCampaignView: Bool = false
 
     @Published private(set) var dashboardCards: [DashboardCard] = [
@@ -37,8 +40,6 @@ final class DashboardViewModel: ObservableObject {
     @Published private(set) var jetpackBannerVisibleFromAppSettings = false
 
     @Published private(set) var hasOrders: Bool = true
-
-    @Published private(set) var canHideMoreDashboardCards = false
 
     @Published var showingCustomization = false
 
@@ -98,8 +99,6 @@ final class DashboardViewModel: ObservableObject {
                                             usageTracksEventEmitter: usageTracksEventEmitter)
         self.storeCreationProfilerUploadAnswersUseCase = storeCreationProfilerUploadAnswersUseCase ?? StoreCreationProfilerUploadAnswersUseCase(siteID: siteID)
         self.themeInstaller = themeInstaller
-        setupObserverForShowOnboarding()
-        setupObserverForBlazeCampaignView()
         configureOrdersResultController()
         setupDashboardCards()
         installPendingThemeIfNeeded()
@@ -130,18 +129,11 @@ final class DashboardViewModel: ObservableObject {
             group.addTask { [weak self] in
                 await self?.updateHasOrdersStatus()
             }
-            if featureFlagService.isFeatureFlagEnabled(.dynamicDashboard) {
-                if dashboardCards.contains(where: { $0.type == .performance }) {
-                    group.addTask { [weak self] in
-                        await self?.storePerformanceViewModel.reloadData()
-                    }
-                }
-
-                if dashboardCards.contains(where: { $0.type == .topPerformers }) {
-                    group.addTask { [weak self] in
-                        await self?.topPerformersViewModel.reloadData()
-                    }
-                }
+            group.addTask { [weak self] in
+                await self?.storePerformanceViewModel.reloadData()
+            }
+            group.addTask { [weak self] in
+                await self?.topPerformersViewModel.reloadData()
             }
         }
     }
@@ -357,24 +349,6 @@ private extension DashboardViewModel {
         localAnnouncementViewModel = viewModel
     }
 
-    /// Sets up observer to decide store onboarding task lists visibility
-    ///
-    func setupObserverForShowOnboarding() {
-        guard featureFlagService.isFeatureFlagEnabled(.dashboardOnboarding) else {
-            return
-        }
-
-        storeOnboardingViewModel.$shouldShowInDashboard
-            .assign(to: &$showOnboarding)
-    }
-
-    /// Sets up observer to decide Blaze campaign view visibility
-    ///
-    func setupObserverForBlazeCampaignView() {
-        blazeCampaignDashboardViewModel.$shouldShowInDashboard
-            .assign(to: &$showBlazeCampaignView)
-    }
-
     func configureOrdersResultController() {
         ordersResultsController.onDidChangeContent = { [weak self] in
             self?.updateResults()
@@ -425,11 +399,6 @@ private extension DashboardViewModel {
                 }
             }
             .store(in: &subscriptions)
-
-        $dashboardCards
-            .receive(on: DispatchQueue.main)
-            .map { $0.filter({ $0.enabled }).count > 1 }
-            .assign(to: &$canHideMoreDashboardCards)
     }
 
     func showCustomizationScreen() {

@@ -8,16 +8,13 @@ struct TopPerformersDashboardView: View {
     @ObservedObject private var viewModel: TopPerformersDashboardViewModel
     @State private var showingCustomRangePicker = false
 
-    private let canHideCard: Bool
     private let onViewAllAnalytics: (_ siteID: Int64,
                                      _ timeZone: TimeZone,
                                      _ timeRange: StatsTimeRangeV4) -> Void
 
-    init(canHideCard: Bool,
-         viewModel: TopPerformersDashboardViewModel,
+    init(viewModel: TopPerformersDashboardViewModel,
          onViewAllAnalytics: @escaping (Int64, TimeZone, StatsTimeRangeV4) -> Void) {
         self.viewModel = viewModel
-        self.canHideCard = canHideCard
         self.onViewAllAnalytics = onViewAllAnalytics
     }
 
@@ -93,7 +90,6 @@ private extension TopPerformersDashboardView {
                     .padding(.vertical, Layout.hideIconVerticalPadding)
             }
             .disabled(viewModel.syncingData)
-            .renderedIf(canHideCard)
         }
     }
 
@@ -173,7 +169,6 @@ private extension TopPerformersDashboardView {
 }
 
 #Preview {
-    TopPerformersDashboardView(canHideCard: true,
-                               viewModel: .init(siteID: 123, usageTracksEventEmitter: .init()),
+    TopPerformersDashboardView(viewModel: .init(siteID: 123, usageTracksEventEmitter: .init()),
                                onViewAllAnalytics: { _, _, _ in })
 }

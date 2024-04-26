@@ -172,14 +172,12 @@ final class SessionManager: SessionManagerProtocol {
         defaultSite = nil
         defaults[.storePhoneNumber] = nil
         defaults[.completedAllStoreOnboardingTasks] = nil
-        defaults[.shouldHideStoreOnboardingTaskList] = nil
         defaults[.hasSavedPrivacyBannerSettings] = nil
         defaults[.usedProductDescriptionAI] = nil
         defaults[.hasDismissedWriteWithAITooltip] = nil
         defaults[.numberOfTimesWriteWithAITooltipIsShown] = nil
         defaults[.storeProfilerAnswers] = nil
         defaults[.aiPromptTone] = nil
-        defaults[.hasDismissedBlazeSectionOnMyStore] = nil
         defaults[.numberOfTimesProductCreationAISurveySuggested] = nil
         defaults[.didStartProductCreationAISurvey] = nil
         defaults[.themesPendingInstall] = nil

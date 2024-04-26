@@ -1,1 +1,2 @@
-Scopri gli ultimi aggiornamenti nella nostra app WooCommerce. Goditi un processo di pagamento semplice, accedi comodamente con le credenziali del sito e crea campagne Blaze più velocemente senza errori. Aggiorna ora per una migliore esperienza di gestione del negozio.
+Risolto un bug fastidioso per garantire il corretto funzionamento del pulsante "Azzera log attività", ricominciando da zero per un nuovo inizio. Immergiti in un'esperienza WooCommerce più fluida. Aggiorna ora.
+

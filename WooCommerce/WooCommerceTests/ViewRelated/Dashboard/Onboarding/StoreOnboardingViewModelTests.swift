@@ -754,7 +754,8 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         XCTAssertFalse(tracker.startupActionsPending.contains(.loadOnboardingTasks))
     }
 
-    func test_hideTaskList_triggers_tracking_event() throws {
+    /// Skipped until the feature flag is on for dynamic dashboard.
+    func skipped_test_hideTaskList_triggers_tracking_event() throws {
         // Given
         let analyticsProvider = MockAnalyticsProvider()
         let analytics = WooAnalytics(analyticsProvider: analyticsProvider)

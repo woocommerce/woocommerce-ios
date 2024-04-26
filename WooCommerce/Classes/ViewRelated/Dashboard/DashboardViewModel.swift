@@ -470,6 +470,9 @@ private extension DashboardViewModel {
             dashboardCards.removeAll { $0.type == .blaze }
         }
 
+        // Manually update the saved cards because it might have been changed above.
+        didCustomizeDashboardCards(dashboardCards)
+
         // Set cards to show "Unavailable" state in Customize screen when should not be shown.
         // Currently this applies to Top Performers and Performance cards.
         // For the other cards, when they should not be shown, they are simply not shown in Customize.

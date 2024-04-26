@@ -142,6 +142,7 @@ class StoreOnboardingViewModel: ObservableObject {
                                                                               pendingTasks: pending))
         if featureFlagService.isFeatureFlagEnabled(.dynamicDashboard) {
             onDismiss?()
+            analytics.track(event: .DynamicDashboard.hideCardTapped(type: .onboarding))
         } else {
             defaults[.shouldHideStoreOnboardingTaskList] = true
         }

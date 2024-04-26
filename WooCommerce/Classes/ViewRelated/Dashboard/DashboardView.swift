@@ -11,7 +11,6 @@ struct DashboardView: View {
     @State private var currentSite: Site?
     @State private var dismissedJetpackBenefitBanner = false
     @State private var showingSupportForm = false
-    @State private var showingCustomization = false
     @State private var troubleshootURL: URL?
     @State private var storePlanState: StorePlanSyncState = .loading
     @State private var connectivityStatus: ConnectivityStatus = .notReachable
@@ -81,7 +80,8 @@ struct DashboardView: View {
             }
             ToolbarItem(placement: .topBarTrailing) {
                 Button(Localization.edit) {
-                    showingCustomization = true
+                    ServiceLocator.analytics.track(event: .DynamicDashboard.editLayoutButtonTapped())
+                    viewModel.showingCustomization = true
                 }
             }
         }
@@ -119,7 +119,7 @@ struct DashboardView: View {
                 viewModel.maybeSyncAnnouncementsAfterWebViewDismissed()
             }
         }
-        .sheet(isPresented: $showingCustomization) {
+        .sheet(isPresented: $viewModel.showingCustomization) {
             DashboardCustomizationView(viewModel: DashboardCustomizationViewModel(
                 allCards: viewModel.dashboardCards,
                 inactiveCards: viewModel.unavailableDashboardCards,
@@ -172,7 +172,43 @@ private extension DashboardView {
                     }
                 }
             }
+
+            if !viewModel.hasOrders {
+                shareStoreCard
+            }
         }
+    }
+
+    var shareStoreCard: some View {
+        VStack(spacing: .zero) {
+            Image(uiImage: .blazeSuccessImage)
+                .padding(.top, Layout.imagePadding)
+                .padding(.bottom, Layout.elementPadding)
+
+            Text(Localization.ShareStoreCard.title)
+                .headlineStyle()
+                .multilineTextAlignment(.center)
+
+            Text(Localization.ShareStoreCard.subtitle)
+                .bodyStyle()
+                .multilineTextAlignment(.center)
+                .padding(.horizontal, Layout.elementPadding)
+                .padding(.top, Layout.textPadding)
+
+            if let url = viewModel.siteURLToShare {
+                ShareLink(item: url) {
+                    Text(Localization.ShareStoreCard.shareButtonLabel)
+                }
+                .buttonStyle(PrimaryButtonStyle())
+                .padding(.horizontal, Layout.elementPadding)
+                .padding(.vertical, Layout.elementPadding)
+            }
+        }
+        .overlay(
+            RoundedRectangle(cornerRadius: Layout.cornerRadius)
+                .stroke(Color(.border), lineWidth: 1)
+        )
+        .padding(.horizontal, Layout.padding)
     }
 
     var jetpackBenefitBanner: some View {
@@ -228,6 +264,10 @@ private extension DashboardView {
 private extension DashboardView {
     enum Layout {
         static let padding: CGFloat = 16
+        static let elementPadding: CGFloat = 24
+        static let imagePadding: CGFloat = 40
+        static let textPadding: CGFloat = 8
+        static let cornerRadius: CGFloat = 8
     }
     enum Localization {
         static let title = NSLocalizedString(
@@ -250,6 +290,26 @@ private extension DashboardView {
             value: "Edit",
             comment: "Title of the button to edit the layout of the Dashboard screen."
         )
+
+        enum ShareStoreCard {
+            static let title = NSLocalizedString(
+                "dashboardView.shareStoreCard.title",
+                value: "Get the word out!",
+                comment: "Title of the Share Your Store card"
+            )
+
+            static let subtitle = NSLocalizedString(
+                "dashboardView.shareStoreCard.subtitle",
+                value: "Use email or social media to spread the word about your store",
+                comment: "Subtitle of the Share Your Store card"
+            )
+
+            static let shareButtonLabel = NSLocalizedString(
+                "dashboardView.shareStoreCard.shareButtonLabel",
+                value: "Share Your Store",
+                comment: "Label of the button to share the store"
+            )
+        }
     }
 }
 

@@ -3291,20 +3291,11 @@ which should be translated separately and considered part of this sentence. */
 /* Name for the Blaze dashboard card in the Customize Dashboard screen */
 "dashboardCard.name.blaze" = "Blaze";
 
-/* Name for the Store Onboarding dashboard card in the Customize Dashboard screen */
-"dashboardCard.name.onboarding" = "Store Onboarding";
-
 /* Name for the Performance dashboard card in the Customize Dashboard screen */
 "dashboardCard.name.performance" = "Performance";
 
-/* Name for the Top Performers dashboard card in the Customize Dashboard screen */
-"dashboardCard.name.topPerformers" = "Top Performers";
-
 /* Button to save changes on the Customize Dashboard screen */
 "dashboardCustomization.saveButton" = "Save";
-
-/* Title for the screen to customize the dashboard screen */
-"dashboardCustomization.title" = "Customize Dashboard";
 
 /* Text on unavailable dashboard card on the Customize Dashboard screen */
 "dashboardCustomization.unavailable" = "Unavailable";
@@ -10119,9 +10110,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Menu item to dismiss the Top Performers section on the Dashboard screen */
 "topPerformersDashboardView.hideCard" = "Hide Top Performers";
-
-/* Title of the Top Performers section on the Dashboard screen */
-"topPerformersDashboardView.title" = "Top Performers";
 
 /* Button to navigate to Analytics Hub. */
 "topPerformersDashboardView.viewAll" = "View all store analytics";

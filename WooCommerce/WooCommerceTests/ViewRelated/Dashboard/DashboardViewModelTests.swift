@@ -1,4 +1,5 @@
 import XCTest
+import Fakes
 import enum Networking.DotcomError
 import enum Yosemite.StatsActionV4
 import enum Yosemite.ProductAction
@@ -6,10 +7,12 @@ import enum Yosemite.OrderAction
 import enum Yosemite.AppSettingsAction
 import enum Yosemite.JustInTimeMessageAction
 import struct Yosemite.JustInTimeMessage
+import struct Yosemite.Order
 import struct Yosemite.StoreOnboardingTask
 import enum Yosemite.StoreOnboardingTasksAction
 import enum Yosemite.ProductStatus
 import struct Yosemite.Site
+import struct Yosemite.DashboardCard
 @testable import WooCommerce
 
 final class DashboardViewModelTests: XCTestCase {
@@ -615,6 +618,22 @@ final class DashboardViewModelTests: XCTestCase {
         XCTAssertTrue(setDashboardCardsActionCalled)
     }
 
+    func test_editorSaveTapped_is_tracked_when_customizing_onboarding_card() throws {
+        // Given
+        let viewModel = DashboardViewModel(siteID: sampleSiteID, analytics: analytics)
+        let cards: [DashboardCard] = [.init(type: .performance, enabled: true),
+                                      .init(type: .blaze, enabled: true),
+                                      .init(type: .topPerformers, enabled: false)]
+
+        // When
+        viewModel.didCustomizeDashboardCards(cards)
+
+        // Then
+        let index = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "dynamic_dashboard_editor_save_tapped" }))
+        let properties = analyticsProvider.receivedProperties[index] as? [String: AnyHashable]
+        XCTAssertEqual(properties?["cards"], "blaze,performance")
+    }
+
     // MARK: Profiler answers
     func test_uploadProfilerAnswers_triggers_uploadAnswers() async throws {
         // Given
@@ -642,6 +661,44 @@ final class DashboardViewModelTests: XCTestCase {
 
         //  Then
         XCTAssertEqual(themeInstaller.installPendingThemeCalledForSiteID, sampleSiteID)
+    }
+
+    // MARK: hasOrders state
+    func test_hasOrders_is_true_when_site_has_orders() {
+        // Given
+        let storage = MockStorageManager()
+        let insertOrder = Order.fake().copy(siteID: sampleSiteID)
+        storage.insertSampleOrder(readOnlyOrder: insertOrder)
+        let viewModel = DashboardViewModel(siteID: sampleSiteID, stores: stores, storageManager: storage)
+
+        // Then
+        XCTAssertTrue(viewModel.hasOrders)
+    }
+
+    func test_hasOrders_is_false_when_site_has_no_orders() {
+        // Given
+        let viewModel = DashboardViewModel(siteID: sampleSiteID, stores: stores)
+
+        // Then
+        XCTAssertFalse(viewModel.hasOrders)
+    }
+
+    func test_hasOrders_is_updated_correctly_when_orders_availability_changes() {
+        // Given
+        let storage = MockStorageManager()
+        let viewModel = DashboardViewModel(siteID: sampleSiteID, stores: stores, storageManager: storage)
+
+        // Then
+        XCTAssertFalse(viewModel.hasOrders)
+
+        // When
+        let insertOrder = Order.fake().copy(siteID: sampleSiteID)
+        storage.insertSampleOrder(readOnlyOrder: insertOrder)
+
+        // Then
+        waitUntil {
+            viewModel.hasOrders == true
+        }
     }
 }
 

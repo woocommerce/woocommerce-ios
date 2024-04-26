@@ -73,7 +73,7 @@ private extension DashboardCardErrorView {
         static let errorTitle = NSLocalizedString(
             "dashboardCardErrorView.errorTitle",
             value: "Unable to load data",
-            comment: "The title of the error view when failed to load store statistics on the Dashboard screen"
+            comment: "The title of the error view when failed to load a Dashboard card"
         )
         static let errorMessage = NSLocalizedString(
             "dashboardCardErrorView.errorMessage",
@@ -90,12 +90,12 @@ private extension DashboardCardErrorView {
         static let retry = NSLocalizedString(
             "dashboardCardErrorView.retry",
             value: "Retry",
-            comment: "Button to reload the Performance card on the Dashboard screen"
+            comment: "Button to reload the dashboard card on the Dashboard screen"
         )
         static let done = NSLocalizedString(
             "dashboardCardErrorView.dismissSupport",
             value: "Done",
-            comment: "Button to dismiss the support form from the Dashboard stats error screen."
+            comment: "Button to dismiss the support form from the Dashboard generic error card."
         )
     }
 }

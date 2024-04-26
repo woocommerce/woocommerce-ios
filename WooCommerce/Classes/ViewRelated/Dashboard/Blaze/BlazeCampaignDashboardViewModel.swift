@@ -39,6 +39,13 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
         }
     }
 
+    var shouldShowCreateCampaignButton: Bool {
+        if case .empty = state {
+            return false
+        }
+        return true
+    }
+
     var shouldShowSubtitle: Bool {
         switch state {
         case .showCampaign, .empty:
@@ -161,6 +168,7 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
     func dismissBlazeSection() {
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.dynamicDashboard) {
             onDismiss?()
+            analytics.track(event: .DynamicDashboard.hideCardTapped(type: .blaze))
         } else {
             userDefaults.setDismissedBlazeSectionOnMyStore(for: siteID)
         }

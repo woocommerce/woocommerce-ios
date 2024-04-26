@@ -107,6 +107,7 @@ struct BlazeCampaignDashboardView: View {
                     }
             case .empty:
                 DashboardCardErrorView(onRetry: {
+                    ServiceLocator.analytics.track(event: .DynamicDashboard.cardRetryTapped(type: .blaze))
                     Task {
                         await viewModel.reload()
                     }
@@ -126,7 +127,7 @@ struct BlazeCampaignDashboardView: View {
                 .padding(.horizontal, Layout.padding)
                 .redacted(reason: viewModel.shouldRedactView ? .placeholder : [])
                 .shimmering(active: viewModel.shouldRedactView)
-                .renderedIf(viewModel.state != .empty)
+                .renderedIf(viewModel.shouldShowCreateCampaignButton)
         }
         .padding(.vertical, Layout.padding)
         .background(Color(.listForeground(modal: false)))

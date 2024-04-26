@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-04-16 11:54:03+0000 */
+/* Translation-Revision-Date: 2024-04-23 11:54:06+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: fr */
@@ -1348,7 +1348,6 @@ which should be translated separately and considered part of this sentence. */
    Button to dismiss the site credential login screen
    Button to dismiss the store creation profiler flow
    Button to dismiss the store name screen
-   Button to dismiss the survey screen.
    Button to dismiss the view or error alerts of the application password authorization web view
    Button to dismiss. Presented to users when updating the card reader software fails
    Cancel button in the More Options action sheet
@@ -2421,9 +2420,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title text for the product discount row informational tooltip */
 "Discounts unavailable" = "Remises indisponibles";
-
-/* Message on the local notification to remind the user to purchase a plan. */
-"Discover advanced features and personalized recommendations for your store! Tap to pick a plan that suits you best." = "Découvrez des fonctionnalités avancées et des recommandations personnalisées pour votre boutique ! Touchez pour choisir le plan qui vous convient le mieux.";
 
 /* Details on the store onboarding payments setup screen. */
 "Discover other payment providers and choose a payment provider." = "Découvrez d’autres fournisseurs de paiement et choisissez un fournisseur de paiement.";
@@ -3653,14 +3649,8 @@ which should be translated separately and considered part of this sentence. */
 /* Browse our help documentation website title */
 "Help Center" = "Centre d'aide";
 
-/* Title in Free trail survey screen. */
-"Help us understand your subscription decisions. Your feedback matters." = "Aidez-nous à comprendre vos décisions d’abonnement. Votre avis nous intéresse.";
-
 /* Text used when sharing a link to the app with a friend. */
 "Hey! Here is a link to download the WooCommerce app. I'm really enjoying it and thought you might too." = "Salut, Voici un lien pour télécharger l’application WooCommerce. Je la trouve super et je me suis dit qu’elle pourrait aussi te plaire.";
-
-/* Message on the local notification about a newly created store.The placeholder is the name of the user. */
-"Hi %1$@, Welcome to your 14-day free trial of Woo Express – everything you need to start and grow a successful online business, all in one place. Ready to explore?" = "Bonjour %1$@, Bienvenue dans votre essai gratuit de 14 jours du service Woo Express : tout ce dont vous avez besoin pour lancer et développer une activité en ligne prospère, en un seul endroit. Envie de découvrir ?";
 
 /* Accessibility value if login page's password field is hiding the password (i.e. with asterisks).
    Display label for the product's catalog visibility */
@@ -3703,23 +3693,11 @@ which should be translated separately and considered part of this sentence. */
 /* Option in the store creation selling status question. */
 "I am already selling online" = "Je vends déjà mes produits ou services en ligne";
 
-/* Text for Free trial survey answer. */
-"I am evaluating and comparing your service with others on the market" = "J’évalue et je compare votre service avec d’autres sur le marché";
-
 /* Option in the store creation selling status question. */
 "I am just starting to sell" = "Je commence à peine à vendre mes produits ou services";
 
-/* Text for Free trial survey answer. */
-"I am part of a team, and we need to make the decision collectively." = "Je fais partie d’une équipe et nous devons décider tous ensemble.";
-
 /* Option in the store creation selling status question. */
 "I am selling offline" = "Je vends mes produits ou services hors ligne";
-
-/* Text for Free trial survey answer. */
-"I am still exploring and assessing the features and benefits of the app." = "Je suis encore en train de découvrir et d’évaluer les fonctionnalités et les avantages de l’application.";
-
-/* Text for Free trial survey answer. */
-"I find the price of the service to be a significant factor in my decision." = "Pour moi, le prix du service est un élément important dans ma prise de décision.";
 
 /* Text on the support form to refer to what area the user has problem with. */
 "I need help with" = "J’ai besoin d’aide concernant le point suivant :";
@@ -4958,9 +4936,6 @@ which should be translated separately and considered part of this sentence. */
 /* Text displayed when no order data are available for the selected time range. */
 "No revenue this period" = "Pas de revenus durant cette période";
 
-/* Message on the local notification to remind after three days. */
-"No rush, take your time! If you have any questions or need assistance, we're always here to help. Happy exploring!" = "Pas de précipitation, prenez votre temps ! Si vous avez des questions ou si vous avez besoin d’aide, nous sommes toujours à votre disposition. Bonne découverte !";
-
 /* The text on the placeholder overlay when there are no shipping classes on the Shipping Class list picker */
 "No shipping classes yet" = "Pas encore de classes de livraison";
 
@@ -5269,9 +5244,6 @@ which should be translated separately and considered part of this sentence. */
    Restriction type Other for contents declared in the customs form for Shipping Label flow
    Type Other of content to be declared for the customs form in Shipping Label flow */
 "Other" = "Autre";
-
-/* Placeholder text for Free trial survey. */
-"Other (please specify)." = "Autre (veuillez préciser).";
 
 /* Title of the Other Plugin support area option */
 "Other Extension \/ Plugin" = "Autre extension";
@@ -6747,8 +6719,7 @@ which should be translated separately and considered part of this sentence. */
 /* Text for the send button in the product review reply screen */
 "Send" = "Envoyer";
 
-/* CTA button title which sends survey feedback.
-   Presents a survey to gather feedback from the user. */
+/* Presents a survey to gather feedback from the user. */
 "Send Feedback" = "Envoyer la réaction";
 
 /* Title of a button. The text should be uppercase.  Clicking requests a hyperlink be emailed ot the user. */
@@ -8986,9 +8957,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the banner notice in the add-ons view */
 "View add-ons from your device!" = "Affichez les modules de votre appareil !";
 
-/* Button when tapped will show a screen with all the store setup tasks.%1$d represents the total number of tasks. */
-"View all (%1$d)" = "Tout afficher (%1$d)";
-
 /* Title of the feedback banner on the coupon list screen */
 "View and edit coupons" = "Afficher et modifier les codes promo";
 
@@ -9222,9 +9190,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Subtitle of the Store details task to add details about the store. */
 "We’ll use the info to get a head start on your shipping, tax, and payments settings." = "Nous utiliserons les informations pour vous aider à configurer les paramètres liés aux paiements, aux expéditions et aux taxes.";
-
-/* Message on the local notification to ask for Free trial survey. */
-"We’re interested in your decision-making journey. Could you please tell us about your current status?" = "Nous sommes intéressés par votre processus de prise de décision. Pouvez-vous nous expliquer votre situation actuelle ?";
 
 /* Content of the feedback banner on the coupon list screen */
 "We’ve been working on making it possible to view and edit coupons from your device!" = "Il sera bientôt possible d’afficher et de modifier les codes promo depuis votre appareil.";
@@ -10620,17 +10585,11 @@ which should be translated separately and considered part of this sentence. */
 /* Name for the Blaze dashboard card in the Customize Dashboard screen */
 "dashboardCard.name.blaze" = "Blaze";
 
-/* Name for the Store Onboarding dashboard card in the Customize Dashboard screen */
-"dashboardCard.name.onboarding" = "Initiation à la boutique";
-
-/* Name for the Store Stats and Top Performers dashboard card in the Customize Dashboard screen */
-"dashboardCard.name.statsAndTopPerformers" = "Statistiques de la boutique et Meilleures performances";
+/* Name for the Performance dashboard card in the Customize Dashboard screen */
+"dashboardCard.name.performance" = "Performances";
 
 /* Button to save changes on the Customize Dashboard screen */
 "dashboardCustomization.saveButton" = "Enregistrer";
-
-/* Title for the screen to customize the dashboard screen */
-"dashboardCustomization.title" = "Personnaliser le tableau de bord";
 
 /* Text on unavailable dashboard card on the Customize Dashboard screen */
 "dashboardCustomization.unavailable" = "Indisponible";
@@ -11326,8 +11285,53 @@ which should be translated separately and considered part of this sentence. */
 /* Tab selector title that shows the statistics for today */
 "statsTimeRangeV4.tabTitle.custom" = "Plage personnalisée";
 
+/* Button when tapped will show a screen with all the store setup tasks.%1$d represents the total number of tasks. */
+"storeOnboardingCardView.viewAll" = "Voir les %1$d tâches";
+
+/* Conversion stat label on dashboard. */
+"storePerformanceView.conversion" = "Conversion";
+
+/* Menu item to dismiss the store performance section on the Dashboard screen */
+"storePerformanceView.hideCard" = "Masquer les performances";
+
+/* Orders stat label on dashboard - should be plural. */
+"storePerformanceView.orders" = "Commandes";
+
+/* Revenue stat label on dashboard. */
+"storePerformanceView.revenue" = "Revenus";
+
+/* Title of the store performance section on the Dashboard screen */
+"storePerformanceView.title" = "Performances";
+
+/* Button to navigate to Analytics Hub. */
+"storePerformanceView.viewAll" = "Voir toutes les statistiques de la boutique";
+
+/* Visitors stat label on dashboard - should be plural. */
+"storePerformanceView.visitors" = "Visiteurs";
+
+/* Button in date range picker to add a Custom Range tab */
+"storePerformanceViewModel.addCustomRange" = "Ajouter";
+
 /* Button title on the store picker for store connection */
 "storePickerViewController.addStoreButton" = "Associer une boutique existante";
+
+/* Text on the store stats chart on the Dashboard screen when there is no revenue */
+"storeStatsChart.noRevenueText" = "Pas de revenus durant cette période";
+
+/* Value for the x-Axis of any selected point on the store stats chart on the Dashboard screen */
+"storeStatsChart.xSelectedValue" = "Date sélectionnée";
+
+/* Value for the x-Axis of the store stats chart on the Dashboard screen */
+"storeStatsChart.xValue" = "Date";
+
+/* Value for the y-Axis of any selected point on the store stats chart on the Dashboard screen */
+"storeStatsChart.ySelectedValue" = "Revenus sélectionnés";
+
+/* Value for the y-Axis of the store stats chart on the Dashboard screen */
+"storeStatsChart.yValue" = "Revenus";
+
+/* Value for the y-Axis of the store stats chart on the Dashboard screen when there is no revenue */
+"storeStatsChart.zeroRevenue" = "Pas de revenus";
 
 /* Widget description, displayed when selecting which widget to add */
 "storeWidgets.description" = "WooCommerce Stats Today";
@@ -11525,6 +11529,15 @@ which should be translated separately and considered part of this sentence. */
 /* Button in theme preview screen to pick a theme. The placeholder is the theme name. Reads like: Use Tsubaki */
 "themesPreviewViewModel.useThisThemeButton" = "Utiliser %1$@";
 
+/* Button in date range picker to add a Custom Range tab */
+"topPerformerDashboardViewModel.addCustomRange" = "Ajouter";
+
+/* Menu item to dismiss the Top Performers section on the Dashboard screen */
+"topPerformersDashboardView.hideCard" = "Masquer les produits les plus performants";
+
+/* Button to navigate to Analytics Hub. */
+"topPerformersDashboardView.viewAll" = "Voir toutes les statistiques de la boutique";
+
 /* Value for the plugin version detail row in settings, when the version is unknown. This is in place of the current version number. */
 "unknown" = "inconnu";
 
@@ -11643,9 +11656,6 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Åland Islands" = "Îles Åland";
 
-/* Title of the local notification to remind the user to purchase a plan. */
-"🌟 Keep your business going!" = "🌟 Faites tourner votre activité !";
-
 /* Message when a tax rate is set */
 "🎉 New tax rate set" = "🎉 Nouveau taux de taxe défini";
 
@@ -11660,16 +11670,4 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text of the notice that is displayed after the refund is created. */
 "🎉 Products successfully refunded" = "🎉 Produits remboursés avec succès";
-
-/* Title of the local notification about a newly created store */
-"🎉 Your store is ready!" = "🎉 Votre boutique est prête !";
-
-/* Title of the local notification to ask for Free trial survey. */
-"💡Help Us Understand Your Subscription Decision" = "💡Aidez-nous à comprendre votre décision d’abonnement";
-
-/* Title of the Blaze campaign view. */
-"🔥 Blaze campaign" = "Campagne Blaze";
-
-/* Title of the local notification to remind after three days. */
-"🧭 Still Exploring WooCommerce?" = "🧭 Toujours en train de découvrir WooCommerce ?";
 

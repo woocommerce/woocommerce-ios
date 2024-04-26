@@ -755,7 +755,7 @@ final class StoreOnboardingViewModelTests: XCTestCase {
     }
 
     /// Skipped until the feature flag is on for dynamic dashboard.
-    func skipped_test_hideTaskList_triggers_tracking_event() throws {
+    func test_hideTaskList_triggers_tracking_event() throws {
         // Given
         let analyticsProvider = MockAnalyticsProvider()
         let analytics = WooAnalytics(analyticsProvider: analyticsProvider)

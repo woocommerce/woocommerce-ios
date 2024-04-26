@@ -29,9 +29,6 @@ struct StoreStatsChart: View {
             if !viewModel.hasRevenue {
                 RuleMark(y: .value(Localization.zeroRevenue, 0))
                     .foregroundStyle(Constants.noRevenueLineColor)
-                    .annotation(position: .overlay, alignment: .center) {
-                        Image(.magnifyingGlassNotFound)
-                    }
             }
 
             // Gradient area
@@ -96,6 +93,7 @@ struct StoreStatsChart: View {
             }
         }
         .padding(Constants.chartPadding)
+        .if(!viewModel.hasRevenue) { $0.overlay { emptyChartOverlay } }
     }
 
     private func updateSelectedDate(at location: CGPoint, proxy: ChartProxy, geometry: GeometryProxy) {
@@ -131,6 +129,26 @@ struct StoreStatsChart: View {
 }
 
 private extension StoreStatsChart {
+    var emptyChartOverlay: some View {
+        // Simulate an empty chart
+        VStack {
+            Divider()
+            Spacer()
+            Divider()
+            Spacer()
+            Divider()
+            Spacer()
+        }
+        .overlay {
+            Image(.magnifyingGlassNotFound)
+                .opacity(Constants.EmptyChartOverlay.opacity)
+                .padding(.bottom, Constants.EmptyChartOverlay.bottomPadding)
+        }
+        .renderedIf(!viewModel.hasRevenue)
+    }
+}
+
+private extension StoreStatsChart {
     enum Localization {
         static let xValue = NSLocalizedString(
             "storeStatsChart.xValue",
@@ -160,10 +178,7 @@ private extension StoreStatsChart {
     }
 
     enum Constants {
-        static var noRevenueLineColor = Color(
-            light: Color.withColorStudio(name: .gray, shade: .shade5),
-            dark: Color.withColorStudio(name: .gray, shade: .shade80)
-        )
+        static var noRevenueLineColor = Color(.listForeground(modal: false))
         static var chartLineColor = Color(
             light: .withColorStudio(name: .wooCommercePurple, shade: .shade50),
             dark: .withColorStudio(name: .wooCommercePurple, shade: .shade30)
@@ -175,6 +190,11 @@ private extension StoreStatsChart {
         )
         static let chartGradientBottomColor = Color.clear
         static let chartPadding: CGFloat = 8
+
+        enum EmptyChartOverlay {
+            static let opacity: CGFloat = 0.5
+            static let bottomPadding: CGFloat = 32
+        }
     }
 }
 

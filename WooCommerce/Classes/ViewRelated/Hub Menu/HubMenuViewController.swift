@@ -7,15 +7,19 @@ final class HubMenuViewController: UIHostingController<HubMenu> {
     private let viewModel: HubMenuViewModel
     private let tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker
 
+    private var storePickerCoordinator: StorePickerCoordinator?
+
     init(siteID: Int64,
          navigationController: UINavigationController?,
          tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker) {
         self.viewModel = HubMenuViewModel(siteID: siteID,
-                                          navigationController: navigationController,
                                           tapToPayBadgePromotionChecker: tapToPayBadgePromotionChecker)
         self.tapToPayBadgePromotionChecker = tapToPayBadgePromotionChecker
         super.init(rootView: HubMenu(viewModel: viewModel))
         configureTabBarItem()
+        rootView.switchStoreHandler = { [weak self] in
+            self?.presentSwitchStore()
+        }
     }
 
     required dynamic init?(coder aDecoder: NSCoder) {
@@ -35,12 +39,11 @@ final class HubMenuViewController: UIHostingController<HubMenu> {
     }
 
     func showPaymentsMenu() {
-        viewModel.showingPayments = true
+        viewModel.showPayments()
     }
 
     func showCoupons() {
-        let enhancedCouponListViewController = EnhancedCouponListViewController(siteID: viewModel.siteID)
-        show(enhancedCouponListViewController, sender: self)
+        viewModel.showingCoupons = true
     }
 
     /// Pushes the Settings & Privacy screen onto the navigation stack.
@@ -73,6 +76,17 @@ final class HubMenuViewController: UIHostingController<HubMenu> {
 
         if #available(iOS 16.0, *) {
             self.navigationController?.setNavigationBarHidden(false, animated: animated)
+        }
+    }
+}
+
+private extension HubMenuViewController {
+    /// Present the `StorePickerViewController` using the `StorePickerCoordinator`, passing the navigation controller from the entry point.
+    ///
+    func presentSwitchStore() {
+        if let navigationController = navigationController {
+            storePickerCoordinator = StorePickerCoordinator(navigationController, config: .switchingStores)
+            storePickerCoordinator?.start()
         }
     }
 }

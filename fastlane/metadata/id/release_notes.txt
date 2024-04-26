@@ -1,1 +1,2 @@
-Terhubung dengan pelanggan melalui WhatsApp dan Telegram secara mudah langsung dari pesanan pelanggan! Selain itu, sederhanakan alur kerja Anda dengan penyaringan pesanan berdasarkan produk baru. Kerjakan banyak tugas sekaligus secara lebih optimal dengan dukungan tampilan terpisah di tab Produk dan sesuaikan dasbor analitik dengan kebutuhan Anda di Hub Analitik versi terbaru. Perbarui sekarang untuk menikmati layanan WooCommerce yang lebih lancar dan personal!
+Mengatasi bug pada tombol "Reset Aktivitas Log" agar tombol dapat berfungsi dengan benar dan log aktivitas terhapus hingga bersih. Nikmati pengalaman WooCommerce yang lebih lancar. Perbarui sekarang!
+

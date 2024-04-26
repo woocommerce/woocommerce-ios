@@ -43,6 +43,12 @@ extension UIImage {
         return UIImage(named: "AppIcon60x60")!
     }
 
+    /// Bell icon
+    ///
+    static var bell: UIImage {
+        UIImage(named: "bell")!
+    }
+
     /// Blaze icon
     ///
     static var blaze: UIImage {
@@ -110,6 +116,12 @@ extension UIImage {
         return UIImage.gridicon(.camera)
             .imageFlippedForRightToLeftLayoutDirection()
             .withTintColor(.placeholderImage)
+    }
+
+    /// Cash register image
+    ///
+    static var cashRegisterImage: UIImage {
+        return UIImage(named: "cash-register")!
     }
 
     /// Product categories Icon
@@ -587,12 +599,6 @@ extension UIImage {
     ///
     static var getPaidImage: UIImage {
         UIImage(named: "icon-get-paid")!
-    }
-
-    /// Set store name image
-    ///
-    static var setStoreNameImage: UIImage {
-        UIImage(systemName: "pencil.circle")!
     }
 
     /// Store summary image used in the store creation flow.
@@ -1238,6 +1244,12 @@ extension UIImage {
         return UIImage(imageLiteralResourceName: "woo-no-store").imageFlippedForRightToLeftLayoutDirection()
     }
 
+    /// No connection image
+    ///
+    static var noConnectionImage: UIImage {
+        UIImage(imageLiteralResourceName: "connection-icon")
+    }
+
     /// Upgrade plan error
     ///
     static var planUpgradeError: UIImage {
@@ -1507,6 +1519,18 @@ extension UIImage {
 
     static var appPasswordTutorialImage: UIImage {
         UIImage(named: "app-password-tutorial-1")!
+    }
+
+    static var exclamationFilledImage: UIImage {
+        UIImage(systemName: "exclamationmark.circle.fill", withConfiguration: Configurations.barButtonItemSymbol)!.withRenderingMode(.alwaysTemplate)
+    }
+
+    static var exclamationImage: UIImage {
+        UIImage(systemName: "exclamationmark.circle", withConfiguration: Configurations.barButtonItemSymbol)!.withRenderingMode(.alwaysTemplate)
+    }
+
+    static var magnifyingGlassNotFound: UIImage {
+        UIImage(imageLiteralResourceName: "magnifying-glass-not-found")
     }
 }
 

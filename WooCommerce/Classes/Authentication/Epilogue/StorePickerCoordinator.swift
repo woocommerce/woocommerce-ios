@@ -87,35 +87,6 @@ extension StorePickerCoordinator: StorePickerViewControllerDelegate {
             self?.onDismiss?()
         }
     }
-
-    func createStore() {
-        let source: StoreCreationCoordinator.Source
-        switch selectedConfiguration {
-        case .storeCreationFromLogin(let loggedOutSource):
-            source = .loggedOut(source: loggedOutSource)
-        default:
-            source = .storePicker
-        }
-
-        switch selectedConfiguration.presentationStyle {
-        case .fullscreen:
-            // The store picker was presented modally in fullscreen, and thus we need to present the
-            // store creation flow on top of the store picker instead of the store picker's navigation controller
-            // (invisible behind the store picker).
-            guard let presentedNavigationController = navigationController.topmostPresentedViewController as? UINavigationController else {
-                return
-            }
-            let coordinator = StoreCreationCoordinator(source: source,
-                                                       navigationController: presentedNavigationController)
-            self.storeCreationCoordinator = coordinator
-            coordinator.start()
-        case .modally, .navigationStack:
-            let coordinator = StoreCreationCoordinator(source: source,
-                                                       navigationController: navigationController)
-            self.storeCreationCoordinator = coordinator
-            coordinator.start()
-        }
-    }
 }
 
 // MARK: - Private Helpers

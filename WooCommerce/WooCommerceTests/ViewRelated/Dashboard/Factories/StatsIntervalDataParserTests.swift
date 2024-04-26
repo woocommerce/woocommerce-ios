@@ -16,7 +16,7 @@ final class StatsIntervalDataParserTests: XCTestCase {
                                                   ])
 
         // When
-        let totalRevenueData = StatsIntervalDataParser.getChartData(for: .totalRevenue, from: orderStats)
+        let totalRevenueData = StatsIntervalDataParser.getChartData(for: .grossRevenue, from: orderStats)
 
         // Then
         XCTAssertEqual(totalRevenueData, [31, 25])
@@ -52,7 +52,7 @@ final class StatsIntervalDataParserTests: XCTestCase {
                                                   ])
 
         // When
-        let orderCountData = StatsIntervalDataParser.getChartData(for: .orderCount, from: orderStats)
+        let orderCountData = StatsIntervalDataParser.getChartData(for: .totalOrders, from: orderStats)
 
         // Then
         XCTAssertEqual(orderCountData, [2, 1])

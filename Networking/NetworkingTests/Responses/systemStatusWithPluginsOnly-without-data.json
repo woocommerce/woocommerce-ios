@@ -5,9 +5,9 @@
             "name":"WooCommerce",
             "version":"5.8.0",
             "version_latest":"5.8.0",
-            "url":"https:\/\/woo.com\/",
+            "url":"https:\/\/woocommerce.com\/",
             "author_name":"Automattic",
-            "author_url":"https:\/\/woo.com",
+            "author_url":"https:\/\/woocommerce.com",
             "network_activated":false
         }
     ],

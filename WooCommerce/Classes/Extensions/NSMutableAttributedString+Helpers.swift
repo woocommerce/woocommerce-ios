@@ -58,4 +58,15 @@ extension NSMutableAttributedString {
         }
 
     }
+
+    /// Highlight the given substring (case insensitive). It does nothing if the given substring cannot be found in the original string.
+    ///
+    func highlightSubstring(textToFind: String, with color: UIColor = .accent) {
+        let range = mutableString.range(of: textToFind, options: .caseInsensitive)
+        if range.location != NSNotFound {
+            addAttribute(.foregroundColor,
+                         value: color.cgColor,
+                         range: range)
+        }
+    }
 }

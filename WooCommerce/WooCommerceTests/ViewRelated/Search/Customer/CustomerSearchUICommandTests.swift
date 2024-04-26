@@ -98,7 +98,7 @@ final class CustomerSearchUICommandTests: XCTestCase {
 
         var invocationCount = 0
         stores.whenReceivingAction(ofType: CustomerAction.self) { action in
-            guard case let .synchronizeLightCustomersData(_, _, _, onCompletion) = action else {
+            guard case let .synchronizeLightCustomersData(_, _, _, _, _, _, onCompletion) = action else {
                 return XCTFail("Unexpected action: \(action)")
             }
             invocationCount += 1

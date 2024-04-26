@@ -349,26 +349,6 @@ final class StoresManagerTests: XCTestCase {
         XCTAssertNil(defaults[UserDefaults.Key.completedAllStoreOnboardingTasks])
     }
 
-    func test_updating_default_storeID_sets_shouldHideStoreOnboardingTaskList_to_nil() throws {
-        // Given
-        let uuid = UUID().uuidString
-        let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
-        let mockSessionManager = MockSessionManager()
-        let sut = DefaultStoresManager(sessionManager: mockSessionManager, defaults: defaults)
-
-        // When
-        defaults[UserDefaults.Key.shouldHideStoreOnboardingTaskList] = true
-
-        // Then
-        XCTAssertTrue(try XCTUnwrap(defaults[UserDefaults.Key.shouldHideStoreOnboardingTaskList] as? Bool))
-
-        // When
-        sut.updateDefaultStore(storeID: 0)
-
-        // Then
-        XCTAssertNil(defaults[UserDefaults.Key.shouldHideStoreOnboardingTaskList])
-    }
-
     func test_updating_default_storeID_sets_usedProductDescriptionAI_to_nil() throws {
         // Given
         let uuid = UUID().uuidString
@@ -475,6 +455,7 @@ final class StoresManagerTests: XCTestCase {
         // Given
         let sessionManager = SessionManager.makeForTesting(defaultSite: Site.fake().copy(siteID: 123))
         let manager = DefaultStoresManager(sessionManager: sessionManager)
+        manager.initializeAfterDependenciesAreInitialized()
 
         // Then
         XCTAssertFalse(manager.isAuthenticated)

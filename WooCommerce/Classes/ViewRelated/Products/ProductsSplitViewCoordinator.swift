@@ -61,6 +61,10 @@ final class ProductsSplitViewCoordinator: NSObject {
             showEmptyViewOrFirstProduct()
         }
     }
+
+    func startProductCreation() {
+        productsViewController.startProductCreation()
+    }
 }
 
 private extension ProductsSplitViewCoordinator {
@@ -70,6 +74,23 @@ private extension ProductsSplitViewCoordinator {
                 showProductFormIfNoUnsavedChanges(product: product)
             case let .addProduct(sourceView, isFirstProduct):
                 startProductCreationIfNoUnsavedChanges(sourceView: sourceView, isFirstProduct: isFirstProduct)
+            case .search:
+                let searchCommand = ProductSearchUICommand(siteID: siteID, onProductSelection: { [weak self] product in
+                    self?.showProductFormIfNoUnsavedChanges(product: product)
+                }, onCancel: { [weak self] in
+                    guard let self else { return }
+                    primaryNavigationController.viewControllers = [productsViewController]
+                    primaryNavigationController.setNavigationBarHidden(false, animated: true)
+                })
+                let searchViewController = SearchViewController(storeID: siteID,
+                                                                command: searchCommand,
+                                                                cellType: ProductsTabProductTableViewCell.self,
+                                                                cellSeparator: .none,
+                                                                selectedObject: selectedProduct,
+                                                                isSelectedObject: {
+                    $0.productID == $1?.productID
+                })
+                primaryNavigationController.viewControllers = [searchViewController]
         }
     }
 }
@@ -165,7 +186,16 @@ private extension ProductsSplitViewCoordinator {
 
     func showEmptyViewOrFirstProduct() {
         showEmptyView()
-        productsViewController.selectFirstProductIfAvailable()
+        switch primaryNavigationController.topViewController {
+            case let productsViewController as ProductsViewController:
+                productsViewController.selectFirstProductIfAvailable()
+            case let productSearchViewController as SearchViewController<ProductsTabProductTableViewCell, ProductSearchUICommand>:
+                productSearchViewController.selectFirstObjectIfAvailable()
+            case let .some(viewController):
+                assertionFailure("Unexpected type for the products tab primary view controller: \(viewController)")
+            case .none:
+                break
+        }
     }
 }
 
@@ -233,8 +263,10 @@ private extension ProductsSplitViewCoordinator {
     /// - The view controller to show in the primary navigation stack is the product list
     func willNavigateFromTheLastSecondaryViewControllerToProductListInCollapsedMode(_ navigationController: UINavigationController,
                                                                                     willShow viewController: UIViewController) -> Bool {
-        splitViewController.isCollapsed && navigationController == primaryNavigationController
-            && contentTypes.isNotEmpty && viewController == productsViewController
+        let isNavigatingToProductList = viewController == productsViewController ||
+        viewController is SearchViewController<ProductsTabProductTableViewCell, ProductSearchUICommand>
+        return splitViewController.isCollapsed && navigationController == primaryNavigationController
+            && contentTypes.isNotEmpty && isNavigatingToProductList
     }
 }
 

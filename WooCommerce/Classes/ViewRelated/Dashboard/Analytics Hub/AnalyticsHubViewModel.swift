@@ -2,6 +2,7 @@ import Foundation
 import Yosemite
 import Combine
 import class UIKit.UIColor
+import protocol Storage.StorageManagerType
 
 /// Main View Model for the Analytics Hub.
 ///
@@ -9,13 +10,9 @@ final class AnalyticsHubViewModel: ObservableObject {
 
     private let siteID: Int64
     private let stores: StoresManager
+    private let storage: StorageManagerType
     private let timeZone: TimeZone
     private let analytics: Analytics
-    private let noticePresenter: NoticePresenter
-
-    /// Delay to allow the backend to process enabling the Jetpack Stats module.
-    /// Defaults to 0.5 seconds.
-    private let backendProcessingDelay: UInt64
 
     private var subscriptions = Set<AnyCancellable>()
 
@@ -32,19 +29,17 @@ final class AnalyticsHubViewModel: ObservableObject {
          statsTimeRange: StatsTimeRangeV4,
          usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter,
          stores: StoresManager = ServiceLocator.stores,
-         analytics: Analytics = ServiceLocator.analytics,
-         noticePresenter: NoticePresenter = ServiceLocator.noticePresenter,
-         backendProcessingDelay: UInt64 = 500_000_000) {
+         storage: StorageManagerType = ServiceLocator.storageManager,
+         analytics: Analytics = ServiceLocator.analytics) {
         let selectedType = AnalyticsHubTimeRangeSelection.SelectionType(statsTimeRange)
         let timeRangeSelection = AnalyticsHubTimeRangeSelection(selectionType: selectedType, timezone: timeZone)
 
         self.siteID = siteID
         self.timeZone = timeZone
         self.stores = stores
+        self.storage = storage
         self.userIsAdmin = stores.sessionManager.defaultRoles.contains(.administrator)
         self.analytics = analytics
-        self.noticePresenter = noticePresenter
-        self.backendProcessingDelay = backendProcessingDelay
         self.timeRangeSelectionType = selectedType
         self.timeRangeSelection = timeRangeSelection
         self.timeRangeCard = AnalyticsHubViewModel.timeRangeCard(timeRangeSelection: timeRangeSelection,
@@ -60,45 +55,75 @@ final class AnalyticsHubViewModel: ObservableObject {
 
     /// Revenue Card ViewModel
     ///
-    lazy var revenueCard: RevenueReportCardViewModel = {
+    var revenueCard: RevenueReportCardViewModel {
         RevenueReportCardViewModel(currentPeriodStats: currentOrderStats,
                                    previousPeriodStats: previousOrderStats,
                                    timeRange: timeRangeSelectionType,
-                                   usageTracksEventEmitter: usageTracksEventEmitter,
-                                   storeAdminURL: stores.sessionManager.defaultSite?.adminURL)
-    }()
+                                   isRedacted: isLoadingOrderStats,
+                                   usageTracksEventEmitter: usageTracksEventEmitter)
+    }
 
     /// Orders Card ViewModel
     ///
-    lazy var ordersCard: OrdersReportCardViewModel = {
+    var ordersCard: OrdersReportCardViewModel {
         OrdersReportCardViewModel(currentPeriodStats: currentOrderStats,
                                   previousPeriodStats: previousOrderStats,
                                   timeRange: timeRangeSelectionType,
-                                  usageTracksEventEmitter: usageTracksEventEmitter,
-                                  storeAdminURL: stores.sessionManager.defaultSite?.adminURL)
-    }()
+                                  isRedacted: isLoadingOrderStats,
+                                  usageTracksEventEmitter: usageTracksEventEmitter)
+    }
 
     /// Products Stats Card ViewModel
     ///
-    lazy var productsStatsCard: AnalyticsProductsStatsCardViewModel = {
+    var productsStatsCard: AnalyticsProductsStatsCardViewModel {
         AnalyticsProductsStatsCardViewModel(currentPeriodStats: currentOrderStats,
                                             previousPeriodStats: previousOrderStats,
                                             timeRange: timeRangeSelectionType,
-                                            usageTracksEventEmitter: usageTracksEventEmitter,
-                                            storeAdminURL: stores.sessionManager.defaultSite?.adminURL)
-    }()
+                                            isRedacted: isLoadingOrderStats,
+                                            usageTracksEventEmitter: usageTracksEventEmitter)
+    }
 
     /// Items Sold Card ViewModel
     ///
-    lazy var itemsSoldCard = {
-        AnalyticsItemsSoldViewModel(itemsSoldStats: itemsSoldStats)
-    }()
+    var itemsSoldCard: AnalyticsItemsSoldViewModel {
+        AnalyticsItemsSoldViewModel(itemsSoldStats: itemsSoldStats,
+                                    isRedacted: isLoadingItemsSoldStats)
+    }
 
     /// Sessions Card ViewModel
     ///
-    lazy var sessionsCard: SessionsReportCardViewModel = {
-        SessionsReportCardViewModel(currentOrderStats: currentOrderStats, siteStats: siteStats)
-    }()
+    var sessionsCard: SessionsReportCardViewModel {
+        SessionsReportCardViewModel(siteID: siteID,
+                                    currentOrderStats: currentOrderStats,
+                                    siteStats: siteStats,
+                                    timeRange: timeRangeSelectionType,
+                                    isJetpackStatsDisabled: isJetpackStatsDisabled,
+                                    isRedacted: isLoadingOrderStats || isLoadingSiteStats,
+                                    updateSiteStatsData: { [weak self] in
+            await self?.updateData(for: [.sessions])
+        })
+    }
+
+    /// Product Bundles Card ViewModel
+    ///
+    var bundlesCard: AnalyticsBundlesReportCardViewModel {
+        AnalyticsBundlesReportCardViewModel(currentPeriodStats: currentBundleStats,
+                                            previousPeriodStats: previousBundleStats,
+                                            bundlesSoldReport: bundlesSoldStats,
+                                            timeRange: timeRangeSelectionType,
+                                            isRedacted: isLoadingBundleStats,
+                                            usageTracksEventEmitter: usageTracksEventEmitter)
+    }
+
+    /// Gift Cards Card ViewModel
+    ///
+    var giftCardsCard: GiftCardsReportCardViewModel {
+        GiftCardsReportCardViewModel(currentPeriodStats: currentGiftCardStats,
+                                     previousPeriodStats: previousGiftCardStats,
+                                     timeRange: timeRangeSelectionType,
+                                     isRedacted: isLoadingGiftCardStats,
+                                     usageTracksEventEmitter: usageTracksEventEmitter)
+    }
 
     /// View model for `AnalyticsHubCustomizeView`, to customize the cards in the Analytics Hub.
     ///
@@ -117,22 +142,24 @@ final class AnalyticsHubViewModel: ObservableObject {
     /// All analytics cards to display in the Analytics Hub.
     ///
     var enabledCards: [AnalyticsCard.CardType] {
-        return allCardsWithSettings.filter { card in
-            let canBeDisplayed = card.type == .sessions ? showSessionsCard : true
-            return card.enabled && canBeDisplayed
-        }.map { $0.type }
+        return allCardsWithSettings.compactMap { card in
+            guard card.enabled, canDisplayCard(ofType: card.type) else {
+                return nil
+            }
+            return card.type
+        }
     }
 
-    /// Sessions Card display state
-    ///
-    private var showSessionsCard: Bool {
-        guard isEligibleForSessionsCard else {
-            return false
-        }
-        if case .custom = timeRangeSelectionType {
-            return false
-        } else {
-            return true
+    private func canDisplayCard(ofType card: AnalyticsCard.CardType) -> Bool {
+        switch card {
+        case .sessions:
+            isEligibleForSessionsCard
+        case .bundles:
+            isPluginActive(SitePlugin.SupportedPlugin.WCProductBundles)
+        case .giftCards:
+            isPluginActive(SitePlugin.SupportedPlugin.WCGiftCards)
+        default:
+            true
         }
     }
 
@@ -147,12 +174,6 @@ final class AnalyticsHubViewModel: ObservableObject {
     /// Whether Jetpack Stats are disabled on the store
     ///
     private var isJetpackStatsDisabled = false
-
-    /// Whether to show the call to action to enable Jetpack Stats
-    ///
-    var showJetpackStatsCTA: Bool {
-        isJetpackStatsDisabled && userIsAdmin
-    }
 
     /// Defines a notice that, when set, dismisses the view and is then displayed.
     /// Defaults to `nil`.
@@ -182,9 +203,62 @@ final class AnalyticsHubViewModel: ObservableObject {
     ///
     @Published private var siteStats: SiteSummaryStats? = nil
 
+    /// Product bundle stats for the current selected time period. Used in the bundles card.
+    ///
+    @Published private var currentBundleStats: ProductBundleStats? = nil
+
+    /// Product bundle stats for the previous selected time period. Used in the bundles card.
+    ///
+    @Published private var previousBundleStats: ProductBundleStats? = nil
+
+    /// Stats fo the current top bundles sold. Used in the bundles card.
+    ///
+    @Published private var bundlesSoldStats: [ProductsReportItem]? = nil
+
+    /// Gift card stats for the current selected time period. Used in the gift cards card.
+    ///
+    @Published private var currentGiftCardStats: GiftCardStats? = nil
+
+    /// Gift card stats for the previous selected time period. Used in the gift cards card.
+    ///
+    @Published private var previousGiftCardStats: GiftCardStats? = nil
+
+    /// Loading state for order stats.
+    ///
+    @Published private var isLoadingOrderStats = false
+
+    /// Loading state for items sold stats.
+    ///
+    @Published private var isLoadingItemsSoldStats = false
+
+    /// Loading state for site stats.
+    ///
+    @Published private var isLoadingSiteStats = false
+
+    /// Loading state for bundle stats.
+    ///
+    @Published private var isLoadingBundleStats = false
+
+    /// Loading stats for gift card stats.
+    ///
+    @Published private var isLoadingGiftCardStats = false
+
     /// Time Range selection data defining the current and previous time period
     ///
     private var timeRangeSelection: AnalyticsHubTimeRangeSelection
+
+    /// Names of the active plugins on the store.
+    ///
+    private lazy var activePlugins: [String] = {
+        let predicate = NSPredicate(format: "siteID == %lld && active == true", siteID)
+        let resultsController = ResultsController<StorageSystemPlugin>(storageManager: storage, matching: predicate, sortedBy: [])
+        do {
+            try resultsController.performFetch()
+        } catch {
+            DDLogError("⛔️ Error fetching active plugins for Analytics Hub")
+        }
+        return resultsController.fetchedObjects.map { $0.name }
+    }()
 
     /// Request stats data from network
     /// - Parameter cards: Optionally limit the request to only the stats needed for a given set of cards.
@@ -211,23 +285,6 @@ final class AnalyticsHubViewModel: ObservableObject {
     func trackAnalyticsInteraction() {
         usageTracksEventEmitter.interacted()
     }
-
-    /// Enables the Jetpack Status module on the store and requests new stats data
-    ///
-    @MainActor
-    func enableJetpackStats() async {
-        analytics.track(event: .AnalyticsHub.jetpackStatsCTATapped())
-
-        do {
-            try await remoteEnableJetpackStats()
-            // Wait for backend to enable the module (it is not ready for stats to be requested immediately after a success response)
-            try await Task.sleep(nanoseconds: backendProcessingDelay)
-            await updateData(for: [.sessions])
-        } catch {
-            noticePresenter.enqueue(notice: .init(title: Localization.statsCTAError))
-            DDLogError("⚠️ Error enabling Jetpack Stats: \(error)")
-        }
-    }
 }
 
 // MARK: Networking
@@ -235,8 +292,6 @@ private extension AnalyticsHubViewModel {
 
     @MainActor
     func retrieveData(for cards: [AnalyticsCard.CardType]) async throws {
-        switchToLoadingState(cards)
-
         let currentTimeRange = try timeRangeSelection.unwrapCurrentTimeRange()
         let previousTimeRange = try timeRangeSelection.unwrapPreviousTimeRange()
 
@@ -259,11 +314,28 @@ private extension AnalyticsHubViewModel {
                 }
                 await self.retrieveSiteStats(currentTimeRange: currentTimeRange)
             }
+            group.addTask {
+                guard cards.contains(.bundles) else {
+                    return
+                }
+                await self.retrieveBundleStats(currentTimeRange: currentTimeRange, previousTimeRange: previousTimeRange, timeZone: self.timeZone)
+            }
+            group.addTask {
+                guard cards.contains(.giftCards) else {
+                    return
+                }
+                await self.retrieveGiftCardStats(currentTimeRange: currentTimeRange, previousTimeRange: previousTimeRange, timeZone: self.timeZone)
+            }
         }
     }
 
     @MainActor
     func retrieveOrderStats(currentTimeRange: AnalyticsHubTimeRange, previousTimeRange: AnalyticsHubTimeRange, timeZone: TimeZone) async {
+        isLoadingOrderStats = true
+        defer {
+            isLoadingOrderStats = false
+        }
+
         async let currentPeriodRequest = retrieveStats(timeZone: timeZone,
                                                        earliestDateToInclude: currentTimeRange.start,
                                                        latestDateToInclude: currentTimeRange.end,
@@ -281,6 +353,11 @@ private extension AnalyticsHubViewModel {
 
     @MainActor
     func retrieveItemsSoldStats(currentTimeRange: AnalyticsHubTimeRange, previousTimeRange: AnalyticsHubTimeRange) async {
+        isLoadingItemsSoldStats = true
+        defer {
+            isLoadingItemsSoldStats = false
+        }
+
         async let itemsSoldRequest = retrieveTopItemsSoldStats(earliestDateToInclude: currentTimeRange.start,
                                                                latestDateToInclude: currentTimeRange.end,
                                                                forceRefresh: true)
@@ -291,6 +368,11 @@ private extension AnalyticsHubViewModel {
     @MainActor
     func retrieveSiteStats(currentTimeRange: AnalyticsHubTimeRange) async {
         isJetpackStatsDisabled = false // Reset optimistically in case stats were enabled
+        isLoadingSiteStats = true
+        defer {
+            isLoadingSiteStats = false
+        }
+
         async let siteStatsRequest = retrieveSiteSummaryStats(latestDateToInclude: currentTimeRange.end)
 
         do {
@@ -298,14 +380,59 @@ private extension AnalyticsHubViewModel {
         } catch SiteStatsStoreError.statsModuleDisabled {
             self.isJetpackStatsDisabled = true
             self.siteStats = nil
-            if showJetpackStatsCTA {
-                analytics.track(event: .AnalyticsHub.jetpackStatsCTAShown())
-            }
             DDLogError("⚠️ Analytics Hub Sessions card can't be loaded: Jetpack stats are disabled")
         } catch {
             self.siteStats = nil
             DDLogError("⚠️ Analytics Hub Sessions card can't be loaded: \(error)")
         }
+    }
+
+    @MainActor
+    func retrieveBundleStats(currentTimeRange: AnalyticsHubTimeRange, previousTimeRange: AnalyticsHubTimeRange, timeZone: TimeZone) async {
+        isLoadingBundleStats = true
+        defer {
+            isLoadingBundleStats = false
+        }
+
+        async let currentPeriodRequest = retrieveBundleStats(timeZone: timeZone,
+                                                             earliestDateToInclude: currentTimeRange.start,
+                                                             latestDateToInclude: currentTimeRange.end,
+                                                             forceRefresh: true)
+        async let previousPeriodRequest = retrieveBundleStats(timeZone: timeZone,
+                                                              earliestDateToInclude: previousTimeRange.start,
+                                                              latestDateToInclude: previousTimeRange.end,
+                                                              forceRefresh: true)
+        async let bundlesSoldRequest = retrieveTopBundlesSoldStats(earliestDateToInclude: currentTimeRange.start,
+                                                                   latestDateToInclude: currentTimeRange.end,
+                                                                   forceRefresh: true)
+
+        let allStats: (currentPeriodStats: ProductBundleStats, previousPeriodStats: ProductBundleStats, bundlesSold: [ProductsReportItem])?
+        allStats = try? await (currentPeriodRequest, previousPeriodRequest, bundlesSoldRequest)
+        self.currentBundleStats = allStats?.currentPeriodStats
+        self.previousBundleStats = allStats?.previousPeriodStats
+        self.bundlesSoldStats = allStats?.bundlesSold
+    }
+
+    @MainActor
+    func retrieveGiftCardStats(currentTimeRange: AnalyticsHubTimeRange, previousTimeRange: AnalyticsHubTimeRange, timeZone: TimeZone) async {
+        isLoadingGiftCardStats = true
+        defer {
+            isLoadingGiftCardStats = false
+        }
+
+        async let currentPeriodRequest = retrieveGiftCardStats(timeZone: timeZone,
+                                                               earliestDateToInclude: currentTimeRange.start,
+                                                               latestDateToInclude: currentTimeRange.end,
+                                                               forceRefresh: true)
+        async let previousPeriodRequest = retrieveGiftCardStats(timeZone: timeZone,
+                                                                earliestDateToInclude: previousTimeRange.start,
+                                                                latestDateToInclude: previousTimeRange.end,
+                                                                forceRefresh: true)
+
+        let allStats: (currentPeriodStats: GiftCardStats, previousPeriodStats: GiftCardStats)?
+        allStats = try? await (currentPeriodRequest, previousPeriodRequest)
+        self.currentGiftCardStats = allStats?.currentPeriodStats
+        self.previousGiftCardStats = allStats?.previousPeriodStats
     }
 
     @MainActor
@@ -369,46 +496,73 @@ private extension AnalyticsHubViewModel {
     }
 
     @MainActor
-    /// Makes the remote request to enable the Jetpack Stats module on the site.
+    /// Retrieves product bundle stats using the `retrieveProductBundleStats` action.
     ///
-    func remoteEnableJetpackStats() async throws {
+    func retrieveBundleStats(timeZone: TimeZone,
+                             earliestDateToInclude: Date,
+                             latestDateToInclude: Date,
+                             forceRefresh: Bool) async throws -> ProductBundleStats {
         try await withCheckedThrowingContinuation { continuation in
-            let action = JetpackSettingsAction.enableJetpackModule(.stats, siteID: siteID) { [weak self] result in
-                switch result {
-                case .success:
-                    self?.isJetpackStatsDisabled = false
-                    self?.analytics.track(event: .AnalyticsHub.enableJetpackStatsSuccess())
-                    continuation.resume()
-                case let .failure(error):
-                    self?.isJetpackStatsDisabled = true
-                    self?.analytics.track(event: .AnalyticsHub.enableJetpackStatsFailed(error: error))
-                    continuation.resume(throwing: error)
-                }
+            let action = StatsActionV4.retrieveProductBundleStats(siteID: siteID,
+                                                                  unit: timeRangeSelectionType.granularity,
+                                                                  timeZone: timeZone,
+                                                                  earliestDateToInclude: earliestDateToInclude,
+                                                                  latestDateToInclude: latestDateToInclude,
+                                                                  quantity: timeRangeSelectionType.intervalSize,
+                                                                  forceRefresh: forceRefresh) { result in
+                continuation.resume(with: result)
             }
             stores.dispatch(action)
         }
+    }
+
+    @MainActor
+    /// Retrieves top bundles sold stats using the `retrieveTopProductBundles` action.
+    ///
+    func retrieveTopBundlesSoldStats(earliestDateToInclude: Date, latestDateToInclude: Date, forceRefresh: Bool) async throws -> [ProductsReportItem] {
+        return try await withCheckedThrowingContinuation { continuation in
+            let action = StatsActionV4.retrieveTopProductBundles(siteID: siteID,
+                                                                 timeZone: timeZone,
+                                                                 earliestDateToInclude: earliestDateToInclude,
+                                                                 latestDateToInclude: latestDateToInclude,
+                                                                 quantity: Constants.maxNumberOfTopItemsSold) { result in
+                continuation.resume(with: result)
+            }
+            stores.dispatch(action)
+        }
+    }
+
+    @MainActor
+    /// Retrieves gift card stats using the `retrieveUsedGiftCardStats` action.
+    ///
+    func retrieveGiftCardStats(timeZone: TimeZone,
+                               earliestDateToInclude: Date,
+                               latestDateToInclude: Date,
+                               forceRefresh: Bool) async throws -> GiftCardStats {
+        try await withCheckedThrowingContinuation { continuation in
+            let action = StatsActionV4.retrieveUsedGiftCardStats(siteID: siteID,
+                                                                 unit: timeRangeSelectionType.granularity,
+                                                                 timeZone: timeZone,
+                                                                 earliestDateToInclude: earliestDateToInclude,
+                                                                 latestDateToInclude: latestDateToInclude,
+                                                                 quantity: timeRangeSelectionType.intervalSize,
+                                                                 forceRefresh: forceRefresh) { result in
+                continuation.resume(with: result)
+            }
+            stores.dispatch(action)
+        }
+    }
+
+    /// Helper function that returns `true` in its callback if the provided plugin name is active on the  store.
+    ///
+    /// - Parameter plugin: A list of names for the plugin (provide all possible names for plugins that have changed names).
+    private func isPluginActive(_ plugin: [String]) -> Bool {
+        activePlugins.contains(where: plugin.contains)
     }
 }
 
 // MARK: Data - UI mapping
 private extension AnalyticsHubViewModel {
-
-    @MainActor
-    func switchToLoadingState(_ cards: [AnalyticsCard.CardType]) {
-        cards.forEach { card in
-            switch card {
-            case .revenue:
-                self.revenueCard.redact()
-            case .orders:
-                self.ordersCard.redact()
-            case .products:
-                self.productsStatsCard.redact()
-                self.itemsSoldCard.redact()
-            case .sessions:
-                self.sessionsCard.redact()
-            }
-        }
-    }
 
     @MainActor
     func switchToErrorState() {
@@ -419,30 +573,6 @@ private extension AnalyticsHubViewModel {
     }
 
     func bindViewModelsWithData() {
-        Publishers.CombineLatest($currentOrderStats, $previousOrderStats)
-            .sink { [weak self] currentOrderStats, previousOrderStats in
-                guard let self else { return }
-
-                self.revenueCard.update(currentPeriodStats: currentOrderStats, previousPeriodStats: previousOrderStats)
-                self.ordersCard.update(currentPeriodStats: currentOrderStats, previousPeriodStats: previousOrderStats)
-                self.productsStatsCard.update(currentPeriodStats: currentOrderStats, previousPeriodStats: previousOrderStats)
-
-            }.store(in: &subscriptions)
-
-        $itemsSoldStats
-            .sink { [weak self] itemsSoldStats in
-                guard let self else { return }
-
-                self.itemsSoldCard.update(itemsSoldStats: itemsSoldStats)
-            }.store(in: &subscriptions)
-
-        $currentOrderStats.zip($siteStats)
-            .sink { [weak self] (currentOrderStats, siteStats) in
-                guard let self else { return }
-
-                self.sessionsCard.update(currentOrderStats: currentOrderStats, siteStats: siteStats)
-            }.store(in: &subscriptions)
-
         $timeRangeSelectionType
             .dropFirst() // do not trigger refresh action on initial value
             .removeDuplicates()
@@ -452,10 +582,6 @@ private extension AnalyticsHubViewModel {
                 self.timeRangeCard = AnalyticsHubViewModel.timeRangeCard(timeRangeSelection: self.timeRangeSelection,
                                                                          usageTracksEventEmitter: self.usageTracksEventEmitter,
                                                                          analytics: self.analytics)
-
-                self.revenueCard.update(timeRange: newSelectionType)
-                self.ordersCard.update(timeRange: newSelectionType)
-                self.productsStatsCard.update(timeRange: newSelectionType)
 
                 // Update data on range selection change
                 Task.init {
@@ -504,12 +630,23 @@ extension AnalyticsHubViewModel {
     ///
     @MainActor
     func loadAnalyticsCardSettings() async {
-        allCardsWithSettings = await withCheckedContinuation { continuation in
+        let storedCards = await withCheckedContinuation { continuation in
             let action = AppSettingsAction.loadAnalyticsHubCards(siteID: siteID) { cards in
-                continuation.resume(returning: cards ?? AnalyticsHubViewModel.defaultCards)
+                continuation.resume(returning: cards)
             }
             stores.dispatch(action)
         }
+
+        guard let storedCards else {
+            return allCardsWithSettings = AnalyticsHubViewModel.defaultCards
+        }
+
+        // Any new cards added to the analytics hub since the stored cards were saved.
+        let newCards = AnalyticsHubViewModel.defaultCards.filter { defaultCard in
+            !storedCards.contains(where: { $0.type == defaultCard.type })
+        }
+
+        allCardsWithSettings = storedCards + newCards
     }
 
     /// Sets analytics card settings in storage
@@ -523,14 +660,13 @@ extension AnalyticsHubViewModel {
     /// Setting this view model opens the view.
     ///
     func customizeAnalytics() {
-        // Exclude any cards the merchant/store is ineligible for.
-        let cardsToExclude: [AnalyticsCard] = [
-            isEligibleForSessionsCard ? nil : allCardsWithSettings.first(where: { $0.type == .sessions })
-        ].compactMap({ $0 })
+        // Identify any inactive cards (that can't be displayed in the Analytics Hub).
+        // Inactive cards are displayed in the customize list with a promo link but can't be customized.
+        let inactiveCards: [AnalyticsCard] = allCardsWithSettings.filter { !canDisplayCard(ofType: $0.type) }
 
         analytics.track(event: .AnalyticsHub.customizeAnalyticsOpened())
         customizeAnalyticsViewModel = AnalyticsHubCustomizeViewModel(allCards: allCardsWithSettings,
-                                                                     cardsToExclude: cardsToExclude) { [weak self] updatedCards in
+                                                                     inactiveCards: inactiveCards) { [weak self] updatedCards in
             guard let self else { return }
             self.allCardsWithSettings = updatedCards
             self.storeAnalyticsCardSettings(updatedCards)
@@ -547,9 +683,6 @@ private extension AnalyticsHubViewModel {
     enum Localization {
         static let timeRangeGeneratorError = NSLocalizedString("Sorry, something went wrong. We can't load analytics for the selected date range.",
                                                                comment: "Error shown when there is a problem retrieving the dates for the selected date range.")
-        static let statsCTAError = NSLocalizedString("analyticsHub.jetpackStatsCTA.errorNotice",
-                                                     value: "We couldn't enable Jetpack Stats on your store",
-                                                     comment: "Error shown when Jetpack Stats can't be enabled in the Analytics Hub.")
     }
 
     /// Set of enabled analytics cards in default order.

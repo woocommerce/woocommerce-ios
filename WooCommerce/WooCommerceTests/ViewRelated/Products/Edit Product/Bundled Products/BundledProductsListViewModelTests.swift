@@ -7,7 +7,7 @@ final class BundledProductsListViewModelTests: XCTestCase {
 
     private let sampleSiteID: Int64 = 12345
     private let sampleSKU = "product-sku"
-    private let sampleImage: Yosemite.ProductImage = .fake().copy(src: "https://woo.com/woo.jpg")
+    private let sampleImage: Yosemite.ProductImage = .fake().copy(src: "https://woocommerce.com/woocommerce.jpg")
 
     private var storageManager: StorageManagerType!
     private var storage: StorageType {
@@ -43,7 +43,7 @@ final class BundledProductsListViewModelTests: XCTestCase {
     func test_view_model_fetches_expected_product_properties_for_bundle_item() throws {
         // Given
         let bundleItem = ProductBundleItem.fake().copy(productID: 12)
-        let imageURL = URL(string: "https://woo.com/woo.jpg")
+        let imageURL = URL(string: "https://woocommerce.com/woocommerce.jpg")
         let product = Product.fake().copy(siteID: sampleSiteID, productID: 12, sku: sampleSKU, images: [.fake().copy(src: imageURL?.absoluteString)])
         insert(product)
 

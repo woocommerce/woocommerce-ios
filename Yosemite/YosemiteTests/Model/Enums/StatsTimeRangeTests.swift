@@ -53,11 +53,11 @@ final class StatsTimeRangeTests: XCTestCase {
         XCTAssertEqual(range.intervalGranularity, .weekly)
     }
 
-    func test_intervalGranularity_for_dates_with_days_difference_from_2_to_28() {
+    func test_intervalGranularity_for_dates_with_days_difference_from_1_to_28() {
         // Given
         // GMT: Saturday, February 1, 2020 12:29:29 AM
         let fromDate = Date(timeIntervalSince1970: 1580516969)
-        let toDate = fromDate.addingDays(Int.random(in: 2...28))
+        let toDate = fromDate.addingDays(Int.random(in: 1...28))
 
         // When
         let range: StatsTimeRangeV4 = .custom(from: fromDate, to: toDate)
@@ -66,14 +66,15 @@ final class StatsTimeRangeTests: XCTestCase {
         XCTAssertEqual(range.intervalGranularity, .daily)
     }
 
-    func test_intervalGranularity_for_dates_with_days_difference_less_than_2() {
+    func test_intervalGranularity_for_a_same_day_range() {
         // Given
-        // GMT: Saturday, February 1, 2020 12:29:29 AM
-        let fromDate = Date(timeIntervalSince1970: 1580516969)
-        let toDate = fromDate.addingDays(1)
+        // GMT: March 4 2024 00:00:00
+        let startDate = Date(timeIntervalSince1970: 1709510400)
+        // GMT: March 4 2024 23:59:59
+        let endDate = Date(timeIntervalSince1970: 1709596799)
 
         // When
-        let range: StatsTimeRangeV4 = .custom(from: fromDate, to: toDate)
+        let range: StatsTimeRangeV4 = .custom(from: startDate, to: endDate)
 
         // Then
         XCTAssertEqual(range.intervalGranularity, .hourly)
@@ -120,11 +121,11 @@ final class StatsTimeRangeTests: XCTestCase {
         XCTAssertEqual(range.siteVisitStatsGranularity, .week)
     }
 
-    func test_siteVisitStatsGranularity_for_dates_with_days_difference_from_2_to_28() {
+    func test_siteVisitStatsGranularity_for_dates_with_days_difference_from_1_to_28() {
         // Given
         // GMT: Saturday, February 1, 2020 12:29:29 AM
         let fromDate = Date(timeIntervalSince1970: 1580516969)
-        let toDate = fromDate.addingDays(Int.random(in: 2...28))
+        let toDate = fromDate.addingDays(Int.random(in: 1...28))
 
         // When
         let range: StatsTimeRangeV4 = .custom(from: fromDate, to: toDate)
@@ -133,14 +134,15 @@ final class StatsTimeRangeTests: XCTestCase {
         XCTAssertEqual(range.siteVisitStatsGranularity, .day)
     }
 
-    func test_siteVisitStatsGranularity_for_dates_with_days_difference_less_than_2() {
+    func test_siteVisitStatsGranularity_for_a_same_day_range() {
         // Given
-        // GMT: Saturday, February 1, 2020 12:29:29 AM
-        let fromDate = Date(timeIntervalSince1970: 1580516969)
-        let toDate = fromDate.addingDays(1)
+        // GMT: March 4 2024 00:00:00
+        let startDate = Date(timeIntervalSince1970: 1709510400)
+        // GMT: March 4 2024 23:59:59
+        let endDate = Date(timeIntervalSince1970: 1709596799)
 
         // When
-        let range: StatsTimeRangeV4 = .custom(from: fromDate, to: toDate)
+        let range: StatsTimeRangeV4 = .custom(from: startDate, to: endDate)
 
         // Then
         XCTAssertEqual(range.siteVisitStatsGranularity, .day)

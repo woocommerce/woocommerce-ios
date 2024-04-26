@@ -230,6 +230,12 @@ public extension StorageType {
         }
     }
 
+    func deleteWCAnalyticsCustomers(siteID: Int64) {
+        loadAllWCAnalyticsCustomers(siteID: siteID).forEach {
+            deleteObject($0)
+        }
+    }
+
     func deleteTaxRates(siteID: Int64) {
         loadTaxRates(siteID: siteID).forEach {
             deleteObject($0)

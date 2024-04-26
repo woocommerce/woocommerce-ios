@@ -18,6 +18,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .updateOrderOptimistically:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .shippingLabelsOnboardingM1:
+            // We need to adapt this functionality to the new Woo Shipping plugin before enabling it
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .searchProductsBySKU:
             return true
@@ -57,8 +58,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .readOnlyMinMaxQuantities:
             return true
-        case .storeCreationNotifications:
-            return true
         case .euShippingNotification:
             return true
         case .shareProductAI:
@@ -82,11 +81,17 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .scanToUpdateInventory:
             return true
         case .blazei3NativeCampaignCreation:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return true
         case .backendReceipts:
             return true
         case .splitViewInProductsTab:
             return true
+        case .customersInHubMenu:
+            return true
+        case .migrateSimplePaymentsToOrderCreation:
+            return true
+        case .subscriptionsInOrderCreationUI:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true
         }

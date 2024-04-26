@@ -29,7 +29,7 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
     @Published private(set) var description: String = ""
 
     // Budget details
-    private var startDate = Date.now
+    private var startDate = Date.now + 60 * 60 * 24 // Current date + 1 day
     private var dailyBudget = BlazeBudgetSettingViewModel.Constants.minimumDailyAmount
     private var duration = BlazeBudgetSettingViewModel.Constants.defaultDayCount
 
@@ -206,7 +206,9 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
                             startDate: startDate,
                             endDate: startDate.addingTimeInterval(Constants.oneDayInSeconds * Double(duration)),
                             timeZone: TimeZone.current.identifier,
-                            totalBudget: dailyBudget * Double(duration),
+                            budget: BlazeCampaignBudget(mode: .total,
+                                                        amount: dailyBudget * Double(duration),
+                                                        currency: Constants.defaultCurrency),
                             siteName: tagline,
                             textSnippet: description,
                             targetUrl: targetUrl,
@@ -312,7 +314,12 @@ extension BlazeCampaignCreationFormViewModel {
     @MainActor
     func downloadProductImage() async {
         isLoadingProductImage = true
-        image = await loadProductImage()
+        if let productImage = await loadProductImage(),
+           // Validate the image has expected dimensions
+           productImage.image.size.width * productImage.image.scale >= editAdViewModel.minImageSize.width,
+           productImage.image.size.height * productImage.image.scale >= editAdViewModel.minImageSize.height {
+            image = productImage
+        }
         isLoadingProductImage = false
     }
 }
@@ -436,6 +443,7 @@ private extension BlazeCampaignCreationFormViewModel {
         static let campaignType = "product"
         static let oneDayInSeconds: Double = 86400
         static let targetUrnFormat = "urn:wpcom:post:%d:%d"
+        static let defaultCurrency = "USD"
     }
     enum Localization {
         static let budgetSingleDay = NSLocalizedString(

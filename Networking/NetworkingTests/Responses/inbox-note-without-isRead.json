@@ -8,7 +8,7 @@
         "content": "As your business grows, you want to optimize costs, streamline operations, and sell more. We can help. Talk to us about how you can get the most out of WooCommerce.",
         "content_data": {},
         "status": "unactioned",
-        "source": "woo.com",
+        "source": "woocommerce.com",
         "date_created": "2022-02-13T11:23:51",
         "date_reminder": null,
         "is_snoozable": false,
@@ -17,11 +17,11 @@
                 "id": 7635,
                 "name": "lead_gen_existing_customers_1",
                 "label": "Yes, please",
-                "query": "https://woo.com/take-your-business-to-the-next-level/",
+                "query": "https://woocommerce.com/take-your-business-to-the-next-level/",
                 "status": "actioned",
                 "primary": false,
                 "actioned_text": "",
-                "url": "https://woo.com/take-your-business-to-the-next-level/"
+                "url": "https://woocommerce.com/take-your-business-to-the-next-level/"
             }
         ],
         "layout": "plain",

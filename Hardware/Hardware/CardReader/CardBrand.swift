@@ -1,7 +1,7 @@
 import Codegen
 
 /// The various card brands for a card.
-public enum CardBrand: String, CaseIterable, Codable, GeneratedFakeable {
+@frozen public enum CardBrand: String, CaseIterable, Codable, GeneratedFakeable {
     /// Visa card
     case visa
 
@@ -22,6 +22,12 @@ public enum CardBrand: String, CaseIterable, Codable, GeneratedFakeable {
 
     /// Interac unbranded card
     case interac
+
+    /// Union Pay card
+    case unionPay
+
+    /// Eftpos Australia card
+    case eftposAu
 
     /// An unknown card brand
     case unknown
@@ -60,7 +66,9 @@ extension CardBrand {
             return "diners"
         case .interac:
             return "interac"
-        case .unknown:
+        case .unionPay:
+            return "unionpay"
+        case .unknown, .eftposAu:
             return "unknown"
         }
     }

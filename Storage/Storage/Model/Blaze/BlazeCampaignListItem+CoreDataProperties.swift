@@ -20,6 +20,9 @@ extension BlazeCampaignListItem {
     @NSManaged public var textSnippet: String
     @NSManaged public var totalBudget: Double
     @NSManaged public var rawStatus: String
+    @NSManaged public var budgetAmount: Double
+    @NSManaged public var budgetCurrency: String
+    @NSManaged public var budgetMode: String
 
 }
 

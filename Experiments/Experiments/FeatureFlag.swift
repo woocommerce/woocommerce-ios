@@ -132,10 +132,6 @@ public enum FeatureFlag: Int {
     ///
     case readOnlyMinMaxQuantities
 
-    /// Local notifications for store creation
-    ///
-    case storeCreationNotifications
-
     /// Enables EU Bound notifications inside the Shipping Labels feature
     ///
     case euShippingNotification
@@ -195,4 +191,16 @@ public enum FeatureFlag: Int {
     /// Displays the Products tab in a split view
     ///
     case splitViewInProductsTab
+
+    /// Displays a Customers section in the Hub menu.
+    ///
+    case customersInHubMenu
+
+    /// Enables migration from simple payments to order creation.
+    ///
+    case migrateSimplePaymentsToOrderCreation
+
+    /// Enables visibility of Subscription product details when creating an order, within product selection, and order details.
+    ///
+    case subscriptionsInOrderCreationUI
 }

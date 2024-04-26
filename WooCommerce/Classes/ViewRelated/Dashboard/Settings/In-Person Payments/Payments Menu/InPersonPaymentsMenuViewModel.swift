@@ -1,10 +1,15 @@
+import Experiments
 import Foundation
 import SwiftUI
 import Yosemite
 import WooFoundation
 import Combine
 
-class InPersonPaymentsMenuViewModel: ObservableObject {
+@MainActor
+final class InPersonPaymentsMenuViewModel: ObservableObject {
+    @Binding var navigationPath: NavigationPath
+    private var navigationPathBeforePaymentCollection: NavigationPath?
+
     @Published private(set) var shouldShowTapToPaySection: Bool = true
     @Published private(set) var shouldShowCardReaderSection: Bool = true
     @Published private(set) var shouldShowPaymentOptionsSection: Bool = false
@@ -20,7 +25,15 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
     @Published var presentManagePaymentGateways: Bool = false
     @Published private(set) var selectedPaymentGatewayName: String?
     @Published private(set) var selectedPaymentGatewayPlugin: CardPresentPaymentsPlugin?
-    @Published var presentCollectPayment: Bool = false
+    @Published var presentCollectPaymentWithSimplePayments: Bool = false
+    /// Whether the payment collection migration sheet is presented, bound to the migration sheet.
+    @Published var presentCollectPaymentMigrationSheet: Bool = false
+    /// Whether the migration sheet has been presented per payment collection session.
+    @Published var hasPresentedCollectPaymentMigrationSheet: Bool = false
+    /// Whether the custom amount flow should be presented after dismissing the payment collection migration sheet.
+    @Published var presentCustomAmountAfterDismissingCollectPaymentMigrationSheet: Bool = false
+    /// Whether the payment methods view is shown after creating an order.
+    @Published var presentPaymentMethods: Bool = false
     @Published var presentSetUpTryOutTapToPay: Bool = false
     @Published var presentAboutTapToPay: Bool = false
     @Published var presentTapToPayFeedback: Bool = false
@@ -34,11 +47,15 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
 
     var shouldAlwaysHideSetUpButtonOnAboutTapToPay: Bool = false
 
-    private(set) var simplePaymentsNoticePublisher: AnyPublisher<SimplePaymentsNotice, Never>
+    /// Set to a non-nil value when order form is shown.
+    private(set) var orderViewModel: EditableOrderViewModel?
 
     let siteID: Int64
 
     var payInPersonToggleViewModel: InPersonPaymentsCashOnDeliveryToggleRowViewModelProtocol
+
+    private(set) var paymentMethodsViewModel: PaymentMethodsViewModel?
+    private var paymentMethodsNoticeSubscription: AnyCancellable?
 
     struct Dependencies {
         let cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration
@@ -48,6 +65,8 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
         let wooPaymentsDepositService: WooPaymentsDepositServiceProtocol
         let analytics: Analytics
         let systemStatusService: SystemStatusServiceProtocol
+        let noticePresenter: NoticePresenter
+        let featureFlagService: FeatureFlagService
 
         init(cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration,
              onboardingUseCase: CardPresentPaymentsOnboardingUseCaseProtocol,
@@ -55,7 +74,9 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
              tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker = TapToPayBadgePromotionChecker(),
              wooPaymentsDepositService: WooPaymentsDepositServiceProtocol,
              systemStatusService: SystemStatusServiceProtocol = SystemStatusService(stores: ServiceLocator.stores),
-             analytics: Analytics = ServiceLocator.analytics) {
+             analytics: Analytics = ServiceLocator.analytics,
+             noticePresenter: NoticePresenter = ServiceLocator.noticePresenter,
+             featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
             self.cardPresentPaymentsConfiguration = cardPresentPaymentsConfiguration
             self.onboardingUseCase = onboardingUseCase
             self.cardReaderSupportDeterminer = cardReaderSupportDeterminer
@@ -63,6 +84,8 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
             self.wooPaymentsDepositService = wooPaymentsDepositService
             self.systemStatusService = systemStatusService
             self.analytics = analytics
+            self.noticePresenter = noticePresenter
+            self.featureFlagService = featureFlagService
         }
     }
 
@@ -84,11 +107,12 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
 
     init(siteID: Int64,
          dependencies: Dependencies,
+         navigationPath: Binding<NavigationPath>,
          payInPersonToggleViewModel: InPersonPaymentsCashOnDeliveryToggleRowViewModelProtocol = InPersonPaymentsCashOnDeliveryToggleRowViewModel()) {
         self.siteID = siteID
         self.dependencies = dependencies
+        self._navigationPath = navigationPath
         self.payInPersonToggleViewModel = payInPersonToggleViewModel
-        self.simplePaymentsNoticePublisher = PassthroughSubject<SimplePaymentsNotice, Never>().eraseToAnyPublisher()
         observeOnboardingChanges()
         runCardPresentPaymentsOnboardingIfPossible()
 
@@ -103,7 +127,13 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
         }
     }
 
-    @MainActor
+    /// Called when payment collection is shown to leave the payment collection flow.
+    func dismissPaymentCollection() {
+        while navigationPath != navigationPathBeforePaymentCollection {
+            navigationPath.removeLast()
+        }
+    }
+
     private func updateOutputProperties() async {
         payInPersonToggleViewModel.refreshState()
         updateCardReadersSection()
@@ -111,7 +141,6 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
         await refreshDepositSummary()
     }
 
-    @MainActor
     private func refreshDepositSummary() async {
         guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.wooPaymentsDepositsOverviewInPaymentsMenu),
         await dependencies.systemStatusService.fetchSystemPluginWithPath(siteID: siteID,
@@ -138,16 +167,19 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
         }
     }
 
-    @MainActor
     func onAppear() async {
         runCardPresentPaymentsOnboardingIfPossible()
         await updateOutputProperties()
     }
 
     func collectPaymentTapped() {
-        presentCollectPayment = true
-
-        analytics.track(event: WooAnalyticsEvent.SimplePayments.simplePaymentsFlowStarted())
+        guard dependencies.featureFlagService.isFeatureFlagEnabled(.migrateSimplePaymentsToOrderCreation) else {
+            presentCollectPaymentWithSimplePayments = true
+            analytics.track(event: WooAnalyticsEvent.SimplePayments.simplePaymentsFlowStarted())
+            analytics.track(.paymentsMenuCollectPaymentTapped)
+            return
+        }
+        collectPayment()
         analytics.track(.paymentsMenuCollectPaymentTapped)
     }
 
@@ -220,6 +252,42 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
         }
         return onboardingViewModel
     }()
+}
+
+// MARK: - Collect payment
+
+private extension InPersonPaymentsMenuViewModel {
+    func collectPayment() {
+        let orderViewModel = EditableOrderViewModel(siteID: siteID)
+        self.orderViewModel = orderViewModel
+        orderViewModel.onFinished = { [weak self] _ in
+            self?.dismissPaymentCollection()
+        }
+        orderViewModel.onFinishAndCollectPayment = { [weak self] order, paymentMethodsViewModel in
+            guard let self else { return }
+            self.paymentMethodsViewModel = paymentMethodsViewModel
+            paymentMethodsNoticeSubscription = paymentMethodsViewModel.notice
+                .compactMap { $0 }
+                .sink { [weak self] notice in
+                    guard let self else { return }
+                    switch notice {
+                        case .created:
+                            dependencies.noticePresenter.enqueue(notice: .init(title: Localization.orderCreated, feedbackType: .success))
+                        case .completed:
+                            dependencies.noticePresenter.enqueue(notice: .init(title: Localization.orderCompleted, feedbackType: .success))
+                        case .error(let description):
+                            dependencies.noticePresenter.enqueue(notice: .init(title: description, feedbackType: .error))
+                    }
+                }
+            presentPaymentMethods = true
+        }
+
+        presentCustomAmountAfterDismissingCollectPaymentMigrationSheet = false
+        hasPresentedCollectPaymentMigrationSheet = false
+        presentPaymentMethods = false
+        navigationPathBeforePaymentCollection = navigationPath
+        navigationPath.append(InPersonPaymentsMenuNavigationDestination.collectPayment)
+    }
 }
 
 // MARK: - Background onboarding
@@ -334,7 +402,6 @@ private extension InPersonPaymentsMenuViewModel {
 // MARK: - Tap to Pay visibility
 
 private extension InPersonPaymentsMenuViewModel {
-    @MainActor
     func updateTapToPaySection() async {
         let deviceSupportsTapToPay = await dependencies.cardReaderSupportDeterminer.deviceSupportsLocalMobileReader()
 
@@ -350,7 +417,6 @@ private extension InPersonPaymentsMenuViewModel {
         cardPresentPaymentsConfiguration.supportedReaders.contains(.appleBuiltIn)
     }
 
-    @MainActor
     func updateSetUpTryTapToPay() async {
         let tapToPayWasPreviouslyUsed = await dependencies.cardReaderSupportDeterminer.hasPreviousTapToPayUsage()
 
@@ -358,7 +424,6 @@ private extension InPersonPaymentsMenuViewModel {
         shouldAlwaysHideSetUpButtonOnAboutTapToPay = tapToPayWasPreviouslyUsed
     }
 
-    @MainActor
     func updateTapToPayFeedbackRowVisibility() async {
         guard let firstTapToPayTransactionDate = await dependencies.cardReaderSupportDeterminer.firstTapToPayTransactionDate(),
               let thirtyDaysAgo = Calendar.current.date(byAdding: DateComponents(day: -30), to: Date()) else {
@@ -377,11 +442,20 @@ extension InPersonPaymentsMenuViewModel: DeepLinkNavigator {
         }
         switch paymentsDestination {
         case .collectPayment:
-            presentCollectPayment = true
+            guard dependencies.featureFlagService.isFeatureFlagEnabled(.migrateSimplePaymentsToOrderCreation) else {
+                return presentCollectPaymentWithSimplePayments = true
+            }
+            collectPayment()
         case .tapToPay:
             presentSetUpTryOutTapToPay = true
         }
     }
+}
+
+/// Destination views that the IPP menu can navigate to.
+/// Used in `NavigationPath` for programatic navigation in `NavigationStack` for deeplinking.
+enum InPersonPaymentsMenuNavigationDestination {
+    case collectPayment
 }
 
 private enum Constants {
@@ -411,6 +485,16 @@ private extension InPersonPaymentsMenuViewModel {
             "menu.payments.inPersonPayments.setup.incomplete.notice.button.title",
             value: "Continue setup",
             comment: "Call to Action to finish the setup of In-Person Payments in the Menu"
+        )
+        static let orderCreated = NSLocalizedString(
+            "menu.payments.inPersonPayments.collectPayment.notice.orderCreated",
+            value: "🎉 Order created",
+            comment: "Notice text after creating an order from In-Person Payments in the Menu"
+        )
+        static let orderCompleted = NSLocalizedString(
+            "menu.payments.inPersonPayments.collectPayment.notice.orderCompleted",
+            value: "🎉 Order completed",
+            comment: "Notice text after completing a payment order from In-Person Payments in the Menu"
         )
     }
 }

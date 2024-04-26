@@ -1,1 +1,2 @@
-Conecta con los clientes con total naturalidad usando WhatsApp y Telegram directamente desde sus pedidos. Además, optimiza tu flujo de trabajo con nuestra nueva función de filtro de pedidos basada en los productos. Disfruta de una mejor capacidad multitarea gracias a la pestaña Productos con vista de pantalla dividida y un panel de análisis personalizado y acorde a tus necesidades con la versión remodelada de Analytics Hub. Actualiza ya y disfruta de una experiencia más sencilla y personalizada en WooCommerce.
+Hemos acabado con un molesto error y ahora el botón "Restablecer registro de actividad" va como la seda; todo listo para empezar de cero. Sumérgete en una experiencia aún más fluida en WooCommerce. ¡Actualiza ya!
+

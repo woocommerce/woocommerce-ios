@@ -96,6 +96,8 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
 
     private let onDeleteCompletion: () -> Void
 
+    private let userDefaults: UserDefaults
+
     init(viewModel: ViewModel,
          isAIContent: Bool = false,
          eventLogger: ProductFormEventLoggerProtocol,
@@ -103,6 +105,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
          currency: String = ServiceLocator.currencySettings.symbol(from: ServiceLocator.currencySettings.currencyCode),
          presentationStyle: ProductFormPresentationStyle,
          productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,
+         userDefaults: UserDefaults = .standard,
          onDeleteCompletion: @escaping () -> Void = {}) {
         self.viewModel = viewModel
         self.isAIContent = isAIContent
@@ -112,6 +115,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         self.productImageActionHandler = productImageActionHandler
         self.productUIImageLoader = DefaultProductUIImageLoader(productImageActionHandler: productImageActionHandler,
                                                                 phAssetImageLoaderProvider: { PHImageManager.default() })
+        self.userDefaults = userDefaults
         self.productImageUploader = productImageUploader
         self.onDeleteCompletion = onDeleteCompletion
         self.aiEligibilityChecker = .init(site: ServiceLocator.stores.sessionManager.defaultSite)
@@ -194,6 +198,12 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
 
     override var shouldShowOfflineBanner: Bool {
         return true
+    }
+
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+
+        updateNavigationBarTitle()
     }
 
     // MARK: - Navigation actions handling
@@ -352,7 +362,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         }
 
         if viewModel.canDeleteProduct() {
-            actionSheet.addDestructiveActionWithTitle(ActionSheetStrings.delete) { [weak self] _ in
+            actionSheet.addDestructiveActionWithTitle(ActionSheetStrings.trashProduct) { [weak self] _ in
                 self?.displayDeleteProductAlert()
             }
         }
@@ -1143,7 +1153,9 @@ private extension ProductFormViewController {
             source: .productDetailPromoteButton,
             shouldShowIntro: viewModel.shouldShowBlazeIntroView,
             navigationController: navigationController,
-            onCampaignCreated: {}
+            onCampaignCreated: {
+                // TODO: make Blaze card appear on the dashboard again
+            }
         )
         coordinator.start()
         blazeCampaignCreationCoordinator = coordinator
@@ -1183,6 +1195,10 @@ private extension ProductFormViewController {
     }
 
     func updateNavigationBarTitle() {
+        guard traitCollection.horizontalSizeClass != .compact else {
+            title = nil
+            return
+        }
         // Update navigation bar title with variation ID for variation page
         guard let variationID = viewModel.productionVariationID else {
             title = Localization.defaultTitle
@@ -2027,7 +2043,9 @@ private enum ActionSheetStrings {
                                                comment: "Button title View product in store in Edit Product More Options Action Sheet")
     static let share = NSLocalizedString("Share", comment: "Button title Share in Edit Product More Options Action Sheet")
     static let promoteWithBlaze = NSLocalizedString("Promote with Blaze", comment: "Button title Promote with Blaze in Edit Product More Options Action Sheet")
-    static let delete = NSLocalizedString("Delete", comment: "Button title Delete in Edit Product More Options Action Sheet")
+    static let trashProduct = NSLocalizedString("productForm.bottomSheet.trashAction",
+                                                value: "Trash product",
+                                                comment: "Button title Trash product in Edit Product More Options Action Sheet")
     static let productSettings = NSLocalizedString("Product Settings", comment: "Button title Product Settings in Edit Product More Options Action Sheet")
     static let cancel = NSLocalizedString("Cancel", comment: "Button title Cancel in Edit Product More Options Action Sheet")
     static let duplicate = NSLocalizedString("Duplicate", comment: "Button title to duplicate a product in Product More Options Action Sheet")

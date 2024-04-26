@@ -23,7 +23,7 @@ struct InPersonPaymentsMenu: View {
                         .onTapGesture {
                             viewModel.collectPaymentTapped()
                         }
-                        .sheet(isPresented: $viewModel.presentCollectPayment,
+                        .sheet(isPresented: $viewModel.presentCollectPaymentWithSimplePayments,
                                onDismiss: {
                             Task { @MainActor in
                                 await viewModel.onAppear()
@@ -183,12 +183,9 @@ struct InPersonPaymentsMenu: View {
             }
             .scrollViewSectionStyle(.insetGrouped)
             .safariSheet(url: $viewModel.safariSheetURL)
-
-            NavigationLink(isActive: $viewModel.shouldShowOnboarding) {
+            .navigationDestination(isPresented: $viewModel.shouldShowOnboarding) {
                 InPersonPaymentsView(viewModel: viewModel.onboardingViewModel)
-            } label: {
-                EmptyView()
-            }.hidden()
+            }
 
             if let onboardingNotice = viewModel.cardPresentPaymentsOnboardingNotice {
                 PermanentNoticeView(notice: onboardingNotice)
@@ -211,6 +208,53 @@ struct InPersonPaymentsMenu: View {
             ToolbarItem(placement: .navigationBarTrailing) {
                 ActivityIndicator(isAnimating: $viewModel.backgroundOnboardingInProgress,
                                   style: .medium)
+            }
+        }
+        .navigationTitle(InPersonPaymentsView.Localization.title)
+        .navigationDestination(for: InPersonPaymentsMenuNavigationDestination.self) { destination in
+            if let orderViewModel = viewModel.orderViewModel {
+                OrderFormPresentationWrapper(dismissHandler: {
+                    viewModel.dismissPaymentCollection()
+                    Task { @MainActor in
+                        await viewModel.onAppear()
+                    }
+                },
+                                             flow: .creation,
+                                             dismissLabel: .backButton,
+                                             viewModel: orderViewModel)
+                .navigationBarHidden(true)
+                .sheet(isPresented: $viewModel.presentCollectPaymentMigrationSheet, onDismiss: {
+                    // Custom amount sheet needs to be presented when the migration sheet is dismissed to avoid conflicting modals.
+                    if viewModel.presentCustomAmountAfterDismissingCollectPaymentMigrationSheet {
+                        orderViewModel.addCustomAmount()
+                    }
+                }) {
+                    SimplePaymentsMigrationView {
+                        viewModel.presentCustomAmountAfterDismissingCollectPaymentMigrationSheet = true
+                        viewModel.presentCollectPaymentMigrationSheet = false
+                    }
+                    .presentationDetents([.medium, .large])
+                }
+                .navigationDestination(isPresented: $viewModel.presentPaymentMethods) {
+                    if let paymentMethodsViewModel = viewModel.paymentMethodsViewModel {
+                        PaymentMethodsView(dismiss: {
+                            viewModel.dismissPaymentCollection()
+                        }, viewModel: paymentMethodsViewModel)
+                    } else {
+                        EmptyView()
+                    }
+                }
+                .onAppear {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                        guard viewModel.hasPresentedCollectPaymentMigrationSheet == false else {
+                            return
+                        }
+                        viewModel.presentCollectPaymentMigrationSheet = true
+                        viewModel.hasPresentedCollectPaymentMigrationSheet = true
+                    }
+                }
+            } else {
+                EmptyView()
             }
         }
     }
@@ -381,8 +425,11 @@ struct InPersonPaymentsMenu_Previews: PreviewProvider {
             cardPresentPaymentsConfiguration: .init(country: .US),
             onboardingUseCase: CardPresentPaymentsOnboardingUseCase(),
             cardReaderSupportDeterminer: CardReaderSupportDeterminer(siteID: 0),
-            wooPaymentsDepositService: WooPaymentsDepositService(siteID: 0, credentials: .init(authToken: ""))))
+            wooPaymentsDepositService: WooPaymentsDepositService(siteID: 0, credentials: .init(authToken: ""))),
+        navigationPath: .constant(NavigationPath()))
     static var previews: some View {
-        InPersonPaymentsMenu(viewModel: viewModel)
+        NavigationStack {
+            InPersonPaymentsMenu(viewModel: viewModel)
+        }
     }
 }

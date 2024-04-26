@@ -6,17 +6,17 @@
         "repositoryURL": "https://github.com/automattic/AutomatticAbout-swift",
         "state": {
           "branch": null,
-          "revision": "d3e8b4d8133984d9ae20936a55e747d27661e2a1",
-          "version": "1.1.1"
+          "revision": "14b10de6d21b0d2e9ee41fc63b1cffc840d73003",
+          "version": "1.1.3"
         }
       },
       {
-        "package": "Charts",
+        "package": "DGCharts",
         "repositoryURL": "https://github.com/danielgindi/Charts",
         "state": {
           "branch": null,
-          "revision": "07b23476ad52b926be772f317d8f1d4511ee8d02",
-          "version": "4.1.0"
+          "revision": "dd9c72e3d7e751e769971092a6bd72d39198ae63",
+          "version": "5.1.0"
         }
       },
       {
@@ -75,16 +75,16 @@
       },
       {
         "package": "swift-algorithms",
-        "repositoryURL": "https://github.com/apple/swift-algorithms",
+        "repositoryURL": "https://github.com/apple/swift-algorithms.git",
         "state": {
           "branch": null,
-          "revision": "b14b7f4c528c942f121c8b860b9410b2bf57825e",
-          "version": "1.0.0"
+          "revision": "f6919dfc309e7f1b56224378b11e28bab5bccc42",
+          "version": "1.2.0"
         }
       },
       {
         "package": "swift-numerics",
-        "repositoryURL": "https://github.com/apple/swift-numerics.git",
+        "repositoryURL": "https://github.com/apple/swift-numerics",
         "state": {
           "branch": null,
           "revision": "0a5bc04095a675662cf24757cc0640aa2204253b",

@@ -13,6 +13,10 @@ public protocol StoresManager {
     ///
     func dispatch(_ actions: [Action])
 
+    /// Initial setup that should only be invoked after dependencies are initialized.
+    ///
+    func initializeAfterDependenciesAreInitialized()
+
     /// Prepares for changing the selected store and remains Authenticated.
     ///
     func removeDefaultStore()

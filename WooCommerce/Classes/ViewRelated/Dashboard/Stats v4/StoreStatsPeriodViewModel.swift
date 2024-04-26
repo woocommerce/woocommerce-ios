@@ -204,13 +204,13 @@ private extension StoreStatsPeriodViewModel {
                 return nil
             }
         }
-        guard let selectedIndex = selectedIntervalIndex else {
+        guard let selectedIndex = selectedIntervalIndex,
+              let date = orderStatsIntervals[safe: selectedIndex]?.dateStart(timeZone: siteTimezone) else {
             return StatsTimeRangeBarViewModel(startDate: startDate,
                                               endDate: endDate,
                                               timeRange: timeRange,
                                               timezone: siteTimezone)
         }
-        let date = orderStatsIntervals[selectedIndex].dateStart(timeZone: siteTimezone)
         return StatsTimeRangeBarViewModel(startDate: startDate,
                                           endDate: endDate,
                                           selectedDate: date,
@@ -354,7 +354,7 @@ private extension StoreStatsPeriodViewModel {
 
     func updateOrderDataIfNeeded() {
         let orderStats = orderStatsResultsController.fetchedObjects.first
-        let intervals = StatsIntervalDataParser.sortOrderStatsIntervals(from: orderStats)
+        let intervals = StatsIntervalDataParser.sortStatsIntervals(from: orderStats)
         orderStatsData = (stats: orderStats, intervals: intervals)
     }
 }

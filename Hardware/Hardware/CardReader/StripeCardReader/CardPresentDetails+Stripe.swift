@@ -6,14 +6,16 @@ extension CardPresentTransactionDetails {
     /// Convenience initializer
     /// - Parameter reader: An instance of a StripeTerminal.CardPresentDetails
     init(details: StripeCardPresentDetails) {
-        self.last4 = details.last4
-        self.expMonth = details.expMonth
-        self.expYear = details.expYear
-        self.cardholderName = details.cardholderName
-        self.brand = CardBrand(brand: details.brand)
-        self.generatedCard = details.generatedCard
-        self.receipt = Hardware.ReceiptDetails(receiptDetails: details.receipt)
-        self.emvAuthData = details.emvAuthData
+        self.init(last4: details.last4,
+                  expMonth: details.expMonth,
+                  expYear: details.expYear,
+                  cardholderName: details.cardholderName,
+                  brand: CardBrand(brand: details.brand),
+                  generatedCard: details.generatedCard,
+                  receipt: Hardware.ReceiptDetails(receiptDetails: details.receipt),
+                  emvAuthData: details.emvAuthData,
+                  wallet: Wallet(type: details.wallet?.type),
+                  network: details.network)
     }
 }
 
@@ -32,6 +34,8 @@ protocol StripeCardPresentDetails {
     var generatedCard: String? { get }
     var receipt: StripeTerminal.ReceiptDetails? { get }
     var emvAuthData: String? { get }
+    var wallet: StripeTerminal.SCPWallet? { get }
+    var network: NSNumber? { get }
 }
 
 

@@ -1,1 +1,2 @@
-WhatsApp ve Telegram'ı doğrudan siparişlerinden kullanarak zahmetsizce müşterilerinizle bağlantı kurun! Ayrıca yeni ürün tabanlı sipariş filtreleme özelliğimiz sayesinde iş akışınızı kolaylaştırın. Ürünler sekmesinde bölünmüş görünüm desteği sayesinde gelişmiş çoklu görevi deneyimleyin ve yenilenmiş Analytics Hub'da analizler panonuzu ihtiyaçlarınıza göre özelleştirin. Daha kolay ve daha kişiselleştirilmiş WooCommerce deneyimi için hemen güncelleyin!
+"Etkinlik Günlüğü’nü Sıfırla" düğmesinin çok iyi çalışmasını sağlayarak temiz bir başlangıç için geçmişe sünger çekmeniz için sinir bozucu bir hatayı ortadan kaldırdık. Daha sorunsuz bir WooCommerce deneyimine geçin. Hemen güncelleyin!
+

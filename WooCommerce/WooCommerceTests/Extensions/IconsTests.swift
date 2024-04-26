@@ -23,6 +23,10 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.analyticsImage)
     }
 
+    func test_bell_image_is_not_nil() {
+        XCTAssertNotNil(UIImage.bell)
+    }
+
     func test_blaze_image_is_not_nil() {
         XCTAssertNotNil(UIImage.blaze)
     }
@@ -322,10 +326,6 @@ final class IconsTests: XCTestCase {
 
     func test_getPaidImage_is_not_nil() {
         XCTAssertNotNil(UIImage.getPaidImage)
-    }
-
-    func test_setStoreNameImage_is_not_nil() {
-        XCTAssertNotNil(UIImage.setStoreNameImage)
     }
 
     func test_storeSummaryImage_is_not_nil() {
@@ -689,6 +689,10 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.noStoreImage)
     }
 
+    func test_no_connection_image_is_not_nil() {
+        XCTAssertNotNil(UIImage.noConnectionImage)
+    }
+
     func test_megaphoneIcon_is_not_nil() {
         XCTAssertNotNil(UIImage.megaphoneIcon)
     }
@@ -923,5 +927,21 @@ final class IconsTests: XCTestCase {
 
     func test_variableSubscriptionProductImage_icon_is_not_nil() {
         XCTAssertNotNil(UIImage.variableSubscriptionProductImage)
+    }
+
+    func test_cashRegisterImage_is_not_nil() {
+        XCTAssertNotNil(UIImage.cashRegisterImage)
+    }
+
+    func test_exclamationFilledImage_is_not_nil() {
+        XCTAssertNotNil(UIImage.exclamationFilledImage)
+    }
+
+    func test_exclamationImage_is_not_nil() {
+        XCTAssertNotNil(UIImage.exclamationImage)
+    }
+
+    func test_magnifyingGlassNotFound_is_not_nil() {
+        XCTAssertNotNil(UIImage.magnifyingGlassNotFound)
     }
 }

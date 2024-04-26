@@ -22,13 +22,13 @@
             "id": 13329,
             "name": "renew-subscription",
             "label": "Renew Subscription",
-            "query": "https://woo.com/products/woocommerce-bookings/",
+            "query": "https://woocommerce.com/products/woocommerce-bookings/",
             "status": "actioned",
             "primary": false,
             "actioned_text": "",
             "nonce_action": null,
             "nonce_name": null,
-            "url": "https://woo.com/products/woocommerce-bookings/"
+            "url": "https://woocommerce.com/products/woocommerce-bookings/"
         }
     ],
     "layout": "plain",

@@ -226,15 +226,18 @@ private extension ApplicationLogViewController {
     /// Clear old logs action
     ///
     func clearLogsWasPressed() {
-        for logFileInfo in logFiles where logFileInfo.isArchived {
-            try? FileManager.default.removeItem(atPath: logFileInfo.filePath)
+        for logFileInfo in logFiles {
+            do {
+                try FileManager.default.removeItem(atPath: logFileInfo.filePath)
+            } catch let error {
+                DDLogError("⚠️ Error deleting log files \(error)")
+            }
+
         }
 
-        DDLogWarn("⚠️ All archived log files erased.")
+        DDLogWarn("⚠️ All log files erased.")
 
-        loadLogFiles()
-        configureSections()
-        tableView.reloadData()
+        navigationController?.popViewController(animated: true)
     }
 }
 

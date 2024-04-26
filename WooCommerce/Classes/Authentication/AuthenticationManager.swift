@@ -1,4 +1,5 @@
 import Foundation
+import SafariServices
 import KeychainAccess
 import WordPressAuthenticator
 import WordPressUI
@@ -566,6 +567,16 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
         self.loggedOutStoreCreationCoordinator = coordinator
         coordinator.start()
     }
+
+    func showSiteCreationGuide(in navigationController: UINavigationController) {
+        analytics.track(event: .StoreCreation.loginPrologueStartingANewStoreTapped())
+
+        guard let url = try? AuthenticationConstants.hostingURL.asURL() else {
+            return
+        }
+        let webView = SFSafariViewController(url: url)
+        navigationController.present(webView, animated: true)
+    }
 }
 
 // MARK: - Private helpers
@@ -853,7 +864,7 @@ extension AuthenticationManager {
 
         switch wooAuthError {
         case .emailDoesNotMatchWPAccount, .invalidEmailFromWPComLogin, .invalidEmailFromSiteAddressLogin:
-            return NotWPAccountViewModel(error: error)
+            return NotWPAccountViewModel()
         case .notWPSite,
              .notValidAddress:
             return NotWPErrorViewModel()

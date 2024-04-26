@@ -96,7 +96,11 @@ final class CustomerStoreTests: XCTestCase {
 
         // When
         let result = waitFor { promise in
-            let action = CustomerAction.synchronizeLightCustomersData(siteID: self.dummySiteID, pageNumber: 1, pageSize: 2) { result in
+            let action = CustomerAction.synchronizeLightCustomersData(siteID: self.dummySiteID,
+                                                                      pageNumber: 1,
+                                                                      pageSize: 2,
+                                                                      orderby: .name,
+                                                                      order: .asc) { result in
                 promise(result)
             }
             self.dispatcher.dispatch(action)
@@ -139,6 +143,8 @@ final class CustomerStoreTests: XCTestCase {
                 siteID: self.dummySiteID,
                 pageNumber: 1,
                 pageSize: 25,
+                orderby: .name,
+                order: .asc,
                 keyword: self.dummyKeyword,
                 retrieveFullCustomersData: true,
                 filter: .name) { result in
@@ -165,6 +171,8 @@ final class CustomerStoreTests: XCTestCase {
             let action = CustomerAction.searchCustomers(siteID: self.dummySiteID,
                                                         pageNumber: 1,
                                                         pageSize: 25,
+                                                        orderby: .name,
+                                                        order: .asc,
                                                         keyword: self.dummyKeyword,
                                                         retrieveFullCustomersData: true,
                                                         filter: .name) { result in
@@ -220,6 +228,8 @@ final class CustomerStoreTests: XCTestCase {
             let action = CustomerAction.searchCustomers(siteID: self.dummySiteID,
                                                         pageNumber: 1,
                                                         pageSize: 25,
+                                                        orderby: .name,
+                                                        order: .asc,
                                                         keyword: self.dummyKeyword,
                                                         retrieveFullCustomersData: true,
                                                         filter: .name) { result in
@@ -254,5 +264,114 @@ final class CustomerStoreTests: XCTestCase {
         let customersAfterDeleting = viewStorage.allObjects(ofType: Storage.Customer.self, matching: nil, sortedBy: nil)
 
         XCTAssertEqual(customersAfterDeleting.count, 0)
+    }
+
+    func test_synchronizeAllCustomers_upserts_WCAnalyticsCustomers_upon_success() {
+        network.simulateResponse(requestUrlSuffix: "customers", filename: "wc-analytics-customers")
+
+        // When
+        let result = waitFor { promise in
+            let action = CustomerAction.synchronizeAllCustomers(siteID: self.dummySiteID,
+                                                                pageNumber: 1,
+                                                                pageSize: 4) { result in
+                promise(result)
+            }
+            self.dispatcher.dispatch(action)
+        }
+
+        let customers = viewStorage
+            .loadAllWCAnalyticsCustomers(siteID: dummySiteID)
+            .map { $0.toReadOnly() }
+            .sorted(by: { $0.customerID < $1.customerID })
+
+        guard case .success(let hasNextPage) = result else {
+            XCTFail()
+
+            return
+        }
+
+        XCTAssertTrue(hasNextPage)
+        assertEqual(4, customers.count)
+        assertEqual(0, customers[0].customerID)
+        assertEqual(1, customers[1].customerID)
+        assertEqual(2, customers[2].customerID)
+        assertEqual(3, customers[3].customerID)
+        assertEqual("Matt The Unregistered", customers[0].name)
+        assertEqual("John", customers[1].name)
+        assertEqual("Paul", customers[2].name)
+        assertEqual("John Doe", customers[3].name)
+    }
+
+    func test_synchronizeAllCustomers_returns_Error_upon_failure() {
+        // Given
+        let expectedError = NetworkError.notFound()
+        network.simulateError(requestUrlSuffix: "", error: expectedError)
+
+        // When
+        let result: Result<Bool, Error> = waitFor { promise in
+            let action = CustomerAction.synchronizeAllCustomers(siteID: self.dummySiteID, pageNumber: 1, pageSize: 2) { result in
+                promise(result)
+            }
+            self.store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        XCTAssertEqual(result.failure as? NetworkError, expectedError)
+    }
+
+    func test_searchWCAnalyticsCustomers_upserts_the_returned_WCAnalyticsCustomerSearchResult() throws {
+        // Given
+        network.simulateResponse(requestUrlSuffix: "customers", filename: "wc-analytics-customers")
+
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.WCAnalyticsCustomerSearchResult.self), 0)
+
+        // When
+        let result: Result<Bool, Error> = waitFor { promise in
+            let action = CustomerAction.searchWCAnalyticsCustomers(siteID: self.dummySiteID,
+                                                                   pageNumber: 1,
+                                                                   pageSize: 25,
+                                                                   keyword: self.dummyKeyword,
+                                                                   filter: .name) { result in
+                promise(result)
+            }
+            self.dispatcher.dispatch(action)
+        }
+
+        // Then
+        let hasMoreCustomers = try XCTUnwrap(result.get())
+        XCTAssertTrue(result.isSuccess)
+        XCTAssertFalse(hasMoreCustomers)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.WCAnalyticsCustomer.self), 4)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.WCAnalyticsCustomerSearchResult.self), 1)
+
+        let storedCustomerSearchResults = viewStorage.loadWCAnalyticsCustomerSearchResult(siteID: dummySiteID, keyword: dummyKeyword)
+
+        XCTAssertNotNil(storedCustomerSearchResults)
+        XCTAssertEqual(storedCustomerSearchResults?.siteID, dummySiteID)
+        XCTAssertEqual(storedCustomerSearchResults?.keyword, dummyKeyword)
+        XCTAssertEqual(storedCustomerSearchResults?.customers?.count, 4)
+    }
+
+    func test_searchWCAnalyticsCustomers_returns_Error_upon_failure() {
+        // Given
+        let expectedError = NetworkError.notFound()
+        network.simulateError(requestUrlSuffix: "", error: expectedError)
+
+        // When
+        let result: Result<Bool, Error> = waitFor { promise in
+            let action = CustomerAction.searchWCAnalyticsCustomers(siteID: self.dummySiteID,
+                                                                   pageNumber: 1,
+                                                                   pageSize: 25,
+                                                                   keyword: self.dummyKeyword,
+                                                                   filter: .name) { result in
+                promise(result)
+            }
+            self.dispatcher.dispatch(action)
+        }
+
+        //Then
+        XCTAssertTrue(result.isFailure)
+        XCTAssertEqual(result.failure as? NetworkError, expectedError)
     }
 }

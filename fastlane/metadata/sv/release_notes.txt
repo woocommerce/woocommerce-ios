@@ -1,1 +1,2 @@
-Kom i kontakt med kunder utan ansträngning genom att använda WhatsApp och Telegram direkt från deras beställningar. Du kan dessutom effektivisera ditt arbetsflöde med vår nya produktbaserade beställningsfiltrering. Upplev förbättrad multitasking med stöd för delad vy på fliken Produkter och skräddarsy din analysadminpanel efter dina behov i den förnyade analyshubben. Uppdatera nu för en smidigare och mer personlig WooCommerce-upplevelse.
+Vi har åtgärdat en irriterande bugg för att säkerställa att knappen "Återställ aktivitetslogg" fungerar korrekt, vilket känns som en nystart. Ta del av en mer sömlös WooCommerce-upplevelse. Uppdatera nu.
+

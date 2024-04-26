@@ -10,7 +10,7 @@ final class BlazePaymentInfoMapperTests: XCTestCase {
         let info = try XCTUnwrap(mapLoadBlazePaymentInfoResponse())
 
         // Then
-        let paymentMethods = info.savedPaymentMethods
+        let paymentMethods = info.paymentMethods
         XCTAssertEqual(paymentMethods.count, 1)
         let method = try XCTUnwrap(paymentMethods.first)
         XCTAssertEqual(method.id, "payment-method-id")
@@ -21,10 +21,6 @@ final class BlazePaymentInfoMapperTests: XCTestCase {
         XCTAssertEqual(method.info.expiring.month, 2)
         XCTAssertEqual(method.info.nickname, "")
         XCTAssertEqual(method.info.cardholderName, "John Doe")
-
-        XCTAssertEqual(info.addPaymentMethod.formUrl, "https://example.com/blaze-pm-add")
-        XCTAssertEqual(info.addPaymentMethod.successUrl, "https://example.com/blaze-pm-success")
-        XCTAssertEqual(info.addPaymentMethod.idUrlParameter, "pmid")
     }
 
 }

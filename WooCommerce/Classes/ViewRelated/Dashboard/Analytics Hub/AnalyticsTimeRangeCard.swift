@@ -44,7 +44,7 @@ struct AnalyticsTimeRangeCard: View {
                     onSelected(selection)
                 }
                 .sheet(isPresented: $showCustomRangeSelectionView) {
-                    RangedDatePicker(startDate: selectionType.startDate, endDate: selectionType.endDate, datesFormatter: DatesFormatter()) { start, end in
+                    RangedDatePicker(startDate: selectionType.startDate, endDate: selectionType.endDate) { start, end in
                         showTimeRangeSelectionView = false // Dismiss the initial sheet for a smooth transition
                         self.selectionType = .custom(start: start, end: end)
                     }
@@ -117,16 +117,6 @@ struct AnalyticsTimeRangeCard: View {
                 }
             }
         )
-    }
-}
-
-private extension AnalyticsTimeRangeCard {
-    /// Specific `DatesFormatter` for the `RangedDatePicker` when presented in the analytics hub module.
-    ///
-    struct DatesFormatter: RangedDateTextFormatter {
-        func format(start: Date, end: Date) -> String {
-            start.formatAsRange(with: end, timezone: .current, calendar: Locale.current.calendar)
-        }
     }
 }
 

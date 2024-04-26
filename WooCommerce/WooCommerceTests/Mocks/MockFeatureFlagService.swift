@@ -25,7 +25,6 @@ struct MockFeatureFlagService: FeatureFlagService {
     private let sideBySideViewForOrderForm: Bool
     private let isCustomersInHubMenuEnabled: Bool
     private let isMigrateSimplePaymentsToOrderCreationEnabled: Bool
-    private let isDynamicDashboardEnabled: Bool
 
     init(isInboxOn: Bool = false,
          isUpdateOrderOptimisticallyOn: Bool = false,
@@ -49,8 +48,7 @@ struct MockFeatureFlagService: FeatureFlagService {
          isBackendReceiptsEnabled: Bool = false,
          sideBySideViewForOrderForm: Bool = false,
          isCustomersInHubMenuEnabled: Bool = false,
-         isMigrateSimplePaymentsToOrderCreationEnabled: Bool = false,
-         isDynamicDashboardEnabled: Bool = false) {
+         isMigrateSimplePaymentsToOrderCreationEnabled: Bool = false) {
         self.isInboxOn = isInboxOn
         self.isUpdateOrderOptimisticallyOn = isUpdateOrderOptimisticallyOn
         self.shippingLabelsOnboardingM1 = shippingLabelsOnboardingM1
@@ -74,7 +72,6 @@ struct MockFeatureFlagService: FeatureFlagService {
         self.sideBySideViewForOrderForm = sideBySideViewForOrderForm
         self.isCustomersInHubMenuEnabled = isCustomersInHubMenuEnabled
         self.isMigrateSimplePaymentsToOrderCreationEnabled = isMigrateSimplePaymentsToOrderCreationEnabled
-        self.isDynamicDashboardEnabled = isDynamicDashboardEnabled
     }
 
     func isFeatureFlagEnabled(_ featureFlag: FeatureFlag) -> Bool {
@@ -123,8 +120,6 @@ struct MockFeatureFlagService: FeatureFlagService {
             return isCustomersInHubMenuEnabled
         case .migrateSimplePaymentsToOrderCreation:
             return isMigrateSimplePaymentsToOrderCreationEnabled
-        case .dynamicDashboard:
-            return isDynamicDashboardEnabled
         default:
             return false
         }

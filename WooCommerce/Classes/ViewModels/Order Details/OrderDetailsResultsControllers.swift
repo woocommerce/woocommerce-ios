@@ -74,12 +74,6 @@ final class OrderDetailsResultsControllers {
                                                        sortedBy: [dateCreatedDescriptor, shippingLabelIDDescriptor])
     }()
 
-    private lazy var customerDetailsResultsController: ResultsController<StorageCustomer> = {
-        let predicate = NSPredicate(format: "siteID == %lld", siteID)
-        let descriptor = NSSortDescriptor(keyPath: \StorageCustomer.customerID, ascending: false)
-        return ResultsController<StorageCustomer>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
-    }()
-
     /// AddOnGroup ResultsController.
     ///
     private lazy var addOnGroupResultsController: ResultsController<StorageAddOnGroup> = {
@@ -130,10 +124,6 @@ final class OrderDetailsResultsControllers {
         return shippingLabelResultsController.fetchedObjects
     }
 
-    var customerDetails: [Customer] {
-        return customerDetailsResultsController.fetchedObjects
-    }
-
     /// Site's add-on groups.
     ///
     var addOnGroups: [AddOnGroup] {
@@ -168,7 +158,6 @@ final class OrderDetailsResultsControllers {
         configureRefundResultsController(onReload: onReload)
         configureShippingLabelResultsController(onReload: onReload)
         configureAddOnGroupResultsController(onReload: onReload)
-        configureCustomerRC(onReload: onReload)
         configureSitePluginsResultsController(onReload: onReload)
         configureFeeLinesResultsController(onReload: onReload)
     }
@@ -319,24 +308,6 @@ private extension OrderDetailsResultsControllers {
         }
     }
 
-    private func configureCustomerRC(onReload: @escaping () -> Void) {
-        customerDetailsResultsController.onDidChangeContent = {
-            onReload()
-        }
-
-        customerDetailsResultsController.onDidResetContent = { [weak self] in
-            guard let self = self else { return }
-            self.refetchAllResultsControllers()
-            onReload()
-        }
-
-        do {
-            try customerDetailsResultsController.performFetch()
-        } catch {
-            DDLogError("⛔️ Unable to fetch Customer for \(siteID): \(error)")
-        }
-    }
-
     private func configureSitePluginsResultsController(onReload: @escaping () -> Void) {
         sitePluginsResultsController.onDidChangeContent = {
             onReload()
@@ -382,7 +353,6 @@ private extension OrderDetailsResultsControllers {
         try? trackingResultsController.performFetch()
         try? statusResultsController.performFetch()
         try? shippingLabelResultsController.performFetch()
-        try? customerDetailsResultsController.performFetch()
         try? addOnGroupResultsController.performFetch()
         try? sitePluginsResultsController.performFetch()
     }

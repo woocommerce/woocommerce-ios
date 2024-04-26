@@ -165,10 +165,6 @@ final class OrderDetailsDataSource: NSObject {
         resultsControllers.addOnGroups
     }
 
-    var customers: [Customer] {
-        resultsControllers.customerDetails
-    }
-
     /// Shipping Labels for an Order
     ///
     private(set) var shippingLabels: [ShippingLabel] = []
@@ -389,8 +385,6 @@ private extension OrderDetailsDataSource {
             configureShippingAddress(cell: cell)
         case let cell as CustomerNoteTableViewCell where row == .customerNote:
             configureCustomerNote(cell: cell)
-        case let cell as CustomerInfoTableViewCell where row == .customer:
-            configureCustomer(cell: cell)
         case let cell as CustomerNoteTableViewCell where row == .shippingMethod:
             configureShippingMethod(cell: cell)
         case let cell as WooBasicTableViewCell where row == .billingDetail:
@@ -971,24 +965,6 @@ private extension OrderDetailsDataSource {
         )
     }
 
-    private func configureCustomer(cell: CustomerInfoTableViewCell) {
-        cell.title = Title.customer
-
-        guard let customer = resultsControllers.customerDetails.first(where: { $0.customerID == order.customerID }),
-        !customer.isGuest else {
-            cell.name = "Guest"
-            cell.address = "----"
-            cell.configureLayout()
-            return
-        }
-
-        if let firstName = customer.firstName, let lastName = customer.lastName {
-            cell.name = String.localizedStringWithFormat(Title.customerName, firstName, lastName)
-        }
-        cell.address = customer.email
-        cell.configureLayout()
-    }
-
     private func configureShippingAddress(cell: CustomerInfoTableViewCell) {
         let shippingAddress = order.shippingAddress
 
@@ -1278,9 +1254,6 @@ extension OrderDetailsDataSource {
 
         let customerInformation: Section? = {
             var rows: [Row] = []
-            /// Customer lines
-            rows.append(.customer)
-
             /// Shipping Address
             /// Almost always visible to allow editing.
             let orderContainsOnlyVirtualProducts = self.products.filter { (product) -> Bool in
@@ -1723,7 +1696,6 @@ extension OrderDetailsDataSource {
         case refundedProducts
         case issueRefundButton
         case customerNote
-        case customer
         case shippingAddress
         case shippingMethod
         case billingDetail
@@ -1777,8 +1749,6 @@ extension OrderDetailsDataSource {
                 return IssueRefundTableViewCell.reuseIdentifier
             case .customerNote:
                 return CustomerNoteTableViewCell.reuseIdentifier
-            case .customer:
-                return CustomerInfoTableViewCell.reuseIdentifier
             case .shippingAddress:
                 return CustomerInfoTableViewCell.reuseIdentifier
             case .shippingMethod:
@@ -1948,10 +1918,6 @@ private extension OrderDetailsDataSource {
     }
 
     enum Title {
-        static let customer = NSLocalizedString(
-            "orderDetailsDataSource.title.customer",
-            value: "Customer",
-            comment: "Title for the customer row, within the customer information section")
         static let products = NSLocalizedString("Products", comment: "Product section title if there is more than one product.")
         static let customAmounts = NSLocalizedString("orderDetails.customAmounts.section.pluralTitle",
                                                      value: "Custom Amounts",
@@ -1969,10 +1935,6 @@ private extension OrderDetailsDataSource {
             "orderDetailsDataSource.title.shippingAddress",
             value: "Shipping method",
             comment: "Title for the shipping method row, within the customer information section")
-        static let customerName = NSLocalizedString(
-            "orderDetailsDataSource.title.customerName",
-            value: "%1$@ %2$@",
-            comment: "Customer first and last names within the customer information section, reads as 'Jane Doe'")
         static let information = NSLocalizedString("Customer", comment: "Customer info section title")
         static let payment = NSLocalizedString("Payment Totals", comment: "Payment section title")
         static let notes = NSLocalizedString("Order Notes", comment: "Order notes section title")

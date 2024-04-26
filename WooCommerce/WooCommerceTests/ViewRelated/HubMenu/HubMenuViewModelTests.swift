@@ -1,3 +1,4 @@
+import SwiftUI
 import XCTest
 
 @testable import WooCommerce
@@ -391,6 +392,23 @@ final class HubMenuViewModelTests: XCTestCase {
         XCTAssertNil(viewModel.generalElements.firstIndex(where: { item in
             item.id == HubMenuViewModel.Customers.id
         }))
+    }
+
+    func test_showPayments_replaces_navigationPath_with_payments() {
+        // Given
+        var navigationPath = NavigationPath(["testPath1", "testPath2"])
+        navigationPath.append(HubMenuNavigationDestination.payments)
+        let viewModel = HubMenuViewModel(siteID: sampleSiteID,
+                                         tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker())
+        viewModel.navigationPath = navigationPath
+        XCTAssertEqual(viewModel.navigationPath.count, 3)
+
+        // When
+        viewModel.showPayments()
+
+        // Then
+        XCTAssertEqual(viewModel.navigationPath.count, 1)
+        XCTAssertEqual(viewModel.navigationPath, NavigationPath([HubMenuNavigationDestination.payments]))
     }
 }
 

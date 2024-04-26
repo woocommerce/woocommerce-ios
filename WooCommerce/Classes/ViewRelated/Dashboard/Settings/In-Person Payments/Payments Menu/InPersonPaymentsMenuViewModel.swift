@@ -7,6 +7,9 @@ import Combine
 
 @MainActor
 final class InPersonPaymentsMenuViewModel: ObservableObject {
+    @Binding var navigationPath: NavigationPath
+    private var navigationPathBeforePaymentCollection: NavigationPath?
+
     @Published private(set) var shouldShowTapToPaySection: Bool = true
     @Published private(set) var shouldShowCardReaderSection: Bool = true
     @Published private(set) var shouldShowPaymentOptionsSection: Bool = false
@@ -23,8 +26,6 @@ final class InPersonPaymentsMenuViewModel: ObservableObject {
     @Published private(set) var selectedPaymentGatewayName: String?
     @Published private(set) var selectedPaymentGatewayPlugin: CardPresentPaymentsPlugin?
     @Published var presentCollectPaymentWithSimplePayments: Bool = false
-    /// Whether the payment collection flow is shown, bound to the order creation screen.
-    @Published var presentCollectPayment: Bool = false
     /// Whether the payment collection migration sheet is presented, bound to the migration sheet.
     @Published var presentCollectPaymentMigrationSheet: Bool = false
     /// Whether the migration sheet has been presented per payment collection session.
@@ -106,9 +107,11 @@ final class InPersonPaymentsMenuViewModel: ObservableObject {
 
     init(siteID: Int64,
          dependencies: Dependencies,
+         navigationPath: Binding<NavigationPath>,
          payInPersonToggleViewModel: InPersonPaymentsCashOnDeliveryToggleRowViewModelProtocol = InPersonPaymentsCashOnDeliveryToggleRowViewModel()) {
         self.siteID = siteID
         self.dependencies = dependencies
+        self._navigationPath = navigationPath
         self.payInPersonToggleViewModel = payInPersonToggleViewModel
         observeOnboardingChanges()
         runCardPresentPaymentsOnboardingIfPossible()
@@ -121,6 +124,13 @@ final class InPersonPaymentsMenuViewModel: ObservableObject {
             _ = try? await dependencies.systemStatusService.synchronizeSystemInformation(siteID: siteID)
             await updateOutputProperties()
             InPersonPaymentsMenuViewController().createUserActivity().becomeCurrent()
+        }
+    }
+
+    /// Called when payment collection is shown to leave the payment collection flow.
+    func dismissPaymentCollection() {
+        while navigationPath != navigationPathBeforePaymentCollection {
+            navigationPath.removeLast()
         }
     }
 
@@ -169,33 +179,7 @@ final class InPersonPaymentsMenuViewModel: ObservableObject {
             analytics.track(.paymentsMenuCollectPaymentTapped)
             return
         }
-        let orderViewModel = EditableOrderViewModel(siteID: siteID)
-        self.orderViewModel = orderViewModel
-        orderViewModel.onFinished = { [weak self] _ in
-            self?.presentCollectPayment = false
-        }
-        orderViewModel.onFinishAndCollectPayment = { [weak self] order, paymentMethodsViewModel in
-            guard let self else { return }
-            self.paymentMethodsViewModel = paymentMethodsViewModel
-            paymentMethodsNoticeSubscription = paymentMethodsViewModel.notice
-                .compactMap { $0 }
-                .sink { [weak self] notice in
-                    guard let self else { return }
-                    switch notice {
-                        case .created:
-                            dependencies.noticePresenter.enqueue(notice: .init(title: Localization.orderCreated, feedbackType: .success))
-                        case .completed:
-                            dependencies.noticePresenter.enqueue(notice: .init(title: Localization.orderCompleted, feedbackType: .success))
-                        case .error(let description):
-                            dependencies.noticePresenter.enqueue(notice: .init(title: description, feedbackType: .error))
-                    }
-                }
-            presentPaymentMethods = true
-        }
-
-        presentCustomAmountAfterDismissingCollectPaymentMigrationSheet = false
-        hasPresentedCollectPaymentMigrationSheet = false
-        presentCollectPayment = true
+        collectPayment()
         analytics.track(.paymentsMenuCollectPaymentTapped)
     }
 
@@ -268,6 +252,42 @@ final class InPersonPaymentsMenuViewModel: ObservableObject {
         }
         return onboardingViewModel
     }()
+}
+
+// MARK: - Collect payment
+
+private extension InPersonPaymentsMenuViewModel {
+    func collectPayment() {
+        let orderViewModel = EditableOrderViewModel(siteID: siteID)
+        self.orderViewModel = orderViewModel
+        orderViewModel.onFinished = { [weak self] _ in
+            self?.dismissPaymentCollection()
+        }
+        orderViewModel.onFinishAndCollectPayment = { [weak self] order, paymentMethodsViewModel in
+            guard let self else { return }
+            self.paymentMethodsViewModel = paymentMethodsViewModel
+            paymentMethodsNoticeSubscription = paymentMethodsViewModel.notice
+                .compactMap { $0 }
+                .sink { [weak self] notice in
+                    guard let self else { return }
+                    switch notice {
+                        case .created:
+                            dependencies.noticePresenter.enqueue(notice: .init(title: Localization.orderCreated, feedbackType: .success))
+                        case .completed:
+                            dependencies.noticePresenter.enqueue(notice: .init(title: Localization.orderCompleted, feedbackType: .success))
+                        case .error(let description):
+                            dependencies.noticePresenter.enqueue(notice: .init(title: description, feedbackType: .error))
+                    }
+                }
+            presentPaymentMethods = true
+        }
+
+        presentCustomAmountAfterDismissingCollectPaymentMigrationSheet = false
+        hasPresentedCollectPaymentMigrationSheet = false
+        presentPaymentMethods = false
+        navigationPathBeforePaymentCollection = navigationPath
+        navigationPath.append(InPersonPaymentsMenuNavigationDestination.collectPayment)
+    }
 }
 
 // MARK: - Background onboarding
@@ -425,11 +445,17 @@ extension InPersonPaymentsMenuViewModel: DeepLinkNavigator {
             guard dependencies.featureFlagService.isFeatureFlagEnabled(.migrateSimplePaymentsToOrderCreation) else {
                 return presentCollectPaymentWithSimplePayments = true
             }
-            presentCollectPayment = true
+            collectPayment()
         case .tapToPay:
             presentSetUpTryOutTapToPay = true
         }
     }
+}
+
+/// Destination views that the IPP menu can navigate to.
+/// Used in `NavigationPath` for programatic navigation in `NavigationStack` for deeplinking.
+enum InPersonPaymentsMenuNavigationDestination {
+    case collectPayment
 }
 
 private enum Constants {

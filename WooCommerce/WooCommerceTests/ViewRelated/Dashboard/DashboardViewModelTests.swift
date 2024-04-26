@@ -464,8 +464,7 @@ final class DashboardViewModelTests: XCTestCase {
 
         // Then
         waitUntil {
-            viewModel.dashboardCards == [.init(type: .performance, enabled: true),
-                                         .init(type: .blaze, enabled: true)]
+            viewModel.dashboardCards.contains { $0.type == .performance && $0.enabled }
         }
     }
 

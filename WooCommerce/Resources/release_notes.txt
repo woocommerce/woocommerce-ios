@@ -1,4 +1,1 @@
-- [*] Bug fix: tapping on the "Collect payment" quick action (long press on the app icon) or deeplink (http://woo.com/mobile/payments/collect-payment) now shows the order form instead of a blank view. [https://github.com/woocommerce/woocommerce-ios/pull/12559]
-- [internal] Blaze: Change campaign image minimum expected dimensions. [https://github.com/woocommerce/woocommerce-ios/pull/12544]
-
-
+Wave goodbye to pesky bugs! Our latest update ensures the "Collect Payment" feature leads you directly to the order form, whether you're using a quick action or a deep link. Enjoy seamless transactions on the go!

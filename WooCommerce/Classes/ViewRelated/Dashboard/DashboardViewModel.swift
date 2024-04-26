@@ -413,15 +413,12 @@ private extension DashboardViewModel {
                               canShowBlaze: Bool,
                               canShowAnalytics: Bool) async {
         dashboardCards = await {
-            if let stored = await loadDashboardCards() {
-                var mutableStored = stored
-                // Remove saved analytics cards if they should not be shown anymore.
-                if !canShowAnalytics {
-                    mutableStored.removeAll { $0.type == .performance || $0.type == .topPerformers }
-                }
-                return mutableStored
+            if var stored = await loadDashboardCards() {
+                let analyticCardTypes: [DashboardCard.CardType] = [.performance, .topPerformers]
+                stored = canShowAnalytics ? stored : stored.filter { !analyticCardTypes.contains($0.type) }
+                return stored
             } else {
-                // Start with default values, cards will be removed further below as needed.
+                // Start with default values, cards could be updated further below as needed.
                 return [DashboardCard(type: .onboarding, enabled: canShowOnboarding),
                         DashboardCard(type: .performance, enabled: canShowAnalytics),
                         DashboardCard(type: .topPerformers, enabled: canShowAnalytics),
@@ -438,9 +435,6 @@ private extension DashboardViewModel {
         if !canShowBlaze {
             dashboardCards.removeAll { $0.type == .blaze }
         }
-
-        // Manually update the saved cards because it might have been changed above.
-        didCustomizeDashboardCards(dashboardCards)
 
         // Set cards to show "Unavailable" state in Customize screen when should not be shown.
         // Currently this applies to Top Performers and Performance cards.

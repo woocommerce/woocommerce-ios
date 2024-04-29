@@ -825,10 +825,15 @@ final class EditableOrderViewModel: ObservableObject {
         trackCustomerNoteAdded()
     }
 
-    /// Saves the current contents of the Order Note
+    /// Saves the current contents of the Order Note, if there are differences with the latest edited content
     ///
     func saveInFlightOrderNotes() {
-        updateCustomerNote()
+        let latestSyncedNote = orderSynchronizer.order.customerNote
+        let currentlyEditedNote = noteViewModel.newNote
+
+        if latestSyncedNote != currentlyEditedNote {
+            updateCustomerNote()
+        }
     }
 
     func orderTotalsExpansionChanged(expanded: Bool) {

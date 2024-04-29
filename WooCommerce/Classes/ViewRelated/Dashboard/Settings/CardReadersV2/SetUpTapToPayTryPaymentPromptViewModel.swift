@@ -31,7 +31,7 @@ final class SetUpTapToPayTryPaymentPromptViewModel: PaymentSettingsFlowPresented
 
     @Published var formattedPaymentAmount: String = ""
 
-    private let presentNoticeSubject: PassthroughSubject<SimplePaymentsNotice, Never> = PassthroughSubject()
+    private let presentNoticeSubject: PassthroughSubject<PaymentMethodsNotice, Never> = PassthroughSubject()
     private let analytics: Analytics = ServiceLocator.analytics
     private let configuration: CardPresentPaymentsConfiguration
 

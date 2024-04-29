@@ -171,7 +171,7 @@ private extension BlazeCampaignDashboardView {
         Button {
             createCampaignTapped?(nil)
         } label: {
-            Text(Localization.promote)
+            Text(Localization.createCampaign)
                 .foregroundColor(.init(uiColor: .accent))
                 .bodyStyle()
         }
@@ -253,10 +253,10 @@ private extension BlazeCampaignDashboardView {
             comment: "Button when tapped will show the Blaze campaign list."
         )
 
-        static let promote = NSLocalizedString(
-            "blazeCampaignDashboardView.promote",
-            value: "Promote",
-            comment: "Button when tapped will launch create Blaze campaign flow."
+        static let createCampaign = NSLocalizedString(
+            "blazeCampaignDashboardView.createCampaign",
+            value: "Create Campaign",
+            comment: "Button that when tapped will launch create Blaze campaign flow."
         )
 
         static let done = NSLocalizedString(

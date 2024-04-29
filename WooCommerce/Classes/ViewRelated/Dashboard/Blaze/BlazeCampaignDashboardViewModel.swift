@@ -169,7 +169,6 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
     }
 
     func didCreateCampaign() {
-        // TODO: restore blaze card on dashboard screen
         Task {
             await reload()
         }

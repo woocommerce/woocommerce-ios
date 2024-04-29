@@ -73,47 +73,6 @@ extension DateFormatter {
             formatter.setLocalizedDateFormatFromTemplate("yyyy")
             return formatter
         }()
-
-
-        // MARK: - Chark marker formatters
-
-        /// Date formatter used for creating a **localized** date string displayed on a chart marker for **day** granularity.
-        ///
-        /// Example Output: "Dec 30" or "12月30日"
-        ///
-        public static var chartMarkerDayFormatter: DateFormatter {
-            monthAndDayFormatter
-        }
-
-        /// Date formatter used for creating a **localized** date string displayed on a chart marker for **week** granularity.
-        ///
-        /// Example Output: "1" or "23" (week number)
-        ///
-        public static let chartMarkerWeekFormatter: DateFormatter = {
-            let formatter = DateFormatter()
-            // Note: Passing "w Y" into `setLocalizedDateFormatFromTemplate()` will result in an empty string, however
-            // simply passing in "w" works. So that is what we have to unfortunately do here.
-            formatter.setLocalizedDateFormatFromTemplate("w")
-            return formatter
-        }()
-
-        /// Date formatter used for creating a **localized** date string displayed on a chart marker for **month** granularity.
-        ///
-        /// Example Output: "Jan 2018" or "2018年1月"
-        ///
-        public static let chartMarkerMonthFormatter: DateFormatter = {
-            let formatter = DateFormatter()
-            formatter.setLocalizedDateFormatFromTemplate("MMM yyyy")
-            return formatter
-        }()
-
-        /// Date formatter used for creating a **localized** date string displayed on a chart marker for **year** granularity.
-        ///
-        /// Example Output: "2018" or "2017"
-        ///
-        public static var chartMarkerYearFormatter: DateFormatter {
-            yearFormatter
-        }
     }
 
     /// Date formatter used for creating a medium-length **localized** date string to be displayed anywhere.

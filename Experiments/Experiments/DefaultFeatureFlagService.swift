@@ -93,7 +93,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .subscriptionsInOrderCreationUI:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .subscriptionsInOrderCreationCustomers:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return (buildConfig == .localDeveloper || buildConfig == .alpha) && !isUITesting
         default:
             return true
         }

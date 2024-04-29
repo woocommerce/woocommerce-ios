@@ -242,12 +242,14 @@ private extension BlazeCampaignDashboardView {
         )
 
         static let subtitle = NSLocalizedString(
-            "Increase visibility and get your products sold quickly.",
+            "blazeCampaignDashboardView.subtitle",
+            value: "Increase visibility and get your products sold quickly.",
             comment: "Subtitle of the Blaze campaign view."
         )
 
         static let showAllCampaigns = NSLocalizedString(
-            "Show All Campaigns",
+            "blazeCampaignDashboardView.showAllCampaigns",
+            value: "Show All Campaigns",
             comment: "Button when tapped will show the Blaze campaign list."
         )
 
@@ -257,9 +259,17 @@ private extension BlazeCampaignDashboardView {
             comment: "Button when tapped will launch create Blaze campaign flow."
         )
 
-        static let done = NSLocalizedString("Done", comment: "Button to dismiss the Blaze campaign detail view")
+        static let done = NSLocalizedString(
+            "blazeCampaignDashboardView.done",
+            value: "Done",
+            comment: "Button to dismiss the Blaze campaign detail view"
+        )
 
-        static let detailTitle = NSLocalizedString("Campaign Details", comment: "Title of the Blaze campaign details view.")
+        static let detailTitle = NSLocalizedString(
+            "blazeCampaignDashboardView.detailTitle",
+            value: "Campaign Details",
+            comment: "Title of the Blaze campaign details view."
+        )
 
         static let hideBlaze = NSLocalizedString(
             "blazeCampaignDashboardView.hideBlazeButton",

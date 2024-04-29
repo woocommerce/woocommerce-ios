@@ -92,10 +92,6 @@ public enum FeatureFlag: Int {
     ///
     case jetpackSetupWithApplicationPassword
 
-    /// Whether to enable the onboarding checklist in the dashboard for WPCOM stores.
-    ///
-    case dashboardOnboarding
-
     /// Enables the ability to add products to orders by SKU scanning
     ///
     case addProductToOrderViaSKUScanner

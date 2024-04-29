@@ -2045,6 +2045,8 @@
 		CE5F462A23AACA0A006B1A5C /* RefundDetailsDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE5F462923AACA0A006B1A5C /* RefundDetailsDataSource.swift */; };
 		CE5F462C23AACBC4006B1A5C /* RefundDetailsResultController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE5F462B23AACBC4006B1A5C /* RefundDetailsResultController.swift */; };
 		CE606D7F2BDFD45A001CB424 /* ShippingMethodSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE606D7E2BDFD45A001CB424 /* ShippingMethodSelector.swift */; };
+		CE606D812BE14000001CB424 /* ShippingLineSelectionDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE606D802BE14000001CB424 /* ShippingLineSelectionDetails.swift */; };
+		CE606D832BE14010001CB424 /* ShippingLineSelectionDetailsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE606D822BE14010001CB424 /* ShippingLineSelectionDetailsViewModel.swift */; };
 		CE63023D2BAAEF2C00E3325C /* CustomersListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE63023C2BAAEF2C00E3325C /* CustomersListView.swift */; };
 		CE63023F2BAAF04600E3325C /* TitleAndSubtitleAndDetailRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE63023E2BAAF04600E3325C /* TitleAndSubtitleAndDetailRow.swift */; };
 		CE6302412BAAFB5E00E3325C /* CustomersListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE6302402BAAFB5E00E3325C /* CustomersListViewModel.swift */; };
@@ -4805,6 +4807,8 @@
 		CE5F462923AACA0A006B1A5C /* RefundDetailsDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundDetailsDataSource.swift; sourceTree = "<group>"; };
 		CE5F462B23AACBC4006B1A5C /* RefundDetailsResultController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundDetailsResultController.swift; sourceTree = "<group>"; };
 		CE606D7E2BDFD45A001CB424 /* ShippingMethodSelector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingMethodSelector.swift; sourceTree = "<group>"; };
+		CE606D802BE14000001CB424 /* ShippingLineSelectionDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLineSelectionDetails.swift; sourceTree = "<group>"; };
+		CE606D822BE14010001CB424 /* ShippingLineSelectionDetailsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLineSelectionDetailsViewModel.swift; sourceTree = "<group>"; };
 		CE63023C2BAAEF2C00E3325C /* CustomersListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomersListView.swift; sourceTree = "<group>"; };
 		CE63023E2BAAF04600E3325C /* TitleAndSubtitleAndDetailRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitleAndSubtitleAndDetailRow.swift; sourceTree = "<group>"; };
 		CE6302402BAAFB5E00E3325C /* CustomersListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomersListViewModel.swift; sourceTree = "<group>"; };
@@ -10790,6 +10794,8 @@
 			children = (
 				AEA3F90C27BE76B300B9F555 /* ShippingLineDetails.swift */,
 				AEA3F90E27BE8EB400B9F555 /* ShippingLineDetailsViewModel.swift */,
+				CE606D802BE14000001CB424 /* ShippingLineSelectionDetails.swift */,
+				CE606D822BE14010001CB424 /* ShippingLineSelectionDetailsViewModel.swift */,
 				CE606D7E2BDFD45A001CB424 /* ShippingMethodSelector.swift */,
 			);
 			path = Shipping;
@@ -13944,6 +13950,7 @@
 				E10459C627BBC22E00C1DCBA /* CardPresentConfigurationLoader.swift in Sources */,
 				B586906621A5F4B1001F1EFC /* UINavigationController+Woo.swift in Sources */,
 				45FBDF3A238D3F8B00127F77 /* ExtendedAddProductImageCollectionViewCell.swift in Sources */,
+				CE606D832BE14010001CB424 /* ShippingLineSelectionDetailsViewModel.swift in Sources */,
 				02C7EE8A2B21B951008B7DF8 /* ProductWithQuantityStepperViewModel.swift in Sources */,
 				02A410F52583A84C005E2925 /* SpacerTableViewCell.swift in Sources */,
 				02BBD6EB29A316FB00243BE2 /* StoreOnboardingCoordinator.swift in Sources */,
@@ -14884,6 +14891,7 @@
 				B95700AC2A72C1E4001BADF2 /* CustomerSelectorViewController.swift in Sources */,
 				ABC35F18E744C5576B986CB3 /* InPersonPaymentsUnavailableView.swift in Sources */,
 				ABC35528D2D6BE6F516E5CEF /* InPersonPaymentsOnboardingError.swift in Sources */,
+				CE606D812BE14000001CB424 /* ShippingLineSelectionDetails.swift in Sources */,
 				3F1FA84C28B60126009E246C /* StoreWidgets.intentdefinition in Sources */,
 				ABC3521A374A2355001E3CD6 /* CardReaderSettingsSearchingViewController.swift in Sources */,
 				B9F1489A2AD586E5008FC795 /* FormattableAmountTextFieldViewModel.swift in Sources */,

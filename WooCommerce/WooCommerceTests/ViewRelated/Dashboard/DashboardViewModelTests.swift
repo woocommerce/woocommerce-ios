@@ -292,47 +292,6 @@ final class DashboardViewModelTests: XCTestCase {
         XCTAssertNotNil(viewModel.localAnnouncementViewModel)
     }
 
-    // MARK: Store onboarding
-
-    func test_showOnboarding_is_false_when_feature_flag_is_turned_off_and_completedAllStoreOnboardingTasks_is_false() async throws {
-        // Given
-        let uuid = UUID().uuidString
-        let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
-        defaults[.completedAllStoreOnboardingTasks] = false
-        let viewModel = DashboardViewModel(siteID: 0,
-                                           stores: stores,
-                                           featureFlags: MockFeatureFlagService(isDashboardStoreOnboardingEnabled: false),
-                                           userDefaults: defaults)
-        // Then
-        XCTAssertFalse(viewModel.showOnboarding)
-    }
-
-    func test_showOnboarding_is_false_when_feature_flag_is_turned_off_and_completedAllStoreOnboardingTasks_is_true() async throws {
-        // Given
-        let uuid = UUID().uuidString
-        let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
-        defaults[.completedAllStoreOnboardingTasks] = true
-        let viewModel = DashboardViewModel(siteID: 0,
-                                           stores: stores,
-                                           featureFlags: MockFeatureFlagService(isDashboardStoreOnboardingEnabled: false),
-                                           userDefaults: defaults)
-        // Then
-        XCTAssertFalse(viewModel.showOnboarding)
-    }
-
-    func test_showOnboarding_is_false_when_feature_flag_is_turned_on_and_completedAllStoreOnboardingTasks_is_true() async throws {
-        // Given
-        let uuid = UUID().uuidString
-        let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
-        defaults[.completedAllStoreOnboardingTasks] = true
-        let viewModel = DashboardViewModel(siteID: 0,
-                                           stores: stores,
-                                           featureFlags: MockFeatureFlagService(isDashboardStoreOnboardingEnabled: true),
-                                           userDefaults: defaults)
-        // Then
-        XCTAssertFalse(viewModel.showOnboarding)
-    }
-
     func test_siteURLToShare_return_nil_if_site_is_not_public() {
         // Given
         let sessionManager = SessionManager.makeForTesting()

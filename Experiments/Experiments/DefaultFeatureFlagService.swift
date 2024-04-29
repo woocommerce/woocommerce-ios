@@ -40,8 +40,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .jetpackSetupWithApplicationPassword:
             return true
-        case .dashboardOnboarding:
-            return true
         case .productBundles:
             return true
         case .manualErrorHandlingForSiteCredentialLogin:
@@ -53,8 +51,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .productDescriptionAIFromStoreOnboarding:
             return !isUITesting
         case .readOnlyGiftCards:
-            return true
-        case .hideStoreOnboardingTaskList:
             return true
         case .readOnlyMinMaxQuantities:
             return true

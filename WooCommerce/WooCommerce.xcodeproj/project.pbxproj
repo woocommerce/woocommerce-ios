@@ -6473,19 +6473,14 @@
 				0217399D2772FB7E0084CD89 /* StoreStatsAndTopPerformersPeriodViewController.swift */,
 				0217399A2772F9DD0084CD89 /* StoreStatsV4PeriodViewController.swift */,
 				021739992772F9DC0084CD89 /* StoreStatsV4PeriodViewController.xib */,
-				02312796277D4F640060E180 /* StoreStatsPeriodViewModel.swift */,
 				0217399F2773F5F50084CD89 /* StoreStatsChartCircleMarker.swift */,
-				028BAC4622F3B550008BB4AF /* StatsTimeRangeV4+UI.swift */,
 				02E4FD79230688BA0049610C /* OrderStatsV4Interval+Chart.swift */,
 				02E4FD7B2306A04C0049610C /* StatsTimeRangeBarView.swift */,
-				02E4FD7D2306A8180049610C /* StatsTimeRangeBarViewModel.swift */,
 				0240B3AB230A910C000A866C /* StoreStatsV4ChartAxisHelper.swift */,
 				5778E00524DB0C3900B65CBF /* StoreStatsAndTopPerformersPeriodViewModel.swift */,
 				DEC6C51727466B59006832D3 /* StoreStatsEmptyView.swift */,
-				579CDEFE274D7E7900E8903D /* StoreStatsUsageTracksEventEmitter.swift */,
 				020624EF27951113000D024C /* StoreStatsDataOrRedactedView.swift */,
 				8687FF482B7A003400D06633 /* CustomRangeTabCreationCoordinator.swift */,
-				DEA0D0672BA82EA2007786F2 /* StatsGranularityV4+UI.swift */,
 			);
 			path = "Stats v4";
 			sourceTree = "<group>";
@@ -10856,6 +10851,7 @@
 				028E1F6F2833DD0A001F8829 /* DashboardViewModel.swift */,
 				029D444822F13F8A00DEFA8A /* DashboardUI.swift */,
 				DE74A45A2BD9048E0009C415 /* DashboardCardErrorView.swift */,
+				579CDEFE274D7E7900E8903D /* StoreStatsUsageTracksEventEmitter.swift */,
 				DE74A4502BCF86F60009C415 /* TopPerformers */,
 				DEA6BCAD2BC6A9A50017D671 /* StoreStats */,
 				DEC75CC02BC4E4E600763801 /* DashboardCustomization */,
@@ -11748,6 +11744,10 @@
 		DEA6BCAD2BC6A9A50017D671 /* StoreStats */ = {
 			isa = PBXGroup;
 			children = (
+				DEA0D0672BA82EA2007786F2 /* StatsGranularityV4+UI.swift */,
+				028BAC4622F3B550008BB4AF /* StatsTimeRangeV4+UI.swift */,
+				02312796277D4F640060E180 /* StoreStatsPeriodViewModel.swift */,
+				02E4FD7D2306A8180049610C /* StatsTimeRangeBarViewModel.swift */,
 				DED0392C2BC7DAFD005D0571 /* StatsTimeRangePicker.swift */,
 				DED039282BC7A04B005D0571 /* StorePerformanceView.swift */,
 				DED0392A2BC7A076005D0571 /* StorePerformanceViewModel.swift */,

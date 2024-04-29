@@ -212,7 +212,7 @@ final class OrderListViewController: UIViewController, GhostableViewController {
         // We can remove this once we've replaced XLPagerTabStrip.
         tableView.reloadData()
     }
-    
+
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 

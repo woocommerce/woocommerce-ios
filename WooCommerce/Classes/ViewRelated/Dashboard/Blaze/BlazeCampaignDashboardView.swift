@@ -113,17 +113,17 @@ struct BlazeCampaignDashboardView: View {
                 EmptyView()
             }
 
-            // Show All Campaigns button
-            showAllCampaignsButton
-                .padding(.horizontal, Layout.padding)
-                .renderedIf(viewModel.shouldShowShowAllCampaignsButton)
-
             // Create campaign button
             createCampaignButton
                 .padding(.horizontal, Layout.padding)
                 .redacted(reason: viewModel.shouldRedactView ? .placeholder : [])
                 .shimmering(active: viewModel.shouldRedactView)
                 .renderedIf(viewModel.shouldShowCreateCampaignButton)
+
+            // Show All Campaigns button
+            showAllCampaignsButton
+                .padding(.horizontal, Layout.padding)
+                .renderedIf(viewModel.shouldShowShowAllCampaignsButton)
         }
         .padding(.vertical, Layout.padding)
         .background(Color(.listForeground(modal: false)))

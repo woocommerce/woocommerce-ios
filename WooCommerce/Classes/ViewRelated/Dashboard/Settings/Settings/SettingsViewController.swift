@@ -367,11 +367,14 @@ private extension SettingsViewController {
     }
 
     func sitePluginsWasPressed() {
+        ServiceLocator.analytics.track(.settingsPluginListTapped)
         guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
             return DDLogError("⛔️ Cannot find ID for current site to load plugins for!")
         }
         let pluginListViewModel = PluginListViewModel(siteID: siteID)
-        let pluginListHostingController = UIHostingController(rootView: PluginListView(siteID: siteID, viewModel: pluginListViewModel))
+        let pluginListHostingController = UIHostingController(rootView: PluginListView(siteID: siteID, viewModel: pluginListViewModel, onClose: { [weak self] in
+            self?.dismiss(animated: true)
+        }))
 
         // Since UIHostingController does not have a navigation bar by itself, we need
         // to wrap it into a navigation controller if we want to set a title in the resulting view
@@ -495,12 +498,8 @@ private extension SettingsViewController {
     }
 
     func logOutUser() {
-        Task { @MainActor in
-            // Waits to track all the canceled notifications before deauthenticating or the events will not be logged.
-            await pushNotesManager.cancelAllNotifications()
-            ServiceLocator.stores.deauthenticate()
-            navigationController?.popToRootViewController(animated: true)
-        }
+        ServiceLocator.stores.deauthenticate()
+        navigationController?.popToRootViewController(animated: true)
     }
 
     func weAreHiringWasPressed(url: URL) {

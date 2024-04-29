@@ -2,10 +2,11 @@ import Yosemite
 import Combine
 import enum Networking.DotcomError
 import enum Storage.StatsVersion
+import protocol Storage.StorageManagerType
 import protocol Experiments.FeatureFlagService
 
 /// Syncs data for dashboard stats UI and determines the state of the dashboard UI based on stats version.
-final class DashboardViewModel {
+final class DashboardViewModel: ObservableObject {
     /// Stats v4 is shown by default, then falls back to v3 if store stats are unavailable.
     @Published private(set) var statsVersion: StatsVersion = .v4
 
@@ -19,13 +20,29 @@ final class DashboardViewModel {
 
     let blazeCampaignDashboardViewModel: BlazeCampaignDashboardViewModel
 
-    @Published private(set) var showWebViewSheet: WebViewSheetViewModel? = nil
+    let storePerformanceViewModel: StorePerformanceViewModel
+    let topPerformersViewModel: TopPerformersDashboardViewModel
+
+    @Published var justInTimeMessagesWebViewModel: WebViewSheetViewModel? = nil
 
     @Published private(set) var showOnboarding: Bool = false
-
     @Published private(set) var showBlazeCampaignView: Bool = false
 
-    private let siteID: Int64
+    @Published private(set) var dashboardCards: [DashboardCard] = [
+        DashboardCard(type: .performance, enabled: true),
+        DashboardCard(type: .topPerformers, enabled: true)
+    ]
+    @Published private(set) var unavailableDashboardCards: [DashboardCard] = []
+
+    @Published private(set) var jetpackBannerVisibleFromAppSettings = false
+
+    @Published private(set) var hasOrders: Bool = true
+
+    @Published private(set) var canHideMoreDashboardCards = false
+
+    @Published var showingCustomization = false
+
+    let siteID: Int64
     private let stores: StoresManager
     private let featureFlagService: FeatureFlagService
     private let analytics: Analytics
@@ -34,25 +51,40 @@ final class DashboardViewModel {
     private let userDefaults: UserDefaults
     private let storeCreationProfilerUploadAnswersUseCase: StoreCreationProfilerUploadAnswersUseCaseProtocol
     private let themeInstaller: ThemeInstaller
+    private let storageManager: StorageManagerType
+    private var subscriptions: Set<AnyCancellable> = []
 
     var siteURLToShare: URL? {
         if let site = stores.sessionManager.defaultSite,
-           site.isPublic, // only show share button if the site is public.
+           !site.isWordPressComStore || site.isPublic, // only show share button if it's a .org site or a public .com site
            let url = URL(string: site.url) {
             return url
         }
         return nil
     }
 
+    private lazy var ordersResultsController: ResultsController<StorageOrder> = {
+        let predicate = NSPredicate(format: "siteID == %lld", siteID)
+        let sortDescriptorByID = NSSortDescriptor(keyPath: \StorageOrder.orderID, ascending: false)
+        let resultsController = ResultsController<StorageOrder>(storageManager: storageManager,
+                                                                matching: predicate,
+                                                                fetchLimit: 1,
+                                                                sortedBy: [sortDescriptorByID])
+        return resultsController
+    }()
+
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
+         storageManager: StorageManagerType = ServiceLocator.storageManager,
          featureFlags: FeatureFlagService = ServiceLocator.featureFlagService,
          analytics: Analytics = ServiceLocator.analytics,
          userDefaults: UserDefaults = .standard,
          storeCreationProfilerUploadAnswersUseCase: StoreCreationProfilerUploadAnswersUseCaseProtocol? = nil,
-         themeInstaller: ThemeInstaller = DefaultThemeInstaller()) {
+         themeInstaller: ThemeInstaller = DefaultThemeInstaller(),
+         usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter = StoreStatsUsageTracksEventEmitter()) {
         self.siteID = siteID
         self.stores = stores
+        self.storageManager = storageManager
         self.featureFlagService = featureFlags
         self.analytics = analytics
         self.userDefaults = userDefaults
@@ -60,10 +92,16 @@ final class DashboardViewModel {
         self.localAnnouncementsProvider = .init(stores: stores, analytics: analytics, featureFlagService: featureFlags)
         self.storeOnboardingViewModel = .init(siteID: siteID, isExpanded: false, stores: stores, defaults: userDefaults)
         self.blazeCampaignDashboardViewModel = .init(siteID: siteID)
+        self.storePerformanceViewModel = .init(siteID: siteID,
+                                               usageTracksEventEmitter: usageTracksEventEmitter)
+        self.topPerformersViewModel = .init(siteID: siteID,
+                                            usageTracksEventEmitter: usageTracksEventEmitter)
         self.storeCreationProfilerUploadAnswersUseCase = storeCreationProfilerUploadAnswersUseCase ?? StoreCreationProfilerUploadAnswersUseCase(siteID: siteID)
         self.themeInstaller = themeInstaller
         setupObserverForShowOnboarding()
         setupObserverForBlazeCampaignView()
+        configureOrdersResultController()
+        setupDashboardCards()
         installPendingThemeIfNeeded()
     }
 
@@ -73,14 +111,51 @@ final class DashboardViewModel {
         await storeCreationProfilerUploadAnswersUseCase.uploadAnswers()
     }
 
+    @MainActor
+    func reloadAllData() async {
+        await withTaskGroup(of: Void.self) { group in
+            group.addTask { [weak self] in
+                guard let self else { return }
+                await self.syncAnnouncements(for: self.siteID)
+            }
+            group.addTask { [weak self] in
+                await self?.reloadStoreOnboardingTasks()
+            }
+            group.addTask { [weak self] in
+                await self?.reloadBlazeCampaignView()
+            }
+            group.addTask { [weak self] in
+                await self?.updateJetpackBannerVisibilityFromAppSettings()
+            }
+            group.addTask { [weak self] in
+                await self?.updateHasOrdersStatus()
+            }
+            if featureFlagService.isFeatureFlagEnabled(.dynamicDashboard) {
+                if dashboardCards.contains(where: { $0.type == .performance }) {
+                    group.addTask { [weak self] in
+                        await self?.storePerformanceViewModel.reloadData()
+                    }
+                }
+
+                if dashboardCards.contains(where: { $0.type == .topPerformers }) {
+                    group.addTask { [weak self] in
+                        await self?.topPerformersViewModel.reloadData()
+                    }
+                }
+            }
+        }
+    }
+
     /// Reloads store onboarding tasks
     ///
+    @MainActor
     func reloadStoreOnboardingTasks() async {
         await storeOnboardingViewModel.reloadTasks()
     }
 
     /// Reloads Blaze dashboard campaign view
     ///
+    @MainActor
     func reloadBlazeCampaignView() async {
         await blazeCampaignDashboardViewModel.reload()
     }
@@ -206,6 +281,7 @@ final class DashboardViewModel {
 
     /// Checks for announcements to show on the dashboard
     ///
+    @MainActor
     func syncAnnouncements(for siteID: Int64) async {
         await syncJustInTimeMessages(for: siteID)
         await loadLocalAnnouncement()
@@ -222,11 +298,35 @@ final class DashboardViewModel {
         analytics.track(event: .Dashboard.dashboardTimezonesDiffers(localTimezone: localGMTOffsetInHours, storeTimezone: siteGMTOffset))
     }
 
+    func saveJetpackBenefitBannerDismissedTime() {
+        let dismissAction = AppSettingsAction.setJetpackBenefitsBannerLastDismissedTime(time: Date())
+        stores.dispatch(dismissAction)
+    }
+
+    func maybeSyncAnnouncementsAfterWebViewDismissed() {
+        // Sync announcements again only when the JITM modal has been dismissed to avoid showing duplicated modals.
+        if modalJustInTimeMessageViewModel == nil {
+            Task {
+                await syncAnnouncements(for: siteID)
+            }
+        }
+    }
+
+    func didCustomizeDashboardCards(_ cards: [DashboardCard]) {
+        stores.dispatch(AppSettingsAction.setDashboardCards(siteID: siteID, cards: cards))
+        dashboardCards = cards
+    }
+}
+
+// MARK: Private helpers
+private extension DashboardViewModel {
+
     /// Checks for Just In Time Messages and prepares the announcement if needed.
     ///
-    private func syncJustInTimeMessages(for siteID: Int64) async {
+    @MainActor
+    func syncJustInTimeMessages(for siteID: Int64) async {
         let viewModel = try? await justInTimeMessagesManager.loadMessage(for: .dashboard, siteID: siteID)
-        viewModel?.$showWebViewSheet.assign(to: &self.$showWebViewSheet)
+        viewModel?.$showWebViewSheet.assign(to: &self.$justInTimeMessagesWebViewModel)
         switch viewModel?.template {
         case .some(.banner):
             announcementViewModel = viewModel
@@ -241,7 +341,7 @@ final class DashboardViewModel {
     @MainActor
     /// If JITM modal isn't displayed, it loads a local announcement to be displayed modally if available.
     /// When a local announcement is available, the view model is set. Otherwise, the view model is set to `nil`.
-    private func loadLocalAnnouncement() async {
+    func loadLocalAnnouncement() async {
         // Local announcement modal can only be shown when JITM modal is not shown.
         guard modalJustInTimeMessageViewModel == nil else {
             return
@@ -255,7 +355,7 @@ final class DashboardViewModel {
 
     /// Sets up observer to decide store onboarding task lists visibility
     ///
-    private func setupObserverForShowOnboarding() {
+    func setupObserverForShowOnboarding() {
         guard featureFlagService.isFeatureFlagEnabled(.dashboardOnboarding) else {
             return
         }
@@ -266,9 +366,158 @@ final class DashboardViewModel {
 
     /// Sets up observer to decide Blaze campaign view visibility
     ///
-    private func setupObserverForBlazeCampaignView() {
+    func setupObserverForBlazeCampaignView() {
         blazeCampaignDashboardViewModel.$shouldShowInDashboard
             .assign(to: &$showBlazeCampaignView)
+    }
+
+    func configureOrdersResultController() {
+        ordersResultsController.onDidChangeContent = { [weak self] in
+            self?.updateResults()
+        }
+        ordersResultsController.onDidResetContent = { [weak self] in
+            self?.updateResults()
+        }
+
+        do {
+            try ordersResultsController.performFetch()
+            updateResults()
+        } catch {
+            ServiceLocator.crashLogging.logError(error)
+        }
+    }
+
+    func updateResults() {
+        hasOrders = ordersResultsController.fetchedObjects.isNotEmpty
+    }
+
+    func setupDashboardCards() {
+        storeOnboardingViewModel.onDismiss = { [weak self] in
+            self?.showCustomizationScreen()
+        }
+
+        blazeCampaignDashboardViewModel.onDismiss = { [weak self] in
+            self?.showCustomizationScreen()
+        }
+
+        storePerformanceViewModel.onDismiss = { [weak self] in
+            self?.showCustomizationScreen()
+        }
+
+        topPerformersViewModel.onDismiss = { [weak self] in
+            self?.showCustomizationScreen()
+        }
+
+        storeOnboardingViewModel.$canShowInDashboard
+            .combineLatest(blazeCampaignDashboardViewModel.$canShowInDashboard, $hasOrders)
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] canShowOnboarding, canShowBlaze, hasOrders in
+                guard let self else { return }
+                Task {
+                    await self.updateDashboardCards(canShowOnboarding: canShowOnboarding,
+                                                    canShowBlaze: canShowBlaze,
+                                                    canShowAnalytics: hasOrders
+                    )
+                }
+            }
+            .store(in: &subscriptions)
+
+        $dashboardCards
+            .receive(on: DispatchQueue.main)
+            .map { $0.filter({ $0.enabled }).count > 1 }
+            .assign(to: &$canHideMoreDashboardCards)
+    }
+
+    func showCustomizationScreen() {
+        showingCustomization = true
+    }
+
+    /// We are using separate user defaults for different cards -
+    /// this should be updated to general app settings.
+    ///
+    @MainActor
+    func updateDashboardCards(canShowOnboarding: Bool,
+                              canShowBlaze: Bool,
+                              canShowAnalytics: Bool) async {
+        dashboardCards = await {
+            if let stored = await loadDashboardCards() {
+                return stored
+            } else {
+                return [DashboardCard(type: .onboarding, enabled: canShowOnboarding),
+                        DashboardCard(type: .performance, enabled: canShowAnalytics),
+                        DashboardCard(type: .topPerformers, enabled: canShowAnalytics),
+                        DashboardCard(type: .blaze, enabled: canShowBlaze)]
+            }
+        }()
+
+        unavailableDashboardCards = []
+
+        if let performanceCard = dashboardCards.first(where: { $0.type == .performance }),
+            !canShowAnalytics {
+            unavailableDashboardCards.append(performanceCard)
+        }
+
+        if let topPerformersCard = dashboardCards.first(where: { $0.type == .topPerformers }),
+            !canShowAnalytics {
+            unavailableDashboardCards.append(topPerformersCard)
+        }
+
+        if let onboardingCard = dashboardCards.first(where: { $0.type == .onboarding }),
+           !canShowOnboarding {
+            unavailableDashboardCards.append(onboardingCard)
+        }
+
+        if let blazeCard = dashboardCards.first(where: { $0.type == .blaze }),
+           !canShowBlaze {
+            unavailableDashboardCards.append(blazeCard)
+        }
+    }
+
+    @MainActor
+    func updateHasOrdersStatus() async {
+        do {
+            hasOrders = try await loadHasOrdersStatus()
+        } catch {
+            DDLogError("⛔️ Dashboard (Share Your Store) — Error checking if site has orders: \(error)")
+        }
+    }
+
+    @MainActor
+    func loadHasOrdersStatus() async throws -> Bool {
+        return try await withCheckedThrowingContinuation { continuation in
+            stores.dispatch(OrderAction.checkIfStoreHasOrders(siteID: self.siteID, onCompletion: { result in
+                switch result {
+                case .success(let hasOrders):
+                    continuation.resume(returning: hasOrders)
+                case .failure(let error):
+                    continuation.resume(throwing: error)
+                }
+            }))
+        }
+    }
+
+    @MainActor
+    func loadJetpackBannerVisibilityFromAppSettings() async -> Bool {
+        await withCheckedContinuation { continuation in
+            stores.dispatch(AppSettingsAction.loadJetpackBenefitsBannerVisibility(currentTime: Date(),
+                                                                               calendar: .current) {  isVisibleFromAppSettings in
+                continuation.resume(returning: isVisibleFromAppSettings)
+            })
+        }
+    }
+
+    @MainActor
+    func updateJetpackBannerVisibilityFromAppSettings() async {
+        jetpackBannerVisibleFromAppSettings = await loadJetpackBannerVisibilityFromAppSettings()
+    }
+
+    @MainActor
+    func loadDashboardCards() async -> [DashboardCard]? {
+        await withCheckedContinuation { continuation in
+            stores.dispatch(AppSettingsAction.loadDashboardCards(siteID: siteID, onCompletion: { cards in
+                continuation.resume(returning: cards)
+            }))
+        }
     }
 }
 
@@ -294,5 +543,7 @@ private extension DashboardViewModel {
     enum Constants {
         static let topEarnerStatsLimit: Int = 5
         static let dashboardScreenName = "my_store"
+        static let orderPageNumber = 1
+        static let orderPageSize = 1
     }
 }

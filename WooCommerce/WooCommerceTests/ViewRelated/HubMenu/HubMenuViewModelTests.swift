@@ -3,6 +3,7 @@ import XCTest
 @testable import WooCommerce
 @testable import Yosemite
 
+@MainActor
 final class HubMenuViewModelTests: XCTestCase {
     private let sampleSiteID: Int64 = 606
 
@@ -325,7 +326,7 @@ final class HubMenuViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.shouldAuthenticateAdminPage)
     }
 
-    func test_menuElements_include_subscriptions_on_wp_com_sites() {
+    func test_menuElements_include_subscriptions_on_wp_com_sites_if_not_free_trial() {
         // Given
         let sessionManager = SessionManager.testingInstance
         sessionManager.defaultSite = Site.fake().copy(isWordPressComStore: true)
@@ -338,6 +339,24 @@ final class HubMenuViewModelTests: XCTestCase {
         viewModel.setupMenuElements()
 
         XCTAssertNotNil(viewModel.settingsElements.firstIndex(where: { item in
+            item.id == HubMenuViewModel.Subscriptions.id
+        }))
+    }
+
+    func test_menuElements_does_not_include_subscriptions_on_wp_com_free_trial_sites() {
+        // Given
+        let freeTrialPlanSlug = "ecommerce-trial-bundle-monthly"
+        let sessionManager = SessionManager.testingInstance
+        sessionManager.defaultSite = Site.fake().copy(plan: freeTrialPlanSlug, isWordPressComStore: true)
+        let stores = MockStoresManager(sessionManager: sessionManager)
+
+        // When
+        let viewModel = HubMenuViewModel(siteID: sampleSiteID,
+                                         tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
+                                         stores: stores)
+        viewModel.setupMenuElements()
+
+        XCTAssertNil(viewModel.settingsElements.firstIndex(where: { item in
             item.id == HubMenuViewModel.Subscriptions.id
         }))
     }
@@ -356,6 +375,21 @@ final class HubMenuViewModelTests: XCTestCase {
 
         XCTAssertNil(viewModel.settingsElements.firstIndex(where: { item in
             item.id == HubMenuViewModel.Subscriptions.id
+        }))
+    }
+
+    func test_menuElements_do_not_include_customers_when_feature_flag_is_off() {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isCustomersInHubMenuEnabled: false)
+
+        // When
+        let viewModel = HubMenuViewModel(siteID: sampleSiteID,
+                                         tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
+                                         featureFlagService: featureFlagService)
+
+        // Then
+        XCTAssertNil(viewModel.generalElements.firstIndex(where: { item in
+            item.id == HubMenuViewModel.Customers.id
         }))
     }
 }

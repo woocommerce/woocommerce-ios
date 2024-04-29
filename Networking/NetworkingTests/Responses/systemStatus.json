@@ -271,9 +271,9 @@
                 "name":"WooCommerce",
                 "version":"5.8.0",
                 "version_latest":"5.8.0",
-                "url":"https:\/\/woo.com\/",
+                "url":"https:\/\/woocommerce.com\/",
                 "author_name":"Automattic",
-                "author_url":"https:\/\/woo.com",
+                "author_url":"https:\/\/woocommerce.com",
                 "network_activated":false
             },
             {
@@ -281,9 +281,9 @@
                 "name":"WooCommerce Payments",
                 "version":"3.1.0",
                 "version_latest":"3.1.0",
-                "url":"https:\/\/woo.com\/payments\/",
+                "url":"https:\/\/woocommerce.com\/payments\/",
                 "author_name":"Automattic",
-                "author_url":"https:\/\/woo.com\/",
+                "author_url":"https:\/\/woocommerce.com\/",
                 "network_activated":false
             },
             {
@@ -291,9 +291,9 @@
                 "name":"WooCommerce Subscriptions",
                 "version":"3.1.6",
                 "version_latest":"3.1.6",
-                "url":"https:\/\/www.woo.com\/products\/woocommerce-subscriptions\/",
+                "url":"https:\/\/www.woocommerce.com\/products\/woocommerce-subscriptions\/",
                 "author_name":"Automattic",
-                "author_url":"https:\/\/woo.com\/",
+                "author_url":"https:\/\/woocommerce.com\/",
                 "network_activated":false
             },
             {

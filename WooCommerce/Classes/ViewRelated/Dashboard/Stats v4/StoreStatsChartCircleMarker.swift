@@ -1,4 +1,4 @@
-import Charts
+import DGCharts
 import UIKit
 
 /// Circle marker which is shown on the highlighted point in the line chart.

@@ -1,0 +1,39 @@
+{
+    "totals": {
+        "items_sold": 5,
+        "bundled_items_sold": 3,
+        "net_revenue": 50,
+        "orders_count": 2,
+        "products_count": 4
+    },
+    "intervals": [
+        {
+            "interval": "2024-01-21",
+            "date_start": "2024-01-21 00:00:00",
+            "date_start_gmt": "2024-01-21 00:00:00",
+            "date_end": "2024-01-21 23:59:59",
+            "date_end_gmt": "2024-01-21 23:59:59",
+            "subtotals": {
+                "items_sold": 3,
+                "bundled_items_sold": 2,
+                "net_revenue": 35,
+                "orders_count": 1,
+                "products_count": 2
+            }
+        },
+        {
+            "interval": "2024-01-20",
+            "date_start": "2024-01-20 00:00:00",
+            "date_start_gmt": "2024-01-20 00:00:00",
+            "date_end": "2024-01-20 23:59:59",
+            "date_end_gmt": "2024-01-20 23:59:59",
+            "subtotals": {
+                "items_sold": 2,
+                "bundled_items_sold": 1,
+                "net_revenue": 15,
+                "orders_count": 1,
+                "products_count": 2
+            }
+        }
+    ]
+}

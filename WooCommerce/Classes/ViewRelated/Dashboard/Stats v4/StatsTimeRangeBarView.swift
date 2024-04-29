@@ -6,7 +6,7 @@ final class StatsTimeRangeBarView: UIView {
     // MARK: Subviews
     private let stackView = UIStackView(frame: .zero)
     private let button = UIButton(frame: .zero)
-    private let subtitleLabel = UILabel(frame: .zero)
+    private let selectedDateLabel = UILabel(frame: .zero)
 
     // To be updated externally to handle button tap
     var editCustomTimeRangeHandler: (() -> Void)?
@@ -16,14 +16,13 @@ final class StatsTimeRangeBarView: UIView {
         translatesAutoresizingMaskIntoConstraints = false
         configureStackView()
         configureButton()
-        configureSubtitleLabel()
     }
 
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         configureStackView()
         configureButton()
-        configureSubtitleLabel()
+        configureSelectedDateLabel()
     }
 
     /// Updates the label with start/end dates, time range type, and site time zone.
@@ -32,8 +31,8 @@ final class StatsTimeRangeBarView: UIView {
 
         var configuration = UIButton.Configuration.plain()
         configuration.titleAlignment = .center
-        configuration.image = viewModel.isTimeRangeEditable ? UIImage(systemName: "calendar") : nil
-        configuration.imagePlacement = .leading
+        configuration.image = viewModel.isTimeRangeEditable ? UIImage(systemName: "pencil") : nil
+        configuration.imagePlacement = .trailing
         configuration.preferredSymbolConfigurationForImage = UIImage.SymbolConfiguration(font: Constants.labelFont)
         configuration.imagePadding = Constants.imagePadding
 
@@ -42,8 +41,9 @@ final class StatsTimeRangeBarView: UIView {
         container.foregroundColor = viewModel.isTimeRangeEditable ? .accent : Constants.labelColor
         configuration.attributedTitle = AttributedString(viewModel.timeRangeText, attributes: container)
 
+        selectedDateLabel.text = viewModel.selectedDateText
+
         button.configuration = configuration
-        subtitleLabel.text = viewModel.granularityText
     }
 }
 
@@ -67,12 +67,11 @@ private extension StatsTimeRangeBarView {
         stackView.addArrangedSubview(button)
     }
 
-    func configureSubtitleLabel() {
-        subtitleLabel.font = Constants.labelFont
-        subtitleLabel.textColor = Constants.labelColor
-        subtitleLabel.setContentCompressionResistancePriority(.required, for: .vertical)
-        subtitleLabel.translatesAutoresizingMaskIntoConstraints = false
-        stackView.addArrangedSubview(subtitleLabel)
+    func configureSelectedDateLabel() {
+        selectedDateLabel.font = Constants.labelFont
+        selectedDateLabel.textColor = Constants.labelColor
+        selectedDateLabel.textAlignment = Constants.labelTextAlignment
+        stackView.addArrangedSubview(selectedDateLabel)
     }
 }
 

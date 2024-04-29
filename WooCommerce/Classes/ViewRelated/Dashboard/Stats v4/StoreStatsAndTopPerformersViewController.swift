@@ -133,6 +133,7 @@ extension StoreStatsAndTopPerformersViewController: DashboardUI {
                 continuation.resume(returning: ())
             }
         }
+        resetViewSize()
     }
 
     func remindStatsUpgradeLater() {
@@ -156,7 +157,9 @@ private extension StoreStatsAndTopPerformersViewController {
                 guard let self else { return }
                 let periodViewController = self.periodVCs[timeRangeTabIndex]
                 self.saveLastTimeRange(periodViewController.timeRange)
-                self.syncStats(forced: false, viewControllerToSync: periodViewController)
+                self.syncStats(forced: false, viewControllerToSync: periodViewController) { [weak self] _ in
+                    self?.resetViewSize()
+                }
             }
     }
 
@@ -389,6 +392,13 @@ private extension StoreStatsAndTopPerformersViewController {
         view.backgroundColor = Constants.backgroundColor
     }
 
+    /// Resets the size of the view controller to display all contents on the `DashboardView`.
+    ///
+    func resetViewSize() {
+        let size = view.systemLayoutSizeFitting(UIView.layoutFittingExpandedSize)
+        preferredContentSize = size
+    }
+
     func configurePeriodViewControllers() {
         periodVCs.forEach { (vc) in
             vc.onPullToRefresh = { [weak self] in
@@ -418,7 +428,6 @@ private extension StoreStatsAndTopPerformersViewController {
         addCustomViewToTabBar(customRangeButtonView)
 
         selectedTabSubscription = tabBar.$selectedIndex
-            .print("🍎 tab switched")
             .dropFirst() // ignore first event to take into account only manual selection
             .sink { [weak self] index in
                 guard let self, let range = timeRanges[safe: index] else {
@@ -523,7 +532,7 @@ private extension StoreStatsAndTopPerformersViewController {
         var siteVisitStatsMode: SiteVisitStatsMode
         if site.isJetpackConnected && site.isJetpackThePluginInstalled {
             let differenceInDay = StatsTimeRangeV4.differenceInDays(startDate: startDate, endDate: endDate)
-            siteVisitStatsMode = differenceInDay == .lessThan2 ? .default : .redactedDueToCustomRange
+            siteVisitStatsMode = differenceInDay == .sameDay ? .default : .redactedDueToCustomRange
         } else if site.isJetpackCPConnected {
             siteVisitStatsMode = .redactedDueToJetpack
         } else {
@@ -549,7 +558,9 @@ private extension StoreStatsAndTopPerformersViewController {
         removeCustomViewFromTabBar()
 
         // Get stats data for this tab
-        syncStats(forced: false, viewControllerToSync: customRangeVC)
+        syncStats(forced: false, viewControllerToSync: customRangeVC) { [weak self] _ in
+            self?.resetViewSize()
+        }
 
         // Add pull to refresh functionality
         customRangeVC.onPullToRefresh = { [weak self] in

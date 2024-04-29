@@ -1,4 +1,5 @@
 import XCTest
+import Fakes
 import enum Networking.DotcomError
 import enum Yosemite.StatsActionV4
 import enum Yosemite.ProductAction
@@ -6,6 +7,7 @@ import enum Yosemite.OrderAction
 import enum Yosemite.AppSettingsAction
 import enum Yosemite.JustInTimeMessageAction
 import struct Yosemite.JustInTimeMessage
+import struct Yosemite.Order
 import struct Yosemite.StoreOnboardingTask
 import enum Yosemite.StoreOnboardingTasksAction
 import enum Yosemite.ProductStatus
@@ -251,11 +253,8 @@ final class DashboardViewModelTests: XCTestCase {
 
         let viewModel = DashboardViewModel(siteID: 0, stores: stores, featureFlags: featureFlagService)
         stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
-            switch action {
-            case .getLocalAnnouncementVisibility:
+            if case .getLocalAnnouncementVisibility = action {
                 XCTFail("Local announcement should not be loaded when JITM is available.")
-            default:
-                XCTFail("Received unsupported action: \(action)")
             }
         }
 
@@ -279,11 +278,8 @@ final class DashboardViewModelTests: XCTestCase {
 
         let viewModel = DashboardViewModel(siteID: 0, stores: stores, featureFlags: featureFlagService)
         stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
-            switch action {
-            case let .getLocalAnnouncementVisibility(_, completion):
+            if case let .getLocalAnnouncementVisibility(_, completion) = action {
                 completion(true)
-            default:
-                XCTFail("Received unsupported action: \(action)")
             }
         }
 
@@ -574,6 +570,53 @@ final class DashboardViewModelTests: XCTestCase {
         XCTAssertTrue(siteSummaryStatsResult.isSuccess)
     }
 
+    // MARK: Dashboard cards
+
+    func test_dashboard_cards_are_loaded_from_app_settings() async throws {
+        // Given
+        let uuid = UUID().uuidString
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
+        let viewModel = DashboardViewModel(siteID: 0,
+                                           stores: stores,
+                                           userDefaults: defaults)
+
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            if case let .loadDashboardCards(_, completion) = action {
+                completion([.init(type: .performance, enabled: true),
+                            .init(type: .blaze, enabled: true)])
+            }
+        }
+
+        // Then
+        waitUntil {
+            viewModel.dashboardCards == [.init(type: .performance, enabled: true),
+                                         .init(type: .blaze, enabled: true)]
+        }
+    }
+
+    func test_dashboard_cards_are_saved_to_app_settings() async throws {
+        // Given
+        let uuid = UUID().uuidString
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
+        defaults[.completedAllStoreOnboardingTasks] = true
+        let viewModel = DashboardViewModel(siteID: 0,
+                                           stores: stores,
+                                           userDefaults: defaults)
+        var setDashboardCardsActionCalled = false
+
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            if case .setDashboardCards = action {
+                setDashboardCardsActionCalled = true
+            }
+        }
+
+        // When
+        viewModel.didCustomizeDashboardCards([.init(type: .performance, enabled: true)])
+
+        // Then
+        XCTAssertTrue(setDashboardCardsActionCalled)
+    }
+
     // MARK: Profiler answers
     func test_uploadProfilerAnswers_triggers_uploadAnswers() async throws {
         // Given
@@ -601,6 +644,44 @@ final class DashboardViewModelTests: XCTestCase {
 
         //  Then
         XCTAssertEqual(themeInstaller.installPendingThemeCalledForSiteID, sampleSiteID)
+    }
+
+    // MARK: hasOrders state
+    func test_hasOrders_is_true_when_site_has_orders() {
+        // Given
+        let storage = MockStorageManager()
+        let insertOrder = Order.fake().copy(siteID: sampleSiteID)
+        storage.insertSampleOrder(readOnlyOrder: insertOrder)
+        let viewModel = DashboardViewModel(siteID: sampleSiteID, stores: stores, storageManager: storage)
+
+        // Then
+        XCTAssertTrue(viewModel.hasOrders)
+    }
+
+    func test_hasOrders_is_false_when_site_has_no_orders() {
+        // Given
+        let viewModel = DashboardViewModel(siteID: sampleSiteID, stores: stores)
+
+        // Then
+        XCTAssertFalse(viewModel.hasOrders)
+    }
+
+    func test_hasOrders_is_updated_correctly_when_orders_availability_changes() {
+        // Given
+        let storage = MockStorageManager()
+        let viewModel = DashboardViewModel(siteID: sampleSiteID, stores: stores, storageManager: storage)
+
+        // Then
+        XCTAssertFalse(viewModel.hasOrders)
+
+        // When
+        let insertOrder = Order.fake().copy(siteID: sampleSiteID)
+        storage.insertSampleOrder(readOnlyOrder: insertOrder)
+
+        // Then
+        waitUntil {
+            viewModel.hasOrders == true
+        }
     }
 }
 

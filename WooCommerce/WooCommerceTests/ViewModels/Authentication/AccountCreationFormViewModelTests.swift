@@ -42,7 +42,7 @@ final class AccountCreationFormViewModelTests: XCTestCase {
 
     func test_isEmailValid_is_true_after_entering_valid_email() {
         // When
-        viewModel.email = "notanemail@woo.com"
+        viewModel.email = "notanemail@woocommerce.com"
 
         // Then
         waitUntil {
@@ -74,6 +74,7 @@ final class AccountCreationFormViewModelTests: XCTestCase {
 
     // MARK: - `createAccount`
 
+    @MainActor
     func test_createAccount_success_sets_state_to_authenticated() async {
         // Given
         mockAccountCreationSuccess(result: .init(authToken: "token", username: "username"))
@@ -86,6 +87,7 @@ final class AccountCreationFormViewModelTests: XCTestCase {
         XCTAssertTrue(stores.isAuthenticated)
     }
 
+    @MainActor
     func test_createAccount_password_failure_sets_passwordErrorMessage() async {
         // Given
         mockAccountCreationFailure(error: .invalidPassword(message: "too complex to guess"))
@@ -101,6 +103,7 @@ final class AccountCreationFormViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.passwordErrorMessage, "too complex to guess")
     }
 
+    @MainActor
     func test_createAccount_invalidEmail_failure_sets_emailErrorMessage() async {
         // Given
         mockAccountCreationFailure(error: .invalidEmail)
@@ -113,6 +116,7 @@ final class AccountCreationFormViewModelTests: XCTestCase {
         XCTAssertNotNil(viewModel.emailErrorMessage)
     }
 
+    @MainActor
     func test_shouldTransitionToPasswordField_is_updated_to_true_when_account_creation_fails_with_invalidPassword() async {
         // Given
         mockAccountCreationFailure(error: .invalidPassword(message: ""))
@@ -139,6 +143,7 @@ final class AccountCreationFormViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.currentField, .password)
     }
 
+    @MainActor
     func test_passwordErrorMessage_is_cleared_after_changing_password_input() async {
         // Given
         mockAccountCreationFailure(error: .invalidPassword(message: "too complex to guess"))
@@ -153,13 +158,14 @@ final class AccountCreationFormViewModelTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_emailErrorMessage_is_cleared_after_changing_email_input() async {
         // Given
         mockAccountCreationFailure(error: .emailExists)
 
         // When
         await viewModel.createAccount()
-        viewModel.email = "real@woo.com"
+        viewModel.email = "real@woocommerce.com"
 
         // Then
         waitUntil {
@@ -169,6 +175,7 @@ final class AccountCreationFormViewModelTests: XCTestCase {
 
     // MARK: - analytics
 
+    @MainActor
     func test_createAccount_success_tracks_expected_events() async {
         // Given
         mockAccountCreationSuccess(result: .init(authToken: "", username: ""))
@@ -180,6 +187,7 @@ final class AccountCreationFormViewModelTests: XCTestCase {
         XCTAssertEqual(analyticsProvider.receivedEvents, ["signup_submitted", "signup_success"])
     }
 
+    @MainActor
     func test_createAccount_failure_tracks_expected_events() async {
         // Given
         mockAccountCreationFailure(error: .emailExists)
@@ -191,6 +199,7 @@ final class AccountCreationFormViewModelTests: XCTestCase {
         XCTAssertEqual(analyticsProvider.receivedEvents, ["signup_submitted", "signup_failed"])
     }
 
+    @MainActor
     func test_createAccount_failure_with_invalid_password_is_not_tracked_if_currentField_is_email() async {
         // Given
         mockAccountCreationFailure(error: .invalidPassword(message: nil))
@@ -203,6 +212,7 @@ final class AccountCreationFormViewModelTests: XCTestCase {
         XCTAssertEqual(analyticsProvider.receivedEvents, ["signup_submitted"])
     }
 
+    @MainActor
     func test_createAccount_failure_with_invalid_password_is_tracked_if_currentField_is_password() async {
         // Given
         mockAccountCreationFailure(error: .invalidPassword(message: nil))

@@ -16,11 +16,11 @@ final class SystemPluginMapperTests: XCTestCase {
         let expectedSiteId: Int64 = 999999
         let expectedPlugin = "woocommerce/woocommerce.php"
         let expectedName = "WooCommerce"
-        let expectedUrl = "https://woo.com/"
+        let expectedUrl = "https://woocommerce.com/"
         let expectedVersion = "5.8.0"
         let expectedVersionLatest = "5.8.0"
         let expectedAuthorName = "Automattic"
-        let expectedAuthorUrl = "https://woo.com"
+        let expectedAuthorUrl = "https://woocommerce.com"
         let expectedNetworkActivated = false
         let expectedActive = true
 
@@ -89,11 +89,11 @@ final class SystemPluginMapperTests: XCTestCase {
         XCTAssertEqual(systemPlugin.siteID, 999999)
         XCTAssertEqual(systemPlugin.plugin, "woocommerce/woocommerce.php")
         XCTAssertEqual(systemPlugin.name, "WooCommerce")
-        XCTAssertEqual(systemPlugin.url, "https://woo.com/")
+        XCTAssertEqual(systemPlugin.url, "https://woocommerce.com/")
         XCTAssertEqual(systemPlugin.version, "5.8.0")
         XCTAssertEqual(systemPlugin.versionLatest, "5.8.0")
         XCTAssertEqual(systemPlugin.authorName, "Automattic")
-        XCTAssertEqual(systemPlugin.authorUrl, "https://woo.com")
+        XCTAssertEqual(systemPlugin.authorUrl, "https://woocommerce.com")
         XCTAssertFalse(systemPlugin.networkActivated)
         XCTAssertTrue(systemPlugin.active)
     }

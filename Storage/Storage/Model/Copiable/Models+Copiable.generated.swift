@@ -19,6 +19,21 @@ extension Storage.AnalyticsCard {
     }
 }
 
+extension Storage.DashboardCard {
+    public func copy(
+        type: CopiableProp<DashboardCard.CardType> = .copy,
+        enabled: CopiableProp<Bool> = .copy
+    ) -> Storage.DashboardCard {
+        let type = type ?? self.type
+        let enabled = enabled ?? self.enabled
+
+        return Storage.DashboardCard(
+            type: type,
+            enabled: enabled
+        )
+    }
+}
+
 extension Storage.FeatureAnnouncementCampaignSettings {
     public func copy(
         dismissedDate: NullableCopiableProp<Date> = .copy,
@@ -88,7 +103,10 @@ extension Storage.GeneralStoreSettings {
         customStatsTimeRange: CopiableProp<String> = .copy,
         firstInPersonPaymentsTransactionsByReaderType: CopiableProp<[CardReaderType: Date]> = .copy,
         selectedTaxRateID: NullableCopiableProp<Int64> = .copy,
-        analyticsHubCards: NullableCopiableProp<[AnalyticsCard]> = .copy
+        analyticsHubCards: NullableCopiableProp<[AnalyticsCard]> = .copy,
+        dashboardCards: NullableCopiableProp<[DashboardCard]> = .copy,
+        lastSelectedPerformanceTimeRange: CopiableProp<String> = .copy,
+        lastSelectedTopPerformersTimeRange: CopiableProp<String> = .copy
     ) -> Storage.GeneralStoreSettings {
         let storeID = storeID ?? self.storeID
         let isTelemetryAvailable = isTelemetryAvailable ?? self.isTelemetryAvailable
@@ -101,6 +119,9 @@ extension Storage.GeneralStoreSettings {
         let firstInPersonPaymentsTransactionsByReaderType = firstInPersonPaymentsTransactionsByReaderType ?? self.firstInPersonPaymentsTransactionsByReaderType
         let selectedTaxRateID = selectedTaxRateID ?? self.selectedTaxRateID
         let analyticsHubCards = analyticsHubCards ?? self.analyticsHubCards
+        let dashboardCards = dashboardCards ?? self.dashboardCards
+        let lastSelectedPerformanceTimeRange = lastSelectedPerformanceTimeRange ?? self.lastSelectedPerformanceTimeRange
+        let lastSelectedTopPerformersTimeRange = lastSelectedTopPerformersTimeRange ?? self.lastSelectedTopPerformersTimeRange
 
         return Storage.GeneralStoreSettings(
             storeID: storeID,
@@ -113,7 +134,10 @@ extension Storage.GeneralStoreSettings {
             customStatsTimeRange: customStatsTimeRange,
             firstInPersonPaymentsTransactionsByReaderType: firstInPersonPaymentsTransactionsByReaderType,
             selectedTaxRateID: selectedTaxRateID,
-            analyticsHubCards: analyticsHubCards
+            analyticsHubCards: analyticsHubCards,
+            dashboardCards: dashboardCards,
+            lastSelectedPerformanceTimeRange: lastSelectedPerformanceTimeRange,
+            lastSelectedTopPerformersTimeRange: lastSelectedTopPerformersTimeRange
         )
     }
 }

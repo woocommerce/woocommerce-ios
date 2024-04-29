@@ -16,10 +16,6 @@ final class OrderDetailsDataSource: NSObject {
     private(set) var order: Order
     private let couponLines: [OrderCouponLine]?
 
-    /// Haptic Feedback!
-    ///
-    private let hapticGenerator = UINotificationFeedbackGenerator()
-
     /// Sections to be rendered
     ///
     private(set) var sections = [Section]()
@@ -85,7 +81,7 @@ final class OrderDetailsDataSource: NSObject {
     ///
     var shouldAllowWCShipInstallation: Bool {
         let isFeatureFlagEnabled = featureFlags.isFeatureFlagEnabled(.shippingLabelsOnboardingM1)
-        let plugin = resultsControllers.sitePlugins.first { $0.name == SitePlugin.SupportedPlugin.WCShip }
+        let plugin = resultsControllers.sitePlugins.first { $0.name == SitePlugin.SupportedPlugin.LegacyWCShip }
         let isPluginInstalled = plugin != nil && resultsControllers.sitePlugins.count > 0
         let isPluginActive = plugin?.status.isActive ?? false
         let isCountryCodeUS = SiteAddress(siteSettings: siteSettings).countryCode == CountryCode.US
@@ -477,6 +473,8 @@ private extension OrderDetailsDataSource {
             configureAttributionDeviceType(cell: cell, at: indexPath)
         case let cell as TitleAndValueTableViewCell where row == .attributionSessionPageViews:
             configureAttributionSessionPageViews(cell: cell, at: indexPath)
+        case let cell as WooBasicTableViewCell where row == .trashOrder:
+            configureTrashOrder(cell: cell, at: indexPath)
         default:
             fatalError("Unidentified customer info row type")
         }
@@ -1021,6 +1019,19 @@ private extension OrderDetailsDataSource {
         }
     }
 
+    private func configureTrashOrder(cell: WooBasicTableViewCell, at indexPath: IndexPath) {
+        cell.bodyLabel.textColor = .error
+        cell.bodyLabel?.text = Titles.trashOrder
+        cell.bodyLabel.textAlignment = .center
+        cell.accessoryType = .none
+        cell.selectionStyle = .default
+
+        cell.accessibilityTraits = .button
+        cell.accessibilityIdentifier = "order-details-trash-order-button"
+        cell.accessibilityLabel = Accessibility.trashOrderLabel
+        cell.accessibilityHint = Accessibility.trashOrderHint
+    }
+
     /// Returns attributes that can be categorized as `Add-ons`.
     /// Returns an `empty` array if we can't find the product associated with order item.
     ///
@@ -1421,6 +1432,10 @@ extension OrderDetailsDataSource {
             return Section(category: .attribution, title: Title.orderAttribution, rows: rows)
         }()
 
+        let trashOrderSection: Section? = {
+            return Section(category: .trashOrder, rows: [.trashOrder])
+        }()
+
         sections = ([summary,
                      shippingNotice,
                      products,
@@ -1429,14 +1444,15 @@ extension OrderDetailsDataSource {
                      installWCShipSection,
                      refundedProducts] +
                     shippingLabelSections +
-                    [payment,
+                    [subscriptions,
+                     payment,
                      customerInformation,
                      attribution,
-                     subscriptions,
                      giftCards,
                      tracking,
                      addTracking,
-                     notes]).compactMap { $0 }
+                     notes,
+                     trashOrderSection]).compactMap { $0 }
 
         updateOrderNoteAsyncDictionary(orderNotes: orderNotes)
     }
@@ -1540,32 +1556,12 @@ extension OrderDetailsDataSource {
 
         switch row {
         case .shippingAddress:
-            sendToPasteboard(order.shippingAddress?.fullNameWithCompanyAndAddress)
+            order.shippingAddress?.fullNameWithCompanyAndAddress.sendToPasteboard()
         case .tracking:
-            sendToPasteboard(orderTracking(at: indexPath)?.trackingNumber, includeTrailingNewline: false)
+            orderTracking(at: indexPath)?.trackingNumber.sendToPasteboard(includeTrailingNewline: false)
         default:
             break // We only send text to the pasteboard from the address rows right meow
         }
-    }
-
-    /// Sends the provided text to the general pasteboard and triggers a success haptic. If the text param
-    /// is nil, nothing is sent to the pasteboard.
-    ///
-    /// - Parameter
-    ///   - text: string value to send to the pasteboard
-    ///   - includeTrailingNewline: If true, insert a trailing newline; defaults to true
-    ///
-    func sendToPasteboard(_ text: String?, includeTrailingNewline: Bool = true) {
-        guard var text = text, text.isEmpty == false else {
-            return
-        }
-
-        if includeTrailingNewline {
-            text += "\n"
-        }
-
-        UIPasteboard.general.string = text
-        hapticGenerator.notificationOccurred(.success)
     }
 
     /// Checks if copying the row data at the provided indexPath is allowed
@@ -1677,6 +1673,10 @@ extension OrderDetailsDataSource {
             value: "See Receipt",
             comment: "Text on the button title to see the order's receipt")
         static let seeLegacyReceipt = NSLocalizedString("See Receipt", comment: "Text on the button to see a saved receipt")
+        static let trashOrder = NSLocalizedString(
+                     "orderDetailsDataSource.trashOrder.button.title",
+                     value: "Move to trash",
+                     comment: "Text on the button title to trash an order")
     }
 
     enum Icons {
@@ -1732,6 +1732,19 @@ extension OrderDetailsDataSource {
                                                                 comment: "Button on bottom of shipping label package card to show shipping details")
     }
 
+    enum Accessibility {
+        static let trashOrderLabel = NSLocalizedString(
+            "orderDetailsDataSource.trashOrder.accessibilityLabel",
+            value: "Trash Order Button",
+            comment: "Accessibility label for the 'Trash order' button"
+        )
+        static let trashOrderHint = NSLocalizedString(
+            "orderDetailsDataSource.trashOrder.accessibilityHint",
+            value: "Put this order in the trash.",
+            comment: "VoiceOver accessibility hint, informing the user that the button can be used to view the order custom fields information."
+        )
+    }
+
     struct Section {
         enum Category {
             case summary
@@ -1750,6 +1763,7 @@ extension OrderDetailsDataSource {
             case notes
             case customFields
             case attribution
+            case trashOrder
         }
 
         /// The table header style of a `Section`.
@@ -1862,6 +1876,7 @@ extension OrderDetailsDataSource {
         case attributionMedium
         case attributionDeviceType
         case attributionSessionPageViews
+        case trashOrder
 
         var reuseIdentifier: String {
             switch self {
@@ -1941,6 +1956,8 @@ extension OrderDetailsDataSource {
                     .attributionDeviceType,
                     .attributionSessionPageViews:
                 return TitleAndValueTableViewCell.reuseIdentifier
+            case .trashOrder:
+                return WooBasicTableViewCell.reuseIdentifier
             }
         }
     }
@@ -1957,6 +1974,7 @@ extension OrderDetailsDataSource {
         case viewAddOns(addOns: [OrderItemProductAddOn])
         case editCustomerNote
         case editShippingAddress
+        case trashOrder
     }
 
     enum Constants {

@@ -188,6 +188,7 @@ struct ProductSelectorView: View {
         .onChange(of: horizontalSizeClass, perform: { newSizeClass in
             updateSyncApproach(for: newSizeClass)
         })
+        // On the order form, this is not connected; the OrderForm displays the notices.
         .notice($viewModel.notice, autoDismiss: false)
         .sheet(isPresented: $showingFilters) {
             FilterListView(viewModel: viewModel.filterListViewModel) { filters in
@@ -376,6 +377,7 @@ private extension ProductSelectorView {
                 SearchHeader(text: $viewModel.searchTerm, placeholder: Localization.searchPlaceholder, onEditingChanged: { isEditing in
                     searchHeaderisBeingEdited = isEditing
                 })
+                .submitLabel(.done)
                 .accessibilityIdentifier("product-selector-search-bar")
                 Picker(selection: $viewModel.productSearchFilter, label: EmptyView()) {
                     ForEach(ProductSearchFilter.allCases, id: \.self) { option in Text(option.title) }

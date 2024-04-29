@@ -3,6 +3,7 @@ import XCTest
 import Yosemite
 import WooFoundation
 import Networking
+import Combine
 
 final class EditableOrderViewModelTests: XCTestCase {
     var viewModel: EditableOrderViewModel!
@@ -3204,6 +3205,18 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertFalse(productRow.productRow.isReadOnly, "Parent product should not be read only")
         XCTAssertFalse(try XCTUnwrap(productRow.childProductRows[0]).isReadOnly, "Child product should not be read only")
         XCTAssertFalse(try XCTUnwrap(productRow.childProductRows[1]).isReadOnly, "Child product variation should not be read only")
+    }
+
+    func test_addCustomAmount_toggles_showAddCustomAmount_to_true_when_order_is_new() {
+        // Given
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
+        XCTAssertFalse(viewModel.customAmountsSectionViewModel.showAddCustomAmount)
+
+        // When
+        viewModel.addCustomAmount()
+
+        // Then
+        XCTAssertTrue(viewModel.customAmountsSectionViewModel.showAddCustomAmount)
     }
 
     func test_when_saveInflightCustomerDetails_is_invoked_then_order_is_updated_with_latestAddressFormFields() {

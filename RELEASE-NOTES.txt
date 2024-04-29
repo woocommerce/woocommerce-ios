@@ -1,12 +1,45 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+18.4
+-----
+- [internal] Blaze: Change campaign image minimum expected dimensions. [https://github.com/woocommerce/woocommerce-ios/pull/12544]
+
+
+18.3
+-----
+- [*] Fixed an issue where the "Reset Activity log" button did not clear the current day's log files, ensuring all logs are now properly reset when the button is pressed. [https://github.com/woocommerce/woocommerce-ios/pull/12479]
+
+18.2
+-----
+- [*] Menu > Payments > Collect Payment: the simple payments flow has been migrated to order form with custom amount. [https://github.com/woocommerce/woocommerce-ios/pull/12455]
+- [*] Login: Allow login using site credentials for Jetpack connected stores. [https://github.com/woocommerce/woocommerce-ios/pull/12429]
+- [internal] Updated all `woo.com` URLs to use `woocommerce.com` domain. [https://github.com/woocommerce/woocommerce-ios/pull/12452]
+- [*] Blaze: Validate that campaign image has minimum expected dimensions. [https://github.com/woocommerce/woocommerce-ios/pull/12470]
+
+18.1
+-----
+- [**] Orders: now it's possible to swiftly delete orders right from the Order Detail page.
+- [**] Stats: The Analytics Hub now includes analytics for Product Bundles and Gift Cards, when those extensions are active. [https://github.com/woocommerce/woocommerce-ios/pull/12425]
+- [*] Login: Fix issues in Jetpack installation feature. [https://github.com/woocommerce/woocommerce-ios/pull/12426]
+- [Internal] WooExpress: Site creation with WooExpress is now disabled. [https://github.com/woocommerce/woocommerce-ios/issues/12323]
+- [*] Product Creation AI: Update prompt to fix error during product creation. [https://github.com/woocommerce/woocommerce-ios/pull/12457]
+- [internal] Fix product package flow error by specifying json as response format. [https://github.com/woocommerce/woocommerce-ios/pull/12466]
+
+18.0
+-----
+- [**] Hub Menu: A new Customers section shows a searchable list of customers with their details, including the option to contact a customer via email. [https://github.com/woocommerce/woocommerce-ios/pull/12349]
+- [Internal] Update Woo Purple color palette [https://github.com/woocommerce/woocommerce-ios/pull/12330]
+- [internal] The dependency setup in `AppDelegate`'s `application(_:willFinishLaunchingWithOptions:)` was updated as an attempted fix for one of the top crashes. [https://github.com/woocommerce/woocommerce-ios/pull/12268]
+- [*] Order List: Speculative fix for a crash on the iPad when viewing orders [https://github.com/woocommerce/woocommerce-ios/pull/12369]
+
 17.9
 -----
-
+- [***] Blaze: revamped the Blaze advertising flow with a native implementation to enhance user experience. This allows merchants to seamlessly create and manage their campaigns directly within the Woo mobile apps, without opening the flow in a webview. [https://github.com/woocommerce/woocommerce-ios/pull/12361]
+- [**] Added 4 home screen quick actions: "New Order", "Orders", "Add a product", "Collect Payment" [https://github.com/woocommerce/woocommerce-ios/pull/12264/]
+- [Internal] Payments: Updated StripeTerminal pod to 3.3.1 [https://github.com/woocommerce/woocommerce-ios/pull/12078]
 
 17.8
 -----
-
 
 17.7
 -----

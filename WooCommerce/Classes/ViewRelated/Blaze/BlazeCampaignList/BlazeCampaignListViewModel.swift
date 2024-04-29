@@ -104,6 +104,11 @@ final class BlazeCampaignListViewModel: ObservableObject {
     func didSelectCreateCampaign(source: BlazeSource) {
         analytics.track(event: .Blaze.blazeEntryPointTapped(source: source))
     }
+
+    func didCreateCampaign() {
+        userDefaults.restoreBlazeSectionOnMyStore(for: siteID)
+        loadCampaigns()
+    }
 }
 
 // MARK: Configuration

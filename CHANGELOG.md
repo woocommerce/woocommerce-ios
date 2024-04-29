@@ -1,6 +1,22 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 18.3
+Squashed a pesky bug to ensure the "Reset Activity Log" button works like a charm, cleaning the slate completely for a fresh start. Dive into a more seamless WooCommerce experience. Update now!
+
+## 18.2
+Discover the latest updates in our WooCommerce app! Enjoy a seamless payment process, log in effortlessly with site credentials, and create Blaze campaigns faster without errors. Upgrade now for an enhanced shop management experience!
+
+## 18.1
+Streamline your management with our latest update! Easily delete orders on-the-go, dive into new analytics for Product Bundles and Gift Cards, and enjoy a smoother Jetpack installation. Update now for a more efficient WooCommerce experience!
+
+## 18.0
+Discover our newest update for the WooCommerce app! Introducing a newly added Customers section in the Hub Menu. Now you can easily search and view customer details at your fingertips, even contact them directly via email. We've implemented crucial application dependency updates to enhance performance and reduce crashes, providing a smoother, more stable user experience. Also, iPad users can now enjoy a more reliable experience when viewing orders with our speculative fix. Dive in and explore these exciting new improvements!
+
+## 17.9
+In our latest update, we've enhanced your WooCommerce experience!
+We added few quick actions when you touch and hold the app icon, you can now start creating new order, get list of orders, add a new product or start collecting payment. Get to the specific feature of the app easier and faster by using one of the actions!
+
 ## 17.7
 In this update, we've made it easier to find one customer's orders, with a new filter by customer option. Analyzing store performance just got more flexible too, with the ability to set custom date ranges for your reports. For iPad and larger iPhones, enjoy a side-by-side view for order creation or editing, maximizing productivity. Plus, we've amped up performance with a new connectivity tool, diagnosing any network hiccups. Download now and unlock smoother, more intuitive store management!
 

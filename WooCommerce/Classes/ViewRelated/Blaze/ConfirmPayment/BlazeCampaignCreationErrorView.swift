@@ -144,6 +144,7 @@ enum BlazeCampaignCreationError: Error {
     case failedToFetchCampaignImage
     case failedToUploadCampaignImage
     case failedToCreateCampaign
+    case insufficientImageSize
 
     var message: String {
         switch self {
@@ -165,6 +166,12 @@ enum BlazeCampaignCreationError: Error {
                 value: "Something's not quite right.\nWe couldn't create your campaign.",
                 comment: "Message on the Blaze campaign creation error screen. " +
                 "Keep '\n' as-is as it signals a line break."
+            )
+        case .insufficientImageSize:
+            NSLocalizedString(
+                "blazeCampaignCreationError.insufficientImageSize",
+                value: "Insufficient image size for cropping. Please select a different campaign image.",
+                comment: "Message on the Blaze campaign creation error screen."
             )
         }
     }

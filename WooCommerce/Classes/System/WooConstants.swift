@@ -93,7 +93,7 @@ extension WooConstants {
         ///
         /// Displayed by the Authenticator in the Continue with WordPress.com flow.
         ///
-        case whatIsWPCom = "https://woo.com/document/what-is-a-wordpress-com-account/"
+        case whatIsWPCom = "https://woocommerce.com/document/what-is-a-wordpress-com-account/"
 
         /// Terms of Service Website. Displayed by the Authenticator (when / if needed).
         ///
@@ -109,11 +109,11 @@ extension WooConstants {
 
         /// More Privacy Documentation URL.
         ///
-        case morePrivacyDocumentation = "https://woo.com/tracking-and-opt-outs/"
+        case morePrivacyDocumentation = "https://woocommerce.com/tracking-and-opt-outs/"
 
         /// Documentation about WooCommerce Usage Tracking
         ///
-        case usageTrackingDocumentation = "https://woo.com/usage-tracking/"
+        case usageTrackingDocumentation = "https://woocommerce.com/usage-tracking/"
 
         /// Privacy policy for California users URL
         ///
@@ -121,61 +121,61 @@ extension WooConstants {
 
         /// Help Center URL
         ///
-        case helpCenter = "https://woo.com/document/woocommerce-ios/"
+        case helpCenter = "https://woocommerce.com/document/woocommerce-ios/"
 
         /// Help Center for "Enter your Store Address" screen
         ///
-        case helpCenterForEnterStoreAddress = "https://woo.com/document/android-ios-apps-login-help-faq/#enter-store-address"
+        case helpCenterForEnterStoreAddress = "https://woocommerce.com/document/android-ios-apps-login-help-faq/#enter-store-address"
 
         /// Help Center for "Enter WordPress.com email" screen
         ///
         /// - Used for providing help in the "Enter WordPress.com email screen" when user tries to login using WordPress.com email address
         ///
         // swiftlint:disable:next line_length
-        case helpCenterForWPCOMEmailScreen = "https://woo.com/document/android-ios-apps-login-help-faq/#login-with-wordpress-com"
+        case helpCenterForWPCOMEmailScreen = "https://woocommerce.com/document/android-ios-apps-login-help-faq/#login-with-wordpress-com"
 
         /// Help Center for "Enter WordPress.com email" screen
         ///
         /// - Used for providing help in the "Ente WordPress.comr email screen" when user tries to login using the store address
         ///
         // swiftlint:disable:next line_length
-        case helpCenterForWPCOMEmailFromSiteAddressFlow = "https://woo.com/document/android-ios-apps-login-help-faq/#enter-wordpress-com-email-address-login-using-store-address-flow"
+        case helpCenterForWPCOMEmailFromSiteAddressFlow = "https://woocommerce.com/document/android-ios-apps-login-help-faq/#enter-wordpress-com-email-address-login-using-store-address-flow"
 
         /// Help Center for "Open magic link from email " screen
         ///
-        case helpCenterForOpenEmail = "https://woo.com/document/android-ios-apps-login-help-faq/#open-mail-to-find-login-link"
+        case helpCenterForOpenEmail = "https://woocommerce.com/document/android-ios-apps-login-help-faq/#open-mail-to-find-login-link"
 
         /// Help Center for "Enter WordPress.com password" screen
         ///
-        case helpCenterForWPCOMPasswordScreen = "https://woo.com/document/android-ios-apps-login-help-faq/#enter-wordpress-com-password"
+        case helpCenterForWPCOMPasswordScreen = "https://woocommerce.com/document/android-ios-apps-login-help-faq/#enter-wordpress-com-password"
 
         /// Help Center for "Enter Store Credentials" screen
         ///
-        case helpCenterForEnterStoreCredentials = "https://woo.com/document/android-ios-apps-login-help-faq/#enter-store-credentials"
+        case helpCenterForEnterStoreCredentials = "https://woocommerce.com/document/android-ios-apps-login-help-faq/#enter-store-credentials"
 
         /// Help Center for "Jetpack required error" screen
         ///
-        case helpCenterForJetpackRequiredError = "https://woo.com/document/android-ios-apps-login-help-faq/#jetpack-required"
+        case helpCenterForJetpackRequiredError = "https://woocommerce.com/document/android-ios-apps-login-help-faq/#jetpack-required"
 
         /// Help Center for "Wrong Account error" screen
         ///
-        case helpCenterForWrongAccountError = "https://woo.com/document/android-ios-apps-login-help-faq/#wrong-account"
+        case helpCenterForWrongAccountError = "https://woocommerce.com/document/android-ios-apps-login-help-faq/#wrong-account"
 
         /// Help Center for No WooCommerce site error
         ///
-        case helpCenterForNoWooError = "https://woo.com/document/android-ios-apps-login-help-faq/#not-a-woocommerce-site"
+        case helpCenterForNoWooError = "https://woocommerce.com/document/android-ios-apps-login-help-faq/#not-a-woocommerce-site"
 
         /// Help Center for "Store picker" screen
         ///
-        case helpCenterForStorePicker = "https://woo.com/document/android-ios-apps-login-help-faq/#pick-store-after-entering-password"
+        case helpCenterForStorePicker = "https://woocommerce.com/document/android-ios-apps-login-help-faq/#pick-store-after-entering-password"
 
         /// URL used for Learn More button in Orders empty state.
         ///
-        case blog = "https://woo.com/blog/"
+        case blog = "https://woocommerce.com/blog/"
 
         /// Jetpack Setup URL when there are no stores available
         ///
-        case emptyStoresJetpackSetup = "https://woo.com/document/jetpack-setup-instructions-for-the-woocommerce-mobile-app/"
+        case emptyStoresJetpackSetup = "https://woocommerce.com/document/jetpack-setup-instructions-for-the-woocommerce-mobile-app/"
 
         /// URL for in-app feedback survey
         ///
@@ -231,15 +231,15 @@ extension WooConstants {
 
         /// URL for shipping label creation information
         ///
-        case shippingLabelCreationInfo = "https://woo.com/products/shipping"
+        case shippingLabelCreationInfo = "https://woocommerce.com/products/shipping"
 
         /// URL for product review information
         ///
-        case productReviewInfo = "https://woo.com/document/product-reviews/"
+        case productReviewInfo = "https://woocommerce.com/document/product-reviews/"
 
         /// URL for troubleshooting documentation used in Error Loading Data banner
         ///
-        case troubleshootErrorLoadingData = "https://woo.com/document/android-ios-apps-troubleshooting-error-fetching-orders/"
+        case troubleshootErrorLoadingData = "https://woocommerce.com/document/android-ios-apps-troubleshooting-error-fetching-orders/"
 
         /// URL for troubleshooting documentation used in error banner when Jetpack is not connected
         ///
@@ -247,7 +247,7 @@ extension WooConstants {
 
         /// URL for roles and permissions information
         ///
-        case rolesAndPermissionsInfo = "https://woo.com/posts/a-guide-to-woocommerce-user-roles-permissions-and-security/"
+        case rolesAndPermissionsInfo = "https://woocommerce.com/posts/a-guide-to-woocommerce-user-roles-permissions-and-security/"
 
         /// URL for making the login on WordPress.com
         ///
@@ -260,14 +260,14 @@ extension WooConstants {
         /// URLs for WCPay IPP documentation
         ///
         case inPersonPaymentsLearnMoreWCPay =
-                "https://woo.com/document/woocommerce-payments/in-person-payments/getting-started-with-in-person-payments/"
+                "https://woocommerce.com/document/woocommerce-payments/in-person-payments/getting-started-with-in-person-payments/"
 
         // swiftlint:disable:next line_length
-        case inPersonPaymentsLearnMoreWCPayTapToPay = "https://woo.com/document/woocommerce-payments/in-person-payments/woocommerce-in-person-payments-tap-to-pay-on-iphone-quick-start-guide/"
+        case inPersonPaymentsLearnMoreWCPayTapToPay = "https://woocommerce.com/document/woocommerce-payments/in-person-payments/woocommerce-in-person-payments-tap-to-pay-on-iphone-quick-start-guide/"
 
         /// URL for Stripe IPP documentation
         ///
-        case inPersonPaymentsLearnMoreStripe = "https://woo.com/document/stripe/accept-in-person-payments-with-stripe/"
+        case inPersonPaymentsLearnMoreStripe = "https://woocommerce.com/document/stripe/accept-in-person-payments-with-stripe/"
 
         /// URL for the order creation feedback survey (full order creation and simple payments)
         ///
@@ -284,15 +284,15 @@ extension WooConstants {
 #endif
         /// URL for the Enable Cash on Delivery (or Pay in Person) onboarding step's learn more link using the Stripe plugin
         ///
-        case stripeCashOnDeliveryLearnMore = "https://woo.com/document/stripe/accept-in-person-payments-with-stripe/#section-8"
+        case stripeCashOnDeliveryLearnMore = "https://woocommerce.com/document/stripe/accept-in-person-payments-with-stripe/#section-8"
 
         /// URL for the Enable Cash on Delivery (or Pay in Person) onboarding step's learn more link using the WCPay plugin
         ///
         case wcPayCashOnDeliveryLearnMore =
-                "https://woo.com/document/payments/getting-started-with-in-person-payments-with-woocommerce-payments/#add-cod-payment-method"
+                "https://woocommerce.com/document/payments/getting-started-with-in-person-payments-with-woocommerce-payments/#add-cod-payment-method"
 
         /// URL for creating a store.
-        case storeCreation = "https://woo.com/start"
+        case storeCreation = "https://woocommerce.com/start"
 
         /// URL with un-escaped characters for testing purposes. It should read as `https://test.com/test-%E2%80%93-survey`
         ///
@@ -308,7 +308,7 @@ extension WooConstants {
 
         /// URL for Woo Express, which shows plan details. Note that this includes links to start a free trial and pricing for plans, and is only
         /// intended for use as a fallback. We should remove this when we fetch plan data from an API.
-        case fallbackWooExpressHome = "https://woo.com/express"
+        case fallbackWooExpressHome = "https://woocommerce.com/express"
 
         /// URL for USPS Hazmat instructions detailing to the user the possible categories and why declaring hazmat materials is mandatory
         ///
@@ -322,22 +322,28 @@ extension WooConstants {
         ///
         case dhlExpressInstructions = "https://www.dhl.com/global-en/home/our-divisions/freight/customer-service/dangerous-goods-and-prohibited-items.html"
 
-        case subscriptionsExtension = "https://woo.com/products/woocommerce-subscriptions/"
+        case subscriptionsExtension = "https://woocommerce.com/products/woocommerce-subscriptions/"
 
-        case productBundlesExtension = "https://woo.com/products/product-bundles/"
+        case productBundlesExtension = "https://woocommerce.com/products/product-bundles/"
 
-        case compositeProductsExtension = "https://woo.com/products/composite-products/"
+        case compositeProductsExtension = "https://woocommerce.com/products/composite-products/"
 
-        case wooPaymentsStartupGuide = "https://woo.com/document/woopayments/startup-guide/"
+        case giftCardsExtension = "https://woocommerce.com/products/gift-cards/"
+
+        case wooPaymentsStartupGuide = "https://woocommerce.com/document/woopayments/startup-guide/"
 
         // swiftlint:disable:next line_length
-        case wooPaymentsStartupGuideConnectWordPressComAccount = "https://woo.com/document/woopayments/startup-guide/#:~:text=Enter%20your%20email%20address%20to%20connect%20to%20your%20WordPress.com%20account"
+        case wooPaymentsStartupGuideConnectWordPressComAccount = "https://woocommerce.com/document/woopayments/startup-guide/#:~:text=Enter%20your%20email%20address%20to%20connect%20to%20your%20WordPress.com%20account"
 
-        case wooPaymentsKnowYourCustomer = "https://woo.com/document/woopayments/our-policies/know-your-customer/"
+        case wooPaymentsKnowYourCustomer = "https://woocommerce.com/document/woopayments/our-policies/know-your-customer/"
 
-        case wooCorePaymentOptions = "https://woo.com/documentation/woocommerce/getting-started/sell-products/core-payment-options"
+        case wooCorePaymentOptions = "https://woocommerce.com/documentation/woocommerce/getting-started/sell-products/core-payment-options"
 
-        case wooPaymentsDepositSchedule = "https://woo.com/document/woopayments/deposits/deposit-schedule/"
+        case wooPaymentsDepositSchedule = "https://woocommerce.com/document/woopayments/deposits/deposit-schedule/"
+
+        /// URL to learn more about Jetpack Stats
+        ///
+        case jetpackStats = "https://jetpack.com/stats/"
 
         /// Returns the URL version of the receiver
         ///

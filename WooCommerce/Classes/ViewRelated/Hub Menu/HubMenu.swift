@@ -146,7 +146,7 @@ private extension HubMenu {
             case HubMenuViewModel.Payments.id:
                 paymentsView
             case HubMenuViewModel.Blaze.id:
-                BlazeCampaignListView(viewModel: .init(siteID: viewModel.siteID))
+                BlazeCampaignListHostingControllerRepresentable(siteID: viewModel.siteID)
             case HubMenuViewModel.WoocommerceAdmin.id:
                 webView(url: viewModel.woocommerceAdminURL,
                         title: HubMenuViewModel.Localization.woocommerceAdmin,
@@ -165,6 +165,8 @@ private extension HubMenu {
                 InAppPurchasesDebugView()
             case HubMenuViewModel.Subscriptions.id:
                 SubscriptionsView(viewModel: .init())
+            case HubMenuViewModel.Customers.id:
+                CustomersListView(viewModel: .init(siteID: viewModel.siteID))
             default:
                 fatalError("🚨 Unsupported menu item")
             }

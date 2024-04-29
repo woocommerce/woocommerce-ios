@@ -14,6 +14,10 @@ extension AnalyticsCard {
             return Localization.products
         case .sessions:
             return Localization.sessions
+        case .bundles:
+            return Localization.bundles
+        case .giftCards:
+            return Localization.giftCards
         }
     }
 }
@@ -33,5 +37,11 @@ private extension AnalyticsCard {
         static let sessions = NSLocalizedString("analyticsHub.customize.sessions",
                                                 value: "Sessions",
                                                 comment: "Name for the Sessions analytics card in the Customize Analytics screen")
+        static let bundles = NSLocalizedString("analyticsHub.customize.bundles",
+                                                value: "Bundles",
+                                                comment: "Name for the Product Bundles analytics card in the Customize Analytics screen")
+        static let giftCards = NSLocalizedString("analyticsHub.customize.giftCards",
+                                                 value: "Gift Cards",
+                                                 comment: "Name for the Gift Cards analytics card in the Customize Analytics screen")
     }
 }

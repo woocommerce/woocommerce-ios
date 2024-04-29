@@ -79,7 +79,7 @@ struct AuthenticatedWebView: UIViewControllerRepresentable {
 struct AuthenticatedWebView_Previews: PreviewProvider {
     static var previews: some View {
         AuthenticatedWebView(isPresented: .constant(true),
-                             url: URL(string: "https://www.woo.com")!)
+                             url: URL(string: "https://www.woocommerce.com")!)
     }
 }
 #endif

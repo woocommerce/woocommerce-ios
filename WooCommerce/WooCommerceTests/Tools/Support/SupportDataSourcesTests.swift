@@ -32,7 +32,6 @@ final class SupportDataSourcesTests: XCTestCase {
             360008583691, // App Language
             360000103103, // Current Site
             360009311651, // Source Platform
-            360000086966, // Network Information
             360000086866, // App Version
             22871957, // Legacy Logs
             25176023, // Sub Category
@@ -63,7 +62,6 @@ final class SupportDataSourcesTests: XCTestCase {
             360008583691, // App Language
             360000103103, // Current Site
             360009311651, // Source Platform
-            360000086966, // Network Information
             360000086866, // App Version
             22871957, // Legacy Logs
             25176023, // Sub Category
@@ -94,7 +92,6 @@ final class SupportDataSourcesTests: XCTestCase {
             360008583691, // App Language
             360000103103, // Current Site
             360009311651, // Source Platform
-            360000086966, // Network Information
             360000086866, // App Version
             22871957, // Legacy Logs
             25176003, // Category
@@ -124,7 +121,6 @@ final class SupportDataSourcesTests: XCTestCase {
             360008583691, // App Language
             360000103103, // Current Site
             360009311651, // Source Platform
-            360000086966, // Network Information
             360000086866, // App Version
             22871957, // Legacy Logs
             25176003, // Category
@@ -155,7 +151,6 @@ final class SupportDataSourcesTests: XCTestCase {
             360008583691, // App Language
             360000103103, // Current Site
             360009311651, // Source Platform
-            360000086966, // Network Information
             360000086866, // App Version
             22871957, // Legacy Logs
             25176003, // Category

@@ -42,11 +42,11 @@
                         "account_statement_descriptor": {
                             "id": "account_statement_descriptor",
                             "label": "Customer bank statement",
-                            "description": "Edit the way your store name appears on your customers’ bank statements (read more about requirements <a href=\"https://woo.com/document/payments/bank-statement-descriptor/\" target=\"_blank\" rel=\"noopener noreferrer\">here</a>).",
+                            "description": "Edit the way your store name appears on your customers’ bank statements (read more about requirements <a href=\"https://woocommerce.com/document/payments/bank-statement-descriptor/\" target=\"_blank\" rel=\"noopener noreferrer\">here</a>).",
                             "type": "account_statement_descriptor",
                             "value": "",
                             "default": "",
-                            "tip": "Edit the way your store name appears on your customers’ bank statements (read more about requirements <a href=\"https://woo.com/document/payments/bank-statement-descriptor/\" target=\"_blank\" rel=\"noopener noreferrer\">here</a>).",
+                            "tip": "Edit the way your store name appears on your customers’ bank statements (read more about requirements <a href=\"https://woocommerce.com/document/payments/bank-statement-descriptor/\" target=\"_blank\" rel=\"noopener noreferrer\">here</a>).",
                             "placeholder": ""
                         },
                         "manual_capture": {

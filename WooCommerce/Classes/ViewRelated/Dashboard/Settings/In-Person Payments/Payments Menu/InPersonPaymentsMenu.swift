@@ -23,7 +23,7 @@ struct InPersonPaymentsMenu: View {
                         .onTapGesture {
                             viewModel.collectPaymentTapped()
                         }
-                        .sheet(isPresented: $viewModel.presentCollectPayment,
+                        .sheet(isPresented: $viewModel.presentCollectPaymentWithSimplePayments,
                                onDismiss: {
                             Task { @MainActor in
                                 await viewModel.onAppear()
@@ -183,12 +183,55 @@ struct InPersonPaymentsMenu: View {
             }
             .scrollViewSectionStyle(.insetGrouped)
             .safariSheet(url: $viewModel.safariSheetURL)
-
-            NavigationLink(isActive: $viewModel.shouldShowOnboarding) {
+            .navigationDestination(isPresented: $viewModel.shouldShowOnboarding) {
                 InPersonPaymentsView(viewModel: viewModel.onboardingViewModel)
-            } label: {
-                EmptyView()
-            }.hidden()
+            }
+            .navigationDestination(isPresented: $viewModel.presentCollectPayment) {
+                if let orderViewModel = viewModel.orderViewModel {
+                    OrderFormPresentationWrapper(dismissHandler: {
+                        viewModel.presentCollectPayment = false
+                        Task { @MainActor in
+                            await viewModel.onAppear()
+                        }
+                    },
+                                                 flow: .creation,
+                                                 dismissLabel: .backButton,
+                                                 viewModel: orderViewModel)
+                    .navigationBarHidden(true)
+                    .sheet(isPresented: $viewModel.presentCollectPaymentMigrationSheet, onDismiss: {
+                        // Custom amount sheet needs to be presented when the migration sheet is dismissed to avoid conflicting modals.
+                        if viewModel.presentCustomAmountAfterDismissingCollectPaymentMigrationSheet {
+                            orderViewModel.addCustomAmount()
+                        }
+                    }) {
+                        SimplePaymentsMigrationView {
+                            viewModel.presentCustomAmountAfterDismissingCollectPaymentMigrationSheet = true
+                            viewModel.presentCollectPaymentMigrationSheet = false
+                        }
+                        .presentationDetents([.medium, .large])
+                    }
+                    .navigationDestination(isPresented: $viewModel.presentPaymentMethods) {
+                        if let paymentMethodsViewModel = viewModel.paymentMethodsViewModel {
+                            PaymentMethodsView(dismiss: {
+                                viewModel.presentCollectPayment = false
+                            }, viewModel: paymentMethodsViewModel)
+                        } else {
+                            EmptyView()
+                        }
+                    }
+                    .onAppear {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                            guard viewModel.hasPresentedCollectPaymentMigrationSheet == false else {
+                                return
+                            }
+                            viewModel.presentCollectPaymentMigrationSheet = true
+                            viewModel.hasPresentedCollectPaymentMigrationSheet = true
+                        }
+                    }
+                } else {
+                    EmptyView()
+                }
+            }
 
             if let onboardingNotice = viewModel.cardPresentPaymentsOnboardingNotice {
                 PermanentNoticeView(notice: onboardingNotice)
@@ -384,6 +427,8 @@ struct InPersonPaymentsMenu_Previews: PreviewProvider {
             cardReaderSupportDeterminer: CardReaderSupportDeterminer(siteID: 0),
             wooPaymentsDepositService: WooPaymentsDepositService(siteID: 0, credentials: .init(authToken: ""))))
     static var previews: some View {
-        InPersonPaymentsMenu(viewModel: viewModel)
+        NavigationStack {
+            InPersonPaymentsMenu(viewModel: viewModel)
+        }
     }
 }

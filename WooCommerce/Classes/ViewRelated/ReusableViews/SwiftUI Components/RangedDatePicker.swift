@@ -12,7 +12,7 @@ protocol RangedDateTextFormatter {
 final class RangedDatePickerHostingController: UIHostingController<RangedDatePicker> {
     init(startDate: Date? = nil,
          endDate: Date? = nil,
-         datesFormatter: RangedDateTextFormatter,
+         datesFormatter: RangedDateTextFormatter = RangedDatePicker.DatesFormatter(),
          customApplyButtonTitle: String? = nil,
          datesSelected: ((_ start: Date, _ end: Date) -> Void)? = nil) {
         super.init(rootView: RangedDatePicker(startDate: startDate,
@@ -63,7 +63,7 @@ struct RangedDatePicker: View {
     ///
     init(startDate: Date? = nil,
          endDate: Date? = nil,
-         datesFormatter: RangedDateTextFormatter,
+         datesFormatter: RangedDateTextFormatter = DatesFormatter(),
          customApplyButtonTitle: String? = nil,
          datesSelected: ((_ start: Date, _ end: Date) -> Void)? = nil) {
         self._startDate = State(initialValue: startDate ?? Date())
@@ -118,7 +118,7 @@ struct RangedDatePicker: View {
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button(action: {
-                        guard startDate < endDate else {
+                        guard startDate <= endDate else {
                             shouldShowInvalidDateRangeAlert = true
                             return
                         }
@@ -167,7 +167,7 @@ private extension RangedDatePicker {
             )
             static let message = NSLocalizedString(
                 "rangedDatePicker.invalidTimeRangeAlert.message",
-                value: "The start date should be earlier than the end date. Please select a different time range.",
+                value: "The start date should not be later than the end date. Please select a different time range.",
                 comment: "Message of the alert displayed when selecting an invalid time range for analytics"
             )
             static let action = NSLocalizedString(
@@ -180,6 +180,14 @@ private extension RangedDatePicker {
     enum Layout {
         static let titleSpacing: CGFloat = 4.0
         static let calendarPadding: CGFloat = -8.0
+    }
+
+    /// Specific `DatesFormatter` for the `RangedDatePicker` when presented in the analytics hub module.
+    ///
+    struct DatesFormatter: RangedDateTextFormatter {
+        func format(start: Date, end: Date) -> String {
+            start.formatAsRange(with: end, timezone: .current, calendar: Locale.current.calendar)
+        }
     }
 }
 

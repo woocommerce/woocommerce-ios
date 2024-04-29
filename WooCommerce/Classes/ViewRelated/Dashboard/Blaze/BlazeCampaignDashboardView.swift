@@ -178,7 +178,6 @@ private extension BlazeCampaignDashboardView {
             createCampaignTapped?(nil)
         } label: {
             Text(Localization.createCampaign)
-                .fontWeight(.bold)
                 .bodyStyle()
         }
         .buttonStyle(SecondaryButtonStyle())

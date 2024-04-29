@@ -1592,7 +1592,6 @@
 		AEFF77A629783CA600667F7A /* PriceInputViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEFF77A529783CA600667F7A /* PriceInputViewModel.swift */; };
 		AEFF77A829786A2900667F7A /* PriceInputViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEFF77A729786A2900667F7A /* PriceInputViewControllerTests.swift */; };
 		AEFF77AA29786DAA00667F7A /* PriceInputViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEFF77A929786DAA00667F7A /* PriceInputViewModelTests.swift */; };
-		B50911302049E27A007D25DC /* DashboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B509112D2049E27A007D25DC /* DashboardViewController.swift */; };
 		B509FED121C041DF000076A9 /* Locale+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B509FED021C041DF000076A9 /* Locale+Woo.swift */; };
 		B50BB4162141828F00AF0F3C /* FooterSpinnerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B50BB4152141828F00AF0F3C /* FooterSpinnerView.swift */; };
 		B511ED27218A660E005787DC /* StringDescriptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = B511ED26218A660E005787DC /* StringDescriptor.swift */; };
@@ -1779,7 +1778,6 @@
 		B946880C29B626A1000646B0 /* SpotlightManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B946880B29B626A1000646B0 /* SpotlightManager.swift */; };
 		B946880E29B627EB000646B0 /* SearchableActivityConvertable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B946880D29B627EB000646B0 /* SearchableActivityConvertable.swift */; };
 		B946881029B8DD01000646B0 /* InPersonPaymentsMenuViewController+Activity.swift in Sources */ = {isa = PBXBuildFile; fileRef = B946880F29B8DD01000646B0 /* InPersonPaymentsMenuViewController+Activity.swift */; };
-		B946881229B8DD41000646B0 /* DashboardViewController+Activity.swift in Sources */ = {isa = PBXBuildFile; fileRef = B946881129B8DD41000646B0 /* DashboardViewController+Activity.swift */; };
 		B946881429B8DD6A000646B0 /* OrderListViewController+Activity.swift in Sources */ = {isa = PBXBuildFile; fileRef = B946881329B8DD6A000646B0 /* OrderListViewController+Activity.swift */; };
 		B946881829B8DDC2000646B0 /* ProductsViewController+Activity.swift in Sources */ = {isa = PBXBuildFile; fileRef = B946881729B8DDC2000646B0 /* ProductsViewController+Activity.swift */; };
 		B946881A29BA2AC6000646B0 /* WooAnalyticsEvent+Spotlight.swift in Sources */ = {isa = PBXBuildFile; fileRef = B946881929BA2AC6000646B0 /* WooAnalyticsEvent+Spotlight.swift */; };
@@ -2062,7 +2060,6 @@
 		CE85535D209B5BB700938BDC /* OrderDetailsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE85535C209B5BB700938BDC /* OrderDetailsViewModel.swift */; };
 		CE855365209BA6A700938BDC /* CustomerInfoTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE855361209BA6A700938BDC /* CustomerInfoTableViewCell.xib */; };
 		CE855366209BA6A700938BDC /* CustomerInfoTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE855362209BA6A700938BDC /* CustomerInfoTableViewCell.swift */; };
-		CE85FD5320F677770080B73E /* Dashboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CE85FD5220F677770080B73E /* Dashboard.storyboard */; };
 		CE85FD5A20F7A7640080B73E /* TableFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE85FD5920F7A7640080B73E /* TableFooterView.swift */; };
 		CE85FD5C20F7A7740080B73E /* TableFooterView.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE85FD5B20F7A7740080B73E /* TableFooterView.xib */; };
 		CE8CCD43239AC06E009DBD22 /* RefundDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE8CCD41239AC06E009DBD22 /* RefundDetailsViewController.swift */; };
@@ -4328,7 +4325,6 @@
 		AEFF77A529783CA600667F7A /* PriceInputViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriceInputViewModel.swift; sourceTree = "<group>"; };
 		AEFF77A729786A2900667F7A /* PriceInputViewControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriceInputViewControllerTests.swift; sourceTree = "<group>"; };
 		AEFF77A929786DAA00667F7A /* PriceInputViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriceInputViewModelTests.swift; sourceTree = "<group>"; };
-		B509112D2049E27A007D25DC /* DashboardViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DashboardViewController.swift; sourceTree = "<group>"; };
 		B509FED021C041DF000076A9 /* Locale+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Locale+Woo.swift"; sourceTree = "<group>"; };
 		B50BB4152141828F00AF0F3C /* FooterSpinnerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FooterSpinnerView.swift; sourceTree = "<group>"; };
 		B511ED26218A660E005787DC /* StringDescriptor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringDescriptor.swift; sourceTree = "<group>"; };
@@ -4536,7 +4532,6 @@
 		B946880B29B626A1000646B0 /* SpotlightManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpotlightManager.swift; sourceTree = "<group>"; };
 		B946880D29B627EB000646B0 /* SearchableActivityConvertable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchableActivityConvertable.swift; sourceTree = "<group>"; };
 		B946880F29B8DD01000646B0 /* InPersonPaymentsMenuViewController+Activity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "InPersonPaymentsMenuViewController+Activity.swift"; sourceTree = "<group>"; };
-		B946881129B8DD41000646B0 /* DashboardViewController+Activity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DashboardViewController+Activity.swift"; sourceTree = "<group>"; };
 		B946881329B8DD6A000646B0 /* OrderListViewController+Activity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderListViewController+Activity.swift"; sourceTree = "<group>"; };
 		B946881729B8DDC2000646B0 /* ProductsViewController+Activity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductsViewController+Activity.swift"; sourceTree = "<group>"; };
 		B946881929BA2AC6000646B0 /* WooAnalyticsEvent+Spotlight.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WooAnalyticsEvent+Spotlight.swift"; sourceTree = "<group>"; };
@@ -4825,7 +4820,6 @@
 		CE85535C209B5BB700938BDC /* OrderDetailsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderDetailsViewModel.swift; sourceTree = "<group>"; };
 		CE855361209BA6A700938BDC /* CustomerInfoTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CustomerInfoTableViewCell.xib; sourceTree = "<group>"; };
 		CE855362209BA6A700938BDC /* CustomerInfoTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomerInfoTableViewCell.swift; sourceTree = "<group>"; };
-		CE85FD5220F677770080B73E /* Dashboard.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Dashboard.storyboard; sourceTree = "<group>"; };
 		CE85FD5920F7A7640080B73E /* TableFooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableFooterView.swift; sourceTree = "<group>"; };
 		CE85FD5B20F7A7740080B73E /* TableFooterView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TableFooterView.xib; sourceTree = "<group>"; };
 		CE8CCD41239AC06E009DBD22 /* RefundDetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundDetailsViewController.swift; sourceTree = "<group>"; };
@@ -10857,13 +10851,10 @@
 				74036CBE211B87FD00E462C2 /* MyStore */,
 				CE85FD5820F7A59E0080B73E /* Settings */,
 				26C98F9929C18ABF00F96503 /* Free Trial */,
-				CE85FD5220F677770080B73E /* Dashboard.storyboard */,
-				B509112D2049E27A007D25DC /* DashboardViewController.swift */,
 				DE8AA0B02BBE50CF0084D2CC /* DashboardView.swift */,
 				DE8AA0B22BBE55E40084D2CC /* DashboardViewHostingController.swift */,
 				028E1F6F2833DD0A001F8829 /* DashboardViewModel.swift */,
 				029D444822F13F8A00DEFA8A /* DashboardUI.swift */,
-				B946881129B8DD41000646B0 /* DashboardViewController+Activity.swift */,
 				DE74A45A2BD9048E0009C415 /* DashboardCardErrorView.swift */,
 				DE74A4502BCF86F60009C415 /* TopPerformers */,
 				DEA6BCAD2BC6A9A50017D671 /* StoreStats */,
@@ -12942,7 +12933,6 @@
 				318109E225E5B55C00EE0BE7 /* ImageTableViewCell.xib in Resources */,
 				680E36B52BD8B9B900E8BCEA /* OrderSubscriptionTableViewCell.xib in Resources */,
 				451A04E72386CE8700E368C9 /* ProductImagesHeaderTableViewCell.xib in Resources */,
-				CE85FD5320F677770080B73E /* Dashboard.storyboard in Resources */,
 				456C7EEC25EE71F10016CBC6 /* ShippingLabelSuggestedAddressViewController.xib in Resources */,
 				02C8876E24501FAC00E4470F /* FilterListViewController.xib in Resources */,
 				26AE31B2251E604A004B1BCE /* RefundShippingDetailsTableViewCell.xib in Resources */,
@@ -14216,7 +14206,6 @@
 				025E32BC251D8FEF00685C4A /* ProductFormDataModel+ProductsTabProductViewModel.swift in Sources */,
 				02ECD1E624FFB4E900735BE5 /* ProductFactory.swift in Sources */,
 				260520F42B87BA23005D5D59 /* WooAnalyticsEvent+ConnectivityTool.swift in Sources */,
-				B946881229B8DD41000646B0 /* DashboardViewController+Activity.swift in Sources */,
 				579CDEFF274D7E7900E8903D /* StoreStatsUsageTracksEventEmitter.swift in Sources */,
 				74F9E9CE214C036400A3F2D2 /* NoPeriodDataTableViewCell.swift in Sources */,
 				CEDBDA472B6BEF2E002047D4 /* AnalyticsWebReport.swift in Sources */,
@@ -14226,7 +14215,6 @@
 				576EA39225264C7400AFC0B3 /* RefundConfirmationViewController.swift in Sources */,
 				DE36E0982A8634FF00B98496 /* StoreNameSetupView.swift in Sources */,
 				2688641B25D3202B00821BA5 /* EditAttributesViewController.swift in Sources */,
-				B50911302049E27A007D25DC /* DashboardViewController.swift in Sources */,
 				7E6A01972725B811001668D5 /* FilterProductCategoryListViewController.swift in Sources */,
 				E10DFC7A2673595A0083AFF2 /* ShareSheet.swift in Sources */,
 				03EF250628C75838006A033E /* PurchaseCardReaderWebViewViewModel.swift in Sources */,

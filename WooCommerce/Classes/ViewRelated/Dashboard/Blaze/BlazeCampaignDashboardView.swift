@@ -143,7 +143,7 @@ private extension BlazeCampaignDashboardView {
                 Image(uiImage: .blaze)
                     .resizable()
                     .frame(width: Layout.logoSize * scale, height: Layout.logoSize * scale)
-                Text("Blaze")
+                Text(Localization.title)
                     .headlineStyle()
                 Spacer()
                 Menu {
@@ -235,6 +235,12 @@ private extension BlazeCampaignDashboardView {
     }
 
     enum Localization {
+        static let title = NSLocalizedString(
+            "blazeCampaignDashboardView.title",
+            value: "Blaze campaigns",
+            comment: "Title of the Blaze campaign view."
+        )
+
         static let subtitle = NSLocalizedString(
             "Increase visibility and get your products sold quickly.",
             comment: "Subtitle of the Blaze campaign view."

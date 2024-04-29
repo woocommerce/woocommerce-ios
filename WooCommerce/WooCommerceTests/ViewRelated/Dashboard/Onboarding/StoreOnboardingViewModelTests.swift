@@ -517,35 +517,6 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         XCTAssertTrue(sut.tasksForDisplay.count == 5)
     }
 
-    @MainActor
-    func test_the_badge_text_is_nil_for_all_tasks_when_productDescriptionAIFromStoreOnboarding_feature_is_disabled() async {
-        // Given
-        stores.updateDefaultStore(storeID: 6)
-        stores.updateDefaultStore(.fake().copy(siteID: 6, isWordPressComStore: true))
-        let sut = StoreOnboardingViewModel(siteID: 0,
-                                           isExpanded: true,
-                                           stores: stores,
-                                           defaults: defaults,
-                                           featureFlagService: MockFeatureFlagService(isProductDescriptionAIFromStoreOnboardingEnabled: false))
-        let tasks: [StoreOnboardingTask] = [
-            .init(isComplete: false, type: .addFirstProduct),
-            .init(isComplete: false, type: .storeDetails),
-            .init(isComplete: false, type: .launchStore),
-            .init(isComplete: true, type: .customizeDomains),
-            .init(isComplete: false, type: .payments)
-        ]
-        mockLoadOnboardingTasks(result: .success(tasks))
-
-        // When
-        await sut.reloadTasks()
-
-        // Then
-        XCTAssertEqual(sut.tasksForDisplay.count, 5)
-        sut.tasksForDisplay.forEach { taskViewModel in
-            XCTAssertNil(taskViewModel.badgeText)
-        }
-    }
-
     // MARK: completedAllStoreOnboardingTasks user defaults
 
     func test_completedAllStoreOnboardingTasks_is_nil_when_there_are_pending_tasks() async {

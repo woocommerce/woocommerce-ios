@@ -25,7 +25,6 @@ final class InPersonPaymentsMenuViewModel: ObservableObject {
     @Published var presentManagePaymentGateways: Bool = false
     @Published private(set) var selectedPaymentGatewayName: String?
     @Published private(set) var selectedPaymentGatewayPlugin: CardPresentPaymentsPlugin?
-    @Published var presentCollectPaymentWithSimplePayments: Bool = false
     /// Whether the payment collection migration sheet is presented, bound to the migration sheet.
     @Published var presentCollectPaymentMigrationSheet: Bool = false
     /// Whether the migration sheet has been presented per payment collection session.

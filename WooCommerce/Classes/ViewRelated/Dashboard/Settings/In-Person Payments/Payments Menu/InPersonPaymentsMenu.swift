@@ -23,17 +23,6 @@ struct InPersonPaymentsMenu: View {
                         .onTapGesture {
                             viewModel.collectPaymentTapped()
                         }
-                        .sheet(isPresented: $viewModel.presentCollectPaymentWithSimplePayments,
-                               onDismiss: {
-                            Task { @MainActor in
-                                await viewModel.onAppear()
-                            }
-                        }) {
-                            NavigationView {
-                                SimplePaymentsAmountHosted(viewModel: SimplePaymentsAmountViewModel(siteID: viewModel.siteID))
-                                .navigationBarTitleDisplayMode(.inline)
-                            }
-                        }
                     } header: {
                         Text(Localization.paymentActionsSectionTitle.uppercased())
                             .accessibilityAddTraits(.isHeader)

@@ -1,6 +1,8 @@
 import SwiftUI
 
 /// View to summarize the Simple Payments order to be created
+/// Though Simple Payments has been migrated to order creation, the summary view is still used in the Tap To Pay trial flow
+/// in the Menu tab > Payments > Tap to pay.
 ///
 struct SimplePaymentsSummary: View {
 

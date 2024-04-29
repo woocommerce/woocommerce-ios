@@ -54,8 +54,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return !isUITesting
         case .readOnlyGiftCards:
             return true
-        case .hideStoreOnboardingTaskList:
-            return true
         case .readOnlyMinMaxQuantities:
             return true
         case .euShippingNotification:

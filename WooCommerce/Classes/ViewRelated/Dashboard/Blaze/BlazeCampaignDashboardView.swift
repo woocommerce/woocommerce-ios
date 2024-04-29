@@ -300,13 +300,19 @@ private struct ProductInfoView: View {
                 .frame(width: Layout.imageSize * scale, height: Layout.imageSize * scale)
                 .cornerRadius(Layout.cornerRadius)
 
-            Text(product.name)
-                .fontWeight(.semibold)
-                .foregroundColor(.init(UIColor.text))
-                .subheadlineStyle()
-                .multilineTextAlignment(.leading)
-                // This size modifier is necessary so that the product name is never truncated.
-                .fixedSize(horizontal: false, vertical: true)
+            VStack(alignment: .leading) {
+                Text(Localization.suggestedProductLabel)
+                    .foregroundColor(.init(UIColor.textSubtle))
+                    .captionStyle()
+
+                Text(product.name)
+                    .fontWeight(.semibold)
+                    .foregroundColor(.init(UIColor.text))
+                    .subheadlineStyle()
+                    .multilineTextAlignment(.leading)
+                    // This size modifier is necessary so that the product name is never truncated.
+                    .fixedSize(horizontal: false, vertical: true)
+            }
 
             Spacer()
 
@@ -333,6 +339,14 @@ private struct ProductInfoView: View {
         static let contentPadding: CGFloat = 16
         static let strokeWidth: CGFloat = 0.5
         static let cornerRadius: CGFloat = 8
+    }
+
+    private enum Localization {
+        static let suggestedProductLabel = NSLocalizedString(
+            "productInfoView.suggestedProductLabel",
+            value: "Suggested product",
+            comment: "Label for the suggested product on the Blaze dashboard view."
+        )
     }
 }
 

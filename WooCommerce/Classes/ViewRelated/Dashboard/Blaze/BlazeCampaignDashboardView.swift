@@ -184,7 +184,7 @@ private extension BlazeCampaignDashboardView {
             showAllCampaignsTapped?()
         } label: {
             HStack {
-                Text(Localization.showAllCampaigns)
+                Text(viewModel.viewCampaignsButtonLabel)
                     .fontWeight(.regular)
                     .bodyStyle()
 
@@ -246,12 +246,6 @@ private extension BlazeCampaignDashboardView {
             "blazeCampaignDashboardView.subtitle",
             value: "Increase visibility and get your products sold quickly.",
             comment: "Subtitle of the Blaze campaign view."
-        )
-
-        static let showAllCampaigns = NSLocalizedString(
-            "blazeCampaignDashboardView.showAllCampaigns",
-            value: "Show All Campaigns",
-            comment: "Button when tapped will show the Blaze campaign list."
         )
 
         static let createCampaign = NSLocalizedString(

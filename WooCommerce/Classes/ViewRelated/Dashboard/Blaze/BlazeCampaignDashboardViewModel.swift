@@ -65,6 +65,18 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
         stores.sessionManager.defaultSite?.url ?? ""
     }
 
+    var campaignsCount: Int {
+        blazeCampaignResultsController.fetchedObjects.count
+    }
+
+    var viewCampaignsButtonLabel: String {
+        if campaignsCount > 1 {
+            return String(format: Localization.viewAllCampaigns, campaignsCount)
+        } else {
+            return Localization.viewAllCampaign
+        }
+    }
+
     private let stores: StoresManager
     private let storageManager: StorageManagerType
     private let analytics: Analytics
@@ -79,7 +91,6 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
         let sortDescriptorByID = NSSortDescriptor(keyPath: \StorageBlazeCampaignListItem.campaignID, ascending: false)
         let resultsController = ResultsController<StorageBlazeCampaignListItem>(storageManager: storageManager,
                                                                                  matching: predicate,
-                                                                                 fetchLimit: 1,
                                                                                  sortedBy: [sortDescriptorByID])
         return resultsController
     }()
@@ -295,5 +306,20 @@ private extension BlazeCampaignDashboardViewModel {
 private extension BlazeCampaignDashboardViewModel {
     enum Constants {
         static let campaignDetailsURLFormat = "https://wordpress.com/advertising/campaigns/%@/%@?source=%@"
+    }
+
+    enum Localization {
+        static let viewAllCampaign = NSLocalizedString(
+            "blazeCampaignDashboardViewModel.showAllCampaignLabel",
+            value: "View all campaigns",
+            comment: "Button to show all campaigns, for the case where there is only one campaign."
+        )
+
+        static let viewAllCampaigns = NSLocalizedString(
+            "blazeCampaignDashboardViewModel.showAllCampaignsLabel",
+            value: "View all %1$d campaigns",
+            comment: "Button to show all campaigns, for the case where there are more than one. " +
+            "Reads like View all 3 campaigns"
+        )
     }
 }

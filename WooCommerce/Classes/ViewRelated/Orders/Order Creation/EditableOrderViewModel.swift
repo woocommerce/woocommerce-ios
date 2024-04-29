@@ -236,7 +236,10 @@ final class EditableOrderViewModel: ObservableObject {
     }
 
     var shouldSplitCustomerAndNoteSections: Bool {
-        customerDataViewModel.isDataAvailable || customerNoteDataViewModel.customerNote.isNotEmpty
+        guard featureFlagService.isFeatureFlagEnabled(.subscriptionsInOrderCreationCustomers) else {
+            return customerDataViewModel.isDataAvailable || customerNoteDataViewModel.customerNote.isNotEmpty
+        }
+        return true
     }
 
     var shouldShowProductsSectionHeader: Bool {

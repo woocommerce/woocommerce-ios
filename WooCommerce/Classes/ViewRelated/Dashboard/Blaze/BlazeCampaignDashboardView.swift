@@ -121,9 +121,15 @@ struct BlazeCampaignDashboardView: View {
                 .renderedIf(viewModel.shouldShowCreateCampaignButton)
 
             // Show All Campaigns button
-            showAllCampaignsButton
-                .padding(.horizontal, Layout.padding)
-                .renderedIf(viewModel.shouldShowShowAllCampaignsButton)
+            VStack(spacing: 0) {
+                Divider()
+                    .padding(.leading, Layout.padding)
+                    .padding(.bottom, Layout.dividerVerticalSpacing)
+                    .renderedIf(viewModel.shouldShowShowAllCampaignsButton)
+                showAllCampaignsButton
+                    .padding(.horizontal, Layout.padding)
+                    .renderedIf(viewModel.shouldShowShowAllCampaignsButton)
+            }
         }
         .padding(.vertical, Layout.padding)
         .background(Color(.listForeground(modal: false)))
@@ -183,9 +189,10 @@ private extension BlazeCampaignDashboardView {
             viewModel.didSelectCampaignList()
             showAllCampaignsTapped?()
         } label: {
-            HStack {
+            HStack(spacing: 0) {
                 Text(viewModel.viewCampaignsButtonLabel)
                     .fontWeight(.regular)
+                    .foregroundColor(.accentColor)
                     .bodyStyle()
 
                 Spacer()
@@ -195,10 +202,6 @@ private extension BlazeCampaignDashboardView {
                     .flipsForRightToLeftLayoutDirection(true)
                     .foregroundColor(Color(.textTertiary))
             }
-            .padding(insets: Layout.insets)
-            .background(Color(uiColor: .init(light: UIColor.systemGray6,
-                                             dark: UIColor.systemGray5)))
-            .cornerRadius(Layout.cornerRadius)
         }
     }
 
@@ -229,10 +232,10 @@ private extension BlazeCampaignDashboardView {
         enum HeadingBlock {
             static let verticalSpacing: CGFloat = 8
         }
-        static let insets: EdgeInsets = .init(top: 16, leading: 16, bottom: 16, trailing: 16)
         static let cornerRadius: CGFloat = 8
         static let logoSize: CGFloat = 20
         static let hideIconVerticalPadding: CGFloat = 8
+        static let dividerVerticalSpacing: CGFloat = 16
     }
 
     enum Localization {

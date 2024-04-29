@@ -212,6 +212,12 @@ final class OrderListViewController: UIViewController, GhostableViewController {
         // We can remove this once we've replaced XLPagerTabStrip.
         tableView.reloadData()
     }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+
+        highlightSelectedRowIfNeeded()
+    }
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
@@ -823,9 +829,6 @@ extension OrderListViewController: UITableViewDelegate {
         }
 
         syncingCoordinator.ensureNextPageIsSynchronized(lastVisibleIndex: itemIndex)
-        if indexPath == selectedIndexPath {
-            highlightSelectedRowIfNeeded()
-        }
     }
 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {

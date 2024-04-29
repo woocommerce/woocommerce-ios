@@ -173,12 +173,6 @@ final class InPersonPaymentsMenuViewModel: ObservableObject {
     }
 
     func collectPaymentTapped() {
-        guard dependencies.featureFlagService.isFeatureFlagEnabled(.migrateSimplePaymentsToOrderCreation) else {
-            presentCollectPaymentWithSimplePayments = true
-            analytics.track(event: WooAnalyticsEvent.SimplePayments.simplePaymentsFlowStarted())
-            analytics.track(.paymentsMenuCollectPaymentTapped)
-            return
-        }
         collectPayment()
         analytics.track(.paymentsMenuCollectPaymentTapped)
     }
@@ -442,9 +436,6 @@ extension InPersonPaymentsMenuViewModel: DeepLinkNavigator {
         }
         switch paymentsDestination {
         case .collectPayment:
-            guard dependencies.featureFlagService.isFeatureFlagEnabled(.migrateSimplePaymentsToOrderCreation) else {
-                return presentCollectPaymentWithSimplePayments = true
-            }
             collectPayment()
         case .tapToPay:
             presentSetUpTryOutTapToPay = true

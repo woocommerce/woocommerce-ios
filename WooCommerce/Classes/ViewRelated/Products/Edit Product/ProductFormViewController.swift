@@ -1154,7 +1154,7 @@ private extension ProductFormViewController {
             shouldShowIntro: viewModel.shouldShowBlazeIntroView,
             navigationController: navigationController,
             onCampaignCreated: {
-                // TODO: make Blaze card appear on the dashboard again
+                // no-op
             }
         )
         coordinator.start()

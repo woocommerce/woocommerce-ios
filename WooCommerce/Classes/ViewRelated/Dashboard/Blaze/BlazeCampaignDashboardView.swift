@@ -172,9 +172,10 @@ private extension BlazeCampaignDashboardView {
             createCampaignTapped?(nil)
         } label: {
             Text(Localization.createCampaign)
-                .foregroundColor(.init(uiColor: .accent))
+                .fontWeight(.bold)
                 .bodyStyle()
         }
+        .buttonStyle(SecondaryButtonStyle())
     }
 
     var showAllCampaignsButton: some View {
@@ -329,7 +330,7 @@ private struct ProductInfoView: View {
         )
         .overlay {
             RoundedRectangle(cornerRadius: Layout.cornerRadius)
-                .stroke(Color(uiColor: .separator), lineWidth: Layout.strokeWidth)
+                .stroke(Color(uiColor: .secondaryButtonDownBorder), lineWidth: Layout.strokeWidth)
         }
     }
 
@@ -337,7 +338,7 @@ private struct ProductInfoView: View {
         static let imageSize: CGFloat = 44
         static let contentSpacing: CGFloat = 16
         static let contentPadding: CGFloat = 16
-        static let strokeWidth: CGFloat = 0.5
+        static let strokeWidth: CGFloat = 1
         static let cornerRadius: CGFloat = 8
     }
 

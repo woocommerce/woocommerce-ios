@@ -192,7 +192,7 @@ private extension BlazeCampaignDashboardView {
             HStack(spacing: 0) {
                 Text(viewModel.viewCampaignsButtonLabel)
                     .fontWeight(.regular)
-                    .foregroundColor(.accentColor)
+                    .foregroundStyle(Color.accentColor)
                     .bodyStyle()
 
                 Spacer()
@@ -200,7 +200,7 @@ private extension BlazeCampaignDashboardView {
                 // Chevron icon
                 Image(uiImage: .chevronImage)
                     .flipsForRightToLeftLayoutDirection(true)
-                    .foregroundColor(Color(.textTertiary))
+                    .foregroundStyle(Color(.textTertiary))
             }
         }
     }
@@ -300,12 +300,12 @@ private struct ProductInfoView: View {
 
             VStack(alignment: .leading) {
                 Text(Localization.suggestedProductLabel)
-                    .foregroundColor(.init(UIColor.textSubtle))
+                    .foregroundStyle(Color(.textSubtle))
                     .captionStyle()
 
                 Text(product.name)
                     .fontWeight(.semibold)
-                    .foregroundColor(.init(UIColor.text))
+                    .foregroundStyle(Color(.text))
                     .subheadlineStyle()
                     .multilineTextAlignment(.leading)
                     // This size modifier is necessary so that the product name is never truncated.
@@ -317,7 +317,7 @@ private struct ProductInfoView: View {
             // Chevron icon
             Image(uiImage: .chevronImage)
                 .flipsForRightToLeftLayoutDirection(true)
-                .foregroundColor(Color(.textTertiary))
+                .foregroundStyle(Color(.textTertiary))
         }
         .padding(Layout.contentPadding)
         .background(

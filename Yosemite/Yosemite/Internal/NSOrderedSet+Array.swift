@@ -17,7 +17,7 @@ extension NSOrderedSet {
 
         for element in self {
             guard let typeCheckedElement = element as? T else {
-                assert(false, "Failed conversion. \(element) is not of type \(T.self)")
+                assertionFailure("Failed conversion. \(element) is not of type \(T.self)")
                 return []
             }
             typeCheckedArray.append(typeCheckedElement)

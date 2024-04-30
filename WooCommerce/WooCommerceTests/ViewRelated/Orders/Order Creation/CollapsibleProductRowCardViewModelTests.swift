@@ -577,7 +577,7 @@ final class CollapsibleProductRowCardViewModelTests: XCTestCase {
         let signUpFee = "0.60"
         let quantity = 10
         let expectedSignUpFees = "$6.00"
-        let expectedSignUpFeeSummary = "10 x $6.00"
+        let expectedSignUpFeeSummary = "10 × $6.00"
         let productSubscription = createFakeSubscription(signUpFee: signUpFee)
 
         // When

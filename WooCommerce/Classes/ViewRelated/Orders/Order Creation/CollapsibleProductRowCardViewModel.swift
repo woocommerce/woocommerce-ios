@@ -372,9 +372,9 @@ private extension CollapsibleProductRowCardViewModel {
                 "Reads as: '3 days free'.")
             static let signupFeeSummary = NSLocalizedString(
                 "CollapsibleProductRowCardViewModel.signupFeeSummary",
-                value: "%1$@ x %2$@",
+                value: "%1$@ × %2$@",
                 comment: "Summary of quantity and signup fees for a subscription product when multiple are selected." +
-                "Reads as: '3 x $0.60'.")
+                "Reads as: '3 × $0.60'. Please ensure you use a multiplication symbol, not a letter x")
         }
     }
 }

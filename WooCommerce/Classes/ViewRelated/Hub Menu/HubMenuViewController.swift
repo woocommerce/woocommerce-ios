@@ -39,7 +39,7 @@ final class HubMenuViewController: UIHostingController<HubMenu> {
     }
 
     func showPaymentsMenu() {
-        viewModel.showingPayments = true
+        viewModel.showPayments()
     }
 
     func showCoupons() {

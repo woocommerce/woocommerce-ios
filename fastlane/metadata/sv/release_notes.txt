@@ -1,1 +1,2 @@
-Upptäck de senaste uppdateringarna i vår WooCommerce-app. Ta del av en sömlös betalningsprocess, logga in utan krångel med webbplatsautentiseringsuppgifter och skapa Blaze-kampanjer snabbare och utan fel. Uppgradera nu för en förbättrad butikshanteringsupplevelse.
+Vi har åtgärdat en irriterande bugg för att säkerställa att knappen "Återställ aktivitetslogg" fungerar korrekt, vilket känns som en nystart. Ta del av en mer sömlös WooCommerce-upplevelse. Uppdatera nu.
+

@@ -116,7 +116,7 @@ final class OrdersRootViewController: UIViewController {
     override var shouldShowOfflineBanner: Bool {
         // Should show the offline banner only when there's no orderDetailsViewController in memory
         // otherwise, it will be shown within the order details view, so there's no need to duplicate it
-        if let orderDetailsViewController {
+        if orderDetailsViewController != nil {
             return false
         } else {
             return true
@@ -280,6 +280,7 @@ final class OrdersRootViewController: UIViewController {
                 case let .failure(error):
                     self.displayScannedProductErrorNotice(error, code: scannedBarcode)
                 }
+                navigationItem.leftBarButtonItem = createAddOrderByProductScanningButtonItem()
             }
         }, onPermissionsDenied: { [weak self] in
             self?.analytics.track(event: WooAnalyticsEvent.BarcodeScanning.barcodeScanningFailure(from: .orderList, reason: .cameraAccessNotPermitted))

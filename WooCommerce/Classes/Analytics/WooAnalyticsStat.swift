@@ -179,6 +179,12 @@ public enum WooAnalyticsStat: String {
     case dashboardNewStatsRevertedBannerLearnMoreTapped = "dashboard_new_stats_reverted_banner_learn_more_tapped"
     case usedAnalytics = "used_analytics"
 
+    // MARK: Dynamic Dashboard Events
+    case dynamicDashboardEditLayoutButtonTapped = "dynamic_dashboard_edit_layout_button_tapped"
+    case dynamicDashboardHideCardTapped = "dynamic_dashboard_hide_card_tapped"
+    case dynamicDashboardEditorSaveTapped = "dynamic_dashboard_editor_save_tapped"
+    case dynamicDashboardCardRetryTapped = "dynamic_dashboard_card_retry_tapped"
+
     // MARK: Analytics Hub Events
     //
     case analyticsHubDateRangeButtonTapped = "analytics_hub_date_range_button_tapped"
@@ -1007,7 +1013,6 @@ public enum WooAnalyticsStat: String {
 
     // MARK: Simple Payments events
     //
-    case simplePaymentsFlowStarted = "simple_payments_flow_started"
     case simplePaymentsFlowNoteAdded = "simple_payments_flow_note_added"
     case simplePaymentsFlowTaxesToggled = "simple_payments_flow_taxes_toggled"
     case simplePaymentsMigrationSheetAddCustomAmount = "simple_payments_migration_sheet_add_custom_amount"

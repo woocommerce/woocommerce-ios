@@ -59,7 +59,7 @@ final class MainTabBarControllerTests: XCTestCase {
         // Assert
         XCTAssertEqual(tabBarController.viewControllers?.count, 4)
         assertThat(tabBarController.tabRootViewController(tab: .myStore),
-                   isAnInstanceOf: DashboardViewController.self)
+                   isAnInstanceOf: DashboardViewHostingController.self)
         assertThat(tabBarController.tabRootViewController(tab: .orders),
                    isAnInstanceOf: OrdersSplitViewWrapperController.self)
         assertThat(tabBarController.tabRootViewController(tab: .products),
@@ -88,7 +88,7 @@ final class MainTabBarControllerTests: XCTestCase {
         // Assert
         XCTAssertEqual(tabBarController.viewControllers?.count, 4)
         assertThat(tabBarController.tabRootViewController(tab: .myStore),
-                   isAnInstanceOf: DashboardViewController.self)
+                   isAnInstanceOf: DashboardViewHostingController.self)
         assertThat(tabBarController.tabRootViewController(tab: .orders),
                    isAnInstanceOf: OrdersSplitViewWrapperController.self)
         assertThat(tabBarController.tabRootViewController(tab: .products),

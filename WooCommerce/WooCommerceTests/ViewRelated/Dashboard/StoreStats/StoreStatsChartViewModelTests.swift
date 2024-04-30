@@ -45,15 +45,16 @@ final class StoreStatsChartViewModelTests: XCTestCase {
 
     func test_xAxisStride_returns_correct_values_for_different_time_ranges() {
         // Given
+        let date = Date(timeIntervalSince1970: 1713571200) // April 20 2024
         let timeRangesWithXAxisStride: [StatsTimeRangeV4: Calendar.Component] = [
             .today: .hour,
             .thisWeek: .day,
             .thisMonth: .day,
             .thisYear: .month,
-            .custom(from: Date(), to: Date().adding(days: 0)!): .hour,
-            .custom(from: Date(), to: Date().adding(days: 2)!): .day,
-            .custom(from: Date(), to: Date().adding(days: 100)!): .month,
-            .custom(from: Date(), to: Date().adding(days: 1460)!): .year // 4 years
+            .custom(from: date, to: date.adding(days: 0)!): .hour,
+            .custom(from: date, to: date.adding(days: 2)!): .day,
+            .custom(from: date, to: date.adding(days: 100)!): .month,
+            .custom(from: date, to: date.adding(days: 1460)!): .year // 4 years
         ]
 
         for timeRange in timeRangesWithXAxisStride.keys {
@@ -67,12 +68,13 @@ final class StoreStatsChartViewModelTests: XCTestCase {
 
     func test_xAxisStrideCount_returns_correct_values_for_different_time_ranges() {
         // Given
+        let date = Date(timeIntervalSince1970: 1713571200) // April 20 2024
         let timeRangesWithXAxisStrideCount: [StatsTimeRangeV4: Int] = [
             .today: 5,
             .thisWeek: 1,
             .thisMonth: 5,
             .thisYear: 3,
-            .custom(from: Date(), to: Date().adding(days: 0)!): 6,
+            .custom(from: date, to: date.adding(days: 0)!): 6,
         ]
 
         for timeRange in timeRangesWithXAxisStrideCount.keys {
@@ -86,15 +88,16 @@ final class StoreStatsChartViewModelTests: XCTestCase {
 
     func test_xAxisLabelFormatStyle_returns_correct_values_for_non_first_dates_in_different_time_ranges() {
         // Given
+        let date = Date(timeIntervalSince1970: 1713571200) // April 20 2024
         let timeRangesWithXAxisLabelFormatStyle: [StatsTimeRangeV4: Date.FormatStyle] = [
             .today: .dateTime.hour(),
             .thisWeek: .dateTime.day(.defaultDigits),
             .thisMonth: .dateTime.day(.defaultDigits),
             .thisYear: .dateTime.month(.abbreviated),
-            .custom(from: Date(), to: Date().adding(days: 0)!): .dateTime.hour(),
-            .custom(from: Date(), to: Date().adding(days: 2)!): .dateTime.day(.defaultDigits),
-            .custom(from: Date(), to: Date().adding(days: 100)!): .dateTime.month(.abbreviated),
-            .custom(from: Date(), to: Date().adding(days: 1460)!): .dateTime.year() // 4 years
+            .custom(from: date, to: date.adding(days: 0)!): .dateTime.hour(),
+            .custom(from: date, to: date.adding(days: 2)!): .dateTime.day(.defaultDigits),
+            .custom(from: date, to: date.adding(days: 100)!): .dateTime.month(.abbreviated),
+            .custom(from: date, to: date.adding(days: 1460)!): .dateTime.year() // 4 years
         ]
 
         for timeRange in timeRangesWithXAxisLabelFormatStyle.keys {

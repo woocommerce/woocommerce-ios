@@ -31,8 +31,7 @@ final class StoreOnboardingViewHostingController: SelfSizingHostingController<St
         self.sourceNavigationController = navigationController
         self.site = site
         self.onUpgradePlan = onUpgradePlan
-        super.init(rootView: StoreOnboardingView(canHideCard: true,
-                                                 viewModel: viewModel,
+        super.init(rootView: StoreOnboardingView(viewModel: viewModel,
                                                  shareFeedbackAction: shareFeedbackAction))
         if #unavailable(iOS 16.0) {
             viewModel.onStateChange = { [weak self] in
@@ -105,15 +104,12 @@ struct StoreOnboardingView: View {
 
     @ObservedObject private var viewModel: StoreOnboardingViewModel
 
-    private let canHideCard: Bool
     private let shareFeedbackAction: (() -> Void)?
 
-    init(canHideCard: Bool,
-         viewModel: StoreOnboardingViewModel,
+    init(viewModel: StoreOnboardingViewModel,
          onTaskTapped: ((StoreOnboardingTask) -> Void)? = nil,
          onViewAllTapped: (() -> Void)? = nil,
          shareFeedbackAction: (() -> Void)? = nil) {
-        self.canHideCard = canHideCard
         self.viewModel = viewModel
         self.taskTapped = onTaskTapped
         self.viewAllTapped = onViewAllTapped
@@ -142,13 +138,13 @@ struct StoreOnboardingView: View {
                                        shareFeedbackAction: shareFeedbackAction,
                                        hideTaskListAction: viewModel.hideTaskList,
                                        isRedacted: viewModel.isRedacted,
-                                       failedToLoadTasks: viewModel.failedToLoadTasks,
-                                       isHideStoreOnboardingTaskListFeatureEnabled: canHideCard)
+                                       failedToLoadTasks: viewModel.failedToLoadTasks)
                 .padding(.horizontal, Layout.padding)
 
                 /// We want to show the dashboard card error view only on the dashboard screen.
                 if viewModel.failedToLoadTasks && !viewModel.isExpanded {
                     DashboardCardErrorView(onRetry: {
+                        ServiceLocator.analytics.track(event: .DynamicDashboard.cardRetryTapped(type: .onboarding))
                         Task {
                             await viewModel.reloadTasks()
                         }
@@ -239,8 +235,8 @@ private extension StoreOnboardingView {
 
 struct StoreOnboardingCardView_Previews: PreviewProvider {
     static var previews: some View {
-        StoreOnboardingView(canHideCard: true, viewModel: .init(siteID: 0, isExpanded: false))
+        StoreOnboardingView(viewModel: .init(siteID: 0, isExpanded: false))
 
-        StoreOnboardingView(canHideCard: true, viewModel: .init(siteID: 0, isExpanded: true))
+        StoreOnboardingView(viewModel: .init(siteID: 0, isExpanded: true))
     }
 }

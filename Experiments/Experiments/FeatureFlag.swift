@@ -192,6 +192,10 @@ public enum FeatureFlag: Int {
     ///
     case subscriptionsInOrderCreationUI
 
+    /// Enables a new customer creation flow in order creation for subscriptions support.
+    ///
+    case subscriptionsInOrderCreationCustomers
+
     /// Enables new shipping line features in order details and order creation/editing.
     ///
     case enhancingOrderShippingLines

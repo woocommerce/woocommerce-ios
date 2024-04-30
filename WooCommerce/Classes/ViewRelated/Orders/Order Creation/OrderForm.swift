@@ -355,7 +355,11 @@ struct OrderForm: View {
 
                             Divider()
 
-                            OrderCustomerSection(viewModel: viewModel, addressFormViewModel: viewModel.addressFormViewModel)
+                            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.subscriptionsInOrderCreationCustomers) {
+                                OrderCustomerSection(viewModel: viewModel, addressFormViewModel: viewModel.addressFormViewModel)
+                            } else {
+                                LegacyOrderCustomerSection(viewModel: viewModel, addressFormViewModel: viewModel.addressFormViewModel)
+                            }
 
                             Group {
                                 Divider()
@@ -930,6 +934,7 @@ struct OrderForm_Previews: PreviewProvider {
         NavigationView {
             OrderForm(flow: .creation, viewModel: viewModel, presentProductSelector: nil)
         }
+        .navigationViewStyle(StackNavigationViewStyle())
 
         NavigationView {
             OrderForm(flow: .creation, viewModel: viewModel, presentProductSelector: nil)

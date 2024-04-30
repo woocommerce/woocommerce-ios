@@ -198,7 +198,7 @@ private struct CollapsibleProductRowCard: View {
                 dismissTooltip()
             }
         }, content: {
-            VStack(spacing: 16.0) {
+            VStack(spacing: Layout.contentPadding) {
                 Divider()
 
                 HStack {
@@ -298,7 +298,7 @@ private extension CollapsibleProductRowCard {
 private extension CollapsibleProductRowCard {
     // Subscription details section. Renders all elements for a Subscription-type product
     @ViewBuilder var subscriptionDetailsSection: some View {
-        VStack {
+        VStack(spacing: Layout.subscriptionDetailsPadding) {
             HStack {
                 if let billingInterval = viewModel.subscriptionBillingIntervalLabel {
                     Text(Localization.Subscription.intervalLabel)
@@ -417,6 +417,8 @@ private extension CollapsibleProductRowCard {
         static let deleteIconSize: CGFloat = 24.0
         static let rowMinHeight: CGFloat = 40.0
         static let badgeOffset: CGFloat = 8.0
+        static let subscriptionDetailsPadding: CGFloat = 4.0
+        static let contentPadding: CGFloat = 16.0
     }
 
     enum Localization {

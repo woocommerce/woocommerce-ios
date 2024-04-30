@@ -10,6 +10,10 @@ final class CollapsibleProductCardPriceSummaryViewModel {
     ///
     let pricedIndividually: Bool
 
+    /// Whether the product is a Subscription-type product
+    ///
+    let isSubscriptionProduct: Bool
+
     /// Unformatted product price
     ///
     private let price: String?
@@ -21,10 +25,12 @@ final class CollapsibleProductCardPriceSummaryViewModel {
     private let currencyFormatter: CurrencyFormatter
 
     init(pricedIndividually: Bool,
+         isSubscriptionProduct: Bool,
          quantity: Decimal,
          price: String?,
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)) {
         self.pricedIndividually = pricedIndividually
+        self.isSubscriptionProduct = isSubscriptionProduct
         self.quantity = quantity
         self.price = pricedIndividually ? price : "0"
         self.currencyFormatter = currencyFormatter

@@ -53,7 +53,7 @@ struct ShippingLineSelectionDetails: View {
                 .disabled(!viewModel.enableDoneButton)
                 .padding()
             })
-            .navigationTitle(viewModel.isExistingShippingLine ? Localization.shipping : Localization.addShipping)
+            .navigationTitle(Localization.shipping)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
@@ -68,9 +68,6 @@ struct ShippingLineSelectionDetails: View {
 
 private extension ShippingLineSelectionDetails {
     enum Localization {
-        static let addShipping = NSLocalizedString("order.shippingLineDetails.addShippingTitle",
-                                                   value: "Add Shipping",
-                                                   comment: "Title for the Shipping Line screen during order creation")
         static let shipping = NSLocalizedString("order.shippingLineDetails.shippingTitle",
                                                 value: "Shipping",
                                                 comment: "Title for the Shipping Line Details screen during order creation")

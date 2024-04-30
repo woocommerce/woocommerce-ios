@@ -1,2 +1,0 @@
-We hebben een vervelende bug verholpen zodat de knop 'Activiteitenlog herstellen' weer perfect werkt en het log volledig wist voor een nieuwe start. Ontdek een naadlozere WooCommerce-ervaring. Update nu!
-

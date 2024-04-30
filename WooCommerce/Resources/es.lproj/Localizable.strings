@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-04-23 17:54:05+0000 */
+/* Translation-Revision-Date: 2024-04-30 13:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: es */
@@ -31,8 +31,7 @@
 /* Labels an order note. The user know it's visible to the customer. Reads like 05:30 PM - username (To Customer) */
 "%1$@ - %2$@ (To Customer)" = "%1$@ - %2$@ (Para el cliente)";
 
-/* Description of the subscription price for a product, with the price and billing frequency. Reads like: '$60.00 / 2 months'.
-   The original price of a domain. %1$@ is the price per term. %2$@ is the duration of each pricing term, usually year. */
+/* The original price of a domain. %1$@ is the price per term. %2$@ is the duration of each pricing term, usually year. */
 "%1$@ \/ %2$@" = "%1$@\/%2$@";
 
 /* The default name for a duplicated product, with %1$@ being the original name. Reads like: Ramen Copy */
@@ -1717,6 +1716,24 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility value when a banner is collapsed */
 "Collapsed" = "Cerrado";
+
+/* The label points to the free trial conditions for product subscriptions */
+"CollapsibleProductRowCard.text.freetrial" = "Período de prueba";
+
+/* The label points to the charge interval for product subscriptions */
+"CollapsibleProductRowCard.text.interval" = "Intervalo";
+
+/* The label points to the sign up fee conditions for product subscriptions */
+"CollapsibleProductRowCard.text.signupfee" = "Tarifa de inscripción";
+
+/* Description of the billing and billing frequency for a subscription product. Reads as: 'Every 2 months'. */
+"CollapsibleProductRowCardViewModel.formattedBillingDetails" = "Cada %1$@ %2$@";
+
+/* Description of the free trial conditions for a subscription product. Reads as: '3 days free'. */
+"CollapsibleProductRowCardViewModel.formattedFreeTrial" = "%1$@ %2$@ gratis";
+
+/* Description of the signup fees for a subscription product. Reads as: '$5.00 signup'. */
+"CollapsibleProductRowCardViewModel.formattedSignUpFee" = "%1$@ de inscripción";
 
 /* SKU label for a product in an order. The variable shows the SKU of the product. */
 "CollapsibleProductRowCardViewModel.skuFormat" = "SKU: %1$@";
@@ -3656,8 +3673,7 @@ which should be translated separately and considered part of this sentence. */
    Display label for the product's catalog visibility */
 "Hidden" = "Oculto";
 
-/* Action title for hiding store onboarding task list
-   Title of the Hide store setup list button in the action sheet. */
+/* Title of the Hide store setup list button in the action sheet. */
 "Hide store setup list" = "Ocultar lista de configuración de la tienda";
 
 /* Subtitle on the add product features screen. */
@@ -5215,6 +5231,18 @@ which should be translated separately and considered part of this sentence. */
 /* Notice that appears when no receipt can be retrieved upon tapping on 'See receipt' in the Order Details view. */
 "OrderDetailsViewModel.displayReceiptRetrievalErrorNotice.notice" = "No se ha podido recuperar el recibo.";
 
+/* Description of the subscription billing interval for a product. Reads like: 'Every 2 months'. */
+"OrderSubscriptionTableViewCellViewModel.billingInterval" = "Cada %1$@ %2$@";
+
+/* Formatted subscription title with subscription number. Reads like: 'Subscription #123' */
+"OrderSubscriptionTableViewCellViewModel.formattedSubscriptionTitle" = "Suscripción n.º %1$@";
+
+/* Description of the subscription price for a product. Reads like: '$60.00'. */
+"OrderSubscriptionTableViewCellViewModel.priceFormat" = "%1$@";
+
+/* Subscription title with subscription number. Reads like: 'Subscription #123' */
+"OrderSubscriptionTableViewCellViewModel.subscriptionTitle" = "Suscripción n.º %d";
+
 /* Accessibility label for Ordered list button on formatting toolbar. */
 "Ordered List" = "Lista ordenada";
 
@@ -6183,8 +6211,7 @@ which should be translated separately and considered part of this sentence. */
 
 /* Confirm button on the alert when the user taps to delete a Product image
    Confirmation button on the alert when the user is deleting a variation
-   Title for removing an attribute in the edit attribute action sheet.
-   Title for the action button on the confirm alert for hiding store onboarding task list */
+   Title for removing an attribute in the edit attribute action sheet. */
 "Remove" = "Eliminar";
 
 /* Confirmation title before removing an attribute from a variation. */
@@ -7269,9 +7296,6 @@ which should be translated separately and considered part of this sentence. */
 /* My Store > Settings > Store Settings section title */
 "Store Settings" = "Ajustes de la tienda";
 
-/* Controls store onboarding setup list visibility. */
-"Store Setup List" = "Lista de configuración de la tienda";
-
 /* Title of the screen when the created store never becomes a Jetpack site in the store creation flow. */
 "Store creation still in progress" = "El proceso de creación de la tienda sigue en curso";
 
@@ -7310,9 +7334,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Display label for simple subscription product type. */
 "Subscription" = "Suscripción";
-
-/* Subscription title with subscription number. Reads like: 'Subscription #123' */
-"Subscription #%d" = "Núm. suscripción%d";
 
 /* Title for the plan section on the subscriptions view. Uppercased */
 "Subscription Status" = "Estado de la suscripción";
@@ -9423,9 +9444,6 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle of the alert presented when the user tries to connect to a specific card reader and it fails due to postal code problems */
 "You can set your store's postcode\/ZIP in wp-admin > WooCommerce > Settings (General)" = "Puedes configurar el código postal o ZIP de la tienda en WP Admin > WooCommerce > Ajustes (General).";
 
-/* Confirm message for hiding store onboarding task list */
-"You can show it when you need it by going to Menu > Settings > Store" = "Puedes mostrarla cuando lo necesites yendo a Menú > Ajustes > Tienda";
-
 /* Error message when In-Person Payments is not supported in a specific country */
 "You can still accept in-person cash payments by enabling the “Cash on Delivery” payment method on your store." = "Para seguir aceptando pagos en efectivo en persona, puedes activar el método de pago “Contra reembolso” en tu tienda.";
 
@@ -10106,9 +10124,11 @@ which should be translated separately and considered part of this sentence. */
 /* Change image button title in the Blaze Edit Ad screen. */
 "blazeEditAdView.image.changeImage" = "Cambiar la imagen";
 
-/* Button to dismiss the image view alert.
-   Error message displayed when selected campaign image is not large enough. */
-"blazeEditAdView.image.imageSizeError" = "Selecciona una imagen con un tamaño mínimo de 600 × 600 píxeles.";
+/* Error message displayed when selected campaign image is not large enough. */
+"blazeEditAdView.image.imageSizeErrorMessage" = "Selecciona una imagen con un tamaño mínimo de 400 ×400 píxeles.";
+
+/* Button to dismiss the image view alert. */
+"blazeEditAdView.image.ok" = "Aceptar";
 
 /* Save button in the Blaze Edit Ad screen. */
 "blazeEditAdView.save" = "Guardar";
@@ -10585,14 +10605,50 @@ which should be translated separately and considered part of this sentence. */
 /* Name for the Blaze dashboard card in the Customize Dashboard screen */
 "dashboardCard.name.blaze" = "Blaze";
 
+/* Name for the Store setup dashboard card in the Customize Dashboard screen */
+"dashboardCard.name.onboarding" = "Configuración de la tienda";
+
 /* Name for the Performance dashboard card in the Customize Dashboard screen */
 "dashboardCard.name.performance" = "Rendimiento";
+
+/* Name for the Top performers dashboard card in the Customize Dashboard screen */
+"dashboardCard.name.topPerformers" = "Mejor rendimiento";
+
+/* Link to open the support form. Should be lowercased. */
+"dashboardCardErrorView.contactSupport" = "ponte en contacto con el soporte técnico";
+
+/* Button to dismiss the support form from the Dashboard generic error card. */
+"dashboardCardErrorView.dismissSupport" = "Hecho";
+
+/* The info of the error view when failed to load store statistics on the Dashboard screen. The placeholder is a link to contact support. Reads as: Try reloading this card. If the issue persists, please contact us. */
+"dashboardCardErrorView.errorMessage" = "Prueba a cargar de nuevo esta tarjeta. Si el problema continúa, %1$@.";
+
+/* The title of the error view when failed to load a Dashboard card */
+"dashboardCardErrorView.errorTitle" = "Los datos no se pueden cargar";
+
+/* Button to reload the dashboard card on the Dashboard screen */
+"dashboardCardErrorView.retry" = "Reintentar";
 
 /* Button to save changes on the Customize Dashboard screen */
 "dashboardCustomization.saveButton" = "Guardar";
 
+/* Title for the screen to customize the dashboard screen */
+"dashboardCustomization.title" = "Personalizar";
+
 /* Text on unavailable dashboard card on the Customize Dashboard screen */
 "dashboardCustomization.unavailable" = "No disponible";
+
+/* Title of the button to edit the layout of the Dashboard screen. */
+"dashboardView.edit" = "Editar";
+
+/* Label of the button to share the store */
+"dashboardView.shareStoreCard.shareButtonLabel" = "Comparte tu tienda";
+
+/* Subtitle of the Share Your Store card */
+"dashboardView.shareStoreCard.subtitle" = "Usa el correo electrónico o las redes sociales para dar a conocer tu tienda";
+
+/* Title of the Share Your Store card */
+"dashboardView.shareStoreCard.title" = "¡Que te conozcan todos!";
 
 /* Title on the banner when the site's WooExpress plan has expired */
 "dashboardView.storePlanBanner.expired" = "El plan de tu sitio ha finalizado.";
@@ -11288,11 +11344,29 @@ which should be translated separately and considered part of this sentence. */
 /* Button when tapped will show a screen with all the store setup tasks.%1$d represents the total number of tasks. */
 "storeOnboardingCardView.viewAll" = "Ver el total de %1$d tareas";
 
+/* Button title to contact support to get help with deprecated stats module */
+"storePerformanceView.contentUnavailable.buttonTitle" = "¿Aún necesitas ayuda? Contacto";
+
+/* Text that explains how to update WooCommerce to get the latest stats */
+"storePerformanceView.contentUnavailable.details" = "Asegúrate de estar ejecutando la última versión de WooCommerce en tu sitio web y de haber activado Analytics en los ajustes de WooCommerce.";
+
+/* Button to dismiss the support form from the Dashboard stats error screen. */
+"storePerformanceView.contentUnavailable.dismissSupport" = "Hecho";
+
+/* Title when we can't show stats because user is on a deprecated WooCommerce Version */
+"storePerformanceView.contentUnavailable.title" = "No podemos mostrar los análisis en tiempo real de tu tienda";
+
 /* Conversion stat label on dashboard. */
 "storePerformanceView.conversion" = "Conversión";
 
+/* Title of the custom time range on the store performance card on the Dashboard screen */
+"storePerformanceView.custom" = "Personalizado";
+
 /* Menu item to dismiss the store performance section on the Dashboard screen */
 "storePerformanceView.hideCard" = "Ocultar rendimiento";
+
+/* Text on the store stats chart on the Dashboard screen when there is no revenue */
+"storePerformanceView.noRevenueText" = "No hay ingresos para las fechas seleccionadas";
 
 /* Orders stat label on dashboard - should be plural. */
 "storePerformanceView.orders" = "Pedidos";
@@ -11314,9 +11388,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button title on the store picker for store connection */
 "storePickerViewController.addStoreButton" = "Conectar una tienda existente";
-
-/* Text on the store stats chart on the Dashboard screen when there is no revenue */
-"storeStatsChart.noRevenueText" = "Sin ingresos para este periodo";
 
 /* Value for the x-Axis of any selected point on the store stats chart on the Dashboard screen */
 "storeStatsChart.xSelectedValue" = "Fecha seleccionada";
@@ -11534,6 +11605,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Menu item to dismiss the Top Performers section on the Dashboard screen */
 "topPerformersDashboardView.hideCard" = "Ocultar mejor rendimiento";
+
+/* Title of the Top performers section on the Dashboard screen */
+"topPerformersDashboardView.title" = "Mejor rendimiento";
 
 /* Button to navigate to Analytics Hub. */
 "topPerformersDashboardView.viewAll" = "Ver todos los análisis de la tienda";

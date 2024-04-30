@@ -1,2 +1,1 @@
-Eliminamos um bug para garantir que o botão "Excluir registro de atividades" funcione perfeitamente, apagando tudo para você começar do zero. Desfrute de uma experiência ainda melhor no WooCommerce. Atualize agora mesmo!
-
+Diga adeus a bugs irritantes! Nossa atualização mais recente garante que a funcionalidade "Cobrar pagamentos" leve você diretamente ao formulário do pedido, esteja você usando uma ação rápida ou um link direto. Realize transações perfeitas em qualquer lugar!

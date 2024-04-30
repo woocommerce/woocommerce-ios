@@ -2044,6 +2044,7 @@
 		CE5F462723AAC8C0006B1A5C /* RefundDetailsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE5F462623AAC8C0006B1A5C /* RefundDetailsViewModel.swift */; };
 		CE5F462A23AACA0A006B1A5C /* RefundDetailsDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE5F462923AACA0A006B1A5C /* RefundDetailsDataSource.swift */; };
 		CE5F462C23AACBC4006B1A5C /* RefundDetailsResultController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE5F462B23AACBC4006B1A5C /* RefundDetailsResultController.swift */; };
+		CE606D7F2BDFD45A001CB424 /* ShippingMethodSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE606D7E2BDFD45A001CB424 /* ShippingMethodSelector.swift */; };
 		CE63023D2BAAEF2C00E3325C /* CustomersListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE63023C2BAAEF2C00E3325C /* CustomersListView.swift */; };
 		CE63023F2BAAF04600E3325C /* TitleAndSubtitleAndDetailRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE63023E2BAAF04600E3325C /* TitleAndSubtitleAndDetailRow.swift */; };
 		CE6302412BAAFB5E00E3325C /* CustomersListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE6302402BAAFB5E00E3325C /* CustomersListViewModel.swift */; };
@@ -4803,6 +4804,7 @@
 		CE5F462623AAC8C0006B1A5C /* RefundDetailsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundDetailsViewModel.swift; sourceTree = "<group>"; };
 		CE5F462923AACA0A006B1A5C /* RefundDetailsDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundDetailsDataSource.swift; sourceTree = "<group>"; };
 		CE5F462B23AACBC4006B1A5C /* RefundDetailsResultController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundDetailsResultController.swift; sourceTree = "<group>"; };
+		CE606D7E2BDFD45A001CB424 /* ShippingMethodSelector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingMethodSelector.swift; sourceTree = "<group>"; };
 		CE63023C2BAAEF2C00E3325C /* CustomersListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomersListView.swift; sourceTree = "<group>"; };
 		CE63023E2BAAF04600E3325C /* TitleAndSubtitleAndDetailRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitleAndSubtitleAndDetailRow.swift; sourceTree = "<group>"; };
 		CE6302402BAAFB5E00E3325C /* CustomersListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomersListViewModel.swift; sourceTree = "<group>"; };
@@ -10033,10 +10035,9 @@
 		CC200BAF27847D9300EC5884 /* PaymentSection */ = {
 			isa = PBXGroup;
 			children = (
+				CE606D7D2BDFD3D9001CB424 /* Shipping */,
 				B998DF462A989BC900D1C6E8 /* Taxes */,
 				CC200BB027847DE300EC5884 /* OrderPaymentSection.swift */,
-				AEA3F90C27BE76B300B9F555 /* ShippingLineDetails.swift */,
-				AEA3F90E27BE8EB400B9F555 /* ShippingLineDetailsViewModel.swift */,
 				AE7C957A27C3D5DA007E8E12 /* FeeOrDiscountLineDetails.swift */,
 				AE7C957C27C3F187007E8E12 /* FeeOrDiscountLineDetailsViewModel.swift */,
 				EEB4E2D929B5F8FC00371C3C /* CouponLineDetailsViewModel.swift */,
@@ -10782,6 +10783,16 @@
 				457509E3267B9E91005FA2EA /* AggregatedProductListViewController.xib */,
 			);
 			path = "Product Details";
+			sourceTree = "<group>";
+		};
+		CE606D7D2BDFD3D9001CB424 /* Shipping */ = {
+			isa = PBXGroup;
+			children = (
+				AEA3F90C27BE76B300B9F555 /* ShippingLineDetails.swift */,
+				AEA3F90E27BE8EB400B9F555 /* ShippingLineDetailsViewModel.swift */,
+				CE606D7E2BDFD45A001CB424 /* ShippingMethodSelector.swift */,
+			);
+			path = Shipping;
 			sourceTree = "<group>";
 		};
 		CE63023B2BAAEF0800E3325C /* Customers */ = {
@@ -13609,6 +13620,7 @@
 				02817B39242B34560050AD8B /* ToolbarView.swift in Sources */,
 				860B85F12ADE3A0E00E85884 /* BulletPointView.swift in Sources */,
 				D817586222BB64C300289CFE /* OrderDetailsNotices.swift in Sources */,
+				CE606D7F2BDFD45A001CB424 /* ShippingMethodSelector.swift in Sources */,
 				022F7A0324A05F6400012601 /* LinkedProductsListSelectorViewController.swift in Sources */,
 				2602A63F27BD880A00B347F1 /* NewOrderInitialStatusResolver.swift in Sources */,
 				0201E42B2946151100C793C7 /* StoreCreationCategoryQuestionViewModel.swift in Sources */,

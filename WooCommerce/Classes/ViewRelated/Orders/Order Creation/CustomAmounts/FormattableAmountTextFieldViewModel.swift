@@ -46,7 +46,7 @@ final class FormattableAmountTextFieldViewModel: ObservableObject {
     /// Defines the amount text color.
     ///
     var amountTextColor: UIColor {
-        amount.isEmpty ? .textSubtle : .text
+        amount.isEmpty ? .textPlaceholder : .text
     }
 
     /// Defines the amount text size.

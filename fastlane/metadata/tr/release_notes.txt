@@ -1,2 +1,1 @@
-"Etkinlik Günlüğü’nü Sıfırla" düğmesinin çok iyi çalışmasını sağlayarak temiz bir başlangıç için geçmişe sünger çekmeniz için sinir bozucu bir hatayı ortadan kaldırdık. Daha sorunsuz bir WooCommerce deneyimine geçin. Hemen güncelleyin!
-
+Rahatsız edici hatalara veda edin! En yeni güncellememiz, hızlı işlem veya derin bir bağlantı kullanmanız fark etmeksizin "Ödeme Alma" özelliğinin sizi doğrudan sipariş formuna yönlendirmesini sağlar. Hareket halindeyken sorunsuz işlemlerin keyfini çıkarın!

@@ -764,23 +764,34 @@ final class EditableOrderViewModel: ObservableObject {
         observeChangesInCustomerDetails()
     }
 
-    /// Saves the latest Customer Details state if the view is dismissed. Eg: on IPads, automatic modal dismissal on size class change
+    /// Saves the latest data entered in the Address Form Fields if the view is dismissed with unsaved changes
+    /// Eg: on IPads, the modal is automatically dismissed on size class change, which would lead to data loss
     ///
     func saveInflightCustomerDetails() {
-        let address = Address(firstName: latestAddressFormFields?.firstName ?? "",
-                              lastName: latestAddressFormFields?.lastName ?? "",
-                              company: latestAddressFormFields?.company,
-                              address1: latestAddressFormFields?.address1 ?? "",
-                              address2: latestAddressFormFields?.address2,
-                              city: latestAddressFormFields?.city ?? "",
-                              state: latestAddressFormFields?.state ?? "",
-                              postcode: latestAddressFormFields?.postcode ?? "",
-                              country: latestAddressFormFields?.country ?? "",
-                              phone: latestAddressFormFields?.phone,
-                              email: latestAddressFormFields?.email)
-        let input = Self.createAddressesInputIfPossible(billingAddress: address, shippingAddress: address)
-        orderSynchronizer.setAddresses.send(input)
-        trackCustomerDetailsAdded()
+        guard let latestAddressFormFields else {
+            return
+        }
+        let latestSyncBillingAddress = orderSynchronizer.order.billingAddress
+        let latestSyncShippingAddress = orderSynchronizer.order.shippingAddress
+
+        let latestAddressState = latestAddressFormFields.toAddress()
+
+        if (latestSyncBillingAddress != latestAddressState) || (latestSyncShippingAddress != latestAddressState) {
+            let address = Address(firstName: latestAddressFormFields.firstName,
+                                  lastName: latestAddressFormFields.lastName,
+                                  company: latestAddressFormFields.company,
+                                  address1: latestAddressFormFields.address1,
+                                  address2: latestAddressFormFields.address2,
+                                  city: latestAddressFormFields.city,
+                                  state: latestAddressFormFields.state,
+                                  postcode: latestAddressFormFields.postcode,
+                                  country: latestAddressFormFields.country,
+                                  phone: latestAddressFormFields.phone,
+                                  email: latestAddressFormFields.email)
+            let input = Self.createAddressesInputIfPossible(billingAddress: address, shippingAddress: address)
+            orderSynchronizer.setAddresses.send(input)
+            trackCustomerDetailsAdded()
+        }
     }
 
     func addCustomerAddressToOrder(customer: Customer) {

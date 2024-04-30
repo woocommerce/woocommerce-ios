@@ -758,6 +758,10 @@ final class EditableOrderViewModel: ObservableObject {
             self?.orderSynchronizer.setAddresses.send(input)
             self?.trackCustomerDetailsAdded()
         })
+        // Since the form is recreated the original reference is lost. This is a problem if we update the form more than once
+        // while keeping the Order open, since new published values won't be observed anymore.
+        // This is resolved by hooking the publisher again to the new object
+        observeChangesInCustomerDetails()
     }
 
     /// Saves the latest Customer Details state if the view is dismissed. Eg: on IPads, automatic modal dismissal on size class change

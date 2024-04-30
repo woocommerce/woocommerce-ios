@@ -1171,33 +1171,10 @@ extension WooAnalyticsEvent {
 extension WooAnalyticsEvent {
     // Namespace
     enum SimplePayments {
-        /// Possible Payment Methods
-        ///
-        enum PaymentMethod: String {
-            case card
-            case cash
-            case paymentLink = "payment_link"
-        }
-
-        /// Possible view sources
-        ///
-        enum Source: String {
-            case amount
-            case summary
-            case paymentMethod = "payment_method"
-        }
-
         /// Common event keys
         ///
         private enum Keys {
             static let state = "state"
-            static let amount = "amount"
-            static let paymentMethod = "payment_method"
-            static let source = "source"
-        }
-
-        static func simplePaymentsFlowStarted() -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .simplePaymentsFlowStarted, properties: [:])
         }
 
         static func simplePaymentsFlowNoteAdded() -> WooAnalyticsEvent {

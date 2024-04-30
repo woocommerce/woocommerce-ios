@@ -251,33 +251,12 @@ final class InPersonPaymentsMenuViewModelTests: XCTestCase {
 
     // MARK: - Collect Payment tests
 
-    func test_collectPaymentTapped_sets_presentCollectPaymentWithSimplePayments_to_true_when_feature_is_disabled() {
-        // Given
-        let featureFlagService = MockFeatureFlagService(isMigrateSimplePaymentsToOrderCreationEnabled: false)
-        let dependencies = InPersonPaymentsMenuViewModel.Dependencies(cardPresentPaymentsConfiguration: .init(country: .US),
-                                                                      onboardingUseCase: mockOnboardingUseCase,
-                                                                      cardReaderSupportDeterminer: MockCardReaderSupportDeterminer(),
-                                                                      wooPaymentsDepositService: mockDepositService,
-                                                                      featureFlagService: featureFlagService)
-        sut = InPersonPaymentsMenuViewModel(siteID: sampleStoreID,
-                                            dependencies: dependencies,
-                                            navigationPath: .constant(.init()))
-
-        // When
-        sut.collectPaymentTapped()
-
-        // Then
-        XCTAssertTrue(sut.presentCollectPaymentWithSimplePayments)
-    }
-
     func test_collectPaymentTapped_appends_collectPayment_to_navigation_path() {
         // Given
-        let featureFlagService = MockFeatureFlagService(isMigrateSimplePaymentsToOrderCreationEnabled: true)
         let dependencies = InPersonPaymentsMenuViewModel.Dependencies(cardPresentPaymentsConfiguration: .init(country: .US),
                                                                       onboardingUseCase: mockOnboardingUseCase,
                                                                       cardReaderSupportDeterminer: MockCardReaderSupportDeterminer(),
-                                                                      wooPaymentsDepositService: mockDepositService,
-                                                                      featureFlagService: featureFlagService)
+                                                                      wooPaymentsDepositService: mockDepositService)
         var navigationPath = NavigationPath()
         let navigationPathBinding = Binding<NavigationPath>(
             get: { navigationPath },
@@ -295,33 +274,12 @@ final class InPersonPaymentsMenuViewModelTests: XCTestCase {
         XCTAssertEqual(navigationPath, NavigationPath([InPersonPaymentsMenuNavigationDestination.collectPayment]))
     }
 
-    func test_navigate_to_collectPayment_sets_presentCollectPaymentWithSimplePayments_to_true_when_feature_is_disabled() {
-        // Given
-        let featureFlagService = MockFeatureFlagService(isMigrateSimplePaymentsToOrderCreationEnabled: false)
-        let dependencies = InPersonPaymentsMenuViewModel.Dependencies(cardPresentPaymentsConfiguration: .init(country: .US),
-                                                                      onboardingUseCase: mockOnboardingUseCase,
-                                                                      cardReaderSupportDeterminer: MockCardReaderSupportDeterminer(),
-                                                                      wooPaymentsDepositService: mockDepositService,
-                                                                      featureFlagService: featureFlagService)
-        sut = InPersonPaymentsMenuViewModel(siteID: sampleStoreID,
-                                            dependencies: dependencies,
-                                            navigationPath: .constant(.init()))
-
-        // When
-        sut.navigate(to: PaymentsMenuDestination.collectPayment)
-
-        // Then
-        XCTAssertTrue(sut.presentCollectPaymentWithSimplePayments)
-    }
-
     func test_navigate_to_collectPayment_appends_collectPayment_to_empty_navigation_path() {
         // Given
-        let featureFlagService = MockFeatureFlagService(isMigrateSimplePaymentsToOrderCreationEnabled: true)
         let dependencies = InPersonPaymentsMenuViewModel.Dependencies(cardPresentPaymentsConfiguration: .init(country: .US),
                                                                       onboardingUseCase: mockOnboardingUseCase,
                                                                       cardReaderSupportDeterminer: MockCardReaderSupportDeterminer(),
-                                                                      wooPaymentsDepositService: mockDepositService,
-                                                                      featureFlagService: featureFlagService)
+                                                                      wooPaymentsDepositService: mockDepositService)
         var navigationPath = NavigationPath()
         let navigationPathBinding = Binding<NavigationPath>(
             get: { navigationPath },
@@ -341,12 +299,10 @@ final class InPersonPaymentsMenuViewModelTests: XCTestCase {
 
     func test_navigate_to_collectPayment_appends_collectPayment_to_non_empty_navigation_path() {
         // Given
-        let featureFlagService = MockFeatureFlagService(isMigrateSimplePaymentsToOrderCreationEnabled: true)
         let dependencies = InPersonPaymentsMenuViewModel.Dependencies(cardPresentPaymentsConfiguration: .init(country: .US),
                                                                       onboardingUseCase: mockOnboardingUseCase,
                                                                       cardReaderSupportDeterminer: MockCardReaderSupportDeterminer(),
-                                                                      wooPaymentsDepositService: mockDepositService,
-                                                                      featureFlagService: featureFlagService)
+                                                                      wooPaymentsDepositService: mockDepositService)
         var navigationPath = NavigationPath(["testPath"])
         let navigationPathBinding = Binding<NavigationPath>(
             get: { navigationPath },
@@ -372,12 +328,10 @@ final class InPersonPaymentsMenuViewModelTests: XCTestCase {
 
     func test_dismissPaymentCollection_pops_paths_down_to_before_the_first_colletPayment_path() {
         // Given
-        let featureFlagService = MockFeatureFlagService(isMigrateSimplePaymentsToOrderCreationEnabled: true)
         let dependencies = InPersonPaymentsMenuViewModel.Dependencies(cardPresentPaymentsConfiguration: .init(country: .US),
                                                                       onboardingUseCase: mockOnboardingUseCase,
                                                                       cardReaderSupportDeterminer: MockCardReaderSupportDeterminer(),
-                                                                      wooPaymentsDepositService: mockDepositService,
-                                                                      featureFlagService: featureFlagService)
+                                                                      wooPaymentsDepositService: mockDepositService)
         var navigationPath = NavigationPath(["testPath"])
         let navigationPathBinding = Binding<NavigationPath>(
             get: { navigationPath },
@@ -402,12 +356,10 @@ final class InPersonPaymentsMenuViewModelTests: XCTestCase {
 
     func test_collectPaymentTapped_sets_orderViewModel() throws {
         // Given
-        let featureFlagService = MockFeatureFlagService(isMigrateSimplePaymentsToOrderCreationEnabled: true)
         let dependencies = InPersonPaymentsMenuViewModel.Dependencies(cardPresentPaymentsConfiguration: .init(country: .US),
                                                                       onboardingUseCase: mockOnboardingUseCase,
                                                                       cardReaderSupportDeterminer: MockCardReaderSupportDeterminer(),
-                                                                      wooPaymentsDepositService: mockDepositService,
-                                                                      featureFlagService: featureFlagService)
+                                                                      wooPaymentsDepositService: mockDepositService)
         sut = InPersonPaymentsMenuViewModel(siteID: sampleStoreID,
                                             dependencies: dependencies,
                                             navigationPath: .constant(.init()))

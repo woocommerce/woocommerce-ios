@@ -227,10 +227,16 @@ struct OrderForm: View {
 
     @Environment(\.adaptiveModalContainerPresentationStyle) var presentationStyle
 
+    @Environment(\.horizontalSizeClass) var horizontalSizeClass
+
     var body: some View {
         orderFormSummary(presentProductSelector)
             .onAppear {
                 updateSelectionSyncApproach(for: presentationStyle)
+            }
+            .onChange(of: horizontalSizeClass) { _ in
+                viewModel.saveInFlightOrderNotes()
+                viewModel.saveInflightCustomerDetails()
             }
     }
 

@@ -92,10 +92,6 @@ public enum FeatureFlag: Int {
     ///
     case jetpackSetupWithApplicationPassword
 
-    /// Whether to enable the onboarding checklist in the dashboard for WPCOM stores.
-    ///
-    case dashboardOnboarding
-
     /// Enables the ability to add products to orders by SKU scanning
     ///
     case addProductToOrderViaSKUScanner
@@ -123,10 +119,6 @@ public enum FeatureFlag: Int {
     /// Enables read-only support for the Gift Cards extension
     ///
     case readOnlyGiftCards
-
-    /// Ability to hide store onboarding task list
-    ///
-    case hideStoreOnboardingTaskList
 
     /// Enables read-only support for the Min/Max Quantities extension
     ///
@@ -196,10 +188,6 @@ public enum FeatureFlag: Int {
     ///
     case customersInHubMenu
 
-    /// Enables migration from simple payments to order creation.
-    ///
-    case migrateSimplePaymentsToOrderCreation
-
     /// Enables visibility of Subscription product details when creating an order, within product selection, and order details.
     ///
     case subscriptionsInOrderCreationUI
@@ -207,4 +195,8 @@ public enum FeatureFlag: Int {
     /// Enables a new customer creation flow in order creation for subscriptions support.
     ///
     case subscriptionsInOrderCreationCustomers
+
+    /// Enables new shipping line features in order details and order creation/editing.
+    ///
+    case enhancingOrderShippingLines
 }

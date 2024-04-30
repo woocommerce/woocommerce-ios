@@ -191,4 +191,8 @@ public enum FeatureFlag: Int {
     /// Enables visibility of Subscription product details when creating an order, within product selection, and order details.
     ///
     case subscriptionsInOrderCreationUI
+
+    /// Enables new shipping line features in order details and order creation/editing.
+    ///
+    case enhancingOrderShippingLines
 }

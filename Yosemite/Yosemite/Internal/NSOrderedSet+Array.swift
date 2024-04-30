@@ -9,8 +9,8 @@ extension NSOrderedSet {
     }
 }
 
-/// Explicitely checks the type for each generic element that will be converted from NSOrderedSet to a Swift array.
-/// Crash and log the error in debug builds if there's a miss-match
+/// Explicitly checks the type for each generic element that will be converted from NSOrderedSet to a Swift array.
+/// Crash and log the error in debug builds if there's a mismatch
 extension NSOrderedSet {
     func toTypeCheckedArray<T>() -> [T] {
         var typeCheckedArray = [T]()

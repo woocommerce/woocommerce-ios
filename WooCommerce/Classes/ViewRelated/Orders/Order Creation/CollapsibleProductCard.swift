@@ -218,6 +218,7 @@ private struct CollapsibleProductRowCard: View {
                 .frame(minHeight: Layout.rowMinHeight)
 
                 subscriptionDetailsSection
+                    .renderedIf(viewModel.shouldShowProductSubscriptionsDetails)
 
                 Divider()
 

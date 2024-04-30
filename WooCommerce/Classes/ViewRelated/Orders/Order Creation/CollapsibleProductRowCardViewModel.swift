@@ -239,6 +239,7 @@ struct CollapsibleProductRowCardViewModel: Identifiable {
                                                                                            manageStock: manageStock)
         self.stepperViewModel = stepperViewModel
         self.priceSummaryViewModel = .init(pricedIndividually: pricedIndividually,
+                                           isSubscriptionProduct: (productSubscriptionDetails != nil),
                                            quantity: stepperViewModel.quantity,
                                            price: price)
         self.currencyFormatter = currencyFormatter

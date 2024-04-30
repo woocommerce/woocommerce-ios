@@ -10,7 +10,7 @@ struct AboutTapToPayView: View {
     var body: some View {
         VStack(spacing: 0) {
             ScrollView(.vertical) {
-                VStack {
+                VStack(alignment: .leading) {
                     VStack(alignment: .leading, spacing: Layout.spacing) {
                         Text(Localization.aboutTapToPayHeading)
                             .font(.title2.bold())

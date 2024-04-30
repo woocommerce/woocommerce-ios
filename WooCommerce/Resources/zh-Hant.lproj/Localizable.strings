@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-04-16 13:54:04+0000 */
+/* Translation-Revision-Date: 2024-04-23 13:54:03+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_TW */
@@ -1348,7 +1348,6 @@ which should be translated separately and considered part of this sentence. */
    Button to dismiss the site credential login screen
    Button to dismiss the store creation profiler flow
    Button to dismiss the store name screen
-   Button to dismiss the survey screen.
    Button to dismiss the view or error alerts of the application password authorization web view
    Button to dismiss. Presented to users when updating the card reader software fails
    Cancel button in the More Options action sheet
@@ -2421,9 +2420,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title text for the product discount row informational tooltip */
 "Discounts unavailable" = "折扣不適用";
-
-/* Message on the local notification to remind the user to purchase a plan. */
-"Discover advanced features and personalized recommendations for your store! Tap to pick a plan that suits you best." = "探索適用於貴店的進階功能和個人化建議！ 點選以挑選最適合你的方案。";
 
 /* Details on the store onboarding payments setup screen. */
 "Discover other payment providers and choose a payment provider." = "探索其他付款服務供應商，並從中選擇一家。";
@@ -3653,14 +3649,8 @@ which should be translated separately and considered part of this sentence. */
 /* Browse our help documentation website title */
 "Help Center" = "說明中心";
 
-/* Title in Free trail survey screen. */
-"Help us understand your subscription decisions. Your feedback matters." = "與我們分享你的訂閱決策。 我們很重視你的意見。";
-
 /* Text used when sharing a link to the app with a friend. */
 "Hey! Here is a link to download the WooCommerce app. I'm really enjoying it and thought you might too." = "嗨！ 在此提供 WooCommerce 應用程式的下載連結。我很喜歡這個應用程式，相信你也會喜歡。 ";
-
-/* Message on the local notification about a newly created store.The placeholder is the name of the user. */
-"Hi %1$@, Welcome to your 14-day free trial of Woo Express – everything you need to start and grow a successful online business, all in one place. Ready to explore?" = "%1$@，你好，歡迎免費試用 14 天 Woo Express：建立及發展成功線上事業所需的一切工具，這裡通通都有。 準備好開始探索了嗎？";
 
 /* Accessibility value if login page's password field is hiding the password (i.e. with asterisks).
    Display label for the product's catalog visibility */
@@ -3703,23 +3693,11 @@ which should be translated separately and considered part of this sentence. */
 /* Option in the store creation selling status question. */
 "I am already selling online" = "我已在線上銷售";
 
-/* Text for Free trial survey answer. */
-"I am evaluating and comparing your service with others on the market" = "我還在評估你們的服務，並與市面上其他服務比較";
-
 /* Option in the store creation selling status question. */
 "I am just starting to sell" = "我剛要開始銷售";
 
-/* Text for Free trial survey answer. */
-"I am part of a team, and we need to make the decision collectively." = "我隸屬於一個團隊，需要與成員取得共識。";
-
 /* Option in the store creation selling status question. */
 "I am selling offline" = "我從事線下銷售";
-
-/* Text for Free trial survey answer. */
-"I am still exploring and assessing the features and benefits of the app." = "我還在探索並評估應用程式的功能與優勢。";
-
-/* Text for Free trial survey answer. */
-"I find the price of the service to be a significant factor in my decision." = "我認為服務價格是影響我決策的重要因素。";
 
 /* Text on the support form to refer to what area the user has problem with. */
 "I need help with" = "我需要協助處理";
@@ -4958,9 +4936,6 @@ which should be translated separately and considered part of this sentence. */
 /* Text displayed when no order data are available for the selected time range. */
 "No revenue this period" = "此期間沒有收益";
 
-/* Message on the local notification to remind after three days. */
-"No rush, take your time! If you have any questions or need assistance, we're always here to help. Happy exploring!" = "慢慢來，我們不趕時間！ 如有任何疑問或需要協助，我們會隨時為你服務。 祝你探索愉快！";
-
 /* The text on the placeholder overlay when there are no shipping classes on the Shipping Class list picker */
 "No shipping classes yet" = "尚未有運送類別";
 
@@ -5269,9 +5244,6 @@ which should be translated separately and considered part of this sentence. */
    Restriction type Other for contents declared in the customs form for Shipping Label flow
    Type Other of content to be declared for the customs form in Shipping Label flow */
 "Other" = "其他";
-
-/* Placeholder text for Free trial survey. */
-"Other (please specify)." = "其他 (請具體說明)。";
 
 /* Title of the Other Plugin support area option */
 "Other Extension \/ Plugin" = "其他擴充功能\/外掛程式";
@@ -6747,8 +6719,7 @@ which should be translated separately and considered part of this sentence. */
 /* Text for the send button in the product review reply screen */
 "Send" = "傳送";
 
-/* CTA button title which sends survey feedback.
-   Presents a survey to gather feedback from the user. */
+/* Presents a survey to gather feedback from the user. */
 "Send Feedback" = "傳送回饋意見";
 
 /* Title of a button. The text should be uppercase.  Clicking requests a hyperlink be emailed ot the user. */
@@ -8986,9 +8957,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the banner notice in the add-ons view */
 "View add-ons from your device!" = "查看裝置的附加元件！";
 
-/* Button when tapped will show a screen with all the store setup tasks.%1$d represents the total number of tasks. */
-"View all (%1$d)" = "檢視全部 (%1$d)";
-
 /* Title of the feedback banner on the coupon list screen */
 "View and edit coupons" = "檢視並編輯優惠券";
 
@@ -9222,9 +9190,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Subtitle of the Store details task to add details about the store. */
 "We’ll use the info to get a head start on your shipping, tax, and payments settings." = "我們會使用該資訊預先幫你完成運送、稅務和付款設定。";
-
-/* Message on the local notification to ask for Free trial survey. */
-"We’re interested in your decision-making journey. Could you please tell us about your current status?" = "我們想瞭解你的決策過程。 可以把你目前的狀態告訴我們嗎？";
 
 /* Content of the feedback banner on the coupon list screen */
 "We’ve been working on making it possible to view and edit coupons from your device!" = "我們一直努力讓你可以在裝置上查看並編輯優惠券！";
@@ -10620,17 +10585,11 @@ which should be translated separately and considered part of this sentence. */
 /* Name for the Blaze dashboard card in the Customize Dashboard screen */
 "dashboardCard.name.blaze" = "Blaze";
 
-/* Name for the Store Onboarding dashboard card in the Customize Dashboard screen */
-"dashboardCard.name.onboarding" = "商店申請";
-
-/* Name for the Store Stats and Top Performers dashboard card in the Customize Dashboard screen */
-"dashboardCard.name.statsAndTopPerformers" = "商店統計與成效最佳者";
+/* Name for the Performance dashboard card in the Customize Dashboard screen */
+"dashboardCard.name.performance" = "績效";
 
 /* Button to save changes on the Customize Dashboard screen */
 "dashboardCustomization.saveButton" = "儲存";
-
-/* Title for the screen to customize the dashboard screen */
-"dashboardCustomization.title" = "自訂儀表板";
 
 /* Text on unavailable dashboard card on the Customize Dashboard screen */
 "dashboardCustomization.unavailable" = "無法使用";
@@ -11326,8 +11285,53 @@ which should be translated separately and considered part of this sentence. */
 /* Tab selector title that shows the statistics for today */
 "statsTimeRangeV4.tabTitle.custom" = "自訂範圍";
 
+/* Button when tapped will show a screen with all the store setup tasks.%1$d represents the total number of tasks. */
+"storeOnboardingCardView.viewAll" = "檢視所有 %1$d 個工作項目";
+
+/* Conversion stat label on dashboard. */
+"storePerformanceView.conversion" = "轉換";
+
+/* Menu item to dismiss the store performance section on the Dashboard screen */
+"storePerformanceView.hideCard" = "隱藏績效";
+
+/* Orders stat label on dashboard - should be plural. */
+"storePerformanceView.orders" = "訂單";
+
+/* Revenue stat label on dashboard. */
+"storePerformanceView.revenue" = "收益";
+
+/* Title of the store performance section on the Dashboard screen */
+"storePerformanceView.title" = "績效";
+
+/* Button to navigate to Analytics Hub. */
+"storePerformanceView.viewAll" = "檢視所有商店分析資料";
+
+/* Visitors stat label on dashboard - should be plural. */
+"storePerformanceView.visitors" = "訪客數";
+
+/* Button in date range picker to add a Custom Range tab */
+"storePerformanceViewModel.addCustomRange" = "新增";
+
 /* Button title on the store picker for store connection */
 "storePickerViewController.addStoreButton" = "連結現有商店";
+
+/* Text on the store stats chart on the Dashboard screen when there is no revenue */
+"storeStatsChart.noRevenueText" = "本期沒有收益";
+
+/* Value for the x-Axis of any selected point on the store stats chart on the Dashboard screen */
+"storeStatsChart.xSelectedValue" = "已選取日期";
+
+/* Value for the x-Axis of the store stats chart on the Dashboard screen */
+"storeStatsChart.xValue" = "日期";
+
+/* Value for the y-Axis of any selected point on the store stats chart on the Dashboard screen */
+"storeStatsChart.ySelectedValue" = "已選取收益";
+
+/* Value for the y-Axis of the store stats chart on the Dashboard screen */
+"storeStatsChart.yValue" = "收益";
+
+/* Value for the y-Axis of the store stats chart on the Dashboard screen when there is no revenue */
+"storeStatsChart.zeroRevenue" = "零收益";
 
 /* Widget description, displayed when selecting which widget to add */
 "storeWidgets.description" = "WooCommerce 今日統計資料";
@@ -11525,6 +11529,15 @@ which should be translated separately and considered part of this sentence. */
 /* Button in theme preview screen to pick a theme. The placeholder is the theme name. Reads like: Use Tsubaki */
 "themesPreviewViewModel.useThisThemeButton" = "使用 %1$@";
 
+/* Button in date range picker to add a Custom Range tab */
+"topPerformerDashboardViewModel.addCustomRange" = "新增";
+
+/* Menu item to dismiss the Top Performers section on the Dashboard screen */
+"topPerformersDashboardView.hideCard" = "隱藏成效最佳者";
+
+/* Button to navigate to Analytics Hub. */
+"topPerformersDashboardView.viewAll" = "檢視所有商店分析資料";
+
 /* Value for the plugin version detail row in settings, when the version is unknown. This is in place of the current version number. */
 "unknown" = "未知";
 
@@ -11643,9 +11656,6 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Åland Islands" = "奧蘭群島";
 
-/* Title of the local notification to remind the user to purchase a plan. */
-"🌟 Keep your business going!" = "🌟 讓業務蒸蒸日上！";
-
 /* Message when a tax rate is set */
 "🎉 New tax rate set" = "🎉 新稅率設定完成";
 
@@ -11660,16 +11670,4 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text of the notice that is displayed after the refund is created. */
 "🎉 Products successfully refunded" = "🎉 已成功退還商品款項";
-
-/* Title of the local notification about a newly created store */
-"🎉 Your store is ready!" = "🎉 你的商店已準備就緒！";
-
-/* Title of the local notification to ask for Free trial survey. */
-"💡Help Us Understand Your Subscription Decision" = "💡 與我們分享你的訂閱決策";
-
-/* Title of the Blaze campaign view. */
-"🔥 Blaze campaign" = "🔥Blaze 行銷活動";
-
-/* Title of the local notification to remind after three days. */
-"🧭 Still Exploring WooCommerce?" = "🧭 還在探索 WooCommerce 嗎？";
 

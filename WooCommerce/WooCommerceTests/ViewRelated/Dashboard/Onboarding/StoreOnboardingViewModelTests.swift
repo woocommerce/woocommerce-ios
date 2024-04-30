@@ -517,35 +517,6 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         XCTAssertTrue(sut.tasksForDisplay.count == 5)
     }
 
-    @MainActor
-    func test_the_badge_text_is_nil_for_all_tasks_when_productDescriptionAIFromStoreOnboarding_feature_is_disabled() async {
-        // Given
-        stores.updateDefaultStore(storeID: 6)
-        stores.updateDefaultStore(.fake().copy(siteID: 6, isWordPressComStore: true))
-        let sut = StoreOnboardingViewModel(siteID: 0,
-                                           isExpanded: true,
-                                           stores: stores,
-                                           defaults: defaults,
-                                           featureFlagService: MockFeatureFlagService(isProductDescriptionAIFromStoreOnboardingEnabled: false))
-        let tasks: [StoreOnboardingTask] = [
-            .init(isComplete: false, type: .addFirstProduct),
-            .init(isComplete: false, type: .storeDetails),
-            .init(isComplete: false, type: .launchStore),
-            .init(isComplete: true, type: .customizeDomains),
-            .init(isComplete: false, type: .payments)
-        ]
-        mockLoadOnboardingTasks(result: .success(tasks))
-
-        // When
-        await sut.reloadTasks()
-
-        // Then
-        XCTAssertEqual(sut.tasksForDisplay.count, 5)
-        sut.tasksForDisplay.forEach { taskViewModel in
-            XCTAssertNil(taskViewModel.badgeText)
-        }
-    }
-
     // MARK: completedAllStoreOnboardingTasks user defaults
 
     func test_completedAllStoreOnboardingTasks_is_nil_when_there_are_pending_tasks() async {
@@ -622,92 +593,6 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         XCTAssertNil(defaults[UserDefaults.Key.completedAllStoreOnboardingTasks])
     }
 
-    // MARK: - `shouldShowInDashboard``
-
-    func test_shouldShowInDashboard_is_false_when_no_tasks_available_due_to_network_error() async {
-        // Given
-        mockLoadOnboardingTasks(result: .failure(MockError()))
-        let sut = StoreOnboardingViewModel(siteID: 0,
-                                           isExpanded: false,
-                                           stores: stores,
-                                           defaults: defaults)
-        // When
-        await sut.reloadTasks()
-
-        // Then
-        XCTAssertFalse(sut.shouldShowInDashboard)
-    }
-
-    func test_shouldShowInDashboard_is_false_when_no_tasks_received_in_success_response() async {
-        // Given
-        mockLoadOnboardingTasks(result: .success([]))
-        let sut = StoreOnboardingViewModel(siteID: 0,
-                                           isExpanded: false,
-                                           stores: stores,
-                                           defaults: defaults)
-        // When
-        await sut.reloadTasks()
-
-        // Then
-        XCTAssertFalse(sut.shouldShowInDashboard)
-    }
-
-    func test_shouldShowInDashboard_is_true_when_pending_tasks_received_in_response() async {
-        // Given
-        let tasks: [StoreOnboardingTask] = [
-            .init(isComplete: false, type: .addFirstProduct),
-            .init(isComplete: true, type: .launchStore),
-            .init(isComplete: false, type: .customizeDomains),
-            .init(isComplete: true, type: .payments)
-        ]
-        mockLoadOnboardingTasks(result: .success(tasks))
-        let sut = StoreOnboardingViewModel(siteID: 0,
-                                           isExpanded: false,
-                                           stores: stores,
-                                           defaults: defaults)
-
-        // When
-        await sut.reloadTasks()
-
-        // Then
-        XCTAssertTrue(sut.shouldShowInDashboard)
-    }
-
-    func test_shouldShowInDashboard_is_false_when_all_tasks_are_complete() async {
-        // Given
-        let tasks: [StoreOnboardingTask] = [
-            .init(isComplete: true, type: .addFirstProduct),
-            .init(isComplete: true, type: .launchStore),
-            .init(isComplete: true, type: .customizeDomains),
-            .init(isComplete: true, type: .payments)
-        ]
-        mockLoadOnboardingTasks(result: .success(tasks))
-        let sut = StoreOnboardingViewModel(siteID: 0,
-                                           isExpanded: false,
-                                           stores: stores,
-                                           defaults: defaults)
-
-        // When
-        await sut.reloadTasks()
-
-        // Then
-        XCTAssertFalse(sut.shouldShowInDashboard)
-    }
-
-    func test_shouldShowInDashboard_is_false_when_user_has_opted_to_hide_the_list() async {
-        // Given
-        let sut = StoreOnboardingViewModel(siteID: 0,
-                                           isExpanded: false,
-                                           stores: stores,
-                                           defaults: defaults)
-
-        // When
-        defaults[UserDefaults.Key.shouldHideStoreOnboardingTaskList] = true
-
-        // Then
-        XCTAssertFalse(sut.shouldShowInDashboard)
-    }
-
     // MARK: - canShowInDashboard
 
     func test_canShowInDashboard_is_false_when_no_tasks_available_due_to_network_error() async {
@@ -780,37 +665,6 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         XCTAssertFalse(sut.canShowInDashboard)
     }
 
-    // MARK: - hideTaskList
-
-    func test_hideTaskList_tracks_hide_list_event() async throws {
-        // Given
-        let tasks: [StoreOnboardingTask] = [
-            .init(isComplete: false, type: .addFirstProduct),
-            .init(isComplete: true, type: .storeDetails),
-            .init(isComplete: false, type: .launchStore),
-            .init(isComplete: false, type: .customizeDomains),
-            .init(isComplete: false, type: .payments)
-        ]
-        mockLoadOnboardingTasks(result: .success(tasks))
-        defaults[UserDefaults.Key.shouldHideStoreOnboardingTaskList] = nil
-        let sut = StoreOnboardingViewModel(siteID: 0,
-                                           isExpanded: false,
-                                           stores: stores,
-                                           defaults: defaults,
-                                           analytics: analytics)
-        await sut.reloadTasks()
-
-        // When
-        sut.hideTaskList()
-
-        // Then
-        let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "store_onboarding_hide_list"}))
-        let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])
-        XCTAssertEqual(eventProperties["source"] as? String, "onboarding_list")
-        XCTAssertTrue(try XCTUnwrap(eventProperties["hide"] as? Bool))
-        XCTAssertEqual(eventProperties["pending_tasks"] as? String, "add_domain,launch_site,payments,products")
-    }
-
     func test_reloadTasks_notifies_waitingTimeTracker_when_completedAllStoreOnboardingTasks_is_true() async {
         // Given
         defaults[UserDefaults.Key.completedAllStoreOnboardingTasks] = true
@@ -869,6 +723,22 @@ final class StoreOnboardingViewModelTests: XCTestCase {
 
         // Then
         XCTAssertFalse(tracker.startupActionsPending.contains(.loadOnboardingTasks))
+    }
+
+    /// Skipped until the feature flag is on for dynamic dashboard.
+    func test_hideTaskList_triggers_tracking_event() throws {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+        let viewModel = StoreOnboardingViewModel(siteID: 123, isExpanded: false, analytics: analytics)
+
+        // When
+        viewModel.hideTaskList()
+
+        // Then
+        let index = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "dynamic_dashboard_hide_card_tapped" }))
+        let properties = analyticsProvider.receivedProperties[index] as? [String: AnyHashable]
+        XCTAssertEqual(properties?["type"], "store_setup")
     }
 }
 

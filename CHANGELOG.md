@@ -1,6 +1,9 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 18.4
+Wave goodbye to pesky bugs! Our latest update ensures the "Collect Payment" feature leads you directly to the order form, whether you're using a quick action or a deep link. Enjoy seamless transactions on the go!
+
 ## 18.3
 Squashed a pesky bug to ensure the "Reset Activity Log" button works like a charm, cleaning the slate completely for a fresh start. Dive into a more seamless WooCommerce experience. Update now!
 

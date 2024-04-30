@@ -65,9 +65,9 @@ final class PaymentMethodsViewModel: ObservableObject {
 
     /// Transmits notice presentation intents.
     ///
-    private let presentNoticeSubject: PassthroughSubject<SimplePaymentsNotice, Never>
+    private let presentNoticeSubject: PassthroughSubject<PaymentMethodsNotice, Never>
 
-    var notice: AnyPublisher<SimplePaymentsNotice, Never> {
+    var notice: AnyPublisher<PaymentMethodsNotice, Never> {
         presentNoticeSubject.eraseToAnyPublisher()
     }
 
@@ -111,7 +111,7 @@ final class PaymentMethodsViewModel: ObservableObject {
     private let cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration
 
     struct Dependencies {
-        let presentNoticeSubject: PassthroughSubject<SimplePaymentsNotice, Never>
+        let presentNoticeSubject: PassthroughSubject<PaymentMethodsNotice, Never>
         let cardPresentPaymentsOnboardingPresenter: CardPresentPaymentsOnboardingPresenting
         let stores: StoresManager
         let storage: StorageManagerType
@@ -121,7 +121,7 @@ final class PaymentMethodsViewModel: ObservableObject {
         let featureFlagService: FeatureFlagService
         let currencySettings: CurrencySettings
 
-        init(presentNoticeSubject: PassthroughSubject<SimplePaymentsNotice, Never> = PassthroughSubject(),
+        init(presentNoticeSubject: PassthroughSubject<PaymentMethodsNotice, Never> = PassthroughSubject(),
              cardPresentPaymentsOnboardingPresenter: CardPresentPaymentsOnboardingPresenting = CardPresentPaymentsOnboardingPresenter(),
              stores: StoresManager = ServiceLocator.stores,
              storage: StorageManagerType = ServiceLocator.storageManager,
@@ -448,6 +448,14 @@ private extension PaymentMethodsViewModel {
                                                                value: "The order was paid by cash. Customer paid %1$@. The change due was %2$@.",
                                                                comment: "Note from the cash tender view.")
     }
+}
+
+/// Representation of possible notices that can be displayed from the payment methods flow
+///
+enum PaymentMethodsNotice: Equatable {
+    case created
+    case completed
+    case error(String)
 }
 
 private extension CardReaderDiscoveryMethod {

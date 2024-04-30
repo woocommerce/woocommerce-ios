@@ -268,7 +268,6 @@ class DefaultStoresManager: StoresManager {
         sessionManager.defaultSite = nil
         defaults[.storePhoneNumber] = nil
         defaults[.completedAllStoreOnboardingTasks] = nil
-        defaults[.shouldHideStoreOnboardingTaskList] = nil
         defaults[.usedProductDescriptionAI] = nil
         defaults[.hasDismissedWriteWithAITooltip] = nil
         defaults[.numberOfTimesWriteWithAITooltipIsShown] = nil

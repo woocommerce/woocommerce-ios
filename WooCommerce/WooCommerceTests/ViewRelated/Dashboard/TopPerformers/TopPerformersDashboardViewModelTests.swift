@@ -90,4 +90,19 @@ final class TopPerformersDashboardViewModelTests: XCTestCase {
         // Then
         XCTAssertTrue(onDismissTriggered)
     }
+
+    func test_dismissTopPerformers_triggers_tracking_event() throws {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+        let viewModel = TopPerformersDashboardViewModel(siteID: 123, usageTracksEventEmitter: .init(), analytics: analytics)
+
+        // When
+        viewModel.dismissTopPerformers()
+
+        // Then
+        let index = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "dynamic_dashboard_hide_card_tapped" }))
+        let properties = analyticsProvider.receivedProperties[index] as? [String: AnyHashable]
+        XCTAssertEqual(properties?["type"], "top_performers")
+    }
 }

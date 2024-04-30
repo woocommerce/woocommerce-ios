@@ -133,7 +133,7 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
 
     /// Transmits notice presentation intents.
     ///
-    private let presentNoticeSubject: PassthroughSubject<SimplePaymentsNotice, Never>
+    private let presentNoticeSubject: PassthroughSubject<PaymentMethodsNotice, Never>
 
     /// Stores Manager.
     ///
@@ -156,7 +156,7 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
          orderID: Int64 = 0,
          paymentLink: URL? = nil,
          feeID: Int64 = 0,
-         presentNoticeSubject: PassthroughSubject<SimplePaymentsNotice, Never> = PassthroughSubject(),
+         presentNoticeSubject: PassthroughSubject<PaymentMethodsNotice, Never> = PassthroughSubject(),
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
          stores: StoresManager = ServiceLocator.stores,
          countryCode: CountryCode = SiteAddress().countryCode,
@@ -195,7 +195,7 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
 
     convenience init(order: Order,
                      providedAmount: String,
-                     presentNoticeSubject: PassthroughSubject<SimplePaymentsNotice, Never> = PassthroughSubject(),
+                     presentNoticeSubject: PassthroughSubject<PaymentMethodsNotice, Never> = PassthroughSubject(),
                      currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
                      stores: StoresManager = ServiceLocator.stores,
                      analyticsFlow: WooAnalyticsEvent.PaymentsFlow.Flow = .simplePayment) {

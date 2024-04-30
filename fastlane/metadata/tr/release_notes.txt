@@ -1,1 +1,2 @@
-WooCommerce uygulamamızda en yeni güncellemeleri keşfedin! Sorunsuz bir ödeme işleminin keyfini çıkarın, site kimlik bilgileriyle zahmetsizce oturum açın ve hata olmadan daha hızlı şekilde Blaze kampanyaları oluşturun. Geliştirilmiş bir mağaza yönetimi deneyimi için hemen yükseltin!
+"Etkinlik Günlüğü’nü Sıfırla" düğmesinin çok iyi çalışmasını sağlayarak temiz bir başlangıç için geçmişe sünger çekmeniz için sinir bozucu bir hatayı ortadan kaldırdık. Daha sorunsuz bir WooCommerce deneyimine geçin. Hemen güncelleyin!
+

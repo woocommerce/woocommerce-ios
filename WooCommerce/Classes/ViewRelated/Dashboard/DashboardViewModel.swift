@@ -414,7 +414,7 @@ private extension DashboardViewModel {
     func updateDashboardCards(canShowOnboarding: Bool,
                               canShowBlaze: Bool,
                               canShowAnalytics: Bool) async {
-        dashboardCards = await {
+        var dashboardCards = await {
             if var stored = await loadDashboardCards() {
                 let analyticCardTypes: [DashboardCard.CardType] = [.performance, .topPerformers]
                 stored = canShowAnalytics ? stored : stored.filter { !analyticCardTypes.contains($0.type) }
@@ -438,15 +438,21 @@ private extension DashboardViewModel {
             dashboardCards.removeAll { $0.type == .blaze }
         }
 
+        self.dashboardCards = dashboardCards
+
         // Set cards to show "Unavailable" state in Customize screen when should not be shown.
         // Currently this applies to Top Performers and Performance cards.
         // For the other cards, when they should not be shown, they are simply not shown in Customize.
-        unavailableDashboardCards = []
-        if !canShowAnalytics {
-            unavailableDashboardCards.append(DashboardCard(type: .performance, enabled: false))
-            unavailableDashboardCards.append(DashboardCard(type: .topPerformers, enabled: false))
-        }
+        unavailableDashboardCards = {
+            if !canShowAnalytics {
+                [DashboardCard(type: .performance, enabled: false),
+                 DashboardCard(type: .topPerformers, enabled: false)]
+            } else {
+                []
+            }
+        }()
     }
+
     @MainActor
     func updateHasOrdersStatus() async {
         do {

@@ -20,10 +20,6 @@ class StoreOnboardingViewModel: ObservableObject {
     @Published private(set) var taskViewModels: [StoreOnboardingTaskViewModel] = []
     @Published private(set) var failedToLoadTasks = false
 
-    /// Used to determine whether the task list should be displayed in dashboard
-    ///
-    @Published private(set) var shouldShowInDashboard: Bool = false
-
     /// Used to determine whether the task list can be displayed in dashboard.
     ///
     @Published private(set) var canShowInDashboard = false
@@ -54,14 +50,11 @@ class StoreOnboardingViewModel: ObservableObject {
         !isExpanded && !isRedacted && (taskViewModels.count > tasksForDisplay.count)
     }
 
-    let isHideStoreOnboardingTaskListFeatureEnabled: Bool
-
     let isExpanded: Bool
 
     private let siteID: Int64
 
     private let stores: StoresManager
-    private let featureFlagService: FeatureFlagService
 
     private var state: State
 
@@ -91,7 +84,6 @@ class StoreOnboardingViewModel: ObservableObject {
          stores: StoresManager = ServiceLocator.stores,
          defaults: UserDefaults = .standard,
          analytics: Analytics = ServiceLocator.analytics,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          waitingTimeTracker: AppStartupWaitingTimeTracker = ServiceLocator.startupWaitingTimeTracker) {
         self.siteID = siteID
         self.isExpanded = isExpanded
@@ -99,15 +91,7 @@ class StoreOnboardingViewModel: ObservableObject {
         self.state = .loading
         self.defaults = defaults
         self.analytics = analytics
-        self.featureFlagService = featureFlagService
-        isHideStoreOnboardingTaskListFeatureEnabled = featureFlagService.isFeatureFlagEnabled(.hideStoreOnboardingTaskList)
         self.waitingTimeTracker = waitingTimeTracker
-
-        Publishers.CombineLatest3($noTasksAvailableForDisplay,
-                                  defaults.publisher(for: \.completedAllStoreOnboardingTasks),
-                                  defaults.publisher(for: \.shouldHideStoreOnboardingTaskList))
-        .map { !($0 || $1 || $2) }
-        .assign(to: &$shouldShowInDashboard)
 
         $noTasksAvailableForDisplay
             .combineLatest(defaults.publisher(for: \.completedAllStoreOnboardingTasks))
@@ -140,11 +124,9 @@ class StoreOnboardingViewModel: ObservableObject {
         analytics.track(event: .StoreOnboarding.storeOnboardingShowOrHideList(isHiding: true,
                                                                               source: .onboardingList,
                                                                               pendingTasks: pending))
-        if featureFlagService.isFeatureFlagEnabled(.dynamicDashboard) {
-            onDismiss?()
-        } else {
-            defaults[.shouldHideStoreOnboardingTaskList] = true
-        }
+
+        onDismiss?()
+        analytics.track(event: .DynamicDashboard.hideCardTapped(type: .onboarding))
     }
 }
 
@@ -256,11 +238,7 @@ private extension StoreOnboardingTaskViewModel {
 }
 
 extension UserDefaults {
-     @objc dynamic var completedAllStoreOnboardingTasks: Bool {
-         bool(forKey: Key.completedAllStoreOnboardingTasks.rawValue)
-     }
-
-    @objc dynamic var shouldHideStoreOnboardingTaskList: Bool {
-        bool(forKey: Key.shouldHideStoreOnboardingTaskList.rawValue)
+    @objc dynamic var completedAllStoreOnboardingTasks: Bool {
+        bool(forKey: Key.completedAllStoreOnboardingTasks.rawValue)
     }
- }
+}

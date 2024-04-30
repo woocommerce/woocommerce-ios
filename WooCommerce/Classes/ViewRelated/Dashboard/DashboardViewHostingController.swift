@@ -59,6 +59,11 @@ final class DashboardViewHostingController: UIHostingController<DashboardView> {
         }
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        viewModel.refreshDashboardCards()
+    }
+
     override var shouldShowOfflineBanner: Bool {
         return true
     }

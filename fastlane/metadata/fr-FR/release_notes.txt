@@ -1,1 +1,2 @@
-Découvrez les nouvelles mises à jour de notre application WooCommerce ! Bénéficiez d’un processus de paiement fluide, connectez-vous sans effort avec les identifiants de connexion du site et créez des campagnes Blaze plus rapidement sans erreurs. Mettez à jour dès maintenant pour une expérience de gestion de boutique améliorée !
+Nous nous sommes débarrassés d’un bug agaçant pour nous assurer que le bouton « Réinitialiser le journal d’activités » fonctionne à merveille, effaçant totalement l’ardoise pour un nouveau départ. Plongez dans une expérience WooCommerce encore plus fluide. Mettez à jour dès maintenant !
+

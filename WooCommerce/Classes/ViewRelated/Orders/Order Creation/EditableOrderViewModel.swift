@@ -1595,6 +1595,13 @@ private extension EditableOrderViewModel {
     /// Updates the Order with the given product from SKU scanning
     ///
     func updateOrderWithBaseItem(_ item: OrderBaseItem) {
+        if case .product(let product) = item,
+           product.variations.isNotEmpty {
+            autodismissableNotice = Notice(title: Localization.parentProductScannedNoticeTitle,
+                                           subtitle: Localization.parentProductScannedNoticeSubtitle)
+            return
+        }
+
         // When a scanned product is a bundle product, the bundle configuration view is shown first.
         if case let .product(product) = item, product.productType == .bundle {
             configurableScannedProductViewModel = .init(product: product,
@@ -2589,6 +2596,18 @@ private extension EditableOrderViewModel {
         static let customAmountDefaultName = NSLocalizedString("editableOrderViewModel.customAmountDefaultName",
                                                                value: "Custom Amount",
                                                                comment: "Default name when the custom amount does not have a name in order creation.")
+        static let parentProductScannedNoticeTitle = NSLocalizedString(
+            "order.barcode.scan.parent.product.notice.title",
+            value: "You cannot add a variable product directly.",
+            comment: "Title of a notice shown when a merchant scans a barcode for a product which is a parent to variations. " +
+            "It's not possible to purchase a parent product, as it simply groups its variable product children. " +
+            "In this case, the product is not added to the order as the merchant wanted it to be.")
+        static let parentProductScannedNoticeSubtitle = NSLocalizedString(
+            "order.barcode.scan.parent.product.notice.subtitle",
+            value: "Please select a specific variation.",
+            comment: "Subtitle of a notice shown when a merchant scans a barcode for a product which is a parent to variations. " +
+            "It's not possible to purchase a parent product, as it simply groups its variable product children. " +
+            "In this case, the product is not added to the order as the merchant wanted it to be.")
 
 
         enum CouponSummary {

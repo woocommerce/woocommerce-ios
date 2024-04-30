@@ -3219,6 +3219,18 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.customAmountsSectionViewModel.showAddCustomAmount)
     }
 
+    func test_init_with_initialItem_which_is_a_parent_product_shows_notice() {
+        // Given
+        let parentProductItem = OrderBaseItem.product(.fake().copy(variations: [123]))
+
+        // When
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, initialItem: parentProductItem)
+
+        // Then
+        XCTAssertNotNil(viewModel.autodismissableNotice)
+        assertEqual("You cannot add a variable product directly.", viewModel.autodismissableNotice?.title)
+    }
+
     func test_when_saveInflightCustomerDetails_is_invoked_then_order_is_updated_with_latestAddressFormFields() {
         // Given
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID)

@@ -1529,7 +1529,9 @@ extension UIImage {
         UIImage(systemName: "exclamationmark.circle", withConfiguration: Configurations.barButtonItemSymbol)!.withRenderingMode(.alwaysTemplate)
     }
 
-
+    static var magnifyingGlassNotFound: UIImage {
+        UIImage(imageLiteralResourceName: "magnifying-glass-not-found")
+    }
 }
 
 private extension UIImage {

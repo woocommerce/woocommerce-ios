@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-04-16 17:54:04+0000 */
+/* Translation-Revision-Date: 2024-04-23 17:54:05+0000 */
 /* Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ru */
@@ -1348,7 +1348,6 @@ which should be translated separately and considered part of this sentence. */
    Button to dismiss the site credential login screen
    Button to dismiss the store creation profiler flow
    Button to dismiss the store name screen
-   Button to dismiss the survey screen.
    Button to dismiss the view or error alerts of the application password authorization web view
    Button to dismiss. Presented to users when updating the card reader software fails
    Cancel button in the More Options action sheet
@@ -2421,9 +2420,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title text for the product discount row informational tooltip */
 "Discounts unavailable" = "Нет доступных скидок";
-
-/* Message on the local notification to remind the user to purchase a plan. */
-"Discover advanced features and personalized recommendations for your store! Tap to pick a plan that suits you best." = "Получите расширенные возможности и индивидуальные рекомендации для своего магазина! Нажмите и выберите тарифный план, который вам подойдёт.";
 
 /* Details on the store onboarding payments setup screen. */
 "Discover other payment providers and choose a payment provider." = "Посмотрите другие платёжные системы и выберите одну из них.";
@@ -3653,14 +3649,8 @@ which should be translated separately and considered part of this sentence. */
 /* Browse our help documentation website title */
 "Help Center" = "Справочный центр";
 
-/* Title in Free trail survey screen. */
-"Help us understand your subscription decisions. Your feedback matters." = "Расскажите, почему вы пока не оформили подписку. Мы ценим обратную связь.";
-
 /* Text used when sharing a link to the app with a friend. */
 "Hey! Here is a link to download the WooCommerce app. I'm really enjoying it and thought you might too." = "Привет! Вот ссылка для загрузки приложения WooCommerce. Мне оно нравится, рекомендую.";
-
-/* Message on the local notification about a newly created store.The placeholder is the name of the user. */
-"Hi %1$@, Welcome to your 14-day free trial of Woo Express – everything you need to start and grow a successful online business, all in one place. Ready to explore?" = "Здравствуйте, %1$@. Начался 14-дневный пробный период использования Woo Express — здесь есть всё, что нужно для создания и развития успешного интернет-бизнеса. Готовы к знакомству?";
 
 /* Accessibility value if login page's password field is hiding the password (i.e. with asterisks).
    Display label for the product's catalog visibility */
@@ -3703,23 +3693,11 @@ which should be translated separately and considered part of this sentence. */
 /* Option in the store creation selling status question. */
 "I am already selling online" = "Уже продаю онлайн";
 
-/* Text for Free trial survey answer. */
-"I am evaluating and comparing your service with others on the market" = "Я сравниваю ваши услуги с другими услугами на рынке";
-
 /* Option in the store creation selling status question. */
 "I am just starting to sell" = "Только начинаю продажи";
 
-/* Text for Free trial survey answer. */
-"I am part of a team, and we need to make the decision collectively." = "Я работаю в команде, и решения мы принимаем вместе.";
-
 /* Option in the store creation selling status question. */
 "I am selling offline" = "Есть офлайн-магазин";
-
-/* Text for Free trial survey answer. */
-"I am still exploring and assessing the features and benefits of the app." = "Я пока изучаю и оцениваю возможности и преимущества приложения.";
-
-/* Text for Free trial survey answer. */
-"I find the price of the service to be a significant factor in my decision." = "На моё решение сильно влияет цена услуг.";
 
 /* Text on the support form to refer to what area the user has problem with. */
 "I need help with" = "Мне нужна помощь с";
@@ -4958,9 +4936,6 @@ which should be translated separately and considered part of this sentence. */
 /* Text displayed when no order data are available for the selected time range. */
 "No revenue this period" = "Нет доходов за указанный период";
 
-/* Message on the local notification to remind after three days. */
-"No rush, take your time! If you have any questions or need assistance, we're always here to help. Happy exploring!" = "Не торопитесь, подумайте. Мы всегда готовы помочь и ответить на вопросы. Продолжайте знакомство!";
-
 /* The text on the placeholder overlay when there are no shipping classes on the Shipping Class list picker */
 "No shipping classes yet" = "Классов доставки пока нет";
 
@@ -5269,9 +5244,6 @@ which should be translated separately and considered part of this sentence. */
    Restriction type Other for contents declared in the customs form for Shipping Label flow
    Type Other of content to be declared for the customs form in Shipping Label flow */
 "Other" = "Прочее";
-
-/* Placeholder text for Free trial survey. */
-"Other (please specify)." = "Другое (укажите).";
 
 /* Title of the Other Plugin support area option */
 "Other Extension \/ Plugin" = "Другое расширение\/плагин";
@@ -6747,8 +6719,7 @@ which should be translated separately and considered part of this sentence. */
 /* Text for the send button in the product review reply screen */
 "Send" = "Отправить";
 
-/* CTA button title which sends survey feedback.
-   Presents a survey to gather feedback from the user. */
+/* Presents a survey to gather feedback from the user. */
 "Send Feedback" = "Отправить отзыв";
 
 /* Title of a button. The text should be uppercase.  Clicking requests a hyperlink be emailed ot the user. */
@@ -8986,9 +8957,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the banner notice in the add-ons view */
 "View add-ons from your device!" = "Просмотрите дополнения на своем устройстве!";
 
-/* Button when tapped will show a screen with all the store setup tasks.%1$d represents the total number of tasks. */
-"View all (%1$d)" = "Посмотреть все (%1$d)";
-
 /* Title of the feedback banner on the coupon list screen */
 "View and edit coupons" = "Просмотр и редактирование купонов";
 
@@ -9222,9 +9190,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Subtitle of the Store details task to add details about the store. */
 "We’ll use the info to get a head start on your shipping, tax, and payments settings." = "Эти данные позволят нам быстрее настроить доставку, платежи и расчёт налогов.";
-
-/* Message on the local notification to ask for Free trial survey. */
-"We’re interested in your decision-making journey. Could you please tell us about your current status?" = "Нам интересно, что влияет на ваше решение. На каком вы сейчас этапе?";
 
 /* Content of the feedback banner on the coupon list screen */
 "We’ve been working on making it possible to view and edit coupons from your device!" = "Мы разработали функцию, которая позволяет просматривать и редактировать купоны на вашем устройстве.";
@@ -10620,17 +10585,11 @@ which should be translated separately and considered part of this sentence. */
 /* Name for the Blaze dashboard card in the Customize Dashboard screen */
 "dashboardCard.name.blaze" = "Blaze";
 
-/* Name for the Store Onboarding dashboard card in the Customize Dashboard screen */
-"dashboardCard.name.onboarding" = "Вводный курс по работе с магазином";
-
-/* Name for the Store Stats and Top Performers dashboard card in the Customize Dashboard screen */
-"dashboardCard.name.statsAndTopPerformers" = "Статистика магазина и лучшие товары";
+/* Name for the Performance dashboard card in the Customize Dashboard screen */
+"dashboardCard.name.performance" = "Производительность";
 
 /* Button to save changes on the Customize Dashboard screen */
 "dashboardCustomization.saveButton" = "Сохранить";
-
-/* Title for the screen to customize the dashboard screen */
-"dashboardCustomization.title" = "Настроить консоль";
 
 /* Text on unavailable dashboard card on the Customize Dashboard screen */
 "dashboardCustomization.unavailable" = "Недоступно";
@@ -11326,8 +11285,53 @@ which should be translated separately and considered part of this sentence. */
 /* Tab selector title that shows the statistics for today */
 "statsTimeRangeV4.tabTitle.custom" = "Произвольный период";
 
+/* Button when tapped will show a screen with all the store setup tasks.%1$d represents the total number of tasks. */
+"storeOnboardingCardView.viewAll" = "Посмотреть все задачи (%1$d)";
+
+/* Conversion stat label on dashboard. */
+"storePerformanceView.conversion" = "Конверсия";
+
+/* Menu item to dismiss the store performance section on the Dashboard screen */
+"storePerformanceView.hideCard" = "Скрыть производительность";
+
+/* Orders stat label on dashboard - should be plural. */
+"storePerformanceView.orders" = "Заказы";
+
+/* Revenue stat label on dashboard. */
+"storePerformanceView.revenue" = "Доход";
+
+/* Title of the store performance section on the Dashboard screen */
+"storePerformanceView.title" = "Производительность";
+
+/* Button to navigate to Analytics Hub. */
+"storePerformanceView.viewAll" = "Просмотреть всю аналитику магазина";
+
+/* Visitors stat label on dashboard - should be plural. */
+"storePerformanceView.visitors" = "Посетители";
+
+/* Button in date range picker to add a Custom Range tab */
+"storePerformanceViewModel.addCustomRange" = "Добавить";
+
 /* Button title on the store picker for store connection */
 "storePickerViewController.addStoreButton" = "Подключить существующий магазин";
+
+/* Text on the store stats chart on the Dashboard screen when there is no revenue */
+"storeStatsChart.noRevenueText" = "Нет доходов за указанный период";
+
+/* Value for the x-Axis of any selected point on the store stats chart on the Dashboard screen */
+"storeStatsChart.xSelectedValue" = "Выбранная дата";
+
+/* Value for the x-Axis of the store stats chart on the Dashboard screen */
+"storeStatsChart.xValue" = "Дата";
+
+/* Value for the y-Axis of any selected point on the store stats chart on the Dashboard screen */
+"storeStatsChart.ySelectedValue" = "Доход по выбору";
+
+/* Value for the y-Axis of the store stats chart on the Dashboard screen */
+"storeStatsChart.yValue" = "Доход";
+
+/* Value for the y-Axis of the store stats chart on the Dashboard screen when there is no revenue */
+"storeStatsChart.zeroRevenue" = "Нулевой доход";
 
 /* Widget description, displayed when selecting which widget to add */
 "storeWidgets.description" = "Статистика WooCommerce за сегодня";
@@ -11525,6 +11529,15 @@ which should be translated separately and considered part of this sentence. */
 /* Button in theme preview screen to pick a theme. The placeholder is the theme name. Reads like: Use Tsubaki */
 "themesPreviewViewModel.useThisThemeButton" = "Использовать %1$@";
 
+/* Button in date range picker to add a Custom Range tab */
+"topPerformerDashboardViewModel.addCustomRange" = "Добавить";
+
+/* Menu item to dismiss the Top Performers section on the Dashboard screen */
+"topPerformersDashboardView.hideCard" = "Скрыть самые продаваемые";
+
+/* Button to navigate to Analytics Hub. */
+"topPerformersDashboardView.viewAll" = "Просмотреть всю аналитику магазина";
+
 /* Value for the plugin version detail row in settings, when the version is unknown. This is in place of the current version number. */
 "unknown" = "неизвестно";
 
@@ -11643,9 +11656,6 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Åland Islands" = "Аландские острова";
 
-/* Title of the local notification to remind the user to purchase a plan. */
-"🌟 Keep your business going!" = "🌟 Поддержите свой бизнес!";
-
 /* Message when a tax rate is set */
 "🎉 New tax rate set" = "🎉 Новая налоговая ставка установлена";
 
@@ -11660,16 +11670,4 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text of the notice that is displayed after the refund is created. */
 "🎉 Products successfully refunded" = "🎉 Средства за продукты возвращены";
-
-/* Title of the local notification about a newly created store */
-"🎉 Your store is ready!" = "🎉 Ваш магазин готов!";
-
-/* Title of the local notification to ask for Free trial survey. */
-"💡Help Us Understand Your Subscription Decision" = "💡 Расскажите, почему вы пока не оформили подписку";
-
-/* Title of the Blaze campaign view. */
-"🔥 Blaze campaign" = "🔥 Кампания Blaze";
-
-/* Title of the local notification to remind after three days. */
-"🧭 Still Exploring WooCommerce?" = "🧭 Ещё знакомитесь с WooCommerce?";
 

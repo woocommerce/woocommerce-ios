@@ -1,1 +1,2 @@
-Conheça a mais nova atualização do aplicativo do WooCommerce. Desfrute de um processo de pagamento impecável, faça login sem esforços usando as credenciais do site e crie campanhas no Blaze mais rápido e sem erros. Faça upgrade agora mesmo e tenha uma experiência melhor de gerenciamento da loja.
+Eliminamos um bug para garantir que o botão "Excluir registro de atividades" funcione perfeitamente, apagando tudo para você começar do zero. Desfrute de uma experiência ainda melhor no WooCommerce. Atualize agora mesmo!
+

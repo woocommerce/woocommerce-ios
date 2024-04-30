@@ -106,7 +106,7 @@ final class BlazeCampaignListViewModel: ObservableObject {
     }
 
     func didCreateCampaign() {
-        userDefaults.restoreBlazeSectionOnMyStore(for: siteID)
+        // TODO: make Blaze card appear on the dashboard again
         loadCampaigns()
     }
 }

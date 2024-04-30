@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-04-15 21:54:04+0000 */
+/* Translation-Revision-Date: 2024-04-22 16:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: pt_BR */
@@ -1348,7 +1348,6 @@ which should be translated separately and considered part of this sentence. */
    Button to dismiss the site credential login screen
    Button to dismiss the store creation profiler flow
    Button to dismiss the store name screen
-   Button to dismiss the survey screen.
    Button to dismiss the view or error alerts of the application password authorization web view
    Button to dismiss. Presented to users when updating the card reader software fails
    Cancel button in the More Options action sheet
@@ -2421,9 +2420,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title text for the product discount row informational tooltip */
 "Discounts unavailable" = "Descontos indisponíveis";
-
-/* Message on the local notification to remind the user to purchase a plan. */
-"Discover advanced features and personalized recommendations for your store! Tap to pick a plan that suits you best." = "Descubra funcionalidades avançadas e recomendações personalizadas para sua loja. Toque para escolher o plano ideal para você.";
 
 /* Details on the store onboarding payments setup screen. */
 "Discover other payment providers and choose a payment provider." = "Descubra outros provedores de pagamento e escolha um deles.";
@@ -3653,14 +3649,8 @@ which should be translated separately and considered part of this sentence. */
 /* Browse our help documentation website title */
 "Help Center" = "Central de ajuda";
 
-/* Title in Free trail survey screen. */
-"Help us understand your subscription decisions. Your feedback matters." = "Ajude-nos a entender sua decisão sobre a assinatura. Seu feedback é importante.";
-
 /* Text used when sharing a link to the app with a friend. */
 "Hey! Here is a link to download the WooCommerce app. I'm really enjoying it and thought you might too." = "Olá! Este é um link para fazer download do aplicativo do WooCommerce. Eu estou gostando muito de usá-lo e acho que talvez você goste também.";
-
-/* Message on the local notification about a newly created store.The placeholder is the name of the user. */
-"Hi %1$@, Welcome to your 14-day free trial of Woo Express – everything you need to start and grow a successful online business, all in one place. Ready to explore?" = "Olá, %1$@. Boas-vindas ao teste gratuito de 14 dias do Woo Express: tudo o que você precisa para iniciar e expandir um negócio online de sucesso em um só lugar. Vamos explorar?";
 
 /* Accessibility value if login page's password field is hiding the password (i.e. with asterisks).
    Display label for the product's catalog visibility */
@@ -3703,23 +3693,11 @@ which should be translated separately and considered part of this sentence. */
 /* Option in the store creation selling status question. */
 "I am already selling online" = "Já estou vendendo online";
 
-/* Text for Free trial survey answer. */
-"I am evaluating and comparing your service with others on the market" = "Estou avaliando e comparando seu serviço com outros no mercado";
-
 /* Option in the store creation selling status question. */
 "I am just starting to sell" = "Estou começando a vender";
 
-/* Text for Free trial survey answer. */
-"I am part of a team, and we need to make the decision collectively." = "Sou parte de uma equipe e precisamos nos decidir em grupo.";
-
 /* Option in the store creation selling status question. */
 "I am selling offline" = "Estou vendendo offline";
-
-/* Text for Free trial survey answer. */
-"I am still exploring and assessing the features and benefits of the app." = "Ainda estou conhecendo e avaliando as funcionalidades e benefícios do app.";
-
-/* Text for Free trial survey answer. */
-"I find the price of the service to be a significant factor in my decision." = "O preço do serviço é um fator determinante na minha decisão.";
 
 /* Text on the support form to refer to what area the user has problem with. */
 "I need help with" = "Preciso de ajuda com";
@@ -4958,9 +4936,6 @@ which should be translated separately and considered part of this sentence. */
 /* Text displayed when no order data are available for the selected time range. */
 "No revenue this period" = "Nenhuma receita para esse período";
 
-/* Message on the local notification to remind after three days. */
-"No rush, take your time! If you have any questions or need assistance, we're always here to help. Happy exploring!" = "Sem pressa! Se estiver com dúvidas ou precisar de assistência, estamos sempre aqui para ajudar. Boa jornada!";
-
 /* The text on the placeholder overlay when there are no shipping classes on the Shipping Class list picker */
 "No shipping classes yet" = "Não há classes de envio";
 
@@ -5269,9 +5244,6 @@ which should be translated separately and considered part of this sentence. */
    Restriction type Other for contents declared in the customs form for Shipping Label flow
    Type Other of content to be declared for the customs form in Shipping Label flow */
 "Other" = "Outros";
-
-/* Placeholder text for Free trial survey. */
-"Other (please specify)." = "Outro (especificar).";
 
 /* Title of the Other Plugin support area option */
 "Other Extension \/ Plugin" = "Outra extensão\/plugin";
@@ -6747,8 +6719,7 @@ which should be translated separately and considered part of this sentence. */
 /* Text for the send button in the product review reply screen */
 "Send" = "Enviar";
 
-/* CTA button title which sends survey feedback.
-   Presents a survey to gather feedback from the user. */
+/* Presents a survey to gather feedback from the user. */
 "Send Feedback" = "Enviar feedback";
 
 /* Title of a button. The text should be uppercase.  Clicking requests a hyperlink be emailed ot the user. */
@@ -8986,9 +8957,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the banner notice in the add-ons view */
 "View add-ons from your device!" = "Veja complementos no seu dispositivo!";
 
-/* Button when tapped will show a screen with all the store setup tasks.%1$d represents the total number of tasks. */
-"View all (%1$d)" = "Visualizar tudo (%1$d)";
-
 /* Title of the feedback banner on the coupon list screen */
 "View and edit coupons" = "Visualizar e editar cupons";
 
@@ -9222,9 +9190,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Subtitle of the Store details task to add details about the store. */
 "We’ll use the info to get a head start on your shipping, tax, and payments settings." = "Usaremos as informações em suas configurações de envio, impostos e pagamentos.";
-
-/* Message on the local notification to ask for Free trial survey. */
-"We’re interested in your decision-making journey. Could you please tell us about your current status?" = "Estamos interessados na sua jornada de tomada de decisão. Poderia nos contar sobre seu status atual?";
 
 /* Content of the feedback banner on the coupon list screen */
 "We’ve been working on making it possible to view and edit coupons from your device!" = "Trabalhamos para que seja possível visualizar e editar cupons no seu dispositivo.";
@@ -10620,17 +10585,11 @@ which should be translated separately and considered part of this sentence. */
 /* Name for the Blaze dashboard card in the Customize Dashboard screen */
 "dashboardCard.name.blaze" = "Blaze";
 
-/* Name for the Store Onboarding dashboard card in the Customize Dashboard screen */
-"dashboardCard.name.onboarding" = "Integração de loja";
-
-/* Name for the Store Stats and Top Performers dashboard card in the Customize Dashboard screen */
-"dashboardCard.name.statsAndTopPerformers" = "Melhores desempenhos e estatísticas da loja";
+/* Name for the Performance dashboard card in the Customize Dashboard screen */
+"dashboardCard.name.performance" = "Desempenho";
 
 /* Button to save changes on the Customize Dashboard screen */
 "dashboardCustomization.saveButton" = "Salvar";
-
-/* Title for the screen to customize the dashboard screen */
-"dashboardCustomization.title" = "Personalizar painel";
 
 /* Text on unavailable dashboard card on the Customize Dashboard screen */
 "dashboardCustomization.unavailable" = "Indisponível";
@@ -11326,8 +11285,53 @@ which should be translated separately and considered part of this sentence. */
 /* Tab selector title that shows the statistics for today */
 "statsTimeRangeV4.tabTitle.custom" = "Período personalizado";
 
+/* Button when tapped will show a screen with all the store setup tasks.%1$d represents the total number of tasks. */
+"storeOnboardingCardView.viewAll" = "Ver todas as %1$d tarefas";
+
+/* Conversion stat label on dashboard. */
+"storePerformanceView.conversion" = "Conversão";
+
+/* Menu item to dismiss the store performance section on the Dashboard screen */
+"storePerformanceView.hideCard" = "Ocultar desempenho";
+
+/* Orders stat label on dashboard - should be plural. */
+"storePerformanceView.orders" = "Pedidos";
+
+/* Revenue stat label on dashboard. */
+"storePerformanceView.revenue" = "Receita";
+
+/* Title of the store performance section on the Dashboard screen */
+"storePerformanceView.title" = "Desempenho";
+
+/* Button to navigate to Analytics Hub. */
+"storePerformanceView.viewAll" = "Ver todos os dados analíticos da loja";
+
+/* Visitors stat label on dashboard - should be plural. */
+"storePerformanceView.visitors" = "Visitantes";
+
+/* Button in date range picker to add a Custom Range tab */
+"storePerformanceViewModel.addCustomRange" = "Adicionar";
+
 /* Button title on the store picker for store connection */
 "storePickerViewController.addStoreButton" = "Conectar loja existente";
+
+/* Text on the store stats chart on the Dashboard screen when there is no revenue */
+"storeStatsChart.noRevenueText" = "Nenhuma receita neste período";
+
+/* Value for the x-Axis of any selected point on the store stats chart on the Dashboard screen */
+"storeStatsChart.xSelectedValue" = "Data selecionada";
+
+/* Value for the x-Axis of the store stats chart on the Dashboard screen */
+"storeStatsChart.xValue" = "Data";
+
+/* Value for the y-Axis of any selected point on the store stats chart on the Dashboard screen */
+"storeStatsChart.ySelectedValue" = "Receita selecionada";
+
+/* Value for the y-Axis of the store stats chart on the Dashboard screen */
+"storeStatsChart.yValue" = "Receita";
+
+/* Value for the y-Axis of the store stats chart on the Dashboard screen when there is no revenue */
+"storeStatsChart.zeroRevenue" = "Sem receita";
 
 /* Widget description, displayed when selecting which widget to add */
 "storeWidgets.description" = "Estatísticas de hoje do WooCommerce";
@@ -11525,6 +11529,15 @@ which should be translated separately and considered part of this sentence. */
 /* Button in theme preview screen to pick a theme. The placeholder is the theme name. Reads like: Use Tsubaki */
 "themesPreviewViewModel.useThisThemeButton" = "Use o %1$@";
 
+/* Button in date range picker to add a Custom Range tab */
+"topPerformerDashboardViewModel.addCustomRange" = "Adicionar";
+
+/* Menu item to dismiss the Top Performers section on the Dashboard screen */
+"topPerformersDashboardView.hideCard" = "Ocultar melhores desempenhos";
+
+/* Button to navigate to Analytics Hub. */
+"topPerformersDashboardView.viewAll" = "Ver todos os dados analíticos da loja";
+
 /* Value for the plugin version detail row in settings, when the version is unknown. This is in place of the current version number. */
 "unknown" = "desconhecida";
 
@@ -11643,9 +11656,6 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Åland Islands" = "Ilhas Aland";
 
-/* Title of the local notification to remind the user to purchase a plan. */
-"🌟 Keep your business going!" = "🌟Mantenha os negócios fluindo.";
-
 /* Message when a tax rate is set */
 "🎉 New tax rate set" = "🎉 Novo imposto definido";
 
@@ -11660,16 +11670,4 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text of the notice that is displayed after the refund is created. */
 "🎉 Products successfully refunded" = "🎉 produtos reembolsados com êxito";
-
-/* Title of the local notification about a newly created store */
-"🎉 Your store is ready!" = "🎉 Sua loja está pronta!";
-
-/* Title of the local notification to ask for Free trial survey. */
-"💡Help Us Understand Your Subscription Decision" = "💡 Ajude-nos a entender sua decisão sobre a assinatura";
-
-/* Title of the Blaze campaign view. */
-"🔥 Blaze campaign" = "🔥Campanha no Blaze";
-
-/* Title of the local notification to remind after three days. */
-"🧭 Still Exploring WooCommerce?" = "🧭 Ainda está conhecendo o WooCommerce?";
 

@@ -1,1 +1,2 @@
-Ontdek de nieuwste updates in onze WooCommerce-app! Profiteer van een naadloos betalingsproces, log moeiteloos in met inloggegevens van je site en maak sneller Blaze-campagnes aan zonder fouten. Upgrade nu voor verbeterd winkelbeheer!
+We hebben een vervelende bug verholpen zodat de knop 'Activiteitenlog herstellen' weer perfect werkt en het log volledig wist voor een nieuwe start. Ontdek een naadlozere WooCommerce-ervaring. Update nu!
+

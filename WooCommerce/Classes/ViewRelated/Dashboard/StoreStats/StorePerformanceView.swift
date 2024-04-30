@@ -8,21 +8,21 @@ struct StorePerformanceView: View {
     @State private var showingCustomRangePicker = false
     @State private var showingSupportForm = false
 
-    var statsValueColor: Color {
-        Color(viewModel.shouldHighlightStats ? .statsHighlighted : .text)
+    private var statsValueColor: Color {
+        guard viewModel.chartViewModel.hasRevenue else {
+            return Color(.textSubtle)
+        }
+        return Color(viewModel.shouldHighlightStats ? .statsHighlighted : .text)
     }
 
-    private let canHideCard: Bool
     private let onCustomRangeRedactedViewTap: () -> Void
     private let onViewAllAnalytics: (_ siteID: Int64,
                                      _ timeZone: TimeZone,
                                      _ timeRange: StatsTimeRangeV4) -> Void
 
-    init(canHideCard: Bool,
-         viewModel: StorePerformanceViewModel,
+    init(viewModel: StorePerformanceViewModel,
          onCustomRangeRedactedViewTap: @escaping () -> Void,
          onViewAllAnalytics: @escaping (Int64, TimeZone, StatsTimeRangeV4) -> Void) {
-        self.canHideCard = canHideCard
         self.viewModel = viewModel
         self.onCustomRangeRedactedViewTap = onCustomRangeRedactedViewTap
         self.onViewAllAnalytics = onViewAllAnalytics
@@ -106,7 +106,6 @@ private extension StorePerformanceView {
                     .padding(.vertical, Layout.hideIconVerticalPadding)
             }
             .disabled(viewModel.syncingData)
-            .renderedIf(canHideCard)
         }
     }
 
@@ -159,24 +158,34 @@ private extension StorePerformanceView {
                     .largeTitleStyle()
 
                 Text(Localization.revenue)
+                    .if(!viewModel.chartViewModel.hasRevenue) { $0.foregroundStyle(Color(.textSubtle)) }
                     .font(Font(StyleManager.statsTitleFont))
             }
 
             HStack(alignment: .bottom) {
-                statsItemView(title: Localization.orders,
-                              value: viewModel.orderStatsText,
-                              redactMode: .none)
-                    .frame(maxWidth: .infinity)
+                Group {
+                    statsItemView(title: Localization.orders,
+                                  value: viewModel.orderStatsText,
+                                  redactMode: .none)
+                        .frame(maxWidth: .infinity)
 
-                statsItemView(title: Localization.visitors,
-                              value: viewModel.visitorStatsText,
-                              redactMode: .withIcon)
-                    .frame(maxWidth: .infinity)
+                    statsItemView(title: Localization.visitors,
+                                  value: viewModel.visitorStatsText,
+                                  redactMode: .withIcon)
+                        .frame(maxWidth: .infinity)
 
-                statsItemView(title: Localization.conversion,
-                              value: viewModel.conversionStatsText,
-                              redactMode: .withoutIcon)
+                    statsItemView(title: Localization.conversion,
+                                  value: viewModel.conversionStatsText,
+                                  redactMode: .withoutIcon)
+                        .frame(maxWidth: .infinity)
+
+                }
+                .renderedIf(viewModel.chartViewModel.hasRevenue)
+
+                Text(Localization.noRevenueText)
+                    .subheadlineStyle()
                     .frame(maxWidth: .infinity)
+                    .renderedIf(!viewModel.chartViewModel.hasRevenue)
             }
         }
     }
@@ -233,7 +242,8 @@ private extension StorePerformanceView {
             }
             .frame(height: Layout.chartViewHeight)
 
-            if let granularityText = viewModel.granularityText {
+            if viewModel.chartViewModel.hasRevenue,
+               let granularityText = viewModel.granularityText {
                 Text(granularityText)
                     .font(Font(StyleManager.statsTitleFont))
             }
@@ -272,6 +282,7 @@ private extension StorePerformanceView {
 
     var errorStateView: some View {
         DashboardCardErrorView(onRetry: {
+            ServiceLocator.analytics.track(event: .DynamicDashboard.cardRetryTapped(type: .performance))
             Task {
                 await viewModel.reloadData()
             }
@@ -337,6 +348,11 @@ private extension StorePerformanceView {
             value: "Revenue",
             comment: "Revenue stat label on dashboard."
         )
+        static let noRevenueText = NSLocalizedString(
+            "storePerformanceView.noRevenueText",
+            value: "No revenue for selected dates",
+            comment: "Text on the store stats chart on the Dashboard screen when there is no revenue"
+        )
         static let orders = NSLocalizedString(
             "storePerformanceView.orders",
             value: "Orders",
@@ -384,8 +400,7 @@ private extension StorePerformanceView {
 }
 
 #Preview {
-    StorePerformanceView(canHideCard: true,
-                         viewModel: StorePerformanceViewModel(siteID: 123,
+    StorePerformanceView(viewModel: StorePerformanceViewModel(siteID: 123,
                                                               usageTracksEventEmitter: .init()),
                          onCustomRangeRedactedViewTap: {},
                          onViewAllAnalytics: { _, _, _ in })

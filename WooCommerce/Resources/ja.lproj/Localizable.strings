@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-04-17 09:54:02+0000 */
+/* Translation-Revision-Date: 2024-04-23 09:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ja_JP */
@@ -1348,7 +1348,6 @@ which should be translated separately and considered part of this sentence. */
    Button to dismiss the site credential login screen
    Button to dismiss the store creation profiler flow
    Button to dismiss the store name screen
-   Button to dismiss the survey screen.
    Button to dismiss the view or error alerts of the application password authorization web view
    Button to dismiss. Presented to users when updating the card reader software fails
    Cancel button in the More Options action sheet
@@ -2421,9 +2420,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title text for the product discount row informational tooltip */
 "Discounts unavailable" = "割引不可";
-
-/* Message on the local notification to remind the user to purchase a plan. */
-"Discover advanced features and personalized recommendations for your store! Tap to pick a plan that suits you best." = "ストア向けの高度な機能とあなたへのおすすめをご覧ください。 タップしてあなたに最適なプランをお選びください。";
 
 /* Details on the store onboarding payments setup screen. */
 "Discover other payment providers and choose a payment provider." = "他の決済サービス業者を探し、決済サービス業者を1社選択します。";
@@ -3653,14 +3649,8 @@ which should be translated separately and considered part of this sentence. */
 /* Browse our help documentation website title */
 "Help Center" = "ヘルプセンター";
 
-/* Title in Free trail survey screen. */
-"Help us understand your subscription decisions. Your feedback matters." = "サブスクリプションの決定についてお教えください。 フィードバックをお待ちしております。";
-
 /* Text used when sharing a link to the app with a friend. */
 "Hey! Here is a link to download the WooCommerce app. I'm really enjoying it and thought you might too." = "注目! このリンクから WooCommerce アプリをダウンロードできます。とても楽しく、どなたにも気に入ってもらえると思います。";
-
-/* Message on the local notification about a newly created store.The placeholder is the name of the user. */
-"Hi %1$@, Welcome to your 14-day free trial of Woo Express – everything you need to start and grow a successful online business, all in one place. Ready to explore?" = "%1$@ さん、Woo Express の14日間のお試し期間にようこそ。Woo Express では、成功するオンラインビジネスを立ち上げて大きく育てるために必要なものが、すべて1か所にそろっています。 Woo Express を使う準備はできましたか ?";
 
 /* Accessibility value if login page's password field is hiding the password (i.e. with asterisks).
    Display label for the product's catalog visibility */
@@ -3703,23 +3693,11 @@ which should be translated separately and considered part of this sentence. */
 /* Option in the store creation selling status question. */
 "I am already selling online" = "オンラインですでに販売している";
 
-/* Text for Free trial survey answer. */
-"I am evaluating and comparing your service with others on the market" = "現在サービスを評価し、市場内の他のサービスと比較している。";
-
 /* Option in the store creation selling status question. */
 "I am just starting to sell" = "これから販売する";
 
-/* Text for Free trial survey answer. */
-"I am part of a team, and we need to make the decision collectively." = "チームの一員であり、チーム全体として決定を行う必要がある。";
-
 /* Option in the store creation selling status question. */
 "I am selling offline" = "オフラインで販売している";
-
-/* Text for Free trial survey answer. */
-"I am still exploring and assessing the features and benefits of the app." = "現在アプリの機能と利点を調査および評価している。";
-
-/* Text for Free trial survey answer. */
-"I find the price of the service to be a significant factor in my decision." = "サービスの料金は決定における重要な要素である。";
 
 /* Text on the support form to refer to what area the user has problem with. */
 "I need help with" = "サポートが必要な領域";
@@ -4958,9 +4936,6 @@ which should be translated separately and considered part of this sentence. */
 /* Text displayed when no order data are available for the selected time range. */
 "No revenue this period" = "この期間には収益がありません";
 
-/* Message on the local notification to remind after three days. */
-"No rush, take your time! If you have any questions or need assistance, we're always here to help. Happy exploring!" = "どうぞゆっくりとご覧ください。 ご質問がある場合やサポートが必要な場合は、いつでもお手伝いいたします。 探索をお楽しみください。";
-
 /* The text on the placeholder overlay when there are no shipping classes on the Shipping Class list picker */
 "No shipping classes yet" = "送料区分がまだありません";
 
@@ -5269,9 +5244,6 @@ which should be translated separately and considered part of this sentence. */
    Restriction type Other for contents declared in the customs form for Shipping Label flow
    Type Other of content to be declared for the customs form in Shipping Label flow */
 "Other" = "その他";
-
-/* Placeholder text for Free trial survey. */
-"Other (please specify)." = "その他 (具体的に教えてください)。";
 
 /* Title of the Other Plugin support area option */
 "Other Extension \/ Plugin" = "その他の拡張機能 \/ プラグイン";
@@ -6747,8 +6719,7 @@ which should be translated separately and considered part of this sentence. */
 /* Text for the send button in the product review reply screen */
 "Send" = "送信";
 
-/* CTA button title which sends survey feedback.
-   Presents a survey to gather feedback from the user. */
+/* Presents a survey to gather feedback from the user. */
 "Send Feedback" = "意見を送る";
 
 /* Title of a button. The text should be uppercase.  Clicking requests a hyperlink be emailed ot the user. */
@@ -8986,9 +8957,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the banner notice in the add-ons view */
 "View add-ons from your device!" = "お使いの端末でアドオンを表示します。";
 
-/* Button when tapped will show a screen with all the store setup tasks.%1$d represents the total number of tasks. */
-"View all (%1$d)" = "すべて表示 (%1$d)";
-
 /* Title of the feedback banner on the coupon list screen */
 "View and edit coupons" = "クーポンを表示して編集する";
 
@@ -9222,9 +9190,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Subtitle of the Store details task to add details about the store. */
 "We’ll use the info to get a head start on your shipping, tax, and payments settings." = "この情報を使用して、配送、税金、支払いの設定を一足先に開始します。";
-
-/* Message on the local notification to ask for Free trial survey. */
-"We’re interested in your decision-making journey. Could you please tell us about your current status?" = "お客様の決定に至るプロセスについて知りたいと考えております。 現在の状況について教えていただけますか ?";
 
 /* Content of the feedback banner on the coupon list screen */
 "We’ve been working on making it possible to view and edit coupons from your device!" = "デバイスからクーポンを表示、編集できる機能を開発中です !";
@@ -10620,17 +10585,11 @@ which should be translated separately and considered part of this sentence. */
 /* Name for the Blaze dashboard card in the Customize Dashboard screen */
 "dashboardCard.name.blaze" = "Blaze";
 
-/* Name for the Store Onboarding dashboard card in the Customize Dashboard screen */
-"dashboardCard.name.onboarding" = "ストアのオンボーディング";
-
-/* Name for the Store Stats and Top Performers dashboard card in the Customize Dashboard screen */
-"dashboardCard.name.statsAndTopPerformers" = "ストアの統計情報と上位パフォーマンス";
+/* Name for the Performance dashboard card in the Customize Dashboard screen */
+"dashboardCard.name.performance" = "パフォーマンス";
 
 /* Button to save changes on the Customize Dashboard screen */
 "dashboardCustomization.saveButton" = "保存";
-
-/* Title for the screen to customize the dashboard screen */
-"dashboardCustomization.title" = "ダッシュボードをカスタマイズ";
 
 /* Text on unavailable dashboard card on the Customize Dashboard screen */
 "dashboardCustomization.unavailable" = "利用できません";
@@ -11326,8 +11285,53 @@ which should be translated separately and considered part of this sentence. */
 /* Tab selector title that shows the statistics for today */
 "statsTimeRangeV4.tabTitle.custom" = "カスタム範囲";
 
+/* Button when tapped will show a screen with all the store setup tasks.%1$d represents the total number of tasks. */
+"storeOnboardingCardView.viewAll" = "%1$d件のタスクをすべて表示";
+
+/* Conversion stat label on dashboard. */
+"storePerformanceView.conversion" = "コンバージョン";
+
+/* Menu item to dismiss the store performance section on the Dashboard screen */
+"storePerformanceView.hideCard" = "パフォーマンスを非表示";
+
+/* Orders stat label on dashboard - should be plural. */
+"storePerformanceView.orders" = "注文";
+
+/* Revenue stat label on dashboard. */
+"storePerformanceView.revenue" = "収益";
+
+/* Title of the store performance section on the Dashboard screen */
+"storePerformanceView.title" = "パフォーマンス";
+
+/* Button to navigate to Analytics Hub. */
+"storePerformanceView.viewAll" = "すべてのストアアナリティクスを表示";
+
+/* Visitors stat label on dashboard - should be plural. */
+"storePerformanceView.visitors" = "訪問者";
+
+/* Button in date range picker to add a Custom Range tab */
+"storePerformanceViewModel.addCustomRange" = "追加";
+
 /* Button title on the store picker for store connection */
 "storePickerViewController.addStoreButton" = "既存のストアを連携";
+
+/* Text on the store stats chart on the Dashboard screen when there is no revenue */
+"storeStatsChart.noRevenueText" = "この期間には収益がありません";
+
+/* Value for the x-Axis of any selected point on the store stats chart on the Dashboard screen */
+"storeStatsChart.xSelectedValue" = "選択した日付";
+
+/* Value for the x-Axis of the store stats chart on the Dashboard screen */
+"storeStatsChart.xValue" = "日付";
+
+/* Value for the y-Axis of any selected point on the store stats chart on the Dashboard screen */
+"storeStatsChart.ySelectedValue" = "選択した収益";
+
+/* Value for the y-Axis of the store stats chart on the Dashboard screen */
+"storeStatsChart.yValue" = "収益";
+
+/* Value for the y-Axis of the store stats chart on the Dashboard screen when there is no revenue */
+"storeStatsChart.zeroRevenue" = "収益なし";
 
 /* Widget description, displayed when selecting which widget to add */
 "storeWidgets.description" = "WooCommerce Stats Today";
@@ -11525,6 +11529,15 @@ which should be translated separately and considered part of this sentence. */
 /* Button in theme preview screen to pick a theme. The placeholder is the theme name. Reads like: Use Tsubaki */
 "themesPreviewViewModel.useThisThemeButton" = "%1$@ を使用";
 
+/* Button in date range picker to add a Custom Range tab */
+"topPerformerDashboardViewModel.addCustomRange" = "追加";
+
+/* Menu item to dismiss the Top Performers section on the Dashboard screen */
+"topPerformersDashboardView.hideCard" = "上位パフォーマンスを非表示";
+
+/* Button to navigate to Analytics Hub. */
+"topPerformersDashboardView.viewAll" = "すべてのストアアナリティクスを表示";
+
 /* Value for the plugin version detail row in settings, when the version is unknown. This is in place of the current version number. */
 "unknown" = "不明";
 
@@ -11643,9 +11656,6 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Åland Islands" = "オーランド諸島";
 
-/* Title of the local notification to remind the user to purchase a plan. */
-"🌟 Keep your business going!" = "🌟ビジネスを推し進めていきましょう !";
-
 /* Message when a tax rate is set */
 "🎉 New tax rate set" = "🎉 新機能: 税率の設定";
 
@@ -11660,16 +11670,4 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text of the notice that is displayed after the refund is created. */
 "🎉 Products successfully refunded" = "🎉 商品は正常に返金されました";
-
-/* Title of the local notification about a newly created store */
-"🎉 Your store is ready!" = "🎉 ストアの準備ができました。";
-
-/* Title of the local notification to ask for Free trial survey. */
-"💡Help Us Understand Your Subscription Decision" = "💡サブスクリプションの決定についてお教えください";
-
-/* Title of the Blaze campaign view. */
-"🔥 Blaze campaign" = "🔥 Blaze キャンペーン";
-
-/* Title of the local notification to remind after three days. */
-"🧭 Still Exploring WooCommerce?" = "🧭 まだ WooCommerce を探索していますか ?";
 

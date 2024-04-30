@@ -1153,8 +1153,8 @@ private extension ProductFormViewController {
             source: .productDetailPromoteButton,
             shouldShowIntro: viewModel.shouldShowBlazeIntroView,
             navigationController: navigationController,
-            onCampaignCreated: { [weak self] in
-                self?.userDefaults.restoreBlazeSectionOnMyStore(for: site.siteID)
+            onCampaignCreated: {
+                // no-op
             }
         )
         coordinator.start()

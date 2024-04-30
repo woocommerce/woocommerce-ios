@@ -80,6 +80,7 @@ struct DashboardView: View {
             }
             ToolbarItem(placement: .topBarTrailing) {
                 Button(Localization.edit) {
+                    ServiceLocator.analytics.track(event: .DynamicDashboard.editLayoutButtonTapped())
                     viewModel.showingCustomization = true
                 }
             }
@@ -138,8 +139,7 @@ private extension DashboardView {
                 if card.enabled {
                     switch card.type {
                     case .onboarding:
-                        StoreOnboardingView(canHideCard: viewModel.canHideMoreDashboardCards,
-                                            viewModel: viewModel.storeOnboardingViewModel,
+                        StoreOnboardingView(viewModel: viewModel.storeOnboardingViewModel,
                                             onTaskTapped: { task in
                             guard let currentSite else { return }
                             onboardingTaskTapped?(currentSite, task)
@@ -150,21 +150,18 @@ private extension DashboardView {
                             onboardingShareFeedbackAction?()
                         })
                     case .blaze:
-                        BlazeCampaignDashboardView(canHideCard: viewModel.canHideMoreDashboardCards,
-                                                   viewModel: viewModel.blazeCampaignDashboardViewModel,
+                        BlazeCampaignDashboardView(viewModel: viewModel.blazeCampaignDashboardViewModel,
                                                    showAllCampaignsTapped: showAllBlazeCampaignsTapped,
                                                    createCampaignTapped: createBlazeCampaignTapped)
                     case .performance:
-                        StorePerformanceView(canHideCard: viewModel.canHideMoreDashboardCards,
-                                             viewModel: viewModel.storePerformanceViewModel,
+                        StorePerformanceView(viewModel: viewModel.storePerformanceViewModel,
                                              onCustomRangeRedactedViewTap: {
                             onCustomRangeRedactedViewTap?()
                         }, onViewAllAnalytics: { siteID, siteTimeZone, timeRange in
                             onViewAllAnalytics?(siteID, siteTimeZone, timeRange)
                         })
                     case .topPerformers:
-                        TopPerformersDashboardView(canHideCard: viewModel.canHideMoreDashboardCards,
-                                                   viewModel: viewModel.topPerformersViewModel,
+                        TopPerformersDashboardView(viewModel: viewModel.topPerformersViewModel,
                                                    onViewAllAnalytics: { siteID, siteTimeZone, timeRange in
                             onViewAllAnalytics?(siteID, siteTimeZone, timeRange)
                         })

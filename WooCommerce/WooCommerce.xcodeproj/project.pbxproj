@@ -226,8 +226,8 @@
 		024EB5812B21A981009BC2D9 /* ProductWithQuantityStepperViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 024EB5802B21A981009BC2D9 /* ProductWithQuantityStepperViewModelTests.swift */; };
 		024EFA6923FCC10B00F36918 /* Product+Media.swift in Sources */ = {isa = PBXBuildFile; fileRef = 024EFA6823FCC10B00F36918 /* Product+Media.swift */; };
 		024F1452250B65A40003030A /* AddProductCoordinatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 024F1451250B65A40003030A /* AddProductCoordinatorTests.swift */; };
-		0250192E2BDF81F3009493A5 /* OrderCustomerSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0250192D2BDF81F3009493A5 /* OrderCustomerSection.swift */; };
 		0250192B2BDF3757009493A5 /* PriceFieldFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0250192A2BDF3757009493A5 /* PriceFieldFormatter.swift */; };
+		0250192E2BDF81F3009493A5 /* OrderCustomerSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0250192D2BDF81F3009493A5 /* OrderCustomerSection.swift */; };
 		02503C632538301400FD235D /* ProductVariationFormActionsFactory+ReadonlyVariationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02503C622538301400FD235D /* ProductVariationFormActionsFactory+ReadonlyVariationTests.swift */; };
 		0250BE8C2AC425F9006D067A /* OrderFormGiftCardRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0250BE8B2AC425F9006D067A /* OrderFormGiftCardRow.swift */; };
 		02521E11243DC3C400DC7810 /* CancellableMedia.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02521E10243DC3C400DC7810 /* CancellableMedia.swift */; };
@@ -385,6 +385,8 @@
 		0290E26F238E3CE400B5C466 /* ListSelectorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0290E26D238E3CE400B5C466 /* ListSelectorViewController.swift */; };
 		0290E275238E4F8100B5C466 /* PaginatedListSelectorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0290E273238E4F8100B5C466 /* PaginatedListSelectorViewController.swift */; };
 		0290E27E238E5B5C00B5C466 /* ProductStockStatusListSelectorCommandTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0290E27D238E5B5C00B5C466 /* ProductStockStatusListSelectorCommandTests.swift */; };
+		029106BC2BE21C4900C2248B /* CollapsibleOrderFormCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 029106BB2BE21C4900C2248B /* CollapsibleOrderFormCard.swift */; };
+		029106BE2BE2868F00C2248B /* CollapsibleOrderFormCardBorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 029106BD2BE2868F00C2248B /* CollapsibleOrderFormCardBorder.swift */; };
 		02913E9523A774C500707A0C /* UnitInputFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02913E9423A774C500707A0C /* UnitInputFormatter.swift */; };
 		02913E9723A774E600707A0C /* DecimalInputFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02913E9623A774E600707A0C /* DecimalInputFormatter.swift */; };
 		0294F8AB25E8A12C005B537A /* WooTabNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0294F8AA25E8A12C005B537A /* WooTabNavigationController.swift */; };
@@ -2981,8 +2983,8 @@
 		024EB5802B21A981009BC2D9 /* ProductWithQuantityStepperViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductWithQuantityStepperViewModelTests.swift; sourceTree = "<group>"; };
 		024EFA6823FCC10B00F36918 /* Product+Media.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Product+Media.swift"; sourceTree = "<group>"; };
 		024F1451250B65A40003030A /* AddProductCoordinatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddProductCoordinatorTests.swift; sourceTree = "<group>"; };
-		0250192D2BDF81F3009493A5 /* OrderCustomerSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderCustomerSection.swift; sourceTree = "<group>"; };
 		0250192A2BDF3757009493A5 /* PriceFieldFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriceFieldFormatter.swift; sourceTree = "<group>"; };
+		0250192D2BDF81F3009493A5 /* OrderCustomerSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderCustomerSection.swift; sourceTree = "<group>"; };
 		02503C622538301400FD235D /* ProductVariationFormActionsFactory+ReadonlyVariationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductVariationFormActionsFactory+ReadonlyVariationTests.swift"; sourceTree = "<group>"; };
 		0250BE8B2AC425F9006D067A /* OrderFormGiftCardRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderFormGiftCardRow.swift; sourceTree = "<group>"; };
 		02521E10243DC3C400DC7810 /* CancellableMedia.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CancellableMedia.swift; sourceTree = "<group>"; };
@@ -3142,6 +3144,8 @@
 		0290E26D238E3CE400B5C466 /* ListSelectorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListSelectorViewController.swift; sourceTree = "<group>"; };
 		0290E273238E4F8100B5C466 /* PaginatedListSelectorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaginatedListSelectorViewController.swift; sourceTree = "<group>"; };
 		0290E27D238E5B5C00B5C466 /* ProductStockStatusListSelectorCommandTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductStockStatusListSelectorCommandTests.swift; sourceTree = "<group>"; };
+		029106BB2BE21C4900C2248B /* CollapsibleOrderFormCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollapsibleOrderFormCard.swift; sourceTree = "<group>"; };
+		029106BD2BE2868F00C2248B /* CollapsibleOrderFormCardBorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollapsibleOrderFormCardBorder.swift; sourceTree = "<group>"; };
 		02913E9423A774C500707A0C /* UnitInputFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnitInputFormatter.swift; sourceTree = "<group>"; };
 		02913E9623A774E600707A0C /* DecimalInputFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DecimalInputFormatter.swift; sourceTree = "<group>"; };
 		0294F8AA25E8A12C005B537A /* WooTabNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooTabNavigationController.swift; sourceTree = "<group>"; };
@@ -10454,6 +10458,8 @@
 				02C7EE8B2B22B21D008B7DF8 /* CollapsibleProductRowCardViewModel.swift */,
 				CE55F2D52B23941D005D53D7 /* CollapsibleProductCardPriceSummary.swift */,
 				CE55F2D32B238C04005D53D7 /* CollapsibleProductCardPriceSummaryViewModel.swift */,
+				029106BB2BE21C4900C2248B /* CollapsibleOrderFormCard.swift */,
+				029106BD2BE2868F00C2248B /* CollapsibleOrderFormCardBorder.swift */,
 			);
 			path = "Order Creation";
 			sourceTree = "<group>";
@@ -13999,6 +14005,7 @@
 				D8EE9692264D328A0033B2F9 /* LegacyReceiptViewController.swift in Sources */,
 				68AC9D292ACE598B0042F784 /* ProductImageThumbnail.swift in Sources */,
 				CE4FE7D82B7D306200F66DD5 /* MultiSelectionReorderableList.swift in Sources */,
+				029106BE2BE2868F00C2248B /* CollapsibleOrderFormCardBorder.swift in Sources */,
 				02E4FD7C2306A04C0049610C /* StatsTimeRangeBarView.swift in Sources */,
 				864213022AE77C730036E5A6 /* UIImage+Resizing.swift in Sources */,
 				DE61978B28991F0E005E4362 /* WKWebView+Authenticated.swift in Sources */,
@@ -14330,6 +14337,7 @@
 				D83C12A022250BF0004CA04C /* OrderTrackingTableViewCell.swift in Sources */,
 				E1ABAEF728479E0300F40BB2 /* InPersonPaymentsSelectPluginView.swift in Sources */,
 				B9B6DEEF283F8B9F00901FB7 /* Site+URL.swift in Sources */,
+				029106BC2BE21C4900C2248B /* CollapsibleOrderFormCard.swift in Sources */,
 				D83F5930225B269C00626E75 /* DatePickerTableViewCell.swift in Sources */,
 				26FF455F24BE49EE00B3B2F4 /* DeprecatedStatsDashboardViewController.swift in Sources */,
 				0272C00322EE9C3200D7CA2C /* AsyncDictionary.swift in Sources */,

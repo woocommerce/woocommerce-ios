@@ -20,7 +20,6 @@ struct ShippingLineSelectionDetails: View {
                         .foregroundColor(Color(.textSubtle))
                     FormattableAmountTextField(viewModel: viewModel.formattableAmountViewModel)
                 }
-                .accessibilityIdentifier("add-shipping-amount-field")
 
                 // MARK: Name
                 VStack(alignment: .leading) {
@@ -29,8 +28,8 @@ struct ShippingLineSelectionDetails: View {
                         .foregroundColor(Color(.textSubtle))
                     TextField(Localization.namePlaceholder, text: $viewModel.methodTitle)
                         .secondaryTitleStyle()
+                        .accessibilityIdentifier(Accessibility.nameField)
                 }
-                .accessibilityIdentifier("add-shipping-name-field")
 
                 // MARK: Delete Shipping Button
                 Button(Localization.deleteShippingButton) {
@@ -51,6 +50,7 @@ struct ShippingLineSelectionDetails: View {
                 }
                 .buttonStyle(PrimaryButtonStyle())
                 .disabled(!viewModel.enableDoneButton)
+                .accessibilityIdentifier(Accessibility.doneButton)
                 .padding()
                 .background(Color(.systemBackground))
             })
@@ -103,6 +103,11 @@ private extension ShippingLineSelectionDetails {
         static let deleteShippingButton = NSLocalizedString("order.shippingLineDetails.removeShipping",
                                                             value: "Remove Shipping from Order",
                                                             comment: "Button to remove a shipping line from the order during order creation")
+    }
+
+    enum Accessibility {
+        static let nameField = "add-shipping-name-field"
+        static let doneButton = "add-shipping-done-button"
     }
 }
 

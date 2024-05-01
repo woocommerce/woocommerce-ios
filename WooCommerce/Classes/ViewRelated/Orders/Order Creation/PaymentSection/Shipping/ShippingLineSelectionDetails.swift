@@ -52,6 +52,7 @@ struct ShippingLineSelectionDetails: View {
                 .buttonStyle(PrimaryButtonStyle())
                 .disabled(!viewModel.enableDoneButton)
                 .padding()
+                .background(Color(.systemBackground))
             })
             .navigationTitle(Localization.shipping)
             .navigationBarTitleDisplayMode(.inline)

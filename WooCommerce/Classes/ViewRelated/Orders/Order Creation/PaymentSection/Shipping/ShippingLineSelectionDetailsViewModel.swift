@@ -51,7 +51,10 @@ class ShippingLineSelectionDetailsViewModel: ObservableObject {
             self.initialAmount = nil
         }
 
-        self.formattableAmountViewModel = FormattableAmountTextFieldViewModel(size: .title2, locale: locale, storeCurrencySettings: storeCurrencySettings)
+        self.formattableAmountViewModel = FormattableAmountTextFieldViewModel(size: .title2,
+                                                                              locale: locale,
+                                                                              storeCurrencySettings: storeCurrencySettings,
+                                                                              allowNegativeNumber: true)
         if isExistingShippingLine {
             formattableAmountViewModel.presetAmount(shippingTotal)
         }

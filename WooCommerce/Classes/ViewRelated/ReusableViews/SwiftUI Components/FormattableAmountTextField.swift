@@ -16,7 +16,7 @@ struct FormattableAmountTextField: View {
         ZStack(alignment: .center) {
             // Hidden input text field
             BindableTextfield("", text: $viewModel.amount, focus: $focusAmountInput)
-                .keyboardType(.decimalPad)
+                .keyboardType(viewModel.allowNegativeNumber ? .numbersAndPunctuation : .decimalPad)
                 .opacity(0)
 
             // Visible & formatted label

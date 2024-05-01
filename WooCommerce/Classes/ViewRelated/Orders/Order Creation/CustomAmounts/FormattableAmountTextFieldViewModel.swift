@@ -34,7 +34,7 @@ final class FormattableAmountTextFieldViewModel: ObservableObject {
             return false
         }
 
-        return amountDecimal > .zero
+        return allowNegativeNumber ? true : amountDecimal > .zero
     }
 
     /// Formatted amount to display. When empty displays a placeholder value.
@@ -51,13 +51,19 @@ final class FormattableAmountTextFieldViewModel: ObservableObject {
 
     /// Defines the amount text size.
     ///
-    var amountTextSize: AmountTextSize
+    let amountTextSize: AmountTextSize
+
+    /// Whether the amount is allowed to be negative.
+    ///
+    let allowNegativeNumber: Bool
 
     init(size: AmountTextSize = .extraLarge,
          locale: Locale = Locale.autoupdatingCurrent,
-         storeCurrencySettings: CurrencySettings = ServiceLocator.currencySettings) {
-        self.priceFieldFormatter = .init(locale: locale, storeCurrencySettings: storeCurrencySettings)
+         storeCurrencySettings: CurrencySettings = ServiceLocator.currencySettings,
+         allowNegativeNumber: Bool = false) {
+        self.priceFieldFormatter = .init(locale: locale, storeCurrencySettings: storeCurrencySettings, allowNegativeNumber: allowNegativeNumber)
         amountTextSize = size
+        self.allowNegativeNumber = allowNegativeNumber
     }
 
     func reset() {

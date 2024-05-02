@@ -327,7 +327,7 @@ final class DashboardViewModelTests: XCTestCase {
         }
 
         // When
-        viewModel.didCustomizeDashboardCards([.init(type: .onboarding, isAvailable: true, enabled: true, status: .show)])
+        viewModel.didCustomizeDashboardCards([.init(type: .onboarding, availability: .show, enabled: true)])
 
         // Then
         XCTAssertTrue(setDashboardCardsActionCalled)
@@ -336,10 +336,10 @@ final class DashboardViewModelTests: XCTestCase {
     func test_editorSaveTapped_is_tracked_when_customizing_onboarding_card() throws {
         // Given
         let viewModel = DashboardViewModel(siteID: sampleSiteID, analytics: analytics)
-        let cards: [DashboardCard] = [DashboardCard(type: .onboarding, isAvailable: true, enabled: false, status: .show),
-                                      DashboardCard(type: .performance, isAvailable: true, enabled: true, status: .show),
-                                      DashboardCard(type: .topPerformers, isAvailable: true, enabled: false, status: .show),
-                                      DashboardCard(type: .blaze, isAvailable: true, enabled: true, status: .show)]
+        let cards: [DashboardCard] = [DashboardCard(type: .onboarding, availability: .show, enabled: false),
+                                      DashboardCard(type: .performance, availability: .show, enabled: true),
+                                      DashboardCard(type: .blaze, availability: .show, enabled: true),
+                                      DashboardCard(type: .topPerformers, availability: .show, enabled: false)]
 
         // When
         viewModel.didCustomizeDashboardCards(cards)

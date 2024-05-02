@@ -27,6 +27,18 @@ final class DashboardViewModel: ObservableObject {
 
     @Published private(set) var dashboardCards: [DashboardCard] = []
 
+    var unavailableCards: [DashboardCard] {
+        dashboardCards.filter { $0.availability == .unavailable }
+    }
+
+    var availableCards: [DashboardCard] {
+        dashboardCards.filter { $0.availability != .hide }
+    }
+
+    var showOnDashboardCards: [DashboardCard] {
+        dashboardCards.filter { $0.availability == .show && $0.enabled }
+    }
+
     @Published private(set) var jetpackBannerVisibleFromAppSettings = false
 
     @Published private(set) var hasOrders: Bool = true
@@ -274,36 +286,25 @@ private extension DashboardViewModel {
 
         // Onboarding card.
         // When not available, Onboarding card needs to be hidden from Dashboard and Customize
-        cards.append(
-            DashboardCard(type: .onboarding,
-                          isAvailable: canShowOnboarding,
-                          enabled: canShowOnboarding,
-                          status: canShowOnboarding ? .show : .hide)
-        )
+        cards.append(DashboardCard(type: .onboarding,
+                                   availability: canShowOnboarding ? .show : .hide,
+                                   enabled: canShowOnboarding))
 
         // Performance and Top Performance cards (also known as Analytics cards).
         // When not available, Analytics cards need to be hidden from Dashboard, but appear on Customize as "Unavailable"
-        cards.append(
-            DashboardCard(type: .performance,
-                          isAvailable: canShowAnalytics,
-                          enabled: canShowAnalytics,
-                          status: canShowAnalytics ? .show : .unavailable)
-        )
-        cards.append(
-            DashboardCard(type: .topPerformers,
-                          isAvailable: canShowAnalytics,
-                          enabled: canShowAnalytics,
-                          status: canShowAnalytics ? .show : .unavailable)
-        )
+        cards.append(DashboardCard(type: .performance,
+                                   availability: canShowAnalytics ? .show : .unavailable,
+                                   enabled: canShowAnalytics))
+
+        cards.append(DashboardCard(type: .topPerformers,
+                                   availability: canShowAnalytics ? .show : .unavailable,
+                                   enabled: canShowAnalytics))
 
         // Blaze card.
         // When not available, Blaze card needs to be hidden from Dashboard and Customize
-        cards.append(
-            DashboardCard(type: .blaze,
-                          isAvailable: canShowBlaze,
-                          enabled: canShowBlaze,
-                          status: canShowBlaze ? .show : .hide)
-        )
+        cards.append(DashboardCard(type: .blaze,
+                                   availability: canShowBlaze ? .show : .hide,
+                                   enabled: canShowBlaze))
 
         return cards
     }
@@ -324,7 +325,7 @@ private extension DashboardViewModel {
         let savedCards = await loadDashboardCards() ?? []
         dashboardCards = initialCards.map { initialCard in
             if let savedCard = savedCards.first(where: { $0.type == initialCard.type }),
-               savedCard.isAvailable && initialCard.isAvailable {
+               savedCard.availability == .show && initialCard.availability == .show {
                 return initialCard.copy(enabled: savedCard.enabled)
             } else {
                 return initialCard

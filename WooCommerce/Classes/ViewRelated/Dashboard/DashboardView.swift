@@ -126,6 +126,9 @@ struct DashboardView: View {
                 onSave: { viewModel.didCustomizeDashboardCards($0) }
             ))
         }
+        .onAppear {
+            viewModel.onViewAppear()
+        }
     }
 }
 
@@ -135,36 +138,43 @@ private extension DashboardView {
     @ViewBuilder
     var dashboardCards: some View {
         VStack(spacing: Layout.padding) {
-            ForEach(viewModel.dashboardCards, id: \.hashValue) { card in
-                if card.enabled {
-                    switch card.type {
-                    case .onboarding:
-                        StoreOnboardingView(viewModel: viewModel.storeOnboardingViewModel,
-                                            onTaskTapped: { task in
-                            guard let currentSite else { return }
-                            onboardingTaskTapped?(currentSite, task)
-                        }, onViewAllTapped: {
-                            guard let currentSite else { return }
-                            viewAllOnboardingTasksTapped?(currentSite)
-                        }, shareFeedbackAction: {
-                            onboardingShareFeedbackAction?()
-                        })
-                    case .blaze:
-                        BlazeCampaignDashboardView(viewModel: viewModel.blazeCampaignDashboardViewModel,
-                                                   showAllCampaignsTapped: showAllBlazeCampaignsTapped,
-                                                   createCampaignTapped: createBlazeCampaignTapped)
-                    case .performance:
-                        StorePerformanceView(viewModel: viewModel.storePerformanceViewModel,
-                                             onCustomRangeRedactedViewTap: {
-                            onCustomRangeRedactedViewTap?()
-                        }, onViewAllAnalytics: { siteID, siteTimeZone, timeRange in
-                            onViewAllAnalytics?(siteID, siteTimeZone, timeRange)
-                        })
-                    case .topPerformers:
-                        TopPerformersDashboardView(viewModel: viewModel.topPerformersViewModel,
-                                                   onViewAllAnalytics: { siteID, siteTimeZone, timeRange in
-                            onViewAllAnalytics?(siteID, siteTimeZone, timeRange)
-                        })
+            ForEach(Array(viewModel.dashboardCards.enumerated()), id: \.element.hashValue) { index, card in
+                VStack(spacing: Layout.padding) {
+                    if card.enabled {
+                        switch card.type {
+                        case .onboarding:
+                            StoreOnboardingView(viewModel: viewModel.storeOnboardingViewModel,
+                                                onTaskTapped: { task in
+                                guard let currentSite else { return }
+                                onboardingTaskTapped?(currentSite, task)
+                            }, onViewAllTapped: {
+                                guard let currentSite else { return }
+                                viewAllOnboardingTasksTapped?(currentSite)
+                            }, shareFeedbackAction: {
+                                onboardingShareFeedbackAction?()
+                            })
+                        case .blaze:
+                            BlazeCampaignDashboardView(viewModel: viewModel.blazeCampaignDashboardViewModel,
+                                                       showAllCampaignsTapped: showAllBlazeCampaignsTapped,
+                                                       createCampaignTapped: createBlazeCampaignTapped)
+                        case .performance:
+                            StorePerformanceView(viewModel: viewModel.storePerformanceViewModel,
+                                                 onCustomRangeRedactedViewTap: {
+                                onCustomRangeRedactedViewTap?()
+                            }, onViewAllAnalytics: { siteID, siteTimeZone, timeRange in
+                                onViewAllAnalytics?(siteID, siteTimeZone, timeRange)
+                            })
+                        case .topPerformers:
+                            TopPerformersDashboardView(viewModel: viewModel.topPerformersViewModel,
+                                                       onViewAllAnalytics: { siteID, siteTimeZone, timeRange in
+                                onViewAllAnalytics?(siteID, siteTimeZone, timeRange)
+                            })
+                        }
+                    }
+
+                    // Append feedback card after the first card
+                    if index == 0 && viewModel.isInAppFeedbackCardVisible {
+                       feedbackCard
                     }
                 }
             }
@@ -173,6 +183,12 @@ private extension DashboardView {
                 shareStoreCard
             }
         }
+    }
+
+    var feedbackCard: some View {
+        ViewControllerContainer(InAppFeedbackCardViewController(onFeedbackGiven: viewModel.onInAppFeedbackCardAction))
+            .clipShape(RoundedRectangle(cornerSize: CGSize(width: Layout.cornerRadius, height: Layout.cornerRadius)))
+            .padding(.horizontal, Layout.padding)
     }
 
     var shareStoreCard: some View {

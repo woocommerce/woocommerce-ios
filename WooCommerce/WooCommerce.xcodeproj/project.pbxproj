@@ -6529,6 +6529,15 @@
 			path = FilterTabBar;
 			sourceTree = "<group>";
 		};
+		02B7C4F42BE3753B00F8E93A /* CustomerCard */ = {
+			isa = PBXGroup;
+			children = (
+				029106C12BE34A8600C2248B /* CollapsibleCustomerCard.swift */,
+				029106C32BE34AA900C2248B /* CollapsibleCustomerCardViewModel.swift */,
+			);
+			path = CustomerCard;
+			sourceTree = "<group>";
+		};
 		02BBD6E329A2674C00243BE2 /* Onboarding */ = {
 			isa = PBXGroup;
 			children = (
@@ -8876,6 +8885,7 @@
 		AE9E04732776034B003FA09E /* CustomerSection */ = {
 			isa = PBXGroup;
 			children = (
+				02B7C4F42BE3753B00F8E93A /* CustomerCard */,
 				0250192C2BDF8195009493A5 /* Legacy */,
 				AEC95D422774D07B001571F5 /* CreateOrderAddressFormViewModel.swift */,
 				68D1BEDA28FFEDC20074A29E /* OrderCustomerListView.swift */,
@@ -8885,8 +8895,6 @@
 				B95A45E82A77AE2C0073A91F /* CustomerSelectorViewModel.swift */,
 				0250192D2BDF81F3009493A5 /* OrderCustomerSection.swift */,
 				029106BF2BE3349500C2248B /* OrderCustomerSectionViewModel.swift */,
-				029106C12BE34A8600C2248B /* CollapsibleCustomerCard.swift */,
-				029106C32BE34AA900C2248B /* CollapsibleCustomerCardViewModel.swift */,
 			);
 			path = CustomerSection;
 			sourceTree = "<group>";
@@ -13901,7 +13909,6 @@
 				68AC9D292ACE598B0042F784 /* ProductImageThumbnail.swift in Sources */,
 				CE4FE7D82B7D306200F66DD5 /* MultiSelectionReorderableList.swift in Sources */,
 				029106BE2BE2868F00C2248B /* CollapsibleOrderFormCardBorder.swift in Sources */,
-				02E4FD7C2306A04C0049610C /* StatsTimeRangeBarView.swift in Sources */,
 				864213022AE77C730036E5A6 /* UIImage+Resizing.swift in Sources */,
 				DE61978B28991F0E005E4362 /* WKWebView+Authenticated.swift in Sources */,
 				311237EE2714DA240033C44E /* CardPresentModalDisplayMessage.swift in Sources */,

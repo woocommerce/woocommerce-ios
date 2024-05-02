@@ -79,25 +79,4 @@ extension StatsTimeRangeV4 {
             return startDate.startOfDay(timezone: siteTimezone)
         }
     }
-
-    /// Returns a date formatter for the x-axis labels of a stats chart
-    ///
-    /// - Parameter siteTimezone: site time zone, which the stats data are based on
-    func chartDateFormatter(siteTimezone: TimeZone) -> DateFormatter {
-        let dateFormatter: DateFormatter
-        switch intervalGranularity {
-        case .hourly:
-            dateFormatter = DateFormatter.Charts.chartAxisHourFormatter
-        case .daily:
-            dateFormatter = DateFormatter.Charts.chartAxisDayFormatter
-        case .weekly:
-            dateFormatter = DateFormatter.Charts.chartAxisDayFormatter
-        case .monthly:
-            dateFormatter = DateFormatter.Charts.chartAxisMonthFormatter
-        case .yearly:
-            dateFormatter = DateFormatter.Charts.chartAxisYearFormatter
-        }
-        dateFormatter.timeZone = siteTimezone
-        return dateFormatter
-    }
 }

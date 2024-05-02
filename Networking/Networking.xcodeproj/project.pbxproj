@@ -702,6 +702,7 @@
 		CE50346021B5799F007573C6 /* SitePlan.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE50345F21B5799F007573C6 /* SitePlan.swift */; };
 		CE50346721B5DCBE007573C6 /* site-plan.json in Resources */ = {isa = PBXBuildFile; fileRef = CE50346621B5DCBE007573C6 /* site-plan.json */; };
 		CE583A0E2109154500D73C1C /* OrderNoteMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE583A0D2109154500D73C1C /* OrderNoteMapper.swift */; };
+		CE606D8B2BE38B04001CB424 /* shipping-methods.json in Resources */ = {isa = PBXBuildFile; fileRef = CE606D8A2BE38B04001CB424 /* shipping-methods.json */; };
 		CE6B969A2A0BCD09003C4B27 /* order-with-bundled-line-items.json in Resources */ = {isa = PBXBuildFile; fileRef = CE6B96992A0BCD09003C4B27 /* order-with-bundled-line-items.json */; };
 		CE6BFEE52236BF05005C79FB /* Product.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE6BFEE42236BF05005C79FB /* Product.swift */; };
 		CE6BFEE82236D133005C79FB /* ProductDimensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE6BFEE72236D133005C79FB /* ProductDimensions.swift */; };
@@ -1795,6 +1796,7 @@
 		CE50345F21B5799F007573C6 /* SitePlan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SitePlan.swift; sourceTree = "<group>"; };
 		CE50346621B5DCBE007573C6 /* site-plan.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "site-plan.json"; sourceTree = "<group>"; };
 		CE583A0D2109154500D73C1C /* OrderNoteMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderNoteMapper.swift; sourceTree = "<group>"; };
+		CE606D8A2BE38B04001CB424 /* shipping-methods.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "shipping-methods.json"; sourceTree = "<group>"; };
 		CE6B96992A0BCD09003C4B27 /* order-with-bundled-line-items.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "order-with-bundled-line-items.json"; sourceTree = "<group>"; };
 		CE6BFEE42236BF05005C79FB /* Product.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Product.swift; sourceTree = "<group>"; };
 		CE6BFEE72236D133005C79FB /* ProductDimensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductDimensions.swift; sourceTree = "<group>"; };
@@ -3070,6 +3072,7 @@
 				456930AC2652AF00009ED69D /* shipping-label-carriers-and-rates-success.json */,
 				CC0786622678F79500BA9AC1 /* shipping-label-purchase-success.json */,
 				CC0786C6267BB10700BA9AC1 /* shipping-label-status-success.json */,
+				CE606D8A2BE38B04001CB424 /* shipping-methods.json */,
 				B56C1EB920EA7D2C00D749F9 /* sites.json */,
 				2670C3FD270F4E6A002FE931 /* sites-malformed.json */,
 				7426CA1221AF34A3004E9FFC /* site-api.json */,
@@ -4034,6 +4037,7 @@
 				022902D422E2436400059692 /* stats_module_disabled_error.json in Resources */,
 				4513382827A96DE700AE5E78 /* inbox-note.json in Resources */,
 				EEA1E2092AC3E08600A37ADD /* generate-product-success-no-dimensions-info.json in Resources */,
+				CE606D8B2BE38B04001CB424 /* shipping-methods.json in Resources */,
 				31A451D227863A2E00FE81AA /* stripe-account-restricted-pending.json in Resources */,
 				45CCFCEA27A2E59B0012E8CB /* inbox-note-list.json in Resources */,
 				025CA2C8238F4FF400B05C81 /* product-shipping-classes-load-all.json in Resources */,

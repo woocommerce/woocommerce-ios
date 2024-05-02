@@ -108,7 +108,7 @@ struct BlazeCampaignDashboardView: View {
                         await viewModel.reload()
                     }
                 })
-                .padding(Layout.padding)
+                .padding(.horizontal, Layout.padding)
             case .loading:
                 EmptyView()
             }

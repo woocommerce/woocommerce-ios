@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-04-30 11:54:15+0000 */
+/* Translation-Revision-Date: 2024-04-30 17:54:04+0000 */
 /* Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ru */
@@ -1727,7 +1727,7 @@ which should be translated separately and considered part of this sentence. */
 "CollapsibleProductRowCard.text.signupfee" = "Регистрационный сбор";
 
 /* Description of the billing and billing frequency for a subscription product. Reads as: 'Every 2 months'. */
-"CollapsibleProductRowCardViewModel.formattedBillingDetails" = "%1$@ за %2$@";
+"CollapsibleProductRowCardViewModel.formattedBillingDetails" = "Каждые %1$@ %2$@";
 
 /* Description of the free trial conditions for a subscription product. Reads as: '3 days free'. */
 "CollapsibleProductRowCardViewModel.formattedFreeTrial" = "%1$@ %2$@ бесплатно";
@@ -5232,16 +5232,16 @@ which should be translated separately and considered part of this sentence. */
 "OrderDetailsViewModel.displayReceiptRetrievalErrorNotice.notice" = "Не удалось получить чек.";
 
 /* Description of the subscription billing interval for a product. Reads like: 'Every 2 months'. */
-"OrderSubscriptionTableViewCellViewModel.billingInterval" = "%1$@ за %2$@";
+"OrderSubscriptionTableViewCellViewModel.billingInterval" = "Каждые %1$@ %2$@";
 
 /* Formatted subscription title with subscription number. Reads like: 'Subscription #123' */
-"OrderSubscriptionTableViewCellViewModel.formattedSubscriptionTitle" = "Subscription #%1$@";
+"OrderSubscriptionTableViewCellViewModel.formattedSubscriptionTitle" = "Подписка № %1$@";
 
 /* Description of the subscription price for a product. Reads like: '$60.00'. */
 "OrderSubscriptionTableViewCellViewModel.priceFormat" = "%1$@";
 
 /* Subscription title with subscription number. Reads like: 'Subscription #123' */
-"OrderSubscriptionTableViewCellViewModel.subscriptionTitle" = "Номер подписки%d";
+"OrderSubscriptionTableViewCellViewModel.subscriptionTitle" = "Подписка № %d";
 
 /* Accessibility label for Ordered list button on formatting toolbar. */
 "Ordered List" = "Упорядоченный список";
@@ -10125,7 +10125,7 @@ which should be translated separately and considered part of this sentence. */
 "blazeEditAdView.image.changeImage" = "Изменить изображение";
 
 /* Error message displayed when selected campaign image is not large enough. */
-"blazeEditAdView.image.imageSizeErrorMessage" = "Выберите изображение размером минимум 600 × 600 пикс.";
+"blazeEditAdView.image.imageSizeErrorMessage" = "Выберите изображение размером минимум 400 × 400 пикс.";
 
 /* Button to dismiss the image view alert. */
 "blazeEditAdView.image.ok" = "ОК";
@@ -10615,13 +10615,16 @@ which should be translated separately and considered part of this sentence. */
 "dashboardCard.name.topPerformers" = "Самые продаваемые";
 
 /* Link to open the support form. Should be lowercased. */
-"dashboardCardErrorView.contactSupport" = "Обратиться в службу поддержки ";
+"dashboardCardErrorView.contactSupport" = "обратиться в службу поддержки";
 
 /* Button to dismiss the support form from the Dashboard generic error card. */
 "dashboardCardErrorView.dismissSupport" = "Готово";
 
+/* The info of the error view when failed to load store statistics on the Dashboard screen. The placeholder is a link to contact support. Reads as: Try reloading this card. If the issue persists, please contact us. */
+"dashboardCardErrorView.errorMessage" = "Попробуйте перезагрузить карточку. Если устранить проблему не удалось, %1$@.";
+
 /* The title of the error view when failed to load a Dashboard card */
-"dashboardCardErrorView.errorTitle" = "Не удалось загрузить";
+"dashboardCardErrorView.errorTitle" = "Не удалось загрузить данные";
 
 /* Button to reload the dashboard card on the Dashboard screen */
 "dashboardCardErrorView.retry" = "Повторить";
@@ -10642,10 +10645,10 @@ which should be translated separately and considered part of this sentence. */
 "dashboardView.shareStoreCard.shareButtonLabel" = "Поделиться адресом магазина";
 
 /* Subtitle of the Share Your Store card */
-"dashboardView.shareStoreCard.subtitle" = "Use email or social media to spread the word about your store";
+"dashboardView.shareStoreCard.subtitle" = "Расскажите всем о своём магазине при помощи рассылки или социальных сетей";
 
 /* Title of the Share Your Store card */
-"dashboardView.shareStoreCard.title" = "Get the word out!";
+"dashboardView.shareStoreCard.title" = "Станьте известным!";
 
 /* Title on the banner when the site's WooExpress plan has expired */
 "dashboardView.storePlanBanner.expired" = "Срок действия тарифного плана для сайта истёк.";
@@ -11342,16 +11345,16 @@ which should be translated separately and considered part of this sentence. */
 "storeOnboardingCardView.viewAll" = "Посмотреть все задачи (%1$d)";
 
 /* Button title to contact support to get help with deprecated stats module */
-"storePerformanceView.contentUnavailable.buttonTitle" = "Still need help? Свяжитесь с нами";
+"storePerformanceView.contentUnavailable.buttonTitle" = "Вам по-прежнему требуется помощь? Свяжитесь с нами";
 
 /* Text that explains how to update WooCommerce to get the latest stats */
-"storePerformanceView.contentUnavailable.details" = "Убедитесь, что на сайте используется последняя версия WooCommerce и вы активировали WooCommerce Admin.";
+"storePerformanceView.contentUnavailable.details" = "Убедитесь, что на сайте используется последняя версия WooCommerce и что аналитика активирована в настройках WooCommerce.";
 
 /* Button to dismiss the support form from the Dashboard stats error screen. */
 "storePerformanceView.contentUnavailable.dismissSupport" = "Готово";
 
 /* Title when we can't show stats because user is on a deprecated WooCommerce Version */
-"storePerformanceView.contentUnavailable.title" = "Невозможно отображать аналитику вашего магазина";
+"storePerformanceView.contentUnavailable.title" = "Не удалось отобразить аналитику вашего магазина";
 
 /* Conversion stat label on dashboard. */
 "storePerformanceView.conversion" = "Конверсия";
@@ -11363,7 +11366,7 @@ which should be translated separately and considered part of this sentence. */
 "storePerformanceView.hideCard" = "Скрыть производительность";
 
 /* Text on the store stats chart on the Dashboard screen when there is no revenue */
-"storePerformanceView.noRevenueText" = "No revenue for selected dates";
+"storePerformanceView.noRevenueText" = "Отсутствует доход в выбранные даты";
 
 /* Orders stat label on dashboard - should be plural. */
 "storePerformanceView.orders" = "Заказы";

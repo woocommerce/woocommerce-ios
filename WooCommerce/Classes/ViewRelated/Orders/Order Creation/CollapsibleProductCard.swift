@@ -152,7 +152,7 @@ private struct CollapsibleProductRowCard: View {
                     .padding(.leading, viewModel.hasParentProduct ? Layout.childLeadingPadding : 0)
                     .overlay(alignment: .topTrailing) {
                         BadgeView(text: badgeQuantity,
-                                  customizations: .init(textColor: Color(.textInverted), backgroundColor: .black),
+                                  customizations: .init(textColor: .white, backgroundColor: .black),
                                   backgroundShape: badgeStyle)
                         .offset(x: Layout.badgeOffset, y: -Layout.badgeOffset)
                         .renderedIf(shouldShowBadgeCounter)

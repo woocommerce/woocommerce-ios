@@ -335,13 +335,6 @@ private extension OrderListViewController {
         tableView.sectionFooterHeight = .leastNonzeroMagnitude
         tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = UITableView.automaticDimension
-
-        // Adds a border to the top of tableview
-        let topBorder = CALayer()
-        let borderWidth = 0.5
-        topBorder.frame = CGRect(x: 0, y: 0, width: tableView.frame.size.width, height: borderWidth)
-        topBorder.backgroundColor = UIColor.divider.cgColor
-        tableView.layer.addSublayer(topBorder)
     }
 
     /// Registers all of the available table view cells and headers

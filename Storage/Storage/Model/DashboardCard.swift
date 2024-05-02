@@ -8,11 +8,11 @@ public struct DashboardCard: Codable, Hashable, Equatable, GeneratedCopiable {
 
     /// The card's availability state for the site.
     /// To be set externally based on each card's availability check.
-    public var isAvailable: Bool
+    public let isAvailable: Bool
 
     /// User-changeable setting in the Customize screen, whether to enable or disable an available card.
     /// An available card will become invisible on the Dashboard, but stay visible on Customize, if `enabled` is set to false.
-    public var enabled: Bool
+    public let enabled: Bool
 
     /// Whether the card is shown on the Dashboard screen.
     var isVisible: Bool {
@@ -24,7 +24,7 @@ public struct DashboardCard: Codable, Hashable, Equatable, GeneratedCopiable {
     }
 
     /// Determines how a card is shown in the Customize screen
-    public var status: CustomizeState
+    public let status: CustomizeState
 
     public init(type: CardType, isAvailable: Bool, enabled: Bool, status: CustomizeState) {
         self.type = type

@@ -126,6 +126,9 @@ struct DashboardView: View {
                 onSave: { viewModel.didCustomizeDashboardCards($0) }
             ))
         }
+        .sheet(isPresented: $viewModel.showingInAppFeedbackSurvey) {
+            Survey(source: .inAppFeedback)
+        }
         .onAppear {
             viewModel.onViewAppear()
         }
@@ -186,8 +189,7 @@ private extension DashboardView {
     }
 
     var feedbackCard: some View {
-        ViewControllerContainer(InAppFeedbackCardViewController(onFeedbackGiven: viewModel.onInAppFeedbackCardAction))
-            .clipShape(RoundedRectangle(cornerSize: CGSize(width: Layout.cornerRadius, height: Layout.cornerRadius)))
+        InAppFeedbackCardView(viewModel: viewModel.inAppFeedbackCardViewModel)
             .padding(.horizontal, Layout.padding)
     }
 

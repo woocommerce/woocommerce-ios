@@ -27,6 +27,10 @@ final class DashboardViewModel: ObservableObject {
 
     @Published private(set) var isInAppFeedbackCardVisible = false
 
+    private(set) var inAppFeedbackCardViewModel = InAppFeedbackCardViewModel()
+
+    @Published var showingInAppFeedbackSurvey = false
+
     // TODO: remove this legacy property when removing `DashboardViewController`
     @Published private(set) var showOnboarding: Bool = false
 
@@ -101,6 +105,10 @@ final class DashboardViewModel: ObservableObject {
                                             usageTracksEventEmitter: usageTracksEventEmitter)
         self.storeCreationProfilerUploadAnswersUseCase = storeCreationProfilerUploadAnswersUseCase ?? StoreCreationProfilerUploadAnswersUseCase(siteID: siteID)
         self.themeInstaller = themeInstaller
+        self.inAppFeedbackCardViewModel.onFeedbackGiven = { [weak self] feedback in
+            self?.showingInAppFeedbackSurvey = feedback == .didntLike
+            self?.onInAppFeedbackCardAction()
+        }
         configureOrdersResultController()
         setupDashboardCards()
         installPendingThemeIfNeeded()
@@ -509,7 +517,7 @@ private extension DashboardViewModel {
 
 // MARK: InAppFeedback card
 //
-extension DashboardViewModel {
+private extension DashboardViewModel {
     /// Updates the card visibility state stored in `isInAppFeedbackCardVisible` by updating the app last feedback date.
     ///
     func onInAppFeedbackCardAction() {
@@ -528,7 +536,7 @@ extension DashboardViewModel {
     }
 
     /// Calculates and updates the value of `isInAppFeedbackCardVisible`.
-    private func refreshIsInAppFeedbackCardVisibleValue() {
+    func refreshIsInAppFeedbackCardVisibleValue() {
         let action = AppSettingsAction.loadFeedbackVisibility(type: .general) { [weak self] result in
             guard let self = self else {
                 return
@@ -548,7 +556,7 @@ extension DashboardViewModel {
 
     /// Updates the value of `isInAppFeedbackCardVisible` and tracks a "shown" event
     /// if the value changed from `false` to `true`.
-    private func sendIsInAppFeedbackCardVisibleValueAndTrackIfNeeded(_ newValue: Bool) {
+    func sendIsInAppFeedbackCardVisibleValueAndTrackIfNeeded(_ newValue: Bool) {
         let trackEvent = isInAppFeedbackCardVisible == false && newValue == true
 
         isInAppFeedbackCardVisible = newValue

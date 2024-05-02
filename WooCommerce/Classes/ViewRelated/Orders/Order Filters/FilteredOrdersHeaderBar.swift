@@ -53,8 +53,8 @@ private extension FilteredOrdersHeaderBar {
     func adjustBorderOnFrameUpdate() {
         let borderWidth = 0.5
         bottomBorder.frame = CGRect(x: 0,
-                                    y: self.bounds.height - borderWidth,
-                                    width: self.bounds.width,
+                                    y: bounds.height - borderWidth,
+                                    width: bounds.width,
                                     height: borderWidth)
     }
 

@@ -38,7 +38,6 @@ final class OrdersRootViewController: UIViewController {
     ///
     private var filtersBar: FilteredOrdersHeaderBar = {
         let filteredOrdersBar: FilteredOrdersHeaderBar = FilteredOrdersHeaderBar.instantiateFromNib()
-        filteredOrdersBar.backgroundColor = .listForeground(modal: false)
         return filteredOrdersBar
     }()
 

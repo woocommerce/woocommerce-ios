@@ -28,7 +28,7 @@ struct InAppFeedbackCardViewModel {
     func didTapILikeIt() {
         analytics.track(event: .appFeedbackPrompt(action: .liked))
         if let windowScene = UIApplication.shared.connectedScenes.first(where: { $0.activationState == .foregroundActive}) as? UIWindowScene {
-            self.storeReviewControllerType.requestReview(in: windowScene)
+            storeReviewControllerType.requestReview(in: windowScene)
         }
         onFeedbackGiven?(.liked)
     }

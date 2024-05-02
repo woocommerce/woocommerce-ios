@@ -125,11 +125,11 @@ struct BlazeCampaignDashboardView: View {
                 Divider()
                     .padding(.leading, Layout.padding)
                     .padding(.bottom, Layout.dividerVerticalSpacing)
-                    .renderedIf(viewModel.shouldShowShowAllCampaignsButton)
                 showAllCampaignsButton
                     .padding(.horizontal, Layout.padding)
-                    .renderedIf(viewModel.shouldShowShowAllCampaignsButton)
             }
+            .renderedIf(viewModel.shouldShowShowAllCampaignsButton)
+
         }
         .padding(.vertical, Layout.padding)
         .background(Color(.listForeground(modal: false)))

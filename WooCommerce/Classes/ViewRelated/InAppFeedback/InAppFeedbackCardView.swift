@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct InAppFeedbackCardView: View {
-    @ObservedObject private var viewModel: InAppFeedbackCardViewModel
+    private let viewModel: InAppFeedbackCardViewModel
 
     init(viewModel: InAppFeedbackCardViewModel) {
         self.viewModel = viewModel

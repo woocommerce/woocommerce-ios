@@ -1,7 +1,7 @@
 import Foundation
 import StoreKit
 
-final class InAppFeedbackCardViewModel: ObservableObject {
+struct InAppFeedbackCardViewModel {
     enum Feedback {
         case liked
         case didntLike
@@ -13,8 +13,6 @@ final class InAppFeedbackCardViewModel: ObservableObject {
     var onFeedbackGiven: ((Feedback) -> Void)?
 
     private let storeReviewControllerType: SKStoreReviewControllerProtocol.Type
-
-    @Published var presentSurvey = false
 
     init(storeReviewControllerType: SKStoreReviewControllerProtocol.Type = SKStoreReviewController.self,
          analytics: Analytics = ServiceLocator.analytics) {

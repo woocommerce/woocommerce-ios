@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="22522" systemVersion="22G513" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="22757" systemVersion="23E224" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="Account" representedClassName="Account" syncable="YES">
         <attribute name="displayName" optional="YES" attributeType="String"/>
         <attribute name="email" optional="YES" attributeType="String"/>
@@ -817,6 +817,11 @@
         <attribute name="taxID" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="total" optional="YES" attributeType="String"/>
         <relationship name="shipping" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ShippingLine" inverseName="taxes" inverseEntity="ShippingLine"/>
+    </entity>
+    <entity name="ShippingMethod" representedClassName="ShippingMethod" syncable="YES">
+        <attribute name="methodID" attributeType="String" defaultValueString=""/>
+        <attribute name="siteID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="title" attributeType="String" defaultValueString=""/>
     </entity>
     <entity name="Site" representedClassName="Site" syncable="YES">
         <attribute name="adminURL" optional="YES" attributeType="String"/>

@@ -132,7 +132,6 @@ private extension HubMenu {
         }
         .listStyle(.insetGrouped)
         .background(Color(.listBackground))
-        .toolbar(.hidden, for: .navigationBar)
         .accentColor(Color(.listSelectedBackground))
     }
 

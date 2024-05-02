@@ -1170,6 +1170,13 @@ extension EditableOrderViewModel {
         let showNonEditableIndicators: Bool
 
         let shippingLineViewModel: ShippingLineDetailsViewModel
+        let saveShippingLineClosure: (ShippingLine?) -> Void
+        var shippingLineSelectionViewModel: ShippingLineSelectionDetailsViewModel {
+            ShippingLineSelectionDetailsViewModel(isExistingShippingLine: shouldShowShippingTotal,
+                                                  initialMethodTitle: shippingMethodTitle,
+                                                  shippingTotal: shippingMethodTotal,
+                                                  didSelectSave: saveShippingLineClosure)
+        }
         let addNewCouponLineClosure: (Coupon) -> Void
         let onGoToCouponsClosure: () -> Void
         let onTaxHelpButtonTappedClosure: () -> Void
@@ -1221,6 +1228,7 @@ extension EditableOrderViewModel {
             self.shippingTotal = currencyFormatter.formatAmount(shippingTotal) ?? "0.00"
             self.shippingMethodTitle = shippingMethodTitle
             self.shippingMethodTotal = currencyFormatter.formatAmount(shippingMethodTotal) ?? "0.00"
+            self.saveShippingLineClosure = saveShippingLineClosure
             self.shippingTax = currencyFormatter.formatAmount(shippingTax) ?? "0.00"
             self.shouldShowShippingTax = !(currencyFormatter.convertToDecimal(shippingTax) ?? NSDecimalNumber(0.0)).isZero()
             self.shouldShowTotalCustomAmounts = shouldShowTotalCustomAmounts

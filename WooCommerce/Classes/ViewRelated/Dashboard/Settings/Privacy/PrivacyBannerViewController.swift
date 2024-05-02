@@ -29,8 +29,11 @@ final class PrivacyBannerViewController: UIHostingController<PrivacyBanner> {
         // Make the banner scrollable when the banner height is bigger than the screen height.
         // Send it in the next run loop to avoid a recursive `viewDidLayoutSubviews`.
         bannerIntrinsicHeight = view.intrinsicContentSize.height
-        DispatchQueue.main.async {
-            self.rootView.shouldScroll = self.bannerIntrinsicHeight > self.view.frame.height
+        let shouldScroll = self.bannerIntrinsicHeight > self.view.frame.height
+        if self.rootView.shouldScroll != shouldScroll {
+            DispatchQueue.main.async {
+                self.rootView.shouldScroll = shouldScroll
+            }
         }
     }
 }
@@ -90,6 +93,11 @@ struct PrivacyBanner: View {
                 .subheadlineStyle()
                 .padding(.trailing, Layout.toggleDescriptionMargin)
 
+            /// Push buttons to the bottom
+            ///
+            if UIDevice.isPad() {
+                Spacer()
+            }
             HStack {
                 Button(Localization.goToSettings) {
                     Task {
@@ -107,10 +115,11 @@ struct PrivacyBanner: View {
                 .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.isLoading))
             }
             .padding(.top)
-
             /// Push all content to the top
             ///
-            Spacer()
+            if !UIDevice.isPad() {
+                Spacer()
+            }
         }
         .padding()
         .disabled(!viewModel.isViewEnabled)

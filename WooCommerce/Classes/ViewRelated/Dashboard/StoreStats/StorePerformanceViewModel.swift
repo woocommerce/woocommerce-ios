@@ -6,6 +6,15 @@ import protocol Storage.StorageManagerType
 import enum Storage.StatsVersion
 import enum Networking.DotcomError
 
+/// Different display modes of site visit stats
+///
+enum SiteVisitStatsMode {
+    case `default`
+    case redactedDueToJetpack
+    case hidden
+    case redactedDueToCustomRange
+}
+
 /// View model for `StorePerformanceView`.
 ///
 final class StorePerformanceViewModel: ObservableObject {

@@ -78,9 +78,9 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
         let predicate = NSPredicate(format: "siteID == %lld", siteID)
         let sortDescriptorByID = NSSortDescriptor(keyPath: \StorageBlazeCampaignListItem.campaignID, ascending: false)
         let resultsController = ResultsController<StorageBlazeCampaignListItem>(storageManager: storageManager,
-                                                                                 matching: predicate,
-                                                                                 fetchLimit: 1,
-                                                                                 sortedBy: [sortDescriptorByID])
+                                                                                matching: predicate,
+                                                                                fetchLimit: 1,
+                                                                                sortedBy: [sortDescriptorByID])
         return resultsController
     }()
 

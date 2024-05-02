@@ -11,7 +11,7 @@ extension DashboardCard {
         case .topPerformers:
             Localization.topPerformers
         case .blaze:
-            Localization.blaze
+            Localization.blazeCampaigns
         }
     }
 }
@@ -33,9 +33,9 @@ private extension DashboardCard {
             value: "Top performers",
             comment: "Name for the Top performers dashboard card in the Customize Dashboard screen"
         )
-        static let blaze = NSLocalizedString(
-            "dashboardCard.name.blaze",
-            value: "Blaze",
+        static let blazeCampaigns = NSLocalizedString(
+            "dashboardCard.name.blazeCampaigns",
+            value: "Blaze campaigns",
             comment: "Name for the Blaze dashboard card in the Customize Dashboard screen"
         )
     }

@@ -1,2 +1,1 @@
-Mengatasi bug pada tombol "Reset Aktivitas Log" agar tombol dapat berfungsi dengan benar dan log aktivitas terhapus hingga bersih. Nikmati pengalaman WooCommerce yang lebih lancar. Perbarui sekarang!
-
+Ucapkan selamat tinggal pada bug yang mengganggu! Dengan pembaruan terakhir ini, fitur "Terima Pembayaran" akan langsung mengarahkan Anda ke formulir pesanan, baik melalui tindakan cepat maupun tautan dalam. Nikmati kelancaran transaksi di mana saja!

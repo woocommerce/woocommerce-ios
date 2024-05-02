@@ -15,9 +15,6 @@ final class StoreStatsPeriodViewModel {
     /// Updated externally from user interactions with the chart.
     @Published var selectedIntervalIndex: Int? = nil
 
-    /// Updated externally from visitor stats availability.
-    @Published var siteVisitStatsMode: SiteVisitStatsMode = .default
-
     /// Emits order stats text values based on order stats and selected time interval.
     private(set) lazy var orderStatsText: AnyPublisher<String, Never> =
     Publishers.CombineLatest($orderStatsData.eraseToAnyPublisher(), $selectedIntervalIndex.eraseToAnyPublisher())
@@ -76,42 +73,6 @@ final class StoreStatsPeriodViewModel {
         .compactMap { [weak self] orderStatsData, selectedIntervalIndex in
             return self?.createTimeRangeBarViewModel(orderStatsData: orderStatsData, selectedIntervalIndex: selectedIntervalIndex)
         }
-        .eraseToAnyPublisher()
-
-    /// Emits the view state for visitor stats based on the visitor stats mode and the selected time interval.
-    private(set) lazy var visitorStatsViewState: AnyPublisher<StoreStatsDataOrRedactedView.State, Never> =
-    Publishers.CombineLatest($siteVisitStatsMode.eraseToAnyPublisher(), $selectedIntervalIndex.eraseToAnyPublisher())
-        .compactMap { [weak self] siteVisitStatsMode, selectedIntervalIndex in
-            return self?.visitorStatsViewState(siteVisitStatsMode: siteVisitStatsMode, selectedIntervalIndex: selectedIntervalIndex)
-        }
-        .removeDuplicates()
-        .eraseToAnyPublisher()
-
-    /// Emits the view state for conversion stats based on the visitor stats view state.
-    private(set) lazy var conversionStatsViewState: AnyPublisher<StoreStatsDataOrRedactedView.State, Never> =
-    visitorStatsViewState
-        .compactMap { [weak self] visitorStatsViewState in
-            return self?.conversionStatsViewState(visitorStatsViewState: visitorStatsViewState)
-        }
-        .removeDuplicates()
-        .eraseToAnyPublisher()
-
-    /// Emits the maximum value for the y-axis in the chart based on the order stats data.
-    private(set) lazy var yAxisMaximum: AnyPublisher<Double, Never> =
-    $orderStatsData.eraseToAnyPublisher()
-        .compactMap { [weak self] orderStatsData in
-            return self?.createYAxisMaximum(orderStatsData: orderStatsData)
-        }
-        .removeDuplicates()
-        .eraseToAnyPublisher()
-
-    /// Emits the minimum value for the y-axis in the chart based on the order stats data.
-    private(set) lazy var yAxisMinimum: AnyPublisher<Double, Never> =
-    $orderStatsData.eraseToAnyPublisher()
-        .compactMap { [weak self] orderStatsData in
-            return self?.createYAxisMinimum(orderStatsData: orderStatsData)
-        }
-        .removeDuplicates()
         .eraseToAnyPublisher()
 
     // MARK: - Private data
@@ -216,60 +177,6 @@ private extension StoreStatsPeriodViewModel {
                                           selectedDate: date,
                                           timeRange: timeRange,
                                           timezone: siteTimezone)
-    }
-
-    func visitorStatsViewState(siteVisitStatsMode: SiteVisitStatsMode, selectedIntervalIndex: Int?) -> StoreStatsDataOrRedactedView.State {
-        switch siteVisitStatsMode {
-        case .default:
-            return timeRange == .today && selectedIntervalIndex != nil ? .redacted: .data
-        case .redactedDueToJetpack:
-            return .redactedDueToJetpack
-        case .hidden:
-            return .redacted
-        case .redactedDueToCustomRange:
-            return .redactedDueToCustomRange
-        }
-    }
-
-    func conversionStatsViewState(visitorStatsViewState: StoreStatsDataOrRedactedView.State) -> StoreStatsDataOrRedactedView.State {
-        switch visitorStatsViewState {
-        case .data:
-            return .data
-        case .redactedDueToJetpack:
-            return .redacted
-        case .redacted:
-            return .redacted
-        case .redactedDueToCustomRange:
-            return .redacted
-        }
-    }
-
-    func createYAxisMaximum(orderStatsData: OrderStatsData) -> Double {
-        let revenueItems = orderStatsData.intervals.map({ ($0.revenueValue as NSDecimalNumber).doubleValue })
-        guard revenueItems.contains(where: { $0 != 0 }) else {
-            return Constants.yAxisMaximumValueWithoutRevenue
-        }
-        let hasNegativeRevenueOnly = revenueItems.contains(where: { $0 > 0 }) == false
-        guard hasNegativeRevenueOnly == false else {
-            return 0
-        }
-
-        let max = revenueItems.max() ?? 0
-        return max.roundedToTheNextSamePowerOfTen(shouldRoundUp: true)
-    }
-
-    func createYAxisMinimum(orderStatsData: OrderStatsData) -> Double {
-        let revenueItems = orderStatsData.intervals.map({ ($0.revenueValue as NSDecimalNumber).doubleValue })
-        guard revenueItems.contains(where: { $0 != 0 }) else {
-            return Constants.yAxisMinimumValueWithoutRevenue
-        }
-
-        let min = revenueItems.min() ?? 0
-        if min < 0 {
-            return min.roundedToTheNextSamePowerOfTen(shouldRoundUp: false)
-        } else {
-            return 0
-        }
     }
 }
 

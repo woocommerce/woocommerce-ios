@@ -31,12 +31,6 @@ final class DashboardViewModel: ObservableObject {
 
     @Published var showingInAppFeedbackSurvey = false
 
-    // TODO: remove this legacy property when removing `DashboardViewController`
-    @Published private(set) var showOnboarding: Bool = false
-
-    // TODO: remove this legacy property when removing `DashboardViewController`
-    @Published private(set) var showBlazeCampaignView: Bool = false
-
     @Published private(set) var dashboardCards: [DashboardCard] = [
         DashboardCard(type: .performance, enabled: true),
         DashboardCard(type: .topPerformers, enabled: true)
@@ -56,7 +50,6 @@ final class DashboardViewModel: ObservableObject {
     private let justInTimeMessagesManager: JustInTimeMessagesProvider
     private let localAnnouncementsProvider: LocalAnnouncementsProvider
     private let userDefaults: UserDefaults
-    private let storeCreationProfilerUploadAnswersUseCase: StoreCreationProfilerUploadAnswersUseCaseProtocol
     private let themeInstaller: ThemeInstaller
     private let storageManager: StorageManagerType
     private var subscriptions: Set<AnyCancellable> = []
@@ -86,7 +79,6 @@ final class DashboardViewModel: ObservableObject {
          featureFlags: FeatureFlagService = ServiceLocator.featureFlagService,
          analytics: Analytics = ServiceLocator.analytics,
          userDefaults: UserDefaults = .standard,
-         storeCreationProfilerUploadAnswersUseCase: StoreCreationProfilerUploadAnswersUseCaseProtocol? = nil,
          themeInstaller: ThemeInstaller = DefaultThemeInstaller(),
          usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter = StoreStatsUsageTracksEventEmitter()) {
         self.siteID = siteID
@@ -103,7 +95,6 @@ final class DashboardViewModel: ObservableObject {
                                                usageTracksEventEmitter: usageTracksEventEmitter)
         self.topPerformersViewModel = .init(siteID: siteID,
                                             usageTracksEventEmitter: usageTracksEventEmitter)
-        self.storeCreationProfilerUploadAnswersUseCase = storeCreationProfilerUploadAnswersUseCase ?? StoreCreationProfilerUploadAnswersUseCase(siteID: siteID)
         self.themeInstaller = themeInstaller
         self.inAppFeedbackCardViewModel.onFeedbackGiven = { [weak self] feedback in
             self?.showingInAppFeedbackSurvey = feedback == .didntLike
@@ -122,12 +113,6 @@ final class DashboardViewModel: ObservableObject {
     ///
     func onViewAppear() {
         refreshIsInAppFeedbackCardVisibleValue()
-    }
-
-    /// Uploads the answers from the store creation profiler flow
-    ///
-    func uploadProfilerAnswers() async {
-        await storeCreationProfilerUploadAnswersUseCase.uploadAnswers()
     }
 
     @MainActor
@@ -170,125 +155,6 @@ final class DashboardViewModel: ObservableObject {
     @MainActor
     func reloadBlazeCampaignView() async {
         await blazeCampaignDashboardViewModel.reload()
-    }
-
-    /// Syncs store stats for dashboard UI.
-    func syncStats(for siteID: Int64,
-                   siteTimezone: TimeZone,
-                   timeRange: StatsTimeRangeV4,
-                   latestDateToInclude: Date,
-                   forceRefresh: Bool,
-                   onCompletion: ((Result<Void, Error>) -> Void)? = nil) {
-        let waitingTracker = WaitingTimeTracker(trackScenario: .dashboardMainStats)
-        let earliestDateToInclude = timeRange.earliestDate(latestDate: latestDateToInclude, siteTimezone: siteTimezone)
-        let action = StatsActionV4.retrieveStats(siteID: siteID,
-                                                 timeRange: timeRange,
-                                                 timeZone: siteTimezone,
-                                                 earliestDateToInclude: earliestDateToInclude,
-                                                 latestDateToInclude: latestDateToInclude,
-                                                 quantity: timeRange.maxNumberOfIntervals,
-                                                 forceRefresh: forceRefresh,
-                                                 onCompletion: { [weak self] result in
-            guard let self = self else { return }
-            switch result {
-            case .success:
-                waitingTracker.end()
-                self.statsVersion = .v4
-            case .failure(let error):
-                DDLogError("⛔️ Dashboard (Order Stats) — Error synchronizing order stats v4: \(error)")
-                if error as? DotcomError == .noRestRoute {
-                    self.statsVersion = .v3
-                } else {
-                    self.statsVersion = .v4
-                }
-            }
-            onCompletion?(result)
-        })
-        stores.dispatch(action)
-    }
-
-    /// Syncs visitor stats for dashboard UI.
-    func syncSiteVisitStats(for siteID: Int64,
-                            siteTimezone: TimeZone,
-                            timeRange: StatsTimeRangeV4,
-                            latestDateToInclude: Date,
-                            onCompletion: ((Result<Void, Error>) -> Void)? = nil) {
-        guard stores.isAuthenticatedWithoutWPCom == false else { // Visit stats are only available for stores connected to WPCom
-            onCompletion?(.success(()))
-            return
-        }
-
-        let action = StatsActionV4.retrieveSiteVisitStats(siteID: siteID,
-                                                          siteTimezone: siteTimezone,
-                                                          timeRange: timeRange,
-                                                          latestDateToInclude: latestDateToInclude,
-                                                          onCompletion: { result in
-            if case let .failure(error) = result {
-                DDLogError("⛔️ Error synchronizing visitor stats: \(error)")
-            }
-            onCompletion?(result)
-        })
-        stores.dispatch(action)
-    }
-
-    /// Syncs summary stats for dashboard UI.
-    func syncSiteSummaryStats(for siteID: Int64,
-                              siteTimezone: TimeZone,
-                              timeRange: StatsTimeRangeV4,
-                              latestDateToInclude: Date,
-                              onCompletion: ((Result<Void, Error>) -> Void)? = nil) {
-        guard stores.isAuthenticatedWithoutWPCom == false else { // Summary stats are only available for stores connected to WPCom
-            onCompletion?(.success(()))
-            return
-        }
-
-        let action = StatsActionV4.retrieveSiteSummaryStats(siteID: siteID,
-                                                            siteTimezone: siteTimezone,
-                                                            period: timeRange.summaryStatsGranularity,
-                                                            quantity: 1,
-                                                            latestDateToInclude: latestDateToInclude,
-                                                            saveInStorage: true) { result in
-            if case let .failure(error) = result {
-                DDLogError("⛔️ Error synchronizing summary stats: \(error)")
-            }
-
-            let voidResult = result.map { _ in () } // Caller expects no entity in the result.
-            onCompletion?(voidResult)
-        }
-        stores.dispatch(action)
-    }
-
-    /// Syncs top performers data for dashboard UI.
-    func syncTopEarnersStats(for siteID: Int64,
-                             siteTimezone: TimeZone,
-                             timeRange: StatsTimeRangeV4,
-                             latestDateToInclude: Date,
-                             forceRefresh: Bool,
-                             onCompletion: ((Result<Void, Error>) -> Void)? = nil) {
-        let waitingTracker = WaitingTimeTracker(trackScenario: .dashboardTopPerformers)
-        let earliestDateToInclude = timeRange.earliestDate(latestDate: latestDateToInclude, siteTimezone: siteTimezone)
-        let action = StatsActionV4.retrieveTopEarnerStats(siteID: siteID,
-                                                          timeRange: timeRange,
-                                                          timeZone: siteTimezone,
-                                                          earliestDateToInclude: earliestDateToInclude,
-                                                          latestDateToInclude: latestDateToInclude,
-                                                          quantity: Constants.topEarnerStatsLimit,
-                                                          forceRefresh: forceRefresh,
-                                                          saveInStorage: true,
-                                                          onCompletion: { result in
-            switch result {
-            case .success:
-                waitingTracker.end()
-                ServiceLocator.analytics.track(event:
-                        .Dashboard.dashboardTopPerformersLoaded(timeRange: timeRange))
-            case .failure(let error):
-                DDLogError("⛔️ Dashboard (Top Performers) — Error synchronizing top earner stats: \(error)")
-            }
-
-            let voidResult = result.map { _ in () } // Caller expects no entity in the result.
-            onCompletion?(voidResult)
-        })
-        stores.dispatch(action)
     }
 
     /// Checks for announcements to show on the dashboard

@@ -369,6 +369,10 @@ final class EditableOrderViewModel: ObservableObject {
 
     // MARK: Customer data properties
 
+    /// View model for the customer section.
+    ///
+    @Published private(set) var customerSectionViewModel: OrderCustomerSectionViewModel = .init(isCustomerAccountRequired: false, isEditable: true)
+
     /// Representation of customer data display properties.
     ///
     @Published private(set) var customerDataViewModel: CustomerDataViewModel = .init(billingAddress: nil, shippingAddress: nil)

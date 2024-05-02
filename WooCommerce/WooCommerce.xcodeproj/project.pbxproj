@@ -379,6 +379,9 @@
 		0290E27E238E5B5C00B5C466 /* ProductStockStatusListSelectorCommandTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0290E27D238E5B5C00B5C466 /* ProductStockStatusListSelectorCommandTests.swift */; };
 		029106BC2BE21C4900C2248B /* CollapsibleOrderFormCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 029106BB2BE21C4900C2248B /* CollapsibleOrderFormCard.swift */; };
 		029106BE2BE2868F00C2248B /* CollapsibleOrderFormCardBorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 029106BD2BE2868F00C2248B /* CollapsibleOrderFormCardBorder.swift */; };
+		029106C02BE3349500C2248B /* OrderCustomerSectionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 029106BF2BE3349500C2248B /* OrderCustomerSectionViewModel.swift */; };
+		029106C22BE34A8600C2248B /* CollapsibleCustomerCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 029106C12BE34A8600C2248B /* CollapsibleCustomerCard.swift */; };
+		029106C42BE34AA900C2248B /* CollapsibleCustomerCardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 029106C32BE34AA900C2248B /* CollapsibleCustomerCardViewModel.swift */; };
 		02913E9523A774C500707A0C /* UnitInputFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02913E9423A774C500707A0C /* UnitInputFormatter.swift */; };
 		02913E9723A774E600707A0C /* DecimalInputFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02913E9623A774E600707A0C /* DecimalInputFormatter.swift */; };
 		0294F8AB25E8A12C005B537A /* WooTabNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0294F8AA25E8A12C005B537A /* WooTabNavigationController.swift */; };
@@ -3114,6 +3117,9 @@
 		0290E27D238E5B5C00B5C466 /* ProductStockStatusListSelectorCommandTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductStockStatusListSelectorCommandTests.swift; sourceTree = "<group>"; };
 		029106BB2BE21C4900C2248B /* CollapsibleOrderFormCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollapsibleOrderFormCard.swift; sourceTree = "<group>"; };
 		029106BD2BE2868F00C2248B /* CollapsibleOrderFormCardBorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollapsibleOrderFormCardBorder.swift; sourceTree = "<group>"; };
+		029106BF2BE3349500C2248B /* OrderCustomerSectionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderCustomerSectionViewModel.swift; sourceTree = "<group>"; };
+		029106C12BE34A8600C2248B /* CollapsibleCustomerCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollapsibleCustomerCard.swift; sourceTree = "<group>"; };
+		029106C32BE34AA900C2248B /* CollapsibleCustomerCardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollapsibleCustomerCardViewModel.swift; sourceTree = "<group>"; };
 		02913E9423A774C500707A0C /* UnitInputFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnitInputFormatter.swift; sourceTree = "<group>"; };
 		02913E9623A774E600707A0C /* DecimalInputFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DecimalInputFormatter.swift; sourceTree = "<group>"; };
 		0294F8AA25E8A12C005B537A /* WooTabNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooTabNavigationController.swift; sourceTree = "<group>"; };
@@ -8878,6 +8884,9 @@
 				B95700AD2A72C39C001BADF2 /* CustomerSelectorView.swift */,
 				B95A45E82A77AE2C0073A91F /* CustomerSelectorViewModel.swift */,
 				0250192D2BDF81F3009493A5 /* OrderCustomerSection.swift */,
+				029106BF2BE3349500C2248B /* OrderCustomerSectionViewModel.swift */,
+				029106C12BE34A8600C2248B /* CollapsibleCustomerCard.swift */,
+				029106C32BE34AA900C2248B /* CollapsibleCustomerCardViewModel.swift */,
 			);
 			path = CustomerSection;
 			sourceTree = "<group>";
@@ -13436,6 +13445,7 @@
 				77E53EB8250E6A4E003D385F /* ProductDownloadListViewController.swift in Sources */,
 				26CE6F392B7E71AA008DB858 /* ConnectivityTool.swift in Sources */,
 				020EF5EB2A8C7105009D2169 /* SiteSnapshotTracker.swift in Sources */,
+				029106C02BE3349500C2248B /* OrderCustomerSectionViewModel.swift in Sources */,
 				E1325EFB28FD544E00EC9B2A /* InAppPurchasesDebugView.swift in Sources */,
 				74460D4022289B7600D7316A /* Coordinator.swift in Sources */,
 				B57C743D20F5493300EEFC87 /* AccountHeaderView.swift in Sources */,
@@ -13702,6 +13712,7 @@
 				DE279BA426E9C4DC002BA963 /* ShippingLabelPackagesForm.swift in Sources */,
 				CE583A0421076C0100D73C1C /* NewNoteViewController.swift in Sources */,
 				26AC0DD92941081500859074 /* AnalyticsHubCustomRangeData.swift in Sources */,
+				029106C22BE34A8600C2248B /* CollapsibleCustomerCard.swift in Sources */,
 				CECC759723D607C900486676 /* OrderItemRefund+Woo.swift in Sources */,
 				EE7707C82ABBF4BB009FD564 /* AIToneVoiceViewModel.swift in Sources */,
 				AEFF77A629783CA600667F7A /* PriceInputViewModel.swift in Sources */,
@@ -14629,6 +14640,7 @@
 				0365986529AF942700F297D3 /* PaymentSettingsFlowHint.swift in Sources */,
 				CE0F17CF22A8105800964A63 /* ReadMoreTableViewCell.swift in Sources */,
 				02E3B62F2906322B007E0F13 /* AuthenticationFormFieldView.swift in Sources */,
+				029106C42BE34AA900C2248B /* CollapsibleCustomerCardViewModel.swift in Sources */,
 				03EF24FE28C0B356006A033E /* CardPresentPaymentsPlugin+CashOnDelivery.swift in Sources */,
 				DEC2961F26BD1605005A056B /* ShippingLabelCustomsFormListViewModel.swift in Sources */,
 				0225091D2A5DAEA0000AEBD2 /* WooAnalyticsEvent+ProductCreation.swift in Sources */,

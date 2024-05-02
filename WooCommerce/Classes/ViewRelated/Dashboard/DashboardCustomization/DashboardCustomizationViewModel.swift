@@ -98,9 +98,9 @@ extension DashboardCustomizationViewModel {
     /// Sample cards to display in the SwiftUI preview
     ///
     static let sampleCards = [
-        DashboardCard(type: .onboarding, enabled: true),
-        DashboardCard(type: .performance, enabled: true),
-        DashboardCard(type: .topPerformers, enabled: false),
-        DashboardCard(type: .blaze, enabled: true),
+        DashboardCard(type: .onboarding, isAvailable: true, enabled: true, status: .show),
+        DashboardCard(type: .performance, isAvailable: true, enabled: true, status: .show),
+        DashboardCard(type: .topPerformers, isAvailable: true, enabled: true, status: .show),
+        DashboardCard(type: .blaze, isAvailable: true, enabled: true, status: .show)
     ]
 }

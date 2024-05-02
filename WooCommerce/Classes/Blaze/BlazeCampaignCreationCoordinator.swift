@@ -324,7 +324,7 @@ private extension BlazeCampaignCreationCoordinator {
               let cardIndex = cards.firstIndex(where: { $0.type == .blaze && !$0.enabled }) else {
             return
         }
-        cards[cardIndex] = DashboardCard(type: .blaze, enabled: true)
+        cards[cardIndex] = DashboardCard(type: .blaze, isAvailable: true, enabled: true, status: .show)
         stores.dispatch(AppSettingsAction.setDashboardCards(siteID: siteID, cards: cards))
     }
 

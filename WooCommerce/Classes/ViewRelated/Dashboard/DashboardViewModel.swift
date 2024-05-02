@@ -31,11 +31,7 @@ final class DashboardViewModel: ObservableObject {
     // TODO: remove this legacy property when removing `DashboardViewController`
     @Published private(set) var showBlazeCampaignView: Bool = false
 
-    @Published private(set) var dashboardCards: [DashboardCard] = [
-        DashboardCard(type: .performance, enabled: true),
-        DashboardCard(type: .topPerformers, enabled: true)
-    ]
-    @Published private(set) var unavailableDashboardCards: [DashboardCard] = []
+    @Published private(set) var dashboardCards: [DashboardCard] = []
 
     @Published private(set) var jetpackBannerVisibleFromAppSettings = false
 
@@ -407,46 +403,69 @@ private extension DashboardViewModel {
         showingCustomization = true
     }
 
-    /// We are using separate user defaults for different cards -
-    /// this should be updated to general app settings.
-    ///
+    func generateDefaultCards(canShowOnboarding: Bool, canShowBlaze: Bool, canShowAnalytics: Bool) -> [DashboardCard] {
+        var cards = [DashboardCard]()
+
+        // Onboarding card.
+        // When not available, Onboarding card needs to be hidden from Dashboard and Customize
+        cards.append(
+            DashboardCard(type: .onboarding,
+                          isAvailable: canShowOnboarding,
+                          enabled: canShowOnboarding,
+                          status: canShowOnboarding ? .show : .hide)
+        )
+
+        // Performance and Top Performance cards (also known as Analytics cards).
+        // When not available, Analytics cards need to be hidden from Dashboard, but appear on Customize as "Unavailable"
+        cards.append(
+            DashboardCard(type: .performance,
+                          isAvailable: canShowAnalytics,
+                          enabled: canShowAnalytics,
+                          status: canShowAnalytics ? .show : .unavailable)
+        )
+        cards.append(
+            DashboardCard(type: .topPerformers,
+                          isAvailable: canShowAnalytics,
+                          enabled: canShowAnalytics,
+                          status: canShowAnalytics ? .show : .unavailable)
+        )
+
+        // Blaze card.
+        // When not available, Blaze card needs to be hidden from Dashboard and Customize
+        cards.append(
+            DashboardCard(type: .blaze,
+                          isAvailable: canShowBlaze,
+                          enabled: canShowBlaze,
+                          status: canShowBlaze ? .show : .hide)
+        )
+
+        return cards
+    }
+
     @MainActor
     func updateDashboardCards(canShowOnboarding: Bool,
                               canShowBlaze: Bool,
                               canShowAnalytics: Bool) async {
-        dashboardCards = await {
-            if var stored = await loadDashboardCards() {
-                let analyticCardTypes: [DashboardCard.CardType] = [.performance, .topPerformers]
-                stored = canShowAnalytics ? stored : stored.filter { !analyticCardTypes.contains($0.type) }
-                return stored
+
+        // First, generate latest cards state based on current canShow states
+        let initialCards = generateDefaultCards(canShowOnboarding: canShowOnboarding,
+                                                canShowBlaze: canShowBlaze,
+                                                canShowAnalytics: canShowAnalytics)
+
+        // Next, get saved cards and preserve existing enabled state for all available cards.
+        // This is needed because even if a user already disabled an available card and saved it, in `initialCards`
+        // the same card might be set to be enabled. To respect user's setting, we need to check the saved state and re-apply it.
+        let savedCards = await loadDashboardCards() ?? []
+        dashboardCards = initialCards.map { initialCard in
+            if let savedCard = savedCards.first(where: { $0.type == initialCard.type }),
+               savedCard.isAvailable && initialCard.isAvailable {
+                return initialCard.copy(enabled: savedCard.enabled)
             } else {
-                // Start with default values, cards could be updated further below as needed.
-                return [DashboardCard(type: .onboarding, enabled: canShowOnboarding),
-                        DashboardCard(type: .performance, enabled: canShowAnalytics),
-                        DashboardCard(type: .topPerformers, enabled: canShowAnalytics),
-                        DashboardCard(type: .blaze, enabled: canShowBlaze)]
+                return initialCard
             }
-        }()
-
-        // If should not be shown, ensure Onboarding is not visible on Dashboard
-        if !canShowOnboarding {
-            dashboardCards.removeAll { $0.type == .onboarding }
-        }
-
-        // If should not be shown, ensure Blaze is not visible on Dashboard
-        if !canShowBlaze {
-            dashboardCards.removeAll { $0.type == .blaze }
-        }
-
-        // Set cards to show "Unavailable" state in Customize screen when should not be shown.
-        // Currently this applies to Top Performers and Performance cards.
-        // For the other cards, when they should not be shown, they are simply not shown in Customize.
-        unavailableDashboardCards = []
-        if !canShowAnalytics {
-            unavailableDashboardCards.append(DashboardCard(type: .performance, enabled: false))
-            unavailableDashboardCards.append(DashboardCard(type: .topPerformers, enabled: false))
         }
     }
+
     @MainActor
     func updateHasOrdersStatus() async {
         do {

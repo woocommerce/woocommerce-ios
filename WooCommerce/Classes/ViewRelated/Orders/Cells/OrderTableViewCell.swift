@@ -89,7 +89,6 @@ final class OrderTableViewCell: UITableViewCell & SearchResultCell {
         preserveLabelColors {
             super.setHighlighted(highlighted, animated: animated)
         }
-        configureBordersWhenHighlighted()
     }
 
     override func prepareForReuse() {
@@ -148,18 +147,5 @@ private extension OrderTableViewCell {
         paymentStatusLabel.numberOfLines = 0
 
         dateCreatedLabel.applyCaption1Style()
-    }
-
-    // Assure top and bottom borders when cell is highlighted
-    func configureBordersWhenHighlighted() {
-        let topBorder = CALayer()
-        let bottomBorder = CALayer()
-        let borderWidth = 0.5
-
-        topBorder.frame = CGRect(x: 0, y: 0, width: frame.width, height: borderWidth)
-        bottomBorder.frame = CGRect(x: 0, y: 0, width: frame.width, height: borderWidth)
-        topBorder.backgroundColor = UIColor.divider.cgColor
-        layer.addSublayer(topBorder)
-        layer.addSublayer(bottomBorder)
     }
 }

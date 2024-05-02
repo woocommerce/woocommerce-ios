@@ -74,6 +74,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         setupWormholy()
         setupKeyboardStateProvider()
         handleLaunchArguments()
+        setupUserNotificationCenter()
 
         // Components that require prior Auth
         setupZendesk()
@@ -370,6 +371,10 @@ private extension AppDelegate {
             pushNotesManager.registerForRemoteNotifications()
             pushNotesManager.ensureAuthorizationIsRequested(includesProvisionalAuth: false, onCompletion: nil)
         #endif
+    }
+
+    func setupUserNotificationCenter() {
+        UNUserNotificationCenter.current().delegate = self
     }
 
     func setupUniversalLinkRouter() {

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-04-30 09:54:04+0000 */
+/* Translation-Revision-Date: 2024-04-30 15:54:03+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_TW */
@@ -10621,7 +10621,7 @@ which should be translated separately and considered part of this sentence. */
 "dashboardCardErrorView.dismissSupport" = "完成";
 
 /* The info of the error view when failed to load store statistics on the Dashboard screen. The placeholder is a link to contact support. Reads as: Try reloading this card. If the issue persists, please contact us. */
-"dashboardCardErrorView.errorMessage" = "請嘗試重新載入此卡片。 如果問題持續發生，請%1$@。";
+"dashboardCardErrorView.errorMessage" = "請嘗試重新載入這張卡片。 如果問題持續發生，請%1$@。";
 
 /* The title of the error view when failed to load a Dashboard card */
 "dashboardCardErrorView.errorTitle" = "無法載入資料";
@@ -11348,7 +11348,7 @@ which should be translated separately and considered part of this sentence. */
 "storePerformanceView.contentUnavailable.buttonTitle" = "仍然需要幫助嗎？ 聯絡我們";
 
 /* Text that explains how to update WooCommerce to get the latest stats */
-"storePerformanceView.contentUnavailable.details" = "請確認你的網站執行最新版本的 WooCommerce，並已在 WooCommerce 設定中啟用「分析」功能。";
+"storePerformanceView.contentUnavailable.details" = "請確認你的網站是否執行最新版本的 WooCommerce，並已在 WooCommerce 設定中啟用「分析」功能。";
 
 /* Button to dismiss the support form from the Dashboard stats error screen. */
 "storePerformanceView.contentUnavailable.dismissSupport" = "完成";
@@ -11366,7 +11366,7 @@ which should be translated separately and considered part of this sentence. */
 "storePerformanceView.hideCard" = "隱藏績效";
 
 /* Text on the store stats chart on the Dashboard screen when there is no revenue */
-"storePerformanceView.noRevenueText" = "選取日期沒有收益";
+"storePerformanceView.noRevenueText" = "所選日期沒有收益";
 
 /* Orders stat label on dashboard - should be plural. */
 "storePerformanceView.orders" = "訂單";

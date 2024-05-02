@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-04-30 13:54:04+0000 */
+/* Translation-Revision-Date: 2024-04-30 15:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: nl */
@@ -1727,10 +1727,10 @@ which should be translated separately and considered part of this sentence. */
 "CollapsibleProductRowCard.text.signupfee" = "Aanmeldkosten";
 
 /* Description of the billing and billing frequency for a subscription product. Reads as: 'Every 2 months'. */
-"CollapsibleProductRowCardViewModel.formattedBillingDetails" = "%1$@ elke %2$@";
+"CollapsibleProductRowCardViewModel.formattedBillingDetails" = "Elke %1$@ %2$@";
 
 /* Description of the signup fees for a subscription product. Reads as: '$5.00 signup'. */
-"CollapsibleProductRowCardViewModel.formattedSignUpFee" = "%1$@aanmeldkosten";
+"CollapsibleProductRowCardViewModel.formattedSignUpFee" = "%1$@ aanmeldkosten";
 
 /* SKU label for a product in an order. The variable shows the SKU of the product. */
 "CollapsibleProductRowCardViewModel.skuFormat" = "SKU: %1$@";
@@ -5229,10 +5229,10 @@ which should be translated separately and considered part of this sentence. */
 "OrderDetailsViewModel.displayReceiptRetrievalErrorNotice.notice" = "Kan kwitantie niet ophalen.";
 
 /* Description of the subscription billing interval for a product. Reads like: 'Every 2 months'. */
-"OrderSubscriptionTableViewCellViewModel.billingInterval" = "%1$@ elke %2$@";
+"OrderSubscriptionTableViewCellViewModel.billingInterval" = "Elke %1$@ %2$@";
 
 /* Formatted subscription title with subscription number. Reads like: 'Subscription #123' */
-"OrderSubscriptionTableViewCellViewModel.formattedSubscriptionTitle" = "Subscription #%1$@";
+"OrderSubscriptionTableViewCellViewModel.formattedSubscriptionTitle" = "Abonnementnummer %1$@";
 
 /* Description of the subscription price for a product. Reads like: '$60.00'. */
 "OrderSubscriptionTableViewCellViewModel.priceFormat" = "%1$@";
@@ -10122,7 +10122,7 @@ which should be translated separately and considered part of this sentence. */
 "blazeEditAdView.image.changeImage" = "Afbeelding wijzigen";
 
 /* Error message displayed when selected campaign image is not large enough. */
-"blazeEditAdView.image.imageSizeErrorMessage" = "Selecteer een afbeelding met een minimale afmeting van 600 x 600 px.";
+"blazeEditAdView.image.imageSizeErrorMessage" = "Selecteer een afbeelding met een minimale afmeting van 400 × 400 px.";
 
 /* Button to dismiss the image view alert. */
 "blazeEditAdView.image.ok" = "OK";
@@ -10617,8 +10617,11 @@ which should be translated separately and considered part of this sentence. */
 /* Button to dismiss the support form from the Dashboard generic error card. */
 "dashboardCardErrorView.dismissSupport" = "Gereed";
 
+/* The info of the error view when failed to load store statistics on the Dashboard screen. The placeholder is a link to contact support. Reads as: Try reloading this card. If the issue persists, please contact us. */
+"dashboardCardErrorView.errorMessage" = "Probeer deze kaart opnieuw te laden. Als het probleem zich blijft voordoen, %1$@.";
+
 /* The title of the error view when failed to load a Dashboard card */
-"dashboardCardErrorView.errorTitle" = "Kan niet laden";
+"dashboardCardErrorView.errorTitle" = "Kan gegevens niet laden";
 
 /* Button to reload the dashboard card on the Dashboard screen */
 "dashboardCardErrorView.retry" = "Opnieuw proberen";
@@ -10639,10 +10642,10 @@ which should be translated separately and considered part of this sentence. */
 "dashboardView.shareStoreCard.shareButtonLabel" = "Deel je winkel";
 
 /* Subtitle of the Share Your Store card */
-"dashboardView.shareStoreCard.subtitle" = "Use email or social media to spread the word about your store";
+"dashboardView.shareStoreCard.subtitle" = "Gebruik e-mail of social media om je winkel bekend te maken";
 
 /* Title of the Share Your Store card */
-"dashboardView.shareStoreCard.title" = "Get the word out!";
+"dashboardView.shareStoreCard.title" = "Verspreid de boodschap!";
 
 /* Title on the banner when the site's WooExpress plan has expired */
 "dashboardView.storePlanBanner.expired" = "Je site-abonnement is beëindigd.";
@@ -11339,10 +11342,10 @@ which should be translated separately and considered part of this sentence. */
 "storeOnboardingCardView.viewAll" = "Alle %1$d taken bekijken";
 
 /* Button title to contact support to get help with deprecated stats module */
-"storePerformanceView.contentUnavailable.buttonTitle" = "Still need help? Neem contact met ons op";
+"storePerformanceView.contentUnavailable.buttonTitle" = "Meer hulp nodig? Neem contact met ons op";
 
 /* Text that explains how to update WooCommerce to get the latest stats */
-"storePerformanceView.contentUnavailable.details" = "Zorg dat je de nieuwste versie van WooCommerce gebruikt op je site en dat WooCommerce Admin geactiveerd is.";
+"storePerformanceView.contentUnavailable.details" = "Zorg dat je de nieuwste versie van WooCommerce gebruikt op je site en dat Analyses is geactiveerd in WooCommerce-instellingen.";
 
 /* Button to dismiss the support form from the Dashboard stats error screen. */
 "storePerformanceView.contentUnavailable.dismissSupport" = "Gereed";
@@ -11360,7 +11363,7 @@ which should be translated separately and considered part of this sentence. */
 "storePerformanceView.hideCard" = "Prestaties verbergen";
 
 /* Text on the store stats chart on the Dashboard screen when there is no revenue */
-"storePerformanceView.noRevenueText" = "No revenue for selected dates";
+"storePerformanceView.noRevenueText" = "Geen inkomsten voor geselecteerde data";
 
 /* Orders stat label on dashboard - should be plural. */
 "storePerformanceView.orders" = "Bestellingen";

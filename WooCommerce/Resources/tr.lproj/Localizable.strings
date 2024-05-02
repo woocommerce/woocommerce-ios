@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-04-30 09:54:04+0000 */
+/* Translation-Revision-Date: 2024-04-30 15:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: tr */
@@ -5235,13 +5235,13 @@ which should be translated separately and considered part of this sentence. */
 "OrderSubscriptionTableViewCellViewModel.billingInterval" = "Her %1$@ %2$@";
 
 /* Formatted subscription title with subscription number. Reads like: 'Subscription #123' */
-"OrderSubscriptionTableViewCellViewModel.formattedSubscriptionTitle" = "#%1$@ Aboneliği";
+"OrderSubscriptionTableViewCellViewModel.formattedSubscriptionTitle" = "%1$@ Numaralı Abonelik";
 
 /* Description of the subscription price for a product. Reads like: '$60.00'. */
 "OrderSubscriptionTableViewCellViewModel.priceFormat" = "%1$@";
 
 /* Subscription title with subscription number. Reads like: 'Subscription #123' */
-"OrderSubscriptionTableViewCellViewModel.subscriptionTitle" = "#%d Aboneliği";
+"OrderSubscriptionTableViewCellViewModel.subscriptionTitle" = "%d Numaralı Abonelik";
 
 /* Accessibility label for Ordered list button on formatting toolbar. */
 "Ordered List" = "Sıralanmış Liste";

@@ -1,2 +1,1 @@
-Vi har åtgärdat en irriterande bugg för att säkerställa att knappen "Återställ aktivitetslogg" fungerar korrekt, vilket känns som en nystart. Ta del av en mer sömlös WooCommerce-upplevelse. Uppdatera nu.
-
+Säg adjö till irriterande buggar. Vår senaste uppdatering säkerställer att funktionen "Ta emot betalning" leder dig direkt till beställningsformuläret, oavsett om du använder en snabbåtgärd eller en djup länk. Ta del av sömlösa transaktioner i farten.

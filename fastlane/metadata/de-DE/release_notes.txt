@@ -1,2 +1,1 @@
-Wir haben einen lästigen Fehler behoben, um sicherzustellen, dass der Button „Aktivitätsprotokoll zurücksetzen“ reibungslos funktioniert und du neu starten kannst. Freue dich auf ein reibungsloseres WooCommerce-Erlebnis. Führe jetzt ein Update durch!
-
+Verabschiede dich von lästigen Bugs! Mit unserem neuesten Update ist sichergestellt, dass die Funktion „Zahlung empfangen“ dich direkt zum Bestellformular führt – sowohl über den Schnellzugriff als auch über einen Deep-Link. Genieße nahtlose Transaktionen auch unterwegs!

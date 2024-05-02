@@ -1,6 +1,9 @@
 import SwiftUI
 
-struct OrderCustomerSection: View {
+/// Represents the Customer section
+///
+struct LegacyOrderCustomerSection: View {
+
     /// Parent view model to access all data
     @ObservedObject var viewModel: EditableOrderViewModel
 
@@ -140,8 +143,7 @@ private extension OrderCustomerSectionContent {
 
     enum Localization {
         static let customer = NSLocalizedString("Customer", comment: "Title text of the section that shows Customer details when creating a new order")
-        static let addCustomerDetails = NSLocalizedString("orderForm.customerSection.addCustomer",
-                                                          value: "Add Customer",
+        static let addCustomerDetails = NSLocalizedString("Add Customer Details",
                                                           comment: "Title text of the button that adds customer data when creating a new order")
         static let editButtonAccessibilityLabel = NSLocalizedString(
             "Edit Customer Details",
@@ -155,7 +157,7 @@ private extension OrderCustomerSectionContent {
     }
 }
 
-struct OrderCustomerSection_Previews: PreviewProvider {
+struct LegacyOrderCustomerSection_Previews: PreviewProvider {
     static var previews: some View {
         let emptyViewModel = EditableOrderViewModel.CustomerDataViewModel(billingAddress: nil, shippingAddress: nil)
         let addressViewModel = EditableOrderViewModel.CustomerDataViewModel(fullName: "Johnny Appleseed",

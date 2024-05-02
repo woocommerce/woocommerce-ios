@@ -1,2 +1,1 @@
-Hemos acabado con un molesto error y ahora el botón "Restablecer registro de actividad" va como la seda; todo listo para empezar de cero. Sumérgete en una experiencia aún más fluida en WooCommerce. ¡Actualiza ya!
-
+No dejes que un error te estropee el día. Nuestra última actualización se encarga de que la función "Aceptar pago" te lleve directamente al formulario del pedido, tanto si usas una acción rápida como un enlace. Disfruta de transacciones perfectas e instantáneas.

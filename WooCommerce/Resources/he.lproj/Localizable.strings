@@ -31,8 +31,7 @@
 /* Labels an order note. The user know it's visible to the customer. Reads like 05:30 PM - username (To Customer) */
 "%1$@ - %2$@ (To Customer)" = "%1$@ - %2$@ (ללקוח)";
 
-/* Description of the subscription price for a product, with the price and billing frequency. Reads like: '$60.00 / 2 months'.
-   The original price of a domain. %1$@ is the price per term. %2$@ is the duration of each pricing term, usually year. */
+/* The original price of a domain. %1$@ is the price per term. %2$@ is the duration of each pricing term, usually year. */
 "%1$@ \/ %2$@" = "%1$@ \/ %2$@";
 
 /* The default name for a duplicated product, with %1$@ being the original name. Reads like: Ramen Copy */
@@ -3656,8 +3655,7 @@ which should be translated separately and considered part of this sentence. */
    Display label for the product's catalog visibility */
 "Hidden" = "מוסתר";
 
-/* Action title for hiding store onboarding task list
-   Title of the Hide store setup list button in the action sheet. */
+/* Title of the Hide store setup list button in the action sheet. */
 "Hide store setup list" = "להסתיר את רשימת ההגדרות לחנות";
 
 /* Subtitle on the add product features screen. */
@@ -6183,8 +6181,7 @@ which should be translated separately and considered part of this sentence. */
 
 /* Confirm button on the alert when the user taps to delete a Product image
    Confirmation button on the alert when the user is deleting a variation
-   Title for removing an attribute in the edit attribute action sheet.
-   Title for the action button on the confirm alert for hiding store onboarding task list */
+   Title for removing an attribute in the edit attribute action sheet. */
 "Remove" = "הסרה";
 
 /* Confirmation title before removing an attribute from a variation. */
@@ -7269,9 +7266,6 @@ which should be translated separately and considered part of this sentence. */
 /* My Store > Settings > Store Settings section title */
 "Store Settings" = "הגדרות החנות";
 
-/* Controls store onboarding setup list visibility. */
-"Store Setup List" = "רשימה להגדרות החנות";
-
 /* Title of the screen when the created store never becomes a Jetpack site in the store creation flow. */
 "Store creation still in progress" = "יצירת החנות עדיין בתהליך";
 
@@ -7310,9 +7304,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Display label for simple subscription product type. */
 "Subscription" = "מינוי";
-
-/* Subscription title with subscription number. Reads like: 'Subscription #123' */
-"Subscription #%d" = "מינוי מספר %d";
 
 /* Title for the plan section on the subscriptions view. Uppercased */
 "Subscription Status" = "סטטוס מינוי";
@@ -9423,9 +9414,6 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle of the alert presented when the user tries to connect to a specific card reader and it fails due to postal code problems */
 "You can set your store's postcode\/ZIP in wp-admin > WooCommerce > Settings (General)" = "אפשר להגדיר את המיקוד של החנות שלך במקטע 'wp-admin' > ‏WooCommerce > הגדרות (כללי)";
 
-/* Confirm message for hiding store onboarding task list */
-"You can show it when you need it by going to Menu > Settings > Store" = "אפשר להציג את המידע כשצריך דרך 'תפריט' > 'הגדרות' > 'חנות'";
-
 /* Error message when In-Person Payments is not supported in a specific country */
 "You can still accept in-person cash payments by enabling the “Cash on Delivery” payment method on your store." = "עדיין אפשר לקבל תשלומי מזומן באופן אישי על ידי הפעלת אמצעי התשלום \"מזומן בעת מסירה\" בחנות שלך.";
 
@@ -10106,10 +10094,6 @@ which should be translated separately and considered part of this sentence. */
 /* Change image button title in the Blaze Edit Ad screen. */
 "blazeEditAdView.image.changeImage" = "להחליף תמונה";
 
-/* Button to dismiss the image view alert.
-   Error message displayed when selected campaign image is not large enough. */
-"blazeEditAdView.image.imageSizeError" = "יש לבחור תמונה עם ממדים מינמליים של 600 ‏x ‏600 פיקסלים.";
-
 /* Save button in the Blaze Edit Ad screen. */
 "blazeEditAdView.save" = "לשמור";
 
@@ -10587,6 +10571,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Name for the Performance dashboard card in the Customize Dashboard screen */
 "dashboardCard.name.performance" = "ביצועים";
+
+/* Name for the Top performers dashboard card in the Customize Dashboard screen */
+"dashboardCard.name.topPerformers" = "הביצועים הטובים ביותר";
 
 /* Button to save changes on the Customize Dashboard screen */
 "dashboardCustomization.saveButton" = "לשמור";
@@ -11315,9 +11302,6 @@ which should be translated separately and considered part of this sentence. */
 /* Button title on the store picker for store connection */
 "storePickerViewController.addStoreButton" = "לחבר חנות קיימת";
 
-/* Text on the store stats chart on the Dashboard screen when there is no revenue */
-"storeStatsChart.noRevenueText" = "אין רווחים בתקופה זאת";
-
 /* Value for the x-Axis of any selected point on the store stats chart on the Dashboard screen */
 "storeStatsChart.xSelectedValue" = "תאריך נבחר";
 
@@ -11534,6 +11518,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Menu item to dismiss the Top Performers section on the Dashboard screen */
 "topPerformersDashboardView.hideCard" = "להסתיר את 'הביצועים הטובים ביותר'";
+
+/* Title of the Top performers section on the Dashboard screen */
+"topPerformersDashboardView.title" = "הביצועים הטובים ביותר";
 
 /* Button to navigate to Analytics Hub. */
 "topPerformersDashboardView.viewAll" = "להציג את כל הנתונים האנליטיים של החנות";

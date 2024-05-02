@@ -2787,6 +2787,36 @@ final class MigrationTests: XCTestCase {
         XCTAssertNotNil(customer.entity.attributesByName["city"])
         XCTAssertNotNil(customer.entity.attributesByName["postcode"])
     }
+
+    func test_migrating_from_110_to_111_adds_ShippingMethod_entity() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 110")
+        let sourceContext = sourceContainer.viewContext
+
+        try sourceContext.save()
+
+        // Confidence Check. These entities should not exist in Model 110
+        XCTAssertNil(NSEntityDescription.entity(forEntityName: "ShippingMethod", in: sourceContext))
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 111")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+
+        // These entities should exist in Model 110
+        XCTAssertNotNil(NSEntityDescription.entity(forEntityName: "ShippingMethod", in: targetContext))
+        XCTAssertEqual(try targetContext.count(entityName: "ShippingMethod"), 0)
+
+        // Insert a new ShippingMethod
+        let shippingMethod = insertShippingMethod(to: targetContext, forModel: 111)
+        XCTAssertEqual(try targetContext.count(entityName: "ShippingMethod"), 1)
+
+        // Check all attributes
+        XCTAssertNotNil(shippingMethod.entity.attributesByName["siteID"])
+        XCTAssertNotNil(shippingMethod.entity.attributesByName["methodID"])
+        XCTAssertNotNil(shippingMethod.entity.attributesByName["title"])
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations
@@ -3596,5 +3626,16 @@ private extension MigrationTests {
             "postcode": "94103"
         ])
         return customer
+    }
+
+    /// Inserts a `ShippingMethod` entity, providing default values for the required properties.
+    @discardableResult
+    func insertShippingMethod(to context: NSManagedObjectContext, forModel modelVersion: Int) -> NSManagedObject {
+        let method = context.insert(entityName: "ShippingMethod", properties: [
+            "siteID": 1,
+            "methodID": "flat_rate",
+            "title": "Flat rate"
+        ])
+        return method
     }
 }

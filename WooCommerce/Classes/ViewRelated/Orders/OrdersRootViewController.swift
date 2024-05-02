@@ -163,31 +163,12 @@ final class OrdersRootViewController: UIViewController {
             horizontalSizeClass: UITraitCollection.current.horizontalSizeClass))
     }
 
-    /// Presents the Details for the Notification with the specified Identifier.
-    ///
-    func presentDetails(for note: Note) {
-        guard let orderID = note.meta.identifier(forKey: .order),
-              let siteID = note.meta.identifier(forKey: .site) else {
-            DDLogError("## Notification with [\(note.noteID)] lacks its OrderID!")
-            return
-        }
-
-        presentDetails(for: Int64(orderID), siteID: Int64(siteID), note: note)
-    }
-
     /// Selects the order given the ID from the order list view if the order exists locally.
     /// - Parameter orderID: ID of the order to select in the list.
     /// - Returns: Whether the order to select is in the list already (i.e. the order has been fetched and exists locally).
     @discardableResult
     func selectOrderFromListIfPossible(for orderID: Int64) -> Bool {
         ordersViewController.selectOrderFromListIfPossible(for: orderID)
-    }
-
-    func presentDetails(for orderID: Int64, siteID: Int64, note: Note? = nil) {
-        let loaderViewController = OrderLoaderViewController(orderID: Int64(orderID), siteID: Int64(siteID), note: note)
-        navigationController?.pushViewController(loaderViewController, animated: true)
-
-        selectOrderFromListIfPossible(for: orderID)
     }
 
     /// Called when an order is shown externally (outside of `OrderListViewController`) and the order should be

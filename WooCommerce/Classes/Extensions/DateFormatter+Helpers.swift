@@ -18,43 +18,11 @@ extension DateFormatter {
             return formatter
         }()
 
-        /// Date formatter used for creating the date displayed on a chart axis for **hour** granularity.
-        ///
-        public static let chartAxisHourFormatter: DateFormatter = {
-            let formatter = DateFormatter()
-            formatter.setLocalizedDateFormatFromTemplate("ha")
-            return formatter
-        }()
-
         /// Date formatter used for creating the date displayed on a chart axis for **day** granularity.
         ///
         public static let chartAxisDayFormatter: DateFormatter = {
             let formatter = DateFormatter()
             formatter.setLocalizedDateFormatFromTemplate("MMM d")
-            return formatter
-        }()
-
-        /// Date formatter used for creating the day of month displayed on a chart axis for **day** granularity.
-        ///
-        public static let chartAxisDayOfMonthFormatter: DateFormatter = {
-            let formatter = DateFormatter()
-            formatter.setLocalizedDateFormatFromTemplate("d")
-            return formatter
-        }()
-
-        /// Date formatter used for creating the date displayed on a chart axis for **week** granularity.
-        ///
-        public static let chartAxisWeekFormatter: DateFormatter = {
-            let formatter = DateFormatter()
-            formatter.setLocalizedDateFormatFromTemplate("MMM d")
-            return formatter
-        }()
-
-        /// Date formatter used for creating the date displayed on a chart axis for **month** granularity.
-        ///
-        public static let chartAxisMonthFormatter: DateFormatter = {
-            let formatter = DateFormatter()
-            formatter.setLocalizedDateFormatFromTemplate("MMM")
             return formatter
         }()
 

@@ -14,6 +14,7 @@ final class FilterOrderListViewModelTests: XCTestCase {
         let expectedCriteria = FilterOrderListViewModel.Filters(orderStatus: nil,
                                                                 dateRange: nil,
                                                                 product: nil,
+                                                                customer: nil,
                                                                 numberOfActiveFilters: 0)
         XCTAssertEqual(viewModel.criteria, expectedCriteria)
     }
@@ -23,7 +24,8 @@ final class FilterOrderListViewModelTests: XCTestCase {
         let filters = FilterOrderListViewModel.Filters(orderStatus: [.processing],
                                                        dateRange: OrderDateRangeFilter(filter: .today),
                                                        product: FilterOrdersByProduct(id: 1, name: "Sample product"),
-                                                       numberOfActiveFilters: 3)
+                                                       customer: CustomerFilter(customer: Customer.fake().copy(customerID: 1)),
+                                                       numberOfActiveFilters: 4)
 
         // When
         let viewModel = FilterOrderListViewModel(filters: filters, allowedStatuses: [], siteID: 1)
@@ -38,7 +40,8 @@ final class FilterOrderListViewModelTests: XCTestCase {
         let filters = FilterOrderListViewModel.Filters(orderStatus: [.completed],
                                                        dateRange: OrderDateRangeFilter(filter: .last7Days),
                                                        product: FilterOrdersByProduct(id: 1, name: "Sample product"),
-                                                       numberOfActiveFilters: 3)
+                                                       customer: CustomerFilter(customer: Customer.fake().copy(customerID: 1)),
+                                                       numberOfActiveFilters: 4)
 
         // When
         let viewModel = FilterOrderListViewModel(filters: filters, allowedStatuses: [], siteID: 1)
@@ -48,6 +51,7 @@ final class FilterOrderListViewModelTests: XCTestCase {
         let expectedCriteria = FilterOrderListViewModel.Filters(orderStatus: nil,
                                                                 dateRange: nil,
                                                                 product: nil,
+                                                                customer: nil,
                                                                 numberOfActiveFilters: 0)
         XCTAssertEqual(viewModel.criteria, expectedCriteria)
     }
@@ -59,7 +63,8 @@ final class FilterOrderListViewModelTests: XCTestCase {
         let filters = FilterOrderListViewModel.Filters(orderStatus: [.processing],
                                                        dateRange: OrderDateRangeFilter(filter: .today),
                                                        product: FilterOrdersByProduct(id: 1, name: "Sample product"),
-                                                       numberOfActiveFilters: 3)
+                                                       customer: CustomerFilter(customer: Customer.fake().copy(customerID: 1)),
+                                                       numberOfActiveFilters: 4)
 
         // When
         let viewModel = FilterOrderListViewModel(filters: filters,

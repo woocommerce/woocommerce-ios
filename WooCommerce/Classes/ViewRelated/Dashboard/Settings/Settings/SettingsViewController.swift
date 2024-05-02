@@ -148,8 +148,6 @@ private extension SettingsViewController {
             configureInstallJetpack(cell: cell)
         case let cell as BasicTableViewCell where row == .themes:
             configureThemes(cell: cell)
-        case let cell as SwitchTableViewCell where row == .storeSetupList:
-            configureStoreSetupList(cell: cell)
         case let cell as BasicTableViewCell where row == .storeName:
             configureStoreName(cell: cell)
         case let cell as BasicTableViewCell where row == .support:
@@ -221,16 +219,6 @@ private extension SettingsViewController {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
         cell.textLabel?.text = Localization.themes
-    }
-
-    func configureStoreSetupList(cell: SwitchTableViewCell) {
-        cell.title = Localization.storeSetupList
-        cell.isOn = viewModel.isStoreSetupSettingSwitchOn
-        cell.onChange = { [weak self] value in
-            Task {
-                await self?.viewModel.updateStoreSetupListVisibility(value)
-            }
-        }
     }
 
     func configureStoreName(cell: BasicTableViewCell) {
@@ -367,13 +355,21 @@ private extension SettingsViewController {
     }
 
     func sitePluginsWasPressed() {
-        // TODO: do we need analytics to track tap here?
+        ServiceLocator.analytics.track(.settingsPluginListTapped)
         guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
             return DDLogError("⛔️ Cannot find ID for current site to load plugins for!")
         }
-        let viewModel = PluginListViewModel(siteID: siteID)
-        let viewController = PluginListViewController(viewModel: viewModel)
-        show(viewController, sender: self)
+        let pluginListViewModel = PluginListViewModel(siteID: siteID)
+        let pluginListHostingController = UIHostingController(rootView: PluginListView(siteID: siteID, viewModel: pluginListViewModel, onClose: { [weak self] in
+            self?.dismiss(animated: true)
+        }))
+
+        // Since UIHostingController does not have a navigation bar by itself, we need
+        // to wrap it into a navigation controller if we want to set a title in the resulting view
+        pluginListHostingController.title = Localization.plugins
+        let navigationController = UINavigationController(rootViewController: pluginListHostingController)
+
+        present(navigationController, animated: true)
     }
 
     func supportWasPressed() {
@@ -490,12 +486,8 @@ private extension SettingsViewController {
     }
 
     func logOutUser() {
-        Task { @MainActor in
-            // Waits to track all the canceled notifications before deauthenticating or the events will not be logged.
-            await pushNotesManager.cancelAllNotifications()
-            ServiceLocator.stores.deauthenticate()
-            navigationController?.popToRootViewController(animated: true)
-        }
+        ServiceLocator.stores.deauthenticate()
+        navigationController?.popToRootViewController(animated: true)
     }
 
     func weAreHiringWasPressed(url: URL) {
@@ -704,7 +696,6 @@ extension SettingsViewController {
         // Store settings
         case domain
         case installJetpack
-        case storeSetupList
         case storeName
         case themes
 
@@ -755,8 +746,6 @@ extension SettingsViewController {
                 return BasicTableViewCell.self
             case .installJetpack:
                 return BasicTableViewCell.self
-            case .storeSetupList:
-                return SwitchTableViewCell.self
             case .logout, .accountSettings:
                 return BasicTableViewCell.self
             case .privacy:
@@ -838,11 +827,6 @@ private extension SettingsViewController {
             "settingsViewController.themesRow",
             value: "Themes",
             comment: "Navigates to Themes screen."
-        )
-
-        static let storeSetupList = NSLocalizedString(
-            "Store Setup List",
-            comment: "Controls store onboarding setup list visibility."
         )
 
         static let storeName = NSLocalizedString(

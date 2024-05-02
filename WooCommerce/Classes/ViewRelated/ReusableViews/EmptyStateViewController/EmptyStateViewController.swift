@@ -225,8 +225,8 @@ final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentP
     ///
     private func updateImageVisibilityUsing(traits: UITraitCollection) {
         let shouldShowImageView = traits.verticalSizeClass != .compact &&
-            imageView.image != nil
-        imageView.isHidden = !shouldShowImageView
+            imageView?.image != nil
+        imageView?.isHidden = !shouldShowImageView
     }
 
     /// Update the `contentViewHeightConstraint` so that the StackView is kept vertically centered.

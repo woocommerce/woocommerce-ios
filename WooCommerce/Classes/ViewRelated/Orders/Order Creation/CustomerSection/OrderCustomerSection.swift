@@ -24,7 +24,10 @@ struct OrderCustomerSection: View {
                                              },
                                              viewModel: addressFormViewModel)
                     case .selector:
-                        CustomerSelectorView(siteID: viewModel.siteID, addressFormViewModel: addressFormViewModel) { customer in
+                        CustomerSelectorView(
+                            siteID: viewModel.siteID,
+                            configuration: .configurationForOrderCustomerSection,
+                            addressFormViewModel: addressFormViewModel) { customer in
                             viewModel.addCustomerAddressToOrder(customer: customer)
                         }
                     }
@@ -37,6 +40,24 @@ struct OrderCustomerSection: View {
             }
     }
 }
+
+private extension CustomerSelectorViewController.Configuration {
+    static let configurationForOrderCustomerSection = CustomerSelectorViewController.Configuration(
+        title: OrderCustomerLocalization.customerSelectorTitle,
+        disallowSelectingGuest: false,
+        disallowCreatingCustomer: false,
+        showGuestLabel: false,
+        shouldTrackCustomerAdded: true
+    )
+
+    enum OrderCustomerLocalization {
+        static let customerSelectorTitle = NSLocalizedString(
+            "configurationForOrderCustomerSection.customerSelectorTitle",
+            value: "Add customer details",
+            comment: "Title of the order customer selection screen.")
+    }
+}
+
 
 private struct OrderCustomerSectionContent: View {
 

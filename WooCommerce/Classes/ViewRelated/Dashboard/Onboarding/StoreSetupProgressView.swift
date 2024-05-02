@@ -13,12 +13,15 @@ struct StoreSetupProgressView: View {
 
     let isRedacted: Bool
 
-    let isHideStoreOnboardingTaskListFeatureEnabled: Bool
-
-    @State private var showingHideStoreSetupListAlert: Bool = false
+    let failedToLoadTasks: Bool
 
     var body: some View {
         HStack(alignment: .top) {
+            Image(systemName: "exclamationmark.circle")
+                .foregroundStyle(Color.secondary)
+                .headlineStyle()
+                .renderedIf(failedToLoadTasks)
+
             VStack(alignment: isExpanded ? .center : .leading, spacing: Layout.verticalSpacing) {
                 // Title label
                 Text(Localization.title)
@@ -32,7 +35,7 @@ struct StoreSetupProgressView: View {
                 ProgressView(value: Double(numberOfTasksCompleted), total: Double(totalNumberOfTasks))
                     .tint(.init(uiColor: .accent))
                     .frame(width: isExpanded ? Layout.ProgressView.widthExpanded : Layout.ProgressView.widthCollapsed, height: Layout.ProgressView.height)
-                    .renderedIf(!isRedacted)
+                    .renderedIf(!isRedacted && !failedToLoadTasks)
 
                 // Subtitle label
                 Text(String(format: isExpanded ? Localization.TasksCompleted.expanded : Localization.TasksCompleted.collapsed,
@@ -42,6 +45,7 @@ struct StoreSetupProgressView: View {
                     .multilineTextAlignment(isExpanded ? .center : .leading)
                     .redacted(reason: isRedacted ? .placeholder : [])
                     .shimmering(active: isRedacted)
+                    .renderedIf(!failedToLoadTasks)
             }
 
             Spacer()
@@ -54,22 +58,16 @@ struct StoreSetupProgressView: View {
                 }
 
                 Button(Localization.hideStoreSetupListButton) {
-                    showingHideStoreSetupListAlert = true
+                    hideTaskListAction()
                 }
-                .renderedIf(isHideStoreOnboardingTaskListFeatureEnabled)
             } label: {
-                Image(uiImage: .ellipsisImage)
-                    .flipsForRightToLeftLayoutDirection(true)
-                    .foregroundColor(Color(.textTertiary))
+                Image(systemName: "ellipsis")
+                    .foregroundStyle(Color.secondary)
+                    .padding(.leading, Layout.horizontalSpacing)
+                    .padding(.vertical, Layout.verticalSpacing)
             }
             .renderedIf(!isExpanded)
         }
-        .alert(isPresented: $showingHideStoreSetupListAlert, content: {
-            Alert(title: Text(Localization.HideStoreSetupListAlert.title),
-                  message: Text(Localization.HideStoreSetupListAlert.message),
-                  primaryButton: .destructive(Text(Localization.HideStoreSetupListAlert.removeButton), action: hideTaskListAction),
-                  secondaryButton: .cancel())
-        })
     }
 }
 
@@ -116,23 +114,6 @@ private extension StoreSetupProgressView {
             "Hide store setup list",
             comment: "Title of the Hide store setup list button in the action sheet."
         )
-
-        enum HideStoreSetupListAlert {
-            static let title = NSLocalizedString(
-                "Hide store setup list",
-                comment: "Action title for hiding store onboarding task list"
-            )
-
-            static let message = NSLocalizedString(
-                "You can show it when you need it by going to Menu > Settings > Store",
-                comment: "Confirm message for hiding store onboarding task list"
-            )
-
-            static let removeButton = NSLocalizedString(
-                "Remove",
-                comment: "Title for the action button on the confirm alert for hiding store onboarding task list"
-            )
-        }
     }
 }
 
@@ -145,7 +126,7 @@ struct StoreSetupProgressView_Previews: PreviewProvider {
                                shareFeedbackAction: nil,
                                hideTaskListAction: {},
                                isRedacted: false,
-                               isHideStoreOnboardingTaskListFeatureEnabled: true)
+                               failedToLoadTasks: false)
 
         StoreSetupProgressView(isExpanded: true,
                                totalNumberOfTasks: 5,
@@ -153,6 +134,6 @@ struct StoreSetupProgressView_Previews: PreviewProvider {
                                shareFeedbackAction: nil,
                                hideTaskListAction: {},
                                isRedacted: false,
-                               isHideStoreOnboardingTaskListFeatureEnabled: true)
+                               failedToLoadTasks: false)
     }
 }

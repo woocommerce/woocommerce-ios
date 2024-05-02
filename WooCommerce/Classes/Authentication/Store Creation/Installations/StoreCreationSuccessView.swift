@@ -115,8 +115,8 @@ private extension StoreCreationSuccessView {
 
 struct StoreCreationSuccessView_Previews: PreviewProvider {
     static var previews: some View {
-        StoreCreationSuccessView(siteURL: URL(string: "https://woo.com")!)
-        StoreCreationSuccessView(siteURL: URL(string: "https://woo.com")!)
+        StoreCreationSuccessView(siteURL: URL(string: "https://woocommerce.com")!)
+        StoreCreationSuccessView(siteURL: URL(string: "https://woocommerce.com")!)
             .preferredColorScheme(.dark)
     }
 }

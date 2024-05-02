@@ -104,6 +104,11 @@ final class BlazeCampaignListViewModel: ObservableObject {
     func didSelectCreateCampaign(source: BlazeSource) {
         analytics.track(event: .Blaze.blazeEntryPointTapped(source: source))
     }
+
+    func didCreateCampaign() {
+        // TODO: make Blaze card appear on the dashboard again
+        loadCampaigns()
+    }
 }
 
 // MARK: Configuration

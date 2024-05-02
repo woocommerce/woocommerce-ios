@@ -240,7 +240,7 @@ final class WrongAccountErrorViewModelTests: XCTestCase {
 
 private extension WrongAccountErrorViewModelTests {
     private enum Expectations {
-        static let url = "https://woo.com"
+        static let url = "https://woocommerce.com"
         static let image = UIImage.productErrorImage
 
         static let primaryButtonTitle = NSLocalizedString("Connect Jetpack",

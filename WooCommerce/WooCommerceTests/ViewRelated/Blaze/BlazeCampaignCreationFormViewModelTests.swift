@@ -20,7 +20,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
                      images: [.fake().copy(imageID: 1)])
     }
 
-    private let sampleImage = UIImage.addOutlineImage
+    private let sampleImage = UIImage.gridicon(.calendar, size: .init(width: 600, height: 600))
 
     private let sampleAISuggestions = [BlazeAISuggestion(siteName: "First suggested tagline", textSnippet: "First suggested description"),
                                        BlazeAISuggestion(siteName: "Second suggested tagline", textSnippet: "Second suggested description"),
@@ -60,6 +60,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
     }
 
     // MARK: Initial values
+    @MainActor
     func test_image_is_empty_initially() async throws {
         // Given
         insertProduct(sampleProduct)
@@ -74,6 +75,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         XCTAssertNil(viewModel.image)
     }
 
+    @MainActor
     func test_tagline_is_empty_initially() async throws {
         // Given
         insertProduct(sampleProduct)
@@ -88,6 +90,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.tagline, "")
     }
 
+    @MainActor
     func test_description_is_empty_initially() async throws {
         // Given
         insertProduct(sampleProduct)
@@ -103,7 +106,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
     }
 
     // MARK: On load
-
+    @MainActor
     func test_onLoad_fetches_AI_suggestions() async throws {
         // Given
         insertProduct(sampleProduct)
@@ -132,6 +135,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         XCTAssertTrue(triggeredFetchAISuggestions)
     }
 
+    @MainActor
     func test_onLoad_downloads_image() async throws {
         // Given
         insertProduct(sampleProduct)
@@ -152,7 +156,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
     }
 
     // MARK: Download product image
-
+    @MainActor
     func test_it_reads_product_from_storage_for_displaying_image() async throws {
         // Given
         insertProduct(sampleProduct)
@@ -174,6 +178,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
     }
 
     // MARK: `canEditAd`
+    @MainActor
     func test_ad_can_be_edited_if_suggestions_failed_to_load() async throws {
         // Given
         insertProduct(sampleProduct)
@@ -195,6 +200,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.canEditAd)
     }
 
+    @MainActor
     func test_ad_can_be_edited_when_product_has_no_image() async throws {
         // Given
         insertProduct(.fake().copy(siteID: sampleSiteID,
@@ -219,7 +225,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
     }
 
     // MARK: Load AI suggestions
-
+    @MainActor
     func test_loadAISuggestions_sends_correct_product_ID_to_fetch() async throws {
         // Given
         insertProduct(sampleProduct)
@@ -248,7 +254,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(expectedProductID, sampleProductID)
     }
-
+    @MainActor
     func test_loadAISuggestions_sets_tagline_and_description_upon_success() async throws {
         // Given
         insertProduct(sampleProduct)
@@ -270,6 +276,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.description, firstSuggestion.textSnippet)
     }
 
+    @MainActor
     func test_loadAISuggestions_sets_error_if_request_fails() async throws {
         // Given
         insertProduct(sampleProduct)
@@ -289,6 +296,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.error, .failedToLoadAISuggestions)
     }
 
+    @MainActor
     func test_loadAISuggestions_sets_error_if_no_suggestions_available() async throws {
         // Given
         insertProduct(sampleProduct)
@@ -309,7 +317,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
     }
 
     // MARK: `canConfirmDetails`
-
+    @MainActor
     func test_ad_cannot_be_confirmed_if_tagline_is_empty() async throws {
         // Given
         insertProduct(sampleProduct)
@@ -334,6 +342,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.canConfirmDetails)
     }
 
+    @MainActor
     func test_ad_cannot_be_confirmed_if_description_is_empty() async throws {
         // Given
         insertProduct(sampleProduct)
@@ -359,6 +368,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
     }
 
     // MARK: Analytics
+    @MainActor
     func test_event_is_tracked_on_appear() async throws {
         // Given
         insertProduct(sampleProduct)
@@ -376,6 +386,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         XCTAssertTrue(analyticsProvider.receivedEvents.contains("blaze_creation_form_displayed"))
     }
 
+    @MainActor
     func test_displayed_event_is_tracked_only_once() async throws {
         // Given
         insertProduct(sampleProduct)
@@ -395,6 +406,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         XCTAssertEqual(analyticsProvider.receivedEvents.filter { $0 == "blaze_creation_form_displayed"}.count, 1)
     }
 
+    @MainActor
     func test_event_is_tracked_upon_tapping_edit_ad() async throws {
         // Given
         insertProduct(sampleProduct)
@@ -412,6 +424,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         XCTAssertTrue(analyticsProvider.receivedEvents.contains("blaze_creation_edit_ad_tapped"))
     }
 
+    @MainActor
     func test_event_is_tracked_upon_tapping_confirm_details_with_AI_suggested_content() async throws {
         // Given
         insertProduct(sampleProduct)
@@ -440,6 +453,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         XCTAssertTrue(isAISuggested)
     }
 
+    @MainActor
     func test_event_is_tracked_upon_tapping_confirm_details_with_custom_tagline() async throws {
         // Given
         insertProduct(sampleProduct)
@@ -472,6 +486,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         XCTAssertTrue(isAISuggested)
     }
 
+    @MainActor
     func test_event_is_tracked_upon_tapping_confirm_details_with_custom_description() async throws {
         // Given
         insertProduct(sampleProduct)
@@ -504,6 +519,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         XCTAssertTrue(isAISuggested)
     }
 
+    @MainActor
     func test_event_is_tracked_upon_tapping_confirm_details_with_custom_tagline_and_description() async throws {
         // Given
         insertProduct(sampleProduct)

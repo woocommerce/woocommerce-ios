@@ -80,7 +80,6 @@ public enum WooAnalyticsStat: String {
     case twoFactorSentSMS = "two_factor_sent_sms"
     case loginInvalidEmailScreenViewed = "login_invalid_email_screen_viewed"
     case whatIsWPComOnInvalidEmailScreenTapped = "what_is_wordpress_com_on_invalid_email_screen"
-    case createAccountOnInvalidEmailScreenTapped = "create_account_on_invalid_email_screen"
     case loginInsufficientRole = "login_insufficient_role"
 
     // MARK: REST API login
@@ -165,6 +164,13 @@ public enum WooAnalyticsStat: String {
     case dashboardTopPerformersWaitingTimeLoaded = "dashboard_top_performers_waiting_time_loaded"
     case dashboardStoreTimezoneDifferFromDevice = "dashboard_store_timezone_differ_from_device"
 
+    // MARK: Dashboard stats custom range
+    case dashboardStatsCustomRangeAddButtonTapped = "dashboard_stats_custom_range_add_button_tapped"
+    case dashboardStatsCustomRangeConfirmed = "dashboard_stats_custom_range_confirmed"
+    case dashboardStatsCustomRangeTabSelected = "dashboard_stats_custom_range_tab_selected"
+    case dashboardStatsCustomRangeEditButtonTapped = "dashboard_stats_custom_range_edit_button_tapped"
+    case dashboardStatsCustomRangeInteracted = "dashboard_stats_custom_range_interacted"
+
     // MARK: Dashboard Stats v3/v4 Events
     //
     case dashboardNewStatsAvailabilityBannerCancelTapped = "dashboard_new_stats_availability_banner_cancel_tapped"
@@ -172,6 +178,12 @@ public enum WooAnalyticsStat: String {
     case dashboardNewStatsRevertedBannerDismissTapped = "dashboard_new_stats_reverted_banner_dismiss_tapped"
     case dashboardNewStatsRevertedBannerLearnMoreTapped = "dashboard_new_stats_reverted_banner_learn_more_tapped"
     case usedAnalytics = "used_analytics"
+
+    // MARK: Dynamic Dashboard Events
+    case dynamicDashboardEditLayoutButtonTapped = "dynamic_dashboard_edit_layout_button_tapped"
+    case dynamicDashboardHideCardTapped = "dynamic_dashboard_hide_card_tapped"
+    case dynamicDashboardEditorSaveTapped = "dynamic_dashboard_editor_save_tapped"
+    case dynamicDashboardCardRetryTapped = "dynamic_dashboard_card_retry_tapped"
 
     // MARK: Analytics Hub Events
     //
@@ -242,7 +254,6 @@ public enum WooAnalyticsStat: String {
 
     // MARK: Site creation
     //
-    case sitePickerCreateSiteTapped = "site_picker_create_site_tapped"
     case siteCreated = "login_woocommerce_site_created"
     case siteCreationFailed = "site_creation_failed"
     case siteCreationDismissed = "site_creation_dismissed"
@@ -258,6 +269,7 @@ public enum WooAnalyticsStat: String {
     case siteCreationPropertiesOutOfSync = "site_creation_properties_out_of_sync"
     case siteCreationFreeTrialCreatedSuccess = "site_creation_free_trial_created_success"
     case loginPrologueCreateSiteTapped = "login_prologue_create_site_tapped"
+    case loginPrologueStartingANewStoreTapped = "login_prologue_starting_a_new_store_tapped"
     case signupFormLoginTapped = "signup_login_button_tapped"
     case signupSubmitted = "signup_submitted"
     case signupSuccess = "signup_success"
@@ -284,6 +296,11 @@ public enum WooAnalyticsStat: String {
     case supportIdentitySet = "support_identity_set"
     case supportSSROpened = "support_ssr_opened"
     case supportSSRCopyButtonTapped = "support_ssr_copy_button_tapped"
+
+    // MARK: Settings Plugin List Events
+    //
+    case settingsPluginListTapped = "settings_plugin_list_tapped"
+    case outOfDatePluginList = "out_of_date_plugin_list"
 
     // MARK: Settings View Events
     //
@@ -412,6 +429,7 @@ public enum WooAnalyticsStat: String {
     case orderDetailEditFlowCanceled = "order_detail_edit_flow_canceled"
     case orderDetailEditFlowFailed = "order_detail_edit_flow_failed"
     case orderDetailPaymentLinkShared = "order_detail_payment_link_shared"
+    case orderDetailTrashButtonTapped = "order_detail_trash_tapped"
 
     // MARK: Test order
     //
@@ -995,9 +1013,10 @@ public enum WooAnalyticsStat: String {
 
     // MARK: Simple Payments events
     //
-    case simplePaymentsFlowStarted = "simple_payments_flow_started"
     case simplePaymentsFlowNoteAdded = "simple_payments_flow_note_added"
     case simplePaymentsFlowTaxesToggled = "simple_payments_flow_taxes_toggled"
+    case simplePaymentsMigrationSheetAddCustomAmount = "simple_payments_migration_sheet_add_custom_amount"
+    case simplePaymentsMigrationSheetShown = "simple_payments_migration_sheet_shown"
 
     // MARK: Payment Methods events
     //
@@ -1048,6 +1067,15 @@ public enum WooAnalyticsStat: String {
     case inboxNotesLoaded = "inbox_notes_loaded"
     case inboxNotesLoadedFailed = "inbox_notes_load_failed"
     case inboxNoteAction = "inbox_note_action"
+
+    // MARK: Customers
+    case customerHubLoaded = "customers_hub_loaded"
+    case customerHubLoadFailed = "customers_hub_load_failed"
+    case customersHubSearch = "customers_hub_customer_search"
+    case customersHubDetailOpen = "customers_hub_customer_detail_open"
+    case customersHubDetailEmailMenuTapped = "customers_hub_customer_detail_email_menu_tapped"
+    case customersHubDetailEmailOptionTapped = "customers_hub_customer_detail_email_option_tapped"
+    case customersHubDetailCopyEmailOptionTapped = "customers_hub_customer_detail_email_copy_option_tapped"
 
     // MARK: Close Account
     case closeAccountTapped = "close_account_tapped"
@@ -1114,10 +1142,6 @@ public enum WooAnalyticsStat: String {
     case freeTrialUpgradeNowTapped = "free_trial_upgrade_now_tapped"
     case planUpgradeSuccess = "plan_upgrade_success"
     case planUpgradeAbandoned = "plan_upgrade_abandoned"
-
-    // MARK: Free Trial Survey
-    case freeTrialSurveyDisplayed = "free_trial_survey_displayed"
-    case freeTrialSurveySent = "free_trial_survey_sent"
 
     // MARK: In-App Purchases
     case planUpgradePurchaseButtonTapped = "plan_upgrade_purchase_button_tapped"

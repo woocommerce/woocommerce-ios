@@ -10,7 +10,7 @@ struct MockProductReviewActionHandler: MockActionHandler {
 
     func handle(action: ActionType) {
         switch action {
-            case .synchronizeProductReviews(let siteID, _, _, _, _, let onCompletion):
+            case .synchronizeProductReviews(let siteID, _, _, _, let onCompletion):
                 synchronizeProductReviews(siteId: siteID, onCompletion: onCompletion)
 
             default: unimplementedAction(action: action)

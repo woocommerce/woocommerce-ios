@@ -11,6 +11,8 @@ final class CouponSearchUICommand: SearchUICommand {
 
     let searchBarPlaceholder = Localization.searchBarPlaceholder
 
+    let returnKeyType = UIReturnKeyType.done
+
     let searchBarAccessibilityIdentifier = "coupon-search-screen-search-field"
 
     let cancelButtonAccessibilityIdentifier = "coupon-search-screen-cancel-button"

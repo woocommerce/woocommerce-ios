@@ -133,8 +133,4 @@ private extension JetpackErrorViewModel {
         static let helpBarButtonItemTitle = NSLocalizedString("Help",
                                                        comment: "Help button on Jetpack required error screen.")
     }
-
-    enum Strings {
-        static let instructionsURLString = "https://woo.com/document/jetpack-setup-instructions-for-the-woocommerce-mobile-app/"
-    }
 }

@@ -62,56 +62,10 @@ struct CouponDetails: View {
         ServiceLocator.analytics.track(.couponDetails, withProperties: ["action": "loaded"])
     }
 
-    private var actionSheetButtons: [Alert.Button] {
-        var buttons: [Alert.Button] =
-        [
-            .default(Text(Localization.copyCode), action: {
-                UIPasteboard.general.string = viewModel.couponCode
-                let notice = Notice(title: Localization.couponCopied, feedbackType: .success)
-                noticePresenter.enqueue(notice: notice)
-                ServiceLocator.analytics.track(.couponDetails, withProperties: ["action": "copied_code"])
-            }),
-            .default(Text(Localization.shareCoupon), action: {
-                showingShareSheet = true
-                ServiceLocator.analytics.track(.couponDetails, withProperties: ["action": "shared_code"])
-            })
-        ]
-
-        if viewModel.isEditingEnabled {
-            buttons.append(contentsOf: [
-                .default(Text(Localization.editCoupon), action: {
-                    ServiceLocator.analytics.track(.couponDetails, withProperties: ["action": "tapped_edit"])
-                    onEditCoupon(viewModel.addEditCouponViewModel)
-                })
-            ])
-        }
-
-        buttons.append(.destructive(Text(Localization.deleteCoupon), action: {
-            ServiceLocator.analytics.track(.couponDetails, withProperties: ["action": "tapped_delete"])
-            showingDeletionConfirmAlert = true
-        }))
-
-
-        buttons.append(.cancel())
-
-        return buttons
-    }
-
     var body: some View {
         GeometryReader { geometry in
             ScrollView {
                 VStack(alignment: .leading, spacing: 0) {
-                    // Anchor the action sheet at the top to be able to show the popover on iPad in the most appropriate position
-                    Divider()
-                        .actionSheet(isPresented: $showingActionSheet) {
-                            ActionSheet(
-                                title: Text(Localization.manageCoupon),
-                                buttons: actionSheetButtons
-                            )
-                        }
-                        .shareSheet(isPresented: $showingShareSheet) {
-                            ShareSheet(activityItems: [viewModel.shareMessage])
-                        }
 
                     VStack(alignment: .leading, spacing: Constants.verticalSpacing) {
                         Text(viewModel.couponCode)
@@ -218,11 +172,17 @@ struct CouponDetails: View {
                         Image(uiImage: .moreImage)
                             .renderingMode(.template)
                     })
+                    .confirmationDialog(Localization.manageCoupon, isPresented: $showingActionSheet, actions: {
+                        actionSheetContent
+                    })
                 }
             }
         }
         .navigationTitle(viewModel.coupon.code)
         .wooNavigationBarStyle()
+        .shareSheet(isPresented: $showingShareSheet) {
+            ShareSheet(activityItems: [viewModel.shareMessage])
+        }
     }
 
     private var summarySection: some View {
@@ -282,6 +242,34 @@ struct CouponDetails: View {
         }
         .bodyStyle()
         .padding(.horizontal, Constants.margin)
+    }
+
+    @ViewBuilder
+    private var actionSheetContent: some View {
+        Button(Localization.copyCode) {
+            UIPasteboard.general.string = viewModel.couponCode
+            let notice = Notice(title: Localization.couponCopied, feedbackType: .success)
+            noticePresenter.enqueue(notice: notice)
+            ServiceLocator.analytics.track(.couponDetails, withProperties: ["action": "copied_code"])
+        }
+
+        Button(Localization.shareCoupon) {
+            showingShareSheet = true
+            ServiceLocator.analytics.track(.couponDetails, withProperties: ["action": "shared_code"])
+        }
+
+        if viewModel.isEditingEnabled {
+            Button(Localization.editCoupon) {
+                ServiceLocator.analytics.track(.couponDetails, withProperties: ["action": "tapped_edit"])
+                onEditCoupon(viewModel.addEditCouponViewModel)
+            }
+        }
+
+        Button(Localization.deleteCoupon, role: .destructive) {
+            ServiceLocator.analytics.track(.couponDetails, withProperties: ["action": "tapped_delete"])
+            showingDeletionConfirmAlert = true
+        }
+        .tint(Color(.error))
     }
 
     @ViewBuilder

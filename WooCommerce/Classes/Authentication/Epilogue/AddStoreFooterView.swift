@@ -7,16 +7,10 @@ final class AddStoreFooterView: UIView {
     private let addStoreHandler: () -> Void
 
     private lazy var addStoreButton = UIButton(type: .custom)
-    private lazy var divider: UIView = {
-        let view = UIView(frame: .zero)
-        view.backgroundColor = .border
-        return view
-    }()
 
     init(addStoreHandler: @escaping () -> Void) {
         self.addStoreHandler = addStoreHandler
         super.init(frame: .zero)
-        configureSubviews()
         configureAddStoreButton()
     }
 
@@ -24,27 +18,10 @@ final class AddStoreFooterView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
 
-    private func configureSubviews() {
+    private func configureAddStoreButton() {
         addStoreButton.translatesAutoresizingMaskIntoConstraints = false
         addSubview(addStoreButton)
-
-        divider.translatesAutoresizingMaskIntoConstraints = false
-        addSubview(divider)
-
-        NSLayoutConstraint.activate([
-            addStoreButton.leadingAnchor.constraint(equalTo: leadingAnchor),
-            trailingAnchor.constraint(equalTo: addStoreButton.trailingAnchor),
-            addStoreButton.topAnchor.constraint(equalTo: topAnchor),
-            bottomAnchor.constraint(equalTo: addStoreButton.bottomAnchor),
-            divider.leadingAnchor.constraint(equalTo: leadingAnchor),
-            divider.trailingAnchor.constraint(equalTo: trailingAnchor),
-            divider.bottomAnchor.constraint(equalTo: bottomAnchor),
-            divider.heightAnchor.constraint(equalToConstant: 1.0 / UIScreen.main.scale)
-        ])
-    }
-
-    private func configureAddStoreButton() {
-        addStoreButton.setTitle(Localization.addStoreButton, for: .normal)
+        addStoreButton.setTitle(Localization.connectExistingStoreButton, for: .normal)
         addStoreButton.applyLinkButtonStyle()
         addStoreButton.contentHorizontalAlignment = .leading
 
@@ -57,6 +34,13 @@ final class AddStoreFooterView: UIView {
                                             trailing: Constants.horizontalPadding)
         addStoreButton.configuration = configuration
 
+        NSLayoutConstraint.activate([
+            addStoreButton.leadingAnchor.constraint(equalTo: leadingAnchor),
+            trailingAnchor.constraint(equalTo: addStoreButton.trailingAnchor),
+            addStoreButton.topAnchor.constraint(equalTo: topAnchor),
+            bottomAnchor.constraint(equalTo: addStoreButton.bottomAnchor),
+        ])
+
         addStoreButton.addAction(UIAction { [weak self] _ in
             self?.addStoreHandler()
         }, for: .touchUpInside)
@@ -65,7 +49,10 @@ final class AddStoreFooterView: UIView {
 
 private extension AddStoreFooterView {
     enum Localization {
-        static let addStoreButton = NSLocalizedString("Add a Store", comment: "Button title on the store picker for store creation")
+        static let connectExistingStoreButton = NSLocalizedString(
+            "addStoreFooterView.connectExistingStoreButton",
+            value: "Connect existing store",
+            comment: "Button title on the store picker for store connection")
     }
 
     enum Constants {

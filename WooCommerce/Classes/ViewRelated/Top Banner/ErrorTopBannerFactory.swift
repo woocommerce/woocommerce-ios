@@ -65,7 +65,9 @@ extension ErrorTopBannerFactory {
                 return Localization.decodingInfo
             case .jetpackConnectionError:
                 return Localization.jetpackConnectionInfo
-            case .timeoutError, .generalError:
+            case .timeoutError:
+                return Localization.timeoutInfo
+            case .generalError:
                 return Localization.generalInfo
             }
         }
@@ -102,6 +104,8 @@ extension ErrorTopBannerFactory {
                                                               comment: "The title of the Error Loading Data banner when there is a Jetpack connection error")
         static let timeoutTitle = NSLocalizedString("Your site is taking a long time to respond",
                                                     comment: "The title of the Error Loading Data banner when there is a Jetpack connection error")
+        static let timeoutInfo = NSLocalizedString("Refresh the screen to try again, or troubleshoot the connection. Contact support if your issue persists.",
+                                                    comment: "The info of the time out error banner")
         static let generalInfo = NSLocalizedString("Please try again later or reach out to us and we'll be happy to assist you!",
                                                    comment: "The info of the Error Loading Data banner")
         static let decodingInfo = NSLocalizedString("This could be related to a conflict with a plugin. " +

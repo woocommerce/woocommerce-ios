@@ -20,7 +20,7 @@ final class OrderFormHostingController: UIHostingController<OrderFormPresentatio
                     return .editing
             }
         }()
-        super.init(rootView: OrderFormPresentationWrapper(flow: flow, viewModel: viewModel))
+        super.init(rootView: OrderFormPresentationWrapper(flow: flow, dismissLabel: .cancelButton, viewModel: viewModel))
 
         // Needed because a `SwiftUI` cannot be dismissed when being presented by a UIHostingController
         rootView.dismissHandler = { [weak self] in
@@ -95,11 +95,21 @@ private extension OrderFormHostingController {
 }
 
 struct OrderFormPresentationWrapper: View {
+    /// Style of the dismiss button label.
+    enum DismissLabel {
+        /// Text label with Cancel copy.
+        case cancelButton
+        /// Backward chevron image.
+        case backButton
+    }
+
     /// Set this closure with UIKit dismiss code. Needed because we need access to the UIHostingController `dismiss` method.
     ///
     var dismissHandler: (() -> Void) = {}
 
     let flow: WooAnalyticsEvent.Orders.Flow
+
+    let dismissLabel: DismissLabel
 
     @ObservedObject var viewModel: EditableOrderViewModel
 
@@ -113,6 +123,12 @@ struct OrderFormPresentationWrapper: View {
                               flow: flow,
                               viewModel: viewModel,
                               presentProductSelector: presentProductSelector)
+                    // When we're modal-on-modal, show the notices on both screens so they're definitely visible
+                    .if(horizontalSizeClass == .compact, transform: {
+                        $0
+                            .notice($viewModel.autodismissableNotice)
+                            .notice($viewModel.fixedNotice, autoDismiss: false)
+                    })
                 },
                 secondaryView: { isShowingProductSelector in
                     if let productSelectorViewModel = viewModel.productSelectorViewModel {
@@ -123,16 +139,39 @@ struct OrderFormPresentationWrapper: View {
                         .sheet(item: $viewModel.productToConfigureViewModel) { viewModel in
                             ConfigurableBundleProductView(viewModel: viewModel)
                         }
+                        // When we're modal-on-modal, show the notices on both screens so they're definitely visible
+                        .if(horizontalSizeClass == .compact, transform: {
+                            $0
+                                .notice($viewModel.autodismissableNotice)
+                                .notice($viewModel.fixedNotice, autoDismiss: false)
+                        })
                     }
                 },
-                isShowingSecondaryView: $viewModel.isProductSelectorPresented,
-                onViewContainerDismiss: {
-                    // By only calling the dismissHandler here, we wouldn't sync the selected items on dismissal
-                    // this is normally done via a callback through the ProductSelector's onCloseButtonTapped(),
-                    // but on split views we move this responsibility to the AdaptiveModalContainer
-                    viewModel.syncOrderItemSelectionStateOnDismiss()
-                    dismissHandler()
-                })
+                dismissBarButton: {
+                    Button {
+                        // By only calling the dismissHandler here, we wouldn't sync the selected items on dismissal
+                        // this is normally done via a callback through the ProductSelector's onCloseButtonTapped(),
+                        // but on split views we move this responsibility to the AdaptiveModalContainer
+                        viewModel.syncOrderItemSelectionStateOnDismiss()
+                        dismissHandler()
+                    } label: {
+                        switch dismissLabel {
+                            case .cancelButton:
+                                Text(OrderForm.Localization.cancelButton)
+                            case .backButton:
+                                Image(systemName: "chevron.backward")
+                                    .headlineLinkStyle()
+                        }
+                    }
+                    .accessibilityIdentifier(OrderForm.Accessibility.cancelButtonIdentifier)
+                },
+                isShowingSecondaryView: $viewModel.isProductSelectorPresented)
+            // When we're side-by-side, show the notices over the combined screen
+            .if(horizontalSizeClass == .regular, transform: {
+                $0
+                    .notice($viewModel.autodismissableNotice)
+                    .notice($viewModel.fixedNotice, autoDismiss: false)
+            })
         } else {
             OrderForm(dismissHandler: dismissHandler, flow: flow, viewModel: viewModel, presentProductSelector: nil)
         }
@@ -195,9 +234,9 @@ struct OrderForm: View {
             }
     }
 
-    private func updateSelectionSyncApproach(for presentationStyle: AdaptiveModalContainerPresentationStyle) {
+    private func updateSelectionSyncApproach(for presentationStyle: AdaptiveModalContainerPresentationStyle?) {
         switch presentationStyle {
-        case .modalOnModal:
+        case .none, .modalOnModal:
             viewModel.selectionSyncApproach = .onSelectorButtonTap
         case .sideBySide:
             viewModel.selectionSyncApproach = .onRecalculateButtonTap
@@ -243,7 +282,7 @@ struct OrderForm: View {
                             }
                             .renderedIf(viewModel.shouldSplitProductsAndCustomAmountsSections)
 
-                            OrderCustomAmountsSection(viewModel: viewModel)
+                            OrderCustomAmountsSection(viewModel: viewModel, sectionViewModel: viewModel.customAmountsSectionViewModel)
                                 .disabled(viewModel.shouldShowNonEditableIndicators)
 
                             Divider()
@@ -328,6 +367,7 @@ struct OrderForm: View {
                     }
                     .disabled(viewModel.disabled)
                 }
+                .accessibilityIdentifier(Accessibility.orderFormScrollViewIdentifier)
                 .background(Color(.listBackground).ignoresSafeArea())
                 .ignoresSafeArea(.container, edges: [.horizontal])
             }
@@ -383,6 +423,8 @@ struct OrderForm: View {
                     Button(Localization.recalculateButton) {
                         viewModel.onRecalculateTapped()
                     }
+                    .disabled(viewModel.shouldShowNonEditableIndicators)
+                    .accessibilityIdentifier(Accessibility.recalculateButtonIdentifier)
                 case .none:
                     EmptyView()
                 }
@@ -392,8 +434,13 @@ struct OrderForm: View {
         .onTapGesture {
             shouldShowInformationalCouponTooltip = false
         }
-        .notice($viewModel.autodismissableNotice)
-        .notice($viewModel.fixedNotice, autoDismiss: false)
+        // Avoids Notice duplication when the feature flag is enabled. These can be removed when the flag is removed.
+        .if(!ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm), transform: {
+            $0.notice($viewModel.autodismissableNotice)
+        })
+        .if(!ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm), transform: {
+            $0.notice($viewModel.fixedNotice, autoDismiss: false)
+        })
     }
 
     @ViewBuilder private var storedTaxRateBottomSheetContent: some View {
@@ -460,6 +507,7 @@ struct OrderForm: View {
             } label: {
                 Text(Localization.recalculateButton)
             }
+            .disabled(viewModel.shouldShowNonEditableIndicators)
             .buttonStyle(PrimaryLoadingButtonStyle(isLoading: loading))
         case .create(let loading):
             Button {
@@ -469,6 +517,7 @@ struct OrderForm: View {
             }
             .buttonStyle(PrimaryLoadingButtonStyle(isLoading: loading))
             .disabled(viewModel.collectPaymentDisabled)
+            .accessibilityIdentifier("order-form-collect-payment")
         case .done(let loading):
             Button {
                 viewModel.finishEditing()
@@ -575,7 +624,7 @@ private struct ProductsSection: View {
     /// Environment variable that manages the presentation state of the AdaptiveModalContainer view
     /// which is used in the OrderForm for presenting either modally or side-by-side, based on device class size
     ///
-    @Environment(\.adaptiveModalContainerPresentationStyle) private var presentationStyle: AdaptiveModalContainerPresentationStyle
+    @Environment(\.adaptiveModalContainerPresentationStyle) private var presentationStyle: AdaptiveModalContainerPresentationStyle?
 
     private var layoutVerticalSpacing: CGFloat {
         if viewModel.shouldShowProductsSectionHeader {
@@ -659,7 +708,7 @@ private struct ProductsSection: View {
                         .id(addProductButton)
                         .accessibilityIdentifier(OrderForm.Accessibility.addProductButtonIdentifier)
                         .buttonStyle(PlusButtonStyle())
-                    } else if !ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm) && presentationStyle == .modalOnModal {
+                    } else if !ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm) {
                         Button(OrderForm.Localization.addProducts) {
                             viewModel.toggleProductSelectorVisibility()
                         }
@@ -668,7 +717,7 @@ private struct ProductsSection: View {
                         .buttonStyle(PlusButtonStyle())
                     }
                     scanProductButton
-                        .renderedIf(presentationStyle == .modalOnModal)
+                        .renderedIf(presentationStyle != .sideBySide)
                 }
                 .renderedIf(viewModel.shouldShowAddProductsButton)
             }
@@ -860,9 +909,11 @@ private extension OrderForm {
     enum Accessibility {
         static let createButtonIdentifier = "new-order-create-button"
         static let cancelButtonIdentifier = "new-order-cancel-button"
+        static let recalculateButtonIdentifier = "new-order-recalculate-button"
         static let doneButtonIdentifier = "edit-order-done-button"
         static let addProductButtonIdentifier = "new-order-add-product-button"
         static let addProductViaSKUScannerButtonIdentifier = "new-order-add-product-via-sku-scanner-button"
+        static let orderFormScrollViewIdentifier = "order-form-scroll-view"
     }
 }
 

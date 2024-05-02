@@ -3,6 +3,12 @@
 <!--Warning: Auto-generated file, do not edit.-->
 <plist version="1.0">
   <dict>
+    <key>AddOrderAction.Title</key>
+    <string>طلب جديد</string>
+    <key>AddProductAction.Title</key>
+    <string>إضافة منتج</string>
+    <key>CollectPaymentAction.Title</key>
+    <string>تحصيل المدفوعات</string>
     <key>NSBluetoothAlwaysUsageDescription</key>
     <string>يستخدم هذا التطبيق تقنية Bluetooth للربط بأجهزة قارئ البطاقة المدعومة.</string>
     <key>NSBluetoothPeripheralUsageDescription</key>
@@ -13,5 +19,9 @@
     <string>يلزم الوصول إلى الموقع لقبول المدفوعات.</string>
     <key>NSPhotoLibraryUsageDescription</key>
     <string>لحفظ الصور من كاميرا خاصة بصور المنتجات أو لإضافة صور أو مقاطع فيديو إلى منتجاتك أو تذاكر الدعم الخاصة بك.</string>
+    <key>OpenOrdersAction.Title</key>
+    <string>الطلبات</string>
+    <key>OpenPaymentsAction.Title</key>
+    <string>المدفوعات</string>
   </dict>
 </plist>

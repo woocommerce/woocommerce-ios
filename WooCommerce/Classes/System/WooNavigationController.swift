@@ -156,7 +156,7 @@ private extension WooNavigationControllerDelegate {
     /// Removes the offline banner from the view controller if it exists.
     ///
     func removeOfflineBanner(for viewController: UIViewController) {
-        guard let offlineBanner = viewController.view.subviews.first(where: { $0 is OfflineBannerView }) else {
+        guard let offlineBanner = viewController.view?.subviews.first(where: { $0 is OfflineBannerView }) else {
             return
         }
         offlineBanner.removeFromSuperview()

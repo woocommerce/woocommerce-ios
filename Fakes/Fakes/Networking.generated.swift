@@ -166,33 +166,22 @@ extension Networking.BlazeAISuggestion {
         )
     }
 }
-extension Networking.BlazeAddPaymentInfo {
+extension Networking.BlazeCampaignBudget {
     /// Returns a "ready to use" type filled with fake values.
     ///
-    public static func fake() -> Networking.BlazeAddPaymentInfo {
+    public static func fake() -> Networking.BlazeCampaignBudget {
         .init(
-            formUrl: .fake(),
-            successUrl: .fake(),
-            idUrlParameter: .fake()
+            mode: .fake(),
+            amount: .fake(),
+            currency: .fake()
         )
     }
 }
-extension Networking.BlazeCampaign {
+extension Networking.BlazeCampaignBudget.Mode {
     /// Returns a "ready to use" type filled with fake values.
     ///
-    public static func fake() -> Networking.BlazeCampaign {
-        .init(
-            siteID: .fake(),
-            campaignID: .fake(),
-            productID: .fake(),
-            name: .fake(),
-            uiStatus: .fake(),
-            contentImageURL: .fake(),
-            contentClickURL: .fake(),
-            totalImpressions: .fake(),
-            totalClicks: .fake(),
-            budgetCents: .fake()
-        )
+    public static func fake() -> Networking.BlazeCampaignBudget.Mode {
+        .total
     }
 }
 extension Networking.BlazeCampaignListItem {
@@ -211,7 +200,10 @@ extension Networking.BlazeCampaignListItem {
             impressions: .fake(),
             clicks: .fake(),
             totalBudget: .fake(),
-            spentBudget: .fake()
+            spentBudget: .fake(),
+            budgetMode: .fake(),
+            budgetAmount: .fake(),
+            budgetCurrency: .fake()
         )
     }
 }
@@ -243,8 +235,7 @@ extension Networking.BlazePaymentInfo {
     ///
     public static func fake() -> Networking.BlazePaymentInfo {
         .init(
-            savedPaymentMethods: .fake(),
-            addPaymentMethod: .fake()
+            paymentMethods: .fake()
         )
     }
 }
@@ -419,7 +410,7 @@ extension Networking.CreateBlazeCampaign {
             startDate: .fake(),
             endDate: .fake(),
             timeZone: .fake(),
-            totalBudget: .fake(),
+            budget: .fake(),
             siteName: .fake(),
             textSnippet: .fake(),
             targetUrl: .fake(),
@@ -541,6 +532,42 @@ extension Networking.FeatureIcon {
             iconUrl: .fake(),
             iconBase64: .fake(),
             iconType: .fake()
+        )
+    }
+}
+extension Networking.GiftCardStats {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.GiftCardStats {
+        .init(
+            siteID: .fake(),
+            granularity: .fake(),
+            totals: .fake(),
+            intervals: .fake()
+        )
+    }
+}
+extension Networking.GiftCardStatsInterval {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.GiftCardStatsInterval {
+        .init(
+            interval: .fake(),
+            dateStart: .fake(),
+            dateEnd: .fake(),
+            subtotals: .fake()
+        )
+    }
+}
+extension Networking.GiftCardStatsTotals {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.GiftCardStatsTotals {
+        .init(
+            giftCardsCount: .fake(),
+            usedAmount: .fake(),
+            refundedAmount: .fake(),
+            netAmount: .fake()
         )
     }
 }
@@ -1253,6 +1280,43 @@ extension Networking.ProductBundleItemStockStatus {
         .inStock
     }
 }
+extension Networking.ProductBundleStats {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.ProductBundleStats {
+        .init(
+            siteID: .fake(),
+            granularity: .fake(),
+            totals: .fake(),
+            intervals: .fake()
+        )
+    }
+}
+extension Networking.ProductBundleStatsInterval {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.ProductBundleStatsInterval {
+        .init(
+            interval: .fake(),
+            dateStart: .fake(),
+            dateEnd: .fake(),
+            subtotals: .fake()
+        )
+    }
+}
+extension Networking.ProductBundleStatsTotals {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.ProductBundleStatsTotals {
+        .init(
+            totalItemsSold: .fake(),
+            totalBundledItemsSold: .fake(),
+            netRevenue: .fake(),
+            totalOrders: .fake(),
+            totalProducts: .fake()
+        )
+    }
+}
 extension Networking.ProductCatalogVisibility {
     /// Returns a "ready to use" type filled with fake values.
     ///
@@ -1499,6 +1563,19 @@ extension Networking.ProductVariationAttribute {
             id: .fake(),
             name: .fake(),
             option: .fake()
+        )
+    }
+}
+extension Networking.ProductsReportItem {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.ProductsReportItem {
+        .init(
+            productID: .fake(),
+            productName: .fake(),
+            quantity: .fake(),
+            total: .fake(),
+            imageUrl: .fake()
         )
     }
 }
@@ -2272,10 +2349,20 @@ extension Networking.WCAnalyticsCustomer {
     public static func fake() -> Networking.WCAnalyticsCustomer {
         .init(
             siteID: .fake(),
+            customerID: .fake(),
             userID: .fake(),
             name: .fake(),
             email: .fake(),
-            username: .fake()
+            username: .fake(),
+            dateRegistered: .fake(),
+            dateLastActive: .fake(),
+            ordersCount: .fake(),
+            totalSpend: .fake(),
+            averageOrderValue: .fake(),
+            country: .fake(),
+            region: .fake(),
+            city: .fake(),
+            postcode: .fake()
         )
     }
 }

@@ -14,10 +14,11 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .inbox:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .sideBySideViewForOrderForm:
-            return false
+            return true
         case .updateOrderOptimistically:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .shippingLabelsOnboardingM1:
+            // We need to adapt this functionality to the new Woo Shipping plugin before enabling it
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .searchProductsBySKU:
             return true
@@ -39,8 +40,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .jetpackSetupWithApplicationPassword:
             return true
-        case .dashboardOnboarding:
-            return true
         case .productBundles:
             return true
         case .manualErrorHandlingForSiteCredentialLogin:
@@ -53,11 +52,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return !isUITesting
         case .readOnlyGiftCards:
             return true
-        case .hideStoreOnboardingTaskList:
-            return true
         case .readOnlyMinMaxQuantities:
-            return true
-        case .storeCreationNotifications:
             return true
         case .euShippingNotification:
             return true
@@ -82,18 +77,14 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .scanToUpdateInventory:
             return true
         case .blazei3NativeCampaignCreation:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return true
         case .backendReceipts:
             return true
         case .splitViewInProductsTab:
             return true
-        case .customRangeInMyStoreAnalytics:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .useURLSessionInWordPressKit:
-            return buildConfig != .appStore
-        case .connectivityTool:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .appPasswordTutorial:
+        case .customersInHubMenu:
+            return true
+        case .subscriptionsInOrderCreationUI:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true

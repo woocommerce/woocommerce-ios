@@ -64,7 +64,7 @@ public class CurrencySettings: Codable {
     ///
     public func symbol(from code: CurrencyCode) -> String {
         // Currency codes pulled from WC:
-        // https://woo.com/wc-apidocs/source-function-get_woocommerce_currency.html#473
+        // https://woocommerce.com/wc-apidocs/source-function-get_woocommerce_currency.html#473
         switch code {
         case .AED:
             return "\u{62f}.\u{625}"

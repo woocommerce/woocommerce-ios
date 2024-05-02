@@ -121,17 +121,6 @@ public extension StorageType {
         }
     }
 
-    // MARK: - BlazeCampaign
-
-    /// Deletes all of the stored Blaze campaigns for the provided siteID.
-    ///
-    func deleteBlazeCampaigns(siteID: Int64) {
-        let campaigns = loadAllBlazeCampaigns(siteID: siteID)
-        for campaign in campaigns {
-            deleteObject(campaign)
-        }
-    }
-
     // MARK: - BlazeTargetDevice
 
     /// Delete all of the stored Blaze target devices with the provided locale.
@@ -237,6 +226,12 @@ public extension StorageType {
     // MARK: - Customers
     func deleteCustomers(siteID: Int64) {
         loadAllCustomers(siteID: siteID).forEach {
+            deleteObject($0)
+        }
+    }
+
+    func deleteWCAnalyticsCustomers(siteID: Int64) {
+        loadAllWCAnalyticsCustomers(siteID: siteID).forEach {
             deleteObject($0)
         }
     }

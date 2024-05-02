@@ -60,6 +60,8 @@ struct ProductSelectorView: View {
 
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
 
+    @Environment(\.adaptiveModalContainerPresentationStyle) var presentationStyle
+
     @ScaledMetric private var scale: CGFloat = 1.0
 
     /// Tracks the state for the 'Clear Selection' button
@@ -186,6 +188,7 @@ struct ProductSelectorView: View {
         .onChange(of: horizontalSizeClass, perform: { newSizeClass in
             updateSyncApproach(for: newSizeClass)
         })
+        // On the order form, this is not connected; the OrderForm displays the notices.
         .notice($viewModel.notice, autoDismiss: false)
         .sheet(isPresented: $showingFilters) {
             FilterListView(viewModel: viewModel.filterListViewModel) { filters in
@@ -203,7 +206,7 @@ struct ProductSelectorView: View {
 
     private func updateSyncApproach(for horizontalSizeClass: UserInterfaceSizeClass?) {
         guard let horizontalSizeClass,
-              ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm) else {
+              let presentationStyle else {
             return
         }
 
@@ -235,7 +238,7 @@ struct ProductSelectorView: View {
                 .onTapGesture {
                     viewModel.variationRowTapped(for: rowViewModel.productOrVariationID)
                 }
-                .redacted(reason: viewModel.selectionDisabled ? .placeholder : [])
+                .redacted(reason: viewModel.showPlaceholders ? .placeholder : [])
                 .disabled(viewModel.selectionDisabled)
 
                 DisclosureIndicator()
@@ -273,10 +276,11 @@ struct ProductSelectorView: View {
                             break
                     }
                 } else {
-                    viewModel.changeSelectionStateForProduct(with: rowViewModel.productOrVariationID)
+                    viewModel.changeSelectionStateForProduct(with: rowViewModel.productOrVariationID,
+                                                             selected: rowViewModel.selectedState != .selected)
                 }
             }
-            .redacted(reason: viewModel.selectionDisabled ? .placeholder : [])
+            .redacted(reason: viewModel.showPlaceholders ? .placeholder : [])
             .disabled(viewModel.selectionDisabled)
         }
     }
@@ -373,6 +377,7 @@ private extension ProductSelectorView {
                 SearchHeader(text: $viewModel.searchTerm, placeholder: Localization.searchPlaceholder, onEditingChanged: { isEditing in
                     searchHeaderisBeingEdited = isEditing
                 })
+                .submitLabel(.done)
                 .accessibilityIdentifier("product-selector-search-bar")
                 Picker(selection: $viewModel.productSearchFilter, label: EmptyView()) {
                     ForEach(ProductSearchFilter.allCases, id: \.self) { option in Text(option.title) }

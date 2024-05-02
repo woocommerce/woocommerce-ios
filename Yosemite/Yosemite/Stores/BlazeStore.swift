@@ -61,10 +61,6 @@ public final class BlazeStore: Store {
                                       skip: skip,
                                       limit: limit,
                                       onCompletion: onCompletion)
-        case let .synchronizeCampaigns(siteID, pageNumber, onCompletion):
-            synchronizeCampaigns(siteID: siteID,
-                                 pageNumber: pageNumber,
-                                 onCompletion: onCompletion)
         case let .synchronizeTargetDevices(siteID, locale, onCompletion):
             synchronizeTargetDevices(siteID: siteID, locale: locale, onCompletion: onCompletion)
         case let .synchronizeTargetLanguages(siteID, locale, onCompletion):
@@ -91,10 +87,7 @@ private extension BlazeStore {
                         onCompletion: @escaping (Result<Void, Error>) -> Void) {
         Task { @MainActor in
             do {
-                // TODO-11540: remove stubbed result when the API is ready.
-                try await mockResponse(stubbedResult: (), onExecution: {
-                    try await remote.createCampaign(campaign, siteID: siteID)
-                })
+                try await remote.createCampaign(campaign, siteID: siteID)
                 onCompletion(.success(()))
             } catch {
                 onCompletion(.failure(error))
@@ -160,65 +153,6 @@ private extension BlazeStore {
                     return storedCampaign
                 }
                 return storage.insertNewObject(ofType: Storage.BlazeCampaignListItem.self)
-            }()
-
-            storageCampaign.update(with: campaign)
-        }
-    }
-}
-
-// MARK: - Synchronized campaigns
-//
-private extension BlazeStore {
-    func synchronizeCampaigns(siteID: Int64, pageNumber: Int, onCompletion: @escaping (Result<Bool, Error>) -> Void) {
-        Task { @MainActor in
-            do {
-                let results = try await remote.loadCampaigns(for: siteID, pageNumber: pageNumber)
-                let shouldClearData = pageNumber == Default.firstPageNumber
-                let hasNextPage = !results.isEmpty // optimistic check because we don't have page size for this API.
-                upsertStoredCampaignsInBackground(readOnlyCampaigns: results, siteID: siteID, shouldClearExistingCampaigns: shouldClearData) {
-                    onCompletion(.success(hasNextPage))
-                }
-            } catch {
-                onCompletion(.failure(error))
-            }
-        }
-    }
-
-    /// Updates or Inserts specified BlazeCampaign Entities in a background thread
-    /// `onCompletion` will be called on the main thread.
-    ///
-    func upsertStoredCampaignsInBackground(readOnlyCampaigns: [Networking.BlazeCampaign],
-                                           siteID: Int64,
-                                           shouldClearExistingCampaigns: Bool = false,
-                                           onCompletion: @escaping () -> Void) {
-        let derivedStorage = sharedDerivedStorage
-        derivedStorage.perform { [weak self] in
-            guard let self = self else { return }
-            if shouldClearExistingCampaigns {
-                derivedStorage.deleteBlazeCampaigns(siteID: siteID)
-            }
-            self.upsertStoredCampaigns(readOnlyCampaigns: readOnlyCampaigns,
-                                       in: derivedStorage,
-                                       siteID: siteID)
-        }
-
-        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
-            DispatchQueue.main.async(execute: onCompletion)
-        }
-    }
-
-    /// Updates or Inserts the specified Blaze campaign entities
-    ///
-    func upsertStoredCampaigns(readOnlyCampaigns: [Networking.BlazeCampaign],
-                               in storage: StorageType,
-                               siteID: Int64) {
-        for campaign in readOnlyCampaigns {
-            let storageCampaign: Storage.BlazeCampaign = {
-                if let storedCampaign = storage.loadBlazeCampaign(siteID: siteID, campaignID: campaign.campaignID) {
-                    return storedCampaign
-                }
-                return storage.insertNewObject(ofType: Storage.BlazeCampaign.self)
             }()
 
             storageCampaign.update(with: campaign)
@@ -400,30 +334,7 @@ private extension BlazeStore {
     func fetchPaymentInfo(siteID: Int64, onCompletion: @escaping (Result<BlazePaymentInfo, Error>) -> Void) {
         Task { @MainActor in
             do {
-                let stubbedResult = {
-                    var methods: [BlazePaymentMethod] = []
-                    let cardNumbers = ["4575", "2343", "6456"]
-
-                    cardNumbers.forEach { cardNumber in
-                        methods.append(BlazePaymentMethod(id: "payment-method-id-\(cardNumber)",
-                                                          rawType: "credit_card",
-                                                          name: "Visa **** \(cardNumber)",
-                                                          info: .init(lastDigits: cardNumber,
-                                                                      expiring: .init(year: 2025, month: 2),
-                                                                      type: "Visa",
-                                                                      nickname: "",
-                                                                      cardholderName: "John Doe")))
-                    }
-                    return BlazePaymentInfo(
-                        savedPaymentMethods: methods,
-                        addPaymentMethod: .init(formUrl: "https://example.com/blaze-pm-add",
-                                                successUrl: "https://example.com/blaze-pm-success",
-                                                idUrlParameter: "pmid")
-                    )
-                }()
-                let paymentInfo = try await mockResponse(stubbedResult: stubbedResult) {
-                    try await remote.fetchPaymentInfo(siteID: siteID)
-                }
+                let paymentInfo = try await remote.fetchPaymentInfo(siteID: siteID)
                 onCompletion(.success(paymentInfo))
             } catch {
                 onCompletion(.failure(error))

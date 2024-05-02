@@ -25,13 +25,11 @@ public final class WordPressOrgNetwork: Network {
     private let authenticator: CookieNonceAuthenticator
     private let userAgent: String?
 
-    private lazy var sessionManager: Alamofire.SessionManager = {
-        let sessionConfiguration = URLSessionConfiguration.default
-        let sessionManager = makeSessionManager(configuration: sessionConfiguration)
-        return sessionManager
+    private lazy var alamofireSession: Alamofire.Session = {
+        makeSession(configuration: .default)
     }()
 
-    public var session: URLSession { sessionManager.session }
+    public var session: URLSession { alamofireSession.session }
 
     public init(configuration: CookieNonceAuthenticatorConfiguration, userAgent: String = UserAgent.defaultUserAgent) {
         self.authenticator = CookieNonceAuthenticator(configuration: configuration)
@@ -42,7 +40,7 @@ public final class WordPressOrgNetwork: Network {
         return try await withCheckedThrowingContinuation { [weak self] continuation in
             guard let self = self else { return }
 
-            self.sessionManager.request(request)
+            self.alamofireSession.request(request)
                 .validate()
                 .responseData(completionHandler: { (response) in
                 switch response.result {
@@ -72,7 +70,7 @@ public final class WordPressOrgNetwork: Network {
     ///     - completion: Closure to be executed upon completion.
     ///
     public func responseData(for request: URLRequestConvertible, completion: @escaping (Data?, Error?) -> Void) {
-        sessionManager.request(request)
+        alamofireSession.request(request)
             .validate()
             .responseData { response in
                 do {
@@ -94,12 +92,12 @@ public final class WordPressOrgNetwork: Network {
     ///     - completion: Closure to be executed upon completion.
     ///
     public func responseData(for request: URLRequestConvertible, completion: @escaping (Swift.Result<Data, Error>) -> Void) {
-        sessionManager.request(request)
+        alamofireSession.request(request)
             .validate()
             .responseData { response in
                 do {
                     try self.validateResponse(response.data)
-                    completion(response.result.toSwiftResult())
+                    completion(response.result.mapError { $0 })
                 } catch {
                     completion(.failure(error))
                 }
@@ -117,10 +115,10 @@ public final class WordPressOrgNetwork: Network {
     public func responseDataPublisher(for request: URLRequestConvertible) -> AnyPublisher<Swift.Result<Data, Error>, Never> {
         return Future() { [weak self] promise in
             guard let self = self else { return }
-            self.sessionManager.request(request).validate().responseData { response in
+            self.alamofireSession.request(request).validate().responseData { response in
                 do {
                     try self.validateResponse(response.data)
-                    let result = response.result.toSwiftResult()
+                    let result: Result<Data, Error> = response.result.mapError { $0 }
                     promise(Swift.Result.success(result))
                 } catch {
                     promise(Swift.Result.success(.failure(error)))
@@ -132,28 +130,23 @@ public final class WordPressOrgNetwork: Network {
     public func uploadMultipartFormData(multipartFormData: @escaping (MultipartFormData) -> Void,
                                         to request: URLRequestConvertible,
                                         completion: @escaping (Data?, Error?) -> Void) {
-        sessionManager.upload(multipartFormData: multipartFormData, with: request) { (encodingResult) in
-            switch encodingResult {
-            case .success(let upload, _, _):
-                upload.responseData { response in
-                    do {
-                        try self.validateResponse(response.data)
-                        completion(response.value, response.error)
-                    } catch {
-                        completion(nil, error)
-                    }
+        alamofireSession
+            .upload(multipartFormData: multipartFormData, with: request)
+            .responseData() { response in
+                do {
+                    try self.validateResponse(response.data)
+                    completion(response.value, response.error)
+                } catch {
+                    completion(nil, error)
                 }
-            case .failure(let error):
-                completion(nil, error)
             }
-        }
     }
 }
 
 private extension WordPressOrgNetwork {
     /// Creates a session manager with injected user agent and authenticator for handling cookie-nonce/token
     ///
-    func makeSessionManager(configuration sessionConfiguration: URLSessionConfiguration) -> Alamofire.SessionManager {
+    func makeSession(configuration sessionConfiguration: URLSessionConfiguration) -> Alamofire.Session {
         var additionalHeaders: [String: AnyObject] = [:]
         if let userAgent = self.userAgent {
             additionalHeaders["User-Agent"] = userAgent as AnyObject?
@@ -161,10 +154,7 @@ private extension WordPressOrgNetwork {
 
         sessionConfiguration.httpAdditionalHeaders = additionalHeaders
 
-        let sessionManager = Alamofire.SessionManager(configuration: sessionConfiguration)
-        sessionManager.adapter = authenticator
-        sessionManager.retrier = authenticator
-        return sessionManager
+        return Alamofire.Session(configuration: sessionConfiguration, interceptor: authenticator)
     }
 
     /// Validates whether the REST API request failed with an invalid cookie nonce.

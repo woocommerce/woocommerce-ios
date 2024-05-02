@@ -48,9 +48,9 @@ public struct CreateBlazeCampaign: Encodable, GeneratedFakeable, GeneratedCopiab
     ///
     public let timeZone: String
 
-    /// Total campaign budget in USD
+    /// Campaign budget with specified amount, currency, and mode.
     ///
-    public let totalBudget: Double
+    public let budget: BlazeCampaignBudget
 
     /// Tagline of the campaign
     ///
@@ -93,7 +93,7 @@ public struct CreateBlazeCampaign: Encodable, GeneratedFakeable, GeneratedCopiab
                 startDate: Date,
                 endDate: Date,
                 timeZone: String,
-                totalBudget: Double,
+                budget: BlazeCampaignBudget,
                 siteName: String,
                 textSnippet: String,
                 targetUrl: String,
@@ -108,7 +108,7 @@ public struct CreateBlazeCampaign: Encodable, GeneratedFakeable, GeneratedCopiab
         self.startDate = startDate
         self.endDate = endDate
         self.timeZone = timeZone
-        self.totalBudget = totalBudget
+        self.budget = budget
         self.siteName = siteName
         self.textSnippet = textSnippet
         self.targetUrl = targetUrl

@@ -18,6 +18,8 @@ final class CustomerSearchUICommand: SearchUICommand {
         return showSearchFilters ? Localization.customerFiltersSearchBarPlaceHolder : Localization.customerSelectorSearchBarPlaceHolder
     }
 
+    let returnKeyType = UIReturnKeyType.done
+
     var searchBarAccessibilityIdentifier: String = "customer-search-screen-search-field"
 
     var cancelButtonAccessibilityIdentifier: String = "customer-search-screen-cancel-button"
@@ -48,9 +50,21 @@ final class CustomerSearchUICommand: SearchUICommand {
 
     private var searchTerm: String?
 
+    // If customer is a guest, show "Guest" in the detail section
+    private let showGuestLabel: Bool
+
+    // Whether to track customer addition
+    private let shouldTrackCustomerAdded: Bool
+
+    // Whether to hide button for creating customer in empty state
+    private let disallowCreatingCustomer: Bool
+
     init(siteID: Int64,
          loadResultsWhenSearchTermIsEmpty: Bool = false,
          showSearchFilters: Bool = false,
+         showGuestLabel: Bool = false,
+         shouldTrackCustomerAdded: Bool = true,
+         disallowCreatingCustomer: Bool = false,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
@@ -61,6 +75,9 @@ final class CustomerSearchUICommand: SearchUICommand {
         self.siteID = siteID
         self.loadResultsWhenSearchTermIsEmpty = loadResultsWhenSearchTermIsEmpty
         self.showSearchFilters = showSearchFilters
+        self.showGuestLabel = showGuestLabel
+        self.shouldTrackCustomerAdded = shouldTrackCustomerAdded
+        self.disallowCreatingCustomer = disallowCreatingCustomer
         self.stores = stores
         self.analytics = analytics
         self.featureFlagService = featureFlagService
@@ -132,7 +149,7 @@ final class CustomerSearchUICommand: SearchUICommand {
     func createStarterViewController() -> UIViewController? {
         guard !featureFlagService.isFeatureFlagEnabled(.betterCustomerSelectionInOrder) else {
             guard loadResultsWhenSearchTermIsEmpty else {
-                return createStarterViewControllerForEmptySearch()
+                return createStarterViewControllerForEmptySearch(disallowCreatingCustomer: disallowCreatingCustomer)
             }
 
             return nil
@@ -152,6 +169,8 @@ final class CustomerSearchUICommand: SearchUICommand {
     }
 
     func createCellViewModel(model: Customer) -> UnderlineableTitleAndSubtitleAndDetailTableViewCell.ViewModel {
+        let detail = showGuestLabel && model.customerID == 0 ? Localization.guestLabel : model.username ?? ""
+
         return CellViewModel(
             id: "\(model.customerID)",
             title: "\(model.firstName ?? "") \(model.lastName ?? "")",
@@ -159,7 +178,7 @@ final class CustomerSearchUICommand: SearchUICommand {
             placeholderSubtitle: Localization.subtitleCellPlaceholder,
             subtitle: model.email,
             accessibilityLabel: "",
-            detail: model.username ?? "",
+            detail: detail,
             underlinedText: searchTerm?.count ?? 0 > 1 ? searchTerm : "" // Only underline the search term if it's longer than 1 character
         )
     }
@@ -189,7 +208,9 @@ final class CustomerSearchUICommand: SearchUICommand {
     }
 
     func didSelectSearchResult(model: Customer, from viewController: UIViewController, reloadData: () -> Void, updateActionButton: () -> Void) {
-        analytics.track(.orderCreationCustomerAdded)
+        if shouldTrackCustomerAdded {
+            analytics.track(.orderCreationCustomerAdded)
+        }
         onDidSelectSearchResult(model)
     }
 
@@ -204,15 +225,24 @@ final class CustomerSearchUICommand: SearchUICommand {
 }
 
 private extension CustomerSearchUICommand {
-    func createStarterViewControllerForEmptySearch() -> UIViewController {
-        let configuration = EmptyStateViewController.Config.withButton(
-            message: .init(string: ""),
-            image: .customerSearchImage,
-            details: Localization.emptyDefaultStateMessage,
-            buttonTitle: Localization.emptyDefaultStateActionTitle
-        ) { [weak self] _ in
-            self?.analytics.track(.orderCreationCustomerAddManuallyTapped)
-            self?.onAddCustomerDetailsManually?()
+    func createStarterViewControllerForEmptySearch(disallowCreatingCustomer: Bool) -> UIViewController {
+        let configuration: EmptyStateViewController.Config
+
+        if disallowCreatingCustomer {
+            configuration = .simple(
+                message: .init(string: Localization.emptyDefaultStateNoCreationMessage),
+                image: .customerSearchImage
+            )
+        } else {
+            configuration = .withButton(
+                message: .init(string: ""),
+                image: .customerSearchImage,
+                details: Localization.emptyDefaultStateMessage,
+                buttonTitle: Localization.emptyDefaultStateActionTitle
+            ) { [weak self] _ in
+                self?.analytics.track(.orderCreationCustomerAddManuallyTapped)
+                self?.onAddCustomerDetailsManually?()
+            }
         }
 
         let emptyStateViewController = EmptyStateViewController(style: .list)
@@ -222,7 +252,12 @@ private extension CustomerSearchUICommand {
     }
 
     func synchronizeAllLightCustomersDataAction(siteID: Int64, pageNumber: Int, pageSize: Int, onCompletion: ((Bool) -> Void)?) -> CustomerAction {
-        CustomerAction.synchronizeLightCustomersData(siteID: siteID, pageNumber: pageNumber, pageSize: pageSize) { [weak self] result in
+        CustomerAction.synchronizeLightCustomersData(siteID: siteID,
+                                                     pageNumber: pageNumber,
+                                                     pageSize: pageSize,
+                                                     orderby: .name,
+                                                     order: .asc,
+                                                     filterEmpty: .email) { [weak self] result in
             switch result {
             case .success:
                 onCompletion?(result.isSuccess)
@@ -252,9 +287,12 @@ private extension CustomerSearchUICommand {
         return CustomerAction.searchCustomers(siteID: siteID,
                                               pageNumber: pageNumber,
                                               pageSize: pageSize,
+                                              orderby: .name,
+                                              order: .asc,
                                               keyword: keyword,
                                               retrieveFullCustomersData: !featureFlagService.isFeatureFlagEnabled(.betterCustomerSelectionInOrder),
-                                              filter: searchFilter) { result in
+                                              filter: searchFilter,
+                                              filterEmpty: .email) { result in
             switch result {
             case .success:
                 onCompletion?(result.isSuccess)
@@ -294,6 +332,15 @@ private extension CustomerSearchUICommand {
                                                                 comment: "Message to prompt users to search for customers on the customer search screen")
         static let emptyDefaultStateActionTitle = NSLocalizedString("Add details manually",
                                                                 comment: "Button title for adding customer details manually on the customer search screen")
+        static let emptyDefaultStateNoCreationMessage = NSLocalizedString(
+            "customerSearchUICommand.emptyDefaultStateNoCreationMessage",
+            value: "Search for an existing customer",
+            comment: "Message to prompt users to search for customers on the customer search screen")
+
+        static let guestLabel = NSLocalizedString(
+            "customerSearchUICommand.guestLabel",
+            value: "Guest",
+            comment: "The label that can be shown optionally for guest customers")
     }
 }
 

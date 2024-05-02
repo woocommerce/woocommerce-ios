@@ -9,29 +9,29 @@ import SwiftUI
 ///
 /// Each view is wrapped in its own Navigation Stack
 ///
-/// Intended to be presented modally – a close button will be added to the leftmost navigation bar.
+/// Intended to be presented modally – the `dismissBarButton` will be added to the leftmost navigation bar.
 ///
 /// This was initially developed for the Order Form and Product Selector to be presented together on iPad.
-struct AdaptiveModalContainer<PrimaryView: View, SecondaryView: View>: View {
+struct AdaptiveModalContainer<PrimaryView: View, SecondaryView: View, DismissButton: View>: View {
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
 
     @ViewBuilder let primaryView: (_ presentSecondaryView: (() -> Void)?) -> PrimaryView
     @ViewBuilder let secondaryView: (_ isPresented: Binding<Bool>) -> SecondaryView
+    @ViewBuilder let dismissBarButton: () -> DismissButton
     @Binding var isShowingSecondaryView: Bool
-    var onViewContainerDismiss: (() -> Void)?
 
     var body: some View {
         if horizontalSizeClass == .compact {
             ModalOnModalView(primaryView: primaryView,
                              secondaryView: secondaryView,
-                             isShowingSecondaryView: $isShowingSecondaryView,
-                             onDimissButtonTapped: onViewContainerDismiss)
+                             dismissBarButton: dismissBarButton,
+                             isShowingSecondaryView: $isShowingSecondaryView)
                 .environment(\.adaptiveModalContainerPresentationStyle, .modalOnModal)
         } else {
             SideBySideView(primaryView: primaryView,
                            secondaryView: secondaryView,
-                           isShowingSecondaryView: $isShowingSecondaryView,
-                           onDimissButtonTapped: onViewContainerDismiss)
+                           dismissBarButton: dismissBarButton,
+                           isShowingSecondaryView: $isShowingSecondaryView)
                 .environment(\.adaptiveModalContainerPresentationStyle, .sideBySide)
         }
     }
@@ -39,8 +39,8 @@ struct AdaptiveModalContainer<PrimaryView: View, SecondaryView: View>: View {
     private struct ModalOnModalView: View {
         @ViewBuilder let primaryView: (_ presentSecondaryView: @escaping () -> Void) -> PrimaryView
         @ViewBuilder let secondaryView: (_ isPresented: Binding<Bool>) -> SecondaryView
+        @ViewBuilder let dismissBarButton: () -> DismissButton
         @Binding var isShowingSecondaryView: Bool
-        var onDimissButtonTapped: (() -> Void)?
 
         var body: some View {
             NavigationView {
@@ -49,11 +49,7 @@ struct AdaptiveModalContainer<PrimaryView: View, SecondaryView: View>: View {
                 })
                 .toolbar {
                     ToolbarItem(placement: .navigationBarLeading) {
-                        Button(action: {
-                            onDimissButtonTapped?()
-                        }, label: {
-                            Text(Localization.cancelButtonText)
-                        })
+                        dismissBarButton()
                     }
                 }
                 .sheet(isPresented: $isShowingSecondaryView) {
@@ -72,8 +68,8 @@ struct AdaptiveModalContainer<PrimaryView: View, SecondaryView: View>: View {
     private struct SideBySideView: View {
         @ViewBuilder let primaryView: (_ presentSecondaryView: (() -> Void)?) -> PrimaryView
         @ViewBuilder let secondaryView: (_ isPresented: Binding<Bool>) -> SecondaryView
+        @ViewBuilder let dismissBarButton: () -> DismissButton
         @Binding var isShowingSecondaryView: Bool
-        var onDimissButtonTapped: (() -> Void)?
 
         var body: some View {
             HStack(spacing: 0) {
@@ -81,11 +77,7 @@ struct AdaptiveModalContainer<PrimaryView: View, SecondaryView: View>: View {
                     secondaryView($isShowingSecondaryView)
                         .toolbar {
                             ToolbarItem(placement: .navigationBarLeading) {
-                                Button(action: {
-                                    onDimissButtonTapped?()
-                                }, label: {
-                                    Text(Localization.cancelButtonText)
-                                })
+                                dismissBarButton()
                             }
                         }
                 }
@@ -123,11 +115,11 @@ enum AdaptiveModalContainerPresentationStyle {
 }
 
 struct AdaptiveModalContainerPresentationStyleKey: EnvironmentKey {
-    static let defaultValue: AdaptiveModalContainerPresentationStyle = .modalOnModal
+    static let defaultValue: AdaptiveModalContainerPresentationStyle? = nil
 }
 
 extension EnvironmentValues {
-    var adaptiveModalContainerPresentationStyle: AdaptiveModalContainerPresentationStyle {
+    var adaptiveModalContainerPresentationStyle: AdaptiveModalContainerPresentationStyle? {
         get { self[AdaptiveModalContainerPresentationStyleKey.self] }
         set { self[AdaptiveModalContainerPresentationStyleKey.self] = newValue }
     }

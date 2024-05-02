@@ -1,5 +1,4 @@
 import SwiftUI
-import Kingfisher
 
 /// Represent a single product or variation row in the Product section of a New Order or in the ProductSelectorView
 ///
@@ -16,6 +15,8 @@ struct ProductRow: View {
 
     // Tracks the scale of the view due to accessibility changes
     @ScaledMetric private var scale: CGFloat = 1
+
+    @Environment(\.isEnabled) private var isEnabled
 
     /// Accessibility hint describing the product row tap gesture.
     /// Avoids overwriting the product stepper accessibility hint, when the stepper is rendered.
@@ -58,6 +59,15 @@ struct ProductRow: View {
                 Text(viewModel.productDetailsLabel)
                     .subheadlineStyle()
                     .renderedIf(viewModel.productDetailsLabel.isNotEmpty)
+                    VStack(alignment: .leading) {
+                        Text(viewModel.subscriptionConditionsLabel)
+                            .subheadlineStyle()
+                            .renderedIf(viewModel.subscriptionConditionsLabel.isNotEmpty)
+                        Text(viewModel.subscriptionBillingDetailsLabel)
+                            .font(.subheadline)
+                            .foregroundColor(Color(.text))
+                    }
+                    .renderedIf(viewModel.shouldShowProductSubscriptionsDetails)
                 Text(viewModel.secondaryProductDetailsLabel)
                     .subheadlineStyle()
                     .renderedIf(viewModel.secondaryProductDetailsLabel.isNotEmpty)
@@ -75,7 +85,7 @@ struct ProductRow: View {
     private var checkbox: some View {
         Image(uiImage: viewModel.selectedState.image)
             .frame(width: Layout.checkImageSize * scale, height: Layout.checkImageSize * scale)
-            .foregroundColor(.init(UIColor.brand))
+            .foregroundColor(isEnabled ? .init(UIColor.brand) : .gray)
     }
 }
 
@@ -100,12 +110,15 @@ extension ProductRow {
     }
 }
 
-private enum Layout {
-    static let productImageSize: CGFloat = 48.0
-    static let cornerRadius: CGFloat = 4.0
-    static let checkImageSize: CGFloat = 24.0
+private extension ProductRow {
+    enum Layout {
+        static let productImageSize: CGFloat = 48.0
+        static let cornerRadius: CGFloat = 4.0
+        static let checkImageSize: CGFloat = 24.0
+    }
 }
 
+#if DEBUG
 struct ProductRow_Previews: PreviewProvider {
     static var previews: some View {
         let viewModel = ProductRowViewModel(productOrVariationID: 1,
@@ -140,3 +153,4 @@ struct ProductRow_Previews: PreviewProvider {
             .previewLayout(.sizeThatFits)
     }
 }
+#endif

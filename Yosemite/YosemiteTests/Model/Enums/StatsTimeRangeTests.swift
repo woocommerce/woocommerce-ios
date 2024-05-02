@@ -14,24 +14,24 @@ final class StatsTimeRangeTests: XCTestCase {
 
     // MARK: `intervalGranularity` for custom range
 
-    func test_intervalGranularity_for_dates_with_days_difference_greater_than_365() {
+    func test_intervalGranularity_for_dates_with_days_difference_greater_than_3_years() {
         // Given
         // GMT: Saturday, February 1, 2020 12:29:29 AM
         let fromDate = Date(timeIntervalSince1970: 1580516969)
-        let toDate = fromDate.addingDays(366)
+        let toDate = fromDate.addingDays(365*3+1)
 
         // When
         let range: StatsTimeRangeV4 = .custom(from: fromDate, to: toDate)
 
         // Then
-        XCTAssertEqual(range.intervalGranularity, .quarterly)
+        XCTAssertEqual(range.intervalGranularity, .yearly)
     }
 
-    func test_intervalGranularity_for_dates_with_days_difference_from_91_to_365() {
+    func test_intervalGranularity_for_dates_with_days_difference_from_91_to_3_years() {
         // Given
         // GMT: Saturday, February 1, 2020 12:29:29 AM
         let fromDate = Date(timeIntervalSince1970: 1580516969)
-        let toDate = fromDate.addingDays(Int.random(in: 91...365))
+        let toDate = fromDate.addingDays(Int.random(in: 91...365*3))
 
         // When
         let range: StatsTimeRangeV4 = .custom(from: fromDate, to: toDate)
@@ -53,11 +53,11 @@ final class StatsTimeRangeTests: XCTestCase {
         XCTAssertEqual(range.intervalGranularity, .weekly)
     }
 
-    func test_intervalGranularity_for_dates_with_days_difference_from_2_to_28() {
+    func test_intervalGranularity_for_dates_with_days_difference_from_1_to_28() {
         // Given
         // GMT: Saturday, February 1, 2020 12:29:29 AM
         let fromDate = Date(timeIntervalSince1970: 1580516969)
-        let toDate = fromDate.addingDays(Int.random(in: 2...28))
+        let toDate = fromDate.addingDays(Int.random(in: 1...28))
 
         // When
         let range: StatsTimeRangeV4 = .custom(from: fromDate, to: toDate)
@@ -66,14 +66,15 @@ final class StatsTimeRangeTests: XCTestCase {
         XCTAssertEqual(range.intervalGranularity, .daily)
     }
 
-    func test_intervalGranularity_for_dates_with_days_difference_less_than_2() {
+    func test_intervalGranularity_for_a_same_day_range() {
         // Given
-        // GMT: Saturday, February 1, 2020 12:29:29 AM
-        let fromDate = Date(timeIntervalSince1970: 1580516969)
-        let toDate = fromDate.addingDays(1)
+        // GMT: March 4 2024 00:00:00
+        let startDate = Date(timeIntervalSince1970: 1709510400)
+        // GMT: March 4 2024 23:59:59
+        let endDate = Date(timeIntervalSince1970: 1709596799)
 
         // When
-        let range: StatsTimeRangeV4 = .custom(from: fromDate, to: toDate)
+        let range: StatsTimeRangeV4 = .custom(from: startDate, to: endDate)
 
         // Then
         XCTAssertEqual(range.intervalGranularity, .hourly)
@@ -81,24 +82,24 @@ final class StatsTimeRangeTests: XCTestCase {
 
     // MARK: `siteVisitStatsGranularity` for custom range
 
-    func test_siteVisitStatsGranularity_for_dates_with_days_difference_greater_than_365() {
+    func test_siteVisitStatsGranularity_for_dates_with_days_difference_greater_than_3_years() {
         // Given
         // GMT: Saturday, February 1, 2020 12:29:29 AM
         let fromDate = Date(timeIntervalSince1970: 1580516969)
-        let toDate = fromDate.addingDays(366)
+        let toDate = fromDate.addingDays(365*3+1)
 
         // When
         let range: StatsTimeRangeV4 = .custom(from: fromDate, to: toDate)
 
         // Then
-        XCTAssertEqual(range.siteVisitStatsGranularity, .quarter)
+        XCTAssertEqual(range.siteVisitStatsGranularity, .year)
     }
 
-    func test_siteVisitStatsGranularity_for_dates_with_days_difference_from_91_to_365() {
+    func test_siteVisitStatsGranularity_for_dates_with_days_difference_from_91_to_3_years() {
         // Given
         // GMT: Saturday, February 1, 2020 12:29:29 AM
         let fromDate = Date(timeIntervalSince1970: 1580516969)
-        let toDate = fromDate.addingDays(Int.random(in: 91...365))
+        let toDate = fromDate.addingDays(Int.random(in: 91...365*3))
 
         // When
         let range: StatsTimeRangeV4 = .custom(from: fromDate, to: toDate)
@@ -120,11 +121,11 @@ final class StatsTimeRangeTests: XCTestCase {
         XCTAssertEqual(range.siteVisitStatsGranularity, .week)
     }
 
-    func test_siteVisitStatsGranularity_for_dates_with_days_difference_from_2_to_28() {
+    func test_siteVisitStatsGranularity_for_dates_with_days_difference_from_1_to_28() {
         // Given
         // GMT: Saturday, February 1, 2020 12:29:29 AM
         let fromDate = Date(timeIntervalSince1970: 1580516969)
-        let toDate = fromDate.addingDays(Int.random(in: 2...28))
+        let toDate = fromDate.addingDays(Int.random(in: 1...28))
 
         // When
         let range: StatsTimeRangeV4 = .custom(from: fromDate, to: toDate)
@@ -133,39 +134,40 @@ final class StatsTimeRangeTests: XCTestCase {
         XCTAssertEqual(range.siteVisitStatsGranularity, .day)
     }
 
-    func test_siteVisitStatsGranularity_for_dates_with_days_difference_less_than_2() {
+    func test_siteVisitStatsGranularity_for_a_same_day_range() {
         // Given
-        // GMT: Saturday, February 1, 2020 12:29:29 AM
-        let fromDate = Date(timeIntervalSince1970: 1580516969)
-        let toDate = fromDate.addingDays(1)
+        // GMT: March 4 2024 00:00:00
+        let startDate = Date(timeIntervalSince1970: 1709510400)
+        // GMT: March 4 2024 23:59:59
+        let endDate = Date(timeIntervalSince1970: 1709596799)
 
         // When
-        let range: StatsTimeRangeV4 = .custom(from: fromDate, to: toDate)
+        let range: StatsTimeRangeV4 = .custom(from: startDate, to: endDate)
 
         // Then
-        XCTAssertEqual(range.siteVisitStatsGranularity, .hour)
+        XCTAssertEqual(range.siteVisitStatsGranularity, .day)
     }
 
     // MARK: `topEarnerStatsGranularity` for custom range
 
-    func test_topEarnerStatsGranularity_for_dates_with_days_difference_greater_than_365() {
+    func test_topEarnerStatsGranularity_for_dates_with_days_difference_greater_than_3_years() {
         // Given
         // GMT: Saturday, February 1, 2020 12:29:29 AM
         let fromDate = Date(timeIntervalSince1970: 1580516969)
-        let toDate = fromDate.addingDays(366)
+        let toDate = fromDate.addingDays(365*3+1)
 
         // When
         let range: StatsTimeRangeV4 = .custom(from: fromDate, to: toDate)
 
         // Then
-        XCTAssertEqual(range.topEarnerStatsGranularity, .quarter)
+        XCTAssertEqual(range.topEarnerStatsGranularity, .year)
     }
 
-    func test_topEarnerStatsGranularity_for_dates_with_days_difference_from_91_to_365() {
+    func test_topEarnerStatsGranularity_for_dates_with_days_difference_from_91_to_3_years() {
         // Given
         // GMT: Saturday, February 1, 2020 12:29:29 AM
         let fromDate = Date(timeIntervalSince1970: 1580516969)
-        let toDate = fromDate.addingDays(Int.random(in: 91...365))
+        let toDate = fromDate.addingDays(Int.random(in: 91...365*3))
 
         // When
         let range: StatsTimeRangeV4 = .custom(from: fromDate, to: toDate)
@@ -187,11 +189,11 @@ final class StatsTimeRangeTests: XCTestCase {
         XCTAssertEqual(range.topEarnerStatsGranularity, .week)
     }
 
-    func test_topEarnerStatsGranularity_for_dates_with_days_difference_from_1_to_28() {
+    func test_topEarnerStatsGranularity_for_dates_with_days_difference_from_2_to_28() {
         // Given
         // GMT: Saturday, February 1, 2020 12:29:29 AM
         let fromDate = Date(timeIntervalSince1970: 1580516969)
-        let toDate = fromDate.addingDays(Int.random(in: 1...28))
+        let toDate = fromDate.addingDays(Int.random(in: 2...28))
 
         // When
         let range: StatsTimeRangeV4 = .custom(from: fromDate, to: toDate)
@@ -210,29 +212,29 @@ final class StatsTimeRangeTests: XCTestCase {
         let range: StatsTimeRangeV4 = .custom(from: fromDate, to: toDate)
 
         // Then
-        XCTAssertEqual(range.topEarnerStatsGranularity, .hour)
+        XCTAssertEqual(range.topEarnerStatsGranularity, .day)
     }
 
     // MARK: `summaryStatsGranularity` for custom range
 
-    func test_summaryStatsGranularity_for_dates_with_days_difference_greater_than_365() {
+    func test_summaryStatsGranularity_for_dates_with_days_difference_greater_than_3_years() {
         // Given
         // GMT: Saturday, February 1, 2020 12:29:29 AM
         let fromDate = Date(timeIntervalSince1970: 1580516969)
-        let toDate = fromDate.addingDays(366)
+        let toDate = fromDate.addingDays(365*3+1)
 
         // When
         let range: StatsTimeRangeV4 = .custom(from: fromDate, to: toDate)
 
         // Then
-        XCTAssertEqual(range.summaryStatsGranularity, .quarter)
+        XCTAssertEqual(range.summaryStatsGranularity, .year)
     }
 
-    func test_summaryStatsGranularity_for_dates_with_days_difference_from_91_to_365() {
+    func test_summaryStatsGranularity_for_dates_with_days_difference_from_91_to_3_years() {
         // Given
         // GMT: Saturday, February 1, 2020 12:29:29 AM
         let fromDate = Date(timeIntervalSince1970: 1580516969)
-        let toDate = fromDate.addingDays(Int.random(in: 91...365))
+        let toDate = fromDate.addingDays(Int.random(in: 91...365*3))
 
         // When
         let range: StatsTimeRangeV4 = .custom(from: fromDate, to: toDate)
@@ -277,7 +279,7 @@ final class StatsTimeRangeTests: XCTestCase {
         let range: StatsTimeRangeV4 = .custom(from: fromDate, to: toDate)
 
         // Then
-        XCTAssertEqual(range.summaryStatsGranularity, .hour)
+        XCTAssertEqual(range.summaryStatsGranularity, .day)
     }
     // MARK: Custom range
 

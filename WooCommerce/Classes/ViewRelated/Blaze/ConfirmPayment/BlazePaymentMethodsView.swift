@@ -3,22 +3,27 @@ import SwiftUI
 struct BlazePaymentMethodsView: View {
     /// Scale of the view based on accessibility changes
     @ScaledMetric private var scale: CGFloat = 1.0
-    @ObservedObject private var viewModel: BlazePaymentMethodsViewModel
+    @StateObject private var viewModel: BlazePaymentMethodsViewModel
     @Environment(\.dismiss) private var dismiss
     @State private var showingAddPaymentWebView: Bool = false
+    @State private var isShowingLoadPaymentMethodsErrorAlert: Bool = false
 
     init(viewModel: BlazePaymentMethodsViewModel) {
-        self.viewModel = viewModel
+        self._viewModel = StateObject(wrappedValue: viewModel)
     }
 
     var body: some View {
         NavigationView {
             VStack(spacing: 0) {
                 secureHeader
+                    .renderedIf(!viewModel.isLoadingPaymentMethods)
+
+                ActivityIndicator(isAnimating: .constant(true), style: .medium)
+                    .renderedIf(viewModel.isLoadingPaymentMethods)
 
                 // Empty state when there are no payments methods
                 noPaymentsView
-                    .renderedIf(viewModel.paymentMethods.isEmpty)
+                    .renderedIf(viewModel.paymentMethods.isEmpty && !viewModel.isLoadingPaymentMethods)
 
                 listView
                     .renderedIf(viewModel.paymentMethods.isNotEmpty)
@@ -36,6 +41,7 @@ struct BlazePaymentMethodsView: View {
                 }
                 .padding(Layout.ctaPadding)
                 .background(Color(.systemBackground))
+                .renderedIf(!viewModel.isLoadingPaymentMethods)
             }
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
@@ -53,6 +59,18 @@ struct BlazePaymentMethodsView: View {
                 BlazeAddPaymentMethodWebView(viewModel: viewModel)
             }
         })
+        .alert(Localization.LoadPaymentMethodsErrorAlert.paymentMethods, isPresented: $viewModel.showLoadPaymentsErrorAlert) {
+            Button(Localization.LoadPaymentMethodsErrorAlert.cancel, role: .cancel) { }
+
+            Button(Localization.LoadPaymentMethodsErrorAlert.retry) {
+                Task {
+                    await viewModel.reloadPaymentMethods()
+                }
+            }
+        }
+        .task {
+            await viewModel.reloadPaymentMethods()
+        }
     }
 
     @ViewBuilder
@@ -140,6 +158,23 @@ struct BlazePaymentMethodsView: View {
 
 private extension BlazePaymentMethodsView {
     enum Localization {
+        enum LoadPaymentMethodsErrorAlert {
+            static let paymentMethods = NSLocalizedString(
+                "blazePaymentMethodsView.loadPaymentMethodsErrorAlert.paymentMethods",
+                value: "Error loading your payment methods",
+                comment: "Error message indicating that loading payment methods failed"
+            )
+            static let cancel = NSLocalizedString(
+                "blazePaymentMethodsView.loadPaymentMethodsErrorAlert.cancel",
+                value: "Cancel",
+                comment: "Dismiss button on the error alert displayed on the Blaze payment method list screen"
+            )
+            static let retry = NSLocalizedString(
+                "blazePaymentMethodsView.loadPaymentMethodsErrorAlert.retry",
+                value: "Retry",
+                comment: "Button on the error alert displayed on the payment method list screen"
+            )
+        }
         static let navigationBarTitle = NSLocalizedString(
             "blazePaymentMethodsView.navigationBarTitle",
             value: "Payment Method",
@@ -214,7 +249,6 @@ struct BlazePaymentMethodsView_Previews: PreviewProvider {
     static var previews: some View {
 
         let viewModel = BlazePaymentMethodsViewModel(siteID: 123,
-                                                     paymentInfo: BlazePaymentMethodsViewModel.samplePaymentInfo(),
                                                      selectedPaymentMethodID: nil,
                                                      completion: { newPaymentID in
         })
@@ -222,7 +256,6 @@ struct BlazePaymentMethodsView_Previews: PreviewProvider {
         BlazePaymentMethodsView(viewModel: viewModel)
 
         let emptyPaymentsViewModel = BlazePaymentMethodsViewModel(siteID: 123,
-                                                     paymentInfo: BlazePaymentMethodsViewModel.samplePaymentInfo(paymentMethods: []),
                                                      selectedPaymentMethodID: nil,
                                                      completion: { newPaymentID in
         })

@@ -56,6 +56,15 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
     /// The set of cards for the Analytics Hub, with their enabled status and sort order.
     public let analyticsHubCards: [AnalyticsCard]?
 
+    /// The set of cards for the Dashboard screen, with their enabled status and sort order.
+    public let dashboardCards: [DashboardCard]?
+
+    /// The raw value string of `StatsTimeRangeV4` that indicates the last selected time range tab in Performance dashboard card.
+    public var lastSelectedPerformanceTimeRange: String
+
+    /// The raw value string of `StatsTimeRangeV4` that indicates the last selected time range tab in Top Performers dashboard card.
+    public var lastSelectedTopPerformersTimeRange: String
+
     public init(storeID: String? = nil,
                 isTelemetryAvailable: Bool = false,
                 telemetryLastReportedTime: Date? = nil,
@@ -66,7 +75,10 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
                 customStatsTimeRange: String = "",
                 firstInPersonPaymentsTransactionsByReaderType: [CardReaderType: Date] = [:],
                 selectedTaxRateID: Int64? = nil,
-                analyticsHubCards: [AnalyticsCard]? = nil) {
+                analyticsHubCards: [AnalyticsCard]? = nil,
+                dashboardCards: [DashboardCard]? = nil,
+                lastSelectedPerformanceTimeRange: String = "",
+                lastSelectedTopPerformersTimeRange: String = "") {
         self.storeID = storeID
         self.isTelemetryAvailable = isTelemetryAvailable
         self.telemetryLastReportedTime = telemetryLastReportedTime
@@ -78,6 +90,9 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
         self.firstInPersonPaymentsTransactionsByReaderType = firstInPersonPaymentsTransactionsByReaderType
         self.selectedTaxRateID = selectedTaxRateID
         self.analyticsHubCards = analyticsHubCards
+        self.dashboardCards = dashboardCards
+        self.lastSelectedPerformanceTimeRange = lastSelectedPerformanceTimeRange
+        self.lastSelectedTopPerformersTimeRange = lastSelectedTopPerformersTimeRange
     }
 
     public func erasingSelectedTaxRateID() -> GeneralStoreSettings {
@@ -91,7 +106,10 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
                              customStatsTimeRange: customStatsTimeRange,
                              firstInPersonPaymentsTransactionsByReaderType: firstInPersonPaymentsTransactionsByReaderType,
                              selectedTaxRateID: nil,
-                             analyticsHubCards: analyticsHubCards)
+                             analyticsHubCards: analyticsHubCards,
+                             dashboardCards: dashboardCards,
+                             lastSelectedPerformanceTimeRange: lastSelectedPerformanceTimeRange,
+                             lastSelectedTopPerformersTimeRange: lastSelectedTopPerformersTimeRange)
     }
 }
 
@@ -114,6 +132,10 @@ extension GeneralStoreSettings {
                                                                                            forKey: .firstInPersonPaymentsTransactionsByReaderType) ?? [:]
         self.selectedTaxRateID = try container.decodeIfPresent(Int64.self, forKey: .selectedTaxRateID)
         self.analyticsHubCards = try container.decodeIfPresent([AnalyticsCard].self, forKey: .analyticsHubCards)
+        self.dashboardCards = try container.decodeIfPresent([DashboardCard].self, forKey: .dashboardCards)
+
+        self.lastSelectedPerformanceTimeRange = try container.decodeIfPresent(String.self, forKey: .lastSelectedPerformanceTimeRange) ?? ""
+        self.lastSelectedTopPerformersTimeRange = try container.decodeIfPresent(String.self, forKey: .lastSelectedTopPerformersTimeRange) ?? ""
 
         // Decode new properties with `decodeIfPresent` and provide a default value if necessary.
     }

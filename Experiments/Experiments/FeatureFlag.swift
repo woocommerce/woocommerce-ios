@@ -92,10 +92,6 @@ public enum FeatureFlag: Int {
     ///
     case jetpackSetupWithApplicationPassword
 
-    /// Whether to enable the onboarding checklist in the dashboard for WPCOM stores.
-    ///
-    case dashboardOnboarding
-
     /// Enables the ability to add products to orders by SKU scanning
     ///
     case addProductToOrderViaSKUScanner
@@ -124,17 +120,9 @@ public enum FeatureFlag: Int {
     ///
     case readOnlyGiftCards
 
-    /// Ability to hide store onboarding task list
-    ///
-    case hideStoreOnboardingTaskList
-
     /// Enables read-only support for the Min/Max Quantities extension
     ///
     case readOnlyMinMaxQuantities
-
-    /// Local notifications for store creation
-    ///
-    case storeCreationNotifications
 
     /// Enables EU Bound notifications inside the Shipping Labels feature
     ///
@@ -196,19 +184,11 @@ public enum FeatureFlag: Int {
     ///
     case splitViewInProductsTab
 
-    /// Displays the option to add a custom date range in My Store Analytics
+    /// Displays a Customers section in the Hub menu.
     ///
-    case customRangeInMyStoreAnalytics
+    case customersInHubMenu
 
-    /// Configures WordPressKit to send HTTP requests using URLSession instead of Alamofire.
+    /// Enables visibility of Subscription product details when creating an order, within product selection, and order details.
     ///
-    case useURLSessionInWordPressKit
-
-    /// Enables the connectivity tool when an order list error happens.
-    ///
-    case connectivityTool
-
-    /// Enables the Application Password tutorial
-    ///
-    case appPasswordTutorial
+    case subscriptionsInOrderCreationUI
 }

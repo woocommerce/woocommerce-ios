@@ -1,3 +1,4 @@
+import Algorithms
 import Foundation
 import Yosemite
 
@@ -32,21 +33,21 @@ final class AnalyticsHubCustomizeViewModel: ObservableObject, Identifiable {
     ///
     private let onSave: (([AnalyticsCard]) -> Void)?
 
-    /// Any cards that are excluded from display.
+    /// Inactive analytics cards. These cards are excluded from being selected or reordered.
     ///
-    private let excludedCards: [AnalyticsCard]
+    let inactiveCards: [AnalyticsCard]
 
     /// - Parameters:
     ///   - allCards: An ordered list of all possible analytics cards, with their settings.
-    ///   - cardsToExclude: Optional list of analytics cards to exclude from display, e.g. because the user or store is not eligible to view them.
+    ///   - inactiveCards: Optional list of inactive (unavailable) analytics cards, to exclude them from selecting/reordering.
     ///   - onSave: Optional closure to perform when the changes are saved.
     init(allCards: [AnalyticsCard],
-         cardsToExclude: [AnalyticsCard] = [],
+         inactiveCards: [AnalyticsCard] = [],
          analytics: Analytics = ServiceLocator.analytics,
          onSave: (([AnalyticsCard]) -> Void)? = nil) {
-        self.excludedCards = cardsToExclude
-        let availableCards = AnalyticsHubCustomizeViewModel.availableCards(from: allCards, excluding: cardsToExclude)
+        self.inactiveCards = inactiveCards
 
+        let availableCards = AnalyticsHubCustomizeViewModel.availableCards(from: allCards, excluding: inactiveCards)
         let groupedCards = AnalyticsHubCustomizeViewModel.groupSelectedCards(in: availableCards)
         self.allCards = groupedCards
         self.originalCards = groupedCards
@@ -69,19 +70,32 @@ final class AnalyticsHubCustomizeViewModel: ObservableObject, Identifiable {
 
         analytics.track(event: .AnalyticsHub.customizeAnalyticsSaved(cards: updatedCards))
 
-        // Add back any cards that were excluded
-        updatedCards.append(contentsOf: excludedCards)
+        // Add back any inactive cards
+        updatedCards.append(contentsOf: inactiveCards)
 
         onSave?(updatedCards)
+    }
+
+    func promoURL(for card: AnalyticsCard) -> URL? {
+        switch card.type {
+        case .bundles:
+            WooConstants.URLs.productBundlesExtension.asURL()
+        case .sessions:
+            WooConstants.URLs.jetpackStats.asURL()
+        case .giftCards:
+            WooConstants.URLs.giftCardsExtension.asURL()
+        case .revenue, .orders, .products:
+            nil
+        }
     }
 }
 
 private extension AnalyticsHubCustomizeViewModel {
-    /// Removes excluded cards from the list of all cards to display in the view.
+    /// Removes inactive cards from the list of all cards to display in the view.
     ///
-    static func availableCards(from allCards: [AnalyticsCard], excluding cardsToExclude: [AnalyticsCard]) -> [AnalyticsCard] {
+    static func availableCards(from allCards: [AnalyticsCard], excluding inactiveCards: [AnalyticsCard]) -> [AnalyticsCard] {
         var allCardsToDisplay = allCards
-        allCardsToDisplay.removeAll(where: cardsToExclude.contains)
+        allCardsToDisplay.removeAll(where: inactiveCards.contains)
         return allCardsToDisplay
     }
 

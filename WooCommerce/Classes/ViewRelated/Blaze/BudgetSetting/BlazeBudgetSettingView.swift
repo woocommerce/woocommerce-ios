@@ -207,7 +207,7 @@ private extension BlazeBudgetSettingView {
 
                         Spacer()
 
-                        DatePicker(selection: $startDate, in: Date()..., displayedComponents: [.date]) {
+                        DatePicker(selection: $startDate, in: viewModel.minDayAllowedInPickerSelection..., displayedComponents: [.date]) {
                             EmptyView()
                         }
                         .datePickerStyle(.compact)
@@ -331,6 +331,7 @@ private extension BlazeBudgetSettingView {
 
 struct BlazeBudgetSettingView_Previews: PreviewProvider {
     static var previews: some View {
-        BlazeBudgetSettingView(viewModel: BlazeBudgetSettingViewModel(siteID: 123, dailyBudget: 5, duration: 7, startDate: .now) { _, _, _ in })
+        let tomorrow = Date.now + 60 * 60 * 24 // Current date + 1 day
+        BlazeBudgetSettingView(viewModel: BlazeBudgetSettingViewModel(siteID: 123, dailyBudget: 5, duration: 7, startDate: tomorrow) { _, _, _ in })
     }
 }

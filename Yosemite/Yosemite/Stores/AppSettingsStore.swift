@@ -108,11 +108,13 @@ public class AppSettingsStore: Store {
                                    let orderStatusesFilter,
                                    let dateRangeFilter,
                                    let productFilter,
+                                   let customerFilter,
                                    let onCompletion):
             upsertOrdersSettings(siteID: siteID,
                                  orderStatusesFilter: orderStatusesFilter,
                                  dateRangeFilter: dateRangeFilter,
                                  productFilter: productFilter,
+                                 customerFilter: customerFilter,
                                  onCompletion: onCompletion)
         case .resetOrdersSettings:
             resetOrdersSettings()
@@ -214,6 +216,18 @@ public class AppSettingsStore: Store {
             loadCustomStatsTimeRange(siteID: siteID, onCompletion: onCompletion)
         case let .setCustomStatsTimeRange(siteID, timeRange):
             setCustomStatsTimeRange(siteID: siteID, timeRange: timeRange)
+        case let .loadDashboardCards(siteID, onCompletion):
+            loadDashboardCards(siteID: siteID, onCompletion: onCompletion)
+        case let .setDashboardCards(siteID, cards):
+            setDashboardCards(siteID: siteID, cards: cards)
+        case let .setLastSelectedPerformanceTimeRange(siteID, timeRange):
+            setLastSelectedPerformanceTimeRange(siteID: siteID, timeRange: timeRange)
+        case let .loadLastSelectedPerformanceTimeRange(siteID, onCompletion):
+            loadLastSelectedPerformanceTimeRange(siteID: siteID, onCompletion: onCompletion)
+        case let .setLastSelectedTopPerformersTimeRange(siteID, timeRange):
+            setLastSelectedTopPerformersTimeRange(siteID: siteID, timeRange: timeRange)
+        case let .loadLastSelectedTopPerformersTimeRange(siteID, onCompletion):
+            loadLastSelectedTopPerformersTimeRange(siteID: siteID, onCompletion: onCompletion)
         }
     }
 }
@@ -665,6 +679,7 @@ private extension AppSettingsStore {
                               orderStatusesFilter: [OrderStatusEnum]?,
                               dateRangeFilter: OrderDateRangeFilter?,
                               productFilter: FilterOrdersByProduct?,
+                              customerFilter: CustomerFilter?,
                               onCompletion: (Error?) -> Void) {
         var existingSettings: [Int64: StoredOrderSettings.Setting] = [:]
         if let storedSettings: StoredOrderSettings = try? fileStorage.data(for: ordersSettingsURL) {
@@ -674,7 +689,8 @@ private extension AppSettingsStore {
         let newSettings = StoredOrderSettings.Setting(siteID: siteID,
                                                       orderStatusesFilter: orderStatusesFilter,
                                                       dateRangeFilter: dateRangeFilter,
-                                                      productFilter: productFilter)
+                                                      productFilter: productFilter,
+                                                      customerFilter: customerFilter)
         existingSettings[siteID] = newSettings
 
         let newStoredOrderSettings = StoredOrderSettings(settings: existingSettings)
@@ -918,7 +934,7 @@ private extension AppSettingsStore {
 
         let updatedSettings: GeneralStoreSettings
         if let taxRateID = id {
-            updatedSettings = storeSettings.copy(selectedTaxRateID: id)
+            updatedSettings = storeSettings.copy(selectedTaxRateID: taxRateID)
         } else {
             updatedSettings = storeSettings.erasingSelectedTaxRateID()
         }
@@ -942,6 +958,46 @@ private extension AppSettingsStore {
 
     func loadAnalyticsHubCards(siteID: Int64, onCompletion: ([AnalyticsCard]?) -> Void) {
         onCompletion(getStoreSettings(for: siteID).analyticsHubCards)
+    }
+}
+
+// MARK: - Dashboard Cards
+
+private extension AppSettingsStore {
+    func setDashboardCards(siteID: Int64, cards: [DashboardCard]) {
+        let storeSettings = getStoreSettings(for: siteID)
+        let updatedSettings = storeSettings.copy(dashboardCards: cards)
+        setStoreSettings(settings: updatedSettings, for: siteID)
+    }
+
+    func loadDashboardCards(siteID: Int64, onCompletion: ([DashboardCard]?) -> Void) {
+        onCompletion(getStoreSettings(for: siteID).dashboardCards)
+    }
+
+    func setLastSelectedPerformanceTimeRange(siteID: Int64, timeRange: StatsTimeRangeV4) {
+        let storeSettings = getStoreSettings(for: siteID)
+        let updatedSettings = storeSettings.copy(lastSelectedPerformanceTimeRange: timeRange.rawValue)
+        setStoreSettings(settings: updatedSettings, for: siteID)
+    }
+
+    func loadLastSelectedPerformanceTimeRange(siteID: Int64, onCompletion: (StatsTimeRangeV4?) -> Void) {
+        let storeSettings = getStoreSettings(for: siteID)
+        let timeRangeRawValue = storeSettings.lastSelectedPerformanceTimeRange
+        let timeRange = StatsTimeRangeV4(rawValue: timeRangeRawValue)
+        onCompletion(timeRange)
+    }
+
+    func setLastSelectedTopPerformersTimeRange(siteID: Int64, timeRange: StatsTimeRangeV4) {
+        let storeSettings = getStoreSettings(for: siteID)
+        let updatedSettings = storeSettings.copy(lastSelectedTopPerformersTimeRange: timeRange.rawValue)
+        setStoreSettings(settings: updatedSettings, for: siteID)
+    }
+
+    func loadLastSelectedTopPerformersTimeRange(siteID: Int64, onCompletion: (StatsTimeRangeV4?) -> Void) {
+        let storeSettings = getStoreSettings(for: siteID)
+        let timeRangeRawValue = storeSettings.lastSelectedTopPerformersTimeRange
+        let timeRange = StatsTimeRangeV4(rawValue: timeRangeRawValue)
+        onCompletion(timeRange)
     }
 }
 

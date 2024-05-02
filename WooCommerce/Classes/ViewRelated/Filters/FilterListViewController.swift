@@ -60,6 +60,9 @@ enum FilterListValueSelectorConfig {
     case ordersDateRange
     // Filter list selector for products
     case products(siteID: Int64)
+    // Filter list selector for customer
+    case customer(siteID: Int64)
+
 }
 
 /// Contains data for rendering a filter type row.
@@ -262,25 +265,46 @@ private extension FilterListViewController {
                     let productSelectorViewModel = ProductSelectorViewModel(
                         siteID: siteID,
                         selectedItemIDs: selectedProductID,
-                        onProductSelectionStateChanged: { [weak self] product in
+                        onProductSelectionStateChanged: { [weak self] product, _ in
                             guard let self else { return }
 
                             selected.selectedValue = FilterOrdersByProduct(id: product.productID, name: product.name)
                             self.updateUI(numberOfActiveFilters: self.viewModel.filterTypeViewModels.numberOfActiveFilters)
                             self.listSelector.reloadData()
-                            self.listSelector.navigationController?.dismiss(animated: true)
+                            self.listSelector.dismiss(animated: true)
                         },
                         onCloseButtonTapped: { [weak self] in
                             guard let self else { return }
 
-                            self.listSelector.navigationController?.dismiss(animated: true)
+                            self.listSelector.dismiss(animated: true)
                         }
                     )
                     return WooNavigationController(rootViewController: ProductSelectorViewController(configuration: .configurationForOrder,
                                                                                                      source: .orderFilter,
                                                                                                      viewModel: productSelectorViewModel))
                 }()
-                self.listSelector.navigationController?.present(controller, animated: true)
+                self.listSelector.present(controller, animated: true)
+
+            case .customer(let siteID):
+                let controller: CustomerSelectorViewController = {
+                    return CustomerSelectorViewController(
+                        siteID: siteID,
+                        configuration: .configurationForOrderFilter,
+                        addressFormViewModel: nil,
+                        onCustomerSelected: { [weak self] customer in
+                            selected.selectedValue = CustomerFilter(customer: customer)
+
+                            self?.updateUI(numberOfActiveFilters: self?.viewModel.filterTypeViewModels.numberOfActiveFilters ?? 0)
+                            self?.listSelector.reloadData()
+                            self?.listSelector.dismiss(animated: true)
+                        }
+                    )
+                }()
+
+                self.listSelector.present(
+                    WooNavigationController(rootViewController: controller),
+                    animated: true
+                )
             }
         }
     }
@@ -404,8 +428,9 @@ private extension FilterListViewController {
 
         func handleSelectedChange(selected: FilterType, viewController: ViewController) {
             // Do not allow selection for an unavailable promotable type.
+            // Instead, just launch a webview to promote it.
             if let promotable = selected as? PromotableProductType, !promotable.isAvailable {
-                return
+                return launchPromoteWebview(for: promotable)
             }
 
             onItemSelectedSubject.send(selected)
@@ -430,17 +455,21 @@ private extension FilterListViewController {
             configuration.buttonSize = .mini
             configuration.title = NSLocalizedString("Explore", comment: "Button title to explore an extension that isn't installed")
 
-            let action = UIAction { action in
-                if let url = promotableType.promoteUrl, let viewController = self.hostViewController {
-                    WebviewHelper.launch(url, with: viewController)
-                    ServiceLocator.analytics.track(event: .ProductListFilter.productFilterListExploreButtonTapped(type: promotableType))
-                }
+            let action = UIAction { [weak self] action in
+                self?.launchPromoteWebview(for: promotableType)
             }
 
             let button = UIButton(configuration: configuration, primaryAction: action)
             button.sizeToFit()
 
             return button
+        }
+
+        func launchPromoteWebview(for promotableType: PromotableProductType) {
+            if let url = promotableType.promoteUrl, let viewController = hostViewController {
+                WebviewHelper.launch(url, with: viewController)
+                ServiceLocator.analytics.track(event: .ProductListFilter.productFilterListExploreButtonTapped(type: promotableType))
+            }
         }
     }
 }

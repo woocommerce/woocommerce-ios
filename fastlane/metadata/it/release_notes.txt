@@ -1,1 +1,2 @@
-Il nostro ultimo aggiornamento apporta miglioramenti per aumentare stabilità e prestazioni. Ma non è tutto: stiamo anche lavorando su alcune nuove funzionalità che non vediamo l'ora di condividere con te nelle prossime versioni. Tieni d'occhio i futuri aggiornamenti, renderanno sempre migliore la tua esperienza!
+Risolto un bug fastidioso per garantire il corretto funzionamento del pulsante "Azzera log attività", ricominciando da zero per un nuovo inizio. Immergiti in un'esperienza WooCommerce più fluida. Aggiorna ora.
+

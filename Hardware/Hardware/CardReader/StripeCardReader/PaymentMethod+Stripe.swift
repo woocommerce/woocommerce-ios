@@ -26,7 +26,7 @@ extension PaymentMethod {
             self = .interacPresent(details: CardPresentTransactionDetails(details: details))
         case .unknown:
             self = .unknown
-        default:
+        @unknown default:
             self = .unknown
         }
     }

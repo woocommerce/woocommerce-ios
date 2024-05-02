@@ -3,6 +3,12 @@
 <!--Warning: Auto-generated file, do not edit.-->
 <plist version="1.0">
   <dict>
+    <key>AddOrderAction.Title</key>
+    <string>Новый заказ</string>
+    <key>AddProductAction.Title</key>
+    <string>Добавить товар</string>
+    <key>CollectPaymentAction.Title</key>
+    <string>Получение платежа</string>
     <key>NSBluetoothAlwaysUsageDescription</key>
     <string>Это приложение использует Bluetooth для подключения к платёжным терминалам.</string>
     <key>NSBluetoothPeripheralUsageDescription</key>
@@ -13,5 +19,9 @@
     <string>Чтобы принимать платежи, требуется доступ к данным о местоположении.</string>
     <key>NSPhotoLibraryUsageDescription</key>
     <string>Чтобы сохранять фотографии с камеры в качестве изображений товаров или добавлять фотографии и видеоролики в описание товаров и заявки в службу поддержки.</string>
+    <key>OpenOrdersAction.Title</key>
+    <string>Заказы</string>
+    <key>OpenPaymentsAction.Title</key>
+    <string>Платежи</string>
   </dict>
 </plist>

@@ -553,22 +553,6 @@ public extension StorageType {
         return allObjects(ofType: BlazeCampaignListItem.self, matching: predicate, sortedBy: nil)
     }
 
-    // MARK: - BlazeCampaign
-
-    /// Returns a single Blaze campaign given a `siteID` and `campaignID`
-    ///
-    func loadBlazeCampaign(siteID: Int64, campaignID: Int64) -> BlazeCampaign? {
-        let predicate = \BlazeCampaign.siteID == siteID && \BlazeCampaign.campaignID == campaignID
-        return firstObject(ofType: BlazeCampaign.self, matching: predicate)
-    }
-
-    /// Returns all stored Blaze campaigns for a site
-    ///
-    func loadAllBlazeCampaigns(siteID: Int64) -> [BlazeCampaign] {
-        let predicate = \BlazeCampaign.siteID == siteID
-        return allObjects(ofType: BlazeCampaign.self, matching: predicate, sortedBy: nil)
-    }
-
     // MARK: BlazeTargetDevice
 
     /// Returns all Blaze target devices with the given locale.
@@ -695,6 +679,27 @@ public extension StorageType {
     func loadCustomerSearchResult(siteID: Int64, keyword: String) -> CustomerSearchResult? {
         let predicate = \CustomerSearchResult.siteID == siteID && \CustomerSearchResult.keyword == keyword
         return firstObject(ofType: CustomerSearchResult.self, matching: predicate)
+    }
+
+    // MARK: - WCAnalytics Customers
+
+    /// Returns a single WCAnalyticsCustomer given a `siteID` and `customerID`
+    ///
+    func loadWCAnalyticsCustomer(siteID: Int64, customerID: Int64) -> WCAnalyticsCustomer? {
+        let predicate = \WCAnalyticsCustomer.siteID == siteID && \WCAnalyticsCustomer.customerID == customerID
+        return firstObject(ofType: WCAnalyticsCustomer.self, matching: predicate)
+    }
+
+    func loadAllWCAnalyticsCustomers(siteID: Int64) -> [WCAnalyticsCustomer] {
+        let predicate = \WCAnalyticsCustomer.siteID == siteID
+        return allObjects(ofType: WCAnalyticsCustomer.self, matching: predicate, sortedBy: [])
+    }
+
+    /// Returns a WCAnalyticsCustomerSearchResult given a `siteID` and a `keyword`
+    ///
+    func loadWCAnalyticsCustomerSearchResult(siteID: Int64, keyword: String) -> WCAnalyticsCustomerSearchResult? {
+        let predicate = \WCAnalyticsCustomerSearchResult.siteID == siteID && \WCAnalyticsCustomerSearchResult.keyword == keyword
+        return firstObject(ofType: WCAnalyticsCustomerSearchResult.self, matching: predicate)
     }
 
     // MARK: - System plugins

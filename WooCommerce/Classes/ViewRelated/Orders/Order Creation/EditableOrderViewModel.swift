@@ -149,6 +149,8 @@ final class EditableOrderViewModel: ObservableObject {
     /// When the value is non-nil, the bundle product configuration screen is shown.
     @Published var productToConfigureViewModel: ConfigurableBundleProductViewModel?
 
+    @Published private(set) var customAmountsSectionViewModel: OrderCustomAmountsSectionViewModel = .init()
+
     // MARK: Status properties
 
     /// Order creation date. For new order flow it's always current date.
@@ -692,6 +694,7 @@ final class EditableOrderViewModel: ObservableObject {
                                                                   hasParentProduct: item.parent != nil,
                                                                   isReadOnly: isReadOnly,
                                                                   isConfigurable: isProductConfigurable,
+                                                                  productSubscriptionDetails: product.subscription,
                                                                   imageURL: product.imageURL,
                                                                   name: product.name,
                                                                   sku: product.sku,
@@ -897,8 +900,15 @@ final class EditableOrderViewModel: ObservableObject {
     }
 
     func onAddCustomAmountButtonTapped() {
-        editingFee = nil
         analytics.track(.orderCreationAddCustomAmountTapped)
+        addCustomAmount()
+    }
+
+    /// Starts the flow to add a custom amount.
+    func addCustomAmount() {
+        editingFee = nil
+        enableAddingCustomAmountViaOrderTotalPercentage ?
+        customAmountsSectionViewModel.showAddCustomAmountOptionsDialog.toggle() : customAmountsSectionViewModel.showAddCustomAmount.toggle()
     }
 
     func onCreateOrderTapped() {
@@ -1447,14 +1457,14 @@ private extension EditableOrderViewModel {
 
     /// Adds a selected product (from the product list) to the order.
     ///
-    func changeSelectionStateForProduct(_ product: Product) {
+    func changeSelectionStateForProduct(_ product: Product, to isSelected: Bool) {
         // Needed because `allProducts` is only updated at start, so product from new pages are not synced.
         allProducts.insert(product)
 
-        if !selectedProducts.contains(where: { $0.productID == product.productID }) {
+        if isSelected && !selectedProducts.contains(where: { $0.productID == product.productID }) {
             selectedProducts.append(product)
             analytics.track(event: WooAnalyticsEvent.Orders.orderCreationProductSelectorItemSelected(productType: .product))
-        } else {
+        } else if !isSelected {
             selectedProducts.removeAll(where: { $0.productID == product.productID })
             analytics.track(event: WooAnalyticsEvent.Orders.orderCreationProductSelectorItemUnselected(productType: .product))
         }
@@ -1462,15 +1472,15 @@ private extension EditableOrderViewModel {
 
     /// Adds a selected product variation (from the product list) to the order.
     ///
-    func changeSelectionStateForProductVariation(_ variation: ProductVariation, parent product: Product) {
+    func changeSelectionStateForProductVariation(_ variation: ProductVariation, parent product: Product, to isSelected: Bool) {
         // Needed because `allProducts` is only updated at start, so product from new pages are not synced.
         allProducts.insert(product)
         allProductVariations.insert(variation)
 
-        if !selectedProductVariations.contains(where: { $0.productVariationID == variation.productVariationID }) {
+        if isSelected && !selectedProductVariations.contains(where: { $0.productVariationID == variation.productVariationID }) {
             selectedProductVariations.append(variation)
             analytics.track(event: WooAnalyticsEvent.Orders.orderCreationProductSelectorItemSelected(productType: .variation))
-        } else {
+        } else if !isSelected {
             selectedProductVariations.removeAll(where: { $0.productVariationID == variation.productVariationID })
             analytics.track(event: WooAnalyticsEvent.Orders.orderCreationProductSelectorItemUnselected(productType: .variation))
         }
@@ -1526,6 +1536,13 @@ private extension EditableOrderViewModel {
     /// Updates the Order with the given product from SKU scanning
     ///
     func updateOrderWithBaseItem(_ item: OrderBaseItem) {
+        if case .product(let product) = item,
+           product.variations.isNotEmpty {
+            autodismissableNotice = Notice(title: Localization.parentProductScannedNoticeTitle,
+                                           subtitle: Localization.parentProductScannedNoticeSubtitle)
+            return
+        }
+
         // When a scanned product is a bundle product, the bundle configuration view is shown first.
         if case let .product(product) = item, product.productType == .bundle {
             configurableScannedProductViewModel = .init(product: product,
@@ -1824,14 +1841,16 @@ private extension EditableOrderViewModel {
                     topProductsProvider: TopProductsFromCachedOrdersProvider(),
                     syncApproach: selectionSyncApproach.productSelectorSyncApproach,
                     orderSyncState: orderSynchronizer.statePublisher,
-                    onProductSelectionStateChanged: { [weak self] product in
+                    shouldShowNonEditableIndicators: shouldShowNonEditableIndicators,
+                    externalNoticePublisher: $autodismissableNotice,
+                    onProductSelectionStateChanged: { [weak self] product, isSelected in
                         guard let self else { return }
-                        changeSelectionStateForProduct(product)
+                        changeSelectionStateForProduct(product, to: isSelected)
                         evaluateSelectionSync()
                     },
-                    onVariationSelectionStateChanged: { [weak self] variation, parentProduct in
+                    onVariationSelectionStateChanged: { [weak self] variation, parentProduct, isSelected in
                         guard let self else { return }
-                        changeSelectionStateForProductVariation(variation, parent: parentProduct)
+                        changeSelectionStateForProductVariation(variation, parent: parentProduct, to: isSelected)
                         evaluateSelectionSync()
                     }, onMultipleSelectionCompleted: { [weak self] _ in
                         guard let self else { return }
@@ -2378,7 +2397,6 @@ extension EditableOrderViewModel {
 // MARK: Constants
 
 extension EditableOrderViewModel {
-
     enum NoticeFactory {
         /// Returns a default order creation error notice.
         ///
@@ -2519,6 +2537,18 @@ private extension EditableOrderViewModel {
         static let customAmountDefaultName = NSLocalizedString("editableOrderViewModel.customAmountDefaultName",
                                                                value: "Custom Amount",
                                                                comment: "Default name when the custom amount does not have a name in order creation.")
+        static let parentProductScannedNoticeTitle = NSLocalizedString(
+            "order.barcode.scan.parent.product.notice.title",
+            value: "You cannot add a variable product directly.",
+            comment: "Title of a notice shown when a merchant scans a barcode for a product which is a parent to variations. " +
+            "It's not possible to purchase a parent product, as it simply groups its variable product children. " +
+            "In this case, the product is not added to the order as the merchant wanted it to be.")
+        static let parentProductScannedNoticeSubtitle = NSLocalizedString(
+            "order.barcode.scan.parent.product.notice.subtitle",
+            value: "Please select a specific variation.",
+            comment: "Subtitle of a notice shown when a merchant scans a barcode for a product which is a parent to variations. " +
+            "It's not possible to purchase a parent product, as it simply groups its variable product children. " +
+            "In this case, the product is not added to the order as the merchant wanted it to be.")
 
 
         enum CouponSummary {

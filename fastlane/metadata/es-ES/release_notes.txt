@@ -1,1 +1,2 @@
-Nuestra última actualización hace una puesta a punto de todos los engranajes para mejorar la estabilidad y el rendimiento. Y aún más, hemos trabajado sin descanso en algunas funciones nuevas que estamos deseando compartir con todos en futuras versiones. Sigue atento a todo lo nuevo que está por venir para que disfrutes de la mejor experiencia posible.
+Hemos acabado con un molesto error y ahora el botón "Restablecer registro de actividad" va como la seda; todo listo para empezar de cero. Sumérgete en una experiencia aún más fluida en WooCommerce. ¡Actualiza ya!
+

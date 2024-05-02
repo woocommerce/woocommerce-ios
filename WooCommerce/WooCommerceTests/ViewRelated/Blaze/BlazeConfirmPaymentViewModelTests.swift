@@ -90,7 +90,7 @@ final class BlazeConfirmPaymentViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.shouldDisableCampaignCreation)
 
         // When
-        mockPaymentFetch(with: .success(.fake().copy(savedPaymentMethods: [paymentMethod])))
+        mockPaymentFetch(with: .success(.fake().copy(paymentMethods: [paymentMethod])))
         await viewModel.updatePaymentInfo()
 
         // Then
@@ -114,7 +114,7 @@ final class BlazeConfirmPaymentViewModelTests: XCTestCase {
                                                            cardholderName: "Jane Doe"))
 
         // When
-        mockPaymentFetch(with: .success(.fake().copy(savedPaymentMethods: [paymentMethod])))
+        mockPaymentFetch(with: .success(.fake().copy(paymentMethods: [paymentMethod])))
         await viewModel.updatePaymentInfo()
 
         // Then
@@ -193,6 +193,25 @@ final class BlazeConfirmPaymentViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.campaignCreationError, .failedToCreateCampaign)
     }
 
+    func test_campaignCreationError_is_correct_when_image_size_error_happens() async {
+        // Given
+        let viewModel = BlazeConfirmPaymentViewModel(productID: sampleProductID,
+                                                     siteID: sampleSiteID,
+                                                     campaignInfo: .fake(),
+                                                     image: .init(image: .init(), source: .productImage(image: .fake())),
+                                                     stores: stores) {}
+        XCTAssertNil(viewModel.campaignCreationError)
+
+        // When
+        mockRetrieveMedia(with: .success(.fake()))
+        mockCampaignCreation(with: .failure(NetworkError.unacceptableStatusCode(statusCode: 422, response: nil)))
+        await viewModel.updatePaymentInfo()
+        await viewModel.submitCampaign()
+
+        // Then
+        XCTAssertEqual(viewModel.campaignCreationError, .insufficientImageSize)
+    }
+
     func test_onCompletion_is_triggered_when_campaign_creation_succeeds() async {
         // Given
         var completionHandlerTriggered = false
@@ -232,7 +251,7 @@ final class BlazeConfirmPaymentViewModelTests: XCTestCase {
         stores.whenReceivingAction(ofType: BlazeAction.self) { action in
             switch action {
             case let .fetchPaymentInfo(_, onCompletion):
-                onCompletion(.success(.fake().copy(savedPaymentMethods: [self.samplePaymentMethod])))
+                onCompletion(.success(.fake().copy(paymentMethods: [self.samplePaymentMethod])))
             case let .createCampaign(campaign, _, onCompletion):
                 submittedCampaign = campaign
                 onCompletion(.success(Void()))
@@ -287,7 +306,7 @@ final class BlazeConfirmPaymentViewModelTests: XCTestCase {
         stores.whenReceivingAction(ofType: BlazeAction.self) { action in
             switch action {
             case let .fetchPaymentInfo(_, onCompletion):
-                onCompletion(.success(.fake().copy(savedPaymentMethods: [self.samplePaymentMethod])))
+                onCompletion(.success(.fake().copy(paymentMethods: [self.samplePaymentMethod])))
             case let .createCampaign(campaign, _, onCompletion):
                 submittedCampaign = campaign
                 onCompletion(.success(Void()))
@@ -381,8 +400,7 @@ final class BlazeConfirmPaymentViewModelTests: XCTestCase {
         }
 
         // When
-        let successURL = try XCTUnwrap(URL(string: "\(samplePaymentInfo.addPaymentMethod.successUrl)?\(samplePaymentInfo.addPaymentMethod.idUrlParameter)=123"))
-        viewModel.addPaymentWebViewModel?.didAddNewPaymentMethod(successURL: successURL)
+        viewModel.addPaymentWebViewModel?.didAddNewPaymentMethod()
 
         // Then
         waitUntil {
@@ -546,7 +564,7 @@ private extension BlazeConfirmPaymentViewModelTests {
         stores.whenReceivingAction(ofType: BlazeAction.self) { action in
             switch action {
             case let .fetchPaymentInfo(_, onCompletion):
-                onCompletion(.success(.fake().copy(savedPaymentMethods: [self.samplePaymentMethod])))
+                onCompletion(.success(.fake().copy(paymentMethods: [self.samplePaymentMethod])))
             case let .createCampaign(_, _, onCompletion):
                 onCompletion(result)
             default:

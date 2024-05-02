@@ -93,9 +93,11 @@ final class ProductSelectorViewModel: ObservableObject {
         }
     }
 
-    /// Defines the current notice that should be shown.
+    /// Defines the current notice that should be shown. Only for internal use as it may be routed different ways.
     /// Defaults to `nil`.
     ///
+    @Published private var productNotice: Notice?
+
     @Published var notice: Notice?
 
     /// All products that can be added to an order.
@@ -132,11 +134,11 @@ final class ProductSelectorViewModel: ObservableObject {
 
     /// Closure to be invoked when a product is selected or deselected
     ///
-    private let onProductSelectionStateChanged: ((Product) -> Void)?
+    private let onProductSelectionStateChanged: ((Product, Bool) -> Void)?
 
     /// Closure to be invoked when a product variation is selected or deselected
     ///
-    private let onVariationSelectionStateChanged: ((ProductVariation, Product) -> Void)?
+    private let onVariationSelectionStateChanged: ((ProductVariation, Product, Bool) -> Void)?
 
     /// Closure to be invoked when multiple selection is completed
     ///
@@ -232,8 +234,10 @@ final class ProductSelectorViewModel: ObservableObject {
          pageSize: Int = PaginationTracker.Defaults.pageSize,
          syncApproach: SyncApproach = .onButtonTap,
          orderSyncState: Published<OrderSyncState>.Publisher? = nil,
-         onProductSelectionStateChanged: ((Product) -> Void)? = nil,
-         onVariationSelectionStateChanged: ((ProductVariation, Product) -> Void)? = nil,
+         shouldShowNonEditableIndicators: Bool = false,
+         externalNoticePublisher: Published<Notice?>.Publisher? = nil,
+         onProductSelectionStateChanged: ((Product, Bool) -> Void)? = nil,
+         onVariationSelectionStateChanged: ((ProductVariation, Product, Bool) -> Void)? = nil,
          onMultipleSelectionCompleted: (([Int64]) -> Void)? = nil,
          onAllSelectionsCleared: (() -> Void)? = nil,
          onSelectedVariationsCleared: (() -> Void)? = nil,
@@ -254,6 +258,7 @@ final class ProductSelectorViewModel: ObservableObject {
         self.paginationTracker = PaginationTracker(pageFirstIndex: pageFirstIndex, pageSize: pageSize)
         self.syncApproach = syncApproach
         self.orderSyncState = orderSyncState
+        self.nonEditable = shouldShowNonEditableIndicators
         self.onAllSelectionsCleared = onAllSelectionsCleared
         self.onSelectedVariationsCleared = onSelectedVariationsCleared
         self.onCloseButtonTapped = onCloseButtonTapped
@@ -267,12 +272,33 @@ final class ProductSelectorViewModel: ObservableObject {
         refreshDataAndSync()
         configureFirstPageLoad()
         synchronizeProductFilterSearch()
+        bindShowPlaceholdersState()
         bindSelectionDisabledState()
+
+        if var externalNoticePublisher {
+            self.$productNotice.assign(to: &externalNoticePublisher)
+        } else {
+            self.$productNotice.assign(to: &$notice)
+        }
     }
 
+    private let nonEditable: Bool
     @Published var selectionDisabled: Bool = false
+    @Published var showPlaceholders: Bool = false
 
     private func bindSelectionDisabledState() {
+        orderSyncState?.map({ [weak self] state in
+            switch state {
+            case .syncing(blocking: true):
+                return true
+            default:
+                return self?.nonEditable ?? false
+            }
+        })
+        .assign(to: &$selectionDisabled)
+    }
+
+    private func bindShowPlaceholdersState() {
         orderSyncState?.map({ state in
             switch state {
             case .syncing(blocking: true):
@@ -281,25 +307,30 @@ final class ProductSelectorViewModel: ObservableObject {
                 return false
             }
         })
-        .assign(to: &$selectionDisabled)
+        .assign(to: &$showPlaceholders)
     }
 
     /// Selects or unselects a product to add to the order
     ///
-    func changeSelectionStateForProduct(with productID: Int64) {
+    func changeSelectionStateForProduct(with productID: Int64, selected: Bool) {
         guard let selectedProduct = products.first(where: { $0.productID == productID }) else {
             return
         }
 
         tracker.updateTrackingSourceAfterSelectionStateChangedForProduct(with: productID)
-        toggleSelection(id: productID)
+        switch selected {
+        case true:
+            addSelection(id: productID)
+        case false:
+            removeSelection(id: productID)
+        }
 
         // The SKU search gives product variations as products. Here we have to handle that.
         if let productVariation = selectedProduct.toProductVariation() {
             // We generate a parent product, which has the same info with the right ID, that is, the product variation parent id.
-            onVariationSelectionStateChanged?(productVariation, selectedProduct.copy(productID: selectedProduct.parentID))
+            onVariationSelectionStateChanged?(productVariation, selectedProduct.copy(productID: selectedProduct.parentID), selected)
         } else {
-            onProductSelectionStateChanged?(selectedProduct)
+            onProductSelectionStateChanged?(selectedProduct, selected)
         }
     }
 
@@ -313,14 +344,6 @@ final class ProductSelectorViewModel: ObservableObject {
     /// - Parameter id: Product or variation ID to add to the product selector.
     func removeSelection(id: Int64) {
         selectedItemsIDs = selectedItemsIDs.filter { $0 != id }
-    }
-
-    private func toggleSelection(id: Int64) {
-        if selectedItemsIDs.contains(id) {
-            selectedItemsIDs = selectedItemsIDs.filter { $0 != id }
-        } else {
-            selectedItemsIDs.append(id)
-        }
     }
 
     func isVariableProduct(productOrVariationID: Int64) -> Bool {
@@ -365,9 +388,9 @@ final class ProductSelectorViewModel: ObservableObject {
                                                  selectedProductVariationIDs: selectedItems,
                                                  purchasableItemsOnly: purchasableItemsOnly,
                                                  orderSyncState: orderSyncState,
-                                                 onVariationSelectionStateChanged: { [weak self] productVariation, product in
+                                                 onVariationSelectionStateChanged: { [weak self] productVariation, product, selected in
             guard let self else { return }
-            onVariationSelectionStateChanged?(productVariation, product)
+            onVariationSelectionStateChanged?(productVariation, product, selected)
         },
                                                  onSelectionsCleared: { [weak self] in
             guard let self else { return }
@@ -481,7 +504,7 @@ extension ProductSelectorViewModel: PaginationTrackerDelegate {
             case .success:
                 self.reloadData()
             case .failure(let error):
-                self.notice = NoticeFactory.productSyncNotice() { [weak self] in
+                self.productNotice = NoticeFactory.productSyncNotice() { [weak self] in
                     self?.sync(pageNumber: pageNumber, pageSize: pageSize, onCompletion: nil)
                 }
                 DDLogError("⛔️ Error synchronizing products during order creation: \(error)")
@@ -518,7 +541,7 @@ extension ProductSelectorViewModel: PaginationTrackerDelegate {
                 self.reloadData()
             case .failure(let error):
                 self.tracker.trackSearchFailureIfNecessary(with: error)
-                self.notice = NoticeFactory.productSearchNotice() { [weak self] in
+                self.productNotice = NoticeFactory.productSearchNotice() { [weak self] in
                     self?.searchProducts(siteID: siteID, keyword: keyword, pageNumber: pageNumber, pageSize: pageSize, onCompletion: nil)
                 }
                 DDLogError("⛔️ Error searching products during order creation: \(error)")
@@ -579,7 +602,7 @@ private extension ProductSelectorViewModel {
     ///
     func transitionToSyncingState(pageNumber: Int) {
         shouldShowScrollIndicator = true
-        notice = nil
+        productNotice = nil
 
         if shouldShowLoadingScreen(pageNumber: pageNumber) {
             syncStatus = .loading

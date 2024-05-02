@@ -10,9 +10,9 @@ final class AnalyticsHubViewModelTests: XCTestCase {
     private var eventEmitter: StoreStatsUsageTracksEventEmitter!
     private var analyticsProvider: MockAnalyticsProvider!
     private var analytics: Analytics!
-    private var noticePresenter: MockNoticePresenter!
     private var vm: AnalyticsHubViewModel!
 
+    private let sampleSiteID: Int64 = 123
     private let sampleAdminURL = "https://example.com/wp-admin/"
 
     override func setUp() {
@@ -20,13 +20,15 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         analyticsProvider = MockAnalyticsProvider()
         analytics = WooAnalytics(analyticsProvider: analyticsProvider)
         eventEmitter = StoreStatsUsageTracksEventEmitter(analytics: analytics)
-        noticePresenter = MockNoticePresenter()
         ServiceLocator.setCurrencySettings(CurrencySettings()) // Default is US
         vm = createViewModel()
     }
 
     func test_cards_viewmodels_show_correct_data_after_updating_from_network() async {
         // Given
+        let storage = MockStorageManager()
+        insertActivePlugins([SitePlugin.SupportedPlugin.WCProductBundles.first, SitePlugin.SupportedPlugin.WCGiftCards.first], to: storage)
+        let vm = createViewModel(storage: storage)
         stores.whenReceivingAction(ofType: StatsActionV4.self) { action in
             switch action {
             case let .retrieveCustomStats(_, _, _, _, _, _, _, completion):
@@ -38,6 +40,15 @@ final class AnalyticsHubViewModelTests: XCTestCase {
             case let .retrieveSiteSummaryStats(_, _, _, _, _, _, completion):
                 let siteStats = SiteSummaryStats.fake().copy(visitors: 30, views: 53)
                 completion(.success(siteStats))
+            case let .retrieveProductBundleStats(_, _, _, _, _, _, _, completion):
+                let bundleStats = ProductBundleStats.fake().copy(totals: .fake().copy(totalItemsSold: 3))
+                completion(.success(bundleStats))
+            case let .retrieveTopProductBundles(_, _, _, _, _, completion):
+                let topBundle = ProductsReportItem.fake()
+                completion(.success([topBundle]))
+            case let .retrieveUsedGiftCardStats(_, _, _, _, _, _, _, completion):
+                let giftCardStats = GiftCardStats.fake().copy(totals: .fake().copy(giftCardsCount: 20))
+                completion(.success(giftCardStats))
             default:
                 break
             }
@@ -52,94 +63,60 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         XCTAssertFalse(vm.productsStatsCard.isRedacted)
         XCTAssertFalse(vm.itemsSoldCard.isRedacted)
         XCTAssertFalse(vm.sessionsCard.isRedacted)
+        XCTAssertFalse(vm.bundlesCard.isRedacted)
+        XCTAssertFalse(vm.giftCardsCard.isRedacted)
 
         XCTAssertEqual(vm.revenueCard.leadingValue, "$62")
         XCTAssertEqual(vm.ordersCard.leadingValue, "15")
         XCTAssertEqual(vm.productsStatsCard.itemsSold, "5")
         XCTAssertEqual(vm.itemsSoldCard.itemsSoldData.count, 1)
         XCTAssertEqual(vm.sessionsCard.leadingValue, "53")
-        XCTAssertEqual(vm.sessionsCard.trailingValue, "50%")
-    }
-
-    func test_cards_viewmodels_show_sync_error_after_getting_error_from_network() async {
-        // Given
-        stores.whenReceivingAction(ofType: StatsActionV4.self) { action in
-            switch action {
-            case let .retrieveCustomStats(_, _, _, _, _, _, _, completion):
-                completion(.failure(NSError(domain: "Test", code: 1)))
-            case let .retrieveTopEarnerStats(_, _, _, _, _, _, _, _, completion):
-                completion(.failure(NSError(domain: "Test", code: 1)))
-            case let .retrieveSiteSummaryStats(_, _, _, _, _, _, completion):
-                completion(.failure(NSError(domain: "Test", code: 1)))
-            default:
-                break
-            }
-        }
-
-        // When
-        await vm.updateData()
-
-        // Then
-        XCTAssertTrue(vm.revenueCard.showSyncError)
-        XCTAssertTrue(vm.ordersCard.showSyncError)
-        XCTAssertTrue(vm.productsStatsCard.showStatsError)
-        XCTAssertTrue(vm.itemsSoldCard.showItemsSoldError)
-        XCTAssertTrue(vm.sessionsCard.showSyncError)
-    }
-
-    func test_cards_viewmodels_show_sync_error_only_if_underlying_request_fails() async {
-        // Given
-        stores.whenReceivingAction(ofType: StatsActionV4.self) { action in
-            switch action {
-            case let .retrieveCustomStats(_, _, _, _, _, _, _, completion):
-                completion(.failure(NSError(domain: "Test", code: 1)))
-            case let .retrieveTopEarnerStats(_, _, _, _, _, _, _, _, completion):
-                let topEarners = TopEarnerStats.fake().copy(items: [.fake()])
-                completion(.success(topEarners))
-            case let .retrieveSiteSummaryStats(_, _, _, _, _, _, completion):
-                completion(.failure(NSError(domain: "Test", code: 1)))
-            default:
-                break
-            }
-        }
-
-        // When
-        await vm.updateData()
-
-        // Then
-        XCTAssertTrue(vm.revenueCard.showSyncError)
-        XCTAssertTrue(vm.ordersCard.showSyncError)
-        XCTAssertTrue(vm.productsStatsCard.showStatsError)
-
-        XCTAssertFalse(vm.itemsSoldCard.showItemsSoldError)
-        XCTAssertEqual(vm.itemsSoldCard.itemsSoldData.count, 1)
-
-        XCTAssertTrue(vm.sessionsCard.showSyncError)
+        XCTAssertEqual(vm.bundlesCard.bundlesSold, "3")
+        XCTAssertEqual(vm.bundlesCard.bundlesSoldData.count, 1)
+        XCTAssertEqual(vm.giftCardsCard.leadingValue, "20")
     }
 
     func test_cards_viewmodels_redacted_while_updating_from_network() async {
         // Given
-        var loadingRevenueCard: AnalyticsReportCardViewModel?
-        var loadingOrdersCard: AnalyticsReportCardViewModel?
-        var loadingProductsCard: AnalyticsProductsStatsCardViewModel?
-        var loadingItemsSoldCard: AnalyticsItemsSoldViewModel?
-        var loadingSessionsCard: AnalyticsReportCardCurrentPeriodViewModel?
+        var loadingRevenueCardRedacted: Bool = false
+        var loadingOrdersCardRedacted: Bool = false
+        var loadingProductsStatsCardRedacted: Bool = false
+        var loadingItemsSoldCardRedacted: Bool = false
+        var loadingSessionsCardRedacted: Bool = false
+        var loadingBundlesStatsCardRedacted: Bool = false
+        var loadingBundlesSoldCardRedacted: Bool = false
+        var loadingGiftCardsCardRedacted: Bool = false
+        let storage = MockStorageManager()
+        insertActivePlugins([SitePlugin.SupportedPlugin.WCProductBundles.first, SitePlugin.SupportedPlugin.WCGiftCards.first], to: storage)
+        let vm = createViewModel(storage: storage)
         stores.whenReceivingAction(ofType: StatsActionV4.self) { action in
             switch action {
             case let .retrieveCustomStats(_, _, _, _, _, _, _, completion):
                 let stats = OrderStatsV4.fake().copy(totals: .fake().copy(totalOrders: 15, totalItemsSold: 5, grossRevenue: 62))
-                loadingRevenueCard = self.vm.revenueCard
-                loadingOrdersCard = self.vm.ordersCard
-                loadingProductsCard = self.vm.productsStatsCard
-                loadingItemsSoldCard = self.vm.itemsSoldCard
+                loadingRevenueCardRedacted = vm.revenueCard.isRedacted
+                loadingOrdersCardRedacted = vm.ordersCard.isRedacted
+                loadingProductsStatsCardRedacted = vm.productsStatsCard.isRedacted
                 completion(.success(stats))
             case let .retrieveTopEarnerStats(_, _, _, _, _, _, _, _, completion):
                 let topEarners = TopEarnerStats.fake().copy(items: [.fake()])
+                loadingItemsSoldCardRedacted = vm.itemsSoldCard.isRedacted
                 completion(.success(topEarners))
             case let .retrieveSiteSummaryStats(_, _, _, _, _, _, completion):
                 let siteStats = SiteSummaryStats.fake()
-                loadingSessionsCard = self.vm.sessionsCard
+                loadingSessionsCardRedacted = vm.sessionsCard.isRedacted
                 completion(.success(siteStats))
+            case let .retrieveProductBundleStats(_, _, _, _, _, _, _, completion):
+                let bundleStats = ProductBundleStats.fake().copy(totals: .fake().copy(totalItemsSold: 3))
+                loadingBundlesStatsCardRedacted = vm.bundlesCard.isRedacted
+                completion(.success(bundleStats))
+            case let .retrieveTopProductBundles(_, _, _, _, _, completion):
+                let topBundle = ProductsReportItem.fake()
+                loadingBundlesSoldCardRedacted = vm.bundlesCard.isRedacted
+                completion(.success([topBundle]))
+            case let .retrieveUsedGiftCardStats(_, _, _, _, _, _, _, completion):
+                let giftCardStats = GiftCardStats.fake()
+                loadingGiftCardsCardRedacted = vm.giftCardsCard.isRedacted
+                completion(.success(giftCardStats))
             default:
                 break
             }
@@ -149,28 +126,18 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         await vm.updateData()
 
         // Then
-        XCTAssertEqual(loadingRevenueCard?.isRedacted, true)
-        XCTAssertEqual(loadingOrdersCard?.isRedacted, true)
-        XCTAssertEqual(loadingProductsCard?.isRedacted, true)
-        XCTAssertEqual(loadingItemsSoldCard?.isRedacted, true)
-        XCTAssertEqual(loadingSessionsCard?.isRedacted, true)
+        XCTAssertTrue(loadingRevenueCardRedacted)
+        XCTAssertTrue(loadingOrdersCardRedacted)
+        XCTAssertTrue(loadingProductsStatsCardRedacted)
+        XCTAssertTrue(loadingItemsSoldCardRedacted)
+        XCTAssertTrue(loadingSessionsCardRedacted)
+        XCTAssertTrue(loadingBundlesStatsCardRedacted)
+        XCTAssertTrue(loadingBundlesSoldCardRedacted)
+        XCTAssertTrue(loadingGiftCardsCardRedacted)
     }
 
-    func test_session_card_is_hidden_for_custom_range() async {
+    func test_bundles_card_shows_correct_loading_state_and_data_with_network_update() {
         // Given
-        XCTAssertTrue(vm.enabledCards.contains(.sessions))
-
-        // When
-        vm.timeRangeSelectionType = .custom(start: Date(), end: Date())
-
-        // Then
-        XCTAssertFalse(vm.enabledCards.contains(.sessions))
-
-        // When
-        vm.timeRangeSelectionType = .lastMonth
-
-        // Then
-        XCTAssertTrue(vm.enabledCards.contains(.sessions))
     }
 
     func test_session_card_is_hidden_for_sites_without_jetpack_plugin() {
@@ -189,7 +156,7 @@ final class AnalyticsHubViewModelTests: XCTestCase {
     }
 
     @MainActor
-    func test_session_card_and_stats_CTA_are_hidden_for_shop_manager_when_stats_module_disabled() async {
+    func test_session_card_is_hidden_for_shop_manager_when_stats_module_disabled() async {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(defaultRoles: [.shopManager]))
         let vm = createViewModel(stores: stores)
@@ -210,7 +177,6 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         await vm.updateData()
 
         // Then
-        XCTAssertFalse(vm.showJetpackStatsCTA)
         XCTAssertFalse(vm.enabledCards.contains(.sessions))
     }
 
@@ -247,273 +213,6 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         XCTAssert(analyticsProvider.receivedEvents.contains(WooAnalyticsStat.analyticsHubWaitingTimeLoaded.rawValue))
     }
 
-    @MainActor
-    func test_showJetpackStatsCTA_true_for_admin_when_stats_module_disabled() async {
-        // Given
-        stores.whenReceivingAction(ofType: StatsActionV4.self) { action in
-            switch action {
-            case let .retrieveCustomStats(_, _, _, _, _, _, _, completion):
-                completion(.success(.fake()))
-            case let .retrieveTopEarnerStats(_, _, _, _, _, _, _, _, completion):
-                completion(.success(.fake()))
-            case let .retrieveSiteSummaryStats(_, _, _, _, _, _, completion):
-                completion(.failure(SiteStatsStoreError.statsModuleDisabled))
-            default:
-                break
-            }
-        }
-        XCTAssertFalse(vm.showJetpackStatsCTA)
-
-        // When
-        await vm.updateData()
-
-        // Then
-        XCTAssertTrue(vm.showJetpackStatsCTA)
-    }
-
-    @MainActor
-    func test_showJetpackStatsCTA_false_for_admin_when_stats_request_fails_and_stats_module_enabled() async {
-        // Given
-        stores.whenReceivingAction(ofType: StatsActionV4.self) { action in
-            switch action {
-            case let .retrieveCustomStats(_, _, _, _, _, _, _, completion):
-                completion(.success(.fake()))
-            case let .retrieveTopEarnerStats(_, _, _, _, _, _, _, _, completion):
-                completion(.success(.fake()))
-            case let .retrieveSiteSummaryStats(_, _, _, _, _, _, completion):
-                completion(.failure(NSError(domain: "Test", code: 1)))
-            default:
-                break
-            }
-        }
-
-        // When
-        await vm.updateData()
-
-        // Then
-        XCTAssertFalse(vm.showJetpackStatsCTA)
-    }
-
-    @MainActor
-    func test_enableJetpackStats_hides_call_to_action_after_successfully_enabling_stats() async {
-        // Given
-        stores.whenReceivingAction(ofType: JetpackSettingsAction.self) { action in
-            switch action {
-            case let .enableJetpackModule(_, _, completion):
-                completion(.success(()))
-            }
-        }
-        stores.whenReceivingAction(ofType: StatsActionV4.self) { action in
-            switch action {
-            case let .retrieveCustomStats(_, _, _, _, _, _, _, completion):
-                completion(.success(.fake()))
-            case let .retrieveTopEarnerStats(_, _, _, _, _, _, _, _, completion):
-                completion(.success(.fake()))
-            case let .retrieveSiteSummaryStats(_, _, _, _, _, _, completion):
-                completion(.success(.fake()))
-            default:
-                break
-            }
-        }
-
-        // When
-        await vm.enableJetpackStats()
-
-        // Then
-        XCTAssertFalse(vm.showJetpackStatsCTA)
-    }
-
-    @MainActor
-    func test_enableJetpackStats_shows_error_and_call_to_action_after_failing_to_enable_stats() async {
-        // Given
-        stores.whenReceivingAction(ofType: JetpackSettingsAction.self) { action in
-            switch action {
-            case let .enableJetpackModule(_, _, completion):
-                completion(.failure(NSError(domain: "Test", code: 1)))
-            }
-        }
-
-        // When
-        await vm.enableJetpackStats()
-
-        // Then
-        XCTAssertEqual(noticePresenter.queuedNotices.count, 1)
-        XCTAssertTrue(vm.showJetpackStatsCTA)
-    }
-
-    func test_it_tracks_expected_jetpack_stats_CTA_success_events() async {
-        // Given
-        stores.whenReceivingAction(ofType: StatsActionV4.self) { action in
-            switch action {
-            case let .retrieveCustomStats(_, _, _, _, _, _, _, completion):
-                completion(.success(.fake()))
-            case let .retrieveTopEarnerStats(_, _, _, _, _, _, _, _, completion):
-                completion(.success(.fake()))
-            case let .retrieveSiteSummaryStats(_, _, _, _, _, _, completion):
-                completion(.failure(SiteStatsStoreError.statsModuleDisabled))
-            default:
-                break
-            }
-        }
-        stores.whenReceivingAction(ofType: JetpackSettingsAction.self) { action in
-            switch action {
-            case let .enableJetpackModule(_, _, completion):
-                completion(.success(()))
-            }
-        }
-
-        // When
-        await vm.updateData()
-        await vm.enableJetpackStats()
-
-        // Then
-        let expectedEvents: [WooAnalyticsStat] = [
-            .analyticsHubEnableJetpackStatsShown,
-            .analyticsHubEnableJetpackStatsTapped,
-            .analyticsHubEnableJetpackStatsSuccess
-        ]
-        for event in expectedEvents {
-            XCTAssert(analyticsProvider.receivedEvents.contains(event.rawValue), "Did not receive expected event: \(event.rawValue)")
-        }
-    }
-
-    func test_it_tracks_expected_jetpack_stats_CTA_failure_events() async {
-        // Given
-        stores.whenReceivingAction(ofType: StatsActionV4.self) { action in
-            switch action {
-            case let .retrieveCustomStats(_, _, _, _, _, _, _, completion):
-                completion(.success(.fake()))
-            case let .retrieveTopEarnerStats(_, _, _, _, _, _, _, _, completion):
-                completion(.success(.fake()))
-            case let .retrieveSiteSummaryStats(_, _, _, _, _, _, completion):
-                completion(.failure(SiteStatsStoreError.statsModuleDisabled))
-            default:
-                break
-            }
-        }
-        stores.whenReceivingAction(ofType: JetpackSettingsAction.self) { action in
-            switch action {
-            case let .enableJetpackModule(_, _, completion):
-                completion(.failure(NSError(domain: "Test", code: 1)))
-            }
-        }
-
-        // When
-        await vm.updateData()
-        await vm.enableJetpackStats()
-
-        // Then
-        let expectedEvents: [WooAnalyticsStat] = [
-            .analyticsHubEnableJetpackStatsShown,
-            .analyticsHubEnableJetpackStatsTapped,
-            .analyticsHubEnableJetpackStatsFailed
-        ]
-        for event in expectedEvents {
-            XCTAssert(analyticsProvider.receivedEvents.contains(event.rawValue), "Did not receive expected event: \(event.rawValue)")
-        }
-    }
-
-    @MainActor
-    func test_cards_viewmodels_contain_expected_reportURL_elements() async throws {
-        // When
-        let revenueCardReportURL = try XCTUnwrap(vm.revenueCard.reportViewModel?.initialURL)
-        let ordersCardReportURL = try XCTUnwrap(vm.ordersCard.reportViewModel?.initialURL)
-        let productsCardReportURL = try XCTUnwrap(vm.productsStatsCard.reportViewModel?.initialURL)
-
-        let revenueCardURLQueryItems = try XCTUnwrap(URLComponents(url: revenueCardReportURL, resolvingAgainstBaseURL: false)?.queryItems)
-        let ordersCardURLQueryItems = try XCTUnwrap(URLComponents(url: ordersCardReportURL, resolvingAgainstBaseURL: false)?.queryItems)
-        let productsCardURLQueryItems = try XCTUnwrap(URLComponents(url: productsCardReportURL, resolvingAgainstBaseURL: false)?.queryItems)
-
-        // Then
-        // Report URL contains expected admin URL
-        XCTAssertTrue(revenueCardReportURL.relativeString.contains(sampleAdminURL))
-        XCTAssertTrue(ordersCardReportURL.relativeString.contains(sampleAdminURL))
-        XCTAssertTrue(productsCardReportURL.relativeString.contains(sampleAdminURL))
-
-        // Report URL contains expected report path
-        XCTAssertTrue(revenueCardURLQueryItems.contains(URLQueryItem(name: "path", value: "/analytics/revenue")))
-        XCTAssertTrue(ordersCardURLQueryItems.contains(URLQueryItem(name: "path", value: "/analytics/orders")))
-        XCTAssertTrue(productsCardURLQueryItems.contains(URLQueryItem(name: "path", value: "/analytics/products")))
-
-        // Report URL contains expected time range period
-        let expectedPeriodQueryItem = URLQueryItem(name: "period", value: "month")
-        XCTAssertTrue(revenueCardURLQueryItems.contains(expectedPeriodQueryItem))
-        XCTAssertTrue(ordersCardURLQueryItems.contains(expectedPeriodQueryItem))
-        XCTAssertTrue(productsCardURLQueryItems.contains(expectedPeriodQueryItem))
-    }
-
-    @MainActor
-    func test_cards_viewmodels_contain_expected_report_path_after_updating_from_network() async throws {
-        // Given
-        stores.whenReceivingAction(ofType: StatsActionV4.self) { action in
-            switch action {
-            case let .retrieveCustomStats(_, _, _, _, _, _, _, completion):
-                let stats = OrderStatsV4.fake().copy(totals: .fake().copy(totalOrders: 15, totalItemsSold: 5, grossRevenue: 62))
-                completion(.success(stats))
-            case let .retrieveTopEarnerStats(_, _, _, _, _, _, _, _, completion):
-                let topEarners = TopEarnerStats.fake().copy(items: [.fake()])
-                completion(.success(topEarners))
-            case let .retrieveSiteSummaryStats(_, _, _, _, _, _, completion):
-                let siteStats = SiteSummaryStats.fake().copy(visitors: 30, views: 53)
-                completion(.success(siteStats))
-            default:
-                break
-            }
-        }
-
-        // When
-        await vm.updateData()
-
-        // Then
-        let revenueCardReportURL = try XCTUnwrap(vm.revenueCard.reportViewModel?.initialURL)
-        let ordersCardReportURL = try XCTUnwrap(vm.ordersCard.reportViewModel?.initialURL)
-        let productsCardReportURL = try XCTUnwrap(vm.productsStatsCard.reportViewModel?.initialURL)
-
-        let revenueCardURLQueryItems = try XCTUnwrap(URLComponents(url: revenueCardReportURL, resolvingAgainstBaseURL: false)?.queryItems)
-        let ordersCardURLQueryItems = try XCTUnwrap(URLComponents(url: ordersCardReportURL, resolvingAgainstBaseURL: false)?.queryItems)
-        let productsCardURLQueryItems = try XCTUnwrap(URLComponents(url: productsCardReportURL, resolvingAgainstBaseURL: false)?.queryItems)
-
-        // Report URL contains expected report path
-        XCTAssertTrue(revenueCardURLQueryItems.contains(URLQueryItem(name: "path", value: "/analytics/revenue")))
-        XCTAssertTrue(ordersCardURLQueryItems.contains(URLQueryItem(name: "path", value: "/analytics/orders")))
-        XCTAssertTrue(productsCardURLQueryItems.contains(URLQueryItem(name: "path", value: "/analytics/products")))
-    }
-
-    @MainActor
-    func test_cards_viewmodels_contain_non_nil_report_url_while_loading_and_after_error() async {
-        // Given
-        var loadingRevenueCard: AnalyticsReportCardViewModel?
-        var loadingOrdersCard: AnalyticsReportCardViewModel?
-        var loadingProductsCard: AnalyticsProductsStatsCardViewModel?
-        stores.whenReceivingAction(ofType: StatsActionV4.self) { action in
-            switch action {
-            case let .retrieveCustomStats(_, _, _, _, _, _, _, completion):
-                loadingRevenueCard = self.vm.revenueCard
-                loadingOrdersCard = self.vm.ordersCard
-                loadingProductsCard = self.vm.productsStatsCard
-                completion(.failure(NSError(domain: "Test", code: 1)))
-            case let .retrieveTopEarnerStats(_, _, _, _, _, _, _, _, completion):
-                completion(.failure(NSError(domain: "Test", code: 1)))
-            case let .retrieveSiteSummaryStats(_, _, _, _, _, _, completion):
-                completion(.failure(NSError(domain: "Test", code: 1)))
-            default:
-                break
-            }
-        }
-
-        // When
-        await vm.updateData()
-
-        // Then
-        XCTAssertNotNil(loadingRevenueCard?.reportViewModel?.initialURL)
-        XCTAssertNotNil(loadingOrdersCard?.reportViewModel?.initialURL)
-        XCTAssertNotNil(loadingProductsCard?.reportViewModel?.initialURL)
-
-        XCTAssertNotNil(vm.revenueCard.reportViewModel?.initialURL)
-        XCTAssertNotNil(vm.ordersCard.reportViewModel?.initialURL)
-        XCTAssertNotNil(vm.productsStatsCard.reportViewModel?.initialURL)
-    }
-
     // MARK: Customized Analytics
 
     func test_enabledCards_shows_correct_data_after_loading_from_storage() async {
@@ -535,6 +234,30 @@ final class AnalyticsHubViewModelTests: XCTestCase {
 
         // Then
         assertEqual([.revenue], vm.enabledCards)
+    }
+
+    func test_enabledCards_contains_new_cards_not_in_stored_customizations_when_extensions_are_active() async {
+        // Given
+        let storage = MockStorageManager()
+        insertActivePlugins([SitePlugin.SupportedPlugin.WCProductBundles.first, SitePlugin.SupportedPlugin.WCGiftCards.first], to: storage)
+        let vm = createViewModel(storage: storage)
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+            case let .loadAnalyticsHubCards(_, completion):
+                completion([AnalyticsCard(type: .orders, enabled: true),
+                            AnalyticsCard(type: .revenue, enabled: true),
+                            AnalyticsCard(type: .products, enabled: false),
+                            AnalyticsCard(type: .sessions, enabled: false)])
+            default:
+                break
+            }
+        }
+
+        // When
+        await vm.loadAnalyticsCardSettings()
+
+        // Then
+        assertEqual([.orders, .revenue, .bundles, .giftCards], vm.enabledCards)
     }
 
     func test_it_updates_enabledCards_when_saved() async throws {
@@ -575,7 +298,9 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         let expectedCards = [AnalyticsCard(type: .revenue, enabled: true),
                              AnalyticsCard(type: .orders, enabled: false),
                              AnalyticsCard(type: .products, enabled: false),
-                             AnalyticsCard(type: .sessions, enabled: false)]
+                             AnalyticsCard(type: .sessions, enabled: false),
+                             AnalyticsCard(type: .bundles, enabled: true),
+                             AnalyticsCard(type: .giftCards, enabled: true)]
         assertEqual(expectedCards, storedAnalyticsCards)
     }
 
@@ -661,7 +386,9 @@ final class AnalyticsHubViewModelTests: XCTestCase {
                 completion([AnalyticsCard(type: .revenue, enabled: true),
                             AnalyticsCard(type: .orders, enabled: true),
                             AnalyticsCard(type: .products, enabled: false),
-                            AnalyticsCard(type: .sessions, enabled: false)])
+                            AnalyticsCard(type: .sessions, enabled: false),
+                            AnalyticsCard(type: .bundles, enabled: false),
+                            AnalyticsCard(type: .giftCards, enabled: false)])
             default:
                 break
             }
@@ -702,7 +429,9 @@ final class AnalyticsHubViewModelTests: XCTestCase {
                 completion([AnalyticsCard(type: .revenue, enabled: true),
                             AnalyticsCard(type: .orders, enabled: true),
                             AnalyticsCard(type: .products, enabled: false),
-                            AnalyticsCard(type: .sessions, enabled: false)])
+                            AnalyticsCard(type: .sessions, enabled: false),
+                            AnalyticsCard(type: .bundles, enabled: false),
+                            AnalyticsCard(type: .giftCards, enabled: false)])
             default:
                 break
             }
@@ -721,7 +450,7 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         customizeAnalytics.saveChanges()
     }
 
-    func test_customizeAnalytics_excludes_sessions_card_when_ineligible() throws {
+    func test_sessions_card_is_inactive_in_customizeAnalytics_when_ineligible() throws {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, defaultSite: .fake().copy(siteID: -1)))
         let vm = createViewModel(stores: stores)
@@ -731,11 +460,42 @@ final class AnalyticsHubViewModelTests: XCTestCase {
 
         // Then
         let customizeAnalyticsVM = try XCTUnwrap(vm.customizeAnalyticsViewModel)
-        let expectedCards = [AnalyticsCard(type: .revenue, enabled: true),
-                             AnalyticsCard(type: .orders, enabled: true),
-                             AnalyticsCard(type: .products, enabled: true)]
         XCTAssertFalse(vm.enabledCards.contains(.sessions))
-        assertEqual(expectedCards, customizeAnalyticsVM.allCards)
+        XCTAssertTrue(customizeAnalyticsVM.inactiveCards.contains(where: { $0.type == .sessions }))
+    }
+
+    func test_bundles_card_is_inactive_in_customizeAnalytics_when_extension_is_inactive() throws {
+        // Given
+        let storage = MockStorageManager()
+        storage.insertSampleSystemPlugin(readOnlySystemPlugin: .fake().copy(siteID: sampleSiteID,
+                                                                            name: SitePlugin.SupportedPlugin.WCProductBundles.first,
+                                                                            active: false))
+        let vm = createViewModel(storage: storage)
+
+        // When
+        vm.customizeAnalytics()
+
+        // Then
+        let customizeAnalyticsVM = try XCTUnwrap(vm.customizeAnalyticsViewModel)
+        XCTAssertFalse(vm.enabledCards.contains(.bundles))
+        XCTAssertTrue(customizeAnalyticsVM.inactiveCards.contains(where: { $0.type == .bundles }))
+    }
+
+    func test_gift_cards_card_is_inactive_in_customizeAnalytics_when_extension_is_inactive() throws {
+        // Given
+        let storage = MockStorageManager()
+        storage.insertSampleSystemPlugin(readOnlySystemPlugin: .fake().copy(siteID: sampleSiteID,
+                                                                            name: SitePlugin.SupportedPlugin.WCGiftCards.first,
+                                                                            active: false))
+        let vm = createViewModel(storage: storage)
+
+        // When
+        vm.customizeAnalytics()
+
+        // Then
+        let customizeAnalyticsVM = try XCTUnwrap(vm.customizeAnalyticsViewModel)
+        XCTAssertFalse(vm.enabledCards.contains(.giftCards))
+        XCTAssertTrue(customizeAnalyticsVM.inactiveCards.contains(where: { $0.type == .giftCards }))
     }
 
     func test_customizeAnalytics_tracks_expected_event() {
@@ -745,16 +505,69 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         // Then
         XCTAssert(analyticsProvider.receivedEvents.contains(WooAnalyticsStat.analyticsHubSettingsOpened.rawValue))
     }
+
+    func test_product_bundles_card_displayed_when_plugin_active() {
+        // Given
+        let storage = MockStorageManager()
+        storage.insertSampleSystemPlugin(readOnlySystemPlugin: .fake().copy(siteID: sampleSiteID,
+                                                                            name: SitePlugin.SupportedPlugin.WCProductBundles.first,
+                                                                            active: true))
+        let vm = createViewModel(storage: storage)
+
+        // Then
+        XCTAssertTrue(vm.enabledCards.contains(.bundles))
+    }
+
+    func test_product_bundles_card_not_displayed_when_plugin_inactive() {
+        // Given
+        let storage = MockStorageManager()
+        storage.insertSampleSystemPlugin(readOnlySystemPlugin: .fake().copy(siteID: sampleSiteID,
+                                                                            name: SitePlugin.SupportedPlugin.WCProductBundles.first,
+                                                                            active: false))
+        let vm = createViewModel(storage: storage)
+
+        // Then
+        XCTAssertFalse(vm.enabledCards.contains(.bundles))
+    }
+
+    func test_gift_cards_card_displayed_when_plugin_active() {
+        // Given
+        let storage = MockStorageManager()
+        storage.insertSampleSystemPlugin(readOnlySystemPlugin: .fake().copy(siteID: sampleSiteID,
+                                                                            name: SitePlugin.SupportedPlugin.WCGiftCards.first,
+                                                                            active: true))
+        let vm = createViewModel(storage: storage)
+
+        // Then
+        XCTAssertTrue(vm.enabledCards.contains(.giftCards))
+    }
+
+    func test_gift_cards_card_not_displayed_when_plugin_inactive() {
+        // Given
+        let storage = MockStorageManager()
+        storage.insertSampleSystemPlugin(readOnlySystemPlugin: .fake().copy(siteID: sampleSiteID,
+                                                                            name: SitePlugin.SupportedPlugin.WCGiftCards.first,
+                                                                            active: false))
+        let vm = createViewModel(storage: storage)
+
+        // Then
+        XCTAssertFalse(vm.enabledCards.contains(.giftCards))
+    }
 }
 
 private extension AnalyticsHubViewModelTests {
-    func createViewModel(stores: MockStoresManager? = nil) -> AnalyticsHubViewModel {
-        AnalyticsHubViewModel(siteID: 123,
+    func createViewModel(stores: MockStoresManager? = nil, storage: MockStorageManager? = nil) -> AnalyticsHubViewModel {
+        AnalyticsHubViewModel(siteID: sampleSiteID,
                               statsTimeRange: .thisMonth,
                               usageTracksEventEmitter: eventEmitter,
                               stores: stores ?? self.stores,
-                              analytics: analytics,
-                              noticePresenter: noticePresenter,
-                              backendProcessingDelay: 0)
+                              storage: storage ?? MockStorageManager(),
+                              analytics: analytics)
+    }
+
+    func insertActivePlugins(_ pluginNames: [String?], to storage: MockStorageManager) {
+        pluginNames.forEach { pluginName in
+            storage.insertSampleSystemPlugin(readOnlySystemPlugin: .fake().copy(siteID: sampleSiteID, name: pluginName, active: true))
+        }
     }
 }

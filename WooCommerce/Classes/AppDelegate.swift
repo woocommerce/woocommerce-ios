@@ -4,13 +4,13 @@ import Storage
 import class Networking.UserAgent
 import Experiments
 import class WidgetKit.WidgetCenter
+import protocol Yosemite.StoresManager
 
 import CocoaLumberjack
 import KeychainAccess
 import WordPressUI
 import WordPressAuthenticator
 import AutomatticTracks
-import WordPressKit
 
 import class Yosemite.ScreenshotStoresManager
 
@@ -59,16 +59,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, willFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
         // Setup Components
         setupStartupWaitingTimeTracker()
-        setupAnalytics()
+
+        let stores = ServiceLocator.stores
+        let analytics = ServiceLocator.analytics
+        let pushNotesManager = ServiceLocator.pushNotesManager
+        stores.initializeAfterDependenciesAreInitialized()
+        setupAnalytics(analytics)
+
         setupCocoaLumberjack()
         setupLibraryLogger()
         setupLogLevel(.verbose)
-        setupPushNotificationsManagerIfPossible()
+        setupPushNotificationsManagerIfPossible(pushNotesManager, stores: stores)
         setupAppRatingManager()
         setupWormholy()
         setupKeyboardStateProvider()
         handleLaunchArguments()
-        setupUserNotificationCenter()
 
         // Components that require prior Auth
         setupZendesk()
@@ -102,8 +107,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         setupNoticePresenter()
         setupUniversalLinkRouter()
         disableAnimationsIfNeeded()
-
-        configureWordPressKit()
 
         // Don't track startup waiting time if user starts logged out
         if !ServiceLocator.stores.isAuthenticated {
@@ -173,6 +176,27 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
             // add our notification request
             UNUserNotificationCenter.current().add(request)
+        }
+    }
+
+    func application(_ application: UIApplication, performActionFor shortcutItem: UIApplicationShortcutItem, completionHandler: @escaping (Bool) -> Void) {
+        guard let quickAction = QuickAction(rawValue: shortcutItem.type) else {
+            completionHandler(false)
+            return
+        }
+        switch quickAction {
+        case QuickAction.addProduct:
+            MainTabBarController.presentAddProductFlow()
+            completionHandler(true)
+        case QuickAction.addOrder:
+            MainTabBarController.presentOrderCreationFlow()
+            completionHandler(true)
+        case QuickAction.openOrders:
+            MainTabBarController.switchToOrdersTab()
+            completionHandler(true)
+        case QuickAction.collectPayment:
+            MainTabBarController.presentCollectPayment()
+            completionHandler(true)
         }
     }
 
@@ -292,8 +316,8 @@ private extension AppDelegate {
 
     /// Sets up the WordPress Authenticator.
     ///
-    func setupAnalytics() {
-        ServiceLocator.analytics.initialize()
+    func setupAnalytics(_ analytics: Analytics) {
+        analytics.initialize()
     }
 
     /// Sets up CocoaLumberjack logging.
@@ -333,17 +357,7 @@ private extension AppDelegate {
 
     /// Push Notifications: Authorization + Registration!
     ///
-    func setupPushNotificationsManagerIfPossible() {
-        let stores = ServiceLocator.stores
-        guard stores.isAuthenticated,
-              stores.needsDefaultStore == false,
-              stores.isAuthenticatedWithoutWPCom == false else {
-            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.storeCreationNotifications) {
-                ServiceLocator.pushNotesManager.ensureAuthorizationIsRequested(includesProvisionalAuth: true, onCompletion: nil)
-            }
-            return
-        }
-
+    func setupPushNotificationsManagerIfPossible(_ pushNotesManager: PushNotesManager, stores: StoresManager) {
         #if targetEnvironment(simulator)
             DDLogVerbose("👀 Push Notifications are not supported in the Simulator!")
         #else
@@ -351,13 +365,6 @@ private extension AppDelegate {
             pushNotesManager.registerForRemoteNotifications()
             pushNotesManager.ensureAuthorizationIsRequested(includesProvisionalAuth: false, onCompletion: nil)
         #endif
-    }
-
-    func setupUserNotificationCenter() {
-        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.storeCreationNotifications) else {
-            return
-        }
-        UNUserNotificationCenter.current().delegate = self
     }
 
     func setupUniversalLinkRouter() {
@@ -462,13 +469,6 @@ private extension AppDelegate {
             break
         }
     }
-
-    func configureWordPressKit() {
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.useURLSessionInWordPressKit) {
-            WordPressOrgXMLRPCApi.useURLSession = true
-            WordPressComRestApi.useURLSession = true
-        }
-    }
 }
 
 
@@ -521,7 +521,7 @@ extension AppDelegate {
     /// Runs whenever the Authentication Flow is completed successfully.
     ///
     func authenticatorWasDismissed() {
-        setupPushNotificationsManagerIfPossible()
+        setupPushNotificationsManagerIfPossible(ServiceLocator.pushNotesManager, stores: ServiceLocator.stores)
         requirementsChecker.checkEligibilityForDefaultStore()
     }
 }
@@ -548,4 +548,13 @@ private extension AppDelegate {
 
         universalLinkRouter?.handle(url: linkURL)
     }
+}
+
+// MARK: - Home Screen Quick Actions
+
+enum QuickAction: String {
+    case addProduct = "AddProductAction"
+    case addOrder = "AddOrderAction"
+    case openOrders = "OpenOrdersAction"
+    case collectPayment = "CollectPaymentAction"
 }

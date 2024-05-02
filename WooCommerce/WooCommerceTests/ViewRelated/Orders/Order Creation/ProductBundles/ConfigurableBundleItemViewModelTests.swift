@@ -172,7 +172,9 @@ final class ConfigurableBundleItemViewModelTests: XCTestCase {
                             .init(id: 0, name: "Color", option: "Orange")
                          ]),
             // Selected product.
-            .fake()
+            .fake(),
+            // isSelected
+            true
         )
 
         // Then
@@ -206,7 +208,9 @@ final class ConfigurableBundleItemViewModelTests: XCTestCase {
             .fake().copy(productVariationID: 7,
                          attributes: []),
             // Selected product.
-            .fake()
+            .fake(),
+            // isSelected.
+            true
         )
 
         // Then
@@ -264,7 +268,9 @@ final class ConfigurableBundleItemViewModelTests: XCTestCase {
             .fake().copy(productVariationID: 7,
                          attributes: []),
             // Selected product.
-            variableProduct
+            variableProduct,
+            // isSelected
+            true
         )
         viewModel.isOptionalAndSelected = true
 
@@ -387,7 +393,7 @@ final class ConfigurableBundleItemViewModelTests: XCTestCase {
 
         // When selecting a variation with only 1 attribute
         let selectedVariation = ProductVariation.fake().copy(attributes: [.fake().copy(name: "Ice level", option: "Full")])
-        viewModel.variationSelectorViewModel?.onVariationSelectionStateChanged?(selectedVariation, .fake())
+        viewModel.variationSelectorViewModel?.onVariationSelectionStateChanged?(selectedVariation, .fake(), true)
 
         // Then there is an error on a missing attribute option
         XCTAssertNotNil(viewModel.errorMessage)
@@ -414,7 +420,7 @@ final class ConfigurableBundleItemViewModelTests: XCTestCase {
         viewModel.createVariationSelectorViewModel()
 
         // When
-        viewModel.variationSelectorViewModel?.onVariationSelectionStateChanged?(.fake(), .fake())
+        viewModel.variationSelectorViewModel?.onVariationSelectionStateChanged?(.fake(), .fake(), true)
 
         // Then
         XCTAssertEqual(analyticsProvider.receivedEvents, ["order_form_bundle_product_configuration_changed"])

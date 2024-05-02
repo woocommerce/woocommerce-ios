@@ -73,6 +73,7 @@ final class OrdersRootViewController: UIViewController {
 
     private let switchDetailsHandler: OrderListViewController.SelectOrderDetails
 
+
     // MARK: View Lifecycle
 
     init(siteID: Int64,
@@ -112,6 +113,16 @@ final class OrdersRootViewController: UIViewController {
         }
     }
 
+    override var shouldShowOfflineBanner: Bool {
+        // Should show the offline banner only when there's no orderDetailsViewController in memory
+        // otherwise, it will be shown within the order details view, so there's no need to duplicate it
+        if orderDetailsViewController != nil {
+            return false
+        } else {
+            return true
+        }
+    }
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
@@ -124,13 +135,32 @@ final class OrdersRootViewController: UIViewController {
     @objc private func displaySearchOrders() {
         analytics.track(.ordersListSearchTapped)
 
-        let searchViewController = SearchViewController<OrderTableViewCell, OrderSearchUICommand>(storeID: siteID,
-                                                                                                  command: OrderSearchUICommand(siteID: siteID),
-                                                                                                  cellType: OrderTableViewCell.self,
-                                                                                                  cellSeparator: .singleLine)
+        let searchViewController = SearchViewController<OrderTableViewCell, OrderSearchUICommand>(
+            storeID: siteID,
+            command: OrderSearchUICommand(siteID: siteID,
+                                          onSelectSearchResult: { [weak self] order, viewController in
+                                              guard let self else { return }
+                                              guard featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm) else {
+                                                  return presentOrder(order, from: viewController)
+                                              }
+                                              navigateToOrderDetail(order)
+                                              viewController.dismiss(animated: true)
+                                          }),
+            cellType: OrderTableViewCell.self,
+            cellSeparator: .singleLine)
         let navigationController = WooNavigationController(rootViewController: searchViewController)
 
         present(navigationController, animated: true, completion: nil)
+    }
+
+    private func presentOrder(_ order: Order, from viewController: UIViewController) {
+        let viewModel = OrderDetailsViewModel(order: order)
+        let detailsViewController = OrderDetailsViewController(viewModel: viewModel)
+
+        viewController.navigationController?.pushViewController(detailsViewController, animated: true)
+        analytics.track(event: WooAnalyticsEvent.Orders.orderOpen(
+            order: order,
+            horizontalSizeClass: UITraitCollection.current.horizontalSizeClass))
     }
 
     /// Presents the Details for the Notification with the specified Identifier.
@@ -250,6 +280,7 @@ final class OrdersRootViewController: UIViewController {
                 case let .failure(error):
                     self.displayScannedProductErrorNotice(error, code: scannedBarcode)
                 }
+                navigationItem.leftBarButtonItem = createAddOrderByProductScanningButtonItem()
             }
         }, onPermissionsDenied: { [weak self] in
             self?.analytics.track(event: WooAnalyticsEvent.BarcodeScanning.barcodeScanningFailure(from: .orderList, reason: .cameraAccessNotPermitted))
@@ -420,6 +451,7 @@ private extension OrdersRootViewController {
                 self?.filters = FilterOrderListViewModel.Filters(orderStatus: settings.orderStatusesFilter,
                                                                  dateRange: settings.dateRangeFilter,
                                                                  product: settings.productFilter,
+                                                                 customer: settings.customerFilter,
                                                                  numberOfActiveFilters: settings.numberOfActiveFilters())
             case .failure(let error):
                 print("It was not possible to sync local orders settings: \(String(describing: error))")
@@ -435,7 +467,8 @@ private extension OrdersRootViewController {
         let action = AppSettingsAction.upsertOrdersSettings(siteID: siteID,
                                                             orderStatusesFilter: filters.orderStatus,
                                                             dateRangeFilter: filters.dateRange,
-                                                            productFilter: filters.product) { error in
+                                                            productFilter: filters.product,
+                                                            customerFilter: filters.customer) { error in
             if error != nil {
                 assertionFailure("It was not possible to store order settings due to an error: \(String(describing: error))")
             }
@@ -483,6 +516,10 @@ private extension OrdersRootViewController {
                                      target: self,
                                      action: #selector(presentOrderCreationFlowByProductScanning))
         button.accessibilityTraits = .button
+        button.accessibilityLabel = NSLocalizedString(
+            "orderForm.products.add.scan.button.accessibilityLabel",
+            value: "Scan barcode",
+            comment: "Accessibility label for the barcode scanning button to add product")
         button.accessibilityIdentifier = "create-new-order-by-product-scanning"
         return button
     }
@@ -495,8 +532,9 @@ private extension OrdersRootViewController {
             horizontalSizeClass: UITraitCollection.current.horizontalSizeClass
         ))
 
-        ordersViewController.showOrderDetails(order)
-        onCompletion?(true)
+        ordersViewController.showOrderDetails(order, shouldScrollIfNeeded: true) { _ in
+            onCompletion?(true)
+        }
     }
 
     var orderDetailsViewController: OrderDetailsViewController? {

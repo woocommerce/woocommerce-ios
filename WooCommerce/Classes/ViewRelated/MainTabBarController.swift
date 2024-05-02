@@ -407,6 +407,19 @@ extension MainTabBarController {
         }
     }
 
+    static func presentAddProductFlow() {
+        switchToProductsTab {
+            let tabBar = AppDelegate.shared.tabBarController
+            let productsContainerController = tabBar?.productsContainerController
+
+            guard let productsSplitViewWrapperController = productsContainerController?.wrappedController as? ProductsSplitViewWrapperController else {
+                return
+            }
+
+            productsSplitViewWrapperController.startProductCreation()
+        }
+    }
+
     static func navigateToOrderDetails(with orderID: Int64, siteID: Int64) {
         showStore(with: siteID, onCompletion: { storeIsShown in
             switchToOrdersTab {
@@ -476,6 +489,13 @@ extension MainTabBarController {
             }
             hubMenuViewController.showPrivacySettings()
         }
+    }
+
+    static func presentCollectPayment() {
+        guard let tabBar = AppDelegate.shared.tabBarController else {
+            return
+        }
+        tabBar.presentCollectPayment()
     }
 }
 
@@ -565,7 +585,7 @@ private extension MainTabBarController {
     }
 
     func createDashboardViewController(siteID: Int64) -> UIViewController {
-        DashboardViewController(siteID: siteID)
+        DashboardViewHostingController(siteID: siteID)
     }
 
     func createOrdersViewController(siteID: Int64) -> UIViewController {

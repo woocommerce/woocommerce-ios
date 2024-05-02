@@ -42,6 +42,15 @@ public struct BlazeCampaignListItem: Decodable, Equatable, GeneratedFakeable, Ge
     /// Spent budget
     public let spentBudget: Double
 
+    /// Indicates whether the `budgetAmount` field is total or daily amount.
+    public let budgetMode: BlazeCampaignBudget.Mode
+
+    /// Can be total or daily amount, so check `budgetMode` to identify this.
+    public let budgetAmount: Double
+
+    /// Currency used in `budgetAmount`. Default to be USD.
+    public let budgetCurrency: String
+
     public init(siteID: Int64,
                 campaignID: String,
                 productID: Int64?,
@@ -53,7 +62,10 @@ public struct BlazeCampaignListItem: Decodable, Equatable, GeneratedFakeable, Ge
                 impressions: Int64,
                 clicks: Int64,
                 totalBudget: Double,
-                spentBudget: Double) {
+                spentBudget: Double,
+                budgetMode: BlazeCampaignBudget.Mode,
+                budgetAmount: Double,
+                budgetCurrency: String) {
         self.siteID = siteID
         self.campaignID = campaignID
         self.productID = productID
@@ -66,6 +78,9 @@ public struct BlazeCampaignListItem: Decodable, Equatable, GeneratedFakeable, Ge
         self.clicks = clicks
         self.totalBudget = totalBudget
         self.spentBudget = spentBudget
+        self.budgetMode = budgetMode
+        self.budgetAmount = budgetAmount
+        self.budgetCurrency = budgetCurrency
     }
 
     public init(from decoder: Decoder) throws {
@@ -95,6 +110,11 @@ public struct BlazeCampaignListItem: Decodable, Equatable, GeneratedFakeable, Ge
         clicks = try container.decodeIfPresent(Int64.self, forKey: .clicks) ?? 0
         totalBudget = try container.decode(Double.self, forKey: .totalBudget)
         spentBudget = try container.decodeIfPresent(Double.self, forKey: .spentBudget) ?? 0
+
+        let budget = try container.decodeIfPresent(BlazeCampaignBudget.self, forKey: .budget)
+        budgetMode = budget?.mode ?? .total
+        budgetAmount = budget?.amount ?? totalBudget
+        budgetCurrency = budget?.currency ?? "USD"
     }
 }
 
@@ -102,14 +122,12 @@ public struct BlazeCampaignListItem: Decodable, Equatable, GeneratedFakeable, Ge
 //
 public extension BlazeCampaignListItem {
     enum Status: String {
+        case pending
         case scheduled
-        case created
-        case rejected
-        case approved
         case active
+        case rejected
         case canceled
         case finished
-        case processing
         case unknown
     }
 
@@ -134,6 +152,7 @@ private extension BlazeCampaignListItem {
         case spentBudget
         case impressions
         case clicks
+        case budget
     }
 
     /// Private subtype for parsing image details.
@@ -144,5 +163,22 @@ private extension BlazeCampaignListItem {
     /// Decoding Errors
     enum DecodingError: Error {
         case missingSiteID
+    }
+}
+
+public struct BlazeCampaignBudget: Codable, GeneratedFakeable, GeneratedCopiable {
+    public let mode: Mode
+    public let amount: Double
+    public let currency: String
+
+    public init(mode: Mode, amount: Double, currency: String) {
+        self.mode = mode
+        self.amount = amount
+        self.currency = currency
+    }
+
+    public enum Mode: String, Codable, GeneratedFakeable {
+        case total
+        case daily
     }
 }

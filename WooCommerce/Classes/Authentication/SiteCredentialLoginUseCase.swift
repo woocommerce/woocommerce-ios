@@ -9,6 +9,7 @@ protocol SiteCredentialLoginProtocol {
 
 enum SiteCredentialLoginError: LocalizedError {
     static let errorDomain = "SiteCredentialLogin"
+    case invalidCredentials
     case loginFailed(message: String)
     case invalidLoginResponse
     case inaccessibleLoginPage
@@ -23,6 +24,7 @@ enum SiteCredentialLoginError: LocalizedError {
         case .inaccessibleLoginPage,
              .inaccessibleAdminPage,
              .invalidLoginResponse,
+             .invalidCredentials,
              .loginFailed,
              .unacceptableStatusCode:
             return NSError(domain: Self.errorDomain, code: errorCode, userInfo: [NSLocalizedDescriptionKey: errorMessage])
@@ -38,6 +40,8 @@ enum SiteCredentialLoginError: LocalizedError {
         case .invalidLoginResponse:
             return -1
         case .loginFailed:
+            return 403
+        case .invalidCredentials:
             return 401
         case .unacceptableStatusCode(let code):
             return code
@@ -54,6 +58,8 @@ enum SiteCredentialLoginError: LocalizedError {
             return Localization.inaccessibleAdminPage
         case .invalidLoginResponse:
             return Localization.invalidLoginResponse
+        case .invalidCredentials:
+            return Localization.invalidCredentials
         case .loginFailed(let message):
             return message
         case .unacceptableStatusCode(let code):
@@ -83,6 +89,10 @@ enum SiteCredentialLoginError: LocalizedError {
         static let unacceptableStatusCode = NSLocalizedString(
             "Unable to login with response status code %1$d.",
             comment: "Error message explaining login failure due to unacceptable status code."
+        )
+        static let invalidCredentials = NSLocalizedString(
+            "It seems the username or password you entered doesn't quite match. Double-check your credentials and try again.",
+            comment: "Error message explaining login failure due to invalid credentials."
         )
     }
 }
@@ -156,6 +166,9 @@ private extension SiteCredentialLoginUseCase {
         case 200:
             guard let html = String(data: data, encoding: .utf8) else {
                 throw SiteCredentialLoginError.invalidLoginResponse
+            }
+            if html.hasInvalidCredentialsPattern() {
+                throw SiteCredentialLoginError.invalidCredentials
             }
             if let errorMessage = html.findLoginErrorMessage() {
                 throw SiteCredentialLoginError.loginFailed(message: errorMessage)
@@ -250,7 +263,7 @@ private extension String {
     /// Gets contents between HTML tags with regex.
     ///
     func findLoginErrorMessage() -> String? {
-        let pattern = "<div[^>]*id=\"login_error\">([\\s\\S]+?)</div>"
+        let pattern = "<div[^>]*id=\"login_error\"[^>]*>([\\s\\S]+?)</div>"
         let urlPattern = "<a href=\".*\">[^~]*?</a>"
         let regexOptions = NSRegularExpression.Options.caseInsensitive
         let matchOptions = NSRegularExpression.MatchingOptions(rawValue: UInt(0))
@@ -287,5 +300,14 @@ private extension String {
             DDLogError("⚠️" + pattern + "<-- not found in string -->" + self )
             return nil
         }
+    }
+
+    /// When logging in with site credentials there is no way to properly tell if an error message is an invalid credentials error.
+    /// However, the server injects this `shake` pattern when an invalid credential error is found.
+    /// For the time being, we will use that pattern as a guess for an invalid credential error message.
+    /// ref: https://github.com/WordPress/WordPress/blob/master/wp-login.php#L65-L67
+    ///
+    func hasInvalidCredentialsPattern() -> Bool {
+        contains("document.querySelector('form').classList.add('shake')")
     }
 }

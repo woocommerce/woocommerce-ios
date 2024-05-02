@@ -90,9 +90,35 @@ final class StoreStatsPeriodViewModelTests: XCTestCase {
         XCTAssertEqual(conversionStatsTextValues, ["-"])
     }
 
-    func test_visitorStatsText_is_emitted_after_visitor_stats_updated_and_selecting_interval() {
+    func test_visitorStatsText_is_not_emitted_for_time_range_with_inequivalent_granularities_of_order_and_visit_stats() {
         // Given
         let timeRange: StatsTimeRangeV4 = .today
+        let viewModel = createViewModel(timeRange: timeRange)
+        observeStatsEmittedValues(viewModel: viewModel)
+
+        XCTAssertEqual(orderStatsTextValues, ["-"])
+        XCTAssertEqual(revenueStatsTextValues, ["-"])
+        XCTAssertEqual(visitorStatsTextValues, ["-"])
+        XCTAssertEqual(conversionStatsTextValues, ["-"])
+
+        // When
+        let siteVisitStats = Yosemite.SiteVisitStats.fake().copy(siteID: siteID, items: [ .fake().copy(visitors: 17) ])
+        insertSiteVisitStats(siteVisitStats, timeRange: timeRange)
+
+        XCTAssertEqual(visitorStatsTextValues, ["-"])
+
+        viewModel.selectedIntervalIndex = 0
+
+        // Then
+        XCTAssertEqual(orderStatsTextValues, ["-"])
+        XCTAssertEqual(revenueStatsTextValues, ["-"])
+        XCTAssertEqual(visitorStatsTextValues, ["-"])
+        XCTAssertEqual(conversionStatsTextValues, ["-"])
+    }
+
+    func test_visitorStatsText_is_emitted_for_time_range_with_equivalent_granularities_of_order_and_visit_stats() {
+        // Given
+        let timeRange: StatsTimeRangeV4 = .thisMonth
         let viewModel = createViewModel(timeRange: timeRange)
         observeStatsEmittedValues(viewModel: viewModel)
 
@@ -139,9 +165,35 @@ final class StoreStatsPeriodViewModelTests: XCTestCase {
         XCTAssertEqual(conversionStatsTextValues, ["-", "20%"]) // order count: 3, visitor count: 15 => 0.2 (20%)
     }
 
-    func test_conversionStatsText_is_emitted_after_order_and_visitors_stats_updated_and_selecting_interval() {
+    func test_conversionStatsText_is_not_emitted_for_time_range_with_inequivalent_granularities_of_order_and_visit_stats() {
         // Given
         let timeRange: StatsTimeRangeV4 = .today
+        let viewModel = createViewModel(timeRange: timeRange)
+        observeStatsEmittedValues(viewModel: viewModel)
+
+        // When
+        let siteVisitStats = Yosemite.SiteVisitStats.fake().copy(siteID: siteID, items: [.fake().copy(visitors: 15)])
+        insertSiteVisitStats(siteVisitStats, timeRange: timeRange)
+
+        XCTAssertEqual(conversionStatsTextValues, ["-"])
+
+        let orderStats = OrderStatsV4(siteID: siteID,
+                                      granularity: timeRange.intervalGranularity,
+                                      totals: .fake(),
+                                      intervals: [ .fake().copy(subtotals: .fake().copy(totalOrders: 3, grossRevenue: 62.7)) ])
+        insertOrderStats(orderStats, timeRange: timeRange)
+
+        XCTAssertEqual(conversionStatsTextValues, ["-"])
+
+        viewModel.selectedIntervalIndex = 0
+
+        // Then
+        XCTAssertEqual(conversionStatsTextValues, ["-"])
+    }
+
+    func test_conversionStatsText_is_emitted_for_time_range_with_equivalent_granularities_of_order_and_visit_stats() {
+        // Given
+        let timeRange: StatsTimeRangeV4 = .thisMonth
         let viewModel = createViewModel(timeRange: timeRange)
         observeStatsEmittedValues(viewModel: viewModel)
 
@@ -219,12 +271,12 @@ final class StoreStatsPeriodViewModelTests: XCTestCase {
                                                                dateEnd: "2022-01-05 23:59:59")])
         insertOrderStats(orderStats, timeRange: timeRange)
 
-        XCTAssertEqual(timeRangeBarViewModels.map { $0.timeRangeText }, ["Jan 3 - Jan 5"])
+        XCTAssertEqual(timeRangeBarViewModels.map { $0.timeRangeText }, ["Jan 3 – Jan 5"])
 
         viewModel.selectedIntervalIndex = 1
 
         // Then
-        XCTAssertEqual(timeRangeBarViewModels.map { $0.timeRangeText }, ["Jan 3 - Jan 5", "Jan 5"])
+        XCTAssertEqual(timeRangeBarViewModels.map { $0.timeRangeText }, ["Jan 3 – Jan 5", "Jan 5"])
     }
 
     func test_timeRangeBarViewModel_for_thisMonth_is_emitted_twice_after_order_and_visitor_stats_updated_and_selecting_interval() {

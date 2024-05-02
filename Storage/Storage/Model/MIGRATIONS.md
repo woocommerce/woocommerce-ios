@@ -2,6 +2,19 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
+## Model 110 (Release 17.9.0.0)
+- @rachelmcr 2024-03-19
+    - Add `WCAnalyticsCustomer` entity.
+    - Add `WCAnalyticsCustomerSearchResults` entity.
+
+## Model 109 (Release 17.9.0.0)
+- @itsmeichigo 2024-03-19
+    - Add new attributes `BudgetAmount`, `BudgetCurrency`, `BudgetMode` to `BlazeCampaignListItem` entity.
+
+## Model 108 (Release 17.7.0.0)
+- @selanthiraiyan 2024-03-04
+    - Remove `BlazeCampaign` entity.
+
 ## Model 107 (Release 17.6.0.0)
 - @selanthiraiyan 2024-02-28
     - Add `BlazeCampaignListItem` entity.

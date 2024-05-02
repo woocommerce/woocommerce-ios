@@ -1171,33 +1171,10 @@ extension WooAnalyticsEvent {
 extension WooAnalyticsEvent {
     // Namespace
     enum SimplePayments {
-        /// Possible Payment Methods
-        ///
-        enum PaymentMethod: String {
-            case card
-            case cash
-            case paymentLink = "payment_link"
-        }
-
-        /// Possible view sources
-        ///
-        enum Source: String {
-            case amount
-            case summary
-            case paymentMethod = "payment_method"
-        }
-
         /// Common event keys
         ///
         private enum Keys {
             static let state = "state"
-            static let amount = "amount"
-            static let paymentMethod = "payment_method"
-            static let source = "source"
-        }
-
-        static func simplePaymentsFlowStarted() -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .simplePaymentsFlowStarted, properties: [:])
         }
 
         static func simplePaymentsFlowNoteAdded() -> WooAnalyticsEvent {
@@ -1206,6 +1183,14 @@ extension WooAnalyticsEvent {
 
         static func simplePaymentsFlowTaxesToggled(isOn: Bool) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .simplePaymentsFlowTaxesToggled, properties: [Keys.state: isOn ? "on" : "off"])
+        }
+
+        static func simplePaymentsMigrationSheetAddCustomAmount() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .simplePaymentsMigrationSheetAddCustomAmount, properties: [:])
+        }
+
+        static func simplePaymentsMigrationSheetShown() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .simplePaymentsMigrationSheetShown, properties: [:])
         }
     }
 }
@@ -2832,34 +2817,6 @@ extension WooAnalyticsEvent {
     }
 }
 
-// MARK: - Free Trial
-//
-extension WooAnalyticsEvent {
-    enum FreeTrial {
-        enum Keys: String {
-            case source
-        }
-
-        enum Source: String {
-            case banner
-            case upgradesScreen = "upgrades_screen"
-            case expiredWPComPlanAlert = "expired_wpcom_plan_alert"
-        }
-
-        static func freeTrialUpgradeNowTapped(source: Source) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .freeTrialUpgradeNowTapped, properties: [Keys.source.rawValue: source.rawValue])
-        }
-
-        static func planUpgradeSuccess(source: Source) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .planUpgradeSuccess, properties: [Keys.source.rawValue: source.rawValue])
-        }
-
-        static func planUpgradeAbandoned(source: Source) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .planUpgradeAbandoned, properties: [Keys.source.rawValue: source.rawValue])
-        }
-    }
-}
-
 // MARK: - In-App Purchases
 extension WooAnalyticsEvent {
     enum InAppPurchases {
@@ -3072,5 +3029,56 @@ extension WooAnalyticsEvent {
 
             return WooAnalyticsEvent(statName: .orderProductSearchViaSKUFailure, properties: properties)
         }
+    }
+}
+
+// MARK: - Customers in Hub Menu
+
+extension WooAnalyticsEvent {
+    enum CustomersHub {
+        private enum Keys {
+            static let searchFilter = "filter"
+            static let registered = "registered"
+            static let hasEmail = "has_email_address"
+        }
+        static func customerListLoaded() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .customerHubLoaded, properties: [:])
+        }
+
+        static func customerListLoadFailed(withError error: Error) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .customerHubLoadFailed, properties: [:], error: error)
+        }
+
+        static func customerListSearched(withFilter filter: CustomerSearchFilter) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .customersHubSearch, properties: [Keys.searchFilter: filter.rawValue])
+        }
+
+        static func customerDetailOpened(registered: Bool, hasEmail: Bool) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .customersHubDetailOpen, properties: [Keys.registered: registered,
+                                                                              Keys.hasEmail: hasEmail])
+        }
+
+        static func customerDetailEmailMenuTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .customersHubDetailEmailMenuTapped, properties: [:])
+        }
+
+        static func customerDetailEmailOptionTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .customersHubDetailEmailOptionTapped, properties: [:])
+        }
+
+        static func customerDetailCopyEmailOptionTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .customersHubDetailCopyEmailOptionTapped, properties: [:])
+        }
+    }
+}
+
+// MARK: - Plugin events
+//
+extension WooAnalyticsEvent {
+    static func logOutOfDatePlugins(_ outOfDatePluginCount: Int, _ pluginList: String) -> WooAnalyticsEvent {
+        WooAnalyticsEvent(statName: .outOfDatePluginList, properties: [
+            "out_of_date_plugin_count": outOfDatePluginCount,
+            "plugins": "\(pluginList)"
+        ])
     }
 }

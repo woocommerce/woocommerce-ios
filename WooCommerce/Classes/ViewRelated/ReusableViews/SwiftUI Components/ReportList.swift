@@ -23,9 +23,10 @@ struct ReportList: View {
     @Environment(\.horizontalSizeClass) var sizeClass: UserInterfaceSizeClass?
 
     var body: some View {
-        VStack {
+        ScrollView {
             LargeTitle(text: viewModel.title)
                 .padding(.bottom, Layout.titleBottomPadding(sizeClass))
+                .padding(.top, Layout.topPadding(sizeClass))
             VStack(spacing: Layout.listSpacing(sizeClass)) {
                 ForEach(viewModel.items, id: \.id) {
                     IconListItem(title: $0.title,
@@ -33,15 +34,16 @@ struct ReportList: View {
                                  icon: $0.icon)
                 }
             }
-            .scrollVerticallyIfNeeded()
-            Spacer()
-            Button(viewModel.ctaTitle, action: viewModel.onDismiss)
-                .buttonStyle(PrimaryButtonStyle())
-                .padding(.horizontal, Layout.buttonHorizontalPadding(sizeClass))
         }
         .onAppear(perform: viewModel.onAppear)
-        .padding(.top, Layout.topPadding(sizeClass))
-        .padding(.bottom, Layout.bottomPadding(sizeClass))
+        .safeAreaInset(edge: .bottom) {
+            VStack {
+                Button(viewModel.ctaTitle, action: viewModel.onDismiss)
+                    .buttonStyle(PrimaryButtonStyle())
+                    .padding()
+            }
+            .background(Color(.systemBackground))
+        }
     }
 }
 
@@ -52,16 +54,8 @@ private extension ReportList {
             sizeClass == .regular ? 40 : 75
         }
 
-        static func bottomPadding(_ sizeClass: UserInterfaceSizeClass?) -> CGFloat {
-            sizeClass == .regular ? 40 : 60
-        }
-
         static func titleBottomPadding(_ sizeClass: UserInterfaceSizeClass?) -> CGFloat {
             sizeClass == .regular ? 32 : 40
-        }
-
-        static func buttonHorizontalPadding(_ sizeClass: UserInterfaceSizeClass?) -> CGFloat {
-            sizeClass == .regular ? 40 : 24
         }
 
         static func listSpacing(_ sizeClass: UserInterfaceSizeClass?) -> CGFloat {

@@ -3,6 +3,7 @@
 18.5
 -----
 - [*] Barcode scanning: Fixed bug where variable parent products could be added to orders directly using the barcode scanner. [https://github.com/woocommerce/woocommerce-ios/pull/12576]
+- [internal] Show In-App feedback card in dashboard. [https://github.com/woocommerce/woocommerce-ios/pull/12636]
 
 18.4
 -----

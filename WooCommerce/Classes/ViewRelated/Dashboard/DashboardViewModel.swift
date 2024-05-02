@@ -170,6 +170,22 @@ final class DashboardViewModel: ObservableObject {
         }
     }
 
+    func refreshDashboardCards() {
+        storeOnboardingViewModel.$canShowInDashboard
+            .combineLatest(blazeCampaignDashboardViewModel.$canShowInDashboard, $hasOrders)
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] canShowOnboarding, canShowBlaze, hasOrders in
+                guard let self else { return }
+                Task {
+                    await self.updateDashboardCards(canShowOnboarding: canShowOnboarding,
+                                                    canShowBlaze: canShowBlaze,
+                                                    canShowAnalytics: hasOrders
+                    )
+                }
+            }
+            .store(in: &subscriptions)
+    }
+
     func didCustomizeDashboardCards(_ cards: [DashboardCard]) {
         let activeCardTypes = cards
             .filter { $0.enabled }
@@ -251,20 +267,6 @@ private extension DashboardViewModel {
         topPerformersViewModel.onDismiss = { [weak self] in
             self?.showCustomizationScreen()
         }
-
-        storeOnboardingViewModel.$canShowInDashboard
-            .combineLatest(blazeCampaignDashboardViewModel.$canShowInDashboard, $hasOrders)
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] canShowOnboarding, canShowBlaze, hasOrders in
-                guard let self else { return }
-                Task {
-                    await self.updateDashboardCards(canShowOnboarding: canShowOnboarding,
-                                                    canShowBlaze: canShowBlaze,
-                                                    canShowAnalytics: hasOrders
-                    )
-                }
-            }
-            .store(in: &subscriptions)
     }
 
     func showCustomizationScreen() {

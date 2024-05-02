@@ -1013,7 +1013,6 @@ public enum WooAnalyticsStat: String {
 
     // MARK: Simple Payments events
     //
-    case simplePaymentsFlowStarted = "simple_payments_flow_started"
     case simplePaymentsFlowNoteAdded = "simple_payments_flow_note_added"
     case simplePaymentsFlowTaxesToggled = "simple_payments_flow_taxes_toggled"
     case simplePaymentsMigrationSheetAddCustomAmount = "simple_payments_migration_sheet_add_custom_amount"

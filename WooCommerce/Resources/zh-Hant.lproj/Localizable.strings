@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-04-23 13:54:03+0000 */
+/* Translation-Revision-Date: 2024-04-30 09:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_TW */
@@ -31,8 +31,7 @@
 /* Labels an order note. The user know it's visible to the customer. Reads like 05:30 PM - username (To Customer) */
 "%1$@ - %2$@ (To Customer)" = "%1$@ - %2$@ (向顧客顯示)";
 
-/* Description of the subscription price for a product, with the price and billing frequency. Reads like: '$60.00 / 2 months'.
-   The original price of a domain. %1$@ is the price per term. %2$@ is the duration of each pricing term, usually year. */
+/* The original price of a domain. %1$@ is the price per term. %2$@ is the duration of each pricing term, usually year. */
 "%1$@ \/ %2$@" = "%1$@ \/ %2$@";
 
 /* The default name for a duplicated product, with %1$@ being the original name. Reads like: Ramen Copy */
@@ -1717,6 +1716,24 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility value when a banner is collapsed */
 "Collapsed" = "已收合";
+
+/* The label points to the free trial conditions for product subscriptions */
+"CollapsibleProductRowCard.text.freetrial" = "免費試用";
+
+/* The label points to the charge interval for product subscriptions */
+"CollapsibleProductRowCard.text.interval" = "間隔";
+
+/* The label points to the sign up fee conditions for product subscriptions */
+"CollapsibleProductRowCard.text.signupfee" = "註冊費";
+
+/* Description of the billing and billing frequency for a subscription product. Reads as: 'Every 2 months'. */
+"CollapsibleProductRowCardViewModel.formattedBillingDetails" = "每 %2$@ %1$@";
+
+/* Description of the free trial conditions for a subscription product. Reads as: '3 days free'. */
+"CollapsibleProductRowCardViewModel.formattedFreeTrial" = "%1$@ %2$@免費";
+
+/* Description of the signup fees for a subscription product. Reads as: '$5.00 signup'. */
+"CollapsibleProductRowCardViewModel.formattedSignUpFee" = "註冊費只需 %1$@";
 
 /* SKU label for a product in an order. The variable shows the SKU of the product. */
 "CollapsibleProductRowCardViewModel.skuFormat" = "貨號：%1$@";
@@ -3656,8 +3673,7 @@ which should be translated separately and considered part of this sentence. */
    Display label for the product's catalog visibility */
 "Hidden" = "隱藏";
 
-/* Action title for hiding store onboarding task list
-   Title of the Hide store setup list button in the action sheet. */
+/* Title of the Hide store setup list button in the action sheet. */
 "Hide store setup list" = "隱藏商店設定清單";
 
 /* Subtitle on the add product features screen. */
@@ -5215,6 +5231,18 @@ which should be translated separately and considered part of this sentence. */
 /* Notice that appears when no receipt can be retrieved upon tapping on 'See receipt' in the Order Details view. */
 "OrderDetailsViewModel.displayReceiptRetrievalErrorNotice.notice" = "無法擷取收據。";
 
+/* Description of the subscription billing interval for a product. Reads like: 'Every 2 months'. */
+"OrderSubscriptionTableViewCellViewModel.billingInterval" = "每 %2$@ %1$@";
+
+/* Formatted subscription title with subscription number. Reads like: 'Subscription #123' */
+"OrderSubscriptionTableViewCellViewModel.formattedSubscriptionTitle" = "訂閱 #%1$@";
+
+/* Description of the subscription price for a product. Reads like: '$60.00'. */
+"OrderSubscriptionTableViewCellViewModel.priceFormat" = "%1$@";
+
+/* Subscription title with subscription number. Reads like: 'Subscription #123' */
+"OrderSubscriptionTableViewCellViewModel.subscriptionTitle" = "訂閱 #%d";
+
 /* Accessibility label for Ordered list button on formatting toolbar. */
 "Ordered List" = "已排序清單";
 
@@ -6183,8 +6211,7 @@ which should be translated separately and considered part of this sentence. */
 
 /* Confirm button on the alert when the user taps to delete a Product image
    Confirmation button on the alert when the user is deleting a variation
-   Title for removing an attribute in the edit attribute action sheet.
-   Title for the action button on the confirm alert for hiding store onboarding task list */
+   Title for removing an attribute in the edit attribute action sheet. */
 "Remove" = "移除";
 
 /* Confirmation title before removing an attribute from a variation. */
@@ -7269,9 +7296,6 @@ which should be translated separately and considered part of this sentence. */
 /* My Store > Settings > Store Settings section title */
 "Store Settings" = "商店設定";
 
-/* Controls store onboarding setup list visibility. */
-"Store Setup List" = "商店設定清單";
-
 /* Title of the screen when the created store never becomes a Jetpack site in the store creation flow. */
 "Store creation still in progress" = "商店建立程序仍在進行中";
 
@@ -7310,9 +7334,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Display label for simple subscription product type. */
 "Subscription" = "訂購";
-
-/* Subscription title with subscription number. Reads like: 'Subscription #123' */
-"Subscription #%d" = "訂購 #%d";
 
 /* Title for the plan section on the subscriptions view. Uppercased */
 "Subscription Status" = "訂購狀態";
@@ -9423,9 +9444,6 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle of the alert presented when the user tries to connect to a specific card reader and it fails due to postal code problems */
 "You can set your store's postcode\/ZIP in wp-admin > WooCommerce > Settings (General)" = "你可以在「WP 管理員 > WooCommerce > 設定 (一般)」設定商店的郵遞區號\/ZIP";
 
-/* Confirm message for hiding store onboarding task list */
-"You can show it when you need it by going to Menu > Settings > Store" = "你可以視需要前往「選單」>「設定」>「商店」以顯示此資訊。";
-
 /* Error message when In-Person Payments is not supported in a specific country */
 "You can still accept in-person cash payments by enabling the “Cash on Delivery” payment method on your store." = "你仍可採用「親自收取現金」，只要為商店啟用「貨到付款」付款方式即可。";
 
@@ -10106,9 +10124,11 @@ which should be translated separately and considered part of this sentence. */
 /* Change image button title in the Blaze Edit Ad screen. */
 "blazeEditAdView.image.changeImage" = "變更圖片";
 
-/* Button to dismiss the image view alert.
-   Error message displayed when selected campaign image is not large enough. */
-"blazeEditAdView.image.imageSizeError" = "請選取並使用最小尺寸為 600x600 像素的圖片。";
+/* Error message displayed when selected campaign image is not large enough. */
+"blazeEditAdView.image.imageSizeErrorMessage" = "請選取並使用最小尺寸為 400x400 像素的圖片。";
+
+/* Button to dismiss the image view alert. */
+"blazeEditAdView.image.ok" = "確定";
 
 /* Save button in the Blaze Edit Ad screen. */
 "blazeEditAdView.save" = "儲存";
@@ -10585,14 +10605,50 @@ which should be translated separately and considered part of this sentence. */
 /* Name for the Blaze dashboard card in the Customize Dashboard screen */
 "dashboardCard.name.blaze" = "Blaze";
 
+/* Name for the Store setup dashboard card in the Customize Dashboard screen */
+"dashboardCard.name.onboarding" = "商店設定";
+
 /* Name for the Performance dashboard card in the Customize Dashboard screen */
 "dashboardCard.name.performance" = "績效";
+
+/* Name for the Top performers dashboard card in the Customize Dashboard screen */
+"dashboardCard.name.topPerformers" = "成效最佳者";
+
+/* Link to open the support form. Should be lowercased. */
+"dashboardCardErrorView.contactSupport" = "聯絡支援團隊";
+
+/* Button to dismiss the support form from the Dashboard generic error card. */
+"dashboardCardErrorView.dismissSupport" = "完成";
+
+/* The info of the error view when failed to load store statistics on the Dashboard screen. The placeholder is a link to contact support. Reads as: Try reloading this card. If the issue persists, please contact us. */
+"dashboardCardErrorView.errorMessage" = "請嘗試重新載入此卡片。 如果問題持續發生，請%1$@。";
+
+/* The title of the error view when failed to load a Dashboard card */
+"dashboardCardErrorView.errorTitle" = "無法載入資料";
+
+/* Button to reload the dashboard card on the Dashboard screen */
+"dashboardCardErrorView.retry" = "重試";
 
 /* Button to save changes on the Customize Dashboard screen */
 "dashboardCustomization.saveButton" = "儲存";
 
+/* Title for the screen to customize the dashboard screen */
+"dashboardCustomization.title" = "自訂";
+
 /* Text on unavailable dashboard card on the Customize Dashboard screen */
 "dashboardCustomization.unavailable" = "無法使用";
+
+/* Title of the button to edit the layout of the Dashboard screen. */
+"dashboardView.edit" = "編輯";
+
+/* Label of the button to share the store */
+"dashboardView.shareStoreCard.shareButtonLabel" = "分享你的商店";
+
+/* Subtitle of the Share Your Store card */
+"dashboardView.shareStoreCard.subtitle" = "使用電子郵件或社群媒體宣傳你的商店";
+
+/* Title of the Share Your Store card */
+"dashboardView.shareStoreCard.title" = "大肆宣傳！";
 
 /* Title on the banner when the site's WooExpress plan has expired */
 "dashboardView.storePlanBanner.expired" = "你的網站方案已結束。";
@@ -11288,11 +11344,29 @@ which should be translated separately and considered part of this sentence. */
 /* Button when tapped will show a screen with all the store setup tasks.%1$d represents the total number of tasks. */
 "storeOnboardingCardView.viewAll" = "檢視所有 %1$d 個工作項目";
 
+/* Button title to contact support to get help with deprecated stats module */
+"storePerformanceView.contentUnavailable.buttonTitle" = "仍然需要幫助嗎？ 聯絡我們";
+
+/* Text that explains how to update WooCommerce to get the latest stats */
+"storePerformanceView.contentUnavailable.details" = "請確認你的網站執行最新版本的 WooCommerce，並已在 WooCommerce 設定中啟用「分析」功能。";
+
+/* Button to dismiss the support form from the Dashboard stats error screen. */
+"storePerformanceView.contentUnavailable.dismissSupport" = "完成";
+
+/* Title when we can't show stats because user is on a deprecated WooCommerce Version */
+"storePerformanceView.contentUnavailable.title" = "我們無法顯示你的商店分析資料";
+
 /* Conversion stat label on dashboard. */
 "storePerformanceView.conversion" = "轉換";
 
+/* Title of the custom time range on the store performance card on the Dashboard screen */
+"storePerformanceView.custom" = "自訂";
+
 /* Menu item to dismiss the store performance section on the Dashboard screen */
 "storePerformanceView.hideCard" = "隱藏績效";
+
+/* Text on the store stats chart on the Dashboard screen when there is no revenue */
+"storePerformanceView.noRevenueText" = "選取日期沒有收益";
 
 /* Orders stat label on dashboard - should be plural. */
 "storePerformanceView.orders" = "訂單";
@@ -11314,9 +11388,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button title on the store picker for store connection */
 "storePickerViewController.addStoreButton" = "連結現有商店";
-
-/* Text on the store stats chart on the Dashboard screen when there is no revenue */
-"storeStatsChart.noRevenueText" = "本期沒有收益";
 
 /* Value for the x-Axis of any selected point on the store stats chart on the Dashboard screen */
 "storeStatsChart.xSelectedValue" = "已選取日期";
@@ -11534,6 +11605,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Menu item to dismiss the Top Performers section on the Dashboard screen */
 "topPerformersDashboardView.hideCard" = "隱藏成效最佳者";
+
+/* Title of the Top performers section on the Dashboard screen */
+"topPerformersDashboardView.title" = "成效最佳者";
 
 /* Button to navigate to Analytics Hub. */
 "topPerformersDashboardView.viewAll" = "檢視所有商店分析資料";

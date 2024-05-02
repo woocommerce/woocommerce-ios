@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-04-23 13:54:03+0000 */
+/* Translation-Revision-Date: 2024-04-30 13:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: nl */
@@ -31,8 +31,7 @@
 /* Labels an order note. The user know it's visible to the customer. Reads like 05:30 PM - username (To Customer) */
 "%1$@ - %2$@ (To Customer)" = "%1$@ - %2$@ (aan klant)";
 
-/* Description of the subscription price for a product, with the price and billing frequency. Reads like: '$60.00 / 2 months'.
-   The original price of a domain. %1$@ is the price per term. %2$@ is the duration of each pricing term, usually year. */
+/* The original price of a domain. %1$@ is the price per term. %2$@ is the duration of each pricing term, usually year. */
 "%1$@ \/ %2$@" = "%1$@\/%2$@";
 
 /* The default name for a duplicated product, with %1$@ being the original name. Reads like: Ramen Copy */
@@ -1717,6 +1716,21 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility value when a banner is collapsed */
 "Collapsed" = "Ingevouwen";
+
+/* The label points to the free trial conditions for product subscriptions */
+"CollapsibleProductRowCard.text.freetrial" = "Gratis proefabonnement";
+
+/* The label points to the charge interval for product subscriptions */
+"CollapsibleProductRowCard.text.interval" = "Interval";
+
+/* The label points to the sign up fee conditions for product subscriptions */
+"CollapsibleProductRowCard.text.signupfee" = "Aanmeldkosten";
+
+/* Description of the billing and billing frequency for a subscription product. Reads as: 'Every 2 months'. */
+"CollapsibleProductRowCardViewModel.formattedBillingDetails" = "%1$@ elke %2$@";
+
+/* Description of the signup fees for a subscription product. Reads as: '$5.00 signup'. */
+"CollapsibleProductRowCardViewModel.formattedSignUpFee" = "%1$@aanmeldkosten";
 
 /* SKU label for a product in an order. The variable shows the SKU of the product. */
 "CollapsibleProductRowCardViewModel.skuFormat" = "SKU: %1$@";
@@ -3656,8 +3670,7 @@ which should be translated separately and considered part of this sentence. */
    Display label for the product's catalog visibility */
 "Hidden" = "Verborgen";
 
-/* Action title for hiding store onboarding task list
-   Title of the Hide store setup list button in the action sheet. */
+/* Title of the Hide store setup list button in the action sheet. */
 "Hide store setup list" = "Lijst voor configuratie winkel verbergen";
 
 /* Subtitle on the add product features screen. */
@@ -5215,6 +5228,18 @@ which should be translated separately and considered part of this sentence. */
 /* Notice that appears when no receipt can be retrieved upon tapping on 'See receipt' in the Order Details view. */
 "OrderDetailsViewModel.displayReceiptRetrievalErrorNotice.notice" = "Kan kwitantie niet ophalen.";
 
+/* Description of the subscription billing interval for a product. Reads like: 'Every 2 months'. */
+"OrderSubscriptionTableViewCellViewModel.billingInterval" = "%1$@ elke %2$@";
+
+/* Formatted subscription title with subscription number. Reads like: 'Subscription #123' */
+"OrderSubscriptionTableViewCellViewModel.formattedSubscriptionTitle" = "Subscription #%1$@";
+
+/* Description of the subscription price for a product. Reads like: '$60.00'. */
+"OrderSubscriptionTableViewCellViewModel.priceFormat" = "%1$@";
+
+/* Subscription title with subscription number. Reads like: 'Subscription #123' */
+"OrderSubscriptionTableViewCellViewModel.subscriptionTitle" = "Abonnementnummer%d";
+
 /* Accessibility label for Ordered list button on formatting toolbar. */
 "Ordered List" = "Geordende lijst";
 
@@ -6183,8 +6208,7 @@ which should be translated separately and considered part of this sentence. */
 
 /* Confirm button on the alert when the user taps to delete a Product image
    Confirmation button on the alert when the user is deleting a variation
-   Title for removing an attribute in the edit attribute action sheet.
-   Title for the action button on the confirm alert for hiding store onboarding task list */
+   Title for removing an attribute in the edit attribute action sheet. */
 "Remove" = "Verwijderen";
 
 /* Confirmation title before removing an attribute from a variation. */
@@ -7269,9 +7293,6 @@ which should be translated separately and considered part of this sentence. */
 /* My Store > Settings > Store Settings section title */
 "Store Settings" = "Winkelinstellingen";
 
-/* Controls store onboarding setup list visibility. */
-"Store Setup List" = "Lijst voor configuratie winkel";
-
 /* Title of the screen when the created store never becomes a Jetpack site in the store creation flow. */
 "Store creation still in progress" = "Het aanmaken van winkels is nog steeds bezig";
 
@@ -7310,9 +7331,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Display label for simple subscription product type. */
 "Subscription" = "Abonnement";
-
-/* Subscription title with subscription number. Reads like: 'Subscription #123' */
-"Subscription #%d" = "Abonnementnummer%d";
 
 /* Title for the plan section on the subscriptions view. Uppercased */
 "Subscription Status" = "Abonnementstatus";
@@ -9423,9 +9441,6 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle of the alert presented when the user tries to connect to a specific card reader and it fails due to postal code problems */
 "You can set your store's postcode\/ZIP in wp-admin > WooCommerce > Settings (General)" = "Je kunt de postcode van je winkel instellen via wp-admin > WooCommerce > Instellingen (Algemeen)";
 
-/* Confirm message for hiding store onboarding task list */
-"You can show it when you need it by going to Menu > Settings > Store" = "Wanneer je het nodig hebt, kan je het weergeven via Menu > Instellingen > Winkel";
-
 /* Error message when In-Person Payments is not supported in a specific country */
 "You can still accept in-person cash payments by enabling the “Cash on Delivery” payment method on your store." = "Je kunt nog altijd fysieke cashbetalingen door de betaalmethode 'Contant betalen bij ontvangst' in te schakelen in je winkel.";
 
@@ -10106,9 +10121,11 @@ which should be translated separately and considered part of this sentence. */
 /* Change image button title in the Blaze Edit Ad screen. */
 "blazeEditAdView.image.changeImage" = "Afbeelding wijzigen";
 
-/* Button to dismiss the image view alert.
-   Error message displayed when selected campaign image is not large enough. */
-"blazeEditAdView.image.imageSizeError" = "Selecteer een afbeelding met een minimale afmeting van 600 x 600 px.";
+/* Error message displayed when selected campaign image is not large enough. */
+"blazeEditAdView.image.imageSizeErrorMessage" = "Selecteer een afbeelding met een minimale afmeting van 600 x 600 px.";
+
+/* Button to dismiss the image view alert. */
+"blazeEditAdView.image.ok" = "OK";
 
 /* Save button in the Blaze Edit Ad screen. */
 "blazeEditAdView.save" = "Opslaan";
@@ -10585,14 +10602,47 @@ which should be translated separately and considered part of this sentence. */
 /* Name for the Blaze dashboard card in the Customize Dashboard screen */
 "dashboardCard.name.blaze" = "Blaze";
 
+/* Name for the Store setup dashboard card in the Customize Dashboard screen */
+"dashboardCard.name.onboarding" = "Winkel instellen";
+
 /* Name for the Performance dashboard card in the Customize Dashboard screen */
 "dashboardCard.name.performance" = "Prestaties";
+
+/* Name for the Top performers dashboard card in the Customize Dashboard screen */
+"dashboardCard.name.topPerformers" = "Toppresteerders";
+
+/* Link to open the support form. Should be lowercased. */
+"dashboardCardErrorView.contactSupport" = "neem contact op met support";
+
+/* Button to dismiss the support form from the Dashboard generic error card. */
+"dashboardCardErrorView.dismissSupport" = "Gereed";
+
+/* The title of the error view when failed to load a Dashboard card */
+"dashboardCardErrorView.errorTitle" = "Kan niet laden";
+
+/* Button to reload the dashboard card on the Dashboard screen */
+"dashboardCardErrorView.retry" = "Opnieuw proberen";
 
 /* Button to save changes on the Customize Dashboard screen */
 "dashboardCustomization.saveButton" = "Opslaan";
 
+/* Title for the screen to customize the dashboard screen */
+"dashboardCustomization.title" = "Aanpassen";
+
 /* Text on unavailable dashboard card on the Customize Dashboard screen */
 "dashboardCustomization.unavailable" = "Niet beschikbaar";
+
+/* Title of the button to edit the layout of the Dashboard screen. */
+"dashboardView.edit" = "Bewerken";
+
+/* Label of the button to share the store */
+"dashboardView.shareStoreCard.shareButtonLabel" = "Deel je winkel";
+
+/* Subtitle of the Share Your Store card */
+"dashboardView.shareStoreCard.subtitle" = "Use email or social media to spread the word about your store";
+
+/* Title of the Share Your Store card */
+"dashboardView.shareStoreCard.title" = "Get the word out!";
 
 /* Title on the banner when the site's WooExpress plan has expired */
 "dashboardView.storePlanBanner.expired" = "Je site-abonnement is beëindigd.";
@@ -11288,11 +11338,29 @@ which should be translated separately and considered part of this sentence. */
 /* Button when tapped will show a screen with all the store setup tasks.%1$d represents the total number of tasks. */
 "storeOnboardingCardView.viewAll" = "Alle %1$d taken bekijken";
 
+/* Button title to contact support to get help with deprecated stats module */
+"storePerformanceView.contentUnavailable.buttonTitle" = "Still need help? Neem contact met ons op";
+
+/* Text that explains how to update WooCommerce to get the latest stats */
+"storePerformanceView.contentUnavailable.details" = "Zorg dat je de nieuwste versie van WooCommerce gebruikt op je site en dat WooCommerce Admin geactiveerd is.";
+
+/* Button to dismiss the support form from the Dashboard stats error screen. */
+"storePerformanceView.contentUnavailable.dismissSupport" = "Gereed";
+
+/* Title when we can't show stats because user is on a deprecated WooCommerce Version */
+"storePerformanceView.contentUnavailable.title" = "We kunnen de analyses van je winkel niet weergeven";
+
 /* Conversion stat label on dashboard. */
 "storePerformanceView.conversion" = "Conversie";
 
+/* Title of the custom time range on the store performance card on the Dashboard screen */
+"storePerformanceView.custom" = "Aangepast";
+
 /* Menu item to dismiss the store performance section on the Dashboard screen */
 "storePerformanceView.hideCard" = "Prestaties verbergen";
+
+/* Text on the store stats chart on the Dashboard screen when there is no revenue */
+"storePerformanceView.noRevenueText" = "No revenue for selected dates";
 
 /* Orders stat label on dashboard - should be plural. */
 "storePerformanceView.orders" = "Bestellingen";
@@ -11314,9 +11382,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button title on the store picker for store connection */
 "storePickerViewController.addStoreButton" = "Een bestaande winkel koppelen";
-
-/* Text on the store stats chart on the Dashboard screen when there is no revenue */
-"storeStatsChart.noRevenueText" = "Geen inkomsten deze periode";
 
 /* Value for the x-Axis of any selected point on the store stats chart on the Dashboard screen */
 "storeStatsChart.xSelectedValue" = "Geselecteerde datum";
@@ -11534,6 +11599,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Menu item to dismiss the Top Performers section on the Dashboard screen */
 "topPerformersDashboardView.hideCard" = "Toppresteerders verbergen";
+
+/* Title of the Top performers section on the Dashboard screen */
+"topPerformersDashboardView.title" = "Toppresteerders";
 
 /* Button to navigate to Analytics Hub. */
 "topPerformersDashboardView.viewAll" = "Alle winkelanalyses bekijken";

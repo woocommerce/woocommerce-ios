@@ -236,7 +236,10 @@ final class EditableOrderViewModel: ObservableObject {
     }
 
     var shouldSplitCustomerAndNoteSections: Bool {
-        customerDataViewModel.isDataAvailable || customerNoteDataViewModel.customerNote.isNotEmpty
+        guard featureFlagService.isFeatureFlagEnabled(.subscriptionsInOrderCreationCustomers) else {
+            return customerDataViewModel.isDataAvailable || customerNoteDataViewModel.customerNote.isNotEmpty
+        }
+        return true
     }
 
     var shouldShowProductsSectionHeader: Bool {
@@ -374,6 +377,10 @@ final class EditableOrderViewModel: ObservableObject {
     ///
     @Published private(set) var addressFormViewModel: CreateOrderAddressFormViewModel
 
+    /// Keeps a reference to the latest Address form fields state
+    ///
+    @Published private(set) var latestAddressFormFields: AddressFormFields? = nil
+
     // MARK: Customer note properties
 
     /// Representation of customer note data display properties.
@@ -508,6 +515,16 @@ final class EditableOrderViewModel: ObservableObject {
         observeProductSelectorPresentationStateForViewModel()
         forwardSyncApproachToSynchronizer()
         observeChangesFromProductSelectorButtonTapSelectionSync()
+        observeChangesInCustomerDetails()
+    }
+
+    /// Observes and keeps track of changes within the Customer Details
+    ///
+    private func observeChangesInCustomerDetails() {
+        addressFormViewModel.fieldsPublisher.sink { [weak self] newValue in
+            self?.latestAddressFormFields = newValue
+        }
+        .store(in: &cancellables)
     }
 
     /// Checks the latest Order sync, and returns the current items that are in the Order
@@ -744,6 +761,40 @@ final class EditableOrderViewModel: ObservableObject {
             self?.orderSynchronizer.setAddresses.send(input)
             self?.trackCustomerDetailsAdded()
         })
+        // Since the form is recreated the original reference is lost. This is a problem if we update the form more than once
+        // while keeping the Order open, since new published values won't be observed anymore.
+        // This is resolved by hooking the publisher again to the new object
+        observeChangesInCustomerDetails()
+    }
+
+    /// Saves the latest data entered in the Address Form Fields if the view is dismissed with unsaved changes
+    /// Eg: on IPads, the modal is automatically dismissed on size class change, which would lead to data loss
+    ///
+    func saveInflightCustomerDetails() {
+        guard let latestAddressFormFields else {
+            return
+        }
+        let latestSyncBillingAddress = orderSynchronizer.order.billingAddress
+        let latestSyncShippingAddress = orderSynchronizer.order.shippingAddress
+
+        let latestAddressState = latestAddressFormFields.toAddress()
+
+        if (latestSyncBillingAddress != latestAddressState) || (latestSyncShippingAddress != latestAddressState) {
+            let address = Address(firstName: latestAddressFormFields.firstName,
+                                  lastName: latestAddressFormFields.lastName,
+                                  company: latestAddressFormFields.company,
+                                  address1: latestAddressFormFields.address1,
+                                  address2: latestAddressFormFields.address2,
+                                  city: latestAddressFormFields.city,
+                                  state: latestAddressFormFields.state,
+                                  postcode: latestAddressFormFields.postcode,
+                                  country: latestAddressFormFields.country,
+                                  phone: latestAddressFormFields.phone,
+                                  email: latestAddressFormFields.email)
+            let input = Self.createAddressesInputIfPossible(billingAddress: address, shippingAddress: address)
+            orderSynchronizer.setAddresses.send(input)
+            trackCustomerDetailsAdded()
+        }
     }
 
     func addCustomerAddressToOrder(customer: Customer) {
@@ -790,6 +841,17 @@ final class EditableOrderViewModel: ObservableObject {
     func updateCustomerNote() {
         orderSynchronizer.setNote.send(noteViewModel.newNote)
         trackCustomerNoteAdded()
+    }
+
+    /// Saves the current contents of the Order Note, if there are differences with the latest edited content
+    ///
+    func saveInFlightOrderNotes() {
+        let latestSyncedNote = orderSynchronizer.order.customerNote
+        let currentlyEditedNote = noteViewModel.newNote
+
+        if latestSyncedNote != currentlyEditedNote {
+            updateCustomerNote()
+        }
     }
 
     func orderTotalsExpansionChanged(expanded: Bool) {
@@ -1536,6 +1598,13 @@ private extension EditableOrderViewModel {
     /// Updates the Order with the given product from SKU scanning
     ///
     func updateOrderWithBaseItem(_ item: OrderBaseItem) {
+        if case .product(let product) = item,
+           product.variations.isNotEmpty {
+            autodismissableNotice = Notice(title: Localization.parentProductScannedNoticeTitle,
+                                           subtitle: Localization.parentProductScannedNoticeSubtitle)
+            return
+        }
+
         // When a scanned product is a bundle product, the bundle configuration view is shown first.
         if case let .product(product) = item, product.productType == .bundle {
             configurableScannedProductViewModel = .init(product: product,
@@ -2530,6 +2599,18 @@ private extension EditableOrderViewModel {
         static let customAmountDefaultName = NSLocalizedString("editableOrderViewModel.customAmountDefaultName",
                                                                value: "Custom Amount",
                                                                comment: "Default name when the custom amount does not have a name in order creation.")
+        static let parentProductScannedNoticeTitle = NSLocalizedString(
+            "order.barcode.scan.parent.product.notice.title",
+            value: "You cannot add a variable product directly.",
+            comment: "Title of a notice shown when a merchant scans a barcode for a product which is a parent to variations. " +
+            "It's not possible to purchase a parent product, as it simply groups its variable product children. " +
+            "In this case, the product is not added to the order as the merchant wanted it to be.")
+        static let parentProductScannedNoticeSubtitle = NSLocalizedString(
+            "order.barcode.scan.parent.product.notice.subtitle",
+            value: "Please select a specific variation.",
+            comment: "Subtitle of a notice shown when a merchant scans a barcode for a product which is a parent to variations. " +
+            "It's not possible to purchase a parent product, as it simply groups its variable product children. " +
+            "In this case, the product is not added to the order as the merchant wanted it to be.")
 
 
         enum CouponSummary {

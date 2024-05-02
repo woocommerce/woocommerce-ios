@@ -84,9 +84,11 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .customersInHubMenu:
             return true
-        case .migrateSimplePaymentsToOrderCreation:
-            return true
         case .subscriptionsInOrderCreationUI:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .subscriptionsInOrderCreationCustomers:
+            return (buildConfig == .localDeveloper || buildConfig == .alpha) && !isUITesting
+        case .enhancingOrderShippingLines:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true

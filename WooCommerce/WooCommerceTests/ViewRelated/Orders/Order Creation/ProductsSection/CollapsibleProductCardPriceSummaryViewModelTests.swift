@@ -9,7 +9,10 @@ final class CollapsibleProductCardPriceSummaryViewModelTests: XCTestCase {
         let quantity: Decimal = 8
 
         // When
-        let viewModel = CollapsibleProductCardPriceSummaryViewModel(pricedIndividually: true, quantity: quantity, price: price)
+        let viewModel = CollapsibleProductCardPriceSummaryViewModel(pricedIndividually: true,
+                                                                    isSubscriptionProduct: false,
+                                                                    quantity: quantity,
+                                                                    price: price)
 
         // Then
         assertEqual("8 × $10.71", viewModel.priceQuantityLine)
@@ -21,7 +24,10 @@ final class CollapsibleProductCardPriceSummaryViewModelTests: XCTestCase {
         let quantity: Decimal = 8
 
         // When
-        let viewModel = CollapsibleProductCardPriceSummaryViewModel(pricedIndividually: false, quantity: quantity, price: price)
+        let viewModel = CollapsibleProductCardPriceSummaryViewModel(pricedIndividually: false,
+                                                                    isSubscriptionProduct: false,
+                                                                    quantity: quantity,
+                                                                    price: price)
 
         // Then
         assertEqual("8 × $0.00", viewModel.priceQuantityLine)
@@ -32,7 +38,10 @@ final class CollapsibleProductCardPriceSummaryViewModelTests: XCTestCase {
         let quantity: Decimal = 8
 
         // When
-        let viewModel = CollapsibleProductCardPriceSummaryViewModel(pricedIndividually: true, quantity: quantity, price: nil)
+        let viewModel = CollapsibleProductCardPriceSummaryViewModel(pricedIndividually: true,
+                                                                    isSubscriptionProduct: false,
+                                                                    quantity: quantity,
+                                                                    price: nil)
 
         // Then
         assertEqual("8 × -", viewModel.priceQuantityLine)
@@ -44,7 +53,10 @@ final class CollapsibleProductCardPriceSummaryViewModelTests: XCTestCase {
         let quantity: Decimal = 8
 
         // When
-        let viewModel = CollapsibleProductCardPriceSummaryViewModel(pricedIndividually: true, quantity: quantity, price: price)
+        let viewModel = CollapsibleProductCardPriceSummaryViewModel(pricedIndividually: true,
+                                                                    isSubscriptionProduct: false,
+                                                                    quantity: quantity,
+                                                                    price: price)
 
         // Then
         assertEqual("$85.68", viewModel.priceBeforeDiscountsLabel)
@@ -55,7 +67,10 @@ final class CollapsibleProductCardPriceSummaryViewModelTests: XCTestCase {
         let price = "10.71"
 
         // When
-        let viewModel = CollapsibleProductCardPriceSummaryViewModel(pricedIndividually: true, quantity: 1, price: price)
+        let viewModel = CollapsibleProductCardPriceSummaryViewModel(pricedIndividually: true,
+                                                                    isSubscriptionProduct: false,
+                                                                    quantity: 1,
+                                                                    price: price)
 
         // Then
         assertEqual("$10.71", viewModel.priceBeforeDiscountsLabel)
@@ -66,7 +81,10 @@ final class CollapsibleProductCardPriceSummaryViewModelTests: XCTestCase {
         let price = "10.71"
 
         // When
-        let viewModel = CollapsibleProductCardPriceSummaryViewModel(pricedIndividually: false, quantity: 1, price: price)
+        let viewModel = CollapsibleProductCardPriceSummaryViewModel(pricedIndividually: false,
+                                                                    isSubscriptionProduct: false,
+                                                                    quantity: 1,
+                                                                    price: price)
 
         // Then
         assertEqual("$0.00", viewModel.priceBeforeDiscountsLabel)

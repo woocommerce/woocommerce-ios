@@ -128,16 +128,7 @@ struct CollapsibleProductRowCardViewModel: Identifiable {
         } else {
             pricePerUnit = subscriptionRegularPrice
         }
-
-        // Multiply price per unit by the currently selected quantity
-        let quantity = stepperViewModel.quantity
-        guard let decimalPrice = currencyFormatter.convertToDecimal(pricePerUnit)?.decimalValue,
-              let stringTotal = currencyFormatter.formatHumanReadableAmount(decimalPrice * quantity) else {
-            return nil
-        }
-
-        let formattedPrice = currencyFormatter.formatAmount(stringTotal)
-        return formattedPrice
+        return pricePerQuantity(price: pricePerUnit)
     }
 
     /// Description of the subscription sign up fee for a Subscription-type Product
@@ -149,9 +140,20 @@ struct CollapsibleProductRowCardViewModel: Identifiable {
               signupFee != "0" else {
             return nil
         }
+        return pricePerQuantity(price: signupFee)
+    }
 
-        let formattedSignupFee = currencyFormatter.formatAmount(signupFee)
-        return formattedSignupFee
+    /// Summary of the subscription sign up fees for a Subscription-type Product when an order has more than one
+    /// eg: "3 x $0.60"
+    ///
+    var signupFeeSummary: String? {
+        guard let subscriptionConditionsSignupFee, stepperViewModel.quantity > 1 else {
+            return nil
+        }
+        let quantity = stepperViewModel.quantity.formatted()
+        return String.localizedStringWithFormat(Localization.Subscription.signupFeeSummary,
+                                                quantity,
+                                                subscriptionConditionsSignupFee)
     }
 
     /// Label of the subscription sign up fee for a Subscription-type Product
@@ -237,6 +239,7 @@ struct CollapsibleProductRowCardViewModel: Identifiable {
                                                                                            manageStock: manageStock)
         self.stepperViewModel = stepperViewModel
         self.priceSummaryViewModel = .init(pricedIndividually: pricedIndividually,
+                                           isSubscriptionProduct: (productSubscriptionDetails != nil),
                                            quantity: stepperViewModel.quantity,
                                            price: price)
         self.currencyFormatter = currencyFormatter
@@ -255,6 +258,18 @@ struct CollapsibleProductRowCardViewModel: Identifiable {
 }
 
 extension CollapsibleProductRowCardViewModel {
+    /// Returns the total price by multiplying price per quantity
+    ///
+    private func pricePerQuantity(price: String) -> String? {
+        let quantity = stepperViewModel.quantity
+        guard let decimalPrice = currencyFormatter.convertToDecimal(price)?.decimalValue,
+              let stringTotal =  currencyFormatter.formatHumanReadableAmount(decimalPrice * quantity, roundSmallNumbers: false) else {
+            return nil
+        }
+        let formattedPrice = currencyFormatter.formatAmount(stringTotal)
+        return formattedPrice
+    }
+
     /// Formatted price label based on a product's price and quantity. Accounting for discounts, if any.
     /// e.g: If price is $5, quantity is 10, and discount is $1, outputs "$49.00"
     ///
@@ -356,6 +371,11 @@ private extension CollapsibleProductRowCardViewModel {
                 value: "%1$@ %2$@ free",
                 comment: "Description of the free trial conditions for a subscription product. " +
                 "Reads as: '3 days free'.")
+            static let signupFeeSummary = NSLocalizedString(
+                "CollapsibleProductRowCardViewModel.signupFeeSummary",
+                value: "%1$@ × %2$@",
+                comment: "Summary of quantity and signup fees for a subscription product when multiple are selected." +
+                "Reads as: '3 × $0.60'. Please ensure you use a multiplication symbol, not a letter x")
         }
     }
 }

@@ -450,6 +450,9 @@ extension EmptyStateViewController {
         fileprivate var message: NSAttributedString {
             switch self {
             case .simpleImageWithDescription:
+                // In order to avoid making changes across multiple uses of `message` by making this optional
+                // we opted for simply returning an empty NSAttributedString, which isn't used.
+                // Ref: https://github.com/woocommerce/woocommerce-ios/pull/12214/files#r1513826124
                 return NSAttributedString(string: "")
             case .simple(let message, _, _),
                     .withLink(let message, _, _, _, _, _),

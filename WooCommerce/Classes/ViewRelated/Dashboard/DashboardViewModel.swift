@@ -44,7 +44,6 @@ final class DashboardViewModel: ObservableObject {
     private let justInTimeMessagesManager: JustInTimeMessagesProvider
     private let localAnnouncementsProvider: LocalAnnouncementsProvider
     private let userDefaults: UserDefaults
-    private let storeCreationProfilerUploadAnswersUseCase: StoreCreationProfilerUploadAnswersUseCaseProtocol
     private let themeInstaller: ThemeInstaller
     private let storageManager: StorageManagerType
     private var subscriptions: Set<AnyCancellable> = []
@@ -74,7 +73,6 @@ final class DashboardViewModel: ObservableObject {
          featureFlags: FeatureFlagService = ServiceLocator.featureFlagService,
          analytics: Analytics = ServiceLocator.analytics,
          userDefaults: UserDefaults = .standard,
-         storeCreationProfilerUploadAnswersUseCase: StoreCreationProfilerUploadAnswersUseCaseProtocol? = nil,
          themeInstaller: ThemeInstaller = DefaultThemeInstaller(),
          usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter = StoreStatsUsageTracksEventEmitter()) {
         self.siteID = siteID
@@ -91,7 +89,6 @@ final class DashboardViewModel: ObservableObject {
                                                usageTracksEventEmitter: usageTracksEventEmitter)
         self.topPerformersViewModel = .init(siteID: siteID,
                                             usageTracksEventEmitter: usageTracksEventEmitter)
-        self.storeCreationProfilerUploadAnswersUseCase = storeCreationProfilerUploadAnswersUseCase ?? StoreCreationProfilerUploadAnswersUseCase(siteID: siteID)
         self.themeInstaller = themeInstaller
         configureOrdersResultController()
         setupDashboardCards()

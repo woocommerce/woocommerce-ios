@@ -32,11 +32,9 @@ final class InAppFeedbackCardViewController: UIViewController {
     private let analytics: Analytics
 
     init(storeReviewControllerType: SKStoreReviewControllerProtocol.Type = SKStoreReviewController.self,
-         analytics: Analytics = ServiceLocator.analytics,
-         onFeedbackGiven: (() -> Void)? = nil) {
+         analytics: Analytics = ServiceLocator.analytics) {
         self.storeReviewControllerType = storeReviewControllerType
         self.analytics = analytics
-        self.onFeedbackGiven = onFeedbackGiven
         super.init(nibName: nil, bundle: nil)
     }
 

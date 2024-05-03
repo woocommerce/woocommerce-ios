@@ -1130,7 +1130,6 @@ extension EditableOrderViewModel {
         let shippingTotal: String
 
         // We only support one (the first) shipping line
-        let shippingMethodID: String
         let shippingMethodTitle: String
         let shippingMethodTotal: String
 
@@ -1171,14 +1170,7 @@ extension EditableOrderViewModel {
         let showNonEditableIndicators: Bool
 
         let shippingLineViewModel: ShippingLineDetailsViewModel
-        let saveShippingLineClosure: (ShippingLine?) -> Void
-        var shippingLineSelectionViewModel: ShippingLineSelectionDetailsViewModel {
-            ShippingLineSelectionDetailsViewModel(isExistingShippingLine: shouldShowShippingTotal,
-                                                  initialMethodID: shippingMethodID,
-                                                  initialMethodTitle: shippingMethodTitle,
-                                                  shippingTotal: shippingMethodTotal,
-                                                  didSelectSave: saveShippingLineClosure)
-        }
+        let shippingLineSelectionViewModel: ShippingLineSelectionDetailsViewModel
         let addNewCouponLineClosure: (Coupon) -> Void
         let onGoToCouponsClosure: () -> Void
         let onTaxHelpButtonTappedClosure: () -> Void
@@ -1189,6 +1181,7 @@ extension EditableOrderViewModel {
         init(siteID: Int64 = 0,
              shouldShowProductsTotal: Bool = false,
              itemsTotal: String = "0",
+             availableShippingMethods: [ShippingMethod] = [],
              shouldShowShippingTotal: Bool = false,
              shippingTotal: String = "0",
              shippingMethodID: String = "",
@@ -1229,10 +1222,8 @@ extension EditableOrderViewModel {
             self.itemsTotal = currencyFormatter.formatAmount(itemsTotal) ?? "0.00"
             self.shouldShowShippingTotal = shouldShowShippingTotal
             self.shippingTotal = currencyFormatter.formatAmount(shippingTotal) ?? "0.00"
-            self.shippingMethodID = shippingMethodID
             self.shippingMethodTitle = shippingMethodTitle
             self.shippingMethodTotal = currencyFormatter.formatAmount(shippingMethodTotal) ?? "0.00"
-            self.saveShippingLineClosure = saveShippingLineClosure
             self.shippingTax = currencyFormatter.formatAmount(shippingTax) ?? "0.00"
             self.shouldShowShippingTax = !(currencyFormatter.convertToDecimal(shippingTax) ?? NSDecimalNumber(0.0)).isZero()
             self.shouldShowTotalCustomAmounts = shouldShowTotalCustomAmounts
@@ -1260,6 +1251,13 @@ extension EditableOrderViewModel {
                                                                       initialMethodTitle: shippingMethodTitle,
                                                                       shippingTotal: shippingMethodTotal,
                                                                       didSelectSave: saveShippingLineClosure)
+            self.shippingLineSelectionViewModel = ShippingLineSelectionDetailsViewModel(siteID: siteID,
+                                                                                        shippingMethods: availableShippingMethods,
+                                                                                        isExistingShippingLine: shouldShowShippingTotal,
+                                                                                        initialMethodID: shippingMethodID,
+                                                                                        initialMethodTitle: shippingMethodTitle,
+                                                                                        shippingTotal: shippingMethodTotal,
+                                                                                        didSelectSave: saveShippingLineClosure)
             self.addNewCouponLineClosure = addNewCouponLineClosure
             self.onGoToCouponsClosure = onGoToCouponsClosure
             self.onTaxHelpButtonTappedClosure = onTaxHelpButtonTappedClosure
@@ -1696,6 +1694,12 @@ private extension EditableOrderViewModel {
 
                 let shippingMethodID = order.shippingLines.first?.methodID ?? ""
                 let shippingMethodTitle = order.shippingLines.first?.methodTitle ?? ""
+                let availableShippingMethods = [ // TODO-12578: Replace with actual shipping methods
+                    ShippingMethod(siteID: siteID, methodID: "flat_rate", title: "Flat rate"),
+                    ShippingMethod(siteID: siteID, methodID: "free_shipping", title: "Free shipping"),
+                    ShippingMethod(siteID: siteID, methodID: "local_pickup", title: "Local pickup"),
+                    ShippingMethod(siteID: siteID, methodID: "other", title: "Other")
+                ]
 
                 let isDataSyncing: Bool = {
                     switch state {
@@ -1740,6 +1744,7 @@ private extension EditableOrderViewModel {
                 return PaymentDataViewModel(siteID: self.siteID,
                                             shouldShowProductsTotal: order.items.isNotEmpty,
                                             itemsTotal: orderTotals.itemsTotal.stringValue,
+                                            availableShippingMethods: availableShippingMethods,
                                             shouldShowShippingTotal: order.shippingLines.filter { $0.methodID != nil }.isNotEmpty,
                                             shippingTotal: order.shippingTotal.isNotEmpty ? order.shippingTotal : "0",
                                             shippingMethodID: shippingMethodID,

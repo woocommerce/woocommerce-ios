@@ -2021,7 +2021,6 @@
 		CE5F462723AAC8C0006B1A5C /* RefundDetailsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE5F462623AAC8C0006B1A5C /* RefundDetailsViewModel.swift */; };
 		CE5F462A23AACA0A006B1A5C /* RefundDetailsDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE5F462923AACA0A006B1A5C /* RefundDetailsDataSource.swift */; };
 		CE5F462C23AACBC4006B1A5C /* RefundDetailsResultController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE5F462B23AACBC4006B1A5C /* RefundDetailsResultController.swift */; };
-		CE606D7F2BDFD45A001CB424 /* ShippingMethodSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE606D7E2BDFD45A001CB424 /* ShippingMethodSelector.swift */; };
 		CE606D812BE14000001CB424 /* ShippingLineSelectionDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE606D802BE14000001CB424 /* ShippingLineSelectionDetails.swift */; };
 		CE606D832BE14010001CB424 /* ShippingLineSelectionDetailsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE606D822BE14010001CB424 /* ShippingLineSelectionDetailsViewModel.swift */; };
 		CE606D872BE29E89001CB424 /* ShippingLineSelectionDetailsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE606D862BE29E89001CB424 /* ShippingLineSelectionDetailsViewModelTests.swift */; };
@@ -4760,7 +4759,6 @@
 		CE5F462623AAC8C0006B1A5C /* RefundDetailsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundDetailsViewModel.swift; sourceTree = "<group>"; };
 		CE5F462923AACA0A006B1A5C /* RefundDetailsDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundDetailsDataSource.swift; sourceTree = "<group>"; };
 		CE5F462B23AACBC4006B1A5C /* RefundDetailsResultController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundDetailsResultController.swift; sourceTree = "<group>"; };
-		CE606D7E2BDFD45A001CB424 /* ShippingMethodSelector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingMethodSelector.swift; sourceTree = "<group>"; };
 		CE606D802BE14000001CB424 /* ShippingLineSelectionDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLineSelectionDetails.swift; sourceTree = "<group>"; };
 		CE606D822BE14010001CB424 /* ShippingLineSelectionDetailsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLineSelectionDetailsViewModel.swift; sourceTree = "<group>"; };
 		CE606D862BE29E89001CB424 /* ShippingLineSelectionDetailsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLineSelectionDetailsViewModelTests.swift; sourceTree = "<group>"; };
@@ -10703,7 +10701,6 @@
 				AEA3F90E27BE8EB400B9F555 /* ShippingLineDetailsViewModel.swift */,
 				CE606D802BE14000001CB424 /* ShippingLineSelectionDetails.swift */,
 				CE606D822BE14010001CB424 /* ShippingLineSelectionDetailsViewModel.swift */,
-				CE606D7E2BDFD45A001CB424 /* ShippingMethodSelector.swift */,
 			);
 			path = Shipping;
 			sourceTree = "<group>";
@@ -13521,7 +13518,6 @@
 				02817B39242B34560050AD8B /* ToolbarView.swift in Sources */,
 				860B85F12ADE3A0E00E85884 /* BulletPointView.swift in Sources */,
 				D817586222BB64C300289CFE /* OrderDetailsNotices.swift in Sources */,
-				CE606D7F2BDFD45A001CB424 /* ShippingMethodSelector.swift in Sources */,
 				022F7A0324A05F6400012601 /* LinkedProductsListSelectorViewController.swift in Sources */,
 				2602A63F27BD880A00B347F1 /* NewOrderInitialStatusResolver.swift in Sources */,
 				0201E42B2946151100C793C7 /* StoreCreationCategoryQuestionViewModel.swift in Sources */,
@@ -13890,7 +13886,6 @@
 				68AC9D292ACE598B0042F784 /* ProductImageThumbnail.swift in Sources */,
 				CE4FE7D82B7D306200F66DD5 /* MultiSelectionReorderableList.swift in Sources */,
 				029106BE2BE2868F00C2248B /* CollapsibleOrderFormCardBorder.swift in Sources */,
-				02E4FD7C2306A04C0049610C /* StatsTimeRangeBarView.swift in Sources */,
 				864213022AE77C730036E5A6 /* UIImage+Resizing.swift in Sources */,
 				DE61978B28991F0E005E4362 /* WKWebView+Authenticated.swift in Sources */,
 				311237EE2714DA240033C44E /* CardPresentModalDisplayMessage.swift in Sources */,

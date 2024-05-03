@@ -23,6 +23,8 @@ final class CollapsibleCustomerCardViewModel: ObservableObject {
             .joined(separator: "\n")
     }
 
+    private let originalCustomerData: CustomerData
+
     init(customerData: CustomerData,
          isCustomerAccountRequired: Bool,
          isEditable: Bool,
@@ -32,6 +34,7 @@ final class CollapsibleCustomerCardViewModel: ObservableObject {
         self.isCollapsed = isCollapsed
         self.emailPlaceholder = Localization.emailPlaceholder(isRequired: isCustomerAccountRequired)
         self.email = customerData.email ?? ""
+        self.originalCustomerData = customerData
     }
 }
 

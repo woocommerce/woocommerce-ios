@@ -437,6 +437,7 @@
 		02B60DF72A586C7F004C47FF /* AddProductFromImageFormImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02B60DF62A586C7F004C47FF /* AddProductFromImageFormImageView.swift */; };
 		02B60DFB2A58809F004C47FF /* View+MediaSourceActionSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02B60DFA2A58809F004C47FF /* View+MediaSourceActionSheet.swift */; };
 		02B653AC2429F7BF00A9C839 /* MockTaxClassStoresManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02B653AB2429F7BF00A9C839 /* MockTaxClassStoresManager.swift */; };
+		02B7C4F62BE375D800F8E93A /* CollapsibleCustomerCardHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02B7C4F52BE375D800F8E93A /* CollapsibleCustomerCardHeaderView.swift */; };
 		02B8650F24A9E2D800265779 /* Product+SwiftUIPreviewHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02B8650E24A9E2D800265779 /* Product+SwiftUIPreviewHelpers.swift */; };
 		02BA12852461674B008D8325 /* Optional+String.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02BA12842461674B008D8325 /* Optional+String.swift */; };
 		02BA128B24616B48008D8325 /* ProductFormActionsFactory+VisibilityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02BA128A24616B48008D8325 /* ProductFormActionsFactory+VisibilityTests.swift */; };
@@ -3174,6 +3175,7 @@
 		02B60DF62A586C7F004C47FF /* AddProductFromImageFormImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddProductFromImageFormImageView.swift; sourceTree = "<group>"; };
 		02B60DFA2A58809F004C47FF /* View+MediaSourceActionSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+MediaSourceActionSheet.swift"; sourceTree = "<group>"; };
 		02B653AB2429F7BF00A9C839 /* MockTaxClassStoresManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockTaxClassStoresManager.swift; sourceTree = "<group>"; };
+		02B7C4F52BE375D800F8E93A /* CollapsibleCustomerCardHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollapsibleCustomerCardHeaderView.swift; sourceTree = "<group>"; };
 		02B8650E24A9E2D800265779 /* Product+SwiftUIPreviewHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Product+SwiftUIPreviewHelpers.swift"; sourceTree = "<group>"; };
 		02BA12842461674B008D8325 /* Optional+String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Optional+String.swift"; sourceTree = "<group>"; };
 		02BA128A24616B48008D8325 /* ProductFormActionsFactory+VisibilityTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductFormActionsFactory+VisibilityTests.swift"; sourceTree = "<group>"; };
@@ -6534,6 +6536,7 @@
 			children = (
 				029106C12BE34A8600C2248B /* CollapsibleCustomerCard.swift */,
 				029106C32BE34AA900C2248B /* CollapsibleCustomerCardViewModel.swift */,
+				02B7C4F52BE375D800F8E93A /* CollapsibleCustomerCardHeaderView.swift */,
 			);
 			path = CustomerCard;
 			sourceTree = "<group>";
@@ -14048,6 +14051,7 @@
 				02038C5C2AF0E7FC00CD36D9 /* ConfigurableVariableBundleAttributePickerViewModel.swift in Sources */,
 				CE24BCD8212F25D4001CD12E /* StorageOrder+Woo.swift in Sources */,
 				DE2FE58A2925EAAE0018040A /* LoginJetpackSetupCoordinator.swift in Sources */,
+				02B7C4F62BE375D800F8E93A /* CollapsibleCustomerCardHeaderView.swift in Sources */,
 				021EBB362A3054BE003634CA /* BlazeEligibilityChecker.swift in Sources */,
 				02820F3422C257B700DE0D37 /* UITableView+HeaderFooterHelpers.swift in Sources */,
 				EEC259422B43EF33004D703C /* BlazeEditAdView.swift in Sources */,

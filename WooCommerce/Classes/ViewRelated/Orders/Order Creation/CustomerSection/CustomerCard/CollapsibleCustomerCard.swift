@@ -14,7 +14,10 @@ struct CollapsibleCustomerCard: View {
                                  showsBorder: true,
                                  padding: Layout.headerAdditionalPadding,
                                  label: {
-            Text("Email address")
+            CollapsibleCustomerCardHeaderView(isCollapsed: viewModel.isCollapsed,
+                                              email: viewModel.email,
+                                              emailPlaceholder: viewModel.emailPlaceholder,
+                                              shippingAddress: viewModel.shippingAddress)
         }, content: {
             Text("Email address text field")
             Text("Create new customer toggle")
@@ -32,6 +35,12 @@ private extension CollapsibleCustomerCard {
 
 struct CollapsibleCustomerCard_Previews: PreviewProvider {
     static var previews: some View {
-        CollapsibleCustomerCard(viewModel: .init(isCustomerAccountRequired: true, isEditable: true, isCollapsed: false))
+        CollapsibleCustomerCard(viewModel: .init(customerData: .init(email: nil,
+                                                                     fullName: nil,
+                                                                     billingAddressFormatted: nil,
+                                                                     shippingAddressFormatted: nil),
+                                                 isCustomerAccountRequired: true,
+                                                 isEditable: true,
+                                                 isCollapsed: false))
     }
 }

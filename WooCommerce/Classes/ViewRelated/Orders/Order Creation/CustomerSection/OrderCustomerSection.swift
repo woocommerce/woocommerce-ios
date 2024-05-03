@@ -39,10 +39,16 @@ private extension OrderCustomerSection {
 }
 
 struct OrderCustomerSection_Previews: PreviewProvider {
+    static let customer: CollapsibleCustomerCardViewModel.CustomerData = .init(
+        email: "customer@woo.com",
+        fullName: "T Woo",
+        billingAddressFormatted: "123 60th St\nUSA",
+        shippingAddressFormatted: nil
+    )
     static var previews: some View {
         Group {
-            OrderCustomerSection(viewModel: .init(isCustomerAccountRequired: true, isEditable: true))
-            OrderCustomerSection(viewModel: .init(isCustomerAccountRequired: false, isEditable: true))
+            OrderCustomerSection(viewModel: .init(customerData: customer, isCustomerAccountRequired: true, isEditable: true))
+            OrderCustomerSection(viewModel: .init(customerData: customer, isCustomerAccountRequired: false, isEditable: true))
         }
     }
 }

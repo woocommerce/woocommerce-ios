@@ -149,7 +149,7 @@ struct StoreOnboardingView: View {
                             await viewModel.reloadTasks()
                         }
                     })
-                    .padding(Layout.padding)
+                    .padding(.horizontal, Layout.padding)
                 } else {
                     // Task list
                     VStack(alignment: .leading, spacing: 0) {

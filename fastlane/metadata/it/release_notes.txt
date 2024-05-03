@@ -1,2 +1,1 @@
-Risolto un bug fastidioso per garantire il corretto funzionamento del pulsante "Azzera log attività", ricominciando da zero per un nuovo inizio. Immergiti in un'esperienza WooCommerce più fluida. Aggiorna ora.
-
+Saluta i bug fastidiosi. Il nostro ultimo aggiornamento garantisce che la funzionalità "Ricevi pagamenti" ti conduca direttamente al modulo dell'ordine, sia che tu stia utilizzando un'azione rapida o un deep link. Sfrutta le transazioni semplici fuori casa.

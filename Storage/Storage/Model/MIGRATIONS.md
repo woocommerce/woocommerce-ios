@@ -2,6 +2,10 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
+## Model 111 (Release 18.5.0.0)
+- @rachelmcr 2024-05-02
+    - Add `ShippingMethod` entity.
+
 ## Model 110 (Release 17.9.0.0)
 - @rachelmcr 2024-03-19
     - Add `WCAnalyticsCustomer` entity.

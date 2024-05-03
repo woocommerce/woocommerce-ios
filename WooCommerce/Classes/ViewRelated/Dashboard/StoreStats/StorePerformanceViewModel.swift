@@ -6,6 +6,15 @@ import protocol Storage.StorageManagerType
 import enum Storage.StatsVersion
 import enum Networking.DotcomError
 
+/// Different display modes of site visit stats
+///
+enum SiteVisitStatsMode {
+    case `default`
+    case redactedDueToJetpack
+    case hidden
+    case redactedDueToCustomRange
+}
+
 /// View model for `StorePerformanceView`.
 ///
 final class StorePerformanceViewModel: ObservableObject {
@@ -45,6 +54,9 @@ final class StorePerformanceViewModel: ObservableObject {
     private var currentDate = Date()
     private let chartValueSelectedEventsSubject = PassthroughSubject<Int?, Never>()
 
+    private var waitingTracker: WaitingTimeTracker?
+    private let syncingDidFinishPublisher = PassthroughSubject<Void, Never>()
+
     // To check whether the tab is showing the visitors and conversion views as redacted for custom range.
     // This redaction is only shown on Custom Range tab with WordPress.com or Jetpack connected sites,
     // while Jetpack CP sites has its own redacted for Jetpack state, and non-Jetpack sites simply has them empty.
@@ -75,6 +87,7 @@ final class StorePerformanceViewModel: ObservableObject {
         self.usageTracksEventEmitter = usageTracksEventEmitter
         self.analytics = analytics
 
+        observeSyncingCompletion()
         observeTimeRange()
         observeChartValueSelectedEvents()
 
@@ -116,7 +129,7 @@ final class StorePerformanceViewModel: ObservableObject {
     func reloadData() async {
         syncingData = true
         loadingError = nil
-        let waitingTracker = WaitingTimeTracker(trackScenario: .dashboardMainStats)
+        waitingTracker = WaitingTimeTracker(trackScenario: .dashboardMainStats)
         do {
             try await syncAllStats()
             trackDashboardStatsSyncComplete()
@@ -139,7 +152,7 @@ final class StorePerformanceViewModel: ObservableObject {
             handleSyncError(error: error)
         }
         syncingData = false
-        waitingTracker.end()
+        syncingDidFinishPublisher.send()
     }
 
     func hideStorePerformance() {
@@ -205,6 +218,15 @@ extension StorePerformanceViewModel {
 // MARK: - Private helpers
 //
 private extension StorePerformanceViewModel {
+    func observeSyncingCompletion() {
+        syncingDidFinishPublisher
+            .receive(on: DispatchQueue.global(qos: .background))
+            .sink { [weak self] in
+                self?.waitingTracker?.end()
+            }
+            .store(in: &subscriptions)
+    }
+
     func observeTimeRange() {
         $timeRange
             .compactMap { [weak self] timeRange -> StoreStatsPeriodViewModel? in

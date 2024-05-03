@@ -30,7 +30,7 @@ struct TopPerformersDashboardView: View {
                         await viewModel.reloadData()
                     }
                 })
-                .padding(.leading, Layout.padding)
+                .padding(.horizontal, Layout.padding)
             } else {
                 timeRangeBar
                     .padding(.horizontal, Layout.padding)

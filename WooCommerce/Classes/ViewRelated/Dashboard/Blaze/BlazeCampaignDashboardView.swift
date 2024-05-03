@@ -108,15 +108,10 @@ struct BlazeCampaignDashboardView: View {
                         await viewModel.reload()
                     }
                 })
-                .padding(Layout.padding)
+                .padding(.horizontal, Layout.padding)
             case .loading:
                 EmptyView()
             }
-
-            // Show All Campaigns button
-            showAllCampaignsButton
-                .padding(.horizontal, Layout.padding)
-                .renderedIf(viewModel.shouldShowShowAllCampaignsButton)
 
             // Create campaign button
             createCampaignButton
@@ -124,6 +119,17 @@ struct BlazeCampaignDashboardView: View {
                 .redacted(reason: viewModel.shouldRedactView ? .placeholder : [])
                 .shimmering(active: viewModel.shouldRedactView)
                 .renderedIf(viewModel.shouldShowCreateCampaignButton)
+
+            // Show All Campaigns button
+            VStack(spacing: 0) {
+                Divider()
+                    .padding(.leading, Layout.padding)
+                    .padding(.bottom, Layout.dividerVerticalSpacing)
+                showAllCampaignsButton
+                    .padding(.horizontal, Layout.padding)
+            }
+            .renderedIf(viewModel.shouldShowShowAllCampaignsButton)
+
         }
         .padding(.vertical, Layout.padding)
         .background(Color(.listForeground(modal: false)))
@@ -143,7 +149,7 @@ private extension BlazeCampaignDashboardView {
                 Image(uiImage: .blaze)
                     .resizable()
                     .frame(width: Layout.logoSize * scale, height: Layout.logoSize * scale)
-                Text("Blaze")
+                Text(Localization.title)
                     .headlineStyle()
                 Spacer()
                 Menu {
@@ -171,10 +177,10 @@ private extension BlazeCampaignDashboardView {
         Button {
             createCampaignTapped?(nil)
         } label: {
-            Text(Localization.promote)
-                .foregroundColor(.init(uiColor: .accent))
+            Text(Localization.createCampaign)
                 .bodyStyle()
         }
+        .buttonStyle(SecondaryButtonStyle())
     }
 
     var showAllCampaignsButton: some View {
@@ -182,9 +188,10 @@ private extension BlazeCampaignDashboardView {
             viewModel.didSelectCampaignList()
             showAllCampaignsTapped?()
         } label: {
-            HStack {
+            HStack(spacing: 0) {
                 Text(Localization.showAllCampaigns)
                     .fontWeight(.regular)
+                    .foregroundStyle(Color.accentColor)
                     .bodyStyle()
 
                 Spacer()
@@ -192,12 +199,8 @@ private extension BlazeCampaignDashboardView {
                 // Chevron icon
                 Image(uiImage: .chevronImage)
                     .flipsForRightToLeftLayoutDirection(true)
-                    .foregroundColor(Color(.textTertiary))
+                    .foregroundStyle(Color(.textTertiary))
             }
-            .padding(insets: Layout.insets)
-            .background(Color(uiColor: .init(light: UIColor.systemGray6,
-                                             dark: UIColor.systemGray5)))
-            .cornerRadius(Layout.cornerRadius)
         }
     }
 
@@ -228,32 +231,48 @@ private extension BlazeCampaignDashboardView {
         enum HeadingBlock {
             static let verticalSpacing: CGFloat = 8
         }
-        static let insets: EdgeInsets = .init(top: 16, leading: 16, bottom: 16, trailing: 16)
         static let cornerRadius: CGFloat = 8
         static let logoSize: CGFloat = 20
         static let hideIconVerticalPadding: CGFloat = 8
+        static let dividerVerticalSpacing: CGFloat = 16
     }
 
     enum Localization {
+        static let title = NSLocalizedString(
+            "blazeCampaignDashboardView.title",
+            value: "Blaze campaigns",
+            comment: "Title of the Blaze campaign view."
+        )
+
         static let subtitle = NSLocalizedString(
-            "Increase visibility and get your products sold quickly.",
+            "blazeCampaignDashboardView.subtitle",
+            value: "Increase visibility and get your products sold quickly.",
             comment: "Subtitle of the Blaze campaign view."
         )
 
         static let showAllCampaigns = NSLocalizedString(
-            "Show All Campaigns",
+            "blazeCampaignDashboardView.showAllCampaigns",
+            value: "View all campaigns",
             comment: "Button when tapped will show the Blaze campaign list."
         )
 
-        static let promote = NSLocalizedString(
-            "blazeCampaignDashboardView.promote",
-            value: "Promote",
-            comment: "Button when tapped will launch create Blaze campaign flow."
+        static let createCampaign = NSLocalizedString(
+            "blazeCampaignDashboardView.createCampaign",
+            value: "Create Campaign",
+            comment: "Button that when tapped will launch create Blaze campaign flow."
         )
 
-        static let done = NSLocalizedString("Done", comment: "Button to dismiss the Blaze campaign detail view")
+        static let done = NSLocalizedString(
+            "blazeCampaignDashboardView.done",
+            value: "Done",
+            comment: "Button to dismiss the Blaze campaign detail view"
+        )
 
-        static let detailTitle = NSLocalizedString("Campaign Details", comment: "Title of the Blaze campaign details view.")
+        static let detailTitle = NSLocalizedString(
+            "blazeCampaignDashboardView.detailTitle",
+            value: "Campaign Details",
+            comment: "Title of the Blaze campaign details view."
+        )
 
         static let hideBlaze = NSLocalizedString(
             "blazeCampaignDashboardView.hideBlazeButton",
@@ -284,20 +303,26 @@ private struct ProductInfoView: View {
                 .frame(width: Layout.imageSize * scale, height: Layout.imageSize * scale)
                 .cornerRadius(Layout.cornerRadius)
 
-            Text(product.name)
-                .fontWeight(.semibold)
-                .foregroundColor(.init(UIColor.text))
-                .subheadlineStyle()
-                .multilineTextAlignment(.leading)
-                // This size modifier is necessary so that the product name is never truncated.
-                .fixedSize(horizontal: false, vertical: true)
+            VStack(alignment: .leading) {
+                Text(Localization.suggestedProductLabel)
+                    .foregroundStyle(Color(.textSubtle))
+                    .captionStyle()
+
+                Text(product.name)
+                    .fontWeight(.semibold)
+                    .foregroundStyle(Color(.text))
+                    .subheadlineStyle()
+                    .multilineTextAlignment(.leading)
+                    // This size modifier is necessary so that the product name is never truncated.
+                    .fixedSize(horizontal: false, vertical: true)
+            }
 
             Spacer()
 
             // Chevron icon
             Image(uiImage: .chevronImage)
                 .flipsForRightToLeftLayoutDirection(true)
-                .foregroundColor(Color(.textTertiary))
+                .foregroundStyle(Color(.textTertiary))
         }
         .padding(Layout.contentPadding)
         .background(
@@ -307,7 +332,7 @@ private struct ProductInfoView: View {
         )
         .overlay {
             RoundedRectangle(cornerRadius: Layout.cornerRadius)
-                .stroke(Color(uiColor: .separator), lineWidth: Layout.strokeWidth)
+                .stroke(Color(uiColor: .secondaryButtonDownBorder), lineWidth: Layout.strokeWidth)
         }
     }
 
@@ -315,8 +340,16 @@ private struct ProductInfoView: View {
         static let imageSize: CGFloat = 44
         static let contentSpacing: CGFloat = 16
         static let contentPadding: CGFloat = 16
-        static let strokeWidth: CGFloat = 0.5
+        static let strokeWidth: CGFloat = 1
         static let cornerRadius: CGFloat = 8
+    }
+
+    private enum Localization {
+        static let suggestedProductLabel = NSLocalizedString(
+            "productInfoView.suggestedProductLabel",
+            value: "Suggested product",
+            comment: "Label for the suggested product on the Blaze dashboard view."
+        )
     }
 }
 

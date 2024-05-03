@@ -45,7 +45,8 @@ APP_STORE_VERSION_BUNDLE_IDENTIFIER = 'com.automattic.woocommerce'
 MAIN_BUNDLE_IDENTIFIERS = [
   APP_STORE_VERSION_BUNDLE_IDENTIFIER,
   "#{APP_STORE_VERSION_BUNDLE_IDENTIFIER}.storewidgets",
-  "#{APP_STORE_VERSION_BUNDLE_IDENTIFIER}.notificationcontentextension"
+  "#{APP_STORE_VERSION_BUNDLE_IDENTIFIER}.notificationcontentextension",
+  "#{APP_STORE_VERSION_BUNDLE_IDENTIFIER}.watchkitapp"
 ].freeze
 
 ALPHA_VERSION_BUNDLE_IDENTIFIER = 'com.automattic.alpha.woocommerce'
@@ -53,7 +54,8 @@ ALPHA_VERSION_BUNDLE_IDENTIFIER = 'com.automattic.alpha.woocommerce'
 ALPHA_BUNDLE_IDENTIFIERS = [
   ALPHA_VERSION_BUNDLE_IDENTIFIER,
   "#{ALPHA_VERSION_BUNDLE_IDENTIFIER}.storewidgets",
-  "#{ALPHA_VERSION_BUNDLE_IDENTIFIER}.notificationcontentextension"
+  "#{ALPHA_VERSION_BUNDLE_IDENTIFIER}.notificationcontentextension",
+  "#{ALPHA_VERSION_BUNDLE_IDENTIFIER}.watchkitapp"
 ].freeze
 
 # Shared options to use when invoking `gym` / `build_app`.

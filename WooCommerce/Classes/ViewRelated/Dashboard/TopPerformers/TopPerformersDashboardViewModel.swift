@@ -1,3 +1,4 @@
+import Combine
 import WooFoundation
 import Yosemite
 import protocol Storage.StorageManagerType
@@ -39,6 +40,10 @@ final class TopPerformersDashboardViewModel: ObservableObject {
         resultsController?.fetchedObjects.first
     }
 
+    private var waitingTracker: WaitingTimeTracker?
+    private let syncingDidFinishPublisher = PassthroughSubject<Error?, Never>()
+    private var subscriptions = Set<AnyCancellable>()
+
     init(siteID: Int64,
          siteTimezone: TimeZone = .siteTimezone,
          stores: StoresManager = ServiceLocator.stores,
@@ -55,6 +60,8 @@ final class TopPerformersDashboardViewModel: ObservableObject {
         self.currencySettings = currencySettings
         self.analytics = analytics
         self.usageTracksEventEmitter = usageTracksEventEmitter
+
+        observeSyncingCompletion()
 
         Task { @MainActor in
             self.timeRange = await loadLastTimeRange() ?? .today
@@ -80,12 +87,13 @@ final class TopPerformersDashboardViewModel: ObservableObject {
         syncingData = true
         syncingError = nil
         updateUIInLoadingState()
+        waitingTracker = WaitingTimeTracker(trackScenario: .dashboardTopPerformers)
         do {
             try await syncTopEarnersStats()
-            ServiceLocator.analytics.track(event:
-                    .Dashboard.dashboardTopPerformersLoaded(timeRange: timeRange))
+            syncingDidFinishPublisher.send(nil)
         } catch {
             syncingError = error
+            syncingDidFinishPublisher.send(error)
             DDLogError("⛔️ Dashboard (Top Performers) — Error synchronizing top earner stats: \(error)")
         }
         syncingData = false
@@ -133,6 +141,18 @@ extension TopPerformersDashboardViewModel {
 // MARK: - Private helpers
 //
 private extension TopPerformersDashboardViewModel {
+    func observeSyncingCompletion() {
+        syncingDidFinishPublisher
+            .receive(on: DispatchQueue.global(qos: .background))
+            .sink { [weak self] error in
+                guard let self else { return }
+                if error != nil {
+                    analytics.track(event: .Dashboard.dashboardTopPerformersLoaded(timeRange: timeRange))
+                }
+                waitingTracker?.end()
+            }
+            .store(in: &subscriptions)
+    }
 
     @MainActor
     func loadLastTimeRange() async -> StatsTimeRangeV4? {
@@ -197,7 +217,6 @@ private extension TopPerformersDashboardViewModel {
         let latestDateToInclude = timeRange.latestDate(currentDate: currentDate, siteTimezone: siteTimezone)
         let earliestDateToInclude = timeRange.earliestDate(latestDate: latestDateToInclude, siteTimezone: siteTimezone)
         try await withCheckedThrowingContinuation { continuation in
-            let waitingTracker = WaitingTimeTracker(trackScenario: .dashboardTopPerformers)
             stores.dispatch(StatsActionV4.retrieveTopEarnerStats(siteID: siteID,
                                                                  timeRange: timeRange,
                                                                  timeZone: siteTimezone,
@@ -207,7 +226,6 @@ private extension TopPerformersDashboardViewModel {
                                                                  forceRefresh: true,
                                                                  saveInStorage: true,
                                                                  onCompletion: { result in
-                waitingTracker.end()
                 let voidResult = result.map { _ in () } // Caller expects no entity in the result.
                 continuation.resume(with: voidResult)
             }))

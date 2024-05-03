@@ -1,1 +1,2 @@
-Wave goodbye to pesky bugs! Our latest update ensures the "Collect Payment" feature leads you directly to the order form, whether you're using a quick action or a deep link. Enjoy seamless transactions on the go!
+- [*] Barcode scanning: Fixed bug where variable parent products could be added to orders directly using the barcode scanner. [https://github.com/woocommerce/woocommerce-ios/pull/12576]
+

@@ -1,2 +1,1 @@
-- [*] Barcode scanning: Fixed bug where variable parent products could be added to orders directly using the barcode scanner. [https://github.com/woocommerce/woocommerce-ios/pull/12576]
-
+In our latest update we've enhanced the barcode scanning by squashing a bug that allowed variable parent products to sneak into orders. Enjoy a smoother order creation experience with our latest update!

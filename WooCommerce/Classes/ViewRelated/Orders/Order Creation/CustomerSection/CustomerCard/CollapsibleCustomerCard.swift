@@ -12,6 +12,7 @@ struct CollapsibleCustomerCard: View {
         CollapsibleOrderFormCard(hasSubtleChevron: true,
                                  isCollapsed: $viewModel.isCollapsed,
                                  showsBorder: true,
+                                 padding: Layout.headerAdditionalPadding,
                                  label: {
             Text("Email address")
         }, content: {
@@ -20,6 +21,12 @@ struct CollapsibleCustomerCard: View {
             Text("Customer address")
             Text("Remove customer from order")
         })
+    }
+}
+
+private extension CollapsibleCustomerCard {
+    enum Layout {
+        static let headerAdditionalPadding: EdgeInsets = .init(top: 8, leading: 0, bottom: 8, trailing: 0)
     }
 }
 

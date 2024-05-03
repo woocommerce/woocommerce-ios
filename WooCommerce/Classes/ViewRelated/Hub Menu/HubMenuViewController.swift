@@ -66,7 +66,7 @@ final class HubMenuViewController: UIHostingController<HubMenu> {
         // We want to hide navigation bar *only* on HubMenu screen. But on iOS 16, the `navigationBarHidden(true)`
         // modifier on `HubMenu` view hides the navigation bar for the whole navigation stack.
         // Here we manually hide or show navigation bar when entering or leaving the HubMenu screen.
-        self.navigationController?.setNavigationBarHidden(true, animated: animated)
+        navigationController?.setNavigationBarHidden(true, animated: animated)
     }
 }
 

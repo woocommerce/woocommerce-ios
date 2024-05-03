@@ -41,10 +41,23 @@ final class OrdersSplitViewWrapperController: UIViewController {
         // If the order cannot be selected from the order list like when it hasn't been fetched remotely,
         // `OrderLoaderViewController` is shown instead.
         guard ordersViewController.selectOrderFromListIfPossible(for: orderID) else {
+            // In #12071, it seems that some users are seeing the loader pushed twice, which causes a crash.
+            // This shouldn't really be possible, but just in case, this check may improve these crashes.
+            guard !orderLoaderAlreadyShownInSecondaryView(for: orderID) else {
+                return
+            }
             let loaderViewController = OrderLoaderViewController(orderID: orderID, siteID: Int64(siteID), note: note)
             let loaderNavigationController = WooNavigationController(rootViewController: loaderViewController)
             return showSecondaryView(loaderNavigationController)
         }
+    }
+
+    private func orderLoaderAlreadyShownInSecondaryView(for orderID: Int64) -> Bool {
+        guard let navigationController = ordersSplitViewController.viewController(for: .secondary) as? WooNavigationController,
+              let loaderController = navigationController.topViewController as? OrderLoaderViewController else {
+            return false
+        }
+        return loaderController.orderID == orderID
     }
 
     func presentOrderCreationFlow() {

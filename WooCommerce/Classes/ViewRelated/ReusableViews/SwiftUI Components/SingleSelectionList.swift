@@ -15,7 +15,7 @@ struct SingleSelectionList<T: Hashable>: View {
     private let onSelection: ((T) -> Void)?
 
     @Binding private var selected: T
-    @Environment(\.presentationMode) var presentation
+    @Environment(\.dismiss) private var dismiss
 
     private let horizontalSpacing: CGFloat = 16
 
@@ -63,7 +63,7 @@ struct SingleSelectionList<T: Hashable>: View {
                 .toolbar(content: {
                     ToolbarItem(placement: .confirmationAction) {
                         Button(action: {
-                            presentation.wrappedValue.dismiss()
+                            dismiss()
                         }, label: {
                             Text(NSLocalizedString("Done", comment: "Done navigation button in selection list screens"))
                         })

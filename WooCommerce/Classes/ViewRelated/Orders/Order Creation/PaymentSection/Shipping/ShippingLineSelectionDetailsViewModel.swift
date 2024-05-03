@@ -17,6 +17,7 @@ class ShippingLineSelectionDetailsViewModel: ObservableObject {
     ///
     @Published var methodTitle: String
 
+    private let initialMethodID: String
     private let initialAmount: Decimal?
     private let initialMethodTitle: String
 
@@ -35,12 +36,14 @@ class ShippingLineSelectionDetailsViewModel: ObservableObject {
     @Published var enableDoneButton: Bool = false
 
     init(isExistingShippingLine: Bool,
+         initialMethodID: String,
          initialMethodTitle: String,
          shippingTotal: String,
          locale: Locale = Locale.autoupdatingCurrent,
          storeCurrencySettings: CurrencySettings = ServiceLocator.currencySettings,
          didSelectSave: @escaping ((ShippingLine?) -> Void)) {
         self.isExistingShippingLine = isExistingShippingLine
+        self.initialMethodID = initialMethodID
         self.initialMethodTitle = initialMethodTitle
         self.methodTitle = initialMethodTitle
 

@@ -1130,6 +1130,7 @@ extension EditableOrderViewModel {
         let shippingTotal: String
 
         // We only support one (the first) shipping line
+        let shippingMethodID: String
         let shippingMethodTitle: String
         let shippingMethodTotal: String
 
@@ -1173,6 +1174,7 @@ extension EditableOrderViewModel {
         let saveShippingLineClosure: (ShippingLine?) -> Void
         var shippingLineSelectionViewModel: ShippingLineSelectionDetailsViewModel {
             ShippingLineSelectionDetailsViewModel(isExistingShippingLine: shouldShowShippingTotal,
+                                                  initialMethodID: shippingMethodID,
                                                   initialMethodTitle: shippingMethodTitle,
                                                   shippingTotal: shippingMethodTotal,
                                                   didSelectSave: saveShippingLineClosure)
@@ -1189,6 +1191,7 @@ extension EditableOrderViewModel {
              itemsTotal: String = "0",
              shouldShowShippingTotal: Bool = false,
              shippingTotal: String = "0",
+             shippingMethodID: String = "",
              shippingMethodTitle: String = "",
              shippingMethodTotal: String = "",
              shippingTax: String = "0",
@@ -1226,6 +1229,7 @@ extension EditableOrderViewModel {
             self.itemsTotal = currencyFormatter.formatAmount(itemsTotal) ?? "0.00"
             self.shouldShowShippingTotal = shouldShowShippingTotal
             self.shippingTotal = currencyFormatter.formatAmount(shippingTotal) ?? "0.00"
+            self.shippingMethodID = shippingMethodID
             self.shippingMethodTitle = shippingMethodTitle
             self.shippingMethodTotal = currencyFormatter.formatAmount(shippingMethodTotal) ?? "0.00"
             self.saveShippingLineClosure = saveShippingLineClosure
@@ -1690,6 +1694,7 @@ private extension EditableOrderViewModel {
 
                 let orderTotals = OrderTotalsCalculator(for: order, using: self.currencyFormatter)
 
+                let shippingMethodID = order.shippingLines.first?.methodID ?? ""
                 let shippingMethodTitle = order.shippingLines.first?.methodTitle ?? ""
 
                 let isDataSyncing: Bool = {
@@ -1737,6 +1742,7 @@ private extension EditableOrderViewModel {
                                             itemsTotal: orderTotals.itemsTotal.stringValue,
                                             shouldShowShippingTotal: order.shippingLines.filter { $0.methodID != nil }.isNotEmpty,
                                             shippingTotal: order.shippingTotal.isNotEmpty ? order.shippingTotal : "0",
+                                            shippingMethodID: shippingMethodID,
                                             shippingMethodTitle: shippingMethodTitle,
                                             shippingMethodTotal: order.shippingLines.first?.total ?? "0",
                                             shippingTax: order.shippingTax.isNotEmpty ? order.shippingTax : "0",

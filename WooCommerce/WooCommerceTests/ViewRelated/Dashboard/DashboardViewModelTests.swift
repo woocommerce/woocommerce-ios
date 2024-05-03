@@ -308,27 +308,7 @@ final class DashboardViewModelTests: XCTestCase {
     }
 
     // MARK: Dashboard cards
-    @MainActor
-    func test_dashboard_cards_are_loaded_from_app_settings() async throws {
-        // Given
-        let uuid = UUID().uuidString
-        let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
-        let viewModel = DashboardViewModel(siteID: 0,
-                                           stores: stores,
-                                           userDefaults: defaults)
-
-        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
-            if case let .loadDashboardCards(_, completion) = action {
-                completion([.init(type: .performance, enabled: true),
-                            .init(type: .blaze, enabled: true)])
-            }
-        }
-
-        // Then
-        waitUntil {
-            viewModel.dashboardCards.contains { $0.type == .performance && $0.enabled }
-        }
-    }
+    // TODO: Add unit test for initially generated cards, and for the synchronizing between generated and saved cards.
 
     func test_dashboard_cards_are_saved_to_app_settings() async throws {
         // Given
@@ -347,7 +327,7 @@ final class DashboardViewModelTests: XCTestCase {
         }
 
         // When
-        viewModel.didCustomizeDashboardCards([.init(type: .performance, enabled: true)])
+        viewModel.didCustomizeDashboardCards([.init(type: .onboarding, availability: .show, enabled: true)])
 
         // Then
         XCTAssertTrue(setDashboardCardsActionCalled)
@@ -356,9 +336,10 @@ final class DashboardViewModelTests: XCTestCase {
     func test_editorSaveTapped_is_tracked_when_customizing_onboarding_card() throws {
         // Given
         let viewModel = DashboardViewModel(siteID: sampleSiteID, analytics: analytics)
-        let cards: [DashboardCard] = [.init(type: .performance, enabled: true),
-                                      .init(type: .blaze, enabled: true),
-                                      .init(type: .topPerformers, enabled: false)]
+        let cards: [DashboardCard] = [DashboardCard(type: .onboarding, availability: .show, enabled: false),
+                                      DashboardCard(type: .performance, availability: .show, enabled: true),
+                                      DashboardCard(type: .blaze, availability: .show, enabled: true),
+                                      DashboardCard(type: .topPerformers, availability: .show, enabled: false)]
 
         // When
         viewModel.didCustomizeDashboardCards(cards)

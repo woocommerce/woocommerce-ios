@@ -2,7 +2,7 @@
 
 18.6
 -----
-- [*] Change text color in badge view in order products list. [https://github.com/woocommerce/woocommerce-ios/pull/12630]
+- [*] Change text color in badge view in order products list to fix the dark mode readability. [https://github.com/woocommerce/woocommerce-ios/pull/12630]
 
 
 18.5

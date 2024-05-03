@@ -17,8 +17,6 @@ struct SingleSelectionList<T: Hashable>: View {
     @Binding private var selected: T
     @Environment(\.dismiss) private var dismiss
 
-    private let horizontalSpacing: CGFloat = 16
-
     init(title: String,
          items: [T],
          contentKeyPath: KeyPath<T, String>,
@@ -32,47 +30,37 @@ struct SingleSelectionList<T: Hashable>: View {
     }
 
     var body: some View {
-        GeometryReader { geometry in
-            NavigationView {
-                ScrollView {
-                    VStack(spacing: 0) {
-                        ForEach(items, id: contentKeyPath) { item in
-                            VStack(spacing: 0) {
-                                SelectableItemRow(
-                                    title: item[keyPath: contentKeyPath],
-                                    selected: item == selected,
-                                    displayMode: .compact,
-                                    alignment: .trailing)
-                                    .padding(.horizontal, insets: geometry.safeAreaInsets)
-                                    .onTapGesture {
-                                        selected = item
-                                        onSelection?(item)
-                                    }
-                                Divider()
-                                    .padding(.leading, horizontalSpacing)
-                                    .padding(.horizontal, insets: geometry.safeAreaInsets)
-                            }
-                            .background(Color(.listForeground(modal: false)))
-                        }
+        NavigationView {
+            List {
+                ForEach(items, id: contentKeyPath) { item in
+                    SelectableItemRow(
+                        title: item[keyPath: contentKeyPath],
+                        selected: item == selected,
+                        displayMode: .compact,
+                        alignment: .trailing)
+                    .onTapGesture {
+                        selected = item
+                        onSelection?(item)
                     }
                 }
-                .background(Color(.listBackground))
-                .ignoresSafeArea(.container, edges: .horizontal)
-                .navigationTitle(title)
-                .navigationBarTitleDisplayMode(.inline)
-                .toolbar(content: {
-                    ToolbarItem(placement: .confirmationAction) {
-                        Button(action: {
-                            dismiss()
-                        }, label: {
-                            Text(NSLocalizedString("Done", comment: "Done navigation button in selection list screens"))
-                        })
-                    }
-                })
+                .listRowInsets(.zero)
             }
-            .navigationViewStyle(StackNavigationViewStyle())
-            .wooNavigationBarStyle()
+            .listStyle(.plain)
+            .background(Color(.listBackground))
+            .navigationTitle(title)
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar(content: {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button(action: {
+                        dismiss()
+                    }, label: {
+                        Text(NSLocalizedString("Done", comment: "Done navigation button in selection list screens"))
+                    })
+                }
+            })
         }
+        .navigationViewStyle(StackNavigationViewStyle())
+        .wooNavigationBarStyle()
     }
 }
 

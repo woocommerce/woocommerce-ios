@@ -19,10 +19,20 @@ struct CollapsibleCustomerCard: View {
                                               emailPlaceholder: viewModel.emailPlaceholder,
                                               shippingAddress: viewModel.shippingAddress)
         }, content: {
-            Text("Email address text field")
-            Text("Create new customer toggle")
-            Text("Customer address")
-            Text("Remove customer from order")
+            VStack(alignment: .leading) {
+                Divider()
+                Text(Localization.emailAddressTitle)
+                TextField(Localization.emailAddressPlaceholder, text: $viewModel.email)
+                    .textFieldStyle(RoundedBorderTextFieldStyle(focused: true))
+
+                Text("Create new customer toggle")
+
+                Divider()
+
+                Text("Address")
+                Text("Remove customer from order")
+            }
+            .padding(.horizontal)
         })
     }
 }
@@ -30,6 +40,19 @@ struct CollapsibleCustomerCard: View {
 private extension CollapsibleCustomerCard {
     enum Layout {
         static let headerAdditionalPadding: EdgeInsets = .init(top: 8, leading: 0, bottom: 8, trailing: 0)
+    }
+
+    enum Localization {
+        static let emailAddressTitle = NSLocalizedString(
+            "collapsibleCustomerCard.emailTextField.title",
+            value: "Email address",
+            comment: "Title of the email text field in the order form customer card."
+        )
+        static let emailAddressPlaceholder = NSLocalizedString(
+            "collapsibleCustomerCard.emailTextField.placeholder",
+            value: "Enter email address",
+            comment: "Title of the email text field in the order form customer card."
+        )
     }
 }
 

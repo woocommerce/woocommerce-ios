@@ -1,22 +1,17 @@
-//
-//  ContentView.swift
-//  Woo Watch App
-//
-//  Created by Ernesto Carrion on 2/05/24.
-//  Copyright © 2024 Automattic. All rights reserved.
-//
-
 import SwiftUI
 import NetworkingWatchOS
 
 
 struct ContentView: View {
+
+    let message: String
+
     var body: some View {
         VStack {
             Image(systemName: "globe")
                 .imageScale(.large)
                 .foregroundStyle(.tint)
-            Text("Hello, world Woo!")
+            Text(message)
         }
         .padding()
         .task {
@@ -27,5 +22,5 @@ struct ContentView: View {
 }
 
 #Preview {
-    ContentView()
+    ContentView(message: "Holi")
 }

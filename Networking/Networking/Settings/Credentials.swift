@@ -48,6 +48,17 @@ private extension Credentials {
 // MARK: - Helpers to read `Credentials`
 //
 public extension Credentials {
+    var rawType: String {
+        switch self {
+        case .wpcom:
+            return "AuthenticationType.wpcom"
+        case .wporg:
+            return "AuthenticationType.wporg"
+        case .applicationPassword:
+            return "AuthenticationType.applicationPassword"
+        }
+    }
+
     var username: String {
         switch self {
         case .wpcom(let username, _, _):

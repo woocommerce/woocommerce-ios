@@ -499,6 +499,8 @@ final class EditableOrderViewModel: ObservableObject {
                                                                    addressData: .init(billingAddress: nil, shippingAddress: nil),
                                                                    onAddressUpdate: nil)
         self.addressFormViewModel = addressFormViewModel
+
+        // A temporary initial value is set here to avoid being an optional, and it will be reset in `configureCustomerDataViewModel`.
         self.customerSectionViewModel = .init(
             siteID: siteID,
             addressFormViewModel: addressFormViewModel,
@@ -1674,24 +1676,28 @@ private extension EditableOrderViewModel {
                 .assign(to: &$customerDataViewModel)
             return
         }
+
+        customerSectionViewModel = .init(
+            siteID: siteID,
+            addressFormViewModel: addressFormViewModel,
+            customerData: .init(email: nil, fullName: nil, billingAddressFormatted: nil, shippingAddressFormatted: nil),
+            isCustomerAccountRequired: false,
+            isEditable: true,
+            addCustomer: { [weak self] customer in
+                self?.addCustomerAddressToOrder(customer: customer)
+            }
+        )
+
         orderSynchronizer.orderPublisher
-            .compactMap { [weak self] in
-                guard let self else { return nil }
-                let customerData = CollapsibleCustomerCardViewModel.CustomerData(
+            .map {
+                CollapsibleCustomerCardViewModel.CustomerData(
                     email: $0.billingAddress?.email ?? $0.shippingAddress?.email,
                     fullName: $0.billingAddress?.fullName ?? $0.shippingAddress?.fullName,
                     billingAddressFormatted: $0.billingAddress?.formattedPostalAddress,
                     shippingAddressFormatted: $0.shippingAddress?.formattedPostalAddress
                 )
-                return OrderCustomerSectionViewModel(siteID: self.siteID,
-                                                     addressFormViewModel: self.addressFormViewModel,
-                                                     customerData: customerData,
-                                                     isCustomerAccountRequired: false,
-                                                     isEditable: true) { [weak self] customer in
-                    self?.addCustomerAddressToOrder(customer: customer)
-                }
             }
-            .assign(to: &$customerSectionViewModel)
+            .assign(to: &customerSectionViewModel.$customerData)
     }
 
     /// Updates notes data viewmodel based on order customer notes.

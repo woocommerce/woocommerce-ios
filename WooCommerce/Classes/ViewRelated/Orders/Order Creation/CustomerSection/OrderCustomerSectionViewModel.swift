@@ -2,15 +2,19 @@ import SwiftUI
 import Yosemite
 
 /// View model for `OrderCustomerSection` view.
+/// As it holds states for the UI like the search modal visibility, this view model is designed to be the same instance throughout the life time of the order form.
 final class OrderCustomerSectionViewModel: ObservableObject {
     let siteID: Int64
     let isCustomerAccountRequired: Bool
     let isEditable: Bool
+
+    // MARK: - Customer search
     @Published var showsCustomerSearch: Bool = false
-    @Published private(set) var cardViewModel: CollapsibleCustomerCardViewModel?
+    @Published var customerData: CollapsibleCustomerCardViewModel.CustomerData
     @Published private(set) var addressFormViewModel: CreateOrderAddressFormViewModel
-    private let customerData: CollapsibleCustomerCardViewModel.CustomerData
     private let addCustomer: (Customer) -> Void
+
+    @Published private(set) var cardViewModel: CollapsibleCustomerCardViewModel?
 
     init(siteID: Int64,
          addressFormViewModel: CreateOrderAddressFormViewModel,
@@ -24,12 +28,7 @@ final class OrderCustomerSectionViewModel: ObservableObject {
         self.isCustomerAccountRequired = isCustomerAccountRequired
         self.isEditable = isEditable
         self.addCustomer = addCustomer
-        if customerData.email?.isNotEmpty == true || customerData.shippingAddressFormatted?.isNotEmpty == true {
-            self.cardViewModel = .init(customerData: customerData,
-                                       isCustomerAccountRequired: isCustomerAccountRequired,
-                                       isEditable: isEditable,
-                                       isCollapsed: true)
-        }
+        observeCustomerDataForCardViewModel()
     }
 
     /// Called when the user taps to add customer details.
@@ -48,5 +47,21 @@ final class OrderCustomerSectionViewModel: ObservableObject {
     /// Called when the user selects a customer from search.
     func addCustomerFromSearch(_ customer: Customer) {
         addCustomer(customer)
+    }
+}
+
+private extension OrderCustomerSectionViewModel {
+    func observeCustomerDataForCardViewModel() {
+        $customerData
+            .compactMap { [weak self] customerData in
+                guard let self, customerData.email?.isNotEmpty == true || customerData.shippingAddressFormatted?.isNotEmpty == true else {
+                    return nil
+                }
+                return CollapsibleCustomerCardViewModel(customerData: customerData,
+                                                        isCustomerAccountRequired: isCustomerAccountRequired,
+                                                        isEditable: isEditable,
+                                                        isCollapsed: true)
+            }
+            .assign(to: &$cardViewModel)
     }
 }

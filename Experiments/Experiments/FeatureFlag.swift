@@ -199,4 +199,8 @@ public enum FeatureFlag: Int {
     /// Enables new shipping line features in order details and order creation/editing.
     ///
     case enhancingOrderShippingLines
+
+    /// Makes the Experimental Feature toggle "Point Of Sale" menu visible, under app settings.
+    ///
+    case displayPointOfSaleToggle
 }

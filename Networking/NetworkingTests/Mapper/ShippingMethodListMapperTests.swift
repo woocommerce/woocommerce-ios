@@ -18,7 +18,8 @@ final class ShippingMethodListMapperTests: XCTestCase {
         let method = try XCTUnwrap(shippingMethods.first)
 
         // Assert
-        assertEqual("flat_rate", method.id)
+        assertEqual(sampleSiteID, method.siteID)
+        assertEqual("flat_rate", method.methodID)
         assertEqual("Flat rate", method.title)
     }
 }

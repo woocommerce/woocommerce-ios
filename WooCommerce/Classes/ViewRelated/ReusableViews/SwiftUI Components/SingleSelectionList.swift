@@ -15,64 +15,67 @@ struct SingleSelectionList<T: Hashable>: View {
     private let onSelection: ((T) -> Void)?
 
     @Binding private var selected: T
-    @Environment(\.presentationMode) var presentation
 
-    private let horizontalSpacing: CGFloat = 16
+    @Environment(\.dismiss) private var dismiss
+
+    /// Whether to show the Done button in the toolbar.
+    ///
+    /// The Done button should always be shown if it's needed to dismiss the view, e.g. when displaying the view in a sheet (in landscape mode).
+    private let showDoneButton: Bool
+
+    /// Background color for the view. `nil` uses system background color.
+    private let backgroundColor: Color?
 
     init(title: String,
          items: [T],
          contentKeyPath: KeyPath<T, String>,
          selected: Binding<T>,
+         showDoneButton: Bool = true,
+         backgroundColor: Color? = Color(.listBackground),
          onSelection: ((T) -> Void)? = nil) {
         self.title = title
         self.items = items
         self.contentKeyPath = contentKeyPath
         self.onSelection = onSelection
         self._selected = selected
+        self.showDoneButton = showDoneButton
+        self.backgroundColor = backgroundColor
     }
 
     var body: some View {
-        GeometryReader { geometry in
-            NavigationView {
-                ScrollView {
-                    VStack(spacing: 0) {
-                        ForEach(items, id: contentKeyPath) { item in
-                            VStack(spacing: 0) {
-                                SelectableItemRow(
-                                    title: item[keyPath: contentKeyPath],
-                                    selected: item == selected,
-                                    displayMode: .compact,
-                                    alignment: .trailing)
-                                    .padding(.horizontal, insets: geometry.safeAreaInsets)
-                                    .onTapGesture {
-                                        selected = item
-                                        onSelection?(item)
-                                    }
-                                Divider()
-                                    .padding(.leading, horizontalSpacing)
-                                    .padding(.horizontal, insets: geometry.safeAreaInsets)
-                            }
-                            .background(Color(.listForeground(modal: false)))
-                        }
+        NavigationView {
+            List {
+                ForEach(items, id: contentKeyPath) { item in
+                    SelectableItemRow(
+                        title: item[keyPath: contentKeyPath],
+                        selected: item == selected,
+                        displayMode: .compact,
+                        alignment: .trailing)
+                    .onTapGesture {
+                        selected = item
+                        onSelection?(item)
                     }
                 }
-                .background(Color(.listBackground))
-                .ignoresSafeArea(.container, edges: .horizontal)
-                .navigationTitle(title)
-                .navigationBarTitleDisplayMode(.inline)
-                .toolbar(content: {
+                .listRowInsets(.zero)
+            }
+            .listStyle(.plain)
+            .background(backgroundColor.ignoresSafeArea())
+            .navigationTitle(title)
+            .navigationBarTitleDisplayMode(.inline)
+            .if(showDoneButton, transform: { view in
+                view.toolbar(content: {
                     ToolbarItem(placement: .confirmationAction) {
                         Button(action: {
-                            presentation.wrappedValue.dismiss()
+                            dismiss()
                         }, label: {
                             Text(NSLocalizedString("Done", comment: "Done navigation button in selection list screens"))
                         })
                     }
                 })
-            }
-            .navigationViewStyle(StackNavigationViewStyle())
-            .wooNavigationBarStyle()
+            })
         }
+        .navigationViewStyle(StackNavigationViewStyle())
+        .wooNavigationBarStyle()
     }
 }
 
@@ -82,5 +85,12 @@ struct SelectionList_Previews: PreviewProvider {
                             items: ["🥪", "🥓", "🥗"],
                             contentKeyPath: \.self,
                             selected: .constant("🥓")) { _ in }
+
+        SingleSelectionList(title: "Lunch",
+                            items: ["🥪", "🥓", "🥗"],
+                            contentKeyPath: \.self,
+                            selected: .constant("🥓"),
+                            showDoneButton: false,
+                            backgroundColor: nil) { _ in }
     }
 }

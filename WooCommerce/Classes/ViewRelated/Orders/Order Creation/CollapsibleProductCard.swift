@@ -35,17 +35,16 @@ struct CollapsibleProductCard: View {
         if viewModel.childProductRows.isEmpty {
             CollapsibleProductRowCard(viewModel: viewModel.productRow,
                                       flow: flow,
+                                      showsBorder: true,
                                       shouldDisableDiscountEditing: shouldDisableDiscountEditing,
                                       shouldDisallowDiscounts: shouldDisallowDiscounts,
                                       onAddDiscount: onAddDiscount)
-            .overlay {
-                cardBorder
-            }
         } else {
             VStack(spacing: 0) {
                 // Parent product
                 CollapsibleProductRowCard(viewModel: viewModel.productRow,
                                           flow: flow,
+                                          showsBorder: false,
                                           shouldDisableDiscountEditing: shouldDisableDiscountEditing,
                                           shouldDisallowDiscounts: shouldDisallowDiscounts,
                                           onAddDiscount: onAddDiscount)
@@ -57,6 +56,7 @@ struct CollapsibleProductCard: View {
                 ForEach(viewModel.childProductRows) { childRow in
                     CollapsibleProductRowCard(viewModel: childRow,
                                               flow: flow,
+                                              showsBorder: false,
                                               shouldDisableDiscountEditing: shouldDisableDiscountEditing,
                                               shouldDisallowDiscounts: shouldDisallowDiscounts,
                                               onAddDiscount: onAddDiscount)
@@ -64,7 +64,7 @@ struct CollapsibleProductCard: View {
                 }
             }
             .overlay {
-                cardBorder
+                CollapsibleOrderFormCardBorder(color: .init(uiColor: .separator))
             }
         }
     }
@@ -72,14 +72,7 @@ struct CollapsibleProductCard: View {
 
 private extension CollapsibleProductCard {
     enum Layout {
-        static let frameCornerRadius: CGFloat = 4
         static let borderLineWidth: CGFloat = 1
-    }
-
-    var cardBorder: some View {
-        RoundedRectangle(cornerRadius: Layout.frameCornerRadius)
-            .inset(by: 0.25)
-            .stroke(Color(uiColor: .separator), lineWidth: Layout.borderLineWidth)
     }
 }
 
@@ -88,6 +81,8 @@ private struct CollapsibleProductRowCard: View {
 
     /// Used for tracking order form events.
     private let flow: WooAnalyticsEvent.Orders.Flow
+
+    private let showsBorder: Bool
 
     @State private var isCollapsed: Bool = true
 
@@ -124,22 +119,22 @@ private struct CollapsibleProductRowCard: View {
 
     init(viewModel: CollapsibleProductRowCardViewModel,
          flow: WooAnalyticsEvent.Orders.Flow,
+         showsBorder: Bool,
          shouldDisableDiscountEditing: Bool,
          shouldDisallowDiscounts: Bool,
          onAddDiscount: @escaping (_ productRowID: Int64) -> Void) {
         self.viewModel = viewModel
         self.flow = flow
+        self.showsBorder = showsBorder
         self.shouldDisableDiscountEditing = shouldDisableDiscountEditing
         self.shouldDisallowDiscounts = shouldDisallowDiscounts
         self.onAddDiscount = onAddDiscount
     }
 
     var body: some View {
-        CollapsibleView(isCollapsible: true,
-                        isCollapsed: $isCollapsed,
-                        safeAreaInsets: EdgeInsets(),
-                        shouldShowDividers: false,
-                        hasSubtleChevron: viewModel.hasParentProduct,
+        CollapsibleOrderFormCard(hasSubtleChevron: viewModel.hasParentProduct,
+                                 isCollapsed: $isCollapsed,
+                                 showsBorder: showsBorder,
                         label: {
             VStack {
                 HStack(alignment: .center, spacing: Layout.padding) {
@@ -152,7 +147,7 @@ private struct CollapsibleProductRowCard: View {
                     .padding(.leading, viewModel.hasParentProduct ? Layout.childLeadingPadding : 0)
                     .overlay(alignment: .topTrailing) {
                         BadgeView(text: badgeQuantity,
-                                  customizations: .init(textColor: Color(.textInverted), backgroundColor: .black),
+                                  customizations: .init(textColor: .white, backgroundColor: .black),
                                   backgroundShape: badgeStyle)
                         .offset(x: Layout.badgeOffset, y: -Layout.badgeOffset)
                         .renderedIf(shouldShowBadgeCounter)
@@ -273,15 +268,6 @@ private struct CollapsibleProductRowCard: View {
         })
         .onTapGesture {
             dismissTooltip()
-        }
-        .padding(Layout.padding)
-        .frame(maxWidth: .infinity, alignment: .center)
-        .background(Color(.listForeground(modal: false)))
-        .overlay {
-            RoundedRectangle(cornerRadius: Layout.frameCornerRadius)
-                .inset(by: 0.25)
-                .stroke(Color(uiColor: .text), lineWidth: Layout.borderLineWidth)
-                .renderedIf(!isCollapsed)
         }
     }
 }

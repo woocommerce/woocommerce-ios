@@ -1369,9 +1369,10 @@ extension AppSettingsStoreTests {
     func test_setDashboardCards_works_correctly() throws {
         // Given
         let dashboardCards = [
-            DashboardCard(type: .onboarding, enabled: false),
-            DashboardCard(type: .performance, enabled: true),
-            DashboardCard(type: .blaze, enabled: true)
+            DashboardCard(type: .onboarding, availability: .show, enabled: false),
+            DashboardCard(type: .performance, availability: .show, enabled: true),
+            DashboardCard(type: .topPerformers, availability: .show, enabled: true),
+            DashboardCard(type: .blaze, availability: .show, enabled: true)
         ]
         let existingSettings = GeneralStoreSettingsBySite(storeSettingsBySite: [TestConstants.siteID: GeneralStoreSettings()])
         try fileStorage?.write(existingSettings, to: expectedGeneralStoreSettingsFileURL)
@@ -1390,9 +1391,10 @@ extension AppSettingsStoreTests {
     func test_loadDashboardCards_works_correctly() throws {
         // Given
         let storedDashboardCards = [
-            DashboardCard(type: .onboarding, enabled: false),
-            DashboardCard(type: .performance, enabled: true),
-            DashboardCard(type: .blaze, enabled: true)
+            DashboardCard(type: .onboarding, availability: .show, enabled: false),
+            DashboardCard(type: .performance, availability: .show, enabled: true),
+            DashboardCard(type: .topPerformers, availability: .show, enabled: true),
+            DashboardCard(type: .blaze, availability: .show, enabled: true)
         ]
         let storeSettings = GeneralStoreSettings(dashboardCards: storedDashboardCards)
         let existingSettings = GeneralStoreSettingsBySite(storeSettingsBySite: [TestConstants.siteID: storeSettings])

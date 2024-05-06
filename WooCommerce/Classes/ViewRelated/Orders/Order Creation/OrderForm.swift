@@ -360,7 +360,7 @@ struct OrderForm: View {
                             Divider()
 
                             if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.subscriptionsInOrderCreationCustomers) {
-                                OrderCustomerSection(viewModel: viewModel, addressFormViewModel: viewModel.addressFormViewModel)
+                                OrderCustomerSection(viewModel: viewModel.customerSectionViewModel)
                             } else {
                                 LegacyOrderCustomerSection(viewModel: viewModel, addressFormViewModel: viewModel.addressFormViewModel)
                             }

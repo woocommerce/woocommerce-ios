@@ -67,6 +67,7 @@ class AuthenticatedState: StoresManagerState {
             SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             ShipmentStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             ShippingLabelStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            ShippingMethodStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             SitePluginStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             SitePostStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             SiteStore(dotcomClientID: ApiCredentials.dotcomAppId,

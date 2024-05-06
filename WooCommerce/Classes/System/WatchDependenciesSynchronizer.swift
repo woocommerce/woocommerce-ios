@@ -1,12 +1,16 @@
 import WatchConnectivity
 import enum Yosemite.Credentials
 
-// TODO: change the name for Adapter? Bridge? Manager? Synchronizer?
-final class WatchCredentialsSynchronizer: NSObject, WCSessionDelegate {
+final class WatchDependenciesSynchronizer: NSObject, WCSessionDelegate {
+
+    struct Queue {
+        let storeID: Int64?
+        let credentials: Credentials?
+    }
 
     let watchSession: WCSession
 
-    private var queuedCredentials: Credentials?
+    private var queuedDependencies: Queue?
 
     init(watchSession: WCSession = WCSession.default) {
         self.watchSession = watchSession
@@ -18,33 +22,35 @@ final class WatchCredentialsSynchronizer: NSObject, WCSessionDelegate {
         }
     }
 
-    // TODO: Handle null scenario
-    func syncCredentials(_ credentials: Credentials?) {
+    func update(storeID: Int64?, credentials: Credentials?) {
 
         guard watchSession.activationState == .activated else {
-            queuedCredentials = credentials
+            queuedDependencies = Queue(storeID: storeID, credentials: credentials)
             return
         }
 
         do {
-            let credDictionary = createCredentialDictionary(from: credentials)
-            try watchSession.updateApplicationContext(credDictionary)
+            let dictionary = createDependenciesDictionary(storeID: storeID, credentials: credentials)
+            try watchSession.updateApplicationContext(dictionary)
         } catch {
             DDLogError("⛔️ Error synchronizing credentials into watch session: \(error)")
         }
     }
 
-    func createCredentialDictionary(from credential: Credentials?) -> [String: Any] {
-        guard let credential else {
-            return ["credential": [:]]
+    func createDependenciesDictionary(storeID: Int64?, credentials: Credentials?) -> [String: Any] {
+        guard let credentials, let storeID else {
+            return ["credentials": [:], "store": [:]]
         }
 
         return [
-            "credential": [
-                "type": credential.rawType,
-                "username": credential.username,
-                "secret": credential.secret,
-                "address": credential.siteAddress
+            "credentials": [
+                "type": credentials.rawType,
+                "username": credentials.username,
+                "secret": credentials.secret,
+                "address": credentials.siteAddress
+            ],
+            "store": [
+                "id": storeID
             ]
         ]
     }
@@ -53,9 +59,9 @@ final class WatchCredentialsSynchronizer: NSObject, WCSessionDelegate {
         // No op
         DDLogInfo("🔵 WatchSession activated \(activationState)")
 
-        if let credentials = queuedCredentials {
-            syncCredentials(credentials)
-            queuedCredentials = nil
+        if let queuedDependencies {
+            update(storeID: queuedDependencies.storeID, credentials: queuedDependencies.credentials)
+            self.queuedDependencies = nil
         }
     }
 

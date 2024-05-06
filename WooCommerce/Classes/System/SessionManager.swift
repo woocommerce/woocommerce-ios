@@ -52,6 +52,10 @@ final class SessionManager: SessionManagerProtocol {
     ///
     private let imageCache: ImageCache
 
+    /// Makes sure the credentials are in sync with the watch session.
+    ///
+    private let watchDependenciesSynchronizer = WatchDependenciesSynchronizer()
+
     /// Default Credentials.
     ///
     var defaultCredentials: Credentials? {
@@ -66,10 +70,11 @@ final class SessionManager: SessionManagerProtocol {
             removeCredentials()
 
             guard let credentials = newValue else {
-                return
+                return watchDependenciesSynchronizer.update(storeID: nil, credentials: nil)
             }
 
             saveCredentials(credentials)
+            watchDependenciesSynchronizer.update(storeID: defaultStoreID, credentials: credentials)
         }
     }
 
@@ -97,6 +102,8 @@ final class SessionManager: SessionManagerProtocol {
         set {
             defaults[.defaultStoreID] = newValue
             defaultStoreIDSubject.send(newValue)
+
+            watchDependenciesSynchronizer.update(storeID: defaultStoreID, credentials: defaultCredentials)
         }
     }
 
@@ -159,6 +166,9 @@ final class SessionManager: SessionManagerProtocol {
         self.imageCache = imageCache
 
         defaultStoreIDSubject = .init(defaults[.defaultStoreID])
+
+        // Sync initial credentials
+        watchDependenciesSynchronizer.update(storeID: defaultStoreID, credentials: loadCredentials())
     }
 
     /// Nukes all of the known Session's properties.

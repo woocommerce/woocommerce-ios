@@ -141,7 +141,7 @@ private extension DashboardView {
     @ViewBuilder
     var dashboardCards: some View {
         VStack(spacing: Layout.padding) {
-            ForEach(Array(viewModel.dashboardCards.enumerated()), id: \.element.hashValue) { index, card in
+            ForEach(Array(viewModel.showOnDashboardCards.enumerated()), id: \.element.hashValue) { index, card in
                 VStack(spacing: Layout.padding) {
                     switch card.type {
                     case .onboarding:

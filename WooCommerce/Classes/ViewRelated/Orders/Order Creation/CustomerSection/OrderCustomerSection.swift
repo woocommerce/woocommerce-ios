@@ -69,14 +69,15 @@ private extension OrderCustomerSection {
     enum Localization {
         static let addCustomerDetails = NSLocalizedString("orderForm.customerSection.addCustomer",
                                                           value: "Add Customer",
-                                                          comment: "Title text of the button that adds customer data when creating a new order")
+                                                          comment: "Title text of the button that adds customer data in the order form.")
         static let customerHeader = NSLocalizedString("orderForm.customerSection.customerHeader",
-                                                          value: "Customer",
-                                                          comment: "Header text of the  when creating a new order")
+                                                      value: "Customer",
+                                                      comment: "Header text of the customer card in the order form.")
         static let customerSelectorTitle = NSLocalizedString(
-            "configurationForOrderCustomerSection.customerSelectorTitle",
+            "orderForm.customerSection.customerSelectorTitle",
             value: "Add customer details",
-            comment: "Title of the order customer selection screen.")
+            comment: "Title of the order customer selection screen in the order form.."
+        )
     }
 }
 

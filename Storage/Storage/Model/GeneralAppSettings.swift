@@ -27,7 +27,7 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
     /// The state for the In-app Purchases feature switch.
     ///
     public var isInAppPurchasesSwitchEnabled: Bool
-    
+
     /// The state for the Point Of Sale feature switch.
     ///
     public var isPointOfSaleEnabled: Bool

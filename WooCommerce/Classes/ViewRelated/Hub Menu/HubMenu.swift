@@ -132,7 +132,6 @@ private extension HubMenu {
         }
         .listStyle(.insetGrouped)
         .background(Color(.listBackground))
-        .toolbar(.hidden, for: .navigationBar)
         .accentColor(Color(.listSelectedBackground))
     }
 
@@ -282,13 +281,6 @@ private extension HubMenu {
             HStack(spacing: HubMenu.Constants.padding) {
 
                 HStack(spacing: .zero) {
-                    /// iOS 16, aligns the list dividers to the first text position.
-                    /// This tricks the system by rendering an empty text and forcing the list to align the divider to it.
-                    /// Without this, the divider will be rendered from the title and will not cover the icon.
-                    /// Ideally we would want to use the `alignmentGuide` modifier but that is only available on iOS 16.
-                    ///
-                    Text("")
-
                     ZStack {
                         // Icon
                         Group {
@@ -324,6 +316,8 @@ private extension HubMenu {
                         }
                     }
                 }
+                // Adjusts the list row separator to align with the leading edge of this view.
+                .alignmentGuide(.listRowSeparatorLeading) { d in d[.leading] }
 
 
                 // Title & Description

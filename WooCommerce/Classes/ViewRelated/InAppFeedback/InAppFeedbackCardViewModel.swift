@@ -1,6 +1,16 @@
 import Foundation
 import StoreKit
 
+/// Defines methods for presenting the in-app app store review form.
+///
+protocol SKStoreReviewControllerProtocol {
+    /// Displays the in app app store review alert.
+    ///
+    static func requestReview(in windowScene: UIWindowScene)
+}
+
+extension SKStoreReviewController: SKStoreReviewControllerProtocol { }
+
 struct InAppFeedbackCardViewModel {
     enum Feedback {
         case liked

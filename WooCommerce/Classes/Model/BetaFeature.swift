@@ -56,7 +56,7 @@ extension BetaFeature {
         case .inAppPurchases:
             return ServiceLocator.featureFlagService.isFeatureFlagEnabled(.inAppPurchasesDebugMenu)
         case .pointOfSale:
-            return ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSale)
+            return ServiceLocator.featureFlagService.isFeatureFlagEnabled(.displayPointOfSaleToggle)
         default:
             return true
         }

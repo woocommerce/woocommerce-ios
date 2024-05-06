@@ -1,9 +1,31 @@
-//
-//  PointOfSaleEntryPoint.swift
-//  WooCommerce
-//
-//  Created by Gabriel Maldonado Almendra on 6/5/24.
-//  Copyright © 2024 Automattic. All rights reserved.
-//
+import SwiftUI
 
-import Foundation
+struct PointOfSaleEntryPoint: View {
+    @State private var showFullScreen = true
+
+    @Environment(\.presentationMode) var presentationMode
+
+    var body: some View {
+        VStack {}
+        .fullScreenCover(isPresented: $showFullScreen) {
+            if UIDevice.isPad() {
+                PointOfSaleDashboard()
+            } else {
+                Button(action: {
+                    presentationMode.wrappedValue.dismiss()
+                }, label: {
+                    Text("Please use iPad")
+                })
+            }
+        }
+        .onAppear {
+            showFullScreen = true
+        }
+    }
+}
+
+struct PointOfSaleDashboard: View {
+    var body: some View {
+        Text("WooCommerce Point Of Sale")
+    }
+}

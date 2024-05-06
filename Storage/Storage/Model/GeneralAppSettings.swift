@@ -27,6 +27,10 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
     /// The state for the In-app Purchases feature switch.
     ///
     public var isInAppPurchasesSwitchEnabled: Bool
+    
+    /// The state for the Point Of Sale feature switch.
+    ///
+    public var isPointOfSaleEnabled: Bool
 
     /// A list (possibly empty) of known card reader IDs - i.e. IDs of card readers that should be reconnected to automatically
     /// e.g. ["CHB204909005931"]
@@ -60,6 +64,7 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
                 feedbacks: [FeedbackType: FeedbackSettings],
                 isViewAddOnsSwitchEnabled: Bool,
                 isInAppPurchasesSwitchEnabled: Bool,
+                isPointOfSaleEnabled: Bool,
                 knownCardReaders: [String],
                 lastEligibilityErrorInfo: EligibilityErrorInfo? = nil,
                 lastJetpackBenefitsBannerDismissedTime: Date? = nil,
@@ -75,6 +80,7 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
         self.lastJetpackBenefitsBannerDismissedTime = lastJetpackBenefitsBannerDismissedTime
         self.featureAnnouncementCampaignSettings = featureAnnouncementCampaignSettings
         self.isInAppPurchasesSwitchEnabled = isInAppPurchasesSwitchEnabled
+        self.isPointOfSaleEnabled = isPointOfSaleEnabled
         self.sitesWithAtLeastOneIPPTransactionFinished = sitesWithAtLeastOneIPPTransactionFinished
         self.isEUShippingNoticeDismissed = isEUShippingNoticeDismissed
         self.localAnnouncementDismissed = localAnnouncementDismissed
@@ -85,6 +91,7 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
               feedbacks: [:],
               isViewAddOnsSwitchEnabled: false,
               isInAppPurchasesSwitchEnabled: false,
+              isPointOfSaleEnabled: false,
               knownCardReaders: [],
               lastEligibilityErrorInfo: nil,
               featureAnnouncementCampaignSettings: [:],
@@ -115,6 +122,7 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
             feedbacks: updatedFeedbacks,
             isViewAddOnsSwitchEnabled: isViewAddOnsSwitchEnabled,
             isInAppPurchasesSwitchEnabled: isInAppPurchasesSwitchEnabled,
+            isPointOfSaleEnabled: isPointOfSaleEnabled,
             knownCardReaders: knownCardReaders,
             lastEligibilityErrorInfo: lastEligibilityErrorInfo,
             featureAnnouncementCampaignSettings: featureAnnouncementCampaignSettings,
@@ -136,6 +144,7 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
             feedbacks: feedbacks,
             isViewAddOnsSwitchEnabled: isViewAddOnsSwitchEnabled,
             isInAppPurchasesSwitchEnabled: isInAppPurchasesSwitchEnabled,
+            isPointOfSaleEnabled: isPointOfSaleEnabled,
             knownCardReaders: knownCardReaders,
             lastEligibilityErrorInfo: lastEligibilityErrorInfo,
             featureAnnouncementCampaignSettings: updatedSettings,
@@ -157,6 +166,7 @@ public struct GeneralAppSettings: Codable, Equatable, GeneratedCopiable {
             feedbacks: feedbacks,
             isViewAddOnsSwitchEnabled: isViewAddOnsSwitchEnabled,
             isInAppPurchasesSwitchEnabled: isInAppPurchasesSwitchEnabled,
+            isPointOfSaleEnabled: isPointOfSaleEnabled,
             knownCardReaders: knownCardReaders,
             lastEligibilityErrorInfo: lastEligibilityErrorInfo,
             featureAnnouncementCampaignSettings: featureAnnouncementCampaignSettings,
@@ -178,6 +188,7 @@ extension GeneralAppSettings {
         self.feedbacks = try container.decodeIfPresent([FeedbackType: FeedbackSettings].self, forKey: .feedbacks) ?? [:]
         self.isViewAddOnsSwitchEnabled = try container.decodeIfPresent(Bool.self, forKey: .isViewAddOnsSwitchEnabled) ?? false
         self.isInAppPurchasesSwitchEnabled = try container.decodeIfPresent(Bool.self, forKey: .isInAppPurchasesSwitchEnabled) ?? false
+        self.isPointOfSaleEnabled = try container.decodeIfPresent(Bool.self, forKey: .isPointOfSaleEnabled) ?? false
         self.knownCardReaders = try container.decodeIfPresent([String].self, forKey: .knownCardReaders) ?? []
         self.lastEligibilityErrorInfo = try container.decodeIfPresent(EligibilityErrorInfo.self, forKey: .lastEligibilityErrorInfo)
         self.lastJetpackBenefitsBannerDismissedTime = try container.decodeIfPresent(Date.self, forKey: .lastJetpackBenefitsBannerDismissedTime)

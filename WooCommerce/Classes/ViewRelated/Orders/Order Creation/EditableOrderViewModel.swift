@@ -371,11 +371,7 @@ final class EditableOrderViewModel: ObservableObject {
 
     /// View model for the customer section.
     ///
-    @Published private(set) var customerSectionViewModel: OrderCustomerSectionViewModel = .init(
-        customerData: .init(email: nil, fullName: nil, billingAddressFormatted: nil, shippingAddressFormatted: nil),
-        isCustomerAccountRequired: false,
-        isEditable: true
-    )
+    @Published private(set) var customerSectionViewModel: OrderCustomerSectionViewModel
 
     /// Representation of customer data display properties.
     ///
@@ -499,7 +495,18 @@ final class EditableOrderViewModel: ObservableObject {
 
         // Set a temporary initial view model, as a workaround to avoid making it optional.
         // Needs to be reset before the view model is used.
-        self.addressFormViewModel = .init(siteID: siteID, addressData: .init(billingAddress: nil, shippingAddress: nil), onAddressUpdate: nil)
+        let addressFormViewModel = CreateOrderAddressFormViewModel(siteID: siteID,
+                                                                   addressData: .init(billingAddress: nil, shippingAddress: nil),
+                                                                   onAddressUpdate: nil)
+        self.addressFormViewModel = addressFormViewModel
+        self.customerSectionViewModel = .init(
+            siteID: siteID,
+            addressFormViewModel: addressFormViewModel,
+            customerData: .init(email: nil, fullName: nil, billingAddressFormatted: nil, shippingAddressFormatted: nil),
+            isCustomerAccountRequired: false,
+            isEditable: true,
+            addCustomer: { _ in }
+        )
 
         configureDisabledState()
         configureCollectPaymentDisabledState()
@@ -1668,16 +1675,21 @@ private extension EditableOrderViewModel {
             return
         }
         orderSynchronizer.orderPublisher
-            .map {
+            .compactMap { [weak self] in
+                guard let self else { return nil }
                 let customerData = CollapsibleCustomerCardViewModel.CustomerData(
                     email: $0.billingAddress?.email ?? $0.shippingAddress?.email,
                     fullName: $0.billingAddress?.fullName ?? $0.shippingAddress?.fullName,
                     billingAddressFormatted: $0.billingAddress?.formattedPostalAddress,
                     shippingAddressFormatted: $0.shippingAddress?.formattedPostalAddress
                 )
-                return OrderCustomerSectionViewModel(customerData: customerData,
+                return OrderCustomerSectionViewModel(siteID: self.siteID,
+                                                     addressFormViewModel: self.addressFormViewModel,
+                                                     customerData: customerData,
                                                      isCustomerAccountRequired: false,
-                                                     isEditable: true)
+                                                     isEditable: true) { [weak self] customer in
+                    self?.addCustomerAddressToOrder(customer: customer)
+                }
             }
             .assign(to: &$customerSectionViewModel)
     }

@@ -369,6 +369,14 @@ final class EditableOrderViewModel: ObservableObject {
 
     // MARK: Customer data properties
 
+    /// View model for the customer section.
+    ///
+    @Published private(set) var customerSectionViewModel: OrderCustomerSectionViewModel = .init(
+        customerData: .init(email: nil, fullName: nil, billingAddressFormatted: nil, shippingAddressFormatted: nil),
+        isCustomerAccountRequired: false,
+        isEditable: true
+    )
+
     /// Representation of customer data display properties.
     ///
     @Published private(set) var customerDataViewModel: CustomerDataViewModel = .init(billingAddress: nil, shippingAddress: nil)
@@ -1650,11 +1658,28 @@ private extension EditableOrderViewModel {
     /// Updates customer data viewmodel based on order addresses.
     ///
     func configureCustomerDataViewModel() {
+        guard featureFlagService.isFeatureFlagEnabled(.subscriptionsInOrderCreationCustomers) else {
+            // Legacy customer section UI.
+            orderSynchronizer.orderPublisher
+                .map {
+                    CustomerDataViewModel(billingAddress: $0.billingAddress, shippingAddress: $0.shippingAddress)
+                }
+                .assign(to: &$customerDataViewModel)
+            return
+        }
         orderSynchronizer.orderPublisher
             .map {
-                CustomerDataViewModel(billingAddress: $0.billingAddress, shippingAddress: $0.shippingAddress)
+                let customerData = CollapsibleCustomerCardViewModel.CustomerData(
+                    email: $0.billingAddress?.email ?? $0.shippingAddress?.email,
+                    fullName: $0.billingAddress?.fullName ?? $0.shippingAddress?.fullName,
+                    billingAddressFormatted: $0.billingAddress?.formattedPostalAddress,
+                    shippingAddressFormatted: $0.shippingAddress?.formattedPostalAddress
+                )
+                return OrderCustomerSectionViewModel(customerData: customerData,
+                                                     isCustomerAccountRequired: false,
+                                                     isEditable: true)
             }
-            .assign(to: &$customerDataViewModel)
+            .assign(to: &$customerSectionViewModel)
     }
 
     /// Updates notes data viewmodel based on order customer notes.

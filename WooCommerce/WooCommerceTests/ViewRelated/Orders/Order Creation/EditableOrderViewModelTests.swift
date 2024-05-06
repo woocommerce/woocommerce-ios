@@ -683,9 +683,10 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertNotNil(analytics.receivedEvents.first(where: { $0 == WooAnalyticsStat.orderCreationEditCustomAmountTapped.rawValue }))
     }
 
-    func test_view_model_is_updated_when_address_updated() {
+    func test_view_model_is_updated_when_address_updated_and_feature_flag_disabled() {
         // Given
-        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores)
+        let featureFlagService = MockFeatureFlagService(isSubscriptionsInOrderCreationCustomersEnabled: false)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores, featureFlagService: featureFlagService)
         XCTAssertFalse(viewModel.customerDataViewModel.isDataAvailable)
 
         // When
@@ -1360,10 +1361,13 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(properties, "editing")
     }
 
-    func test_customer_details_tracked_when_added() throws {
+    func test_customer_details_tracked_when_added_and_feature_flag_disabled() throws {
         // Given
         let analytics = MockAnalyticsProvider()
-        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, analytics: WooAnalytics(analyticsProvider: analytics))
+        let featureFlagService = MockFeatureFlagService(isSubscriptionsInOrderCreationCustomersEnabled: false)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
+                                               analytics: WooAnalytics(analyticsProvider: analytics),
+                                               featureFlagService: featureFlagService)
 
         // When
         viewModel.addressFormViewModel.fields.address1 = sampleAddress1().address1
@@ -1379,12 +1383,14 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertTrue(hasDifferentShippingDetailsProperty)
     }
 
-    func test_customer_details_tracked_when_only_billing_address_added() throws {
+    func test_customer_details_tracked_when_only_billing_address_added_and_feature_flag_disabled() throws {
         // Given
         let analytics = MockAnalyticsProvider()
+        let featureFlagService = MockFeatureFlagService(isSubscriptionsInOrderCreationCustomersEnabled: false)
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
                                                flow: .editing(initialOrder: .fake()),
-                                               analytics: WooAnalytics(analyticsProvider: analytics))
+                                               analytics: WooAnalytics(analyticsProvider: analytics),
+                                               featureFlagService: featureFlagService)
 
         // When
         viewModel.addressFormViewModel.fields.address1 = sampleAddress1().address1
@@ -1915,7 +1921,8 @@ final class EditableOrderViewModelTests: XCTestCase {
         // Given
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
                                                stores: stores,
-                                               featureFlagService: MockFeatureFlagService(betterCustomerSelectionInOrder: true))
+                                               featureFlagService: MockFeatureFlagService(betterCustomerSelectionInOrder: true,
+                                                                                          isSubscriptionsInOrderCreationCustomersEnabled: false))
         let customer = Customer.fake().copy(
             email: "scrambled@scrambled.com",
             firstName: "Johnny",
@@ -3231,9 +3238,10 @@ final class EditableOrderViewModelTests: XCTestCase {
         assertEqual("You cannot add a variable product directly.", viewModel.autodismissableNotice?.title)
     }
 
-    func test_when_saveInflightCustomerDetails_is_invoked_then_order_is_updated_with_latestAddressFormFields() {
+    func test_when_feature_flag_disabled_saveInflightCustomerDetails_is_invoked_then_order_is_updated_with_latestAddressFormFields() {
         // Given
-        let viewModel = EditableOrderViewModel(siteID: sampleSiteID)
+        let featureFlagService = MockFeatureFlagService(isSubscriptionsInOrderCreationCustomersEnabled: false)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, featureFlagService: featureFlagService)
         let sampleAddress = sampleAddress1()
         let expectedFullName = sampleAddress1().fullName
 

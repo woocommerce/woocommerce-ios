@@ -6,6 +6,7 @@ struct CollapsibleOrderFormCard<Label: View, Content: View>: View {
     private let hasSubtleChevron: Bool
     private let isCollapsed: Binding<Bool>
     private let showsBorder: Bool
+    private let padding: EdgeInsets
     private let label: () -> Label
     private let content: () -> Content
 
@@ -13,16 +14,19 @@ struct CollapsibleOrderFormCard<Label: View, Content: View>: View {
     ///   - hasSubtleChevron: Whether a subtle up/down chevron icon is shown to indicate the card is collapsible.
     ///   - isCollapsed: Whether the card is collapsed.
     ///   - showsBorder: Whether the permanent card border is shown.
+    ///   - padding: Additional padding between the card content to the card border, on top of the 16px horizontal and 8px vertical padding.
     ///   - label: View that is always shown in the collapsed and expanded states.
     ///   - content: View that is shown only when the card is expanded.
     init(hasSubtleChevron: Bool,
          isCollapsed: Binding<Bool>,
          showsBorder: Bool,
+         padding: EdgeInsets = Layout.defaultPadding,
          @ViewBuilder label: @escaping () -> Label,
          @ViewBuilder content: @escaping () -> Content) {
         self.hasSubtleChevron = hasSubtleChevron
         self.isCollapsed = isCollapsed
         self.showsBorder = showsBorder
+        self.padding = padding
         self.label = label
         self.content = content
     }
@@ -35,7 +39,7 @@ struct CollapsibleOrderFormCard<Label: View, Content: View>: View {
                                         hasSubtleChevron: hasSubtleChevron,
                                         label: label,
                                         content: content)
-        .padding(Layout.padding)
+        .padding(padding)
         .frame(maxWidth: .infinity, alignment: .center)
         .background(Color(.listForeground(modal: false)))
         .overlay {
@@ -54,7 +58,7 @@ struct CollapsibleOrderFormCard<Label: View, Content: View>: View {
 }
 
 private enum Layout {
-    static let padding: CGFloat = 16
+    static let defaultPadding: EdgeInsets = .init(top: 16, leading: 16, bottom: 16, trailing: 16)
 }
 
 #if DEBUG

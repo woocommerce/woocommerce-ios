@@ -430,7 +430,7 @@ private extension DashboardViewModel {
 
             switch result {
             case .success(let shouldBeVisible):
-                self.sendIsInAppFeedbackCardVisibleValueAndTrackIfNeeded(true)
+                self.sendIsInAppFeedbackCardVisibleValueAndTrackIfNeeded(shouldBeVisible)
             case .failure(let error):
                 ServiceLocator.crashLogging.logError(error)
                 // We'll just send a `false` value. I think this is the safer bet.

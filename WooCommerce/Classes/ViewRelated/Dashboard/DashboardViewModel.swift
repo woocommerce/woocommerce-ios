@@ -39,6 +39,12 @@ final class DashboardViewModel: ObservableObject {
         dashboardCards.filter { $0.availability == .show && $0.enabled }
     }
 
+    @Published private(set) var isInAppFeedbackCardVisible = false
+
+    private(set) var inAppFeedbackCardViewModel = InAppFeedbackCardViewModel()
+
+    @Published var showingInAppFeedbackSurvey = false
+
     @Published private(set) var jetpackBannerVisibleFromAppSettings = false
 
     @Published private(set) var hasOrders: Bool = true
@@ -98,9 +104,23 @@ final class DashboardViewModel: ObservableObject {
         self.topPerformersViewModel = .init(siteID: siteID,
                                             usageTracksEventEmitter: usageTracksEventEmitter)
         self.themeInstaller = themeInstaller
+        self.inAppFeedbackCardViewModel.onFeedbackGiven = { [weak self] feedback in
+            self?.showingInAppFeedbackSurvey = feedback == .didntLike
+            self?.onInAppFeedbackCardAction()
+        }
         configureOrdersResultController()
         setupDashboardCards()
         installPendingThemeIfNeeded()
+    }
+
+    /// Must be called by the `View` during the `onAppear()` event. This will
+    /// update the visibility of the in-app feedback card.
+    ///
+    /// The visibility is updated on `onAppear()` to consider scenarios when the app is
+    /// never terminated.
+    ///
+    func onViewAppear() {
+        refreshIsInAppFeedbackCardVisibleValue()
     }
 
     @MainActor
@@ -377,6 +397,57 @@ private extension DashboardViewModel {
             stores.dispatch(AppSettingsAction.loadDashboardCards(siteID: siteID, onCompletion: { cards in
                 continuation.resume(returning: cards)
             }))
+        }
+    }
+}
+
+// MARK: InAppFeedback card
+//
+private extension DashboardViewModel {
+    /// Updates the card visibility state stored in `isInAppFeedbackCardVisible` by updating the app last feedback date.
+    ///
+    func onInAppFeedbackCardAction() {
+        let action = AppSettingsAction.updateFeedbackStatus(type: .general, status: .given(Date())) { [weak self] result in
+            guard let self = self else {
+                return
+            }
+
+            if let error = result.failure {
+                ServiceLocator.crashLogging.logError(error)
+            }
+
+            self.refreshIsInAppFeedbackCardVisibleValue()
+        }
+        stores.dispatch(action)
+    }
+
+    /// Calculates and updates the value of `isInAppFeedbackCardVisible`.
+    func refreshIsInAppFeedbackCardVisibleValue() {
+        let action = AppSettingsAction.loadFeedbackVisibility(type: .general) { [weak self] result in
+            guard let self = self else {
+                return
+            }
+
+            switch result {
+            case .success(let shouldBeVisible):
+                self.sendIsInAppFeedbackCardVisibleValueAndTrackIfNeeded(shouldBeVisible)
+            case .failure(let error):
+                ServiceLocator.crashLogging.logError(error)
+                // We'll just send a `false` value. I think this is the safer bet.
+                self.sendIsInAppFeedbackCardVisibleValueAndTrackIfNeeded(false)
+            }
+        }
+        stores.dispatch(action)
+    }
+
+    /// Updates the value of `isInAppFeedbackCardVisible` and tracks a "shown" event
+    /// if the value changed from `false` to `true`.
+    func sendIsInAppFeedbackCardVisibleValueAndTrackIfNeeded(_ newValue: Bool) {
+        let trackEvent = isInAppFeedbackCardVisible == false && newValue == true
+
+        isInAppFeedbackCardVisible = newValue
+        if trackEvent {
+            analytics.track(event: .appFeedbackPrompt(action: .shown))
         }
     }
 }

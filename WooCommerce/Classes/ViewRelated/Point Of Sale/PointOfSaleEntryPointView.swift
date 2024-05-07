@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct PointOfSaleEntryPoint: View {
+struct PointOfSaleEntryPointView: View {
     @State private var showFullScreen = true
 
     @Environment(\.presentationMode) var presentationMode

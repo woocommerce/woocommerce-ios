@@ -1347,7 +1347,7 @@
 		68C31B712A8617C500AE5C5A /* NewNoteViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68C31B702A8617C500AE5C5A /* NewNoteViewModel.swift */; };
 		68D1BEDB28FFEDC20074A29E /* OrderCustomerListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68D1BEDA28FFEDC20074A29E /* OrderCustomerListView.swift */; };
 		68D1BEDD2900E4180074A29E /* CustomerSearchUICommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68D1BEDC2900E4180074A29E /* CustomerSearchUICommand.swift */; };
-		68D3D4C92BE8C6AD0045EF4A /* PointOfSaleEntryPoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68D3D4C82BE8C6AD0045EF4A /* PointOfSaleEntryPoint.swift */; };
+		68D3D4C92BE8C6AD0045EF4A /* PointOfSaleEntryPointView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68D3D4C82BE8C6AD0045EF4A /* PointOfSaleEntryPointView.swift */; };
 		68D3D4CB2BE8CC9A0045EF4A /* PointOfSaleDashboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68D3D4CA2BE8CC9A0045EF4A /* PointOfSaleDashboard.swift */; };
 		68D5094E2AD39BC900B6FFD5 /* DiscountLineDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68D5094D2AD39BC900B6FFD5 /* DiscountLineDetailsView.swift */; };
 		68E6749F2A4DA01C0034BA1E /* WooWPComPlan.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68E6749E2A4DA01C0034BA1E /* WooWPComPlan.swift */; };
@@ -4056,7 +4056,7 @@
 		68C31B702A8617C500AE5C5A /* NewNoteViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewNoteViewModel.swift; sourceTree = "<group>"; };
 		68D1BEDA28FFEDC20074A29E /* OrderCustomerListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderCustomerListView.swift; sourceTree = "<group>"; };
 		68D1BEDC2900E4180074A29E /* CustomerSearchUICommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerSearchUICommand.swift; sourceTree = "<group>"; };
-		68D3D4C82BE8C6AD0045EF4A /* PointOfSaleEntryPoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleEntryPoint.swift; sourceTree = "<group>"; };
+		68D3D4C82BE8C6AD0045EF4A /* PointOfSaleEntryPointView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleEntryPointView.swift; sourceTree = "<group>"; };
 		68D3D4CA2BE8CC9A0045EF4A /* PointOfSaleDashboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleDashboard.swift; sourceTree = "<group>"; };
 		68D5094D2AD39BC900B6FFD5 /* DiscountLineDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscountLineDetailsView.swift; sourceTree = "<group>"; };
 		68E6749E2A4DA01C0034BA1E /* WooWPComPlan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooWPComPlan.swift; sourceTree = "<group>"; };
@@ -8466,7 +8466,7 @@
 		68D3D4C72BE8C6860045EF4A /* Point Of Sale */ = {
 			isa = PBXGroup;
 			children = (
-				68D3D4C82BE8C6AD0045EF4A /* PointOfSaleEntryPoint.swift */,
+				68D3D4C82BE8C6AD0045EF4A /* PointOfSaleEntryPointView.swift */,
 				68D3D4CA2BE8CC9A0045EF4A /* PointOfSaleDashboard.swift */,
 			);
 			path = "Point Of Sale";
@@ -13369,7 +13369,7 @@
 				EE45E2B92A409BA40085F227 /* ProductDescriptionAITooltipUseCase.swift in Sources */,
 				DE02ABBA2B56981C008E0AC4 /* BlazeConfirmPaymentView.swift in Sources */,
 				86967D832B4E3EC300C20CA8 /* BlazeAdUrlParameter.swift in Sources */,
-				68D3D4C92BE8C6AD0045EF4A /* PointOfSaleEntryPoint.swift in Sources */,
+				68D3D4C92BE8C6AD0045EF4A /* PointOfSaleEntryPointView.swift in Sources */,
 				456AB0E7283E610500019CFF /* WCShipInstallTableViewCell.swift in Sources */,
 				024A8F1F2A588FA500ABF3EB /* EditableImageView.swift in Sources */,
 				02FE1B9F287F51F400EC03B3 /* LoginOnboardingViewController.swift in Sources */,

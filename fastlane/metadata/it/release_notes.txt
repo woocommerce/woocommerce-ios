@@ -1,1 +1,0 @@
-Saluta i bug fastidiosi. Il nostro ultimo aggiornamento garantisce che la funzionalità "Ricevi pagamenti" ti conduca direttamente al modulo dell'ordine, sia che tu stia utilizzando un'azione rapida o un deep link. Sfrutta le transazioni semplici fuori casa.

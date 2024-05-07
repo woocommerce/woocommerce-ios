@@ -70,10 +70,8 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
 struct PointOfSaleDashboardView: View {
     @ObservedObject private var viewModel: PointOfSaleDashboardViewModel
 
-    init() {
-        // Since we do not inject the data into the dashboard view through the entry point
-        // we need to instantiate it here directly:
-        self.viewModel = PointOfSaleDashboardViewModel()
+    init(viewModel: PointOfSaleDashboardViewModel) {
+        self.viewModel = viewModel
     }
 
     var body: some View {

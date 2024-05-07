@@ -166,6 +166,8 @@ private extension HubMenu {
                 SubscriptionsView(viewModel: .init())
             case HubMenuViewModel.Customers.id:
                 CustomersListView(viewModel: .init(siteID: viewModel.siteID))
+            case HubMenuViewModel.PointOfSaleEntryPoint.id:
+                PointOfSaleEntryPointView()
             default:
                 fatalError("🚨 Unsupported menu item")
             }

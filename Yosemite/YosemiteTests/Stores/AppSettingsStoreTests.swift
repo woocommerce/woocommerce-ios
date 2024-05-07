@@ -395,6 +395,42 @@ final class AppSettingsStoreTests: XCTestCase {
         XCTAssertTrue(isEnabled)
     }
 
+    func test_loadPointOfSaleSwitchState_isEnabled_when_new_generalAppSettings_then_returns_false() throws {
+        // Given
+        try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
+
+        // When
+        let result: Result<Bool, Error> = waitFor { promise in
+            let action = AppSettingsAction.loadPointOfSaleSwitchState { result in
+                promise(result)
+            }
+            self.subject?.onAction(action)
+        }
+
+        // Then
+        let isEnabled = try result.get()
+        XCTAssertFalse(isEnabled)
+    }
+
+    func test_loadPointOfSaleSwitchState_isEnabled_when_setPointOfSaleSwitchState_to_true_then_returns_true() throws {
+        // Given
+        try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
+        let updateAction = AppSettingsAction.setPointOfSaleSwitchState(isEnabled: true, onCompletion: { _ in })
+        subject?.onAction(updateAction)
+
+        // When
+        let result: Result<Bool, Error> = waitFor { promise in
+            let action = AppSettingsAction.loadPointOfSaleSwitchState { result in
+                promise(result)
+            }
+            self.subject?.onAction(action)
+        }
+
+        // Then
+        let isEnabled = try result.get()
+        XCTAssertTrue(isEnabled)
+    }
+
     func test_loadJetpackBenefitsBannerVisibility_returns_true_on_new_generalAppSettings() throws {
         // Given
         // Deletes any pre-existing app settings.
@@ -1549,6 +1585,7 @@ private extension AppSettingsStoreTests {
             feedbacks: [feedback.name: feedback],
             isViewAddOnsSwitchEnabled: false,
             isInAppPurchasesSwitchEnabled: false,
+            isPointOfSaleEnabled: false,
             knownCardReaders: [],
             featureAnnouncementCampaignSettings: [:],
             sitesWithAtLeastOneIPPTransactionFinished: [],
@@ -1565,6 +1602,7 @@ private extension AppSettingsStoreTests {
             feedbacks: [:],
             isViewAddOnsSwitchEnabled: false,
             isInAppPurchasesSwitchEnabled: false,
+            isPointOfSaleEnabled: false,
             knownCardReaders: [],
             featureAnnouncementCampaignSettings: featureAnnouncementCampaignSettings,
             sitesWithAtLeastOneIPPTransactionFinished: [],

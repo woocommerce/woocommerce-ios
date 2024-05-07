@@ -153,6 +153,9 @@ final class HubMenuViewModel: ObservableObject {
         if generalAppSettings.betaFeatureEnabled(.inAppPurchases) {
             generalElements.append(InAppPurchases())
         }
+        if generalAppSettings.betaFeatureEnabled(.pointOfSale) {
+            generalElements.append(PointOfSaleEntryPoint())
+        }
 
         let inboxUseCase = InboxEligibilityUseCase(stores: stores, featureFlagService: featureFlagService)
         inboxUseCase.isEligibleForInbox(siteID: siteID) { [weak self] isInboxMenuShown in
@@ -398,6 +401,18 @@ extension HubMenuViewModel {
         let iconColor: UIColor = .red
         let accessibilityIdentifier: String = "menu-iap"
         let trackingOption: String = "debug-iap"
+        let iconBadge: HubMenuBadgeType? = nil
+    }
+
+    struct PointOfSaleEntryPoint: HubMenuItem {
+        static var id = "pointOfSale"
+
+        let title: String = "Point Of Sale"
+        let description: String = "Point Of Sale entry point"
+        let icon: UIImage = UIImage(systemName: "ladybug.fill")!
+        let iconColor: UIColor = .red
+        let accessibilityIdentifier: String = "menu-pointOfSale"
+        let trackingOption: String = "pointOfSale"
         let iconBadge: HubMenuBadgeType? = nil
     }
 

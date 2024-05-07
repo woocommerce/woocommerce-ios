@@ -38,18 +38,29 @@ final class PhoneDependenciesSynchronizer: NSObject, ObservableObject, WCSession
             return storeDic["id"]
         }()
 
-        let credentials: [String: Any] = {
+        let credentials: Credentials? = {
 
             guard let credentialsDic = appContext["credentials"] as? [String: String] else {
-                return [:]
+                return nil
             }
 
-            let type = credentialsDic["type"]
-            let username = credentialsDic["username"]
-            let secret = credentialsDic["secret"]
-            let siteAddress = credentialsDic["address"]
+            guard let type = credentialsDic["type"],
+                  let username = credentialsDic["username"],
+                  let secret = credentialsDic["secret"],
+                  let siteAddress = credentialsDic["address"] else {
+                return nil
+            }
 
-            return [:]
+            switch type {
+            case "AuthenticationType.wpcom":
+                return .wpcom(username: username, authToken: secret, siteAddress: siteAddress)
+            case "AuthenticationType.wporg":
+                return .wporg(username: username, password: secret, siteAddress: siteAddress)
+            case "AuthenticationType.applicationPassword":
+                return .applicationPassword(username: username, password: secret, siteAddress: siteAddress)
+            default:
+                return nil
+            }
         }()
     }
 }

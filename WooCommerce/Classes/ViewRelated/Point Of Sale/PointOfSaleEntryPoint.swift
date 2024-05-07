@@ -9,7 +9,9 @@ struct PointOfSaleEntryPoint: View {
         VStack {}
         .fullScreenCover(isPresented: $showFullScreen) {
             if UIDevice.isPad() {
-                PointOfSaleDashboard()
+                // Not injecting any data into the View at this point
+                // since we want to keep this separated
+                PointOfSaleDashboardView()
             } else {
                 Button(action: {
                     presentationMode.wrappedValue.dismiss()

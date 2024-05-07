@@ -280,9 +280,6 @@ which should be translated separately and considered part of this sentence. */
 /* Disclaimer regarding some of the features related to payments. */
 "1. Available as standard in WooCommerce Payments (restrictions apply).Additional extensions may be required for other payment providers." = "1. 우커머스 결제에서 표준으로 사용 가능(제한 사항 적용) – 다른 결제 제공업체의 경우에는 추가 확장 기능이 필요할 수 있습니다.";
 
-/* Step 1 of the 'How it works' list, instructing the merchant to prepare an order for payment */
-"1. Create an order or collect a payment" = "1. 주문을 생성하거나 결제를 받습니다.";
-
 /* Settings > Manage Card Reader > Connect > Help hint number 2
    Settings > Set up Tap to Pay on iPhone > Information > Help hint number 2 */
 "2" = "2";
@@ -1085,9 +1082,6 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Bangladesh" = "방글라데시";
 
-/* VoiceOver accessibility value about a specific bar in the revenue chart.It reads: Bar number {bar number} {summary of bar}. */
-"Bar number %i, %@, " = "표시줄 번호 %1$i, %2$@, ";
-
 /* Country option for a site address. */
 "Barbados" = "바베이도스";
 
@@ -1387,7 +1381,6 @@ which should be translated separately and considered part of this sentence. */
    The title of the button to cancel issuing a refund.
    Title for canceling the edit attribute action sheet.
    Title for the button to cancel the payment methods screen
-   Title for the button to cancel the simple payments screen
    Title of an option to dismiss the bulk edit action sheet
    Title of dismiss button presented when site credential login fails
    Title of the alert dismiss action when the site cannot be launched from store onboarding > launch store screen.
@@ -1980,9 +1973,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Shown while logging in with Apple and the app waits for the site creation process to complete. */
 "Continuing with Apple" = "Apple로 계속하기";
-
-/* Conversion stat label on dashboard. */
-"Conversion" = "전환";
 
 /* Label for the conversion rate (orders per visitor) in the Analytics Hub */
 "Conversion Rate" = "전환율";
@@ -2824,9 +2814,6 @@ which should be translated separately and considered part of this sentence. */
 /* Address field placeholder in Edit Address Form
    Button to open a webview at the admin pages, so that the merchant can update their store address to continue setting up In Person Payments */
 "Enter Address" = "주소 입력";
-
-/* Short instructions label in the simple payments screen */
-"Enter Amount" = "금액 입력";
 
 /* Action button linking to instructions for enter another store.Presented when logging in with a site address that appears to be invalid.
    Action button linking to instructions for enter another store.Presented when logging in with a site address that is not a WordPress site */
@@ -3847,9 +3834,6 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle of the product form bottom sheet action for linked products. */
 "Increase sales with upsells and cross-sells" = "상향 판매 및 교차 판매로 판매 늘리기";
 
-/* Subtitle of the Blaze campaign view. */
-"Increase visibility and get your products sold quickly." = "가시성을 높이고 상품 판매 속도를 단축하세요.";
-
 /* Country option for a site address. */
 "India" = "인도";
 
@@ -4448,9 +4432,6 @@ which should be translated separately and considered part of this sentence. */
 /* Settings > Manage Card Reader > Connect > Hint to charge card reader */
 "Make sure card reader is charged" = "카드 리더 충전 여부 확인";
 
-/* Text that explains how to update VC to get the latest stats */
-"Make sure you are running the latest version of WooCommerce on your site and that you have WooCommerce Admin activated." = "사이트에서 WooCommerce 최신 버전을 실행하고 있으며 WooCommerce 관리자가 활성화되어 있는지 확인하세요.";
-
 /* Settings > Set up Tap to Pay on iPhone > Information > Hint to sign in to iCloud and set a passcode on the device */
 "Make sure you are signed in to iCloud, and have set a passcode." = "iCloud에 로그인했는지 확인하고 패스코드를 설정하세요.";
 
@@ -4619,9 +4600,6 @@ which should be translated separately and considered part of this sentence. */
 /* The minimum limit of spending required for a coupon on the Coupon Details screen, reads like: Minimum spend of $20.00 */
 "Minimum spend of %1$@" = "최소 %1$@ 지출";
 
-/* VoiceOver accessibility value, informs the user about the Y-axis min/max values. It reads: Minimum value {value}, maximum value {value}. */
-"Minimum value %@, maximum value %@" = "최소값 %1$@, 최대값 %2$@";
-
 /* The description in product variations bulk update, of a value, that is different acrossall variations */
 "Mixed" = "혼합";
 
@@ -4707,8 +4685,7 @@ which should be translated separately and considered part of this sentence. */
    Title of the hub menu view in case there is no title for the store */
 "My Store" = "내 스토어";
 
-/* Title of the bottom tab item that presents the user's store dashboard, and default title for the store dashboard
-   Title of the store creation summary screen. */
+/* Title of the store creation summary screen. */
 "My store" = "내 스토어";
 
 /* Country option for a site address. */
@@ -4766,8 +4743,7 @@ which should be translated separately and considered part of this sentence. */
 /* Label for net sales (net revenue) in the Analytics Hub */
 "Net Sales" = "순매출액";
 
-/* Label for the total sales of a product in the Analytics Hub
-   Top performers — label for the total sales of a product */
+/* Label for the total sales of a product in the Analytics Hub */
 "Net sales: %@" = "순매출액: %@";
 
 /* Country option for a site address. */
@@ -4822,7 +4798,6 @@ which should be translated separately and considered part of this sentence. */
    Next nav bar button title in Add Product Attribute Options screen
    Next nav bar button title in Add Product Attribute screen
    The button title on the login onboarding screen to continue to the next step.
-   Title for the button to confirm the amount in the simple payments screen
    Title of a button.
    Title of a button. The text should be capitalized.
    Title of the next button in the issue refund screen */
@@ -4890,9 +4865,6 @@ which should be translated separately and considered part of this sentence. */
 /* The title on the placeholder overlay when there are no customers on the customers list screen. */
 "No customers found" = "고객 없음";
 
-/* Text displayed when no data is available for revenue chart. */
-"No data available" = "사용 가능한 데이터 없음";
-
 /* Placeholder when there's no customer email in the list */
 "No email address" = "이메일 주소 없음";
 
@@ -4948,9 +4920,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Empty state for the list of shipment carriers. It reads: 'No results for DHL. Add a custom carrier'. Parameters: %1$@ - carrier name */
 "No results found for %1$@\nAdd a custom carrier" = "%1$@에 대한 결과를 찾을 수 없음\n사용자 정의 배송업체 추가";
-
-/* Text displayed when no order data are available for the selected time range. */
-"No revenue this period" = "이 기간에 해당하는 수익이 없습니다.";
 
 /* The text on the placeholder overlay when there are no shipping classes on the Shipping Class list picker */
 "No shipping classes yet" = "아직 배송 클래스가 없음";
@@ -5246,8 +5215,7 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label for Ordered list button on formatting toolbar. */
 "Ordered List" = "순서 있는 목록";
 
-/* Orders stat label on dashboard - should be plural.
-   The title of the Orders tab.
+/* The title of the Orders tab.
    Title of the 'Orders' tab - used for spotlight indexing on iOS. */
 "Orders" = "주문";
 
@@ -6382,9 +6350,6 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Reunion" = "레위니옹";
 
-/* Revenue stat label on dashboard. */
-"Revenue" = "수익";
-
 /* Title of Review Order screen */
 "Review Order" = "주문 검토";
 
@@ -6639,9 +6604,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Link title to see all paper size options */
 "See layout and paper sizes options" = "레이아웃 및 용지 크기 옵션 참조";
-
-/* Button on the stats dashboard that navigates user to the analytics hub */
-"See more" = "더 보기";
 
 /* Title for a link to view Woo Express plan details on the web, as a fallback. */
 "See plan details" = "요금제 상세 정보 참조";
@@ -6959,9 +6921,6 @@ which should be translated separately and considered part of this sentence. */
    Title of the Short Description row on Product main screen */
 "Short description" = "간단한 설명";
 
-/* Button when tapped will show the Blaze campaign list. */
-"Show All Campaigns" = "모든 캠페인 표시";
-
 /* Button title for applying filters to a list of orders. */
 "Show Orders" = "주문 표시";
 
@@ -7247,9 +7206,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the option to create a template product */
 "Start with a template" = "템플릿 시작";
 
-/* VoiceOver accessibility value, informs the user about the X-axis min/max values. It reads: Starting date {date}, ending date {date}. */
-"Starting period %@, ending period %@" = "시작 기간 %1$@, 종료 기간 %2$@";
-
 /* Text field state in Edit Address Form
    Text field state in Shipping Label Address Validation
    Title to select state from the edit address screen */
@@ -7270,9 +7226,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Subtitle of the Jetpack benefits banner. */
 "Stay updated and boost store security. Explore Jetpack now." = "최신 상태로 유지하여 스토어 보안을 강화하세요. 지금 젯팩을 살펴보세요.";
-
-/* Button title to contact support to get help with deprecated stats */
-"Still need help? Contact us" = "도움이 더 필요하세요? 문의하기";
 
 /* Row title for filtering products by stock status. */
 "Stock Status" = "재고 상태";
@@ -7307,18 +7260,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the store name screen */
 "Store name" = "스토어 이름";
-
-/* VoiceOver accessibility label for the store revenue chart. */
-"Store revenue chart" = "스토어 수입 차트";
-
-/* VoiceOver accessibility label for the store revenue chart. It reads: Store revenue chart {chart granularity}. */
-"Store revenue chart %@" = "스토어 수입 차트 %@";
-
-/* VoiceOver accessibility label for the store revenue chart's X-axis. */
-"Store revenue chart: X Axis" = "스토어 수입 차트: X축";
-
-/* VoiceOver accessibility label for the store revenue chart's Y-axis. */
-"Store revenue chart: Y Axis" = "스토어 수입 차트: Y축";
 
 /* Title of the store setup progress view. */
 "Store setup" = "스토어 설정";
@@ -7966,9 +7907,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Message to be displayed when the user encounters an error during the connection step of Jetpack setup */
 "There was an error connecting your site to Jetpack." = "사이트를 젯팩에 연결하는 중 오류가 발생했습니다.";
-
-/* Notice text after failing to create a simple payments order. */
-"There was an error creating the order" = "오더 생성 중 오류가 발생했음";
 
 /* Error shown when failing to fetch the plan details in the upgrades view. */
 "There was an error fetching your plan details, please try again later." = "요금제 상세 정보를 가져오는 중 오류가 발생했습니다. 나중에 다시 시도하세요.";
@@ -9012,9 +8950,6 @@ which should be translated separately and considered part of this sentence. */
    Visibility label in Product Settings */
 "Visibility" = "공개 설정";
 
-/* Visitors stat label on dashboard - should be plural. */
-"Visitors" = "방문자";
-
 /* Add a note screen - Write Note section title */
 "WRITE NOTE" = "메모 작성";
 
@@ -9051,9 +8986,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Message when we can't reach WPCom in the recovery tool */
 "We can’t connect to WordPress.com right now.\n\nTry again in a few minutes, or contact our support team and we will happily assist you." = "지금은 워드프레스닷컴에 연결할 수 없습니다.\n\n몇 분 후에 다시 시도하세요. 또는 지원팀에 문의하시면 기꺼이 도와드리겠습니다.";
-
-/* Title when we can't show stats because user is on a deprecated WC Version */
-"We can’t display your store’s analytics" = "스토어 분석을 표시할 수 없습니다.";
 
 /* The title of the Error Loading Data banner when there is a Jetpack connection error */
 "We couldn't connect to your store" = "스토어에 연결할 수 없음";
@@ -10031,9 +9963,6 @@ which should be translated separately and considered part of this sentence. */
 /* Button to dismiss the Blaze campaign section on the My Store screen. */
 "blazeCampaignDashboardView.hideBlazeButton" = "Blaze 숨기기";
 
-/* Button when tapped will launch create Blaze campaign flow. */
-"blazeCampaignDashboardView.promote" = "홍보";
-
 /* The action to be agreed upon on the Payment screen in the Blaze campaign creation flow. */
 "blazeConfirmPaymentView.adPolicy" = "광고 정책";
 
@@ -10509,9 +10438,6 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility title for the edit button on a custom amount row. */
 "customAmount.edit.button.accessibilityLabel" = "금액 편집";
 
-/* Button in date range picker to add a Custom Range tab */
-"customRangeTabCreationCoordinator.add" = "추가";
-
 /* Label for a customer with no name in the Customer detail screen. */
 "customerDetail.guestName" = "비회원";
 
@@ -10601,9 +10527,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for Customers list screen */
 "customersList.title" = "고객";
-
-/* Name for the Blaze dashboard card in the Customize Dashboard screen */
-"dashboardCard.name.blaze" = "Blaze";
 
 /* Name for the Store setup dashboard card in the Customize Dashboard screen */
 "dashboardCard.name.onboarding" = "스토어 설정";
@@ -11735,12 +11658,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Success notice when tapping Mark Order Complete on Review Order screen */
 "🎉 Order Completed" = "🎉 주문 완료됨";
-
-/* Notice text after completing a simple payment order */
-"🎉 Order completed" = "🎉 주문 완료됨";
-
-/* Notice text after creating a simple payment order */
-"🎉 Order created" = "🎉 주문 생성됨";
 
 /* Text of the notice that is displayed after the refund is created. */
 "🎉 Products successfully refunded" = "🎉개 제품이 환불되었음";

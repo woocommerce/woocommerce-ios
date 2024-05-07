@@ -376,7 +376,7 @@ private extension SettingsViewController {
 
     func supportWasPressed() {
         ServiceLocator.analytics.track(.settingsContactSupportTapped)
-        guard let viewController = UIStoryboard.dashboard.instantiateViewController(ofClass: HelpAndSupportViewController.self) else {
+        guard let viewController = UIStoryboard.settings.instantiateViewController(ofClass: HelpAndSupportViewController.self) else {
             fatalError("Cannot instantiate `HelpAndSupportViewController` from Dashboard storyboard")
         }
         show(viewController, sender: self)
@@ -447,7 +447,7 @@ private extension SettingsViewController {
 
     func privacyWasPressed() {
         ServiceLocator.analytics.track(.settingsPrivacySettingsTapped)
-        guard let viewController = UIStoryboard.dashboard.instantiateViewController(ofClass: PrivacySettingsViewController.self) else {
+        guard let viewController = UIStoryboard.settings.instantiateViewController(ofClass: PrivacySettingsViewController.self) else {
             fatalError("Cannot instantiate `PrivacySettingsViewController` from Dashboard storyboard")
         }
         show(viewController, sender: self)

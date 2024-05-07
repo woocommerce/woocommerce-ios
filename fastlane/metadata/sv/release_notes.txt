@@ -1,1 +1,0 @@
-Säg adjö till irriterande buggar. Vår senaste uppdatering säkerställer att funktionen "Ta emot betalning" leder dig direkt till beställningsformuläret, oavsett om du använder en snabbåtgärd eller en djup länk. Ta del av sömlösa transaktioner i farten.

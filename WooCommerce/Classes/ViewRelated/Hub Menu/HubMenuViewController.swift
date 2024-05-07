@@ -52,7 +52,7 @@ final class HubMenuViewController: UIHostingController<HubMenu> {
         guard let navigationController else {
             return DDLogError("⛔️ Could not find a navigation controller context.")
         }
-        guard let privacy = UIStoryboard.dashboard.instantiateViewController(ofClass: PrivacySettingsViewController.self) else {
+        guard let privacy = UIStoryboard.settings.instantiateViewController(ofClass: PrivacySettingsViewController.self) else {
             return DDLogError("⛔️ Could not instantiate PrivacySettingsViewController")
         }
 

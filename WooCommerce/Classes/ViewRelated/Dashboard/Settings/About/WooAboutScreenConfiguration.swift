@@ -203,7 +203,7 @@ private extension WooLegalAndMoreSubmenuConfiguration {
 
     func presentLicenses(from viewController: UIViewController) {
         ServiceLocator.analytics.track(.settingsLicensesLinkTapped)
-        guard let licensesViewController = UIStoryboard.dashboard.instantiateViewController(ofClass: LicensesViewController.self) else {
+        guard let licensesViewController = UIStoryboard.settings.instantiateViewController(ofClass: LicensesViewController.self) else {
             fatalError("Cannot instantiate `LicensesViewController` from Dashboard storyboard")
         }
 

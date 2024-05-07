@@ -91,7 +91,7 @@ extension RemotePostCreateParameters {
         if (previous.content ?? "") != (content ?? "") {
             changes.content = (content ?? "")
         }
-        if previous.password != password {
+        if (previous.password ?? "") != (password ?? "") {
             changes.password = password
         }
         if (previous.excerpt ?? "") != (excerpt ?? "") {
@@ -289,11 +289,11 @@ struct RemotePostUpdateParametersWordPressComEncoder: Encodable {
         try container.encodeIfPresent(parameters.status, forKey: .status)
         try container.encodeIfPresent(parameters.date, forKey: .date)
         try container.encodeIfPresent(parameters.authorID, forKey: .authorID)
-        try container.encodeIfPresent(parameters.title, forKey: .title)
-        try container.encodeIfPresent(parameters.content, forKey: .content)
-        try container.encodeIfPresent(parameters.password, forKey: .password)
-        try container.encodeIfPresent(parameters.excerpt, forKey: .excerpt)
-        try container.encodeIfPresent(parameters.slug, forKey: .slug)
+        try container.encodeStringIfPresent(parameters.title, forKey: .title)
+        try container.encodeStringIfPresent(parameters.content, forKey: .content)
+        try container.encodeStringIfPresent(parameters.password, forKey: .password)
+        try container.encodeStringIfPresent(parameters.excerpt, forKey: .excerpt)
+        try container.encodeStringIfPresent(parameters.slug, forKey: .slug)
         if let value = parameters.featuredImageID {
             try container.encodeNullableID(value, forKey: .featuredImageID)
         }

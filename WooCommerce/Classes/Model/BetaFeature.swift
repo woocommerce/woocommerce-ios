@@ -122,11 +122,12 @@ private extension BetaFeature {
             comment: "Cell description on beta features screen to enable in-app purchases")
 
         static let pointOfSaleTitle = NSLocalizedString(
-            "betaFeature.description.pointOfSaleTitle",
+            "betaFeature.pointOfSale.title",
             value: "Point Of Sale",
             comment: "Cell title on beta features screen to enable the Point Of Sale feature")
         static let pointOfSaleDescription = NSLocalizedString(
-            "Test out Point Of Sale as we get ready to launch",
+            "betaFeature.pointOfSale.description",
+            value: "Test out Point Of Sale as we get ready to launch",
             comment: "Cell description on beta features screen to enable the Point Of Sale feature")
     }
 }

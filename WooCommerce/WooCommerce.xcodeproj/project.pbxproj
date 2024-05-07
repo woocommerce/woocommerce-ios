@@ -874,6 +874,8 @@
 		269A2F47295CC683000828A8 /* GenerateVariationsSelectorCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 269A2F46295CC683000828A8 /* GenerateVariationsSelectorCommand.swift */; };
 		269B46622A16D68A00ADA872 /* UpdateAnalyticsSettingsUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 269B46612A16D68A00ADA872 /* UpdateAnalyticsSettingsUseCase.swift */; };
 		269B46642A16D6ED00ADA872 /* UpdateAnalyticsSettingsUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 269B46632A16D6ED00ADA872 /* UpdateAnalyticsSettingsUseCaseTests.swift */; };
+		26A000762BE9D8E70071DB1E /* UserDefaults+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5AA7B3E20ED81C2004DA14F /* UserDefaults+Woo.swift */; };
+		26A000772BE9D9030071DB1E /* WooConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5D1AFBF20BC67C200DB0E8C /* WooConstants.swift */; };
 		26A280D62B45F00F00ACEE87 /* OrderNotificationViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26A280D52B45F00F00ACEE87 /* OrderNotificationViewModelTests.swift */; };
 		26A280D72B46027A00ACEE87 /* OrderNotificationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26CA2BC52AAA1773003B16C2 /* OrderNotificationView.swift */; };
 		26A630ED253F3B5C00CBC3B1 /* RefundCreationUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26A630EC253F3B5C00CBC3B1 /* RefundCreationUseCase.swift */; };
@@ -13641,6 +13643,7 @@
 				26F81B182BE433A2009EC58E /* WooApp.swift in Sources */,
 				26DD329C2BEBC45E00F2C69C /* RESTRequestConvertible.swift in Sources */,
 				2604C3BA2BE977F000250465 /* PhoneDependenciesSynchronizer.swift in Sources */,
+				26A000772BE9D9030071DB1E /* WooConstants.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

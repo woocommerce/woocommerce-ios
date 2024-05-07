@@ -6,14 +6,39 @@ struct OrderCustomerSection: View {
     var body: some View {
         Group {
             if let cardViewModel = viewModel.cardViewModel {
-                CollapsibleCustomerCard(viewModel: cardViewModel)
-                    .padding()
+                VStack(alignment: .leading, spacing: Layout.spacingBetweenHeaderAndCard) {
+                    HStack {
+                        Text(Localization.customerHeader)
+                            .headlineStyle()
+                        Spacer()
+                        searchCustomerView
+                    }
+
+                    CollapsibleCustomerCard(viewModel: cardViewModel)
+                }
+                .padding()
             } else {
                 createCustomerView
                     .frame(minHeight: Layout.buttonHeight)
             }
         }
         .background(Color(.listForeground(modal: true)))
+        .sheet(isPresented: $viewModel.showsCustomerSearch) {
+            NavigationView {
+                CustomerSelectorView(
+                    siteID: viewModel.siteID,
+                    configuration: CustomerSelectorViewController.Configuration(
+                        title: Localization.customerSelectorTitle,
+                        disallowSelectingGuest: viewModel.isCustomerAccountRequired,
+                        disallowCreatingCustomer: true,
+                        showGuestLabel: false,
+                        shouldTrackCustomerAdded: true
+                    ),
+                    addressFormViewModel: viewModel.addressFormViewModel) { customer in
+                        viewModel.addCustomerFromSearch(customer)
+                    }
+            }
+        }
     }
 
     private var createCustomerView: some View {
@@ -23,18 +48,36 @@ struct OrderCustomerSection: View {
         .buttonStyle(PlusButtonStyle())
         .padding([.leading, .trailing])
     }
+
+    private var searchCustomerView: some View {
+        Button(action: {
+            viewModel.searchCustomer()
+        }, label: {
+            Image(systemName: "magnifyingglass")
+        })
+        .buttonStyle(TextButtonStyle())
+    }
 }
 
 // MARK: Constants
 private extension OrderCustomerSection {
     enum Layout {
         static let buttonHeight: CGFloat = 56.0
+        static let spacingBetweenHeaderAndCard: CGFloat = 16
     }
 
     enum Localization {
         static let addCustomerDetails = NSLocalizedString("orderForm.customerSection.addCustomer",
                                                           value: "Add Customer",
-                                                          comment: "Title text of the button that adds customer data when creating a new order")
+                                                          comment: "Title text of the button that adds customer data in the order form.")
+        static let customerHeader = NSLocalizedString("orderForm.customerSection.customerHeader",
+                                                      value: "Customer",
+                                                      comment: "Header text of the customer card in the order form.")
+        static let customerSelectorTitle = NSLocalizedString(
+            "orderForm.customerSection.customerSelectorTitle",
+            value: "Add customer details",
+            comment: "Title of the order customer selection screen in the order form.."
+        )
     }
 }
 
@@ -47,8 +90,28 @@ struct OrderCustomerSection_Previews: PreviewProvider {
     )
     static var previews: some View {
         Group {
-            OrderCustomerSection(viewModel: .init(customerData: customer, isCustomerAccountRequired: true, isEditable: true))
-            OrderCustomerSection(viewModel: .init(customerData: customer, isCustomerAccountRequired: false, isEditable: true))
+            OrderCustomerSection(viewModel: .init(siteID: 1,
+                                                  addressFormViewModel: .init(
+                                                    siteID: 1,
+                                                    addressData: .init(billingAddress: nil,
+                                                                       shippingAddress: nil),
+                                                    onAddressUpdate: nil
+                                                  ),
+                                                  customerData: customer,
+                                                  isCustomerAccountRequired: true,
+                                                  isEditable: true,
+                                                  addCustomer: { _ in }))
+            OrderCustomerSection(viewModel: .init(siteID: 1,
+                                                  addressFormViewModel: .init(
+                                                    siteID: 1,
+                                                    addressData: .init(billingAddress: nil,
+                                                                       shippingAddress: nil),
+                                                    onAddressUpdate: nil
+                                                  ),
+                                                  customerData: customer,
+                                                  isCustomerAccountRequired: false,
+                                                  isEditable: true,
+                                                  addCustomer: { _ in }))
         }
     }
 }

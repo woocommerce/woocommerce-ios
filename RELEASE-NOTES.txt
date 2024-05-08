@@ -3,6 +3,9 @@
 18.5
 -----
 
+18.4.1
+-----
+- [***] The application crashes when the `Charts` library attempts to calculate stride values for the y-axis with negative numbers, typically occurring when the data contains negative revenue (refunds). The issue is traced to the `NumberBins.init(size:range:)` method within the library, causing a crash seconds after app launch when viewing stats in the new Dynamic Dashboard.
 
 18.4
 -----

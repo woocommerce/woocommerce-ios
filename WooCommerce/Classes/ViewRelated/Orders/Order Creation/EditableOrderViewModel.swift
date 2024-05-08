@@ -533,6 +533,7 @@ final class EditableOrderViewModel: ObservableObject {
         forwardSyncApproachToSynchronizer()
         observeChangesFromProductSelectorButtonTapSelectionSync()
         observeChangesInCustomerDetails()
+        syncShippingMethods()
     }
 
     /// Observes and keeps track of changes within the Customer Details
@@ -1710,7 +1711,6 @@ private extension EditableOrderViewModel {
                 .assign(to: &$customerNoteDataViewModel)
     }
 
-
     /// Updates payment section view model based on items in the order and order sync state.
     ///
     func configurePaymentDataViewModel() {
@@ -1866,6 +1866,20 @@ private extension EditableOrderViewModel {
                 }
             }
             .assign(to: &$multipleLinesMessage)
+    }
+
+    /// Synchronizes available shipping methods for editing the order shipping lines.
+    ///
+    func syncShippingMethods() {
+        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.enhancingOrderShippingLines) else {
+            return
+        }
+        let action = ShippingMethodAction.synchronizeShippingMethods(siteID: siteID) { result in
+            if let error = result.failure {
+                DDLogError("⛔️ Error retrieving available shipping methods: \(error)")
+            }
+        }
+        stores.dispatch(action)
     }
 
     func configureTaxRates() {

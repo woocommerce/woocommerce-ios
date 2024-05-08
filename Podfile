@@ -15,6 +15,7 @@ use_frameworks! # Defaulting to use_frameworks! See pre_install hook below for s
 use_modular_headers!
 
 app_ios_deployment_target = Gem::Version.new('16.0')
+app_watchos_deployment_target = Gem::Version.new('9.0')
 
 platform :ios, app_ios_deployment_target.version
 workspace 'WooCommerce.xcworkspace'
@@ -136,6 +137,19 @@ target 'NotificationExtension' do
   project 'WooCommerce/WooCommerce.xcodeproj'
   tracks
   keychain
+end
+
+# Woo Watch App Target
+# ==========
+#
+target 'Woo Watch App' do
+  project 'WooCommerce/WooCommerce.xcodeproj'
+  platform :watchos, app_watchos_deployment_target.version
+
+  alamofire
+  keychain
+  cocoa_lumberjack
+
 end
 
 # Yosemite Layer:
@@ -355,7 +369,7 @@ post_install do |installer|
   # =====================================
   #
   installer.pods_project.build_configuration_list.build_configurations.each do |configuration|
-    configuration.build_settings['VALID_ARCHS'] = '$(ARCHS_STANDARD_64_BIT)'
+    configuration.build_settings['VALID_ARCHS'] = '$(ARCHS_STANDARD)'
   end
 
   # Let Pods targets inherit deployment target from the app

@@ -136,7 +136,6 @@ private extension ShippingLineSelectionDetails {
 
 #Preview("Add shipping") {
     ShippingLineSelectionDetails(viewModel: ShippingLineSelectionDetailsViewModel(siteID: 1,
-                                                                                  shippingMethods: [],
                                                                                   isExistingShippingLine: false,
                                                                                   initialMethodID: "",
                                                                                   initialMethodTitle: "",
@@ -146,7 +145,6 @@ private extension ShippingLineSelectionDetails {
 
 #Preview("Edit shipping") {
     ShippingLineSelectionDetails(viewModel: ShippingLineSelectionDetailsViewModel(siteID: 1,
-                                                                                  shippingMethods: [],
                                                                                   isExistingShippingLine: true,
                                                                                   initialMethodID: "flat_rate",
                                                                                   initialMethodTitle: "Shipping",

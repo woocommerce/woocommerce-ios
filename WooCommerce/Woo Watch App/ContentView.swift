@@ -7,7 +7,7 @@
 //
 
 import SwiftUI
-import NetworkingWatchOS
+import Networking
 
 
 struct ContentView: View {

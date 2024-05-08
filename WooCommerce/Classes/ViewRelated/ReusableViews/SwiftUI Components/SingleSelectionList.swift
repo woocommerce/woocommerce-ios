@@ -44,7 +44,7 @@ struct SingleSelectionList<T: Hashable>: View {
 
     var body: some View {
         List {
-            ForEach(items, id: contentKeyPath) { item in
+            ForEach(items, id: \.self) { item in
                 SelectableItemRow(
                     title: item[keyPath: contentKeyPath],
                     selected: item == selected,

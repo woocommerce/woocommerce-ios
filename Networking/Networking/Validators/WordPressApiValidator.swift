@@ -1,3 +1,5 @@
+import Foundation
+
 struct WordPressApiValidator: ResponseDataValidator {
     /// Throws a WordPressApiError contained in a given Data Instance (if any).
     ///

@@ -3,7 +3,7 @@ import Foundation
 
 /// WooCommerce Constants
 ///
-enum WooConstants {
+public enum WooConstants {
 
     /// App Display Name, used on the About screen
     ///
@@ -15,7 +15,7 @@ enum WooConstants {
 
     /// Keychain Access's Service Name
     ///
-    static let keychainServiceName = "com.automattic.woocommerce"
+    public static let keychainServiceName = "com.automattic.woocommerce"
 
     /// Keychain Access's Key for Apple ID
     ///

@@ -1,4 +1,5 @@
 import Codegen
+import Foundation
 
 /// Represents the data associated with order stats over a specific period.
 /// v4

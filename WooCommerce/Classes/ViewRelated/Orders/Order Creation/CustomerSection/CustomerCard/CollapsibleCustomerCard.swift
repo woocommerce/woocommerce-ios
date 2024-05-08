@@ -95,6 +95,7 @@ struct CollapsibleCustomerCard_Previews: PreviewProvider {
                                                  isCustomerAccountRequired: true,
                                                  isEditable: true,
                                                  isCollapsed: false,
-                                                 removeCustomer: {}))
+                                                 removeCustomer: {},
+                                                 editAddress: {}))
     }
 }

@@ -14,6 +14,9 @@ final class OrderCustomerSectionViewModel: ObservableObject {
     @Published private(set) var addressFormViewModel: CreateOrderAddressFormViewModel
     private let updateCustomer: (Customer?) -> Void
 
+    // MARK: - Address
+    @Published var showsAddressForm: Bool = false
+
     @Published private(set) var cardViewModel: CollapsibleCustomerCardViewModel?
 
     init(siteID: Int64,
@@ -37,7 +40,8 @@ final class OrderCustomerSectionViewModel: ObservableObject {
                               isCustomerAccountRequired: isCustomerAccountRequired,
                               isEditable: isEditable,
                               isCollapsed: false,
-                              removeCustomer: removeCustomer)
+                              removeCustomer: removeCustomer,
+                              editAddress: editAddress)
     }
 
     /// Called when the user taps to search for a customer.
@@ -55,6 +59,10 @@ private extension OrderCustomerSectionViewModel {
     func removeCustomer() {
         updateCustomer(nil)
     }
+
+    func editAddress() {
+        showsAddressForm = true
+    }
 }
 
 private extension OrderCustomerSectionViewModel {
@@ -68,7 +76,8 @@ private extension OrderCustomerSectionViewModel {
                                                         isCustomerAccountRequired: isCustomerAccountRequired,
                                                         isEditable: isEditable,
                                                         isCollapsed: true,
-                                                        removeCustomer: removeCustomer)
+                                                        removeCustomer: removeCustomer,
+                                                        editAddress: editAddress)
             }
             .assign(to: &$cardViewModel)
     }

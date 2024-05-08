@@ -35,8 +35,10 @@ final class CollapsibleCustomerCardViewModel: ObservableObject {
     private(set) lazy var addressViewModel: CollapsibleCustomerCardAddressViewModel = .init(
         billingAddressFormatted: originalCustomerData.billingAddressFormatted,
         shippingAddressFormatted: originalCustomerData.shippingAddressFormatted,
-        editAddress: {}
+        editAddress: editAddress
     )
+    /// Called when the user taps to add/edit address.
+    private let editAddress: () -> Void
 
     private let originalCustomerData: CustomerData
 
@@ -44,7 +46,8 @@ final class CollapsibleCustomerCardViewModel: ObservableObject {
          isCustomerAccountRequired: Bool,
          isEditable: Bool,
          isCollapsed: Bool,
-         removeCustomer: @escaping () -> Void) {
+         removeCustomer: @escaping () -> Void,
+         editAddress: @escaping () -> Void) {
         self.isCustomerAccountRequired = isCustomerAccountRequired
         self.isEditable = isEditable
         self.isCollapsed = isCollapsed
@@ -52,6 +55,7 @@ final class CollapsibleCustomerCardViewModel: ObservableObject {
         self.email = customerData.email ?? ""
         self.originalCustomerData = customerData
         self.removeCustomer = removeCustomer
+        self.editAddress = editAddress
     }
 }
 

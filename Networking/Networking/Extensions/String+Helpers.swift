@@ -1,3 +1,5 @@
+#if os(watchOS)
+
 /// Extension copied from the `WordPressShared` pod only for the `NetworkingWatchOS` framework.
 /// `WordPressShared` currently does not support the `watchOS` target.
 
@@ -120,3 +122,5 @@ public extension String {
         return copy
     }
 }
+
+#endif

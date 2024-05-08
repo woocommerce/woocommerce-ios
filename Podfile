@@ -121,7 +121,7 @@ target 'WooCommerce' do
 end
 
 
-# WooCommercePOS Layer:
+# WooCommerce POS Layer:
 # ===============
 #
 def woocommercepos_pods
@@ -135,6 +135,15 @@ target 'WooCommercePOS' do
   project 'WooCommercePOS/WooCommercePOS.xcodeproj'
   woocommercepos_pods
 end
+
+# Unit Tests
+# ==========
+#
+target 'WooCommercePOSTests' do
+  project 'WooCommercePOS/WooCommercePOS.xcodeproj'
+  woocommercepos_pods
+end
+
 
 # StoreWidget Target
 # ==========

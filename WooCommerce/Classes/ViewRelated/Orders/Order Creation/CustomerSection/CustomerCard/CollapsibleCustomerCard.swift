@@ -19,11 +19,14 @@ struct CollapsibleCustomerCard: View {
                                               emailPlaceholder: viewModel.emailPlaceholder,
                                               shippingAddress: viewModel.shippingAddress)
         }, content: {
-            VStack(alignment: .leading) {
+            VStack(alignment: .leading, spacing: Layout.expandedContentVerticalSpacing) {
                 Divider()
-                Text(Localization.emailAddressTitle)
-                TextField(Localization.emailAddressPlaceholder, text: $viewModel.email)
-                    .textFieldStyle(RoundedBorderTextFieldStyle(focused: true))
+
+                VStack(alignment: .leading) {
+                    Text(Localization.emailAddressTitle)
+                    TextField(Localization.emailAddressPlaceholder, text: $viewModel.email)
+                        .textFieldStyle(RoundedBorderTextFieldStyle(focused: true))
+                }
 
                 Text("Create new customer toggle")
 
@@ -34,7 +37,7 @@ struct CollapsibleCustomerCard: View {
                 removeCustomerView()
                     .renderedIf(viewModel.canRemoveCustomer)
             }
-            .padding(.horizontal)
+            .padding(Layout.expandedContentPadding)
         })
     }
 }
@@ -59,6 +62,8 @@ private extension CollapsibleCustomerCard {
 private extension CollapsibleCustomerCard {
     enum Layout {
         static let headerAdditionalPadding: EdgeInsets = .init(top: 8, leading: 0, bottom: 8, trailing: 0)
+        static let expandedContentPadding: EdgeInsets = .init(top: 0, leading: 16, bottom: 16, trailing: 16)
+        static let expandedContentVerticalSpacing: CGFloat = 16
     }
 
     enum Localization {

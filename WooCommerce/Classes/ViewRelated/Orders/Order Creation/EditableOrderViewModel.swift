@@ -799,6 +799,7 @@ final class EditableOrderViewModel: ObservableObject {
         }
 
         customerSectionViewModel.addressFormViewModel = .init(siteID: siteID,
+                                                              showEmailField: false,
                                                               addressData: .init(billingAddress: orderSynchronizer.order.billingAddress,
                                                                                  shippingAddress: orderSynchronizer.order.shippingAddress),
                                                               onAddressUpdate: { [weak self] updatedAddressData in

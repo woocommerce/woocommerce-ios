@@ -48,6 +48,9 @@ struct OrderCustomerSection: View {
             }
             .discardChangesPrompt(canDismiss: !viewModel.addressFormViewModel.hasPendingChanges,
                                   didDismiss: viewModel.addressFormViewModel.userDidCancelFlow)
+            .onDisappear {
+                viewModel.resetAddressForm()
+            }
         }
     }
 
@@ -111,7 +114,8 @@ struct OrderCustomerSection_Previews: PreviewProvider {
                                                   customerData: customer,
                                                   isCustomerAccountRequired: true,
                                                   isEditable: true,
-                                                  updateCustomer: { _ in }))
+                                                  updateCustomer: { _ in },
+                                                  resetAddressForm: {}))
             OrderCustomerSection(viewModel: .init(siteID: 1,
                                                   addressFormViewModel: .init(
                                                     siteID: 1,
@@ -122,7 +126,8 @@ struct OrderCustomerSection_Previews: PreviewProvider {
                                                   customerData: customer,
                                                   isCustomerAccountRequired: false,
                                                   isEditable: true,
-                                                  updateCustomer: { _ in }))
+                                                  updateCustomer: { _ in },
+                                                  resetAddressForm: {}))
         }
     }
 }

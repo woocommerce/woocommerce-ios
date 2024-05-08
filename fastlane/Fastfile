@@ -428,6 +428,10 @@ platform :ios do
       version_long: build_code_hotfix
     )
     commit_version_bump
+
+    # Push the newly created hotfix branch
+    push_to_git_remote(tags: false)
+
     UI.success("Done! New Release Version: #{release_version_current}. New Build Code: #{build_code_current}")
   end
 

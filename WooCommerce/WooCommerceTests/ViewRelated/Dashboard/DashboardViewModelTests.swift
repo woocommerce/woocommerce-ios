@@ -36,73 +36,6 @@ final class DashboardViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.statsVersion, .v4)
     }
 
-    func test_statsVersion_changes_from_v4_to_v3_when_store_stats_sync_returns_noRestRoute_error() {
-        // Given
-        stores.whenReceivingAction(ofType: StatsActionV4.self) { action in
-            if case let .retrieveStats(_, _, _, _, _, _, _, completion) = action {
-                completion(.failure(DotcomError.noRestRoute))
-            }
-        }
-        let viewModel = DashboardViewModel(siteID: 0, stores: stores)
-        XCTAssertEqual(viewModel.statsVersion, .v4)
-
-        // When
-        viewModel.syncStats(for: sampleSiteID, siteTimezone: .current, timeRange: .thisMonth, latestDateToInclude: .init(), forceRefresh: false)
-
-        // Then
-        XCTAssertEqual(viewModel.statsVersion, .v3)
-    }
-
-    func test_statsVersion_remains_v4_when_non_store_stats_sync_returns_noRestRoute_error() {
-        // Given
-        stores.whenReceivingAction(ofType: StatsActionV4.self) { action in
-            switch action {
-            case let .retrieveStats(_, _, _, _, _, _, _, completion):
-                completion(.failure(DotcomError.empty))
-            case let .retrieveSiteVisitStats(_, _, _, _, completion):
-                completion(.failure(DotcomError.noRestRoute))
-            case let .retrieveTopEarnerStats(_, _, _, _, _, _, _, _, completion):
-                completion(.failure(DotcomError.noRestRoute))
-            case let .retrieveSiteSummaryStats(_, _, _, _, _, _, completion):
-                completion(.failure(DotcomError.noRestRoute))
-            default:
-                XCTFail("Received unsupported action: \(action)")
-            }
-        }
-        let viewModel = DashboardViewModel(siteID: 0, stores: stores)
-        XCTAssertEqual(viewModel.statsVersion, .v4)
-
-        // When
-        viewModel.syncStats(for: sampleSiteID, siteTimezone: .current, timeRange: .thisMonth, latestDateToInclude: .init(), forceRefresh: false)
-        viewModel.syncSiteVisitStats(for: sampleSiteID, siteTimezone: .current, timeRange: .thisMonth, latestDateToInclude: .init())
-        viewModel.syncTopEarnersStats(for: sampleSiteID, siteTimezone: .current, timeRange: .thisMonth, latestDateToInclude: .init(), forceRefresh: false)
-        viewModel.syncSiteSummaryStats(for: sampleSiteID, siteTimezone: .current, timeRange: .thisMonth, latestDateToInclude: .init())
-
-        // Then
-        XCTAssertEqual(viewModel.statsVersion, .v4)
-    }
-
-    func test_statsVersion_changes_from_v3_to_v4_when_store_stats_sync_returns_success() {
-        // Given
-        // `DotcomError.noRestRoute` error indicates the stats are unavailable.
-        var storeStatsResult: Result<Void, Error> = .failure(DotcomError.noRestRoute)
-        stores.whenReceivingAction(ofType: StatsActionV4.self) { action in
-            if case let .retrieveStats(_, _, _, _, _, _, _, completion) = action {
-                completion(storeStatsResult)
-            }
-        }
-        let viewModel = DashboardViewModel(siteID: 0, stores: stores)
-        viewModel.syncStats(for: sampleSiteID, siteTimezone: .current, timeRange: .thisMonth, latestDateToInclude: .init(), forceRefresh: false)
-        XCTAssertEqual(viewModel.statsVersion, .v3)
-
-        // When
-        storeStatsResult = .success(())
-        viewModel.syncStats(for: sampleSiteID, siteTimezone: .current, timeRange: .thisMonth, latestDateToInclude: .init(), forceRefresh: false)
-
-        // Then
-        XCTAssertEqual(viewModel.statsVersion, .v4)
-    }
-
     func test_view_model_syncs_just_in_time_messages() async {
         // Given
         let message = Yosemite.JustInTimeMessage.fake().copy(title: "JITM Message")
@@ -292,47 +225,6 @@ final class DashboardViewModelTests: XCTestCase {
         XCTAssertNotNil(viewModel.localAnnouncementViewModel)
     }
 
-    // MARK: Store onboarding
-
-    func test_showOnboarding_is_false_when_feature_flag_is_turned_off_and_completedAllStoreOnboardingTasks_is_false() async throws {
-        // Given
-        let uuid = UUID().uuidString
-        let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
-        defaults[.completedAllStoreOnboardingTasks] = false
-        let viewModel = DashboardViewModel(siteID: 0,
-                                           stores: stores,
-                                           featureFlags: MockFeatureFlagService(isDashboardStoreOnboardingEnabled: false),
-                                           userDefaults: defaults)
-        // Then
-        XCTAssertFalse(viewModel.showOnboarding)
-    }
-
-    func test_showOnboarding_is_false_when_feature_flag_is_turned_off_and_completedAllStoreOnboardingTasks_is_true() async throws {
-        // Given
-        let uuid = UUID().uuidString
-        let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
-        defaults[.completedAllStoreOnboardingTasks] = true
-        let viewModel = DashboardViewModel(siteID: 0,
-                                           stores: stores,
-                                           featureFlags: MockFeatureFlagService(isDashboardStoreOnboardingEnabled: false),
-                                           userDefaults: defaults)
-        // Then
-        XCTAssertFalse(viewModel.showOnboarding)
-    }
-
-    func test_showOnboarding_is_false_when_feature_flag_is_turned_on_and_completedAllStoreOnboardingTasks_is_true() async throws {
-        // Given
-        let uuid = UUID().uuidString
-        let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
-        defaults[.completedAllStoreOnboardingTasks] = true
-        let viewModel = DashboardViewModel(siteID: 0,
-                                           stores: stores,
-                                           featureFlags: MockFeatureFlagService(isDashboardStoreOnboardingEnabled: true),
-                                           userDefaults: defaults)
-        // Then
-        XCTAssertFalse(viewModel.showOnboarding)
-    }
-
     func test_siteURLToShare_return_nil_if_site_is_not_public() {
         // Given
         let sessionManager = SessionManager.makeForTesting()
@@ -415,36 +307,6 @@ final class DashboardViewModelTests: XCTestCase {
         XCTAssertNil(analyticsProvider.receivedEvents.firstIndex(of: "dashboard_store_timezone_differ_from_device"))
     }
 
-    func test_wpcom_stats_not_synced_when_authenticated_without_wpcom() {
-        // Given
-        stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: false))
-        stores.whenReceivingAction(ofType: StatsActionV4.self) { action in
-            switch action {
-            case .retrieveSiteVisitStats, .retrieveSiteSummaryStats:
-                XCTFail("WPCom stats should not be synced when store is authenticated without WPCom")
-            default:
-                XCTFail("Received unsupported action: \(action)")
-            }
-        }
-        let viewModel = DashboardViewModel(siteID: sampleSiteID, stores: stores)
-
-        // When
-        let siteVisitStatsResult: Result<Void, Error> = waitFor { promise in
-            viewModel.syncSiteVisitStats(for: self.sampleSiteID, siteTimezone: .current, timeRange: .thisMonth, latestDateToInclude: .init()) { result in
-                promise(result)
-            }
-        }
-        let siteSummaryStatsResult: Result<Void, Error> = waitFor { promise in
-            viewModel.syncSiteSummaryStats(for: self.sampleSiteID, siteTimezone: .current, timeRange: .thisMonth, latestDateToInclude: .init()) { result in
-                promise(result)
-            }
-        }
-
-        // Then
-        XCTAssertTrue(siteVisitStatsResult.isSuccess)
-        XCTAssertTrue(siteSummaryStatsResult.isSuccess)
-    }
-
     // MARK: Dashboard cards
     @MainActor
     func test_dashboard_cards_are_loaded_from_app_settings() async throws {
@@ -505,20 +367,6 @@ final class DashboardViewModelTests: XCTestCase {
         let index = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "dynamic_dashboard_editor_save_tapped" }))
         let properties = analyticsProvider.receivedProperties[index] as? [String: AnyHashable]
         XCTAssertEqual(properties?["cards"], "blaze,performance")
-    }
-
-    // MARK: Profiler answers
-    func test_uploadProfilerAnswers_triggers_uploadAnswers() async throws {
-        // Given
-        let usecase = MockStoreCreationProfilerUploadAnswersUseCase()
-        let viewModel = DashboardViewModel(siteID: sampleSiteID,
-                                           storeCreationProfilerUploadAnswersUseCase: usecase)
-
-        // When
-        await viewModel.uploadProfilerAnswers()
-
-        //  Then
-        XCTAssertTrue(usecase.uploadAnswersCalled)
     }
 
     // MARK: Install theme

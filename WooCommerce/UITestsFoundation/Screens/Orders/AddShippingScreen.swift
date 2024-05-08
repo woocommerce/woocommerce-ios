@@ -3,10 +3,6 @@ import XCTest
 
 public final class AddShippingScreen: ScreenObject {
 
-    private let shippingAmountGetter: (XCUIApplication) -> XCUIElement = {
-        $0.textFields["add-shipping-amount-field"]
-    }
-
     private let shippingNameGetter: (XCUIApplication) -> XCUIElement = {
         $0.textFields["add-shipping-name-field"]
     }
@@ -15,25 +11,26 @@ public final class AddShippingScreen: ScreenObject {
         $0.buttons["add-shipping-done-button"]
     }
 
-    private var shippingAmountField: XCUIElement { shippingAmountGetter(app) }
-
     private var shippingNameField: XCUIElement { shippingNameGetter(app) }
 
     private var doneButton: XCUIElement { doneButtonGetter(app) }
 
     init(app: XCUIApplication = XCUIApplication()) throws {
         try super.init(
-            expectedElementGetters: [ shippingAmountGetter ],
+            expectedElementGetters: [ doneButtonGetter ],
             app: app
         )
     }
 
-    /// Enters a shipping amount.
+    /// Enters a shipping amount by tapping a button on the numeric keypad.
+    /// This is done instead of entering text because the text field for shipping amount
+    /// is custom with opacity 0, and gets no keyboard focus when tapped.
     /// - Returns: Add Shipping screen object.
     @discardableResult
     public func enterShippingAmount(_ amount: String) throws -> Self {
-        shippingAmountField.tap()
-        shippingAmountField.typeText(amount)
+        amount.forEach { character in
+            app.keyboards.keys[String(character)].firstMatch.tap()
+        }
         return self
     }
 
@@ -42,6 +39,7 @@ public final class AddShippingScreen: ScreenObject {
     @discardableResult
     public func enterShippingName(_ name: String) throws -> Self {
         shippingNameField.tap()
+        shippingNameField.tap() // For some reason this field doesn't get keyboard focus until the second tap, in the UI test only.
         shippingNameField.typeText(name)
         return self
     }

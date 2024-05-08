@@ -227,10 +227,16 @@ struct OrderForm: View {
 
     @Environment(\.adaptiveModalContainerPresentationStyle) var presentationStyle
 
+    @Environment(\.horizontalSizeClass) var horizontalSizeClass
+
     var body: some View {
         orderFormSummary(presentProductSelector)
             .onAppear {
                 updateSelectionSyncApproach(for: presentationStyle)
+            }
+            .onChange(of: horizontalSizeClass) { _ in
+                viewModel.saveInFlightOrderNotes()
+                viewModel.saveInflightCustomerDetails()
             }
     }
 
@@ -303,7 +309,11 @@ struct OrderForm: View {
                                     shouldShowGiftCardForm: $shouldShowGiftCardForm)
                                 .disabled(viewModel.shouldShowNonEditableIndicators)
                                 .sheet(isPresented: $shouldShowShippingLineDetails) {
-                                    ShippingLineDetails(viewModel: viewModel.paymentDataViewModel.shippingLineViewModel)
+                                    if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.enhancingOrderShippingLines) {
+                                        ShippingLineSelectionDetails(viewModel: viewModel.paymentDataViewModel.shippingLineSelectionViewModel)
+                                    } else {
+                                        ShippingLineDetails(viewModel: viewModel.paymentDataViewModel.shippingLineViewModel)
+                                    }
                                 }
                                 Divider()
                             }
@@ -349,7 +359,11 @@ struct OrderForm: View {
 
                             Divider()
 
-                            OrderCustomerSection(viewModel: viewModel, addressFormViewModel: viewModel.addressFormViewModel)
+                            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.subscriptionsInOrderCreationCustomers) {
+                                OrderCustomerSection(viewModel: viewModel, addressFormViewModel: viewModel.addressFormViewModel)
+                            } else {
+                                LegacyOrderCustomerSection(viewModel: viewModel, addressFormViewModel: viewModel.addressFormViewModel)
+                            }
 
                             Group {
                                 Divider()
@@ -924,6 +938,7 @@ struct OrderForm_Previews: PreviewProvider {
         NavigationView {
             OrderForm(flow: .creation, viewModel: viewModel, presentProductSelector: nil)
         }
+        .navigationViewStyle(StackNavigationViewStyle())
 
         NavigationView {
             OrderForm(flow: .creation, viewModel: viewModel, presentProductSelector: nil)

@@ -1,6 +1,9 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 18.5
+In our latest update we've enhanced the barcode scanning by squashing a bug that allowed variable parent products to sneak into orders. Enjoy a smoother order creation experience with our latest update!
+
 ## 18.4
 Wave goodbye to pesky bugs! Our latest update ensures the "Collect Payment" feature leads you directly to the order form, whether you're using a quick action or a deep link. Enjoy seamless transactions on the go!
 

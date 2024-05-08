@@ -241,6 +241,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         return true
     }
+
+    func applicationDidReceiveMemoryWarning(_ application: UIApplication) {
+        let size = os_proc_available_memory()
+        DDLogDebug("Received memory warning: Available memory - \(size)")
+    }
 }
 
 

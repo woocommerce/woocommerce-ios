@@ -7,12 +7,10 @@ struct MockFeatureFlagService: FeatureFlagService {
     private let shippingLabelsOnboardingM1: Bool
     private let isDomainSettingsEnabled: Bool
     private let isSupportRequestEnabled: Bool
-    private let isDashboardStoreOnboardingEnabled: Bool
     private let jetpackSetupWithApplicationPassword: Bool
     private let isProductDescriptionAIEnabled: Bool
     private let isProductDescriptionAIFromStoreOnboardingEnabled: Bool
     private let isReadOnlyGiftCardsEnabled: Bool
-    private let isHideStoreOnboardingTaskListFeatureEnabled: Bool
     private let isBlazeEnabled: Bool
     private let isShareProductAIEnabled: Bool
     private let betterCustomerSelectionInOrder: Bool
@@ -24,19 +22,16 @@ struct MockFeatureFlagService: FeatureFlagService {
     private let isBackendReceiptsEnabled: Bool
     private let sideBySideViewForOrderForm: Bool
     private let isCustomersInHubMenuEnabled: Bool
-    private let isMigrateSimplePaymentsToOrderCreationEnabled: Bool
 
     init(isInboxOn: Bool = false,
          isUpdateOrderOptimisticallyOn: Bool = false,
          shippingLabelsOnboardingM1: Bool = false,
          isDomainSettingsEnabled: Bool = false,
          isSupportRequestEnabled: Bool = false,
-         isDashboardStoreOnboardingEnabled: Bool = false,
          jetpackSetupWithApplicationPassword: Bool = false,
          isProductDescriptionAIEnabled: Bool = false,
          isProductDescriptionAIFromStoreOnboardingEnabled: Bool = false,
          isReadOnlyGiftCardsEnabled: Bool = false,
-         isHideStoreOnboardingTaskListFeatureEnabled: Bool = false,
          isBlazeEnabled: Bool = false,
          isShareProductAIEnabled: Bool = false,
          betterCustomerSelectionInOrder: Bool = false,
@@ -47,19 +42,16 @@ struct MockFeatureFlagService: FeatureFlagService {
          blazei3NativeCampaignCreation: Bool = false,
          isBackendReceiptsEnabled: Bool = false,
          sideBySideViewForOrderForm: Bool = false,
-         isCustomersInHubMenuEnabled: Bool = false,
-         isMigrateSimplePaymentsToOrderCreationEnabled: Bool = false) {
+         isCustomersInHubMenuEnabled: Bool = false) {
         self.isInboxOn = isInboxOn
         self.isUpdateOrderOptimisticallyOn = isUpdateOrderOptimisticallyOn
         self.shippingLabelsOnboardingM1 = shippingLabelsOnboardingM1
         self.isDomainSettingsEnabled = isDomainSettingsEnabled
         self.isSupportRequestEnabled = isSupportRequestEnabled
-        self.isDashboardStoreOnboardingEnabled = isDashboardStoreOnboardingEnabled
         self.jetpackSetupWithApplicationPassword = jetpackSetupWithApplicationPassword
         self.isProductDescriptionAIEnabled = isProductDescriptionAIEnabled
         self.isProductDescriptionAIFromStoreOnboardingEnabled = isProductDescriptionAIFromStoreOnboardingEnabled
         self.isReadOnlyGiftCardsEnabled = isReadOnlyGiftCardsEnabled
-        self.isHideStoreOnboardingTaskListFeatureEnabled = isHideStoreOnboardingTaskListFeatureEnabled
         self.isBlazeEnabled = isBlazeEnabled
         self.isShareProductAIEnabled = isShareProductAIEnabled
         self.betterCustomerSelectionInOrder = betterCustomerSelectionInOrder
@@ -71,7 +63,6 @@ struct MockFeatureFlagService: FeatureFlagService {
         self.isBackendReceiptsEnabled = isBackendReceiptsEnabled
         self.sideBySideViewForOrderForm = sideBySideViewForOrderForm
         self.isCustomersInHubMenuEnabled = isCustomersInHubMenuEnabled
-        self.isMigrateSimplePaymentsToOrderCreationEnabled = isMigrateSimplePaymentsToOrderCreationEnabled
     }
 
     func isFeatureFlagEnabled(_ featureFlag: FeatureFlag) -> Bool {
@@ -86,8 +77,6 @@ struct MockFeatureFlagService: FeatureFlagService {
             return isDomainSettingsEnabled
         case .supportRequests:
             return isSupportRequestEnabled
-        case .dashboardOnboarding:
-            return isDashboardStoreOnboardingEnabled
         case .jetpackSetupWithApplicationPassword:
             return jetpackSetupWithApplicationPassword
         case .productDescriptionAI:
@@ -96,8 +85,6 @@ struct MockFeatureFlagService: FeatureFlagService {
             return isProductDescriptionAIFromStoreOnboardingEnabled
         case .readOnlyGiftCards:
             return isReadOnlyGiftCardsEnabled
-        case .hideStoreOnboardingTaskList:
-            return isHideStoreOnboardingTaskListFeatureEnabled
         case .shareProductAI:
             return isShareProductAIEnabled
         case .betterCustomerSelectionInOrder:
@@ -118,8 +105,6 @@ struct MockFeatureFlagService: FeatureFlagService {
             return sideBySideViewForOrderForm
         case .customersInHubMenu:
             return isCustomersInHubMenuEnabled
-        case .migrateSimplePaymentsToOrderCreation:
-            return isMigrateSimplePaymentsToOrderCreationEnabled
         default:
             return false
         }

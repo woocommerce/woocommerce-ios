@@ -25,7 +25,6 @@ final class InPersonPaymentsMenuViewModel: ObservableObject {
     @Published var presentManagePaymentGateways: Bool = false
     @Published private(set) var selectedPaymentGatewayName: String?
     @Published private(set) var selectedPaymentGatewayPlugin: CardPresentPaymentsPlugin?
-    @Published var presentCollectPaymentWithSimplePayments: Bool = false
     /// Whether the payment collection migration sheet is presented, bound to the migration sheet.
     @Published var presentCollectPaymentMigrationSheet: Bool = false
     /// Whether the migration sheet has been presented per payment collection session.
@@ -173,12 +172,6 @@ final class InPersonPaymentsMenuViewModel: ObservableObject {
     }
 
     func collectPaymentTapped() {
-        guard dependencies.featureFlagService.isFeatureFlagEnabled(.migrateSimplePaymentsToOrderCreation) else {
-            presentCollectPaymentWithSimplePayments = true
-            analytics.track(event: WooAnalyticsEvent.SimplePayments.simplePaymentsFlowStarted())
-            analytics.track(.paymentsMenuCollectPaymentTapped)
-            return
-        }
         collectPayment()
         analytics.track(.paymentsMenuCollectPaymentTapped)
     }
@@ -442,9 +435,6 @@ extension InPersonPaymentsMenuViewModel: DeepLinkNavigator {
         }
         switch paymentsDestination {
         case .collectPayment:
-            guard dependencies.featureFlagService.isFeatureFlagEnabled(.migrateSimplePaymentsToOrderCreation) else {
-                return presentCollectPaymentWithSimplePayments = true
-            }
             collectPayment()
         case .tapToPay:
             presentSetUpTryOutTapToPay = true

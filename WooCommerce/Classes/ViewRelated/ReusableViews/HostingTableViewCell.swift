@@ -28,9 +28,26 @@ class HostingTableViewCell<Content: View>: UITableViewCell {
         parent.addChild(swiftUICellViewController)
         contentView.addSubview(swiftUICellView)
         swiftUICellView.translatesAutoresizingMaskIntoConstraints = false
-        contentView.pinSubviewToAllEdges(swiftUICellView)
+        contentView.pinSubviewToAllEdgeMargins(swiftUICellView)
 
         swiftUICellViewController.didMove(toParent: parent)
         swiftUICellView.layoutIfNeeded()
+    }
+
+    override func awakeFromNib() {
+        super.awakeFromNib()
+
+        configureBackground()
+    }
+
+    override func updateConfiguration(using state: UICellConfigurationState) {
+        super.updateConfiguration(using: state)
+        updateDefaultBackgroundConfiguration(using: state)
+    }
+}
+
+private extension HostingTableViewCell {
+    func configureBackground() {
+        configureDefaultBackgroundConfiguration()
     }
 }

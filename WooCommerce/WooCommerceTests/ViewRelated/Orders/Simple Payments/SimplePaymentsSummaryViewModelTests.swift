@@ -276,7 +276,7 @@ final class SimplePaymentsSummaryViewModelTests: XCTestCase {
     func test_view_model_attempts_error_notice_presentation_when_failing_to_update_order() {
         // Given
         let mockStores = MockStoresManager(sessionManager: .testingInstance)
-        let noticeSubject = PassthroughSubject<SimplePaymentsNotice, Never>()
+        let noticeSubject = PassthroughSubject<PaymentMethodsNotice, Never>()
         let viewModel = SimplePaymentsSummaryViewModel(providedAmount: "1.0",
                                                        totalWithTaxes: "1.0",
                                                        taxLines: [],
@@ -312,7 +312,7 @@ final class SimplePaymentsSummaryViewModelTests: XCTestCase {
     func test_view_model_attempts_error_notice_presentation_when_submitting_invalid_email() {
         // Given
         let mockStores = MockStoresManager(sessionManager: .testingInstance)
-        let noticeSubject = PassthroughSubject<SimplePaymentsNotice, Never>()
+        let noticeSubject = PassthroughSubject<PaymentMethodsNotice, Never>()
         let viewModel = SimplePaymentsSummaryViewModel(providedAmount: "1.0",
                                                        totalWithTaxes: "1.0",
                                                        taxLines: [],

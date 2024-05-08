@@ -50,14 +50,11 @@ class StoreOnboardingViewModel: ObservableObject {
         !isExpanded && !isRedacted && (taskViewModels.count > tasksForDisplay.count)
     }
 
-    let isHideStoreOnboardingTaskListFeatureEnabled: Bool
-
     let isExpanded: Bool
 
     private let siteID: Int64
 
     private let stores: StoresManager
-    private let featureFlagService: FeatureFlagService
 
     private var state: State
 
@@ -87,7 +84,6 @@ class StoreOnboardingViewModel: ObservableObject {
          stores: StoresManager = ServiceLocator.stores,
          defaults: UserDefaults = .standard,
          analytics: Analytics = ServiceLocator.analytics,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          waitingTimeTracker: AppStartupWaitingTimeTracker = ServiceLocator.startupWaitingTimeTracker) {
         self.siteID = siteID
         self.isExpanded = isExpanded
@@ -95,8 +91,6 @@ class StoreOnboardingViewModel: ObservableObject {
         self.state = .loading
         self.defaults = defaults
         self.analytics = analytics
-        self.featureFlagService = featureFlagService
-        isHideStoreOnboardingTaskListFeatureEnabled = featureFlagService.isFeatureFlagEnabled(.hideStoreOnboardingTaskList)
         self.waitingTimeTracker = waitingTimeTracker
 
         $noTasksAvailableForDisplay

@@ -140,7 +140,7 @@ private extension SettingsViewController {
             configureSwitchStore(cell: cell)
         case let cell as BasicTableViewCell where row == .plugins:
             configurePlugins(cell: cell)
-        case let cell as HostingTableViewCell<PluginDetailsRowView> where row == .woocommerceDetails:
+        case let cell as HostingTableViewCell<PluginDetailsRowContent> where row == .woocommerceDetails:
             configureWooCommmerceDetails(cell: cell)
         case let cell as BasicTableViewCell where row == .domain:
             configureDomain(cell: cell)
@@ -191,10 +191,12 @@ private extension SettingsViewController {
         cell.textLabel?.text = Localization.plugins
     }
 
-    func configureWooCommmerceDetails(cell: HostingTableViewCell<PluginDetailsRowView>) {
-        let view = PluginDetailsRowView.init(viewModel: woocommercePluginViewModel)
+    func configureWooCommmerceDetails(cell: HostingTableViewCell<PluginDetailsRowContent>) {
+        let view = PluginDetailsRowContent.init(viewModel: woocommercePluginViewModel)
         cell.host(view, parent: self)
-        cell.selectionStyle = .none
+        let hasUpdates = woocommercePluginViewModel.updateURL != nil
+        cell.accessoryType = hasUpdates ? .disclosureIndicator : .none
+        cell.selectionStyle = hasUpdates ? .default : .none
     }
 
     func configureSupport(cell: BasicTableViewCell) {
@@ -374,7 +376,7 @@ private extension SettingsViewController {
 
     func supportWasPressed() {
         ServiceLocator.analytics.track(.settingsContactSupportTapped)
-        guard let viewController = UIStoryboard.dashboard.instantiateViewController(ofClass: HelpAndSupportViewController.self) else {
+        guard let viewController = UIStoryboard.settings.instantiateViewController(ofClass: HelpAndSupportViewController.self) else {
             fatalError("Cannot instantiate `HelpAndSupportViewController` from Dashboard storyboard")
         }
         show(viewController, sender: self)
@@ -433,9 +435,19 @@ private extension SettingsViewController {
         present(controller, animated: true)
     }
 
+    func openWoocommerceDetails() {
+        guard let url = woocommercePluginViewModel.updateURL else {
+            return
+        }
+        let vc = SFSafariViewController(url: url)
+        vc.modalPresentationStyle = .formSheet
+
+        present(vc, animated: true)
+    }
+
     func privacyWasPressed() {
         ServiceLocator.analytics.track(.settingsPrivacySettingsTapped)
-        guard let viewController = UIStoryboard.dashboard.instantiateViewController(ofClass: PrivacySettingsViewController.self) else {
+        guard let viewController = UIStoryboard.settings.instantiateViewController(ofClass: PrivacySettingsViewController.self) else {
             fatalError("Cannot instantiate `PrivacySettingsViewController` from Dashboard storyboard")
         }
         show(viewController, sender: self)
@@ -611,6 +623,8 @@ extension SettingsViewController: UITableViewDelegate {
             switchStoreWasPressed()
         case .plugins:
             sitePluginsWasPressed()
+        case .woocommerceDetails:
+            openWoocommerceDetails()
         case .support:
             supportWasPressed()
         case .domain:
@@ -739,7 +753,7 @@ extension SettingsViewController {
             case .plugins:
                 return BasicTableViewCell.self
             case .woocommerceDetails:
-                return HostingTableViewCell<PluginDetailsRowView>.self
+                return HostingTableViewCell<PluginDetailsRowContent>.self
             case .support:
                 return BasicTableViewCell.self
             case .domain:

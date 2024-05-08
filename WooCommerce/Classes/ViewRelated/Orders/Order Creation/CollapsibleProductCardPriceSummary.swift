@@ -11,9 +11,16 @@ struct CollapsibleProductCardPriceSummary: View {
     var body: some View {
         HStack {
             HStack {
-                Text(viewModel.priceQuantityLine)
-                    .foregroundColor(.secondary)
-                Spacer()
+                if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.subscriptionsInOrderCreationUI) &&
+                    viewModel.isSubscriptionProduct {
+                    Spacer()
+                    Text(viewModel.priceQuantityLine)
+                        .foregroundColor(.secondary)
+                } else {
+                    Text(viewModel.priceQuantityLine)
+                        .foregroundColor(.secondary)
+                    Spacer()
+                }
             }
             if let price = viewModel.priceBeforeDiscountsLabel {
                 Text(price)
@@ -27,8 +34,8 @@ struct CollapsibleProductCardPriceSummary: View {
 
 struct CollapsibleProductCardPriceSummary_Previews: PreviewProvider {
     static var previews: some View {
-        let viewModel = CollapsibleProductCardPriceSummaryViewModel(pricedIndividually: true, quantity: 2, price: "5")
-        let bundleViewModel = CollapsibleProductCardPriceSummaryViewModel(pricedIndividually: false, quantity: 2, price: "0")
+        let viewModel = CollapsibleProductCardPriceSummaryViewModel(pricedIndividually: true, isSubscriptionProduct: false, quantity: 2, price: "5")
+        let bundleViewModel = CollapsibleProductCardPriceSummaryViewModel(pricedIndividually: false, isSubscriptionProduct: false, quantity: 2, price: "0")
         CollapsibleProductCardPriceSummary(viewModel: viewModel)
             .previewDisplayName("Priced individually")
         CollapsibleProductCardPriceSummary(viewModel: bundleViewModel)

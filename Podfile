@@ -212,16 +212,6 @@ target 'Networking' do
   networking_pods
 end
 
-# Networking WatchOS Target:
-# ==================
-#
-target 'NetworkingWatchOS' do
-  project 'Networking/Networking.xcodeproj'
-  platform :watchos, app_watchos_deployment_target.version
-
-  networking_watch_os_pods
-end
-
 # Unit Tests
 # ==========
 #

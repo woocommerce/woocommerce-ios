@@ -1,5 +1,7 @@
 import UIKit
 
+#if os(iOS)
+
 /// Represents each iOS system color.
 public enum SystemColor {
     case label
@@ -92,3 +94,5 @@ public extension UIColor {
         return systemColor.color
     }
 }
+
+#endif

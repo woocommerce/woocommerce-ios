@@ -1,5 +1,7 @@
 import SwiftUI
 
+#if os(iOS)
+
 public extension Color {
     init(light lightModeColor: @escaping @autoclosure () -> Color,
          dark darkModeColor: @escaping @autoclosure () -> Color) {
@@ -9,3 +11,5 @@ public extension Color {
         ))
     }
 }
+
+#endif

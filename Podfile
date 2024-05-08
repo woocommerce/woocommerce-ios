@@ -76,6 +76,10 @@ def networking_watch_os_pods
   cocoa_lumberjack
 end
 
+def woofoundation_pods
+  cocoa_lumberjack
+end
+
 # Main Target!
 # ============
 #
@@ -151,6 +155,7 @@ target 'Woo Watch App' do
   project 'WooCommerce/WooCommerce.xcodeproj'
   platform :watchos, app_watchos_deployment_target.version
   networking_watch_os_pods
+  woofoundation_pods
 end
 
 # Yosemite Layer:
@@ -184,17 +189,6 @@ end
 # WooFoundation Layer:
 # ===============
 #
-def woofoundation_pods
-  cocoa_lumberjack
-end
-
-# Tools Target:
-# ================
-#
-target 'WooFoundation' do
-  project 'WooFoundation/WooFoundation.xcodeproj'
-  woofoundation_pods
-end
 
 # Unit Tests
 # ==========

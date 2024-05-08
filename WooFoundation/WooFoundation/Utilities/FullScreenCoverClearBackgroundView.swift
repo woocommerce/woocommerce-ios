@@ -1,4 +1,7 @@
+#if os(iOS)
+
 import SwiftUI
+import UIKit
 
 /// Use this view to clear the background of a view in SwiftUI after it's presented with `fullScreenCover`
 ///
@@ -29,3 +32,5 @@ public struct FullScreenCoverClearBackgroundView: UIViewRepresentable {
         }
     }
 }
+
+#endif

@@ -1,0 +1,9 @@
+//FRAMEWORK_SEARCH_PATHS = $(inherited) $(BUILT_PRODUCTS_DIR)/CocoaLumberjack-watchOS
+
+FRAMEWORK_SEARCH_PATHS = $(inherited)
+FRAMEWORK_SEARCH_PATHS[sdk=watchos*] = $(TARGET_BUILD_DIR)/CocoaLumberjack-watchOS
+FRAMEWORK_SEARCH_PATHS[sdk=watchsimulator*] = $(TARGET_BUILD_DIR)/CocoaLumberjack-watchOS
+FRAMEWORK_SEARCH_PATHS[sdk=iphoneos*] = $(TARGET_BUILD_DIR)/CocoaLumberjack-iOS
+FRAMEWORK_SEARCH_PATHS[sdk=iphonesimulator*] = $(TARGET_BUILD_DIR)/CocoaLumberjack-iOS
+
+OTHER_LDFLAGS = $(inherited) -framework CocoaLumberjack

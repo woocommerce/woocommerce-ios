@@ -1,3 +1,5 @@
+#if canImport(CoreImage)
+
 import CoreImage.CIFilterBuiltins
 
 extension CIImage {
@@ -15,3 +17,5 @@ extension CIImage {
         return combinedFilter.outputImage
     }
 }
+
+#endif

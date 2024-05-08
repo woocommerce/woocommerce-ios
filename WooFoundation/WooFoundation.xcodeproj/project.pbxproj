@@ -29,13 +29,13 @@
 		26AF1F5628B8362800937BA9 /* UIColor+SystemColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26AF1F5228B8362800937BA9 /* UIColor+SystemColors.swift */; };
 		26AF1F5928B9011100937BA9 /* WooStyleModifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26AF1F5828B9011100937BA9 /* WooStyleModifiers.swift */; };
 		397702D42D32EAEEEA3B29FC /* Pods_WooFoundationTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 532D4D63493CE8FA6F13C85B /* Pods_WooFoundationTests.framework */; };
+		4A9D28DD2BEB35F8006C079F /* Debug.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 4A9D28DB2BEB35F8006C079F /* Debug.xcconfig */; };
 		686BE912288EE0D300967C86 /* TypedPredicates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 686BE911288EE0D300967C86 /* TypedPredicates.swift */; };
 		686BE915288EE2CA00967C86 /* TypedPredicateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 686BE914288EE2CA00967C86 /* TypedPredicateTests.swift */; };
 		6874E81428998AD300074A97 /* LogErrorAndExit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6874E81328998AD300074A97 /* LogErrorAndExit.swift */; };
 		689D11D02891B3A300F6A83F /* CrashLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 689D11CF2891B3A300F6A83F /* CrashLogger.swift */; };
 		689D11D32891B7D800F6A83F /* MockCrashLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 689D11D22891B7D800F6A83F /* MockCrashLogger.swift */; };
 		68FBC5B328926B2C00A05461 /* Collection+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68FBC5B228926B2C00A05461 /* Collection+Extensions.swift */; };
-		9FA5113235035AC9A6079B0D /* Pods_WooFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C1733C61561AE3A1AD3C16B7 /* Pods_WooFoundation.framework */; };
 		AE948D0A28CF67CF009F3246 /* Date+StartAndEnd.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE948D0928CF67CE009F3246 /* Date+StartAndEnd.swift */; };
 		AE948D0D28CF6D50009F3246 /* DateStartAndEndTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE948D0C28CF6D50009F3246 /* DateStartAndEndTests.swift */; };
 		B95B15CB2B15FA3A00A54044 /* Publishers+KeyboardHeight.swift in Sources */ = {isa = PBXBuildFile; fileRef = B95B15CA2B15FA3A00A54044 /* Publishers+KeyboardHeight.swift */; };
@@ -96,6 +96,7 @@
 		26AF1F5128B8362800937BA9 /* UIColor+ColorStudio.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIColor+ColorStudio.swift"; sourceTree = "<group>"; };
 		26AF1F5228B8362800937BA9 /* UIColor+SystemColors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIColor+SystemColors.swift"; sourceTree = "<group>"; };
 		26AF1F5828B9011100937BA9 /* WooStyleModifiers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WooStyleModifiers.swift; sourceTree = "<group>"; };
+		4A9D28DB2BEB35F8006C079F /* Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Debug.xcconfig; sourceTree = "<group>"; };
 		532D4D63493CE8FA6F13C85B /* Pods_WooFoundationTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WooFoundationTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		5BC355411C0A805BF29F38A6 /* Pods-WooFoundationTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooFoundationTests.release.xcconfig"; path = "Target Support Files/Pods-WooFoundationTests/Pods-WooFoundationTests.release.xcconfig"; sourceTree = "<group>"; };
 		686BE911288EE0D300967C86 /* TypedPredicates.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TypedPredicates.swift; sourceTree = "<group>"; };
@@ -104,8 +105,6 @@
 		689D11CF2891B3A300F6A83F /* CrashLogger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CrashLogger.swift; sourceTree = "<group>"; };
 		689D11D22891B7D800F6A83F /* MockCrashLogger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockCrashLogger.swift; sourceTree = "<group>"; };
 		68FBC5B228926B2C00A05461 /* Collection+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Collection+Extensions.swift"; sourceTree = "<group>"; };
-		81B8569CD52D20EAE64EE737 /* Pods-WooFoundation.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooFoundation.release-alpha.xcconfig"; path = "Target Support Files/Pods-WooFoundation/Pods-WooFoundation.release-alpha.xcconfig"; sourceTree = "<group>"; };
-		99861FECBD0975C25DA03D80 /* Pods-WooFoundation.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooFoundation.debug.xcconfig"; path = "Target Support Files/Pods-WooFoundation/Pods-WooFoundation.debug.xcconfig"; sourceTree = "<group>"; };
 		A21D73D352B4162AB096E276 /* Pods-WooFoundationTests.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooFoundationTests.release-alpha.xcconfig"; path = "Target Support Files/Pods-WooFoundationTests/Pods-WooFoundationTests.release-alpha.xcconfig"; sourceTree = "<group>"; };
 		AE948D0928CF67CE009F3246 /* Date+StartAndEnd.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+StartAndEnd.swift"; sourceTree = "<group>"; };
 		AE948D0C28CF6D50009F3246 /* DateStartAndEndTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DateStartAndEndTests.swift; sourceTree = "<group>"; };
@@ -127,8 +126,6 @@
 		B9C9C662283E7296001B879F /* Logging.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Logging.swift; sourceTree = "<group>"; };
 		B9C9C665283E72ED001B879F /* CocoaLumberjack.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = CocoaLumberjack.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BCA82452EA8EE0170C1AA258 /* Pods-WooFoundationTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooFoundationTests.debug.xcconfig"; path = "Target Support Files/Pods-WooFoundationTests/Pods-WooFoundationTests.debug.xcconfig"; sourceTree = "<group>"; };
-		C1733C61561AE3A1AD3C16B7 /* Pods_WooFoundation.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WooFoundation.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		D64F2A76E9373989B3F181FC /* Pods-WooFoundation.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooFoundation.release.xcconfig"; path = "Target Support Files/Pods-WooFoundation/Pods-WooFoundation.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -137,7 +134,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				20AD34D32B0CDB8900F38F44 /* Codegen in Frameworks */,
-				9FA5113235035AC9A6079B0D /* Pods_WooFoundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -196,6 +192,14 @@
 			name = ViewModifiers;
 			path = WooFoundation/ViewModifiers;
 			sourceTree = SOURCE_ROOT;
+		};
+		4A9D28DC2BEB35F8006C079F /* XCConfig */ = {
+			isa = PBXGroup;
+			children = (
+				4A9D28DB2BEB35F8006C079F /* Debug.xcconfig */,
+			);
+			path = XCConfig;
+			sourceTree = "<group>";
 		};
 		686BE910288EE09B00967C86 /* Utilities */ = {
 			isa = PBXGroup;
@@ -267,6 +271,7 @@
 		B9C9C636283E703C001B879F /* WooFoundation */ = {
 			isa = PBXGroup;
 			children = (
+				4A9D28DC2BEB35F8006C079F /* XCConfig */,
 				26AF1F4E28B8362800937BA9 /* Colors */,
 				203758732AD5564F000E4281 /* Countries */,
 				B9C9C65A283E71C8001B879F /* Currency */,
@@ -331,7 +336,6 @@
 				B9AED55B283E755A002A2668 /* Hardware.framework */,
 				B9AED558283E7553002A2668 /* Yosemite.framework */,
 				B9C9C665283E72ED001B879F /* CocoaLumberjack.framework */,
-				C1733C61561AE3A1AD3C16B7 /* Pods_WooFoundation.framework */,
 				532D4D63493CE8FA6F13C85B /* Pods_WooFoundationTests.framework */,
 			);
 			name = Frameworks;
@@ -340,11 +344,8 @@
 		C8E281DD95DE8EF39194328A /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				99861FECBD0975C25DA03D80 /* Pods-WooFoundation.debug.xcconfig */,
-				D64F2A76E9373989B3F181FC /* Pods-WooFoundation.release.xcconfig */,
 				BCA82452EA8EE0170C1AA258 /* Pods-WooFoundationTests.debug.xcconfig */,
 				5BC355411C0A805BF29F38A6 /* Pods-WooFoundationTests.release.xcconfig */,
-				81B8569CD52D20EAE64EE737 /* Pods-WooFoundation.release-alpha.xcconfig */,
 				A21D73D352B4162AB096E276 /* Pods-WooFoundationTests.release-alpha.xcconfig */,
 			);
 			name = Pods;
@@ -368,7 +369,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = B9C9C646283E703C001B879F /* Build configuration list for PBXNativeTarget "WooFoundation" */;
 			buildPhases = (
-				785F98CEE4A25B52E109348C /* [CP] Check Pods Manifest.lock */,
 				B9C9C630283E703C001B879F /* Headers */,
 				B9C9C631283E703C001B879F /* Sources */,
 				B9C9C632283E703C001B879F /* Frameworks */,
@@ -452,6 +452,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4A9D28DD2BEB35F8006C079F /* Debug.xcconfig in Resources */,
 				265C99D828B93F04005E6117 /* ColorPalette.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -466,28 +467,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		785F98CEE4A25B52E109348C /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-WooFoundation-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
 		8412E9AEB5C292FAFA14BB34 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -648,7 +627,6 @@
 		};
 		B9BD4BD52844E20300F835D6 /* Release-Alpha */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 81B8569CD52D20EAE64EE737 /* Pods-WooFoundation.release-alpha.xcconfig */;
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				CODE_SIGN_IDENTITY = "";
@@ -675,12 +653,15 @@
 				PRODUCT_NAME = WooFoundation;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator watchos watchsimulator";
+				SUPPORTS_MACCATALYST = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1,2,4";
 				VALIDATE_PRODUCT = YES;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
+				WATCHOS_DEPLOYMENT_TARGET = 9.0;
 			};
 			name = "Release-Alpha";
 		};
@@ -819,7 +800,7 @@
 		};
 		B9C9C647283E703C001B879F /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 99861FECBD0975C25DA03D80 /* Pods-WooFoundation.debug.xcconfig */;
+			baseConfigurationReference = 4A9D28DB2BEB35F8006C079F /* Debug.xcconfig */;
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				CODE_SIGN_IDENTITY = "";
@@ -846,17 +827,19 @@
 				PRODUCT_NAME = WooFoundation;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator watchos watchsimulator";
+				SUPPORTS_MACCATALYST = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1,2,4";
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
+				WATCHOS_DEPLOYMENT_TARGET = 9.0;
 			};
 			name = Debug;
 		};
 		B9C9C648283E703C001B879F /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = D64F2A76E9373989B3F181FC /* Pods-WooFoundation.release.xcconfig */;
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				CODE_SIGN_IDENTITY = "";
@@ -883,12 +866,15 @@
 				PRODUCT_NAME = WooFoundation;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator watchos watchsimulator";
+				SUPPORTS_MACCATALYST = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1,2,4";
 				VALIDATE_PRODUCT = YES;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
+				WATCHOS_DEPLOYMENT_TARGET = 9.0;
 			};
 			name = Release;
 		};

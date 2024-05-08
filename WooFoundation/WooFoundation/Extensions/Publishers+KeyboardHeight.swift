@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Combine
 import Foundation
 import UIKit
@@ -22,3 +24,5 @@ private extension Notification {
         return (userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect)?.height ?? 0
     }
 }
+
+#endif

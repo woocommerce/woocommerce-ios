@@ -1,8 +1,10 @@
-import UIKit
-
 /// Disposable Class to find this `Bundle` at runtime
 ///
 internal class WooFoundationBundleClass {}
+
+#if os(iOS)
+
+import UIKit
 
 public extension UIColor {
 
@@ -29,7 +31,6 @@ public extension UIColor {
         return withColorStudio(newColor)
     }
 }
-
 
 public extension UIColor {
     // A way to create dynamic colors that's compatible with iOS 11 & 12
@@ -62,3 +63,5 @@ public extension UIColor {
         return self
     }
 }
+
+#endif

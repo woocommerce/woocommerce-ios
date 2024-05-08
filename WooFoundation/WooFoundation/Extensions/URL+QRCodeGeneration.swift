@@ -1,6 +1,8 @@
 import Foundation
 import UIKit
 
+#if canImport(CoreImage)
+
 public extension URL {
     /// Returns a black and white QR UIImage code for this URL.
     ///
@@ -37,3 +39,5 @@ public extension URL {
         return filter.outputImage?.transformed(by: qrTransform)
     }
 }
+
+#endif

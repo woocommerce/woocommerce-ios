@@ -14,6 +14,7 @@
 		200B84B02BEB99FE00EAAB23 /* PointOfSaleEntryPointView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200B84AA2BEB98EB00EAAB23 /* PointOfSaleEntryPointView.swift */; };
 		200B84B12BEB9A0100EAAB23 /* PointOfSaleDashboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200B84AB2BEB98EB00EAAB23 /* PointOfSaleDashboard.swift */; };
 		20CBA25C2BEBB2370006820C /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 20CBA25B2BEBB2370006820C /* SwiftUI.framework */; settings = {ATTRIBUTES = (Required, ); }; };
+		A4FA2C8B066BCBF514089458 /* Pods_WooCommercePOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 93F9ABF5FD8405FC05439FAA /* Pods_WooCommercePOS.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -35,6 +36,9 @@
 		200B84AA2BEB98EB00EAAB23 /* PointOfSaleEntryPointView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleEntryPointView.swift; sourceTree = "<group>"; };
 		200B84AB2BEB98EB00EAAB23 /* PointOfSaleDashboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleDashboard.swift; sourceTree = "<group>"; };
 		20CBA25B2BEBB2370006820C /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
+		5DAF835EEF69449B9B4146B9 /* Pods-WooCommercePOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooCommercePOS.debug.xcconfig"; path = "Target Support Files/Pods-WooCommercePOS/Pods-WooCommercePOS.debug.xcconfig"; sourceTree = "<group>"; };
+		93F9ABF5FD8405FC05439FAA /* Pods_WooCommercePOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WooCommercePOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		D94D86784E9CD1B473EC6AE8 /* Pods-WooCommercePOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooCommercePOS.release.xcconfig"; path = "Target Support Files/Pods-WooCommercePOS/Pods-WooCommercePOS.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -43,6 +47,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				20CBA25C2BEBB2370006820C /* SwiftUI.framework in Frameworks */,
+				A4FA2C8B066BCBF514089458 /* Pods_WooCommercePOS.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -64,6 +69,7 @@
 				200B849E2BEB984700EAAB23 /* WooCommercePOSTests */,
 				200B84912BEB984700EAAB23 /* Products */,
 				20CBA25A2BEBB2370006820C /* Frameworks */,
+				E339D4263F0FE2171AFE2791 /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -107,8 +113,19 @@
 			isa = PBXGroup;
 			children = (
 				20CBA25B2BEBB2370006820C /* SwiftUI.framework */,
+				93F9ABF5FD8405FC05439FAA /* Pods_WooCommercePOS.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		E339D4263F0FE2171AFE2791 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				5DAF835EEF69449B9B4146B9 /* Pods-WooCommercePOS.debug.xcconfig */,
+				D94D86784E9CD1B473EC6AE8 /* Pods-WooCommercePOS.release.xcconfig */,
+			);
+			name = Pods;
+			path = ../Pods;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -129,6 +146,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 200B84A42BEB984800EAAB23 /* Build configuration list for PBXNativeTarget "WooCommercePOS" */;
 			buildPhases = (
+				05B4F8E63C956EF8F010487D /* [CP] Check Pods Manifest.lock */,
 				200B848B2BEB984700EAAB23 /* Headers */,
 				200B848C2BEB984700EAAB23 /* Sources */,
 				200B848D2BEB984700EAAB23 /* Frameworks */,
@@ -214,6 +232,31 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		05B4F8E63C956EF8F010487D /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-WooCommercePOS-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		200B848C2BEB984700EAAB23 /* Sources */ = {
@@ -372,6 +415,7 @@
 		};
 		200B84A52BEB984800EAAB23 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 5DAF835EEF69449B9B4146B9 /* Pods-WooCommercePOS.debug.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
@@ -408,6 +452,7 @@
 		};
 		200B84A62BEB984800EAAB23 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = D94D86784E9CD1B473EC6AE8 /* Pods-WooCommercePOS.release.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;

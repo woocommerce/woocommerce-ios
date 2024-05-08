@@ -120,6 +120,22 @@ target 'WooCommerce' do
   end
 end
 
+
+# WooCommercePOS Layer:
+# ===============
+#
+def woocommercepos_pods
+  cocoa_lumberjack
+end
+
+# WooCommerce POS Target
+# ==========
+#
+target 'WooCommercePOS' do
+  project 'WooCommercePOS/WooCommercePOS.xcodeproj'
+  woocommercepos_pods
+end
+
 # StoreWidget Target
 # ==========
 #

@@ -1,4 +1,8 @@
+import Foundation
+
+#if canImport(WordPressShared)
 import WordPressShared
+#endif
 
 public struct ApplicationPassword: Decodable {
     /// WordPress org username that the application password belongs to

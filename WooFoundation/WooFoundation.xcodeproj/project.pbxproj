@@ -29,7 +29,10 @@
 		26AF1F5628B8362800937BA9 /* UIColor+SystemColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26AF1F5228B8362800937BA9 /* UIColor+SystemColors.swift */; };
 		26AF1F5928B9011100937BA9 /* WooStyleModifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26AF1F5828B9011100937BA9 /* WooStyleModifiers.swift */; };
 		397702D42D32EAEEEA3B29FC /* Pods_WooFoundationTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 532D4D63493CE8FA6F13C85B /* Pods_WooFoundationTests.framework */; };
-		4A9D28DD2BEB35F8006C079F /* Debug.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 4A9D28DB2BEB35F8006C079F /* Debug.xcconfig */; };
+		4A9D28DD2BEB35F8006C079F /* Common.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 4A9D28DB2BEB35F8006C079F /* Common.xcconfig */; };
+		4A9D28EE2BEC2D98006C079F /* Release.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 4A9D28EB2BEC2D98006C079F /* Release.xcconfig */; };
+		4A9D28EF2BEC2D98006C079F /* Release-Alpha.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 4A9D28EC2BEC2D98006C079F /* Release-Alpha.xcconfig */; };
+		4A9D28F02BEC2D98006C079F /* Debug.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 4A9D28ED2BEC2D98006C079F /* Debug.xcconfig */; };
 		686BE912288EE0D300967C86 /* TypedPredicates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 686BE911288EE0D300967C86 /* TypedPredicates.swift */; };
 		686BE915288EE2CA00967C86 /* TypedPredicateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 686BE914288EE2CA00967C86 /* TypedPredicateTests.swift */; };
 		6874E81428998AD300074A97 /* LogErrorAndExit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6874E81328998AD300074A97 /* LogErrorAndExit.swift */; };
@@ -96,7 +99,10 @@
 		26AF1F5128B8362800937BA9 /* UIColor+ColorStudio.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIColor+ColorStudio.swift"; sourceTree = "<group>"; };
 		26AF1F5228B8362800937BA9 /* UIColor+SystemColors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIColor+SystemColors.swift"; sourceTree = "<group>"; };
 		26AF1F5828B9011100937BA9 /* WooStyleModifiers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WooStyleModifiers.swift; sourceTree = "<group>"; };
-		4A9D28DB2BEB35F8006C079F /* Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Debug.xcconfig; sourceTree = "<group>"; };
+		4A9D28DB2BEB35F8006C079F /* Common.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Common.xcconfig; sourceTree = "<group>"; };
+		4A9D28EB2BEC2D98006C079F /* Release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Release.xcconfig; sourceTree = "<group>"; };
+		4A9D28EC2BEC2D98006C079F /* Release-Alpha.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "Release-Alpha.xcconfig"; sourceTree = "<group>"; };
+		4A9D28ED2BEC2D98006C079F /* Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Debug.xcconfig; sourceTree = "<group>"; };
 		532D4D63493CE8FA6F13C85B /* Pods_WooFoundationTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WooFoundationTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		5BC355411C0A805BF29F38A6 /* Pods-WooFoundationTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooFoundationTests.release.xcconfig"; path = "Target Support Files/Pods-WooFoundationTests/Pods-WooFoundationTests.release.xcconfig"; sourceTree = "<group>"; };
 		686BE911288EE0D300967C86 /* TypedPredicates.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TypedPredicates.swift; sourceTree = "<group>"; };
@@ -196,7 +202,10 @@
 		4A9D28DC2BEB35F8006C079F /* XCConfig */ = {
 			isa = PBXGroup;
 			children = (
-				4A9D28DB2BEB35F8006C079F /* Debug.xcconfig */,
+				4A9D28DB2BEB35F8006C079F /* Common.xcconfig */,
+				4A9D28ED2BEC2D98006C079F /* Debug.xcconfig */,
+				4A9D28EC2BEC2D98006C079F /* Release-Alpha.xcconfig */,
+				4A9D28EB2BEC2D98006C079F /* Release.xcconfig */,
 			);
 			path = XCConfig;
 			sourceTree = "<group>";
@@ -452,8 +461,11 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4A9D28DD2BEB35F8006C079F /* Debug.xcconfig in Resources */,
+				4A9D28DD2BEB35F8006C079F /* Common.xcconfig in Resources */,
+				4A9D28EF2BEC2D98006C079F /* Release-Alpha.xcconfig in Resources */,
 				265C99D828B93F04005E6117 /* ColorPalette.xcassets in Resources */,
+				4A9D28F02BEC2D98006C079F /* Debug.xcconfig in Resources */,
+				4A9D28EE2BEC2D98006C079F /* Release.xcconfig in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -627,6 +639,7 @@
 		};
 		B9BD4BD52844E20300F835D6 /* Release-Alpha */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 4A9D28EC2BEC2D98006C079F /* Release-Alpha.xcconfig */;
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				CODE_SIGN_IDENTITY = "";
@@ -800,7 +813,7 @@
 		};
 		B9C9C647283E703C001B879F /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 4A9D28DB2BEB35F8006C079F /* Debug.xcconfig */;
+			baseConfigurationReference = 4A9D28DB2BEB35F8006C079F /* Common.xcconfig */;
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				CODE_SIGN_IDENTITY = "";
@@ -840,6 +853,7 @@
 		};
 		B9C9C648283E703C001B879F /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 4A9D28EB2BEC2D98006C079F /* Release.xcconfig */;
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				CODE_SIGN_IDENTITY = "";

@@ -32,7 +32,7 @@ struct CollapsibleCustomerCard: View {
 
                 Divider()
 
-                Text("Address")
+                CollapsibleCustomerCardAddressView(viewModel: viewModel.addressViewModel)
 
                 removeCustomerView()
                     .renderedIf(viewModel.canRemoveCustomer)

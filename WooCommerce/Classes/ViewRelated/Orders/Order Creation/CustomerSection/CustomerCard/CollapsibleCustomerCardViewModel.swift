@@ -32,6 +32,12 @@ final class CollapsibleCustomerCardViewModel: ObservableObject {
     /// Called when the user taps to remove customer.
     let removeCustomer: () -> Void
 
+    private(set) lazy var addressViewModel: CollapsibleCustomerCardAddressViewModel = .init(
+        billingAddressFormatted: originalCustomerData.billingAddressFormatted,
+        shippingAddressFormatted: originalCustomerData.shippingAddressFormatted,
+        editAddress: {}
+    )
+
     private let originalCustomerData: CustomerData
 
     init(customerData: CustomerData,

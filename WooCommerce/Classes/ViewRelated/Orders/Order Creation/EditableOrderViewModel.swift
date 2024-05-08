@@ -504,10 +504,14 @@ final class EditableOrderViewModel: ObservableObject {
         self.customerSectionViewModel = .init(
             siteID: siteID,
             addressFormViewModel: addressFormViewModel,
-            customerData: .init(email: nil, fullName: nil, billingAddressFormatted: nil, shippingAddressFormatted: nil),
+            customerData: .init(customerID: nil,
+                                email: nil,
+                                fullName: nil,
+                                billingAddressFormatted: nil,
+                                shippingAddressFormatted: nil),
             isCustomerAccountRequired: false,
             isEditable: true,
-            addCustomer: { _ in }
+            updateCustomer: { _ in }
         )
 
         configureDisabledState()
@@ -821,6 +825,12 @@ final class EditableOrderViewModel: ObservableObject {
         orderSynchronizer.setCustomerID.send(customer.customerID)
         orderSynchronizer.setAddresses.send(input)
         resetAddressForm()
+    }
+
+    func removeCustomerFromOrder() {
+        orderSynchronizer.removeCustomerID.send(())
+        let input = Self.createAddressesInputIfPossible(billingAddress: .empty, shippingAddress: .empty)
+        orderSynchronizer.setAddresses.send(input)
     }
 
     func addTaxRateAddressToOrder(taxRate: TaxRate) {
@@ -1680,17 +1690,29 @@ private extension EditableOrderViewModel {
         customerSectionViewModel = .init(
             siteID: siteID,
             addressFormViewModel: addressFormViewModel,
-            customerData: .init(email: nil, fullName: nil, billingAddressFormatted: nil, shippingAddressFormatted: nil),
+            customerData: .init(
+                customerID: nil,
+                email: nil,
+                fullName: nil,
+                billingAddressFormatted: nil,
+                shippingAddressFormatted: nil
+            ),
             isCustomerAccountRequired: false,
             isEditable: true,
-            addCustomer: { [weak self] customer in
-                self?.addCustomerAddressToOrder(customer: customer)
+            updateCustomer: { [weak self] customer in
+                guard let self else { return }
+                if let customer {
+                    addCustomerAddressToOrder(customer: customer)
+                } else {
+                    removeCustomerFromOrder()
+                }
             }
         )
 
         orderSynchronizer.orderPublisher
             .map {
                 CollapsibleCustomerCardViewModel.CustomerData(
+                    customerID: $0.customerID,
                     email: $0.billingAddress?.email ?? $0.shippingAddress?.email,
                     fullName: $0.billingAddress?.fullName ?? $0.shippingAddress?.fullName,
                     billingAddressFormatted: $0.billingAddress?.formattedPostalAddress,

@@ -30,10 +30,29 @@ struct CollapsibleCustomerCard: View {
                 Divider()
 
                 Text("Address")
-                Text("Remove customer from order")
+
+                removeCustomerView()
+                    .renderedIf(viewModel.canRemoveCustomer)
             }
             .padding(.horizontal)
         })
+    }
+}
+
+private extension CollapsibleCustomerCard {
+    @ViewBuilder private func removeCustomerView() -> some View {
+        Button {
+            viewModel.removeCustomer()
+        } label: {
+            HStack(alignment: .center) {
+                Label {
+                    Text(Localization.removeCustomer)
+                } icon: {
+                    Image(systemName: "multiply.circle")
+                }
+            }
+        }
+        .foregroundColor(Color(uiColor: .withColorStudio(.red, shade: .shade60)))
     }
 }
 
@@ -53,17 +72,24 @@ private extension CollapsibleCustomerCard {
             value: "Enter email address",
             comment: "Title of the email text field in the order form customer card."
         )
+        static let removeCustomer = NSLocalizedString(
+            "collapsibleCustomerCard.removeCustomerButton.title",
+            value: "Remove customer from order",
+            comment: "Title of the button to remove customer from an order in the order form customer card."
+        )
     }
 }
 
 struct CollapsibleCustomerCard_Previews: PreviewProvider {
     static var previews: some View {
-        CollapsibleCustomerCard(viewModel: .init(customerData: .init(email: nil,
+        CollapsibleCustomerCard(viewModel: .init(customerData: .init(customerID: nil,
+                                                                     email: nil,
                                                                      fullName: nil,
                                                                      billingAddressFormatted: nil,
                                                                      shippingAddressFormatted: nil),
                                                  isCustomerAccountRequired: true,
                                                  isEditable: true,
-                                                 isCollapsed: false))
+                                                 isCollapsed: false,
+                                                 removeCustomer: {}))
     }
 }

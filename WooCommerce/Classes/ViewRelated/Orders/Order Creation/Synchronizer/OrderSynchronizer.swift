@@ -148,6 +148,10 @@ protocol OrderSynchronizer {
     ///
     var setCustomerID: PassthroughSubject<Int64, Never> { get }
 
+    /// Removes customer from the order.
+    ///
+    var removeCustomerID: PassthroughSubject<Void, Never> { get }
+
     /// Trigger to retry a remote sync.
     ///
     var retryTrigger: PassthroughSubject<Void, Never> { get }

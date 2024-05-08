@@ -55,6 +55,8 @@ final class RemoteOrderSynchronizer: OrderSynchronizer {
 
     let setCustomerID = PassthroughSubject<Int64, Never>()
 
+    let removeCustomerID = PassthroughSubject<Void, Never>()
+
     var retryTrigger = PassthroughSubject<Void, Never>()
 
     // MARK: Private properties
@@ -306,6 +308,15 @@ private extension RemoteOrderSynchronizer {
         setCustomerID.withLatestFrom(orderPublisher)
             .map { customerID, order in
                 order.copy(customerID: customerID)
+            }
+            .sink { [weak self] order in
+                self?.order = order
+            }
+            .store(in: &subscriptions)
+
+        removeCustomerID.withLatestFrom(orderPublisher)
+            .map { _, order in
+                order.copy(customerID: 0)
             }
             .sink { [weak self] order in
                 self?.order = order

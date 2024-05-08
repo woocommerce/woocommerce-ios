@@ -827,7 +827,7 @@ final class EditableOrderViewModel: ObservableObject {
         resetAddressForm()
     }
 
-    func removeCustomerFromOrder() {
+    private func removeCustomerFromOrder() {
         orderSynchronizer.removeCustomerID.send(())
         let input = Self.createAddressesInputIfPossible(billingAddress: .empty, shippingAddress: .empty)
         orderSynchronizer.setAddresses.send(input)

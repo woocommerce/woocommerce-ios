@@ -5,6 +5,9 @@
       location = "group:WooCommerce/WooCommerce.xcodeproj">
    </FileRef>
    <FileRef
+      location = "group:WooCommercePOS/WooCommercePOS.xcodeproj">
+   </FileRef>
+   <FileRef
       location = "group:Yosemite/Yosemite.xcodeproj">
    </FileRef>
    <FileRef
@@ -20,6 +23,9 @@
       location = "group:Hardware/Hardware.xcodeproj">
    </FileRef>
    <FileRef
+      location = "group:WooFoundation/WooFoundation.xcodeproj">
+   </FileRef>
+   <FileRef
       location = "group:Fakes/Fakes.xcodeproj">
    </FileRef>
    <FileRef
@@ -30,8 +36,5 @@
    </FileRef>
    <FileRef
       location = "group:Pods/Pods.xcodeproj">
-   </FileRef>
-   <FileRef
-      location = "group:WooFoundation/WooFoundation.xcodeproj">
    </FileRef>
 </Workspace>

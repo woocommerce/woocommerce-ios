@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 // MARK: - Manual currency formatting
@@ -306,3 +308,5 @@ public class CurrencyFormatter {
         formatAmount(amount as NSDecimalNumber, with: currency, locale: locale, numberOfDecimals: numberOfDecimals)
     }
 }
+
+#endif

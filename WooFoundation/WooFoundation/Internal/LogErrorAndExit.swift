@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 
@@ -11,3 +13,5 @@ public func logErrorAndExit(_ message: String, file: StaticString = #file, line:
     DDLogError(message)
     fatalError(message, file: file, line: line)
 }
+
+#endif

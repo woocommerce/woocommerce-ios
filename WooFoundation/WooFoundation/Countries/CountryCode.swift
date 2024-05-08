@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 // MARK: - Mapping between country codes and readable names
@@ -308,3 +310,5 @@ public enum CountryCode: String, CaseIterable {
 
     case unknown
 }
+
+#endif

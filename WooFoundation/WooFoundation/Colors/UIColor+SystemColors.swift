@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import UIKit
 
 #if os(iOS)
@@ -94,5 +96,7 @@ public extension UIColor {
         return systemColor.color
     }
 }
+
+#endif
 
 #endif

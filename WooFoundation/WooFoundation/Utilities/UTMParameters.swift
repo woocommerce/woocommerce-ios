@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 public protocol UTMParametersProviding {
@@ -65,3 +67,5 @@ public extension UTMParametersProviding {
         return components.url
     }
 }
+
+#endif

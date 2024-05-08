@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 public extension NSDecimalNumber {
@@ -93,3 +95,5 @@ private extension NSDecimalNumber {
         static let lowerSmallNumberLimit = NSDecimalNumber(string: "-1000.0")
     }
 }
+
+#endif

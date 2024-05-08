@@ -1,5 +1,7 @@
 #if os(iOS)
 
+#if os(iOS)
+
 import SwiftUI
 import UIKit
 
@@ -32,5 +34,7 @@ public struct FullScreenCoverClearBackgroundView: UIViewRepresentable {
         }
     }
 }
+
+#endif
 
 #endif

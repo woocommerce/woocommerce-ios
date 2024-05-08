@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 public struct WooCommerceComUTMProvider: UTMParametersProviding {
@@ -28,3 +30,5 @@ public struct WooCommerceComUTMProvider: UTMParametersProviding {
         static let wooCommerceComUtmMedium = "woo_ios"
     }
 }
+
+#endif

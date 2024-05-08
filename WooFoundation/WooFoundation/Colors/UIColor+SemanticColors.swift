@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import UIKit
 
 // MARK: - Base colors.
@@ -529,3 +531,5 @@ public extension UIColor {
         }
     }
 }
+
+#endif

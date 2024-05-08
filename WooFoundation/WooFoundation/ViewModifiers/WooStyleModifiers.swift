@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import SwiftUI
 
@@ -263,3 +265,5 @@ public extension View {
         self.modifier(IconStyle())
     }
 }
+
+#endif

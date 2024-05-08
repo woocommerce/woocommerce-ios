@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import SwiftUI
 
 public extension Color {
@@ -11,3 +13,5 @@ public extension Color {
         return Color(assetName, bundle: Bundle(for: WooFoundationBundleClass.self))
     }
 }
+
+#endif

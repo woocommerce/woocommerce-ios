@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import SwiftUI
 import RegexBuilder
@@ -80,3 +82,5 @@ extension Color {
         case invalidRGBStringProvided
     }
 }
+
+#endif

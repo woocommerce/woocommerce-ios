@@ -1,3 +1,5 @@
+#if os(iOS)
+
 /// Generates the names of the named colors in the ColorPalette.xcasset
 public enum ColorStudioName: String, CustomStringConvertible {
     // MARK: - Base colors
@@ -80,3 +82,5 @@ public struct ColorStudio {
         return "\(name)\(shade)"
     }
 }
+
+#endif

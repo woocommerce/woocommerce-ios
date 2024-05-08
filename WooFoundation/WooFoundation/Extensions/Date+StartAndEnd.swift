@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 public extension Date {
@@ -162,3 +164,5 @@ public extension Date {
         return calendar
     }
 }
+
+#endif

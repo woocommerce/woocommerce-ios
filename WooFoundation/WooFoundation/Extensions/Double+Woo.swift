@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 
@@ -137,3 +139,5 @@ private extension Double {
         }
     }
 }
+
+#endif

@@ -1,3 +1,5 @@
+#if os(iOS)
+
 /// The level of severity, that is currently based on `SentrySeverity`.
 public enum SeverityLevel {
     case fatal
@@ -39,3 +41,5 @@ public protocol CrashLogger {
     */
     func logFatalErrorAndExit(_ error: Error, userInfo: [String: Any]?) -> Never
 }
+
+#endif

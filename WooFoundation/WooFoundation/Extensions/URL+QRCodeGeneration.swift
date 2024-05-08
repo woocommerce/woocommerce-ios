@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import UIKit
 
@@ -39,5 +41,7 @@ public extension URL {
         return filter.outputImage?.transformed(by: qrTransform)
     }
 }
+
+#endif
 
 #endif

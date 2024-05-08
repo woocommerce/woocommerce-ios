@@ -1,3 +1,5 @@
+#if os(iOS)
+
 /// Disposable Class to find this `Bundle` at runtime
 ///
 internal class WooFoundationBundleClass {}
@@ -63,5 +65,7 @@ public extension UIColor {
         return self
     }
 }
+
+#endif
 
 #endif

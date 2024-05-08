@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 ///
@@ -87,3 +89,5 @@ internal extension ComparisonPredicate {
         self.init(leftExpression: keyPathExpression, rightExpression: valueExpression, modifier: .direct, type: `operator`, options: options)
     }
 }
+
+#endif

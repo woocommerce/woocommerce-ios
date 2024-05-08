@@ -1,3 +1,5 @@
+#if os(iOS)
+
 // This file bridges logging commands from the current module to our logging
 // library. You can call any DDLog… function from any Swift file in this module
 // without having to import CocoaLumberjackSwift manually.
@@ -123,3 +125,5 @@ internal func DDLogError(_ message: @autoclosure () -> String,
                                asynchronous: async,
                                ddlog: ddlog)
 }
+
+#endif

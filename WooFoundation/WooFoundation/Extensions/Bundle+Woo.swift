@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 extension Bundle {
@@ -17,3 +19,5 @@ extension Bundle {
         return marketingVersion
     }
 }
+
+#endif

@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import Codegen
 /// The 3-letter country code for supported currencies
@@ -76,3 +78,5 @@ public extension CurrencyCode {
         }
     }
 }
+
+#endif

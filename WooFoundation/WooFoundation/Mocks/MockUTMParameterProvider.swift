@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 public struct MockUTMParameterProvider: UTMParametersProviding {
@@ -9,3 +11,5 @@ public struct MockUTMParameterProvider: UTMParametersProviding {
         self.parameters = parameters
     }
 }
+
+#endif

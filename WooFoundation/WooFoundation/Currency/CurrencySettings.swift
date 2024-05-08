@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 /// Site-wide settings for displaying prices/money
@@ -427,3 +429,5 @@ public class CurrencySettings: Codable {
         try container.encode(fractionDigits, forKey: .fractionDigits)
     }
 }
+
+#endif

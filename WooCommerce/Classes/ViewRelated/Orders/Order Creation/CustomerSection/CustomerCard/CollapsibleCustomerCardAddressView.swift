@@ -1,40 +1,6 @@
 import SwiftUI
-import Yosemite
 
-final class CollapsibleCustomerCardAddressViewModel: ObservableObject {
-    let state: CollapsibleCustomerCardAddressView.State
-    let editAddress: () -> Void
-
-    init(billingAddressFormatted: String?,
-         shippingAddressFormatted: String?,
-         editAddress: @escaping () -> Void) {
-        self.state = {
-            guard !billingAddressFormatted.isNilOrEmpty || !shippingAddressFormatted.isNilOrEmpty else {
-                return .addAddress
-            }
-            if billingAddressFormatted == shippingAddressFormatted {
-                return .sameBillingAndShippingAddress(address: billingAddressFormatted ?? "")
-            }
-            if let billingAddressFormatted, billingAddressFormatted.isNotEmpty {
-                if let shippingAddressFormatted, shippingAddressFormatted.isNotEmpty {
-                    return .differentBillingAndShippingAddresses(billing: billingAddressFormatted, shipping: shippingAddressFormatted)
-                } else {
-                    return .billingOnly(address: billingAddressFormatted)
-                }
-            } else if let shippingAddressFormatted, shippingAddressFormatted.isNotEmpty {
-                if let billingAddressFormatted, billingAddressFormatted.isNotEmpty {
-                    return .differentBillingAndShippingAddresses(billing: billingAddressFormatted, shipping: shippingAddressFormatted)
-                } else {
-                    return .shippingOnly(address: shippingAddressFormatted)
-                }
-            } else {
-                return .addAddress
-            }
-        }()
-        self.editAddress = editAddress
-    }
-}
-
+/// Shows a customer's address if available, with a CTA to add/edit the address.
 struct CollapsibleCustomerCardAddressView: View {
     let viewModel: CollapsibleCustomerCardAddressViewModel
 
@@ -121,17 +87,6 @@ private extension CollapsibleCustomerCardAddressView {
 }
 
 struct CollapsibleCustomerCardAddressView_Previews: PreviewProvider {
-    static let address: Address = .init(firstName: "Customer",
-                                        lastName: "Woo",
-                                        company: nil,
-                                        address1: "60 30th St",
-                                        address2: nil,
-                                        city: "San Francisco",
-                                        state: "CA",
-                                        postcode: "94123",
-                                        country: "USA",
-                                        phone: nil,
-                                        email: nil)
     static var previews: some View {
         VStack {
             CollapsibleCustomerCardAddressView(viewModel: .init(billingAddressFormatted: nil,

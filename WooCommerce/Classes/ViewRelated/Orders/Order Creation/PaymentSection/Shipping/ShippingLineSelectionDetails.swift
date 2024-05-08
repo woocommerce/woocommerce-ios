@@ -11,7 +11,7 @@ struct ShippingLineSelectionDetails: View {
     @Environment(\.dismiss) var dismiss
 
     var body: some View {
-        NavigationView {
+        NavigationStack {
             List {
                 // MARK: Shipping Method
                 NavigationLink {

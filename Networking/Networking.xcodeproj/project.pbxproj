@@ -180,11 +180,11 @@
 		077F39E626A5D15800ABEADC /* SystemPluginMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 077F39DB26A58F4800ABEADC /* SystemPluginMapperTests.swift */; };
 		09885C8027C3FFD200910A62 /* product-variations-bulk-update.json in Resources */ = {isa = PBXBuildFile; fileRef = 09885C7F27C3FFD200910A62 /* product-variations-bulk-update.json */; };
 		09EA564B27C75FCE00407D40 /* ProductVariationsBulkUpdateMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09EA564A27C75FCE00407D40 /* ProductVariationsBulkUpdateMapper.swift */; };
+		0DBA7AD42957407670BF2AB9 /* Pods_NetworkingTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0E45935ABF71A2482B74693A /* Pods_NetworkingTests.framework */; };
 		209AD3C32AC196E300825D76 /* WooPaymentsDepositsOverview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 209AD3C22AC196E300825D76 /* WooPaymentsDepositsOverview.swift */; };
 		209AD3C52AC19E7500825D76 /* WooPaymentsDepositsOverviewMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 209AD3C42AC19E7500825D76 /* WooPaymentsDepositsOverviewMapper.swift */; };
 		20D210C32B1780CE0099E517 /* deposits-overview-all.json in Resources */ = {isa = PBXBuildFile; fileRef = 20D210C22B1780CE0099E517 /* deposits-overview-all.json */; };
 		20D210C52B1788E60099E517 /* deposits-overview-all-no-default-currency.json in Resources */ = {isa = PBXBuildFile; fileRef = 20D210C42B1788E60099E517 /* deposits-overview-all-no-default-currency.json */; };
-		21DB5B99C4107CF69C0A57EC /* Pods_NetworkingTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 69314EDE650855CAF927057E /* Pods_NetworkingTests.framework */; };
 		24F98C522502E79800F49B68 /* FeatureFlagRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24F98C512502E79800F49B68 /* FeatureFlagRemote.swift */; };
 		24F98C5E2502EDCF00F49B68 /* BundleWooTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24F98C5D2502EDCF00F49B68 /* BundleWooTests.swift */; };
 		24F98C602502EF8200F49B68 /* FeatureFlagRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24F98C5F2502EF8200F49B68 /* FeatureFlagRemoteTests.swift */; };
@@ -385,13 +385,13 @@
 		45ED4F10239E8A54004F1BE3 /* TaxClassListMapperTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45ED4F0F239E8A54004F1BE3 /* TaxClassListMapperTest.swift */; };
 		45ED4F12239E8C57004F1BE3 /* taxes-classes.json in Resources */ = {isa = PBXBuildFile; fileRef = 45ED4F11239E8C57004F1BE3 /* taxes-classes.json */; };
 		45ED4F14239E8F2E004F1BE3 /* TaxRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45ED4F13239E8F2E004F1BE3 /* TaxRemoteTests.swift */; };
+		4A9D28E32BEB5FAE006C079F /* Debug.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 4A9D28E12BEB5FAE006C079F /* Debug.xcconfig */; };
 		57150E1524F462E600E81611 /* TestKit in Frameworks */ = {isa = PBXBuildFile; productRef = 57150E1424F462E600E81611 /* TestKit */; };
 		5726F159248E9D88005AE9B4 /* Models+Copiable.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5726F158248E9D88005AE9B4 /* Models+Copiable.generated.swift */; };
 		5726F7342460A8F00031CAAC /* CopiableTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5726F7332460A8F00031CAAC /* CopiableTests.swift */; };
 		57BE08D82409B63800F6DCED /* reviews-missing-avatar-urls.json in Resources */ = {isa = PBXBuildFile; fileRef = 57BE08D72409B63700F6DCED /* reviews-missing-avatar-urls.json */; };
 		57E8FED3246616AC0057CD68 /* Result+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57E8FED2246616AC0057CD68 /* Result+Extensions.swift */; };
 		621D043B29C9D4280040EC08 /* product-variation-alternative-types.json in Resources */ = {isa = PBXBuildFile; fileRef = 621D043A29C9D4280040EC08 /* product-variation-alternative-types.json */; };
-		6647C0161DAC6AB6570C53A7 /* Pods_Networking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F3F25DC15EC1D7C631169CB5 /* Pods_Networking.framework */; };
 		6812FC012A6B27E100D7C625 /* InAppPurchasesTransactionMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6812FC002A6B27E100D7C625 /* InAppPurchasesTransactionMapperTests.swift */; };
 		6846B0152A619A5C008EB143 /* InAppPurchasesTransactionMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6846B0142A619A5C008EB143 /* InAppPurchasesTransactionMapper.swift */; };
 		6846B01B2A61B590008EB143 /* iap-transaction-handled.json in Resources */ = {isa = PBXBuildFile; fileRef = 6846B01A2A61B590008EB143 /* iap-transaction-handled.json */; };
@@ -1275,7 +1275,7 @@
 		077F39DB26A58F4800ABEADC /* SystemPluginMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemPluginMapperTests.swift; sourceTree = "<group>"; };
 		09885C7F27C3FFD200910A62 /* product-variations-bulk-update.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "product-variations-bulk-update.json"; sourceTree = "<group>"; };
 		09EA564A27C75FCE00407D40 /* ProductVariationsBulkUpdateMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductVariationsBulkUpdateMapper.swift; sourceTree = "<group>"; };
-		14CE248C7246705417A41DE1 /* Pods-NetworkingWatchOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NetworkingWatchOS.release.xcconfig"; path = "../Pods/Target Support Files/Pods-NetworkingWatchOS/Pods-NetworkingWatchOS.release.xcconfig"; sourceTree = "<group>"; };
+		0E45935ABF71A2482B74693A /* Pods_NetworkingTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_NetworkingTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		209AD3C22AC196E300825D76 /* WooPaymentsDepositsOverview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooPaymentsDepositsOverview.swift; sourceTree = "<group>"; };
 		209AD3C42AC19E7500825D76 /* WooPaymentsDepositsOverviewMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooPaymentsDepositsOverviewMapper.swift; sourceTree = "<group>"; };
 		20D210C22B1780CE0099E517 /* deposits-overview-all.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "deposits-overview-all.json"; sourceTree = "<group>"; };
@@ -1480,12 +1480,11 @@
 		45ED4F0F239E8A54004F1BE3 /* TaxClassListMapperTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaxClassListMapperTest.swift; sourceTree = "<group>"; };
 		45ED4F11239E8C57004F1BE3 /* taxes-classes.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "taxes-classes.json"; sourceTree = "<group>"; };
 		45ED4F13239E8F2E004F1BE3 /* TaxRemoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaxRemoteTests.swift; sourceTree = "<group>"; };
+		4A9D28E12BEB5FAE006C079F /* Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Debug.xcconfig; sourceTree = "<group>"; };
 		5726F158248E9D88005AE9B4 /* Models+Copiable.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Models+Copiable.generated.swift"; sourceTree = "<group>"; };
 		5726F7332460A8F00031CAAC /* CopiableTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CopiableTests.swift; sourceTree = "<group>"; };
 		57BE08D72409B63700F6DCED /* reviews-missing-avatar-urls.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "reviews-missing-avatar-urls.json"; sourceTree = "<group>"; };
 		57E8FED2246616AC0057CD68 /* Result+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Result+Extensions.swift"; sourceTree = "<group>"; };
-		6132DCC72AA9C070E2033628 /* Pods_NetworkingWatchOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_NetworkingWatchOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		61A45743E761BA40FF08B27D /* Pods-NetworkingWatchOS.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NetworkingWatchOS.release-alpha.xcconfig"; path = "../Pods/Target Support Files/Pods-NetworkingWatchOS/Pods-NetworkingWatchOS.release-alpha.xcconfig"; sourceTree = "<group>"; };
 		621D043A29C9D4280040EC08 /* product-variation-alternative-types.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "product-variation-alternative-types.json"; sourceTree = "<group>"; };
 		6812FC002A6B27E100D7C625 /* InAppPurchasesTransactionMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppPurchasesTransactionMapperTests.swift; sourceTree = "<group>"; };
 		6846B0142A619A5C008EB143 /* InAppPurchasesTransactionMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppPurchasesTransactionMapper.swift; sourceTree = "<group>"; };
@@ -1513,7 +1512,6 @@
 		68F48B1028E3BBC60045C15B /* WCAnalyticsCustomerMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WCAnalyticsCustomerMapperTests.swift; sourceTree = "<group>"; };
 		68F48B1228E3E5750045C15B /* wc-analytics-customers.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "wc-analytics-customers.json"; sourceTree = "<group>"; };
 		68FBC5B728928C8C00A05461 /* WooFoundation.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = WooFoundation.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		69314EDE650855CAF927057E /* Pods_NetworkingTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_NetworkingTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		74002D692118B26000A63C19 /* SiteVisitStatsMapperTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SiteVisitStatsMapperTests.swift; sourceTree = "<group>"; };
 		74002D6B2118B88200A63C19 /* SiteStatsRemoteTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SiteStatsRemoteTests.swift; sourceTree = "<group>"; };
 		740211DE2193985A002248DA /* comment-moderate-spam.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "comment-moderate-spam.json"; sourceTree = "<group>"; };
@@ -1597,9 +1595,8 @@
 		74D522B52113607F00042831 /* StatGranularity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StatGranularity.swift; sourceTree = "<group>"; };
 		74D5BECD217E0F98007B0348 /* SiteSettingsRemoteTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SiteSettingsRemoteTests.swift; sourceTree = "<group>"; };
 		74E30950216E8DCE00ABCE4C /* site-visits-alt.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "site-visits-alt.json"; sourceTree = "<group>"; };
-		753D6504FF01F09F6A33B73E /* Pods-Networking.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Networking.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-Networking/Pods-Networking.debug.xcconfig"; sourceTree = "<group>"; };
 		77CE405F2514CB3E003FF69D /* ProductDownloadDragAndDrop.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProductDownloadDragAndDrop.swift; sourceTree = "<group>"; };
-		8409BB32277EE720D63713D4 /* Pods-NetworkingWatchOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NetworkingWatchOS.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-NetworkingWatchOS/Pods-NetworkingWatchOS.debug.xcconfig"; sourceTree = "<group>"; };
+		8564B8782ADFDB27A4B072A7 /* Pods-NetworkingTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NetworkingTests.debug.xcconfig"; path = "Target Support Files/Pods-NetworkingTests/Pods-NetworkingTests.debug.xcconfig"; sourceTree = "<group>"; };
 		8617EDA52B3C093200BD9D1B /* BlazeImpressionsMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeImpressionsMapperTests.swift; sourceTree = "<group>"; };
 		8617EDA72B3C0E3800BD9D1B /* blaze-impressions.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "blaze-impressions.json"; sourceTree = "<group>"; };
 		8646A9B62B4522E7001F606C /* BlazeForecastedImpressionsInputEncoderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeForecastedImpressionsInputEncoderTests.swift; sourceTree = "<group>"; };
@@ -1609,7 +1606,6 @@
 		93D8BBFC226BBEE800AD2EB3 /* AccountSettingsMapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountSettingsMapper.swift; sourceTree = "<group>"; };
 		93D8BBFE226BC1DA00AD2EB3 /* me-settings.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "me-settings.json"; sourceTree = "<group>"; };
 		93D8BC00226BC20600AD2EB3 /* AccountSettingsRemoteTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountSettingsRemoteTests.swift; sourceTree = "<group>"; };
-		9BD9C6C44CAC220B3C3B90B7 /* Pods-Networking.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Networking.release-alpha.xcconfig"; path = "../Pods/Target Support Files/Pods-Networking/Pods-Networking.release-alpha.xcconfig"; sourceTree = "<group>"; };
 		A69FE19C2588D70E0059A96B /* order-with-deleted-refunds.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "order-with-deleted-refunds.json"; sourceTree = "<group>"; };
 		AE1950F2296DB2C2004D37D2 /* ProductsBulkUpdateMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductsBulkUpdateMapper.swift; sourceTree = "<group>"; };
 		AE2D6622272A8F6E004A2C3A /* TelemetryRemoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TelemetryRemoteTests.swift; sourceTree = "<group>"; };
@@ -1708,8 +1704,6 @@
 		B9DFE4BD2AA2057B00174004 /* TaxRateListMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaxRateListMapper.swift; sourceTree = "<group>"; };
 		B9DFE4C12AA22B6F00174004 /* taxes.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = taxes.json; sourceTree = "<group>"; };
 		BAB373712795A1FB00837B4A /* OrderTaxLine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderTaxLine.swift; sourceTree = "<group>"; };
-		BD9439D9B8F2C1ED2EADAA51 /* Pods-NetworkingTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NetworkingTests.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-NetworkingTests/Pods-NetworkingTests.debug.xcconfig"; sourceTree = "<group>"; };
-		C8F9A8CC6F90A8C9B5EF2EE2 /* Pods-Networking.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Networking.release.xcconfig"; path = "../Pods/Target Support Files/Pods-Networking/Pods-Networking.release.xcconfig"; sourceTree = "<group>"; };
 		CC01CE5729B0EBED004FF537 /* product-bundle.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "product-bundle.json"; sourceTree = "<group>"; };
 		CC01CE5929B0FD61004FF537 /* ProductBundleItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductBundleItem.swift; sourceTree = "<group>"; };
 		CC07865E267799EE00BA9AC1 /* ShippingLabelPurchase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelPurchase.swift; sourceTree = "<group>"; };
@@ -1858,7 +1852,8 @@
 		CEF88DAA233E911A00BED485 /* order-fully-refunded.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "order-fully-refunded.json"; sourceTree = "<group>"; };
 		CEF88DAC233E95B000BED485 /* OrderRefundCondensed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderRefundCondensed.swift; sourceTree = "<group>"; };
 		CEF88DAE233E9F7D00BED485 /* order-details-partially-refunded.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "order-details-partially-refunded.json"; sourceTree = "<group>"; };
-		D7865552BE07C116627FE528 /* Pods-NetworkingTests.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NetworkingTests.release-alpha.xcconfig"; path = "../Pods/Target Support Files/Pods-NetworkingTests/Pods-NetworkingTests.release-alpha.xcconfig"; sourceTree = "<group>"; };
+		D0ABDAB15D14042B740EE08C /* Pods-NetworkingTests.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NetworkingTests.release-alpha.xcconfig"; path = "Target Support Files/Pods-NetworkingTests/Pods-NetworkingTests.release-alpha.xcconfig"; sourceTree = "<group>"; };
+		D2F4D35C23B57594B143FB68 /* Pods-NetworkingTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NetworkingTests.release.xcconfig"; path = "Target Support Files/Pods-NetworkingTests/Pods-NetworkingTests.release.xcconfig"; sourceTree = "<group>"; };
 		D800DA0925EFEB9C001E13CE /* WCPayRemoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WCPayRemoteTests.swift; sourceTree = "<group>"; };
 		D800DA0D25EFEC21001E13CE /* wcpay-connection-token.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "wcpay-connection-token.json"; sourceTree = "<group>"; };
 		D823D9022237450A00C90817 /* shipment_tracking_new.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = shipment_tracking_new.json; sourceTree = "<group>"; };
@@ -2173,8 +2168,6 @@
 		EEFC4C952A5E996C004C5A83 /* jwt-token-success.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "jwt-token-success.json"; sourceTree = "<group>"; };
 		EEFC4C982A5E9E49004C5A83 /* generative-text-invalid-token.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "generative-text-invalid-token.json"; sourceTree = "<group>"; };
 		EEFC4C9A2A5ED1F6004C5A83 /* identify-language-invalid-token.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "identify-language-invalid-token.json"; sourceTree = "<group>"; };
-		F3F25DC15EC1D7C631169CB5 /* Pods_Networking.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Networking.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		F6CEE1CA2AD376C0C28AE9F6 /* Pods-NetworkingTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NetworkingTests.release.xcconfig"; path = "../Pods/Target Support Files/Pods-NetworkingTests/Pods-NetworkingTests.release.xcconfig"; sourceTree = "<group>"; };
 		FE28F6E126840DED004465C7 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		FE28F6E326842848004465C7 /* UserMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserMapper.swift; sourceTree = "<group>"; };
 		FE28F6E5268429B6004465C7 /* UserRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserRemote.swift; sourceTree = "<group>"; };
@@ -2190,7 +2183,6 @@
 			files = (
 				263E37D22641ACEA00260D3B /* Codegen in Frameworks */,
 				68FBC5B828928C8C00A05461 /* WooFoundation.framework in Frameworks */,
-				6647C0161DAC6AB6570C53A7 /* Pods_Networking.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2202,7 +2194,7 @@
 				57150E1524F462E600E81611 /* TestKit in Frameworks */,
 				B557D9ED209753AA005962F4 /* Networking.framework in Frameworks */,
 				263E383F2641FF1600260D3B /* Codegen in Frameworks */,
-				21DB5B99C4107CF69C0A57EC /* Pods_NetworkingTests.framework in Frameworks */,
+				0DBA7AD42957407670BF2AB9 /* Pods_NetworkingTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2266,9 +2258,7 @@
 			children = (
 				68FBC5B728928C8C00A05461 /* WooFoundation.framework */,
 				26FB056B25F6CB9100A40B26 /* Fakes.framework */,
-				F3F25DC15EC1D7C631169CB5 /* Pods_Networking.framework */,
-				69314EDE650855CAF927057E /* Pods_NetworkingTests.framework */,
-				6132DCC72AA9C070E2033628 /* Pods_NetworkingWatchOS.framework */,
+				0E45935ABF71A2482B74693A /* Pods_NetworkingTests.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -2325,6 +2315,14 @@
 			path = Refund;
 			sourceTree = "<group>";
 		};
+		4A9D28E22BEB5FAE006C079F /* XCConfig */ = {
+			isa = PBXGroup;
+			children = (
+				4A9D28E12BEB5FAE006C079F /* Debug.xcconfig */,
+			);
+			path = XCConfig;
+			sourceTree = "<group>";
+		};
 		5726F72F2460A83D0031CAAC /* Copiable */ = {
 			isa = PBXGroup;
 			children = (
@@ -2365,6 +2363,17 @@
 				CE070A2D2BBC3C3500017578 /* GiftCardStatsTotals.swift */,
 			);
 			path = Stats;
+			sourceTree = "<group>";
+		};
+		9E7C7CA9EAA5B42344A106AF /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				8564B8782ADFDB27A4B072A7 /* Pods-NetworkingTests.debug.xcconfig */,
+				D2F4D35C23B57594B143FB68 /* Pods-NetworkingTests.release.xcconfig */,
+				D0ABDAB15D14042B740EE08C /* Pods-NetworkingTests.release-alpha.xcconfig */,
+			);
+			name = Pods;
+			path = ../Pods;
 			sourceTree = "<group>";
 		};
 		B505F6EB20BEFD9100BB1B69 /* Tools */ = {
@@ -2508,8 +2517,8 @@
 				B557D9E5209753AA005962F4 /* Networking */,
 				B557D9F0209753AA005962F4 /* NetworkingTests */,
 				B557D9E4209753AA005962F4 /* Products */,
-				B66F21EDEB26EE811202794F /* Pods */,
 				35C45CCE73A311BE252F6BF4 /* Frameworks */,
+				9E7C7CA9EAA5B42344A106AF /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -2525,6 +2534,7 @@
 		B557D9E5209753AA005962F4 /* Networking */ = {
 			isa = PBXGroup;
 			children = (
+				4A9D28E22BEB5FAE006C079F /* XCConfig */,
 				DE66C5512976507100DAA978 /* CookieNonce */,
 				EE54C899294777D000A9BF61 /* ApplicationPassword */,
 				B5A0369F214C0F4C00774E2C /* Internal */,
@@ -3495,22 +3505,6 @@
 			path = Mapper;
 			sourceTree = "<group>";
 		};
-		B66F21EDEB26EE811202794F /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				753D6504FF01F09F6A33B73E /* Pods-Networking.debug.xcconfig */,
-				C8F9A8CC6F90A8C9B5EF2EE2 /* Pods-Networking.release.xcconfig */,
-				BD9439D9B8F2C1ED2EADAA51 /* Pods-NetworkingTests.debug.xcconfig */,
-				F6CEE1CA2AD376C0C28AE9F6 /* Pods-NetworkingTests.release.xcconfig */,
-				9BD9C6C44CAC220B3C3B90B7 /* Pods-Networking.release-alpha.xcconfig */,
-				D7865552BE07C116627FE528 /* Pods-NetworkingTests.release-alpha.xcconfig */,
-				8409BB32277EE720D63713D4 /* Pods-NetworkingWatchOS.debug.xcconfig */,
-				14CE248C7246705417A41DE1 /* Pods-NetworkingWatchOS.release.xcconfig */,
-				61A45743E761BA40FF08B27D /* Pods-NetworkingWatchOS.release-alpha.xcconfig */,
-			);
-			name = Pods;
-			sourceTree = "<group>";
-		};
 		CE6BFEE62236CF0D005C79FB /* Product */ = {
 			isa = PBXGroup;
 			children = (
@@ -3729,7 +3723,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = B557D9F7209753AA005962F4 /* Build configuration list for PBXNativeTarget "Networking" */;
 			buildPhases = (
-				6BC2909022759950DF06CC9F /* [CP] Check Pods Manifest.lock */,
 				B557D9E0209753AA005962F4 /* Headers */,
 				B557D9DE209753AA005962F4 /* Sources */,
 				B557D9DF209753AA005962F4 /* Frameworks */,
@@ -3751,12 +3744,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = B557D9FA209753AA005962F4 /* Build configuration list for PBXNativeTarget "NetworkingTests" */;
 			buildPhases = (
-				64AD9A97CC7706DAF87EE1E9 /* [CP] Check Pods Manifest.lock */,
+				B1F6D78F6B870E8DADD28DC1 /* [CP] Check Pods Manifest.lock */,
 				B557D9E8209753AA005962F4 /* Sources */,
 				B557D9E9209753AA005962F4 /* Frameworks */,
 				B557D9EA209753AA005962F4 /* Resources */,
-				AF6F2217EABB7A84BD6BEF75 /* [CP] Embed Pods Frameworks */,
 				263E37EE2641F9F200260D3B /* Embed Frameworks */,
+				0248FF0BB0485F25E884875C /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -3817,6 +3810,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4A9D28E32BEB5FAE006C079F /* Debug.xcconfig in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4260,43 +4254,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		64AD9A97CC7706DAF87EE1E9 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-NetworkingTests-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		6BC2909022759950DF06CC9F /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-Networking-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		AF6F2217EABB7A84BD6BEF75 /* [CP] Embed Pods Frameworks */ = {
+		0248FF0BB0485F25E884875C /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -4311,6 +4269,28 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-NetworkingTests/Pods-NetworkingTests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		B1F6D78F6B870E8DADD28DC1 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-NetworkingTests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -5030,7 +5010,6 @@
 		};
 		1A96903F2359D9F30061E383 /* Release-Alpha */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 9BD9C6C44CAC220B3C3B90B7 /* Pods-Networking.release-alpha.xcconfig */;
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				CLANG_ENABLE_MODULES = YES;
@@ -5055,16 +5034,19 @@
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator watchos watchsimulator";
+				SUPPORTS_MACCATALYST = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = ALPHA;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1,2,4";
 				VALID_ARCHS = "$(inherited)";
+				WATCHOS_DEPLOYMENT_TARGET = 9.0;
 			};
 			name = "Release-Alpha";
 		};
 		1A9690402359D9F30061E383 /* Release-Alpha */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = D7865552BE07C116627FE528 /* Pods-NetworkingTests.release-alpha.xcconfig */;
+			baseConfigurationReference = D0ABDAB15D14042B740EE08C /* Pods-NetworkingTests.release-alpha.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -5209,7 +5191,7 @@
 		};
 		B557D9F8209753AA005962F4 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 753D6504FF01F09F6A33B73E /* Pods-Networking.debug.xcconfig */;
+			baseConfigurationReference = 4A9D28E12BEB5FAE006C079F /* Debug.xcconfig */;
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				CLANG_ENABLE_MODULES = YES;
@@ -5234,16 +5216,18 @@
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator watchos watchsimulator";
+				SUPPORTS_MACCATALYST = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1,2,4";
 				VALID_ARCHS = "$(inherited)";
+				WATCHOS_DEPLOYMENT_TARGET = 9.0;
 			};
 			name = Debug;
 		};
 		B557D9F9209753AA005962F4 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = C8F9A8CC6F90A8C9B5EF2EE2 /* Pods-Networking.release.xcconfig */;
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				CLANG_ENABLE_MODULES = YES;
@@ -5268,15 +5252,18 @@
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator watchos watchsimulator";
+				SUPPORTS_MACCATALYST = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1,2,4";
 				VALID_ARCHS = "$(inherited)";
+				WATCHOS_DEPLOYMENT_TARGET = 9.0;
 			};
 			name = Release;
 		};
 		B557D9FB209753AA005962F4 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = BD9439D9B8F2C1ED2EADAA51 /* Pods-NetworkingTests.debug.xcconfig */;
+			baseConfigurationReference = 8564B8782ADFDB27A4B072A7 /* Pods-NetworkingTests.debug.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -5298,7 +5285,7 @@
 		};
 		B557D9FC209753AA005962F4 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = F6CEE1CA2AD376C0C28AE9F6 /* Pods-NetworkingTests.release.xcconfig */;
+			baseConfigurationReference = D2F4D35C23B57594B143FB68 /* Pods-NetworkingTests.release.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;

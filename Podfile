@@ -198,14 +198,6 @@ target 'WooFoundationTests' do
   woofoundation_pods
 end
 
-# Networking Target:
-# ==================
-#
-target 'Networking' do
-  project 'Networking/Networking.xcodeproj'
-  networking_pods
-end
-
 # Unit Tests
 # ==========
 #

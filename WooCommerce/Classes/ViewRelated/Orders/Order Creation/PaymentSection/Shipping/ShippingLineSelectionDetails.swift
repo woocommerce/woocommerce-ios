@@ -11,11 +11,16 @@ struct ShippingLineSelectionDetails: View {
     @Environment(\.dismiss) var dismiss
 
     var body: some View {
-        NavigationView {
+        NavigationStack {
             List {
                 // MARK: Shipping Method
                 NavigationLink {
-                    EmptyView() // TODO-12578: Navigate to shipping method selector
+                    SingleSelectionList(title: Localization.methodTitle,
+                                        items: viewModel.shippingMethods,
+                                        contentKeyPath: \.title,
+                                        selected: $viewModel.selectedMethod,
+                                        showDoneButton: false,
+                                        backgroundColor: nil)
                 } label: {
                     VStack(alignment: .leading) {
                         Text(Localization.methodTitle)

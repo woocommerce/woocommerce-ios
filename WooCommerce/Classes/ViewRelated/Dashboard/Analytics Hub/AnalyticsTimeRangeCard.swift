@@ -37,12 +37,15 @@ struct AnalyticsTimeRangeCard: View {
     var body: some View {
         createTimeRangeContent()
             .sheet(isPresented: $showTimeRangeSelectionView) {
-                SingleSelectionList(title: Localization.timeRangeSelectionTitle,
-                                    items: Range.allCases,
-                                    contentKeyPath: \.description,
-                                    selected: internalSelectionBinding()) { selection in
-                    onSelected(selection)
+                NavigationStack {
+                    SingleSelectionList(title: Localization.timeRangeSelectionTitle,
+                                        items: Range.allCases,
+                                        contentKeyPath: \.description,
+                                        selected: internalSelectionBinding()) { selection in
+                        onSelected(selection)
+                    }
                 }
+                .wooNavigationBarStyle()
                 .sheet(isPresented: $showCustomRangeSelectionView) {
                     RangedDatePicker(startDate: selectionType.startDate, endDate: selectionType.endDate) { start, end in
                         showTimeRangeSelectionView = false // Dismiss the initial sheet for a smooth transition

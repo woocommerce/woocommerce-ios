@@ -213,6 +213,34 @@ final class ShippingLineSelectionDetailsViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.enableDoneButton)
     }
 
+    func test_view_model_disables_done_button_for_prefilled_data_and_enables_with_method_changes() {
+        // Given
+        let flatRateMethod = ShippingMethod(siteID: sampleSiteID, methodID: "flat_rate", title: "Flat rate")
+        let localPickupMethod = ShippingMethod(siteID: sampleSiteID, methodID: "local_pickup", title: "Local pickup")
+        let viewModel = ShippingLineSelectionDetailsViewModel(siteID: sampleSiteID,
+                                                              shippingMethods: [flatRateMethod, localPickupMethod],
+                                                              isExistingShippingLine: true,
+                                                              initialMethodID: flatRateMethod.methodID,
+                                                              initialMethodTitle: "Flat Rate",
+                                                              shippingTotal: "$11.30",
+                                                              locale: usLocale,
+                                                              storeCurrencySettings: usStoreSettings,
+                                                              didSelectSave: { _ in })
+        XCTAssertFalse(viewModel.enableDoneButton)
+
+        // When
+        viewModel.selectedMethod = localPickupMethod
+
+        // Then
+        XCTAssertTrue(viewModel.enableDoneButton)
+
+        // When
+        viewModel.selectedMethod = flatRateMethod
+
+        // Then
+        XCTAssertFalse(viewModel.enableDoneButton)
+    }
+
     func test_view_model_creates_shippping_line_with_data_from_fields() {
         // Given
         var savedShippingLine: ShippingLine?
@@ -232,11 +260,13 @@ final class ShippingLineSelectionDetailsViewModelTests: XCTestCase {
         // When
         viewModel.formattableAmountViewModel.amount = "$11.30"
         viewModel.methodTitle = "Flat Rate"
+        viewModel.selectedMethod = shippingMethod
         viewModel.saveData()
 
         // Then
         XCTAssertEqual(savedShippingLine?.total, "11.30")
         XCTAssertEqual(savedShippingLine?.methodTitle, "Flat Rate")
+        XCTAssertEqual(savedShippingLine?.methodID, shippingMethod.methodID)
     }
 
     func test_view_model_creates_shippping_line_with_negative_data_from_fields() {
@@ -312,6 +342,7 @@ final class ShippingLineSelectionDetailsViewModelTests: XCTestCase {
         viewModel.saveData()
         XCTAssertEqual(savedShippingLine?.total, "11.30")
         XCTAssertNotEqual(savedShippingLine?.methodTitle, "") // "Shipping" placeholder string is localized -> not reliable for comparison here.
+        XCTAssertEqual(savedShippingLine?.methodID, "")
     }
 
     func test_view_model_amount_placeholder_has_expected_value() {

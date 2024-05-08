@@ -143,10 +143,13 @@ struct ShippingLabelCustomsFormItemDetails: View {
                         isShowingCountries.toggle()
                     }
                     .sheet(isPresented: $isShowingCountries, content: {
-                        SingleSelectionList(title: Localization.originTitle,
-                                            items: viewModel.allCountries,
-                                            contentKeyPath: \.name,
-                                            selected: $viewModel.originCountry)
+                        NavigationStack {
+                            SingleSelectionList(title: Localization.originTitle,
+                                                items: viewModel.allCountries,
+                                                contentKeyPath: \.name,
+                                                selected: $viewModel.originCountry)
+                        }
+                        .wooNavigationBarStyle()
                     })
                     Divider()
                         .padding(.leading, Constants.horizontalSpacing)

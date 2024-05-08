@@ -86,32 +86,29 @@ class ShippingLineSelectionDetailsViewModel: ObservableObject {
 
         self.didSelectSave = didSelectSave
 
-        observeFormattableAmountForUIStates(with: currencyFormatter)
+        observeShippingLineDetailsForUIStates(with: currencyFormatter)
     }
 
-    func observeFormattableAmountForUIStates(with currencyFormatter: CurrencyFormatter) {
-        // Maps the formatted amount to a boolean indicating whether the amount has been updated with a valid amount.
-        let amountUpdated: AnyPublisher<Bool, Never> = formattableAmountViewModel.$amount.map { [weak self] amount in
-            guard let self, let amountDecimal = currencyFormatter.convertToDecimal(amount) as? Decimal else {
-                return false
-            }
-            return amountDecimal != self.initialAmount
-        }.eraseToAnyPublisher()
-
-        amountUpdated.combineLatest($methodTitle)
-            .map { [weak self] (amountUpdated, methodTitle) in
-                guard let self else { return false }
+    /// Observes changes to the shipping line method, amount, and method title to determine the state of the "Done" button.
+    ///
+    func observeShippingLineDetailsForUIStates(with currencyFormatter: CurrencyFormatter) {
+        formattableAmountViewModel.$amount
+            .combineLatest($methodTitle, $selectedMethod)
+            .map { [weak self] (amount, methodTitle, selectedMethod) in
+                guard let self, let amountDecimal = currencyFormatter.convertToDecimal(amount) as? Decimal else {
+                    return false
+                }
+                let amountUpdated = amountDecimal != self.initialAmount
                 let methodTitleUpdated = methodTitle != self.initialMethodTitle
-                return amountUpdated || methodTitleUpdated
-            }
-            .assign(to: &$enableDoneButton)
+                let methodUpdated = selectedMethod.methodID != self.initialMethodID
+                return amountUpdated || methodTitleUpdated || methodUpdated
+        }.assign(to: &$enableDoneButton)
     }
 
     func saveData() {
-        // TODO-12578: Save selected shipping method ID
         let shippingLine = ShippingLine(shippingID: 0,
                                         methodTitle: finalMethodTitle,
-                                        methodID: "other",
+                                        methodID: selectedMethod.methodID,
                                         total: formattableAmountViewModel.amount,
                                         totalTax: "",
                                         taxes: [])

@@ -149,7 +149,6 @@ target 'Woo Watch App' do
   alamofire
   keychain
   cocoa_lumberjack
-
 end
 
 # Yosemite Layer:

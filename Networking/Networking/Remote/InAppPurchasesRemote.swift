@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Alamofire
 import Foundation
 
@@ -167,3 +169,5 @@ private extension InAppPurchasesRemote {
         static let subscriptionGroupIdKey = "subscription_group_id"
     }
 }
+
+#endif

@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 /// Protocol for `WordPressThemeRemote` mainly used for mocking.
@@ -109,3 +111,5 @@ private extension WordPressThemeRemote {
         static let filteredThemeIDs = ["tsubaki", "tazza", "amulet", "zaino", "thriving-artist"]
     }
 }
+
+#endif

@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import Codegen
 
@@ -179,3 +181,5 @@ extension PaymentGateway.Setting: Codable {
         case value
     }
 }
+
+#endif

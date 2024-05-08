@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import Codegen
 
@@ -190,3 +192,5 @@ extension ShippingLabelCustomsForm.Item {
                   productID: productID)
     }
 }
+
+#endif

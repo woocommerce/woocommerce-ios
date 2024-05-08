@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 /// Gift Card Stats: Remote Endpoints for fetching gift card stats.
@@ -66,3 +68,5 @@ private extension GiftCardStatsRemote {
         static let forceRefresh = "force_cache_refresh"
     }
 }
+
+#endif

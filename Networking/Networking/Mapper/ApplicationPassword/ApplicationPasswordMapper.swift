@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 struct ApplicationPasswordMapper: Mapper {
@@ -16,3 +18,5 @@ struct ApplicationPasswordMapper: Mapper {
         return password
     }
 }
+
+#endif

@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import Codegen
 
@@ -108,3 +110,5 @@ extension ShippingLabelCarrierRate: Codable {
         case deliveryDateGuaranteed = "delivery_date_guaranteed"
     }
 }
+
+#endif

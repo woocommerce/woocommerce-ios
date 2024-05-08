@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import Codegen
 
@@ -68,3 +70,5 @@ private extension ProductImage {
         case alt            = "alt"
     }
 }
+
+#endif

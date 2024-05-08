@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 
@@ -38,3 +40,5 @@ private struct TaxClassListEnvelope: Decodable {
         case taxClasses = "data"
     }
 }
+
+#endif

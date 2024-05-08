@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import Codegen
 
@@ -13,3 +15,5 @@ public enum WCPayPaymentMethodType: String, Codable, GeneratedCopiable, Generate
     case interacPresent = "interac_present"
     case unknown
 }
+
+#endif

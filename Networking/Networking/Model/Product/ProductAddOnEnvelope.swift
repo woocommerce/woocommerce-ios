@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 /// Helper to unwrap the product add-ons envelope inside the product metadata.
@@ -89,3 +91,5 @@ public enum ProductAddOnEnvelopeError: Error {
     ///
     case invalidJsonObject([String: Any])
 }
+
+#endif

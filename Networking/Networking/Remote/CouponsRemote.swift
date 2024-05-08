@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 /// Protocol for `CouponsRemote` mainly used for mocking.
@@ -283,3 +285,5 @@ public extension CouponsRemote {
         static let after = "after"
     }
 }
+
+#endif

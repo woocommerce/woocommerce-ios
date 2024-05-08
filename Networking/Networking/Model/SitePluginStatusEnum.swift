@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import Codegen
 
@@ -62,3 +64,5 @@ private enum Keys {
     static let inactive      = "inactive"
     static let unknown       = "unknown"
 }
+
+#endif

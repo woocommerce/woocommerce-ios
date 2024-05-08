@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 /// Data Remote Endpoints.
@@ -24,3 +26,5 @@ private extension DataRemote {
         static let countries = "data/countries"
     }
 }
+
+#endif

@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 /// Mapper: ProductsBulkUpdateMapper
@@ -45,3 +47,5 @@ private struct ProductsContainer: Decodable {
         case updatedProducts = "update"
     }
 }
+
+#endif

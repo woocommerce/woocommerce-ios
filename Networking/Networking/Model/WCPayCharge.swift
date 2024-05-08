@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import Codegen
 
@@ -151,3 +153,5 @@ internal extension WCPayCharge {
 enum WCPayChargeDecodingError: Error {
     case missingSiteID
 }
+
+#endif

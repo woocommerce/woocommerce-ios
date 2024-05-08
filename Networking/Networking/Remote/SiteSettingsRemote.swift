@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 
@@ -104,3 +106,5 @@ private extension SiteSettingsRemote {
         static let valueParameter: String = "value"
     }
 }
+
+#endif

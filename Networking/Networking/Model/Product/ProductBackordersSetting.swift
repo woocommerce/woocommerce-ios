@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import Codegen
 
@@ -65,3 +67,5 @@ private enum Keys {
     static let allowedAndNotifyCustomer = "notify"
     static let notAllowed = "no"
 }
+
+#endif

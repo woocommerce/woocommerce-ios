@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import Codegen
 
@@ -110,3 +112,5 @@ internal extension Subscription {
 enum SubscriptionDecodingError: Error {
     case missingSiteID
 }
+
+#endif

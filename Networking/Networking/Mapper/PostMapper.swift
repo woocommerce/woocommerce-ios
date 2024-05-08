@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 
@@ -12,3 +14,5 @@ class PostMapper: Mapper {
         return try decoder.decode(Post.self, from: response)
     }
 }
+
+#endif

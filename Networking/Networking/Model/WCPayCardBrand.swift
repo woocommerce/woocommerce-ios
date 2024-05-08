@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import Codegen
 
@@ -18,3 +20,5 @@ public enum WCPayCardBrand: String, Codable, GeneratedCopiable, GeneratedFakeabl
     case visa
     case unknown
 }
+
+#endif

@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import Codegen
 
@@ -58,3 +60,5 @@ public extension WordPressTheme {
         return URL(string: urlStr)
     }
 }
+
+#endif

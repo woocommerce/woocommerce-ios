@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import Codegen
 
@@ -158,3 +160,5 @@ private extension Address {
         case email      = "email"
     }
 }
+
+#endif

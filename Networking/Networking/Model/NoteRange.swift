@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import Codegen
 
@@ -152,3 +154,5 @@ extension NoteRange {
         case unknown
     }
 }
+
+#endif

@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import Codegen
 
@@ -182,3 +184,5 @@ public struct BlazeCampaignBudget: Codable, GeneratedFakeable, GeneratedCopiable
         case daily
     }
 }
+
+#endif

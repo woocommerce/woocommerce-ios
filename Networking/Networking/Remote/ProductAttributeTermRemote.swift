@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 /// Product Attribute Term: Remote Endpoints
@@ -90,3 +92,5 @@ public extension ProductAttributeTermRemote {
         static let name: String = "name"
     }
 }
+
+#endif

@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import Codegen
 
@@ -164,3 +166,5 @@ extension JustInTimeMessage {
 enum JustInTimeMessageDecodingError: Error {
     case missingSiteID
 }
+
+#endif

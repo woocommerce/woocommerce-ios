@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import Codegen
 
@@ -10,3 +12,5 @@ public enum ShippingLabelPaymentCardType: String, Decodable, GeneratedFakeable {
     case visa
     case paypal
 }
+
+#endif

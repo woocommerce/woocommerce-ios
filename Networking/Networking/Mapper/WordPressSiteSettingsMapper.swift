@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 /// Mapper: WordPress Site Settings
@@ -28,3 +30,5 @@ public struct WordPressSiteSettings: Decodable, Equatable {
         case url
     }
 }
+
+#endif

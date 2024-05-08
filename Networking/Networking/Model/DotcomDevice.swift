@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 
@@ -40,3 +42,5 @@ extension DotcomDevice {
 enum DotcomDeviceParseError: Error {
     case missingDeviceID
 }
+
+#endif

@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import Codegen
 
@@ -200,3 +202,5 @@ public extension Product {
                   combineVariationQuantities: nil)
     }
 }
+
+#endif

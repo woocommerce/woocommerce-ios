@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import Codegen
 
@@ -115,3 +117,5 @@ extension User: Comparable {
 enum UserDecodingError: Error {
     case missingSiteID
 }
+
+#endif

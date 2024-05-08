@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 struct WooPaymentsDepositsOverviewMapper: Mapper {
@@ -20,3 +22,5 @@ private struct WooPaymentsDepositsOverviewEnvelope: Decodable {
         case depositsOverview = "data"
     }
 }
+
+#endif

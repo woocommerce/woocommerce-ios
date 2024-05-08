@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 /// Mapper: `BlazeAISuggestion`
@@ -15,3 +17,5 @@ struct BlazeAISuggestionListMapper: Mapper {
 private struct BlazeAISuggestionsEnvelope: Decodable {
     let creatives: [BlazeAISuggestion]
 }
+
+#endif

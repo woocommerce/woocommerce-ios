@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 /// Mapper: `WordPressTheme`
@@ -11,3 +13,5 @@ struct WordPressThemeMapper: Mapper {
         return try decoder.decode(WordPressTheme.self, from: response)
     }
 }
+
+#endif

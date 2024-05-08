@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import Codegen
 
@@ -39,3 +41,5 @@ extension ShippingLabelStoreOptions: Decodable {
         case originCountry = "origin_country"
     }
 }
+
+#endif

@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import Codegen
 
@@ -16,3 +18,5 @@ public struct BlazeImpressions: Decodable, Equatable, GeneratedCopiable, Generat
         self.totalImpressionsMax = totalImpressionsMax
     }
 }
+
+#endif

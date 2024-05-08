@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import Codegen
 
@@ -64,3 +66,5 @@ private enum Keys {
     static let pendingCancel = "pending-cancel"
     static let cancelled     = "cancelled"
 }
+
+#endif

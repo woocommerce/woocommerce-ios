@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import Codegen
 
@@ -108,3 +110,5 @@ enum SiteSettingError: Error {
     case missingSiteID
     case missingSettingGroupKey
 }
+
+#endif

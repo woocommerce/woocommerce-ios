@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 public extension SystemStatus {
@@ -7,3 +9,5 @@ public extension SystemStatus {
         public let type, count: String
     }
 }
+
+#endif

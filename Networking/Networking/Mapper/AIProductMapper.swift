@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 /// Mapper: `AIProduct` generated using AI
@@ -15,3 +17,5 @@ struct AIProductMapper: Mapper {
 private struct TextCompletionResponse: Decodable {
     let completion: String
 }
+
+#endif

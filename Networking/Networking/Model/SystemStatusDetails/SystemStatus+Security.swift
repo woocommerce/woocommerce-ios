@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 public extension SystemStatus {
@@ -12,3 +14,5 @@ public extension SystemStatus {
         }
     }
 }
+
+#endif

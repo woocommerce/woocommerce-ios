@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import Codegen
 
@@ -77,3 +79,5 @@ public extension OrderAttributionInfo {
         public static let mobileAppSourceType = "mobile_app"
     }
 }
+
+#endif

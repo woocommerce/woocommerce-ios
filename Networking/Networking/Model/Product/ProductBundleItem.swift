@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import Codegen
 
@@ -145,3 +147,5 @@ public enum ProductBundleItemStockStatus: String, Codable, GeneratedFakeable {
     case outOfStock     = "out_of_stock"
     case onBackOrder    = "on_backorder"
 }
+
+#endif

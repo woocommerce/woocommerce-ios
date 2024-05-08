@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 /// Mapper: ShippingMethod List
@@ -36,3 +38,5 @@ private struct ShippingMethodEnvelope: Decodable {
         case methods = "data"
     }
 }
+
+#endif

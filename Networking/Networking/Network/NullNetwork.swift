@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Combine
 import Foundation
 import Alamofire
@@ -27,3 +29,5 @@ public final class NullNetwork: Network {
                                         to request: URLRequestConvertible,
                                         completion: @escaping (Data?, Error?) -> Void) { }
 }
+
+#endif

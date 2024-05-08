@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import Codegen
 
@@ -517,3 +519,5 @@ extension ProductVariation: Hashable {
         hasher.combine(productVariationID)
     }
 }
+
+#endif

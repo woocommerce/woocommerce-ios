@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 /// Mapper: TaxRate List
@@ -36,3 +38,5 @@ private struct TaxRateListEnvelope: Decodable {
         case taxClasses = "data"
     }
 }
+
+#endif

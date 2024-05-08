@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 /// Mapper: `BlazePaymentInfo`
@@ -12,3 +14,5 @@ struct BlazePaymentInfoMapper: Mapper {
         return try decoder.decode(BlazePaymentInfo.self, from: response)
     }
 }
+
+#endif

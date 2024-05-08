@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 /// Protocol for `SubscriptionsRemote` mainly used for mocking.
@@ -70,3 +72,5 @@ private extension SubscriptionsRemote {
         static let parentOrder = "parent"
     }
 }
+
+#endif

@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 /// Mapper: StoreOnboardingTask
@@ -45,3 +47,5 @@ private struct StoreOnboardingTaskEnvelope: Decodable {
         case group = "data"
     }
 }
+
+#endif

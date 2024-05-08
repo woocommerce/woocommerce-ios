@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import Codegen
 
@@ -90,3 +92,5 @@ public enum CompositeComponentOptionType: String, Codable, GeneratedFakeable {
     case productIDs     = "product_ids"
     case categoryIDs    = "category_ids"
 }
+
+#endif

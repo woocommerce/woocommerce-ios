@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 
@@ -40,3 +42,5 @@ private extension SiteAPIRemote {
         static let fieldValues: String = "authentication,namespaces"
     }
 }
+
+#endif

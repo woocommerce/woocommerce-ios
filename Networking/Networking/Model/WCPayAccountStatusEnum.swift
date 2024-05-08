@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import Codegen
 
@@ -128,3 +130,5 @@ private enum Keys {
     /// An unrecognized response was returned for the account status field.
     static let unknown                = "UNKNOWN"
 }
+
+#endif

@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 
@@ -39,3 +41,5 @@ private struct SiteAPIEnvelope: Decodable {
         case siteAPI = "data"
     }
 }
+
+#endif

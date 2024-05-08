@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 
@@ -113,3 +115,5 @@ private extension CommentRemote {
         static let edit: String       = "edit"
     }
 }
+
+#endif

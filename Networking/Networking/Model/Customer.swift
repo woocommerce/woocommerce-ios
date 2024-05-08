@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import Codegen
 
@@ -100,3 +102,5 @@ extension Customer {
         case missingSiteID
     }
 }
+
+#endif

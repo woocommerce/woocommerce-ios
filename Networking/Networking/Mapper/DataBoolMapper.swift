@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 /// Mapper: Bool Result, Wrapped in `data` Key or not
@@ -27,3 +29,5 @@ private struct DataBool: Decodable {
         case data
     }
 }
+
+#endif

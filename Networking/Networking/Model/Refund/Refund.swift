@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import Codegen
 
@@ -163,3 +165,5 @@ enum RefundDecodingError: Error {
     case missingOrderID
     case missingSiteID
 }
+
+#endif

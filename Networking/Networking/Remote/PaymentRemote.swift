@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import struct Alamofire.JSONEncoding
 import struct Alamofire.URLEncoding
@@ -302,3 +304,5 @@ private extension PaymentRemote {
         static let cartCheckout = "me/transactions"
     }
 }
+
+#endif

@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 /// Mapper: System Plugins
@@ -40,3 +42,5 @@ struct SystemPluginMapper: Mapper {
         return activePlugins + inactivePlugins
     }
 }
+
+#endif

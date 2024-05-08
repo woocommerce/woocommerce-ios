@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 /// Mapper: WCAnalyticsCustomer
@@ -28,3 +30,5 @@ private struct WCAnalyticsCustomerEnvelope: Decodable {
         case customer = "data"
     }
 }
+
+#endif

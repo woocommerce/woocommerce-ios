@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 /// Represents the rate for all the Shipping Carriers
@@ -54,3 +56,5 @@ private struct ShippingLabelRatesEnvelope: Decodable {
         case rates
     }
 }
+
+#endif

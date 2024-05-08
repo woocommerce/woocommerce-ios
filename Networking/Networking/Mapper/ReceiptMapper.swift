@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 struct ReceiptMapper: Mapper {
@@ -18,3 +20,5 @@ struct ReceiptMapper: Mapper {
 private struct ReceiptEnvelope: Decodable {
     let data: Receipt
 }
+
+#endif

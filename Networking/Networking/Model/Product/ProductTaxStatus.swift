@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import Codegen
 
@@ -61,3 +63,5 @@ private enum Keys {
     static let shipping = "shipping"
     static let none     = "none"
 }
+
+#endif

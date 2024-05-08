@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import Codegen
 
@@ -33,3 +35,5 @@ private extension ProductVariationAttribute {
         case option
     }
 }
+
+#endif

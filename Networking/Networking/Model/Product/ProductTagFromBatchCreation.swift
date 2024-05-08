@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 /// Represents a ProductTag entity, used during a tag creation.
@@ -65,3 +67,5 @@ private extension ProductTagFromBatchCreation {
 enum ProductTagCreateDecodingError: Error {
     case missingSiteID
 }
+
+#endif

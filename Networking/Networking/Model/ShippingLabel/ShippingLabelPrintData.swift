@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import Codegen
 
@@ -29,3 +31,5 @@ private extension ShippingLabelPrintData {
         case base64Content = "b64Content"
     }
 }
+
+#endif

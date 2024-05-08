@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 /// Protocol for `ProductsRemote` mainly used for mocking.
@@ -502,3 +504,5 @@ private extension ProductsRemote.Order {
         }
     }
 }
+
+#endif

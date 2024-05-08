@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 /// Mapper for a `PaymentGateway` JSON object
@@ -36,3 +38,5 @@ private struct PaymentGatewayEnvelope: Decodable {
 
     let paymentGateway: PaymentGateway
 }
+
+#endif

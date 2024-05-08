@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 
@@ -26,3 +28,5 @@ private extension InAppPurchaseOrderResultMapper {
         case parseError
     }
 }
+
+#endif

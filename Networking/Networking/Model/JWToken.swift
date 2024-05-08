@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 /// Authentication token for WPCOM AI endpoint
@@ -15,3 +17,5 @@ struct JWToken {
     ///
     let siteID: Int64
 }
+
+#endif

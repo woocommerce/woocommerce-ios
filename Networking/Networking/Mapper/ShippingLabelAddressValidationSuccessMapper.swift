@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 
@@ -30,3 +32,5 @@ private struct ShippingLabelAddressValidationResponseEnvelope: Decodable {
         case data = "data"
     }
 }
+
+#endif

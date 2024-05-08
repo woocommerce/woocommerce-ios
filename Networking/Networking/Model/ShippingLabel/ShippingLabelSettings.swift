@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import Codegen
 
@@ -16,3 +18,5 @@ public struct ShippingLabelSettings: Equatable, GeneratedFakeable {
         self.paperSize = paperSize
     }
 }
+
+#endif

@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import Codegen
 
@@ -55,3 +57,5 @@ extension ProductDefaultAttribute: Comparable {
             (lhs.attributeID == rhs.attributeID && lhsName < rhsName)
     }
 }
+
+#endif

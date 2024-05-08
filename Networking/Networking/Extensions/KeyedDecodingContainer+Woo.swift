@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 /// Defines an alternative way of decoding a type to the target type.
@@ -204,3 +206,5 @@ private extension KeyedDecodingContainer {
 private enum DecodingConstants {
     static let booleanTrueAsInteger = 1
 }
+
+#endif

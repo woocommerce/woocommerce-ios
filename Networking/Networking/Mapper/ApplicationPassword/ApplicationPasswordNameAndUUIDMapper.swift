@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 struct ApplicationPasswordNameAndUUIDMapper: Mapper {
@@ -6,3 +8,5 @@ struct ApplicationPasswordNameAndUUIDMapper: Mapper {
         return try decoder.decode([ApplicationPasswordNameAndUUID].self, from: response)
     }
 }
+
+#endif

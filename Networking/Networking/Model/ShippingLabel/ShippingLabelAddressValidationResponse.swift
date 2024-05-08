@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 /// Represents Shipping Label Address that has been validated or that generated an error.
@@ -42,3 +44,5 @@ private extension ShippingLabelAddressValidationResponse {
         case isTrivialNormalization = "is_trivial_normalization"
     }
 }
+
+#endif

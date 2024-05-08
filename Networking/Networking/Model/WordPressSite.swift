@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 /// Represents basic information for a WordPress site.
@@ -146,3 +148,5 @@ private extension WordPressSite {
         static let wooNameSpace = "wc/"
     }
 }
+
+#endif

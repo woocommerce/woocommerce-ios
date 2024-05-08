@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Alamofire
 
 /// Converter to convert Jetpack tunnel requests into REST API requests if needed
@@ -28,3 +30,5 @@ struct RequestConverter {
         return restRequest
     }
 }
+
+#endif

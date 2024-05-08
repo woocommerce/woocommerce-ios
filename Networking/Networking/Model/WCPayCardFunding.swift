@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import Codegen
 
@@ -17,3 +19,5 @@ public enum WCPayCardFunding: String, Codable, GeneratedCopiable, GeneratedFakea
     case savings
     case unknown
 }
+
+#endif

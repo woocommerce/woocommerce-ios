@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 /// Protocol for `MediaRemote` mainly used for mocking.
@@ -302,3 +304,5 @@ public extension MediaRemote {
         static let wordPressMediaFields = "id,date_gmt,slug,mime_type,source_url,alt_text,media_details,title"
     }
 }
+
+#endif

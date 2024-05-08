@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import Codegen
 
@@ -100,3 +102,5 @@ private enum Keys {
     static let bundle               = "bundle"
     static let composite            = "composite"
 }
+
+#endif

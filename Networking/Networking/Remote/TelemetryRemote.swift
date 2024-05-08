@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 
@@ -31,3 +33,5 @@ public class TelemetryRemote: Remote {
         enqueue(request, mapper: mapper, completion: completion)
     }
 }
+
+#endif

@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import Codegen
 
@@ -61,3 +63,5 @@ internal extension WCPayPaymentMethodDetails {
 enum WCPayPaymentMethodDetailsDecodingError: Error {
     case noDetailsPresentForPaymentType
 }
+
+#endif

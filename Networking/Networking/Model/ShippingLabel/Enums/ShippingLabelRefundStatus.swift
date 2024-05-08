@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import Codegen
 
@@ -34,3 +36,5 @@ extension ShippingLabelRefundStatus: RawRepresentable {
 private enum Keys {
     static let pending = "pending"
 }
+
+#endif

@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 /// Constants to be shared in Networking layer.
@@ -16,3 +18,5 @@ public enum WooConstants {
     /// Slug of the free trial WooExpress plan
     static let freeTrialPlanSlug = "ecommerce-trial-bundle-monthly"
 }
+
+#endif

@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Combine
 import Foundation
 import Alamofire
@@ -168,3 +170,5 @@ extension Alamofire.DataResponse {
         }
     }
 }
+
+#endif

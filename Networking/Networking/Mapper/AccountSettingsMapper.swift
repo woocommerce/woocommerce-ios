@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 
@@ -22,3 +24,5 @@ struct AccountSettingsMapper: Mapper {
         return try decoder.decode(AccountSettings.self, from: response)
     }
 }
+
+#endif

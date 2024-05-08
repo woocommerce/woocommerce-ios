@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import Codegen
 
@@ -132,3 +134,5 @@ extension InboxNote: Codable {
 enum InboxNoteDecodingError: Error {
     case missingSiteID
 }
+
+#endif

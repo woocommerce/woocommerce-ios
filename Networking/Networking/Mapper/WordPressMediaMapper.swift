@@ -1,3 +1,5 @@
+#if os(iOS)
+
 /// Mapper: WordPressMedia
 ///
 struct WordPressMediaMapper: Mapper {
@@ -23,3 +25,5 @@ struct WordPressMediaListMapper: Mapper {
 private enum Constants {
     static let dateFormatterForDecoding = DateFormatter.Defaults.dateTimeFormatter
 }
+
+#endif

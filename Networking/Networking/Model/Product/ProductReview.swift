@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import Codegen
 
@@ -121,3 +123,5 @@ private extension ProductReview {
 enum ProductReviewDecodingError: Error {
     case missingSiteID
 }
+
+#endif

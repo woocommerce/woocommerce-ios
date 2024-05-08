@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 /// Represents a ProductCategory entity, used during categories batch creation.
@@ -67,3 +69,5 @@ private extension ProductCategoryFromBatchCreation {
 enum ProductCategoryCreateDecodingError: Error {
     case missingSiteID
 }
+
+#endif

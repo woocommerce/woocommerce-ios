@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import Codegen
 
@@ -69,3 +71,5 @@ public struct OrderItemBundleItem: Encodable, Equatable, Hashable, GeneratedFake
         case variationAttributes = "attributes"
     }
 }
+
+#endif

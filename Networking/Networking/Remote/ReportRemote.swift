@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 
@@ -24,3 +26,5 @@ private extension ReportRemote {
         static let orderTotalsPath = "reports/orders/totals"
     }
 }
+
+#endif

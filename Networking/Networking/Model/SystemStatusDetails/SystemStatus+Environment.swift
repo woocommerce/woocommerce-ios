@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 public extension SystemStatus {
@@ -69,3 +71,5 @@ private extension SystemStatus.Environment {
         case remoteGetSuccessful = "remote_get_successful"
     }
 }
+
+#endif

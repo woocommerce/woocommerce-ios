@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Codegen
 
 /// WordPress Site Media
@@ -92,3 +94,5 @@ private extension Media {
         case width
     }
 }
+
+#endif

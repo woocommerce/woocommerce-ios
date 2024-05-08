@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 public class CustomerRemote: Remote {
@@ -21,3 +23,5 @@ public class CustomerRemote: Remote {
         enqueue(request, mapper: mapper, completion: completion)
     }
 }
+
+#endif

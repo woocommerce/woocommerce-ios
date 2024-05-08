@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import Codegen
 
@@ -46,3 +48,5 @@ extension ShipmentTrackingProviderGroup: CustomStringConvertible {
         return name + " providers: \(providers)"
     }
 }
+
+#endif

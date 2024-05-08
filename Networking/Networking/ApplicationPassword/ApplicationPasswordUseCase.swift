@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import enum Alamofire.AFError
 import KeychainAccess
@@ -249,3 +251,5 @@ private extension DefaultApplicationPasswordUseCase {
         static let adminPath = "/wp-admin/"
     }
 }
+
+#endif

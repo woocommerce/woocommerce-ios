@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 extension Decimal {
@@ -11,3 +13,5 @@ extension Decimal {
         self.exponent >= 0
     }
 }
+
+#endif

@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 /// Helper to extract specific data from inside `Product` metadata.
@@ -109,3 +111,5 @@ public enum ProductMetadataExtractorError: Error {
     ///
     case invalidJSONObject([String: Any?])
 }
+
+#endif

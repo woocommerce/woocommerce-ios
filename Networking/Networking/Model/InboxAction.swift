@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import Codegen
 
@@ -53,3 +55,5 @@ extension InboxAction: Codable {
         case url
     }
 }
+
+#endif

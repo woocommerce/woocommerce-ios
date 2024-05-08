@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 /// Mapper: BlazeImpressions
@@ -12,3 +14,5 @@ struct BlazeImpressionsMapper: Mapper {
         return try decoder.decode(BlazeImpressions.self, from: response)
     }
 }
+
+#endif

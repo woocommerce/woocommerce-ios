@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 
@@ -21,3 +23,5 @@ public struct NoteHash: Decodable {
         case hash = "note_hash"
     }
 }
+
+#endif

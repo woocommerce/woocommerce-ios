@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 /// Mapper: ProductShippingClass List
@@ -38,3 +40,5 @@ private struct ProductShippingClassListEnvelope: Decodable {
         case data = "data"
     }
 }
+
+#endif

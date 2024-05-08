@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Alamofire
 import Combine
 import Foundation
@@ -178,3 +180,5 @@ private extension WordPressOrgNetwork {
         let message: String
     }
 }
+
+#endif

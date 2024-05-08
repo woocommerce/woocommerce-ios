@@ -386,6 +386,7 @@
 		45ED4F12239E8C57004F1BE3 /* taxes-classes.json in Resources */ = {isa = PBXBuildFile; fileRef = 45ED4F11239E8C57004F1BE3 /* taxes-classes.json */; };
 		45ED4F14239E8F2E004F1BE3 /* TaxRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45ED4F13239E8F2E004F1BE3 /* TaxRemoteTests.swift */; };
 		4A9D28E32BEB5FAE006C079F /* Debug.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 4A9D28E12BEB5FAE006C079F /* Debug.xcconfig */; };
+		4A9D28E42BEB65C3006C079F /* String+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 263A6DA72BEAA0DB00C292B2 /* String+Helpers.swift */; };
 		57150E1524F462E600E81611 /* TestKit in Frameworks */ = {isa = PBXBuildFile; productRef = 57150E1424F462E600E81611 /* TestKit */; };
 		5726F159248E9D88005AE9B4 /* Models+Copiable.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5726F158248E9D88005AE9B4 /* Models+Copiable.generated.swift */; };
 		5726F7342460A8F00031CAAC /* CopiableTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5726F7332460A8F00031CAAC /* CopiableTests.swift */; };
@@ -4300,6 +4301,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4A9D28E42BEB65C3006C079F /* String+Helpers.swift in Sources */,
 				74ABA1CF213F1D1600FFAD30 /* TopEarnerStatsItem.swift in Sources */,
 				FE28F6E6268429B6004465C7 /* UserRemote.swift in Sources */,
 				02AD47702A6EB71100E652D6 /* URLRequestConvertible+Path.swift in Sources */,

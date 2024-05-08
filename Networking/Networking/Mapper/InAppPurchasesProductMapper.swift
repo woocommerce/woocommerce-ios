@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 /// Mapper: IAP Product
@@ -11,3 +13,5 @@ struct InAppPurchasesProductMapper: Mapper {
         return try decoder.decode([String].self, from: response)
     }
 }
+
+#endif

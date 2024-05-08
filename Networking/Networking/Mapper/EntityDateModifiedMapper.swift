@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 /// Mapper: Date Modified for an entity, Wrapped in `data` Key or not
@@ -44,3 +46,5 @@ private struct ModifiedEntity: Decodable {
         case dateModified = "date_modified_gmt"
     }
 }
+
+#endif

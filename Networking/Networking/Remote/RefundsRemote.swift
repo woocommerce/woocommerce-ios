@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 
@@ -144,3 +146,5 @@ public extension RefundsRemote {
         static let include: String    = "include"
     }
 }
+
+#endif

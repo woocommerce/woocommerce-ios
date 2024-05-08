@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 /// Mapper for `[Announcement]`
@@ -23,3 +25,5 @@ private struct AnnouncementsContainer: Decodable {
         announcements = try rootContainer.decode([Announcement].self, forKey: .announcements)
     }
 }
+
+#endif

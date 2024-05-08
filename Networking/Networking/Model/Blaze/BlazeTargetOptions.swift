@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Codegen
 import Foundation
 
@@ -137,3 +139,5 @@ public final class BlazeTargetLocation: NSObject, Decodable, Identifiable, Gener
         return locations.map { $0.name }
     }
 }
+
+#endif

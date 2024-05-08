@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 
@@ -37,3 +39,5 @@ private struct ReportOrderTotalsEnvelope: Decodable {
         case data
     }
 }
+
+#endif

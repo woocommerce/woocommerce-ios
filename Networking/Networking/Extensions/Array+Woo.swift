@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 
@@ -18,3 +20,5 @@ extension Array where Element == Int64 {
         return items
     }
 }
+
+#endif

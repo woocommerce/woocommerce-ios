@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 
@@ -11,3 +13,5 @@ struct DotcomDeviceMapper: Mapper {
         return try JSONDecoder().decode(DotcomDevice.self, from: response)
     }
 }
+
+#endif

@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import Codegen
 
@@ -26,3 +28,5 @@ extension Receipt {
         case expirationDate = "expiration_date"
     }
 }
+
+#endif

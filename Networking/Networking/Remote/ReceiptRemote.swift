@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 public final class ReceiptRemote: Remote {
@@ -38,3 +40,5 @@ private extension ReceiptRemote {
         static let forceRegenerate: String = "force_new"
     }
 }
+
+#endif

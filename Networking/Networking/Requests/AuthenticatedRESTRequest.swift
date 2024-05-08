@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import Alamofire
 
@@ -29,3 +31,5 @@ struct AuthenticatedRESTRequest: URLRequestConvertible {
         request
     }
 }
+
+#endif

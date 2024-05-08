@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 
@@ -45,3 +47,5 @@ private struct GiftCardStatsEnvelope: Decodable {
         case giftCardStats = "data"
     }
 }
+
+#endif

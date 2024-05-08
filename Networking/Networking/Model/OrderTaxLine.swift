@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import Codegen
 
@@ -78,3 +80,5 @@ private extension OrderTaxLine {
         case attributes        = "meta_data"
     }
 }
+
+#endif

@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 /// Endpoints for WordPress site information.
@@ -34,3 +36,5 @@ private extension WordPressSiteRemote {
         static let pages = "/?rest_route=/wp/v2/pages&_fields=id,title,link"
     }
 }
+
+#endif

@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import Codegen
 
@@ -291,3 +293,5 @@ private extension Site {
         static let aiAssistantFeature = "ai-assistant"
     }
 }
+
+#endif

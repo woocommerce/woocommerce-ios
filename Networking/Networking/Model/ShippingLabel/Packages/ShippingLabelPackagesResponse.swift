@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import Codegen
 
@@ -128,3 +130,5 @@ private extension ShippingLabelPackagesResponse {
         return (try? JSONDecoder().decode([ShippingLabelPredefinedPackage].self, from: jsonData)) ?? []
     }
 }
+
+#endif

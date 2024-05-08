@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 /// Mapper: System Status
@@ -35,3 +37,5 @@ struct SystemStatusEnvelope: Decodable {
         case systemStatus = "data"
     }
 }
+
+#endif

@@ -1,3 +1,5 @@
+#if os(iOS)
+
 // Generated using Sourcery 1.0.3 — https://github.com/krzysztofzablocki/Sourcery
 // DO NOT EDIT
 import Codegen
@@ -3770,3 +3772,5 @@ extension Networking.WordPressTheme {
         )
     }
 }
+
+#endif

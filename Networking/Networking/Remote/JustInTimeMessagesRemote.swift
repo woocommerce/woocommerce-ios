@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 public protocol JustInTimeMessagesRemoteProtocol {
@@ -147,3 +149,5 @@ public extension JustInTimeMessagesRemote {
         }
     }
 }
+
+#endif

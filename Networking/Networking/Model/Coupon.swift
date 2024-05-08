@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import Codegen
 
@@ -259,3 +261,5 @@ extension Coupon.DiscountType: Codable {
 extension Coupon: GeneratedCopiable, GeneratedFakeable, Equatable {}
 
 extension Coupon.DiscountType: GeneratedCopiable, GeneratedFakeable, Equatable {}
+
+#endif

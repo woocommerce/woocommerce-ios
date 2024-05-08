@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import Codegen
 
@@ -172,3 +174,5 @@ public enum AddOnPriceType: String, Codable, GeneratedFakeable {
     case quantityBased = "quantity_based"
     case percentageBased = "percentage_based"
 }
+
+#endif

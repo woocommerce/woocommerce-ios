@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import Codegen
 
@@ -50,3 +52,5 @@ private enum Keys {
     static let product = "product"
     static let advanged = "advanced"
 }
+
+#endif

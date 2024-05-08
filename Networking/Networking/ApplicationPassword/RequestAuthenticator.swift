@@ -1,3 +1,5 @@
+#if os(iOS)
+
 enum RequestAuthenticatorError: Error {
     case applicationPasswordUseCaseNotAvailable
     case applicationPasswordNotAvailable
@@ -129,3 +131,5 @@ private extension DefaultRequestAuthenticator {
         return AuthenticatedRESTRequest(applicationPassword: applicationPassword, request: urlRequest).asURLRequest()
     }
 }
+
+#endif

@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 import class Aztec.HTMLParser
@@ -14,3 +16,5 @@ extension String {
         HTMLParser().parse(self).rawText()
     }
 }
+
+#endif

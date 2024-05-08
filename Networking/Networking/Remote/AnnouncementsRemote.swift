@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 /// Protocol used to mock the remote.
@@ -49,3 +51,5 @@ private extension AnnouncementsRemote {
         static let WooCommerceAppId = "4"
     }
 }
+
+#endif

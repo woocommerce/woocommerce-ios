@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import Codegen
 
@@ -126,3 +128,5 @@ private extension SitePlugin {
 enum SitePluginError: Error {
     case missingSiteID
 }
+
+#endif

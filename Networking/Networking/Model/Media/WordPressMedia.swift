@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Codegen
 
 /// Media from WordPress Site API
@@ -111,3 +113,5 @@ private extension WordPressMedia {
         case title
     }
 }
+
+#endif

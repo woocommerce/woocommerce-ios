@@ -1,3 +1,5 @@
+#if os(iOS)
+
 /// Mapper: Card reader connection token
 ///
 struct ReaderConnectionTokenMapper: Mapper {
@@ -28,3 +30,5 @@ private struct ReaderConnectionTokenEnvelope: Decodable {
         case token = "data"
     }
 }
+
+#endif

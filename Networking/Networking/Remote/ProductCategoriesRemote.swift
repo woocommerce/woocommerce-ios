@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 public protocol ProductCategoriesRemoteProtocol {
@@ -212,3 +214,5 @@ public extension ProductCategoriesRemote {
         static let create: String = "create"
     }
 }
+
+#endif

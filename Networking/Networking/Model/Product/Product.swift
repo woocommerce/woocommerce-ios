@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import Codegen
 
@@ -867,3 +869,5 @@ extension Product: Hashable {
         hasher.combine(productID)
     }
 }
+
+#endif

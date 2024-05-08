@@ -1,3 +1,5 @@
+#if os(iOS)
+
 /// Mapper: NewShipmentTrackingMapper
 ///
 struct NewShipmentTrackingMapper: Mapper {
@@ -38,3 +40,5 @@ private struct NewShipmentTrackingMapperEnvelope: Decodable {
         case shipmentTracking = "data"
     }
 }
+
+#endif

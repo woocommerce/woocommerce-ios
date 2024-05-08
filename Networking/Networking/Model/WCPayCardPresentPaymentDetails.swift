@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import Codegen
 
@@ -30,3 +32,5 @@ public struct WCPayCardPresentPaymentDetails: Codable, GeneratedCopiable, Genera
         self.receipt = receipt
     }
 }
+
+#endif

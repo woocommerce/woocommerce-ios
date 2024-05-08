@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import Codegen
 
@@ -135,3 +137,5 @@ enum ShippingLabelPurchaseDecodingError: Error {
     case missingSiteID
     case missingOrderID
 }
+
+#endif

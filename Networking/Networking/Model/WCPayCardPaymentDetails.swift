@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import Codegen
 
@@ -25,3 +27,5 @@ public struct WCPayCardPaymentDetails: Codable, GeneratedCopiable, GeneratedFake
         self.funding = funding
     }
 }
+
+#endif

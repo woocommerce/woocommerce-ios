@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import Codegen
 
@@ -50,3 +52,5 @@ extension ProductAttributeTerm: Decodable {
 enum ProductAttributeTermDecodingError: Error {
     case missingSiteID
 }
+
+#endif

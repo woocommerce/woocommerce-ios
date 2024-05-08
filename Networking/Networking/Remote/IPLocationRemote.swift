@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 /// Remote type to fetch the user's IP Location using the public `geo` API.
@@ -44,3 +46,5 @@ private struct IPCountryCodeMapper: Mapper {
         try JSONDecoder().decode(Response.self, from: response).countryCode
     }
 }
+
+#endif

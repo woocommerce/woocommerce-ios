@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 /// Extension to provide fallbacks to new Order properties.
@@ -23,3 +25,5 @@ internal extension Order {
         return status == .pending || status == .onHold || status == .autoDraft
     }
 }
+
+#endif

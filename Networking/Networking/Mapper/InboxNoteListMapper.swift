@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 /// Mapper: Inbox Note List
@@ -35,3 +37,5 @@ private struct InboxNoteListEnvelope: Decodable {
         case data
     }
 }
+
+#endif

@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 /// Mapper: WCPay Payment Intent
@@ -29,3 +31,5 @@ private struct WCPayPaymentIntentEnvelope: Decodable {
         case paymentIntent = "data"
     }
 }
+
+#endif

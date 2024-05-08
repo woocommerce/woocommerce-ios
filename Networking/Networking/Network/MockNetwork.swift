@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Combine
 import Foundation
 import Alamofire
@@ -199,3 +201,5 @@ private extension MockNetwork {
         }
     }
 }
+
+#endif

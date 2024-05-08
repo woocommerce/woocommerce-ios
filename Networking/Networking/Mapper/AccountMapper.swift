@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 
@@ -12,3 +14,5 @@ class AccountMapper: Mapper {
         return try decoder.decode(Account.self, from: response)
     }
 }
+
+#endif

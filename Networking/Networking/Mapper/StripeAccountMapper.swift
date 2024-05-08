@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 /// Mapper: Stripe Account
@@ -34,3 +36,5 @@ private struct StripeAccountEnvelope: Decodable {
         case account = "data"
     }
 }
+
+#endif

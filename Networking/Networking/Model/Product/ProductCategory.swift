@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import Codegen
 
@@ -105,3 +107,5 @@ public extension ProductCategory {
 enum ProductCategoryDecodingError: Error {
     case missingSiteID
 }
+
+#endif

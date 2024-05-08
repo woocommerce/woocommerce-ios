@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Codegen
 
 /// Represents the data associated with gift card stats over a specific period.
@@ -49,3 +51,5 @@ private extension GiftCardStatsTotals {
         case netAmount = "net_amount"
     }
 }
+
+#endif

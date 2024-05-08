@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import Codegen
 
@@ -73,3 +75,5 @@ extension TopEarnerStatsItem: Identifiable {
         productID
     }
 }
+
+#endif

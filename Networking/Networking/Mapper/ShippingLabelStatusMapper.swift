@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 /// Mapper: Check Status of Shipping Labels
@@ -56,3 +58,5 @@ private struct ShippingLabelStatusEnvelope: Decodable {
         case labels
     }
 }
+
+#endif

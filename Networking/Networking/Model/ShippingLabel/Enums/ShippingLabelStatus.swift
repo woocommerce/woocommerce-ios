@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import Codegen
 
@@ -46,3 +48,5 @@ private enum Keys {
     static let purchaseError = "PURCHASE_ERROR"
     static let purchaseInProgress = "PURCHASE_IN_PROGRESS"
 }
+
+#endif

@@ -1,3 +1,5 @@
+#if os(iOS)
+
 
 import Foundation
 
@@ -84,3 +86,5 @@ private extension Data {
         }
     }
 }
+
+#endif

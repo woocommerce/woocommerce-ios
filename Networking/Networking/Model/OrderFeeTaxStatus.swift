@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import Codegen
 
@@ -55,3 +57,5 @@ private enum Keys {
     static let taxable  = "taxable"
     static let none     = "none"
 }
+
+#endif

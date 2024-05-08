@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 
@@ -9,3 +11,5 @@ struct IgnoringResponseMapper: Mapper {
         // Do nothing, accept any type of response, including null
     }
 }
+
+#endif

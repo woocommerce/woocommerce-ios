@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import Codegen
 import WooFoundation
@@ -81,3 +83,5 @@ extension ShippingLabelCustomPackage: Codable {
         case maxWeight = "max_weight"
     }
 }
+
+#endif

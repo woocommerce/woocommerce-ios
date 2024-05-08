@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import Codegen
 
@@ -50,3 +52,5 @@ extension OrderRefundCondensed: Comparable {
             (lhs.refundID == rhs.refundID && lhs.total < rhs.total)
     }
 }
+
+#endif

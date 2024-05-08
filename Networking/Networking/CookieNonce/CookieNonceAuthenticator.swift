@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Alamofire
 import Foundation
 
@@ -181,3 +183,5 @@ extension CookieNonceAuthenticator {
         return request
     }
 }
+
+#endif

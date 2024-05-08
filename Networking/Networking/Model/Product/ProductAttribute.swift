@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import Codegen
 
@@ -125,3 +127,5 @@ extension ProductAttribute: Comparable {
 enum ProductAttributeDecodingError: Error {
     case missingSiteID
 }
+
+#endif

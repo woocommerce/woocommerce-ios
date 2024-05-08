@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 /// Order: Remote Endpoints
@@ -458,3 +460,5 @@ public extension OrdersRemote {
         case customerID
     }
 }
+
+#endif

@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import Codegen
 
@@ -417,3 +419,5 @@ extension Order: Equatable {
 enum OrderDecodingError: Error {
     case missingSiteID
 }
+
+#endif

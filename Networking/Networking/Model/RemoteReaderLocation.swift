@@ -1,3 +1,5 @@
+#if os(iOS)
+
 /// Represent a Remote Reader Location Entity.
 ///
 public struct RemoteReaderLocation: Decodable {
@@ -77,3 +79,5 @@ private extension RemoteReaderLocation {
         case stateProvinceRegion = "state"
     }
 }
+
+#endif

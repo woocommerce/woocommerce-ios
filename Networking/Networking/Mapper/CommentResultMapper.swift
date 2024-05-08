@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 
@@ -20,3 +22,5 @@ private extension CommentResultMapper {
         static let statusKey: String = "status"
     }
 }
+
+#endif

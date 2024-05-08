@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 
@@ -31,3 +33,5 @@ private struct OrderNotesEnvelope: Decodable {
         case orderNotes = "data"
     }
 }
+
+#endif

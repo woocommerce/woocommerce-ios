@@ -1,3 +1,5 @@
+#if os(iOS)
+
 /// Represent a System Status.
 ///
 public struct SystemStatus: Decodable {
@@ -93,3 +95,5 @@ private extension SystemStatus {
         case mustUsePlugins = "mu_plugins"
     }
 }
+
+#endif

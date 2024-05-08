@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import Codegen
 
@@ -72,3 +74,5 @@ extension TopEarnerStats: Equatable {
 enum TopEarnerStatsError: Error {
     case missingSiteID
 }
+
+#endif

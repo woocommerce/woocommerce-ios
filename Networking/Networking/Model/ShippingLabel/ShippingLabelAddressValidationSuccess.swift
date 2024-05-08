@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import Codegen
 
@@ -19,3 +21,5 @@ public struct ShippingLabelAddressValidationSuccess: Equatable, GeneratedFakeabl
         self.isTrivialNormalization = isTrivialNormalization
     }
 }
+
+#endif

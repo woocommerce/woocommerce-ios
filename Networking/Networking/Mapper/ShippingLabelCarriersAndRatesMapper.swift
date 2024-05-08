@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 
@@ -52,3 +54,5 @@ private struct ShippingLabelDefaultBoxEnvelope: Decodable {
         }
     }
 }
+
+#endif

@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 /// Mapper: From WooCommerce site settings response to a boolean that indicates whether WooCommerce is active on the site
@@ -10,3 +12,5 @@ struct WooCommerceAvailabilityMapper: Mapper {
         true
     }
 }
+
+#endif

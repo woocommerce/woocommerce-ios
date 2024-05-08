@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import Codegen
 
@@ -15,3 +17,5 @@ public struct BlazeAISuggestion: Decodable, Equatable, GeneratedFakeable, Genera
         self.textSnippet = textSnippet
     }
 }
+
+#endif

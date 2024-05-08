@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 /// (Attempts) to convert a dictionary into an ShipmentTrackingProviderGroup entity.
@@ -34,3 +36,5 @@ private struct ShipmentTrackingProviderListEnvelope: Decodable {
         case rawData = "data"
     }
 }
+
+#endif

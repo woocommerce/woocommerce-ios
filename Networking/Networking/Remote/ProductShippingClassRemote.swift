@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 /// ProductShippingClass: Remote Endpoints
@@ -78,3 +80,5 @@ public extension ProductShippingClassRemote {
         static let contextKey: String = "context"
     }
 }
+
+#endif

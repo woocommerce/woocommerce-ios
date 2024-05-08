@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import Codegen
 
@@ -165,3 +167,5 @@ private struct SubscriptionPaymentSyncDate: Decodable {
         case month
     }
 }
+
+#endif

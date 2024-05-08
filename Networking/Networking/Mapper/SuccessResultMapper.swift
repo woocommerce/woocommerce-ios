@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 
@@ -27,3 +29,5 @@ private struct SuccessResult: Decodable {
         case success
     }
 }
+
+#endif

@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Codegen
 import Foundation
 
@@ -103,3 +105,5 @@ public extension BlazePaymentMethod {
         }
     }
 }
+
+#endif

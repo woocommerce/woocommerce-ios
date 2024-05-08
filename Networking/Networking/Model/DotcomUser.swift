@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Codegen
 import Foundation
 
@@ -41,3 +43,5 @@ private extension DotcomUser {
         case avatar
     }
 }
+
+#endif

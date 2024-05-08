@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 /// Product Attributes: Remote Endpoints for fetching global product attributes.
@@ -119,3 +121,5 @@ public extension ProductAttributesRemote {
         static let hasArchives: String = "has_archives"
     }
 }
+
+#endif

@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import KeychainAccess
 
@@ -85,3 +87,5 @@ private extension OneTimeApplicationPasswordUseCase {
         static let introspect = "/?rest_route=/wp/v2/users/me/application-passwords/introspect"
     }
 }
+
+#endif

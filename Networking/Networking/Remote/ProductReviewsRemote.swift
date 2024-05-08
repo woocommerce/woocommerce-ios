@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 /// Protocol for `ProductReviewsRemote` mainly used for mocking.
@@ -123,3 +125,5 @@ public extension ProductReviewsRemote {
         static let status: String     = "status"
     }
 }
+
+#endif

@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 /// Mapper: Single Entity ID
@@ -43,3 +45,5 @@ private struct EntityIDEnvelope: Decodable {
         case data = "data"
     }
 }
+
+#endif

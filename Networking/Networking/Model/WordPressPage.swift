@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import Codegen
 
@@ -35,3 +37,5 @@ private extension WordPressPage {
         case link
     }
 }
+
+#endif

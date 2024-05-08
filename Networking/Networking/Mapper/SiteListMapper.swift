@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 
@@ -57,3 +59,5 @@ private struct SiteListEnvelope: Decodable {
         self.sites = sites
     }
 }
+
+#endif

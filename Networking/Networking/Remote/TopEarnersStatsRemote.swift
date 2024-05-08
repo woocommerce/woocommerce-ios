@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 
@@ -47,3 +49,5 @@ private extension TopEarnersStatsRemote {
         static let limit: String    = "limit"
     }
 }
+
+#endif

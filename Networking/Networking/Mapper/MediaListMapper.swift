@@ -1,3 +1,5 @@
+#if os(iOS)
+
 /// Mapper: Media
 ///
 struct MediaMapper: Mapper {
@@ -29,3 +31,5 @@ private struct MediaListEnvelope: Decodable {
         case mediaList = "media"
     }
 }
+
+#endif

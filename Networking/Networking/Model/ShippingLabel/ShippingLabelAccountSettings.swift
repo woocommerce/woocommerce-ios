@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import Codegen
 
@@ -146,3 +148,5 @@ private extension ShippingLabelAccountSettings {
 enum ShippingLabelAccountSettingsDecodingError: Error {
     case missingSiteID
 }
+
+#endif

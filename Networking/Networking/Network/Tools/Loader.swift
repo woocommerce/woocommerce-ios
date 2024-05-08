@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 /// File-Loading Tools: Only for Unit Testing purposes.
@@ -69,3 +71,5 @@ class Loader {
         return nil
     }
 }
+
+#endif

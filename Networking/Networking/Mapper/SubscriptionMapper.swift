@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 /// Mapper: `Subscription`
@@ -37,3 +39,5 @@ private struct SubscriptionEnvelope: Decodable {
         case subscription = "data"
     }
 }
+
+#endif

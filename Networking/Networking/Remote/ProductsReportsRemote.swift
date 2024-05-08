@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 /// Products Reports: Remote Endpoints for WC Analytics
@@ -66,3 +68,5 @@ private extension ProductsReportsRemote {
         static let extendedInfo = "true"
     }
 }
+
+#endif

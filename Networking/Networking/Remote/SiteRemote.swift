@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 /// Protocol for `SiteRemote` mainly used for mocking.
@@ -315,3 +317,5 @@ private extension SiteRemote {
         static let title = "title"
     }
 }
+
+#endif

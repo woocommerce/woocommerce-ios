@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 public protocol JetpackSettingsRemoteProtocol {
@@ -36,3 +38,5 @@ public extension JetpackSettingsRemote {
         static let settings = "jetpack/v4/settings"
     }
 }
+
+#endif

@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 
@@ -152,3 +154,5 @@ private extension ShipmentsRemote {
         static let dateShipped: String            = "date_shipped"
     }
 }
+
+#endif

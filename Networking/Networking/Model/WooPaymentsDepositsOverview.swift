@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import Codegen
 
@@ -335,3 +337,5 @@ public enum WooPaymentsDepositInterval: Equatable, GeneratedFakeable, GeneratedC
         }
     }
 }
+
+#endif

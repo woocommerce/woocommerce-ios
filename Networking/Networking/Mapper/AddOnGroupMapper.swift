@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 /// Maps between a raw json response to an array of `AddOnGroups`
@@ -25,3 +27,5 @@ struct AddOnGroupMapper: Mapper {
 private struct AddOnGroupEnvelope: Decodable {
     let data: [AddOnGroup]
 }
+
+#endif

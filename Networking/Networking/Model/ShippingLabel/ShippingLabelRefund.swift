@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import Codegen
 
@@ -34,3 +36,5 @@ extension ShippingLabelRefund: Decodable {
         case status
     }
 }
+
+#endif

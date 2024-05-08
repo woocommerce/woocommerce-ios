@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import Codegen
 
@@ -119,3 +121,5 @@ public struct CreateBlazeCampaign: Encodable, GeneratedFakeable, GeneratedCopiab
         self.type = type
     }
 }
+
+#endif

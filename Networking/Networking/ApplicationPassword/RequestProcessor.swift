@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Alamofire
 import Foundation
 
@@ -108,3 +110,5 @@ public extension NSNotification.Name {
     ///
     static let ApplicationPasswordsGenerationFailed = NSNotification.Name(rawValue: "ApplicationPasswordsGenerationFailed")
 }
+
+#endif

@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import Codegen
 import class Aztec.HTMLParser
@@ -88,3 +90,5 @@ extension ProductsReportItem: Comparable {
             (lhs.quantity == rhs.quantity && lhs.total < rhs.total)
     }
 }
+
+#endif

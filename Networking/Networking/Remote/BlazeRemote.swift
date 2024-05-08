@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Codegen
 import Foundation
 import struct Alamofire.JSONEncoding
@@ -348,3 +350,5 @@ public struct BlazeTargetOptions: Encodable, GeneratedFakeable, GeneratedCopiabl
         case pageTopics
     }
 }
+
+#endif

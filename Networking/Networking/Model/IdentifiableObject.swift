@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 /// Represents any entity with an ID.
@@ -10,3 +12,5 @@ struct IdentifiableObject: Decodable, Identifiable {
     ///
     public let id: Int64
 }
+
+#endif

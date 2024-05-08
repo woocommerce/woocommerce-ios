@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Codegen
 
 /// Represents gift card stats for a specific period.
@@ -44,3 +46,5 @@ private extension GiftCardStatsInterval {
         case subtotals = "subtotals"
     }
 }
+
+#endif

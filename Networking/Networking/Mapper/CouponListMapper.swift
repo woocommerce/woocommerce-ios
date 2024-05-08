@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 /// Mapper: `Coupon` List
@@ -34,3 +36,5 @@ private struct CouponListEnvelope: Decodable {
         case coupons = "data"
     }
 }
+
+#endif

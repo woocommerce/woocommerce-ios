@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import Codegen
 
@@ -55,3 +57,5 @@ private extension ProductDownload {
         case fileURL    = "file"
     }
 }
+
+#endif

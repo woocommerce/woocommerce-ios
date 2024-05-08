@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import Codegen
 
@@ -60,3 +62,5 @@ extension AddOnGroup {
                   addOns: try container.decode([ProductAddOn].self, forKey: .addOns))
     }
 }
+
+#endif

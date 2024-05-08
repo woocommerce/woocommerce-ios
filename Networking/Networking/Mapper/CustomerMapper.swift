@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 /// Mapper: Customer
@@ -27,3 +29,5 @@ private struct CustomerEnvelope: Decodable {
         case customer = "data"
     }
 }
+
+#endif

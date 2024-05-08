@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Codegen
 import Foundation
 
@@ -388,3 +390,5 @@ private extension DomainRemote {
         }
     }
 }
+
+#endif

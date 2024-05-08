@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import Codegen
 
@@ -77,3 +79,5 @@ private enum Keys {
     static let completed    = "completed"
     static let refunded     = "refunded"
 }
+
+#endif

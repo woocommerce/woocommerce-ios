@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import Codegen
 
@@ -40,3 +42,5 @@ extension ShippingLabelPredefinedOption: Decodable {
         case providerID
     }
 }
+
+#endif

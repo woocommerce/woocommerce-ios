@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import Codegen
 
@@ -40,3 +42,5 @@ public struct APNSDevice: GeneratedFakeable {
         self.identifierForVendor = identifierForVendor
     }
 }
+
+#endif

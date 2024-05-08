@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import Codegen
 
@@ -37,3 +39,5 @@ private extension ShippingLabelAddressVerification {
         case type
     }
 }
+
+#endif

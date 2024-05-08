@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 /// Protocol for `SitePluginsRemote` mainly used for mocking.
@@ -118,3 +120,5 @@ private extension SitePluginsRemote {
         }
     }
 }
+
+#endif

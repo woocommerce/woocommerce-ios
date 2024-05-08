@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 /// Protocol for `FeatureFlagsRemote` mainly used for mocking.
@@ -57,3 +59,5 @@ private extension FeatureFlagRemote {
         static let marketingVersion = "marketing_version"
     }
 }
+
+#endif

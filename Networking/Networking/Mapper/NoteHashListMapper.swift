@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 
@@ -23,3 +25,5 @@ private struct NoteHashesEnvelope: Decodable {
         case hashes = "notes"
     }
 }
+
+#endif

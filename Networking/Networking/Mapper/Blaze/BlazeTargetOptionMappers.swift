@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 /// Mapper: `BlazeTargetLanguage`
@@ -83,3 +85,5 @@ struct BlazeTargetLocationListMapper: Mapper {
         let locations: [BlazeTargetLocation]
     }
 }
+
+#endif

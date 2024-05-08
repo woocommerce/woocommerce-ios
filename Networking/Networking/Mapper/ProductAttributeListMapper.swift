@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 /// Mapper: ProductAttribute List
@@ -37,3 +39,5 @@ private struct ProductAttributeListEnvelope: Decodable {
         case productAttributes = "data"
     }
 }
+
+#endif

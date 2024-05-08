@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 /// Error when serializing an Encodable
@@ -31,3 +33,5 @@ extension Encodable {
         }
     }
 }
+
+#endif

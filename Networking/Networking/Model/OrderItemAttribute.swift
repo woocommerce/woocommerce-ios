@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Codegen
 
 /// Represents an attribute of an `OrderItem` in its `attributes` property.
@@ -41,3 +43,5 @@ private extension OrderItemAttribute {
         case value = "display_value"
     }
 }
+
+#endif

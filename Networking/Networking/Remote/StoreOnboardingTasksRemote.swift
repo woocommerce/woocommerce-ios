@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 public protocol StoreOnboardingTasksRemoteProtocol {
@@ -27,3 +29,5 @@ private extension StoreOnboardingTasksRemote {
         static let tasksPath = "onboarding/tasks"
     }
 }
+
+#endif

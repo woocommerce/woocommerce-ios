@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 /// Mapper: SitePlugin
@@ -45,3 +47,5 @@ private struct SitePluginEnvelope: Decodable {
         case plugin = "data"
     }
 }
+
+#endif

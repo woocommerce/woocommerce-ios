@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 /// A wrapper of shipping labels and settings from `Load Shipping Labels` response.
@@ -124,3 +126,5 @@ enum OrderShippingLabelListDecodingError: Error {
     case missingSiteID
     case missingOrderID
 }
+
+#endif

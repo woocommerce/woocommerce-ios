@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 /// Mapper: Just In Time Message
@@ -34,3 +36,5 @@ private struct JustInTimeMessageListEnvelope: Decodable {
         case data
     }
 }
+
+#endif

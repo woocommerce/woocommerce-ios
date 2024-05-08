@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Combine
 import Foundation
 
@@ -166,3 +168,5 @@ private extension WCPayRemote {
         static let fieldValues: String = "id,status"
     }
 }
+
+#endif

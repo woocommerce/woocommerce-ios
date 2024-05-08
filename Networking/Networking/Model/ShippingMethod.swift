@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 /// Represents a Shipping Method Entity.
@@ -54,3 +56,5 @@ private extension ShippingMethod {
 enum ShippingMethodDecodingError: Error {
     case missingSiteID
 }
+
+#endif

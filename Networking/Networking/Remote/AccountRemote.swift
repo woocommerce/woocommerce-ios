@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Combine
 import Foundation
 
@@ -260,3 +262,5 @@ public enum CreateAccountError: Error, Equatable {
         static let invalidUsername = "username_invalid"
     }
 }
+
+#endif

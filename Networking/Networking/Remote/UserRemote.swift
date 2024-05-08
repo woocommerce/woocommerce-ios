@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 /// User: Remote Endpoints
@@ -28,3 +30,5 @@ private extension UserRemote {
         static let usersPath: String = "wp/v2/users/me"
     }
 }
+
+#endif

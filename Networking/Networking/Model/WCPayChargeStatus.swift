@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import Codegen
 
@@ -12,3 +14,5 @@ public enum WCPayChargeStatus: String, Decodable, GeneratedCopiable, GeneratedFa
     case pending
     case failed
 }
+
+#endif

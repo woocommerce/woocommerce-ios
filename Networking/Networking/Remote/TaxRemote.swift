@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 /// Tax Class: Remote Endpoints
@@ -88,3 +90,5 @@ public extension TaxRemote {
         static let perPage: String          = "per_page"
     }
 }
+
+#endif

@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import Codegen
 
@@ -55,3 +57,5 @@ enum ProductBundleStatsAPIError: Error {
     case missingSiteID
     case missingGranularity
 }
+
+#endif

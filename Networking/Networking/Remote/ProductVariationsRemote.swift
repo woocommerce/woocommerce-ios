@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 /// Protocol for `ProductVariationsRemote` mainly used for mocking.
@@ -288,3 +290,5 @@ public extension ProductVariationsRemote {
         static let include: String    = "include"
     }
 }
+
+#endif

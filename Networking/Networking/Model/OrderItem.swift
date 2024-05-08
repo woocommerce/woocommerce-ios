@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import Codegen
 
@@ -221,3 +223,5 @@ private struct OrderItemProductAddOnContainer: Decodable {
     let key: String
     let value: [OrderItemProductAddOn]
 }
+
+#endif

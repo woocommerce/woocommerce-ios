@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 /// ShippingMethodsRemote: Remote Endpoints
@@ -29,3 +31,5 @@ private extension ShippingMethodsRemote {
         static let path: String    = "shipping_methods"
     }
 }
+
+#endif

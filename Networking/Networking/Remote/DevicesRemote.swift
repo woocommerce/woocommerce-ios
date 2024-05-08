@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 
@@ -87,3 +89,5 @@ private extension DevicesRemote {
         static let defaultStoreID = "selected_blog_id"
     }
 }
+
+#endif

@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Codegen
 
 /// Represents the data associated with product bundle stats over a specific period.
@@ -48,3 +50,5 @@ private extension ProductBundleStatsTotals {
         case productsCount = "products_count"
     }
 }
+
+#endif

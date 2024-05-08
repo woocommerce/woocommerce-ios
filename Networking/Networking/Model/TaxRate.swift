@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import Codegen
 
@@ -168,3 +170,5 @@ private extension TaxRate {
         case missingSiteID
     }
 }
+
+#endif

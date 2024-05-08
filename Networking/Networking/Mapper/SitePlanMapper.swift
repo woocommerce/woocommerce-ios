@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 
@@ -12,3 +14,5 @@ class SitePlanMapper: Mapper {
         return try decoder.decode(SitePlan.self, from: response)
     }
 }
+
+#endif

@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 /// Mapper: Shipping Label Creation Eligibility
@@ -26,3 +28,5 @@ private struct ShippingLabelCreationEligibilityMapperEnvelope: Decodable {
         case eligibility = "data"
     }
 }
+
+#endif

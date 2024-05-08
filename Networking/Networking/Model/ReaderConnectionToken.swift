@@ -1,3 +1,5 @@
+#if os(iOS)
+
 /// Represent a card reader connection token Entity.
 ///
 public struct ReaderConnectionToken: Decodable {
@@ -28,3 +30,5 @@ private extension ReaderConnectionToken {
         case testMode   = "test_mode"
     }
 }
+
+#endif

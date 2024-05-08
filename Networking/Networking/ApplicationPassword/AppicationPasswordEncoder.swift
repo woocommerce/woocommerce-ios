@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 /// Utility class to encode the stored application password.
@@ -30,3 +32,5 @@ public struct ApplicationPasswordEncoder {
         return loginData.base64EncodedString()
     }
 }
+
+#endif

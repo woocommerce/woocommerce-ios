@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import Codegen
 
@@ -88,3 +90,5 @@ extension NoteMedia {
         case unknown
     }
 }
+
+#endif

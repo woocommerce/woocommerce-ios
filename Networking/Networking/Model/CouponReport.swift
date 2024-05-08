@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Codegen
 import Foundation
 
@@ -36,3 +38,5 @@ extension CouponReport: Decodable {
 // MARK: - Other Conformance
 //
 extension CouponReport: GeneratedCopiable, GeneratedFakeable, Equatable {}
+
+#endif

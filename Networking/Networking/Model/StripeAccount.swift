@@ -1,3 +1,5 @@
+#if os(iOS)
+
 /// Represent a Stripe Account Entity.
 ///
 public struct StripeAccount: Decodable {
@@ -110,3 +112,5 @@ private extension StripeAccount {
         case supported
     }
 }
+
+#endif

@@ -1,3 +1,5 @@
+#if os(iOS)
+
 /// Represent a WCPay Payment Intent Entity.
 ///
 public struct RemotePaymentIntent: Decodable {
@@ -32,3 +34,5 @@ private extension RemotePaymentIntent {
         case status = "status"
     }
 }
+
+#endif

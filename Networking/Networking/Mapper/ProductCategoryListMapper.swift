@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 /// Mapper: ProductCategory List
@@ -89,3 +91,5 @@ private struct ProductCategoryListBatchCreateContainer: Decodable {
         case categories = "create"
     }
 }
+
+#endif

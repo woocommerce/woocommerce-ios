@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 /// Mapper: WCPayCharge
@@ -36,3 +38,5 @@ private struct WCPayChargeEnvelope: Decodable {
         case charge = "data"
     }
 }
+
+#endif

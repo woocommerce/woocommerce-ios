@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 /// Mapper: Create Blaze Campaign request
@@ -16,3 +18,5 @@ struct CreateBlazeCampaignMapper: Mapper {
 private struct CreateBlazeCampaignResponse: Decodable {
     public let id: String
 }
+
+#endif

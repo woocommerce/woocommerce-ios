@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import CoreServices
 import Codegen
@@ -96,3 +98,5 @@ private extension ProductDownloadDragAndDrop {
         case invalidDataType, decodeFailure, encodeFailure
     }
 }
+
+#endif

@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import Codegen
 
@@ -47,3 +49,5 @@ private extension ProductDimensions {
         case height
     }
 }
+
+#endif

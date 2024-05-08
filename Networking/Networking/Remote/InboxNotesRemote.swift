@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 /// Protocol for `InboxNotesRemote` mainly used for mocking.
@@ -246,3 +248,5 @@ public extension InboxNotesRemote {
         case sent = "sent"
     }
 }
+
+#endif

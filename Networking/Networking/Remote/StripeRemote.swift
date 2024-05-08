@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Combine
 import Foundation
 
@@ -127,3 +129,5 @@ private extension StripeRemote {
         static let fieldValues: String = "id,status"
     }
 }
+
+#endif

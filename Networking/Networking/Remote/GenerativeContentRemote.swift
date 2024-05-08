@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 /// Used by backend to track AI-generation usage and measure costs
@@ -330,3 +332,5 @@ private extension JWToken {
         expiryDate > Date() && siteID == currentSelectedSiteID
     }
 }
+
+#endif

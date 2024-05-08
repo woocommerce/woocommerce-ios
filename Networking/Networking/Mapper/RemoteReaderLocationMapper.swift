@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 /// Mapper: WCPay Reader Location
@@ -29,3 +31,5 @@ private struct RemoteReaderLocationEnvelope: Decodable {
         case location = "data"
     }
 }
+
+#endif

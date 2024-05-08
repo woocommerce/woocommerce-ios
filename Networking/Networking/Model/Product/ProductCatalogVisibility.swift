@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import Codegen
 
@@ -72,3 +74,5 @@ private enum Keys {
     static let search  = "search"
     static let hidden  = "hidden"
 }
+
+#endif

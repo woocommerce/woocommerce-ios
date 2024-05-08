@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 /// Mapper: Jetpack user
@@ -22,3 +24,5 @@ private struct JetpackConnectionData: Decodable {
         case currentUser
     }
 }
+
+#endif

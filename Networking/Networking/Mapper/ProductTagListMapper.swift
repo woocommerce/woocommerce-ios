@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 /// Mapper: ProductTag List
@@ -113,3 +115,5 @@ private struct ProductTagListBatchDeleteContainer: Decodable {
         case tags = "delete"
     }
 }
+
+#endif

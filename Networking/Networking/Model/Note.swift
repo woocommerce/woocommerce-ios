@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import Codegen
 
@@ -238,3 +240,5 @@ extension Note {
         case storeReview = "store_review"
     }
 }
+
+#endif

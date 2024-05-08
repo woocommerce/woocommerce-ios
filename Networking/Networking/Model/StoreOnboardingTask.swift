@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 public struct StoreOnboardingTask: Decodable, Equatable {
@@ -74,3 +76,5 @@ extension StoreOnboardingTask: Comparable {
         lhs.type.sortOrder < rhs.type.sortOrder
     }
 }
+
+#endif

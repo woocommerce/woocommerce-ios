@@ -1,3 +1,5 @@
+#if os(iOS)
+
 /// Represent a WCPay account Entity.
 ///
 public struct WCPayAccount: Decodable {
@@ -122,3 +124,5 @@ private extension WCPayAccount {
         case supported
     }
 }
+
+#endif

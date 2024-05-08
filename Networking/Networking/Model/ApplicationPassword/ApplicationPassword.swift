@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import WordPressShared
 
 public struct ApplicationPassword: Decodable {
@@ -42,3 +44,5 @@ public struct ApplicationPassword: Decodable {
 enum ApplicationPasswordDecodingError: Error {
     case missingWpOrgUsername
 }
+
+#endif

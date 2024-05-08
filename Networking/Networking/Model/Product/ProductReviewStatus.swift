@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Codegen
 
 /// Represents a ProductReviewStatus Entity.
@@ -81,3 +83,5 @@ private enum Keys {
     static let trash    = "trash"
     static let untrash  = "untrash"
 }
+
+#endif

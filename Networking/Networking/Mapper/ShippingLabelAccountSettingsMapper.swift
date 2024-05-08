@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 /// Mapper: Shipping Label Account Settings
@@ -36,3 +38,5 @@ private struct ShippingLabelAccountSettingsMapperEnvelope: Decodable {
         case data
     }
 }
+
+#endif

@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 /// Mapper: ProductsTotal
@@ -33,3 +35,5 @@ private struct ProductTypeTotalListEnvelope: Decodable {
         case totals = "data"
     }
 }
+
+#endif

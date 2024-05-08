@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 public class WCAnalyticsCustomerRemote: Remote {
@@ -111,3 +113,5 @@ private extension WCAnalyticsCustomerRemote {
         static let filterEmpty = "filter_empty"
     }
 }
+
+#endif

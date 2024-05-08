@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Codegen
 import Foundation
 
@@ -50,3 +52,5 @@ private extension JetpackUser {
         case gravatar
     }
 }
+
+#endif

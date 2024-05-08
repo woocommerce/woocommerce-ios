@@ -1,3 +1,5 @@
+#if os(iOS)
+
 
 import Foundation
 
@@ -32,3 +34,5 @@ public struct InAppPurchasesTransactionResponse: Decodable {
         case code
     }
 }
+
+#endif

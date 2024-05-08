@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import Codegen
 
@@ -78,3 +80,5 @@ extension ShippingLabelPackagePurchase: Encodable {
         case items
     }
 }
+
+#endif

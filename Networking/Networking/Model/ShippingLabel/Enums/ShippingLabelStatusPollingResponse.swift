@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import Codegen
 
@@ -42,3 +44,5 @@ public enum ShippingLabelStatusPollingResponse: Decodable {
         }
     }
 }
+
+#endif

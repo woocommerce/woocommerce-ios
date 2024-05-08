@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 /// Mapper: `WordPressTheme` List
@@ -19,3 +21,5 @@ struct WordPressThemeListMapper: Mapper {
 private struct WordPressThemeListEnvelope: Decodable {
     let themes: [WordPressTheme]
 }
+
+#endif

@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import Codegen
 
@@ -86,3 +88,5 @@ private enum Keys {
     static let autoDraft     = "auto-draft"
     static let importing     = "importing"
 }
+
+#endif

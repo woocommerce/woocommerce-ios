@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 /// Product Bundle Stats: Remote Endpoints for fetching product bundle stats.
@@ -114,3 +116,5 @@ private extension ProductBundleStatsRemote {
         static let extendedInfo = "true"
     }
 }
+
+#endif

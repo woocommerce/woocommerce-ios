@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Codegen
 
 /// Represents a product add-on (from the Product Add-ons extension) of an `OrderItem` in its `attributes` (meta) property.
@@ -41,3 +43,5 @@ private extension OrderItemProductAddOn {
 enum OrderItemProductAddOnDecodingError: Error {
     case invalidValue
 }
+
+#endif

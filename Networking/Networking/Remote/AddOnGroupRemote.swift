@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 /// `AddOnGroup` remote endpoints.
@@ -24,3 +26,5 @@ private extension AddOnGroupRemote {
         static let addOnGroups = "product-add-ons"
     }
 }
+
+#endif

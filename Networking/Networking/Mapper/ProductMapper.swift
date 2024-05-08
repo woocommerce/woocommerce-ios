@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 
@@ -42,3 +44,5 @@ private struct ProductEnvelope: Decodable {
         case product = "data"
     }
 }
+
+#endif

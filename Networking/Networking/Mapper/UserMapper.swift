@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 /// Mapper: User
@@ -36,3 +38,5 @@ private struct UserEnvelope: Decodable {
         case user = "data"
     }
 }
+
+#endif

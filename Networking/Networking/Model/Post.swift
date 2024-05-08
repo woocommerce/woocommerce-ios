@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import Codegen
 
@@ -46,3 +48,5 @@ private extension Post {
         case password       = "password"
     }
 }
+
+#endif

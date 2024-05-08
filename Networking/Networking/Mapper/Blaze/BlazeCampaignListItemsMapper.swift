@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 /// Mapper: `BlazeCampaignListItem` List
@@ -26,3 +28,5 @@ struct BlazeCampaignListItemsMapper: Mapper {
 private struct BlazeCampaignListItemEnvelope: Decodable {
     let campaigns: [BlazeCampaignListItem]
 }
+
+#endif

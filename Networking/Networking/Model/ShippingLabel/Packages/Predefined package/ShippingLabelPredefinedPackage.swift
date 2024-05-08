@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import Codegen
 import WooFoundation
@@ -61,3 +63,5 @@ extension ShippingLabelPredefinedPackage: Decodable {
         case dimensions = "outer_dimensions"
     }
 }
+
+#endif

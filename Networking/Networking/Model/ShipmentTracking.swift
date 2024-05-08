@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import Codegen
 
@@ -112,3 +114,5 @@ extension ShipmentTracking: Comparable {
             (lhs.siteID == rhs.siteID && lhs.orderID == rhs.orderID && lhs.trackingID == rhs.trackingID && lhs.trackingNumber < rhs.trackingNumber)
     }
 }
+
+#endif

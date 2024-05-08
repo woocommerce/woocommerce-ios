@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 /// Handle API requests to the Jetpack REST API.
@@ -85,3 +87,5 @@ private extension JetpackConnectionRemote {
         static let activeStatus = "active"
     }
 }
+
+#endif

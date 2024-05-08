@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import Codegen
 
@@ -39,3 +41,5 @@ internal extension WCPayCardPresentReceiptDetails {
         case dedicatedFileName = "dedicated_file_name"
     }
 }
+
+#endif

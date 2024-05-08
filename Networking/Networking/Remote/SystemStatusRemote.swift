@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 /// System Status: Remote Endpoint
@@ -68,3 +70,5 @@ private extension SystemStatusRemote {
         static let fields: String = "_fields"
     }
 }
+
+#endif

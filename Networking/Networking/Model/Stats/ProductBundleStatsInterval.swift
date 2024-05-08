@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Codegen
 
 /// Represents product bundle stats for a specific period.
@@ -44,3 +46,5 @@ private extension ProductBundleStatsInterval {
         case subtotals = "subtotals"
     }
 }
+
+#endif

@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 /// Payment Gateways Endpoints
@@ -57,3 +59,5 @@ private extension PaymentGatewayRemote {
         static let path = "payment_gateways"
     }
 }
+
+#endif

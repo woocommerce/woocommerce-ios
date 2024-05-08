@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 /// Makes URLRequest conform to Request.
@@ -6,3 +8,5 @@ extension URLRequest: Request {
         PlaceholderDataValidator()
     }
 }
+
+#endif

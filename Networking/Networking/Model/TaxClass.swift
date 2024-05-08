@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import Codegen
 
@@ -57,3 +59,5 @@ private extension TaxClass {
 enum TaxClassDecodingError: Error {
     case missingSiteID
 }
+
+#endif

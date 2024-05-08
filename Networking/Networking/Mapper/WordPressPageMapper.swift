@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 /// Mapper for a list of `WordPressPage`.
@@ -9,3 +11,5 @@ struct WordPressPageListMapper: Mapper {
         return try decoder.decode([WordPressPage].self, from: response)
     }
 }
+
+#endif

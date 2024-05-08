@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import Codegen
 
@@ -49,3 +51,5 @@ private extension Account {
         case gravatarUrl    = "avatar_URL"
     }
 }
+
+#endif

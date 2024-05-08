@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import Codegen
 
@@ -76,3 +78,5 @@ private extension ProductShippingClass {
 enum ProductShippingClassDecodingError: Error {
     case missingSiteID
 }
+
+#endif

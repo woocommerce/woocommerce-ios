@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import Codegen
 
@@ -147,3 +149,5 @@ private extension OrderItemRefund {
         case taxes = "refund_tax"
     }
 }
+
+#endif

@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 /// Protocol for `ShippingLabelRemote` mainly used for mocking.
@@ -385,3 +387,5 @@ extension ShippingLabelRemote {
         case missingPackage
     }
 }
+
+#endif

@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import protocol Alamofire.URLRequestConvertible
 
@@ -24,3 +26,5 @@ struct UnauthenticatedRequest: Request {
         PlaceholderDataValidator()
     }
 }
+
+#endif

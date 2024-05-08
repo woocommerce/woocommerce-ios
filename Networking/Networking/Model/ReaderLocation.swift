@@ -1,3 +1,5 @@
+#if os(iOS)
+
 /// Represent a Reader Location Entity.
 ///
 public struct ReaderLocation: Decodable, Equatable {
@@ -19,3 +21,5 @@ public struct ReaderLocation: Decodable, Equatable {
         self.displayName = displayName
     }
 }
+
+#endif

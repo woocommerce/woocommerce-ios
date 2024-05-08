@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 /// Protocol for `NotificationsRemote` mainly used for mocking.
@@ -171,3 +173,5 @@ private extension NotificationsRemote {
         static let locale = "locale"
     }
 }
+
+#endif

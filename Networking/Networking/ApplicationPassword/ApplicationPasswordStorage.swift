@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import KeychainAccess
 import WordPressShared
@@ -64,3 +66,5 @@ private extension Keychain {
         set { self[Keychain.keychainApplicationPasswordUUID] = newValue }
     }
 }
+
+#endif

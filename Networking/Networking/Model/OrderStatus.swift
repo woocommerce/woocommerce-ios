@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import Codegen
 
@@ -66,3 +68,5 @@ extension OrderStatus: Comparable {
 enum OrderStatusError: Error {
     case missingSiteID
 }
+
+#endif

@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import Codegen
 
@@ -75,3 +77,5 @@ extension ShippingLine: Comparable {
             lhs.methodTitle < rhs.methodTitle
     }
 }
+
+#endif

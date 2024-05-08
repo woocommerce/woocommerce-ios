@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import Codegen
 
@@ -155,3 +157,5 @@ public func ==(lhs: NoteBlock, rhs: NoteBlock) -> Bool {
             lhs.text == rhs.text &&
             lhs.kind == rhs.kind
 }
+
+#endif

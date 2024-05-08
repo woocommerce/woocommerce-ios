@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 
@@ -20,3 +22,5 @@ struct TopEarnerStatsMapper: Mapper {
         return try decoder.decode(TopEarnerStats.self, from: response)
     }
 }
+
+#endif

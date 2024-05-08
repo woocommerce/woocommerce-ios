@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 import Codegen
 
@@ -38,3 +40,5 @@ private extension OrderMetaData {
         case value
     }
 }
+
+#endif

@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 /// Mapper for a single SiteSetting
@@ -45,3 +47,5 @@ private struct SiteSettingEnvelope: Decodable {
         case setting = "data"
     }
 }
+
+#endif

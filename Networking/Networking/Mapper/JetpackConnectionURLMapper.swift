@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 /// Mapper: Jetpack Connection URL
@@ -18,3 +20,5 @@ struct JetpackConnectionURLMapper: Mapper {
         return try urlString.asURL()
     }
 }
+
+#endif

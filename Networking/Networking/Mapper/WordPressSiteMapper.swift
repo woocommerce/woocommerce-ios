@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 /// Mapper for `WordPressSite`.
@@ -9,3 +11,5 @@ struct WordPressSiteMapper: Mapper {
         return try decoder.decode(WordPressSite.self, from: response)
     }
 }
+
+#endif

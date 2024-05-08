@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import Foundation
 
 /// Product Tags: Remote Endpoints
@@ -114,3 +116,5 @@ public extension ProductTagsRemote {
         static let delete: String = "delete"
     }
 }
+
+#endif

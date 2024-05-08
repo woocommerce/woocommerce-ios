@@ -3,10 +3,13 @@
 18.6
 -----
 
-
 18.5
 -----
 - [*] Barcode scanning: Fixed bug where variable parent products could be added to orders directly using the barcode scanner. [https://github.com/woocommerce/woocommerce-ios/pull/12576]
+
+18.4.1
+-----
+- [***] The application crashes when the `Charts` library attempts to calculate stride values for the y-axis with negative numbers, typically occurring when the data contains negative revenue (refunds). The issue is traced to the `NumberBins.init(size:range:)` method within the library, causing a crash seconds after app launch when viewing stats in the new Dynamic Dashboard. [https://github.com/woocommerce/woocommerce-ios/pull/12672]
 
 18.4
 -----

@@ -128,7 +128,7 @@ extension StoreStatsChartViewModel {
     var yAxisStride: Double {
         let minValue = intervals.map { $0.revenue }.min() ?? 0
         let maxValue = intervals.map { $0.revenue }.max() ?? 0
-        return (minValue + maxValue) / 2
+        return (abs(minValue) + abs(maxValue)) / 2
     }
 
     func yAxisLabel(for revenue: Double) -> String {

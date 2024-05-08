@@ -440,7 +440,7 @@ platform :ios do
   # bundle exec fastlane finalize_hotfix_release
   #####################################################################################
   desc 'Performs the final checks and triggers a release build for the hotfix in the current branch'
-  lane :finalize_hotfix_release do
+  lane :finalize_hotfix_release do |options|
     ensure_git_branch_is_release_branch
 
     # Verify that there's nothing in progress in the working copy

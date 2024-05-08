@@ -3,6 +3,4 @@ import XCTest
 
 final class WooCommercePOSTests: XCTestCase {
 
-    
-
 }

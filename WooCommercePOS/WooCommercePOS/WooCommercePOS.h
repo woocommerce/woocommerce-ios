@@ -1,10 +1,3 @@
-//
-//  WooCommercePOS.h
-//  WooCommercePOS
-//
-//  Created by Josh Heald on 08/05/2024.
-//
-
 #import <Foundation/Foundation.h>
 
 //! Project version number for WooCommercePOS.

@@ -1140,7 +1140,9 @@ extension OrderDetailsDataSource {
         let shippingNotice: Section? = {
             // Hide the shipping method warning if order contains only virtual products
             // or if the order contains only one shipping method
-            if isMultiShippingLinesAvailable(for: order) == false {
+            // or if multiple shipping lines are supported (feature flag)
+            if isMultiShippingLinesAvailable(for: order) == false ||
+                featureFlags.isFeatureFlagEnabled(.multipleShippingLines) {
                 return nil
             }
 

@@ -1302,16 +1302,15 @@ final class EditableOrderViewModelTests: XCTestCase {
         // Given
         let analytics = MockAnalyticsProvider()
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, analytics: WooAnalytics(analyticsProvider: analytics))
-        let shippingLine = ShippingLine.fake()
+        let shippingLine = ShippingLine.fake().copy(methodID: "flat_rate")
 
         // When
         viewModel.saveShippingLine(shippingLine)
 
         // Then
         XCTAssertEqual(analytics.receivedEvents, [WooAnalyticsStat.orderShippingMethodAdd.rawValue])
-
-        let properties = try XCTUnwrap(analytics.receivedProperties.first?["flow"] as? String)
-        XCTAssertEqual(properties, "creation")
+        assertEqual("creation", analytics.receivedProperties.first?["flow"] as? String)
+        assertEqual("flat_rate", analytics.receivedProperties.first?["shipping_method"] as? String)
     }
 
     func test_shipping_method_tracked_when_removed() throws {

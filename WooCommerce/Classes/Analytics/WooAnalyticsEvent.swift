@@ -560,6 +560,7 @@ extension WooAnalyticsEvent {
             static let taxStatus = "tax_status"
             static let expanded = "expanded"
             static let horizontalSizeClass = "horizontal_size_class"
+            static let shippingMethod = "shipping_method"
         }
 
         static func ordersSelected(horizontalSizeClass: UIUserInterfaceSizeClass) -> WooAnalyticsEvent {
@@ -719,8 +720,9 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .orderProductDiscountEditButtonTapped, properties: [:])
         }
 
-        static func orderShippingMethodAdd(flow: Flow) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .orderShippingMethodAdd, properties: [Keys.flow: flow.rawValue])
+        static func orderShippingMethodAdd(flow: Flow, methodID: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderShippingMethodAdd, properties: [Keys.flow: flow.rawValue,
+                                                                              Keys.shippingMethod: methodID])
         }
 
         static func orderShippingMethodRemove(flow: Flow) -> WooAnalyticsEvent {

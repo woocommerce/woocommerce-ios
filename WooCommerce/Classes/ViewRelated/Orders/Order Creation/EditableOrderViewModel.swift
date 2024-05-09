@@ -409,8 +409,8 @@ final class EditableOrderViewModel: ObservableObject {
     func saveShippingLine(_ shippingLine: ShippingLine?) {
         orderSynchronizer.setShipping.send(shippingLine)
 
-        if shippingLine != nil {
-            analytics.track(event: WooAnalyticsEvent.Orders.orderShippingMethodAdd(flow: flow.analyticsFlow))
+        if let shippingLine {
+            analytics.track(event: WooAnalyticsEvent.Orders.orderShippingMethodAdd(flow: flow.analyticsFlow, methodID: shippingLine.methodID ?? ""))
         } else {
             analytics.track(event: WooAnalyticsEvent.Orders.orderShippingMethodRemove(flow: flow.analyticsFlow))
         }

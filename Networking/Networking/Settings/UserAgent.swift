@@ -55,10 +55,6 @@ public class UserAgent {
         return "Mozilla/5.0 (\(deviceModel); CPU \(osName) \(osVersion) like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148"
     }()
 
-    static var watchUserAgent: String = {
-        return ""
-    }()
-
     /// Returns the Bundle Version ID
     ///
     public static var bundleShortVersion: String {
@@ -69,7 +65,7 @@ public class UserAgent {
     /// Returns the
     ///
     private static var device: AppleDevice {
-#if os(iOS)
+#if !os(watchOS)
         return UIDevice.current
 #endif
 #if os(watchOS)
@@ -109,7 +105,7 @@ private protocol AppleDevice {
     var isPad: Bool { get }
 }
 
-#if os(iOS)
+#if !os(watchOS)
 extension UIDevice: AppleDevice {
     var isPad: Bool {
         return userInterfaceIdiom == .pad

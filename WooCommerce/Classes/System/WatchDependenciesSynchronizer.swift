@@ -1,5 +1,5 @@
 import WatchConnectivity
-import enum Yosemite.Credentials
+import enum Networking.Credentials
 
 /// Type that syncs the necessary dependencies to the watch session.
 /// Dependencies:

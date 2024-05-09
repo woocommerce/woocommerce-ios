@@ -2,17 +2,16 @@ import Foundation
 import WatchConnectivity
 import KeychainAccess
 
+/// Type that receives and stores the necessary dependencies from the phone session.
+///
 final class PhoneDependenciesSynchronizer: NSObject, ObservableObject, WCSessionDelegate {
 
-    struct Dependencies {
-        let storeID: Int64
-        let credentials: Credentials
-    }
+    @Published var message = "Not Logged In"
 
-    @Published var message = "Nothing yet"
-
+    /// Secure store.
     private let keychain: Keychain
 
+    /// Nonsecure store.
     private let userDefaults: UserDefaults
 
     override init() {
@@ -20,9 +19,7 @@ final class PhoneDependenciesSynchronizer: NSObject, ObservableObject, WCSession
         self.userDefaults = UserDefaults.standard
         super.init()
 
-        if let dependencies = self.loadDependencies() {
-            self.message = "Store ID: \(dependencies.storeID)\nSiteAddress: \(dependencies.credentials.siteAddress)"
-        }
+        updateMessage()
 
         if WCSession.isSupported() {
             let session = WCSession.default
@@ -31,99 +28,66 @@ final class PhoneDependenciesSynchronizer: NSObject, ObservableObject, WCSession
         }
     }
 
+    /// Get the latest application context when the session activates
+    /// 
     func session(_ session: WCSession, activationDidCompleteWith activationState: WCSessionActivationState, error: Error?) {
-        print("current app context: \(session.applicationContext)")
+        print("current app context: \(session.receivedApplicationContext)")
+
+        guard !session.receivedApplicationContext.isEmpty else {
+            return
+        }
+
         DispatchQueue.main.async {
-            if !session.applicationContext.isEmpty {
-                self.extractAndStoreDependencies(appContext: session.applicationContext)
-                if let dependencies = self.loadDependencies() {
-                    self.message = "Store ID: \(dependencies.storeID)\nSiteAddress: \(dependencies.credentials.siteAddress)"
-                } else {
-                    self.message = "Could not load dependencies"
-                }
-            }
+            self.storeDependencies(appContext: session.receivedApplicationContext)
+            self.updateMessage()
         }
     }
 
+    /// Get new application context on real time.
+    ///
     func session(_ session: WCSession, didReceiveApplicationContext applicationContext: [String: Any]) {
-        print("Application Context: \(applicationContext)")
         DispatchQueue.main.async {
-            self.extractAndStoreDependencies(appContext: applicationContext)
-            if let dependencies = self.loadDependencies() {
-                self.message = "Store ID: \(dependencies.storeID)\nSiteAddress: \(dependencies.credentials.siteAddress)"
-            } else {
-                self.message = "Could not load dependencies"
-            }
+            self.storeDependencies(appContext: applicationContext)
+            self.updateMessage()
         }
     }
 
-    func loadDependencies() -> Dependencies? {
-        guard let secret = keychain["credentials.secret"],
+    /// Update UI from stored dependencies
+    ///
+    private func updateMessage() {
+        let dependencies = loadDependencies()
+        if let storeID = dependencies.storeID, dependencies.credentials != nil {
+            message = "Store ID: \(storeID)"
+        } else {
+            message = "Not Logged In"
+        }
+    }
+
+    /// Load stored dependencies
+    ///
+    private func loadDependencies() -> WatchDependencies {
+        guard let secret = keychain[WooConstants.authToken],
               let username: String = userDefaults[.defaultUsername],
               let type: String = userDefaults[.defaultCredentialsType],
               let siteAddress: String = userDefaults[.defaultSiteAddress],
               let storeID: Int64 = userDefaults[.defaultStoreID] else {
-            return nil
+            return WatchDependencies(storeID: nil, credentials: nil)
         }
 
-        let credentials: Credentials? = {
-            switch type {
-            case "AuthenticationType.wpcom":
-                return .wpcom(username: username, authToken: secret, siteAddress: siteAddress)
-            case "AuthenticationType.wporg":
-                return .wporg(username: username, password: secret, siteAddress: siteAddress)
-            case "AuthenticationType.applicationPassword":
-                return .applicationPassword(username: username, password: secret, siteAddress: siteAddress)
-            default:
-                return nil
-            }
-        }()
-
-        guard let credentials else {
-            return nil
-        }
-
-        return Dependencies(storeID: storeID, credentials: credentials)
+        let credentials = Credentials(rawType: type, username: username, secret: secret, siteAddress: siteAddress)
+        return WatchDependencies(storeID: storeID, credentials: credentials)
     }
 
-    func extractAndStoreDependencies(appContext: [String: Any]) {
-        let storeID: Int64? = {
-            guard let storeDic = appContext["store"] as? [String: Int64] else {
-                return nil
-            }
+    /// Store dependencies from the app context
+    ///
+    private func storeDependencies(appContext: [String: Any]) {
 
-            return storeDic["id"]
-        }()
+        let dependencies = WatchDependencies(dictionary: appContext)
 
-        let credentials: Credentials? = {
-
-            guard let credentialsDic = appContext["credentials"] as? [String: String] else {
-                return nil
-            }
-
-            guard let type = credentialsDic["type"],
-                  let username = credentialsDic["username"],
-                  let secret = credentialsDic["secret"],
-                  let siteAddress = credentialsDic["address"] else {
-                return nil
-            }
-
-            switch type {
-            case "AuthenticationType.wpcom":
-                return .wpcom(username: username, authToken: secret, siteAddress: siteAddress)
-            case "AuthenticationType.wporg":
-                return .wporg(username: username, password: secret, siteAddress: siteAddress)
-            case "AuthenticationType.applicationPassword":
-                return .applicationPassword(username: username, password: secret, siteAddress: siteAddress)
-            default:
-                return nil
-            }
-        }()
-
-        keychain["credentials.secret"] = credentials?.secret
-        userDefaults[.defaultUsername] = credentials?.username
-        userDefaults[.defaultCredentialsType] = credentials?.rawType
-        userDefaults[.defaultSiteAddress] = credentials?.siteAddress
-        userDefaults[.defaultStoreID] = storeID
+        userDefaults[.defaultStoreID] = dependencies.storeID
+        userDefaults[.defaultUsername] = dependencies.credentials?.username
+        userDefaults[.defaultCredentialsType] = dependencies.credentials?.rawType
+        userDefaults[.defaultSiteAddress] = dependencies.credentials?.siteAddress
+        keychain[WooConstants.authToken] = dependencies.credentials?.secret
     }
 }

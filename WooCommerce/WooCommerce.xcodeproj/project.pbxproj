@@ -3679,7 +3679,6 @@
 		26578C4026277AFF00A15097 /* OrderAddOnsListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderAddOnsListViewController.swift; sourceTree = "<group>"; };
 		265BCA0B2430E741004E53EE /* ProductCategoryTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCategoryTableViewCell.swift; sourceTree = "<group>"; };
 		265BCA0D2430E771004E53EE /* ProductCategoryTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductCategoryTableViewCell.xib; sourceTree = "<group>"; };
-		265C3F9B2BE98B0D00B9CF46 /* Credentials.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Credentials.swift; path = ../../Networking/Networking/Settings/Credentials.swift; sourceTree = "<group>"; };
 		265C99E028B9BA43005E6117 /* StoreInfoWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreInfoWidget.swift; sourceTree = "<group>"; };
 		265C99E328B9C834005E6117 /* StoreInfoProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreInfoProvider.swift; sourceTree = "<group>"; };
 		265C99E528B9CB8E005E6117 /* StoreInfoViewModifiers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreInfoViewModifiers.swift; sourceTree = "<group>"; };
@@ -7717,7 +7716,6 @@
 				26F81B172BE433A2009EC58E /* WooApp.swift */,
 				26F81B192BE433A2009EC58E /* ContentView.swift */,
 				2604C3B92BE977F000250465 /* PhoneDependenciesSynchronizer.swift */,
-				265C3F9B2BE98B0D00B9CF46 /* Credentials.swift */,
 				26F81B1B2BE433A3009EC58E /* Assets.xcassets */,
 				26F81B1D2BE433A3009EC58E /* Preview Content */,
 			);

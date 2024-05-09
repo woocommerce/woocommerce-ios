@@ -15,6 +15,7 @@ use_frameworks! # Defaulting to use_frameworks! See pre_install hook below for s
 use_modular_headers!
 
 app_ios_deployment_target = Gem::Version.new('16.0')
+app_watchos_deployment_target = Gem::Version.new('9.0')
 
 platform :ios, app_ios_deployment_target.version
 workspace 'WooCommerce.xcworkspace'
@@ -67,6 +68,12 @@ def networking_pods
   aztec
 
   # Used for storing application password
+  keychain
+end
+
+def networking_watch_os_pods
+  alamofire
+  cocoa_lumberjack
   keychain
 end
 
@@ -138,6 +145,15 @@ target 'NotificationExtension' do
   keychain
 end
 
+# Woo Watch App Target
+# ==========
+#
+target 'Woo Watch App' do
+  project 'WooCommerce/WooCommerce.xcodeproj'
+  platform :watchos, app_watchos_deployment_target.version
+  networking_watch_os_pods
+end
+
 # Yosemite Layer:
 # ===============
 #
@@ -195,6 +211,16 @@ end
 target 'Networking' do
   project 'Networking/Networking.xcodeproj'
   networking_pods
+end
+
+# Networking WatchOS Target:
+# ==================
+#
+target 'NetworkingWatchOS' do
+  project 'Networking/Networking.xcodeproj'
+  platform :watchos, app_watchos_deployment_target.version
+
+  networking_watch_os_pods
 end
 
 # Unit Tests
@@ -355,7 +381,7 @@ post_install do |installer|
   # =====================================
   #
   installer.pods_project.build_configuration_list.build_configurations.each do |configuration|
-    configuration.build_settings['VALID_ARCHS'] = '$(ARCHS_STANDARD_64_BIT)'
+    configuration.build_settings['VALID_ARCHS'] = '$(ARCHS_STANDARD)'
   end
 
   # Let Pods targets inherit deployment target from the app

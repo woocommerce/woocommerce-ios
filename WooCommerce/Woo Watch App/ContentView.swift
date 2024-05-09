@@ -7,6 +7,8 @@
 //
 
 import SwiftUI
+import NetworkingWatchOS
+
 
 struct ContentView: View {
     var body: some View {
@@ -17,6 +19,10 @@ struct ContentView: View {
             Text("Hello, world Woo!")
         }
         .padding()
+        .task {
+            let credentials = Credentials(authToken: "6789")
+            print("I can compile some credentials: \(credentials)")
+        }
     }
 }
 

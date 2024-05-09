@@ -5,7 +5,11 @@ public struct PointOfSaleEntryPointView: View {
 
     @Environment(\.presentationMode) var presentationMode
 
-    public init(showFullScreen: Bool = true) {
+    private let dependencies: PointOfSaleDependencies
+
+    public init(showFullScreen: Bool = true,
+                dependencies: PointOfSaleDependencies) {
+        self.dependencies = dependencies
         self.showFullScreen = showFullScreen
     }
 
@@ -24,6 +28,7 @@ public struct PointOfSaleEntryPointView: View {
         }
         .onAppear {
             showFullScreen = true
+            dependencies.analytics.track(.notificationReviewApprovedTapped)
         }
     }
 }

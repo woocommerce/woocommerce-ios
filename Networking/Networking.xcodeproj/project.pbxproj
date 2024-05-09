@@ -253,6 +253,19 @@
 		26731337255ACA850026F7EF /* PaymentGatewayListMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26731336255ACA850026F7EF /* PaymentGatewayListMapper.swift */; };
 		2676F4CE290AE6BB00C7A15B /* EntityIDMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2676F4CD290AE6BB00C7A15B /* EntityIDMapper.swift */; };
 		2676F4D0290B0EC800C7A15B /* product-id-only.json in Resources */ = {isa = PBXBuildFile; fileRef = 2676F4CF290B0EC700C7A15B /* product-id-only.json */; };
+		2680B0CB2BED58B200E7F1D8 /* ApplicationPasswordNameAndUUID.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE57C10D2979277300BC31E7 /* ApplicationPasswordNameAndUUID.swift */; };
+		2680B0CC2BED58B200E7F1D8 /* ApplicationPassword.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE57C1142979371B00BC31E7 /* ApplicationPassword.swift */; };
+		2680B0CE2BED592800E7F1D8 /* Secret.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2680B0CD2BED592800E7F1D8 /* Secret.swift */; };
+		2680B0CF2BED59CE00E7F1D8 /* ApplicationPasswordStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE71CC3C2951A8EA0074D908 /* ApplicationPasswordStorage.swift */; };
+		2680B0D02BED5A1900E7F1D8 /* WooConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE2E8EB429546648002E4B14 /* WooConstants.swift */; };
+		2680B0D12BED5A4C00E7F1D8 /* UnauthenticatedRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 029C9E5B291507A40013E5EE /* UnauthenticatedRequest.swift */; };
+		2680B0D22BED5A4C00E7F1D8 /* AuthenticatedRESTRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEFAA57C295D77F0003583BE /* AuthenticatedRESTRequest.swift */; };
+		2680B0D32BED5A5400E7F1D8 /* OneTimeApplicationPasswordUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEEF8E6729C858AD00D47411 /* OneTimeApplicationPasswordUseCase.swift */; };
+		2680B0D42BED5A6600E7F1D8 /* AppicationPasswordEncoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 261C466A2A6738EE00734070 /* AppicationPasswordEncoder.swift */; };
+		2680B0D52BED5A7700E7F1D8 /* CookieNonceAuthenticator.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE66C5522976508300DAA978 /* CookieNonceAuthenticator.swift */; };
+		2680B0D62BED5A7F00E7F1D8 /* WordPressOrgNetwork.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE34051428BDEB1900CF0D97 /* WordPressOrgNetwork.swift */; };
+		2680B0D72BED5A8800E7F1D8 /* ApplicationPasswordMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE54C8A629486B6800A9BF61 /* ApplicationPasswordMapper.swift */; };
+		2680B0D82BED5A8800E7F1D8 /* ApplicationPasswordNameAndUUIDMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE57C110297927C600BC31E7 /* ApplicationPasswordNameAndUUIDMapper.swift */; };
 		2683D70E24456DB8002A1589 /* categories-empty.json in Resources */ = {isa = PBXBuildFile; fileRef = 2683D70D24456DB7002A1589 /* categories-empty.json */; };
 		2683D71024456EE4002A1589 /* categories-extra.json in Resources */ = {isa = PBXBuildFile; fileRef = 2683D70F24456EE4002A1589 /* categories-extra.json */; };
 		2685C0D2263B069500D9EE97 /* AddOnGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2685C0D1263B069500D9EE97 /* AddOnGroup.swift */; };
@@ -288,6 +301,11 @@
 		26DAAB582BEA8DFF00CE399E /* Remote.swift in Sources */ = {isa = PBXBuildFile; fileRef = B557DA0020975500005962F4 /* Remote.swift */; };
 		26DAAB592BEA8E1500CE399E /* Network.swift in Sources */ = {isa = PBXBuildFile; fileRef = B518662120A097C200037A38 /* Network.swift */; };
 		26EBDC492BED3CA6004D8E1C /* Codegen in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 269014C62BEA9166006056E0 /* Codegen */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		26F2CAD92BED574D00F9A5E7 /* AlamofireNetwork.swift in Sources */ = {isa = PBXBuildFile; fileRef = B518662320A099BF00037A38 /* AlamofireNetwork.swift */; };
+		26F2CADA2BED578200F9A5E7 /* RequestProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEFBA7532949CE6600C35BA9 /* RequestProcessor.swift */; };
+		26F2CADB2BED578200F9A5E7 /* RequestAuthenticator.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE99814D295AA7430074AE68 /* RequestAuthenticator.swift */; };
+		26F2CADC2BED578200F9A5E7 /* RequestConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE99814F295AACE10074AE68 /* RequestConverter.swift */; };
+		26F2CADD2BED579100F9A5E7 /* ApplicationPasswordUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE54C89E2947782E00A9BF61 /* ApplicationPasswordUseCase.swift */; };
 		26FB056C25F6CB9100A40B26 /* Fakes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26FB056B25F6CB9100A40B26 /* Fakes.framework */; };
 		31054702262E04F700C5C02B /* RemotePaymentIntentMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31054701262E04F700C5C02B /* RemotePaymentIntentMapper.swift */; };
 		31054706262E278100C5C02B /* RemotePaymentIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31054705262E278100C5C02B /* RemotePaymentIntent.swift */; };
@@ -1377,6 +1395,7 @@
 		26731336255ACA850026F7EF /* PaymentGatewayListMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentGatewayListMapper.swift; sourceTree = "<group>"; };
 		2676F4CD290AE6BB00C7A15B /* EntityIDMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityIDMapper.swift; sourceTree = "<group>"; };
 		2676F4CF290B0EC700C7A15B /* product-id-only.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "product-id-only.json"; sourceTree = "<group>"; };
+		2680B0CD2BED592800E7F1D8 /* Secret.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Secret.swift; sourceTree = "<group>"; };
 		2683D70D24456DB7002A1589 /* categories-empty.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "categories-empty.json"; sourceTree = "<group>"; };
 		2683D70F24456EE4002A1589 /* categories-extra.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "categories-extra.json"; sourceTree = "<group>"; };
 		2685C0D1263B069500D9EE97 /* AddOnGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddOnGroup.swift; sourceTree = "<group>"; };
@@ -2741,6 +2760,7 @@
 				B557DA0A20975D7E005962F4 /* WooAPIVersion.swift */,
 				B557DA0C20975DB1005962F4 /* WordPressAPIVersion.swift */,
 				DE2E8EB429546648002E4B14 /* WooConstants.swift */,
+				2680B0CD2BED592800E7F1D8 /* Secret.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -4471,6 +4491,23 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2680B0D72BED5A8800E7F1D8 /* ApplicationPasswordMapper.swift in Sources */,
+				2680B0D82BED5A8800E7F1D8 /* ApplicationPasswordNameAndUUIDMapper.swift in Sources */,
+				2680B0D62BED5A7F00E7F1D8 /* WordPressOrgNetwork.swift in Sources */,
+				2680B0D52BED5A7700E7F1D8 /* CookieNonceAuthenticator.swift in Sources */,
+				2680B0D42BED5A6600E7F1D8 /* AppicationPasswordEncoder.swift in Sources */,
+				2680B0D32BED5A5400E7F1D8 /* OneTimeApplicationPasswordUseCase.swift in Sources */,
+				2680B0D12BED5A4C00E7F1D8 /* UnauthenticatedRequest.swift in Sources */,
+				2680B0D22BED5A4C00E7F1D8 /* AuthenticatedRESTRequest.swift in Sources */,
+				2680B0D02BED5A1900E7F1D8 /* WooConstants.swift in Sources */,
+				2680B0CF2BED59CE00E7F1D8 /* ApplicationPasswordStorage.swift in Sources */,
+				2680B0CB2BED58B200E7F1D8 /* ApplicationPasswordNameAndUUID.swift in Sources */,
+				2680B0CC2BED58B200E7F1D8 /* ApplicationPassword.swift in Sources */,
+				26F2CADD2BED579100F9A5E7 /* ApplicationPasswordUseCase.swift in Sources */,
+				26F2CADA2BED578200F9A5E7 /* RequestProcessor.swift in Sources */,
+				26F2CADB2BED578200F9A5E7 /* RequestAuthenticator.swift in Sources */,
+				26F2CADC2BED578200F9A5E7 /* RequestConverter.swift in Sources */,
+				26F2CAD92BED574D00F9A5E7 /* AlamofireNetwork.swift in Sources */,
 				263A6DBE2BEAA4A900C292B2 /* MIContainer.swift in Sources */,
 				263A6DBB2BEAA49B00C292B2 /* AnyCodable.swift in Sources */,
 				263A6DBC2BEAA49B00C292B2 /* AnyDecodable.swift in Sources */,
@@ -4492,6 +4529,7 @@
 				263A6DAC2BEAA31400C292B2 /* StatsGranularityV4.swift in Sources */,
 				263A6DAB2BEAA30500C292B2 /* SiteStatsRemote.swift in Sources */,
 				263A6DAA2BEAA2E700C292B2 /* OrderStatsRemoteV4.swift in Sources */,
+				2680B0CE2BED592800E7F1D8 /* Secret.swift in Sources */,
 				263A6DA62BEA9FE600C292B2 /* PlaceholderDataValidator.swift in Sources */,
 				263A6DA52BEA9FCC00C292B2 /* String+URL.swift in Sources */,
 				263A6DA42BEA9F5A00C292B2 /* Dictionary+Woo.swift in Sources */,

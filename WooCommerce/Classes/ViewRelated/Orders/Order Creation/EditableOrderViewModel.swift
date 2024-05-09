@@ -1926,7 +1926,7 @@ private extension EditableOrderViewModel {
     /// Synchronizes available shipping methods for editing the order shipping lines.
     ///
     func syncShippingMethods() {
-        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.enhancingOrderShippingLines) else {
+        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.orderShippingMethodSelection) else {
             return
         }
         let action = ShippingMethodAction.synchronizeShippingMethods(siteID: siteID) { result in

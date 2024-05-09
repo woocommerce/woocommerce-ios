@@ -1,0 +1,1 @@
+En nuestra última actualización, hemos mejorado la lectura de códigos de barras, porque hemos solucionado un error que hacía que productos padre variables se mezclaran con otros. Disfruta de una experiencia de creación de pedidos más sencilla con nuestra última actualización.

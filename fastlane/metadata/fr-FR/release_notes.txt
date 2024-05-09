@@ -1,0 +1,1 @@
+Dans notre dernière mise à jour, nous avons amélioré le scan des codes-barres en éliminant un bug qui permettait à des produits parents variables de se glisser dans les commandes. Profitez d’une expérience de création de commande plus fluide grâce à notre dernière mise à jour !

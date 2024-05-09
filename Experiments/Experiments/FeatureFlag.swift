@@ -207,4 +207,8 @@ public enum FeatureFlag: Int {
     /// Enables new dashboard cards on the My Store screen.
     ///
     case dynamicDashboardM2
+
+    /// Enables multiple shipping lines in order details and order creation/editing.
+    ///
+    case multipleShippingLines
 }

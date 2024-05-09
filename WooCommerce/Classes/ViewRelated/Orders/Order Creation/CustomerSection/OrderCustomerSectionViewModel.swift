@@ -11,8 +11,12 @@ final class OrderCustomerSectionViewModel: ObservableObject {
     // MARK: - Customer search
     @Published var showsCustomerSearch: Bool = false
     @Published var customerData: CollapsibleCustomerCardViewModel.CustomerData
-    @Published private(set) var addressFormViewModel: CreateOrderAddressFormViewModel
+    @Published var addressFormViewModel: CreateOrderAddressFormViewModel
     private let updateCustomer: (Customer?) -> Void
+
+    // MARK: - Address
+    @Published var showsAddressForm: Bool = false
+    let resetAddressForm: () -> Void
 
     @Published private(set) var cardViewModel: CollapsibleCustomerCardViewModel?
 
@@ -21,13 +25,15 @@ final class OrderCustomerSectionViewModel: ObservableObject {
          customerData: CollapsibleCustomerCardViewModel.CustomerData,
          isCustomerAccountRequired: Bool,
          isEditable: Bool,
-         updateCustomer: @escaping (Customer?) -> Void) {
+         updateCustomer: @escaping (Customer?) -> Void,
+         resetAddressForm: @escaping () -> Void) {
         self.siteID = siteID
         self.addressFormViewModel = addressFormViewModel
         self.customerData = customerData
         self.isCustomerAccountRequired = isCustomerAccountRequired
         self.isEditable = isEditable
         self.updateCustomer = updateCustomer
+        self.resetAddressForm = resetAddressForm
         observeCustomerDataForCardViewModel()
     }
 
@@ -37,7 +43,8 @@ final class OrderCustomerSectionViewModel: ObservableObject {
                               isCustomerAccountRequired: isCustomerAccountRequired,
                               isEditable: isEditable,
                               isCollapsed: false,
-                              removeCustomer: removeCustomer)
+                              removeCustomer: removeCustomer,
+                              editAddress: editAddress)
     }
 
     /// Called when the user taps to search for a customer.
@@ -55,6 +62,10 @@ private extension OrderCustomerSectionViewModel {
     func removeCustomer() {
         updateCustomer(nil)
     }
+
+    func editAddress() {
+        showsAddressForm = true
+    }
 }
 
 private extension OrderCustomerSectionViewModel {
@@ -68,7 +79,8 @@ private extension OrderCustomerSectionViewModel {
                                                         isCustomerAccountRequired: isCustomerAccountRequired,
                                                         isEditable: isEditable,
                                                         isCollapsed: true,
-                                                        removeCustomer: removeCustomer)
+                                                        removeCustomer: removeCustomer,
+                                                        editAddress: editAddress)
             }
             .assign(to: &$cardViewModel)
     }

@@ -39,6 +39,19 @@ struct OrderCustomerSection: View {
                     }
             }
         }
+        .sheet(isPresented: $viewModel.showsAddressForm) {
+            NavigationView {
+                EditOrderAddressForm(dismiss: { _ in
+                    viewModel.showsAddressForm.toggle()
+                },
+                                     viewModel: viewModel.addressFormViewModel)
+            }
+            .discardChangesPrompt(canDismiss: !viewModel.addressFormViewModel.hasPendingChanges,
+                                  didDismiss: viewModel.addressFormViewModel.userDidCancelFlow)
+            .onDisappear {
+                viewModel.resetAddressForm()
+            }
+        }
     }
 
     private var createCustomerView: some View {
@@ -101,7 +114,8 @@ struct OrderCustomerSection_Previews: PreviewProvider {
                                                   customerData: customer,
                                                   isCustomerAccountRequired: true,
                                                   isEditable: true,
-                                                  updateCustomer: { _ in }))
+                                                  updateCustomer: { _ in },
+                                                  resetAddressForm: {}))
             OrderCustomerSection(viewModel: .init(siteID: 1,
                                                   addressFormViewModel: .init(
                                                     siteID: 1,
@@ -112,7 +126,8 @@ struct OrderCustomerSection_Previews: PreviewProvider {
                                                   customerData: customer,
                                                   isCustomerAccountRequired: false,
                                                   isEditable: true,
-                                                  updateCustomer: { _ in }))
+                                                  updateCustomer: { _ in },
+                                                  resetAddressForm: {}))
         }
     }
 }

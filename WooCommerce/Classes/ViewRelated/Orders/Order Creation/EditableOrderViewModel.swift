@@ -511,7 +511,8 @@ final class EditableOrderViewModel: ObservableObject {
                                 shippingAddressFormatted: nil),
             isCustomerAccountRequired: false,
             isEditable: true,
-            updateCustomer: { _ in }
+            updateCustomer: { _ in },
+            resetAddressForm: {}
         )
 
         configureDisabledState()
@@ -542,7 +543,14 @@ final class EditableOrderViewModel: ObservableObject {
     /// Observes and keeps track of changes within the Customer Details
     ///
     private func observeChangesInCustomerDetails() {
-        addressFormViewModel.fieldsPublisher.sink { [weak self] newValue in
+        guard featureFlagService.isFeatureFlagEnabled(.subscriptionsInOrderCreationCustomers) else {
+            addressFormViewModel.fieldsPublisher.sink { [weak self] newValue in
+                self?.latestAddressFormFields = newValue
+            }
+            .store(in: &cancellables)
+            return
+        }
+        customerSectionViewModel.addressFormViewModel.fieldsPublisher.sink { [weak self] newValue in
             self?.latestAddressFormFields = newValue
         }
         .store(in: &cancellables)
@@ -773,10 +781,28 @@ final class EditableOrderViewModel: ObservableObject {
     /// Can be used to configure the address form for first use or discard pending changes.
     ///
     func resetAddressForm() {
-        addressFormViewModel = CreateOrderAddressFormViewModel(siteID: siteID,
-                                                               addressData: .init(billingAddress: orderSynchronizer.order.billingAddress,
-                                                                                  shippingAddress: orderSynchronizer.order.shippingAddress),
-                                                               onAddressUpdate: { [weak self] updatedAddressData in
+        guard featureFlagService.isFeatureFlagEnabled(.subscriptionsInOrderCreationCustomers) else {
+            addressFormViewModel = CreateOrderAddressFormViewModel(siteID: siteID,
+                                                                   addressData: .init(billingAddress: orderSynchronizer.order.billingAddress,
+                                                                                      shippingAddress: orderSynchronizer.order.shippingAddress),
+                                                                   onAddressUpdate: { [weak self] updatedAddressData in
+                let input = Self.createAddressesInputIfPossible(billingAddress: updatedAddressData.billingAddress,
+                                                                shippingAddress: updatedAddressData.shippingAddress)
+                self?.orderSynchronizer.setAddresses.send(input)
+                self?.trackCustomerDetailsAdded()
+            })
+            // Since the form is recreated the original reference is lost. This is a problem if we update the form more than once
+            // while keeping the Order open, since new published values won't be observed anymore.
+            // This is resolved by hooking the publisher again to the new object
+            observeChangesInCustomerDetails()
+            return
+        }
+
+        customerSectionViewModel.addressFormViewModel = .init(siteID: siteID,
+                                                              showEmailField: false,
+                                                              addressData: .init(billingAddress: orderSynchronizer.order.billingAddress,
+                                                                                 shippingAddress: orderSynchronizer.order.shippingAddress),
+                                                              onAddressUpdate: { [weak self] updatedAddressData in
             let input = Self.createAddressesInputIfPossible(billingAddress: updatedAddressData.billingAddress,
                                                             shippingAddress: updatedAddressData.shippingAddress)
             self?.orderSynchronizer.setAddresses.send(input)
@@ -1708,7 +1734,8 @@ private extension EditableOrderViewModel {
                 } else {
                     removeCustomerFromOrder()
                 }
-            }
+            },
+            resetAddressForm: resetAddressForm
         )
 
         orderSynchronizer.orderPublisher

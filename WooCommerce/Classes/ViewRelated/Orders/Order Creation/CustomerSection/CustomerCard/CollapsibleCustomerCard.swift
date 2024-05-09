@@ -32,7 +32,7 @@ struct CollapsibleCustomerCard: View {
 
                 Divider()
 
-                Text("Address")
+                CollapsibleCustomerCardAddressView(viewModel: viewModel.addressViewModel)
 
                 removeCustomerView()
                     .renderedIf(viewModel.canRemoveCustomer)
@@ -95,6 +95,7 @@ struct CollapsibleCustomerCard_Previews: PreviewProvider {
                                                  isCustomerAccountRequired: true,
                                                  isEditable: true,
                                                  isCollapsed: false,
-                                                 removeCustomer: {}))
+                                                 removeCustomer: {},
+                                                 editAddress: {}))
     }
 }

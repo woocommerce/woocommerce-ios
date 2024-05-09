@@ -379,6 +379,28 @@ final class ShippingLineSelectionDetailsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.formattableAmountViewModel.amount, "")
         XCTAssertEqual(viewModel.methodTitle, "")
     }
+
+    func test_view_model_tracks_selected_shipping_method() {
+        // Given
+        let analytics = MockAnalyticsProvider()
+        let viewModel = ShippingLineSelectionDetailsViewModel(siteID: sampleSiteID,
+                                                              isExistingShippingLine: false,
+                                                              initialMethodID: "",
+                                                              initialMethodTitle: "",
+                                                              shippingTotal: "",
+                                                              locale: usLocale,
+                                                              storeCurrencySettings: usStoreSettings,
+                                                              analytics: WooAnalytics(analyticsProvider: analytics),
+                                                              didSelectSave: { _ in })
+
+        // When
+        let shippingMethod = ShippingMethod(siteID: sampleSiteID, methodID: "flat_rate", title: "Flat rate")
+        viewModel.trackShippingMethodSelected(shippingMethod)
+
+        // Then
+        XCTAssertEqual(analytics.receivedEvents, [WooAnalyticsStat.orderShippingMethodSelected.rawValue])
+        assertEqual(shippingMethod.methodID, analytics.receivedProperties.first?["shipping_method"] as? String)
+    }
 }
 
 private extension ShippingLineSelectionDetailsViewModelTests {

@@ -500,6 +500,8 @@ public enum WooAnalyticsStat: String {
     case orderProductDiscountRemove = "order_product_discount_remove"
     case orderProductDiscountAddButtonTapped = "order_product_discount_add_button_tapped"
     case orderProductDiscountEditButtonTapped = "order_product_discount_edit_button_tapped"
+    case orderAddShippingTapped = "order_add_shipping_tapped"
+    case orderShippingMethodSelected = "order_shipping_method_selected"
     case orderShippingMethodAdd = "order_shipping_method_add"
     case orderShippingMethodRemove = "order_shipping_method_remove"
     case orderSyncFailed = "order_sync_failed"

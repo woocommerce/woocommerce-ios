@@ -409,8 +409,8 @@ final class EditableOrderViewModel: ObservableObject {
     func saveShippingLine(_ shippingLine: ShippingLine?) {
         orderSynchronizer.setShipping.send(shippingLine)
 
-        if shippingLine != nil {
-            analytics.track(event: WooAnalyticsEvent.Orders.orderShippingMethodAdd(flow: flow.analyticsFlow))
+        if let shippingLine {
+            analytics.track(event: WooAnalyticsEvent.Orders.orderShippingMethodAdd(flow: flow.analyticsFlow, methodID: shippingLine.methodID ?? ""))
         } else {
             analytics.track(event: WooAnalyticsEvent.Orders.orderShippingMethodRemove(flow: flow.analyticsFlow))
         }
@@ -1231,6 +1231,7 @@ extension EditableOrderViewModel {
         let onDismissWpAdminWebViewClosure: () -> Void
         let addGiftCardClosure: () -> Void
         let setGiftCardClosure: (_ code: String?) -> Void
+        let addShippingTappedClosure: () -> Void
 
         init(siteID: Int64 = 0,
              shouldShowProductsTotal: Bool = false,
@@ -1269,6 +1270,7 @@ extension EditableOrderViewModel {
              onDismissWpAdminWebViewClosure: @escaping () -> Void = {},
              addGiftCardClosure: @escaping () -> Void = {},
              setGiftCardClosure: @escaping (_ code: String?) -> Void = { _ in },
+             addShippingTappedClosure: @escaping () -> Void = {},
              currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)) {
             self.siteID = siteID
             self.shouldShowProductsTotal = shouldShowProductsTotal
@@ -1316,6 +1318,7 @@ extension EditableOrderViewModel {
             self.onDismissWpAdminWebViewClosure = onDismissWpAdminWebViewClosure
             self.addGiftCardClosure = addGiftCardClosure
             self.setGiftCardClosure = setGiftCardClosure
+            self.addShippingTappedClosure = addShippingTappedClosure
         }
 
         /// Indicates whether the Coupons informational tooltip button should be shown
@@ -1879,6 +1882,9 @@ private extension EditableOrderViewModel {
                                                 self.orderSynchronizer.setGiftCard.send(code)
                                                 self.analytics.track(event: .Orders.orderFormGiftCardSet(flow: self.flow.analyticsFlow,
                                                                                                          isRemoved: code == nil))
+                                            },
+                                            addShippingTappedClosure: { [weak self] in
+                                                self?.analytics.track(event: .Orders.orderAddShippingTapped())
                                             },
                                             currencyFormatter: self.currencyFormatter)
             }

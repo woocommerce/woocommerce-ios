@@ -369,6 +369,10 @@ final class EditableOrderViewModel: ObservableObject {
 
     // MARK: Customer data properties
 
+    /// View model for the customer section.
+    ///
+    @Published private(set) var customerSectionViewModel: OrderCustomerSectionViewModel
+
     /// Representation of customer data display properties.
     ///
     @Published private(set) var customerDataViewModel: CustomerDataViewModel = .init(billingAddress: nil, shippingAddress: nil)
@@ -491,7 +495,20 @@ final class EditableOrderViewModel: ObservableObject {
 
         // Set a temporary initial view model, as a workaround to avoid making it optional.
         // Needs to be reset before the view model is used.
-        self.addressFormViewModel = .init(siteID: siteID, addressData: .init(billingAddress: nil, shippingAddress: nil), onAddressUpdate: nil)
+        let addressFormViewModel = CreateOrderAddressFormViewModel(siteID: siteID,
+                                                                   addressData: .init(billingAddress: nil, shippingAddress: nil),
+                                                                   onAddressUpdate: nil)
+        self.addressFormViewModel = addressFormViewModel
+
+        // A temporary initial value is set here to avoid being an optional, and it will be reset in `configureCustomerDataViewModel`.
+        self.customerSectionViewModel = .init(
+            siteID: siteID,
+            addressFormViewModel: addressFormViewModel,
+            customerData: .init(email: nil, fullName: nil, billingAddressFormatted: nil, shippingAddressFormatted: nil),
+            isCustomerAccountRequired: false,
+            isEditable: true,
+            addCustomer: { _ in }
+        )
 
         configureDisabledState()
         configureCollectPaymentDisabledState()
@@ -1170,13 +1187,7 @@ extension EditableOrderViewModel {
         let showNonEditableIndicators: Bool
 
         let shippingLineViewModel: ShippingLineDetailsViewModel
-        let saveShippingLineClosure: (ShippingLine?) -> Void
-        var shippingLineSelectionViewModel: ShippingLineSelectionDetailsViewModel {
-            ShippingLineSelectionDetailsViewModel(isExistingShippingLine: shouldShowShippingTotal,
-                                                  initialMethodTitle: shippingMethodTitle,
-                                                  shippingTotal: shippingMethodTotal,
-                                                  didSelectSave: saveShippingLineClosure)
-        }
+        let shippingLineSelectionViewModel: ShippingLineSelectionDetailsViewModel
         let addNewCouponLineClosure: (Coupon) -> Void
         let onGoToCouponsClosure: () -> Void
         let onTaxHelpButtonTappedClosure: () -> Void
@@ -1187,8 +1198,10 @@ extension EditableOrderViewModel {
         init(siteID: Int64 = 0,
              shouldShowProductsTotal: Bool = false,
              itemsTotal: String = "0",
+             availableShippingMethods: [ShippingMethod] = [],
              shouldShowShippingTotal: Bool = false,
              shippingTotal: String = "0",
+             shippingMethodID: String = "",
              shippingMethodTitle: String = "",
              shippingMethodTotal: String = "",
              shippingTax: String = "0",
@@ -1228,7 +1241,6 @@ extension EditableOrderViewModel {
             self.shippingTotal = currencyFormatter.formatAmount(shippingTotal) ?? "0.00"
             self.shippingMethodTitle = shippingMethodTitle
             self.shippingMethodTotal = currencyFormatter.formatAmount(shippingMethodTotal) ?? "0.00"
-            self.saveShippingLineClosure = saveShippingLineClosure
             self.shippingTax = currencyFormatter.formatAmount(shippingTax) ?? "0.00"
             self.shouldShowShippingTax = !(currencyFormatter.convertToDecimal(shippingTax) ?? NSDecimalNumber(0.0)).isZero()
             self.shouldShowTotalCustomAmounts = shouldShowTotalCustomAmounts
@@ -1256,6 +1268,13 @@ extension EditableOrderViewModel {
                                                                       initialMethodTitle: shippingMethodTitle,
                                                                       shippingTotal: shippingMethodTotal,
                                                                       didSelectSave: saveShippingLineClosure)
+            self.shippingLineSelectionViewModel = ShippingLineSelectionDetailsViewModel(siteID: siteID,
+                                                                                        shippingMethods: availableShippingMethods,
+                                                                                        isExistingShippingLine: shouldShowShippingTotal,
+                                                                                        initialMethodID: shippingMethodID,
+                                                                                        initialMethodTitle: shippingMethodTitle,
+                                                                                        shippingTotal: shippingMethodTotal,
+                                                                                        didSelectSave: saveShippingLineClosure)
             self.addNewCouponLineClosure = addNewCouponLineClosure
             self.onGoToCouponsClosure = onGoToCouponsClosure
             self.onTaxHelpButtonTappedClosure = onTaxHelpButtonTappedClosure
@@ -1650,11 +1669,37 @@ private extension EditableOrderViewModel {
     /// Updates customer data viewmodel based on order addresses.
     ///
     func configureCustomerDataViewModel() {
+        guard featureFlagService.isFeatureFlagEnabled(.subscriptionsInOrderCreationCustomers) else {
+            // Legacy customer section UI.
+            orderSynchronizer.orderPublisher
+                .map {
+                    CustomerDataViewModel(billingAddress: $0.billingAddress, shippingAddress: $0.shippingAddress)
+                }
+                .assign(to: &$customerDataViewModel)
+            return
+        }
+
+        customerSectionViewModel = .init(
+            siteID: siteID,
+            addressFormViewModel: addressFormViewModel,
+            customerData: .init(email: nil, fullName: nil, billingAddressFormatted: nil, shippingAddressFormatted: nil),
+            isCustomerAccountRequired: false,
+            isEditable: true,
+            addCustomer: { [weak self] customer in
+                self?.addCustomerAddressToOrder(customer: customer)
+            }
+        )
+
         orderSynchronizer.orderPublisher
             .map {
-                CustomerDataViewModel(billingAddress: $0.billingAddress, shippingAddress: $0.shippingAddress)
+                CollapsibleCustomerCardViewModel.CustomerData(
+                    email: $0.billingAddress?.email ?? $0.shippingAddress?.email,
+                    fullName: $0.billingAddress?.fullName ?? $0.shippingAddress?.fullName,
+                    billingAddressFormatted: $0.billingAddress?.formattedPostalAddress,
+                    shippingAddressFormatted: $0.shippingAddress?.formattedPostalAddress
+                )
             }
-            .assign(to: &$customerDataViewModel)
+            .assign(to: &customerSectionViewModel.$customerData)
     }
 
     /// Updates notes data viewmodel based on order customer notes.
@@ -1690,7 +1735,14 @@ private extension EditableOrderViewModel {
 
                 let orderTotals = OrderTotalsCalculator(for: order, using: self.currencyFormatter)
 
+                let shippingMethodID = order.shippingLines.first?.methodID ?? ""
                 let shippingMethodTitle = order.shippingLines.first?.methodTitle ?? ""
+                let availableShippingMethods = [ // TODO-12578: Replace with actual shipping methods
+                    ShippingMethod(siteID: siteID, methodID: "flat_rate", title: "Flat rate"),
+                    ShippingMethod(siteID: siteID, methodID: "free_shipping", title: "Free shipping"),
+                    ShippingMethod(siteID: siteID, methodID: "local_pickup", title: "Local pickup"),
+                    ShippingMethod(siteID: siteID, methodID: "other", title: "Other")
+                ]
 
                 let isDataSyncing: Bool = {
                     switch state {
@@ -1735,8 +1787,10 @@ private extension EditableOrderViewModel {
                 return PaymentDataViewModel(siteID: self.siteID,
                                             shouldShowProductsTotal: order.items.isNotEmpty,
                                             itemsTotal: orderTotals.itemsTotal.stringValue,
+                                            availableShippingMethods: availableShippingMethods,
                                             shouldShowShippingTotal: order.shippingLines.filter { $0.methodID != nil }.isNotEmpty,
                                             shippingTotal: order.shippingTotal.isNotEmpty ? order.shippingTotal : "0",
+                                            shippingMethodID: shippingMethodID,
                                             shippingMethodTitle: shippingMethodTitle,
                                             shippingMethodTotal: order.shippingLines.first?.total ?? "0",
                                             shippingTax: order.shippingTax.isNotEmpty ? order.shippingTax : "0",

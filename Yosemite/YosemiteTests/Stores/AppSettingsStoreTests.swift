@@ -395,6 +395,42 @@ final class AppSettingsStoreTests: XCTestCase {
         XCTAssertTrue(isEnabled)
     }
 
+    func test_loadPointOfSaleSwitchState_isEnabled_when_new_generalAppSettings_then_returns_false() throws {
+        // Given
+        try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
+
+        // When
+        let result: Result<Bool, Error> = waitFor { promise in
+            let action = AppSettingsAction.loadPointOfSaleSwitchState { result in
+                promise(result)
+            }
+            self.subject?.onAction(action)
+        }
+
+        // Then
+        let isEnabled = try result.get()
+        XCTAssertFalse(isEnabled)
+    }
+
+    func test_loadPointOfSaleSwitchState_isEnabled_when_setPointOfSaleSwitchState_to_true_then_returns_true() throws {
+        // Given
+        try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
+        let updateAction = AppSettingsAction.setPointOfSaleSwitchState(isEnabled: true, onCompletion: { _ in })
+        subject?.onAction(updateAction)
+
+        // When
+        let result: Result<Bool, Error> = waitFor { promise in
+            let action = AppSettingsAction.loadPointOfSaleSwitchState { result in
+                promise(result)
+            }
+            self.subject?.onAction(action)
+        }
+
+        // Then
+        let isEnabled = try result.get()
+        XCTAssertTrue(isEnabled)
+    }
+
     func test_loadJetpackBenefitsBannerVisibility_returns_true_on_new_generalAppSettings() throws {
         // Given
         // Deletes any pre-existing app settings.
@@ -1369,9 +1405,10 @@ extension AppSettingsStoreTests {
     func test_setDashboardCards_works_correctly() throws {
         // Given
         let dashboardCards = [
-            DashboardCard(type: .onboarding, enabled: false),
-            DashboardCard(type: .performance, enabled: true),
-            DashboardCard(type: .blaze, enabled: true)
+            DashboardCard(type: .onboarding, availability: .show, enabled: false),
+            DashboardCard(type: .performance, availability: .show, enabled: true),
+            DashboardCard(type: .topPerformers, availability: .show, enabled: true),
+            DashboardCard(type: .blaze, availability: .show, enabled: true)
         ]
         let existingSettings = GeneralStoreSettingsBySite(storeSettingsBySite: [TestConstants.siteID: GeneralStoreSettings()])
         try fileStorage?.write(existingSettings, to: expectedGeneralStoreSettingsFileURL)
@@ -1390,9 +1427,10 @@ extension AppSettingsStoreTests {
     func test_loadDashboardCards_works_correctly() throws {
         // Given
         let storedDashboardCards = [
-            DashboardCard(type: .onboarding, enabled: false),
-            DashboardCard(type: .performance, enabled: true),
-            DashboardCard(type: .blaze, enabled: true)
+            DashboardCard(type: .onboarding, availability: .show, enabled: false),
+            DashboardCard(type: .performance, availability: .show, enabled: true),
+            DashboardCard(type: .topPerformers, availability: .show, enabled: true),
+            DashboardCard(type: .blaze, availability: .show, enabled: true)
         ]
         let storeSettings = GeneralStoreSettings(dashboardCards: storedDashboardCards)
         let existingSettings = GeneralStoreSettingsBySite(storeSettingsBySite: [TestConstants.siteID: storeSettings])
@@ -1547,6 +1585,7 @@ private extension AppSettingsStoreTests {
             feedbacks: [feedback.name: feedback],
             isViewAddOnsSwitchEnabled: false,
             isInAppPurchasesSwitchEnabled: false,
+            isPointOfSaleEnabled: false,
             knownCardReaders: [],
             featureAnnouncementCampaignSettings: [:],
             sitesWithAtLeastOneIPPTransactionFinished: [],
@@ -1563,6 +1602,7 @@ private extension AppSettingsStoreTests {
             feedbacks: [:],
             isViewAddOnsSwitchEnabled: false,
             isInAppPurchasesSwitchEnabled: false,
+            isPointOfSaleEnabled: false,
             knownCardReaders: [],
             featureAnnouncementCampaignSettings: featureAnnouncementCampaignSettings,
             sitesWithAtLeastOneIPPTransactionFinished: [],

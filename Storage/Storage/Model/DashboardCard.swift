@@ -6,11 +6,17 @@ public struct DashboardCard: Codable, Hashable, Equatable, GeneratedCopiable {
     /// The type of dashboard card.
     public let type: CardType
 
-    /// Whether the card is enabled in the Analytics Hub.
-    public var enabled: Bool
+    /// User-changeable setting in the Customize screen, whether to enable or disable an available card.
+    /// An available card will become invisible on the Dashboard, but stay visible on Customize, if `enabled` is set to false.
+    public let enabled: Bool
 
-    public init(type: CardType, enabled: Bool) {
+    /// The card's availability state for the site.
+    /// To be set externally based on each card's availability check.
+    public let availability: AvailabilityState
+
+    public init(type: CardType, availability: AvailabilityState, enabled: Bool) {
         self.type = type
+        self.availability = availability
         self.enabled = enabled
     }
 
@@ -21,5 +27,13 @@ public struct DashboardCard: Codable, Hashable, Equatable, GeneratedCopiable {
         case performance
         case topPerformers
         case blaze
+    }
+
+    /// Card's availability state that determines whether it can be displayed and used.
+    /// Affects how it's shown (or not shown) in Dashboard and Customize.
+    public enum AvailabilityState: String, Codable {
+        case show           // Shown in Dashboard and Customize
+        case unavailable    // Shown in Dashboard and Customize (as "Unavailable")
+        case hide           // Not shown in Dashboard and Customize
     }
 }

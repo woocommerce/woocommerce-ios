@@ -20,7 +20,7 @@ class OrderLoaderViewController: UIViewController {
 
     /// Target OrderID
     ///
-    private let orderID: Int64
+    let orderID: Int64
 
     /// Target Order's SiteID
     ///

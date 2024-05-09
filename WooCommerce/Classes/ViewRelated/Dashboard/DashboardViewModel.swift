@@ -25,11 +25,25 @@ final class DashboardViewModel: ObservableObject {
 
     @Published var justInTimeMessagesWebViewModel: WebViewSheetViewModel? = nil
 
-    @Published private(set) var dashboardCards: [DashboardCard] = [
-        DashboardCard(type: .performance, enabled: true),
-        DashboardCard(type: .topPerformers, enabled: true)
-    ]
-    @Published private(set) var unavailableDashboardCards: [DashboardCard] = []
+    @Published private(set) var dashboardCards: [DashboardCard] = []
+
+    var unavailableCards: [DashboardCard] {
+        dashboardCards.filter { $0.availability == .unavailable }
+    }
+
+    var availableCards: [DashboardCard] {
+        dashboardCards.filter { $0.availability != .hide }
+    }
+
+    var showOnDashboardCards: [DashboardCard] {
+        dashboardCards.filter { $0.availability == .show && $0.enabled }
+    }
+
+    @Published private(set) var isInAppFeedbackCardVisible = false
+
+    private(set) var inAppFeedbackCardViewModel = InAppFeedbackCardViewModel()
+
+    @Published var showingInAppFeedbackSurvey = false
 
     @Published private(set) var jetpackBannerVisibleFromAppSettings = false
 
@@ -90,9 +104,23 @@ final class DashboardViewModel: ObservableObject {
         self.topPerformersViewModel = .init(siteID: siteID,
                                             usageTracksEventEmitter: usageTracksEventEmitter)
         self.themeInstaller = themeInstaller
+        self.inAppFeedbackCardViewModel.onFeedbackGiven = { [weak self] feedback in
+            self?.showingInAppFeedbackSurvey = feedback == .didntLike
+            self?.onInAppFeedbackCardAction()
+        }
         configureOrdersResultController()
         setupDashboardCards()
         installPendingThemeIfNeeded()
+    }
+
+    /// Must be called by the `View` during the `onAppear()` event. This will
+    /// update the visibility of the in-app feedback card.
+    ///
+    /// The visibility is updated on `onAppear()` to consider scenarios when the app is
+    /// never terminated.
+    ///
+    func onViewAppear() {
+        refreshIsInAppFeedbackCardVisibleValue()
     }
 
     @MainActor
@@ -273,46 +301,58 @@ private extension DashboardViewModel {
         showingCustomization = true
     }
 
-    /// We are using separate user defaults for different cards -
-    /// this should be updated to general app settings.
-    ///
+    func generateDefaultCards(canShowOnboarding: Bool, canShowBlaze: Bool, canShowAnalytics: Bool) -> [DashboardCard] {
+        var cards = [DashboardCard]()
+
+        // Onboarding card.
+        // When not available, Onboarding card needs to be hidden from Dashboard and Customize
+        cards.append(DashboardCard(type: .onboarding,
+                                   availability: canShowOnboarding ? .show : .hide,
+                                   enabled: canShowOnboarding))
+
+        // Performance and Top Performance cards (also known as Analytics cards).
+        // When not available, Analytics cards need to be hidden from Dashboard, but appear on Customize as "Unavailable"
+        cards.append(DashboardCard(type: .performance,
+                                   availability: canShowAnalytics ? .show : .unavailable,
+                                   enabled: canShowAnalytics))
+
+        cards.append(DashboardCard(type: .topPerformers,
+                                   availability: canShowAnalytics ? .show : .unavailable,
+                                   enabled: canShowAnalytics))
+
+        // Blaze card.
+        // When not available, Blaze card needs to be hidden from Dashboard and Customize
+        cards.append(DashboardCard(type: .blaze,
+                                   availability: canShowBlaze ? .show : .hide,
+                                   enabled: canShowBlaze))
+
+        return cards
+    }
+
     @MainActor
     func updateDashboardCards(canShowOnboarding: Bool,
                               canShowBlaze: Bool,
                               canShowAnalytics: Bool) async {
-        dashboardCards = await {
-            if var stored = await loadDashboardCards() {
-                let analyticCardTypes: [DashboardCard.CardType] = [.performance, .topPerformers]
-                stored = canShowAnalytics ? stored : stored.filter { !analyticCardTypes.contains($0.type) }
-                return stored
+
+        // First, generate latest cards state based on current canShow states
+        let initialCards = generateDefaultCards(canShowOnboarding: canShowOnboarding,
+                                                canShowBlaze: canShowBlaze,
+                                                canShowAnalytics: canShowAnalytics)
+
+        // Next, get saved cards and preserve existing enabled state for all available cards.
+        // This is needed because even if a user already disabled an available card and saved it, in `initialCards`
+        // the same card might be set to be enabled. To respect user's setting, we need to check the saved state and re-apply it.
+        let savedCards = await loadDashboardCards() ?? []
+        dashboardCards = initialCards.map { initialCard in
+            if let savedCard = savedCards.first(where: { $0.type == initialCard.type }),
+               savedCard.availability == .show && initialCard.availability == .show {
+                return initialCard.copy(enabled: savedCard.enabled)
             } else {
-                // Start with default values, cards could be updated further below as needed.
-                return [DashboardCard(type: .onboarding, enabled: canShowOnboarding),
-                        DashboardCard(type: .performance, enabled: canShowAnalytics),
-                        DashboardCard(type: .topPerformers, enabled: canShowAnalytics),
-                        DashboardCard(type: .blaze, enabled: canShowBlaze)]
+                return initialCard
             }
-        }()
-
-        // If should not be shown, ensure Onboarding is not visible on Dashboard
-        if !canShowOnboarding {
-            dashboardCards.removeAll { $0.type == .onboarding }
-        }
-
-        // If should not be shown, ensure Blaze is not visible on Dashboard
-        if !canShowBlaze {
-            dashboardCards.removeAll { $0.type == .blaze }
-        }
-
-        // Set cards to show "Unavailable" state in Customize screen when should not be shown.
-        // Currently this applies to Top Performers and Performance cards.
-        // For the other cards, when they should not be shown, they are simply not shown in Customize.
-        unavailableDashboardCards = []
-        if !canShowAnalytics {
-            unavailableDashboardCards.append(DashboardCard(type: .performance, enabled: false))
-            unavailableDashboardCards.append(DashboardCard(type: .topPerformers, enabled: false))
         }
     }
+
     @MainActor
     func updateHasOrdersStatus() async {
         do {
@@ -357,6 +397,57 @@ private extension DashboardViewModel {
             stores.dispatch(AppSettingsAction.loadDashboardCards(siteID: siteID, onCompletion: { cards in
                 continuation.resume(returning: cards)
             }))
+        }
+    }
+}
+
+// MARK: InAppFeedback card
+//
+private extension DashboardViewModel {
+    /// Updates the card visibility state stored in `isInAppFeedbackCardVisible` by updating the app last feedback date.
+    ///
+    func onInAppFeedbackCardAction() {
+        let action = AppSettingsAction.updateFeedbackStatus(type: .general, status: .given(Date())) { [weak self] result in
+            guard let self = self else {
+                return
+            }
+
+            if let error = result.failure {
+                ServiceLocator.crashLogging.logError(error)
+            }
+
+            self.refreshIsInAppFeedbackCardVisibleValue()
+        }
+        stores.dispatch(action)
+    }
+
+    /// Calculates and updates the value of `isInAppFeedbackCardVisible`.
+    func refreshIsInAppFeedbackCardVisibleValue() {
+        let action = AppSettingsAction.loadFeedbackVisibility(type: .general) { [weak self] result in
+            guard let self = self else {
+                return
+            }
+
+            switch result {
+            case .success(let shouldBeVisible):
+                self.sendIsInAppFeedbackCardVisibleValueAndTrackIfNeeded(shouldBeVisible)
+            case .failure(let error):
+                ServiceLocator.crashLogging.logError(error)
+                // We'll just send a `false` value. I think this is the safer bet.
+                self.sendIsInAppFeedbackCardVisibleValueAndTrackIfNeeded(false)
+            }
+        }
+        stores.dispatch(action)
+    }
+
+    /// Updates the value of `isInAppFeedbackCardVisible` and tracks a "shown" event
+    /// if the value changed from `false` to `true`.
+    func sendIsInAppFeedbackCardVisibleValueAndTrackIfNeeded(_ newValue: Bool) {
+        let trackEvent = isInAppFeedbackCardVisible == false && newValue == true
+
+        isInAppFeedbackCardVisible = newValue
+        if trackEvent {
+            analytics.track(event: .appFeedbackPrompt(action: .shown))
         }
     }
 }

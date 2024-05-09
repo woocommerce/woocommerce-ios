@@ -11,8 +11,27 @@ struct ShippingLineSelectionDetails: View {
     @Environment(\.dismiss) var dismiss
 
     var body: some View {
-        NavigationView {
+        NavigationStack {
             List {
+                // MARK: Shipping Method
+                NavigationLink {
+                    SingleSelectionList(title: Localization.methodTitle,
+                                        items: viewModel.shippingMethods,
+                                        contentKeyPath: \.title,
+                                        selected: $viewModel.selectedMethod,
+                                        showDoneButton: false,
+                                        backgroundColor: nil)
+                } label: {
+                    VStack(alignment: .leading) {
+                        Text(Localization.methodTitle)
+                            .font(.title3)
+                            .foregroundColor(Color(.textSubtle))
+                        Text(viewModel.selectedMethod.title)
+                            .font(.title2.bold())
+                            .foregroundColor(viewModel.selectedMethodColor)
+                    }
+                }
+
                 // MARK: Amount
                 VStack(alignment: .leading) {
                     Text(Localization.amountTitle)
@@ -76,6 +95,10 @@ private extension ShippingLineSelectionDetails {
                                               value: "Cancel",
                                               comment: "Text for the cancel button in the Shipping Line Details screen")
 
+        static let methodTitle = NSLocalizedString("order.shippingLineDetails.method",
+                                                 value: "Method",
+                                                 comment: "Title above the shipping method field on the Shipping Line Details screen")
+
         static let amountTitle = NSLocalizedString("order.shippingLineDetails.amount",
                                                  value: "Amount",
                                                  comment: "Title above the amount field on the Shipping Line Details screen")
@@ -112,14 +135,20 @@ private extension ShippingLineSelectionDetails {
 }
 
 #Preview("Add shipping") {
-    ShippingLineSelectionDetails(viewModel: ShippingLineSelectionDetailsViewModel(isExistingShippingLine: false,
+    ShippingLineSelectionDetails(viewModel: ShippingLineSelectionDetailsViewModel(siteID: 1,
+                                                                                  shippingMethods: [],
+                                                                                  isExistingShippingLine: false,
+                                                                                  initialMethodID: "",
                                                                                   initialMethodTitle: "",
                                                                                   shippingTotal: "",
                                                                                   didSelectSave: { _ in }))
 }
 
 #Preview("Edit shipping") {
-    ShippingLineSelectionDetails(viewModel: ShippingLineSelectionDetailsViewModel(isExistingShippingLine: true,
+    ShippingLineSelectionDetails(viewModel: ShippingLineSelectionDetailsViewModel(siteID: 1,
+                                                                                  shippingMethods: [],
+                                                                                  isExistingShippingLine: true,
+                                                                                  initialMethodID: "flat_rate",
                                                                                   initialMethodTitle: "Shipping",
                                                                                   shippingTotal: "10.00",
                                                                                   didSelectSave: { _ in }))

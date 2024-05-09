@@ -150,6 +150,22 @@ final class StoreStatsChartViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.yAxisStride, 100)
     }
 
+    func test_yAxisStride_can_handle_negative_revenue_values() {
+        // Given
+        let currentDate = Date()
+        let intervals = [
+            StoreStatsChartData(date: currentDate, revenue: 100),
+            StoreStatsChartData(date: currentDate.adding(days: 1)!, revenue: -10),
+            StoreStatsChartData(date: currentDate.adding(days: 2)!, revenue: 130),
+        ]
+
+        // When
+        let viewModel = StoreStatsChartViewModel(intervals: intervals, timeRange: .thisWeek)
+
+        // Then
+        XCTAssertEqual(viewModel.yAxisStride, 70)
+    }
+
     func test_yAxisLabel_is_correct_for_zero_revenue() {
         // Given
         let viewModel = StoreStatsChartViewModel(intervals: [], timeRange: .thisWeek)

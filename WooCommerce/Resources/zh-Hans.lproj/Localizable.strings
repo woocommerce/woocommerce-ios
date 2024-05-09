@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-04-30 09:54:04+0000 */
+/* Translation-Revision-Date: 2024-05-08 09:54:15+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_CN */
@@ -279,6 +279,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Disclaimer regarding some of the features related to payments. */
 "1. Available as standard in WooCommerce Payments (restrictions apply).Additional extensions may be required for other payment providers." = "1. 作为 WooCommerce Payments 的标配提供（存在限制条件）。对于其他付款提供商，可能需要额外的扩展程序。";
+
+/* Step 1 of the 'How it works' list, instructing the merchant to prepare an order for payment */
+"1. Create an order" = "1. 创建订单";
 
 /* Settings > Manage Card Reader > Connect > Help hint number 2
    Settings > Set up Tap to Pay on iPhone > Information > Help hint number 2 */
@@ -1727,6 +1730,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description of the signup fees for a subscription product. Reads as: '$5.00 signup'. */
 "CollapsibleProductRowCardViewModel.formattedSignUpFee" = "%1$@ 注册费";
+
+/* Summary of quantity and signup fees for a subscription product when multiple are selected.Reads as: '3 × $0.60'. Please ensure you use a multiplication symbol, not a letter x */
+"CollapsibleProductRowCardViewModel.signupFeeSummary" = "%1$@ × %2$@";
 
 /* SKU label for a product in an order. The variable shows the SKU of the product. */
 "CollapsibleProductRowCardViewModel.skuFormat" = "SKU：%1$@";
@@ -9960,8 +9966,26 @@ which should be translated separately and considered part of this sentence. */
 /* Message in the Blaze campaign creation loading screen */
 "blazeCampaignCreationLoadingView.Message" = "创建广告活动";
 
+/* Button that when tapped will launch create Blaze campaign flow. */
+"blazeCampaignDashboardView.createCampaign" = "创建广告活动";
+
+/* Title of the Blaze campaign details view. */
+"blazeCampaignDashboardView.detailTitle" = "广告活动详细信息";
+
+/* Button to dismiss the Blaze campaign detail view */
+"blazeCampaignDashboardView.done" = "完成";
+
 /* Button to dismiss the Blaze campaign section on the My Store screen. */
 "blazeCampaignDashboardView.hideBlazeButton" = "隐藏 Blaze";
+
+/* Button when tapped will show the Blaze campaign list. */
+"blazeCampaignDashboardView.showAllCampaigns" = "查看所有广告活动";
+
+/* Subtitle of the Blaze campaign view. */
+"blazeCampaignDashboardView.subtitle" = "提高展示率，让产品更快售出。";
+
+/* Title of the Blaze campaign view. */
+"blazeCampaignDashboardView.title" = "Blaze 广告活动";
 
 /* The action to be agreed upon on the Payment screen in the Blaze campaign creation flow. */
 "blazeConfirmPaymentView.adPolicy" = "广告政策";
@@ -10528,6 +10552,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title for Customers list screen */
 "customersList.title" = "客户";
 
+/* Name for the Blaze dashboard card in the Customize Dashboard screen */
+"dashboardCard.name.blazeCampaigns" = "Blaze 广告活动";
+
 /* Name for the Store setup dashboard card in the Customize Dashboard screen */
 "dashboardCard.name.onboarding" = "商店设置";
 
@@ -10891,6 +10918,15 @@ which should be translated separately and considered part of this sentence. */
 /* A error message when it's not possible toacquire the Analytics Hub previous selection range */
 "no previous period" = "无前一个时段";
 
+/* Title for the screen to select a shipping method for an order */
+"order.ShippingMethodSelector.Title" = "方法";
+
+/* Subtitle of a notice shown when a merchant scans a barcode for a product which is a parent to variations. It's not possible to purchase a parent product, as it simply groups its variable product children. In this case, the product is not added to the order as the merchant wanted it to be. */
+"order.barcode.scan.parent.product.notice.subtitle" = "请选择一个特定的变体。";
+
+/* Title of a notice shown when a merchant scans a barcode for a product which is a parent to variations. It's not possible to purchase a parent product, as it simply groups its variable product children. In this case, the product is not added to the order as the merchant wanted it to be. */
+"order.barcode.scan.parent.product.notice.title" = "您不能直接添加变体产品。";
+
 /* Title for the Coupon screen during order creation */
 "order.form.coupon.add.button.title" = "添加优惠券";
 
@@ -10926,6 +10962,31 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title text of the button that adds shipping line when creating a new order */
 "order.form.shipping.add.button.title" = "添加配送信息";
+
+/* Button to add a shipping line to the order during order creation */
+"order.shippingLineDetails.addShipping" = "添加配送信息";
+
+/* Title above the amount field on the Shipping Line Details screen */
+"order.shippingLineDetails.amount" = "金额";
+
+/* Text for the cancel button in the Shipping Line Details screen */
+"order.shippingLineDetails.cancel" = "取消";
+
+/* Button to edit a shipping line to the order during order creation */
+"order.shippingLineDetails.editShipping" = "编辑配送信息";
+
+/* Title above the name field on the Shipping Line Details screen */
+"order.shippingLineDetails.name" = "名称";
+
+/* Placeholder for the name field on the Shipping Line Details screen
+   Placeholder for the name field on the Shipping Line Details screen in order form */
+"order.shippingLineDetails.namePlaceholder" = "配送";
+
+/* Button to remove a shipping line from the order during order creation */
+"order.shippingLineDetails.removeShipping" = "从订单中取消配送";
+
+/* Title for the Shipping Line Details screen during order creation */
+"order.shippingLineDetails.shippingTitle" = "配送";
 
 /* Origin in Order Attribution Section on Order Details screen. */
 "orderAttributionInfo.direct" = "直接";
@@ -11007,6 +11068,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title text of the confirmation dialog that shows the add custom amounts options. */
 "orderForm.customAmounts.addOptionsDialogTitle" = "您想怎样添加自定义金额？";
+
+/* Title text of the button that adds customer data when creating a new order */
+"orderForm.customerSection.addCustomer" = "添加客户";
 
 /* Title of the primary button on the new order screen to collect payment, likely in-person. This button first creates the order, then presents a view for the merchant to choose a payment method. */
 "orderForm.payment.collect.button.title" = "收款";
@@ -11121,6 +11185,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Alert message to inform the user that they must wait for all image uploads to complete before they can reorder the images. */
 "productImagesCollectionViewController.notice" = "请等待所有图片上传完成后，再对其进行重新排序。";
+
+/* Label for the suggested product on the Blaze dashboard view. */
+"productInfoView.suggestedProductLabel" = "建议产品";
 
 /* Title of the billing interval row on the Product Price screen */
 "productPriceSettingsViewController.billingIntervalRowTitle" = "计费间隔";

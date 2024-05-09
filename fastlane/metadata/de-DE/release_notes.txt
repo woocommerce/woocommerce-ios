@@ -1,0 +1,1 @@
+Im Rahmen unseres letzten Updates wurde das Scannen des Barcodes verbessert. Zu diesem Zweck wurde ein Fehler behoben, durch den variable übergeordnete Produkte unbemerkt in den Bestellungen landen konnten. Genieße dank unserem neuesten Update eine reibungslosere Erstellung von Bestellungen!

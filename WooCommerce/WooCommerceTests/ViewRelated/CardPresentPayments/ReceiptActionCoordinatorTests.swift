@@ -2,6 +2,7 @@ import XCTest
 import TestKit
 import Yosemite
 import Hardware
+import enum WooFoundation.WooAnalyticsStat
 
 @testable import WooCommerce
 

@@ -1,5 +1,6 @@
 import XCTest
 import Yosemite
+import enum WooFoundation.WooAnalyticsStat
 @testable import WooCommerce
 
 final class NewTaxRateSelectorViewModelTests: XCTestCase {

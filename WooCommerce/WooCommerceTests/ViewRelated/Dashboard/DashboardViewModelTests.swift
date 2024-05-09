@@ -6,6 +6,7 @@ import enum Yosemite.ProductAction
 import enum Yosemite.OrderAction
 import enum Yosemite.AppSettingsAction
 import enum Yosemite.JustInTimeMessageAction
+import protocol WooFoundation.Analytics
 import struct Yosemite.JustInTimeMessage
 import struct Yosemite.Order
 import struct Yosemite.StoreOnboardingTask

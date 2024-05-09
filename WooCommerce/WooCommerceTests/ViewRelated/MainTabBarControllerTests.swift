@@ -3,6 +3,7 @@ import TestKit
 import XCTest
 @testable import WooCommerce
 import Yosemite
+import enum WooFoundation.WooAnalyticsStat
 
 final class MainTabBarControllerTests: XCTestCase {
     private var stores: StoresManager!

@@ -3,6 +3,7 @@ import Combine
 import Photos
 import XCTest
 import Yosemite
+import enum WooFoundation.WooAnalyticsStat
 
 final class ProductImagesSaverTests: XCTestCase {
     private let siteID: Int64 = 134

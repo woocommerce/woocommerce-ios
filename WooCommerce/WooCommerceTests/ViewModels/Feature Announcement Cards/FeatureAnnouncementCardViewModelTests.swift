@@ -1,6 +1,7 @@
 import XCTest
 @testable import WooCommerce
 import Yosemite
+import struct WooFoundation.WooAnalyticsEvent
 
 private typealias FeatureCardEvent = WooAnalyticsEvent.FeatureCard
 

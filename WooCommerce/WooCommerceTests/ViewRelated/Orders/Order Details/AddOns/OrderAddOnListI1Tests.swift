@@ -1,5 +1,6 @@
 import XCTest
 import Fakes
+import enum WooFoundation.WooAnalyticsStat
 
 @testable import WooCommerce
 @testable import Yosemite

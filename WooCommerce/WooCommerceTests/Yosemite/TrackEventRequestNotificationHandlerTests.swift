@@ -1,4 +1,5 @@
 import XCTest
+import struct WooFoundation.WooAnalyticsEvent
 @testable import WooCommerce
 @testable import Networking
 

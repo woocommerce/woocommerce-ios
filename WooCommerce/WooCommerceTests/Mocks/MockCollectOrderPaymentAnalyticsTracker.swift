@@ -1,6 +1,7 @@
 import Foundation
 @testable import WooCommerce
 import Yosemite
+import struct WooFoundation.WooAnalyticsEvent
 
 final class MockCollectOrderPaymentAnalyticsTracker: CollectOrderPaymentAnalyticsTracking {
     var connectedReaderModel: String?

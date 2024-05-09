@@ -155,7 +155,10 @@ private extension ShippingLineSelectionDetailsViewModel {
     func updateShippingMethodResultsController() {
         do {
             try shippingMethodResultsController.performFetch()
-            shippingMethods = [placeholderMethod] + shippingMethodResultsController.fetchedObjects
+            // The app previously set the shipping method ID to "other" when shipping was added in the app.
+            // This option is not included in the remote list of shipping methods so we add it here.
+            let otherMethod = ShippingMethod(siteID: siteID, methodID: "other", title: "Other")
+            shippingMethods = [placeholderMethod] + shippingMethodResultsController.fetchedObjects + [otherMethod]
         } catch {
             DDLogError("⛔️ Error fetching shipping methods from storage: \(error)")
         }

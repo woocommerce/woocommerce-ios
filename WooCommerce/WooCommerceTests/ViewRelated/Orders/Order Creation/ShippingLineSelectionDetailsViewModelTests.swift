@@ -102,7 +102,6 @@ final class ShippingLineSelectionDetailsViewModelTests: XCTestCase {
 
         // Then
         XCTAssertTrue(viewModel.isExistingShippingLine)
-        XCTAssertEqual(viewModel.shippingMethods.count, 2) // Provided method + placeholder method
         XCTAssertEqual(viewModel.selectedMethod, shippingMethod)
         XCTAssertEqual(viewModel.selectedMethodColor, Color(.text))
         XCTAssertEqual(viewModel.formattableAmountViewModel.amount, "11.30")
@@ -373,11 +372,29 @@ final class ShippingLineSelectionDetailsViewModelTests: XCTestCase {
 
         // Then
         XCTAssertFalse(viewModel.isExistingShippingLine)
-        XCTAssertEqual(viewModel.shippingMethods.count, 1) // Placeholder method
         XCTAssertEqual(viewModel.selectedMethod.methodID, "")
         XCTAssertEqual(viewModel.selectedMethodColor, Color(.placeholderText))
         XCTAssertEqual(viewModel.formattableAmountViewModel.amount, "")
         XCTAssertEqual(viewModel.methodTitle, "")
+    }
+
+    func test_view_model_sets_expected_shipping_methods() {
+        // Given
+        let shippingMethod = ShippingMethod(siteID: sampleSiteID, methodID: "flat_rate", title: "Flat rate")
+        insert(shippingMethod)
+        let viewModel = ShippingLineSelectionDetailsViewModel(siteID: sampleSiteID,
+                                                              isExistingShippingLine: false,
+                                                              initialMethodID: "",
+                                                              initialMethodTitle: "",
+                                                              shippingTotal: "",
+                                                              locale: usLocale,
+                                                              storeCurrencySettings: usStoreSettings,
+                                                              storageManager: storageManager,
+                                                              didSelectSave: { _ in })
+
+        // Then
+        XCTAssertEqual(viewModel.shippingMethods.count, 3) // Placeholder method + provided method + "Other"
+        XCTAssertTrue(viewModel.shippingMethods.contains(shippingMethod))
     }
 
     func test_view_model_tracks_selected_shipping_method() {

@@ -1,5 +1,7 @@
 import Foundation
 import Yosemite
+import protocol WooFoundation.Analytics
+import struct WooFoundation.WooAnalyticsEvent
 
 /// Given a scanned barcode this struct searches for the matching product or variation, refining the barcode if necessary to handle the format exceptions
 ///

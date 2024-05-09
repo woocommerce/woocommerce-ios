@@ -1,5 +1,6 @@
 import UIKit
 import StoreKit
+import enum WooFoundation.WooAnalyticsStat
 
 extension UIViewController {
     // MARK: - App Store Review Prompt

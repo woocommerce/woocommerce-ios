@@ -1,5 +1,7 @@
 import Foundation
 import Yosemite
+import protocol WooFoundation.Analytics
+import struct WooFoundation.WooAnalyticsEvent
 
 final class InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel: ObservableObject {
     // MARK: - Dependencies

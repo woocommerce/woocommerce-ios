@@ -2,6 +2,7 @@ import Foundation
 import Yosemite
 
 import protocol Storage.StorageManagerType
+import protocol WooFoundation.Analytics
 
 /// Provides view data for Add Attributes, and handles init/UI/navigation actions needed.
 ///
@@ -274,7 +275,7 @@ extension AddAttributeOptionsViewModel {
 
         // Track operation trigger
         let startDate = Date()
-        analytics.track(event: WooAnalyticsEvent.Variations.updateAttribute(productID: product.productID))
+        analytics.track(event: .Variations.updateAttribute(productID: product.productID))
 
         state.isUpdating = true
         let action = ProductAction.updateProduct(product: newProduct) { [weak self] result in
@@ -289,7 +290,7 @@ extension AddAttributeOptionsViewModel {
     private func performProductDraftCreation(_ newProduct: Product, onCompletion: @escaping ((Result<Product, ProductUpdateError>) -> Void)) {
         // Track operation trigger
         let startDate = Date()
-        analytics.track(event: WooAnalyticsEvent.Variations.updateAttribute(productID: product.productID))
+        analytics.track(event: .Variations.updateAttribute(productID: product.productID))
 
         let productViewModel = EditableProductModel(product: newProduct.copy(statusKey: ProductStatus.draft.rawValue))
 
@@ -313,9 +314,9 @@ extension AddAttributeOptionsViewModel {
         let elapsedTime = Date().timeIntervalSince(requestStartDate)
         switch result {
         case .success:
-            self.analytics.track(event: WooAnalyticsEvent.Variations.updateAttributeSuccess(productID: product.productID, time: elapsedTime))
+            self.analytics.track(event: .Variations.updateAttributeSuccess(productID: product.productID, time: elapsedTime))
         case let .failure(error):
-            self.analytics.track(event: WooAnalyticsEvent.Variations.updateAttributeFail(productID: product.productID,
+            self.analytics.track(event: .Variations.updateAttributeFail(productID: product.productID,
                                                                                          time: elapsedTime,
                                                                                          error: error))
         }

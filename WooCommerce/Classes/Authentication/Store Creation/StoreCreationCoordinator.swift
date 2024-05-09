@@ -4,6 +4,8 @@ import Yosemite
 import enum Networking.SiteCreationFlow
 import protocol Experiments.FeatureFlagService
 import protocol Storage.StorageManagerType
+import protocol WooFoundation.Analytics
+import struct WooFoundation.WooAnalyticsEvent
 
 /// Coordinates navigation for store creation flow, with the assumption that the app is already authenticated with a WPCOM user.
 final class StoreCreationCoordinator: Coordinator {

@@ -1,5 +1,6 @@
 import Foundation
 import struct Yosemite.DashboardCard
+import struct WooFoundation.WooAnalyticsEvent
 
 extension WooAnalyticsEvent {
     enum DynamicDashboard {

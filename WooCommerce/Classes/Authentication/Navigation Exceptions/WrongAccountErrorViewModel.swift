@@ -5,6 +5,7 @@ import WordPressUI
 import Yosemite
 import WordPressAuthenticator
 import class Networking.WordPressOrgNetwork
+import protocol WooFoundation.Analytics
 
 /// Configuration and actions for an ULErrorViewController, modelling
 /// an error when Jetpack is not installed or is not connected

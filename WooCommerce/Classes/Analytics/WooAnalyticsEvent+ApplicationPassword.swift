@@ -1,4 +1,5 @@
 import enum Networking.ApplicationPasswordUseCaseError
+import struct WooFoundation.WooAnalyticsEvent
 
 extension WooAnalyticsEvent {
     enum ApplicationPassword {

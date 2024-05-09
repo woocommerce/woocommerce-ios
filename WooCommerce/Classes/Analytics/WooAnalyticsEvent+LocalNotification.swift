@@ -1,3 +1,6 @@
+import protocol WooFoundation.WooAnalyticsEventPropertyType
+import struct WooFoundation.WooAnalyticsEvent
+
 extension WooAnalyticsEvent {
     enum LocalNotification {
         /// Event property keys.

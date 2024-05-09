@@ -1,5 +1,7 @@
 import Combine
 import Yosemite
+import protocol WooFoundation.Analytics
+import struct WooFoundation.WooAnalyticsEvent
 
 /// Dispatches a network call for fulfilling an `Order`. This also provides actions for
 /// undoing the fulfillment and retrying failed network calls.

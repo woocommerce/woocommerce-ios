@@ -1,6 +1,7 @@
 import Foundation
 import WebKit
 import Yosemite
+import protocol WooFoundation.Analytics
 
 /// View model used for the web view controller to setup Jetpack connection during the login flow.
 ///

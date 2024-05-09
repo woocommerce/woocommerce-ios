@@ -1,6 +1,7 @@
 import Combine
 import Yosemite
 import protocol Storage.StorageManagerType
+import protocol WooFoundation.Analytics
 
 final class CreateOrderAddressFormViewModel: AddressFormViewModel, AddressFormViewModelProtocol {
 

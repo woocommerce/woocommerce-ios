@@ -1,3 +1,5 @@
+import struct WooFoundation.WooAnalyticsEvent
+
 extension WooAnalyticsEvent {
     enum ProductCreation {
         /// Event property keys.

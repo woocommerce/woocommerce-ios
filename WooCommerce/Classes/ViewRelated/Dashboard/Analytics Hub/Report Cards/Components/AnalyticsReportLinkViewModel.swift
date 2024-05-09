@@ -1,4 +1,5 @@
 import Foundation
+import protocol WooFoundation.Analytics
 
 /// A view model for `AnalyticsReportLink`, which opens an authenticated webview to show an analytics report in wp-admin.
 final class AnalyticsReportLinkViewModel: WPAdminWebViewModel {

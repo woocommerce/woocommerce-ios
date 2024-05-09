@@ -1,4 +1,5 @@
 import Foundation
+import struct WooFoundation.WooAnalyticsEvent
 
 extension WooAnalyticsEvent {
     enum ProductSharingAI {

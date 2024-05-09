@@ -1,5 +1,6 @@
 import Foundation
 import Yosemite
+import WooFoundation
 
 /// Tracks the waiting time for app startup, allowing to evaluate as analytics
 /// how much time in seconds it took between the init and the final `end(action:)` function call.

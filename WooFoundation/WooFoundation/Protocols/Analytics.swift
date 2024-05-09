@@ -2,7 +2,7 @@ import Foundation
 
 /// Abstracts the Analytics engine.
 ///
-protocol Analytics {
+public protocol Analytics {
     /// Initialize the analytics engine
     ///
     func initialize()
@@ -59,7 +59,7 @@ protocol Analytics {
     var analyticsProvider: AnalyticsProvider { get }
 }
 
-extension Analytics {
+public extension Analytics {
     /// Track a specific event.
     ///
     /// - Parameter event: The event to track along with its properties.

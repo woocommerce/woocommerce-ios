@@ -1,5 +1,6 @@
 import Foundation
 import enum Yosemite.LocalAnnouncement
+import struct WooFoundation.WooAnalyticsEvent
 
 extension WooAnalyticsEvent {
     enum LocalAnnouncementModal {

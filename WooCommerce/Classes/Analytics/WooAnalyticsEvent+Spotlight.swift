@@ -1,4 +1,5 @@
 import Foundation
+import struct WooFoundation.WooAnalyticsEvent
 
 extension WooActivityType {
     var trackingValue: String {

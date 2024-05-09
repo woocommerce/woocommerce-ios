@@ -1,6 +1,7 @@
 import UIKit
 import WebKit
 import class Networking.UserAgent
+import struct WooFoundation.WooAnalyticsEvent
 
 /// Outputs of the the SurveyViewController
 ///

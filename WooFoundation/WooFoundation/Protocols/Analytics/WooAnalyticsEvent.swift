@@ -36,13 +36,13 @@
 /// ~~~
 ///
 public struct WooAnalyticsEvent {
-    init(statName: WooAnalyticsStat, properties: [String: WooAnalyticsEventPropertyType], error: Error? = nil) {
+    public init(statName: WooAnalyticsStat, properties: [String: WooAnalyticsEventPropertyType], error: Error? = nil) {
         self.statName = statName
         self.properties = properties
         self.error = error
     }
 
-    let statName: WooAnalyticsStat
-    let properties: [String: WooAnalyticsEventPropertyType]
-    let error: Error?
+    public let statName: WooAnalyticsStat
+    public let properties: [String: WooAnalyticsEventPropertyType]
+    public let error: Error?
 }

@@ -6,6 +6,7 @@ import WordPressUI
 import Yosemite
 import class Networking.UserAgent
 import enum Experiments.ABTest
+import enum WooFoundation.WooAnalyticsStat
 import struct Networking.Settings
 import protocol Experiments.FeatureFlagService
 import protocol Storage.StorageManagerType
@@ -13,6 +14,7 @@ import protocol Networking.ApplicationPasswordUseCase
 import class Networking.OneTimeApplicationPasswordUseCase
 import class Networking.DefaultApplicationPasswordUseCase
 import protocol Experiments.ABTestVariationProvider
+import protocol WooFoundation.Analytics
 import struct Experiments.CachedABTestVariationProvider
 
 /// Encapsulates all of the interactions with the WordPress Authenticator

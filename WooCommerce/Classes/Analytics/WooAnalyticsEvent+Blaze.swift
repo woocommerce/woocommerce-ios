@@ -1,3 +1,5 @@
+import struct WooFoundation.WooAnalyticsEvent
+
 extension WooAnalyticsEvent {
     enum Blaze {
         /// Event property keys.

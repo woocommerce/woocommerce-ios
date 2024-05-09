@@ -4,7 +4,8 @@ import Foundation
 import UserNotifications
 import AutomatticTracks
 import Yosemite
-
+import enum WooFoundation.WooAnalyticsStat
+import protocol WooFoundation.Analytics
 
 
 /// PushNotificationsManager: Encapsulates all the tasks related to Push Notifications Auth + Registration + Handling.

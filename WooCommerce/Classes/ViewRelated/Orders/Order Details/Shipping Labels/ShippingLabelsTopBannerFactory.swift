@@ -1,4 +1,5 @@
 import Yosemite
+import protocol WooFoundation.Analytics
 
 /// Creates a top banner for shipping labels asynchronously based on the shipping labels and app settings.
 /// The top banner has two actions: "give feedback" and "dismiss".

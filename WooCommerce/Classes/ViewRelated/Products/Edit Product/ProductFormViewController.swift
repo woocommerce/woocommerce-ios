@@ -3,6 +3,7 @@ import Photos
 import UIKit
 import WordPressUI
 import Yosemite
+import struct WooFoundation.WooAnalyticsEvent
 
 /// The entry UI for adding/editing a Product.
 final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: UIViewController, UITableViewDelegate {
@@ -461,7 +462,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                 guard isEditable else {
                     return
                 }
-                ServiceLocator.analytics.track(event: WooAnalyticsEvent.ProductDetailAddOns.productAddOnsButtonTapped(productID: product.productID))
+                ServiceLocator.analytics.track(event: .ProductDetailAddOns.productAddOnsButtonTapped(productID: product.productID))
                 navigateToAddOns()
             case .categories(_, let isEditable):
                 guard isEditable else {

@@ -1,6 +1,7 @@
 import Combine
 import UIKit
 import WordPressAuthenticator
+import protocol WooFoundation.Analytics
 
 /// A protocol used to mock `WordPressComAccountService` for unit tests.
 protocol WordPressComAccountServiceProtocol {

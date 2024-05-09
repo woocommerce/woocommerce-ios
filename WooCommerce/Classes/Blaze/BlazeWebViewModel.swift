@@ -1,5 +1,6 @@
 import Foundation
 import WebKit
+import struct WooFoundation.WooAnalyticsEvent
 import struct Yosemite.Site
 
 /// Blaze entry points.

@@ -5,6 +5,10 @@ import WordPressShared
 import WidgetKit
 import enum Alamofire.AFError
 import Yosemite
+import enum WooFoundation.WooAnalyticsStat
+import protocol WooFoundation.Analytics
+import protocol WooFoundation.AnalyticsProvider
+import struct WooFoundation.WooAnalyticsEvent
 
 public class WooAnalytics: Analytics {
 
@@ -12,7 +16,7 @@ public class WooAnalytics: Analytics {
 
     /// AnalyticsProvider: Interface to the actual analytics implementation
     ///
-    private(set) var analyticsProvider: AnalyticsProvider
+    private(set) public var analyticsProvider: AnalyticsProvider
 
     /// Time when app was opened — used for calculating the time-in-app property
     ///
@@ -20,7 +24,7 @@ public class WooAnalytics: Analytics {
 
     /// Check user opt-in for analytics
     ///
-    var userHasOptedIn: Bool {
+    public var userHasOptedIn: Bool {
         get {
             let isUITesting: Bool = CommandLine.arguments.contains("-ui_testing")
             let optedIn: Bool? = UserDefaults.standard.object(forKey: .userOptedInAnalytics)
@@ -175,7 +179,7 @@ public extension WooAnalytics {
 //
 extension WooAnalytics {
 
-    func setUserHasOptedOut(_ optedOut: Bool) {
+    public func setUserHasOptedOut(_ optedOut: Bool) {
         userHasOptedIn = !optedOut
 
         if optedOut {

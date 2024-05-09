@@ -1,5 +1,6 @@
 import UIKit
 import Yosemite
+import protocol WooFoundation.Analytics
 
 /// View model for `ProductNameGenerationView`.
 ///

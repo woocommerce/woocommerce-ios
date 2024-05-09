@@ -6,6 +6,7 @@ import Yosemite
 import Combine
 
 import class AutomatticTracks.CrashLogging
+import struct WooFoundation.WooAnalyticsEvent
 
 /// Shows a list of products with pull to refresh and infinite scroll
 /// TODO: it will be good to have unit tests for this, introducing a `ViewModel`

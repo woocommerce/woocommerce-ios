@@ -1,4 +1,5 @@
 import Foundation
+import protocol WooFoundation.Analytics
 
 final class WooPaymentsDepositsOverviewViewModel: ObservableObject {
     @Published var currencyViewModels: [WooPaymentsDepositsCurrencyOverviewViewModel]

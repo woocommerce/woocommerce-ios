@@ -1,5 +1,6 @@
 import SwiftUI
 import Yosemite
+import struct WooFoundation.WooAnalyticsEvent
 
 /// Hosting controller for `ProductSelectorView`.
 ///

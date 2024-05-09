@@ -1,5 +1,7 @@
 import UIKit
 import struct Yosemite.Site
+import protocol WooFoundation.Analytics
+import struct WooFoundation.WooAnalyticsEvent
 
 /// Coordinates navigation for product description AI.
 final class ProductDescriptionAICoordinator: Coordinator {

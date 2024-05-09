@@ -1,5 +1,6 @@
 import Yosemite
 import SwiftUI
+import struct WooFoundation.WooAnalyticsEvent
 
 /// Displays a single collapsible product row or grouped parent and child product rows
 struct CollapsibleProductCard: View {

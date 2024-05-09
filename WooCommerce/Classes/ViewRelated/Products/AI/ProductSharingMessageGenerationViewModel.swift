@@ -1,5 +1,6 @@
 import Foundation
 import Yosemite
+import protocol WooFoundation.Analytics
 
 /// View model for `ProductSharingMessageGenerationView`
 final class ProductSharingMessageGenerationViewModel: ObservableObject {

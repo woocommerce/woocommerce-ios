@@ -1,4 +1,5 @@
 import Yosemite
+import protocol WooFoundation.Analytics
 
 /// View model for `BlazeAddPaymentMethodWebView`.
 ///

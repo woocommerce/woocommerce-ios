@@ -1,4 +1,5 @@
 import struct Yosemite.StoreOnboardingTask
+import struct WooFoundation.WooAnalyticsEvent
 
 extension WooAnalyticsEvent {
     enum StoreOnboarding {

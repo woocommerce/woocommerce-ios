@@ -7,6 +7,7 @@ import Combine
 class ShippingLineSelectionDetailsViewModel: ObservableObject {
     private var siteID: Int64
     private let storageManager: StorageManagerType
+    private let analytics: Analytics
 
     /// Closure to be invoked when the shipping line is updated.
     ///
@@ -73,9 +74,11 @@ class ShippingLineSelectionDetailsViewModel: ObservableObject {
          locale: Locale = Locale.autoupdatingCurrent,
          storeCurrencySettings: CurrencySettings = ServiceLocator.currencySettings,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
+         analytics: Analytics = ServiceLocator.analytics,
          didSelectSave: @escaping ((ShippingLine?) -> Void)) {
         self.siteID = siteID
         self.storageManager = storageManager
+        self.analytics = analytics
         self.isExistingShippingLine = isExistingShippingLine
         self.initialMethodID = initialMethodID
         self.initialMethodTitle = initialMethodTitle
@@ -112,6 +115,12 @@ class ShippingLineSelectionDetailsViewModel: ObservableObject {
                                         totalTax: "",
                                         taxes: [])
         didSelectSave(shippingLine)
+    }
+
+    /// Tracks when a shipping method is selected
+    ///
+    func trackShippingMethodSelected(_ selectedMethod: ShippingMethod) {
+        analytics.track(event: .Orders.orderShippingMethodSelected(methodID: selectedMethod.methodID))
     }
 }
 

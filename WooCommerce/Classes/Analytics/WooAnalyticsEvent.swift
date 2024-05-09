@@ -720,6 +720,10 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .orderProductDiscountEditButtonTapped, properties: [:])
         }
 
+        static func orderShippingMethodSelected(methodID: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderShippingMethodSelected, properties: [Keys.shippingMethod: methodID])
+        }
+
         static func orderShippingMethodAdd(flow: Flow, methodID: String) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .orderShippingMethodAdd, properties: [Keys.flow: flow.rawValue,
                                                                               Keys.shippingMethod: methodID])

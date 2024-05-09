@@ -20,7 +20,9 @@ struct ShippingLineSelectionDetails: View {
                                         contentKeyPath: \.title,
                                         selected: $viewModel.selectedMethod,
                                         showDoneButton: false,
-                                        backgroundColor: nil)
+                                        backgroundColor: nil) { method in
+                        viewModel.trackShippingMethodSelected(method)
+                    }
                 } label: {
                     VStack(alignment: .leading) {
                         Text(Localization.methodTitle)

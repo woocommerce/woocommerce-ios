@@ -4,6 +4,11 @@ import Foundation
 ///
 public enum Credentials: Equatable {
 
+    // Keys
+    private static let wpcomType = "AuthenticationType.wpcom"
+    private static let wporgType = "AuthenticationType.wporg"
+    private static let appPasswordType = "AuthenticationType.applicationPassword"
+
     /// For WordPress.com credentials
     ///
     case wpcom(username: String, authToken: String, siteAddress: String)
@@ -26,6 +31,21 @@ public enum Credentials: Equatable {
     ///
     public init(authToken: String) {
         self = .wpcom(username: UUID().uuidString, authToken: authToken, siteAddress: Constants.placeholderSiteAddress)
+    }
+
+    /// Failable initializer from raw types.
+    ///
+    public init?(rawType: String, username: String, secret: String, siteAddress: String) {
+        switch rawType {
+        case Self.wpcomType:
+            self = .wpcom(username: username, authToken: secret, siteAddress: siteAddress)
+        case Self.wporgType:
+            self = .wporg(username: username, password: secret, siteAddress: siteAddress)
+        case Self.appPasswordType:
+            self = .applicationPassword(username: username, password: secret, siteAddress: siteAddress)
+        default:
+            return nil
+        }
     }
 
     /// Returns true if the username is a UUID placeholder.
@@ -51,11 +71,11 @@ public extension Credentials {
     var rawType: String {
         switch self {
         case .wpcom:
-            return "AuthenticationType.wpcom"
+            return Self.wpcomType
         case .wporg:
-            return "AuthenticationType.wporg"
+            return Self.wporgType
         case .applicationPassword:
-            return "AuthenticationType.applicationPassword"
+            return Self.appPasswordType
         }
     }
 

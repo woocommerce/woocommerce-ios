@@ -3,6 +3,7 @@ import SwiftUI
 /// View model for `CollapsibleCustomerCard` view.
 final class CollapsibleCustomerCardViewModel: ObservableObject {
     struct CustomerData {
+        let customerID: Int64?
         let email: String?
         let fullName: String?
         let billingAddressFormatted: String?
@@ -23,18 +24,28 @@ final class CollapsibleCustomerCardViewModel: ObservableObject {
             .joined(separator: "\n")
     }
 
+    /// Whether the Remove Customer CTA can be shown.
+    var canRemoveCustomer: Bool {
+        (originalCustomerData.customerID ?? Constants.guestCustomerID) != Constants.guestCustomerID
+    }
+
+    /// Called when the user taps to remove customer.
+    let removeCustomer: () -> Void
+
     private let originalCustomerData: CustomerData
 
     init(customerData: CustomerData,
          isCustomerAccountRequired: Bool,
          isEditable: Bool,
-         isCollapsed: Bool) {
+         isCollapsed: Bool,
+         removeCustomer: @escaping () -> Void) {
         self.isCustomerAccountRequired = isCustomerAccountRequired
         self.isEditable = isEditable
         self.isCollapsed = isCollapsed
         self.emailPlaceholder = Localization.emailPlaceholder(isRequired: isCustomerAccountRequired)
         self.email = customerData.email ?? ""
         self.originalCustomerData = customerData
+        self.removeCustomer = removeCustomer
     }
 }
 
@@ -54,5 +65,11 @@ private extension CollapsibleCustomerCardViewModel {
             value: "Email address",
             comment: "Placeholder of the email in the header of a customer card in order form when an account is not required."
         )
+    }
+
+    enum Constants {
+        /// Order's customer ID is default to 0 based on the API doc:
+        /// https://woocommerce.github.io/woocommerce-rest-api-docs/#order-properties
+        static let guestCustomerID: Int64 = 0
     }
 }

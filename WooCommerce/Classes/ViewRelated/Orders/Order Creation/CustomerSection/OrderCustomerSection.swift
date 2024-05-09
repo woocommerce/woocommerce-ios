@@ -83,6 +83,7 @@ private extension OrderCustomerSection {
 
 struct OrderCustomerSection_Previews: PreviewProvider {
     static let customer: CollapsibleCustomerCardViewModel.CustomerData = .init(
+        customerID: 0,
         email: "customer@woo.com",
         fullName: "T Woo",
         billingAddressFormatted: "123 60th St\nUSA",
@@ -100,7 +101,7 @@ struct OrderCustomerSection_Previews: PreviewProvider {
                                                   customerData: customer,
                                                   isCustomerAccountRequired: true,
                                                   isEditable: true,
-                                                  addCustomer: { _ in }))
+                                                  updateCustomer: { _ in }))
             OrderCustomerSection(viewModel: .init(siteID: 1,
                                                   addressFormViewModel: .init(
                                                     siteID: 1,
@@ -111,7 +112,7 @@ struct OrderCustomerSection_Previews: PreviewProvider {
                                                   customerData: customer,
                                                   isCustomerAccountRequired: false,
                                                   isEditable: true,
-                                                  addCustomer: { _ in }))
+                                                  updateCustomer: { _ in }))
         }
     }
 }

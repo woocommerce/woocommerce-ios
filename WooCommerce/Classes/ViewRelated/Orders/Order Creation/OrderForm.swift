@@ -309,7 +309,7 @@ struct OrderForm: View {
                                     shouldShowGiftCardForm: $shouldShowGiftCardForm)
                                 .disabled(viewModel.shouldShowNonEditableIndicators)
                                 .sheet(isPresented: $shouldShowShippingLineDetails) {
-                                    if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.enhancingOrderShippingLines) {
+                                    if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.orderShippingMethodSelection) {
                                         ShippingLineSelectionDetails(viewModel: viewModel.paymentDataViewModel.shippingLineSelectionViewModel)
                                     } else {
                                         ShippingLineDetails(viewModel: viewModel.paymentDataViewModel.shippingLineViewModel)

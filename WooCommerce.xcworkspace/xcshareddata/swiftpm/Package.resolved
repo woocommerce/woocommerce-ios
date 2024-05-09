@@ -75,7 +75,7 @@
       },
       {
         "package": "swift-algorithms",
-        "repositoryURL": "https://github.com/apple/swift-algorithms.git",
+        "repositoryURL": "https://github.com/apple/swift-algorithms",
         "state": {
           "branch": null,
           "revision": "f6919dfc309e7f1b56224378b11e28bab5bccc42",
@@ -84,7 +84,7 @@
       },
       {
         "package": "swift-numerics",
-        "repositoryURL": "https://github.com/apple/swift-numerics",
+        "repositoryURL": "https://github.com/apple/swift-numerics.git",
         "state": {
           "branch": null,
           "revision": "0a5bc04095a675662cf24757cc0640aa2204253b",

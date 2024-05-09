@@ -4,6 +4,10 @@ import Foundation
 import enum Networking.Credentials
 #endif
 
+#if canImport(NetworkingWatchOS)
+import enum NetworkingWatchOS.Credentials
+#endif
+
 /// WatchOS session dependencies.
 ///
 public struct WatchDependencies {

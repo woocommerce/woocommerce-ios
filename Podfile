@@ -74,6 +74,7 @@ end
 def networking_watch_os_pods
   alamofire
   cocoa_lumberjack
+  keychain
 end
 
 # Main Target!

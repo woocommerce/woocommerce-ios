@@ -1298,6 +1298,18 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(event.value as? String, "product_selector")
     }
 
+    func test_payment_data_view_model_when_calling_add_shipping_tapped_tracks_expected_event() {
+        // Given
+        let analytics = MockAnalyticsProvider()
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, analytics: WooAnalytics(analyticsProvider: analytics))
+
+        // When
+        viewModel.paymentDataViewModel.addShippingTappedClosure()
+
+        // Then
+        XCTAssertEqual(analytics.receivedEvents, [WooAnalyticsStat.orderAddShippingTapped.rawValue])
+    }
+
     func test_shipping_method_tracked_when_added() throws {
         // Given
         let analytics = MockAnalyticsProvider()

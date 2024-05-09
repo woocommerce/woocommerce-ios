@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-05-03 08:18:59+0000 */
+/* Translation-Revision-Date: 2024-05-08 11:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: sv_SE */
@@ -10965,6 +10965,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button to add a shipping line to the order during order creation */
 "order.shippingLineDetails.addShipping" = "Lägg till frakt";
+
+/* Title above the amount field on the Shipping Line Details screen */
+"order.shippingLineDetails.amount" = "Belopp";
 
 /* Text for the cancel button in the Shipping Line Details screen */
 "order.shippingLineDetails.cancel" = "Avbryt";

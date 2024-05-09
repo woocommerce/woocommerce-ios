@@ -9,7 +9,7 @@ struct StorePerformanceView: View {
     @State private var showingSupportForm = false
 
     private var statsValueColor: Color {
-        guard viewModel.chartViewModel.hasRevenue else {
+        guard viewModel.hasRevenue else {
             return Color(.textSubtle)
         }
         return Color(viewModel.shouldHighlightStats ? .statsHighlighted : .text)
@@ -158,7 +158,7 @@ private extension StorePerformanceView {
                     .largeTitleStyle()
 
                 Text(Localization.revenue)
-                    .if(!viewModel.chartViewModel.hasRevenue) { $0.foregroundStyle(Color(.textSubtle)) }
+                    .if(!viewModel.hasRevenue) { $0.foregroundStyle(Color(.textSubtle)) }
                     .font(Font(StyleManager.statsTitleFont))
             }
 
@@ -180,12 +180,12 @@ private extension StorePerformanceView {
                         .frame(maxWidth: .infinity)
 
                 }
-                .renderedIf(viewModel.chartViewModel.hasRevenue)
+                .renderedIf(viewModel.hasRevenue)
 
                 Text(Localization.noRevenueText)
                     .subheadlineStyle()
                     .frame(maxWidth: .infinity)
-                    .renderedIf(!viewModel.chartViewModel.hasRevenue)
+                    .renderedIf(!viewModel.hasRevenue)
             }
         }
     }
@@ -235,17 +235,20 @@ private extension StorePerformanceView {
         }
     }
 
+    @ViewBuilder
     var chartView: some View {
-        VStack {
-            StoreStatsChart(viewModel: viewModel.chartViewModel) { selectedIndex in
-                viewModel.didSelectStatsInterval(at: selectedIndex)
-            }
-            .frame(height: Layout.chartViewHeight)
+        if let chartViewModel = viewModel.chartViewModel {
+            VStack {
+                StoreStatsChart(viewModel: chartViewModel) { selectedIndex in
+                    viewModel.didSelectStatsInterval(at: selectedIndex)
+                }
+                .frame(height: Layout.chartViewHeight)
 
-            if viewModel.chartViewModel.hasRevenue,
-               let granularityText = viewModel.granularityText {
-                Text(granularityText)
-                    .font(Font(StyleManager.statsTitleFont))
+                if viewModel.hasRevenue,
+                   let granularityText = viewModel.granularityText {
+                    Text(granularityText)
+                        .font(Font(StyleManager.statsTitleFont))
+                }
             }
         }
     }

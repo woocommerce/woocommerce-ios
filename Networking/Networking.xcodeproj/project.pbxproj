@@ -287,6 +287,7 @@
 		26DAAB572BEA8DC100CE399E /* Credentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = B557DA1720979D51005962F4 /* Credentials.swift */; };
 		26DAAB582BEA8DFF00CE399E /* Remote.swift in Sources */ = {isa = PBXBuildFile; fileRef = B557DA0020975500005962F4 /* Remote.swift */; };
 		26DAAB592BEA8E1500CE399E /* Network.swift in Sources */ = {isa = PBXBuildFile; fileRef = B518662120A097C200037A38 /* Network.swift */; };
+		26EBDC492BED3CA6004D8E1C /* Codegen in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 269014C62BEA9166006056E0 /* Codegen */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		26FB056C25F6CB9100A40B26 /* Fakes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26FB056B25F6CB9100A40B26 /* Fakes.framework */; };
 		31054702262E04F700C5C02B /* RemotePaymentIntentMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31054701262E04F700C5C02B /* RemotePaymentIntentMapper.swift */; };
 		31054706262E278100C5C02B /* RemotePaymentIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31054705262E278100C5C02B /* RemotePaymentIntent.swift */; };
@@ -1158,6 +1159,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				26EBDC492BED3CA6004D8E1C /* Codegen in Embed Frameworks */,
 				26B542462BEAC6A6003A55B5 /* Pods_NetworkingWatchOS.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
@@ -5327,7 +5329,7 @@
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 4;
-				VALID_ARCHS = "$(inherited) armv7k arm64_32";
+				VALID_ARCHS = "$(ARCHS_STANDARD)";
 				WATCHOS_DEPLOYMENT_TARGET = 9.0;
 			};
 			name = Debug;
@@ -5368,7 +5370,7 @@
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 4;
-				VALID_ARCHS = "$(inherited) armv7k arm64_32";
+				VALID_ARCHS = "$(ARCHS_STANDARD)";
 				WATCHOS_DEPLOYMENT_TARGET = 9.0;
 			};
 			name = Release;
@@ -5409,7 +5411,7 @@
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 4;
-				VALID_ARCHS = "$(inherited) armv7k arm64_32";
+				VALID_ARCHS = "$(ARCHS_STANDARD)";
 				WATCHOS_DEPLOYMENT_TARGET = 9.0;
 			};
 			name = "Release-Alpha";

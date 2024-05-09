@@ -1,16 +1,19 @@
 import WatchConnectivity
 import enum Yosemite.Credentials
 
+/// Type that syncs the necessary dependencies to the watch session.
+/// Dependencies:
+/// - Store ID
+/// - Credentials
+///
 final class WatchDependenciesSynchronizer: NSObject, WCSessionDelegate {
 
-    struct Queue {
-        let storeID: Int64?
-        let credentials: Credentials?
-    }
+    /// Current WatchKit Session
+    private let watchSession: WCSession
 
-    let watchSession: WCSession
-
-    private var queuedDependencies: Queue?
+    /// Dependencies waiting to be synced.
+    /// Used when we are waiting for the watch session to activate.
+    private var queuedDependencies: WatchDependencies?
 
     init(watchSession: WCSession = WCSession.default) {
         self.watchSession = watchSession
@@ -22,41 +25,26 @@ final class WatchDependenciesSynchronizer: NSObject, WCSessionDelegate {
         }
     }
 
+    /// Syncs credentials to the watch session.
+    ///
     func update(storeID: Int64?, credentials: Credentials?) {
 
+        let dependencies = WatchDependencies(storeID: storeID, credentials: credentials)
+
+        // Enqueue dependencies if the session is not yet activated.
         guard watchSession.activationState == .activated else {
-            queuedDependencies = Queue(storeID: storeID, credentials: credentials)
+            queuedDependencies = dependencies
             return
         }
 
         do {
-            let dictionary = createDependenciesDictionary(storeID: storeID, credentials: credentials)
-            try watchSession.updateApplicationContext(dictionary)
+            try watchSession.updateApplicationContext(dependencies.toDictionary())
         } catch {
             DDLogError("⛔️ Error synchronizing credentials into watch session: \(error)")
         }
     }
 
-    func createDependenciesDictionary(storeID: Int64?, credentials: Credentials?) -> [String: Any] {
-        guard let credentials, let storeID else {
-            return ["credentials": [:], "store": [:]]
-        }
-
-        return [
-            "credentials": [
-                "type": credentials.rawType,
-                "username": credentials.username,
-                "secret": credentials.secret,
-                "address": credentials.siteAddress
-            ],
-            "store": [
-                "id": storeID
-            ]
-        ]
-    }
-
     func session(_ session: WCSession, activationDidCompleteWith activationState: WCSessionActivationState, error: Error?) {
-        // No op
         DDLogInfo("🔵 WatchSession activated \(activationState)")
 
         if let queuedDependencies {

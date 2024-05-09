@@ -539,15 +539,21 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
         let subscription = try? metaDataExtractor?.extractProductSubscription()
 
         // Min/Max Quantities properties
-        let minAllowedQuantity = metaDataExtractor?.extractStringValue(forKey: MetadataKeys.minAllowedQuantity)
-        let maxAllowedQuantity = metaDataExtractor?.extractStringValue(forKey: MetadataKeys.maxAllowedQuantity)
-        let groupOfQuantity = metaDataExtractor?.extractStringValue(forKey: MetadataKeys.groupOfQuantity)
-        let combineVariationQuantities: Bool? = {
-            guard let allowCombination = metaDataExtractor?.extractStringValue(forKey: MetadataKeys.allowCombination) else {
-                return nil
-            }
-            return (allowCombination as NSString).boolValue
-        }()
+        //let minAllowedQuantity = metaDataExtractor?.extractStringValue(forKey: MetadataKeys.minAllowedQuantity)
+        let minAllowedQuantity = container.failsafeDecodeIfPresent(stringForKey: .minAllowedQuantity)
+        let maxAllowedQuantity = container.failsafeDecodeIfPresent(stringForKey: .maxAllowedQuantity)
+        let groupOfQuantity = container.failsafeDecodeIfPresent(stringForKey: .groupOfQuantity)
+        let combineVariationQuantities = container.failsafeDecodeIfPresent(stringForKey: .combineVariations) == "yes" ? true : false
+
+
+//        let maxAllowedQuantity = metaDataExtractor?.extractStringValue(forKey: MetadataKeys.maxAllowedQuantity)
+//        let groupOfQuantity = metaDataExtractor?.extractStringValue(forKey: MetadataKeys.groupOfQuantity)
+//        let combineVariationQuantities: Bool? = {
+//            guard let allowCombination = metaDataExtractor?.extractStringValue(forKey: MetadataKeys.allowCombination) else {
+//                return nil
+//            }
+//            return (allowCombination as NSString).boolValue
+//        }()
 
         self.init(siteID: siteID,
                   productID: productID,
@@ -830,6 +836,11 @@ private extension Product {
         case bundledItems                   = "bundled_items"
 
         case compositeComponents    = "composite_components"
+
+        case minAllowedQuantity     = "min_quantity"
+        case maxAllowedQuantity     = "max_quantity"
+        case groupOfQuantity        = "group_of_quantity"
+        case combineVariations      = "combine_variations"
     }
 
     enum MetadataKeys {

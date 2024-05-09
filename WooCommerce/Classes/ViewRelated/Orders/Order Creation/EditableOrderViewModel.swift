@@ -538,6 +538,7 @@ final class EditableOrderViewModel: ObservableObject {
         forwardSyncApproachToSynchronizer()
         observeChangesFromProductSelectorButtonTapSelectionSync()
         observeChangesInCustomerDetails()
+        syncShippingMethods()
     }
 
     /// Observes and keeps track of changes within the Customer Details
@@ -1234,7 +1235,6 @@ extension EditableOrderViewModel {
         init(siteID: Int64 = 0,
              shouldShowProductsTotal: Bool = false,
              itemsTotal: String = "0",
-             availableShippingMethods: [ShippingMethod] = [],
              shouldShowShippingTotal: Bool = false,
              shippingTotal: String = "0",
              shippingMethodID: String = "",
@@ -1305,7 +1305,6 @@ extension EditableOrderViewModel {
                                                                       shippingTotal: shippingMethodTotal,
                                                                       didSelectSave: saveShippingLineClosure)
             self.shippingLineSelectionViewModel = ShippingLineSelectionDetailsViewModel(siteID: siteID,
-                                                                                        shippingMethods: availableShippingMethods,
                                                                                         isExistingShippingLine: shouldShowShippingTotal,
                                                                                         initialMethodID: shippingMethodID,
                                                                                         initialMethodTitle: shippingMethodTitle,
@@ -1761,7 +1760,6 @@ private extension EditableOrderViewModel {
                 .assign(to: &$customerNoteDataViewModel)
     }
 
-
     /// Updates payment section view model based on items in the order and order sync state.
     ///
     func configurePaymentDataViewModel() {
@@ -1786,12 +1784,6 @@ private extension EditableOrderViewModel {
 
                 let shippingMethodID = order.shippingLines.first?.methodID ?? ""
                 let shippingMethodTitle = order.shippingLines.first?.methodTitle ?? ""
-                let availableShippingMethods = [ // TODO-12578: Replace with actual shipping methods
-                    ShippingMethod(siteID: siteID, methodID: "flat_rate", title: "Flat rate"),
-                    ShippingMethod(siteID: siteID, methodID: "free_shipping", title: "Free shipping"),
-                    ShippingMethod(siteID: siteID, methodID: "local_pickup", title: "Local pickup"),
-                    ShippingMethod(siteID: siteID, methodID: "other", title: "Other")
-                ]
 
                 let isDataSyncing: Bool = {
                     switch state {
@@ -1836,7 +1828,6 @@ private extension EditableOrderViewModel {
                 return PaymentDataViewModel(siteID: self.siteID,
                                             shouldShowProductsTotal: order.items.isNotEmpty,
                                             itemsTotal: orderTotals.itemsTotal.stringValue,
-                                            availableShippingMethods: availableShippingMethods,
                                             shouldShowShippingTotal: order.shippingLines.filter { $0.methodID != nil }.isNotEmpty,
                                             shippingTotal: order.shippingTotal.isNotEmpty ? order.shippingTotal : "0",
                                             shippingMethodID: shippingMethodID,
@@ -1924,6 +1915,20 @@ private extension EditableOrderViewModel {
                 }
             }
             .assign(to: &$multipleLinesMessage)
+    }
+
+    /// Synchronizes available shipping methods for editing the order shipping lines.
+    ///
+    func syncShippingMethods() {
+        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.enhancingOrderShippingLines) else {
+            return
+        }
+        let action = ShippingMethodAction.synchronizeShippingMethods(siteID: siteID) { result in
+            if let error = result.failure {
+                DDLogError("⛔️ Error retrieving available shipping methods: \(error)")
+            }
+        }
+        stores.dispatch(action)
     }
 
     func configureTaxRates() {

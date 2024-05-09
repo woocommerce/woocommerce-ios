@@ -3283,6 +3283,24 @@ final class EditableOrderViewModelTests: XCTestCase {
         //Then
         XCTAssertTrue(viewModel.hasChanges)
     }
+
+    func test_init_syncs_available_shipping_methods() {
+        // Given
+        var shippingMethodsSynced = false
+        stores.whenReceivingAction(ofType: ShippingMethodAction.self) { action in
+            switch action {
+            case let .synchronizeShippingMethods(_, completion):
+                shippingMethodsSynced = true
+                completion(.success(()))
+            }
+        }
+
+        // When
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores)
+
+        // Then
+        XCTAssertTrue(shippingMethodsSynced)
+    }
 }
 
 private extension EditableOrderViewModelTests {

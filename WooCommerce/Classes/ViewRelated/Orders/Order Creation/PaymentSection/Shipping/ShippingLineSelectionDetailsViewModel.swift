@@ -1,11 +1,12 @@
 import SwiftUI
 import WooFoundation
-import struct Yosemite.ShippingLine
-import struct Yosemite.ShippingMethod
+import Yosemite
+import protocol Storage.StorageManagerType
 import Combine
 
 class ShippingLineSelectionDetailsViewModel: ObservableObject {
     private var siteID: Int64
+    private let storageManager: StorageManagerType
 
     /// Closure to be invoked when the shipping line is updated.
     ///
@@ -43,31 +44,44 @@ class ShippingLineSelectionDetailsViewModel: ObservableObject {
     ///
     let isExistingShippingLine: Bool
 
+    /// Shipping Method Results Controller.
+    ///
+    private lazy var shippingMethodResultsController: ResultsController<StorageShippingMethod> = {
+        let predicate = NSPredicate(format: "siteID == %lld", siteID)
+        let descriptor = NSSortDescriptor(key: "methodID", ascending: true)
+        let resultsController = ResultsController<StorageShippingMethod>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
+        return resultsController
+    }()
+
+    /// Placeholder shipping method, when no store shipping method is selected.
+    ///
+    private let placeholderMethod: ShippingMethod
+
     /// Available shipping methods on the store.
     ///
-    let shippingMethods: [ShippingMethod]
+    var shippingMethods: [ShippingMethod] = []
 
     /// Returns true when there are valid pending changes.
     ///
     @Published var enableDoneButton: Bool = false
 
     init(siteID: Int64,
-         shippingMethods: [ShippingMethod],
          isExistingShippingLine: Bool,
          initialMethodID: String,
          initialMethodTitle: String,
          shippingTotal: String,
          locale: Locale = Locale.autoupdatingCurrent,
          storeCurrencySettings: CurrencySettings = ServiceLocator.currencySettings,
+         storageManager: StorageManagerType = ServiceLocator.storageManager,
          didSelectSave: @escaping ((ShippingLine?) -> Void)) {
         self.siteID = siteID
+        self.storageManager = storageManager
         self.isExistingShippingLine = isExistingShippingLine
         self.initialMethodID = initialMethodID
         self.initialMethodTitle = initialMethodTitle
         self.methodTitle = initialMethodTitle
-        let placeholderMethod = ShippingMethod(siteID: siteID, methodID: "", title: Localization.placeholderMethodTitle)
-        self.shippingMethods = [placeholderMethod] + shippingMethods
-        self.selectedMethod = shippingMethods.first(where: { $0.methodID == initialMethodID }) ?? placeholderMethod
+        placeholderMethod = ShippingMethod(siteID: siteID, methodID: "", title: Localization.placeholderMethodTitle)
+        selectedMethod = placeholderMethod
 
         let currencyFormatter = CurrencyFormatter(currencySettings: storeCurrencySettings)
         if isExistingShippingLine, let initialAmount = currencyFormatter.convertToDecimal(shippingTotal) {
@@ -86,9 +100,24 @@ class ShippingLineSelectionDetailsViewModel: ObservableObject {
 
         self.didSelectSave = didSelectSave
 
+        configureShippingMethods()
         observeShippingLineDetailsForUIStates(with: currencyFormatter)
     }
 
+    func saveData() {
+        let shippingLine = ShippingLine(shippingID: 0,
+                                        methodTitle: finalMethodTitle,
+                                        methodID: selectedMethod.methodID,
+                                        total: formattableAmountViewModel.amount,
+                                        totalTax: "",
+                                        taxes: [])
+        didSelectSave(shippingLine)
+    }
+}
+
+// MARK: Configuration
+
+private extension ShippingLineSelectionDetailsViewModel {
     /// Observes changes to the shipping line method, amount, and method title to determine the state of the "Done" button.
     ///
     func observeShippingLineDetailsForUIStates(with currencyFormatter: CurrencyFormatter) {
@@ -105,14 +134,28 @@ class ShippingLineSelectionDetailsViewModel: ObservableObject {
         }.assign(to: &$enableDoneButton)
     }
 
-    func saveData() {
-        let shippingLine = ShippingLine(shippingID: 0,
-                                        methodTitle: finalMethodTitle,
-                                        methodID: selectedMethod.methodID,
-                                        total: formattableAmountViewModel.amount,
-                                        totalTax: "",
-                                        taxes: [])
-        didSelectSave(shippingLine)
+    /// Configures the available and selected shipping methods for display.
+    ///
+    func configureShippingMethods() {
+        updateShippingMethodResultsController()
+        initializeSelectedMethod()
+    }
+
+    /// Fetches shipping methods from storage.
+    ///
+    func updateShippingMethodResultsController() {
+        do {
+            try shippingMethodResultsController.performFetch()
+            shippingMethods = [placeholderMethod] + shippingMethodResultsController.fetchedObjects
+        } catch {
+            DDLogError("⛔️ Error fetching shipping methods from storage: \(error)")
+        }
+    }
+
+    /// Sets the initial selected method using the available shipping methods.
+    ///
+    func initializeSelectedMethod() {
+        selectedMethod = shippingMethods.first(where: { $0.methodID == initialMethodID }) ?? placeholderMethod
     }
 }
 

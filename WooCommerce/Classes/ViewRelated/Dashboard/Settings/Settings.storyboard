@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="21507" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21505"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Privacy Settings View Controller-->
+        <scene sceneID="g1b-rK-cDR">
+            <objects>
+                <viewController storyboardIdentifier="PrivacySettingsViewController" id="tLZ-3e-cJY" customClass="PrivacySettingsViewController" customModule="WooCommerce" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="eDL-oC-fDz">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" layoutMarginsFollowReadableWidth="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="insetGrouped" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" sectionFooterHeight="18" translatesAutoresizingMaskIntoConstraints="NO" id="hwi-He-cKY">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                                <connections>
+                                    <outlet property="dataSource" destination="tLZ-3e-cJY" id="uum-dx-Yau"/>
+                                    <outlet property="delegate" destination="tLZ-3e-cJY" id="Ig0-wR-2Ms"/>
+                                </connections>
+                            </tableView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="e4p-U3-YVf"/>
+                        <constraints>
+                            <constraint firstAttribute="bottomMargin" secondItem="hwi-He-cKY" secondAttribute="bottom" id="UPd-Rr-5ev"/>
+                            <constraint firstItem="hwi-He-cKY" firstAttribute="trailing" secondItem="eDL-oC-fDz" secondAttribute="trailing" id="mcB-Fh-FAx"/>
+                            <constraint firstItem="hwi-He-cKY" firstAttribute="top" secondItem="eDL-oC-fDz" secondAttribute="topMargin" id="sVu-Pi-CPd"/>
+                            <constraint firstItem="hwi-He-cKY" firstAttribute="leading" secondItem="eDL-oC-fDz" secondAttribute="leading" id="tE5-ir-eJR"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="tableView" destination="hwi-He-cKY" id="dz2-gV-Lqe"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="8Ut-YJ-O7J" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1388" y="2389.6551724137935"/>
+        </scene>
+        <!--Application Log View Controller-->
+        <scene sceneID="bod-JW-RLg">
+            <objects>
+                <viewController storyboardIdentifier="ApplicationLogViewController" id="cZP-lH-gTc" customClass="ApplicationLogViewController" customModule="WooCommerce" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="kTI-Ip-3qK">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" sectionFooterHeight="18" translatesAutoresizingMaskIntoConstraints="NO" id="pYs-VV-dST">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                                <color key="backgroundColor" systemColor="groupTableViewBackgroundColor"/>
+                                <connections>
+                                    <outlet property="dataSource" destination="cZP-lH-gTc" id="elE-X0-kT3"/>
+                                    <outlet property="delegate" destination="cZP-lH-gTc" id="Pq1-iP-TpG"/>
+                                </connections>
+                            </tableView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="qMn-MK-zzV"/>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="pYs-VV-dST" secondAttribute="trailing" id="9bn-9p-K1Z"/>
+                            <constraint firstItem="pYs-VV-dST" firstAttribute="leading" secondItem="kTI-Ip-3qK" secondAttribute="leading" id="OUm-VB-DJ3"/>
+                            <constraint firstItem="pYs-VV-dST" firstAttribute="top" secondItem="qMn-MK-zzV" secondAttribute="top" id="nJg-fe-Omp"/>
+                            <constraint firstItem="qMn-MK-zzV" firstAttribute="bottom" secondItem="pYs-VV-dST" secondAttribute="bottom" id="o10-zc-2HE"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="tableView" destination="pYs-VV-dST" id="Cqx-Lg-UJh"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="fOe-oS-ZTi" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2356" y="811"/>
+        </scene>
+        <!--Help And Support View Controller-->
+        <scene sceneID="k0p-fl-BDY">
+            <objects>
+                <viewController storyboardIdentifier="HelpAndSupportViewController" id="iSl-b1-8Q7" customClass="HelpAndSupportViewController" customModule="WooCommerce" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="wie-fQ-LP9">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" sectionFooterHeight="18" translatesAutoresizingMaskIntoConstraints="NO" id="egg-mo-Y4S">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                                <color key="backgroundColor" systemColor="groupTableViewBackgroundColor"/>
+                                <connections>
+                                    <outlet property="dataSource" destination="iSl-b1-8Q7" id="D4h-Iu-gaD"/>
+                                    <outlet property="delegate" destination="iSl-b1-8Q7" id="O3x-LW-ggf"/>
+                                </connections>
+                            </tableView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="nz7-i3-560"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="egg-mo-Y4S" secondAttribute="trailing" id="4lT-TU-td8"/>
+                            <constraint firstItem="egg-mo-Y4S" firstAttribute="top" secondItem="nz7-i3-560" secondAttribute="top" id="bz0-ln-OvO"/>
+                            <constraint firstItem="nz7-i3-560" firstAttribute="bottom" secondItem="egg-mo-Y4S" secondAttribute="bottom" id="hoc-dS-mst"/>
+                            <constraint firstItem="egg-mo-Y4S" firstAttribute="leading" secondItem="wie-fQ-LP9" secondAttribute="leading" id="nCX-Yb-zUk"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="tableView" destination="egg-mo-Y4S" id="Q6m-Fm-qjc"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="FQx-lA-JpF" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1431" y="811"/>
+        </scene>
+        <!--Licenses View Controller-->
+        <scene sceneID="Uj1-Ej-yhV">
+            <objects>
+                <viewController storyboardIdentifier="LicensesViewController" id="2kR-vO-lWS" customClass="LicensesViewController" customModule="WooCommerce" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="pIy-Ye-9vd">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <wkWebView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3Ux-jX-kZE">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                                <color key="backgroundColor" red="0.36078431370000003" green="0.38823529410000002" blue="0.4039215686" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <wkWebViewConfiguration key="configuration">
+                                    <audiovisualMediaTypes key="mediaTypesRequiringUserActionForPlayback" none="YES"/>
+                                    <wkPreferences key="preferences"/>
+                                </wkWebViewConfiguration>
+                            </wkWebView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="gcq-RR-2k7"/>
+                        <constraints>
+                            <constraint firstItem="3Ux-jX-kZE" firstAttribute="leading" secondItem="gcq-RR-2k7" secondAttribute="leading" id="Qmb-Md-7xS"/>
+                            <constraint firstItem="gcq-RR-2k7" firstAttribute="trailing" secondItem="3Ux-jX-kZE" secondAttribute="trailing" id="hPA-YS-aD5"/>
+                            <constraint firstItem="gcq-RR-2k7" firstAttribute="bottom" secondItem="3Ux-jX-kZE" secondAttribute="bottom" id="qGU-af-Ie5"/>
+                            <constraint firstItem="3Ux-jX-kZE" firstAttribute="top" secondItem="gcq-RR-2k7" secondAttribute="top" id="roD-E5-KXz"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="webView" destination="3Ux-jX-kZE" id="Mwl-R5-9dT"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="mMe-a0-E0Y" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2265" y="1525"/>
+        </scene>
+    </scenes>
+    <resources>
+        <systemColor name="groupTableViewBackgroundColor">
+            <color red="0.94901960784313721" green="0.94901960784313721" blue="0.96862745098039216" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+    </resources>
+</document>

@@ -1,1 +1,1 @@
-Saluta i bug fastidiosi. Il nostro ultimo aggiornamento garantisce che la funzionalità "Ricevi pagamenti" ti conduca direttamente al modulo dell'ordine, sia che tu stia utilizzando un'azione rapida o un deep link. Sfrutta le transazioni semplici fuori casa.
+Nel nostro ultimo aggiornamento abbiamo migliorato la scansione dei codici a barre eliminando un bug che consentiva ai prodotti genitore variabili di intrufolarsi negli ordini. Goditi un'esperienza di creazione dell'ordine più fluida con il nostro ultimo aggiornamento!

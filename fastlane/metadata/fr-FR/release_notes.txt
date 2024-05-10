@@ -1,1 +1,1 @@
-Dites au revoir aux bugs agaçants ! Avec notre dernière mise à jour, vous avez la garantie que la fonctionnalité « Collecter le paiement » vous amène directement au formulaire de commande, que vous utilisiez une action rapide ou un lien profond. Profitez de transactions fluides à la volée !
+Dans notre dernière mise à jour, nous avons amélioré le scan des codes-barres en éliminant un bug qui permettait à des produits parents variables de se glisser dans les commandes. Profitez d’une expérience de création de commande plus fluide grâce à notre dernière mise à jour !

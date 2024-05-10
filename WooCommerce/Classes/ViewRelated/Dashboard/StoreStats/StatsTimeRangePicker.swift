@@ -10,7 +10,7 @@ struct StatsTimeRangePicker: View {
 
     var body: some View {
         Menu {
-            ForEach(timeRanges, id: \.rawValue) { range in
+            ForEach(timeRanges.reversed(), id: \.rawValue) { range in
                 Button {
                     onSelect(range)
                 } label: {

@@ -124,6 +124,7 @@ private extension AddOrderComponentsSection {
     @ViewBuilder var addShippingRow: some View {
         Button(Localization.addShipping) {
             shouldShowShippingLineDetails = true
+            viewModel.addShippingTappedClosure()
         }
         .buttonStyle(PlusButtonStyle())
         .padding()

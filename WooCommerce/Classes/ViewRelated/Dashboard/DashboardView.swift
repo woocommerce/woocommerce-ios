@@ -121,10 +121,16 @@ struct DashboardView: View {
         }
         .sheet(isPresented: $viewModel.showingCustomization) {
             DashboardCustomizationView(viewModel: DashboardCustomizationViewModel(
-                allCards: viewModel.dashboardCards,
-                inactiveCards: viewModel.unavailableDashboardCards,
+                allCards: viewModel.availableCards,
+                inactiveCards: viewModel.unavailableCards,
                 onSave: { viewModel.didCustomizeDashboardCards($0) }
             ))
+        }
+        .sheet(isPresented: $viewModel.showingInAppFeedbackSurvey) {
+            Survey(source: .inAppFeedback)
+        }
+        .onAppear {
+            viewModel.onViewAppear()
         }
     }
 }
@@ -135,8 +141,8 @@ private extension DashboardView {
     @ViewBuilder
     var dashboardCards: some View {
         VStack(spacing: Layout.padding) {
-            ForEach(viewModel.dashboardCards, id: \.hashValue) { card in
-                if card.enabled {
+            ForEach(Array(viewModel.showOnDashboardCards.enumerated()), id: \.element.hashValue) { index, card in
+                VStack(spacing: Layout.padding) {
                     switch card.type {
                     case .onboarding:
                         StoreOnboardingView(viewModel: viewModel.storeOnboardingViewModel,
@@ -166,6 +172,11 @@ private extension DashboardView {
                             onViewAllAnalytics?(siteID, siteTimeZone, timeRange)
                         })
                     }
+
+                    // Append feedback card after the first card
+                    if index == 0 && viewModel.isInAppFeedbackCardVisible {
+                        feedbackCard
+                    }
                 }
             }
 
@@ -173,6 +184,11 @@ private extension DashboardView {
                 shareStoreCard
             }
         }
+    }
+
+    var feedbackCard: some View {
+        InAppFeedbackCardView(viewModel: viewModel.inAppFeedbackCardViewModel)
+            .padding(.horizontal, Layout.padding)
     }
 
     var shareStoreCard: some View {

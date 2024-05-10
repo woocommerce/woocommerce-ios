@@ -1,1 +1,1 @@
-Ucapkan selamat tinggal pada bug yang mengganggu! Dengan pembaruan terakhir ini, fitur "Terima Pembayaran" akan langsung mengarahkan Anda ke formulir pesanan, baik melalui tindakan cepat maupun tautan dalam. Nikmati kelancaran transaksi di mana saja!
+Pada pembaruan teranyar ini, kami menyempurnakan pemindaian barcode melalui pembasmian bug yang membuat produk induk variabel menyusup ke dalam pesanan. Nikmati pembuatan pesanan yang lebih mulus dengan pembaruan teranyar kami!

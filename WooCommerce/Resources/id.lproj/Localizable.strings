@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-04-30 09:54:04+0000 */
+/* Translation-Revision-Date: 2024-05-08 09:54:08+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: id */
@@ -281,7 +281,7 @@ which should be translated separately and considered part of this sentence. */
 "1. Available as standard in WooCommerce Payments (restrictions apply).Additional extensions may be required for other payment providers." = "1. Tersedia sebagai standar dalam WooCommerce Payments (batasan berlaku). Penyedia jasa pembayaran lainnya mungkin memerlukan ekstensi tambahan.";
 
 /* Step 1 of the 'How it works' list, instructing the merchant to prepare an order for payment */
-"1. Create an order or collect a payment" = "1. Buat pesanan atau terima pembayaran";
+"1. Create an order" = "1. Buat pesanan";
 
 /* Settings > Manage Card Reader > Connect > Help hint number 2
    Settings > Set up Tap to Pay on iPhone > Information > Help hint number 2 */
@@ -1085,9 +1085,6 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Bangladesh" = "Bangladesh";
 
-/* VoiceOver accessibility value about a specific bar in the revenue chart.It reads: Bar number {bar number} {summary of bar}. */
-"Bar number %i, %@, " = "Nomor bar %1$i, %2$@, ";
-
 /* Country option for a site address. */
 "Barbados" = "Barbados";
 
@@ -1387,7 +1384,6 @@ which should be translated separately and considered part of this sentence. */
    The title of the button to cancel issuing a refund.
    Title for canceling the edit attribute action sheet.
    Title for the button to cancel the payment methods screen
-   Title for the button to cancel the simple payments screen
    Title of an option to dismiss the bulk edit action sheet
    Title of dismiss button presented when site credential login fails
    Title of the alert dismiss action when the site cannot be launched from store onboarding > launch store screen.
@@ -1735,6 +1731,9 @@ which should be translated separately and considered part of this sentence. */
 /* Description of the signup fees for a subscription product. Reads as: '$5.00 signup'. */
 "CollapsibleProductRowCardViewModel.formattedSignUpFee" = "pendaftaran %1$@";
 
+/* Summary of quantity and signup fees for a subscription product when multiple are selected.Reads as: '3 × $0.60'. Please ensure you use a multiplication symbol, not a letter x */
+"CollapsibleProductRowCardViewModel.signupFeeSummary" = "%1$@ × %2$@";
+
 /* SKU label for a product in an order. The variable shows the SKU of the product. */
 "CollapsibleProductRowCardViewModel.skuFormat" = "SKU: %1$@";
 
@@ -1980,9 +1979,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Shown while logging in with Apple and the app waits for the site creation process to complete. */
 "Continuing with Apple" = "Melanjutkan dengan Apple";
-
-/* Conversion stat label on dashboard. */
-"Conversion" = "Konversi";
 
 /* Label for the conversion rate (orders per visitor) in the Analytics Hub */
 "Conversion Rate" = "Angka Konversi";
@@ -2824,9 +2820,6 @@ which should be translated separately and considered part of this sentence. */
 /* Address field placeholder in Edit Address Form
    Button to open a webview at the admin pages, so that the merchant can update their store address to continue setting up In Person Payments */
 "Enter Address" = "Masukan Alamat";
-
-/* Short instructions label in the simple payments screen */
-"Enter Amount" = "Masukkan Jumlah";
 
 /* Action button linking to instructions for enter another store.Presented when logging in with a site address that appears to be invalid.
    Action button linking to instructions for enter another store.Presented when logging in with a site address that is not a WordPress site */
@@ -3847,9 +3840,6 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle of the product form bottom sheet action for linked products. */
 "Increase sales with upsells and cross-sells" = "Tingkatkan penjualan dengan upsell dan cross-sell";
 
-/* Subtitle of the Blaze campaign view. */
-"Increase visibility and get your products sold quickly." = "Tingkatkan visibilitas dan jual produk Anda segera.";
-
 /* Country option for a site address. */
 "India" = "India";
 
@@ -4448,9 +4438,6 @@ which should be translated separately and considered part of this sentence. */
 /* Settings > Manage Card Reader > Connect > Hint to charge card reader */
 "Make sure card reader is charged" = "Pastikan pembaca kartu telah terisi daya";
 
-/* Text that explains how to update VC to get the latest stats */
-"Make sure you are running the latest version of WooCommerce on your site and that you have WooCommerce Admin activated." = "Pastikan Anda mengoperasikan WooCommerce versi terbaru di situs Anda dan telah mengaktifkan WooCommerce Admin.";
-
 /* Settings > Set up Tap to Pay on iPhone > Information > Hint to sign in to iCloud and set a passcode on the device */
 "Make sure you are signed in to iCloud, and have set a passcode." = "Pastikan Anda sudah login ke iCloud dan mengatur kode sandi.";
 
@@ -4619,9 +4606,6 @@ which should be translated separately and considered part of this sentence. */
 /* The minimum limit of spending required for a coupon on the Coupon Details screen, reads like: Minimum spend of $20.00 */
 "Minimum spend of %1$@" = "Belanja minimum %1$@";
 
-/* VoiceOver accessibility value, informs the user about the Y-axis min/max values. It reads: Minimum value {value}, maximum value {value}. */
-"Minimum value %@, maximum value %@" = "Nilai minimum %1$@, nilai maksimum %2$@";
-
 /* The description in product variations bulk update, of a value, that is different acrossall variations */
 "Mixed" = "Campuran";
 
@@ -4707,8 +4691,7 @@ which should be translated separately and considered part of this sentence. */
    Title of the hub menu view in case there is no title for the store */
 "My Store" = "Toko Saya";
 
-/* Title of the bottom tab item that presents the user's store dashboard, and default title for the store dashboard
-   Title of the store creation summary screen. */
+/* Title of the store creation summary screen. */
 "My store" = "Toko saya";
 
 /* Country option for a site address. */
@@ -4766,8 +4749,7 @@ which should be translated separately and considered part of this sentence. */
 /* Label for net sales (net revenue) in the Analytics Hub */
 "Net Sales" = "Penjualan Bersih";
 
-/* Label for the total sales of a product in the Analytics Hub
-   Top performers — label for the total sales of a product */
+/* Label for the total sales of a product in the Analytics Hub */
 "Net sales: %@" = "Penjualan bersih: %@";
 
 /* Country option for a site address. */
@@ -4822,7 +4804,6 @@ which should be translated separately and considered part of this sentence. */
    Next nav bar button title in Add Product Attribute Options screen
    Next nav bar button title in Add Product Attribute screen
    The button title on the login onboarding screen to continue to the next step.
-   Title for the button to confirm the amount in the simple payments screen
    Title of a button.
    Title of a button. The text should be capitalized.
    Title of the next button in the issue refund screen */
@@ -4890,9 +4871,6 @@ which should be translated separately and considered part of this sentence. */
 /* The title on the placeholder overlay when there are no customers on the customers list screen. */
 "No customers found" = "Pelanggan tidak ditemukan";
 
-/* Text displayed when no data is available for revenue chart. */
-"No data available" = "Tidak ada data yang tersedia";
-
 /* Placeholder when there's no customer email in the list */
 "No email address" = "Tanpa alamat email";
 
@@ -4948,9 +4926,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Empty state for the list of shipment carriers. It reads: 'No results for DHL. Add a custom carrier'. Parameters: %1$@ - carrier name */
 "No results found for %1$@\nAdd a custom carrier" = "Tidak ada hasil yang ditemukan untuk %1$@\nTambahkan operator kustom";
-
-/* Text displayed when no order data are available for the selected time range. */
-"No revenue this period" = "Tidak ada pendapatan dalam periode ini";
 
 /* The text on the placeholder overlay when there are no shipping classes on the Shipping Class list picker */
 "No shipping classes yet" = "Kelas pengiriman belum ditetapkan";
@@ -5246,8 +5221,7 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label for Ordered list button on formatting toolbar. */
 "Ordered List" = "Daftar Berurutan";
 
-/* Orders stat label on dashboard - should be plural.
-   The title of the Orders tab.
+/* The title of the Orders tab.
    Title of the 'Orders' tab - used for spotlight indexing on iOS. */
 "Orders" = "Pesanan";
 
@@ -6382,9 +6356,6 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Reunion" = "Reunion";
 
-/* Revenue stat label on dashboard. */
-"Revenue" = "Pendapatan";
-
 /* Title of Review Order screen */
 "Review Order" = "Tinjau Pesanan";
 
@@ -6639,9 +6610,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Link title to see all paper size options */
 "See layout and paper sizes options" = "Lihat opsi tata letak dan ukuran kertas";
-
-/* Button on the stats dashboard that navigates user to the analytics hub */
-"See more" = "Lihat Selengkapnya";
 
 /* Title for a link to view Woo Express plan details on the web, as a fallback. */
 "See plan details" = "Lihat detail paket";
@@ -6959,9 +6927,6 @@ which should be translated separately and considered part of this sentence. */
    Title of the Short Description row on Product main screen */
 "Short description" = "Deskripsi singkat";
 
-/* Button when tapped will show the Blaze campaign list. */
-"Show All Campaigns" = "Lihat Semua Kampanye";
-
 /* Button title for applying filters to a list of orders. */
 "Show Orders" = "Tampilkan Pesanan";
 
@@ -7247,9 +7212,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the option to create a template product */
 "Start with a template" = "Mulai dengan templat";
 
-/* VoiceOver accessibility value, informs the user about the X-axis min/max values. It reads: Starting date {date}, ending date {date}. */
-"Starting period %@, ending period %@" = "Periode awal %1$@, periode akhir %2$@";
-
 /* Text field state in Edit Address Form
    Text field state in Shipping Label Address Validation
    Title to select state from the edit address screen */
@@ -7270,9 +7232,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Subtitle of the Jetpack benefits banner. */
 "Stay updated and boost store security. Explore Jetpack now." = "Terus dapatkan pembaruan dan tingkatkan keamanan toko. Jelajahi Jetpack sekarang.";
-
-/* Button title to contact support to get help with deprecated stats */
-"Still need help? Contact us" = "Masih memerlukan bantuan? Hubungi kami";
 
 /* Row title for filtering products by stock status. */
 "Stock Status" = "Status stok";
@@ -7307,18 +7266,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the store name screen */
 "Store name" = "Nama toko";
-
-/* VoiceOver accessibility label for the store revenue chart. */
-"Store revenue chart" = "Diagram pendapatan toko";
-
-/* VoiceOver accessibility label for the store revenue chart. It reads: Store revenue chart {chart granularity}. */
-"Store revenue chart %@" = "Diagram pendapatan toko %@";
-
-/* VoiceOver accessibility label for the store revenue chart's X-axis. */
-"Store revenue chart: X Axis" = "Diagram pendapatan toko: Sumbu X";
-
-/* VoiceOver accessibility label for the store revenue chart's Y-axis. */
-"Store revenue chart: Y Axis" = "Diagram pendapatan toko: Sumbu Y";
 
 /* Title of the store setup progress view. */
 "Store setup" = "Penyiapan toko";
@@ -7966,9 +7913,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Message to be displayed when the user encounters an error during the connection step of Jetpack setup */
 "There was an error connecting your site to Jetpack." = "Terjadi error saat menghubungkan situs Anda ke Jetpack.";
-
-/* Notice text after failing to create a simple payments order. */
-"There was an error creating the order" = "Terjadi error saat membuat pesanan";
 
 /* Error shown when failing to fetch the plan details in the upgrades view. */
 "There was an error fetching your plan details, please try again later." = "Terjadi error saat mengambil detail paket Anda. Harap coba lagi nanti.";
@@ -9012,9 +8956,6 @@ which should be translated separately and considered part of this sentence. */
    Visibility label in Product Settings */
 "Visibility" = "Visibilitas";
 
-/* Visitors stat label on dashboard - should be plural. */
-"Visitors" = "Pengunjung";
-
 /* Add a note screen - Write Note section title */
 "WRITE NOTE" = "TULIS CATATAN";
 
@@ -9051,9 +8992,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Message when we can't reach WPCom in the recovery tool */
 "We can’t connect to WordPress.com right now.\n\nTry again in a few minutes, or contact our support team and we will happily assist you." = "Kami tidak dapat terhubung dengan WordPress.com saat ini.\n\nCoba lagi dalam beberapa menit, atau hubungi tim dukungan kami dan kami siap membantu.";
-
-/* Title when we can't show stats because user is on a deprecated WC Version */
-"We can’t display your store’s analytics" = "Kami tidak dapat menampilkan analisis toko Anda";
 
 /* The title of the Error Loading Data banner when there is a Jetpack connection error */
 "We couldn't connect to your store" = "Kami tidak dapat menghubungkan ke toko Anda";
@@ -10028,11 +9966,26 @@ which should be translated separately and considered part of this sentence. */
 /* Message in the Blaze campaign creation loading screen */
 "blazeCampaignCreationLoadingView.Message" = "Membuat kampanye";
 
+/* Button that when tapped will launch create Blaze campaign flow. */
+"blazeCampaignDashboardView.createCampaign" = "Buat Kampanye";
+
+/* Title of the Blaze campaign details view. */
+"blazeCampaignDashboardView.detailTitle" = "Detail Kampanye";
+
+/* Button to dismiss the Blaze campaign detail view */
+"blazeCampaignDashboardView.done" = "Selesai";
+
 /* Button to dismiss the Blaze campaign section on the My Store screen. */
 "blazeCampaignDashboardView.hideBlazeButton" = "Sembunyikan Blaze";
 
-/* Button when tapped will launch create Blaze campaign flow. */
-"blazeCampaignDashboardView.promote" = "Promosikan";
+/* Button when tapped will show the Blaze campaign list. */
+"blazeCampaignDashboardView.showAllCampaigns" = "Lihat semua kampanye";
+
+/* Subtitle of the Blaze campaign view. */
+"blazeCampaignDashboardView.subtitle" = "Tingkatkan visibilitas dan buat produk Anda laris manis.";
+
+/* Title of the Blaze campaign view. */
+"blazeCampaignDashboardView.title" = "Kampanye Blaze";
 
 /* The action to be agreed upon on the Payment screen in the Blaze campaign creation flow. */
 "blazeConfirmPaymentView.adPolicy" = "Kebijakan Iklan";
@@ -10509,9 +10462,6 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility title for the edit button on a custom amount row. */
 "customAmount.edit.button.accessibilityLabel" = "Edit jumlah";
 
-/* Button in date range picker to add a Custom Range tab */
-"customRangeTabCreationCoordinator.add" = "Tambah";
-
 /* Label for a customer with no name in the Customer detail screen. */
 "customerDetail.guestName" = "Tamu";
 
@@ -10603,7 +10553,7 @@ which should be translated separately and considered part of this sentence. */
 "customersList.title" = "Pelanggan";
 
 /* Name for the Blaze dashboard card in the Customize Dashboard screen */
-"dashboardCard.name.blaze" = "Blaze";
+"dashboardCard.name.blazeCampaigns" = "Kampanye Blaze";
 
 /* Name for the Store setup dashboard card in the Customize Dashboard screen */
 "dashboardCard.name.onboarding" = "Penyiapan toko";
@@ -10968,6 +10918,15 @@ which should be translated separately and considered part of this sentence. */
 /* A error message when it's not possible toacquire the Analytics Hub previous selection range */
 "no previous period" = "tidak ada periode sebelumnya";
 
+/* Title for the screen to select a shipping method for an order */
+"order.ShippingMethodSelector.Title" = "Metode";
+
+/* Subtitle of a notice shown when a merchant scans a barcode for a product which is a parent to variations. It's not possible to purchase a parent product, as it simply groups its variable product children. In this case, the product is not added to the order as the merchant wanted it to be. */
+"order.barcode.scan.parent.product.notice.subtitle" = "Pilih satu variasi spesifik.";
+
+/* Title of a notice shown when a merchant scans a barcode for a product which is a parent to variations. It's not possible to purchase a parent product, as it simply groups its variable product children. In this case, the product is not added to the order as the merchant wanted it to be. */
+"order.barcode.scan.parent.product.notice.title" = "Produk variabel tidak dapat ditambahkan secara langsung.";
+
 /* Title for the Coupon screen during order creation */
 "order.form.coupon.add.button.title" = "Tambah Kupon";
 
@@ -11003,6 +10962,31 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title text of the button that adds shipping line when creating a new order */
 "order.form.shipping.add.button.title" = "Tambahkan Pengiriman";
+
+/* Button to add a shipping line to the order during order creation */
+"order.shippingLineDetails.addShipping" = "Tambahkan Pengiriman";
+
+/* Title above the amount field on the Shipping Line Details screen */
+"order.shippingLineDetails.amount" = "Jumlah";
+
+/* Text for the cancel button in the Shipping Line Details screen */
+"order.shippingLineDetails.cancel" = "Batal";
+
+/* Button to edit a shipping line to the order during order creation */
+"order.shippingLineDetails.editShipping" = "Edit Pengiriman";
+
+/* Title above the name field on the Shipping Line Details screen */
+"order.shippingLineDetails.name" = "Nama";
+
+/* Placeholder for the name field on the Shipping Line Details screen
+   Placeholder for the name field on the Shipping Line Details screen in order form */
+"order.shippingLineDetails.namePlaceholder" = "Pengiriman";
+
+/* Button to remove a shipping line from the order during order creation */
+"order.shippingLineDetails.removeShipping" = "Hapus Pengiriman dari Pesanan";
+
+/* Title for the Shipping Line Details screen during order creation */
+"order.shippingLineDetails.shippingTitle" = "Pengiriman";
 
 /* Origin in Order Attribution Section on Order Details screen. */
 "orderAttributionInfo.direct" = "Langsung";
@@ -11084,6 +11068,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title text of the confirmation dialog that shows the add custom amounts options. */
 "orderForm.customAmounts.addOptionsDialogTitle" = "Bagaimana Anda ingin menambahkan jumlah kustom?";
+
+/* Title text of the button that adds customer data when creating a new order */
+"orderForm.customerSection.addCustomer" = "Tambahkan Pelanggan";
 
 /* Title of the primary button on the new order screen to collect payment, likely in-person. This button first creates the order, then presents a view for the merchant to choose a payment method. */
 "orderForm.payment.collect.button.title" = "Terima Pembayaran";
@@ -11198,6 +11185,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Alert message to inform the user that they must wait for all image uploads to complete before they can reorder the images. */
 "productImagesCollectionViewController.notice" = "Tunggu hingga semua selesai diunggah sebelum menyusun ulang gambar.";
+
+/* Label for the suggested product on the Blaze dashboard view. */
+"productInfoView.suggestedProductLabel" = "Saran produk";
 
 /* Title of the billing interval row on the Product Price screen */
 "productPriceSettingsViewController.billingIntervalRowTitle" = "Interval penagihan";
@@ -11735,12 +11725,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Success notice when tapping Mark Order Complete on Review Order screen */
 "🎉 Order Completed" = "🎉 Pesanan Selesai";
-
-/* Notice text after completing a simple payment order */
-"🎉 Order completed" = "🎉 Pesanan selesai";
-
-/* Notice text after creating a simple payment order */
-"🎉 Order created" = "🎉 Pesanan dibuat";
 
 /* Text of the notice that is displayed after the refund is created. */
 "🎉 Products successfully refunded" = "🎉 Pengembalian dana produk berhasil";

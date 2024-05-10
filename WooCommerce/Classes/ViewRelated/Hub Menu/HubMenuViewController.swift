@@ -52,7 +52,7 @@ final class HubMenuViewController: UIHostingController<HubMenu> {
         guard let navigationController else {
             return DDLogError("⛔️ Could not find a navigation controller context.")
         }
-        guard let privacy = UIStoryboard.dashboard.instantiateViewController(ofClass: PrivacySettingsViewController.self) else {
+        guard let privacy = UIStoryboard.settings.instantiateViewController(ofClass: PrivacySettingsViewController.self) else {
             return DDLogError("⛔️ Could not instantiate PrivacySettingsViewController")
         }
 
@@ -66,17 +66,7 @@ final class HubMenuViewController: UIHostingController<HubMenu> {
         // We want to hide navigation bar *only* on HubMenu screen. But on iOS 16, the `navigationBarHidden(true)`
         // modifier on `HubMenu` view hides the navigation bar for the whole navigation stack.
         // Here we manually hide or show navigation bar when entering or leaving the HubMenu screen.
-        if #available(iOS 16.0, *) {
-            self.navigationController?.setNavigationBarHidden(true, animated: animated)
-        }
-    }
-
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-
-        if #available(iOS 16.0, *) {
-            self.navigationController?.setNavigationBarHidden(false, animated: animated)
-        }
+        navigationController?.setNavigationBarHidden(true, animated: animated)
     }
 }
 

@@ -1,1 +1,1 @@
-Rahatsız edici hatalara veda edin! En yeni güncellememiz, hızlı işlem veya derin bir bağlantı kullanmanız fark etmeksizin "Ödeme Alma" özelliğinin sizi doğrudan sipariş formuna yönlendirmesini sağlar. Hareket halindeyken sorunsuz işlemlerin keyfini çıkarın!
+Son güncellememizde değişken ana ürünlerin siparişlere sızmasına neden olan bir hatayı düzelterek barkod taramayı geliştirdik. En yeni güncellememizle daha sorunsuz bir sipariş oluşturma deneyiminin keyfini çıkarın!

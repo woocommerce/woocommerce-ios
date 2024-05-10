@@ -46,6 +46,7 @@ final class StorePerformanceViewModel: ObservableObject {
     private let analytics: Analytics
 
     private var periodViewModel: StoreStatsPeriodViewModel?
+    private(set) var chartViewModel: StoreStatsChartViewModel?
 
     // Set externally to trigger callback when hiding the card.
     var onDismiss: (() -> Void)?
@@ -53,6 +54,9 @@ final class StorePerformanceViewModel: ObservableObject {
     private var subscriptions: Set<AnyCancellable> = []
     private var currentDate = Date()
     private let chartValueSelectedEventsSubject = PassthroughSubject<Int?, Never>()
+
+    private var waitingTracker: WaitingTimeTracker?
+    private let syncingDidFinishPublisher = PassthroughSubject<Void, Never>()
 
     // To check whether the tab is showing the visitors and conversion views as redacted for custom range.
     // This redaction is only shown on Custom Range tab with WordPress.com or Jetpack connected sites,
@@ -84,7 +88,8 @@ final class StorePerformanceViewModel: ObservableObject {
         self.usageTracksEventEmitter = usageTracksEventEmitter
         self.analytics = analytics
 
-        observeTimeRange()
+        observeSyncingCompletion()
+        observeData()
         observeChartValueSelectedEvents()
 
         Task { @MainActor in
@@ -125,7 +130,7 @@ final class StorePerformanceViewModel: ObservableObject {
     func reloadData() async {
         syncingData = true
         loadingError = nil
-        let waitingTracker = WaitingTimeTracker(trackScenario: .dashboardMainStats)
+        waitingTracker = WaitingTimeTracker(trackScenario: .dashboardMainStats)
         do {
             try await syncAllStats()
             trackDashboardStatsSyncComplete()
@@ -148,7 +153,7 @@ final class StorePerformanceViewModel: ObservableObject {
             handleSyncError(error: error)
         }
         syncingData = false
-        waitingTracker.end()
+        syncingDidFinishPublisher.send()
     }
 
     func hideStorePerformance() {
@@ -181,13 +186,6 @@ extension StorePerformanceViewModel {
         return Localization.addCustomRange
     }
 
-    var chartViewModel: StoreStatsChartViewModel {
-        StoreStatsChartViewModel(intervals: statsIntervalData,
-                                 timeRange: timeRange,
-                                 currencySettings: currencySettings,
-                                 currencyFormatter: currencyFormatter)
-    }
-
     var granularityText: String? {
         guard case .custom = timeRange else {
             return nil
@@ -209,12 +207,28 @@ extension StorePerformanceViewModel {
     var redactedViewIconColor: UIColor {
         siteVisitStatMode == .redactedDueToJetpack ? .jetpackGreen : .accent
     }
+
+    var hasRevenue: Bool {
+        guard let chartViewModel else {
+            return false
+        }
+        return chartViewModel.hasRevenue
+    }
 }
 
 // MARK: - Private helpers
 //
 private extension StorePerformanceViewModel {
-    func observeTimeRange() {
+    func observeSyncingCompletion() {
+        syncingDidFinishPublisher
+            .receive(on: DispatchQueue.global(qos: .background))
+            .sink { [weak self] in
+                self?.waitingTracker?.end()
+            }
+            .store(in: &subscriptions)
+    }
+
+    func observeData() {
         $timeRange
             .compactMap { [weak self] timeRange -> StoreStatsPeriodViewModel? in
                 guard let self else {
@@ -235,6 +249,21 @@ private extension StorePerformanceViewModel {
                 Task { [weak self] in
                     await self?.reloadData()
                 }
+            }
+            .store(in: &subscriptions)
+
+        $statsIntervalData
+            .map { [weak self] data -> StoreStatsChartViewModel? in
+                guard let self else {
+                    return nil
+                }
+                return StoreStatsChartViewModel(intervals: data,
+                                                timeRange: timeRange,
+                                                currencySettings: currencySettings,
+                                                currencyFormatter: currencyFormatter)
+            }
+            .sink { [weak self] viewModel in
+                self?.chartViewModel = viewModel
             }
             .store(in: &subscriptions)
     }
@@ -265,6 +294,7 @@ private extension StorePerformanceViewModel {
             .assign(to: &$conversionStatsText)
 
         periodViewModel.orderStatsIntervals
+            .removeDuplicates()
             .map { [weak self] intervals in
                 guard let self else {
                     return []

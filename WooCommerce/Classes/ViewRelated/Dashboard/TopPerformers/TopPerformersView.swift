@@ -124,8 +124,10 @@ struct TopPerformersRow: View {
                     VStack(alignment: .leading, spacing: Layout.textSpacing) {
                         Text(data.name)
                             .bodyStyle()
+                            .multilineTextAlignment(.leading)
                         Text(data.details)
                             .subheadlineStyle()
+                            .multilineTextAlignment(.leading)
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
 

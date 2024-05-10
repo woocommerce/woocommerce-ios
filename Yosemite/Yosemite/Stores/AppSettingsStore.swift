@@ -140,6 +140,10 @@ public class AppSettingsStore: Store {
             setOrderAddOnsFeatureSwitchState(isEnabled: isEnabled, onCompletion: onCompletion)
         case .loadOrderAddOnsSwitchState(onCompletion: let onCompletion):
             loadOrderAddOnsSwitchState(onCompletion: onCompletion)
+        case .setPointOfSaleSwitchState(isEnabled: let isEnabled, onCompletion: let onCompletion):
+            setPointOfSaleSwitchState(isEnabled: isEnabled, onCompletion: onCompletion)
+        case .loadPointOfSaleSwitchState(onCompletion: let onCompletion):
+            loadPointOfSaleSwitchState(onCompletion: onCompletion)
         case .rememberCardReader(cardReaderID: let cardReaderID, onCompletion: let onCompletion):
             rememberCardReader(cardReaderID: cardReaderID, onCompletion: onCompletion)
         case .forgetCardReader(onCompletion: let onCompletion):
@@ -296,6 +300,23 @@ private extension AppSettingsStore {
     ///
     func loadOrderAddOnsSwitchState(onCompletion: (Result<Bool, Error>) -> Void) {
         onCompletion(.success(generalAppSettings.value(for: \.isViewAddOnsSwitchEnabled)))
+    }
+
+    /// Sets the current Point Of Sale beta feature switch state into `GeneralAppSettings`
+    ///
+    func setPointOfSaleSwitchState(isEnabled: Bool, onCompletion: (Result<Void, Error>) -> Void) {
+        do {
+            try generalAppSettings.setValue(isEnabled, for: \.isPointOfSaleEnabled)
+            onCompletion(.success(()))
+        } catch {
+            onCompletion(.failure(error))
+        }
+    }
+
+    /// Loads the current Point Of Sale beta feature switch state from `GeneralAppSettings`
+    ///
+    func loadPointOfSaleSwitchState(onCompletion: (Result<Bool, Error>) -> Void) {
+        onCompletion(.success(generalAppSettings.value(for: \.isPointOfSaleEnabled)))
     }
 
     /// Loads the last persisted eligibility error information from `GeneralAppSettings`

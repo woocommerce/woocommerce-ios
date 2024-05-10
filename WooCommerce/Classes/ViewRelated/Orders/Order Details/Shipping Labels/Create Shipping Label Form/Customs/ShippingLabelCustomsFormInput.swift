@@ -79,10 +79,13 @@ struct ShippingLabelCustomsFormInput: View {
                 showingContentTypes.toggle()
             }
             .sheet(isPresented: $showingContentTypes, content: {
-                SingleSelectionList(title: Localization.contentTypeTitle,
-                                    items: ShippingLabelCustomsForm.ContentsType.allCases,
-                                    contentKeyPath: \.localizedName,
-                                    selected: $viewModel.contentsType)
+                NavigationStack {
+                    SingleSelectionList(title: Localization.contentTypeTitle,
+                                        items: ShippingLabelCustomsForm.ContentsType.allCases,
+                                        contentKeyPath: \.localizedName,
+                                        selected: $viewModel.contentsType)
+                }
+                .wooNavigationBarStyle()
             })
             Divider()
                 .padding(.leading, Constants.horizontalPadding)
@@ -114,10 +117,13 @@ struct ShippingLabelCustomsFormInput: View {
                 showingRestrictionTypes.toggle()
             }
             .sheet(isPresented: $showingRestrictionTypes, content: {
-                SingleSelectionList(title: Localization.restrictionTypeTitle,
-                                    items: ShippingLabelCustomsForm.RestrictionType.allCases,
-                                    contentKeyPath: \.localizedName,
-                                    selected: $viewModel.restrictionType)
+                NavigationStack {
+                    SingleSelectionList(title: Localization.restrictionTypeTitle,
+                                        items: ShippingLabelCustomsForm.RestrictionType.allCases,
+                                        contentKeyPath: \.localizedName,
+                                        selected: $viewModel.restrictionType)
+                }
+                .wooNavigationBarStyle()
             })
             Divider()
                 .padding(.leading, Constants.horizontalPadding)

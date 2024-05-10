@@ -35,7 +35,7 @@ private extension QuantityRulesViewModel {
     /// Returns a description of the provided quantity, using the placeholder if the quantity is nil or empty.
     ///
     static func getDescription(for quantity: String?, withPlaceholder placeholder: String) -> String {
-        guard let quantity, quantity.isNotEmpty else {
+        guard let quantity, quantity.isAValidProductQuantityRuleValue else {
             return placeholder
         }
         return quantity

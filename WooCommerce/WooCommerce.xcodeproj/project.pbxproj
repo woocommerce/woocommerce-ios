@@ -1799,6 +1799,7 @@
 		B99B30CD2A85200D0066743D /* AddressFormViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B99B30CC2A85200D0066743D /* AddressFormViewModel.swift */; };
 		B99B87A72AEFCF0A006B8AB1 /* Order+Empty.swift in Sources */ = {isa = PBXBuildFile; fileRef = B99B87A62AEFCF0A006B8AB1 /* Order+Empty.swift */; };
 		B9A0F7A62B1735B10035A153 /* UpdateProductInventoryViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9A0F7A52B1735B10035A153 /* UpdateProductInventoryViewModelTests.swift */; };
+		B9ACF6882BEE4FC60076E6BC /* String+ProductQuantityRules.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9ACF6872BEE4FC60076E6BC /* String+ProductQuantityRules.swift */; };
 		B9B0391628A6824200DC1C83 /* PermanentNoticePresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9B0391528A6824200DC1C83 /* PermanentNoticePresenter.swift */; };
 		B9B0391828A6838400DC1C83 /* PermanentNoticeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9B0391728A6838400DC1C83 /* PermanentNoticeView.swift */; };
 		B9B0391A28A68ADE00DC1C83 /* ConstraintsUpdatingHostingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9B0391928A68ADE00DC1C83 /* ConstraintsUpdatingHostingController.swift */; };
@@ -4539,6 +4540,7 @@
 		B99B30CC2A85200D0066743D /* AddressFormViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddressFormViewModel.swift; sourceTree = "<group>"; };
 		B99B87A62AEFCF0A006B8AB1 /* Order+Empty.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Order+Empty.swift"; sourceTree = "<group>"; };
 		B9A0F7A52B1735B10035A153 /* UpdateProductInventoryViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateProductInventoryViewModelTests.swift; sourceTree = "<group>"; };
+		B9ACF6872BEE4FC60076E6BC /* String+ProductQuantityRules.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+ProductQuantityRules.swift"; sourceTree = "<group>"; };
 		B9B0391528A6824200DC1C83 /* PermanentNoticePresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermanentNoticePresenter.swift; sourceTree = "<group>"; };
 		B9B0391728A6838400DC1C83 /* PermanentNoticeView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PermanentNoticeView.swift; sourceTree = "<group>"; };
 		B9B0391928A68ADE00DC1C83 /* ConstraintsUpdatingHostingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConstraintsUpdatingHostingController.swift; sourceTree = "<group>"; };
@@ -10539,6 +10541,7 @@
 				204C9C732B6BDFFB007A94E0 /* UIUserInterfaceSizeClass+Helpers.swift */,
 				EE8A30442B74948C001D7C66 /* OrderAttributionInfo+Origin.swift */,
 				26CE6F332B7D4C27008DB858 /* Error+Timeout.swift */,
+				B9ACF6872BEE4FC60076E6BC /* String+ProductQuantityRules.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -14129,6 +14132,7 @@
 				45C11B7C2508E156006C2089 /* SelectedSiteSettings.swift in Sources */,
 				B5A56BF3219F46470065A902 /* UIButton+Animations.swift in Sources */,
 				03AA165E2719B7EF005CCB7B /* ReceiptActionCoordinator.swift in Sources */,
+				B9ACF6882BEE4FC60076E6BC /* String+ProductQuantityRules.swift in Sources */,
 				B54FBE552111F70700390F57 /* ResultsController+UIKit.swift in Sources */,
 				CE2409F1215D12D30091F887 /* WooNavigationController.swift in Sources */,
 				0250BE8C2AC425F9006D067A /* OrderFormGiftCardRow.swift in Sources */,

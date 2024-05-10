@@ -4,10 +4,10 @@ The analytics protocols (`Analytics`, `AnalyticsProvider`, `WooAnalyticsEventPro
 
 ```swift
 import enum WooFoundation.WooAnalyticsStat
-import struct WooFoundation.WooAnalyticsEvent
 import protocol WooFoundation.Analytics
-import protocol WooFoundation.WooAnalyticsEventPropertyType
 import protocol WooFoundation.AnalyticsProvider
+import protocol WooFoundation.WooAnalyticsEventPropertyType
+import struct WooFoundation.WooAnalyticsEvent
 ```
 
 To add a new event, the event name has to be added as a `case` in the [`WooAnalyticsStat` enum](../WooCommerce/Classes/Analytics/WooAnalyticsStat.swift). Tracking the event looks like this:

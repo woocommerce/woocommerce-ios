@@ -174,7 +174,7 @@ final class OrderDetailsDataSource: NSObject {
     /// Shipping Lines from an Order
     ///
     private var shippingLines: [ShippingLine] {
-        return order.shippingLines
+        return order.shippingLines.sorted(by: { $0.shippingID < $1.shippingID })
     }
 
     /// First Shipping method from an order
@@ -475,6 +475,8 @@ private extension OrderDetailsDataSource {
             configureAttributionSessionPageViews(cell: cell, at: indexPath)
         case let cell as WooBasicTableViewCell where row == .trashOrder:
             configureTrashOrder(cell: cell, at: indexPath)
+        case let cell as TitleAndSubtitleAndValueCardTableViewCell where row == .shippingLine:
+            configureShippingLine(cell: cell, at: indexPath)
         default:
             fatalError("Unidentified customer info row type")
         }
@@ -1005,6 +1007,14 @@ private extension OrderDetailsDataSource {
         cell.selectionStyle = .none
     }
 
+    private func configureShippingLine(cell: TitleAndSubtitleAndValueCardTableViewCell, at indexPath: IndexPath) {
+        let shippingLine = shippingLines[indexPath.row]
+        let shippingTotal = currencyFormatter.formatAmount(shippingLine.total) ?? shippingLine.total
+        // TODO-12582: Update subtitle with method name (from method ID)
+        cell.configure(title: shippingLine.methodTitle, subtitle: shippingLine.methodTitle, value: shippingTotal)
+        cell.selectionStyle = .none
+    }
+
     private func configureSummary(cell: SummaryTableViewCell) {
         let cellViewModel = SummaryTableViewCellViewModel(
             order: order,
@@ -1262,6 +1272,15 @@ extension OrderDetailsDataSource {
             return sections
         }()
 
+        let shippingLinesSection: Section? = {
+            guard shippingLines.count > 0
+                    && featureFlags.isFeatureFlagEnabled(.multipleShippingLines) else {
+                return nil
+            }
+
+            return Section(category: .shippingLines, title: Title.shippingLines, rows: Array(repeating: .shippingLine, count: shippingLines.count))
+        }()
+
         let customerInformation: Section? = {
             var rows: [Row] = []
 
@@ -1280,8 +1299,9 @@ extension OrderDetailsDataSource {
                 rows.append(.shippingAddress)
             }
 
-            /// Shipping Lines
-            if shippingLines.count > 0 {
+            /// Shipping Lines (single shipping line)
+            if shippingLines.count > 0
+                && !featureFlags.isFeatureFlagEnabled(.multipleShippingLines) {
                 rows.append(.shippingMethod)
             }
 
@@ -1447,6 +1467,7 @@ extension OrderDetailsDataSource {
                      refundedProducts] +
                     shippingLabelSections +
                     [subscriptions,
+                     shippingLinesSection,
                      payment,
                      customerInformation,
                      attribution,
@@ -1725,6 +1746,9 @@ extension OrderDetailsDataSource {
             value: "Order attribution",
             comment: "Title of Order Attribution Section in Order Details screen."
         )
+        static let shippingLines = NSLocalizedString("orderDetailsDataSource.shippingLines.title",
+                                                     value: "Shipping",
+                                                     comment: "Title of Shipping Section in Order Details screen")
     }
 
     enum Footer {
@@ -1766,6 +1790,7 @@ extension OrderDetailsDataSource {
             case customFields
             case attribution
             case trashOrder
+            case shippingLines
         }
 
         /// The table header style of a `Section`.
@@ -1866,6 +1891,7 @@ extension OrderDetailsDataSource {
         case shippingLabelRefunded
         case shippingLabelReprintButton
         case shippingLabelTrackingNumber
+        case shippingLine
         case shippingNotice
         case addOrderNote
         case orderNoteHeader
@@ -1960,6 +1986,8 @@ extension OrderDetailsDataSource {
                 return TitleAndValueTableViewCell.reuseIdentifier
             case .trashOrder:
                 return WooBasicTableViewCell.reuseIdentifier
+            case .shippingLine:
+                return TitleAndSubtitleAndValueCardTableViewCell.reuseIdentifier
             }
         }
     }

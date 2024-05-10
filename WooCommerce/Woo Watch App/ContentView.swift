@@ -1,10 +1,9 @@
 import SwiftUI
 import NetworkingWatchOS
 
-
 struct ContentView: View {
 
-    let message: String
+    let message: String = "Hello Woo"
 
     var body: some View {
         VStack {
@@ -22,5 +21,5 @@ struct ContentView: View {
 }
 
 #Preview {
-    ContentView(message: "Holi")
+    ContentView()
 }

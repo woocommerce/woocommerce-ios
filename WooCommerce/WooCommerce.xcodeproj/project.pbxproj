@@ -907,6 +907,7 @@
 		26B542432BEAC68B003A55B5 /* Codegen in Frameworks */ = {isa = PBXBuildFile; productRef = 26B542422BEAC68B003A55B5 /* Codegen */; };
 		26B542442BEAC68B003A55B5 /* Codegen in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 26B542422BEAC68B003A55B5 /* Codegen */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		26B71DB6293FE490004D8052 /* RangedDatePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26B71DB5293FE490004D8052 /* RangedDatePicker.swift */; };
+		26B984D42BEECC610052658C /* Environment+Dependencies.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26B984D32BEECC610052658C /* Environment+Dependencies.swift */; };
 		26B98758273C5BE30090E8CA /* EditCustomerNoteViewModelProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26B98757273C5BE30090E8CA /* EditCustomerNoteViewModelProtocol.swift */; };
 		26B9875D273C6A830090E8CA /* SimplePaymentsNoteViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26B9875C273C6A830090E8CA /* SimplePaymentsNoteViewModel.swift */; };
 		26B9875F273CB6AA0090E8CA /* SimplePaymentsNoteViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26B9875E273CB6AA0090E8CA /* SimplePaymentsNoteViewModelTests.swift */; };
@@ -3687,6 +3688,7 @@
 		26B3EC612744772A0075EAE6 /* SimplePaymentsSummaryViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimplePaymentsSummaryViewModelTests.swift; sourceTree = "<group>"; };
 		26B3EC632745916F0075EAE6 /* BindableTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BindableTextField.swift; sourceTree = "<group>"; };
 		26B71DB5293FE490004D8052 /* RangedDatePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RangedDatePicker.swift; sourceTree = "<group>"; };
+		26B984D32BEECC610052658C /* Environment+Dependencies.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Environment+Dependencies.swift"; sourceTree = "<group>"; };
 		26B98757273C5BE30090E8CA /* EditCustomerNoteViewModelProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditCustomerNoteViewModelProtocol.swift; sourceTree = "<group>"; };
 		26B9875C273C6A830090E8CA /* SimplePaymentsNoteViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimplePaymentsNoteViewModel.swift; sourceTree = "<group>"; };
 		26B9875E273CB6AA0090E8CA /* SimplePaymentsNoteViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimplePaymentsNoteViewModelTests.swift; sourceTree = "<group>"; };
@@ -7462,6 +7464,15 @@
 			path = Survey;
 			sourceTree = "<group>";
 		};
+		26B984D22BEECC460052658C /* Dependencies */ = {
+			isa = PBXGroup;
+			children = (
+				2604C3B92BE977F000250465 /* PhoneDependenciesSynchronizer.swift */,
+				26B984D32BEECC610052658C /* Environment+Dependencies.swift */,
+			);
+			path = Dependencies;
+			sourceTree = "<group>";
+		};
 		26B9875B273C6A670090E8CA /* Summary */ = {
 			isa = PBXGroup;
 			children = (
@@ -7590,9 +7601,9 @@
 		26F81B162BE433A2009EC58E /* Woo Watch App */ = {
 			isa = PBXGroup;
 			children = (
+				26B984D22BEECC460052658C /* Dependencies */,
 				26F81B172BE433A2009EC58E /* WooApp.swift */,
 				26F81B192BE433A2009EC58E /* ContentView.swift */,
-				2604C3B92BE977F000250465 /* PhoneDependenciesSynchronizer.swift */,
 				26F81B1B2BE433A3009EC58E /* Assets.xcassets */,
 				26F81B1D2BE433A3009EC58E /* Preview Content */,
 			);
@@ -13343,6 +13354,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				26B984D42BEECC610052658C /* Environment+Dependencies.swift in Sources */,
 				26F81B1A2BE433A2009EC58E /* ContentView.swift in Sources */,
 				26DD32D42BEBCDFB00F2C69C /* WooConstants.swift in Sources */,
 				26DD32D62BEBCE3900F2C69C /* UserDefaults+Woo.swift in Sources */,

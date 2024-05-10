@@ -7,7 +7,7 @@ import NetworkingWatchOS
 ///
 final class PhoneDependenciesSynchronizer: NSObject, ObservableObject, WCSessionDelegate {
 
-    @Published var message = "Not Logged In"
+    @Published var dependencies = WatchDependencies(storeID: nil, credentials: nil)
 
     /// Secure store.
     private let keychain: Keychain
@@ -20,7 +20,7 @@ final class PhoneDependenciesSynchronizer: NSObject, ObservableObject, WCSession
         self.userDefaults = UserDefaults.standard
         super.init()
 
-        updateMessage()
+        reloadDependencies()
 
         if WCSession.isSupported() {
             let session = WCSession.default
@@ -40,7 +40,7 @@ final class PhoneDependenciesSynchronizer: NSObject, ObservableObject, WCSession
 
         DispatchQueue.main.async {
             self.storeDependencies(appContext: session.receivedApplicationContext)
-            self.updateMessage()
+            self.reloadDependencies()
         }
     }
 
@@ -49,19 +49,14 @@ final class PhoneDependenciesSynchronizer: NSObject, ObservableObject, WCSession
     func session(_ session: WCSession, didReceiveApplicationContext applicationContext: [String: Any]) {
         DispatchQueue.main.async {
             self.storeDependencies(appContext: applicationContext)
-            self.updateMessage()
+            self.reloadDependencies()
         }
     }
 
     /// Update UI from stored dependencies
     ///
-    private func updateMessage() {
-        let dependencies = loadDependencies()
-        if let storeID = dependencies.storeID, dependencies.credentials != nil {
-            message = "Store ID: \(storeID)"
-        } else {
-            message = "Not Logged In"
-        }
+    private func reloadDependencies() {
+        self.dependencies = loadDependencies()
     }
 
     /// Load stored dependencies

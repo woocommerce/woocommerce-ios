@@ -7,7 +7,8 @@ struct Woo_Watch_AppApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView(message: phoneDependencySynchronizer.message)
+            ContentView()
+                .environment(\.dependencies, phoneDependencySynchronizer.dependencies)
         }
     }
 }

@@ -10,6 +10,8 @@
 		02A568E22BECC7E40027AB3B /* WooFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 02A568E12BECC7E40027AB3B /* WooFoundation.framework */; };
 		02A568E32BECC7E40027AB3B /* WooFoundation.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 02A568E12BECC7E40027AB3B /* WooFoundation.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		02A568E62BECD9DF0027AB3B /* PointOfSaleDependencies.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02A568E52BECD9DF0027AB3B /* PointOfSaleDependencies.swift */; };
+		02F2C1C22BEDB3EA003B4658 /* Yosemite.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 02F2C1C12BEDB3EA003B4658 /* Yosemite.framework */; };
+		02F2C1C32BEDB3EA003B4658 /* Yosemite.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 02F2C1C12BEDB3EA003B4658 /* Yosemite.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		200B84952BEB984700EAAB23 /* WooCommercePOS.docc in Sources */ = {isa = PBXBuildFile; fileRef = 200B84942BEB984700EAAB23 /* WooCommercePOS.docc */; };
 		200B849B2BEB984700EAAB23 /* WooCommercePOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 200B84902BEB984700EAAB23 /* WooCommercePOS.framework */; };
 		200B84A02BEB984700EAAB23 /* WooCommercePOSTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200B849F2BEB984700EAAB23 /* WooCommercePOSTests.swift */; };
@@ -39,6 +41,7 @@
 			dstSubfolderSpec = 10;
 			files = (
 				02A568E32BECC7E40027AB3B /* WooFoundation.framework in Embed Frameworks */,
+				02F2C1C32BEDB3EA003B4658 /* Yosemite.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -48,6 +51,7 @@
 /* Begin PBXFileReference section */
 		02A568E12BECC7E40027AB3B /* WooFoundation.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = WooFoundation.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		02A568E52BECD9DF0027AB3B /* PointOfSaleDependencies.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleDependencies.swift; sourceTree = "<group>"; };
+		02F2C1C12BEDB3EA003B4658 /* Yosemite.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Yosemite.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		200B84902BEB984700EAAB23 /* WooCommercePOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = WooCommercePOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		200B84932BEB984700EAAB23 /* WooCommercePOS.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WooCommercePOS.h; sourceTree = "<group>"; };
 		200B84942BEB984700EAAB23 /* WooCommercePOS.docc */ = {isa = PBXFileReference; lastKnownFileType = folder.documentationcatalog; path = WooCommercePOS.docc; sourceTree = "<group>"; };
@@ -72,6 +76,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				20CBA25C2BEBB2370006820C /* SwiftUI.framework in Frameworks */,
+				02F2C1C22BEDB3EA003B4658 /* Yosemite.framework in Frameworks */,
 				02A568E22BECC7E40027AB3B /* WooFoundation.framework in Frameworks */,
 				A4FA2C8B066BCBF514089458 /* Pods_WooCommercePOS.framework in Frameworks */,
 			);
@@ -140,6 +145,7 @@
 		20CBA25A2BEBB2370006820C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				02F2C1C12BEDB3EA003B4658 /* Yosemite.framework */,
 				02A568E12BECC7E40027AB3B /* WooFoundation.framework */,
 				20CBA25B2BEBB2370006820C /* SwiftUI.framework */,
 				93F9ABF5FD8405FC05439FAA /* Pods_WooCommercePOS.framework */,

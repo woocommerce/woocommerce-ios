@@ -1,4 +1,5 @@
 import SwiftUI
+import struct Yosemite.DashboardCard
 
 /// SwiftUI view for the inbox messages dashboard card.
 ///
@@ -28,7 +29,7 @@ private extension InboxDashboardCard {
                 .foregroundStyle(Color.secondary)
                 .headlineStyle()
                 .renderedIf(viewModel.syncingError != nil)
-            Text(Localization.title)
+            Text(DashboardCard.CardType.inbox.name)
                 .headlineStyle()
             Spacer()
             Menu {
@@ -54,11 +55,6 @@ private extension InboxDashboardCard {
     }
 
     enum Localization {
-        static let title = NSLocalizedString(
-            "inboxDashboardCard.title",
-            value: "Inbox",
-            comment: "Title of the Inbox section on the Dashboard screen"
-        )
         static let hideCard = NSLocalizedString(
             "inboxDashboardCard.hideCard",
             value: "Hide Inbox",

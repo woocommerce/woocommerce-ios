@@ -542,7 +542,11 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
         let minAllowedQuantity = container.failsafeDecodeIfPresent(stringForKey: .minAllowedQuantity)
         let maxAllowedQuantity = container.failsafeDecodeIfPresent(stringForKey: .maxAllowedQuantity)
         let groupOfQuantity = container.failsafeDecodeIfPresent(stringForKey: .groupOfQuantity)
-        let combineVariationQuantities = container.failsafeDecodeIfPresent(stringForKey: .combineVariations) == Values.combineVariationQuantitiesTrueValue
+
+        var combineVariationQuantities: Bool?
+        if let combineVariationQuantitiesString = container.failsafeDecodeIfPresent(stringForKey: .combineVariations) {
+            combineVariationQuantities = combineVariationQuantitiesString == Values.combineVariationQuantitiesTrueValue
+        }
 
         self.init(siteID: siteID,
                   productID: productID,

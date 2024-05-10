@@ -3,23 +3,37 @@ import SwiftUI
 /// SwiftUI view for the inbox messages dashboard card.
 ///
 struct InboxDashboardCard: View {
+    private let viewModel: InboxDashboardCardViewModel
+
+    init(viewModel: InboxDashboardCardViewModel) {
+        self.viewModel = viewModel
+    }
+
     var body: some View {
         VStack(alignment: .leading, spacing: Layout.padding) {
             header
                 .padding(.horizontal, Layout.padding)
         }
+        .padding(.vertical, Layout.padding)
+        .background(Color(.listForeground(modal: false)))
+        .clipShape(RoundedRectangle(cornerSize: Layout.cornerSize))
+        .padding(.horizontal, Layout.padding)
     }
 }
 
 private extension InboxDashboardCard {
     var header: some View {
         HStack {
+            Image(systemName: "exclamationmark.circle")
+                .foregroundStyle(Color.secondary)
+                .headlineStyle()
+                .renderedIf(viewModel.syncingError != nil)
             Text(Localization.title)
                 .headlineStyle()
             Spacer()
             Menu {
                 Button(Localization.hideCard) {
-                    // TODO
+                    viewModel.dismissInbox()
                 }
             } label: {
                 Image(systemName: "ellipsis")
@@ -27,6 +41,7 @@ private extension InboxDashboardCard {
                     .padding(.leading, Layout.padding)
                     .padding(.vertical, Layout.hideIconVerticalPadding)
             }
+            .disabled(viewModel.syncingData)
         }
     }
 }
@@ -58,5 +73,5 @@ private extension InboxDashboardCard {
 }
 
 #Preview {
-    InboxDashboardCard()
+    InboxDashboardCard(viewModel: .init(siteID: 123))
 }

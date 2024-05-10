@@ -16,14 +16,22 @@ public struct PointOfSaleEntryPointView: View {
     public var body: some View {
         VStack {}
         .fullScreenCover(isPresented: $showFullScreen) {
-            if UIDevice.current.userInterfaceIdiom == .pad {
-                PointOfSaleDashboard()
-            } else {
-                Button(action: {
-                    presentationMode.wrappedValue.dismiss()
-                }, label: {
-                    Text("Please use iPad")
-                })
+            NavigationStack {
+                if UIDevice.current.userInterfaceIdiom != .pad {
+                    Button(action: {
+                        presentationMode.wrappedValue.dismiss()
+                    }, label: {
+                        Text("Please use iPad")
+                    })
+                }
+                PointOfSaleDashboard(viewModel: .init(dependencies: dependencies))
+                    .toolbar {
+                        ToolbarItem(placement: .cancellationAction) {
+                            Button("Dismiss") {
+                                presentationMode.wrappedValue.dismiss()
+                            }
+                        }
+                    }
             }
         }
         .onAppear {

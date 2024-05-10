@@ -360,7 +360,7 @@ extension OrderDetailsViewModel {
     /// Registers all of the available TableViewCells
     ///
     func registerTableViewCells(_ tableView: UITableView) {
-        let cells = [
+        let cellsWithNib = [
             LargeHeightLeftImageTableViewCell.self,
             LeftImageTableViewCell.self,
             CustomerNoteTableViewCell.self,
@@ -381,8 +381,16 @@ extension OrderDetailsViewModel {
             TitleAndValueTableViewCell.self
         ]
 
-        for cellClass in cells {
+        let cellsWithoutNib = [
+            TitleAndSubtitleAndValueCardTableViewCell.self
+        ]
+
+        for cellClass in cellsWithNib {
             tableView.registerNib(for: cellClass)
+        }
+
+        for cellClass in cellsWithoutNib {
+            tableView.register(cellClass)
         }
     }
 

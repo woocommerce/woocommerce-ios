@@ -13,7 +13,7 @@ struct DashboardCustomizationView: View {
     var body: some View {
         NavigationStack {
             MultiSelectionReorderableList(contents: $viewModel.allCards,
-                                          contentKeyPath: \.name,
+                                          contentKeyPath: \.type.name,
                                           selectedItems: $viewModel.selectedCards,
                                           inactiveItems: viewModel.inactiveCards,
                                           inactiveAccessoryView: { card in

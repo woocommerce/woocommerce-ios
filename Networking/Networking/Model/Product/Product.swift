@@ -539,21 +539,10 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
         let subscription = try? metaDataExtractor?.extractProductSubscription()
 
         // Min/Max Quantities properties
-        //let minAllowedQuantity = metaDataExtractor?.extractStringValue(forKey: MetadataKeys.minAllowedQuantity)
         let minAllowedQuantity = container.failsafeDecodeIfPresent(stringForKey: .minAllowedQuantity)
         let maxAllowedQuantity = container.failsafeDecodeIfPresent(stringForKey: .maxAllowedQuantity)
         let groupOfQuantity = container.failsafeDecodeIfPresent(stringForKey: .groupOfQuantity)
-        let combineVariationQuantities = container.failsafeDecodeIfPresent(stringForKey: .combineVariations) == "yes" ? true : false
-
-
-//        let maxAllowedQuantity = metaDataExtractor?.extractStringValue(forKey: MetadataKeys.maxAllowedQuantity)
-//        let groupOfQuantity = metaDataExtractor?.extractStringValue(forKey: MetadataKeys.groupOfQuantity)
-//        let combineVariationQuantities: Bool? = {
-//            guard let allowCombination = metaDataExtractor?.extractStringValue(forKey: MetadataKeys.allowCombination) else {
-//                return nil
-//            }
-//            return (allowCombination as NSString).boolValue
-//        }()
+        let combineVariationQuantities = container.failsafeDecodeIfPresent(stringForKey: .combineVariations) == Values.combineVariationQuantitiesTrueValue
 
         self.init(siteID: siteID,
                   productID: productID,
@@ -844,9 +833,6 @@ private extension Product {
     }
 
     enum MetadataKeys {
-        static let minAllowedQuantity = "minimum_allowed_quantity"
-        static let maxAllowedQuantity = "maximum_allowed_quantity"
-        static let groupOfQuantity    = "group_of_quantity"
         static let allowCombination   = "allow_combination"
         static let headStartPost      = "_headstart_post"
     }
@@ -860,9 +846,9 @@ private extension Product {
     enum Values {
         static let manageStockParent = "parent"
         static let headStartValue = "_hs_extra"
+        static let combineVariationQuantitiesTrueValue = "yes"
     }
 }
-
 
 // MARK: - Decoding Errors
 //

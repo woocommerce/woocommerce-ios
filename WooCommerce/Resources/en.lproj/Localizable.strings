@@ -1246,6 +1246,12 @@ which should be translated separately and considered part of this sentence. */
 /* Hosting title feature on the Free Trial Summary Screen */
 "Best-in-class hosting" = "Best-in-class hosting";
 
+/* Cell description on beta features screen to enable the Point Of Sale feature */
+"betaFeature.pointOfSale.description" = "Test out Point Of Sale as we get ready to launch";
+
+/* Cell title on beta features screen to enable the Point Of Sale feature */
+"betaFeature.pointOfSale.title" = "Point Of Sale";
+
 /* Country option for a site address. */
 "Bhutan" = "Bhutan";
 
@@ -2517,6 +2523,27 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility value when a banner is collapsed */
 "Collapsed" = "Collapsed";
 
+/* Title of the button to add address in the order form customer card. */
+"collapsibleCustomerCard.addAddress.title" = "Add customer address";
+
+/* Address header text in the order form customer card when the billing and shipping addresses are the same. */
+"collapsibleCustomerCard.editAddress.address.header" = "Address";
+
+/* Billing address header text in the order form customer card. */
+"collapsibleCustomerCard.editAddress.billing.header" = "Billing address";
+
+/* Shipping address header text in the order form customer card. */
+"collapsibleCustomerCard.editAddress.shipping.header" = "Shipping address";
+
+/* Title of the email text field in the order form customer card. */
+"collapsibleCustomerCard.emailTextField.placeholder" = "Enter email address";
+
+/* Title of the email text field in the order form customer card. */
+"collapsibleCustomerCard.emailTextField.title" = "Email address";
+
+/* Title of the button to remove customer from an order in the order form customer card. */
+"collapsibleCustomerCard.removeCustomerButton.title" = "Remove customer from order";
+
 /* Formatted price label based on a product's price and quantity. Reads as '8 x $10.00'. Please take care to use the multiplication symbol ×, not a letter x, where appropriate. */
 "collapsibleProductCardPriceSummaryViewModel.priceQuantityLine" = "%1$@ × %2$@";
 
@@ -2910,9 +2937,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Costa Rica" = "Costa Rica";
-
-/* The title of the button for giving a negative feedback for the app. */
-"Could Be Better" = "Could Be Better";
 
 /* Message shown when site purchases API failed */
 "Could not check site purchases." = "Could not check site purchases.";
@@ -3957,9 +3981,6 @@ which should be translated separately and considered part of this sentence. */
    Label for one of the filters in order custom date range */
 "End Date" = "End Date";
 
-/* The title used when asking the user for feedback for the app. */
-"Enjoying the WooCommerce app?" = "Enjoying the WooCommerce app?";
-
 /* Step 3 of shipping label printing instructions screen. The content inside two double asterisks **...** denote bolded text. */
 "Ensure that your **printer firmware is up to date**. See your printer documentation for instructions on updating." = "Ensure that your **printer firmware is up to date**. See your printer documentation for instructions on updating.";
 
@@ -4906,9 +4927,6 @@ which should be translated separately and considered part of this sentence. */
 /* Option in the store creation selling status question. */
 "I am selling offline" = "I am selling offline";
 
-/* The title of the button for giving a positive feedback for the app. */
-"I Like It" = "I Like It";
-
 /* Text on the support form to refer to what area the user has problem with. */
 "I need help with" = "I need help with";
 
@@ -5005,6 +5023,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* The plugin is not active on the site and has enabled automatic updates */
 "Inactive, Autoupdates on" = "Inactive, Autoupdates on";
+
+/* The title of the button for giving a negative feedback for the app. */
+"inAppFeedbackCardView.couldBeBetter" = "Could be better";
+
+/* The title of the button for giving a positive feedback for the app. */
+"inAppFeedbackCardView.iLikeIt" = "I like it";
+
+/* The title used when asking the user for feedback for the app. */
+"inAppFeedbackCardView.title" = "Enjoying the WooCommerce app?";
 
 /* Navigation title of the webview which is used in Inbox Notes.
    Title for the screen that shows inbox notes.
@@ -6562,6 +6589,9 @@ which should be translated separately and considered part of this sentence. */
 /* Button to edit a shipping line to the order during order creation */
 "order.shippingLineDetails.editShipping" = "Edit Shipping";
 
+/* Title above the shipping method field on the Shipping Line Details screen */
+"order.shippingLineDetails.method" = "Method";
+
 /* Title above the name field on the Shipping Line Details screen */
 "order.shippingLineDetails.name" = "Name";
 
@@ -6569,14 +6599,14 @@ which should be translated separately and considered part of this sentence. */
    Placeholder for the name field on the Shipping Line Details screen in order form */
 "order.shippingLineDetails.namePlaceholder" = "Shipping";
 
+/* Title for the placeholder shipping method on the Shipping Line Details screen */
+"order.shippingLineDetails.placeholderMethodTitle" = "N/A";
+
 /* Button to remove a shipping line from the order during order creation */
 "order.shippingLineDetails.removeShipping" = "Remove Shipping from Order";
 
 /* Title for the Shipping Line Details screen during order creation */
 "order.shippingLineDetails.shippingTitle" = "Shipping";
-
-/* Title for the screen to select a shipping method for an order */
-"order.ShippingMethodSelector.Title" = "Method";
 
 /* Origin in Order Attribution Section on Order Details screen. */
 "orderAttributionInfo.direct" = "Direct";
@@ -6692,8 +6722,20 @@ which should be translated separately and considered part of this sentence. */
 /* Title text of the confirmation dialog that shows the add custom amounts options. */
 "orderForm.customAmounts.addOptionsDialogTitle" = "How do you want to add your custom amount?";
 
-/* Title text of the button that adds customer data when creating a new order */
+/* Title text of the button that adds customer data in the order form. */
 "orderForm.customerSection.addCustomer" = "Add Customer";
+
+/* Placeholder of the email in the header of a customer card in order form when an account is not required. */
+"orderForm.customerSection.customerCard.header.emailPlaceholder.notRequired" = "Email address";
+
+/* Placeholder of the email in the header of a customer card in order form when an account is required. */
+"orderForm.customerSection.customerCard.header.emailPlaceholder.required" = "Email address required";
+
+/* Header text of the customer card in the order form. */
+"orderForm.customerSection.customerHeader" = "Customer";
+
+/* Title of the order customer selection screen in the order form.. */
+"orderForm.customerSection.customerSelectorTitle" = "Add customer details";
 
 /* Title of the primary button on the new order screen to collect payment, likely in-person. This button first creates the order, then presents a view for the merchant to choose a payment method. */
 "orderForm.payment.collect.button.title" = "Collect Payment";
@@ -10177,6 +10219,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button in date range picker to add a Custom Range tab */
 "topPerformerDashboardViewModel.addCustomRange" = "Add";
+
+/* Title of the custom time range on the Top Performers card on the Dashboard screen */
+"topPerformersDashboardView.custom" = "Custom";
 
 /* Menu item to dismiss the Top Performers section on the Dashboard screen */
 "topPerformersDashboardView.hideCard" = "Hide Top Performers";

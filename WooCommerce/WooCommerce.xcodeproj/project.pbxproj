@@ -2334,6 +2334,7 @@
 		DE69C55527C5E317000BB888 /* ShippingLabelSampleData.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE69C55427C5E317000BB888 /* ShippingLabelSampleData.swift */; };
 		DE6F997B2BE9E5CA0007B2DD /* Settings.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DE6F997A2BE9E5CA0007B2DD /* Settings.storyboard */; };
 		DE6F997E2BEE00C50007B2DD /* InboxDashboardCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE6F997D2BEE00C50007B2DD /* InboxDashboardCard.swift */; };
+		DE6F99802BEE04310007B2DD /* InboxDashboardCardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE6F997F2BEE04310007B2DD /* InboxDashboardCardViewModel.swift */; };
 		DE74A44F2BCE2FCF0009C415 /* StorePerformanceViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE74A44E2BCE2FCF0009C415 /* StorePerformanceViewModelTests.swift */; };
 		DE74A4522BCF87120009C415 /* TopPerformersDashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE74A4512BCF87120009C415 /* TopPerformersDashboardView.swift */; };
 		DE74A4542BCF88420009C415 /* TopPerformersDashboardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE74A4532BCF88420009C415 /* TopPerformersDashboardViewModel.swift */; };
@@ -5087,6 +5088,7 @@
 		DE69C55427C5E317000BB888 /* ShippingLabelSampleData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelSampleData.swift; sourceTree = "<group>"; };
 		DE6F997A2BE9E5CA0007B2DD /* Settings.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Settings.storyboard; sourceTree = "<group>"; };
 		DE6F997D2BEE00C50007B2DD /* InboxDashboardCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InboxDashboardCard.swift; sourceTree = "<group>"; };
+		DE6F997F2BEE04310007B2DD /* InboxDashboardCardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InboxDashboardCardViewModel.swift; sourceTree = "<group>"; };
 		DE74A44E2BCE2FCF0009C415 /* StorePerformanceViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorePerformanceViewModelTests.swift; sourceTree = "<group>"; };
 		DE74A4512BCF87120009C415 /* TopPerformersDashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopPerformersDashboardView.swift; sourceTree = "<group>"; };
 		DE74A4532BCF88420009C415 /* TopPerformersDashboardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopPerformersDashboardViewModel.swift; sourceTree = "<group>"; };
@@ -11566,6 +11568,7 @@
 			isa = PBXGroup;
 			children = (
 				DE6F997D2BEE00C50007B2DD /* InboxDashboardCard.swift */,
+				DE6F997F2BEE04310007B2DD /* InboxDashboardCardViewModel.swift */,
 			);
 			path = Inbox;
 			sourceTree = "<group>";
@@ -13352,6 +13355,7 @@
 				31B19B67263B5E580099DAA6 /* CardReaderSettingsSearchingViewModel.swift in Sources */,
 				265284022624937600F91BA1 /* AddOnCrossreferenceUseCase.swift in Sources */,
 				02F3A6842A618CD7004CD2E8 /* WordPressMediaLibraryPickerCoordinator.swift in Sources */,
+				DE6F99802BEE04310007B2DD /* InboxDashboardCardViewModel.swift in Sources */,
 				026D68492A0E060A00D8C22C /* LocalNotificationScheduler.swift in Sources */,
 				02CA63DB23D1ADD100BBF148 /* MediaPickingCoordinator.swift in Sources */,
 				028FA466257E021100F88A48 /* RefundShippingLabelViewModel.swift in Sources */,

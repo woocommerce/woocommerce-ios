@@ -168,7 +168,10 @@ private extension HubMenu {
             case HubMenuViewModel.Customers.id:
                 CustomersListView(viewModel: .init(siteID: viewModel.siteID))
             case HubMenuViewModel.PointOfSaleEntryPoint.id:
-                    PointOfSaleEntryPointView(dependencies: .init(analytics: ServiceLocator.analytics))
+                    PointOfSaleEntryPointView(dependencies: .init(siteID: viewModel.siteID,
+                                                                  analytics: ServiceLocator.analytics,
+                                                                  stores: ServiceLocator.stores))
+                    .environment(\.managedObjectContext, ServiceLocator.storageManager.persistentContainer.viewContext)
             default:
                 fatalError("🚨 Unsupported menu item")
             }

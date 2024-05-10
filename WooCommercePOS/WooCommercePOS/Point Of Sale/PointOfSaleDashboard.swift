@@ -6,10 +6,13 @@ import enum Yosemite.ProductAction
 final class PointOfSaleDashboardViewModel: ObservableObject {
     @Published private(set) var isSyncing: Bool = false
 
+    let predicate: NSPredicate
+
     private let dependencies: PointOfSaleDependencies
 
     init(dependencies: PointOfSaleDependencies) {
         self.dependencies = dependencies
+        self.predicate = NSPredicate(format: "siteID == %lld", dependencies.siteID)
         syncProducts()
     }
 }
@@ -44,11 +47,13 @@ struct PointOfSaleDashboard: View {
     @StateObject private var viewModel: PointOfSaleDashboardViewModel
 
     // SwiftUI equivalent of NSFetchedResultsController in UIKit table view
-    @FetchRequest(sortDescriptors: [SortDescriptor(\.name, order: .forward)])
+    @FetchRequest
     private var products: FetchedResults<StorageProduct>
 
     init(viewModel: PointOfSaleDashboardViewModel) {
         self._viewModel = .init(wrappedValue: viewModel)
+        self._products = FetchRequest<StorageProduct>(sortDescriptors: [SortDescriptor(\.name, order: .forward)],
+                                                      predicate: viewModel.predicate)
     }
 
     var body: some View {

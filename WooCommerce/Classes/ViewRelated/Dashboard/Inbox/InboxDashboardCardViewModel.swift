@@ -5,6 +5,9 @@ import protocol Storage.StorageManagerType
 /// View model for `InboxDashboardCard`.
 ///
 final class InboxDashboardCardViewModel: ObservableObject {
+    // Set externally to trigger callback upon hiding the Top Performers card.
+    var onDismiss: (() -> Void)?
+
     @Published private(set) var syncingData = false
     @Published private(set) var syncingError: Error?
 
@@ -12,7 +15,7 @@ final class InboxDashboardCardViewModel: ObservableObject {
     private let stores: StoresManager
     private let storage: StorageManagerType
     private let analytics: Analytics
-    
+
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
          storage: StorageManagerType = ServiceLocator.storageManager,
@@ -24,6 +27,7 @@ final class InboxDashboardCardViewModel: ObservableObject {
     }
 
     func dismissInbox() {
-        // TODO
+        // TODO: add tracking
+        onDismiss?()
     }
 }

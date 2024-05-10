@@ -297,6 +297,10 @@ private extension DashboardViewModel {
         topPerformersViewModel.onDismiss = { [weak self] in
             self?.showCustomizationScreen()
         }
+
+        inboxViewModel.onDismiss = { [weak self] in
+            self?.showCustomizationScreen()
+        }
     }
 
     func showCustomizationScreen() {

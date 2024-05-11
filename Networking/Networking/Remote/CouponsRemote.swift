@@ -36,6 +36,11 @@ public protocol CouponsRemoteProtocol {
                           couponID: Int64,
                           from startDate: Date,
                           completion: @escaping (Result<CouponReport, Error>) -> Void)
+
+    func loadMostActiveCoupons(for siteID: Int64,
+                               from startDate: Date?,
+                               to endDate: Date?,
+                               completion: @escaping (Result<[CouponReport], Error>) -> Void)
 }
 
 
@@ -255,6 +260,65 @@ public final class CouponsRemote: Remote, CouponsRemoteProtocol {
             }
         })
     }
+
+    // MARK: - Load most active coupons
+
+    /// Loads top 3 most active coupons based on order count within the specified time range and site ID.
+    ///
+    /// - Parameters:
+    ///     - siteID: The ID of the  site from which we'll fetch the coupons report.
+    ///     - from: The start of the date range for which we'll fetch the coupons report. Sending `nil`fetches all time info.
+    ///     - to: The end of the date range until which we'll fetch the coupons report. Sending `nil`fetches all time info.
+    ///     - completion: Closure to be executed upon completion.
+    ///
+    public func loadMostActiveCoupons(for siteID: Int64,
+                                      from startDate: Date? = nil,
+                                      to endDate: Date? = nil,
+                                      completion: @escaping (Result<[CouponReport], Error>) -> Void) {
+        let parameters: [String: Any] = {
+            var params = [
+                ParameterKey.page: 1,
+                ParameterKey.perPage: 3,
+                ParameterKey.order: ParameterValue.desc,
+                ParameterKey.orderBy: ParameterValue.ordersCount,
+            ]
+
+            let dateFormatter = ISO8601DateFormatter()
+            if let startDate {
+                let formattedStartTime = dateFormatter.string(from: startDate)
+                params[ParameterKey.after] = formattedStartTime
+            }
+
+            if let endDate {
+                let formattedEndTime = dateFormatter.string(from: endDate)
+                params[ParameterKey.before] = formattedEndTime
+            }
+
+            return params
+        }()
+
+        let request = JetpackRequest(wooApiVersion: .wcAnalytics,
+                                     method: .get,
+                                     siteID: siteID,
+                                     path: Path.couponReports,
+                                     parameters: parameters,
+                                     availableAsRESTRequest: true)
+
+        let mapper = CouponReportListMapper()
+
+        enqueue(request, mapper: mapper, completion: { result in
+            switch result {
+            case .success(let couponReports):
+                if !couponReports.isEmpty {
+                    completion(.success(couponReports))
+                } else {
+                    completion(.failure(CouponsRemoteError.noAnalyticsReportsFound))
+                }
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        })
+    }
 }
 
 // MARK: - Constants
@@ -281,5 +345,13 @@ public extension CouponsRemote {
         static let coupons = "coupons"
         static let keyword = "search"
         static let after = "after"
+        static let before = "before"
+        static let orderBy = "orderby"
+        static let order = "order"
+    }
+
+    enum ParameterValue {
+        static let ordersCount = "orders_count"
+        static let desc = "desc"
     }
 }

@@ -9,7 +9,7 @@ public struct PointOfSaleEntryPointView: View {
 
         return viewModel
     }()
-    
+
     private var hideAppTabBarsCallback: ((Bool) -> Void)? = nil
 
     // Necessary to expose the View's entry point to WooCommerce

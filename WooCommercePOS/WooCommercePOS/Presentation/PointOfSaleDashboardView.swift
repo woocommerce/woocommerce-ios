@@ -15,5 +15,23 @@ struct PointOfSaleDashboardView: View {
                 OrderView(viewModel: viewModel)
             }
         }
+        .navigationBarBackButtonHidden(true)
+        .toolbar {
+            ToolbarItem(placement: .topBarLeading, content: {
+                Button("Exit POS") {
+                    // TODO
+                }
+            })
+            ToolbarItem(placement: .principal, content: {
+                Button("Reader not connected") {
+                    // TODO
+                }
+            })
+            ToolbarItem(placement: .primaryAction, content: {
+                Button("History") {
+                    // TODO
+                }
+            })
+        }
     }
 }

@@ -168,7 +168,7 @@ private extension HubMenu {
             case HubMenuViewModel.Customers.id:
                 CustomersListView(viewModel: .init(siteID: viewModel.siteID))
             case HubMenuViewModel.PointOfSaleEntryPoint.id:
-                PointOfSaleEntryPointView()
+                WooCommercePOS.PointOfSaleEntryPointView()
             default:
                 fatalError("🚨 Unsupported menu item")
             }

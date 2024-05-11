@@ -1,35 +1,21 @@
 import SwiftUI
 
 public struct PointOfSaleEntryPointView: View {
-    @State private var showFullScreen = true
+    // TODO:
+    // Temporary. DI proper product models once we have a data layer
+    private let viewModel: PointOfSaleDashboardViewModel = {
+        let products = ProductFactory.makeFakeProducts()
+        let viewModel = PointOfSaleDashboardViewModel(products: products)
 
-    @Environment(\.presentationMode) var presentationMode
+        return viewModel
+    }()
 
-    public init(showFullScreen: Bool = true) {
-        self.showFullScreen = showFullScreen
-    }
+    // Necessary to expose the View's entry point to WooCommerce
+    // Otherwise the current switch on `HubMenu` where this View is created
+    // will error with "No exact matches in reference to static method 'buildExpression'"
+    public init() {}
 
     public var body: some View {
-        VStack {}
-        // TODO: Remove the full screen modal
-        // TODO: Move iPhone logic outside and do not render the entry point.
-        .fullScreenCover(isPresented: $showFullScreen) {
-            if UIDevice.current.userInterfaceIdiom == .pad {
-                // TODO: Pass proper product models once we have data layer
-                let products = ProductFactory.makeFakeProducts()
-                let viewModel = PointOfSaleDashboardViewModel(products: products)
-
-                PointOfSaleDashboardView(viewModel: viewModel)
-            } else {
-                Button(action: {
-                    presentationMode.wrappedValue.dismiss()
-                }, label: {
-                    Text("Please use iPad")
-                })
-            }
-        }
-        .onAppear {
-            showFullScreen = true
-        }
+        PointOfSaleDashboardView(viewModel: viewModel)
     }
 }

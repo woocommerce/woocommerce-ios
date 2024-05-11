@@ -61,9 +61,13 @@ msgctxt "app_store_promo_text"
 msgid "Run your store from anywhere"
 msgstr ""
 
-msgctxt "v18.5-whats-new"
+msgctxt "v18.6-whats-new"
 msgid ""
-"In our latest update we've enhanced the barcode scanning by squashing a bug that allowed variable parent products to sneak into orders. Enjoy a smoother order creation experience with our latest update!\n"
+"- [*] Change text color in badge view in order products list to fix the dark mode readability. [https://github.com/woocommerce/woocommerce-ios/pull/12630]\n"
+"- [*] Speculative fix for a crash when opening order notifications [https://github.com/woocommerce/woocommerce-ios/pull/12643]\n"
+"- [internal] Show In-App feedback card in dashboard. [https://github.com/woocommerce/woocommerce-ios/pull/12636]\n"
+"- [*] Shipping: A shipping method can now be selected when adding or editing shipping on an order. [https://github.com/woocommerce/woocommerce-ios/pull/12688]\n"
+"\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.

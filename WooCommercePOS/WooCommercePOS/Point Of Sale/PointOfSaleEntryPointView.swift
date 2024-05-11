@@ -1,14 +1,18 @@
 import SwiftUI
 
-struct PointOfSaleEntryPointView: View {
+public struct PointOfSaleEntryPointView: View {
     @State private var showFullScreen = true
 
     @Environment(\.presentationMode) var presentationMode
 
-    var body: some View {
+    public init(showFullScreen: Bool = true) {
+        self.showFullScreen = showFullScreen
+    }
+
+    public var body: some View {
         VStack {}
         .fullScreenCover(isPresented: $showFullScreen) {
-            if UIDevice.isPad() {
+            if UIDevice.current.userInterfaceIdiom == .pad {
                 PointOfSaleDashboard()
             } else {
                 Button(action: {

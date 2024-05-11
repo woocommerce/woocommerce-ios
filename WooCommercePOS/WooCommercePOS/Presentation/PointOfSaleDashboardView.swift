@@ -12,7 +12,10 @@ struct PointOfSaleDashboardView: View {
             Text("WooCommerce Point Of Sale")
             HStack {
                 ProductGridView(viewModel: viewModel)
+                    .frame(maxWidth: .infinity)
+                Spacer()
                 OrderView(viewModel: viewModel)
+                    .frame(maxWidth: .infinity)
             }
         }
         .navigationBarBackButtonHidden(true)

@@ -15,6 +15,7 @@ struct OrderView: View {
             Text("Product XYZ")
             Text("Product XYZ")
             Text("Product XYZ")
+            Spacer()
             Button("Pay now") {
                 viewModel.callbackFromOrder()
             }

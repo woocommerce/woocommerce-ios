@@ -9,13 +9,23 @@ public struct PointOfSaleEntryPointView: View {
 
         return viewModel
     }()
+    
+    private var hideAppTabBarsCallback: ((Bool) -> Void)? = nil
 
     // Necessary to expose the View's entry point to WooCommerce
     // Otherwise the current switch on `HubMenu` where this View is created
     // will error with "No exact matches in reference to static method 'buildExpression'"
-    public init() {}
+    public init(hideAppTabBarsCallback: ((Bool) -> Void)? = nil) {
+        self.hideAppTabBarsCallback = hideAppTabBarsCallback
+    }
 
     public var body: some View {
         PointOfSaleDashboardView(viewModel: viewModel)
+            .onAppear(perform: {
+                hideAppTabBarsCallback?(true)
+            })
+            .onDisappear {
+                hideAppTabBarsCallback?(false)
+            }
     }
 }

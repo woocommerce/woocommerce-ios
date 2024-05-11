@@ -11,9 +11,15 @@ public struct PointOfSaleEntryPointView: View {
 
     public var body: some View {
         VStack {}
+        // TODO: Remove the full screen modal
+        // TODO: Move iPhone logic outside and do not render the entry point.
         .fullScreenCover(isPresented: $showFullScreen) {
             if UIDevice.current.userInterfaceIdiom == .pad {
-                PointOfSaleDashboard()
+                // TODO: Pass proper product models once we have data layer
+                let products = ProductFactory.makeFakeProducts()
+                let viewModel = PointOfSaleDashboardViewModel(products: products)
+
+                PointOfSaleDashboardView(viewModel: viewModel)
             } else {
                 Button(action: {
                     presentationMode.wrappedValue.dismiss()

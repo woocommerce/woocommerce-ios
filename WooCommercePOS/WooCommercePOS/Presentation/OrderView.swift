@@ -9,12 +9,9 @@ struct OrderView: View {
 
     var body: some View {
         VStack {
-            Text("Product XYZ")
-            Text("Product XYZ")
-            Text("Product XYZ")
-            Text("Product XYZ")
-            Text("Product XYZ")
-            Text("Product XYZ")
+            ProductRowView()
+            ProductRowView()
+            ProductRowView()
             Spacer()
             Button("Pay now") {
                 viewModel.callbackFromOrder()

@@ -1,6 +1,8 @@
 import SwiftUI
 
 struct PointOfSaleDashboardView: View {
+    @Environment(\.presentationMode) var presentationMode
+
     @ObservedObject private var viewModel: PointOfSaleDashboardViewModel
 
     init(viewModel: PointOfSaleDashboardViewModel) {
@@ -22,17 +24,17 @@ struct PointOfSaleDashboardView: View {
         .toolbar {
             ToolbarItem(placement: .topBarLeading, content: {
                 Button("Exit POS") {
-                    // TODO
+                    presentationMode.wrappedValue.dismiss()
                 }
             })
             ToolbarItem(placement: .principal, content: {
                 Button("Reader not connected") {
-                    // TODO
+                    debugPrint("Not implemented")
                 }
             })
             ToolbarItem(placement: .primaryAction, content: {
                 Button("History") {
-                    // TODO
+                    debugPrint("Not implemented")
                 }
             })
         }

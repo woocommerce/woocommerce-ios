@@ -9,10 +9,10 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
     }
 
     func callbackFromProductSelector(_ product: Product) {
-        debugPrint("Product selector callback: \(product.name)")
+        debugPrint("Not implemented")
     }
 
     func callbackFromOrder() {
-        debugPrint("Order callback")
+        debugPrint("Not implemented")
     }
 }

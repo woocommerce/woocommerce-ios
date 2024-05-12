@@ -168,8 +168,8 @@ private extension HubMenu {
             case HubMenuViewModel.Customers.id:
                 CustomersListView(viewModel: .init(siteID: viewModel.siteID))
             case HubMenuViewModel.PointOfSaleEntryPoint.id:
-                WooCommercePOS.PointOfSaleEntryPointView(hideAppTabBarsCallback: { hidden in
-                    AppDelegate.shared.tabBarController?.tabBar.isHidden = hidden
+                WooCommercePOS.PointOfSaleEntryPointView(hideAppTabBarsCallback: { isHidden in
+                    AppDelegate.shared.shouldHideTabBar(isHidden)
                 })
             default:
                 fatalError("🚨 Unsupported menu item")

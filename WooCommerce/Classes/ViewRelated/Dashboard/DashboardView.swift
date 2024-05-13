@@ -171,6 +171,10 @@ private extension DashboardView {
                                                    onViewAllAnalytics: { siteID, siteTimeZone, timeRange in
                             onViewAllAnalytics?(siteID, siteTimeZone, timeRange)
                         })
+                    case .inbox:
+                        InboxDashboardCard(viewModel: viewModel.inboxViewModel)
+                    case .coupons, .lastOrders, .stock, .reviews:
+                        EmptyView()
                     }
 
                     // Append feedback card after the first card

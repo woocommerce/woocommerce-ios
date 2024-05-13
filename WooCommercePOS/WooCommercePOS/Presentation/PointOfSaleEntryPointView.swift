@@ -21,9 +21,9 @@ public struct PointOfSaleEntryPointView: View {
 
     public var body: some View {
         PointOfSaleDashboardView(viewModel: viewModel)
-            .onAppear(perform: {
+            .onAppear {
                 hideAppTabBar(true)
-            })
+            }
             .onDisappear {
                 hideAppTabBar(false)
             }

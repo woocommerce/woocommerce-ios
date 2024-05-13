@@ -173,7 +173,9 @@ private extension DashboardView {
                         })
                     case .inbox:
                         InboxDashboardCard(viewModel: viewModel.inboxViewModel)
-                    case .coupons, .lastOrders, .stock, .reviews:
+                    case .reviews:
+                        ReviewsDashboardCard()
+                    case .coupons, .lastOrders, .stock:
                         EmptyView()
                     }
 

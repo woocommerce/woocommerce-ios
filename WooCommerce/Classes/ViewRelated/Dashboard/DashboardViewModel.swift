@@ -336,6 +336,7 @@ private extension DashboardViewModel {
         if dynamicDashboardM2 {
             // TODO: check eligibility and update `enabled` accordingly
             cards.append(DashboardCard(type: .inbox, availability: .show, enabled: false))
+            cards.append(DashboardCard(type: .reviews, availability: .show, enabled: false))
         }
 
         return cards

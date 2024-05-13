@@ -1,4 +1,3 @@
-
 enum AppIntentsTrackingType: String {
     case collectPayment = "collect_payment"
     case createOrder = "create_order"

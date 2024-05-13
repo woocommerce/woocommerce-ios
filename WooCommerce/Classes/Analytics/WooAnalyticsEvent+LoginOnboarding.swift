@@ -1,4 +1,3 @@
-
 extension WooAnalyticsEvent {
     enum LoginOnboarding {
         /// Event property keys.

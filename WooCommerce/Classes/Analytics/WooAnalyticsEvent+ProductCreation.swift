@@ -1,4 +1,3 @@
-
 extension WooAnalyticsEvent {
     enum ProductCreation {
         /// Event property keys.

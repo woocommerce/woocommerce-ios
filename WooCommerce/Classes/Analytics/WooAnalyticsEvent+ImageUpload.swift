@@ -1,4 +1,3 @@
-
 extension WooAnalyticsEvent {
     enum ImageUpload {
         /// Common event keys.

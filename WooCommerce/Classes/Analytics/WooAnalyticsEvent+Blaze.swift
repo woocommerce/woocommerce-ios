@@ -1,4 +1,3 @@
-
 extension WooAnalyticsEvent {
     enum Blaze {
         /// Event property keys.

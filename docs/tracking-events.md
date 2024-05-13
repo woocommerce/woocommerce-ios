@@ -1,6 +1,6 @@
 # Tracking Events
 
-The analytics protocols (`Analytics`, `AnalyticsProvider`, `WooAnalyticsEventPropertyType`), `WooAnalyticsStat` enum, and `WooAnalyticsEvent` struct are in the WooFoundation framework. When using any of them, they can be imported by:
+The analytics protocols (`Analytics`, `AnalyticsProvider`, `WooAnalyticsEventPropertyType`) are in the WooFoundation framework. When referencing any of them, they can be imported by:
 
 ```swift
 import protocol WooFoundation.Analytics

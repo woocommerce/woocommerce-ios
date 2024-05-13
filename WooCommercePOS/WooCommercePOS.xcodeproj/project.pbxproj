@@ -21,6 +21,7 @@
 		686F19FB2BEF871100318150 /* PointOfSaleDashboardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 686F19FA2BEF871100318150 /* PointOfSaleDashboardViewModel.swift */; };
 		686F19FD2BEF877000318150 /* ProductFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 686F19FC2BEF877000318150 /* ProductFactory.swift */; };
 		A4FA2C8B066BCBF514089458 /* Pods_WooCommercePOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 93F9ABF5FD8405FC05439FAA /* Pods_WooCommercePOS.framework */; };
+		DAD3013F2BF2102D001AED4F /* Color+WooCommercePOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAD3013E2BF2102D001AED4F /* Color+WooCommercePOS.swift */; };
 		F0EC3C7DA6DAE3FAE2CAC022 /* Pods_WooCommercePOSTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E72638A9ADBD80DC3ECDE6A8 /* Pods_WooCommercePOSTests.framework */; };
 /* End PBXBuildFile section */
 
@@ -55,6 +56,7 @@
 		74F14F901DA1882BDF151366 /* Pods-WooCommercePOS.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooCommercePOS.release-alpha.xcconfig"; path = "Target Support Files/Pods-WooCommercePOS/Pods-WooCommercePOS.release-alpha.xcconfig"; sourceTree = "<group>"; };
 		93F9ABF5FD8405FC05439FAA /* Pods_WooCommercePOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WooCommercePOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D94D86784E9CD1B473EC6AE8 /* Pods-WooCommercePOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooCommercePOS.release.xcconfig"; path = "Target Support Files/Pods-WooCommercePOS/Pods-WooCommercePOS.release.xcconfig"; sourceTree = "<group>"; };
+		DAD3013E2BF2102D001AED4F /* Color+WooCommercePOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+WooCommercePOS.swift"; sourceTree = "<group>"; };
 		E58B626C5D5EB66595A9E445 /* Pods-WooCommercePOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooCommercePOSTests.release.xcconfig"; path = "Target Support Files/Pods-WooCommercePOSTests/Pods-WooCommercePOSTests.release.xcconfig"; sourceTree = "<group>"; };
 		E72638A9ADBD80DC3ECDE6A8 /* Pods_WooCommercePOSTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WooCommercePOSTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -156,6 +158,7 @@
 			isa = PBXGroup;
 			children = (
 				686F19FC2BEF877000318150 /* ProductFactory.swift */,
+				DAD3013E2BF2102D001AED4F /* Color+WooCommercePOS.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -365,6 +368,7 @@
 				683A39942BF0DACE008A485E /* ProductRowView.swift in Sources */,
 				686F19F92BEF869C00318150 /* OrderView.swift in Sources */,
 				200B84952BEB984700EAAB23 /* WooCommercePOS.docc in Sources */,
+				DAD3013F2BF2102D001AED4F /* Color+WooCommercePOS.swift in Sources */,
 				200B84B02BEB99FE00EAAB23 /* PointOfSaleEntryPointView.swift in Sources */,
 				686F19FD2BEF877000318150 /* ProductFactory.swift in Sources */,
 			);

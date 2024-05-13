@@ -32,7 +32,7 @@ class WaitingTimeTrackerTests: XCTestCase {
         waitingTracker.end()
 
         // Then
-        XCTAssertEqual(testAnalytics.lastReceivedStat, .orderDetailWaitingTimeLoaded)
+        XCTAssertEqual(testAnalytics.lastReceivedEventName, WooAnalyticsStat.orderDetailWaitingTimeLoaded.rawValue)
     }
 
     func testTopPerformersTrackScenarioTriggersExpectedAnalyticsStat() {
@@ -46,7 +46,7 @@ class WaitingTimeTrackerTests: XCTestCase {
         waitingTracker.end()
 
         // Then
-        XCTAssertEqual(testAnalytics.lastReceivedStat, .dashboardTopPerformersWaitingTimeLoaded)
+        XCTAssertEqual(testAnalytics.lastReceivedEventName, WooAnalyticsStat.dashboardTopPerformersWaitingTimeLoaded.rawValue)
     }
 
     func testMainStatsTrackScenarioTriggersExpectedAnalyticsStat() {
@@ -60,7 +60,7 @@ class WaitingTimeTrackerTests: XCTestCase {
         waitingTracker.end()
 
         // Then
-        XCTAssertEqual(testAnalytics.lastReceivedStat, .dashboardMainStatsWaitingTimeLoaded)
+        XCTAssertEqual(testAnalytics.lastReceivedEventName, WooAnalyticsStat.dashboardMainStatsWaitingTimeLoaded.rawValue)
     }
 
     func test_analytics_hub_track_scenario_triggers_expected_analytics_stat() {
@@ -74,7 +74,7 @@ class WaitingTimeTrackerTests: XCTestCase {
         waitingTracker.end()
 
         // Then
-        XCTAssertEqual(testAnalytics.lastReceivedStat, .analyticsHubWaitingTimeLoaded)
+        XCTAssertEqual(testAnalytics.lastReceivedEventName, WooAnalyticsStat.analyticsHubWaitingTimeLoaded.rawValue)
     }
 
     func test_appStartup_track_scenario_triggers_expected_analytics_stat() {
@@ -88,17 +88,12 @@ class WaitingTimeTrackerTests: XCTestCase {
         waitingTracker.end()
 
         // Then
-        XCTAssertEqual(testAnalytics.lastReceivedStat, .applicationOpenedWaitingTimeLoaded)
+        XCTAssertEqual(testAnalytics.lastReceivedEventName, WooAnalyticsStat.applicationOpenedWaitingTimeLoaded.rawValue)
     }
 
     class TestAnalytics: Analytics {
-        var lastReceivedStat: WooAnalyticsStat? = nil
+        var lastReceivedEventName: String? = nil
         var lastReceivedWaitingTime: TimeInterval? = nil
-
-        func track(_ stat: WooAnalyticsStat, properties: [AnyHashable: Any]?, error: Error?) {
-            lastReceivedStat = stat
-            lastReceivedWaitingTime = properties?["waiting_time"] as? TimeInterval
-        }
 
         // MARK: - Protocol conformance
 
@@ -106,6 +101,8 @@ class WaitingTimeTrackerTests: XCTestCase {
         }
 
         func track(_ eventName: String, properties: [AnyHashable: Any]?, error: Error?) {
+            lastReceivedEventName = eventName
+            lastReceivedWaitingTime = properties?["waiting_time"] as? TimeInterval
         }
 
         func track(_ eventName: String) {
@@ -124,7 +121,7 @@ class WaitingTimeTrackerTests: XCTestCase {
             userHasOptedIn = !optedOut
         }
 
-        var userHasOptedIn: Bool = false
+        var userHasOptedIn: Bool = true
         private(set) var analyticsProvider: AnalyticsProvider = MockAnalyticsProvider()
     }
 }

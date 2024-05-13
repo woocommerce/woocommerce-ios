@@ -80,7 +80,8 @@ extension WooAnalytics {
         }
     }
 
-    /// Track a spcific event without any associated properties
+    /// Consider calling `track(_ stat:)` with the `WooAnalyticsStat` enum.
+    /// Track a specific event without any associated properties
     ///
     /// - Parameter eventName: the event name
     ///
@@ -92,6 +93,7 @@ extension WooAnalytics {
         track(eventName, withProperties: nil)
     }
 
+    /// Consider calling `track(_ stat:withProperties:)` with the `WooAnalyticsStat` enum.
     /// Track a specific event with associated properties
     ///
     /// - Parameters:
@@ -102,6 +104,7 @@ extension WooAnalytics {
         track(eventName, properties: properties, error: nil)
     }
 
+    /// Consider calling `track(_ stat:withError:)` with the `WooAnalyticsStat` enum.
     /// Track a specific event with an associated error (that is translated to properties)
     ///
     /// - Parameters:
@@ -112,6 +115,7 @@ extension WooAnalytics {
         track(eventName, properties: nil, error: error)
     }
 
+    /// Consider calling `track(_ stat:properties:error:)` with the `WooAnalyticsStat` enum.
     /// Track a specific event with associated properties and an associated error (that is translated to properties)
     ///
     /// - Parameters:
@@ -120,8 +124,12 @@ extension WooAnalytics {
     ///   - error: the error to track
     ///
     func track(_ eventName: String, properties passedProperties: [AnyHashable: Any]?, error: Error?) {
-        if let passedProperties {
-            analyticsProvider.track(eventName, withProperties: passedProperties)
+        guard userHasOptedIn == true else {
+            return
+        }
+        let properties = combinedProperties(from: error, with: passedProperties)
+        if let properties {
+            analyticsProvider.track(eventName, withProperties: properties)
         } else {
             analyticsProvider.track(eventName)
         }
@@ -158,7 +166,7 @@ extension Analytics {
 }
 
 extension Analytics {
-    /// Track a spcific event without any associated properties
+    /// Track a specific event without any associated properties
     ///
     /// - Parameter stat: the event name
     ///
@@ -202,13 +210,8 @@ extension Analytics {
             return
         }
 
-        let properties = combinedProperties(from: error, with: passedProperties)
-
-        if let updatedProperties = updatePropertiesIfNeeded(for: stat, properties: properties) {
-            analyticsProvider.track(stat.rawValue, withProperties: updatedProperties)
-        } else {
-            analyticsProvider.track(stat.rawValue)
-        }
+        let updatedProperties = updatePropertiesIfNeeded(for: stat, properties: passedProperties)
+        track(stat.rawValue, properties: updatedProperties, error: error)
     }
 }
 

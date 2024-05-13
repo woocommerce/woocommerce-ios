@@ -24,6 +24,8 @@ struct QuantityRules: View {
     ///
     @Environment(\.safeAreaInsets) private var safeAreaInsets: EdgeInsets
 
+    @Environment(\.presentationMode) var presentationMode
+
     var body: some View {
         ScrollView {
             VStack(alignment: .leading) {
@@ -53,6 +55,13 @@ struct QuantityRules: View {
         }
         .navigationBarTitle(Localization.title)
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .confirmationAction) {
+                Button(Localization.done) {
+                    self.presentationMode.wrappedValue.dismiss()
+                }
+            }
+        }
         .ignoresSafeArea(edges: .horizontal)
         .background(
             Color(.listBackground).edgesIgnoringSafeArea(.all)
@@ -72,6 +81,11 @@ private extension QuantityRules {
         static let noMinQuantity = NSLocalizedString("No minimum", comment: "Description when no minimum quantity is set in quantity rules.")
         static let noMaxQuantity = NSLocalizedString("No maximum", comment: "Description when no maximum quantity is set in quantity rules.")
         static let noGroupOfQuantity = NSLocalizedString("Not grouped", comment: "Description when no 'group of' quantity is set in quantity rules.")
+        static let done = NSLocalizedString(
+            "quantityRulesView.done",
+            value: "Done",
+            comment: "Button to dismiss the product quantity rules view screen."
+        )
     }
 }
 

@@ -4,6 +4,13 @@ import struct Yosemite.DashboardCard
 /// SwiftUI view for the Reviews dashboard card
 ///
 struct ReviewsDashboardCard: View {
+    private let viewModel: ReviewsDashboardCardViewModel
+
+    init(viewModel: ReviewsDashboardCardViewModel) {
+        self.viewModel = viewModel
+    }
+
+
     var body: some View {
         VStack(alignment: .leading, spacing: Layout.padding) {
             header

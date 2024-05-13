@@ -23,6 +23,7 @@ final class DashboardViewModel: ObservableObject {
     let storePerformanceViewModel: StorePerformanceViewModel
     let topPerformersViewModel: TopPerformersDashboardViewModel
     let inboxViewModel: InboxDashboardCardViewModel
+    let reviewsViewModel: ReviewsDashboardCardViewModel
 
     @Published var justInTimeMessagesWebViewModel: WebViewSheetViewModel? = nil
 
@@ -105,6 +106,7 @@ final class DashboardViewModel: ObservableObject {
         self.topPerformersViewModel = .init(siteID: siteID,
                                             usageTracksEventEmitter: usageTracksEventEmitter)
         self.inboxViewModel = InboxDashboardCardViewModel(siteID: siteID)
+        self.reviewsViewModel = ReviewsDashboardCardViewModel(siteID: siteID)
         self.themeInstaller = themeInstaller
         self.inAppFeedbackCardViewModel.onFeedbackGiven = { [weak self] feedback in
             self?.showingInAppFeedbackSurvey = feedback == .didntLike

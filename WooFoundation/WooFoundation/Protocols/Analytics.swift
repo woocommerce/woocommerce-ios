@@ -7,28 +7,6 @@ public protocol Analytics {
     ///
     func initialize()
 
-    /// Track a specific event without any associated properties
-    ///
-    /// - Parameter eventName: the event name
-    ///
-    func track(_ eventName: String)
-
-    /// Track a specific event with associated properties
-    ///
-    /// - Parameters:
-    ///   - eventName: the event name
-    ///   - properties: a collection of properties related to the event
-    ///
-    func track(_ eventName: String, withProperties properties: [AnyHashable: Any]?)
-
-    /// Track a specific event with an associated error (that is translated to properties)
-    ///
-    /// - Parameters:
-    ///   - eventName: the event name
-    ///   - error: the error to track
-    ///
-    func track(_ eventName: String, withError error: Error)
-
     /// Track a specific event with associated properties and an associated error (that is translated to properties)
     ///
     /// - Parameters:

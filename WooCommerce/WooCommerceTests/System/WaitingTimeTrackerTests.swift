@@ -105,15 +105,6 @@ class WaitingTimeTrackerTests: XCTestCase {
             lastReceivedWaitingTime = properties?["waiting_time"] as? TimeInterval
         }
 
-        func track(_ eventName: String) {
-        }
-
-        func track(_ eventName: String, withProperties properties: [AnyHashable: Any]?) {
-        }
-
-        func track(_ eventName: String, withError error: Error) {
-        }
-
         func refreshUserData() {
         }
 

@@ -80,41 +80,6 @@ extension WooAnalytics {
         }
     }
 
-    /// Consider calling `track(_ stat:)` with the `WooAnalyticsStat` enum.
-    /// Track a specific event without any associated properties
-    ///
-    /// - Parameter eventName: the event name
-    ///
-    func track(_ eventName: String) {
-        guard userHasOptedIn == true else {
-            return
-        }
-
-        track(eventName, withProperties: nil)
-    }
-
-    /// Consider calling `track(_ stat:withProperties:)` with the `WooAnalyticsStat` enum.
-    /// Track a specific event with associated properties
-    ///
-    /// - Parameters:
-    ///   - eventName: the event name
-    ///   - properties: a collection of properties related to the event
-    ///
-    func track(_ eventName: String, withProperties properties: [AnyHashable: Any]?) {
-        track(eventName, properties: properties, error: nil)
-    }
-
-    /// Consider calling `track(_ stat:withError:)` with the `WooAnalyticsStat` enum.
-    /// Track a specific event with an associated error (that is translated to properties)
-    ///
-    /// - Parameters:
-    ///   - eventName: the event name
-    ///   - error: the error to track
-    ///
-    func track(_ eventName: String, withError error: Error) {
-        track(eventName, properties: nil, error: error)
-    }
-
     /// Consider calling `track(_ stat:properties:error:)` with the `WooAnalyticsStat` enum.
     /// Track a specific event with associated properties and an associated error (that is translated to properties)
     ///

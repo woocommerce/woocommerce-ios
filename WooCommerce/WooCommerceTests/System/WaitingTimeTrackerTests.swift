@@ -105,13 +105,16 @@ class WaitingTimeTrackerTests: XCTestCase {
         func initialize() {
         }
 
-        func track(_ stat: WooAnalyticsStat) {
+        func track(_ eventName: String, properties: [AnyHashable: Any]?, error: Error?) {
         }
 
-        func track(_ stat: WooAnalyticsStat, withProperties properties: [AnyHashable: Any]?) {
+        func track(_ eventName: String) {
         }
 
-        func track(_ stat: WooAnalyticsStat, withError error: Error) {
+        func track(_ eventName: String, withProperties properties: [AnyHashable: Any]?) {
+        }
+
+        func track(_ eventName: String, withError error: Error) {
         }
 
         func refreshUserData() {

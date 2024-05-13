@@ -1,12 +1,11 @@
 import WordPressShared
 
-/// This enum contains all of the events we track in the app. Please reference the "Woo Mobile Events Draft i2"
-/// spreadsheet for more details.
+/// This enum contains all of the events we track in the WooCommerce app.
 ///
 /// One of goals of this `enum` is to be able to list all the event names that we use throughout
 /// the app. We can also potentially make a parser to gather all the event names and automatically
 /// compare them with WCAndroid. With that, we can make sure both platforms are tracking the
-/// same events. Right now, we use the spreadsheet. XD
+/// same events.
 ///
 /// ### Type-Safe Properties
 ///

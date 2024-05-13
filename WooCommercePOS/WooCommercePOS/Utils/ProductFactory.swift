@@ -1,6 +1,7 @@
-
+/// Temporary fake product factory
+///
 final class ProductFactory {
-    static func makeFakeProducts() -> [WooCommercePOS.Product] {
+    static func makeFakeProducts() -> [Product] {
         return [
             Product(itemID: UUID(), productID: 1, name: "Product 1", price: "2"),
             Product(itemID: UUID(), productID: 2, name: "Product 2", price: "2"),

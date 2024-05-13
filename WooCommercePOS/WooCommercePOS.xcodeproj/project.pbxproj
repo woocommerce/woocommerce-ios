@@ -105,7 +105,7 @@
 			isa = PBXGroup;
 			children = (
 				683AAAB92BEDD3CC001D91BE /* ViewModels */,
-				683AAAB82BEDD366001D91BE /* Adapters */,
+				683AAAB82BEDD366001D91BE /* Utils */,
 				683AAAB52BEDD24B001D91BE /* Models */,
 				200B84AC2BEB98EB00EAAB23 /* Presentation */,
 				200B84932BEB984700EAAB23 /* WooCommercePOS.h */,
@@ -152,12 +152,12 @@
 			path = Models;
 			sourceTree = "<group>";
 		};
-		683AAAB82BEDD366001D91BE /* Adapters */ = {
+		683AAAB82BEDD366001D91BE /* Utils */ = {
 			isa = PBXGroup;
 			children = (
 				686F19FC2BEF877000318150 /* ProductFactory.swift */,
 			);
-			path = Adapters;
+			path = Utils;
 			sourceTree = "<group>";
 		};
 		683AAAB92BEDD3CC001D91BE /* ViewModels */ = {

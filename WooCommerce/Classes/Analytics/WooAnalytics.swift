@@ -8,13 +8,13 @@ import Yosemite
 import protocol WooFoundation.Analytics
 import protocol WooFoundation.AnalyticsProvider
 
-public class WooAnalytics: Analytics {
+final class WooAnalytics: Analytics {
 
     // MARK: - Properties
 
     /// AnalyticsProvider: Interface to the actual analytics implementation
     ///
-    private(set) public var analyticsProvider: AnalyticsProvider
+    private(set) var analyticsProvider: AnalyticsProvider
 
     /// Time when app was opened — used for calculating the time-in-app property
     ///
@@ -22,7 +22,7 @@ public class WooAnalytics: Analytics {
 
     /// Check user opt-in for analytics
     ///
-    public var userHasOptedIn: Bool {
+    var userHasOptedIn: Bool {
         get {
             let isUITesting: Bool = CommandLine.arguments.contains("-ui_testing")
             let optedIn: Bool? = UserDefaults.standard.object(forKey: .userOptedInAnalytics)
@@ -47,7 +47,7 @@ public class WooAnalytics: Analytics {
 
 // MARK: - Public Interface
 //
-public extension WooAnalytics {
+extension WooAnalytics {
 
     /// Initialize the analytics engine
     ///
@@ -133,7 +133,7 @@ public extension WooAnalytics {
 //
 extension WooAnalytics {
 
-    public func setUserHasOptedOut(_ optedOut: Bool) {
+    func setUserHasOptedOut(_ optedOut: Bool) {
         userHasOptedIn = !optedOut
 
         if optedOut {

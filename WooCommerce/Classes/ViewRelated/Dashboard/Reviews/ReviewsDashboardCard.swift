@@ -26,6 +26,10 @@ struct ReviewsDashboardCard: View {
 private extension ReviewsDashboardCard {
     var header: some View {
         HStack {
+            Image(systemName: "exclamationmark.circle")
+                .foregroundStyle(Color.secondary)
+                .headlineStyle()
+                .renderedIf(viewModel.syncingError != nil)
             Text(DashboardCard.CardType.reviews.name)
                 .headlineStyle()
             Spacer()
@@ -39,6 +43,7 @@ private extension ReviewsDashboardCard {
                     .padding(.leading, Layout.padding)
                     .padding(.vertical, Layout.hideIconVerticalPadding)
             }
+            .disabled(viewModel.syncingData)
         }
     }
 }

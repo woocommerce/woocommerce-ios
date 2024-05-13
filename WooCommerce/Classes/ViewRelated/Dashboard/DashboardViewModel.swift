@@ -303,6 +303,10 @@ private extension DashboardViewModel {
         inboxViewModel.onDismiss = { [weak self] in
             self?.showCustomizationScreen()
         }
+
+        reviewsViewModel.onDismiss = { [weak self] in
+            self?.showCustomizationScreen()
+        }
     }
 
     func showCustomizationScreen() {

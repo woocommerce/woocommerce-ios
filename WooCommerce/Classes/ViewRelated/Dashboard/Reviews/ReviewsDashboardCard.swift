@@ -31,7 +31,7 @@ private extension ReviewsDashboardCard {
             Spacer()
             Menu {
                 Button(Localization.hideCard) {
-                    // TODO
+                    viewModel.dismissReviews()
                 }
             } label: {
                 Image(systemName: "ellipsis")

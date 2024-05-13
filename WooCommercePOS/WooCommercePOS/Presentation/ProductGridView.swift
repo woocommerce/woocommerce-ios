@@ -31,3 +31,7 @@ struct ProductGridView: View {
         }
     }
 }
+
+#Preview {
+    ProductGridView(viewModel: PointOfSaleDashboardViewModel(products: ProductFactory.makeFakeProducts()))
+}

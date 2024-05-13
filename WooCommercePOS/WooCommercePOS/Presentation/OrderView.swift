@@ -19,3 +19,7 @@ struct OrderView: View {
         }
     }
 }
+
+#Preview {
+    OrderView(viewModel: PointOfSaleDashboardViewModel(products: ProductFactory.makeFakeProducts()))
+}

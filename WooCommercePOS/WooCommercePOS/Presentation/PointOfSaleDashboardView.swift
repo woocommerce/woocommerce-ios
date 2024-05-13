@@ -40,3 +40,7 @@ struct PointOfSaleDashboardView: View {
         }
     }
 }
+
+#Preview {
+    PointOfSaleDashboardView(viewModel: PointOfSaleDashboardViewModel(products: ProductFactory.makeFakeProducts()))
+}

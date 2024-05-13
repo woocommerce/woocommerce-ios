@@ -29,3 +29,7 @@ public struct PointOfSaleEntryPointView: View {
             }
     }
 }
+
+#Preview {
+    PointOfSaleEntryPointView(hideAppTabBarsCallback: { _ in })
+}

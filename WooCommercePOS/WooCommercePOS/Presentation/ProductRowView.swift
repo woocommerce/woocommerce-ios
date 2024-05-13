@@ -7,3 +7,7 @@ struct ProductRowView: View {
             .border(Color.gray, width: 1)
     }
 }
+
+#Preview {
+    ProductRowView()
+}

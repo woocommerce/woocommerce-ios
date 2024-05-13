@@ -2,25 +2,25 @@ import Foundation
 
 /// View Model for `QuantityRules`
 ///
-final class QuantityRulesViewModel {
+final class QuantityRulesViewModel: ObservableObject {
     /// Minimum quantity
     ///
-    let minQuantity: String
+    @Published var minQuantity: String
 
     /// Maximum quantity
     ///
-    let maxQuantity: String
+    @Published var maxQuantity: String
 
     /// Group of
     ///
-    let groupOf: String
+    @Published var groupOf: String
 
     init(minQuantity: String?,
          maxQuantity: String?,
          groupOf: String?) {
-        self.minQuantity = QuantityRulesViewModel.getDescription(for: minQuantity, withPlaceholder: Localization.noMinQuantity)
-        self.maxQuantity = QuantityRulesViewModel.getDescription(for: maxQuantity, withPlaceholder: Localization.noMaxQuantity)
-        self.groupOf = QuantityRulesViewModel.getDescription(for: groupOf, withPlaceholder: Localization.noGroupOfQuantity)
+        self.minQuantity = QuantityRulesViewModel.getDisplayValue(for: minQuantity)
+        self.maxQuantity = QuantityRulesViewModel.getDisplayValue(for: maxQuantity)
+        self.groupOf = QuantityRulesViewModel.getDisplayValue(for: groupOf)
     }
 
     convenience init(product: ProductFormDataModel) {
@@ -32,18 +32,12 @@ final class QuantityRulesViewModel {
 
 private extension QuantityRulesViewModel {
 
-    /// Returns a description of the provided quantity, using the placeholder if the quantity is nil or empty.
+    /// Returns the display value of the provided quantity, using empty string if the quantity is not set.
     ///
-    static func getDescription(for quantity: String?, withPlaceholder placeholder: String) -> String {
+    static func getDisplayValue(for quantity: String?) -> String {
         guard let quantity, quantity.isAValidProductQuantityRuleValue else {
-            return placeholder
+            return ""
         }
         return quantity
-    }
-
-    enum Localization {
-        static let noMinQuantity = NSLocalizedString("No minimum", comment: "Description when no minimum quantity is set in quantity rules.")
-        static let noMaxQuantity = NSLocalizedString("No maximum", comment: "Description when no maximum quantity is set in quantity rules.")
-        static let noGroupOfQuantity = NSLocalizedString("Not grouped", comment: "Description when no 'group of' quantity is set in quantity rules.")
     }
 }

@@ -18,7 +18,7 @@ struct QuantityRules: View {
 
     /// View model that directs the view content.
     ///
-    let viewModel: QuantityRulesViewModel
+    @ObservedObject var viewModel: QuantityRulesViewModel
 
     /// Environment safe areas
     ///
@@ -27,20 +27,22 @@ struct QuantityRules: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading) {
-                // Minimum quantity
-                TitleAndSubtitleRow(title: Localization.minQuantity, subtitle: viewModel.minQuantity)
+                TitleAndTextFieldRow(title: Localization.minQuantity, placeholder: Localization.noMinQuantity, text: $viewModel.minQuantity)
                 Divider()
                     .padding(.leading)
                     .padding(.trailing, insets: -safeAreaInsets)
 
                 // Maximum quantity
-                TitleAndSubtitleRow(title: Localization.maxQuantity, subtitle: viewModel.maxQuantity)
+                TitleAndTextFieldRow(title: Localization.maxQuantity,
+                                     placeholder: Localization.noMaxQuantity,
+                                     text: $viewModel.maxQuantity,
+                                     keyboardType: .asciiCapableNumberPad)
                 Divider()
                     .padding(.leading)
                     .padding(.trailing, insets: -safeAreaInsets)
 
                 // Group of
-                TitleAndSubtitleRow(title: Localization.groupOf, subtitle: viewModel.groupOf)
+                TitleAndTextFieldRow(title: Localization.groupOf, placeholder: Localization.noGroupOfQuantity, text: $viewModel.groupOf)
             }
             .padding(.horizontal, insets: safeAreaInsets)
             .addingTopAndBottomDividers()
@@ -66,6 +68,10 @@ private extension QuantityRules {
         static let minQuantity = NSLocalizedString("Minimum quantity", comment: "Title for the minimum quantity setting in the quantity rules screen.")
         static let maxQuantity = NSLocalizedString("Maximum quantity", comment: "Title for the maximum quantity setting in the quantity rules screen.")
         static let groupOf = NSLocalizedString("Group of", comment: "Title for the 'group of' setting in the quantity rules screen.")
+
+        static let noMinQuantity = NSLocalizedString("No minimum", comment: "Description when no minimum quantity is set in quantity rules.")
+        static let noMaxQuantity = NSLocalizedString("No maximum", comment: "Description when no maximum quantity is set in quantity rules.")
+        static let noGroupOfQuantity = NSLocalizedString("Not grouped", comment: "Description when no 'group of' quantity is set in quantity rules.")
     }
 }
 

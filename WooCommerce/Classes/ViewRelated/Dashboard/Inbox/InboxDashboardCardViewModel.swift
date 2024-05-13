@@ -5,7 +5,7 @@ import protocol Storage.StorageManagerType
 /// View model for `InboxDashboardCard`.
 ///
 final class InboxDashboardCardViewModel: ObservableObject {
-    // Set externally to trigger callback upon hiding the Top Performers card.
+    // Set externally to trigger callback upon hiding the Inbox card.
     var onDismiss: (() -> Void)?
 
     @Published private(set) var syncingData = false

@@ -252,7 +252,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 // MARK: - Helper method for WooCommerce POS
 //
 extension AppDelegate {
-    func shouldHideTabBar(_ hidden: Bool) {
+    func setShouldHideTabBar(_ hidden: Bool) {
         guard let tabBarController = AppDelegate.shared.tabBarController else {
             return
         }

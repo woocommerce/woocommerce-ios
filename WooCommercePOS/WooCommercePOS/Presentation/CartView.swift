@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct OrderView: View {
+struct CartView: View {
     @ObservedObject private var viewModel: PointOfSaleDashboardViewModel
 
     init(viewModel: PointOfSaleDashboardViewModel) {
@@ -14,12 +14,12 @@ struct OrderView: View {
             ProductRowView()
             Spacer()
             Button("Pay now") {
-                viewModel.callbackFromOrder()
+                viewModel.submitCart()
             }
         }
     }
 }
 
 #Preview {
-    OrderView(viewModel: PointOfSaleDashboardViewModel(products: ProductFactory.makeFakeProducts()))
+    CartView(viewModel: PointOfSaleDashboardViewModel(products: ProductFactory.makeFakeProducts()))
 }

@@ -15,7 +15,7 @@ struct ProductGridView: View {
             LazyVGrid(columns: columns, spacing: 20) {
                 ForEach(viewModel.products, id: \.productID) { product in
                     Button(action: {
-                        viewModel.callbackFromProductSelector(product)
+                        viewModel.addProductToCart(product)
                     }, label: {
                         VStack {
                             Text(product.name)

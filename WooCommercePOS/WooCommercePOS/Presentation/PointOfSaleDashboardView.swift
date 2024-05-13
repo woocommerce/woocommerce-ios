@@ -16,7 +16,7 @@ struct PointOfSaleDashboardView: View {
                 ProductGridView(viewModel: viewModel)
                     .frame(maxWidth: .infinity)
                 Spacer()
-                OrderView(viewModel: viewModel)
+                CartView(viewModel: viewModel)
                     .frame(maxWidth: .infinity)
             }
         }

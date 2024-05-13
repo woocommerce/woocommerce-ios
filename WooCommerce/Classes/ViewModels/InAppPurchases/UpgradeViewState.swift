@@ -1,5 +1,4 @@
 import Foundation
-import struct WooFoundation.WooAnalyticsEvent
 
 enum UpgradeViewState: Equatable {
     case loading

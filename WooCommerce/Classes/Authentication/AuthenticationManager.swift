@@ -6,7 +6,6 @@ import WordPressUI
 import Yosemite
 import class Networking.UserAgent
 import enum Experiments.ABTest
-import enum WooFoundation.WooAnalyticsStat
 import struct Networking.Settings
 import protocol Experiments.FeatureFlagService
 import protocol Storage.StorageManagerType

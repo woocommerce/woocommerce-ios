@@ -2,7 +2,6 @@ import Foundation
 import SwiftUI
 import Yosemite
 import Combine
-import enum WooFoundation.WooAnalyticsStat
 import protocol WooFoundation.Analytics
 
 /// ViewModel for the Upgrades View

@@ -1,5 +1,4 @@
 import enum Yosemite.CreateAccountError
-import struct WooFoundation.WooAnalyticsEvent
 
 extension WooAnalyticsEvent {
     enum DomainSettings {

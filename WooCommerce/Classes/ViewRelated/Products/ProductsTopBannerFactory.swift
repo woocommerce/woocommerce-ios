@@ -1,7 +1,6 @@
 import UIKit
 import Yosemite
 import protocol WooFoundation.Analytics
-import struct WooFoundation.WooAnalyticsEvent
 
 struct ProductsTopBannerFactory {
 

@@ -1,7 +1,5 @@
 import Storage
-import enum WooFoundation.WooAnalyticsStat
 import protocol WooFoundation.WooAnalyticsEventPropertyType
-import struct WooFoundation.WooAnalyticsEvent
 
 enum BetaFeature: String, CaseIterable {
     case viewAddOns

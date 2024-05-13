@@ -2,7 +2,6 @@ import XCTest
 import Yosemite
 import TestKit
 import Combine
-import enum WooFoundation.WooAnalyticsStat
 @testable import WooCommerce
 
 final class EditOrderAddressFormViewModelTests: XCTestCase {

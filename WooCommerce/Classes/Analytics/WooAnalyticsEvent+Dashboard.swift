@@ -1,6 +1,5 @@
 import Foundation
 import enum Yosemite.StatsTimeRangeV4
-import struct WooFoundation.WooAnalyticsEvent
 
 extension WooAnalyticsEvent {
     enum Dashboard {

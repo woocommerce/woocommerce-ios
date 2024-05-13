@@ -1,7 +1,6 @@
 import Foundation
 import Combine
 import protocol WooFoundation.Analytics
-import struct WooFoundation.WooAnalyticsEvent
 
 /// Presents notices for order fulfillment and handling of undos and retries.
 ///

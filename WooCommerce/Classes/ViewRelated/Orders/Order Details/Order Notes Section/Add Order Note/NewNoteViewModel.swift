@@ -1,6 +1,5 @@
 import Foundation
 import Yosemite
-import enum WooFoundation.WooAnalyticsStat
 import protocol WooFoundation.Analytics
 
 final class NewNoteViewModel {

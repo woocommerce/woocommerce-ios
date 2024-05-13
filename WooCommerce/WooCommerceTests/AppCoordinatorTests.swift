@@ -4,7 +4,6 @@ import WordPressAuthenticator
 import XCTest
 @testable import WooCommerce
 import Yosemite
-import enum WooFoundation.WooAnalyticsStat
 import protocol Storage.StorageManagerType
 import protocol WooFoundation.Analytics
 

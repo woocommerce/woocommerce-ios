@@ -2,7 +2,6 @@ import TestKit
 import XCTest
 import WordPressAuthenticator
 import Yosemite
-import enum WooFoundation.WooAnalyticsStat
 @testable import WooCommerce
 
 /// Test cases for `AuthenticationManager`.

@@ -1,5 +1,4 @@
 import XCTest
-import enum WooFoundation.WooAnalyticsStat
 import protocol WooFoundation.Analytics
 import protocol WooFoundation.AnalyticsProvider
 @testable import WooCommerce

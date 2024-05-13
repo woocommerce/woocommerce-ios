@@ -2,7 +2,6 @@ import Foundation
 import Combine
 import Networking
 import Yosemite
-import struct WooFoundation.WooAnalyticsEvent
 
 final class ConnectivityToolViewModel {
 

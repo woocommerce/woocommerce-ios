@@ -1,4 +1,3 @@
-import struct WooFoundation.WooAnalyticsEvent
 
 enum AppIntentsTrackingType: String {
     case collectPayment = "collect_payment"

@@ -1,6 +1,5 @@
 import SwiftUI
 import Yosemite
-import struct WooFoundation.WooAnalyticsEvent
 
 struct InPersonPaymentsPluginNotSetup: View {
     let plugin: CardPresentPaymentsPlugin

@@ -8,9 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		02427F092BECA12800E2073B /* Analytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02427F082BECA12800E2073B /* Analytics.swift */; };
-		02427F0C2BECA14E00E2073B /* WooAnalyticsStat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02427F0B2BECA14E00E2073B /* WooAnalyticsStat.swift */; };
 		02427F0E2BECA1D900E2073B /* AnalyticsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02427F0D2BECA1D900E2073B /* AnalyticsProvider.swift */; };
-		02427F102BECA21600E2073B /* WooAnalyticsEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02427F0F2BECA21600E2073B /* WooAnalyticsEvent.swift */; };
 		02427F122BECA23300E2073B /* WooAnalyticsEventPropertyType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02427F112BECA23300E2073B /* WooAnalyticsEventPropertyType.swift */; };
 		0331A7512A39DECC001D2C2C /* Color+RGBStringDecoding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0331A7502A39DECC001D2C2C /* Color+RGBStringDecoding.swift */; };
 		0331A7532A39DFD4001D2C2C /* Color+RGBStringDecoding-Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0331A7522A39DFD4001D2C2C /* Color+RGBStringDecoding-Tests.swift */; };
@@ -83,9 +81,7 @@
 
 /* Begin PBXFileReference section */
 		02427F082BECA12800E2073B /* Analytics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Analytics.swift; sourceTree = "<group>"; };
-		02427F0B2BECA14E00E2073B /* WooAnalyticsStat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooAnalyticsStat.swift; sourceTree = "<group>"; };
 		02427F0D2BECA1D900E2073B /* AnalyticsProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsProvider.swift; sourceTree = "<group>"; };
-		02427F0F2BECA21600E2073B /* WooAnalyticsEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooAnalyticsEvent.swift; sourceTree = "<group>"; };
 		02427F112BECA23300E2073B /* WooAnalyticsEventPropertyType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooAnalyticsEventPropertyType.swift; sourceTree = "<group>"; };
 		0331A7502A39DECC001D2C2C /* Color+RGBStringDecoding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+RGBStringDecoding.swift"; sourceTree = "<group>"; };
 		0331A7522A39DFD4001D2C2C /* Color+RGBStringDecoding-Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+RGBStringDecoding-Tests.swift"; sourceTree = "<group>"; };
@@ -167,9 +163,7 @@
 		02427F0A2BECA14600E2073B /* Analytics */ = {
 			isa = PBXGroup;
 			children = (
-				02427F0B2BECA14E00E2073B /* WooAnalyticsStat.swift */,
 				02427F0D2BECA1D900E2073B /* AnalyticsProvider.swift */,
-				02427F0F2BECA21600E2073B /* WooAnalyticsEvent.swift */,
 				02427F112BECA23300E2073B /* WooAnalyticsEventPropertyType.swift */,
 			);
 			path = Analytics;
@@ -557,10 +551,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				02427F0C2BECA14E00E2073B /* WooAnalyticsStat.swift in Sources */,
 				03B8C3892914083F002235B1 /* Bundle+Woo.swift in Sources */,
 				B99BC2122A1FAE5100E6008A /* CIImage+ImageCombination.swift in Sources */,
-				02427F102BECA21600E2073B /* WooAnalyticsEvent.swift in Sources */,
 				B9C9C659283E7195001B879F /* NSDecimalNumber+Helpers.swift in Sources */,
 				B99BC2162A1FB21700E6008A /* UIImage+Background.swift in Sources */,
 				26AF1F5328B8362800937BA9 /* UIColor+SemanticColors.swift in Sources */,

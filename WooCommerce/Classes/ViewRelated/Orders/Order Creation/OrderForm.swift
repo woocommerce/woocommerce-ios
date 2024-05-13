@@ -1,6 +1,5 @@
 import SwiftUI
 import Combine
-import struct WooFoundation.WooAnalyticsEvent
 
 /// Hosting controller that wraps an `OrderForm` view.
 ///

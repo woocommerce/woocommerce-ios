@@ -1,6 +1,5 @@
 import SwiftUI
 import Yosemite
-import struct WooFoundation.WooAnalyticsEvent
 
 struct InPersonPaymentsOnboardingError: View {
     let title: String

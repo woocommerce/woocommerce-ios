@@ -1,7 +1,6 @@
 import Foundation
 import Combine
 import protocol WooFoundation.Analytics
-import struct WooFoundation.WooAnalyticsEvent
 
 /// Tracks the waiting time for a given scenario, allowing to evaluate as analytics
 /// how much time in seconds it took between the init and `end` function call

@@ -1,7 +1,5 @@
 import XCTest
 import TestKit
-import enum WooFoundation.WooAnalyticsStat
-import struct WooFoundation.WooAnalyticsEvent
 @testable import Yosemite
 @testable import WooCommerce
 

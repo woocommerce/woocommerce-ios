@@ -1,4 +1,5 @@
 import SwiftUI
+import struct Yosemite.DashboardCard
 
 struct StoreSetupProgressView: View {
     let isExpanded: Bool
@@ -24,7 +25,7 @@ struct StoreSetupProgressView: View {
 
             VStack(alignment: isExpanded ? .center : .leading, spacing: Layout.verticalSpacing) {
                 // Title label
-                Text(Localization.title)
+                Text(DashboardCard.CardType.onboarding.name)
                     .fontWeight(.semibold)
                     .if(isExpanded) { $0.titleStyle() }
                     .if(!isExpanded) { $0.headlineStyle() }
@@ -84,10 +85,6 @@ private extension StoreSetupProgressView {
     }
 
     enum Localization {
-        static let title = NSLocalizedString(
-            "Store setup",
-            comment: "Title of the store setup progress view."
-        )
 
         enum TasksCompleted {
             static let collapsed = NSLocalizedString(

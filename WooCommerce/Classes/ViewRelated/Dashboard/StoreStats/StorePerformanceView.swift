@@ -1,5 +1,6 @@
 import SwiftUI
 import enum Yosemite.StatsTimeRangeV4
+import struct Yosemite.DashboardCard
 
 /// View for store performance on Dashboard screen
 ///
@@ -92,7 +93,7 @@ private extension StorePerformanceView {
                 .headlineStyle()
                 .renderedIf(viewModel.statsVersion == .v3 || viewModel.loadingError != nil)
 
-            Text(Localization.title)
+            Text(DashboardCard.CardType.performance.name)
                 .headlineStyle()
             Spacer()
             Menu {
@@ -331,11 +332,6 @@ private extension StorePerformanceView {
     }
 
     enum Localization {
-        static let title = NSLocalizedString(
-            "storePerformanceView.title",
-            value: "Performance",
-            comment: "Title of the store performance section on the Dashboard screen"
-        )
         static let hideCard = NSLocalizedString(
             "storePerformanceView.hideCard",
             value: "Hide Performance",

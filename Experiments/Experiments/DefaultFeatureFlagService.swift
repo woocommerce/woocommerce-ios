@@ -92,6 +92,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .displayPointOfSaleToggle:
             return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .dynamicDashboardM2:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true
         }

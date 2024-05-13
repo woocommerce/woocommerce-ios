@@ -837,7 +837,6 @@ private extension Product {
     }
 
     enum MetadataKeys {
-        static let allowCombination   = "allow_combination"
         static let headStartPost      = "_headstart_post"
     }
 }

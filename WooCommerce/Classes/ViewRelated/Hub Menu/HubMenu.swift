@@ -1,6 +1,7 @@
 import SwiftUI
 import Kingfisher
 import Yosemite
+import WooCommercePOS
 
 /// This view will be embedded inside the `HubMenuViewController`
 /// and will be the entry point of the `Menu` Tab.

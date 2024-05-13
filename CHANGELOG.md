@@ -1,6 +1,9 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 18.6
+With this week's update, you can set a shipping method when you add or edit an order. We've also addressed a potential crash from opening a notification, and made readability improvements in dark mode. Keep your app up to date for the best of WooCommerce!
+
 ## 18.5
 In our latest update we've enhanced the barcode scanning by squashing a bug that allowed variable parent products to sneak into orders. Enjoy a smoother order creation experience with our latest update!
 

@@ -3,7 +3,7 @@ import NetworkingWatchOS
 
 struct ContentView: View {
 
-    let message: String = "Hello Woo"
+    let message: String = "Logged In"
 
     var body: some View {
         VStack {

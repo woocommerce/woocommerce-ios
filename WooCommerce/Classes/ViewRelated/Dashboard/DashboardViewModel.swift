@@ -24,6 +24,7 @@ final class DashboardViewModel: ObservableObject {
     let storePerformanceViewModel: StorePerformanceViewModel
     let topPerformersViewModel: TopPerformersDashboardViewModel
     let inboxViewModel: InboxDashboardCardViewModel
+    let mostActiveCouponsViewModel: MostActiveCouponsCardViewModel
 
     @Published var justInTimeMessagesWebViewModel: WebViewSheetViewModel? = nil
 
@@ -106,6 +107,7 @@ final class DashboardViewModel: ObservableObject {
         self.topPerformersViewModel = .init(siteID: siteID,
                                             usageTracksEventEmitter: usageTracksEventEmitter)
         self.inboxViewModel = InboxDashboardCardViewModel(siteID: siteID)
+        self.mostActiveCouponsViewModel = MostActiveCouponsCardViewModel(siteID: siteID)
         self.themeInstaller = themeInstaller
         self.inAppFeedbackCardViewModel.onFeedbackGiven = { [weak self] feedback in
             self?.showingInAppFeedbackSurvey = feedback == .didntLike
@@ -150,6 +152,9 @@ final class DashboardViewModel: ObservableObject {
             }
             group.addTask { [weak self] in
                 await self?.topPerformersViewModel.reloadData()
+            }
+            group.addTask { [weak self] in
+                await self?.mostActiveCouponsViewModel.reloadData()
             }
         }
     }
@@ -302,6 +307,10 @@ private extension DashboardViewModel {
         inboxViewModel.onDismiss = { [weak self] in
             self?.showCustomizationScreen()
         }
+
+        mostActiveCouponsViewModel.onDismiss = { [weak self] in
+            self?.showCustomizationScreen()
+        }
     }
 
     func showCustomizationScreen() {
@@ -337,6 +346,7 @@ private extension DashboardViewModel {
         if dynamicDashboardM2 {
             // TODO: check eligibility and update `enabled` accordingly
             cards.append(DashboardCard(type: .inbox, availability: .show, enabled: false))
+            cards.append(DashboardCard(type: .coupons, availability: .show, enabled: false))
         }
 
         return cards

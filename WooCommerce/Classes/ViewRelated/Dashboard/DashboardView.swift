@@ -37,6 +37,9 @@ struct DashboardView: View {
                               _ timeZone: TimeZone,
                               _ timeRange: StatsTimeRangeV4) -> Void)?
 
+    /// Set externally in the hosting controller.
+    var onViewAllCoupons: ((_ siteID: Int64) -> Void)?
+
     private let storePlanSynchronizer = ServiceLocator.storePlanSynchronizer
     private let connectivityObserver = ServiceLocator.connectivityObserver
 
@@ -173,7 +176,12 @@ private extension DashboardView {
                         })
                     case .inbox:
                         InboxDashboardCard(viewModel: viewModel.inboxViewModel)
-                    case .coupons, .lastOrders, .stock, .reviews:
+                    case .coupons:
+                        MostActiveCouponsCard(viewModel: viewModel.mostActiveCouponsViewModel,
+                                              onViewAllCoupons: { siteID in
+                            onViewAllCoupons?(siteID)
+                        })
+                    case .lastOrders, .stock, .reviews:
                         EmptyView()
                     }
 

@@ -1,6 +1,7 @@
 import Combine
 import UIKit
 import Yosemite
+import protocol WooFoundation.Analytics
 
 /// Coordinates navigation for domain settings flow.
 final class DomainSettingsCoordinator: Coordinator {

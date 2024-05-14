@@ -1,4 +1,5 @@
 import Foundation
+import protocol WooFoundation.WooAnalyticsEventPropertyType
 
 extension WooAnalyticsEvent {
     enum JetpackSetup {

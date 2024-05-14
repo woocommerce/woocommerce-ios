@@ -11,7 +11,7 @@ struct CollectPaymentAppIntent: AppIntent {
     @MainActor
     func perform() async throws -> some IntentResult {
         AppDelegate.shared.tabBarController?.navigate(to: PaymentsMenuDestination.collectPayment)
-        ServiceLocator.analytics.track(event: WooAnalyticsEvent.AppIntents.shortcutWasOpened(with: .collectPayment))
+        ServiceLocator.analytics.track(event: .AppIntents.shortcutWasOpened(with: .collectPayment))
 
         return .result()
     }

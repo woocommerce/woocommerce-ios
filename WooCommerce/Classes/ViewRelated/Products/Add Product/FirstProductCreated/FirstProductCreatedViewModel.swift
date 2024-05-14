@@ -1,4 +1,5 @@
 import Yosemite
+import protocol WooFoundation.Analytics
 
 final class FirstProductCreatedViewModel: ObservableObject {
     @Published var isSharePopoverPresented = false

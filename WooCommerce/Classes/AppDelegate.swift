@@ -4,6 +4,7 @@ import Storage
 import class Networking.UserAgent
 import Experiments
 import class WidgetKit.WidgetCenter
+import protocol WooFoundation.Analytics
 import protocol Yosemite.StoresManager
 
 import CocoaLumberjack

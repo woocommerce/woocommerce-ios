@@ -1,5 +1,6 @@
 import XCTest
 import TestKit
+import protocol WooFoundation.Analytics
 
 @testable import WooCommerce
 

@@ -13,6 +13,7 @@ import protocol Networking.ApplicationPasswordUseCase
 import class Networking.OneTimeApplicationPasswordUseCase
 import class Networking.DefaultApplicationPasswordUseCase
 import protocol Experiments.ABTestVariationProvider
+import protocol WooFoundation.Analytics
 import struct Experiments.CachedABTestVariationProvider
 
 /// Encapsulates all of the interactions with the WordPress Authenticator

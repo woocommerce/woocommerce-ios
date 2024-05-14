@@ -1,6 +1,7 @@
 import Foundation
 import Yosemite
 import Combine
+import protocol WooFoundation.Analytics
 
 enum CardReaderPreflightResult {
     case completed(CardReader, PaymentGatewayAccount)

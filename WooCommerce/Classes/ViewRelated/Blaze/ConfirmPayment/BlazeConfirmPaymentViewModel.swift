@@ -2,6 +2,7 @@ import Foundation
 import Yosemite
 import class Photos.PHAsset
 import enum Networking.NetworkError
+import protocol WooFoundation.Analytics
 
 /// View model for `BlazeConfirmPaymentView`
 final class BlazeConfirmPaymentViewModel: ObservableObject {

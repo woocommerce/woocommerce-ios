@@ -9,7 +9,7 @@ final class MostActiveCouponsCardViewModel: ObservableObject {
     // Set externally to trigger callback upon hiding the Coupons card.
     var onDismiss: (() -> Void)?
 
-    @Published private(set) var timeRange = MostActiveCouponsTimeRange.today
+    @Published private(set) var timeRange = MostActiveCouponsTimeRange.allTime
     @Published private(set) var syncingData = false
     @Published private(set) var syncingError: Error?
     @Published private(set) var coupons: [Coupon] = []
@@ -33,7 +33,7 @@ final class MostActiveCouponsCardViewModel: ObservableObject {
         self.analytics = analytics
 
         Task { @MainActor in
-            self.timeRange = await loadLastTimeRange() ?? .today
+            self.timeRange = await loadLastTimeRange() ?? .allTime
             await reloadData()
         }
     }

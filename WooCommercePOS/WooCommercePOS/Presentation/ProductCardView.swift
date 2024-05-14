@@ -11,15 +11,15 @@ struct ProductCardView: View {
 
     var body: some View {
         Rectangle()
-            .fill(.blue)
+            .fill(Color.tertiaryBackground)
             .frame(minWidth: 200, maxWidth: .infinity, minHeight: 200)
             .aspectRatio(1, contentMode: .fit)
             .overlay {
                 VStack {
                     Text(product.name)
-                        .foregroundStyle(Color.cyan)
+                        .foregroundStyle(Color.primaryBackground)
                     Text(product.price)
-                        .foregroundStyle(Color.cyan)
+                        .foregroundStyle(Color.primaryBackground)
                     HStack {
                         QuantityBadgeView()
                         PlusButtonView {

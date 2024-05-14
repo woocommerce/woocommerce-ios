@@ -377,6 +377,13 @@ extension ProductVariationFormViewModel {
     }
 
     func updateQuantityRules(minQuantity: String, maxQuantity: String, groupOf: String) {
+        productVariation = EditableProductVariationModel(productVariation: productVariation.productVariation.copy(minAllowedQuantity: minQuantity, 
+                                                                                                                  maxAllowedQuantity: maxQuantity,
+                                                                                                                  groupOfQuantity: groupOf),
+                                                         parentProductType: productVariation.productType,
+                                                         allAttributes: allAttributes,
+                                                         parentProductSKU: parentProductSKU,
+                                                         parentProductDisablesQuantityRules: parentProductDisablesQuantityRules)
     }
 }
 

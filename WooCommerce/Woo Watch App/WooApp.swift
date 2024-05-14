@@ -7,7 +7,13 @@ struct Woo_Watch_AppApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView(message: phoneDependencySynchronizer.message)
+            if phoneDependencySynchronizer.dependencies.credentials != nil {
+                ContentView()
+                    .environment(\.dependencies, phoneDependencySynchronizer.dependencies)
+            } else {
+                ConnectView()
+            }
+
         }
     }
 }

@@ -12,40 +12,38 @@ class CardPresentPaymentsAdaptor {
 
     func collectPayment(for order: Order,
                         using discoveryMethod: CardReaderDiscoveryMethod) -> AsyncStream<CardPresentPaymentEvent> {
-        var continuation: AsyncStream<CardPresentPaymentEvent>.Continuation!
-        let eventStream = AsyncStream { cont in
-            continuation = cont
-        }
-        // The problem is, we need to hold on to this stream at the class level, so that we can send events from the onboarding/alerts implementations.
-        // That makes it long-lived and then it has to match the class's lifespan.
-        // That stops us having a single source of truth for the reader connection (at least in this class.)
+        let eventStream = AsyncStream<CardPresentPaymentEvent> { streamContinuation in
+            let eventAdaptor = CardPresentPaymentsEventAdaptor(eventStreamContinuation: streamContinuation)
 
-        let orderPaymentUseCase = CollectOrderPaymentUseCase(siteID: siteID,
-                                                                   order: order,
-                                                                   formattedAmount: currencyFormatter.formatAmount(order.total, with: order.currency) ?? "",
-                                                                   // moved from EditableOrderViewModel.collectPayment(for: Order)
-                                                                   rootViewController: UIViewController(), 
-                                                                   // We don't want to use this at all, but it's currently required by the existing code.
-                                                                   // TODO: replace `rootViewController` with a protocol containing the UIVC functions we need, and implement that here.
-                                                                   onboardingPresenter: self,
-                                                                   configuration: CardPresentConfigurationLoader().configuration,
-                                                                   alertsPresenter: self)
-        orderPaymentUseCase.collectPayment(using: discoveryMethod) { error in
-            if let error = error as? CardPaymentErrorProtocol {
-                continuation.yield(.failure(error))
-            } else {
-                continuation.yield(.failure(CardPaymentsAdaptorError.unknownPaymentError(underlyingError: error)))
-                continuation.finish()
+            let orderPaymentUseCase = CollectOrderPaymentUseCase(siteID: siteID,
+                                                                 order: order,
+                                                                 formattedAmount: currencyFormatter.formatAmount(order.total, with: order.currency) ?? "",
+                                                                 // moved from EditableOrderViewModel.collectPayment(for: Order)
+                                                                 rootViewController: UIViewController(),
+                                                                 // We don't want to use this at all, but it's currently required by the existing code.
+                                                                 // TODO: replace `rootViewController` with a protocol containing the UIVC functions we need, and implement that here.
+                                                                 onboardingPresenter: eventAdaptor,
+                                                                 configuration: CardPresentConfigurationLoader().configuration,
+                                                                 alertsPresenter: eventAdaptor)
+            orderPaymentUseCase.collectPayment(using: discoveryMethod) { error in
+                if let error = error as? CardPaymentErrorProtocol {
+                    streamContinuation.yield(.failure(error))
+                } else {
+                    streamContinuation.yield(.failure(CardPaymentsAdaptorError.unknownPaymentError(underlyingError: error)))
+                    streamContinuation.finish()
+                }
+            } onCancel: {
+                streamContinuation.yield(.cancellation)
+                streamContinuation.finish()
+            } onPaymentCompletion: {
+                // no-op – not used in PaymentMethodsViewModel anyway so this can be removed
+            } onCompleted: {
+                streamContinuation.yield(.success(order))
+                streamContinuation.finish()
             }
-        } onCancel: {
-            continuation.yield(.cancellation)
-            continuation.finish()
-        } onPaymentCompletion: {
-            // no-op – not used in PaymentMethodsViewModel anyway so this can be removed
-        } onCompleted: {
-            continuation.yield(.success(order))
-            continuation.finish()
         }
+
+        return eventStream
     }
 
     enum CardPaymentsAdaptorError: Error, CardPaymentErrorProtocol {
@@ -57,31 +55,37 @@ class CardPresentPaymentsAdaptor {
     }
 }
 
-extension CardPresentPaymentsAdaptor: CardPresentPaymentsOnboardingPresenting {
-    func showOnboardingIfRequired(from: UIViewController, readyToCollectPayment: @escaping () -> Void) {
-        
+class CardPresentPaymentsEventAdaptor: CardPresentPaymentsOnboardingPresenting, CardPresentPaymentAlertsPresenting {
+    let eventStreamContinuation: AsyncStream<CardPresentPaymentEvent>.Continuation
+
+    init(eventStreamContinuation: AsyncStream<CardPresentPaymentEvent>.Continuation) {
+        self.eventStreamContinuation = eventStreamContinuation
     }
-    
+
+    func showOnboardingIfRequired(from: UIViewController, readyToCollectPayment: @escaping () -> Void) {
+        eventStreamContinuation.yield(.showOnboarding)
+    }
+
     func refresh() {
         // TODO: Refresh onboarding
     }
-}
 
-extension CardPresentPaymentsAdaptor: CardPresentPaymentAlertsPresenting {
     func present(viewModel: CardPresentPaymentsModalViewModel) {
-        <#code#>
+        eventStreamContinuation.yield(.presentAlert(CardPresentPaymentsAdaptorPaymentAlert(from: viewModel)))
     }
-    
+
     func foundSeveralReaders(readerIDs: [String], connect: @escaping (String) -> Void, cancelSearch: @escaping () -> Void) {
-
+        eventStreamContinuation.yield(.presentReaderList(readerIDs))
     }
-    
+
     func updateSeveralReadersList(readerIDs: [String]) {
-
+        eventStreamContinuation.yield(.presentReaderList(readerIDs))
     }
-    
+
     func dismiss() {
-        <#code#>
+        eventStreamContinuation.yield(.dismissAlerts)
+        // I don't know whether we _really_ need to implement this.
+        // It seems better to dismiss implicitly (if we need to present something else) or if the user triggers it.
     }
 }
 
@@ -89,6 +93,7 @@ enum CardPresentPaymentEvent {
     case presentAlert(CardPresentPaymentsAdaptorPaymentAlert)
     case presentReaderList(_ readerIDs: [String])
     case showOnboarding
+    case dismissAlerts
 
     case success(Order)
     case failure(CardPaymentErrorProtocol)
@@ -96,6 +101,7 @@ enum CardPresentPaymentEvent {
 }
 
 struct CardPresentPaymentsAdaptorPaymentAlert {
-    
-}
+    init(from: CardPresentPaymentsModalViewModel) {
 
+    }
+}

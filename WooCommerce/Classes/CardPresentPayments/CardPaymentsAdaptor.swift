@@ -11,6 +11,37 @@ enum CardPresentPaymentResult {
 class CardPresentPaymentsAdaptor {
     private let currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
     private let siteID: Int64
+
+    // These connection controllers shouldn't be lazy, I'm just being lazy.
+    // They're lazy because of `self` implementing `alertsPresenter`.
+    // If that were done by another owned struct, and the handler passed to it as and when it changed, we could do this in the init.
+    private lazy var bluetoothConnectionController: CardReaderConnectionController = {
+        CardReaderConnectionController(
+            forSiteID: siteID,
+            knownReaderProvider: CardReaderSettingsKnownReaderStorage(),
+            alertsPresenter: self,
+            alertsProvider: BluetoothReaderConnectionAlertsProvider(),
+            configuration: CardPresentConfigurationLoader().configuration,
+            analyticsTracker: CardReaderConnectionAnalyticsTracker(
+                configuration: CardPresentConfigurationLoader().configuration,
+                siteID: siteID,
+                connectionType: .userInitiated, // This will need a tweak – it changes from use to use.
+                analytics: ServiceLocator.analytics))
+    }()
+
+    private lazy var tapToPayConnectionController: BuiltInCardReaderConnectionController = {
+        BuiltInCardReaderConnectionController(
+            forSiteID: siteID,
+            alertsPresenter: self,
+            alertsProvider: BluetoothReaderConnectionAlertsProvider(),
+            configuration: CardPresentConfigurationLoader().configuration,
+            analyticsTracker: CardReaderConnectionAnalyticsTracker(
+                configuration: CardPresentConfigurationLoader().configuration,
+                siteID: siteID,
+                connectionType: .userInitiated, // This will need a tweak – it changes from use to use.
+                analytics: ServiceLocator.analytics))
+    }()
+
     var paymentsAlertHandler: CardPresentPaymentsAlertHandling?
 
     init(siteID: Int64) {
@@ -19,6 +50,14 @@ class CardPresentPaymentsAdaptor {
 
     func collectPayment(for order: Order,
                         using discoveryMethod: CardReaderDiscoveryMethod) async -> CardPresentPaymentResult {
+        let preflightController = await CardPresentPaymentPreflightController(
+            siteID: siteID,
+            configuration: CardPresentConfigurationLoader().configuration,
+            rootViewController: UIViewController(),
+            alertsPresenter: self,
+            onboardingPresenter: self,
+            bluetoothConnectionController: bluetoothConnectionController,
+            builtInConnectionController: tapToPayConnectionController)
         let orderPaymentUseCase = await CollectOrderPaymentUseCase(siteID: siteID,
                                                                    order: order,
                                                                    formattedAmount: currencyFormatter.formatAmount(order.total, with: order.currency) ?? "",
@@ -28,7 +67,8 @@ class CardPresentPaymentsAdaptor {
                                                                    // TODO: replace `rootViewController` with a protocol containing the UIVC functions we need, and implement that here.
                                                                    onboardingPresenter: self,
                                                                    configuration: CardPresentConfigurationLoader().configuration,
-                                                                   alertsPresenter: self)
+                                                                   alertsPresenter: self,
+                                                                   preflightController: preflightController)
         return await withCheckedContinuation { continuation in
             orderPaymentUseCase.collectPayment(using: discoveryMethod) { error in
                 if let error = error as? CardPaymentErrorProtocol {

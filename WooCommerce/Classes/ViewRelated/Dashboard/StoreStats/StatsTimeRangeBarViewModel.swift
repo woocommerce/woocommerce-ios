@@ -155,4 +155,27 @@ struct StatsTimeRangeBarViewModel: Equatable {
                   timeRange: timeRange,
                   timezone: timezone)
     }
+
+    init?(timeRange: MostActiveCouponsTimeRange,
+          timezone: TimeZone) {
+        switch timeRange {
+        case .allTime:
+            return nil
+        case .today:
+            self.init(timeRange: StatsTimeRangeV4.today,
+                      timezone: timezone)
+        case .thisWeek:
+            self.init(timeRange: StatsTimeRangeV4.thisWeek,
+                      timezone: timezone)
+        case .thisMonth:
+            self.init(timeRange: StatsTimeRangeV4.thisMonth,
+                      timezone: timezone)
+        case .thisYear:
+            self.init(timeRange: StatsTimeRangeV4.thisYear,
+                      timezone: timezone)
+        case .custom(let from, let to):
+            self.init(timeRange: StatsTimeRangeV4.custom(from: from, to: to),
+                      timezone: timezone)
+        }
+    }
 }

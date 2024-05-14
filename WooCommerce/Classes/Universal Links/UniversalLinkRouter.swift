@@ -1,7 +1,6 @@
 import Foundation
 import UIKit
 import protocol WooFoundation.Analytics
-import struct WooFoundation.WooAnalyticsEvent
 
 /// Keeps a list of possible URL routes that are exposed
 /// via universal links, and handles incoming links to trigger the appropriate route.

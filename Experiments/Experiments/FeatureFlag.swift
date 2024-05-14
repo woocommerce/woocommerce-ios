@@ -196,11 +196,15 @@ public enum FeatureFlag: Int {
     ///
     case subscriptionsInOrderCreationCustomers
 
-    /// Enables new shipping line features in order details and order creation/editing.
+    /// Enables shipping method selection in order creation/editing.
     ///
-    case enhancingOrderShippingLines
+    case orderShippingMethodSelection
 
     /// Makes the Experimental Feature toggle "Point Of Sale" menu visible, under app settings.
     ///
     case displayPointOfSaleToggle
+
+    /// Enables new dashboard cards on the My Store screen.
+    ///
+    case dynamicDashboardM2
 }

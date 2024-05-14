@@ -23,6 +23,7 @@ final class DashboardViewModel: ObservableObject {
 
     let storePerformanceViewModel: StorePerformanceViewModel
     let topPerformersViewModel: TopPerformersDashboardViewModel
+    let inboxViewModel: InboxDashboardCardViewModel
 
     @Published var justInTimeMessagesWebViewModel: WebViewSheetViewModel? = nil
 
@@ -104,6 +105,7 @@ final class DashboardViewModel: ObservableObject {
                                                usageTracksEventEmitter: usageTracksEventEmitter)
         self.topPerformersViewModel = .init(siteID: siteID,
                                             usageTracksEventEmitter: usageTracksEventEmitter)
+        self.inboxViewModel = InboxDashboardCardViewModel(siteID: siteID)
         self.themeInstaller = themeInstaller
         self.inAppFeedbackCardViewModel.onFeedbackGiven = { [weak self] feedback in
             self?.showingInAppFeedbackSurvey = feedback == .didntLike
@@ -296,6 +298,10 @@ private extension DashboardViewModel {
         topPerformersViewModel.onDismiss = { [weak self] in
             self?.showCustomizationScreen()
         }
+
+        inboxViewModel.onDismiss = { [weak self] in
+            self?.showCustomizationScreen()
+        }
     }
 
     func showCustomizationScreen() {
@@ -326,6 +332,12 @@ private extension DashboardViewModel {
         cards.append(DashboardCard(type: .blaze,
                                    availability: canShowBlaze ? .show : .hide,
                                    enabled: canShowBlaze))
+
+        let dynamicDashboardM2 = featureFlagService.isFeatureFlagEnabled(.dynamicDashboardM2)
+        if dynamicDashboardM2 {
+            // TODO: check eligibility and update `enabled` accordingly
+            cards.append(DashboardCard(type: .inbox, availability: .show, enabled: false))
+        }
 
         return cards
     }

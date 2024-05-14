@@ -709,6 +709,50 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         XCTAssertTrue(update.fields.contains(.customerID))
     }
 
+    func test_removing_customer_id_sets_customer_id_to_0() {
+        // Given
+        let order = Order.fake().copy(orderID: sampleOrderID, customerID: 16)
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .editing(initialOrder: order), stores: stores)
+
+        // When
+        stores.whenReceivingAction(ofType: OrderAction.self) { action in
+            // Then
+            XCTFail("Unexpected action: \(action)")
+        }
+        synchronizer.removeCustomerID.send(())
+
+        // Then
+        XCTAssertEqual(synchronizer.order.customerID, 0)
+    }
+
+    func test_removing_customer_id_does_not_trigger_sync_in_creation_flow() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
+
+        // When
+        stores.whenReceivingAction(ofType: OrderAction.self) { action in
+            // Then
+            XCTFail("Unexpected action: \(action)")
+        }
+        synchronizer.removeCustomerID.send(())
+    }
+
+    func test_removing_customer_id_does_not_trigger_sync_in_edit_flow() {
+        // Given
+        let order = Order.fake().copy(orderID: sampleOrderID)
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .editing(initialOrder: order), stores: stores)
+
+        // When
+        stores.whenReceivingAction(ofType: OrderAction.self) { action in
+            // Then
+            XCTFail("Unexpected action: \(action)")
+        }
+        synchronizer.removeCustomerID.send(())
+    }
+
     func test_states_are_properly_set_upon_success_order_creation() {
         // Given
         let product = Product.fake().copy(productID: sampleProductID)

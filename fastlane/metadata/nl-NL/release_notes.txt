@@ -1,0 +1,1 @@
+In onze nieuwste update hebben we het scannen van streepjescodes verbeterd door een bug te verhelpen die ervoor zorgde dat een bovenliggend variabel product op de bestelling terecht kwam. Profiteer van een soepelere ervaring met bestellingen aanmaken met onze nieuwste update!

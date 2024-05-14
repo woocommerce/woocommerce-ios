@@ -1,0 +1,1 @@
+I vår senaste uppdatering har vi förbättrat streckkodsskanningen genom att åtgärda en bugg som gjorde att variabla överordnade produkter kunde smyga sig in i beställningar. Ta del av smidigare beställningsskapande med vår senaste uppdatering.

@@ -1,7 +1,6 @@
 import XCTest
 @testable import WooCommerce
 import Yosemite
-import enum WooFoundation.WooAnalyticsStat
 import protocol WooFoundation.Analytics
 
 final class AnalyticsHubCustomizeViewModelTests: XCTestCase {

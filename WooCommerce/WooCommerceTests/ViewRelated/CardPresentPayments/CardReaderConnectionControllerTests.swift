@@ -2,7 +2,6 @@ import XCTest
 import Fakes
 import Storage
 import Yosemite
-import enum WooFoundation.WooAnalyticsStat
 @testable import WooCommerce
 
 final class CardReaderConnectionControllerTests: XCTestCase {

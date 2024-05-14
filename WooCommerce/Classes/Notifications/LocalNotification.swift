@@ -1,6 +1,5 @@
 import Foundation
 import protocol Yosemite.StoresManager
-import struct WooFoundation.WooAnalyticsEvent
 
 /// Content for a local notification to be converted to `UNNotificationContent`.
 /// This is now currently unused, but preserved for future needs.

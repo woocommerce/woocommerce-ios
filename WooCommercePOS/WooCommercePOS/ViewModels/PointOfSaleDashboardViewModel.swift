@@ -8,11 +8,11 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
         self.products = products
     }
 
-    func callbackFromProductSelector(_ product: Product) {
+    func addProductToCart(_ product: Product) {
         debugPrint("Not implemented")
     }
 
-    func callbackFromOrder() {
+    func submitCart() {
         debugPrint("Not implemented")
     }
 }

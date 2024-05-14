@@ -1,0 +1,1 @@
+Nel nostro ultimo aggiornamento abbiamo migliorato la scansione dei codici a barre eliminando un bug che consentiva ai prodotti genitore variabili di intrufolarsi negli ordini. Goditi un'esperienza di creazione dell'ordine più fluida con il nostro ultimo aggiornamento!

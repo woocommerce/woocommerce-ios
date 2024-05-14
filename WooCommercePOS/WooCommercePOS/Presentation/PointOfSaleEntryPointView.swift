@@ -10,22 +10,26 @@ public struct PointOfSaleEntryPointView: View {
         return viewModel
     }()
 
-    private var shouldHideWooAppTabBar: ((Bool) -> Void)? = nil
+    private let hideAppTabBar: ((Bool) -> Void)
 
     // Necessary to expose the View's entry point to WooCommerce
     // Otherwise the current switch on `HubMenu` where this View is created
     // will error with "No exact matches in reference to static method 'buildExpression'"
-    public init(hideAppTabBarsCallback: ((Bool) -> Void)? = nil) {
-        self.shouldHideWooAppTabBar = hideAppTabBarsCallback
+    public init(hideAppTabBar: @escaping ((Bool) -> Void)) {
+        self.hideAppTabBar = hideAppTabBar
     }
 
     public var body: some View {
         PointOfSaleDashboardView(viewModel: viewModel)
-            .onAppear(perform: {
-                shouldHideWooAppTabBar?(true)
-            })
+            .onAppear {
+                hideAppTabBar(true)
+            }
             .onDisappear {
-                shouldHideWooAppTabBar?(false)
+                hideAppTabBar(false)
             }
     }
+}
+
+#Preview {
+    PointOfSaleEntryPointView(hideAppTabBar: { _ in })
 }

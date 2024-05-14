@@ -11,8 +11,12 @@ final class OrderCustomerSectionViewModel: ObservableObject {
     // MARK: - Customer search
     @Published var showsCustomerSearch: Bool = false
     @Published var customerData: CollapsibleCustomerCardViewModel.CustomerData
-    @Published private(set) var addressFormViewModel: CreateOrderAddressFormViewModel
-    private let addCustomer: (Customer) -> Void
+    @Published var addressFormViewModel: CreateOrderAddressFormViewModel
+    private let updateCustomer: (Customer?) -> Void
+
+    // MARK: - Address
+    @Published var showsAddressForm: Bool = false
+    let resetAddressForm: () -> Void
 
     @Published private(set) var cardViewModel: CollapsibleCustomerCardViewModel?
 
@@ -21,13 +25,15 @@ final class OrderCustomerSectionViewModel: ObservableObject {
          customerData: CollapsibleCustomerCardViewModel.CustomerData,
          isCustomerAccountRequired: Bool,
          isEditable: Bool,
-         addCustomer: @escaping (Customer) -> Void) {
+         updateCustomer: @escaping (Customer?) -> Void,
+         resetAddressForm: @escaping () -> Void) {
         self.siteID = siteID
         self.addressFormViewModel = addressFormViewModel
         self.customerData = customerData
         self.isCustomerAccountRequired = isCustomerAccountRequired
         self.isEditable = isEditable
-        self.addCustomer = addCustomer
+        self.updateCustomer = updateCustomer
+        self.resetAddressForm = resetAddressForm
         observeCustomerDataForCardViewModel()
     }
 
@@ -36,7 +42,9 @@ final class OrderCustomerSectionViewModel: ObservableObject {
         cardViewModel = .init(customerData: customerData,
                               isCustomerAccountRequired: isCustomerAccountRequired,
                               isEditable: isEditable,
-                              isCollapsed: false)
+                              isCollapsed: false,
+                              removeCustomer: removeCustomer,
+                              editAddress: editAddress)
     }
 
     /// Called when the user taps to search for a customer.
@@ -46,7 +54,17 @@ final class OrderCustomerSectionViewModel: ObservableObject {
 
     /// Called when the user selects a customer from search.
     func addCustomerFromSearch(_ customer: Customer) {
-        addCustomer(customer)
+        updateCustomer(customer)
+    }
+}
+
+private extension OrderCustomerSectionViewModel {
+    func removeCustomer() {
+        updateCustomer(nil)
+    }
+
+    func editAddress() {
+        showsAddressForm = true
     }
 }
 
@@ -60,7 +78,9 @@ private extension OrderCustomerSectionViewModel {
                 return CollapsibleCustomerCardViewModel(customerData: customerData,
                                                         isCustomerAccountRequired: isCustomerAccountRequired,
                                                         isEditable: isEditable,
-                                                        isCollapsed: true)
+                                                        isCollapsed: true,
+                                                        removeCustomer: removeCustomer,
+                                                        editAddress: editAddress)
             }
             .assign(to: &$cardViewModel)
     }

@@ -1,6 +1,5 @@
 import XCTest
 import TestKit
-import enum WooFoundation.WooAnalyticsStat
 
 @testable import WooCommerce
 @testable import Yosemite
@@ -122,7 +121,7 @@ import enum WooFoundation.WooAnalyticsStat
         await viewModel.submitChanges(destination: .settings)
 
         // Then
-        XCTAssertEqual(analytics.lastReceivedStat, WooAnalyticsStat.privacyChoicesSettingsButtonTapped)
+        XCTAssertEqual(analytics.lastReceivedEventName, WooAnalyticsStat.privacyChoicesSettingsButtonTapped.rawValue)
     }
 
     @MainActor func test_tapping_go_to_save_tracks_analytic_event() async {
@@ -135,7 +134,7 @@ import enum WooFoundation.WooAnalyticsStat
         await viewModel.submitChanges(destination: .dismiss)
 
         // Then
-        XCTAssertEqual(analytics.lastReceivedStat, WooAnalyticsStat.privacyChoicesSaveButtonTapped)
+        XCTAssertEqual(analytics.lastReceivedEventName, WooAnalyticsStat.privacyChoicesSaveButtonTapped.rawValue)
     }
 
     override class func tearDown() {

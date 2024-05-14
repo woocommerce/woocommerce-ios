@@ -43,39 +43,35 @@ struct SingleSelectionList<T: Hashable>: View {
     }
 
     var body: some View {
-        NavigationView {
-            List {
-                ForEach(items, id: contentKeyPath) { item in
-                    SelectableItemRow(
-                        title: item[keyPath: contentKeyPath],
-                        selected: item == selected,
-                        displayMode: .compact,
-                        alignment: .trailing)
-                    .onTapGesture {
-                        selected = item
-                        onSelection?(item)
-                    }
+        List {
+            ForEach(items, id: \.self) { item in
+                SelectableItemRow(
+                    title: item[keyPath: contentKeyPath],
+                    selected: item == selected,
+                    displayMode: .compact,
+                    alignment: .trailing)
+                .onTapGesture {
+                    selected = item
+                    onSelection?(item)
                 }
-                .listRowInsets(.zero)
             }
-            .listStyle(.plain)
-            .background(backgroundColor.ignoresSafeArea())
-            .navigationTitle(title)
-            .navigationBarTitleDisplayMode(.inline)
-            .if(showDoneButton, transform: { view in
-                view.toolbar(content: {
-                    ToolbarItem(placement: .confirmationAction) {
-                        Button(action: {
-                            dismiss()
-                        }, label: {
-                            Text(NSLocalizedString("Done", comment: "Done navigation button in selection list screens"))
-                        })
-                    }
-                })
-            })
+            .listRowInsets(.zero)
         }
-        .navigationViewStyle(StackNavigationViewStyle())
-        .wooNavigationBarStyle()
+        .listStyle(.plain)
+        .background(backgroundColor.ignoresSafeArea())
+        .navigationTitle(title)
+        .navigationBarTitleDisplayMode(.inline)
+        .if(showDoneButton, transform: { view in
+            view.toolbar(content: {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button(action: {
+                        dismiss()
+                    }, label: {
+                        Text(NSLocalizedString("Done", comment: "Done navigation button in selection list screens"))
+                    })
+                }
+            })
+        })
     }
 }
 

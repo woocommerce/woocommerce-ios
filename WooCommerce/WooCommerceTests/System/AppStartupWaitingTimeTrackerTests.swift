@@ -1,5 +1,4 @@
 import XCTest
-import enum WooFoundation.WooAnalyticsStat
 @testable import WooCommerce
 
 final class AppStartupWaitingTimeTrackerTests: XCTestCase {

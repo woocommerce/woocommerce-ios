@@ -9,3 +9,7 @@ struct ProductRowView: View {
             .foregroundColor(Color.tertiaryBackground)
     }
 }
+
+#Preview {
+    ProductRowView()
+}

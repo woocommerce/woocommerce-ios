@@ -1,5 +1,4 @@
 import UIKit
-import struct WooFoundation.WooAnalyticsEvent
 
 extension WooAnalyticsEvent {
     enum Products {

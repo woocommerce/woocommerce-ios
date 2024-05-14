@@ -18,9 +18,11 @@ final class EditableOrderViewModelTests: XCTestCase {
         super.setUp()
         stores = MockStoresManager(sessionManager: .testingInstance)
         storageManager = MockStorageManager()
+        let featureFlagService = MockFeatureFlagService(isSubscriptionsInOrderCreationCustomersEnabled: false)
         viewModel = EditableOrderViewModel(siteID: sampleSiteID,
                                            stores: stores,
                                            storageManager: storageManager,
+                                           featureFlagService: featureFlagService,
                                            quantityDebounceDuration: 0)
     }
 
@@ -1296,20 +1298,31 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(event.value as? String, "product_selector")
     }
 
+    func test_payment_data_view_model_when_calling_add_shipping_tapped_tracks_expected_event() {
+        // Given
+        let analytics = MockAnalyticsProvider()
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, analytics: WooAnalytics(analyticsProvider: analytics))
+
+        // When
+        viewModel.paymentDataViewModel.addShippingTappedClosure()
+
+        // Then
+        XCTAssertEqual(analytics.receivedEvents, [WooAnalyticsStat.orderAddShippingTapped.rawValue])
+    }
+
     func test_shipping_method_tracked_when_added() throws {
         // Given
         let analytics = MockAnalyticsProvider()
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, analytics: WooAnalytics(analyticsProvider: analytics))
-        let shippingLine = ShippingLine.fake()
+        let shippingLine = ShippingLine.fake().copy(methodID: "flat_rate")
 
         // When
         viewModel.saveShippingLine(shippingLine)
 
         // Then
         XCTAssertEqual(analytics.receivedEvents, [WooAnalyticsStat.orderShippingMethodAdd.rawValue])
-
-        let properties = try XCTUnwrap(analytics.receivedProperties.first?["flow"] as? String)
-        XCTAssertEqual(properties, "creation")
+        assertEqual("creation", analytics.receivedProperties.first?["flow"] as? String)
+        assertEqual("flat_rate", analytics.receivedProperties.first?["shipping_method"] as? String)
     }
 
     func test_shipping_method_tracked_when_removed() throws {
@@ -1825,7 +1838,8 @@ final class EditableOrderViewModelTests: XCTestCase {
             shipping: sampleAddress2()
         )
 
-        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores)
+        let featureFlagService = MockFeatureFlagService(isSubscriptionsInOrderCreationCustomersEnabled: false)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores, featureFlagService: featureFlagService)
         let taxRate = TaxRate.fake().copy(siteID: sampleSiteID, name: "test tax rate", country: "US", state: "CA", postcodes: ["12345"], cities: ["San Diego"])
         viewModel.addCustomerAddressToOrder(customer: customer)
         viewModel.onTaxRateSelected(taxRate)
@@ -1859,7 +1873,8 @@ final class EditableOrderViewModelTests: XCTestCase {
             shipping: sampleAddress2()
         )
 
-        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores)
+        let featureFlagService = MockFeatureFlagService(isSubscriptionsInOrderCreationCustomersEnabled: false)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores, featureFlagService: featureFlagService)
         let taxRate = TaxRate.fake().copy(siteID: sampleSiteID, name: "test tax rate", country: "US", state: "CA", postcodes: ["12345"], cities: ["San Diego"])
 
         viewModel.addCustomerAddressToOrder(customer: customer)
@@ -1900,7 +1915,8 @@ final class EditableOrderViewModelTests: XCTestCase {
 
     func test_addCustomerAddressToOrder_resets_addressFormViewModel_with_new_data() {
         // Given
-        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores)
+        let featureFlagService = MockFeatureFlagService(isSubscriptionsInOrderCreationCustomersEnabled: false)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores, featureFlagService: featureFlagService)
         let customer = Customer.fake().copy(
             email: "scrambled@scrambled.com",
             firstName: "Johnny",
@@ -1967,7 +1983,8 @@ final class EditableOrderViewModelTests: XCTestCase {
 
     func test_resetAddressForm_discards_pending_address_field_changes() {
         // Given
-        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores)
+        let featureFlagService = MockFeatureFlagService(isSubscriptionsInOrderCreationCustomersEnabled: false)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores, featureFlagService: featureFlagService)
 
         // Given there is a saved change and a pending change
         viewModel.addressFormViewModel.fields.firstName = sampleAddress1().firstName
@@ -2575,7 +2592,8 @@ final class EditableOrderViewModelTests: XCTestCase {
             }
         })
 
-        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores)
+        let featureFlagService = MockFeatureFlagService(isSubscriptionsInOrderCreationCustomersEnabled: false)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores, featureFlagService: featureFlagService)
 
         waitUntil {
             viewModel.addressFormViewModel.fields.state.isNotEmpty
@@ -2619,7 +2637,8 @@ final class EditableOrderViewModelTests: XCTestCase {
             }
         })
 
-        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores)
+        let featureFlagService = MockFeatureFlagService(isSubscriptionsInOrderCreationCustomersEnabled: false)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores, featureFlagService: featureFlagService)
 
         waitUntil {
             viewModel.addressFormViewModel.fields.state.isNotEmpty
@@ -3274,6 +3293,24 @@ final class EditableOrderViewModelTests: XCTestCase {
 
         //Then
         XCTAssertTrue(viewModel.hasChanges)
+    }
+
+    func test_init_syncs_available_shipping_methods() {
+        // Given
+        var shippingMethodsSynced = false
+        stores.whenReceivingAction(ofType: ShippingMethodAction.self) { action in
+            switch action {
+            case let .synchronizeShippingMethods(_, completion):
+                shippingMethodsSynced = true
+                completion(.success(()))
+            }
+        }
+
+        // When
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores)
+
+        // Then
+        XCTAssertTrue(shippingMethodsSynced)
     }
 }
 

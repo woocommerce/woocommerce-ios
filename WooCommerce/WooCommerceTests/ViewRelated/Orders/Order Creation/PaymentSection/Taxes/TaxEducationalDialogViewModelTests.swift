@@ -1,7 +1,6 @@
 import XCTest
 @testable import WooCommerce
 import Yosemite
-import enum WooFoundation.WooAnalyticsStat
 
 final class TaxEducationalDialogViewModelTests: XCTestCase {
     var viewModel: TaxEducationalDialogViewModel!

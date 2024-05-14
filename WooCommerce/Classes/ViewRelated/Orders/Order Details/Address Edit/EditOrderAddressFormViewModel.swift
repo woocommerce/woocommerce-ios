@@ -2,7 +2,6 @@ import Combine
 import Yosemite
 import protocol Storage.StorageManagerType
 import protocol WooFoundation.Analytics
-import struct WooFoundation.WooAnalyticsEvent
 
 final class EditOrderAddressFormViewModel: AddressFormViewModel, AddressFormViewModelProtocol {
 

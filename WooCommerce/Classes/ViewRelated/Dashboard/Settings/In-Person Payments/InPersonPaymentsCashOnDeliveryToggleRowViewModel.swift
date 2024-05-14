@@ -2,7 +2,6 @@ import Foundation
 import Yosemite
 import protocol Storage.StorageManagerType
 import protocol WooFoundation.Analytics
-import struct WooFoundation.WooAnalyticsEvent
 
 protocol InPersonPaymentsCashOnDeliveryToggleRowViewModelProtocol {
     func refreshState()

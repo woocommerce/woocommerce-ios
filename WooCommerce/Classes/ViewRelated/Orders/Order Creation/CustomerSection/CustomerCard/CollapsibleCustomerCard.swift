@@ -19,27 +19,51 @@ struct CollapsibleCustomerCard: View {
                                               emailPlaceholder: viewModel.emailPlaceholder,
                                               shippingAddress: viewModel.shippingAddress)
         }, content: {
-            VStack(alignment: .leading) {
+            VStack(alignment: .leading, spacing: Layout.expandedContentVerticalSpacing) {
                 Divider()
-                Text(Localization.emailAddressTitle)
-                TextField(Localization.emailAddressPlaceholder, text: $viewModel.email)
-                    .textFieldStyle(RoundedBorderTextFieldStyle(focused: true))
+
+                VStack(alignment: .leading) {
+                    Text(Localization.emailAddressTitle)
+                    TextField(Localization.emailAddressPlaceholder, text: $viewModel.email)
+                        .textFieldStyle(RoundedBorderTextFieldStyle(focused: true))
+                }
 
                 Text("Create new customer toggle")
 
                 Divider()
 
-                Text("Address")
-                Text("Remove customer from order")
+                CollapsibleCustomerCardAddressView(viewModel: viewModel.addressViewModel)
+
+                removeCustomerView()
+                    .renderedIf(viewModel.canRemoveCustomer)
             }
-            .padding(.horizontal)
+            .padding(Layout.expandedContentPadding)
         })
+    }
+}
+
+private extension CollapsibleCustomerCard {
+    @ViewBuilder private func removeCustomerView() -> some View {
+        Button {
+            viewModel.removeCustomer()
+        } label: {
+            HStack(alignment: .center) {
+                Label {
+                    Text(Localization.removeCustomer)
+                } icon: {
+                    Image(systemName: "multiply.circle")
+                }
+            }
+        }
+        .foregroundColor(Color(uiColor: .withColorStudio(.red, shade: .shade60)))
     }
 }
 
 private extension CollapsibleCustomerCard {
     enum Layout {
         static let headerAdditionalPadding: EdgeInsets = .init(top: 8, leading: 0, bottom: 8, trailing: 0)
+        static let expandedContentPadding: EdgeInsets = .init(top: 0, leading: 16, bottom: 16, trailing: 16)
+        static let expandedContentVerticalSpacing: CGFloat = 16
     }
 
     enum Localization {
@@ -53,17 +77,25 @@ private extension CollapsibleCustomerCard {
             value: "Enter email address",
             comment: "Title of the email text field in the order form customer card."
         )
+        static let removeCustomer = NSLocalizedString(
+            "collapsibleCustomerCard.removeCustomerButton.title",
+            value: "Remove customer from order",
+            comment: "Title of the button to remove customer from an order in the order form customer card."
+        )
     }
 }
 
 struct CollapsibleCustomerCard_Previews: PreviewProvider {
     static var previews: some View {
-        CollapsibleCustomerCard(viewModel: .init(customerData: .init(email: nil,
+        CollapsibleCustomerCard(viewModel: .init(customerData: .init(customerID: nil,
+                                                                     email: nil,
                                                                      fullName: nil,
                                                                      billingAddressFormatted: nil,
                                                                      shippingAddressFormatted: nil),
                                                  isCustomerAccountRequired: true,
                                                  isEditable: true,
-                                                 isCollapsed: false))
+                                                 isCollapsed: false,
+                                                 removeCustomer: {},
+                                                 editAddress: {}))
     }
 }

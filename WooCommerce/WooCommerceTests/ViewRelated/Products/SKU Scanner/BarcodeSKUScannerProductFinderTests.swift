@@ -1,8 +1,6 @@
 import Foundation
 import XCTest
 import Yosemite
-import enum WooFoundation.WooAnalyticsStat
-import struct WooFoundation.WooAnalyticsEvent
 @testable import WooCommerce
 
 final class BarcodeSKUScannerItemFinderTests: XCTestCase {

@@ -5,18 +5,16 @@ import WordPressShared
 import WidgetKit
 import enum Alamofire.AFError
 import Yosemite
-import enum WooFoundation.WooAnalyticsStat
 import protocol WooFoundation.Analytics
 import protocol WooFoundation.AnalyticsProvider
-import struct WooFoundation.WooAnalyticsEvent
 
-public class WooAnalytics: Analytics {
+final class WooAnalytics: Analytics {
 
     // MARK: - Properties
 
     /// AnalyticsProvider: Interface to the actual analytics implementation
     ///
-    private(set) public var analyticsProvider: AnalyticsProvider
+    private(set) var analyticsProvider: AnalyticsProvider
 
     /// Time when app was opened — used for calculating the time-in-app property
     ///
@@ -24,7 +22,7 @@ public class WooAnalytics: Analytics {
 
     /// Check user opt-in for analytics
     ///
-    public var userHasOptedIn: Bool {
+    var userHasOptedIn: Bool {
         get {
             let isUITesting: Bool = CommandLine.arguments.contains("-ui_testing")
             let optedIn: Bool? = UserDefaults.standard.object(forKey: .userOptedInAnalytics)
@@ -49,7 +47,7 @@ public class WooAnalytics: Analytics {
 
 // MARK: - Public Interface
 //
-public extension WooAnalytics {
+extension WooAnalytics {
 
     /// Initialize the analytics engine
     ///
@@ -82,7 +80,58 @@ public extension WooAnalytics {
         }
     }
 
-    /// Track a spcific event without any associated properties
+    /// Consider calling `track(_ stat:properties:error:)` with the `WooAnalyticsStat` enum.
+    /// Track a specific event with associated properties and an associated error (that is translated to properties)
+    ///
+    /// - Parameters:
+    ///   - eventName: the event name
+    ///   - properties: a collection of properties related to the event
+    ///   - error: the error to track
+    ///
+    func track(_ eventName: String, properties passedProperties: [AnyHashable: Any]?, error: Error?) {
+        guard userHasOptedIn == true else {
+            return
+        }
+        let properties = combinedProperties(from: error, with: passedProperties)
+        if let properties {
+            analyticsProvider.track(eventName, withProperties: properties)
+        } else {
+            analyticsProvider.track(eventName)
+        }
+    }
+}
+
+
+// MARK: - Opt Out
+//
+extension WooAnalytics {
+
+    func setUserHasOptedOut(_ optedOut: Bool) {
+        userHasOptedIn = !optedOut
+
+        if optedOut {
+            analyticsProvider.clearEvents()
+            analyticsProvider.clearUsers()
+            DDLogInfo("🔴 Tracking opt-out complete.")
+        } else {
+            refreshUserData()
+            DDLogInfo("🔵 Tracking started.")
+        }
+    }
+}
+
+extension Analytics {
+    /// Track a specific event.
+    ///
+    /// - Parameter event: The event to track along with its properties.
+    ///
+    func track(event: WooAnalyticsEvent) {
+        track(event.statName, properties: event.properties, error: event.error)
+    }
+}
+
+extension Analytics {
+    /// Track a specific event without any associated properties
     ///
     /// - Parameter stat: the event name
     ///
@@ -126,16 +175,31 @@ public extension WooAnalytics {
             return
         }
 
-        let properties = combinedProperties(from: error, with: passedProperties)
+        let updatedProperties = updatePropertiesIfNeeded(for: stat, properties: passedProperties)
+        track(stat.rawValue, properties: updatedProperties, error: error)
+    }
+}
 
-        if let updatedProperties = updatePropertiesIfNeeded(for: stat, properties: properties) {
-            analyticsProvider.track(stat.rawValue, withProperties: updatedProperties)
-        } else {
-            analyticsProvider.track(stat.rawValue)
+private extension Analytics {
+    /// This function appends any additional properties to the provided properties dict if needed.
+    ///
+    func updatePropertiesIfNeeded(for stat: WooAnalyticsStat, properties: [AnyHashable: Any]?) -> [AnyHashable: Any]? {
+        guard stat.shouldSendSiteProperties, ServiceLocator.stores.isAuthenticated else {
+            return properties
         }
+
+        var updatedProperties = properties ?? [:]
+        let site = ServiceLocator.stores.sessionManager.defaultSite
+        updatedProperties[PropertyKeys.blogIDKey] = site?.siteID
+        updatedProperties[PropertyKeys.wpcomStoreKey] = site?.isWordPressComStore
+        updatedProperties[PropertyKeys.ecommerceTrialKey] = site?.wasEcommerceTrial
+        updatedProperties[PropertyKeys.planKey] = site?.plan
+        updatedProperties[PropertyKeys.siteURL] = site?.url
+        updatedProperties[PropertyKeys.storeID] = ServiceLocator.stores.sessionManager.defaultStoreUUID
+        return updatedProperties
     }
 
-    private func combinedProperties(from error: Error?, with passedProperties: [AnyHashable: Any]?) -> [AnyHashable: Any]? {
+    func combinedProperties(from error: Error?, with passedProperties: [AnyHashable: Any]?) -> [AnyHashable: Any]? {
         let properties: [AnyHashable: Any]?
         let errorProperties = errorProperties(from: error)
 
@@ -149,7 +213,7 @@ public extension WooAnalytics {
         return properties
     }
 
-    private func errorProperties(from error: Error?) -> [AnyHashable: Any]? {
+    func errorProperties(from error: Error?) -> [AnyHashable: Any]? {
         guard let error = error else {
             return nil
         }
@@ -173,26 +237,6 @@ public extension WooAnalytics {
         ]
     }
 }
-
-
-// MARK: - Opt Out
-//
-extension WooAnalytics {
-
-    public func setUserHasOptedOut(_ optedOut: Bool) {
-        userHasOptedIn = !optedOut
-
-        if optedOut {
-            analyticsProvider.clearEvents()
-            analyticsProvider.clearUsers()
-            DDLogInfo("🔴 Tracking opt-out complete.")
-        } else {
-            refreshUserData()
-            DDLogInfo("🔵 Tracking started.")
-        }
-    }
-}
-
 
 // MARK: - Private Helpers
 //
@@ -236,24 +280,6 @@ private extension WooAnalytics {
         return [PropertyKeys.propertyKeyTimeInApp: timeInApp.description]
     }
 
-    /// This function appends any additional properties to the provided properties dict if needed.
-    ///
-    func updatePropertiesIfNeeded(for stat: WooAnalyticsStat, properties: [AnyHashable: Any]?) -> [AnyHashable: Any]? {
-        guard stat.shouldSendSiteProperties, ServiceLocator.stores.isAuthenticated else {
-            return properties
-        }
-
-        var updatedProperties = properties ?? [:]
-        let site = ServiceLocator.stores.sessionManager.defaultSite
-        updatedProperties[PropertyKeys.blogIDKey] = site?.siteID
-        updatedProperties[PropertyKeys.wpcomStoreKey] = site?.isWordPressComStore
-        updatedProperties[PropertyKeys.ecommerceTrialKey] = site?.wasEcommerceTrial
-        updatedProperties[PropertyKeys.planKey] = site?.plan
-        updatedProperties[PropertyKeys.siteURL] = site?.url
-        updatedProperties[PropertyKeys.storeID] = ServiceLocator.stores.sessionManager.defaultStoreUUID
-        return updatedProperties
-    }
-
     /// Builds the necesary properties for the `application_opened` event.
     ///
     func applicationOpenedProperties(_ configurationResult: Result<[WidgetInfo], Error>) -> [String: String] {
@@ -281,21 +307,18 @@ private extension WooAnalytics {
 
 // MARK: - Constants!
 //
-private extension WooAnalytics {
+private enum Constants {
+    static let errorKeyCode         = "error_code"
+    static let errorKeyDomain       = "error_domain"
+    static let errorKeyDescription  = "error_description"
+}
 
-    enum Constants {
-        static let errorKeyCode         = "error_code"
-        static let errorKeyDomain       = "error_domain"
-        static let errorKeyDescription  = "error_description"
-    }
-
-    enum PropertyKeys {
-        static let propertyKeyTimeInApp = "time_in_app"
-        static let blogIDKey            = "blog_id"
-        static let wpcomStoreKey        = "is_wpcom_store"
-        static let ecommerceTrialKey    = "was_ecommerce_trial"
-        static let planKey              = "plan"
-        static let siteURL              = "site_url"
-        static let storeID              = "store_id"
-    }
+private enum PropertyKeys {
+    static let propertyKeyTimeInApp = "time_in_app"
+    static let blogIDKey            = "blog_id"
+    static let wpcomStoreKey        = "is_wpcom_store"
+    static let ecommerceTrialKey    = "was_ecommerce_trial"
+    static let planKey              = "plan"
+    static let siteURL              = "site_url"
+    static let storeID              = "store_id"
 }

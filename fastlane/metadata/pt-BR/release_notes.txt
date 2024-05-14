@@ -1,0 +1,1 @@
+Na nossa última atualização, melhoramos a leitura de códigos de barras ao corrigir um bug que permitia que produtos variáveis principais se infiltrassem nos pedidos. Tenha uma experiência de criação de pedidos mais tranquila com a nossa mais nova atualização.

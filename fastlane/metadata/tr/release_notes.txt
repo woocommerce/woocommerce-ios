@@ -1,0 +1,1 @@
+Son güncellememizde değişken ana ürünlerin siparişlere sızmasına neden olan bir hatayı düzelterek barkod taramayı geliştirdik. En yeni güncellememizle daha sorunsuz bir sipariş oluşturma deneyiminin keyfini çıkarın!

@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct OrderView: View {
+struct CartView: View {
     @ObservedObject private var viewModel: PointOfSaleDashboardViewModel
 
     init(viewModel: PointOfSaleDashboardViewModel) {
@@ -14,9 +14,13 @@ struct OrderView: View {
             ProductRowView()
             Spacer()
             Button("Pay now") {
-                viewModel.callbackFromOrder()
+                viewModel.submitCart()
             }
         }
         .background(Color.secondaryBackground)
     }
+}
+
+#Preview {
+    CartView(viewModel: PointOfSaleDashboardViewModel(products: ProductFactory.makeFakeProducts()))
 }

@@ -4,7 +4,6 @@ import UIKit
 import Storage
 import SwiftUI
 import Yosemite
-import struct WooFoundation.WooAnalyticsEvent
 
 /// Facilitates connecting to a card reader
 ///

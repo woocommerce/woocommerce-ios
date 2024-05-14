@@ -1,7 +1,6 @@
 import Foundation
 import UIKit
 import SwiftUI
-import struct WooFoundation.WooAnalyticsEvent
 
 class LearnMoreViewModel: ObservableObject {
 

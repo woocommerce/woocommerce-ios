@@ -1,9 +1,13 @@
 import SwiftUI
 import WooFoundation
-import struct Yosemite.ShippingLine
+import Yosemite
+import protocol Storage.StorageManagerType
 import Combine
 
 class ShippingLineSelectionDetailsViewModel: ObservableObject {
+    private var siteID: Int64
+    private let storageManager: StorageManagerType
+    private let analytics: Analytics
 
     /// Closure to be invoked when the shipping line is updated.
     ///
@@ -13,16 +17,19 @@ class ShippingLineSelectionDetailsViewModel: ObservableObject {
     ///
     let formattableAmountViewModel: FormattableAmountTextFieldViewModel
 
+    /// Stores the method selected by the merchant.
+    ///
+    @Published var selectedMethod: ShippingMethod
+
+    /// Text color for the selected method.
+    ///
+    var selectedMethodColor: Color {
+        Color(selectedMethod.methodID == "" ? .placeholderText : .text)
+    }
+
     /// Stores the method title entered by the merchant.
     ///
     @Published var methodTitle: String
-
-    private let initialAmount: Decimal?
-    private let initialMethodTitle: String
-
-    /// Returns true when existing shipping line is edited.
-    ///
-    let isExistingShippingLine: Bool
 
     /// Method title entered by user or placeholder if it's empty.
     ///
@@ -30,19 +37,54 @@ class ShippingLineSelectionDetailsViewModel: ObservableObject {
         methodTitle.isNotEmpty ? methodTitle : Localization.namePlaceholder
     }
 
+    private let initialMethodID: String
+    private let initialAmount: Decimal?
+    private let initialMethodTitle: String
+
+    /// Returns true when existing shipping line is edited.
+    ///
+    let isExistingShippingLine: Bool
+
+    /// Shipping Method Results Controller.
+    ///
+    private lazy var shippingMethodResultsController: ResultsController<StorageShippingMethod> = {
+        let predicate = NSPredicate(format: "siteID == %lld", siteID)
+        let descriptor = NSSortDescriptor(key: "methodID", ascending: true)
+        let resultsController = ResultsController<StorageShippingMethod>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
+        return resultsController
+    }()
+
+    /// Placeholder shipping method, when no store shipping method is selected.
+    ///
+    private let placeholderMethod: ShippingMethod
+
+    /// Available shipping methods on the store.
+    ///
+    var shippingMethods: [ShippingMethod] = []
+
     /// Returns true when there are valid pending changes.
     ///
     @Published var enableDoneButton: Bool = false
 
-    init(isExistingShippingLine: Bool,
+    init(siteID: Int64,
+         isExistingShippingLine: Bool,
+         initialMethodID: String,
          initialMethodTitle: String,
          shippingTotal: String,
          locale: Locale = Locale.autoupdatingCurrent,
          storeCurrencySettings: CurrencySettings = ServiceLocator.currencySettings,
+         storageManager: StorageManagerType = ServiceLocator.storageManager,
+         analytics: Analytics = ServiceLocator.analytics,
          didSelectSave: @escaping ((ShippingLine?) -> Void)) {
+        self.siteID = siteID
+        self.storageManager = storageManager
+        self.analytics = analytics
         self.isExistingShippingLine = isExistingShippingLine
+        self.initialMethodID = initialMethodID
         self.initialMethodTitle = initialMethodTitle
         self.methodTitle = initialMethodTitle
+        placeholderMethod = ShippingMethod(siteID: siteID, methodID: "", title: Localization.placeholderMethodTitle)
+        selectedMethod = placeholderMethod
 
         let currencyFormatter = CurrencyFormatter(currencySettings: storeCurrencySettings)
         if isExistingShippingLine, let initialAmount = currencyFormatter.convertToDecimal(shippingTotal) {
@@ -61,36 +103,71 @@ class ShippingLineSelectionDetailsViewModel: ObservableObject {
 
         self.didSelectSave = didSelectSave
 
-        observeFormattableAmountForUIStates(with: currencyFormatter)
-    }
-
-    func observeFormattableAmountForUIStates(with currencyFormatter: CurrencyFormatter) {
-        // Maps the formatted amount to a boolean indicating whether the amount has been updated with a valid amount.
-        let amountUpdated: AnyPublisher<Bool, Never> = formattableAmountViewModel.$amount.map { [weak self] amount in
-            guard let self, let amountDecimal = currencyFormatter.convertToDecimal(amount) as? Decimal else {
-                return false
-            }
-            return amountDecimal != self.initialAmount
-        }.eraseToAnyPublisher()
-
-        amountUpdated.combineLatest($methodTitle)
-            .map { [weak self] (amountUpdated, methodTitle) in
-                guard let self else { return false }
-                let methodTitleUpdated = methodTitle != self.initialMethodTitle
-                return amountUpdated || methodTitleUpdated
-            }
-            .assign(to: &$enableDoneButton)
+        configureShippingMethods()
+        observeShippingLineDetailsForUIStates(with: currencyFormatter)
     }
 
     func saveData() {
-        // TODO-12578: Save selected shipping method ID
         let shippingLine = ShippingLine(shippingID: 0,
                                         methodTitle: finalMethodTitle,
-                                        methodID: "other",
+                                        methodID: selectedMethod.methodID,
                                         total: formattableAmountViewModel.amount,
                                         totalTax: "",
                                         taxes: [])
         didSelectSave(shippingLine)
+    }
+
+    /// Tracks when a shipping method is selected
+    ///
+    func trackShippingMethodSelected(_ selectedMethod: ShippingMethod) {
+        analytics.track(event: .Orders.orderShippingMethodSelected(methodID: selectedMethod.methodID))
+    }
+}
+
+// MARK: Configuration
+
+private extension ShippingLineSelectionDetailsViewModel {
+    /// Observes changes to the shipping line method, amount, and method title to determine the state of the "Done" button.
+    ///
+    func observeShippingLineDetailsForUIStates(with currencyFormatter: CurrencyFormatter) {
+        formattableAmountViewModel.$amount
+            .combineLatest($methodTitle, $selectedMethod)
+            .map { [weak self] (amount, methodTitle, selectedMethod) in
+                guard let self, let amountDecimal = currencyFormatter.convertToDecimal(amount) as? Decimal else {
+                    return false
+                }
+                let amountUpdated = amountDecimal != self.initialAmount
+                let methodTitleUpdated = methodTitle != self.initialMethodTitle
+                let methodUpdated = selectedMethod.methodID != self.initialMethodID
+                return amountUpdated || methodTitleUpdated || methodUpdated
+        }.assign(to: &$enableDoneButton)
+    }
+
+    /// Configures the available and selected shipping methods for display.
+    ///
+    func configureShippingMethods() {
+        updateShippingMethodResultsController()
+        initializeSelectedMethod()
+    }
+
+    /// Fetches shipping methods from storage.
+    ///
+    func updateShippingMethodResultsController() {
+        do {
+            try shippingMethodResultsController.performFetch()
+            // The app previously set the shipping method ID to "other" when shipping was added in the app.
+            // This option is not included in the remote list of shipping methods so we add it here.
+            let otherMethod = ShippingMethod(siteID: siteID, methodID: "other", title: "Other")
+            shippingMethods = [placeholderMethod] + shippingMethodResultsController.fetchedObjects + [otherMethod]
+        } catch {
+            DDLogError("⛔️ Error fetching shipping methods from storage: \(error)")
+        }
+    }
+
+    /// Sets the initial selected method using the available shipping methods.
+    ///
+    func initializeSelectedMethod() {
+        selectedMethod = shippingMethods.first(where: { $0.methodID == initialMethodID }) ?? placeholderMethod
     }
 }
 
@@ -101,5 +178,8 @@ extension ShippingLineSelectionDetailsViewModel {
         static let namePlaceholder = NSLocalizedString("order.shippingLineDetails.namePlaceholder",
                                                        value: "Shipping",
                                                        comment: "Placeholder for the name field on the Shipping Line Details screen in order form")
+        static let placeholderMethodTitle = NSLocalizedString("order.shippingLineDetails.placeholderMethodTitle",
+                                                              value: "N/A",
+                                                              comment: "Title for the placeholder shipping method on the Shipping Line Details screen")
     }
 }

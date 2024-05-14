@@ -21,12 +21,16 @@ public struct DashboardCard: Codable, Hashable, Equatable, GeneratedCopiable {
     }
 
     /// Types of cards to display on the Dashboard screen.
-    /// The order of the cases in this enum defines the default order.
     public enum CardType: String, Codable, CaseIterable {
         case onboarding
         case performance
         case topPerformers
         case blaze
+        case inbox
+        case stock
+        case reviews
+        case lastOrders
+        case coupons
     }
 
     /// Card's availability state that determines whether it can be displayed and used.

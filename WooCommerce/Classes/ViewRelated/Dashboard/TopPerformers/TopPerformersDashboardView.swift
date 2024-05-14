@@ -1,6 +1,7 @@
 import SwiftUI
 import enum Yosemite.StatsTimeRangeV4
 import struct Yosemite.TopEarnerStatsItem
+import struct Yosemite.DashboardCard
 
 /// SwiftUI view for the Top Performers dashboard card.
 ///
@@ -76,7 +77,7 @@ private extension TopPerformersDashboardView {
                 .foregroundStyle(Color.secondary)
                 .headlineStyle()
                 .renderedIf(viewModel.syncingError != nil)
-            Text(Localization.title)
+            Text(DashboardCard.CardType.topPerformers.name)
                 .headlineStyle()
             Spacer()
             Menu {
@@ -96,12 +97,26 @@ private extension TopPerformersDashboardView {
     var timeRangeBar: some View {
         HStack {
             AdaptiveStack(horizontalAlignment: .leading) {
-                Text(viewModel.timeRange.tabTitle)
+                Text(viewModel.timeRange.isCustomTimeRange ?
+                     Localization.custom : viewModel.timeRange.tabTitle)
                     .foregroundStyle(Color(.text))
                     .subheadlineStyle()
 
-                Text(viewModel.timeRangeText)
-                    .subheadlineStyle()
+                if viewModel.timeRange.isCustomTimeRange {
+                    Button {
+                        showingCustomRangePicker = true
+                    } label: {
+                        HStack {
+                            Text(viewModel.timeRangeText)
+                            Image(systemName: "pencil")
+                        }
+                        .foregroundStyle(Color.accentColor)
+                        .subheadlineStyle()
+                    }
+                } else {
+                    Text(viewModel.timeRangeText)
+                        .subheadlineStyle()
+                }
             }
             Spacer()
             StatsTimeRangePicker(currentTimeRange: viewModel.timeRange) { newTimeRange in
@@ -150,11 +165,6 @@ private extension TopPerformersDashboardView {
     }
 
     enum Localization {
-        static let title = NSLocalizedString(
-            "topPerformersDashboardView.title",
-            value: "Top performers",
-            comment: "Title of the Top performers section on the Dashboard screen"
-        )
         static let hideCard = NSLocalizedString(
             "topPerformersDashboardView.hideCard",
             value: "Hide Top Performers",
@@ -164,6 +174,11 @@ private extension TopPerformersDashboardView {
             "topPerformersDashboardView.viewAll",
             value: "View all store analytics",
             comment: "Button to navigate to Analytics Hub."
+        )
+        static let custom = NSLocalizedString(
+            "topPerformersDashboardView.custom",
+            value: "Custom",
+            comment: "Title of the custom time range on the Top Performers card on the Dashboard screen"
         )
     }
 }

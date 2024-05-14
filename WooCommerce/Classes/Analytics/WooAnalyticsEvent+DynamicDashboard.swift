@@ -1,6 +1,5 @@
 import Foundation
 import struct Yosemite.DashboardCard
-import struct WooFoundation.WooAnalyticsEvent
 
 extension WooAnalyticsEvent {
     enum DynamicDashboard {
@@ -46,6 +45,16 @@ extension DashboardCard.CardType {
             "performance"
         case .topPerformers:
             "top_performers"
+        case .inbox:
+            "inbox"
+        case .stock:
+            "stock"
+        case .reviews:
+            "reviews"
+        case .lastOrders:
+            "last_orders"
+        case .coupons:
+            "coupons"
         }
     }
 }

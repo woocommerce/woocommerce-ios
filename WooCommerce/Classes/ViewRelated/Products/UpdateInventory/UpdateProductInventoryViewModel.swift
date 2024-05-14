@@ -2,7 +2,6 @@ import Combine
 import Yosemite
 import SwiftUI
 import protocol WooFoundation.Analytics
-import struct WooFoundation.WooAnalyticsEvent
 
 enum UpdateInventoryError: Error {
     case nonSupportedQuantity

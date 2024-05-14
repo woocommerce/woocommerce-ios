@@ -42,6 +42,7 @@
 		689D11D02891B3A300F6A83F /* CrashLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 689D11CF2891B3A300F6A83F /* CrashLogger.swift */; };
 		689D11D32891B7D800F6A83F /* MockCrashLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 689D11D22891B7D800F6A83F /* MockCrashLogger.swift */; };
 		68FBC5B328926B2C00A05461 /* Collection+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68FBC5B228926B2C00A05461 /* Collection+Extensions.swift */; };
+		7A8A7FB1C1B872009917940A /* Pods_WooFoundationWatchOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A72956724B0AE377A044EDF4 /* Pods_WooFoundationWatchOS.framework */; };
 		9FA5113235035AC9A6079B0D /* Pods_WooFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C1733C61561AE3A1AD3C16B7 /* Pods_WooFoundation.framework */; };
 		AE948D0A28CF67CF009F3246 /* Date+StartAndEnd.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE948D0928CF67CE009F3246 /* Date+StartAndEnd.swift */; };
 		AE948D0D28CF6D50009F3246 /* DateStartAndEndTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE948D0C28CF6D50009F3246 /* DateStartAndEndTests.swift */; };
@@ -116,9 +117,12 @@
 		689D11CF2891B3A300F6A83F /* CrashLogger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CrashLogger.swift; sourceTree = "<group>"; };
 		689D11D22891B7D800F6A83F /* MockCrashLogger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockCrashLogger.swift; sourceTree = "<group>"; };
 		68FBC5B228926B2C00A05461 /* Collection+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Collection+Extensions.swift"; sourceTree = "<group>"; };
+		73D31B9496B7C29667554A6E /* Pods-WooFoundationWatchOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooFoundationWatchOS.release.xcconfig"; path = "Target Support Files/Pods-WooFoundationWatchOS/Pods-WooFoundationWatchOS.release.xcconfig"; sourceTree = "<group>"; };
 		81B8569CD52D20EAE64EE737 /* Pods-WooFoundation.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooFoundation.release-alpha.xcconfig"; path = "Target Support Files/Pods-WooFoundation/Pods-WooFoundation.release-alpha.xcconfig"; sourceTree = "<group>"; };
+		8E30B666ED4157ED247C4485 /* Pods-WooFoundationWatchOS.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooFoundationWatchOS.release-alpha.xcconfig"; path = "Target Support Files/Pods-WooFoundationWatchOS/Pods-WooFoundationWatchOS.release-alpha.xcconfig"; sourceTree = "<group>"; };
 		99861FECBD0975C25DA03D80 /* Pods-WooFoundation.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooFoundation.debug.xcconfig"; path = "Target Support Files/Pods-WooFoundation/Pods-WooFoundation.debug.xcconfig"; sourceTree = "<group>"; };
 		A21D73D352B4162AB096E276 /* Pods-WooFoundationTests.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooFoundationTests.release-alpha.xcconfig"; path = "Target Support Files/Pods-WooFoundationTests/Pods-WooFoundationTests.release-alpha.xcconfig"; sourceTree = "<group>"; };
+		A72956724B0AE377A044EDF4 /* Pods_WooFoundationWatchOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WooFoundationWatchOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		AE948D0928CF67CE009F3246 /* Date+StartAndEnd.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+StartAndEnd.swift"; sourceTree = "<group>"; };
 		AE948D0C28CF6D50009F3246 /* DateStartAndEndTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DateStartAndEndTests.swift; sourceTree = "<group>"; };
 		B95B15CA2B15FA3A00A54044 /* Publishers+KeyboardHeight.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Publishers+KeyboardHeight.swift"; sourceTree = "<group>"; };
@@ -141,6 +145,7 @@
 		BCA82452EA8EE0170C1AA258 /* Pods-WooFoundationTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooFoundationTests.debug.xcconfig"; path = "Target Support Files/Pods-WooFoundationTests/Pods-WooFoundationTests.debug.xcconfig"; sourceTree = "<group>"; };
 		C1733C61561AE3A1AD3C16B7 /* Pods_WooFoundation.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WooFoundation.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D64F2A76E9373989B3F181FC /* Pods-WooFoundation.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooFoundation.release.xcconfig"; path = "Target Support Files/Pods-WooFoundation/Pods-WooFoundation.release.xcconfig"; sourceTree = "<group>"; };
+		ECDCBBC381959DB4653FBFD0 /* Pods-WooFoundationWatchOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooFoundationWatchOS.debug.xcconfig"; path = "Target Support Files/Pods-WooFoundationWatchOS/Pods-WooFoundationWatchOS.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -148,6 +153,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7A8A7FB1C1B872009917940A /* Pods_WooFoundationWatchOS.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -373,6 +379,7 @@
 				B9C9C665283E72ED001B879F /* CocoaLumberjack.framework */,
 				C1733C61561AE3A1AD3C16B7 /* Pods_WooFoundation.framework */,
 				532D4D63493CE8FA6F13C85B /* Pods_WooFoundationTests.framework */,
+				A72956724B0AE377A044EDF4 /* Pods_WooFoundationWatchOS.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -386,6 +393,9 @@
 				5BC355411C0A805BF29F38A6 /* Pods-WooFoundationTests.release.xcconfig */,
 				81B8569CD52D20EAE64EE737 /* Pods-WooFoundation.release-alpha.xcconfig */,
 				A21D73D352B4162AB096E276 /* Pods-WooFoundationTests.release-alpha.xcconfig */,
+				ECDCBBC381959DB4653FBFD0 /* Pods-WooFoundationWatchOS.debug.xcconfig */,
+				73D31B9496B7C29667554A6E /* Pods-WooFoundationWatchOS.release.xcconfig */,
+				8E30B666ED4157ED247C4485 /* Pods-WooFoundationWatchOS.release-alpha.xcconfig */,
 			);
 			name = Pods;
 			path = ../Pods;
@@ -416,6 +426,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 264E9EA22BF4037D009C48FD /* Build configuration list for PBXNativeTarget "WooFoundationWatchOS" */;
 			buildPhases = (
+				474919A7190423CC4A2DAB24 /* [CP] Check Pods Manifest.lock */,
 				264E9E962BF4037D009C48FD /* Headers */,
 				264E9E972BF4037D009C48FD /* Sources */,
 				264E9E982BF4037D009C48FD /* Frameworks */,
@@ -543,6 +554,28 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		474919A7190423CC4A2DAB24 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-WooFoundationWatchOS-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
 		785F98CEE4A25B52E109348C /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -685,6 +718,7 @@
 /* Begin XCBuildConfiguration section */
 		264E9E9F2BF4037D009C48FD /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = ECDCBBC381959DB4653FBFD0 /* Pods-WooFoundationWatchOS.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -729,6 +763,7 @@
 		};
 		264E9EA02BF4037D009C48FD /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 73D31B9496B7C29667554A6E /* Pods-WooFoundationWatchOS.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -773,6 +808,7 @@
 		};
 		264E9EA12BF4037D009C48FD /* Release-Alpha */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 8E30B666ED4157ED247C4485 /* Pods-WooFoundationWatchOS.release-alpha.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";

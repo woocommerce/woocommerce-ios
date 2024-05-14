@@ -884,6 +884,8 @@
 		269A2F47295CC683000828A8 /* GenerateVariationsSelectorCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 269A2F46295CC683000828A8 /* GenerateVariationsSelectorCommand.swift */; };
 		269B46622A16D68A00ADA872 /* UpdateAnalyticsSettingsUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 269B46612A16D68A00ADA872 /* UpdateAnalyticsSettingsUseCase.swift */; };
 		269B46642A16D6ED00ADA872 /* UpdateAnalyticsSettingsUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 269B46632A16D6ED00ADA872 /* UpdateAnalyticsSettingsUseCaseTests.swift */; };
+		269FFA462BF40768004E6B86 /* WooFoundationWatchOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 269FFA452BF40768004E6B86 /* WooFoundationWatchOS.framework */; };
+		269FFA472BF40768004E6B86 /* WooFoundationWatchOS.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 269FFA452BF40768004E6B86 /* WooFoundationWatchOS.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		26A000772BE9D9030071DB1E /* WooConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5D1AFBF20BC67C200DB0E8C /* WooConstants.swift */; };
 		26A280D62B45F00F00ACEE87 /* OrderNotificationViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26A280D52B45F00F00ACEE87 /* OrderNotificationViewModelTests.swift */; };
 		26A280D72B46027A00ACEE87 /* OrderNotificationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26CA2BC52AAA1773003B16C2 /* OrderNotificationView.swift */; };
@@ -2758,6 +2760,7 @@
 				263E64212BEB419B0059D84B /* NetworkingWatchOS.framework in Embed Frameworks */,
 				26B542442BEAC68B003A55B5 /* Codegen in Embed Frameworks */,
 				26B542412BEAC4DC003A55B5 /* Pods_Woo_Watch_App.framework in Embed Frameworks */,
+				269FFA472BF40768004E6B86 /* WooFoundationWatchOS.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -3673,6 +3676,7 @@
 		269A2F46295CC683000828A8 /* GenerateVariationsSelectorCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenerateVariationsSelectorCommand.swift; sourceTree = "<group>"; };
 		269B46612A16D68A00ADA872 /* UpdateAnalyticsSettingsUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateAnalyticsSettingsUseCase.swift; sourceTree = "<group>"; };
 		269B46632A16D6ED00ADA872 /* UpdateAnalyticsSettingsUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateAnalyticsSettingsUseCaseTests.swift; sourceTree = "<group>"; };
+		269FFA452BF40768004E6B86 /* WooFoundationWatchOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = WooFoundationWatchOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		26A280D52B45F00F00ACEE87 /* OrderNotificationViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderNotificationViewModelTests.swift; sourceTree = "<group>"; };
 		26A630EC253F3B5C00CBC3B1 /* RefundCreationUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundCreationUseCase.swift; sourceTree = "<group>"; };
 		26A630F2253F3CFE00CBC3B1 /* RefundCreationUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundCreationUseCaseTests.swift; sourceTree = "<group>"; };
@@ -5513,6 +5517,7 @@
 				263E64202BEB419B0059D84B /* NetworkingWatchOS.framework in Frameworks */,
 				26B542432BEAC68B003A55B5 /* Codegen in Frameworks */,
 				26B542402BEAC4DC003A55B5 /* Pods_Woo_Watch_App.framework in Frameworks */,
+				269FFA462BF40768004E6B86 /* WooFoundationWatchOS.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -8956,6 +8961,7 @@
 		88A44ABE866401E6DB03AC60 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				269FFA452BF40768004E6B86 /* WooFoundationWatchOS.framework */,
 				263E641F2BEB419B0059D84B /* NetworkingWatchOS.framework */,
 				200B84AD2BEB99AC00EAAB23 /* WooCommercePOS.framework */,
 				2679F0252AAA2A3200AF80C5 /* WooFoundation.framework */,

@@ -7,68 +7,9 @@ import Yosemite
 /// and connecting to a reader
 ///
 protocol CardReaderSettingsAlertsProvider {
-    /// Defines a cancellable alert indicating we are searching for a reader
-    ///
-    func scanningForReader(from: UIViewController, cancel: @escaping () -> Void)
-
-    /// Defines a cancellable (closeable) alert indicating the search failed
-    ///
-    func scanningFailed(from: UIViewController, error: Error, close: @escaping () -> Void)
-
-    /// Defines an interactive alert indicating a reader has been found. The user must
-    /// choose to connect to that reader or continue searching
-    ///
-    func foundReader(from: UIViewController,
-                     name: String,
-                     connect: @escaping () -> Void,
-                     continueSearch: @escaping () -> Void,
-                     cancelSearch: @escaping () -> Void)
-
-    /// Defines an interactive alert indicating more than one reader has been found. The user must
-    /// choose to connect to that reader or cancel searching
-    ///
-    func foundSeveralReaders(from: UIViewController,
-                             readerIDs: [String],
-                             connect: @escaping (String) -> Void,
-                             cancelSearch: @escaping () -> Void)
-
     /// Allows updating the list of readers found in the several readers alert
     ///
     func updateSeveralReadersList(readerIDs: [String])
-
-    /// Defines a non-interactive alert indicating a connection is in progress to a particular reader
-    ///
-    func connectingToReader(from: UIViewController)
-
-    /// Defines an alert indicating connecting failed. The user may continue the search
-    /// or cancel
-    ///
-    func connectingFailed(from: UIViewController,
-                          error: Error,
-                          continueSearch: @escaping () -> Void,
-                          cancelSearch: @escaping () -> Void)
-
-    /// Defines an alert indicating connecting failed because their address needs updating.
-    /// The user may try again or cancel
-    ///
-    func connectingFailedIncompleteAddress(from: UIViewController,
-                                           openWCSettings: ((UIViewController) -> Void)?,
-                                           retrySearch: @escaping () -> Void,
-                                           cancelSearch: @escaping () -> Void)
-
-    /// Defines an alert indicating connecting failed because their postal code needs updating.
-    /// The user may try again or cancel
-    ///
-    func connectingFailedInvalidPostalCode(from: UIViewController,
-                                           retrySearch: @escaping () -> Void,
-                                           cancelSearch: @escaping () -> Void)
-
-    /// Defines an alert indicating connecting failed because the reader battery is critically low.
-    /// The user may try searching again (i.e. for a different reader) or cancel
-    ///
-    func connectingFailedCriticallyLowBattery(from: UIViewController,
-                                           retrySearch: @escaping () -> Void,
-                                           cancelSearch: @escaping () -> Void)
 
     /// Defines an alert indicating an update couldn't be installed because the reader is low on battery.
     ///

@@ -9,90 +9,12 @@ final class CardReaderSettingsAlerts: CardReaderSettingsAlertsProvider {
     private var modalController: CardPresentPaymentsModalViewController?
     private var severalFoundController: SeveralReadersFoundViewController?
 
-    func scanningForReader(from: UIViewController, cancel: @escaping () -> Void) {
-        setViewModelAndPresent(from: from, viewModel: scanningForReader(cancel: cancel))
-    }
-
-    func scanningFailed(from: UIViewController, error: Error, close: @escaping () -> Void) {
-        setViewModelAndPresent(from: from, viewModel: scanningFailed(error: error, close: close))
-    }
-
-    func connectingToReader(from: UIViewController) {
-        setViewModelAndPresent(from: from, viewModel: connectingToReader())
-    }
-
-    func connectingFailed(from: UIViewController, error: Error, continueSearch: @escaping () -> Void, cancelSearch: @escaping () -> Void) {
-        setViewModelAndPresent(from: from,
-                               viewModel: connectingFailed(error: error,
-                                                           continueSearch: continueSearch,
-                                                           cancelSearch: cancelSearch))
-    }
-
-    func connectingFailedIncompleteAddress(from: UIViewController,
-                                        openWCSettings: ((UIViewController) -> Void)?,
-                                        retrySearch: @escaping () -> Void,
-                                        cancelSearch: @escaping () -> Void) {
-        setViewModelAndPresent(from: from,
-                               viewModel: connectingFailedUpdateAddress(openWCSettings: openWCSettings,
-                                                                        retrySearch: retrySearch,
-                                                                        cancelSearch: cancelSearch))
-    }
-
-    func connectingFailedInvalidPostalCode(from: UIViewController, retrySearch: @escaping () -> Void, cancelSearch: @escaping () -> Void) {
-        setViewModelAndPresent(from: from, viewModel: connectingFailedUpdatePostalCode(retrySearch: retrySearch, cancelSearch: cancelSearch))
-    }
-
-    func connectingFailedCriticallyLowBattery(from: UIViewController, retrySearch: @escaping () -> Void, cancelSearch: @escaping () -> Void) {
-        setViewModelAndPresent(from: from, viewModel: connectingFailedCriticallyLowBattery(retrySearch: retrySearch, cancelSearch: cancelSearch))
-    }
-
     func updatingFailedLowBattery(from: UIViewController, batteryLevel: Double?, close: @escaping () -> Void) {
         setViewModelAndPresent(from: from, viewModel: updatingFailedLowBattery(from: from, batteryLevel: batteryLevel, close: close))
     }
 
     func updatingFailed(from: UIViewController, tryAgain: (() -> Void)?, close: @escaping () -> Void) {
         setViewModelAndPresent(from: from, viewModel: updatingFailed(from: from, tryAgain: tryAgain, close: close))
-    }
-
-    func foundReader(from: UIViewController,
-                     name: String,
-                     connect: @escaping () -> Void,
-                     continueSearch: @escaping () -> Void,
-                     cancelSearch: @escaping () -> Void) {
-        setViewModelAndPresent(from: from,
-                               viewModel: foundReader(name: name,
-                                                      connect: connect,
-                                                      continueSearch: continueSearch,
-                                                      cancel: {
-            cancelSearch()
-            from.dismiss(animated: true)
-        })
-        )
-    }
-
-    /// Note: `foundSeveralReaders` uses a view controller distinct from the common
-    /// `CardPresentPaymentsModalViewController` to avoid further
-    /// overloading `CardPresentPaymentsModalViewModel`
-    ///
-    /// This will dismiss any view controllers using the common view model first before
-    /// presenting the several readers found modal
-    ///
-    func foundSeveralReaders(from: UIViewController,
-                             readerIDs: [String],
-                             connect: @escaping (String) -> Void,
-                             cancelSearch: @escaping () -> Void) {
-        severalFoundController = SeveralReadersFoundViewController()
-
-        if let severalFoundController = severalFoundController {
-            severalFoundController.configureController(
-                readerIDs: readerIDs,
-                connect: connect,
-                cancelSearch: cancelSearch
-            )
-            severalFoundController.prepareForCardReaderModalFlow()
-        }
-
-        dismissCommonAndPresent(animated: false, from: from, present: severalFoundController)
     }
 
     /// Used to update the readers list in the several readers found view

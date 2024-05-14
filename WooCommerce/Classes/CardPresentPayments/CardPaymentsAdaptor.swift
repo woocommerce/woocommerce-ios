@@ -10,6 +10,13 @@ class CardPresentPaymentsAdaptor {
         self.siteID = siteID
     }
 
+    /// The problem with this approach is that making the usecase also makes the preflight controller, which makes the two connection controllers.
+    /// Each of these require the `alertPresenter`, and some require the `onboardingPresenter`.
+    /// 
+    /// Since this design has a short-lived `eventAdaptor` fulfilling both roles, we can't make a long-lived connection controller
+    /// unless we change it to allow the alertsPresenter to be changed when `collectPayment` is called a second time.
+    ///
+    /// Having short-lived connection controllers means we would need another way to set a single source of truth for the reader connection.
     func collectPayment(for order: Order,
                         using discoveryMethod: CardReaderDiscoveryMethod) -> AsyncStream<CardPresentPaymentEvent> {
         let eventStream = AsyncStream<CardPresentPaymentEvent> { streamContinuation in

@@ -3,6 +3,7 @@ import Yosemite
 import Experiments
 import class WordPressShared.EmailFormatValidator
 import protocol Storage.StorageManagerType
+import protocol WooFoundation.Analytics
 
 /// Parent class for AddressFormViewModelProtocol implementations. Holds shared sync/management logic.
 /// Not to be used on its own, so it doesn't conform to AddressFormViewModelProtocol.

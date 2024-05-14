@@ -1,6 +1,7 @@
 import WordPressUI
 import SafariServices
 import WordPressAuthenticator
+import protocol WooFoundation.Analytics
 
 extension FancyAlertViewController {
     static func makeWhatIsJetpackAlertController(analytics: Analytics) -> FancyAlertViewController {

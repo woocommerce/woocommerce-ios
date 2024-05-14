@@ -3,6 +3,7 @@ import UIKit
 import Yosemite
 import WordPressUI
 import Experiments
+import protocol WooFoundation.Analytics
 
 
 /// Enum representing the individual tabs

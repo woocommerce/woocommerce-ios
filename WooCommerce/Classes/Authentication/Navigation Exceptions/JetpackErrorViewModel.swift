@@ -3,6 +3,7 @@ import SafariServices
 import WordPressAuthenticator
 import WordPressUI
 import enum Yosemite.Credentials
+import protocol WooFoundation.Analytics
 
 /// Configuration and actions for an ULErrorViewController, modelling
 /// an error when Jetpack is not installed or is not connected

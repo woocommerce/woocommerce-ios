@@ -1,5 +1,6 @@
 import Foundation
 import class Networking.Remote
+import protocol WooFoundation.Analytics
 
 final class TrackEventRequestNotificationHandler {
 

@@ -3,6 +3,7 @@ import SafariServices
 import WordPressAuthenticator
 import WordPressUI
 import Experiments
+import protocol WooFoundation.Analytics
 
 /// Configuration and actions for an ULErrorViewController, modeling
 /// an error when user attempts to log in with an invalid WordPress.com account

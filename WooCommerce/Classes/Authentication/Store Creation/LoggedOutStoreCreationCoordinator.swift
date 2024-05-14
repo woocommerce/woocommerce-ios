@@ -1,6 +1,7 @@
 import UIKit
 import Experiments
 import enum WordPressAuthenticator.SignInSource
+import protocol WooFoundation.Analytics
 import struct WordPressAuthenticator.NavigateToEnterAccount
 
 /// Coordinates navigation for store creation flow in logged-out state that starts with WPCOM authentication.

@@ -1,5 +1,6 @@
 import Combine
 import Yosemite
+import protocol WooFoundation.Analytics
 
 final class ProductImagesSaver {
     /// Initially set when product save is requested when all images at the time of request are uploaded.

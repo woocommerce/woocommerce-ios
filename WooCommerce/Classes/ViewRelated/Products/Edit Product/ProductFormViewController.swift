@@ -461,7 +461,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                 guard isEditable else {
                     return
                 }
-                ServiceLocator.analytics.track(event: WooAnalyticsEvent.ProductDetailAddOns.productAddOnsButtonTapped(productID: product.productID))
+                ServiceLocator.analytics.track(event: .ProductDetailAddOns.productAddOnsButtonTapped(productID: product.productID))
                 navigateToAddOns()
             case .categories(_, let isEditable):
                 guard isEditable else {

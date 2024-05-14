@@ -1,5 +1,6 @@
 import SwiftUI
 import Yosemite
+import protocol WooFoundation.Analytics
 
 /// Hosting controller for `JetpackSetupView`.
 ///

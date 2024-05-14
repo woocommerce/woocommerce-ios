@@ -2,6 +2,7 @@ import Foundation
 import Yosemite
 import Combine
 import protocol Experiments.FeatureFlagService
+import protocol WooFoundation.Analytics
 
 /// ViewModel for the Subscriptions View
 /// Drives the site's plan subscription

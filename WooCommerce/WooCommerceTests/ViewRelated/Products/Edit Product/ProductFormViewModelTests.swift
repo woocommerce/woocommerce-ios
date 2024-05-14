@@ -3,6 +3,7 @@ import XCTest
 @testable import WooCommerce
 import Yosemite
 import TestKit
+import protocol WooFoundation.Analytics
 
 final class ProductFormViewModelTests: XCTestCase {
 

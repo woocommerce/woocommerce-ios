@@ -1,5 +1,6 @@
 import Foundation
 import Yosemite
+import protocol WooFoundation.Analytics
 
 /// ViewModel for ThemesPreviewView
 ///

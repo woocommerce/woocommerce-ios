@@ -2,6 +2,7 @@ import Experiments
 import UIKit
 import Yosemite
 import protocol Storage.StorageManagerType
+import protocol WooFoundation.Analytics
 
 /// Coordinates navigation into the entry of the Blaze creation flow.
 final class BlazeCampaignCreationCoordinator: Coordinator {

@@ -1,4 +1,5 @@
 import Foundation
+import protocol WooFoundation.Analytics
 
 /// Accepts interaction events from the Analytics / My Store UI and decides whether the group of interactions can be
 /// considered as a _usage_ of the UI.

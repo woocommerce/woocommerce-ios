@@ -1,4 +1,5 @@
 import UIKit
+import protocol WooFoundation.Analytics
 
 /// The source of the media to pick from.
 enum MediaPickingSource {

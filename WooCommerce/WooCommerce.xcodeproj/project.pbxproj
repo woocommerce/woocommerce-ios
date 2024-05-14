@@ -1286,7 +1286,6 @@
 		576EA39225264C7400AFC0B3 /* RefundConfirmationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 576EA39125264C7400AFC0B3 /* RefundConfirmationViewController.swift */; };
 		576EA39425264C9B00AFC0B3 /* RefundConfirmationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 576EA39325264C9B00AFC0B3 /* RefundConfirmationViewModel.swift */; };
 		578195FC25AD1D7C004A5C12 /* OrderFulfillmentUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 578195FB25AD1D7C004A5C12 /* OrderFulfillmentUseCaseTests.swift */; };
-		5783FB3F25D7369F00B9984B /* WooAnalyticsEventPropertyType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5783FB3E25D7369F00B9984B /* WooAnalyticsEventPropertyType.swift */; };
 		57896D6625362B0C000E8C4D /* TitleAndEditableValueTableViewCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57896D6525362B0C000E8C4D /* TitleAndEditableValueTableViewCellViewModel.swift */; };
 		5791FB4224EC834300117FD6 /* MainTabViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5791FB4124EC834300117FD6 /* MainTabViewModelTests.swift */; };
 		579CDEFF274D7E7900E8903D /* StoreStatsUsageTracksEventEmitter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 579CDEFE274D7E7900E8903D /* StoreStatsUsageTracksEventEmitter.swift */; };
@@ -1379,7 +1378,6 @@
 		7459A6C621B0680300F83A78 /* RequirementsChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7459A6C521B0680300F83A78 /* RequirementsChecker.swift */; };
 		746791632108D7C0007CF1DC /* WooAnalyticsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 746791622108D7C0007CF1DC /* WooAnalyticsTests.swift */; };
 		746FC23D2200A62B00C3096C /* DateWooTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 746FC23C2200A62B00C3096C /* DateWooTests.swift */; };
-		747AA0892107CEC60047A89B /* AnalyticsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 747AA0882107CEC60047A89B /* AnalyticsProvider.swift */; };
 		747AA08B2107CF8D0047A89B /* TracksProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 747AA08A2107CF8D0047A89B /* TracksProvider.swift */; };
 		748AD087219F481B00023535 /* UIView+Animation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 748AD086219F481B00023535 /* UIView+Animation.swift */; };
 		748C7784211E2D8400814F2C /* DoubleWooTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 748C7783211E2D8400814F2C /* DoubleWooTests.swift */; };
@@ -2204,7 +2202,6 @@
 		D8C2A291231BD0FD00F503E9 /* ReviewsDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8C2A290231BD0FD00F503E9 /* ReviewsDataSource.swift */; };
 		D8CD0605258B384E00B52D63 /* oauth2_token-error.json in Resources */ = {isa = PBXBuildFile; fileRef = D8CD0604258B384E00B52D63 /* oauth2_token-error.json */; };
 		D8D15F83230A17A000D48B3F /* ServiceLocator.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8D15F82230A17A000D48B3F /* ServiceLocator.swift */; };
-		D8D15F85230A18AB00D48B3F /* Analytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8D15F84230A18AB00D48B3F /* Analytics.swift */; };
 		D8EE9692264D328A0033B2F9 /* LegacyReceiptViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8EE9690264D328A0033B2F9 /* LegacyReceiptViewController.swift */; };
 		D8EE9693264D328A0033B2F9 /* LegacyReceiptViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D8EE9691264D328A0033B2F9 /* LegacyReceiptViewController.xib */; };
 		D8EE9698264D3CCB0033B2F9 /* LegacyReceiptViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8EE9697264D3CCB0033B2F9 /* LegacyReceiptViewModel.swift */; };
@@ -3998,7 +3995,6 @@
 		576EA39125264C7400AFC0B3 /* RefundConfirmationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundConfirmationViewController.swift; sourceTree = "<group>"; };
 		576EA39325264C9B00AFC0B3 /* RefundConfirmationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundConfirmationViewModel.swift; sourceTree = "<group>"; };
 		578195FB25AD1D7C004A5C12 /* OrderFulfillmentUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderFulfillmentUseCaseTests.swift; sourceTree = "<group>"; };
-		5783FB3E25D7369F00B9984B /* WooAnalyticsEventPropertyType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooAnalyticsEventPropertyType.swift; sourceTree = "<group>"; };
 		57896D6525362B0C000E8C4D /* TitleAndEditableValueTableViewCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitleAndEditableValueTableViewCellViewModel.swift; sourceTree = "<group>"; };
 		5791FB4124EC834300117FD6 /* MainTabViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabViewModelTests.swift; sourceTree = "<group>"; };
 		579CDEFE274D7E7900E8903D /* StoreStatsUsageTracksEventEmitter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreStatsUsageTracksEventEmitter.swift; sourceTree = "<group>"; };
@@ -4094,7 +4090,6 @@
 		746791622108D7C0007CF1DC /* WooAnalyticsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooAnalyticsTests.swift; sourceTree = "<group>"; };
 		746791652108D87B007CF1DC /* MockAnalyticsProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockAnalyticsProvider.swift; sourceTree = "<group>"; };
 		746FC23C2200A62B00C3096C /* DateWooTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DateWooTests.swift; sourceTree = "<group>"; };
-		747AA0882107CEC60047A89B /* AnalyticsProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsProvider.swift; sourceTree = "<group>"; };
 		747AA08A2107CF8D0047A89B /* TracksProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TracksProvider.swift; sourceTree = "<group>"; };
 		748AD086219F481B00023535 /* UIView+Animation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+Animation.swift"; sourceTree = "<group>"; };
 		748C7783211E2D8400814F2C /* DoubleWooTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DoubleWooTests.swift; sourceTree = "<group>"; };
@@ -4953,7 +4948,6 @@
 		D8C2A290231BD0FD00F503E9 /* ReviewsDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewsDataSource.swift; sourceTree = "<group>"; };
 		D8CD0604258B384E00B52D63 /* oauth2_token-error.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "oauth2_token-error.json"; sourceTree = "<group>"; };
 		D8D15F82230A17A000D48B3F /* ServiceLocator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceLocator.swift; sourceTree = "<group>"; };
-		D8D15F84230A18AB00D48B3F /* Analytics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Analytics.swift; sourceTree = "<group>"; };
 		D8EE9690264D328A0033B2F9 /* LegacyReceiptViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LegacyReceiptViewController.swift; sourceTree = "<group>"; };
 		D8EE9691264D328A0033B2F9 /* LegacyReceiptViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = LegacyReceiptViewController.xib; sourceTree = "<group>"; };
 		D8EE9697264D3CCB0033B2F9 /* LegacyReceiptViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LegacyReceiptViewModel.swift; sourceTree = "<group>"; };
@@ -8582,10 +8576,8 @@
 				CEA16F3920FD0C8C0061B4E1 /* WooAnalytics.swift */,
 				57EBC91F24EEE61800C1D45B /* WooAnalyticsEvent.swift */,
 				74213449210A323C00C13890 /* WooAnalyticsStat.swift */,
-				747AA0882107CEC60047A89B /* AnalyticsProvider.swift */,
 				747AA08A2107CF8D0047A89B /* TracksProvider.swift */,
 				EE57C11C297AC27300BC31E7 /* TrackEventRequestNotificationHandler.swift */,
-				5783FB3E25D7369F00B9984B /* WooAnalyticsEventPropertyType.swift */,
 				02C3FACD282A93020095440A /* WooAnalyticsEvent+Dashboard.swift */,
 				0247F511286F73EA009C177E /* WooAnalyticsEvent+ImageUpload.swift */,
 				02AC30CE2888EC8100146A25 /* WooAnalyticsEvent+LoginOnboarding.swift */,
@@ -11305,7 +11297,6 @@
 			isa = PBXGroup;
 			children = (
 				D8D15F82230A17A000D48B3F /* ServiceLocator.swift */,
-				D8D15F84230A18AB00D48B3F /* Analytics.swift */,
 				E1C47208267A1ECC00D06DA1 /* CrashLoggingStack.swift */,
 				D8C251D8230D256F00F49782 /* NoticePresenter.swift */,
 				D8C251DA230D288A00F49782 /* PushNotesManager.swift */,
@@ -13672,7 +13663,6 @@
 				CCE73D2529EDAB5C0064E797 /* SubscriptionPeriod+UI.swift in Sources */,
 				0235595524496B6D004BE2B8 /* BottomSheetListSelectorCommand.swift in Sources */,
 				EE1905862B57BBE300617C53 /* BlazePaymentMethodsView.swift in Sources */,
-				747AA0892107CEC60047A89B /* AnalyticsProvider.swift in Sources */,
 				D89CFF3A25B43BBB000E4683 /* WrongAccountErrorViewModel.swift in Sources */,
 				02B2829227C4808D004A332A /* InfiniteScrollIndicator.swift in Sources */,
 				03E471DC29424EC9001A58AD /* CardPresentModalBuiltInSuccessWithoutEmail.swift in Sources */,
@@ -14648,7 +14638,6 @@
 				CE32B10D20BEDE1C006FBCF4 /* TwoColumnSectionHeaderView.swift in Sources */,
 				AE7C957D27C3F187007E8E12 /* FeeOrDiscountLineDetailsViewModel.swift in Sources */,
 				4520A15C2721B2A9001FA573 /* FilterOrderListViewModel.swift in Sources */,
-				D8D15F85230A18AB00D48B3F /* Analytics.swift in Sources */,
 				B582F95920FFCEAA0060934A /* UITableViewHeaderFooterView+Helpers.swift in Sources */,
 				B933CCB02AA6220E00938F3F /* TaxRateRow.swift in Sources */,
 				57532CAC24BFF4DA0032B84E /* MessageComposerPresenter.swift in Sources */,
@@ -14702,7 +14691,6 @@
 				020B640F29C194CF001C5BD9 /* StoreOnboardingStoreLaunchedView.swift in Sources */,
 				26B3EC642745916F0075EAE6 /* BindableTextField.swift in Sources */,
 				CE2A9FC823C3D2D4002BEC1C /* RefundedProductsDataSource.swift in Sources */,
-				5783FB3F25D7369F00B9984B /* WooAnalyticsEventPropertyType.swift in Sources */,
 				CECC759523D6057E00486676 /* OrderItem+Woo.swift in Sources */,
 				039B7E6529F167DB00E21EF4 /* UniversalLinkRouter+JustInTimeMessages.swift in Sources */,
 				03AFDE02282C0B82003B67CD /* InPersonPaymentsCompletedView.swift in Sources */,

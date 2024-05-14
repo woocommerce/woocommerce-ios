@@ -44,7 +44,7 @@ final class BluetoothCardReaderSettingsConnectedViewModel: PaymentSettingsFlowPr
     /// The datasource that will be used to help render the related screens
     ///
     private(set) lazy var dataSource: CardReaderSettingsDataSource = {
-        return CardReaderSettingsDataSource(siteID: siteID)
+        return CardReaderSettingsDataSource(siteID: siteID, storageManager: ServiceLocator.storageManager)
     }()
 
     private let analyticsTracker: CardReaderConnectionAnalyticsTracker

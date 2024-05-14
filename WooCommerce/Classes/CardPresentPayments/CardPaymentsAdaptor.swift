@@ -17,8 +17,7 @@ class CardPresentPaymentsAdaptor {
     }
 
     func collectPayment(for order: Order,
-                        using discoveryMethod: CardReaderDiscoveryMethod,
-                        eventStream: AsyncStream<CardPresentPaymentEvent>) async -> CardPresentPaymentResult {
+                        using discoveryMethod: CardReaderDiscoveryMethod) async -> CardPresentPaymentResult {
         let orderPaymentUseCase = await CollectOrderPaymentUseCase(siteID: siteID,
                                                                    order: order,
                                                                    formattedAmount: currencyFormatter.formatAmount(order.total, with: order.currency) ?? "",

@@ -361,7 +361,7 @@ private extension CollectOrderPaymentUseCase {
         analyticsTracker.trackSuccessfulPayment(capturedPaymentData: capturedPaymentData)
     }
 
-    func handlePaymentCancellation(from cancellationSource: WooAnalyticsEvent.InPersonPayments.CancellationSource) {
+    func handlePaymentCancellation(from cancellationSource: CardReaderConnectionCancellationSource) {
         analyticsTracker.trackPaymentCancelation(cancelationSource: cancellationSource)
         alertsPresenter.dismiss()
     }
@@ -496,7 +496,7 @@ private extension CollectOrderPaymentUseCase {
 
     /// Cancels payment and record analytics.
     ///
-    func cancelPayment(from cancelationSource: WooAnalyticsEvent.InPersonPayments.CancellationSource,
+    func cancelPayment(from cancelationSource: CardReaderConnectionCancellationSource,
                        onCompleted: @escaping () -> ()) {
         paymentOrchestrator.cancelPayment { [weak self] _ in
             self?.analyticsTracker.trackPaymentCancelation(cancelationSource: cancelationSource)

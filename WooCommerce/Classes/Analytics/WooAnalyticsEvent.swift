@@ -1769,7 +1769,7 @@ extension WooAnalyticsEvent {
         static func collectPaymentCanceled(forGatewayID: String?,
                                            countryCode: CountryCode,
                                            cardReaderModel: String?,
-                                           cancellationSource: CancellationSource,
+                                           cancellationSource: CardReaderConnectionCancellationSource,
                                            siteID: Int64) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .collectPaymentCanceled,
                               properties: [
@@ -1780,21 +1780,6 @@ extension WooAnalyticsEvent {
                                 Keys.siteID: siteID
                               ]
             )
-        }
-
-        enum CancellationSource: String {
-            case appleTOSAcceptance = "apple_tap_to_pay_terms_acceptance"
-            case reader = "card_reader"
-            case selectReaderType = "preflight_select_reader_type"
-            case searchingForReader = "searching_for_reader"
-            case foundReader = "found_reader"
-            case foundSeveralReaders = "found_several_readers"
-            case paymentValidatingOrder = "payment_validating_order"
-            case paymentPreparingReader = "payment_preparing_reader"
-            case paymentWaitingForInput = "payment_waiting_for_input"
-            case connectionError = "connection_error"
-            case readerSoftwareUpdate = "reader_software_update"
-            case other = "unknown"
         }
 
         /// Tracked when payment collection succeeds

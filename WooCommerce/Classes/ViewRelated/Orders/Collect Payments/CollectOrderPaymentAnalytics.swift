@@ -13,7 +13,7 @@ protocol CollectOrderPaymentAnalyticsTracking {
 
     func trackPaymentFailure(with error: Error)
 
-    func trackPaymentCancelation(cancelationSource: WooAnalyticsEvent.InPersonPayments.CancellationSource)
+    func trackPaymentCancelation(cancelationSource: CardReaderConnectionCancellationSource)
 
     func trackEmailTapped()
 
@@ -103,7 +103,7 @@ final class CollectOrderPaymentAnalytics: CollectOrderPaymentAnalyticsTracking {
                                                                                        siteID: siteID))
     }
 
-    func trackPaymentCancelation(cancelationSource: WooAnalyticsEvent.InPersonPayments.CancellationSource) {
+    func trackPaymentCancelation(cancelationSource: CardReaderConnectionCancellationSource) {
         analytics.track(event: WooAnalyticsEvent.InPersonPayments.collectPaymentCanceled(forGatewayID: paymentGatewayAccount?.gatewayID,
                                                                                          countryCode: configuration.countryCode,
                                                                                          cardReaderModel: connectedReaderModel,

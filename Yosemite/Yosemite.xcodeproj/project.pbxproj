@@ -94,6 +94,9 @@
 		02F2722D292F18BF00C36419 /* PaymentStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02F2722C292F18BF00C36419 /* PaymentStoreTests.swift */; };
 		02F2722F292F18FD00C36419 /* MockPaymentRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02F2722E292F18FD00C36419 /* MockPaymentRemote.swift */; };
 		02F2C1C62BF33BCD003B4658 /* CardReaderConnectionStateMachine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02F2C1C52BF33BCD003B4658 /* CardReaderConnectionStateMachine.swift */; };
+		02F2C1C82BF33E69003B4658 /* CardReaderSettingsKnownReaderProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02F2C1C72BF33E69003B4658 /* CardReaderSettingsKnownReaderProvider.swift */; };
+		02F2C1CA2BF33F26003B4658 /* CardReaderSettingsDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02F2C1C92BF33F26003B4658 /* CardReaderSettingsDataSource.swift */; };
+		02F2C1CC2BF33F41003B4658 /* CardReaderSettingsResultsControllers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02F2C1CB2BF33F41003B4658 /* CardReaderSettingsResultsControllers.swift */; };
 		02F6AAAC270556A4002425D0 /* Models+Copiable.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02F6AAAB270556A4002425D0 /* Models+Copiable.generated.swift */; };
 		02FF054D23D983F30058E6E7 /* MediaFileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02FF054523D983F30058E6E7 /* MediaFileManager.swift */; };
 		02FF054E23D983F30058E6E7 /* MediaImageExporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02FF054623D983F30058E6E7 /* MediaImageExporter.swift */; };
@@ -583,6 +586,9 @@
 		02F2722C292F18BF00C36419 /* PaymentStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentStoreTests.swift; sourceTree = "<group>"; };
 		02F2722E292F18FD00C36419 /* MockPaymentRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockPaymentRemote.swift; sourceTree = "<group>"; };
 		02F2C1C52BF33BCD003B4658 /* CardReaderConnectionStateMachine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderConnectionStateMachine.swift; sourceTree = "<group>"; };
+		02F2C1C72BF33E69003B4658 /* CardReaderSettingsKnownReaderProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderSettingsKnownReaderProvider.swift; sourceTree = "<group>"; };
+		02F2C1C92BF33F26003B4658 /* CardReaderSettingsDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderSettingsDataSource.swift; sourceTree = "<group>"; };
+		02F2C1CB2BF33F41003B4658 /* CardReaderSettingsResultsControllers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderSettingsResultsControllers.swift; sourceTree = "<group>"; };
 		02F6AAAB270556A4002425D0 /* Models+Copiable.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Models+Copiable.generated.swift"; sourceTree = "<group>"; };
 		02FF054523D983F30058E6E7 /* MediaFileManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MediaFileManager.swift; sourceTree = "<group>"; };
 		02FF054623D983F30058E6E7 /* MediaImageExporter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MediaImageExporter.swift; sourceTree = "<group>"; };
@@ -1119,6 +1125,9 @@
 			isa = PBXGroup;
 			children = (
 				02F2C1C52BF33BCD003B4658 /* CardReaderConnectionStateMachine.swift */,
+				02F2C1C72BF33E69003B4658 /* CardReaderSettingsKnownReaderProvider.swift */,
+				02F2C1C92BF33F26003B4658 /* CardReaderSettingsDataSource.swift */,
+				02F2C1CB2BF33F41003B4658 /* CardReaderSettingsResultsControllers.swift */,
 			);
 			path = Payments;
 			sourceTree = "<group>";
@@ -2152,6 +2161,7 @@
 				02C254FA2563B66600A04423 /* ShippingLabelRefund+ReadOnlyConvertible.swift in Sources */,
 				CECE6BBE2BA9DE3200A57C1F /* WCAnalyticsCustomer+ReadOnlyConvertible.swift in Sources */,
 				02FF054F23D983F30058E6E7 /* FileManager+URL.swift in Sources */,
+				02F2C1CC2BF33F41003B4658 /* CardReaderSettingsResultsControllers.swift in Sources */,
 				03F3AFE728097D6400E328BE /* CardPresentPaymentsPlugin.swift in Sources */,
 				B52E0032211A440D00700FDE /* Order+ReadOnlyType.swift in Sources */,
 				CE606D9C2BE3BCC4001CB424 /* ShippingMethod+ReadOnlyConvertible.swift in Sources */,
@@ -2167,6 +2177,7 @@
 				B5C9DE152087FF0E006B910A /* Dispatcher.swift in Sources */,
 				247CE8402582F39900F9D9D1 /* MockActionHandler.swift in Sources */,
 				247CE7C82582DF5500F9D9D1 /* MockStoresManager.swift in Sources */,
+				02F2C1C82BF33E69003B4658 /* CardReaderSettingsKnownReaderProvider.swift in Sources */,
 				BAB3737927964A9500837B4A /* OrderTaxLine+ReadOnlyConvertible.swift in Sources */,
 				D83B093525DECFCC00B21F45 /* CardPresentPaymentAction.swift in Sources */,
 				B52E0030211A439E00700FDE /* Account+ReadOnlyType.swift in Sources */,
@@ -2263,6 +2274,7 @@
 				0331A7092A38CF08001D2C2C /* WooPlan.swift in Sources */,
 				077F39E026A5A6F500ABEADC /* SystemStatusStore.swift in Sources */,
 				DE2E8EA52953F77A002E4B14 /* WordPressSiteAction.swift in Sources */,
+				02F2C1CA2BF33F26003B4658 /* CardReaderSettingsDataSource.swift in Sources */,
 				02FF054D23D983F30058E6E7 /* MediaFileManager.swift in Sources */,
 				02137901270AB204006430F7 /* MockUserActionHandler.swift in Sources */,
 				DED91DEE2AD673CF00CDCC53 /* BlazeAction.swift in Sources */,

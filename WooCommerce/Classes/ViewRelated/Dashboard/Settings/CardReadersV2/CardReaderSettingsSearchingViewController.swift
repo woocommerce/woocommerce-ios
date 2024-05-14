@@ -1,4 +1,5 @@
 import SwiftUI
+import class Yosemite.CardReaderConnectionController
 
 /// This view controller is used when no reader is connected. It assists
 /// the merchant in connecting to a reader.
@@ -22,12 +23,11 @@ final class CardReaderSettingsSearchingViewController: UIHostingController<CardR
         }
 
         return CardReaderConnectionController(
-            forSiteID: viewModel.siteID,
+            siteID: viewModel.siteID,
+            storageManager: ServiceLocator.storageManager,
+            stores: ServiceLocator.stores,
             knownReaderProvider: knownReaderProvider,
-            alertsPresenter: alertsPresenter,
-            alertsProvider: alertsProvider,
-            configuration: viewModel.configuration,
-            analyticsTracker: viewModel.cardReaderConnectionAnalyticsTracker
+            configuration: viewModel.configuration
         )
     }()
 

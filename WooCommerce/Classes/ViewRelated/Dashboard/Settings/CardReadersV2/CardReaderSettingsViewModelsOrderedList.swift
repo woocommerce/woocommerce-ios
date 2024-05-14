@@ -1,4 +1,5 @@
 import Foundation
+import protocol Yosemite.CardReaderSettingsKnownReaderProvider
 import struct Yosemite.CardPresentPaymentsConfiguration
 
 /// Aggregates an ordered list of viewmodels, conforming to the viewmodel provider protocol. Priority is given to
@@ -16,7 +17,7 @@ final class CardReaderSettingsViewModelsOrderedList: PaymentSettingsFlowPrioriti
 
     var onPriorityChanged: ((PaymentSettingsFlowViewModelAndView?) -> ())?
 
-    private var knownReaderProvider: CardReaderSettingsKnownReaderProvider?
+    private let knownReaderProvider: CardReaderSettingsKnownReaderProvider?
 
     private let cardReaderConnectionAnalyticsTracker: CardReaderConnectionAnalyticsTracker
 

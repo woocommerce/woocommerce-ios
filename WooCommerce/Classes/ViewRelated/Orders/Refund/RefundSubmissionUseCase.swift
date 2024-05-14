@@ -72,18 +72,11 @@ final class RefundSubmissionUseCase: NSObject, RefundSubmissionProtocol {
 
     /// Controller to connect a card reader for in-person refund.
     private lazy var cardReaderConnectionController =
-    CardReaderConnectionController(forSiteID: order.siteID,
+    CardReaderConnectionController(siteID: order.siteID,
                                    storageManager: storageManager,
                                    stores: stores,
                                    knownReaderProvider: knownReaderProvider,
-                                   alertsPresenter: CardPresentPaymentAlertsPresenter(rootViewController: rootViewController),
-                                   alertsProvider: cardReaderConnectionAlerts,
-                                   configuration: cardPresentConfiguration,
-                                   analyticsTracker: .init(configuration: cardPresentConfiguration,
-                                                           siteID: order.siteID,
-                                                           connectionType: .userInitiated,
-                                                           stores: stores,
-                                                           analytics: analytics))
+                                   configuration: cardPresentConfiguration)
 
     /// IPP Configuration.
     private let cardPresentConfiguration: CardPresentPaymentsConfiguration

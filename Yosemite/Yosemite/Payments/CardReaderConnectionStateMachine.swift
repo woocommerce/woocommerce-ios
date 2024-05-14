@@ -3,9 +3,38 @@ import Foundation
 import Storage
 import SwiftUI
 
+public enum CardReaderConnectionResult {
+    case connected(CardReader)
+    case canceled(CardReaderConnectionCancellationSource)
+}
+
+public enum CardReaderConnectionCancellationSource: String {
+    // TODO: move raw value to analytics extension
+    case appleTOSAcceptance = "apple_tap_to_pay_terms_acceptance"
+    case reader = "card_reader"
+    case selectReaderType = "preflight_select_reader_type"
+    case searchingForReader = "searching_for_reader"
+    case foundReader = "found_reader"
+    case foundSeveralReaders = "found_several_readers"
+    case paymentValidatingOrder = "payment_validating_order"
+    case paymentPreparingReader = "payment_preparing_reader"
+    case paymentWaitingForInput = "payment_waiting_for_input"
+    case connectionError = "connection_error"
+    case readerSoftwareUpdate = "reader_software_update"
+    case other = "unknown"
+}
+
 /// Facilitates connecting to a card reader
 ///
-final class CardReaderConnectionController {
+public class CardReaderConnectionController {
+    enum UIState {
+        case scanningForReader(cancel: () -> Void)
+        case updateInProgress(requiredUpdate: Bool,
+                              progress: Float,
+                              cancel: () -> Void)
+        case dismissed
+    }
+
     private enum ControllerState {
         /// Initial state of the controller
         ///
@@ -58,28 +87,13 @@ final class CardReaderConnectionController {
         /// will be called with a `success` `Bool` `False` result. The view controller passed to `searchAndConnect` will be
         /// dereferenced and the state set to `idle`
         ///
-        case cancel(source: CancellationSource)
+        case cancel(source: CardReaderConnectionCancellationSource)
 
         /// A failure occurred. The completion passed to `searchAndConnect`
         /// will be called with a `failure` result. The view controller passed to `searchAndConnect` will be
         /// dereferenced and the state set to `idle`
         ///
         case discoveryFailed(Error)
-    }
-
-    enum CancellationSource: String {
-        case appleTOSAcceptance = "apple_tap_to_pay_terms_acceptance"
-        case reader = "card_reader"
-        case selectReaderType = "preflight_select_reader_type"
-        case searchingForReader = "searching_for_reader"
-        case foundReader = "found_reader"
-        case foundSeveralReaders = "found_several_readers"
-        case paymentValidatingOrder = "payment_validating_order"
-        case paymentPreparingReader = "payment_preparing_reader"
-        case paymentWaitingForInput = "payment_waiting_for_input"
-        case connectionError = "connection_error"
-        case readerSoftwareUpdate = "reader_software_update"
-        case other = "unknown"
     }
 
     private let storageManager: StorageManagerType
@@ -173,7 +187,7 @@ final class CardReaderConnectionController {
         subscriptions.removeAll()
     }
 
-    func searchAndConnect(onCompletion: @escaping (Result<CardReaderConnectionResult, Error>) -> Void) {
+    public func searchAndConnect(onCompletion: @escaping (Result<CardReaderConnectionResult, Error>) -> Void) {
         Task { @MainActor [weak self] in
             self?.onCompletion = onCompletion
             self?.state = .initializing

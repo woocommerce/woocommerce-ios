@@ -57,7 +57,7 @@ final class BuiltInCardReaderConnectionController: BuiltInCardReaderConnectionCo
         /// will be called with a `success` `Bool` `False` result. The view controller passed to `searchAndConnect` will be
         /// dereferenced and the state set to `idle`
         ///
-        case cancel(WooAnalyticsEvent.InPersonPayments.CancellationSource)
+        case cancel(CardReaderConnectionCancellationSource)
 
         /// A failure occurred. The completion passed to `searchAndConnect`
         /// will be called with a `failure` result. The view controller passed to `searchAndConnect` will be
@@ -320,7 +320,7 @@ private extension BuiltInCardReaderConnectionController {
 
     /// End the search for a card reader
     ///
-    func onCancel(from cancellationSource: WooAnalyticsEvent.InPersonPayments.CancellationSource) {
+    func onCancel(from cancellationSource: CardReaderConnectionCancellationSource) {
         let action = CardPresentPaymentAction.cancelCardReaderDiscovery() { [weak self] _ in
             self?.returnSuccess(result: .canceled(cancellationSource))
         }

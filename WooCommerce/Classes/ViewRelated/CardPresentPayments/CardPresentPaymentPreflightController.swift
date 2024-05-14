@@ -5,12 +5,7 @@ import protocol WooFoundation.Analytics
 
 enum CardReaderPreflightResult {
     case completed(CardReader, PaymentGatewayAccount)
-    case canceled(WooAnalyticsEvent.InPersonPayments.CancellationSource, PaymentGatewayAccount)
-}
-
-enum CardReaderConnectionResult {
-    case connected(CardReader)
-    case canceled(WooAnalyticsEvent.InPersonPayments.CancellationSource)
+    case canceled(CardReaderConnectionCancellationSource, PaymentGatewayAccount)
 }
 
 protocol CardPresentPaymentPreflightControllerProtocol {
@@ -98,12 +93,12 @@ final class CardPresentPaymentPreflightController: CardPresentPaymentPreflightCo
                                                                      stores: stores,
                                                                      analytics: analytics)
         self.connectionController = CardReaderConnectionController(
-            forSiteID: siteID,
+            siteID: siteID,
+            storageManager: ServiceLocator.storageManager,
+            stores: stores,
             knownReaderProvider: CardReaderSettingsKnownReaderStorage(),
-            alertsPresenter: alertsPresenter,
-            alertsProvider: BluetoothReaderConnectionAlertsProvider(),
-            configuration: configuration,
-            analyticsTracker: analyticsTracker)
+            configuration: configuration
+        )
 
         self.builtInConnectionController = BuiltInCardReaderConnectionController(
             forSiteID: siteID,

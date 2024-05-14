@@ -1,5 +1,6 @@
 import Foundation
 import Yosemite
+import protocol WooFoundation.Analytics
 
 final class SessionsReportCardViewModel: AnalyticsReportCardProtocol {
     private let siteID: Int64

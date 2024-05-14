@@ -1,6 +1,7 @@
 import SwiftUI
 import XCTest
 import TestKit
+import protocol WooFoundation.Analytics
 @testable import Yosemite
 @testable import WooCommerce
 

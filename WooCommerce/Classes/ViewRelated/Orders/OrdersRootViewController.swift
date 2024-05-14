@@ -158,7 +158,7 @@ final class OrdersRootViewController: UIViewController {
         let detailsViewController = OrderDetailsViewController(viewModel: viewModel)
 
         viewController.navigationController?.pushViewController(detailsViewController, animated: true)
-        analytics.track(event: WooAnalyticsEvent.Orders.orderOpen(
+        analytics.track(event: .Orders.orderOpen(
             order: order,
             horizontalSizeClass: UITraitCollection.current.horizontalSizeClass))
     }
@@ -231,14 +231,14 @@ final class OrdersRootViewController: UIViewController {
             navigationController.present(newOrderNavigationController, animated: true)
         }
 
-        analytics.track(event: WooAnalyticsEvent.Orders.orderAddNew())
+        analytics.track(event: .Orders.orderAddNew())
         orderDurationRecorder.startRecording()
     }
 
     /// Presents the Order Creation flow when a product is scanned
     ///
     @objc func presentOrderCreationFlowByProductScanning() {
-        analytics.track(event: WooAnalyticsEvent.Orders.orderAddNewFromBarcodeScanningTapped())
+        analytics.track(event: .Orders.orderAddNewFromBarcodeScanningTapped())
 
         guard let navigationController = navigationController else {
             return
@@ -246,14 +246,14 @@ final class OrdersRootViewController: UIViewController {
 
         let productSKUBarcodeScannerCoordinator = ProductSKUBarcodeScannerCoordinator(sourceNavigationController: navigationController,
                                                                                       onSKUBarcodeScanned: { [weak self] scannedBarcode in
-            self?.analytics.track(event: WooAnalyticsEvent.BarcodeScanning.barcodeScanningSuccess(from: .orderList))
+            self?.analytics.track(event: .BarcodeScanning.barcodeScanningSuccess(from: .orderList))
 
             self?.navigationItem.configureLeftBarButtonItemAsLoader()
             self?.handleScannedBarcode(scannedBarcode) { [weak self] result in
                 guard let self = self else { return }
                 switch result {
                 case let .success(product):
-                    self.analytics.track(event: WooAnalyticsEvent.Orders.orderProductAdd(flow: .creation,
+                    self.analytics.track(event: .Orders.orderProductAdd(flow: .creation,
                                                                                          source: .orderList,
                                                                                          addedVia: .scanning,
                                                                                          includesBundleProductConfiguration: false))
@@ -264,7 +264,7 @@ final class OrdersRootViewController: UIViewController {
                 navigationItem.leftBarButtonItem = createAddOrderByProductScanningButtonItem()
             }
         }, onPermissionsDenied: { [weak self] in
-            self?.analytics.track(event: WooAnalyticsEvent.BarcodeScanning.barcodeScanningFailure(from: .orderList, reason: .cameraAccessNotPermitted))
+            self?.analytics.track(event: .BarcodeScanning.barcodeScanningFailure(from: .orderList, reason: .cameraAccessNotPermitted))
         })
         barcodeScannerCoordinator = productSKUBarcodeScannerCoordinator
         productSKUBarcodeScannerCoordinator.start()
@@ -508,7 +508,7 @@ private extension OrdersRootViewController {
     /// Pushes an `OrderDetailsViewController` onto the navigation stack.
     ///
     private func navigateToOrderDetail(_ order: Order, onCompletion: ((Bool) -> Void)? = nil) {
-        analytics.track(event: WooAnalyticsEvent.Orders.orderOpen(
+        analytics.track(event: .Orders.orderOpen(
             order: order,
             horizontalSizeClass: UITraitCollection.current.horizontalSizeClass
         ))

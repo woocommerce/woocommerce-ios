@@ -4,6 +4,7 @@ import Fakes
 import Yosemite
 import Combine
 import Networking
+import protocol WooFoundation.Analytics
 
 @testable import WooCommerce
 

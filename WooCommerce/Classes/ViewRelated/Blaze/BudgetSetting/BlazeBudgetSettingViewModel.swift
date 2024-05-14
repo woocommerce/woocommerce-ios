@@ -1,6 +1,7 @@
 import Combine
 import Foundation
 import Yosemite
+import protocol WooFoundation.Analytics
 
 /// View model for `BlazeBudgetSettingView`
 final class BlazeBudgetSettingViewModel: ObservableObject {

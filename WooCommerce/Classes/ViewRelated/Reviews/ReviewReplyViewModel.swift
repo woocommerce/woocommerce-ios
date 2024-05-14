@@ -1,6 +1,7 @@
 import Foundation
 import Combine
 import Yosemite
+import protocol WooFoundation.Analytics
 
 /// View model for the `ReviewReply` screen.
 ///

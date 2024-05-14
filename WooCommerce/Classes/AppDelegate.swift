@@ -4,6 +4,7 @@ import Storage
 import class Networking.UserAgent
 import Experiments
 import class WidgetKit.WidgetCenter
+import protocol WooFoundation.Analytics
 import protocol Yosemite.StoresManager
 
 import CocoaLumberjack
@@ -245,6 +246,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationDidReceiveMemoryWarning(_ application: UIApplication) {
         let size = os_proc_available_memory()
         DDLogDebug("Received memory warning: Available memory - \(size)")
+    }
+}
+
+// MARK: - Helper method for WooCommerce POS
+//
+extension AppDelegate {
+    func setShouldHideTabBar(_ hidden: Bool) {
+        guard let tabBarController = AppDelegate.shared.tabBarController else {
+            return
+        }
+        tabBarController.tabBar.isHidden = hidden
     }
 }
 

@@ -1,5 +1,6 @@
 import XCTest
 import Yosemite
+import protocol WooFoundation.Analytics
 @testable import WooCommerce
 
 final class LocalAnnouncementViewModelTests: XCTestCase {

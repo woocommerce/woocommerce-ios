@@ -1,4 +1,5 @@
 import Foundation
+import protocol WooFoundation.Analytics
 
 /// To determine when to show Product Creation AI survey
 ///

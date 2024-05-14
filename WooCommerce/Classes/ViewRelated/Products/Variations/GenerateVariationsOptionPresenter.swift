@@ -1,6 +1,7 @@
 import Foundation
 import UIKit
 import Yosemite
+import protocol WooFoundation.Analytics
 
 /// Type to encapsulate the options presented when generating variations.
 ///

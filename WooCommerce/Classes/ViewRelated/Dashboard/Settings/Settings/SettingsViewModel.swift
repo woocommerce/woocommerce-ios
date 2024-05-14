@@ -3,6 +3,7 @@ import Yosemite
 import Storage
 import class Networking.UserAgent
 import Experiments
+import protocol WooFoundation.Analytics
 
 protocol SettingsViewModelOutput {
     typealias Section = SettingsViewController.Section

@@ -1,6 +1,7 @@
 import UIKit
 import struct Yosemite.Site
 import protocol Experiments.FeatureFlagService
+import protocol WooFoundation.Analytics
 
 /// Coordinates navigation for product sharing
 final class ShareProductCoordinator: Coordinator {

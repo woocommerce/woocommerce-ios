@@ -1,5 +1,6 @@
 import Foundation
 import WebKit
+import protocol WooFoundation.Analytics
 
 final class WooSetupWebViewModel: AuthenticatedWebViewModel {
     private let siteURL: String

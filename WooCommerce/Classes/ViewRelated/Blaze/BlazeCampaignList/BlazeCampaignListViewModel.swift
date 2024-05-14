@@ -2,6 +2,7 @@ import Foundation
 import Yosemite
 import Experiments
 import protocol Storage.StorageManagerType
+import protocol WooFoundation.Analytics
 
 /// Conformance to support listing in SwiftUI
 extension BlazeCampaignListItem: Identifiable {

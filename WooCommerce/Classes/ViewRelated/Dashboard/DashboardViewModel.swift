@@ -4,6 +4,7 @@ import enum Networking.DotcomError
 import enum Storage.StatsVersion
 import protocol Storage.StorageManagerType
 import protocol Experiments.FeatureFlagService
+import protocol WooFoundation.Analytics
 
 /// Syncs data for dashboard stats UI and determines the state of the dashboard UI based on stats version.
 final class DashboardViewModel: ObservableObject {

@@ -1,6 +1,7 @@
 import UIKit
 import SwiftUI
 import Yosemite
+import protocol WooFoundation.Analytics
 
 /// Coordinates navigation actions for printing shipping labels.
 final class PrintShippingLabelCoordinator {

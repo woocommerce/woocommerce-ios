@@ -3,6 +3,7 @@ import Yosemite
 import Combine
 import class UIKit.UIColor
 import protocol Storage.StorageManagerType
+import protocol WooFoundation.Analytics
 
 /// Main View Model for the Analytics Hub.
 ///

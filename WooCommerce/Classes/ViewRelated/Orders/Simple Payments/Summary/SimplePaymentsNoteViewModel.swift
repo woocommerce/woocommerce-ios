@@ -1,5 +1,6 @@
 import Foundation
 import Combine
+import protocol WooFoundation.Analytics
 
 final class SimplePaymentsNoteViewModel: EditCustomerNoteViewModelProtocol {
 
@@ -17,7 +18,7 @@ final class SimplePaymentsNoteViewModel: EditCustomerNoteViewModelProtocol {
         originalNote = newNote
         onCompletion(true)
 
-        analytics.track(event: WooAnalyticsEvent.SimplePayments.simplePaymentsFlowNoteAdded())
+        analytics.track(event: .SimplePayments.simplePaymentsFlowNoteAdded())
     }
 
     /// Revert to original content.

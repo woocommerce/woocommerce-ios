@@ -1,3 +1,5 @@
+import protocol WooFoundation.WooAnalyticsEventPropertyType
+
 extension WooAnalyticsEvent {
     enum OrdersFilter {
         /// Event property keys.

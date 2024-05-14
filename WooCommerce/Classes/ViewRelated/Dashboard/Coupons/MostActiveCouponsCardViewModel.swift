@@ -6,7 +6,7 @@ import protocol WooFoundation.Analytics
 /// View model for `MostActiveCouponsCard`.
 ///
 final class MostActiveCouponsCardViewModel: ObservableObject {
-    // Set externally to trigger callback upon hiding the Inbox card.
+    // Set externally to trigger callback upon hiding the Coupons card.
     var onDismiss: (() -> Void)?
 
     @Published private(set) var timeRange = MostActiveCouponsTimeRange.today

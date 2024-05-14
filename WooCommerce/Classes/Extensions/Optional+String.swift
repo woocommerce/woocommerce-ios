@@ -7,4 +7,12 @@ extension Optional where Wrapped == String {
         }
         return self.isEmpty
     }
+
+    var isNilOrEmptyOrZero: Bool {
+        guard !isNilOrEmpty else {
+            return true
+        }
+
+        return self == "0"
+    }
 }

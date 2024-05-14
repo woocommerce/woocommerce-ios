@@ -539,15 +539,14 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
         let subscription = try? metaDataExtractor?.extractProductSubscription()
 
         // Min/Max Quantities properties
-        let minAllowedQuantity = metaDataExtractor?.extractStringValue(forKey: MetadataKeys.minAllowedQuantity)
-        let maxAllowedQuantity = metaDataExtractor?.extractStringValue(forKey: MetadataKeys.maxAllowedQuantity)
-        let groupOfQuantity = metaDataExtractor?.extractStringValue(forKey: MetadataKeys.groupOfQuantity)
-        let combineVariationQuantities: Bool? = {
-            guard let allowCombination = metaDataExtractor?.extractStringValue(forKey: MetadataKeys.allowCombination) else {
-                return nil
-            }
-            return (allowCombination as NSString).boolValue
-        }()
+        let minAllowedQuantity = container.failsafeDecodeIfPresent(stringForKey: .minAllowedQuantity)
+        let maxAllowedQuantity = container.failsafeDecodeIfPresent(stringForKey: .maxAllowedQuantity)
+        let groupOfQuantity = container.failsafeDecodeIfPresent(stringForKey: .groupOfQuantity)
+
+        var combineVariationQuantities: Bool?
+        if let combineVariationQuantitiesString = container.failsafeDecodeIfPresent(stringForKey: .combineVariations) {
+            combineVariationQuantities = combineVariationQuantitiesString == Values.combineVariationQuantitiesTrueValue
+        }
 
         self.init(siteID: siteID,
                   productID: productID,
@@ -830,13 +829,14 @@ private extension Product {
         case bundledItems                   = "bundled_items"
 
         case compositeComponents    = "composite_components"
+
+        case minAllowedQuantity     = "min_quantity"
+        case maxAllowedQuantity     = "max_quantity"
+        case groupOfQuantity        = "group_of_quantity"
+        case combineVariations      = "combine_variations"
     }
 
     enum MetadataKeys {
-        static let minAllowedQuantity = "minimum_allowed_quantity"
-        static let maxAllowedQuantity = "maximum_allowed_quantity"
-        static let groupOfQuantity    = "group_of_quantity"
-        static let allowCombination   = "allow_combination"
         static let headStartPost      = "_headstart_post"
     }
 }
@@ -849,9 +849,9 @@ private extension Product {
     enum Values {
         static let manageStockParent = "parent"
         static let headStartValue = "_hs_extra"
+        static let combineVariationQuantitiesTrueValue = "yes"
     }
 }
-
 
 // MARK: - Decoding Errors
 //

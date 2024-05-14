@@ -181,7 +181,9 @@ private extension DashboardView {
                                               onViewAllCoupons: { siteID in
                             onViewAllCoupons?(siteID)
                         })
-                    case .lastOrders, .stock, .reviews:
+                    case .reviews:
+                        ReviewsDashboardCard(viewModel: viewModel.reviewsViewModel)
+                    case .lastOrders, .stock:
                         EmptyView()
                     }
 

@@ -180,7 +180,7 @@ extension EditableProductModel: ProductFormDataModel, TaxClassRequestable {
     }
 
     var hasQuantityRules: Bool {
-        let hasNoRules = minAllowedQuantity.isNilOrEmpty && maxAllowedQuantity.isNilOrEmpty && groupOfQuantity.isNilOrEmpty
+        let hasNoRules = minAllowedQuantity.isNilOrEmptyOrZero && maxAllowedQuantity.isNilOrEmptyOrZero && groupOfQuantity.isNilOrEmptyOrZero
         return !hasNoRules
     }
 

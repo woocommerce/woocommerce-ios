@@ -106,8 +106,8 @@ final class MockCouponsRemote: CouponsRemoteProtocol {
     }
 
     func loadMostActiveCoupons(for siteID: Int64,
-                               from startDate: Date?,
-                               to endDate: Date?,
+                               from startDate: Date,
+                               to endDate: Date,
                                completion: @escaping (Result<[CouponReport], Error>) -> Void) {
         didCallLoadMostActiveCoupons = true
         spyLoadMostActiveCouponsSiteID = siteID

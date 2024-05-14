@@ -38,8 +38,8 @@ public protocol CouponsRemoteProtocol {
                           completion: @escaping (Result<CouponReport, Error>) -> Void)
 
     func loadMostActiveCoupons(for siteID: Int64,
-                               from startDate: Date?,
-                               to endDate: Date?,
+                               from startDate: Date,
+                               to endDate: Date,
                                completion: @escaping (Result<[CouponReport], Error>) -> Void)
 }
 
@@ -267,13 +267,13 @@ public final class CouponsRemote: Remote, CouponsRemoteProtocol {
     ///
     /// - Parameters:
     ///     - siteID: The ID of the  site from which we'll fetch the coupons report.
-    ///     - from: The start of the date range for which we'll fetch the coupons report. Sending `nil`fetches all time info.
-    ///     - to: The end of the date range until which we'll fetch the coupons report. Sending `nil`fetches all time info.
+    ///     - from: The start of the date range for which we'll fetch the coupons report.
+    ///     - to: The end of the date range until which we'll fetch the coupons report.
     ///     - completion: Closure to be executed upon completion.
     ///
     public func loadMostActiveCoupons(for siteID: Int64,
-                                      from startDate: Date? = nil,
-                                      to endDate: Date? = nil,
+                                      from startDate: Date,
+                                      to endDate: Date,
                                       completion: @escaping (Result<[CouponReport], Error>) -> Void) {
         let parameters: [String: Any] = {
             var params = [
@@ -284,15 +284,10 @@ public final class CouponsRemote: Remote, CouponsRemoteProtocol {
             ]
 
             let dateFormatter = ISO8601DateFormatter()
-            if let startDate {
-                let formattedStartTime = dateFormatter.string(from: startDate)
-                params[ParameterKey.after] = formattedStartTime
-            }
-
-            if let endDate {
-                let formattedEndTime = dateFormatter.string(from: endDate)
-                params[ParameterKey.before] = formattedEndTime
-            }
+            let formattedStartTime = dateFormatter.string(from: startDate)
+            params[ParameterKey.after] = formattedStartTime
+            let formattedEndTime = dateFormatter.string(from: endDate)
+            params[ParameterKey.before] = formattedEndTime
 
             return params
         }()

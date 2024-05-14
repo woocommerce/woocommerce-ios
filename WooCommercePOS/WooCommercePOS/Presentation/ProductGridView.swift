@@ -17,6 +17,8 @@ struct ProductGridView: View {
                     ProductCardView(product: product) {
                         viewModel.addProductToCart(product)
                     }
+                    .foregroundColor(Color.primaryText)
+                    .background(Color.tertiaryBackground)
                 }
             }
         }

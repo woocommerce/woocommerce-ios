@@ -119,7 +119,6 @@ private extension MostActiveCouponsCardViewModel {
         stores.dispatch(action)
     }
 
-
     @MainActor
     func loadCouponDetails(for reports: [CouponReport]) async throws -> [Coupon] {
         try await Task.sleep(nanoseconds: 1_000_000_000)
@@ -197,6 +196,7 @@ private extension MostActiveCouponsCardViewModel {
                        usedBy: [])]
     }
 
+    @MainActor
     func mostActiveCoupons() async throws -> [CouponReport] {
         try await Task.sleep(nanoseconds: 1_000_000_000)
         return [CouponReport(couponID: 123, amount: 546, ordersCount: 54),

@@ -15,6 +15,11 @@ struct ReviewsDashboardCard: View {
         VStack(alignment: .leading, spacing: Layout.padding) {
             header
                 .padding(.horizontal, Layout.padding)
+
+            reviewsFilterBar
+                .padding(.horizontal, Layout.padding)
+                .redacted(reason: viewModel.syncingData ? [.placeholder] : [])
+                .shimmering(active: viewModel.syncingData)
         }
         .padding(.vertical, Layout.padding)
         .background(Color(.listForeground(modal: false)))
@@ -46,6 +51,33 @@ private extension ReviewsDashboardCard {
             .disabled(viewModel.syncingData)
         }
     }
+
+    var reviewsFilterBar: some View {
+        HStack {
+            AdaptiveStack(horizontalAlignment: .leading) {
+                Text(Localization.status)
+                    .foregroundStyle(Color(.text))
+                    .subheadlineStyle()
+
+                Text("All")
+                    .subheadlineStyle()
+            }
+            Spacer()
+
+            Menu {
+                ForEach(viewModel.filters, id: \.self) { filter in
+                    Button {
+                        // TODO
+                    } label: {
+                        SelectableItemRow(title: filter.title, selected: false)
+                    }
+                }
+            } label: {
+                Image(systemName: "line.3.horizontal.decrease")
+                    .foregroundStyle(Color.secondary)
+            }
+        }
+    }
 }
 
 private extension ReviewsDashboardCard {
@@ -60,6 +92,11 @@ private extension ReviewsDashboardCard {
             "reviewsDashboardCard.hideCard",
             value: "Hide Reviews",
             comment: "Menu item to dismiss the Reviews card on the Dashboard screen"
+        )
+        static let status = NSLocalizedString(
+            "reviewsDashboardCard.status",
+            value: "Status",
+            comment: "Status label on the Reviews card's filter area."
         )
         static let viewAll = NSLocalizedString(
             "reviewsDashboardCard.viewAll",

@@ -17,5 +17,6 @@ struct OrderView: View {
                 viewModel.callbackFromOrder()
             }
         }
+        .background(Color.secondaryBackground)
     }
 }

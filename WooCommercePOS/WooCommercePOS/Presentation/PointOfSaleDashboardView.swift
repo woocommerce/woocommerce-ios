@@ -12,6 +12,7 @@ struct PointOfSaleDashboardView: View {
     var body: some View {
         VStack {
             Text("WooCommerce Point Of Sale")
+                .foregroundColor(Color.primaryText)
             HStack {
                 ProductGridView(viewModel: viewModel)
                     .frame(maxWidth: .infinity)
@@ -20,6 +21,7 @@ struct PointOfSaleDashboardView: View {
                     .frame(maxWidth: .infinity)
             }
         }
+        .background(Color.primaryBackground)
         .navigationBarBackButtonHidden(true)
         .toolbar {
             ToolbarItem(placement: .topBarLeading, content: {

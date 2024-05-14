@@ -22,12 +22,14 @@ struct ProductGridView: View {
                             // TODO: CurrencyFormatter
                             Text(product.price)
                         }
+                        .foregroundColor(Color.primaryText)
                         .padding()
-                        .background(Color.cyan)
+                        .background(Color.tertiaryBackground)
                         .frame(minWidth: 0, maxWidth: .infinity, minHeight: 100)
                     })
                 }
             }
         }
+        .background(Color.secondaryBackground)
     }
 }

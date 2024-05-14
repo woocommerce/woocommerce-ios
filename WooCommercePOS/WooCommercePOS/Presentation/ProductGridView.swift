@@ -20,6 +20,7 @@ struct ProductGridView: View {
                 }
             }
         }
+        .background(Color.secondaryBackground)
     }
 }
 

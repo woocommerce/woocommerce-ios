@@ -19,6 +19,7 @@ struct CartView: View {
                 viewModel.submitCart()
             }
         }
+        .background(Color.secondaryBackground)
     }
 }
 

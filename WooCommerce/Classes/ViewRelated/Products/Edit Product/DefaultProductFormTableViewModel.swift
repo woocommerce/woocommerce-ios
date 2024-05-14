@@ -645,15 +645,15 @@ private extension DefaultProductFormTableViewModel {
 
         var quantityDetails = [String]()
 
-        if let minQuantity = product.minAllowedQuantity, minQuantity.isNotEmpty {
+        if let minQuantity = product.minAllowedQuantity, minQuantity.isAValidProductQuantityRuleValue {
             let minQuantityDescription = String.localizedStringWithFormat(Localization.minQuantityFormat, minQuantity)
             quantityDetails.append(minQuantityDescription)
         }
-        if let maxQuantity = product.maxAllowedQuantity, maxQuantity.isNotEmpty {
+        if let maxQuantity = product.maxAllowedQuantity, maxQuantity.isAValidProductQuantityRuleValue {
             let maxQuantityDescription = String.localizedStringWithFormat(Localization.maxQuantityFormat, maxQuantity)
             quantityDetails.append(maxQuantityDescription)
         }
-        if !quantityDetails.containsMoreThanOne, let groupOf = product.groupOfQuantity, groupOf.isNotEmpty {
+        if !quantityDetails.containsMoreThanOne, let groupOf = product.groupOfQuantity, groupOf.isAValidProductQuantityRuleValue {
             let groupOfDescription = String.localizedStringWithFormat(Localization.groupOfFormat, groupOf)
             quantityDetails.append(groupOfDescription)
         }

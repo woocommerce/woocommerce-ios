@@ -23,6 +23,7 @@ struct CartView: View {
             }
             .background(Color.secondaryBackground)
         }
+        .frame(maxWidth: .infinity)
         .background(Color.secondaryBackground)
     }
 }

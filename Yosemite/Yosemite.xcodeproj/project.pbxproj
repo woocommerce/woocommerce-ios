@@ -463,6 +463,7 @@
 		EEB4E2CB29B04A1200371C3C /* StoreOnboardingTasksAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEB4E2CA29B04A1200371C3C /* StoreOnboardingTasksAction.swift */; };
 		EEB4E2CD29B04CE900371C3C /* MockStoreOnboardingTasksRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEB4E2CC29B04CE900371C3C /* MockStoreOnboardingTasksRemote.swift */; };
 		EEB4E2CF29B04D7900371C3C /* StoreOnboardingTasksStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEB4E2CE29B04D7900371C3C /* StoreOnboardingTasksStoreTests.swift */; };
+		EEC0992D2BF3107E00FBCF6C /* MostActiveCouponsTimeRange.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEC0992C2BF3107E00FBCF6C /* MostActiveCouponsTimeRange.swift */; };
 		FE28F6EE268440B1004465C7 /* UserAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE28F6ED268440B1004465C7 /* UserAction.swift */; };
 		FE28F6F026844231004465C7 /* UserStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE28F6EF26844231004465C7 /* UserStore.swift */; };
 		FE28F6F2268462A6004465C7 /* UserStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE28F6F1268462A6004465C7 /* UserStoreTests.swift */; };
@@ -956,6 +957,7 @@
 		EEB4E2CA29B04A1200371C3C /* StoreOnboardingTasksAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreOnboardingTasksAction.swift; sourceTree = "<group>"; };
 		EEB4E2CC29B04CE900371C3C /* MockStoreOnboardingTasksRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockStoreOnboardingTasksRemote.swift; sourceTree = "<group>"; };
 		EEB4E2CE29B04D7900371C3C /* StoreOnboardingTasksStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreOnboardingTasksStoreTests.swift; sourceTree = "<group>"; };
+		EEC0992C2BF3107E00FBCF6C /* MostActiveCouponsTimeRange.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MostActiveCouponsTimeRange.swift; sourceTree = "<group>"; };
 		FE28F6ED268440B1004465C7 /* UserAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserAction.swift; sourceTree = "<group>"; };
 		FE28F6EF26844231004465C7 /* UserStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserStore.swift; sourceTree = "<group>"; };
 		FE28F6F1268462A6004465C7 /* UserStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserStoreTests.swift; sourceTree = "<group>"; };
@@ -1084,6 +1086,7 @@
 				E109876B284F6EEB002EBB05 /* CardPresentPaymentsPluginState.swift */,
 				B93E03272A960CAD009CA9C1 /* TaxBasedOnSetting.swift */,
 				CEF2DD982B56BEC500A3DD0B /* JetpackModule.swift */,
+				EEC0992C2BF3107E00FBCF6C /* MostActiveCouponsTimeRange.swift */,
 			);
 			path = Enums;
 			sourceTree = "<group>";
@@ -2209,6 +2212,7 @@
 				74D42DBA221C978D00B4977D /* ShipmentTracking+ReadOnlyType.swift in Sources */,
 				DEDA8DAD2B1846FF0076BF0F /* WordPressThemeAction.swift in Sources */,
 				AEF945892729766D001DCCFB /* TelemetryStore.swift in Sources */,
+				EEC0992D2BF3107E00FBCF6C /* MostActiveCouponsTimeRange.swift in Sources */,
 				AEF945872729760F001DCCFB /* TelemetryAction.swift in Sources */,
 				B5DC3CB120D1B8720063AC41 /* AccountAction.swift in Sources */,
 				D831E2E2230E3513000037D0 /* ProductReviewStore.swift in Sources */,

@@ -3,10 +3,10 @@ import Yosemite
 import protocol Storage.StorageManagerType
 import protocol WooFoundation.Analytics
 
-/// View model for `InboxDashboardCard`.
+/// View model for `ReviewsDashboardCard`
 ///
-final class InboxDashboardCardViewModel: ObservableObject {
-    // Set externally to trigger callback upon hiding the Inbox card.
+final class ReviewsDashboardCardViewModel: ObservableObject {
+    // Set externally to trigger callback upon hiding the Reviews card
     var onDismiss: (() -> Void)?
 
     @Published private(set) var syncingData = false
@@ -27,7 +27,7 @@ final class InboxDashboardCardViewModel: ObservableObject {
         self.analytics = analytics
     }
 
-    func dismissInbox() {
+    func dismissReviews() {
         // TODO: add tracking
         onDismiss?()
     }

@@ -1487,6 +1487,8 @@
 		860476E12B6A31D500AF0AEB /* ManualProductTypeOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 860476E02B6A31D500AF0AEB /* ManualProductTypeOptions.swift */; };
 		860476E82B6CA0FC00AF0AEB /* BottomSheetProductType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 860476E72B6CA0FC00AF0AEB /* BottomSheetProductType.swift */; };
 		860B85F12ADE3A0E00E85884 /* BulletPointView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 860B85F02ADE3A0E00E85884 /* BulletPointView.swift */; };
+		8625C5112BF20990007F1901 /* ReviewsDashboardCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8625C5102BF20990007F1901 /* ReviewsDashboardCard.swift */; };
+		8625C5132BF20CC6007F1901 /* ReviewsDashboardCardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8625C5122BF20CC6007F1901 /* ReviewsDashboardCardViewModel.swift */; };
 		863012A72B288F60004EC9DC /* ThemesPreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 863012A62B288F60004EC9DC /* ThemesPreviewView.swift */; };
 		864213022AE77C730036E5A6 /* UIImage+Resizing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 864213012AE77C730036E5A6 /* UIImage+Resizing.swift */; };
 		8646A9BA2B46C7CA001F606C /* BlazeAdDestinationSettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8646A9B92B46C7CA001F606C /* BlazeAdDestinationSettingView.swift */; };
@@ -1796,6 +1798,7 @@
 		B99B30CD2A85200D0066743D /* AddressFormViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B99B30CC2A85200D0066743D /* AddressFormViewModel.swift */; };
 		B99B87A72AEFCF0A006B8AB1 /* Order+Empty.swift in Sources */ = {isa = PBXBuildFile; fileRef = B99B87A62AEFCF0A006B8AB1 /* Order+Empty.swift */; };
 		B9A0F7A62B1735B10035A153 /* UpdateProductInventoryViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9A0F7A52B1735B10035A153 /* UpdateProductInventoryViewModelTests.swift */; };
+		B9ACF6882BEE4FC60076E6BC /* String+ProductQuantityRules.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9ACF6872BEE4FC60076E6BC /* String+ProductQuantityRules.swift */; };
 		B9B0391628A6824200DC1C83 /* PermanentNoticePresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9B0391528A6824200DC1C83 /* PermanentNoticePresenter.swift */; };
 		B9B0391828A6838400DC1C83 /* PermanentNoticeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9B0391728A6838400DC1C83 /* PermanentNoticeView.swift */; };
 		B9B0391A28A68ADE00DC1C83 /* ConstraintsUpdatingHostingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9B0391928A68ADE00DC1C83 /* ConstraintsUpdatingHostingController.swift */; };
@@ -4199,6 +4202,8 @@
 		860476E02B6A31D500AF0AEB /* ManualProductTypeOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManualProductTypeOptions.swift; sourceTree = "<group>"; };
 		860476E72B6CA0FC00AF0AEB /* BottomSheetProductType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomSheetProductType.swift; sourceTree = "<group>"; };
 		860B85F02ADE3A0E00E85884 /* BulletPointView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BulletPointView.swift; sourceTree = "<group>"; };
+		8625C5102BF20990007F1901 /* ReviewsDashboardCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewsDashboardCard.swift; sourceTree = "<group>"; };
+		8625C5122BF20CC6007F1901 /* ReviewsDashboardCardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewsDashboardCardViewModel.swift; sourceTree = "<group>"; };
 		863012A62B288F60004EC9DC /* ThemesPreviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemesPreviewView.swift; sourceTree = "<group>"; };
 		864213012AE77C730036E5A6 /* UIImage+Resizing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Resizing.swift"; sourceTree = "<group>"; };
 		8646A9B92B46C7CA001F606C /* BlazeAdDestinationSettingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeAdDestinationSettingView.swift; sourceTree = "<group>"; };
@@ -4534,6 +4539,7 @@
 		B99B30CC2A85200D0066743D /* AddressFormViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddressFormViewModel.swift; sourceTree = "<group>"; };
 		B99B87A62AEFCF0A006B8AB1 /* Order+Empty.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Order+Empty.swift"; sourceTree = "<group>"; };
 		B9A0F7A52B1735B10035A153 /* UpdateProductInventoryViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateProductInventoryViewModelTests.swift; sourceTree = "<group>"; };
+		B9ACF6872BEE4FC60076E6BC /* String+ProductQuantityRules.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+ProductQuantityRules.swift"; sourceTree = "<group>"; };
 		B9B0391528A6824200DC1C83 /* PermanentNoticePresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermanentNoticePresenter.swift; sourceTree = "<group>"; };
 		B9B0391728A6838400DC1C83 /* PermanentNoticeView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PermanentNoticeView.swift; sourceTree = "<group>"; };
 		B9B0391928A68ADE00DC1C83 /* ConstraintsUpdatingHostingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConstraintsUpdatingHostingController.swift; sourceTree = "<group>"; };
@@ -8810,6 +8816,15 @@
 			path = Themes;
 			sourceTree = "<group>";
 		};
+		8625C50F2BF2097E007F1901 /* Reviews */ = {
+			isa = PBXGroup;
+			children = (
+				8625C5102BF20990007F1901 /* ReviewsDashboardCard.swift */,
+				8625C5122BF20CC6007F1901 /* ReviewsDashboardCardViewModel.swift */,
+			);
+			path = Reviews;
+			sourceTree = "<group>";
+		};
 		8646A9B82B46C79A001F606C /* AdDestination */ = {
 			isa = PBXGroup;
 			children = (
@@ -10525,6 +10540,7 @@
 				204C9C732B6BDFFB007A94E0 /* UIUserInterfaceSizeClass+Helpers.swift */,
 				EE8A30442B74948C001D7C66 /* OrderAttributionInfo+Origin.swift */,
 				26CE6F332B7D4C27008DB858 /* Error+Timeout.swift */,
+				B9ACF6872BEE4FC60076E6BC /* String+ProductQuantityRules.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -10765,6 +10781,7 @@
 		CE85FD5120F677460080B73E /* Dashboard */ = {
 			isa = PBXGroup;
 			children = (
+				8625C50F2BF2097E007F1901 /* Reviews */,
 				DE6F997C2BEE00A70007B2DD /* Inbox */,
 				EEBA029F2ADD5F0E001FE8E4 /* Blaze */,
 				2647F7B329280A5000D59FDF /* Analytics Hub */,
@@ -14003,6 +14020,7 @@
 				CCFBBCFA29C4C85F0081B595 /* ComponentSettingsViewModel.swift in Sources */,
 				02C37B7B2967096800F0CF9E /* DomainSettingsView.swift in Sources */,
 				CC4B252B27CFCEE2008D2E6E /* OrderTotalsCalculator.swift in Sources */,
+				8625C5112BF20990007F1901 /* ReviewsDashboardCard.swift in Sources */,
 				0247F512286F73EA009C177E /* WooAnalyticsEvent+ImageUpload.swift in Sources */,
 				202D2A5A2AC5933100E4ABC0 /* TopTabView.swift in Sources */,
 				B57C744A20F5649300EEFC87 /* EmptyStoresTableViewCell.swift in Sources */,
@@ -14122,6 +14140,7 @@
 				45C11B7C2508E156006C2089 /* SelectedSiteSettings.swift in Sources */,
 				B5A56BF3219F46470065A902 /* UIButton+Animations.swift in Sources */,
 				03AA165E2719B7EF005CCB7B /* ReceiptActionCoordinator.swift in Sources */,
+				B9ACF6882BEE4FC60076E6BC /* String+ProductQuantityRules.swift in Sources */,
 				B54FBE552111F70700390F57 /* ResultsController+UIKit.swift in Sources */,
 				CE2409F1215D12D30091F887 /* WooNavigationController.swift in Sources */,
 				0250BE8C2AC425F9006D067A /* OrderFormGiftCardRow.swift in Sources */,
@@ -14657,6 +14676,7 @@
 				029106C42BE34AA900C2248B /* CollapsibleCustomerCardViewModel.swift in Sources */,
 				03EF24FE28C0B356006A033E /* CardPresentPaymentsPlugin+CashOnDelivery.swift in Sources */,
 				DEC2961F26BD1605005A056B /* ShippingLabelCustomsFormListViewModel.swift in Sources */,
+				8625C5132BF20CC6007F1901 /* ReviewsDashboardCardViewModel.swift in Sources */,
 				0225091D2A5DAEA0000AEBD2 /* WooAnalyticsEvent+ProductCreation.swift in Sources */,
 				D843D5D722485B19001BFA55 /* ShippingProvidersViewModel.swift in Sources */,
 				B649BC7E2A1C295B007AB988 /* View+HighlightModifier.swift in Sources */,

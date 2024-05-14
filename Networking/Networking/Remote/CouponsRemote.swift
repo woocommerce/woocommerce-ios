@@ -304,11 +304,7 @@ public final class CouponsRemote: Remote, CouponsRemoteProtocol {
         enqueue(request, mapper: mapper, completion: { result in
             switch result {
             case .success(let couponReports):
-                if !couponReports.isEmpty {
-                    completion(.success(couponReports))
-                } else {
-                    completion(.failure(CouponsRemoteError.noAnalyticsReportsFound))
-                }
+                completion(.success(couponReports))
             case .failure(let error):
                 completion(.failure(error))
             }

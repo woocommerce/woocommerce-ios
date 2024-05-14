@@ -57,7 +57,7 @@ extension StatsTimeRangeV4: RawRepresentable, Hashable {
         }
     }
 
-    private enum CustomRangeFormatter {
+    enum CustomRangeFormatter {
         static private let dateFormatter = DateFormatter.Defaults.yearMonthDayDateFormatter
         static private let separator = "_"
 

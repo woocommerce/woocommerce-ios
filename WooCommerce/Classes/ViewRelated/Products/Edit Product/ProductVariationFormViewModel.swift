@@ -375,6 +375,9 @@ extension ProductVariationFormViewModel {
                                                          parentProductSKU: parentProductSKU,
                                                          parentProductDisablesQuantityRules: parentProductDisablesQuantityRules)
     }
+
+    func updateQuantityRules(minQuantity: String, maxQuantity: String, groupOf: String) {
+    }
 }
 
 // MARK: Remote actions

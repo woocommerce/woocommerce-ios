@@ -533,6 +533,10 @@ extension ProductFormViewModel {
         let subscription = product.subscription?.copy(length: length)
         product = EditableProductModel(product: product.product.copy(subscription: subscription))
     }
+
+    func updateQuantityRules(minQuantity: String, maxQuantity: String, groupOf: String) {
+        product = EditableProductModel(product: product.product.copy(minAllowedQuantity: minQuantity, maxAllowedQuantity: maxQuantity, groupOfQuantity: groupOf))
+    }
 }
 
 // MARK: Remote actions

@@ -722,6 +722,11 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
         try container.encode(upsellIDs, forKey: .upsellIDs)
         try container.encode(crossSellIDs, forKey: .crossSellIDs)
 
+        // Quantity Rules
+        try container.encode(maxAllowedQuantity, forKey: .maxAllowedQuantity)
+        try container.encode(minAllowedQuantity, forKey: .minAllowedQuantity)
+        try container.encode(groupOfQuantity, forKey: .groupOfQuantity)
+
         // Attributes
         try container.encode(attributes, forKey: .attributes)
 

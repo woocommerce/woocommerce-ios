@@ -3,6 +3,8 @@ import Foundation
 /// View Model for `QuantityRules`
 ///
 final class QuantityRulesViewModel: ObservableObject {
+    typealias Completion = (_ minQuantity: String, _ maxQuantity: String, _ groupOf: String) -> Void
+
     /// Minimum quantity
     ///
     @Published var minQuantity: String
@@ -15,18 +17,28 @@ final class QuantityRulesViewModel: ObservableObject {
     ///
     @Published var groupOf: String
 
+    private let onCompletion: Completion
+
     init(minQuantity: String?,
          maxQuantity: String?,
-         groupOf: String?) {
+         groupOf: String?,
+         onCompletion: @escaping Completion) {
         self.minQuantity = QuantityRulesViewModel.getDisplayValue(for: minQuantity)
         self.maxQuantity = QuantityRulesViewModel.getDisplayValue(for: maxQuantity)
         self.groupOf = QuantityRulesViewModel.getDisplayValue(for: groupOf)
+        self.onCompletion = onCompletion
     }
 
-    convenience init(product: ProductFormDataModel) {
+    convenience init(product: ProductFormDataModel,
+                     onCompletion: @escaping Completion) {
         self.init(minQuantity: product.minAllowedQuantity,
                   maxQuantity: product.maxAllowedQuantity,
-                  groupOf: product.groupOfQuantity)
+                  groupOf: product.groupOfQuantity,
+                  onCompletion: onCompletion)
+    }
+
+    func onDoneButtonPressed() {
+        onCompletion(minQuantity.isNotEmpty ? minQuantity : "0", maxQuantity.isNotEmpty ? maxQuantity : "", groupOf.isNotEmpty ? groupOf : "0")
     }
 }
 

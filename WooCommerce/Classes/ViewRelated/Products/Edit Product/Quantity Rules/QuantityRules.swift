@@ -24,8 +24,6 @@ struct QuantityRules: View {
     ///
     @Environment(\.safeAreaInsets) private var safeAreaInsets: EdgeInsets
 
-    @Environment(\.presentationMode) var presentationMode
-
     var body: some View {
         ScrollView {
             VStack(alignment: .leading) {
@@ -55,7 +53,7 @@ struct QuantityRules: View {
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
                 Button(Localization.done) {
-                    self.presentationMode.wrappedValue.dismiss()
+                    viewModel.onDoneButtonPressed()
                 }
             }
         }
@@ -86,8 +84,8 @@ private extension QuantityRules {
 
 struct QuantityRules_Previews: PreviewProvider {
 
-    static let viewModel = QuantityRulesViewModel(minQuantity: "4", maxQuantity: "200", groupOf: "2")
-    static let noQuantityRules = QuantityRulesViewModel(minQuantity: "", maxQuantity: "", groupOf: "")
+    static let viewModel = QuantityRulesViewModel(minQuantity: "4", maxQuantity: "200", groupOf: "2", onCompletion: { minQuantity, maxQuantity, groupOf in })
+    static let noQuantityRules = QuantityRulesViewModel(minQuantity: "", maxQuantity: "", groupOf: "", onCompletion: { minQuantity, maxQuantity, groupOf in })
 
     static var previews: some View {
         QuantityRules(viewModel: viewModel)

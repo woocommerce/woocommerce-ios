@@ -309,7 +309,7 @@ open class WordPressComRestApi: NSObject {
         return "\(String(describing: oAuthToken)),\(String(describing: userAgent))".hashValue
     }
 
-    private func requestBuilder(URLString: String) throws -> HTTPRequestBuilder {
+    func requestBuilder(URLString: String) throws -> HTTPRequestBuilder {
         guard let url = URL(string: URLString, relativeTo: baseURL) else {
             throw URLError(.badURL)
         }
@@ -414,9 +414,9 @@ open class WordPressComRestApi: NSObject {
         return await perform(request: builder, fulfilling: progress, decoder: decoder)
     }
 
-    private func perform<T>(
+    func perform<T>(
         request: HTTPRequestBuilder,
-        fulfilling progress: Progress?,
+        fulfilling progress: Progress? = nil,
         decoder: @escaping (Data) throws -> T,
         taskCreated: ((Int) -> Void)? = nil,
         session: URLSession? = nil

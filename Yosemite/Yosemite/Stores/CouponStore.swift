@@ -214,27 +214,20 @@ private extension CouponStore {
     /// Loads top 3 most active coupons report within the specified time range and site ID.
     ///
     /// - `siteID`: site ID.
-    /// - `timeRange`: Time range to fetch report for. Fetches all time data when `nil`.
+    /// - `timeRange`: Time range to fetch report for.
     /// - `siteTimezone`: site's timezone
     /// - `onCompletion`: invoked when the reports are fetched.
     ///
     func loadMostActiveCoupons(siteID: Int64,
-                               timeRange: StatsTimeRangeV4?,
+                               timeRange: StatsTimeRangeV4,
                                siteTimezone: TimeZone,
                                onCompletion: @escaping (Result<[CouponReport], Error>) -> Void) {
-        if let timeRange {
-            let to = timeRange.latestDate(currentDate: Date(), siteTimezone: siteTimezone)
-            let from = timeRange.earliestDate(latestDate: to, siteTimezone: siteTimezone)
-            remote.loadMostActiveCoupons(for: siteID,
-                                         from: from,
-                                         to: to,
-                                         completion: onCompletion)
-        } else {
-            remote.loadMostActiveCoupons(for: siteID,
-                                         from: nil,
-                                         to: nil,
-                                         completion: onCompletion)
-        }
+        let to = timeRange.latestDate(currentDate: Date(), siteTimezone: siteTimezone)
+        let from = timeRange.earliestDate(latestDate: to, siteTimezone: siteTimezone)
+        remote.loadMostActiveCoupons(for: siteID,
+                                     from: from,
+                                     to: to,
+                                     completion: onCompletion)
     }
 
     /// Search coupons from a Site that match a specified keyword.

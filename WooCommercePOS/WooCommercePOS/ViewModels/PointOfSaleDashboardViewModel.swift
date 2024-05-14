@@ -1,10 +1,5 @@
 import SwiftUI
 
-struct CartProduct {
-    let product: Product
-    let quantity: Int
-}
-
 final class PointOfSaleDashboardViewModel: ObservableObject {
     @Published var products: [Product]
     @Published var productsInCart: [CartProduct] = []

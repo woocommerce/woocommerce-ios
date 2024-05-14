@@ -1,3 +1,4 @@
+import Combine
 import SwiftUI
 import class Yosemite.CardReaderConnectionController
 
@@ -22,14 +23,62 @@ final class CardReaderSettingsSearchingViewController: UIHostingController<CardR
             return nil
         }
 
-        return CardReaderConnectionController(
+        let controller = CardReaderConnectionController(
             siteID: viewModel.siteID,
             storageManager: ServiceLocator.storageManager,
             stores: ServiceLocator.stores,
             knownReaderProvider: knownReaderProvider,
             configuration: viewModel.configuration
         )
+        // TODO: move to a function to declutter the lazy var code
+        connectionUIStateSubscription = controller.$uiState
+            .compactMap { $0 }
+            .sink { [weak self] uiState in
+                guard let self else { return }
+                switch uiState {
+                    case let .scanningForReader(cancel):
+                        alertsPresenter.present(viewModel: alertsProvider.scanningForReader(cancel: cancel))
+                    case .connectingToReader:
+                        alertsPresenter.present(viewModel: alertsProvider.connectingToReader())
+                    case let .foundReader(name,
+                                          connect,
+                                          continueSearch,
+                                          cancelSearch):
+                        alertsPresenter.present(
+                            viewModel: alertsProvider.foundReader(
+                                name: name,
+                                connect: connect,
+                                continueSearch: continueSearch,
+                                cancelSearch: cancelSearch))
+                    case let .foundSeveralReaders(readerIDs,
+                                                 connect,
+                                                 cancelSearch):
+                        alertsPresenter.foundSeveralReaders(
+                            readerIDs: readerIDs,
+                            connect: connect,
+                            cancelSearch: cancelSearch
+                        )
+                    case let .updateSeveralReadersList(readerIDs):
+                        alertsPresenter.updateSeveralReadersList(readerIDs: readerIDs)
+                    case let .updateInProgress(requiredUpdate,
+                                               progress,
+                                               cancel):
+                        alertsPresenter.present(
+                            viewModel: alertsProvider.updateProgress(requiredUpdate: requiredUpdate,
+                                                                     progress: progress,
+                                                                     cancel: cancel)
+                        )
+                    case let .scanningFailed(error, close):
+                        alertsPresenter.present(
+                            viewModel: alertsProvider.scanningFailed(error: error, close: close)
+                        )
+                    case .dismissed:
+                        alertsPresenter.dismiss()
+                }
+            }
+        return controller
     }()
+    private var connectionUIStateSubscription: AnyCancellable?
 
     init?(viewModel: PaymentSettingsFlowPresentedViewModel) {
         guard let viewModel = viewModel as? CardReaderSettingsSearchingViewModel else {

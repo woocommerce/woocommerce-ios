@@ -27,11 +27,21 @@ public enum CardReaderConnectionCancellationSource: String {
 /// Facilitates connecting to a card reader
 ///
 public class CardReaderConnectionController {
-    enum UIState {
+    public enum UIState {
         case scanningForReader(cancel: () -> Void)
+        case connectingToReader
+        case foundReader(name: String,
+                         connect: () -> Void,
+                         continueSearch: () -> Void,
+                         cancelSearch: () -> Void)
+        case foundSeveralReaders(readerIDs: [String],
+                                 connect: (String) -> Void,
+                                 cancelSearch: () -> Void)
+        case updateSeveralReadersList(readerIDs: [String])
         case updateInProgress(requiredUpdate: Bool,
                               progress: Float,
-                              cancel: () -> Void)
+                              cancel: (() -> Void)?)
+        case scanningFailed(error: Error, close: () -> Void)
         case dismissed
     }
 
@@ -96,6 +106,8 @@ public class CardReaderConnectionController {
         case discoveryFailed(Error)
     }
 
+    @Published public private(set) var uiState: UIState?
+
     private let storageManager: StorageManagerType
     private let stores: StoresManager
 
@@ -107,10 +119,7 @@ public class CardReaderConnectionController {
 
     private let siteID: Int64
     private let knownCardReaderProvider: CardReaderSettingsKnownReaderProvider
-    private let alertsPresenter: CardPresentPaymentAlertsPresenting
     private let configuration: CardPresentPaymentsConfiguration
-
-    private let alertsProvider: BluetoothReaderConnnectionAlertsProviding
 
     /// Reader(s) discovered by the card reader service
     ///
@@ -128,9 +137,10 @@ public class CardReaderConnectionController {
     ///
     private var candidateReader: CardReader?
 
+    // TODO: update tracker to protocol
     /// Tracks analytics for card reader connection events
     ///
-    private let analyticsTracker: CardReaderConnectionAnalyticsTracker
+//    private let analyticsTracker: CardReaderConnectionAnalyticsTracker
 
     /// Since the number of readers can go greater than 1 and then back to 1, and we don't
     /// want to keep changing the UI from the several-readers-found list to a single prompt
@@ -153,32 +163,26 @@ public class CardReaderConnectionController {
     private var gatewayID: String? {
         didSet {
             didSetGatewayID()
-            analyticsTracker.setGatewayID(gatewayID: gatewayID)
+//            analyticsTracker.setGatewayID(gatewayID: gatewayID)
         }
     }
 
-    init(
-        forSiteID: Int64,
-        storageManager: StorageManagerType = ServiceLocator.storageManager,
-        stores: StoresManager = ServiceLocator.stores,
+    public init(
+        siteID: Int64,
+        storageManager: StorageManagerType,
+        stores: StoresManager,
         knownReaderProvider: CardReaderSettingsKnownReaderProvider,
-        alertsPresenter: CardPresentPaymentAlertsPresenting,
-        alertsProvider: BluetoothReaderConnnectionAlertsProviding,
-        configuration: CardPresentPaymentsConfiguration,
-        analyticsTracker: CardReaderConnectionAnalyticsTracker
+        configuration: CardPresentPaymentsConfiguration
     ) {
-        siteID = forSiteID
+        self.siteID = siteID
         self.storageManager = storageManager
         self.stores = stores
         state = .idle
         knownCardReaderProvider = knownReaderProvider
-        self.alertsPresenter = alertsPresenter
-        self.alertsProvider = alertsProvider
         foundReaders = []
         knownReaderID = nil
         skippedReaderIDs = []
         self.configuration = configuration
-        self.analyticsTracker = analyticsTracker
 
         configureResultsControllers()
     }
@@ -361,7 +365,7 @@ private extension CardReaderConnectionController {
                 /// If the found-several-readers view is already presenting, update its list of found readers
                 ///
                 if case .foundSeveralReaders = self.state {
-                    self.alertsPresenter.updateSeveralReadersList(readerIDs: self.getFoundReaderIDs())
+                    uiState = .updateSeveralReadersList(readerIDs: getFoundReaderIDs())
                 }
 
                 /// To avoid interrupting connecting to a known reader, ensure we are
@@ -403,7 +407,7 @@ private extension CardReaderConnectionController {
             onError: { [weak self] error in
                 guard let self = self else { return }
 
-                self.analyticsTracker.discoveryFailed(error: error)
+//                self.analyticsTracker.discoveryFailed(error: error)
                 self.state = .discoveryFailed(error)
             })
 
@@ -444,9 +448,9 @@ private extension CardReaderConnectionController {
         /// If all else fails, display the "scanning" modal and
         /// stay in this state
         ///
-        alertsPresenter.present(viewModel: alertsProvider.scanningForReader(cancel: {
-            self.state = .cancel(.searchingForReader)
-        }))
+        uiState = .scanningForReader(cancel: { [weak self] in
+            self?.state = .cancel(source: .searchingForReader)
+        })
     }
 
     /// A (unknown) reader has been found
@@ -457,28 +461,27 @@ private extension CardReaderConnectionController {
             return
         }
 
-        alertsPresenter.present(
-            viewModel: alertsProvider.foundReader(
-                name: candidateReader.id,
-                connect: {
-                    self.state = .connectToReader
-                },
-                continueSearch: {
-                    self.skippedReaderIDs.append(candidateReader.id)
-                    self.candidateReader = nil
-                    self.pruneSkippedReaders()
-                    self.state = .searching
-                },
-                cancelSearch: { [weak self] in
-                    self?.state = .cancel(.foundReader)
-                }))
+        uiState = .foundReader(name: candidateReader.id,
+                               connect: { [weak self] in
+            self?.state = .connectToReader
+        },
+                               continueSearch: { [weak self] in
+            guard let self else { return }
+            skippedReaderIDs.append(candidateReader.id)
+            self.candidateReader = nil
+            pruneSkippedReaders()
+            state = .searching
+        },
+                               cancelSearch: { [weak self] in
+            self?.state = .cancel(source: .foundReader)
+        })
     }
 
     /// Several readers have been found
     /// Opens a continually updating list modal for the user to pick one (or cancel the search)
     ///
     func onFoundSeveralReaders() {
-        alertsPresenter.foundSeveralReaders(
+        uiState = .foundSeveralReaders(
             readerIDs: getFoundReaderIDs(),
             connect: { [weak self] readerID in
                 guard let self = self else {
@@ -488,7 +491,7 @@ private extension CardReaderConnectionController {
                 self.state = .connectToReader
             },
             cancelSearch: { [weak self] in
-                self?.state = .cancel(.foundSeveralReaders)
+                self?.state = .cancel(source: .foundSeveralReaders)
             }
         )
     }
@@ -499,28 +502,27 @@ private extension CardReaderConnectionController {
         let cancel = softwareUpdateCancelable.map { cancelable in
             return { [weak self] in
                 guard let self = self else { return }
-                self.state = .cancel(.readerSoftwareUpdate)
-                self.analyticsTracker.cardReaderSoftwareUpdateCancelTapped()
+                self.state = .cancel(source: .readerSoftwareUpdate)
+//                self.analyticsTracker.cardReaderSoftwareUpdateCancelTapped()
                 cancelable.cancel { [weak self] result in
                     if case .failure(let error) = result {
                         DDLogError("💳 Error: canceling software update \(error)")
                     } else {
-                        self?.analyticsTracker.cardReaderSoftwareUpdateCanceled()
+//                        self?.analyticsTracker.cardReaderSoftwareUpdateCanceled()
                     }
                 }
             }
         }
 
-        alertsPresenter.present(
-            viewModel: alertsProvider.updateProgress(requiredUpdate: true,
-                                                     progress: progress,
-                                                     cancel: cancel))
+        uiState = .updateInProgress(requiredUpdate: true,
+                                    progress: progress,
+                                    cancel: cancel)
     }
 
     /// Retry a search for a card reader
     ///
     func onRetry() {
-        alertsPresenter.dismiss()
+        uiState = .dismissed
         let action = CardPresentPaymentAction.cancelCardReaderDiscovery() { [weak self] _ in
             self?.state = .beginSearch
         }
@@ -529,7 +531,7 @@ private extension CardReaderConnectionController {
 
     /// End the search for a card reader
     ///
-    func onCancel(from cancellationSource: WooAnalyticsEvent.InPersonPayments.CancellationSource) {
+    func onCancel(from cancellationSource: CardReaderConnectionCancellationSource) {
         let action = CardPresentPaymentAction.cancelCardReaderDiscovery() { [weak self] _ in
             self?.returnSuccess(result: .canceled(cancellationSource))
         }
@@ -543,7 +545,7 @@ private extension CardReaderConnectionController {
             return
         }
 
-        analyticsTracker.setCandidateReader(candidateReader)
+//        analyticsTracker.setCandidateReader(candidateReader)
 
         let softwareUpdateAction = CardPresentPaymentAction.observeCardReaderUpdateState { [weak self] softwareUpdateEvents in
             guard let self = self else { return }
@@ -576,13 +578,13 @@ private extension CardReaderConnectionController {
         let action = CardPresentPaymentAction.connect(reader: candidateReader) { [weak self] result in
             guard let self = self else { return }
 
-            self.analyticsTracker.setCandidateReader(nil)
+//            self.analyticsTracker.setCandidateReader(nil)
 
             switch result {
             case .success(let reader):
                 self.knownCardReaderProvider.rememberCardReader(cardReaderID: reader.id)
-                self.analyticsTracker.connectionSuccess(batteryLevel: reader.batteryLevel,
-                                                        cardReaderModel: reader.readerType.model)
+//                self.analyticsTracker.connectionSuccess(batteryLevel: reader.batteryLevel,
+//                                                        cardReaderModel: reader.readerType.model)
                 // If we were installing a software update, introduce a small delay so the user can
                 // actually see a success message showing the installation was complete
                 if case .updating(progress: 1) = self.state {
@@ -593,14 +595,14 @@ private extension CardReaderConnectionController {
                     self.returnSuccess(result: .connected(reader))
                 }
             case .failure(let error):
-                self.analyticsTracker.connectionFailed(error: error,
-                                                       cardReaderModel: candidateReader.readerType.model)
+//                self.analyticsTracker.connectionFailed(error: error,
+//                                                       cardReaderModel: candidateReader.readerType.model)
                 self.state = .connectingFailed(error)
             }
         }
         stores.dispatch(action)
 
-        alertsPresenter.present(viewModel: alertsProvider.connectingToReader())
+        uiState = .connectingToReader
     }
 
     /// An error occurred while connecting
@@ -629,17 +631,19 @@ private extension CardReaderConnectionController {
             // Update was cancelled, don't treat this as an error
             return
         case .readerSoftwareUpdateFailedBatteryLow:
-            alertsPresenter.present(
-                viewModel: alertsProvider.updatingFailedLowBattery(batteryLevel: batteryLevel,
-                                                                   close: {
-                                                                       self.state = .searching
-                                                                   }))
+//            alertsPresenter.present(
+//                viewModel: alertsProvider.updatingFailedLowBattery(batteryLevel: batteryLevel,
+//                                                                   close: {
+//                                                                       self.state = .searching
+//                                                                   }))
+        break
         default:
-            alertsPresenter.present(
-                viewModel: alertsProvider.updatingFailed(tryAgain: nil,
-                                                         close: {
-                    self.state = .searching
-                }))
+                break
+//            alertsPresenter.present(
+//                viewModel: alertsProvider.updatingFailed(tryAgain: nil,
+//                                                         close: {
+//                    self.state = .searching
+//                }))
         }
     }
 
@@ -653,88 +657,87 @@ private extension CardReaderConnectionController {
         }
 
         let cancelSearch = {
-            self.state = .cancel(.connectionError)
+            self.state = .cancel(source: .connectionError)
         }
-
-        guard case CardReaderServiceError.connection(let underlyingError) = error else {
-            return alertsPresenter.present(
-                viewModel: alertsProvider.connectingFailed(error: error,
-                                                           retrySearch: continueSearch,
-                                                           cancelSearch: cancelSearch))
-        }
-
-        switch underlyingError {
-        case .incompleteStoreAddress(let adminUrl):
-            alertsPresenter.present(
-                viewModel: alertsProvider.connectingFailedIncompleteAddress(
-                    openWCSettings: openWCSettingsAction(adminUrl: adminUrl,
-                                                         retrySearch: retrySearch),
-                    retrySearch: retrySearch,
-                    cancelSearch: cancelSearch))
-        case .invalidPostalCode:
-            alertsPresenter.present(
-                viewModel: alertsProvider.connectingFailedInvalidPostalCode(
-                    retrySearch: retrySearch,
-                    cancelSearch: cancelSearch))
-        case .bluetoothConnectionFailedBatteryCriticallyLow:
-            alertsPresenter.present(
-                viewModel: alertsProvider.connectingFailedCriticallyLowBattery(
-                    retrySearch: retrySearch,
-                    cancelSearch: cancelSearch))
-        default:
-            // We continueSearch here from a button labeled `Try again`, rather than retrying from the beginning,
-            // this is because the original reader can be re-discovered in the same process.
-            alertsPresenter.present(
-                viewModel: alertsProvider.connectingFailed(
-                    error: error,
-                    retrySearch: continueSearch,
-                    cancelSearch: cancelSearch))
-        }
+//        guard case CardReaderServiceError.connection(let underlyingError) = error else {
+//            return alertsPresenter.present(
+//                viewModel: alertsProvider.connectingFailed(error: error,
+//                                                           retrySearch: continueSearch,
+//                                                           cancelSearch: cancelSearch))
+//        }
+//
+//        switch underlyingError {
+//        case .incompleteStoreAddress(let adminUrl):
+//            alertsPresenter.present(
+//                viewModel: alertsProvider.connectingFailedIncompleteAddress(
+//                    openWCSettings: openWCSettingsAction(adminUrl: adminUrl,
+//                                                         retrySearch: retrySearch),
+//                    retrySearch: retrySearch,
+//                    cancelSearch: cancelSearch))
+//        case .invalidPostalCode:
+//            alertsPresenter.present(
+//                viewModel: alertsProvider.connectingFailedInvalidPostalCode(
+//                    retrySearch: retrySearch,
+//                    cancelSearch: cancelSearch))
+//        case .bluetoothConnectionFailedBatteryCriticallyLow:
+//            alertsPresenter.present(
+//                viewModel: alertsProvider.connectingFailedCriticallyLowBattery(
+//                    retrySearch: retrySearch,
+//                    cancelSearch: cancelSearch))
+//        default:
+//            // We continueSearch here from a button labeled `Try again`, rather than retrying from the beginning,
+//            // this is because the original reader can be re-discovered in the same process.
+//            alertsPresenter.present(
+//                viewModel: alertsProvider.connectingFailed(
+//                    error: error,
+//                    retrySearch: continueSearch,
+//                    cancelSearch: cancelSearch))
+//        }
     }
 
-    private func openWCSettingsAction(adminUrl: URL?,
-                                      retrySearch: @escaping () -> Void) -> ((UIViewController) -> Void)? {
-        if let adminUrl = adminUrl {
-            if let site = stores.sessionManager.defaultSite,
-               site.isWordPressComStore {
-                return { [weak self] viewController in
-                    self?.openWCSettingsInWebview(url: adminUrl, from: viewController, retrySearch: retrySearch)
-                }
-            } else {
-                return { [weak self] _ in
-                    UIApplication.shared.open(adminUrl)
-                    self?.showIncompleteAddressErrorWithRefreshButton()
-                }
-            }
-        }
-        return nil
-    }
-    private func openWCSettingsInWebview(url adminUrl: URL,
-                                         from viewController: UIViewController,
-                                         retrySearch: @escaping () -> Void) {
-        let nav = NavigationView {
-            AuthenticatedWebView(isPresented: .constant(true),
-                                 url: adminUrl,
-                                 urlToTriggerExit: nil,
-                                 exitTrigger: nil)
-                                 .navigationTitle(Localization.adminWebviewTitle)
-                                 .navigationBarTitleDisplayMode(.inline)
-                                 .toolbar {
-                                     ToolbarItem(placement: .confirmationAction) {
-                                         Button(action: {
-                                             viewController.dismiss(animated: true) {
-                                                 retrySearch()
-                                             }
-                                         }, label: {
-                                             Text(Localization.doneButtonUpdateAddress)
-                                         })
-                                     }
-                                 }
-        }
-        .wooNavigationBarStyle()
-        let hostingController = UIHostingController(rootView: nav)
-        viewController.present(hostingController, animated: true, completion: nil)
-    }
+//    private func openWCSettingsAction(adminUrl: URL?,
+//                                      retrySearch: @escaping () -> Void) -> ((UIViewController) -> Void)? {
+//        if let adminUrl = adminUrl {
+//            if let site = stores.sessionManager.defaultSite,
+//               site.isWordPressComStore {
+//                return { [weak self] viewController in
+//                    self?.openWCSettingsInWebview(url: adminUrl, from: viewController, retrySearch: retrySearch)
+//                }
+//            } else {
+//                return { [weak self] _ in
+//                    UIApplication.shared.open(adminUrl)
+//                    self?.showIncompleteAddressErrorWithRefreshButton()
+//                }
+//            }
+//        }
+//        return nil
+//    }
+//    private func openWCSettingsInWebview(url adminUrl: URL,
+//                                         from viewController: UIViewController,
+//                                         retrySearch: @escaping () -> Void) {
+//        let nav = NavigationView {
+//            AuthenticatedWebView(isPresented: .constant(true),
+//                                 url: adminUrl,
+//                                 urlToTriggerExit: nil,
+//                                 exitTrigger: nil)
+//                                 .navigationTitle(Localization.adminWebviewTitle)
+//                                 .navigationBarTitleDisplayMode(.inline)
+//                                 .toolbar {
+//                                     ToolbarItem(placement: .confirmationAction) {
+//                                         Button(action: {
+//                                             viewController.dismiss(animated: true) {
+//                                                 retrySearch()
+//                                             }
+//                                         }, label: {
+//                                             Text(Localization.doneButtonUpdateAddress)
+//                                         })
+//                                     }
+//                                 }
+//        }
+//        .wooNavigationBarStyle()
+//        let hostingController = UIHostingController(rootView: nav)
+//        viewController.present(hostingController, animated: true, completion: nil)
+//    }
 
     private func showIncompleteAddressErrorWithRefreshButton() {
         showConnectionFailed(error: CardReaderServiceError.connection(underlyingError: .incompleteStoreAddress(adminUrl: nil)))
@@ -744,8 +747,8 @@ private extension CardReaderConnectionController {
     /// Presents the error in a modal
     ///
     private func onDiscoveryFailed(error: Error) {
-        alertsPresenter.present(
-            viewModel: alertsProvider.scanningFailed(error: error) { [weak self] in
+        uiState = .scanningFailed(error: error,
+                                  close: { [weak self] in
             self?.returnFailure(error: error)
         })
     }

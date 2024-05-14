@@ -30,6 +30,20 @@ public class CardReaderConnectionController {
     public enum UIState {
         case scanningForReader(cancel: () -> Void)
         case connectingToReader
+        case connectingFailed(error: Error,
+                              retrySearch: () -> Void,
+                              cancelSearch: () -> Void)
+        case connectingFailedIncompleteAddress(openWCSettings: ((UIViewController) -> Void)?,
+                                               retrySearch: () -> Void,
+                                               cancelSearch: () -> Void)
+
+        /// Defines an alert indicating connecting failed because their postal code needs updating.
+        /// The user may try again or cancel
+        ///
+        case connectingFailedInvalidPostalCode(retrySearch: () -> Void,
+                                               cancelSearch: () -> Void)
+        case connectingFailedCriticallyLowBattery(retrySearch: () -> Void,
+                                                  cancelSearch: () -> Void)
         case foundReader(name: String,
                          connect: () -> Void,
                          continueSearch: () -> Void,
@@ -41,6 +55,9 @@ public class CardReaderConnectionController {
         case updateInProgress(requiredUpdate: Bool,
                               progress: Float,
                               cancel: (() -> Void)?)
+        case updatingFailed(tryAgain: (() -> Void)?, close: () -> Void)
+        case updatingFailedLowBattery(batteryLevel: Double?,
+                                      close: () -> Void)
         case scanningFailed(error: Error, close: () -> Void)
         case dismissed
     }
@@ -627,23 +644,19 @@ private extension CardReaderConnectionController {
         }
 
         switch underlyingError {
-        case .readerSoftwareUpdateFailedInterrupted:
-            // Update was cancelled, don't treat this as an error
-            return
-        case .readerSoftwareUpdateFailedBatteryLow:
-//            alertsPresenter.present(
-//                viewModel: alertsProvider.updatingFailedLowBattery(batteryLevel: batteryLevel,
-//                                                                   close: {
-//                                                                       self.state = .searching
-//                                                                   }))
-        break
-        default:
-                break
-//            alertsPresenter.present(
-//                viewModel: alertsProvider.updatingFailed(tryAgain: nil,
-//                                                         close: {
-//                    self.state = .searching
-//                }))
+            case .readerSoftwareUpdateFailedInterrupted:
+                // Update was cancelled, don't treat this as an error
+                return
+            case .readerSoftwareUpdateFailedBatteryLow:
+                uiState = .updatingFailedLowBattery(batteryLevel: batteryLevel,
+                                                    close: { [weak self] in
+                    self?.state = .searching
+                })
+            default:
+                // TODO: consider removing `tryAgain` if we're only passing nil
+                uiState = .updatingFailed(tryAgain: nil, close: { [weak self] in
+                    self?.state = .searching
+                })
         }
     }
 
@@ -659,40 +672,37 @@ private extension CardReaderConnectionController {
         let cancelSearch = {
             self.state = .cancel(source: .connectionError)
         }
-//        guard case CardReaderServiceError.connection(let underlyingError) = error else {
-//            return alertsPresenter.present(
-//                viewModel: alertsProvider.connectingFailed(error: error,
-//                                                           retrySearch: continueSearch,
-//                                                           cancelSearch: cancelSearch))
-//        }
-//
-//        switch underlyingError {
-//        case .incompleteStoreAddress(let adminUrl):
-//            alertsPresenter.present(
-//                viewModel: alertsProvider.connectingFailedIncompleteAddress(
-//                    openWCSettings: openWCSettingsAction(adminUrl: adminUrl,
-//                                                         retrySearch: retrySearch),
-//                    retrySearch: retrySearch,
-//                    cancelSearch: cancelSearch))
-//        case .invalidPostalCode:
-//            alertsPresenter.present(
-//                viewModel: alertsProvider.connectingFailedInvalidPostalCode(
-//                    retrySearch: retrySearch,
-//                    cancelSearch: cancelSearch))
-//        case .bluetoothConnectionFailedBatteryCriticallyLow:
-//            alertsPresenter.present(
-//                viewModel: alertsProvider.connectingFailedCriticallyLowBattery(
-//                    retrySearch: retrySearch,
-//                    cancelSearch: cancelSearch))
-//        default:
-//            // We continueSearch here from a button labeled `Try again`, rather than retrying from the beginning,
-//            // this is because the original reader can be re-discovered in the same process.
-//            alertsPresenter.present(
-//                viewModel: alertsProvider.connectingFailed(
-//                    error: error,
-//                    retrySearch: continueSearch,
-//                    cancelSearch: cancelSearch))
-//        }
+        guard case CardReaderServiceError.connection(let underlyingError) = error else {
+            return uiState = .connectingFailed(error: error,
+                                               retrySearch: continueSearch,
+                                               cancelSearch: cancelSearch)
+        }
+
+        switch underlyingError {
+            case .incompleteStoreAddress(let adminUrl):
+                // TODO: recover openWCSettingsAction
+                uiState = .connectingFailedIncompleteAddress(openWCSettings: nil,
+                                                             retrySearch: retrySearch,
+                                                             cancelSearch: cancelSearch)
+//                alertsPresenter.present(
+//                    viewModel: alertsProvider.connectingFailedIncompleteAddress(
+//                        openWCSettings: openWCSettingsAction(adminUrl: adminUrl,
+//                                                             retrySearch: retrySearch),
+//                        retrySearch: retrySearch,
+//                        cancelSearch: cancelSearch))
+            case .invalidPostalCode:
+                uiState = .connectingFailedInvalidPostalCode(retrySearch: retrySearch,
+                                                             cancelSearch: cancelSearch)
+            case .bluetoothConnectionFailedBatteryCriticallyLow:
+                uiState = .connectingFailedCriticallyLowBattery(retrySearch: retrySearch,
+                                                                cancelSearch: cancelSearch)
+            default:
+                // We continueSearch here from a button labeled `Try again`, rather than retrying from the beginning,
+                // this is because the original reader can be re-discovered in the same process.
+                uiState = .connectingFailed(error: error,
+                                            retrySearch: continueSearch,
+                                            cancelSearch: cancelSearch)
+        }
     }
 
 //    private func openWCSettingsAction(adminUrl: URL?,

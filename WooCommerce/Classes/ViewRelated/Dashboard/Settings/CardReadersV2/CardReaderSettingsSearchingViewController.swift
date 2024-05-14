@@ -74,6 +74,36 @@ final class CardReaderSettingsSearchingViewController: UIHostingController<CardR
                         )
                     case .dismissed:
                         alertsPresenter.dismiss()
+                    case .connectingFailed(error: let error, retrySearch: let retrySearch, cancelSearch: let cancelSearch):
+                        alertsPresenter.present(
+                            viewModel: alertsProvider.connectingFailed(error: error,
+                                                                       retrySearch: retrySearch,
+                                                                       cancelSearch: cancelSearch))
+                    case .connectingFailedIncompleteAddress(openWCSettings: let openWCSettings, retrySearch: let retrySearch, cancelSearch: let cancelSearch):
+                        // TODO: handle `openWCSettings`
+                        alertsPresenter.present(
+                            viewModel: alertsProvider.connectingFailedIncompleteAddress(
+                                openWCSettings: nil,
+                                retrySearch: retrySearch,
+                                cancelSearch: cancelSearch))
+                    case .connectingFailedInvalidPostalCode(retrySearch: let retrySearch, cancelSearch: let cancelSearch):
+                        alertsPresenter.present(
+                            viewModel: alertsProvider.connectingFailedInvalidPostalCode(
+                                retrySearch: retrySearch,
+                                cancelSearch: cancelSearch))
+                    case .connectingFailedCriticallyLowBattery(retrySearch: let retrySearch, cancelSearch: let cancelSearch):
+                        alertsPresenter.present(
+                            viewModel: alertsProvider.connectingFailedCriticallyLowBattery(
+                                retrySearch: retrySearch,
+                                cancelSearch: cancelSearch))
+                    case let .updatingFailed(tryAgain, close):
+                        alertsPresenter.present(
+                            viewModel: alertsProvider.updatingFailed(tryAgain: tryAgain,
+                                                                     close: close))
+                    case let .updatingFailedLowBattery(batteryLevel, close):
+                        alertsPresenter.present(
+                            viewModel: alertsProvider.updatingFailedLowBattery(batteryLevel: batteryLevel,
+                                                                               close: close))
                 }
             }
         return controller

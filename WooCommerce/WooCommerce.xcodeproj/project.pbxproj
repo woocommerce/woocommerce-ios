@@ -2615,6 +2615,10 @@
 		EEBDF7E22A2F685C00EFEF47 /* DefaultShareProductAIEligibilityCheckerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEBDF7E12A2F685C00EFEF47 /* DefaultShareProductAIEligibilityCheckerTests.swift */; };
 		EEBDF7E52A317BCE00EFEF47 /* FirstProductCreatedViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEBDF7E42A317BCE00EFEF47 /* FirstProductCreatedViewModel.swift */; };
 		EEBDF7E72A31A59F00EFEF47 /* FirstProductCreatedViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEBDF7E62A31A59F00EFEF47 /* FirstProductCreatedViewModelTests.swift */; };
+		EEC099292BF2207F00FBCF6C /* MostActiveCouponsCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEC099282BF2207F00FBCF6C /* MostActiveCouponsCard.swift */; };
+		EEC0992B2BF2208A00FBCF6C /* MostActiveCouponsCardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEC0992A2BF2208A00FBCF6C /* MostActiveCouponsCardViewModel.swift */; };
+		EEC0992F2BF32EDB00FBCF6C /* MostActiveCouponsTimeRange+UI.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEC0992E2BF32EDB00FBCF6C /* MostActiveCouponsTimeRange+UI.swift */; };
+		EEC099312BF3340100FBCF6C /* MostActiveCouponsTimeRangePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEC099302BF3340100FBCF6C /* MostActiveCouponsTimeRangePicker.swift */; };
 		EEC259422B43EF33004D703C /* BlazeEditAdView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEC259412B43EF33004D703C /* BlazeEditAdView.swift */; };
 		EEC259442B43EF3B004D703C /* BlazeEditAdViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEC259432B43EF3B004D703C /* BlazeEditAdViewModel.swift */; };
 		EEC259462B4556B6004D703C /* BlazeEditAdHostingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEC259452B4556B6004D703C /* BlazeEditAdHostingController.swift */; };
@@ -5363,6 +5367,10 @@
 		EEBDF7E12A2F685C00EFEF47 /* DefaultShareProductAIEligibilityCheckerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultShareProductAIEligibilityCheckerTests.swift; sourceTree = "<group>"; };
 		EEBDF7E42A317BCE00EFEF47 /* FirstProductCreatedViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstProductCreatedViewModel.swift; sourceTree = "<group>"; };
 		EEBDF7E62A31A59F00EFEF47 /* FirstProductCreatedViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstProductCreatedViewModelTests.swift; sourceTree = "<group>"; };
+		EEC099282BF2207F00FBCF6C /* MostActiveCouponsCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MostActiveCouponsCard.swift; sourceTree = "<group>"; };
+		EEC0992A2BF2208A00FBCF6C /* MostActiveCouponsCardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MostActiveCouponsCardViewModel.swift; sourceTree = "<group>"; };
+		EEC0992E2BF32EDB00FBCF6C /* MostActiveCouponsTimeRange+UI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MostActiveCouponsTimeRange+UI.swift"; sourceTree = "<group>"; };
+		EEC099302BF3340100FBCF6C /* MostActiveCouponsTimeRangePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MostActiveCouponsTimeRangePicker.swift; sourceTree = "<group>"; };
 		EEC259412B43EF33004D703C /* BlazeEditAdView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeEditAdView.swift; sourceTree = "<group>"; };
 		EEC259432B43EF3B004D703C /* BlazeEditAdViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeEditAdViewModel.swift; sourceTree = "<group>"; };
 		EEC259452B4556B6004D703C /* BlazeEditAdHostingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeEditAdHostingController.swift; sourceTree = "<group>"; };
@@ -10765,6 +10773,7 @@
 		CE85FD5120F677460080B73E /* Dashboard */ = {
 			isa = PBXGroup;
 			children = (
+				EEC099272BF2202A00FBCF6C /* Coupons */,
 				DE6F997C2BEE00A70007B2DD /* Inbox */,
 				EEBA029F2ADD5F0E001FE8E4 /* Blaze */,
 				2647F7B329280A5000D59FDF /* Analytics Hub */,
@@ -12210,6 +12219,17 @@
 			path = FirstProductCreated;
 			sourceTree = "<group>";
 		};
+		EEC099272BF2202A00FBCF6C /* Coupons */ = {
+			isa = PBXGroup;
+			children = (
+				EEC099282BF2207F00FBCF6C /* MostActiveCouponsCard.swift */,
+				EEC0992A2BF2208A00FBCF6C /* MostActiveCouponsCardViewModel.swift */,
+				EEC0992E2BF32EDB00FBCF6C /* MostActiveCouponsTimeRange+UI.swift */,
+				EEC099302BF3340100FBCF6C /* MostActiveCouponsTimeRangePicker.swift */,
+			);
+			path = Coupons;
+			sourceTree = "<group>";
+		};
 		EEC259402B43E4D6004D703C /* BlazeEditAd */ = {
 			isa = PBXGroup;
 			children = (
@@ -13626,6 +13646,7 @@
 				02BBD6E529A2678100243BE2 /* StoreOnboardingView.swift in Sources */,
 				02784A03238B8BC800BDD6A8 /* UIView+Border.swift in Sources */,
 				CE1CCB402056F21C000EE3AC /* Style.swift in Sources */,
+				EEC0992B2BF2208A00FBCF6C /* MostActiveCouponsCardViewModel.swift in Sources */,
 				B943E7252AFA41CF009CBA20 /* OrderDetailsCustomAmountCellViewModel.swift in Sources */,
 				45EF7984244F26BB00B22BA2 /* Array+IndexPath.swift in Sources */,
 				02E6B97823853D81000A36F0 /* TitleAndValueTableViewCell.swift in Sources */,
@@ -13689,6 +13710,7 @@
 				CE27257F21925AE8002B22EB /* ValueOneTableViewCell.swift in Sources */,
 				DE4A33552A45A4DC00795DA9 /* WPComSitePlan+SimpleSite.swift in Sources */,
 				860476E82B6CA0FC00AF0AEB /* BottomSheetProductType.swift in Sources */,
+				EEC0992F2BF32EDB00FBCF6C /* MostActiveCouponsTimeRange+UI.swift in Sources */,
 				028296EC237D28B600E84012 /* TextViewViewController.swift in Sources */,
 				02B8650F24A9E2D800265779 /* Product+SwiftUIPreviewHelpers.swift in Sources */,
 				454B28BE23BF63C600CD2091 /* DateIntervalFormatter+Helpers.swift in Sources */,
@@ -13884,6 +13906,7 @@
 				26ABCE532518EAF300721CB0 /* IssueRefundTableViewCell.swift in Sources */,
 				0304E35E28BDC86D00A80191 /* LearnMoreViewModel.swift in Sources */,
 				02DF980B2A15FD920009E2EA /* StoreCreationStatusChecker.swift in Sources */,
+				EEC099292BF2207F00FBCF6C /* MostActiveCouponsCard.swift in Sources */,
 				02482A8B237BE8C7007E73ED /* LinkSettingsViewController.swift in Sources */,
 				CE227097228F152400C0626C /* WooBasicTableViewCell.swift in Sources */,
 				02C27BCE282CB52F0065471A /* CardPresentPaymentReceiptEmailCoordinator.swift in Sources */,
@@ -14425,6 +14448,7 @@
 				B5290ED9219B3FA900A6AF7F /* Date+Woo.swift in Sources */,
 				DE36E09A2A86351100B98496 /* StoreNameSetupViewModel.swift in Sources */,
 				DE279BA626E9C582002BA963 /* ShippingLabelPackagesFormViewModel.swift in Sources */,
+				EEC099312BF3340100FBCF6C /* MostActiveCouponsTimeRangePicker.swift in Sources */,
 				02038C582AF0D0F400CD36D9 /* ConfigurableVariableBundleAttributePicker.swift in Sources */,
 				02B1AA6729A4709400D54FCB /* FilterTabBar.swift in Sources */,
 				CECC758C23D2227000486676 /* ProductDetailsCellViewModel.swift in Sources */,

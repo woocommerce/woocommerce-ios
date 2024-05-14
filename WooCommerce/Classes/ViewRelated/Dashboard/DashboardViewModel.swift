@@ -24,6 +24,7 @@ final class DashboardViewModel: ObservableObject {
     let storePerformanceViewModel: StorePerformanceViewModel
     let topPerformersViewModel: TopPerformersDashboardViewModel
     let inboxViewModel: InboxDashboardCardViewModel
+    let reviewsViewModel: ReviewsDashboardCardViewModel
 
     @Published var justInTimeMessagesWebViewModel: WebViewSheetViewModel? = nil
 
@@ -106,6 +107,7 @@ final class DashboardViewModel: ObservableObject {
         self.topPerformersViewModel = .init(siteID: siteID,
                                             usageTracksEventEmitter: usageTracksEventEmitter)
         self.inboxViewModel = InboxDashboardCardViewModel(siteID: siteID)
+        self.reviewsViewModel = ReviewsDashboardCardViewModel(siteID: siteID)
         self.themeInstaller = themeInstaller
         self.inAppFeedbackCardViewModel.onFeedbackGiven = { [weak self] feedback in
             self?.showingInAppFeedbackSurvey = feedback == .didntLike
@@ -302,6 +304,10 @@ private extension DashboardViewModel {
         inboxViewModel.onDismiss = { [weak self] in
             self?.showCustomizationScreen()
         }
+
+        reviewsViewModel.onDismiss = { [weak self] in
+            self?.showCustomizationScreen()
+        }
     }
 
     func showCustomizationScreen() {
@@ -337,6 +343,7 @@ private extension DashboardViewModel {
         if dynamicDashboardM2 {
             // TODO: check eligibility and update `enabled` accordingly
             cards.append(DashboardCard(type: .inbox, availability: .show, enabled: false))
+            cards.append(DashboardCard(type: .reviews, availability: .show, enabled: false))
         }
 
         return cards

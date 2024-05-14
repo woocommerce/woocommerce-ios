@@ -73,7 +73,9 @@ struct ProductGridView: View {
         ScrollView {
             LazyVGrid(columns: columns, spacing: 20) {
                 ForEach(viewModel.products, id: \.productID) { product in
-                    ProductCardView(product: product)
+                    ProductCardView(product: product) {
+                        viewModel.addProductToCart(product)
+                    }
                 }
             }
         }

@@ -9,9 +9,9 @@ struct CartView: View {
 
     var body: some View {
         VStack {
-            ProductRowView()
-            ProductRowView()
-            ProductRowView()
+            ForEach(viewModel.productsInCart, id: \.product.productID) { product in
+                ProductRowView(cartProduct: product)
+            }
             Spacer()
             Button("Pay now") {
                 viewModel.submitCart()

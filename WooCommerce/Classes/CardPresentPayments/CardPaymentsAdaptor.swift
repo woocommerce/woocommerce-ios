@@ -2,12 +2,6 @@ import Foundation
 import Yosemite
 import class WooFoundation.CurrencyFormatter
 
-enum CardPresentPaymentResult {
-    case success(Order)
-    case failure(CardPaymentErrorProtocol)
-    case cancellation
-}
-
 class CardPresentPaymentsAdaptor {
     private let currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
     private let siteID: Int64
@@ -17,9 +11,16 @@ class CardPresentPaymentsAdaptor {
     }
 
     func collectPayment(for order: Order,
-                        using discoveryMethod: CardReaderDiscoveryMethod,
-                        eventStream: AsyncStream<CardPresentPaymentEvent>) async -> CardPresentPaymentResult {
-        let orderPaymentUseCase = await CollectOrderPaymentUseCase(siteID: siteID,
+                        using discoveryMethod: CardReaderDiscoveryMethod) -> AsyncStream<CardPresentPaymentEvent> {
+        var continuation: AsyncStream<CardPresentPaymentEvent>.Continuation!
+        let eventStream = AsyncStream { cont in
+            continuation = cont
+        }
+        // The problem is, we need to hold on to this stream at the class level, so that we can send events from the onboarding/alerts implementations.
+        // That makes it long-lived and then it has to match the class's lifespan.
+        // That stops us having a single source of truth for the reader connection (at least in this class.)
+
+        let orderPaymentUseCase = CollectOrderPaymentUseCase(siteID: siteID,
                                                                    order: order,
                                                                    formattedAmount: currencyFormatter.formatAmount(order.total, with: order.currency) ?? "",
                                                                    // moved from EditableOrderViewModel.collectPayment(for: Order)
@@ -29,20 +30,21 @@ class CardPresentPaymentsAdaptor {
                                                                    onboardingPresenter: self,
                                                                    configuration: CardPresentConfigurationLoader().configuration,
                                                                    alertsPresenter: self)
-        return await withCheckedContinuation { continuation in
-            orderPaymentUseCase.collectPayment(using: discoveryMethod) { error in
-                if let error = error as? CardPaymentErrorProtocol {
-                    continuation.resume(returning: .failure(error))
-                } else {
-                    continuation.resume(returning: .failure(CardPaymentsAdaptorError.unknownPaymentError(underlyingError: error)))
-                }
-            } onCancel: {
-                continuation.resume(returning: .cancellation)
-            } onPaymentCompletion: {
-                // no-op – not used in PaymentMethodsViewModel anyway so this can be removed
-            } onCompleted: {
-                continuation.resume(returning: .success(order))
+        orderPaymentUseCase.collectPayment(using: discoveryMethod) { error in
+            if let error = error as? CardPaymentErrorProtocol {
+                continuation.yield(.failure(error))
+            } else {
+                continuation.yield(.failure(CardPaymentsAdaptorError.unknownPaymentError(underlyingError: error)))
+                continuation.finish()
             }
+        } onCancel: {
+            continuation.yield(.cancellation)
+            continuation.finish()
+        } onPaymentCompletion: {
+            // no-op – not used in PaymentMethodsViewModel anyway so this can be removed
+        } onCompleted: {
+            continuation.yield(.success(order))
+            continuation.finish()
         }
     }
 
@@ -87,6 +89,10 @@ enum CardPresentPaymentEvent {
     case presentAlert(CardPresentPaymentsAdaptorPaymentAlert)
     case presentReaderList(_ readerIDs: [String])
     case showOnboarding
+
+    case success(Order)
+    case failure(CardPaymentErrorProtocol)
+    case cancellation
 }
 
 struct CardPresentPaymentsAdaptorPaymentAlert {

@@ -676,7 +676,7 @@ extension ProductFormViewModel {
 extension ProductFormViewModel {
     func trackProductFormLoaded() {
         let hasLinkedProducts = product.upsellIDs.isNotEmpty || product.crossSellIDs.isNotEmpty
-        let hasMinMaxQuantityRules = product.hasQuantityRules
+        let hasMinMaxQuantityRules = product.canEditQuantityRules
         analytics.track(event: WooAnalyticsEvent.ProductDetail.loaded(hasLinkedProducts: hasLinkedProducts,
                                                                       hasMinMaxQuantityRules: hasMinMaxQuantityRules,
                                                                       horizontalSizeClass: UITraitCollection.current.horizontalSizeClass))

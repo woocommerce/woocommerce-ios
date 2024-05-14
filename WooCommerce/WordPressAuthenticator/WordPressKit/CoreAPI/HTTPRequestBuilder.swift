@@ -68,6 +68,13 @@ final class HTTPRequestBuilder {
             .append(query: urlComponents.queryItems ?? [])
     }
 
+    func headers(_ headers: [String: String]) -> Self {
+        for (key, value) in headers {
+            self.headers[key] = value
+        }
+        return self
+    }
+
     func header(name: String, value: String?) -> Self {
         headers[name] = value
         return self

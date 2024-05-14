@@ -449,7 +449,8 @@ open class WordPressComRestApi: NSObject {
 
     public func upload(
         URLString: String,
-        parameters: [String: AnyObject]?,
+        parameters: [String: AnyObject]? = nil,
+        httpHeaders: [String: String]? = nil,
         fileParts: [FilePart],
         requestEnqueued: RequestEnqueuedBlock? = nil,
         fulfilling progress: Progress? = nil
@@ -462,6 +463,7 @@ open class WordPressComRestApi: NSObject {
             builder = try requestBuilder(URLString: URLString)
                 .method(.post)
                 .body(form: form)
+                .headers(httpHeaders ?? [:])
         } catch {
             return .failure(.requestEncodingFailure(underlyingError: error))
         }

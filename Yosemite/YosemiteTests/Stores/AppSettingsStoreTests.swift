@@ -1568,6 +1568,59 @@ extension AppSettingsStoreTests {
         // Then
         XCTAssertNil(loadedTimeRange)
     }
+
+    // MARK: - Last selected time range for Most active coupons card
+
+    func test_setLastSelectedMostActiveCouponsTimeRange_works_correctly() throws {
+        // Given
+        let timeRange = StatsTimeRangeV4.thisMonth
+        let existingSettings = GeneralStoreSettingsBySite(storeSettingsBySite: [TestConstants.siteID: GeneralStoreSettings()])
+        try fileStorage?.write(existingSettings, to: expectedGeneralStoreSettingsFileURL)
+
+        // When
+        let action = AppSettingsAction.setLastSelectedMostActiveCouponsTimeRange(siteID: TestConstants.siteID, timeRange: timeRange)
+        subject?.onAction(action)
+
+        // Then
+        let savedSettings: GeneralStoreSettingsBySite = try XCTUnwrap(fileStorage?.data(for: expectedGeneralStoreSettingsFileURL))
+        let settingsForSite = savedSettings.storeSettingsBySite[TestConstants.siteID]
+
+        assertEqual(timeRange.rawValue, settingsForSite?.lastSelectedMostActiveCouponsTimeRange)
+    }
+
+    func test_loadLastSelectedMostActiveCouponsTimeRange_works_correctly() throws {
+        // Given
+        let timeRange = StatsTimeRangeV4.thisMonth
+        let storeSettings = GeneralStoreSettings(lastSelectedMostActiveCouponsTimeRange: timeRange.rawValue)
+        let existingSettings = GeneralStoreSettingsBySite(storeSettingsBySite: [TestConstants.siteID: storeSettings])
+        try fileStorage?.write(existingSettings, to: expectedGeneralStoreSettingsFileURL)
+
+        // When
+        var loadedTimeRange: StatsTimeRangeV4?
+        let action = AppSettingsAction.loadLastSelectedMostActiveCouponsTimeRange(siteID: TestConstants.siteID) { timeRange in
+            loadedTimeRange = timeRange
+        }
+        subject?.onAction(action)
+
+        // Then
+        assertEqual(timeRange, loadedTimeRange)
+    }
+
+    func test_loadLastSelectedMostActiveCouponsTimeRange_returns_nil_when_no_data_was_saved() throws {
+        // Given
+        let existingSettings = GeneralStoreSettingsBySite(storeSettingsBySite: [TestConstants.siteID: GeneralStoreSettings()])
+        try fileStorage?.write(existingSettings, to: expectedGeneralStoreSettingsFileURL)
+
+        // When
+        var loadedTimeRange: StatsTimeRangeV4?
+        let action = AppSettingsAction.loadLastSelectedMostActiveCouponsTimeRange(siteID: TestConstants.siteID) { timeRange in
+            loadedTimeRange = timeRange
+        }
+        subject?.onAction(action)
+
+        // Then
+        XCTAssertNil(loadedTimeRange)
+    }
 }
 
 // MARK: - Utils

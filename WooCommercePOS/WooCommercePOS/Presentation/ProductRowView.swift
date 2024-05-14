@@ -12,11 +12,12 @@ struct ProductRowView: View {
     var body: some View {
         HStack {
             Text(cartProduct.product.name)
-                .foregroundColor(Color.primaryText)
+                .foregroundColor(Color.white)
             Button(action: {
                 onProductRemoveTapped?()
             }, label: {
-                Image(uiImage: .remove)
+                Image(systemName: "minus.circle.fill")
+                    .foregroundColor(Color.white)
             })
         }
         .frame(maxWidth: .infinity)

@@ -11,6 +11,7 @@ enum CardPresentPaymentResult {
 class CardPresentPaymentsAdaptor {
     private let currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
     private let siteID: Int64
+    var paymentsAlertHandler: CardPresentPaymentsAlertHandling?
 
     init(siteID: Int64) {
         self.siteID = siteID
@@ -22,7 +23,7 @@ class CardPresentPaymentsAdaptor {
                                                                    order: order,
                                                                    formattedAmount: currencyFormatter.formatAmount(order.total, with: order.currency) ?? "",
                                                                    // moved from EditableOrderViewModel.collectPayment(for: Order)
-                                                                   rootViewController: UIViewController(), 
+                                                                   rootViewController: UIViewController(),
                                                                    // We don't want to use this at all, but it's currently required by the existing code.
                                                                    // TODO: replace `rootViewController` with a protocol containing the UIVC functions we need, and implement that here.
                                                                    onboardingPresenter: self,
@@ -54,31 +55,31 @@ class CardPresentPaymentsAdaptor {
     }
 }
 
-extension CardPresentPaymentsAdaptor: CardPresentPaymentsOnboardingPresenting {
+extension CardPresentPaymentsAdaptor: CardPresentPaymentsOnboardingPresenting, CardPresentPaymentAlertsPresenting {
     func showOnboardingIfRequired(from: UIViewController, readyToCollectPayment: @escaping () -> Void) {
-        
+        paymentsAlertHandler?.showOnboarding()
     }
-    
+
     func refresh() {
         // TODO: Refresh onboarding
     }
-}
 
-extension CardPresentPaymentsAdaptor: CardPresentPaymentAlertsPresenting {
     func present(viewModel: CardPresentPaymentsModalViewModel) {
-        <#code#>
+        paymentsAlertHandler?.present(CardPresentPaymentsAdaptorPaymentAlert(from: viewModel))
     }
-    
+
     func foundSeveralReaders(readerIDs: [String], connect: @escaping (String) -> Void, cancelSearch: @escaping () -> Void) {
-
+        paymentsAlertHandler?.showReaderList(readerIDs)
+        // the button actions here might need to be communicated... or we could expose them on the adaptor somehow.
     }
-    
+
     func updateSeveralReadersList(readerIDs: [String]) {
-
+        paymentsAlertHandler?.showReaderList(readerIDs)
     }
-    
+
     func dismiss() {
-        <#code#>
+        paymentsAlertHandler?.dismiss()
+        // We might not really need this
     }
 }
 
@@ -89,6 +90,18 @@ enum CardPresentPaymentEvent {
 }
 
 struct CardPresentPaymentsAdaptorPaymentAlert {
-    
+    init(from paymentsModalViewModel: CardPresentPaymentsModalViewModel) {
+        // In here we still need to handle the button actions wrt the UIViewControllers the closures are passed.
+        // That said, very few of the alerts actually use the UIVCs, so it might be just as easy to remove the dependency from both sides
+    }
 }
 
+protocol CardPresentPaymentsAlertHandling {
+    func showOnboarding()
+
+    func present(_ alert: CardPresentPaymentsAdaptorPaymentAlert)
+
+    func showReaderList(_ readerIDs: [String])
+
+    func dismiss()
+}

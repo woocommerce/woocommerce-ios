@@ -41,6 +41,7 @@ final class DashboardViewHostingController: UIHostingController<DashboardView> {
         configureBlazeSection()
         configureJetpackBenefitBanner()
         configureStorePerformanceView()
+        configureMostActiveCouponsView()
     }
 
     @available(*, unavailable)
@@ -207,6 +208,17 @@ private extension DashboardViewHostingController {
                                                       rootViewController: navigationController)
             jetpackSetupCoordinator = coordinator
             coordinator.showBenefitModal()
+        }
+    }
+}
+
+// MARK: Most active coupons
+private extension DashboardViewHostingController {
+    func configureMostActiveCouponsView() {
+        rootView.onViewAllCoupons = { [weak self] siteID in
+            guard let self else { return }
+            let couponsVC = EnhancedCouponListViewController(siteID: siteID)
+            show(couponsVC, sender: self)
         }
     }
 }

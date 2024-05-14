@@ -232,6 +232,10 @@ public class AppSettingsStore: Store {
             setLastSelectedTopPerformersTimeRange(siteID: siteID, timeRange: timeRange)
         case let .loadLastSelectedTopPerformersTimeRange(siteID, onCompletion):
             loadLastSelectedTopPerformersTimeRange(siteID: siteID, onCompletion: onCompletion)
+        case let .setLastSelectedMostActiveCouponsTimeRange(siteID, timeRange):
+            setLastSelectedMostActiveCouponsTimeRange(siteID: siteID, timeRange: timeRange)
+        case let .loadLastSelectedMostActiveCouponsTimeRange(siteID, onCompletion):
+            loadLastSelectedMostActiveCouponsTimeRange(siteID: siteID, onCompletion: onCompletion)
         }
     }
 }
@@ -1018,6 +1022,19 @@ private extension AppSettingsStore {
         let storeSettings = getStoreSettings(for: siteID)
         let timeRangeRawValue = storeSettings.lastSelectedTopPerformersTimeRange
         let timeRange = StatsTimeRangeV4(rawValue: timeRangeRawValue)
+        onCompletion(timeRange)
+    }
+
+    func setLastSelectedMostActiveCouponsTimeRange(siteID: Int64, timeRange: MostActiveCouponsTimeRange) {
+        let storeSettings = getStoreSettings(for: siteID)
+        let updatedSettings = storeSettings.copy(lastSelectedMostActiveCouponsTimeRange: timeRange.rawValue)
+        setStoreSettings(settings: updatedSettings, for: siteID)
+    }
+
+    func loadLastSelectedMostActiveCouponsTimeRange(siteID: Int64, onCompletion: (MostActiveCouponsTimeRange?) -> Void) {
+        let storeSettings = getStoreSettings(for: siteID)
+        let timeRangeRawValue = storeSettings.lastSelectedMostActiveCouponsTimeRange
+        let timeRange = MostActiveCouponsTimeRange(rawValue: timeRangeRawValue)
         onCompletion(timeRange)
     }
 }

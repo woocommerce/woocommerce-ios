@@ -292,4 +292,12 @@ public enum AppSettingsAction: Action {
     /// Loads the last selected time range for the Top Performers dashboard card.
     ///
     case loadLastSelectedTopPerformersTimeRange(siteID: Int64, onCompletion: (StatsTimeRangeV4?) -> Void)
+
+    /// Stores the last selected time range for the Most Active coupons dashboard card.
+    ///
+    case setLastSelectedMostActiveCouponsTimeRange(siteID: Int64, timeRange: MostActiveCouponsTimeRange)
+
+    /// Loads the last selected time range for the Most Active coupons dashboard card.
+    ///
+    case loadLastSelectedMostActiveCouponsTimeRange(siteID: Int64, onCompletion: (MostActiveCouponsTimeRange?) -> Void)
 }

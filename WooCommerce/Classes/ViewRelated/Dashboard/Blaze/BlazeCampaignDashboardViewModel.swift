@@ -2,6 +2,7 @@ import UIKit
 import Yosemite
 import Combine
 import protocol Storage.StorageManagerType
+import protocol WooFoundation.Analytics
 
 /// View model for `BlazeCampaignDashboardView`.
 final class BlazeCampaignDashboardViewModel: ObservableObject {

@@ -2,6 +2,7 @@ import Foundation
 import Yosemite
 import enum Alamofire.AFError
 import enum Networking.NetworkError
+import protocol WooFoundation.Analytics
 
 /// View model for `JetpackSetupView`.
 ///

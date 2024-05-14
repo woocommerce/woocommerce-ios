@@ -3,6 +3,7 @@ import UIKit
 import Yosemite
 import Combine
 import Experiments
+import protocol WooFoundation.Analytics
 
 /// View model for `StoreOnboardingView`.
 class StoreOnboardingViewModel: ObservableObject {

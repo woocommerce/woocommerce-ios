@@ -1,6 +1,7 @@
 import Experiments
 import Foundation
 import Yosemite
+import protocol WooFoundation.Analytics
 
 /// Provides the local announcements to be displayed on the dashboard tab.
 ///

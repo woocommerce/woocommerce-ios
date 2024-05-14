@@ -2,6 +2,7 @@ import Combine
 import SwiftUI
 import Vision
 import Yosemite
+import protocol WooFoundation.Analytics
 
 /// View model for `AddProductFromImageView` to handle user actions from the view and provide data for the view.
 @MainActor

@@ -123,7 +123,7 @@ struct SetUpTapToPayInformationView: View {
                 InPersonPaymentsLearnMore(
                     viewModel: LearnMoreViewModel(
                         formatText: Localization.learnMore,
-                        tappedAnalyticEvent: WooAnalyticsEvent.InPersonPayments.learnMoreTapped(source: .tapToPaySummary)))
+                        tappedAnalyticEvent: .InPersonPayments.learnMoreTapped(source: .tapToPaySummary)))
                 .padding(.vertical, Constants.learnMorePadding)
                 .customOpenURL(action: { _ in
                     showingAboutTapToPay = true

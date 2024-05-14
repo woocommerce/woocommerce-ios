@@ -203,4 +203,8 @@ public enum FeatureFlag: Int {
     /// Makes the Experimental Feature toggle "Point Of Sale" menu visible, under app settings.
     ///
     case displayPointOfSaleToggle
+
+    /// Enables new dashboard cards on the My Store screen.
+    ///
+    case dynamicDashboardM2
 }

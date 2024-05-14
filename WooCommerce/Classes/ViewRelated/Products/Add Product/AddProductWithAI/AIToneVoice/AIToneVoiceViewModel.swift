@@ -1,4 +1,5 @@
 import Foundation
+import protocol WooFoundation.Analytics
 
 public enum AIToneVoice: String, CaseIterable {
     case casual = "Casual"

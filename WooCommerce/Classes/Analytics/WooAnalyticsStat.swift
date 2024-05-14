@@ -1,12 +1,11 @@
 import WordPressShared
 
-/// This enum contains all of the events we track in the app. Please reference the "Woo Mobile Events Draft i2"
-/// spreadsheet for more details.
+/// This enum contains all of the events we track in the WooCommerce app.
 ///
 /// One of goals of this `enum` is to be able to list all the event names that we use throughout
 /// the app. We can also potentially make a parser to gather all the event names and automatically
 /// compare them with WCAndroid. With that, we can make sure both platforms are tracking the
-/// same events. Right now, we use the spreadsheet. XD
+/// same events.
 ///
 /// ### Type-Safe Properties
 ///
@@ -17,7 +16,7 @@ import WordPressShared
 /// Note: If you would like to exclude site properties (e.g. `blog_id`) for a given event, please
 /// add the event to the `WooAnalyticsStat.shouldSendSiteProperties` var.
 ///
-public enum WooAnalyticsStat: String {
+enum WooAnalyticsStat: String {
 
     // MARK: Application Events
     //
@@ -1199,7 +1198,7 @@ public enum WooAnalyticsStat: String {
     case connectivityToolContactSupportTapped = "connectivity_tool_contact_support_tapped"
 }
 
-public extension WooAnalyticsStat {
+extension WooAnalyticsStat {
 
 
     /// Indicates if site information should be included with this event when it's sent to the tracks server.
@@ -1232,6 +1231,9 @@ public extension WooAnalyticsStat {
             return true
         }
     }
+}
+
+extension WooAnalyticsStat {
 
     /// Converts the provided WPAnalyticsStat into a WooAnalyticsStat.
     /// This whole process kinda stinks, but we need this for the `WordPressAuthenticatorDelegate`

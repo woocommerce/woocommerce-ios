@@ -1,4 +1,5 @@
 import UIKit
+import protocol WooFoundation.Analytics
 
 /// Controls navigation for the in-app feedback flow. Meant to be presented modally
 ///

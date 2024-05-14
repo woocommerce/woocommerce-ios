@@ -46,7 +46,7 @@ struct InPersonPaymentsStripeAccountOverdue: View {
 
 private extension InPersonPaymentsStripeAccountOverdue {
     func trackPluginSetupTappedEvent() {
-        ServiceLocator.analytics.track(event: WooAnalyticsEvent.InPersonPayments.cardPresentOnboardingCtaFailed(
+        ServiceLocator.analytics.track(event: .InPersonPayments.cardPresentOnboardingCtaFailed(
             reason: "stripe_account_setup_tapped",
             countryCode: CardPresentConfigurationLoader().configuration.countryCode,
             gatewayID: plugin.gatewayID

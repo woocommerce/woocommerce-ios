@@ -1,4 +1,5 @@
 import enum Yosemite.CreateAccountError
+import protocol WooFoundation.WooAnalyticsEventPropertyType
 import struct Yosemite.StoreProfilerAnswers
 
 extension WooAnalyticsEvent {

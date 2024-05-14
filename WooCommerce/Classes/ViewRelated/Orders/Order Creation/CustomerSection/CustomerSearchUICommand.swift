@@ -1,6 +1,7 @@
 import Foundation
 import Yosemite
 import Experiments
+import protocol WooFoundation.Analytics
 
 /// Implementation of `SearchUICommand` for Customer search.
 ///

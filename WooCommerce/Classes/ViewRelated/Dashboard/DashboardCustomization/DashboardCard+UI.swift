@@ -1,9 +1,9 @@
 import Foundation
 import struct Yosemite.DashboardCard
 
-extension DashboardCard {
+extension DashboardCard.CardType {
     var name: String {
-        switch type {
+        switch self {
         case .onboarding:
             Localization.onboarding
         case .performance:
@@ -12,11 +12,21 @@ extension DashboardCard {
             Localization.topPerformers
         case .blaze:
             Localization.blazeCampaigns
+        case .inbox:
+            Localization.inbox
+        case .stock:
+            Localization.stock
+        case .reviews:
+            Localization.reviews
+        case .lastOrders:
+            Localization.lastOrders
+        case .coupons:
+            Localization.coupons
         }
     }
 }
 
-private extension DashboardCard {
+private extension DashboardCard.CardType {
     enum Localization {
         static let onboarding = NSLocalizedString(
             "dashboardCard.name.onboarding",
@@ -37,6 +47,31 @@ private extension DashboardCard {
             "dashboardCard.name.blazeCampaigns",
             value: "Blaze campaigns",
             comment: "Name for the Blaze dashboard card in the Customize Dashboard screen"
+        )
+        static let stock = NSLocalizedString(
+            "dashboardCard.name.stock",
+            value: "Stock",
+            comment: "Name for the Stock dashboard card in the Customize Dashboard screen"
+        )
+        static let inbox = NSLocalizedString(
+            "dashboardCard.name.inbox",
+            value: "Inbox",
+            comment: "Name for the Inbox dashboard card in the Customize Dashboard screen"
+        )
+        static let reviews = NSLocalizedString(
+            "dashboardCard.name.reviews",
+            value: "Most recent reviews",
+            comment: "Name for the Most recent reviews dashboard card in the Customize Dashboard screen"
+        )
+        static let lastOrders = NSLocalizedString(
+            "dashboardCard.name.lastOrders",
+            value: "Most recent orders",
+            comment: "Name for the Most recent orders dashboard card in the Customize Dashboard screen"
+        )
+        static let coupons = NSLocalizedString(
+            "dashboardCard.name.coupons",
+            value: "Most active coupons",
+            comment: "Name for the Most active coupons dashboard card in the Customize Dashboard screen"
         )
     }
 }

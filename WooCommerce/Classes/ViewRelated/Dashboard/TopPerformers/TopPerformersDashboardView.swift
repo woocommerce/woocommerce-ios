@@ -1,6 +1,7 @@
 import SwiftUI
 import enum Yosemite.StatsTimeRangeV4
 import struct Yosemite.TopEarnerStatsItem
+import struct Yosemite.DashboardCard
 
 /// SwiftUI view for the Top Performers dashboard card.
 ///
@@ -76,7 +77,7 @@ private extension TopPerformersDashboardView {
                 .foregroundStyle(Color.secondary)
                 .headlineStyle()
                 .renderedIf(viewModel.syncingError != nil)
-            Text(Localization.title)
+            Text(DashboardCard.CardType.topPerformers.name)
                 .headlineStyle()
             Spacer()
             Menu {
@@ -164,11 +165,6 @@ private extension TopPerformersDashboardView {
     }
 
     enum Localization {
-        static let title = NSLocalizedString(
-            "topPerformersDashboardView.title",
-            value: "Top performers",
-            comment: "Title of the Top performers section on the Dashboard screen"
-        )
         static let hideCard = NSLocalizedString(
             "topPerformersDashboardView.hideCard",
             value: "Hide Top Performers",

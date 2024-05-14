@@ -1,6 +1,7 @@
 import Foundation
 import UIKit
 import Yosemite
+import protocol WooFoundation.Analytics
 
 /// View model for `LocalAnnouncementModal` view.
 final class LocalAnnouncementViewModel {

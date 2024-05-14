@@ -1,4 +1,5 @@
 import Foundation
+import protocol WooFoundation.Analytics
 import struct Networking.BlazeAISuggestion
 
 /// View model for `BlazeEditAdView`

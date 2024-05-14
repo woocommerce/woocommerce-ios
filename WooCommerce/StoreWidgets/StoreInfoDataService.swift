@@ -1,4 +1,8 @@
+#if canImport(Networking)
 import Networking
+#elseif canImport(NetworkingWatchOS)
+import NetworkingWatchOS
+#endif
 
 /// Orchestrator class that fetches today store stats data.
 ///

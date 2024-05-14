@@ -823,6 +823,7 @@
 		2647F7BA292BE2F900D59FDF /* AnalyticsReportCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2647F7B9292BE2F900D59FDF /* AnalyticsReportCard.swift */; };
 		264957A329C520860095AA4C /* SubscriptionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 264957A229C520860095AA4C /* SubscriptionsView.swift */; };
 		264E9E942BF1D1DF009C48FD /* AppLocalizedString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F50FE4228CAEBA800C89201 /* AppLocalizedString.swift */; };
+		264E9E952BF400AD009C48FD /* StoreInfoDataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 260DE20828CA7CE2009ECD7C /* StoreInfoDataService.swift */; };
 		265284022624937600F91BA1 /* AddOnCrossreferenceUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 265284012624937600F91BA1 /* AddOnCrossreferenceUseCase.swift */; };
 		265284092624ACE900F91BA1 /* AddOnCrossreferenceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 265284082624ACE900F91BA1 /* AddOnCrossreferenceTests.swift */; };
 		2655905B27863D1300BB8457 /* MockCollectOrderPaymentUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2655905A27863D1300BB8457 /* MockCollectOrderPaymentUseCase.swift */; };
@@ -13380,6 +13381,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				264E9E952BF400AD009C48FD /* StoreInfoDataService.swift in Sources */,
 				26B984D42BEECC610052658C /* Environment+Dependencies.swift in Sources */,
 				26F81B1A2BE433A2009EC58E /* ContentView.swift in Sources */,
 				264E9E942BF1D1DF009C48FD /* AppLocalizedString.swift in Sources */,

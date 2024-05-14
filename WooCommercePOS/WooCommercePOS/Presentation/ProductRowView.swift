@@ -26,7 +26,7 @@ struct ProductRowView: View {
 }
 
 #Preview {
-    ProductRowView(cartProduct: CartProduct(
-        id: UUID(), product: Product(itemID: UUID(), productID: 0, name: "Product name", price: "$2.00"),
-        quantity: 2))
+    ProductRowView(cartProduct: CartProduct(id: UUID(),
+                                            product: ProductFactory.makeProduct(),
+                                            quantity: 2))
 }

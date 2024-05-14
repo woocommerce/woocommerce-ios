@@ -32,6 +32,5 @@ struct ProductCardView: View {
 }
 
 #Preview {
-    ProductCardView(product: Product(itemID: UUID(), productID: 0, name: "Product name", price: "$2.00"),
-                    onProductCardTapped: { })
+    ProductCardView(product: ProductFactory.makeProduct())
 }

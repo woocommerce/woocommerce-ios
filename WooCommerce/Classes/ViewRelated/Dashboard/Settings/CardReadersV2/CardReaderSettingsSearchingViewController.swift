@@ -31,6 +31,7 @@ final class CardReaderSettingsSearchingViewController: UIHostingController<CardR
             configuration: viewModel.configuration
         )
         // TODO: move to a function to declutter the lazy var code
+        // TODO: figure out how to share this code with other CardReaderConnectionController use cases
         connectionUIStateSubscription = controller.$uiState
             .compactMap { $0 }
             .sink { [weak self] uiState in
@@ -74,24 +75,23 @@ final class CardReaderSettingsSearchingViewController: UIHostingController<CardR
                         )
                     case .dismissed:
                         alertsPresenter.dismiss()
-                    case .connectingFailed(error: let error, retrySearch: let retrySearch, cancelSearch: let cancelSearch):
+                    case let .connectingFailed(error, retrySearch, cancelSearch):
                         alertsPresenter.present(
                             viewModel: alertsProvider.connectingFailed(error: error,
                                                                        retrySearch: retrySearch,
                                                                        cancelSearch: cancelSearch))
-                    case .connectingFailedIncompleteAddress(openWCSettings: let openWCSettings, retrySearch: let retrySearch, cancelSearch: let cancelSearch):
-                        // TODO: handle `openWCSettings`
+                    case let .connectingFailedIncompleteAddress(adminURLForWCSettings, showIncompleteAddressErrorWithRefreshButton, retrySearch, cancelSearch):
                         alertsPresenter.present(
                             viewModel: alertsProvider.connectingFailedIncompleteAddress(
-                                openWCSettings: nil,
+                                openWCSettings: openWCSettingsAction(adminUrl: adminURLForWCSettings, showIncompleteAddressErrorWithRefreshButton: showIncompleteAddressErrorWithRefreshButton, retrySearch: retrySearch),
                                 retrySearch: retrySearch,
                                 cancelSearch: cancelSearch))
-                    case .connectingFailedInvalidPostalCode(retrySearch: let retrySearch, cancelSearch: let cancelSearch):
+                    case let .connectingFailedInvalidPostalCode(retrySearch, cancelSearch):
                         alertsPresenter.present(
                             viewModel: alertsProvider.connectingFailedInvalidPostalCode(
                                 retrySearch: retrySearch,
                                 cancelSearch: cancelSearch))
-                    case .connectingFailedCriticallyLowBattery(retrySearch: let retrySearch, cancelSearch: let cancelSearch):
+                    case let .connectingFailedCriticallyLowBattery(retrySearch, cancelSearch):
                         alertsPresenter.present(
                             viewModel: alertsProvider.connectingFailedCriticallyLowBattery(
                                 retrySearch: retrySearch,
@@ -188,6 +188,70 @@ private extension CardReaderSettingsSearchingViewController {
             /// through the `cardReaderAvailableSubscription`
             self?.alertsPresenter.dismiss()
         }
+    }
+}
+
+// MARK: - WC Settings
+//
+private extension CardReaderSettingsSearchingViewController {
+    func openWCSettingsAction(adminUrl: URL?,
+                              showIncompleteAddressErrorWithRefreshButton: @escaping () -> Void,
+                              retrySearch: @escaping () -> Void) -> ((UIViewController) -> Void)? {
+        if let adminUrl = adminUrl {
+            if let site = ServiceLocator.stores.sessionManager.defaultSite,
+               site.isWordPressComStore {
+                return { [weak self] viewController in
+                    self?.openWCSettingsInWebview(url: adminUrl, from: viewController, retrySearch: retrySearch)
+                }
+            } else {
+                return { _ in
+                    UIApplication.shared.open(adminUrl)
+                    showIncompleteAddressErrorWithRefreshButton()
+                }
+            }
+        }
+        return nil
+    }
+    private func openWCSettingsInWebview(url adminUrl: URL,
+                                         from viewController: UIViewController,
+                                         retrySearch: @escaping () -> Void) {
+        let nav = NavigationView {
+            AuthenticatedWebView(isPresented: .constant(true),
+                                 url: adminUrl,
+                                 urlToTriggerExit: nil,
+                                 exitTrigger: nil)
+            .navigationTitle(Localization.adminWebviewTitle)
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button(action: {
+                        viewController.dismiss(animated: true) {
+                            retrySearch()
+                        }
+                    }, label: {
+                        Text(Localization.doneButtonUpdateAddress)
+                    })
+                }
+            }
+        }
+            .wooNavigationBarStyle()
+        let hostingController = UIHostingController(rootView: nav)
+        viewController.present(hostingController, animated: true, completion: nil)
+    }
+}
+
+private extension CardReaderSettingsSearchingViewController {
+    enum Localization {
+        static let adminWebviewTitle = NSLocalizedString(
+            "WooCommerce Settings",
+            comment: "Navigation title of the webview which used by the merchant to update their store address"
+        )
+
+        static let doneButtonUpdateAddress = NSLocalizedString(
+            "Done",
+            comment: "The button title to indicate that the user has finished updating their store's address and is" +
+            "ready to close the webview. This also tries to connect to the reader again."
+        )
     }
 }
 

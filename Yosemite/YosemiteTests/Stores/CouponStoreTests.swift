@@ -480,8 +480,8 @@ final class CouponStoreTests: XCTestCase {
         let currentDate = try date(from: "2020-11-05T23:59:59Z")
         let from = currentDate.addingDays(-3)
         let to = currentDate.addingDays(3)
-        let sampleTimeRange = StatsTimeRangeV4.custom(from: from,
-                                                      to: to)
+        let sampleTimeRange = MostActiveCouponsTimeRange.custom(from: from,
+                                                                to: to)
         let timeZone = try XCTUnwrap(TimeZone(secondsFromGMT: 0))
         let action = CouponAction.loadMostActiveCoupons(siteID: sampleSiteID,
                                                         timeRange: sampleTimeRange,
@@ -507,8 +507,8 @@ final class CouponStoreTests: XCTestCase {
         let currentDate = try date(from: "2020-11-05T23:59:59Z")
         let from = currentDate.addingDays(-3)
         let to = currentDate.addingDays(3)
-        let sampleTimeRange = StatsTimeRangeV4.custom(from: from,
-                                                      to: to)
+        let sampleTimeRange = MostActiveCouponsTimeRange.custom(from: from,
+                                                                to: to)
         let timeZone = try XCTUnwrap(TimeZone(secondsFromGMT: 0))
         let expectedError = NetworkError.unacceptableStatusCode(statusCode: 500)
         network.simulateError(requestUrlSuffix: "reports/coupons", error: expectedError)
@@ -529,7 +529,7 @@ final class CouponStoreTests: XCTestCase {
     func test_loadMostActiveCoupons_returns_expected_details_upon_success() throws {
         // Given
         let sampleCouponID: Int64 = 571
-        let sampleTimeRange = StatsTimeRangeV4.today
+        let sampleTimeRange = MostActiveCouponsTimeRange.today
         let timeZone = try XCTUnwrap(TimeZone(secondsFromGMT: 0))
         let expectedReport = [CouponReport(couponID: sampleCouponID, amount: 12, ordersCount: 1)]
         network.simulateResponse(requestUrlSuffix: "reports/coupons", filename: "coupon-reports")

@@ -9,8 +9,10 @@ struct CartView: View {
 
     var body: some View {
         VStack {
-            ForEach(viewModel.productsInCart, id: \.product.productID) { product in
-                ProductRowView(cartProduct: product)
+            ForEach(viewModel.productsInCart, id: \.product.productID) { cartProduct in
+                ProductRowView(cartProduct: cartProduct) {
+                    viewModel.removeProductFromCart(cartProduct)
+                }
             }
             Spacer()
             Button("Pay now") {

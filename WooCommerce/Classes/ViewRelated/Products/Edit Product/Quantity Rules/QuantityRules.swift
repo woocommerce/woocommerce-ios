@@ -49,9 +49,6 @@ struct QuantityRules: View {
             .padding(.horizontal, insets: safeAreaInsets)
             .addingTopAndBottomDividers()
             .background(Color(.listForeground(modal: false)))
-
-            FooterNotice(infoText: Localization.infoNotice)
-                .padding(.horizontal, insets: safeAreaInsets)
         }
         .navigationBarTitle(Localization.title)
         .navigationBarTitleDisplayMode(.inline)
@@ -72,8 +69,6 @@ struct QuantityRules: View {
 private extension QuantityRules {
     enum Localization {
         static let title = NSLocalizedString("Quantity Rules", comment: "Title for the quantity rules in a product.")
-        static let infoNotice = NSLocalizedString("You can edit quantity rules in the web dashboard",
-                                                  comment: "Info notice at the bottom of the quantity rules screen.")
         static let minQuantity = NSLocalizedString("Minimum quantity", comment: "Title for the minimum quantity setting in the quantity rules screen.")
         static let maxQuantity = NSLocalizedString("Maximum quantity", comment: "Title for the maximum quantity setting in the quantity rules screen.")
         static let groupOf = NSLocalizedString("Group of", comment: "Title for the 'group of' setting in the quantity rules screen.")

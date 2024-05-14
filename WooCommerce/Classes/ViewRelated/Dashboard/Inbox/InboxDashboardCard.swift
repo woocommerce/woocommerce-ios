@@ -14,6 +14,15 @@ struct InboxDashboardCard: View {
         VStack(alignment: .leading, spacing: Layout.padding) {
             header
                 .padding(.horizontal, Layout.padding)
+
+            switch viewModel.syncState {
+            case .empty:
+                emptyStateView
+            case .syncingFirstPage:
+                loadingStateView
+            case .results:
+                messageList
+            }
         }
         .padding(.vertical, Layout.padding)
         .background(Color(.listForeground(modal: false)))
@@ -25,10 +34,10 @@ struct InboxDashboardCard: View {
 private extension InboxDashboardCard {
     var header: some View {
         HStack {
-            Image(systemName: "exclamationmark.circle")
-                .foregroundStyle(Color.secondary)
-                .headlineStyle()
-                .renderedIf(viewModel.syncingError != nil)
+//            Image(systemName: "exclamationmark.circle")
+//                .foregroundStyle(Color.secondary)
+//                .headlineStyle()
+//                .renderedIf(viewModel.syncingError != nil)
             Text(DashboardCard.CardType.inbox.name)
                 .headlineStyle()
             Spacer()
@@ -42,7 +51,58 @@ private extension InboxDashboardCard {
                     .padding(.leading, Layout.padding)
                     .padding(.vertical, Layout.hideIconVerticalPadding)
             }
-            .disabled(viewModel.syncingData)
+            .disabled(viewModel.syncState == .syncingFirstPage)
+        }
+    }
+
+    var loadingStateView: some View {
+        ForEach(viewModel.contentViewModel.placeholderRowViewModels) { rowViewModel in
+            InboxNoteRow(viewModel: rowViewModel)
+                .redacted(reason: .placeholder)
+                .shimmering()
+        }
+    }
+
+    @ViewBuilder
+    var messageList: some View {
+        ForEach(viewModel.noteRowViewModels) { rowViewModel in
+            InboxNoteRow(viewModel: rowViewModel)
+                .padding(.horizontal, Layout.padding)
+
+            Divider()
+                .padding(.leading, Layout.padding)
+        }
+
+        viewAllButton
+            .padding(.horizontal, Layout.padding)
+    }
+
+    var emptyStateView: some View {
+        VStack(spacing: Layout.padding) {
+            Image(uiImage: .emptyInboxNotesImage)
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(width: Layout.emptyStateImageWidth)
+                .accessibility(hidden: true)
+
+            Text(Localization.emptyStateTitle)
+                .multilineTextAlignment(.center)
+                .headlineStyle()
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.horizontal, Layout.padding)
+    }
+
+    var viewAllButton: some View {
+        Button {
+            // TODO navigate to Inbox list
+        } label: {
+            HStack {
+                Text(Localization.viewAll)
+                Spacer()
+                Image(systemName: "chevron.forward")
+                    .foregroundStyle(Color(.tertiaryLabel))
+            }
         }
     }
 }
@@ -52,6 +112,7 @@ private extension InboxDashboardCard {
         static let padding: CGFloat = 16
         static let cornerSize = CGSize(width: 8.0, height: 8.0)
         static let hideIconVerticalPadding: CGFloat = 8
+        static let emptyStateImageWidth: CGFloat = 168
     }
 
     enum Localization {
@@ -64,6 +125,11 @@ private extension InboxDashboardCard {
             "inboxDashboardCard.viewAll",
             value: "View all messages",
             comment: "Button to navigate to Inbox messages list screen."
+        )
+        static let emptyStateTitle = NSLocalizedString(
+            "inboxDashboardCard.emptyStateTitle",
+            value: "No unread messages",
+            comment: "Title displayed if there are no inbox notes in the Inbox section on the Dashboard screen."
         )
     }
 }

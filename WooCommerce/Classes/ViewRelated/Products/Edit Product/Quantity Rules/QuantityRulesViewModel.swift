@@ -38,7 +38,7 @@ final class QuantityRulesViewModel: ObservableObject {
     }
 
     func onDoneButtonPressed() {
-        onCompletion(minQuantity.isNotEmpty ? minQuantity : "0", maxQuantity.isNotEmpty ? maxQuantity : "", groupOf.isNotEmpty ? groupOf : "0")
+        onCompletion(minQuantity, maxQuantity, groupOf)
     }
 }
 

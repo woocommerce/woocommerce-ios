@@ -724,8 +724,13 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
 
         // Quantity Rules
         try container.encode(maxAllowedQuantity, forKey: .maxAllowedQuantity)
-        try container.encode(minAllowedQuantity, forKey: .minAllowedQuantity)
-        try container.encode(groupOfQuantity, forKey: .groupOfQuantity)
+        if let minAllowedQuantity = minAllowedQuantity {
+            try container.encode(minAllowedQuantity.isEmpty ? "0" : minAllowedQuantity, forKey: .minAllowedQuantity)
+        }
+
+        if let groupOfQuantity = groupOfQuantity {
+            try container.encode(groupOfQuantity.isEmpty ? "0" : groupOfQuantity, forKey: .groupOfQuantity)
+        }
 
         // Attributes
         try container.encode(attributes, forKey: .attributes)

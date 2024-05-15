@@ -1208,6 +1208,8 @@ public enum ProductUpdateError: Error, Equatable {
         case variationInvalidImageId = "woocommerce_variation_invalid_image_id"
         case invalidMaxQuantity = "woocommerce_rest_invalid_max_quantity"
         case invalidMinQuantity = "woocommerce_rest_invalid_min_quantity"
+        case invalidVariationMaxQuantity = "woocommerce_rest_invalid_variation_max_quantity"
+        case invalidVariationMinQuantity = "woocommerce_rest_invalid_variation_min_quantity"
 
         func error(with message: String?) -> ProductUpdateError {
             switch self {
@@ -1215,9 +1217,9 @@ public enum ProductUpdateError: Error, Equatable {
                 return .invalidSKU
             case .variationInvalidImageId:
                 return .variationInvalidImageId
-            case .invalidMaxQuantity:
+            case .invalidMaxQuantity, .invalidVariationMaxQuantity:
                 return .invalidMaxQuantity(message: message ?? "")
-            case .invalidMinQuantity:
+            case .invalidMinQuantity, .invalidVariationMinQuantity:
                 return .invalidMaxQuantity(message: message ?? "")
             }
         }

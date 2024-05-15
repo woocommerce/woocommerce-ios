@@ -408,6 +408,11 @@ public struct ProductVariation: Codable, GeneratedCopiable, Equatable, Generated
         // Variation (Local) Attributes
         try container.encode(attributes, forKey: .attributes)
 
+        // Quantity Rules
+        try container.encode(maxAllowedQuantity, forKey: .maxAllowedQuantity)
+        try container.encode(minAllowedQuantity, forKey: .minAllowedQuantity)
+        try container.encode(groupOfQuantity, forKey: .groupOfQuantity)
+
         // Metadata
         let metaDataValuePairs = buildMetaDataValuePairs()
         if metaDataValuePairs.isEmpty == false {

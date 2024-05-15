@@ -3,7 +3,7 @@ import SwiftUI
 struct PlusButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         return IconButton(configuration: configuration,
-                          icon: Image(systemName: "plus"))
+                          icon: Image(systemName: "plus.circle"))
     }
 
     private struct IconButton: View {

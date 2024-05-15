@@ -3,6 +3,8 @@ import NetworkingWatchOS
 
 struct ContentView: View {
 
+    @Environment(\.dependencies) private var dependencies
+
     let message: String = "Logged In"
 
     var body: some View {
@@ -14,8 +16,15 @@ struct ContentView: View {
         }
         .padding()
         .task {
-            let credentials = Credentials(authToken: "6789")
-            print("I can compile some credentials: \(credentials)")
+            if let credentials = dependencies.credentials {
+                let service = StoreInfoDataService(credentials: credentials)
+                do {
+                    let stats = try await service.fetchTodayStats(for: dependencies.storeID!)
+                    print(stats)
+                } catch {
+                    print(error)
+                }
+            }
         }
     }
 }

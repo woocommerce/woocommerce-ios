@@ -13,7 +13,6 @@ struct Woo_Watch_AppApp: App {
             } else {
                 ConnectView()
             }
-
         }
     }
 }

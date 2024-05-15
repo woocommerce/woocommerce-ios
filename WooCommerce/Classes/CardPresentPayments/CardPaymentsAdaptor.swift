@@ -42,10 +42,13 @@ class CardPresentPaymentsAdaptor {
                 analytics: ServiceLocator.analytics))
     }()
 
+    private let onboardingPresenterAdaptor: CardPresentPaymentsOnboardingPresenterAdaptor
+
     var paymentsAlertHandler: CardPresentPaymentsAlertHandling?
 
     init(siteID: Int64) {
         self.siteID = siteID
+        onboardingPresenterAdaptor = CardPresentPaymentsOnboardingPresenterAdaptor(stores: ServiceLocator.stores)
     }
 
     func collectPayment(for order: Order,
@@ -55,7 +58,7 @@ class CardPresentPaymentsAdaptor {
             configuration: CardPresentConfigurationLoader().configuration,
             rootViewController: UIViewController(),
             alertsPresenter: self,
-            onboardingPresenter: self,
+            onboardingPresenter: onboardingPresenterAdaptor,
             bluetoothConnectionController: bluetoothConnectionController,
             builtInConnectionController: tapToPayConnectionController)
         let orderPaymentUseCase = await CollectOrderPaymentUseCase(siteID: siteID,
@@ -65,7 +68,7 @@ class CardPresentPaymentsAdaptor {
                                                                    rootViewController: UIViewController(),
                                                                    // We don't want to use this at all, but it's currently required by the existing code.
                                                                    // TODO: replace `rootViewController` with a protocol containing the UIVC functions we need, and implement that here.
-                                                                   onboardingPresenter: self,
+                                                                   onboardingPresenter: onboardingPresenterAdaptor,
                                                                    configuration: CardPresentConfigurationLoader().configuration,
                                                                    alertsPresenter: self,
                                                                    preflightController: preflightController)
@@ -95,14 +98,7 @@ class CardPresentPaymentsAdaptor {
     }
 }
 
-extension CardPresentPaymentsAdaptor: CardPresentPaymentsOnboardingPresenting, CardPresentPaymentAlertsPresenting {
-    func showOnboardingIfRequired(from: UIViewController, readyToCollectPayment: @escaping () -> Void) {
-        paymentsAlertHandler?.showOnboarding()
-    }
-
-    func refresh() {
-        // TODO: Refresh onboarding
-    }
+extension CardPresentPaymentsAdaptor: CardPresentPaymentAlertsPresenting {
 
     func present(viewModel: CardPresentPaymentsModalViewModel) {
         paymentsAlertHandler?.present(CardPresentPaymentsAdaptorPaymentAlert(from: viewModel))
@@ -123,6 +119,74 @@ extension CardPresentPaymentsAdaptor: CardPresentPaymentsOnboardingPresenting, C
     }
 }
 
+import Combine
+
+/// This is really a re-implementation of the CardPresentPaymentsOnboardingPresenter, as it needs to take the calls to `showOnboardingIfRequired` and
+/// route the output to a SwiftUI view for display, rather than directly displaying on the viewController that's passed in.
+final class CardPresentPaymentsOnboardingPresenterAdaptor: CardPresentPaymentsOnboardingPresenting {
+    private let stores: StoresManager
+
+    private let onboardingUseCase: CardPresentPaymentsOnboardingUseCase
+
+    private let readinessUseCase: CardPresentPaymentsReadinessUseCase
+
+    private let onboardingViewModel: InPersonPaymentsViewModel
+
+    private var readinessSubscription: AnyCancellable?
+
+    var onboardingScreenViewModelPublisher: AnyPublisher<InPersonPaymentsViewModel?, Never>
+
+    private var onboardingScreenViewModelSubject: PassthroughSubject<InPersonPaymentsViewModel?, Never> = PassthroughSubject()
+
+    init(stores: StoresManager = ServiceLocator.stores) {
+        self.stores = stores
+        onboardingUseCase = CardPresentPaymentsOnboardingUseCase(stores: stores)
+        readinessUseCase = CardPresentPaymentsReadinessUseCase(onboardingUseCase: onboardingUseCase, stores: stores)
+        onboardingViewModel = InPersonPaymentsViewModel(useCase: onboardingUseCase)
+        onboardingScreenViewModelPublisher = onboardingScreenViewModelSubject.eraseToAnyPublisher()
+    }
+
+
+    /// If the onboarding state is not `ready`, this will instruct downstream SwiftUI code to present the appropriate onboarding screen.
+    /// - Parameters:
+    ///   - viewController: This will be ignored, as other SwiftUI code is responsible for the display in this implementation.
+    ///   - completion: Callback when the onboarding is complete
+    func showOnboardingIfRequired(from viewController: UIViewController,
+                                  readyToCollectPayment completion: @escaping () -> Void) {
+        readinessUseCase.checkCardPaymentReadiness()
+        guard case .ready = readinessUseCase.readiness else {
+            return showOnboarding(readyToCollectPayment: completion)
+        }
+        completion()
+    }
+
+    private func showOnboarding(readyToCollectPayment completion: @escaping () -> Void) {
+        onboardingScreenViewModelSubject.send(onboardingViewModel)
+
+        // TODO: add the disappear closure to the OnboardingViewModel so that it can be used when we make the view.
+//            .onDisappear { [weak self] in
+//                self?.readinessSubscription?.cancel()
+//            }
+
+        readinessSubscription = readinessUseCase.$readiness
+            .subscribe(on: DispatchQueue.main)
+            .sink(receiveValue: { [weak self] readiness in
+                guard let self,
+                        case .ready = readiness else {
+                    return
+                }
+                onboardingScreenViewModelSubject.send(nil)
+
+                completion()
+            })
+    }
+
+    func refresh() {
+        onboardingUseCase.refreshIfNecessary()
+    }
+
+}
+
 enum CardPresentPaymentEvent {
     case presentAlert(CardPresentPaymentsAdaptorPaymentAlert)
     case presentReaderList(_ readerIDs: [String])
@@ -137,7 +201,7 @@ struct CardPresentPaymentsAdaptorPaymentAlert {
 }
 
 protocol CardPresentPaymentsAlertHandling {
-    func showOnboarding()
+    func showOnboarding(viewModel: InPersonPaymentsViewModel?)
 
     func present(_ alert: CardPresentPaymentsAdaptorPaymentAlert)
 

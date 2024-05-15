@@ -4,6 +4,7 @@ import Yosemite
 /// Shows information about an inbox note with actions and a CTA to dismiss the note.
 struct InboxNoteRow: View {
     let viewModel: InboxNoteRowViewModel
+    var dividerPadding: EdgeInsets = .zero
 
     @State private var tappedAction: InboxNoteRowActionViewModel?
     @State private var isDismissButtonLoading: Bool = false
@@ -94,6 +95,7 @@ struct InboxNoteRow: View {
 
             Divider()
                 .frame(height: Constants.dividerHeight)
+                .padding(dividerPadding)
         }
     }
 

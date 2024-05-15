@@ -4,14 +4,14 @@ import struct Yosemite.DashboardCard
 /// SwiftUI view for the inbox messages dashboard card.
 ///
 struct InboxDashboardCard: View {
-    private let viewModel: InboxDashboardCardViewModel
+    @ObservedObject var viewModel: InboxDashboardCardViewModel
 
     init(viewModel: InboxDashboardCardViewModel) {
         self.viewModel = viewModel
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: Layout.padding) {
+        VStack(alignment: .leading, spacing: 0) {
             header
                 .padding(.horizontal, Layout.padding)
 
@@ -63,18 +63,16 @@ private extension InboxDashboardCard {
         }
     }
 
-    @ViewBuilder
     var messageList: some View {
-        ForEach(viewModel.noteRowViewModels) { rowViewModel in
-            InboxNoteRow(viewModel: rowViewModel)
+        VStack(spacing: Layout.padding) {
+            VStack(spacing: 0) {
+                ForEach(viewModel.noteRowViewModels) { rowViewModel in
+                    InboxNoteRow(viewModel: rowViewModel)
+                }
+            }
+            viewAllButton
                 .padding(.horizontal, Layout.padding)
-
-            Divider()
-                .padding(.leading, Layout.padding)
         }
-
-        viewAllButton
-            .padding(.horizontal, Layout.padding)
     }
 
     var emptyStateView: some View {

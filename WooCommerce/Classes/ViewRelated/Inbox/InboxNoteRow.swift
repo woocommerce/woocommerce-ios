@@ -4,6 +4,7 @@ import Yosemite
 /// Shows information about an inbox note with actions and a CTA to dismiss the note.
 struct InboxNoteRow: View {
     let viewModel: InboxNoteRowViewModel
+    var shouldHighlightUnreadNoteTitle = true
     var dividerPadding: EdgeInsets = .zero
 
     @State private var tappedAction: InboxNoteRowActionViewModel?
@@ -23,8 +24,8 @@ struct InboxNoteRow: View {
 
                     // Title with status read or unread.
                     Text(viewModel.title)
-                        .if(viewModel.isRead) { $0.bodyStyle() }
-                        .if(!viewModel.isRead) { $0.headlineStyle() }
+                        .if(viewModel.isRead || !shouldHighlightUnreadNoteTitle) { $0.bodyStyle() }
+                        .if(!viewModel.isRead && !shouldHighlightUnreadNoteTitle) { $0.headlineStyle() }
                         .fixedSize(horizontal: false, vertical: true)
 
                     // Content.

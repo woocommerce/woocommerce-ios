@@ -70,6 +70,7 @@ private extension InboxDashboardCard {
             VStack(spacing: 0) {
                 ForEach(viewModel.noteRowViewModels) { rowViewModel in
                     InboxNoteRow(viewModel: rowViewModel,
+                                 shouldHighlightUnreadNoteTitle: false,
                                  dividerPadding: Layout.dividerPadding)
                 }
             }

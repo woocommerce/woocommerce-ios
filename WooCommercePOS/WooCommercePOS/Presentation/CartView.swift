@@ -9,14 +9,21 @@ struct CartView: View {
 
     var body: some View {
         VStack {
-            ProductRowView()
-            ProductRowView()
-            ProductRowView()
+            Text("Cart")
+                .foregroundColor(Color.white)
+            ForEach(viewModel.productsInCart, id: \.product.productID) { cartProduct in
+                ProductRowView(cartProduct: cartProduct) {
+                    viewModel.removeProductFromCart(cartProduct)
+                }
+                .background(Color.tertiaryBackground)
+            }
             Spacer()
             Button("Pay now") {
                 viewModel.submitCart()
             }
+            .background(Color.secondaryBackground)
         }
+        .frame(maxWidth: .infinity)
         .background(Color.secondaryBackground)
     }
 }

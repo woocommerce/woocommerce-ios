@@ -90,11 +90,11 @@ private extension MostActiveCouponsCard {
             // Header
             HStack {
                 Text(Localization.coupons)
-                    .fontWeight(.bold)
+                    .fontWeight(.semibold)
                     .subheadlineStyle()
                 Spacer()
                 Text(Localization.uses)
-                    .fontWeight(.bold)
+                    .fontWeight(.semibold)
                     .subheadlineStyle()
             }
             .padding(.horizontal, Layout.padding)

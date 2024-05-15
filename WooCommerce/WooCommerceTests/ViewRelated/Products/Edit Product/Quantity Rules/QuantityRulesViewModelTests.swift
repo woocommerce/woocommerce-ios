@@ -2,30 +2,29 @@ import XCTest
 @testable import WooCommerce
 
 final class QuantityRulesViewModelTests: XCTestCase {
-
-    func test_view_model_returns_placeholders_for_nil_quantities() {
+    func test_view_model_returns_empty_string_for_nil_quantities() {
         // Given
-        let viewModel = QuantityRulesViewModel(minQuantity: nil, maxQuantity: nil, groupOf: nil)
+        let viewModel = QuantityRulesViewModel(minQuantity: nil, maxQuantity: nil, groupOf: nil) {_, _, _ in }
 
         // Then
-        XCTAssertEqual(viewModel.minQuantity, Placeholders.noMinQuantity)
-        XCTAssertEqual(viewModel.maxQuantity, Placeholders.noMaxQuantity)
-        XCTAssertEqual(viewModel.groupOf, Placeholders.noGroupOfQuantity)
+        XCTAssertEqual(viewModel.minQuantity, "")
+        XCTAssertEqual(viewModel.maxQuantity, "")
+        XCTAssertEqual(viewModel.groupOf, "")
     }
 
-    func test_view_model_returns_placeholders_for_empty_quantities() {
+    func test_view_model_returns_empty_string_for_empty_quantities() {
         // Given
-        let viewModel = QuantityRulesViewModel(minQuantity: "", maxQuantity: "", groupOf: "")
+        let viewModel = QuantityRulesViewModel(minQuantity: "", maxQuantity: "", groupOf: "") {_, _, _ in }
 
         // Then
-        XCTAssertEqual(viewModel.minQuantity, Placeholders.noMinQuantity)
-        XCTAssertEqual(viewModel.maxQuantity, Placeholders.noMaxQuantity)
-        XCTAssertEqual(viewModel.groupOf, Placeholders.noGroupOfQuantity)
+        XCTAssertEqual(viewModel.minQuantity, "")
+        XCTAssertEqual(viewModel.maxQuantity, "")
+        XCTAssertEqual(viewModel.groupOf, "")
     }
 
     func test_view_model_returns_quantities_when_not_nil_or_empty() {
         // Given
-        let viewModel = QuantityRulesViewModel(minQuantity: "4", maxQuantity: "200", groupOf: "2")
+        let viewModel = QuantityRulesViewModel(minQuantity: "4", maxQuantity: "200", groupOf: "2") {_, _, _ in }
 
         // Then
         XCTAssertEqual(viewModel.minQuantity, "4")
@@ -33,12 +32,29 @@ final class QuantityRulesViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.groupOf, "2")
     }
 
-}
+    func test_onDoneButtonPressed_calls_onCompletion_with_values() {
+        let newMinQuantity = "5"
+        let newMaxQuantity = "10"
+        let newGroupOfValue = "5"
 
-private extension QuantityRulesViewModelTests {
-    enum Placeholders {
-        static let noMinQuantity = NSLocalizedString("No minimum", comment: "Description when no minimum quantity is set in quantity rules.")
-        static let noMaxQuantity = NSLocalizedString("No maximum", comment: "Description when no maximum quantity is set in quantity rules.")
-        static let noGroupOfQuantity = NSLocalizedString("Not grouped", comment: "Description when no 'group of' quantity is set in quantity rules.")
+        var passedMinQuantity: String?
+        var passedMaxQuantity: String?
+        var passedGroupOfValue: String?
+
+        let viewModel = QuantityRulesViewModel(minQuantity: "4", maxQuantity: "200", groupOf: "2") { minQuantity, maxQuantity, groupOfValue in
+            passedMinQuantity = minQuantity
+            passedMaxQuantity = maxQuantity
+            passedGroupOfValue = groupOfValue
+        }
+
+        viewModel.minQuantity = newMinQuantity
+        viewModel.maxQuantity = newMaxQuantity
+        viewModel.groupOf = newGroupOfValue
+
+        viewModel.onDoneButtonPressed()
+
+        XCTAssertEqual(passedMinQuantity, newMinQuantity)
+        XCTAssertEqual(passedMaxQuantity, newMaxQuantity)
+        XCTAssertEqual(passedGroupOfValue, newGroupOfValue)
     }
 }

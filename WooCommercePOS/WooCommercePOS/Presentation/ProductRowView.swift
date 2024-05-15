@@ -2,7 +2,7 @@ import SwiftUI
 
 struct ProductRowView: View {
     private let cartProduct: CartProduct
-    private var onProductRemoveTapped: (() -> Void)?
+    private let onProductRemoveTapped: (() -> Void)?
 
     init(cartProduct: CartProduct, onProductRemoveTapped: (() -> Void)? = nil) {
         self.cartProduct = cartProduct

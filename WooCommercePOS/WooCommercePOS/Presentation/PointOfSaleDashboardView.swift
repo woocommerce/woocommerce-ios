@@ -12,12 +12,14 @@ struct PointOfSaleDashboardView: View {
     var body: some View {
         VStack {
             Text("WooCommerce Point Of Sale")
-                .foregroundColor(Color.primaryText)
+                .foregroundColor(Color.white)
             HStack {
                 ProductGridView(viewModel: viewModel)
+                    .background(Color.secondaryBackground)
                     .frame(maxWidth: .infinity)
                 Spacer()
                 CartView(viewModel: viewModel)
+                    .background(Color.secondaryBackground)
                     .frame(maxWidth: .infinity)
             }
         }

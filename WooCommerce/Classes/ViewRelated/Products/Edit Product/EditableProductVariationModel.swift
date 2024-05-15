@@ -216,7 +216,7 @@ extension EditableProductVariationModel: ProductFormDataModel, TaxClassRequestab
 
     var hasQuantityRules: Bool {
         let enabled = productVariation.overrideProductQuantities == true && parentProductDisablesQuantityRules == false
-        let hasNoRules = minAllowedQuantity.isNilOrEmpty && maxAllowedQuantity.isNilOrEmpty && groupOfQuantity.isNilOrEmpty
+        let hasNoRules = minAllowedQuantity.isNilOrEmptyOrZero && maxAllowedQuantity.isNilOrEmptyOrZero && groupOfQuantity.isNilOrEmptyOrZero
         return enabled && !hasNoRules
     }
 

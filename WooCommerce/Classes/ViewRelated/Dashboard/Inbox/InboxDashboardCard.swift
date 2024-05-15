@@ -16,7 +16,12 @@ struct InboxDashboardCard: View {
                 .padding(.horizontal, Layout.padding)
 
             if viewModel.syncingError != nil && viewModel.noteRowViewModels.isEmpty {
-                // TODO: show error state
+                DashboardCardErrorView {
+                    ServiceLocator.analytics.track(event: .DynamicDashboard.cardRetryTapped(type: .inbox))
+                    Task {
+                        await viewModel.reloadData()
+                    }
+                }
             } else if viewModel.syncingData {
                 loadingStateView
             } else if viewModel.noteRowViewModels.isNotEmpty {

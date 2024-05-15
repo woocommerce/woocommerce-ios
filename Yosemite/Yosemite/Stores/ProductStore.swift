@@ -1181,10 +1181,10 @@ public enum ProductUpdateError: Error, Equatable {
     case passwordCannotBeUpdated
     case notFoundInStorage
     case variationInvalidImageId
-    case invalidMaxQuantity(message: String)
-    case invalidMinQuantity(message: String)
     case unexpected
     case unknown(error: AnyError)
+    case invalidMaxQuantity(message: String)
+    case invalidMinQuantity(message: String)
 
     init(error: Error) {
         guard let dotcomError = error as? DotcomError else {

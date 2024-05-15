@@ -50,8 +50,8 @@ final class InboxDashboardCardViewModel: ObservableObject {
         syncingData = true
         syncingError = nil
         do {
-            let notes = try await loadInboxMessages()
-            noteRowViewModels = notes.map { InboxNoteRowViewModel(note: $0) }
+            // Ignoring the result from remote as we're using storage as the single source of truth
+            _ = try await loadInboxMessages()
         } catch {
             syncingError = error
         }

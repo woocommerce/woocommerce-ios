@@ -43,6 +43,10 @@ struct ReviewsDashboardCard: View {
                 ReviewRow(for: review, isLastItem: index == dummyData.count-1)
             }
             Divider()
+            viewAllReviewsButton
+                .padding(.horizontal, Layout.padding)
+                .redacted(reason: viewModel.syncingData ? [.placeholder] : [])
+                .shimmering(active: viewModel.syncingData)
         }
         .padding(.vertical, Layout.padding)
         .background(Color(.listForeground(modal: false)))
@@ -82,7 +86,7 @@ private extension ReviewsDashboardCard {
                     .foregroundStyle(Color(.text))
                     .subheadlineStyle()
 
-                Text("All")
+                Text("All") // TODO: dynamically change based on filter selection
                     .subheadlineStyle()
             }
             Spacer()
@@ -106,14 +110,19 @@ private extension ReviewsDashboardCard {
         HStack(alignment: .top) {
             Image(systemName: "bubble.fill")
                 .foregroundStyle(review.status == .hold ? Color.secondary : Color(.wooCommercePurple(.shade60)))
-                .padding(Layout.cardPadding)
+                .padding(.horizontal, Layout.padding)
+                .padding(.vertical, Layout.cardPadding)
+
 
             VStack(alignment: .leading) {
+                // TODO: use actual product name
                 authorText(author: review.reviewer, productName: "Fallen Angel Candelabra")
                     .bodyStyle()
+                    .padding(.trailing, Layout.padding)
                 reviewText(text: review.review, shouldDisplayStatus: review.status == .hold)
                     .lineLimit(2)
                     .subheadlineStyle()
+                    .padding(.trailing, Layout.padding)
                     .renderedIf(review.review.isNotEmpty)
                 HStack(spacing: Layout.starRatingSpacing) {
                     ForEach(0..<abs(review.rating), id: \.self) { _ in
@@ -146,6 +155,21 @@ private extension ReviewsDashboardCard {
             return Text(text)
         }
     }
+
+    var viewAllReviewsButton: some View {
+        Button {
+            /* TODO */
+        } label: {
+            HStack {
+                Text(Localization.viewAll)
+                Spacer()
+                Image(systemName: "chevron.forward")
+                    .foregroundStyle(Color(.tertiaryLabel))
+            }
+        }
+        .disabled(viewModel.syncingData)
+    }
+
 }
 
 private extension ReviewsDashboardCard {
@@ -159,7 +183,7 @@ private extension ReviewsDashboardCard {
     }
 
     enum Constants {
-        static let starSize: CGFloat = 8
+        static let starSize: CGFloat = 10
     }
 
     enum Localization {

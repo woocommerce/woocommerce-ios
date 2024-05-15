@@ -7,8 +7,8 @@ final class CardReaderConnectionViewModel: ObservableObject {
         self.state = state
     }
 
-    /// TODO: replace this with card reader connection implementation.
-    /// Simulates a successful
+    /// TODO: replace this with card reader connection implementation `CardReaderConnectionController`
+    /// Simulates a successful card reader connection flow.
     func checkReaderConnection() {
         Task { @MainActor in
             state = .scanningForReader(cancel: { [weak self] in

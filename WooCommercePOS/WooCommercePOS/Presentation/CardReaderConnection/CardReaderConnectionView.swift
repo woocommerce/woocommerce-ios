@@ -13,6 +13,11 @@ enum CardReaderUpdateError: Error {
 }
 
 enum CardReaderConnectionUIState {
+    case notConnected(search: () -> Void)
+    case connected(readerID: String, disconnect: () -> Void)
+
+    // MARK: - From card reader connection events
+
     case scanningForReader(cancel: () -> Void)
     case scanningFailed(error: Error, close: () -> Void)
     case connectingToReader
@@ -21,8 +26,7 @@ enum CardReaderConnectionUIState {
                           cancelSearch: () -> Void)
     case readersFound(readerIDs: [String],
                       connect: (String) -> Void,
-                      continueSearch: () -> Void,
-                      cancelSearch: () -> Void)
+                      continueSearch: () -> Void)
     case updateInProgress(requiredUpdate: Bool,
                           progress: Float,
                           cancel: (() -> Void)?)
@@ -37,21 +41,30 @@ struct CardReaderConnectionView: View {
     }
 
     var body: some View {
-        switch viewModel.state {
-            case .scanningForReader(let cancel):
-                ScanningForReaderView()
-            case .scanningFailed(let error, let close):
-                ScanningForReaderFailedView()
-            case .connectingToReader:
-                ConnectingToReaderView()
-            case .connectingFailed(let error, let retrySearch, let cancelSearch):
-                ConnectingFailedView()
-            case .readersFound(let readerIDs, let connect, let continueSearch, let cancelSearch):
-                FoundReadersView(readerIDs: readerIDs)
-            case .updateInProgress(let requiredUpdate, let progress, let cancel):
-                ReaderUpdateInProgressView()
-            case .updatingFailed(let error, let tryAgain, let close):
-                ReaderUpdateFailedView()
+        Group {
+            switch viewModel.state {
+                case .notConnected(let search):
+                    ReaderNotConnectedView(searchForReaders: search)
+                case .connected(let readerID, let disconnect):
+                    ReaderConnectedView(readerID: readerID, disconnect: disconnect)
+                case .scanningForReader(let cancel):
+                    ScanningForReaderView(cancel: cancel)
+                case .scanningFailed(_, _):
+                    ScanningForReaderFailedView()
+                case .connectingToReader:
+                    ConnectingToReaderView()
+                case .connectingFailed(_, _, _):
+                    ConnectingFailedView()
+                case .readersFound(let readerIDs, let connect, let continueSearch):
+                    FoundReadersView(readerIDs: readerIDs, connect: connect, continueSearch: continueSearch)
+                case .updateInProgress(_, _, _):
+                    ReaderUpdateInProgressView()
+                case .updatingFailed(_, _, _):
+                    ReaderUpdateFailedView()
+            }
+        }
+        .onAppear {
+            viewModel.checkReaderConnection()
         }
     }
 }
@@ -62,7 +75,18 @@ extension CardReaderConnectionUIState: CaseIterable, Hashable {
     static var allCases: [CardReaderConnectionUIState] {
         [
             .scanningForReader(cancel: {}),
-            .scanningFailed(error: NSError(domain: "", code: 0), close: {})
+            .scanningFailed(error: NSError(domain: "", code: 0), close: {}),
+            .connectingToReader,
+            .connectingFailed(error: .criticallyLowBattery, retrySearch: {}, cancelSearch: {}),
+            .readersFound(readerIDs: ["Reader 1", "Reader 2"],
+                          connect: { _ in },
+                          continueSearch: {}),
+            .updateInProgress(requiredUpdate: true,
+                              progress: 0.6,
+                              cancel: nil),
+            .updatingFailed(error: .lowBattery,
+                            tryAgain: nil,
+                            close: {})
         ]
     }
 
@@ -72,6 +96,10 @@ extension CardReaderConnectionUIState: CaseIterable, Hashable {
 
     func hash(into hasher: inout Hasher) {
         switch self {
+            case .notConnected:
+                hasher.combine("notConnected")
+            case .connected:
+                hasher.combine("connected")
             case .scanningForReader:
                 hasher.combine("scanningForReader")
             case .scanningFailed:

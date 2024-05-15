@@ -220,6 +220,12 @@ private extension DashboardViewHostingController {
             let couponsVC = EnhancedCouponListViewController(siteID: siteID)
             show(couponsVC, sender: self)
         }
+
+        rootView.onViewCouponDetail = { [weak self] coupon in
+            guard let self else { return }
+            let detailVC = CouponDetailsHostingController(viewModel: CouponDetailsViewModel(coupon: coupon))
+            show(detailVC, sender: self)
+        }
     }
 }
 

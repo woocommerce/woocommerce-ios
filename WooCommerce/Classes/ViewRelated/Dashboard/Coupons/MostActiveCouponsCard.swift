@@ -7,11 +7,14 @@ struct MostActiveCouponsCard: View {
     @ObservedObject private var viewModel: MostActiveCouponsCardViewModel
     @State private var showingCustomRangePicker = false
     private let onViewAllCoupons: (_ siteID: Int64) -> Void
+    private let onViewCouponDetail: (_ coupon: Coupon) -> Void
 
     init(viewModel: MostActiveCouponsCardViewModel,
-         onViewAllCoupons: @escaping (_ siteID: Int64) -> Void) {
+         onViewAllCoupons: @escaping (_ siteID: Int64) -> Void,
+         onViewCouponDetail: @escaping (_ coupon: Coupon) -> Void) {
         self.viewModel = viewModel
         self.onViewAllCoupons = onViewAllCoupons
+        self.onViewCouponDetail = onViewCouponDetail
     }
 
     var body: some View {
@@ -54,9 +57,6 @@ struct MostActiveCouponsCard: View {
                              datesSelected: { start, end in
                 viewModel.didSelectTimeRange(.custom(from: start, to: end))
             })
-        }
-        .sheet(item: $viewModel.selectedCoupon) { coupon in
-            couponDetailView(coupon: coupon)
         }
     }
 }
@@ -102,7 +102,7 @@ private extension MostActiveCouponsCard {
             // Rows
             ForEach(viewModel.coupons) { item in
                 CouponDashboardRow(coupon: item, tapHandler: {
-                    viewModel.didSelectCoupon(item)
+                    onViewCouponDetail(item)
                 })
             }
             .redacted(reason: viewModel.syncingData ? [.placeholder] : [])
@@ -158,23 +158,6 @@ private extension MostActiveCouponsCard {
             }
         }
         .disabled(viewModel.syncingData)
-    }
-
-    func couponDetailView(coupon: Coupon) -> some View {
-        NavigationView {
-            // TODO: 12716 - Check the "More" menu and disable it if needed.
-            CouponDetails(viewModel: CouponDetailsViewModel(coupon: coupon))
-                .toolbar {
-                    ToolbarItem(placement: .cancellationAction) {
-                        Button(action: {
-                            viewModel.selectedCoupon = nil
-                        }, label: {
-                            Image(uiImage: .closeButton)
-                                .secondaryBodyStyle()
-                        })
-                    }
-                }
-        }
     }
 }
 
@@ -250,5 +233,6 @@ private extension MostActiveCouponsCard {
 
 #Preview {
     MostActiveCouponsCard(viewModel: .init(siteID: 123),
-                          onViewAllCoupons: { _ in})
+                          onViewAllCoupons: { _ in },
+                          onViewCouponDetail: { _ in })
 }

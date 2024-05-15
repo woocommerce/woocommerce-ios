@@ -13,7 +13,6 @@ final class MostActiveCouponsCardViewModel: ObservableObject {
     @Published private(set) var syncingData = false
     @Published private(set) var syncingError: Error?
     @Published private(set) var coupons: [Coupon] = []
-    @Published var selectedCoupon: Coupon?
 
     let siteID: Int64
     let siteTimezone: TimeZone
@@ -64,10 +63,6 @@ final class MostActiveCouponsCardViewModel: ObservableObject {
             DDLogError("⛔️ Dashboard (Most active coupons) — Error loading most active coupons: \(error)")
         }
         syncingData = false
-    }
-
-    func didSelectCoupon(_ coupon: Coupon) {
-        selectedCoupon = coupon
     }
 }
 

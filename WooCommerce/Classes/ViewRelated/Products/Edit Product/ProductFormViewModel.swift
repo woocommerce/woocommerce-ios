@@ -2,6 +2,7 @@ import Combine
 import Yosemite
 
 import protocol Storage.StorageManagerType
+import protocol WooFoundation.Analytics
 
 /// Provides data for product form UI, and handles product editing actions.
 final class ProductFormViewModel: ProductFormViewModelProtocol {
@@ -677,7 +678,7 @@ extension ProductFormViewModel {
     func trackProductFormLoaded() {
         let hasLinkedProducts = product.upsellIDs.isNotEmpty || product.crossSellIDs.isNotEmpty
         let hasMinMaxQuantityRules = product.canEditQuantityRules
-        analytics.track(event: WooAnalyticsEvent.ProductDetail.loaded(hasLinkedProducts: hasLinkedProducts,
+        analytics.track(event: .ProductDetail.loaded(hasLinkedProducts: hasLinkedProducts,
                                                                       hasMinMaxQuantityRules: hasMinMaxQuantityRules,
                                                                       horizontalSizeClass: UITraitCollection.current.horizontalSizeClass))
     }

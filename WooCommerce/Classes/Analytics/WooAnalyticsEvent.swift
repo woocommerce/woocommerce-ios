@@ -39,7 +39,7 @@ import WooFoundation
 /// Analytics.track(event: .loginStart)
 /// ~~~
 ///
-public struct WooAnalyticsEvent {
+struct WooAnalyticsEvent {
     init(statName: WooAnalyticsStat, properties: [String: WooAnalyticsEventPropertyType], error: Error? = nil) {
         self.statName = statName
         self.properties = properties

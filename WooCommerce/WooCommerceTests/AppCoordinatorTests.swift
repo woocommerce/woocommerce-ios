@@ -5,6 +5,7 @@ import XCTest
 @testable import WooCommerce
 import Yosemite
 import protocol Storage.StorageManagerType
+import protocol WooFoundation.Analytics
 
 final class AppCoordinatorTests: XCTestCase {
     private var sessionManager: SessionManager!

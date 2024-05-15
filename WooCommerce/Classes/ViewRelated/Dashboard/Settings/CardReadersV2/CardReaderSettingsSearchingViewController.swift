@@ -154,7 +154,7 @@ struct CardReaderSettingsSearchingView: View {
                 .padding(.bottom, 8)
 
             InPersonPaymentsLearnMore(viewModel: LearnMoreViewModel(
-                tappedAnalyticEvent: WooAnalyticsEvent.InPersonPayments.learnMoreTapped(source: .manageCardReader)))
+                tappedAnalyticEvent: .InPersonPayments.learnMoreTapped(source: .manageCardReader)))
             .padding(.vertical, 8)
             .customOpenURL(action: { url in
                 switch url {

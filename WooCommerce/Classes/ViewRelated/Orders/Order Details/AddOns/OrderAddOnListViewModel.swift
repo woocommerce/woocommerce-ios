@@ -1,5 +1,6 @@
 import Foundation
 import Yosemite
+import protocol WooFoundation.Analytics
 
 /// ViewModel for `OrderAddOnListI1View`
 ///
@@ -76,7 +77,7 @@ extension OrderAddOnListI1ViewModel {
     ///
     func trackAddOns() {
         let addOnNames = addOns.map { $0.title }
-        analytics.track(event: WooAnalyticsEvent.OrderDetailAddOns.orderAddOnsViewed(addOnNames: addOnNames))
+        analytics.track(event: .OrderDetailAddOns.orderAddOnsViewed(addOnNames: addOnNames))
     }
 }
 

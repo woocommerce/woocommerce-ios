@@ -1,4 +1,5 @@
 import UIKit
+import protocol WooFoundation.Analytics
 import protocol Yosemite.StoresManager
 
 /// Coordinates navigation for closing a WPCOM account from various entry points (settings and empty stores screens).

@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		02427F092BECA12800E2073B /* Analytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02427F082BECA12800E2073B /* Analytics.swift */; };
+		02427F0E2BECA1D900E2073B /* AnalyticsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02427F0D2BECA1D900E2073B /* AnalyticsProvider.swift */; };
+		02427F122BECA23300E2073B /* WooAnalyticsEventPropertyType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02427F112BECA23300E2073B /* WooAnalyticsEventPropertyType.swift */; };
 		0331A7512A39DECC001D2C2C /* Color+RGBStringDecoding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0331A7502A39DECC001D2C2C /* Color+RGBStringDecoding.swift */; };
 		0331A7532A39DFD4001D2C2C /* Color+RGBStringDecoding-Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0331A7522A39DFD4001D2C2C /* Color+RGBStringDecoding-Tests.swift */; };
 		0331A75B2A3B553A001D2C2C /* Color+ColorStudio.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0331A75A2A3B553A001D2C2C /* Color+ColorStudio.swift */; };
@@ -77,6 +80,9 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		02427F082BECA12800E2073B /* Analytics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Analytics.swift; sourceTree = "<group>"; };
+		02427F0D2BECA1D900E2073B /* AnalyticsProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsProvider.swift; sourceTree = "<group>"; };
+		02427F112BECA23300E2073B /* WooAnalyticsEventPropertyType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooAnalyticsEventPropertyType.swift; sourceTree = "<group>"; };
 		0331A7502A39DECC001D2C2C /* Color+RGBStringDecoding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+RGBStringDecoding.swift"; sourceTree = "<group>"; };
 		0331A7522A39DFD4001D2C2C /* Color+RGBStringDecoding-Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+RGBStringDecoding-Tests.swift"; sourceTree = "<group>"; };
 		0331A75A2A3B553A001D2C2C /* Color+ColorStudio.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+ColorStudio.swift"; sourceTree = "<group>"; };
@@ -154,6 +160,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		02427F0A2BECA14600E2073B /* Analytics */ = {
+			isa = PBXGroup;
+			children = (
+				02427F0D2BECA1D900E2073B /* AnalyticsProvider.swift */,
+				02427F112BECA23300E2073B /* WooAnalyticsEventPropertyType.swift */,
+			);
+			path = Analytics;
+			sourceTree = "<group>";
+		};
 		203758732AD5564F000E4281 /* Countries */ = {
 			isa = PBXGroup;
 			children = (
@@ -222,7 +237,9 @@
 		689D11CE2891B37400F6A83F /* Protocols */ = {
 			isa = PBXGroup;
 			children = (
+				02427F0A2BECA14600E2073B /* Analytics */,
 				689D11CF2891B3A300F6A83F /* CrashLogger.swift */,
+				02427F082BECA12800E2073B /* Analytics.swift */,
 			);
 			path = Protocols;
 			sourceTree = "<group>";
@@ -540,6 +557,8 @@
 				B99BC2162A1FB21700E6008A /* UIImage+Background.swift in Sources */,
 				26AF1F5328B8362800937BA9 /* UIColor+SemanticColors.swift in Sources */,
 				0331A7512A39DECC001D2C2C /* Color+RGBStringDecoding.swift in Sources */,
+				02427F122BECA23300E2073B /* WooAnalyticsEventPropertyType.swift in Sources */,
+				02427F0E2BECA1D900E2073B /* AnalyticsProvider.swift in Sources */,
 				03597A9B28F87BFC005E4A98 /* WooCommerceComUTMProvider.swift in Sources */,
 				B9C9C663283E7296001B879F /* Logging.swift in Sources */,
 				6874E81428998AD300074A97 /* LogErrorAndExit.swift in Sources */,
@@ -552,6 +571,7 @@
 				689D11D32891B7D800F6A83F /* MockCrashLogger.swift in Sources */,
 				0331A75B2A3B553A001D2C2C /* Color+ColorStudio.swift in Sources */,
 				B987B06F284540D300C53CF6 /* CurrencyCode.swift in Sources */,
+				02427F092BECA12800E2073B /* Analytics.swift in Sources */,
 				03597A9928F8799C005E4A98 /* MockUTMParameterProvider.swift in Sources */,
 				B9C9C660283E71F4001B879F /* Double+Woo.swift in Sources */,
 				689D11D02891B3A300F6A83F /* CrashLogger.swift in Sources */,

@@ -3,6 +3,7 @@ import Experiments
 import Yosemite
 import class AutomatticTracks.CrashLogging
 import protocol Storage.StorageManagerType
+import protocol WooFoundation.Analytics
 
 /// ViewModel for `OrderListViewController`.
 ///

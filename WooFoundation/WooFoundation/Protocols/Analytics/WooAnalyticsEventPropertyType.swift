@@ -9,7 +9,7 @@ import Foundation
 /// - float
 /// - boolean
 ///
-protocol WooAnalyticsEventPropertyType {
+public protocol WooAnalyticsEventPropertyType {
 
 }
 

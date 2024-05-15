@@ -28,7 +28,7 @@ struct InPersonPaymentsPluginNotSetup: View {
             Button {
                 presentedSetupURL = setupURL
                 ServiceLocator.analytics.track(
-                    event: WooAnalyticsEvent.InPersonPayments.cardPresentOnboardingCtaTapped(
+                    event: .InPersonPayments.cardPresentOnboardingCtaTapped(
                         reason: analyticReason,
                         countryCode: cardPresentConfiguration.countryCode,
                         gatewayID: plugin.gatewayID
@@ -91,13 +91,13 @@ struct InPersonPaymentsPluginNotSetup_Previews: PreviewProvider {
 
 private extension InPersonPaymentsPluginNotSetup {
     var learnMoreAnalyticEvent: WooAnalyticsEvent? {
-        WooAnalyticsEvent.InPersonPayments.cardPresentOnboardingLearnMoreTapped(reason: analyticReason,
+        .InPersonPayments.cardPresentOnboardingLearnMoreTapped(reason: analyticReason,
                                                                                 countryCode: cardPresentConfiguration.countryCode,
                                                                                 gatewayID: plugin.gatewayID)
     }
 
     private func trackPluginSetupTappedEvent() {
-        ServiceLocator.analytics.track(event: WooAnalyticsEvent.InPersonPayments.cardPresentOnboardingCtaFailed(
+        ServiceLocator.analytics.track(event: .InPersonPayments.cardPresentOnboardingCtaFailed(
             reason: "plugin_setup_tapped",
             countryCode: cardPresentConfiguration.countryCode,
             gatewayID: plugin.gatewayID

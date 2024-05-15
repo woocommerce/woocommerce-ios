@@ -1,4 +1,5 @@
 import Yosemite
+import protocol WooFoundation.Analytics
 
 /// Implementation of `SearchUICommand` for Product search.
 final class ProductSearchUICommand: SearchUICommand {

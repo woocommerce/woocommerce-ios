@@ -1,6 +1,7 @@
 import UIKit
 import Yosemite
 import WordPressAuthenticator
+import protocol WooFoundation.Analytics
 
 /// Coordinates navigation for the Jetpack setup flow during login.
 final class LoginJetpackSetupCoordinator: Coordinator {

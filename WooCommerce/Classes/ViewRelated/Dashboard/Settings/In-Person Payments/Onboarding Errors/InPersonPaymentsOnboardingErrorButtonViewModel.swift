@@ -20,7 +20,7 @@ struct InPersonPaymentsOnboardingErrorButtonViewModel {
         self.cardPresentConfiguration = cardPresentConfiguration
         self.action = {
             ServiceLocator.analytics.track(
-                event: WooAnalyticsEvent.InPersonPayments.cardPresentOnboardingCtaTapped(
+                event: .InPersonPayments.cardPresentOnboardingCtaTapped(
                     reason: analyticReason,
                     countryCode: cardPresentConfiguration.countryCode,
                     gatewayID: plugin?.gatewayID

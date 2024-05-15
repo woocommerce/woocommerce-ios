@@ -5,6 +5,8 @@ import WordPressAuthenticator
 import Yosemite
 import class AutomatticTracks.CrashLogging
 import protocol Storage.StorageManagerType
+import protocol WooFoundation.Analytics
+
 final class AppCoordinator {
     let tabBarController: MainTabBarController
 

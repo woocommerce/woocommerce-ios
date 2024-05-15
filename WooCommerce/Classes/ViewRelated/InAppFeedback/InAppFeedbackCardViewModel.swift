@@ -1,5 +1,6 @@
 import Foundation
 import StoreKit
+import protocol WooFoundation.Analytics
 
 /// Defines methods for presenting the in-app app store review form.
 ///

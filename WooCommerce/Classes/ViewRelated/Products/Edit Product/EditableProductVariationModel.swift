@@ -215,7 +215,7 @@ extension EditableProductVariationModel: ProductFormDataModel, TaxClassRequestab
     }
 
     var canEditQuantityRules: Bool {
-        let quantityRulesAreSet = minAllowedQuantity != nil || maxAllowedQuantity != nil || groupOfQuantity.isNilOrEmpty
+        let quantityRulesAreSet = minAllowedQuantity != nil || maxAllowedQuantity != nil || groupOfQuantity != nil
         let enabled = productVariation.overrideProductQuantities == true && parentProductDisablesQuantityRules == false
 
         return enabled && quantityRulesAreSet

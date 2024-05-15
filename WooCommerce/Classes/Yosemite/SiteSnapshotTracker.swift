@@ -1,5 +1,6 @@
 import Foundation
 import Yosemite
+import protocol WooFoundation.Analytics
 
 /// Tracks a snapshot of a given site - number of orders, number of products, and the status of various payment gateway plugins.
 final class SiteSnapshotTracker {

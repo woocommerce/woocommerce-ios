@@ -32,11 +32,6 @@ final class MostActiveCouponsCardViewModel: ObservableObject {
         self.storage = storage
         self.analytics = analytics
 
-        Task { @MainActor in
-            self.timeRange = await loadLastTimeRange() ?? .today
-            await reloadData()
-        }
-
         $timeRange
             .removeDuplicates()
             .map({ timeRange in
@@ -46,6 +41,11 @@ final class MostActiveCouponsCardViewModel: ObservableObject {
                 return timeRangeViewModel.timeRangeText
             })
             .assign(to: &$timeRangeText)
+
+        Task { @MainActor in
+            self.timeRange = await loadLastTimeRange() ?? .today
+            await reloadData()
+        }
     }
 
     func dismiss() {

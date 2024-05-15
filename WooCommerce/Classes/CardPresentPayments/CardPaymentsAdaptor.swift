@@ -9,6 +9,14 @@ enum CardPresentPaymentResult {
 }
 
 class CardPresentPaymentsAdaptor {
+
+    /// `paymentScreenEventPublisher` provides a stream of events relating to a payment, including their view models,
+    /// for subscribers to display to the user.
+    /// This is long lived, and used to display UI, not to communicate the success or failure of a particular payment
+    // TODO: figure out whether there's any reason to use a Combine publisher or AsyncStream here.
+    // TODO: decide whether we actually want to expose this, or just internally assign `paymentScreenEventSubject` to each short-lived stream instead.
+    var paymentScreenEventPublisher: AnyPublisher<CardPresentPaymentEvent?, Never>
+
     private let currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
     private let siteID: Int64
 
@@ -44,11 +52,20 @@ class CardPresentPaymentsAdaptor {
 
     private let onboardingPresenterAdaptor: CardPresentPaymentsOnboardingPresenterAdaptor
 
-    var paymentsAlertHandler: CardPresentPaymentsAlertHandling?
+    private var paymentScreenEventSubject = CurrentValueSubject<CardPresentPaymentEvent?, Never>(nil)
 
     init(siteID: Int64) {
         self.siteID = siteID
         onboardingPresenterAdaptor = CardPresentPaymentsOnboardingPresenterAdaptor(stores: ServiceLocator.stores)
+
+        paymentScreenEventPublisher = onboardingPresenterAdaptor.onboardingScreenViewModelPublisher.map { onboardingViewModel -> CardPresentPaymentEvent? in
+            guard let onboardingViewModel else {
+                return nil
+            }
+            return CardPresentPaymentEvent.showOnboarding(onboardingViewModel)
+        }
+        .merge(with: paymentScreenEventSubject)
+        .eraseToAnyPublisher()
     }
 
     func collectPayment(for order: Order,
@@ -101,21 +118,21 @@ class CardPresentPaymentsAdaptor {
 extension CardPresentPaymentsAdaptor: CardPresentPaymentAlertsPresenting {
 
     func present(viewModel: CardPresentPaymentsModalViewModel) {
-        paymentsAlertHandler?.present(CardPresentPaymentsAdaptorPaymentAlert(from: viewModel))
+        paymentScreenEventSubject.send(.presentAlert(CardPresentPaymentsAdaptorPaymentAlert(from: viewModel)))
     }
 
     func foundSeveralReaders(readerIDs: [String], connect: @escaping (String) -> Void, cancelSearch: @escaping () -> Void) {
-        paymentsAlertHandler?.showReaderList(readerIDs)
+        paymentScreenEventSubject.send(.presentReaderList(readerIDs))
         // the button actions here might need to be communicated... or we could expose them on the adaptor somehow.
     }
 
     func updateSeveralReadersList(readerIDs: [String]) {
-        paymentsAlertHandler?.showReaderList(readerIDs)
+        paymentScreenEventSubject.send(.presentReaderList(readerIDs))
     }
 
     func dismiss() {
-        paymentsAlertHandler?.dismiss()
-        // We might not really need this
+        paymentScreenEventSubject.send(nil)
+        // TODO: Decide whether we really need this
     }
 }
 
@@ -190,7 +207,7 @@ final class CardPresentPaymentsOnboardingPresenterAdaptor: CardPresentPaymentsOn
 enum CardPresentPaymentEvent {
     case presentAlert(CardPresentPaymentsAdaptorPaymentAlert)
     case presentReaderList(_ readerIDs: [String])
-    case showOnboarding
+    case showOnboarding(_ onboardingViewModel: InPersonPaymentsViewModel)
 }
 
 struct CardPresentPaymentsAdaptorPaymentAlert {
@@ -198,14 +215,4 @@ struct CardPresentPaymentsAdaptorPaymentAlert {
         // In here we still need to handle the button actions wrt the UIViewControllers the closures are passed.
         // That said, very few of the alerts actually use the UIVCs, so it might be just as easy to remove the dependency from both sides
     }
-}
-
-protocol CardPresentPaymentsAlertHandling {
-    func showOnboarding(viewModel: InPersonPaymentsViewModel?)
-
-    func present(_ alert: CardPresentPaymentsAdaptorPaymentAlert)
-
-    func showReaderList(_ readerIDs: [String])
-
-    func dismiss()
 }

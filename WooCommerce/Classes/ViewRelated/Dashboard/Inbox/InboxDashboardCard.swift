@@ -15,13 +15,14 @@ struct InboxDashboardCard: View {
             header
                 .padding(.horizontal, Layout.padding)
 
-            switch viewModel.syncState {
-            case .empty:
-                emptyStateView
-            case .syncingFirstPage:
+            if viewModel.syncingError != nil && viewModel.noteRowViewModels.isEmpty {
+                // TODO: show error state
+            } else if viewModel.syncingData {
                 loadingStateView
-            case .results:
+            } else if viewModel.noteRowViewModels.isNotEmpty {
                 messageList
+            } else {
+                emptyStateView
             }
         }
         .padding(.vertical, Layout.padding)
@@ -34,10 +35,10 @@ struct InboxDashboardCard: View {
 private extension InboxDashboardCard {
     var header: some View {
         HStack {
-//            Image(systemName: "exclamationmark.circle")
-//                .foregroundStyle(Color.secondary)
-//                .headlineStyle()
-//                .renderedIf(viewModel.syncingError != nil)
+            Image(systemName: "exclamationmark.circle")
+                .foregroundStyle(Color.secondary)
+                .headlineStyle()
+                .renderedIf(viewModel.syncingError != nil)
             Text(DashboardCard.CardType.inbox.name)
                 .headlineStyle()
             Spacer()
@@ -51,12 +52,12 @@ private extension InboxDashboardCard {
                     .padding(.leading, Layout.padding)
                     .padding(.vertical, Layout.hideIconVerticalPadding)
             }
-            .disabled(viewModel.syncState == .syncingFirstPage)
+            .disabled(viewModel.syncingData)
         }
     }
 
     var loadingStateView: some View {
-        ForEach(viewModel.contentViewModel.placeholderRowViewModels) { rowViewModel in
+        ForEach(InboxViewModel.placeholderRowViewModels) { rowViewModel in
             InboxNoteRow(viewModel: rowViewModel)
                 .redacted(reason: .placeholder)
                 .shimmering()

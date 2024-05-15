@@ -4,8 +4,8 @@ struct ScanningForReaderView: View {
     let cancel: () -> Void
 
     var body: some View {
-        Text("Scanning for reader...")
-        Button("Cancel search") {
+        Text("Searching for reader")
+        Button("Cancel") {
             cancel()
         }
     }

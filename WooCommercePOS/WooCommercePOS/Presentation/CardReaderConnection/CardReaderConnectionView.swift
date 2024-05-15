@@ -50,17 +50,17 @@ struct CardReaderConnectionView: View {
                     ReaderConnectedView(readerID: readerID, disconnect: disconnect)
                 case .scanningForReader(let cancel):
                     ScanningForReaderView(cancel: cancel)
-                case .scanningFailed(_, _):
+                case .scanningFailed:
                     ScanningForReaderFailedView()
                 case .connectingToReader:
                     ConnectingToReaderView()
-                case .connectingFailed(_, _, _):
+                case .connectingFailed:
                     ConnectingFailedView()
                 case .readersFound(let readerIDs, let connect, let continueSearch):
                     FoundReadersView(readerIDs: readerIDs, connect: connect, continueSearch: continueSearch)
-                case .updateInProgress(_, _, _):
+                case .updateInProgress:
                     ReaderUpdateInProgressView()
-                case .updatingFailed(_, _, _):
+                case .updatingFailed:
                     ReaderUpdateFailedView()
             }
         }

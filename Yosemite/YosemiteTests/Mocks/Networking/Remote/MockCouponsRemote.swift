@@ -34,6 +34,11 @@ final class MockCouponsRemote: CouponsRemoteProtocol {
     var spyLoadCouponReportSiteID: Int64?
     var spyLoadCouponReportCouponID: Int64?
 
+    var didCallLoadMostActiveCoupons = false
+    var spyLoadMostActiveCouponsSiteID: Int64?
+    var spyLoadMostActiveCouponsStartDate: Date?
+    var spyLoadMostActiveCouponsEndDate: Date?
+
     // MARK: - Stub responses
     var resultForLoadAllCoupons: Result<[Coupon], Error>?
     var resultForSearchCoupons: Result<[Coupon], Error>?
@@ -98,5 +103,15 @@ final class MockCouponsRemote: CouponsRemoteProtocol {
         didCallRetrieveCoupon = true
         spyRetrieveSiteID = siteID
         spyRetrieveCouponID = couponID
+    }
+
+    func loadMostActiveCoupons(for siteID: Int64,
+                               from startDate: Date,
+                               to endDate: Date,
+                               completion: @escaping (Result<[CouponReport], Error>) -> Void) {
+        didCallLoadMostActiveCoupons = true
+        spyLoadMostActiveCouponsSiteID = siteID
+        spyLoadMostActiveCouponsStartDate = startDate
+        spyLoadMostActiveCouponsEndDate = endDate
     }
 }

@@ -12,21 +12,13 @@ struct ProductGridView: View {
                                         count: viewModel.products.count)
 
         ScrollView {
-            LazyVGrid(columns: columns, spacing: 20) {
+            LazyVGrid(columns: columns, spacing: 8) {
                 ForEach(viewModel.products, id: \.productID) { product in
-                    Button(action: {
+                    ProductCardView(product: product) {
                         viewModel.addProductToCart(product)
-                    }, label: {
-                        VStack {
-                            Text(product.name)
-                            // TODO: CurrencyFormatter
-                            Text(product.price)
-                        }
-                        .foregroundColor(Color.primaryText)
-                        .padding()
-                        .background(Color.tertiaryBackground)
-                        .frame(minWidth: 0, maxWidth: .infinity, minHeight: 100)
-                    })
+                    }
+                    .foregroundColor(Color.primaryText)
+                    .background(Color.secondaryBackground)
                 }
             }
         }

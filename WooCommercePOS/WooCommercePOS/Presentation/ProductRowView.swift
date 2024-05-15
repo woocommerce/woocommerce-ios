@@ -1,15 +1,33 @@
 import SwiftUI
 
 struct ProductRowView: View {
+    private let cartProduct: CartProduct
+    private let onProductRemoveTapped: (() -> Void)?
+
+    init(cartProduct: CartProduct, onProductRemoveTapped: (() -> Void)? = nil) {
+        self.cartProduct = cartProduct
+        self.onProductRemoveTapped = onProductRemoveTapped
+    }
+
     var body: some View {
-        Text("Product XYZ")
-            .foregroundColor(Color.primaryText)
-            .frame(maxWidth: .infinity)
-            .border(Color.gray, width: 1)
-            .foregroundColor(Color.tertiaryBackground)
+        HStack {
+            Text(cartProduct.product.name)
+                .foregroundColor(Color.white)
+            Button(action: {
+                onProductRemoveTapped?()
+            }, label: {
+                Image(systemName: "minus.circle.fill")
+                    .foregroundColor(Color.white)
+            })
+        }
+        .frame(maxWidth: .infinity)
+        .border(Color.gray, width: 1)
+        .foregroundColor(Color.tertiaryBackground)
     }
 }
 
 #Preview {
-    ProductRowView()
+    ProductRowView(cartProduct: CartProduct(id: UUID(),
+                                            product: ProductFactory.makeProduct(),
+                                            quantity: 2))
 }

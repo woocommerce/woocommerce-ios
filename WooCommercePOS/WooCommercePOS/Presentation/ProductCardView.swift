@@ -10,24 +10,24 @@ struct ProductCardView: View {
     }
 
     var body: some View {
-        Rectangle()
-            .fill(Color.tertiaryBackground)
-            .frame(minWidth: 200, maxWidth: .infinity, minHeight: 200)
-            .aspectRatio(1, contentMode: .fit)
-            .overlay {
-                VStack {
-                    Text(product.name)
-                        .foregroundStyle(Color.primaryBackground)
-                    Text(product.price)
-                        .foregroundStyle(Color.primaryBackground)
-                    HStack {
-                        QuantityBadgeView()
-                        PlusButtonView {
-                            onProductCardTapped?()
-                        }
-                    }
+            VStack {
+                Text(product.name)
+                    .foregroundStyle(Color.primaryBackground)
+                Text(product.price)
+                    .foregroundStyle(Color.primaryBackground)
+                HStack(spacing: 8) {
+                    QuantityBadgeView()
+                        .frame(width: 50, height: 50)
+                    Spacer()
+                    Button(action: {
+                        onProductCardTapped?()
+                    }, label: { })
+                    .buttonStyle(PlusButtonStyle())
+                    .frame(width: 50, height: 50)
                 }
             }
+            .frame(maxWidth: .infinity)
+            .background(Color.tertiaryBackground)
     }
 }
 

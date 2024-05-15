@@ -14,6 +14,7 @@
 		200B84B02BEB99FE00EAAB23 /* PointOfSaleEntryPointView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200B84AA2BEB98EB00EAAB23 /* PointOfSaleEntryPointView.swift */; };
 		200B84B12BEB9A0100EAAB23 /* PointOfSaleDashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200B84AB2BEB98EB00EAAB23 /* PointOfSaleDashboardView.swift */; };
 		20CBA25C2BEBB2370006820C /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 20CBA25B2BEBB2370006820C /* SwiftUI.framework */; settings = {ATTRIBUTES = (Required, ); }; };
+		682E0CF62BF4A39A00E3CE3A /* PlusButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 682E0CF52BF4A39A00E3CE3A /* PlusButtonStyle.swift */; };
 		683A39942BF0DACE008A485E /* ProductRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 683A39932BF0DACE008A485E /* ProductRowView.swift */; };
 		683AAABB2BEDD544001D91BE /* Product.swift in Sources */ = {isa = PBXBuildFile; fileRef = 683AAABA2BEDD544001D91BE /* Product.swift */; };
 		686F19F72BEF864300318150 /* ProductGridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 686F19F62BEF864300318150 /* ProductGridView.swift */; };
@@ -51,6 +52,7 @@
 		2E60C08ADBF7509B8DDF7DB1 /* Pods-WooCommercePOSTests.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooCommercePOSTests.release-alpha.xcconfig"; path = "Target Support Files/Pods-WooCommercePOSTests/Pods-WooCommercePOSTests.release-alpha.xcconfig"; sourceTree = "<group>"; };
 		46D98E5A6533112DCF03DA7C /* Pods-WooCommercePOSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooCommercePOSTests.debug.xcconfig"; path = "Target Support Files/Pods-WooCommercePOSTests/Pods-WooCommercePOSTests.debug.xcconfig"; sourceTree = "<group>"; };
 		5DAF835EEF69449B9B4146B9 /* Pods-WooCommercePOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooCommercePOS.debug.xcconfig"; path = "Target Support Files/Pods-WooCommercePOS/Pods-WooCommercePOS.debug.xcconfig"; sourceTree = "<group>"; };
+		682E0CF52BF4A39A00E3CE3A /* PlusButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlusButtonStyle.swift; sourceTree = "<group>"; };
 		683A39932BF0DACE008A485E /* ProductRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductRowView.swift; sourceTree = "<group>"; };
 		683AAABA2BEDD544001D91BE /* Product.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Product.swift; sourceTree = "<group>"; };
 		686F19F62BEF864300318150 /* ProductGridView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductGridView.swift; sourceTree = "<group>"; };
@@ -115,6 +117,7 @@
 			isa = PBXGroup;
 			children = (
 				683AAAB92BEDD3CC001D91BE /* ViewModels */,
+				682E0CF42BF4A36800E3CE3A /* Reusable Views */,
 				683AAAB82BEDD366001D91BE /* Utils */,
 				683AAAB52BEDD24B001D91BE /* Models */,
 				200B84AC2BEB98EB00EAAB23 /* Presentation */,
@@ -155,6 +158,14 @@
 				E72638A9ADBD80DC3ECDE6A8 /* Pods_WooCommercePOSTests.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		682E0CF42BF4A36800E3CE3A /* Reusable Views */ = {
+			isa = PBXGroup;
+			children = (
+				682E0CF52BF4A39A00E3CE3A /* PlusButtonStyle.swift */,
+			);
+			path = "Reusable Views";
 			sourceTree = "<group>";
 		};
 		683AAAB52BEDD24B001D91BE /* Models */ = {
@@ -377,6 +388,7 @@
 				200B84B12BEB9A0100EAAB23 /* PointOfSaleDashboardView.swift in Sources */,
 				683AAABB2BEDD544001D91BE /* Product.swift in Sources */,
 				686F19F72BEF864300318150 /* ProductGridView.swift in Sources */,
+				682E0CF62BF4A39A00E3CE3A /* PlusButtonStyle.swift in Sources */,
 				683A39942BF0DACE008A485E /* ProductRowView.swift in Sources */,
 				687EEF832BF33E0800ABB94B /* CartProduct.swift in Sources */,
 				686F19F92BEF869C00318150 /* CartView.swift in Sources */,

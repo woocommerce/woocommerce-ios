@@ -23,16 +23,16 @@ public struct WatchDependencies {
         static let id = "id"
     }
 
-    let storeID: Int64?
-    let credentials: Credentials?
+    let storeID: Int64
+    let credentials: Credentials
 
-    public init(storeID: Int64?, credentials: Credentials?) {
+    public init(storeID: Int64, credentials: Credentials) {
         self.storeID = storeID
         self.credentials = credentials
     }
 
     /// Create Dependencies from a serialized dictionary.
-    public init(dictionary: [String: Any]) {
+    public init?(dictionary: [String: Any]) {
         let storeID: Int64? = {
             guard let storeDic = dictionary[Keys.store] as? [String: Int64] else {
                 return nil
@@ -62,15 +62,19 @@ public struct WatchDependencies {
             }
         }()
 
+        guard let storeID, let credentials else {
+            return nil
+        }
+
         self.init(storeID: storeID, credentials: credentials)
     }
 
     /// Dictionary to be transferred between sessions.
     ///
     public func toDictionary() -> [String: Any] {
-        guard let credentials, let storeID else {
-            return [Keys.credentials: [:], Keys.store: [:]]
-        }
+//        guard let credentials, let storeID else {
+//            return [Keys.credentials: [:], Keys.store: [:]]
+//        }
 
         return [
             Keys.credentials: [

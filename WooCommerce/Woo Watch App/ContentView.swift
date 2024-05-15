@@ -16,14 +16,12 @@ struct ContentView: View {
         }
         .padding()
         .task {
-            if let credentials = dependencies.credentials {
-                let service = StoreInfoDataService(credentials: credentials)
-                do {
-                    let stats = try await service.fetchTodayStats(for: dependencies.storeID!)
-                    print(stats)
-                } catch {
-                    print(error)
-                }
+            let service = StoreInfoDataService(credentials: dependencies.credentials)
+            do {
+                let stats = try await service.fetchTodayStats(for: dependencies.storeID)
+                print(stats)
+            } catch {
+                print(error)
             }
         }
     }

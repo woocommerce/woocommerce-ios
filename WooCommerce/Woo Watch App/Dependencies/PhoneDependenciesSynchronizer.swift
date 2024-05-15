@@ -7,7 +7,7 @@ import NetworkingWatchOS
 ///
 final class PhoneDependenciesSynchronizer: NSObject, ObservableObject, WCSessionDelegate {
 
-    @Published var dependencies = WatchDependencies(storeID: nil, credentials: nil)
+    @Published var dependencies: WatchDependencies?
 
     /// Secure store.
     private let keychain: Keychain
@@ -32,10 +32,6 @@ final class PhoneDependenciesSynchronizer: NSObject, ObservableObject, WCSession
     /// Get the latest application context when the session activates
     ///
     func session(_ session: WCSession, activationDidCompleteWith activationState: WCSessionActivationState, error: Error?) {
-        guard !session.receivedApplicationContext.isEmpty else {
-            return
-        }
-
         DispatchQueue.main.async {
             self.storeDependencies(appContext: session.receivedApplicationContext)
             self.reloadDependencies()
@@ -59,29 +55,28 @@ final class PhoneDependenciesSynchronizer: NSObject, ObservableObject, WCSession
 
     /// Load stored dependencies
     ///
-    private func loadDependencies() -> WatchDependencies {
+    private func loadDependencies() -> WatchDependencies? {
         guard let secret = keychain[WooConstants.authToken],
               let username: String = userDefaults[.defaultUsername],
               let type: String = userDefaults[.defaultCredentialsType],
               let siteAddress: String = userDefaults[.defaultSiteAddress],
-              let storeID: Int64 = userDefaults[.defaultStoreID] else {
-            return WatchDependencies(storeID: nil, credentials: nil)
+              let storeID: Int64 = userDefaults[.defaultStoreID],
+              let credentials = Credentials(rawType: type, username: username, secret: secret, siteAddress: siteAddress) else {
+            return nil
         }
 
-        let credentials = Credentials(rawType: type, username: username, secret: secret, siteAddress: siteAddress)
         return WatchDependencies(storeID: storeID, credentials: credentials)
     }
 
     /// Store dependencies from the app context
+    /// Receiving an empty dictionary will clear the store as it likely mean that the user has logged out of the app.
     ///
     private func storeDependencies(appContext: [String: Any]) {
-
         let dependencies = WatchDependencies(dictionary: appContext)
-
-        userDefaults[.defaultStoreID] = dependencies.storeID
-        userDefaults[.defaultUsername] = dependencies.credentials?.username
-        userDefaults[.defaultCredentialsType] = dependencies.credentials?.rawType
-        userDefaults[.defaultSiteAddress] = dependencies.credentials?.siteAddress
-        keychain[WooConstants.authToken] = dependencies.credentials?.secret
+        userDefaults[.defaultStoreID] = dependencies?.storeID
+        userDefaults[.defaultUsername] = dependencies?.credentials.username
+        userDefaults[.defaultCredentialsType] = dependencies?.credentials.rawType
+        userDefaults[.defaultSiteAddress] = dependencies?.credentials.siteAddress
+        keychain[WooConstants.authToken] = dependencies?.credentials.secret
     }
 }

@@ -3,7 +3,7 @@ import SwiftUI
 /// Environment dependencies setup
 ///
 private enum DependenciesKey: EnvironmentKey {
-    static let defaultValue: WatchDependencies = WatchDependencies(storeID: nil, credentials: nil)
+    static let defaultValue: WatchDependencies = WatchDependencies(storeID: .zero, credentials: .init(authToken: ""))
 }
 
 extension EnvironmentValues {

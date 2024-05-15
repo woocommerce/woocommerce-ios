@@ -22,11 +22,11 @@ final class ReviewsDashboardCardViewModel: ObservableObject {
     @Published private(set) var syncingData = false
     @Published private(set) var syncingError: Error?
 
-    private let siteID: Int64
     private let stores: StoresManager
     private let storage: StorageManagerType
     private let analytics: Analytics
 
+    public let siteID: Int64
     public let filters: [ReviewsFilter] = [.all, .hold, .approved]
 
     init(siteID: Int64,

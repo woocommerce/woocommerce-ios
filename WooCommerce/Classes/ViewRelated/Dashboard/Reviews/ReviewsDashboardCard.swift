@@ -124,11 +124,13 @@ private extension ReviewsDashboardCard {
                     .subheadlineStyle()
                     .padding(.trailing, Layout.padding)
                     .renderedIf(review.review.isNotEmpty)
-                HStack(spacing: Layout.starRatingSpacing) {
-                    ForEach(0..<abs(review.rating), id: \.self) { _ in
-                        Image(systemName: "star.fill")
-                            .resizable()
-                            .frame(width: Constants.starSize * scale, height: Constants.starSize * scale)
+                if review.rating > 0 {
+                    HStack(spacing: Layout.starRatingSpacing) {
+                        ForEach(0..<review.rating, id: \.self) { _ in
+                            Image(systemName: "star.fill")
+                                .resizable()
+                                .frame(width: Constants.starSize * scale, height: Constants.starSize * scale)
+                        }
                     }
                 }
 

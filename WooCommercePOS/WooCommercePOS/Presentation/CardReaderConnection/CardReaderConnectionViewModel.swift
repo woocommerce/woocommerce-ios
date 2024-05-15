@@ -26,7 +26,7 @@ final class CardReaderConnectionViewModel: ObservableObject {
                 Task { @MainActor in
                     try await Task.sleep(nanoseconds: UInt64(2 * 1_000_000_000))
                     self?.state = .connected(readerID: readerID, disconnect: {
-                        // TODO: implement reader disconnection action
+                        // TODO: implement reader disconnection action in `CardReaderConnectionController` to match design
                         self?.state = .notConnected(search: {
                             self?.checkReaderConnection()
                         })

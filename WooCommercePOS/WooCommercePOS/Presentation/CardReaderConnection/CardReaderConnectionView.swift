@@ -20,6 +20,7 @@ enum CardReaderConnectionUIState {
 
     case scanningForReader(cancel: () -> Void)
     case scanningFailed(error: Error, close: () -> Void)
+    // TODO: update `CardReaderConnectionController` to add reader ID to match design
     case connectingToReader
     case connectingFailed(error: CardReaderConnectionError,
                           retrySearch: () -> Void,

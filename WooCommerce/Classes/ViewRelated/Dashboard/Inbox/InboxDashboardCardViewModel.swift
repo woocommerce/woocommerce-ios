@@ -16,7 +16,7 @@ final class InboxDashboardCardViewModel: ObservableObject {
     /// View models for inbox note rows.
     @Published private(set) var noteRowViewModels: [InboxNoteRowViewModel] = []
 
-    private let siteID: Int64
+    let siteID: Int64
     private let stores: StoresManager
     private let storageManager: StorageManagerType
     private let analytics: Analytics

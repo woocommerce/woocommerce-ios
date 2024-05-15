@@ -37,6 +37,9 @@ struct DashboardView: View {
                               _ timeZone: TimeZone,
                               _ timeRange: StatsTimeRangeV4) -> Void)?
 
+    /// Set externally in the hosting controller.
+    var onShowAllInboxMessages: (() -> Void)?
+
     private let storePlanSynchronizer = ServiceLocator.storePlanSynchronizer
     private let connectivityObserver = ServiceLocator.connectivityObserver
 
@@ -172,7 +175,9 @@ private extension DashboardView {
                             onViewAllAnalytics?(siteID, siteTimeZone, timeRange)
                         })
                     case .inbox:
-                        InboxDashboardCard(viewModel: viewModel.inboxViewModel)
+                        InboxDashboardCard(viewModel: viewModel.inboxViewModel) {
+                            onShowAllInboxMessages?()
+                        }
                     case .reviews:
                         ReviewsDashboardCard(viewModel: viewModel.reviewsViewModel)
                     case .coupons, .lastOrders, .stock:

@@ -41,6 +41,7 @@ final class DashboardViewHostingController: UIHostingController<DashboardView> {
         configureBlazeSection()
         configureJetpackBenefitBanner()
         configureStorePerformanceView()
+        configureInboxCard()
     }
 
     @available(*, unavailable)
@@ -117,6 +118,15 @@ private extension DashboardViewHostingController {
                                                                    timeRange: timeRange,
                                                                    usageTracksEventEmitter: usageTracksEventEmitter)
             show(analyticsHubVC, sender: self)
+        }
+    }
+
+    func configureInboxCard() {
+        rootView.onShowAllInboxMessages = { [weak self] in
+            guard let self else { return }
+            let inboxViewModel = InboxViewModel(siteID: viewModel.siteID)
+            let hostingController = UIHostingController(rootView: Inbox(viewModel: inboxViewModel))
+            show(hostingController, sender: self)
         }
     }
 }

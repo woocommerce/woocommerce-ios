@@ -4,10 +4,12 @@ import struct Yosemite.DashboardCard
 /// SwiftUI view for the inbox messages dashboard card.
 ///
 struct InboxDashboardCard: View {
-    @ObservedObject var viewModel: InboxDashboardCardViewModel
+    @ObservedObject private var viewModel: InboxDashboardCardViewModel
+    private let onShowAllInboxMessages: () -> Void
 
-    init(viewModel: InboxDashboardCardViewModel) {
+    init(viewModel: InboxDashboardCardViewModel, onShowAllInboxMessages: @escaping () -> Void) {
         self.viewModel = viewModel
+        self.onShowAllInboxMessages = onShowAllInboxMessages
     }
 
     var body: some View {
@@ -102,7 +104,7 @@ private extension InboxDashboardCard {
 
     var viewAllButton: some View {
         Button {
-            // TODO navigate to Inbox list
+            onShowAllInboxMessages()
         } label: {
             HStack {
                 Text(Localization.viewAll)
@@ -143,5 +145,5 @@ private extension InboxDashboardCard {
 }
 
 #Preview {
-    InboxDashboardCard(viewModel: .init(siteID: 123))
+    InboxDashboardCard(viewModel: .init(siteID: 123)) {}
 }

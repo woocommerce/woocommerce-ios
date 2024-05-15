@@ -7,6 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		02EF7BEB2BF45D4F00A8A597 /* CardReaderConnectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02EF7BEA2BF45D4F00A8A597 /* CardReaderConnectionView.swift */; };
+		02EF7BEE2BF45D7A00A8A597 /* ScanningForReaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02EF7BED2BF45D7A00A8A597 /* ScanningForReaderView.swift */; };
+		02EF7BF02BF45DC000A8A597 /* ConnectingToReaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02EF7BEF2BF45DC000A8A597 /* ConnectingToReaderView.swift */; };
+		02EF7BF22BF45DE600A8A597 /* ConnectingFailedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02EF7BF12BF45DE600A8A597 /* ConnectingFailedView.swift */; };
+		02EF7BF82BF460C900A8A597 /* FoundReadersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02EF7BF72BF460C900A8A597 /* FoundReadersView.swift */; };
+		02EF7BFA2BF460F400A8A597 /* ReaderUpdateFailedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02EF7BF92BF460F400A8A597 /* ReaderUpdateFailedView.swift */; };
+		02EF7BFC2BF4610600A8A597 /* ScanningForReaderFailedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02EF7BFB2BF4610600A8A597 /* ScanningForReaderFailedView.swift */; };
+		02EF7BFE2BF464CF00A8A597 /* ReaderUpdateInProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02EF7BFD2BF464CF00A8A597 /* ReaderUpdateInProgressView.swift */; };
 		200B84952BEB984700EAAB23 /* WooCommercePOS.docc in Sources */ = {isa = PBXBuildFile; fileRef = 200B84942BEB984700EAAB23 /* WooCommercePOS.docc */; };
 		200B849B2BEB984700EAAB23 /* WooCommercePOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 200B84902BEB984700EAAB23 /* WooCommercePOS.framework */; };
 		200B84A02BEB984700EAAB23 /* WooCommercePOSTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200B849F2BEB984700EAAB23 /* WooCommercePOSTests.swift */; };
@@ -36,6 +44,14 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		02EF7BEA2BF45D4F00A8A597 /* CardReaderConnectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderConnectionView.swift; sourceTree = "<group>"; };
+		02EF7BED2BF45D7A00A8A597 /* ScanningForReaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanningForReaderView.swift; sourceTree = "<group>"; };
+		02EF7BEF2BF45DC000A8A597 /* ConnectingToReaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectingToReaderView.swift; sourceTree = "<group>"; };
+		02EF7BF12BF45DE600A8A597 /* ConnectingFailedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectingFailedView.swift; sourceTree = "<group>"; };
+		02EF7BF72BF460C900A8A597 /* FoundReadersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoundReadersView.swift; sourceTree = "<group>"; };
+		02EF7BF92BF460F400A8A597 /* ReaderUpdateFailedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReaderUpdateFailedView.swift; sourceTree = "<group>"; };
+		02EF7BFB2BF4610600A8A597 /* ScanningForReaderFailedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanningForReaderFailedView.swift; sourceTree = "<group>"; };
+		02EF7BFD2BF464CF00A8A597 /* ReaderUpdateInProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReaderUpdateInProgressView.swift; sourceTree = "<group>"; };
 		200B84902BEB984700EAAB23 /* WooCommercePOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = WooCommercePOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		200B84932BEB984700EAAB23 /* WooCommercePOS.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WooCommercePOS.h; sourceTree = "<group>"; };
 		200B84942BEB984700EAAB23 /* WooCommercePOS.docc */ = {isa = PBXFileReference; lastKnownFileType = folder.documentationcatalog; path = WooCommercePOS.docc; sourceTree = "<group>"; };
@@ -83,6 +99,29 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		02EF7BE92BF45D2500A8A597 /* CardReaderConnection */ = {
+			isa = PBXGroup;
+			children = (
+				02EF7BEC2BF45D5400A8A597 /* UI States */,
+				02EF7BEA2BF45D4F00A8A597 /* CardReaderConnectionView.swift */,
+			);
+			path = CardReaderConnection;
+			sourceTree = "<group>";
+		};
+		02EF7BEC2BF45D5400A8A597 /* UI States */ = {
+			isa = PBXGroup;
+			children = (
+				02EF7BED2BF45D7A00A8A597 /* ScanningForReaderView.swift */,
+				02EF7BFB2BF4610600A8A597 /* ScanningForReaderFailedView.swift */,
+				02EF7BEF2BF45DC000A8A597 /* ConnectingToReaderView.swift */,
+				02EF7BF12BF45DE600A8A597 /* ConnectingFailedView.swift */,
+				02EF7BF72BF460C900A8A597 /* FoundReadersView.swift */,
+				02EF7BFD2BF464CF00A8A597 /* ReaderUpdateInProgressView.swift */,
+				02EF7BF92BF460F400A8A597 /* ReaderUpdateFailedView.swift */,
+			);
+			path = "UI States";
+			sourceTree = "<group>";
+		};
 		200B84862BEB984700EAAB23 = {
 			isa = PBXGroup;
 			children = (
@@ -127,6 +166,7 @@
 		200B84AC2BEB98EB00EAAB23 /* Presentation */ = {
 			isa = PBXGroup;
 			children = (
+				02EF7BE92BF45D2500A8A597 /* CardReaderConnection */,
 				200B84AA2BEB98EB00EAAB23 /* PointOfSaleEntryPointView.swift */,
 				200B84AB2BEB98EB00EAAB23 /* PointOfSaleDashboardView.swift */,
 				686F19F62BEF864300318150 /* ProductGridView.swift */,
@@ -362,13 +402,21 @@
 			buildActionMask = 2147483647;
 			files = (
 				686F19FB2BEF871100318150 /* PointOfSaleDashboardViewModel.swift in Sources */,
+				02EF7BFC2BF4610600A8A597 /* ScanningForReaderFailedView.swift in Sources */,
 				200B84B12BEB9A0100EAAB23 /* PointOfSaleDashboardView.swift in Sources */,
+				02EF7BFA2BF460F400A8A597 /* ReaderUpdateFailedView.swift in Sources */,
 				683AAABB2BEDD544001D91BE /* Product.swift in Sources */,
 				686F19F72BEF864300318150 /* ProductGridView.swift in Sources */,
+				02EF7BEE2BF45D7A00A8A597 /* ScanningForReaderView.swift in Sources */,
 				683A39942BF0DACE008A485E /* ProductRowView.swift in Sources */,
+				02EF7BF82BF460C900A8A597 /* FoundReadersView.swift in Sources */,
 				686F19F92BEF869C00318150 /* CartView.swift in Sources */,
+				02EF7BEB2BF45D4F00A8A597 /* CardReaderConnectionView.swift in Sources */,
 				200B84952BEB984700EAAB23 /* WooCommercePOS.docc in Sources */,
+				02EF7BF22BF45DE600A8A597 /* ConnectingFailedView.swift in Sources */,
+				02EF7BFE2BF464CF00A8A597 /* ReaderUpdateInProgressView.swift in Sources */,
 				DAD3013F2BF2102D001AED4F /* Color+WooCommercePOS.swift in Sources */,
+				02EF7BF02BF45DC000A8A597 /* ConnectingToReaderView.swift in Sources */,
 				200B84B02BEB99FE00EAAB23 /* PointOfSaleEntryPointView.swift in Sources */,
 				686F19FD2BEF877000318150 /* ProductFactory.swift in Sources */,
 			);

@@ -5,7 +5,7 @@ struct PlusButtonStyle: ButtonStyle {
         return IconButton(configuration: configuration,
                           icon: Image(systemName: "plus"))
     }
-    
+
     private struct IconButton: View {
         let configuration: ButtonStyleConfiguration
         let icon: Image

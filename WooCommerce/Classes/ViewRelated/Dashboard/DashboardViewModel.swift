@@ -155,8 +155,10 @@ final class DashboardViewModel: ObservableObject {
             group.addTask { [weak self] in
                 await self?.topPerformersViewModel.reloadData()
             }
-            group.addTask { [weak self] in
-                await self?.mostActiveCouponsViewModel.reloadData()
+            if featureFlagService.isFeatureFlagEnabled(.dynamicDashboardM2) {
+                group.addTask { [weak self] in
+                    await self?.mostActiveCouponsViewModel.reloadData()
+                }
             }
         }
     }

@@ -60,6 +60,18 @@ public enum CouponAction: Action {
                           startDate: Date,
                           onCompletion: (Result<CouponReport, Error>) -> Void)
 
+    /// Loads top 3 most active coupons report within the specified time range and site ID.
+    ///
+    /// - `siteID`: site ID.
+    /// - `timeRange`: Time range to fetch report for.
+    /// - `siteTimezone`: site's timezone.
+    /// - `onCompletion`: invoked when the reports are fetched.
+    ///
+    case loadMostActiveCoupons(siteID: Int64,
+                               timeRange: StatsTimeRangeV4,
+                               siteTimezone: TimeZone,
+                               onCompletion: (Result<[CouponReport], Error>) -> Void)
+
     /// Search Coupons matching a given keyword for a site
     ///
     /// - `siteID`: the site for which coupons should be fetched.

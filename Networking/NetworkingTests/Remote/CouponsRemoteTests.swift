@@ -307,6 +307,57 @@ final class CouponsRemoteTests: XCTestCase {
         XCTAssertEqual(resultError, .unacceptableStatusCode(statusCode: 500))
     }
 
+    // MARK: - Load most active coupons
+
+    /// Verifies that loadMostActiveCoupons properly parses the `coupon-reports` sample response.
+    ///
+    func test_loadMostActiveCoupons_properly_returns_parsed_report() throws {
+        // Given
+        let remote = CouponsRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "reports/coupons", filename: "coupon-reports")
+
+        // When
+        let result = waitFor { promise in
+            remote.loadMostActiveCoupons(for: self.sampleSiteID,
+                                         from: Date(),
+                                         to: Date()
+            ) { (result) in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssert(result.isSuccess)
+        let returnedReport = try XCTUnwrap(result.get())
+        let expectedReport = [CouponReport(couponID: 571, amount: 12, ordersCount: 1)]
+        XCTAssertEqual(returnedReport, expectedReport)
+    }
+
+    /// Verifies that loadMostActiveCoupons properly relays Networking Layer errors.
+    ///
+    func test_loadMostActiveCoupons_properly_relays_networking_errors() throws {
+        // Given
+        let remote = CouponsRemote(network: network)
+
+        let error = NetworkError.unacceptableStatusCode(statusCode: 500)
+        network.simulateError(requestUrlSuffix: "reports/coupons", error: error)
+
+        // When
+        let result = waitFor { promise in
+            remote.loadMostActiveCoupons(for: self.sampleSiteID,
+                                         from: Date(),
+                                         to: Date()
+            ) { (result) in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        let resultError = try XCTUnwrap(result.failure as? NetworkError)
+        XCTAssertEqual(resultError, .unacceptableStatusCode(statusCode: 500))
+    }
+
     // MARK: - Search coupons
 
     /// Verifies that searchCoupons properly parses the `coupons-all` sample response.

@@ -29,14 +29,6 @@ enum CardReaderConnectionUIState {
     case updatingFailed(error: CardReaderUpdateError, tryAgain: (() -> Void)?, close: () -> Void)
 }
 
-final class CardReaderConnectionViewModel: ObservableObject {
-    @Published private(set) var state: CardReaderConnectionUIState
-
-    init(state: CardReaderConnectionUIState) {
-        self.state = state
-    }
-}
-
 struct CardReaderConnectionView: View {
     @StateObject var viewModel: CardReaderConnectionViewModel
 

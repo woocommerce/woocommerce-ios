@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		02CA04B22BF4930800A791D1 /* CardReaderConnectionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02CA04B12BF4930800A791D1 /* CardReaderConnectionViewModel.swift */; };
 		02EF7BEB2BF45D4F00A8A597 /* CardReaderConnectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02EF7BEA2BF45D4F00A8A597 /* CardReaderConnectionView.swift */; };
 		02EF7BEE2BF45D7A00A8A597 /* ScanningForReaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02EF7BED2BF45D7A00A8A597 /* ScanningForReaderView.swift */; };
 		02EF7BF02BF45DC000A8A597 /* ConnectingToReaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02EF7BEF2BF45DC000A8A597 /* ConnectingToReaderView.swift */; };
@@ -44,6 +45,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		02CA04B12BF4930800A791D1 /* CardReaderConnectionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderConnectionViewModel.swift; sourceTree = "<group>"; };
 		02EF7BEA2BF45D4F00A8A597 /* CardReaderConnectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderConnectionView.swift; sourceTree = "<group>"; };
 		02EF7BED2BF45D7A00A8A597 /* ScanningForReaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanningForReaderView.swift; sourceTree = "<group>"; };
 		02EF7BEF2BF45DC000A8A597 /* ConnectingToReaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectingToReaderView.swift; sourceTree = "<group>"; };
@@ -104,6 +106,7 @@
 			children = (
 				02EF7BEC2BF45D5400A8A597 /* UI States */,
 				02EF7BEA2BF45D4F00A8A597 /* CardReaderConnectionView.swift */,
+				02CA04B12BF4930800A791D1 /* CardReaderConnectionViewModel.swift */,
 			);
 			path = CardReaderConnection;
 			sourceTree = "<group>";
@@ -409,6 +412,7 @@
 				686F19F72BEF864300318150 /* ProductGridView.swift in Sources */,
 				02EF7BEE2BF45D7A00A8A597 /* ScanningForReaderView.swift in Sources */,
 				683A39942BF0DACE008A485E /* ProductRowView.swift in Sources */,
+				02CA04B22BF4930800A791D1 /* CardReaderConnectionViewModel.swift in Sources */,
 				02EF7BF82BF460C900A8A597 /* FoundReadersView.swift in Sources */,
 				686F19F92BEF869C00318150 /* CartView.swift in Sources */,
 				02EF7BEB2BF45D4F00A8A597 /* CardReaderConnectionView.swift in Sources */,

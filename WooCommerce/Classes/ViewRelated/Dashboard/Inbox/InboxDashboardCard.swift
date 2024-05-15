@@ -78,6 +78,9 @@ private extension InboxDashboardCard {
                 ForEach(viewModel.noteRowViewModels) { rowViewModel in
                     InboxNoteRow(viewModel: rowViewModel,
                                  shouldHighlightUnreadNoteTitle: false,
+                                 contentFont: .subheadline,
+                                 dateFont: .footnote,
+                                 verticalSpacing: Layout.noteContentVerticalSpacing,
                                  dividerPadding: Layout.dividerPadding)
                 }
             }
@@ -122,6 +125,7 @@ private extension InboxDashboardCard {
         static let cornerSize = CGSize(width: 8.0, height: 8.0)
         static let hideIconVerticalPadding: CGFloat = 8
         static let emptyStateImageWidth: CGFloat = 168
+        static let noteContentVerticalSpacing: CGFloat = 5
         static let dividerPadding = EdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 0)
     }
 

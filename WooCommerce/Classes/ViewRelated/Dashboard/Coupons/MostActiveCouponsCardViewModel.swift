@@ -13,6 +13,7 @@ final class MostActiveCouponsCardViewModel: ObservableObject {
     @Published private(set) var syncingData = false
     @Published private(set) var syncingError: Error?
     @Published private(set) var coupons: [Coupon] = []
+    @Published private(set) var timeRangeText = ""
 
     let siteID: Int64
     let siteTimezone: TimeZone
@@ -35,6 +36,16 @@ final class MostActiveCouponsCardViewModel: ObservableObject {
             self.timeRange = await loadLastTimeRange() ?? .today
             await reloadData()
         }
+
+        $timeRange
+            .removeDuplicates()
+            .map({ timeRange in
+                guard let timeRangeViewModel = StatsTimeRangeBarViewModel(timeRange: timeRange, timezone: siteTimezone) else {
+                    return ""
+                }
+                return timeRangeViewModel.timeRangeText
+            })
+            .assign(to: &$timeRangeText)
     }
 
     func dismiss() {
@@ -69,13 +80,6 @@ final class MostActiveCouponsCardViewModel: ObservableObject {
 // MARK: - Data for `MostActiveCouponsCardViewModel`
 //
 extension MostActiveCouponsCardViewModel {
-    var timeRangeText: String {
-        guard let timeRangeViewModel = StatsTimeRangeBarViewModel(timeRange: timeRange, timezone: siteTimezone) else {
-            return ""
-        }
-        return timeRangeViewModel.timeRangeText
-    }
-
     var startDateForCustomRange: Date {
         if case let .custom(startDate, _) = timeRange {
             return startDate

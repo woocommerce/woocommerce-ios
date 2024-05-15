@@ -153,6 +153,9 @@ final class DashboardViewModel: ObservableObject {
             group.addTask { [weak self] in
                 await self?.topPerformersViewModel.reloadData()
             }
+            group.addTask { [weak self] in
+                await self?.inboxViewModel.reloadData()
+            }
         }
     }
 

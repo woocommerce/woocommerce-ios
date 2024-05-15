@@ -5,28 +5,26 @@ struct ContentView: View {
 
     @Environment(\.dependencies) private var dependencies
 
-    let message: String = "Logged In"
+    @StateObject var viewModel: MyStoreViewModel
+
+    init(dependencies: WatchDependencies) {
+        _viewModel = StateObject(wrappedValue: MyStoreViewModel(dependencies: dependencies))
+    }
 
     var body: some View {
         VStack {
             Image(systemName: "globe")
                 .imageScale(.large)
                 .foregroundStyle(.tint)
-            Text(message)
+            Text(viewModel.viewState.description)
         }
         .padding()
         .task {
-            let service = StoreInfoDataService(credentials: dependencies.credentials)
-            do {
-                let stats = try await service.fetchTodayStats(for: dependencies.storeID)
-                print(stats)
-            } catch {
-                print(error)
-            }
+            await viewModel.fetchStats()
         }
     }
 }
 
 #Preview {
-    ContentView()
+    ContentView(dependencies: .fake())
 }

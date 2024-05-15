@@ -3,7 +3,7 @@ import SwiftUI
 /// Environment dependencies setup
 ///
 private enum DependenciesKey: EnvironmentKey {
-    static let defaultValue: WatchDependencies = WatchDependencies(storeID: .zero, credentials: .init(authToken: ""))
+    static let defaultValue: WatchDependencies = .fake()
 }
 
 extension EnvironmentValues {
@@ -14,5 +14,13 @@ extension EnvironmentValues {
         set {
             self[DependenciesKey.self] = newValue
         }
+    }
+}
+
+extension WatchDependencies {
+    /// Fake object, useful as a default value and for previews.
+    ///
+    static func fake() -> Self {
+        .init(storeID: .zero, credentials: .init(authToken: ""))
     }
 }

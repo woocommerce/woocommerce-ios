@@ -59,7 +59,7 @@ final class InboxDashboardCardViewModel: ObservableObject {
     }
 
     func dismissInbox() {
-        // TODO: add tracking
+        analytics.track(event: .DynamicDashboard.hideCardTapped(type: .inbox))
         onDismiss?()
     }
 }

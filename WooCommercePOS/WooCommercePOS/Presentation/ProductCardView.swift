@@ -2,7 +2,7 @@ import SwiftUI
 
 struct ProductCardView: View {
     private let product: Product
-    private var onProductCardTapped: (() -> Void)?
+    private let onProductCardTapped: (() -> Void)?
 
     init(product: Product, onProductCardTapped: (() -> Void)? = nil) {
         self.product = product

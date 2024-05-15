@@ -58,7 +58,8 @@ private extension InboxDashboardCard {
 
     var loadingStateView: some View {
         ForEach(InboxViewModel.placeholderRowViewModels) { rowViewModel in
-            InboxNoteRow(viewModel: rowViewModel)
+            InboxNoteRow(viewModel: rowViewModel,
+                         dividerPadding: Layout.dividerPadding)
                 .redacted(reason: .placeholder)
                 .shimmering()
         }
@@ -68,7 +69,8 @@ private extension InboxDashboardCard {
         VStack(spacing: Layout.padding) {
             VStack(spacing: 0) {
                 ForEach(viewModel.noteRowViewModels) { rowViewModel in
-                    InboxNoteRow(viewModel: rowViewModel)
+                    InboxNoteRow(viewModel: rowViewModel,
+                                 dividerPadding: Layout.dividerPadding)
                 }
             }
             viewAllButton
@@ -112,6 +114,7 @@ private extension InboxDashboardCard {
         static let cornerSize = CGSize(width: 8.0, height: 8.0)
         static let hideIconVerticalPadding: CGFloat = 8
         static let emptyStateImageWidth: CGFloat = 168
+        static let dividerPadding = EdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 0)
     }
 
     enum Localization {

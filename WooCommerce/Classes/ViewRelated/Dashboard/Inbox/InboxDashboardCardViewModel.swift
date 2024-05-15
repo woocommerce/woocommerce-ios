@@ -18,17 +18,31 @@ final class InboxDashboardCardViewModel: ObservableObject {
 
     private let siteID: Int64
     private let stores: StoresManager
-    private let storage: StorageManagerType
+    private let storageManager: StorageManagerType
     private let analytics: Analytics
+
+    /// Inbox notes ResultsController.
+    private lazy var resultsController: ResultsController<StorageInboxNote> = {
+        let predicate = NSPredicate(format: "siteID == %lld AND isRemoved == NO", siteID)
+        let sortDescriptorByDateCreated = NSSortDescriptor(keyPath: \StorageInboxNote.dateCreated, ascending: false)
+        let sortDescriptorByID = NSSortDescriptor(keyPath: \StorageInboxNote.id, ascending: true)
+        let resultsController = ResultsController<StorageInboxNote>(storageManager: storageManager,
+                                                                    matching: predicate,
+                                                                    fetchLimit: Constants.numberOfItems,
+                                                                    sortedBy: [sortDescriptorByDateCreated, sortDescriptorByID])
+        return resultsController
+    }()
 
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
-         storage: StorageManagerType = ServiceLocator.storageManager,
+         storageManager: StorageManagerType = ServiceLocator.storageManager,
          analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
         self.analytics = analytics
         self.stores = stores
-        self.storage = storage
+        self.storageManager = storageManager
+
+        configureResultsController()
     }
 
     @MainActor
@@ -57,11 +71,41 @@ private extension InboxDashboardCardViewModel {
         try await withCheckedThrowingContinuation { continuation in
             stores.dispatch(InboxNotesAction.loadAllInboxNotes(siteID: siteID,
                                                                pageNumber: 1,
-                                                               pageSize: 3,
+                                                               pageSize: Constants.numberOfItems,
+                                                               orderBy: .date,
                                                                type: InboxViewModel.noteTypes,
                                                                status: InboxViewModel.noteStatuses) { result in
                 continuation.resume(with: result)
             })
         }
+    }
+
+    /// Performs initial fetch from storage and updates results.
+    func configureResultsController() {
+        resultsController.onDidChangeContent = { [weak self] in
+            self?.updateResults()
+        }
+        resultsController.onDidResetContent = { [weak self] in
+            self?.updateResults()
+        }
+
+        do {
+            try resultsController.performFetch()
+        } catch {
+            ServiceLocator.crashLogging.logError(error)
+        }
+    }
+
+    /// Updates row view models.
+    func updateResults() {
+        noteRowViewModels = resultsController.fetchedObjects
+            .prefix(Constants.numberOfItems)
+            .map { InboxNoteRowViewModel(note: $0) }
+    }
+}
+
+private extension InboxDashboardCardViewModel {
+    enum Constants {
+        static let numberOfItems = 3
     }
 }

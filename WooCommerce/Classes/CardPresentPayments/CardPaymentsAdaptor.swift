@@ -34,16 +34,9 @@ enum CardPresentPaymentResult {
 }
 
 enum CardPresentPaymentEvent {
-    case presentAlert(CardPresentPaymentsAdaptorPaymentAlert)
+    case presentAlert(CardPresentPaymentsModalContent)
     case presentReaderList(_ readerIDs: [String])
     case showOnboarding(_ onboardingViewModel: InPersonPaymentsViewModel)
-}
-
-struct CardPresentPaymentsAdaptorPaymentAlert {
-    init(from paymentsModalViewModel: CardPresentPaymentsModalViewModel) {
-        // In here we still need to handle the button actions wrt the UIViewControllers the closures are passed.
-        // That said, very few of the alerts actually use the UIVCs, so it might be just as easy to remove the dependency from both sides
-    }
 }
 
 class CardPresentPaymentsAdaptor: CardPresentPayments {
@@ -176,7 +169,7 @@ class CardPresentPaymentsAdaptor: CardPresentPayments {
 extension CardPresentPaymentsAdaptor: CardPresentPaymentAlertsPresenting {
 
     func present(viewModel: CardPresentPaymentsModalViewModel) {
-        paymentScreenEventSubject.send(.presentAlert(CardPresentPaymentsAdaptorPaymentAlert(from: viewModel)))
+        paymentScreenEventSubject.send(.presentAlert(viewModel as CardPresentPaymentsModalContent))
     }
 
     func foundSeveralReaders(readerIDs: [String], connect: @escaping (String) -> Void, cancelSearch: @escaping () -> Void) {

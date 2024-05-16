@@ -4,6 +4,11 @@ import Yosemite
 /// Shows information about an inbox note with actions and a CTA to dismiss the note.
 struct InboxNoteRow: View {
     let viewModel: InboxNoteRowViewModel
+    var shouldHighlightUnreadNoteTitle = true
+    var contentFont: UIFont = .body
+    var dateFont: UIFont = .subheadline
+    var verticalSpacing: CGFloat = 14
+    var dividerPadding: EdgeInsets = .zero
 
     @State private var tappedAction: InboxNoteRowActionViewModel?
     @State private var isDismissButtonLoading: Bool = false
@@ -14,16 +19,16 @@ struct InboxNoteRow: View {
             VStack(alignment: .leading, spacing: Constants.spacingBetweenTopViewAndContentVStack) {
                 // Relative date.
                 Text(viewModel.date)
-                    .font(.subheadline)
+                    .font(Font(dateFont))
                     .foregroundColor(Color(Constants.dateTextColor))
 
-                VStack(alignment: .leading, spacing: Constants.verticalSpacing) {
+                VStack(alignment: .leading, spacing: verticalSpacing) {
 
 
                     // Title with status read or unread.
                     Text(viewModel.title)
-                        .if(viewModel.isRead) { $0.bodyStyle() }
-                        .if(!viewModel.isRead) { $0.headlineStyle() }
+                        .if(viewModel.isRead || !shouldHighlightUnreadNoteTitle) { $0.bodyStyle() }
+                        .if(!viewModel.isRead && !shouldHighlightUnreadNoteTitle) { $0.headlineStyle() }
                         .fixedSize(horizontal: false, vertical: true)
 
                     // Content.
@@ -32,7 +37,7 @@ struct InboxNoteRow: View {
                         Text(String(repeating: " ", count: 120))
                             .bodyStyle()
                     } else {
-                        AttributedText(viewModel.attributedContent)
+                        AttributedText(viewModel.attributedContent.addingAttributes([.font: contentFont]))
                             .attributedTextLinkColor(Color(.accent))
                     }
 
@@ -46,7 +51,7 @@ struct InboxNoteRow: View {
                                     }
                                     viewModel.markInboxNoteAsActioned(actionID: action.id)
                                 }
-                                .buttonStyle(SecondaryButtonStyle())
+                                .buttonStyle(SecondaryButtonStyle(labelFont: Font(contentFont)))
                                 .frame(minWidth: Constants.minWidthSurveyButton)
                                 .fixedSize(horizontal: true, vertical: true)
                                 .renderedIf(!surveyCompleted &&  !viewModel.isActioned)
@@ -57,10 +62,11 @@ struct InboxNoteRow: View {
                                     viewModel.markInboxNoteAsActioned(actionID: action.id)
                                 }
                                 .foregroundColor(Color(.accent))
-                                .font(.body)
+                                .font(Font(contentFont))
                                 .buttonStyle(PlainButtonStyle())
                             } else {
                                 Text(action.title)
+                                    .font(Font(contentFont))
                             }
                         }
 
@@ -79,7 +85,7 @@ struct InboxNoteRow: View {
                                 }
                             }
                             .foregroundColor(Color(.withColorStudio(.gray, shade: .shade30)))
-                            .font(.body)
+                            .font(Font(contentFont))
                             .buttonStyle(PlainButtonStyle())
                             .renderedIf(!surveyCompleted || (viewModel.isSurvey && !viewModel.isActioned))
                         }
@@ -94,6 +100,7 @@ struct InboxNoteRow: View {
 
             Divider()
                 .frame(height: Constants.dividerHeight)
+                .padding(dividerPadding)
         }
     }
 
@@ -144,7 +151,6 @@ private extension InboxNoteRow {
     enum Constants {
         static let spacingBetweenActions: CGFloat = 16
         static let spacingBetweenTopViewAndContentVStack: CGFloat = 8
-        static let verticalSpacing: CGFloat = 14
         static let defaultPadding: CGFloat = 16
         static let dividerHeight: CGFloat = 1
         static let dateTextColor: UIColor = .withColorStudio(.gray, shade: .shade30)

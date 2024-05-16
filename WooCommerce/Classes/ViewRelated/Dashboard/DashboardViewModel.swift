@@ -156,6 +156,10 @@ final class DashboardViewModel: ObservableObject {
                 await self?.topPerformersViewModel.reloadData()
             }
             if featureFlagService.isFeatureFlagEnabled(.dynamicDashboardM2) {
+                // TODO: optimize reloading to sync inbox only when the card is enabled.
+                group.addTask { [weak self] in
+                    await self?.inboxViewModel.reloadData()
+                }
                 group.addTask { [weak self] in
                     await self?.mostActiveCouponsViewModel.reloadData()
                 }

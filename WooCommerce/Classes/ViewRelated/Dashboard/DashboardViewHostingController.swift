@@ -41,6 +41,7 @@ final class DashboardViewHostingController: UIHostingController<DashboardView> {
         configureBlazeSection()
         configureJetpackBenefitBanner()
         configureStorePerformanceView()
+        configureInboxCard()
         configureMostActiveCouponsView()
     }
 
@@ -118,6 +119,15 @@ private extension DashboardViewHostingController {
                                                                    timeRange: timeRange,
                                                                    usageTracksEventEmitter: usageTracksEventEmitter)
             show(analyticsHubVC, sender: self)
+        }
+    }
+
+    func configureInboxCard() {
+        rootView.onShowAllInboxMessages = { [weak self] in
+            guard let self else { return }
+            let inboxViewModel = InboxViewModel(siteID: viewModel.siteID)
+            let hostingController = UIHostingController(rootView: Inbox(viewModel: inboxViewModel))
+            show(hostingController, sender: self)
         }
     }
 }
@@ -215,9 +225,9 @@ private extension DashboardViewHostingController {
 // MARK: Most active coupons
 private extension DashboardViewHostingController {
     func configureMostActiveCouponsView() {
-        rootView.onViewAllCoupons = { [weak self] siteID in
+        rootView.onViewAllCoupons = { [weak self] in
             guard let self else { return }
-            let couponsVC = EnhancedCouponListViewController(siteID: siteID)
+            let couponsVC = EnhancedCouponListViewController(siteID: viewModel.siteID)
             show(couponsVC, sender: self)
         }
 

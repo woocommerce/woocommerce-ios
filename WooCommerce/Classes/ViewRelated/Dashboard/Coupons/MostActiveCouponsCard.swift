@@ -6,11 +6,11 @@ import Yosemite
 struct MostActiveCouponsCard: View {
     @ObservedObject private var viewModel: MostActiveCouponsCardViewModel
     @State private var showingCustomRangePicker = false
-    private let onViewAllCoupons: (_ siteID: Int64) -> Void
+    private let onViewAllCoupons: () -> Void
     private let onViewCouponDetail: (_ coupon: Coupon) -> Void
 
     init(viewModel: MostActiveCouponsCardViewModel,
-         onViewAllCoupons: @escaping (_ siteID: Int64) -> Void,
+         onViewAllCoupons: @escaping () -> Void,
          onViewCouponDetail: @escaping (_ coupon: Coupon) -> Void) {
         self.viewModel = viewModel
         self.onViewAllCoupons = onViewAllCoupons
@@ -148,7 +148,7 @@ private extension MostActiveCouponsCard {
 
     var viewAllCouponsButton: some View {
         Button {
-            onViewAllCoupons(viewModel.siteID)
+            onViewAllCoupons()
         } label: {
             HStack {
                 Text(Localization.viewAll)
@@ -233,6 +233,6 @@ private extension MostActiveCouponsCard {
 
 #Preview {
     MostActiveCouponsCard(viewModel: .init(siteID: 123),
-                          onViewAllCoupons: { _ in },
+                          onViewAllCoupons: {},
                           onViewCouponDetail: { _ in })
 }

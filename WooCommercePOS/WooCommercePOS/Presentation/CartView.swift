@@ -10,6 +10,9 @@ struct CartView: View {
     var body: some View {
         VStack {
             Text("Cart")
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.horizontal, 32)
+                .padding(.vertical, 8)
                 .font(.title)
                 .foregroundColor(Color.white)
             ForEach(viewModel.productsInCart, id: \.product.productID) { cartProduct in

@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct PlusButtonStyle: ButtonStyle {
+struct POSPlusButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         return IconButton(configuration: configuration,
                           icon: Image(systemName: "plus.circle"))

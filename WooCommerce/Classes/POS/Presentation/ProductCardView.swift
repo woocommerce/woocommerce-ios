@@ -1,10 +1,10 @@
 import SwiftUI
 
 struct ProductCardView: View {
-    private let product: Product
+    private let product: POSProduct
     private let onProductCardTapped: (() -> Void)?
 
-    init(product: Product, onProductCardTapped: (() -> Void)? = nil) {
+    init(product: POSProduct, onProductCardTapped: (() -> Void)? = nil) {
         self.product = product
         self.onProductCardTapped = onProductCardTapped
     }
@@ -22,7 +22,7 @@ struct ProductCardView: View {
                     Button(action: {
                         onProductCardTapped?()
                     }, label: { })
-                    .buttonStyle(PlusButtonStyle())
+                    .buttonStyle(POSPlusButtonStyle())
                     .frame(width: 50, height: 50)
                 }
             }
@@ -32,5 +32,5 @@ struct ProductCardView: View {
 }
 
 #Preview {
-    ProductCardView(product: ProductFactory.makeProduct())
+    ProductCardView(product: POSProductFactory.makeProduct())
 }

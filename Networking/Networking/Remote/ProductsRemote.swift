@@ -53,7 +53,7 @@ public protocol ProductsRemoteProtocol {
     func loadStock(for siteID: Int64,
                    with stockStatus: ProductStockStatus,
                    pageNumber: Int,
-                   pageSize: Int, 
+                   pageSize: Int,
                    orderBy: ProductsRemote.OrderKey,
                    order: ProductsRemote.Order) async throws -> [ProductStock]
 }
@@ -427,7 +427,12 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
             ParameterKey.order: order,
             ParameterKey.orderBy: orderBy
         ]
-        let request = JetpackRequest(wooApiVersion: .wcAnalytics, method: .get, siteID: siteID, path: path, availableAsRESTRequest: true)
+        let request = JetpackRequest(wooApiVersion: .wcAnalytics,
+                                     method: .get,
+                                     siteID: siteID,
+                                     path: path,
+                                     parameters: parameters,
+                                     availableAsRESTRequest: true)
         let mapper = ProductStockListMapper(siteID: siteID)
         return try await enqueue(request, mapper: mapper)
     }

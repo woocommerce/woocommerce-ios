@@ -20,6 +20,7 @@ final class ReviewsDashboardCardViewModel: ObservableObject {
     }
 
     @Published private(set) var data: [ReviewViewModel] = []
+    private var reviewProducts: [Product] = []
     @Published private(set) var syncingData = false
     @Published private(set) var syncingError: Error?
 
@@ -39,18 +40,23 @@ final class ReviewsDashboardCardViewModel: ObservableObject {
         self.storageManager = storageManager
         self.analytics = analytics
 
-        configureResultsController()
+        configureResultsControllers()
     }
 
-    /// Reviews ResultsController
-    private lazy var resultsController: ResultsController<StorageProductReview> = {
+    /// ResultsController for ProductReview
+    private lazy var productReviewsResultsController: ResultsController<StorageProductReview> = {
         let predicate = NSPredicate(format: "siteID == %lld", siteID)
         let sortDescriptor = NSSortDescriptor(keyPath: \StorageProductReview.dateCreated, ascending: false)
-        let resultsController = ResultsController<StorageProductReview>(storageManager: storageManager,
+        return ResultsController<StorageProductReview>(storageManager: storageManager,
                                                                         matching: predicate,
                                                                         fetchLimit: Constants.numberOfItems,
                                                                         sortedBy: [sortDescriptor])
-        return resultsController
+    }()
+
+    /// ResultsController for Product
+    private lazy var productsResultsController: ResultsController<StorageProduct> = {
+        let predicate = NSPredicate(format: "siteID == %lld", siteID)
+        return ResultsController<StorageProduct>(storageManager: storageManager, matching: predicate, sortedBy: [])
     }()
 
     func dismissReviews() {
@@ -85,27 +91,94 @@ private extension ReviewsDashboardCardViewModel {
         }
     }
 
+    @MainActor
+    func retrieveProducts(for reviewProductIDs: [Int64]) async throws -> (products: [Product], hasNextPage: Bool) {
+        try await withCheckedThrowingContinuation { continuation in
+            stores.dispatch(ProductAction.retrieveProducts(siteID: siteID,
+                                                           productIDs: reviewProductIDs
+                                                          ) { result in
+                continuation.resume(with: result)
+            })
+        }
+    }
 
     /// Performs initial fetch from storage and updates results.
-    func configureResultsController() {
-        resultsController.onDidChangeContent = { [weak self] in
-            self?.updateResults()
+    func configureResultsControllers() {
+        configureProductReviewsResultsController()
+        configureProductsResultsController()
+    }
+
+    func configureProductReviewsResultsController() {
+        productReviewsResultsController.onDidChangeContent = { [weak self] in
+            guard let self else { return }
+            Task {
+                await self.updateReviewsResults()
+            }
         }
-        resultsController.onDidResetContent = { [weak self] in
-            self?.updateResults()
+        productReviewsResultsController.onDidResetContent = { [weak self] in
+            guard let self else { return }
+            Task {
+                await self.updateReviewsResults()
+            }
         }
 
         do {
-            try resultsController.performFetch()
+            try productReviewsResultsController.performFetch()
+        } catch {
+            ServiceLocator.crashLogging.logError(error)
+        }
+    }
+
+    func configureProductsResultsController() {
+        productsResultsController.onDidChangeContent = { [weak self] in
+            self?.updateProductsResults()
+        }
+        productsResultsController.onDidResetContent = { [weak self] in
+            self?.updateProductsResults()
+        }
+
+        do {
+            try productsResultsController.performFetch()
         } catch {
             ServiceLocator.crashLogging.logError(error)
         }
     }
 
     /// Updates data
-    func updateResults() {
-        data = resultsController.fetchedObjects
-            .map { ReviewViewModel(review: $0, product: nil, notification: nil) } // TODO: also fetch product and notification
+    @MainActor
+    func updateReviewsResults() async {
+        let reviews = productReviewsResultsController.fetchedObjects
+        let reviewProductIDs = reviews.map { $0.productID }
+
+        // Load products that matches the review product IDs
+        if reviewProductIDs.isNotEmpty {
+            await loadReviewProducts(for: reviewProductIDs)
+        }
+
+        data = reviews
+            .map { review in
+                let product = reviewProducts.first { $0.productID == review.productID }
+                // TODO: also fetch notification
+                return ReviewViewModel(review: review, product: product, notification: nil)
+            }
+    }
+
+    func updateProductsResults() {
+        reviewProducts = productsResultsController.fetchedObjects
+    }
+
+    @MainActor
+    func loadReviewProducts(for reviewProductIDs: [Int64]) async {
+        syncingData = true
+        syncingError = nil
+
+        do {
+            // Ignoring the result from remote as we're using storage as the single source of truth
+            _ = try await retrieveProducts(for: reviewProductIDs)
+        } catch {
+            syncingError = error
+        }
+        syncingData = false
     }
 }
 

@@ -3,7 +3,8 @@ import Yosemite
 import Experiments
 import WooFoundation
 
-final class InPersonPaymentsViewModel: ObservableObject, PaymentSettingsFlowPresentedViewModel {
+final class InPersonPaymentsViewModel: ObservableObject, PaymentSettingsFlowPresentedViewModel, Identifiable {
+    let id = UUID()
     @Published var state: CardPresentPaymentOnboardingState
     var userIsAdministrator: Bool
     var learnMoreURL: URL? = nil

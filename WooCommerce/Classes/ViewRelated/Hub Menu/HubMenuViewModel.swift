@@ -97,6 +97,10 @@ final class HubMenuViewModel: ObservableObject {
             navigationPath: navigationPathBinding)
     }()
 
+    lazy var pointOfSalePaymentsTestViewModel: PointOfSalePaymentsTestViewModel = {
+        PointOfSalePaymentsTestViewModel(siteID: siteID)
+    }()
+
     init(siteID: Int64,
          tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,

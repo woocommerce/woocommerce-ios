@@ -1,6 +1,5 @@
 import Foundation
 import Yosemite
-import protocol Storage.StorageManagerType
 import protocol WooFoundation.Analytics
 
 /// View model for `MostActiveCouponsCard`.
@@ -18,18 +17,15 @@ final class MostActiveCouponsCardViewModel: ObservableObject {
     let siteID: Int64
     let siteTimezone: TimeZone
     private let stores: StoresManager
-    private let storage: StorageManagerType
     private let analytics: Analytics
 
     init(siteID: Int64,
          siteTimezone: TimeZone = .siteTimezone,
          stores: StoresManager = ServiceLocator.stores,
-         storage: StorageManagerType = ServiceLocator.storageManager,
          analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
         self.siteTimezone = siteTimezone
         self.stores = stores
-        self.storage = storage
         self.analytics = analytics
 
         $timeRange
@@ -120,87 +116,25 @@ private extension MostActiveCouponsCardViewModel {
 
     @MainActor
     func loadCouponDetails(for reports: [CouponReport]) async throws -> [Coupon] {
-        try await Task.sleep(nanoseconds: 1_000_000_000)
-        return [Coupon(siteID: siteID,
-                       couponID: 123,
-                       code: "WELCOMETOTHECLUB",
-                       amount: "20",
-                       dateCreated: Date(),
-                       dateModified: Date(),
-                       discountType: .percent,
-                       description: "TEST",
-                       dateExpires: nil,
-                       usageCount: 5612,
-                       individualUse: true,
-                       productIds: [],
-                       excludedProductIds: [],
-                       usageLimit: nil,
-                       usageLimitPerUser: nil,
-                       limitUsageToXItems: nil,
-                       freeShipping: true,
-                       productCategories: [],
-                       excludedProductCategories: [],
-                       excludeSaleItems: false,
-                       minimumAmount: "1",
-                       maximumAmount: "32",
-                       emailRestrictions: [],
-                       usedBy: []),
-                Coupon(siteID: siteID,
-                       couponID: 212,
-                       code: "20OFF",
-                       amount: "20",
-                       dateCreated: Date(),
-                       dateModified: Date(),
-                       discountType: .fixedCart,
-                       description: "ERAFFF",
-                       dateExpires: nil,
-                       usageCount: 671,
-                       individualUse: true,
-                       productIds: [],
-                       excludedProductIds: [3, 4, 32, 43, 1],
-                       usageLimit: nil,
-                       usageLimitPerUser: nil,
-                       limitUsageToXItems: nil,
-                       freeShipping: true,
-                       productCategories: [],
-                       excludedProductCategories: [],
-                       excludeSaleItems: false,
-                       minimumAmount: "1",
-                       maximumAmount: "32",
-                       emailRestrictions: [],
-                       usedBy: []),
-                Coupon(siteID: siteID,
-                       couponID: 122,
-                       code: "tunamelt",
-                       amount: "100",
-                       dateCreated: Date(),
-                       dateModified: Date(),
-                       discountType: .percent,
-                       description: "UNKEMK",
-                       dateExpires: nil,
-                       usageCount: 304,
-                       individualUse: true,
-                       productIds: [1, 4, 2],
-                       excludedProductIds: [],
-                       usageLimit: nil,
-                       usageLimitPerUser: nil,
-                       limitUsageToXItems: nil,
-                       freeShipping: true,
-                       productCategories: [],
-                       excludedProductCategories: [],
-                       excludeSaleItems: false,
-                       minimumAmount: "1",
-                       maximumAmount: "32",
-                       emailRestrictions: [],
-                       usedBy: [])]
+        guard reports.isNotEmpty else {
+            return []
+        }
+        let couponIDs = reports.map({ $0.couponID })
+        return try await withCheckedThrowingContinuation { continuation in
+            stores.dispatch(CouponAction.loadCoupons(siteID: siteID,
+                                                     couponIDs: couponIDs) { result in
+                continuation.resume(with: result)
+            })
+        }
     }
 
     @MainActor
     func mostActiveCoupons() async throws -> [CouponReport] {
-        try await Task.sleep(nanoseconds: 1_000_000_000)
-        return [CouponReport(couponID: 123, amount: 546, ordersCount: 54),
-                CouponReport(couponID: 122, amount: 784, ordersCount: 23),
-                CouponReport(couponID: 212, amount: 112, ordersCount: 10)]
+        try await withCheckedThrowingContinuation { continuation in
+            stores.dispatch(CouponAction.loadMostActiveCoupons(siteID: siteID, timeRange: timeRange, siteTimezone: siteTimezone) { result in
+                continuation.resume(with: result)
+            })
+        }
     }
 }
 

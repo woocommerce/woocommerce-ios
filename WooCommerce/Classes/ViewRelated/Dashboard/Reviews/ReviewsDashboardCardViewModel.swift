@@ -19,7 +19,7 @@ final class ReviewsDashboardCardViewModel: ObservableObject {
         case approved
     }
 
-    @Published private(set) var data: [ProductReview] = []
+    @Published private(set) var data: [ReviewViewModel] = []
     @Published private(set) var syncingData = false
     @Published private(set) var syncingError: Error?
 
@@ -105,6 +105,7 @@ private extension ReviewsDashboardCardViewModel {
     /// Updates data
     func updateResults() {
         data = resultsController.fetchedObjects
+            .map { ReviewViewModel(review: $0, product: nil, notification: nil) } // TODO: also fetch product and notification
     }
 }
 

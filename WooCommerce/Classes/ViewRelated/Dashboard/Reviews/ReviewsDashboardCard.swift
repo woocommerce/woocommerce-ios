@@ -42,8 +42,8 @@ struct ReviewsDashboardCard: View {
             Divider()
 
             if viewModel.data.isNotEmpty {
-                ForEach(Array(viewModel.data.enumerated()), id: \.element.reviewID) { index, review in
-                    ReviewRow(for: review, isLastItem: index == dummyData.count-1)
+                ForEach(Array(viewModel.data.enumerated()), id: \.element.review.reviewID) { index, reviewViewModel in
+                    ReviewRow(for: reviewViewModel, isLastItem: index == dummyData.count-1)
                 }
             }
             Divider()
@@ -113,30 +113,35 @@ private extension ReviewsDashboardCard {
         }
     }
 
-    func ReviewRow(for review: ProductReview, isLastItem: Bool) -> some View {
+    func ReviewRow(for reviewViewModel: ReviewViewModel, isLastItem: Bool) -> some View {
         HStack(alignment: .top, spacing: 0) {
             Image(systemName: "bubble.fill")
-                .foregroundStyle(review.status == .hold ? Color.secondary : Color(.wooCommercePurple(.shade60)))
+                .foregroundStyle(reviewViewModel.review.status == .hold ? Color.secondary : Color(.wooCommercePurple(.shade60)))
                 .padding(.horizontal, Layout.padding)
                 .padding(.vertical, Layout.cardPadding)
 
 
             VStack(alignment: .leading) {
-                // TODO: use actual product name
-                authorText(author: review.reviewer, productName: "Fallen Angel Candelabra")
-                    .bodyStyle()
-                    .padding(.trailing, Layout.padding)
-                reviewText(text: formatHTMLText(for: review.review),
-                           shouldDisplayStatus: review.status == .hold)
-                    .lineLimit(2)
-                    .subheadlineStyle()
-                    .padding(.trailing, Layout.padding)
-                    .renderedIf(review.review.isNotEmpty)
-                HStack(spacing: Layout.starRatingSpacing) {
-                    ForEach(0..<abs(review.rating), id: \.self) { _ in
-                        Image(systemName: "star.fill")
-                            .resizable()
-                            .frame(width: Constants.starSize * scale, height: Constants.starSize * scale)
+                if let subject = reviewViewModel.subject {
+                    Text(subject)
+                        .bodyStyle()
+                        .padding(.trailing, Layout.padding)
+                }
+
+                if let snippet = reviewViewModel.snippet {
+                    Text(snippet.string)
+                        .lineLimit(2)
+                        .subheadlineStyle()
+                        .padding(.trailing, Layout.padding)
+                }
+
+                if reviewViewModel.review.rating > 0 {
+                    HStack(spacing: Layout.starRatingSpacing) {
+                        ForEach(0..<reviewViewModel.review.rating, id: \.self) { _ in
+                            Image(systemName: "star.fill")
+                                .resizable()
+                                .frame(width: Constants.starSize * scale, height: Constants.starSize * scale)
+                        }
                     }
                 }
 
@@ -144,27 +149,6 @@ private extension ReviewsDashboardCard {
                     .padding(.vertical, Layout.dividerSpacing)
                     .renderedIf(!isLastItem)
             }
-        }
-    }
-
-    func formatHTMLText(for htmlText: String) -> String {
-        return NSAttributedString(string: htmlText.strippedHTML).trimNewlines().string
-    }
-
-    func authorText(author: String, productName: String) -> some View {
-        if author.isNotEmpty {
-            return Text(String.localizedStringWithFormat(Localization.completeAuthorText, author, productName))
-        } else {
-            return Text(String.localizedStringWithFormat(Localization.incompleteAuthorText, productName))
-        }
-    }
-
-    func reviewText(text: String, shouldDisplayStatus: Bool) -> some View {
-        if shouldDisplayStatus {
-            return Text(Localization.pendingReview).foregroundColor(Color(uiColor: .wooOrange)) +
-                Text(" • " + text)
-        } else {
-            return Text(text)
         }
     }
 

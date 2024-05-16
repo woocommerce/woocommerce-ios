@@ -4,9 +4,13 @@ struct PointOfSaleDashboardView: View {
     @Environment(\.presentationMode) var presentationMode
 
     @ObservedObject private var viewModel: PointOfSaleDashboardViewModel
+    @ObservedObject private var historyViewModel: PointOfSaleHistoryViewModel
 
-    init(viewModel: PointOfSaleDashboardViewModel) {
+    @State private var showHistory: Bool = false
+
+    init(viewModel: PointOfSaleDashboardViewModel, historyViewModel: PointOfSaleHistoryViewModel) {
         self.viewModel = viewModel
+        self.historyViewModel = historyViewModel
     }
 
     var body: some View {
@@ -37,18 +41,22 @@ struct PointOfSaleDashboardView: View {
                 }
             })
             ToolbarItem(placement: .primaryAction, content: {
-                Button("History") {
-                    debugPrint("Not implemented")
+                Button(historyViewModel.items.isEmpty ? "History" : "History (\(historyViewModel.items.count))") {
+                    showHistory = true
                 }
             })
         }
         .sheet(isPresented: $viewModel.showsCardReaderSheet, content: {
             CardReaderConnectionView(viewModel: viewModel.cardReaderConnectionViewModel)
         })
+        .sheet(isPresented: $showHistory) {
+            PointOfSaleHistoryView(viewModel: historyViewModel)
+        }
     }
 }
 
 #Preview {
     PointOfSaleDashboardView(viewModel: PointOfSaleDashboardViewModel(products: POSProductFactory.makeFakeProducts(),
-                                                                      cardReaderConnectionViewModel: .init(state: .connectingToReader)))
+                                                                      cardReaderConnectionViewModel: .init(state: .connectingToReader)),
+                             historyViewModel: PointOfSaleHistoryViewModel(items: []))
 }

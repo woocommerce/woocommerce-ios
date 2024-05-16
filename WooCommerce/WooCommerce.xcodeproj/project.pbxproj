@@ -2232,6 +2232,9 @@
 		D8EE9698264D3CCB0033B2F9 /* LegacyReceiptViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8EE9697264D3CCB0033B2F9 /* LegacyReceiptViewModel.swift */; };
 		D8F01DD325DEDC1C00CE70BE /* StripeCardReaderIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F01DD225DEDC1C00CE70BE /* StripeCardReaderIntegrationTests.swift */; };
 		D8F82AC522AF903700B67E4B /* IconsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F82AC422AF903700B67E4B /* IconsTests.swift */; };
+		DAE11FA42BF5F0A400AAE72F /* POSHistoryItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAE11FA32BF5F0A400AAE72F /* POSHistoryItem.swift */; };
+		DAE11FA62BF5F0D100AAE72F /* PointOfSaleHistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAE11FA52BF5F0D100AAE72F /* PointOfSaleHistoryView.swift */; };
+		DAE11FA82BF5F16000AAE72F /* PointOfSaleHistoryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAE11FA72BF5F16000AAE72F /* PointOfSaleHistoryViewModel.swift */; };
 		DE001323279A793A00EB0350 /* CouponWooTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE001322279A793A00EB0350 /* CouponWooTests.swift */; };
 		DE0134152A2EED52000A6F54 /* ProductSharingMessageGenerationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE0134142A2EED52000A6F54 /* ProductSharingMessageGenerationView.swift */; };
 		DE0134172A30364B000A6F54 /* ProductSharingMessageGenerationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE0134162A30364B000A6F54 /* ProductSharingMessageGenerationViewModel.swift */; };
@@ -5012,6 +5015,9 @@
 		D8F82AC422AF903700B67E4B /* IconsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = IconsTests.swift; path = WooCommerceTests/Extensions/IconsTests.swift; sourceTree = SOURCE_ROOT; };
 		D8FBFF1622D4CC2F006E3336 /* docs */ = {isa = PBXFileReference; lastKnownFileType = folder; name = docs; path = ../docs; sourceTree = "<group>"; };
 		DA1AE99A10B90748C7676E95 /* Pods-StoreWidgetsExtension.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StoreWidgetsExtension.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-StoreWidgetsExtension/Pods-StoreWidgetsExtension.debug.xcconfig"; sourceTree = "<group>"; };
+		DAE11FA32BF5F0A400AAE72F /* POSHistoryItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSHistoryItem.swift; sourceTree = "<group>"; };
+		DAE11FA52BF5F0D100AAE72F /* PointOfSaleHistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleHistoryView.swift; sourceTree = "<group>"; };
+		DAE11FA72BF5F16000AAE72F /* PointOfSaleHistoryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleHistoryViewModel.swift; sourceTree = "<group>"; };
 		DE001322279A793A00EB0350 /* CouponWooTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponWooTests.swift; sourceTree = "<group>"; };
 		DE0134142A2EED52000A6F54 /* ProductSharingMessageGenerationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductSharingMessageGenerationView.swift; sourceTree = "<group>"; };
 		DE0134162A30364B000A6F54 /* ProductSharingMessageGenerationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductSharingMessageGenerationViewModel.swift; sourceTree = "<group>"; };
@@ -6241,6 +6247,7 @@
 			isa = PBXGroup;
 			children = (
 				026826922BF59D830036F959 /* PointOfSaleDashboardViewModel.swift */,
+				DAE11FA72BF5F16000AAE72F /* PointOfSaleHistoryViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -6266,6 +6273,7 @@
 			isa = PBXGroup;
 			children = (
 				0268269E2BF59DE10036F959 /* POSProduct.swift */,
+				DAE11FA32BF5F0A400AAE72F /* POSHistoryItem.swift */,
 				0268269D2BF59DE10036F959 /* CartProduct.swift */,
 			);
 			path = Models;
@@ -6277,6 +6285,7 @@
 				026826B02BF59E170036F959 /* CardReaderConnection */,
 				026826A72BF59DF70036F959 /* PointOfSaleEntryPointView.swift */,
 				026826A52BF59DF60036F959 /* PointOfSaleDashboardView.swift */,
+				DAE11FA52BF5F0D100AAE72F /* PointOfSaleHistoryView.swift */,
 				026826A82BF59DF70036F959 /* ProductGridView.swift */,
 				026826A32BF59DF60036F959 /* CartView.swift */,
 				026826A22BF59DF60036F959 /* ProductRowView.swift */,
@@ -14061,6 +14070,7 @@
 				311D21ED264AF0E700102316 /* CardReaderSettingsAlerts.swift in Sources */,
 				867EA0AF2B8F15740064BCA7 /* CustomerFilter+Analytics.swift in Sources */,
 				02C0CD2A23B5BB1C00F880B1 /* ImageService.swift in Sources */,
+				DAE11FA82BF5F16000AAE72F /* PointOfSaleHistoryViewModel.swift in Sources */,
 				26ABCE532518EAF300721CB0 /* IssueRefundTableViewCell.swift in Sources */,
 				0304E35E28BDC86D00A80191 /* LearnMoreViewModel.swift in Sources */,
 				02DF980B2A15FD920009E2EA /* StoreCreationStatusChecker.swift in Sources */,
@@ -14328,6 +14338,7 @@
 				DE36E0982A8634FF00B98496 /* StoreNameSetupView.swift in Sources */,
 				2688641B25D3202B00821BA5 /* EditAttributesViewController.swift in Sources */,
 				7E6A01972725B811001668D5 /* FilterProductCategoryListViewController.swift in Sources */,
+				DAE11FA62BF5F0D100AAE72F /* PointOfSaleHistoryView.swift in Sources */,
 				E10DFC7A2673595A0083AFF2 /* ShareSheet.swift in Sources */,
 				03EF250628C75838006A033E /* PurchaseCardReaderWebViewViewModel.swift in Sources */,
 				027CB043295D7B6B00F98F7C /* StoreCreationCountryQuestionView.swift in Sources */,
@@ -14579,6 +14590,7 @@
 				209AD3D02AC1EDDA00825D76 /* WooPaymentsDepositsCurrencyOverviewViewModel.swift in Sources */,
 				AE3AA88B290C30B900BE422D /* WebViewControllerConfiguration.swift in Sources */,
 				26E1BECA251BE5390096D0A1 /* RefundItemTableViewCell.swift in Sources */,
+				DAE11FA42BF5F0A400AAE72F /* POSHistoryItem.swift in Sources */,
 				DE7B479527A38B8F0018742E /* CouponDetailsViewModel.swift in Sources */,
 				E16058F9285876E600E471D4 /* LeftImageTitleSubtitleTableViewCell.swift in Sources */,
 				03E471C2293A1F6B001A58AD /* BluetoothReaderConnectionAlertsProvider.swift in Sources */,

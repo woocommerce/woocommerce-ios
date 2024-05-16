@@ -10,6 +10,11 @@ public struct PointOfSaleEntryPointView: View {
         return viewModel
     }()
 
+    private let historyViewModel: PointOfSaleHistoryViewModel = PointOfSaleHistoryViewModel(items: [
+        HistoryItem(createdAt: Date()),
+        HistoryItem(createdAt: Date() - 1000)
+    ])
+
     private let hideAppTabBar: ((Bool) -> Void)
 
     // Necessary to expose the View's entry point to WooCommerce
@@ -20,7 +25,7 @@ public struct PointOfSaleEntryPointView: View {
     }
 
     public var body: some View {
-        PointOfSaleDashboardView(viewModel: viewModel)
+        PointOfSaleDashboardView(viewModel: viewModel, historyViewModel: historyViewModel)
             .onAppear {
                 hideAppTabBar(true)
             }

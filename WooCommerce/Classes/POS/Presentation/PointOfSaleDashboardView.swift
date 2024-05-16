@@ -3,10 +3,10 @@ import SwiftUI
 struct PointOfSaleDashboardView: View {
     @Environment(\.presentationMode) var presentationMode
 
-    @ObservedObject private var viewModel: PointOfSaleDashboardViewModel
+    @StateObject private var viewModel: PointOfSaleDashboardViewModel
 
     init(viewModel: PointOfSaleDashboardViewModel) {
-        self.viewModel = viewModel
+        self._viewModel = .init(wrappedValue: viewModel)
     }
 
     var body: some View {

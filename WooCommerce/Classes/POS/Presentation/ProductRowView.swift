@@ -28,6 +28,6 @@ struct ProductRowView: View {
 
 #Preview {
     ProductRowView(cartProduct: CartProduct(id: UUID(),
-                                            product: ProductFactory.makeProduct(),
+                                            product: POSProductFactory.makeProduct(),
                                             quantity: 2))
 }

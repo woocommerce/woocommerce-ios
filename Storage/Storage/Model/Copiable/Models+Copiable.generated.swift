@@ -112,7 +112,8 @@ extension Storage.GeneralStoreSettings {
         analyticsHubCards: NullableCopiableProp<[AnalyticsCard]> = .copy,
         dashboardCards: NullableCopiableProp<[DashboardCard]> = .copy,
         lastSelectedPerformanceTimeRange: CopiableProp<String> = .copy,
-        lastSelectedTopPerformersTimeRange: CopiableProp<String> = .copy
+        lastSelectedTopPerformersTimeRange: CopiableProp<String> = .copy,
+        lastSelectedMostActiveCouponsTimeRange: CopiableProp<String> = .copy
     ) -> Storage.GeneralStoreSettings {
         let storeID = storeID ?? self.storeID
         let isTelemetryAvailable = isTelemetryAvailable ?? self.isTelemetryAvailable
@@ -128,6 +129,7 @@ extension Storage.GeneralStoreSettings {
         let dashboardCards = dashboardCards ?? self.dashboardCards
         let lastSelectedPerformanceTimeRange = lastSelectedPerformanceTimeRange ?? self.lastSelectedPerformanceTimeRange
         let lastSelectedTopPerformersTimeRange = lastSelectedTopPerformersTimeRange ?? self.lastSelectedTopPerformersTimeRange
+        let lastSelectedMostActiveCouponsTimeRange = lastSelectedMostActiveCouponsTimeRange ?? self.lastSelectedMostActiveCouponsTimeRange
 
         return Storage.GeneralStoreSettings(
             storeID: storeID,
@@ -143,7 +145,8 @@ extension Storage.GeneralStoreSettings {
             analyticsHubCards: analyticsHubCards,
             dashboardCards: dashboardCards,
             lastSelectedPerformanceTimeRange: lastSelectedPerformanceTimeRange,
-            lastSelectedTopPerformersTimeRange: lastSelectedTopPerformersTimeRange
+            lastSelectedTopPerformersTimeRange: lastSelectedTopPerformersTimeRange,
+            lastSelectedMostActiveCouponsTimeRange: lastSelectedMostActiveCouponsTimeRange
         )
     }
 }

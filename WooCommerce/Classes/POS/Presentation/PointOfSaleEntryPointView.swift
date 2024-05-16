@@ -4,8 +4,8 @@ public struct PointOfSaleEntryPointView: View {
     // TODO:
     // Temporary. DI proper product models once we have a data layer
     private let viewModel: PointOfSaleDashboardViewModel = {
-        let products = ProductFactory.makeFakeProducts()
-        let viewModel = PointOfSaleDashboardViewModel(products: products)
+        let products = POSProductFactory.makeFakeProducts()
+        let viewModel = PointOfSaleDashboardViewModel(products: products, cardReaderConnectionViewModel: .init(state: .scanningForReader(cancel: {})))
 
         return viewModel
     }()

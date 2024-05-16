@@ -78,9 +78,13 @@ struct ApplicationPasswordTutorial: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding([.horizontal, .top])
 
-                Image(uiImage: .appPasswordTutorialImage)
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
+                HStack(spacing: .zero) {
+                    Image(uiImage: .appPasswordTutorialImage)
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(maxWidth: Layout.imageMaxWidth)
+                    Spacer()
+                }
 
                 Text(Localization.tutorial2)
                     .bodyStyle(opacity: 0.8)
@@ -142,6 +146,7 @@ private extension ApplicationPasswordTutorial {
 
     enum Layout {
         static let bottomButtonsSpacing: CGFloat = 16.0
+        static let imageMaxWidth: CGFloat = 400
     }
 }
 

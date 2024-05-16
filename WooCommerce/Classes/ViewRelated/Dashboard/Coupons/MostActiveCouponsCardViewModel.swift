@@ -49,7 +49,7 @@ final class MostActiveCouponsCardViewModel: ObservableObject {
     }
 
     func dismiss() {
-        // TODO: add tracking
+        analytics.track(event: .DynamicDashboard.hideCardTapped(type: .coupons))
         onDismiss?()
     }
 

@@ -125,14 +125,12 @@ private extension MostActiveCouponsCard {
     }
 
     var emptyView: some View {
-        HStack {
-            Spacer()
-
+        VStack(spacing: 0) {
             MostActiveCouponsEmptyView()
+                .frame(maxWidth: .infinity)
 
-            Spacer()
+            Divider()
         }
-        .padding(.horizontal, Layout.padding)
     }
 
     var timeRangeBar: some View {

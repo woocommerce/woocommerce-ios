@@ -2,12 +2,11 @@ import UIKit
 
 /// Abstracts configuration and contents of the modal screens presented
 /// during operations related to Card Present Payments
-protocol CardPresentPaymentsModalViewModel {
+typealias CardPresentPaymentsModalViewModel = CardPresentPaymentsModalContent & CardPresentPaymentsModalActions
+
+protocol CardPresentPaymentsModalContent {
     /// The number and distribution of text labels
     var textMode: PaymentsModalTextMode { get }
-
-    /// The number and distribution of action buttons
-    var actionsMode: PaymentsModalActionsMode { get }
 
     /// The title at the top of the modal view.
     var topTitle: String { get }
@@ -40,6 +39,11 @@ protocol CardPresentPaymentsModalViewModel {
 
     /// The accessibilityLabel to be provided to VoiceOver
     var accessibilityLabel: String? { get }
+}
+
+protocol CardPresentPaymentsModalActions {
+    /// The number and distribution of action buttons
+    var actionsMode: PaymentsModalActionsMode { get }
 
     /// Executes action associated to a tap in the view controller primary button
     /// - Parameter viewController: usually the view controller sending the tap
@@ -99,7 +103,7 @@ enum PaymentsModalActionsMode {
 
 }
 
-extension CardPresentPaymentsModalViewModel {
+extension CardPresentPaymentsModalContent {
     /// Default implementation for NSAttributedString auxiliary button title.
     /// If is not set directly by each Modal's ViewModel, it will default to nil
     var auxiliaryAttributedButtonTitle: NSAttributedString? {

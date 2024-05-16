@@ -43,12 +43,30 @@ struct PointOfSaleDashboardView: View {
             })
         }
         .sheet(isPresented: $viewModel.showsCardReaderSheet, content: {
-            CardReaderConnectionView(viewModel: viewModel.cardReaderConnectionViewModel)
+            NavigationView {
+                CardReaderSettingsFlowPresentingView(
+                    configuration: viewModel.dependencies.cardPresentPaymentsConfiguration,
+                    siteID: viewModel.dependencies.siteID)
+                .navigationBarItems(leading: Button(Localization.done, action: {
+                    viewModel.showsCardReaderSheet = false
+                }))
+            }
         })
+    }
+}
+
+private extension PointOfSaleDashboardView {
+    enum Localization {
+        static let done = NSLocalizedString(
+            "pos.cardReaderConnection.navigation.done.button.title",
+            value: "Done",
+            comment: "Title for a done button in the navigation bar in POS card reader connection flow.")
     }
 }
 
 #Preview {
     PointOfSaleDashboardView(viewModel: PointOfSaleDashboardViewModel(products: POSProductFactory.makeFakeProducts(),
-                                                                      cardReaderConnectionViewModel: .init(state: .connectingToReader)))
+                                                                      cardReaderConnectionViewModel: .init(state: .connectingToReader),
+                                                                      dependencies: .init(siteID: 1,
+                                                                                          cardPresentPaymentsConfiguration: .init(country: .US))))
 }

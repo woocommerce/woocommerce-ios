@@ -51,6 +51,8 @@ private extension CartView {
 #if DEBUG
 #Preview {
     CartView(viewModel: PointOfSaleDashboardViewModel(products: POSProductFactory.makeFakeProducts(),
-                                                      cardReaderConnectionViewModel: .init(state: .connectingToReader)))
+                                                      cardReaderConnectionViewModel: .init(state: .connectingToReader),
+                                                      dependencies: .init(siteID: 1,
+                                                                          cardPresentPaymentsConfiguration: .init(country: .US))))
 }
 #endif

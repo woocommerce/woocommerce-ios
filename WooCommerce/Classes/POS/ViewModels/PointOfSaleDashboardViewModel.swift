@@ -7,10 +7,14 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
     @Published var showsCardReaderSheet: Bool = false
     @ObservedObject private(set) var cardReaderConnectionViewModel: CardReaderConnectionViewModel
 
+    let dependencies: PointOfSaleDependencies
+
     init(products: [POSProduct],
-         cardReaderConnectionViewModel: CardReaderConnectionViewModel) {
+         cardReaderConnectionViewModel: CardReaderConnectionViewModel,
+         dependencies: PointOfSaleDependencies) {
         self.products = products
         self.cardReaderConnectionViewModel = cardReaderConnectionViewModel
+        self.dependencies = dependencies
     }
 
     // Creates a unique `CartProduct` from a `Product`, and adds it to the Cart

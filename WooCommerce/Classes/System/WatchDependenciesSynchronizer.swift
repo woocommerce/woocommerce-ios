@@ -32,13 +32,13 @@ final class WatchDependenciesSynchronizer: NSObject, WCSessionDelegate {
 
     /// Syncs credentials to the watch session.
     ///
-    func update(storeID: Int64?, credentials: Credentials?) {
+    func update(storeID: Int64?, storeName: String?, credentials: Credentials?) {
 
         let dependencies: WatchDependencies? = {
-            guard let storeID, let credentials else {
+            guard let storeID, let storeName, let credentials else {
                 return nil
             }
-            return .init(storeID: storeID, credentials: credentials)
+            return .init(storeID: storeID, storeName: storeName, credentials: credentials)
         }()
 
         // Enqueue dependencies if the session is not yet activated.
@@ -59,9 +59,9 @@ final class WatchDependenciesSynchronizer: NSObject, WCSessionDelegate {
         DDLogInfo("🔵 WatchSession activated \(activationState)")
 
         if case .queued(let watchDependencies) = queuedDependencies {
-            update(storeID: watchDependencies?.storeID, credentials: watchDependencies?.credentials)
+            update(storeID: watchDependencies?.storeID, storeName: watchDependencies?.storeName, credentials: watchDependencies?.credentials)
             self.queuedDependencies = .notQueued
-        } 
+        }
     }
 
     func sessionDidBecomeInactive(_ session: WCSession) {

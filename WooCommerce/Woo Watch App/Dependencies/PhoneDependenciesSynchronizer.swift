@@ -61,11 +61,12 @@ final class PhoneDependenciesSynchronizer: NSObject, ObservableObject, WCSession
               let type: String = userDefaults[.defaultCredentialsType],
               let siteAddress: String = userDefaults[.defaultSiteAddress],
               let storeID: Int64 = userDefaults[.defaultStoreID],
+              let storeName: String = userDefaults[.defaultStoreName],
               let credentials = Credentials(rawType: type, username: username, secret: secret, siteAddress: siteAddress) else {
             return nil
         }
 
-        return WatchDependencies(storeID: storeID, credentials: credentials)
+        return WatchDependencies(storeID: storeID, storeName: storeName, credentials: credentials)
     }
 
     /// Store dependencies from the app context
@@ -74,6 +75,7 @@ final class PhoneDependenciesSynchronizer: NSObject, ObservableObject, WCSession
     private func storeDependencies(appContext: [String: Any]) {
         let dependencies = WatchDependencies(dictionary: appContext)
         userDefaults[.defaultStoreID] = dependencies?.storeID
+        userDefaults[.defaultStoreName] = dependencies?.storeName
         userDefaults[.defaultUsername] = dependencies?.credentials.username
         userDefaults[.defaultCredentialsType] = dependencies?.credentials.rawType
         userDefaults[.defaultSiteAddress] = dependencies?.credentials.siteAddress

@@ -70,11 +70,11 @@ final class SessionManager: SessionManagerProtocol {
             removeCredentials()
 
             guard let credentials = newValue else {
-                return watchDependenciesSynchronizer.update(storeID: nil, credentials: nil)
+                return watchDependenciesSynchronizer.update(storeID: nil, storeName: nil, credentials: nil)
             }
 
             saveCredentials(credentials)
-            watchDependenciesSynchronizer.update(storeID: defaultStoreID, credentials: credentials)
+            watchDependenciesSynchronizer.update(storeID: defaultStoreID, storeName: defaultSite?.name, credentials: credentials)
         }
     }
 
@@ -103,7 +103,7 @@ final class SessionManager: SessionManagerProtocol {
             defaults[.defaultStoreID] = newValue
             defaultStoreIDSubject.send(newValue)
 
-            watchDependenciesSynchronizer.update(storeID: defaultStoreID, credentials: defaultCredentials)
+            watchDependenciesSynchronizer.update(storeID: defaultStoreID, storeName: defaultSite?.name, credentials: defaultCredentials)
         }
     }
 
@@ -154,7 +154,11 @@ final class SessionManager: SessionManagerProtocol {
 
     /// Default Store Site
     ///
-    @Published var defaultSite: Site?
+    @Published var defaultSite: Site? {
+        didSet {
+            watchDependenciesSynchronizer.update(storeID: defaultStoreID, storeName: defaultSite?.name, credentials: loadCredentials())
+        }
+    }
 
     /// Designated Initializer.
     ///
@@ -166,9 +170,6 @@ final class SessionManager: SessionManagerProtocol {
         self.imageCache = imageCache
 
         defaultStoreIDSubject = .init(defaults[.defaultStoreID])
-
-        // Sync initial credentials
-        watchDependenciesSynchronizer.update(storeID: defaultStoreID, credentials: loadCredentials())
     }
 
     /// Nukes all of the known Session's properties.

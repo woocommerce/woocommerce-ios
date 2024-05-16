@@ -200,7 +200,7 @@ private extension MostActiveCouponsCard {
     }
 
     var supportForm: some View {
-        NavigationView {
+        NavigationStack {
             SupportForm(isPresented: $showingSupportForm,
                         viewModel: SupportFormViewModel())
             .toolbar {

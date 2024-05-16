@@ -16,15 +16,36 @@ struct PointOfSaleHistoryView: View {
                 .bold()
                 .foregroundColor(Color.primaryText)
             Spacer()
+            Button("Close") {
+                presentationMode.wrappedValue.dismiss()
+            }
+            .tint(Color.primaryText)
         }
     }
 
+    private let dateFormatter: DateComponentsFormatter = {
+        let formatter = DateComponentsFormatter()
+        formatter.allowedUnits = [.day, .hour, .minute, .second]
+        formatter.unitsStyle = .abbreviated
+        return formatter
+    }()
+    
+    private let currencyFormatter: NumberFormatter = {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .currency
+        return formatter
+    }()
+
+    @ViewBuilder
     private var headerView: some View {
         HStack {
             Text("This session:")
             Spacer()
-            Text("[duration]")
-            Spacer()
+            if let sessionStart = viewModel.sessionStart,
+               let duration = dateFormatter.string(from: sessionStart, to: Date()) {
+                Text(duration)
+                Spacer()
+            }
             if viewModel.items.count == 1 {
                 Text("1 transaction")
             }
@@ -32,9 +53,20 @@ struct PointOfSaleHistoryView: View {
                 Text("\(viewModel.items.count) transactions")
             }
             Spacer()
-            Text("$[amount]")
+            transactionsAmountView
         }
         .foregroundColor(Color.primaryText)
+    }
+    
+    @ViewBuilder
+    private var transactionsAmountView: some View {
+        let totalAmount = Double(viewModel.itemsAmount) / 100.0
+        if let amount = currencyFormatter.string(from: NSNumber(value: totalAmount)) {
+            Text(amount)
+        }
+        else {
+            EmptyView()
+        }
     }
 
     @State private var searchText: String = ""

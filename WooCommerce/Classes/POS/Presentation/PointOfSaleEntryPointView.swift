@@ -11,8 +11,8 @@ public struct PointOfSaleEntryPointView: View {
     }()
 
     private let historyViewModel: PointOfSaleHistoryViewModel = PointOfSaleHistoryViewModel(items: [
-        HistoryItem(createdAt: Date()),
-        HistoryItem(createdAt: Date() - 1000)
+        HistoryItem(createdAt: Date(), amountInCents: 299),
+        HistoryItem(createdAt: Date() - 1000, amountInCents: 399)
     ])
 
     private let hideAppTabBar: ((Bool) -> Void)
@@ -28,9 +28,11 @@ public struct PointOfSaleEntryPointView: View {
         PointOfSaleDashboardView(viewModel: viewModel, historyViewModel: historyViewModel)
             .onAppear {
                 hideAppTabBar(true)
+                historyViewModel.startSession()
             }
             .onDisappear {
                 hideAppTabBar(false)
+                historyViewModel.endSession()
             }
     }
 }

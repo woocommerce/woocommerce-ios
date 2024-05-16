@@ -2322,6 +2322,33 @@ extension Networking.ProductReview {
     }
 }
 
+extension Networking.ProductStock {
+    public func copy(
+        siteID: CopiableProp<Int64> = .copy,
+        productID: CopiableProp<Int64> = .copy,
+        sku: NullableCopiableProp<String> = .copy,
+        manageStock: CopiableProp<Bool> = .copy,
+        stockQuantity: NullableCopiableProp<Decimal> = .copy,
+        stockStatusKey: CopiableProp<String> = .copy
+    ) -> Networking.ProductStock {
+        let siteID = siteID ?? self.siteID
+        let productID = productID ?? self.productID
+        let sku = sku ?? self.sku
+        let manageStock = manageStock ?? self.manageStock
+        let stockQuantity = stockQuantity ?? self.stockQuantity
+        let stockStatusKey = stockStatusKey ?? self.stockStatusKey
+
+        return Networking.ProductStock(
+            siteID: siteID,
+            productID: productID,
+            sku: sku,
+            manageStock: manageStock,
+            stockQuantity: stockQuantity,
+            stockStatusKey: stockStatusKey
+        )
+    }
+}
+
 extension Networking.ProductSubscription {
     public func copy(
         length: CopiableProp<String> = .copy,

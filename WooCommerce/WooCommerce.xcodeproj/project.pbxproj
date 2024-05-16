@@ -2561,6 +2561,7 @@
 		EE505DE12B3D321A006E3323 /* BlazeLearnHowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE505DE02B3D321A006E3323 /* BlazeLearnHowView.swift */; };
 		EE505DE32B3D36F0006E3323 /* BlazeCreateCampaignIntroViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE505DE22B3D36F0006E3323 /* BlazeCreateCampaignIntroViewModel.swift */; };
 		EE5366A52B0673760008E61E /* SubscriptionExpiryViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE5366A42B0673760008E61E /* SubscriptionExpiryViewModelTests.swift */; };
+		EE570A8D2BF5EE78006BA026 /* MostActiveCouponsCardViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE570A8C2BF5EE78006BA026 /* MostActiveCouponsCardViewModelTests.swift */; };
 		EE572A212B4684FF00B74B2E /* BlazeEditAdViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE572A202B4684FF00B74B2E /* BlazeEditAdViewModelTests.swift */; };
 		EE57C11D297AC27300BC31E7 /* TrackEventRequestNotificationHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE57C11C297AC27300BC31E7 /* TrackEventRequestNotificationHandler.swift */; };
 		EE57C11F297E742200BC31E7 /* WooAnalyticsEvent+ApplicationPassword.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE57C11E297E742200BC31E7 /* WooAnalyticsEvent+ApplicationPassword.swift */; };
@@ -2619,9 +2620,9 @@
 		EEBDF7E22A2F685C00EFEF47 /* DefaultShareProductAIEligibilityCheckerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEBDF7E12A2F685C00EFEF47 /* DefaultShareProductAIEligibilityCheckerTests.swift */; };
 		EEBDF7E52A317BCE00EFEF47 /* FirstProductCreatedViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEBDF7E42A317BCE00EFEF47 /* FirstProductCreatedViewModel.swift */; };
 		EEBDF7E72A31A59F00EFEF47 /* FirstProductCreatedViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEBDF7E62A31A59F00EFEF47 /* FirstProductCreatedViewModelTests.swift */; };
+		EEC099332BF3B53E00FBCF6C /* MostActiveCouponsEmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEC099322BF3B53E00FBCF6C /* MostActiveCouponsEmptyView.swift */; };
 		EEC099362BF3C68000FBCF6C /* MostActiveCouponsCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEC099352BF3C68000FBCF6C /* MostActiveCouponsCard.swift */; };
 		EEC099382BF3C6A900FBCF6C /* MostActiveCouponsCardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEC099372BF3C6A900FBCF6C /* MostActiveCouponsCardViewModel.swift */; };
-          EEC099332BF3B53E00FBCF6C /* MostActiveCouponsEmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEC099322BF3B53E00FBCF6C /* MostActiveCouponsEmptyView.swift */; };
 		EEC259422B43EF33004D703C /* BlazeEditAdView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEC259412B43EF33004D703C /* BlazeEditAdView.swift */; };
 		EEC259442B43EF3B004D703C /* BlazeEditAdViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEC259432B43EF3B004D703C /* BlazeEditAdViewModel.swift */; };
 		EEC259462B4556B6004D703C /* BlazeEditAdHostingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEC259452B4556B6004D703C /* BlazeEditAdHostingController.swift */; };
@@ -5316,6 +5317,7 @@
 		EE505DE02B3D321A006E3323 /* BlazeLearnHowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeLearnHowView.swift; sourceTree = "<group>"; };
 		EE505DE22B3D36F0006E3323 /* BlazeCreateCampaignIntroViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeCreateCampaignIntroViewModel.swift; sourceTree = "<group>"; };
 		EE5366A42B0673760008E61E /* SubscriptionExpiryViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionExpiryViewModelTests.swift; sourceTree = "<group>"; };
+		EE570A8C2BF5EE78006BA026 /* MostActiveCouponsCardViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MostActiveCouponsCardViewModelTests.swift; sourceTree = "<group>"; };
 		EE572A202B4684FF00B74B2E /* BlazeEditAdViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeEditAdViewModelTests.swift; sourceTree = "<group>"; };
 		EE57C11C297AC27300BC31E7 /* TrackEventRequestNotificationHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackEventRequestNotificationHandler.swift; sourceTree = "<group>"; };
 		EE57C11E297E742200BC31E7 /* WooAnalyticsEvent+ApplicationPassword.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WooAnalyticsEvent+ApplicationPassword.swift"; sourceTree = "<group>"; };
@@ -5374,9 +5376,9 @@
 		EEBDF7E12A2F685C00EFEF47 /* DefaultShareProductAIEligibilityCheckerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultShareProductAIEligibilityCheckerTests.swift; sourceTree = "<group>"; };
 		EEBDF7E42A317BCE00EFEF47 /* FirstProductCreatedViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstProductCreatedViewModel.swift; sourceTree = "<group>"; };
 		EEBDF7E62A31A59F00EFEF47 /* FirstProductCreatedViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstProductCreatedViewModelTests.swift; sourceTree = "<group>"; };
+		EEC099322BF3B53E00FBCF6C /* MostActiveCouponsEmptyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MostActiveCouponsEmptyView.swift; sourceTree = "<group>"; };
 		EEC099352BF3C68000FBCF6C /* MostActiveCouponsCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MostActiveCouponsCard.swift; sourceTree = "<group>"; };
 		EEC099372BF3C6A900FBCF6C /* MostActiveCouponsCardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MostActiveCouponsCardViewModel.swift; sourceTree = "<group>"; };
-          EEC099322BF3B53E00FBCF6C /* MostActiveCouponsEmptyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MostActiveCouponsEmptyView.swift; sourceTree = "<group>"; };
 		EEC259412B43EF33004D703C /* BlazeEditAdView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeEditAdView.swift; sourceTree = "<group>"; };
 		EEC259432B43EF3B004D703C /* BlazeEditAdViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeEditAdViewModel.swift; sourceTree = "<group>"; };
 		EEC259452B4556B6004D703C /* BlazeEditAdHostingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeEditAdHostingController.swift; sourceTree = "<group>"; };
@@ -6760,6 +6762,7 @@
 		02E4FD7F2306AA770049610C /* Dashboard */ = {
 			isa = PBXGroup;
 			children = (
+				EE570A8B2BF5EE68006BA026 /* Coupons */,
 				EEC5C8D82ADE2FB80071E852 /* Blaze */,
 				02D7E7CA2A4CE4E20003049A /* LocalAnnouncements */,
 				EE3272A229A88F670015F8D0 /* Onboarding */,
@@ -12082,6 +12085,14 @@
 			path = BlazeIntro;
 			sourceTree = "<group>";
 		};
+		EE570A8B2BF5EE68006BA026 /* Coupons */ = {
+			isa = PBXGroup;
+			children = (
+				EE570A8C2BF5EE78006BA026 /* MostActiveCouponsCardViewModelTests.swift */,
+			);
+			path = Coupons;
+			sourceTree = "<group>";
+		};
 		EE5B5BB12AB30BF9009BCBD6 /* AddProductWithAI */ = {
 			isa = PBXGroup;
 			children = (
@@ -12242,7 +12253,7 @@
 			children = (
 				EEC099352BF3C68000FBCF6C /* MostActiveCouponsCard.swift */,
 				EEC099372BF3C6A900FBCF6C /* MostActiveCouponsCardViewModel.swift */,
-                EEC099322BF3B53E00FBCF6C /* MostActiveCouponsEmptyView.swift */,
+				EEC099322BF3B53E00FBCF6C /* MostActiveCouponsEmptyView.swift */,
 			);
 			path = Coupons;
 			sourceTree = "<group>";
@@ -14993,6 +15004,7 @@
 				2667BFDB252E659A008099D4 /* MockOrderItem.swift in Sources */,
 				DEC51AA0274F9922009F3DF4 /* JCPJetpackInstallStepsViewModelTests.swift in Sources */,
 				E1068058285C787100668B46 /* BetaFeaturesTests.swift in Sources */,
+				EE570A8D2BF5EE78006BA026 /* MostActiveCouponsCardViewModelTests.swift in Sources */,
 				020EF5EF2A8C94E0009D2169 /* SiteSnapshotTrackerTests.swift in Sources */,
 				26C6E8E426E2D87C00C7BB0F /* CountrySelectorViewModelTests.swift in Sources */,
 				0269A5E72913FD22003B20EB /* StoreCreationCoordinatorTests.swift in Sources */,

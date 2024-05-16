@@ -144,7 +144,7 @@ class CardPresentPaymentsAdaptor: CardPresentPayments {
                     }
                 }
             } onCancel: {
-                // cancel any in-progress discovery, connection, or payment.
+                // TODO: cancel any in-progress discovery, connection, or payment.
             }
         }
         self.paymentTask = paymentTask

@@ -11,6 +11,9 @@ class PointOfSalePaymentsTestViewModel: ObservableObject {
 
     @Published var onboardingViewModels: InPersonPaymentsViewModel?
 
+    @Published var paymentModalViewModel:
+    WrappedCardPresentPaymentsModalViewModel?
+
     init(siteID: Int64) {
         self.cardPresentPayments = CardPresentPaymentsAdaptor(siteID: siteID)
         cardPresentPayments.paymentScreenEventPublisher
@@ -24,6 +27,17 @@ class PointOfSalePaymentsTestViewModel: ObservableObject {
             }
         }
         .assign(to: &$onboardingViewModels)
+
+        cardPresentPayments.paymentScreenEventPublisher
+            .map { event -> WrappedCardPresentPaymentsModalViewModel? in
+            switch event {
+            case .presentAlert(let content):
+                return WrappedCardPresentPaymentsModalViewModel(from: content)
+            default:
+                return nil
+            }
+        }
+        .assign(to: &$paymentModalViewModel)
     }
 
     func cancel() {
@@ -58,6 +72,9 @@ struct PointOfSalePaymentsTestView: View {
                             }
                         }
                 }
+            }
+            .modal(item: $viewModel.paymentModalViewModel) { item in
+                CardPresentPaymentsModalView(viewModel: item)
             }
     }
 }

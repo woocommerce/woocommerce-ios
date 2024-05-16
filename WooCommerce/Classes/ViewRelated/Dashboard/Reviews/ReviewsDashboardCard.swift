@@ -114,31 +114,31 @@ private extension ReviewsDashboardCard {
         }
     }
 
-    func ReviewRow(for reviewViewModel: ReviewViewModel, isLastItem: Bool) -> some View {
+    func ReviewRow(for viewModel: ReviewViewModel, isLastItem: Bool) -> some View {
         HStack(alignment: .top, spacing: 0) {
             Image(systemName: "bubble.fill")
-                .foregroundStyle(reviewViewModel.review.status == .hold ? Color.secondary : Color(.wooCommercePurple(.shade60)))
+                .foregroundStyle(viewModel.review.status == .hold ? Color.secondary : Color(.wooCommercePurple(.shade60)))
                 .padding(.horizontal, Layout.padding)
                 .padding(.vertical, Layout.cardPadding)
 
 
             VStack(alignment: .leading) {
-                if let subject = reviewViewModel.subject {
+                if let subject = viewModel.subject {
                     Text(subject)
                         .bodyStyle()
                         .padding(.trailing, Layout.padding)
                 }
 
-                if let snippet = reviewViewModel.snippet {
+                if let snippet = viewModel.snippet {
                     Text(snippet.string)
                         .lineLimit(2)
                         .subheadlineStyle()
                         .padding(.trailing, Layout.padding)
                 }
 
-                if reviewViewModel.review.rating > 0 {
+                if viewModel.review.rating > 0 {
                     HStack(spacing: Layout.starRatingSpacing) {
-                        ForEach(0..<reviewViewModel.review.rating, id: \.self) { _ in
+                        ForEach(0..<viewModel.review.rating, id: \.self) { _ in
                             Image(systemName: "star.fill")
                                 .resizable()
                                 .frame(width: Constants.starSize * scale, height: Constants.starSize * scale)

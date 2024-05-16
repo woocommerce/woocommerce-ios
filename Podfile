@@ -227,7 +227,7 @@ end
 target 'WooFoundationWatchOS' do
   project 'WooFoundation/WooFoundation.xcodeproj'
   platform :watchos, app_watchos_deployment_target.version
-  
+
   woofoundation_watchos_pods
 end
 

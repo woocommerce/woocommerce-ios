@@ -4,7 +4,7 @@ import Codegen
 /// Represents stock details for a Product.
 ///
 public struct ProductStock: Decodable, GeneratedCopiable, Equatable, GeneratedFakeable {
-    
+
     public let siteID: Int64
     public let productID: Int64
     public let name: String
@@ -73,7 +73,7 @@ public struct ProductStock: Decodable, GeneratedCopiable, Equatable, GeneratedFa
 
         let stockStatusKey = try container.decode(String.self, forKey: .stockStatusKey)
 
-        self.init(siteID: siteID, 
+        self.init(siteID: siteID,
                   productID: productID,
                   name: name,
                   sku: sku,

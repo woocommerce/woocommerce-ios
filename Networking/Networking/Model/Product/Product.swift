@@ -723,6 +723,7 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
         try container.encode(crossSellIDs, forKey: .crossSellIDs)
 
         // Quantity Rules
+        // https://woocommerce.com/document/minmax-quantities/#section-6
         try container.encode(maxAllowedQuantity, forKey: .maxAllowedQuantity)
         if let minAllowedQuantity = minAllowedQuantity {
             try container.encode(minAllowedQuantity.isEmpty ? "0" : minAllowedQuantity, forKey: .minAllowedQuantity)

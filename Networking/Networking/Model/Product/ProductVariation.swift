@@ -409,6 +409,7 @@ public struct ProductVariation: Codable, GeneratedCopiable, Equatable, Generated
         try container.encode(attributes, forKey: .attributes)
 
         // Quantity Rules
+        // https://woocommerce.com/document/minmax-quantities/#section-6
         try container.encode(maxAllowedQuantity, forKey: .maxAllowedQuantity)
         if let minAllowedQuantity = minAllowedQuantity {
             try container.encode(minAllowedQuantity.isEmpty ? "0" : minAllowedQuantity, forKey: .minAllowedQuantity)

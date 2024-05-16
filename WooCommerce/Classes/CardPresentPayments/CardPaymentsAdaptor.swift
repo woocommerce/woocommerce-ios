@@ -2,13 +2,49 @@ import Foundation
 import Yosemite
 import class WooFoundation.CurrencyFormatter
 
+
+protocol CardPresentPayments {
+
+    /// The adaptor/facade is intended to be created once when we switch stores, and to be a singleton.
+    /// We might as well make a new one when we switch stores though.
+    init(siteID: Int64)
+
+    /// `paymentScreenEventPublisher` provides a stream of events relating to a payment, including their view models,
+    /// for subscribers to display to the user. e.g. onboarding screens, connection progress, payment progress, card reader messages
+    /// We may want separate streams for these depending on the way we consume it
+    var paymentScreenEventPublisher: AnyPublisher<CardPresentPaymentEvent?, Never> { get }
+
+    /// Uses the existing code to connect to a reader, publishing intermediate events on the stream above as required.
+    /// The end result of the payment is returned via async/await
+    /// - Parameters:
+    ///   - order: The order to collect payment for
+    ///   - discoveryMethod: Allows specifying Tap to Pay or external reader. For POS, this would default to external.
+    /// - Returns: `CardPresentPaymentResult` for a success, failure, or cancellation.
+    func collectPayment(for order: Order,
+                        using discoveryMethod: CardReaderDiscoveryMethod) async -> CardPresentPaymentResult
+
+}
+
 enum CardPresentPaymentResult {
     case success(Order)
     case failure(CardPaymentErrorProtocol)
     case cancellation
 }
 
-class CardPresentPaymentsAdaptor {
+enum CardPresentPaymentEvent {
+    case presentAlert(CardPresentPaymentsAdaptorPaymentAlert)
+    case presentReaderList(_ readerIDs: [String])
+    case showOnboarding(_ onboardingViewModel: InPersonPaymentsViewModel)
+}
+
+struct CardPresentPaymentsAdaptorPaymentAlert {
+    init(from paymentsModalViewModel: CardPresentPaymentsModalViewModel) {
+        // In here we still need to handle the button actions wrt the UIViewControllers the closures are passed.
+        // That said, very few of the alerts actually use the UIVCs, so it might be just as easy to remove the dependency from both sides
+    }
+}
+
+class CardPresentPaymentsAdaptor: CardPresentPayments {
 
     /// `paymentScreenEventPublisher` provides a stream of events relating to a payment, including their view models,
     /// for subscribers to display to the user.
@@ -54,7 +90,7 @@ class CardPresentPaymentsAdaptor {
 
     private var paymentScreenEventSubject = CurrentValueSubject<CardPresentPaymentEvent?, Never>(nil)
 
-    init(siteID: Int64) {
+    required init(siteID: Int64) {
         self.siteID = siteID
         onboardingPresenterAdaptor = CardPresentPaymentsOnboardingPresenterAdaptor(stores: ServiceLocator.stores)
 
@@ -68,9 +104,10 @@ class CardPresentPaymentsAdaptor {
         .eraseToAnyPublisher()
     }
 
+    @MainActor
     func collectPayment(for order: Order,
                         using discoveryMethod: CardReaderDiscoveryMethod) async -> CardPresentPaymentResult {
-        let preflightController = await CardPresentPaymentPreflightController(
+        let preflightController = CardPresentPaymentPreflightController(
             siteID: siteID,
             configuration: CardPresentConfigurationLoader().configuration,
             rootViewController: UIViewController(),
@@ -78,7 +115,7 @@ class CardPresentPaymentsAdaptor {
             onboardingPresenter: onboardingPresenterAdaptor,
             bluetoothConnectionController: bluetoothConnectionController,
             builtInConnectionController: tapToPayConnectionController)
-        let orderPaymentUseCase = await CollectOrderPaymentUseCase(siteID: siteID,
+        let orderPaymentUseCase = CollectOrderPaymentUseCase(siteID: siteID,
                                                                    order: order,
                                                                    formattedAmount: currencyFormatter.formatAmount(order.total, with: order.currency) ?? "",
                                                                    // moved from EditableOrderViewModel.collectPayment(for: Order)
@@ -202,17 +239,4 @@ final class CardPresentPaymentsOnboardingPresenterAdaptor: CardPresentPaymentsOn
         onboardingUseCase.refreshIfNecessary()
     }
 
-}
-
-enum CardPresentPaymentEvent {
-    case presentAlert(CardPresentPaymentsAdaptorPaymentAlert)
-    case presentReaderList(_ readerIDs: [String])
-    case showOnboarding(_ onboardingViewModel: InPersonPaymentsViewModel)
-}
-
-struct CardPresentPaymentsAdaptorPaymentAlert {
-    init(from paymentsModalViewModel: CardPresentPaymentsModalViewModel) {
-        // In here we still need to handle the button actions wrt the UIViewControllers the closures are passed.
-        // That said, very few of the alerts actually use the UIVCs, so it might be just as easy to remove the dependency from both sides
-    }
 }

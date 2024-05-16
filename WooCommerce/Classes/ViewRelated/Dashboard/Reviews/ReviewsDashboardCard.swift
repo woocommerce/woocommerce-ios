@@ -12,19 +12,6 @@ struct ReviewsDashboardCard: View {
 
     private let viewModel: ReviewsDashboardCardViewModel
 
-    let dummyData: [ProductReview] = [
-        ProductReview(siteID: 1, reviewID: 1, productID: 1, dateCreated: Date(),
-                      statusKey: "approved", reviewer: "Sherlock", reviewerEmail: "", reviewerAvatarURL: "",
-                      review: "The best product in the whole world. This is meant to be really long to be more than two lines",
-                      rating: 5, verified: true),
-        ProductReview(siteID: 1, reviewID: 2, productID: 1, dateCreated: Date(),
-                      statusKey: "hold", reviewer: "Holmes", reviewerEmail: "", reviewerAvatarURL: "",
-                      review: "Amazing!", rating: 5, verified: true),
-        ProductReview(siteID: 1, reviewID: 3, productID: 1, dateCreated: Date(),
-                      statusKey: "approved", reviewer: "", reviewerEmail: "", reviewerAvatarURL: "",
-                      review: "", rating: 5, verified: true)
-    ]
-
     init(viewModel: ReviewsDashboardCardViewModel) {
         self.viewModel = viewModel
     }

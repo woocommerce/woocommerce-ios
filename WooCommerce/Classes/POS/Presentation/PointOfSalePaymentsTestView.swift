@@ -40,45 +40,13 @@ class PointOfSalePaymentsTestViewModel: ObservableObject {
         .assign(to: &$paymentModalViewModel)
     }
 
+    func startTestPayment() async {
+        _ = await cardPresentPayments.collectPayment(
+            for: Order.fake(),
+            using: .bluetoothScan)
+    }
+
     func cancel() {
         cardPresentPayments.cancelPayment()
     }
-}
-
-struct PointOfSalePaymentsTestView: View {
-    @ObservedObject var viewModel: PointOfSalePaymentsTestViewModel
-
-    init(viewModel: PointOfSalePaymentsTestViewModel) {
-        self.viewModel = viewModel
-    }
-
-    var body: some View {
-        Button(
-        action: {
-            Task {
-                await viewModel.cardPresentPayments.collectPayment(for: Order.fake(), using: .bluetoothScan)
-            }
-        }, label: {
-            Text("Start payment")
-        })
-            .sheet(item: $viewModel.onboardingViewModels) { onboardingViewModel in
-                NavigationStack {
-                    InPersonPaymentsView(viewModel: onboardingViewModel)
-                        .navigationTitle(Text(""))
-                        .navigationBarTitleDisplayMode(.inline)
-                        .toolbar {
-                            Button(action: viewModel.cancel) {
-                                Text("Cancel")
-                            }
-                        }
-                }
-            }
-            .modal(item: $viewModel.paymentModalViewModel) { item in
-                CardPresentPaymentsModalView(viewModel: item)
-            }
-    }
-}
-
-#Preview {
-    PointOfSalePaymentsTestView(viewModel: PointOfSalePaymentsTestViewModel(siteID: 123))
 }

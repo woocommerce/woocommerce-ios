@@ -167,10 +167,11 @@ private extension HubMenu {
             case HubMenuViewModel.Customers.id:
                 CustomersListView(viewModel: .init(siteID: viewModel.siteID))
             case HubMenuViewModel.PointOfSaleEntryPoint.id:
-                PointOfSalePaymentsTestView(viewModel: viewModel.pointOfSalePaymentsTestViewModel)
-                PointOfSaleEntryPointView(hideAppTabBar: { isHidden in
+                PointOfSaleEntryPointView(
+                    hideAppTabBar: { isHidden in
                     AppDelegate.shared.setShouldHideTabBar(isHidden)
-                })
+                },
+                    testPaymentViewModel: viewModel.pointOfSalePaymentsTestViewModel)
             default:
                 fatalError("🚨 Unsupported menu item")
             }

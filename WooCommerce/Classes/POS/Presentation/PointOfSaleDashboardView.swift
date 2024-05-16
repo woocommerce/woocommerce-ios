@@ -5,8 +5,12 @@ struct PointOfSaleDashboardView: View {
 
     @ObservedObject private var viewModel: PointOfSaleDashboardViewModel
 
-    init(viewModel: PointOfSaleDashboardViewModel) {
+    @ObservedObject var testPaymentViewModel: PointOfSalePaymentsTestViewModel
+
+    init(viewModel: PointOfSaleDashboardViewModel,
+         testPaymentViewModel: PointOfSalePaymentsTestViewModel) {
         self.viewModel = viewModel
+        self.testPaymentViewModel = testPaymentViewModel
     }
 
     var body: some View {
@@ -36,6 +40,13 @@ struct PointOfSaleDashboardView: View {
                     viewModel.showCardReaderConnection()
                 }
             })
+            ToolbarItem(placement: .secondaryAction) {
+                Button("Start Test Payment") {
+                    Task {
+                        await testPaymentViewModel.startTestPayment()
+                    }
+                }
+            }
             ToolbarItem(placement: .primaryAction, content: {
                 Button("History") {
                     debugPrint("Not implemented")
@@ -45,10 +56,29 @@ struct PointOfSaleDashboardView: View {
         .sheet(isPresented: $viewModel.showsCardReaderSheet, content: {
             CardReaderConnectionView(viewModel: viewModel.cardReaderConnectionViewModel)
         })
+        .sheet(item: $testPaymentViewModel.onboardingViewModels) { onboardingViewModel in
+            NavigationStack {
+                InPersonPaymentsView(viewModel: onboardingViewModel)
+                    .navigationTitle(Text(""))
+                    .navigationBarTitleDisplayMode(.inline)
+                    .toolbar {
+                        Button(action: testPaymentViewModel.cancel) {
+                            Text("Cancel")
+                        }
+                    }
+            }
+        }
+        .modal(item: $testPaymentViewModel.paymentModalViewModel) { item in
+            CardPresentPaymentsModalView(viewModel: item)
+        }
     }
 }
 
 #Preview {
-    PointOfSaleDashboardView(viewModel: PointOfSaleDashboardViewModel(products: POSProductFactory.makeFakeProducts(),
-                                                                      cardReaderConnectionViewModel: .init(state: .connectingToReader)))
+    PointOfSaleDashboardView(
+        viewModel: PointOfSaleDashboardViewModel(
+            products: POSProductFactory.makeFakeProducts(),
+            cardReaderConnectionViewModel: .init(state: .connectingToReader)),
+        testPaymentViewModel: PointOfSalePaymentsTestViewModel(siteID: 123)
+    )
 }

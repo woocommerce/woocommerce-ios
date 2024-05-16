@@ -6598,9 +6598,9 @@
 		029327662BF59D2D00D703E7 /* POS */ = {
 			isa = PBXGroup;
 			children = (
-				026826972BF59D9E0036F959 /* Utils */,
 				026826912BF59D7A0036F959 /* ViewModels */,
 				026826942BF59D8E0036F959 /* Reusable Views */,
+				026826972BF59D9E0036F959 /* Utils */,
 				0268269C2BF59DD60036F959 /* Models */,
 				026826A12BF59DED0036F959 /* Presentation */,
 			);

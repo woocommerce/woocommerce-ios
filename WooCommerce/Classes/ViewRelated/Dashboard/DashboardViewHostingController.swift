@@ -215,9 +215,9 @@ private extension DashboardViewHostingController {
 // MARK: Most active coupons
 private extension DashboardViewHostingController {
     func configureMostActiveCouponsView() {
-        rootView.onViewAllCoupons = { [weak self] siteID in
+        rootView.onViewAllCoupons = { [weak self] in
             guard let self else { return }
-            let couponsVC = EnhancedCouponListViewController(siteID: siteID)
+            let couponsVC = EnhancedCouponListViewController(siteID: viewModel.siteID)
             show(couponsVC, sender: self)
         }
 

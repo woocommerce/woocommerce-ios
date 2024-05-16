@@ -23,6 +23,8 @@ protocol CardPresentPayments {
     func collectPayment(for order: Order,
                         using discoveryMethod: CardReaderDiscoveryMethod) async -> CardPresentPaymentResult
 
+    func cancelPayment()
+
 }
 
 enum CardPresentPaymentResult {
@@ -104,6 +106,8 @@ class CardPresentPaymentsAdaptor: CardPresentPayments {
         .eraseToAnyPublisher()
     }
 
+    private var paymentTask: Task<CardPresentPaymentResult, Never>?
+
     @MainActor
     func collectPayment(for order: Order,
                         using discoveryMethod: CardReaderDiscoveryMethod) async -> CardPresentPaymentResult {
@@ -126,21 +130,38 @@ class CardPresentPaymentsAdaptor: CardPresentPayments {
                                                                    configuration: CardPresentConfigurationLoader().configuration,
                                                                    alertsPresenter: self,
                                                                    preflightController: preflightController)
-        return await withCheckedContinuation { continuation in
-            orderPaymentUseCase.collectPayment(using: discoveryMethod) { error in
-                if let error = error as? CardPaymentErrorProtocol {
-                    continuation.resume(returning: .failure(error))
-                } else {
-                    continuation.resume(returning: .failure(CardPaymentsAdaptorError.unknownPaymentError(underlyingError: error)))
+        paymentTask?.cancel()
+
+        let paymentTask = Task {
+            return await withTaskCancellationHandler {
+                return await withCheckedContinuation { continuation in
+                    orderPaymentUseCase.collectPayment(using: discoveryMethod) { error in
+                        // TODO: even though we have a tri-state result type, perhaps we should throw these errors.
+                        if let error = error as? CardPaymentErrorProtocol {
+                            continuation.resume(returning: CardPresentPaymentResult.failure(error))
+                        } else {
+                            continuation.resume(returning: CardPresentPaymentResult.failure(CardPaymentsAdaptorError.unknownPaymentError(underlyingError: error)))
+                        }
+                    } onCancel: {
+                        continuation.resume(returning: CardPresentPaymentResult.cancellation)
+                    } onPaymentCompletion: {
+                        // no-op – not used in PaymentMethodsViewModel anyway so this can be removed
+                    } onCompleted: {
+                        continuation.resume(returning: CardPresentPaymentResult.success(order))
+                    }
                 }
             } onCancel: {
-                continuation.resume(returning: .cancellation)
-            } onPaymentCompletion: {
-                // no-op – not used in PaymentMethodsViewModel anyway so this can be removed
-            } onCompleted: {
-                continuation.resume(returning: .success(order))
+                // cancel any in-progress discovery, connection, or payment.
             }
         }
+        self.paymentTask = paymentTask
+
+        return await paymentTask.value
+    }
+
+    func cancelPayment() {
+        paymentTask?.cancel()
+        paymentScreenEventSubject.send(nil) // This removes any otherwise-presented UI
     }
 
     enum CardPaymentsAdaptorError: Error, CardPaymentErrorProtocol {

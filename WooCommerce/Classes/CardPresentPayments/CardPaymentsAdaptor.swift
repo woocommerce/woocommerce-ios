@@ -250,6 +250,10 @@ final class CardPresentPaymentsOnboardingPresenterAdaptor: CardPresentPaymentsOn
                         case .ready = readiness else {
                     return
                 }
+                // TODO: perhaps we should have a more specific "success" event here.
+                // At the moment, this clears the screen of the onboarding flow, and then another screen would get presented
+                // Since we merge this subject with the payment alerts subject, the existing behaviour might not be ideal
+                // because it will lead to a dismissal, then a new presentation.
                 onboardingScreenViewModelSubject.send(nil)
 
                 completion()

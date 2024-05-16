@@ -40,13 +40,18 @@ struct ReviewsDashboardCard: View {
                 .redacted(reason: viewModel.syncingData ? [.placeholder] : [])
                 .shimmering(active: viewModel.syncingData)
             Divider()
+                .redacted(reason: viewModel.syncingData ? [.placeholder] : [])
                 .shimmering(active: viewModel.syncingData)
 
             if viewModel.data.isNotEmpty {
                 ForEach(Array(viewModel.data.enumerated()), id: \.element.review.reviewID) { index, reviewViewModel in
                     ReviewRow(for: reviewViewModel, isLastItem: index == dummyData.count-1)
                 }
+                .redacted(reason: viewModel.syncingData ? [.placeholder] : [])
+                .shimmering(active: viewModel.syncingData)
+
                 Divider()
+
                 viewAllReviewsButton
                     .padding(.horizontal, Layout.padding)
                     .redacted(reason: viewModel.syncingData ? [.placeholder] : [])

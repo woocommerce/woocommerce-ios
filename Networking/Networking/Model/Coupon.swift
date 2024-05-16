@@ -212,6 +212,13 @@ public struct Coupon {
 
 }
 
+// MARK: - Identifiable Conformance
+
+extension Coupon: Identifiable {
+    public var id: Int64 {
+        couponID
+    }
+}
 
 // MARK: - Codable Conformance
 

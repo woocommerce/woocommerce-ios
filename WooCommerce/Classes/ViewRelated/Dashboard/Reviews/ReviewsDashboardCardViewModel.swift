@@ -147,7 +147,7 @@ private extension ReviewsDashboardCardViewModel {
     /// Updates data
     @MainActor
     func updateReviewsResults() async {
-        let reviews = productReviewsResultsController.fetchedObjects
+        let reviews = productReviewsResultsController.fetchedObjects.prefix(3)
         let reviewProductIDs = reviews.map { $0.productID }
 
         // Load products that matches the review product IDs

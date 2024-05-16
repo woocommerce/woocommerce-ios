@@ -21,6 +21,10 @@ final class ReviewsDashboardCardViewModel: ObservableObject {
 
     @Published private(set) var data: [ReviewViewModel] = []
     private var reviewProducts: [Product] = []
+    private var notifications: [Note] {
+        return notificationsResultsController.fetchedObjects
+    }
+
     @Published private(set) var syncingData = false
     @Published private(set) var syncingError: Error?
 
@@ -55,6 +59,24 @@ final class ReviewsDashboardCardViewModel: ObservableObject {
     /// ResultsController for Product
     private lazy var productsResultsController: ResultsController<StorageProduct> = {
         return ResultsController<StorageProduct>(storageManager: storageManager, matching: sitePredicate(), sortedBy: [])
+    }()
+
+    /// ResultsController for Notification
+    private lazy var notificationsResultsController: ResultsController<StorageNote> = {
+        let sortDescriptor = NSSortDescriptor(keyPath: \StorageNote.timestamp, ascending: false)
+        return ResultsController<StorageNote>(storageManager: storageManager,
+                                              sectionNameKeyPath: "normalizedAgeAsString",
+                                              matching: notificationsPredicate,
+                                              sortedBy: [sortDescriptor])
+    }()
+
+    private lazy var notificationsPredicate: NSPredicate = {
+        let notDeletedPredicate = NSPredicate(format: "deleteInProgress == NO")
+        let typeReviewPredicate = NSPredicate(format: "subtype == %@", Note.Subkind.storeReview.rawValue)
+
+        return NSCompoundPredicate(andPredicateWithSubpredicates: [typeReviewPredicate,
+                                                                   sitePredicate(),
+                                                                   notDeletedPredicate])
     }()
 
     func dismissReviews() {
@@ -106,10 +128,21 @@ private extension ReviewsDashboardCardViewModel {
         }
     }
 
+    @MainActor
+    func synchronizeNotifications() async throws {
+        try await withCheckedThrowingContinuation { continuation in
+            stores.dispatch(NotificationAction.synchronizeNotifications { result in
+                continuation.resume(returning: ())
+            })
+        }
+    }
+
+
     /// Performs initial fetch from storage and updates results.
     func configureResultsControllers() {
         configureProductReviewsResultsController()
         configureProductsResultsController()
+        configureNotificationsResultsController()
     }
 
     func configureProductReviewsResultsController() {
@@ -148,6 +181,14 @@ private extension ReviewsDashboardCardViewModel {
         }
     }
 
+    func configureNotificationsResultsController() {
+        do {
+            try notificationsResultsController.performFetch()
+        } catch {
+            ServiceLocator.crashLogging.logError(error)
+        }
+    }
+
     /// Updates data
     @MainActor
     func updateReviewsResults() async {
@@ -157,14 +198,24 @@ private extension ReviewsDashboardCardViewModel {
         // Load products that matches the review product IDs
         if reviewProductIDs.isNotEmpty {
             await loadReviewProducts(for: reviewProductIDs)
+
+            if stores.isAuthenticatedWithoutWPCom == false {
+                await loadNotifications()
+            }
         }
 
-        data = reviews
-            .map { review in
-                let product = reviewProducts.first { $0.productID == review.productID }
-                // TODO: also fetch notification
-                return ReviewViewModel(review: review, product: product, notification: nil)
+        data = reviews.map { review in
+            let product = reviewProducts.first { $0.productID == review.productID }
+
+            let notification = notifications.first { notification in
+                if let notificationReviewID = notification.meta.identifier(forKey: .comment) {
+                    return notificationReviewID == review.reviewID
+                }
+                return false
             }
+
+            return ReviewViewModel(review: review, product: product, notification: notification)
+        }
     }
 
     func updateProductsResults() {
@@ -184,6 +235,20 @@ private extension ReviewsDashboardCardViewModel {
         }
         syncingData = false
     }
+
+    @MainActor
+    func loadNotifications() async {
+        syncingData = true
+        syncingError = nil
+
+        do {
+            try await synchronizeNotifications()
+        } catch {
+            syncingError = error
+        }
+        syncingData = false
+    }
+
 }
 
 private extension ReviewsDashboardCardViewModel {

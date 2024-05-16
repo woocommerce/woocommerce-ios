@@ -117,7 +117,11 @@ private extension ReviewsDashboardCard {
     func ReviewRow(for viewModel: ReviewViewModel, isLastItem: Bool) -> some View {
         HStack(alignment: .top, spacing: 0) {
             Image(systemName: "bubble.fill")
-                .foregroundStyle(viewModel.review.status == .hold ? Color.secondary : Color(.wooCommercePurple(.shade60)))
+                .foregroundStyle(
+                    viewModel.notification?.read == true
+                    ? Color.secondary
+                    : Color(.wooCommercePurple(.shade60))
+                )
                 .padding(.horizontal, Layout.padding)
                 .padding(.vertical, Layout.cardPadding)
 

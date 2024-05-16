@@ -284,9 +284,9 @@
 		026826932BF59D830036F959 /* PointOfSaleDashboardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026826922BF59D830036F959 /* PointOfSaleDashboardViewModel.swift */; };
 		026826962BF59D9A0036F959 /* PlusButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026826952BF59D9A0036F959 /* PlusButtonStyle.swift */; };
 		026826992BF59DA90036F959 /* Color+WooCommercePOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026826982BF59DA80036F959 /* Color+WooCommercePOS.swift */; };
-		0268269B2BF59DB00036F959 /* ProductFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0268269A2BF59DB00036F959 /* ProductFactory.swift */; };
+		0268269B2BF59DB00036F959 /* POSProductFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0268269A2BF59DB00036F959 /* POSProductFactory.swift */; };
 		0268269F2BF59DE10036F959 /* CartProduct.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0268269D2BF59DE10036F959 /* CartProduct.swift */; };
-		026826A02BF59DE10036F959 /* Product.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0268269E2BF59DE10036F959 /* Product.swift */; };
+		026826A02BF59DE10036F959 /* POSProduct.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0268269E2BF59DE10036F959 /* POSProduct.swift */; };
 		026826A92BF59DF70036F959 /* ProductGridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026826A82BF59DF70036F959 /* ProductGridView.swift */; };
 		026826AA2BF59DF70036F959 /* CartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026826A32BF59DF60036F959 /* CartView.swift */; };
 		026826AB2BF59DF70036F959 /* ProductRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026826A22BF59DF60036F959 /* ProductRowView.swift */; };
@@ -3050,9 +3050,9 @@
 		026826922BF59D830036F959 /* PointOfSaleDashboardViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PointOfSaleDashboardViewModel.swift; sourceTree = "<group>"; };
 		026826952BF59D9A0036F959 /* PlusButtonStyle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlusButtonStyle.swift; sourceTree = "<group>"; };
 		026826982BF59DA80036F959 /* Color+WooCommercePOS.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Color+WooCommercePOS.swift"; sourceTree = "<group>"; };
-		0268269A2BF59DB00036F959 /* ProductFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductFactory.swift; sourceTree = "<group>"; };
+		0268269A2BF59DB00036F959 /* POSProductFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSProductFactory.swift; sourceTree = "<group>"; };
 		0268269D2BF59DE10036F959 /* CartProduct.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CartProduct.swift; sourceTree = "<group>"; };
-		0268269E2BF59DE10036F959 /* Product.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Product.swift; sourceTree = "<group>"; };
+		0268269E2BF59DE10036F959 /* POSProduct.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = POSProduct.swift; sourceTree = "<group>"; };
 		026826A22BF59DF60036F959 /* ProductRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductRowView.swift; sourceTree = "<group>"; };
 		026826A32BF59DF60036F959 /* CartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartView.swift; sourceTree = "<group>"; };
 		026826A42BF59DF60036F959 /* ProductCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCardView.swift; sourceTree = "<group>"; };
@@ -6254,7 +6254,7 @@
 		026826972BF59D9E0036F959 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
-				0268269A2BF59DB00036F959 /* ProductFactory.swift */,
+				0268269A2BF59DB00036F959 /* POSProductFactory.swift */,
 				026826982BF59DA80036F959 /* Color+WooCommercePOS.swift */,
 			);
 			path = Utils;
@@ -6263,7 +6263,7 @@
 		0268269C2BF59DD60036F959 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				0268269E2BF59DE10036F959 /* Product.swift */,
+				0268269E2BF59DE10036F959 /* POSProduct.swift */,
 				0268269D2BF59DE10036F959 /* CartProduct.swift */,
 			);
 			path = Models;
@@ -6602,11 +6602,11 @@
 		029327662BF59D2D00D703E7 /* POS */ = {
 			isa = PBXGroup;
 			children = (
-				026826A12BF59DED0036F959 /* Presentation */,
-				0268269C2BF59DD60036F959 /* Models */,
 				026826972BF59D9E0036F959 /* Utils */,
 				026826912BF59D7A0036F959 /* ViewModels */,
 				026826942BF59D8E0036F959 /* Reusable Views */,
+				0268269C2BF59DD60036F959 /* Models */,
+				026826A12BF59DED0036F959 /* Presentation */,
 			);
 			path = POS;
 			sourceTree = "<group>";
@@ -14165,7 +14165,7 @@
 				DEDB886B26E8531E00981595 /* ShippingLabelPackageAttributes.swift in Sources */,
 				AEC95D412774C5AE001571F5 /* AddressFormViewModelProtocol.swift in Sources */,
 				B6E851F5276330200041D1BA /* RefundCustomAmountsDetailsTableViewCell.swift in Sources */,
-				0268269B2BF59DB00036F959 /* ProductFactory.swift in Sources */,
+				0268269B2BF59DB00036F959 /* POSProductFactory.swift in Sources */,
 				028E1F702833DD0A001F8829 /* DashboardViewModel.swift in Sources */,
 				2602A63D27BD3C8C00B347F1 /* RemoteOrderSynchronizer.swift in Sources */,
 				CCFBBCFA29C4C85F0081B595 /* ComponentSettingsViewModel.swift in Sources */,
@@ -14950,7 +14950,7 @@
 				D449C51D26DE6B5000D75B02 /* LargeTitle.swift in Sources */,
 				B6E7DB64293A7C390049B001 /* AnalyticsHubYesterdayRangeData.swift in Sources */,
 				456396B625C82691001F1A26 /* ShippingLabelFormStepTableViewCell.swift in Sources */,
-				026826A02BF59DE10036F959 /* Product.swift in Sources */,
+				026826A02BF59DE10036F959 /* POSProduct.swift in Sources */,
 				03FBDA9D263AD49200ACE257 /* CouponListViewController.swift in Sources */,
 				023930612918F36400B2632F /* DomainSelectorView.swift in Sources */,
 				EE9D030C2B86078A0077CED1 /* ProductSelector+Order.swift in Sources */,

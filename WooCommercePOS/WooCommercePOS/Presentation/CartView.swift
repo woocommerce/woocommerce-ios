@@ -10,6 +10,7 @@ struct CartView: View {
     var body: some View {
         VStack {
             Text("Cart")
+                .font(.title)
                 .foregroundColor(Color.white)
             ForEach(viewModel.productsInCart, id: \.product.productID) { cartProduct in
                 ProductRowView(cartProduct: cartProduct) {
@@ -19,16 +20,30 @@ struct CartView: View {
                 .padding(.horizontal, 32)
             }
             Spacer()
-            Button("Pay now") {
-                viewModel.submitCart()
-            }
-            .background(Color.secondaryBackground)
+            checkoutButton()
+                .padding(.horizontal, 32)
+
         }
         .frame(maxWidth: .infinity)
         .background(Color.secondaryBackground)
     }
+
+    @ViewBuilder
+    private func checkoutButton() -> some View {
+        Button("Checkout") {
+            viewModel.submitCart()
+        }
+        .padding(.all, 20)
+        .frame(maxWidth: .infinity, idealHeight: 120)
+        .font(.title)
+        .foregroundColor(Color.primaryBackground)
+        .background(Color.white)
+        .cornerRadius(10)
+    }
 }
 
+#if DEBUG
 #Preview {
     CartView(viewModel: PointOfSaleDashboardViewModel(products: ProductFactory.makeFakeProducts()))
 }
+#endif

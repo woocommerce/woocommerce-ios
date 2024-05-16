@@ -19,7 +19,7 @@ final class PointOfSaleHistoryViewModel: ObservableObject {
     func endSession() {
         sessionStart = nil
     }
-    
+
     var itemsAmount: Int {
         let amount = items.reduce(0) { $0 + $1.amountInCents }
         return amount

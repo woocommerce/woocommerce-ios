@@ -29,7 +29,7 @@ struct PointOfSaleHistoryView: View {
         formatter.unitsStyle = .abbreviated
         return formatter
     }()
-    
+
     private let currencyFormatter: NumberFormatter = {
         let formatter = NumberFormatter()
         formatter.numberStyle = .currency
@@ -57,7 +57,7 @@ struct PointOfSaleHistoryView: View {
         }
         .foregroundColor(Color.primaryText)
     }
-    
+
     @ViewBuilder
     private var transactionsAmountView: some View {
         let totalAmount = Double(viewModel.itemsAmount) / 100.0

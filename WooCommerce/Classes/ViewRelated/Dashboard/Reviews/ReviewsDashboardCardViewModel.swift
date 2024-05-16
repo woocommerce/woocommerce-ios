@@ -45,18 +45,16 @@ final class ReviewsDashboardCardViewModel: ObservableObject {
 
     /// ResultsController for ProductReview
     private lazy var productReviewsResultsController: ResultsController<StorageProductReview> = {
-        let predicate = NSPredicate(format: "siteID == %lld", siteID)
         let sortDescriptor = NSSortDescriptor(keyPath: \StorageProductReview.dateCreated, ascending: false)
         return ResultsController<StorageProductReview>(storageManager: storageManager,
-                                                                        matching: predicate,
-                                                                        fetchLimit: Constants.numberOfItems,
-                                                                        sortedBy: [sortDescriptor])
+                                                       matching: sitePredicate(),
+                                                       fetchLimit: Constants.numberOfItems,
+                                                       sortedBy: [sortDescriptor])
     }()
 
     /// ResultsController for Product
     private lazy var productsResultsController: ResultsController<StorageProduct> = {
-        let predicate = NSPredicate(format: "siteID == %lld", siteID)
-        return ResultsController<StorageProduct>(storageManager: storageManager, matching: predicate, sortedBy: [])
+        return ResultsController<StorageProduct>(storageManager: storageManager, matching: sitePredicate(), sortedBy: [])
     }()
 
     func dismissReviews() {
@@ -80,6 +78,12 @@ final class ReviewsDashboardCardViewModel: ObservableObject {
 
 // MARK: - Private helpers
 private extension ReviewsDashboardCardViewModel {
+    /// Predicate to entities that belong to the current store
+    ///
+    func sitePredicate() -> NSPredicate {
+        return NSPredicate(format: "siteID == %lld", siteID)
+    }
+
     @MainActor
     func loadReviews() async throws -> [ProductReview] {
         try await withCheckedThrowingContinuation { continuation in

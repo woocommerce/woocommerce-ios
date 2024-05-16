@@ -30,6 +30,10 @@
 		265C99D828B93F04005E6117 /* ColorPalette.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 265C99D728B93F04005E6117 /* ColorPalette.xcassets */; };
 		265C99DD28B941D5005E6117 /* UIColor+Muriel-Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 265C99DC28B941D5005E6117 /* UIColor+Muriel-Tests.swift */; };
 		265C99DF28B94271005E6117 /* MurielColorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 265C99DE28B94271005E6117 /* MurielColorTests.swift */; };
+		269FFA4C2BF5AFC8004E6B86 /* CurrencySettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9C9C65C283E71C8001B879F /* CurrencySettings.swift */; };
+		269FFA4D2BF5AFCF004E6B86 /* CurrencyCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = B987B06E284540D300C53CF6 /* CurrencyCode.swift */; };
+		269FFA4F2BF5B040004E6B86 /* Codegen in Frameworks */ = {isa = PBXBuildFile; productRef = 269FFA4E2BF5B040004E6B86 /* Codegen */; };
+		269FFA502BF5B040004E6B86 /* Codegen in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 269FFA4E2BF5B040004E6B86 /* Codegen */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		26AF1F5328B8362800937BA9 /* UIColor+SemanticColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26AF1F4F28B8362800937BA9 /* UIColor+SemanticColors.swift */; };
 		26AF1F5428B8362800937BA9 /* ColorStudio.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26AF1F5028B8362800937BA9 /* ColorStudio.swift */; };
 		26AF1F5528B8362800937BA9 /* UIColor+ColorStudio.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26AF1F5128B8362800937BA9 /* UIColor+ColorStudio.swift */; };
@@ -78,6 +82,17 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		269FFA512BF5B040004E6B86 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				269FFA502BF5B040004E6B86 /* Codegen in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -153,6 +168,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				269FFA4F2BF5B040004E6B86 /* Codegen in Frameworks */,
 				7A8A7FB1C1B872009917940A /* Pods_WooFoundationWatchOS.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -431,12 +447,16 @@
 				264E9E972BF4037D009C48FD /* Sources */,
 				264E9E982BF4037D009C48FD /* Frameworks */,
 				264E9E992BF4037D009C48FD /* Resources */,
+				269FFA512BF5B040004E6B86 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			name = WooFoundationWatchOS;
+			packageProductDependencies = (
+				269FFA4E2BF5B040004E6B86 /* Codegen */,
+			);
 			productName = WooFoundationWatchOS;
 			productReference = 264E9E9B2BF4037D009C48FD /* WooFoundationWatchOS.framework */;
 			productType = "com.apple.product-type.framework";
@@ -645,6 +665,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				264E9EA32BF403E1009C48FD /* Date+StartAndEnd.swift in Sources */,
+				269FFA4C2BF5AFC8004E6B86 /* CurrencySettings.swift in Sources */,
+				269FFA4D2BF5AFCF004E6B86 /* CurrencyCode.swift in Sources */,
 				264E9EA42BF4040E009C48FD /* Logging.swift in Sources */,
 				264E9EA52BF40411009C48FD /* LogErrorAndExit.swift in Sources */,
 			);
@@ -1238,6 +1260,10 @@
 			productName = TestKit;
 		};
 		20AD34D22B0CDB8900F38F44 /* Codegen */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Codegen;
+		};
+		269FFA4E2BF5B040004E6B86 /* Codegen */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Codegen;
 		};

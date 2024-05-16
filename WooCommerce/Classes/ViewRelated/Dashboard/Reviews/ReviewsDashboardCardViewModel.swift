@@ -19,11 +19,12 @@ final class ReviewsDashboardCardViewModel: ObservableObject {
         case approved
     }
 
+    @Published private(set) var data: [ProductReview] = []
     @Published private(set) var syncingData = false
     @Published private(set) var syncingError: Error?
 
     private let stores: StoresManager
-    private let storage: StorageManagerType
+    private let storageManager: StorageManagerType
     private let analytics: Analytics
 
     public let siteID: Int64
@@ -31,13 +32,26 @@ final class ReviewsDashboardCardViewModel: ObservableObject {
 
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
-         storage: StorageManagerType = ServiceLocator.storageManager,
+         storageManager: StorageManagerType = ServiceLocator.storageManager,
          analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
         self.stores = stores
-        self.storage = storage
+        self.storageManager = storageManager
         self.analytics = analytics
+
+        configureResultsController()
     }
+
+    /// Reviews ResultsController
+    private lazy var resultsController: ResultsController<StorageProductReview> = {
+        let predicate = NSPredicate(format: "siteID == %lld", siteID)
+        let sortDescriptor = NSSortDescriptor(keyPath: \StorageProductReview.dateCreated, ascending: false)
+        let resultsController = ResultsController<StorageProductReview>(storageManager: storageManager,
+                                                                        matching: predicate,
+                                                                        fetchLimit: Constants.numberOfItems,
+                                                                        sortedBy: [sortDescriptor])
+        return resultsController
+    }()
 
     func dismissReviews() {
         // TODO: add tracking
@@ -69,6 +83,28 @@ private extension ReviewsDashboardCardViewModel {
                 continuation.resume(with: result)
             })
         }
+    }
+
+
+    /// Performs initial fetch from storage and updates results.
+    func configureResultsController() {
+        resultsController.onDidChangeContent = { [weak self] in
+            self?.updateResults()
+        }
+        resultsController.onDidResetContent = { [weak self] in
+            self?.updateResults()
+        }
+
+        do {
+            try resultsController.performFetch()
+        } catch {
+            ServiceLocator.crashLogging.logError(error)
+        }
+    }
+
+    /// Updates data
+    func updateResults() {
+        data = resultsController.fetchedObjects
     }
 }
 

@@ -41,8 +41,10 @@ struct ReviewsDashboardCard: View {
                 .shimmering(active: viewModel.syncingData)
             Divider()
 
-            ForEach(Array(dummyData.enumerated()), id: \.element.reviewID) { index, review in
-                ReviewRow(for: review, isLastItem: index == dummyData.count-1)
+            if viewModel.data.isNotEmpty {
+                ForEach(Array(viewModel.data.enumerated()), id: \.element.reviewID) { index, review in
+                    ReviewRow(for: review, isLastItem: index == dummyData.count-1)
+                }
             }
             Divider()
             viewAllReviewsButton

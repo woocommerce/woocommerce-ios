@@ -53,8 +53,8 @@ extension CouponsRemoteProtocol {
     public func loadCoupons(for siteID: Int64, by couponsIDs: [Int64], completion: @escaping (Result<[Coupon], Error>) -> Void) {
         loadCoupons(for: siteID,
                     by: couponsIDs,
-                    pageNumber: ProductsRemote.Default.pageNumber,
-                    pageSize: ProductsRemote.Default.pageSize,
+                    pageNumber: CouponsRemote.Default.pageNumber,
+                    pageSize: CouponsRemote.Default.pageSize,
                     completion: completion)
     }
 }

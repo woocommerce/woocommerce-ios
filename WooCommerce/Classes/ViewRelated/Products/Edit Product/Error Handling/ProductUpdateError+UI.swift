@@ -9,12 +9,6 @@ extension ProductUpdateError {
         case .variationInvalidImageId:
             return NSLocalizedString("Cannot update product",
                                      comment: "The title of the alert when there is an error removing the image from a Product Variation if WooCommerce <4.7")
-        case .invalidMaxQuantity:
-            return NSLocalizedString("Invalid Max Quantity",
-                                     comment: "The title of the alert when there is an error updating the max quantity")
-        case .invalidMinQuantity:
-            return NSLocalizedString("Invalid Min Quantity",
-                                     comment: "The title of the alert when there is an error updating the max quantity")
         default:
             return nil
         }

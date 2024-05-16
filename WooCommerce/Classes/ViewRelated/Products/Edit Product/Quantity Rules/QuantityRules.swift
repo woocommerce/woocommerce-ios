@@ -27,7 +27,10 @@ struct QuantityRules: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading) {
-                TitleAndTextFieldRow(title: Localization.minQuantity, placeholder: Localization.noMinQuantity, text: $viewModel.minQuantity)
+                TitleAndTextFieldRow(title: Localization.minQuantity, 
+                                     placeholder: Localization.noMinQuantity,
+                                     text: $viewModel.minQuantity,
+                                     keyboardType: .asciiCapableNumberPad)
                 Divider()
                     .padding(.leading)
                     .padding(.trailing, insets: -safeAreaInsets)
@@ -42,7 +45,10 @@ struct QuantityRules: View {
                     .padding(.trailing, insets: -safeAreaInsets)
 
                 // Group of
-                TitleAndTextFieldRow(title: Localization.groupOf, placeholder: Localization.noGroupOfQuantity, text: $viewModel.groupOf)
+                TitleAndTextFieldRow(title: Localization.groupOf, 
+                                     placeholder: Localization.noGroupOfQuantity,
+                                     text: $viewModel.groupOf,
+                                     keyboardType: .asciiCapableNumberPad)
             }
             .padding(.horizontal, insets: safeAreaInsets)
             .addingTopAndBottomDividers()

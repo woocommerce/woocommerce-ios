@@ -32,7 +32,7 @@ struct ReviewsDashboardCard: View {
 
             if viewModel.data.isNotEmpty {
                 ForEach(Array(viewModel.data.enumerated()), id: \.element.review.reviewID) { index, reviewViewModel in
-                    ReviewRow(for: reviewViewModel, isLastItem: index == viewModel.data.count-1)
+                    reviewRow(for: reviewViewModel, isLastItem: index == viewModel.data.count-1)
                 }
                 .redacted(reason: viewModel.syncingData ? [.placeholder] : [])
                 .shimmering(active: viewModel.syncingData)
@@ -106,7 +106,7 @@ private extension ReviewsDashboardCard {
         }
     }
 
-    func ReviewRow(for viewModel: ReviewViewModel, isLastItem: Bool) -> some View {
+    func reviewRow(for viewModel: ReviewViewModel, isLastItem: Bool) -> some View {
         HStack(alignment: .top, spacing: 0) {
             Image(systemName: "bubble.fill")
                 .foregroundStyle(viewModel.review.status == .hold ? Color.secondary : Color(.wooCommercePurple(.shade60)))

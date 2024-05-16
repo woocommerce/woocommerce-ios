@@ -746,19 +746,6 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
     }
 }
 
-/// Min/Max Quantities. Sync values to API requirements
-/// https://woocommerce.com/document/minmax-quantities/#section-6
-///
-private extension Optional where Wrapped == String {
-    var refinedMinMaxQuantityEmptyValue: String? {
-        guard let self = self else {
-            return nil
-        }
-
-        return self.isEmpty ? "0" : self
-    }
-}
-
 /// Defines all of the Product CodingKeys
 ///
 private extension Product {

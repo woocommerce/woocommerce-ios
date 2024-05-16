@@ -35,7 +35,6 @@ struct CartView: View {
 /// View sub-components
 ///
 private extension CartView {
-    @ViewBuilder
     var checkoutButton: some View {
         Button("Checkout") {
             viewModel.submitCart()

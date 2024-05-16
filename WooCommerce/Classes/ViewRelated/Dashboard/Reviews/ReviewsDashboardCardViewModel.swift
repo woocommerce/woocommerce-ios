@@ -43,6 +43,39 @@ final class ReviewsDashboardCardViewModel: ObservableObject {
         // TODO: add tracking
         onDismiss?()
     }
+
+    @MainActor
+    func reloadData() async {
+        syncingData = true
+        syncingError = nil
+        do {
+            // Ignoring the result from remote as we're using storage as the single source of truth
+            _ = try await loadReviews()
+        } catch {
+            syncingError = error
+        }
+        syncingData = false
+    }
+}
+
+// MARK: - Private helpers
+private extension ReviewsDashboardCardViewModel {
+    @MainActor
+    func loadReviews() async throws -> [ProductReview] {
+        try await withCheckedThrowingContinuation { continuation in
+            stores.dispatch(ProductReviewAction.synchronizeProductReviews(siteID: siteID,
+                                                                          pageNumber: 1,
+                                                                          pageSize: Constants.numberOfItems) { result in
+                continuation.resume(with: result)
+            })
+        }
+    }
+}
+
+private extension ReviewsDashboardCardViewModel {
+    enum Constants {
+         static let numberOfItems = 3
+     }
 }
 
 extension ReviewsDashboardCardViewModel.ReviewsFilter {

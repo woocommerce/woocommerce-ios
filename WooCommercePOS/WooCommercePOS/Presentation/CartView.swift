@@ -23,16 +23,20 @@ struct CartView: View {
                 .padding(.horizontal, 32)
             }
             Spacer()
-            checkoutButton()
+            checkoutButton
                 .padding(.horizontal, 32)
 
         }
         .frame(maxWidth: .infinity)
         .background(Color.secondaryBackground)
     }
+}
 
+/// View sub-components
+///
+private extension CartView {
     @ViewBuilder
-    private func checkoutButton() -> some View {
+    var checkoutButton: some View {
         Button("Checkout") {
             viewModel.submitCart()
         }

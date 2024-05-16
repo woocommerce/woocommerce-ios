@@ -1,7 +1,6 @@
 import SwiftUI
 import Kingfisher
 import Yosemite
-import WooCommercePOS
 
 /// This view will be embedded inside the `HubMenuViewController`
 /// and will be the entry point of the `Menu` Tab.
@@ -169,7 +168,7 @@ private extension HubMenu {
                 CustomersListView(viewModel: .init(siteID: viewModel.siteID))
             case HubMenuViewModel.PointOfSaleEntryPoint.id:
                 PointOfSalePaymentsTestView(viewModel: viewModel.pointOfSalePaymentsTestViewModel)
-                WooCommercePOS.PointOfSaleEntryPointView(hideAppTabBar: { isHidden in
+                PointOfSaleEntryPointView(hideAppTabBar: { isHidden in
                     AppDelegate.shared.setShouldHideTabBar(isHidden)
                 })
             default:

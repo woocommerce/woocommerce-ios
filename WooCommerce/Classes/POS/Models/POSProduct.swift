@@ -1,5 +1,6 @@
+import Foundation
 
-public struct Product {
+public struct POSProduct {
     public let itemID: UUID
     public let productID: Int64
     public let name: String

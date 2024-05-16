@@ -66,6 +66,11 @@ public final class CouponStore: Store {
             createCoupon(coupon, siteTimezone: siteTimezone, onCompletion: onCompletion)
         case .loadCouponReport(let siteID, let couponID, let startDate, let onCompletion):
             loadCouponReport(siteID: siteID, couponID: couponID, startDate: startDate, onCompletion: onCompletion)
+        case .loadMostActiveCoupons(let siteID, let timeRange, let siteTimezone, let onCompletion):
+            loadMostActiveCoupons(siteID: siteID,
+                                  timeRange: timeRange,
+                                  siteTimezone: siteTimezone,
+                                  onCompletion: onCompletion)
         case .searchCoupons(let siteID, let keyword, let pageNumber, let pageSize, let onCompletion):
             searchCoupons(siteID: siteID,
                           keyword: keyword,
@@ -204,6 +209,25 @@ private extension CouponStore {
     ///
     func loadCouponReport(siteID: Int64, couponID: Int64, startDate: Date, onCompletion: @escaping (Result<CouponReport, Error>) -> Void) {
         remote.loadCouponReport(for: siteID, couponID: couponID, from: startDate, completion: onCompletion)
+    }
+
+    /// Loads top 3 most active coupons report within the specified time range and site ID.
+    ///
+    /// - `siteID`: site ID.
+    /// - `timeRange`: Time range to fetch report for.
+    /// - `siteTimezone`: site's timezone
+    /// - `onCompletion`: invoked when the reports are fetched.
+    ///
+    func loadMostActiveCoupons(siteID: Int64,
+                               timeRange: StatsTimeRangeV4,
+                               siteTimezone: TimeZone,
+                               onCompletion: @escaping (Result<[CouponReport], Error>) -> Void) {
+        let to = timeRange.latestDate(currentDate: Date(), siteTimezone: siteTimezone)
+        let from = timeRange.earliestDate(latestDate: to, siteTimezone: siteTimezone)
+        remote.loadMostActiveCoupons(for: siteID,
+                                     from: from,
+                                     to: to,
+                                     completion: onCompletion)
     }
 
     /// Search coupons from a Site that match a specified keyword.

@@ -244,17 +244,17 @@ extension Coupon {
             "Reads like: 10 Categories"
         )
         static let summaryFormat = NSLocalizedString(
-            "%1$@ off %2$@",
+            "%1$@ off · %2$@",
             comment: "Summary line for a coupon, with the discounted amount and number of products and categories that the coupon is limited to. " +
-            "Reads like: '10% off all products' or '$15 off 2 Product 1 Category'"
+            "Reads like: '10% off · all products' or '$15 off · 2 Product 1 Category'"
         )
         static let allWithException = NSLocalizedString(
-            "All Products excl. %1$@",
-            comment: "Exception rule for a coupon. Reads like: All Products excl. 2 Products"
+            "All Products · Excl. %1$@",
+            comment: "Exception rule for a coupon. Reads like: All Products · Excl. 2 Products"
         )
         static let ruleWithException = NSLocalizedString(
-            "%1$@ excl. %2$@",
-            comment: "Exception rule for a coupon. Reads like: 3 Products excl. 1 Category"
+            "%1$@ · Excl. %2$@",
+            comment: "Exception rule for a coupon. Reads like: 3 Products · Excl. 1 Category"
         )
         static let combinedRules = NSLocalizedString(
             "%1$@, %2$@",

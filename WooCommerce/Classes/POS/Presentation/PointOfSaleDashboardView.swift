@@ -12,12 +12,14 @@ struct PointOfSaleDashboardView: View {
     var body: some View {
         VStack {
             Text("WooCommerce Point Of Sale")
-                .foregroundColor(Color.primaryText)
+                .foregroundColor(Color.white)
             HStack {
                 ProductGridView(viewModel: viewModel)
+                    .background(Color.secondaryBackground)
                     .frame(maxWidth: .infinity)
                 Spacer()
                 CartView(viewModel: viewModel)
+                    .background(Color.secondaryBackground)
                     .frame(maxWidth: .infinity)
             }
         }
@@ -31,7 +33,7 @@ struct PointOfSaleDashboardView: View {
             })
             ToolbarItem(placement: .principal, content: {
                 Button("Reader not connected") {
-                    debugPrint("Not implemented")
+                    viewModel.showCardReaderConnection()
                 }
             })
             ToolbarItem(placement: .primaryAction, content: {
@@ -40,9 +42,13 @@ struct PointOfSaleDashboardView: View {
                 }
             })
         }
+        .sheet(isPresented: $viewModel.showsCardReaderSheet, content: {
+            CardReaderConnectionView(viewModel: viewModel.cardReaderConnectionViewModel)
+        })
     }
 }
 
 #Preview {
-    PointOfSaleDashboardView(viewModel: PointOfSaleDashboardViewModel(products: ProductFactory.makeFakeProducts()))
+    PointOfSaleDashboardView(viewModel: PointOfSaleDashboardViewModel(products: POSProductFactory.makeFakeProducts(),
+                                                                      cardReaderConnectionViewModel: .init(state: .connectingToReader)))
 }

@@ -116,7 +116,7 @@ final class CouponWooTests: XCTestCase {
         let sampleCoupon = Coupon.fake().copy(productIds: [12, 23, 45], excludedProductIds: [], productCategories: [], excludedProductCategories: [11])
 
         // Then
-        let appliedTo = String(format: NSLocalizedString("%d Products excl. %d Category", comment: ""), 3, 1)
+        let appliedTo = String(format: NSLocalizedString("%d Products · Excl. %d Category", comment: ""), 3, 1)
         XCTAssertTrue(sampleCoupon.summary().contains(appliedTo))
     }
 
@@ -125,7 +125,7 @@ final class CouponWooTests: XCTestCase {
         let sampleCoupon = Coupon.fake().copy(productIds: [], excludedProductIds: [11, 22], productCategories: [1, 2, 3], excludedProductCategories: [])
 
         // Then
-        let appliedTo = String(format: NSLocalizedString("%d Categories excl. %d Products", comment: ""), 3, 2)
+        let appliedTo = String(format: NSLocalizedString("%d Categories · Excl. %d Products", comment: ""), 3, 2)
         XCTAssertTrue(sampleCoupon.summary().contains(appliedTo))
     }
 
@@ -134,7 +134,7 @@ final class CouponWooTests: XCTestCase {
         let sampleCoupon = Coupon.fake().copy(productIds: [], excludedProductIds: [11, 22], productCategories: [], excludedProductCategories: [])
 
         // Then
-        let appliedTo = String(format: NSLocalizedString("All Products excl. %d Products", comment: ""), 2)
+        let appliedTo = String(format: NSLocalizedString("All Products · Excl. %d Products", comment: ""), 2)
         XCTAssertTrue(sampleCoupon.summary().contains(appliedTo))
     }
 
@@ -143,7 +143,7 @@ final class CouponWooTests: XCTestCase {
         let sampleCoupon = Coupon.fake().copy(productIds: [], excludedProductIds: [], productCategories: [], excludedProductCategories: [11, 22])
 
         // Then
-        let appliedTo = String(format: NSLocalizedString("All Products excl. %d Categories", comment: ""), 2)
+        let appliedTo = String(format: NSLocalizedString("All Products · Excl. %d Categories", comment: ""), 2)
         XCTAssertTrue(sampleCoupon.summary().contains(appliedTo))
     }
 }

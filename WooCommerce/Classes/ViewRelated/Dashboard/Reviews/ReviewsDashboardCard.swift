@@ -32,7 +32,7 @@ struct ReviewsDashboardCard: View {
 
             if viewModel.data.isNotEmpty {
                 ForEach(Array(viewModel.data.enumerated()), id: \.element.review.reviewID) { index, reviewViewModel in
-                    ReviewRow(for: reviewViewModel, isLastItem: index == dummyData.count-1)
+                    ReviewRow(for: reviewViewModel, isLastItem: index == viewModel.data.count-1)
                 }
                 .redacted(reason: viewModel.syncingData ? [.placeholder] : [])
                 .shimmering(active: viewModel.syncingData)

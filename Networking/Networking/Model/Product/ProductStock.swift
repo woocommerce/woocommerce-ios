@@ -7,6 +7,7 @@ public struct ProductStock: Decodable, GeneratedCopiable, Equatable, GeneratedFa
     
     public let siteID: Int64
     public let productID: Int64
+    public let name: String
 
     public let sku: String?
     public let manageStock: Bool
@@ -19,12 +20,14 @@ public struct ProductStock: Decodable, GeneratedCopiable, Equatable, GeneratedFa
 
     public init(siteID: Int64,
                 productID: Int64,
-                sku: String? = nil,
+                name: String,
+                sku: String?,
                 manageStock: Bool,
                 stockQuantity: Decimal?,
                 stockStatusKey: String) {
         self.siteID = siteID
         self.productID = productID
+        self.name = name
         self.sku = sku
         self.manageStock = manageStock
         self.stockQuantity = stockQuantity
@@ -40,6 +43,7 @@ public struct ProductStock: Decodable, GeneratedCopiable, Equatable, GeneratedFa
 
         let container = try decoder.container(keyedBy: CodingKeys.self)
         let productID = try container.decode(Int64.self, forKey: .productID)
+        let name = try container.decode(String.self, forKey: .name)
 
         // Even though a plain install of WooCommerce Core provides String values,
         // some plugins alter the field value from String to Int or Decimal.
@@ -71,6 +75,8 @@ public struct ProductStock: Decodable, GeneratedCopiable, Equatable, GeneratedFa
 
         self.init(siteID: siteID, 
                   productID: productID,
+                  name: name,
+                  sku: sku,
                   manageStock: manageStock,
                   stockQuantity: stockQuantity,
                   stockStatusKey: stockStatusKey)
@@ -83,7 +89,7 @@ private extension ProductStock {
 
     enum CodingKeys: String, CodingKey {
         case productID  = "id"
-
+        case name
         case sku            = "sku"
 
         case manageStock    = "manage_stock"

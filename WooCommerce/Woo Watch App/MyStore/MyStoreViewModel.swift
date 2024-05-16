@@ -1,14 +1,20 @@
 import Foundation
 import NetworkingWatchOS
 
+/// View Model for the MyStoreView
+///
 final class MyStoreViewModel: ObservableObject {
 
+    /// Enum that tracks the state of the view.
+    ///
     enum ViewState {
         case idle
         case loading
         case error
         case loaded(revenue: String, totalOrders: String, totalVisitors: String, conversion: String)
 
+        /// Temporary description.
+        ///
         var description: String {
             switch self {
             case .idle:
@@ -31,6 +37,8 @@ final class MyStoreViewModel: ObservableObject {
         self.dependencies = dependencies
     }
 
+    /// Fetch stats and update the view state based on the result.
+    ///
     @MainActor
     func fetchStats() async {
         self.viewState = .loading

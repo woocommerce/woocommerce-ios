@@ -1997,11 +1997,7 @@ private extension ProductFormViewController {
 private extension ProductFormViewController {
     func showQuantityRules() {
         let quantityRulesViewModel = QuantityRulesViewModel(product: product) { [weak self] minQuantity, maxQuantity, groupOf in
-
-            defer {
-                self?.navigationController?.popViewController(animated: true)
-            }
-
+            self?.navigationController?.popViewController(animated: true)
             self?.viewModel.updateQuantityRules(minQuantity: minQuantity, maxQuantity: maxQuantity, groupOf: groupOf)
         }
         let viewController = QuantityRulesViewController(viewModel: quantityRulesViewModel)

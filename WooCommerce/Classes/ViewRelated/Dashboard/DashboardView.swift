@@ -2,6 +2,7 @@ import SwiftUI
 import enum Yosemite.StatsTimeRangeV4
 import struct Yosemite.Site
 import struct Yosemite.StoreOnboardingTask
+import struct Yosemite.Coupon
 
 /// View for the dashboard screen
 ///
@@ -36,6 +37,11 @@ struct DashboardView: View {
     var onViewAllAnalytics: ((_ siteID: Int64,
                               _ timeZone: TimeZone,
                               _ timeRange: StatsTimeRangeV4) -> Void)?
+    /// Set externally in the hosting controller.
+    var onViewAllCoupons: (() -> Void)?
+
+    /// Set externally in the hosting controller.
+    var onViewCouponDetail: ((_ coupon: Coupon) -> Void)?
 
     private let storePlanSynchronizer = ServiceLocator.storePlanSynchronizer
     private let connectivityObserver = ServiceLocator.connectivityObserver
@@ -175,7 +181,14 @@ private extension DashboardView {
                         InboxDashboardCard(viewModel: viewModel.inboxViewModel)
                     case .reviews:
                         ReviewsDashboardCard(viewModel: viewModel.reviewsViewModel)
-                    case .coupons, .lastOrders, .stock:
+                    case .coupons:
+                        MostActiveCouponsCard(viewModel: viewModel.mostActiveCouponsViewModel,
+                                              onViewAllCoupons: {
+                            onViewAllCoupons?()
+                        }, onViewCouponDetail: { coupon in
+                            onViewCouponDetail?(coupon)
+                        })
+                    case .lastOrders, .stock:
                         EmptyView()
                     }
 

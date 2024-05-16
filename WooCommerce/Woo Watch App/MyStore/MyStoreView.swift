@@ -1,7 +1,7 @@
 import SwiftUI
 import NetworkingWatchOS
 
-struct ContentView: View {
+struct MyStoreView: View {
 
     @Environment(\.dependencies) private var dependencies
 
@@ -24,5 +24,5 @@ struct ContentView: View {
 }
 
 #Preview {
-    ContentView(dependencies: .fake())
+    MyStoreView(dependencies: .fake())
 }

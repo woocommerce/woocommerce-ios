@@ -8,7 +8,7 @@ struct Woo_Watch_AppApp: App {
     var body: some Scene {
         WindowGroup {
             if let dependencies = phoneDependencySynchronizer.dependencies {
-                ContentView(dependencies: dependencies)
+                MyStoreView(dependencies: dependencies)
                     .environment(\.dependencies, dependencies)
             } else {
                 ConnectView()

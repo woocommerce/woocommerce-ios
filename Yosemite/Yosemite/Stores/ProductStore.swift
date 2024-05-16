@@ -1183,8 +1183,7 @@ public enum ProductUpdateError: Error, Equatable {
     case variationInvalidImageId
     case unexpected
     case unknown(error: AnyError)
-    case invalidMaxQuantity(message: String)
-    case invalidMinQuantity(message: String)
+    case generic(message: String)
 
     init(error: Error) {
         guard let dotcomError = error as? DotcomError else {
@@ -1217,10 +1216,8 @@ public enum ProductUpdateError: Error, Equatable {
                 return .invalidSKU
             case .variationInvalidImageId:
                 return .variationInvalidImageId
-            case .invalidMaxQuantity, .invalidVariationMaxQuantity:
-                return .invalidMaxQuantity(message: message ?? "")
-            case .invalidMinQuantity, .invalidVariationMinQuantity:
-                return .invalidMaxQuantity(message: message ?? "")
+            case .invalidMaxQuantity, .invalidMinQuantity, .invalidVariationMaxQuantity, .invalidVariationMinQuantity:
+                return .generic(message: message ?? "")
             }
         }
     }

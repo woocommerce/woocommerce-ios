@@ -24,9 +24,7 @@ extension ProductUpdateError: LocalizedError {
         case .invalidSKU:
             return NSLocalizedString("This SKU is used on another product or is invalid.",
                                      comment: "The message of the alert when there is an error updating the product SKU")
-        case .invalidMaxQuantity(let message):
-            return message
-        case .invalidMinQuantity(let message):
+        case .generic(let message):
             return message
         case .unknown:
             return NSLocalizedString("Unexpected error", comment: "The message of the alert when there is an unexpected error updating the product")

@@ -39,44 +39,4 @@ extension StatsTimeRangeV4 {
             )
         }
     }
-
-    /// Returns the latest date to be shown for the time range, given the current date and site time zone
-    ///
-    /// - Parameters:
-    ///   - currentDate: the date which the latest date is based on
-    ///   - siteTimezone: site time zone, which the stats data are based on
-    func latestDate(currentDate: Date, siteTimezone: TimeZone) -> Date {
-        switch self {
-        case .today:
-            return currentDate.endOfDay(timezone: siteTimezone)
-        case .thisWeek:
-            return currentDate.endOfWeek(timezone: siteTimezone)!
-        case .thisMonth:
-            return currentDate.endOfMonth(timezone: siteTimezone)!
-        case .thisYear:
-            return currentDate.endOfYear(timezone: siteTimezone)!
-        case .custom(_, let toDate):
-            return toDate.endOfDay(timezone: siteTimezone)
-        }
-    }
-
-    /// Returns the earliest date to be shown for the time range, given the latest date and site time zone
-    ///
-    /// - Parameters:
-    ///   - latestDate: the date which the earliest date is based on
-    ///   - siteTimezone: site time zone, which the stats data are based on
-    func earliestDate(latestDate: Date, siteTimezone: TimeZone) -> Date {
-        switch self {
-        case .today:
-            return latestDate.startOfDay(timezone: siteTimezone)
-        case .thisWeek:
-            return latestDate.startOfWeek(timezone: siteTimezone)!
-        case .thisMonth:
-            return latestDate.startOfMonth(timezone: siteTimezone)!
-        case .thisYear:
-            return latestDate.startOfYear(timezone: siteTimezone)!
-        case .custom(let startDate, _):
-            return startDate.startOfDay(timezone: siteTimezone)
-        }
-    }
 }

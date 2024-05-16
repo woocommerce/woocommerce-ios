@@ -6280,6 +6280,7 @@
 			children = (
 				026826B02BF59E170036F959 /* CardReaderConnection */,
 				026826A72BF59DF70036F959 /* PointOfSaleEntryPointView.swift */,
+				2063E4DF2BF517C600AAE96B /* PointOfSalePaymentsTestView.swift */,
 				026826A52BF59DF60036F959 /* PointOfSaleDashboardView.swift */,
 				026826A82BF59DF70036F959 /* ProductGridView.swift */,
 				026826A32BF59DF60036F959 /* CartView.swift */,
@@ -7185,14 +7186,6 @@
 				2063E4DC2BF36EF000AAE96B /* CardPaymentsAdaptor.swift */,
 			);
 			path = CardPresentPayments;
-			sourceTree = "<group>";
-		};
-		2063E4DE2BF517B100AAE96B /* PointOfSale */ = {
-			isa = PBXGroup;
-			children = (
-				2063E4DF2BF517C600AAE96B /* PointOfSalePaymentsTestView.swift */,
-			);
-			path = PointOfSale;
 			sourceTree = "<group>";
 		};
 		20AE33C32B0510AD00527B60 /* Destinations */ = {
@@ -9430,7 +9423,6 @@
 		B56DB3F12049C0B800D4AA8E /* Classes */ = {
 			isa = PBXGroup;
 			children = (
-				2063E4DE2BF517B100AAE96B /* PointOfSale */,
 				2063E4DB2BF36EBF00AAE96B /* CardPresentPayments */,
 				20AE33C32B0510AD00527B60 /* Destinations */,
 				02D7E7BF2A4CA8E50003049A /* LocalAnnouncements */,

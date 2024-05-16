@@ -1,6 +1,7 @@
+import Foundation
 
 struct CartProduct {
     let id: UUID
-    let product: Product
+    let product: POSProduct
     let quantity: Int
 }

@@ -27,5 +27,6 @@ struct ProductGridView: View {
 }
 
 #Preview {
-    ProductGridView(viewModel: PointOfSaleDashboardViewModel(products: ProductFactory.makeFakeProducts()))
+    ProductGridView(viewModel: PointOfSaleDashboardViewModel(products: POSProductFactory.makeFakeProducts(),
+                                                             cardReaderConnectionViewModel: .init(state: .connectingToReader)))
 }

@@ -86,13 +86,6 @@
         "identifier" : "0270C08927069A8900FC799F",
         "name" : "ExperimentsTests"
       }
-    },
-    {
-      "target" : {
-        "containerPath" : "container:..\/WooCommercePOS\/WooCommercePOS.xcodeproj",
-        "identifier" : "200B84992BEB984700EAAB23",
-        "name" : "WooCommercePOSTests"
-      }
     }
   ],
   "version" : 1

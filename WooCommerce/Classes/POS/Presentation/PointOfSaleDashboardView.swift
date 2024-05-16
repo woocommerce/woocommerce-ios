@@ -33,7 +33,7 @@ struct PointOfSaleDashboardView: View {
             })
             ToolbarItem(placement: .principal, content: {
                 Button("Reader not connected") {
-                    debugPrint("Not implemented")
+                    viewModel.showCardReaderConnection()
                 }
             })
             ToolbarItem(placement: .primaryAction, content: {
@@ -42,9 +42,13 @@ struct PointOfSaleDashboardView: View {
                 }
             })
         }
+        .sheet(isPresented: $viewModel.showsCardReaderSheet, content: {
+            CardReaderConnectionView(viewModel: viewModel.cardReaderConnectionViewModel)
+        })
     }
 }
 
 #Preview {
-    PointOfSaleDashboardView(viewModel: PointOfSaleDashboardViewModel(products: ProductFactory.makeFakeProducts()))
+    PointOfSaleDashboardView(viewModel: PointOfSaleDashboardViewModel(products: POSProductFactory.makeFakeProducts(),
+                                                                      cardReaderConnectionViewModel: .init(state: .connectingToReader)))
 }

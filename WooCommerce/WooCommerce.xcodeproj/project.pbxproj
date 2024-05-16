@@ -305,6 +305,7 @@
 		026826C52BF59E410036F959 /* ReaderUpdateFailedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026826BC2BF59E410036F959 /* ReaderUpdateFailedView.swift */; };
 		026826C62BF59E410036F959 /* ReaderNotConnectedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026826BD2BF59E410036F959 /* ReaderNotConnectedView.swift */; };
 		026826C72BF59E410036F959 /* ScanningForReaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026826BE2BF59E410036F959 /* ScanningForReaderView.swift */; };
+		026826CA2BF5B7EB0036F959 /* PointOfSaleDependencies.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026826C92BF5B7EB0036F959 /* PointOfSaleDependencies.swift */; };
 		02691780232600A6002AFC20 /* ProductsTabProductViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0269177F232600A6002AFC20 /* ProductsTabProductViewModelTests.swift */; };
 		02691782232605B9002AFC20 /* PaginatedListViewControllerStateCoordinatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02691781232605B9002AFC20 /* PaginatedListViewControllerStateCoordinatorTests.swift */; };
 		0269576A23726304001BA0BF /* KeyboardFrameObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0269576923726304001BA0BF /* KeyboardFrameObserver.swift */; };
@@ -3078,6 +3079,7 @@
 		026826BC2BF59E410036F959 /* ReaderUpdateFailedView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReaderUpdateFailedView.swift; sourceTree = "<group>"; };
 		026826BD2BF59E410036F959 /* ReaderNotConnectedView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReaderNotConnectedView.swift; sourceTree = "<group>"; };
 		026826BE2BF59E410036F959 /* ScanningForReaderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScanningForReaderView.swift; sourceTree = "<group>"; };
+		026826C92BF5B7EB0036F959 /* PointOfSaleDependencies.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleDependencies.swift; sourceTree = "<group>"; };
 		0269177F232600A6002AFC20 /* ProductsTabProductViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductsTabProductViewModelTests.swift; sourceTree = "<group>"; };
 		02691781232605B9002AFC20 /* PaginatedListViewControllerStateCoordinatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaginatedListViewControllerStateCoordinatorTests.swift; sourceTree = "<group>"; };
 		0269576923726304001BA0BF /* KeyboardFrameObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardFrameObserver.swift; sourceTree = "<group>"; };
@@ -6326,6 +6328,14 @@
 			path = "UI States";
 			sourceTree = "<group>";
 		};
+		026826C82BF5B7D70036F959 /* Interface */ = {
+			isa = PBXGroup;
+			children = (
+				026826C92BF5B7EB0036F959 /* PointOfSaleDependencies.swift */,
+			);
+			path = Interface;
+			sourceTree = "<group>";
+		};
 		0269177E23260090002AFC20 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -6618,6 +6628,7 @@
 		029327662BF59D2D00D703E7 /* POS */ = {
 			isa = PBXGroup;
 			children = (
+				026826C82BF5B7D70036F959 /* Interface */,
 				026826912BF59D7A0036F959 /* ViewModels */,
 				026826942BF59D8E0036F959 /* Reusable Views */,
 				026826972BF59D9E0036F959 /* Utils */,
@@ -14578,6 +14589,7 @@
 				02E222C829FBA60F004579A1 /* WooAnalyticsEvent+ProductFormAI.swift in Sources */,
 				D8815B132638686200EDAD62 /* CardPresentModalError.swift in Sources */,
 				020ACF88299A809000B3638B /* LearnMoreAttributedText.swift in Sources */,
+				026826CA2BF5B7EB0036F959 /* PointOfSaleDependencies.swift in Sources */,
 				02EAA4CA2911004B00918DAB /* TextFieldStyles.swift in Sources */,
 				453DBF8E2387F34A006762A5 /* UICollectionViewCell+Helpers.swift in Sources */,
 				45B9C63E23A8E50D007FC4C5 /* ProductPriceSettingsViewController.swift in Sources */,

@@ -268,4 +268,13 @@ extension MockProductsRemote: ProductsRemoteProtocol {
             throw error
         }
     }
+
+    func loadStock(for siteID: Int64,
+                   with stockStatus: ProductStockStatus,
+                   pageNumber: Int,
+                   pageSize: Int,
+                   orderBy: ProductsRemote.OrderKey,
+                   order: ProductsRemote.Order) async throws -> [ProductStock] {
+        // no-op
+    }
 }

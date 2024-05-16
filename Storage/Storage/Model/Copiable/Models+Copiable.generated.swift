@@ -22,12 +22,12 @@ extension Storage.AnalyticsCard {
 extension Storage.DashboardCard {
     public func copy(
         type: CopiableProp<DashboardCard.CardType> = .copy,
-        enabled: CopiableProp<Bool> = .copy,
-        availability: CopiableProp<DashboardCard.AvailabilityState> = .copy
+        availability: CopiableProp<DashboardCard.AvailabilityState> = .copy,
+        enabled: CopiableProp<Bool> = .copy
     ) -> Storage.DashboardCard {
         let type = type ?? self.type
-        let enabled = enabled ?? self.enabled
         let availability = availability ?? self.availability
+        let enabled = enabled ?? self.enabled
 
         return Storage.DashboardCard(
             type: type,

@@ -1462,6 +1462,7 @@ extension Networking.ProductStock {
         .init(
             siteID: .fake(),
             productID: .fake(),
+            name: .fake(),
             sku: .fake(),
             manageStock: .fake(),
             stockQuantity: .fake(),

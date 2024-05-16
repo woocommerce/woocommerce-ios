@@ -21,25 +21,28 @@ public struct WatchDependencies {
         static let secret = "secret"
         static let address = "address"
         static let id = "id"
+        static let name = "name"
     }
 
-    let storeID: Int64?
-    let credentials: Credentials?
+    let storeID: Int64
+    let storeName: String
+    let credentials: Credentials
 
-    public init(storeID: Int64?, credentials: Credentials?) {
+    public init(storeID: Int64, storeName: String, credentials: Credentials) {
         self.storeID = storeID
+        self.storeName = storeName
         self.credentials = credentials
     }
 
     /// Create Dependencies from a serialized dictionary.
-    public init(dictionary: [String: Any]) {
-        let storeID: Int64? = {
-            guard let storeDic = dictionary[Keys.store] as? [String: Int64] else {
-                return nil
-            }
+    public init?(dictionary: [String: Any]) {
 
-            return storeDic[Keys.id]
-        }()
+        guard let storeDic = dictionary[Keys.store] as? [String: Any] else {
+            return nil
+        }
+
+        let storeID = storeDic[Keys.id] as? Int64
+        let storeName = storeDic[Keys.name] as? String
 
         let credentials: Credentials? = {
             guard let credentialsDic = dictionary[Keys.credentials] as? [String: String],
@@ -62,17 +65,17 @@ public struct WatchDependencies {
             }
         }()
 
-        self.init(storeID: storeID, credentials: credentials)
+        guard let storeID, let storeName, let credentials else {
+            return nil
+        }
+
+        self.init(storeID: storeID, storeName: storeName, credentials: credentials)
     }
 
     /// Dictionary to be transferred between sessions.
     ///
     public func toDictionary() -> [String: Any] {
-        guard let credentials, let storeID else {
-            return [Keys.credentials: [:], Keys.store: [:]]
-        }
-
-        return [
+        [
             Keys.credentials: [
                 Keys.type: credentials.rawType,
                 Keys.username: credentials.username,
@@ -80,7 +83,8 @@ public struct WatchDependencies {
                 Keys.address: credentials.siteAddress
             ],
             Keys.store: [
-                Keys.id: storeID
+                Keys.id: storeID,
+                Keys.name: storeName
             ]
         ]
     }

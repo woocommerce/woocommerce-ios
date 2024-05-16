@@ -8,12 +8,17 @@ import enum Networking.Credentials
 ///
 final class WatchDependenciesSynchronizer: NSObject, WCSessionDelegate {
 
+    private enum SyncState {
+        case notQueued
+        case queued(WatchDependencies?)
+    }
+
     /// Current WatchKit Session
     private let watchSession: WCSession
 
     /// Dependencies waiting to be synced.
     /// Used when we are waiting for the watch session to activate.
-    private var queuedDependencies: WatchDependencies?
+    private var queuedDependencies: SyncState = .notQueued
 
     init(watchSession: WCSession = WCSession.default) {
         self.watchSession = watchSession
@@ -27,18 +32,24 @@ final class WatchDependenciesSynchronizer: NSObject, WCSessionDelegate {
 
     /// Syncs credentials to the watch session.
     ///
-    func update(storeID: Int64?, credentials: Credentials?) {
+    func update(storeID: Int64?, storeName: String?, credentials: Credentials?) {
 
-        let dependencies = WatchDependencies(storeID: storeID, credentials: credentials)
+        let dependencies: WatchDependencies? = {
+            guard let storeID, let storeName, let credentials else {
+                return nil
+            }
+            return .init(storeID: storeID, storeName: storeName, credentials: credentials)
+        }()
 
         // Enqueue dependencies if the session is not yet activated.
         guard watchSession.activationState == .activated else {
-            queuedDependencies = dependencies
+            queuedDependencies = .queued(dependencies)
             return
         }
 
         do {
-            try watchSession.updateApplicationContext(dependencies.toDictionary())
+            let dependenciesDic = dependencies?.toDictionary() ?? [:]
+            try watchSession.updateApplicationContext(dependenciesDic)
         } catch {
             DDLogError("⛔️ Error synchronizing credentials into watch session: \(error)")
         }
@@ -47,9 +58,9 @@ final class WatchDependenciesSynchronizer: NSObject, WCSessionDelegate {
     func session(_ session: WCSession, activationDidCompleteWith activationState: WCSessionActivationState, error: Error?) {
         DDLogInfo("🔵 WatchSession activated \(activationState)")
 
-        if let queuedDependencies {
-            update(storeID: queuedDependencies.storeID, credentials: queuedDependencies.credentials)
-            self.queuedDependencies = nil
+        if case .queued(let watchDependencies) = queuedDependencies {
+            update(storeID: watchDependencies?.storeID, storeName: watchDependencies?.storeName, credentials: watchDependencies?.credentials)
+            self.queuedDependencies = .notQueued
         }
     }
 

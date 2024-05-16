@@ -189,12 +189,23 @@ def woofoundation_pods
   cocoa_lumberjack
 end
 
+def woofoundation_watchos_pods
+  cocoa_lumberjack
+end
+
 # Tools Target:
 # ================
 #
 target 'WooFoundation' do
   project 'WooFoundation/WooFoundation.xcodeproj'
   woofoundation_pods
+end
+
+target 'WooFoundationWatchOS' do
+  project 'WooFoundation/WooFoundation.xcodeproj'
+  platform :watchos, app_watchos_deployment_target.version
+
+  woofoundation_watchos_pods
 end
 
 # Unit Tests

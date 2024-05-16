@@ -3,23 +3,26 @@ import NetworkingWatchOS
 
 struct ContentView: View {
 
-    let message: String = "Logged In"
+    @Environment(\.dependencies) private var dependencies
+
+    @StateObject var viewModel: MyStoreViewModel
+
+    init(dependencies: WatchDependencies) {
+        _viewModel = StateObject(wrappedValue: MyStoreViewModel(dependencies: dependencies))
+    }
 
     var body: some View {
         VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text(message)
+            Text(dependencies.storeName)
+            Text(viewModel.viewState.description)
         }
         .padding()
         .task {
-            let credentials = Credentials(authToken: "6789")
-            print("I can compile some credentials: \(credentials)")
+            await viewModel.fetchStats()
         }
     }
 }
 
 #Preview {
-    ContentView()
+    ContentView(dependencies: .fake())
 }

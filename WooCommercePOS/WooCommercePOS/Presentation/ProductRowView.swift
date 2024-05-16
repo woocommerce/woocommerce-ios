@@ -12,22 +12,28 @@ struct ProductRowView: View {
     var body: some View {
         HStack {
             Text(cartProduct.product.name)
-                .foregroundColor(Color.white)
+                .padding(.horizontal, 32)
+                .foregroundColor(Color.primaryBackground)
+            Spacer()
             Button(action: {
                 onProductRemoveTapped?()
             }, label: {
-                Image(systemName: "minus.circle.fill")
-                    .foregroundColor(Color.white)
+                Image(systemName: "x.circle")
             })
+            .frame(width: 56, height: 56, alignment: .trailing)
+            .padding(.horizontal, 32)
+            .foregroundColor(Color.lightBlue)
+            .background(Color(.clear))
         }
-        .frame(maxWidth: .infinity)
-        .border(Color.gray, width: 1)
+        .frame(maxWidth: .infinity, idealHeight: 120)
         .foregroundColor(Color.tertiaryBackground)
     }
 }
 
+#if DEBUG
 #Preview {
     ProductRowView(cartProduct: CartProduct(id: UUID(),
                                             product: ProductFactory.makeProduct(),
                                             quantity: 2))
 }
+#endif

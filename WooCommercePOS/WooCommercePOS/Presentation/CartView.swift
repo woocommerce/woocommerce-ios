@@ -16,6 +16,7 @@ struct CartView: View {
                     viewModel.removeProductFromCart(cartProduct)
                 }
                 .background(Color.tertiaryBackground)
+                .padding(.horizontal, 32)
             }
             Spacer()
             Button("Pay now") {

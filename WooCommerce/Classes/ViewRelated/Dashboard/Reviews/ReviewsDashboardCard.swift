@@ -126,7 +126,8 @@ private extension ReviewsDashboardCard {
                 authorText(author: review.reviewer, productName: "Fallen Angel Candelabra")
                     .bodyStyle()
                     .padding(.trailing, Layout.padding)
-                reviewText(text: review.review, shouldDisplayStatus: review.status == .hold)
+                reviewText(text: formatHTMLText(for: review.review),
+                           shouldDisplayStatus: review.status == .hold)
                     .lineLimit(2)
                     .subheadlineStyle()
                     .padding(.trailing, Layout.padding)
@@ -144,6 +145,10 @@ private extension ReviewsDashboardCard {
                     .renderedIf(!isLastItem)
             }
         }
+    }
+
+    func formatHTMLText(for htmlText: String) -> String {
+        return NSAttributedString(string: htmlText.strippedHTML).trimNewlines().string
     }
 
     func authorText(author: String, productName: String) -> some View {

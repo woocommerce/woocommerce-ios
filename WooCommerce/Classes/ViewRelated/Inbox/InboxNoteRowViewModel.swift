@@ -42,7 +42,6 @@ struct InboxNoteRowViewModel: Identifiable, Equatable {
          stores: StoresManager = ServiceLocator.stores) {
         let attributedContent = note.content.htmlToAttributedString
             .addingAttributes([
-                .font: UIFont.body,
                 .foregroundColor: UIColor.secondaryLabel
             ])
         let date: String = {

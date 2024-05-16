@@ -2240,6 +2240,7 @@
 		DE1B030D268DD01A00804330 /* ReviewOrderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE1B030B268DD01A00804330 /* ReviewOrderViewController.swift */; };
 		DE1B030E268DD01A00804330 /* ReviewOrderViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = DE1B030C268DD01A00804330 /* ReviewOrderViewController.xib */; };
 		DE1B0310268EB2FB00804330 /* ReviewOrderViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE1B030F268EB2FB00804330 /* ReviewOrderViewModel.swift */; };
+		DE2004532BF4A37B00660A72 /* InboxDashboardCardViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE2004522BF4A37B00660A72 /* InboxDashboardCardViewModelTests.swift */; };
 		DE23CFFA27462D8F003BE54E /* JCPJetpackInstallIntroView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE23CFF927462D8F003BE54E /* JCPJetpackInstallIntroView.swift */; };
 		DE26B5292775C76C00A2EA0A /* MockSyncingCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE26B5282775C76B00A2EA0A /* MockSyncingCoordinator.swift */; };
 		DE279BA426E9C4DC002BA963 /* ShippingLabelPackagesForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE279BA326E9C4DC002BA963 /* ShippingLabelPackagesForm.swift */; };
@@ -4996,6 +4997,7 @@
 		DE1B030B268DD01A00804330 /* ReviewOrderViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewOrderViewController.swift; sourceTree = "<group>"; };
 		DE1B030C268DD01A00804330 /* ReviewOrderViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ReviewOrderViewController.xib; sourceTree = "<group>"; };
 		DE1B030F268EB2FB00804330 /* ReviewOrderViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewOrderViewModel.swift; sourceTree = "<group>"; };
+		DE2004522BF4A37B00660A72 /* InboxDashboardCardViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InboxDashboardCardViewModelTests.swift; sourceTree = "<group>"; };
 		DE23CFF927462D8F003BE54E /* JCPJetpackInstallIntroView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JCPJetpackInstallIntroView.swift; sourceTree = "<group>"; };
 		DE26B5282775C76B00A2EA0A /* MockSyncingCoordinator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockSyncingCoordinator.swift; sourceTree = "<group>"; };
 		DE279BA326E9C4DC002BA963 /* ShippingLabelPackagesForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelPackagesForm.swift; sourceTree = "<group>"; };
@@ -6772,6 +6774,7 @@
 				028E1F712833E954001F8829 /* DashboardViewModelTests.swift */,
 				027F83EE29B048E2002688C6 /* TopPerformersPeriodViewModelTests.swift */,
 				DEC75CC72BC518D900763801 /* DashboardCustomizationViewModelTests.swift */,
+				DE2004522BF4A37B00660A72 /* InboxDashboardCardViewModelTests.swift */,
 				DE74A4552BCFB5890009C415 /* TopPerformers */,
 				DED039252BC79339005D0571 /* StoreStats */,
 			);
@@ -15092,6 +15095,7 @@
 				2683835A296F9C1A00CCF60A /* GenerateAllVariationsUseCaseTests.swift in Sources */,
 				020ACF8A299B746700B3638B /* DomainContactInfoFormViewModelTests.swift in Sources */,
 				0215320D2423309B003F2BBD /* UIStackView+SubviewsTests.swift in Sources */,
+				DE2004532BF4A37B00660A72 /* InboxDashboardCardViewModelTests.swift in Sources */,
 				027B8BBD23FE0DE10040944E /* ProductImageActionHandlerTests.swift in Sources */,
 				EEEDA916290A799E004B001D /* WordPressAuthenticator+Internal.swift in Sources */,
 				CC53FB3E2758E2D500C4CA4F /* ProductRowViewModelTests.swift in Sources */,

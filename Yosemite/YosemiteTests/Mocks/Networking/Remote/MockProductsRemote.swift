@@ -276,5 +276,6 @@ extension MockProductsRemote: ProductsRemoteProtocol {
                    orderBy: ProductsRemote.OrderKey,
                    order: ProductsRemote.Order) async throws -> [ProductStock] {
         // no-op
+        return []
     }
 }

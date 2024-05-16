@@ -13,8 +13,36 @@ struct MyStoreView: View {
 
     var body: some View {
         VStack {
+
             Text(dependencies.storeName)
-            Text(viewModel.viewState.description)
+            Text("Revenue")
+            Text("$4,321.90")
+
+            Divider()
+
+            HStack {
+                Text("Today")
+                Spacer()
+                Text("As of 02:19")
+            }
+
+            HStack {
+                Button("56") {
+                    print("Order button pressed")
+                }
+
+                VStack {
+                    HStack {
+                        Text("112")
+                        /// Image
+                    }
+
+                    HStack {
+                        Text("50")
+                        // Image
+                    }
+                }
+            }
         }
         .padding()
         .task {

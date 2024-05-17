@@ -8,6 +8,8 @@ final class FilteredOrdersHeaderBar: UIView {
     @IBOutlet private weak var mainLabel: UILabel!
     @IBOutlet private weak var filterButton: UIButton!
 
+    private let bottomBorder = CALayer()
+
     /// The number of filters applied
     ///
     private var numberOfFilters = 0
@@ -18,6 +20,12 @@ final class FilteredOrdersHeaderBar: UIView {
         super.awakeFromNib()
         configureLabels()
         configureButtons()
+        configureBackground()
+    }
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        adjustBorderOnFrameUpdate()
     }
 
     func setNumberOfFilters(_ filters: Int) {
@@ -33,10 +41,21 @@ final class FilteredOrdersHeaderBar: UIView {
 }
 
 // MARK: - Setup
-
 private extension FilteredOrdersHeaderBar {
     func configureBackground() {
         backgroundColor = .listForeground(modal: false)
+        bottomBorder.backgroundColor = UIColor.divider.cgColor
+        layer.addSublayer(bottomBorder)
+    }
+
+    /// Adjusts the bottom border whenever the view's frame changes after initial layout setup
+    ///
+    func adjustBorderOnFrameUpdate() {
+        let borderWidth = 0.5
+        bottomBorder.frame = CGRect(x: 0,
+                                    y: bounds.height - borderWidth,
+                                    width: bounds.width,
+                                    height: borderWidth)
     }
 
     /// Setup: Labels

@@ -28,6 +28,8 @@ extension UITableViewCell {
 
         if state.isSelected || state.isHighlighted {
             backgroundConfiguration.backgroundColor = .listSelectedBackground
+            backgroundConfiguration.strokeColor = Layout.borderStrokeColor
+            backgroundConfiguration.strokeWidth = Layout.borderorderStrokeWidth
         }
         self.backgroundConfiguration = backgroundConfiguration
     }
@@ -46,5 +48,12 @@ extension UITableViewCell {
     ///
     func showSeparator(inset: UIEdgeInsets = .init(top: 0, left: 16, bottom: 0, right: 0)) {
         separatorInset = inset
+    }
+}
+
+private extension UITableViewCell {
+    enum Layout {
+        static let borderStrokeColor: UIColor = .divider
+        static let borderorderStrokeWidth: CGFloat = 0.5
     }
 }

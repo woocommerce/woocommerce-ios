@@ -3,82 +3,82 @@ import Yosemite
 
 /// Provides data for product form UI on a `ProductVariation`, and handles product editing actions.
 final class ProductVariationFormViewModel: ProductFormViewModelProtocol {
-
+    
     typealias ProductModel = EditableProductVariationModel
-
+    
     /// Emits product variation on change.
     var observableProduct: AnyPublisher<EditableProductVariationModel, Never> {
         productVariationSubject.eraseToAnyPublisher()
     }
-
+    
     /// The latest product variation including potential edits.
     var productModel: EditableProductVariationModel {
         productVariation
     }
-
+    
     /// The original product variation.
     var originalProductModel: EditableProductVariationModel {
         originalProductVariation
     }
-
+    
     /// Emits a boolean of whether the product variation has unsaved changes for remote update.
     var isUpdateEnabled: AnyPublisher<Bool, Never> {
         isUpdateEnabledSubject.eraseToAnyPublisher()
     }
-
+    
     /// Unused in variations but needed to satisfy protocol
     var blazeEligibilityUpdate: AnyPublisher<Void, Never> {
         Just(Void()).eraseToAnyPublisher()
     }
-
+    
     /// Also unused in variations but needed to satisfy protocol
     var shouldShowBlazeIntroView = false
-
+    
     /// The product variation ID
     var productionVariationID: Int64? {
         productVariation.productVariation.productVariationID
     }
-
+    
     /// Emits a void value informing when there is a new variation price state available
     var newVariationsPrice: AnyPublisher<Void, Never> = PassthroughSubject<Void, Never>().eraseToAnyPublisher()
-
+    
     /// Creates actions available on the bottom sheet.
     private(set) var actionsFactory: ProductFormActionsFactoryProtocol
-
+    
     /// Product variation form only supports editing
     let formType: ProductFormType
-
+    
     private let editable: Bool
-
+    
     /// Not applicable to product variation form
     private(set) var password: String? = nil
-
+    
     /// Not applicable to product variation form
     private(set) var productName: AnyPublisher<String, Never>? = nil
-
+    
     private let productVariationSubject: PassthroughSubject<EditableProductVariationModel, Never> = PassthroughSubject<EditableProductVariationModel, Never>()
     private let isUpdateEnabledSubject: PassthroughSubject<Bool, Never>
-
+    
     /// The product variation before any potential edits; reset after a remote update.
     private var originalProductVariation: EditableProductVariationModel {
         didSet {
             productVariation = originalProductVariation
         }
     }
-
+    
     /// The product variation with potential edits; reset after a remote update.
     private var productVariation: EditableProductVariationModel {
         didSet {
             guard productVariation != oldValue else {
                 return
             }
-
+            
             actionsFactory = ProductVariationFormActionsFactory(productVariation: productVariation, editable: editable)
             productVariationSubject.send(productVariation)
             isUpdateEnabledSubject.send(hasUnsavedChanges())
         }
     }
-
+    
     /// The action buttons that should be rendered in the navigation bar.
     var actionButtons: [ActionButtonType] {
         var buttons: [ActionButtonType] = {
@@ -89,18 +89,18 @@ final class ProductVariationFormViewModel: ProductFormViewModelProtocol {
                 return []
             }
         }()
-
+        
         if shouldShowMoreOptionsMenu() {
             buttons.append(.more)
         }
-
+        
         return buttons
     }
-
+    
     /// Assign this closure to get notified when the variation is deleted.
     ///
     var onVariationDeletion: ((ProductVariation) -> Void)?
-
+    
     private let allAttributes: [ProductAttribute]
     private let parentProductSKU: String?
     private let parentProductDisablesQuantityRules: Bool?
@@ -108,7 +108,7 @@ final class ProductVariationFormViewModel: ProductFormViewModelProtocol {
     private let storesManager: StoresManager
     private let productImagesUploader: ProductImageUploaderProtocol
     private var cancellable: AnyCancellable?
-
+    
     init(productVariation: EditableProductVariationModel,
          allAttributes: [ProductAttribute],
          parentProductSKU: String?,
@@ -134,11 +134,11 @@ final class ProductVariationFormViewModel: ProductFormViewModelProtocol {
             self.isUpdateEnabledSubject.send(self.hasUnsavedChanges())
         }
     }
-
+    
     deinit {
         cancellable?.cancel()
     }
-
+    
     func hasUnsavedChanges() -> Bool {
         let hasProductChangesExcludingImages =
         productVariation.productVariation.copy(image: .some(nil)) != originalProductVariation.productVariation.copy(image: .some(nil))
@@ -161,34 +161,34 @@ extension ProductVariationFormViewModel {
     func canShowPublishOption() -> Bool {
         false
     }
-
+    
     func canSaveAsDraft() -> Bool {
         false
     }
-
+    
     func canEditProductSettings() -> Bool {
         false
     }
-
+    
     func canViewProductInStore() -> Bool {
         originalProductVariation.productVariation.status == .published && formType != .add
     }
-
+    
     func canShareProduct() -> Bool {
         let isSitePublic = storesManager.sessionManager.defaultSite?.isPublic == true
         let productHasLinkToShare = URL(string: originalProductVariation.permalink) != nil
         return isSitePublic && formType != .add && productHasLinkToShare
     }
-
+    
     func canPromoteWithBlaze() -> Bool {
         // Product variations are not supported in Blaze.
         false
     }
-
+    
     func canDeleteProduct() -> Bool {
         formType == .edit
     }
-
+    
     func canDuplicateProduct() -> Bool {
         false
     }
@@ -200,7 +200,7 @@ extension ProductVariationFormViewModel {
     func updateName(_ name: String) {
         // no-op: a variation's name is derived from its attributes and is not editable
     }
-
+    
     func updateImages(_ images: [ProductImage]) {
         guard images.count <= 1 else {
             assertionFailure("Up to 1 image can be attached to a product variation.")
@@ -212,7 +212,7 @@ extension ProductVariationFormViewModel {
                                                          parentProductSKU: parentProductSKU,
                                                          parentProductDisablesQuantityRules: parentProductDisablesQuantityRules)
     }
-
+    
     func updateDescription(_ newDescription: String) {
         productVariation = EditableProductVariationModel(productVariation: productVariation.productVariation.copy(description: newDescription),
                                                          parentProductType: productVariation.productType,
@@ -220,7 +220,7 @@ extension ProductVariationFormViewModel {
                                                          parentProductSKU: parentProductSKU,
                                                          parentProductDisablesQuantityRules: parentProductDisablesQuantityRules)
     }
-
+    
     func updatePriceSettings(regularPrice: String?,
                              subscriptionPeriod: SubscriptionPeriod?,
                              subscriptionPeriodInterval: String?,
@@ -239,7 +239,7 @@ extension ProductVariationFormViewModel {
                 return productVariation.subscription?.length
             }
         }()
-
+        
         let subscription = productVariation.subscription?.copy(length: subscriptionLength,
                                                                period: subscriptionPeriod,
                                                                periodInterval: subscriptionPeriodInterval,
@@ -260,7 +260,7 @@ extension ProductVariationFormViewModel {
             parentProductSKU: parentProductSKU,
             parentProductDisablesQuantityRules: parentProductDisablesQuantityRules)
     }
-
+    
     func updateInventorySettings(sku: String?,
                                  manageStock: Bool,
                                  soldIndividually: Bool?,
@@ -277,7 +277,7 @@ extension ProductVariationFormViewModel {
                                                          parentProductSKU: parentProductSKU,
                                                          parentProductDisablesQuantityRules: parentProductDisablesQuantityRules)
     }
-
+    
     func updateShippingSettings(weight: String?,
                                 dimensions: ProductDimensions,
                                 // `oneTimeShipping` is ignored as this setting is not applicable for variation
@@ -294,39 +294,39 @@ extension ProductVariationFormViewModel {
                                                          parentProductSKU: parentProductSKU,
                                                          parentProductDisablesQuantityRules: parentProductDisablesQuantityRules)
     }
-
+    
     func updateProductType(productType: BottomSheetProductType) {
         // no-op
     }
-
+    
     func updateProductCategories(_ categories: [ProductCategory]) {
         // no-op
     }
-
+    
     func updateProductTags(_ tags: [ProductTag]) {
         // no-op
     }
-
+    
     func updateShortDescription(_ shortDescription: String) {
         // no-op
     }
-
+    
     func updateSKU(_ sku: String?) {
         // no-op
     }
-
+    
     func updateGroupedProductIDs(_ groupedProductIDs: [Int64]) {
         // no-op
     }
-
+    
     func updateProductSettings(_ settings: ProductSettings) {
         // no-op
     }
-
+    
     func updateExternalLink(externalURL: String?, buttonText: String) {
         // no-op
     }
-
+    
     func updateStatus(_ isEnabled: Bool) {
         ServiceLocator.analytics.track(.productVariationDetailViewStatusSwitchTapped)
         let status: ProductStatus = isEnabled ? .published: .privateStatus
@@ -336,15 +336,15 @@ extension ProductVariationFormViewModel {
                                                          parentProductSKU: parentProductSKU,
                                                          parentProductDisablesQuantityRules: parentProductDisablesQuantityRules)
     }
-
+    
     func updateDownloadableFiles(downloadableFiles: [ProductDownload], downloadLimit: Int64, downloadExpiry: Int64) {
         // no-op
     }
-
+    
     func updateLinkedProducts(upsellIDs: [Int64], crossSellIDs: [Int64]) {
         // no-op
     }
-
+    
     func updateVariationAttributes(_ attributes: [ProductVariationAttribute]) {
         productVariation = EditableProductVariationModel(productVariation: productVariation.productVariation.copy(attributes: attributes),
                                                          parentProductType: productVariation.productType,
@@ -352,11 +352,11 @@ extension ProductVariationFormViewModel {
                                                          parentProductSKU: parentProductSKU,
                                                          parentProductDisablesQuantityRules: parentProductDisablesQuantityRules)
     }
-
+    
     func updateProductVariations(from product: Product) {
         //no-op
     }
-
+    
     func updateSubscriptionFreeTrialSettings(trialLength: String, trialPeriod: SubscriptionPeriod) {
         let subscription = productVariation.subscription?.copy(trialLength: trialLength,
                                                                trialPeriod: trialPeriod)
@@ -366,7 +366,7 @@ extension ProductVariationFormViewModel {
                                                          parentProductSKU: parentProductSKU,
                                                          parentProductDisablesQuantityRules: parentProductDisablesQuantityRules)
     }
-
+    
     func updateSubscriptionExpirySettings(length: String) {
         let subscription = productVariation.subscription?.copy(length: length)
         productVariation = EditableProductVariationModel(productVariation: productVariation.productVariation.copy(subscription: subscription),
@@ -375,7 +375,7 @@ extension ProductVariationFormViewModel {
                                                          parentProductSKU: parentProductSKU,
                                                          parentProductDisablesQuantityRules: parentProductDisablesQuantityRules)
     }
-
+    
     func updateQuantityRules(minQuantity: String, maxQuantity: String, groupOf: String) {
         productVariation = EditableProductVariationModel(productVariation: productVariation.productVariation.copy(minAllowedQuantity: minQuantity, 
                                                                                                                   maxAllowedQuantity: maxQuantity,
@@ -413,11 +413,11 @@ extension ProductVariationFormViewModel {
         }
         storesManager.dispatch(updateAction)
     }
-
+    
     func duplicateProduct(onCompletion: @escaping (Result<EditableProductVariationModel, ProductUpdateError>) -> Void) {
         // no-op
     }
-
+    
     func deleteProductRemotely(onCompletion: @escaping (Result<Void, ProductUpdateError>) -> Void) {
         let deleteAction = ProductVariationAction.deleteProductVariation(productVariation: productVariation.productVariation) { [weak self] result in
             switch result {
@@ -432,12 +432,12 @@ extension ProductVariationFormViewModel {
         }
         storesManager.dispatch(deleteAction)
     }
-
+    
     private func resetProductVariation(_ productVariation: EditableProductVariationModel) {
         originalProductVariation = productVariation
         isUpdateEnabledSubject.send(hasUnsavedChanges())
     }
-
+    
     private func saveProductVariationImageWhenUploaded() {
         productImagesUploader
             .saveProductImagesWhenNoneIsPendingUploadAnymore(key: .init(siteID: productVariation.siteID,

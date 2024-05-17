@@ -26,4 +26,14 @@ final class ProductStockDashboardCardViewModel: ObservableObject {
         self.stores = stores
         self.storageManager = storageManager
     }
+
+    @MainActor
+    func reloadData() async {
+        // TODO
+    }
+
+    func dismissStock() {
+        analytics.track(event: .DynamicDashboard.hideCardTapped(type: .stock))
+        onDismiss?()
+    }
 }

@@ -34,7 +34,7 @@ private extension ProductStockDashboardCard {
             Spacer()
             Menu {
                 Button(Localization.hideCard) {
-                    // TODO
+                    viewModel.dismissStock()
                 }
             } label: {
                 Image(systemName: "ellipsis")

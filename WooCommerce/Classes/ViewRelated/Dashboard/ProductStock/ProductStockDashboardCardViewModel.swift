@@ -11,6 +11,7 @@ final class ProductStockDashboardCardViewModel: ObservableObject {
 
     @Published private(set) var syncingData = false
     @Published private(set) var syncingError: Error?
+    @Published private(set) var selectedStockType: StockType = .lowStock
 
     let siteID: Int64
     private let stores: StoresManager
@@ -35,5 +36,52 @@ final class ProductStockDashboardCardViewModel: ObservableObject {
     func dismissStock() {
         analytics.track(event: .DynamicDashboard.hideCardTapped(type: .stock))
         onDismiss?()
+    }
+
+    func updateStockType(_ type: StockType) {
+        selectedStockType = type
+        Task {
+            await reloadData()
+        }
+    }
+}
+
+extension ProductStockDashboardCardViewModel {
+    enum StockType: String, CaseIterable, Identifiable {
+        case lowStock = "lowstock"
+        case outOfStock = "outofstock"
+        case onBackOrder = "onbackorder"
+
+        /// Identifiable conformance
+        var id: String { rawValue }
+
+        var displayedName: String {
+            switch self {
+            case .lowStock:
+                Localization.lowStock
+            case .outOfStock:
+                Localization.outOfStock
+            case .onBackOrder:
+                Localization.onBackOrder
+            }
+        }
+
+        private enum Localization {
+            static let lowStock = NSLocalizedString(
+                "productStockDashboardCardViewModel.stockType.lowStock",
+                value: "Low stock",
+                comment: "Title of a stock type displayed on the Stock section on My Store screen"
+            )
+            static let outOfStock = NSLocalizedString(
+                "productStockDashboardCardViewModel.stockType.outOfStock",
+                value: "Out of stock",
+                comment: "Title of a stock type displayed on the Stock section on My Store screen"
+            )
+            static let onBackOrder = NSLocalizedString(
+                "productStockDashboardCardViewModel.stockType.onBackOrder",
+                value: "On back order",
+                comment: "Title of a stock type displayed on the Stock section on My Store screen"
+            )
+        }
     }
 }

@@ -129,7 +129,7 @@ class CardPresentPaymentsAdaptor: CardPresentPayments {
 
         let paymentTask = Task {
             return await withTaskCancellationHandler {
-                return await withCheckedContinuation { continuation in
+                return await withCheckedContinuation { [weak self] continuation in
                     orderPaymentUseCase.collectPayment(using: discoveryMethod) { error in
                         // TODO: even though we have a tri-state result type, perhaps we should throw these errors.
                         if let error = error as? CardPaymentErrorProtocol {
@@ -138,10 +138,12 @@ class CardPresentPaymentsAdaptor: CardPresentPayments {
                             continuation.resume(returning: CardPresentPaymentResult.failure(CardPaymentsAdaptorError.unknownPaymentError(underlyingError: error)))
                         }
                     } onCancel: {
+                        self?.paymentScreenEventSubject.send(nil)
                         continuation.resume(returning: CardPresentPaymentResult.cancellation)
                     } onPaymentCompletion: {
                         // no-op – not used in PaymentMethodsViewModel anyway so this can be removed
                     } onCompleted: {
+                        self?.paymentScreenEventSubject.send(nil)
                         continuation.resume(returning: CardPresentPaymentResult.success(order))
                     }
                 }

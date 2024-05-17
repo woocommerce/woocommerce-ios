@@ -1,6 +1,11 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 18.7
+We're thrilled to roll out the latest updates!
+Our latest update brings under-the-hood improvements to enhance both stability and performance.
+We're committed to continuously improving our app to serve you better. Thank you for choosing WooCommerce!
+
 ## 18.6
 With this week's update, you can set a shipping method when you add or edit an order. We've also addressed a potential crash from opening a notification, and made readability improvements in dark mode. Keep your app up to date for the best of WooCommerce!
 

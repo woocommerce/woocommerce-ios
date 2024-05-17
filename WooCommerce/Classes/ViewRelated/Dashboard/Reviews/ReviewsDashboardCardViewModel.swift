@@ -35,6 +35,7 @@ final class ReviewsDashboardCardViewModel: ObservableObject {
 
     public let siteID: Int64
     public let filters: [ReviewsFilter] = [.all, .hold, .approved]
+    @Published private(set) var currentFilter: ReviewsFilter = .all
 
     private var productsResultsController: ResultsController<StorageProduct>
 
@@ -91,11 +92,17 @@ final class ReviewsDashboardCardViewModel: ObservableObject {
         syncingError = nil
         do {
             // Ignoring the result from remote as we're using storage as the single source of truth
-            _ = try await loadReviews()
+            _ = try await loadReviews(filter: currentFilter)
         } catch {
             syncingError = error
         }
         syncingData = false
+    }
+
+    @MainActor
+    func filterReviews(by filter: ReviewsFilter) async {
+        currentFilter = filter
+        await reloadData()
     }
 }
 
@@ -140,11 +147,13 @@ private extension ReviewsDashboardCardViewModel {
 // MARK: - Private helpers
 private extension ReviewsDashboardCardViewModel {
     @MainActor
-    func loadReviews() async throws -> [ProductReview] {
+    func loadReviews(filter: ReviewsFilter? = nil) async throws -> [ProductReview] {
         try await withCheckedThrowingContinuation { continuation in
             stores.dispatch(ProductReviewAction.synchronizeProductReviews(siteID: siteID,
                                                                           pageNumber: 1,
-                                                                          pageSize: Constants.numberOfItems) { result in
+                                                                          pageSize: Constants.numberOfItems,
+                                                                          status: currentFilter.productReviewStatus
+                                                                         ) { result in
                 continuation.resume(with: result)
             })
         }
@@ -242,17 +251,6 @@ private extension ReviewsDashboardCardViewModel {
             })
         }
     }
-
-    func mapToProductReviewStatus(from reviewsFilter: ReviewsFilter) -> [ProductReviewStatus]? {
-        switch reviewsFilter {
-        case .all:
-            return nil // There is no "all" case inside ProductReviewStatus. To fetch everything, this needs to be nil.
-        case .approved:
-            return [.approved]
-        case .hold:
-            return [.hold]
-        }
-    }
 }
 
 private extension ReviewsDashboardCardViewModel {
@@ -270,6 +268,17 @@ extension ReviewsDashboardCardViewModel.ReviewsFilter {
             return Localization.filterHold
         case .approved:
             return Localization.filterApproved
+        }
+    }
+
+    var productReviewStatus: ProductReviewStatus? {
+        switch self {
+        case .all:
+            return nil // There is no "all" case inside ProductReviewStatus. To fetch everything, this needs to be nil.
+        case .approved:
+            return .approved
+        case .hold:
+            return .hold
         }
     }
 

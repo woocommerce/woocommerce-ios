@@ -85,7 +85,7 @@ private extension ReviewsDashboardCard {
                     .foregroundStyle(Color(.text))
                     .subheadlineStyle()
 
-                Text("All") // TODO: dynamically change based on filter selection
+                Text(viewModel.currentFilter.title)
                     .subheadlineStyle()
             }
             Spacer()
@@ -93,7 +93,9 @@ private extension ReviewsDashboardCard {
             Menu {
                 ForEach(viewModel.filters, id: \.self) { filter in
                     Button {
-                        // TODO
+                        Task {
+                            await viewModel.filterReviews(by: filter)
+                        }
                     } label: {
                         SelectableItemRow(title: filter.title, selected: false)
                     }

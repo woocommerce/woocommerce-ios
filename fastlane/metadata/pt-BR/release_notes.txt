@@ -1,1 +1,5 @@
-Na nossa última atualização, melhoramos a leitura de códigos de barras ao corrigir um bug que permitia que produtos variáveis principais se infiltrassem nos pedidos. Tenha uma experiência de criação de pedidos mais tranquila com a nossa mais nova atualização.
+- [*] Alteração na cor do texto da visualização de selo na lista de produtos do pedido para corrigir a legibilidade no modo escuro. [https://github.com/woocommerce/woocommerce-ios/pull/12630]
+- [*] Correção especulativa de uma falha na abertura de notificações do pedido [https://github.com/woocommerce/woocommerce-ios/pull/12643]
+- [internal] Exibição do cartão de feedback no app no painel. [https://github.com/woocommerce/woocommerce-ios/pull/12636]
+- [*] Envio: agora é possível selecionar um método de envio ao adicionar ou editar o envio em um pedido. [https://github.com/woocommerce/woocommerce-ios/pull/12688]
+

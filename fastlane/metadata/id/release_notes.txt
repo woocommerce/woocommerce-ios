@@ -1,1 +1,5 @@
-Pada pembaruan teranyar ini, kami menyempurnakan pemindaian barcode melalui pembasmian bug yang membuat produk induk variabel menyusup ke dalam pesanan. Nikmati pembuatan pesanan yang lebih mulus dengan pembaruan teranyar kami!
+- [*] Mengubah warna teks pada tampilan lencana pada daftar pesanan produk untuk memperbaiki keterbacaan mode gelap. [https://github.com/woocommerce/woocommerce-ios/pull/12630]
+- [*] Membuat perbaikan spekulatif untuk crash saat membuka notifikasi pesanan [https://github.com/woocommerce/woocommerce-ios/pull/12643]
+- [internal] Menampilkan kartu feedback dalam aplikasi pada dasbor. [https://github.com/woocommerce/woocommerce-ios/pull/12636]
+- [*] Pengiriman: Metode pengiriman kini dapat dipilih saat menambahkan atau mengedit pengiriman pada pesanan. [https://github.com/woocommerce/woocommerce-ios/pull/12688]
+

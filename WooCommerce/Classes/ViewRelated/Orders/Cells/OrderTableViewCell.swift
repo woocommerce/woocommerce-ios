@@ -59,6 +59,7 @@ final class OrderTableViewCell: UITableViewCell & SearchResultCell {
         // From iOS 15.0, a focus effect will be applied automatically to a selected cell
         // modifying its style (e.g: by adding a border)
         focusEffect = nil
+
     }
 
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {

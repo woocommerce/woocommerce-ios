@@ -119,12 +119,15 @@ private extension ReviewsDashboardCard {
                         .padding(.trailing, Layout.padding)
                 }
 
-                if let snippet = viewModel.snippet {
-                    Text(snippet.string)
-                        .lineLimit(2)
-                        .subheadlineStyle()
-                        .padding(.trailing, Layout.padding)
-                }
+                reviewText(text: viewModel.snippetData.reviewText,
+                           pendingText: viewModel.snippetData.pendingReviewsText,
+                           divider: viewModel.snippetData.dot,
+                           textColor: viewModel.snippetData.textColor,
+                           accentColor: viewModel.snippetData.accentColor,
+                           shouldDisplayStatus: viewModel.shouldDisplayStatus)
+                .lineLimit(2)
+                .subheadlineStyle()
+                .padding(.trailing, Layout.padding)
 
                 if viewModel.review.rating > 0 {
                     HStack(spacing: Layout.starRatingSpacing) {
@@ -142,6 +145,21 @@ private extension ReviewsDashboardCard {
             }
         }
     }
+
+    func reviewText(text: String,
+                    pendingText: String,
+                    divider: String,
+                    textColor: UIColor,
+                    accentColor: UIColor,
+                    shouldDisplayStatus: Bool) -> some View {
+        if shouldDisplayStatus {
+            return Text(pendingText).foregroundColor(Color(uiColor: textColor)) +
+            Text(divider + text).foregroundColor(Color(uiColor: textColor))
+        } else {
+            return Text(text)
+        }
+    }
+
 
     var viewAllReviewsButton: some View {
         Button {

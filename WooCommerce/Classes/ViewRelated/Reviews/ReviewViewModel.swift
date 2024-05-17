@@ -2,10 +2,20 @@ import Foundation
 import Yosemite
 
 final class ReviewViewModel {
+    /// Needed to display snippet in SwiftUI
+    struct ReviewSnippet {
+        let pendingReviewsText: String
+        let reviewText: String
+        let dot: String = " ∙ "
+        let accentColor: UIColor
+        let textColor: UIColor
+    }
+
     let showsProductTitle: Bool
     let review: ProductReview
     let product: Product?
     let notification: Note?
+    let snippetData: ReviewSnippet
 
     let notIcon: String = "\u{f300}"
 
@@ -43,16 +53,13 @@ final class ReviewViewModel {
             return NSAttributedString(string: review.review.strippedHTML).trimNewlines()
         }
 
-        let accentColor = UIColor.wooOrange
-        let textColor = UIColor.textSubtle
-
         let pendingReviewLiteral = NSAttributedString(string: Strings.pendingReviews,
-                                                      attributes: [.foregroundColor: accentColor])
+                                                      attributes: [.foregroundColor: Constants.accentColor])
 
         let dot = NSAttributedString(string: " ∙ ",
-                                     attributes: [.foregroundColor: textColor])
+                                     attributes: [.foregroundColor: Constants.textColor])
         let reviewText = NSAttributedString(string: review.review.strippedHTML,
-                                            attributes: [.foregroundColor: textColor])
+                                            attributes: [.foregroundColor: Constants.textColor])
         let returnValue = NSMutableAttributedString(attributedString: pendingReviewLiteral)
         returnValue.append(dot)
         returnValue.append(reviewText)
@@ -76,7 +83,7 @@ final class ReviewViewModel {
         return note.read
     }()
 
-    private var shouldDisplayStatus: Bool {
+    var shouldDisplayStatus: Bool {
         return review.status == .hold
     }
 
@@ -85,9 +92,13 @@ final class ReviewViewModel {
         self.review = review
         self.product = product
         self.notification = notification
+
+        snippetData = ReviewSnippet(pendingReviewsText: Strings.pendingReviews,
+                                    reviewText: NSAttributedString(string: review.review.strippedHTML).trimNewlines().string,
+                                    accentColor: Constants.accentColor,
+                                    textColor: Constants.textColor)
     }
 }
-
 
 private extension ReviewViewModel {
     enum Strings {
@@ -95,6 +106,11 @@ private extension ReviewViewModel {
                                                       comment: "Indicates a review is pending approval. It reads { Pending Review · Content of the review}")
         static let someone = NSLocalizedString("Someone",
                                                comment: "Indicates the reviewer does not have a name. It reads { Someone left a review}")
+    }
+
+    enum Constants {
+        static let accentColor = UIColor.wooOrange
+        static let textColor = UIColor.textSubtle
     }
 }
 

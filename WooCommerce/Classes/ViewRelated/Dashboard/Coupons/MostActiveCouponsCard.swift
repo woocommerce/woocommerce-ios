@@ -45,7 +45,7 @@ struct MostActiveCouponsCard: View {
 
                 Divider()
 
-                if viewModel.syncingData || viewModel.coupons.isNotEmpty {
+                if viewModel.syncingData || viewModel.rows.isNotEmpty {
                     couponsList
                 } else {
                     emptyView
@@ -114,9 +114,9 @@ private extension MostActiveCouponsCard {
             .padding(.horizontal, Layout.padding)
 
             // Rows
-            ForEach(viewModel.coupons) { item in
-                CouponDashboardRow(coupon: item, tapHandler: {
-                    onViewCouponDetail(item)
+            ForEach(viewModel.rows) { item in
+                MostActiveCouponRow(viewModel: item, tapHandler: {
+                    onViewCouponDetail(item.coupon)
                 })
             }
             .redacted(reason: viewModel.syncingData ? [.placeholder] : [])
@@ -212,40 +212,6 @@ private extension MostActiveCouponsCard {
             }
         }
         .navigationViewStyle(.stack)
-    }
-}
-
-private struct CouponDashboardRow: View {
-    let coupon: Coupon
-    let tapHandler: (() -> Void)
-
-    var body: some View {
-        Button {
-            tapHandler()
-        } label: {
-            VStack {
-                HStack {
-                    VStack(alignment: .leading, spacing: 0) {
-                        Text(coupon.code)
-                            .bodyStyle()
-                        Text(coupon.summary())
-                            .subheadlineStyle()
-                    }
-
-                    Spacer()
-
-                    VStack(alignment: .trailing) {
-                        Text("\(coupon.usageCount)")
-                            .bodyStyle()
-                        Spacer()
-                    }
-                }
-                .padding(.horizontal, MostActiveCouponsCard.Layout.padding)
-
-                Divider()
-                    .padding(.leading, MostActiveCouponsCard.Layout.padding)
-            }
-        }
     }
 }
 

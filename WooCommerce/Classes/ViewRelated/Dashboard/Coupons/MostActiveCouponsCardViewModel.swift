@@ -1,6 +1,7 @@
 import Foundation
 import Yosemite
 import protocol WooFoundation.Analytics
+import protocol Storage.StorageManagerType
 
 /// View model for `MostActiveCouponsCard`.
 ///
@@ -11,21 +12,25 @@ final class MostActiveCouponsCardViewModel: ObservableObject {
     @Published private(set) var timeRange = StatsTimeRangeV4.today
     @Published private(set) var syncingData = false
     @Published private(set) var syncingError: Error?
-    @Published private(set) var coupons: [Coupon] = []
+    @Published private(set) var rows: [MostActiveCouponRowViewModel] = []
     @Published private(set) var timeRangeText = ""
 
     let siteID: Int64
     let siteTimezone: TimeZone
     private let stores: StoresManager
+    private let storageManager: StorageManagerType
     private let analytics: Analytics
+    private var resultsController: ResultsController<StorageCoupon>?
 
     init(siteID: Int64,
          siteTimezone: TimeZone = .siteTimezone,
          stores: StoresManager = ServiceLocator.stores,
+         storageManager: StorageManagerType = ServiceLocator.storageManager,
          analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
         self.siteTimezone = siteTimezone
         self.stores = stores
+        self.storageManager = storageManager
         self.analytics = analytics
 
         $timeRange
@@ -62,9 +67,27 @@ final class MostActiveCouponsCardViewModel: ObservableObject {
     func reloadData() async {
         syncingData = true
         syncingError = nil
+        rows = []
+        resultsController = nil
+
         do {
-            let activeCouponReports = try await mostActiveCoupons()
-            coupons = try await loadCouponDetails(for: activeCouponReports)
+            let couponReports = try await fetchMostActiveCoupons()
+
+            if couponReports.isNotEmpty {
+                /// Load and display coupons from storage
+                configureResultsController(for: couponReports)
+
+                /// If all or some coupons are not available in storage
+                /// then fetch from remote
+                if rows.count != couponReports.count {
+                    try await synchronizeCoupons(for: couponReports)
+                } else {
+                    /// Refresh coupons in background
+                    Task { @MainActor in
+                        try await synchronizeCoupons(for: couponReports)
+                    }
+                }
+            }
         } catch {
             syncingError = error
             DDLogError("⛔️ Dashboard (Most active coupons) — Error loading most active coupons: \(error)")
@@ -99,6 +122,43 @@ extension MostActiveCouponsCardViewModel {
 }
 
 private extension MostActiveCouponsCardViewModel {
+    func configureResultsController(for couponReports: [CouponReport]) {
+        let resultsController = ResultsController<StorageCoupon>(storageManager: storageManager,
+                                                                 matching: NSPredicate(format: "siteID == %lld AND couponID IN %@",
+                                                                                       siteID, couponReports.map({ $0.couponID })),
+                                                                 sortedBy: [])
+        self.resultsController = resultsController
+        resultsController.onDidChangeContent = { [weak self] in
+            self?.updateResults(for: couponReports)
+        }
+        resultsController.onDidResetContent = { [weak self] in
+            self?.updateResults(for: couponReports)
+        }
+
+        do {
+            try resultsController.performFetch()
+            updateResults(for: couponReports)
+        } catch {
+            ServiceLocator.crashLogging.logError(error)
+        }
+    }
+
+    func updateResults(for couponReports: [CouponReport]) {
+        guard let coupons = resultsController?.fetchedObjects else {
+            return
+        }
+
+        rows = couponReports
+            .map { report in
+                guard let coupon = coupons.first(where: { $0.couponID == report.couponID }) else {
+                    return nil
+                }
+                return MostActiveCouponRowViewModel(coupon: coupon,
+                                                    report: report)
+            }
+            .compactMap { $0 }
+    }
+
     @MainActor
     func loadLastTimeRange() async -> StatsTimeRangeV4? {
         await withCheckedContinuation { continuation in
@@ -115,21 +175,26 @@ private extension MostActiveCouponsCardViewModel {
     }
 
     @MainActor
-    func loadCouponDetails(for reports: [CouponReport]) async throws -> [Coupon] {
-        guard reports.isNotEmpty else {
-            return []
+    func synchronizeCoupons(for couponReports: [CouponReport]) async throws {
+        guard couponReports.isNotEmpty else {
+            return
         }
-        let couponIDs = reports.map({ $0.couponID })
-        return try await withCheckedThrowingContinuation { continuation in
+        let couponIDs = couponReports.map({ $0.couponID })
+        try await withCheckedThrowingContinuation { continuation in
             stores.dispatch(CouponAction.loadCoupons(siteID: siteID,
                                                      couponIDs: couponIDs) { result in
-                continuation.resume(with: result)
+                switch result {
+                case .success:
+                    continuation.resume()
+                case .failure(let error):
+                    continuation.resume(throwing: error)
+                }
             })
         }
     }
 
     @MainActor
-    func mostActiveCoupons() async throws -> [CouponReport] {
+    func fetchMostActiveCoupons() async throws -> [CouponReport] {
         try await withCheckedThrowingContinuation { continuation in
             stores.dispatch(CouponAction.loadMostActiveCoupons(siteID: siteID, timeRange: timeRange, siteTimezone: siteTimezone) { result in
                 continuation.resume(with: result)

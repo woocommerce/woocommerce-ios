@@ -4,6 +4,12 @@ import struct Yosemite.DashboardCard
 /// View for displaying stock based on status on the dashboard.
 ///
 struct ProductStockDashboardCard: View {
+    @ObservedObject private var viewModel: ProductStockDashboardCardViewModel
+
+    init(viewModel: ProductStockDashboardCardViewModel) {
+        self.viewModel = viewModel
+    }
+
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             header
@@ -19,6 +25,10 @@ struct ProductStockDashboardCard: View {
 private extension ProductStockDashboardCard {
     var header: some View {
         HStack {
+            Image(systemName: "exclamationmark.circle")
+                .foregroundStyle(Color.secondary)
+                .headlineStyle()
+                .renderedIf(viewModel.syncingError != nil)
             Text(DashboardCard.CardType.stock.name)
                 .headlineStyle()
             Spacer()
@@ -32,6 +42,7 @@ private extension ProductStockDashboardCard {
                     .padding(.leading, Layout.padding)
                     .padding(.vertical, Layout.hideIconVerticalPadding)
             }
+            .disabled(viewModel.syncingData)
         }
     }
 }
@@ -54,5 +65,5 @@ private extension ProductStockDashboardCard {
 }
 
 #Preview {
-    ProductStockDashboardCard()
+    ProductStockDashboardCard(viewModel: .init(siteID: 123))
 }

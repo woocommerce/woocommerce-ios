@@ -60,7 +60,7 @@ struct ApplicationPasswordTutorial: View {
     /// Friendly error description.
     ///
     let errorDescription: String
-    
+
     @ScaledMetric private var scale: CGFloat = 1.0
 
     var body: some View {

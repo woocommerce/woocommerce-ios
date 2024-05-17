@@ -1455,6 +1455,21 @@ extension Networking.ProductStatus {
         .published
     }
 }
+extension Networking.ProductStock {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.ProductStock {
+        .init(
+            siteID: .fake(),
+            productID: .fake(),
+            name: .fake(),
+            sku: .fake(),
+            manageStock: .fake(),
+            stockQuantity: .fake(),
+            stockStatusKey: .fake()
+        )
+    }
+}
 extension Networking.ProductStockStatus {
     /// Returns a "ready to use" type filled with fake values.
     ///

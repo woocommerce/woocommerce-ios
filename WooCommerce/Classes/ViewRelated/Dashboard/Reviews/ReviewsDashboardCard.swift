@@ -10,12 +10,11 @@ struct ReviewsDashboardCard: View {
 
     @State private var showingAllReviews: Bool = false
 
-    private let viewModel: ReviewsDashboardCardViewModel
+    @ObservedObject private var viewModel: ReviewsDashboardCardViewModel
 
     init(viewModel: ReviewsDashboardCardViewModel) {
         self.viewModel = viewModel
     }
-
 
     var body: some View {
         VStack(alignment: .leading, spacing: Layout.padding) {

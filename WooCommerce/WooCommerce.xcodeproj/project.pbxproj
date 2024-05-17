@@ -987,7 +987,7 @@
 		26F65C9825DEDAF0008FAE29 /* GenerateVariationUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26F65C9725DEDAF0008FAE29 /* GenerateVariationUseCase.swift */; };
 		26F65C9E25DEDE67008FAE29 /* GenerateVariationUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26F65C9D25DEDE67008FAE29 /* GenerateVariationUseCaseTests.swift */; };
 		26F81B182BE433A2009EC58E /* WooApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26F81B172BE433A2009EC58E /* WooApp.swift */; };
-		26F81B1A2BE433A2009EC58E /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26F81B192BE433A2009EC58E /* ContentView.swift */; };
+		26F81B1A2BE433A2009EC58E /* MyStoreView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26F81B192BE433A2009EC58E /* MyStoreView.swift */; };
 		26F81B1C2BE433A3009EC58E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 26F81B1B2BE433A3009EC58E /* Assets.xcassets */; };
 		26F81B1F2BE433A3009EC58E /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 26F81B1E2BE433A3009EC58E /* Preview Assets.xcassets */; };
 		26F81B222BE433A3009EC58E /* Woo Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 26F81B152BE433A2009EC58E /* Woo Watch App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -3791,7 +3791,7 @@
 		26F65C9D25DEDE67008FAE29 /* GenerateVariationUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenerateVariationUseCaseTests.swift; sourceTree = "<group>"; };
 		26F81B152BE433A2009EC58E /* Woo Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Woo Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		26F81B172BE433A2009EC58E /* WooApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooApp.swift; sourceTree = "<group>"; };
-		26F81B192BE433A2009EC58E /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		26F81B192BE433A2009EC58E /* MyStoreView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyStoreView.swift; sourceTree = "<group>"; };
 		26F81B1B2BE433A3009EC58E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		26F81B1E2BE433A3009EC58E /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		26F94E1B267A3E4500DB6CCF /* ProductAddOnsListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductAddOnsListViewController.swift; sourceTree = "<group>"; };
@@ -7586,6 +7586,7 @@
 		269FFA492BF544B6004E6B86 /* MyStore */ = {
 			isa = PBXGroup;
 			children = (
+				26F81B192BE433A2009EC58E /* MyStoreView.swift */,
 				269FFA4A2BF544C9004E6B86 /* MyStoreViewModel.swift */,
 			);
 			path = MyStore;
@@ -7765,7 +7766,6 @@
 			children = (
 				26B984D22BEECC460052658C /* Dependencies */,
 				26F81B172BE433A2009EC58E /* WooApp.swift */,
-				26F81B192BE433A2009EC58E /* ContentView.swift */,
 				26B984D52BEECF260052658C /* ConnectView.swift */,
 				269FFA492BF544B6004E6B86 /* MyStore */,
 				26F81B1B2BE433A3009EC58E /* Assets.xcassets */,
@@ -13550,7 +13550,7 @@
 			files = (
 				264E9E952BF400AD009C48FD /* StoreInfoDataService.swift in Sources */,
 				26B984D42BEECC610052658C /* Environment+Dependencies.swift in Sources */,
-				26F81B1A2BE433A2009EC58E /* ContentView.swift in Sources */,
+				26F81B1A2BE433A2009EC58E /* MyStoreView.swift in Sources */,
 				264E9E942BF1D1DF009C48FD /* AppLocalizedString.swift in Sources */,
 				26DD32D42BEBCDFB00F2C69C /* WooConstants.swift in Sources */,
 				269FFA4B2BF544C9004E6B86 /* MyStoreViewModel.swift in Sources */,

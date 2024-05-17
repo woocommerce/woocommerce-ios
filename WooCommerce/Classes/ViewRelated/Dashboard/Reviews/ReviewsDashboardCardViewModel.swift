@@ -20,6 +20,7 @@ final class ReviewsDashboardCardViewModel: ObservableObject {
     }
 
     @Published private(set) var data: [ReviewViewModel] = []
+    private var reviewProductIDs: [Int64] = []
     private var reviewProducts: [Product] = []
     @Published private(set) var syncingData = false
     @Published private(set) var syncingError: Error?
@@ -40,7 +41,7 @@ final class ReviewsDashboardCardViewModel: ObservableObject {
         self.storageManager = storageManager
         self.analytics = analytics
 
-        configureResultsControllers()
+        configureProductReviewsResultsController()
     }
 
     /// ResultsController for ProductReview
@@ -54,7 +55,8 @@ final class ReviewsDashboardCardViewModel: ObservableObject {
 
     /// ResultsController for Product
     private lazy var productsResultsController: ResultsController<StorageProduct> = {
-        return ResultsController<StorageProduct>(storageManager: storageManager, matching: sitePredicate(), sortedBy: [])
+        let predicate = NSPredicate(format: "siteID == %lld AND productID IN %@", siteID, reviewProductIDs)
+        return ResultsController<StorageProduct>(storageManager: storageManager, matching: predicate, sortedBy: [])
     }()
 
     func dismissReviews() {
@@ -107,11 +109,6 @@ private extension ReviewsDashboardCardViewModel {
     }
 
     /// Performs initial fetch from storage and updates results.
-    func configureResultsControllers() {
-        configureProductReviewsResultsController()
-        configureProductsResultsController()
-    }
-
     func configureProductReviewsResultsController() {
         productReviewsResultsController.onDidChangeContent = { [weak self] in
             guard let self else { return }
@@ -133,30 +130,19 @@ private extension ReviewsDashboardCardViewModel {
         }
     }
 
-    func configureProductsResultsController() {
-        productsResultsController.onDidChangeContent = { [weak self] in
-            self?.updateProductsResults()
-        }
-        productsResultsController.onDidResetContent = { [weak self] in
-            self?.updateProductsResults()
-        }
-
-        do {
-            try productsResultsController.performFetch()
-        } catch {
-            ServiceLocator.crashLogging.logError(error)
-        }
-    }
-
     /// Updates data
     @MainActor
     func updateReviewsResults() async {
         let reviews = productReviewsResultsController.fetchedObjects.prefix(Constants.numberOfItems)
-        let reviewProductIDs = reviews.map { $0.productID }
+        reviewProductIDs = reviews.map { $0.productID }
 
         // Load products that matches the review product IDs
         if reviewProductIDs.isNotEmpty {
-            await loadReviewProducts(for: reviewProductIDs)
+            do {
+                try await fetchProducts()
+            } catch {
+                ServiceLocator.crashLogging.logError(error)
+            }
         }
 
         data = reviews
@@ -167,8 +153,19 @@ private extension ReviewsDashboardCardViewModel {
             }
     }
 
-    func updateProductsResults() {
+    /// Get products from storage if available, if not then fetch remotely.
+    ///
+    @MainActor
+    private func fetchProducts() async throws {
+        // Prefer to fetch locally first, if not available then fetch remotely
+        try productsResultsController.performFetch()
         reviewProducts = productsResultsController.fetchedObjects
+
+        if reviewProducts.isEmpty {
+            await loadReviewProducts(for: reviewProductIDs)
+            try productsResultsController.performFetch()
+            reviewProducts = productsResultsController.fetchedObjects
+        }
     }
 
     @MainActor

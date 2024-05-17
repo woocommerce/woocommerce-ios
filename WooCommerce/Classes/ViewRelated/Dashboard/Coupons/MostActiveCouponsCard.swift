@@ -211,7 +211,6 @@ private extension MostActiveCouponsCard {
                 }
             }
         }
-        .navigationViewStyle(.stack)
     }
 }
 

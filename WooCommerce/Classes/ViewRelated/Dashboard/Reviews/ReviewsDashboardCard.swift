@@ -8,14 +8,15 @@ struct ReviewsDashboardCard: View {
     /// Scale of the view based on accessibility changes
     @ScaledMetric private var scale: CGFloat = 1.0
 
-    @State private var showingAllReviews: Bool = false
-
     @ObservedObject private var viewModel: ReviewsDashboardCardViewModel
+    private let onViewAllReviews: (() -> Void)
     private let onViewReviewDetail: ((_ review: ReviewViewModel) -> Void)
 
     init(viewModel: ReviewsDashboardCardViewModel,
+         onViewAllReviews: @escaping () -> Void,
          onViewReviewDetail: @escaping (_ review: ReviewViewModel) -> Void) {
         self.viewModel = viewModel
+        self.onViewAllReviews = onViewAllReviews
         self.onViewReviewDetail = onViewReviewDetail
     }
 
@@ -50,9 +51,6 @@ struct ReviewsDashboardCard: View {
         .background(Color(.listForeground(modal: false)))
         .clipShape(RoundedRectangle(cornerSize: Layout.cornerSize))
         .padding(.horizontal, Layout.padding)
-        LazyNavigationLink(destination: ReviewsView(siteID: viewModel.siteID), isActive: $showingAllReviews) {
-            EmptyView()
-        }
     }
 }
 
@@ -171,7 +169,7 @@ private extension ReviewsDashboardCard {
 
     var viewAllReviewsButton: some View {
         Button {
-            showingAllReviews = true
+            onViewAllReviews()
         } label: {
             HStack {
                 Text(Localization.viewAll)
@@ -234,5 +232,6 @@ private extension ReviewsDashboardCard {
 
 #Preview {
     ReviewsDashboardCard(viewModel: ReviewsDashboardCardViewModel(siteID: 1),
+                         onViewAllReviews: { },
                          onViewReviewDetail: { _ in })
 }

@@ -252,6 +252,12 @@ private extension DashboardViewHostingController {
             show(hostingController, sender: self)
         }
 
+        rootView.onViewAllReviews = { [weak self] in
+            guard let self else { return }
+            let view = ReviewsView(siteID: viewModel.siteID)
+            let hostingController = UIHostingController(rootView: view)
+            show(hostingController, sender: self)
+        }
     }
 }
 

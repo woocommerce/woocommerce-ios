@@ -11,9 +11,14 @@ struct ProductStockDashboardCard: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
+        VStack(alignment: .leading, spacing: Layout.padding) {
             header
                 .padding(.horizontal, Layout.padding)
+
+            filterBar
+                .padding(.horizontal, Layout.padding)
+
+            Divider()
         }
         .padding(.vertical, Layout.padding)
         .background(Color(.listForeground(modal: false)))
@@ -45,6 +50,30 @@ private extension ProductStockDashboardCard {
             .disabled(viewModel.syncingData)
         }
     }
+
+    var filterBar: some View {
+        HStack {
+            Text(Localization.status)
+                .foregroundStyle(Color.primaryText)
+                .subheadlineStyle()
+            Text(viewModel.selectedStockType.displayedName)
+                .subheadlineStyle()
+            Spacer()
+            Menu {
+                ForEach(ProductStockDashboardCardViewModel.StockType.allCases) { stockType in
+                    Button {
+                        viewModel.updateStockType(stockType)
+                    } label: {
+                        SelectableItemRow(title: stockType.displayedName, selected: stockType == viewModel.selectedStockType)
+                    }
+                }
+            } label: {
+                Image(systemName: "line.3.horizontal.decrease")
+                    .foregroundStyle(Color(.secondaryLabel))
+            }
+
+        }
+    }
 }
 
 private extension ProductStockDashboardCard {
@@ -59,7 +88,12 @@ private extension ProductStockDashboardCard {
         static let hideCard = NSLocalizedString(
             "productStockDashboardCard.hideCard",
             value: "Hide Stock",
-            comment: "Menu item to dismiss the Stock section on the Dashboard screen"
+            comment: "Menu item to dismiss the Stock section on the My Store screen"
+        )
+        static let status = NSLocalizedString(
+            "productStockDashboardCard.status",
+            value: "Status",
+            comment: "Header label on the Stock section on the My Store screen"
         )
     }
 }

@@ -30,7 +30,11 @@ final class ProductStockDashboardCardViewModel: ObservableObject {
 
     @MainActor
     func reloadData() async {
-        // TODO
+        syncingData = true
+        syncingError = nil
+        // TODO: replace this with actual remote requests
+        try? await Task.sleep(nanoseconds: 1_000_000_000)
+        syncingData = false
     }
 
     func dismissStock() {

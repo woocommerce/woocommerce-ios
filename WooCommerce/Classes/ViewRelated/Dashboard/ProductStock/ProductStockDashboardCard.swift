@@ -18,11 +18,15 @@ struct ProductStockDashboardCard: View {
 
             filterBar
                 .padding(.horizontal, Layout.padding)
+                .redacted(reason: viewModel.syncingData ? [.placeholder] : [])
+                .shimmering(active: viewModel.syncingData)
 
             Divider()
 
             stockList
                 .padding(.horizontal, Layout.padding)
+                .redacted(reason: viewModel.syncingData ? [.placeholder] : [])
+                .shimmering(active: viewModel.syncingData)
         }
         .padding(.vertical, Layout.padding)
         .background(Color(.listForeground(modal: false)))

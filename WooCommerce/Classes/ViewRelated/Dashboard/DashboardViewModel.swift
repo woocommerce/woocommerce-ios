@@ -18,7 +18,6 @@ final class DashboardViewModel: ObservableObject {
     @Published var localAnnouncementViewModel: LocalAnnouncementViewModel? = nil
 
     let storeOnboardingViewModel: StoreOnboardingViewModel
-
     let blazeCampaignDashboardViewModel: BlazeCampaignDashboardViewModel
 
     let storePerformanceViewModel: StorePerformanceViewModel
@@ -26,6 +25,7 @@ final class DashboardViewModel: ObservableObject {
     let inboxViewModel: InboxDashboardCardViewModel
     let reviewsViewModel: ReviewsDashboardCardViewModel
     let mostActiveCouponsViewModel: MostActiveCouponsCardViewModel
+    let productStockCardViewModel: ProductStockDashboardCardViewModel
 
     @Published var justInTimeMessagesWebViewModel: WebViewSheetViewModel? = nil
 
@@ -110,6 +110,8 @@ final class DashboardViewModel: ObservableObject {
         self.inboxViewModel = InboxDashboardCardViewModel(siteID: siteID)
         self.reviewsViewModel = ReviewsDashboardCardViewModel(siteID: siteID)
         self.mostActiveCouponsViewModel = MostActiveCouponsCardViewModel(siteID: siteID)
+        self.productStockCardViewModel = ProductStockDashboardCardViewModel(siteID: siteID)
+
         self.themeInstaller = themeInstaller
         self.inAppFeedbackCardViewModel.onFeedbackGiven = { [weak self] feedback in
             self?.showingInAppFeedbackSurvey = feedback == .didntLike
@@ -162,6 +164,9 @@ final class DashboardViewModel: ObservableObject {
                 }
                 group.addTask { [weak self] in
                     await self?.mostActiveCouponsViewModel.reloadData()
+                }
+                group.addTask { [weak self] in
+                    await self?.productStockCardViewModel.reloadData()
                 }
             }
         }
@@ -296,33 +301,17 @@ private extension DashboardViewModel {
     }
 
     func setupDashboardCards() {
-        storeOnboardingViewModel.onDismiss = { [weak self] in
+        let showCustomizationScreen: (() -> Void) = { [weak self] in
             self?.showCustomizationScreen()
         }
-
-        blazeCampaignDashboardViewModel.onDismiss = { [weak self] in
-            self?.showCustomizationScreen()
-        }
-
-        storePerformanceViewModel.onDismiss = { [weak self] in
-            self?.showCustomizationScreen()
-        }
-
-        topPerformersViewModel.onDismiss = { [weak self] in
-            self?.showCustomizationScreen()
-        }
-
-        inboxViewModel.onDismiss = { [weak self] in
-            self?.showCustomizationScreen()
-        }
-
-        reviewsViewModel.onDismiss = { [weak self] in
-            self?.showCustomizationScreen()
-        }
-
-        mostActiveCouponsViewModel.onDismiss = { [weak self] in
-            self?.showCustomizationScreen()
-        }
+        storeOnboardingViewModel.onDismiss = showCustomizationScreen
+        blazeCampaignDashboardViewModel.onDismiss = showCustomizationScreen
+        storePerformanceViewModel.onDismiss = showCustomizationScreen
+        topPerformersViewModel.onDismiss = showCustomizationScreen
+        inboxViewModel.onDismiss = showCustomizationScreen
+        reviewsViewModel.onDismiss = showCustomizationScreen
+        mostActiveCouponsViewModel.onDismiss = showCustomizationScreen
+        productStockCardViewModel.onDismiss = showCustomizationScreen
     }
 
     func showCustomizationScreen() {
@@ -360,6 +349,7 @@ private extension DashboardViewModel {
             cards.append(DashboardCard(type: .inbox, availability: .show, enabled: false))
             cards.append(DashboardCard(type: .reviews, availability: .show, enabled: false))
             cards.append(DashboardCard(type: .coupons, availability: .show, enabled: false))
+            cards.append(DashboardCard(type: .stock, availability: .show, enabled: false))
         }
 
         return cards

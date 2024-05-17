@@ -193,7 +193,9 @@ private extension DashboardView {
                         }, onViewCouponDetail: { coupon in
                             onViewCouponDetail?(coupon)
                         })
-                    case .lastOrders, .stock:
+                    case .stock:
+                        ProductStockDashboardCard(viewModel: viewModel.productStockCardViewModel)
+                    case .lastOrders:
                         EmptyView()
                     }
 

@@ -1,1 +1,5 @@
-Nel nostro ultimo aggiornamento abbiamo migliorato la scansione dei codici a barre eliminando un bug che consentiva ai prodotti genitore variabili di intrufolarsi negli ordini. Goditi un'esperienza di creazione dell'ordine più fluida con il nostro ultimo aggiornamento!
+- [*] Modifica del colore del testo nella vista dei badge nell'elenco dei prodotti degli ordini per correggere la leggibilità in modalità scura. [https://github.com/woocommerce/woocommerce-ios/pull/12630]
+- [*] Correzione speculativa di un arresto anomalo durante l'apertura delle notifiche sugli ordini [https://github.com/woocommerce/woocommerce-ios/pull/12643]
+- [interno] Visualizzazione della scheda del feedback in app nella bacheca. [https://github.com/woocommerce/woocommerce-ios/pull/12636]
+- [*] Spedizione: ora è possibile selezionare un metodo di spedizione durante l'aggiunta o la modifica della spedizione relativa a un determinato ordine. [https://github.com/woocommerce/woocommerce-ios/pull/12688]
+

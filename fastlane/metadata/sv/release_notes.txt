@@ -1,1 +1,5 @@
-I vår senaste uppdatering har vi förbättrat streckkodsskanningen genom att åtgärda en bugg som gjorde att variabla överordnade produkter kunde smyga sig in i beställningar. Ta del av smidigare beställningsskapande med vår senaste uppdatering.
+- [*] Vi har ändrat textfärgen i beställningsproduktlistans märkesvy för förbättrad läsbarhet i mörkt läge. [https://github.com/woocommerce/woocommerce-ios/pull/12630]
+- [*] Vi har korrigerat en krasch som uppstod vid öppnande av beställningsnotiser [https://github.com/woocommerce/woocommerce-ios/pull/12643]
+- [internal] Feedback i appen-kortet visas nu i adminpanelen [https://github.com/woocommerce/woocommerce-ios/pull/12636]
+- [*] Frakt: Det är nu möjligt att välja en fraktmetod när du lägger till eller redigerar frakt för en beställning. [https://github.com/woocommerce/woocommerce-ios/pull/12688]
+

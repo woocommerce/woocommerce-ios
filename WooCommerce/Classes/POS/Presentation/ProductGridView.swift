@@ -8,7 +8,7 @@ struct ProductGridView: View {
     }
 
     var body: some View {
-        let columns: [GridItem] = Array(repeating: .init(.flexible()),
+        let columns: [GridItem] = Array(repeating: .init(.fixed(120)),
                                         count: viewModel.products.count)
 
         ScrollView {

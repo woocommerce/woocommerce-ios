@@ -60,6 +60,8 @@ struct ApplicationPasswordTutorial: View {
     /// Friendly error description.
     ///
     let errorDescription: String
+    
+    @ScaledMetric private var scale: CGFloat = 1.0
 
     var body: some View {
         VStack(spacing: .zero) {
@@ -82,7 +84,7 @@ struct ApplicationPasswordTutorial: View {
                     Image(uiImage: .appPasswordTutorialImage)
                         .resizable()
                         .aspectRatio(contentMode: .fit)
-                        .frame(maxWidth: Layout.imageMaxWidth)
+                        .frame(maxWidth: Layout.imageMaxWidth * scale)
                     Spacer()
                 }
 

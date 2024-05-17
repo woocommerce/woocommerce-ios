@@ -34,7 +34,10 @@ final class CardPresentModalRetryableError: CardPresentPaymentsModalViewModel {
     }
 
     func didTapPrimaryButton(in viewController: UIViewController?) {
-        viewController?.dismiss(animated: true, completion: { [weak self] in
+        guard let viewController else {
+            return primaryAction()
+        }
+        viewController.dismiss(animated: true, completion: { [weak self] in
             self?.primaryAction()
         })
     }

@@ -58,6 +58,20 @@ protocol CardPresentPaymentsModalActions {
     func didTapAuxiliaryButton(in viewController: UIViewController?)
 }
 
+extension CardPresentPaymentsModalActions {
+    func primaryButtonTapped() {
+        didTapPrimaryButton(in: nil)
+    }
+
+    func secondaryButtonTapped() {
+        didTapSecondaryButton(in: nil)
+    }
+
+    func auxiliaryButtonTapped() {
+        didTapAuxiliaryButton(in: nil)
+    }
+}
+
 /// The type of card-present transaction.
 enum CardPresentTransactionType {
     /// To collect payment.

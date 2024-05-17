@@ -53,7 +53,11 @@ final class CardPresentModalError: CardPresentPaymentsModalViewModel {
     }
 
     func didTapSecondaryButton(in viewController: UIViewController?) {
-        viewController?.dismiss(animated: true) { [weak self] in
+        guard let viewController else {
+            // TODO: we probably need something that will actually dismiss the error here
+            return dismissCompletion()
+        }
+        viewController.dismiss(animated: true) { [weak self] in
             self?.dismissCompletion()
         }
     }

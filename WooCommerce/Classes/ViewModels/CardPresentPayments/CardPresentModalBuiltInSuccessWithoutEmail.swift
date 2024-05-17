@@ -39,13 +39,19 @@ final class CardPresentModalBuiltInSuccessWithoutEmail: CardPresentPaymentsModal
     }
 
     func didTapPrimaryButton(in viewController: UIViewController?) {
-        viewController?.dismiss(animated: true, completion: { [weak self] in
+        guard let viewController else {
+            return printReceiptAction()
+        }
+        viewController.dismiss(animated: true, completion: { [weak self] in
             self?.printReceiptAction()
         })
     }
 
     func didTapSecondaryButton(in viewController: UIViewController?) {
-        viewController?.dismiss(animated: true) { [weak self] in
+        guard let viewController else {
+            return noReceiptAction()
+        }
+        viewController.dismiss(animated: true) { [weak self] in
             self?.noReceiptAction()
         }
     }

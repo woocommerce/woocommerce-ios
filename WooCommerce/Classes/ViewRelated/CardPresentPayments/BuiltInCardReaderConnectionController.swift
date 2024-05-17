@@ -494,6 +494,8 @@ private extension BuiltInCardReaderConnectionController {
         }
     }
 
+    // TODO: The use of UIViewController here is pretty problematic when using it from SwiftUI,
+    // we need an alternative when it gets consumed through the CardPresentPaymentsAdaptor
     private func openWCSettingsAction(adminUrl: URL?,
                                       retrySearch: @escaping () -> Void) -> ((UIViewController) -> Void)? {
         if let adminUrl = adminUrl {

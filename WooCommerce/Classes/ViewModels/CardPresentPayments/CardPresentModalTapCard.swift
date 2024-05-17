@@ -67,7 +67,11 @@ final class CardPresentModalTapCard: CardPresentPaymentsModalViewModel {
     }
 
     func didTapSecondaryButton(in viewController: UIViewController?) {
-        viewController?.dismiss(animated: true, completion: { [weak self] in
+        guard let viewController else {
+            // TODO: Check whether we need another "cancel" handler here
+            return onCancel()
+        }
+        viewController.dismiss(animated: true, completion: { [weak self] in
             self?.onCancel()
         })
     }

@@ -46,6 +46,10 @@ final class CardPresentModalConnectingFailedUpdateAddress: CardPresentPaymentsMo
         self.cancelSearchAction = cancelSearch
     }
 
+    // TODO: The use of UIViewController here is pretty problematic when using it from SwiftUI,
+    // we need an alternative when it gets consumed through the CardPresentPaymentsAdaptor.
+    // it's used for both dismissal and presentation within `openWCSettingsAction`.
+    // Not tackled in experiment.
     func didTapPrimaryButton(in viewController: UIViewController?) {
         guard let openWCSettingsAction = openWCSettingsAction,
               let viewController = viewController else {

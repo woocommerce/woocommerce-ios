@@ -44,6 +44,10 @@ final class CardPresentModalBuiltInReaderCheckingDeviceSupport: CardPresentPayme
     func didTapAuxiliaryButton(in viewController: UIViewController?) {
         ServiceLocator.analytics.track(.cardPresentOnboardingLearnMoreTapped)
         guard let viewController = viewController else {
+            // TODO: find some way to return this for swiftUI if there's no UIVC
+//            WebViewSheetViewModel(url: Constants.learnMoreURL.asURL(),
+//                                  navigationTitle: "Card Readers",
+//                                  authenticated: false)
             return
         }
         WebviewHelper.launch(Constants.learnMoreURL.asURL(), with: viewController)

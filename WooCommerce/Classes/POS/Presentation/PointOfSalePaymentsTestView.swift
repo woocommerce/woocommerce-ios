@@ -3,7 +3,6 @@ import Combine
 
 // Required for making a dummy order
 import Yosemite
-import Fakes
 
 class PointOfSalePaymentsTestViewModel: ObservableObject {
     let cardPresentPayments: CardPresentPayments
@@ -41,9 +40,14 @@ class PointOfSalePaymentsTestViewModel: ObservableObject {
     }
 
     func startTestPayment() async {
-        _ = await cardPresentPayments.collectPayment(
-            for: Order.fake(),
-            using: .bluetoothScan)
+        do {
+            let order = try await cardPresentPayments.createTestOrder()
+            _ = await cardPresentPayments.collectPayment(
+                for: order,
+                using: .bluetoothScan)
+        } catch {
+            DDLogError("Error with test payment \(error)")
+        }
     }
 
     func cancel() {

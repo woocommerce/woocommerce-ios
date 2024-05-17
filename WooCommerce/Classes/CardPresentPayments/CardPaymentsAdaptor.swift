@@ -25,6 +25,8 @@ protocol CardPresentPayments {
 
     func cancelPayment()
 
+    func createTestOrder() async throws -> Order
+
 }
 
 enum CardPresentPaymentResult {
@@ -155,6 +157,19 @@ class CardPresentPaymentsAdaptor: CardPresentPayments {
     func cancelPayment() {
         paymentTask?.cancel()
         paymentScreenEventSubject.send(nil) // This removes any otherwise-presented UI
+    }
+
+    @MainActor
+    func createTestOrder() async throws -> Order {
+        return try await withCheckedThrowingContinuation { continuation in
+            let action = OrderAction.createSimplePaymentsOrder(siteID: siteID,
+                                                               status: .pending,
+                                                               amount: "1.00",
+                                                               taxable: false) { result in
+                continuation.resume(with: result)
+            }
+            ServiceLocator.stores.dispatch(action)
+        }
     }
 
     enum CardPaymentsAdaptorError: Error, CardPaymentErrorProtocol {

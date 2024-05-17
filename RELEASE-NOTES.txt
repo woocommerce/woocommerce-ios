@@ -1,8 +1,11 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
-18.7
+18.8
 -----
 - [*] Resolved an issue where the image on the tutorial of application password on the iPad login page was displayed too large, improving the login experience for iPad users. [https://github.com/woocommerce/woocommerce-ios/pull/12759]
+
+18.7
+-----
 
 18.6
 -----

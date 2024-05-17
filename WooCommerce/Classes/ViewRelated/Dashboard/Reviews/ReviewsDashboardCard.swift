@@ -152,14 +152,35 @@ private extension ReviewsDashboardCard {
                     textColor: UIColor,
                     accentColor: UIColor,
                     shouldDisplayStatus: Bool) -> some View {
-        if shouldDisplayStatus {
-            return Text(pendingText).foregroundColor(Color(uiColor: accentColor)) +
-            Text(divider + text).foregroundColor(Color(uiColor: textColor))
-        } else {
-            return Text(text).foregroundColor(Color(uiColor: textColor))
-        }
-    }
 
+        var pendingAttributedString: AttributedString {
+            var result = AttributedString(pendingText)
+            result.foregroundColor = Color(uiColor: accentColor)
+            return result
+        }
+
+        var dividerAttributedString: AttributedString {
+            var result = AttributedString(divider)
+            result.foregroundColor = Color(uiColor: textColor)
+            return result
+        }
+
+        var reviewAttributedString: AttributedString {
+            var result = AttributedString(text)
+            result.foregroundColor = Color(uiColor: textColor)
+            return result
+        }
+
+        var reviewText: AttributedString {
+            if shouldDisplayStatus {
+                return pendingAttributedString + dividerAttributedString + reviewAttributedString
+            } else {
+                return reviewAttributedString
+            }
+        }
+
+        return Text(reviewText)
+    }
 
     var viewAllReviewsButton: some View {
         Button {
@@ -201,25 +222,10 @@ private extension ReviewsDashboardCard {
             value: "Status",
             comment: "Status label on the Reviews card's filter area."
         )
-        static let pendingReview = NSLocalizedString(
-            "reviewsDashboardCard.pendingReview",
-            value: "Pending review",
-            comment: "Additional label on a review when its status is hold."
-        )
         static let viewAll = NSLocalizedString(
             "reviewsDashboardCard.viewAll",
             value: "View all reviews",
             comment: "Button to navigate to Reviews list screen."
-        )
-        static let completeAuthorText = NSLocalizedString(
-            "reviewsDashboardCard.completeAuthorText",
-            value: "%@ left a review on %@",
-            comment: "Text displayed when the author of a review is known."
-        )
-        static let incompleteAuthorText = NSLocalizedString(
-            "reviewsDashboardCard.incompleteAuthorText",
-            value: "A customer left a review on %@",
-            comment: "Text displayed when the author of a review is unknown."
         )
     }
 }

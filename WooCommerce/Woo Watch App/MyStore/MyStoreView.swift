@@ -15,8 +15,43 @@ struct MyStoreView: View {
     }
 
     var body: some View {
-        VStack() {
+        VStack {
+            switch viewModel.viewState {
+            case .idle:
+                EmptyView()
+            case .loading:
+                dataView(revenue: "------", orders: "--", visitors: "--", conversion: "--")
+                    .redacted(reason: .placeholder)
+            case .error:
+                errorView
+            case let .loaded(revenue, totalOrders, totalVisitors, conversion):
+                dataView(revenue: revenue, orders: totalOrders, visitors: totalVisitors, conversion: conversion)
+            }
+        }
+        .padding()
+        .background(
+            LinearGradient(gradient: Gradient(colors: [Colors.wooPurpleBackground, .black]), startPoint: .top, endPoint: .bottom)
+        )
+        .task {
+            await viewModel.fetchStats()
+        }
+    }
 
+    @ViewBuilder var errorView: some View {
+        VStack {
+            Spacer()
+            Text(Localization.error)
+            Spacer()
+            Button(Localization.retry) {
+                Task {
+                    await viewModel.fetchStats()
+                }
+            }
+        }
+    }
+
+    @ViewBuilder func dataView(revenue: String, orders: String, visitors: String, conversion: String) -> some View {
+        VStack {
             Text(dependencies.storeName)
                 .font(.body)
                 .foregroundStyle(Colors.wooPurple5)
@@ -27,7 +62,7 @@ struct MyStoreView: View {
                 .foregroundStyle(Colors.wooPurple5)
                 .padding(.bottom, Layout.revenueTitlePadding)
 
-            Text("$4,321.90")
+            Text(revenue)
                 .font(.title2)
                 .bold()
                 .padding(.bottom, Layout.revenueValuePadding)
@@ -54,7 +89,7 @@ struct MyStoreView: View {
                             .renderingMode(.original)
                             .foregroundStyle(Colors.wooPurple10)
 
-                        Text("56")
+                        Text(orders)
                             .font(.caption)
                             .bold()
                     }
@@ -69,7 +104,7 @@ struct MyStoreView: View {
                 VStack(spacing: Layout.iconsSpacing) {
                     HStack(spacing: Layout.iconsSpacing) {
 
-                        Text("112")
+                        Text(visitors)
                             .font(.caption)
                             .bold()
 
@@ -80,7 +115,7 @@ struct MyStoreView: View {
 
                     HStack(spacing: Layout.iconsSpacing) {
 
-                        Text("50%")
+                        Text(conversion)
                             .font(.caption2)
                             .bold()
 
@@ -90,13 +125,6 @@ struct MyStoreView: View {
                     }
                 }
             }
-        }
-        .padding()
-        .background(
-            LinearGradient(gradient: Gradient(colors: [Colors.wooPurpleBackground, .black]), startPoint: .top, endPoint: .bottom)
-        )
-        .task {
-            await viewModel.fetchStats()
         }
     }
 }
@@ -131,6 +159,16 @@ fileprivate extension MyStoreView {
             "watch.mystore.today.title",
             value: "Today",
             comment: "Today title on the watch store stats screen."
+        )
+        static let error = AppLocalizedString(
+            "watch.mystore.error.title",
+            value: "There was an error loading the store's data",
+            comment: "Loading title on the watch store stats screen."
+        )
+        static let retry = AppLocalizedString(
+            "watch.mystore.retry.title",
+            value: "Retry",
+            comment: "Retry on the watch store stats screen."
         )
     }
 

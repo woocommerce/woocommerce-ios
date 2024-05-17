@@ -1,0 +1,21 @@
+{
+    "data": [
+        {
+            "id": 2051,
+            "parent_id": 0,
+            "name": "貴志川線 1日乘車券",
+            "sku": "",
+            "stock_status": "outofstock",
+            "stock_quantity": 0,
+            "manage_stock": "parent",
+            "low_stock_amount": 2,
+            "_links": {
+                "product": [
+                    {
+                        "href": "https://test.wpcomstaging.com/wp-json/wc-analytics/products/2051"
+                    }
+                ]
+            }
+        }
+    ]
+}

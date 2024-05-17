@@ -1,1 +1,5 @@
-Dans notre dernière mise à jour, nous avons amélioré le scan des codes-barres en éliminant un bug qui permettait à des produits parents variables de se glisser dans les commandes. Profitez d’une expérience de création de commande plus fluide grâce à notre dernière mise à jour !
+- [*] Changement de la couleur du texte du badge dans la liste des produits de la commande pour corriger la lisibilité en mode sombre. [https://github.com/woocommerce/woocommerce-ios/pull/12630]
+- [*] Correction spéculative d’un incident lors de l’ouverture des notifications de la commande [https://github.com/woocommerce/woocommerce-ios/pull/12643]
+- [interne] Affichage de la carte de commentaires in-app dans le tableau de bord. [https://github.com/woocommerce/woocommerce-ios/pull/12636]
+- [*] Expédition : une méthode d’expédition peut désormais être sélectionnée lors de l’ajout ou de la modification de l’expédition d’une commande. [https://github.com/woocommerce/woocommerce-ios/pull/12688]
+

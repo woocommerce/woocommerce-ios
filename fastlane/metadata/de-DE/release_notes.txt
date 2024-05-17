@@ -1,1 +1,5 @@
-Im Rahmen unseres letzten Updates wurde das Scannen des Barcodes verbessert. Zu diesem Zweck wurde ein Fehler behoben, durch den variable übergeordnete Produkte unbemerkt in den Bestellungen landen konnten. Genieße dank unserem neuesten Update eine reibungslosere Erstellung von Bestellungen!
+- [*] Textfarbe der Badge-Ansicht der Liste der bestellten Produkte ändern, damit sie auch im dunklen Modus gut lesbar ist. [https://github.com/woocommerce/woocommerce-ios/pull/12630]
+- [*] Spekulative Fehlerbehebung eines Absturzes, der beim Öffnen von Bestellbenachrichtigungen auftritt [https://github.com/woocommerce/woocommerce-ios/pull/12643]
+- [intern] Karte mit In App-Feedback im Dashboard anzeigen. [https://github.com/woocommerce/woocommerce-ios/pull/12636]
+- [*] Versand: Beim Hinzufügen oder Bearbeiten von Versandinformationen zu einer Bestellung kann jetzt eine Versandmethode ausgewählt werden. [https://github.com/woocommerce/woocommerce-ios/pull/12688]
+

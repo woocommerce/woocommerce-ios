@@ -36,7 +36,7 @@ enum CardPresentPaymentResult {
 }
 
 enum CardPresentPaymentEvent {
-    case presentAlert(CardPresentPaymentsModalContent)
+    case presentAlert(CardPresentPaymentsModalViewModel)
     case presentReaderList(_ readerIDs: [String])
     case showOnboarding(_ onboardingViewModel: InPersonPaymentsViewModel)
 }
@@ -184,7 +184,7 @@ class CardPresentPaymentsAdaptor: CardPresentPayments {
 extension CardPresentPaymentsAdaptor: CardPresentPaymentAlertsPresenting {
 
     func present(viewModel: CardPresentPaymentsModalViewModel) {
-        paymentScreenEventSubject.send(.presentAlert(viewModel as CardPresentPaymentsModalContent))
+        paymentScreenEventSubject.send(.presentAlert(viewModel))
     }
 
     func foundSeveralReaders(readerIDs: [String], connect: @escaping (String) -> Void, cancelSearch: @escaping () -> Void) {

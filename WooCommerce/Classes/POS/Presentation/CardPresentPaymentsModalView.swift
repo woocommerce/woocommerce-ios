@@ -37,6 +37,27 @@ struct CardPresentPaymentsModalView: View {
                     .padding(.bottom)
                     .foregroundColor(.secondary)
             }
+
+            if let primaryButtonViewModel = viewModel.primaryButtonViewModel {
+                Button(action: primaryButtonViewModel.handler, label: {
+                    Text(primaryButtonViewModel.label)
+                })
+                .buttonStyle(PrimaryButtonStyle())
+            }
+
+            if let secondaryButtonViewModel = viewModel.secondaryButtonViewModel {
+                Button(action: secondaryButtonViewModel.handler, label: {
+                    Text(secondaryButtonViewModel.label)
+                })
+                .buttonStyle(SecondaryButtonStyle())
+            }
+
+            if let auxiliaryButtonViewModel = viewModel.auxiliaryButtonViewModel {
+                Button(action: auxiliaryButtonViewModel.handler, label: {
+                    Text(auxiliaryButtonViewModel.label)
+                })
+                .buttonStyle(TextButtonStyle())
+            }
         }
         .padding()
     }

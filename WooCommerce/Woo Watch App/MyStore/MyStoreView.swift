@@ -13,30 +13,35 @@ struct MyStoreView: View {
     init(dependencies: WatchDependencies) {
         _viewModel = StateObject(wrappedValue: MyStoreViewModel(dependencies: dependencies))
     }
-
     var body: some View {
+        // This VStack is needed so the `onAppear` task is properly executed.
         VStack {
+            // Draw the view that corresponds to the view state.
             switch viewModel.viewState {
             case .idle:
                 EmptyView()
             case .loading:
-                dataView(revenue: "------", orders: "--", visitors: "--", conversion: "--")
+                dataView(revenue: "------", orders: "--", visitors: "--", conversion: "--", time: "00:00 AM")
                     .redacted(reason: .placeholder)
             case .error:
                 errorView
-            case let .loaded(revenue, totalOrders, totalVisitors, conversion):
-                dataView(revenue: revenue, orders: totalOrders, visitors: totalVisitors, conversion: conversion)
+            case let .loaded(revenue, totalOrders, totalVisitors, conversion, time):
+                dataView(revenue: revenue, orders: totalOrders, visitors: totalVisitors, conversion: conversion, time: time)
             }
         }
         .padding()
         .background(
             LinearGradient(gradient: Gradient(colors: [Colors.wooPurpleBackground, .black]), startPoint: .top, endPoint: .bottom)
         )
-        .task {
-            await viewModel.fetchStats()
+        .onAppear() {
+            Task {
+                await viewModel.fetchStats()
+            }
         }
     }
 
+    /// Error View with a retry button
+    ///
     @ViewBuilder var errorView: some View {
         VStack {
             Spacer()
@@ -50,7 +55,9 @@ struct MyStoreView: View {
         }
     }
 
-    @ViewBuilder func dataView(revenue: String, orders: String, visitors: String, conversion: String) -> some View {
+    /// My Store Stats data view.
+    ///
+    @ViewBuilder func dataView(revenue: String, orders: String, visitors: String, conversion: String, time: String) -> some View {
         VStack {
             Text(dependencies.storeName)
                 .font(.body)
@@ -73,7 +80,7 @@ struct MyStoreView: View {
             HStack {
                 Text(Localization.today)
                 Spacer()
-                Text("As of 02:19")
+                Text(Localization.time(time))
             }
             .font(.footnote)
             .foregroundStyle(.secondary)
@@ -129,7 +136,10 @@ struct MyStoreView: View {
     }
 }
 
+/// Constants
+///
 fileprivate extension MyStoreView {
+    // TODO: Move this to a shared resource
     enum Colors {
         static let wooPurple5 = Color(red: 223/255.0, green: 209/255.0, blue: 251/255.0)
         static let wooPurple80 = Color(red: 60/255.0, green: 40/255.0, blue: 97/255.0)
@@ -170,6 +180,14 @@ fileprivate extension MyStoreView {
             value: "Retry",
             comment: "Retry on the watch store stats screen."
         )
+        static func time(_ time: String) -> LocalizedString {
+            let format = AppLocalizedString(
+                "watch.mystore.time.format",
+                value: "As of %@",
+                comment: "Format of the updated time in the watch store stats screen."
+            )
+            return LocalizedString(format: format, time)
+        }
     }
 
     enum Images {

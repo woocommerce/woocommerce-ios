@@ -1,1 +1,5 @@
-최신 업데이트에서는 상위 변형 상품이 의도치 않게 주문에 포함되는 버그가 수정되어 바코드 스캔이 개선되었습니다. 최신 업데이트로 더 원활한 주문 생성 환경을 누리세요.
+- [*] 어둡게 모드에서 가독성을 개선하도록 주문 제품 목록의 배지 보기에서 텍스트 색상 변경. [https://github.com/woocommerce/woocommerce-ios/pull/12630]
+- [*] 주문 알림을 열 때의 충돌에 대한 예측 수정 [https://github.com/woocommerce/woocommerce-ios/pull/12643]
+- [internal] 대시보드에 인앱 피드백 카드 표시. [https://github.com/woocommerce/woocommerce-ios/pull/12636]
+- [*] 배송: 주문 배송 추가 또는 편집 시 배송 방법 선택 가능. [https://github.com/woocommerce/woocommerce-ios/pull/12688]
+

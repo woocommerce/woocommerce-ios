@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-05-08 09:54:07+0000 */
+/* Translation-Revision-Date: 2024-05-14 15:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: es */
@@ -2014,9 +2014,6 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Costa Rica" = "Costa Rica";
 
-/* The title of the button for giving a negative feedback for the app. */
-"Could Be Better" = "Podría ser mejor";
-
 /* Message shown when site purchases API failed */
 "Could not check site purchases." = "No se han podido comprobar las compras del sitio.";
 
@@ -2810,9 +2807,6 @@ which should be translated separately and considered part of this sentence. */
 /* End Date label in custom range date picker
    Label for one of the filters in order custom date range */
 "End Date" = "Fecha final";
-
-/* The title used when asking the user for feedback for the app. */
-"Enjoying the WooCommerce app?" = "¿Te gusta la aplicación de WooCommerce?";
 
 /* Step 3 of shipping label printing instructions screen. The content inside two double asterisks **...** denote bolded text. */
 "Ensure that your **printer firmware is up to date**. See your printer documentation for instructions on updating." = "Comprueba que el **firmware de la impresora está actualizado**. Consulta la documentación de la impresora para saber cómo actualizarla.";
@@ -3695,9 +3689,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Hungary" = "Hungría";
-
-/* The title of the button for giving a positive feedback for the app. */
-"I Like It" = "Me gusta";
 
 /* Option in the store creation selling status question. */
 "I am already selling online" = "Ya vendo por Internet.";
@@ -9686,6 +9677,12 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the link for site creation guide. */
 "authenticationConstants.siteCreationGuideButtonTitle" = "¿Deseas crear una nueva tienda?";
 
+/* Cell description on beta features screen to enable the Point Of Sale feature */
+"betaFeature.pointOfSale.description" = "Prueba la función de punto de venta mientras preparamos todo para lanzarla";
+
+/* Cell title on beta features screen to enable the Point Of Sale feature */
+"betaFeature.pointOfSale.title" = "Punto de venta";
+
 /* Button to send a message to a customer via Telegram */
 "billingInfoViewController.telegram" = "Enviar mensaje de Telegram";
 
@@ -10366,6 +10363,27 @@ which should be translated separately and considered part of this sentence. */
 /* Navigation bar title for the cash tender view. Reads like 'Take Payment ($34.45)' */
 "cashPaymentTenderView.navigationBarTitle" = "Aceptar pago (%1$@)";
 
+/* Title of the button to add address in the order form customer card. */
+"collapsibleCustomerCard.addAddress.title" = "Añadir dirección del cliente";
+
+/* Address header text in the order form customer card when the billing and shipping addresses are the same. */
+"collapsibleCustomerCard.editAddress.address.header" = "Dirección";
+
+/* Billing address header text in the order form customer card. */
+"collapsibleCustomerCard.editAddress.billing.header" = "Dirección de facturación";
+
+/* Shipping address header text in the order form customer card. */
+"collapsibleCustomerCard.editAddress.shipping.header" = "Dirección de envío";
+
+/* Title of the email text field in the order form customer card. */
+"collapsibleCustomerCard.emailTextField.placeholder" = "Introduce la dirección de correo electrónico";
+
+/* Title of the email text field in the order form customer card. */
+"collapsibleCustomerCard.emailTextField.title" = "Dirección de correo electrónico";
+
+/* Title of the button to remove customer from an order in the order form customer card. */
+"collapsibleCustomerCard.removeCustomerButton.title" = "Quitar cliente del pedido";
+
 /* Formatted price label based on a product's price and quantity. Reads as '8 x $10.00'. Please take care to use the multiplication symbol ×, not a letter x, where appropriate. */
 "collapsibleProductCardPriceSummaryViewModel.priceQuantityLine" = "%1$@ × %2$@";
 
@@ -10754,6 +10772,15 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the view containing a single Product Review */
 "hubMenu.productReview" = "Reseña de producto";
 
+/* The title of the button for giving a negative feedback for the app. */
+"inAppFeedbackCardView.couldBeBetter" = "Podría estar mejor";
+
+/* The title of the button for giving a positive feedback for the app. */
+"inAppFeedbackCardView.iLikeIt" = "Me gusta";
+
+/* The title used when asking the user for feedback for the app. */
+"inAppFeedbackCardView.title" = "¿Te gusta la aplicación de WooCommerce?";
+
 /* Title for Add Order home screen action */
 "infoplist.AddOrderAction.Title" = "Nuevo pedido";
 
@@ -10918,9 +10945,6 @@ which should be translated separately and considered part of this sentence. */
 /* A error message when it's not possible toacquire the Analytics Hub previous selection range */
 "no previous period" = "no hay períodos previos";
 
-/* Title for the screen to select a shipping method for an order */
-"order.ShippingMethodSelector.Title" = "Método";
-
 /* Subtitle of a notice shown when a merchant scans a barcode for a product which is a parent to variations. It's not possible to purchase a parent product, as it simply groups its variable product children. In this case, the product is not added to the order as the merchant wanted it to be. */
 "order.barcode.scan.parent.product.notice.subtitle" = "Elije una variación específica.";
 
@@ -10975,12 +10999,18 @@ which should be translated separately and considered part of this sentence. */
 /* Button to edit a shipping line to the order during order creation */
 "order.shippingLineDetails.editShipping" = "Editar envío";
 
+/* Title above the shipping method field on the Shipping Line Details screen */
+"order.shippingLineDetails.method" = "Método";
+
 /* Title above the name field on the Shipping Line Details screen */
 "order.shippingLineDetails.name" = "Nombre";
 
 /* Placeholder for the name field on the Shipping Line Details screen
    Placeholder for the name field on the Shipping Line Details screen in order form */
 "order.shippingLineDetails.namePlaceholder" = "Envío";
+
+/* Title for the placeholder shipping method on the Shipping Line Details screen */
+"order.shippingLineDetails.placeholderMethodTitle" = "N\/D";
 
 /* Button to remove a shipping line from the order during order creation */
 "order.shippingLineDetails.removeShipping" = "Eliminar el envío del pedido";
@@ -11069,8 +11099,20 @@ which should be translated separately and considered part of this sentence. */
 /* Title text of the confirmation dialog that shows the add custom amounts options. */
 "orderForm.customAmounts.addOptionsDialogTitle" = "¿Cómo deseas añadir el importe personalizado?";
 
-/* Title text of the button that adds customer data when creating a new order */
+/* Title text of the button that adds customer data in the order form. */
 "orderForm.customerSection.addCustomer" = "Añadir cliente";
+
+/* Placeholder of the email in the header of a customer card in order form when an account is not required. */
+"orderForm.customerSection.customerCard.header.emailPlaceholder.notRequired" = "Dirección de correo electrónico";
+
+/* Placeholder of the email in the header of a customer card in order form when an account is required. */
+"orderForm.customerSection.customerCard.header.emailPlaceholder.required" = "La dirección de correo electrónico es necesaria";
+
+/* Header text of the customer card in the order form. */
+"orderForm.customerSection.customerHeader" = "Cliente";
+
+/* Title of the order customer selection screen in the order form.. */
+"orderForm.customerSection.customerSelectorTitle" = "Añadir detalles del cliente";
 
 /* Title of the primary button on the new order screen to collect payment, likely in-person. This button first creates the order, then presents a view for the merchant to choose a payment method. */
 "orderForm.payment.collect.button.title" = "Recibir pago";
@@ -11592,6 +11634,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button in date range picker to add a Custom Range tab */
 "topPerformerDashboardViewModel.addCustomRange" = "Añadir";
+
+/* Title of the custom time range on the Top Performers card on the Dashboard screen */
+"topPerformersDashboardView.custom" = "Personalizado";
 
 /* Menu item to dismiss the Top Performers section on the Dashboard screen */
 "topPerformersDashboardView.hideCard" = "Ocultar mejor rendimiento";

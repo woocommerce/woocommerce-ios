@@ -1,5 +1,6 @@
 import SwiftUI
 import Yosemite
+import enum Networking.DotcomError
 
 /// SwiftUI view for the most active coupons card.
 ///
@@ -8,6 +9,7 @@ struct MostActiveCouponsCard: View {
     @State private var showingCustomRangePicker = false
     private let onViewAllCoupons: () -> Void
     private let onViewCouponDetail: (_ coupon: Coupon) -> Void
+    @State private var showingSupportForm = false
 
     init(viewModel: MostActiveCouponsCardViewModel,
          onViewAllCoupons: @escaping () -> Void,
@@ -22,14 +24,19 @@ struct MostActiveCouponsCard: View {
             header
                 .padding(.horizontal, Layout.padding)
 
-            if viewModel.syncingError != nil {
-                DashboardCardErrorView(onRetry: {
-                    ServiceLocator.analytics.track(event: .DynamicDashboard.cardRetryTapped(type: .coupons))
-                    Task {
-                        await viewModel.reloadData()
-                    }
-                })
-                .padding(.horizontal, Layout.padding)
+            if let error = viewModel.syncingError {
+                if error as? DotcomError == .noRestRoute {
+                    contentUnavailableView
+                        .padding(.horizontal, Layout.padding)
+                } else {
+                    DashboardCardErrorView(onRetry: {
+                        ServiceLocator.analytics.track(event: .DynamicDashboard.cardRetryTapped(type: .coupons))
+                        Task {
+                            await viewModel.reloadData()
+                        }
+                    })
+                    .padding(.horizontal, Layout.padding)
+                }
             } else {
                 timeRangeBar
                     .padding(.horizontal, Layout.padding)
@@ -38,7 +45,11 @@ struct MostActiveCouponsCard: View {
 
                 Divider()
 
-                couponsList
+                if viewModel.syncingData || viewModel.rows.isNotEmpty {
+                    couponsList
+                } else {
+                    emptyView
+                }
 
                 viewAllCouponsButton
                     .padding(.horizontal, Layout.padding)
@@ -57,6 +68,9 @@ struct MostActiveCouponsCard: View {
                              datesSelected: { start, end in
                 viewModel.didSelectTimeRange(.custom(from: start, to: end))
             })
+        }
+        .sheet(isPresented: $showingSupportForm) {
+            supportForm
         }
     }
 }
@@ -100,13 +114,22 @@ private extension MostActiveCouponsCard {
             .padding(.horizontal, Layout.padding)
 
             // Rows
-            ForEach(viewModel.coupons) { item in
-                CouponDashboardRow(coupon: item, tapHandler: {
-                    onViewCouponDetail(item)
+            ForEach(viewModel.rows) { item in
+                MostActiveCouponRow(viewModel: item, tapHandler: {
+                    onViewCouponDetail(item.coupon)
                 })
             }
             .redacted(reason: viewModel.syncingData ? [.placeholder] : [])
             .shimmering(active: viewModel.syncingData)
+        }
+    }
+
+    var emptyView: some View {
+        VStack(spacing: 0) {
+            MostActiveCouponsEmptyView()
+                .frame(maxWidth: .infinity)
+
+            Divider()
         }
     }
 
@@ -159,37 +182,33 @@ private extension MostActiveCouponsCard {
         }
         .disabled(viewModel.syncingData)
     }
-}
 
-private struct CouponDashboardRow: View {
-    let coupon: Coupon
-    let tapHandler: (() -> Void)
+    var contentUnavailableView: some View {
+        VStack(alignment: .center, spacing: Layout.padding) {
+            Image(uiImage: .noStoreImage)
+            Text(Localization.ContentUnavailable.title)
+                .headlineStyle()
+            Text(Localization.ContentUnavailable.details)
+                .bodyStyle()
+                .multilineTextAlignment(.center)
+            Button(Localization.ContentUnavailable.buttonTitle) {
+                showingSupportForm = true
+            }
+            .buttonStyle(SecondaryButtonStyle())
+        }
+        .frame(maxWidth: .infinity)
+    }
 
-    var body: some View {
-        Button {
-            tapHandler()
-        } label: {
-            VStack {
-                HStack {
-                    VStack(alignment: .leading, spacing: 0) {
-                        Text(coupon.code)
-                            .bodyStyle()
-                        Text(coupon.summary())
-                            .subheadlineStyle()
-                    }
-
-                    Spacer()
-
-                    VStack(alignment: .trailing) {
-                        Text("\(coupon.usageCount)")
-                            .bodyStyle()
-                        Spacer()
+    var supportForm: some View {
+        NavigationStack {
+            SupportForm(isPresented: $showingSupportForm,
+                        viewModel: SupportFormViewModel())
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button(Localization.ContentUnavailable.done) {
+                        showingSupportForm = false
                     }
                 }
-                .padding(.horizontal, MostActiveCouponsCard.Layout.padding)
-
-                Divider()
-                    .padding(.leading, MostActiveCouponsCard.Layout.padding)
             }
         }
     }
@@ -228,6 +247,29 @@ private extension MostActiveCouponsCard {
             value: "Uses",
             comment: "Title in the coupons list on the coupons card on the Dashboard screen. Denotes the number of times the coupon has been used."
         )
+        enum ContentUnavailable {
+            static let title = NSLocalizedString(
+                "mostActiveCouponsCard.contentUnavailable.title",
+                value: "Unable to load coupon usage report",
+                comment: "Title when we can't load coupon usage report because user is on a deprecated WooCommerce Version"
+            )
+            static let details = NSLocalizedString(
+                "mostActiveCouponsCard.contentUnavailable.details",
+                value: "Make sure you are running the latest version of WooCommerce on your site" +
+                " and enabling Analytics in WooCommerce Settings.",
+                comment: "Text that explains how to update WooCommerce to get the latest stats"
+            )
+            static let buttonTitle = NSLocalizedString(
+                "mostActiveCouponsCard.contentUnavailable.buttonTitle",
+                value: "Still need help? Contact us",
+                comment: "Button title to contact support to get help with deprecated stats module"
+            )
+            static let done = NSLocalizedString(
+                "mostActiveCouponsCard.contentUnavailable.dismissSupport",
+                value: "Done",
+                comment: "Button to dismiss the support form from the Dashboard stats error screen."
+            )
+        }
     }
 }
 

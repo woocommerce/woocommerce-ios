@@ -99,4 +99,14 @@ public enum CouponAction: Action {
     case validateCouponCode(code: String,
                             siteID: Int64,
                             onCompletion: (Result<Bool, Error>) -> Void)
+
+    /// Loads the coupons from a site given the coupon IDs
+    ///
+    /// - `siteID`: the site for which coupons should be fetched.
+    /// - `couponIDs`: IDs of the coupons to be retrieved.
+    /// - `onCompletion`: invoked upon completion.
+    ///
+    case loadCoupons(siteID: Int64,
+                     couponIDs: [Int64],
+                     onCompletion: (Result<[Coupon], Error>) -> Void)
 }

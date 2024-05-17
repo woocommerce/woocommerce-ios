@@ -81,6 +81,8 @@ public final class CouponStore: Store {
             retrieveCoupon(siteID: siteID, couponID: couponID, onCompletion: onCompletion)
         case .validateCouponCode(let code, let siteID, let onCompletion):
             validateCouponCode(code: code, siteID: siteID, onCompletion: onCompletion)
+        case .loadCoupons(let siteID, let couponIDs, let onCompletion):
+            loadCoupons(siteID: siteID, couponIDs: couponIDs, onCompletion: onCompletion)
         }
     }
 }
@@ -284,6 +286,27 @@ private extension CouponStore {
             case .success(let coupon):
                 self.upsertStoredCouponsInBackground(readOnlyCoupons: [coupon], siteID: siteID) {
                     onCompletion(.success(coupon))
+                }
+            }
+        }
+    }
+    /// Loads the coupons for a site given all the coupon IDs
+    ///
+    /// - `siteID`: the site for which coupons should be fetched.
+    /// - `couponIDs`: IDs of the coupons to be retrieved.
+    /// - `onCompletion`: invoked upon completion.
+    ///
+    func loadCoupons(siteID: Int64,
+                     couponIDs: [Int64],
+                     onCompletion: @escaping (_ result: Result<[Coupon], Error>) -> Void) {
+        remote.loadCoupons(for: siteID, by: couponIDs) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .failure(let error):
+                onCompletion(.failure(error))
+            case .success(let coupons):
+                self.upsertStoredCouponsInBackground(readOnlyCoupons: coupons, siteID: siteID) {
+                    onCompletion(.success(coupons))
                 }
             }
         }

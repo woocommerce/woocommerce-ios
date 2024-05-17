@@ -304,6 +304,8 @@ private extension EmptyStateViewController {
         switch config {
         case .simple:
             actionButton.isHidden = true
+        case .simpleImageWithDescription:
+            actionButton.isHidden = true
         case .withLink(_, _, _, let title, _, _), .withButton(_, _, _, let title, _, _):
             actionButton.isHidden = false
             actionButton.applyPrimaryButtonStyle()
@@ -322,6 +324,8 @@ private extension EmptyStateViewController {
         pullToRefreshHandler = {
             switch config {
             case .simple(_, _, let pullToRefreshClosure):
+                return pullToRefreshClosure
+            case .simpleImageWithDescription(_, _, let pullToRefreshClosure):
                 return pullToRefreshClosure
             case .withLink(_, _, _, _, _, let pullToRefreshClosure):
                 return pullToRefreshClosure
@@ -392,6 +396,12 @@ extension EmptyStateViewController {
         ///
         case simple(message: NSAttributedString, image: UIImage, onPullToRefresh: PullToRequestActionHandler? = nil)
 
+        /// Show an image and description only.
+        ///
+        case simpleImageWithDescription(image: UIImage,
+                                       details: String,
+                                       onPullToRefresh: PullToRequestActionHandler? = nil)
+
         /// Show all the elements and a prominent button which navigates to a URL when activated.
         ///
         /// - Parameters:
@@ -439,10 +449,15 @@ extension EmptyStateViewController {
 
         fileprivate var message: NSAttributedString {
             switch self {
+            case .simpleImageWithDescription:
+                // In order to avoid making changes across multiple uses of `message` by making this optional
+                // we opted for simply returning an empty NSAttributedString, which isn't used.
+                // Ref: https://github.com/woocommerce/woocommerce-ios/pull/12214/files#r1513826124
+                return NSAttributedString(string: "")
             case .simple(let message, _, _),
-                 .withLink(let message, _, _, _, _, _),
-                 .withButton(let message, _, _, _, _, _),
-                 .withSupportRequest(let message, _, _, _, _):
+                    .withLink(let message, _, _, _, _, _),
+                    .withButton(let message, _, _, _, _, _),
+                    .withSupportRequest(let message, _, _, _, _):
                 return message
             }
         }
@@ -450,9 +465,10 @@ extension EmptyStateViewController {
         fileprivate var image: UIImage {
             switch self {
             case .simple(_, let image, _),
-                 .withLink(_, let image, _, _, _, _),
-                 .withButton(_, let image, _, _, _, _),
-                 .withSupportRequest(_, let image, _, _, _):
+                    .simpleImageWithDescription(let image, _, _),
+                    .withLink(_, let image, _, _, _, _),
+                    .withButton(_, let image, _, _, _, _),
+                    .withSupportRequest(_, let image, _, _, _):
                 return image
             }
         }
@@ -461,9 +477,10 @@ extension EmptyStateViewController {
             switch self {
             case .simple:
                 return nil
-            case .withLink(_, _, let detail, _, _, _),
-                 .withButton(_, _, let detail, _, _, _),
-                 .withSupportRequest(_, _, let detail, _, _):
+            case .simpleImageWithDescription( _, let detail, _),
+                    .withLink(_, _, let detail, _, _, _),
+                    .withButton(_, _, let detail, _, _, _),
+                    .withSupportRequest(_, _, let detail, _, _):
                 return detail
             }
         }

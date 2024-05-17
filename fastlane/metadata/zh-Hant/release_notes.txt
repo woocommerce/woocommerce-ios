@@ -1,1 +1,5 @@
-我們在最新更新中強化了條碼掃描功能並修正錯誤，不讓多款式上層商品混入訂單。 運用我們的最新更新，享有更流暢的訂單建立體驗！
+- [*] 變更訂單商品清單中徽章檢視畫面的文字顏色，藉此修正深色模式的可讀性。[https://github.com/woocommerce/woocommerce-ios/pull/12630]
+- [*] 開啟訂單通知時，針對當機狀況進行推測性修正 [https://github.com/woocommerce/woocommerce-ios/pull/12643]
+- [內部] 在儀表板顯示應用程式內的意見回饋卡。[https://github.com/woocommerce/woocommerce-ios/pull/12636]
+- [*] 運送功能：在訂單中新增或編輯運送功能時，現在可以選取運送方式。[https://github.com/woocommerce/woocommerce-ios/pull/12688]
+

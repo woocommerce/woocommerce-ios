@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "shopping-bags.pdf",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

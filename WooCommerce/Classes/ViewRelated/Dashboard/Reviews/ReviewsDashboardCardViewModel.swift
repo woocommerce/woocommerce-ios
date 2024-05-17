@@ -20,8 +20,9 @@ final class ReviewsDashboardCardViewModel: ObservableObject {
     }
 
     @Published private(set) var data: [ReviewViewModel] = []
-    private var reviewProductIDs: [Int64] = []
-    private var reviewProducts: [Product] = []
+    private var reviewProducts: [Product] {
+        return productsResultsController.fetchedObjects
+    }
     private var notifications: [Note] {
         return notificationsResultsController.fetchedObjects
     }
@@ -35,6 +36,8 @@ final class ReviewsDashboardCardViewModel: ObservableObject {
     public let siteID: Int64
     public let filters: [ReviewsFilter] = [.all, .hold, .approved]
 
+    private var productsResultsController: ResultsController<StorageProduct>
+
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
@@ -44,6 +47,9 @@ final class ReviewsDashboardCardViewModel: ObservableObject {
         self.storageManager = storageManager
         self.analytics = analytics
 
+        self.productsResultsController = ResultsController<StorageProduct>(storageManager: storageManager,
+                                                                           matching: nil,
+                                                                           sortedBy: [])
         configureProductReviewsResultsController()
     }
 
@@ -54,12 +60,6 @@ final class ReviewsDashboardCardViewModel: ObservableObject {
                                                        matching: sitePredicate(),
                                                        fetchLimit: Constants.numberOfItems,
                                                        sortedBy: [sortDescriptor])
-    }()
-
-    /// ResultsController for Product
-    private lazy var productsResultsController: ResultsController<StorageProduct> = {
-        let predicate = NSPredicate(format: "siteID == %lld AND productID IN %@", siteID, reviewProductIDs)
-        return ResultsController<StorageProduct>(storageManager: storageManager, matching: predicate, sortedBy: [])
     }()
 
     /// ResultsController for Notification
@@ -99,7 +99,7 @@ final class ReviewsDashboardCardViewModel: ObservableObject {
     }
 }
 
-// MARK: - Private helpers
+// MARK: - Storage related
 private extension ReviewsDashboardCardViewModel {
     /// Predicate to entities that belong to the current store
     ///
@@ -107,29 +107,8 @@ private extension ReviewsDashboardCardViewModel {
         return NSPredicate(format: "siteID == %lld", siteID)
     }
 
-    @MainActor
-    func loadReviews() async throws -> [ProductReview] {
-        try await withCheckedThrowingContinuation { continuation in
-            stores.dispatch(ProductReviewAction.synchronizeProductReviews(siteID: siteID,
-                                                                          pageNumber: 1,
-                                                                          pageSize: Constants.numberOfItems) { result in
-                continuation.resume(with: result)
-            })
-        }
-    }
-
-    @MainActor
-    func retrieveProducts(for reviewProductIDs: [Int64]) async throws -> (products: [Product], hasNextPage: Bool) {
-        try await withCheckedThrowingContinuation { continuation in
-            stores.dispatch(ProductAction.retrieveProducts(siteID: siteID,
-                                                           productIDs: reviewProductIDs
-                                                          ) { result in
-                continuation.resume(with: result)
-            })
-        }
-    }
-
     /// Performs initial fetch from storage and updates results.
+    ///
     func configureProductReviewsResultsController() {
         productReviewsResultsController.onDidChangeContent = { [weak self] in
             guard let self else { return }
@@ -151,17 +130,36 @@ private extension ReviewsDashboardCardViewModel {
         }
     }
 
+    func updateProductsResultsControllerPredicate(with productIDs: [Int64]) {
+        let predicates = NSCompoundPredicate(andPredicateWithSubpredicates: [sitePredicate(),
+                                                                            NSPredicate(format: "productID IN %@", productIDs)])
+        productsResultsController.predicate = predicates
+    }
+}
+
+// MARK: - Private helpers
+private extension ReviewsDashboardCardViewModel {
+    @MainActor
+    func loadReviews() async throws -> [ProductReview] {
+        try await withCheckedThrowingContinuation { continuation in
+            stores.dispatch(ProductReviewAction.synchronizeProductReviews(siteID: siteID,
+                                                                          pageNumber: 1,
+                                                                          pageSize: Constants.numberOfItems) { result in
+                continuation.resume(with: result)
+            })
+        }
+    }
+
     /// Updates data
     @MainActor
     func updateReviewsResults() async {
         let reviews = productReviewsResultsController.fetchedObjects.prefix(Constants.numberOfItems)
-        reviewProductIDs = reviews.map { $0.productID }
+        let productIDs = reviews.map { $0.productID }
 
-        // Once we get product IDs from reviews, fetch products to get product names, and optionally fetch
-        // notifications for read state.
-        if reviewProductIDs.isNotEmpty {
+        if productIDs.isNotEmpty {
+            updateProductsResultsControllerPredicate(with: productIDs)
             do {
-                try await fetchProducts()
+                try await fetchProducts(for: productIDs)
 
                 if stores.isAuthenticatedWithoutWPCom == false {
                     try await fetchNotifications()
@@ -188,14 +186,16 @@ private extension ReviewsDashboardCardViewModel {
     /// Get products from storage if available, if not then fetch remotely.
     ///
     @MainActor
-    private func fetchProducts() async throws {
+    private func fetchProducts(for productIDs: [Int64]) async throws {
         try productsResultsController.performFetch()
-        reviewProducts = productsResultsController.fetchedObjects
 
-        if reviewProducts.isEmpty {
-            await loadReviewProducts(for: reviewProductIDs)
-            try productsResultsController.performFetch()
-            reviewProducts = productsResultsController.fetchedObjects
+        // Check if all productIDs are available in storage
+        let allProductsAvailable = productIDs.allSatisfy { productID in
+            reviewProducts.contains { $0.productID == productID }
+        }
+
+        if !allProductsAvailable {
+            await loadReviewProducts(for: productIDs)
         }
     }
 
@@ -221,6 +221,17 @@ private extension ReviewsDashboardCardViewModel {
             syncingError = error
         }
         syncingData = false
+    }
+
+    @MainActor
+    func retrieveProducts(for reviewProductIDs: [Int64]) async throws -> (products: [Product], hasNextPage: Bool) {
+        try await withCheckedThrowingContinuation { continuation in
+            stores.dispatch(ProductAction.retrieveProducts(siteID: siteID,
+                                                           productIDs: reviewProductIDs
+                                                          ) { result in
+                continuation.resume(with: result)
+            })
+        }
     }
 
     @MainActor

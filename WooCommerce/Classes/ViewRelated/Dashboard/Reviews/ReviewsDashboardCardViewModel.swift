@@ -242,6 +242,17 @@ private extension ReviewsDashboardCardViewModel {
             })
         }
     }
+
+    func mapToProductReviewStatus(from reviewsFilter: ReviewsFilter) -> [ProductReviewStatus]? {
+        switch reviewsFilter {
+        case .all:
+            return nil // There is no "all" case inside ProductReviewStatus. To fetch everything, this needs to be nil.
+        case .approved:
+            return [.approved]
+        case .hold:
+            return [.hold]
+        }
+    }
 }
 
 private extension ReviewsDashboardCardViewModel {

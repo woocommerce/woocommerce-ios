@@ -167,7 +167,7 @@ private extension HubMenu {
             case HubMenuViewModel.Customers.id:
                 CustomersListView(viewModel: .init(siteID: viewModel.siteID))
             case HubMenuViewModel.PointOfSaleEntryPoint.id:
-                PointOfSaleEntryPointView(hideAppTabBar: { isHidden in
+                PointOfSaleEntryPointView(historyViewModel: PointOfSaleHistoryViewModel.makeFakeHistory(), hideAppTabBar: { isHidden in
                     AppDelegate.shared.setShouldHideTabBar(isHidden)
                 })
             default:

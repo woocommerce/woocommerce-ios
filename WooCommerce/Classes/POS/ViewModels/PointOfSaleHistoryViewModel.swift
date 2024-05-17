@@ -1,23 +1,22 @@
 import SwiftUI
 
-final class PointOfSaleHistoryViewModel: ObservableObject {
+public final class PointOfSaleHistoryViewModel: ObservableObject {
     @Published var items: [HistoryItem]
-    @Published var sessionStart: Date?
+    @Published var sessionStart: Date? = Date()
 
     init(items: [HistoryItem]) {
         self.items = items
     }
 
+    static func makeFakeHistory() -> PointOfSaleHistoryViewModel {
+        return PointOfSaleHistoryViewModel(items: [
+            HistoryItem(createdAt: Date(), amountInCents: 299),
+            HistoryItem(createdAt: Date() - 1000, amountInCents: 399)
+        ])
+    }
+
     func addItem(_ item: HistoryItem) {
         self.items.append(item)
-    }
-
-    func startSession() {
-        sessionStart = Date()
-    }
-
-    func endSession() {
-        sessionStart = nil
     }
 
     var itemsAmount: Int {

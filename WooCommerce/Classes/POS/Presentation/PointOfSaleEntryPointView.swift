@@ -10,17 +10,15 @@ public struct PointOfSaleEntryPointView: View {
         return viewModel
     }()
 
-    private let historyViewModel: PointOfSaleHistoryViewModel = PointOfSaleHistoryViewModel(items: [
-        HistoryItem(createdAt: Date(), amountInCents: 299),
-        HistoryItem(createdAt: Date() - 1000, amountInCents: 399)
-    ])
+    @ObservedObject var historyViewModel: PointOfSaleHistoryViewModel
 
     private let hideAppTabBar: ((Bool) -> Void)
 
     // Necessary to expose the View's entry point to WooCommerce
     // Otherwise the current switch on `HubMenu` where this View is created
     // will error with "No exact matches in reference to static method 'buildExpression'"
-    public init(hideAppTabBar: @escaping ((Bool) -> Void)) {
+    public init(historyViewModel: PointOfSaleHistoryViewModel, hideAppTabBar: @escaping ((Bool) -> Void)) {
+        self.historyViewModel = historyViewModel
         self.hideAppTabBar = hideAppTabBar
     }
 
@@ -28,15 +26,13 @@ public struct PointOfSaleEntryPointView: View {
         PointOfSaleDashboardView(viewModel: viewModel, historyViewModel: historyViewModel)
             .onAppear {
                 hideAppTabBar(true)
-                historyViewModel.startSession()
             }
             .onDisappear {
                 hideAppTabBar(false)
-                historyViewModel.endSession()
             }
     }
 }
 
 #Preview {
-    PointOfSaleEntryPointView(hideAppTabBar: { _ in })
+    PointOfSaleEntryPointView(historyViewModel: PointOfSaleHistoryViewModel.makeFakeHistory(), hideAppTabBar: { _ in })
 }

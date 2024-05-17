@@ -46,6 +46,10 @@ struct PointOfSaleHistoryView: View {
                 Text(duration)
                 Spacer()
             }
+            else {
+                Text("\(viewModel.sessionStart!.formatted())")
+                Spacer()
+            }
             if viewModel.items.count == 1 {
                 Text("1 transaction")
             }
@@ -129,12 +133,28 @@ struct PointOfSaleHistoryView: View {
 struct HistoryItemView: View {
     let item: HistoryItem
 
+    private let currencyFormatter: NumberFormatter = {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .currency
+        return formatter
+    }()
+
     var body: some View {
         HStack {
             Text(item.createdAt.formatted())
                 .foregroundColor(Color.primaryText)
                 .padding()
             Spacer()
+            let amountValue = Double(item.amountInCents) / 100.0
+            if let amount = currencyFormatter.string(from: NSNumber(value: amountValue)) {
+                Text(amount)
+                    .foregroundColor(Color.primaryText)
+                    .bold()
+                    .padding()
+            }
+            else {
+                EmptyView()
+            }
         }
         .background(Color.tertiaryBackground)
     }

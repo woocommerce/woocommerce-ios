@@ -22,6 +22,9 @@ final class ReviewsDashboardCardViewModel: ObservableObject {
     @Published private(set) var data: [ReviewViewModel] = []
     private var reviewProductIDs: [Int64] = []
     private var reviewProducts: [Product] = []
+    private var notifications: [Note] {
+        return notificationsResultsController.fetchedObjects
+    }
     @Published private(set) var syncingData = false
     @Published private(set) var syncingError: Error?
 
@@ -57,6 +60,24 @@ final class ReviewsDashboardCardViewModel: ObservableObject {
     private lazy var productsResultsController: ResultsController<StorageProduct> = {
         let predicate = NSPredicate(format: "siteID == %lld AND productID IN %@", siteID, reviewProductIDs)
         return ResultsController<StorageProduct>(storageManager: storageManager, matching: predicate, sortedBy: [])
+    }()
+
+    /// ResultsController for Notification
+    private lazy var notificationsResultsController: ResultsController<StorageNote> = {
+        let sortDescriptor = NSSortDescriptor(keyPath: \StorageNote.timestamp, ascending: false)
+        return ResultsController<StorageNote>(storageManager: storageManager,
+                                              sectionNameKeyPath: "normalizedAgeAsString",
+                                              matching: notificationsPredicate,
+                                              sortedBy: [sortDescriptor])
+    }()
+
+    private lazy var notificationsPredicate: NSPredicate = {
+        let notDeletedPredicate = NSPredicate(format: "deleteInProgress == NO")
+        let typeReviewPredicate = NSPredicate(format: "subtype == %@", Note.Subkind.storeReview.rawValue)
+
+        return NSCompoundPredicate(andPredicateWithSubpredicates: [typeReviewPredicate,
+                                                                   sitePredicate(),
+                                                                   notDeletedPredicate])
     }()
 
     func dismissReviews() {
@@ -136,10 +157,15 @@ private extension ReviewsDashboardCardViewModel {
         let reviews = productReviewsResultsController.fetchedObjects.prefix(Constants.numberOfItems)
         reviewProductIDs = reviews.map { $0.productID }
 
-        // Load products that matches the review product IDs
+        // Once we get product IDs from reviews, fetch products to get product names, and optionally fetch
+        // notifications for read state.
         if reviewProductIDs.isNotEmpty {
             do {
                 try await fetchProducts()
+
+                if stores.isAuthenticatedWithoutWPCom == false {
+                    try await fetchNotifications()
+                }
             } catch {
                 ServiceLocator.crashLogging.logError(error)
             }
@@ -148,8 +174,14 @@ private extension ReviewsDashboardCardViewModel {
         data = reviews
             .map { review in
                 let product = reviewProducts.first { $0.productID == review.productID }
-                // TODO: also fetch notification
-                return ReviewViewModel(review: review, product: product, notification: nil)
+                let notification = notifications.first { notification in
+                    if let notificationReviewID = notification.meta.identifier(forKey: .comment) {
+                        return notificationReviewID == review.reviewID
+                    }
+                    return false
+                }
+
+                return ReviewViewModel(review: review, product: product, notification: notification)
             }
     }
 
@@ -157,7 +189,6 @@ private extension ReviewsDashboardCardViewModel {
     ///
     @MainActor
     private func fetchProducts() async throws {
-        // Prefer to fetch locally first, if not available then fetch remotely
         try productsResultsController.performFetch()
         reviewProducts = productsResultsController.fetchedObjects
 
@@ -165,6 +196,16 @@ private extension ReviewsDashboardCardViewModel {
             await loadReviewProducts(for: reviewProductIDs)
             try productsResultsController.performFetch()
             reviewProducts = productsResultsController.fetchedObjects
+        }
+    }
+
+    /// Get notifications from storage if available, if not then fetch remotely.
+    ///
+    @MainActor
+    private func fetchNotifications() async throws {
+        try notificationsResultsController.performFetch()
+        if notifications.isEmpty {
+            try await synchronizeNotifications()
         }
     }
 
@@ -180,6 +221,15 @@ private extension ReviewsDashboardCardViewModel {
             syncingError = error
         }
         syncingData = false
+    }
+
+    @MainActor
+    func synchronizeNotifications() async throws {
+        try await withCheckedThrowingContinuation { continuation in
+            stores.dispatch(NotificationAction.synchronizeNotifications { result in
+                continuation.resume(returning: ())
+            })
+        }
     }
 }
 

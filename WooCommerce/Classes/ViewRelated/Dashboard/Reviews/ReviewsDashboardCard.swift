@@ -111,14 +111,18 @@ private extension ReviewsDashboardCard {
         } label: {
             HStack(alignment: .top, spacing: 0) {
                 Image(systemName: "bubble.fill")
-                    .foregroundStyle(viewModel.review.status == .hold ? Color.secondary : Color(.wooCommercePurple(.shade60)))
+                    .foregroundStyle(
+                        viewModel.notification?.read == true
+                        ? Color.secondary
+                        : Color(.wooCommercePurple(.shade60))
+                    )
                     .padding(.horizontal, Layout.padding)
                     .padding(.vertical, Layout.cardPadding)
-
 
                 VStack(alignment: .leading) {
                     if let subject = viewModel.subject {
                         Text(subject)
+                            .multilineTextAlignment(.leading)
                             .bodyStyle()
                             .padding(.trailing, Layout.padding)
                     }

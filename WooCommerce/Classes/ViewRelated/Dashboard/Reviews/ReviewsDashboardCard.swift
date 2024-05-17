@@ -153,10 +153,10 @@ private extension ReviewsDashboardCard {
                     accentColor: UIColor,
                     shouldDisplayStatus: Bool) -> some View {
         if shouldDisplayStatus {
-            return Text(pendingText).foregroundColor(Color(uiColor: textColor)) +
+            return Text(pendingText).foregroundColor(Color(uiColor: accentColor)) +
             Text(divider + text).foregroundColor(Color(uiColor: textColor))
         } else {
-            return Text(text)
+            return Text(text).foregroundColor(Color(uiColor: textColor))
         }
     }
 

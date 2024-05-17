@@ -46,6 +46,9 @@ struct DashboardView: View {
     /// Set externally in the hosting controller.
     var onShowAllInboxMessages: (() -> Void)?
 
+    /// Set externally in the hosting controller.
+    var onViewReviewDetail: ((_ review: ReviewViewModel) -> Void)?
+
     private let storePlanSynchronizer = ServiceLocator.storePlanSynchronizer
     private let connectivityObserver = ServiceLocator.connectivityObserver
 
@@ -185,7 +188,9 @@ private extension DashboardView {
                             onShowAllInboxMessages?()
                         }
                     case .reviews:
-                        ReviewsDashboardCard(viewModel: viewModel.reviewsViewModel)
+                        ReviewsDashboardCard(viewModel: viewModel.reviewsViewModel) { review in
+                            onViewReviewDetail?(review)
+                        }
                     case .coupons:
                         MostActiveCouponsCard(viewModel: viewModel.mostActiveCouponsViewModel,
                                               onViewAllCoupons: {

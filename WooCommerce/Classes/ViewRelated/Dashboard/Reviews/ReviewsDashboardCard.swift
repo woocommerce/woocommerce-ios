@@ -11,9 +11,12 @@ struct ReviewsDashboardCard: View {
     @State private var showingAllReviews: Bool = false
 
     @ObservedObject private var viewModel: ReviewsDashboardCardViewModel
+    private let onViewReviewDetail: ((_ review: ReviewViewModel) -> Void)
 
-    init(viewModel: ReviewsDashboardCardViewModel) {
+    init(viewModel: ReviewsDashboardCardViewModel,
+         onViewReviewDetail: @escaping (_ review: ReviewViewModel) -> Void) {
         self.viewModel = viewModel
+        self.onViewReviewDetail = onViewReviewDetail
     }
 
     var body: some View {
@@ -105,43 +108,48 @@ private extension ReviewsDashboardCard {
     }
 
     func reviewRow(for viewModel: ReviewViewModel, isLastItem: Bool) -> some View {
-        HStack(alignment: .top, spacing: 0) {
-            Image(systemName: "bubble.fill")
-                .foregroundStyle(viewModel.review.status == .hold ? Color.secondary : Color(.wooCommercePurple(.shade60)))
-                .padding(.horizontal, Layout.padding)
-                .padding(.vertical, Layout.cardPadding)
+        Button {
+            onViewReviewDetail(viewModel)
+        } label: {
+            HStack(alignment: .top, spacing: 0) {
+                Image(systemName: "bubble.fill")
+                    .foregroundStyle(viewModel.review.status == .hold ? Color.secondary : Color(.wooCommercePurple(.shade60)))
+                    .padding(.horizontal, Layout.padding)
+                    .padding(.vertical, Layout.cardPadding)
 
 
-            VStack(alignment: .leading) {
-                if let subject = viewModel.subject {
-                    Text(subject)
-                        .bodyStyle()
-                        .padding(.trailing, Layout.padding)
-                }
+                VStack(alignment: .leading) {
+                    if let subject = viewModel.subject {
+                        Text(subject)
+                            .bodyStyle()
+                            .padding(.trailing, Layout.padding)
+                    }
 
-                reviewText(text: viewModel.snippetData.reviewText,
-                           pendingText: viewModel.snippetData.pendingReviewsText,
-                           divider: viewModel.snippetData.dot,
-                           textColor: viewModel.snippetData.textColor,
-                           accentColor: viewModel.snippetData.accentColor,
-                           shouldDisplayStatus: viewModel.shouldDisplayStatus)
-                .lineLimit(2)
-                .subheadlineStyle()
-                .padding(.trailing, Layout.padding)
+                    reviewText(text: viewModel.snippetData.reviewText,
+                               pendingText: viewModel.snippetData.pendingReviewsText,
+                               divider: viewModel.snippetData.dot,
+                               textColor: viewModel.snippetData.textColor,
+                               accentColor: viewModel.snippetData.accentColor,
+                               shouldDisplayStatus: viewModel.shouldDisplayStatus)
+                    .multilineTextAlignment(.leading)
+                    .lineLimit(2)
+                    .subheadlineStyle()
+                    .padding(.trailing, Layout.padding)
 
-                if viewModel.review.rating > 0 {
-                    HStack(spacing: Layout.starRatingSpacing) {
-                        ForEach(0..<viewModel.review.rating, id: \.self) { _ in
-                            Image(systemName: "star.fill")
-                                .resizable()
-                                .frame(width: Constants.starSize * scale, height: Constants.starSize * scale)
+                    if viewModel.review.rating > 0 {
+                        HStack(spacing: Layout.starRatingSpacing) {
+                            ForEach(0..<viewModel.review.rating, id: \.self) { _ in
+                                Image(systemName: "star.fill")
+                                    .resizable()
+                                    .frame(width: Constants.starSize * scale, height: Constants.starSize * scale)
+                            }
                         }
                     }
-                }
 
-                Divider()
-                    .padding(.vertical, Layout.dividerSpacing)
-                    .renderedIf(!isLastItem)
+                    Divider()
+                        .padding(.vertical, Layout.dividerSpacing)
+                        .renderedIf(!isLastItem)
+                }
             }
         }
     }
@@ -225,5 +233,6 @@ private extension ReviewsDashboardCard {
 }
 
 #Preview {
-    ReviewsDashboardCard(viewModel: ReviewsDashboardCardViewModel(siteID: 1))
+    ReviewsDashboardCard(viewModel: ReviewsDashboardCardViewModel(siteID: 1),
+                         onViewReviewDetail: { _ in })
 }

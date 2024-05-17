@@ -12,6 +12,21 @@ struct ProductGridView: View {
                                         count: viewModel.products.count)
 
         ScrollView {
+            Text("Product List")
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.horizontal, 32)
+                .padding(.vertical, 8)
+                .font(.title)
+                .foregroundColor(Color.white)
+            HStack {
+                SearchView()
+                    .padding(.top, 20)
+                    .padding(.horizontal, 32)
+                Spacer()
+                FilterView()
+                    .padding(.top, 20)
+                    .padding(.horizontal, 32)
+            }
             LazyVGrid(columns: columns, spacing: 8) {
                 ForEach(viewModel.products, id: \.productID) { product in
                     ProductCardView(product: product) {
@@ -23,6 +38,32 @@ struct ProductGridView: View {
             }
         }
         .background(Color.secondaryBackground)
+    }
+}
+
+struct SearchView: View {
+    var body: some View {
+        TextField("Search", text: .constant("Search"))
+            .frame(maxWidth: .infinity, idealHeight: 120)
+            .font(.title2)
+            .foregroundColor(Color.white)
+            .background(Color.secondaryBackground)
+            .cornerRadius(10)
+            .border(Color.white, width: 2)
+    }
+}
+
+struct FilterView: View {
+    var body: some View {
+        Button("Filter") {
+            // TODO:
+        }
+        .frame(maxWidth: .infinity, idealHeight: 120)
+        .font(.title2)
+        .foregroundColor(Color.white)
+        .background(Color.secondaryBackground)
+        .cornerRadius(10)
+        .border(Color.white, width: 2)
     }
 }
 

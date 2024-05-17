@@ -97,3 +97,9 @@ private extension ReviewViewModel {
                                                comment: "Indicates the reviewer does not have a name. It reads { Someone left a review}")
     }
 }
+
+extension ReviewViewModel: Equatable {
+    static func == (lhs: ReviewViewModel, rhs: ReviewViewModel) -> Bool {
+        return lhs.review.reviewID == rhs.review.reviewID
+    }
+}

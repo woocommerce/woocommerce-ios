@@ -26,12 +26,11 @@ struct ReviewsDashboardCard: View {
                 .redacted(reason: viewModel.syncingData ? [.placeholder] : [])
                 .shimmering(active: viewModel.syncingData)
             Divider()
-                .redacted(reason: viewModel.syncingData ? [.placeholder] : [])
-                .shimmering(active: viewModel.syncingData)
 
             if viewModel.data.isNotEmpty {
-                ForEach(Array(viewModel.data.enumerated()), id: \.element.review.reviewID) { index, reviewViewModel in
-                    reviewRow(for: reviewViewModel, isLastItem: index == viewModel.data.count-1)
+                ForEach(viewModel.data, id: \.review.reviewID) { reviewViewModel in
+                    reviewRow(for: reviewViewModel,
+                              isLastItem: reviewViewModel == viewModel.data.last)
                 }
                 .redacted(reason: viewModel.syncingData ? [.placeholder] : [])
                 .shimmering(active: viewModel.syncingData)

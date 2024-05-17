@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-05-08 11:54:03+0000 */
+/* Translation-Revision-Date: 2024-05-14 15:54:03+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_TW */
@@ -2014,9 +2014,6 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Costa Rica" = "哥斯大黎加";
 
-/* The title of the button for giving a negative feedback for the app. */
-"Could Be Better" = "可以再好一點";
-
 /* Message shown when site purchases API failed */
 "Could not check site purchases." = "無法確認網站購買項目。";
 
@@ -2810,9 +2807,6 @@ which should be translated separately and considered part of this sentence. */
 /* End Date label in custom range date picker
    Label for one of the filters in order custom date range */
 "End Date" = "結束日期";
-
-/* The title used when asking the user for feedback for the app. */
-"Enjoying the WooCommerce app?" = "喜歡 WooCommerce 應用程式嗎？";
 
 /* Step 3 of shipping label printing instructions screen. The content inside two double asterisks **...** denote bolded text. */
 "Ensure that your **printer firmware is up to date**. See your printer documentation for instructions on updating." = "請確認你的**印表機韌體是最新的版本**。 如需瞭解如何更新，請參閱印表機的說明文件。";
@@ -3695,9 +3689,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Hungary" = "匈牙利";
-
-/* The title of the button for giving a positive feedback for the app. */
-"I Like It" = "我喜歡";
 
 /* Option in the store creation selling status question. */
 "I am already selling online" = "我已在線上銷售";
@@ -9686,6 +9677,12 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the link for site creation guide. */
 "authenticationConstants.siteCreationGuideButtonTitle" = "是否開設新商店？";
 
+/* Cell description on beta features screen to enable the Point Of Sale feature */
+"betaFeature.pointOfSale.description" = "在準備啟動就緒後，測試銷售時點情報系統";
+
+/* Cell title on beta features screen to enable the Point Of Sale feature */
+"betaFeature.pointOfSale.title" = "銷售時點情報系統";
+
 /* Button to send a message to a customer via Telegram */
 "billingInfoViewController.telegram" = "傳送 Telegram 訊息";
 
@@ -10366,6 +10363,27 @@ which should be translated separately and considered part of this sentence. */
 /* Navigation bar title for the cash tender view. Reads like 'Take Payment ($34.45)' */
 "cashPaymentTenderView.navigationBarTitle" = "收款 (%1$@)";
 
+/* Title of the button to add address in the order form customer card. */
+"collapsibleCustomerCard.addAddress.title" = "新增顧客地址";
+
+/* Address header text in the order form customer card when the billing and shipping addresses are the same. */
+"collapsibleCustomerCard.editAddress.address.header" = "地址";
+
+/* Billing address header text in the order form customer card. */
+"collapsibleCustomerCard.editAddress.billing.header" = "帳單地址";
+
+/* Shipping address header text in the order form customer card. */
+"collapsibleCustomerCard.editAddress.shipping.header" = "運送地址";
+
+/* Title of the email text field in the order form customer card. */
+"collapsibleCustomerCard.emailTextField.placeholder" = "輸入電子郵件地址";
+
+/* Title of the email text field in the order form customer card. */
+"collapsibleCustomerCard.emailTextField.title" = "電子郵件地址";
+
+/* Title of the button to remove customer from an order in the order form customer card. */
+"collapsibleCustomerCard.removeCustomerButton.title" = "從訂單移除顧客";
+
 /* Formatted price label based on a product's price and quantity. Reads as '8 x $10.00'. Please take care to use the multiplication symbol ×, not a letter x, where appropriate. */
 "collapsibleProductCardPriceSummaryViewModel.priceQuantityLine" = "%1$@ × %2$@。";
 
@@ -10754,6 +10772,15 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the view containing a single Product Review */
 "hubMenu.productReview" = "商品評論";
 
+/* The title of the button for giving a negative feedback for the app. */
+"inAppFeedbackCardView.couldBeBetter" = "可以更好";
+
+/* The title of the button for giving a positive feedback for the app. */
+"inAppFeedbackCardView.iLikeIt" = "我很喜歡";
+
+/* The title used when asking the user for feedback for the app. */
+"inAppFeedbackCardView.title" = "喜歡 WooCommerce 應用程式嗎？";
+
 /* Title for Add Order home screen action */
 "infoplist.AddOrderAction.Title" = "新訂單";
 
@@ -10918,9 +10945,6 @@ which should be translated separately and considered part of this sentence. */
 /* A error message when it's not possible toacquire the Analytics Hub previous selection range */
 "no previous period" = "沒有上個期間";
 
-/* Title for the screen to select a shipping method for an order */
-"order.ShippingMethodSelector.Title" = "方法";
-
 /* Subtitle of a notice shown when a merchant scans a barcode for a product which is a parent to variations. It's not possible to purchase a parent product, as it simply groups its variable product children. In this case, the product is not added to the order as the merchant wanted it to be. */
 "order.barcode.scan.parent.product.notice.subtitle" = "請選取特定款式。";
 
@@ -10975,12 +10999,18 @@ which should be translated separately and considered part of this sentence. */
 /* Button to edit a shipping line to the order during order creation */
 "order.shippingLineDetails.editShipping" = "編輯運送方式";
 
+/* Title above the shipping method field on the Shipping Line Details screen */
+"order.shippingLineDetails.method" = "方式";
+
 /* Title above the name field on the Shipping Line Details screen */
 "order.shippingLineDetails.name" = "名稱";
 
 /* Placeholder for the name field on the Shipping Line Details screen
    Placeholder for the name field on the Shipping Line Details screen in order form */
 "order.shippingLineDetails.namePlaceholder" = "運送方式";
+
+/* Title for the placeholder shipping method on the Shipping Line Details screen */
+"order.shippingLineDetails.placeholderMethodTitle" = "N\/A";
 
 /* Button to remove a shipping line from the order during order creation */
 "order.shippingLineDetails.removeShipping" = "從訂單移除運送方式";
@@ -11069,8 +11099,20 @@ which should be translated separately and considered part of this sentence. */
 /* Title text of the confirmation dialog that shows the add custom amounts options. */
 "orderForm.customAmounts.addOptionsDialogTitle" = "你想要如何新增自訂金額？";
 
-/* Title text of the button that adds customer data when creating a new order */
+/* Title text of the button that adds customer data in the order form. */
 "orderForm.customerSection.addCustomer" = "新增顧客";
+
+/* Placeholder of the email in the header of a customer card in order form when an account is not required. */
+"orderForm.customerSection.customerCard.header.emailPlaceholder.notRequired" = "電子郵件地址";
+
+/* Placeholder of the email in the header of a customer card in order form when an account is required. */
+"orderForm.customerSection.customerCard.header.emailPlaceholder.required" = "必須提供電子郵件地址";
+
+/* Header text of the customer card in the order form. */
+"orderForm.customerSection.customerHeader" = "顧客";
+
+/* Title of the order customer selection screen in the order form.. */
+"orderForm.customerSection.customerSelectorTitle" = "新增顧客詳細資料";
 
 /* Title of the primary button on the new order screen to collect payment, likely in-person. This button first creates the order, then presents a view for the merchant to choose a payment method. */
 "orderForm.payment.collect.button.title" = "收取款項";
@@ -11592,6 +11634,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button in date range picker to add a Custom Range tab */
 "topPerformerDashboardViewModel.addCustomRange" = "新增";
+
+/* Title of the custom time range on the Top Performers card on the Dashboard screen */
+"topPerformersDashboardView.custom" = "自訂";
 
 /* Menu item to dismiss the Top Performers section on the Dashboard screen */
 "topPerformersDashboardView.hideCard" = "隱藏成效最佳者";

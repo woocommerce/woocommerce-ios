@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-05-08 09:54:06+0000 */
+/* Translation-Revision-Date: 2024-05-14 09:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ko_KR */
@@ -2014,9 +2014,6 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Costa Rica" = "코스타리카";
 
-/* The title of the button for giving a negative feedback for the app. */
-"Could Be Better" = "별로";
-
 /* Message shown when site purchases API failed */
 "Could not check site purchases." = "사이트 구매를 확인할 수 없습니다.";
 
@@ -2810,9 +2807,6 @@ which should be translated separately and considered part of this sentence. */
 /* End Date label in custom range date picker
    Label for one of the filters in order custom date range */
 "End Date" = "종료 날짜";
-
-/* The title used when asking the user for feedback for the app. */
-"Enjoying the WooCommerce app?" = "WooCommerce 앱이 마음에 드시나요?";
 
 /* Step 3 of shipping label printing instructions screen. The content inside two double asterisks **...** denote bolded text. */
 "Ensure that your **printer firmware is up to date**. See your printer documentation for instructions on updating." = "**프린터 펌웨어가 최신 상태**인지 확인하세요. 프린터 설명서에서 업데이트에 대한 지침을 참조하세요.";
@@ -3695,9 +3689,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Hungary" = "헝가리";
-
-/* The title of the button for giving a positive feedback for the app. */
-"I Like It" = "좋아요";
 
 /* Option in the store creation selling status question. */
 "I am already selling online" = "이미 온라인 판매 중";
@@ -9686,6 +9677,12 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the link for site creation guide. */
 "authenticationConstants.siteCreationGuideButtonTitle" = "새 스토어를 시작하시나요?";
 
+/* Cell description on beta features screen to enable the Point Of Sale feature */
+"betaFeature.pointOfSale.description" = "출시를 준비하면서 판매 지점 테스트";
+
+/* Cell title on beta features screen to enable the Point Of Sale feature */
+"betaFeature.pointOfSale.title" = "판매 지점";
+
 /* Button to send a message to a customer via Telegram */
 "billingInfoViewController.telegram" = "Telegram 메시지 보내기";
 
@@ -10366,6 +10363,27 @@ which should be translated separately and considered part of this sentence. */
 /* Navigation bar title for the cash tender view. Reads like 'Take Payment ($34.45)' */
 "cashPaymentTenderView.navigationBarTitle" = "결제 진행(%1$@)";
 
+/* Title of the button to add address in the order form customer card. */
+"collapsibleCustomerCard.addAddress.title" = "사용자 정의 주소 추가";
+
+/* Address header text in the order form customer card when the billing and shipping addresses are the same. */
+"collapsibleCustomerCard.editAddress.address.header" = "주소";
+
+/* Billing address header text in the order form customer card. */
+"collapsibleCustomerCard.editAddress.billing.header" = "청구 주소";
+
+/* Shipping address header text in the order form customer card. */
+"collapsibleCustomerCard.editAddress.shipping.header" = "배송 주소";
+
+/* Title of the email text field in the order form customer card. */
+"collapsibleCustomerCard.emailTextField.placeholder" = "이메일 주소 입력";
+
+/* Title of the email text field in the order form customer card. */
+"collapsibleCustomerCard.emailTextField.title" = "이메일 주소";
+
+/* Title of the button to remove customer from an order in the order form customer card. */
+"collapsibleCustomerCard.removeCustomerButton.title" = "주문에서 고객 제거";
+
 /* Formatted price label based on a product's price and quantity. Reads as '8 x $10.00'. Please take care to use the multiplication symbol ×, not a letter x, where appropriate. */
 "collapsibleProductCardPriceSummaryViewModel.priceQuantityLine" = "%1$@ × %2$@";
 
@@ -10754,6 +10772,15 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the view containing a single Product Review */
 "hubMenu.productReview" = "상품 리뷰";
 
+/* The title of the button for giving a negative feedback for the app. */
+"inAppFeedbackCardView.couldBeBetter" = "개선의 여지가 있음";
+
+/* The title of the button for giving a positive feedback for the app. */
+"inAppFeedbackCardView.iLikeIt" = "좋아요";
+
+/* The title used when asking the user for feedback for the app. */
+"inAppFeedbackCardView.title" = "WooCommerce 앱이 마음에 드시나요?";
+
 /* Title for Add Order home screen action */
 "infoplist.AddOrderAction.Title" = "새 주문";
 
@@ -10918,9 +10945,6 @@ which should be translated separately and considered part of this sentence. */
 /* A error message when it's not possible toacquire the Analytics Hub previous selection range */
 "no previous period" = "이전 기간 없음";
 
-/* Title for the screen to select a shipping method for an order */
-"order.ShippingMethodSelector.Title" = "방법";
-
 /* Subtitle of a notice shown when a merchant scans a barcode for a product which is a parent to variations. It's not possible to purchase a parent product, as it simply groups its variable product children. In this case, the product is not added to the order as the merchant wanted it to be. */
 "order.barcode.scan.parent.product.notice.subtitle" = "특정 변형을 선택하세요.";
 
@@ -10975,12 +10999,18 @@ which should be translated separately and considered part of this sentence. */
 /* Button to edit a shipping line to the order during order creation */
 "order.shippingLineDetails.editShipping" = "배송 수정";
 
+/* Title above the shipping method field on the Shipping Line Details screen */
+"order.shippingLineDetails.method" = "방법";
+
 /* Title above the name field on the Shipping Line Details screen */
 "order.shippingLineDetails.name" = "이름";
 
 /* Placeholder for the name field on the Shipping Line Details screen
    Placeholder for the name field on the Shipping Line Details screen in order form */
 "order.shippingLineDetails.namePlaceholder" = "배송";
+
+/* Title for the placeholder shipping method on the Shipping Line Details screen */
+"order.shippingLineDetails.placeholderMethodTitle" = "해당 없음";
 
 /* Button to remove a shipping line from the order during order creation */
 "order.shippingLineDetails.removeShipping" = "주문에서 배송 제거";
@@ -11069,8 +11099,20 @@ which should be translated separately and considered part of this sentence. */
 /* Title text of the confirmation dialog that shows the add custom amounts options. */
 "orderForm.customAmounts.addOptionsDialogTitle" = "사용자 정의 금액을 어떻게 추가하시겠어요?";
 
-/* Title text of the button that adds customer data when creating a new order */
+/* Title text of the button that adds customer data in the order form. */
 "orderForm.customerSection.addCustomer" = "고객 추가";
+
+/* Placeholder of the email in the header of a customer card in order form when an account is not required. */
+"orderForm.customerSection.customerCard.header.emailPlaceholder.notRequired" = "이메일 주소";
+
+/* Placeholder of the email in the header of a customer card in order form when an account is required. */
+"orderForm.customerSection.customerCard.header.emailPlaceholder.required" = "이메일 주소를 입력하세요";
+
+/* Header text of the customer card in the order form. */
+"orderForm.customerSection.customerHeader" = "고객";
+
+/* Title of the order customer selection screen in the order form.. */
+"orderForm.customerSection.customerSelectorTitle" = "고객 상세 정보 추가";
 
 /* Title of the primary button on the new order screen to collect payment, likely in-person. This button first creates the order, then presents a view for the merchant to choose a payment method. */
 "orderForm.payment.collect.button.title" = "결제 수령";
@@ -11592,6 +11634,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button in date range picker to add a Custom Range tab */
 "topPerformerDashboardViewModel.addCustomRange" = "추가";
+
+/* Title of the custom time range on the Top Performers card on the Dashboard screen */
+"topPerformersDashboardView.custom" = "사용자 정의";
 
 /* Menu item to dismiss the Top Performers section on the Dashboard screen */
 "topPerformersDashboardView.hideCard" = "최고 인기 상품 숨기기";

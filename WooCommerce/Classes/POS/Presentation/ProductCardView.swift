@@ -16,7 +16,7 @@ struct ProductCardView: View {
                 Text(product.price)
                     .foregroundStyle(Color.primaryBackground)
                 HStack(spacing: 8) {
-                    QuantityBadgeView()
+                    QuantityBadgeView(product.stockQuantity)
                         .frame(width: 50, height: 50)
                     Spacer()
                     Button(action: {

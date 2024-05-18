@@ -31,6 +31,10 @@ final class DashboardViewModel: ObservableObject {
 
     @Published private(set) var dashboardCards: [DashboardCard] = []
 
+    /// Used to compare and reload only newly enabled cards
+    ///
+    private var previousDashboardCards: [DashboardCard] = []
+
     var unavailableCards: [DashboardCard] {
         dashboardCards.filter { $0.availability == .unavailable }
     }

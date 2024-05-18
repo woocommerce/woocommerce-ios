@@ -53,9 +53,6 @@ which should be translated separately and considered part of this sentence. */
 /* The default name for a duplicated product, with %1$@ being the original name. Reads like: Ramen Copy */
 "%1$@ Copy" = "%1$@ Copy";
 
-/* Exception rule for a coupon. Reads like: 3 Products excl. 1 Category */
-"%1$@ excl. %2$@" = "%1$@ excl. %2$@";
-
 /* Label about product's inventory stock status shown during order creation
    Label about product's inventory stock status shown on Products tab */
 "%1$@ in stock" = "%1$@ in stock";
@@ -69,8 +66,8 @@ which should be translated separately and considered part of this sentence. */
 /* Review title. Reads as {Review author} left a review on {Product}. */
 "%1$@ left a review on %2$@" = "%1$@ left a review on %2$@";
 
-/* Summary line for a coupon, with the discounted amount and number of products and categories that the coupon is limited to. Reads like: '10% off all products' or '$15 off 2 Product 1 Category' */
-"%1$@ off %2$@" = "%1$@ off %2$@";
+/* Summary line for a coupon, with the discounted amount and number of products and categories that the coupon is limited to. Reads like: '10% off · all products' or '$15 off · 2 Product 1 Category' */
+"%1$@ off · %2$@" = "%1$@ off · %2$@";
 
 /* Notice format when a shipping label refund request is successful. The first variable shows the shipping label service name (e.g. USPS Priority Mail). The second variable shows the formatted amount that is eligible for refund  (e.g. $7.50). */
 "%1$@ refund requested (%2$@)" = "%1$@ refund requested (%2$@)";
@@ -83,6 +80,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Payment on <date> received via (payment method title) */
 "%1$@ via %2$@" = "%1$@ via %2$@";
+
+/* Exception rule for a coupon. Reads like: 3 Products · Excl. 1 Category */
+"%1$@ · Excl. %2$@" = "%1$@ · Excl. %2$@";
 
 /* In Order Details, the pattern used to show the quantity multiplied by the price. For example, “23 × $400.00”. The %1$@ is the quantity. The %2$@ is the formatted price with currency (e.g. $400.00). Please take care to use the multiplication symbol ×, not a letter x, where appropriate. */
 "%1$@ × %2$@" = "%1$@ × %2$@";
@@ -754,8 +754,8 @@ which should be translated separately and considered part of this sentence. */
    Title of the product search filter to search for all products. */
 "All Products" = "All Products";
 
-/* Exception rule for a coupon. Reads like: All Products excl. 2 Products */
-"All Products excl. %1$@" = "All Products excl. %1$@";
+/* Exception rule for a coupon. Reads like: All Products · Excl. 2 Products */
+"All Products · Excl. %1$@" = "All Products · Excl. %1$@";
 
 /* Value for the limit usage to X items row in Coupon Usage Restrictions screen when no limit is set */
 "All Qualifying" = "All Qualifying";
@@ -1574,9 +1574,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Subtitle of the Blaze campaign view. */
 "blazeCampaignDashboardView.subtitle" = "Increase visibility and get your products sold quickly.";
-
-/* Title of the Blaze campaign view. */
-"blazeCampaignDashboardView.title" = "Blaze campaigns";
 
 /* Button for adding a payment method on the Payment screen in the Blaze campaign creation flow */
 "blazeConfirmPaymentView.addPaymentMethod" = "Add a payment method";
@@ -3342,11 +3339,26 @@ which should be translated separately and considered part of this sentence. */
 /* Name for the Blaze dashboard card in the Customize Dashboard screen */
 "dashboardCard.name.blazeCampaigns" = "Blaze campaigns";
 
+/* Name for the Most active coupons dashboard card in the Customize Dashboard screen */
+"dashboardCard.name.coupons" = "Most active coupons";
+
+/* Name for the Inbox dashboard card in the Customize Dashboard screen */
+"dashboardCard.name.inbox" = "Inbox";
+
+/* Name for the Most recent orders dashboard card in the Customize Dashboard screen */
+"dashboardCard.name.lastOrders" = "Most recent orders";
+
 /* Name for the Store setup dashboard card in the Customize Dashboard screen */
 "dashboardCard.name.onboarding" = "Store setup";
 
 /* Name for the Performance dashboard card in the Customize Dashboard screen */
 "dashboardCard.name.performance" = "Performance";
+
+/* Name for the Most recent reviews dashboard card in the Customize Dashboard screen */
+"dashboardCard.name.reviews" = "Most recent reviews";
+
+/* Name for the Stock dashboard card in the Customize Dashboard screen */
+"dashboardCard.name.stock" = "Stock";
 
 /* Name for the Top performers dashboard card in the Customize Dashboard screen */
 "dashboardCard.name.topPerformers" = "Top performers";
@@ -5038,6 +5050,15 @@ which should be translated separately and considered part of this sentence. */
    Title of the Inbox menu in the hub menu */
 "Inbox" = "Inbox";
 
+/* Title displayed if there are no inbox notes in the Inbox section on the Dashboard screen. */
+"inboxDashboardCard.emptyStateTitle" = "No unread messages";
+
+/* Menu item to dismiss the Inbox section on the Dashboard screen */
+"inboxDashboardCard.hideCard" = "Hide Inbox";
+
+/* Button to navigate to Inbox messages list screen. */
+"inboxDashboardCard.viewAll" = "View all messages";
+
 /* Subtitle of the product form bottom sheet action for editing downloadable files. */
 "Include downloadable files with purchases" = "Include downloadable files with purchases";
 
@@ -6005,6 +6026,24 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Morocco" = "Morocco";
+
+/* Title in the coupons list on the coupons card on the Dashboard screen */
+"mostActiveCouponsCard.coupons" = "Coupons";
+
+/* Title of the custom time range on the coupons card on the Dashboard screen */
+"mostActiveCouponsCard.custom" = "Custom";
+
+/* Menu item to dismiss the coupons card on the Dashboard screen */
+"mostActiveCouponsCard.hideCard" = "Hide Coupons";
+
+/* Title in the coupons list on the coupons card on the Dashboard screen. Denotes the number of times the coupon has been used. */
+"mostActiveCouponsCard.uses" = "Uses";
+
+/* Button to navigate to Coupons list screen. */
+"mostActiveCouponsCard.viewAll" = "View all coupons";
+
+/* Button in date range picker to add a Custom Range tab */
+"mostActiveCouponsCardViewModel.addCustomRange" = "Add";
 
 /* Button on each order item of the Package Details screen in Shipping Labels flow. */
 "Move" = "Move";
@@ -7668,6 +7707,27 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Products tab — plural form of Product */
 "productsTab.tabTitle" = "Products";
 
+/* Menu item to dismiss the Stock section on the My Store screen */
+"productStockDashboardCard.hideCard" = "Hide Stock";
+
+/* Header label on the Stock section on the My Store screen */
+"productStockDashboardCard.products" = "Products";
+
+/* Header label on the Stock section on the My Store screen */
+"productStockDashboardCard.status" = "Status";
+
+/* Header label on the Stock section on the My Store screen */
+"productStockDashboardCard.stockLevels" = "Stock levels";
+
+/* Title of a stock type displayed on the Stock section on My Store screen */
+"productStockDashboardCardViewModel.stockType.lowStock" = "Low stock";
+
+/* Title of a stock type displayed on the Stock section on My Store screen */
+"productStockDashboardCardViewModel.stockType.onBackOrder" = "On back order";
+
+/* Title of a stock type displayed on the Stock section on My Store screen */
+"productStockDashboardCardViewModel.stockType.outOfStock" = "Out of stock";
+
 /* No comment provided by engineer. */
 "Promote on TikTok" = "Promote on TikTok";
 
@@ -8113,6 +8173,33 @@ which should be translated separately and considered part of this sentence. */
    Title that appears on top of the main Reviews screen (plural form of the word Review).
    Title that appears on top of the Product Reviews screen. */
 "Reviews" = "Reviews";
+
+/* Text displayed when the author of a review is known. */
+"reviewsDashboardCard.completeAuthorText" = "%1$@ left a review on %2$@";
+
+/* Menu item to dismiss the Reviews card on the Dashboard screen */
+"reviewsDashboardCard.hideCard" = "Hide Reviews";
+
+/* Text displayed when the author of a review is unknown. */
+"reviewsDashboardCard.incompleteAuthorText" = "A customer left a review on %@";
+
+/* Additional label on a review when its status is hold. */
+"reviewsDashboardCard.pendingReview" = "Pending review";
+
+/* Status label on the Reviews card's filter area. */
+"reviewsDashboardCard.status" = "Status";
+
+/* Button to navigate to Reviews list screen. */
+"reviewsDashboardCard.viewAll" = "View all reviews";
+
+/* Menu item to dismiss the Reviews card on the Dashboard screen */
+"reviewsDashboardCardViewModel.filterAll" = "All";
+
+/* Button to navigate to Reviews list screen. */
+"reviewsDashboardCardViewModel.filterApproved" = "Approved";
+
+/* Status label on the Reviews card's filter area. */
+"reviewsDashboardCardViewModel.filterHold" = "Hold";
 
 /* Post Rich content */
 "Rich Content" = "Rich Content";
@@ -9057,9 +9144,6 @@ which should be translated separately and considered part of this sentence. */
 /* My Store > Settings > Store Settings section title */
 "Store Settings" = "Store Settings";
 
-/* Title of the store setup progress view. */
-"Store setup" = "Store setup";
-
 /* Button when tapped will show a screen with all the store setup tasks.%1$d represents the total number of tasks. */
 "storeOnboardingCardView.viewAll" = "View all %1$d tasks";
 
@@ -9092,9 +9176,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Revenue stat label on dashboard. */
 "storePerformanceView.revenue" = "Revenue";
-
-/* Title of the store performance section on the Dashboard screen */
-"storePerformanceView.title" = "Performance";
 
 /* Button to navigate to Analytics Hub. */
 "storePerformanceView.viewAll" = "View all store analytics";
@@ -10225,9 +10306,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Menu item to dismiss the Top Performers section on the Dashboard screen */
 "topPerformersDashboardView.hideCard" = "Hide Top Performers";
-
-/* Title of the Top performers section on the Dashboard screen */
-"topPerformersDashboardView.title" = "Top performers";
 
 /* Button to navigate to Analytics Hub. */
 "topPerformersDashboardView.viewAll" = "View all store analytics";

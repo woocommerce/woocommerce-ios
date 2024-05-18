@@ -160,6 +160,9 @@ final class DashboardViewModel: ObservableObject {
                 await self.syncAnnouncements(for: self.siteID)
             }
             group.addTask { [weak self] in
+                await self?.reloadBlazeCampaignView()
+            }
+            group.addTask { [weak self] in
                 await self?.updateJetpackBannerVisibilityFromAppSettings()
             }
             group.addTask { [weak self] in

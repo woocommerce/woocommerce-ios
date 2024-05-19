@@ -46,7 +46,7 @@ final class MyStoreViewModel: ObservableObject {
                 return StoreInfoFormatter.Constants.valuePlaceholderText
             }()
 
-            self.viewState = .loaded(revenue: StoreInfoFormatter.formattedAmountString(for: stats.revenue, with: nil),
+            self.viewState = .loaded(revenue: StoreInfoFormatter.formattedAmountString(for: stats.revenue, with: dependencies.currencySettings),
                                      totalOrders: "\(stats.totalOrders)",
                                      totalVisitors: visitors,
                                      conversion: conversion,

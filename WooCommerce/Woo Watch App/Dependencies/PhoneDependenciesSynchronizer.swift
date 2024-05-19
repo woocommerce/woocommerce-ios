@@ -2,6 +2,7 @@ import Foundation
 import WatchConnectivity
 import KeychainAccess
 import NetworkingWatchOS
+import WooFoundationWatchOS
 
 /// Type that receives and stores the necessary dependencies from the phone session.
 ///
@@ -66,7 +67,15 @@ final class PhoneDependenciesSynchronizer: NSObject, ObservableObject, WCSession
             return nil
         }
 
-        return WatchDependencies(storeID: storeID, storeName: storeName, credentials: credentials)
+        let currencySettings: CurrencySettings = {
+            guard let currencySettingsData = userDefaults[.defaultStoreCurrencySettings] as? Data,
+                  let currencySettings = try? JSONDecoder().decode(CurrencySettings.self, from: currencySettingsData) else {
+                return CurrencySettings()
+            }
+            return currencySettings
+        }()
+
+        return WatchDependencies(storeID: storeID, storeName: storeName, currencySettings: currencySettings, credentials: credentials)
     }
 
     /// Store dependencies from the app context
@@ -77,6 +86,7 @@ final class PhoneDependenciesSynchronizer: NSObject, ObservableObject, WCSession
         userDefaults[.defaultStoreID] = dependencies?.storeID
         userDefaults[.defaultStoreName] = dependencies?.storeName
         userDefaults[.defaultUsername] = dependencies?.credentials.username
+        userDefaults[.defaultStoreCurrencySettings] = try? JSONEncoder().encode(dependencies?.currencySettings)
         userDefaults[.defaultCredentialsType] = dependencies?.credentials.rawType
         userDefaults[.defaultSiteAddress] = dependencies?.credentials.siteAddress
         keychain[WooConstants.authToken] = dependencies?.credentials.secret

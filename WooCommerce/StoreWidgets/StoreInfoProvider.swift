@@ -190,7 +190,7 @@ private extension StoreInfoProvider {
         return StoreInfoEntry.data(.init(range: Localization.today,
                                          name: dependencies.storeName,
                                          revenue: StoreInfoFormatter.formattedAmountString(for: todayStats.revenue, with: dependencies.storeCurrencySettings),
-                                         revenueCompact: StoreInfoFormatter.formattedAmountCompactString(for: todayStats.revenue, 
+                                         revenueCompact: StoreInfoFormatter.formattedAmountCompactString(for: todayStats.revenue,
                                                                                                          with: dependencies.storeCurrencySettings),
                                          visitors: visitors,
                                          orders: "\(todayStats.totalOrders)",

@@ -105,7 +105,7 @@ final class SessionManager: SessionManagerProtocol {
             defaults[.defaultStoreID] = newValue
             defaultStoreIDSubject.send(newValue)
 
-            watchDependenciesSynchronizer.update(storeID: defaultStoreID, 
+            watchDependenciesSynchronizer.update(storeID: defaultStoreID,
                                                  storeName: defaultSite?.name,
                                                  currencySettings: ServiceLocator.currencySettings,
                                                  credentials: defaultCredentials)
@@ -161,7 +161,7 @@ final class SessionManager: SessionManagerProtocol {
     ///
     @Published var defaultSite: Site? {
         didSet {
-            watchDependenciesSynchronizer.update(storeID: defaultStoreID, 
+            watchDependenciesSynchronizer.update(storeID: defaultStoreID,
                                                  storeName: defaultSite?.name,
                                                  currencySettings: ServiceLocator.currencySettings,
                                                  credentials: loadCredentials())

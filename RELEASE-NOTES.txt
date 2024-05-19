@@ -1,5 +1,10 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+18.8
+-----
+- [internal] Optimize API calls sent for Dashboard screen. [https://github.com/woocommerce/woocommerce-ios/pull/12775]
+
+
 18.7
 -----
 

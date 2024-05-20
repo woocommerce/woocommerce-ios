@@ -824,6 +824,7 @@
 		DE20046E2BFB522900660A72 /* ProductReportSegmentListMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE20046D2BFB522900660A72 /* ProductReportSegmentListMapper.swift */; };
 		DE2004702BFB535500660A72 /* product-report.json in Resources */ = {isa = PBXBuildFile; fileRef = DE20046F2BFB535500660A72 /* product-report.json */; };
 		DE2004722BFB536900660A72 /* product-report-without-data-envelope.json in Resources */ = {isa = PBXBuildFile; fileRef = DE2004712BFB536900660A72 /* product-report-without-data-envelope.json */; };
+		DE2004742BFB53DD00660A72 /* ProductReportSegmentListMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE2004732BFB53DD00660A72 /* ProductReportSegmentListMapperTests.swift */; };
 		DE2095BD27956D7900171F1C /* CouponReport.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE2095BC27956D7900171F1C /* CouponReport.swift */; };
 		DE2095BF279583A100171F1C /* CouponReportListMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE2095BE279583A100171F1C /* CouponReportListMapper.swift */; };
 		DE2095C127966EC800171F1C /* coupon-reports.json in Resources */ = {isa = PBXBuildFile; fileRef = DE2095C027966EC800171F1C /* coupon-reports.json */; };
@@ -1935,6 +1936,7 @@
 		DE20046D2BFB522900660A72 /* ProductReportSegmentListMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductReportSegmentListMapper.swift; sourceTree = "<group>"; };
 		DE20046F2BFB535500660A72 /* product-report.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "product-report.json"; sourceTree = "<group>"; };
 		DE2004712BFB536900660A72 /* product-report-without-data-envelope.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "product-report-without-data-envelope.json"; sourceTree = "<group>"; };
+		DE2004732BFB53DD00660A72 /* ProductReportSegmentListMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductReportSegmentListMapperTests.swift; sourceTree = "<group>"; };
 		DE2095BC27956D7900171F1C /* CouponReport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponReport.swift; sourceTree = "<group>"; };
 		DE2095BE279583A100171F1C /* CouponReportListMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponReportListMapper.swift; sourceTree = "<group>"; };
 		DE2095C027966EC800171F1C /* coupon-reports.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "coupon-reports.json"; sourceTree = "<group>"; };
@@ -3518,6 +3520,7 @@
 				DE02ABB62B563F3A008E0AC4 /* BlazePaymentInfoMapperTests.swift */,
 				CEB9BF442BB19EDE0007978A /* ProductBundleStatsMapperTests.swift */,
 				DE20045C2BF614A300660A72 /* ProductStockListMapperTests.swift */,
+				DE2004732BFB53DD00660A72 /* ProductReportSegmentListMapperTests.swift */,
 			);
 			path = Mapper;
 			sourceTree = "<group>";
@@ -4990,6 +4993,7 @@
 				CEB9BF452BB19EDE0007978A /* ProductBundleStatsMapperTests.swift in Sources */,
 				E18152C428F85E5C0011A0EC /* InAppPurchasesProductsMapperTests.swift in Sources */,
 				68BFF9022B677F1D00B15FF2 /* ReceiptRemoteTests.swift in Sources */,
+				DE2004742BFB53DD00660A72 /* ProductReportSegmentListMapperTests.swift in Sources */,
 				CCE5F39729F00B5200087332 /* SubscriptionsRemoteTests.swift in Sources */,
 				DED91DE72AD64ED500CDCC53 /* BlazeRemoteTests.swift in Sources */,
 				D8A2849A25FBB2E70019A84B /* ProductAttributeTermListMapperTests.swift in Sources */,

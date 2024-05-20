@@ -820,6 +820,7 @@
 		DE2004662BF7499600660A72 /* product-stock-decimal-sku.json in Resources */ = {isa = PBXBuildFile; fileRef = DE2004652BF7499500660A72 /* product-stock-decimal-sku.json */; };
 		DE2004682BF74A2500660A72 /* product-stock-parent-manage-stock.json in Resources */ = {isa = PBXBuildFile; fileRef = DE2004672BF74A2500660A72 /* product-stock-parent-manage-stock.json */; };
 		DE20046A2BF74B1E00660A72 /* product-stock-string-quantity.json in Resources */ = {isa = PBXBuildFile; fileRef = DE2004692BF74B1E00660A72 /* product-stock-string-quantity.json */; };
+		DE20046C2BFB4D4600660A72 /* ProductReport.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE20046B2BFB4D4600660A72 /* ProductReport.swift */; };
 		DE2095BD27956D7900171F1C /* CouponReport.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE2095BC27956D7900171F1C /* CouponReport.swift */; };
 		DE2095BF279583A100171F1C /* CouponReportListMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE2095BE279583A100171F1C /* CouponReportListMapper.swift */; };
 		DE2095C127966EC800171F1C /* coupon-reports.json in Resources */ = {isa = PBXBuildFile; fileRef = DE2095C027966EC800171F1C /* coupon-reports.json */; };
@@ -1927,6 +1928,7 @@
 		DE2004652BF7499500660A72 /* product-stock-decimal-sku.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "product-stock-decimal-sku.json"; sourceTree = "<group>"; };
 		DE2004672BF74A2500660A72 /* product-stock-parent-manage-stock.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "product-stock-parent-manage-stock.json"; sourceTree = "<group>"; };
 		DE2004692BF74B1E00660A72 /* product-stock-string-quantity.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "product-stock-string-quantity.json"; sourceTree = "<group>"; };
+		DE20046B2BFB4D4600660A72 /* ProductReport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductReport.swift; sourceTree = "<group>"; };
 		DE2095BC27956D7900171F1C /* CouponReport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponReport.swift; sourceTree = "<group>"; };
 		DE2095BE279583A100171F1C /* CouponReportListMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponReportListMapper.swift; sourceTree = "<group>"; };
 		DE2095C027966EC800171F1C /* coupon-reports.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "coupon-reports.json"; sourceTree = "<group>"; };
@@ -3561,6 +3563,7 @@
 				458C6DE325AC72A1009B300D /* StoredProductSettings.swift */,
 				EE4D51B12ACC6F1E00783D77 /* ProductCategoryFromBatchCreation.swift */,
 				EE1D9A9E2ACD6BA60020D817 /* AIProduct.swift */,
+				DE20046B2BFB4D4600660A72 /* ProductReport.swift */,
 			);
 			path = Product;
 			sourceTree = "<group>";
@@ -4584,6 +4587,7 @@
 				026CF620237D69D6009563D4 /* ProductVariationsRemote.swift in Sources */,
 				03DCB7402624AD7D00C8953D /* CouponListMapper.swift in Sources */,
 				077F39D626A58E4500ABEADC /* SystemStatusRemote.swift in Sources */,
+				DE20046C2BFB4D4600660A72 /* ProductReport.swift in Sources */,
 				4599FC5E24A62AA70056157A /* ProductTagsRemote.swift in Sources */,
 				DEC51AE7276848A9009F3DF4 /* SystemStatus+Environment.swift in Sources */,
 				DE02ABB12B5636FC008E0AC4 /* BlazePaymentInfo.swift in Sources */,

@@ -60,7 +60,7 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
 
     /// View Controller used to present alerts.
     ///
-    private let rootViewController: UIViewController
+    private let rootViewController: Presenting
 
     /// Alerts presenter: alerts from the various parts of the payment process are forwarded here
     ///
@@ -88,7 +88,7 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
     init(siteID: Int64,
          order: Order,
          formattedAmount: String,
-         rootViewController: UIViewController,
+         rootViewController: Presenting,
          onboardingPresenter: CardPresentPaymentsOnboardingPresenting,
          configuration: CardPresentPaymentsConfiguration,
          stores: StoresManager = ServiceLocator.stores,
@@ -564,6 +564,9 @@ private extension CollectOrderPaymentUseCase {
     /// Presents the native email client with the provided content.
     ///
     func presentEmailForm(content: String, onCompleted: @escaping () -> ()) {
+        guard let rootViewController = rootViewController as? UIViewController else {
+            return
+        }
         let coordinator = CardPresentPaymentReceiptEmailCoordinator(countryCode: configuration.countryCode,
                                                                     cardReaderModel: analyticsTracker.connectedReaderModel)
         receiptEmailCoordinator = coordinator
@@ -601,7 +604,7 @@ private extension CollectOrderPaymentUseCase {
         let noticePresenter = DefaultNoticePresenter()
         let notice = Notice(title: Localization.failedReceiptPrintNoticeText,
                                     feedbackType: .error)
-        noticePresenter.presentingViewController = rootViewController
+        noticePresenter.presentingViewController = rootViewController as? UIViewController
         noticePresenter.enqueue(notice: notice)
 
         onCompleted()

@@ -41,6 +41,52 @@ enum CardPresentPaymentEvent {
     case showOnboarding(_ onboardingViewModel: InPersonPaymentsViewModel)
 }
 
+protocol Presenting: AnyObject {
+    func present(_ viewControllerToPresent: UIViewController, animated: Bool, completion: (() -> Void)?)
+    func present(_ viewControllerToPresent: UIViewController, animated: Bool)
+    func dismiss(animated: Bool, completion: (() -> Void)?)
+    func dismiss(animated: Bool)
+    func show(_ vc: UIViewController, sender: Any?)
+    var presentedViewController: UIViewController? { get }
+    var navigationController: UINavigationController? { get }
+}
+
+extension UIViewController: Presenting {
+    func present(_ viewControllerToPresent: UIViewController, animated: Bool) {
+        present(viewControllerToPresent, animated: animated, completion: nil)
+    }
+
+    func dismiss(animated: Bool) {
+        dismiss(animated: animated, completion: nil)
+    }
+}
+
+class NullPresenting: Presenting {
+    func present(_ viewControllerToPresent: UIViewController, animated: Bool) {
+        // no-op
+    }
+
+    func dismiss(animated: Bool) {
+        // no-op
+    }
+
+    func present(_ viewControllerToPresent: UIViewController, animated: Bool, completion: (() -> Void)?) {
+        // no-op
+    }
+
+    func dismiss(animated: Bool, completion: (() -> Void)?) {
+        // no-op
+    }
+
+    func show(_ vc: UIViewController, sender: Any?) {
+        // no-op
+    }
+
+    var presentedViewController: UIViewController?
+
+    var navigationController: UINavigationController?
+}
+
 class CardPresentPaymentsAdaptor: CardPresentPayments {
 
     /// `paymentScreenEventPublisher` provides a stream of events relating to a payment, including their view models,
@@ -118,7 +164,7 @@ class CardPresentPaymentsAdaptor: CardPresentPayments {
                                                                    order: order,
                                                                    formattedAmount: currencyFormatter.formatAmount(order.total, with: order.currency) ?? "",
                                                                    // moved from EditableOrderViewModel.collectPayment(for: Order)
-                                                                   rootViewController: UIViewController(),
+                                                                   rootViewController: NullPresenting(),
                                                                    // We don't want to use this at all, but it's currently required by the existing code.
                                                                    // TODO: replace `rootViewController` with a protocol containing the UIVC functions we need, and implement that here.
                                                                    onboardingPresenter: onboardingPresenterAdaptor,
@@ -236,7 +282,7 @@ final class CardPresentPaymentsOnboardingPresenterAdaptor: CardPresentPaymentsOn
     /// - Parameters:
     ///   - viewController: This will be ignored, as other SwiftUI code is responsible for the display in this implementation.
     ///   - completion: Callback when the onboarding is complete
-    func showOnboardingIfRequired(from viewController: UIViewController,
+    func showOnboardingIfRequired(from viewController: Presenting,
                                   readyToCollectPayment completion: @escaping () -> Void) {
         readinessUseCase.checkCardPaymentReadiness()
         guard case .ready = readinessUseCase.readiness else {

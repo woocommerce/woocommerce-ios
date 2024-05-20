@@ -4,7 +4,7 @@ import Combine
 import Foundation
 
 protocol CardPresentPaymentsOnboardingPresenting {
-    func showOnboardingIfRequired(from: UIViewController,
+    func showOnboardingIfRequired(from: Presenting,
                                   readyToCollectPayment: @escaping () -> Void)
 
     func refresh()
@@ -32,7 +32,7 @@ final class CardPresentPaymentsOnboardingPresenter: CardPresentPaymentsOnboardin
         onboardingViewModel = InPersonPaymentsViewModel(useCase: onboardingUseCase)
     }
 
-    func showOnboardingIfRequired(from viewController: UIViewController,
+    func showOnboardingIfRequired(from viewController: Presenting,
                                   readyToCollectPayment completion: @escaping () -> Void) {
         readinessUseCase.checkCardPaymentReadiness()
         guard case .ready = readinessUseCase.readiness else {
@@ -41,7 +41,7 @@ final class CardPresentPaymentsOnboardingPresenter: CardPresentPaymentsOnboardin
         completion()
     }
 
-    private func showOnboarding(from viewController: UIViewController,
+    private func showOnboarding(from viewController: Presenting,
                                 readyToCollectPayment completion: @escaping () -> Void) {
         let onboardingViewController = InPersonPaymentsViewController(viewModel: onboardingViewModel,
                                                                       onWillDisappear: { [weak self] in

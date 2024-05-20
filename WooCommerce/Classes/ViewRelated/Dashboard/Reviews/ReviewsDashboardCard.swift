@@ -97,7 +97,7 @@ private extension ReviewsDashboardCard {
                             await viewModel.filterReviews(by: filter)
                         }
                     } label: {
-                        SelectableItemRow(title: filter.title, selected: false)
+                        SelectableItemRow(title: filter.title, selected: viewModel.currentFilter == filter)
                     }
                 }
             } label: {

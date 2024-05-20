@@ -19,6 +19,7 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
             productsInCart.append(cartProduct)
         } else {
             // TODO: Handle out of stock
+            // wp.me/p91TBi-bcW#comment-12123
             return
         }
     }

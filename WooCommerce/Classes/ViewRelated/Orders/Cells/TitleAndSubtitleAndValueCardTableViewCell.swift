@@ -48,6 +48,12 @@ final class TitleAndSubtitleAndValueCardTableViewCell: UITableViewCell {
         return stackView
     }()
 
+    /// Default top anchor constraint for content view
+    ///
+    private lazy var contentViewTopAnchorConstraint: NSLayoutConstraint = {
+        contentView.topAnchor.constraint(equalTo: mainView.topAnchor, constant: -Constants.insets.top)
+    }()
+
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         configureDefaultBackgroundConfiguration()
@@ -67,7 +73,7 @@ final class TitleAndSubtitleAndValueCardTableViewCell: UITableViewCell {
 
 // MARK: UI Update
 extension TitleAndSubtitleAndValueCardTableViewCell {
-    func configure(title: String, subtitle: String, value: String) {
+    func configure(row: Int, title: String, subtitle: String, value: String) {
         titleLabel.text = title
         titleLabel.applyBodyStyle()
 
@@ -76,6 +82,19 @@ extension TitleAndSubtitleAndValueCardTableViewCell {
 
         valueLabel.text = value
         valueLabel.applyBodyStyle()
+
+        hideSeparator()
+        setInsets(for: row)
+    }
+
+    /// Removes the default top anchor inset when the cell isn't the first row in the section.
+    ///
+    func setInsets(for row: Int) {
+        if row == 0 {
+            contentViewTopAnchorConstraint.constant = -Constants.insets.top
+        } else {
+            contentViewTopAnchorConstraint.constant = 0
+        }
     }
 }
 
@@ -90,7 +109,12 @@ private extension TitleAndSubtitleAndValueCardTableViewCell {
 
     func configureSubviews() {
         contentView.addSubview(mainView)
-        contentView.pinSubviewToSafeArea(mainView, insets: Constants.insets)
+        NSLayoutConstraint.activate([
+            contentViewTopAnchorConstraint,
+            contentView.leadingAnchor.constraint(equalTo: mainView.leadingAnchor, constant: -Constants.insets.left),
+            contentView.trailingAnchor.constraint(equalTo: mainView.trailingAnchor, constant: Constants.insets.right),
+            contentView.bottomAnchor.constraint(equalTo: mainView.bottomAnchor, constant: Constants.insets.bottom),
+        ])
 
         mainView.addSubview(stackView)
         mainView.pinSubviewToAllEdges(stackView, insets: Constants.insets)

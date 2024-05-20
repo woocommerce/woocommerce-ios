@@ -1017,7 +1017,7 @@ private extension OrderDetailsDataSource {
         let shippingLine = shippingLines[indexPath.row]
         let shippingMethod = siteShippingMethods.first(where: { $0.methodID == shippingLine.methodID })?.title ?? ""
         let shippingTotal = currencyFormatter.formatAmount(shippingLine.total) ?? shippingLine.total
-        cell.configure(title: shippingLine.methodTitle, subtitle: shippingMethod, value: shippingTotal)
+        cell.configure(row: indexPath.row, title: shippingLine.methodTitle, subtitle: shippingMethod, value: shippingTotal)
         cell.selectionStyle = .none
     }
 

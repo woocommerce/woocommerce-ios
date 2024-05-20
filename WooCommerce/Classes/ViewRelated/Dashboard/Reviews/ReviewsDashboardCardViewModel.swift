@@ -33,7 +33,7 @@ final class ReviewsDashboardCardViewModel: ObservableObject {
     public let siteID: Int64
     public let filters: [ReviewsFilter] = [.all, .hold, .approved]
 
-    private var productsResultsController: ResultsController<StorageProduct>
+    private let productsResultsController: ResultsController<StorageProduct>
 
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,

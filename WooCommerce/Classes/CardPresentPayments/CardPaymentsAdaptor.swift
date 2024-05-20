@@ -36,9 +36,9 @@ enum CardPresentPaymentResult {
 }
 
 enum CardPresentPaymentEvent {
-    case presentAlert(CardPresentPaymentsModalViewModel)
+    case presentAlert(CardPresentPaymentsModalViewModel) // These are existing view models
     case presentReaderList(_ readerIDs: [String])
-    case showOnboarding(_ onboardingViewModel: InPersonPaymentsViewModel)
+    case showOnboarding(_ onboardingViewModel: InPersonPaymentsViewModel) // These are existing view models
 }
 
 protocol Presenting: AnyObject {
@@ -179,6 +179,9 @@ class CardPresentPaymentsAdaptor: CardPresentPayments {
                         // TODO: even though we have a tri-state result type, perhaps we should throw these errors.
                         if let error = error as? CardPaymentErrorProtocol {
                             continuation.resume(returning: CardPresentPaymentResult.failure(error))
+                            // TODO: Some of these errors are retriable with the same payment intent.
+                            // This isn't catered for in the experiment yet. Perhaps those should not be returned as errors,
+                            // but sent as events with a retry handler.
                         } else {
                             continuation.resume(returning: CardPresentPaymentResult.failure(CardPaymentsAdaptorError.unknownPaymentError(underlyingError: error)))
                         }

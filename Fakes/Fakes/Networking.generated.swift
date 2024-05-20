@@ -1422,8 +1422,8 @@ extension Networking.ProductReportSegment {
     ///
     public static func fake() -> Networking.ProductReportSegment {
         .init(
-            productName: .fake(),
             productID: .fake(),
+            productName: .fake(),
             subtotals: .fake()
         )
     }
@@ -1433,9 +1433,7 @@ extension Networking.ProductReportSegment.Subtotals {
     ///
     public static func fake() -> Networking.ProductReportSegment.Subtotals {
         .init(
-            itemsSold: .fake(),
-            netRevenue: .fake(),
-            ordersCount: .fake()
+            itemsSold: .fake()
         )
     }
 }

@@ -2294,17 +2294,17 @@ extension Networking.ProductReport {
 
 extension Networking.ProductReportSegment {
     public func copy(
-        productName: CopiableProp<String> = .copy,
         productID: CopiableProp<Int64> = .copy,
+        productName: CopiableProp<String> = .copy,
         subtotals: CopiableProp<ProductReportSegment.Subtotals> = .copy
     ) -> Networking.ProductReportSegment {
-        let productName = productName ?? self.productName
         let productID = productID ?? self.productID
+        let productName = productName ?? self.productName
         let subtotals = subtotals ?? self.subtotals
 
         return Networking.ProductReportSegment(
-            productName: productName,
             productID: productID,
+            productName: productName,
             subtotals: subtotals
         )
     }
@@ -2312,18 +2312,12 @@ extension Networking.ProductReportSegment {
 
 extension Networking.ProductReportSegment.Subtotals {
     public func copy(
-        itemsSold: CopiableProp<Int> = .copy,
-        netRevenue: CopiableProp<Double> = .copy,
-        ordersCount: CopiableProp<Int> = .copy
+        itemsSold: CopiableProp<Int> = .copy
     ) -> Networking.ProductReportSegment.Subtotals {
         let itemsSold = itemsSold ?? self.itemsSold
-        let netRevenue = netRevenue ?? self.netRevenue
-        let ordersCount = ordersCount ?? self.ordersCount
 
         return Networking.ProductReportSegment.Subtotals(
-            itemsSold: itemsSold,
-            netRevenue: netRevenue,
-            ordersCount: ordersCount
+            itemsSold: itemsSold
         )
     }
 }

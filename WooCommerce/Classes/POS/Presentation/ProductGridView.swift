@@ -2,15 +2,15 @@ import SwiftUI
 
 struct ProductGridView: View {
     @ObservedObject var viewModel: PointOfSaleDashboardViewModel
-    
+
     init(viewModel: PointOfSaleDashboardViewModel) {
         self.viewModel = viewModel
     }
-    
+
     var body: some View {
         let columns: [GridItem] = Array(repeating: .init(.fixed(120)),
                                         count: viewModel.products.count)
-        
+
         VStack {
             Text("Product List")
                 .frame(maxWidth: .infinity, alignment: .leading)

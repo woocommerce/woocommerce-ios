@@ -82,6 +82,30 @@ private extension HubMenu {
                 .disabled(!viewModel.switchStoreEnabled)
             }
 
+            // Point of Sale
+            if let menu = viewModel.posElement {
+                Section {
+                    Button {
+                        handleTap(menu: menu)
+                    } label: {
+                        Row(title: menu.title,
+                            titleBadge: nil,
+                            iconBadge: menu.iconBadge,
+                            description: menu.description,
+                            icon: .local(menu.icon),
+                            chevron: .leading)
+                        .foregroundColor(Color(menu.iconColor))
+                    }
+                    .accessibilityIdentifier(menu.accessibilityIdentifier)
+                    .overlay {
+                        NavigationLink(value: menu.id) {
+                            EmptyView()
+                        }
+                        .opacity(0)
+                    }
+                }
+            }
+
             // Settings Section
             Section(Localization.settings) {
                 ForEach(viewModel.settingsElements, id: \.id) { menu in

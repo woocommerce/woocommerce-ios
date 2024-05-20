@@ -5,12 +5,17 @@ struct Woo_Watch_AppApp: App {
 
     @StateObject var phoneDependencySynchronizer = PhoneDependenciesSynchronizer()
 
+    @State private var selectedTab = WooWatchTab.myStore
+
     var body: some Scene {
         WindowGroup {
             if let dependencies = phoneDependencySynchronizer.dependencies {
-                TabView {
-                    MyStoreView(dependencies: dependencies)
-                    OrdersListView()
+                TabView(selection: $selectedTab) {
+                    MyStoreView(dependencies: dependencies, watchTab: $selectedTab)
+                        .tag(WooWatchTab.myStore)
+
+                    OrdersListView(watchTab: $selectedTab)
+                        .tag(WooWatchTab.ordersList)
                 }
                 .compatibleVerticalStyle()
                 .environment(\.dependencies, dependencies)
@@ -19,6 +24,11 @@ struct Woo_Watch_AppApp: App {
             }
         }
     }
+}
+
+enum WooWatchTab: Int {
+    case myStore
+    case ordersList
 }
 
 /// Backwards compatible vertical `tabViewStyle` modifier.

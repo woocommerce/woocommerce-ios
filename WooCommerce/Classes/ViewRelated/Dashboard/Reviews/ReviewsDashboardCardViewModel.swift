@@ -38,6 +38,7 @@ final class ReviewsDashboardCardViewModel: ObservableObject {
     @Published private(set) var currentFilter: ReviewsFilter = .all
 
     private let productsResultsController: ResultsController<StorageProduct>
+    private let notificationsResultsController: ResultsController<StorageNote>
 
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
@@ -52,6 +53,11 @@ final class ReviewsDashboardCardViewModel: ObservableObject {
                                                                            matching: nil,
                                                                            fetchLimit: Constants.numberOfItems,
                                                                            sortedBy: [])
+
+        self.notificationsResultsController = ResultsController<StorageNote>(storageManager: storageManager,
+                                                                           sectionNameKeyPath: "normalizedAgeAsString",
+                                                                           matching: nil,
+                                                                           sortedBy: [])
         configureProductReviewsResultsController()
     }
 
@@ -62,15 +68,6 @@ final class ReviewsDashboardCardViewModel: ObservableObject {
                                                        matching: sitePredicate(),
                                                        fetchLimit: Constants.numberOfItems,
                                                        sortedBy: [sortDescriptor])
-    }()
-
-    /// ResultsController for Notification
-    private lazy var notificationsResultsController: ResultsController<StorageNote> = {
-        let sortDescriptor = NSSortDescriptor(keyPath: \StorageNote.timestamp, ascending: false)
-        return ResultsController<StorageNote>(storageManager: storageManager,
-                                              sectionNameKeyPath: "normalizedAgeAsString",
-                                              matching: notificationsPredicate,
-                                              sortedBy: [sortDescriptor])
     }()
 
     private lazy var notificationsPredicate: NSPredicate = {
@@ -177,6 +174,7 @@ private extension ReviewsDashboardCardViewModel {
                 try await fetchProducts(for: productIDs)
 
                 if stores.isAuthenticatedWithoutWPCom == false {
+                    notificationsResultsController.predicate = notificationsPredicate
                     try await fetchNotifications()
                 }
             } catch {

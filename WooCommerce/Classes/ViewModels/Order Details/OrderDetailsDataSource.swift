@@ -166,6 +166,12 @@ final class OrderDetailsDataSource: NSObject {
         resultsControllers.addOnGroups
     }
 
+    /// Shipping Methods list
+    ///
+    var siteShippingMethods: [ShippingMethod] {
+        resultsControllers.siteShippingMethods
+    }
+
     /// Shipping Labels for an Order
     ///
     private(set) var shippingLabels: [ShippingLabel] = []
@@ -1010,10 +1016,11 @@ private extension OrderDetailsDataSource {
 
     private func configureShippingLine(cell: HostingConfigurationTableViewCell<ShippingLineRowView>, at indexPath: IndexPath) {
         let shippingLine = shippingLines[indexPath.row]
+        let shippingMethod = siteShippingMethods.first(where: { $0.methodID == shippingLine.methodID })?.title ?? ""
         let shippingTotal = currencyFormatter.formatAmount(shippingLine.total) ?? shippingLine.total
-        // TODO-12582: Update subtitle with method name (from method ID)
+
         let view = ShippingLineRowView(shippingTitle: shippingLine.methodTitle,
-                                       shippingMethod: shippingLine.methodTitle,
+                                       shippingMethod: shippingMethod,
                                        shippingAmount: shippingTotal,
                                        editable: false)
         let topMargin = indexPath.row == 0 ? Constants.cellDefaultMargin : 0 // Reduce cell padding between rows

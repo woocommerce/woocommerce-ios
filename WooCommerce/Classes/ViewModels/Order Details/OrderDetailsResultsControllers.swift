@@ -88,6 +88,13 @@ final class OrderDetailsResultsControllers {
         return ResultsController<StorageSitePlugin>(storageManager: storageManager, matching: predicate, sortedBy: [])
     }()
 
+    /// Shipping Methods ResultsController.
+    ///
+    private lazy var shippingMethodsResultsController: ResultsController<StorageShippingMethod> = {
+        let predicate = NSPredicate(format: "siteID == %lld", siteID)
+        return ResultsController<StorageShippingMethod>(storageManager: storageManager, matching: predicate, sortedBy: [])
+    }()
+
     /// Order shipment tracking list
     ///
     var orderTracking: [ShipmentTracking] {
@@ -138,6 +145,12 @@ final class OrderDetailsResultsControllers {
         return feeLinesResultsController.fetchedObjects
     }
 
+    /// Shipping methods list
+    ///
+    var siteShippingMethods: [ShippingMethod] {
+        return shippingMethodsResultsController.fetchedObjects
+    }
+
     /// Completion handler for when results controllers reload.
     ///
     var onReload: (() -> Void)?
@@ -160,6 +173,7 @@ final class OrderDetailsResultsControllers {
         configureAddOnGroupResultsController(onReload: onReload)
         configureSitePluginsResultsController(onReload: onReload)
         configureFeeLinesResultsController(onReload: onReload)
+        configureShippingMethodsResultsController(onReload: onReload)
     }
 
     func update(order: Order) {
@@ -344,6 +358,24 @@ private extension OrderDetailsResultsControllers {
         }
     }
 
+    private func configureShippingMethodsResultsController(onReload: @escaping () -> Void) {
+        shippingMethodsResultsController.onDidChangeContent = {
+            onReload()
+        }
+
+        shippingMethodsResultsController.onDidResetContent = { [weak self] in
+            guard let self else { return }
+            self.refetchAllResultsControllers()
+            onReload()
+        }
+
+        do {
+            try shippingMethodsResultsController.performFetch()
+        } catch {
+            DDLogError("⛔️ Unable to fetch Shipping Methods for Site \(siteID): \(error)")
+        }
+    }
+
     /// Refetching all the results controllers is necessary after a storage reset in `onDidResetContent` callback and before reloading UI that
     /// involves more than one results controller.
     func refetchAllResultsControllers() {
@@ -355,5 +387,6 @@ private extension OrderDetailsResultsControllers {
         try? shippingLabelResultsController.performFetch()
         try? addOnGroupResultsController.performFetch()
         try? sitePluginsResultsController.performFetch()
+        try? shippingMethodsResultsController.performFetch()
     }
 }

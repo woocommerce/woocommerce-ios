@@ -168,6 +168,9 @@ final class DashboardViewModel: ObservableObject {
                 group.addTask { [weak self] in
                     await self?.productStockCardViewModel.reloadData()
                 }
+                group.addTask { [weak self] in
+                    await self?.reviewsViewModel.reloadData()
+                }
             }
         }
     }

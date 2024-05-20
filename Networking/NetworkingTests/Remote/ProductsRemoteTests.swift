@@ -728,6 +728,40 @@ final class ProductsRemoteTests: XCTestCase {
             $0 as? NetworkError == .notFound()
         })
     }
+
+    // MARK: - `loadStock`
+
+    func test_loadStock_returns_correct_items() async throws {
+        // Given
+        let remote = ProductsRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "reports/stock", filename: "product-stock")
+
+        // When
+        let stock = try await remote.loadStock(for: 8, with: "outOfStock", pageNumber: 1, pageSize: 3, orderBy: .name, order: .descending)
+
+        // Then
+        XCTAssertEqual(stock.count, 1)
+
+        let item = try XCTUnwrap(stock.first)
+        XCTAssertEqual(item.productID, 2051)
+        XCTAssertEqual(item.name, "貴志川線 1日乘車券")
+        XCTAssertEqual(item.sku, "")
+        XCTAssertEqual(item.productStockStatus, .outOfStock)
+        XCTAssertEqual(item.stockQuantity, 0)
+        XCTAssertFalse(item.manageStock)
+    }
+
+    func test_loadStock_relays_networking_error() async throws {
+        // Given
+        let remote = ProductsRemote(network: network)
+
+        // When
+        await assertThrowsError({ _ = try await remote.loadStock(for: 8, with: "outofstock", pageNumber: 1, pageSize: 3, orderBy: .name, order: .descending) },
+                                errorAssert: {
+            // Then
+            $0 as? NetworkError == .notFound()
+        })
+    }
 }
 
 // MARK: - Private Helpers

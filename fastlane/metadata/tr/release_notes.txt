@@ -1,1 +1,5 @@
-Son güncellememizde değişken ana ürünlerin siparişlere sızmasına neden olan bir hatayı düzelterek barkod taramayı geliştirdik. En yeni güncellememizle daha sorunsuz bir sipariş oluşturma deneyiminin keyfini çıkarın!
+- [*] Karanlık mod okunabilirliğini düzeltmek için sipariş ürünleri listesinde rozet görünümünde metin rengi değiştirildi. [https://github.com/woocommerce/woocommerce-ios/pull/12630]
+- [*] Sipariş bildirimlerini açarken meydana gelen bir çökme için spekülatif düzeltme [https://github.com/woocommerce/woocommerce-ios/pull/12643]
+- [dahili] Panoda Uygulama İçi geri bildirim kartı gösterildi. [https://github.com/woocommerce/woocommerce-ios/pull/12636]
+- [*] Gönderim: Bir siparişe gönderim eklenirken veya bundaki sipariş düzenlenirken artık bir gönderim yöntemi seçilebilir. [https://github.com/woocommerce/woocommerce-ios/pull/12688]
+

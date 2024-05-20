@@ -1,1 +1,5 @@
-En nuestra última actualización, hemos mejorado la lectura de códigos de barras, porque hemos solucionado un error que hacía que productos padre variables se mezclaran con otros. Disfruta de una experiencia de creación de pedidos más sencilla con nuestra última actualización.
+- [*] Cambia el color del texto en la vista de logotipo de la lista de productos del pedido para solucionar la legibilidad del modo oscuro. [https://github.com/woocommerce/woocommerce-ios/pull/12630]
+- [*] Solución posible a un error que se produce al abrir notificaciones sobre un pedido [https://github.com/woocommerce/woocommerce-ios/pull/12643]
+- [internal] Muestra la tarjeta de valoraciones incluida en la aplicación en el panel de administración. [https://github.com/woocommerce/woocommerce-ios/pull/12636]
+- [*] Envíos: ahora se puede seleccionar un método de envío al añadir o editar el envío para un pedido. [https://github.com/woocommerce/woocommerce-ios/pull/12688]
+

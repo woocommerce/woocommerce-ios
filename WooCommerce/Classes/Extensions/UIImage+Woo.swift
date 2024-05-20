@@ -382,6 +382,10 @@ extension UIImage {
         UIImage(named: "woo-empty-search-results")!
     }
 
+    static var shoppingBagsImage: UIImage {
+        UIImage(named: "shopping-bags")!
+    }
+
     /// An image showing a bar chart. This is used to show an empty All Orders tab.
     ///
     static var emptyOrdersImage: UIImage {

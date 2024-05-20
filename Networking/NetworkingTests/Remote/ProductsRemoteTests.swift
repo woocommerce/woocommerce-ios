@@ -737,7 +737,7 @@ final class ProductsRemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "reports/stock", filename: "product-stock")
 
         // When
-        let stock = try await remote.loadStock(for: 8, with: .outOfStock, pageNumber: 1, pageSize: 3, orderBy: .name, order: .descending)
+        let stock = try await remote.loadStock(for: 8, with: "outOfStock", pageNumber: 1, pageSize: 3, orderBy: .name, order: .descending)
 
         // Then
         XCTAssertEqual(stock.count, 1)
@@ -756,7 +756,7 @@ final class ProductsRemoteTests: XCTestCase {
         let remote = ProductsRemote(network: network)
 
         // When
-        await assertThrowsError({ _ = try await remote.loadStock(for: 8, with: .outOfStock, pageNumber: 1, pageSize: 3, orderBy: .name, order: .descending) },
+        await assertThrowsError({ _ = try await remote.loadStock(for: 8, with: "outofstock", pageNumber: 1, pageSize: 3, orderBy: .name, order: .descending) },
                                 errorAssert: {
             // Then
             $0 as? NetworkError == .notFound()

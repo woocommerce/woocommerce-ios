@@ -45,7 +45,6 @@ final class MostActiveCouponsCardViewModel: ObservableObject {
 
         Task { @MainActor in
             self.timeRange = await loadLastTimeRange() ?? .today
-            await reloadData()
         }
     }
 

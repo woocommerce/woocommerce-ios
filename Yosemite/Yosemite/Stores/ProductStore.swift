@@ -156,6 +156,14 @@ public class ProductStore: Store {
                               categories: categories,
                               tags: tags,
                               completion: completion)
+        case let .fetchStockReport(siteID, stockType, pageNumber, pageSize, orderBy, order, completion):
+            fetchStockReport(siteID: siteID,
+                             stockType: stockType,
+                             pageNumber: pageNumber,
+                             pageSize: pageSize,
+                             orderBy: orderBy,
+                             order: order,
+                             completion: completion)
         }
     }
 }
@@ -731,6 +739,28 @@ private extension ProductStore {
             completion(result)
         }
     }
+
+    func fetchStockReport(siteID: Int64,
+                          stockType: String,
+                          pageNumber: Int,
+                          pageSize: Int,
+                          orderBy: ProductsRemote.OrderKey,
+                          order: ProductsRemote.Order,
+                          completion: @escaping (Result<[ProductStock], Error>) -> Void) {
+        Task { @MainActor in
+            do {
+                let stock = try await remote.loadStock(for: siteID,
+                                                       with: stockType,
+                                                       pageNumber: pageNumber,
+                                                       pageSize: pageSize,
+                                                       orderBy: orderBy,
+                                                       order: order)
+                completion(.success(stock))
+            } catch {
+                completion(.failure(error))
+            }
+        }
+    }
 }
 
 
@@ -1183,6 +1213,7 @@ public enum ProductUpdateError: Error, Equatable {
     case variationInvalidImageId
     case unexpected
     case unknown(error: AnyError)
+    case generic(message: String)
 
     init(error: Error) {
         guard let dotcomError = error as? DotcomError else {
@@ -1190,12 +1221,12 @@ public enum ProductUpdateError: Error, Equatable {
             return
         }
         switch dotcomError {
-        case .unknown(let code, _):
+        case let .unknown(code, message):
             guard let errorCode = ErrorCode(rawValue: code) else {
                 self = .unknown(error: dotcomError.toAnyError)
                 return
             }
-            self = errorCode.error
+            self = errorCode.error(with: message)
         default:
             self = .unknown(error: dotcomError.toAnyError)
         }
@@ -1204,13 +1235,19 @@ public enum ProductUpdateError: Error, Equatable {
     private enum ErrorCode: String {
         case invalidSKU = "product_invalid_sku"
         case variationInvalidImageId = "woocommerce_variation_invalid_image_id"
+        case invalidMaxQuantity = "woocommerce_rest_invalid_max_quantity"
+        case invalidMinQuantity = "woocommerce_rest_invalid_min_quantity"
+        case invalidVariationMaxQuantity = "woocommerce_rest_invalid_variation_max_quantity"
+        case invalidVariationMinQuantity = "woocommerce_rest_invalid_variation_min_quantity"
 
-        var error: ProductUpdateError {
+        func error(with message: String?) -> ProductUpdateError {
             switch self {
             case .invalidSKU:
                 return .invalidSKU
             case .variationInvalidImageId:
                 return .variationInvalidImageId
+            case .invalidMaxQuantity, .invalidMinQuantity, .invalidVariationMaxQuantity, .invalidVariationMinQuantity:
+                return .generic(message: message ?? "")
             }
         }
     }

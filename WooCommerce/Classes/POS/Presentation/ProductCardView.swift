@@ -17,13 +17,13 @@ struct ProductCardView: View {
                     .foregroundStyle(Color.primaryBackground)
                 HStack(spacing: 8) {
                     QuantityBadgeView()
-                        .frame(width: 50, height: 50)
+                        .frame(width: 56, height: 56)
                     Spacer()
                     Button(action: {
                         onProductCardTapped?()
                     }, label: { })
                     .buttonStyle(POSPlusButtonStyle())
-                    .frame(width: 50, height: 50)
+                    .frame(width: 56, height: 56)
                 }
             }
             .frame(maxWidth: .infinity)

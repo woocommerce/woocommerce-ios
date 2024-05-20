@@ -66,7 +66,6 @@ final class TopPerformersDashboardViewModel: ObservableObject {
         Task { @MainActor in
             self.timeRange = await loadLastTimeRange() ?? .today
             updateResultsController()
-            await reloadData()
         }
     }
 

@@ -281,6 +281,12 @@ extension OrderDetailsViewModel {
             group.leave()
         }
 
+        group.enter()
+        syncShippingMethods { _ in
+            onReloadSections?()
+            group.leave()
+        }
+
         group.notify(queue: .main) { [weak self] in
 
             /// Update state to synced
@@ -693,6 +699,19 @@ extension OrderDetailsViewModel {
             }
             self.stores.dispatch(action)
         }
+    }
+
+    func syncShippingMethods(onCompletion: ((Error?) -> ())? = nil) {
+        let action = ShippingMethodAction.synchronizeShippingMethods(siteID: order.siteID) { result in
+            switch result {
+            case .success:
+                onCompletion?(nil)
+            case let .failure(error):
+                DDLogError("⛔️ Error synchronizing shipping methods: \(error)")
+                onCompletion?(error)
+            }
+        }
+        stores.dispatch(action)
     }
 
     @MainActor

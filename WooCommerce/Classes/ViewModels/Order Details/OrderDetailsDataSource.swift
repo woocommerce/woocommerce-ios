@@ -165,6 +165,12 @@ final class OrderDetailsDataSource: NSObject {
         resultsControllers.addOnGroups
     }
 
+    /// Shipping Methods list
+    ///
+    var siteShippingMethods: [ShippingMethod] {
+        resultsControllers.siteShippingMethods
+    }
+
     /// Shipping Labels for an Order
     ///
     private(set) var shippingLabels: [ShippingLabel] = []
@@ -1009,9 +1015,9 @@ private extension OrderDetailsDataSource {
 
     private func configureShippingLine(cell: TitleAndSubtitleAndValueCardTableViewCell, at indexPath: IndexPath) {
         let shippingLine = shippingLines[indexPath.row]
+        let shippingMethod = siteShippingMethods.first(where: { $0.methodID == shippingLine.methodID })?.title ?? ""
         let shippingTotal = currencyFormatter.formatAmount(shippingLine.total) ?? shippingLine.total
-        // TODO-12582: Update subtitle with method name (from method ID)
-        cell.configure(title: shippingLine.methodTitle, subtitle: shippingLine.methodTitle, value: shippingTotal)
+        cell.configure(title: shippingLine.methodTitle, subtitle: shippingMethod, value: shippingTotal)
         cell.selectionStyle = .none
     }
 

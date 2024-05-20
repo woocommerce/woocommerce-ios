@@ -12,6 +12,8 @@ struct HubMenu: View {
     @ObservedObject private var iO = Inject.observer
 
     @ObservedObject private var viewModel: HubMenuViewModel
+    
+    @StateObject private var historyViewModel = PointOfSaleHistoryViewModel.makeFakeHistory()
 
     init(viewModel: HubMenuViewModel) {
         self.viewModel = viewModel
@@ -167,7 +169,7 @@ private extension HubMenu {
             case HubMenuViewModel.Customers.id:
                 CustomersListView(viewModel: .init(siteID: viewModel.siteID))
             case HubMenuViewModel.PointOfSaleEntryPoint.id:
-                PointOfSaleEntryPointView(historyViewModel: PointOfSaleHistoryViewModel.makeFakeHistory(), hideAppTabBar: { isHidden in
+                PointOfSaleEntryPointView(historyViewModel: historyViewModel, hideAppTabBar: { isHidden in
                     AppDelegate.shared.setShouldHideTabBar(isHidden)
                 })
             default:

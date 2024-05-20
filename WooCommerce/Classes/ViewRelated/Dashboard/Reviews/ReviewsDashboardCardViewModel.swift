@@ -147,7 +147,7 @@ private extension ReviewsDashboardCardViewModel {
 // MARK: - Private helpers
 private extension ReviewsDashboardCardViewModel {
     @MainActor
-    func loadReviews() async throws {
+    func loadReviews(filter: ReviewsFilter? = nil) async throws {
         try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
             stores.dispatch(ProductReviewAction.synchronizeProductReviews(siteID: siteID,
                                                                           pageNumber: 1,
@@ -249,6 +249,19 @@ private extension ReviewsDashboardCardViewModel {
                     continuation.resume()
                 case .failure(let error):
                     continuation.resume(throwing: error)
+                }
+            })
+        }
+    }
+
+    @MainActor
+    func synchronizeNotifications() async throws {
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+            stores.dispatch(NotificationAction.synchronizeNotifications { error in
+                if let error {
+                    continuation.resume(throwing: error)
+                } else {
+                    continuation.resume()
                 }
             })
         }

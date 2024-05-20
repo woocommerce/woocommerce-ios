@@ -189,4 +189,14 @@ public enum ProductAction: Action {
                            categories: [ProductCategory],
                            tags: [ProductTag],
                            completion: (Result<AIProduct, Error>) -> Void)
+
+    /// Fetches stock based on the given status for a site
+    ///
+    case fetchStockReport(siteID: Int64,
+                          stockStatus: ProductStockStatus,
+                          pageNumber: Int,
+                          pageSize: Int,
+                          orderBy: ProductsRemote.OrderKey,
+                          order: ProductsRemote.Order,
+                          completion: (Result<[ProductStock], Error>) -> Void)
 }

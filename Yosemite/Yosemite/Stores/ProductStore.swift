@@ -156,6 +156,14 @@ public class ProductStore: Store {
                               categories: categories,
                               tags: tags,
                               completion: completion)
+        case let .fetchStockReport(siteID, stockStatus, pageNumber, pageSize, orderBy, order, completion):
+            fetchStockReport(siteID: siteID,
+                             stockStatus: stockStatus,
+                             pageNumber: pageNumber,
+                             pageSize: pageSize,
+                             orderBy: orderBy,
+                             order: order,
+                             completion: completion)
         }
     }
 }
@@ -729,6 +737,28 @@ private extension ProductStore {
                 return product
             }
             completion(result)
+        }
+    }
+
+    func fetchStockReport(siteID: Int64,
+                          stockStatus: ProductStockStatus,
+                          pageNumber: Int,
+                          pageSize: Int,
+                          orderBy: ProductsRemote.OrderKey,
+                          order: ProductsRemote.Order,
+                          completion: @escaping (Result<[ProductStock], Error>) -> Void) {
+        Task { @MainActor in
+            do {
+                let stock = try await remote.loadStock(for: siteID,
+                                                       with: stockStatus,
+                                                       pageNumber: pageNumber,
+                                                       pageSize: pageSize,
+                                                       orderBy: orderBy,
+                                                       order: order)
+                completion(.success(stock))
+            } catch {
+                completion(.failure(error))
+            }
         }
     }
 }

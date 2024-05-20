@@ -25,30 +25,40 @@ struct ReviewsDashboardCard: View {
             header
                 .padding(.horizontal, Layout.padding)
 
-            reviewsFilterBar
+            if let error = viewModel.syncingError {
+                DashboardCardErrorView(onRetry: {
+                    ServiceLocator.analytics.track(event: .DynamicDashboard.cardRetryTapped(type: .reviews))
+                    Task {
+                        await viewModel.reloadData()
+                    }
+                })
                 .padding(.horizontal, Layout.padding)
-                .redacted(reason: viewModel.syncingData ? [.placeholder] : [])
-                .shimmering(active: viewModel.syncingData)
-            Divider()
-
-            if viewModel.syncingData || viewModel.data.isNotEmpty {
-                ForEach(viewModel.data, id: \.review.reviewID) { reviewViewModel in
-                    reviewRow(for: reviewViewModel,
-                              isLastItem: reviewViewModel == viewModel.data.last)
-                }
-                .redacted(reason: viewModel.syncingData ? [.placeholder] : [])
-                .shimmering(active: viewModel.syncingData)
             } else {
-                emptyView(isFiltered: viewModel.currentFilter != .all)
-            }
-
-            if viewModel.shouldShowAllReviewsButton {
-                Divider()
-
-                viewAllReviewsButton
+                reviewsFilterBar
                     .padding(.horizontal, Layout.padding)
                     .redacted(reason: viewModel.syncingData ? [.placeholder] : [])
                     .shimmering(active: viewModel.syncingData)
+                Divider()
+
+                if viewModel.syncingData || viewModel.data.isNotEmpty {
+                    ForEach(viewModel.data, id: \.review.reviewID) { reviewViewModel in
+                        reviewRow(for: reviewViewModel,
+                                  isLastItem: reviewViewModel == viewModel.data.last)
+                    }
+                    .redacted(reason: viewModel.syncingData ? [.placeholder] : [])
+                    .shimmering(active: viewModel.syncingData)
+                } else {
+                    emptyView(isFiltered: viewModel.currentFilter != .all)
+                }
+
+                if viewModel.shouldShowAllReviewsButton {
+                    Divider()
+
+                    viewAllReviewsButton
+                        .padding(.horizontal, Layout.padding)
+                        .redacted(reason: viewModel.syncingData ? [.placeholder] : [])
+                        .shimmering(active: viewModel.syncingData)
+                }
             }
         }
         .padding(.vertical, Layout.padding)

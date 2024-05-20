@@ -81,7 +81,7 @@ final class ReviewsDashboardCardViewModel: ObservableObject {
     }()
 
     func dismissReviews() {
-        // TODO: add tracking
+        analytics.track(event: .DynamicDashboard.hideCardTapped(type: .reviews))
         onDismiss?()
     }
 

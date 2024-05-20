@@ -31,13 +31,15 @@ struct ReviewsDashboardCard: View {
                 .shimmering(active: viewModel.syncingData)
             Divider()
 
-            if viewModel.data.isNotEmpty {
+            if viewModel.syncingData || viewModel.data.isNotEmpty {
                 ForEach(viewModel.data, id: \.review.reviewID) { reviewViewModel in
                     reviewRow(for: reviewViewModel,
                               isLastItem: reviewViewModel == viewModel.data.last)
                 }
                 .redacted(reason: viewModel.syncingData ? [.placeholder] : [])
                 .shimmering(active: viewModel.syncingData)
+            } else {
+                emptyView(isFiltered: viewModel.currentFilter != .all)
             }
 
             if viewModel.shouldShowAllReviewsButton {
@@ -208,6 +210,13 @@ private extension ReviewsDashboardCard {
             }
         }
         .disabled(viewModel.syncingData)
+    }
+
+    func emptyView(isFiltered: Bool) -> some View {
+        VStack(spacing: 0) {
+            ReviewDashboardEmptyView(isFiltered: isFiltered)
+                .frame(maxWidth: .infinity)
+        }
     }
 }
 

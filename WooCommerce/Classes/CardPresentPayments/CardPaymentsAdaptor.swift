@@ -161,16 +161,15 @@ class CardPresentPaymentsAdaptor: CardPresentPayments {
             bluetoothConnectionController: bluetoothConnectionController,
             builtInConnectionController: tapToPayConnectionController)
         let orderPaymentUseCase = CollectOrderPaymentUseCase(siteID: siteID,
-                                                                   order: order,
-                                                                   formattedAmount: currencyFormatter.formatAmount(order.total, with: order.currency) ?? "",
-                                                                   // moved from EditableOrderViewModel.collectPayment(for: Order)
-                                                                   rootViewController: NullPresenting(),
-                                                                   // We don't want to use this at all, but it's currently required by the existing code.
-                                                                   // TODO: replace `rootViewController` with a protocol containing the UIVC functions we need, and implement that here.
-                                                                   onboardingPresenter: onboardingPresenterAdaptor,
-                                                                   configuration: CardPresentConfigurationLoader().configuration,
-                                                                   alertsPresenter: self,
-                                                                   preflightController: preflightController)
+                                                             order: order,
+                                                             formattedAmount: currencyFormatter.formatAmount(order.total, with: order.currency) ?? "",
+                                                             // moved from EditableOrderViewModel.collectPayment(for: Order)
+                                                             rootViewController: NullPresenting(),
+                                                             // We don't want to use this at all, but it's currently required by the existing code.
+                                                             onboardingPresenter: onboardingPresenterAdaptor,
+                                                             configuration: CardPresentConfigurationLoader().configuration,
+                                                             alertsPresenter: self,
+                                                             preflightController: preflightController)
         paymentTask?.cancel()
 
         let paymentTask = Task {

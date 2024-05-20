@@ -26,8 +26,10 @@ struct ProductRowView: View {
     }
 }
 
+#if DEBUG
 #Preview {
     ProductRowView(cartProduct: CartProduct(id: UUID(),
                                             product: POSProductFactory.makeProduct(),
                                             quantity: 2))
 }
+#endif

@@ -19,3 +19,10 @@ struct FilterView: View {
         .border(Color.white, width: 2)
     }
 }
+
+#if DEBUG
+#Preview {
+    FilterView(viewModel: PointOfSaleDashboardViewModel(products: [],
+                                                        cardReaderConnectionViewModel: .init(state: .connectingToReader)))
+}
+#endif

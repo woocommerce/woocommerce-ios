@@ -30,6 +30,8 @@ struct PointOfSaleEntryPointView: View {
     }
 }
 
+#if DEBUG
 #Preview {
     PointOfSaleEntryPointView(hideAppTabBar: { _ in })
 }
+#endif

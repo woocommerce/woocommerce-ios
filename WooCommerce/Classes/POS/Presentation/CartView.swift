@@ -28,7 +28,9 @@ struct CartView: View {
     }
 }
 
+#if DEBUG
 #Preview {
     CartView(viewModel: PointOfSaleDashboardViewModel(products: POSProductFactory.makeFakeProducts(),
                                                       cardReaderConnectionViewModel: .init(state: .connectingToReader)))
 }
+#endif

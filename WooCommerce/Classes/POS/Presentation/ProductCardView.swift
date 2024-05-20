@@ -31,6 +31,8 @@ struct ProductCardView: View {
     }
 }
 
+#if DEBUG
 #Preview {
     ProductCardView(product: POSProductFactory.makeProduct())
 }
+#endif

@@ -12,3 +12,9 @@ struct SearchView: View {
             .border(Color.white, width: 2)
     }
 }
+
+#if DEBUG
+#Preview {
+    SearchView()
+}
+#endif

@@ -13,6 +13,8 @@ struct QuantityBadgeView: View {
     }
 }
 
+#if DEBUG
 #Preview {
     QuantityBadgeView(3)
 }
+#endif

@@ -319,7 +319,14 @@ private extension DashboardViewModel {
                     group.addTask { [weak self] in
                         await self?.productStockCardViewModel.reloadData()
                     }
-                case .reviews, .lastOrders:
+                case .reviews:
+                    guard featureFlagService.isFeatureFlagEnabled(.dynamicDashboardM2) else {
+                        return
+                    }
+                    group.addTask { [weak self] in
+                        await self?.reviewsViewModel.reloadData()
+                    }
+                case .lastOrders:
                     // TODO
                     return
                 }

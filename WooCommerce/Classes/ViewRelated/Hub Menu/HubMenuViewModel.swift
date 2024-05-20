@@ -138,12 +138,12 @@ final class HubMenuViewModel: ObservableObject {
     }
 
     private func setupPOSElement() {
-        let eligibilityChecker = POSEligibilityChecker(isBetaFeatureEnabled: generalAppSettings.betaFeatureEnabled(.pointOfSale),
-                                                       cardPresentPaymentsOnboarding: CardPresentPaymentsOnboardingUseCase(),
+        let isBetaFeatureEnabled = generalAppSettings.betaFeatureEnabled(.pointOfSale)
+        let eligibilityChecker = POSEligibilityChecker(cardPresentPaymentsOnboarding: CardPresentPaymentsOnboardingUseCase(),
                                                        siteSettings: ServiceLocator.selectedSiteSettings.siteSettings,
                                                        currencySettings: ServiceLocator.currencySettings,
                                                        featureFlagService: featureFlagService)
-        if eligibilityChecker.isEligible() {
+        if isBetaFeatureEnabled && eligibilityChecker.isEligible() {
             posElement = PointOfSaleEntryPoint()
         } else {
             posElement = nil

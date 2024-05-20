@@ -822,6 +822,8 @@
 		DE20046A2BF74B1E00660A72 /* product-stock-string-quantity.json in Resources */ = {isa = PBXBuildFile; fileRef = DE2004692BF74B1E00660A72 /* product-stock-string-quantity.json */; };
 		DE20046C2BFB4D4600660A72 /* ProductReport.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE20046B2BFB4D4600660A72 /* ProductReport.swift */; };
 		DE20046E2BFB522900660A72 /* ProductReportSegmentListMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE20046D2BFB522900660A72 /* ProductReportSegmentListMapper.swift */; };
+		DE2004702BFB535500660A72 /* product-report.json in Resources */ = {isa = PBXBuildFile; fileRef = DE20046F2BFB535500660A72 /* product-report.json */; };
+		DE2004722BFB536900660A72 /* product-report-without-data-envelope.json in Resources */ = {isa = PBXBuildFile; fileRef = DE2004712BFB536900660A72 /* product-report-without-data-envelope.json */; };
 		DE2095BD27956D7900171F1C /* CouponReport.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE2095BC27956D7900171F1C /* CouponReport.swift */; };
 		DE2095BF279583A100171F1C /* CouponReportListMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE2095BE279583A100171F1C /* CouponReportListMapper.swift */; };
 		DE2095C127966EC800171F1C /* coupon-reports.json in Resources */ = {isa = PBXBuildFile; fileRef = DE2095C027966EC800171F1C /* coupon-reports.json */; };
@@ -1931,6 +1933,8 @@
 		DE2004692BF74B1E00660A72 /* product-stock-string-quantity.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "product-stock-string-quantity.json"; sourceTree = "<group>"; };
 		DE20046B2BFB4D4600660A72 /* ProductReport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductReport.swift; sourceTree = "<group>"; };
 		DE20046D2BFB522900660A72 /* ProductReportSegmentListMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductReportSegmentListMapper.swift; sourceTree = "<group>"; };
+		DE20046F2BFB535500660A72 /* product-report.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "product-report.json"; sourceTree = "<group>"; };
+		DE2004712BFB536900660A72 /* product-report-without-data-envelope.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "product-report-without-data-envelope.json"; sourceTree = "<group>"; };
 		DE2095BC27956D7900171F1C /* CouponReport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponReport.swift; sourceTree = "<group>"; };
 		DE2095BE279583A100171F1C /* CouponReportListMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponReportListMapper.swift; sourceTree = "<group>"; };
 		DE2095C027966EC800171F1C /* coupon-reports.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "coupon-reports.json"; sourceTree = "<group>"; };
@@ -2782,6 +2786,8 @@
 		B559EBA820A0B5B100836CD4 /* Responses */ = {
 			isa = PBXGroup;
 			children = (
+				DE20046F2BFB535500660A72 /* product-report.json */,
+				DE2004712BFB536900660A72 /* product-report-without-data-envelope.json */,
 				DE2004582BF6142200660A72 /* product-stock.json */,
 				DE20045A2BF6146700660A72 /* product-stock-without-data-envelope.json */,
 				DE2004652BF7499500660A72 /* product-stock-decimal-sku.json */,
@@ -3878,6 +3884,7 @@
 				B5A2417B217F98FC00595DEF /* broken-notifications.json in Resources */,
 				3158A4A32729F42500C3CFA8 /* wcpay-account-dev-test.json in Resources */,
 				DE50296328C609DE00551736 /* jetpack-user-not-connected.json in Resources */,
+				DE2004722BFB536900660A72 /* product-report-without-data-envelope.json in Resources */,
 				CE12AE9929F2AC2F0056DD17 /* subscription.json in Resources */,
 				31104E142630DDA700587C1E /* wcpay-account-wrong-json.json in Resources */,
 				3158FE7C26129E2100E566B9 /* wcpay-account-restricted-pending.json in Resources */,
@@ -4181,6 +4188,7 @@
 				A69FE19D2588D70E0059A96B /* order-with-deleted-refunds.json in Resources */,
 				E18152C228F85E0A0011A0EC /* iap-products.json in Resources */,
 				02B41A90296BC85800FE3311 /* site-domains.json in Resources */,
+				DE2004702BFB535500660A72 /* product-report.json in Resources */,
 				EE57C13E297FBEE200BC31E7 /* product-tags-created-without-data.json in Resources */,
 				EEA658462966C67C00112DF0 /* products-ids-only-without-data.json in Resources */,
 				DE2095C127966EC800171F1C /* coupon-reports.json in Resources */,

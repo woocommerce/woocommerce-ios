@@ -298,7 +298,7 @@ extension MockProductsRemote: ProductsRemoteProtocol {
     }
 
     public func loadProductReports(for siteID: Int64,
-                                   for productIDs: [Int64],
+                                   productIDs: [Int64],
                                    timeZone: TimeZone,
                                    earliestDateToInclude: Date,
                                    latestDateToInclude: Date,

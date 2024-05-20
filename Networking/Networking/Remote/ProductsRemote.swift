@@ -58,7 +58,7 @@ public protocol ProductsRemoteProtocol {
                    order: ProductsRemote.Order) async throws -> [ProductStock]
 
     func loadProductReports(for siteID: Int64,
-                            for productIDs: [Int64],
+                            productIDs: [Int64],
                             timeZone: TimeZone,
                             earliestDateToInclude: Date,
                             latestDateToInclude: Date,
@@ -448,7 +448,7 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
     }
 
     public func loadProductReports(for siteID: Int64,
-                                   for productIDs: [Int64],
+                                   productIDs: [Int64],
                                    timeZone: TimeZone,
                                    earliestDateToInclude: Date,
                                    latestDateToInclude: Date,

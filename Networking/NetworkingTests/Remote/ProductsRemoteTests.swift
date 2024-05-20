@@ -772,7 +772,7 @@ final class ProductsRemoteTests: XCTestCase {
 
         // When
         let products = try await remote.loadProductReports(for: sampleSiteID,
-                                                           for: [119, 134],
+                                                           productIDs: [119, 134],
                                                            timeZone: .gmt,
                                                            earliestDateToInclude: Date(timeIntervalSinceNow: -3600*24*7),
                                                            latestDateToInclude: Date(),
@@ -802,7 +802,7 @@ final class ProductsRemoteTests: XCTestCase {
         // When
         await assertThrowsError({
             _ = try await remote.loadProductReports(for: sampleSiteID,
-                                                    for: [119, 134],
+                                                    productIDs: [119, 134],
                                                     timeZone: .gmt,
                                                     earliestDateToInclude: Date(timeIntervalSinceNow: -3600*24*7),
                                                     latestDateToInclude: Date(),

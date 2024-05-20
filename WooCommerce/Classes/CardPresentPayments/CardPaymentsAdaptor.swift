@@ -175,22 +175,31 @@ class CardPresentPaymentsAdaptor: CardPresentPayments {
         let paymentTask = Task {
             return await withTaskCancellationHandler {
                 return await withCheckedContinuation { [weak self] continuation in
+                    var nillableContinuation: CheckedContinuation<CardPresentPaymentResult, Never>? = continuation
                     orderPaymentUseCase.collectPayment(using: discoveryMethod) { error in
                         // TODO: even though we have a tri-state result type, perhaps we should throw these errors.
                         if let error = error as? CardPaymentErrorProtocol {
+                            guard let continuation = nillableContinuation else { return }
+                            nillableContinuation = nil
                             continuation.resume(returning: CardPresentPaymentResult.failure(error))
                             // TODO: Some of these errors are retriable with the same payment intent.
                             // This isn't catered for in the experiment yet. Perhaps those should not be returned as errors,
                             // but sent as events with a retry handler.
                         } else {
+                            guard let continuation = nillableContinuation else { return }
+                            nillableContinuation = nil
                             continuation.resume(returning: CardPresentPaymentResult.failure(CardPaymentsAdaptorError.unknownPaymentError(underlyingError: error)))
                         }
                     } onCancel: {
+                        guard let continuation = nillableContinuation else { return }
+                        nillableContinuation = nil
                         self?.paymentScreenEventSubject.send(nil)
                         continuation.resume(returning: CardPresentPaymentResult.cancellation)
                     } onPaymentCompletion: {
                         // no-op – not used in PaymentMethodsViewModel anyway so this can be removed
                     } onCompleted: {
+                        guard let continuation = nillableContinuation else { return }
+                        nillableContinuation = nil
                         self?.paymentScreenEventSubject.send(nil)
                         continuation.resume(returning: CardPresentPaymentResult.success(order))
                     }

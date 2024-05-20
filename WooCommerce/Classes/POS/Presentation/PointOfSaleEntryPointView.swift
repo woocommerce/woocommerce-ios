@@ -1,6 +1,6 @@
 import SwiftUI
 
-public struct PointOfSaleEntryPointView: View {
+struct PointOfSaleEntryPointView: View {
     // TODO:
     // Temporary. DI proper product models once we have a data layer
     private let viewModel: PointOfSaleDashboardViewModel = {
@@ -19,7 +19,7 @@ public struct PointOfSaleEntryPointView: View {
         self.hideAppTabBar = hideAppTabBar
     }
 
-    public var body: some View {
+    var body: some View {
         PointOfSaleDashboardView(viewModel: viewModel)
             .onAppear {
                 hideAppTabBar(true)

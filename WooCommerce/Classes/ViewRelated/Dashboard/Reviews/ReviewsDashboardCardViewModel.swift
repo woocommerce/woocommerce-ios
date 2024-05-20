@@ -46,6 +46,7 @@ final class ReviewsDashboardCardViewModel: ObservableObject {
 
         self.productsResultsController = ResultsController<StorageProduct>(storageManager: storageManager,
                                                                            matching: nil,
+                                                                           fetchLimit: Constants.numberOfItems,
                                                                            sortedBy: [])
         configureProductReviewsResultsController()
     }
@@ -111,7 +112,7 @@ private extension ReviewsDashboardCardViewModel {
 
     func updateProductsResultsControllerPredicate(with productIDs: [Int64]) {
         let predicates = NSCompoundPredicate(andPredicateWithSubpredicates: [sitePredicate(),
-                                                                            NSPredicate(format: "productID IN %@", productIDs)])
+                                                                             NSPredicate(format: "productID IN %@", productIDs)])
         productsResultsController.predicate = predicates
     }
 }

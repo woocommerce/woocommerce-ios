@@ -90,11 +90,15 @@ final class ReviewsDashboardCardViewModel: ObservableObject {
         syncingData = true
         syncingError = nil
         do {
+            // Populate review data locally first if available, so that the View can start showing
+            // partial review info without product name or read state.
+            populateData()
+
             try await loadReviews(filter: currentFilter)
+            syncingData = false
         } catch {
             syncingError = error
         }
-        syncingData = false
     }
 
     @MainActor
@@ -144,6 +148,35 @@ private extension ReviewsDashboardCardViewModel {
 
 // MARK: - Private helpers
 private extension ReviewsDashboardCardViewModel {
+    /// Populates data from the local storage for the three main data (reviews, products, notifications).
+    ///
+    func populateData() {
+        let localReviews = productReviewsResultsController.fetchedObjects.prefix(Constants.numberOfItems)
+
+        // We can start showing partial review content as long as there are reviews found in storage.
+        // This might be unintuitive because on the view this remove the shimmer even if remote fetch
+        // is not yet done, but it's a way to show partial content as soon as possible.
+        if localReviews.isEmpty == false {
+            syncingData = false
+        }
+
+        data = localReviews.map { review in
+                let product = reviewProducts.first { $0.productID == review.productID }
+                let notification = notifications.first { notification in
+                    if let notificationReviewID = notification.meta.identifier(forKey: .comment) {
+                        return notificationReviewID == review.reviewID
+                    }
+                    return false
+                }
+                return ReviewViewModel(
+                    showProductTitle: product != nil,
+                    review: review,
+                    product: product,
+                    notification: notification
+                )
+            }
+    }
+
     @MainActor
     func loadReviews(filter: ReviewsFilter? = nil) async throws {
         try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
@@ -170,6 +203,9 @@ private extension ReviewsDashboardCardViewModel {
         let productIDs = reviews.map { $0.productID }
 
         if productIDs.isNotEmpty {
+            // Populate data to show partial review content first before fetching more data.
+            populateData()
+
             // As long as the app is able to fetch one review once, then the button should always appear.
             // Later on, when filtering by hold or pending status, the reviews result might become empty.
             // In that case, the app should keep showing the button to allow the user to see all non-filtered reviews.
@@ -183,23 +219,13 @@ private extension ReviewsDashboardCardViewModel {
                     notificationsResultsController.predicate = notificationsPredicate
                     try await fetchNotifications()
                 }
+
+                // Update data again once products and notifications are fetched from remote
+                populateData()
             } catch {
                 ServiceLocator.crashLogging.logError(error)
             }
         }
-
-        data = reviews
-            .map { review in
-                let product = reviewProducts.first { $0.productID == review.productID }
-                let notification = notifications.first { notification in
-                    if let notificationReviewID = notification.meta.identifier(forKey: .comment) {
-                        return notificationReviewID == review.reviewID
-                    }
-                    return false
-                }
-
-                return ReviewViewModel(review: review, product: product, notification: notification)
-            }
     }
 
     /// Get products from storage if available, if not then fetch remotely.

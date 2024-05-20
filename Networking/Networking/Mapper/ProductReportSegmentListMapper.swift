@@ -8,7 +8,6 @@ struct ProductReportSegmentListMapper: Mapper {
     ///
     func map(response: Data) throws -> [ProductReportSegment] {
         let decoder = JSONDecoder()
-        decoder.keyDecodingStrategy = .convertFromSnakeCase
         if hasDataEnvelope(in: response) {
             return try decoder.decode(ProductReportEnvelope.self, from: response).report.totals.segments
         } else {

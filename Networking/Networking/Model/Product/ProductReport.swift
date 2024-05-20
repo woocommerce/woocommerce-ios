@@ -1,37 +1,62 @@
 import Foundation
 import Codegen
 
-/// An internal struct to decode product reports.
+/// A struct to decode product reports.
 ///
-struct ProductReport: Decodable, Equatable, GeneratedCopiable, GeneratedFakeable {
-    let totals: ProductReportTotals
+public struct ProductReport: Decodable, Equatable, GeneratedCopiable, GeneratedFakeable {
+    public let totals: ProductReportTotals
 
-    init(totals: ProductReportTotals) {
+    public init(totals: ProductReportTotals) {
         self.totals = totals
     }
 }
 
-/// An internal struct to decode product report totals.
+/// A struct to decode product report totals.
 ///
-struct ProductReportTotals: Decodable, Equatable, GeneratedCopiable, GeneratedFakeable {
-    let segments: [ProductReportSegment]
+public struct ProductReportTotals: Decodable, Equatable, GeneratedCopiable, GeneratedFakeable {
+    public let segments: [ProductReportSegment]
 
-    init(segments: [ProductReportSegment]) {
+    public init(segments: [ProductReportSegment]) {
         self.segments = segments
     }
 }
 
 /// Segment in a product report containing product name, ID, and items sold in a time period.
-/// 
+///
 public struct ProductReportSegment: Decodable, Equatable, GeneratedCopiable, GeneratedFakeable {
-    public let productName: String
     public let productID: Int64
+    public let productName: String
     public let subtotals: Subtotals
 
-    public init(productName: String, productID: Int64, subtotals: ProductReportSegment.Subtotals) {
+    public init(productID: Int64, productName: String, subtotals: ProductReportSegment.Subtotals) {
         self.productName = productName
         self.productID = productID
         self.subtotals = subtotals
+    }
+
+    /// The public initializer.
+    ///
+    public init(from decoder: Decoder) throws {
+
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        let productID = container.failsafeDecodeIfPresent(
+            targetType: Int64.self,
+            forKey: .productID,
+            alternativeTypes: [.string(transform: { Int64($0) ?? 0 })]) ?? 0
+        let productName = (try? container.decode(String.self, forKey: .productName)) ?? ""
+        let subtotals = try container.decode(Subtotals.self, forKey: .subtotals)
+
+        self.init(productID: productID,
+                  productName: productName,
+                  subtotals: subtotals)
+    }
+}
+
+private extension ProductReportSegment {
+    enum CodingKeys: String, CodingKey {
+        case productName  = "segment_label"
+        case productID = "segment_id"
+        case subtotals
     }
 }
 
@@ -40,13 +65,15 @@ public struct ProductReportSegment: Decodable, Equatable, GeneratedCopiable, Gen
 public extension ProductReportSegment {
     struct Subtotals: Decodable, Equatable, GeneratedCopiable, GeneratedFakeable {
         public let itemsSold: Int
-        public let netRevenue: Double
-        public let ordersCount: Int
 
-        public init(itemsSold: Int, netRevenue: Double, ordersCount: Int) {
+        public init(itemsSold: Int) {
             self.itemsSold = itemsSold
-            self.netRevenue = netRevenue
-            self.ordersCount = ordersCount
         }
+    }
+}
+
+private extension ProductReportSegment.Subtotals {
+    enum CodingKeys: String, CodingKey {
+        case itemsSold  = "items_sold"
     }
 }

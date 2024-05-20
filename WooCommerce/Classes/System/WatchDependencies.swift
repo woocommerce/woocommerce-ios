@@ -2,11 +2,17 @@ import Foundation
 
 #if canImport(Networking)
 import enum Networking.Credentials
-#endif
-
-#if canImport(NetworkingWatchOS)
+#elseif canImport(NetworkingWatchOS)
 import enum NetworkingWatchOS.Credentials
 #endif
+
+#if canImport(WooFoundation)
+import class WooFoundation.CurrencySettings
+#elseif canImport(WooFoundationWatchOS)
+import class WooFoundationWatchOS.CurrencySettings
+#endif
+
+
 
 /// WatchOS session dependencies.
 ///
@@ -22,15 +28,18 @@ public struct WatchDependencies {
         static let address = "address"
         static let id = "id"
         static let name = "name"
+        static let currencySettings = "currency-settings"
     }
 
     let storeID: Int64
     let storeName: String
+    let currencySettings: CurrencySettings
     let credentials: Credentials
 
-    public init(storeID: Int64, storeName: String, credentials: Credentials) {
+    public init(storeID: Int64, storeName: String, currencySettings: CurrencySettings, credentials: Credentials) {
         self.storeID = storeID
         self.storeName = storeName
+        self.currencySettings = currencySettings
         self.credentials = credentials
     }
 
@@ -43,6 +52,18 @@ public struct WatchDependencies {
 
         let storeID = storeDic[Keys.id] as? Int64
         let storeName = storeDic[Keys.name] as? String
+
+        // Read currency settings as a base64-string
+        let currencySettings: CurrencySettings = {
+            // If we could not find any setting, use a default one.
+            guard let base64Settings = storeDic[Keys.currencySettings] as? String,
+                  let currencyData = Data(base64Encoded: base64Settings),
+                  let settings = try? JSONDecoder().decode(CurrencySettings.self, from: currencyData) else {
+                return CurrencySettings()
+            }
+            return settings
+        }()
+
 
         let credentials: Credentials? = {
             guard let credentialsDic = dictionary[Keys.credentials] as? [String: String],
@@ -69,13 +90,15 @@ public struct WatchDependencies {
             return nil
         }
 
-        self.init(storeID: storeID, storeName: storeName, credentials: credentials)
+        self.init(storeID: storeID, storeName: storeName, currencySettings: currencySettings, credentials: credentials)
     }
 
     /// Dictionary to be transferred between sessions.
     ///
     public func toDictionary() -> [String: Any] {
-        [
+        // Send currency settings as a base64-string because a Data type can't be transferred to the watch.
+        let currencySettingJsonAsBase64 = (try? JSONEncoder().encode(currencySettings))?.base64EncodedString() ?? ""
+        return [
             Keys.credentials: [
                 Keys.type: credentials.rawType,
                 Keys.username: credentials.username,
@@ -84,7 +107,8 @@ public struct WatchDependencies {
             ],
             Keys.store: [
                 Keys.id: storeID,
-                Keys.name: storeName
+                Keys.name: storeName,
+                Keys.currencySettings: currencySettingJsonAsBase64
             ]
         ]
     }

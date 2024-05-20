@@ -34,6 +34,9 @@
 		269FFA4D2BF5AFCF004E6B86 /* CurrencyCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = B987B06E284540D300C53CF6 /* CurrencyCode.swift */; };
 		269FFA4F2BF5B040004E6B86 /* Codegen in Frameworks */ = {isa = PBXBuildFile; productRef = 269FFA4E2BF5B040004E6B86 /* Codegen */; };
 		269FFA502BF5B040004E6B86 /* Codegen in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 269FFA4E2BF5B040004E6B86 /* Codegen */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		26A0B2CF2BF9A51E002E9620 /* CurrencyFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9C9C65B283E71C8001B879F /* CurrencyFormatter.swift */; };
+		26A0B2D02BF9A550002E9620 /* NSDecimalNumber+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9C9C658283E7195001B879F /* NSDecimalNumber+Helpers.swift */; };
+		26A0B2D12BF9A58C002E9620 /* Double+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9C9C65F283E71F4001B879F /* Double+Woo.swift */; };
 		26AF1F5328B8362800937BA9 /* UIColor+SemanticColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26AF1F4F28B8362800937BA9 /* UIColor+SemanticColors.swift */; };
 		26AF1F5428B8362800937BA9 /* ColorStudio.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26AF1F5028B8362800937BA9 /* ColorStudio.swift */; };
 		26AF1F5528B8362800937BA9 /* UIColor+ColorStudio.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26AF1F5128B8362800937BA9 /* UIColor+ColorStudio.swift */; };
@@ -664,10 +667,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				26A0B2D02BF9A550002E9620 /* NSDecimalNumber+Helpers.swift in Sources */,
 				264E9EA32BF403E1009C48FD /* Date+StartAndEnd.swift in Sources */,
+				26A0B2CF2BF9A51E002E9620 /* CurrencyFormatter.swift in Sources */,
 				269FFA4C2BF5AFC8004E6B86 /* CurrencySettings.swift in Sources */,
 				269FFA4D2BF5AFCF004E6B86 /* CurrencyCode.swift in Sources */,
 				264E9EA42BF4040E009C48FD /* Logging.swift in Sources */,
+				26A0B2D12BF9A58C002E9620 /* Double+Woo.swift in Sources */,
 				264E9EA52BF40411009C48FD /* LogErrorAndExit.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

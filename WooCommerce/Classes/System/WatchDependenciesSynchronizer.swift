@@ -1,5 +1,6 @@
 import WatchConnectivity
 import enum Networking.Credentials
+import class WooFoundation.CurrencySettings
 
 /// Type that syncs the necessary dependencies to the watch session.
 /// Dependencies:
@@ -32,13 +33,13 @@ final class WatchDependenciesSynchronizer: NSObject, WCSessionDelegate {
 
     /// Syncs credentials to the watch session.
     ///
-    func update(storeID: Int64?, storeName: String?, credentials: Credentials?) {
+    func update(storeID: Int64?, storeName: String?, currencySettings: CurrencySettings?, credentials: Credentials?) {
 
         let dependencies: WatchDependencies? = {
-            guard let storeID, let storeName, let credentials else {
+            guard let storeID, let storeName, let credentials, let currencySettings else {
                 return nil
             }
-            return .init(storeID: storeID, storeName: storeName, credentials: credentials)
+            return .init(storeID: storeID, storeName: storeName, currencySettings: currencySettings, credentials: credentials)
         }()
 
         // Enqueue dependencies if the session is not yet activated.
@@ -59,7 +60,10 @@ final class WatchDependenciesSynchronizer: NSObject, WCSessionDelegate {
         DDLogInfo("🔵 WatchSession activated \(activationState)")
 
         if case .queued(let watchDependencies) = queuedDependencies {
-            update(storeID: watchDependencies?.storeID, storeName: watchDependencies?.storeName, credentials: watchDependencies?.credentials)
+            update(storeID: watchDependencies?.storeID,
+                   storeName: watchDependencies?.storeName,
+                   currencySettings: watchDependencies?.currencySettings,
+                   credentials: watchDependencies?.credentials)
             self.queuedDependencies = .notQueued
         }
     }

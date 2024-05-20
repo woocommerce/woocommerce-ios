@@ -61,13 +61,11 @@ msgctxt "app_store_promo_text"
 msgid "Run your store from anywhere"
 msgstr ""
 
-msgctxt "v18.6-whats-new"
+msgctxt "v18.7-whats-new"
 msgid ""
-"- [*] Change text color in badge view in order products list to fix the dark mode readability. [https://github.com/woocommerce/woocommerce-ios/pull/12630]\n"
-"- [*] Speculative fix for a crash when opening order notifications [https://github.com/woocommerce/woocommerce-ios/pull/12643]\n"
-"- [internal] Show In-App feedback card in dashboard. [https://github.com/woocommerce/woocommerce-ios/pull/12636]\n"
-"- [*] Shipping: A shipping method can now be selected when adding or editing shipping on an order. [https://github.com/woocommerce/woocommerce-ios/pull/12688]\n"
-"\n"
+"We're thrilled to roll out the latest updates!\n"
+"Our latest update brings under-the-hood improvements to enhance both stability and performance.\n"
+"We're committed to continuously improving our app to serve you better. Thank you for choosing WooCommerce!\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.

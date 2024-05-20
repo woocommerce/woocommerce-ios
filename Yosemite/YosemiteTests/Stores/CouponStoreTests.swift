@@ -752,6 +752,62 @@ final class CouponStoreTests: XCTestCase {
         // Then
         XCTAssertEqual(result.failure as? NetworkError, expectedError)
     }
+
+    // MARK: CouponAction.loadCoupons
+
+    func test_loadCoupons_calls_remote_using_correct_request_parameters() {
+        setUpUsingSpyRemote()
+        // Given
+        let action = CouponAction.loadCoupons(siteID: 1092,
+                                              couponIDs: [1, 2, 3]) { _ in }
+
+        // When
+        store.onAction(action)
+
+        // Then
+        XCTAssertTrue(remote.didCallLoadCoupons)
+        XCTAssertEqual(remote.spyLoadCouponsSiteID, 1092)
+        XCTAssertEqual(remote.spyLoadCouponsCouponIDs, [1, 2, 3])
+    }
+
+    func test_loadCoupons_returns_network_error_on_failure() {
+        setUpUsingSpyRemote()
+        // Given
+        let expectedError = NetworkError.unacceptableStatusCode(statusCode: 418)
+        remote.resultForLoadCoupons = .failure(expectedError)
+
+        // When
+        let result: Result<[Networking.Coupon], Error> = waitFor { promise in
+            let action = CouponAction.loadCoupons(siteID: 1092,
+                                                  couponIDs: [1, 2, 3]) { result in
+                promise(result)
+            }
+            self.store.onAction(action)
+        }
+
+        // Then
+        XCTAssertEqual(result.failure as? NetworkError, expectedError)
+    }
+
+    func test_loadCoupons_stores_coupons_upon_success() throws {
+        // Given
+        network.simulateResponse(requestUrlSuffix: "coupons",
+                                 filename: "coupons-all")
+        XCTAssertEqual(storedCouponsCount, 0)
+
+        // When
+        let result: Result<[Networking.Coupon], Error> = waitFor { promise in
+            let action = CouponAction.loadCoupons(siteID: 1092,
+                                                  couponIDs: [1, 2, 3]) { result in
+                promise(result)
+            }
+            self.store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        XCTAssertEqual(storedCouponsCount, 4)
+    }
 }
 
 private extension CouponStoreTests {

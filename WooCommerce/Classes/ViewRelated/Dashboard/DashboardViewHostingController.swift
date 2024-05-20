@@ -28,6 +28,12 @@ final class DashboardViewHostingController: UIHostingController<DashboardView> {
 
     private var subscriptions: Set<AnyCancellable> = []
 
+    private lazy var noticePresenter: DefaultNoticePresenter = {
+        let noticePresenter = DefaultNoticePresenter()
+        noticePresenter.presentingViewController = self
+        return noticePresenter
+    }()
+
     init(siteID: Int64) {
         let usageTracksEventEmitter = StoreStatsUsageTracksEventEmitter()
         let viewModel = DashboardViewModel(siteID: siteID, usageTracksEventEmitter: usageTracksEventEmitter)
@@ -234,7 +240,23 @@ private extension DashboardViewHostingController {
 
         rootView.onViewCouponDetail = { [weak self] coupon in
             guard let self else { return }
-            let detailVC = CouponDetailsHostingController(viewModel: CouponDetailsViewModel(coupon: coupon))
+            let detailsViewModel = CouponDetailsViewModel(coupon: coupon,
+                                                          onUpdate: { [weak self] in
+                guard let self = self else { return }
+                Task { @MainActor in
+                    await self.viewModel.mostActiveCouponsViewModel.reloadData()
+                }
+            },
+                                                          onDeletion: { [weak self] in
+                guard let self = self else { return }
+                Task { @MainActor in
+                    await self.viewModel.mostActiveCouponsViewModel.reloadData()
+                }
+                self.navigationController?.popViewController(animated: true)
+                let notice = Notice(title: EnhancedCouponListViewController.Localization.couponDeleted, feedbackType: .success)
+                self.noticePresenter.enqueue(notice: notice)
+            })
+            let detailVC = CouponDetailsHostingController(viewModel: detailsViewModel)
             show(detailVC, sender: self)
         }
     }

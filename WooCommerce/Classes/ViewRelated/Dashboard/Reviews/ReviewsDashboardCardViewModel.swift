@@ -37,7 +37,7 @@ final class ReviewsDashboardCardViewModel: ObservableObject {
     public let filters: [ReviewsFilter] = [.all, .hold, .approved]
     @Published private(set) var currentFilter: ReviewsFilter = .all
 
-    private var productsResultsController: ResultsController<StorageProduct>
+    private let productsResultsController: ResultsController<StorageProduct>
 
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
@@ -50,6 +50,7 @@ final class ReviewsDashboardCardViewModel: ObservableObject {
 
         self.productsResultsController = ResultsController<StorageProduct>(storageManager: storageManager,
                                                                            matching: nil,
+                                                                           fetchLimit: Constants.numberOfItems,
                                                                            sortedBy: [])
         configureProductReviewsResultsController()
     }
@@ -91,8 +92,7 @@ final class ReviewsDashboardCardViewModel: ObservableObject {
         syncingData = true
         syncingError = nil
         do {
-            // Ignoring the result from remote as we're using storage as the single source of truth
-            _ = try await loadReviews(filter: currentFilter)
+            try await loadReviews(filter: currentFilter)
         } catch {
             syncingError = error
         }
@@ -139,7 +139,7 @@ private extension ReviewsDashboardCardViewModel {
 
     func updateProductsResultsControllerPredicate(with productIDs: [Int64]) {
         let predicates = NSCompoundPredicate(andPredicateWithSubpredicates: [sitePredicate(),
-                                                                            NSPredicate(format: "productID IN %@", productIDs)])
+                                                                             NSPredicate(format: "productID IN %@", productIDs)])
         productsResultsController.predicate = predicates
     }
 }
@@ -147,14 +147,20 @@ private extension ReviewsDashboardCardViewModel {
 // MARK: - Private helpers
 private extension ReviewsDashboardCardViewModel {
     @MainActor
-    func loadReviews(filter: ReviewsFilter? = nil) async throws -> [ProductReview] {
-        try await withCheckedThrowingContinuation { continuation in
+    func loadReviews() async throws {
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
             stores.dispatch(ProductReviewAction.synchronizeProductReviews(siteID: siteID,
                                                                           pageNumber: 1,
                                                                           pageSize: Constants.numberOfItems,
                                                                           status: currentFilter.productReviewStatus
                                                                          ) { result in
-                continuation.resume(with: result)
+                switch result {
+                case .success:
+                    // Ignoring the result from remote as we're using storage as the single source of truth
+                    continuation.resume()
+                case .failure(let error):
+                    continuation.resume(throwing: error)
+                }
             })
         }
     }
@@ -224,8 +230,7 @@ private extension ReviewsDashboardCardViewModel {
         syncingError = nil
 
         do {
-            // Ignoring the result from remote as we're using storage as the single source of truth
-            _ = try await retrieveProducts(for: reviewProductIDs)
+            try await retrieveProducts(for: reviewProductIDs)
         } catch {
             syncingError = error
         }
@@ -233,21 +238,18 @@ private extension ReviewsDashboardCardViewModel {
     }
 
     @MainActor
-    func retrieveProducts(for reviewProductIDs: [Int64]) async throws -> (products: [Product], hasNextPage: Bool) {
-        try await withCheckedThrowingContinuation { continuation in
+    func retrieveProducts(for reviewProductIDs: [Int64]) async throws {
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
             stores.dispatch(ProductAction.retrieveProducts(siteID: siteID,
                                                            productIDs: reviewProductIDs
                                                           ) { result in
-                continuation.resume(with: result)
-            })
-        }
-    }
-
-    @MainActor
-    func synchronizeNotifications() async throws {
-        try await withCheckedThrowingContinuation { continuation in
-            stores.dispatch(NotificationAction.synchronizeNotifications { result in
-                continuation.resume(returning: ())
+                switch result {
+                case .success:
+                    // Ignoring the result from remote as we're using storage as the single source of truth
+                    continuation.resume()
+                case .failure(let error):
+                    continuation.resume(throwing: error)
+                }
             })
         }
     }

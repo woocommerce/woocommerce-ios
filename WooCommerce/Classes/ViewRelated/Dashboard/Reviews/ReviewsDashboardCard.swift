@@ -39,6 +39,7 @@ struct ReviewsDashboardCard: View {
                     .redacted(reason: viewModel.syncingData ? [.placeholder] : [])
                     .shimmering(active: viewModel.syncingData)
                 Divider()
+                    .renderedIf(viewModel.syncingData == false)
 
                 if viewModel.syncingData || viewModel.data.isNotEmpty {
                     ForEach(viewModel.data, id: \.review.reviewID) { reviewViewModel in

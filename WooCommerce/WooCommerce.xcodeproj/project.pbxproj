@@ -1528,6 +1528,7 @@
 		86DBBB0BDEA3488E2BEBB314 /* Pods_WooCommerce.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BABE5E07DD787ECA6D2A76DE /* Pods_WooCommerce.framework */; };
 		86DE68822B4BA47A00B437A6 /* BlazeAdDestinationSettingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86DE68812B4BA47900B437A6 /* BlazeAdDestinationSettingViewModel.swift */; };
 		86E1D3192BFB470C00BA29B7 /* ReviewDashboardEmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86E1D3182BFB470C00BA29B7 /* ReviewDashboardEmptyView.swift */; };
+		86E1D31C2BFB64E400BA29B7 /* ReviewsDashboardCardViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86E1D31B2BFB64E400BA29B7 /* ReviewsDashboardCardViewModelTests.swift */; };
 		86E40AED2B597DEC00990365 /* BlazeCampaignCreationCoordinatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86E40AEC2B597DEC00990365 /* BlazeCampaignCreationCoordinatorTests.swift */; };
 		86F0896F2B307D7E00D668A1 /* ThemesPreviewViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86F0896E2B307D7E00D668A1 /* ThemesPreviewViewModelTests.swift */; };
 		8CD41D4A21F8A7E300CF3C2B /* RELEASE-NOTES.txt in Resources */ = {isa = PBXBuildFile; fileRef = 8CD41D4921F8A7E300CF3C2B /* RELEASE-NOTES.txt */; };
@@ -4275,6 +4276,7 @@
 		86A4EBBC2B2F1306008011F5 /* ThemesPreviewViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemesPreviewViewModel.swift; sourceTree = "<group>"; };
 		86DE68812B4BA47900B437A6 /* BlazeAdDestinationSettingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeAdDestinationSettingViewModel.swift; sourceTree = "<group>"; };
 		86E1D3182BFB470C00BA29B7 /* ReviewDashboardEmptyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewDashboardEmptyView.swift; sourceTree = "<group>"; };
+		86E1D31B2BFB64E400BA29B7 /* ReviewsDashboardCardViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewsDashboardCardViewModelTests.swift; sourceTree = "<group>"; };
 		86E40AEC2B597DEC00990365 /* BlazeCampaignCreationCoordinatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeCampaignCreationCoordinatorTests.swift; sourceTree = "<group>"; };
 		86F0896E2B307D7E00D668A1 /* ThemesPreviewViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemesPreviewViewModelTests.swift; sourceTree = "<group>"; };
 		8A659E65308A3D9DD79A95F9 /* Pods-WooCommerceTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooCommerceTests.release.xcconfig"; path = "../Pods/Target Support Files/Pods-WooCommerceTests/Pods-WooCommerceTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -6903,6 +6905,7 @@
 		02E4FD7F2306AA770049610C /* Dashboard */ = {
 			isa = PBXGroup;
 			children = (
+				86E1D31A2BFB64CD00BA29B7 /* Reviews */,
 				EE570A8B2BF5EE68006BA026 /* Coupons */,
 				EEC5C8D82ADE2FB80071E852 /* Blaze */,
 				02D7E7CA2A4CE4E20003049A /* LocalAnnouncements */,
@@ -8998,6 +9001,14 @@
 				867EA0AE2B8F15740064BCA7 /* CustomerFilter+Analytics.swift */,
 			);
 			path = "Customer Filter";
+			sourceTree = "<group>";
+		};
+		86E1D31A2BFB64CD00BA29B7 /* Reviews */ = {
+			isa = PBXGroup;
+			children = (
+				86E1D31B2BFB64E400BA29B7 /* ReviewsDashboardCardViewModelTests.swift */,
+			);
+			path = Reviews;
 			sourceTree = "<group>";
 		};
 		88A44ABE866401E6DB03AC60 /* Frameworks */ = {
@@ -15683,6 +15694,7 @@
 				6850C5F42B6A11CA0026A93B /* ReceiptViewModelTests.swift in Sources */,
 				4596854B254071C000D17B90 /* DownloadableFileBottomSheetListSelectorCommandTests.swift in Sources */,
 				26B9875F273CB6AA0090E8CA /* SimplePaymentsNoteViewModelTests.swift in Sources */,
+				86E1D31C2BFB64E400BA29B7 /* ReviewsDashboardCardViewModelTests.swift in Sources */,
 				0201E4312946FFDB00C793C7 /* StoreCreationCategoryQuestionViewModelTests.swift in Sources */,
 				EE8DCA8028BF964700F23B23 /* MockAuthentication.swift in Sources */,
 				02EFF81A2ABC28BA0015ABB2 /* GiftCardInputViewModelTests.swift in Sources */,

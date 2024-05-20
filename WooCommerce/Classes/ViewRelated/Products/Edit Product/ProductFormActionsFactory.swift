@@ -162,7 +162,7 @@ private extension ProductFormActionsFactory {
         let canEditProductType = editable
         let shouldShowShippingSettingsRow = product.isShippingEnabled()
         let canEditInventorySettingsRow = editable && product.hasIntegerStockQuantity
-        let shouldShowQuantityRulesRow = isMinMaxQuantitiesEnabled && product.hasQuantityRules
+        let shouldShowQuantityRulesRow = isMinMaxQuantitiesEnabled && product.canEditQuantityRules
 
         let actions: [ProductFormEditAction?] = [
             .priceSettings(editable: editable, hideSeparator: false),
@@ -186,7 +186,7 @@ private extension ProductFormActionsFactory {
         let shouldShowExternalURLRow = editable || product.product.externalURL?.isNotEmpty == true
         let shouldShowSKURow = editable || product.sku?.isNotEmpty == true
         let canEditProductType = editable
-        let shouldShowQuantityRulesRow = isMinMaxQuantitiesEnabled && product.hasQuantityRules
+        let shouldShowQuantityRulesRow = isMinMaxQuantitiesEnabled && product.canEditQuantityRules
 
         let actions: [ProductFormEditAction?] = [
             .priceSettings(editable: editable, hideSeparator: false),
@@ -208,7 +208,7 @@ private extension ProductFormActionsFactory {
         let shouldShowReviewsRow = product.reviewsAllowed
         let shouldShowSKURow = editable || product.sku?.isNotEmpty == true
         let canEditProductType = editable
-        let shouldShowQuantityRulesRow = isMinMaxQuantitiesEnabled && product.hasQuantityRules
+        let shouldShowQuantityRulesRow = isMinMaxQuantitiesEnabled && product.canEditQuantityRules
 
         let actions: [ProductFormEditAction?] = [
             .groupedProducts(editable: editable),
@@ -235,7 +235,7 @@ private extension ProductFormActionsFactory {
             let productHasNoPriceSet = variationsPrice == .unknown && product.product.variations.isNotEmpty && product.product.price.isEmpty
             return canEditProductType && (variationsHaveNoPriceSet || productHasNoPriceSet)
         }()
-        let shouldShowQuantityRulesRow = isMinMaxQuantitiesEnabled && product.hasQuantityRules
+        let shouldShowQuantityRulesRow = isMinMaxQuantitiesEnabled && product.canEditQuantityRules
 
         let actions: [ProductFormEditAction?] = [
             .variations(hideSeparator: shouldShowNoPriceWarningRow),
@@ -260,7 +260,7 @@ private extension ProductFormActionsFactory {
         let canOpenBundledProducts = product.bundledItems.isNotEmpty
         let shouldShowPriceSettingsRow = product.regularPrice.isNilOrEmpty == false
         let shouldShowReviewsRow = product.reviewsAllowed
-        let shouldShowQuantityRulesRow = isMinMaxQuantitiesEnabled && product.hasQuantityRules
+        let shouldShowQuantityRulesRow = isMinMaxQuantitiesEnabled && product.canEditQuantityRules
 
         let actions: [ProductFormEditAction?] = [
             shouldShowBundledProductsRow ? .bundledProducts(actionable: canOpenBundledProducts) : nil,
@@ -283,7 +283,7 @@ private extension ProductFormActionsFactory {
         let canOpenComponents = product.compositeComponents.isNotEmpty
         let shouldShowPriceSettingsRow = product.regularPrice.isNilOrEmpty == false
         let shouldShowReviewsRow = product.reviewsAllowed
-        let shouldShowQuantityRulesRow = isMinMaxQuantitiesEnabled && product.hasQuantityRules
+        let shouldShowQuantityRulesRow = isMinMaxQuantitiesEnabled && product.canEditQuantityRules
 
         let actions: [ProductFormEditAction?] = [
             shouldShowComponentsRow ? .components(actionable: canOpenComponents) : nil,
@@ -303,7 +303,7 @@ private extension ProductFormActionsFactory {
 
     func allSettingsSectionActionsForSubscriptionProduct() -> [ProductFormEditAction] {
         let shouldShowReviewsRow = product.reviewsAllowed
-        let shouldShowQuantityRulesRow = isMinMaxQuantitiesEnabled && product.hasQuantityRules
+        let shouldShowQuantityRulesRow = isMinMaxQuantitiesEnabled && product.canEditQuantityRules
         let canEditInventorySettingsRow = editable && product.hasIntegerStockQuantity
         let canEditProductType = editable
         let shouldShowShippingSettingsRow = product.isShippingEnabled()
@@ -330,7 +330,7 @@ private extension ProductFormActionsFactory {
     func allSettingsSectionActionsForVariableSubscriptionProduct() -> [ProductFormEditAction] {
         let shouldShowReviewsRow = product.reviewsAllowed
         let shouldShowAttributesRow = product.product.attributesForVariations.isNotEmpty
-        let shouldShowQuantityRulesRow = isMinMaxQuantitiesEnabled && product.hasQuantityRules
+        let shouldShowQuantityRulesRow = isMinMaxQuantitiesEnabled && product.canEditQuantityRules
 
         let actions: [ProductFormEditAction?] = {
             let canEditProductType = editable
@@ -364,7 +364,7 @@ private extension ProductFormActionsFactory {
     func allSettingsSectionActionsForNonCoreProduct() -> [ProductFormEditAction] {
         let shouldShowPriceSettingsRow = product.regularPrice.isNilOrEmpty == false
         let shouldShowReviewsRow = product.reviewsAllowed
-        let shouldShowQuantityRulesRow = isMinMaxQuantitiesEnabled && product.hasQuantityRules
+        let shouldShowQuantityRulesRow = isMinMaxQuantitiesEnabled && product.canEditQuantityRules
 
         let actions: [ProductFormEditAction?] = [
             shouldShowPriceSettingsRow ? .priceSettings(editable: false, hideSeparator: false): nil,

@@ -51,7 +51,7 @@ public protocol ProductsRemoteProtocol {
     func loadNumberOfProducts(siteID: Int64) async throws -> Int64
 
     func loadStock(for siteID: Int64,
-                   with stockStatus: ProductStockStatus,
+                   with stockType: String,
                    pageNumber: Int,
                    pageSize: Int,
                    orderBy: ProductsRemote.OrderKey,
@@ -424,14 +424,14 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
     }
 
     public func loadStock(for siteID: Int64,
-                          with stockStatus: ProductStockStatus,
+                          with stockType: String,
                           pageNumber: Int,
                           pageSize: Int,
                           orderBy: ProductsRemote.OrderKey,
                           order: ProductsRemote.Order) async throws -> [ProductStock] {
         let path = Path.stockReports
         let parameters: [String: Any] = [
-            ParameterKey.type: stockStatus.rawValue,
+            ParameterKey.type: stockType,
             ParameterKey.page: String(pageNumber),
             ParameterKey.perPage: String(pageSize),
             ParameterKey.order: order,

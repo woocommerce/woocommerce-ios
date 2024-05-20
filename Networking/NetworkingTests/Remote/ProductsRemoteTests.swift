@@ -762,6 +762,59 @@ final class ProductsRemoteTests: XCTestCase {
             $0 as? NetworkError == .notFound()
         })
     }
+
+    // MARK: - Load product reports
+
+    func test_loadProductReports_returns_correct_items() async throws {
+        // Given
+        let remote = ProductsRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "reports/products/stats", filename: "product-report")
+
+        // When
+        let products = try await remote.loadProductReports(for: sampleSiteID,
+                                                           for: [119, 134],
+                                                           timeZone: .gmt,
+                                                           earliestDateToInclude: Date(timeIntervalSinceNow: -3600*24*7),
+                                                           latestDateToInclude: Date(),
+                                                           pageSize: 3,
+                                                           pageNumber: 1,
+                                                           orderBy: .itemsSold,
+                                                           order: .descending)
+
+        // Then
+        XCTAssertEqual(products.count, 2)
+
+        let firstItem = try XCTUnwrap(products.first)
+        XCTAssertEqual(firstItem.productID, 119)
+        XCTAssertEqual(firstItem.productName, "Pesto Spaghetti")
+        XCTAssertEqual(firstItem.subtotals.itemsSold, 1)
+
+        let secondItem = try XCTUnwrap(products.last)
+        XCTAssertEqual(secondItem.productID, 134)
+        XCTAssertEqual(secondItem.productName, "Fried-egg Bacon Bagel")
+        XCTAssertEqual(secondItem.subtotals.itemsSold, 0)
+    }
+
+    func test_loadProductReports_relays_networking_error() async throws {
+        // Given
+        let remote = ProductsRemote(network: network)
+
+        // When
+        await assertThrowsError({
+            _ = try await remote.loadProductReports(for: sampleSiteID,
+                                                    for: [119, 134],
+                                                    timeZone: .gmt,
+                                                    earliestDateToInclude: Date(timeIntervalSinceNow: -3600*24*7),
+                                                    latestDateToInclude: Date(),
+                                                    pageSize: 3,
+                                                    pageNumber: 1,
+                                                    orderBy: .itemsSold,
+                                                    order: .descending)
+        }, errorAssert: {
+            // Then
+            $0 as? NetworkError == .notFound()
+        })
+    }
 }
 
 // MARK: - Private Helpers

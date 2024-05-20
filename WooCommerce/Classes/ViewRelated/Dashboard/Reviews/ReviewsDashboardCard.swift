@@ -38,7 +38,9 @@ struct ReviewsDashboardCard: View {
                 }
                 .redacted(reason: viewModel.syncingData ? [.placeholder] : [])
                 .shimmering(active: viewModel.syncingData)
+            }
 
+            if viewModel.shouldShowAllReviewsButton {
                 Divider()
 
                 viewAllReviewsButton

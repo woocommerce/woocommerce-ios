@@ -445,6 +445,7 @@ public extension ProductsRemote {
     enum OrderKey {
         case date
         case name
+        case itemsSold // available for use in `GET wc-analytics/reports/products/stats` only.`
     }
 
     enum Order {
@@ -473,6 +474,7 @@ public extension ProductsRemote {
         static let templateProducts   = "onboarding/tasks/create_product_from_template"
         static let productsTotal = "reports/products/totals"
         static let stockReports = "reports/stock"
+        static let productReportsStats = "reports/products/stats"
     }
 
     private enum ParameterKey {
@@ -521,6 +523,8 @@ private extension ProductsRemote.OrderKey {
             return "date"
         case .name:
             return "title"
+        case .itemsSold:
+            return "items_sold"
         }
     }
 }

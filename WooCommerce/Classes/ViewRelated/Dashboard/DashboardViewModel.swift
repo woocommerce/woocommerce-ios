@@ -145,7 +145,7 @@ final class DashboardViewModel: ObservableObject {
             }
             group.addTask { [weak self] in
                 guard let self = self else { return }
-                await self.reloadCards(self.showOnDashboardCards)
+                await reloadCards(showOnDashboardCards)
             }
         }
     }

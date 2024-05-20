@@ -80,13 +80,10 @@ struct ApplicationPasswordTutorial: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding([.horizontal, .top])
 
-                HStack(spacing: .zero) {
-                    Image(uiImage: .appPasswordTutorialImage)
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(maxWidth: Layout.imageMaxWidth * scale)
-                    Spacer()
-                }
+                Image(uiImage: .appPasswordTutorialImage)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(maxWidth: Layout.imageMaxWidth * scale)
 
                 Text(Localization.tutorial2)
                     .bodyStyle(opacity: 0.8)

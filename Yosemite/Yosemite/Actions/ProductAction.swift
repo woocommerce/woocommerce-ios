@@ -191,9 +191,16 @@ public enum ProductAction: Action {
                            completion: (Result<AIProduct, Error>) -> Void)
 
     /// Fetches stock based on the given status for a site
+    /// - Parameter siteID: Site ID to fetch stock for.
+    /// - Parameter stockType: Raw type of stock to query.
+    /// - Parameter pageNumber: The index of the content page to query.
+    /// - Parameter pageSize: The max amount of items to return per page.
+    /// - Parameter orderBy: The key to sort returned items.
+    /// - Parameter order: Whether to sort returned items ASC or DESC.
+    /// - Parameter completion: Closure to trigger when fetching completes.
     ///
     case fetchStockReport(siteID: Int64,
-                          stockStatus: ProductStockStatus,
+                          stockType: String,
                           pageNumber: Int,
                           pageSize: Int,
                           orderBy: ProductsRemote.OrderKey,

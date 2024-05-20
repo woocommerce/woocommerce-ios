@@ -156,9 +156,9 @@ public class ProductStore: Store {
                               categories: categories,
                               tags: tags,
                               completion: completion)
-        case let .fetchStockReport(siteID, stockStatus, pageNumber, pageSize, orderBy, order, completion):
+        case let .fetchStockReport(siteID, stockType, pageNumber, pageSize, orderBy, order, completion):
             fetchStockReport(siteID: siteID,
-                             stockStatus: stockStatus,
+                             stockType: stockType,
                              pageNumber: pageNumber,
                              pageSize: pageSize,
                              orderBy: orderBy,
@@ -741,7 +741,7 @@ private extension ProductStore {
     }
 
     func fetchStockReport(siteID: Int64,
-                          stockStatus: ProductStockStatus,
+                          stockType: String,
                           pageNumber: Int,
                           pageSize: Int,
                           orderBy: ProductsRemote.OrderKey,
@@ -750,7 +750,7 @@ private extension ProductStore {
         Task { @MainActor in
             do {
                 let stock = try await remote.loadStock(for: siteID,
-                                                       with: stockStatus,
+                                                       with: stockType,
                                                        pageNumber: pageNumber,
                                                        pageSize: pageSize,
                                                        orderBy: orderBy,

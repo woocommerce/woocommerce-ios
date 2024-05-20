@@ -107,7 +107,7 @@ private extension ProductFormTableViewDataSource {
             configurePromoteWithBlaze(cell: cell)
         }
     }
-    
+
     func configureImages(cell: UITableViewCell, isEditable: Bool, allowsMultipleImages: Bool, isVariation: Bool) {
         guard let cell = cell as? ProductImagesHeaderTableViewCell else {
             fatalError()
@@ -145,7 +145,7 @@ private extension ProductFormTableViewDataSource {
             self?.onAddImage?()
         }
     }
-    
+
     func configureName(cell: UITableViewCell, name: String?, isEditable: Bool, productStatus: ProductStatus) {
         if isEditable {
             configureEditableName(cell: cell, name: name, productStatus: productStatus)

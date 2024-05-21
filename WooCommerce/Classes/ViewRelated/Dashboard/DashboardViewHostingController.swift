@@ -266,19 +266,17 @@ private extension DashboardViewHostingController {
 private extension DashboardViewHostingController {
     func configureReviewsCard() {
         rootView.onViewReviewDetail = { [weak self] review in
-            guard let self else { return }
-            let view = ReviewDetailView(productReview: review.review,
-                                        product: review.product,
-                                        notification: review.notification)
-            let hostingController = UIHostingController(rootView: view)
-            show(hostingController, sender: self)
+            guard let self = self else { return }
+            let viewController = ReviewDetailsViewController(productReview: review.review,
+                                                             product: review.product,
+                                                             notification: review.notification)
+            self.show(viewController, sender: self)
         }
 
         rootView.onViewAllReviews = { [weak self] in
-            guard let self else { return }
-            let view = ReviewsView(siteID: viewModel.siteID)
-            let hostingController = UIHostingController(rootView: view)
-            show(hostingController, sender: self)
+            guard let self = self else { return }
+            let viewController = ReviewsViewController(siteID: viewModel.siteID)
+            self.show(viewController, sender: self)
         }
     }
 }

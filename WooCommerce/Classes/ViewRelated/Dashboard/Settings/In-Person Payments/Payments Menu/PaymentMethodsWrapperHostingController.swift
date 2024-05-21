@@ -1,7 +1,7 @@
 import SwiftUI
 
-/// A pure wrapper UIKit hosting controller of `PaymentMethodsView` to provide `PaymentMethodsView`'s `rootViewController` in order for card reader payment methods to work,
-/// as a pure SwiftUI flow doesn't have a `UIViewController` to pass around.
+/// A pure wrapper UIKit hosting controller of `PaymentMethodsView` to provide `PaymentMethodsView`'s `rootViewController` in order
+/// for card reader payment methods to work, as a pure SwiftUI flow doesn't have a `UIViewController` to pass around.
 /// To use it in SwiftUI, `PaymentMethodsWrapperHosted` is the wrapper's SwiftUI version.
 final class PaymentMethodsWrapperHostingController: UIHostingController<PaymentMethodsView> {
     init(dismiss: @escaping () -> Void,

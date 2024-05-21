@@ -26,6 +26,7 @@ final class DashboardViewModel: ObservableObject {
     let reviewsViewModel: ReviewsDashboardCardViewModel
     let mostActiveCouponsViewModel: MostActiveCouponsCardViewModel
     let productStockCardViewModel: ProductStockDashboardCardViewModel
+    let lastOrdersCardViewModel: LastOrdersDashboardCardViewModel
 
     @Published var justInTimeMessagesWebViewModel: WebViewSheetViewModel? = nil
 
@@ -115,6 +116,7 @@ final class DashboardViewModel: ObservableObject {
         self.reviewsViewModel = ReviewsDashboardCardViewModel(siteID: siteID)
         self.mostActiveCouponsViewModel = MostActiveCouponsCardViewModel(siteID: siteID)
         self.productStockCardViewModel = ProductStockDashboardCardViewModel(siteID: siteID)
+        self.lastOrdersCardViewModel = LastOrdersDashboardCardViewModel(siteID: siteID)
 
         self.themeInstaller = themeInstaller
         self.inAppFeedbackCardViewModel.onFeedbackGiven = { [weak self] feedback in
@@ -327,8 +329,12 @@ private extension DashboardViewModel {
                         await self?.reviewsViewModel.reloadData()
                     }
                 case .lastOrders:
-                    // TODO
-                    return
+                    guard featureFlagService.isFeatureFlagEnabled(.dynamicDashboardM2) else {
+                        return
+                    }
+                    group.addTask { [weak self] in
+                        await self?.lastOrdersCardViewModel.reloadData()
+                    }
                 }
             }
         }
@@ -401,6 +407,7 @@ private extension DashboardViewModel {
         reviewsViewModel.onDismiss = showCustomizationScreen
         mostActiveCouponsViewModel.onDismiss = showCustomizationScreen
         productStockCardViewModel.onDismiss = showCustomizationScreen
+        lastOrdersCardViewModel.onDismiss = showCustomizationScreen
     }
 
     func showCustomizationScreen() {
@@ -439,6 +446,7 @@ private extension DashboardViewModel {
             cards.append(DashboardCard(type: .reviews, availability: .show, enabled: false))
             cards.append(DashboardCard(type: .coupons, availability: .show, enabled: false))
             cards.append(DashboardCard(type: .stock, availability: .show, enabled: false))
+            cards.append(DashboardCard(type: .lastOrders, availability: .show, enabled: false))
         }
 
         return cards

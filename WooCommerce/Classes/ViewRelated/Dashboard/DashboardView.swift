@@ -203,7 +203,12 @@ private extension DashboardView {
                     case .stock:
                         ProductStockDashboardCard(viewModel: viewModel.productStockCardViewModel)
                     case .lastOrders:
-                        EmptyView()
+                        LastOrdersDashboardCard(viewModel: viewModel.lastOrdersCardViewModel) {
+                            onViewAllOrders?()
+                        } onViewOrderDetail: { order in
+                            onViewOrderDetail?(order)
+                        }
+
                     }
 
                     // Append feedback card after the first card

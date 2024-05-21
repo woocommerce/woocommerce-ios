@@ -223,6 +223,79 @@ final class CoreDataManagerTests: XCTestCase {
         insertAccount(to: manager.viewStorage)
         XCTAssertEqual(manager.viewStorage.countObjects(ofType: Account.self), 3)
     }
+
+    func test_viewStorage_is_thread_safe() {
+        // Given
+        let manager = CoreDataManager(name: storageIdentifier, crashLogger: MockCrashLogger())
+        let expectation = self.expectation(description: "Thread Safety")
+
+        // When
+        DispatchQueue.global(qos: .background).async {
+            let viewContext = manager.viewStorage as? NSManagedObjectContext
+            // Then
+            XCTAssertNotNil(viewContext)
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    func test_reset_is_thread_safe() {
+        // Given
+        let manager = CoreDataManager(name: storageIdentifier, crashLogger: MockCrashLogger())
+        let expectation = self.expectation(description: "Thread Safety")
+
+        // When
+        DispatchQueue.global(qos: .background).async {
+            manager.reset()
+            // Then
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    func test_concurrent_access_to_core_data_manager() {
+        // Given
+        let manager = CoreDataManager(name: storageIdentifier, crashLogger: MockCrashLogger())
+        let expectation1 = self.expectation(description: "Thread 1")
+        let expectation2 = self.expectation(description: "Thread 2")
+
+        // When
+        DispatchQueue.global(qos: .background).async {
+            manager.reset()
+            // Then
+            expectation1.fulfill()
+        }
+
+        DispatchQueue.global(qos: .background).async {
+            let viewContext = manager.viewStorage as? NSManagedObjectContext
+            // Then
+            XCTAssertNotNil(viewContext)
+            expectation2.fulfill()
+        }
+
+        wait(for: [expectation1, expectation2], timeout: Constants.expectationTimeout)
+    }
+
+    func test_saving_operations_are_thread_safe() {
+        // Given
+        let manager = CoreDataManager(name: storageIdentifier, crashLogger: MockCrashLogger())
+        let expectation = self.expectation(description: "Thread Safety")
+
+        // When
+        DispatchQueue.global(qos: .background).async {
+            let derivedContext = manager.writerDerivedStorage as? NSManagedObjectContext
+            derivedContext?.performAndWait {
+                _ = derivedContext?.insertNewObject(ofType: ShippingLine.self)
+                derivedContext?.saveIfNeeded()
+            }
+            // Then
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
 }
 
 // MARK: - Helpers

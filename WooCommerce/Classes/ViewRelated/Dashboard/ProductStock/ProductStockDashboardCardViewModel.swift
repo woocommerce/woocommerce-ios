@@ -60,11 +60,11 @@ private extension ProductStockDashboardCardViewModel {
     func loadLastSelectedStockType() async -> StockType {
         await withCheckedContinuation { continuation in
             stores.dispatch(AppSettingsAction.loadLastSelectedStockType(siteID: siteID, onCompletion: { type in
-                guard let type else {
+                guard let type,
+                      let stockType = StockType(rawValue: type) else {
                     continuation.resume(returning: .lowStock)
                     return
                 }
-                let stockType = StockType(rawValue: type) ?? .lowStock
                 continuation.resume(returning: stockType)
             }))
         }

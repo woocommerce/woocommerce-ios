@@ -229,6 +229,7 @@
 		26373E1F2BFCF69A008E6735 /* OrderNoteMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE583A0D2109154500D73C1C /* OrderNoteMapper.swift */; };
 		26373E202BFCF6A7008E6735 /* EntityDateModifiedMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE865A9C2A41E1480049B03C /* EntityDateModifiedMapper.swift */; };
 		26373E242BFCF9F0008E6735 /* Encodable+Serialization.swift in Sources */ = {isa = PBXBuildFile; fileRef = 021C7BF623863D1800A3BCBD /* Encodable+Serialization.swift */; };
+		26373E2A2BFD08AF008E6735 /* WatchOS-Models+Copiable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26373E282BFD0880008E6735 /* WatchOS-Models+Copiable.swift */; };
 		263A6D9E2BEA9DF500C292B2 /* Logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 933A2731222234F800C2143A /* Logging.swift */; };
 		263A6D9F2BEA9E4200C292B2 /* DotcomValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B53EF5332180F646003E146F /* DotcomValidator.swift */; };
 		263A6DA02BEA9E7300C292B2 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = B557DA1920979D66005962F4 /* Settings.swift */; };
@@ -1422,6 +1423,7 @@
 		262E5AD4255ACD6F000B2416 /* PaymentGatewayListMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentGatewayListMapperTests.swift; sourceTree = "<group>"; };
 		263659DB2A264A3E00607A0D /* IPLocationRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IPLocationRemote.swift; sourceTree = "<group>"; };
 		263659DD2A2694A000607A0D /* IPLocationRemoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IPLocationRemoteTests.swift; sourceTree = "<group>"; };
+		26373E282BFD0880008E6735 /* WatchOS-Models+Copiable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WatchOS-Models+Copiable.swift"; sourceTree = "<group>"; };
 		263A6DA72BEAA0DB00C292B2 /* String+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Helpers.swift"; sourceTree = "<group>"; };
 		265BCA01243056E3004E53EE /* categories-all.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "categories-all.json"; sourceTree = "<group>"; };
 		265EFBDB285257950033BD33 /* Order+Fallbacks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Order+Fallbacks.swift"; sourceTree = "<group>"; };
@@ -2491,6 +2493,7 @@
 			isa = PBXGroup;
 			children = (
 				5726F158248E9D88005AE9B4 /* Models+Copiable.generated.swift */,
+				26373E282BFD0880008E6735 /* WatchOS-Models+Copiable.swift */,
 			);
 			path = Copiable;
 			sourceTree = "<group>";
@@ -4594,6 +4597,7 @@
 				263A6DBE2BEAA4A900C292B2 /* MIContainer.swift in Sources */,
 				263A6DBB2BEAA49B00C292B2 /* AnyCodable.swift in Sources */,
 				26373E0D2BFCEAFB008E6735 /* Address.swift in Sources */,
+				26373E2A2BFD08AF008E6735 /* WatchOS-Models+Copiable.swift in Sources */,
 				263A6DBC2BEAA49B00C292B2 /* AnyDecodable.swift in Sources */,
 				263A6DBD2BEAA49B00C292B2 /* AnyEncodable.swift in Sources */,
 				263A6DB92BEAA46F00C292B2 /* SiteSummaryStatsMapper.swift in Sources */,

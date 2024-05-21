@@ -1411,7 +1411,7 @@ extension Networking.ProductImage {
 extension Networking.ProductReport {
     /// Returns a "ready to use" type filled with fake values.
     ///
-    static func fake() -> Networking.ProductReport {
+    public static func fake() -> Networking.ProductReport {
         .init(
             totals: .fake()
         )
@@ -1440,7 +1440,7 @@ extension Networking.ProductReportSegment.Subtotals {
 extension Networking.ProductReportTotals {
     /// Returns a "ready to use" type filled with fake values.
     ///
-    static func fake() -> Networking.ProductReportTotals {
+    public static func fake() -> Networking.ProductReportTotals {
         .init(
             segments: .fake()
         )

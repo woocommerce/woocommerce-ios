@@ -116,7 +116,7 @@ private extension ReviewsDashboardCard {
             HStack(alignment: .top, spacing: 0) {
                 Image(systemName: "bubble.fill")
                     .foregroundStyle(
-                        viewModel.notification?.read == true
+                        viewModel.notification == nil || viewModel.notification?.read == true
                         ? Color.secondary
                         : Color(.wooCommercePurple(.shade60))
                     )

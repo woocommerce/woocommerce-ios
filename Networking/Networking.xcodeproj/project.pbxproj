@@ -223,6 +223,12 @@
 		26373E192BFCEF96008E6735 /* OrderListMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B567AF2A20A0FA4200AB6C62 /* OrderListMapper.swift */; };
 		26373E1A2BFCEFA7008E6735 /* OrderFeeTaxStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = D88E229325AC9B420023F3B1 /* OrderFeeTaxStatus.swift */; };
 		26373E1B2BFCF531008E6735 /* String+HTML.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02BDB83423EA98C800BCC63E /* String+HTML.swift */; };
+		26373E1C2BFCF62C008E6735 /* OrderNote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74C8F06320EEB44800B6EDC9 /* OrderNote.swift */; };
+		26373E1D2BFCF646008E6735 /* OrderMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5C6FCD320A373BA00A4F8E4 /* OrderMapper.swift */; };
+		26373E1E2BFCF657008E6735 /* OrderNotesMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74C8F06720EEB7BC00B6EDC9 /* OrderNotesMapper.swift */; };
+		26373E1F2BFCF69A008E6735 /* OrderNoteMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE583A0D2109154500D73C1C /* OrderNoteMapper.swift */; };
+		26373E202BFCF6A7008E6735 /* EntityDateModifiedMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE865A9C2A41E1480049B03C /* EntityDateModifiedMapper.swift */; };
+		26373E242BFCF9F0008E6735 /* Encodable+Serialization.swift in Sources */ = {isa = PBXBuildFile; fileRef = 021C7BF623863D1800A3BCBD /* Encodable+Serialization.swift */; };
 		263A6D9E2BEA9DF500C292B2 /* Logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 933A2731222234F800C2143A /* Logging.swift */; };
 		263A6D9F2BEA9E4200C292B2 /* DotcomValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B53EF5332180F646003E146F /* DotcomValidator.swift */; };
 		263A6DA02BEA9E7300C292B2 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = B557DA1920979D66005962F4 /* Settings.swift */; };
@@ -4572,6 +4578,7 @@
 				2680B0D42BED5A6600E7F1D8 /* AppicationPasswordEncoder.swift in Sources */,
 				2680B0D32BED5A5400E7F1D8 /* OneTimeApplicationPasswordUseCase.swift in Sources */,
 				2680B0D12BED5A4C00E7F1D8 /* UnauthenticatedRequest.swift in Sources */,
+				26373E1C2BFCF62C008E6735 /* OrderNote.swift in Sources */,
 				2680B0D22BED5A4C00E7F1D8 /* AuthenticatedRESTRequest.swift in Sources */,
 				2680B0D02BED5A1900E7F1D8 /* WooConstants.swift in Sources */,
 				2680B0CF2BED59CE00E7F1D8 /* ApplicationPasswordStorage.swift in Sources */,
@@ -4617,18 +4624,21 @@
 				2680B0CE2BED592800E7F1D8 /* Secret.swift in Sources */,
 				263A6DA62BEA9FE600C292B2 /* PlaceholderDataValidator.swift in Sources */,
 				263A6DA52BEA9FCC00C292B2 /* String+URL.swift in Sources */,
+				26373E1F2BFCF69A008E6735 /* OrderNoteMapper.swift in Sources */,
 				263A6DA42BEA9F5A00C292B2 /* Dictionary+Woo.swift in Sources */,
 				263A6DA32BEA9EFD00C292B2 /* Result+Extensions.swift in Sources */,
 				263A6DA22BEA9E8F00C292B2 /* WordPressApiError.swift in Sources */,
 				263A6DA12BEA9E8000C292B2 /* WordPressApiValidator.swift in Sources */,
 				263A6DA02BEA9E7300C292B2 /* Settings.swift in Sources */,
 				263A6D9F2BEA9E4200C292B2 /* DotcomValidator.swift in Sources */,
+				26373E1D2BFCF646008E6735 /* OrderMapper.swift in Sources */,
 				263A6D9E2BEA9DF500C292B2 /* Logging.swift in Sources */,
 				26373E082BFCEA86008E6735 /* OrderItemAttribute.swift in Sources */,
 				26373E0C2BFCEAD1008E6735 /* ProductVariationAttribute.swift in Sources */,
 				269014D42BEA9335006056E0 /* UserAgent.swift in Sources */,
 				269014D22BEA9309006056E0 /* DotcomRequest.swift in Sources */,
 				269014D32BEA9309006056E0 /* AuthenticatedDotcomRequest.swift in Sources */,
+				26373E1E2BFCF657008E6735 /* OrderNotesMapper.swift in Sources */,
 				269014D12BEA92F8006056E0 /* DecodingError+CodingPath.swift in Sources */,
 				269014D02BEA92CD006056E0 /* URLRequestConvertible+Path.swift in Sources */,
 				269014CF2BEA928A006056E0 /* WooAPIVersion.swift in Sources */,
@@ -4650,9 +4660,11 @@
 				269014C32BEA9134006056E0 /* Mapper.swift in Sources */,
 				269014C22BEA912D006056E0 /* Request.swift in Sources */,
 				26373E182BFCEF79008E6735 /* KeyedDecodingContainer+Woo.swift in Sources */,
+				26373E202BFCF6A7008E6735 /* EntityDateModifiedMapper.swift in Sources */,
 				26DAAB592BEA8E1500CE399E /* Network.swift in Sources */,
 				26373E052BFCEA60008E6735 /* Order.swift in Sources */,
 				26DAAB582BEA8DFF00CE399E /* Remote.swift in Sources */,
+				26373E242BFCF9F0008E6735 /* Encodable+Serialization.swift in Sources */,
 				26DAAB572BEA8DC100CE399E /* Credentials.swift in Sources */,
 				26373E0B2BFCEAC9008E6735 /* OrderItemBundleItem.swift in Sources */,
 			);

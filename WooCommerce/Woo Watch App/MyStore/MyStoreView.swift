@@ -10,9 +10,14 @@ struct MyStoreView: View {
     // View Model to drive the view
     @StateObject var viewModel: MyStoreViewModel
 
-    init(dependencies: WatchDependencies) {
+    // Used to changed the tab programmatically
+    @Binding var watchTab: WooWatchTab
+
+    init(dependencies: WatchDependencies, watchTab: Binding<WooWatchTab>) {
         _viewModel = StateObject(wrappedValue: MyStoreViewModel(dependencies: dependencies))
+        self._watchTab = watchTab
     }
+
     var body: some View {
         // This VStack is needed so the `onAppear` task is properly executed.
         VStack {
@@ -89,7 +94,7 @@ struct MyStoreView: View {
             HStack {
 
                 Button(action: {
-                    print("Order button pressed")
+                    self.watchTab = .ordersList
                 }) {
                     HStack {
                         Images.document
@@ -195,8 +200,4 @@ fileprivate extension MyStoreView {
         static let person = Image(systemName: "person.2.fill")
         static let zigzag = Image(systemName: "point.bottomleft.forward.to.point.topright.filled.scurvepath")
     }
-}
-
-#Preview {
-    MyStoreView(dependencies: .fake())
 }

@@ -284,7 +284,7 @@ public extension Site {
         return TimeZone(secondsFromGMT: secondsFromGMT) ?? .current
     }
 
-    /// Returns true if it's not a .org site or a public .com site.
+    /// Returns true only if the site is hosted on WP.com and is private.
     ///
     var isPrivateWPCOMSite: Bool {
         return isWordPressComStore && !isPublic

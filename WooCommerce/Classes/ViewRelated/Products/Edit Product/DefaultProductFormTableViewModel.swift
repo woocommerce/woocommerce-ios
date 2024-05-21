@@ -24,6 +24,8 @@ struct DefaultProductFormTableViewModel: ProductFormTableViewModel {
 
     private let isDescriptionAIEnabled: Bool
     private let featureFlagService: FeatureFlagService
+    private let stores: StoresManager
+
 
     init(product: ProductFormDataModel,
          actionsFactory: ProductFormActionsFactoryProtocol,
@@ -33,7 +35,8 @@ struct DefaultProductFormTableViewModel: ProductFormTableViewModel {
          weightUnit: String? = ServiceLocator.shippingSettingsService.weightUnit,
          dimensionUnit: String? = ServiceLocator.shippingSettingsService.dimensionUnit,
          isDescriptionAIEnabled: Bool,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
+         stores: StoresManager = ServiceLocator.stores) {
         self.currency = currency
         self.currencyFormatter = currencyFormatter
         self.shippingValueLocalizer = shippingValueLocalizer
@@ -41,6 +44,7 @@ struct DefaultProductFormTableViewModel: ProductFormTableViewModel {
         self.dimensionUnit = dimensionUnit
         self.isDescriptionAIEnabled = isDescriptionAIEnabled
         self.featureFlagService = featureFlagService
+        self.stores = stores
         configureSections(product: product, actionsFactory: actionsFactory)
     }
 }
@@ -55,8 +59,11 @@ private extension DefaultProductFormTableViewModel {
     func primaryFieldRows(product: ProductFormDataModel, actions: [ProductFormEditAction]) -> [ProductFormSection.PrimaryFieldRow] {
         actions.map { action -> [ProductFormSection.PrimaryFieldRow] in
             switch action {
-            case .images(let editable):
-                return [.images(isEditable: editable, allowsMultiple: product.allowsMultipleImages(), isVariation: product is EditableProductVariationModel)]
+            case .images(let editable, let isStorePublic):
+                return [.images(isEditable: editable,
+                                isStorePublic: isStorePublic,
+                                allowsMultiple: product.allowsMultipleImages(),
+                                isVariation: product is EditableProductVariationModel)]
             case .linkedProductsPromo(let viewModel):
                 return [.linkedProductsPromo(viewModel: viewModel)]
             case .name(let editable):

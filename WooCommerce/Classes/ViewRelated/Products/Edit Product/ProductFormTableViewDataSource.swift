@@ -87,8 +87,12 @@ private extension ProductFormTableViewDataSource {
 private extension ProductFormTableViewDataSource {
     func configureCellInPrimaryFieldsSection(_ cell: UITableViewCell, row: ProductFormSection.PrimaryFieldRow) {
         switch row {
-        case .images(let editable, let allowsMultipleImages, let isVariation):
-            configureImages(cell: cell, isEditable: editable, allowsMultipleImages: allowsMultipleImages, isVariation: isVariation)
+        case .images(let editable, let isStorePublic, let allowsMultipleImages, let isVariation):
+            configureImages(cell: cell,
+                            isEditable: editable,
+                            isStorePublic: isStorePublic,
+                            allowsMultipleImages: allowsMultipleImages,
+                            isVariation: isVariation)
         case .linkedProductsPromo(let viewModel):
             configureLinkedProductsPromo(cell: cell, viewModel: viewModel)
         case .name(let name, let editable, let productStatus):
@@ -108,7 +112,14 @@ private extension ProductFormTableViewDataSource {
         }
     }
 
-    func configureImages(cell: UITableViewCell, isEditable: Bool, allowsMultipleImages: Bool, isVariation: Bool) {
+    func configureImages(cell: UITableViewCell, isEditable: Bool, isStorePublic: Bool, allowsMultipleImages: Bool, isVariation: Bool) {
+//         only show images row if it's a .org site or a public .com site. Private .com site will see a banner.
+//         TODO
+//        guard isStorePublic else {
+//
+//        }
+
+
         guard let cell = cell as? ProductImagesHeaderTableViewCell else {
             fatalError()
         }

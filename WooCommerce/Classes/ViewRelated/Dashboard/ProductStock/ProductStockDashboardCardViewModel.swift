@@ -69,6 +69,57 @@ private extension ProductStockDashboardCardViewModel {
             }))
         }
     }
+
+    @MainActor
+    func fetchStock(type: StockType) async throws -> [ProductStock] {
+        try await withCheckedThrowingContinuation { continuation in
+            stores.dispatch(ProductAction.fetchStockReport(siteID: siteID,
+                                                           stockType: type.rawValue,
+                                                           pageNumber: Constants.pageNumber,
+                                                           pageSize: Constants.maxItemCount,
+                                                           orderBy: .date,
+                                                           order: .descending) { result in
+                continuation.resume(with: result)
+            })
+        }
+    }
+
+    @MainActor
+    func fetchProductReports(productIDs: [Int64]) async throws -> [ProductReportSegment] {
+        let timeZone = TimeZone.siteTimezone
+        let currentDate = Date().endOfDay(timezone: timeZone)
+        let last30Days = Date(timeInterval: -Constants.dayInSeconds*30, since: currentDate).startOfDay(timezone: timeZone)
+        return try await withCheckedThrowingContinuation { continuation in
+            stores.dispatch(ProductAction.fetchProductReports(siteID: siteID,
+                                                              productIDs: productIDs,
+                                                              timeZone: timeZone,
+                                                              earliestDateToInclude: currentDate,
+                                                              latestDateToInclude: last30Days,
+                                                              pageSize: Constants.maxItemCount,
+                                                              pageNumber: Constants.pageNumber,
+                                                              orderBy: .itemsSold,
+                                                              order: .descending) { result in
+                continuation.resume(with: result)
+            })
+        }
+    }
+
+    @MainActor
+    func fetchProductDetails(productIDs: [Int64]) async throws -> [Product] {
+        try await withCheckedThrowingContinuation { continuation in
+            stores.dispatch(ProductAction.retrieveProducts(siteID: siteID,
+                                                           productIDs: productIDs,
+                                                           pageNumber: Constants.pageNumber,
+                                                           pageSize: Constants.maxItemCount) { result in
+                switch result {
+                case let .success((products, _)):
+                    continuation.resume(returning: products)
+                case let .failure(error):
+                    continuation.resume(throwing: error)
+                }
+            })
+        }
+    }
 }
 
 extension ProductStockDashboardCardViewModel {
@@ -108,5 +159,13 @@ extension ProductStockDashboardCardViewModel {
                 comment: "Title of a stock type displayed on the Stock section on My Store screen"
             )
         }
+    }
+}
+
+private extension ProductStockDashboardCardViewModel {
+    enum Constants {
+        static let pageNumber = 1
+        static let maxItemCount = 3
+        static let dayInSeconds: TimeInterval = 86400
     }
 }

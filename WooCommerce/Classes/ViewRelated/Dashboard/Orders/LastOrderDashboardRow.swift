@@ -30,6 +30,7 @@ struct LastOrderDashboardRow: View {
 
                     VStack(alignment: .trailing, spacing: Layout.spacing) {
                         Text(viewModel.statusDescription)
+                            .foregroundStyle(.black)
                             .captionStyle()
                             .padding(.horizontal, Layout.Status.hPadding)
                             .padding(.vertical, Layout.Status.vPadding)

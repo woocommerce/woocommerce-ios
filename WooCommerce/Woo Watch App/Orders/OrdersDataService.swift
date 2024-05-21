@@ -4,15 +4,6 @@ import NetworkingWatchOS
 ///
 final class OrdersDataService {
 
-    //    /// Data extracted from networking types.
-    //    ///
-    //    struct Stats {
-    //        let revenue: Decimal
-    //        let totalOrders: Int
-    //        let totalVisitors: Int?
-    //        let conversion: Double?
-    //    }
-
     /// Orders remote
     ///
     private let ordersRemote: OrdersRemote

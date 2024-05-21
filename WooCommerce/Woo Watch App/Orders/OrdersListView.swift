@@ -7,7 +7,11 @@ struct OrdersListView: View {
     // Used to changed the tab programmatically
     @Binding var watchTab: WooWatchTab
 
-    init(watchTab: Binding<WooWatchTab>) {
+    // View Model to drive the view
+    @StateObject var viewModel: OrdersListViewModel
+
+    init(dependencies: WatchDependencies, watchTab: Binding<WooWatchTab>) {
+        _viewModel = StateObject(wrappedValue: OrdersListViewModel(dependencies: dependencies))
         self._watchTab = watchTab
     }
 
@@ -38,6 +42,9 @@ struct OrdersListView: View {
             }
         } detail: {
             Text("Order Detail")
+        }
+        .task {
+            await viewModel.fetchOrders()
         }
     }
 }

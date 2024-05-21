@@ -51,11 +51,21 @@ public protocol ProductsRemoteProtocol {
     func loadNumberOfProducts(siteID: Int64) async throws -> Int64
 
     func loadStock(for siteID: Int64,
-                   with stockStatus: ProductStockStatus,
+                   with stockType: String,
                    pageNumber: Int,
                    pageSize: Int,
                    orderBy: ProductsRemote.OrderKey,
                    order: ProductsRemote.Order) async throws -> [ProductStock]
+
+    func loadProductReports(for siteID: Int64,
+                            productIDs: [Int64],
+                            timeZone: TimeZone,
+                            earliestDateToInclude: Date,
+                            latestDateToInclude: Date,
+                            pageSize: Int,
+                            pageNumber: Int,
+                            orderBy: ProductsRemote.OrderKey,
+                            order: ProductsRemote.Order) async throws -> [ProductReportSegment]
 }
 
 extension ProductsRemoteProtocol {
@@ -414,14 +424,14 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
     }
 
     public func loadStock(for siteID: Int64,
-                          with stockStatus: ProductStockStatus,
+                          with stockType: String,
                           pageNumber: Int,
                           pageSize: Int,
                           orderBy: ProductsRemote.OrderKey,
                           order: ProductsRemote.Order) async throws -> [ProductStock] {
         let path = Path.stockReports
         let parameters: [String: Any] = [
-            ParameterKey.type: stockStatus.rawValue,
+            ParameterKey.type: stockType,
             ParameterKey.page: String(pageNumber),
             ParameterKey.perPage: String(pageSize),
             ParameterKey.order: order,
@@ -436,6 +446,39 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
         let mapper = ProductStockListMapper(siteID: siteID)
         return try await enqueue(request, mapper: mapper)
     }
+
+    public func loadProductReports(for siteID: Int64,
+                                   productIDs: [Int64],
+                                   timeZone: TimeZone,
+                                   earliestDateToInclude: Date,
+                                   latestDateToInclude: Date,
+                                   pageSize: Int,
+                                   pageNumber: Int,
+                                   orderBy: ProductsRemote.OrderKey,
+                                   order: ProductsRemote.Order) async throws -> [ProductReportSegment] {
+        let dateFormatter = DateFormatter.Defaults.iso8601WithoutTimeZone
+        dateFormatter.timeZone = timeZone
+        let path = Path.productReportsStats
+        let parameters: [String: Any] = [
+            ParameterKey.products: productIDs,
+            ParameterKey.segmentBy: ParameterValues.productSegment,
+            ParameterKey.fieldsWithoutUnderscore: [ParameterValues.itemsSold],
+            ParameterKey.after: dateFormatter.string(from: earliestDateToInclude),
+            ParameterKey.before: dateFormatter.string(from: latestDateToInclude),
+            ParameterKey.page: String(pageNumber),
+            ParameterKey.perPage: String(pageSize),
+            ParameterKey.order: order,
+            ParameterKey.orderBy: orderBy
+        ]
+        let request = JetpackRequest(wooApiVersion: .wcAnalytics,
+                                     method: .get,
+                                     siteID: siteID,
+                                     path: path,
+                                     parameters: parameters,
+                                     availableAsRESTRequest: true)
+        let mapper = ProductReportSegmentListMapper()
+        return try await enqueue(request, mapper: mapper)
+    }
 }
 
 
@@ -445,6 +488,7 @@ public extension ProductsRemote {
     enum OrderKey {
         case date
         case name
+        case itemsSold // available for use in `GET wc-analytics/reports/products/stats` only.`
     }
 
     enum Order {
@@ -473,6 +517,7 @@ public extension ProductsRemote {
         static let templateProducts   = "onboarding/tasks/create_product_from_template"
         static let productsTotal = "reports/products/totals"
         static let stockReports = "reports/stock"
+        static let productReportsStats = "reports/products/stats"
     }
 
     private enum ParameterKey {
@@ -495,10 +540,17 @@ public extension ProductsRemote {
         static let id: String         = "id"
         static let templateName: String = "template_name"
         static let type = "type"
+        static let products = "products"
+        static let before = "before"
+        static let after = "after"
+        static let segmentBy = "segmentby"
+        static let fieldsWithoutUnderscore = "fields"
     }
 
     private enum ParameterValues {
         static let skuFieldValues: String = "sku"
+        static let productSegment = "product"
+        static let itemsSold = "items_sold"
     }
 }
 
@@ -521,6 +573,8 @@ private extension ProductsRemote.OrderKey {
             return "date"
         case .name:
             return "title"
+        case .itemsSold:
+            return "items_sold"
         }
     }
 }

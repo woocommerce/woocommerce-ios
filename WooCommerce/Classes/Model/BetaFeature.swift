@@ -57,8 +57,7 @@ extension BetaFeature {
         case .inAppPurchases:
             return ServiceLocator.featureFlagService.isFeatureFlagEnabled(.inAppPurchasesDebugMenu)
         case .pointOfSale:
-            return ServiceLocator.featureFlagService.isFeatureFlagEnabled(.displayPointOfSaleToggle) &&
-            UIDevice.current.userInterfaceIdiom == .pad
+            return POSEligibilityChecker().isEligible()
         default:
             return true
         }

@@ -328,9 +328,9 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
         self.bundledItems = bundledItems
         self.compositeComponents = compositeComponents
         self.subscription = subscription
-        self.minAllowedQuantity = minAllowedQuantity
+        self.minAllowedQuantity = minAllowedQuantity.refinedMinMaxQuantityEmptyValue
+        self.groupOfQuantity = groupOfQuantity.refinedMinMaxQuantityEmptyValue
         self.maxAllowedQuantity = maxAllowedQuantity
-        self.groupOfQuantity = groupOfQuantity
         self.combineVariationQuantities = combineVariationQuantities
     }
 
@@ -722,6 +722,12 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
         try container.encode(upsellIDs, forKey: .upsellIDs)
         try container.encode(crossSellIDs, forKey: .crossSellIDs)
 
+        // Quantity Rules
+        // https://woocommerce.com/document/minmax-quantities/#section-6
+        try container.encode(maxAllowedQuantity, forKey: .maxAllowedQuantity)
+        try container.encode(minAllowedQuantity, forKey: .minAllowedQuantity)
+        try container.encode(groupOfQuantity, forKey: .groupOfQuantity)
+
         // Attributes
         try container.encode(attributes, forKey: .attributes)
 
@@ -739,7 +745,6 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
         return []
     }
 }
-
 
 /// Defines all of the Product CodingKeys
 ///

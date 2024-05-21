@@ -164,9 +164,9 @@ public class ProductStore: Store {
                              orderBy: orderBy,
                              order: order,
                              completion: completion)
-        case let .fetchProductReports(siteID, products, timeZone, earliestDateToInclude, latestDateToInclude, pageSize, pageNumber, orderBy, order, completion):
+        case let .fetchProductReports(siteID, productIDs, timeZone, earliestDateToInclude, latestDateToInclude, pageSize, pageNumber, orderBy, order, completion):
             fetchProductReports(siteID: siteID,
-                                products: products,
+                                productIDs: productIDs,
                                 timeZone: timeZone,
                                 earliestDateToInclude: earliestDateToInclude,
                                 latestDateToInclude: latestDateToInclude,
@@ -774,7 +774,7 @@ private extension ProductStore {
     }
 
     func fetchProductReports(siteID: Int64,
-                             products: [Int64],
+                             productIDs: [Int64],
                              timeZone: TimeZone,
                              earliestDateToInclude: Date,
                              latestDateToInclude: Date,
@@ -786,7 +786,7 @@ private extension ProductStore {
         Task { @MainActor in
             do {
                 let segments = try await remote.loadProductReports(for: siteID,
-                                                                   productIDs: products,
+                                                                   productIDs: productIDs,
                                                                    timeZone: timeZone,
                                                                    earliestDateToInclude: earliestDateToInclude,
                                                                    latestDateToInclude: latestDateToInclude,

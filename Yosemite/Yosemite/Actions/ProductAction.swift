@@ -209,7 +209,7 @@ public enum ProductAction: Action {
 
     /// Fetches product reports for the given product ID of a site in a given time range.
     /// - Parameter siteID: Site ID to fetch stock for.
-    /// - Parameter products: IDs of the products of interest.
+    /// - Parameter productIDs: IDs of the products of interest.
     /// - Parameter timeZone: The timezone to consider for the given time range.
     /// - Parameter earliestDateToInclude: The earliest date for the product reports.
     /// - Parameter latestDateToInclude: The latest date for the product reports.
@@ -220,7 +220,7 @@ public enum ProductAction: Action {
     /// - Parameter completion: Closure to trigger when fetching completes.
     ///
     case fetchProductReports(siteID: Int64,
-                             products: [Int64],
+                             productIDs: [Int64],
                              timeZone: TimeZone,
                              earliestDateToInclude: Date,
                              latestDateToInclude: Date,

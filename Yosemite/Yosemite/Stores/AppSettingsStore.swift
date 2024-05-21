@@ -236,6 +236,10 @@ public class AppSettingsStore: Store {
             setLastSelectedMostActiveCouponsTimeRange(siteID: siteID, timeRange: timeRange)
         case let .loadLastSelectedMostActiveCouponsTimeRange(siteID, onCompletion):
             loadLastSelectedMostActiveCouponsTimeRange(siteID: siteID, onCompletion: onCompletion)
+        case let .setLastSelectedStockType(siteID, type):
+            setLastSelectedStockType(siteID: siteID, type: type)
+        case let .loadLastSelectedStockType(siteID, onCompletion):
+            loadLastSelectedStockType(siteID: siteID, onCompletion: onCompletion)
         }
     }
 }
@@ -1036,6 +1040,18 @@ private extension AppSettingsStore {
         let timeRangeRawValue = storeSettings.lastSelectedMostActiveCouponsTimeRange
         let timeRange = StatsTimeRangeV4(rawValue: timeRangeRawValue)
         onCompletion(timeRange)
+    }
+
+    func setLastSelectedStockType(siteID: Int64, type: String) {
+        let storeSettings = getStoreSettings(for: siteID)
+        let updatedSettings = storeSettings.copy(lastSelectedStockType: type)
+        setStoreSettings(settings: updatedSettings, for: siteID)
+    }
+
+    func loadLastSelectedStockType(siteID: Int64, onCompletion: (String?) -> Void) {
+        let storeSettings = getStoreSettings(for: siteID)
+        let stockType = storeSettings.lastSelectedStockType
+        onCompletion(stockType)
     }
 }
 

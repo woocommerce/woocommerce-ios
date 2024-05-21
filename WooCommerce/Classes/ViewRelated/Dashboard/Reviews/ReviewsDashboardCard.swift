@@ -38,6 +38,8 @@ struct ReviewsDashboardCard: View {
                 }
                 .redacted(reason: viewModel.showLoadingAnimation ? [.placeholder] : [])
                 .shimmering(active: viewModel.showLoadingAnimation)
+            } else {
+                emptyView(isFiltered: viewModel.currentFilter != .all)
             }
 
             if viewModel.shouldShowAllReviewsButton {
@@ -208,6 +210,13 @@ private extension ReviewsDashboardCard {
             }
         }
         .disabled(viewModel.showLoadingAnimation)
+    }
+
+    func emptyView(isFiltered: Bool) -> some View {
+        VStack(spacing: 0) {
+            ReviewsDashboardEmptyView(isFiltered: isFiltered)
+                .frame(maxWidth: .infinity)
+        }
     }
 }
 

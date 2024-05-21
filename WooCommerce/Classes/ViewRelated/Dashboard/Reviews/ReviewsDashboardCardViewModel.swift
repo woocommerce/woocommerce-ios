@@ -226,13 +226,13 @@ private extension ReviewsDashboardCardViewModel {
                 await withTaskGroup(of: Void.self) { group in
                     group.addTask { [weak self] in
                         guard let self else { return }
-                        await self.updateProductsAndPerformFetch(productIDs: productIDs)
+                        await self.updateProducts(productIDs: productIDs)
                     }
 
                     if stores.isAuthenticatedWithoutWPCom == false {
                         group.addTask { [weak self] in
                             guard let self else { return }
-                            await self.updateNotificationsAndPerformFetch()
+                            await self.updateNotifications()
                         }
                     }
                 }
@@ -243,7 +243,7 @@ private extension ReviewsDashboardCardViewModel {
     }
 
     @MainActor
-    func updateProductsAndPerformFetch(productIDs: [Int64]) async {
+    func updateProducts(productIDs: [Int64]) async {
         do {
             try await retrieveProducts(for: productIDs)
 
@@ -258,7 +258,7 @@ private extension ReviewsDashboardCardViewModel {
     }
 
     @MainActor
-    func updateNotificationsAndPerformFetch() async {
+    func updateNotifications() async {
         do {
             try await synchronizeNotifications()
         } catch {

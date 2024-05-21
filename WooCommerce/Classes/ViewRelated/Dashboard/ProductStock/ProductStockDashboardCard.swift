@@ -1,3 +1,4 @@
+import Kingfisher
 import SwiftUI
 import struct Yosemite.DashboardCard
 
@@ -94,29 +95,36 @@ private extension ProductStockDashboardCard {
                     .subheadlineStyle()
                     .fontWeight(.semibold)
             }
-            ForEach(Array([0, 1, 2].enumerated()), id: \.element) { (index, element) in
+            ForEach(Array(viewModel.stock.enumerated()), id: \.element) { (index, element) in
                 HStack(alignment: .top) {
-                    Image(uiImage: .productPlaceholderImage)
+                    // Thumbnail image
+                    KFImage(element.thumbnailURL)
+                        .placeholder { Image(uiImage: .productPlaceholderImage)
+                                .foregroundColor(Color(.listIcon))
+                        }
                         .resizable()
                         .frame(width: Layout.thumbnailSize * scale,
                                height: Layout.thumbnailSize * scale)
                         .clipShape(RoundedRectangle(cornerSize: Layout.thumbnailCornerSize))
+
+                    // Details
                     VStack {
                         HStack(alignment: .firstTextBaseline) {
                             VStack(alignment: .leading) {
-                                Text("Little nap blend 250g")
+                                Text(element.productName)
                                     .bodyStyle()
-                                Text("10 items sold last 30 days")
+                                Text(String(format: Localization.subtitle,
+                                            element.itemsSoldLast30Days))
                                     .subheadlineStyle()
                             }
                             Spacer()
-                            Text("3")
+                            Text("\(element.stockQuantity)")
                                 .foregroundStyle(Color(.error))
                                 .bodyStyle()
                                 .fontWeight(.semibold)
                         }
                         Divider()
-                            .renderedIf(index < 2)
+                            .renderedIf(index < viewModel.stock.count - 1)
                     }
                 }
             }
@@ -153,6 +161,12 @@ private extension ProductStockDashboardCard {
             "productStockDashboardCard.stockLevels",
             value: "Stock levels",
             comment: "Header label on the Stock section on the My Store screen"
+        )
+        static let subtitle = NSLocalizedString(
+            "productStockDashboardCard.item.subtitle",
+            value: "%1$d items sold last 30 days",
+            comment: "Subtitle for the stock items on the Stock section on the My Store screen. " +
+            "Reads as: 10 items sold last 30 days"
         )
     }
 }

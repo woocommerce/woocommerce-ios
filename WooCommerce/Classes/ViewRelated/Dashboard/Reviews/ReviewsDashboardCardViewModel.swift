@@ -20,13 +20,17 @@ final class ReviewsDashboardCardViewModel: ObservableObject {
     }
 
     @Published private(set) var data: [ReviewViewModel] = []
+
+    private var reviews: [ProductReview] {
+        return productReviewsResultsController.fetchedObjects
+    }
     private var reviewProducts: [Product] {
         return productsResultsController.fetchedObjects
     }
     private var notifications: [Note] {
         return notificationsResultsController.fetchedObjects
     }
-    @Published private(set) var syncingData = false
+    @Published private(set) var showLoadingAnimation = false
     @Published private(set) var syncingError: Error?
     @Published private(set) var shouldShowAllReviewsButton = false
 
@@ -56,10 +60,11 @@ final class ReviewsDashboardCardViewModel: ObservableObject {
                                                                            sortedBy: [])
 
         self.notificationsResultsController = ResultsController<StorageNote>(storageManager: storageManager,
-                                                                           sectionNameKeyPath: "normalizedAgeAsString",
-                                                                           matching: nil,
-                                                                           sortedBy: [])
-        configureProductReviewsResultsController()
+                                                                             sectionNameKeyPath: "normalizedAgeAsString",
+                                                                             matching: nil,
+                                                                             sortedBy: [])
+
+        configureResultsController()
     }
 
     /// ResultsController for ProductReview
@@ -87,14 +92,14 @@ final class ReviewsDashboardCardViewModel: ObservableObject {
 
     @MainActor
     func reloadData() async {
-        syncingData = true
+        showLoadingAnimation = true
         syncingError = nil
         do {
-            try await loadReviews(filter: currentFilter)
+            try await synchronizeReviews(filter: currentFilter)
         } catch {
             syncingError = error
         }
-        syncingData = false
+        showLoadingAnimation = false
     }
 
     @MainActor
@@ -104,6 +109,7 @@ final class ReviewsDashboardCardViewModel: ObservableObject {
     }
 }
 
+
 // MARK: - Storage related
 private extension ReviewsDashboardCardViewModel {
     /// Predicate to entities that belong to the current store
@@ -112,40 +118,159 @@ private extension ReviewsDashboardCardViewModel {
         return NSPredicate(format: "siteID == %lld", siteID)
     }
 
-    /// Performs initial fetch from storage and updates results.
-    ///
+    func configureResultsController() {
+        configureProductReviewsResultsController()
+        configureProductsResultsController()
+        configureNotificationsResultsController()
+    }
+
     func configureProductReviewsResultsController() {
         productReviewsResultsController.onDidChangeContent = { [weak self] in
             guard let self else { return }
-            Task {
-                await self.updateReviewsResults()
-            }
+            self.updateData()
         }
         productReviewsResultsController.onDidResetContent = { [weak self] in
             guard let self else { return }
-            Task {
-                await self.updateReviewsResults()
-            }
+            self.updateData()
         }
 
         do {
             try productReviewsResultsController.performFetch()
+            updateData()
         } catch {
             ServiceLocator.crashLogging.logError(error)
         }
     }
 
-    func updateProductsResultsControllerPredicate(with productIDs: [Int64]) {
-        let predicates = NSCompoundPredicate(andPredicateWithSubpredicates: [sitePredicate(),
-                                                                             NSPredicate(format: "productID IN %@", productIDs)])
-        productsResultsController.predicate = predicates
+    func configureProductsResultsController() {
+        productsResultsController.onDidChangeContent = { [weak self] in
+            guard let self else { return }
+            self.updateData()
+        }
+        productsResultsController.onDidResetContent = { [weak self] in
+            guard let self else { return }
+            self.updateData()
+        }
+
+        /// Note: Intentionally not doing performFetch() here, as it has to wait for available
+        /// productIDs from productReviewsResultsController() for the results to be correct.
+    }
+
+    func configureNotificationsResultsController() {
+        notificationsResultsController.predicate = notificationsPredicate
+
+        notificationsResultsController.onDidChangeContent = { [weak self] in
+            guard let self else { return }
+            self.updateData()
+        }
+        notificationsResultsController.onDidResetContent = { [weak self] in
+            guard let self else { return }
+            self.updateData()
+        }
+
+        do {
+            try notificationsResultsController.performFetch()
+            updateData()
+        } catch {
+            ServiceLocator.crashLogging.logError(error)
+        }
     }
 }
 
 // MARK: - Private helpers
 private extension ReviewsDashboardCardViewModel {
+    /// Populates data from the local storage for the three main data (reviews, products, notifications).
+    ///
+    func updateData() {
+        let localReviews = reviews.prefix(Constants.numberOfItems)
+
+        // We can show partial review content as long as there are reviews found in storage.
+        if localReviews.isEmpty == false {
+            showLoadingAnimation = false
+        }
+
+        data = localReviews.map { review in
+
+            // Depending on the sync progress, `product` and `notification` might still be nil.
+            // This is acceptable and the app is able to display partial review content.
+            let product = reviewProducts.first { $0.productID == review.productID }
+            let notification = notifications.first { notification in
+                if let notificationReviewID = notification.meta.identifier(forKey: .comment) {
+                    return notificationReviewID == review.reviewID
+                }
+                return false
+            }
+            return ReviewViewModel(
+                showProductTitle: product != nil,
+                review: review,
+                product: product,
+                notification: notification
+            )
+        }
+    }
+
     @MainActor
-    func loadReviews(filter: ReviewsFilter? = nil) async throws {
+    func synchronizeReviews(filter: ReviewsFilter) async throws {
+        do {
+            try await synchronizeProductReviews(filter: filter)
+
+            let productIDs = reviews.prefix(Constants.numberOfItems).map { $0.productID }
+
+            if productIDs.isNotEmpty {
+                // As long as the app is able to fetch one review once, then the button should always appear.
+                // Later on, when filtering by hold or pending status, the reviews result might become empty.
+                // In that case, the app should keep showing the button to allow the user to see all non-filtered reviews.
+                shouldShowAllReviewsButton = true
+
+                // Get product names and, optionally, read status from notifications.
+                await withTaskGroup(of: Void.self) { group in
+                    group.addTask { [weak self] in
+                        guard let self else { return }
+                        await self.updateProductsAndPerformFetch(productIDs: productIDs)
+                    }
+
+                    if stores.isAuthenticatedWithoutWPCom == false {
+                        group.addTask { [weak self] in
+                            guard let self else { return }
+                            await self.updateNotificationsAndPerformFetch()
+                        }
+                    }
+                }
+            }
+        } catch {
+            ServiceLocator.crashLogging.logError(error)
+        }
+    }
+
+    @MainActor
+    func updateProductsAndPerformFetch(productIDs: [Int64]) async {
+        do {
+            try await retrieveProducts(for: productIDs)
+
+            // update predicate and manually fetch so that new predicate applies.
+            productsResultsController.predicate = NSCompoundPredicate(
+                andPredicateWithSubpredicates: [sitePredicate(),
+                                                NSPredicate(format: "productID IN %@", productIDs)])
+            try productsResultsController.performFetch()
+        } catch {
+            ServiceLocator.crashLogging.logError(error)
+        }
+    }
+
+    @MainActor
+    func updateNotificationsAndPerformFetch() async {
+        do {
+            try await synchronizeNotifications()
+        } catch {
+            ServiceLocator.crashLogging.logError(error)
+        }
+    }
+}
+
+// MARK: Remote
+private extension ReviewsDashboardCardViewModel {
+    @MainActor
+    func synchronizeProductReviews (filter: ReviewsFilter? = nil) async throws {
         try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
             stores.dispatch(ProductReviewAction.synchronizeProductReviews(siteID: siteID,
                                                                           pageNumber: 1,
@@ -161,84 +286,6 @@ private extension ReviewsDashboardCardViewModel {
                 }
             })
         }
-    }
-
-    /// Updates data
-    @MainActor
-    func updateReviewsResults() async {
-        let reviews = productReviewsResultsController.fetchedObjects.prefix(Constants.numberOfItems)
-        let productIDs = reviews.map { $0.productID }
-
-        if productIDs.isNotEmpty {
-            // As long as the app is able to fetch one review once, then the button should always appear.
-            // Later on, when filtering by hold or pending status, the reviews result might become empty.
-            // In that case, the app should keep showing the button to allow the user to see all non-filtered reviews.
-            shouldShowAllReviewsButton = true
-
-            updateProductsResultsControllerPredicate(with: productIDs)
-            do {
-                try await fetchProducts(for: productIDs)
-
-                if stores.isAuthenticatedWithoutWPCom == false {
-                    notificationsResultsController.predicate = notificationsPredicate
-                    try await fetchNotifications()
-                }
-            } catch {
-                ServiceLocator.crashLogging.logError(error)
-            }
-        }
-
-        data = reviews
-            .map { review in
-                let product = reviewProducts.first { $0.productID == review.productID }
-                let notification = notifications.first { notification in
-                    if let notificationReviewID = notification.meta.identifier(forKey: .comment) {
-                        return notificationReviewID == review.reviewID
-                    }
-                    return false
-                }
-
-                return ReviewViewModel(review: review, product: product, notification: notification)
-            }
-    }
-
-    /// Get products from storage if available, if not then fetch remotely.
-    ///
-    @MainActor
-    private func fetchProducts(for productIDs: [Int64]) async throws {
-        try productsResultsController.performFetch()
-
-        // Check if all productIDs are available in storage
-        let allProductsAvailable = productIDs.allSatisfy { productID in
-            reviewProducts.contains { $0.productID == productID }
-        }
-
-        if !allProductsAvailable {
-            await loadReviewProducts(for: productIDs)
-        }
-    }
-
-    /// Get notifications from storage if available, if not then fetch remotely.
-    ///
-    @MainActor
-    private func fetchNotifications() async throws {
-        try notificationsResultsController.performFetch()
-        if notifications.isEmpty {
-            try await synchronizeNotifications()
-        }
-    }
-
-    @MainActor
-    func loadReviewProducts(for reviewProductIDs: [Int64]) async {
-        syncingData = true
-        syncingError = nil
-
-        do {
-            try await retrieveProducts(for: reviewProductIDs)
-        } catch {
-            syncingError = error
-        }
-        syncingData = false
     }
 
     @MainActor
@@ -274,8 +321,8 @@ private extension ReviewsDashboardCardViewModel {
 
 private extension ReviewsDashboardCardViewModel {
     enum Constants {
-         static let numberOfItems = 3
-     }
+        static let numberOfItems = 3
+    }
 }
 
 extension ReviewsDashboardCardViewModel.ReviewsFilter {

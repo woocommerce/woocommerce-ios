@@ -27,17 +27,17 @@ struct ReviewsDashboardCard: View {
 
             reviewsFilterBar
                 .padding(.horizontal, Layout.padding)
-                .redacted(reason: viewModel.syncingData ? [.placeholder] : [])
-                .shimmering(active: viewModel.syncingData)
+                .redacted(reason: viewModel.showLoadingAnimation ? [.placeholder] : [])
+                .shimmering(active: viewModel.showLoadingAnimation)
             Divider()
 
-            if viewModel.data.isNotEmpty {
+            if viewModel.showLoadingAnimation || viewModel.data.isNotEmpty {
                 ForEach(viewModel.data, id: \.review.reviewID) { reviewViewModel in
                     reviewRow(for: reviewViewModel,
                               isLastItem: reviewViewModel == viewModel.data.last)
                 }
-                .redacted(reason: viewModel.syncingData ? [.placeholder] : [])
-                .shimmering(active: viewModel.syncingData)
+                .redacted(reason: viewModel.showLoadingAnimation ? [.placeholder] : [])
+                .shimmering(active: viewModel.showLoadingAnimation)
             }
 
             if viewModel.shouldShowAllReviewsButton {
@@ -45,8 +45,8 @@ struct ReviewsDashboardCard: View {
 
                 viewAllReviewsButton
                     .padding(.horizontal, Layout.padding)
-                    .redacted(reason: viewModel.syncingData ? [.placeholder] : [])
-                    .shimmering(active: viewModel.syncingData)
+                    .redacted(reason: viewModel.showLoadingAnimation ? [.placeholder] : [])
+                    .shimmering(active: viewModel.showLoadingAnimation)
             }
         }
         .padding(.vertical, Layout.padding)
@@ -76,7 +76,7 @@ private extension ReviewsDashboardCard {
                     .padding(.leading, Layout.padding)
                     .padding(.vertical, Layout.hideIconVerticalPadding)
             }
-            .disabled(viewModel.syncingData)
+            .disabled(viewModel.showLoadingAnimation)
         }
     }
 
@@ -207,7 +207,7 @@ private extension ReviewsDashboardCard {
                     .foregroundStyle(Color(.tertiaryLabel))
             }
         }
-        .disabled(viewModel.syncingData)
+        .disabled(viewModel.showLoadingAnimation)
     }
 }
 

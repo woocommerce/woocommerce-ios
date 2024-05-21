@@ -1,6 +1,5 @@
 import Foundation
 import Yosemite
-import protocol Storage.StorageManagerType
 import protocol WooFoundation.Analytics
 
 /// View model for `ProductStockDashboardCard`
@@ -16,7 +15,6 @@ final class ProductStockDashboardCardViewModel: ObservableObject {
 
     let siteID: Int64
     private let stores: StoresManager
-    private let storageManager: StorageManagerType
     private let analytics: Analytics
 
     /// In-memory list of loaded items sold by product IDs.
@@ -27,12 +25,10 @@ final class ProductStockDashboardCardViewModel: ObservableObject {
 
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
-         storageManager: StorageManagerType = ServiceLocator.storageManager,
          analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
         self.analytics = analytics
         self.stores = stores
-        self.storageManager = storageManager
 
         Task { @MainActor in
             selectedStockType = await loadLastSelectedStockType()

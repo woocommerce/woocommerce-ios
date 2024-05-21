@@ -45,6 +45,9 @@ struct PointOfSaleDashboardView: View {
         .sheet(isPresented: $viewModel.showsCardReaderSheet, content: {
             CardReaderConnectionView(viewModel: viewModel.cardReaderConnectionViewModel)
         })
+        .sheet(isPresented: $viewModel.showsFilterSheet, content: {
+            FilterView(viewModel: viewModel)
+        })
     }
 }
 

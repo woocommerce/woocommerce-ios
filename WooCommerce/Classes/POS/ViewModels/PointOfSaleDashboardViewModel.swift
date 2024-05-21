@@ -5,6 +5,7 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
     @Published var productsInCart: [CartProduct] = []
 
     @Published var showsCardReaderSheet: Bool = false
+    @Published var showsFilterSheet: Bool = false
     @ObservedObject private(set) var cardReaderConnectionViewModel: CardReaderConnectionViewModel
 
     init(products: [POSProduct],
@@ -69,6 +70,10 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
 
     func showCardReaderConnection() {
         showsCardReaderSheet = true
+    }
+
+    func showFilters() {
+        showsFilterSheet = true
     }
 }
 

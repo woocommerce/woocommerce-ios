@@ -5,7 +5,7 @@ struct Woo_Watch_AppApp: App {
 
     @StateObject var phoneDependencySynchronizer = PhoneDependenciesSynchronizer()
 
-    @State private var selectedTab = WooWatchTab.ordersList
+    @State private var selectedTab = WooWatchTab.myStore
 
     var body: some Scene {
         WindowGroup {

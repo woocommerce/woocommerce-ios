@@ -71,3 +71,10 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
         showsCardReaderSheet = true
     }
 }
+
+extension PointOfSaleDashboardViewModel {
+    // Helper function to populate SwifUI previews
+    static func defaultPreview() -> PointOfSaleDashboardViewModel {
+        PointOfSaleDashboardViewModel(products: [], cardReaderConnectionViewModel: .init(state: .connectingToReader))
+    }
+}

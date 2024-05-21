@@ -26,6 +26,10 @@ final class ProductStockDashboardCardViewModel: ObservableObject {
         self.analytics = analytics
         self.stores = stores
         self.storageManager = storageManager
+
+        Task { @MainActor in
+            selectedStockType = await loadLastSelectedStockType()
+        }
     }
 
     @MainActor
@@ -44,8 +48,25 @@ final class ProductStockDashboardCardViewModel: ObservableObject {
 
     func updateStockType(_ type: StockType) {
         selectedStockType = type
+        stores.dispatch(AppSettingsAction.setLastSelectedStockType(siteID: siteID, type: type.rawValue))
         Task {
             await reloadData()
+        }
+    }
+}
+
+private extension ProductStockDashboardCardViewModel {
+    @MainActor
+    func loadLastSelectedStockType() async -> StockType {
+        await withCheckedContinuation { continuation in
+            stores.dispatch(AppSettingsAction.loadLastSelectedStockType(siteID: siteID, onCompletion: { type in
+                guard let type else {
+                    continuation.resume(returning: .lowStock)
+                    return
+                }
+                let stockType = StockType(rawValue: type) ?? .lowStock
+                continuation.resume(returning: stockType)
+            }))
         }
     }
 }

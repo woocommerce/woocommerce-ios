@@ -1638,7 +1638,7 @@ extension AppSettingsStoreTests {
         let savedSettings: GeneralStoreSettingsBySite = try XCTUnwrap(fileStorage?.data(for: expectedGeneralStoreSettingsFileURL))
         let settingsForSite = savedSettings.storeSettingsBySite[TestConstants.siteID]
 
-        assertEqual(stockType, settingsForSite?.lastSelectedStatsTimeRange)
+        assertEqual(stockType, settingsForSite?.lastSelectedStockType)
     }
 
     func test_loadLastSelectedStockType_works_correctly() throws {

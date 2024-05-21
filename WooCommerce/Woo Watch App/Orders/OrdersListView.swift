@@ -17,16 +17,16 @@ struct OrdersListView: View {
 
     var body: some View {
         NavigationSplitView() {
-            List() {
-                Section { // Temporary Views
-                    OrderListCard()
-                    OrderListCard()
-                    OrderListCard()
-                    OrderListCard()
-                    OrderListCard()
-                    OrderListCard()
-                    OrderListCard()
-                    OrderListCard()
+            Group {
+                switch viewModel.viewState {
+                case .idle:
+                    EmptyView()
+                case .loading:
+                    loadingView
+                case .error:
+                    errorView
+                case .loaded(let orders):
+                    dataView(orders: orders)
                 }
             }
             .navigationTitle(Localization.title)
@@ -47,6 +47,40 @@ struct OrdersListView: View {
             await viewModel.fetchOrders()
         }
     }
+
+    @ViewBuilder var loadingView: some View {
+        List {
+            OrderListCard(order: .init(date: "----",
+                                       number: "----",
+                                       name: "----- -----",
+                                       price: "----",
+                                       status: "------- ------"))
+        }
+        .redacted(reason: .placeholder)
+    }
+
+    /// Error View with a retry button
+    ///
+    @ViewBuilder var errorView: some View {
+        VStack {
+            Spacer()
+            Text(Localization.error)
+            Spacer()
+            Button(Localization.retry) {
+                Task {
+                    await viewModel.fetchOrders()
+                }
+            }
+        }
+    }
+
+    @ViewBuilder private func dataView(orders: [Order]) -> some View {
+        List() {
+            ForEach(orders, id: \.number) { order in
+                OrderListCard(order: order)
+            }
+        }
+    }
 }
 
 private extension OrdersListView {
@@ -56,6 +90,16 @@ private extension OrdersListView {
             value: "Orders",
             comment: "Title on the watch orders list screen."
         )
+        static let error = AppLocalizedString(
+            "watch.orders.error.title",
+            value: "There was an error loading the orders list",
+            comment: "Loading title on the watch orders list screen."
+        )
+        static let retry = AppLocalizedString(
+            "watch.orders.retry.title",
+            value: "Retry",
+            comment: "Retry on the watch orders list screen."
+        )
     }
 
     enum Images {
@@ -64,25 +108,28 @@ private extension OrdersListView {
 }
 
 struct OrderListCard: View {
+
+    let order: OrdersListView.Order
+
     var body: some View {
         VStack(alignment: .leading) {
 
             HStack {
-                Text("25 Feb")
+                Text(order.date)
                 Spacer()
-                Text("#1031")
+                Text(order.number)
             }
             .font(.footnote)
             .foregroundStyle(.secondary)
 
-            Text("Jemima Kirk")
+            Text(order.name)
                 .font(.body)
 
-            Text("$149.50")
+            Text(order.price)
                 .font(.body)
                 .bold()
 
-            Text("Pending payment")
+            Text(order.status)
                 .font(.footnote)
                 .foregroundStyle(Colors.wooPurple20)
         }

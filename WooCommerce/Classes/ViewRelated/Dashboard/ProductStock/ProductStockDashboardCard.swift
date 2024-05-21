@@ -9,6 +9,7 @@ struct ProductStockDashboardCard: View {
     @ObservedObject private var viewModel: ProductStockDashboardCardViewModel
     @ScaledMetric private var scale: CGFloat = 1.0
     @State private var showingSupportForm = false
+    @State private var selectedItem: ProductStockDashboardCardViewModel.StockItem?
 
     init(viewModel: ProductStockDashboardCardViewModel) {
         self.viewModel = viewModel
@@ -59,6 +60,9 @@ struct ProductStockDashboardCard: View {
         .padding(.horizontal, Layout.padding)
         .sheet(isPresented: $showingSupportForm) {
             supportForm
+        }
+        .sheet(item: $selectedItem) { item in
+            ViewControllerContainer(productDetailView(for: item))
         }
     }
 }
@@ -125,36 +129,42 @@ private extension ProductStockDashboardCard {
                     .fontWeight(.semibold)
             }
             ForEach(Array(viewModel.stock.enumerated()), id: \.element) { (index, element) in
-                HStack(alignment: .top) {
-                    // Thumbnail image
-                    KFImage(element.thumbnailURL)
-                        .placeholder { Image(uiImage: .productPlaceholderImage)
-                                .foregroundColor(Color(.listIcon))
-                        }
-                        .resizable()
-                        .frame(width: Layout.thumbnailSize * scale,
-                               height: Layout.thumbnailSize * scale)
-                        .clipShape(RoundedRectangle(cornerSize: Layout.thumbnailCornerSize))
-
-                    // Details
-                    VStack {
-                        HStack(alignment: .firstTextBaseline) {
-                            VStack(alignment: .leading) {
-                                Text(element.productName)
-                                    .bodyStyle()
-                                Text(String.pluralize(element.itemsSoldLast30Days,
-                                                      singular: Localization.subtitleSingular,
-                                                      plural: Localization.subtitlePlural))
-                                    .subheadlineStyle()
+                Button {
+                    selectedItem = element
+                } label: {
+                    HStack(alignment: .top) {
+                        // Thumbnail image
+                        KFImage(element.thumbnailURL)
+                            .placeholder { Image(uiImage: .productPlaceholderImage)
+                                    .foregroundColor(Color(.listIcon))
                             }
-                            Spacer()
-                            Text("\(element.stockQuantity)")
-                                .foregroundStyle(Color(.error))
-                                .bodyStyle()
-                                .fontWeight(.semibold)
+                            .resizable()
+                            .frame(width: Layout.thumbnailSize * scale,
+                                   height: Layout.thumbnailSize * scale)
+                            .clipShape(RoundedRectangle(cornerSize: Layout.thumbnailCornerSize))
+
+                        // Details
+                        VStack {
+                            HStack(alignment: .firstTextBaseline) {
+                                VStack(alignment: .leading) {
+                                    Text(element.productName)
+                                        .bodyStyle()
+                                        .multilineTextAlignment(.leading)
+                                    Text(String.pluralize(element.itemsSoldLast30Days,
+                                                          singular: Localization.subtitleSingular,
+                                                          plural: Localization.subtitlePlural))
+                                    .subheadlineStyle()
+                                    .multilineTextAlignment(.leading)
+                                }
+                                Spacer()
+                                Text("\(element.stockQuantity)")
+                                    .foregroundStyle(Color(.error))
+                                    .bodyStyle()
+                                    .fontWeight(.semibold)
+                            }
+                            Divider()
+                                .renderedIf(index < viewModel.stock.count - 1)
                         }
-                        Divider()
-                            .renderedIf(index < viewModel.stock.count - 1)
                     }
                 }
             }
@@ -200,6 +210,13 @@ private extension ProductStockDashboardCard {
                 }
             }
         }
+    }
+
+    func productDetailView(for item: ProductStockDashboardCardViewModel.StockItem) -> UIViewController {
+        let loaderViewController = ProductLoaderViewController(model: .product(productID: item.productID),
+                                                               siteID: viewModel.siteID,
+                                                               forceReadOnly: false)
+        return WooNavigationController(rootViewController: loaderViewController)
     }
 }
 

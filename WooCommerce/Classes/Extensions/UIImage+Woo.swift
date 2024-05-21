@@ -1058,6 +1058,12 @@ extension UIImage {
             .imageFlippedForRightToLeftLayoutDirection()
     }
 
+    /// Play square image
+    ///
+    static var playSquareImage: UIImage {
+        UIImage(systemName: "play.square")!
+    }
+
     /// Plus Icon
     ///
     static var plusImage: UIImage {

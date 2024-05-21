@@ -82,57 +82,52 @@ private extension HubMenu {
                 .disabled(!viewModel.switchStoreEnabled)
             }
 
+            // Point of Sale
+            if let menu = viewModel.posElement {
+                Section {
+                    menuItemView(menu: menu)
+                }
+            }
+
             // Settings Section
             Section(Localization.settings) {
                 ForEach(viewModel.settingsElements, id: \.id) { menu in
-                    Button {
-                        handleTap(menu: menu)
-                    } label: {
-                        Row(title: menu.title,
-                            titleBadge: nil,
-                            iconBadge: menu.iconBadge,
-                            description: menu.description,
-                            icon: .local(menu.icon),
-                            chevron: .leading)
-                        .foregroundColor(Color(menu.iconColor))
-                    }
-                    .accessibilityIdentifier(menu.accessibilityIdentifier)
-                    .overlay {
-                        NavigationLink(value: menu.id) {
-                            EmptyView()
-                        }
-                        .opacity(0)
-                    }
+                    menuItemView(menu: menu)
                 }
             }
 
             // General Section
             Section(Localization.general) {
                 ForEach(viewModel.generalElements, id: \.id) { menu in
-                    Button {
-                        handleTap(menu: menu)
-                    } label: {
-                        Row(title: menu.title,
-                            titleBadge: nil,
-                            iconBadge: menu.iconBadge,
-                            description: menu.description,
-                            icon: .local(menu.icon),
-                            chevron: .leading)
-                        .foregroundColor(Color(menu.iconColor))
-                    }
-                    .accessibilityIdentifier(menu.accessibilityIdentifier)
-                    .overlay {
-                        NavigationLink(value: menu.id) {
-                            EmptyView()
-                        }
-                        .opacity(0)
-                    }
+                    menuItemView(menu: menu)
                 }
             }
         }
         .listStyle(.insetGrouped)
         .background(Color(.listBackground))
         .accentColor(Color(.listSelectedBackground))
+    }
+
+    @ViewBuilder
+    func menuItemView(menu: HubMenuItem) -> some View {
+        Button {
+            handleTap(menu: menu)
+        } label: {
+            Row(title: menu.title,
+                titleBadge: nil,
+                iconBadge: menu.iconBadge,
+                description: menu.description,
+                icon: .local(menu.icon),
+                chevron: .leading)
+            .foregroundColor(Color(menu.iconColor))
+        }
+        .accessibilityIdentifier(menu.accessibilityIdentifier)
+        .overlay {
+            NavigationLink(value: menu.id) {
+                EmptyView()
+            }
+            .opacity(0)
+        }
     }
 
     @ViewBuilder

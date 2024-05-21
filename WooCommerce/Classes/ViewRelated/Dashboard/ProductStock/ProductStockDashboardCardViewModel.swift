@@ -56,6 +56,7 @@ final class ProductStockDashboardCardViewModel: ObservableObject {
                                  thumbnailURL: productThumbnails[item.productID] ?? nil,
                                  itemsSoldLast30Days: itemsSoldLast30Days[item.productID] ?? 0)
             }
+            .sorted { $0.stockQuantity < $1.stockQuantity }
         } catch {
             syncingError = error
         }

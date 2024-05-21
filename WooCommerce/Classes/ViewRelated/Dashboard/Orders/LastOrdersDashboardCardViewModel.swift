@@ -64,9 +64,8 @@ final class LastOrdersDashboardCardViewModel: ObservableObject {
          .completed,
          .cancelled,
          .refunded,
-         .failed,
-         // TODO: 12792 Load custom statuses from storage
-         .custom(.init(name: "free-gift", siteID: siteID, slug: "Free gift", total: 1))]
+         .failed]
+        // TODO: 12792 Load custom statuses from storage
     }
 
     var status: String {

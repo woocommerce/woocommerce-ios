@@ -60,7 +60,6 @@ final class ReviewsDashboardCardViewModel: ObservableObject {
                                                                            sortedBy: [])
 
         self.notificationsResultsController = ResultsController<StorageNote>(storageManager: storageManager,
-                                                                             sectionNameKeyPath: "normalizedAgeAsString",
                                                                              matching: nil,
                                                                              sortedBy: [])
 

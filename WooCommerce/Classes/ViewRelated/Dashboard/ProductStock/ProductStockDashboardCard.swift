@@ -148,6 +148,7 @@ private extension ProductStockDashboardCard {
                 .subheadlineStyle()
         }
         .padding(Layout.padding)
+        .frame(maxWidth: .infinity)
     }
 }
 

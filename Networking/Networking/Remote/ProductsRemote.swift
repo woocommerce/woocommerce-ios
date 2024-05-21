@@ -445,8 +445,8 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
             ParameterKey.type: stockType,
             ParameterKey.page: String(pageNumber),
             ParameterKey.perPage: String(pageSize),
-            ParameterKey.order: order,
-            ParameterKey.orderBy: orderBy
+            ParameterKey.order: order.value,
+            ParameterKey.orderBy: orderBy.value
         ]
         let request = JetpackRequest(wooApiVersion: .wcAnalytics,
                                      method: .get,
@@ -476,8 +476,8 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
             ParameterKey.after: dateFormatter.string(from: latestDateToInclude),
             ParameterKey.page: String(pageNumber),
             ParameterKey.perPage: String(pageSize),
-            ParameterKey.order: order,
-            ParameterKey.orderBy: orderBy,
+            ParameterKey.order: order.value,
+            ParameterKey.orderBy: orderBy.value,
             ParameterKey.extendedInfo: true
         ]
         let request = JetpackRequest(wooApiVersion: .wcAnalytics,

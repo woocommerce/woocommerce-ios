@@ -1621,6 +1621,59 @@ extension AppSettingsStoreTests {
         // Then
         XCTAssertNil(loadedTimeRange)
     }
+
+    // MARK: - Last selected stock type for Stock dashboard card
+
+    func test_setLastSelectedStockType_works_correctly() throws {
+        // Given
+        let stockType = "lowstock"
+        let existingSettings = GeneralStoreSettingsBySite(storeSettingsBySite: [TestConstants.siteID: GeneralStoreSettings()])
+        try fileStorage?.write(existingSettings, to: expectedGeneralStoreSettingsFileURL)
+
+        // When
+        let action = AppSettingsAction.setLastSelectedStockType(siteID: TestConstants.siteID, type: stockType)
+        subject?.onAction(action)
+
+        // Then
+        let savedSettings: GeneralStoreSettingsBySite = try XCTUnwrap(fileStorage?.data(for: expectedGeneralStoreSettingsFileURL))
+        let settingsForSite = savedSettings.storeSettingsBySite[TestConstants.siteID]
+
+        assertEqual(stockType, settingsForSite?.lastSelectedStatsTimeRange)
+    }
+
+    func test_loadLastSelectedStockType_works_correctly() throws {
+        // Given
+        let stockType = "lowstock"
+        let storeSettings = GeneralStoreSettings(lastSelectedStockType: stockType)
+        let existingSettings = GeneralStoreSettingsBySite(storeSettingsBySite: [TestConstants.siteID: storeSettings])
+        try fileStorage?.write(existingSettings, to: expectedGeneralStoreSettingsFileURL)
+
+        // When
+        var loadedStockType: String?
+        let action = AppSettingsAction.loadLastSelectedStockType(siteID: TestConstants.siteID) { type in
+            loadedStockType = type
+        }
+        subject?.onAction(action)
+
+        // Then
+        assertEqual(stockType, loadedStockType)
+    }
+
+    func test_loadLastSelectedStockType_returns_nil_when_no_data_was_saved() throws {
+        // Given
+        let existingSettings = GeneralStoreSettingsBySite(storeSettingsBySite: [TestConstants.siteID: GeneralStoreSettings()])
+        try fileStorage?.write(existingSettings, to: expectedGeneralStoreSettingsFileURL)
+
+        // When
+        var loadedStockType: String?
+        let action = AppSettingsAction.loadLastSelectedStockType(siteID: TestConstants.siteID) { type in
+            loadedStockType = type
+        }
+        subject?.onAction(action)
+
+        // Then
+        XCTAssertNil(loadedStockType)
+    }
 }
 
 // MARK: - Utils

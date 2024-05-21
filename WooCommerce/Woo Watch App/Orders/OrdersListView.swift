@@ -14,7 +14,7 @@ struct OrdersListView: View {
     var body: some View {
         NavigationSplitView() {
             List() {
-                Section {
+                Section { // Temporary Views
                     OrderListCard()
                     OrderListCard()
                     OrderListCard()
@@ -25,20 +25,34 @@ struct OrdersListView: View {
                     OrderListCard()
                 }
             }
-            .navigationTitle("Orders")
+            .navigationTitle(Localization.title)
             .listStyle(.plain)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button {
                         self.watchTab = .myStore
                     } label: {
-                        Label("", systemImage: "house")
+                        Images.myStore
                     }
                 }
             }
         } detail: {
             Text("Order Detail")
         }
+    }
+}
+
+private extension OrdersListView {
+    enum Localization {
+        static let title = AppLocalizedString(
+            "watch.orders.title",
+            value: "Orders",
+            comment: "Title on the watch orders list screen."
+        )
+    }
+
+    enum Images {
+        static let myStore = Image(systemName: "house")
     }
 }
 

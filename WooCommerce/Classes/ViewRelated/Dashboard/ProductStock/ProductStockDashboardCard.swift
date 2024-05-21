@@ -24,10 +24,16 @@ struct ProductStockDashboardCard: View {
 
             Divider()
 
-            stockList
-                .padding(.horizontal, Layout.padding)
-                .redacted(reason: viewModel.syncingData ? [.placeholder] : [])
-                .shimmering(active: viewModel.syncingData)
+            Group {
+                if viewModel.stock.isNotEmpty {
+                    stockList
+                } else {
+                    emptyView
+                }
+            }
+            .padding(.horizontal, Layout.padding)
+            .redacted(reason: viewModel.syncingData ? [.placeholder] : [])
+            .shimmering(active: viewModel.syncingData)
         }
         .padding(.vertical, Layout.padding)
         .background(Color(.listForeground(modal: false)))
@@ -62,11 +68,13 @@ private extension ProductStockDashboardCard {
 
     var filterBar: some View {
         HStack {
-            Text(Localization.status)
-                .foregroundStyle(Color.primaryText)
-                .subheadlineStyle()
-            Text(viewModel.selectedStockType.displayedName)
-                .subheadlineStyle()
+            AdaptiveStack(horizontalAlignment: .leading) {
+                Text(Localization.status)
+                    .foregroundStyle(Color.primaryText)
+                    .subheadlineStyle()
+                Text(viewModel.selectedStockType.displayedName)
+                    .subheadlineStyle()
+            }
             Spacer()
             Menu {
                 ForEach(ProductStockDashboardCardViewModel.StockType.allCases) { stockType in
@@ -113,8 +121,9 @@ private extension ProductStockDashboardCard {
                             VStack(alignment: .leading) {
                                 Text(element.productName)
                                     .bodyStyle()
-                                Text(String(format: Localization.subtitle,
-                                            element.itemsSoldLast30Days))
+                                Text(String.pluralize(element.itemsSoldLast30Days,
+                                                      singular: Localization.subtitleSingular,
+                                                      plural: Localization.subtitlePlural))
                                     .subheadlineStyle()
                             }
                             Spacer()
@@ -129,6 +138,16 @@ private extension ProductStockDashboardCard {
                 }
             }
         }
+    }
+
+    var emptyView: some View {
+        VStack(alignment: .center, spacing: Layout.padding) {
+            Image(uiImage: .noStoreImage)
+            Text(String(format: Localization.emptyStateTitle,
+                        viewModel.selectedStockType.displayedName))
+                .subheadlineStyle()
+        }
+        .padding(Layout.padding)
     }
 }
 
@@ -162,11 +181,23 @@ private extension ProductStockDashboardCard {
             value: "Stock levels",
             comment: "Header label on the Stock section on the My Store screen"
         )
-        static let subtitle = NSLocalizedString(
-            "productStockDashboardCard.item.subtitle",
+        static let subtitleSingular = NSLocalizedString(
+            "productStockDashboardCard.item.subtitle.singular",
+            value: "%1$d item sold last 30 days",
+            comment: "Subtitle in singular mode for the stock items on the Stock section on the My Store screen. " +
+            "Reads as: 1 item sold last 30 days"
+        )
+        static let subtitlePlural = NSLocalizedString(
+            "productStockDashboardCard.item.subtitle.plural",
             value: "%1$d items sold last 30 days",
-            comment: "Subtitle for the stock items on the Stock section on the My Store screen. " +
+            comment: "Subtitle in plural mode for the stock items on the Stock section on the My Store screen. " +
             "Reads as: 10 items sold last 30 days"
+        )
+        static let emptyStateTitle = NSLocalizedString(
+            "productStockDashboardCard.emptyStateTitle",
+            value: "No item found with %1$@ status",
+            comment: "Text on the empty state of the Stock section on the My Store screen. " +
+            "Reads as: No item found with Out of stock status"
         )
     }
 }

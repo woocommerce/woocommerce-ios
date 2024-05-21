@@ -10,6 +10,12 @@ public protocol CouponsRemoteProtocol {
                         pageSize: Int,
                         completion: @escaping (Result<[Coupon], Error>) -> ())
 
+    func loadCoupons(for siteID: Int64,
+                     by couponIDs: [Int64],
+                     pageNumber: Int,
+                     pageSize: Int,
+                     completion: @escaping (Result<[Coupon], Error>) -> ())
+
     func searchCoupons(for siteID: Int64,
                        keyword: String,
                        pageNumber: Int,
@@ -43,6 +49,15 @@ public protocol CouponsRemoteProtocol {
                                completion: @escaping (Result<[CouponReport], Error>) -> Void)
 }
 
+extension CouponsRemoteProtocol {
+    public func loadCoupons(for siteID: Int64, by couponsIDs: [Int64], completion: @escaping (Result<[Coupon], Error>) -> Void) {
+        loadCoupons(for: siteID,
+                    by: couponsIDs,
+                    pageNumber: CouponsRemote.Default.pageNumber,
+                    pageSize: CouponsRemote.Default.pageSize,
+                    completion: completion)
+    }
+}
 
 /// Coupons: Remote endpoints
 ///
@@ -62,6 +77,48 @@ public final class CouponsRemote: Remote, CouponsRemoteProtocol {
                                pageSize: Int = Default.pageSize,
                                completion: @escaping (Result<[Coupon], Error>) -> ()) {
         let parameters = [
+            ParameterKey.page: String(pageNumber),
+            ParameterKey.perPage: String(pageSize)
+        ]
+
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .get,
+                                     siteID: siteID,
+                                     path: Path.coupons,
+                                     parameters: parameters,
+                                     availableAsRESTRequest: true)
+
+        let mapper = CouponListMapper(siteID: siteID)
+
+        enqueue(request, mapper: mapper, completion: completion)
+    }
+
+    /// Retrieves a specific list of `Coupon`s by `couponID`.
+    ///
+    /// - Note: this method makes a single request for a list of coupons.
+    ///         It is NOT a wrapper for `retrieveCoupon()`
+    ///
+    /// - Parameters:
+    ///     - siteID: We are fetching remote coupons for this site.
+    ///     - couponIDs: The array of coupon IDs that are requested.
+    ///     - pageNumber: Number of page that should be retrieved.
+    ///     - pageSize: Number of coupons to be retrieved per page.
+    ///     - completion: Closure to be executed upon completion.
+    ///
+    public func loadCoupons(for siteID: Int64,
+                            by couponIDs: [Int64],
+                            pageNumber: Int = Default.pageNumber,
+                            pageSize: Int = Default.pageSize,
+                            completion: @escaping (Result<[Coupon], Error>) -> Void) {
+        guard couponIDs.isEmpty == false else {
+            completion(.success([]))
+            return
+        }
+
+        let stringOfCouponIDs = couponIDs.map { String($0) }
+            .joined(separator: ",")
+        let parameters = [
+            ParameterKey.include: stringOfCouponIDs,
             ParameterKey.page: String(pageNumber),
             ParameterKey.perPage: String(pageSize)
         ]
@@ -339,6 +396,7 @@ public extension CouponsRemote {
         static let before = "before"
         static let orderBy = "orderby"
         static let order = "order"
+        static let include = "include"
     }
 
     enum ParameterValue {

@@ -41,6 +41,10 @@ final class HubMenuViewModel: ObservableObject {
 
     @Published private(set) var woocommerceAdminURL = WooConstants.URLs.blog.asURL()
 
+    /// POS Section Element
+    ///
+    @Published private(set) var posElement: HubMenuItem?
+
     /// Settings Elements
     ///
     @Published private(set) var settingsElements: [HubMenuItem] = []
@@ -122,6 +126,7 @@ final class HubMenuViewModel: ObservableObject {
     /// Resets the menu elements displayed on the menu.
     ///
     func setupMenuElements() {
+        setupPOSElement()
         setupSettingsElements()
         setupGeneralElements()
     }
@@ -130,6 +135,19 @@ final class HubMenuViewModel: ObservableObject {
     func showPayments() {
         navigationPath = .init()
         navigationPath.append(HubMenuNavigationDestination.payments)
+    }
+
+    private func setupPOSElement() {
+        let isBetaFeatureEnabled = generalAppSettings.betaFeatureEnabled(.pointOfSale)
+        let eligibilityChecker = POSEligibilityChecker(cardPresentPaymentsOnboarding: CardPresentPaymentsOnboardingUseCase(),
+                                                       siteSettings: ServiceLocator.selectedSiteSettings.siteSettings,
+                                                       currencySettings: ServiceLocator.currencySettings,
+                                                       featureFlagService: featureFlagService)
+        if isBetaFeatureEnabled && eligibilityChecker.isEligible() {
+            posElement = PointOfSaleEntryPoint()
+        } else {
+            posElement = nil
+        }
     }
 
     private func setupSettingsElements() {
@@ -152,9 +170,6 @@ final class HubMenuViewModel: ObservableObject {
                            Reviews()]
         if generalAppSettings.betaFeatureEnabled(.inAppPurchases) {
             generalElements.append(InAppPurchases())
-        }
-        if generalAppSettings.betaFeatureEnabled(.pointOfSale) {
-            generalElements.append(PointOfSaleEntryPoint())
         }
 
         let inboxUseCase = InboxEligibilityUseCase(stores: stores, featureFlagService: featureFlagService)

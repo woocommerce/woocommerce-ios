@@ -658,7 +658,7 @@ private extension DefaultProductFormTableViewModel {
             quantityDetails.append(groupOfDescription)
         }
 
-        let details = quantityDetails.isEmpty ? nil : quantityDetails.joined(separator: "\n")
+        let details = quantityDetails.isEmpty ? Localization.emptyQuantityRules : quantityDetails.joined(separator: "\n")
 
         return ProductFormSection.SettingsRow.ViewModel(icon: icon,
                                                         title: title,
@@ -990,4 +990,7 @@ private extension DefaultProductFormTableViewModel.Localization {
                                                        comment: "Format of the Maximum Quantity setting (with a numeric quantity) on the Quantity Rules row")
         static let groupOfFormat = NSLocalizedString("Group of: %@",
                                                        comment: "Format of the Group Of setting (with a numeric quantity) on the Quantity Rules row")
+        static let emptyQuantityRules = NSLocalizedString("productForm.quantityRules.placeholder",
+                                                      value: "No Quantity Rules",
+                                                      comment: "Placeholder for empty product ratings")
 }

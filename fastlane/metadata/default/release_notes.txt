@@ -1,1 +1,5 @@
-In our latest update we've enhanced the barcode scanning by squashing a bug that allowed variable parent products to sneak into orders. Enjoy a smoother order creation experience with our latest update!
+- [*] Change text color in badge view in order products list to fix the dark mode readability. [https://github.com/woocommerce/woocommerce-ios/pull/12630]
+- [*] Speculative fix for a crash when opening order notifications [https://github.com/woocommerce/woocommerce-ios/pull/12643]
+- [internal] Show In-App feedback card in dashboard. [https://github.com/woocommerce/woocommerce-ios/pull/12636]
+- [*] Shipping: A shipping method can now be selected when adding or editing shipping on an order. [https://github.com/woocommerce/woocommerce-ios/pull/12688]
+

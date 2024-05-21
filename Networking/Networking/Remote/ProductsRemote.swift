@@ -49,6 +49,13 @@ public protocol ProductsRemoteProtocol {
                         completion: @escaping (Result<[Int64], Error>) -> Void)
     func createTemplateProduct(for siteID: Int64, template: ProductsRemote.TemplateType, completion: @escaping (Result<Int64, Error>) -> Void)
     func loadNumberOfProducts(siteID: Int64) async throws -> Int64
+
+    func loadStock(for siteID: Int64,
+                   with stockType: String,
+                   pageNumber: Int,
+                   pageSize: Int,
+                   orderBy: ProductsRemote.OrderKey,
+                   order: ProductsRemote.Order) async throws -> [ProductStock]
 }
 
 extension ProductsRemoteProtocol {
@@ -405,6 +412,30 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
         let mapper = ProductsTotalMapper()
         return try await enqueue(request, mapper: mapper)
     }
+
+    public func loadStock(for siteID: Int64,
+                          with stockType: String,
+                          pageNumber: Int,
+                          pageSize: Int,
+                          orderBy: ProductsRemote.OrderKey,
+                          order: ProductsRemote.Order) async throws -> [ProductStock] {
+        let path = Path.stockReports
+        let parameters: [String: Any] = [
+            ParameterKey.type: stockType,
+            ParameterKey.page: String(pageNumber),
+            ParameterKey.perPage: String(pageSize),
+            ParameterKey.order: order,
+            ParameterKey.orderBy: orderBy
+        ]
+        let request = JetpackRequest(wooApiVersion: .wcAnalytics,
+                                     method: .get,
+                                     siteID: siteID,
+                                     path: path,
+                                     parameters: parameters,
+                                     availableAsRESTRequest: true)
+        let mapper = ProductStockListMapper(siteID: siteID)
+        return try await enqueue(request, mapper: mapper)
+    }
 }
 
 
@@ -441,6 +472,7 @@ public extension ProductsRemote {
         static let products   = "products"
         static let templateProducts   = "onboarding/tasks/create_product_from_template"
         static let productsTotal = "reports/products/totals"
+        static let stockReports = "reports/stock"
     }
 
     private enum ParameterKey {
@@ -462,6 +494,7 @@ public extension ProductsRemote {
         static let images: String = "images"
         static let id: String         = "id"
         static let templateName: String = "template_name"
+        static let type = "type"
     }
 
     private enum ParameterValues {

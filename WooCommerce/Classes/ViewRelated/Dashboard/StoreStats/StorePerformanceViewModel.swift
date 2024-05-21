@@ -99,6 +99,9 @@ final class StorePerformanceViewModel: ObservableObject {
 
     func didSelectTimeRange(_ newTimeRange: StatsTimeRangeV4) {
         timeRange = newTimeRange
+        Task { [weak self] in
+            await self?.reloadData()
+        }
         saveLastTimeRange(timeRange)
         shouldHighlightStats = false
         usageTracksEventEmitter.interacted()
@@ -246,9 +249,6 @@ private extension StorePerformanceViewModel {
                 guard let self else { return }
                 periodViewModel = viewModel
                 observePeriodViewModel()
-                Task { [weak self] in
-                    await self?.reloadData()
-                }
             }
             .store(in: &subscriptions)
 

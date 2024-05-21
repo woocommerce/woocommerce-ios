@@ -18,7 +18,6 @@ final class DashboardViewModel: ObservableObject {
     @Published var localAnnouncementViewModel: LocalAnnouncementViewModel? = nil
 
     let storeOnboardingViewModel: StoreOnboardingViewModel
-
     let blazeCampaignDashboardViewModel: BlazeCampaignDashboardViewModel
 
     let storePerformanceViewModel: StorePerformanceViewModel
@@ -26,10 +25,15 @@ final class DashboardViewModel: ObservableObject {
     let inboxViewModel: InboxDashboardCardViewModel
     let reviewsViewModel: ReviewsDashboardCardViewModel
     let mostActiveCouponsViewModel: MostActiveCouponsCardViewModel
+    let productStockCardViewModel: ProductStockDashboardCardViewModel
 
     @Published var justInTimeMessagesWebViewModel: WebViewSheetViewModel? = nil
 
     @Published private(set) var dashboardCards: [DashboardCard] = []
+
+    /// Used to compare and reload only newly enabled cards
+    ///
+    private var previousDashboardCards: [DashboardCard] = []
 
     var unavailableCards: [DashboardCard] {
         dashboardCards.filter { $0.availability == .unavailable }
@@ -110,6 +114,8 @@ final class DashboardViewModel: ObservableObject {
         self.inboxViewModel = InboxDashboardCardViewModel(siteID: siteID)
         self.reviewsViewModel = ReviewsDashboardCardViewModel(siteID: siteID)
         self.mostActiveCouponsViewModel = MostActiveCouponsCardViewModel(siteID: siteID)
+        self.productStockCardViewModel = ProductStockDashboardCardViewModel(siteID: siteID)
+
         self.themeInstaller = themeInstaller
         self.inAppFeedbackCardViewModel.onFeedbackGiven = { [weak self] feedback in
             self?.showingInAppFeedbackSurvey = feedback == .didntLike
@@ -118,6 +124,7 @@ final class DashboardViewModel: ObservableObject {
         configureOrdersResultController()
         setupDashboardCards()
         installPendingThemeIfNeeded()
+        observeDashboardCardsAndReload()
     }
 
     /// Must be called by the `View` during the `onAppear()` event. This will
@@ -134,11 +141,23 @@ final class DashboardViewModel: ObservableObject {
     func reloadAllData() async {
         await withTaskGroup(of: Void.self) { group in
             group.addTask { [weak self] in
-                guard let self else { return }
-                await self.syncAnnouncements(for: self.siteID)
+                await self?.syncDashboardEssentialData()
             }
             group.addTask { [weak self] in
-                await self?.reloadStoreOnboardingTasks()
+                guard let self = self else { return }
+                await reloadCards(showOnDashboardCards)
+            }
+        }
+    }
+
+    /// Sync essential data to construct the dashboard
+    ///
+    @MainActor
+    func syncDashboardEssentialData() async {
+        await withTaskGroup(of: Void.self) { group in
+            group.addTask { [weak self] in
+                guard let self else { return }
+                await self.syncAnnouncements(for: self.siteID)
             }
             group.addTask { [weak self] in
                 await self?.reloadBlazeCampaignView()
@@ -148,21 +167,6 @@ final class DashboardViewModel: ObservableObject {
             }
             group.addTask { [weak self] in
                 await self?.updateHasOrdersStatus()
-            }
-            group.addTask { [weak self] in
-                await self?.storePerformanceViewModel.reloadData()
-            }
-            group.addTask { [weak self] in
-                await self?.topPerformersViewModel.reloadData()
-            }
-            if featureFlagService.isFeatureFlagEnabled(.dynamicDashboardM2) {
-                // TODO: optimize reloading to sync inbox only when the card is enabled.
-                group.addTask { [weak self] in
-                    await self?.inboxViewModel.reloadData()
-                }
-                group.addTask { [weak self] in
-                    await self?.mostActiveCouponsViewModel.reloadData()
-                }
             }
         }
     }
@@ -240,9 +244,99 @@ final class DashboardViewModel: ObservableObject {
     }
 }
 
+// MARK: Reload cards
+
+private extension DashboardViewModel {
+    func observeDashboardCardsAndReload() {
+        $dashboardCards
+            .filter({ $0.isNotEmpty })
+            .removeDuplicates()
+            .sink(receiveValue: { [weak self] cards in
+                guard let self else { return }
+
+                let newlyEnabledCards = {
+                    let previouslyEnabledCards = Set(
+                        self.previousDashboardCards
+                            .filter { $0.enabled }
+                    )
+                    let currentlyEnabledCards = Set(
+                        cards
+                            .filter { $0.enabled }
+                    )
+                    return Array(currentlyEnabledCards.subtracting(previouslyEnabledCards))
+                }()
+
+                previousDashboardCards = cards
+
+                if newlyEnabledCards.isNotEmpty {
+                    Task { @MainActor in
+                        await self.reloadCards(newlyEnabledCards)
+                    }
+                }
+            })
+            .store(in: &subscriptions)
+    }
+
+    @MainActor
+    func reloadCards(_ cards: [DashboardCard]) async {
+        await withTaskGroup(of: Void.self) { group in
+            cards.forEach { card in
+                switch card.type {
+                case .onboarding:
+                    group.addTask { [weak self] in
+                        await self?.reloadStoreOnboardingTasks()
+                    }
+                case .performance:
+                    group.addTask { [weak self] in
+                        await self?.storePerformanceViewModel.reloadData()
+                    }
+                case .topPerformers:
+                    group.addTask { [weak self] in
+                        await self?.topPerformersViewModel.reloadData()
+                    }
+                case .blaze:
+                    group.addTask { [weak self] in
+                        await self?.reloadBlazeCampaignView()
+                    }
+                case .inbox:
+                    guard featureFlagService.isFeatureFlagEnabled(.dynamicDashboardM2) else {
+                        return
+                    }
+                    group.addTask { [weak self] in
+                        await self?.inboxViewModel.reloadData()
+                    }
+                case .coupons:
+                    guard featureFlagService.isFeatureFlagEnabled(.dynamicDashboardM2) else {
+                        return
+                    }
+                    group.addTask { [weak self] in
+                        await self?.mostActiveCouponsViewModel.reloadData()
+                    }
+                case .stock:
+                    guard featureFlagService.isFeatureFlagEnabled(.dynamicDashboardM2) else {
+                        return
+                    }
+                    group.addTask { [weak self] in
+                        await self?.productStockCardViewModel.reloadData()
+                    }
+                case .reviews:
+                    guard featureFlagService.isFeatureFlagEnabled(.dynamicDashboardM2) else {
+                        return
+                    }
+                    group.addTask { [weak self] in
+                        await self?.reviewsViewModel.reloadData()
+                    }
+                case .lastOrders:
+                    // TODO
+                    return
+                }
+            }
+        }
+    }
+}
+
 // MARK: Private helpers
 private extension DashboardViewModel {
-
     /// Checks for Just In Time Messages and prepares the announcement if needed.
     ///
     @MainActor
@@ -296,33 +390,17 @@ private extension DashboardViewModel {
     }
 
     func setupDashboardCards() {
-        storeOnboardingViewModel.onDismiss = { [weak self] in
+        let showCustomizationScreen: (() -> Void) = { [weak self] in
             self?.showCustomizationScreen()
         }
-
-        blazeCampaignDashboardViewModel.onDismiss = { [weak self] in
-            self?.showCustomizationScreen()
-        }
-
-        storePerformanceViewModel.onDismiss = { [weak self] in
-            self?.showCustomizationScreen()
-        }
-
-        topPerformersViewModel.onDismiss = { [weak self] in
-            self?.showCustomizationScreen()
-        }
-
-        inboxViewModel.onDismiss = { [weak self] in
-            self?.showCustomizationScreen()
-        }
-
-        reviewsViewModel.onDismiss = { [weak self] in
-            self?.showCustomizationScreen()
-        }
-
-        mostActiveCouponsViewModel.onDismiss = { [weak self] in
-            self?.showCustomizationScreen()
-        }
+        storeOnboardingViewModel.onDismiss = showCustomizationScreen
+        blazeCampaignDashboardViewModel.onDismiss = showCustomizationScreen
+        storePerformanceViewModel.onDismiss = showCustomizationScreen
+        topPerformersViewModel.onDismiss = showCustomizationScreen
+        inboxViewModel.onDismiss = showCustomizationScreen
+        reviewsViewModel.onDismiss = showCustomizationScreen
+        mostActiveCouponsViewModel.onDismiss = showCustomizationScreen
+        productStockCardViewModel.onDismiss = showCustomizationScreen
     }
 
     func showCustomizationScreen() {
@@ -360,6 +438,7 @@ private extension DashboardViewModel {
             cards.append(DashboardCard(type: .inbox, availability: .show, enabled: false))
             cards.append(DashboardCard(type: .reviews, availability: .show, enabled: false))
             cards.append(DashboardCard(type: .coupons, availability: .show, enabled: false))
+            cards.append(DashboardCard(type: .stock, availability: .show, enabled: false))
         }
 
         return cards

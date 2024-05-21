@@ -29,7 +29,7 @@ struct ProductCardView: View {
                         onProductCardTapped?()
                     }, label: { })
                     .buttonStyle(POSPlusButtonStyle())
-                    .frame(width: 50, height: 50)
+                    .frame(width: 56, height: 56)
                 }
             }
             .frame(maxWidth: .infinity)

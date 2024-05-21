@@ -153,7 +153,7 @@ private extension EnhancedCouponListViewController {
 
 // MARK: - Localization
 //
-private extension EnhancedCouponListViewController {
+extension EnhancedCouponListViewController {
     enum Localization {
         static let title = NSLocalizedString(
             "Coupons",

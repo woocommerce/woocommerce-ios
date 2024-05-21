@@ -1,7 +1,7 @@
 import Foundation
 import Yosemite
-import protocol Storage.StorageManagerType
 import protocol WooFoundation.Analytics
+import protocol Storage.StorageManagerType
 
 /// View model for `MostActiveCouponsCard`.
 ///
@@ -12,24 +12,25 @@ final class MostActiveCouponsCardViewModel: ObservableObject {
     @Published private(set) var timeRange = StatsTimeRangeV4.today
     @Published private(set) var syncingData = false
     @Published private(set) var syncingError: Error?
-    @Published private(set) var coupons: [Coupon] = []
+    @Published private(set) var rows: [MostActiveCouponRowViewModel] = []
     @Published private(set) var timeRangeText = ""
 
     let siteID: Int64
     let siteTimezone: TimeZone
     private let stores: StoresManager
-    private let storage: StorageManagerType
+    private let storageManager: StorageManagerType
     private let analytics: Analytics
+    private var resultsController: ResultsController<StorageCoupon>?
 
     init(siteID: Int64,
          siteTimezone: TimeZone = .siteTimezone,
          stores: StoresManager = ServiceLocator.stores,
-         storage: StorageManagerType = ServiceLocator.storageManager,
+         storageManager: StorageManagerType = ServiceLocator.storageManager,
          analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
         self.siteTimezone = siteTimezone
         self.stores = stores
-        self.storage = storage
+        self.storageManager = storageManager
         self.analytics = analytics
 
         $timeRange
@@ -44,12 +45,11 @@ final class MostActiveCouponsCardViewModel: ObservableObject {
 
         Task { @MainActor in
             self.timeRange = await loadLastTimeRange() ?? .today
-            await reloadData()
         }
     }
 
     func dismiss() {
-        // TODO: add tracking
+        analytics.track(event: .DynamicDashboard.hideCardTapped(type: .coupons))
         onDismiss?()
     }
 
@@ -66,9 +66,27 @@ final class MostActiveCouponsCardViewModel: ObservableObject {
     func reloadData() async {
         syncingData = true
         syncingError = nil
+        rows = []
+        resultsController = nil
+
         do {
-            let activeCouponReports = try await mostActiveCoupons()
-            coupons = try await loadCouponDetails(for: activeCouponReports)
+            let couponReports = try await fetchMostActiveCoupons()
+
+            if couponReports.isNotEmpty {
+                /// Load and display coupons from storage
+                configureResultsController(for: couponReports)
+
+                /// If all or some coupons are not available in storage
+                /// then fetch from remote
+                if rows.count != couponReports.count {
+                    try await synchronizeCoupons(for: couponReports)
+                } else {
+                    /// Refresh coupons in background
+                    Task { @MainActor in
+                        try await synchronizeCoupons(for: couponReports)
+                    }
+                }
+            }
         } catch {
             syncingError = error
             DDLogError("⛔️ Dashboard (Most active coupons) — Error loading most active coupons: \(error)")
@@ -103,6 +121,43 @@ extension MostActiveCouponsCardViewModel {
 }
 
 private extension MostActiveCouponsCardViewModel {
+    func configureResultsController(for couponReports: [CouponReport]) {
+        let resultsController = ResultsController<StorageCoupon>(storageManager: storageManager,
+                                                                 matching: NSPredicate(format: "siteID == %lld AND couponID IN %@",
+                                                                                       siteID, couponReports.map({ $0.couponID })),
+                                                                 sortedBy: [])
+        self.resultsController = resultsController
+        resultsController.onDidChangeContent = { [weak self] in
+            self?.updateResults(for: couponReports)
+        }
+        resultsController.onDidResetContent = { [weak self] in
+            self?.updateResults(for: couponReports)
+        }
+
+        do {
+            try resultsController.performFetch()
+            updateResults(for: couponReports)
+        } catch {
+            ServiceLocator.crashLogging.logError(error)
+        }
+    }
+
+    func updateResults(for couponReports: [CouponReport]) {
+        guard let coupons = resultsController?.fetchedObjects else {
+            return
+        }
+
+        rows = couponReports
+            .map { report in
+                guard let coupon = coupons.first(where: { $0.couponID == report.couponID }) else {
+                    return nil
+                }
+                return MostActiveCouponRowViewModel(coupon: coupon,
+                                                    report: report)
+            }
+            .compactMap { $0 }
+    }
+
     @MainActor
     func loadLastTimeRange() async -> StatsTimeRangeV4? {
         await withCheckedContinuation { continuation in
@@ -119,88 +174,31 @@ private extension MostActiveCouponsCardViewModel {
     }
 
     @MainActor
-    func loadCouponDetails(for reports: [CouponReport]) async throws -> [Coupon] {
-        try await Task.sleep(nanoseconds: 1_000_000_000)
-        return [Coupon(siteID: siteID,
-                       couponID: 123,
-                       code: "WELCOMETOTHECLUB",
-                       amount: "20",
-                       dateCreated: Date(),
-                       dateModified: Date(),
-                       discountType: .percent,
-                       description: "TEST",
-                       dateExpires: nil,
-                       usageCount: 5612,
-                       individualUse: true,
-                       productIds: [],
-                       excludedProductIds: [],
-                       usageLimit: nil,
-                       usageLimitPerUser: nil,
-                       limitUsageToXItems: nil,
-                       freeShipping: true,
-                       productCategories: [],
-                       excludedProductCategories: [],
-                       excludeSaleItems: false,
-                       minimumAmount: "1",
-                       maximumAmount: "32",
-                       emailRestrictions: [],
-                       usedBy: []),
-                Coupon(siteID: siteID,
-                       couponID: 212,
-                       code: "20OFF",
-                       amount: "20",
-                       dateCreated: Date(),
-                       dateModified: Date(),
-                       discountType: .fixedCart,
-                       description: "ERAFFF",
-                       dateExpires: nil,
-                       usageCount: 671,
-                       individualUse: true,
-                       productIds: [],
-                       excludedProductIds: [3, 4, 32, 43, 1],
-                       usageLimit: nil,
-                       usageLimitPerUser: nil,
-                       limitUsageToXItems: nil,
-                       freeShipping: true,
-                       productCategories: [],
-                       excludedProductCategories: [],
-                       excludeSaleItems: false,
-                       minimumAmount: "1",
-                       maximumAmount: "32",
-                       emailRestrictions: [],
-                       usedBy: []),
-                Coupon(siteID: siteID,
-                       couponID: 122,
-                       code: "tunamelt",
-                       amount: "100",
-                       dateCreated: Date(),
-                       dateModified: Date(),
-                       discountType: .percent,
-                       description: "UNKEMK",
-                       dateExpires: nil,
-                       usageCount: 304,
-                       individualUse: true,
-                       productIds: [1, 4, 2],
-                       excludedProductIds: [],
-                       usageLimit: nil,
-                       usageLimitPerUser: nil,
-                       limitUsageToXItems: nil,
-                       freeShipping: true,
-                       productCategories: [],
-                       excludedProductCategories: [],
-                       excludeSaleItems: false,
-                       minimumAmount: "1",
-                       maximumAmount: "32",
-                       emailRestrictions: [],
-                       usedBy: [])]
+    func synchronizeCoupons(for couponReports: [CouponReport]) async throws {
+        guard couponReports.isNotEmpty else {
+            return
+        }
+        let couponIDs = couponReports.map({ $0.couponID })
+        try await withCheckedThrowingContinuation { continuation in
+            stores.dispatch(CouponAction.loadCoupons(siteID: siteID,
+                                                     couponIDs: couponIDs) { result in
+                switch result {
+                case .success:
+                    continuation.resume()
+                case .failure(let error):
+                    continuation.resume(throwing: error)
+                }
+            })
+        }
     }
 
     @MainActor
-    func mostActiveCoupons() async throws -> [CouponReport] {
-        try await Task.sleep(nanoseconds: 1_000_000_000)
-        return [CouponReport(couponID: 123, amount: 546, ordersCount: 54),
-                CouponReport(couponID: 122, amount: 784, ordersCount: 23),
-                CouponReport(couponID: 212, amount: 112, ordersCount: 10)]
+    func fetchMostActiveCoupons() async throws -> [CouponReport] {
+        try await withCheckedThrowingContinuation { continuation in
+            stores.dispatch(CouponAction.loadMostActiveCoupons(siteID: siteID, timeRange: timeRange, siteTimezone: siteTimezone) { result in
+                continuation.resume(with: result)
+            })
+        }
     }
 }
 

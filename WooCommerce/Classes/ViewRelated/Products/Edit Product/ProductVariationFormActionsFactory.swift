@@ -57,7 +57,7 @@ private extension ProductVariationFormActionsFactory {
                 return nil
             }
         }()
-        let shouldShowQuantityRulesRow = isMinMaxQuantitiesEnabled && productVariation.hasQuantityRules
+        let shouldShowQuantityRulesRow = isMinMaxQuantitiesEnabled && productVariation.canEditQuantityRules
 
         let actions: [ProductFormEditAction?] = [
             subscriptionOrPriceRow,

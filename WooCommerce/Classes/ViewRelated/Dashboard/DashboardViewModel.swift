@@ -229,7 +229,8 @@ final class DashboardViewModel: ObservableObject {
                 Task {
                     await self.updateDashboardCards(canShowOnboarding: canShowOnboarding,
                                                     canShowBlaze: canShowBlaze,
-                                                    canShowAnalytics: hasOrders
+                                                    canShowAnalytics: hasOrders,
+                                                    canShowLastOrders: hasOrders
                     )
                 }
             }
@@ -414,7 +415,10 @@ private extension DashboardViewModel {
         showingCustomization = true
     }
 
-    func generateDefaultCards(canShowOnboarding: Bool, canShowBlaze: Bool, canShowAnalytics: Bool) -> [DashboardCard] {
+    func generateDefaultCards(canShowOnboarding: Bool,
+                              canShowBlaze: Bool,
+                              canShowAnalytics: Bool,
+                              canShowLastOrders: Bool) -> [DashboardCard] {
         var cards = [DashboardCard]()
 
         // Onboarding card.
@@ -446,7 +450,11 @@ private extension DashboardViewModel {
             cards.append(DashboardCard(type: .reviews, availability: .show, enabled: false))
             cards.append(DashboardCard(type: .coupons, availability: .show, enabled: false))
             cards.append(DashboardCard(type: .stock, availability: .show, enabled: false))
-            cards.append(DashboardCard(type: .lastOrders, availability: .show, enabled: false))
+
+            // When not available, Last orders cards need to be hidden from Dashboard, but appear on Customize as "Unavailable"
+            cards.append(DashboardCard(type: .lastOrders,
+                                       availability: canShowLastOrders ? .show : .unavailable,
+                                       enabled: canShowLastOrders))
         }
 
         return cards
@@ -455,12 +463,14 @@ private extension DashboardViewModel {
     @MainActor
     func updateDashboardCards(canShowOnboarding: Bool,
                               canShowBlaze: Bool,
-                              canShowAnalytics: Bool) async {
+                              canShowAnalytics: Bool,
+                              canShowLastOrders: Bool) async {
 
         // First, generate latest cards state based on current canShow states
         let initialCards = generateDefaultCards(canShowOnboarding: canShowOnboarding,
                                                 canShowBlaze: canShowBlaze,
-                                                canShowAnalytics: canShowAnalytics)
+                                                canShowAnalytics: canShowAnalytics,
+                                                canShowLastOrders: canShowLastOrders)
 
         // Next, get saved cards and preserve existing enabled state for all available cards.
         // This is needed because even if a user already disabled an available card and saved it, in `initialCards`

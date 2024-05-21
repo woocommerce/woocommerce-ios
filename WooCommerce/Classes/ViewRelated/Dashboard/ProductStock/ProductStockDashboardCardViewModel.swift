@@ -9,6 +9,7 @@ final class ProductStockDashboardCardViewModel: ObservableObject {
     // Set externally to trigger callback upon hiding the Inbox card.
     var onDismiss: (() -> Void)?
 
+    @Published private(set) var stock: [StockItem] = []
     @Published private(set) var syncingData = false
     @Published private(set) var syncingError: Error?
     @Published private(set) var selectedStockType: StockType = .lowStock
@@ -17,6 +18,12 @@ final class ProductStockDashboardCardViewModel: ObservableObject {
     private let stores: StoresManager
     private let storageManager: StorageManagerType
     private let analytics: Analytics
+
+    /// In-memory list of loaded items sold by product IDs.
+    private var itemsSoldLast30Days: [Int64: Int] = [:]
+
+    /// In-memory list of loaded product thumbnails by product IDs.
+    private var productThumbnails: [Int64: URL?] = [:]
 
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
@@ -36,8 +43,26 @@ final class ProductStockDashboardCardViewModel: ObservableObject {
     func reloadData() async {
         syncingData = true
         syncingError = nil
-        // TODO: replace this with actual remote requests
-        try? await Task.sleep(nanoseconds: 1_000_000_000)
+        do {
+            let productStock = try await fetchStock(type: selectedStockType)
+            let productIDs = productStock.map { $0.productID }
+            try await saveStockDetailsToMemory(for: productIDs)
+            stock = productStock.map { item in
+                let quantity: Int = {
+                    guard let stockQuantity = item.stockQuantity else {
+                        return 0
+                    }
+                    return Int(truncating: stockQuantity as NSNumber)
+                }()
+                return StockItem(productID: item.productID,
+                                 productName: item.name,
+                                 stockQuantity: quantity,
+                                 thumbnailURL: productThumbnails[item.productID] ?? nil,
+                                 itemsSoldLast30Days: itemsSoldLast30Days[item.productID] ?? 0)
+            }
+        } catch {
+            syncingError = error
+        }
         syncingData = false
     }
 
@@ -120,9 +145,52 @@ private extension ProductStockDashboardCardViewModel {
             })
         }
     }
+
+    @MainActor
+    func saveStockDetailsToMemory(for productIDs: [Int64]) async throws {
+        let idsToFetchItemsSold: [Int64] = productIDs.filter { !itemsSoldLast30Days.keys.contains($0) }
+        let idsToFetchProductDetails: [Int64] = productIDs.filter { !productThumbnails.keys.contains($0) }
+
+        try await withThrowingTaskGroup(of: Void.self) { [weak self] group in
+            guard let self else { return }
+
+            if idsToFetchItemsSold.isNotEmpty {
+                group.addTask {
+                    let segments = try await self.fetchProductReports(productIDs: idsToFetchItemsSold)
+                    for segment in segments {
+                        self.itemsSoldLast30Days[segment.productID] = segment.subtotals.itemsSold
+                    }
+                }
+            }
+
+            if idsToFetchProductDetails.isNotEmpty {
+                group.addTask {
+                    let products = try await self.fetchProductDetails(productIDs: idsToFetchProductDetails)
+                    for product in products {
+                        self.productThumbnails[product.productID] = product.imageURL
+                    }
+                }
+            }
+
+            while !group.isEmpty {
+                // rethrow any failure.
+                try await group.next()
+            }
+        }
+    }
 }
 
 extension ProductStockDashboardCardViewModel {
+    struct StockItem: Identifiable, Hashable {
+        let productID: Int64
+        let productName: String
+        let stockQuantity: Int
+        let thumbnailURL: URL?
+        let itemsSoldLast30Days: Int
+
+        var id: Int64 { productID }
+    }
+
     enum StockType: String, CaseIterable, Identifiable {
         case lowStock = "lowstock"
         case outOfStock = "outofstock"

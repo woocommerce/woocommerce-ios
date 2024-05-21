@@ -300,4 +300,12 @@ public enum AppSettingsAction: Action {
     /// Loads the last selected time range for the Most Active coupons dashboard card.
     ///
     case loadLastSelectedMostActiveCouponsTimeRange(siteID: Int64, onCompletion: (StatsTimeRangeV4?) -> Void)
+
+    /// Stores the last selected stock type for the Stock dashboard card.
+    ///
+    case setLastSelectedStockType(siteID: Int64, type: String)
+
+    /// Loads the last selected stock type for the Stock dashboard card.
+    ///
+    case loadLastSelectedStockType(siteID: Int64, onCompletion: (String?) -> Void)
 }

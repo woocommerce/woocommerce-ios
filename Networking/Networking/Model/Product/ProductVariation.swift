@@ -166,9 +166,9 @@ public struct ProductVariation: Codable, GeneratedCopiable, Equatable, Generated
         self.shippingClassID = shippingClassID
         self.menuOrder = menuOrder
         self.subscription = subscription
-        self.minAllowedQuantity = minAllowedQuantity
+        self.minAllowedQuantity = minAllowedQuantity.refinedMinMaxQuantityEmptyValue
+        self.groupOfQuantity = groupOfQuantity.refinedMinMaxQuantityEmptyValue
         self.maxAllowedQuantity = maxAllowedQuantity
-        self.groupOfQuantity = groupOfQuantity
         self.overrideProductQuantities = overrideProductQuantities
     }
 
@@ -407,6 +407,12 @@ public struct ProductVariation: Codable, GeneratedCopiable, Equatable, Generated
 
         // Variation (Local) Attributes
         try container.encode(attributes, forKey: .attributes)
+
+        // Quantity Rules
+        // https://woocommerce.com/document/minmax-quantities/#section-6
+        try container.encode(maxAllowedQuantity, forKey: .maxAllowedQuantity)
+        try container.encode(minAllowedQuantity, forKey: .minAllowedQuantity)
+        try container.encode(groupOfQuantity, forKey: .groupOfQuantity)
 
         // Metadata
         let metaDataValuePairs = buildMetaDataValuePairs()

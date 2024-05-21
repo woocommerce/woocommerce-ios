@@ -64,7 +64,7 @@ final class DashboardViewHostingController: UIHostingController<DashboardView> {
         observeModalJustInTimeMessages()
 
         Task {
-            await viewModel.reloadAllData()
+            await viewModel.syncDashboardEssentialData()
         }
     }
 

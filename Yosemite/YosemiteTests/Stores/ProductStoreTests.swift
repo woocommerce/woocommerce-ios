@@ -2831,6 +2831,133 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertTrue(result.isFailure)
         XCTAssertEqual(result.failure as? NetworkError, .timeout())
     }
+
+    // MARK: - Fetch stock
+
+    func test_fetchStock_returns_stock_on_success() throws {
+        // Given
+        let stock = ProductStock.fake().copy(siteID: sampleSiteID,
+                                             productID: 13,
+                                             name: "Steamed bun",
+                                             sku: "1353",
+                                             manageStock: true,
+                                             stockQuantity: 4,
+                                             stockStatusKey: "instock")
+        let mockRemote = MockProductsRemote()
+        mockRemote.whenFetchingStock(thenReturn: .success([stock]))
+        let productStore = ProductStore(dispatcher: dispatcher,
+                                        storageManager: storageManager,
+                                        network: network,
+                                        remote: mockRemote)
+
+        // When
+        let result = waitFor { promise in
+            productStore.onAction(ProductAction.fetchStockReport(siteID: self.sampleSiteID,
+                                                                 stockType: "lowstock",
+                                                                 pageNumber: 1,
+                                                                 pageSize: 3,
+                                                                 orderBy: .date,
+                                                                 order: .descending,
+                                                                 completion: { result in
+                promise(result)
+            }))
+        }
+
+        // Then
+        let receivedStock = try XCTUnwrap(result.get())
+        XCTAssertEqual(receivedStock.count, 1)
+        XCTAssertEqual(receivedStock.first, stock)
+    }
+
+    func test_fetchStock_returns_error_on_failure() throws {
+        // Given
+        let mockRemote = MockProductsRemote()
+        mockRemote.whenFetchingStock(thenReturn: .failure(NetworkError.timeout()))
+        let productStore = ProductStore(dispatcher: dispatcher,
+                                        storageManager: storageManager,
+                                        network: network,
+                                        remote: mockRemote)
+
+        // When
+        let result = waitFor { promise in
+            productStore.onAction(ProductAction.fetchStockReport(siteID: self.sampleSiteID,
+                                                                 stockType: "lowstock",
+                                                                 pageNumber: 1,
+                                                                 pageSize: 3,
+                                                                 orderBy: .date,
+                                                                 order: .descending,
+                                                                 completion: { result in
+                promise(result)
+            }))
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        XCTAssertEqual(result.failure as? NetworkError, .timeout())
+    }
+
+    // MARK: - Fetch product reports
+
+    func test_fetchProductReports_returns_segments_on_success() throws {
+        // Given
+        let segment = ProductReportSegment.fake().copy(productID: 123, productName: "Steamed bun", subtotals: .fake().copy(itemsSold: 10))
+        let mockRemote = MockProductsRemote()
+        mockRemote.whenFetchingProductReports(thenReturn: .success([segment]))
+        let productStore = ProductStore(dispatcher: dispatcher,
+                                        storageManager: storageManager,
+                                        network: network,
+                                        remote: mockRemote)
+
+        // When
+        let result = waitFor { promise in
+            productStore.onAction(ProductAction.fetchProductReports(siteID: self.sampleSiteID,
+                                                                    productIDs: [119, 134],
+                                                                    timeZone: .gmt,
+                                                                    earliestDateToInclude: Date(timeIntervalSinceNow: -3600*24*7),
+                                                                    latestDateToInclude: Date(),
+                                                                    pageSize: 3,
+                                                                    pageNumber: 1,
+                                                                    orderBy: .itemsSold,
+                                                                    order: .descending) { result in
+                promise(result)
+            })
+        }
+
+        // Then
+        let receivedSegments = try XCTUnwrap(result.get())
+        XCTAssertEqual(receivedSegments.count, 1)
+        XCTAssertEqual(receivedSegments.first, segment)
+    }
+
+    func test_fetchProductReports_returns_error_on_failure() throws {
+        // Given
+        let mockRemote = MockProductsRemote()
+        mockRemote.whenFetchingProductReports(thenReturn: .failure(NetworkError.timeout()))
+        let productStore = ProductStore(dispatcher: dispatcher,
+                                        storageManager: storageManager,
+                                        network: network,
+                                        remote: mockRemote)
+
+        // When
+        let result = waitFor { promise in
+            productStore.onAction(ProductAction.fetchProductReports(siteID: self.sampleSiteID,
+                                                                    productIDs: [119, 134],
+                                                                    timeZone: .gmt,
+                                                                    earliestDateToInclude: Date(timeIntervalSinceNow: -3600*24*7),
+                                                                    latestDateToInclude: Date(),
+                                                                    pageSize: 3,
+                                                                    pageNumber: 1,
+                                                                    orderBy: .itemsSold,
+                                                                    order: .descending,
+                                                                    completion: { result in
+                promise(result)
+            }))
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        XCTAssertEqual(result.failure as? NetworkError, .timeout())
+    }
 }
 
 // MARK: - Private Helpers

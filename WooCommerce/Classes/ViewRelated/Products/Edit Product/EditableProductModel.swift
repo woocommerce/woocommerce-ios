@@ -179,9 +179,8 @@ extension EditableProductModel: ProductFormDataModel, TaxClassRequestable {
         product.subscription
     }
 
-    var hasQuantityRules: Bool {
-        let hasNoRules = minAllowedQuantity.isNilOrEmptyOrZero && maxAllowedQuantity.isNilOrEmptyOrZero && groupOfQuantity.isNilOrEmptyOrZero
-        return !hasNoRules
+    var canEditQuantityRules: Bool {
+        minAllowedQuantity != nil || maxAllowedQuantity != nil || groupOfQuantity != nil
     }
 
     var minAllowedQuantity: String? {

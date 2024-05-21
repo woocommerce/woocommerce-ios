@@ -3,7 +3,7 @@
 18.8
 -----
 - [internal] Optimize API calls sent for Dashboard screen. [https://github.com/woocommerce/woocommerce-ios/pull/12775]
-
+- [internal] Enhanced Thread Safety in Core Data Management. [https://github.com/woocommerce/woocommerce-ios/pull/12805]
 
 18.7
 -----

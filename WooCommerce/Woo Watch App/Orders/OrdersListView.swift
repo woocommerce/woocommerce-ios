@@ -14,17 +14,28 @@ struct OrdersListView: View {
     var body: some View {
         NavigationSplitView() {
             List() {
-                OrderListCard()
-                OrderListCard()
-                OrderListCard()
-                OrderListCard()
-                OrderListCard()
-                OrderListCard()
-                OrderListCard()
-                OrderListCard()
+                Section {
+                    OrderListCard()
+                    OrderListCard()
+                    OrderListCard()
+                    OrderListCard()
+                    OrderListCard()
+                    OrderListCard()
+                    OrderListCard()
+                    OrderListCard()
+                }
             }
             .navigationTitle("Orders")
             .listStyle(.plain)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button {
+                        self.watchTab = .myStore
+                    } label: {
+                        Label("", systemImage: "house")
+                    }
+                }
+            }
         } detail: {
             Text("Order Detail")
         }

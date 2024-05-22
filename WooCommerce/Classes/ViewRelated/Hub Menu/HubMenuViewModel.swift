@@ -123,7 +123,6 @@ final class HubMenuViewModel: ObservableObject {
                                                            featureFlagService: featureFlagService)
         observeSiteForUIUpdates()
         observePlanName()
-        setupPOSElement()
         tapToPayBadgePromotionChecker.$shouldShowTapToPayBadges.share().assign(to: &$shouldShowNewFeatureBadgeOnPayments)
     }
 
@@ -134,6 +133,7 @@ final class HubMenuViewModel: ObservableObject {
     /// Resets the menu elements displayed on the menu.
     ///
     func setupMenuElements() {
+        setupPOSElement()
         setupSettingsElements()
         setupGeneralElements()
     }

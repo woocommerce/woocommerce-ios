@@ -422,10 +422,10 @@ extension HubMenuViewModel {
     struct PointOfSaleEntryPoint: HubMenuItem {
         static var id = "pointOfSale"
 
-        let title: String = "Point Of Sale"
-        let description: String = "Point Of Sale entry point"
-        let icon: UIImage = UIImage(systemName: "ladybug.fill")!
-        let iconColor: UIColor = .red
+        let title: String = Localization.pos
+        let description: String = Localization.posDescription
+        let icon: UIImage = .pointOfSaleImage
+        let iconColor: UIColor = .withColorStudio(.green, shade: .shade30)
         let accessibilityIdentifier: String = "menu-pointOfSale"
         let trackingOption: String = "pointOfSale"
         let iconBadge: HubMenuBadgeType? = nil
@@ -483,6 +483,14 @@ extension HubMenuViewModel {
         static let myStore = NSLocalizedString(
             "My Store",
             comment: "Title of the hub menu view in case there is no title for the store")
+
+        static let pos = NSLocalizedString(
+            "Point of Sale Mode",
+            comment: "Title of the POS menu in the hub menu")
+
+        static let posDescription = NSLocalizedString(
+            "Use the app as a cash register",
+            comment: "Description of the POS menu in the hub menu")
 
         static let woocommerceAdmin = NSLocalizedString(
             "WooCommerce Admin",

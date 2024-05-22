@@ -1058,6 +1058,12 @@ extension UIImage {
             .imageFlippedForRightToLeftLayoutDirection()
     }
 
+    /// Play square image
+    ///
+    static var playSquareImage: UIImage {
+        UIImage(systemName: "play.square")!
+    }
+
     /// Plus Icon
     ///
     static var plusImage: UIImage {
@@ -1074,6 +1080,12 @@ extension UIImage {
     ///
     static var plusSmallImage: UIImage {
         return UIImage.gridicon(.plusSmall)
+    }
+
+    /// Point of sale image
+    ///
+    static var pointOfSaleImage: UIImage {
+        UIImage(named: "point-of-sale")!
     }
 
     /// Product description AI announcement image

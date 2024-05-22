@@ -85,7 +85,7 @@ private extension HubMenu {
             // Point of Sale
             if let menu = viewModel.posElement {
                 Section {
-                    menuItemView(menu: menu)
+                    menuItemView(menu: menu, chevron: .enteringMode)
                 }
             }
 
@@ -109,7 +109,7 @@ private extension HubMenu {
     }
 
     @ViewBuilder
-    func menuItemView(menu: HubMenuItem) -> some View {
+    func menuItemView(menu: HubMenuItem, chevron: Row.Chevron = .leading) -> some View {
         Button {
             handleTap(menu: menu)
         } label: {
@@ -118,7 +118,7 @@ private extension HubMenu {
                 iconBadge: menu.iconBadge,
                 description: menu.description,
                 icon: .local(menu.icon),
-                chevron: .leading)
+                chevron: chevron)
             .foregroundColor(Color(menu.iconColor))
         }
         .accessibilityIdentifier(menu.accessibilityIdentifier)
@@ -233,6 +233,7 @@ private extension HubMenu {
             case none
             case down
             case leading
+            case enteringMode
 
             var asset: UIImage {
                 switch self {
@@ -242,6 +243,9 @@ private extension HubMenu {
                     return .chevronDownImage
                 case .leading:
                     return .chevronImage
+                case .enteringMode:
+                    return .playSquareImage
+                        .withTintColor(.secondaryLabel, renderingMode: .alwaysTemplate)
                 }
             }
         }

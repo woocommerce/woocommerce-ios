@@ -29,14 +29,14 @@ struct OrderListCellViewModel {
     /// For example, #560 Pamela Nguyen
     ///
     var title: String {
-        let customerName: String = {
-            if let fullName = order.billingAddress?.fullName, fullName.isNotEmpty {
-                return fullName
-            }
-            return Localization.guestName
-        }()
+        Localization.title(orderNumber: order.number, customerName: customerName)
+    }
 
-        return Localization.title(orderNumber: order.number, customerName: customerName)
+    var customerName: String {
+        if let fullName = order.billingAddress?.fullName, fullName.isNotEmpty {
+            return fullName
+        }
+        return Localization.guestName
     }
 
     /// The localized unabbreviated total which includes the currency.

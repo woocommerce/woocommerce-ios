@@ -32,11 +32,13 @@ final class OrdersListViewModel: ObservableObject {
 
     private static func viewOrders(from remoteOrders: [Order], currencySettings: CurrencySettings) -> [OrdersListView.Order] {
         remoteOrders.map { order in
-            OrdersListView.Order(date: order.dateCreated.description,
-                                 number: "#\(order.number)",
-                                 name: ((order.billingAddress?.firstName ?? "") + " " + (order.billingAddress?.lastName ?? "")),
-                                 price: "$\(order.total)",
-                                 status: order.status.rawValue)
+            // TODO: Provide real list of site statuses.
+            let orderViewModel = OrderListCellViewModel(order: order, status: nil, currencySettings: currencySettings)
+            return OrdersListView.Order(date: orderViewModel.dateCreated,
+                                        number: "#\(order.number)",
+                                        name: orderViewModel.customerName,
+                                        price: orderViewModel.total ?? "$\(order.total)",
+                                        status: orderViewModel.statusString.capitalized)
         }
     }
 }

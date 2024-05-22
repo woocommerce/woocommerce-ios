@@ -96,7 +96,7 @@ final class HubMenuViewModel: ObservableObject {
             siteID: siteID,
             dependencies: .init(
                 cardPresentPaymentsConfiguration: CardPresentConfigurationLoader().configuration,
-                onboardingUseCase: CardPresentPaymentsOnboardingUseCase(),
+                onboardingUseCase: cardPresentPaymentsOnboarding,
                 cardReaderSupportDeterminer: CardReaderSupportDeterminer(siteID: siteID),
                 wooPaymentsDepositService: WooPaymentsDepositService(siteID: siteID,
                                                                      credentials: ServiceLocator.stores.sessionManager.defaultCredentials!)),

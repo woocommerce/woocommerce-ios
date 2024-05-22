@@ -180,7 +180,7 @@ private extension ReviewsDashboardCardViewModel {
     /// Populates data from the local storage for the three main data (reviews, products, notifications).
     ///
     func updateData() {
-        let localReviews = reviews.prefix(Constants.numberOfItems)
+        let localReviews = reviews.filter { $0.status == currentFilter.productReviewStatus }.prefix(Constants.numberOfItems)
 
         // We can show partial review content as long as there are reviews found in storage.
         if localReviews.isEmpty == false {

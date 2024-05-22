@@ -209,9 +209,9 @@ private extension ReviewsDashboardCardViewModel {
 
     @MainActor
     func synchronizeReviews(filter: ReviewsFilter) async throws {
-        try await synchronizeProductReviews(filter: filter)
+        let fetchedReviews = try await synchronizeProductReviews(filter: filter)
 
-        let productIDs = reviews.prefix(Constants.numberOfItems).map { $0.productID }
+        let productIDs = fetchedReviews.prefix(Constants.numberOfItems).map { $0.productID }
 
         if productIDs.isNotEmpty {
             // Get product names and, optionally, read status from notifications.
@@ -251,17 +251,16 @@ private extension ReviewsDashboardCardViewModel {
 // MARK: Remote
 private extension ReviewsDashboardCardViewModel {
     @MainActor
-    func synchronizeProductReviews (filter: ReviewsFilter? = nil) async throws {
-        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+    func synchronizeProductReviews (filter: ReviewsFilter? = nil) async throws -> [ProductReview] {
+        try await withCheckedThrowingContinuation { continuation in
             stores.dispatch(ProductReviewAction.synchronizeProductReviews(siteID: siteID,
                                                                           pageNumber: 1,
                                                                           pageSize: Constants.numberOfItems,
                                                                           status: currentFilter.productReviewStatus
                                                                          ) { result in
                 switch result {
-                case .success:
-                    // Ignoring the result from remote as we're using storage as the single source of truth
-                    continuation.resume()
+                case .success(let reviews):
+                    continuation.resume(returning: reviews)
                 case .failure(let error):
                     continuation.resume(throwing: error)
                 }

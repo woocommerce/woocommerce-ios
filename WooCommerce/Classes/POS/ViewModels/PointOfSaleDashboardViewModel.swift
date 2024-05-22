@@ -72,12 +72,11 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
     }
 
     func submitCart() {
-        // TODO
+        // TODO: https://github.com/woocommerce/woocommerce-ios/issues/12810
         orderStage = .finalizing
     }
 
     func addMoreToCart() {
-        // TODO
         orderStage = .building
     }
 

@@ -18,13 +18,13 @@ private extension ReviewsDashboardEmptyView {
     enum Localization {
         static let noReviewsText = NSLocalizedString(
             "mostActiveCouponsEmptyView.noReviewsText",
-            value: "Get your first reviews",
+            value: "No reviews found.",
             comment: "Message shown in the Reviews Dashboard Card if the site has no review"
         )
 
         static let noFilteredReviewsText = NSLocalizedString(
             "mostActiveCouponsEmptyView.noFilteredReviewsText",
-            value: "No reviews found.",
+            value: "No reviews match the selected filter, please try changing the filter.",
             comment: "Message shown in the Reviews Dashboard Card if the list is filtered and there is no review."
         )
     }

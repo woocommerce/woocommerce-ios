@@ -112,7 +112,7 @@ struct OrderListCard: View {
     let order: OrdersListView.Order
 
     var body: some View {
-        VStack(alignment: .leading) {
+        VStack(alignment: .leading, spacing: 2) {
 
             HStack {
                 Text(order.date)

@@ -219,7 +219,7 @@ private extension ReviewsDashboardCardViewModel {
     func synchronizeReviews(filter: ReviewsFilter) async throws {
         let fetchedReviews = try await synchronizeProductReviews(filter: filter)
 
-        let productIDs = fetchedReviews.prefix(Constants.numberOfItems).map { $0.productID }
+        let productIDs = fetchedReviews.map { $0.productID }
 
         if productIDs.isNotEmpty {
             updateProductsResultsController(for: productIDs)
@@ -273,12 +273,7 @@ private extension ReviewsDashboardCardViewModel {
                                                                           pageSize: Constants.numberOfItems,
                                                                           status: currentFilter.productReviewStatus
                                                                          ) { result in
-                switch result {
-                case .success(let reviews):
-                    continuation.resume(returning: reviews)
-                case .failure(let error):
-                    continuation.resume(throwing: error)
-                }
+                continuation.resume(with: result)
             })
         }
     }

@@ -6,9 +6,18 @@ import enum WooFoundation.CountryCode
 import protocol Experiments.FeatureFlagService
 import struct Yosemite.SiteSetting
 
+protocol POSEligibilityCheckerProtocol {
+    /// As POS eligibility can change from site settings and card payment onboarding state, it's recommended to observe the eligibility value.
+    var isEligible: AnyPublisher<Bool, Never> { get }
+}
+
 /// Determines whether the POS entry point can be shown based on the selected store and feature gates.
-final class POSEligibilityChecker {
-    @Published private(set) var isEligible: Bool = false
+final class POSEligibilityChecker: POSEligibilityCheckerProtocol {
+    var isEligible: AnyPublisher<Bool, Never> {
+        $isEligibleValue.eraseToAnyPublisher()
+    }
+
+    @Published private var isEligibleValue: Bool = false
     private var onboardingStateSubscription: AnyCancellable?
 
     private let cardPresentPaymentsOnboarding: CardPresentPaymentsOnboardingUseCaseProtocol
@@ -35,7 +44,7 @@ private extension POSEligibilityChecker {
         let isTablet = UIDevice.current.userInterfaceIdiom == .pad
         let isFeatureFlagEnabled = featureFlagService.isFeatureFlagEnabled(.displayPointOfSaleToggle)
         guard isTablet && isFeatureFlagEnabled else {
-            isEligible = false
+            isEligibleValue = false
             return
         }
 
@@ -47,7 +56,7 @@ private extension POSEligibilityChecker {
                 // Woo Payments plugin enabled and user setup complete
                 onboardingState == .completed(plugin: .wcPayOnly) || onboardingState == .completed(plugin: .wcPayPreferred)
             }
-            .assign(to: &$isEligible)
+            .assign(to: &$isEligibleValue)
     }
 
     func isEligibleFromSiteChecks() -> Bool {

@@ -6,14 +6,16 @@ final class BetaFeaturesConfigurationViewModel: ObservableObject {
     @Published private(set) var availableFeatures: [BetaFeature] = []
     private let appSettings: GeneralAppSettingsStorage
     private let featureFlagService: FeatureFlagService
-    private let posEligibilityChecker: POSEligibilityChecker
+    private let posEligibilityChecker: POSEligibilityCheckerProtocol
 
     init(appSettings: GeneralAppSettingsStorage = ServiceLocator.generalAppSettings,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
-         posEligibilityChecker: POSEligibilityChecker = POSEligibilityChecker(cardPresentPaymentsOnboarding: CardPresentPaymentsOnboardingUseCase(),
-                                                                              siteSettings: ServiceLocator.selectedSiteSettings,
-                                                                              currencySettings: ServiceLocator.currencySettings,
-                                                                              featureFlagService: ServiceLocator.featureFlagService)) {
+         posEligibilityChecker: POSEligibilityCheckerProtocol = POSEligibilityChecker(
+            cardPresentPaymentsOnboarding: CardPresentPaymentsOnboardingUseCase(),
+            siteSettings: ServiceLocator.selectedSiteSettings,
+            currencySettings: ServiceLocator.currencySettings,
+            featureFlagService: ServiceLocator.featureFlagService
+         )) {
         self.appSettings = appSettings
         self.featureFlagService = featureFlagService
         self.posEligibilityChecker = posEligibilityChecker
@@ -27,7 +29,7 @@ final class BetaFeaturesConfigurationViewModel: ObservableObject {
 
 private extension BetaFeaturesConfigurationViewModel {
     func observePOSEligibilityForAvailableFeatures() {
-        posEligibilityChecker.$isEligible
+        posEligibilityChecker.isEligible
             .map { [weak self] isEligibleForPOS in
                 guard let self else {
                     return []

@@ -68,7 +68,7 @@ final class HubMenuViewModel: ObservableObject {
     private let featureFlagService: FeatureFlagService
     private let generalAppSettings: GeneralAppSettingsStorage
     private let cardPresentPaymentsOnboarding: CardPresentPaymentsOnboardingUseCaseProtocol
-    private let posEligibilityChecker: POSEligibilityChecker
+    private let posEligibilityChecker: POSEligibilityCheckerProtocol
 
     private(set) var productReviewFromNoteParcel: ProductReviewFromNoteParcel?
 
@@ -145,7 +145,7 @@ final class HubMenuViewModel: ObservableObject {
     }
 
     private func setupPOSElement() {
-        Publishers.CombineLatest(generalAppSettings.betaFeatureEnabledPublisher(.pointOfSale), posEligibilityChecker.$isEligible)
+        Publishers.CombineLatest(generalAppSettings.betaFeatureEnabledPublisher(.pointOfSale), posEligibilityChecker.isEligible)
             .map { isBetaFeatureEnabled, isEligibleForPOS in
                 if isBetaFeatureEnabled && isEligibleForPOS {
                     return PointOfSaleEntryPoint()

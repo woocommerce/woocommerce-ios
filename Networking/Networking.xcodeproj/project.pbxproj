@@ -230,6 +230,7 @@
 		26373E202BFCF6A7008E6735 /* EntityDateModifiedMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE865A9C2A41E1480049B03C /* EntityDateModifiedMapper.swift */; };
 		26373E242BFCF9F0008E6735 /* Encodable+Serialization.swift in Sources */ = {isa = PBXBuildFile; fileRef = 021C7BF623863D1800A3BCBD /* Encodable+Serialization.swift */; };
 		26373E2A2BFD08AF008E6735 /* WatchOS-Models+Copiable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26373E282BFD0880008E6735 /* WatchOS-Models+Copiable.swift */; };
+		26373E302BFD7CAC008E6735 /* OrderStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE12FBD8221F3A6F00C59248 /* OrderStatus.swift */; };
 		263A6D9E2BEA9DF500C292B2 /* Logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 933A2731222234F800C2143A /* Logging.swift */; };
 		263A6D9F2BEA9E4200C292B2 /* DotcomValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B53EF5332180F646003E146F /* DotcomValidator.swift */; };
 		263A6DA02BEA9E7300C292B2 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = B557DA1920979D66005962F4 /* Settings.swift */; };
@@ -4576,6 +4577,7 @@
 				2680B0D72BED5A8800E7F1D8 /* ApplicationPasswordMapper.swift in Sources */,
 				2680B0D82BED5A8800E7F1D8 /* ApplicationPasswordNameAndUUIDMapper.swift in Sources */,
 				2680B0D62BED5A7F00E7F1D8 /* WordPressOrgNetwork.swift in Sources */,
+				26373E302BFD7CAC008E6735 /* OrderStatus.swift in Sources */,
 				2680B0D52BED5A7700E7F1D8 /* CookieNonceAuthenticator.swift in Sources */,
 				26373E1B2BFCF531008E6735 /* String+HTML.swift in Sources */,
 				2680B0D42BED5A6600E7F1D8 /* AppicationPasswordEncoder.swift in Sources */,

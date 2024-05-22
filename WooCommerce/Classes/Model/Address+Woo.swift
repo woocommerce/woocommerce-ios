@@ -1,6 +1,11 @@
 import Foundation
 import Contacts
+
+#if canImport(Yosemite)
 import Yosemite
+#elseif canImport(NetworkingWatchOS)
+import NetworkingWatchOS
+#endif
 
 
 // Yosemite.Address Helper Methods
@@ -33,6 +38,7 @@ extension Address {
         return output.joined(separator: "\n")
     }
 
+#if !os(watchOS)
     /// Returns the Postal Address, formated and ready for display.
     ///
     var formattedPostalAddress: String? {
@@ -115,9 +121,10 @@ extension Address {
                            postcode: taxRate.postcodes.first ?? taxRate.postcode,
                            country: taxRate.country)
     }
+#endif
 }
 
-
+#if !os(watchOS)
 // MARK: - Private Methods
 //
 private extension Address {
@@ -132,6 +139,7 @@ private extension Address {
 
         return address1 + "\n" + address2
     }
+
 
     /// Returns a CNPostalAddress with the receiver's properties
     ///
@@ -149,6 +157,7 @@ private extension Address {
         return address
     }
 
+
     func refineAddressState() -> Address {
         // https://github.com/woocommerce/woocommerce-ios/issues/5851
         // The backend gives us the state code in the state field.
@@ -161,3 +170,4 @@ private extension Address {
         return copy(state: stateName)
     }
 }
+#endif

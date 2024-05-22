@@ -1,18 +1,29 @@
 import Foundation
+
+#if canImport(Yosemite)
 import Yosemite
+#elseif canImport(NetworkingWatchOS)
+import NetworkingWatchOS
+#endif
+
+#if canImport(WooFoundation)
 import WooFoundation
+#elseif canImport(WooFoundationWatchOS)
+import WooFoundationWatchOS
+#endif
+
 
 // MARK: - View Model for individual cells on the Order List screen
 //
 struct OrderListCellViewModel {
     private let order: Order
     private let orderStatus: OrderStatus?
+    private let currencyFormatter: CurrencyFormatter
 
-    private let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
-
-    init(order: Order, status: OrderStatus?) {
+    init(order: Order, status: OrderStatus?, currencySettings: CurrencySettings) {
         self.order = order
-        orderStatus = status
+        self.orderStatus = status
+        self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
     }
 
     /// For example, #560 Pamela Nguyen
@@ -59,6 +70,7 @@ struct OrderListCellViewModel {
         return orderStatus?.name ?? order.status.rawValue
     }
 
+#if !os(watchOS)
     /// Accessory view that renders the cell's disclosure indicator
     ///
     var accessoryView: UIImageView? {
@@ -69,6 +81,7 @@ struct OrderListCellViewModel {
         accessoryView.tintColor = .tertiaryLabel
         return accessoryView
     }
+#endif
 }
 
 // MARK: - Constants

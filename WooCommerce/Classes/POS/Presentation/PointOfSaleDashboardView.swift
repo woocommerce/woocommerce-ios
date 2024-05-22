@@ -4,12 +4,28 @@ struct TotalsView: View {
     var body: some View {
         VStack {
             Text("Totals")
+                .font(.title)
                 .foregroundColor(Color.white)
             Spacer()
             HStack {
                 Button("Take payment") { debugPrint("Not implemented") }
+                    .padding(.all, 10)
+                    .frame(maxWidth: .infinity, idealHeight: 120)
+                    .font(.title)
+                    .foregroundColor(Color.white)
+                    .border(.white, width: 2)
                 Button("Cash") { debugPrint("Not implemented") }
+                    .padding(.all, 10)
+                    .frame(maxWidth: .infinity, idealHeight: 120)
+                    .font(.title)
+                    .foregroundColor(Color.primaryBackground)
+                    .background(Color.white)
                 Button("Card") { debugPrint("Not implemented") }
+                    .padding(.all, 10)
+                    .frame(maxWidth: .infinity, idealHeight: 120)
+                    .font(.title)
+                    .foregroundColor(Color.primaryBackground)
+                    .background(Color.white)
             }
         }
     }

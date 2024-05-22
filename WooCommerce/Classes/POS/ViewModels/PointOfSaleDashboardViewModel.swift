@@ -72,13 +72,13 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
     }
 
     func submitCart() {
-        // TODO:
-        // Dummy toggle state. Should go only one-way building -> finalizing
-        if orderStage == .building {
-            orderStage = .finalizing
-        } else {
-            orderStage = .building
-        }
+        // TODO
+        orderStage = .finalizing
+    }
+
+    func addMoreToCart() {
+        // TODO
+        orderStage = .building
     }
 
     func showCardReaderConnection() {

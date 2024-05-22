@@ -8,6 +8,13 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
     @Published var showsFilterSheet: Bool = false
     @ObservedObject private(set) var cardReaderConnectionViewModel: CardReaderConnectionViewModel
 
+    enum OrderStage {
+        case building
+        case finalizing
+    }
+
+    @Published private(set) var orderStage: OrderStage = .building
+
     init(products: [POSProduct],
          cardReaderConnectionViewModel: CardReaderConnectionViewModel) {
         self.products = products
@@ -65,7 +72,13 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
     }
 
     func submitCart() {
-        debugPrint("Not implemented")
+        // TODO:
+        // Dummy toggle state. Should go only one-way building -> finalizing
+        if orderStage == .building {
+            orderStage = .finalizing
+        } else {
+            orderStage = .building
+        }
     }
 
     func showCardReaderConnection() {

@@ -1,5 +1,20 @@
 import SwiftUI
 
+struct TotalsView: View {
+    var body: some View {
+        VStack {
+            Text("Totals")
+                .foregroundColor(Color.white)
+            Spacer()
+            HStack {
+                Button("Take payment") { debugPrint("Not implemented") }
+                Button("Cash") { debugPrint("Not implemented") }
+                Button("Card") { debugPrint("Not implemented") }
+            }
+        }
+    }
+}
+
 struct PointOfSaleDashboardView: View {
     @Environment(\.presentationMode) var presentationMode
 
@@ -14,13 +29,24 @@ struct PointOfSaleDashboardView: View {
             Text("WooCommerce Point Of Sale")
                 .foregroundColor(Color.white)
             HStack {
-                ProductGridView(viewModel: viewModel)
-                    .background(Color.secondaryBackground)
-                    .frame(maxWidth: .infinity)
-                Spacer()
-                CartView(viewModel: viewModel)
-                    .background(Color.secondaryBackground)
-                    .frame(maxWidth: .infinity)
+                switch viewModel.orderStage {
+                case .building:
+                    ProductGridView(viewModel: viewModel)
+                        .background(Color.secondaryBackground)
+                        .frame(maxWidth: .infinity)
+                    Spacer()
+                    CartView(viewModel: viewModel)
+                        .background(Color.secondaryBackground)
+                        .frame(maxWidth: .infinity)
+                case .finalizing:
+                    CartView(viewModel: viewModel)
+                        .background(Color.secondaryBackground)
+                        .frame(maxWidth: .infinity)
+                    Spacer()
+                    TotalsView()
+                        .background(Color.secondaryBackground)
+                        .frame(maxWidth: .infinity)
+                }
             }
         }
         .background(Color.primaryBackground)

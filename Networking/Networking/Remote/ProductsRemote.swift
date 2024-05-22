@@ -532,7 +532,10 @@ public extension ProductsRemote {
     enum OrderKey {
         case date
         case name
-        case itemsSold // available for use in `GET wc-analytics/reports/products/stats` only.`
+        // available for use in `GET wc-analytics/reports/stock` only.
+        case stockStatus
+        // available for use in `GET wc-analytics/reports/products/stats` only.
+        case itemsSold
     }
 
     enum Order {
@@ -618,6 +621,8 @@ private extension ProductsRemote.OrderKey {
             return "date"
         case .name:
             return "title"
+        case .stockStatus:
+            return "stock_status"
         case .itemsSold:
             return "items_sold"
         }

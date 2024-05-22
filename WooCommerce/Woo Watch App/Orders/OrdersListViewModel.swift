@@ -62,11 +62,16 @@ extension OrdersListView {
 
     /// Represents an order item.
     ///
-    struct Order {
+    struct Order: Identifiable, Hashable {
         let date: String
         let number: String
         let name: String
         let price: String
         let status: String
+
+        // SwiftUI ID
+        var id: String {
+            number
+        }
     }
 }

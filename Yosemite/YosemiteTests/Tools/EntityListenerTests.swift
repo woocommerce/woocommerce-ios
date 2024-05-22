@@ -149,7 +149,7 @@ class EntityListenerTests: XCTestCase {
 
     /// Tests the thread safety of the readOnlyEntity property.
     ///
-    func test_hread_safety_for_readOnlyEntity() {
+    func test_thread_safety_for_readOnlyEntity() {
         // Given: A sample storage account is inserted and saved.
         let storageAccount = storageManager.insertSampleAccount()
         viewContext.saveIfNeeded()

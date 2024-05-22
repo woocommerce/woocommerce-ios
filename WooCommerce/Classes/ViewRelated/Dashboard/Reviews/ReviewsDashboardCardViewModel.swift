@@ -32,7 +32,6 @@ final class ReviewsDashboardCardViewModel: ObservableObject {
     }
     @Published private(set) var showLoadingAnimation = false
     @Published private(set) var syncingError: Error?
-    @Published private(set) var shouldShowAllReviewsButton = false
 
     private let stores: StoresManager
     private let storageManager: StorageManagerType
@@ -215,11 +214,6 @@ private extension ReviewsDashboardCardViewModel {
         let productIDs = reviews.prefix(Constants.numberOfItems).map { $0.productID }
 
         if productIDs.isNotEmpty {
-            // As long as the app is able to fetch one review once, then the button should always appear.
-            // Later on, when filtering by hold or pending status, the reviews result might become empty.
-            // In that case, the app should keep showing the button to allow the user to see all non-filtered reviews.
-            shouldShowAllReviewsButton = true
-
             // Get product names and, optionally, read status from notifications.
             await withTaskGroup(of: Void.self) { group in
                 group.addTask { [weak self] in

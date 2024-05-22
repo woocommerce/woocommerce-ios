@@ -40,14 +40,12 @@ struct ReviewsDashboardCard: View {
                 .shimmering(active: viewModel.showLoadingAnimation)
             }
 
-            if viewModel.shouldShowAllReviewsButton {
-                Divider()
+            Divider()
 
-                viewAllReviewsButton
-                    .padding(.horizontal, Layout.padding)
-                    .redacted(reason: viewModel.showLoadingAnimation ? [.placeholder] : [])
-                    .shimmering(active: viewModel.showLoadingAnimation)
-            }
+            viewAllReviewsButton
+                .padding(.horizontal, Layout.padding)
+                .redacted(reason: viewModel.showLoadingAnimation ? [.placeholder] : [])
+                .shimmering(active: viewModel.showLoadingAnimation)
         }
         .padding(.vertical, Layout.padding)
         .background(Color(.listForeground(modal: false)))

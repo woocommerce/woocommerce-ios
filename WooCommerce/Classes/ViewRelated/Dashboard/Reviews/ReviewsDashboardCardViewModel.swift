@@ -19,12 +19,7 @@ final class ReviewsDashboardCardViewModel: ObservableObject {
         case approved
     }
 
-    @Published private(set) var data: [ReviewViewModel] = [] {
-        didSet {
-            showLoadingAnimation = data.isEmpty
-        }
-    }
-
+    @Published private(set) var data: [ReviewViewModel] = []
     private var reviews: [ProductReview] {
         return productReviewsResultsController.fetchedObjects
     }
@@ -36,6 +31,8 @@ final class ReviewsDashboardCardViewModel: ObservableObject {
     }
     @Published private(set) var showLoadingAnimation = false
     @Published private(set) var syncingError: Error?
+    @Published private var syncingData: Bool = false
+    @Published private(set) var switchingStatus: Bool = false
 
     private let stores: StoresManager
     private let storageManager: StorageManagerType
@@ -67,6 +64,12 @@ final class ReviewsDashboardCardViewModel: ObservableObject {
                                                                              sortedBy: [])
 
         configureResultsController()
+
+        $syncingData.combineLatest($data)
+            .map { syncing, data -> Bool in
+                syncing && data.isEmpty
+            }
+            .assign(to: &$showLoadingAnimation)
     }
 
     /// ResultsController for ProductReview
@@ -94,7 +97,7 @@ final class ReviewsDashboardCardViewModel: ObservableObject {
 
     @MainActor
     func reloadData() async {
-        showLoadingAnimation = true
+        syncingData = true
         syncingError = nil
         do {
             try await synchronizeReviews(filter: currentFilter)
@@ -102,13 +105,15 @@ final class ReviewsDashboardCardViewModel: ObservableObject {
             syncingError = error
             DDLogError("⛔️ Dashboard (Reviews) — Error synchronizing reviews: \(error)")
         }
-        showLoadingAnimation = false
+        syncingData = false
     }
 
     @MainActor
     func filterReviews(by filter: ReviewsFilter) async {
+        switchingStatus = true
         currentFilter = filter
         await reloadData()
+        switchingStatus = false
     }
 }
 

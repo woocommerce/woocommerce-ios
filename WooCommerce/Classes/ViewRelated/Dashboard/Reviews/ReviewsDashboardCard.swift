@@ -88,6 +88,8 @@ private extension ReviewsDashboardCard {
                 Text(viewModel.currentFilter.title)
                     .subheadlineStyle()
             }
+            .redacted(reason: viewModel.switchingStatus ? [.placeholder] : [])
+            .shimmering(active: viewModel.switchingStatus)
             Spacer()
 
             Menu {

@@ -19,7 +19,11 @@ final class ReviewsDashboardCardViewModel: ObservableObject {
         case approved
     }
 
-    @Published private(set) var data: [ReviewViewModel] = []
+    @Published private(set) var data: [ReviewViewModel] = [] {
+        didSet {
+            showLoadingAnimation = data.isEmpty
+        }
+    }
 
     private var reviews: [ProductReview] {
         return productReviewsResultsController.fetchedObjects
@@ -189,11 +193,6 @@ private extension ReviewsDashboardCardViewModel {
 
         // Ensure to only get the first three items.
         let localReviews = filteredLocalReviews.prefix(Constants.numberOfItems)
-
-        // We can show partial review content as long as there are reviews found in storage.
-        if localReviews.isEmpty == false {
-            showLoadingAnimation = false
-        }
 
         data = localReviews.map { review in
 

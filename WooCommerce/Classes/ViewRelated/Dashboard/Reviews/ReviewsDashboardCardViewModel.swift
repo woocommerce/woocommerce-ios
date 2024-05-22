@@ -210,59 +210,47 @@ private extension ReviewsDashboardCardViewModel {
 
     @MainActor
     func synchronizeReviews(filter: ReviewsFilter) async throws {
-        do {
-            try await synchronizeProductReviews(filter: filter)
+        try await synchronizeProductReviews(filter: filter)
 
-            let productIDs = reviews.prefix(Constants.numberOfItems).map { $0.productID }
+        let productIDs = reviews.prefix(Constants.numberOfItems).map { $0.productID }
 
-            if productIDs.isNotEmpty {
-                // As long as the app is able to fetch one review once, then the button should always appear.
-                // Later on, when filtering by hold or pending status, the reviews result might become empty.
-                // In that case, the app should keep showing the button to allow the user to see all non-filtered reviews.
-                shouldShowAllReviewsButton = true
+        if productIDs.isNotEmpty {
+            // As long as the app is able to fetch one review once, then the button should always appear.
+            // Later on, when filtering by hold or pending status, the reviews result might become empty.
+            // In that case, the app should keep showing the button to allow the user to see all non-filtered reviews.
+            shouldShowAllReviewsButton = true
 
-                // Get product names and, optionally, read status from notifications.
-                await withTaskGroup(of: Void.self) { group in
-                    group.addTask { [weak self] in
-                        guard let self else { return }
-                        await self.updateProducts(productIDs: productIDs)
+            // Get product names and, optionally, read status from notifications.
+            await withTaskGroup(of: Void.self) { group in
+                group.addTask { [weak self] in
+                    do {
+                        try await self?.retrieveProducts(for: productIDs)
+                    } catch {
+                        self?.syncingError = error
                     }
-
-                    if stores.isAuthenticatedWithoutWPCom == false {
-                        group.addTask { [weak self] in
-                            guard let self else { return }
-                            await self.updateNotifications()
+                }
+                if stores.isAuthenticatedWithoutWPCom == false {
+                    group.addTask { [weak self] in
+                        do {
+                            try await self?.synchronizeNotifications()
+                        } catch {
+                            self?.syncingError = error
                         }
                     }
                 }
             }
-        } catch {
-            ServiceLocator.crashLogging.logError(error)
         }
     }
 
     @MainActor
-    func updateProducts(productIDs: [Int64]) async {
-        do {
-            try await retrieveProducts(for: productIDs)
+    func updateProducts(productIDs: [Int64]) async throws {
+        try await retrieveProducts(for: productIDs)
 
-            // update predicate and manually fetch so that new predicate applies.
-            productsResultsController.predicate = NSCompoundPredicate(
-                andPredicateWithSubpredicates: [sitePredicate(),
-                                                NSPredicate(format: "productID IN %@", productIDs)])
-            try productsResultsController.performFetch()
-        } catch {
-            ServiceLocator.crashLogging.logError(error)
-        }
-    }
-
-    @MainActor
-    func updateNotifications() async {
-        do {
-            try await synchronizeNotifications()
-        } catch {
-            ServiceLocator.crashLogging.logError(error)
-        }
+        // update predicate and manually fetch so that new predicate applies.
+        productsResultsController.predicate = NSCompoundPredicate(
+            andPredicateWithSubpredicates: [sitePredicate(),
+                                            NSPredicate(format: "productID IN %@", productIDs)])
+        try productsResultsController.performFetch()
     }
 }
 

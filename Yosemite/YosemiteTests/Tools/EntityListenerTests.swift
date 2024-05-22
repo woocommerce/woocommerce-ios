@@ -185,7 +185,7 @@ class EntityListenerTests: XCTestCase {
         }
 
         // Then
-        wait(for: [expectation1, expectation2, expectation3], timeout: 5.0)
+        wait(for: [expectation1, expectation2, expectation3], timeout: 0.1)
     }
 
 }

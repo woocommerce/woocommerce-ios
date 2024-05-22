@@ -145,6 +145,7 @@ final class HubMenuViewModel: ObservableObject {
     }
 
     private func setupPOSElement() {
+        cardPresentPaymentsOnboarding.refreshIfNecessary()
         Publishers.CombineLatest(generalAppSettings.betaFeatureEnabledPublisher(.pointOfSale), posEligibilityChecker.isEligible)
             .map { isBetaFeatureEnabled, isEligibleForPOS in
                 if isBetaFeatureEnabled && isEligibleForPOS {

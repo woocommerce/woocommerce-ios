@@ -139,6 +139,11 @@ struct PaymentMethodsView: View {
             }
                 .background(FullScreenCoverClearBackgroundView())
         }
+        .onAppear {
+            guard rootViewController != nil else {
+                return viewModel.logNoRootViewControllerError()
+            }
+        }
     }
 }
 

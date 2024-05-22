@@ -9,15 +9,21 @@ struct ProductCardView: View {
         self.onProductCardTapped = onProductCardTapped
     }
 
+    var outOfStock: Bool {
+        // TODO: Handle out of stock
+        // wp.me/p91TBi-bcW#comment-12123
+        product.stockQuantity <= 0
+    }
+
     var body: some View {
             VStack {
                 Text(product.name)
                     .foregroundStyle(Color.primaryBackground)
-                Text(product.price)
+                Text(outOfStock ? "Out of Stock" : product.price)
                     .foregroundStyle(Color.primaryBackground)
                 HStack(spacing: 8) {
-                    QuantityBadgeView()
-                        .frame(width: 56, height: 56)
+                    QuantityBadgeView(product.stockQuantity)
+                        .frame(width: 50, height: 50)
                     Spacer()
                     Button(action: {
                         onProductCardTapped?()
@@ -27,10 +33,12 @@ struct ProductCardView: View {
                 }
             }
             .frame(maxWidth: .infinity)
-            .background(Color.tertiaryBackground)
+            .background(outOfStock ? Color.pink : Color.tertiaryBackground)
     }
 }
 
+#if DEBUG
 #Preview {
     ProductCardView(product: POSProductFactory.makeProduct())
 }
+#endif

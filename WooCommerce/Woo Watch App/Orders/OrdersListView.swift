@@ -7,22 +7,26 @@ struct OrdersListView: View {
     // Used to changed the tab programmatically
     @Binding var watchTab: WooWatchTab
 
-    init(watchTab: Binding<WooWatchTab>) {
+    // View Model to drive the view
+    @StateObject var viewModel: OrdersListViewModel
+
+    init(dependencies: WatchDependencies, watchTab: Binding<WooWatchTab>) {
+        _viewModel = StateObject(wrappedValue: OrdersListViewModel(dependencies: dependencies))
         self._watchTab = watchTab
     }
 
     var body: some View {
         NavigationSplitView() {
-            List() {
-                Section { // Temporary Views
-                    OrderListCard()
-                    OrderListCard()
-                    OrderListCard()
-                    OrderListCard()
-                    OrderListCard()
-                    OrderListCard()
-                    OrderListCard()
-                    OrderListCard()
+            Group {
+                switch viewModel.viewState {
+                case .idle:
+                    EmptyView()
+                case .loading:
+                    loadingView
+                case .error:
+                    errorView
+                case .loaded(let orders):
+                    dataView(orders: orders)
                 }
             }
             .navigationTitle(Localization.title)
@@ -39,6 +43,47 @@ struct OrdersListView: View {
         } detail: {
             Text("Order Detail")
         }
+        .task {
+            await viewModel.fetchOrders()
+        }
+    }
+
+    /// Loading: Redacted OrderListCard
+    ///
+    @ViewBuilder var loadingView: some View {
+        List {
+            OrderListCard(order: .init(date: "----",
+                                       number: "----",
+                                       name: "----- -----",
+                                       price: "----",
+                                       status: "------- ------"))
+        }
+        .redacted(reason: .placeholder)
+    }
+
+    /// Error View with a retry button
+    ///
+    @ViewBuilder var errorView: some View {
+        VStack {
+            Spacer()
+            Text(Localization.error)
+            Spacer()
+            Button(Localization.retry) {
+                Task {
+                    await viewModel.fetchOrders()
+                }
+            }
+        }
+    }
+
+    /// Data: List with live order content.
+    ///
+    @ViewBuilder private func dataView(orders: [Order]) -> some View {
+        List() {
+            ForEach(orders, id: \.number) { order in
+                OrderListCard(order: order)
+            }
+        }
     }
 }
 
@@ -49,6 +94,16 @@ private extension OrdersListView {
             value: "Orders",
             comment: "Title on the watch orders list screen."
         )
+        static let error = AppLocalizedString(
+            "watch.orders.error.title",
+            value: "There was an error loading the orders list",
+            comment: "Loading title on the watch orders list screen."
+        )
+        static let retry = AppLocalizedString(
+            "watch.orders.retry.title",
+            value: "Retry",
+            comment: "Retry on the watch orders list screen."
+        )
     }
 
     enum Images {
@@ -56,26 +111,31 @@ private extension OrdersListView {
     }
 }
 
+/// View that represents each Order Item in the list.
+///
 struct OrderListCard: View {
+
+    let order: OrdersListView.Order
+
     var body: some View {
-        VStack(alignment: .leading) {
+        VStack(alignment: .leading, spacing: 2) {
 
             HStack {
-                Text("25 Feb")
+                Text(order.date)
                 Spacer()
-                Text("#1031")
+                Text(order.number)
             }
             .font(.footnote)
             .foregroundStyle(.secondary)
 
-            Text("Jemima Kirk")
+            Text(order.name)
                 .font(.body)
 
-            Text("$149.50")
+            Text(order.price)
                 .font(.body)
                 .bold()
 
-            Text("Pending payment")
+            Text(order.status)
                 .font(.footnote)
                 .foregroundStyle(Colors.wooPurple20)
         }

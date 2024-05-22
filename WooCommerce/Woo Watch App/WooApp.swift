@@ -14,7 +14,7 @@ struct Woo_Watch_AppApp: App {
                     MyStoreView(dependencies: dependencies, watchTab: $selectedTab)
                         .tag(WooWatchTab.myStore)
 
-                    OrdersListView(watchTab: $selectedTab)
+                    OrdersListView(dependencies: dependencies, watchTab: $selectedTab)
                         .tag(WooWatchTab.ordersList)
                 }
                 .compatibleVerticalStyle()

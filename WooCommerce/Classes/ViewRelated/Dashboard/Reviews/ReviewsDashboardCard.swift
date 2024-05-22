@@ -145,6 +145,7 @@ private extension ReviewsDashboardCard {
                                     Image(systemName: "star.fill")
                                         .resizable()
                                         .frame(width: Constants.starSize * scale, height: Constants.starSize * scale)
+                                        .foregroundColor(Color(.label))
                                 }
                             }
                         }

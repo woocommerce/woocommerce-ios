@@ -222,6 +222,8 @@ private extension ReviewsDashboardCardViewModel {
         let productIDs = fetchedReviews.prefix(Constants.numberOfItems).map { $0.productID }
 
         if productIDs.isNotEmpty {
+            updateProductsResultsController(for: productIDs)
+
             // Get product names and, optionally, read status from notifications.
             await withTaskGroup(of: Void.self) { group in
                 group.addTask { [weak self] in
@@ -244,15 +246,18 @@ private extension ReviewsDashboardCardViewModel {
         }
     }
 
-    @MainActor
-    func updateProducts(productIDs: [Int64]) async throws {
-        try await retrieveProducts(for: productIDs)
-
-        // update predicate and manually fetch so that new predicate applies.
+    /// update predicate and manually fetch so that new predicate applies.
+    ///
+    func updateProductsResultsController(for productIDs: [Int64]) {
         productsResultsController.predicate = NSCompoundPredicate(
             andPredicateWithSubpredicates: [sitePredicate(),
                                             NSPredicate(format: "productID IN %@", productIDs)])
-        try productsResultsController.performFetch()
+        do {
+            try productsResultsController.performFetch()
+        }
+        catch {
+            ServiceLocator.crashLogging.logError(error)
+        }
     }
 }
 

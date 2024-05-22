@@ -18,7 +18,6 @@ final class POSEligibilityChecker: POSEligibilityCheckerProtocol {
     }
 
     @Published private var isEligibleValue: Bool = false
-    private var onboardingStateSubscription: AnyCancellable?
 
     private let userInterfaceIdiom: UIUserInterfaceIdiom
     private let cardPresentPaymentsOnboarding: CardPresentPaymentsOnboardingUseCaseProtocol

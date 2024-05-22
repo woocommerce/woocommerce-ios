@@ -16,6 +16,8 @@ final class OrdersListViewModel: ObservableObject {
         self.dependencies = dependencies
     }
 
+    /// Fetch orders from a the remote source and updates the view state accordingly.
+    ///
     @MainActor
     func fetchOrders() async {
         self.viewState = .loading
@@ -30,6 +32,8 @@ final class OrdersListViewModel: ObservableObject {
         }
     }
 
+    /// Convert remote orders into view orders.
+    ///
     private static func viewOrders(from remoteOrders: [Order], currencySettings: CurrencySettings) -> [OrdersListView.Order] {
         remoteOrders.map { order in
             // TODO: Provide real list of site statuses.
@@ -43,9 +47,12 @@ final class OrdersListViewModel: ObservableObject {
     }
 }
 
-
+/// Data types that feed the OrdersListView
+///
 extension OrdersListView {
 
+    /// Represents the possible view states
+    ///
     enum State {
         case idle
         case loading
@@ -53,6 +60,8 @@ extension OrdersListView {
         case error
     }
 
+    /// Represents an order item.
+    ///
     struct Order {
         let date: String
         let number: String

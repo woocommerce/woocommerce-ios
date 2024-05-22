@@ -48,6 +48,8 @@ struct OrdersListView: View {
         }
     }
 
+    /// Loading: Redacted OrderListCard
+    ///
     @ViewBuilder var loadingView: some View {
         List {
             OrderListCard(order: .init(date: "----",
@@ -74,6 +76,8 @@ struct OrdersListView: View {
         }
     }
 
+    /// Data: List with live order content.
+    ///
     @ViewBuilder private func dataView(orders: [Order]) -> some View {
         List() {
             ForEach(orders, id: \.number) { order in
@@ -107,6 +111,8 @@ private extension OrdersListView {
     }
 }
 
+/// View that represents each Order Item in the list.
+///
 struct OrderListCard: View {
 
     let order: OrdersListView.Order

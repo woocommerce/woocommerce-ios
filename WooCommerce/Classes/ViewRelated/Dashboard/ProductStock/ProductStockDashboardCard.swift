@@ -288,7 +288,7 @@ private extension ProductStockDashboardCard {
             static let done = NSLocalizedString(
                 "productStockDashboardCard.contentUnavailable.dismissSupport",
                 value: "Done",
-                comment: "Button to dismiss the support form from the Dashboard stats error screen."
+                comment: "Button to dismiss the support form from the Dashboard stock card error screen."
             )
         }
     }

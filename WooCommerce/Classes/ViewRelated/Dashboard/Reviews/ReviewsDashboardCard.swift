@@ -113,50 +113,49 @@ private extension ReviewsDashboardCard {
         Button {
             onViewReviewDetail(viewModel)
         } label: {
-            HStack(alignment: .top, spacing: 0) {
+            HStack(alignment: .firstTextBaseline, spacing: Layout.padding) {
                 Image(systemName: "bubble.fill")
                     .foregroundStyle(
                         viewModel.notification == nil || viewModel.notification?.read == true
                         ? Color.secondary
                         : Color(.wooCommercePurple(.shade60))
                     )
-                    .padding(.horizontal, Layout.padding)
-                    .padding(.vertical, Layout.cardPadding)
 
-                VStack(alignment: .leading) {
-                    if let subject = viewModel.subject {
-                        Text(subject)
-                            .multilineTextAlignment(.leading)
-                            .bodyStyle()
-                            .padding(.trailing, Layout.padding)
-                    }
+                VStack(alignment: .leading, spacing: Layout.padding) {
+                    VStack(alignment: .leading) {
+                        if let subject = viewModel.subject {
+                            Text(subject)
+                                .multilineTextAlignment(.leading)
+                                .bodyStyle()
+                        }
 
-                    reviewText(text: viewModel.snippetData.reviewText,
-                               pendingText: viewModel.snippetData.pendingReviewsText,
-                               divider: viewModel.snippetData.dot,
-                               textColor: viewModel.snippetData.textColor,
-                               accentColor: viewModel.snippetData.accentColor,
-                               shouldDisplayStatus: viewModel.shouldDisplayStatus)
-                    .multilineTextAlignment(.leading)
-                    .lineLimit(2)
-                    .subheadlineStyle()
-                    .padding(.trailing, Layout.padding)
+                        reviewText(text: viewModel.snippetData.reviewText,
+                                   pendingText: viewModel.snippetData.pendingReviewsText,
+                                   divider: viewModel.snippetData.dot,
+                                   textColor: viewModel.snippetData.textColor,
+                                   accentColor: viewModel.snippetData.accentColor,
+                                   shouldDisplayStatus: viewModel.shouldDisplayStatus)
+                        .multilineTextAlignment(.leading)
+                        .lineLimit(2)
+                        .subheadlineStyle()
 
-                    if viewModel.review.rating > 0 {
-                        HStack(spacing: Layout.starRatingSpacing) {
-                            ForEach(0..<viewModel.review.rating, id: \.self) { _ in
-                                Image(systemName: "star.fill")
-                                    .resizable()
-                                    .frame(width: Constants.starSize * scale, height: Constants.starSize * scale)
+                        if viewModel.review.rating > 0 {
+                            HStack(spacing: Layout.starRatingSpacing) {
+                                ForEach(0..<viewModel.review.rating, id: \.self) { _ in
+                                    Image(systemName: "star.fill")
+                                        .resizable()
+                                        .frame(width: Constants.starSize * scale, height: Constants.starSize * scale)
+                                }
                             }
                         }
                     }
+                    .padding(.trailing, Layout.padding)
 
                     Divider()
-                        .padding(.vertical, Layout.dividerSpacing)
                         .renderedIf(!isLastItem)
                 }
             }
+            .padding(.leading, Layout.padding)
         }
     }
 
@@ -214,11 +213,9 @@ private extension ReviewsDashboardCard {
 private extension ReviewsDashboardCard {
     enum Layout {
         static let padding: CGFloat = 16
-        static let cardPadding: CGFloat = 4
         static let cornerSize = CGSize(width: 8.0, height: 8.0)
         static let hideIconVerticalPadding: CGFloat = 8
         static let starRatingSpacing: CGFloat = 4
-        static let dividerSpacing: CGFloat = 4
     }
 
     enum Constants {

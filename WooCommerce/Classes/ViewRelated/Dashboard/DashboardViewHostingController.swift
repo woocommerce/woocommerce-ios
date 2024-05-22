@@ -266,11 +266,11 @@ private extension DashboardViewHostingController {
 private extension DashboardViewHostingController {
     func configureReviewsCard() {
         rootView.onViewReviewDetail = { [weak self] review in
-            guard let self = self else { return }
+            guard let self else { return }
             let viewController = ReviewDetailsViewController(productReview: review.review,
                                                              product: review.product,
                                                              notification: review.notification)
-            self.show(viewController, sender: self)
+            show(viewController, sender: self)
         }
 
         rootView.onViewAllReviews = { [weak self] in

@@ -67,6 +67,8 @@ final class HubMenuViewModel: ObservableObject {
     private let stores: StoresManager
     private let featureFlagService: FeatureFlagService
     private let generalAppSettings: GeneralAppSettingsStorage
+    private let cardPresentPaymentsOnboarding: CardPresentPaymentsOnboardingUseCaseProtocol
+    private let posEligibilityChecker: POSEligibilityChecker
 
     private(set) var productReviewFromNoteParcel: ProductReviewFromNoteParcel?
 
@@ -114,8 +116,14 @@ final class HubMenuViewModel: ObservableObject {
         self.generalAppSettings = generalAppSettings
         self.switchStoreEnabled = stores.isAuthenticatedWithoutWPCom == false
         self.blazeEligibilityChecker = blazeEligibilityChecker
+        self.cardPresentPaymentsOnboarding = CardPresentPaymentsOnboardingUseCase()
+        self.posEligibilityChecker = POSEligibilityChecker(cardPresentPaymentsOnboarding: cardPresentPaymentsOnboarding,
+                                                           siteSettings: ServiceLocator.selectedSiteSettings,
+                                                           currencySettings: ServiceLocator.currencySettings,
+                                                           featureFlagService: featureFlagService)
         observeSiteForUIUpdates()
         observePlanName()
+        setupPOSElement()
         tapToPayBadgePromotionChecker.$shouldShowTapToPayBadges.share().assign(to: &$shouldShowNewFeatureBadgeOnPayments)
     }
 
@@ -126,7 +134,6 @@ final class HubMenuViewModel: ObservableObject {
     /// Resets the menu elements displayed on the menu.
     ///
     func setupMenuElements() {
-        setupPOSElement()
         setupSettingsElements()
         setupGeneralElements()
     }
@@ -138,16 +145,15 @@ final class HubMenuViewModel: ObservableObject {
     }
 
     private func setupPOSElement() {
-        let isBetaFeatureEnabled = generalAppSettings.betaFeatureEnabled(.pointOfSale)
-        let eligibilityChecker = POSEligibilityChecker(cardPresentPaymentsOnboarding: CardPresentPaymentsOnboardingUseCase(),
-                                                       siteSettings: ServiceLocator.selectedSiteSettings.siteSettings,
-                                                       currencySettings: ServiceLocator.currencySettings,
-                                                       featureFlagService: featureFlagService)
-        if isBetaFeatureEnabled && eligibilityChecker.isEligible() {
-            posElement = PointOfSaleEntryPoint()
-        } else {
-            posElement = nil
-        }
+        Publishers.CombineLatest(generalAppSettings.betaFeatureEnabledPublisher(.pointOfSale), posEligibilityChecker.$isEligible)
+            .map { isBetaFeatureEnabled, isEligibleForPOS in
+                if isBetaFeatureEnabled && isEligibleForPOS {
+                    return PointOfSaleEntryPoint()
+                } else {
+                    return nil
+                }
+            }
+            .assign(to: &$posElement)
     }
 
     private func setupSettingsElements() {

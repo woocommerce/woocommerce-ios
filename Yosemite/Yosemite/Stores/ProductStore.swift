@@ -164,6 +164,17 @@ public class ProductStore: Store {
                              orderBy: orderBy,
                              order: order,
                              completion: completion)
+        case let .fetchProductReports(siteID, productIDs, timeZone, earliestDateToInclude, latestDateToInclude, pageSize, pageNumber, orderBy, order, completion):
+            fetchProductReports(siteID: siteID,
+                                productIDs: productIDs,
+                                timeZone: timeZone,
+                                earliestDateToInclude: earliestDateToInclude,
+                                latestDateToInclude: latestDateToInclude,
+                                pageSize: pageSize,
+                                pageNumber: pageNumber,
+                                orderBy: orderBy,
+                                order: order,
+                                completion: completion)
         }
     }
 }
@@ -756,6 +767,34 @@ private extension ProductStore {
                                                        orderBy: orderBy,
                                                        order: order)
                 completion(.success(stock))
+            } catch {
+                completion(.failure(error))
+            }
+        }
+    }
+
+    func fetchProductReports(siteID: Int64,
+                             productIDs: [Int64],
+                             timeZone: TimeZone,
+                             earliestDateToInclude: Date,
+                             latestDateToInclude: Date,
+                             pageSize: Int,
+                             pageNumber: Int,
+                             orderBy: ProductsRemote.OrderKey,
+                             order: ProductsRemote.Order,
+                             completion: @escaping (Result<[ProductReportSegment], Error>) -> Void) {
+        Task { @MainActor in
+            do {
+                let segments = try await remote.loadProductReports(for: siteID,
+                                                                   productIDs: productIDs,
+                                                                   timeZone: timeZone,
+                                                                   earliestDateToInclude: earliestDateToInclude,
+                                                                   latestDateToInclude: latestDateToInclude,
+                                                                   pageSize: pageSize,
+                                                                   pageNumber: pageNumber,
+                                                                   orderBy: orderBy,
+                                                                   order: order)
+                completion(.success(segments))
             } catch {
                 completion(.failure(error))
             }

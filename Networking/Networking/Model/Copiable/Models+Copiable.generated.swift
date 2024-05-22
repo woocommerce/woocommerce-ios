@@ -2281,7 +2281,7 @@ extension Networking.ProductImage {
 }
 
 extension Networking.ProductReport {
-    func copy(
+    public func copy(
         totals: CopiableProp<ProductReportTotals> = .copy
     ) -> Networking.ProductReport {
         let totals = totals ?? self.totals
@@ -2323,7 +2323,7 @@ extension Networking.ProductReportSegment.Subtotals {
 }
 
 extension Networking.ProductReportTotals {
-    func copy(
+    public func copy(
         segments: CopiableProp<[ProductReportSegment]> = .copy
     ) -> Networking.ProductReportTotals {
         let segments = segments ?? self.segments

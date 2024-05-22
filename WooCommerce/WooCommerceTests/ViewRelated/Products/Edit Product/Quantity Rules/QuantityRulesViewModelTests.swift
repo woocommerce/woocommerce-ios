@@ -4,7 +4,7 @@ import XCTest
 final class QuantityRulesViewModelTests: XCTestCase {
     func test_view_model_returns_empty_string_for_nil_quantities() {
         // Given
-        let viewModel = QuantityRulesViewModel(minQuantity: nil, maxQuantity: nil, groupOf: nil) {_, _, _ in }
+        let viewModel = QuantityRulesViewModel(minQuantity: nil, maxQuantity: nil, groupOf: nil) {_, _ in }
 
         // Then
         XCTAssertEqual(viewModel.minQuantity, "")
@@ -14,7 +14,7 @@ final class QuantityRulesViewModelTests: XCTestCase {
 
     func test_view_model_returns_empty_string_for_empty_quantities() {
         // Given
-        let viewModel = QuantityRulesViewModel(minQuantity: "", maxQuantity: "", groupOf: "") {_, _, _ in }
+        let viewModel = QuantityRulesViewModel(minQuantity: "", maxQuantity: "", groupOf: "") {_, _ in }
 
         // Then
         XCTAssertEqual(viewModel.minQuantity, "")
@@ -24,7 +24,7 @@ final class QuantityRulesViewModelTests: XCTestCase {
 
     func test_view_model_returns_quantities_when_not_nil_or_empty() {
         // Given
-        let viewModel = QuantityRulesViewModel(minQuantity: "4", maxQuantity: "200", groupOf: "2") {_, _, _ in }
+        let viewModel = QuantityRulesViewModel(minQuantity: "4", maxQuantity: "200", groupOf: "2") {_, _ in }
 
         // Then
         XCTAssertEqual(viewModel.minQuantity, "4")
@@ -41,10 +41,10 @@ final class QuantityRulesViewModelTests: XCTestCase {
         var passedMaxQuantity: String?
         var passedGroupOfValue: String?
 
-        let viewModel = QuantityRulesViewModel(minQuantity: "4", maxQuantity: "200", groupOf: "2") { minQuantity, maxQuantity, groupOfValue in
-            passedMinQuantity = minQuantity
-            passedMaxQuantity = maxQuantity
-            passedGroupOfValue = groupOfValue
+        let viewModel = QuantityRulesViewModel(minQuantity: "4", maxQuantity: "200", groupOf: "2") { rules, hasUnchangedValues in
+            passedMinQuantity = rules.minQuantity
+            passedMaxQuantity = rules.maxQuantity
+            passedGroupOfValue = rules.groupOf
         }
 
         viewModel.minQuantity = newMinQuantity

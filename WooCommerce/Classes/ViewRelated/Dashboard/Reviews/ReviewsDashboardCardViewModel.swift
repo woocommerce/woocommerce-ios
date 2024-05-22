@@ -100,6 +100,7 @@ final class ReviewsDashboardCardViewModel: ObservableObject {
             try await synchronizeReviews(filter: currentFilter)
         } catch {
             syncingError = error
+            DDLogError("⛔️ Dashboard (Reviews) — Error synchronizing reviews: \(error)")
         }
         showLoadingAnimation = false
     }
@@ -230,6 +231,7 @@ private extension ReviewsDashboardCardViewModel {
                         try await self?.retrieveProducts(for: productIDs)
                     } catch {
                         self?.syncingError = error
+                        DDLogError("⛔️ Dashboard (Reviews) — Error retrieving products: \(error)")
                     }
                 }
                 if stores.isAuthenticatedWithoutWPCom == false {
@@ -238,6 +240,7 @@ private extension ReviewsDashboardCardViewModel {
                             try await self?.synchronizeNotifications()
                         } catch {
                             self?.syncingError = error
+                            DDLogError("⛔️ Dashboard (Reviews) — Error synchronizing notifications: \(error)")
                         }
                     }
                 }

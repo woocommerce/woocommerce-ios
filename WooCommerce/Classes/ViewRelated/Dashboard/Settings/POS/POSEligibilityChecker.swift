@@ -20,15 +20,18 @@ final class POSEligibilityChecker: POSEligibilityCheckerProtocol {
     @Published private var isEligibleValue: Bool = false
     private var onboardingStateSubscription: AnyCancellable?
 
+    private let userInterfaceIdiom: UIUserInterfaceIdiom
     private let cardPresentPaymentsOnboarding: CardPresentPaymentsOnboardingUseCaseProtocol
     private let siteSettings: SelectedSiteSettings
     private let currencySettings: CurrencySettings
     private let featureFlagService: FeatureFlagService
 
-    init(cardPresentPaymentsOnboarding: CardPresentPaymentsOnboardingUseCaseProtocol = CardPresentPaymentsOnboardingUseCase(),
+    init(userInterfaceIdiom: UIUserInterfaceIdiom = UIDevice.current.userInterfaceIdiom,
+         cardPresentPaymentsOnboarding: CardPresentPaymentsOnboardingUseCaseProtocol = CardPresentPaymentsOnboardingUseCase(),
          siteSettings: SelectedSiteSettings = ServiceLocator.selectedSiteSettings,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+        self.userInterfaceIdiom = userInterfaceIdiom
         self.siteSettings = siteSettings
         self.currencySettings = currencySettings
         self.cardPresentPaymentsOnboarding = cardPresentPaymentsOnboarding
@@ -40,8 +43,8 @@ final class POSEligibilityChecker: POSEligibilityCheckerProtocol {
 private extension POSEligibilityChecker {
     /// Returns whether the selected store is eligible for POS.
     func observeOnboardingStateForEligibilityCheck() {
-        // Conditions that are fixed per lifetime of the menu tab.
-        let isTablet = UIDevice.current.userInterfaceIdiom == .pad
+        // Conditions that are fixed for its lifetime.
+        let isTablet = userInterfaceIdiom == .pad
         let isFeatureFlagEnabled = featureFlagService.isFeatureFlagEnabled(.displayPointOfSaleToggle)
         guard isTablet && isFeatureFlagEnabled else {
             isEligibleValue = false
@@ -60,7 +63,7 @@ private extension POSEligibilityChecker {
     }
 
     func isEligibleFromSiteChecks() -> Bool {
-        // Conditions that can change if site settings are synced during the lifetime of the menu tab.
+        // Conditions that can change if site settings are synced during the lifetime.
         let isCountryCodeUS = SiteAddress(siteSettings: siteSettings.siteSettings).countryCode == .US
         let isCurrencyUSD = currencySettings.currencyCode == .USD
         return isCountryCodeUS && isCurrencyUSD

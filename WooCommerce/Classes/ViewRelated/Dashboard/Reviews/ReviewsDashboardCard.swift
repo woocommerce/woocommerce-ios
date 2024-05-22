@@ -39,6 +39,7 @@ struct ReviewsDashboardCard: View {
                     .redacted(reason: viewModel.showLoadingAnimation ? [.placeholder] : [])
                     .shimmering(active: viewModel.showLoadingAnimation)
                 Divider()
+                    .renderedIf(viewModel.showLoadingAnimation == false)
 
                 if viewModel.showLoadingAnimation || viewModel.data.isNotEmpty {
                     ForEach(viewModel.data, id: \.review.reviewID) { reviewViewModel in

@@ -26,4 +26,7 @@ protocol ProductFormEventLoggerProtocol {
 
     /// Called to log an event when the subscriptions expiration row is tapped
     func logSubscriptionsExpirationDateTapped()
+
+    /// Called to log an event when the done button in the quantity rules view is tapped
+    func logQuantityRulesDoneButtonTapped(hasUnsavedChanges: Bool)
 }

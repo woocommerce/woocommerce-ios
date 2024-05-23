@@ -236,6 +236,7 @@
 		025678052575EA1B009D7E6C /* ProductDetailsCellViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 025678042575EA1B009D7E6C /* ProductDetailsCellViewModelTests.swift */; };
 		025678C125773236009D7E6C /* Collection+ShippingLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 025678C025773236009D7E6C /* Collection+ShippingLabel.swift */; };
 		025678C725773399009D7E6C /* Collection+ShippingLabelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 025678C625773399009D7E6C /* Collection+ShippingLabelTests.swift */; };
+		02577A7F2BFC4BB300B63FE6 /* PaymentMethodsWrapperHostingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02577A7E2BFC4BB300B63FE6 /* PaymentMethodsWrapperHostingController.swift */; };
 		0258B4D82B1590A3008FEA07 /* ConfigurableBundleNoticeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0258B4D72B1590A3008FEA07 /* ConfigurableBundleNoticeView.swift */; };
 		0258B4DA2B159A0F008FEA07 /* Publisher+WithPrevious.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0258B4D92B159A0F008FEA07 /* Publisher+WithPrevious.swift */; };
 		0258B66D2518778300EB5CF2 /* ProductFormViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0258B66C2518778300EB5CF2 /* ProductFormViewModelTests.swift */; };
@@ -3011,6 +3012,7 @@
 		025678042575EA1B009D7E6C /* ProductDetailsCellViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductDetailsCellViewModelTests.swift; sourceTree = "<group>"; };
 		025678C025773236009D7E6C /* Collection+ShippingLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Collection+ShippingLabel.swift"; sourceTree = "<group>"; };
 		025678C625773399009D7E6C /* Collection+ShippingLabelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Collection+ShippingLabelTests.swift"; sourceTree = "<group>"; };
+		02577A7E2BFC4BB300B63FE6 /* PaymentMethodsWrapperHostingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentMethodsWrapperHostingController.swift; sourceTree = "<group>"; };
 		0258B4D72B1590A3008FEA07 /* ConfigurableBundleNoticeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigurableBundleNoticeView.swift; sourceTree = "<group>"; };
 		0258B4D92B159A0F008FEA07 /* Publisher+WithPrevious.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Publisher+WithPrevious.swift"; sourceTree = "<group>"; };
 		0258B66C2518778300EB5CF2 /* ProductFormViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductFormViewModelTests.swift; sourceTree = "<group>"; };
@@ -7239,6 +7241,7 @@
 				20D5CB502AFCF856009A39C3 /* PaymentsRow.swift */,
 				20D5CB522AFCF8E7009A39C3 /* PaymentsToggleRow.swift */,
 				0240737F2BBAAF7400C00441 /* SimplePaymentsMigrationView.swift */,
+				02577A7E2BFC4BB300B63FE6 /* PaymentMethodsWrapperHostingController.swift */,
 			);
 			path = "Payments Menu";
 			sourceTree = "<group>";
@@ -14521,6 +14524,7 @@
 				CE263DE8206ACE3E0015A693 /* MainTabBarController.swift in Sources */,
 				20A3AFE32B10EF860033AF2D /* CardReaderSettingsFlowPresentingView.swift in Sources */,
 				CE14452E2188C11700A991D8 /* ZendeskManager.swift in Sources */,
+				02577A7F2BFC4BB300B63FE6 /* PaymentMethodsWrapperHostingController.swift in Sources */,
 				02BA53432A380D7D0069224D /* ProductDescriptionAICoordinator.swift in Sources */,
 				FE28F7122684CA29004465C7 /* RoleErrorViewController.swift in Sources */,
 				B5BE75DB213F1D1E00909A14 /* OverlayMessageView.swift in Sources */,

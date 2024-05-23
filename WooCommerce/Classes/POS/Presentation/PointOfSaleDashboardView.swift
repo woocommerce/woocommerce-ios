@@ -48,7 +48,9 @@ struct PointOfSaleDashboardView: View {
     }
 }
 
+#if DEBUG
 #Preview {
     PointOfSaleDashboardView(viewModel: PointOfSaleDashboardViewModel(products: POSProductFactory.makeFakeProducts(),
                                                                       cardReaderConnectionViewModel: .init(state: .connectingToReader)))
 }
+#endif

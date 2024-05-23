@@ -57,6 +57,7 @@ struct OrderDetailView: View {
             VStack(alignment: .leading, spacing: Layout.nameSectionSpacing) {
                 Text(order.name)
                     .font(.body)
+                    .fixedSize(horizontal: false, vertical: true)
 
                 Text(order.total)
                     .font(.title2)

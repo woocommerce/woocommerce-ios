@@ -1,21 +1,14 @@
 import SwiftUI
 
 struct PointOfSaleEntryPointView: View {
-    // TODO:
-    // Temporary. DI proper product models once we have a data layer
-    private let viewModel: PointOfSaleDashboardViewModel = {
-        let products = POSProductFactory.makeFakeProducts()
-        let viewModel = PointOfSaleDashboardViewModel(products: products, cardReaderConnectionViewModel: .init(state: .scanningForReader(cancel: {})))
-
-        return viewModel
-    }()
+    @StateObject private var viewModel: PointOfSaleDashboardViewModel = PointOfSaleDashboardViewModel(
+        products: POSProductFactory.makeFakeProducts(),
+        cardReaderConnectionViewModel: .init(state: .connectingToReader)
+    )
 
     private let hideAppTabBar: ((Bool) -> Void)
 
-    // Necessary to expose the View's entry point to WooCommerce
-    // Otherwise the current switch on `HubMenu` where this View is created
-    // will error with "No exact matches in reference to static method 'buildExpression'"
-    public init(hideAppTabBar: @escaping ((Bool) -> Void)) {
+    init(hideAppTabBar: @escaping ((Bool) -> Void)) {
         self.hideAppTabBar = hideAppTabBar
     }
 

@@ -379,17 +379,16 @@ final class HubMenuViewModelTests: XCTestCase {
         }))
     }
 
-    func test_menuElements_do_not_include_customers_when_feature_flag_is_off() {
+    func test_menuElements_include_customers() {
         // Given
-        let featureFlagService = MockFeatureFlagService(isCustomersInHubMenuEnabled: false)
+        let viewModel = HubMenuViewModel(siteID: sampleSiteID,
+                                         tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker())
 
         // When
-        let viewModel = HubMenuViewModel(siteID: sampleSiteID,
-                                         tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
-                                         featureFlagService: featureFlagService)
+        viewModel.setupMenuElements()
 
         // Then
-        XCTAssertNil(viewModel.generalElements.firstIndex(where: { item in
+        XCTAssertNotNil(viewModel.generalElements.firstIndex(where: { item in
             item.id == HubMenuViewModel.Customers.id
         }))
     }

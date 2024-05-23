@@ -12,6 +12,7 @@ struct TotalsView: View {
             Text("Totals")
                 .font(.title)
                 .foregroundColor(Color.white)
+            ScrollView {
                 ForEach(viewModel.productsInCart, id: \.product.productID) { cartProduct in
                     VStack {
                         HStack {
@@ -22,6 +23,7 @@ struct TotalsView: View {
                     }
                     .foregroundColor(.white)
                 }
+            }
             Spacer()
             HStack {
                 Button("Take payment") { debugPrint("Not implemented") }

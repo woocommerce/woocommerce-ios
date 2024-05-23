@@ -16,7 +16,7 @@ struct OrdersListView: View {
     }
 
     var body: some View {
-        NavigationSplitView() {
+        NavigationStack() {
             Group {
                 switch viewModel.viewState {
                 case .idle:
@@ -40,8 +40,6 @@ struct OrdersListView: View {
                     }
                 }
             }
-        } detail: {
-            Text("Order Detail")
         }
         .task {
             await viewModel.fetchOrders()
@@ -53,10 +51,12 @@ struct OrdersListView: View {
     @ViewBuilder var loadingView: some View {
         List {
             OrderListCard(order: .init(date: "----",
+                                       time: "----",
                                        number: "----",
                                        name: "----- -----",
-                                       price: "----",
-                                       status: "------- ------"))
+                                       total: "----",
+                                       status: "------- ------",
+                                       items: []))
         }
         .redacted(reason: .placeholder)
     }
@@ -81,8 +81,14 @@ struct OrdersListView: View {
     @ViewBuilder private func dataView(orders: [Order]) -> some View {
         List() {
             ForEach(orders, id: \.number) { order in
-                OrderListCard(order: order)
+                NavigationLink(value: order) {
+                    OrderListCard(order: order)
+                }
             }
+            .listRowBackground(OrderListCard.background)
+        }
+        .navigationDestination(for: Order.self) { order in
+            OrderDetailView(order: order)
         }
     }
 }
@@ -131,7 +137,7 @@ struct OrderListCard: View {
             Text(order.name)
                 .font(.body)
 
-            Text(order.price)
+            Text(order.total)
                 .font(.body)
                 .bold()
 
@@ -139,10 +145,12 @@ struct OrderListCard: View {
                 .font(.footnote)
                 .foregroundStyle(Colors.wooPurple20)
         }
-        .listRowBackground(
-            LinearGradient(gradient: Gradient(colors: [Colors.wooBackgroundStart, Colors.wooBackgroundEnd]), startPoint: .top, endPoint: .bottom)
-                .cornerRadius(10)
-        )
+        .listRowBackground(Self.background)
+    }
+
+    static var background: some View {
+        LinearGradient(gradient: Gradient(colors: [Colors.wooBackgroundStart, Colors.wooBackgroundEnd]), startPoint: .top, endPoint: .bottom)
+            .cornerRadius(10)
     }
 }
 

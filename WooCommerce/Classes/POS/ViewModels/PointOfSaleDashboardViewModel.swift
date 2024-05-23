@@ -8,6 +8,13 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
     @Published var showsFilterSheet: Bool = false
     @ObservedObject private(set) var cardReaderConnectionViewModel: CardReaderConnectionViewModel
 
+    enum OrderStage {
+        case building
+        case finalizing
+    }
+
+    @Published private(set) var orderStage: OrderStage = .building
+
     init(products: [POSProduct],
          cardReaderConnectionViewModel: CardReaderConnectionViewModel) {
         self.products = products
@@ -65,7 +72,12 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
     }
 
     func submitCart() {
-        debugPrint("Not implemented")
+        // TODO: https://github.com/woocommerce/woocommerce-ios/issues/12810
+        orderStage = .finalizing
+    }
+
+    func addMoreToCart() {
+        orderStage = .building
     }
 
     func showCardReaderConnection() {

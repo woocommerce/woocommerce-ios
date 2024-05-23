@@ -1500,6 +1500,7 @@ extension Networking.ProductStock {
         .init(
             siteID: .fake(),
             productID: .fake(),
+            parentID: .fake(),
             name: .fake(),
             sku: .fake(),
             manageStock: .fake(),

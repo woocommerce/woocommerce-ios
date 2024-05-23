@@ -2380,6 +2380,7 @@ extension Networking.ProductStock {
     public func copy(
         siteID: CopiableProp<Int64> = .copy,
         productID: CopiableProp<Int64> = .copy,
+        parentID: CopiableProp<Int64> = .copy,
         name: CopiableProp<String> = .copy,
         sku: NullableCopiableProp<String> = .copy,
         manageStock: CopiableProp<Bool> = .copy,
@@ -2388,6 +2389,7 @@ extension Networking.ProductStock {
     ) -> Networking.ProductStock {
         let siteID = siteID ?? self.siteID
         let productID = productID ?? self.productID
+        let parentID = parentID ?? self.parentID
         let name = name ?? self.name
         let sku = sku ?? self.sku
         let manageStock = manageStock ?? self.manageStock
@@ -2397,6 +2399,7 @@ extension Networking.ProductStock {
         return Networking.ProductStock(
             siteID: siteID,
             productID: productID,
+            parentID: parentID,
             name: name,
             sku: sku,
             manageStock: manageStock,

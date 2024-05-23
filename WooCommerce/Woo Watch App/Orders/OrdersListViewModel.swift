@@ -36,13 +36,22 @@ final class OrdersListViewModel: ObservableObject {
     ///
     private static func viewOrders(from remoteOrders: [Order], currencySettings: CurrencySettings) -> [OrdersListView.Order] {
         remoteOrders.map { order in
-            // TODO: Provide real list of site statuses.
             let orderViewModel = OrderListCellViewModel(order: order, status: nil, currencySettings: currencySettings)
+
+            let items = order.items.map { orderItem in
+                OrdersListView.OrderItem(id: orderItem.itemID,
+                                         name: orderItem.total,
+                                         total: orderViewModel.total(for: orderItem),
+                                         count: orderItem.quantity)
+            }
+
             return OrdersListView.Order(date: orderViewModel.dateCreated,
+                                        time: orderViewModel.timeCreated,
                                         number: "#\(order.number)",
                                         name: orderViewModel.customerName,
-                                        price: orderViewModel.total ?? "$\(order.total)",
-                                        status: orderViewModel.statusString.capitalized)
+                                        total: orderViewModel.total ?? "$\(order.total)",
+                                        status: orderViewModel.statusString.capitalized,
+                                        items: items)
         }
     }
 }
@@ -60,18 +69,33 @@ extension OrdersListView {
         case error
     }
 
-    /// Represents an order item.
+    /// Represents an order.
     ///
     struct Order: Identifiable, Hashable {
         let date: String
+        let time: String
         let number: String
         let name: String
-        let price: String
+        let total: String
         let status: String
+        let items: [OrderItem]
 
         // SwiftUI ID
         var id: String {
             number
         }
+
+        var itemCount: Int {
+            items.count
+        }
+    }
+
+    /// Represents an order item.
+    ///
+    struct OrderItem: Identifiable, Hashable {
+        let id: Int64
+        let name: String
+        let total: String
+        let count: Decimal
     }
 }

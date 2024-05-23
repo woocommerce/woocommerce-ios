@@ -51,10 +51,12 @@ struct OrdersListView: View {
     @ViewBuilder var loadingView: some View {
         List {
             OrderListCard(order: .init(date: "----",
+                                       time: "----",
                                        number: "----",
                                        name: "----- -----",
-                                       price: "----",
-                                       status: "------- ------"))
+                                       total: "----",
+                                       status: "------- ------",
+                                       items: []))
         }
         .redacted(reason: .placeholder)
     }
@@ -135,7 +137,7 @@ struct OrderListCard: View {
             Text(order.name)
                 .font(.body)
 
-            Text(order.price)
+            Text(order.total)
                 .font(.body)
                 .bold()
 

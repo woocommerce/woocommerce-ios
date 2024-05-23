@@ -32,6 +32,8 @@ struct OrderListCellViewModel {
         Localization.title(orderNumber: order.number, customerName: customerName)
     }
 
+    /// For example, Pamela Nguyen
+    ///
     var customerName: String {
         if let fullName = order.billingAddress?.fullName, fullName.isNotEmpty {
             return fullName
@@ -56,6 +58,14 @@ struct OrderListCellViewModel {
         return formatter.string(from: order.dateCreated)
     }
 
+    /// Time where the order was created
+    ///
+    var timeCreated: String {
+        let formatter: DateFormatter = .timeFormatter
+        formatter.timeZone = .siteTimezone
+        return formatter.string(from: order.dateCreated)
+    }
+
     /// Status of the order
     ///
     var status: OrderStatusEnum {
@@ -68,6 +78,14 @@ struct OrderListCellViewModel {
     /// So if orderStatus doesn't have a name, let's use the order.status to display those as slugs.
     var statusString: String {
         return orderStatus?.name ?? order.status.rawValue
+    }
+
+    /// The localized unabbreviated total for a given order item, which includes the currency.
+    ///
+    /// Example: $48,415,504.20
+    ///
+    func total(for orderItem: OrderItem) -> String {
+        currencyFormatter.formatAmount(orderItem.total, with: order.currency) ?? "$\(orderItem.total)"
     }
 
 #if !os(watchOS)

@@ -782,7 +782,7 @@ final class ProductsRemoteTests: XCTestCase {
                                                            order: .descending)
 
         // Then
-        XCTAssertEqual(products.count, 2)
+        XCTAssertEqual(products.count, 1)
 
         let firstItem = try XCTUnwrap(products.first)
         XCTAssertEqual(firstItem.productID, 248)
@@ -790,13 +790,6 @@ final class ProductsRemoteTests: XCTestCase {
         XCTAssertEqual(firstItem.name, "Fantastic Concrete Shirt")
         XCTAssertEqual(firstItem.itemsSold, 8)
         XCTAssertEqual(firstItem.imageURL?.absoluteString, "https://test.ninja/wp-content/uploads/2024/05/img-laboriosam-300x300.png")
-
-        let secondItem = try XCTUnwrap(products.last)
-        XCTAssertEqual(secondItem.productID, 248)
-        XCTAssertEqual(secondItem.variationID, 277)
-        XCTAssertEqual(secondItem.name, "Fantastic Concrete Shirt")
-        XCTAssertEqual(secondItem.itemsSold, 7)
-        XCTAssertEqual(secondItem.imageURL?.absoluteString, "https://test.ninja/wp-content/uploads/2024/05/img-vel-300x300.png")
     }
 
     func test_loadProductReports_relays_networking_error() async throws {

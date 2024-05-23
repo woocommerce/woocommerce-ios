@@ -23,7 +23,7 @@ public struct ProductReport: Decodable, Equatable, GeneratedCopiable, GeneratedF
     }
 
     public init(from decoder: Decoder) throws {
-        
+
         let container = try decoder.container(keyedBy: CodingKeys.self)
         let productID = container.failsafeDecodeIfPresent(
             targetType: Int64.self,
@@ -36,7 +36,7 @@ public struct ProductReport: Decodable, Equatable, GeneratedCopiable, GeneratedF
         let itemsSold = try container.decode(Int.self, forKey: .itemsSold)
         let extendedInfo = try container.decode(ExtendedInfo.self, forKey: .extendedInfo)
         let imageURL = Self.extractSourceURL(from: (extendedInfo.image ?? ""))
-        
+
         self.init(productID: productID,
                   variationID: variationID,
                   name: extendedInfo.name,
@@ -49,7 +49,7 @@ public extension ProductReport {
     struct ExtendedInfo: Decodable, Equatable, GeneratedCopiable, GeneratedFakeable {
         public let name: String
         public let image: String?
-        
+
         public init(name: String, image: String?) {
             self.name = name
             self.image = image

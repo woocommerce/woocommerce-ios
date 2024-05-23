@@ -88,7 +88,7 @@ struct OrdersListView: View {
             .listRowBackground(OrderListCard.background)
         }
         .navigationDestination(for: Order.self) { order in
-            OrderDetailView()
+            OrderDetailView(order: order)
         }
     }
 }

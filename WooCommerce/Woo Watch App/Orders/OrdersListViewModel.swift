@@ -40,7 +40,7 @@ final class OrdersListViewModel: ObservableObject {
 
             let items = order.items.map { orderItem in
                 OrdersListView.OrderItem(id: orderItem.itemID,
-                                         name: orderItem.total,
+                                         name: orderItem.name,
                                          total: orderViewModel.total(for: orderItem),
                                          count: orderItem.quantity)
             }

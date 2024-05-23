@@ -3,14 +3,19 @@ import SwiftUI
 /// View for the order detail
 ///
 struct OrderDetailView: View {
+
+    /// Order to render
+    ///
+    let order: OrdersListView.Order
+
     var body: some View {
         ScrollView {
             VStack(alignment: .leading) {
 
                 HStack {
-                    Text("25 Feb")
+                    Text(order.date)
                     Spacer()
-                    Text("12:14 pm")
+                    Text(order.time)
                 }
                 .font(.caption2)
                 .foregroundStyle(.secondary)
@@ -18,36 +23,35 @@ struct OrderDetailView: View {
                 Divider()
 
                 VStack(alignment: .leading, spacing: Layout.nameSectionSpacing) {
-                    Text("Willem Dafoe")
+                    Text(order.name)
                         .font(.title3)
 
-                    Text("$149.50")
+                    Text(order.total)
                         .font(.title2)
                         .bold()
 
-                    Text("Pending payment")
+                    Text(order.status)
                         .font(.footnote)
                         .foregroundStyle(Colors.gray5)
                 }
                 .padding(.bottom, Layout.mainSectionsPadding)
 
-                Text("3 products")
+                Text(Localization.products(order.itemCount).lowercased())
                     .font(.caption2)
                     .padding(.bottom, Layout.mainSectionsPadding)
 
                 VStack {
-                    itemRow()
-                    Divider()
-                    itemRow()
-                    Divider()
-                    itemRow()
+                    ForEach(order.items) { orderItem in
+                        itemRow(orderItem)
+                        Divider()
+                    }
                 }
             }
         }
         .padding(.horizontal)
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
-                Text("#1031")
+                Text(order.number)
                     .font(.body)
                     .foregroundStyle(Colors.wooPurple20)
             }
@@ -57,19 +61,19 @@ struct OrderDetailView: View {
         )
     }
 
-    @ViewBuilder private func itemRow() -> some View {
+    @ViewBuilder private func itemRow(_ item: OrdersListView.OrderItem) -> some View {
         VStack(alignment: .leading, spacing: .zero) {
-            Text("Little Nap Blend 250g")
+            Text(item.name)
                 .font(.caption2)
 
             HStack {
-                Text("$99.00")
+                Text(item.total)
                     .font(.caption2)
                     .foregroundStyle(.secondary)
 
                 Spacer()
 
-                Text("3")
+                Text(item.count.formatted(.number))
                     .font(.caption2)
                     .foregroundStyle(Colors.wooPurple20)
                     .padding(Layout.itemCountPadding)
@@ -84,6 +88,17 @@ private extension OrderDetailView {
         static let nameSectionSpacing = 2.0
         static let mainSectionsPadding = 10.0
         static let itemCountPadding = 6.0
+    }
+
+    enum Localization {
+        static func products(_ count: Int) -> LocalizedString {
+            let format = AppLocalizedString(
+                "watch.orders.detail.product-count",
+                value: "%d Products",
+                comment: "Format for the number of products in the order detail screen."
+            )
+            return LocalizedString(format: format, count)
+        }
     }
 
     enum Colors {

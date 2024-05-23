@@ -8,10 +8,7 @@ struct PointOfSaleEntryPointView: View {
 
     private let hideAppTabBar: ((Bool) -> Void)
 
-    // Necessary to expose the View's entry point to WooCommerce
-    // Otherwise the current switch on `HubMenu` where this View is created
-    // will error with "No exact matches in reference to static method 'buildExpression'"
-    public init(hideAppTabBar: @escaping ((Bool) -> Void)) {
+    init(hideAppTabBar: @escaping ((Bool) -> Void)) {
         self.hideAppTabBar = hideAppTabBar
     }
 

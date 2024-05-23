@@ -38,11 +38,12 @@ final class OrdersListViewModel: ObservableObject {
         remoteOrders.map { order in
             let orderViewModel = OrderListCellViewModel(order: order, status: nil, currencySettings: currencySettings)
 
-            let items = order.items.map { orderItem in
+            let items = order.items.enumerated().map { index, orderItem in
                 OrdersListView.OrderItem(id: orderItem.itemID,
                                          name: orderItem.name,
                                          total: orderViewModel.total(for: orderItem),
-                                         count: orderItem.quantity)
+                                         count: orderItem.quantity,
+                                         showDivider: index < (order.items.count - 1) )
             }
 
             return OrdersListView.Order(date: orderViewModel.dateCreated,
@@ -97,5 +98,6 @@ extension OrdersListView {
         let name: String
         let total: String
         let count: Decimal
+        let showDivider: Bool
     }
 }

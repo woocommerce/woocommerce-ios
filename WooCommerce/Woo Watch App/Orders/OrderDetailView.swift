@@ -17,6 +17,7 @@ struct OrderDetailView: View {
             // First
             summaryView
                 .tag(Tab.summary)
+                .padding(.horizontal)
 
             // Second
             if order.itemCount > 0 {
@@ -24,7 +25,6 @@ struct OrderDetailView: View {
                     .tag(Tab.products)
             }
         }
-        .padding(.horizontal)
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
                 Text(order.number)
@@ -94,36 +94,44 @@ struct OrderDetailView: View {
             } header: {
                 Text(Localization.products(order.itemCount))
                     .font(.caption2)
-                    .padding(.bottom)
             }
+            .listStyle(.plain)
+            .listRowBackground(Color.clear)
+            .listRowInsets(.init(top: 0, leading: Layout.itemlistPadding, bottom: 0, trailing: Layout.itemlistPadding))
         }
     }
 
     /// Item Row of the product list
     ///
     @ViewBuilder private func itemRow(_ item: OrdersListView.OrderItem) -> some View {
-        HStack(alignment: .top, spacing: Layout.itemRowSpacing) {
+        VStack(alignment: .leading, spacing: .zero) {
+            HStack(alignment: .top, spacing: Layout.itemRowSpacing) {
 
-            // Item count
-            Text(item.count.formatted(.number))
-                .font(.caption2)
-                .foregroundStyle(Colors.wooPurple20)
-                .padding(Layout.itemCountPadding)
-                .background(Circle().fill(Colors.whiteTransparent))
-
-            // Name and total
-            VStack(alignment: .leading) {
-                Text(item.name)
+                // Item count
+                Text(item.count.formatted(.number))
                     .font(.caption2)
+                    .foregroundStyle(Colors.wooPurple20)
+                    .padding(Layout.itemCountPadding)
+                    .background(Circle().fill(Colors.whiteTransparent))
 
-                Text(item.total)
-                    .font(.caption2)
-                    .foregroundStyle(.secondary)
+                // Name and total
+                VStack(alignment: .leading) {
+                    Text(item.name)
+                        .font(.caption2)
+
+                    Text(item.total)
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                }
+
+                Spacer()
             }
+            .padding(.vertical)
 
-            Spacer()
+            if item.showDivider {
+                Divider()
+            }
         }
-        .padding(.vertical)
     }
 }
 
@@ -139,6 +147,7 @@ private extension OrderDetailView {
         static let itemCountPadding = 6.0
         static let itemRowSpacing = 8.0
         static let buttonCornerRadius = 10.0
+        static let itemlistPadding = 5.0
     }
 
     enum Localization {

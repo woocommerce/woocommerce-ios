@@ -461,8 +461,6 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
         let path = Path.productReports
         let parameters: [String: Any] = [
             ParameterKey.products: productIDs,
-            ParameterKey.segmentBy: ParameterValues.productSegment,
-            ParameterKey.fieldsWithoutUnderscore: [ParameterValues.itemsSold],
             ParameterKey.after: dateFormatter.string(from: earliestDateToInclude),
             ParameterKey.before: dateFormatter.string(from: latestDateToInclude),
             ParameterKey.page: String(pageNumber),
@@ -519,7 +517,6 @@ public extension ProductsRemote {
         static let productsTotal = "reports/products/totals"
         static let stockReports = "reports/stock"
         static let productReports = "reports/products"
-        static let variationReports = "reports/variations"
     }
 
     private enum ParameterKey {
@@ -543,11 +540,8 @@ public extension ProductsRemote {
         static let templateName: String = "template_name"
         static let type = "type"
         static let products = "products"
-        static let variations = "variations"
         static let before = "before"
         static let after = "after"
-        static let segmentBy = "segmentby"
-        static let fieldsWithoutUnderscore = "fields"
         static let extendedInfo = "extended_info"
     }
 

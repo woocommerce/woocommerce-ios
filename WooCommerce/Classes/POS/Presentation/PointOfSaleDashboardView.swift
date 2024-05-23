@@ -16,21 +16,13 @@ struct PointOfSaleDashboardView: View {
             HStack {
                 switch viewModel.orderStage {
                 case .building:
-                    ProductGridView(viewModel: viewModel)
-                        .background(Color.secondaryBackground)
-                        .frame(maxWidth: .infinity)
+                    productGridView
                     Spacer()
-                    CartView(viewModel: viewModel)
-                        .background(Color.secondaryBackground)
-                        .frame(maxWidth: .infinity)
+                    cartView
                 case .finalizing:
-                    CartView(viewModel: viewModel)
-                        .background(Color.secondaryBackground)
-                        .frame(maxWidth: .infinity)
+                    cartView
                     Spacer()
-                    TotalsView(viewModel: viewModel)
-                        .background(Color.secondaryBackground)
-                        .frame(maxWidth: .infinity)
+                    totalsView
                 }
             }
         }
@@ -59,6 +51,27 @@ struct PointOfSaleDashboardView: View {
         .sheet(isPresented: $viewModel.showsFilterSheet, content: {
             FilterView(viewModel: viewModel)
         })
+    }
+}
+
+/// Helpers to generate all Dashboard subviews
+private extension PointOfSaleDashboardView {
+    var cartView: some View {
+        CartView(viewModel: viewModel)
+            .background(Color.secondaryBackground)
+            .frame(maxWidth: .infinity)
+    }
+
+    var totalsView: some View {
+        TotalsView(viewModel: viewModel)
+            .background(Color.secondaryBackground)
+            .frame(maxWidth: .infinity)
+    }
+
+    var productGridView: some View {
+        ProductGridView(viewModel: viewModel)
+            .background(Color.secondaryBackground)
+            .frame(maxWidth: .infinity)
     }
 }
 

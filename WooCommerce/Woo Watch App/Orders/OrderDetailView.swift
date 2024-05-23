@@ -8,14 +8,20 @@ struct OrderDetailView: View {
     ///
     let order: OrdersListView.Order
 
+    /// Tracks the selected tab.
+    ///
+    @State private var selectedTab = Tab.summary
+
     var body: some View {
-        TabView {
+        TabView(selection: $selectedTab) {
             // First
             summaryView
+                .tag(Tab.summary)
 
             // Second
             if order.itemCount > 0 {
                 productsView
+                    .tag(Tab.products)
             }
         }
         .padding(.horizontal)
@@ -64,7 +70,9 @@ struct OrderDetailView: View {
 
             // Products button
             Button(Localization.products(order.itemCount).lowercased()) {
-                print("product Button tapped")
+                if order.itemCount > 0 {
+                    self.selectedTab = .products
+                }
             }
             .font(.caption2)
             .buttonStyle(.borderless)
@@ -120,6 +128,11 @@ struct OrderDetailView: View {
 }
 
 private extension OrderDetailView {
+    enum Tab: Int {
+        case summary
+        case products
+    }
+
     enum Layout {
         static let nameSectionSpacing = 2.0
         static let mainSectionsPadding = 10.0
@@ -133,7 +146,7 @@ private extension OrderDetailView {
             if count == 1 {
                 return AppLocalizedString(
                     "watch.orders.detail.product-count-singular",
-                    value: "%d Product",
+                    value: "1 Product",
                     comment: "Singular format for the number of products in the order detail screen."
                 )
             }

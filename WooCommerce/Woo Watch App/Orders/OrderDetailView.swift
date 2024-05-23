@@ -24,6 +24,10 @@ struct OrderDetailView: View {
                 productsView
                     .tag(Tab.products)
             }
+
+            // Third
+            customerView
+                .tag(Tab.customer)
         }
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
@@ -137,31 +141,35 @@ struct OrderDetailView: View {
 
     /// Third View Customer & Address section
     ///
-    @ViewBuilder private var customerView: some View  {
+    @ViewBuilder private var customerView: some View {
         List {
             Section {
-                // name
-                Text(order.name)
-                    .font(.body)
+                VStack(alignment: .leading, spacing: Layout.nameSectionSpacing) {
+                    // name
+                    Text(order.name)
+                        .font(.body)
 
-                // Email if exists
-                Text("willemdafoe@gmail.com")
-                    .font(.footnote)
-                    .foregroundStyle(.secondary)
+                    // Email if exists
+                    if order.email.isNotEmpty {
+                        Text(order.email)
+                            .font(.footnote)
+                            .foregroundStyle(.secondary)
+                    }
 
-                Divider()
+                    Divider()
+                        .padding(.top, Layout.customerDividerPadding)
+                }
 
                 // Address
-                Text("Address")
+                Text(order.address)
                     .font(.caption2)
-
             } header: {
                 Text(Localization.customer)
                     .font(.caption2)
+                    .padding(.bottom)
             }
             .listStyle(.plain)
             .listRowBackground(Color.clear)
-            .listRowInsets(.init(top: 0, leading: Layout.itemlistPadding, bottom: 0, trailing: Layout.itemlistPadding))
         }
     }
 }
@@ -170,10 +178,12 @@ private extension OrderDetailView {
     enum Tab: Int {
         case summary
         case products
+        case customer
     }
 
     enum Layout {
         static let nameSectionSpacing = 2.0
+        static let customerDividerPadding = 6.0
         static let mainSectionsPadding = 10.0
         static let itemCountPadding = 6.0
         static let itemRowSpacing = 8.0

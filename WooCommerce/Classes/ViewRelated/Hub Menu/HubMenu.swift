@@ -12,11 +12,9 @@ struct HubMenu: View {
     @ObservedObject private var iO = Inject.observer
 
     @ObservedObject private var viewModel: HubMenuViewModel
-    @ObservedObject private var pointOfSaleViewModel: PointOfSaleDashboardViewModel
 
-    init(viewModel: HubMenuViewModel, pointOfSaleViewModel: PointOfSaleDashboardViewModel) {
+    init(viewModel: HubMenuViewModel) {
         self.viewModel = viewModel
-        self.pointOfSaleViewModel = pointOfSaleViewModel
     }
 
     var body: some View {
@@ -164,7 +162,7 @@ private extension HubMenu {
             case HubMenuViewModel.Customers.id:
                 CustomersListView(viewModel: .init(siteID: viewModel.siteID))
             case HubMenuViewModel.PointOfSaleEntryPoint.id:
-                PointOfSaleEntryPointView(viewModel: pointOfSaleViewModel, hideAppTabBar: { isHidden in
+                PointOfSaleEntryPointView(hideAppTabBar: { isHidden in
                     AppDelegate.shared.setShouldHideTabBar(isHidden)
                 })
             default:
@@ -392,17 +390,17 @@ private extension HubMenu {
 
 struct HubMenu_Previews: PreviewProvider {
     static var previews: some View {
-        HubMenu(viewModel: .init(siteID: 123, tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker()), pointOfSaleViewModel: .defaultPreview())
+        HubMenu(viewModel: .init(siteID: 123, tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker()))
             .environment(\.colorScheme, .light)
 
-        HubMenu(viewModel: .init(siteID: 123, tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker()), pointOfSaleViewModel: .defaultPreview())
+        HubMenu(viewModel: .init(siteID: 123, tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker()))
             .environment(\.colorScheme, .dark)
 
-        HubMenu(viewModel: .init(siteID: 123, tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker()), pointOfSaleViewModel: .defaultPreview())
+        HubMenu(viewModel: .init(siteID: 123, tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker()))
             .previewLayout(.fixed(width: 312, height: 528))
             .environment(\.sizeCategory, .accessibilityExtraExtraExtraLarge)
 
-        HubMenu(viewModel: .init(siteID: 123, tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker()), pointOfSaleViewModel: .defaultPreview())
+        HubMenu(viewModel: .init(siteID: 123, tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker()))
             .previewLayout(.fixed(width: 1024, height: 768))
     }
 }

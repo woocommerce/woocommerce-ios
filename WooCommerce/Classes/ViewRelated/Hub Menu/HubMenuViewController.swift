@@ -5,7 +5,6 @@ import Yosemite
 /// Displays a grid view of all available menu in the "Menu" tab (eg. View Store, Reviews, Coupons, etc...)
 final class HubMenuViewController: UIHostingController<HubMenu> {
     private let viewModel: HubMenuViewModel
-    private let pointOfSaleViewModel: PointOfSaleDashboardViewModel
     private let tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker
 
     private var storePickerCoordinator: StorePickerCoordinator?
@@ -15,13 +14,9 @@ final class HubMenuViewController: UIHostingController<HubMenu> {
          tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker) {
         self.viewModel = HubMenuViewModel(siteID: siteID,
                                           tapToPayBadgePromotionChecker: tapToPayBadgePromotionChecker)
-        // TODO:
-        // Temporary. DI proper product models once we have a data layer
-        self.pointOfSaleViewModel = PointOfSaleDashboardViewModel(products: POSProductFactory.makeFakeProducts(),
-                                                                  cardReaderConnectionViewModel: .init(state: .scanningForReader(cancel: {})))
 
         self.tapToPayBadgePromotionChecker = tapToPayBadgePromotionChecker
-        super.init(rootView: HubMenu(viewModel: viewModel, pointOfSaleViewModel: pointOfSaleViewModel))
+        super.init(rootView: HubMenu(viewModel: viewModel))
         configureTabBarItem()
         rootView.switchStoreHandler = { [weak self] in
             self?.presentSwitchStore()

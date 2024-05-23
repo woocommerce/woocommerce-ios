@@ -6,6 +6,7 @@ import Experiments
 @testable import Yosemite
 
 final class ProductFormActionsFactoryTests: XCTestCase {
+
     func test_viewModel_for_physical_simple_product_without_images() {
         // Arrange
         let product = Fixtures.physicalSimpleProductWithoutImages
@@ -15,7 +16,9 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let factory = Fixtures.actionsFactory(product: model, formType: .edit)
 
         // Assert
-        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true, isStorePublic: true), .name(editable: true), .description(editable: true)]
+        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true, isStorePublic: true),
+                                                                      .name(editable: true),
+                                                                      .description(editable: true)]
         XCTAssertEqual(factory.primarySectionActions(), expectedPrimarySectionActions)
 
         let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings(editable: true, hideSeparator: false),
@@ -42,76 +45,10 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let factory = Fixtures.actionsFactory(product: model, formType: .edit)
 
         // Assert
-        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true, isStorePublic: true), .name(editable: true), .description(editable: true)]
+        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true, isStorePublic: true),
+                                                                      .name(editable: true),
+                                                                      .description(editable: true)]
         XCTAssertEqual(factory.primarySectionActions(), expectedPrimarySectionActions)
-
-        let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings(editable: true, hideSeparator: false),
-                                                                       .reviews,
-                                                                       .shippingSettings(editable: true),
-                                                                       .inventorySettings(editable: true),
-                                                                       .categories(editable: true),
-                                                                       .tags(editable: true),
-                                                                       .shortDescription(editable: true),
-                                                                       .linkedProducts(editable: true),
-                                                                       .productType(editable: true)]
-        XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
-
-        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editDownloadableFiles]
-        XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
-    }
-
-    func test_viewModel_for_physical_simple_product_without_images_store_not_public() {
-        // Given
-        let product = Fixtures.physicalSimpleProductWithoutImages
-        let model = EditableProductModel(product: product)
-
-        // When
-        let factory = Fixtures.actionsFactory(product: model, formType: .edit)
-
-        // Then
-        let primarySectionActions = factory.primarySectionActions()
-        XCTAssertEqual(primarySectionActions, [.images(editable: true, isStorePublic: false), .name(editable: true), .description(editable: true)])
-
-        // Assert isStorePublic is false
-        if case let .images(_, isStorePublic) = primarySectionActions.first {
-            XCTAssertFalse(isStorePublic)
-        } else {
-            XCTFail("First action is not .images")
-        }
-
-        let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings(editable: true, hideSeparator: false),
-                                                                       .reviews,
-                                                                       .shippingSettings(editable: true),
-                                                                       .inventorySettings(editable: true),
-                                                                       .categories(editable: true),
-                                                                       .tags(editable: true),
-                                                                       .shortDescription(editable: true),
-                                                                       .linkedProducts(editable: true),
-                                                                       .productType(editable: true)]
-        XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
-
-        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editDownloadableFiles]
-        XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
-    }
-
-    func test_viewModel_for_physical_simple_product_with_images_store_not_public() {
-        // Given
-        let product = Fixtures.physicalSimpleProductWithImages
-        let model = EditableProductModel(product: product)
-
-        // When
-        let factory = Fixtures.actionsFactory(product: model, formType: .edit)
-
-        // Then
-        let primarySectionActions = factory.primarySectionActions()
-        XCTAssertEqual(primarySectionActions, [.images(editable: true, isStorePublic: false), .name(editable: true), .description(editable: true)])
-
-        // Assert isStorePublic is false
-        if case let .images(_, isStorePublic) = primarySectionActions.first {
-            XCTAssertFalse(isStorePublic)
-        } else {
-            XCTFail("First action is not .images")
-        }
 
         let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings(editable: true, hideSeparator: false),
                                                                        .reviews,

@@ -1,0 +1,30 @@
+{
+    "data": {
+        "totals": {
+            "items_sold": 1,
+            "net_revenue": 10.8,
+            "orders_count": 1,
+            "segments": [
+                {
+                    "segment_label": "Pesto Spaghetti",
+                    "segment_id": "119",
+                    "subtotals": {
+                        "items_sold": 1,
+                        "net_revenue": 10.8,
+                        "orders_count": 1
+                    }
+                },
+                {
+                    "segment_id": 134,
+                    "segment_label": "Fried-egg Bacon Bagel",
+                    "subtotals": {
+                        "items_sold": 0,
+                        "net_revenue": 0,
+                        "orders_count": 0
+                    }
+                }
+            ]
+        },
+        "intervals": []
+    }
+}

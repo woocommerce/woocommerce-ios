@@ -35,4 +35,8 @@ struct ProductFormEventLogger: ProductFormEventLoggerProtocol {
     func logSubscriptionsExpirationDateTapped() {
         ServiceLocator.analytics.track(event: .ProductDetail.expirationDateSettingsTapped())
     }
+
+    func logQuantityRulesDoneButtonTapped(hasUnsavedChanges: Bool) {
+        ServiceLocator.analytics.track(event: .ProductDetail.quantityRulesDoneButtonTapped(hasChangedData: hasUnsavedChanges))
+    }
 }

@@ -15,12 +15,14 @@ struct CartView: View {
                 .padding(.vertical, 8)
                 .font(.title)
                 .foregroundColor(Color.white)
-            ForEach(viewModel.productsInCart, id: \.product.productID) { cartProduct in
-                ProductRowView(cartProduct: cartProduct) {
-                    viewModel.removeProductFromCart(cartProduct)
+            ScrollView {
+                ForEach(viewModel.productsInCart, id: \.product.productID) { cartProduct in
+                    ProductRowView(cartProduct: cartProduct) {
+                        viewModel.removeProductFromCart(cartProduct)
+                    }
+                    .background(Color.tertiaryBackground)
+                    .padding(.horizontal, 32)
                 }
-                .background(Color.tertiaryBackground)
-                .padding(.horizontal, 32)
             }
             Spacer()
             switch viewModel.orderStage {

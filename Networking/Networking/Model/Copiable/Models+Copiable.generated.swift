@@ -2280,6 +2280,60 @@ extension Networking.ProductImage {
     }
 }
 
+extension Networking.ProductReport {
+    public func copy(
+        totals: CopiableProp<ProductReportTotals> = .copy
+    ) -> Networking.ProductReport {
+        let totals = totals ?? self.totals
+
+        return Networking.ProductReport(
+            totals: totals
+        )
+    }
+}
+
+extension Networking.ProductReportSegment {
+    public func copy(
+        productID: CopiableProp<Int64> = .copy,
+        productName: CopiableProp<String> = .copy,
+        subtotals: CopiableProp<ProductReportSegment.Subtotals> = .copy
+    ) -> Networking.ProductReportSegment {
+        let productID = productID ?? self.productID
+        let productName = productName ?? self.productName
+        let subtotals = subtotals ?? self.subtotals
+
+        return Networking.ProductReportSegment(
+            productID: productID,
+            productName: productName,
+            subtotals: subtotals
+        )
+    }
+}
+
+extension Networking.ProductReportSegment.Subtotals {
+    public func copy(
+        itemsSold: CopiableProp<Int> = .copy
+    ) -> Networking.ProductReportSegment.Subtotals {
+        let itemsSold = itemsSold ?? self.itemsSold
+
+        return Networking.ProductReportSegment.Subtotals(
+            itemsSold: itemsSold
+        )
+    }
+}
+
+extension Networking.ProductReportTotals {
+    public func copy(
+        segments: CopiableProp<[ProductReportSegment]> = .copy
+    ) -> Networking.ProductReportTotals {
+        let segments = segments ?? self.segments
+
+        return Networking.ProductReportTotals(
+            segments: segments
+        )
+    }
+}
+
 extension Networking.ProductReview {
     public func copy(
         siteID: CopiableProp<Int64> = .copy,

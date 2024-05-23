@@ -279,6 +279,17 @@ final class PaymentMethodsViewModel: ObservableObject {
         trackFlowCanceled()
     }
 
+    /// Logs an error when `PaymentMethodsView.rootViewController` is missing.
+    func logNoRootViewControllerError() {
+        let logProperties: [String: Any] = ["flow": flow.rawValue]
+        ServiceLocator.crashLogging.logMessage(
+            "Missing `rootViewController` in `PaymentMethodsView` can result in a broken IPP experience",
+            properties: logProperties,
+            level: .error
+        )
+        assertionFailure("Missing `rootViewController` in `PaymentMethodsView` can result in a broken IPP experience in flow: \(flow.rawValue)")
+    }
+
     /// Defines if the swipe-to-dismiss gesture on the payment flow should be enabled
     ///
     var shouldEnableSwipeToDismiss: Bool {

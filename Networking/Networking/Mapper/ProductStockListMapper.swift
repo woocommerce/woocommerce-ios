@@ -26,7 +26,7 @@ struct ProductStockListMapper: Mapper {
 
 
 /// ProductStockListEnvelope Disposable Entity:
-/// Load Product stock list endpoint returns the coupon in the `data` key.
+/// Load Product stock list endpoint returns the stock in the `data` key.
 /// This entity allows us to parse all the things with JSONDecoder.
 ///
 private struct ProductStockListEnvelope: Decodable {

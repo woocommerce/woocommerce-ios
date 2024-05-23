@@ -1408,6 +1408,44 @@ extension Networking.ProductImage {
         )
     }
 }
+extension Networking.ProductReport {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.ProductReport {
+        .init(
+            totals: .fake()
+        )
+    }
+}
+extension Networking.ProductReportSegment {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.ProductReportSegment {
+        .init(
+            productID: .fake(),
+            productName: .fake(),
+            subtotals: .fake()
+        )
+    }
+}
+extension Networking.ProductReportSegment.Subtotals {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.ProductReportSegment.Subtotals {
+        .init(
+            itemsSold: .fake()
+        )
+    }
+}
+extension Networking.ProductReportTotals {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.ProductReportTotals {
+        .init(
+            segments: .fake()
+        )
+    }
+}
 extension Networking.ProductReview {
     /// Returns a "ready to use" type filled with fake values.
     ///

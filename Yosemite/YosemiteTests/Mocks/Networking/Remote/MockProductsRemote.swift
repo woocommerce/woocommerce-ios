@@ -44,7 +44,7 @@ final class MockProductsRemote {
     private var searchProductsBySKUResultsBySKU = [String: Result<[Product], Error>]()
 
     private var fetchedStockResult: Result<[ProductStock], Error>?
-    private var fetchedProductReports: Result<[ProductReportSegment], Error>?
+    private var fetchedProductReports: Result<[ProductReport], Error>?
 
     /// The number of times that `loadProduct()` was invoked.
     private(set) var invocationCountOfLoadProduct: Int = 0
@@ -110,7 +110,7 @@ final class MockProductsRemote {
         fetchedStockResult = result
     }
 
-    func whenFetchingProductReports(thenReturn result: Result<[ProductReportSegment], Error>) {
+    func whenFetchingProductReports(thenReturn result: Result<[ProductReport], Error>) {
         fetchedProductReports = result
     }
 }
@@ -305,7 +305,7 @@ extension MockProductsRemote: ProductsRemoteProtocol {
                                    pageSize: Int,
                                    pageNumber: Int,
                                    orderBy: ProductsRemote.OrderKey,
-                                   order: ProductsRemote.Order) async throws -> [ProductReportSegment] {
+                                   order: ProductsRemote.Order) async throws -> [ProductReport] {
         guard let result = fetchedProductReports else {
             throw NetworkError.notFound()
         }

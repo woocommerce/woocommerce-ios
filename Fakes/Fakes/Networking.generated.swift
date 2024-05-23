@@ -1413,36 +1413,21 @@ extension Networking.ProductReport {
     ///
     public static func fake() -> Networking.ProductReport {
         .init(
-            totals: .fake()
-        )
-    }
-}
-extension Networking.ProductReportSegment {
-    /// Returns a "ready to use" type filled with fake values.
-    ///
-    public static func fake() -> Networking.ProductReportSegment {
-        .init(
             productID: .fake(),
-            productName: .fake(),
-            subtotals: .fake()
-        )
-    }
-}
-extension Networking.ProductReportSegment.Subtotals {
-    /// Returns a "ready to use" type filled with fake values.
-    ///
-    public static func fake() -> Networking.ProductReportSegment.Subtotals {
-        .init(
+            variationID: .fake(),
+            name: .fake(),
+            imageURL: .fake(),
             itemsSold: .fake()
         )
     }
 }
-extension Networking.ProductReportTotals {
+extension Networking.ProductReport.ExtendedInfo {
     /// Returns a "ready to use" type filled with fake values.
     ///
-    public static func fake() -> Networking.ProductReportTotals {
+    public static func fake() -> Networking.ProductReport.ExtendedInfo {
         .init(
-            segments: .fake()
+            name: .fake(),
+            image: .fake()
         )
     }
 }

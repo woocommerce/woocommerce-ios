@@ -2282,54 +2282,39 @@ extension Networking.ProductImage {
 
 extension Networking.ProductReport {
     public func copy(
-        totals: CopiableProp<ProductReportTotals> = .copy
-    ) -> Networking.ProductReport {
-        let totals = totals ?? self.totals
-
-        return Networking.ProductReport(
-            totals: totals
-        )
-    }
-}
-
-extension Networking.ProductReportSegment {
-    public func copy(
         productID: CopiableProp<Int64> = .copy,
-        productName: CopiableProp<String> = .copy,
-        subtotals: CopiableProp<ProductReportSegment.Subtotals> = .copy
-    ) -> Networking.ProductReportSegment {
-        let productID = productID ?? self.productID
-        let productName = productName ?? self.productName
-        let subtotals = subtotals ?? self.subtotals
-
-        return Networking.ProductReportSegment(
-            productID: productID,
-            productName: productName,
-            subtotals: subtotals
-        )
-    }
-}
-
-extension Networking.ProductReportSegment.Subtotals {
-    public func copy(
+        variationID: NullableCopiableProp<Int64> = .copy,
+        name: CopiableProp<String> = .copy,
+        imageURL: NullableCopiableProp<URL> = .copy,
         itemsSold: CopiableProp<Int> = .copy
-    ) -> Networking.ProductReportSegment.Subtotals {
+    ) -> Networking.ProductReport {
+        let productID = productID ?? self.productID
+        let variationID = variationID ?? self.variationID
+        let name = name ?? self.name
+        let imageURL = imageURL ?? self.imageURL
         let itemsSold = itemsSold ?? self.itemsSold
 
-        return Networking.ProductReportSegment.Subtotals(
+        return Networking.ProductReport(
+            productID: productID,
+            variationID: variationID,
+            name: name,
+            imageURL: imageURL,
             itemsSold: itemsSold
         )
     }
 }
 
-extension Networking.ProductReportTotals {
+extension Networking.ProductReport.ExtendedInfo {
     public func copy(
-        segments: CopiableProp<[ProductReportSegment]> = .copy
-    ) -> Networking.ProductReportTotals {
-        let segments = segments ?? self.segments
+        name: CopiableProp<String> = .copy,
+        image: NullableCopiableProp<String> = .copy
+    ) -> Networking.ProductReport.ExtendedInfo {
+        let name = name ?? self.name
+        let image = image ?? self.image
 
-        return Networking.ProductReportTotals(
-            segments: segments
+        return Networking.ProductReport.ExtendedInfo(
+            name: name,
+            image: image
         )
     }
 }

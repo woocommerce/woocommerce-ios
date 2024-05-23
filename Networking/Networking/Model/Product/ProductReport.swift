@@ -4,76 +4,80 @@ import Codegen
 /// A struct to decode product reports.
 ///
 public struct ProductReport: Decodable, Equatable, GeneratedCopiable, GeneratedFakeable {
-    public let totals: ProductReportTotals
-
-    public init(totals: ProductReportTotals) {
-        self.totals = totals
-    }
-}
-
-/// A struct to decode product report totals.
-///
-public struct ProductReportTotals: Decodable, Equatable, GeneratedCopiable, GeneratedFakeable {
-    public let segments: [ProductReportSegment]
-
-    public init(segments: [ProductReportSegment]) {
-        self.segments = segments
-    }
-}
-
-/// Segment in a product report containing product name, ID, and items sold in a time period.
-///
-public struct ProductReportSegment: Decodable, Equatable, GeneratedCopiable, GeneratedFakeable {
     public let productID: Int64
-    public let productName: String
-    public let subtotals: Subtotals
+    public let variationID: Int64?
+    public let name: String
+    public let imageURL: URL?
+    public let itemsSold: Int
 
-    public init(productID: Int64, productName: String, subtotals: ProductReportSegment.Subtotals) {
-        self.productName = productName
+    public init(productID: Int64,
+                variationID: Int64?,
+                name: String,
+                imageURL: URL? = nil,
+                itemsSold: Int) {
         self.productID = productID
-        self.subtotals = subtotals
+        self.variationID = variationID
+        self.itemsSold = itemsSold
+        self.name = name
+        self.imageURL = imageURL
     }
 
-    /// The public initializer.
-    ///
     public init(from decoder: Decoder) throws {
-
+        
         let container = try decoder.container(keyedBy: CodingKeys.self)
         let productID = container.failsafeDecodeIfPresent(
             targetType: Int64.self,
             forKey: .productID,
             alternativeTypes: [.string(transform: { Int64($0) ?? 0 })]) ?? 0
-        let productName = (try? container.decode(String.self, forKey: .productName)) ?? ""
-        let subtotals = try container.decode(Subtotals.self, forKey: .subtotals)
-
+        let variationID = container.failsafeDecodeIfPresent(
+            targetType: Int64.self,
+            forKey: .variationID,
+            alternativeTypes: [.string(transform: { Int64($0) ?? 0 })])
+        let itemsSold = try container.decode(Int.self, forKey: .itemsSold)
+        let extendedInfo = try container.decode(ExtendedInfo.self, forKey: .extendedInfo)
+        let imageURL = Self.extractSourceURL(from: (extendedInfo.image ?? ""))
+        
         self.init(productID: productID,
-                  productName: productName,
-                  subtotals: subtotals)
+                  variationID: variationID,
+                  name: extendedInfo.name,
+                  imageURL: imageURL,
+                  itemsSold: itemsSold)
     }
 }
 
-private extension ProductReportSegment {
-    enum CodingKeys: String, CodingKey {
-        case productName  = "segment_label"
-        case productID = "segment_id"
-        case subtotals
-    }
-}
-
-/// Statistics for a product in a time period.
-///
-public extension ProductReportSegment {
-    struct Subtotals: Decodable, Equatable, GeneratedCopiable, GeneratedFakeable {
-        public let itemsSold: Int
-
-        public init(itemsSold: Int) {
-            self.itemsSold = itemsSold
+public extension ProductReport {
+    struct ExtendedInfo: Decodable, Equatable, GeneratedCopiable, GeneratedFakeable {
+        public let name: String
+        public let image: String?
+        
+        public init(name: String, image: String?) {
+            self.name = name
+            self.image = image
         }
     }
 }
 
-private extension ProductReportSegment.Subtotals {
+private extension ProductReport {
+    static func extractSourceURL(from content: String) -> URL? {
+        let components = content.split(separator: " ")
+        if let src = components.first(where: { $0.hasPrefix("src=")}) {
+            let detector = try? NSDataDetector(types: NSTextCheckingResult.CheckingType.link.rawValue)
+            let input = String(src)
+            let matches = detector?.matches(in: input, options: [], range: NSRange(location: 0, length: input.utf16.count))
+            if let match = matches?.first,
+               let range = Range(match.range, in: input) {
+                let url = String(input[range])
+                return URL(string: url)
+            }
+        }
+        DDLogError("⛔️ Error detecting URL from \(content)")
+        return nil
+    }
+
     enum CodingKeys: String, CodingKey {
+        case productID = "product_id"
+        case variationID = "variation_id"
         case itemsSold  = "items_sold"
+        case extendedInfo = "extended_info"
     }
 }

@@ -228,5 +228,5 @@ public enum ProductAction: Action {
                              pageNumber: Int,
                              orderBy: ProductsRemote.OrderKey,
                              order: ProductsRemote.Order,
-                             completion: (Result<[ProductReportSegment], Error>) -> Void)
+                             completion: (Result<[ProductReport], Error>) -> Void)
 }

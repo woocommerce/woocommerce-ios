@@ -62,24 +62,26 @@ struct OrderDetailView: View {
     }
 
     @ViewBuilder private func itemRow(_ item: OrdersListView.OrderItem) -> some View {
-        VStack(alignment: .leading, spacing: .zero) {
-            Text(item.name)
-                .font(.caption2)
+        HStack(alignment: .top, spacing: Layout.itemRowSpacing) {
 
-            HStack {
+            Text(item.count.formatted(.number))
+                .font(.caption2)
+                .foregroundStyle(Colors.wooPurple20)
+                .padding(Layout.itemCountPadding)
+                .background(Circle().fill(Colors.whiteTransparent))
+
+            VStack(alignment: .leading) {
+                Text(item.name)
+                    .font(.caption2)
+
                 Text(item.total)
                     .font(.caption2)
                     .foregroundStyle(.secondary)
-
-                Spacer()
-
-                Text(item.count.formatted(.number))
-                    .font(.caption2)
-                    .foregroundStyle(Colors.wooPurple20)
-                    .padding(Layout.itemCountPadding)
-                    .background(Circle().fill(Colors.whiteTransparent))
             }
+
+            Spacer()
         }
+        .padding(.vertical)
     }
 }
 
@@ -88,6 +90,7 @@ private extension OrderDetailView {
         static let nameSectionSpacing = 2.0
         static let mainSectionsPadding = 10.0
         static let itemCountPadding = 6.0
+        static let itemRowSpacing = 8.0
     }
 
     enum Localization {

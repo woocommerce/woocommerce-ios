@@ -2286,20 +2286,23 @@ extension Networking.ProductReport {
         variationID: NullableCopiableProp<Int64> = .copy,
         name: CopiableProp<String> = .copy,
         imageURL: NullableCopiableProp<URL> = .copy,
-        itemsSold: CopiableProp<Int> = .copy
+        itemsSold: CopiableProp<Int> = .copy,
+        stockQuantity: CopiableProp<Int> = .copy
     ) -> Networking.ProductReport {
         let productID = productID ?? self.productID
         let variationID = variationID ?? self.variationID
         let name = name ?? self.name
         let imageURL = imageURL ?? self.imageURL
         let itemsSold = itemsSold ?? self.itemsSold
+        let stockQuantity = stockQuantity ?? self.stockQuantity
 
         return Networking.ProductReport(
             productID: productID,
             variationID: variationID,
             name: name,
             imageURL: imageURL,
-            itemsSold: itemsSold
+            itemsSold: itemsSold,
+            stockQuantity: stockQuantity
         )
     }
 }
@@ -2307,14 +2310,17 @@ extension Networking.ProductReport {
 extension Networking.ProductReport.ExtendedInfo {
     public func copy(
         name: CopiableProp<String> = .copy,
-        image: NullableCopiableProp<String> = .copy
+        image: NullableCopiableProp<String> = .copy,
+        stockQuantity: CopiableProp<Int> = .copy
     ) -> Networking.ProductReport.ExtendedInfo {
         let name = name ?? self.name
         let image = image ?? self.image
+        let stockQuantity = stockQuantity ?? self.stockQuantity
 
         return Networking.ProductReport.ExtendedInfo(
             name: name,
-            image: image
+            image: image,
+            stockQuantity: stockQuantity
         )
     }
 }

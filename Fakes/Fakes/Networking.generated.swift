@@ -1417,7 +1417,8 @@ extension Networking.ProductReport {
             variationID: .fake(),
             name: .fake(),
             imageURL: .fake(),
-            itemsSold: .fake()
+            itemsSold: .fake(),
+            stockQuantity: .fake()
         )
     }
 }
@@ -1427,7 +1428,8 @@ extension Networking.ProductReport.ExtendedInfo {
     public static func fake() -> Networking.ProductReport.ExtendedInfo {
         .init(
             name: .fake(),
-            image: .fake()
+            image: .fake(),
+            stockQuantity: .fake()
         )
     }
 }

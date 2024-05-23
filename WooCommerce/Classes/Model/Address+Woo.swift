@@ -38,8 +38,8 @@ extension Address {
         return output.joined(separator: "\n")
     }
 
-#if !os(watchOS)
-    /// Returns the Postal Address, formated and ready for display.
+
+    /// Returns the Postal Address, formatted and ready for display.
     ///
     var formattedPostalAddress: String? {
         return postalAddress.formatted(as: .mailingAddress)
@@ -92,6 +92,7 @@ extension Address {
         self == .empty
     }
 
+#if !os(watchOS)
     /// Erases the address components that are also part of a Tax Rate. Call this if you want to unlink an address from a tax rate.
     ///
     func resettingTaxRateComponents() -> Address {
@@ -124,7 +125,7 @@ extension Address {
 #endif
 }
 
-#if !os(watchOS)
+
 // MARK: - Private Methods
 //
 private extension Address {
@@ -159,6 +160,7 @@ private extension Address {
 
 
     func refineAddressState() -> Address {
+#if !os(watchOS)
         // https://github.com/woocommerce/woocommerce-ios/issues/5851
         // The backend gives us the state code in the state field.
         // For these countries we should show the state name instead, as the code is not identifiable (e.g. JP01 -> Hokkaido)
@@ -168,6 +170,10 @@ private extension Address {
         }
 
         return copy(state: stateName)
+#else
+        // Watch app does not have a local storage of countries.
+        // In this case we don't apply any special treatment
+        return self
+#endif
     }
 }
-#endif

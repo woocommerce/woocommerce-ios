@@ -56,6 +56,8 @@ struct OrdersListView: View {
                                        name: "----- -----",
                                        total: "----",
                                        status: "------- ------",
+                                       email: "-----",
+                                       address: "-----",
                                        items: []))
         }
         .redacted(reason: .placeholder)

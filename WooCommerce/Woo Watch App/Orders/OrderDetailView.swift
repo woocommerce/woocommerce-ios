@@ -24,6 +24,10 @@ struct OrderDetailView: View {
                 productsView
                     .tag(Tab.products)
             }
+
+            // Third
+            customerView
+                .tag(Tab.customer)
         }
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
@@ -134,16 +138,52 @@ struct OrderDetailView: View {
             }
         }
     }
+
+    /// Third View Customer & Address section
+    ///
+    @ViewBuilder private var customerView: some View {
+        List {
+            Section {
+                VStack(alignment: .leading, spacing: Layout.nameSectionSpacing) {
+                    // name
+                    Text(order.name)
+                        .font(.body)
+
+                    // Email if exists
+                    if order.email.isNotEmpty {
+                        Text(order.email)
+                            .font(.footnote)
+                            .foregroundStyle(.secondary)
+                    }
+
+                    Divider()
+                        .padding(.top, Layout.customerDividerPadding)
+                }
+
+                // Address
+                Text(order.address)
+                    .font(.caption2)
+            } header: {
+                Text(Localization.customer)
+                    .font(.caption2)
+                    .padding(.bottom)
+            }
+            .listStyle(.plain)
+            .listRowBackground(Color.clear)
+        }
+    }
 }
 
 private extension OrderDetailView {
     enum Tab: Int {
         case summary
         case products
+        case customer
     }
 
     enum Layout {
         static let nameSectionSpacing = 2.0
+        static let customerDividerPadding = 6.0
         static let mainSectionsPadding = 10.0
         static let itemCountPadding = 6.0
         static let itemRowSpacing = 8.0
@@ -168,6 +208,12 @@ private extension OrderDetailView {
             )
             return LocalizedString(format: format, count)
         }
+
+        static let customer = AppLocalizedString(
+            "watch.orders.detail.customer",
+            value: "Customer",
+            comment: "Customer title in the order detail screen."
+        )
     }
 
     enum Colors {

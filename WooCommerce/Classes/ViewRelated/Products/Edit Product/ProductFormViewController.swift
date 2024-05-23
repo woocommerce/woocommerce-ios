@@ -1,4 +1,5 @@
 import Combine
+import SafariServices
 import Photos
 import UIKit
 import WordPressUI
@@ -400,6 +401,11 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         case .primaryFields(let rows):
             let row = rows[indexPath.row]
             switch row {
+            case .images(_, let isStorePublic, _, _):
+                guard isStorePublic else {
+                    presentURL(URLs.wpComPrivacySettings)
+                    return
+                }
             case .description(_, let isEditable, _):
                 guard isEditable else {
                     return
@@ -1284,6 +1290,18 @@ extension ProductFormViewController: KeyboardScrollable {
     }
 }
 
+// MARK: - Helper Methods
+
+private extension ProductFormViewController {
+
+    /// Presents a URL modally.
+    ///
+    func presentURL(_ url: URL) {
+        let safariViewController = SFSafariViewController(url: url)
+        present(safariViewController, animated: true)
+    }
+}
+
 // MARK: - Navigation actions handling
 //
 private extension ProductFormViewController {
@@ -2037,6 +2055,10 @@ private enum Localization {
         static let gotIt = NSLocalizedString("Got it",
                                              comment: "Button title that dismisses the Write with AI tooltip")
     }
+}
+
+private enum URLs {
+    static let wpComPrivacySettings = URL(string: "https://wordpress.com/support/privacy-settings/")!
 }
 
 private enum ActionSheetStrings {

@@ -25,6 +25,7 @@ struct PointOfSaleDashboardView: View {
                     totalsView
                 }
             }
+            .padding()
         }
         .background(Color.primaryBackground)
         .navigationBarBackButtonHidden(true)

@@ -382,7 +382,7 @@ extension OrderDetailsViewModel {
         ]
 
         let cellsWithoutNib = [
-            TitleAndSubtitleAndValueCardTableViewCell.self
+            HostingConfigurationTableViewCell<ShippingLineRowView>.self
         ]
 
         for cellClass in cellsWithNib {

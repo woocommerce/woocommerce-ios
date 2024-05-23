@@ -1,4 +1,5 @@
 import Foundation
+import SwiftUI
 import UIKit
 import Yosemite
 import Experiments
@@ -475,7 +476,7 @@ private extension OrderDetailsDataSource {
             configureAttributionSessionPageViews(cell: cell, at: indexPath)
         case let cell as WooBasicTableViewCell where row == .trashOrder:
             configureTrashOrder(cell: cell, at: indexPath)
-        case let cell as TitleAndSubtitleAndValueCardTableViewCell where row == .shippingLine:
+        case let cell as HostingConfigurationTableViewCell<ShippingLineRowView> where row == .shippingLine:
             configureShippingLine(cell: cell, at: indexPath)
         default:
             fatalError("Unidentified customer info row type")
@@ -1007,12 +1008,20 @@ private extension OrderDetailsDataSource {
         cell.selectionStyle = .none
     }
 
-    private func configureShippingLine(cell: TitleAndSubtitleAndValueCardTableViewCell, at indexPath: IndexPath) {
+    private func configureShippingLine(cell: HostingConfigurationTableViewCell<ShippingLineRowView>, at indexPath: IndexPath) {
         let shippingLine = shippingLines[indexPath.row]
         let shippingTotal = currencyFormatter.formatAmount(shippingLine.total) ?? shippingLine.total
         // TODO-12582: Update subtitle with method name (from method ID)
-        cell.configure(title: shippingLine.methodTitle, subtitle: shippingLine.methodTitle, value: shippingTotal)
+        let view = ShippingLineRowView(shippingTitle: shippingLine.methodTitle,
+                                       shippingMethod: shippingLine.methodTitle,
+                                       shippingAmount: shippingTotal,
+                                       editable: false)
+        let topMargin = indexPath.row == 0 ? Constants.cellDefaultMargin : 0 // Reduce cell padding between rows
+        let insets = UIEdgeInsets(top: topMargin, left: Constants.cellDefaultMargin, bottom: Constants.cellDefaultMargin, right: Constants.cellDefaultMargin)
+        cell.host(view, insets: insets)
+        cell.hideSeparator()
         cell.selectionStyle = .none
+
     }
 
     private func configureSummary(cell: SummaryTableViewCell) {
@@ -1987,7 +1996,7 @@ extension OrderDetailsDataSource {
             case .trashOrder:
                 return WooBasicTableViewCell.reuseIdentifier
             case .shippingLine:
-                return TitleAndSubtitleAndValueCardTableViewCell.reuseIdentifier
+                return HostingConfigurationTableViewCell<ShippingLineRowView>.reuseIdentifier
             }
         }
     }
@@ -2011,5 +2020,6 @@ extension OrderDetailsDataSource {
         static let addOrderCell = 1
         static let paymentCell = 1
         static let paidByCustomerCell = 1
+        static let cellDefaultMargin: CGFloat = 16
     }
 }

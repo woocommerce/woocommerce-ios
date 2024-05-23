@@ -9,17 +9,20 @@ public struct ProductReport: Decodable, Equatable, GeneratedCopiable, GeneratedF
     public let name: String
     public let imageURL: URL?
     public let itemsSold: Int
+    public let stockQuantity: Int
 
     public init(productID: Int64,
                 variationID: Int64?,
                 name: String,
                 imageURL: URL? = nil,
-                itemsSold: Int) {
+                itemsSold: Int,
+                stockQuantity: Int) {
         self.productID = productID
         self.variationID = variationID
         self.itemsSold = itemsSold
         self.name = name
         self.imageURL = imageURL
+        self.stockQuantity = stockQuantity
     }
 
     public init(from decoder: Decoder) throws {
@@ -36,12 +39,15 @@ public struct ProductReport: Decodable, Equatable, GeneratedCopiable, GeneratedF
         let itemsSold = try container.decode(Int.self, forKey: .itemsSold)
         let extendedInfo = try container.decode(ExtendedInfo.self, forKey: .extendedInfo)
         let imageURL = Self.extractSourceURL(from: (extendedInfo.image ?? ""))
+        let stockQuantity = extendedInfo.stockQuantity
+        let name = extendedInfo.name
 
         self.init(productID: productID,
                   variationID: variationID,
-                  name: extendedInfo.name,
+                  name: name,
                   imageURL: imageURL,
-                  itemsSold: itemsSold)
+                  itemsSold: itemsSold,
+                  stockQuantity: stockQuantity)
     }
 }
 
@@ -49,10 +55,18 @@ public extension ProductReport {
     struct ExtendedInfo: Decodable, Equatable, GeneratedCopiable, GeneratedFakeable {
         public let name: String
         public let image: String?
+        public let stockQuantity: Int
 
-        public init(name: String, image: String?) {
+        public init(name: String, image: String?, stockQuantity: Int) {
             self.name = name
             self.image = image
+            self.stockQuantity = stockQuantity
+        }
+
+        private enum CodingKeys: String, CodingKey {
+            case name
+            case image
+            case stockQuantity = "stock_quantity"
         }
     }
 }

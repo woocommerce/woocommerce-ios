@@ -9,43 +9,13 @@ struct OrderDetailView: View {
     let order: OrdersListView.Order
 
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading) {
+        TabView {
+            // First
+            summaryView
 
-                HStack {
-                    Text(order.date)
-                    Spacer()
-                    Text(order.time)
-                }
-                .font(.caption2)
-                .foregroundStyle(.secondary)
-
-                Divider()
-
-                VStack(alignment: .leading, spacing: Layout.nameSectionSpacing) {
-                    Text(order.name)
-                        .font(.title3)
-
-                    Text(order.total)
-                        .font(.title2)
-                        .bold()
-
-                    Text(order.status)
-                        .font(.footnote)
-                        .foregroundStyle(Colors.gray5)
-                }
-                .padding(.bottom, Layout.mainSectionsPadding)
-
-                Text(Localization.products(order.itemCount).lowercased())
-                    .font(.caption2)
-                    .padding(.bottom, Layout.mainSectionsPadding)
-
-                VStack {
-                    ForEach(order.items) { orderItem in
-                        itemRow(orderItem)
-                        Divider()
-                    }
-                }
+            // Second
+            if order.itemCount > 0 {
+                productsView
             }
         }
         .padding(.horizontal)
@@ -61,15 +31,79 @@ struct OrderDetailView: View {
         )
     }
 
+    /// First View: Summary
+    ///
+    @ViewBuilder private var summaryView: some View {
+        VStack(alignment: .leading) {
+
+            // Date & Time
+            HStack {
+                Text(order.date)
+                Spacer()
+                Text(order.time)
+            }
+            .font(.caption2)
+            .foregroundStyle(.secondary)
+
+            Divider()
+
+            // Name, total, status
+            VStack(alignment: .leading, spacing: Layout.nameSectionSpacing) {
+                Text(order.name)
+                    .font(.body)
+
+                Text(order.total)
+                    .font(.title2)
+                    .bold()
+
+                Text(order.status)
+                    .font(.footnote)
+                    .foregroundStyle(Colors.gray5)
+            }
+            .padding(.bottom, Layout.mainSectionsPadding)
+
+            // Products button
+            Button(Localization.products(order.itemCount).lowercased()) {
+                print("product Button tapped")
+            }
+            .font(.caption2)
+            .buttonStyle(.borderless)
+            .frame(maxWidth: .greatestFiniteMagnitude, alignment: .leading)
+            .padding()
+            .background(Colors.whiteTransparent)
+            .cornerRadius(Layout.buttonCornerRadius)
+        }
+    }
+
+    /// Second View: Product List
+    ///
+    @ViewBuilder private var productsView: some View {
+        List {
+            Section {
+                ForEach(order.items) { orderItem in
+                    itemRow(orderItem)
+                }
+            } header: {
+                Text(Localization.products(order.itemCount))
+                    .font(.caption2)
+                    .padding(.bottom)
+            }
+        }
+    }
+
+    /// Item Row of the product list
+    ///
     @ViewBuilder private func itemRow(_ item: OrdersListView.OrderItem) -> some View {
         HStack(alignment: .top, spacing: Layout.itemRowSpacing) {
 
+            // Item count
             Text(item.count.formatted(.number))
                 .font(.caption2)
                 .foregroundStyle(Colors.wooPurple20)
                 .padding(Layout.itemCountPadding)
                 .background(Circle().fill(Colors.whiteTransparent))
 
+            // Name and total
             VStack(alignment: .leading) {
                 Text(item.name)
                     .font(.caption2)
@@ -91,14 +125,23 @@ private extension OrderDetailView {
         static let mainSectionsPadding = 10.0
         static let itemCountPadding = 6.0
         static let itemRowSpacing = 8.0
+        static let buttonCornerRadius = 10.0
     }
 
     enum Localization {
         static func products(_ count: Int) -> LocalizedString {
+            if count == 1 {
+                return AppLocalizedString(
+                    "watch.orders.detail.product-count-singular",
+                    value: "%d Product",
+                    comment: "Singular format for the number of products in the order detail screen."
+                )
+            }
+
             let format = AppLocalizedString(
                 "watch.orders.detail.product-count",
                 value: "%d Products",
-                comment: "Format for the number of products in the order detail screen."
+                comment: "Plural format for the number of products in the order detail screen."
             )
             return LocalizedString(format: format, count)
         }

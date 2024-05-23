@@ -1016,7 +1016,7 @@ private extension OrderDetailsDataSource {
 
     private func configureShippingLine(cell: HostingConfigurationTableViewCell<ShippingLineRowView>, at indexPath: IndexPath) {
         let shippingLine = shippingLines[indexPath.row]
-        let shippingMethod = siteShippingMethods.first(where: { $0.methodID == shippingLine.methodID })?.title ?? ""
+        let shippingMethod = siteShippingMethods.first(where: { $0.methodID == shippingLine.methodID })?.title
         let shippingTotal = currencyFormatter.formatAmount(shippingLine.total) ?? shippingLine.total
 
         let view = ShippingLineRowView(shippingTitle: shippingLine.methodTitle,

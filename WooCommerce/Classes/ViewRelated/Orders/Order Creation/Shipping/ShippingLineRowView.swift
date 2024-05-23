@@ -10,7 +10,7 @@ struct ShippingLineRowView: View {
     let shippingTitle: String
 
     /// Name of the shipping method for the shipping line
-    let shippingMethod: String
+    let shippingMethod: String?
 
     /// Amount for the shipping line
     let shippingAmount: String
@@ -30,8 +30,10 @@ struct ShippingLineRowView: View {
                 // Avoids the shipping line name to be truncated when it's long enough
                     .fixedSize(horizontal: false, vertical: true)
 
-                Text(shippingMethod)
-                    .subheadlineStyle()
+                if let shippingMethod {
+                    Text(shippingMethod)
+                        .subheadlineStyle()
+                }
             }
 
             Spacer()

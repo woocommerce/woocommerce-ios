@@ -2,7 +2,9 @@
 
 18.8
 -----
+- [*] Menu > Payments > Collect Payment: fix the the "card reader" & "Tap To Pay" payment methods where it was no-op before. [https://github.com/woocommerce/woocommerce-ios/pull/12801]
 - [internal] Optimize API calls sent for Dashboard screen. [https://github.com/woocommerce/woocommerce-ios/pull/12775]
+- [**] Adds edit support for the Min/Max Quantities extension in product details. [https://github.com/woocommerce/woocommerce-ios/pull/12758]
 
 18.7
 -----

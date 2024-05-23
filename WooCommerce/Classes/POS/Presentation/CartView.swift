@@ -25,9 +25,14 @@ struct CartView: View {
                 }
             }
             Spacer()
-            checkoutButton
-                .padding(.horizontal, 32)
-
+            switch viewModel.orderStage {
+            case .building:
+                checkoutButton
+                    .padding(.horizontal, 32)
+            case .finalizing:
+                addMoreButton
+                    .padding(.horizontal, 32)
+            }
         }
         .frame(maxWidth: .infinity)
         .background(Color.secondaryBackground)
@@ -46,6 +51,19 @@ private extension CartView {
         .font(.title)
         .foregroundColor(Color.primaryBackground)
         .background(Color.white)
+        .cornerRadius(10)
+    }
+
+    var addMoreButton: some View {
+        Button("Add More") {
+            viewModel.addMoreToCart()
+        }
+        .padding(.all, 20)
+        .frame(maxWidth: .infinity, idealHeight: 120)
+        .font(.title)
+        .foregroundColor(Color.white)
+        .background(Color.secondaryBackground)
+        .border(.white, width: 2)
         .cornerRadius(10)
     }
 }

@@ -134,6 +134,36 @@ struct OrderDetailView: View {
             }
         }
     }
+
+    /// Third View Customer & Address section
+    ///
+    @ViewBuilder private var customerView: some View  {
+        List {
+            Section {
+                // name
+                Text(order.name)
+                    .font(.body)
+
+                // Email if exists
+                Text("willemdafoe@gmail.com")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+
+                Divider()
+
+                // Address
+                Text("Address")
+                    .font(.caption2)
+
+            } header: {
+                Text(Localization.customer)
+                    .font(.caption2)
+            }
+            .listStyle(.plain)
+            .listRowBackground(Color.clear)
+            .listRowInsets(.init(top: 0, leading: Layout.itemlistPadding, bottom: 0, trailing: Layout.itemlistPadding))
+        }
+    }
 }
 
 private extension OrderDetailView {
@@ -168,6 +198,12 @@ private extension OrderDetailView {
             )
             return LocalizedString(format: format, count)
         }
+
+        static let customer = AppLocalizedString(
+            "watch.orders.detail.customer",
+            value: "Customer",
+            comment: "Customer title in the order detail screen."
+        )
     }
 
     enum Colors {

@@ -32,15 +32,14 @@ final class ProductStockDashboardCardViewModelTests: XCTestCase {
         let viewModel = ProductStockDashboardCardViewModel(siteID: siteID, stores: stores)
 
         let stock = ProductStock.fake().copy(siteID: siteID,
-                                             productID: productID,
-                                             name: "Steamed bun",
-                                             sku: "1353",
-                                             manageStock: true,
-                                             stockQuantity: 4,
-                                             stockStatusKey: "instock")
-        let segment = ProductReportSegment.fake().copy(productID: 123, productName: "Steamed bun", subtotals: .fake().copy(itemsSold: 10))
+                                             productID: productID)
         let thumbnailURL = "https://example.com/image.jpg"
-        XCTAssertTrue(viewModel.stock.isEmpty)
+        let report = ProductReport.fake().copy(productID: 123,
+                                               name: "Steamed bun",
+                                               imageURL: URL(string: thumbnailURL),
+                                               itemsSold: 10,
+                                               stockQuantity: 4)
+        XCTAssertTrue(viewModel.reports.isEmpty)
 
         // When
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
@@ -48,11 +47,7 @@ final class ProductStockDashboardCardViewModelTests: XCTestCase {
             case let .fetchStockReport(_, _, _, _, _, _, completion):
                 completion(.success([stock]))
             case let .fetchProductReports(_, _, _, _, _, _, _, _, _, completion):
-                completion(.success([segment]))
-            case let .retrieveProducts(_, _, _, _, onCompletion):
-                let image = ProductImage.fake().copy(src: thumbnailURL)
-                let product = Product.fake().copy(productID: productID, images: [image])
-                onCompletion(.success(([product], false)))
+                completion(.success([report]))
             default:
                 break
             }
@@ -60,14 +55,7 @@ final class ProductStockDashboardCardViewModelTests: XCTestCase {
         await viewModel.reloadData()
 
         // Then
-        let expectedItem = ProductStockDashboardCardViewModel.StockItem(
-            productID: productID,
-            productName: "Steamed bun",
-            stockQuantity: 4,
-            thumbnailURL: URL(string: thumbnailURL),
-            itemsSoldLast30Days: segment.subtotals.itemsSold
-        )
-        XCTAssertEqual(viewModel.stock, [expectedItem])
+        XCTAssertEqual(viewModel.reports, [report])
     }
 
     @MainActor
@@ -79,14 +67,13 @@ final class ProductStockDashboardCardViewModelTests: XCTestCase {
         let viewModel = ProductStockDashboardCardViewModel(siteID: siteID, stores: stores)
 
         let stock = ProductStock.fake().copy(siteID: siteID,
-                                             productID: productID,
-                                             name: "Steamed bun",
-                                             sku: "1353",
-                                             manageStock: true,
-                                             stockQuantity: 4,
-                                             stockStatusKey: "instock")
-        let segment = ProductReportSegment.fake().copy(productID: 123, productName: "Steamed bun", subtotals: .fake().copy(itemsSold: 10))
+                                             productID: productID)
         let thumbnailURL = "https://example.com/image.jpg"
+        let report = ProductReport.fake().copy(productID: 123,
+                                               name: "Steamed bun",
+                                               imageURL: URL(string: thumbnailURL),
+                                               itemsSold: 10,
+                                               stockQuantity: 4)
 
         var fetchStockRequestCount = 0
         var fetchProductReportRequestCount = 0
@@ -100,12 +87,7 @@ final class ProductStockDashboardCardViewModelTests: XCTestCase {
                 completion(.success([stock]))
             case let .fetchProductReports(_, _, _, _, _, _, _, _, _, completion):
                 fetchProductReportRequestCount += 1
-                completion(.success([segment]))
-            case let .retrieveProducts(_, _, _, _, onCompletion):
-                retrieveProductsRequestCount += 1
-                let image = ProductImage.fake().copy(src: thumbnailURL)
-                let product = Product.fake().copy(productID: productID, images: [image])
-                onCompletion(.success(([product], false)))
+                completion(.success([report]))
             default:
                 break
             }
@@ -115,7 +97,6 @@ final class ProductStockDashboardCardViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(fetchStockRequestCount, 1)
         XCTAssertEqual(fetchProductReportRequestCount, 1)
-        XCTAssertEqual(retrieveProductsRequestCount, 1)
 
         // When
         await viewModel.reloadData() // request again, e.g. when pulling-to-refresh.
@@ -123,7 +104,6 @@ final class ProductStockDashboardCardViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(fetchStockRequestCount, 2)
         XCTAssertEqual(fetchProductReportRequestCount, 1)
-        XCTAssertEqual(retrieveProductsRequestCount, 1)
     }
 
     @MainActor
@@ -135,13 +115,7 @@ final class ProductStockDashboardCardViewModelTests: XCTestCase {
         let viewModel = ProductStockDashboardCardViewModel(siteID: siteID, stores: stores)
 
         let stock = ProductStock.fake().copy(siteID: siteID,
-                                             productID: productID,
-                                             name: "Steamed bun",
-                                             sku: "1353",
-                                             manageStock: true,
-                                             stockQuantity: 4,
-                                             stockStatusKey: "instock")
-        let thumbnailURL = "https://example.com/image.jpg"
+                                             productID: productID)
         let productReportError = NSError(domain: "test", code: 500)
         XCTAssertNil(viewModel.syncingError)
 
@@ -152,10 +126,6 @@ final class ProductStockDashboardCardViewModelTests: XCTestCase {
                 completion(.success([stock]))
             case let .fetchProductReports(_, _, _, _, _, _, _, _, _, completion):
                 completion(.failure(productReportError))
-            case let .retrieveProducts(_, _, _, _, onCompletion):
-                let image = ProductImage.fake().copy(src: thumbnailURL)
-                let product = Product.fake().copy(productID: productID, images: [image])
-                onCompletion(.success(([product], false)))
             default:
                 break
             }

@@ -8,7 +8,7 @@ final class ProductStockDashboardCardViewModel: ObservableObject {
     // Set externally to trigger callback upon hiding the Inbox card.
     var onDismiss: (() -> Void)?
 
-    @Published private(set) var stock: [StockItem] = []
+    @Published private(set) var reports: [ProductReport] = []
     @Published private(set) var syncingData = false
     @Published private(set) var syncingError: Error?
     @Published private(set) var selectedStockType: StockType = .lowStock
@@ -17,11 +17,8 @@ final class ProductStockDashboardCardViewModel: ObservableObject {
     private let stores: StoresManager
     private let analytics: Analytics
 
-    /// In-memory list of loaded items sold by product IDs.
-    private var itemsSoldLast30Days: [Int64: Int] = [:]
-
-    /// In-memory list of loaded product thumbnails by product IDs.
-    private var productThumbnails: [Int64: URL?] = [:]
+    /// In-memory list of loaded product reports by product IDs.
+    private var savedReports: [Int64: ProductReport] = [:]
 
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
@@ -40,21 +37,11 @@ final class ProductStockDashboardCardViewModel: ObservableObject {
         syncingData = true
         syncingError = nil
         do {
-            let productStock = try await fetchStock(type: selectedStockType)
-            let productIDs = productStock.map { $0.productID }
-            try await saveStockDetailsToMemory(for: productIDs)
-            stock = productStock.map { item in
-                let quantity: Int = {
-                    guard let stockQuantity = item.stockQuantity else {
-                        return 0
-                    }
-                    return Int(truncating: stockQuantity as NSNumber)
-                }()
-                return StockItem(productID: item.productID,
-                                 productName: item.name,
-                                 stockQuantity: quantity,
-                                 thumbnailURL: productThumbnails[item.productID] ?? nil,
-                                 itemsSoldLast30Days: itemsSoldLast30Days[item.productID] ?? 0)
+            let stock = try await fetchStock(type: selectedStockType)
+            let productIDs = stock.map { $0.productID }
+            try await saveProductReportsToMemory(for: productIDs)
+            reports = stock.compactMap { item in
+                savedReports.first(where: { $0.key == item.productID })?.value
             }
             .sorted { $0.stockQuantity < $1.stockQuantity }
         } catch {
@@ -108,7 +95,7 @@ private extension ProductStockDashboardCardViewModel {
     }
 
     @MainActor
-    func fetchProductReports(productIDs: [Int64]) async throws -> [ProductReportSegment] {
+    func fetchProductReports(productIDs: [Int64]) async throws -> [ProductReport] {
         let timeZone = TimeZone.siteTimezone
         let currentDate = Date().endOfDay(timezone: timeZone)
         let last30Days = Date(timeInterval: -Constants.dayInSeconds*30, since: currentDate).startOfDay(timezone: timeZone)
@@ -128,66 +115,19 @@ private extension ProductStockDashboardCardViewModel {
     }
 
     @MainActor
-    func fetchProductDetails(productIDs: [Int64]) async throws -> [Product] {
-        try await withCheckedThrowingContinuation { continuation in
-            stores.dispatch(ProductAction.retrieveProducts(siteID: siteID,
-                                                           productIDs: productIDs,
-                                                           pageNumber: Constants.pageNumber,
-                                                           pageSize: Constants.maxItemCount) { result in
-                switch result {
-                case let .success((products, _)):
-                    continuation.resume(returning: products)
-                case let .failure(error):
-                    continuation.resume(throwing: error)
-                }
-            })
-        }
-    }
+    func saveProductReportsToMemory(for productIDs: [Int64]) async throws {
+        let idsToFetchReports = productIDs.filter { !savedReports.keys.contains($0) }
 
-    @MainActor
-    func saveStockDetailsToMemory(for productIDs: [Int64]) async throws {
-        let idsToFetchItemsSold: [Int64] = productIDs.filter { !itemsSoldLast30Days.keys.contains($0) }
-        let idsToFetchProductDetails: [Int64] = productIDs.filter { !productThumbnails.keys.contains($0) }
-
-        try await withThrowingTaskGroup(of: Void.self) { [weak self] group in
-            guard let self else { return }
-
-            if idsToFetchItemsSold.isNotEmpty {
-                group.addTask {
-                    let segments = try await self.fetchProductReports(productIDs: idsToFetchItemsSold)
-                    for segment in segments {
-                        self.itemsSoldLast30Days[segment.productID] = segment.subtotals.itemsSold
-                    }
-                }
-            }
-
-            if idsToFetchProductDetails.isNotEmpty {
-                group.addTask {
-                    let products = try await self.fetchProductDetails(productIDs: idsToFetchProductDetails)
-                    for product in products {
-                        self.productThumbnails[product.productID] = product.imageURL
-                    }
-                }
-            }
-
-            while !group.isEmpty {
-                // rethrow any failure.
-                try await group.next()
+        if idsToFetchReports.isNotEmpty {
+            let reports = try await self.fetchProductReports(productIDs: idsToFetchReports)
+            for report in reports {
+                self.savedReports[report.productID] = report
             }
         }
     }
 }
 
 extension ProductStockDashboardCardViewModel {
-    struct StockItem: Identifiable, Hashable {
-        let productID: Int64
-        let productName: String
-        let stockQuantity: Int
-        let thumbnailURL: URL?
-        let itemsSoldLast30Days: Int
-
-        var id: Int64 { productID }
-    }
 
     enum StockType: String, CaseIterable, Identifiable {
         case lowStock = "lowstock"
@@ -234,4 +174,8 @@ private extension ProductStockDashboardCardViewModel {
         static let maxItemCount = 3
         static let dayInSeconds: TimeInterval = 86400
     }
+}
+
+extension ProductReport: Identifiable {
+    public var id: String { "\(productID)-\(variationID ?? 0)" }
 }

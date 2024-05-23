@@ -1,5 +1,6 @@
 import Kingfisher
 import SwiftUI
+import struct Yosemite.ProductReport
 import struct Yosemite.DashboardCard
 import enum Networking.DotcomError
 
@@ -9,7 +10,7 @@ struct ProductStockDashboardCard: View {
     @ObservedObject private var viewModel: ProductStockDashboardCardViewModel
     @ScaledMetric private var scale: CGFloat = 1.0
     @State private var showingSupportForm = false
-    @State private var selectedItem: ProductStockDashboardCardViewModel.StockItem?
+    @State private var selectedItem: ProductReport?
 
     init(viewModel: ProductStockDashboardCardViewModel) {
         self.viewModel = viewModel
@@ -43,7 +44,7 @@ struct ProductStockDashboardCard: View {
             }
 
             Group {
-                if viewModel.stock.isNotEmpty {
+                if viewModel.reports.isNotEmpty {
                     stockList
                 } else {
                     emptyView
@@ -128,13 +129,13 @@ private extension ProductStockDashboardCard {
                     .subheadlineStyle()
                     .fontWeight(.semibold)
             }
-            ForEach(Array(viewModel.stock.enumerated()), id: \.element) { (index, element) in
+            ForEach(viewModel.reports) { element in
                 Button {
                     selectedItem = element
                 } label: {
                     HStack(alignment: .top) {
                         // Thumbnail image
-                        KFImage(element.thumbnailURL)
+                        KFImage(element.imageURL)
                             .placeholder { Image(uiImage: .productPlaceholderImage)
                                     .foregroundColor(Color(.listIcon))
                             }
@@ -147,10 +148,10 @@ private extension ProductStockDashboardCard {
                         VStack {
                             HStack(alignment: .firstTextBaseline) {
                                 VStack(alignment: .leading) {
-                                    Text(element.productName)
+                                    Text(element.name)
                                         .bodyStyle()
                                         .multilineTextAlignment(.leading)
-                                    Text(String.pluralize(element.itemsSoldLast30Days,
+                                    Text(String.pluralize(element.itemsSold,
                                                           singular: Localization.subtitleSingular,
                                                           plural: Localization.subtitlePlural))
                                     .subheadlineStyle()
@@ -163,7 +164,7 @@ private extension ProductStockDashboardCard {
                                     .fontWeight(.semibold)
                             }
                             Divider()
-                                .renderedIf(index < viewModel.stock.count - 1)
+                                .renderedIf(element != viewModel.reports.last)
                         }
                     }
                 }
@@ -212,7 +213,7 @@ private extension ProductStockDashboardCard {
         }
     }
 
-    func productDetailView(for item: ProductStockDashboardCardViewModel.StockItem) -> UIViewController {
+    func productDetailView(for item: ProductReport) -> UIViewController {
         let loaderViewController = ProductLoaderViewController(model: .product(productID: item.productID),
                                                                siteID: viewModel.siteID,
                                                                forceReadOnly: false)

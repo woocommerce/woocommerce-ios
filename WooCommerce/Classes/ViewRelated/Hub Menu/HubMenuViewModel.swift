@@ -209,9 +209,7 @@ final class HubMenuViewModel: ObservableObject {
             generalElements.removeAll(where: { $0.id == Blaze.id })
         }
 
-        if featureFlagService.isFeatureFlagEnabled(.customersInHubMenu) {
-            generalElements.append(Customers())
-        }
+        generalElements.append(Customers())
     }
 
     func showReviewDetails(using parcel: ProductReviewFromNoteParcel) {

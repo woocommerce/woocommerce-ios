@@ -21,7 +21,6 @@ struct MockFeatureFlagService: FeatureFlagService {
     private let blazei3NativeCampaignCreation: Bool
     private let isBackendReceiptsEnabled: Bool
     private let sideBySideViewForOrderForm: Bool
-    private let isCustomersInHubMenuEnabled: Bool
     private let isSubscriptionsInOrderCreationCustomersEnabled: Bool
     private let isMultipleShippingLinesEnabled: Bool
     private let isDisplayPointOfSaleToggleEnabled: Bool
@@ -45,7 +44,6 @@ struct MockFeatureFlagService: FeatureFlagService {
          blazei3NativeCampaignCreation: Bool = false,
          isBackendReceiptsEnabled: Bool = false,
          sideBySideViewForOrderForm: Bool = false,
-         isCustomersInHubMenuEnabled: Bool = false,
          isSubscriptionsInOrderCreationCustomersEnabled: Bool = false,
          isMultipleShippingLinesEnabled: Bool = false,
          isDisplayPointOfSaleToggleEnabled: Bool = false) {
@@ -68,7 +66,6 @@ struct MockFeatureFlagService: FeatureFlagService {
         self.blazei3NativeCampaignCreation = blazei3NativeCampaignCreation
         self.isBackendReceiptsEnabled = isBackendReceiptsEnabled
         self.sideBySideViewForOrderForm = sideBySideViewForOrderForm
-        self.isCustomersInHubMenuEnabled = isCustomersInHubMenuEnabled
         self.isSubscriptionsInOrderCreationCustomersEnabled = isSubscriptionsInOrderCreationCustomersEnabled
         self.isMultipleShippingLinesEnabled = isMultipleShippingLinesEnabled
         self.isDisplayPointOfSaleToggleEnabled = isDisplayPointOfSaleToggleEnabled
@@ -112,8 +109,6 @@ struct MockFeatureFlagService: FeatureFlagService {
             return isBackendReceiptsEnabled
         case .sideBySideViewForOrderForm:
             return sideBySideViewForOrderForm
-        case .customersInHubMenu:
-            return isCustomersInHubMenuEnabled
         case .subscriptionsInOrderCreationCustomers:
             return isSubscriptionsInOrderCreationCustomersEnabled
         case .multipleShippingLines:

@@ -3,7 +3,10 @@ import WooFoundation
 import struct Yosemite.ShippingLine
 import struct Yosemite.ShippingMethod
 
-struct ShippingLineRowViewModel {
+struct ShippingLineRowViewModel: Identifiable {
+    /// ID for the row view model
+    let id: Int64
+
     /// Title for the shipping line
     let shippingTitle: String
 
@@ -19,10 +22,12 @@ struct ShippingLineRowViewModel {
     /// Closure to be invoked when the shipping line is edited
     let onEditShippingLine: () -> Void = {} // TODO-12581: Support editing shipping lines
 
-    init(shippingTitle: String,
+    init(id: Int64,
+         shippingTitle: String,
          shippingMethod: String?,
          shippingAmount: String,
          editable: Bool) {
+        self.id = id
         self.shippingTitle = shippingTitle
         self.shippingMethod = shippingMethod
         self.shippingAmount = shippingAmount
@@ -36,7 +41,8 @@ struct ShippingLineRowViewModel {
         let formattedAmount = currencyFormatter.formatAmount(shippingLine.total) ?? shippingLine.total
         let shippingMethod = shippingMethods.first(where: { $0.methodID == shippingLine.methodID })?.title
 
-        self.init(shippingTitle: shippingLine.methodTitle,
+        self.init(id: shippingLine.shippingID,
+                  shippingTitle: shippingLine.methodTitle,
                   shippingMethod: shippingMethod,
                   shippingAmount: formattedAmount,
                   editable: editable)

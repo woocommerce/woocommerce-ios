@@ -73,9 +73,17 @@ extension ShippingLineRowView {
 }
 
 #Preview("Editable") {
-    ShippingLineRowView(viewModel: ShippingLineRowViewModel(shippingTitle: "Package 1", shippingMethod: "Flat Rate", shippingAmount: "$5.00", editable: true))
+    ShippingLineRowView(viewModel: ShippingLineRowViewModel(id: 1,
+                                                            shippingTitle: "Package 1",
+                                                            shippingMethod: "Flat Rate",
+                                                            shippingAmount: "$5.00",
+                                                            editable: true))
 }
 
 #Preview("Not editable") {
-    ShippingLineRowView(viewModel: ShippingLineRowViewModel(shippingTitle: "Package 1", shippingMethod: "Flat Rate", shippingAmount: "$5.00", editable: false))
+    ShippingLineRowView(viewModel: ShippingLineRowViewModel(id: 1,
+                                                            shippingTitle: "Package 1",
+                                                            shippingMethod: "Flat Rate",
+                                                            shippingAmount: "$5.00",
+                                                            editable: false))
 }

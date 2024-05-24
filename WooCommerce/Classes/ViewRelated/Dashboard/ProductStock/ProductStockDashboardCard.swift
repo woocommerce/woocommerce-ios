@@ -215,7 +215,14 @@ private extension ProductStockDashboardCard {
     }
 
     func productDetailView(for item: ProductReport) -> UIViewController {
-        let loaderViewController = ProductLoaderViewController(model: .product(productID: item.productID),
+        let model: ProductLoaderViewController.Model = {
+            if let variationID = item.variationID {
+                .productVariation(productID: item.productID, variationID: variationID)
+            } else {
+                .product(productID: item.productID)
+            }
+        }()
+        let loaderViewController = ProductLoaderViewController(model: model,
                                                                siteID: viewModel.siteID,
                                                                forceReadOnly: false)
         return WooNavigationController(rootViewController: loaderViewController)

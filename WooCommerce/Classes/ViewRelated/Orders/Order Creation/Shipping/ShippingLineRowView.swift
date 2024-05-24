@@ -29,14 +29,17 @@ struct ShippingLineRowView: View {
             Text(viewModel.shippingAmount)
                 .bodyStyle()
 
-            Image(systemName: "pencil")
-                .resizable()
-                .frame(width: Layout.editIconImageSize * scale,
-                       height: Layout.editIconImageSize * scale)
-                .foregroundColor(Color(.wooCommercePurple(.shade60)))
-                .accessibilityAddTraits(.isButton)
-                .accessibilityLabel(Localization.editButtonAccessibilityLabel)
-                .renderedIf(viewModel.editable)
+            Button {
+                viewModel.onEditShippingLine()
+            } label: {
+                Image(systemName: "pencil")
+                    .resizable()
+                    .frame(width: Layout.editIconImageSize * scale,
+                           height: Layout.editIconImageSize * scale)
+            }
+            .tint(Color(.primary))
+            .accessibilityLabel(Localization.editButtonAccessibilityLabel)
+            .renderedIf(viewModel.editable)
         }
         .padding(Layout.contentPadding)
         .contentShape(Rectangle())
@@ -73,9 +76,17 @@ extension ShippingLineRowView {
 }
 
 #Preview("Editable") {
-    ShippingLineRowView(viewModel: ShippingLineRowViewModel(shippingTitle: "Package 1", shippingMethod: "Flat Rate", shippingAmount: "$5.00", editable: true))
+    ShippingLineRowView(viewModel: ShippingLineRowViewModel(id: 1,
+                                                            shippingTitle: "Package 1",
+                                                            shippingMethod: "Flat Rate",
+                                                            shippingAmount: "$5.00",
+                                                            editable: true))
 }
 
 #Preview("Not editable") {
-    ShippingLineRowView(viewModel: ShippingLineRowViewModel(shippingTitle: "Package 1", shippingMethod: "Flat Rate", shippingAmount: "$5.00", editable: false))
+    ShippingLineRowView(viewModel: ShippingLineRowViewModel(id: 1,
+                                                            shippingTitle: "Package 1",
+                                                            shippingMethod: "Flat Rate",
+                                                            shippingAmount: "$5.00",
+                                                            editable: false))
 }

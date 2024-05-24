@@ -12,7 +12,11 @@ final class ShippingLineRowViewModelTests: XCTestCase {
         let shippingAmount = "$5.00"
 
         // When
-        let viewModel = ShippingLineRowViewModel(shippingTitle: shippingTitle, shippingMethod: shippingMethod, shippingAmount: shippingAmount, editable: true)
+        let viewModel = ShippingLineRowViewModel(id: 1,
+                                                 shippingTitle: shippingTitle,
+                                                 shippingMethod: shippingMethod,
+                                                 shippingAmount: shippingAmount,
+                                                 editable: true)
 
         // Then
         assertEqual(shippingTitle, viewModel.shippingTitle)

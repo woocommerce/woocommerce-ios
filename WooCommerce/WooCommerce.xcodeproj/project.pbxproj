@@ -2024,6 +2024,7 @@
 		CE27258021925AE8002B22EB /* ValueOneTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE27257E21925AE8002B22EB /* ValueOneTableViewCell.xib */; };
 		CE29A63029F2DACC003D2A00 /* OrderSubscriptionTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE29A62F29F2DACC003D2A00 /* OrderSubscriptionTableViewCell.swift */; };
 		CE29FEED2BFF771F007679C2 /* ShippingLineRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE29FEEC2BFF771F007679C2 /* ShippingLineRowView.swift */; };
+		CE29FEF22C009867007679C2 /* OrderShippingSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE29FEF12C009867007679C2 /* OrderShippingSection.swift */; };
 		CE29FEF42C009D7C007679C2 /* ShippingLineRowViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE29FEF32C009D7C007679C2 /* ShippingLineRowViewModel.swift */; };
 		CE29FEF62C009F5F007679C2 /* ShippingLineRowViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE29FEF52C009F5F007679C2 /* ShippingLineRowViewModelTests.swift */; };
 		CE2A9FBF23BFB1BE002BEC1C /* LedgerTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE2A9FBD23BFB1BD002BEC1C /* LedgerTableViewCell.swift */; };
@@ -4815,6 +4816,7 @@
 		CE27257E21925AE8002B22EB /* ValueOneTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ValueOneTableViewCell.xib; sourceTree = "<group>"; };
 		CE29A62F29F2DACC003D2A00 /* OrderSubscriptionTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderSubscriptionTableViewCell.swift; sourceTree = "<group>"; };
 		CE29FEEC2BFF771F007679C2 /* ShippingLineRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLineRowView.swift; sourceTree = "<group>"; };
+		CE29FEF12C009867007679C2 /* OrderShippingSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderShippingSection.swift; sourceTree = "<group>"; };
 		CE29FEF32C009D7C007679C2 /* ShippingLineRowViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLineRowViewModel.swift; sourceTree = "<group>"; };
 		CE29FEF52C009F5F007679C2 /* ShippingLineRowViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLineRowViewModelTests.swift; sourceTree = "<group>"; };
 		CE2A9FBD23BFB1BD002BEC1C /* LedgerTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LedgerTableViewCell.swift; sourceTree = "<group>"; };
@@ -10789,6 +10791,7 @@
 			children = (
 				CE29FEEC2BFF771F007679C2 /* ShippingLineRowView.swift */,
 				CE29FEF32C009D7C007679C2 /* ShippingLineRowViewModel.swift */,
+				CE29FEF12C009867007679C2 /* OrderShippingSection.swift */,
 			);
 			path = Shipping;
 			sourceTree = "<group>";
@@ -14052,6 +14055,7 @@
 				027B8BB823FE0CB30040944E /* DefaultProductUIImageLoader.swift in Sources */,
 				CC254F3226C2BCCF005F3C82 /* ShippingLabelAddNewPackageViewModel.swift in Sources */,
 				0202B6922387AB0C00F3EBE0 /* WooTab+Tag.swift in Sources */,
+				CE29FEF22C009867007679C2 /* OrderShippingSection.swift in Sources */,
 				D8736B5A22F07D7100A14A29 /* MainTabViewModel.swift in Sources */,
 				02619858256B53DD00E321E9 /* AggregatedShippingLabelOrderItems.swift in Sources */,
 				260520F22B83B1B7005D5D59 /* ConnectivityToolViewModel.swift in Sources */,

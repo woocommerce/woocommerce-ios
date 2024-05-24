@@ -1205,6 +1205,7 @@ extension EditableOrderViewModel {
 
         let shouldShowShippingTotal: Bool
         let shippingTotal: String
+        let isShippingTotalEditable: Bool
 
         // We only support one (the first) shipping line
         let shippingMethodTitle: String
@@ -1261,6 +1262,7 @@ extension EditableOrderViewModel {
              itemsTotal: String = "0",
              shouldShowShippingTotal: Bool = false,
              shippingTotal: String = "0",
+             isShippingTotalEditable: Bool = true,
              shippingMethodID: String = "",
              shippingMethodTitle: String = "",
              shippingMethodTotal: String = "",
@@ -1342,6 +1344,7 @@ extension EditableOrderViewModel {
             self.addGiftCardClosure = addGiftCardClosure
             self.setGiftCardClosure = setGiftCardClosure
             self.addShippingTappedClosure = addShippingTappedClosure
+            self.isShippingTotalEditable = isShippingTotalEditable
         }
 
         /// Indicates whether the Coupons informational tooltip button should be shown
@@ -1881,6 +1884,7 @@ private extension EditableOrderViewModel {
                                             itemsTotal: orderTotals.itemsTotal.stringValue,
                                             shouldShowShippingTotal: order.shippingLines.filter { $0.methodID != nil }.isNotEmpty,
                                             shippingTotal: order.shippingTotal.isNotEmpty ? order.shippingTotal : "0",
+                                            isShippingTotalEditable: !multipleShippingLinesEnabled,
                                             shippingMethodID: shippingMethodID,
                                             shippingMethodTitle: shippingMethodTitle,
                                             shippingMethodTotal: order.shippingLines.first?.total ?? "0",

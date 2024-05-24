@@ -1,6 +1,9 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 18.8
+Delve into a smoother WooCommerce experience with our latest update! We've resolved issues hindering the "Card Reader" and "Tap To Pay" features under Menu > Payments > Collect Payment for seamless transactions. Your dashboard screen gets a performance booster as we've optimized API calls. In addition, item editing is now more convenient with added edit support for the Min/Max Quantities extension in product details. Enjoy effortless e-commerce management with WooCommerce!
+
 ## 18.7
 We're thrilled to roll out the latest updates!
 Our latest update brings under-the-hood improvements to enhance both stability and performance.

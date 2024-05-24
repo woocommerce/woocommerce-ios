@@ -369,6 +369,12 @@ final class EditableOrderViewModel: ObservableObject {
 
     // MARK: Shipping line properties
 
+    /// Multiple shipping lines support
+    ///
+    var multipleShippingLinesEnabled: Bool {
+        featureFlagService.isFeatureFlagEnabled(.multipleShippingLines)
+    }
+
     /// View models for each shipping line in the order.
     ///
     @Published private(set) var shippingLineRows: [ShippingLineRowViewModel] = []
@@ -1671,7 +1677,7 @@ private extension EditableOrderViewModel {
         updateShippingMethodsResultsController()
         syncShippingMethods()
 
-        guard featureFlagService.isFeatureFlagEnabled(.multipleShippingLines) else {
+        guard multipleShippingLinesEnabled else {
             return
         }
 

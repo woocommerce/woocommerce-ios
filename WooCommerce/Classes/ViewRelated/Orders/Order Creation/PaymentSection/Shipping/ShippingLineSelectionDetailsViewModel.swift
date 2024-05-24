@@ -67,10 +67,10 @@ class ShippingLineSelectionDetailsViewModel: ObservableObject {
     @Published var enableDoneButton: Bool = false
 
     init(siteID: Int64,
-         isExistingShippingLine: Bool,
-         initialMethodID: String,
-         initialMethodTitle: String,
-         shippingTotal: String,
+         isExistingShippingLine: Bool = false,
+         initialMethodID: String = "",
+         initialMethodTitle: String = "",
+         shippingTotal: String = "",
          locale: Locale = Locale.autoupdatingCurrent,
          storeCurrencySettings: CurrencySettings = ServiceLocator.currencySettings,
          storageManager: StorageManagerType = ServiceLocator.storageManager,

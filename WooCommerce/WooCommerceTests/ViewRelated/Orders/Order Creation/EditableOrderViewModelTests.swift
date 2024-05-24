@@ -3333,6 +3333,19 @@ final class EditableOrderViewModelTests: XCTestCase {
         assertEqual(shippingLine.methodTitle, shippingLineRow.shippingTitle)
         assertEqual(shippingMethod.title, shippingLineRow.shippingMethod)
     }
+
+    func test_addShippingLineViewModel_returns_view_model_for_new_shipping_line() {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isMultipleShippingLinesEnabled: true)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
+                                               featureFlagService: featureFlagService)
+
+        // When
+        let newShippingLineViewModel = viewModel.addShippingLineViewModel()
+
+        // Then
+        XCTAssertFalse(newShippingLineViewModel.isExistingShippingLine)
+    }
 }
 
 private extension EditableOrderViewModelTests {

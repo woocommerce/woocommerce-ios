@@ -17,7 +17,7 @@ final class ProductStockDashboardCardViewModel: ObservableObject {
     private let stores: StoresManager
     private let analytics: Analytics
 
-    /// In-memory list of loaded product reports by product IDs.
+    /// In-memory list of loaded reports by product IDs.
     private var savedReports: [Int64: ProductReport] = [:]
 
     init(siteID: Int64,
@@ -38,10 +38,9 @@ final class ProductStockDashboardCardViewModel: ObservableObject {
         syncingError = nil
         do {
             let stock = try await fetchStock(type: selectedStockType)
-            let productIDs = stock.map { $0.productID }
-            try await saveProductReportsToMemory(for: productIDs)
+            try await fetchAndSaveReportsToMemory(for: stock)
             reports = stock.compactMap { item in
-                savedReports.first(where: { $0.key == item.productID })?.value
+                savedReports[item.productID]
             }
             .sorted { $0.stockQuantity < $1.stockQuantity }
         } catch {
@@ -115,13 +114,65 @@ private extension ProductStockDashboardCardViewModel {
     }
 
     @MainActor
-    func saveProductReportsToMemory(for productIDs: [Int64]) async throws {
-        let idsToFetchReports = productIDs.filter { !savedReports.keys.contains($0) }
+    func fetchVariationReports(productIDs: [Int64], variationIDs: [Int64]) async throws -> [ProductReport] {
+        let timeZone = TimeZone.siteTimezone
+        let currentDate = Date().endOfDay(timezone: timeZone)
+        let last30Days = Date(timeInterval: -Constants.dayInSeconds*30, since: currentDate).startOfDay(timezone: timeZone)
+        return try await withCheckedThrowingContinuation { continuation in
+            stores.dispatch(ProductAction.fetchVariationReports(siteID: siteID,
+                                                                productIDs: productIDs,
+                                                                variationIDs: variationIDs,
+                                                                timeZone: timeZone,
+                                                                earliestDateToInclude: currentDate,
+                                                                latestDateToInclude: last30Days,
+                                                                pageSize: Constants.maxItemCount,
+                                                                pageNumber: Constants.pageNumber,
+                                                                orderBy: .itemsSold,
+                                                                order: .descending) { result in
+                continuation.resume(with: result)
+            })
+        }
+    }
 
-        if idsToFetchReports.isNotEmpty {
-            let reports = try await self.fetchProductReports(productIDs: idsToFetchReports)
-            for report in reports {
-                self.savedReports[report.productID] = report
+    @MainActor
+    func fetchAndSaveReportsToMemory(for stock: [ProductStock]) async throws {
+
+        let groupedStockByVariations = Dictionary(grouping: stock, by: { $0.isProductVariation })
+        let variationsToFetchReports = (groupedStockByVariations[true] ?? [])
+            .filter { savedReports[$0.productID] == nil }
+
+        let productsToFetchReports = (groupedStockByVariations[false] ?? [])
+            .filter { savedReports[$0.productID] == nil }
+
+        try await withThrowingTaskGroup(of: Void.self) { [weak self] group in
+            guard let self else { return }
+
+            if variationsToFetchReports.isNotEmpty {
+                group.addTask {
+                    let reports = try await self.fetchVariationReports(
+                        productIDs: Array(Set(variationsToFetchReports.map { $0.parentID })),
+                        variationIDs: variationsToFetchReports.map { $0.productID }
+                    )
+                    for report in reports {
+                        if let variationID = report.variationID {
+                            self.savedReports[variationID] = report
+                        }
+                    }
+                }
+            }
+
+            if productsToFetchReports.isNotEmpty {
+                group.addTask {
+                    let reports = try await self.fetchProductReports(productIDs: productsToFetchReports.map { $0.productID })
+                    for report in reports {
+                        self.savedReports[report.productID] = report
+                    }
+                }
+            }
+
+            while !group.isEmpty {
+                // rethrow any failure.
+                try await group.next()
             }
         }
     }

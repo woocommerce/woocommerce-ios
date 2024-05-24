@@ -2,6 +2,7 @@
     "data": [
         {
           "product_id": 248,
+          "variation_id": 280,
           "items_sold": 8,
           "net_revenue": 6235.52,
           "orders_count": 1,
@@ -14,7 +15,23 @@
             "stock_quantity": 24,
             "low_stock_amount": 2,
             "sku": "fantastic-concrete-shirt-64346342",
-            "attributes": []
+            "attributes": [
+              {
+                "id": 0,
+                "name": "omnis-beatae-quaerat",
+                "option": "ex"
+              },
+              {
+                "id": 2,
+                "name": "numeric-size",
+                "option": "7"
+              },
+              {
+                "id": 1,
+                "name": "color",
+                "option": "Pink"
+              }
+            ]
           },
           "_links": {
             "product": [

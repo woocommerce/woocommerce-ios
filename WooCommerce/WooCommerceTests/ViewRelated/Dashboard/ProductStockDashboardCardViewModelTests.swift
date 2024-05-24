@@ -69,53 +69,6 @@ final class ProductStockDashboardCardViewModelTests: XCTestCase {
     }
 
     @MainActor
-    func test_reloadData_reuse_in_memory_data_for_previously_fetched_items() async {
-        // Given
-        let siteID: Int64 = 123
-        let productID: Int64 = siteID
-        let stores = MockStoresManager(sessionManager: .makeForTesting())
-        let viewModel = ProductStockDashboardCardViewModel(siteID: siteID, stores: stores)
-
-        let stock = ProductStock.fake().copy(siteID: siteID,
-                                             productID: productID)
-        let thumbnailURL = "https://example.com/image.jpg"
-        let report = ProductReport.fake().copy(productID: 123,
-                                               name: "Steamed bun",
-                                               imageURL: URL(string: thumbnailURL),
-                                               itemsSold: 10,
-                                               stockQuantity: 4)
-
-        var fetchStockRequestCount = 0
-        var fetchProductReportRequestCount = 0
-
-        // When
-        stores.whenReceivingAction(ofType: ProductAction.self) { action in
-            switch action {
-            case let .fetchStockReport(_, _, _, _, _, completion):
-                fetchStockRequestCount += 1
-                completion(.success([stock]))
-            case let .fetchProductReports(_, _, _, _, _, _, _, _, _, completion):
-                fetchProductReportRequestCount += 1
-                completion(.success([report]))
-            default:
-                break
-            }
-        }
-        await viewModel.reloadData()
-
-        // Then
-        XCTAssertEqual(fetchStockRequestCount, 1)
-        XCTAssertEqual(fetchProductReportRequestCount, 1)
-
-        // When
-        await viewModel.reloadData() // request again, e.g. when pulling-to-refresh.
-
-        // Then
-        XCTAssertEqual(fetchStockRequestCount, 2)
-        XCTAssertEqual(fetchProductReportRequestCount, 1)
-    }
-
-    @MainActor
     func test_reloadData_relays_error_when_one_of_the_requests_fail() async {
         // Given
         let siteID: Int64 = 123

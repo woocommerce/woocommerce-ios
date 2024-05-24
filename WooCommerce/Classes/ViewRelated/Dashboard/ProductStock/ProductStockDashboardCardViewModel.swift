@@ -137,11 +137,8 @@ private extension ProductStockDashboardCardViewModel {
     func fetchAndSaveReportsToMemory(for stock: [ProductStock]) async throws {
 
         let groupedStockByVariations = Dictionary(grouping: stock, by: { $0.isProductVariation })
-        let variationsToFetchReports = (groupedStockByVariations[true] ?? [])
-            .filter { savedReports[$0.productID] == nil }
-
-        let productsToFetchReports = (groupedStockByVariations[false] ?? [])
-            .filter { savedReports[$0.productID] == nil }
+        let variationsToFetchReports = groupedStockByVariations[true] ?? []
+        let productsToFetchReports = groupedStockByVariations[false] ?? []
 
         try await withThrowingTaskGroup(of: Void.self) { [weak self] group in
             guard let self else { return }

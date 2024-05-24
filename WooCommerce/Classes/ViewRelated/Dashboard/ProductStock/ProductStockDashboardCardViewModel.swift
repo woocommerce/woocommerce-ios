@@ -155,7 +155,16 @@ private extension ProductStockDashboardCardViewModel {
                     )
                     for report in reports {
                         if let variationID = report.variationID {
-                            self.savedReports[variationID] = report
+                            // In some cases, variation reports can have invalid product ID.
+                            // Fix that by restore the parent ID from the stock item.
+                            let updatedReport: ProductReport = {
+                                guard report.productID == 0,
+                                      let parentID = variationsToFetchReports.first(where: { $0.productID == variationID })?.productID else {
+                                    return report
+                                }
+                                return report.copy(productID: parentID)
+                            }()
+                            self.savedReports[variationID] = updatedReport
                         }
                     }
                 }

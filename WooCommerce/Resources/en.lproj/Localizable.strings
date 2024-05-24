@@ -6027,6 +6027,18 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Morocco" = "Morocco";
 
+/* Button title to contact support to get help with deprecated stats module */
+"mostActiveCouponsCard.contentUnavailable.buttonTitle" = "Still need help? Contact us";
+
+/* Text that explains how to update WooCommerce to get the latest stats */
+"mostActiveCouponsCard.contentUnavailable.details" = "Make sure you are running the latest version of WooCommerce on your site and enabling Analytics in WooCommerce Settings.";
+
+/* Button to dismiss the support form from the Dashboard stats error screen. */
+"mostActiveCouponsCard.contentUnavailable.dismissSupport" = "Done";
+
+/* Title when we can't load coupon usage report because user is on a deprecated WooCommerce Version */
+"mostActiveCouponsCard.contentUnavailable.title" = "Unable to load coupon usage report";
+
 /* Title in the coupons list on the coupons card on the Dashboard screen */
 "mostActiveCouponsCard.coupons" = "Coupons";
 
@@ -6044,6 +6056,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button in date range picker to add a Custom Range tab */
 "mostActiveCouponsCardViewModel.addCustomRange" = "Add";
+
+/* Default text for Most active coupons dashboard card when no data exists for a given period. */
+"mostActiveCouponsEmptyView.text" = "No coupon usage during this period";
 
 /* Button on each order item of the Package Details screen in Shipping Labels flow. */
 "Move" = "Move";
@@ -6734,6 +6749,9 @@ which should be translated separately and considered part of this sentence. */
 /* Text on the button title to see the order's receipt */
 "OrderDetailsDataSource.configureSeeReceipt.button.title" = "See Receipt";
 
+/* Title of Shipping Section in Order Details screen */
+"orderDetailsDataSource.shippingLines.title" = "Shipping";
+
 /* VoiceOver accessibility hint, informing the user that the button can be used to view the order custom fields information. */
 "orderDetailsDataSource.trashOrder.accessibilityHint" = "Put this order in the trash.";
 
@@ -7309,6 +7327,9 @@ which should be translated separately and considered part of this sentence. */
    Navigates to Plugins screen. */
 "Plugins" = "Plugins";
 
+/* Title of the POS menu in the hub menu */
+"Point of Sale Mode" = "Point of Sale Mode";
+
 /* Country option for a site address. */
 "Poland" = "Poland";
 
@@ -7591,6 +7612,9 @@ which should be translated separately and considered part of this sentence. */
 /* Product title */
 "productForm.defaultTitle" = "Product";
 
+/* Placeholder for empty product ratings */
+"productForm.quantityRules.placeholder" = "No Quantity Rules";
+
 /* Description of the subscription period for a product. Reads like: 'every 2 months'. */
 "productFormDataModel.subscriptionPeriodFormat" = "every %1$@";
 
@@ -7809,6 +7833,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Format of the stock quantity on the Inventory Settings row */
 "Quantity: %@" = "Quantity: %@";
+
+/* Button to dismiss the product quantity rules view screen. */
+"quantityRulesView.done" = "Done";
 
 /* Restriction type Quarantine for contents declared in the customs form for Shipping Label flow */
 "Quarantine" = "Quarantine";
@@ -8174,17 +8201,8 @@ which should be translated separately and considered part of this sentence. */
    Title that appears on top of the Product Reviews screen. */
 "Reviews" = "Reviews";
 
-/* Text displayed when the author of a review is known. */
-"reviewsDashboardCard.completeAuthorText" = "%1$@ left a review on %2$@";
-
 /* Menu item to dismiss the Reviews card on the Dashboard screen */
 "reviewsDashboardCard.hideCard" = "Hide Reviews";
-
-/* Text displayed when the author of a review is unknown. */
-"reviewsDashboardCard.incompleteAuthorText" = "A customer left a review on %@";
-
-/* Additional label on a review when its status is hold. */
-"reviewsDashboardCard.pendingReview" = "Pending review";
 
 /* Status label on the Reviews card's filter area. */
 "reviewsDashboardCard.status" = "Status";
@@ -8738,6 +8756,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Cancel button title for the Shipping Label purchase flow, shown in the nav bar */
 "shipping.label.navigationBar.cancel.button.title" = "Cancel";
+
+/* Accessibility title for the edit button on a shipping line row. */
+"shippingLine.edit.button.accessibilityLabel" = "Edit shipping";
 
 /* Display label for the product's catalog visibility */
 "Shop and search results" = "Shop and search results";
@@ -10979,6 +11000,9 @@ which should be translated separately and considered part of this sentence. */
 /* Action to use the address in Shipping Label Suggested screen as suggested */
 "Use Suggested Address" = "Use Suggested Address";
 
+/* Description of the POS menu in the hub menu */
+"Use the app as a cash register" = "Use the app as a cash register";
+
 /* Fourth instruction on the test order screen */
 "Use the app to process the refund for the test order." = "Use the app to process the refund for the test order.";
 
@@ -11607,9 +11631,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Info notice at the bottom of the product add-ons screen */
 "You can edit product add-ons in the web dashboard." = "You can edit product add-ons in the web dashboard.";
-
-/* Info notice at the bottom of the quantity rules screen. */
-"You can edit quantity rules in the web dashboard" = "You can edit quantity rules in the web dashboard";
 
 /* Instructions of the domain purchase success screen. */
 "You can find the domain settings in menu > settings" = "You can find the domain settings in menu > settings";

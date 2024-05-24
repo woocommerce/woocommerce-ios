@@ -29,14 +29,17 @@ struct ShippingLineRowView: View {
             Text(viewModel.shippingAmount)
                 .bodyStyle()
 
-            Image(systemName: "pencil")
-                .resizable()
-                .frame(width: Layout.editIconImageSize * scale,
-                       height: Layout.editIconImageSize * scale)
-                .foregroundColor(Color(.wooCommercePurple(.shade60)))
-                .accessibilityAddTraits(.isButton)
-                .accessibilityLabel(Localization.editButtonAccessibilityLabel)
-                .renderedIf(viewModel.editable)
+            Button {
+                viewModel.onEditShippingLine()
+            } label: {
+                Image(systemName: "pencil")
+                    .resizable()
+                    .frame(width: Layout.editIconImageSize * scale,
+                           height: Layout.editIconImageSize * scale)
+            }
+            .tint(Color(.primary))
+            .accessibilityLabel(Localization.editButtonAccessibilityLabel)
+            .renderedIf(viewModel.editable)
         }
         .padding(Layout.contentPadding)
         .contentShape(Rectangle())

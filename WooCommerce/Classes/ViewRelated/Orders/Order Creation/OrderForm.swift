@@ -297,6 +297,7 @@ struct OrderForm: View {
 
                             Group {
                                 OrderShippingSection(viewModel: viewModel)
+                                    .disabled(viewModel.shouldShowNonEditableIndicators)
                                 Spacer(minLength: Layout.sectionSpacing)
                             }
                             .renderedIf(viewModel.shippingLineRows.isNotEmpty && viewModel.multipleShippingLinesEnabled)

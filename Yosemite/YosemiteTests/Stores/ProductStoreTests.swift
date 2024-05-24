@@ -2883,7 +2883,6 @@ final class ProductStoreTests: XCTestCase {
                                                                  stockType: "lowstock",
                                                                  pageNumber: 1,
                                                                  pageSize: 3,
-                                                                 orderBy: .date,
                                                                  order: .descending,
                                                                  completion: { result in
                 promise(result)

@@ -54,7 +54,6 @@ public protocol ProductsRemoteProtocol {
                    with stockType: String,
                    pageNumber: Int,
                    pageSize: Int,
-                   orderBy: ProductsRemote.OrderKey,
                    order: ProductsRemote.Order) async throws -> [ProductStock]
 
     func loadProductReports(for siteID: Int64,
@@ -438,15 +437,13 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
                           with stockType: String,
                           pageNumber: Int,
                           pageSize: Int,
-                          orderBy: ProductsRemote.OrderKey,
                           order: ProductsRemote.Order) async throws -> [ProductStock] {
         let path = Path.stockReports
         let parameters: [String: Any] = [
             ParameterKey.type: stockType,
             ParameterKey.page: String(pageNumber),
             ParameterKey.perPage: String(pageSize),
-            ParameterKey.order: order.value,
-            ParameterKey.orderBy: orderBy.value
+            ParameterKey.order: order.value
         ]
         let request = JetpackRequest(wooApiVersion: .wcAnalytics,
                                      method: .get,
@@ -532,8 +529,6 @@ public extension ProductsRemote {
     enum OrderKey {
         case date
         case name
-        // available for use in `GET wc-analytics/reports/stock` only.
-        case stockStatus
         // available for use in `GET wc-analytics/reports/products/stats` only.
         case itemsSold
     }
@@ -621,8 +616,6 @@ private extension ProductsRemote.OrderKey {
             return "date"
         case .name:
             return "title"
-        case .stockStatus:
-            return "stock_status"
         case .itemsSold:
             return "items_sold"
         }

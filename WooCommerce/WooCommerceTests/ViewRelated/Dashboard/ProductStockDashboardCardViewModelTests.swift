@@ -44,7 +44,7 @@ final class ProductStockDashboardCardViewModelTests: XCTestCase {
         // When
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
-            case let .fetchStockReport(_, _, _, _, _, _, completion):
+            case let .fetchStockReport(_, _, _, _, _, completion):
                 completion(.success([stock]))
             case let .fetchProductReports(_, _, _, _, _, _, _, _, _, completion):
                 completion(.success([report]))
@@ -82,7 +82,7 @@ final class ProductStockDashboardCardViewModelTests: XCTestCase {
         // When
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
-            case let .fetchStockReport(_, _, _, _, _, _, completion):
+            case let .fetchStockReport(_, _, _, _, _, completion):
                 fetchStockRequestCount += 1
                 completion(.success([stock]))
             case let .fetchProductReports(_, _, _, _, _, _, _, _, _, completion):
@@ -122,7 +122,7 @@ final class ProductStockDashboardCardViewModelTests: XCTestCase {
         // When
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
-            case let .fetchStockReport(_, _, _, _, _, _, completion):
+            case let .fetchStockReport(_, _, _, _, _, completion):
                 completion(.success([stock]))
             case let .fetchProductReports(_, _, _, _, _, _, _, _, _, completion):
                 completion(.failure(productReportError))

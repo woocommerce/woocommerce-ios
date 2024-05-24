@@ -86,7 +86,6 @@ private extension ProductStockDashboardCardViewModel {
                                                            stockType: type.rawValue,
                                                            pageNumber: Constants.pageNumber,
                                                            pageSize: Constants.maxItemCount,
-                                                           orderBy: .stockStatus,
                                                            order: .ascending) { result in
                 continuation.resume(with: result)
             })

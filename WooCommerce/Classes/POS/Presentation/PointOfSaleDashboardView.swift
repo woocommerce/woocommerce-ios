@@ -50,7 +50,7 @@ struct PointOfSaleDashboardView: View {
 
 #if DEBUG
 #Preview {
-    PointOfSaleDashboardView(viewModel: PointOfSaleDashboardViewModel(products: POSProductFactory.makeFakeProducts(),
+    PointOfSaleDashboardView(viewModel: PointOfSaleDashboardViewModel(products: POSProductFactory.makeFakeProducts(currencySettings: ServiceLocator.currencySettings),
                                                                       cardReaderConnectionViewModel: .init(state: .connectingToReader)))
 }
 #endif

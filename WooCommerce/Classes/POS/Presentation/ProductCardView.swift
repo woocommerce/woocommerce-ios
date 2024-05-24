@@ -4,7 +4,6 @@ import class WooFoundation.CurrencyFormatter
 struct ProductCardView: View {
     private let product: POSProduct
     private let onProductCardTapped: (() -> Void)?
-    private let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
 
     init(product: POSProduct, onProductCardTapped: (() -> Void)? = nil) {
         self.product = product
@@ -21,7 +20,7 @@ struct ProductCardView: View {
             VStack {
                 Text(product.name)
                     .foregroundStyle(Color.primaryBackground)
-                Text(outOfStock ? "Out of Stock" : product.priceWithCurrency(using: currencyFormatter))
+                Text(outOfStock ? "Out of Stock" : product.priceWithCurrency)
                     .foregroundStyle(Color.primaryBackground)
                 HStack(spacing: 8) {
                     QuantityBadgeView(product.stockQuantity)
@@ -41,6 +40,6 @@ struct ProductCardView: View {
 
 #if DEBUG
 #Preview {
-    ProductCardView(product: POSProductFactory.makeProduct())
+    ProductCardView(product: POSProductFactory.makeProduct(currencySettings: ServiceLocator.currencySettings))
 }
 #endif

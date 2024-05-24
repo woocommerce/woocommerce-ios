@@ -35,7 +35,7 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
                                         productID: product.productID,
                                         name: product.name,
                                         price: product.price,
-                                        currency: product.currency,
+                                        currencySettings: product.currencySettings,
                                         stockQuantity: updatedQuantity)
         products[index] = updatedProduct
     }
@@ -49,7 +49,7 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
                                         productID: product.productID,
                                         name: product.name,
                                         price: product.price,
-                                        currency: product.currency,
+                                        currencySettings: product.currencySettings,
                                         stockQuantity: updatedQuantity)
         products[index] = updatedProduct
     }

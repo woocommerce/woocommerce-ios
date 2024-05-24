@@ -52,7 +52,7 @@ private extension CartView {
 
 #if DEBUG
 #Preview {
-    CartView(viewModel: PointOfSaleDashboardViewModel(products: POSProductFactory.makeFakeProducts(),
+    CartView(viewModel: PointOfSaleDashboardViewModel(products: POSProductFactory.makeFakeProducts(currencySettings: ServiceLocator.currencySettings),
                                                       cardReaderConnectionViewModel: .init(state: .connectingToReader)))
 }
 #endif

@@ -1,5 +1,9 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+18.9
+-----
+
+
 18.8
 -----
 - [*] Menu > Payments > Collect Payment: fix the the "card reader" & "Tap To Pay" payment methods where it was no-op before. [https://github.com/woocommerce/woocommerce-ios/pull/12801]

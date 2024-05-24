@@ -12,18 +12,12 @@
         "stock_status": "instock",
         "stock_quantity": 24,
         "low_stock_amount": 2,
-        "sku": "fantastic-concrete-shirt-64346342",
-        "attributes": []
+        "sku": "fantastic-concrete-shirt-64346342"
       },
       "_links": {
         "product": [
           {
             "href": "https://test.ninja/wp-json/wc-analytics/products/248"
-          }
-        ],
-        "variation": [
-          {
-            "href": "https://test.ninja/wp-json/wc-analytics/products/248/variation/280"
           }
         ]
       }

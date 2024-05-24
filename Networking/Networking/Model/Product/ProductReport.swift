@@ -41,11 +41,13 @@ public struct ProductReport: Decodable, Equatable, GeneratedCopiable, GeneratedF
         let imageURL = Self.extractSourceURL(from: (extendedInfo.image ?? ""))
         let stockQuantity = extendedInfo.stockQuantity
         let name: String = {
-            guard let variationID, !extendedInfo.attributes.isEmpty else {
+            guard let variationID,
+                  let attributes = extendedInfo.attributes,
+                  !attributes.isEmpty else {
                 return extendedInfo.name
             }
-            let attributes = extendedInfo.attributes.map { $0.option }.joined(separator: ", ")
-            return [extendedInfo.name, attributes].joined(separator: " - ")
+            let attributeText = attributes.map { $0.option }.joined(separator: ", ")
+            return [extendedInfo.name, attributeText].joined(separator: " - ")
         }()
 
         self.init(productID: productID,
@@ -62,12 +64,12 @@ public extension ProductReport {
         public let name: String
         public let image: String?
         public let stockQuantity: Int
-        public let attributes: [ProductVariationAttribute]
+        public let attributes: [ProductVariationAttribute]?
 
         public init(name: String,
                     image: String?,
                     stockQuantity: Int,
-                    attributes: [ProductVariationAttribute]) {
+                    attributes: [ProductVariationAttribute]?) {
             self.name = name
             self.image = image
             self.stockQuantity = stockQuantity

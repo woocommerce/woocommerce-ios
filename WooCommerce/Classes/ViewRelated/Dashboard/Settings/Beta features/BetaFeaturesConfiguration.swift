@@ -4,7 +4,7 @@ import Yosemite
 final class BetaFeaturesConfigurationViewController: UIHostingController<BetaFeaturesConfiguration> {
 
     init() {
-        super.init(rootView: BetaFeaturesConfiguration())
+        super.init(rootView: BetaFeaturesConfiguration(viewModel: .init()))
     }
 
     required dynamic init?(coder aDecoder: NSCoder) {
@@ -13,13 +13,17 @@ final class BetaFeaturesConfigurationViewController: UIHostingController<BetaFea
 }
 
 struct BetaFeaturesConfiguration: View {
-    let appSettings = ServiceLocator.generalAppSettings
+    @StateObject private var viewModel: BetaFeaturesConfigurationViewModel
+
+    init(viewModel: BetaFeaturesConfigurationViewModel) {
+        self._viewModel = .init(wrappedValue: viewModel)
+    }
 
     var body: some View {
         List {
-            ForEach(BetaFeature.availableFeatures) { feature in
+            ForEach(viewModel.availableFeatures) { feature in
                 Section(footer: Text(feature.description)) {
-                    TitleAndToggleRow(title: feature.title, isOn: appSettings.betaFeatureEnabledBinding(feature))
+                    TitleAndToggleRow(title: feature.title, isOn: viewModel.isOn(feature: feature))
                 }
             }
         }
@@ -36,7 +40,7 @@ private enum Localization {
 struct BetaFeaturesConfiguration_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
-            BetaFeaturesConfiguration()
+            BetaFeaturesConfiguration(viewModel: .init())
         }
     }
 }

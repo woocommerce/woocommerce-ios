@@ -1,5 +1,3 @@
-- [*] Vi har ändrat textfärgen i beställningsproduktlistans märkesvy för förbättrad läsbarhet i mörkt läge. [https://github.com/woocommerce/woocommerce-ios/pull/12630]
-- [*] Vi har korrigerat en krasch som uppstod vid öppnande av beställningsnotiser [https://github.com/woocommerce/woocommerce-ios/pull/12643]
-- [internal] Feedback i appen-kortet visas nu i adminpanelen [https://github.com/woocommerce/woocommerce-ios/pull/12636]
-- [*] Frakt: Det är nu möjligt att välja en fraktmetod när du lägger till eller redigerar frakt för en beställning. [https://github.com/woocommerce/woocommerce-ios/pull/12688]
-
+Vi är glada över att kunna presentera de senaste uppdateringarna!
+Vår senaste uppdatering inkluderar förbättringar under huven av både stabilitet och prestanda.
+Vi är mycket måna om att ständigt förbättra vår app för att kunna ge dig bättre service. Tack för att du väljer WooCommerce.

@@ -1,5 +1,3 @@
-- [*] Alteração na cor do texto da visualização de selo na lista de produtos do pedido para corrigir a legibilidade no modo escuro. [https://github.com/woocommerce/woocommerce-ios/pull/12630]
-- [*] Correção especulativa de uma falha na abertura de notificações do pedido [https://github.com/woocommerce/woocommerce-ios/pull/12643]
-- [internal] Exibição do cartão de feedback no app no painel. [https://github.com/woocommerce/woocommerce-ios/pull/12636]
-- [*] Envio: agora é possível selecionar um método de envio ao adicionar ou editar o envio em um pedido. [https://github.com/woocommerce/woocommerce-ios/pull/12688]
-
+Estamos felizes em anunciar que temos novidades!
+Nossa mais recente atualização traz melhorias internas para otimizar a estabilidade e o desempenho.
+Temos o compromisso contínuo de aprimorar nosso aplicativo para melhor atender você. Obrigado por escolher o WooCommerce!

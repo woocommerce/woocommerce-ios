@@ -34,9 +34,9 @@ struct HubMenu: View {
                 .navigationDestination(isPresented: $viewModel.showingCoupons) {
                     couponListView
                 }
-        }
-        .onAppear {
-            viewModel.setupMenuElements()
+                .onAppear {
+                    viewModel.setupMenuElements()
+                }
         }
     }
 

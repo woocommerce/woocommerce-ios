@@ -5,7 +5,15 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
     @Published var productsInCart: [CartProduct] = []
 
     @Published var showsCardReaderSheet: Bool = false
+    @Published var showsFilterSheet: Bool = false
     @ObservedObject private(set) var cardReaderConnectionViewModel: CardReaderConnectionViewModel
+
+    enum OrderStage {
+        case building
+        case finalizing
+    }
+
+    @Published private(set) var orderStage: OrderStage = .building
 
     init(products: [POSProduct],
          cardReaderConnectionViewModel: CardReaderConnectionViewModel) {
@@ -66,10 +74,26 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
     }
 
     func submitCart() {
-        debugPrint("Not implemented")
+        // TODO: https://github.com/woocommerce/woocommerce-ios/issues/12810
+        orderStage = .finalizing
+    }
+
+    func addMoreToCart() {
+        orderStage = .building
     }
 
     func showCardReaderConnection() {
         showsCardReaderSheet = true
+    }
+
+    func showFilters() {
+        showsFilterSheet = true
+    }
+}
+
+extension PointOfSaleDashboardViewModel {
+    // Helper function to populate SwifUI previews
+    static func defaultPreview() -> PointOfSaleDashboardViewModel {
+        PointOfSaleDashboardViewModel(products: [], cardReaderConnectionViewModel: .init(state: .connectingToReader))
     }
 }

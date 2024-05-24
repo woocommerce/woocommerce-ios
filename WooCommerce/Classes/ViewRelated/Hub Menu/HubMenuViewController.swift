@@ -14,6 +14,7 @@ final class HubMenuViewController: UIHostingController<HubMenu> {
          tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker) {
         self.viewModel = HubMenuViewModel(siteID: siteID,
                                           tapToPayBadgePromotionChecker: tapToPayBadgePromotionChecker)
+
         self.tapToPayBadgePromotionChecker = tapToPayBadgePromotionChecker
         super.init(rootView: HubMenu(viewModel: viewModel))
         configureTabBarItem()

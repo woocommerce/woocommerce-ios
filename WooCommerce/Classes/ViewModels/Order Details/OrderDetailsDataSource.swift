@@ -1016,15 +1016,13 @@ private extension OrderDetailsDataSource {
 
     private func configureShippingLine(cell: HostingConfigurationTableViewCell<ShippingLineRowView>, at indexPath: IndexPath) {
         let shippingLine = shippingLines[indexPath.row]
-        let shippingMethod = siteShippingMethods.first(where: { $0.methodID == shippingLine.methodID })?.title
-        let shippingTotal = currencyFormatter.formatAmount(shippingLine.total) ?? shippingLine.total
+        let viewModel = ShippingLineRowViewModel(shippingLine: shippingLine, shippingMethods: siteShippingMethods, editable: false)
+        let view = ShippingLineRowView(viewModel: viewModel)
 
-        let view = ShippingLineRowView(shippingTitle: shippingLine.methodTitle,
-                                       shippingMethod: shippingMethod,
-                                       shippingAmount: shippingTotal,
-                                       editable: false)
-        let topMargin = indexPath.row == 0 ? Constants.cellDefaultMargin : 0 // Reduce cell padding between rows
+        // Reduce cell padding between rows
+        let topMargin = indexPath.row == 0 ? Constants.cellDefaultMargin : 0
         let insets = UIEdgeInsets(top: topMargin, left: Constants.cellDefaultMargin, bottom: Constants.cellDefaultMargin, right: Constants.cellDefaultMargin)
+
         cell.host(view, insets: insets)
         cell.hideSeparator()
         cell.selectionStyle = .none

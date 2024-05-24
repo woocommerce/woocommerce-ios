@@ -1,6 +1,14 @@
 import Foundation
 
 public final class JetpackAIServiceRemote: SiteServiceRemoteWordPressComREST {
+
+    /// Returns information about your current tier, requests limit, and more.
+    public func getAssistantFeatureDetails() async throws -> JetpackAssistantFeatureDetails {
+        let path = path(forEndpoint: "sites/\(siteID)/jetpack-ai/ai-assistant-feature", withVersion: ._2_0)
+        let response = await wordPressComRestApi.perform(.get, URLString: path, type: JetpackAssistantFeatureDetails.self)
+        return try response.get().body
+    }
+
     /// Returns short-lived JWT token (lifetime is in minutes).
     public func getAuthorizationToken() async throws -> String {
         struct Response: Decodable {

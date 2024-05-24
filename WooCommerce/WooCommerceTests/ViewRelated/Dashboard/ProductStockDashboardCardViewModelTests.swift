@@ -24,30 +24,40 @@ final class ProductStockDashboardCardViewModelTests: XCTestCase {
     }
 
     @MainActor
-    func test_reloadData_updates_stock_correctly() async {
+    func test_reloadData_fetches_stock_and_reports_for_appropriate_product_types() async {
         // Given
         let siteID: Int64 = 123
-        let productID: Int64 = siteID
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         let viewModel = ProductStockDashboardCardViewModel(siteID: siteID, stores: stores)
 
-        let stock = ProductStock.fake().copy(siteID: siteID,
-                                             productID: productID)
+        let product = ProductStock.fake().copy(siteID: siteID, productID: 32)
+        let variation = ProductStock.fake().copy(siteID: siteID, productID: 44, parentID: 40)
+
         let thumbnailURL = "https://example.com/image.jpg"
-        let report = ProductReport.fake().copy(productID: 123,
-                                               name: "Steamed bun",
-                                               imageURL: URL(string: thumbnailURL),
-                                               itemsSold: 10,
-                                               stockQuantity: 4)
+        let productReport = ProductReport.fake().copy(productID: product.productID,
+                                                      name: "Steamed bun",
+                                                      imageURL: URL(string: thumbnailURL),
+                                                      itemsSold: 10,
+                                                      stockQuantity: 4)
+        let variationReport = ProductReport.fake().copy(productID: variation.parentID,
+                                                        variationID: variation.productID,
+                                                        imageURL: nil,
+                                                        itemsSold: 8,
+                                                        stockQuantity: 3)
         XCTAssertTrue(viewModel.reports.isEmpty)
 
         // When
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
             case let .fetchStockReport(_, _, _, _, _, completion):
-                completion(.success([stock]))
-            case let .fetchProductReports(_, _, _, _, _, _, _, _, _, completion):
-                completion(.success([report]))
+                completion(.success([product, variation]))
+            case let .fetchProductReports(_, productIDs, _, _, _, _, _, _, _, completion):
+                XCTAssertEqual(productIDs, [product.productID])
+                completion(.success([productReport]))
+            case let .fetchVariationReports(_, productIDs, variationIDs, _, _, _, _, _, _, _, completion):
+                XCTAssertEqual(productIDs, [variation.parentID])
+                XCTAssertEqual(variationIDs, [variation.productID])
+                completion(.success([variationReport]))
             default:
                 break
             }
@@ -55,7 +65,7 @@ final class ProductStockDashboardCardViewModelTests: XCTestCase {
         await viewModel.reloadData()
 
         // Then
-        XCTAssertEqual(viewModel.reports, [report])
+        XCTAssertEqual(viewModel.reports, [variationReport, productReport])
     }
 
     @MainActor
@@ -77,7 +87,6 @@ final class ProductStockDashboardCardViewModelTests: XCTestCase {
 
         var fetchStockRequestCount = 0
         var fetchProductReportRequestCount = 0
-        var retrieveProductsRequestCount = 0
 
         // When
         stores.whenReceivingAction(ofType: ProductAction.self) { action in

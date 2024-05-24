@@ -226,9 +226,10 @@ struct InPersonPaymentsMenu: View {
                 }
                 .navigationDestination(isPresented: $viewModel.presentPaymentMethods) {
                     if let paymentMethodsViewModel = viewModel.paymentMethodsViewModel {
-                        PaymentMethodsView(dismiss: {
+                        PaymentMethodsWrapperHosted(viewModel: paymentMethodsViewModel,
+                                                    dismiss: {
                             viewModel.dismissPaymentCollection()
-                        }, viewModel: paymentMethodsViewModel)
+                        })
                     } else {
                         EmptyView()
                     }

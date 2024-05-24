@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-05-15 10:54:04+0000 */
+/* Translation-Revision-Date: 2024-05-21 15:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: he_IL */
@@ -54,9 +54,6 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility description for a card payment method, used by assistive technologies such as screen reader. %1$@ is a placeholder for the card brand, %2$@ is a placeholder for the last 4 digits of the card number */
 "%1$@ card ending %2$@" = "כרטיס %1$@ שמסתיים בספרות %2$@";
 
-/* Exception rule for a coupon. Reads like: 3 Products excl. 1 Category */
-"%1$@ excl. %2$@" = "%1$@ לא כולל %2$@";
-
 /* Label about product's inventory stock status shown during order creation
    Label about product's inventory stock status shown on Products tab */
 "%1$@ in stock" = "%1$@ במלאי";
@@ -70,8 +67,8 @@ which should be translated separately and considered part of this sentence. */
 /* Review title. Reads as {Review author} left a review on {Product}. */
 "%1$@ left a review on %2$@" = "המשתמש %1$@ כתב ביקורת על %2$@";
 
-/* Summary line for a coupon, with the discounted amount and number of products and categories that the coupon is limited to. Reads like: '10% off all products' or '$15 off 2 Product 1 Category' */
-"%1$@ off %2$@" = "%1$@ הנחה על %2$@";
+/* Summary line for a coupon, with the discounted amount and number of products and categories that the coupon is limited to. Reads like: '10% off · all products' or '$15 off · 2 Product 1 Category' */
+"%1$@ off · %2$@" = "%1$@ הנחה · %2$@";
 
 /* Notice format when a shipping label refund request is successful. The first variable shows the shipping label service name (e.g. USPS Priority Mail). The second variable shows the formatted amount that is eligible for refund  (e.g. $7.50). */
 "%1$@ refund requested (%2$@)" = "נשלחה בקשה עבור החזר כספי %1$@ ‏(%2$@)";
@@ -84,6 +81,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Payment on <date> received via (payment method title) */
 "%1$@ via %2$@" = "%1$@ באמצעות %2$@";
+
+/* Exception rule for a coupon. Reads like: 3 Products · Excl. 1 Category */
+"%1$@ · Excl. %2$@" = "%1$@ · לא כולל %2$@";
 
 /* In Order Details, the pattern used to show the quantity multiplied by the price. For example, “23 × $400.00”. The %1$@ is the quantity. The %2$@ is the formatted price with currency (e.g. $400.00). Please take care to use the multiplication symbol ×, not a letter x, where appropriate. */
 "%1$@ × %2$@" = "%1$@ × %2$@";
@@ -716,8 +716,8 @@ which should be translated separately and considered part of this sentence. */
    Title of the product search filter to search for all products. */
 "All Products" = "כל המוצרים";
 
-/* Exception rule for a coupon. Reads like: All Products excl. 2 Products */
-"All Products excl. %1$@" = "כל המוצרים, מלבד %1$@";
+/* Exception rule for a coupon. Reads like: All Products · Excl. 2 Products */
+"All Products · Excl. %1$@" = "כל המוצרים   מלבד %1$@";
 
 /* Value for the limit usage to X items row in Coupon Usage Restrictions screen when no limit is set */
 "All Qualifying" = "כל הפריטים עומדים בדרישות";
@@ -7258,9 +7258,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the store name screen */
 "Store name" = "שם החנות";
 
-/* Title of the store setup progress view. */
-"Store setup" = "הגדרת חנות";
-
 /* Accessibility label for strikethrough button on formatting toolbar. */
 "Strike Through" = "קו חוצה";
 
@@ -9981,9 +9978,6 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle of the Blaze campaign view. */
 "blazeCampaignDashboardView.subtitle" = "מגדילים את הנראות ומאיצים את מכירת המוצרים.";
 
-/* Title of the Blaze campaign view. */
-"blazeCampaignDashboardView.title" = "קמפיינים של Blaze";
-
 /* The action to be agreed upon on the Payment screen in the Blaze campaign creation flow. */
 "blazeConfirmPaymentView.adPolicy" = "מדיניות פרסום";
 
@@ -10573,11 +10567,26 @@ which should be translated separately and considered part of this sentence. */
 /* Name for the Blaze dashboard card in the Customize Dashboard screen */
 "dashboardCard.name.blazeCampaigns" = "קמפיינים של Blaze";
 
+/* Name for the Most active coupons dashboard card in the Customize Dashboard screen */
+"dashboardCard.name.coupons" = "הקופונים הפעילים ביותר";
+
+/* Name for the Inbox dashboard card in the Customize Dashboard screen */
+"dashboardCard.name.inbox" = "תיבת דואר נכנס";
+
+/* Name for the Most recent orders dashboard card in the Customize Dashboard screen */
+"dashboardCard.name.lastOrders" = "ההזמנות האחרונות ביותר";
+
 /* Name for the Store setup dashboard card in the Customize Dashboard screen */
 "dashboardCard.name.onboarding" = "הגדרת חנות";
 
 /* Name for the Performance dashboard card in the Customize Dashboard screen */
 "dashboardCard.name.performance" = "ביצועים";
+
+/* Name for the Most recent reviews dashboard card in the Customize Dashboard screen */
+"dashboardCard.name.reviews" = "הביקורות האחרונות ביותר";
+
+/* Name for the Stock dashboard card in the Customize Dashboard screen */
+"dashboardCard.name.stock" = "מלאי";
 
 /* Name for the Top performers dashboard card in the Customize Dashboard screen */
 "dashboardCard.name.topPerformers" = "הביצועים הטובים ביותר";
@@ -10781,6 +10790,15 @@ which should be translated separately and considered part of this sentence. */
 /* The title used when asking the user for feedback for the app. */
 "inAppFeedbackCardView.title" = "האפליקציה של WooCommerce מהנה לדעתך?";
 
+/* Title displayed if there are no inbox notes in the Inbox section on the Dashboard screen. */
+"inboxDashboardCard.emptyStateTitle" = "אין הודעות שלא נקראו";
+
+/* Menu item to dismiss the Inbox section on the Dashboard screen */
+"inboxDashboardCard.hideCard" = "להסתיר תיבת דואר נכנס";
+
+/* Button to navigate to Inbox messages list screen. */
+"inboxDashboardCard.viewAll" = "להציג את כל ההודעות";
+
 /* Title for Add Order home screen action */
 "infoplist.AddOrderAction.Title" = "הזמנה חדשה";
 
@@ -10929,6 +10947,24 @@ which should be translated separately and considered part of this sentence. */
 
 /* Display label for a product's subscription period, e.g. '12 months'. */
 "months" = "חודשים";
+
+/* Title in the coupons list on the coupons card on the Dashboard screen */
+"mostActiveCouponsCard.coupons" = "קופונים";
+
+/* Title of the custom time range on the coupons card on the Dashboard screen */
+"mostActiveCouponsCard.custom" = "התאמה אישית";
+
+/* Menu item to dismiss the coupons card on the Dashboard screen */
+"mostActiveCouponsCard.hideCard" = "להסתיר קופונים";
+
+/* Title in the coupons list on the coupons card on the Dashboard screen. Denotes the number of times the coupon has been used. */
+"mostActiveCouponsCard.uses" = "שימוש";
+
+/* Button to navigate to Coupons list screen. */
+"mostActiveCouponsCard.viewAll" = "להציג את כל הקופונים";
+
+/* Button in date range picker to add a Custom Range tab */
+"mostActiveCouponsCardViewModel.addCustomRange" = "להוסיף";
 
 /* Placeholder in the search bar of a multiple selection list */
 "multipleSelectionList.search" = "חיפוש";
@@ -11291,6 +11327,27 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the One time shipping product shipping setting. */
 "productShippingSettings.oneTimeShipping.title" = "משלוח חד-פעמי";
 
+/* Menu item to dismiss the Stock section on the My Store screen */
+"productStockDashboardCard.hideCard" = "להסתיר מלאי";
+
+/* Header label on the Stock section on the My Store screen */
+"productStockDashboardCard.products" = "מוצרים";
+
+/* Header label on the Stock section on the My Store screen */
+"productStockDashboardCard.status" = "סטטוס";
+
+/* Header label on the Stock section on the My Store screen */
+"productStockDashboardCard.stockLevels" = "רמות מלאי";
+
+/* Title of a stock type displayed on the Stock section on My Store screen */
+"productStockDashboardCardViewModel.stockType.lowStock" = "מלאי מוגבל";
+
+/* Title of a stock type displayed on the Stock section on My Store screen */
+"productStockDashboardCardViewModel.stockType.onBackOrder" = "בהזמנה חוזרת";
+
+/* Title of a stock type displayed on the Stock section on My Store screen */
+"productStockDashboardCardViewModel.stockType.outOfStock" = "לא במלאי";
+
 /* Message on the secondary view of the products tab split view before any product is selected. */
 "productsTab.emptySecondaryView.message" = "לא נבחרו מוצרים";
 
@@ -11326,6 +11383,33 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the switch in the IssueRefund screen to refund customAmounts */
 "refundIssue.customAmounts.title" = "החזרים של סכומים בהתאמה אישית";
+
+/* Text displayed when the author of a review is known. */
+"reviewsDashboardCard.completeAuthorText" = "המשתמש %1$@ כתב ביקורת על %2$@";
+
+/* Menu item to dismiss the Reviews card on the Dashboard screen */
+"reviewsDashboardCard.hideCard" = "להסתיר את הביקורות";
+
+/* Text displayed when the author of a review is unknown. */
+"reviewsDashboardCard.incompleteAuthorText" = "לקוח כתב ביקורות על %@";
+
+/* Additional label on a review when its status is hold. */
+"reviewsDashboardCard.pendingReview" = "בהמתנה לבדיקה";
+
+/* Status label on the Reviews card's filter area. */
+"reviewsDashboardCard.status" = "סטטוס";
+
+/* Button to navigate to Reviews list screen. */
+"reviewsDashboardCard.viewAll" = "להציג את כל הביקורות";
+
+/* Menu item to dismiss the Reviews card on the Dashboard screen */
+"reviewsDashboardCardViewModel.filterAll" = "הכול";
+
+/* Button to navigate to Reviews list screen. */
+"reviewsDashboardCardViewModel.filterApproved" = "אושר";
+
+/* Status label on the Reviews card's filter area. */
+"reviewsDashboardCardViewModel.filterHold" = "בהמתנה";
 
 /* The title for the cancel button in the search screen. */
 "searchViewController.cancelButton.tilet" = "ביטול";
@@ -11405,9 +11489,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Revenue stat label on dashboard. */
 "storePerformanceView.revenue" = "רווחים";
-
-/* Title of the store performance section on the Dashboard screen */
-"storePerformanceView.title" = "ביצועים";
 
 /* Button to navigate to Analytics Hub. */
 "storePerformanceView.viewAll" = "להציג את כל הנתונים האנליטיים של החנות";
@@ -11640,9 +11721,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Menu item to dismiss the Top Performers section on the Dashboard screen */
 "topPerformersDashboardView.hideCard" = "להסתיר את 'הביצועים הטובים ביותר'";
-
-/* Title of the Top performers section on the Dashboard screen */
-"topPerformersDashboardView.title" = "הביצועים הטובים ביותר";
 
 /* Button to navigate to Analytics Hub. */
 "topPerformersDashboardView.viewAll" = "להציג את כל הנתונים האנליטיים של החנות";

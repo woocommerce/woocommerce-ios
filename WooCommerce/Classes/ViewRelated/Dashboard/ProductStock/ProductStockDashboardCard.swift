@@ -151,9 +151,10 @@ private extension ProductStockDashboardCard {
                                     Text(element.name)
                                         .bodyStyle()
                                         .multilineTextAlignment(.leading)
-                                    Text(String.pluralize(element.itemsSold,
-                                                          singular: Localization.subtitleSingular,
-                                                          plural: Localization.subtitlePlural))
+                                    Text(element.itemsSold == 0 ? Localization.subtitleZero :
+                                            String.pluralize(element.itemsSold,
+                                                                  singular: Localization.subtitleSingular,
+                                                                  plural: Localization.subtitlePlural))
                                     .subheadlineStyle()
                                     .multilineTextAlignment(.leading)
                                 }
@@ -262,6 +263,11 @@ private extension ProductStockDashboardCard {
             value: "%1$d items sold last 30 days",
             comment: "Subtitle in plural mode for the stock items on the Stock section on the My Store screen. " +
             "Reads as: 10 items sold last 30 days"
+        )
+        static let subtitleZero = NSLocalizedString(
+            "productStockDashboardCard.item.subtitle.zero",
+            value: "No item sold last 30 days",
+            comment: "Subtitle for the stock items with no items sold on the Stock section on the My Store screen."
         )
         static let emptyStateTitle = NSLocalizedString(
             "productStockDashboardCard.emptyStateTitle",

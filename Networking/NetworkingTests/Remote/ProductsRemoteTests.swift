@@ -786,7 +786,6 @@ final class ProductsRemoteTests: XCTestCase {
 
         let firstItem = try XCTUnwrap(products.first)
         XCTAssertEqual(firstItem.productID, 248)
-        XCTAssertEqual(firstItem.variationID, 280)
         XCTAssertEqual(firstItem.name, "Fantastic Concrete Shirt")
         XCTAssertEqual(firstItem.itemsSold, 8)
         XCTAssertEqual(firstItem.stockQuantity, 24)
@@ -819,9 +818,7 @@ final class ProductsRemoteTests: XCTestCase {
     func test_loadVariationReports_returns_correct_items() async throws {
         // Given
         let remote = ProductsRemote(network: network)
-        /// The structure for product reports and variation reports are the same
-        /// so we're using the same response file for both endpoints.
-        network.simulateResponse(requestUrlSuffix: "reports/variations", filename: "product-report")
+        network.simulateResponse(requestUrlSuffix: "reports/variations", filename: "variation-report")
 
         // When
         let products = try await remote.loadVariationReports(for: sampleSiteID,
@@ -841,7 +838,7 @@ final class ProductsRemoteTests: XCTestCase {
         let firstItem = try XCTUnwrap(products.first)
         XCTAssertEqual(firstItem.productID, 248)
         XCTAssertEqual(firstItem.variationID, 280)
-        XCTAssertEqual(firstItem.name, "Fantastic Concrete Shirt")
+        XCTAssertEqual(firstItem.name, "Fantastic Concrete Shirt - ex, 7, Pink")
         XCTAssertEqual(firstItem.itemsSold, 8)
         XCTAssertEqual(firstItem.imageURL?.absoluteString, "https://test.ninja/wp-content/uploads/2024/05/img-laboriosam-300x300.png")
     }

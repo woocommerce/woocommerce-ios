@@ -826,6 +826,7 @@
 		DE2004702BFB535500660A72 /* product-report.json in Resources */ = {isa = PBXBuildFile; fileRef = DE20046F2BFB535500660A72 /* product-report.json */; };
 		DE2004722BFB536900660A72 /* product-report-without-data-envelope.json in Resources */ = {isa = PBXBuildFile; fileRef = DE2004712BFB536900660A72 /* product-report-without-data-envelope.json */; };
 		DE2004742BFB53DD00660A72 /* ProductReportListMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE2004732BFB53DD00660A72 /* ProductReportListMapperTests.swift */; };
+		DE2004762C001F7500660A72 /* variation-report.json in Resources */ = {isa = PBXBuildFile; fileRef = DE2004752C001F7500660A72 /* variation-report.json */; };
 		DE2095BD27956D7900171F1C /* CouponReport.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE2095BC27956D7900171F1C /* CouponReport.swift */; };
 		DE2095BF279583A100171F1C /* CouponReportListMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE2095BE279583A100171F1C /* CouponReportListMapper.swift */; };
 		DE2095C127966EC800171F1C /* coupon-reports.json in Resources */ = {isa = PBXBuildFile; fileRef = DE2095C027966EC800171F1C /* coupon-reports.json */; };
@@ -1939,6 +1940,7 @@
 		DE20046F2BFB535500660A72 /* product-report.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "product-report.json"; sourceTree = "<group>"; };
 		DE2004712BFB536900660A72 /* product-report-without-data-envelope.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "product-report-without-data-envelope.json"; sourceTree = "<group>"; };
 		DE2004732BFB53DD00660A72 /* ProductReportListMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductReportListMapperTests.swift; sourceTree = "<group>"; };
+		DE2004752C001F7500660A72 /* variation-report.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "variation-report.json"; sourceTree = "<group>"; };
 		DE2095BC27956D7900171F1C /* CouponReport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponReport.swift; sourceTree = "<group>"; };
 		DE2095BE279583A100171F1C /* CouponReportListMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponReportListMapper.swift; sourceTree = "<group>"; };
 		DE2095C027966EC800171F1C /* coupon-reports.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "coupon-reports.json"; sourceTree = "<group>"; };
@@ -2791,6 +2793,7 @@
 		B559EBA820A0B5B100836CD4 /* Responses */ = {
 			isa = PBXGroup;
 			children = (
+				DE2004752C001F7500660A72 /* variation-report.json */,
 				DE20046F2BFB535500660A72 /* product-report.json */,
 				DE2004712BFB536900660A72 /* product-report-without-data-envelope.json */,
 				DE2004582BF6142200660A72 /* product-stock.json */,
@@ -4197,6 +4200,7 @@
 				DE2004702BFB535500660A72 /* product-report.json in Resources */,
 				EE57C13E297FBEE200BC31E7 /* product-tags-created-without-data.json in Resources */,
 				EEA658462966C67C00112DF0 /* products-ids-only-without-data.json in Resources */,
+				DE2004762C001F7500660A72 /* variation-report.json in Resources */,
 				DE2095C127966EC800171F1C /* coupon-reports.json in Resources */,
 				453305F52459ED2700264E50 /* site-post-update.json in Resources */,
 				CECC759E23D6231A00486676 /* order-560-all-refunds.json in Resources */,

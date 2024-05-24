@@ -74,7 +74,9 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let factory = Fixtures.actionsFactory(product: model, formType: .edit)
 
         // Assert
-        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true, isStorePublic: true), .name(editable: true), .description(editable: true)]
+        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true, isStorePublic: true),
+                                                                      .name(editable: true),
+                                                                      .description(editable: true)]
         XCTAssertEqual(factory.primarySectionActions(), expectedPrimarySectionActions)
 
         let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings(editable: true, hideSeparator: false),
@@ -100,7 +102,9 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let factory = Fixtures.actionsFactory(product: model, formType: .edit)
 
         // Assert
-        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true, isStorePublic: true), .name(editable: true), .description(editable: true)]
+        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true, isStorePublic: true),
+                                                                      .name(editable: true),
+                                                                      .description(editable: true)]
         XCTAssertEqual(factory.primarySectionActions(), expectedPrimarySectionActions)
 
         let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings(editable: true, hideSeparator: false),
@@ -125,7 +129,9 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let factory = Fixtures.actionsFactory(product: model, formType: .edit)
 
         // Assert
-        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true, isStorePublic: true), .name(editable: true), .description(editable: true)]
+        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true, isStorePublic: true),
+                                                                      .name(editable: true),
+                                                                      .description(editable: true)]
         XCTAssertEqual(factory.primarySectionActions(), expectedPrimarySectionActions)
 
         let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings(editable: true, hideSeparator: false),
@@ -152,7 +158,9 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let factory = Fixtures.actionsFactory(product: model, formType: .edit)
 
         // Assert
-        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true, isStorePublic: true), .name(editable: true), .description(editable: true)]
+        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true, isStorePublic: true),
+                                                                      .name(editable: true),
+                                                                      .description(editable: true)]
         XCTAssertEqual(factory.primarySectionActions(), expectedPrimarySectionActions)
 
         let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings(editable: true, hideSeparator: false),
@@ -178,7 +186,9 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let factory = Fixtures.actionsFactory(product: model, formType: .edit)
 
         // Assert
-        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true, isStorePublic: true), .name(editable: true), .description(editable: true)]
+        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true, isStorePublic: true),
+                                                                      .name(editable: true),
+                                                                      .description(editable: true)]
         XCTAssertEqual(factory.primarySectionActions(), expectedPrimarySectionActions)
 
         let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings(editable: true, hideSeparator: false),
@@ -205,7 +215,9 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let factory = Fixtures.actionsFactory(product: model, formType: .edit)
 
         // Assert
-        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true, isStorePublic: true), .name(editable: true), .description(editable: true)]
+        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true, isStorePublic: true),
+                                                                      .name(editable: true),
+                                                                      .description(editable: true)]
         XCTAssertEqual(factory.primarySectionActions(), expectedPrimarySectionActions)
 
         let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings(editable: true, hideSeparator: false),
@@ -232,7 +244,9 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let factory = Fixtures.actionsFactory(product: model, formType: .edit)
 
         // Assert
-        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true, isStorePublic: true), .name(editable: true), .description(editable: true)]
+        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true, isStorePublic: true),
+                                                                      .name(editable: true),
+                                                                      .description(editable: true)]
         XCTAssertEqual(factory.primarySectionActions(), expectedPrimarySectionActions)
 
         let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings(editable: true, hideSeparator: false),
@@ -258,7 +272,9 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let factory = Fixtures.actionsFactory(product: model, formType: .edit)
 
         // Assert
-        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true, isStorePublic: true), .name(editable: true), .description(editable: true)]
+        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true, isStorePublic: true),
+                                                                      .name(editable: true),
+                                                                      .description(editable: true)]
         XCTAssertEqual(factory.primarySectionActions(), expectedPrimarySectionActions)
 
         let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings(editable: true, hideSeparator: false),
@@ -281,7 +297,9 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let factory = Fixtures.actionsFactory(product: model, formType: .edit)
 
         // Assert
-        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true, isStorePublic: true), .name(editable: true), .description(editable: true)]
+        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true, isStorePublic: true),
+                                                                      .name(editable: true),
+                                                                      .description(editable: true)]
         XCTAssertEqual(factory.primarySectionActions(), expectedPrimarySectionActions)
 
         let expectedSettingsSectionActions: [ProductFormEditAction] = [.groupedProducts(editable: true),
@@ -303,7 +321,9 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let factory = Fixtures.actionsFactory(product: model, formType: .edit)
 
         // Assert
-        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true, isStorePublic: true), .name(editable: true), .description(editable: true)]
+        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true, isStorePublic: true),
+                                                                      .name(editable: true),
+                                                                      .description(editable: true)]
         XCTAssertEqual(factory.primarySectionActions(), expectedPrimarySectionActions)
 
         let expectedSettingsSectionActions: [ProductFormEditAction] = [
@@ -329,7 +349,9 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let factory = Fixtures.actionsFactory(product: model, formType: .edit)
 
         // Assert
-        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true, isStorePublic: true), .name(editable: true), .description(editable: true)]
+        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true, isStorePublic: true),
+                                                                      .name(editable: true),
+                                                                      .description(editable: true)]
         XCTAssertEqual(factory.primarySectionActions(), expectedPrimarySectionActions)
 
         let expectedSettingsSectionActions: [ProductFormEditAction] = [
@@ -356,7 +378,9 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let factory = Fixtures.actionsFactory(product: model, formType: .edit)
 
         // Assert
-        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true, isStorePublic: true), .name(editable: true), .description(editable: true)]
+        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true, isStorePublic: true),
+                                                                      .name(editable: true),
+                                                                      .description(editable: true)]
         XCTAssertEqual(factory.primarySectionActions(), expectedPrimarySectionActions)
 
         let expectedSettingsSectionActions: [ProductFormEditAction] = [.reviews,
@@ -378,7 +402,9 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let factory = Fixtures.actionsFactory(product: model, formType: .edit)
 
         // Assert
-        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true, isStorePublic: true), .name(editable: true), .description(editable: true)]
+        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true, isStorePublic: true),
+                                                                      .name(editable: true),
+                                                                      .description(editable: true)]
         XCTAssertEqual(factory.primarySectionActions(), expectedPrimarySectionActions)
 
         let expectedSettingsSectionActions: [ProductFormEditAction] = [
@@ -542,7 +568,9 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let factory = Fixtures.actionsFactory(product: model, formType: .edit, isBundledProductsEnabled: false)
 
         // Assert
-        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true, isStorePublic: true), .name(editable: true), .description(editable: true)]
+        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true, isStorePublic: true),
+                                                                      .name(editable: true),
+                                                                      .description(editable: true)]
         assertEqual(expectedPrimarySectionActions, factory.primarySectionActions())
 
         let expectedSettingsSectionActions: [ProductFormEditAction] = [.reviews,
@@ -564,7 +592,9 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let factory = Fixtures.actionsFactory(product: model, formType: .edit, isBundledProductsEnabled: true)
 
         // Assert
-        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true, isStorePublic: true), .name(editable: true), .description(editable: true)]
+        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true, isStorePublic: true),
+                                                                      .name(editable: true),
+                                                                      .description(editable: true)]
         assertEqual(expectedPrimarySectionActions, factory.primarySectionActions())
 
         let expectedSettingsSectionActions: [ProductFormEditAction] = [.bundledProducts(actionable: false),
@@ -587,7 +617,9 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let factory = Fixtures.actionsFactory(product: model, formType: .edit, isBundledProductsEnabled: true)
 
         // Assert
-        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true, isStorePublic: true), .name(editable: true), .description(editable: true)]
+        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true, isStorePublic: true),
+                                                                      .name(editable: true),
+                                                                      .description(editable: true)]
         assertEqual(expectedPrimarySectionActions, factory.primarySectionActions())
 
         let expectedSettingsSectionActions: [ProductFormEditAction] = [.bundledProducts(actionable: true),
@@ -611,7 +643,9 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let factory = Fixtures.actionsFactory(product: model, formType: .edit, isCompositeProductsEnabled: false)
 
         // Assert
-        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true, isStorePublic: true), .name(editable: true), .description(editable: true)]
+        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true, isStorePublic: true),
+                                                                      .name(editable: true),
+                                                                      .description(editable: true)]
         assertEqual(expectedPrimarySectionActions, factory.primarySectionActions())
 
         let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings(editable: false, hideSeparator: false),
@@ -634,7 +668,9 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let factory = Fixtures.actionsFactory(product: model, formType: .edit, isCompositeProductsEnabled: true)
 
         // Assert
-        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true, isStorePublic: true), .name(editable: true), .description(editable: true)]
+        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true, isStorePublic: true),
+                                                                      .name(editable: true),
+                                                                      .description(editable: true)]
         assertEqual(expectedPrimarySectionActions, factory.primarySectionActions())
 
         let expectedSettingsSectionActions: [ProductFormEditAction] = [.components(actionable: true),
@@ -660,7 +696,9 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let factory = Fixtures.actionsFactory(product: model, formType: .edit)
 
         // Assert
-        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true, isStorePublic: true), .name(editable: true), .description(editable: true)]
+        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true, isStorePublic: true),
+                                                                      .name(editable: true),
+                                                                      .description(editable: true)]
         assertEqual(expectedPrimarySectionActions, factory.primarySectionActions())
 
         let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings(editable: true, hideSeparator: false),
@@ -686,7 +724,9 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let factory = Fixtures.actionsFactory(product: model, formType: .edit)
 
         // Assert
-        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true, isStorePublic: true), .name(editable: true), .description(editable: true)]
+        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true, isStorePublic: true),
+                                                                      .name(editable: true),
+                                                                      .description(editable: true)]
         XCTAssertEqual(factory.primarySectionActions(), expectedPrimarySectionActions)
 
         let expectedSettingsSectionActions: [ProductFormEditAction] = [
@@ -712,7 +752,9 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let factory = Fixtures.actionsFactory(product: model, formType: .edit)
 
         // Assert
-        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true, isStorePublic: true), .name(editable: true), .description(editable: true)]
+        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true, isStorePublic: true),
+                                                                      .name(editable: true),
+                                                                      .description(editable: true)]
         XCTAssertEqual(factory.primarySectionActions(), expectedPrimarySectionActions)
 
         let expectedSettingsSectionActions: [ProductFormEditAction] = [
@@ -739,7 +781,9 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let factory = Fixtures.actionsFactory(product: model, formType: .edit)
 
         // Assert
-        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true, isStorePublic: true), .name(editable: true), .description(editable: true)]
+        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true, isStorePublic: true),
+                                                                      .name(editable: true),
+                                                                      .description(editable: true)]
         assertEqual(expectedPrimarySectionActions, factory.primarySectionActions())
 
         let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings(editable: true, hideSeparator: false),
@@ -765,7 +809,9 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let factory = Fixtures.actionsFactory(product: model, formType: .edit)
 
         // Assert
-        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true, isStorePublic: true), .name(editable: true), .description(editable: true)]
+        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true, isStorePublic: true),
+                                                                      .name(editable: true),
+                                                                      .description(editable: true)]
         assertEqual(expectedPrimarySectionActions, factory.primarySectionActions())
 
         let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings(editable: true, hideSeparator: false),
@@ -791,7 +837,9 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let factory = Fixtures.actionsFactory(product: model, formType: .edit)
 
         // Assert
-        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true, isStorePublic: true), .name(editable: true), .description(editable: true)]
+        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true, isStorePublic: true),
+                                                                      .name(editable: true),
+                                                                      .description(editable: true)]
         assertEqual(expectedPrimarySectionActions, factory.primarySectionActions())
 
         let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings(editable: true, hideSeparator: false),
@@ -817,7 +865,9 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let factory = Fixtures.actionsFactory(product: model, formType: .edit)
 
         // Assert
-        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true, isStorePublic: true), .name(editable: true), .description(editable: true)]
+        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true, isStorePublic: true),
+                                                                      .name(editable: true),
+                                                                      .description(editable: true)]
         assertEqual(expectedPrimarySectionActions, factory.primarySectionActions())
 
         let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings(editable: true, hideSeparator: false),
@@ -898,7 +948,9 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let factory = Fixtures.actionsFactory(product: model, formType: .edit, isMinMaxQuantitiesEnabled: true)
 
         // Assert
-        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true, isStorePublic: true), .name(editable: true), .description(editable: true)]
+        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true, isStorePublic: true),
+                                                                      .name(editable: true),
+                                                                      .description(editable: true)]
         XCTAssertEqual(factory.primarySectionActions(), expectedPrimarySectionActions)
 
         let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings(editable: true, hideSeparator: false),

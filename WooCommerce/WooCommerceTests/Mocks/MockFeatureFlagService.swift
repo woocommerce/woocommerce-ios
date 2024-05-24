@@ -24,6 +24,7 @@ struct MockFeatureFlagService: FeatureFlagService {
     private let isCustomersInHubMenuEnabled: Bool
     private let isSubscriptionsInOrderCreationCustomersEnabled: Bool
     private let isMultipleShippingLinesEnabled: Bool
+    private let isDisplayPointOfSaleToggleEnabled: Bool
 
     init(isInboxOn: Bool = false,
          isUpdateOrderOptimisticallyOn: Bool = false,
@@ -46,7 +47,8 @@ struct MockFeatureFlagService: FeatureFlagService {
          sideBySideViewForOrderForm: Bool = false,
          isCustomersInHubMenuEnabled: Bool = false,
          isSubscriptionsInOrderCreationCustomersEnabled: Bool = false,
-         isMultipleShippingLinesEnabled: Bool = false) {
+         isMultipleShippingLinesEnabled: Bool = false,
+         isDisplayPointOfSaleToggleEnabled: Bool = false) {
         self.isInboxOn = isInboxOn
         self.isUpdateOrderOptimisticallyOn = isUpdateOrderOptimisticallyOn
         self.shippingLabelsOnboardingM1 = shippingLabelsOnboardingM1
@@ -69,6 +71,7 @@ struct MockFeatureFlagService: FeatureFlagService {
         self.isCustomersInHubMenuEnabled = isCustomersInHubMenuEnabled
         self.isSubscriptionsInOrderCreationCustomersEnabled = isSubscriptionsInOrderCreationCustomersEnabled
         self.isMultipleShippingLinesEnabled = isMultipleShippingLinesEnabled
+        self.isDisplayPointOfSaleToggleEnabled = isDisplayPointOfSaleToggleEnabled
     }
 
     func isFeatureFlagEnabled(_ featureFlag: FeatureFlag) -> Bool {
@@ -115,6 +118,8 @@ struct MockFeatureFlagService: FeatureFlagService {
             return isSubscriptionsInOrderCreationCustomersEnabled
         case .multipleShippingLines:
             return isMultipleShippingLinesEnabled
+        case .displayPointOfSaleToggle:
+            return isDisplayPointOfSaleToggleEnabled
         default:
             return false
         }

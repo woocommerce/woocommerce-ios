@@ -1,5 +1,3 @@
-- [*] 更改订单产品列表徽章视图中的文本颜色，以解决在深色模式下的可读性问题。[https://github.com/woocommerce/woocommerce-ios/pull/12630]
-- [*] 对打开订单通知时出现的崩溃问题进行了推测性修复 [https://github.com/woocommerce/woocommerce-ios/pull/12643]
-- [内部] 在仪表盘中显示应用程序内反馈卡。[https://github.com/woocommerce/woocommerce-ios/pull/12636]
-- [*] 配送：现在可在添加或编辑订单配送信息时选择配送方式。 [https://github.com/woocommerce/woocommerce-ios/pull/12688]
-
+很高兴推出我们的最新更新！
+我们在最新更新中进行了多项底层改进，旨在增强稳定性和性能。
+我们致力于持续改进应用程序，为您提供更优质的服务。 感谢您选择 WooCommerce！

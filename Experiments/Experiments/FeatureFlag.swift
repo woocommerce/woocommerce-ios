@@ -184,10 +184,6 @@ public enum FeatureFlag: Int {
     ///
     case splitViewInProductsTab
 
-    /// Displays a Customers section in the Hub menu.
-    ///
-    case customersInHubMenu
-
     /// Enables visibility of Subscription product details when creating an order, within product selection, and order details.
     ///
     case subscriptionsInOrderCreationUI

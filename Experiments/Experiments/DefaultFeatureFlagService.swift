@@ -82,8 +82,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .splitViewInProductsTab:
             return true
-        case .customersInHubMenu:
-            return true
         case .subscriptionsInOrderCreationUI:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .subscriptionsInOrderCreationCustomers:

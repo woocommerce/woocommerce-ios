@@ -61,11 +61,9 @@ msgctxt "app_store_promo_text"
 msgid "Run your store from anywhere"
 msgstr ""
 
-msgctxt "v18.7-whats-new"
+msgctxt "v18.8-whats-new"
 msgid ""
-"We're thrilled to roll out the latest updates!\n"
-"Our latest update brings under-the-hood improvements to enhance both stability and performance.\n"
-"We're committed to continuously improving our app to serve you better. Thank you for choosing WooCommerce!\n"
+"Delve into a smoother WooCommerce experience with our latest update! We've resolved issues hindering the "Card Reader" and "Tap To Pay" features under Menu > Payments > Collect Payment for seamless transactions. The dashboard screen gets a performance booster as we've optimized API calls. In addition, edit support for the Min/Max Quantities extension in product details is now available.\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.

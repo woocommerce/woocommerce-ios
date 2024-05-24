@@ -1,5 +1,3 @@
-- [*] Verander de tekstkleur in badgeweergave in de productlijst van een bestelling om de leesbaarheid van de donkere modus te verbeteren. [https://github.com/woocommerce/woocommerce-ios/pull/12630]
-- [*] Speculatieve fix voor een crash wanneer meldingen over bestellingen worden geopend [https://github.com/woocommerce/woocommerce-ios/pull/12643]
-- [intern] In-app feedbackkaart op dashboard weergeven. [https://github.com/woocommerce/woocommerce-ios/pull/12636]
-- [*] Verzenden: Er kan nu een verzendmethode worden geselecteerd wanneer verzending wordt toegevoegd aan of bewerkt voor een bestelling. [https://github.com/woocommerce/woocommerce-ios/pull/12688]
-
+We kijken uit naar de nieuwste updates!
+Onze nieuwste update bevat verbeteringen achter de schermen om zowel de stabiliteit als de prestaties te verbeteren.
+We proberen onze app continu te verbeteren om jou beter van dienst te kunnen zijn. Bedankt dat je voor WooCommerce hebt gekozen!

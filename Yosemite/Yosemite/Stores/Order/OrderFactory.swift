@@ -105,3 +105,9 @@ public extension OrderFeeLine {
         self == OrderFactory.deletedFeeLine(self)
     }
 }
+
+public extension ShippingLine {
+    var isDeleted: Bool {
+        self == OrderFactory.deletedShippingLine(self)
+    }
+}

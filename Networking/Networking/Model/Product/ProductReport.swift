@@ -41,7 +41,7 @@ public struct ProductReport: Decodable, Equatable, GeneratedCopiable, GeneratedF
         let imageURL = Self.extractSourceURL(from: (extendedInfo.image ?? ""))
         let stockQuantity = extendedInfo.stockQuantity
         let name: String = {
-            guard let variationID,
+            guard variationID != nil,
                   let attributes = extendedInfo.attributes,
                   !attributes.isEmpty else {
                 return extendedInfo.name

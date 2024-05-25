@@ -3,8 +3,13 @@ import SwiftUI
 @main
 struct Woo_Watch_AppApp: App {
 
+    @WKApplicationDelegateAdaptor var delegate: AppDelegate
+
     @StateObject var phoneDependencySynchronizer = PhoneDependenciesSynchronizer()
 
+    @StateObject var appBindings = AppBindings()
+
+    // Refactor: Include this variable into AppBindings
     @State private var selectedTab = WooWatchTab.myStore
 
     var body: some Scene {
@@ -17,8 +22,16 @@ struct Woo_Watch_AppApp: App {
                     OrdersListView(dependencies: dependencies, watchTab: $selectedTab)
                         .tag(WooWatchTab.ordersList)
                 }
+                .sheet(isPresented: $appBindings.presentNote, content: {
+                    Text("New notification arrived and we should present nada yeaaaahhhh")
+                })
                 .compatibleVerticalStyle()
                 .environment(\.dependencies, dependencies)
+                .task {
+                    // For some reason I can't use the bindings directly from our AppDelegate.
+                    // We need to store them in this type assign them to the delegate for further modification.
+                    delegate.appBindings = appBindings
+                }
             } else {
                 ConnectView()
             }

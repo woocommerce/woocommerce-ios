@@ -982,6 +982,8 @@
 		26CE6F342B7D4C27008DB858 /* Error+Timeout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26CE6F332B7D4C27008DB858 /* Error+Timeout.swift */; };
 		26CE6F392B7E71AA008DB858 /* ConnectivityTool.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26CE6F382B7E71AA008DB858 /* ConnectivityTool.swift */; };
 		26CFDB2727357E8000AB940B /* SimplePaymentsSummary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26CFDB2627357E8000AB940B /* SimplePaymentsSummary.swift */; };
+		26CFDEDA2C029322005ABC31 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26CFDED92C029322005ABC31 /* AppDelegate.swift */; };
+		26CFDEDC2C02932C005ABC31 /* AppBindings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26CFDEDB2C02932C005ABC31 /* AppBindings.swift */; };
 		26D1E9E82949818B00A7DC62 /* AnalyticsHubTimeRageAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26D1E9E72949818B00A7DC62 /* AnalyticsHubTimeRageAdapter.swift */; };
 		26D57CF72B59820600E8EFB8 /* View+ContainerBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26D57CF62B59820600E8EFB8 /* View+ContainerBackground.swift */; };
 		26D9E54428C107F80098DF26 /* WooFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26D9E54328C107F80098DF26 /* WooFoundation.framework */; };
@@ -3813,6 +3815,8 @@
 		26CE6F332B7D4C27008DB858 /* Error+Timeout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Error+Timeout.swift"; sourceTree = "<group>"; };
 		26CE6F382B7E71AA008DB858 /* ConnectivityTool.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectivityTool.swift; sourceTree = "<group>"; };
 		26CFDB2627357E8000AB940B /* SimplePaymentsSummary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimplePaymentsSummary.swift; sourceTree = "<group>"; };
+		26CFDED92C029322005ABC31 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		26CFDEDB2C02932C005ABC31 /* AppBindings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppBindings.swift; sourceTree = "<group>"; };
 		26D1E9E72949818B00A7DC62 /* AnalyticsHubTimeRageAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsHubTimeRageAdapter.swift; sourceTree = "<group>"; };
 		26D57CF62B59820600E8EFB8 /* View+ContainerBackground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+ContainerBackground.swift"; sourceTree = "<group>"; };
 		26D9E54328C107F80098DF26 /* WooFoundation.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = WooFoundation.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -7798,6 +7802,16 @@
 			path = "Connectivity Tool";
 			sourceTree = "<group>";
 		};
+		26CFDED82C02930C005ABC31 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				26F81B172BE433A2009EC58E /* WooApp.swift */,
+				26CFDED92C029322005ABC31 /* AppDelegate.swift */,
+				26CFDEDB2C02932C005ABC31 /* AppBindings.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
 		26DB7E3228636CF200506173 /* Order Edition */ = {
 			isa = PBXGroup;
 			children = (
@@ -7857,7 +7871,7 @@
 			isa = PBXGroup;
 			children = (
 				26B984D22BEECC460052658C /* Dependencies */,
-				26F81B172BE433A2009EC58E /* WooApp.swift */,
+				26CFDED82C02930C005ABC31 /* App */,
 				26B984D52BEECF260052658C /* ConnectView.swift */,
 				269FFA492BF544B6004E6B86 /* MyStore */,
 				26A0B2D52BFBA51D002E9620 /* Orders */,
@@ -13696,6 +13710,7 @@
 				26B984D42BEECC610052658C /* Environment+Dependencies.swift in Sources */,
 				26F81B1A2BE433A2009EC58E /* MyStoreView.swift in Sources */,
 				26373E2F2BFD7C18008E6735 /* OrderListCellViewModel.swift in Sources */,
+				26CFDEDA2C029322005ABC31 /* AppDelegate.swift in Sources */,
 				264E9E942BF1D1DF009C48FD /* AppLocalizedString.swift in Sources */,
 				26A0B2D42BF9A78C002E9620 /* StoreInfoFormatter.swift in Sources */,
 				26DD32D42BEBCDFB00F2C69C /* WooConstants.swift in Sources */,
@@ -13707,6 +13722,7 @@
 				269FFA482BF516BA004E6B86 /* Logging.swift in Sources */,
 				26F81B182BE433A2009EC58E /* WooApp.swift in Sources */,
 				26CA47212BFD82AE00E54348 /* DateFormatter+Helpers.swift in Sources */,
+				26CFDEDC2C02932C005ABC31 /* AppBindings.swift in Sources */,
 				2604C3BA2BE977F000250465 /* PhoneDependenciesSynchronizer.swift in Sources */,
 				26A000772BE9D9030071DB1E /* WooConstants.swift in Sources */,
 				26373E2C2BFD13E0008E6735 /* OrdersDataService.swift in Sources */,

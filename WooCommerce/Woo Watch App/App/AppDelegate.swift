@@ -1,5 +1,6 @@
 import WatchKit
 import UserNotifications
+import struct NetworkingWatchOS.Note
 
 
 class AppDelegate: NSObject, ObservableObject, WKApplicationDelegate {
@@ -19,9 +20,12 @@ class AppDelegate: NSObject, ObservableObject, WKApplicationDelegate {
 
 extension AppDelegate: UNUserNotificationCenterDelegate {
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse) async {
-        print("receive notification response")
-        if response.notification.request.content.categoryIdentifier == "store_order" {
-            appBindings.presentNote = true
+        /// The Watch app only supports order notifications.
+        guard let notification = PushNotification.from(userInfo: response.notification.request.content.userInfo),
+              notification.kind == Note.Kind.storeOrder else {
+            return
         }
+
+        appBindings.orderNotification = notification
     }
 }

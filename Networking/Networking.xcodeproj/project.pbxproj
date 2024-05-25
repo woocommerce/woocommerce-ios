@@ -328,6 +328,11 @@
 		26B542462BEAC6A6003A55B5 /* Pods_NetworkingWatchOS.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 6132DCC72AA9C070E2033628 /* Pods_NetworkingWatchOS.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		26BD9FCD2965EC3C004E0D15 /* product-variations-bulk-create.json in Resources */ = {isa = PBXBuildFile; fileRef = 26BD9FCC2965EC3C004E0D15 /* product-variations-bulk-create.json */; };
 		26BD9FCF2965EE71004E0D15 /* ProductVariationsBulkCreateMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26BD9FCE2965EE71004E0D15 /* ProductVariationsBulkCreateMapper.swift */; };
+		26CFDEDD2C0295AD005ABC31 /* Note.swift in Sources */ = {isa = PBXBuildFile; fileRef = B59325C6217E22FC000B0E8E /* Note.swift */; };
+		26CFDEDE2C0295CB005ABC31 /* NoteBlock.swift in Sources */ = {isa = PBXBuildFile; fileRef = B59325D0217E4206000B0E8E /* NoteBlock.swift */; };
+		26CFDEDF2C0295D5005ABC31 /* NoteMedia.swift in Sources */ = {isa = PBXBuildFile; fileRef = B59325CF217E4206000B0E8E /* NoteMedia.swift */; };
+		26CFDEE02C0295E1005ABC31 /* NoteRange.swift in Sources */ = {isa = PBXBuildFile; fileRef = B59325D1217E4206000B0E8E /* NoteRange.swift */; };
+		26CFDEE12C0295EA005ABC31 /* MetaContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5A2417C217F9ECC00595DEF /* MetaContainer.swift */; };
 		26DAAB522BEA8D3400CE399E /* NetworkingWatchOS.h in Headers */ = {isa = PBXBuildFile; fileRef = 26DAAB512BEA8D3400CE399E /* NetworkingWatchOS.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		26DAAB572BEA8DC100CE399E /* Credentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = B557DA1720979D51005962F4 /* Credentials.swift */; };
 		26DAAB582BEA8DFF00CE399E /* Remote.swift in Sources */ = {isa = PBXBuildFile; fileRef = B557DA0020975500005962F4 /* Remote.swift */; };
@@ -4609,10 +4614,12 @@
 				26373E042BFCEA48008E6735 /* OrdersRemote.swift in Sources */,
 				26373E0F2BFCEB1B008E6735 /* ShippingLineTax.swift in Sources */,
 				263A6DB72BEAA46000C292B2 /* SiteVisitStats.swift in Sources */,
+				26CFDEDD2C0295AD005ABC31 /* Note.swift in Sources */,
 				263A6DB82BEAA46000C292B2 /* SiteVisitStatsItem.swift in Sources */,
 				263A6DB52BEAA44D00C292B2 /* StatGranularity.swift in Sources */,
 				263A6DB42BEAA43700C292B2 /* Mapper+DataEnvelope.swift in Sources */,
 				263A6DB32BEAA41D00C292B2 /* DateFormatter+Woo.swift in Sources */,
+				26CFDEDF2C0295D5005ABC31 /* NoteMedia.swift in Sources */,
 				263A6DB22BEAA3EC00C292B2 /* CodingUserInfoKey+Woo.swift in Sources */,
 				263A6DB12BEAA33900C292B2 /* WCAnalyticsStats.swift in Sources */,
 				263A6DAD2BEAA32800C292B2 /* OrderStatsV4Mapper.swift in Sources */,
@@ -4652,6 +4659,7 @@
 				269014CD2BEA926F006056E0 /* WordPressAPIVersion.swift in Sources */,
 				269014CC2BEA925F006056E0 /* RESTRequestConvertible.swift in Sources */,
 				26373E072BFCEA7E008E6735 /* OrderItem.swift in Sources */,
+				26CFDEE12C0295EA005ABC31 /* MetaContainer.swift in Sources */,
 				26373E152BFCEDE9008E6735 /* OrderGiftCard.swift in Sources */,
 				269014CB2BEA9253006056E0 /* JetpackRequest.swift in Sources */,
 				269014CA2BEA924B006056E0 /* NetworkError.swift in Sources */,
@@ -4667,6 +4675,8 @@
 				269014C22BEA912D006056E0 /* Request.swift in Sources */,
 				26373E182BFCEF79008E6735 /* KeyedDecodingContainer+Woo.swift in Sources */,
 				26373E202BFCF6A7008E6735 /* EntityDateModifiedMapper.swift in Sources */,
+				26CFDEE02C0295E1005ABC31 /* NoteRange.swift in Sources */,
+				26CFDEDE2C0295CB005ABC31 /* NoteBlock.swift in Sources */,
 				26DAAB592BEA8E1500CE399E /* Network.swift in Sources */,
 				26373E052BFCEA60008E6735 /* Order.swift in Sources */,
 				26DAAB582BEA8DFF00CE399E /* Remote.swift in Sources */,

@@ -22,8 +22,12 @@ struct Woo_Watch_AppApp: App {
                     OrdersListView(dependencies: dependencies, watchTab: $selectedTab)
                         .tag(WooWatchTab.ordersList)
                 }
-                .sheet(isPresented: $appBindings.presentNote, content: {
-                    Text("New notification arrived and we should present nada yeaaaahhhh")
+                .sheet(item: $appBindings.orderNotification, content: { orderNotification in
+                    VStack {
+                        Text("\(orderNotification.title)")
+                        Text("\(orderNotification.subtitle ?? "")")
+                        Text("\(orderNotification.message ?? "")")
+                    }
                 })
                 .compatibleVerticalStyle()
                 .environment(\.dependencies, dependencies)

@@ -12,10 +12,10 @@ import struct NetworkingWatchOS.Note
 struct PushNotification {
     /// The `note_id` value received from the Remote Notification's `userInfo`.
     ///
-    let noteID: Int
+    let noteID: Int64
     /// The `blog` value received from the Remote Notification's `userInfo`.
     ///
-    let siteID: Int
+    let siteID: Int64
     /// The `type` value received from the Remote Notification's `userInfo`.
     ///
     let kind: Note.Kind
@@ -61,7 +61,7 @@ enum APNSKey {
 /// SwiftUI Identifiable conformance
 ///
 extension PushNotification: Identifiable {
-    var id: Int {
+    var id: Int64 {
         noteID
     }
 }

@@ -13,8 +13,21 @@ class AppDelegate: NSObject, ObservableObject, WKApplicationDelegate {
     /// Setup code after the app finishes launching
     ///
     func applicationDidFinishLaunching() {
+        // Set up logging
+        setupCocoaLumberjack()
+
         // Sets the notification delegate
         UNUserNotificationCenter.current().delegate = self
+    }
+
+    /// Sets up CocoaLumberjack logging.
+    ///
+    func setupCocoaLumberjack() {
+        let fileLogger = DDFileLogger()
+        fileLogger.rollingFrequency = TimeInterval(60*60*24)  // 24 hours
+        fileLogger.logFileManager.maximumNumberOfLogFiles = 7
+        DDLog.add(DDOSLogger.sharedInstance)
+        DDLog.add(fileLogger)
     }
 }
 

@@ -333,6 +333,11 @@
 		26CFDEDF2C0295D5005ABC31 /* NoteMedia.swift in Sources */ = {isa = PBXBuildFile; fileRef = B59325CF217E4206000B0E8E /* NoteMedia.swift */; };
 		26CFDEE02C0295E1005ABC31 /* NoteRange.swift in Sources */ = {isa = PBXBuildFile; fileRef = B59325D1217E4206000B0E8E /* NoteRange.swift */; };
 		26CFDEE12C0295EA005ABC31 /* MetaContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5A2417C217F9ECC00595DEF /* MetaContainer.swift */; };
+		26CFDEE72C038C8C005ABC31 /* NotificationsRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5DAEFEF2180DD5A0002356A /* NotificationsRemote.swift */; };
+		26CFDEE82C038C9D005ABC31 /* SuccessResultMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B53EF53B21814900003E146F /* SuccessResultMapper.swift */; };
+		26CFDEE92C038CAE005ABC31 /* NoteListMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B59325CB217E2B4C000B0E8E /* NoteListMapper.swift */; };
+		26CFDEEA2C038CBE005ABC31 /* NoteHash.swift in Sources */ = {isa = PBXBuildFile; fileRef = B554FA902180BCFC00C54DFF /* NoteHash.swift */; };
+		26CFDEEB2C038CC8005ABC31 /* NoteHashListMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B554FA8E2180BC7000C54DFF /* NoteHashListMapper.swift */; };
 		26DAAB522BEA8D3400CE399E /* NetworkingWatchOS.h in Headers */ = {isa = PBXBuildFile; fileRef = 26DAAB512BEA8D3400CE399E /* NetworkingWatchOS.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		26DAAB572BEA8DC100CE399E /* Credentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = B557DA1720979D51005962F4 /* Credentials.swift */; };
 		26DAAB582BEA8DFF00CE399E /* Remote.swift in Sources */ = {isa = PBXBuildFile; fileRef = B557DA0020975500005962F4 /* Remote.swift */; };
@@ -4586,9 +4591,11 @@
 				2680B0D52BED5A7700E7F1D8 /* CookieNonceAuthenticator.swift in Sources */,
 				26373E1B2BFCF531008E6735 /* String+HTML.swift in Sources */,
 				2680B0D42BED5A6600E7F1D8 /* AppicationPasswordEncoder.swift in Sources */,
+				26CFDEEA2C038CBE005ABC31 /* NoteHash.swift in Sources */,
 				2680B0D32BED5A5400E7F1D8 /* OneTimeApplicationPasswordUseCase.swift in Sources */,
 				2680B0D12BED5A4C00E7F1D8 /* UnauthenticatedRequest.swift in Sources */,
 				26373E1C2BFCF62C008E6735 /* OrderNote.swift in Sources */,
+				26CFDEEB2C038CC8005ABC31 /* NoteHashListMapper.swift in Sources */,
 				2680B0D22BED5A4C00E7F1D8 /* AuthenticatedRESTRequest.swift in Sources */,
 				2680B0D02BED5A1900E7F1D8 /* WooConstants.swift in Sources */,
 				2680B0CF2BED59CE00E7F1D8 /* ApplicationPasswordStorage.swift in Sources */,
@@ -4629,16 +4636,19 @@
 				26373E192BFCEF96008E6735 /* OrderListMapper.swift in Sources */,
 				26373E062BFCEA70008E6735 /* OrderStatusEnum.swift in Sources */,
 				263A6DB02BEAA32800C292B2 /* OrderStatsV4Interval.swift in Sources */,
+				26CFDEE72C038C8C005ABC31 /* NotificationsRemote.swift in Sources */,
 				263A6DAC2BEAA31400C292B2 /* StatsGranularityV4.swift in Sources */,
 				26373E1A2BFCEFA7008E6735 /* OrderFeeTaxStatus.swift in Sources */,
 				26373E172BFCEF5D008E6735 /* Order+Fallbacks.swift in Sources */,
 				263A6DAB2BEAA30500C292B2 /* SiteStatsRemote.swift in Sources */,
+				26CFDEE82C038C9D005ABC31 /* SuccessResultMapper.swift in Sources */,
 				263A6DAA2BEAA2E700C292B2 /* OrderStatsRemoteV4.swift in Sources */,
 				2680B0CE2BED592800E7F1D8 /* Secret.swift in Sources */,
 				263A6DA62BEA9FE600C292B2 /* PlaceholderDataValidator.swift in Sources */,
 				263A6DA52BEA9FCC00C292B2 /* String+URL.swift in Sources */,
 				26373E1F2BFCF69A008E6735 /* OrderNoteMapper.swift in Sources */,
 				263A6DA42BEA9F5A00C292B2 /* Dictionary+Woo.swift in Sources */,
+				26CFDEE92C038CAE005ABC31 /* NoteListMapper.swift in Sources */,
 				263A6DA32BEA9EFD00C292B2 /* Result+Extensions.swift in Sources */,
 				263A6DA22BEA9E8F00C292B2 /* WordPressApiError.swift in Sources */,
 				263A6DA12BEA9E8000C292B2 /* WordPressApiValidator.swift in Sources */,

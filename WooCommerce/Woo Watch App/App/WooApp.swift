@@ -23,11 +23,7 @@ struct Woo_Watch_AppApp: App {
                         .tag(WooWatchTab.ordersList)
                 }
                 .sheet(item: $appBindings.orderNotification, content: { orderNotification in
-                    VStack {
-                        Text("\(orderNotification.title)")
-                        Text("\(orderNotification.subtitle ?? "")")
-                        Text("\(orderNotification.message ?? "")")
-                    }
+                    OrderDetailLoader(dependencies: dependencies, pushNotification: orderNotification)
                 })
                 .compatibleVerticalStyle()
                 .environment(\.dependencies, dependencies)
@@ -50,7 +46,7 @@ enum WooWatchTab: Int {
 
 /// Backwards compatible vertical `tabViewStyle` modifier.
 ///
-private struct VerticalPageModifier: ViewModifier {
+struct VerticalPageModifier: ViewModifier {
     func body(content: Content) -> some View {
         if #available(watchOS 10.0, *) {
             content
@@ -62,7 +58,7 @@ private struct VerticalPageModifier: ViewModifier {
     }
 }
 
-private extension View {
+extension View {
     func compatibleVerticalStyle() -> some View {
         self.modifier(VerticalPageModifier())
     }

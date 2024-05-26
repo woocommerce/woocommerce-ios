@@ -39,6 +39,7 @@ struct OrderDetailView: View {
         .background(
             LinearGradient(gradient: Gradient(colors: [Colors.wooPurpleBackground, .black]), startPoint: .top, endPoint: .bottom)
         )
+        .compatibleVerticalStyle()
     }
 
     /// First View: Summary

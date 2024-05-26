@@ -822,6 +822,7 @@
 		261F1A7C29C2B09D001D9861 /* FreeTrialBannerViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 261F1A7B29C2B09D001D9861 /* FreeTrialBannerViewModelTests.swift */; };
 		262418332B8D3630009A3834 /* ApplicationPasswordTutorial.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262418322B8D3630009A3834 /* ApplicationPasswordTutorial.swift */; };
 		262418372B9044FF009A3834 /* ApplicationPasswordTutorialViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262418362B9044FF009A3834 /* ApplicationPasswordTutorialViewModel.swift */; };
+		262619F12C03AB9600BD733B /* OrderDetailLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262619F02C03AB9600BD733B /* OrderDetailLoader.swift */; };
 		26281776278F0B0100C836D3 /* View+NoticesModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26281775278F0B0100C836D3 /* View+NoticesModifier.swift */; };
 		262A098B2628C51D0033AD20 /* OrderAddOnListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262A098A2628C51D0033AD20 /* OrderAddOnListViewModel.swift */; };
 		262A0999262908A60033AD20 /* OrderAddOnListI1Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262A0998262908A60033AD20 /* OrderAddOnListI1Tests.swift */; };
@@ -3689,6 +3690,7 @@
 		261F1A7B29C2B09D001D9861 /* FreeTrialBannerViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FreeTrialBannerViewModelTests.swift; sourceTree = "<group>"; };
 		262418322B8D3630009A3834 /* ApplicationPasswordTutorial.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationPasswordTutorial.swift; sourceTree = "<group>"; };
 		262418362B9044FF009A3834 /* ApplicationPasswordTutorialViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationPasswordTutorialViewModel.swift; sourceTree = "<group>"; };
+		262619F02C03AB9600BD733B /* OrderDetailLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderDetailLoader.swift; sourceTree = "<group>"; };
 		26281775278F0B0100C836D3 /* View+NoticesModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+NoticesModifier.swift"; sourceTree = "<group>"; };
 		262A098A2628C51D0033AD20 /* OrderAddOnListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderAddOnListViewModel.swift; sourceTree = "<group>"; };
 		262A0998262908A60033AD20 /* OrderAddOnListI1Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderAddOnListI1Tests.swift; sourceTree = "<group>"; };
@@ -7690,6 +7692,7 @@
 				26373E2D2BFD2F46008E6735 /* OrdersListViewModel.swift */,
 				26373E2B2BFD13E0008E6735 /* OrdersDataService.swift */,
 				26CA47232BFE4C1B00E54348 /* OrderDetailView.swift */,
+				262619F02C03AB9600BD733B /* OrderDetailLoader.swift */,
 			);
 			path = Orders;
 			sourceTree = "<group>";
@@ -13716,6 +13719,7 @@
 				26CFDEE32C029AD2005ABC31 /* Dictionary+Woo.swift in Sources */,
 				26373E2E2BFD2F46008E6735 /* OrdersListViewModel.swift in Sources */,
 				26A0B2D72BFBA536002E9620 /* OrdersListView.swift in Sources */,
+				262619F12C03AB9600BD733B /* OrderDetailLoader.swift in Sources */,
 				26B984D42BEECC610052658C /* Environment+Dependencies.swift in Sources */,
 				26F81B1A2BE433A2009EC58E /* MyStoreView.swift in Sources */,
 				26373E2F2BFD7C18008E6735 /* OrderListCellViewModel.swift in Sources */,

@@ -5,7 +5,20 @@ import Experiments
 
 /// Checks whether a store is eligible for Inbox feature.
 /// Since mobile requires API support for filtering, only stores with a minimum WC plugin version are eligible.
-final class InboxEligibilityUseCase {
+///
+protocol InboxEligibilityChecker {
+    /// Determines whether the store is eligible for inbox feature.
+    /// - Parameters:
+    ///   - siteID: the ID of the site to check for Inbox eligibility.
+    ///   - completion: called when the Inbox eligibility is determined.
+    ///
+    func isEligibleForInbox(siteID: Int64, completion: @escaping (Bool) -> Void)
+
+}
+
+/// Default implementation to check whether a store is eligible for Inbox feature.
+///
+final class InboxEligibilityUseCase: InboxEligibilityChecker {
     private let stores: StoresManager
     private let featureFlagService: FeatureFlagService
 

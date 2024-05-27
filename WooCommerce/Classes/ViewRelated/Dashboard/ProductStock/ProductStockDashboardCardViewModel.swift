@@ -81,7 +81,6 @@ private extension ProductStockDashboardCardViewModel {
     @MainActor
     func fetchStock(type: StockType) async throws -> [ProductStock] {
         try await withCheckedThrowingContinuation { continuation in
-            /// `order` and `orderby` follow the same setting on Woo Analytics page
             stores.dispatch(ProductAction.fetchStockReport(siteID: siteID,
                                                            stockType: type.rawValue,
                                                            pageNumber: Constants.pageNumber,

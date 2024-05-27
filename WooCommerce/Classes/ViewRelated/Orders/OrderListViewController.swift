@@ -297,7 +297,7 @@ private extension OrderListViewController {
             guard let self = self else { return }
 
             /// Check that view is loaded and displayed to prevent UI tests failing while synching orders from other screens.
-            guard self.isViewLoaded && self.view.window != nil else {
+            guard isViewLoaded == true && view.window != nil else {
                 return
             }
 

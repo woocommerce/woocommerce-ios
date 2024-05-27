@@ -66,6 +66,17 @@ public protocol ProductsRemoteProtocol {
                             pageNumber: Int,
                             orderBy: ProductsRemote.OrderKey,
                             order: ProductsRemote.Order) async throws -> [ProductReport]
+
+    func loadVariationReports(for siteID: Int64,
+                              productIDs: [Int64],
+                              variationIDs: [Int64],
+                              timeZone: TimeZone,
+                              earliestDateToInclude: Date,
+                              latestDateToInclude: Date,
+                              pageSize: Int,
+                              pageNumber: Int,
+                              orderBy: ProductsRemote.OrderKey,
+                              order: ProductsRemote.Order) async throws -> [ProductReport]
 }
 
 extension ProductsRemoteProtocol {
@@ -461,8 +472,42 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
         let path = Path.productReports
         let parameters: [String: Any] = [
             ParameterKey.products: productIDs,
-            ParameterKey.before: dateFormatter.string(from: earliestDateToInclude),
-            ParameterKey.after: dateFormatter.string(from: latestDateToInclude),
+            ParameterKey.after: dateFormatter.string(from: earliestDateToInclude),
+            ParameterKey.before: dateFormatter.string(from: latestDateToInclude),
+            ParameterKey.page: String(pageNumber),
+            ParameterKey.perPage: String(pageSize),
+            ParameterKey.order: order.value,
+            ParameterKey.orderBy: orderBy.value,
+            ParameterKey.extendedInfo: true
+        ]
+        let request = JetpackRequest(wooApiVersion: .wcAnalytics,
+                                     method: .get,
+                                     siteID: siteID,
+                                     path: path,
+                                     parameters: parameters,
+                                     availableAsRESTRequest: true)
+        let mapper = ProductReportListMapper()
+        return try await enqueue(request, mapper: mapper)
+    }
+
+    public func loadVariationReports(for siteID: Int64,
+                                     productIDs: [Int64],
+                                     variationIDs: [Int64],
+                                     timeZone: TimeZone,
+                                     earliestDateToInclude: Date,
+                                     latestDateToInclude: Date,
+                                     pageSize: Int,
+                                     pageNumber: Int,
+                                     orderBy: ProductsRemote.OrderKey,
+                                     order: ProductsRemote.Order) async throws -> [ProductReport] {
+        let dateFormatter = DateFormatter.Defaults.iso8601WithoutTimeZone
+        dateFormatter.timeZone = timeZone
+        let path = Path.variationReports
+        let parameters: [String: Any] = [
+            ParameterKey.products: productIDs,
+            ParameterKey.variations: variationIDs,
+            ParameterKey.after: dateFormatter.string(from: earliestDateToInclude),
+            ParameterKey.before: dateFormatter.string(from: latestDateToInclude),
             ParameterKey.page: String(pageNumber),
             ParameterKey.perPage: String(pageSize),
             ParameterKey.order: order.value,
@@ -517,6 +562,7 @@ public extension ProductsRemote {
         static let productsTotal = "reports/products/totals"
         static let stockReports = "reports/stock"
         static let productReports = "reports/products"
+        static let variationReports = "reports/variations"
     }
 
     private enum ParameterKey {
@@ -540,6 +586,7 @@ public extension ProductsRemote {
         static let templateName: String = "template_name"
         static let type = "type"
         static let products = "products"
+        static let variations = "variations"
         static let before = "before"
         static let after = "after"
         static let extendedInfo = "extended_info"

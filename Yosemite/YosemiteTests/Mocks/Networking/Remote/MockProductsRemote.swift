@@ -45,6 +45,7 @@ final class MockProductsRemote {
 
     private var fetchedStockResult: Result<[ProductStock], Error>?
     private var fetchedProductReports: Result<[ProductReport], Error>?
+    private var fetchedVariationReports: Result<[ProductReport], Error>?
 
     /// The number of times that `loadProduct()` was invoked.
     private(set) var invocationCountOfLoadProduct: Int = 0
@@ -112,6 +113,10 @@ final class MockProductsRemote {
 
     func whenFetchingProductReports(thenReturn result: Result<[ProductReport], Error>) {
         fetchedProductReports = result
+    }
+
+    func whenFetchingVariationReports(thenReturn result: Result<[ProductReport], Error>) {
+        fetchedVariationReports = result
     }
 }
 
@@ -297,21 +302,42 @@ extension MockProductsRemote: ProductsRemoteProtocol {
         }
     }
 
-    public func loadProductReports(for siteID: Int64,
-                                   productIDs: [Int64],
-                                   timeZone: TimeZone,
-                                   earliestDateToInclude: Date,
-                                   latestDateToInclude: Date,
-                                   pageSize: Int,
-                                   pageNumber: Int,
-                                   orderBy: ProductsRemote.OrderKey,
-                                   order: ProductsRemote.Order) async throws -> [ProductReport] {
+    func loadProductReports(for siteID: Int64,
+                            productIDs: [Int64],
+                            timeZone: TimeZone,
+                            earliestDateToInclude: Date,
+                            latestDateToInclude: Date,
+                            pageSize: Int,
+                            pageNumber: Int,
+                            orderBy: ProductsRemote.OrderKey,
+                            order: ProductsRemote.Order) async throws -> [ProductReport] {
         guard let result = fetchedProductReports else {
             throw NetworkError.notFound()
         }
         switch result {
-        case let .success(segments):
-            return segments
+        case let .success(reports):
+            return reports
+        case let .failure(error):
+            throw error
+        }
+    }
+
+    func loadVariationReports(for siteID: Int64,
+                                     productIDs: [Int64],
+                                     variationIDs: [Int64],
+                                     timeZone: TimeZone,
+                                     earliestDateToInclude: Date,
+                                     latestDateToInclude: Date,
+                                     pageSize: Int,
+                                     pageNumber: Int,
+                                     orderBy: ProductsRemote.OrderKey,
+                              order: ProductsRemote.Order) async throws -> [ProductReport] {
+        guard let result = fetchedVariationReports else {
+            throw NetworkError.notFound()
+        }
+        switch result {
+        case let .success(reports):
+            return reports
         case let .failure(error):
             throw error
         }

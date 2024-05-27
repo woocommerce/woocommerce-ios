@@ -40,7 +40,15 @@ public struct ProductReport: Decodable, Equatable, GeneratedCopiable, GeneratedF
         let extendedInfo = try container.decode(ExtendedInfo.self, forKey: .extendedInfo)
         let imageURL = Self.extractSourceURL(from: (extendedInfo.image ?? ""))
         let stockQuantity = extendedInfo.stockQuantity
-        let name = extendedInfo.name
+        let name: String = {
+            guard variationID != nil,
+                  let attributes = extendedInfo.attributes,
+                  !attributes.isEmpty else {
+                return extendedInfo.name
+            }
+            let attributeText = attributes.map { $0.option }.joined(separator: ", ")
+            return [extendedInfo.name, attributeText].joined(separator: " - ")
+        }()
 
         self.init(productID: productID,
                   variationID: variationID,
@@ -56,17 +64,23 @@ public extension ProductReport {
         public let name: String
         public let image: String?
         public let stockQuantity: Int
+        public let attributes: [ProductVariationAttribute]?
 
-        public init(name: String, image: String?, stockQuantity: Int) {
+        public init(name: String,
+                    image: String?,
+                    stockQuantity: Int,
+                    attributes: [ProductVariationAttribute]?) {
             self.name = name
             self.image = image
             self.stockQuantity = stockQuantity
+            self.attributes = attributes
         }
 
         private enum CodingKeys: String, CodingKey {
             case name
             case image
             case stockQuantity = "stock_quantity"
+            case attributes
         }
     }
 }

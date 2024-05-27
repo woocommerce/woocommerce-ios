@@ -768,7 +768,7 @@ final class ProductsRemoteTests: XCTestCase {
     func test_loadProductReports_returns_correct_items() async throws {
         // Given
         let remote = ProductsRemote(network: network)
-        network.simulateResponse(requestUrlSuffix: "reports/products/stats", filename: "product-report")
+        network.simulateResponse(requestUrlSuffix: "reports/products", filename: "product-report")
 
         // When
         let products = try await remote.loadProductReports(for: sampleSiteID,
@@ -782,17 +782,15 @@ final class ProductsRemoteTests: XCTestCase {
                                                            order: .descending)
 
         // Then
-        XCTAssertEqual(products.count, 2)
+        XCTAssertEqual(products.count, 1)
 
         let firstItem = try XCTUnwrap(products.first)
-        XCTAssertEqual(firstItem.productID, 119)
-        XCTAssertEqual(firstItem.productName, "Pesto Spaghetti")
-        XCTAssertEqual(firstItem.subtotals.itemsSold, 1)
-
-        let secondItem = try XCTUnwrap(products.last)
-        XCTAssertEqual(secondItem.productID, 134)
-        XCTAssertEqual(secondItem.productName, "Fried-egg Bacon Bagel")
-        XCTAssertEqual(secondItem.subtotals.itemsSold, 0)
+        XCTAssertEqual(firstItem.productID, 248)
+        XCTAssertEqual(firstItem.variationID, 280)
+        XCTAssertEqual(firstItem.name, "Fantastic Concrete Shirt")
+        XCTAssertEqual(firstItem.itemsSold, 8)
+        XCTAssertEqual(firstItem.stockQuantity, 24)
+        XCTAssertEqual(firstItem.imageURL?.absoluteString, "https://test.ninja/wp-content/uploads/2024/05/img-laboriosam-300x300.png")
     }
 
     func test_loadProductReports_relays_networking_error() async throws {

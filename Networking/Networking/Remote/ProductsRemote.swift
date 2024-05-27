@@ -65,7 +65,7 @@ public protocol ProductsRemoteProtocol {
                             pageSize: Int,
                             pageNumber: Int,
                             orderBy: ProductsRemote.OrderKey,
-                            order: ProductsRemote.Order) async throws -> [ProductReportSegment]
+                            order: ProductsRemote.Order) async throws -> [ProductReport]
 }
 
 extension ProductsRemoteProtocol {
@@ -455,20 +455,19 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
                                    pageSize: Int,
                                    pageNumber: Int,
                                    orderBy: ProductsRemote.OrderKey,
-                                   order: ProductsRemote.Order) async throws -> [ProductReportSegment] {
+                                   order: ProductsRemote.Order) async throws -> [ProductReport] {
         let dateFormatter = DateFormatter.Defaults.iso8601WithoutTimeZone
         dateFormatter.timeZone = timeZone
-        let path = Path.productReportsStats
+        let path = Path.productReports
         let parameters: [String: Any] = [
             ParameterKey.products: productIDs,
-            ParameterKey.segmentBy: ParameterValues.productSegment,
-            ParameterKey.fieldsWithoutUnderscore: [ParameterValues.itemsSold],
-            ParameterKey.after: dateFormatter.string(from: earliestDateToInclude),
-            ParameterKey.before: dateFormatter.string(from: latestDateToInclude),
+            ParameterKey.before: dateFormatter.string(from: earliestDateToInclude),
+            ParameterKey.after: dateFormatter.string(from: latestDateToInclude),
             ParameterKey.page: String(pageNumber),
             ParameterKey.perPage: String(pageSize),
-            ParameterKey.order: order,
-            ParameterKey.orderBy: orderBy
+            ParameterKey.order: order.value,
+            ParameterKey.orderBy: orderBy.value,
+            ParameterKey.extendedInfo: true
         ]
         let request = JetpackRequest(wooApiVersion: .wcAnalytics,
                                      method: .get,
@@ -476,7 +475,7 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
                                      path: path,
                                      parameters: parameters,
                                      availableAsRESTRequest: true)
-        let mapper = ProductReportSegmentListMapper()
+        let mapper = ProductReportListMapper()
         return try await enqueue(request, mapper: mapper)
     }
 }
@@ -517,7 +516,7 @@ public extension ProductsRemote {
         static let templateProducts   = "onboarding/tasks/create_product_from_template"
         static let productsTotal = "reports/products/totals"
         static let stockReports = "reports/stock"
-        static let productReportsStats = "reports/products/stats"
+        static let productReports = "reports/products"
     }
 
     private enum ParameterKey {
@@ -543,8 +542,7 @@ public extension ProductsRemote {
         static let products = "products"
         static let before = "before"
         static let after = "after"
-        static let segmentBy = "segmentby"
-        static let fieldsWithoutUnderscore = "fields"
+        static let extendedInfo = "extended_info"
     }
 
     private enum ParameterValues {

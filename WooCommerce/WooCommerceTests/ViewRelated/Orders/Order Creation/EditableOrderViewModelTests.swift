@@ -3307,10 +3307,31 @@ final class EditableOrderViewModelTests: XCTestCase {
         }
 
         // When
-        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores)
+        _ = EditableOrderViewModel(siteID: sampleSiteID, stores: stores)
 
         // Then
         XCTAssertTrue(shippingMethodsSynced)
+    }
+
+    func test_view_model_inits_with_expected_shipping_line_row_from_order_shipping_line_and_stored_shipping_method() throws {
+        // Given
+        let shippingMethod = ShippingMethod(siteID: sampleSiteID, methodID: "flat_rate", title: "Flat Rate")
+        storageManager.insert(shippingMethod)
+        let shippingLine = ShippingLine.fake().copy(methodTitle: "Package 1", methodID: "flat_rate")
+        let order = Order.fake().copy(siteID: sampleSiteID, shippingLines: [shippingLine])
+
+        // When
+        let featureFlagService = MockFeatureFlagService(isMultipleShippingLinesEnabled: true)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
+                                               flow: .editing(initialOrder: order),
+                                               storageManager: storageManager,
+                                               featureFlagService: featureFlagService)
+
+        // Then
+        assertEqual(1, viewModel.shippingLineRows.count)
+        let shippingLineRow = try XCTUnwrap(viewModel.shippingLineRows.first)
+        assertEqual(shippingLine.methodTitle, shippingLineRow.shippingTitle)
+        assertEqual(shippingMethod.title, shippingLineRow.shippingMethod)
     }
 }
 
@@ -3376,6 +3397,12 @@ private extension MockStorageManager {
         }
 
         return bundleProduct
+    }
+
+    func insert(_ readOnlyShippingMethod: ShippingMethod) {
+        let shippingMethod = viewStorage.insertNewObject(ofType: StorageShippingMethod.self)
+        shippingMethod.update(with: readOnlyShippingMethod)
+        viewStorage.saveIfNeeded()
     }
 }
 

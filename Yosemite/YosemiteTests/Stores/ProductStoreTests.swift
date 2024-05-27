@@ -2900,7 +2900,10 @@ final class ProductStoreTests: XCTestCase {
 
     func test_fetchProductReports_returns_segments_on_success() throws {
         // Given
-        let segment = ProductReportSegment.fake().copy(productID: 123, productName: "Steamed bun", subtotals: .fake().copy(itemsSold: 10))
+        let segment = ProductReport.fake().copy(productID: 123,
+                                                name: "Steamed bun",
+                                                imageURL: URL(string: "https://example.com/image.png"),
+                                                itemsSold: 3)
         let mockRemote = MockProductsRemote()
         mockRemote.whenFetchingProductReports(thenReturn: .success([segment]))
         let productStore = ProductStore(dispatcher: dispatcher,

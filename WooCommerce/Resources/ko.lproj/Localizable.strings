@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-05-14 09:54:04+0000 */
+/* Translation-Revision-Date: 2024-05-21 09:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ko_KR */
@@ -54,9 +54,6 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility description for a card payment method, used by assistive technologies such as screen reader. %1$@ is a placeholder for the card brand, %2$@ is a placeholder for the last 4 digits of the card number */
 "%1$@ card ending %2$@" = "%2$@(으)로 끝나는 %1$@ 카드";
 
-/* Exception rule for a coupon. Reads like: 3 Products excl. 1 Category */
-"%1$@ excl. %2$@" = "%1$@(%2$@ 제외)";
-
 /* Label about product's inventory stock status shown during order creation
    Label about product's inventory stock status shown on Products tab */
 "%1$@ in stock" = "%1$@ 재고 있음";
@@ -70,8 +67,8 @@ which should be translated separately and considered part of this sentence. */
 /* Review title. Reads as {Review author} left a review on {Product}. */
 "%1$@ left a review on %2$@" = "%1$@ 님이 %2$@에 리뷰를 남겼습니다.";
 
-/* Summary line for a coupon, with the discounted amount and number of products and categories that the coupon is limited to. Reads like: '10% off all products' or '$15 off 2 Product 1 Category' */
-"%1$@ off %2$@" = "%1$@ 할인 %2$@";
+/* Summary line for a coupon, with the discounted amount and number of products and categories that the coupon is limited to. Reads like: '10% off · all products' or '$15 off · 2 Product 1 Category' */
+"%1$@ off · %2$@" = "%1$@ 할인 %2$@";
 
 /* Notice format when a shipping label refund request is successful. The first variable shows the shipping label service name (e.g. USPS Priority Mail). The second variable shows the formatted amount that is eligible for refund  (e.g. $7.50). */
 "%1$@ refund requested (%2$@)" = "%1$@ 환불 요청됨(%2$@)";
@@ -84,6 +81,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Payment on <date> received via (payment method title) */
 "%1$@ via %2$@" = "%2$@을(를) 통한 %1$@";
+
+/* Exception rule for a coupon. Reads like: 3 Products · Excl. 1 Category */
+"%1$@ · Excl. %2$@" = "%1$@(%2$@ 제외)";
 
 /* In Order Details, the pattern used to show the quantity multiplied by the price. For example, “23 × $400.00”. The %1$@ is the quantity. The %2$@ is the formatted price with currency (e.g. $400.00). Please take care to use the multiplication symbol ×, not a letter x, where appropriate. */
 "%1$@ × %2$@" = "%1$@ × %2$@";
@@ -716,8 +716,8 @@ which should be translated separately and considered part of this sentence. */
    Title of the product search filter to search for all products. */
 "All Products" = "모든 상품";
 
-/* Exception rule for a coupon. Reads like: All Products excl. 2 Products */
-"All Products excl. %1$@" = "모든 상품(%1$@ 제외)";
+/* Exception rule for a coupon. Reads like: All Products · Excl. 2 Products */
+"All Products · Excl. %1$@" = "모든 상품(%1$@ 제외)";
 
 /* Value for the limit usage to X items row in Coupon Usage Restrictions screen when no limit is set */
 "All Qualifying" = "모든 적격 항목";
@@ -7258,9 +7258,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the store name screen */
 "Store name" = "스토어 이름";
 
-/* Title of the store setup progress view. */
-"Store setup" = "스토어 설정";
-
 /* Accessibility label for strikethrough button on formatting toolbar. */
 "Strike Through" = "취소선";
 
@@ -9981,9 +9978,6 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle of the Blaze campaign view. */
 "blazeCampaignDashboardView.subtitle" = "가시성을 높이고 상품 판매 속도를 단축하세요.";
 
-/* Title of the Blaze campaign view. */
-"blazeCampaignDashboardView.title" = "Blaze 캠페인";
-
 /* The action to be agreed upon on the Payment screen in the Blaze campaign creation flow. */
 "blazeConfirmPaymentView.adPolicy" = "광고 정책";
 
@@ -10573,11 +10567,26 @@ which should be translated separately and considered part of this sentence. */
 /* Name for the Blaze dashboard card in the Customize Dashboard screen */
 "dashboardCard.name.blazeCampaigns" = "Blaze 캠페인";
 
+/* Name for the Most active coupons dashboard card in the Customize Dashboard screen */
+"dashboardCard.name.coupons" = "가장 많이 사용된 쿠폰";
+
+/* Name for the Inbox dashboard card in the Customize Dashboard screen */
+"dashboardCard.name.inbox" = "받은 편지함";
+
+/* Name for the Most recent orders dashboard card in the Customize Dashboard screen */
+"dashboardCard.name.lastOrders" = "최근 주문";
+
 /* Name for the Store setup dashboard card in the Customize Dashboard screen */
 "dashboardCard.name.onboarding" = "스토어 설정";
 
 /* Name for the Performance dashboard card in the Customize Dashboard screen */
 "dashboardCard.name.performance" = "성과";
+
+/* Name for the Most recent reviews dashboard card in the Customize Dashboard screen */
+"dashboardCard.name.reviews" = "최근 리뷰";
+
+/* Name for the Stock dashboard card in the Customize Dashboard screen */
+"dashboardCard.name.stock" = "재고";
 
 /* Name for the Top performers dashboard card in the Customize Dashboard screen */
 "dashboardCard.name.topPerformers" = "최고 인기 상품";
@@ -10781,6 +10790,15 @@ which should be translated separately and considered part of this sentence. */
 /* The title used when asking the user for feedback for the app. */
 "inAppFeedbackCardView.title" = "WooCommerce 앱이 마음에 드시나요?";
 
+/* Title displayed if there are no inbox notes in the Inbox section on the Dashboard screen. */
+"inboxDashboardCard.emptyStateTitle" = "읽지 않은 메시지 없음";
+
+/* Menu item to dismiss the Inbox section on the Dashboard screen */
+"inboxDashboardCard.hideCard" = "받은 편지함 숨기기";
+
+/* Button to navigate to Inbox messages list screen. */
+"inboxDashboardCard.viewAll" = "모든 메시지 보기";
+
 /* Title for Add Order home screen action */
 "infoplist.AddOrderAction.Title" = "새 주문";
 
@@ -10929,6 +10947,24 @@ which should be translated separately and considered part of this sentence. */
 
 /* Display label for a product's subscription period, e.g. '12 months'. */
 "months" = "월";
+
+/* Title in the coupons list on the coupons card on the Dashboard screen */
+"mostActiveCouponsCard.coupons" = "쿠폰";
+
+/* Title of the custom time range on the coupons card on the Dashboard screen */
+"mostActiveCouponsCard.custom" = "사용자 정의";
+
+/* Menu item to dismiss the coupons card on the Dashboard screen */
+"mostActiveCouponsCard.hideCard" = "쿠폰 숨기기";
+
+/* Title in the coupons list on the coupons card on the Dashboard screen. Denotes the number of times the coupon has been used. */
+"mostActiveCouponsCard.uses" = "사용";
+
+/* Button to navigate to Coupons list screen. */
+"mostActiveCouponsCard.viewAll" = "모든 쿠폰 보기";
+
+/* Button in date range picker to add a Custom Range tab */
+"mostActiveCouponsCardViewModel.addCustomRange" = "추가";
 
 /* Placeholder in the search bar of a multiple selection list */
 "multipleSelectionList.search" = "검색";
@@ -11291,6 +11327,27 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the One time shipping product shipping setting. */
 "productShippingSettings.oneTimeShipping.title" = "1회 배송";
 
+/* Menu item to dismiss the Stock section on the My Store screen */
+"productStockDashboardCard.hideCard" = "재고 숨기기";
+
+/* Header label on the Stock section on the My Store screen */
+"productStockDashboardCard.products" = "상품";
+
+/* Header label on the Stock section on the My Store screen */
+"productStockDashboardCard.status" = "상태";
+
+/* Header label on the Stock section on the My Store screen */
+"productStockDashboardCard.stockLevels" = "재고 수준";
+
+/* Title of a stock type displayed on the Stock section on My Store screen */
+"productStockDashboardCardViewModel.stockType.lowStock" = "재고 부족";
+
+/* Title of a stock type displayed on the Stock section on My Store screen */
+"productStockDashboardCardViewModel.stockType.onBackOrder" = "이월 주문";
+
+/* Title of a stock type displayed on the Stock section on My Store screen */
+"productStockDashboardCardViewModel.stockType.outOfStock" = "재고 없음";
+
 /* Message on the secondary view of the products tab split view before any product is selected. */
 "productsTab.emptySecondaryView.message" = "선택된 상품 없음";
 
@@ -11326,6 +11383,33 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the switch in the IssueRefund screen to refund customAmounts */
 "refundIssue.customAmounts.title" = "환불 사용자 정의 금액";
+
+/* Text displayed when the author of a review is known. */
+"reviewsDashboardCard.completeAuthorText" = "%1$@ 님이 %2$@에 리뷰를 남겼습니다.";
+
+/* Menu item to dismiss the Reviews card on the Dashboard screen */
+"reviewsDashboardCard.hideCard" = "리뷰 숨기기";
+
+/* Text displayed when the author of a review is unknown. */
+"reviewsDashboardCard.incompleteAuthorText" = "고객이 %@에 리뷰를 남겼습니다.";
+
+/* Additional label on a review when its status is hold. */
+"reviewsDashboardCard.pendingReview" = "리뷰 보류 중";
+
+/* Status label on the Reviews card's filter area. */
+"reviewsDashboardCard.status" = "상태";
+
+/* Button to navigate to Reviews list screen. */
+"reviewsDashboardCard.viewAll" = "모든 리뷰 보기";
+
+/* Menu item to dismiss the Reviews card on the Dashboard screen */
+"reviewsDashboardCardViewModel.filterAll" = "모두";
+
+/* Button to navigate to Reviews list screen. */
+"reviewsDashboardCardViewModel.filterApproved" = "승인됨";
+
+/* Status label on the Reviews card's filter area. */
+"reviewsDashboardCardViewModel.filterHold" = "보류";
 
 /* The title for the cancel button in the search screen. */
 "searchViewController.cancelButton.tilet" = "취소";
@@ -11405,9 +11489,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Revenue stat label on dashboard. */
 "storePerformanceView.revenue" = "수익";
-
-/* Title of the store performance section on the Dashboard screen */
-"storePerformanceView.title" = "성과";
 
 /* Button to navigate to Analytics Hub. */
 "storePerformanceView.viewAll" = "모든 스토어 분석 보기";
@@ -11640,9 +11721,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Menu item to dismiss the Top Performers section on the Dashboard screen */
 "topPerformersDashboardView.hideCard" = "최고 인기 상품 숨기기";
-
-/* Title of the Top performers section on the Dashboard screen */
-"topPerformersDashboardView.title" = "최고 인기 상품";
 
 /* Button to navigate to Analytics Hub. */
 "topPerformersDashboardView.viewAll" = "모든 스토어 분석 보기";

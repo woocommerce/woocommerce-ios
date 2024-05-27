@@ -240,6 +240,7 @@ extension WooAnalyticsEvent {
             static let errorDescription = "error_description"
             static let field = "field"
             static let variationsCount = "variations_count"
+            static let hasChangedData = "has_changed_data"
         }
 
         enum BulkUpdateField: String {
@@ -365,6 +366,11 @@ extension WooAnalyticsEvent {
         static func expirationDateSettingsTapped() -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .productVariationViewSubscriptionExpirationDateTapped, properties: [:])
         }
+
+        static func quantityRulesDoneButtonTapped(hasChangedData: Bool) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productVariationDetailsViewQuantityRulesDoneButtonTapped,
+                              properties: [Keys.hasChangedData: hasChangedData])
+        }
     }
 }
 
@@ -447,6 +453,11 @@ extension WooAnalyticsEvent {
         ///
         static func expirationDateSettingsTapped() -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .productDetailsViewSubscriptionExpirationDateTapped, properties: [:])
+        }
+
+        static func quantityRulesDoneButtonTapped(hasChangedData: Bool) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productDetailsViewQuantityRulesDoneButtonTapped,
+                              properties: [Keys.hasChangedData: hasChangedData])
         }
 
         /// For Woo Subscriptions products, tracks when the subscription expiration details screen is closed.

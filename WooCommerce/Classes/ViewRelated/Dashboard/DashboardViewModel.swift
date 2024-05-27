@@ -476,12 +476,22 @@ private extension DashboardViewModel {
         // This is needed because even if a user already disabled an available card and saved it, in `initialCards`
         // the same card might be set to be enabled. To respect user's setting, we need to check the saved state and re-apply it.
         let savedCards = await loadDashboardCards() ?? []
-        dashboardCards = initialCards.map { initialCard in
+        let updatedCards = initialCards.map { initialCard in
             if let savedCard = savedCards.first(where: { $0.type == initialCard.type }),
                savedCard.availability == .show && initialCard.availability == .show {
                 return initialCard.copy(enabled: savedCard.enabled)
             } else {
                 return initialCard
+            }
+        }
+
+        /// If no saved cards are found, display the default cards.
+        if savedCards.isEmpty {
+            dashboardCards = updatedCards
+        } else {
+            // Reorder dashboardCards based on original ordering in savedCards
+            dashboardCards = savedCards.compactMap { savedCard in
+                updatedCards.first(where: { $0.type == savedCard.type })
             }
         }
     }

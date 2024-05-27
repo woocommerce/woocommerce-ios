@@ -1,5 +1,3 @@
-- [*] 어둡게 모드에서 가독성을 개선하도록 주문 제품 목록의 배지 보기에서 텍스트 색상 변경. [https://github.com/woocommerce/woocommerce-ios/pull/12630]
-- [*] 주문 알림을 열 때의 충돌에 대한 예측 수정 [https://github.com/woocommerce/woocommerce-ios/pull/12643]
-- [internal] 대시보드에 인앱 피드백 카드 표시. [https://github.com/woocommerce/woocommerce-ios/pull/12636]
-- [*] 배송: 주문 배송 추가 또는 편집 시 배송 방법 선택 가능. [https://github.com/woocommerce/woocommerce-ios/pull/12688]
-
+최신 업데이트를 공개합니다!
+최신 업데이트를 통해 안정성과 성능이 향상되도록 눈에 보이지 않는 부분을 개선했습니다.
+더 좋은 서비스를 제공하려고 계속 최선을 다하여 앱을 개선하고 있습니다. 우커머스를 선택해 주셔서 감사합니다!

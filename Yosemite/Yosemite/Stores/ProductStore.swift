@@ -782,7 +782,7 @@ private extension ProductStore {
                              pageNumber: Int,
                              orderBy: ProductsRemote.OrderKey,
                              order: ProductsRemote.Order,
-                             completion: @escaping (Result<[ProductReportSegment], Error>) -> Void) {
+                             completion: @escaping (Result<[ProductReport], Error>) -> Void) {
         Task { @MainActor in
             do {
                 let segments = try await remote.loadProductReports(for: siteID,

@@ -2673,6 +2673,11 @@
 		EE8A30452B74948C001D7C66 /* OrderAttributionInfo+Origin.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8A30442B74948C001D7C66 /* OrderAttributionInfo+Origin.swift */; };
 		EE8A30472B74F3A8001D7C66 /* OrderAttributionInfo+OriginTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8A30462B74F3A8001D7C66 /* OrderAttributionInfo+OriginTests.swift */; };
 		EE8B42092BF668540077C4E7 /* MostActiveCouponRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8B42082BF668540077C4E7 /* MostActiveCouponRow.swift */; };
+		EE8B42102BF9A3270077C4E7 /* LastOrdersDashboardCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8B420F2BF9A3270077C4E7 /* LastOrdersDashboardCard.swift */; };
+		EE8B42122BF9A3340077C4E7 /* LastOrdersDashboardCardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8B42112BF9A3340077C4E7 /* LastOrdersDashboardCardViewModel.swift */; };
+		EE8B42142BFB4A8A0077C4E7 /* LastOrderDashboardRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8B42132BFB4A8A0077C4E7 /* LastOrderDashboardRow.swift */; };
+		EE8B42162BFC33670077C4E7 /* LastOrdersDashboardEmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8B42152BFC33670077C4E7 /* LastOrdersDashboardEmptyView.swift */; };
+		EE8B42182BFC5CFF0077C4E7 /* OrderStatusEnum+UI.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8B42172BFC5CFF0077C4E7 /* OrderStatusEnum+UI.swift */; };
 		EE8DCA8028BF964700F23B23 /* MockAuthentication.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8DCA7F28BF964700F23B23 /* MockAuthentication.swift */; };
 		EE94258F29DDA49E0063B499 /* StoreCreationProgressViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE94258E29DDA49E0063B499 /* StoreCreationProgressViewModelTests.swift */; };
 		EE9D030C2B86078A0077CED1 /* ProductSelector+Order.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE9D030B2B86078A0077CED1 /* ProductSelector+Order.swift */; };
@@ -5528,6 +5533,11 @@
 		EE8A30442B74948C001D7C66 /* OrderAttributionInfo+Origin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderAttributionInfo+Origin.swift"; sourceTree = "<group>"; };
 		EE8A30462B74F3A8001D7C66 /* OrderAttributionInfo+OriginTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderAttributionInfo+OriginTests.swift"; sourceTree = "<group>"; };
 		EE8B42082BF668540077C4E7 /* MostActiveCouponRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MostActiveCouponRow.swift; sourceTree = "<group>"; };
+		EE8B420F2BF9A3270077C4E7 /* LastOrdersDashboardCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LastOrdersDashboardCard.swift; sourceTree = "<group>"; };
+		EE8B42112BF9A3340077C4E7 /* LastOrdersDashboardCardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LastOrdersDashboardCardViewModel.swift; sourceTree = "<group>"; };
+		EE8B42132BFB4A8A0077C4E7 /* LastOrderDashboardRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LastOrderDashboardRow.swift; sourceTree = "<group>"; };
+		EE8B42152BFC33670077C4E7 /* LastOrdersDashboardEmptyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LastOrdersDashboardEmptyView.swift; sourceTree = "<group>"; };
+		EE8B42172BFC5CFF0077C4E7 /* OrderStatusEnum+UI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderStatusEnum+UI.swift"; sourceTree = "<group>"; };
 		EE8DCA7F28BF964700F23B23 /* MockAuthentication.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockAuthentication.swift; sourceTree = "<group>"; };
 		EE94258E29DDA49E0063B499 /* StoreCreationProgressViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreCreationProgressViewModelTests.swift; sourceTree = "<group>"; };
 		EE9D030B2B86078A0077CED1 /* ProductSelector+Order.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductSelector+Order.swift"; sourceTree = "<group>"; };
@@ -8214,6 +8224,7 @@
 				4567389B2745497C00743054 /* OrderStatusFilterViewController.swift */,
 				4567389C2745497C00743054 /* OrderStatusFilterViewController.xib */,
 				EE9D03172B89E2B10077CED1 /* OrderStatusEnum+Analytics.swift */,
+				EE8B42172BFC5CFF0077C4E7 /* OrderStatusEnum+UI.swift */,
 			);
 			path = "Order Status Filter";
 			sourceTree = "<group>";
@@ -11194,6 +11205,7 @@
 		CE85FD5120F677460080B73E /* Dashboard */ = {
 			isa = PBXGroup;
 			children = (
+				EE8B420A2BF9A1E40077C4E7 /* Orders */,
 				DE20045E2BF7090700660A72 /* ProductStock */,
 				EEC099342BF3C67200FBCF6C /* Coupons */,
 				8625C50F2BF2097E007F1901 /* Reviews */,
@@ -12589,6 +12601,17 @@
 			path = AIToneVoice;
 			sourceTree = "<group>";
 		};
+		EE8B420A2BF9A1E40077C4E7 /* Orders */ = {
+			isa = PBXGroup;
+			children = (
+				EE8B420F2BF9A3270077C4E7 /* LastOrdersDashboardCard.swift */,
+				EE8B42112BF9A3340077C4E7 /* LastOrdersDashboardCardViewModel.swift */,
+				EE8B42132BFB4A8A0077C4E7 /* LastOrderDashboardRow.swift */,
+				EE8B42152BFC33670077C4E7 /* LastOrdersDashboardEmptyView.swift */,
+			);
+			path = Orders;
+			sourceTree = "<group>";
+		};
 		EE94258D29DDA4300063B499 /* Progress */ = {
 			isa = PBXGroup;
 			children = (
@@ -13902,6 +13925,7 @@
 				26B71DB6293FE490004D8052 /* RangedDatePicker.swift in Sources */,
 				0268269F2BF59DE10036F959 /* CartProduct.swift in Sources */,
 				74460D4222289C7A00D7316A /* StorePickerCoordinator.swift in Sources */,
+				EE8B42182BFC5CFF0077C4E7 /* OrderStatusEnum+UI.swift in Sources */,
 				FEDD70AF26A7223500194C3A /* StorageEligibilityErrorInfo+Woo.swift in Sources */,
 				024073802BBAAF7400C00441 /* SimplePaymentsMigrationView.swift in Sources */,
 				DE653EAD2A70D09F00937C78 /* CreateTestOrderView.swift in Sources */,
@@ -14058,6 +14082,7 @@
 				B57C743D20F5493300EEFC87 /* AccountHeaderView.swift in Sources */,
 				02562AD2296D293D00980404 /* DomainSettingsCoordinator.swift in Sources */,
 				026826C42BF59E410036F959 /* FoundReadersView.swift in Sources */,
+				EE8B42142BFB4A8A0077C4E7 /* LastOrderDashboardRow.swift in Sources */,
 				03E471D2293FA8B2001A58AD /* BluetoothCardReaderPaymentAlertsProvider.swift in Sources */,
 				03E471CA293E0A30001A58AD /* CardPresentModalBuiltInConfigurationProgress.swift in Sources */,
 				31AD0B1126E9575F000B6391 /* CardPresentModalConnectingFailed.swift in Sources */,
@@ -15127,6 +15152,7 @@
 				450C2CBA24D3127500D570DD /* ProductReviewsTableViewCell.swift in Sources */,
 				B991D3952A4EC0F800D886ED /* CouponLineViewModel.swift in Sources */,
 				D8C2A28F231BD00500F503E9 /* ReviewsViewModel.swift in Sources */,
+				EE8B42162BFC33670077C4E7 /* LastOrdersDashboardEmptyView.swift in Sources */,
 				20E188842AD059A50053E945 /* AboutTapToPayView.swift in Sources */,
 				EE8A30452B74948C001D7C66 /* OrderAttributionInfo+Origin.swift in Sources */,
 				026D4652295D763B0037F59A /* CountryCode+FlagEmoji.swift in Sources */,
@@ -15182,6 +15208,7 @@
 				4541D88A270718F6005A9E30 /* ShippingLabelCarriersSectionViewModel.swift in Sources */,
 				77E53EBF2510C153003D385F /* ProductDownloadListViewModel.swift in Sources */,
 				B910686027F1F28F00AD0575 /* GhostableViewController.swift in Sources */,
+				EE8B42122BF9A3340077C4E7 /* LastOrdersDashboardCardViewModel.swift in Sources */,
 				AE8AEA8628084EC90054BDA2 /* MaxWidthPreference.swift in Sources */,
 				DE19BB1A26C3B5DC00AB70D9 /* ShippingLabelCustomsFormItemDetailsViewModel.swift in Sources */,
 				B6F3796C293794A000718561 /* AnalyticsHubYearToDateRangeData.swift in Sources */,
@@ -15193,6 +15220,7 @@
 				26FE09DF24DB871100B9BDF5 /* SurveyViewControllersFactory.swift in Sources */,
 				DE157E152B01F26500542A9B /* ProductFormDataModel+SubscriptionDescription.swift in Sources */,
 				02279587237A50C900787C63 /* AztecHeaderFormatBarCommand.swift in Sources */,
+				EE8B42102BF9A3270077C4E7 /* LastOrdersDashboardCard.swift in Sources */,
 				025C006B2550DE4700FAC222 /* CodeScannerViewController.swift in Sources */,
 				09885C8727C6947A00910A62 /* ProductPriceSettingsValidator.swift in Sources */,
 				02D7E7C12A4CA9030003049A /* LocalAnnouncementsProvider.swift in Sources */,

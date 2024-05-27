@@ -2282,54 +2282,48 @@ extension Networking.ProductImage {
 
 extension Networking.ProductReport {
     public func copy(
-        totals: CopiableProp<ProductReportTotals> = .copy
+        productID: CopiableProp<Int64> = .copy,
+        variationID: NullableCopiableProp<Int64> = .copy,
+        name: CopiableProp<String> = .copy,
+        imageURL: NullableCopiableProp<URL> = .copy,
+        itemsSold: CopiableProp<Int> = .copy,
+        stockQuantity: CopiableProp<Int> = .copy
     ) -> Networking.ProductReport {
-        let totals = totals ?? self.totals
+        let productID = productID ?? self.productID
+        let variationID = variationID ?? self.variationID
+        let name = name ?? self.name
+        let imageURL = imageURL ?? self.imageURL
+        let itemsSold = itemsSold ?? self.itemsSold
+        let stockQuantity = stockQuantity ?? self.stockQuantity
 
         return Networking.ProductReport(
-            totals: totals
-        )
-    }
-}
-
-extension Networking.ProductReportSegment {
-    public func copy(
-        productID: CopiableProp<Int64> = .copy,
-        productName: CopiableProp<String> = .copy,
-        subtotals: CopiableProp<ProductReportSegment.Subtotals> = .copy
-    ) -> Networking.ProductReportSegment {
-        let productID = productID ?? self.productID
-        let productName = productName ?? self.productName
-        let subtotals = subtotals ?? self.subtotals
-
-        return Networking.ProductReportSegment(
             productID: productID,
-            productName: productName,
-            subtotals: subtotals
+            variationID: variationID,
+            name: name,
+            imageURL: imageURL,
+            itemsSold: itemsSold,
+            stockQuantity: stockQuantity
         )
     }
 }
 
-extension Networking.ProductReportSegment.Subtotals {
+extension Networking.ProductReport.ExtendedInfo {
     public func copy(
-        itemsSold: CopiableProp<Int> = .copy
-    ) -> Networking.ProductReportSegment.Subtotals {
-        let itemsSold = itemsSold ?? self.itemsSold
+        name: CopiableProp<String> = .copy,
+        image: NullableCopiableProp<String> = .copy,
+        stockQuantity: CopiableProp<Int> = .copy,
+        attributes: CopiableProp<[ProductVariationAttribute]> = .copy
+    ) -> Networking.ProductReport.ExtendedInfo {
+        let name = name ?? self.name
+        let image = image ?? self.image
+        let stockQuantity = stockQuantity ?? self.stockQuantity
+        let attributes = attributes ?? self.attributes
 
-        return Networking.ProductReportSegment.Subtotals(
-            itemsSold: itemsSold
-        )
-    }
-}
-
-extension Networking.ProductReportTotals {
-    public func copy(
-        segments: CopiableProp<[ProductReportSegment]> = .copy
-    ) -> Networking.ProductReportTotals {
-        let segments = segments ?? self.segments
-
-        return Networking.ProductReportTotals(
-            segments: segments
+        return Networking.ProductReport.ExtendedInfo(
+            name: name,
+            image: image,
+            stockQuantity: stockQuantity,
+            attributes: attributes
         )
     }
 }
@@ -2380,6 +2374,7 @@ extension Networking.ProductStock {
     public func copy(
         siteID: CopiableProp<Int64> = .copy,
         productID: CopiableProp<Int64> = .copy,
+        parentID: CopiableProp<Int64> = .copy,
         name: CopiableProp<String> = .copy,
         sku: NullableCopiableProp<String> = .copy,
         manageStock: CopiableProp<Bool> = .copy,
@@ -2388,6 +2383,7 @@ extension Networking.ProductStock {
     ) -> Networking.ProductStock {
         let siteID = siteID ?? self.siteID
         let productID = productID ?? self.productID
+        let parentID = parentID ?? self.parentID
         let name = name ?? self.name
         let sku = sku ?? self.sku
         let manageStock = manageStock ?? self.manageStock
@@ -2397,6 +2393,7 @@ extension Networking.ProductStock {
         return Networking.ProductStock(
             siteID: siteID,
             productID: productID,
+            parentID: parentID,
             name: name,
             sku: sku,
             manageStock: manageStock,

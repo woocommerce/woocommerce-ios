@@ -25,8 +25,7 @@ public enum WooAPIVersion: String {
     ///
     case mark4 = "wc/v4"
 
-    /// WooCommerce Analytics from the WooCommerce Admin plugin.
-    /// Only works for WC Admin v0.22 and up.
+    /// WooCommerce Analytics.
     ///
     case wcAnalytics = "wc-analytics"
 

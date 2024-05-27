@@ -13,7 +13,7 @@ public struct POSProduct {
     public let priceWithCurrency: String
     private let currencySettings: CurrencySettings
 
-    public init(itemID: UUID, productID: Int64, name: String, price: String, currencySettings: CurrencySettings, stockQuantity: Int) {
+    public init(itemID: UUID, productID: Int64, name: String, price: String, stockQuantity: Int, currencySettings: CurrencySettings) {
         self.itemID = itemID
         self.productID = productID
         self.name = name
@@ -29,7 +29,7 @@ public struct POSProduct {
                           productID: productID,
                           name: name,
                           price: price,
-                          currencySettings: currencySettings,
-                          stockQuantity: updatedQuantity)
+                          stockQuantity: updatedQuantity,
+                          currencySettings: currencySettings)
     }
 }

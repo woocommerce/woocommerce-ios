@@ -24,7 +24,6 @@ struct DefaultProductFormTableViewModel: ProductFormTableViewModel {
 
     private let isDescriptionAIEnabled: Bool
     private let featureFlagService: FeatureFlagService
-    private let stores: StoresManager
 
 
     init(product: ProductFormDataModel,
@@ -35,8 +34,7 @@ struct DefaultProductFormTableViewModel: ProductFormTableViewModel {
          weightUnit: String? = ServiceLocator.shippingSettingsService.weightUnit,
          dimensionUnit: String? = ServiceLocator.shippingSettingsService.dimensionUnit,
          isDescriptionAIEnabled: Bool,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
-         stores: StoresManager = ServiceLocator.stores) {
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.currency = currency
         self.currencyFormatter = currencyFormatter
         self.shippingValueLocalizer = shippingValueLocalizer
@@ -44,7 +42,6 @@ struct DefaultProductFormTableViewModel: ProductFormTableViewModel {
         self.dimensionUnit = dimensionUnit
         self.isDescriptionAIEnabled = isDescriptionAIEnabled
         self.featureFlagService = featureFlagService
-        self.stores = stores
         configureSections(product: product, actionsFactory: actionsFactory)
     }
 }

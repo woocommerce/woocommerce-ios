@@ -467,9 +467,14 @@ private extension DashboardViewModel {
             }
         }
 
-        // Reorder dashboardCards based on original ordering in savedCards
-        dashboardCards = savedCards.compactMap { savedCard in
-            updatedCards.first(where: { $0.type == savedCard.type })
+        /// If no saved cards are found, display the default cards.
+        if savedCards.isEmpty {
+            dashboardCards = updatedCards
+        } else {
+            // Reorder dashboardCards based on original ordering in savedCards
+            dashboardCards = savedCards.compactMap { savedCard in
+                updatedCards.first(where: { $0.type == savedCard.type })
+            }
         }
     }
 

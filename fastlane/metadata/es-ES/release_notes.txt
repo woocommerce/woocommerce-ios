@@ -1,5 +1,3 @@
-- [*] Cambia el color del texto en la vista de logotipo de la lista de productos del pedido para solucionar la legibilidad del modo oscuro. [https://github.com/woocommerce/woocommerce-ios/pull/12630]
-- [*] Solución posible a un error que se produce al abrir notificaciones sobre un pedido [https://github.com/woocommerce/woocommerce-ios/pull/12643]
-- [internal] Muestra la tarjeta de valoraciones incluida en la aplicación en el panel de administración. [https://github.com/woocommerce/woocommerce-ios/pull/12636]
-- [*] Envíos: ahora se puede seleccionar un método de envío al añadir o editar el envío para un pedido. [https://github.com/woocommerce/woocommerce-ios/pull/12688]
-
+¡Estamos emocionados con el lanzamiento de las últimas actualizaciones!
+Nuestra última actualización hace una puesta a punto de todos los procesos para mejorar la estabilidad y el rendimiento.
+Nos comprometemos a seguir mejorando nuestra aplicación para ofrecerte el mejor servicio. Gracias por elegir WooCommerce.

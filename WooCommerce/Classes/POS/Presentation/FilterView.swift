@@ -10,6 +10,7 @@ struct FilterView: View {
     var body: some View {
         Button("Filter") {
             // TODO: https://github.com/woocommerce/woocommerce-ios/issues/12761
+            viewModel.showFilters()
         }
         .frame(maxWidth: .infinity, idealHeight: 120)
         .font(.title2)

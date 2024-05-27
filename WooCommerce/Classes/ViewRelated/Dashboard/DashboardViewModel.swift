@@ -56,7 +56,9 @@ final class DashboardViewModel: ObservableObject {
 
     @Published private(set) var jetpackBannerVisibleFromAppSettings = false
 
-    @Published private(set) var hasOrders: Bool = true
+    @Published private(set) var hasOrders = true
+
+    @Published private(set) var isEligibleForInbox = false
 
     @Published var showingCustomization = false
 
@@ -69,6 +71,7 @@ final class DashboardViewModel: ObservableObject {
     private let userDefaults: UserDefaults
     private let themeInstaller: ThemeInstaller
     private let storageManager: StorageManagerType
+    private let inboxEligibilityChecker: InboxEligibilityChecker
     private var subscriptions: Set<AnyCancellable> = []
 
     var siteURLToShare: URL? {
@@ -97,7 +100,8 @@ final class DashboardViewModel: ObservableObject {
          analytics: Analytics = ServiceLocator.analytics,
          userDefaults: UserDefaults = .standard,
          themeInstaller: ThemeInstaller = DefaultThemeInstaller(),
-         usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter = StoreStatsUsageTracksEventEmitter()) {
+         usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter = StoreStatsUsageTracksEventEmitter(),
+         inboxEligibilityChecker: InboxEligibilityChecker = InboxEligibilityUseCase()) {
         self.siteID = siteID
         self.stores = stores
         self.storageManager = storageManager
@@ -119,6 +123,7 @@ final class DashboardViewModel: ObservableObject {
         self.lastOrdersCardViewModel = LastOrdersDashboardCardViewModel(siteID: siteID)
 
         self.themeInstaller = themeInstaller
+        self.inboxEligibilityChecker = inboxEligibilityChecker
         self.inAppFeedbackCardViewModel.onFeedbackGiven = { [weak self] feedback in
             self?.showingInAppFeedbackSurvey = feedback == .didntLike
             self?.onInAppFeedbackCardAction()
@@ -127,6 +132,7 @@ final class DashboardViewModel: ObservableObject {
         setupDashboardCards()
         installPendingThemeIfNeeded()
         observeDashboardCardsAndReload()
+        checkInboxEligibility()
     }
 
     /// Must be called by the `View` during the `onAppear()` event. This will
@@ -222,16 +228,16 @@ final class DashboardViewModel: ObservableObject {
 
     func refreshDashboardCards() {
         storeOnboardingViewModel.$canShowInDashboard
-            .combineLatest(blazeCampaignDashboardViewModel.$canShowInDashboard, $hasOrders)
+            .combineLatest(blazeCampaignDashboardViewModel.$canShowInDashboard, $hasOrders, $isEligibleForInbox)
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] canShowOnboarding, canShowBlaze, hasOrders in
+            .sink { [weak self] canShowOnboarding, canShowBlaze, hasOrders, isEligibleForInbox in
                 guard let self else { return }
                 Task {
                     await self.updateDashboardCards(canShowOnboarding: canShowOnboarding,
                                                     canShowBlaze: canShowBlaze,
                                                     canShowAnalytics: hasOrders,
-                                                    canShowLastOrders: hasOrders
-                    )
+                                                    canShowLastOrders: hasOrders,
+                                                    canShowInbox: isEligibleForInbox)
                 }
             }
             .store(in: &subscriptions)
@@ -302,7 +308,7 @@ private extension DashboardViewModel {
                         await self?.reloadBlazeCampaignView()
                     }
                 case .inbox:
-                    guard featureFlagService.isFeatureFlagEnabled(.dynamicDashboardM2) else {
+                    guard featureFlagService.isFeatureFlagEnabled(.dynamicDashboardM2), isEligibleForInbox else {
                         return
                     }
                     group.addTask { [weak self] in
@@ -376,6 +382,12 @@ private extension DashboardViewModel {
         localAnnouncementViewModel = viewModel
     }
 
+    func checkInboxEligibility() {
+        inboxEligibilityChecker.isEligibleForInbox(siteID: siteID) { [weak self] isEligible in
+            self?.isEligibleForInbox = isEligible
+        }
+    }
+
     func configureOrdersResultController() {
         ordersResultsController.onDidChangeContent = { [weak self] in
             self?.updateResults()
@@ -418,7 +430,8 @@ private extension DashboardViewModel {
     func generateDefaultCards(canShowOnboarding: Bool,
                               canShowBlaze: Bool,
                               canShowAnalytics: Bool,
-                              canShowLastOrders: Bool) -> [DashboardCard] {
+                              canShowLastOrders: Bool,
+                              canShowInbox: Bool) -> [DashboardCard] {
         var cards = [DashboardCard]()
 
         // Onboarding card.
@@ -446,7 +459,9 @@ private extension DashboardViewModel {
         let dynamicDashboardM2 = featureFlagService.isFeatureFlagEnabled(.dynamicDashboardM2)
         if dynamicDashboardM2 {
             // TODO: check eligibility and update `enabled` accordingly
-            cards.append(DashboardCard(type: .inbox, availability: .show, enabled: false))
+            cards.append(DashboardCard(type: .inbox,
+                                       availability: canShowInbox ? .show : .hide,
+                                       enabled: canShowInbox))
             cards.append(DashboardCard(type: .reviews, availability: .show, enabled: false))
             cards.append(DashboardCard(type: .coupons, availability: .show, enabled: false))
             cards.append(DashboardCard(type: .stock, availability: .show, enabled: false))
@@ -464,13 +479,15 @@ private extension DashboardViewModel {
     func updateDashboardCards(canShowOnboarding: Bool,
                               canShowBlaze: Bool,
                               canShowAnalytics: Bool,
-                              canShowLastOrders: Bool) async {
+                              canShowLastOrders: Bool,
+                              canShowInbox: Bool) async {
 
         // First, generate latest cards state based on current canShow states
         let initialCards = generateDefaultCards(canShowOnboarding: canShowOnboarding,
                                                 canShowBlaze: canShowBlaze,
                                                 canShowAnalytics: canShowAnalytics,
-                                                canShowLastOrders: canShowLastOrders)
+                                                canShowLastOrders: canShowLastOrders,
+                                                canShowInbox: canShowInbox)
 
         // Next, get saved cards and preserve existing enabled state for all available cards.
         // This is needed because even if a user already disabled an available card and saved it, in `initialCards`

@@ -129,7 +129,7 @@ private extension ProductFormTableViewDataSource {
                 imageTintColor: .text,
                 numberOfLinesForTitle: 0,
                 numberOfLinesForText: 0,
-                isActionable: true,: i
+                isActionable: true,
                 showsDisclosureIndicator: false,
                 showsSeparator: true
             )

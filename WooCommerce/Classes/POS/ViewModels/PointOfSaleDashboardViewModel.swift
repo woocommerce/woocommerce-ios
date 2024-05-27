@@ -1,8 +1,8 @@
 import SwiftUI
 
 final class PointOfSaleDashboardViewModel: ObservableObject {
-    @Published var products: [POSProduct]
-    @Published var productsInCart: [CartProduct] = []
+    @Published private(set) var products: [POSProduct]
+    @Published private(set) var productsInCart: [CartProduct] = []
 
     @Published var showsCardReaderSheet: Bool = false
     @Published var showsFilterSheet: Bool = false

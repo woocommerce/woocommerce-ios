@@ -5,10 +5,8 @@ struct PointOfSaleEntryPointView: View {
     @StateObject private var viewModel: PointOfSaleDashboardViewModel
 
     private let hideAppTabBar: ((Bool) -> Void)
-    private let currencySettings: CurrencySettings
 
     init(currencySettings: CurrencySettings, hideAppTabBar: @escaping ((Bool) -> Void)) {
-        self.currencySettings = currencySettings
         self.hideAppTabBar = hideAppTabBar
 
         _viewModel = StateObject(wrappedValue: PointOfSaleDashboardViewModel(

@@ -403,6 +403,41 @@ final class DashboardViewModelTests: XCTestCase {
             viewModel.hasOrders == true
         }
     }
+
+    func test_generated_default_cards_are_as_expected() {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isDynamicDashboardM2Enabled: true)
+
+        let viewModel = DashboardViewModel(siteID: sampleSiteID, stores: stores, featureFlags: featureFlagService)
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+            case let .loadDashboardCards(_, onCompletion):
+                onCompletion([])
+            default:
+                break
+            }
+        }
+
+        let expectedCards = [DashboardCard(type: .onboarding, availability: .show, enabled: true),
+                             DashboardCard(type: .performance, availability: .unavailable, enabled: false),
+                             DashboardCard(type: .topPerformers, availability: .unavailable, enabled: false),
+                             DashboardCard(type: .blaze, availability: .hide, enabled: false),
+                             DashboardCard(type: .inbox, availability: .show, enabled: false),
+                             DashboardCard(type: .reviews, availability: .show, enabled: false),
+                             DashboardCard(type: .coupons, availability: .show, enabled: false),
+                             DashboardCard(type: .stock, availability: .show, enabled: false)]
+
+        // When
+        viewModel.refreshDashboardCards()
+
+        // Then
+        waitUntil {
+            viewModel.dashboardCards.isNotEmpty
+        }
+
+        XCTAssertEqual(viewModel.dashboardCards.count, 8)
+        XCTAssertEqual(viewModel.dashboardCards, expectedCards)
+    }
 }
 
 private extension DashboardViewModelTests {

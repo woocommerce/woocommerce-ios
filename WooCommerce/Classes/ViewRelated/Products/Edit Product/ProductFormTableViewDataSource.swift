@@ -121,21 +121,21 @@ private extension ProductFormTableViewDataSource {
             }
             let viewModel = ImageAndTitleAndTextTableViewCell.ViewModel(
                 title: Localization.wpComStoreNotPublicTitle,
-                    titleFontStyle: .body,
-                    titleTintColor: .text,
+                titleFontStyle: .body,
+                titleTintColor: .text,
                 text: Localization.wpComStoreNotPublicText,
-                    textTintColor: .textLink,
-                    image: .infoOutlineImage,
-                    imageTintColor: .text,
-                    numberOfLinesForTitle: 0,
-                    numberOfLinesForText: 0,
-                    isActionable: true,
-                    showsDisclosureIndicator: false,
-                    showsSeparator: true
-                )
+                textTintColor: .textLink,
+                image: .infoOutlineImage,
+                imageTintColor: .text,
+                numberOfLinesForTitle: 0,
+                numberOfLinesForText: 0,
+                isActionable: true,: i
+                showsDisclosureIndicator: false,
+                showsSeparator: true
+            )
 
-                cell.updateUI(viewModel: viewModel)
-                cell.contentView.backgroundColor = .warningBackground
+            cell.updateUI(viewModel: viewModel)
+            cell.contentView.backgroundColor = .warningBackground
             return
         }
 

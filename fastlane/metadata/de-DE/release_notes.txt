@@ -1,5 +1,3 @@
-- [*] Textfarbe der Badge-Ansicht der Liste der bestellten Produkte ändern, damit sie auch im dunklen Modus gut lesbar ist. [https://github.com/woocommerce/woocommerce-ios/pull/12630]
-- [*] Spekulative Fehlerbehebung eines Absturzes, der beim Öffnen von Bestellbenachrichtigungen auftritt [https://github.com/woocommerce/woocommerce-ios/pull/12643]
-- [intern] Karte mit In App-Feedback im Dashboard anzeigen. [https://github.com/woocommerce/woocommerce-ios/pull/12636]
-- [*] Versand: Beim Hinzufügen oder Bearbeiten von Versandinformationen zu einer Bestellung kann jetzt eine Versandmethode ausgewählt werden. [https://github.com/woocommerce/woocommerce-ios/pull/12688]
-
+Wir freuen uns, die neuesten Updates veröffentlichen zu können!
+Unser neuestes Update beinhaltet grundlegende Verbesserungen, die sowohl die Stabilität als auch die Performance steigern.
+Unser Ziel ist es, unsere App und dein Erlebnis stets weiter zu verbessern. Danke, dass du dich für WooCommerce entschieden hast!

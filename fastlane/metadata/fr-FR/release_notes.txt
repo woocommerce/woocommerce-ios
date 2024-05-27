@@ -1,5 +1,3 @@
-- [*] Changement de la couleur du texte du badge dans la liste des produits de la commande pour corriger la lisibilité en mode sombre. [https://github.com/woocommerce/woocommerce-ios/pull/12630]
-- [*] Correction spéculative d’un incident lors de l’ouverture des notifications de la commande [https://github.com/woocommerce/woocommerce-ios/pull/12643]
-- [interne] Affichage de la carte de commentaires in-app dans le tableau de bord. [https://github.com/woocommerce/woocommerce-ios/pull/12636]
-- [*] Expédition : une méthode d’expédition peut désormais être sélectionnée lors de l’ajout ou de la modification de l’expédition d’une commande. [https://github.com/woocommerce/woocommerce-ios/pull/12688]
-
+Les dernières mises à jour sont lancées, pour notre plus grande joie !
+Notre dernière mise à jour va sous le capot pour améliorer la stabilité et les performances.
+Nous nous engageons à améliorer sans cesse notre application pour mieux vous servir. Merci d’avoir choisi WooCommerce !

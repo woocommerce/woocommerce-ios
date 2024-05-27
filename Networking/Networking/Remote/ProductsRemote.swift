@@ -469,8 +469,8 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
         let path = Path.productReports
         let parameters: [String: Any] = [
             ParameterKey.products: productIDs,
-            ParameterKey.before: dateFormatter.string(from: earliestDateToInclude),
-            ParameterKey.after: dateFormatter.string(from: latestDateToInclude),
+            ParameterKey.after: dateFormatter.string(from: earliestDateToInclude),
+            ParameterKey.before: dateFormatter.string(from: latestDateToInclude),
             ParameterKey.page: String(pageNumber),
             ParameterKey.perPage: String(pageSize),
             ParameterKey.order: order.value,
@@ -503,8 +503,8 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
         let parameters: [String: Any] = [
             ParameterKey.products: productIDs,
             ParameterKey.variations: variationIDs,
-            ParameterKey.before: dateFormatter.string(from: earliestDateToInclude),
-            ParameterKey.after: dateFormatter.string(from: latestDateToInclude),
+            ParameterKey.after: dateFormatter.string(from: earliestDateToInclude),
+            ParameterKey.before: dateFormatter.string(from: latestDateToInclude),
             ParameterKey.page: String(pageNumber),
             ParameterKey.perPage: String(pageSize),
             ParameterKey.order: order.value,

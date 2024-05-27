@@ -22,11 +22,13 @@ final class DashboardViewModelTests: XCTestCase {
     private var analytics: Analytics!
     private var analyticsProvider: MockAnalyticsProvider!
     private var stores: MockStoresManager!
+    private var userDefaults: UserDefaults!
 
-    override func setUp() {
+    override func setUpWithError() throws {
         analyticsProvider = MockAnalyticsProvider()
         analytics = WooAnalytics(analyticsProvider: analyticsProvider)
         stores = MockStoresManager(sessionManager: .makeForTesting())
+        userDefaults = try XCTUnwrap(UserDefaults(suiteName: "DashboardViewModelTests"))
     }
 
     func test_default_statsVersion_is_v4() {
@@ -404,6 +406,8 @@ final class DashboardViewModelTests: XCTestCase {
         }
     }
 
+    // MARK: Dashboard cards
+
     func test_generated_default_cards_are_as_expected_with_m2_feature_flag_enabled() {
         // Given
         let featureFlagService = MockFeatureFlagService(isDynamicDashboardM2Enabled: true)
@@ -499,6 +503,32 @@ final class DashboardViewModelTests: XCTestCase {
 
         XCTAssertTrue(viewModel.dashboardCards.contains(expectedPerformanceCard))
         XCTAssertTrue(viewModel.dashboardCards.contains(expectedTopPerformersCard))
+    }
+
+    func test_dashboard_cards_has_disabled_onboarding_card_if_all_tasks_are_completed() throws {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isDynamicDashboardM2Enabled: false)
+        userDefaults[.completedAllStoreOnboardingTasks] = true
+
+        let viewModel = DashboardViewModel(siteID: sampleSiteID, stores: stores, featureFlags: featureFlagService, userDefaults: userDefaults)
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+            case let .loadDashboardCards(_, onCompletion):
+                onCompletion([])
+            default:
+                break
+            }
+        }
+
+        // When
+        viewModel.refreshDashboardCards()
+
+        // Then
+        waitUntil {
+            viewModel.dashboardCards.isNotEmpty
+        }
+
+        XCTAssertFalse(viewModel.dashboardCards.first(where: {$0.type == .onboarding })!.enabled)
     }
 
     func test_dashboard_cards_is_loaded_from_storage_if_they_exist() {

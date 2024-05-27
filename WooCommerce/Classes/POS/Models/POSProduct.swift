@@ -11,7 +11,7 @@ public struct POSProduct {
     // We might want to use Decimal type for consistency with the rest of the app
     public let stockQuantity: Int
     public let priceWithCurrency: String
-    public let currencySettings: CurrencySettings
+    private let currencySettings: CurrencySettings
 
     public init(itemID: UUID, productID: Int64, name: String, price: String, currencySettings: CurrencySettings, stockQuantity: Int) {
         self.itemID = itemID
@@ -22,5 +22,14 @@ public struct POSProduct {
         self.currencySettings = currencySettings
         let currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
         self.priceWithCurrency = currencyFormatter.formatAmount(price, with: currencySettings.currencyCode.rawValue) ?? String()
+    }
+
+    public func createWithUpdatedQuantity(_ updatedQuantity: Int) -> POSProduct {
+        return POSProduct(itemID: itemID,
+                          productID: productID,
+                          name: name,
+                          price: price,
+                          currencySettings: currencySettings,
+                          stockQuantity: updatedQuantity)
     }
 }

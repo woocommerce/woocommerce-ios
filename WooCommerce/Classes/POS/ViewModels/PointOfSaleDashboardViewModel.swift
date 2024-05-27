@@ -39,12 +39,7 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
             return
         }
         let updatedQuantity = product.stockQuantity - 1
-        let updatedProduct = POSProduct(itemID: product.itemID,
-                                        productID: product.productID,
-                                        name: product.name,
-                                        price: product.price,
-                                        currencySettings: product.currencySettings,
-                                        stockQuantity: updatedQuantity)
+        let updatedProduct = product.createWithUpdatedQuantity(updatedQuantity)
         products[index] = updatedProduct
     }
 
@@ -53,12 +48,7 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
             return
         }
         let updatedQuantity = product.stockQuantity + 1
-        let updatedProduct = POSProduct(itemID: product.itemID,
-                                        productID: product.productID,
-                                        name: product.name,
-                                        price: product.price,
-                                        currencySettings: product.currencySettings,
-                                        stockQuantity: updatedQuantity)
+        let updatedProduct = product.createWithUpdatedQuantity(updatedQuantity)
         products[index] = updatedProduct
     }
 

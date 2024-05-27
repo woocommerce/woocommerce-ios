@@ -505,7 +505,7 @@ final class DashboardViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.dashboardCards.contains(expectedTopPerformersCard))
     }
 
-    func test_dashboard_cards_has_disabled_onboarding_card_if_all_tasks_are_completed() throws {
+    func test_dashboard_cards_has_disabled_onboarding_card_if_all_tasks_are_completed() {
         // Given
         let featureFlagService = MockFeatureFlagService(isDynamicDashboardM2Enabled: false)
         userDefaults[.completedAllStoreOnboardingTasks] = true

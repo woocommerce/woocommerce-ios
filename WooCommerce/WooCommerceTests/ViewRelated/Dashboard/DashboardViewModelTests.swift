@@ -465,15 +465,7 @@ final class DashboardViewModelTests: XCTestCase {
         let insertOrder = Order.fake().copy(siteID: sampleSiteID)
         storage.insertSampleOrder(readOnlyOrder: insertOrder)
         let viewModel = DashboardViewModel(siteID: sampleSiteID, stores: stores, storageManager: storage, featureFlags: featureFlagService)
-
-        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
-            switch action {
-            case let .loadDashboardCards(_, onCompletion):
-                onCompletion([])
-            default:
-                break
-            }
-        }
+        mockLoadDashboardCards()
 
         // The expected cards need to be availability: .show and enabled: true
         let expectedPerformanceCard = DashboardCard(type: .performance, availability: .show, enabled: true)

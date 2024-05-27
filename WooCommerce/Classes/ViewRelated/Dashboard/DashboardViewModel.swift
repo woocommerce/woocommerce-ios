@@ -132,7 +132,6 @@ final class DashboardViewModel: ObservableObject {
         setupDashboardCards()
         installPendingThemeIfNeeded()
         observeDashboardCardsAndReload()
-        checkInboxEligibility()
     }
 
     /// Must be called by the `View` during the `onAppear()` event. This will
@@ -162,6 +161,7 @@ final class DashboardViewModel: ObservableObject {
     ///
     @MainActor
     func syncDashboardEssentialData() async {
+        checkInboxEligibility()
         await withTaskGroup(of: Void.self) { group in
             group.addTask { [weak self] in
                 guard let self else { return }

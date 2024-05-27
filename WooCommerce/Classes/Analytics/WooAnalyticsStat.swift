@@ -784,6 +784,10 @@ enum WooAnalyticsStat: String {
     case productSubscriptionExpirationDoneButtonTapped = "product_subscription_expiration_done_button_tapped"
     case productSubscriptionFreeTrialDoneButtonTapped = "product_subscription_free_trial_done_button_tapped"
 
+    // MARK: Quantity Rules product Events
+    case productDetailsViewQuantityRulesDoneButtonTapped = "product_detail_quantity_rules_done_button_tapped"
+    case productVariationDetailsViewQuantityRulesDoneButtonTapped = "product_variation_quantity_rules_done_button_tapped"
+
 
     // MARK: Product Images Events
     //

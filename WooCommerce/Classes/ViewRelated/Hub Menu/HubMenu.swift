@@ -34,9 +34,9 @@ struct HubMenu: View {
                 .navigationDestination(isPresented: $viewModel.showingCoupons) {
                     couponListView
                 }
-        }
-        .onAppear {
-            viewModel.setupMenuElements()
+                .onAppear {
+                    viewModel.setupMenuElements()
+                }
         }
     }
 
@@ -82,57 +82,52 @@ private extension HubMenu {
                 .disabled(!viewModel.switchStoreEnabled)
             }
 
+            // Point of Sale
+            if let menu = viewModel.posElement {
+                Section {
+                    menuItemView(menu: menu, chevron: .enteringMode)
+                }
+            }
+
             // Settings Section
             Section(Localization.settings) {
                 ForEach(viewModel.settingsElements, id: \.id) { menu in
-                    Button {
-                        handleTap(menu: menu)
-                    } label: {
-                        Row(title: menu.title,
-                            titleBadge: nil,
-                            iconBadge: menu.iconBadge,
-                            description: menu.description,
-                            icon: .local(menu.icon),
-                            chevron: .leading)
-                        .foregroundColor(Color(menu.iconColor))
-                    }
-                    .accessibilityIdentifier(menu.accessibilityIdentifier)
-                    .overlay {
-                        NavigationLink(value: menu.id) {
-                            EmptyView()
-                        }
-                        .opacity(0)
-                    }
+                    menuItemView(menu: menu)
                 }
             }
 
             // General Section
             Section(Localization.general) {
                 ForEach(viewModel.generalElements, id: \.id) { menu in
-                    Button {
-                        handleTap(menu: menu)
-                    } label: {
-                        Row(title: menu.title,
-                            titleBadge: nil,
-                            iconBadge: menu.iconBadge,
-                            description: menu.description,
-                            icon: .local(menu.icon),
-                            chevron: .leading)
-                        .foregroundColor(Color(menu.iconColor))
-                    }
-                    .accessibilityIdentifier(menu.accessibilityIdentifier)
-                    .overlay {
-                        NavigationLink(value: menu.id) {
-                            EmptyView()
-                        }
-                        .opacity(0)
-                    }
+                    menuItemView(menu: menu)
                 }
             }
         }
         .listStyle(.insetGrouped)
         .background(Color(.listBackground))
         .accentColor(Color(.listSelectedBackground))
+    }
+
+    @ViewBuilder
+    func menuItemView(menu: HubMenuItem, chevron: Row.Chevron = .leading) -> some View {
+        Button {
+            handleTap(menu: menu)
+        } label: {
+            Row(title: menu.title,
+                titleBadge: nil,
+                iconBadge: menu.iconBadge,
+                description: menu.description,
+                icon: .local(menu.icon),
+                chevron: chevron)
+            .foregroundColor(Color(menu.iconColor))
+        }
+        .accessibilityIdentifier(menu.accessibilityIdentifier)
+        .overlay {
+            NavigationLink(value: menu.id) {
+                EmptyView()
+            }
+            .opacity(0)
+        }
     }
 
     @ViewBuilder
@@ -167,7 +162,7 @@ private extension HubMenu {
             case HubMenuViewModel.Customers.id:
                 CustomersListView(viewModel: .init(siteID: viewModel.siteID))
             case HubMenuViewModel.PointOfSaleEntryPoint.id:
-                PointOfSaleEntryPointView(hideAppTabBar: { isHidden in
+                PointOfSaleEntryPointView(currencySettings: ServiceLocator.currencySettings, hideAppTabBar: { isHidden in
                     AppDelegate.shared.setShouldHideTabBar(isHidden)
                 })
             default:
@@ -238,6 +233,7 @@ private extension HubMenu {
             case none
             case down
             case leading
+            case enteringMode
 
             var asset: UIImage {
                 switch self {
@@ -247,6 +243,9 @@ private extension HubMenu {
                     return .chevronDownImage
                 case .leading:
                     return .chevronImage
+                case .enteringMode:
+                    return .playSquareImage
+                        .withTintColor(.secondaryLabel, renderingMode: .alwaysTemplate)
                 }
             }
         }

@@ -296,7 +296,15 @@ struct OrderForm: View {
                             Spacer(minLength: Layout.sectionSpacing)
 
                             Group {
-                                if let title = viewModel.multipleLinesMessage {
+                                OrderShippingSection(viewModel: viewModel)
+                                    .disabled(viewModel.shouldShowNonEditableIndicators)
+                                Spacer(minLength: Layout.sectionSpacing)
+                            }
+                            .renderedIf(viewModel.shippingLineRows.isNotEmpty && viewModel.multipleShippingLinesEnabled)
+
+                            Group {
+                                if let title = viewModel.multipleLinesMessage,
+                                   !viewModel.multipleShippingLinesEnabled {
                                     MultipleLinesMessage(title: title)
                                     Spacer(minLength: Layout.sectionSpacing)
                                 }

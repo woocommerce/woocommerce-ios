@@ -61,6 +61,8 @@ struct ApplicationPasswordTutorial: View {
     ///
     let errorDescription: String
 
+    @ScaledMetric private var scale: CGFloat = 1.0
+
     var body: some View {
         VStack(spacing: .zero) {
             ScrollView {
@@ -81,6 +83,7 @@ struct ApplicationPasswordTutorial: View {
                 Image(uiImage: .appPasswordTutorialImage)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
+                    .frame(maxWidth: Layout.imageMaxWidth * scale)
 
                 Text(Localization.tutorial2)
                     .bodyStyle(opacity: 0.8)
@@ -142,6 +145,7 @@ private extension ApplicationPasswordTutorial {
 
     enum Layout {
         static let bottomButtonsSpacing: CGFloat = 16.0
+        static let imageMaxWidth: CGFloat = 400
     }
 }
 

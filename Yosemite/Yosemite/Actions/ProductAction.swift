@@ -203,7 +203,53 @@ public enum ProductAction: Action {
                           stockType: String,
                           pageNumber: Int,
                           pageSize: Int,
-                          orderBy: ProductsRemote.OrderKey,
                           order: ProductsRemote.Order,
                           completion: (Result<[ProductStock], Error>) -> Void)
+
+    /// Fetches product reports for the given product ID of a site in a given time range.
+    /// - Parameter siteID: Site ID to fetch stock for.
+    /// - Parameter productIDs: IDs of the products of interest.
+    /// - Parameter timeZone: The timezone to consider for the given time range.
+    /// - Parameter earliestDateToInclude: The earliest date for the product reports.
+    /// - Parameter latestDateToInclude: The latest date for the product reports.
+    /// - Parameter pageNumber: The index of the content page to query.
+    /// - Parameter pageSize: The max amount of items to return per page.
+    /// - Parameter orderBy: The key to sort returned items.
+    /// - Parameter order: Whether to sort returned items ASC or DESC.
+    /// - Parameter completion: Closure to trigger when fetching completes.
+    ///
+    case fetchProductReports(siteID: Int64,
+                             productIDs: [Int64],
+                             timeZone: TimeZone,
+                             earliestDateToInclude: Date,
+                             latestDateToInclude: Date,
+                             pageSize: Int,
+                             pageNumber: Int,
+                             orderBy: ProductsRemote.OrderKey,
+                             order: ProductsRemote.Order,
+                             completion: (Result<[ProductReport], Error>) -> Void)
+
+    /// Fetches variation reports for the given product IDs and variation IDs in a given time range.
+    /// - Parameter siteID: Site ID to fetch stock for.
+    /// - Parameter productIDs: IDs of the products of interest.
+    /// - Parameter timeZone: The timezone to consider for the given time range.
+    /// - Parameter earliestDateToInclude: The earliest date for the product reports.
+    /// - Parameter latestDateToInclude: The latest date for the product reports.
+    /// - Parameter pageNumber: The index of the content page to query.
+    /// - Parameter pageSize: The max amount of items to return per page.
+    /// - Parameter orderBy: The key to sort returned items.
+    /// - Parameter order: Whether to sort returned items ASC or DESC.
+    /// - Parameter completion: Closure to trigger when fetching completes.
+    ///
+    case fetchVariationReports(siteID: Int64,
+                               productIDs: [Int64],
+                               variationIDs: [Int64],
+                               timeZone: TimeZone,
+                               earliestDateToInclude: Date,
+                               latestDateToInclude: Date,
+                               pageSize: Int,
+                               pageNumber: Int,
+                               orderBy: ProductsRemote.OrderKey,
+                               order: ProductsRemote.Order,
+                               completion: (Result<[ProductReport], Error>) -> Void)
 }

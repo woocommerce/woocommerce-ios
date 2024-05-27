@@ -2014,15 +2014,23 @@ private extension ProductFormViewController {
 //
 private extension ProductFormViewController {
     func showQuantityRules() {
-        let quantityRulesViewModel = QuantityRulesViewModel(product: product) { [weak self] minQuantity, maxQuantity, groupOf in
-            self?.navigationController?.popViewController(animated: true)
-            self?.viewModel.updateQuantityRules(minQuantity: minQuantity, maxQuantity: maxQuantity, groupOf: groupOf)
+        let quantityRulesViewModel = QuantityRulesViewModel(product: product) { [weak self] rules, hasUnsavedChanges in
+            defer {
+                self?.navigationController?.popViewController(animated: true)
+            }
+
+            self?.eventLogger.logQuantityRulesDoneButtonTapped(hasUnsavedChanges: hasUnsavedChanges)
+
+            guard hasUnsavedChanges else {
+                return
+            }
+
+            self?.viewModel.updateQuantityRules(minQuantity: rules.minQuantity, maxQuantity: rules.maxQuantity, groupOf: rules.groupOf)
         }
         let viewController = QuantityRulesViewController(viewModel: quantityRulesViewModel)
         show(viewController, sender: self)
     }
 }
-
 
 // MARK: Constants
 //

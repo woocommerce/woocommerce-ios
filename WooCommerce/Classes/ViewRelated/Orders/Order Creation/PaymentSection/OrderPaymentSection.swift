@@ -94,13 +94,19 @@ private extension OrderPaymentSection {
     }
 
     @ViewBuilder var existingShippingRow: some View {
-        TitleAndValueRow(title: Localization.shippingTotal,
-                         titleSuffixImage: (image: rowsEditImage, color: Color(.primary)),
-                         value: .content(viewModel.shippingTotal),
-                         selectionStyle: editableRowsSelectionStyle) {
-            shouldShowShippingLineDetails = true
+        if viewModel.isShippingTotalEditable {
+            TitleAndValueRow(title: Localization.shippingTotal,
+                             titleSuffixImage: (image: rowsEditImage, color: Color(.primary)),
+                             value: .content(viewModel.shippingTotal),
+                             selectionStyle: editableRowsSelectionStyle) {
+                shouldShowShippingLineDetails = true
+            }
+            .renderedIf(viewModel.shouldShowShippingTotal)
+        } else {
+            TitleAndValueRow(title: Localization.shippingTotal,
+                             value: .content(viewModel.shippingTotal))
+            .renderedIf(viewModel.shouldShowShippingTotal)
         }
-        .renderedIf(viewModel.shouldShowShippingTotal)
     }
 
     @ViewBuilder var productsRow: some View {

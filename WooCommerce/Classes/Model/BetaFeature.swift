@@ -1,3 +1,4 @@
+import Combine
 import Storage
 import protocol WooFoundation.WooAnalyticsEventPropertyType
 
@@ -52,22 +53,6 @@ extension BetaFeature {
         }
     }
 
-    var isAvailable: Bool {
-        switch self {
-        case .inAppPurchases:
-            return ServiceLocator.featureFlagService.isFeatureFlagEnabled(.inAppPurchasesDebugMenu)
-        case .pointOfSale:
-            return ServiceLocator.featureFlagService.isFeatureFlagEnabled(.displayPointOfSaleToggle) &&
-            UIDevice.current.userInterfaceIdiom == .pad
-        default:
-            return true
-        }
-    }
-
-    static var availableFeatures: [Self] {
-        allCases.filter(\.isAvailable)
-    }
-
     func analyticsProperties(toggleState enabled: Bool) -> [String: WooAnalyticsEventPropertyType] {
         var properties = ["state": enabled ? "on" : "off"]
         if analyticsStat == .settingsBetaFeatureToggled {
@@ -79,10 +64,11 @@ extension BetaFeature {
 
 extension GeneralAppSettingsStorage {
     func betaFeatureEnabled(_ feature: BetaFeature) -> Bool {
-        guard feature.isAvailable else {
-            return false
-        }
-        return value(for: feature.settingsKey)
+        value(for: feature.settingsKey)
+    }
+
+    func betaFeatureEnabledPublisher(_ feature: BetaFeature) -> AnyPublisher<Bool, Never> {
+        publisher(for: feature.settingsKey)
     }
 
     func betaFeatureEnabledBinding(_ feature: BetaFeature) -> Binding<Bool> {

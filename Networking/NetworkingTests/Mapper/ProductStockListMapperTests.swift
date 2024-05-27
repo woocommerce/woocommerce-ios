@@ -11,6 +11,7 @@ final class ProductStockListMapperTests: XCTestCase {
 
         // Then
         XCTAssertEqual(item.productID, 2051)
+        XCTAssertEqual(item.parentID, 0)
         XCTAssertEqual(item.name, "貴志川線 1日乘車券")
         XCTAssertEqual(item.sku, "")
         XCTAssertEqual(item.productStockStatus, .outOfStock)
@@ -25,6 +26,7 @@ final class ProductStockListMapperTests: XCTestCase {
 
         // Then
         XCTAssertEqual(item.productID, 2051)
+        XCTAssertEqual(item.parentID, 0)
         XCTAssertEqual(item.name, "貴志川線 1日乘車券")
         XCTAssertEqual(item.sku, "")
         XCTAssertEqual(item.productStockStatus, .outOfStock)

@@ -41,6 +41,10 @@ final class HubMenuViewModel: ObservableObject {
 
     @Published private(set) var woocommerceAdminURL = WooConstants.URLs.blog.asURL()
 
+    /// POS Section Element
+    ///
+    @Published private(set) var posElement: HubMenuItem?
+
     /// Settings Elements
     ///
     @Published private(set) var settingsElements: [HubMenuItem] = []
@@ -63,6 +67,8 @@ final class HubMenuViewModel: ObservableObject {
     private let stores: StoresManager
     private let featureFlagService: FeatureFlagService
     private let generalAppSettings: GeneralAppSettingsStorage
+    private let cardPresentPaymentsOnboarding: CardPresentPaymentsOnboardingUseCaseProtocol
+    private let posEligibilityChecker: POSEligibilityCheckerProtocol
 
     private(set) var productReviewFromNoteParcel: ProductReviewFromNoteParcel?
 
@@ -110,6 +116,11 @@ final class HubMenuViewModel: ObservableObject {
         self.generalAppSettings = generalAppSettings
         self.switchStoreEnabled = stores.isAuthenticatedWithoutWPCom == false
         self.blazeEligibilityChecker = blazeEligibilityChecker
+        self.cardPresentPaymentsOnboarding = CardPresentPaymentsOnboardingUseCase()
+        self.posEligibilityChecker = POSEligibilityChecker(cardPresentPaymentsOnboarding: cardPresentPaymentsOnboarding,
+                                                           siteSettings: ServiceLocator.selectedSiteSettings,
+                                                           currencySettings: ServiceLocator.currencySettings,
+                                                           featureFlagService: featureFlagService)
         observeSiteForUIUpdates()
         observePlanName()
         tapToPayBadgePromotionChecker.$shouldShowTapToPayBadges.share().assign(to: &$shouldShowNewFeatureBadgeOnPayments)
@@ -122,6 +133,7 @@ final class HubMenuViewModel: ObservableObject {
     /// Resets the menu elements displayed on the menu.
     ///
     func setupMenuElements() {
+        setupPOSElement()
         setupSettingsElements()
         setupGeneralElements()
     }
@@ -130,6 +142,19 @@ final class HubMenuViewModel: ObservableObject {
     func showPayments() {
         navigationPath = .init()
         navigationPath.append(HubMenuNavigationDestination.payments)
+    }
+
+    private func setupPOSElement() {
+        cardPresentPaymentsOnboarding.refreshIfNecessary()
+        Publishers.CombineLatest(generalAppSettings.betaFeatureEnabledPublisher(.pointOfSale), posEligibilityChecker.isEligible)
+            .map { isBetaFeatureEnabled, isEligibleForPOS in
+                if isBetaFeatureEnabled && isEligibleForPOS {
+                    return PointOfSaleEntryPoint()
+                } else {
+                    return nil
+                }
+            }
+            .assign(to: &$posElement)
     }
 
     private func setupSettingsElements() {
@@ -152,9 +177,6 @@ final class HubMenuViewModel: ObservableObject {
                            Reviews()]
         if generalAppSettings.betaFeatureEnabled(.inAppPurchases) {
             generalElements.append(InAppPurchases())
-        }
-        if generalAppSettings.betaFeatureEnabled(.pointOfSale) {
-            generalElements.append(PointOfSaleEntryPoint())
         }
 
         let inboxUseCase = InboxEligibilityUseCase(stores: stores, featureFlagService: featureFlagService)
@@ -187,9 +209,7 @@ final class HubMenuViewModel: ObservableObject {
             generalElements.removeAll(where: { $0.id == Blaze.id })
         }
 
-        if featureFlagService.isFeatureFlagEnabled(.customersInHubMenu) {
-            generalElements.append(Customers())
-        }
+        generalElements.append(Customers())
     }
 
     func showReviewDetails(using parcel: ProductReviewFromNoteParcel) {
@@ -407,10 +427,10 @@ extension HubMenuViewModel {
     struct PointOfSaleEntryPoint: HubMenuItem {
         static var id = "pointOfSale"
 
-        let title: String = "Point Of Sale"
-        let description: String = "Point Of Sale entry point"
-        let icon: UIImage = UIImage(systemName: "ladybug.fill")!
-        let iconColor: UIColor = .red
+        let title: String = Localization.pos
+        let description: String = Localization.posDescription
+        let icon: UIImage = .pointOfSaleImage
+        let iconColor: UIColor = .withColorStudio(.green, shade: .shade30)
         let accessibilityIdentifier: String = "menu-pointOfSale"
         let trackingOption: String = "pointOfSale"
         let iconBadge: HubMenuBadgeType? = nil
@@ -468,6 +488,14 @@ extension HubMenuViewModel {
         static let myStore = NSLocalizedString(
             "My Store",
             comment: "Title of the hub menu view in case there is no title for the store")
+
+        static let pos = NSLocalizedString(
+            "Point of Sale Mode",
+            comment: "Title of the POS menu in the hub menu")
+
+        static let posDescription = NSLocalizedString(
+            "Use the app as a cash register",
+            comment: "Description of the POS menu in the hub menu")
 
         static let woocommerceAdmin = NSLocalizedString(
             "WooCommerce Admin",

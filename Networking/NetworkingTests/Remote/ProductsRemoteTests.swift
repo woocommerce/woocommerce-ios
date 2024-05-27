@@ -737,7 +737,7 @@ final class ProductsRemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "reports/stock", filename: "product-stock")
 
         // When
-        let stock = try await remote.loadStock(for: 8, with: "outOfStock", pageNumber: 1, pageSize: 3, orderBy: .name, order: .descending)
+        let stock = try await remote.loadStock(for: 8, with: "outOfStock", pageNumber: 1, pageSize: 3, order: .descending)
 
         // Then
         XCTAssertEqual(stock.count, 1)
@@ -756,8 +756,110 @@ final class ProductsRemoteTests: XCTestCase {
         let remote = ProductsRemote(network: network)
 
         // When
-        await assertThrowsError({ _ = try await remote.loadStock(for: 8, with: "outofstock", pageNumber: 1, pageSize: 3, orderBy: .name, order: .descending) },
+        await assertThrowsError({ _ = try await remote.loadStock(for: 8, with: "outofstock", pageNumber: 1, pageSize: 3, order: .descending) },
                                 errorAssert: {
+            // Then
+            $0 as? NetworkError == .notFound()
+        })
+    }
+
+    // MARK: - Load product reports
+
+    func test_loadProductReports_returns_correct_items() async throws {
+        // Given
+        let remote = ProductsRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "reports/products", filename: "product-report")
+
+        // When
+        let products = try await remote.loadProductReports(for: sampleSiteID,
+                                                           productIDs: [119, 134],
+                                                           timeZone: .gmt,
+                                                           earliestDateToInclude: Date(timeIntervalSinceNow: -3600*24*7),
+                                                           latestDateToInclude: Date(),
+                                                           pageSize: 3,
+                                                           pageNumber: 1,
+                                                           orderBy: .itemsSold,
+                                                           order: .descending)
+
+        // Then
+        XCTAssertEqual(products.count, 1)
+
+        let firstItem = try XCTUnwrap(products.first)
+        XCTAssertEqual(firstItem.productID, 248)
+        XCTAssertEqual(firstItem.name, "Fantastic Concrete Shirt")
+        XCTAssertEqual(firstItem.itemsSold, 8)
+        XCTAssertEqual(firstItem.stockQuantity, 24)
+        XCTAssertEqual(firstItem.imageURL?.absoluteString, "https://test.ninja/wp-content/uploads/2024/05/img-laboriosam-300x300.png")
+    }
+
+    func test_loadProductReports_relays_networking_error() async throws {
+        // Given
+        let remote = ProductsRemote(network: network)
+
+        // When
+        await assertThrowsError({
+            _ = try await remote.loadProductReports(for: sampleSiteID,
+                                                    productIDs: [119, 134],
+                                                    timeZone: .gmt,
+                                                    earliestDateToInclude: Date(timeIntervalSinceNow: -3600*24*7),
+                                                    latestDateToInclude: Date(),
+                                                    pageSize: 3,
+                                                    pageNumber: 1,
+                                                    orderBy: .itemsSold,
+                                                    order: .descending)
+        }, errorAssert: {
+            // Then
+            $0 as? NetworkError == .notFound()
+        })
+    }
+
+    // MARK: - Load variation reports
+
+    func test_loadVariationReports_returns_correct_items() async throws {
+        // Given
+        let remote = ProductsRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "reports/variations", filename: "variation-report")
+
+        // When
+        let products = try await remote.loadVariationReports(for: sampleSiteID,
+                                                             productIDs: [119],
+                                                             variationIDs: [120, 122],
+                                                             timeZone: .gmt,
+                                                             earliestDateToInclude: Date(timeIntervalSinceNow: -3600*24*7),
+                                                             latestDateToInclude: Date(),
+                                                             pageSize: 3,
+                                                             pageNumber: 1,
+                                                             orderBy: .itemsSold,
+                                                             order: .descending)
+
+        // Then
+        XCTAssertEqual(products.count, 1)
+
+        let firstItem = try XCTUnwrap(products.first)
+        XCTAssertEqual(firstItem.productID, 248)
+        XCTAssertEqual(firstItem.variationID, 280)
+        XCTAssertEqual(firstItem.name, "Fantastic Concrete Shirt - ex, 7, Pink")
+        XCTAssertEqual(firstItem.itemsSold, 8)
+        XCTAssertEqual(firstItem.imageURL?.absoluteString, "https://test.ninja/wp-content/uploads/2024/05/img-laboriosam-300x300.png")
+    }
+
+    func test_loadVariationReports_relays_networking_error() async throws {
+        // Given
+        let remote = ProductsRemote(network: network)
+
+        // When
+        await assertThrowsError({
+            _ = try await remote.loadVariationReports(for: sampleSiteID,
+                                                      productIDs: [119],
+                                                      variationIDs: [120, 122],
+                                                      timeZone: .gmt,
+                                                      earliestDateToInclude: Date(timeIntervalSinceNow: -3600*24*7),
+                                                      latestDateToInclude: Date(),
+                                                      pageSize: 3,
+                                                      pageNumber: 1,
+                                                      orderBy: .itemsSold,
+                                                      order: .descending)
+        }, errorAssert: {
             // Then
             $0 as? NetworkError == .notFound()
         })

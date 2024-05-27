@@ -1408,6 +1408,32 @@ extension Networking.ProductImage {
         )
     }
 }
+extension Networking.ProductReport {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.ProductReport {
+        .init(
+            productID: .fake(),
+            variationID: .fake(),
+            name: .fake(),
+            imageURL: .fake(),
+            itemsSold: .fake(),
+            stockQuantity: .fake()
+        )
+    }
+}
+extension Networking.ProductReport.ExtendedInfo {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.ProductReport.ExtendedInfo {
+        .init(
+            name: .fake(),
+            image: .fake(),
+            stockQuantity: .fake(),
+            attributes: .fake()
+        )
+    }
+}
 extension Networking.ProductReview {
     /// Returns a "ready to use" type filled with fake values.
     ///
@@ -1462,6 +1488,7 @@ extension Networking.ProductStock {
         .init(
             siteID: .fake(),
             productID: .fake(),
+            parentID: .fake(),
             name: .fake(),
             sku: .fake(),
             manageStock: .fake(),

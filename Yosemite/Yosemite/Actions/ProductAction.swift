@@ -203,7 +203,6 @@ public enum ProductAction: Action {
                           stockType: String,
                           pageNumber: Int,
                           pageSize: Int,
-                          orderBy: ProductsRemote.OrderKey,
                           order: ProductsRemote.Order,
                           completion: (Result<[ProductStock], Error>) -> Void)
 

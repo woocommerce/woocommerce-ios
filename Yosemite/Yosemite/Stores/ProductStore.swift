@@ -156,12 +156,11 @@ public class ProductStore: Store {
                               categories: categories,
                               tags: tags,
                               completion: completion)
-        case let .fetchStockReport(siteID, stockType, pageNumber, pageSize, orderBy, order, completion):
+        case let .fetchStockReport(siteID, stockType, pageNumber, pageSize, order, completion):
             fetchStockReport(siteID: siteID,
                              stockType: stockType,
                              pageNumber: pageNumber,
                              pageSize: pageSize,
-                             orderBy: orderBy,
                              order: order,
                              completion: completion)
         case let .fetchProductReports(siteID, productIDs, timeZone, earliestDateToInclude, latestDateToInclude, pageSize, pageNumber, orderBy, order, completion):
@@ -777,7 +776,6 @@ private extension ProductStore {
                           stockType: String,
                           pageNumber: Int,
                           pageSize: Int,
-                          orderBy: ProductsRemote.OrderKey,
                           order: ProductsRemote.Order,
                           completion: @escaping (Result<[ProductStock], Error>) -> Void) {
         Task { @MainActor in
@@ -786,7 +784,6 @@ private extension ProductStore {
                                                        with: stockType,
                                                        pageNumber: pageNumber,
                                                        pageSize: pageSize,
-                                                       orderBy: orderBy,
                                                        order: order)
                 completion(.success(stock))
             } catch {

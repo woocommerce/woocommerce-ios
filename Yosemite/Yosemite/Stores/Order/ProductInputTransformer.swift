@@ -1,9 +1,8 @@
 import Foundation
-import Yosemite
 
 /// Helper to updates an `order` given an `OrderSyncInput` type.
 ///
-struct ProductInputTransformer {
+public struct ProductInputTransformer {
     /// Type to help bundling  order Items parameters.
     ///
     struct OrderItemParameters {
@@ -27,7 +26,7 @@ struct ProductInputTransformer {
         }
     }
 
-    enum UpdateOrDelete {
+    public enum UpdateOrDelete {
         case update
         case delete
     }
@@ -35,7 +34,7 @@ struct ProductInputTransformer {
     /// Adds, deletes, or updates order items based on the given product input.
     /// When `shouldUpdateOrDeleteZeroQuantities` value is `.update`, items with `.zero` quantities will be updated instead of being deleted.
     ///
-    static func update(input: OrderSyncProductInput, on order: Order, shouldUpdateOrDeleteZeroQuantities: UpdateOrDelete) -> Order {
+    public static func update(input: OrderSyncProductInput, on order: Order, shouldUpdateOrDeleteZeroQuantities: UpdateOrDelete) -> Order {
         // If the input's quantity is 0 or less, delete the item if required.
         guard input.quantity > 0 || shouldUpdateOrDeleteZeroQuantities == .update else {
             return remove(input: input, from: order)
@@ -56,7 +55,7 @@ struct ProductInputTransformer {
     ///   - shouldUpdateOrDeleteZeroQuantities: When its value is `.update`, items with `.zero` quantities will be updated instead of being deleted.
     ///
     /// - Returns: An Order entity.
-    static func updateMultipleItems(with inputs: [OrderSyncProductInput], on order: Order, shouldUpdateOrDeleteZeroQuantities: UpdateOrDelete) -> Order {
+    public static func updateMultipleItems(with inputs: [OrderSyncProductInput], on order: Order, shouldUpdateOrDeleteZeroQuantities: UpdateOrDelete) -> Order {
         var updatedOrderItems = order.items
 
         for input in inputs {

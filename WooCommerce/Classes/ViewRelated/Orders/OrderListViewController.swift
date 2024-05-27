@@ -295,6 +295,12 @@ private extension OrderListViewController {
         /// Update the `dataSource` whenever there is a new snapshot.
         viewModel.snapshot.sink { [weak self] snapshot in
             guard let self = self else { return }
+
+            /// Check that view is loaded and displayed to prevent UI tests failing while synching orders from other screens.
+            guard self.isViewLoaded && self.view.window != nil else {
+                return
+            }
+
             dataSource?.apply(snapshot)
 
             transitionToResultsUpdatedState()

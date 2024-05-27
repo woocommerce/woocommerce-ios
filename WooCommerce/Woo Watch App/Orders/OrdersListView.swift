@@ -50,15 +50,7 @@ struct OrdersListView: View {
     ///
     @ViewBuilder var loadingView: some View {
         List {
-            OrderListCard(order: .init(date: "----",
-                                       time: "----",
-                                       number: "----",
-                                       name: "----- -----",
-                                       total: "----",
-                                       status: "------- ------",
-                                       email: "-----",
-                                       address: "-----",
-                                       items: []))
+            OrderListCard(order: .placeholder)
         }
         .redacted(reason: .placeholder)
     }

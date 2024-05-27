@@ -34,7 +34,7 @@ final class OrdersListViewModel: ObservableObject {
 
     /// Convert remote orders into view orders.
     ///
-    private static func viewOrders(from remoteOrders: [Order], currencySettings: CurrencySettings) -> [OrdersListView.Order] {
+    static func viewOrders(from remoteOrders: [Order], currencySettings: CurrencySettings) -> [OrdersListView.Order] {
         remoteOrders.map { order in
             let orderViewModel = OrderListCellViewModel(order: order, status: nil, currencySettings: currencySettings)
 
@@ -93,6 +93,18 @@ extension OrdersListView {
         var itemCount: Int {
             items.count
         }
+
+        /// Empty order used as a redacted placeholder.
+        ///
+        static let placeholder: Order = Order(date: "----",
+                                              time: "----",
+                                              number: "----",
+                                              name: "----- -----",
+                                              total: "----",
+                                              status: "------- ------",
+                                              email: "-----",
+                                              address: "-----",
+                                              items: [])
     }
 
     /// Represents an order item.

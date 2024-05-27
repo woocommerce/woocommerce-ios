@@ -328,6 +328,16 @@
 		26B542462BEAC6A6003A55B5 /* Pods_NetworkingWatchOS.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 6132DCC72AA9C070E2033628 /* Pods_NetworkingWatchOS.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		26BD9FCD2965EC3C004E0D15 /* product-variations-bulk-create.json in Resources */ = {isa = PBXBuildFile; fileRef = 26BD9FCC2965EC3C004E0D15 /* product-variations-bulk-create.json */; };
 		26BD9FCF2965EE71004E0D15 /* ProductVariationsBulkCreateMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26BD9FCE2965EE71004E0D15 /* ProductVariationsBulkCreateMapper.swift */; };
+		26CFDEDD2C0295AD005ABC31 /* Note.swift in Sources */ = {isa = PBXBuildFile; fileRef = B59325C6217E22FC000B0E8E /* Note.swift */; };
+		26CFDEDE2C0295CB005ABC31 /* NoteBlock.swift in Sources */ = {isa = PBXBuildFile; fileRef = B59325D0217E4206000B0E8E /* NoteBlock.swift */; };
+		26CFDEDF2C0295D5005ABC31 /* NoteMedia.swift in Sources */ = {isa = PBXBuildFile; fileRef = B59325CF217E4206000B0E8E /* NoteMedia.swift */; };
+		26CFDEE02C0295E1005ABC31 /* NoteRange.swift in Sources */ = {isa = PBXBuildFile; fileRef = B59325D1217E4206000B0E8E /* NoteRange.swift */; };
+		26CFDEE12C0295EA005ABC31 /* MetaContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5A2417C217F9ECC00595DEF /* MetaContainer.swift */; };
+		26CFDEE72C038C8C005ABC31 /* NotificationsRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5DAEFEF2180DD5A0002356A /* NotificationsRemote.swift */; };
+		26CFDEE82C038C9D005ABC31 /* SuccessResultMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B53EF53B21814900003E146F /* SuccessResultMapper.swift */; };
+		26CFDEE92C038CAE005ABC31 /* NoteListMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B59325CB217E2B4C000B0E8E /* NoteListMapper.swift */; };
+		26CFDEEA2C038CBE005ABC31 /* NoteHash.swift in Sources */ = {isa = PBXBuildFile; fileRef = B554FA902180BCFC00C54DFF /* NoteHash.swift */; };
+		26CFDEEB2C038CC8005ABC31 /* NoteHashListMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B554FA8E2180BC7000C54DFF /* NoteHashListMapper.swift */; };
 		26DAAB522BEA8D3400CE399E /* NetworkingWatchOS.h in Headers */ = {isa = PBXBuildFile; fileRef = 26DAAB512BEA8D3400CE399E /* NetworkingWatchOS.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		26DAAB572BEA8DC100CE399E /* Credentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = B557DA1720979D51005962F4 /* Credentials.swift */; };
 		26DAAB582BEA8DFF00CE399E /* Remote.swift in Sources */ = {isa = PBXBuildFile; fileRef = B557DA0020975500005962F4 /* Remote.swift */; };
@@ -4581,9 +4591,11 @@
 				2680B0D52BED5A7700E7F1D8 /* CookieNonceAuthenticator.swift in Sources */,
 				26373E1B2BFCF531008E6735 /* String+HTML.swift in Sources */,
 				2680B0D42BED5A6600E7F1D8 /* AppicationPasswordEncoder.swift in Sources */,
+				26CFDEEA2C038CBE005ABC31 /* NoteHash.swift in Sources */,
 				2680B0D32BED5A5400E7F1D8 /* OneTimeApplicationPasswordUseCase.swift in Sources */,
 				2680B0D12BED5A4C00E7F1D8 /* UnauthenticatedRequest.swift in Sources */,
 				26373E1C2BFCF62C008E6735 /* OrderNote.swift in Sources */,
+				26CFDEEB2C038CC8005ABC31 /* NoteHashListMapper.swift in Sources */,
 				2680B0D22BED5A4C00E7F1D8 /* AuthenticatedRESTRequest.swift in Sources */,
 				2680B0D02BED5A1900E7F1D8 /* WooConstants.swift in Sources */,
 				2680B0CF2BED59CE00E7F1D8 /* ApplicationPasswordStorage.swift in Sources */,
@@ -4609,10 +4621,12 @@
 				26373E042BFCEA48008E6735 /* OrdersRemote.swift in Sources */,
 				26373E0F2BFCEB1B008E6735 /* ShippingLineTax.swift in Sources */,
 				263A6DB72BEAA46000C292B2 /* SiteVisitStats.swift in Sources */,
+				26CFDEDD2C0295AD005ABC31 /* Note.swift in Sources */,
 				263A6DB82BEAA46000C292B2 /* SiteVisitStatsItem.swift in Sources */,
 				263A6DB52BEAA44D00C292B2 /* StatGranularity.swift in Sources */,
 				263A6DB42BEAA43700C292B2 /* Mapper+DataEnvelope.swift in Sources */,
 				263A6DB32BEAA41D00C292B2 /* DateFormatter+Woo.swift in Sources */,
+				26CFDEDF2C0295D5005ABC31 /* NoteMedia.swift in Sources */,
 				263A6DB22BEAA3EC00C292B2 /* CodingUserInfoKey+Woo.swift in Sources */,
 				263A6DB12BEAA33900C292B2 /* WCAnalyticsStats.swift in Sources */,
 				263A6DAD2BEAA32800C292B2 /* OrderStatsV4Mapper.swift in Sources */,
@@ -4622,16 +4636,19 @@
 				26373E192BFCEF96008E6735 /* OrderListMapper.swift in Sources */,
 				26373E062BFCEA70008E6735 /* OrderStatusEnum.swift in Sources */,
 				263A6DB02BEAA32800C292B2 /* OrderStatsV4Interval.swift in Sources */,
+				26CFDEE72C038C8C005ABC31 /* NotificationsRemote.swift in Sources */,
 				263A6DAC2BEAA31400C292B2 /* StatsGranularityV4.swift in Sources */,
 				26373E1A2BFCEFA7008E6735 /* OrderFeeTaxStatus.swift in Sources */,
 				26373E172BFCEF5D008E6735 /* Order+Fallbacks.swift in Sources */,
 				263A6DAB2BEAA30500C292B2 /* SiteStatsRemote.swift in Sources */,
+				26CFDEE82C038C9D005ABC31 /* SuccessResultMapper.swift in Sources */,
 				263A6DAA2BEAA2E700C292B2 /* OrderStatsRemoteV4.swift in Sources */,
 				2680B0CE2BED592800E7F1D8 /* Secret.swift in Sources */,
 				263A6DA62BEA9FE600C292B2 /* PlaceholderDataValidator.swift in Sources */,
 				263A6DA52BEA9FCC00C292B2 /* String+URL.swift in Sources */,
 				26373E1F2BFCF69A008E6735 /* OrderNoteMapper.swift in Sources */,
 				263A6DA42BEA9F5A00C292B2 /* Dictionary+Woo.swift in Sources */,
+				26CFDEE92C038CAE005ABC31 /* NoteListMapper.swift in Sources */,
 				263A6DA32BEA9EFD00C292B2 /* Result+Extensions.swift in Sources */,
 				263A6DA22BEA9E8F00C292B2 /* WordPressApiError.swift in Sources */,
 				263A6DA12BEA9E8000C292B2 /* WordPressApiValidator.swift in Sources */,
@@ -4652,6 +4669,7 @@
 				269014CD2BEA926F006056E0 /* WordPressAPIVersion.swift in Sources */,
 				269014CC2BEA925F006056E0 /* RESTRequestConvertible.swift in Sources */,
 				26373E072BFCEA7E008E6735 /* OrderItem.swift in Sources */,
+				26CFDEE12C0295EA005ABC31 /* MetaContainer.swift in Sources */,
 				26373E152BFCEDE9008E6735 /* OrderGiftCard.swift in Sources */,
 				269014CB2BEA9253006056E0 /* JetpackRequest.swift in Sources */,
 				269014CA2BEA924B006056E0 /* NetworkError.swift in Sources */,
@@ -4667,6 +4685,8 @@
 				269014C22BEA912D006056E0 /* Request.swift in Sources */,
 				26373E182BFCEF79008E6735 /* KeyedDecodingContainer+Woo.swift in Sources */,
 				26373E202BFCF6A7008E6735 /* EntityDateModifiedMapper.swift in Sources */,
+				26CFDEE02C0295E1005ABC31 /* NoteRange.swift in Sources */,
+				26CFDEDE2C0295CB005ABC31 /* NoteBlock.swift in Sources */,
 				26DAAB592BEA8E1500CE399E /* Network.swift in Sources */,
 				26373E052BFCEA60008E6735 /* Order.swift in Sources */,
 				26DAAB582BEA8DFF00CE399E /* Remote.swift in Sources */,

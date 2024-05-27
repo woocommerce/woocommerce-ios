@@ -33,6 +33,7 @@ struct ProductRowView: View {
 #if DEBUG
 #Preview {
     ProductRowView(cartProduct: CartProduct(id: UUID(),
+                                            cartItemID: nil,
                                             product: POSProductFactory.makeProduct(),
                                             quantity: 2))
 }

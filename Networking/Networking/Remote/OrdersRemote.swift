@@ -220,6 +220,19 @@ public class OrdersRemote: Remote {
         }
     }
 
+    public func createPointOfSaleOrder(siteID: Int64, order: Order, fields: [CreateOrderField]) async throws -> Order {
+        return try await withCheckedThrowingContinuation { continuation in
+            createOrder(siteID: siteID, order: order, giftCard: nil, fields: fields) { result in
+                switch result {
+                    case let .success(order):
+                        continuation.resume(returning: order)
+                    case let .failure(error):
+                        continuation.resume(throwing: error)
+                }
+            }
+        }
+    }
+
     /// Updates the `OrderStatus` of a given Order.
     ///
     /// - Parameters:
@@ -305,6 +318,19 @@ public class OrdersRemote: Remote {
             enqueue(request, mapper: mapper, completion: completion)
         } catch {
             completion(.failure(error))
+        }
+    }
+
+    public func updatePointOfSaleOrder(siteID: Int64, order: Order, fields: [UpdateOrderField]) async throws -> Order {
+        return try await withCheckedThrowingContinuation { continuation in
+            updateOrder(from: siteID, order: order, giftCard: nil, fields: fields) { result in
+                switch result {
+                    case let .success(order):
+                        continuation.resume(returning: order)
+                    case let .failure(error):
+                        continuation.resume(throwing: error)
+                }
+            }
         }
     }
 

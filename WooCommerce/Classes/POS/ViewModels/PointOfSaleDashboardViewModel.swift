@@ -1,4 +1,10 @@
+import Combine
+import Yosemite
 import SwiftUI
+import class Yosemite.PointOfSaleOrderService
+import protocol Yosemite.PointOfSaleOrderServiceProtocol
+import struct Yosemite.PointOfSaleOrder
+import struct Yosemite.PointOfSaleCartItem
 
 final class PointOfSaleDashboardViewModel: ObservableObject {
     @Published private(set) var products: [POSProduct]
@@ -15,17 +21,26 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
 
     @Published private(set) var orderStage: OrderStage = .building
 
+    @Published private var order: PointOfSaleOrder?
+    private let orderService: PointOfSaleOrderServiceProtocol
+    private var cartSubscription: AnyCancellable?
+
     init(products: [POSProduct],
-         cardReaderConnectionViewModel: CardReaderConnectionViewModel) {
+         cardReaderConnectionViewModel: CardReaderConnectionViewModel,
+         orderService: PointOfSaleOrderServiceProtocol = PointOfSaleOrderService(siteID: ServiceLocator.stores.sessionManager.defaultStoreID!,
+                                                                                 credentials: ServiceLocator.stores.sessionManager.defaultCredentials!)) {
         self.products = products
         self.cardReaderConnectionViewModel = cardReaderConnectionViewModel
+        self.orderService = orderService
+
+        observeProductsInCartForRemoteOrderSyncing()
     }
 
     func addProductToCart(_ product: POSProduct) {
         if product.stockQuantity > 0 {
             reduceInventory(product)
 
-            let cartProduct = CartProduct(id: UUID(), product: product, quantity: 1)
+            let cartProduct = CartProduct(id: UUID(), cartItemID: nil, product: product, quantity: 1)
             productsInCart.append(cartProduct)
         } else {
             // TODO: Handle out of stock
@@ -90,8 +105,40 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
 }
 
 extension PointOfSaleDashboardViewModel {
-    // Helper function to populate SwifUI previews
+    // Helper function to populate SwiftUI previews
     static func defaultPreview() -> PointOfSaleDashboardViewModel {
         PointOfSaleDashboardViewModel(products: [], cardReaderConnectionViewModel: .init(state: .connectingToReader))
+    }
+}
+
+private extension PointOfSaleDashboardViewModel {
+    func observeProductsInCartForRemoteOrderSyncing() {
+        cartSubscription = $productsInCart
+            .debounce(for: .seconds(Constants.cartChangesDebounceDuration), scheduler: DispatchQueue.main)
+            .sink { [weak self] cartProducts in
+                Task { @MainActor in
+                    guard let self else {
+                        throw OrderSyncError.selfDeallocated
+                    }
+                    let cart = cartProducts
+                        .map {
+                            PointOfSaleCartItem(itemID: $0.cartItemID,
+                                                product: .init(productID: $0.product.productID),
+                                                quantity: Decimal($0.quantity))
+                        }
+                    let order = try await self.orderService.syncOrder(cart: cart, order: self.order)
+                    print("~~~\(order)")
+                }
+            }
+    }
+}
+
+private extension PointOfSaleDashboardViewModel {
+    enum Constants {
+        static let cartChangesDebounceDuration: TimeInterval = 0.5
+    }
+
+    enum OrderSyncError: Error {
+        case selfDeallocated
     }
 }

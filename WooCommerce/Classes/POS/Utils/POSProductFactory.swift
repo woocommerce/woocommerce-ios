@@ -4,7 +4,7 @@ import class WooFoundation.CurrencySettings
 /// Temporary fake product factory
 ///
 final class POSProductFactory {
-    static func makeProduct(currencySettings: CurrencySettings) -> POSProduct {
+    static func makeProduct(currencySettings: CurrencySettings = ServiceLocator.currencySettings) -> POSProduct {
         POSProduct(itemID: UUID(),
                    productID: 1,
                    name: "Product 1",
@@ -13,7 +13,7 @@ final class POSProductFactory {
                    currencySettings: currencySettings)
     }
 
-    static func makeFakeProducts(currencySettings: CurrencySettings) -> [POSProduct] {
+    static func makeFakeProducts(currencySettings: CurrencySettings = ServiceLocator.currencySettings) -> [POSProduct] {
         return [
             POSProduct(itemID: UUID(), productID: 1, name: "Product 1", price: "1.00", stockQuantity: 10, currencySettings: currencySettings),
             POSProduct(itemID: UUID(), productID: 2, name: "Product 2", price: "2.00", stockQuantity: 10, currencySettings: currencySettings),

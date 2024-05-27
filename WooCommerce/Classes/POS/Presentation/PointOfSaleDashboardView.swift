@@ -78,7 +78,7 @@ private extension PointOfSaleDashboardView {
 
 #if DEBUG
 #Preview {
-    PointOfSaleDashboardView(viewModel: PointOfSaleDashboardViewModel(products: POSProductFactory.makeFakeProducts(currencySettings: ServiceLocator.currencySettings),
+    PointOfSaleDashboardView(viewModel: PointOfSaleDashboardViewModel(products: POSProductFactory.makeFakeProducts(),
                                                                       cardReaderConnectionViewModel: .init(state: .connectingToReader)))
 }
 #endif

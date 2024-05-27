@@ -435,7 +435,6 @@ final class DashboardViewModelTests: XCTestCase {
             viewModel.dashboardCards.isNotEmpty
         }
 
-        XCTAssertEqual(viewModel.dashboardCards.count, 8)
         XCTAssertEqual(viewModel.dashboardCards, expectedCards)
     }
 
@@ -466,17 +465,16 @@ final class DashboardViewModelTests: XCTestCase {
             viewModel.dashboardCards.isNotEmpty
         }
 
-        XCTAssertEqual(viewModel.dashboardCards.count, 4)
         XCTAssertEqual(viewModel.dashboardCards, expectedCards)
     }
 
-    func test_dashoard_cards_contain_enabled_analytics_cards_when_there_is_order() {
+    func test_dashboard_cards_contain_enabled_analytics_cards_when_there_is_order() {
         // Given
         let featureFlagService = MockFeatureFlagService(isDynamicDashboardM2Enabled: true)
         let storage = MockStorageManager()
         let insertOrder = Order.fake().copy(siteID: sampleSiteID)
         storage.insertSampleOrder(readOnlyOrder: insertOrder)
-        let viewModel = DashboardViewModel(siteID: sampleSiteID, stores: stores, storageManager: storage)
+        let viewModel = DashboardViewModel(siteID: sampleSiteID, stores: stores, storageManager: storage, featureFlags: featureFlagService)
 
         stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
             switch action {
@@ -501,6 +499,73 @@ final class DashboardViewModelTests: XCTestCase {
 
         XCTAssertTrue(viewModel.dashboardCards.contains(expectedPerformanceCard))
         XCTAssertTrue(viewModel.dashboardCards.contains(expectedTopPerformersCard))
+    }
+
+    func test_dashboard_cards_is_loaded_from_storage_if_they_exist() {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isDynamicDashboardM2Enabled: false)
+        let storage = MockStorageManager()
+        let insertOrder = Order.fake().copy(siteID: sampleSiteID)
+        storage.insertSampleOrder(readOnlyOrder: insertOrder)
+        let viewModel = DashboardViewModel(siteID: sampleSiteID, stores: stores, storageManager: storage, featureFlags: featureFlagService)
+
+        let storedCards = [DashboardCard(type: .onboarding, availability: .show, enabled: true),
+                           DashboardCard(type: .performance, availability: .show, enabled: true),
+                           DashboardCard(type: .topPerformers, availability: .show, enabled: true)]
+
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+            case let .loadDashboardCards(_, onCompletion):
+                onCompletion(storedCards)
+            default:
+                break
+            }
+        }
+
+        // When
+        viewModel.refreshDashboardCards()
+
+        // Then
+        waitUntil {
+            viewModel.dashboardCards.isNotEmpty
+        }
+
+        XCTAssertEqual(viewModel.dashboardCards, storedCards)
+    }
+
+    func test_dashboard_cards_respects_existing_ordering_from_saved_cards() {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isDynamicDashboardM2Enabled: false)
+        let storage = MockStorageManager()
+
+        // Add order so that analytics cards are enabled
+        let insertOrder = Order.fake().copy(siteID: sampleSiteID)
+        storage.insertSampleOrder(readOnlyOrder: insertOrder)
+        let viewModel = DashboardViewModel(siteID: sampleSiteID, stores: stores, storageManager: storage, featureFlags: featureFlagService)
+
+        let storedCards = [DashboardCard(type: .topPerformers, availability: .show, enabled: true),
+                           DashboardCard(type: .onboarding, availability: .show, enabled: true),
+                           DashboardCard(type: .performance, availability: .show, enabled: true)]
+
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+            case let .loadDashboardCards(_, onCompletion):
+                onCompletion(storedCards)
+            default:
+                break
+            }
+        }
+
+        viewModel.refreshDashboardCards()
+
+        waitUntil {
+            viewModel.dashboardCards.isNotEmpty
+        }
+
+        // Then
+        XCTAssertEqual(viewModel.dashboardCards[0], storedCards[0])
+        XCTAssertEqual(viewModel.dashboardCards[1], storedCards[1])
+        XCTAssertEqual(viewModel.dashboardCards[2], storedCards[2])
     }
 }
 

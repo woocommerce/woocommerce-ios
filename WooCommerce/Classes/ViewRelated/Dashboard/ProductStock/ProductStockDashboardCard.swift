@@ -44,7 +44,7 @@ struct ProductStockDashboardCard: View {
             }
 
             Group {
-                if viewModel.reports.isNotEmpty {
+                if viewModel.reports.isNotEmpty || viewModel.syncingData {
                     stockList
                 } else {
                     emptyView

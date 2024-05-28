@@ -297,7 +297,6 @@
 		026826AB2BF59DF70036F959 /* ProductRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026826A22BF59DF60036F959 /* ProductRowView.swift */; };
 		026826AC2BF59DF70036F959 /* ProductCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026826A42BF59DF60036F959 /* ProductCardView.swift */; };
 		026826AD2BF59DF70036F959 /* PointOfSaleDashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026826A52BF59DF60036F959 /* PointOfSaleDashboardView.swift */; };
-		026826AE2BF59DF70036F959 /* QuantityBadgeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026826A62BF59DF70036F959 /* QuantityBadgeView.swift */; };
 		026826AF2BF59DF70036F959 /* PointOfSaleEntryPointView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026826A72BF59DF70036F959 /* PointOfSaleEntryPointView.swift */; };
 		026826B42BF59E330036F959 /* CardReaderConnectionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026826B22BF59E320036F959 /* CardReaderConnectionViewModel.swift */; };
 		026826B52BF59E330036F959 /* CardReaderConnectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026826B32BF59E320036F959 /* CardReaderConnectionView.swift */; };
@@ -3086,7 +3085,6 @@
 		026826A32BF59DF60036F959 /* CartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartView.swift; sourceTree = "<group>"; };
 		026826A42BF59DF60036F959 /* ProductCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCardView.swift; sourceTree = "<group>"; };
 		026826A52BF59DF60036F959 /* PointOfSaleDashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleDashboardView.swift; sourceTree = "<group>"; };
-		026826A62BF59DF70036F959 /* QuantityBadgeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuantityBadgeView.swift; sourceTree = "<group>"; };
 		026826A72BF59DF70036F959 /* PointOfSaleEntryPointView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleEntryPointView.swift; sourceTree = "<group>"; };
 		026826A82BF59DF70036F959 /* ProductGridView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductGridView.swift; sourceTree = "<group>"; };
 		026826B22BF59E320036F959 /* CardReaderConnectionViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardReaderConnectionViewModel.swift; sourceTree = "<group>"; };
@@ -6336,7 +6334,6 @@
 				026826A82BF59DF70036F959 /* ProductGridView.swift */,
 				026826A32BF59DF60036F959 /* CartView.swift */,
 				026826A22BF59DF60036F959 /* ProductRowView.swift */,
-				026826A62BF59DF70036F959 /* QuantityBadgeView.swift */,
 				026826A42BF59DF60036F959 /* ProductCardView.swift */,
 				68BB75322BFAF0FD0031C6FE /* FilterView.swift */,
 				68BB75342BFAF12F0031C6FE /* SearchView.swift */,
@@ -14565,7 +14562,6 @@
 				68D8FBD12BFEF9C700477C42 /* TotalsView.swift in Sources */,
 				E1ABAEF728479E0300F40BB2 /* InPersonPaymentsSelectPluginView.swift in Sources */,
 				B9B6DEEF283F8B9F00901FB7 /* Site+URL.swift in Sources */,
-				026826AE2BF59DF70036F959 /* QuantityBadgeView.swift in Sources */,
 				029106BC2BE21C4900C2248B /* CollapsibleOrderFormCard.swift in Sources */,
 				D83F5930225B269C00626E75 /* DatePickerTableViewCell.swift in Sources */,
 				0272C00322EE9C3200D7CA2C /* AsyncDictionary.swift in Sources */,

@@ -451,10 +451,8 @@ final class DashboardViewModelTests: XCTestCase {
 
         // Then
         waitUntil {
-            viewModel.dashboardCards.isNotEmpty
+            viewModel.dashboardCards == expectedCards
         }
-
-        XCTAssertEqual(viewModel.dashboardCards, expectedCards)
     }
 
     func test_dashboard_cards_contain_enabled_analytics_cards_when_there_is_order() {
@@ -521,10 +519,8 @@ final class DashboardViewModelTests: XCTestCase {
 
         // Then
         waitUntil {
-            viewModel.dashboardCards.isNotEmpty
+            viewModel.dashboardCards == storedCards
         }
-
-        XCTAssertEqual(viewModel.dashboardCards, storedCards)
     }
 
     func test_dashboard_cards_respects_existing_ordering_from_saved_cards() {

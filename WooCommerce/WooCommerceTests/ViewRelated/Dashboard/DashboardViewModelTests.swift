@@ -22,11 +22,13 @@ final class DashboardViewModelTests: XCTestCase {
     private var analytics: Analytics!
     private var analyticsProvider: MockAnalyticsProvider!
     private var stores: MockStoresManager!
+    private var userDefaults: UserDefaults!
 
-    override func setUp() {
+    override func setUpWithError() throws {
         analyticsProvider = MockAnalyticsProvider()
         analytics = WooAnalytics(analyticsProvider: analyticsProvider)
         stores = MockStoresManager(sessionManager: .makeForTesting())
+        userDefaults = try XCTUnwrap(UserDefaults(suiteName: "DashboardViewModelTests"))
     }
 
     func test_default_statsVersion_is_v4() {
@@ -403,6 +405,200 @@ final class DashboardViewModelTests: XCTestCase {
             viewModel.hasOrders == true
         }
     }
+
+    // MARK: Dashboard cards
+
+    func test_generated_default_cards_are_as_expected_with_m2_feature_flag_enabled() {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isDynamicDashboardM2Enabled: true)
+
+        let viewModel = DashboardViewModel(siteID: sampleSiteID, stores: stores, featureFlags: featureFlagService)
+        mockLoadDashboardCards(withStoredCards: [])
+
+        let expectedCards = [DashboardCard(type: .onboarding, availability: .show, enabled: true),
+                             DashboardCard(type: .performance, availability: .unavailable, enabled: false),
+                             DashboardCard(type: .topPerformers, availability: .unavailable, enabled: false),
+                             DashboardCard(type: .blaze, availability: .hide, enabled: false),
+                             DashboardCard(type: .inbox, availability: .show, enabled: false),
+                             DashboardCard(type: .reviews, availability: .show, enabled: false),
+                             DashboardCard(type: .coupons, availability: .show, enabled: false),
+                             DashboardCard(type: .stock, availability: .show, enabled: false)]
+
+        // When
+        viewModel.refreshDashboardCards()
+
+        // Then
+        waitUntil {
+            viewModel.dashboardCards == expectedCards
+        }
+
+    }
+
+    func test_generated_default_cards_are_as_expected_with_m2_feature_flag_disabled() {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isDynamicDashboardM2Enabled: false)
+
+        let viewModel = DashboardViewModel(siteID: sampleSiteID, stores: stores, featureFlags: featureFlagService)
+        mockLoadDashboardCards(withStoredCards: [])
+
+        let expectedCards = [DashboardCard(type: .onboarding, availability: .show, enabled: true),
+                             DashboardCard(type: .performance, availability: .unavailable, enabled: false),
+                             DashboardCard(type: .topPerformers, availability: .unavailable, enabled: false),
+                             DashboardCard(type: .blaze, availability: .hide, enabled: false)]
+
+        // When
+        viewModel.refreshDashboardCards()
+
+        // Then
+        waitUntil {
+            viewModel.dashboardCards == expectedCards
+        }
+    }
+
+    func test_dashboard_cards_contain_unavailable_and_disabled_analytics_cards_when_there_are_no_orders() {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isDynamicDashboardM2Enabled: false)
+        let viewModel = DashboardViewModel(siteID: sampleSiteID, stores: stores, featureFlags: featureFlagService)
+        mockLoadDashboardCards(withStoredCards: [])
+
+        // Analytics cards need to say "Unavailable" in the Customize screen and be disabled so they don't appear on Dashboard
+        // This is set as availability: .unavailable and enabled: false in the expected cards.
+        let expectedPerformanceCard = DashboardCard(type: .performance, availability: .unavailable, enabled: false)
+        let expectedTopPerformersCard = DashboardCard(type: .topPerformers, availability: .unavailable, enabled: false)
+
+        // When
+        viewModel.refreshDashboardCards()
+
+        // Then
+        waitUntil {
+            viewModel.dashboardCards.contains(expectedPerformanceCard) &&
+            viewModel.dashboardCards.contains(expectedTopPerformersCard)
+        }
+    }
+
+    func test_dashboard_cards_contain_enabled_analytics_cards_when_there_is_order() {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isDynamicDashboardM2Enabled: true)
+        let storage = MockStorageManager()
+        let insertOrder = Order.fake().copy(siteID: sampleSiteID)
+        storage.insertSampleOrder(readOnlyOrder: insertOrder)
+        let viewModel = DashboardViewModel(siteID: sampleSiteID, stores: stores, storageManager: storage, featureFlags: featureFlagService)
+        mockLoadDashboardCards(withStoredCards: [])
+
+        // Analytics cards need to be set with availability: .show and enabled: true to make them available and shown.
+        let expectedPerformanceCard = DashboardCard(type: .performance, availability: .show, enabled: true)
+        let expectedTopPerformersCard = DashboardCard(type: .topPerformers, availability: .show, enabled: true)
+
+        // When
+        viewModel.refreshDashboardCards()
+
+        // Then
+        waitUntil {
+            viewModel.dashboardCards.contains(expectedPerformanceCard) &&
+            viewModel.dashboardCards.contains(expectedTopPerformersCard)
+        }
+    }
+
+    func test_dashboard_cards_has_disabled_onboarding_card_if_all_tasks_are_completed() throws {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isDynamicDashboardM2Enabled: false)
+        userDefaults[.completedAllStoreOnboardingTasks] = true
+
+        let viewModel = DashboardViewModel(siteID: sampleSiteID, stores: stores, featureFlags: featureFlagService, userDefaults: userDefaults)
+
+        mockLoadDashboardCards(withStoredCards: [])
+
+        // When
+        viewModel.refreshDashboardCards()
+
+        // Then
+        waitUntil {
+            viewModel.dashboardCards.isNotEmpty
+        }
+
+        let onboardingCard = try XCTUnwrap(viewModel.dashboardCards.first(where: {$0.type == .onboarding }))
+        XCTAssertFalse(onboardingCard.enabled)
+    }
+
+    func test_dashboard_cards_is_loaded_from_storage_if_they_exist() {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isDynamicDashboardM2Enabled: false)
+        let storage = MockStorageManager()
+        let insertOrder = Order.fake().copy(siteID: sampleSiteID)
+        storage.insertSampleOrder(readOnlyOrder: insertOrder)
+        let viewModel = DashboardViewModel(siteID: sampleSiteID, stores: stores, storageManager: storage, featureFlags: featureFlagService)
+
+        let storedCards = [DashboardCard(type: .onboarding, availability: .show, enabled: true),
+                           DashboardCard(type: .performance, availability: .show, enabled: true),
+                           DashboardCard(type: .topPerformers, availability: .show, enabled: true)]
+
+        mockLoadDashboardCards(withStoredCards: storedCards)
+
+        // When
+        viewModel.refreshDashboardCards()
+
+        // Then
+        waitUntil {
+            viewModel.dashboardCards == storedCards
+        }
+    }
+
+    func test_dashboard_cards_respects_existing_ordering_from_saved_cards() {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isDynamicDashboardM2Enabled: false)
+        let storage = MockStorageManager()
+
+        // Add order so that analytics cards are enabled
+        let insertOrder = Order.fake().copy(siteID: sampleSiteID)
+        storage.insertSampleOrder(readOnlyOrder: insertOrder)
+        let viewModel = DashboardViewModel(siteID: sampleSiteID, stores: stores, storageManager: storage, featureFlags: featureFlagService)
+
+        let storedCards = [DashboardCard(type: .topPerformers, availability: .show, enabled: true),
+                           DashboardCard(type: .onboarding, availability: .show, enabled: true),
+                           DashboardCard(type: .performance, availability: .show, enabled: true)]
+
+        mockLoadDashboardCards(withStoredCards: storedCards)
+
+        // When
+        viewModel.refreshDashboardCards()
+
+        // Then
+        waitUntil {
+            // Equality implies identical ordering
+            viewModel.dashboardCards == storedCards
+        }
+    }
+
+    func test_dashboard_cards_respects_enabled_setting_from_saved_cards() throws {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isDynamicDashboardM2Enabled: false)
+        let storage = MockStorageManager()
+
+        // Add order so that analytics cards are enabled
+        let insertOrder = Order.fake().copy(siteID: sampleSiteID)
+        storage.insertSampleOrder(readOnlyOrder: insertOrder)
+        let viewModel = DashboardViewModel(siteID: sampleSiteID, stores: stores, storageManager: storage, featureFlags: featureFlagService)
+
+        let storedCards = [DashboardCard(type: .onboarding, availability: .show, enabled: true),
+                           DashboardCard(type: .performance, availability: .show, enabled: true),
+                           DashboardCard(type: .topPerformers, availability: .show, enabled: false)]
+
+        mockLoadDashboardCards(withStoredCards: storedCards)
+
+        // When
+        viewModel.refreshDashboardCards()
+
+        // Then
+        waitUntil {
+            viewModel.dashboardCards.isNotEmpty
+        }
+
+        let performanceCard = try XCTUnwrap(viewModel.dashboardCards.first(where: {$0.type == .performance }))
+        XCTAssertTrue(performanceCard.enabled)
+
+        let topPerformersCard = try XCTUnwrap(viewModel.dashboardCards.first(where: {$0.type == .topPerformers }))
+        XCTAssertFalse(topPerformersCard.enabled)
+    }
 }
 
 private extension DashboardViewModelTests {
@@ -412,6 +608,18 @@ private extension DashboardViewModelTests {
                 return XCTFail()
             }
             completion(result)
+        }
+    }
+
+    /// Mock saved cards. Pass empty array to simulate no saved cards situation.
+    func mockLoadDashboardCards(withStoredCards cards: [DashboardCard]) {
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+            case let .loadDashboardCards(_, onCompletion):
+                onCompletion(cards)
+            default:
+                break
+            }
         }
     }
 

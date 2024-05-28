@@ -473,11 +473,9 @@ final class DashboardViewModelTests: XCTestCase {
 
         // Then
         waitUntil {
-            viewModel.dashboardCards.isNotEmpty
+            viewModel.dashboardCards.contains(expectedPerformanceCard) &&
+            viewModel.dashboardCards.contains(expectedTopPerformersCard)
         }
-
-        XCTAssertTrue(viewModel.dashboardCards.contains(expectedPerformanceCard))
-        XCTAssertTrue(viewModel.dashboardCards.contains(expectedTopPerformersCard))
     }
 
     func test_dashboard_cards_has_disabled_onboarding_card_if_all_tasks_are_completed() {
@@ -494,10 +492,8 @@ final class DashboardViewModelTests: XCTestCase {
 
         // Then
         waitUntil {
-            viewModel.dashboardCards.isNotEmpty
+            viewModel.dashboardCards.first(where: {$0.type == .onboarding })!.enabled == false
         }
-
-        XCTAssertFalse(viewModel.dashboardCards.first(where: {$0.type == .onboarding })!.enabled)
     }
 
     func test_dashboard_cards_is_loaded_from_storage_if_they_exist() {
@@ -544,12 +540,9 @@ final class DashboardViewModelTests: XCTestCase {
 
         // Then
         waitUntil {
-            viewModel.dashboardCards.isNotEmpty
+            // Equality implies identical ordering
+            viewModel.dashboardCards == storedCards
         }
-
-        XCTAssertEqual(viewModel.dashboardCards[0], storedCards[0])
-        XCTAssertEqual(viewModel.dashboardCards[1], storedCards[1])
-        XCTAssertEqual(viewModel.dashboardCards[2], storedCards[2])
     }
 
     func test_dashboard_cards_respects_enabled_setting_from_saved_cards() {
@@ -573,11 +566,9 @@ final class DashboardViewModelTests: XCTestCase {
 
         // Then
         waitUntil {
-            viewModel.dashboardCards.isNotEmpty
+            viewModel.dashboardCards.first(where: {$0.type == .performance })!.enabled == true &&
+            viewModel.dashboardCards.first(where: {$0.type == .topPerformers })!.enabled == false
         }
-
-        XCTAssertTrue(viewModel.dashboardCards.first(where: {$0.type == .performance })!.enabled)
-        XCTAssertFalse(viewModel.dashboardCards.first(where: {$0.type == .topPerformers })!.enabled)
     }
 }
 

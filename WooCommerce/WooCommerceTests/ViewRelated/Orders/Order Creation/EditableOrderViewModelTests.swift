@@ -3346,6 +3346,24 @@ final class EditableOrderViewModelTests: XCTestCase {
         // Then
         XCTAssertFalse(newShippingLineViewModel.isExistingShippingLine)
     }
+
+    func test_editing_existing_shipping_line_sets_expected_selectedShippingLine() throws {
+        // Given
+        let shippingLine = ShippingLine.fake().copy(shippingID: 1, methodTitle: "Package 1")
+        let order = Order.fake().copy(siteID: sampleSiteID, shippingLines: [shippingLine])
+        let featureFlagService = MockFeatureFlagService(isMultipleShippingLinesEnabled: true)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
+                                               flow: .editing(initialOrder: order),
+                                               storageManager: storageManager,
+                                               featureFlagService: featureFlagService)
+
+        // When
+        viewModel.shippingLineRows.first?.editShippingLine()
+
+        // Then
+        let editShippingLineViewModel = try XCTUnwrap(viewModel.selectedShippingLine)
+        assertEqual(shippingLine.methodTitle, editShippingLineViewModel.methodTitle)
+    }
 }
 
 private extension EditableOrderViewModelTests {

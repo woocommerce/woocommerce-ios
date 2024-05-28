@@ -4,7 +4,7 @@ import Yosemite
 import protocol Storage.StorageManagerType
 import Combine
 
-class ShippingLineSelectionDetailsViewModel: ObservableObject {
+class ShippingLineSelectionDetailsViewModel: ObservableObject, Identifiable {
     private var siteID: Int64
     private let storageManager: StorageManagerType
     private let analytics: Analytics

@@ -390,6 +390,10 @@ final class EditableOrderViewModel: ObservableObject {
     ///
     private var allShippingMethods: [ShippingMethod] = []
 
+    /// View model to edit a selected shipping line.
+    ///
+    @Published var selectedShippingLine: ShippingLineSelectionDetailsViewModel? = nil
+
     // MARK: Customer data properties
 
     /// View model for the customer section.
@@ -1699,7 +1703,18 @@ private extension EditableOrderViewModel {
 
                     return ShippingLineRowViewModel(shippingLine: shippingLine,
                                                     shippingMethods: self.allShippingMethods,
-                                                    editable: !isNonEditable)
+                                                    editable: !isNonEditable,
+                                                    onEditShippingLine: { [weak self] shippingID in
+                        guard let self else {
+                            return
+                        }
+                        selectedShippingLine = ShippingLineSelectionDetailsViewModel(siteID: siteID,
+                                                                                     isExistingShippingLine: true,
+                                                                                     initialMethodID: shippingLine.methodID ?? "",
+                                                                                     initialMethodTitle: shippingLine.methodTitle,
+                                                                                     shippingTotal: shippingLine.total,
+                                                                                     didSelectSave: saveShippingLine)
+                    })
                 }
             }
             .assign(to: &$shippingLineRows)

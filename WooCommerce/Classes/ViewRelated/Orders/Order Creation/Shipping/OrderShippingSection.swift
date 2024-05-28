@@ -41,6 +41,9 @@ struct OrderShippingSection: View {
         .sheet(isPresented: $showAddShippingLine, content: {
             ShippingLineSelectionDetails(viewModel: viewModel.addShippingLineViewModel())
         })
+        .sheet(item: $viewModel.selectedShippingLine, content: { selectedShippingLine in
+            ShippingLineSelectionDetails(viewModel: selectedShippingLine)
+        })
     }
 }
 

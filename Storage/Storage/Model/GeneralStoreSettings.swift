@@ -71,7 +71,7 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
     /// The raw value of stock type indicating the last selected type in the Stock dashboard card.
     public var lastSelectedStockType: String?
 
-    /// The raw value of order status indicating the last selected type in the Most recent orders dashboard card.
+    /// The raw value of order status indicating the last selected order status in the Most recent orders dashboard card.
     public var lastSelectedOrderStatus: String?
 
     public init(storeID: String? = nil,

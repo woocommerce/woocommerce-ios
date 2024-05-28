@@ -1113,7 +1113,7 @@ final class EditableOrderViewModel: ObservableObject {
     }
 
     func addShippingLineViewModel() -> ShippingLineSelectionDetailsViewModel {
-        return ShippingLineSelectionDetailsViewModel(siteID: siteID, didSelectSave: saveShippingLine)
+        return ShippingLineSelectionDetailsViewModel(siteID: siteID, shippingLine: nil, didSelectSave: saveShippingLine)
     }
 }
 

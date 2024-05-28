@@ -68,10 +68,10 @@ class ShippingLineSelectionDetailsViewModel: ObservableObject, Identifiable {
     @Published var enableDoneButton: Bool = false
 
     init(siteID: Int64,
-         shippingID: Int64? = nil,
-         initialMethodID: String = "",
-         initialMethodTitle: String = "",
-         shippingTotal: String = "",
+         shippingID: Int64?,
+         initialMethodID: String,
+         initialMethodTitle: String,
+         shippingTotal: String,
          locale: Locale = Locale.autoupdatingCurrent,
          storeCurrencySettings: CurrencySettings = ServiceLocator.currencySettings,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
@@ -107,6 +107,25 @@ class ShippingLineSelectionDetailsViewModel: ObservableObject, Identifiable {
 
         configureShippingMethods()
         observeShippingLineDetailsForUIStates(with: currencyFormatter)
+    }
+
+    convenience init(siteID: Int64,
+                     shippingLine: ShippingLine?,
+                     locale: Locale = Locale.autoupdatingCurrent,
+                     storeCurrencySettings: CurrencySettings = ServiceLocator.currencySettings,
+                     storageManager: StorageManagerType = ServiceLocator.storageManager,
+                     analytics: Analytics = ServiceLocator.analytics,
+                     didSelectSave: @escaping ((ShippingLine?) -> Void)) {
+        self.init(siteID: siteID,
+                  shippingID: shippingLine?.shippingID,
+                  initialMethodID: shippingLine?.methodID ?? "",
+                  initialMethodTitle: shippingLine?.methodTitle ?? "",
+                  shippingTotal: shippingLine?.total ?? "",
+                  locale: locale,
+                  storeCurrencySettings: storeCurrencySettings,
+                  storageManager: storageManager,
+                  analytics: analytics,
+                  didSelectSave: didSelectSave)
     }
 
     func saveData() {

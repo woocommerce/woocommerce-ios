@@ -156,12 +156,11 @@ public class ProductStore: Store {
                               categories: categories,
                               tags: tags,
                               completion: completion)
-        case let .fetchStockReport(siteID, stockType, pageNumber, pageSize, orderBy, order, completion):
+        case let .fetchStockReport(siteID, stockType, pageNumber, pageSize, order, completion):
             fetchStockReport(siteID: siteID,
                              stockType: stockType,
                              pageNumber: pageNumber,
                              pageSize: pageSize,
-                             orderBy: orderBy,
                              order: order,
                              completion: completion)
         case let .fetchProductReports(siteID, productIDs, timeZone, earliestDateToInclude, latestDateToInclude, pageSize, pageNumber, orderBy, order, completion):
@@ -175,6 +174,28 @@ public class ProductStore: Store {
                                 orderBy: orderBy,
                                 order: order,
                                 completion: completion)
+        case let .fetchVariationReports(siteID,
+                                        productIDs,
+                                        variationIDs,
+                                        timeZone,
+                                        earliestDateToInclude,
+                                        latestDateToInclude,
+                                        pageSize,
+                                        pageNumber,
+                                        orderBy,
+                                        order,
+                                        completion):
+            fetchVariationReports(siteID: siteID,
+                                  productIDs: productIDs,
+                                  variationIDs: variationIDs,
+                                  timeZone: timeZone,
+                                  earliestDateToInclude: earliestDateToInclude,
+                                  latestDateToInclude: latestDateToInclude,
+                                  pageSize: pageSize,
+                                  pageNumber: pageNumber,
+                                  orderBy: orderBy,
+                                  order: order,
+                                  completion: completion)
         }
     }
 }
@@ -755,7 +776,6 @@ private extension ProductStore {
                           stockType: String,
                           pageNumber: Int,
                           pageSize: Int,
-                          orderBy: ProductsRemote.OrderKey,
                           order: ProductsRemote.Order,
                           completion: @escaping (Result<[ProductStock], Error>) -> Void) {
         Task { @MainActor in
@@ -764,7 +784,6 @@ private extension ProductStore {
                                                        with: stockType,
                                                        pageNumber: pageNumber,
                                                        pageSize: pageSize,
-                                                       orderBy: orderBy,
                                                        order: order)
                 completion(.success(stock))
             } catch {
@@ -785,16 +804,46 @@ private extension ProductStore {
                              completion: @escaping (Result<[ProductReport], Error>) -> Void) {
         Task { @MainActor in
             do {
-                let segments = try await remote.loadProductReports(for: siteID,
-                                                                   productIDs: productIDs,
-                                                                   timeZone: timeZone,
-                                                                   earliestDateToInclude: earliestDateToInclude,
-                                                                   latestDateToInclude: latestDateToInclude,
-                                                                   pageSize: pageSize,
-                                                                   pageNumber: pageNumber,
-                                                                   orderBy: orderBy,
-                                                                   order: order)
-                completion(.success(segments))
+                let reports = try await remote.loadProductReports(for: siteID,
+                                                                  productIDs: productIDs,
+                                                                  timeZone: timeZone,
+                                                                  earliestDateToInclude: earliestDateToInclude,
+                                                                  latestDateToInclude: latestDateToInclude,
+                                                                  pageSize: pageSize,
+                                                                  pageNumber: pageNumber,
+                                                                  orderBy: orderBy,
+                                                                  order: order)
+                completion(.success(reports))
+            } catch {
+                completion(.failure(error))
+            }
+        }
+    }
+
+    func fetchVariationReports(siteID: Int64,
+                               productIDs: [Int64],
+                               variationIDs: [Int64],
+                               timeZone: TimeZone,
+                               earliestDateToInclude: Date,
+                               latestDateToInclude: Date,
+                               pageSize: Int,
+                               pageNumber: Int,
+                               orderBy: ProductsRemote.OrderKey,
+                               order: ProductsRemote.Order,
+                               completion: @escaping (Result<[ProductReport], Error>) -> Void) {
+        Task { @MainActor in
+            do {
+                let reports = try await remote.loadVariationReports(for: siteID,
+                                                                    productIDs: productIDs,
+                                                                    variationIDs: variationIDs,
+                                                                    timeZone: timeZone,
+                                                                    earliestDateToInclude: earliestDateToInclude,
+                                                                    latestDateToInclude: latestDateToInclude,
+                                                                    pageSize: pageSize,
+                                                                    pageNumber: pageNumber,
+                                                                    orderBy: orderBy,
+                                                                    order: order)
+                completion(.success(reports))
             } catch {
                 completion(.failure(error))
             }

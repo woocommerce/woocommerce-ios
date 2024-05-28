@@ -54,11 +54,7 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
             return
         }
         let updatedQuantity = product.stockQuantity - 1
-        let updatedProduct = POSProduct(itemID: product.itemID,
-                                    productID: product.productID,
-                                    name: product.name,
-                                    price: product.price,
-                                    stockQuantity: updatedQuantity)
+        let updatedProduct = product.createWithUpdatedQuantity(updatedQuantity)
         products[index] = updatedProduct
     }
 
@@ -67,11 +63,7 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
             return
         }
         let updatedQuantity = product.stockQuantity + 1
-        let updatedProduct = POSProduct(itemID: product.itemID,
-                                    productID: product.productID,
-                                    name: product.name,
-                                    price: product.price,
-                                    stockQuantity: updatedQuantity)
+        let updatedProduct = product.createWithUpdatedQuantity(updatedQuantity)
         products[index] = updatedProduct
     }
 
@@ -127,7 +119,6 @@ private extension PointOfSaleDashboardViewModel {
                                                 quantity: Decimal($0.quantity))
                         }
                     let order = try await self.orderService.syncOrder(cart: cart, order: self.order)
-                    print("~~~\(order)")
                 }
             }
     }

@@ -49,6 +49,8 @@ final class DashboardViewHostingController: UIHostingController<DashboardView> {
         configureStorePerformanceView()
         configureInboxCard()
         configureMostActiveCouponsView()
+        configureLastOrdersView()
+        configureReviewsCard()
     }
 
     @available(*, unavailable)
@@ -257,6 +259,38 @@ private extension DashboardViewHostingController {
             })
             let detailVC = CouponDetailsHostingController(viewModel: detailsViewModel)
             show(detailVC, sender: self)
+        }
+    }
+}
+
+// MARK: Last orders
+private extension DashboardViewHostingController {
+    func configureLastOrdersView() {
+        rootView.onViewAllOrders = {
+            // TODO: 12655
+        }
+
+        rootView.onViewOrderDetail = { _ in
+            // TODO: 12655
+        }
+    }
+}
+
+// MARK: Reviews card
+private extension DashboardViewHostingController {
+    func configureReviewsCard() {
+        rootView.onViewReviewDetail = { [weak self] review in
+            guard let self else { return }
+            let viewController = ReviewDetailsViewController(productReview: review.review,
+                                                             product: review.product,
+                                                             notification: review.notification)
+            show(viewController, sender: self)
+        }
+
+        rootView.onViewAllReviews = { [weak self] in
+            guard let self else { return }
+            let viewController = ReviewsViewController(siteID: viewModel.siteID)
+            show(viewController, sender: self)
         }
     }
 }

@@ -14,7 +14,7 @@ struct TotalsView: View {
                     priceFieldView(title: "Subtotal", formattedPrice: viewModel.formattedCartTotalPrice ?? "-")
                     priceFieldView(title: "Taxes", formattedPrice: "$0.60")
                 }
-                totalPriceView(formattedPrice: "$6.59")
+                totalPriceView(formattedPrice: viewModel.formattedOrderTotalPrice ?? "-")
             }
             Spacer()
             HStack {

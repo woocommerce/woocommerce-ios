@@ -198,9 +198,13 @@ private extension ReviewsDashboardCardViewModel {
         }
 
         // Ensure to only get the first three items.
-        let localReviews = filteredLocalReviews.prefix(Constants.numberOfItems)
+        let localReviews = Array(filteredLocalReviews.prefix(Constants.numberOfItems))
 
-        data = localReviews.map { review in
+        updateDataWithReviews(localReviews)
+    }
+
+    func updateDataWithReviews(_ reviews: [ProductReview]) {
+        data = reviews.map { review in
 
             // Depending on the sync progress, `product` and `notification` might still be nil.
             // This is acceptable and the app is able to display partial review content.
@@ -223,6 +227,7 @@ private extension ReviewsDashboardCardViewModel {
     @MainActor
     func synchronizeReviews(filter: ReviewsFilter) async throws {
         let fetchedReviews = try await synchronizeProductReviews(filter: filter)
+        updateDataWithReviews(fetchedReviews)
 
         let productIDs = fetchedReviews.map { $0.productID }
 

@@ -117,6 +117,8 @@ final class LastOrdersDashboardCardViewModel: ObservableObject {
         Task { @MainActor in
             selectedOrderStatus = await loadLastSelectedOrderStatus()
         }
+
+        configureStatusResultsController()
     }
 
     @MainActor
@@ -124,12 +126,26 @@ final class LastOrdersDashboardCardViewModel: ObservableObject {
         syncingData = true
         syncingError = nil
         rows = []
-        configureStatusPicker()
         configureOrdersResultsController()
 
         do {
-            // Send network request -> listen to storage -> load UI
-            try await loadLast3Orders(for: selectedOrderStatus)
+            try await withThrowingTaskGroup(of: Void.self) { group in
+                group.addTask { [weak self] in
+                    guard let self else { return }
+
+                    // Send network request -> listen to storage -> load UI
+                    try await self.loadLast3Orders(for: self.selectedOrderStatus)
+                }
+
+                group.addTask { [weak self] in
+                    try? await self?.loadOrderStatuses()
+                }
+
+                while !group.isEmpty {
+                    // rethrow any failure.
+                    try await group.next()
+                }
+            }
         } catch {
             syncingError = error
             DDLogError("⛔️ Dashboard (Last orders) — Error loading orders: \(error)")
@@ -181,16 +197,41 @@ private extension LastOrdersDashboardCardViewModel {
         }
     }
 
-    func configureStatusPicker() {
+    @MainActor
+    func loadOrderStatuses() async throws {
+        return try await withCheckedThrowingContinuation { continuation in
+            stores.dispatch(OrderStatusAction.retrieveOrderStatuses(siteID: siteID) { result in
+                switch result {
+                case .success:
+                    continuation.resume()
+                case .failure(let error):
+                    continuation.resume(throwing: error)
+                }
+            })
+        }
+    }
+
+    func configureStatusResultsController() {
+        statusResultsController.onDidChangeContent = { [weak self] in
+            self?.updateStatuses()
+        }
+        statusResultsController.onDidResetContent = { [weak self] in
+            self?.updateStatuses()
+        }
+
         do {
             try statusResultsController.performFetch()
-            let remoteStatuses = statusResultsController.fetchedObjects
-                .map { OrderStatusEnum(rawValue: $0.slug) }
-                .map { OrderStatusRow($0) }
-            allStatuses = [.any] + remoteStatuses
+            updateStatuses()
         } catch {
             DDLogError("⛔️ Dashboard (Last orders) — Unable to fetch Order Statuses: \(error)")
         }
+    }
+
+    func updateStatuses() {
+        let remoteStatuses = statusResultsController.fetchedObjects
+            .map { OrderStatusEnum(rawValue: $0.slug) }
+            .map { OrderStatusRow($0) }
+        allStatuses = [.any] + remoteStatuses
     }
 
     func configureOrdersResultsController() {

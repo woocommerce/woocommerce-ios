@@ -454,7 +454,7 @@ private extension DashboardViewModel {
             // When not available, Last orders cards need to be hidden from Dashboard, but appear on Customize as "Unavailable"
             cards.append(DashboardCard(type: .lastOrders,
                                        availability: canShowLastOrders ? .show : .unavailable,
-                                       enabled: canShowLastOrders))
+                                       enabled: false))
         }
 
         return cards

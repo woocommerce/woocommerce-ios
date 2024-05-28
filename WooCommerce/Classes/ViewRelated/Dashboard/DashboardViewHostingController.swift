@@ -266,12 +266,14 @@ private extension DashboardViewHostingController {
 // MARK: Last orders
 private extension DashboardViewHostingController {
     func configureLastOrdersView() {
-        rootView.onViewAllOrders = {
-            // TODO: 12655
+        rootView.onViewAllOrders = { [weak self] in
+            guard let self else { return }
+            MainTabBarController.switchToOrdersTab()
         }
 
-        rootView.onViewOrderDetail = { _ in
-            // TODO: 12655
+        rootView.onViewOrderDetail = { [weak self] order in
+            guard let self else { return }
+            MainTabBarController.navigateToOrderDetails(with: order.orderID, siteID: viewModel.siteID)
         }
     }
 }

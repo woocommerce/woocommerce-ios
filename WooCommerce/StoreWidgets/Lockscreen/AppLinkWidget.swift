@@ -12,7 +12,7 @@ struct AppLinkWidget: Widget {
             return []
         }
 #else
-        return [.accessoryCorner]
+        return [.accessoryCorner, .accessoryCircular]
 #endif
     }
 

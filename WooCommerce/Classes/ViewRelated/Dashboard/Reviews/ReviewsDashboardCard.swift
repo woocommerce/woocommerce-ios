@@ -51,6 +51,7 @@ struct ReviewsDashboardCard: View {
                 } else {
                     emptyView(isFiltered: viewModel.currentFilter != .all)
                 }
+            }
 
             Divider()
 

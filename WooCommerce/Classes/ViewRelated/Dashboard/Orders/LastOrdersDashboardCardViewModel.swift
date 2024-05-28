@@ -8,6 +8,7 @@ import protocol WooFoundation.Analytics
 final class LastOrdersDashboardCardViewModel: ObservableObject {
     enum OrderStatusRow: Identifiable {
         case any
+        case autoDraft
         case pending
         case processing
         case onHold
@@ -47,6 +48,8 @@ final class LastOrdersDashboardCardViewModel: ObservableObject {
 
         var status: OrderStatusEnum? {
             switch self {
+            case .autoDraft:
+                return .autoDraft
             case .any:
                 return nil
             case .pending:

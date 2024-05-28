@@ -16,7 +16,7 @@ struct CartView: View {
                 .font(.title)
                 .foregroundColor(Color.white)
             ScrollView {
-                ForEach(viewModel.productsInCart, id: \.product.productID) { cartProduct in
+                ForEach(viewModel.productsInCart, id: \.id) { cartProduct in
                     ProductRowView(cartProduct: cartProduct) {
                         viewModel.removeProductFromCart(cartProduct)
                     }

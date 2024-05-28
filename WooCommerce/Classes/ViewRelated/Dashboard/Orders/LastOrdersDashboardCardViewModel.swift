@@ -15,7 +15,35 @@ final class LastOrdersDashboardCardViewModel: ObservableObject {
         case cancelled
         case refunded
         case failed
-        case custom(OrderStatus)
+        case custom(String)
+
+        init(_ status: OrderStatusEnum?) {
+            guard let status else {
+                self = .any
+                return
+            }
+
+            switch status {
+            case .autoDraft:
+                self = .autoDraft
+            case .pending:
+                self = .pending
+            case .processing:
+                self = .processing
+            case .onHold:
+                self = .onHold
+            case .failed:
+                self = .failed
+            case .cancelled:
+                self = .cancelled
+            case .completed:
+                self = .completed
+            case .refunded:
+                self = .refunded
+            case .custom(let value):
+                self = .custom(value)
+            }
+        }
 
         var status: OrderStatusEnum? {
             switch self {
@@ -36,7 +64,7 @@ final class LastOrdersDashboardCardViewModel: ObservableObject {
             case .refunded:
                 return .refunded
             case .custom(let value):
-                return value.status
+                return .custom(value)
             }
         }
 

@@ -894,7 +894,7 @@
 		267A04872C051C5200C91CB4 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5744BEB0248FE44C000A6FE2 /* SwiftUI.framework */; };
 		267A048A2C051C5300C91CB4 /* WatchWidgetsExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267A04892C051C5300C91CB4 /* WatchWidgetsExtension.swift */; };
 		267A048C2C051C5300C91CB4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 267A048B2C051C5300C91CB4 /* Assets.xcassets */; };
-		267A04902C051C5300C91CB4 /* WatchWidgetsExtensionExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 267A04852C051C5200C91CB4 /* WatchWidgetsExtensionExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		267A04902C051C5300C91CB4 /* WatchWidgetsExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 267A04852C051C5200C91CB4 /* WatchWidgetsExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		267A04982C05266600C91CB4 /* AppLinkWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = AED9012C28E5F517002B4572 /* AppLinkWidget.swift */; };
 		267A04992C05266C00C91CB4 /* View+ContainerBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26D57CF62B59820600E8EFB8 /* View+ContainerBackground.swift */; };
 		267A049A2C05268300C91CB4 /* WooConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5D1AFBF20BC67C200DB0E8C /* WooConstants.swift */; };
@@ -2848,7 +2848,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				267A04902C051C5300C91CB4 /* WatchWidgetsExtensionExtension.appex in Embed Foundation Extensions */,
+				267A04902C051C5300C91CB4 /* WatchWidgetsExtension.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -3782,7 +3782,7 @@
 		2679F0252AAA2A3200AF80C5 /* WooFoundation.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = WooFoundation.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		2679F0282AAA37D400AF80C5 /* images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = images.xcassets; sourceTree = "<group>"; };
 		2679F02C2AAADB1C00AF80C5 /* OrderNotificationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderNotificationViewModel.swift; sourceTree = "<group>"; };
-		267A04852C051C5200C91CB4 /* WatchWidgetsExtensionExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = WatchWidgetsExtensionExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		267A04852C051C5200C91CB4 /* WatchWidgetsExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = WatchWidgetsExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		267A04892C051C5300C91CB4 /* WatchWidgetsExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchWidgetsExtension.swift; sourceTree = "<group>"; };
 		267A048B2C051C5300C91CB4 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		267A048D2C051C5300C91CB4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -9642,7 +9642,7 @@
 				3F1FA84028B60125009E246C /* StoreWidgetsExtension.appex */,
 				260837072AA66E4A0004A12B /* NotificationExtension.appex */,
 				26F81B152BE433A2009EC58E /* Woo Watch App.app */,
-				267A04852C051C5200C91CB4 /* WatchWidgetsExtensionExtension.appex */,
+				267A04852C051C5200C91CB4 /* WatchWidgetsExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -12942,9 +12942,9 @@
 			productReference = 260837072AA66E4A0004A12B /* NotificationExtension.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
-		267A04842C051C5100C91CB4 /* WatchWidgetsExtensionExtension */ = {
+		267A04842C051C5100C91CB4 /* WatchWidgetsExtension */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 267A04952C051C5700C91CB4 /* Build configuration list for PBXNativeTarget "WatchWidgetsExtensionExtension" */;
+			buildConfigurationList = 267A04952C051C5700C91CB4 /* Build configuration list for PBXNativeTarget "WatchWidgetsExtension" */;
 			buildPhases = (
 				267A04812C051C5100C91CB4 /* Sources */,
 				267A04822C051C5100C91CB4 /* Frameworks */,
@@ -12954,9 +12954,9 @@
 			);
 			dependencies = (
 			);
-			name = WatchWidgetsExtensionExtension;
+			name = WatchWidgetsExtension;
 			productName = WatchWidgetsExtensionExtension;
-			productReference = 267A04852C051C5200C91CB4 /* WatchWidgetsExtensionExtension.appex */;
+			productReference = 267A04852C051C5200C91CB4 /* WatchWidgetsExtension.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
 		26F81B142BE433A2009EC58E /* Woo Watch App */ = {
@@ -13255,7 +13255,7 @@
 				3F1FA83F28B60125009E246C /* StoreWidgetsExtension */,
 				260837062AA66E4A0004A12B /* NotificationExtension */,
 				26F81B142BE433A2009EC58E /* Woo Watch App */,
-				267A04842C051C5100C91CB4 /* WatchWidgetsExtensionExtension */,
+				267A04842C051C5100C91CB4 /* WatchWidgetsExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -16261,7 +16261,7 @@
 		};
 		267A048F2C051C5300C91CB4 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 267A04842C051C5100C91CB4 /* WatchWidgetsExtensionExtension */;
+			target = 267A04842C051C5100C91CB4 /* WatchWidgetsExtension */;
 			targetProxy = 267A048E2C051C5300C91CB4 /* PBXContainerItemProxy */;
 		};
 		26F81B212BE433A3009EC58E /* PBXTargetDependency */ = {
@@ -16710,7 +16710,7 @@
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MARKETING_VERSION = 1.0;
 				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.automattic.woocommerce.watchkitapp.widgets;
+				PRODUCT_BUNDLE_IDENTIFIER = com.automattic.alpha.woocommerce.watchkitapp.widgets;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = watchos;
@@ -17483,7 +17483,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		267A04952C051C5700C91CB4 /* Build configuration list for PBXNativeTarget "WatchWidgetsExtensionExtension" */ = {
+		267A04952C051C5700C91CB4 /* Build configuration list for PBXNativeTarget "WatchWidgetsExtension" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				267A04922C051C5700C91CB4 /* Debug */,

@@ -5,11 +5,15 @@ import SwiftUI
 ///
 struct AppLinkWidget: Widget {
     private var supportedFamilies: [WidgetFamily] {
+#if !os(watchOS)
         if #available(iOSApplicationExtension 16.0, *) {
             return [.accessoryCircular]
         } else {
             return []
         }
+#else
+        return [.accessoryCorner]
+#endif
     }
 
     var body: some WidgetConfiguration {
@@ -50,8 +54,10 @@ private struct AppLinkProvider: TimelineProvider {
 private struct AppButtonView: View {
     var body: some View {
         ZStack {
+#if !os(watchOS)
             Circle()
                 .fill(Color.black)
+#endif
             Image(uiImage: .wooLogoWhite)
                 .resizable()
                 .scaledToFit()

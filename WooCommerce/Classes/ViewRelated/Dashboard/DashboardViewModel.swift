@@ -506,10 +506,18 @@ private extension DashboardViewModel {
         if savedCards.isEmpty {
             dashboardCards = updatedCards
         } else {
+
             // Reorder dashboardCards based on original ordering in savedCards
-            dashboardCards = savedCards.compactMap { savedCard in
+            let reorderedCards = savedCards.compactMap { savedCard in
                 updatedCards.first(where: { $0.type == savedCard.type })
             }
+
+            // Get any remaining cards and disable them.
+            let remainingCards = Set(updatedCards).subtracting(savedCards)
+                .map { $0.copy(enabled: false) }
+
+            // Append the remaining cards to the end of the list
+            dashboardCards = reorderedCards + remainingCards
         }
     }
 

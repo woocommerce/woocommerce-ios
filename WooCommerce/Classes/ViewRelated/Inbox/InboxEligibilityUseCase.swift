@@ -14,7 +14,6 @@ protocol InboxEligibilityChecker {
     ///
     func isEligibleForInbox(siteID: Int64, completion: @escaping (Bool) -> Void)
 
-    
     /// Asynchronously determines whether the store is eligible for inbox feature.
     /// - Parameters:
     ///   - siteID: the ID of the site to check for Inbox eligibility.

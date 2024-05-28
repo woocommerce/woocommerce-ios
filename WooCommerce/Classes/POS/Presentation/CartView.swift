@@ -16,7 +16,7 @@ struct CartView: View {
                 .font(.title)
                 .foregroundColor(Color.white)
             ScrollView {
-                ForEach(viewModel.productsInCart, id: \.product.productID) { cartProduct in
+                ForEach(viewModel.productsInCart, id: \.id) { cartProduct in
                     ProductRowView(cartProduct: cartProduct) {
                         viewModel.removeProductFromCart(cartProduct)
                     }
@@ -71,6 +71,7 @@ private extension CartView {
 #if DEBUG
 #Preview {
     CartView(viewModel: PointOfSaleDashboardViewModel(products: POSProductFactory.makeFakeProducts(),
-                                                      cardReaderConnectionViewModel: .init(state: .connectingToReader)))
+                                                      cardReaderConnectionViewModel: .init(state: .connectingToReader),
+                                                      currencySettings: .init()))
 }
 #endif

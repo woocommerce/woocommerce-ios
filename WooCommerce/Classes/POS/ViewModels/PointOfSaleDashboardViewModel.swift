@@ -5,10 +5,13 @@ import class Yosemite.PointOfSaleOrderService
 import protocol Yosemite.PointOfSaleOrderServiceProtocol
 import struct Yosemite.PointOfSaleOrder
 import struct Yosemite.PointOfSaleCartItem
+import class WooFoundation.CurrencyFormatter
+import class WooFoundation.CurrencySettings
 
 final class PointOfSaleDashboardViewModel: ObservableObject {
     @Published private(set) var products: [POSProduct]
     @Published private(set) var productsInCart: [CartProduct] = []
+    @Published private(set) var formattedCartTotalPrice: String?
 
     @Published var showsCardReaderSheet: Bool = false
     @Published var showsFilterSheet: Bool = false
@@ -22,18 +25,26 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
     @Published private(set) var orderStage: OrderStage = .building
 
     @Published private var order: PointOfSaleOrder?
+    var formattedOrderTotalPrice: String? {
+        order?.total
+    }
     @Published private var isSyncingOrder: Bool = false
     private let orderService: PointOfSaleOrderServiceProtocol
     private var cartSubscription: AnyCancellable?
 
+    private let currencyFormatter: CurrencyFormatter
+
     init(products: [POSProduct],
          cardReaderConnectionViewModel: CardReaderConnectionViewModel,
+         // TODO: DI to entry point from the app
          orderService: PointOfSaleOrderServiceProtocol = PointOfSaleOrderService(siteID: ServiceLocator.stores.sessionManager.defaultStoreID!,
-                                                                                 credentials: ServiceLocator.stores.sessionManager.defaultCredentials!)) {
+                                                                                 credentials: ServiceLocator.stores.sessionManager.defaultCredentials!),
+         currencySettings: CurrencySettings) {
         self.products = products
         self.cardReaderConnectionViewModel = cardReaderConnectionViewModel
         self.orderService = orderService
-
+        self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
+        observeProductsInCartForCartTotal()
         observeProductsInCartForRemoteOrderSyncing()
     }
 
@@ -100,7 +111,26 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
 extension PointOfSaleDashboardViewModel {
     // Helper function to populate SwiftUI previews
     static func defaultPreview() -> PointOfSaleDashboardViewModel {
-        PointOfSaleDashboardViewModel(products: [], cardReaderConnectionViewModel: .init(state: .connectingToReader))
+        PointOfSaleDashboardViewModel(products: [],
+                                      cardReaderConnectionViewModel: .init(state: .connectingToReader),
+                                      currencySettings: .init())
+    }
+}
+
+private extension PointOfSaleDashboardViewModel {
+    func observeProductsInCartForCartTotal() {
+        $productsInCart
+            .map { [weak self] in
+                guard let self else { return nil }
+                let totalValue: Decimal = $0.reduce(0) { partialResult, cartProduct in
+                    let productPrice = self.currencyFormatter.convertToDecimal(cartProduct.product.price) ?? 0
+                    let quantity = cartProduct.quantity
+                    let total = productPrice.multiplying(by: NSDecimalNumber(value: quantity)) as Decimal
+                    return partialResult + total
+                }
+                return currencyFormatter.formatAmount(totalValue)
+            }
+            .assign(to: &$formattedCartTotalPrice)
     }
 }
 

@@ -9,7 +9,7 @@ struct ProductGridView: View {
 
     var body: some View {
         let columns: [GridItem] = Array(repeating: .init(.fixed(120)),
-                                        count: viewModel.products.count)
+                                        count: 4)
 
         VStack {
             Text("Product List")

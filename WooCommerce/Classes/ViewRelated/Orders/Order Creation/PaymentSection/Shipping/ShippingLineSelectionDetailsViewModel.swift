@@ -37,6 +37,7 @@ class ShippingLineSelectionDetailsViewModel: ObservableObject, Identifiable {
         methodTitle.isNotEmpty ? methodTitle : Localization.namePlaceholder
     }
 
+    private let shippingID: Int64
     private let initialMethodID: String
     private let initialAmount: Decimal?
     private let initialMethodTitle: String
@@ -67,7 +68,7 @@ class ShippingLineSelectionDetailsViewModel: ObservableObject, Identifiable {
     @Published var enableDoneButton: Bool = false
 
     init(siteID: Int64,
-         isExistingShippingLine: Bool = false,
+         shippingID: Int64? = nil,
          initialMethodID: String = "",
          initialMethodTitle: String = "",
          shippingTotal: String = "",
@@ -77,9 +78,10 @@ class ShippingLineSelectionDetailsViewModel: ObservableObject, Identifiable {
          analytics: Analytics = ServiceLocator.analytics,
          didSelectSave: @escaping ((ShippingLine?) -> Void)) {
         self.siteID = siteID
+        self.shippingID = shippingID ?? 0
         self.storageManager = storageManager
         self.analytics = analytics
-        self.isExistingShippingLine = isExistingShippingLine
+        self.isExistingShippingLine = shippingID != nil
         self.initialMethodID = initialMethodID
         self.initialMethodTitle = initialMethodTitle
         self.methodTitle = initialMethodTitle
@@ -108,7 +110,7 @@ class ShippingLineSelectionDetailsViewModel: ObservableObject, Identifiable {
     }
 
     func saveData() {
-        let shippingLine = ShippingLine(shippingID: 0,
+        let shippingLine = ShippingLine(shippingID: shippingID,
                                         methodTitle: finalMethodTitle,
                                         methodID: selectedMethod.methodID,
                                         total: formattableAmountViewModel.amount,

@@ -1271,6 +1271,7 @@ extension EditableOrderViewModel {
              shouldShowShippingTotal: Bool = false,
              shippingTotal: String = "0",
              isShippingTotalEditable: Bool = true,
+             shippingID: Int64? = nil,
              shippingMethodID: String = "",
              shippingMethodTitle: String = "",
              shippingMethodTotal: String = "",
@@ -1340,7 +1341,7 @@ extension EditableOrderViewModel {
                                                                       shippingTotal: shippingMethodTotal,
                                                                       didSelectSave: saveShippingLineClosure)
             self.shippingLineSelectionViewModel = ShippingLineSelectionDetailsViewModel(siteID: siteID,
-                                                                                        isExistingShippingLine: shouldShowShippingTotal,
+                                                                                        shippingID: shippingID,
                                                                                         initialMethodID: shippingMethodID,
                                                                                         initialMethodTitle: shippingMethodTitle,
                                                                                         shippingTotal: shippingMethodTotal,
@@ -1709,7 +1710,7 @@ private extension EditableOrderViewModel {
                             return
                         }
                         selectedShippingLine = ShippingLineSelectionDetailsViewModel(siteID: siteID,
-                                                                                     isExistingShippingLine: true,
+                                                                                     shippingID: shippingLine.shippingID,
                                                                                      initialMethodID: shippingLine.methodID ?? "",
                                                                                      initialMethodTitle: shippingLine.methodTitle,
                                                                                      shippingTotal: shippingLine.total,
@@ -1855,8 +1856,7 @@ private extension EditableOrderViewModel {
 
                 let orderTotals = OrderTotalsCalculator(for: order, using: self.currencyFormatter)
 
-                let shippingMethodID = order.shippingLines.first?.methodID ?? ""
-                let shippingMethodTitle = order.shippingLines.first?.methodTitle ?? ""
+                let shippingLine = order.shippingLines.first
 
                 let isDataSyncing: Bool = {
                     switch state {
@@ -1904,8 +1904,9 @@ private extension EditableOrderViewModel {
                                             shouldShowShippingTotal: order.shippingLines.filter { $0.methodID != nil }.isNotEmpty,
                                             shippingTotal: order.shippingTotal.isNotEmpty ? order.shippingTotal : "0",
                                             isShippingTotalEditable: !multipleShippingLinesEnabled,
-                                            shippingMethodID: shippingMethodID,
-                                            shippingMethodTitle: shippingMethodTitle,
+                                            shippingID: shippingLine?.shippingID,
+                                            shippingMethodID: shippingLine?.methodID ?? "",
+                                            shippingMethodTitle: shippingLine?.methodTitle ?? "",
                                             shippingMethodTotal: order.shippingLines.first?.total ?? "0",
                                             shippingTax: order.shippingTax.isNotEmpty ? order.shippingTax : "0",
                                             shouldShowTotalCustomAmounts: order.fees.filter { $0.name != nil }.isNotEmpty,

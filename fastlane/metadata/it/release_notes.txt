@@ -1,5 +1,3 @@
-- [*] Modifica del colore del testo nella vista dei badge nell'elenco dei prodotti degli ordini per correggere la leggibilità in modalità scura. [https://github.com/woocommerce/woocommerce-ios/pull/12630]
-- [*] Correzione speculativa di un arresto anomalo durante l'apertura delle notifiche sugli ordini [https://github.com/woocommerce/woocommerce-ios/pull/12643]
-- [interno] Visualizzazione della scheda del feedback in app nella bacheca. [https://github.com/woocommerce/woocommerce-ios/pull/12636]
-- [*] Spedizione: ora è possibile selezionare un metodo di spedizione durante l'aggiunta o la modifica della spedizione relativa a un determinato ordine. [https://github.com/woocommerce/woocommerce-ios/pull/12688]
-
+Siamo felici di presentare gli ultimi aggiornamenti.
+Il nostro ultimo aggiornamento apporta miglioramenti per aumentare stabilità e prestazioni.
+Ci impegniamo a migliorare continuamente la nostra app per offrire un servizio migliore. Grazie per aver scelto WooCommerce.

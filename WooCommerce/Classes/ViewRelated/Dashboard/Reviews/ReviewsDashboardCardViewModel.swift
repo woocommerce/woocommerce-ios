@@ -20,7 +20,6 @@ final class ReviewsDashboardCardViewModel: ObservableObject {
     }
 
     @Published private(set) var data: [ReviewViewModel] = []
-
     private var reviews: [ProductReview] {
         return productReviewsResultsController.fetchedObjects
     }
@@ -32,7 +31,8 @@ final class ReviewsDashboardCardViewModel: ObservableObject {
     }
     @Published private(set) var showLoadingAnimation = false
     @Published private(set) var syncingError: Error?
-    @Published private(set) var shouldShowAllReviewsButton = false
+    @Published private var syncingData: Bool = false
+    @Published private(set) var switchingStatus: Bool = false
 
     private let stores: StoresManager
     private let storageManager: StorageManagerType
@@ -64,6 +64,12 @@ final class ReviewsDashboardCardViewModel: ObservableObject {
                                                                              sortedBy: [])
 
         configureResultsController()
+
+        $syncingData.combineLatest($data)
+            .map { syncing, data -> Bool in
+                syncing && data.isEmpty
+            }
+            .assign(to: &$showLoadingAnimation)
     }
 
     /// ResultsController for ProductReview
@@ -91,20 +97,23 @@ final class ReviewsDashboardCardViewModel: ObservableObject {
 
     @MainActor
     func reloadData() async {
-        showLoadingAnimation = true
+        syncingData = true
         syncingError = nil
         do {
             try await synchronizeReviews(filter: currentFilter)
         } catch {
             syncingError = error
+            DDLogError("⛔️ Dashboard (Reviews) — Error synchronizing reviews: \(error)")
         }
-        showLoadingAnimation = false
+        syncingData = false
     }
 
     @MainActor
     func filterReviews(by filter: ReviewsFilter) async {
+        switchingStatus = true
         currentFilter = filter
         await reloadData()
+        switchingStatus = false
     }
 }
 
@@ -181,12 +190,15 @@ private extension ReviewsDashboardCardViewModel {
     /// Populates data from the local storage for the three main data (reviews, products, notifications).
     ///
     func updateData() {
-        let localReviews = reviews.prefix(Constants.numberOfItems)
-
-        // We can show partial review content as long as there are reviews found in storage.
-        if localReviews.isEmpty == false {
-            showLoadingAnimation = false
+        var filteredLocalReviews: [ProductReview] = []
+        if currentFilter != .all {
+            filteredLocalReviews = reviews.filter { $0.status == currentFilter.productReviewStatus }
+        } else {
+            filteredLocalReviews = reviews
         }
+
+        // Ensure to only get the first three items.
+        let localReviews = filteredLocalReviews.prefix(Constants.numberOfItems)
 
         data = localReviews.map { review in
 
@@ -210,15 +222,12 @@ private extension ReviewsDashboardCardViewModel {
 
     @MainActor
     func synchronizeReviews(filter: ReviewsFilter) async throws {
-        try await synchronizeProductReviews(filter: filter)
+        let fetchedReviews = try await synchronizeProductReviews(filter: filter)
 
-        let productIDs = reviews.prefix(Constants.numberOfItems).map { $0.productID }
+        let productIDs = fetchedReviews.map { $0.productID }
 
         if productIDs.isNotEmpty {
-            // As long as the app is able to fetch one review once, then the button should always appear.
-            // Later on, when filtering by hold or pending status, the reviews result might become empty.
-            // In that case, the app should keep showing the button to allow the user to see all non-filtered reviews.
-            shouldShowAllReviewsButton = true
+            updateProductsResultsController(for: productIDs)
 
             // Get product names and, optionally, read status from notifications.
             await withTaskGroup(of: Void.self) { group in
@@ -227,6 +236,7 @@ private extension ReviewsDashboardCardViewModel {
                         try await self?.retrieveProducts(for: productIDs)
                     } catch {
                         self?.syncingError = error
+                        DDLogError("⛔️ Dashboard (Reviews) — Error retrieving products: \(error)")
                     }
                 }
                 if stores.isAuthenticatedWithoutWPCom == false {
@@ -235,6 +245,7 @@ private extension ReviewsDashboardCardViewModel {
                             try await self?.synchronizeNotifications()
                         } catch {
                             self?.syncingError = error
+                            DDLogError("⛔️ Dashboard (Reviews) — Error synchronizing notifications: \(error)")
                         }
                     }
                 }
@@ -242,35 +253,32 @@ private extension ReviewsDashboardCardViewModel {
         }
     }
 
-    @MainActor
-    func updateProducts(productIDs: [Int64]) async throws {
-        try await retrieveProducts(for: productIDs)
-
-        // update predicate and manually fetch so that new predicate applies.
+    /// update predicate and manually fetch so that new predicate applies.
+    ///
+    func updateProductsResultsController(for productIDs: [Int64]) {
         productsResultsController.predicate = NSCompoundPredicate(
             andPredicateWithSubpredicates: [sitePredicate(),
                                             NSPredicate(format: "productID IN %@", productIDs)])
-        try productsResultsController.performFetch()
+        do {
+            try productsResultsController.performFetch()
+        }
+        catch {
+            ServiceLocator.crashLogging.logError(error)
+        }
     }
 }
 
 // MARK: Remote
 private extension ReviewsDashboardCardViewModel {
     @MainActor
-    func synchronizeProductReviews (filter: ReviewsFilter? = nil) async throws {
-        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+    func synchronizeProductReviews (filter: ReviewsFilter? = nil) async throws -> [ProductReview] {
+        try await withCheckedThrowingContinuation { continuation in
             stores.dispatch(ProductReviewAction.synchronizeProductReviews(siteID: siteID,
                                                                           pageNumber: 1,
                                                                           pageSize: Constants.numberOfItems,
                                                                           status: currentFilter.productReviewStatus
                                                                          ) { result in
-                switch result {
-                case .success:
-                    // Ignoring the result from remote as we're using storage as the single source of truth
-                    continuation.resume()
-                case .failure(let error):
-                    continuation.resume(throwing: error)
-                }
+                continuation.resume(with: result)
             })
         }
     }

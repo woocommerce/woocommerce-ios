@@ -1,5 +1,3 @@
-- [*] 注文商品一覧のバッジ表示のテキスト色を変更して、ダークモードでの読みやすさを修正しました。 [https://github.com/woocommerce/woocommerce-ios/pull/12630]
-- [*] 注文通知を開く際のクラッシュに対する投機的修正 [https://github.com/woocommerce/woocommerce-ios/pull/12643]
-- [内部] ダッシュボードにアプリ内フィードバックカードを表示します。 [https://github.com/woocommerce/woocommerce-ios/pull/12636]
-- [*] 配送: 注文で配送を追加または編集する際に、配送方法を選択できるようになりました。 [https://github.com/woocommerce/woocommerce-ios/pull/12688]
-
+最新のアップデートを公開することをお知らせいたします。
+最新のアップデートでは、安定性とパフォーマンスの両方を向上させるため、見えない部分の重要な改善を行いました。
+当社はアプリを継続的に改善することでより良いサービスを提供できるよう努めています。 WooCommerce をお選びいただきありがとうございます。

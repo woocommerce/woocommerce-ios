@@ -490,6 +490,10 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.print)
     }
 
+    func test_playSquareImage_is_not_nil() {
+        XCTAssertNotNil(UIImage.playSquareImage)
+    }
+
     func testPlusImageIconIsNotNil() {
         XCTAssertNotNil(UIImage.plusImage)
     }
@@ -500,6 +504,10 @@ final class IconsTests: XCTestCase {
 
     func test_plus_small_image_is_not_nil() {
         XCTAssertNotNil(UIImage.plusSmallImage)
+    }
+
+    func test_pointOfSaleImage_is_not_nil() {
+        XCTAssertNotNil(UIImage.pointOfSaleImage)
     }
 
     func test_productDescriptionAIAnnouncementImage_is_not_nil() {

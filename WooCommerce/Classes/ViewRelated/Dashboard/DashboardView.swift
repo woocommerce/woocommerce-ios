@@ -3,6 +3,7 @@ import enum Yosemite.StatsTimeRangeV4
 import struct Yosemite.Site
 import struct Yosemite.StoreOnboardingTask
 import struct Yosemite.Coupon
+import struct Yosemite.Order
 
 /// View for the dashboard screen
 ///
@@ -45,6 +46,12 @@ struct DashboardView: View {
 
     /// Set externally in the hosting controller.
     var onShowAllInboxMessages: (() -> Void)?
+
+    /// Set externally in the hosting controller.
+    var onViewAllOrders: (() -> Void)?
+
+    /// Set externally in the hosting controller.
+    var onViewOrderDetail: ((_ order: Order) -> Void)?
 
     /// Set externally in the hosting controller.
     var onViewReviewDetail: ((_ review: ReviewViewModel) -> Void)?
@@ -207,7 +214,12 @@ private extension DashboardView {
                     case .stock:
                         ProductStockDashboardCard(viewModel: viewModel.productStockCardViewModel)
                     case .lastOrders:
-                        EmptyView()
+                        LastOrdersDashboardCard(viewModel: viewModel.lastOrdersCardViewModel) {
+                            onViewAllOrders?()
+                        } onViewOrderDetail: { order in
+                            onViewOrderDetail?(order)
+                        }
+
                     }
 
                     // Append feedback card after the first card

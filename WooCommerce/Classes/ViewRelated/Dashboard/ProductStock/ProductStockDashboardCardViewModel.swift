@@ -1,6 +1,5 @@
 import Foundation
 import Yosemite
-import protocol Storage.StorageManagerType
 import protocol WooFoundation.Analytics
 
 /// View model for `ProductStockDashboardCard`
@@ -9,23 +8,24 @@ final class ProductStockDashboardCardViewModel: ObservableObject {
     // Set externally to trigger callback upon hiding the Inbox card.
     var onDismiss: (() -> Void)?
 
+    @Published private(set) var reports: [ProductReport] = []
     @Published private(set) var syncingData = false
     @Published private(set) var syncingError: Error?
     @Published private(set) var selectedStockType: StockType = .lowStock
 
     let siteID: Int64
     private let stores: StoresManager
-    private let storageManager: StorageManagerType
     private let analytics: Analytics
+
+    /// In-memory list of loaded reports by product IDs.
+    private var savedReports: [Int64: ProductReport] = [:]
 
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
-         storageManager: StorageManagerType = ServiceLocator.storageManager,
          analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
         self.analytics = analytics
         self.stores = stores
-        self.storageManager = storageManager
 
         Task { @MainActor in
             selectedStockType = await loadLastSelectedStockType()
@@ -36,8 +36,16 @@ final class ProductStockDashboardCardViewModel: ObservableObject {
     func reloadData() async {
         syncingData = true
         syncingError = nil
-        // TODO: replace this with actual remote requests
-        try? await Task.sleep(nanoseconds: 1_000_000_000)
+        do {
+            let stock = try await fetchStock(type: selectedStockType)
+            try await fetchAndSaveReportsToMemory(for: stock)
+            reports = stock.compactMap { item in
+                savedReports[item.productID]
+            }
+            .sorted { $0.stockQuantity < $1.stockQuantity }
+        } catch {
+            syncingError = error
+        }
         syncingData = false
     }
 
@@ -69,9 +77,113 @@ private extension ProductStockDashboardCardViewModel {
             }))
         }
     }
+
+    @MainActor
+    func fetchStock(type: StockType) async throws -> [ProductStock] {
+        try await withCheckedThrowingContinuation { continuation in
+            stores.dispatch(ProductAction.fetchStockReport(siteID: siteID,
+                                                           stockType: type.rawValue,
+                                                           pageNumber: Constants.pageNumber,
+                                                           pageSize: Constants.maxItemCount,
+                                                           order: .ascending) { result in
+                continuation.resume(with: result)
+            })
+        }
+    }
+
+    @MainActor
+    func fetchProductReports(productIDs: [Int64]) async throws -> [ProductReport] {
+        let timeZone = TimeZone.siteTimezone
+        let currentDate = Date().endOfDay(timezone: timeZone)
+        let last30Days = Date(timeInterval: -Constants.dayInSeconds*30, since: currentDate).startOfDay(timezone: timeZone)
+        return try await withCheckedThrowingContinuation { continuation in
+            stores.dispatch(ProductAction.fetchProductReports(siteID: siteID,
+                                                              productIDs: productIDs,
+                                                              timeZone: timeZone,
+                                                              earliestDateToInclude: last30Days,
+                                                              latestDateToInclude: currentDate,
+                                                              pageSize: Constants.maxItemCount,
+                                                              pageNumber: Constants.pageNumber,
+                                                              orderBy: .itemsSold,
+                                                              order: .descending) { result in
+                continuation.resume(with: result)
+            })
+        }
+    }
+
+    @MainActor
+    func fetchVariationReports(productIDs: [Int64], variationIDs: [Int64]) async throws -> [ProductReport] {
+        let timeZone = TimeZone.siteTimezone
+        let currentDate = Date().endOfDay(timezone: timeZone)
+        let last30Days = Date(timeInterval: -Constants.dayInSeconds*30, since: currentDate).startOfDay(timezone: timeZone)
+        return try await withCheckedThrowingContinuation { continuation in
+            stores.dispatch(ProductAction.fetchVariationReports(siteID: siteID,
+                                                                productIDs: productIDs,
+                                                                variationIDs: variationIDs,
+                                                                timeZone: timeZone,
+                                                                earliestDateToInclude: last30Days,
+                                                                latestDateToInclude: currentDate,
+                                                                pageSize: Constants.maxItemCount,
+                                                                pageNumber: Constants.pageNumber,
+                                                                orderBy: .itemsSold,
+                                                                order: .descending) { result in
+                continuation.resume(with: result)
+            })
+        }
+    }
+
+    @MainActor
+    func fetchAndSaveReportsToMemory(for stock: [ProductStock]) async throws {
+
+        let groupedStockByVariations = Dictionary(grouping: stock, by: { $0.isProductVariation })
+        let variationsToFetchReports = groupedStockByVariations[true] ?? []
+        let productsToFetchReports = groupedStockByVariations[false] ?? []
+
+        try await withThrowingTaskGroup(of: Void.self) { [weak self] group in
+            guard let self else { return }
+
+            if variationsToFetchReports.isNotEmpty {
+                group.addTask {
+                    let reports = try await self.fetchVariationReports(
+                        productIDs: Array(Set(variationsToFetchReports.map { $0.parentID })),
+                        variationIDs: variationsToFetchReports.map { $0.productID }
+                    )
+                    for report in reports {
+                        if let variationID = report.variationID {
+                            // In some cases, variation reports can have invalid product ID.
+                            // Fix that by restore the parent ID from the stock item.
+                            let updatedReport: ProductReport = {
+                                guard report.productID == 0,
+                                      let parentID = variationsToFetchReports.first(where: { $0.productID == variationID })?.productID else {
+                                    return report
+                                }
+                                return report.copy(productID: parentID)
+                            }()
+                            self.savedReports[variationID] = updatedReport
+                        }
+                    }
+                }
+            }
+
+            if productsToFetchReports.isNotEmpty {
+                group.addTask {
+                    let reports = try await self.fetchProductReports(productIDs: productsToFetchReports.map { $0.productID })
+                    for report in reports {
+                        self.savedReports[report.productID] = report
+                    }
+                }
+            }
+
+            while !group.isEmpty {
+                // rethrow any failure.
+                try await group.next()
+            }
+        }
+    }
 }
 
 extension ProductStockDashboardCardViewModel {
+
     enum StockType: String, CaseIterable, Identifiable {
         case lowStock = "lowstock"
         case outOfStock = "outofstock"
@@ -109,4 +221,16 @@ extension ProductStockDashboardCardViewModel {
             )
         }
     }
+}
+
+private extension ProductStockDashboardCardViewModel {
+    enum Constants {
+        static let pageNumber = 1
+        static let maxItemCount = 3
+        static let dayInSeconds: TimeInterval = 86400
+    }
+}
+
+extension ProductReport: Identifiable {
+    public var id: String { "\(productID)-\(variationID ?? 0)" }
 }

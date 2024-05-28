@@ -54,7 +54,6 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
     let storageManager: StorageManagerType
     let stores: StoresManager
     let configurationLoader: CardPresentConfigurationLoader
-    let featureFlagService: FeatureFlagService
     private let cardPresentPluginsDataProvider: CardPresentPluginsDataProvider
     private let cardPresentPaymentOnboardingStateCache: CardPresentPaymentOnboardingStateCache
     private let analytics: Analytics
@@ -72,7 +71,6 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
     init(
         storageManager: StorageManagerType = ServiceLocator.storageManager,
         stores: StoresManager = ServiceLocator.stores,
-        featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
         cardPresentPaymentOnboardingStateCache: CardPresentPaymentOnboardingStateCache = CardPresentPaymentOnboardingStateCache.shared,
         analytics: Analytics = ServiceLocator.analytics
     ) {
@@ -80,7 +78,6 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
         self.stores = stores
         self.configurationLoader = .init(stores: stores)
         self.cardPresentPluginsDataProvider = .init(storageManager: storageManager, stores: stores, configuration: configurationLoader.configuration)
-        self.featureFlagService = featureFlagService
         self.cardPresentPaymentOnboardingStateCache = cardPresentPaymentOnboardingStateCache
         self.analytics = analytics
 

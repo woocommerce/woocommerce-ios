@@ -429,10 +429,9 @@ final class DashboardViewModelTests: XCTestCase {
 
         // Then
         waitUntil {
-            viewModel.dashboardCards.isNotEmpty
+            viewModel.dashboardCards == expectedCards
         }
 
-        XCTAssertEqual(viewModel.dashboardCards, expectedCards)
     }
 
     func test_generated_default_cards_are_as_expected_with_m2_feature_flag_disabled() {

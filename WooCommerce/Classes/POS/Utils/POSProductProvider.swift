@@ -6,9 +6,15 @@ import class WooFoundation.CurrencySettings
 /// Product provider for the Point of Sale feature
 ///
 final class POSProductProvider {
-    private let storageManager: StorageManagerType = ServiceLocator.storageManager
-    private var siteID: Int64 { ServiceLocator.stores.sessionManager.defaultSite?.siteID ?? 0 }
-    private var currencySettings: CurrencySettings = ServiceLocator.currencySettings
+    private let storageManager: StorageManagerType
+    private var siteID: Int64
+    private var currencySettings: CurrencySettings
+
+    init() {
+        self.storageManager = ServiceLocator.storageManager
+        self.siteID = ServiceLocator.stores.sessionManager.defaultSite?.siteID ?? 0
+        self.currencySettings = ServiceLocator.currencySettings
+    }
 
     private lazy var productsResultsController: ResultsController<StorageProduct> = {
         let predicate = NSPredicate(format: "siteID == %lld", siteID)

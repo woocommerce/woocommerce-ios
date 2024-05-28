@@ -71,7 +71,11 @@ final class ReviewsDashboardCardViewModelTests: XCTestCase {
         await viewModel.reloadData()
 
         // Then
-        XCTAssertEqual(viewModel.data.count, self.sampleReviews.count)
+        let sortedExtractedReviews = viewModel.data
+            .map { $0.review }
+            .sorted { $0.reviewID < $1.reviewID }
+
+        XCTAssertEqual(sortedExtractedReviews, self.sampleReviews)
     }
 
     @MainActor
@@ -220,7 +224,7 @@ final class ReviewsDashboardCardViewModelTests: XCTestCase {
         stores.whenReceivingAction(ofType: ProductReviewAction.self) { action in
             switch action {
             case let .synchronizeProductReviews(_, _, _, _, _, onCompletion):
-                onCompletion(.success([]))
+                onCompletion(.success(self.sampleReviews))
             default:
                 XCTFail("Unexpected action: \(action)")
             }
@@ -264,7 +268,7 @@ final class ReviewsDashboardCardViewModelTests: XCTestCase {
         stores.whenReceivingAction(ofType: ProductReviewAction.self) { action in
             switch action {
             case let .synchronizeProductReviews(_, _, _, _, _, onCompletion):
-                onCompletion(.success([]))
+                onCompletion(.success(self.sampleReviews))
             default:
                 XCTFail("Unexpected action: \(action)")
             }

@@ -509,8 +509,8 @@ final class DashboardViewModelTests: XCTestCase {
         let viewModel = DashboardViewModel(siteID: sampleSiteID, stores: stores, storageManager: storage, featureFlags: featureFlagService)
         mockLoadDashboardCards(withStoredCards: [])
 
-        // Analytics cards need to be set with availability: .show and enabled: true to make them available and shown.
-        let expectedLastOrdersCard = DashboardCard(type: .lastOrders, availability: .show, enabled: true)
+        // Last orders cards need to be set with availability: .show and enabled: false to make them available.
+        let expectedLastOrdersCard = DashboardCard(type: .lastOrders, availability: .show, enabled: false)
 
         // When
         viewModel.refreshDashboardCards()

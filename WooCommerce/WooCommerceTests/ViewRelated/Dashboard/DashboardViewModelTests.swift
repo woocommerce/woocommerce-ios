@@ -455,6 +455,27 @@ final class DashboardViewModelTests: XCTestCase {
         }
     }
 
+    func test_dashboard_cards_contain_unavailable_and_disabled_analytics_cards_when_there_are_no_orders() {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isDynamicDashboardM2Enabled: false)
+        let viewModel = DashboardViewModel(siteID: sampleSiteID, stores: stores, featureFlags: featureFlagService)
+        mockLoadDashboardCards(withStoredCards: [])
+
+        // Analytics cards need to say "Unavailable" in the Customize screen and be disabled so they don't appear on Dashboard
+        // This is set as availability: .unavailable and enabled: false in the expected cards.
+        let expectedPerformanceCard = DashboardCard(type: .performance, availability: .unavailable, enabled: false)
+        let expectedTopPerformersCard = DashboardCard(type: .topPerformers, availability: .unavailable, enabled: false)
+
+        // When
+        viewModel.refreshDashboardCards()
+
+        // Then
+        waitUntil {
+            viewModel.dashboardCards.contains(expectedPerformanceCard) &&
+            viewModel.dashboardCards.contains(expectedTopPerformersCard)
+        }
+    }
+
     func test_dashboard_cards_contain_enabled_analytics_cards_when_there_is_order() {
         // Given
         let featureFlagService = MockFeatureFlagService(isDynamicDashboardM2Enabled: true)
@@ -464,7 +485,7 @@ final class DashboardViewModelTests: XCTestCase {
         let viewModel = DashboardViewModel(siteID: sampleSiteID, stores: stores, storageManager: storage, featureFlags: featureFlagService)
         mockLoadDashboardCards(withStoredCards: [])
 
-        // The expected cards need to be availability: .show and enabled: true
+        // Analytics cards need to be set with availability: .show and enabled: true to make them available and shown.
         let expectedPerformanceCard = DashboardCard(type: .performance, availability: .show, enabled: true)
         let expectedTopPerformersCard = DashboardCard(type: .topPerformers, availability: .show, enabled: true)
 

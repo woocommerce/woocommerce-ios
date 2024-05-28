@@ -10,7 +10,7 @@ struct PointOfSaleEntryPointView: View {
         self.hideAppTabBar = hideAppTabBar
 
         _viewModel = StateObject(wrappedValue: PointOfSaleDashboardViewModel(
-            products: POSProductFactory().makePointOfSaleProducts(),
+            products: POSProductProvider().providePointOfSaleProducts(),
             cardReaderConnectionViewModel: .init(state: .connectingToReader))
         )
     }

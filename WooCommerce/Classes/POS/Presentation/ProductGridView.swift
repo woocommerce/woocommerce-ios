@@ -48,7 +48,7 @@ private extension ProductGridView {
 
 #if DEBUG
 #Preview {
-    ProductGridView(viewModel: PointOfSaleDashboardViewModel(products: POSProductFactory.makeFakeProducts(),
+    ProductGridView(viewModel: PointOfSaleDashboardViewModel(products: POSProductProvider.provideProductsForPreview(),
                                                              cardReaderConnectionViewModel: .init(state: .connectingToReader)))
 }
 #endif

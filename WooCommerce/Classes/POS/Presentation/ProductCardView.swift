@@ -40,6 +40,6 @@ struct ProductCardView: View {
 
 #if DEBUG
 #Preview {
-    ProductCardView(product: POSProductFactory.makeProduct(currencySettings: ServiceLocator.currencySettings))
+    ProductCardView(product: POSProductProvider.provideProductForPreview(currencySettings: ServiceLocator.currencySettings))
 }
 #endif

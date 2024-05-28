@@ -3,9 +3,9 @@ import Yosemite
 import protocol Storage.StorageManagerType
 import class WooFoundation.CurrencySettings
 
-/// Temporary fake product factory
+/// Product provider for the Point of Sale feature
 ///
-final class POSProductFactory {
+final class POSProductProvider {
     private let storageManager: StorageManagerType = ServiceLocator.storageManager
     private var siteID: Int64 { ServiceLocator.stores.sessionManager.defaultSite?.siteID ?? 0 }
     private var currencySettings: CurrencySettings = ServiceLocator.currencySettings
@@ -19,27 +19,9 @@ final class POSProductFactory {
         return resultsController
     }()
 
-    static func makeProduct(currencySettings: CurrencySettings = ServiceLocator.currencySettings) -> POSProduct {
-        POSProduct(itemID: UUID(),
-                   productID: 1,
-                   name: "Product 1",
-                   price: "1.00",
-                   stockQuantity: 10,
-                   currencySettings: currencySettings)
-    }
-
-    static func makeFakeProducts(currencySettings: CurrencySettings = ServiceLocator.currencySettings) -> [POSProduct] {
-        return [
-            POSProduct(itemID: UUID(), productID: 1, name: "Product 1", price: "1.00", stockQuantity: 10, currencySettings: currencySettings),
-            POSProduct(itemID: UUID(), productID: 2, name: "Product 2", price: "2.00", stockQuantity: 10, currencySettings: currencySettings),
-            POSProduct(itemID: UUID(), productID: 3, name: "Product 3", price: "3.00", stockQuantity: 10, currencySettings: currencySettings),
-            POSProduct(itemID: UUID(), productID: 4, name: "Product 4", price: "4.00", stockQuantity: 0, currencySettings: currencySettings),
-            ]
-    }
-
     /// Provides a`[POSProduct]`array by mapping  simple, purchasable-only Products from storage
     ///
-    func makePointOfSaleProducts() -> [POSProduct] {
+    func providePointOfSaleProducts() -> [POSProduct] {
         var loadedProducts: [Product] = []
         var pointOfSaleProducts: [POSProduct] = []
 
@@ -77,4 +59,26 @@ final class POSProductFactory {
 
     // TODO: Mechanism to reload/sync product data.
     // https://github.com/woocommerce/woocommerce-ios/issues/12837
+}
+
+// MARK: - PreviewProvider helpers
+//
+extension POSProductProvider {
+    static func provideProductForPreview(currencySettings: CurrencySettings = ServiceLocator.currencySettings) -> POSProduct {
+        POSProduct(itemID: UUID(),
+                   productID: 1,
+                   name: "Product 1",
+                   price: "1.00",
+                   stockQuantity: 10,
+                   currencySettings: currencySettings)
+    }
+
+    static func provideProductsForPreview(currencySettings: CurrencySettings = ServiceLocator.currencySettings) -> [POSProduct] {
+        return [
+            POSProduct(itemID: UUID(), productID: 1, name: "Product 1", price: "1.00", stockQuantity: 10, currencySettings: currencySettings),
+            POSProduct(itemID: UUID(), productID: 2, name: "Product 2", price: "2.00", stockQuantity: 10, currencySettings: currencySettings),
+            POSProduct(itemID: UUID(), productID: 3, name: "Product 3", price: "3.00", stockQuantity: 10, currencySettings: currencySettings),
+            POSProduct(itemID: UUID(), productID: 4, name: "Product 4", price: "4.00", stockQuantity: 0, currencySettings: currencySettings),
+        ]
+    }
 }

@@ -422,7 +422,8 @@ final class DashboardViewModelTests: XCTestCase {
                              DashboardCard(type: .inbox, availability: .show, enabled: false),
                              DashboardCard(type: .reviews, availability: .show, enabled: false),
                              DashboardCard(type: .coupons, availability: .show, enabled: false),
-                             DashboardCard(type: .stock, availability: .show, enabled: false)]
+                             DashboardCard(type: .stock, availability: .show, enabled: false),
+                             DashboardCard(type: .lastOrders, availability: .unavailable, enabled: false)]
 
         // When
         viewModel.refreshDashboardCards()
@@ -496,6 +497,27 @@ final class DashboardViewModelTests: XCTestCase {
         waitUntil {
             viewModel.dashboardCards.contains(expectedPerformanceCard) &&
             viewModel.dashboardCards.contains(expectedTopPerformersCard)
+        }
+    }
+
+    func test_dashboard_cards_contain_enabled_last_orders_cards_when_there_is_order() {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isDynamicDashboardM2Enabled: true)
+        let storage = MockStorageManager()
+        let insertOrder = Order.fake().copy(siteID: sampleSiteID)
+        storage.insertSampleOrder(readOnlyOrder: insertOrder)
+        let viewModel = DashboardViewModel(siteID: sampleSiteID, stores: stores, storageManager: storage, featureFlags: featureFlagService)
+        mockLoadDashboardCards(withStoredCards: [])
+
+        // Analytics cards need to be set with availability: .show and enabled: true to make them available and shown.
+        let expectedLastOrdersCard = DashboardCard(type: .lastOrders, availability: .show, enabled: true)
+
+        // When
+        viewModel.refreshDashboardCards()
+
+        // Then
+        waitUntil {
+            viewModel.dashboardCards.contains(expectedLastOrdersCard)
         }
     }
 

@@ -132,6 +132,9 @@ final class DashboardViewModel: ObservableObject {
         setupDashboardCards()
         installPendingThemeIfNeeded()
         observeDashboardCardsAndReload()
+        Task {
+            await checkInboxEligibility()
+        }
     }
 
     /// Must be called by the `View` during the `onAppear()` event. This will
@@ -151,8 +154,11 @@ final class DashboardViewModel: ObservableObject {
                 await self?.syncDashboardEssentialData()
             }
             group.addTask { [weak self] in
-                guard let self = self else { return }
+                guard let self else { return }
                 await reloadCards(showOnDashboardCards)
+            }
+            group.addTask { [weak self] in
+                await self?.checkInboxEligibility()
             }
         }
     }
@@ -161,7 +167,6 @@ final class DashboardViewModel: ObservableObject {
     ///
     @MainActor
     func syncDashboardEssentialData() async {
-        checkInboxEligibility()
         await withTaskGroup(of: Void.self) { group in
             group.addTask { [weak self] in
                 guard let self else { return }
@@ -382,10 +387,12 @@ private extension DashboardViewModel {
         localAnnouncementViewModel = viewModel
     }
 
-    func checkInboxEligibility() {
-        inboxEligibilityChecker.isEligibleForInbox(siteID: siteID) { [weak self] isEligible in
-            self?.isEligibleForInbox = isEligible
+    @MainActor
+    func checkInboxEligibility() async {
+        guard featureFlagService.isFeatureFlagEnabled(.dynamicDashboardM2) else {
+            return
         }
+        isEligibleForInbox = await inboxEligibilityChecker.isEligibleForInbox(siteID: siteID)
     }
 
     func configureOrdersResultController() {
@@ -458,10 +465,9 @@ private extension DashboardViewModel {
 
         let dynamicDashboardM2 = featureFlagService.isFeatureFlagEnabled(.dynamicDashboardM2)
         if dynamicDashboardM2 {
-            // TODO: check eligibility and update `enabled` accordingly
             cards.append(DashboardCard(type: .inbox,
                                        availability: canShowInbox ? .show : .hide,
-                                       enabled: canShowInbox))
+                                       enabled: false))
             cards.append(DashboardCard(type: .reviews, availability: .show, enabled: false))
             cards.append(DashboardCard(type: .coupons, availability: .show, enabled: false))
             cards.append(DashboardCard(type: .stock, availability: .show, enabled: false))
@@ -512,8 +518,9 @@ private extension DashboardViewModel {
                 updatedCards.first(where: { $0.type == savedCard.type })
             }
 
-            // Get any remaining cards and disable them.
+            // Get any remaining available cards and disable them.
             let remainingCards = Set(updatedCards).subtracting(savedCards)
+                .filter { $0.availability == .show }
                 .map { $0.copy(enabled: false) }
 
             // Append the remaining cards to the end of the list

@@ -14,6 +14,13 @@ protocol InboxEligibilityChecker {
     ///
     func isEligibleForInbox(siteID: Int64, completion: @escaping (Bool) -> Void)
 
+    
+    /// Asynchronously determines whether the store is eligible for inbox feature.
+    /// - Parameters:
+    ///   - siteID: the ID of the site to check for Inbox eligibility.
+    ///
+    func isEligibleForInbox(siteID: Int64) async -> Bool
+
 }
 
 /// Default implementation to check whether a store is eligible for Inbox feature.
@@ -48,6 +55,18 @@ final class InboxEligibilityUseCase: InboxEligibilityChecker {
             completion(isInboxSupportedByWCPlugin)
         }
         stores.dispatch(action)
+    }
+
+    @MainActor
+    func isEligibleForInbox(siteID: Int64) async -> Bool {
+        await withCheckedContinuation { [weak self] continuation in
+            guard let self else {
+                return continuation.resume(returning: false)
+            }
+            isEligibleForInbox(siteID: siteID) { isEligible in
+                continuation.resume(returning: isEligible)
+            }
+        }
     }
 }
 

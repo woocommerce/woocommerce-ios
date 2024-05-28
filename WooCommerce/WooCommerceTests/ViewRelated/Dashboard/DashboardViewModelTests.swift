@@ -413,7 +413,7 @@ final class DashboardViewModelTests: XCTestCase {
         let featureFlagService = MockFeatureFlagService(isDynamicDashboardM2Enabled: true)
 
         let viewModel = DashboardViewModel(siteID: sampleSiteID, stores: stores, featureFlags: featureFlagService)
-        mockLoadDashboardCards()
+        mockLoadDashboardCards(withStoredCards: [])
 
         let expectedCards = [DashboardCard(type: .onboarding, availability: .show, enabled: true),
                              DashboardCard(type: .performance, availability: .unavailable, enabled: false),
@@ -439,7 +439,7 @@ final class DashboardViewModelTests: XCTestCase {
         let featureFlagService = MockFeatureFlagService(isDynamicDashboardM2Enabled: false)
 
         let viewModel = DashboardViewModel(siteID: sampleSiteID, stores: stores, featureFlags: featureFlagService)
-        mockLoadDashboardCards()
+        mockLoadDashboardCards(withStoredCards: [])
 
         let expectedCards = [DashboardCard(type: .onboarding, availability: .show, enabled: true),
                              DashboardCard(type: .performance, availability: .unavailable, enabled: false),
@@ -462,7 +462,7 @@ final class DashboardViewModelTests: XCTestCase {
         let insertOrder = Order.fake().copy(siteID: sampleSiteID)
         storage.insertSampleOrder(readOnlyOrder: insertOrder)
         let viewModel = DashboardViewModel(siteID: sampleSiteID, stores: stores, storageManager: storage, featureFlags: featureFlagService)
-        mockLoadDashboardCards()
+        mockLoadDashboardCards(withStoredCards: [])
 
         // The expected cards need to be availability: .show and enabled: true
         let expectedPerformanceCard = DashboardCard(type: .performance, availability: .show, enabled: true)
@@ -487,7 +487,7 @@ final class DashboardViewModelTests: XCTestCase {
 
         let viewModel = DashboardViewModel(siteID: sampleSiteID, stores: stores, featureFlags: featureFlagService, userDefaults: userDefaults)
 
-        mockLoadDashboardCards()
+        mockLoadDashboardCards(withStoredCards: [])
 
         // When
         viewModel.refreshDashboardCards()
@@ -591,12 +591,12 @@ private extension DashboardViewModelTests {
         }
     }
 
-    /// Returns mocked saved cards or empty.
-    func mockLoadDashboardCards(withStoredCards cards: [DashboardCard]? = nil) {
+    /// Mock saved cards. Pass empty array to simulate no saved cards situation.
+    func mockLoadDashboardCards(withStoredCards cards: [DashboardCard]) {
         stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
             switch action {
             case let .loadDashboardCards(_, onCompletion):
-                onCompletion(cards ?? [])
+                onCompletion(cards)
             default:
                 break
             }

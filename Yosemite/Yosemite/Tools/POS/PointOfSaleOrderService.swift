@@ -3,9 +3,11 @@ import Networking
 
 public struct PointOfSaleCartProduct {
     public let productID: Int64
+    public let price: String
 
-    public init(productID: Int64) {
+    public init(productID: Int64, price: String) {
         self.productID = productID
+        self.price = price
     }
 }
 
@@ -27,6 +29,25 @@ public struct PointOfSaleOrder {
     public let orderID: Int64
     public let total: String
     public let totalTax: String
+    public let items: [PointOfSaleOrderItem]
+}
+
+public struct PointOfSaleOrderItem {
+    public let itemID: Int64
+
+    /// The product ID of a product order item, or the ID of the variable product if the order item is a product variation.
+    public let productID: Int64
+    public let quantity: Decimal
+
+    func toOrderItem() -> OrderItem {
+        .init(itemID: itemID, name: "", productID: productID, variationID: .zero, quantity: quantity, price: .zero, sku: nil, subtotal: "", subtotalTax: "", taxClass: "", taxes: [], total: "", totalTax: "", attributes: [], addOns: [], parent: nil, bundleConfiguration: [])
+    }
+
+    init(orderItem: OrderItem) {
+        self.itemID = orderItem.itemID
+        self.productID = orderItem.productID
+        self.quantity = orderItem.quantity
+    }
 }
 
 public protocol PointOfSaleOrderServiceProtocol {
@@ -53,15 +74,15 @@ public final class PointOfSaleOrderService: PointOfSaleOrderServiceProtocol {
     // MARK: - Protocol conformance
 
     public func syncOrder(cart: [PointOfSaleCartItem], order posOrder: PointOfSaleOrder?) async throws -> PointOfSaleOrder {
-        let order: Order = {
+        let initialOrder: Order = {
             if let posOrder {
-
-                return OrderFactory.emptyNewOrder.copy(siteID: posOrder.siteID)
+                return OrderFactory.emptyNewOrder.copy(siteID: posOrder.siteID, orderID: posOrder.orderID, items: posOrder.items.map { $0.toOrderItem() })
             } else {
                 // TODO: handle WC version under 6.3 when auto-draft status is unavailable as in `NewOrderInitialStatusResolver`
                 return OrderFactory.emptyNewOrder.copy(siteID: siteID, status: .autoDraft)
             }
         }()
+        let order = updateOrder(initialOrder, cart: cart)
         let syncedOrder: Order
         if posOrder != nil {
             syncedOrder = try await ordersRemote.updatePointOfSaleOrder(siteID: siteID, order: order, fields: [.items])
@@ -71,44 +92,40 @@ public final class PointOfSaleOrderService: PointOfSaleOrderServiceProtocol {
         return PointOfSaleOrder(siteID: syncedOrder.siteID,
                                 orderID: syncedOrder.orderID,
                                 total: syncedOrder.total,
-                                totalTax: syncedOrder.totalTax)
+                                totalTax: syncedOrder.totalTax,
+                                items: syncedOrder.items.map { PointOfSaleOrderItem(orderItem: $0) })
+    }
+}
+
+private struct PointOfSaleOrderSyncProductType: OrderSyncProductTypeProtocol {
+    let productID: Int64
+    let price: String
+    // Not used in POS but have to be included for the app usage.
+    let productType: ProductType
+    let bundledItems: [ProductBundleItem]
+
+    init(productID: Int64, price: String, productType: ProductType, bundledItems: [ProductBundleItem] = []) {
+        self.productID = productID
+        // TODO: price value only
+        self.price = price.removingPrefix("$")
+        self.productType = productType
+        self.bundledItems = bundledItems
     }
 }
 
 private extension PointOfSaleOrderService {
-//    func updateOrder(_ order: Order, cart: [PointOfSaleCartItem]) -> Order {
-//        var updatedOrderItems = order.items
-//
-//        for cartItem in cart {
-//            updateOrderItems(from: order, with: input, orderItems: &updatedOrderItems)
-//        }
-//
-//        // If the input's quantity is 0 or less, delete the item if required.
-//        // We perform a second loop for deletions so we don't attempt to access to overflown indexes
-//        for input in inputs {
-//            guard input.quantity > 0 || shouldUpdateOrDeleteZeroQuantities == .update else {
-//                updatedOrderItems.removeAll(where: { $0.itemID == input.id })
-//                return order.copy(items: updatedOrderItems)
-//            }
-//        }
-//
-//        return order.copy(items: updatedOrderItems)
-//    }
-//
-//    /// Creates, or updates existing `OrderItems` of a given `Order` with any `OrderSyncProductInput` update
-//    ///
-//    /// - Parameters:
-//    ///   - order: Represents an Order entity.
-//    ///   - input: Types of products the synchronizer supports
-//    ///   - updatedOrderItems: An array of `[OrderItem]` entities
-//    ///
-//    func updateOrderItems(from order: Order, with input: OrderSyncProductInput, orderItems updatedOrderItems: inout [OrderItem]) {
-//        let newItem = createOrderItem(using: input)
-//
-//        if let itemIndex = order.items.firstIndex(where: { $0.itemID == input.id }) {
-//            updatedOrderItems[itemIndex] = newItem
-//        } else {
-//            updatedOrderItems.append(newItem)
-//        }
-//    }
+    func updateOrder(_ order: Order, cart: [PointOfSaleCartItem]) -> Order {
+        // We need to send all OrderSyncProductInput in one call to the RemoteOrderSynchronizer, both additions and deletions
+        // otherwise may ignore the subsequent values that are sent
+        let products: [PointOfSaleOrderSyncProductType] = cart.map { cartItem in
+            // TODO: pass productType from product
+            PointOfSaleOrderSyncProductType(productID: cartItem.product.productID, price: cartItem.product.price, productType: .simple)
+        }
+        var placeholderProductSelectorBundleConfigurationsByProductID: [Int64 : [[BundledProductConfiguration]]] = [:]
+        let addedItemsToSync = ProductInputTransformer.productInputAdditionsToSync(orderItems: order.items, productsToSync: products, variations: [], productSelectorBundleConfigurationsByProductID: &placeholderProductSelectorBundleConfigurationsByProductID, allProducts: [], allProductVariations: [])
+        let removedItemsToSync = ProductInputTransformer.productInputDeletionsToSync(orderItems: order.items, productsToSync: products, variations: [], allProducts: [], allProductVariations: [], defaultDiscount: { _ in 0 })
+        let itemsToSync = addedItemsToSync + removedItemsToSync
+
+        return ProductInputTransformer.updateMultipleItems(with: itemsToSync, on: order, shouldUpdateOrDeleteZeroQuantities: .update)
+    }
 }

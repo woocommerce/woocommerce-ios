@@ -22,6 +22,7 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
     @Published private(set) var orderStage: OrderStage = .building
 
     @Published private var order: PointOfSaleOrder?
+    @Published private var isSyncingOrder: Bool = false
     private let orderService: PointOfSaleOrderServiceProtocol
     private var cartSubscription: AnyCancellable?
 
@@ -105,22 +106,38 @@ extension PointOfSaleDashboardViewModel {
 
 private extension PointOfSaleDashboardViewModel {
     func observeProductsInCartForRemoteOrderSyncing() {
-        cartSubscription = $productsInCart
-            .debounce(for: .seconds(Constants.cartChangesDebounceDuration), scheduler: DispatchQueue.main)
-            .sink { [weak self] cartProducts in
-                Task { @MainActor in
-                    guard let self else {
-                        throw OrderSyncError.selfDeallocated
+        cartSubscription = Publishers.CombineLatest($productsInCart.debounce(for: .seconds(Constants.cartChangesDebounceDuration), scheduler: DispatchQueue.main),
+                                                    $isSyncingOrder)
+        .filter { _, isSyncingOrder in
+            isSyncingOrder == false
+        }
+        .map { $0.0 }
+        .removeDuplicates()
+        .dropFirst()
+        .sink { [weak self] cartProducts in
+            Task { @MainActor in
+                guard let self else {
+                    throw OrderSyncError.selfDeallocated
+                }
+                let cart = cartProducts
+                    .map {
+                        PointOfSaleCartItem(itemID: $0.cartItemID,
+                                            product: .init(productID: $0.product.productID, price: $0.product.price),
+                                            quantity: Decimal($0.quantity))
                     }
-                    let cart = cartProducts
-                        .map {
-                            PointOfSaleCartItem(itemID: $0.cartItemID,
-                                                product: .init(productID: $0.product.productID),
-                                                quantity: Decimal($0.quantity))
-                        }
+                defer {
+                    self.isSyncingOrder = false
+                }
+                do {
+                    self.isSyncingOrder = true
                     let order = try await self.orderService.syncOrder(cart: cart, order: self.order)
+                    self.order = order
+                    print("🟢 [POS] Synced order: \(order)")
+                } catch {
+                    print("🔴 [POS] Error syncing order: \(error)")
                 }
             }
+        }
     }
 }
 

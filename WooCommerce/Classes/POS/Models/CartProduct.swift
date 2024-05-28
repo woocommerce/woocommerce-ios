@@ -1,6 +1,6 @@
 import Foundation
 
-struct CartProduct {
+struct CartProduct: Equatable {
     let id: UUID
     let cartItemID: Int64?
     let product: POSProduct

@@ -2,7 +2,11 @@ import Foundation
 import class WooFoundation.CurrencySettings
 import class WooFoundation.CurrencyFormatter
 
-public struct POSProduct {
+public struct POSProduct: Equatable {
+    public static func == (lhs: POSProduct, rhs: POSProduct) -> Bool {
+        lhs.productID == rhs.productID
+    }
+
     public let itemID: UUID
     public let productID: Int64
     public let name: String

@@ -114,7 +114,8 @@ extension Storage.GeneralStoreSettings {
         lastSelectedPerformanceTimeRange: CopiableProp<String> = .copy,
         lastSelectedTopPerformersTimeRange: CopiableProp<String> = .copy,
         lastSelectedMostActiveCouponsTimeRange: CopiableProp<String> = .copy,
-        lastSelectedStockType: NullableCopiableProp<String> = .copy
+        lastSelectedStockType: NullableCopiableProp<String> = .copy,
+        lastSelectedOrderStatus: NullableCopiableProp<String> = .copy
     ) -> Storage.GeneralStoreSettings {
         let storeID = storeID ?? self.storeID
         let isTelemetryAvailable = isTelemetryAvailable ?? self.isTelemetryAvailable
@@ -132,6 +133,7 @@ extension Storage.GeneralStoreSettings {
         let lastSelectedTopPerformersTimeRange = lastSelectedTopPerformersTimeRange ?? self.lastSelectedTopPerformersTimeRange
         let lastSelectedMostActiveCouponsTimeRange = lastSelectedMostActiveCouponsTimeRange ?? self.lastSelectedMostActiveCouponsTimeRange
         let lastSelectedStockType = lastSelectedStockType ?? self.lastSelectedStockType
+        let lastSelectedOrderStatus = lastSelectedOrderStatus ?? self.lastSelectedOrderStatus
 
         return Storage.GeneralStoreSettings(
             storeID: storeID,
@@ -149,7 +151,8 @@ extension Storage.GeneralStoreSettings {
             lastSelectedPerformanceTimeRange: lastSelectedPerformanceTimeRange,
             lastSelectedTopPerformersTimeRange: lastSelectedTopPerformersTimeRange,
             lastSelectedMostActiveCouponsTimeRange: lastSelectedMostActiveCouponsTimeRange,
-            lastSelectedStockType: lastSelectedStockType
+            lastSelectedStockType: lastSelectedStockType,
+            lastSelectedOrderStatus: lastSelectedOrderStatus
         )
     }
 }

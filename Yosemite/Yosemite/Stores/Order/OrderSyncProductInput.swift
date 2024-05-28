@@ -1,3 +1,12 @@
+public protocol OrderSyncProductTypeProtocol {
+    var price: String { get }
+    var productID: Int64 { get }
+    var productType: ProductType { get }
+    var bundledItems: [ProductBundleItem] { get }
+}
+
+extension Product: OrderSyncProductTypeProtocol {}
+
 /// Product input for an `OrderSynchronizer` type.
 ///
 public struct OrderSyncProductInput {
@@ -18,7 +27,7 @@ public struct OrderSyncProductInput {
     /// Types of products the synchronizer supports
     ///
     public enum ProductType {
-        case product(Product)
+        case product(OrderSyncProductTypeProtocol)
         case variation(ProductVariation)
     }
     public var id: Int64 = .zero

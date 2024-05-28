@@ -26,23 +26,24 @@ public final class ProductReviewsRemote: Remote, ProductReviewsRemoteProtocol {
     ///     - pageNumber: Number of page that should be retrieved.
     ///     - pageSize: Number of Orders to be retrieved per page.
     ///     - products: Limit result set to reviews assigned to specific product IDs.
+    ///     - filterByStatuses: Array of statuses to filter reviews by.
     ///     - completion: Closure to be executed upon completion.
     ///
     public func loadAllProductReviews(for siteID: Int64,
-                                context: String? = nil,
-                                pageNumber: Int = Default.pageNumber,
-                                pageSize: Int = Default.pageSize,
-                                products: [Int64]? = nil,
-                                completion: @escaping (Result<[ProductReview], Error>) -> Void) {
-
-
+                                      context: String? = nil,
+                                      pageNumber: Int = Default.pageNumber,
+                                      pageSize: Int = Default.pageSize,
+                                      products: [Int64]? = nil,
+                                      filterByStatuses: [ProductReviewStatus]? = nil,
+                                      completion: @escaping (Result<[ProductReview], Error>) -> Void) {
         let stringOfProductIDs = products?.map { String($0) }.joined(separator: ",") ?? ""
+        let statusFilter = filterByStatuses?.map { $0.rawValue }.joined(separator: ", ") ?? Default.allReviews
         let parameters = [
             ParameterKey.page: String(pageNumber),
             ParameterKey.perPage: String(pageSize),
             ParameterKey.contextKey: context ?? Default.context,
             ParameterKey.product: stringOfProductIDs,
-            ParameterKey.status: Default.allReviews
+            ParameterKey.status: statusFilter
             ]
 
         let path = Path.reviews

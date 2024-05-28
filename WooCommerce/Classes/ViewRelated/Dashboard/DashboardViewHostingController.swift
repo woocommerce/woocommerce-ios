@@ -49,6 +49,7 @@ final class DashboardViewHostingController: UIHostingController<DashboardView> {
         configureStorePerformanceView()
         configureInboxCard()
         configureMostActiveCouponsView()
+        configureLastOrdersView()
         configureReviewsCard()
     }
 
@@ -258,6 +259,19 @@ private extension DashboardViewHostingController {
             })
             let detailVC = CouponDetailsHostingController(viewModel: detailsViewModel)
             show(detailVC, sender: self)
+        }
+    }
+}
+
+// MARK: Last orders
+private extension DashboardViewHostingController {
+    func configureLastOrdersView() {
+        rootView.onViewAllOrders = {
+            // TODO: 12655
+        }
+
+        rootView.onViewOrderDetail = { _ in
+            // TODO: 12655
         }
     }
 }

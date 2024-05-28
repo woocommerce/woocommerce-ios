@@ -2856,7 +2856,6 @@ final class ProductStoreTests: XCTestCase {
                                                                  stockType: "lowstock",
                                                                  pageNumber: 1,
                                                                  pageSize: 3,
-                                                                 orderBy: .date,
                                                                  order: .descending,
                                                                  completion: { result in
                 promise(result)
@@ -2884,7 +2883,6 @@ final class ProductStoreTests: XCTestCase {
                                                                  stockType: "lowstock",
                                                                  pageNumber: 1,
                                                                  pageSize: 3,
-                                                                 orderBy: .date,
                                                                  order: .descending,
                                                                  completion: { result in
                 promise(result)
@@ -2898,11 +2896,14 @@ final class ProductStoreTests: XCTestCase {
 
     // MARK: - Fetch product reports
 
-    func test_fetchProductReports_returns_segments_on_success() throws {
+    func test_fetchProductReports_returns_reports_on_success() throws {
         // Given
-        let segment = ProductReportSegment.fake().copy(productID: 123, productName: "Steamed bun", subtotals: .fake().copy(itemsSold: 10))
+        let report = ProductReport.fake().copy(productID: 123,
+                                               name: "Steamed bun",
+                                               imageURL: URL(string: "https://example.com/image.png"),
+                                               itemsSold: 3)
         let mockRemote = MockProductsRemote()
-        mockRemote.whenFetchingProductReports(thenReturn: .success([segment]))
+        mockRemote.whenFetchingProductReports(thenReturn: .success([report]))
         let productStore = ProductStore(dispatcher: dispatcher,
                                         storageManager: storageManager,
                                         network: network,
@@ -2924,9 +2925,9 @@ final class ProductStoreTests: XCTestCase {
         }
 
         // Then
-        let receivedSegments = try XCTUnwrap(result.get())
-        XCTAssertEqual(receivedSegments.count, 1)
-        XCTAssertEqual(receivedSegments.first, segment)
+        let receivedReports = try XCTUnwrap(result.get())
+        XCTAssertEqual(receivedReports.count, 1)
+        XCTAssertEqual(receivedReports.first, report)
     }
 
     func test_fetchProductReports_returns_error_on_failure() throws {
@@ -2952,6 +2953,74 @@ final class ProductStoreTests: XCTestCase {
                                                                     completion: { result in
                 promise(result)
             }))
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        XCTAssertEqual(result.failure as? NetworkError, .timeout())
+    }
+
+    // MARK: - Fetch variation reports
+
+    func test_fetchVariationReports_returns_reports_on_success() throws {
+        // Given
+        let report = ProductReport.fake().copy(productID: 123,
+                                               variationID: 133,
+                                               name: "Steamed bun",
+                                               imageURL: URL(string: "https://example.com/image.png"),
+                                               itemsSold: 3)
+        let mockRemote = MockProductsRemote()
+        mockRemote.whenFetchingVariationReports(thenReturn: .success([report]))
+        let productStore = ProductStore(dispatcher: dispatcher,
+                                        storageManager: storageManager,
+                                        network: network,
+                                        remote: mockRemote)
+
+        // When
+        let result = waitFor { promise in
+            productStore.onAction(ProductAction.fetchVariationReports(siteID: self.sampleSiteID,
+                                                                      productIDs: [119],
+                                                                      variationIDs: [120, 122],
+                                                                      timeZone: .gmt,
+                                                                      earliestDateToInclude: Date(timeIntervalSinceNow: -3600*24*7),
+                                                                      latestDateToInclude: Date(),
+                                                                      pageSize: 3,
+                                                                      pageNumber: 1,
+                                                                      orderBy: .itemsSold,
+                                                                      order: .descending) { result in
+                promise(result)
+            })
+        }
+
+        // Then
+        let receivedReports = try XCTUnwrap(result.get())
+        XCTAssertEqual(receivedReports.count, 1)
+        XCTAssertEqual(receivedReports.first, report)
+    }
+
+    func test_fetchVariationReports_returns_error_on_failure() throws {
+        // Given
+        let mockRemote = MockProductsRemote()
+        mockRemote.whenFetchingVariationReports(thenReturn: .failure(NetworkError.timeout()))
+        let productStore = ProductStore(dispatcher: dispatcher,
+                                        storageManager: storageManager,
+                                        network: network,
+                                        remote: mockRemote)
+
+        // When
+        let result = waitFor { promise in
+            productStore.onAction(ProductAction.fetchVariationReports(siteID: self.sampleSiteID,
+                                                                      productIDs: [119],
+                                                                      variationIDs: [120, 122],
+                                                                      timeZone: .gmt,
+                                                                      earliestDateToInclude: Date(timeIntervalSinceNow: -3600*24*7),
+                                                                      latestDateToInclude: Date(),
+                                                                      pageSize: 3,
+                                                                      pageNumber: 1,
+                                                                      orderBy: .itemsSold,
+                                                                      order: .descending) { result in
+                promise(result)
+            })
         }
 
         // Then

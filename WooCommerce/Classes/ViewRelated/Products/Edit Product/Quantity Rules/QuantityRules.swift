@@ -90,8 +90,8 @@ private extension QuantityRules {
 
 struct QuantityRules_Previews: PreviewProvider {
 
-    static let viewModel = QuantityRulesViewModel(minQuantity: "4", maxQuantity: "200", groupOf: "2", onCompletion: { minQuantity, maxQuantity, groupOf in })
-    static let noQuantityRules = QuantityRulesViewModel(minQuantity: "", maxQuantity: "", groupOf: "", onCompletion: { minQuantity, maxQuantity, groupOf in })
+    static let viewModel = QuantityRulesViewModel(minQuantity: "4", maxQuantity: "200", groupOf: "2", onCompletion: { rules, hasUnsavedChanges in })
+    static let noQuantityRules = QuantityRulesViewModel(minQuantity: "", maxQuantity: "", groupOf: "", onCompletion: { rules, hasUnsavedChanges in })
 
     static var previews: some View {
         QuantityRules(viewModel: viewModel)

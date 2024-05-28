@@ -1413,36 +1413,24 @@ extension Networking.ProductReport {
     ///
     public static func fake() -> Networking.ProductReport {
         .init(
-            totals: .fake()
-        )
-    }
-}
-extension Networking.ProductReportSegment {
-    /// Returns a "ready to use" type filled with fake values.
-    ///
-    public static func fake() -> Networking.ProductReportSegment {
-        .init(
             productID: .fake(),
-            productName: .fake(),
-            subtotals: .fake()
+            variationID: .fake(),
+            name: .fake(),
+            imageURL: .fake(),
+            itemsSold: .fake(),
+            stockQuantity: .fake()
         )
     }
 }
-extension Networking.ProductReportSegment.Subtotals {
+extension Networking.ProductReport.ExtendedInfo {
     /// Returns a "ready to use" type filled with fake values.
     ///
-    public static func fake() -> Networking.ProductReportSegment.Subtotals {
+    public static func fake() -> Networking.ProductReport.ExtendedInfo {
         .init(
-            itemsSold: .fake()
-        )
-    }
-}
-extension Networking.ProductReportTotals {
-    /// Returns a "ready to use" type filled with fake values.
-    ///
-    public static func fake() -> Networking.ProductReportTotals {
-        .init(
-            segments: .fake()
+            name: .fake(),
+            image: .fake(),
+            stockQuantity: .fake(),
+            attributes: .fake()
         )
     }
 }
@@ -1500,6 +1488,7 @@ extension Networking.ProductStock {
         .init(
             siteID: .fake(),
             productID: .fake(),
+            parentID: .fake(),
             name: .fake(),
             sku: .fake(),
             manageStock: .fake(),

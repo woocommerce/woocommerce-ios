@@ -82,8 +82,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .splitViewInProductsTab:
             return true
-        case .customersInHubMenu:
-            return true
         case .subscriptionsInOrderCreationUI:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .subscriptionsInOrderCreationCustomers:
@@ -93,6 +91,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .displayPointOfSaleToggle:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .dynamicDashboardM2:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .multipleShippingLines:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true

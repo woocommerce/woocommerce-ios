@@ -281,6 +281,12 @@ extension OrderDetailsViewModel {
             group.leave()
         }
 
+        group.enter()
+        syncShippingMethods { _ in
+            onReloadSections?()
+            group.leave()
+        }
+
         group.notify(queue: .main) { [weak self] in
 
             /// Update state to synced
@@ -360,7 +366,7 @@ extension OrderDetailsViewModel {
     /// Registers all of the available TableViewCells
     ///
     func registerTableViewCells(_ tableView: UITableView) {
-        let cells = [
+        let cellsWithNib = [
             LargeHeightLeftImageTableViewCell.self,
             LeftImageTableViewCell.self,
             CustomerNoteTableViewCell.self,
@@ -381,8 +387,16 @@ extension OrderDetailsViewModel {
             TitleAndValueTableViewCell.self
         ]
 
-        for cellClass in cells {
+        let cellsWithoutNib = [
+            HostingConfigurationTableViewCell<ShippingLineRowView>.self
+        ]
+
+        for cellClass in cellsWithNib {
             tableView.registerNib(for: cellClass)
+        }
+
+        for cellClass in cellsWithoutNib {
+            tableView.register(cellClass)
         }
     }
 
@@ -685,6 +699,19 @@ extension OrderDetailsViewModel {
             }
             self.stores.dispatch(action)
         }
+    }
+
+    func syncShippingMethods(onCompletion: ((Error?) -> ())? = nil) {
+        let action = ShippingMethodAction.synchronizeShippingMethods(siteID: order.siteID) { result in
+            switch result {
+            case .success:
+                onCompletion?(nil)
+            case let .failure(error):
+                DDLogError("⛔️ Error synchronizing shipping methods: \(error)")
+                onCompletion?(error)
+            }
+        }
+        stores.dispatch(action)
     }
 
     @MainActor

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-05-13 14:54:12+0000 */
+/* Translation-Revision-Date: 2024-05-22 09:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: de */
@@ -54,9 +54,6 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility description for a card payment method, used by assistive technologies such as screen reader. %1$@ is a placeholder for the card brand, %2$@ is a placeholder for the last 4 digits of the card number */
 "%1$@ card ending %2$@" = "%1$@-Karte mit den Endziffern %2$@";
 
-/* Exception rule for a coupon. Reads like: 3 Products excl. 1 Category */
-"%1$@ excl. %2$@" = "%1$@ außer %2$@";
-
 /* Label about product's inventory stock status shown during order creation
    Label about product's inventory stock status shown on Products tab */
 "%1$@ in stock" = "%1$@ vorrätig";
@@ -70,8 +67,8 @@ which should be translated separately and considered part of this sentence. */
 /* Review title. Reads as {Review author} left a review on {Product}. */
 "%1$@ left a review on %2$@" = "%1$@ hat am %2$@ eine Bewertung abgegeben";
 
-/* Summary line for a coupon, with the discounted amount and number of products and categories that the coupon is limited to. Reads like: '10% off all products' or '$15 off 2 Product 1 Category' */
-"%1$@ off %2$@" = "%1$@ Rabatt auf %2$@";
+/* Summary line for a coupon, with the discounted amount and number of products and categories that the coupon is limited to. Reads like: '10% off · all products' or '$15 off · 2 Product 1 Category' */
+"%1$@ off · %2$@" = "%1$@ Rabatt · %2$@";
 
 /* Notice format when a shipping label refund request is successful. The first variable shows the shipping label service name (e.g. USPS Priority Mail). The second variable shows the formatted amount that is eligible for refund  (e.g. $7.50). */
 "%1$@ refund requested (%2$@)" = "%1$@ Rückerstattung angefordert (%2$@)";
@@ -84,6 +81,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Payment on <date> received via (payment method title) */
 "%1$@ via %2$@" = "%1$@ per %2$@";
+
+/* Exception rule for a coupon. Reads like: 3 Products · Excl. 1 Category */
+"%1$@ · Excl. %2$@" = "%1$@ · Exkl. %2$@";
 
 /* In Order Details, the pattern used to show the quantity multiplied by the price. For example, “23 × $400.00”. The %1$@ is the quantity. The %2$@ is the formatted price with currency (e.g. $400.00). Please take care to use the multiplication symbol ×, not a letter x, where appropriate. */
 "%1$@ × %2$@" = "%1$@ × %2$@";
@@ -716,8 +716,8 @@ which should be translated separately and considered part of this sentence. */
    Title of the product search filter to search for all products. */
 "All Products" = "Alle Produkte";
 
-/* Exception rule for a coupon. Reads like: All Products excl. 2 Products */
-"All Products excl. %1$@" = "Alle Produkte außer %1$@";
+/* Exception rule for a coupon. Reads like: All Products · Excl. 2 Products */
+"All Products · Excl. %1$@" = "Alle Produkte · Exkl. %1$@";
 
 /* Value for the limit usage to X items row in Coupon Usage Restrictions screen when no limit is set */
 "All Qualifying" = "Alle infrage kommenden Artikel";
@@ -7258,9 +7258,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the store name screen */
 "Store name" = "Name des Shops";
 
-/* Title of the store setup progress view. */
-"Store setup" = "Shop-Einrichtung";
-
 /* Accessibility label for strikethrough button on formatting toolbar. */
 "Strike Through" = "Durchgestrichen";
 
@@ -9981,9 +9978,6 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle of the Blaze campaign view. */
 "blazeCampaignDashboardView.subtitle" = "Erhöhe die Sichtbarkeit und verkaufe deine Produkte schnell.";
 
-/* Title of the Blaze campaign view. */
-"blazeCampaignDashboardView.title" = "Blaze-Kampagnen";
-
 /* The action to be agreed upon on the Payment screen in the Blaze campaign creation flow. */
 "blazeConfirmPaymentView.adPolicy" = "Werberichtlinien";
 
@@ -10573,11 +10567,26 @@ which should be translated separately and considered part of this sentence. */
 /* Name for the Blaze dashboard card in the Customize Dashboard screen */
 "dashboardCard.name.blazeCampaigns" = "Blaze-Kampagnen";
 
+/* Name for the Most active coupons dashboard card in the Customize Dashboard screen */
+"dashboardCard.name.coupons" = "Aktivste Gutscheine";
+
+/* Name for the Inbox dashboard card in the Customize Dashboard screen */
+"dashboardCard.name.inbox" = "Posteingang";
+
+/* Name for the Most recent orders dashboard card in the Customize Dashboard screen */
+"dashboardCard.name.lastOrders" = "Neueste Bestellungen";
+
 /* Name for the Store setup dashboard card in the Customize Dashboard screen */
 "dashboardCard.name.onboarding" = "Shop-Einrichtung";
 
 /* Name for the Performance dashboard card in the Customize Dashboard screen */
 "dashboardCard.name.performance" = "Performance";
+
+/* Name for the Most recent reviews dashboard card in the Customize Dashboard screen */
+"dashboardCard.name.reviews" = "Neueste Bewertungen";
+
+/* Name for the Stock dashboard card in the Customize Dashboard screen */
+"dashboardCard.name.stock" = "Lagerbestand";
 
 /* Name for the Top performers dashboard card in the Customize Dashboard screen */
 "dashboardCard.name.topPerformers" = "Topseller";
@@ -10781,6 +10790,15 @@ which should be translated separately and considered part of this sentence. */
 /* The title used when asking the user for feedback for the app. */
 "inAppFeedbackCardView.title" = "Gefällt dir die WooCommerce-App?";
 
+/* Title displayed if there are no inbox notes in the Inbox section on the Dashboard screen. */
+"inboxDashboardCard.emptyStateTitle" = "Keine ungelesenen Nachrichten";
+
+/* Menu item to dismiss the Inbox section on the Dashboard screen */
+"inboxDashboardCard.hideCard" = "Posteingang ausblenden";
+
+/* Button to navigate to Inbox messages list screen. */
+"inboxDashboardCard.viewAll" = "Alle Nachrichten anzeigen";
+
 /* Title for Add Order home screen action */
 "infoplist.AddOrderAction.Title" = "Neue Bestellung";
 
@@ -10929,6 +10947,24 @@ which should be translated separately and considered part of this sentence. */
 
 /* Display label for a product's subscription period, e.g. '12 months'. */
 "months" = "Monate";
+
+/* Title in the coupons list on the coupons card on the Dashboard screen */
+"mostActiveCouponsCard.coupons" = "Gutscheine";
+
+/* Title of the custom time range on the coupons card on the Dashboard screen */
+"mostActiveCouponsCard.custom" = "Individuell";
+
+/* Menu item to dismiss the coupons card on the Dashboard screen */
+"mostActiveCouponsCard.hideCard" = "Gutscheine ausblenden";
+
+/* Title in the coupons list on the coupons card on the Dashboard screen. Denotes the number of times the coupon has been used. */
+"mostActiveCouponsCard.uses" = "Anwendungen";
+
+/* Button to navigate to Coupons list screen. */
+"mostActiveCouponsCard.viewAll" = "Alle Gutscheine anzeigen";
+
+/* Button in date range picker to add a Custom Range tab */
+"mostActiveCouponsCardViewModel.addCustomRange" = "Hinzufügen";
 
 /* Placeholder in the search bar of a multiple selection list */
 "multipleSelectionList.search" = "Suchen";
@@ -11291,6 +11327,27 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the One time shipping product shipping setting. */
 "productShippingSettings.oneTimeShipping.title" = "Einmaliger Versand";
 
+/* Menu item to dismiss the Stock section on the My Store screen */
+"productStockDashboardCard.hideCard" = "Lagerbestand ausblenden";
+
+/* Header label on the Stock section on the My Store screen */
+"productStockDashboardCard.products" = "Produkte";
+
+/* Header label on the Stock section on the My Store screen */
+"productStockDashboardCard.status" = "Status";
+
+/* Header label on the Stock section on the My Store screen */
+"productStockDashboardCard.stockLevels" = "Lagerbestände";
+
+/* Title of a stock type displayed on the Stock section on My Store screen */
+"productStockDashboardCardViewModel.stockType.lowStock" = "Niedriger Lagerbestand";
+
+/* Title of a stock type displayed on the Stock section on My Store screen */
+"productStockDashboardCardViewModel.stockType.onBackOrder" = "Lieferrückstand";
+
+/* Title of a stock type displayed on the Stock section on My Store screen */
+"productStockDashboardCardViewModel.stockType.outOfStock" = "Ausverkauft";
+
 /* Message on the secondary view of the products tab split view before any product is selected. */
 "productsTab.emptySecondaryView.message" = "Kein Produkt ausgewählt";
 
@@ -11326,6 +11383,33 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the switch in the IssueRefund screen to refund customAmounts */
 "refundIssue.customAmounts.title" = "Individuelle Beträge zurückerstatten";
+
+/* Text displayed when the author of a review is known. */
+"reviewsDashboardCard.completeAuthorText" = "%1$@ hat eine Bewertung für %2$@ hinterlassen";
+
+/* Menu item to dismiss the Reviews card on the Dashboard screen */
+"reviewsDashboardCard.hideCard" = "Bewertungen ausblenden";
+
+/* Text displayed when the author of a review is unknown. */
+"reviewsDashboardCard.incompleteAuthorText" = "Ein Kunde hat eine Bewertung für %@ hinterlassen";
+
+/* Additional label on a review when its status is hold. */
+"reviewsDashboardCard.pendingReview" = "Bewertung ausstehend";
+
+/* Status label on the Reviews card's filter area. */
+"reviewsDashboardCard.status" = "Status";
+
+/* Button to navigate to Reviews list screen. */
+"reviewsDashboardCard.viewAll" = "Alle Bewertungen anzeigen";
+
+/* Menu item to dismiss the Reviews card on the Dashboard screen */
+"reviewsDashboardCardViewModel.filterAll" = "Alle";
+
+/* Button to navigate to Reviews list screen. */
+"reviewsDashboardCardViewModel.filterApproved" = "Genehmigt";
+
+/* Status label on the Reviews card's filter area. */
+"reviewsDashboardCardViewModel.filterHold" = "Angehalten";
 
 /* The title for the cancel button in the search screen. */
 "searchViewController.cancelButton.tilet" = "Abbrechen";
@@ -11405,9 +11489,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Revenue stat label on dashboard. */
 "storePerformanceView.revenue" = "Einnahmen";
-
-/* Title of the store performance section on the Dashboard screen */
-"storePerformanceView.title" = "Performance";
 
 /* Button to navigate to Analytics Hub. */
 "storePerformanceView.viewAll" = "Alle Shop-Analysen anzeigen";
@@ -11640,9 +11721,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Menu item to dismiss the Top Performers section on the Dashboard screen */
 "topPerformersDashboardView.hideCard" = "Topseller ausblenden";
-
-/* Title of the Top performers section on the Dashboard screen */
-"topPerformersDashboardView.title" = "Topseller";
 
 /* Button to navigate to Analytics Hub. */
 "topPerformersDashboardView.viewAll" = "Alle Shop-Analysen anzeigen";

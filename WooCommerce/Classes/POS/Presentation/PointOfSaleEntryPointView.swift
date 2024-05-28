@@ -11,8 +11,9 @@ struct PointOfSaleEntryPointView: View {
 
         _viewModel = StateObject(wrappedValue: PointOfSaleDashboardViewModel(
             products: POSProductFactory.makeFakeProducts(currencySettings: currencySettings),
-            cardReaderConnectionViewModel: .init(state: .connectingToReader))
-        )
+            cardReaderConnectionViewModel: .init(state: .connectingToReader),
+            currencySettings: currencySettings
+        ))
     }
 
     var body: some View {

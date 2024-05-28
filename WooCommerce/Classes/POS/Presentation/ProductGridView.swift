@@ -43,6 +43,7 @@ struct ProductGridView: View {
 #if DEBUG
 #Preview {
     ProductGridView(viewModel: PointOfSaleDashboardViewModel(products: POSProductFactory.makeFakeProducts(),
-                                                             cardReaderConnectionViewModel: .init(state: .connectingToReader)))
+                                                             cardReaderConnectionViewModel: .init(state: .connectingToReader),
+                                                             currencySettings: .init()))
 }
 #endif

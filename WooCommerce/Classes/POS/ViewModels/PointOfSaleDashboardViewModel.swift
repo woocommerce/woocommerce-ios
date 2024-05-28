@@ -1,8 +1,11 @@
 import SwiftUI
+import class WooFoundation.CurrencyFormatter
+import class WooFoundation.CurrencySettings
 
 final class PointOfSaleDashboardViewModel: ObservableObject {
-    @Published var products: [POSProduct]
-    @Published var productsInCart: [CartProduct] = []
+    @Published private(set) var products: [POSProduct]
+    @Published private(set) var productsInCart: [CartProduct] = []
+    @Published private(set) var formattedCartTotalPrice: String?
 
     @Published var showsCardReaderSheet: Bool = false
     @Published var showsFilterSheet: Bool = false
@@ -15,10 +18,15 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
 
     @Published private(set) var orderStage: OrderStage = .building
 
+    private let currencyFormatter: CurrencyFormatter
+
     init(products: [POSProduct],
-         cardReaderConnectionViewModel: CardReaderConnectionViewModel) {
+         cardReaderConnectionViewModel: CardReaderConnectionViewModel,
+         currencySettings: CurrencySettings) {
         self.products = products
         self.cardReaderConnectionViewModel = cardReaderConnectionViewModel
+        self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
+        observeProductsInCartForCartTotal()
     }
 
     func addProductToCart(_ product: POSProduct) {
@@ -84,6 +92,25 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
 extension PointOfSaleDashboardViewModel {
     // Helper function to populate SwifUI previews
     static func defaultPreview() -> PointOfSaleDashboardViewModel {
-        PointOfSaleDashboardViewModel(products: [], cardReaderConnectionViewModel: .init(state: .connectingToReader))
+        PointOfSaleDashboardViewModel(products: [],
+                                      cardReaderConnectionViewModel: .init(state: .connectingToReader),
+                                      currencySettings: .init())
+    }
+}
+
+private extension PointOfSaleDashboardViewModel {
+    func observeProductsInCartForCartTotal() {
+        $productsInCart
+            .map { [weak self] in
+                guard let self else { return nil }
+                let totalValue: Decimal = $0.reduce(0) { partialResult, cartProduct in
+                    let productPrice = self.currencyFormatter.convertToDecimal(cartProduct.product.price) ?? 0
+                    let quantity = cartProduct.quantity
+                    let total = productPrice.multiplying(by: NSDecimalNumber(value: quantity)) as Decimal
+                    return partialResult + total
+                }
+                return currencyFormatter.formatAmount(totalValue)
+            }
+            .assign(to: &$formattedCartTotalPrice)
     }
 }

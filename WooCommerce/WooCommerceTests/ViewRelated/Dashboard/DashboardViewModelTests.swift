@@ -478,7 +478,7 @@ final class DashboardViewModelTests: XCTestCase {
         }
     }
 
-    func test_dashboard_cards_has_disabled_onboarding_card_if_all_tasks_are_completed() {
+    func test_dashboard_cards_has_disabled_onboarding_card_if_all_tasks_are_completed() throws {
         // Given
         let featureFlagService = MockFeatureFlagService(isDynamicDashboardM2Enabled: false)
         userDefaults[.completedAllStoreOnboardingTasks] = true
@@ -492,8 +492,11 @@ final class DashboardViewModelTests: XCTestCase {
 
         // Then
         waitUntil {
-            viewModel.dashboardCards.first(where: {$0.type == .onboarding })!.enabled == false
+            viewModel.dashboardCards.isNotEmpty
         }
+
+        let onboardingCard = try XCTUnwrap(viewModel.dashboardCards.first(where: {$0.type == .onboarding }))
+        XCTAssertFalse(onboardingCard.enabled)
     }
 
     func test_dashboard_cards_is_loaded_from_storage_if_they_exist() {
@@ -545,7 +548,7 @@ final class DashboardViewModelTests: XCTestCase {
         }
     }
 
-    func test_dashboard_cards_respects_enabled_setting_from_saved_cards() {
+    func test_dashboard_cards_respects_enabled_setting_from_saved_cards() throws {
         // Given
         let featureFlagService = MockFeatureFlagService(isDynamicDashboardM2Enabled: false)
         let storage = MockStorageManager()
@@ -566,9 +569,14 @@ final class DashboardViewModelTests: XCTestCase {
 
         // Then
         waitUntil {
-            viewModel.dashboardCards.first(where: {$0.type == .performance })!.enabled == true &&
-            viewModel.dashboardCards.first(where: {$0.type == .topPerformers })!.enabled == false
+            viewModel.dashboardCards.isNotEmpty
         }
+
+        let performanceCard = try XCTUnwrap(viewModel.dashboardCards.first(where: {$0.type == .performance }))
+        XCTAssertTrue(performanceCard.enabled)
+
+        let topPerformersCard = try XCTUnwrap(viewModel.dashboardCards.first(where: {$0.type == .topPerformers }))
+        XCTAssertFalse(topPerformersCard.enabled)
     }
 }
 

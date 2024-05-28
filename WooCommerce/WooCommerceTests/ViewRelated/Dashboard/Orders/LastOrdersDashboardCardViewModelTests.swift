@@ -12,7 +12,10 @@ final class LastOrdersDashboardCardViewModelTests: XCTestCase {
                                 Order.fake().copy(siteID: 134, orderID: 3, status: .refunded, dateCreated: .now.adding(days: -7)),
                                 Order.fake().copy(siteID: 134, orderID: 4, status: .pending, dateCreated: .now.adding(days: -4)),
                                 Order.fake().copy(siteID: 134, orderID: 5, status: .cancelled, dateCreated: .now.adding(days: -3))]
-
+    private let sampleOrderStatuses = [OrderStatus.fake().copy(siteID: 134, slug: "waiting-pickup"),
+                                       OrderStatus.fake().copy(siteID: 134, slug: "pending"),
+                                       OrderStatus.fake().copy(siteID: 134, slug: "failed"),
+                                       OrderStatus.fake().copy(siteID: 134, slug: "completed")]
     /// Mock Storage: InMemory
     private var storageManager: StorageManagerType!
 
@@ -41,6 +44,7 @@ final class LastOrdersDashboardCardViewModelTests: XCTestCase {
                                                          storageManager: storageManager)
         insertOrders(sampleOrders)
         mockSynchronizeOrders()
+        mockOrderStatuses()
 
         // When
         await viewModel.reloadData()
@@ -62,6 +66,7 @@ final class LastOrdersDashboardCardViewModelTests: XCTestCase {
                                                          stores: stores,
                                                          storageManager: storageManager)
         XCTAssertFalse(viewModel.syncingData)
+        mockOrderStatuses()
 
         // When
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
@@ -87,6 +92,7 @@ final class LastOrdersDashboardCardViewModelTests: XCTestCase {
                                                          stores: stores,
                                                          storageManager: storageManager)
         insertOrders(sampleOrders)
+        mockOrderStatuses()
 
         // When
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
@@ -113,6 +119,7 @@ final class LastOrdersDashboardCardViewModelTests: XCTestCase {
                                                          storageManager: storageManager)
         XCTAssertNil(viewModel.syncingError)
         let error = NSError(domain: "test", code: 500)
+        mockOrderStatuses()
 
         // When
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
@@ -129,6 +136,29 @@ final class LastOrdersDashboardCardViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.syncingError as? NSError, error)
     }
 
+
+    @MainActor
+    func test_order_statuses_are_loaded_from_storage_when_available() async {
+        // Given
+        let viewModel = LastOrdersDashboardCardViewModel(siteID: sampleSiteID,
+                                                         stores: stores,
+                                                         storageManager: storageManager)
+        insertOrderStatuses(sampleOrderStatuses)
+
+        mockSynchronizeOrders()
+        mockOrderStatuses()
+
+        // When
+        await viewModel.reloadData()
+
+        let statusSlugs = sampleOrderStatuses
+            .map { $0.slug }
+            .sorted()
+
+        // Then
+        XCTAssertEqual(viewModel.allStatuses.map { $0.id }, (["any"] + statusSlugs))
+    }
+
     @MainActor
     func test_orders_are_loaded_based_on_selected_status() async {
         // Given
@@ -137,6 +167,7 @@ final class LastOrdersDashboardCardViewModelTests: XCTestCase {
                                                          storageManager: storageManager)
         insertOrders(sampleOrders)
         mockSynchronizeOrders()
+        mockOrderStatuses()
 
         // When
         await viewModel.updateOrderStatus(.cancelled)
@@ -154,6 +185,14 @@ final class LastOrdersDashboardCardViewModelTests: XCTestCase {
 }
 
 extension LastOrdersDashboardCardViewModelTests {
+    func insertOrderStatuses(_ readOnlyOrderStatuses: [OrderStatus]) {
+        readOnlyOrderStatuses.forEach { orderStatus in
+            let newOrderStatus = storage.insertNewObject(ofType: StorageOrderStatus.self)
+            newOrderStatus.update(with: orderStatus)
+        }
+        storage.saveIfNeeded()
+    }
+
     func insertOrders(_ readOnlyOrders: [Order]) {
         readOnlyOrders.forEach { order in
             let newOrder = storage.insertNewObject(ofType: StorageOrder.self)
@@ -167,6 +206,17 @@ extension LastOrdersDashboardCardViewModelTests {
             switch action {
             case let .synchronizeOrders(_, _, _, _, _, _, _, _, _, completion):
                 completion(1, nil)
+            default:
+                break
+            }
+        }
+    }
+
+    func mockOrderStatuses() {
+        stores.whenReceivingAction(ofType: OrderStatusAction.self) { action in
+            switch action {
+            case let .retrieveOrderStatuses(_, completion):
+                completion(.success([]))
             default:
                 break
             }

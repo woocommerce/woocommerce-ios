@@ -184,7 +184,7 @@ final class LastOrdersDashboardCardViewModelTests: XCTestCase {
     }
 }
 
-extension LastOrdersDashboardCardViewModelTests {
+private extension LastOrdersDashboardCardViewModelTests {
     func insertOrderStatuses(_ readOnlyOrderStatuses: [OrderStatus]) {
         readOnlyOrderStatuses.forEach { orderStatus in
             let newOrderStatus = storage.insertNewObject(ofType: StorageOrderStatus.self)

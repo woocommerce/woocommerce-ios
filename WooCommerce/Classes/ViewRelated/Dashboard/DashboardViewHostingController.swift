@@ -266,8 +266,7 @@ private extension DashboardViewHostingController {
 // MARK: Last orders
 private extension DashboardViewHostingController {
     func configureLastOrdersView() {
-        rootView.onViewAllOrders = { [weak self] in
-            guard let self else { return }
+        rootView.onViewAllOrders = {
             MainTabBarController.switchToOrdersTab()
         }
 

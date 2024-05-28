@@ -9,7 +9,7 @@ struct ProductGridView: View {
 
     var body: some View {
         let columns: [GridItem] = Array(repeating: .init(.fixed(120)),
-                                        count: 4)
+                                        count: Constants.maxItemsPerRow)
 
         VStack {
             Text("Product List")
@@ -37,6 +37,12 @@ struct ProductGridView: View {
         }
         .padding(.horizontal, 32)
         .background(Color.secondaryBackground)
+    }
+}
+
+private extension ProductGridView {
+    enum Constants {
+        static let maxItemsPerRow: Int = 4
     }
 }
 

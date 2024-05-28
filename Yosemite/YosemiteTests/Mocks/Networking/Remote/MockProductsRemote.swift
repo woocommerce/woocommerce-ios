@@ -289,7 +289,6 @@ extension MockProductsRemote: ProductsRemoteProtocol {
                    with stockType: String,
                    pageNumber: Int,
                    pageSize: Int,
-                   orderBy: ProductsRemote.OrderKey,
                    order: ProductsRemote.Order) async throws -> [ProductStock] {
         guard let result = fetchedStockResult else {
             throw NetworkError.notFound()

@@ -37,23 +37,32 @@ final class POSProductFactory {
             ]
     }
 
-    /// Returns an array of [PosProduct] mapped from [Yosemite.Product]
+    /// Provides a`[POSProduct]`array by mapping  simple, purchasable-only Products from storage
     ///
     func makePointOfSaleProducts() -> [POSProduct] {
-        // 1. Load App products
         var loadedProducts: [Product] = []
         var pointOfSaleProducts: [POSProduct] = []
 
+        // 1. Fetch products from storage, and filter them by `purchasable` and `simple`
         do {
             try productsResultsController.performFetch()
-            // TODO: Handle filtering through a policy
-            loadedProducts = productsResultsController.fetchedObjects.filter { $0.productType == .simple }
+            if productsResultsController.fetchedObjects.isEmpty {
+                // TODO: Handle case for empty product list, or not empty but no eligible products
+                // https://github.com/woocommerce/woocommerce-ios/issues/12815
+                // https://github.com/woocommerce/woocommerce-ios/issues/12816
+                DDLogWarn("No products eligible for POS, or empty storage.")
+            } else {
+                // Ideally we should handle the filtering through a policy that can be easily modified,
+                // rather than having this declared implicitely:
+                loadedProducts = productsResultsController.fetchedObjects.filter { $0.productType == .simple && $0.purchasable }
+            }
         } catch {
-            // TODO: Handle
-            fatalError()
+            // TODO: Handle case for error when fetching products
+            // https://github.com/woocommerce/woocommerce-ios/issues/12846
+            DDLogError("Error fetching products from storage")
         }
 
-        // 2. Map from App product to POS product
+        // 2. Map result to POSProduct and populate the output
         for product in loadedProducts {
             let posProduct = POSProduct(itemID: UUID(),
                                         productID: product.productID,
@@ -63,8 +72,6 @@ final class POSProductFactory {
                                         currencySettings: currencySettings)
             pointOfSaleProducts.append(posProduct)
         }
-
-        // 4. Output
         return pointOfSaleProducts
     }
 

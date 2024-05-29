@@ -729,7 +729,10 @@ platform :ios do
       dsym_path: './build/WooCommerce.app.dSYM.zip'
     )
 
-    UI.message("Successfully built and uploaded prototype build `#{build_number}` to App Center.")
+    # The build code used in the Enterprise build has a different format that the App Store one.
+    # We cannot use the standard build_code_current method but have to read it directly.
+    build_code = Xcodeproj::Config.new(File.new(PUBLIC_CONFIG_FILE)).to_hash[BUILD_CODE_KEY]
+    UI.message("Successfully built and uploaded prototype build `#{build_code}` to App Center.")
 
     return if ENV['BUILDKITE_PULL_REQUEST'].nil?
 

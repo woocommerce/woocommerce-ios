@@ -369,30 +369,11 @@ final class EditableOrderViewModel: ObservableObject {
 
     // MARK: Shipping line properties
 
-    /// Multiple shipping lines support
+    /// Use case to display, add, edit, or remove shipping lines.
     ///
-    var multipleShippingLinesEnabled: Bool {
-        featureFlagService.isFeatureFlagEnabled(.multipleShippingLines)
-    }
-
-    /// View models for each shipping line in the order.
-    ///
-    @Published private(set) var shippingLineRows: [ShippingLineRowViewModel] = []
-
-    /// Shipping Methods Results Controller.
-    ///
-    private lazy var shippingMethodsResultsController: ResultsController<StorageShippingMethod> = {
-        let predicate = NSPredicate(format: "siteID == %lld", siteID)
-        return ResultsController<StorageShippingMethod>(storageManager: storageManager, matching: predicate, sortedBy: [])
+    lazy var shippingLineUseCase: EditableOrderShippingLineUseCase = {
+        EditableOrderShippingLineUseCase(siteID: siteID, flow: flow)
     }()
-
-    /// All shipping methods for the store.
-    ///
-    private var allShippingMethods: [ShippingMethod] = []
-
-    /// View model to edit a selected shipping line.
-    ///
-    @Published var selectedShippingLine: ShippingLineSelectionDetailsViewModel? = nil
 
     // MARK: Customer data properties
 
@@ -551,7 +532,6 @@ final class EditableOrderViewModel: ObservableObject {
         configureStatusBadgeViewModel()
         configureProductRowViewModels()
         configureCustomAmountRowViewModels()
-        configureShippingLineRowViewModels()
         configureCustomerDataViewModel()
         configurePaymentDataViewModel()
         configureCustomerNoteDataViewModel()
@@ -1685,42 +1665,6 @@ private extension EditableOrderViewModel {
             .assign(to: &$customAmountRows)
     }
 
-    func configureShippingLineRowViewModels() {
-        updateShippingMethodsResultsController()
-        syncShippingMethods()
-
-        guard multipleShippingLinesEnabled else {
-            return
-        }
-
-        orderSynchronizer.orderPublisher
-            .map { $0.shippingLines }
-            .removeDuplicates()
-            .combineLatest($shouldShowNonEditableIndicators)
-            .map { [weak self] (shippingLines, isNonEditable) -> [ShippingLineRowViewModel] in
-                guard let self else { return [] }
-                return shippingLines.compactMap { shippingLine in
-                    guard !shippingLine.isDeleted else { return nil }
-
-                    return ShippingLineRowViewModel(shippingLine: shippingLine,
-                                                    shippingMethods: self.allShippingMethods,
-                                                    editable: !isNonEditable,
-                                                    onEditShippingLine: { [weak self] shippingID in
-                        guard let self else {
-                            return
-                        }
-                        selectedShippingLine = ShippingLineSelectionDetailsViewModel(siteID: siteID,
-                                                                                     shippingID: shippingLine.shippingID,
-                                                                                     initialMethodID: shippingLine.methodID ?? "",
-                                                                                     initialMethodTitle: shippingLine.methodTitle,
-                                                                                     shippingTotal: shippingLine.total,
-                                                                                     didSelectSave: saveShippingLine)
-                    })
-                }
-            }
-            .assign(to: &$shippingLineRows)
-    }
-
     /// If given an initial product ID on initialization, updates the Order with the item
     ///
     func configureOrderWithinitialItemIfNeeded() {
@@ -1903,7 +1847,7 @@ private extension EditableOrderViewModel {
                                             itemsTotal: orderTotals.itemsTotal.stringValue,
                                             shouldShowShippingTotal: order.shippingLines.filter { $0.methodID != nil }.isNotEmpty,
                                             shippingTotal: order.shippingTotal.isNotEmpty ? order.shippingTotal : "0",
-                                            isShippingTotalEditable: !multipleShippingLinesEnabled,
+                                            isShippingTotalEditable: !shippingLineUseCase.multipleShippingLinesEnabled,
                                             shippingID: shippingLine?.shippingID,
                                             shippingMethodID: shippingLine?.methodID ?? "",
                                             shippingMethodTitle: shippingLine?.methodTitle ?? "",
@@ -1993,23 +1937,6 @@ private extension EditableOrderViewModel {
                 }
             }
             .assign(to: &$multipleLinesMessage)
-    }
-
-    /// Synchronizes available shipping methods for editing the order shipping lines.
-    ///
-    func syncShippingMethods() {
-        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.orderShippingMethodSelection) else {
-            return
-        }
-        let action = ShippingMethodAction.synchronizeShippingMethods(siteID: siteID) { [weak self] result in
-            switch result {
-            case .success:
-                self?.updateShippingMethodsResultsController()
-            case let .failure(error):
-                DDLogError("⛔️ Error retrieving available shipping methods: \(error)")
-            }
-        }
-        stores.dispatch(action)
     }
 
     func configureTaxRates() {
@@ -2472,15 +2399,6 @@ private extension EditableOrderViewModel {
             allProductVariations = Set(productVariationsResultsController.fetchedObjects)
         } catch {
             DDLogError("⛔️ Error fetching product variations for order: \(error)")
-        }
-    }
-
-    func updateShippingMethodsResultsController() {
-        do {
-            try shippingMethodsResultsController.performFetch()
-            allShippingMethods = shippingMethodsResultsController.fetchedObjects
-        } catch {
-            DDLogError("⛔️ Error fetching shipping methods for order: \(error)")
         }
     }
 

@@ -1,8 +1,8 @@
 import SwiftUI
 
 struct OrderShippingSection: View {
-    /// View model to drive the view content
-    @ObservedObject var viewModel: EditableOrderViewModel
+    /// Use case to add, edit, or remove shipping lines
+    @ObservedObject var useCase: EditableOrderShippingLineUseCase
 
     @State private var showAddShippingLine: Bool = false
 
@@ -19,7 +19,7 @@ struct OrderShippingSection: View {
 
                 Image(uiImage: .lockImage)
                     .foregroundColor(Color(.primary))
-                    .renderedIf(viewModel.shouldShowNonEditableIndicators)
+                    .renderedIf(useCase.shouldShowNonEditableIndicators)
 
                 Button(action: {
                     addShippingLine()
@@ -27,10 +27,10 @@ struct OrderShippingSection: View {
                     Image(uiImage: .plusImage)
                 }
                 .scaledToFit()
-                .renderedIf(!viewModel.shouldShowNonEditableIndicators)
+                .renderedIf(!useCase.shouldShowNonEditableIndicators)
             }
 
-            ForEach(viewModel.shippingLineRows) { shippingLineRow in
+            ForEach(useCase.shippingLineRows) { shippingLineRow in
                 ShippingLineRowView(viewModel: shippingLineRow)
             }
         }
@@ -39,9 +39,9 @@ struct OrderShippingSection: View {
         .background(Color(.listForeground(modal: true)))
         .addingTopAndBottomDividers()
         .sheet(isPresented: $showAddShippingLine, content: {
-            ShippingLineSelectionDetails(viewModel: viewModel.addShippingLineViewModel())
+            ShippingLineSelectionDetails(viewModel: useCase.addShippingLineViewModel())
         })
-        .sheet(item: $viewModel.selectedShippingLine, content: { selectedShippingLine in
+        .sheet(item: $useCase.selectedShippingLine, content: { selectedShippingLine in
             ShippingLineSelectionDetails(viewModel: selectedShippingLine)
         })
     }

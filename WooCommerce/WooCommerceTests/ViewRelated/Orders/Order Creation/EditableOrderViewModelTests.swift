@@ -3328,8 +3328,8 @@ final class EditableOrderViewModelTests: XCTestCase {
                                                featureFlagService: featureFlagService)
 
         // Then
-        assertEqual(1, viewModel.shippingLineRows.count)
-        let shippingLineRow = try XCTUnwrap(viewModel.shippingLineRows.first)
+        assertEqual(1, viewModel.shippingLineUseCase.shippingLineRows.count)
+        let shippingLineRow = try XCTUnwrap(viewModel.shippingLineUseCase.shippingLineRows.first)
         assertEqual(shippingLine.methodTitle, shippingLineRow.shippingTitle)
         assertEqual(shippingMethod.title, shippingLineRow.shippingMethod)
     }
@@ -3358,10 +3358,10 @@ final class EditableOrderViewModelTests: XCTestCase {
                                                featureFlagService: featureFlagService)
 
         // When
-        viewModel.shippingLineRows.first?.editShippingLine()
+        viewModel.shippingLineUseCase.shippingLineRows.first?.editShippingLine()
 
         // Then
-        let editShippingLineViewModel = try XCTUnwrap(viewModel.selectedShippingLine)
+        let editShippingLineViewModel = try XCTUnwrap(viewModel.shippingLineUseCase.selectedShippingLine)
         assertEqual(shippingLine.methodTitle, editShippingLineViewModel.methodTitle)
     }
 }

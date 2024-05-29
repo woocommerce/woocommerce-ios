@@ -9,7 +9,7 @@ struct ProductGridView: View {
 
     var body: some View {
         let columns: [GridItem] = Array(repeating: .init(.fixed(120)),
-                                        count: viewModel.products.count)
+                                        count: Constants.maxItemsPerRow)
 
         VStack {
             Text("Product List")
@@ -40,9 +40,15 @@ struct ProductGridView: View {
     }
 }
 
+private extension ProductGridView {
+    enum Constants {
+        static let maxItemsPerRow: Int = 4
+    }
+}
+
 #if DEBUG
 #Preview {
-    ProductGridView(viewModel: PointOfSaleDashboardViewModel(products: POSProductFactory.makeFakeProducts(),
+    ProductGridView(viewModel: PointOfSaleDashboardViewModel(products: POSProductProvider.provideProductsForPreview(),
                                                              cardReaderConnectionViewModel: .init(state: .connectingToReader)))
 }
 #endif

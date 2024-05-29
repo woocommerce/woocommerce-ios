@@ -408,11 +408,16 @@ final class DashboardViewModelTests: XCTestCase {
 
     // MARK: Dashboard cards
 
-    func test_generated_default_cards_are_as_expected_with_m2_feature_flag_enabled() {
+    func test_generated_default_cards_are_as_expected_with_m2_feature_flag_enabled_when_site_is_eligible_for_inbox() {
         // Given
         let featureFlagService = MockFeatureFlagService(isDynamicDashboardM2Enabled: true)
+        let inboxEligibilityChecker = MockInboxEligibilityChecker()
+        inboxEligibilityChecker.isEligible = true
 
-        let viewModel = DashboardViewModel(siteID: sampleSiteID, stores: stores, featureFlags: featureFlagService)
+        let viewModel = DashboardViewModel(siteID: sampleSiteID,
+                                           stores: stores,
+                                           featureFlags: featureFlagService,
+                                           inboxEligibilityChecker: inboxEligibilityChecker)
         mockLoadDashboardCards(withStoredCards: [])
 
         let expectedCards = [DashboardCard(type: .onboarding, availability: .show, enabled: true),
@@ -420,6 +425,38 @@ final class DashboardViewModelTests: XCTestCase {
                              DashboardCard(type: .topPerformers, availability: .unavailable, enabled: false),
                              DashboardCard(type: .blaze, availability: .hide, enabled: false),
                              DashboardCard(type: .inbox, availability: .show, enabled: false),
+                             DashboardCard(type: .reviews, availability: .show, enabled: false),
+                             DashboardCard(type: .coupons, availability: .show, enabled: false),
+                             DashboardCard(type: .stock, availability: .show, enabled: false),
+                             DashboardCard(type: .lastOrders, availability: .unavailable, enabled: false)]
+
+        // When
+        viewModel.refreshDashboardCards()
+
+        // Then
+        waitUntil {
+            viewModel.dashboardCards == expectedCards
+        }
+
+    }
+
+    func test_generated_default_cards_are_as_expected_with_m2_feature_flag_enabled_when_site_is_not_eligible_for_inbox() {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isDynamicDashboardM2Enabled: true)
+        let inboxEligibilityChecker = MockInboxEligibilityChecker()
+        inboxEligibilityChecker.isEligible = false
+
+        let viewModel = DashboardViewModel(siteID: sampleSiteID,
+                                           stores: stores,
+                                           featureFlags: featureFlagService,
+                                           inboxEligibilityChecker: inboxEligibilityChecker)
+        mockLoadDashboardCards(withStoredCards: [])
+
+        let expectedCards = [DashboardCard(type: .onboarding, availability: .show, enabled: true),
+                             DashboardCard(type: .performance, availability: .unavailable, enabled: false),
+                             DashboardCard(type: .topPerformers, availability: .unavailable, enabled: false),
+                             DashboardCard(type: .blaze, availability: .hide, enabled: false),
+                             DashboardCard(type: .inbox, availability: .hide, enabled: false),
                              DashboardCard(type: .reviews, availability: .show, enabled: false),
                              DashboardCard(type: .coupons, availability: .show, enabled: false),
                              DashboardCard(type: .stock, availability: .show, enabled: false),
@@ -509,8 +546,8 @@ final class DashboardViewModelTests: XCTestCase {
         let viewModel = DashboardViewModel(siteID: sampleSiteID, stores: stores, storageManager: storage, featureFlags: featureFlagService)
         mockLoadDashboardCards(withStoredCards: [])
 
-        // Analytics cards need to be set with availability: .show and enabled: true to make them available and shown.
-        let expectedLastOrdersCard = DashboardCard(type: .lastOrders, availability: .show, enabled: true)
+        // Last orders cards need to be set with availability: .show and enabled: false to make them available.
+        let expectedLastOrdersCard = DashboardCard(type: .lastOrders, availability: .show, enabled: false)
 
         // When
         viewModel.refreshDashboardCards()

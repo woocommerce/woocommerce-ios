@@ -33,7 +33,7 @@ struct ProductRowView: View {
 #if DEBUG
 #Preview {
     ProductRowView(cartProduct: CartProduct(id: UUID(),
-                                            product: POSProductFactory.makeProduct(currencySettings: ServiceLocator.currencySettings),
+                                            product: POSProductProvider.provideProductForPreview(currencySettings: .init()),
                                             quantity: 2))
 }
 #endif

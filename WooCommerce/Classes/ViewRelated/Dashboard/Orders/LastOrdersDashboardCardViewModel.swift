@@ -8,6 +8,7 @@ import protocol WooFoundation.Analytics
 final class LastOrdersDashboardCardViewModel: ObservableObject {
     enum OrderStatusRow: Identifiable {
         case any
+        case autoDraft
         case pending
         case processing
         case onHold
@@ -15,10 +16,40 @@ final class LastOrdersDashboardCardViewModel: ObservableObject {
         case cancelled
         case refunded
         case failed
-        case custom(OrderStatus)
+        case custom(String)
+
+        init(_ status: OrderStatusEnum?) {
+            guard let status else {
+                self = .any
+                return
+            }
+
+            switch status {
+            case .autoDraft:
+                self = .autoDraft
+            case .pending:
+                self = .pending
+            case .processing:
+                self = .processing
+            case .onHold:
+                self = .onHold
+            case .failed:
+                self = .failed
+            case .cancelled:
+                self = .cancelled
+            case .completed:
+                self = .completed
+            case .refunded:
+                self = .refunded
+            case .custom(let value):
+                self = .custom(value)
+            }
+        }
 
         var status: OrderStatusEnum? {
             switch self {
+            case .autoDraft:
+                return .autoDraft
             case .any:
                 return nil
             case .pending:
@@ -36,7 +67,7 @@ final class LastOrdersDashboardCardViewModel: ObservableObject {
             case .refunded:
                 return .refunded
             case .custom(let value):
-                return value.status
+                return .custom(value)
             }
         }
 
@@ -55,18 +86,7 @@ final class LastOrdersDashboardCardViewModel: ObservableObject {
     @Published private(set) var syncingError: Error?
     @Published private(set) var selectedOrderStatus: OrderStatusEnum?
     @Published private(set) var rows: [LastOrderDashboardRowViewModel] = []
-
-    var allStatuses: [OrderStatusRow] {
-        [.any,
-         .pending,
-         .processing,
-         .onHold,
-         .completed,
-         .cancelled,
-         .refunded,
-         .failed]
-        // TODO: 12792 Load custom statuses from storage
-    }
+    @Published private(set) var allStatuses: [OrderStatusRow] = []
 
     var status: String {
         selectedOrderStatus?.description ?? Localization.anyStatusCase
@@ -76,7 +96,14 @@ final class LastOrdersDashboardCardViewModel: ObservableObject {
     private let stores: StoresManager
     private let storageManager: StorageManagerType
     private let analytics: Analytics
-    private var resultsController: ResultsController<StorageOrder>?
+    private var ordersResultsController: ResultsController<StorageOrder>?
+
+    private lazy var statusResultsController: ResultsController<StorageOrderStatus> = {
+        let predicate = NSPredicate(format: "siteID == %lld", siteID)
+        let descriptor = NSSortDescriptor(key: "slug", ascending: true)
+
+        return ResultsController<StorageOrderStatus>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
+    }()
 
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
@@ -86,6 +113,12 @@ final class LastOrdersDashboardCardViewModel: ObservableObject {
         self.analytics = analytics
         self.stores = stores
         self.storageManager = storageManager
+
+        Task { @MainActor in
+            selectedOrderStatus = await loadLastSelectedOrderStatus()
+        }
+
+        configureStatusResultsController()
     }
 
     @MainActor
@@ -93,11 +126,26 @@ final class LastOrdersDashboardCardViewModel: ObservableObject {
         syncingData = true
         syncingError = nil
         rows = []
-        configureResultsController()
+        configureOrdersResultsController()
 
         do {
-            // Send network request -> listen to storage -> load UI
-            try await loadLast3Orders(for: selectedOrderStatus)
+            try await withThrowingTaskGroup(of: Void.self) { group in
+                group.addTask { [weak self] in
+                    guard let self else { return }
+
+                    // Send network request -> listen to storage -> load UI
+                    try await self.loadLast3Orders(for: self.selectedOrderStatus)
+                }
+
+                group.addTask { [weak self] in
+                    try? await self?.loadOrderStatuses()
+                }
+
+                while !group.isEmpty {
+                    // rethrow any failure.
+                    try await group.next()
+                }
+            }
         } catch {
             syncingError = error
             DDLogError("⛔️ Dashboard (Last orders) — Error loading orders: \(error)")
@@ -110,12 +158,12 @@ final class LastOrdersDashboardCardViewModel: ObservableObject {
         onDismiss?()
     }
 
-    func updateOrderStatus(_ status: OrderStatusRow) {
+    @MainActor
+    func updateOrderStatus(_ status: OrderStatusRow) async {
         selectedOrderStatus = status.status
+        stores.dispatch(AppSettingsAction.setLastSelectedOrderStatus(siteID: siteID, status: selectedOrderStatus?.rawValue))
 
-        Task {
-            await reloadData()
-        }
+        await reloadData()
     }
 }
 
@@ -149,13 +197,50 @@ private extension LastOrdersDashboardCardViewModel {
         }
     }
 
-    func configureResultsController() {
+    @MainActor
+    func loadOrderStatuses() async throws {
+        return try await withCheckedThrowingContinuation { continuation in
+            stores.dispatch(OrderStatusAction.retrieveOrderStatuses(siteID: siteID) { result in
+                switch result {
+                case .success:
+                    continuation.resume()
+                case .failure(let error):
+                    continuation.resume(throwing: error)
+                }
+            })
+        }
+    }
+
+    func configureStatusResultsController() {
+        statusResultsController.onDidChangeContent = { [weak self] in
+            self?.updateStatuses()
+        }
+        statusResultsController.onDidResetContent = { [weak self] in
+            self?.updateStatuses()
+        }
+
+        do {
+            try statusResultsController.performFetch()
+            updateStatuses()
+        } catch {
+            DDLogError("⛔️ Dashboard (Last orders) — Unable to fetch Order Statuses: \(error)")
+        }
+    }
+
+    func updateStatuses() {
+        let remoteStatuses = statusResultsController.fetchedObjects
+            .map { OrderStatusEnum(rawValue: $0.slug) }
+            .map { OrderStatusRow($0) }
+        allStatuses = [.any] + remoteStatuses
+    }
+
+    func configureOrdersResultsController() {
         let sortDescriptorByID = NSSortDescriptor(keyPath: \StorageOrder.dateCreated, ascending: false)
         let resultsController = ResultsController<StorageOrder>(storageManager: storageManager,
                                                                 matching: ordersPredicate(),
                                                                 fetchLimit: Constants.numberOfOrdersToShow,
                                                                 sortedBy: [sortDescriptorByID])
-        self.resultsController = resultsController
+        self.ordersResultsController = resultsController
         resultsController.onDidChangeContent = { [weak self] in
             self?.updateResults()
         }
@@ -173,10 +258,22 @@ private extension LastOrdersDashboardCardViewModel {
 
     /// Updates row view models.
     func updateResults() {
-        if let orders = resultsController?.fetchedObjects {
+        if let orders = ordersResultsController?.fetchedObjects {
             rows = orders
                 .prefix(Constants.numberOfOrdersToShow)
                 .map { LastOrderDashboardRowViewModel(order: $0) }
+        }
+    }
+
+    @MainActor
+    func loadLastSelectedOrderStatus() async -> OrderStatusEnum? {
+        return await withCheckedContinuation { continuation in
+            stores.dispatch(AppSettingsAction.loadLastSelectedOrderStatus(siteID: siteID, onCompletion: { rawStatus in
+                guard let rawStatus else {
+                    return continuation.resume(returning: nil)
+                }
+                continuation.resume(returning: OrderStatusEnum(rawValue: rawStatus))
+            }))
         }
     }
 }

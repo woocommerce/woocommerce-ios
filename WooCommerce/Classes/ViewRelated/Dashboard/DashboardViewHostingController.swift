@@ -267,11 +267,12 @@ private extension DashboardViewHostingController {
 private extension DashboardViewHostingController {
     func configureLastOrdersView() {
         rootView.onViewAllOrders = {
-            // TODO: 12655
+            MainTabBarController.switchToOrdersTab()
         }
 
-        rootView.onViewOrderDetail = { _ in
-            // TODO: 12655
+        rootView.onViewOrderDetail = { [weak self] order in
+            guard let self else { return }
+            MainTabBarController.navigateToOrderDetails(with: order.orderID, siteID: viewModel.siteID)
         }
     }
 }

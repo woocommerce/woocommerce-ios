@@ -24,6 +24,20 @@ class ShippingInputTransformerTests: XCTestCase {
         XCTAssertEqual(updatedOrder.shippingTotal, input.total)
     }
 
+    func test_new_input_with_no_shipping_method_adds_expected_shipping_line_to_order() throws {
+        // Given
+        let order = Order.fake()
+        let input = ShippingLine.fake().copy(methodID: "", total: "10.00")
+
+        // When
+        let updatedOrder = ShippingInputTransformer.update(input: input, on: order)
+
+        // Then
+        let shippingLine = try XCTUnwrap(updatedOrder.shippingLines.first)
+        XCTAssertEqual(shippingLine, input.copy(methodID: " "))
+        XCTAssertEqual(updatedOrder.shippingTotal, input.total)
+    }
+
     func test_new_input_updates_first_shipping_line_from_order() throws {
         // Given
         let shipping = ShippingLine.fake().copy(shippingID: sampleShippingID, methodID: sampleMethodID, total: "10.00")

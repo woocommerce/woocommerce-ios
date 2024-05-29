@@ -627,7 +627,7 @@ platform :ios do
   # bundle exec fastlane build_and_upload_to_app_store_connect skip_confirm:true
   # bundle exec fastlane build_and_upload_to_app_store_connect beta_release:true
   #####################################################################################
-  desc 'Builds and uploads for distribution'
+  desc 'Builds and uploads for distribution to the App Store'
   lane :build_and_upload_to_app_store_connect do |options|
     unless options[:skip_prechecks]
       # Verify that there's nothing in progress in the working copy
@@ -644,15 +644,7 @@ platform :ios do
       UI.user_error!("Terminating as requested. Don't forget to run the remainder of this automation manually.")
     end
 
-    appstore_code_signing
-
-    gym(
-      scheme: 'WooCommerce',
-      workspace: WORKSPACE_PATH,
-      clean: true,
-      export_team_id: get_required_env('EXT_EXPORT_TEAM_ID'),
-      export_options: { **COMMON_EXPORT_OPTIONS, method: 'app-store' }
-    )
+    build_for_app_store_connect
 
     sentry_upload_dsym(
       auth_token: get_required_env('SENTRY_AUTH_TOKEN'),
@@ -688,6 +680,19 @@ platform :ios do
     sh('cd .. && rm WooCommerce.ipa')
   end
 
+  desc 'Builds for distribution to the App Store'
+  lane :build_for_app_store_connect do
+    appstore_code_signing
+
+    gym(
+      scheme: 'WooCommerce',
+      workspace: WORKSPACE_PATH,
+      clean: true,
+      export_team_id: get_required_env('EXT_EXPORT_TEAM_ID'),
+      export_options: { **COMMON_EXPORT_OPTIONS, method: 'app-store' }
+    )
+  end
+
   #####################################################################################
   # build_and_upload_prototype_build
   # -----------------------------------------------------------------------------------
@@ -700,34 +705,12 @@ platform :ios do
   # bundle exec fastlane build_and_upload_prototype_build
   # bundle exec fastlane build_and_upload_prototype_build build_number:123
   #####################################################################################
-  desc 'Builds and uploads an prototype build'
+  desc 'Builds and uploads a prototype build (Enterprise distribution)'
   lane :build_and_upload_prototype_build do
     ensure_sentry_installed
     xcversion # Ensure we're using the right version of Xcode, defined in `.xcode-version` file
 
-    alpha_code_signing
-
-    # Get the current build version, and update it if needed
-    versions = Xcodeproj::Config.new(File.new(PUBLIC_CONFIG_FILE)).to_hash
-    build_number = generate_prototype_build_number
-    UI.message("Updating build version to #{build_number}")
-    versions['VERSION_LONG'] = build_number
-    new_config = Xcodeproj::Config.new(versions)
-    new_config.save_as(Pathname.new(PUBLIC_CONFIG_FILE))
-
-    gym(
-      scheme: 'WooCommerce Alpha',
-      workspace: WORKSPACE_PATH,
-      export_method: 'enterprise',
-      clean: true,
-      output_directory: 'build',
-      export_team_id: ENV.fetch('INT_EXPORT_TEAM_ID'),
-      export_options: {
-        **COMMON_EXPORT_OPTIONS,
-        method: 'enterprise',
-        iCloudContainerEnvironment: 'Production'
-      }
-    )
+    build_for_prototype_build
 
     appcenter_upload(
       api_token: get_required_env('APPCENTER_API_TOKEN'),
@@ -759,6 +742,33 @@ platform :ios do
       pr_number: Integer(ENV.fetch('BUILDKITE_PULL_REQUEST')),
       reuse_identifier: 'prototype-build-link',
       body: comment_body
+    )
+  end
+
+  desc 'Builds a prototype build (Enterprise build)'
+  lane :build_for_prototype_build do
+    alpha_code_signing
+
+    # Get the current build version, and update it if needed
+    versions = Xcodeproj::Config.new(File.new(PUBLIC_CONFIG_FILE)).to_hash
+    build_number = generate_prototype_build_number
+    UI.message("Updating build version to #{build_number}")
+    versions['VERSION_LONG'] = build_number
+    new_config = Xcodeproj::Config.new(versions)
+    new_config.save_as(Pathname.new(PUBLIC_CONFIG_FILE))
+
+    gym(
+      scheme: 'WooCommerce Alpha',
+      workspace: WORKSPACE_PATH,
+      export_method: 'enterprise',
+      clean: true,
+      output_directory: 'build',
+      export_team_id: get_required_env('INT_EXPORT_TEAM_ID'),
+      export_options: {
+        **COMMON_EXPORT_OPTIONS,
+        method: 'enterprise',
+        iCloudContainerEnvironment: 'Production'
+      }
     )
   end
 

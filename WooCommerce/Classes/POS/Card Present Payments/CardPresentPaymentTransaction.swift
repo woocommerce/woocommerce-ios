@@ -1,6 +1,6 @@
 import Foundation
 
 /// A completed, paid transaction.
-struct POSTransaction {
+struct CardPresentPaymentTransaction {
     let receiptURL: URL
 }

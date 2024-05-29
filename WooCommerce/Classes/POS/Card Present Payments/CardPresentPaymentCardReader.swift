@@ -1,6 +1,6 @@
 import Foundation
 
-struct CardReader {
+struct CardPresentPaymentCardReader {
     public let name: String
 
     /// The reader's battery level, if available.

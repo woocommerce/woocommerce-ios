@@ -1,6 +1,6 @@
 import Foundation
 
 enum CardPresentPaymentReaderConnectionResult {
-    case connected(CardReader)
+    case connected(CardPresentPaymentCardReader)
     case canceled
 }

@@ -755,8 +755,8 @@
 		2004E2C62C076D4500D62521 /* CardPresentPaymentResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2004E2C52C076D4500D62521 /* CardPresentPaymentResult.swift */; };
 		2004E2CA2C07771400D62521 /* CardPresentPaymentReaderConnectionResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2004E2C92C07771400D62521 /* CardPresentPaymentReaderConnectionResult.swift */; };
 		2004E2CC2C07795E00D62521 /* CardPresentPaymentError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2004E2CB2C07795E00D62521 /* CardPresentPaymentError.swift */; };
-		2004E2CE2C077B0B00D62521 /* CardReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2004E2CD2C077B0B00D62521 /* CardReader.swift */; };
-		2004E2D02C077D2800D62521 /* POSTransaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2004E2CF2C077D2800D62521 /* POSTransaction.swift */; };
+		2004E2CE2C077B0B00D62521 /* CardPresentPaymentCardReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2004E2CD2C077B0B00D62521 /* CardPresentPaymentCardReader.swift */; };
+		2004E2D02C077D2800D62521 /* CardPresentPaymentTransaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2004E2CF2C077D2800D62521 /* CardPresentPaymentTransaction.swift */; };
 		2004E2D22C07878E00D62521 /* CardReaderConnectionMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2004E2D12C07878E00D62521 /* CardReaderConnectionMethod.swift */; };
 		201F5AC52AD4061800EF6C55 /* AboutTapToPayViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 201F5AC42AD4061800EF6C55 /* AboutTapToPayViewModel.swift */; };
 		20203AB22B31EEF1009D0C11 /* ExpandableBottomSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20203AB12B31EEF1009D0C11 /* ExpandableBottomSheet.swift */; };
@@ -3557,8 +3557,8 @@
 		2004E2C52C076D4500D62521 /* CardPresentPaymentResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentResult.swift; sourceTree = "<group>"; };
 		2004E2C92C07771400D62521 /* CardPresentPaymentReaderConnectionResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentReaderConnectionResult.swift; sourceTree = "<group>"; };
 		2004E2CB2C07795E00D62521 /* CardPresentPaymentError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentError.swift; sourceTree = "<group>"; };
-		2004E2CD2C077B0B00D62521 /* CardReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReader.swift; sourceTree = "<group>"; };
-		2004E2CF2C077D2800D62521 /* POSTransaction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSTransaction.swift; sourceTree = "<group>"; };
+		2004E2CD2C077B0B00D62521 /* CardPresentPaymentCardReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentCardReader.swift; sourceTree = "<group>"; };
+		2004E2CF2C077D2800D62521 /* CardPresentPaymentTransaction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentTransaction.swift; sourceTree = "<group>"; };
 		2004E2D12C07878E00D62521 /* CardReaderConnectionMethod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderConnectionMethod.swift; sourceTree = "<group>"; };
 		200B84AD2BEB99AC00EAAB23 /* WooCommercePOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = WooCommercePOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		201F5AC42AD4061800EF6C55 /* AboutTapToPayViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutTapToPayViewModel.swift; sourceTree = "<group>"; };
@@ -7260,9 +7260,9 @@
 				2004E2C52C076D4500D62521 /* CardPresentPaymentResult.swift */,
 				2004E2C92C07771400D62521 /* CardPresentPaymentReaderConnectionResult.swift */,
 				2004E2CB2C07795E00D62521 /* CardPresentPaymentError.swift */,
-				2004E2CD2C077B0B00D62521 /* CardReader.swift */,
+				2004E2CD2C077B0B00D62521 /* CardPresentPaymentCardReader.swift */,
 				2004E2D12C07878E00D62521 /* CardReaderConnectionMethod.swift */,
-				2004E2CF2C077D2800D62521 /* POSTransaction.swift */,
+				2004E2CF2C077D2800D62521 /* CardPresentPaymentTransaction.swift */,
 			);
 			path = "Card Present Payments";
 			sourceTree = "<group>";
@@ -14334,7 +14334,7 @@
 				DE4D23AA29B1B0CA003A4B5D /* WPCom2FALoginView.swift in Sources */,
 				023D1DD124AB2D05002B03A3 /* ProductListSelectorViewController.swift in Sources */,
 				DE8FCD1A2A80FBBD00CB707D /* StoreCreationProfilerQuestionContainerView.swift in Sources */,
-				2004E2D02C077D2800D62521 /* POSTransaction.swift in Sources */,
+				2004E2D02C077D2800D62521 /* CardPresentPaymentTransaction.swift in Sources */,
 				0206483A23FA4160008441BB /* OrdersRootViewController.swift in Sources */,
 				022BF7FD23B9D708000A1DFB /* InProgressViewController.swift in Sources */,
 				EEB4E2D629B2063800371C3C /* StoreOnboardingTaskViewModel.swift in Sources */,
@@ -14619,7 +14619,7 @@
 				B90DACC02A30AEF000365897 /* BarcodeSKUScannerItemFinder.swift in Sources */,
 				D85A3C5626C1911600C0E026 /* InPersonPaymentsPluginNotInstalledView.swift in Sources */,
 				EE505DE32B3D36F0006E3323 /* BlazeCreateCampaignIntroViewModel.swift in Sources */,
-				2004E2CE2C077B0B00D62521 /* CardReader.swift in Sources */,
+				2004E2CE2C077B0B00D62521 /* CardPresentPaymentCardReader.swift in Sources */,
 				26B233D12A14208800926EAD /* PrivacyBannerPresenter.swift in Sources */,
 				CE55F2D62B23941D005D53D7 /* CollapsibleProductCardPriceSummary.swift in Sources */,
 				B59D1EDF219072CC009D1978 /* ProductReviewTableViewCell.swift in Sources */,

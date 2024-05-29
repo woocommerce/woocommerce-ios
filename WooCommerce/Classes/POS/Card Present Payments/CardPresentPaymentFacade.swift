@@ -10,7 +10,7 @@ protocol CardPresentPaymentFacade {
 
     /// `connectedReaderPublisher` provides the latest CardReader that was connected.
     /// This is a long lasting stream, and will not finish during the life of the façade.
-    var connectedReaderPublisher: AnyPublisher<CardReader?, Never> { get }
+    var connectedReaderPublisher: AnyPublisher<CardPresentPaymentCardReader?, Never> { get }
 
     /// Attempts to a card reader of the specified type.
     /// If another type of reader is already connected, this will be disconnected automatically.

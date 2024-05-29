@@ -179,7 +179,7 @@ private extension ProductStockDashboardCardViewModel {
     }
 
     // In some cases, variation reports can have invalid product ID.
-    // Fix that by restore the parent ID from the stock item.
+    // Fix that by restoring the parent ID from the stock item.
     func updatedVariationReports(from reports: [ProductReport], using stock: [ProductStock]) -> [ProductReport] {
         reports.map { report in
             guard let variationID = report.variationID,

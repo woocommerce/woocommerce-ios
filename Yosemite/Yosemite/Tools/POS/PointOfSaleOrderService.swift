@@ -2,9 +2,9 @@ import Foundation
 import Networking
 
 public struct PointOfSaleCartProduct {
-    public let productID: Int64
-    public let price: String
-    public let productType: ProductType
+    let productID: Int64
+    let price: String
+    let productType: ProductType
 
     public init(productID: Int64, price: String, productType: ProductType) {
         self.productID = productID
@@ -15,9 +15,9 @@ public struct PointOfSaleCartProduct {
 
 public struct PointOfSaleCartItem {
     /// Nil when the cart item is local and has not been synced remotely.
-    public let itemID: Int64?
-    public let product: PointOfSaleCartProduct
-    public let quantity: Decimal
+    let itemID: Int64?
+    let product: PointOfSaleCartProduct
+    let quantity: Decimal
 
     public init(itemID: Int64?, product: PointOfSaleCartProduct, quantity: Decimal) {
         self.itemID = itemID
@@ -31,15 +31,15 @@ public struct PointOfSaleOrder {
     public let orderID: Int64
     public let total: String
     public let totalTax: String
-    public let items: [PointOfSaleOrderItem]
+    let items: [PointOfSaleOrderItem]
 }
 
-public struct PointOfSaleOrderItem {
-    public let itemID: Int64
+struct PointOfSaleOrderItem {
+    let itemID: Int64
 
     /// The product ID of a product order item, or the ID of the variable product if the order item is a product variation.
-    public let productID: Int64
-    public let quantity: Decimal
+    let productID: Int64
+    let quantity: Decimal
 
     func toOrderItem() -> OrderItem {
         .init(itemID: itemID, name: "", productID: productID, variationID: .zero, quantity: quantity, price: .zero, sku: nil, subtotal: "", subtotalTax: "", taxClass: "", taxes: [], total: "", totalTax: "", attributes: [], addOns: [], parent: nil, bundleConfiguration: [])
@@ -60,6 +60,8 @@ public protocol PointOfSaleOrderServiceProtocol {
     ///   - allProducts: Necessary for removing existing order items with products that have been removed from the cart.
     /// - Returns: Order from the remote sync.
     func syncOrder(cart: [PointOfSaleCartItem], order: PointOfSaleOrder?, allProducts: [PointOfSaleCartProduct]) async throws -> PointOfSaleOrder
+
+    // TODO: add a function to update order's status from "auto-draft" when checking out / finalizing the order
 }
 
 public final class PointOfSaleOrderService: PointOfSaleOrderServiceProtocol {

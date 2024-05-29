@@ -700,7 +700,7 @@ final class DashboardViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.showNewCardsNotice)
     }
 
-    func test_showNewCardsNotice_beomes_false_after_true_then_showing_customization_and_dismissing_it() async {
+    func test_showNewCardsNotice_changes_from_true_to_false_after_showing_customize_screen_and_dismissing_it() async {
         // Given
         let incompleteNewCardsSet: [DashboardCard] = [
             .init(type: .inbox, availability: .show, enabled: false),

@@ -11,7 +11,8 @@ struct PointOfSaleEntryPointView: View {
 
         _viewModel = StateObject(wrappedValue: PointOfSaleDashboardViewModel(
             products: POSProductProvider().providePointOfSaleProducts(),
-            cardReaderConnectionViewModel: .init(state: .connectingToReader))
+            cardReaderConnectionViewModel: .init(state: .connectingToReader),
+            currencySettings: .init())
         )
     }
 

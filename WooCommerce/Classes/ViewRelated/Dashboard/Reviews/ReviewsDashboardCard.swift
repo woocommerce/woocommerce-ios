@@ -25,7 +25,7 @@ struct ReviewsDashboardCard: View {
             header
                 .padding(.horizontal, Layout.padding)
 
-            if let error = viewModel.syncingError {
+            if viewModel.syncingError != nil {
                 DashboardCardErrorView(onRetry: {
                     ServiceLocator.analytics.track(event: .DynamicDashboard.cardRetryTapped(type: .reviews))
                     Task {
@@ -49,7 +49,7 @@ struct ReviewsDashboardCard: View {
                     .redacted(reason: viewModel.showLoadingAnimation ? [.placeholder] : [])
                     .shimmering(active: viewModel.showLoadingAnimation)
                 } else {
-                    emptyView(isFiltered: viewModel.currentFilter != .all)
+                    emptyView(message: emptyViewText(isFiltered: viewModel.currentFilter != .all))
                 }
             }
 
@@ -223,10 +223,21 @@ private extension ReviewsDashboardCard {
         .disabled(viewModel.showLoadingAnimation)
     }
 
-    func emptyView(isFiltered: Bool) -> some View {
-        VStack(spacing: 0) {
-            ReviewsDashboardEmptyView(isFiltered: isFiltered)
-                .frame(maxWidth: .infinity)
+    func emptyView(message: String) -> some View {
+        VStack(alignment: .center, spacing: Layout.padding) {
+            Image(uiImage: .emptyReviewsImage)
+            Text(message)
+                .subheadlineStyle()
+        }
+        .padding(.all, Layout.padding)
+        .frame(maxWidth: .infinity)
+    }
+
+    func emptyViewText(isFiltered: Bool) -> String {
+        if isFiltered {
+            return String.localizedStringWithFormat(Localization.noFilteredReviewsText, viewModel.currentFilter.title)
+        } else {
+            return Localization.noReviewsText
         }
     }
 }
@@ -258,6 +269,17 @@ private extension ReviewsDashboardCard {
             "reviewsDashboardCard.viewAll",
             value: "View all reviews",
             comment: "Button to navigate to Reviews list screen."
+        )
+        static let noReviewsText = NSLocalizedString(
+            "reviewsDashboardCard.noReviewsText",
+            value: "No reviews found.",
+            comment: "Message shown in the Reviews Dashboard Card if the site has no review"
+        )
+
+        static let noFilteredReviewsText = NSLocalizedString(
+            "reviewsDashboardCard.noFilteredReviewsText",
+            value: "No reviews matching %@ status. Try changing the filter.",
+            comment: "Message shown in the Reviews Dashboard Card if the list is filtered and there is no review. The %@ is a placeholder for the filter name."
         )
     }
 }

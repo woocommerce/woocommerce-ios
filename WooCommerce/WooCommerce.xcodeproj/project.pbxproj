@@ -1524,7 +1524,6 @@
 		8646A9BA2B46C7CA001F606C /* BlazeAdDestinationSettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8646A9B92B46C7CA001F606C /* BlazeAdDestinationSettingView.swift */; };
 		86558EA82AD91B7800E10EDF /* BlazeCampaignIntroView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86558EA72AD91B7800E10EDF /* BlazeCampaignIntroView.swift */; };
 		866016512B47F8F800B4047E /* ProductSelector+Blaze.swift in Sources */ = {isa = PBXBuildFile; fileRef = 866016502B47F8F800B4047E /* ProductSelector+Blaze.swift */; };
-		866A07022BFCF17200256D5B /* ReviewsDashboardEmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 866A07012BFCF17200256D5B /* ReviewsDashboardEmptyView.swift */; };
 		866A07052BFCF2CB00256D5B /* ReviewsDashboardCardViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 866A07042BFCF2CB00256D5B /* ReviewsDashboardCardViewModelTests.swift */; };
 		867644A62B55121A0044ACAA /* BlazeCampaignCreationCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 867644A52B55121A0044ACAA /* BlazeCampaignCreationCoordinator.swift */; };
 		867B330F2B4D39B900DCBEA6 /* BlazeAddParameterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 867B330E2B4D39B900DCBEA6 /* BlazeAddParameterView.swift */; };
@@ -4292,7 +4291,6 @@
 		8646A9B92B46C7CA001F606C /* BlazeAdDestinationSettingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeAdDestinationSettingView.swift; sourceTree = "<group>"; };
 		86558EA72AD91B7800E10EDF /* BlazeCampaignIntroView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeCampaignIntroView.swift; sourceTree = "<group>"; };
 		866016502B47F8F800B4047E /* ProductSelector+Blaze.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductSelector+Blaze.swift"; sourceTree = "<group>"; };
-		866A07012BFCF17200256D5B /* ReviewsDashboardEmptyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewsDashboardEmptyView.swift; sourceTree = "<group>"; };
 		866A07042BFCF2CB00256D5B /* ReviewsDashboardCardViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewsDashboardCardViewModelTests.swift; sourceTree = "<group>"; };
 		867644A52B55121A0044ACAA /* BlazeCampaignCreationCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeCampaignCreationCoordinator.swift; sourceTree = "<group>"; };
 		867B330E2B4D39B900DCBEA6 /* BlazeAddParameterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeAddParameterView.swift; sourceTree = "<group>"; };
@@ -9040,7 +9038,6 @@
 			children = (
 				8625C5102BF20990007F1901 /* ReviewsDashboardCard.swift */,
 				8625C5122BF20CC6007F1901 /* ReviewsDashboardCardViewModel.swift */,
-				866A07012BFCF17200256D5B /* ReviewsDashboardEmptyView.swift */,
 			);
 			path = Reviews;
 			sourceTree = "<group>";
@@ -14851,7 +14848,6 @@
 				DEDB2D262845D31900CE7D35 /* CouponAllowedEmailsViewModel.swift in Sources */,
 				035DBA45292D0164003E5125 /* CollectOrderPaymentUseCase.swift in Sources */,
 				0282DD96233C960C006A5FDB /* SearchResultCell.swift in Sources */,
-				866A07022BFCF17200256D5B /* ReviewsDashboardEmptyView.swift in Sources */,
 				02EFF8172ABBEBED0015ABB2 /* GiftCardError+Description.swift in Sources */,
 				027F83ED29B046D2002688C6 /* TopPerformersPeriodViewModel.swift in Sources */,
 				203A5C312AC5ADD700BF29A1 /* WooPaymentsDepositsOverviewView.swift in Sources */,

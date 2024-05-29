@@ -9,10 +9,16 @@ final class MostActiveCouponsCardViewModelTests: XCTestCase {
     private var stores: MockStoresManager!
     private let sampleCouponReports: [CouponReport] = [.fake().copy(couponID: 1),
                                                        .fake().copy(couponID: 2),
-                                                       .fake().copy(couponID: 3)]
+                                                       .fake().copy(couponID: 3),
+                                                       .fake().copy(couponID: 4),
+                                                       .fake().copy(couponID: 5),
+                                                       .fake().copy(couponID: 6)]
     private let sampleCoupons = [Coupon.fake().copy(siteID: 134, couponID: 1),
                                  Coupon.fake().copy(siteID: 134, couponID: 2),
-                                 Coupon.fake().copy(siteID: 134, couponID: 3)]
+                                 Coupon.fake().copy(siteID: 134, couponID: 3),
+                                 Coupon.fake().copy(siteID: 134, couponID: 4),
+                                 Coupon.fake().copy(siteID: 134, couponID: 5),
+                                 Coupon.fake().copy(siteID: 134, couponID: 6)]
 
     /// Mock Storage: InMemory
     private var storageManager: StorageManagerType!
@@ -45,7 +51,7 @@ final class MostActiveCouponsCardViewModelTests: XCTestCase {
         // When
         stores.whenReceivingAction(ofType: CouponAction.self) { action in
             switch action {
-            case let .loadMostActiveCoupons(_, _, _, completion):
+            case let .loadMostActiveCoupons(_, _, _, _, completion):
                 completion(.success(self.sampleCouponReports))
             case let .loadCoupons(_, _, completion):
                 completion(.success([]))
@@ -56,7 +62,7 @@ final class MostActiveCouponsCardViewModelTests: XCTestCase {
         await viewModel.reloadData()
 
         // Then
-        XCTAssertEqual(viewModel.rows.map({ $0.id }), sampleCoupons.map({ $0.couponID }))
+        XCTAssertEqual(viewModel.rows.map({ $0.id }), sampleCoupons.prefix(3).map({ $0.couponID }))
     }
 
     @MainActor
@@ -70,7 +76,7 @@ final class MostActiveCouponsCardViewModelTests: XCTestCase {
         // When
         stores.whenReceivingAction(ofType: CouponAction.self) { action in
             switch action {
-            case let .loadMostActiveCoupons(_, _, _, completion):
+            case let .loadMostActiveCoupons(_, _, _, _, completion):
                 XCTAssertTrue(viewModel.syncingData)
                 completion(.success(self.sampleCouponReports))
             case let .loadCoupons(_, _, completion):
@@ -97,7 +103,7 @@ final class MostActiveCouponsCardViewModelTests: XCTestCase {
         // When
         stores.whenReceivingAction(ofType: CouponAction.self) { action in
             switch action {
-            case let .loadMostActiveCoupons(_, _, _, completion):
+            case let .loadMostActiveCoupons(_, _, _, _, completion):
                 XCTAssertTrue(viewModel.syncingData)
                 completion(.success(self.sampleCouponReports))
             case let .loadCoupons(_, _, completion):
@@ -124,7 +130,7 @@ final class MostActiveCouponsCardViewModelTests: XCTestCase {
         // When
         stores.whenReceivingAction(ofType: CouponAction.self) { action in
             switch action {
-            case let .loadMostActiveCoupons(_, _, _, completion):
+            case let .loadMostActiveCoupons(_, _, _, _, completion):
                 completion(.failure(error))
             case let .loadCoupons(_, _, completion):
                 XCTAssertTrue(viewModel.syncingData)
@@ -142,15 +148,17 @@ final class MostActiveCouponsCardViewModelTests: XCTestCase {
     @MainActor
     func test_syncingError_is_updated_correctly_when_loading_coupons_fails() async {
         // Given
-        let viewModel = MostActiveCouponsCardViewModel(siteID: sampleSiteID, stores: stores)
+        let viewModel = MostActiveCouponsCardViewModel(siteID: sampleSiteID,
+                                                       stores: stores,
+                                                       storageManager: storageManager)
         XCTAssertNil(viewModel.syncingError)
         let error = NSError(domain: "test", code: 500)
 
         // When
         stores.whenReceivingAction(ofType: CouponAction.self) { action in
             switch action {
-            case let .loadMostActiveCoupons(_, _, _, completion):
-                completion(.success([CouponReport.fake()]))
+            case let .loadMostActiveCoupons(_, _, _, _, completion):
+                completion(.success([CouponReport.fake(), CouponReport.fake(), CouponReport.fake()]))
             case let .loadCoupons(_, _, completion):
                 completion(.failure(error))
             default:
@@ -162,6 +170,36 @@ final class MostActiveCouponsCardViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(viewModel.syncingError as? NSError, error)
     }
+
+    @MainActor
+    func test_next_available_coupon_report_is_displayed_if_coupon_not_found() async {
+        // Given
+        let viewModel = MostActiveCouponsCardViewModel(siteID: sampleSiteID,
+                                                       stores: stores,
+                                                       storageManager: storageManager)
+        insertCoupons(sampleCoupons)
+
+        stores.whenReceivingAction(ofType: CouponAction.self) { action in
+            switch action {
+            case let .loadMostActiveCoupons(_, _, _, _, completion):
+                completion(.success(self.sampleCouponReports))
+            case let .loadCoupons(_, _, completion):
+                completion(.success([]))
+            default:
+                break
+            }
+        }
+        await viewModel.reloadData()
+
+        // Then
+        XCTAssertEqual(viewModel.rows.map({ $0.id }), [1, 2, 3])
+
+        // When
+        deleteCoupons([Coupon.fake().copy(siteID: 134, couponID: 3)])
+
+        // Then
+        XCTAssertEqual(viewModel.rows.map({ $0.id }), [1, 2, 4])
+    }
 }
 
 extension MostActiveCouponsCardViewModelTests {
@@ -169,6 +207,15 @@ extension MostActiveCouponsCardViewModelTests {
         readOnlyCoupons.forEach { coupon in
             let newCoupon = storage.insertNewObject(ofType: StorageCoupon.self)
             newCoupon.update(with: coupon)
+        }
+        storage.saveIfNeeded()
+    }
+
+    func deleteCoupons(_ readOnlyCoupons: [Coupon]) {
+        readOnlyCoupons.forEach { coupon in
+            if let storageCoupon = storage.loadCoupon(siteID: coupon.siteID, couponID: coupon.couponID) {
+                storage.deleteObject(storageCoupon)
+            }
         }
         storage.saveIfNeeded()
     }

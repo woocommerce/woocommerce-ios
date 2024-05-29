@@ -116,8 +116,7 @@ private struct PointOfSaleOrderSyncProductType: OrderSyncProductTypeProtocol {
 
     init(productID: Int64, price: String, productType: ProductType, bundledItems: [ProductBundleItem] = []) {
         self.productID = productID
-        // TODO: price value only
-        self.price = price.removingPrefix("$")
+        self.price = price
         self.productType = productType
         self.bundledItems = bundledItems
     }

@@ -4,6 +4,8 @@ struct OrderShippingSection: View {
     /// View model to drive the view content
     @ObservedObject var viewModel: EditableOrderViewModel
 
+    @State private var showAddShippingLine: Bool = false
+
     @Environment(\.safeAreaInsets) private var safeAreaInsets: EdgeInsets
 
     var body: some View {
@@ -36,12 +38,18 @@ struct OrderShippingSection: View {
         .padding()
         .background(Color(.listForeground(modal: true)))
         .addingTopAndBottomDividers()
+        .sheet(isPresented: $showAddShippingLine, content: {
+            ShippingLineSelectionDetails(viewModel: viewModel.addShippingLineViewModel())
+        })
+        .sheet(item: $viewModel.selectedShippingLine, content: { selectedShippingLine in
+            ShippingLineSelectionDetails(viewModel: selectedShippingLine)
+        })
     }
 }
 
 private extension OrderShippingSection {
     func addShippingLine() {
-        // TODO-12583: Add a new shipping line (opens `ShippingLineSelectionDetails`)
+        showAddShippingLine = true
         // TODO-12584: Track that add shipping has been tapped
     }
 }

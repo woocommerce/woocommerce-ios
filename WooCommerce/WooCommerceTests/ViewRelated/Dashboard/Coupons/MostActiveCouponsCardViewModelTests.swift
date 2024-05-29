@@ -172,7 +172,7 @@ final class MostActiveCouponsCardViewModelTests: XCTestCase {
     }
 
     @MainActor
-    func test_next_available_coupon_report_is_displayed_if_coupon_not_found() async {
+    func test_next_available_active_coupon_is_displayed_when_coupon_deleted() async {
         // Given
         let viewModel = MostActiveCouponsCardViewModel(siteID: sampleSiteID,
                                                        stores: stores,

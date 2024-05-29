@@ -4,6 +4,9 @@ struct AddOrderComponentsSection: View {
     /// View model to drive the view content
     let viewModel: EditableOrderViewModel.PaymentDataViewModel
 
+    /// Use case for shipping lines on an order
+    private let shippingUseCase: EditableOrderShippingLineUseCase
+
     /// Indicates if the coupon line details screen should be shown or not.
     ///
     @State private var shouldShowAddCouponLineDetails: Bool = false
@@ -31,10 +34,12 @@ struct AddOrderComponentsSection: View {
     @ScaledMetric private var scale: CGFloat = 1.0
 
     init(viewModel: EditableOrderViewModel.PaymentDataViewModel,
+         shippingUseCase: EditableOrderShippingLineUseCase,
          shouldShowCouponsInfoTooltip: Binding<Bool>,
          shouldShowShippingLineDetails: Binding<Bool>,
          shouldShowGiftCardForm: Binding<Bool>) {
         self.viewModel = viewModel
+        self.shippingUseCase = shippingUseCase
         self._shouldShowCouponsInfoTooltip = shouldShowCouponsInfoTooltip
         self._shouldShowShippingLineDetails = shouldShowShippingLineDetails
         self._shouldShowGiftCardForm = shouldShowGiftCardForm
@@ -124,13 +129,13 @@ private extension AddOrderComponentsSection {
     @ViewBuilder var addShippingRow: some View {
         Button(Localization.addShipping) {
             shouldShowShippingLineDetails = true
-            viewModel.addShippingTappedClosure()
+            shippingUseCase.trackAddShippingTapped()
         }
         .buttonStyle(PlusButtonStyle())
         .padding()
         .accessibilityIdentifier("add-shipping-button")
         .disabled(viewModel.orderIsEmpty)
-        .renderedIf(!viewModel.shouldShowShippingTotal)
+        .renderedIf(!shippingUseCase.paymentData.shouldShowShippingTotal)
     }
 
     @ViewBuilder var addGiftCardRow: some View {
@@ -233,8 +238,10 @@ private extension AddOrderComponentsSection {
 struct AddOrderComponentsSection_Previews: PreviewProvider {
     static var previews: some View {
         let viewModel = EditableOrderViewModel.PaymentDataViewModel(itemsTotal: "20.00")
+        let shippingUseCase = EditableOrderShippingLineUseCase(siteID: 1, flow: .creation, orderSynchronizer: RemoteOrderSynchronizer(siteID: 1, flow: .creation))
 
         AddOrderComponentsSection(viewModel: viewModel,
+                                  shippingUseCase: shippingUseCase,
                                   shouldShowCouponsInfoTooltip: .constant(true),
                                   shouldShowShippingLineDetails: .constant(false),
                                   shouldShowGiftCardForm: .constant(false))

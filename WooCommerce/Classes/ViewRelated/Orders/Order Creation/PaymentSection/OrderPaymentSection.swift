@@ -7,6 +7,9 @@ struct OrderPaymentSection: View {
     /// View model to drive the view content
     let viewModel: EditableOrderViewModel.PaymentDataViewModel
 
+    /// Use case for shipping lines on an order
+    let shippingUseCase: EditableOrderShippingLineUseCase
+
     /// Indicates if the shipping line details screen should be shown or not.
     ///
     @Binding private var shouldShowShippingLineDetails: Bool
@@ -37,9 +40,11 @@ struct OrderPaymentSection: View {
     }
 
     init(viewModel: EditableOrderViewModel.PaymentDataViewModel,
+         shippingUseCase: EditableOrderShippingLineUseCase,
          shouldShowShippingLineDetails: Binding<Bool>,
          shouldShowGiftCardForm: Binding<Bool>) {
         self.viewModel = viewModel
+        self.shippingUseCase = shippingUseCase
         self._shouldShowShippingLineDetails = shouldShowShippingLineDetails
         self._shouldShowGiftCardForm = shouldShowGiftCardForm
     }
@@ -94,18 +99,17 @@ private extension OrderPaymentSection {
     }
 
     @ViewBuilder var existingShippingRow: some View {
-        if viewModel.isShippingTotalEditable {
+        if shippingUseCase.paymentData.isShippingTotalEditable {
             TitleAndValueRow(title: Localization.shippingTotal,
                              titleSuffixImage: (image: rowsEditImage, color: Color(.primary)),
-                             value: .content(viewModel.shippingTotal),
+                             value: .content(shippingUseCase.paymentData.shippingTotal),
                              selectionStyle: editableRowsSelectionStyle) {
                 shouldShowShippingLineDetails = true
-            }
-            .renderedIf(viewModel.shouldShowShippingTotal)
+            }.renderedIf(shippingUseCase.paymentData.shouldShowShippingTotal)
         } else {
             TitleAndValueRow(title: Localization.shippingTotal,
-                             value: .content(viewModel.shippingTotal))
-            .renderedIf(viewModel.shouldShowShippingTotal)
+                             value: .content(shippingUseCase.paymentData.shippingTotal))
+            .renderedIf(shippingUseCase.paymentData.shouldShowShippingTotal)
         }
     }
 
@@ -168,7 +172,7 @@ private extension OrderPaymentSection {
             taxSectionTitle
             taxLines
             shippingTax
-                .renderedIf(viewModel.shouldShowShippingTax)
+                .renderedIf(shippingUseCase.paymentData.shouldShowShippingTax)
             taxBasedOnLine
                 .onTapGesture {
                     shouldShowTaxEducationalDialog = true
@@ -226,7 +230,7 @@ private extension OrderPaymentSection {
                     .foregroundColor(Color(uiColor: .secondaryLabel))
                     .multilineTextAlignment(.leading)
                     .frame(maxWidth: .infinity, alignment: .leading)
-                Text(viewModel.shippingTax)
+                Text(shippingUseCase.paymentData.shippingTax)
                     .footnoteStyle()
                     .multilineTextAlignment(.trailing)
                     .frame(width: nil, alignment: .trailing)
@@ -335,8 +339,10 @@ private extension OrderPaymentSection {
 struct OrderPaymentSection_Previews: PreviewProvider {
     static var previews: some View {
         let viewModel = EditableOrderViewModel.PaymentDataViewModel(itemsTotal: "20.00")
+        let shippingUseCase = EditableOrderShippingLineUseCase(siteID: 1, flow: .creation, orderSynchronizer: RemoteOrderSynchronizer(siteID: 1, flow: .creation))
 
         OrderPaymentSection(viewModel: viewModel,
+                            shippingUseCase: shippingUseCase,
                             shouldShowShippingLineDetails: .constant(false),
                             shouldShowGiftCardForm: .constant(false))
             .previewLayout(.sizeThatFits)

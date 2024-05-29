@@ -38,6 +38,7 @@ struct OrderShippingSection: View {
         .padding()
         .background(Color(.listForeground(modal: true)))
         .addingTopAndBottomDividers()
+        .renderedIf(useCase.shippingLineRows.isNotEmpty)
         .sheet(isPresented: $showAddShippingLine, content: {
             ShippingLineSelectionDetails(viewModel: useCase.addShippingLineViewModel())
         })

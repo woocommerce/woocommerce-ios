@@ -300,7 +300,7 @@ struct OrderForm: View {
                                     .disabled(viewModel.shouldShowNonEditableIndicators)
                                 Spacer(minLength: Layout.sectionSpacing)
                             }
-                            .renderedIf(viewModel.shippingLineUseCase.shippingLineRows.isNotEmpty && viewModel.shippingLineUseCase.multipleShippingLinesEnabled)
+                            .renderedIf(viewModel.shippingLineUseCase.multipleShippingLinesEnabled)
 
                             Group {
                                 if let title = viewModel.multipleLinesMessage,
@@ -312,15 +312,16 @@ struct OrderForm: View {
                                 Divider()
                                 AddOrderComponentsSection(
                                     viewModel: viewModel.paymentDataViewModel,
+                                    shippingUseCase: viewModel.shippingLineUseCase,
                                     shouldShowCouponsInfoTooltip: $shouldShowInformationalCouponTooltip,
                                     shouldShowShippingLineDetails: $shouldShowShippingLineDetails,
                                     shouldShowGiftCardForm: $shouldShowGiftCardForm)
                                 .disabled(viewModel.shouldShowNonEditableIndicators)
                                 .sheet(isPresented: $shouldShowShippingLineDetails) {
                                     if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.orderShippingMethodSelection) {
-                                        ShippingLineSelectionDetails(viewModel: viewModel.paymentDataViewModel.shippingLineSelectionViewModel)
+                                        ShippingLineSelectionDetails(viewModel: viewModel.shippingLineUseCase.paymentData.shippingLineSelectionViewModel)
                                     } else {
-                                        ShippingLineDetails(viewModel: viewModel.paymentDataViewModel.shippingLineViewModel)
+                                        ShippingLineDetails(viewModel: viewModel.shippingLineUseCase.paymentData.shippingLineViewModel)
                                     }
                                 }
                                 Divider()
@@ -414,6 +415,7 @@ struct OrderForm: View {
             } expandableContent: {
                 OrderPaymentSection(
                     viewModel: viewModel.paymentDataViewModel,
+                    shippingUseCase: viewModel.shippingLineUseCase,
                     shouldShowShippingLineDetails: $shouldShowShippingLineDetails,
                     shouldShowGiftCardForm: $shouldShowGiftCardForm)
                 .disabled(viewModel.shouldShowNonEditableIndicators)

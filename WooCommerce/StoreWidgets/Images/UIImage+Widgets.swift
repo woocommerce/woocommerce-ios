@@ -6,7 +6,7 @@ extension UIImage {
 
     /// Woo Logo Image
     ///
-    static var wooLogoWhite: UIImage {
-        return UIImage(named: "woo-logo-white")!
+    static var wooLogo: UIImage {
+        return UIImage(named: "woo-logo")!
     }
 }

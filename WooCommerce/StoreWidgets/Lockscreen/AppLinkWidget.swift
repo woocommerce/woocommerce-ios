@@ -20,6 +20,7 @@ struct AppLinkWidget: Widget {
         StaticConfiguration(kind: WooConstants.appLinkWidgetKind, provider: AppLinkProvider()) { _ in
             AppButtonView()
         }
+        .containerBackgroundRemovable(false)
         .configurationDisplayName(Localization.title)
         .description(Localization.description)
         .supportedFamilies(supportedFamilies)
@@ -53,17 +54,11 @@ private struct AppLinkProvider: TimelineProvider {
 
 private struct AppButtonView: View {
     var body: some View {
-        ZStack {
-#if !os(watchOS)
-            Circle()
-                .fill(Color.black)
-#endif
-            Image(uiImage: .wooLogoWhite)
-                .resizable()
-                .scaledToFit()
-                .padding(10)
-        }
-        .widgetBackground(backgroundView: Color(.clear))
+        Image("woo-logo", bundle: nil)
+            .resizable()
+            .scaledToFit()
+            .padding(8)
+            .widgetBackground(backgroundView: AccessoryWidgetBackground())
     }
 }
 

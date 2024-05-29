@@ -103,15 +103,17 @@ struct DashboardView: View {
             ToolbarItem(placement: .topBarTrailing) {
                 Button(action: {
                     ServiceLocator.analytics.track(event: .DynamicDashboard.editLayoutButtonTapped())
-                    viewModel.showingCustomization = true
+                    viewModel.showCustomizationScreen()
                 }, label: {
                     Text(Localization.edit)
                         .overlay(alignment: .topTrailing) {
-                            Circle()
-                                .fill(Color(.accent))
-                                .frame(width: Layout.dotBadgeSize)
-                                .padding(Layout.dotBadgePadding)
-                                .offset(Layout.dotBadgeOffset)
+                            if viewModel.showNewCardsNotice {
+                                Circle()
+                                    .fill(Color(.accent))
+                                    .frame(width: Layout.dotBadgeSize)
+                                    .padding(Layout.dotBadgePadding)
+                                    .offset(Layout.dotBadgeOffset)
+                            }
                         }
                 })
             }
@@ -150,7 +152,12 @@ struct DashboardView: View {
                 viewModel.maybeSyncAnnouncementsAfterWebViewDismissed()
             }
         }
-        .sheet(isPresented: $viewModel.showingCustomization) {
+        .sheet(isPresented: $viewModel.showingCustomization,
+               onDismiss: {
+            Task {
+                await viewModel.handleCustomizationDismissal()
+            }
+        }) {
             DashboardCustomizationView(viewModel: DashboardCustomizationViewModel(
                 allCards: viewModel.availableCards,
                 inactiveCards: viewModel.unavailableCards,
@@ -240,6 +247,10 @@ private extension DashboardView {
 
             if !viewModel.hasOrders {
                 shareStoreCard
+            }
+
+            if viewModel.showNewCardsNotice {
+                // TODO show new cards notice
             }
         }
     }

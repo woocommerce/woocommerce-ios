@@ -62,6 +62,9 @@ final class DashboardViewModel: ObservableObject {
 
     @Published var showingCustomization = false
 
+    @Published var showNewCardsNotice = false
+    private var shouldSaveCurrentCards = false
+
     let siteID: Int64
     private let stores: StoresManager
     private let featureFlagService: FeatureFlagService
@@ -145,6 +148,11 @@ final class DashboardViewModel: ObservableObject {
     ///
     func onViewAppear() {
         refreshIsInAppFeedbackCardVisibleValue()
+    }
+
+    @MainActor
+    func handleCustomizationDismissal() async {
+        await configureNewCardsNotice()
     }
 
     @MainActor
@@ -246,6 +254,15 @@ final class DashboardViewModel: ObservableObject {
                 }
             }
             .store(in: &subscriptions)
+    }
+
+    func showCustomizationScreen() {
+        if shouldSaveCurrentCards {
+            stores.dispatch(AppSettingsAction.setDashboardCards(siteID: siteID, cards: dashboardCards))
+            shouldSaveCurrentCards = false
+        }
+
+        showingCustomization = true
     }
 
     func didCustomizeDashboardCards(_ cards: [DashboardCard]) {
@@ -430,10 +447,6 @@ private extension DashboardViewModel {
         lastOrdersCardViewModel.onDismiss = showCustomizationScreen
     }
 
-    func showCustomizationScreen() {
-        showingCustomization = true
-    }
-
     func generateDefaultCards(canShowOnboarding: Bool,
                               canShowBlaze: Bool,
                               canShowAnalytics: Bool,
@@ -525,6 +538,35 @@ private extension DashboardViewModel {
 
             // Append the remaining cards to the end of the list
             dashboardCards = reorderedCards + remainingCards
+        }
+
+        await configureNewCardsNotice(with: savedCards)
+    }
+
+    /// Determines whether to show the notice that new cards now exist and can be found in Customize screen.
+    /// Can optionally pass local cards in case they are recently loaded before calling this function.
+    @MainActor
+    func configureNewCardsNotice(with localCards: [DashboardCard]? = nil) async {
+        var cards: [DashboardCard]
+
+        if let localCards {
+            cards = localCards
+        } else {
+            cards = await loadDashboardCards() ?? []
+        }
+
+        let savedCardTypes = Set(cards.map { $0.type })
+        let savedCardContainsAllNewCards = Constants.m2CardSet.isSubset(of: savedCardTypes)
+
+        if savedCardContainsAllNewCards {
+            showNewCardsNotice = false
+        } else {
+            showNewCardsNotice = true
+
+            // The app should remove the notice once a user opens the Customize screen (whether they end up customizing or not).
+            // To do so, schedule saving the current dashboard cards once when opening Customize. The cards will already have
+            // the new cards included, so doing it will ensure the notice is hidden in subsequent checks.
+            shouldSaveCurrentCards = true
         }
     }
 
@@ -651,5 +693,7 @@ private extension DashboardViewModel {
         static let dashboardScreenName = "my_store"
         static let orderPageNumber = 1
         static let orderPageSize = 1
+
+        static let m2CardSet: Set<DashboardCard.CardType> = [.inbox, .reviews, .coupons, .stock, .lastOrders]
     }
 }

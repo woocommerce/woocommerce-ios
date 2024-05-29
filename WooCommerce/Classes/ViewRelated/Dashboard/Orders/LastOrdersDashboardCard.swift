@@ -117,7 +117,9 @@ private extension LastOrdersDashboardCard {
             Menu {
                 ForEach(viewModel.allStatuses) { status in
                     Button {
-                        viewModel.updateOrderStatus(status)
+                        Task { @MainActor in
+                            await viewModel.updateOrderStatus(status)
+                        }
                     } label: {
                         SelectableItemRow(title: status.description, selected: status.status == viewModel.selectedOrderStatus)
                     }

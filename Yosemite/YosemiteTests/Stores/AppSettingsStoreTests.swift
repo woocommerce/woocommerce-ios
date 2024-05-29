@@ -1674,6 +1674,59 @@ extension AppSettingsStoreTests {
         // Then
         XCTAssertNil(loadedStockType)
     }
+
+    // MARK: - Last selected order status for Most recent orders card
+
+    func test_setLastSelectedOrderStatus_works_correctly() throws {
+        // Given
+        let status = "pending"
+        let existingSettings = GeneralStoreSettingsBySite(storeSettingsBySite: [TestConstants.siteID: GeneralStoreSettings()])
+        try fileStorage?.write(existingSettings, to: expectedGeneralStoreSettingsFileURL)
+
+        // When
+        let action = AppSettingsAction.setLastSelectedOrderStatus(siteID: TestConstants.siteID, status: status)
+        subject?.onAction(action)
+
+        // Then
+        let savedSettings: GeneralStoreSettingsBySite = try XCTUnwrap(fileStorage?.data(for: expectedGeneralStoreSettingsFileURL))
+        let settingsForSite = savedSettings.storeSettingsBySite[TestConstants.siteID]
+
+        assertEqual(status, settingsForSite?.lastSelectedOrderStatus)
+    }
+
+    func test_loadLastSelectedOrderStatus_works_correctly() throws {
+        // Given
+        let status = "pending"
+        let storeSettings = GeneralStoreSettings(lastSelectedOrderStatus: status)
+        let existingSettings = GeneralStoreSettingsBySite(storeSettingsBySite: [TestConstants.siteID: storeSettings])
+        try fileStorage?.write(existingSettings, to: expectedGeneralStoreSettingsFileURL)
+
+        // When
+        var loadedOrderStatus: String?
+        let action = AppSettingsAction.loadLastSelectedOrderStatus(siteID: TestConstants.siteID) { status in
+            loadedOrderStatus = status
+        }
+        subject?.onAction(action)
+
+        // Then
+        assertEqual(status, loadedOrderStatus)
+    }
+
+    func test_loadLastSelectedOrderStatus_returns_nil_when_no_data_was_saved() throws {
+        // Given
+        let existingSettings = GeneralStoreSettingsBySite(storeSettingsBySite: [TestConstants.siteID: GeneralStoreSettings()])
+        try fileStorage?.write(existingSettings, to: expectedGeneralStoreSettingsFileURL)
+
+        // When
+        var loadedOrderStatus: String?
+        let action = AppSettingsAction.loadLastSelectedOrderStatus(siteID: TestConstants.siteID) { status in
+            loadedOrderStatus = status
+        }
+        subject?.onAction(action)
+
+        // Then
+        XCTAssertNil(loadedOrderStatus)
+    }
 }
 
 // MARK: - Utils

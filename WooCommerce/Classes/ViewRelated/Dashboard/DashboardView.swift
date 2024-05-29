@@ -101,10 +101,19 @@ struct DashboardView: View {
                 }
             }
             ToolbarItem(placement: .topBarTrailing) {
-                Button(Localization.edit) {
+                Button(action: {
                     ServiceLocator.analytics.track(event: .DynamicDashboard.editLayoutButtonTapped())
                     viewModel.showingCustomization = true
-                }
+                }, label: {
+                    Text(Localization.edit)
+                        .overlay(alignment: .topTrailing) {
+                            Circle()
+                                .fill(Color(.accent))
+                                .frame(width: Layout.dotBadgeSize)
+                                .padding(Layout.dotBadgePadding)
+                                .offset(Layout.dotBadgeOffset)
+                        }
+                })
             }
         }
         .toolbarBackground(Color.clear, for: .navigationBar)
@@ -329,6 +338,10 @@ private extension DashboardView {
         static let imagePadding: CGFloat = 40
         static let textPadding: CGFloat = 8
         static let cornerRadius: CGFloat = 8
+        static let dotBadgePadding = EdgeInsets(top: 6, leading: 0, bottom: 0, trailing: 2)
+        static let dotBadgeSize: CGFloat = 6
+        static let dotBadgeOffset = CGSize(width: 7, height: -7)
+
     }
     enum Localization {
         static let title = NSLocalizedString(

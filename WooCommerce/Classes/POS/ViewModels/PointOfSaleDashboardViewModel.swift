@@ -4,10 +4,14 @@ import class WooFoundation.CurrencySettings
 
 final class PointOfSaleDashboardViewModel: ObservableObject {
     @Published private(set) var products: [POSProduct]
-    @Published private(set) var productsInCart: [CartProduct] = []
+    @Published private(set) var productsInCart: [CartProduct] = [] {
+        didSet {
+            calculateAmounts()
+        }
+    }
     @Published private(set) var formattedCartTotalPrice: String?
-    let formattedOrderTotalPrice: String? = "$6.59"
-    let formattedOrderTotalTaxPrice: String? = "$0.60"
+    @Published private(set) var formattedOrderTotalPrice: String?
+    @Published private(set) var formattedOrderTotalTaxPrice: String?
 
     @Published var showsCardReaderSheet: Bool = false
     @Published var showsFilterSheet: Bool = false
@@ -56,6 +60,17 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
 
     func showFilters() {
         showsFilterSheet = true
+    }
+
+    func calculateAmounts() {
+        // TODO: this is just a starting point for this logic, to have something calculated on the fly
+        if let formattedCartTotalPrice = formattedCartTotalPrice,
+           let subtotalAmount = currencyFormatter.convertToDecimal(formattedCartTotalPrice)?.doubleValue {
+            let taxAmount = subtotalAmount * 0.1 // having fixed 10% tax for testing
+            let totalAmount = subtotalAmount + taxAmount
+            formattedOrderTotalTaxPrice = currencyFormatter.formatAmount(Decimal(taxAmount))
+            formattedOrderTotalPrice = currencyFormatter.formatAmount(Decimal(totalAmount))
+        }
     }
 }
 

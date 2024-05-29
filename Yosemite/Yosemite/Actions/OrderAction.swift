@@ -62,7 +62,7 @@ public enum OrderAction: Action {
                            productID: Int64? = nil,
                            pageNumber: Int,
                            pageSize: Int,
-                           onCompletion: (TimeInterval, Error?) -> Void)
+                           onCompletion: (TimeInterval, Result<[Order], Error>) -> Void)
 
     /// Nukes all of the cached orders.
     ///

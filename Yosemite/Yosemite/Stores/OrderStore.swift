@@ -252,7 +252,7 @@ private extension OrderStore {
                            productID: Int64?,
                            pageNumber: Int,
                            pageSize: Int,
-                           onCompletion: @escaping (TimeInterval, Error?) -> Void) {
+                           onCompletion: @escaping (TimeInterval, Result<[Order], Error>) -> Void) {
         let startTime = Date()
         remote.loadAllOrders(for: siteID,
                              statuses: statuses,
@@ -266,10 +266,10 @@ private extension OrderStore {
             switch result {
             case .success(let orders):
                 self?.upsertStoredOrdersInBackground(readOnlyOrders: orders) {
-                    onCompletion(Date().timeIntervalSince(startTime), nil)
+                    onCompletion(Date().timeIntervalSince(startTime), .success(orders))
                 }
             case .failure(let error):
-                onCompletion(Date().timeIntervalSince(startTime), error)
+                onCompletion(Date().timeIntervalSince(startTime), .failure(error))
             }
         }
     }

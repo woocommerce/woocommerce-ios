@@ -4,6 +4,7 @@ import class Yosemite.PointOfSaleOrderService
 import protocol Yosemite.PointOfSaleOrderServiceProtocol
 import struct Yosemite.PointOfSaleOrder
 import struct Yosemite.PointOfSaleCartItem
+import struct Yosemite.PointOfSaleCartProduct
 import class WooFoundation.CurrencyFormatter
 import class WooFoundation.CurrencySettings
 
@@ -154,7 +155,7 @@ private extension PointOfSaleDashboardViewModel {
                 let cart = cartProducts
                     .map {
                         PointOfSaleCartItem(itemID: $0.cartItemID,
-                                            product: .init(productID: $0.product.productID, price: $0.product.price),
+                                            product: .init(productID: $0.product.productID, price: $0.product.price, productType: $0.product.productType),
                                             quantity: Decimal($0.quantity))
                     }
                 defer {
@@ -162,7 +163,8 @@ private extension PointOfSaleDashboardViewModel {
                 }
                 do {
                     self.isSyncingOrder = true
-                    let order = try await self.orderService.syncOrder(cart: cart, order: self.order)
+                    let posProducts = self.products.map { Yosemite.PointOfSaleCartProduct(productID: $0.productID, price: $0.price, productType: $0.productType) }
+                    let order = try await self.orderService.syncOrder(cart: cart, order: self.order, allProducts: posProducts)
                     self.order = order
                     print("🟢 [POS] Synced order: \(order)")
                 } catch {

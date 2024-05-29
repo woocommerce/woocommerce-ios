@@ -4,10 +4,12 @@ import Networking
 public struct PointOfSaleCartProduct {
     public let productID: Int64
     public let price: String
+    public let productType: ProductType
 
-    public init(productID: Int64, price: String) {
+    public init(productID: Int64, price: String, productType: ProductType) {
         self.productID = productID
         self.price = price
+        self.productType = productType
     }
 }
 

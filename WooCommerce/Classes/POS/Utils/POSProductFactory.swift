@@ -9,6 +9,7 @@ final class POSProductFactory {
                    productID: 1,
                    name: "Product 1",
                    price: "1.00",
+                   productType: .simple,
                    stockQuantity: 10,
                    currencySettings: currencySettings)
     }

@@ -1,5 +1,4 @@
 import Combine
-import Yosemite
 import SwiftUI
 import class Yosemite.PointOfSaleOrderService
 import protocol Yosemite.PointOfSaleOrderServiceProtocol
@@ -12,8 +11,12 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
     @Published private(set) var products: [POSProduct]
     @Published private(set) var productsInCart: [CartProduct] = []
     @Published private(set) var formattedCartTotalPrice: String?
-    let formattedOrderTotalPrice: String? = "$6.59"
-    let formattedOrderTotalTaxPrice: String? = "$0.60"
+    var formattedOrderTotalPrice: String? {
+        order?.total
+    }
+    var formattedOrderTotalTaxPrice: String? {
+        order?.totalTax
+    }
 
     @Published var showsCardReaderSheet: Bool = false
     @Published var showsFilterSheet: Bool = false
@@ -27,12 +30,6 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
     @Published private(set) var orderStage: OrderStage = .building
 
     @Published private var order: PointOfSaleOrder?
-    var formattedOrderTotalPrice: String? {
-        order?.total
-    }
-    var formattedOrderTotalTaxPrice: String? {
-        order?.totalTax
-    }
     @Published private var isSyncingOrder: Bool = false
     private let orderService: PointOfSaleOrderServiceProtocol
     private var cartSubscription: AnyCancellable?

@@ -200,6 +200,34 @@ final class MostActiveCouponsCardViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(viewModel.rows.map({ $0.id }), [1, 2, 4])
     }
+
+    @MainActor
+    func test_number_of_coupon_reports_loaded_from_remote_is_double_of_what_will_be_displayed() async throws {
+        // Given
+        let viewModel = MostActiveCouponsCardViewModel(siteID: sampleSiteID,
+                                                       stores: stores,
+                                                       storageManager: storageManager)
+
+        var numberOfCouponsToLoad: Int?
+
+        // When
+        stores.whenReceivingAction(ofType: CouponAction.self) { action in
+            switch action {
+            case let .loadMostActiveCoupons(_, numberToLoad, _, _, completion):
+                numberOfCouponsToLoad = numberToLoad
+                completion(.success(self.sampleCouponReports))
+            case let .loadCoupons(_, _, completion):
+                completion(.success([]))
+            default:
+                break
+            }
+        }
+        await viewModel.reloadData()
+
+        // Then
+        let count = try XCTUnwrap(numberOfCouponsToLoad)
+        XCTAssertEqual(count, 6)
+    }
 }
 
 extension MostActiveCouponsCardViewModelTests {

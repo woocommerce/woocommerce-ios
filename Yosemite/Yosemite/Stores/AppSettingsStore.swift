@@ -240,6 +240,10 @@ public class AppSettingsStore: Store {
             setLastSelectedStockType(siteID: siteID, type: type)
         case let .loadLastSelectedStockType(siteID, onCompletion):
             loadLastSelectedStockType(siteID: siteID, onCompletion: onCompletion)
+        case let .setLastSelectedOrderStatus(siteID, status):
+            setLastSelectedOrderStatus(siteID: siteID, status: status)
+        case let .loadLastSelectedOrderStatus(siteID, onCompletion):
+            loadLastSelectedOrderStatus(siteID: siteID, onCompletion: onCompletion)
         }
     }
 }
@@ -1052,6 +1056,18 @@ private extension AppSettingsStore {
         let storeSettings = getStoreSettings(for: siteID)
         let stockType = storeSettings.lastSelectedStockType
         onCompletion(stockType)
+    }
+
+    func setLastSelectedOrderStatus(siteID: Int64, status: String?) {
+        let storeSettings = getStoreSettings(for: siteID)
+        let updatedSettings = storeSettings.copy(lastSelectedOrderStatus: status)
+        setStoreSettings(settings: updatedSettings, for: siteID)
+    }
+
+    func loadLastSelectedOrderStatus(siteID: Int64, onCompletion: (String?) -> Void) {
+        let storeSettings = getStoreSettings(for: siteID)
+        let orderStatus = storeSettings.lastSelectedOrderStatus
+        onCompletion(orderStatus)
     }
 }
 

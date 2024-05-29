@@ -2312,7 +2312,7 @@ extension Networking.ProductReport.ExtendedInfo {
         name: CopiableProp<String> = .copy,
         image: NullableCopiableProp<String> = .copy,
         stockQuantity: CopiableProp<Int> = .copy,
-        attributes: CopiableProp<[ProductVariationAttribute]> = .copy
+        attributes: NullableCopiableProp<[ProductVariationAttribute]> = .copy
     ) -> Networking.ProductReport.ExtendedInfo {
         let name = name ?? self.name
         let image = image ?? self.image

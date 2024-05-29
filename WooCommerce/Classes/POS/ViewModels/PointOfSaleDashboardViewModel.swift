@@ -28,6 +28,9 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
     var formattedOrderTotalPrice: String? {
         order?.total
     }
+    var formattedOrderTotalTaxPrice: String? {
+        order?.totalTax
+    }
     @Published private var isSyncingOrder: Bool = false
     private let orderService: PointOfSaleOrderServiceProtocol
     private var cartSubscription: AnyCancellable?

@@ -12,6 +12,8 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
     @Published private(set) var products: [POSProduct]
     @Published private(set) var productsInCart: [CartProduct] = []
     @Published private(set) var formattedCartTotalPrice: String?
+    let formattedOrderTotalPrice: String? = "$6.59"
+    let formattedOrderTotalTaxPrice: String? = "$0.60"
 
     @Published var showsCardReaderSheet: Bool = false
     @Published var showsFilterSheet: Bool = false

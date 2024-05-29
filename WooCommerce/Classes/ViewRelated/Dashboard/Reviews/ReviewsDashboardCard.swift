@@ -8,12 +8,16 @@ struct ReviewsDashboardCard: View {
     /// Scale of the view based on accessibility changes
     @ScaledMetric private var scale: CGFloat = 1.0
 
-    @State private var showingAllReviews: Bool = false
-
     @ObservedObject private var viewModel: ReviewsDashboardCardViewModel
+    private let onViewAllReviews: (() -> Void)
+    private let onViewReviewDetail: ((_ review: ReviewViewModel) -> Void)
 
-    init(viewModel: ReviewsDashboardCardViewModel) {
+    init(viewModel: ReviewsDashboardCardViewModel,
+         onViewAllReviews: @escaping () -> Void,
+         onViewReviewDetail: @escaping (_ review: ReviewViewModel) -> Void) {
         self.viewModel = viewModel
+        self.onViewAllReviews = onViewAllReviews
+        self.onViewReviewDetail = onViewReviewDetail
     }
 
     var body: some View {
@@ -23,33 +27,30 @@ struct ReviewsDashboardCard: View {
 
             reviewsFilterBar
                 .padding(.horizontal, Layout.padding)
-                .redacted(reason: viewModel.syncingData ? [.placeholder] : [])
-                .shimmering(active: viewModel.syncingData)
+                .redacted(reason: viewModel.showLoadingAnimation ? [.placeholder] : [])
+                .shimmering(active: viewModel.showLoadingAnimation)
             Divider()
 
-            if viewModel.data.isNotEmpty {
+            if viewModel.showLoadingAnimation || viewModel.data.isNotEmpty {
                 ForEach(viewModel.data, id: \.review.reviewID) { reviewViewModel in
                     reviewRow(for: reviewViewModel,
                               isLastItem: reviewViewModel == viewModel.data.last)
                 }
-                .redacted(reason: viewModel.syncingData ? [.placeholder] : [])
-                .shimmering(active: viewModel.syncingData)
-
-                Divider()
-
-                viewAllReviewsButton
-                    .padding(.horizontal, Layout.padding)
-                    .redacted(reason: viewModel.syncingData ? [.placeholder] : [])
-                    .shimmering(active: viewModel.syncingData)
+                .redacted(reason: viewModel.showLoadingAnimation ? [.placeholder] : [])
+                .shimmering(active: viewModel.showLoadingAnimation)
             }
+
+            Divider()
+
+            viewAllReviewsButton
+                .padding(.horizontal, Layout.padding)
+                .redacted(reason: viewModel.showLoadingAnimation ? [.placeholder] : [])
+                .shimmering(active: viewModel.showLoadingAnimation)
         }
         .padding(.vertical, Layout.padding)
         .background(Color(.listForeground(modal: false)))
         .clipShape(RoundedRectangle(cornerSize: Layout.cornerSize))
         .padding(.horizontal, Layout.padding)
-        LazyNavigationLink(destination: ReviewsView(siteID: viewModel.siteID), isActive: $showingAllReviews) {
-            EmptyView()
-        }
     }
 }
 
@@ -73,7 +74,7 @@ private extension ReviewsDashboardCard {
                     .padding(.leading, Layout.padding)
                     .padding(.vertical, Layout.hideIconVerticalPadding)
             }
-            .disabled(viewModel.syncingData)
+            .disabled(viewModel.showLoadingAnimation)
         }
     }
 
@@ -84,17 +85,21 @@ private extension ReviewsDashboardCard {
                     .foregroundStyle(Color(.text))
                     .subheadlineStyle()
 
-                Text("All") // TODO: dynamically change based on filter selection
+                Text(viewModel.currentFilter.title)
                     .subheadlineStyle()
             }
+            .redacted(reason: viewModel.switchingStatus ? [.placeholder] : [])
+            .shimmering(active: viewModel.switchingStatus)
             Spacer()
 
             Menu {
                 ForEach(viewModel.filters, id: \.self) { filter in
                     Button {
-                        // TODO
+                        Task {
+                            await viewModel.filterReviews(by: filter)
+                        }
                     } label: {
-                        SelectableItemRow(title: filter.title, selected: false)
+                        SelectableItemRow(title: filter.title, selected: viewModel.currentFilter == filter)
                     }
                 }
             } label: {
@@ -105,44 +110,53 @@ private extension ReviewsDashboardCard {
     }
 
     func reviewRow(for viewModel: ReviewViewModel, isLastItem: Bool) -> some View {
-        HStack(alignment: .top, spacing: 0) {
-            Image(systemName: "bubble.fill")
-                .foregroundStyle(viewModel.review.status == .hold ? Color.secondary : Color(.wooCommercePurple(.shade60)))
-                .padding(.horizontal, Layout.padding)
-                .padding(.vertical, Layout.cardPadding)
+        Button {
+            onViewReviewDetail(viewModel)
+        } label: {
+            HStack(alignment: .firstTextBaseline, spacing: Layout.padding) {
+                Image(systemName: "bubble.fill")
+                    .foregroundStyle(
+                        viewModel.notification == nil || viewModel.notification?.read == true
+                        ? Color.secondary
+                        : Color(.wooCommercePurple(.shade60))
+                    )
 
+                VStack(alignment: .leading, spacing: Layout.padding) {
+                    VStack(alignment: .leading) {
+                        if let subject = viewModel.subject {
+                            Text(subject)
+                                .multilineTextAlignment(.leading)
+                                .bodyStyle()
+                        }
 
-            VStack(alignment: .leading) {
-                if let subject = viewModel.subject {
-                    Text(subject)
-                        .bodyStyle()
-                        .padding(.trailing, Layout.padding)
-                }
+                        reviewText(text: viewModel.snippetData.reviewText,
+                                   pendingText: viewModel.snippetData.pendingReviewsText,
+                                   divider: viewModel.snippetData.dot,
+                                   textColor: viewModel.snippetData.textColor,
+                                   accentColor: viewModel.snippetData.accentColor,
+                                   shouldDisplayStatus: viewModel.shouldDisplayStatus)
+                        .multilineTextAlignment(.leading)
+                        .lineLimit(2)
+                        .subheadlineStyle()
 
-                reviewText(text: viewModel.snippetData.reviewText,
-                           pendingText: viewModel.snippetData.pendingReviewsText,
-                           divider: viewModel.snippetData.dot,
-                           textColor: viewModel.snippetData.textColor,
-                           accentColor: viewModel.snippetData.accentColor,
-                           shouldDisplayStatus: viewModel.shouldDisplayStatus)
-                .lineLimit(2)
-                .subheadlineStyle()
-                .padding(.trailing, Layout.padding)
-
-                if viewModel.review.rating > 0 {
-                    HStack(spacing: Layout.starRatingSpacing) {
-                        ForEach(0..<viewModel.review.rating, id: \.self) { _ in
-                            Image(systemName: "star.fill")
-                                .resizable()
-                                .frame(width: Constants.starSize * scale, height: Constants.starSize * scale)
+                        if viewModel.review.rating > 0 {
+                            HStack(spacing: Layout.starRatingSpacing) {
+                                ForEach(0..<viewModel.review.rating, id: \.self) { _ in
+                                    Image(systemName: "star.fill")
+                                        .resizable()
+                                        .frame(width: Constants.starSize * scale, height: Constants.starSize * scale)
+                                        .foregroundColor(Color(.label))
+                                }
+                            }
                         }
                     }
-                }
+                    .padding(.trailing, Layout.padding)
 
-                Divider()
-                    .padding(.vertical, Layout.dividerSpacing)
-                    .renderedIf(!isLastItem)
+                    Divider()
+                        .renderedIf(!isLastItem)
+                }
             }
+            .padding(.leading, Layout.padding)
         }
     }
 
@@ -184,7 +198,7 @@ private extension ReviewsDashboardCard {
 
     var viewAllReviewsButton: some View {
         Button {
-            showingAllReviews = true
+            onViewAllReviews()
         } label: {
             HStack {
                 Text(Localization.viewAll)
@@ -193,18 +207,16 @@ private extension ReviewsDashboardCard {
                     .foregroundStyle(Color(.tertiaryLabel))
             }
         }
-        .disabled(viewModel.syncingData)
+        .disabled(viewModel.showLoadingAnimation)
     }
 }
 
 private extension ReviewsDashboardCard {
     enum Layout {
         static let padding: CGFloat = 16
-        static let cardPadding: CGFloat = 4
         static let cornerSize = CGSize(width: 8.0, height: 8.0)
         static let hideIconVerticalPadding: CGFloat = 8
         static let starRatingSpacing: CGFloat = 4
-        static let dividerSpacing: CGFloat = 4
     }
 
     enum Constants {
@@ -231,5 +243,7 @@ private extension ReviewsDashboardCard {
 }
 
 #Preview {
-    ReviewsDashboardCard(viewModel: ReviewsDashboardCardViewModel(siteID: 1))
+    ReviewsDashboardCard(viewModel: ReviewsDashboardCardViewModel(siteID: 1),
+                         onViewAllReviews: { },
+                         onViewReviewDetail: { _ in })
 }

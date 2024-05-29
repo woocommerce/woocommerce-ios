@@ -296,15 +296,15 @@ struct OrderForm: View {
                             Spacer(minLength: Layout.sectionSpacing)
 
                             Group {
-                                OrderShippingSection(viewModel: viewModel)
+                                OrderShippingSection(useCase: viewModel.shippingUseCase)
                                     .disabled(viewModel.shouldShowNonEditableIndicators)
                                 Spacer(minLength: Layout.sectionSpacing)
                             }
-                            .renderedIf(viewModel.shippingLineRows.isNotEmpty && viewModel.multipleShippingLinesEnabled)
+                            .renderedIf(viewModel.shippingUseCase.multipleShippingLinesEnabled)
 
                             Group {
                                 if let title = viewModel.multipleLinesMessage,
-                                   !viewModel.multipleShippingLinesEnabled {
+                                   !viewModel.shippingUseCase.multipleShippingLinesEnabled {
                                     MultipleLinesMessage(title: title)
                                     Spacer(minLength: Layout.sectionSpacing)
                                 }
@@ -312,15 +312,16 @@ struct OrderForm: View {
                                 Divider()
                                 AddOrderComponentsSection(
                                     viewModel: viewModel.paymentDataViewModel,
+                                    shippingUseCase: viewModel.shippingUseCase,
                                     shouldShowCouponsInfoTooltip: $shouldShowInformationalCouponTooltip,
                                     shouldShowShippingLineDetails: $shouldShowShippingLineDetails,
                                     shouldShowGiftCardForm: $shouldShowGiftCardForm)
                                 .disabled(viewModel.shouldShowNonEditableIndicators)
                                 .sheet(isPresented: $shouldShowShippingLineDetails) {
                                     if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.orderShippingMethodSelection) {
-                                        ShippingLineSelectionDetails(viewModel: viewModel.paymentDataViewModel.shippingLineSelectionViewModel)
+                                        ShippingLineSelectionDetails(viewModel: viewModel.shippingUseCase.paymentData.shippingLineSelectionViewModel)
                                     } else {
-                                        ShippingLineDetails(viewModel: viewModel.paymentDataViewModel.shippingLineViewModel)
+                                        ShippingLineDetails(viewModel: viewModel.shippingUseCase.paymentData.shippingLineViewModel)
                                     }
                                 }
                                 Divider()
@@ -414,6 +415,7 @@ struct OrderForm: View {
             } expandableContent: {
                 OrderPaymentSection(
                     viewModel: viewModel.paymentDataViewModel,
+                    shippingUseCase: viewModel.shippingUseCase,
                     shouldShowShippingLineDetails: $shouldShowShippingLineDetails,
                     shouldShowGiftCardForm: $shouldShowGiftCardForm)
                 .disabled(viewModel.shouldShowNonEditableIndicators)

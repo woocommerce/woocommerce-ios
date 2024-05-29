@@ -22,45 +22,13 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
     }
 
     func addProductToCart(_ product: POSProduct) {
-        if product.stockQuantity > 0 {
-            reduceInventory(product)
-
-            let cartProduct = CartProduct(id: UUID(), product: product, quantity: 1)
-            productsInCart.append(cartProduct)
-        } else {
-            // TODO: Handle out of stock
-            // wp.me/p91TBi-bcW#comment-12123
-            return
-        }
-    }
-
-    func reduceInventory(_ product: POSProduct) {
-        guard let index = products.firstIndex(where: { $0.itemID == product.itemID }) else {
-            return
-        }
-        let updatedQuantity = product.stockQuantity - 1
-        let updatedProduct = product.createWithUpdatedQuantity(updatedQuantity)
-        products[index] = updatedProduct
-    }
-
-    func restoreInventory(_ product: POSProduct) {
-        guard let index = products.firstIndex(where: { $0.itemID == product.itemID }) else {
-            return
-        }
-        let updatedQuantity = product.stockQuantity + 1
-        let updatedProduct = product.createWithUpdatedQuantity(updatedQuantity)
-        products[index] = updatedProduct
+        let cartProduct = CartProduct(id: UUID(), product: product, quantity: 1)
+        productsInCart.append(cartProduct)
     }
 
     // Removes a `CartProduct` from the Cart
     func removeProductFromCart(_ cartProduct: CartProduct) {
         productsInCart.removeAll(where: { $0.id == cartProduct.id })
-
-        // When removing an item from the cart, restore previous inventory
-        guard let match = products.first(where: { $0.productID == cartProduct.product.productID }) else {
-            return
-        }
-        restoreInventory(match)
     }
 
     func submitCart() {

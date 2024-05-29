@@ -51,7 +51,13 @@ public struct PointOfSaleOrderItem {
 }
 
 public protocol PointOfSaleOrderServiceProtocol {
-    func syncOrder(cart: [PointOfSaleCartItem], order: PointOfSaleOrder?) async throws -> PointOfSaleOrder
+    /// Syncs order based on the cart.
+    /// - Parameters:
+    ///   - cart: Cart with optional items (product & quantity).
+    ///   - order: Optional latest remotely synced order. Nil when syncing order for the first time.
+    ///   - allProducts: Necessary for removing existing order items with products that have been removed from the cart.
+    /// - Returns: Order from the remote sync.
+    func syncOrder(cart: [PointOfSaleCartItem], order: PointOfSaleOrder?, allProducts: [PointOfSaleCartProduct]) async throws -> PointOfSaleOrder
 }
 
 public final class PointOfSaleOrderService: PointOfSaleOrderServiceProtocol {
@@ -73,16 +79,18 @@ public final class PointOfSaleOrderService: PointOfSaleOrderServiceProtocol {
 
     // MARK: - Protocol conformance
 
-    public func syncOrder(cart: [PointOfSaleCartItem], order posOrder: PointOfSaleOrder?) async throws -> PointOfSaleOrder {
+    public func syncOrder(cart: [PointOfSaleCartItem], order posOrder: PointOfSaleOrder?, allProducts: [PointOfSaleCartProduct]) async throws -> PointOfSaleOrder {
         let initialOrder: Order = {
             if let posOrder {
-                return OrderFactory.emptyNewOrder.copy(siteID: posOrder.siteID, orderID: posOrder.orderID, items: posOrder.items.map { $0.toOrderItem() })
+                return OrderFactory.emptyNewOrder.copy(siteID: posOrder.siteID,
+                                                       orderID: posOrder.orderID,
+                                                       items: posOrder.items.map { $0.toOrderItem() })
             } else {
                 // TODO: handle WC version under 6.3 when auto-draft status is unavailable as in `NewOrderInitialStatusResolver`
                 return OrderFactory.emptyNewOrder.copy(siteID: siteID, status: .autoDraft)
             }
         }()
-        let order = updateOrder(initialOrder, cart: cart)
+        let order = updateOrder(initialOrder, cart: cart, allProducts: allProducts)
         let syncedOrder: Order
         if posOrder != nil {
             syncedOrder = try await ordersRemote.updatePointOfSaleOrder(siteID: siteID, order: order, fields: [.items])
@@ -114,18 +122,43 @@ private struct PointOfSaleOrderSyncProductType: OrderSyncProductTypeProtocol {
 }
 
 private extension PointOfSaleOrderService {
-    func updateOrder(_ order: Order, cart: [PointOfSaleCartItem]) -> Order {
-        // We need to send all OrderSyncProductInput in one call to the RemoteOrderSynchronizer, both additions and deletions
-        // otherwise may ignore the subsequent values that are sent
-        let products: [PointOfSaleOrderSyncProductType] = cart.map { cartItem in
-            // TODO: pass productType from product
-            PointOfSaleOrderSyncProductType(productID: cartItem.product.productID, price: cartItem.product.price, productType: .simple)
+    func updateOrder(_ order: Order, cart: [PointOfSaleCartItem], allProducts: [PointOfSaleCartProduct]) -> Order {
+        let cartProducts = cart.map { PointOfSaleOrderSyncProductType(productID: $0.product.productID, price: $0.product.price, productType: $0.product.productType) }
+        let allProducts = allProducts.map { PointOfSaleOrderSyncProductType(productID: $0.productID, price: $0.price, productType: $0.productType) }
+
+        // Removes all existing items by setting quantity to 0.
+        let itemsToRemove = order.items.compactMap {
+            ProductInputTransformer.createUpdateProductInput(item: $0, quantity: 0, allProducts: allProducts, allProductVariations: [], defaultDiscount: 0)
         }
-        var placeholderProductSelectorBundleConfigurationsByProductID: [Int64 : [[BundledProductConfiguration]]] = [:]
-        let addedItemsToSync = ProductInputTransformer.productInputAdditionsToSync(orderItems: order.items, productsToSync: products, variations: [], productSelectorBundleConfigurationsByProductID: &placeholderProductSelectorBundleConfigurationsByProductID, allProducts: [], allProductVariations: [])
-        let removedItemsToSync = ProductInputTransformer.productInputDeletionsToSync(orderItems: order.items, productsToSync: products, variations: [], allProducts: [], allProductVariations: [], defaultDiscount: { _ in 0 })
-        let itemsToSync = addedItemsToSync + removedItemsToSync
+
+        // Adds items from the latest cart grouping cart items of the same product.
+        let quantitiesByProductID = createQuantitiesByProductID(from: cart)
+        let productIDsSortedByOrderInCart = quantitiesByProductID.keys.sorted { lhs, rhs in
+            let lhsIndexInCart = cartProducts.firstIndex(where: { $0.productID == lhs }) ?? 0
+            let rhsIndexInCart = cartProducts.firstIndex(where: { $0.productID == rhs }) ?? 0
+            return lhsIndexInCart < rhsIndexInCart
+        }
+        let itemsToAdd: [OrderSyncProductInput] = productIDsSortedByOrderInCart.compactMap { productID in
+            guard let quantity = quantitiesByProductID[productID],
+                  let product = allProducts.first(where: { $0.productID == productID }) else {
+                return nil
+            }
+            return OrderSyncProductInput(product: .product(product), quantity: quantity)
+        }
+        let itemsToSync = itemsToRemove + itemsToAdd
 
         return ProductInputTransformer.updateMultipleItems(with: itemsToSync, on: order, shouldUpdateOrDeleteZeroQuantities: .update)
+    }
+
+    func createQuantitiesByProductID(from cart: [PointOfSaleCartItem]) -> [Int64: Decimal] {
+        cart.reduce([Int64: Decimal]()) { partialResult, cartItem in
+            var result = partialResult
+            if let quantity = partialResult[cartItem.product.productID] {
+                result[cartItem.product.productID] = quantity + cartItem.quantity
+            } else {
+                result[cartItem.product.productID] = cartItem.quantity
+            }
+            return result
+        }
     }
 }

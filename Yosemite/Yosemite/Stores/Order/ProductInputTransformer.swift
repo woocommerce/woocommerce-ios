@@ -200,7 +200,7 @@ public struct ProductInputTransformer {
 
         for item in allOrderItemsToBeRemoved {
 
-            if let input = createUpdateProductInput(item: item, quantity: 0, allProducts: allProducts, allProductVariations: allProductVariations, defaultDiscount: defaultDiscount(item)) {
+            if let input = createUpdateProductInput(item: item, quantity: 0, allProducts: Array(allProducts), allProductVariations: allProductVariations, defaultDiscount: defaultDiscount(item)) {
                 inputsToBeRemoved.append(input)
             }
 
@@ -220,7 +220,7 @@ public struct ProductInputTransformer {
                                                 quantity: Decimal,
                                                 discount: Decimal? = nil,
                                                 bundleConfiguration: [BundledProductConfiguration] = [],
-                                                allProducts: Set<Product>,
+                                                allProducts: [OrderSyncProductTypeProtocol],
                                                 allProductVariations: Set<ProductVariation>,
                                                 defaultDiscount: Decimal) -> OrderSyncProductInput? {
         // Finds the product or productVariation associated with the order item.

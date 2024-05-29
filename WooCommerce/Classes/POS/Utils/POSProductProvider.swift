@@ -56,7 +56,6 @@ final class POSProductProvider {
                                         productID: product.productID,
                                         name: product.name,
                                         price: product.price,
-                                        stockQuantity: product.stockQuantity?.intValue ?? 0, // TODO: Remove stock usage
                                         currencySettings: currencySettings)
             pointOfSaleProducts.append(posProduct)
         }
@@ -75,16 +74,15 @@ extension POSProductProvider {
                    productID: 1,
                    name: "Product 1",
                    price: "1.00",
-                   stockQuantity: 10,
                    currencySettings: currencySettings)
     }
 
     static func provideProductsForPreview(currencySettings: CurrencySettings = ServiceLocator.currencySettings) -> [POSProduct] {
         return [
-            POSProduct(itemID: UUID(), productID: 1, name: "Product 1", price: "1.00", stockQuantity: 10, currencySettings: currencySettings),
-            POSProduct(itemID: UUID(), productID: 2, name: "Product 2", price: "2.00", stockQuantity: 10, currencySettings: currencySettings),
-            POSProduct(itemID: UUID(), productID: 3, name: "Product 3", price: "3.00", stockQuantity: 10, currencySettings: currencySettings),
-            POSProduct(itemID: UUID(), productID: 4, name: "Product 4", price: "4.00", stockQuantity: 0, currencySettings: currencySettings),
+            POSProduct(itemID: UUID(), productID: 1, name: "Product 1", price: "1.00", currencySettings: currencySettings),
+            POSProduct(itemID: UUID(), productID: 2, name: "Product 2", price: "2.00", currencySettings: currencySettings),
+            POSProduct(itemID: UUID(), productID: 3, name: "Product 3", price: "3.00", currencySettings: currencySettings),
+            POSProduct(itemID: UUID(), productID: 4, name: "Product 4", price: "4.00", currencySettings: currencySettings),
         ]
     }
 }

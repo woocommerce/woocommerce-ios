@@ -29,7 +29,6 @@ final class POSProductProvider {
     ///
     func providePointOfSaleProducts() -> [POSProduct] {
         var loadedProducts: [Product] = []
-        var pointOfSaleProducts: [POSProduct] = []
 
         // 1. Fetch products from storage, and filter them by `purchasable` and `simple`
         do {
@@ -51,15 +50,13 @@ final class POSProductProvider {
         }
 
         // 2. Map result to POSProduct and populate the output
-        for product in loadedProducts {
-            let posProduct = POSProduct(itemID: UUID(),
-                                        productID: product.productID,
-                                        name: product.name,
-                                        price: product.price,
-                                        currencySettings: currencySettings)
-            pointOfSaleProducts.append(posProduct)
+        return loadedProducts.map { product in
+            POSProduct(itemID: UUID(),
+                       productID: product.productID,
+                       name: product.name,
+                       price: product.price,
+                       currencySettings: currencySettings)
         }
-        return pointOfSaleProducts
     }
 
     // TODO: Mechanism to reload/sync product data.

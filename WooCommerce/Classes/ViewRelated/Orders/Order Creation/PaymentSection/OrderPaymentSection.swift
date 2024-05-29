@@ -8,7 +8,7 @@ struct OrderPaymentSection: View {
     let viewModel: EditableOrderViewModel.PaymentDataViewModel
 
     /// Use case for shipping lines on an order
-    let shippingUseCase: EditableOrderShippingLineUseCase
+    let shippingUseCase: EditableOrderShippingUseCase
 
     /// Indicates if the shipping line details screen should be shown or not.
     ///
@@ -40,7 +40,7 @@ struct OrderPaymentSection: View {
     }
 
     init(viewModel: EditableOrderViewModel.PaymentDataViewModel,
-         shippingUseCase: EditableOrderShippingLineUseCase,
+         shippingUseCase: EditableOrderShippingUseCase,
          shouldShowShippingLineDetails: Binding<Bool>,
          shouldShowGiftCardForm: Binding<Bool>) {
         self.viewModel = viewModel
@@ -339,7 +339,7 @@ private extension OrderPaymentSection {
 struct OrderPaymentSection_Previews: PreviewProvider {
     static var previews: some View {
         let viewModel = EditableOrderViewModel.PaymentDataViewModel(itemsTotal: "20.00")
-        let shippingUseCase = EditableOrderShippingLineUseCase(siteID: 1, flow: .creation, orderSynchronizer: RemoteOrderSynchronizer(siteID: 1, flow: .creation))
+        let shippingUseCase = EditableOrderShippingUseCase(siteID: 1, flow: .creation, orderSynchronizer: RemoteOrderSynchronizer(siteID: 1, flow: .creation))
 
         OrderPaymentSection(viewModel: viewModel,
                             shippingUseCase: shippingUseCase,

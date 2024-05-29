@@ -5,7 +5,7 @@ struct AddOrderComponentsSection: View {
     let viewModel: EditableOrderViewModel.PaymentDataViewModel
 
     /// Use case for shipping lines on an order
-    private let shippingUseCase: EditableOrderShippingLineUseCase
+    private let shippingUseCase: EditableOrderShippingUseCase
 
     /// Indicates if the coupon line details screen should be shown or not.
     ///
@@ -34,7 +34,7 @@ struct AddOrderComponentsSection: View {
     @ScaledMetric private var scale: CGFloat = 1.0
 
     init(viewModel: EditableOrderViewModel.PaymentDataViewModel,
-         shippingUseCase: EditableOrderShippingLineUseCase,
+         shippingUseCase: EditableOrderShippingUseCase,
          shouldShowCouponsInfoTooltip: Binding<Bool>,
          shouldShowShippingLineDetails: Binding<Bool>,
          shouldShowGiftCardForm: Binding<Bool>) {
@@ -238,7 +238,7 @@ private extension AddOrderComponentsSection {
 struct AddOrderComponentsSection_Previews: PreviewProvider {
     static var previews: some View {
         let viewModel = EditableOrderViewModel.PaymentDataViewModel(itemsTotal: "20.00")
-        let shippingUseCase = EditableOrderShippingLineUseCase(siteID: 1, flow: .creation, orderSynchronizer: RemoteOrderSynchronizer(siteID: 1, flow: .creation))
+        let shippingUseCase = EditableOrderShippingUseCase(siteID: 1, flow: .creation, orderSynchronizer: RemoteOrderSynchronizer(siteID: 1, flow: .creation))
 
         AddOrderComponentsSection(viewModel: viewModel,
                                   shippingUseCase: shippingUseCase,

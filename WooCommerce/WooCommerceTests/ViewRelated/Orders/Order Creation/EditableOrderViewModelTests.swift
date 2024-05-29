@@ -83,7 +83,7 @@ final class EditableOrderViewModelTests: XCTestCase {
             }
 
             // Trigger remote sync
-            viewModel.shippingLineUseCase.saveShippingLine(.fake())
+            viewModel.shippingUseCase.saveShippingLine(.fake())
         }
 
         // Then
@@ -191,7 +191,7 @@ final class EditableOrderViewModelTests: XCTestCase {
             }
 
             // When remote sync is triggered
-            viewModel.shippingLineUseCase.saveShippingLine(.fake())
+            viewModel.shippingUseCase.saveShippingLine(.fake())
         }
 
         // Then
@@ -215,7 +215,7 @@ final class EditableOrderViewModelTests: XCTestCase {
             }
 
             // When remote sync is triggered
-            viewModel.shippingLineUseCase.saveShippingLine(.fake())
+            viewModel.shippingUseCase.saveShippingLine(.fake())
         }
 
         // Then
@@ -240,7 +240,7 @@ final class EditableOrderViewModelTests: XCTestCase {
                 }
             }
             // Remote sync is triggered
-            viewModel.shippingLineUseCase.saveShippingLine(.fake())
+            viewModel.shippingUseCase.saveShippingLine(.fake())
         }
 
         // Then
@@ -966,7 +966,7 @@ final class EditableOrderViewModelTests: XCTestCase {
                 }
             }
             // Trigger remote sync
-            self.viewModel.shippingLineUseCase.saveShippingLine(.fake())
+            self.viewModel.shippingUseCase.saveShippingLine(.fake())
         }
 
         // Then
@@ -990,7 +990,7 @@ final class EditableOrderViewModelTests: XCTestCase {
                 }
             }
             // Trigger remote sync
-            viewModel.shippingLineUseCase.saveShippingLine(.fake())
+            viewModel.shippingUseCase.saveShippingLine(.fake())
         }
 
         // Then
@@ -1015,7 +1015,7 @@ final class EditableOrderViewModelTests: XCTestCase {
             }
         }
         // Trigger remote sync
-        viewModel.shippingLineUseCase.saveShippingLine(.fake())
+        viewModel.shippingUseCase.saveShippingLine(.fake())
 
         // Then
         waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
@@ -1080,7 +1080,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         let shippingLine = ShippingLine.fake()
 
         // When
-        viewModel.shippingLineUseCase.saveShippingLine(shippingLine)
+        viewModel.shippingUseCase.saveShippingLine(shippingLine)
 
         // Then
         XCTAssertTrue(viewModel.hasChanges)
@@ -1352,7 +1352,7 @@ final class EditableOrderViewModelTests: XCTestCase {
             }
 
             // When remote sync is triggered
-            viewModel.shippingLineUseCase.saveShippingLine(.fake())
+            viewModel.shippingUseCase.saveShippingLine(.fake())
         }
 
         // Then
@@ -1427,7 +1427,7 @@ final class EditableOrderViewModelTests: XCTestCase {
                 }
             }
             // Trigger remote sync
-            viewModel.shippingLineUseCase.saveShippingLine(.fake())
+            viewModel.shippingUseCase.saveShippingLine(.fake())
         }
 
         // When
@@ -3177,10 +3177,10 @@ final class EditableOrderViewModelTests: XCTestCase {
                                                featureFlagService: featureFlagService)
 
         // When
-        viewModel.shippingLineUseCase.shippingLineRows.first?.editShippingLine()
+        viewModel.shippingUseCase.shippingLineRows.first?.editShippingLine()
 
         // Then
-        let editShippingLineViewModel = try XCTUnwrap(viewModel.shippingLineUseCase.selectedShippingLine)
+        let editShippingLineViewModel = try XCTUnwrap(viewModel.shippingUseCase.selectedShippingLine)
         assertEqual(shippingLine.methodTitle, editShippingLineViewModel.methodTitle)
     }
 }

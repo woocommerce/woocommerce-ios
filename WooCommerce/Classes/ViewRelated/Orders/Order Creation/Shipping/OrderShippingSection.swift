@@ -2,7 +2,7 @@ import SwiftUI
 
 struct OrderShippingSection: View {
     /// Use case to add, edit, or remove shipping lines
-    @ObservedObject var useCase: EditableOrderShippingLineUseCase
+    @ObservedObject var useCase: EditableOrderShippingUseCase
 
     @State private var showAddShippingLine: Bool = false
 

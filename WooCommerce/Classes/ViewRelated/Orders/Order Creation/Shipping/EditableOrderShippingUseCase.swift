@@ -6,7 +6,7 @@ import Combine
 
 /// Use case to add, edit, or remove shipping lines on an order.
 ///
-final class EditableOrderShippingLineUseCase: ObservableObject {
+final class EditableOrderShippingUseCase: ObservableObject {
     private var siteID: Int64
     private var analytics: Analytics
     private var featureFlagService: FeatureFlagService
@@ -164,7 +164,7 @@ final class EditableOrderShippingLineUseCase: ObservableObject {
 
 // MARK: Configuration
 
-private extension EditableOrderShippingLineUseCase {
+private extension EditableOrderShippingUseCase {
     /// Binds the order state to the `shouldShowNonEditableIndicators` property.
     ///
     func configureNonEditableIndicators() {

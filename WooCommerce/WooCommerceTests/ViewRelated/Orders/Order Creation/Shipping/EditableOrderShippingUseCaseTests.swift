@@ -3,8 +3,8 @@ import WooFoundation
 import Yosemite
 @testable import WooCommerce
 
-final class EditableOrderShippingLineUseCaseTests: XCTestCase {
-    var useCase: EditableOrderShippingLineUseCase!
+final class EditableOrderShippingUseCaseTests: XCTestCase {
+    var useCase: EditableOrderShippingUseCase!
     var stores: MockStoresManager!
     var storageManager: MockStorageManager!
     var analytics: MockAnalyticsProvider!
@@ -21,7 +21,7 @@ final class EditableOrderShippingLineUseCaseTests: XCTestCase {
         storageManager = MockStorageManager()
         analytics = MockAnalyticsProvider()
         orderSynchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores, currencySettings: currencySettings)
-        useCase = EditableOrderShippingLineUseCase(siteID: sampleSiteID,
+        useCase = EditableOrderShippingUseCase(siteID: sampleSiteID,
                                                    flow: .creation,
                                                    orderSynchronizer: orderSynchronizer,
                                                    analytics: WooAnalytics(analyticsProvider: analytics),
@@ -45,7 +45,7 @@ final class EditableOrderShippingLineUseCaseTests: XCTestCase {
         }
 
         // When
-        _ = EditableOrderShippingLineUseCase(siteID: sampleSiteID,
+        _ = EditableOrderShippingUseCase(siteID: sampleSiteID,
                                              flow: .creation,
                                              orderSynchronizer: orderSynchronizer,
                                              stores: stores)
@@ -62,7 +62,7 @@ final class EditableOrderShippingLineUseCaseTests: XCTestCase {
         let order = Order.fake().copy(siteID: sampleSiteID, shippingLines: [shippingLine])
 
         // When
-        let useCase = EditableOrderShippingLineUseCase(siteID: sampleSiteID,
+        let useCase = EditableOrderShippingUseCase(siteID: sampleSiteID,
                                                        flow: .editing(initialOrder: order),
                                                        orderSynchronizer: RemoteOrderSynchronizer(siteID: sampleSiteID,
                                                                                                   flow: .editing(initialOrder: order),
@@ -84,7 +84,7 @@ final class EditableOrderShippingLineUseCaseTests: XCTestCase {
         let currencySettings = CurrencySettings(currencyCode: .GBP, currencyPosition: .left, thousandSeparator: "", decimalSeparator: ".", numberOfDecimals: 2)
 
         // When
-        let paymentData = EditableOrderShippingLineUseCase.ShippingPaymentData(shippingTotal: "3.00",
+        let paymentData = EditableOrderShippingUseCase.ShippingPaymentData(shippingTotal: "3.00",
                                                                                shippingTax: "0.30",
                                                                                currencyFormatter: CurrencyFormatter(currencySettings: currencySettings))
 
@@ -176,7 +176,7 @@ final class EditableOrderShippingLineUseCaseTests: XCTestCase {
         // Given
         let shippingLine = ShippingLine.fake().copy(methodTitle: "Flat Rate")
         let order = Order.fake().copy(siteID: sampleSiteID, shippingLines: [shippingLine])
-        let useCase = EditableOrderShippingLineUseCase(siteID: sampleSiteID,
+        let useCase = EditableOrderShippingUseCase(siteID: sampleSiteID,
                                                        flow: .editing(initialOrder: order),
                                                        orderSynchronizer: RemoteOrderSynchronizer(siteID: sampleSiteID,
                                                                                                   flow: .editing(initialOrder: order),
@@ -209,7 +209,7 @@ final class EditableOrderShippingLineUseCaseTests: XCTestCase {
         let order = Order.fake().copy(siteID: sampleSiteID, isEditable: false, shippingLines: [shippingLine])
 
         // When
-        let useCase = EditableOrderShippingLineUseCase(siteID: sampleSiteID,
+        let useCase = EditableOrderShippingUseCase(siteID: sampleSiteID,
                                                        flow: .editing(initialOrder: order),
                                                        orderSynchronizer: RemoteOrderSynchronizer(siteID: sampleSiteID,
                                                                                                   flow: .editing(initialOrder: order),
@@ -226,7 +226,7 @@ final class EditableOrderShippingLineUseCaseTests: XCTestCase {
         let order = Order.fake().copy(siteID: sampleSiteID, isEditable: true, shippingLines: [shippingLine])
 
         // When
-        let useCase = EditableOrderShippingLineUseCase(siteID: sampleSiteID,
+        let useCase = EditableOrderShippingUseCase(siteID: sampleSiteID,
                                                        flow: .editing(initialOrder: order),
                                                        orderSynchronizer: RemoteOrderSynchronizer(siteID: sampleSiteID,
                                                                                                   flow: .editing(initialOrder: order),

@@ -371,8 +371,8 @@ final class EditableOrderViewModel: ObservableObject {
 
     /// Use case to display, add, edit, or remove shipping lines.
     ///
-    lazy var shippingLineUseCase: EditableOrderShippingLineUseCase = {
-        EditableOrderShippingLineUseCase(siteID: siteID, flow: flow, orderSynchronizer: orderSynchronizer)
+    lazy var shippingUseCase: EditableOrderShippingUseCase = {
+        EditableOrderShippingUseCase(siteID: siteID, flow: flow, orderSynchronizer: orderSynchronizer)
     }()
 
     // MARK: Customer data properties

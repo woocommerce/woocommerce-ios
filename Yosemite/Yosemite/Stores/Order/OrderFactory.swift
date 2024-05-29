@@ -95,6 +95,14 @@ public enum OrderFactory {
         shippingLine.copy(methodTitle: "", methodID: .some(nil), total: "0")
     }
 
+    /// Creates a shipping line suitable to add a shipping line without a method not yet saved remotely in an order.
+    ///
+    /// The API can't save the order when a new shipping line has an empty `methodID`; we send a space as a workaround.
+    ///
+    public static func noMethodShippingLine(_ shippingLine: ShippingLine) -> ShippingLine {
+        shippingLine.copy(methodID: " ")
+    }
+
     /// References a new empty order with constants `Date` values.
     ///
     public static let emptyNewOrder = Order.empty

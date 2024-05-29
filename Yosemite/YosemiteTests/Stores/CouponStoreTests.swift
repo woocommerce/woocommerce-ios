@@ -478,12 +478,14 @@ final class CouponStoreTests: XCTestCase {
         setUpUsingSpyRemote()
         // Given
         let currentDate = try date(from: "2020-11-05T23:59:59Z")
+        let numberOfCouponsToLoad = 3
         let from = currentDate.addingDays(-3)
         let to = currentDate.addingDays(3)
         let sampleTimeRange = StatsTimeRangeV4.custom(from: from,
                                                       to: to)
         let timeZone = try XCTUnwrap(TimeZone(secondsFromGMT: 0))
         let action = CouponAction.loadMostActiveCoupons(siteID: sampleSiteID,
+                                                        numberOfCouponsToLoad: numberOfCouponsToLoad,
                                                         timeRange: sampleTimeRange,
                                                         siteTimezone: timeZone) { _ in }
 
@@ -493,6 +495,7 @@ final class CouponStoreTests: XCTestCase {
         // Then
         XCTAssertTrue(remote.didCallLoadMostActiveCoupons)
         XCTAssertEqual(remote.spyLoadMostActiveCouponsSiteID, sampleSiteID)
+        XCTAssertEqual(remote.spyLoadMostActiveCouponsNumberOfCouponsToLoad, numberOfCouponsToLoad)
 
         let end = sampleTimeRange.latestDate(currentDate: currentDate,
                                             siteTimezone: timeZone)
@@ -516,6 +519,7 @@ final class CouponStoreTests: XCTestCase {
         // When
         let result: Result<[Networking.CouponReport], Error> = waitFor { promise in
             let action = CouponAction.loadMostActiveCoupons(siteID: self.sampleSiteID,
+                                                            numberOfCouponsToLoad: 3,
                                                             timeRange: sampleTimeRange,
                                                             siteTimezone: timeZone) { result in                 promise(result)
             }
@@ -537,6 +541,7 @@ final class CouponStoreTests: XCTestCase {
         // When
         let result: Result<[Networking.CouponReport], Error> = waitFor { promise in
             let action = CouponAction.loadMostActiveCoupons(siteID: self.sampleSiteID,
+                                                            numberOfCouponsToLoad: 3,
                                                             timeRange: sampleTimeRange,
                                                             siteTimezone: timeZone) { result in
                 promise(result)

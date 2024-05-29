@@ -41,7 +41,7 @@ final class POSProductProvider {
                 DDLogWarn("No products eligible for POS, or empty storage.")
             } else {
                 // Ideally we should handle the filtering through a policy that can be easily modified,
-                // rather than having this declared implicitely:
+                // rather than having this declared implicitly:
                 loadedProducts = productsResultsController.fetchedObjects.filter { $0.productType == .simple && $0.purchasable }
             }
         } catch {

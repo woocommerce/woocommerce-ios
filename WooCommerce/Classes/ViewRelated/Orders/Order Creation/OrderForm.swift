@@ -403,7 +403,6 @@ struct OrderForm: View {
                 OrderPaymentSection(
                     viewModel: viewModel.paymentDataViewModel,
                     shippingUseCase: viewModel.shippingUseCase,
-                    shouldShowShippingLineDetails: $shouldShowShippingLineDetails,
                     shouldShowGiftCardForm: $shouldShowGiftCardForm)
                 .disabled(viewModel.shouldShowNonEditableIndicators)
             }

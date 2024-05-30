@@ -66,50 +66,14 @@ final class EditableOrderShippingUseCase: ObservableObject {
         let shouldShowShippingTax: Bool
         let shippingTax: String
 
-        // We only support one (the first) shipping line when the multipleShippingLines feature flag is disabled
-        // In that case we need the shipping line details so it can be edited from the order totals section
-        let isShippingTotalEditable: Bool
-        let siteID: Int64
-        let shippingID: Int64?
-        let shippingMethodID: String
-        let shippingMethodTitle: String
-        let shippingMethodTotal: String
-        let saveShippingLineClosure: (ShippingLine) -> Void
-        let removeShippingLineClosure: (ShippingLine) -> Void
-        var shippingLineSelectionViewModel: ShippingLineSelectionDetailsViewModel {
-            ShippingLineSelectionDetailsViewModel(siteID: siteID,
-                                                  shippingID: shippingID,
-                                                  initialMethodID: shippingMethodID,
-                                                  initialMethodTitle: shippingMethodTitle,
-                                                  shippingTotal: shippingMethodTotal,
-                                                  didSelectSave: saveShippingLineClosure,
-                                                  didSelectRemove: removeShippingLineClosure)
-        }
-
-        init(siteID: Int64 = 0,
-             shouldShowShippingTotal: Bool = false,
+        init(shouldShowShippingTotal: Bool = false,
              shippingTotal: String = "0",
-             isShippingTotalEditable: Bool = true,
-             shippingID: Int64? = nil,
-             shippingMethodID: String = "",
-             shippingMethodTitle: String = "",
-             shippingMethodTotal: String = "",
              shippingTax: String = "0",
-             saveShippingLineClosure: @escaping (ShippingLine) -> Void = { _ in },
-             removeShippingLineClosure: @escaping (ShippingLine) -> Void = { _ in },
              currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)) {
-            self.siteID = siteID
             self.shouldShowShippingTotal = shouldShowShippingTotal
             self.shippingTotal = currencyFormatter.formatAmount(shippingTotal) ?? "0.00"
-            self.isShippingTotalEditable = isShippingTotalEditable
-            self.shippingID = shippingID
-            self.shippingMethodID = shippingMethodID
-            self.shippingMethodTitle = shippingMethodTitle
-            self.shippingMethodTotal = currencyFormatter.formatAmount(shippingMethodTotal) ?? "0.00"
             self.shouldShowShippingTax = !(currencyFormatter.convertToDecimal(shippingTax) ?? NSDecimalNumber(0.0)).isZero()
             self.shippingTax = currencyFormatter.formatAmount(shippingTax) ?? "0.00"
-            self.saveShippingLineClosure = saveShippingLineClosure
-            self.removeShippingLineClosure = removeShippingLineClosure
         }
     }
 
@@ -229,20 +193,9 @@ private extension EditableOrderShippingUseCase {
             .map { [weak self] order in
                 guard let self else { return ShippingPaymentData() }
 
-                // The first shipping line in the order (used if multiple shipping lines are not supported)
-                let shippingLine = order.shippingLines.first
-
-                return ShippingPaymentData(siteID: siteID,
-                                           shouldShowShippingTotal: order.shippingLines.filter { $0.methodID != nil }.isNotEmpty,
+                return ShippingPaymentData(shouldShowShippingTotal: order.shippingLines.filter { $0.methodID != nil }.isNotEmpty,
                                            shippingTotal: order.shippingTotal.isNotEmpty ? order.shippingTotal : "0",
-                                           isShippingTotalEditable: !multipleShippingLinesEnabled,
-                                           shippingID: shippingLine?.shippingID,
-                                           shippingMethodID: shippingLine?.methodID ?? "",
-                                           shippingMethodTitle: shippingLine?.methodTitle ?? "",
-                                           shippingMethodTotal: order.shippingLines.first?.total ?? "0",
-                                           shippingTax: order.shippingTax.isNotEmpty ? order.shippingTax : "0",
-                                           saveShippingLineClosure: saveShippingLine,
-                                           removeShippingLineClosure: removeShippingLine)
+                                           shippingTax: order.shippingTax.isNotEmpty ? order.shippingTax : "0")
             }
             .assign(to: &$paymentData)
     }

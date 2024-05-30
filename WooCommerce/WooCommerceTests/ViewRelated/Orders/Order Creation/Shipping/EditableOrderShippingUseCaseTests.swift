@@ -119,7 +119,7 @@ final class EditableOrderShippingUseCaseTests: XCTestCase {
         XCTAssertEqual(useCase.paymentData.shippingTotal, "$10.00")
 
         // When
-        useCase.saveShippingLine(nil)
+        useCase.removeShippingLine(shippingLine)
 
         // Then
         XCTAssertFalse(useCase.paymentData.shouldShowShippingTotal)
@@ -141,7 +141,7 @@ final class EditableOrderShippingUseCaseTests: XCTestCase {
         XCTAssertEqual(useCase.paymentData.shippingTotal, "-$5.00")
 
         // When
-        useCase.saveShippingLine(nil)
+        useCase.removeShippingLine(shippingLine)
 
         // Then
         XCTAssertFalse(useCase.paymentData.shouldShowShippingTotal)
@@ -275,7 +275,7 @@ final class EditableOrderShippingUseCaseTests: XCTestCase {
 
     func test_shipping_method_tracked_when_removed() throws {
         // When
-        useCase.saveShippingLine(nil)
+        useCase.removeShippingLine(ShippingLine.fake())
 
         // Then
         XCTAssertEqual(analytics.receivedEvents, [WooAnalyticsStat.orderShippingMethodRemove.rawValue])

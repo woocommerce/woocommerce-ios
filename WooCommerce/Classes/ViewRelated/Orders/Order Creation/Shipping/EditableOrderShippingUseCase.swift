@@ -74,12 +74,14 @@ final class EditableOrderShippingUseCase: ObservableObject {
         let shippingMethodID: String
         let shippingMethodTitle: String
         let shippingMethodTotal: String
-        let saveShippingLineClosure: (ShippingLine?) -> Void
+        let saveShippingLineClosure: (ShippingLine) -> Void
+        let removeShippingLineClosure: (ShippingLine) -> Void
         var shippingLineViewModel: ShippingLineDetailsViewModel {
-            ShippingLineDetailsViewModel(isExistingShippingLine: shouldShowShippingTotal,
+            ShippingLineDetailsViewModel(shippingID: shippingID,
                                          initialMethodTitle: shippingMethodTitle,
                                          shippingTotal: shippingMethodTotal,
-                                         didSelectSave: saveShippingLineClosure)
+                                         didSelectSave: saveShippingLineClosure,
+                                         didSelectRemove: removeShippingLineClosure)
         }
         var shippingLineSelectionViewModel: ShippingLineSelectionDetailsViewModel {
             ShippingLineSelectionDetailsViewModel(siteID: siteID,
@@ -87,7 +89,8 @@ final class EditableOrderShippingUseCase: ObservableObject {
                                                   initialMethodID: shippingMethodID,
                                                   initialMethodTitle: shippingMethodTitle,
                                                   shippingTotal: shippingMethodTotal,
-                                                  didSelectSave: saveShippingLineClosure)
+                                                  didSelectSave: saveShippingLineClosure,
+                                                  didSelectRemove: removeShippingLineClosure)
         }
 
         init(siteID: Int64 = 0,
@@ -99,7 +102,8 @@ final class EditableOrderShippingUseCase: ObservableObject {
              shippingMethodTitle: String = "",
              shippingMethodTotal: String = "",
              shippingTax: String = "0",
-             saveShippingLineClosure: @escaping (ShippingLine?) -> Void = { _ in },
+             saveShippingLineClosure: @escaping (ShippingLine) -> Void = { _ in },
+             removeShippingLineClosure: @escaping (ShippingLine) -> Void = { _ in },
              currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)) {
             self.siteID = siteID
             self.shouldShowShippingTotal = shouldShowShippingTotal
@@ -112,6 +116,7 @@ final class EditableOrderShippingUseCase: ObservableObject {
             self.shouldShowShippingTax = !(currencyFormatter.convertToDecimal(shippingTax) ?? NSDecimalNumber(0.0)).isZero()
             self.shippingTax = currencyFormatter.formatAmount(shippingTax) ?? "0.00"
             self.saveShippingLineClosure = saveShippingLineClosure
+            self.removeShippingLineClosure = removeShippingLineClosure
         }
     }
 
@@ -139,20 +144,23 @@ final class EditableOrderShippingUseCase: ObservableObject {
     /// Returns a view model for adding a shipping line to an order.
     ///
     func addShippingLineViewModel() -> ShippingLineSelectionDetailsViewModel {
-        return ShippingLineSelectionDetailsViewModel(siteID: siteID, shippingLine: nil, didSelectSave: saveShippingLine)
+        return ShippingLineSelectionDetailsViewModel(siteID: siteID, shippingLine: nil, didSelectSave: saveShippingLine, didSelectRemove: removeShippingLine)
     }
 
     /// Saves a shipping line.
     ///
-    /// - Parameter shippingLine: Optional shipping line object to save. `nil` will remove existing shipping line.
-    func saveShippingLine(_ shippingLine: ShippingLine?) {
+    /// - Parameter shippingLine: New or updated shipping line object to save.
+    func saveShippingLine(_ shippingLine: ShippingLine) {
         orderSynchronizer.setShipping.send(shippingLine)
+        analytics.track(event: WooAnalyticsEvent.Orders.orderShippingMethodAdd(flow: flow.analyticsFlow, methodID: shippingLine.methodID ?? ""))
+    }
 
-        if let shippingLine {
-            analytics.track(event: WooAnalyticsEvent.Orders.orderShippingMethodAdd(flow: flow.analyticsFlow, methodID: shippingLine.methodID ?? ""))
-        } else {
-            analytics.track(event: WooAnalyticsEvent.Orders.orderShippingMethodRemove(flow: flow.analyticsFlow))
-        }
+    /// Removes a shipping line.
+    ///
+    /// - Parameter shippingLine: Shipping line object to remove.
+    func removeShippingLine(_ shippingLine: ShippingLine) {
+        orderSynchronizer.removeShipping.send(shippingLine)
+        analytics.track(event: WooAnalyticsEvent.Orders.orderShippingMethodRemove(flow: flow.analyticsFlow))
     }
 
     /// Tracks when the "Add shipping" button is tapped.
@@ -211,7 +219,8 @@ private extension EditableOrderShippingUseCase {
                                                                                      initialMethodID: shippingLine.methodID ?? "",
                                                                                      initialMethodTitle: shippingLine.methodTitle,
                                                                                      shippingTotal: shippingLine.total,
-                                                                                     didSelectSave: saveShippingLine)
+                                                                                     didSelectSave: saveShippingLine,
+                                                                                     didSelectRemove: removeShippingLine)
                     })
                 }
             }
@@ -237,7 +246,8 @@ private extension EditableOrderShippingUseCase {
                                            shippingMethodTitle: shippingLine?.methodTitle ?? "",
                                            shippingMethodTotal: order.shippingLines.first?.total ?? "0",
                                            shippingTax: order.shippingTax.isNotEmpty ? order.shippingTax : "0",
-                                           saveShippingLineClosure: saveShippingLine)
+                                           saveShippingLineClosure: saveShippingLine,
+                                           removeShippingLineClosure: removeShippingLine)
             }
             .assign(to: &$paymentData)
     }

@@ -66,7 +66,7 @@ struct ShippingLineDetails: View {
                     if viewModel.isExistingShippingLine {
                         Section {
                             Button(Localization.remove) {
-                                viewModel.didSelectSave(nil)
+                                viewModel.removeShippingLine()
                                 presentation.wrappedValue.dismiss()
                             }
                             .padding()
@@ -129,10 +129,11 @@ private extension ShippingLineDetails {
 
 struct ShippingLineDetails_Previews: PreviewProvider {
     static var previews: some View {
-        let viewModel = ShippingLineDetailsViewModel(isExistingShippingLine: true,
+        let viewModel = ShippingLineDetailsViewModel(shippingID: 1,
                                                      initialMethodTitle: "Shipping",
                                                      shippingTotal: "10",
-                                                     didSelectSave: { _ in })
+                                                     didSelectSave: { _ in },
+                                                     didSelectRemove: { _ in })
         ShippingLineDetails(viewModel: viewModel)
     }
 }

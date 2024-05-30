@@ -113,9 +113,13 @@ protocol OrderSynchronizer {
     ///
     var setAddresses: PassthroughSubject<OrderSyncAddressesInput?, Never> { get }
 
-    /// Sets or removes a shipping line.
+    /// Sets a shipping line.
     ///
-    var setShipping: PassthroughSubject<ShippingLine?, Never> { get }
+    var setShipping: PassthroughSubject<ShippingLine, Never> { get }
+
+    /// Removes a shipping line.
+    ///
+    var removeShipping: PassthroughSubject<ShippingLine, Never> { get }
 
     /// Adds a fee to the order.
     ///

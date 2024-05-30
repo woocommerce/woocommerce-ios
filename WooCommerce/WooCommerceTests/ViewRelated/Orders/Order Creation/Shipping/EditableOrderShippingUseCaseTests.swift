@@ -27,8 +27,7 @@ final class EditableOrderShippingUseCaseTests: XCTestCase {
                                                    analytics: WooAnalytics(analyticsProvider: analytics),
                                                    storageManager: storageManager,
                                                    stores: stores,
-                                                   currencySettings: currencySettings,
-                                                   featureFlagService: MockFeatureFlagService(isMultipleShippingLinesEnabled: true))
+                                                   currencySettings: currencySettings)
     }
 
     // MARK: Initialization
@@ -67,8 +66,7 @@ final class EditableOrderShippingUseCaseTests: XCTestCase {
                                                        orderSynchronizer: RemoteOrderSynchronizer(siteID: sampleSiteID,
                                                                                                   flow: .editing(initialOrder: order),
                                                                                                   stores: stores),
-                                                       storageManager: storageManager,
-                                                       featureFlagService: MockFeatureFlagService(isMultipleShippingLinesEnabled: true))
+                                                       storageManager: storageManager)
 
         // Then
         assertEqual(1, useCase.shippingLineRows.count)
@@ -119,7 +117,7 @@ final class EditableOrderShippingUseCaseTests: XCTestCase {
         XCTAssertEqual(useCase.paymentData.shippingTotal, "$10.00")
 
         // When
-        useCase.saveShippingLine(nil)
+        useCase.removeShippingLine(shippingLine)
 
         // Then
         XCTAssertFalse(useCase.paymentData.shouldShowShippingTotal)
@@ -141,7 +139,7 @@ final class EditableOrderShippingUseCaseTests: XCTestCase {
         XCTAssertEqual(useCase.paymentData.shippingTotal, "-$5.00")
 
         // When
-        useCase.saveShippingLine(nil)
+        useCase.removeShippingLine(shippingLine)
 
         // Then
         XCTAssertFalse(useCase.paymentData.shouldShowShippingTotal)
@@ -180,8 +178,7 @@ final class EditableOrderShippingUseCaseTests: XCTestCase {
                                                        flow: .editing(initialOrder: order),
                                                        orderSynchronizer: RemoteOrderSynchronizer(siteID: sampleSiteID,
                                                                                                   flow: .editing(initialOrder: order),
-                                                                                                  stores: stores),
-                                                       featureFlagService: MockFeatureFlagService(isMultipleShippingLinesEnabled: true))
+                                                                                                  stores: stores))
 
         // When
         useCase.shippingLineRows.first?.editShippingLine()
@@ -271,11 +268,12 @@ final class EditableOrderShippingUseCaseTests: XCTestCase {
         XCTAssertEqual(analytics.receivedEvents, [WooAnalyticsStat.orderShippingMethodAdd.rawValue])
         assertEqual("creation", analytics.receivedProperties.first?["flow"] as? String)
         assertEqual("flat_rate", analytics.receivedProperties.first?["shipping_method"] as? String)
+        assertEqual(1, analytics.receivedProperties.first?["shipping_lines_count"] as? Int64)
     }
 
     func test_shipping_method_tracked_when_removed() throws {
         // When
-        useCase.saveShippingLine(nil)
+        useCase.removeShippingLine(ShippingLine.fake())
 
         // Then
         XCTAssertEqual(analytics.receivedEvents, [WooAnalyticsStat.orderShippingMethodRemove.rawValue])

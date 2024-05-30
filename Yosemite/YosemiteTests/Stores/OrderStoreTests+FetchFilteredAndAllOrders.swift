@@ -37,7 +37,7 @@ final class OrderStoreTests_FetchFilteredAndAllOrders: XCTestCase {
         // Act
         executeActionAndWait(using: createOrderStore(using: network),
                              statuses: [OrderStatusEnum.processing.rawValue],
-                             deleteAllBeforeSaving: true)
+                             writeStrategy: .deleteAllBeforeSaving)
 
         // Assert
         // The previously saved order should be deleted
@@ -59,13 +59,35 @@ final class OrderStoreTests_FetchFilteredAndAllOrders: XCTestCase {
         // Act
         executeActionAndWait(using: createOrderStore(using: network),
                              statuses: [OrderStatusEnum.processing.rawValue],
-                             deleteAllBeforeSaving: false)
+                             writeStrategy: .save)
 
         // Assert
         // The previously saved order should still be there
         XCTAssertNotNil(findOrder(withID: Fixtures.order.orderID))
         // There should be records saved from the GET /orders query
         XCTAssertEqual(countOrders(), Fixtures.ordersLoadAllJSON.ordersCount + 1)
+    }
+
+    func test_it_can_skip_saving_orders() {
+        // Arrange
+        insert(order: Fixtures.order)
+        // Confidence checks
+        XCTAssertNotNil(findOrder(withID: Fixtures.order.orderID))
+        XCTAssertEqual(countOrders(), 1)
+
+        let network = MockNetwork()
+        network.simulateResponse(requestUrlSuffix: "orders", filename: Fixtures.ordersLoadAllJSON.fileName)
+
+        // Act
+        executeActionAndWait(using: createOrderStore(using: network),
+                             statuses: [OrderStatusEnum.processing.rawValue],
+                             writeStrategy: .doNotSave)
+
+        // Assert
+        // The previously saved order should still be there
+        XCTAssertNotNil(findOrder(withID: Fixtures.order.orderID))
+        // There should be no records saved from the GET /orders query
+        XCTAssertEqual(countOrders(), 1)
     }
 
     func test_when_given_a_filter_it_fetches_all_orders_list() {
@@ -76,7 +98,7 @@ final class OrderStoreTests_FetchFilteredAndAllOrders: XCTestCase {
         // Act
         executeActionAndWait(using: createOrderStore(using: network),
                              statuses: [OrderStatusEnum.completed.rawValue],
-                             deleteAllBeforeSaving: true)
+                             writeStrategy: .deleteAllBeforeSaving)
 
         // Assert
         XCTAssertEqual(countOrders(),
@@ -91,7 +113,7 @@ final class OrderStoreTests_FetchFilteredAndAllOrders: XCTestCase {
         // Act
         executeActionAndWait(using: createOrderStore(using: network),
                              statuses: nil,
-                             deleteAllBeforeSaving: true)
+                             writeStrategy: .deleteAllBeforeSaving)
 
         // Assert
         XCTAssertEqual(countOrders(), Fixtures.ordersLoadAllJSON.ordersCount)
@@ -107,7 +129,7 @@ final class OrderStoreTests_FetchFilteredAndAllOrders: XCTestCase {
         // Act
         executeActionAndWait(using: createOrderStore(using: network),
                              statuses: [OrderStatusEnum.processing.rawValue],
-                             deleteAllBeforeSaving: true)
+                             writeStrategy: .deleteAllBeforeSaving)
 
         // Assert
         // The previously saved order should still exist
@@ -123,13 +145,15 @@ private extension OrderStoreTests_FetchFilteredAndAllOrders {
         OrderStore(dispatcher: Dispatcher(), storageManager: storageManager, network: network)
     }
 
-    func executeActionAndWait(using store: OrderStore, statuses: [String]?, deleteAllBeforeSaving: Bool) {
+    func executeActionAndWait(using store: OrderStore,
+                              statuses: [String]?,
+                              writeStrategy: OrderAction.OrdersStorageWriteStrategy) {
         let expectation = self.expectation(description: "fetch")
 
         let action = OrderAction.fetchFilteredOrders(
             siteID: Fixtures.siteID,
             statuses: statuses,
-            deleteAllBeforeSaving: deleteAllBeforeSaving,
+            writeStrategy: writeStrategy,
             pageSize: 50) { _, _  in
                 expectation.fulfill()
         }

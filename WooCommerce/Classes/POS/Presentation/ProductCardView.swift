@@ -32,7 +32,7 @@ struct ProductCardView: View {
 }
 
 #if DEBUG
-#Preview {
-    ProductCardView(product: POSProductProvider.provideProductForPreview(currencySettings: .init()))
-}
+//#Preview {
+//    ProductCardView(product: POSProductProvider.provideProductForPreview(currencySettings: .init()))
+//}
 #endif

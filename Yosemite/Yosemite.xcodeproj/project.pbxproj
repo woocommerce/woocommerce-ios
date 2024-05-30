@@ -255,6 +255,7 @@
 		68BD37B928DB323D00C2A517 /* CustomerStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68BD37B828DB323D00C2A517 /* CustomerStoreTests.swift */; };
 		68EA25342C08734900C49AE2 /* POSProduct.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68EA25332C08734800C49AE2 /* POSProduct.swift */; };
 		68EA25362C08736600C49AE2 /* CartProduct.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68EA25352C08736600C49AE2 /* CartProduct.swift */; };
+		68EA25382C0876DF00C49AE2 /* POSProductProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68EA25372C0876DF00C49AE2 /* POSProductProvider.swift */; };
 		741F34802195EA62005F5BD9 /* CommentAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 741F347F2195EA62005F5BD9 /* CommentAction.swift */; };
 		741F34822195EA71005F5BD9 /* CommentStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 741F34812195EA71005F5BD9 /* CommentStore.swift */; };
 		741F34842195F752005F5BD9 /* CommentStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 741F34832195F752005F5BD9 /* CommentStoreTests.swift */; };
@@ -742,6 +743,7 @@
 		68BD37B828DB323D00C2A517 /* CustomerStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerStoreTests.swift; sourceTree = "<group>"; };
 		68EA25332C08734800C49AE2 /* POSProduct.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSProduct.swift; sourceTree = "<group>"; };
 		68EA25352C08736600C49AE2 /* CartProduct.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartProduct.swift; sourceTree = "<group>"; };
+		68EA25372C0876DF00C49AE2 /* POSProductProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSProductProvider.swift; sourceTree = "<group>"; };
 		741F347F2195EA62005F5BD9 /* CommentAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentAction.swift; sourceTree = "<group>"; };
 		741F34812195EA71005F5BD9 /* CommentStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentStore.swift; sourceTree = "<group>"; };
 		741F34832195F752005F5BD9 /* CommentStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentStoreTests.swift; sourceTree = "<group>"; };
@@ -1394,6 +1396,7 @@
 				6898F3732C0842150039F10A /* POSItemProvider.swift */,
 				68EA25332C08734800C49AE2 /* POSProduct.swift */,
 				68EA25352C08736600C49AE2 /* CartProduct.swift */,
+				68EA25372C0876DF00C49AE2 /* POSProductProvider.swift */,
 			);
 			path = PointOfSale;
 			sourceTree = "<group>";
@@ -2361,6 +2364,7 @@
 				DE2E8EA72953F85C002E4B14 /* WordPressSiteStore.swift in Sources */,
 				74858DB421C02B5A00754F3E /* OrderNote+ReadOnlyType.swift in Sources */,
 				0248B3652459018100A271A4 /* ResultsController+FilterProducts.swift in Sources */,
+				68EA25382C0876DF00C49AE2 /* POSProductProvider.swift in Sources */,
 				02E262C2238CF74D00B79588 /* StorageShippingSettingsService.swift in Sources */,
 				FE28F6EE268440B1004465C7 /* UserAction.swift in Sources */,
 				DE34050828BC706B00CF0D97 /* DeauthenticatedStore.swift in Sources */,

@@ -289,7 +289,6 @@
 		026826932BF59D830036F959 /* PointOfSaleDashboardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026826922BF59D830036F959 /* PointOfSaleDashboardViewModel.swift */; };
 		026826962BF59D9A0036F959 /* PlusButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026826952BF59D9A0036F959 /* PlusButtonStyle.swift */; };
 		026826992BF59DA90036F959 /* Color+WooCommercePOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026826982BF59DA80036F959 /* Color+WooCommercePOS.swift */; };
-		0268269B2BF59DB00036F959 /* POSProductProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0268269A2BF59DB00036F959 /* POSProductProvider.swift */; };
 		026826A92BF59DF70036F959 /* ProductGridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026826A82BF59DF70036F959 /* ProductGridView.swift */; };
 		026826AA2BF59DF70036F959 /* CartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026826A32BF59DF60036F959 /* CartView.swift */; };
 		026826AB2BF59DF70036F959 /* ProductRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026826A22BF59DF60036F959 /* ProductRowView.swift */; };
@@ -3080,7 +3079,6 @@
 		026826922BF59D830036F959 /* PointOfSaleDashboardViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PointOfSaleDashboardViewModel.swift; sourceTree = "<group>"; };
 		026826952BF59D9A0036F959 /* PlusButtonStyle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlusButtonStyle.swift; sourceTree = "<group>"; };
 		026826982BF59DA80036F959 /* Color+WooCommercePOS.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Color+WooCommercePOS.swift"; sourceTree = "<group>"; };
-		0268269A2BF59DB00036F959 /* POSProductProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSProductProvider.swift; sourceTree = "<group>"; };
 		026826A22BF59DF60036F959 /* ProductRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductRowView.swift; sourceTree = "<group>"; };
 		026826A32BF59DF60036F959 /* CartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartView.swift; sourceTree = "<group>"; };
 		026826A42BF59DF60036F959 /* ProductCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCardView.swift; sourceTree = "<group>"; };
@@ -6314,7 +6312,6 @@
 		026826972BF59D9E0036F959 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
-				0268269A2BF59DB00036F959 /* POSProductProvider.swift */,
 				026826982BF59DA80036F959 /* Color+WooCommercePOS.swift */,
 			);
 			path = Utils;
@@ -14320,7 +14317,6 @@
 				DEDB886B26E8531E00981595 /* ShippingLabelPackageAttributes.swift in Sources */,
 				AEC95D412774C5AE001571F5 /* AddressFormViewModelProtocol.swift in Sources */,
 				B6E851F5276330200041D1BA /* RefundCustomAmountsDetailsTableViewCell.swift in Sources */,
-				0268269B2BF59DB00036F959 /* POSProductProvider.swift in Sources */,
 				028E1F702833DD0A001F8829 /* DashboardViewModel.swift in Sources */,
 				2602A63D27BD3C8C00B347F1 /* RemoteOrderSynchronizer.swift in Sources */,
 				CCFBBCFA29C4C85F0081B595 /* ComponentSettingsViewModel.swift in Sources */,

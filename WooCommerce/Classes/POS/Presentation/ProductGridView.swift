@@ -47,9 +47,9 @@ private extension ProductGridView {
 }
 
 #if DEBUG
-#Preview {
-    ProductGridView(viewModel: PointOfSaleDashboardViewModel(products: POSProductProvider.provideProductsForPreview(),
-                                                             cardReaderConnectionViewModel: .init(state: .connectingToReader),
-                                                             currencySettings: .init()))
-}
+//#Preview {
+//    ProductGridView(viewModel: PointOfSaleDashboardViewModel(products: POSProductProvider.provideProductsForPreview(),
+//                                                             cardReaderConnectionViewModel: .init(state: .connectingToReader),
+//                                                             currencySettings: .init()))
+//}
 #endif

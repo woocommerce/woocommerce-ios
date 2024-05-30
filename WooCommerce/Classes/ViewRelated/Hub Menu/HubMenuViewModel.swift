@@ -69,8 +69,11 @@ final class HubMenuViewModel: ObservableObject {
     private let generalAppSettings: GeneralAppSettingsStorage
     private let cardPresentPaymentsOnboarding: CardPresentPaymentsOnboardingUseCaseProtocol
     private let posEligibilityChecker: POSEligibilityCheckerProtocol
-    // TODO: Is this the right place to instantiate the provider?
-    let posProductProvider: POSItemProvider = POSProductProvider()
+// TODO: Is this the right place to instantiate the provider?
+// The HubMenu ViewBuilder doesn't seem to allow us to compile if this is lazy
+//    private lazy var posProductProvider: POSItemProvider = POSProductProvider(storageManager: ServiceLocator.storageManager,
+//                                                             siteID: ServiceLocator.stores.sessionManager.defaultSite?.siteID ?? 0,
+//                                                             currencySettings: ServiceLocator.currencySettings)
 
     private(set) var productReviewFromNoteParcel: ProductReviewFromNoteParcel?
 

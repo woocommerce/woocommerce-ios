@@ -162,7 +162,13 @@ private extension HubMenu {
             case HubMenuViewModel.Customers.id:
                 CustomersListView(viewModel: .init(siteID: viewModel.siteID))
             case HubMenuViewModel.PointOfSaleEntryPoint.id:
-                PointOfSaleEntryPointView(itemProvider: viewModel.posProductProvider,
+                // Temporary POSProductProvider just for testing, we should inject this from somewhere else
+                // once the Servicelocator references and currencyformatter usage within the product is resolved.
+                let posProductProvider: POSItemProvider = POSProductProvider(storageManager: ServiceLocator.storageManager,
+                                                                         siteID: ServiceLocator.stores.sessionManager.defaultSite?.siteID ?? 0,
+                                                                         currencySettings: ServiceLocator.currencySettings)
+
+                PointOfSaleEntryPointView(itemProvider: posProductProvider,
                                           currencySettings: ServiceLocator.currencySettings,
                                           hideAppTabBar: { isHidden in
                     AppDelegate.shared.setShouldHideTabBar(isHidden)

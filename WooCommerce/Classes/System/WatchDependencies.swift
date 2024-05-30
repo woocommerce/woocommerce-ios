@@ -16,7 +16,7 @@ import class WooFoundationWatchOS.CurrencySettings
 
 /// WatchOS session dependencies.
 ///
-public struct WatchDependencies {
+public struct WatchDependencies: Equatable {
 
     // Dictionary Keys
     private enum Keys {

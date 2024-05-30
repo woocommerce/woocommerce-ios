@@ -46,6 +46,7 @@ struct Woo_Watch_AppApp: App {
 
                 // Assign other delegate dependencies.
                 delegate.tracksProvider = tracksProvider
+                phoneDependencySynchronizer.tracksProvider = tracksProvider
 
                 // Tracks
                 tracksProvider.sendTracksEvent(.watchAppOpened)

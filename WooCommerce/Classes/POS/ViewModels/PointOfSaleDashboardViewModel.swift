@@ -26,9 +26,9 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
     }
 
     @Published private(set) var orderStage: OrderStage = .building
-    
+
     private let currencyFormatter: CurrencyFormatter
-    
+
     init(products: [POSItem],
          cardReaderConnectionViewModel: CardReaderConnectionViewModel,
          currencySettings: CurrencySettings) {

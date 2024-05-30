@@ -162,8 +162,9 @@ private extension HubMenu {
             case HubMenuViewModel.Customers.id:
                 CustomersListView(viewModel: .init(siteID: viewModel.siteID))
             case HubMenuViewModel.PointOfSaleEntryPoint.id:
-                PointOfSaleEntryPointView(productProvider: viewModel.posProductProvider,
-                                          currencySettings: ServiceLocator.currencySettings, hideAppTabBar: { isHidden in
+                PointOfSaleEntryPointView(itemProvider: viewModel.posProductProvider,
+                                          currencySettings: ServiceLocator.currencySettings,
+                                          hideAppTabBar: { isHidden in
                     AppDelegate.shared.setShouldHideTabBar(isHidden)
                 })
             default:

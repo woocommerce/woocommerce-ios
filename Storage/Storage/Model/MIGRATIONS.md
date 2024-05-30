@@ -2,6 +2,12 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
+## Model 112 (Release 18.9.0.0)
+- @pmusolino 2024-05-30
+    - Added `visibility` attribute to `Site` entity.
+    - Removed `isPublic` attribute from `Site` entity.
+    - Added `WooCommerceModelV111toV112` mapping model.
+    
 ## Model 111 (Release 18.5.0.0)
 - @rachelmcr 2024-05-02
     - Add `ShippingMethod` entity.

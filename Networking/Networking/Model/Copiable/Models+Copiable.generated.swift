@@ -3046,7 +3046,7 @@ extension Networking.Site {
         jetpackConnectionActivePlugins: CopiableProp<[String]> = .copy,
         timezone: CopiableProp<String> = .copy,
         gmtOffset: CopiableProp<Double> = .copy,
-        isPublic: CopiableProp<Bool> = .copy,
+        visibility: CopiableProp<SiteVisibility> = .copy,
         canBlaze: CopiableProp<Bool> = .copy,
         isAdmin: CopiableProp<Bool> = .copy,
         wasEcommerceTrial: CopiableProp<Bool> = .copy
@@ -3068,7 +3068,7 @@ extension Networking.Site {
         let jetpackConnectionActivePlugins = jetpackConnectionActivePlugins ?? self.jetpackConnectionActivePlugins
         let timezone = timezone ?? self.timezone
         let gmtOffset = gmtOffset ?? self.gmtOffset
-        let isPublic = isPublic ?? self.isPublic
+        let visibility = visibility ?? self.visibility
         let canBlaze = canBlaze ?? self.canBlaze
         let isAdmin = isAdmin ?? self.isAdmin
         let wasEcommerceTrial = wasEcommerceTrial ?? self.wasEcommerceTrial
@@ -3091,7 +3091,7 @@ extension Networking.Site {
             jetpackConnectionActivePlugins: jetpackConnectionActivePlugins,
             timezone: timezone,
             gmtOffset: gmtOffset,
-            isPublic: isPublic,
+            visibility: visibility,
             canBlaze: canBlaze,
             isAdmin: isAdmin,
             wasEcommerceTrial: wasEcommerceTrial

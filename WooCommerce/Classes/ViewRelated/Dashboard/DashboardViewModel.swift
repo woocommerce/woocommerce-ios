@@ -78,7 +78,7 @@ final class DashboardViewModel: ObservableObject {
 
     var siteURLToShare: URL? {
         if let site = stores.sessionManager.defaultSite,
-           !site.isWordPressComStore || site.isPublic, // only show share button if it's a .org site or a public .com site
+           !site.isWordPressComStore || (site.visibility == .publicSite), // only show share button if it's a .org site or a public .com site
            let url = URL(string: site.url) {
             return url
         }

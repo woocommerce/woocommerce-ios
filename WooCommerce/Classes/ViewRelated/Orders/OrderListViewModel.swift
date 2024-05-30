@@ -49,7 +49,7 @@ final class OrderListViewModel {
         }
 
         /// Enabled if site is launched, has published at least 1 product and set up payments.
-        return site.isPublic && hasAnyPaymentGateways && hasAnyPublishedProducts
+        return (site.visibility == .publicSite) && hasAnyPaymentGateways && hasAnyPublishedProducts
     }
 
     /// Filters applied to the order list.

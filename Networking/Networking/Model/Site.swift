@@ -74,7 +74,7 @@ public struct Site: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable {
 
     /// Whether the site is launched and public.
     ///
-    public let isPublic: Bool
+    public let visibility: SiteVisibility
 
     /// Whether the site is partially eligible for Blaze. For the site to be fully eligible for Blaze, `isAdmin` needs to be `true` as well.
     ///
@@ -113,7 +113,7 @@ public struct Site: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable {
         let loginURL = try optionsContainer.decode(String.self, forKey: .loginURL)
         let frameNonce = try optionsContainer.decode(String.self, forKey: .frameNonce)
         let canBlaze = optionsContainer.failsafeDecodeIfPresent(booleanForKey: .canBlaze) ?? false
-        let isPublic = optionsContainer.failsafeDecodeIfPresent(booleanForKey: .isPublic) ?? false
+        let visibility = optionsContainer.failsafeDecodeIfPresent(SiteVisibility.self, forKey: .visibility) ?? .privateSite
 
         let planContainer = try siteContainer.nestedContainer(keyedBy: PlanInfo.self, forKey: .plan)
         let plan = try planContainer.decode(String.self, forKey: .slug)
@@ -143,7 +143,7 @@ public struct Site: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable {
                   jetpackConnectionActivePlugins: jetpackConnectionActivePlugins,
                   timezone: timezone,
                   gmtOffset: gmtOffset,
-                  isPublic: isPublic,
+                  visibility: visibility,
                   canBlaze: canBlaze,
                   isAdmin: isAdmin,
                   wasEcommerceTrial: wasEcommerceTrial)
@@ -168,7 +168,7 @@ public struct Site: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable {
                 jetpackConnectionActivePlugins: [String],
                 timezone: String,
                 gmtOffset: Double,
-                isPublic: Bool,
+                visibility: SiteVisibility,
                 canBlaze: Bool,
                 isAdmin: Bool,
                 wasEcommerceTrial: Bool) {
@@ -189,7 +189,7 @@ public struct Site: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable {
         self.jetpackConnectionActivePlugins = jetpackConnectionActivePlugins
         self.timezone = timezone
         self.gmtOffset = gmtOffset
-        self.isPublic = isPublic
+        self.visibility = visibility
         self.canBlaze = canBlaze
         self.isAdmin = isAdmin
         self.wasEcommerceTrial = wasEcommerceTrial
@@ -264,13 +264,21 @@ private extension Site {
         case adminURL = "admin_url"
         case loginURL = "login_url"
         case frameNonce = "frame_nonce"
-        case isPublic = "blog_public"
+        case visibility = "blog_public"
         case canBlaze = "can_blaze"
     }
 
     enum PlanKeys: String, CodingKey {
         case shortName      = "product_name_short"
     }
+}
+
+/// Enum representing the visibility status of a site.
+///
+public enum SiteVisibility: Int, Codable, GeneratedFakeable {
+    case privateSite = -1
+    case comingSoon = 0
+    case publicSite = 1
 }
 
 /// Computed properties
@@ -287,7 +295,7 @@ public extension Site {
     /// Returns true only if the site is hosted on WP.com and is private.
     ///
     var isPrivateWPCOMSite: Bool {
-        return isWordPressComStore && !isPublic
+        return isWordPressComStore && (visibility == .privateSite)
     }
 }
 

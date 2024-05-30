@@ -1980,39 +1980,6 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.shouldShowNonEditableIndicators)
     }
 
-    func test_zero_fees_and_shipping_lines_order_displays_nil_message() {
-        // Given
-        let order = Order.fake()
-
-        // When
-        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, flow: .editing(initialOrder: order))
-
-        // Then
-        XCTAssertNil(viewModel.multipleLinesMessage)
-    }
-
-    func test_one_shipping_and_fee_line_order_displays_nil_message() {
-        // Given
-        let order = Order.fake().copy(shippingLines: [.fake()], fees: [.fake()])
-
-        // When
-        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, flow: .editing(initialOrder: order))
-
-        // Then
-        XCTAssertNil(viewModel.multipleLinesMessage)
-    }
-
-    func test_multiple_shipping_line_order_displays_info_message() {
-        // Given
-        let order = Order.fake().copy(shippingLines: [.fake(), .fake()])
-
-        // When
-        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, flow: .editing(initialOrder: order))
-
-        // Then
-        XCTAssertNotNil(viewModel.multipleLinesMessage)
-    }
-
     func test_capturePermissionStatus_is_notDetermined_when_permissionChecker_is_notDetermined() {
         // Given
         let permissionChecker = MockCaptureDevicePermissionChecker(authorizationStatus: .notDetermined)

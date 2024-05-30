@@ -398,8 +398,6 @@ private extension OrderDetailsDataSource {
             configureBillingDetail(cell: cell)
         case let cell as WooBasicTableViewCell where row == .shippingLabelDetail:
             configureShippingLabelDetail(cell: cell)
-        case let cell as ImageAndTitleAndTextTableViewCell where row == .shippingNotice:
-            configureShippingNotice(cell: cell)
         case let cell as WCShipInstallTableViewCell where row == .installWCShip:
             configureInstallWCShip(cell: cell)
         case let cell as ImageAndTitleAndTextTableViewCell where row == .shippingLabelCreationInfo(showsSeparator: true),
@@ -544,29 +542,6 @@ private extension OrderDetailsDataSource {
             "Show the billing details for this order.",
             comment: "VoiceOver accessibility hint, informing the user that the button can be used to view billing information."
         )
-    }
-
-    private func configureShippingNotice(cell: ImageAndTitleAndTextTableViewCell) {
-        let cellTextContent = NSLocalizedString(
-            "This order is using extensions to calculate shipping. The shipping methods shown might be incomplete.",
-            comment: "Shipping notice row label when there is more than one shipping method")
-
-        cell.update(with: .imageAndTitleOnly(fontStyle: .body),
-                    data: .init(title: cellTextContent,
-                                textTintColor: .text,
-                                image: Icons.shippingNoticeIcon,
-                                imageTintColor: .listIcon,
-                                numberOfLinesForTitle: 0,
-                                isActionable: false))
-
-        cell.selectionStyle = .none
-
-        cell.accessibilityTraits = .staticText
-        cell.accessibilityLabel = NSLocalizedString(
-            "This order is using extensions to calculate shipping. The shipping methods shown might be incomplete.",
-            comment: "Accessibility label for the Shipping notice")
-        cell.accessibilityHint = NSLocalizedString("Shipping notice about the order",
-                                                    comment: "VoiceOver accessibility label for the shipping notice about the order")
     }
 
     private func configureInstallWCShip(cell: WCShipInstallTableViewCell) {
@@ -1161,18 +1136,6 @@ extension OrderDetailsDataSource {
 
         let summary = Section(category: .summary, row: .summary)
 
-        let shippingNotice: Section? = {
-            // Hide the shipping method warning if order contains only virtual products
-            // or if the order contains only one shipping method
-            // or if multiple shipping lines are supported (feature flag)
-            if isMultiShippingLinesAvailable(for: order) == false ||
-                featureFlags.isFeatureFlagEnabled(.multipleShippingLines) {
-                return nil
-            }
-
-            return Section(category: .shippingNotice, title: nil, rightTitle: nil, footer: nil, rows: [.shippingNotice])
-        }()
-
         let products: Section? = {
             if items.isEmpty {
                 return nil
@@ -1473,7 +1436,6 @@ extension OrderDetailsDataSource {
         }()
 
         sections = ([summary,
-                     shippingNotice,
                      products,
                      customAmountsSection,
                      customFields,
@@ -1717,7 +1679,6 @@ extension OrderDetailsDataSource {
     }
 
     enum Icons {
-        static let shippingNoticeIcon = UIImage.noticeImage
         static let plusImage = UIImage.plusImage
     }
 
@@ -1788,7 +1749,6 @@ extension OrderDetailsDataSource {
     struct Section {
         enum Category {
             case summary
-            case shippingNotice
             case products
             case customAmounts
             case installWCShip
@@ -1906,7 +1866,6 @@ extension OrderDetailsDataSource {
         case shippingLabelReprintButton
         case shippingLabelTrackingNumber
         case shippingLine
-        case shippingNotice
         case addOrderNote
         case orderNoteHeader
         case orderNote
@@ -1976,8 +1935,6 @@ extension OrderDetailsDataSource {
                 return ImageAndTitleAndTextTableViewCell.reuseIdentifier
             case .shippingLabelReprintButton:
                 return ButtonTableViewCell.reuseIdentifier
-            case .shippingNotice:
-                return ImageAndTitleAndTextTableViewCell.reuseIdentifier
             case .addOrderNote:
                 return LargeHeightLeftImageTableViewCell.reuseIdentifier
             case .orderNoteHeader:

@@ -76,13 +76,6 @@ final class EditableOrderShippingUseCase: ObservableObject {
         let shippingMethodTotal: String
         let saveShippingLineClosure: (ShippingLine) -> Void
         let removeShippingLineClosure: (ShippingLine) -> Void
-        var shippingLineViewModel: ShippingLineDetailsViewModel {
-            ShippingLineDetailsViewModel(shippingID: shippingID,
-                                         initialMethodTitle: shippingMethodTitle,
-                                         shippingTotal: shippingMethodTotal,
-                                         didSelectSave: saveShippingLineClosure,
-                                         didSelectRemove: removeShippingLineClosure)
-        }
         var shippingLineSelectionViewModel: ShippingLineSelectionDetailsViewModel {
             ShippingLineSelectionDetailsViewModel(siteID: siteID,
                                                   shippingID: shippingID,

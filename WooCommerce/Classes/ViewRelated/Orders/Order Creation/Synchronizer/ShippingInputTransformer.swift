@@ -22,7 +22,8 @@ struct ShippingInputTransformer {
 
         // If there is no existing shipping lines, we insert the input one.
         guard let existingShippingLine = order.shippingLines.first else {
-            return order.copy(shippingTotal: input.total, shippingLines: [input])
+            let newShippingLine = input.methodID?.isNotEmpty == true ? input : OrderFactory.noMethodShippingLine(input)
+            return order.copy(shippingTotal: input.total, shippingLines: [newShippingLine])
         }
 
         // Since we only support one shipping line, if we find one, we update the existing with the new input values.

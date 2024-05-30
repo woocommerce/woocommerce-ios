@@ -159,7 +159,7 @@ final class LastOrdersDashboardCardViewModelTests: XCTestCase {
     }
 
     @MainActor
-    func test_fetch_orders_request_asks_for_only_3_orders() async throws {
+    func test_fetch_orders_request_asks_for_only_3_orders() async {
         // Given
         let viewModel = LastOrdersDashboardCardViewModel(siteID: sampleSiteID,
                                                          stores: stores,
@@ -181,7 +181,7 @@ final class LastOrdersDashboardCardViewModelTests: XCTestCase {
     }
 
     @MainActor
-    func test_fetch_orders_request_asks_to_skip_saving_orders() async throws {
+    func test_fetch_orders_request_asks_to_skip_saving_orders() async {
         // Given
         let viewModel = LastOrdersDashboardCardViewModel(siteID: sampleSiteID,
                                                          stores: stores,

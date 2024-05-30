@@ -2,7 +2,7 @@
 
 18.9
 -----
-
+- [*] Orders: Fixes an issue where adding shipping to an order without selecting a shipping method prevented the order from being created/updated. [https://github.com/woocommerce/woocommerce-ios/pull/12870]
 
 18.8
 -----

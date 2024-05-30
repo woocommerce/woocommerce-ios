@@ -196,7 +196,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
 
     func test_sending_shipping_input_updates_local_order() throws {
         // Given
-        let shippingLine = ShippingLine.fake().copy(shippingID: sampleShippingID)
+        let shippingLine = ShippingLine.fake().copy(shippingID: sampleShippingID, methodID: "free_shipping")
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
 

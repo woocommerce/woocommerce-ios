@@ -44,6 +44,7 @@ public protocol CouponsRemoteProtocol {
                           completion: @escaping (Result<CouponReport, Error>) -> Void)
 
     func loadMostActiveCoupons(for siteID: Int64,
+                               numberOfCouponsToLoad: Int,
                                from startDate: Date,
                                to endDate: Date,
                                completion: @escaping (Result<[CouponReport], Error>) -> Void)
@@ -324,18 +325,20 @@ public final class CouponsRemote: Remote, CouponsRemoteProtocol {
     ///
     /// - Parameters:
     ///     - siteID: The ID of the  site from which we'll fetch the coupons report.
+    ///     - numberOfCouponsToLoad: Number of coupons to load.
     ///     - from: The start of the date range for which we'll fetch the coupons report.
     ///     - to: The end of the date range until which we'll fetch the coupons report.
     ///     - completion: Closure to be executed upon completion.
     ///
     public func loadMostActiveCoupons(for siteID: Int64,
+                                      numberOfCouponsToLoad: Int,
                                       from startDate: Date,
                                       to endDate: Date,
                                       completion: @escaping (Result<[CouponReport], Error>) -> Void) {
         let parameters: [String: Any] = {
             var params = [
                 ParameterKey.page: 1,
-                ParameterKey.perPage: 3,
+                ParameterKey.perPage: numberOfCouponsToLoad,
                 ParameterKey.order: ParameterValue.desc,
                 ParameterKey.orderBy: ParameterValue.ordersCount,
             ]

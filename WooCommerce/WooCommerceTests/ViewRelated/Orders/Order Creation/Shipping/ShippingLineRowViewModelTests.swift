@@ -16,7 +16,8 @@ final class ShippingLineRowViewModelTests: XCTestCase {
                                                  shippingTitle: shippingTitle,
                                                  shippingMethod: shippingMethod,
                                                  shippingAmount: shippingAmount,
-                                                 editable: true)
+                                                 editable: true,
+                                                 onEditShippingLine: { _ in })
 
         // Then
         assertEqual(shippingTitle, viewModel.shippingTitle)
@@ -41,5 +42,24 @@ final class ShippingLineRowViewModelTests: XCTestCase {
         assertEqual(shippingMethod.title, viewModel.shippingMethod)
         assertEqual("$5.00", viewModel.shippingAmount)
         XCTAssertFalse(viewModel.editable)
+    }
+
+    func test_editShippingLine_calls_onEditShippingLine_with_expected_shippingID() {
+        // Given
+        let shippingLine = ShippingLine(shippingID: 1, methodTitle: "Package 1", methodID: "flat_rate", total: "5", totalTax: "0", taxes: [])
+        let shippingMethod = ShippingMethod(siteID: 12345, methodID: "flat_rate", title: "Flat Rate")
+        var editShippingID: Int64?
+        let viewModel = ShippingLineRowViewModel(shippingLine: shippingLine,
+                                                 shippingMethods: [shippingMethod],
+                                                 editable: false,
+                                                 currencyFormatter: CurrencyFormatter(currencySettings: CurrencySettings())) { shippingID in
+            editShippingID = shippingID
+        }
+
+        // When
+        viewModel.editShippingLine()
+
+        // Then
+        assertEqual(shippingLine.shippingID, editShippingID)
     }
 }

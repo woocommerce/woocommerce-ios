@@ -30,7 +30,7 @@ struct ShippingLineRowView: View {
                 .bodyStyle()
 
             Button {
-                viewModel.onEditShippingLine()
+                viewModel.editShippingLine()
             } label: {
                 Image(systemName: "pencil")
                     .resizable()
@@ -44,7 +44,7 @@ struct ShippingLineRowView: View {
         .padding(Layout.contentPadding)
         .contentShape(Rectangle())
         .onTapGesture {
-            viewModel.onEditShippingLine()
+            viewModel.editShippingLine()
         }
         .background(
             RoundedRectangle(cornerRadius: Layout.cornerRadius)
@@ -58,7 +58,7 @@ struct ShippingLineRowView: View {
     }
 }
 
-extension ShippingLineRowView {
+private extension ShippingLineRowView {
     enum Layout {
         static let contentSpacing: CGFloat = 16
         static let contentPadding: CGFloat = 16
@@ -80,7 +80,8 @@ extension ShippingLineRowView {
                                                             shippingTitle: "Package 1",
                                                             shippingMethod: "Flat Rate",
                                                             shippingAmount: "$5.00",
-                                                            editable: true))
+                                                            editable: true,
+                                                            onEditShippingLine: { _ in }))
 }
 
 #Preview("Not editable") {
@@ -88,5 +89,6 @@ extension ShippingLineRowView {
                                                             shippingTitle: "Package 1",
                                                             shippingMethod: "Flat Rate",
                                                             shippingAmount: "$5.00",
-                                                            editable: false))
+                                                            editable: false,
+                                                            onEditShippingLine: { _ in }))
 }

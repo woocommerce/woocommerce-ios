@@ -37,7 +37,7 @@ final class OrderStoreTests_FetchFilteredAndAllOrders: XCTestCase {
         // Act
         executeActionAndWait(using: createOrderStore(using: network),
                              statuses: [OrderStatusEnum.processing.rawValue],
-                             deleteAllBeforeSaving: true)
+                             writeStrategy: .deleteAllBeforeSaving)
 
         // Assert
         // The previously saved order should be deleted
@@ -59,7 +59,7 @@ final class OrderStoreTests_FetchFilteredAndAllOrders: XCTestCase {
         // Act
         executeActionAndWait(using: createOrderStore(using: network),
                              statuses: [OrderStatusEnum.processing.rawValue],
-                             deleteAllBeforeSaving: false)
+                             writeStrategy: .save)
 
         // Assert
         // The previously saved order should still be there
@@ -76,7 +76,7 @@ final class OrderStoreTests_FetchFilteredAndAllOrders: XCTestCase {
         // Act
         executeActionAndWait(using: createOrderStore(using: network),
                              statuses: [OrderStatusEnum.completed.rawValue],
-                             deleteAllBeforeSaving: true)
+                             writeStrategy: .deleteAllBeforeSaving)
 
         // Assert
         XCTAssertEqual(countOrders(),
@@ -91,7 +91,7 @@ final class OrderStoreTests_FetchFilteredAndAllOrders: XCTestCase {
         // Act
         executeActionAndWait(using: createOrderStore(using: network),
                              statuses: nil,
-                             deleteAllBeforeSaving: true)
+                             writeStrategy: .deleteAllBeforeSaving)
 
         // Assert
         XCTAssertEqual(countOrders(), Fixtures.ordersLoadAllJSON.ordersCount)
@@ -107,7 +107,7 @@ final class OrderStoreTests_FetchFilteredAndAllOrders: XCTestCase {
         // Act
         executeActionAndWait(using: createOrderStore(using: network),
                              statuses: [OrderStatusEnum.processing.rawValue],
-                             deleteAllBeforeSaving: true)
+                             writeStrategy: .deleteAllBeforeSaving)
 
         // Assert
         // The previously saved order should still exist
@@ -123,13 +123,15 @@ private extension OrderStoreTests_FetchFilteredAndAllOrders {
         OrderStore(dispatcher: Dispatcher(), storageManager: storageManager, network: network)
     }
 
-    func executeActionAndWait(using store: OrderStore, statuses: [String]?, deleteAllBeforeSaving: Bool) {
+    func executeActionAndWait(using store: OrderStore,
+                              statuses: [String]?,
+                              writeStrategy: OrderAction.OrdersStorageWriteStrategy) {
         let expectation = self.expectation(description: "fetch")
 
         let action = OrderAction.fetchFilteredOrders(
             siteID: Fixtures.siteID,
             statuses: statuses,
-            deleteAllBeforeSaving: deleteAllBeforeSaving,
+            writeStrategy: writeStrategy,
             pageSize: 50) { _, _  in
                 expectation.fulfill()
         }

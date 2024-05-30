@@ -40,12 +40,12 @@ final class OrderListSyncActionUseCaseTests: XCTestCase {
                                        completionHandler: unimportantCompletionHandler)
 
         // Assert
-        guard case .fetchFilteredOrders(_, let statuses, _, _, let modifiedAfter, _, _, let deleteAllBeforeSaving, _, _) = action else {
+        guard case .fetchFilteredOrders(_, let statuses, _, _, let modifiedAfter, _, _, let writeStrategy, _, _) = action else {
             XCTFail("Unexpected OrderAction type: \(action)")
             return
         }
 
-        XCTAssertTrue(deleteAllBeforeSaving)
+        XCTAssertEqual(writeStrategy, .deleteAllBeforeSaving)
         XCTAssertEqual(statuses, [OrderStatusEnum.processing.rawValue])
         XCTAssertNil(modifiedAfter)
     }
@@ -73,12 +73,12 @@ final class OrderListSyncActionUseCaseTests: XCTestCase {
                                        completionHandler: unimportantCompletionHandler)
 
         // Assert
-        guard case .fetchFilteredOrders(_, let statuses, _, _, let modifiedAfter, _, _, let deleteAllBeforeSaving, _, _) = action else {
+        guard case .fetchFilteredOrders(_, let statuses, _, _, let modifiedAfter, _, _, let writeStrategy, _, _) = action else {
             XCTFail("Unexpected OrderAction type: \(action)")
             return
         }
 
-        XCTAssertFalse(deleteAllBeforeSaving)
+        XCTAssertEqual(writeStrategy, .save)
         XCTAssertEqual(statuses, [OrderStatusEnum.processing.rawValue])
         XCTAssertEqual(modifiedAfter, lastSyncDate)
     }
@@ -101,12 +101,12 @@ final class OrderListSyncActionUseCaseTests: XCTestCase {
                                        completionHandler: unimportantCompletionHandler)
 
         // Assert
-        guard case .fetchFilteredOrders(_, let statuses, _, _, let modifiedAfter, _, _, let deleteAllBeforeSaving, _, _) = action else {
+        guard case .fetchFilteredOrders(_, let statuses, _, _, let modifiedAfter, _, _, let writeStrategy, _, _) = action else {
             XCTFail("Unexpected OrderAction type: \(action)")
             return
         }
 
-        XCTAssertTrue(deleteAllBeforeSaving)
+        XCTAssertEqual(writeStrategy, .deleteAllBeforeSaving)
         XCTAssertNil(statuses?.first)
         XCTAssertNil(modifiedAfter)
     }
@@ -128,12 +128,12 @@ final class OrderListSyncActionUseCaseTests: XCTestCase {
                                        completionHandler: unimportantCompletionHandler)
 
         // Assert
-        guard case .fetchFilteredOrders(_, let statuses, _, _, let modifiedAfter, _, _, let deleteAllBeforeSaving, _, _) = action else {
+        guard case .fetchFilteredOrders(_, let statuses, _, _, let modifiedAfter, _, _, let writeStrategy, _, _) = action else {
             XCTFail("Unexpected OrderAction type: \(action)")
             return
         }
 
-        XCTAssertFalse(deleteAllBeforeSaving)
+        XCTAssertEqual(writeStrategy, .save)
         XCTAssertNil(statuses?.first)
         XCTAssertEqual(modifiedAfter, lastSyncDate)
     }
@@ -213,12 +213,12 @@ final class OrderListSyncActionUseCaseTests: XCTestCase {
                                        completionHandler: unimportantCompletionHandler)
 
         // Assert
-        guard case .fetchFilteredOrders(_, let statuses, _, _, _, _, _, let deleteAllBeforeSaving, _, _) = action else {
+        guard case .fetchFilteredOrders(_, let statuses, _, _, _, _, _, let writeStrategy, _, _) = action else {
             XCTFail("Unexpected OrderAction type: \(action)")
             return
         }
 
-        XCTAssertTrue(deleteAllBeforeSaving)
+        XCTAssertEqual(writeStrategy, .deleteAllBeforeSaving)
         XCTAssertEqual(statuses, [OrderStatusEnum.processing.rawValue])
     }
 }

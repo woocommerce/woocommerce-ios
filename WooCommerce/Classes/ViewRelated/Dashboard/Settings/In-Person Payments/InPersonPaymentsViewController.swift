@@ -5,7 +5,7 @@ final class InPersonPaymentsViewController: UIHostingController<InPersonPayments
 
     private let onWillDisappear: (() -> ())?
 
-    init(viewModel: CardPresentPaymentsOnboardingViewModel,
+    init(viewModel: CardPresentPaymentOnboardingViewModel,
          onWillDisappear: (() -> ())?) {
         self.onWillDisappear = onWillDisappear
         super.init(rootView: InPersonPaymentsView(viewModel: viewModel))
@@ -31,7 +31,7 @@ final class InPersonPaymentsViewController: UIHostingController<InPersonPayments
 }
 
 struct InPersonPaymentsView: View {
-    @StateObject var viewModel: CardPresentPaymentsOnboardingViewModel
+    @StateObject var viewModel: CardPresentPaymentOnboardingViewModel
     var shouldShowMenuOnCompletion: Bool = true
 
     var body: some View {
@@ -119,7 +119,7 @@ struct InPersonPaymentsView: View {
 struct InPersonPaymentsView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
-            InPersonPaymentsView(viewModel: CardPresentPaymentsOnboardingViewModel(fixedState: .completed(plugin: .stripeOnly)))
+            InPersonPaymentsView(viewModel: CardPresentPaymentOnboardingViewModel(fixedState: .completed(plugin: .stripeOnly)))
         }
     }
 }

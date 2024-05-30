@@ -3,8 +3,8 @@ import Combine
 @testable import WooCommerce
 import Yosemite
 
-final class InPersonPaymentsViewModelTests: XCTestCase {
-    private var sut: CardPresentPaymentsOnboardingViewModel!
+final class CardPresentPaymentOnboardingViewModelTests: XCTestCase {
+    private var sut: CardPresentPaymentOnboardingViewModel!
     private var onboardingUseCase: MockCardPresentPaymentsOnboardingUseCase!
     private var stateSubject: CurrentValueSubject<CardPresentPaymentOnboardingState, Never>!
 
@@ -15,7 +15,7 @@ final class InPersonPaymentsViewModelTests: XCTestCase {
         onboardingUseCase = MockCardPresentPaymentsOnboardingUseCase(
             initial: .noConnectionError,
             publisher: stateSubject.eraseToAnyPublisher())
-        sut = CardPresentPaymentsOnboardingViewModel(useCase: onboardingUseCase)
+        sut = CardPresentPaymentOnboardingViewModel(useCase: onboardingUseCase)
     }
 
     override func tearDown() {

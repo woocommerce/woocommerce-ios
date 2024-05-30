@@ -21,7 +21,7 @@ final class CardPresentPaymentsOnboardingPresenter: CardPresentPaymentsOnboardin
 
     private let readinessUseCase: CardPresentPaymentsReadinessUseCase
 
-    private let onboardingViewModel: CardPresentPaymentsOnboardingViewModel
+    private let onboardingViewModel: CardPresentPaymentOnboardingViewModel
 
     private var readinessSubscription: AnyCancellable?
 
@@ -29,7 +29,7 @@ final class CardPresentPaymentsOnboardingPresenter: CardPresentPaymentsOnboardin
         self.stores = stores
         onboardingUseCase = CardPresentPaymentsOnboardingUseCase(stores: stores)
         readinessUseCase = CardPresentPaymentsReadinessUseCase(onboardingUseCase: onboardingUseCase, stores: stores)
-        onboardingViewModel = CardPresentPaymentsOnboardingViewModel(useCase: onboardingUseCase)
+        onboardingViewModel = CardPresentPaymentOnboardingViewModel(useCase: onboardingUseCase)
     }
 
     func showOnboardingIfRequired(from viewController: UIViewController,

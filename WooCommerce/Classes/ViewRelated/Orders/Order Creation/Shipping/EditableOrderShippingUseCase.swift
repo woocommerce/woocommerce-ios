@@ -9,7 +9,6 @@ import Combine
 final class EditableOrderShippingUseCase: ObservableObject {
     private var siteID: Int64
     private var analytics: Analytics
-    private var featureFlagService: FeatureFlagService
     private var storageManager: StorageManagerType
     private var stores: StoresManager
     private var orderSynchronizer: OrderSynchronizer
@@ -21,12 +20,6 @@ final class EditableOrderShippingUseCase: ObservableObject {
     /// Defines if the non editable indicators (banners, locks, fields) should be shown.
     ///
     @Published private(set) var shouldShowNonEditableIndicators: Bool = false
-
-    /// Multiple shipping lines support
-    ///
-    var multipleShippingLinesEnabled: Bool {
-        featureFlagService.isFeatureFlagEnabled(.multipleShippingLines)
-    }
 
     // MARK: View models
 
@@ -83,15 +76,13 @@ final class EditableOrderShippingUseCase: ObservableObject {
          analytics: Analytics = ServiceLocator.analytics,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          stores: StoresManager = ServiceLocator.stores,
-         currencySettings: CurrencySettings = ServiceLocator.currencySettings,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+         currencySettings: CurrencySettings = ServiceLocator.currencySettings) {
         self.siteID = siteID
         self.flow = flow
         self.analytics = analytics
         self.storageManager = storageManager
         self.stores = stores
         self.orderSynchronizer = orderSynchronizer
-        self.featureFlagService = featureFlagService
 
         configurePaymentData()
         configureNonEditableIndicators()
@@ -152,10 +143,6 @@ private extension EditableOrderShippingUseCase {
     func configureShippingLineRowViewModels() {
         updateShippingMethodsResultsController()
         syncShippingMethods()
-
-        guard multipleShippingLinesEnabled else {
-            return
-        }
 
         orderSynchronizer.orderPublisher
             .map { $0.shippingLines }

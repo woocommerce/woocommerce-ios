@@ -3137,11 +3137,9 @@ final class EditableOrderViewModelTests: XCTestCase {
         // Given
         let shippingLine = ShippingLine.fake().copy(shippingID: 1, methodTitle: "Package 1")
         let order = Order.fake().copy(siteID: sampleSiteID, shippingLines: [shippingLine])
-        let featureFlagService = MockFeatureFlagService(isMultipleShippingLinesEnabled: true)
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
                                                flow: .editing(initialOrder: order),
-                                               storageManager: storageManager,
-                                               featureFlagService: featureFlagService)
+                                               storageManager: storageManager)
 
         // When
         viewModel.shippingUseCase.shippingLineRows.first?.editShippingLine()

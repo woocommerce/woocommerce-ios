@@ -30,8 +30,8 @@ final class ProductStockDashboardCardViewModelTests: XCTestCase {
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         let viewModel = ProductStockDashboardCardViewModel(siteID: siteID, stores: stores)
 
-        let product = ProductStock.fake().copy(siteID: siteID, productID: 32, name: "Steamed bun")
-        let variation = ProductStock.fake().copy(siteID: siteID, productID: 44, parentID: 40, name: "Pizza - Large, Seafood, Spicy")
+        let product = ProductStock.fake().copy(siteID: siteID, productID: 32)
+        let variation = ProductStock.fake().copy(siteID: siteID, productID: 44, parentID: 40)
 
         let thumbnailURL = "https://example.com/image.jpg"
         let productReport = ProductReport.fake().copy(productID: product.productID,
@@ -41,6 +41,7 @@ final class ProductStockDashboardCardViewModelTests: XCTestCase {
                                                       stockQuantity: 4)
         let variationReport = ProductReport.fake().copy(productID: variation.parentID,
                                                         variationID: variation.productID,
+                                                        name: "Pizza - Large, Seafood, Spicy",
                                                         imageURL: nil,
                                                         itemsSold: 8,
                                                         stockQuantity: 3)

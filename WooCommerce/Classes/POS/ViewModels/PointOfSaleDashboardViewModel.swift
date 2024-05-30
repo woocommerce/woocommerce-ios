@@ -1,4 +1,7 @@
 import SwiftUI
+import protocol Yosemite.POSItem
+import struct Yosemite.POSProduct
+import struct Yosemite.CartProduct
 
 final class PointOfSaleDashboardViewModel: ObservableObject {
     @Published var products: [POSProduct]
@@ -15,9 +18,11 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
 
     @Published private(set) var orderStage: OrderStage = .building
 
-    init(products: [POSProduct],
+    init(products: [POSItem],
          cardReaderConnectionViewModel: CardReaderConnectionViewModel) {
-        self.products = products
+        // For the moment we inject POSItem, but only use the POSProduct implementation, since it's the only item type we're using
+        // Later we might change this to support other types of items
+        self.products = products.compactMap { $0 as? POSProduct }
         self.cardReaderConnectionViewModel = cardReaderConnectionViewModel
     }
 

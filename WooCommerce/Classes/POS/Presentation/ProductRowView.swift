@@ -1,4 +1,5 @@
 import SwiftUI
+import struct Yosemite.CartProduct
 
 struct ProductRowView: View {
     private let cartProduct: CartProduct
@@ -31,9 +32,9 @@ struct ProductRowView: View {
 }
 
 #if DEBUG
-#Preview {
-    ProductRowView(cartProduct: CartProduct(id: UUID(),
-                                            product: POSProductProvider.provideProductForPreview(currencySettings: .init()),
-                                            quantity: 2))
-}
+//#Preview {
+//    ProductRowView(cartProduct: CartProduct(id: UUID(),
+//                                            product: POSProductProvider.provideProductForPreview(currencySettings: .init()),
+//                                            quantity: 2))
+//}
 #endif

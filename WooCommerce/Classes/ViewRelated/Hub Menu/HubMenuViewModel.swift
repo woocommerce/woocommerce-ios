@@ -69,6 +69,8 @@ final class HubMenuViewModel: ObservableObject {
     private let generalAppSettings: GeneralAppSettingsStorage
     private let cardPresentPaymentsOnboarding: CardPresentPaymentsOnboardingUseCaseProtocol
     private let posEligibilityChecker: POSEligibilityCheckerProtocol
+    // TODO: Is this the right place to instantiate the provider?
+    let posProductProvider: POSItemProvider = POSProductProvider()
 
     private(set) var productReviewFromNoteParcel: ProductReviewFromNoteParcel?
 

@@ -5,7 +5,7 @@ import class WooFoundation.CurrencySettings
 
 /// Product provider for the Point of Sale feature
 ///
-final class POSProductProvider {
+final class POSProductProvider: POSItemProvider {
     private let storageManager: StorageManagerType
     private var siteID: Int64
     private var currencySettings: CurrencySettings
@@ -27,7 +27,7 @@ final class POSProductProvider {
 
     /// Provides a`[POSProduct]`array by mapping  simple, purchasable-only Products from storage
     ///
-    func providePointOfSaleProducts() -> [POSProduct] {
+    func providePointOfSaleItems() -> [POSItem] {
         var loadedProducts: [Product] = []
 
         // 1. Fetch products from storage, and filter them by `purchasable` and `simple`

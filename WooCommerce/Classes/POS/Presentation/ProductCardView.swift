@@ -1,5 +1,6 @@
 import SwiftUI
 import class WooFoundation.CurrencyFormatter
+import struct Yosemite.POSProduct
 
 struct ProductCardView: View {
     private let product: POSProduct

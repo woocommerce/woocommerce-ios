@@ -37,7 +37,7 @@ struct ReviewsDashboardCard: View {
                     }
                 })
                 .padding(.horizontal, Layout.padding)
-            } else if viewModel.showLoadingAnimation {
+            } else if viewModel.syncingData {
                 loadingStateView
             } else if viewModel.data.isNotEmpty {
                 ForEach(viewModel.data, id: \.review.reviewID) { reviewViewModel in
@@ -46,15 +46,12 @@ struct ReviewsDashboardCard: View {
                 }
             } else {
                 emptyView(message: emptyViewText(isFiltered: viewModel.currentFilter != .all))
-
             }
 
             Divider()
 
             viewAllReviewsButton
                 .padding(.horizontal, Layout.padding)
-                .redacted(reason: viewModel.showLoadingAnimation ? [.placeholder] : [])
-                .shimmering(active: viewModel.showLoadingAnimation)
         }
         .padding(.vertical, Layout.padding)
         .background(Color(.listForeground(modal: false)))
@@ -83,7 +80,7 @@ private extension ReviewsDashboardCard {
                     .padding(.leading, Layout.padding)
                     .padding(.vertical, Layout.hideIconVerticalPadding)
             }
-            .disabled(viewModel.showLoadingAnimation)
+            .disabled(viewModel.syncingData)
         }
     }
 
@@ -113,7 +110,7 @@ private extension ReviewsDashboardCard {
                 Image(systemName: "line.3.horizontal.decrease")
                     .foregroundStyle(Color.secondary)
             }
-            .disabled(viewModel.showLoadingAnimation)
+            .disabled(viewModel.syncingData)
         }
     }
 
@@ -224,7 +221,7 @@ private extension ReviewsDashboardCard {
                     .foregroundStyle(Color(.tertiaryLabel))
             }
         }
-        .disabled(viewModel.showLoadingAnimation)
+        .disabled(viewModel.syncingData)
     }
 
     func emptyView(message: String) -> some View {

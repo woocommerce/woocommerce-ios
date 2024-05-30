@@ -300,7 +300,7 @@ struct OrderForm: View {
                                     .disabled(viewModel.shouldShowNonEditableIndicators)
                                 Spacer(minLength: Layout.sectionSpacing)
                             }
-                            .renderedIf(viewModel.shippingUseCase.multipleShippingLinesEnabled)
+                            .renderedIf(viewModel.shippingUseCase.shippingLineRows.isNotEmpty)
 
                             AddOrderComponentsSection(
                                 viewModel: viewModel.paymentDataViewModel,

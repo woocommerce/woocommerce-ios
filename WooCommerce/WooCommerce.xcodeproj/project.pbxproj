@@ -2532,7 +2532,7 @@
 		E1308381270311E200D5A68D /* CardPresentModalUpdateFailedLowBattery.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1308380270311E200D5A68D /* CardPresentModalUpdateFailedLowBattery.swift */; };
 		E1325EFB28FD544E00EC9B2A /* InAppPurchasesDebugView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1325EFA28FD544E00EC9B2A /* InAppPurchasesDebugView.swift */; };
 		E138D4F4269ED9C3006EA5C6 /* InPersonPaymentsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E138D4F3269ED9C3006EA5C6 /* InPersonPaymentsViewController.swift */; };
-		E138D4FC269EEAFE006EA5C6 /* InPersonPaymentsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E138D4FB269EEAFE006EA5C6 /* InPersonPaymentsViewModel.swift */; };
+		E138D4FC269EEAFE006EA5C6 /* CardPresentPaymentsOnboardingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E138D4FB269EEAFE006EA5C6 /* CardPresentPaymentsOnboardingViewModel.swift */; };
 		E15F163126C5117300D3059B /* InPersonPaymentsNoConnectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E15F163026C5117300D3059B /* InPersonPaymentsNoConnectionView.swift */; };
 		E15FC74126BC1CED00CF83E6 /* AttributedText.swift in Sources */ = {isa = PBXBuildFile; fileRef = E15FC74026BC1CED00CF83E6 /* AttributedText.swift */; };
 		E15FC74326BC1D2700CF83E6 /* SafariSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = E15FC74226BC1D2700CF83E6 /* SafariSheet.swift */; };
@@ -5336,7 +5336,7 @@
 		E1308380270311E200D5A68D /* CardPresentModalUpdateFailedLowBattery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalUpdateFailedLowBattery.swift; sourceTree = "<group>"; };
 		E1325EFA28FD544E00EC9B2A /* InAppPurchasesDebugView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppPurchasesDebugView.swift; sourceTree = "<group>"; };
 		E138D4F3269ED9C3006EA5C6 /* InPersonPaymentsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsViewController.swift; sourceTree = "<group>"; };
-		E138D4FB269EEAFE006EA5C6 /* InPersonPaymentsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsViewModel.swift; sourceTree = "<group>"; };
+		E138D4FB269EEAFE006EA5C6 /* CardPresentPaymentsOnboardingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentsOnboardingViewModel.swift; sourceTree = "<group>"; };
 		E15F163026C5117300D3059B /* InPersonPaymentsNoConnectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsNoConnectionView.swift; sourceTree = "<group>"; };
 		E15FC74026BC1CED00CF83E6 /* AttributedText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttributedText.swift; sourceTree = "<group>"; };
 		E15FC74226BC1D2700CF83E6 /* SafariSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafariSheet.swift; sourceTree = "<group>"; };
@@ -12199,7 +12199,7 @@
 				E120F63726C26B550005A029 /* InPersonPaymentsLoadingView.swift */,
 				03AFDE01282C0B82003B67CD /* InPersonPaymentsCompletedView.swift */,
 				319A626027ACAE3400BC96C3 /* InPersonPaymentsPluginChoicesView.swift */,
-				E138D4FB269EEAFE006EA5C6 /* InPersonPaymentsViewModel.swift */,
+				E138D4FB269EEAFE006EA5C6 /* CardPresentPaymentsOnboardingViewModel.swift */,
 				E15FC74426BC213500CF83E6 /* InPersonPaymentsLearnMore.swift */,
 				0304E35D28BDC86D00A80191 /* LearnMoreViewModel.swift */,
 				E107FCE226C13A0D00BAF51B /* InPersonPaymentsSupportLink.swift */,
@@ -13743,7 +13743,7 @@
 				03E471D62942222E001A58AD /* CardPresentModalBuiltInFollowReaderInstructions.swift in Sources */,
 				B60B5026292D308A00178C26 /* AnalyticsTimeRangeCard.swift in Sources */,
 				026826C32BF59E410036F959 /* ReaderConnectedView.swift in Sources */,
-				E138D4FC269EEAFE006EA5C6 /* InPersonPaymentsViewModel.swift in Sources */,
+				E138D4FC269EEAFE006EA5C6 /* CardPresentPaymentsOnboardingViewModel.swift in Sources */,
 				039D948F276113490044EF38 /* UIView+SuperviewConstraints.swift in Sources */,
 				D8736B5322EF4F5900A14A29 /* NotificationsBadgeController.swift in Sources */,
 				03E471CC293E0FB8001A58AD /* CardPresentModalProgressDisplaying.swift in Sources */,

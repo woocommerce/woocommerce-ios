@@ -4,7 +4,7 @@ import Combine
 import Yosemite
 
 final class InPersonPaymentsViewModelTests: XCTestCase {
-    private var sut: InPersonPaymentsViewModel!
+    private var sut: CardPresentPaymentsOnboardingViewModel!
     private var onboardingUseCase: MockCardPresentPaymentsOnboardingUseCase!
     private var stateSubject: CurrentValueSubject<CardPresentPaymentOnboardingState, Never>!
 
@@ -15,7 +15,7 @@ final class InPersonPaymentsViewModelTests: XCTestCase {
         onboardingUseCase = MockCardPresentPaymentsOnboardingUseCase(
             initial: .noConnectionError,
             publisher: stateSubject.eraseToAnyPublisher())
-        sut = InPersonPaymentsViewModel(useCase: onboardingUseCase)
+        sut = CardPresentPaymentsOnboardingViewModel(useCase: onboardingUseCase)
     }
 
     override func tearDown() {

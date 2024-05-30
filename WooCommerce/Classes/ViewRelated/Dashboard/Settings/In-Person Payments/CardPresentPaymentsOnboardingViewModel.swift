@@ -3,7 +3,7 @@ import Yosemite
 import Experiments
 import WooFoundation
 
-final class InPersonPaymentsViewModel: ObservableObject, PaymentSettingsFlowPresentedViewModel {
+final class CardPresentPaymentsOnboardingViewModel: ObservableObject, PaymentSettingsFlowPresentedViewModel {
     @Published var state: CardPresentPaymentOnboardingState
     var userIsAdministrator: Bool
     var learnMoreURL: URL? = nil
@@ -143,7 +143,7 @@ final class InPersonPaymentsViewModel: ObservableObject, PaymentSettingsFlowPres
     var didUpdate: (() -> Void)? = nil
 }
 
-private extension InPersonPaymentsViewModel {
+private extension CardPresentPaymentsOnboardingViewModel {
     var countryCode: CountryCode {
         CardPresentConfigurationLoader().configuration.countryCode
     }

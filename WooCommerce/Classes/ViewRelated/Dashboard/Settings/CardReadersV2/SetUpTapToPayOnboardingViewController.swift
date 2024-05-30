@@ -5,7 +5,7 @@ final class SetUpTapToPayOnboardingViewController: UIHostingController<SetUpTapT
 
     private let onWillDisappear: (() -> ())?
 
-    init(viewModel: InPersonPaymentsViewModel,
+    init(viewModel: CardPresentPaymentsOnboardingViewModel,
          onWillDisappear: (() -> ())?) {
         self.onWillDisappear = onWillDisappear
         let onboardingView = InPersonPaymentsView(viewModel: viewModel)
@@ -28,7 +28,7 @@ final class SetUpTapToPayOnboardingViewController: UIHostingController<SetUpTapT
     }
 
     convenience init?(viewModel: PaymentSettingsFlowPresentedViewModel) {
-        guard let viewModel = viewModel as? InPersonPaymentsViewModel else {
+        guard let viewModel = viewModel as? CardPresentPaymentsOnboardingViewModel else {
             return nil
         }
         self.init(viewModel: viewModel, onWillDisappear: nil)

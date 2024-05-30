@@ -297,51 +297,6 @@ final class ReviewsDashboardCardViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(viewModel.syncingError as? NSError, error)
     }
-
-    @MainActor
-    func test_switchingStatus_is_updated_correctly_during_review_filtering() async {
-        // Given
-        let viewModel = ReviewsDashboardCardViewModel(siteID: sampleSiteID,
-                                                      stores: stores,
-                                                      storageManager: storageManager)
-        XCTAssertFalse(viewModel.switchingStatus)
-
-        let newFilter = ReviewsDashboardCardViewModel.ReviewsFilter.hold
-
-        // When
-        stores.whenReceivingAction(ofType: ProductReviewAction.self) { action in
-            switch action {
-            case let .synchronizeProductReviews(_, _, _, _, _, onCompletion):
-                XCTAssertTrue(viewModel.switchingStatus)
-                onCompletion(.success(self.sampleReviews))
-            default:
-                XCTFail("Unexpected action: \(action)")
-            }
-        }
-
-        stores.whenReceivingAction(ofType: ProductAction.self) { action in
-            switch action {
-            case let .retrieveProducts(_, _, _, _, onCompletion):
-                onCompletion(.success(([], true)))
-            default:
-                XCTFail("Unexpected action: \(action)")
-            }
-        }
-
-        stores.whenReceivingAction(ofType: NotificationAction.self) { action in
-            switch action {
-            case let .synchronizeNotifications(onCompletion):
-                onCompletion(nil)
-            default:
-                XCTFail("Unexpected action: \(action)")
-            }
-        }
-
-        await viewModel.filterReviews(by: newFilter)
-
-        // Then
-        XCTAssertFalse(viewModel.switchingStatus)
-    }
 }
 
 extension ReviewsDashboardCardViewModelTests {

@@ -25,6 +25,10 @@ struct ReviewsDashboardCard: View {
             header
                 .padding(.horizontal, Layout.padding)
 
+            reviewsFilterBar
+                .padding(.horizontal, Layout.padding)
+            Divider()
+
             if viewModel.syncingError != nil {
                 DashboardCardErrorView(onRetry: {
                     ServiceLocator.analytics.track(event: .DynamicDashboard.cardRetryTapped(type: .reviews))
@@ -33,24 +37,16 @@ struct ReviewsDashboardCard: View {
                     }
                 })
                 .padding(.horizontal, Layout.padding)
-            } else {
-                reviewsFilterBar
-                    .padding(.horizontal, Layout.padding)
-                    .redacted(reason: viewModel.showLoadingAnimation ? [.placeholder] : [])
-                    .shimmering(active: viewModel.showLoadingAnimation)
-                Divider()
-                    .renderedIf(viewModel.showLoadingAnimation == false)
-
-                if viewModel.showLoadingAnimation || viewModel.data.isNotEmpty {
-                    ForEach(viewModel.data, id: \.review.reviewID) { reviewViewModel in
-                        reviewRow(for: reviewViewModel,
-                                  isLastItem: reviewViewModel == viewModel.data.last)
-                    }
-                    .redacted(reason: viewModel.showLoadingAnimation ? [.placeholder] : [])
-                    .shimmering(active: viewModel.showLoadingAnimation)
-                } else {
-                    emptyView(message: emptyViewText(isFiltered: viewModel.currentFilter != .all))
+            } else if viewModel.showLoadingAnimation {
+                loadingStateView
+            } else if viewModel.data.isNotEmpty {
+                ForEach(viewModel.data, id: \.review.reviewID) { reviewViewModel in
+                    reviewRow(for: reviewViewModel,
+                              isLastItem: reviewViewModel == viewModel.data.last)
                 }
+            } else {
+                emptyView(message: emptyViewText(isFiltered: viewModel.currentFilter != .all))
+
             }
 
             Divider()
@@ -101,8 +97,6 @@ private extension ReviewsDashboardCard {
                 Text(viewModel.currentFilter.title)
                     .subheadlineStyle()
             }
-            .redacted(reason: viewModel.switchingStatus ? [.placeholder] : [])
-            .shimmering(active: viewModel.switchingStatus)
             Spacer()
 
             Menu {
@@ -119,7 +113,17 @@ private extension ReviewsDashboardCard {
                 Image(systemName: "line.3.horizontal.decrease")
                     .foregroundStyle(Color.secondary)
             }
+            .disabled(viewModel.showLoadingAnimation)
         }
+    }
+
+    var loadingStateView: some View {
+        ForEach(ReviewsDashboardCardViewModel.placeholderData, id: \.review.reviewID) { reviewViewModel in
+            reviewRow(for: reviewViewModel,
+                      isLastItem: reviewViewModel == viewModel.data.last)
+        }
+        .redacted(reason: .placeholder)
+        .shimmering()
     }
 
     func reviewRow(for viewModel: ReviewViewModel, isLastItem: Bool) -> some View {

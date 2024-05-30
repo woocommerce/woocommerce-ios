@@ -20,6 +20,26 @@ final class ReviewsDashboardCardViewModel: ObservableObject {
     }
 
     @Published private(set) var data: [ReviewViewModel] = []
+
+    /// View models for placeholder rows.
+    static let placeholderData: [ReviewViewModel] = [Int64](0..<3).map { index in
+        // The content does not matter because the text in placeholder rows is redacted.
+        ReviewViewModel(showProductTitle: true,
+                        review: ProductReview(siteID: 1,
+                                              reviewID: index,
+                                              productID: 1,
+                                              dateCreated: Date(),
+                                              statusKey: "",
+                                              reviewer: "########",
+                                              reviewerEmail: "##############################",
+                                              reviewerAvatarURL: nil,
+                                              review: "######## ######## ######## ################",
+                                              rating: 5,
+                                              verified: true),
+                        product: nil,
+                        notification: nil)
+    }
+
     private var reviews: [ProductReview] {
         return productReviewsResultsController.fetchedObjects
     }
@@ -32,7 +52,6 @@ final class ReviewsDashboardCardViewModel: ObservableObject {
     @Published private(set) var showLoadingAnimation = false
     @Published private(set) var syncingError: Error?
     @Published private var syncingData: Bool = false
-    @Published private(set) var switchingStatus: Bool = false
 
     private let stores: StoresManager
     private let storageManager: StorageManagerType
@@ -97,6 +116,7 @@ final class ReviewsDashboardCardViewModel: ObservableObject {
 
     @MainActor
     func reloadData() async {
+        data = []
         syncingData = true
         syncingError = nil
         do {
@@ -110,10 +130,8 @@ final class ReviewsDashboardCardViewModel: ObservableObject {
 
     @MainActor
     func filterReviews(by filter: ReviewsFilter) async {
-        switchingStatus = true
         currentFilter = filter
         await reloadData()
-        switchingStatus = false
     }
 }
 

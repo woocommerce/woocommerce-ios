@@ -40,7 +40,7 @@ final class ProductStockDashboardCardViewModel: ObservableObject {
             let stock = try await fetchStock(type: selectedStockType)
             try await fetchAndSaveReportsToMemory(for: stock)
             reports = stock.compactMap { item in
-                savedReports[item.productID]
+                savedReports[item.productID]?.copy(name: item.name)
             }
             .sorted { $0.stockQuantity < $1.stockQuantity }
         } catch {

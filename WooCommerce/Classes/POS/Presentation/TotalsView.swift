@@ -9,20 +9,12 @@ struct TotalsView: View {
 
     var body: some View {
         VStack {
-            Text("Totals")
-                .font(.title)
-                .foregroundColor(Color.white)
-            ScrollView {
-                ForEach(viewModel.productsInCart, id: \.product.productID) { cartProduct in
-                    VStack {
-                        HStack {
-                            Text("\(cartProduct.quantity) x \(cartProduct.product.name) ")
-                            Spacer()
-                            Text("\(cartProduct.product.price)")
-                        }
-                    }
-                    .foregroundColor(.white)
+            VStack(alignment: .leading, spacing: 32) {
+                HStack {
+                    priceFieldView(title: "Subtotal", formattedPrice: viewModel.formattedCartTotalPrice ?? "-")
+                    priceFieldView(title: "Taxes", formattedPrice: viewModel.formattedOrderTotalTaxPrice ?? "-")
                 }
+                totalPriceView(formattedPrice: viewModel.formattedOrderTotalPrice ?? "-")
             }
             Spacer()
             HStack {
@@ -48,3 +40,29 @@ struct TotalsView: View {
         }
     }
 }
+
+private extension TotalsView {
+    @ViewBuilder func priceFieldView(title: String, formattedPrice: String) -> some View {
+        VStack(alignment: .leading, spacing: .zero) {
+            Text(title)
+            Text(formattedPrice)
+        }
+    }
+
+    @ViewBuilder func totalPriceView(formattedPrice: String) -> some View {
+        VStack(alignment: .leading, spacing: .zero) {
+            Text("Total")
+                .bold()
+            Text(formattedPrice)
+                .font(.title)
+        }
+    }
+}
+
+#if DEBUG
+#Preview {
+    TotalsView(viewModel: .init(products: [],
+                                cardReaderConnectionViewModel: .init(state: .connectingToReader),
+                                currencySettings: .init()))
+}
+#endif

@@ -10,6 +10,8 @@ final class PhoneDependenciesSynchronizer: NSObject, ObservableObject, WCSession
 
     @Published var dependencies: WatchDependencies?
 
+    var tracksProvider: WatchTracksProvider?
+
     /// Secure store.
     private let keychain: Keychain
 
@@ -36,6 +38,8 @@ final class PhoneDependenciesSynchronizer: NSObject, ObservableObject, WCSession
         DispatchQueue.main.async {
             self.storeDependencies(appContext: session.receivedApplicationContext)
             self.reloadDependencies()
+
+            self.tracksProvider?.flushQueuedEvents()
         }
     }
 
@@ -90,5 +94,7 @@ final class PhoneDependenciesSynchronizer: NSObject, ObservableObject, WCSession
         userDefaults[.defaultCredentialsType] = dependencies?.credentials.rawType
         userDefaults[.defaultSiteAddress] = dependencies?.credentials.siteAddress
         keychain[WooConstants.authToken] = dependencies?.credentials.secret
+
+        tracksProvider?.sendTracksEvent(.watchStoreDataSynced)
     }
 }

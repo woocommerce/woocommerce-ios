@@ -79,6 +79,10 @@ public enum WooConstants {
     static let appLoginURLPrefix = "woocommerce://app-login"
 
     static let wooPaymentsPluginPath = "woocommerce-payments/woocommerce-payments.php"
+
+    /// Key used to identify track events sent between the phone and the watch.
+    ///
+    static let watchTracksKey = "watch-tracks-event"
 }
 
 // MARK: URLs

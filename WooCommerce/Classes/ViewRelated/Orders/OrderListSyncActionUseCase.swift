@@ -75,7 +75,7 @@ struct OrderListSyncActionUseCase {
                 modifiedAfter: modifiedAfter,
                 customerID: customerID,
                 productID: productID,
-                deleteAllBeforeSaving: deleteAllBeforeSaving,
+                writeStrategy: deleteAllBeforeSaving ? .deleteAllBeforeSaving : .save,
                 pageSize: pageSize,
                 onCompletion: { timeInterval, result in
                     switch result {

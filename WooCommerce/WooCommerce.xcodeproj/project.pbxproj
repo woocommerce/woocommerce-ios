@@ -815,6 +815,7 @@
 		261AA30C2753119E009530FE /* PaymentMethodsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 261AA30B2753119E009530FE /* PaymentMethodsViewModel.swift */; };
 		261AA30E275506DE009530FE /* PaymentMethodsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 261AA30D275506DE009530FE /* PaymentMethodsViewModelTests.swift */; };
 		261B526E29B795DB00DF7AB6 /* SupportFormMetadataProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 261B526D29B795DB00DF7AB6 /* SupportFormMetadataProvider.swift */; };
+		261C21552C08D8E20051AF19 /* WatchTracksProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 261C21542C08D8E20051AF19 /* WatchTracksProvider.swift */; };
 		261E91A029C961EE00A5C118 /* SubscriptionsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 261E919F29C961EE00A5C118 /* SubscriptionsViewModel.swift */; };
 		261E91A329C9882600A5C118 /* SubscriptionsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 261E91A229C9882600A5C118 /* SubscriptionsViewModelTests.swift */; };
 		261F1A7929C2AB2E001D9861 /* FreeTrialBannerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 261F1A7829C2AB2E001D9861 /* FreeTrialBannerViewModel.swift */; };
@@ -909,6 +910,7 @@
 		26838356296F702B00CCF60A /* GenerateAllVariationsPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26838355296F702B00CCF60A /* GenerateAllVariationsPresenter.swift */; };
 		26838358296F9A1E00CCF60A /* GenerateAllVariationsUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26838357296F9A1E00CCF60A /* GenerateAllVariationsUseCase.swift */; };
 		2683835A296F9C1A00CCF60A /* GenerateAllVariationsUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26838359296F9C1A00CCF60A /* GenerateAllVariationsUseCaseTests.swift */; };
+		268631CF2C07D38C00521364 /* WooAnalyticsStat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74213449210A323C00C13890 /* WooAnalyticsStat.swift */; };
 		2687165524D21BC80042F6AE /* SurveySubmittedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2687165324D21BC80042F6AE /* SurveySubmittedViewController.swift */; };
 		2687165624D21BC80042F6AE /* SurveySubmittedViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2687165424D21BC80042F6AE /* SurveySubmittedViewController.xib */; };
 		2687165A24D350C20042F6AE /* SurveyCoordinatingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2687165924D350C20042F6AE /* SurveyCoordinatingController.swift */; };
@@ -3721,6 +3723,7 @@
 		261AA30B2753119E009530FE /* PaymentMethodsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentMethodsViewModel.swift; sourceTree = "<group>"; };
 		261AA30D275506DE009530FE /* PaymentMethodsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentMethodsViewModelTests.swift; sourceTree = "<group>"; };
 		261B526D29B795DB00DF7AB6 /* SupportFormMetadataProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupportFormMetadataProvider.swift; sourceTree = "<group>"; };
+		261C21542C08D8E20051AF19 /* WatchTracksProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchTracksProvider.swift; sourceTree = "<group>"; };
 		261E919F29C961EE00A5C118 /* SubscriptionsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionsViewModel.swift; sourceTree = "<group>"; };
 		261E91A229C9882600A5C118 /* SubscriptionsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionsViewModelTests.swift; sourceTree = "<group>"; };
 		261F1A7829C2AB2E001D9861 /* FreeTrialBannerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FreeTrialBannerViewModel.swift; sourceTree = "<group>"; };
@@ -7887,6 +7890,7 @@
 				26F81B172BE433A2009EC58E /* WooApp.swift */,
 				26CFDED92C029322005ABC31 /* AppDelegate.swift */,
 				26CFDEDB2C02932C005ABC31 /* AppBindings.swift */,
+				261C21542C08D8E20051AF19 /* WatchTracksProvider.swift */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -13864,6 +13868,7 @@
 				262619F12C03AB9600BD733B /* OrderDetailLoader.swift in Sources */,
 				26B984D42BEECC610052658C /* Environment+Dependencies.swift in Sources */,
 				26F81B1A2BE433A2009EC58E /* MyStoreView.swift in Sources */,
+				268631CF2C07D38C00521364 /* WooAnalyticsStat.swift in Sources */,
 				26373E2F2BFD7C18008E6735 /* OrderListCellViewModel.swift in Sources */,
 				26CFDEDA2C029322005ABC31 /* AppDelegate.swift in Sources */,
 				264E9E942BF1D1DF009C48FD /* AppLocalizedString.swift in Sources */,
@@ -13885,6 +13890,7 @@
 				26CFDEE62C038C7D005ABC31 /* OrderNotificationDataService.swift in Sources */,
 				26CA471F2BFD81E900E54348 /* String+Helpers.swift in Sources */,
 				26CA47242BFE4C1C00E54348 /* OrderDetailView.swift in Sources */,
+				261C21552C08D8E20051AF19 /* WatchTracksProvider.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

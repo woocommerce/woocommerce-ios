@@ -7,6 +7,8 @@ struct MyStoreView: View {
 
     @Environment(\.dependencies) private var dependencies
 
+    @EnvironmentObject private var tracksProvider: WatchTracksProvider
+
     // View Model to drive the view
     @StateObject var viewModel: MyStoreViewModel
 
@@ -40,6 +42,7 @@ struct MyStoreView: View {
         )
         .onAppear() {
             Task {
+                tracksProvider.sendTracksEvent(.watchMyStoreOpened)
                 await viewModel.fetchStats()
             }
         }

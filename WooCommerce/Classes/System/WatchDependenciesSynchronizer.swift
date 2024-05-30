@@ -76,3 +76,15 @@ final class WatchDependenciesSynchronizer: NSObject, WCSessionDelegate {
         // No op
     }
 }
+
+extension WatchDependenciesSynchronizer {
+    func session(_ session: WCSession, didReceiveUserInfo userInfo: [String: Any] = [:]) {
+
+        // The user info could contain a track event. Send it if we found one.
+        guard let rawEvent = userInfo[WooConstants.watchTracksKey] as? String,
+              let analyticEvent = WooAnalyticsStat(rawValue: rawEvent) else {
+            return DDLogError("⛔️ Unsupported watch tracks event: \(userInfo)")
+        }
+        ServiceLocator.analytics.track(analyticEvent)
+    }
+}

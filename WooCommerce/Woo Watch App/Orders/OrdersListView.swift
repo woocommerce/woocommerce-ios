@@ -4,6 +4,8 @@ import SwiftUI
 ///
 struct OrdersListView: View {
 
+    @EnvironmentObject private var tracksProvider: WatchTracksProvider
+
     // Used to changed the tab programmatically
     @Binding var watchTab: WooWatchTab
 
@@ -43,6 +45,9 @@ struct OrdersListView: View {
         }
         .task {
             await viewModel.fetchOrders()
+        }
+        .onAppear {
+            tracksProvider.sendTracksEvent(.watchOrdersListOpened)
         }
     }
 

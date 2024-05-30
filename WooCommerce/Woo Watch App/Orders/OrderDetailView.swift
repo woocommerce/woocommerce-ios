@@ -4,6 +4,8 @@ import SwiftUI
 ///
 struct OrderDetailView: View {
 
+    @EnvironmentObject private var tracksProvider: WatchTracksProvider
+
     /// Order to render
     ///
     let order: OrdersListView.Order
@@ -40,6 +42,9 @@ struct OrderDetailView: View {
             LinearGradient(gradient: Gradient(colors: [Colors.wooPurpleBackground, .black]), startPoint: .top, endPoint: .bottom)
         )
         .compatibleVerticalStyle()
+        .onAppear() {
+            tracksProvider.sendTracksEvent(.watchOrderDetailOpened)
+        }
     }
 
     /// First View: Summary

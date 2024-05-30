@@ -93,7 +93,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .dynamicDashboardM2:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .multipleShippingLines:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return true
         default:
             return true
         }

@@ -76,9 +76,9 @@ final class MostActiveCouponsCardViewModel: ObservableObject {
                 /// Load and display coupons from storage
                 configureResultsController(for: couponReports)
 
-                /// If all or some coupons are not available in storage
-                /// then fetch from remote
-                if rows.count != couponReports.count {
+                if rows.count < Constants.numberOfCouponsToDisplay /// Less then expected number of coupons are displayed.
+                    && couponReports.count >= Constants.numberOfCouponsToDisplay { /// Coupon reports count is at or above expected count.
+                    /// Fetch from remote as some coupons are not being displayed as they are not available in storage
                     try await synchronizeCoupons(for: couponReports)
                 } else {
                     /// Refresh coupons in background
@@ -147,15 +147,15 @@ private extension MostActiveCouponsCardViewModel {
             return
         }
 
-        rows = couponReports
-            .map { report in
+        rows = Array(couponReports
+            .compactMap { report in
                 guard let coupon = coupons.first(where: { $0.couponID == report.couponID }) else {
                     return nil
                 }
                 return MostActiveCouponRowViewModel(coupon: coupon,
                                                     report: report)
             }
-            .compactMap { $0 }
+            .prefix(Constants.numberOfCouponsToDisplay))
     }
 
     @MainActor
@@ -195,7 +195,10 @@ private extension MostActiveCouponsCardViewModel {
     @MainActor
     func fetchMostActiveCoupons() async throws -> [CouponReport] {
         try await withCheckedThrowingContinuation { continuation in
-            stores.dispatch(CouponAction.loadMostActiveCoupons(siteID: siteID, timeRange: timeRange, siteTimezone: siteTimezone) { result in
+            stores.dispatch(CouponAction.loadMostActiveCoupons(siteID: siteID,
+                                                               numberOfCouponsToLoad: Constants.numberOfCouponsToDisplay * 2,
+                                                               timeRange: timeRange,
+                                                               siteTimezone: siteTimezone) { result in
                 continuation.resume(with: result)
             })
         }
@@ -206,6 +209,7 @@ private extension MostActiveCouponsCardViewModel {
 //
 private extension MostActiveCouponsCardViewModel {
     enum Constants {
+        static let numberOfCouponsToDisplay = 3
         static let thirtyDaysInSeconds: TimeInterval = 86400*30
     }
     enum Localization {

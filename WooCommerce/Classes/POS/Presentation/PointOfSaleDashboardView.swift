@@ -79,6 +79,7 @@ private extension PointOfSaleDashboardView {
 #if DEBUG
 #Preview {
     PointOfSaleDashboardView(viewModel: PointOfSaleDashboardViewModel(products: POSProductProvider.provideProductsForPreview(),
-                                                                      cardReaderConnectionViewModel: .init(state: .connectingToReader)))
+                                                                      cardReaderConnectionViewModel: .init(state: .connectingToReader),
+                                                                      currencySettings: .init()))
 }
 #endif

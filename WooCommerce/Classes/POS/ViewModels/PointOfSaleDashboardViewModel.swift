@@ -62,7 +62,7 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
         showsFilterSheet = true
     }
 
-    func calculateAmounts() {
+    private func calculateAmounts() {
         // TODO: this is just a starting point for this logic, to have something calculated on the fly
         if let formattedCartTotalPrice = formattedCartTotalPrice,
            let subtotalAmount = currencyFormatter.convertToDecimal(formattedCartTotalPrice)?.doubleValue {

@@ -6,8 +6,13 @@ import struct NetworkingWatchOS.Note
 
 class AppDelegate: NSObject, ObservableObject, WKApplicationDelegate {
 
+    /// Helper to send tracks events.
+    /// This type should be assigned from the main WooApp file.
+    ///
+    var tracksProvider: WatchTracksProvider?
+
     /// Stores and modifies app bindings.
-    /// This type should be replaced from the main WatchApp file.
+    /// This type should be replaced from the main WooApp file.
     ///
     var appBindings: AppBindings = AppBindings()
 
@@ -34,6 +39,9 @@ class AppDelegate: NSObject, ObservableObject, WKApplicationDelegate {
 
 extension AppDelegate: UNUserNotificationCenterDelegate {
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse) async {
+
+        tracksProvider?.sendTracksEvent(.watchPushNotificationTapped)
+
         // The Watch app only supports order notifications.
         guard let notification = PushNotification.from(userInfo: response.notification.request.content.userInfo),
               notification.kind == Note.Kind.storeOrder else {

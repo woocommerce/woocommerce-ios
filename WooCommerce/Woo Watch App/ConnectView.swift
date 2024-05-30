@@ -5,6 +5,8 @@ import NetworkingWatchOS
 ///
 struct ConnectView: View {
 
+    @EnvironmentObject private var tracksProvider: WatchTracksProvider
+
     let message: String = Localization.connectMessage
 
     var body: some View {
@@ -19,6 +21,9 @@ struct ConnectView: View {
                 .foregroundStyle(Layout.ambarColor)
         }
         .padding()
+        .task {
+            tracksProvider.sendTracksEvent(.watchConnectingOpened)
+        }
     }
 }
 

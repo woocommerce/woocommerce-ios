@@ -8,6 +8,12 @@ import Networking
 //
 public enum OrderAction: Action {
 
+    public enum OrdersStorageWriteStrategy {
+        case save
+        case deleteAllBeforeSaving
+        case doNotSave
+    }
+
     /// Searches orders that contain a given keyword.
     ///
     case searchOrders(siteID: Int64, keyword: String, pageNumber: Int, pageSize: Int, onCompletion: (Error?) -> Void)
@@ -36,9 +42,9 @@ public enum OrderAction: Action {
         modifiedAfter: Date? = nil,
         customerID: Int64? = nil,
         productID: Int64? = nil,
-        deleteAllBeforeSaving: Bool,
+        writeStrategy: OrdersStorageWriteStrategy,
         pageSize: Int,
-        onCompletion: (TimeInterval, Error?) -> Void
+        onCompletion: (TimeInterval, Result<[Order], Error>) -> Void
     )
 
     /// Synchronizes the Orders matching the specified criteria.

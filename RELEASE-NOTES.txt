@@ -3,6 +3,9 @@
 18.9
 -----
 - [internal] Resolved an issue where users were unable to upload product images when the store is set to private on WP.com. [https://github.com/woocommerce/woocommerce-ios/issues/12646]
+- [*] Orders: Fixes an issue where adding shipping to an order without selecting a shipping method prevented the order from being created/updated. [https://github.com/woocommerce/woocommerce-ios/pull/12870]
+- [**] Orders: Multiple shipping lines can now be viewed, added, edited, or removed on orders; previously only the first shipping line on an order was supported. [https://github.com/woocommerce/woocommerce-ios/pull/12888]
+- [internal] Orders: An empty order list screen after applying filters no longer affects Dashboard cards eligibility. [https://github.com/woocommerce/woocommerce-ios/pull/12873]
 
 18.8
 -----

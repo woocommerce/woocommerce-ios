@@ -196,7 +196,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
 
     func test_sending_shipping_input_updates_local_order() throws {
         // Given
-        let shippingLine = ShippingLine.fake().copy(shippingID: sampleShippingID)
+        let shippingLine = ShippingLine.fake().copy(shippingID: sampleShippingID, methodID: "free_shipping")
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
 
@@ -207,7 +207,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         XCTAssertEqual(synchronizer.order.shippingLines, [shippingLine])
     }
 
-    func test_sending_nil_shipping_input_updates_local_order() throws {
+    func test_removing_shipping_input_updates_local_order() throws {
         // Given
         let shippingLine = ShippingLine.fake().copy(shippingID: sampleShippingID)
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -215,7 +215,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
 
         // When
         synchronizer.setShipping.send(shippingLine)
-        synchronizer.setShipping.send(nil)
+        synchronizer.removeShipping.send(shippingLine)
 
         // Then
         let firstLine = try XCTUnwrap(synchronizer.order.shippingLines.first)

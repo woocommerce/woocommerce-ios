@@ -51,11 +51,12 @@ public final class POSProductProvider: POSItemProvider {
 
         // 2. Map result to POSProduct and populate the output
         return loadedProducts.map { product in
+            // TODO: Decorate the price with currency formatting
             POSProduct(itemID: UUID(),
                        productID: product.productID,
                        name: product.name,
                        price: product.price,
-                       currencySettings: currencySettings)
+                       formattedPrice: "$\(product.price)")
         }
     }
 
@@ -65,22 +66,22 @@ public final class POSProductProvider: POSItemProvider {
 
 // MARK: - PreviewProvider helpers
 //
-//extension POSProductProvider {
-//    // TODO: Cannot pass the Servicelocator currency settings at this level on static func
-//    static func provideProductForPreview(currencySettings: CurrencySettings = ServiceLocator.currencySettings) -> POSProduct {
-//        POSProduct(itemID: UUID(),
-//                   productID: 1,
-//                   name: "Product 1",
-//                   price: "1.00",
-//                   currencySettings: currencySettings)
-//    }
-//
-//    static func provideProductsForPreview(currencySettings: CurrencySettings = ServiceLocator.currencySettings) -> [POSProduct] {
-//        return [
-//            POSProduct(itemID: UUID(), productID: 1, name: "Product 1", price: "1.00", currencySettings: currencySettings),
-//            POSProduct(itemID: UUID(), productID: 2, name: "Product 2", price: "2.00", currencySettings: currencySettings),
-//            POSProduct(itemID: UUID(), productID: 3, name: "Product 3", price: "3.00", currencySettings: currencySettings),
-//            POSProduct(itemID: UUID(), productID: 4, name: "Product 4", price: "4.00", currencySettings: currencySettings),
-//        ]
-//    }
-//}
+extension POSProductProvider {
+    // TODO: Cannot pass the Servicelocator currency settings at this level on static func
+    static func provideProductForPreview() -> POSProduct {
+        POSProduct(itemID: UUID(),
+                   productID: 1,
+                   name: "Product 1",
+                   price: "1.00",
+                   formattedPrice: "$1.00")
+    }
+
+    static func provideProductsForPreview() -> [POSProduct] {
+        return [
+            POSProduct(itemID: UUID(), productID: 1, name: "Product 1", price: "1.00", formattedPrice: "$1.00"),
+            POSProduct(itemID: UUID(), productID: 2, name: "Product 2", price: "2.00", formattedPrice: "$2.00"),
+            POSProduct(itemID: UUID(), productID: 3, name: "Product 3", price: "3.00", formattedPrice: "$3.00"),
+            POSProduct(itemID: UUID(), productID: 4, name: "Product 4", price: "4.00", formattedPrice: "$4.00"),
+        ]
+    }
+}

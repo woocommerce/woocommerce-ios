@@ -90,14 +90,7 @@ struct OrderListSyncActionUseCase {
             productID: productID,
             pageNumber: pageNumber,
             pageSize: pageSize,
-            onCompletion: { timeInterval, result in
-                switch result {
-                case .success:
-                    completionHandler(timeInterval, nil)
-                case .failure(let error):
-                    completionHandler(timeInterval, error)
-                }
-            }
+            onCompletion: completionHandler
         )
     }
 }

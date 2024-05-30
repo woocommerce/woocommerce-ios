@@ -35,4 +35,3 @@ final class WatchTracksProvider: NSObject, ObservableObject {
         DDLogInfo("🔵 Track event delegated: \(event.rawValue)")
     }
 }
-

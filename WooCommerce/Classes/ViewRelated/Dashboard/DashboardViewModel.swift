@@ -396,23 +396,30 @@ private extension DashboardViewModel {
     }
 
     func configureOrdersResultController() {
-        ordersResultsController.onDidChangeContent = { [weak self] in
-            self?.updateResults()
+        func refreshHasOrders() {
+            guard ordersResultsController.fetchedObjects.isEmpty else {
+                hasOrders = true
+                return
+            }
+
+            Task { @MainActor [weak self] in
+                await self?.updateHasOrdersStatus()
+            }
         }
-        ordersResultsController.onDidResetContent = { [weak self] in
-            self?.updateResults()
+
+        ordersResultsController.onDidChangeContent = {
+            refreshHasOrders()
+        }
+        ordersResultsController.onDidResetContent = {
+            refreshHasOrders()
         }
 
         do {
             try ordersResultsController.performFetch()
-            updateResults()
+            refreshHasOrders()
         } catch {
             ServiceLocator.crashLogging.logError(error)
         }
-    }
-
-    func updateResults() {
-        hasOrders = ordersResultsController.fetchedObjects.isNotEmpty
     }
 
     func setupDashboardCards() {

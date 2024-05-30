@@ -3,6 +3,7 @@
 18.9
 -----
 - [*] Orders: Fixes an issue where adding shipping to an order without selecting a shipping method prevented the order from being created/updated. [https://github.com/woocommerce/woocommerce-ios/pull/12870]
+- [internal] Orders: An empty order list screen after applying filters no longer affects Dashboard cards eligibility. [https://github.com/woocommerce/woocommerce-ios/pull/12873]
 
 18.8
 -----

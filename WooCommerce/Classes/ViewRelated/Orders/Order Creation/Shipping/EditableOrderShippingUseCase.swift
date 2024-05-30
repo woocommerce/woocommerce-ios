@@ -268,9 +268,6 @@ private extension EditableOrderShippingUseCase {
     /// Synchronizes available shipping methods for editing the order shipping lines.
     ///
     func syncShippingMethods() {
-        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.orderShippingMethodSelection) else {
-            return
-        }
         let action = ShippingMethodAction.synchronizeShippingMethods(siteID: siteID) { [weak self] result in
             switch result {
             case .success:

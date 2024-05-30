@@ -87,6 +87,12 @@ final class PhoneDependenciesSynchronizer: NSObject, ObservableObject, WCSession
     ///
     private func storeDependencies(appContext: [String: Any]) {
         let dependencies = WatchDependencies(dictionary: appContext)
+
+        // Only store the dependencies if we get new values to store.
+        guard self.dependencies != dependencies else {
+            return
+        }
+
         userDefaults[.defaultStoreID] = dependencies?.storeID
         userDefaults[.defaultStoreName] = dependencies?.storeName
         userDefaults[.defaultUsername] = dependencies?.credentials.username

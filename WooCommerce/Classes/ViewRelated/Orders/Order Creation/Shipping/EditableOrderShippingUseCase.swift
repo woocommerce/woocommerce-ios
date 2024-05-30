@@ -152,7 +152,9 @@ final class EditableOrderShippingUseCase: ObservableObject {
     /// - Parameter shippingLine: New or updated shipping line object to save.
     func saveShippingLine(_ shippingLine: ShippingLine) {
         orderSynchronizer.setShipping.send(shippingLine)
-        analytics.track(event: WooAnalyticsEvent.Orders.orderShippingMethodAdd(flow: flow.analyticsFlow, methodID: shippingLine.methodID ?? ""))
+        analytics.track(event: WooAnalyticsEvent.Orders.orderShippingMethodAdd(flow: flow.analyticsFlow,
+                                                                               methodID: shippingLine.methodID ?? "",
+                                                                               shippingLinesCount: Int64(orderSynchronizer.order.shippingLines.count)))
     }
 
     /// Removes a shipping line.

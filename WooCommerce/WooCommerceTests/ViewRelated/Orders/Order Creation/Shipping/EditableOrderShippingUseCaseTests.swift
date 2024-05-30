@@ -271,6 +271,7 @@ final class EditableOrderShippingUseCaseTests: XCTestCase {
         XCTAssertEqual(analytics.receivedEvents, [WooAnalyticsStat.orderShippingMethodAdd.rawValue])
         assertEqual("creation", analytics.receivedProperties.first?["flow"] as? String)
         assertEqual("flat_rate", analytics.receivedProperties.first?["shipping_method"] as? String)
+        assertEqual(1, analytics.receivedProperties.first?["shipping_lines_count"] as? Int64)
     }
 
     func test_shipping_method_tracked_when_removed() throws {

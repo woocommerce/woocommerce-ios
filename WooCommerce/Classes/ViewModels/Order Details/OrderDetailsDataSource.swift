@@ -184,12 +184,6 @@ final class OrderDetailsDataSource: NSObject {
         return order.shippingLines.sorted(by: { $0.shippingID < $1.shippingID })
     }
 
-    /// First Shipping method from an order
-    ///
-    private var shippingMethod: String {
-        return shippingLines.first?.methodTitle ?? String()
-    }
-
     /// Yosemite.OrderItem
     /// The original list of order items a user purchased
     ///
@@ -392,8 +386,6 @@ private extension OrderDetailsDataSource {
             configureShippingAddress(cell: cell)
         case let cell as CustomerNoteTableViewCell where row == .customerNote:
             configureCustomerNote(cell: cell)
-        case let cell as CustomerNoteTableViewCell where row == .shippingMethod:
-            configureShippingMethod(cell: cell)
         case let cell as WooBasicTableViewCell where row == .billingDetail:
             configureBillingDetail(cell: cell)
         case let cell as WooBasicTableViewCell where row == .shippingLabelDetail:
@@ -982,13 +974,6 @@ private extension OrderDetailsDataSource {
         cell.configureLayout()
     }
 
-    private func configureShippingMethod(cell: CustomerNoteTableViewCell) {
-        cell.headline = NSLocalizedString("Shipping Method",
-                                          comment: "Shipping method title for customer info cell")
-        cell.body = shippingMethod.strippedHTML
-        cell.selectionStyle = .none
-    }
-
     private func configureShippingLine(cell: HostingConfigurationTableViewCell<ShippingLineRowView>, at indexPath: IndexPath) {
         let shippingLine = shippingLines[indexPath.row]
         let viewModel = ShippingLineRowViewModel(shippingLine: shippingLine, shippingMethods: siteShippingMethods, editable: false)
@@ -1250,8 +1235,7 @@ extension OrderDetailsDataSource {
         }()
 
         let shippingLinesSection: Section? = {
-            guard shippingLines.count > 0
-                    && featureFlags.isFeatureFlagEnabled(.multipleShippingLines) else {
+            guard shippingLines.count > 0 else {
                 return nil
             }
 
@@ -1274,12 +1258,6 @@ extension OrderDetailsDataSource {
 
             if order.shippingAddress != nil && orderContainsOnlyVirtualProducts == false {
                 rows.append(.shippingAddress)
-            }
-
-            /// Shipping Lines (single shipping line)
-            if shippingLines.count > 0
-                && !featureFlags.isFeatureFlagEnabled(.multipleShippingLines) {
-                rows.append(.shippingMethod)
             }
 
             /// Billing Address
@@ -1843,7 +1821,6 @@ extension OrderDetailsDataSource {
         case issueRefundButton
         case customerNote
         case shippingAddress
-        case shippingMethod
         case billingDetail
         case payment
         case customerPaid
@@ -1897,8 +1874,6 @@ extension OrderDetailsDataSource {
                 return CustomerNoteTableViewCell.reuseIdentifier
             case .shippingAddress:
                 return CustomerInfoTableViewCell.reuseIdentifier
-            case .shippingMethod:
-                return CustomerNoteTableViewCell.reuseIdentifier
             case .billingDetail:
                 return WooBasicTableViewCell.reuseIdentifier
             case .payment:

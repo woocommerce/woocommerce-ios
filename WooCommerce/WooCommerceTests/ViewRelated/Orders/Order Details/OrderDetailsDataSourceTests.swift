@@ -41,8 +41,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         let dataSource = OrderDetailsDataSource(
             order: order,
             storageManager: storageManager,
-            cardPresentPaymentsConfiguration: Mocks.configuration,
-            featureFlags: MockFeatureFlagService(isMultipleShippingLinesEnabled: true)
+            cardPresentPaymentsConfiguration: Mocks.configuration
         )
 
         dataSource.configureResultsControllers { }
@@ -879,8 +878,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         let order = Order.fake().copy(shippingLines: [.fake()])
         let dataSource = OrderDetailsDataSource(order: order,
                                                 storageManager: storageManager,
-                                                cardPresentPaymentsConfiguration: Mocks.configuration,
-                                                featureFlags: MockFeatureFlagService(isMultipleShippingLinesEnabled: true))
+                                                cardPresentPaymentsConfiguration: Mocks.configuration)
 
         // When
         dataSource.reloadSections()

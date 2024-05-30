@@ -919,6 +919,12 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .orderDetailsGiftCardShown, properties: [:])
         }
 
+        /// Tracks when shipping is displayed in order details.
+        ///
+        static func shippingShown(shippingLinesCount: Int64) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderDetailsShippingMethodsShown, properties: [Keys.shippingLinesCount: shippingLinesCount])
+        }
+
         /// Tracked when the Configure button is shown in the order form.
         ///
         static func orderFormBundleProductConfigureCTAShown(flow: Flow, source: BundleProductConfigurationSource) -> WooAnalyticsEvent {

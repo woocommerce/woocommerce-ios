@@ -79,18 +79,18 @@ final class ReviewsDashboardCardViewModelTests: XCTestCase {
     }
 
     @MainActor
-    func test_showLoadingAnimation_is_updated_correctly_when_syncing() async {
+    func test_syncingData_is_updated_correctly_when_syncing() async {
         // Given
         let viewModel = ReviewsDashboardCardViewModel(siteID: sampleSiteID,
                                                       stores: stores,
                                                       storageManager: storageManager)
-        XCTAssertFalse(viewModel.showLoadingAnimation)
+        XCTAssertFalse(viewModel.syncingData)
 
         // When
         stores.whenReceivingAction(ofType: ProductReviewAction.self) { action in
             switch action {
             case let .synchronizeProductReviews(_, _, _, _, _, onCompletion):
-                XCTAssertTrue(viewModel.showLoadingAnimation)
+                XCTAssertTrue(viewModel.syncingData)
                 onCompletion(.success(self.sampleReviews))
             default:
                 XCTFail("Unexpected action: \(action)")
@@ -118,53 +118,7 @@ final class ReviewsDashboardCardViewModelTests: XCTestCase {
         await viewModel.reloadData()
 
         // Then
-        XCTAssertFalse(viewModel.showLoadingAnimation)
-    }
-
-    /// If there is partial data, we want to show it right away even if partially, thus loading animation must be hidden.
-    ///
-    @MainActor
-    func test_showLoadingAnimation_is_hidden_if_there_is_partial_data() async {
-        // Given
-        let viewModel = ReviewsDashboardCardViewModel(siteID: sampleSiteID,
-                                                      stores: stores,
-                                                      storageManager: storageManager)
-        XCTAssertFalse(viewModel.showLoadingAnimation)
-
-        // When
-        stores.whenReceivingAction(ofType: ProductReviewAction.self) { action in
-            switch action {
-            case let .synchronizeProductReviews(_, _, _, _, _, onCompletion):
-                onCompletion(.success(self.sampleReviews))
-            default:
-                XCTFail("Unexpected action: \(action)")
-            }
-        }
-
-        stores.whenReceivingAction(ofType: ProductAction.self) { action in
-            switch action {
-            case let .retrieveProducts(_, _, _, _, onCompletion):
-                XCTAssertFalse(viewModel.showLoadingAnimation) // Loading animation should be off before syncing products
-                onCompletion(.success(([], true)))
-            default:
-                XCTFail("Unexpected action: \(action)")
-            }
-        }
-
-        stores.whenReceivingAction(ofType: NotificationAction.self) { action in
-            switch action {
-            case let .synchronizeNotifications(onCompletion):
-                XCTAssertFalse(viewModel.showLoadingAnimation) // Loading animation should be off before syncing notifications
-                onCompletion(nil)
-            default:
-                XCTFail("Unexpected action: \(action)")
-            }
-        }
-
-        await viewModel.reloadData()
-
-        // Then
-        XCTAssertFalse(viewModel.showLoadingAnimation)
+        XCTAssertFalse(viewModel.syncingData)
     }
 
     @MainActor

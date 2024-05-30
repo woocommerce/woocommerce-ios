@@ -8,21 +8,6 @@ struct ShippingInputTransformer {
     /// Adds or updates a shipping line input into an existing order.
     ///
     static func update(input: ShippingLine, on order: Order) -> Order {
-        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.multipleShippingLines) else {
-            // If there is no existing shipping lines, we insert the input one.
-            guard let existingShippingLine = order.shippingLines.first else {
-                let newShippingLine = input.methodID?.isNotEmpty == true ? input : OrderFactory.noMethodShippingLine(input)
-                return order.copy(shippingTotal: newShippingLine.total, shippingLines: [newShippingLine])
-            }
-
-            // Since we only support one shipping line, if we find one, we update the existing with the new input values.
-            var updatedLines = order.shippingLines
-            let updatedShippingLine = existingShippingLine.copy(methodTitle: input.methodTitle, methodID: input.methodID, total: input.total)
-            updatedLines[0] = updatedShippingLine
-
-            return order.copy(shippingTotal: calculateTotals(from: updatedLines), shippingLines: updatedLines)
-        }
-
         var updatedLines = order.shippingLines
 
         // If the order contains the shipping line, we update it with the new input values.

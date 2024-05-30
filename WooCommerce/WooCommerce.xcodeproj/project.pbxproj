@@ -758,7 +758,7 @@
 		2004E2CE2C077B0B00D62521 /* CardPresentPaymentCardReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2004E2CD2C077B0B00D62521 /* CardPresentPaymentCardReader.swift */; };
 		2004E2D02C077D2800D62521 /* CardPresentPaymentTransaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2004E2CF2C077D2800D62521 /* CardPresentPaymentTransaction.swift */; };
 		2004E2D22C07878E00D62521 /* CardReaderConnectionMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2004E2D12C07878E00D62521 /* CardReaderConnectionMethod.swift */; };
-		2004E2DE2C08EB2100D62521 /* ViewControllerPresenting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2004E2DB2C08E95B00D62521 /* ViewControllerPresenting.swift */; };
+		2004E2DC2C08E95B00D62521 /* ViewControllerPresenting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2004E2DB2C08E95B00D62521 /* ViewControllerPresenting.swift */; };
 		201F5AC52AD4061800EF6C55 /* AboutTapToPayViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 201F5AC42AD4061800EF6C55 /* AboutTapToPayViewModel.swift */; };
 		20203AB22B31EEF1009D0C11 /* ExpandableBottomSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20203AB12B31EEF1009D0C11 /* ExpandableBottomSheet.swift */; };
 		202496642B0B9E0D00EE527D /* ScrollViewSectionKit in Frameworks */ = {isa = PBXBuildFile; productRef = 202496632B0B9E0D00EE527D /* ScrollViewSectionKit */; };
@@ -13677,6 +13677,7 @@
 				CCE4CD282669324300E09FD4 /* ShippingLabelPaymentMethodsTopBanner.swift in Sources */,
 				269B46622A16D68A00ADA872 /* UpdateAnalyticsSettingsUseCase.swift in Sources */,
 				B95B15C92B15EBA000A54044 /* UpdateProductInventoryViewModel.swift in Sources */,
+				2004E2DC2C08E95B00D62521 /* ViewControllerPresenting.swift in Sources */,
 				02CA63DD23D1ADD100BBF148 /* MediaPickingContext.swift in Sources */,
 				EE3D1E942B8EC1E00016B132 /* BlazeCampaignListItem+Customizations.swift in Sources */,
 				DE157E1A2B02406400542A9B /* ProductSubscriptionPeriodPickerUseCase.swift in Sources */,

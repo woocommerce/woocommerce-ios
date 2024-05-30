@@ -30,16 +30,20 @@ final class WatchDependenciesSynchronizer: NSObject, WCSessionDelegate {
     ///
     @Published private var isSessionActive: Bool = false
 
-    init(watchSession: WCSession = WCSession.default) {
+    init(watchSession: WCSession = WCSession.default, storedDependencies: WatchDependencies?) {
         self.watchSession = watchSession
         super.init()
+
+        self.storeID = storedDependencies?.storeID
+        self.storeName = storedDependencies?.storeName
+        self.credentials = storedDependencies?.credentials
+
+        bindAndSyncDependencies()
 
         if WCSession.isSupported() {
             watchSession.delegate = self
             watchSession.activate()
         }
-
-        bindAndSyncDependencies()
     }
 
     /// Gather all the necessary dependencies inputs and syncs them when the session is active.

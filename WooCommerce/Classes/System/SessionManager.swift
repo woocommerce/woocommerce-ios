@@ -54,7 +54,16 @@ final class SessionManager: SessionManagerProtocol {
 
     /// Makes sure the credentials are in sync with the watch session.
     ///
-    private let watchDependenciesSynchronizer = WatchDependenciesSynchronizer()
+    private lazy var watchDependenciesSynchronizer = {
+        let storedDependencies: WatchDependencies? = {
+            guard let storeID = self.defaultStoreID, let storeName = self.defaultSite?.name, let credentials = self.loadCredentials() else {
+                return nil
+            }
+            return WatchDependencies(storeID: storeID, storeName: storeName, currencySettings: ServiceLocator.currencySettings, credentials: credentials)
+        }()
+
+        return WatchDependenciesSynchronizer(storedDependencies: storedDependencies)
+    }()
 
     /// Default Credentials.
     ///

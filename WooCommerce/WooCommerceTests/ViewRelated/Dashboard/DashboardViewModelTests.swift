@@ -658,6 +658,82 @@ final class DashboardViewModelTests: XCTestCase {
         let topPerformersCard = try XCTUnwrap(viewModel.dashboardCards.first(where: {$0.type == .topPerformers }))
         XCTAssertFalse(topPerformersCard.enabled)
     }
+
+    // MARK: Show New Cards Notice
+
+    func test_showNewCardsNotice_is_false_when_all_new_cards_are_already_in_saved_cards() async {
+        // Given
+        let viewModel = DashboardViewModel(siteID: sampleSiteID, stores: stores)
+        let completeCardsSet: [DashboardCard] = [
+            .init(type: .inbox, availability: .show, enabled: true),
+            .init(type: .reviews, availability: .show, enabled: true),
+            .init(type: .coupons, availability: .show, enabled: true),
+            .init(type: .stock, availability: .show, enabled: true),
+            .init(type: .lastOrders, availability: .show, enabled: true)
+        ]
+        mockLoadDashboardCards(withStoredCards: completeCardsSet)
+
+        // When
+        viewModel.refreshDashboardCards()
+
+        // Then
+        waitUntil {
+            viewModel.dashboardCards.isNotEmpty
+        }
+        XCTAssertFalse(viewModel.showNewCardsNotice)
+    }
+
+    func test_showNewCardsNotice_is_true_when_not_all_new_cards_are_in_saved_cards() async {
+        // Given
+        let viewModel = DashboardViewModel(siteID: sampleSiteID, stores: stores)
+        let incompleteNewCardsSet: [DashboardCard] = []
+        mockLoadDashboardCards(withStoredCards: incompleteNewCardsSet)
+
+        // When
+        viewModel.refreshDashboardCards()
+
+        // Then
+        waitUntil {
+            viewModel.dashboardCards.isNotEmpty
+        }
+
+        XCTAssertTrue(viewModel.showNewCardsNotice)
+    }
+
+    func test_showNewCardsNotice_changes_from_true_to_false_after_showing_customize_screen_and_dismissing_it() async {
+        // Given
+        let incompleteNewCardsSet: [DashboardCard] = [
+            .init(type: .inbox, availability: .show, enabled: false),
+            .init(type: .reviews, availability: .show, enabled: false)
+        ]
+        let viewModel = DashboardViewModel(siteID: sampleSiteID, stores: stores)
+        mockLoadDashboardCards(withStoredCards: incompleteNewCardsSet)
+
+        // When
+        viewModel.refreshDashboardCards()
+
+        waitUntil {
+            viewModel.dashboardCards.isNotEmpty
+        }
+
+        XCTAssertTrue(viewModel.showNewCardsNotice)
+        viewModel.showCustomizationScreen() // Simulate showing Customize screen
+
+        // Simulate saving complete cards since initially we mocked it with empty array
+        let completeCardsSet: [DashboardCard] = [
+            .init(type: .inbox, availability: .show, enabled: true),
+            .init(type: .reviews, availability: .show, enabled: true),
+            .init(type: .coupons, availability: .show, enabled: true),
+            .init(type: .stock, availability: .show, enabled: true),
+            .init(type: .lastOrders, availability: .show, enabled: true)
+        ]
+        mockLoadDashboardCards(withStoredCards: completeCardsSet)
+
+        await viewModel.handleCustomizationDismissal() // Simulate dismissing Customize screen
+
+        // Then
+        XCTAssertFalse(viewModel.showNewCardsNotice) // Check it's false after dismissing Customize screen
+    }
 }
 
 private extension DashboardViewModelTests {

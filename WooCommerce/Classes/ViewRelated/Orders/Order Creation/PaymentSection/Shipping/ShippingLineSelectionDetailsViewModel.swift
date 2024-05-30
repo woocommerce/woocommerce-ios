@@ -9,9 +9,13 @@ class ShippingLineSelectionDetailsViewModel: ObservableObject, Identifiable {
     private let storageManager: StorageManagerType
     private let analytics: Analytics
 
-    /// Closure to be invoked when the shipping line is updated.
+    /// Closure to be invoked when the shipping line is added or updated.
     ///
-    var didSelectSave: ((ShippingLine?) -> Void)
+    var didSelectSave: ((ShippingLine) -> Void)
+
+    /// Closure to be invoked when the shipping line is removed.
+    ///
+    var didSelectRemove: ((ShippingLine) -> Void)
 
     /// View model for the amount text field with currency symbol.
     ///
@@ -76,7 +80,8 @@ class ShippingLineSelectionDetailsViewModel: ObservableObject, Identifiable {
          storeCurrencySettings: CurrencySettings = ServiceLocator.currencySettings,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          analytics: Analytics = ServiceLocator.analytics,
-         didSelectSave: @escaping ((ShippingLine?) -> Void)) {
+         didSelectSave: @escaping ((ShippingLine) -> Void),
+         didSelectRemove: @escaping ((ShippingLine) -> Void)) {
         self.siteID = siteID
         self.shippingID = shippingID ?? 0
         self.storageManager = storageManager
@@ -104,6 +109,7 @@ class ShippingLineSelectionDetailsViewModel: ObservableObject, Identifiable {
         }
 
         self.didSelectSave = didSelectSave
+        self.didSelectRemove = didSelectRemove
 
         configureShippingMethods()
         observeShippingLineDetailsForUIStates(with: currencyFormatter)
@@ -115,7 +121,8 @@ class ShippingLineSelectionDetailsViewModel: ObservableObject, Identifiable {
                      storeCurrencySettings: CurrencySettings = ServiceLocator.currencySettings,
                      storageManager: StorageManagerType = ServiceLocator.storageManager,
                      analytics: Analytics = ServiceLocator.analytics,
-                     didSelectSave: @escaping ((ShippingLine?) -> Void)) {
+                     didSelectSave: @escaping ((ShippingLine) -> Void),
+                     didSelectRemove: @escaping ((ShippingLine) -> Void)) {
         self.init(siteID: siteID,
                   shippingID: shippingLine?.shippingID,
                   initialMethodID: shippingLine?.methodID ?? "",
@@ -125,7 +132,8 @@ class ShippingLineSelectionDetailsViewModel: ObservableObject, Identifiable {
                   storeCurrencySettings: storeCurrencySettings,
                   storageManager: storageManager,
                   analytics: analytics,
-                  didSelectSave: didSelectSave)
+                  didSelectSave: didSelectSave,
+                  didSelectRemove: didSelectRemove)
     }
 
     func saveData() {
@@ -136,6 +144,16 @@ class ShippingLineSelectionDetailsViewModel: ObservableObject, Identifiable {
                                         totalTax: "",
                                         taxes: [])
         didSelectSave(shippingLine)
+    }
+
+    func removeShippingLine() {
+        let shippingLine = ShippingLine(shippingID: shippingID,
+                                        methodTitle: finalMethodTitle,
+                                        methodID: selectedMethod.methodID,
+                                        total: formattableAmountViewModel.amount,
+                                        totalTax: "",
+                                        taxes: [])
+        didSelectRemove(shippingLine)
     }
 
     /// Tracks when a shipping method is selected

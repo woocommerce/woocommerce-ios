@@ -12,12 +12,13 @@ final class ShippingLineDetailsViewModelTests: XCTestCase {
 
     func test_view_model_formats_amount_correctly() {
         // Given
-        let viewModel = ShippingLineDetailsViewModel(isExistingShippingLine: false,
+        let viewModel = ShippingLineDetailsViewModel(shippingID: nil,
                                                      initialMethodTitle: "",
                                                      shippingTotal: "",
                                                      locale: usLocale,
                                                      storeCurrencySettings: usStoreSettings,
-                                                     didSelectSave: { _ in })
+                                                     didSelectSave: { _ in },
+                                                     didSelectRemove: { _ in })
 
         // When
         viewModel.amount = "hi:11.3005.02-"
@@ -29,12 +30,13 @@ final class ShippingLineDetailsViewModelTests: XCTestCase {
 
     func test_view_model_formats_negative_amount_correctly() {
         // Given
-        let viewModel = ShippingLineDetailsViewModel(isExistingShippingLine: false,
+        let viewModel = ShippingLineDetailsViewModel(shippingID: nil,
                                                      initialMethodTitle: "",
                                                      shippingTotal: "",
                                                      locale: usLocale,
                                                      storeCurrencySettings: usStoreSettings,
-                                                     didSelectSave: { _ in })
+                                                     didSelectSave: { _ in },
+                                                     didSelectRemove: { _ in })
 
         // When
         viewModel.amount = "-hi:11.3005.02-"
@@ -52,12 +54,13 @@ final class ShippingLineDetailsViewModelTests: XCTestCase {
                                               decimalSeparator: ",",
                                               numberOfDecimals: 3)
 
-        let viewModel = ShippingLineDetailsViewModel(isExistingShippingLine: false,
+        let viewModel = ShippingLineDetailsViewModel(shippingID: nil,
                                                      initialMethodTitle: "",
                                                      shippingTotal: "",
                                                      locale: usLocale,
                                                      storeCurrencySettings: customSettings,
-                                                     didSelectSave: { _ in })
+                                                     didSelectSave: { _ in },
+                                                     didSelectRemove: { _ in })
 
         // When
         viewModel.amount = "12.203"
@@ -70,12 +73,13 @@ final class ShippingLineDetailsViewModelTests: XCTestCase {
 
     func test_view_model_prefills_input_data_correctly() {
         // Given
-        let viewModel = ShippingLineDetailsViewModel(isExistingShippingLine: true,
+        let viewModel = ShippingLineDetailsViewModel(shippingID: 1,
                                                      initialMethodTitle: "Flat Rate",
                                                      shippingTotal: "$11.30",
                                                      locale: usLocale,
                                                      storeCurrencySettings: usStoreSettings,
-                                                     didSelectSave: { _ in })
+                                                     didSelectSave: { _ in },
+                                                     didSelectRemove: { _ in })
 
         // Then
         XCTAssertTrue(viewModel.isExistingShippingLine)
@@ -85,12 +89,13 @@ final class ShippingLineDetailsViewModelTests: XCTestCase {
 
     func test_view_model_prefills_negative_input_data_correctly() {
         // Given
-        let viewModel = ShippingLineDetailsViewModel(isExistingShippingLine: true,
+        let viewModel = ShippingLineDetailsViewModel(shippingID: 1,
                                                      initialMethodTitle: "Flat Rate",
                                                      shippingTotal: "-$11.30",
                                                      locale: usLocale,
                                                      storeCurrencySettings: usStoreSettings,
-                                                     didSelectSave: { _ in })
+                                                     didSelectSave: { _ in },
+                                                     didSelectRemove: { _ in })
 
         // Then
         XCTAssertTrue(viewModel.isExistingShippingLine)
@@ -100,12 +105,13 @@ final class ShippingLineDetailsViewModelTests: XCTestCase {
 
     func test_view_model_does_not_prefill_zero_amount_without_existing_shipping_line() {
         // Given
-        let viewModel = ShippingLineDetailsViewModel(isExistingShippingLine: false,
+        let viewModel = ShippingLineDetailsViewModel(shippingID: nil,
                                                      initialMethodTitle: "",
                                                      shippingTotal: "0",
                                                      locale: usLocale,
                                                      storeCurrencySettings: usStoreSettings,
-                                                     didSelectSave: { _ in })
+                                                     didSelectSave: { _ in },
+                                                     didSelectRemove: { _ in })
 
         // Then
         XCTAssertTrue(viewModel.amount.isEmpty)
@@ -113,12 +119,13 @@ final class ShippingLineDetailsViewModelTests: XCTestCase {
 
     func test_view_model_disables_done_button_for_empty_state_and_enables_with_input() {
         // Given
-        let viewModel = ShippingLineDetailsViewModel(isExistingShippingLine: false,
+        let viewModel = ShippingLineDetailsViewModel(shippingID: nil,
                                                      initialMethodTitle: "",
                                                      shippingTotal: "",
                                                      locale: usLocale,
                                                      storeCurrencySettings: usStoreSettings,
-                                                     didSelectSave: { _ in })
+                                                     didSelectSave: { _ in },
+                                                     didSelectRemove: { _ in })
         XCTAssertTrue(viewModel.shouldDisableDoneButton)
 
         // When
@@ -136,12 +143,13 @@ final class ShippingLineDetailsViewModelTests: XCTestCase {
 
     func test_view_model_disables_done_button_for_prefilled_data_and_enables_with_changes() {
         // Given
-        let viewModel = ShippingLineDetailsViewModel(isExistingShippingLine: true,
+        let viewModel = ShippingLineDetailsViewModel(shippingID: 1,
                                                      initialMethodTitle: "Flat Rate",
                                                      shippingTotal: "$11.30",
                                                      locale: usLocale,
                                                      storeCurrencySettings: usStoreSettings,
-                                                     didSelectSave: { _ in })
+                                                     didSelectSave: { _ in },
+                                                     didSelectRemove: { _ in })
         XCTAssertTrue(viewModel.shouldDisableDoneButton)
 
         // When
@@ -160,14 +168,15 @@ final class ShippingLineDetailsViewModelTests: XCTestCase {
     func test_view_model_creates_shippping_line_with_data_from_fields() {
         // Given
         var savedShippingLine: ShippingLine?
-        let viewModel = ShippingLineDetailsViewModel(isExistingShippingLine: false,
+        let viewModel = ShippingLineDetailsViewModel(shippingID: nil,
                                                      initialMethodTitle: "",
                                                      shippingTotal: "",
                                                      locale: usLocale,
                                                      storeCurrencySettings: usStoreSettings,
                                                      didSelectSave: { newShippingLine in
             savedShippingLine = newShippingLine
-        })
+        },
+                                                     didSelectRemove: { _ in })
 
         // When
         viewModel.amount = "$11.30"
@@ -182,14 +191,15 @@ final class ShippingLineDetailsViewModelTests: XCTestCase {
     func test_view_model_creates_shippping_line_with_negative_data_from_fields() {
         // Given
         var savedShippingLine: ShippingLine?
-        let viewModel = ShippingLineDetailsViewModel(isExistingShippingLine: false,
+        let viewModel = ShippingLineDetailsViewModel(shippingID: nil,
                                                      initialMethodTitle: "",
                                                      shippingTotal: "",
                                                      locale: usLocale,
                                                      storeCurrencySettings: usStoreSettings,
                                                      didSelectSave: { newShippingLine in
             savedShippingLine = newShippingLine
-        })
+        },
+                                                     didSelectRemove: { _ in })
 
         // When
         viewModel.amount = "-11.30"
@@ -204,14 +214,15 @@ final class ShippingLineDetailsViewModelTests: XCTestCase {
     func test_view_model_allows_saving_zero_amount_and_creates_correct_shippping_line() {
         // Given
         var savedShippingLine: ShippingLine?
-        let viewModel = ShippingLineDetailsViewModel(isExistingShippingLine: false,
+        let viewModel = ShippingLineDetailsViewModel(shippingID: nil,
                                                      initialMethodTitle: "",
                                                      shippingTotal: "",
                                                      locale: usLocale,
                                                      storeCurrencySettings: usStoreSettings,
                                                      didSelectSave: { newShippingLine in
             savedShippingLine = newShippingLine
-        })
+        },
+                                                     didSelectRemove: { _ in })
 
         // When
         viewModel.amount = "0"
@@ -225,14 +236,15 @@ final class ShippingLineDetailsViewModelTests: XCTestCase {
     func test_view_model_creates_shippping_line_with_placeholder_for_method_title() {
         // Given
         var savedShippingLine: ShippingLine?
-        let viewModel = ShippingLineDetailsViewModel(isExistingShippingLine: false,
+        let viewModel = ShippingLineDetailsViewModel(shippingID: nil,
                                                      initialMethodTitle: "",
                                                      shippingTotal: "",
                                                      locale: usLocale,
                                                      storeCurrencySettings: usStoreSettings,
                                                      didSelectSave: { newShippingLine in
             savedShippingLine = newShippingLine
-        })
+        },
+                                                     didSelectRemove: { _ in })
 
         // When
         viewModel.amount = "$11.30"
@@ -246,12 +258,13 @@ final class ShippingLineDetailsViewModelTests: XCTestCase {
 
     func test_view_model_amount_placeholder_has_expected_value() {
         // Given
-        let viewModel = ShippingLineDetailsViewModel(isExistingShippingLine: false,
+        let viewModel = ShippingLineDetailsViewModel(shippingID: nil,
                                                      initialMethodTitle: "",
                                                      shippingTotal: "",
                                                      locale: usLocale,
                                                      storeCurrencySettings: usStoreSettings,
-                                                     didSelectSave: { _ in })
+                                                     didSelectSave: { _ in },
+                                                     didSelectRemove: { _ in })
 
         // Then
         XCTAssertEqual(viewModel.amountPlaceholder, "0")
@@ -259,14 +272,34 @@ final class ShippingLineDetailsViewModelTests: XCTestCase {
 
     func test_view_model_initializes_correctly_with_no_existing_shipping_line() {
         // Given
-        let viewModel = ShippingLineDetailsViewModel(isExistingShippingLine: false,
+        let viewModel = ShippingLineDetailsViewModel(shippingID: nil,
                                                      initialMethodTitle: "",
                                                      shippingTotal: "",
                                                      locale: usLocale,
                                                      storeCurrencySettings: usStoreSettings,
-                                                     didSelectSave: { _ in })
+                                                     didSelectSave: { _ in },
+                                                     didSelectRemove: { _ in })
 
         // Then
         XCTAssertFalse(viewModel.isExistingShippingLine)
+    }
+
+    func test_removeShippingLine_returns_shipping_line_with_expected_shipping_id() {
+        // Given
+        var removedShippingLine: Yosemite.ShippingLine?
+        let existingShippingLine = ShippingLine.fake().copy(shippingID: 1)
+        let viewModel = ShippingLineDetailsViewModel(shippingID: existingShippingLine.shippingID,
+                                                     initialMethodTitle: existingShippingLine.methodTitle,
+                                                     shippingTotal: existingShippingLine.total,
+                                                     didSelectSave: { _ in },
+                                                     didSelectRemove: { shippingLine in
+            removedShippingLine = shippingLine
+        })
+
+        // When
+        viewModel.removeShippingLine()
+
+        // Then
+        assertEqual(existingShippingLine.shippingID, removedShippingLine?.shippingID)
     }
 }

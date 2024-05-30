@@ -4,9 +4,13 @@ import struct Yosemite.ShippingLine
 
 class ShippingLineDetailsViewModel: ObservableObject {
 
-    /// Closure to be invoked when the shipping line is updated.
+    /// Closure to be invoked when the shipping line is added or updated.
     ///
-    var didSelectSave: ((ShippingLine?) -> Void)
+    var didSelectSave: ((ShippingLine) -> Void)
+
+    /// Closure to be invoked when the shipping line is removed.
+    ///
+    var didSelectRemove: ((ShippingLine) -> Void)
 
     /// Helper to format price field input.
     ///
@@ -37,6 +41,7 @@ class ShippingLineDetailsViewModel: ObservableObject {
     ///
     @Published var methodTitle: String
 
+    private let shippingID: Int64
     private let initialAmount: Decimal?
     private let initialMethodTitle: String
 
@@ -63,17 +68,19 @@ class ShippingLineDetailsViewModel: ObservableObject {
         return !(amountUpdated || methodTitleUpdated)
     }
 
-    init(isExistingShippingLine: Bool,
+    init(shippingID: Int64?,
          initialMethodTitle: String,
          shippingTotal: String,
          locale: Locale = Locale.autoupdatingCurrent,
          storeCurrencySettings: CurrencySettings = ServiceLocator.currencySettings,
-         didSelectSave: @escaping ((ShippingLine?) -> Void)) {
+         didSelectSave: @escaping ((ShippingLine) -> Void),
+         didSelectRemove: @escaping ((ShippingLine) -> Void)) {
         self.priceFieldFormatter = .init(locale: locale, storeCurrencySettings: storeCurrencySettings, allowNegativeNumber: true)
         self.currencySymbol = storeCurrencySettings.symbol(from: storeCurrencySettings.currencyCode)
         self.currencyPosition = storeCurrencySettings.currencyPosition
 
-        self.isExistingShippingLine = isExistingShippingLine
+        self.isExistingShippingLine = shippingID != nil
+        self.shippingID = shippingID ?? 0
         self.initialMethodTitle = initialMethodTitle
         self.methodTitle = initialMethodTitle
 
@@ -89,16 +96,27 @@ class ShippingLineDetailsViewModel: ObservableObject {
         }
 
         self.didSelectSave = didSelectSave
+        self.didSelectRemove = didSelectRemove
     }
 
     func saveData() {
-        let shippingLine = ShippingLine(shippingID: 0,
+        let shippingLine = ShippingLine(shippingID: shippingID,
                                         methodTitle: finalMethodTitle,
                                         methodID: "other",
                                         total: amount,
                                         totalTax: "",
                                         taxes: [])
         didSelectSave(shippingLine)
+    }
+
+    func removeShippingLine() {
+        let shippingLine = ShippingLine(shippingID: shippingID,
+                                        methodTitle: finalMethodTitle,
+                                        methodID: "other",
+                                        total: amount,
+                                        totalTax: "",
+                                        taxes: [])
+        didSelectRemove(shippingLine)
     }
 }
 

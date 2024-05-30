@@ -5,32 +5,54 @@ import Yosemite
 ///
 struct ShippingInputTransformer {
 
-    /// Adds, deletes, or updates a shipping line input into an existing order.
+    /// Adds or updates a shipping line input into an existing order.
     ///
-    static func update(input: ShippingLine?, on order: Order) -> Order {
-        // If input is `nil`, then we remove the first shipping line.
-        // We remove a shipping like by setting its `methodID` to nil.
-        guard let input = input else {
-            let updatedLines = order.shippingLines.enumerated().map { index, line -> ShippingLine in
-                if index == 0 {
-                    return OrderFactory.deletedShippingLine(line)
-                }
-                return line
+    static func update(input: ShippingLine, on order: Order) -> Order {
+        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.multipleShippingLines) else {
+            // If there is no existing shipping lines, we insert the input one.
+            guard let existingShippingLine = order.shippingLines.first else {
+                let newShippingLine = input.methodID?.isNotEmpty == true ? input : OrderFactory.noMethodShippingLine(input)
+                return order.copy(shippingTotal: newShippingLine.total, shippingLines: [newShippingLine])
             }
+
+            // Since we only support one shipping line, if we find one, we update the existing with the new input values.
+            var updatedLines = order.shippingLines
+            let methodID = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.orderShippingMethodSelection) ? input.methodID : existingShippingLine.methodID
+            let updatedShippingLine = existingShippingLine.copy(methodTitle: input.methodTitle, methodID: methodID, total: input.total)
+            updatedLines[0] = updatedShippingLine
+
             return order.copy(shippingTotal: calculateTotals(from: updatedLines), shippingLines: updatedLines)
         }
 
-        // If there is no existing shipping lines, we insert the input one.
-        guard let existingShippingLine = order.shippingLines.first else {
+        var updatedLines = order.shippingLines
+
+        // If the order contains the shipping line, we update it with the new input values.
+        if let index = updatedLines.firstIndex(where: { $0.shippingID == input.shippingID }) {
+            let updatedShippingLine = updatedLines[index].copy(methodTitle: input.methodTitle, methodID: input.methodID, total: input.total)
+            updatedLines[index] = updatedShippingLine
+        }
+        // Otherwise, we insert the input as a new shipping line on the order.
+        else {
             let newShippingLine = input.methodID?.isNotEmpty == true ? input : OrderFactory.noMethodShippingLine(input)
-            return order.copy(shippingTotal: input.total, shippingLines: [newShippingLine])
+            updatedLines.append(newShippingLine)
         }
 
-        // Since we only support one shipping line, if we find one, we update the existing with the new input values.
+        return order.copy(shippingTotal: calculateTotals(from: updatedLines), shippingLines: updatedLines)
+    }
+
+    /// Deletes a shipping line input from an existing order.
+    ///
+    static func remove(input: ShippingLine, from order: Order) -> Order {
         var updatedLines = order.shippingLines
-        let methodID = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.orderShippingMethodSelection) ? input.methodID : existingShippingLine.methodID
-        let updatedShippingLine = existingShippingLine.copy(methodTitle: input.methodTitle, methodID: methodID, total: input.total)
-        updatedLines[0] = updatedShippingLine
+
+        // Find index of the shipping line to delete.
+        guard let index = updatedLines.firstIndex(where: { $0.shippingID == input.shippingID }) else {
+            return order
+        }
+
+        // Replace the existing shipping line with the deleted shipping line.
+        let deletedShippingLine = OrderFactory.deletedShippingLine(input)
+        updatedLines[index] = deletedShippingLine
 
         return order.copy(shippingTotal: calculateTotals(from: updatedLines), shippingLines: updatedLines)
     }

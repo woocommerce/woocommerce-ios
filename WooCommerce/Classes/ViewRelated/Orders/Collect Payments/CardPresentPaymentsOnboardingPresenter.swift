@@ -43,8 +43,8 @@ final class CardPresentPaymentsOnboardingPresenter: CardPresentPaymentsOnboardin
 
     private func showOnboarding(from viewController: UIViewController,
                                 readyToCollectPayment completion: @escaping () -> Void) {
-        let onboardingViewController = InPersonPaymentsViewController(viewModel: onboardingViewModel,
-                                                                      onWillDisappear: { [weak self] in
+        let onboardingViewController = CardPresentPaymentOnboardingViewController(viewModel: onboardingViewModel,
+                                                                                  onWillDisappear: { [weak self] in
             self?.readinessSubscription?.cancel()
         })
         viewController.show(onboardingViewController, sender: viewController)

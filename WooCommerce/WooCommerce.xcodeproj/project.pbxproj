@@ -2537,7 +2537,7 @@
 		E12FB786266E0CAE0039E9C2 /* ApllicationLogDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E12FB785266E0CAE0039E9C2 /* ApllicationLogDetailView.swift */; };
 		E1308381270311E200D5A68D /* CardPresentModalUpdateFailedLowBattery.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1308380270311E200D5A68D /* CardPresentModalUpdateFailedLowBattery.swift */; };
 		E1325EFB28FD544E00EC9B2A /* InAppPurchasesDebugView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1325EFA28FD544E00EC9B2A /* InAppPurchasesDebugView.swift */; };
-		E138D4F4269ED9C3006EA5C6 /* InPersonPaymentsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E138D4F3269ED9C3006EA5C6 /* InPersonPaymentsViewController.swift */; };
+		E138D4F4269ED9C3006EA5C6 /* CardPresentPaymentOnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E138D4F3269ED9C3006EA5C6 /* CardPresentPaymentOnboardingViewController.swift */; };
 		E138D4FC269EEAFE006EA5C6 /* CardPresentPaymentOnboardingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E138D4FB269EEAFE006EA5C6 /* CardPresentPaymentOnboardingViewModel.swift */; };
 		E15F163126C5117300D3059B /* InPersonPaymentsNoConnectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E15F163026C5117300D3059B /* InPersonPaymentsNoConnectionView.swift */; };
 		E15FC74126BC1CED00CF83E6 /* AttributedText.swift in Sources */ = {isa = PBXBuildFile; fileRef = E15FC74026BC1CED00CF83E6 /* AttributedText.swift */; };
@@ -5347,7 +5347,7 @@
 		E12FB785266E0CAE0039E9C2 /* ApllicationLogDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApllicationLogDetailView.swift; sourceTree = "<group>"; };
 		E1308380270311E200D5A68D /* CardPresentModalUpdateFailedLowBattery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalUpdateFailedLowBattery.swift; sourceTree = "<group>"; };
 		E1325EFA28FD544E00EC9B2A /* InAppPurchasesDebugView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppPurchasesDebugView.swift; sourceTree = "<group>"; };
-		E138D4F3269ED9C3006EA5C6 /* InPersonPaymentsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsViewController.swift; sourceTree = "<group>"; };
+		E138D4F3269ED9C3006EA5C6 /* CardPresentPaymentOnboardingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentOnboardingViewController.swift; sourceTree = "<group>"; };
 		E138D4FB269EEAFE006EA5C6 /* CardPresentPaymentOnboardingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentOnboardingViewModel.swift; sourceTree = "<group>"; };
 		E15F163026C5117300D3059B /* InPersonPaymentsNoConnectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsNoConnectionView.swift; sourceTree = "<group>"; };
 		E15FC74026BC1CED00CF83E6 /* AttributedText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttributedText.swift; sourceTree = "<group>"; };
@@ -12219,7 +12219,7 @@
 				20E188832AD059A50053E945 /* AboutTapToPayView.swift */,
 				201F5AC42AD4061800EF6C55 /* AboutTapToPayViewModel.swift */,
 				E12AF69826BA8ADC00C371C1 /* CardPresentPaymentsOnboardingUseCase.swift */,
-				E138D4F3269ED9C3006EA5C6 /* InPersonPaymentsViewController.swift */,
+				E138D4F3269ED9C3006EA5C6 /* CardPresentPaymentOnboardingViewController.swift */,
 				03EF250528C75838006A033E /* PurchaseCardReaderWebViewViewModel.swift */,
 				03EF24F928BF5D21006A033E /* InPersonPaymentsCashOnDeliveryToggleRowViewModel.swift */,
 				E120F63726C26B550005A029 /* InPersonPaymentsLoadingView.swift */,
@@ -13888,7 +13888,7 @@
 				DE19BB1826C3B5C300AB70D9 /* ShippingLabelCustomsFormItemDetails.swift in Sources */,
 				DE1B0310268EB2FB00804330 /* ReviewOrderViewModel.swift in Sources */,
 				02DC2ED2242061BF002F9676 /* ProductPriceSettingsViewModel.swift in Sources */,
-				E138D4F4269ED9C3006EA5C6 /* InPersonPaymentsViewController.swift in Sources */,
+				E138D4F4269ED9C3006EA5C6 /* CardPresentPaymentOnboardingViewController.swift in Sources */,
 				26838358296F9A1E00CCF60A /* GenerateAllVariationsUseCase.swift in Sources */,
 				EE3BC28C2BE3905400195AF0 /* InAppFeedbackCardView.swift in Sources */,
 				038BC38329C4B8ED00EAF565 /* SetUpTapToPayTryPaymentPromptViewController.swift in Sources */,

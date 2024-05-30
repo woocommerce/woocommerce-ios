@@ -1,14 +1,14 @@
 import SwiftUI
 import Yosemite
 
-final class InPersonPaymentsViewController: UIHostingController<InPersonPaymentsView> {
+final class CardPresentPaymentOnboardingViewController: UIHostingController<CardPresentPaymentOnboardingView> {
 
     private let onWillDisappear: (() -> ())?
 
     init(viewModel: CardPresentPaymentOnboardingViewModel,
          onWillDisappear: (() -> ())?) {
         self.onWillDisappear = onWillDisappear
-        super.init(rootView: InPersonPaymentsView(viewModel: viewModel))
+        super.init(rootView: CardPresentPaymentOnboardingView(viewModel: viewModel))
         viewModel.showSupport = { [weak self] in
             guard let self = self else { return }
             let supportForm = SupportFormHostingController(viewModel: .init())
@@ -30,7 +30,7 @@ final class InPersonPaymentsViewController: UIHostingController<InPersonPayments
     }
 }
 
-struct InPersonPaymentsView: View {
+struct CardPresentPaymentOnboardingView: View {
     @StateObject var viewModel: CardPresentPaymentOnboardingViewModel
     var shouldShowMenuOnCompletion: Bool = true
 
@@ -116,10 +116,10 @@ struct InPersonPaymentsView: View {
     }
 }
 
-struct InPersonPaymentsView_Previews: PreviewProvider {
+struct CardPresentPaymentOnboardingView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
-            InPersonPaymentsView(viewModel: CardPresentPaymentOnboardingViewModel(fixedState: .completed(plugin: .stripeOnly)))
+            CardPresentPaymentOnboardingView(viewModel: CardPresentPaymentOnboardingViewModel(fixedState: .completed(plugin: .stripeOnly)))
         }
     }
 }

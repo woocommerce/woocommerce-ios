@@ -173,7 +173,7 @@ struct InPersonPaymentsMenu: View {
             .scrollViewSectionStyle(.insetGrouped)
             .safariSheet(url: $viewModel.safariSheetURL)
             .navigationDestination(isPresented: $viewModel.shouldShowOnboarding) {
-                InPersonPaymentsView(viewModel: viewModel.onboardingViewModel)
+                CardPresentPaymentOnboardingView(viewModel: viewModel.onboardingViewModel)
             }
 
             if let onboardingNotice = viewModel.cardPresentPaymentsOnboardingNotice {
@@ -199,7 +199,7 @@ struct InPersonPaymentsMenu: View {
                                   style: .medium)
             }
         }
-        .navigationTitle(InPersonPaymentsView.Localization.title)
+        .navigationTitle(CardPresentPaymentOnboardingView.Localization.title)
         .navigationDestination(for: InPersonPaymentsMenuNavigationDestination.self) { destination in
             if let orderViewModel = viewModel.orderViewModel {
                 OrderFormPresentationWrapper(dismissHandler: {

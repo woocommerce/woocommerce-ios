@@ -129,7 +129,6 @@ final class LastOrdersDashboardCardViewModel: ObservableObject {
         do {
             async let orders = loadLast3Orders(for: selectedOrderStatus)
             try? await loadOrderStatuses()
-
             rows = try await orders
                 .map { LastOrderDashboardRowViewModel(order: $0) }
         } catch {
@@ -168,15 +167,15 @@ private extension LastOrdersDashboardCardViewModel {
     @MainActor
     func loadLast3Orders(for status: OrderStatusEnum?) async throws -> [Order] {
         return try await withCheckedThrowingContinuation { continuation in
-            stores.dispatch(OrderAction.synchronizeOrders(
+            stores.dispatch(OrderAction.fetchFilteredOrders(
                 siteID: siteID,
                 statuses: [status?.rawValue].compactMap { $0 },
-                pageNumber: Constants.pageNumber,
+                writeStrategy: .doNotSave,
                 pageSize: Constants.numberOfOrdersToShow,
                 onCompletion: { _, result in
                     switch result {
                     case .success(let orders):
-                        continuation.resume(returning: orders.sorted(by: { $0.dateCreated > $1.dateCreated }))
+                        continuation.resume(returning: orders)
                     case .failure(let error):
                         continuation.resume(throwing: error)
                     }
@@ -238,7 +237,6 @@ private extension LastOrdersDashboardCardViewModel {
 //
 private extension LastOrdersDashboardCardViewModel {
     enum Constants {
-        static let pageNumber = 1
         static let numberOfOrdersToShow = 3
     }
 

@@ -67,7 +67,6 @@ public final class POSProductProvider: POSItemProvider {
 // MARK: - PreviewProvider helpers
 //
 extension POSProductProvider {
-    // TODO: Cannot pass the Servicelocator currency settings at this level on static func
     static func provideProductForPreview() -> POSProduct {
         POSProduct(itemID: UUID(),
                    productID: 1,

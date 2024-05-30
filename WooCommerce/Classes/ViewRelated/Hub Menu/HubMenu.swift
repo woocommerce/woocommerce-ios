@@ -162,8 +162,7 @@ private extension HubMenu {
             case HubMenuViewModel.Customers.id:
                 CustomersListView(viewModel: .init(siteID: viewModel.siteID))
             case HubMenuViewModel.PointOfSaleEntryPoint.id:
-                // Temporary POSProductProvider just for testing, we should inject this from somewhere else
-                // once the Servicelocator references and currencyformatter usage within the product is resolved.
+                // Temporary POSProductProvider just for testing, we should inject this from somewhere else so is not recreated with the view
                 let posProductProvider: POSItemProvider = POSProductProvider(storageManager: ServiceLocator.storageManager,
                                                                          siteID: ServiceLocator.stores.sessionManager.defaultSite?.siteID ?? 0,
                                                                          currencySettings: ServiceLocator.currencySettings)

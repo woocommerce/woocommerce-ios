@@ -76,13 +76,6 @@ final class EditableOrderShippingUseCase: ObservableObject {
         let shippingMethodTotal: String
         let saveShippingLineClosure: (ShippingLine) -> Void
         let removeShippingLineClosure: (ShippingLine) -> Void
-        var shippingLineViewModel: ShippingLineDetailsViewModel {
-            ShippingLineDetailsViewModel(shippingID: shippingID,
-                                         initialMethodTitle: shippingMethodTitle,
-                                         shippingTotal: shippingMethodTotal,
-                                         didSelectSave: saveShippingLineClosure,
-                                         didSelectRemove: removeShippingLineClosure)
-        }
         var shippingLineSelectionViewModel: ShippingLineSelectionDetailsViewModel {
             ShippingLineSelectionDetailsViewModel(siteID: siteID,
                                                   shippingID: shippingID,
@@ -268,9 +261,6 @@ private extension EditableOrderShippingUseCase {
     /// Synchronizes available shipping methods for editing the order shipping lines.
     ///
     func syncShippingMethods() {
-        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.orderShippingMethodSelection) else {
-            return
-        }
         let action = ShippingMethodAction.synchronizeShippingMethods(siteID: siteID) { [weak self] result in
             switch result {
             case .success:

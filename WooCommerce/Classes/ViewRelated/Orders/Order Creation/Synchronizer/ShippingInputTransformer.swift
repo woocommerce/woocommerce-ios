@@ -17,8 +17,7 @@ struct ShippingInputTransformer {
 
             // Since we only support one shipping line, if we find one, we update the existing with the new input values.
             var updatedLines = order.shippingLines
-            let methodID = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.orderShippingMethodSelection) ? input.methodID : existingShippingLine.methodID
-            let updatedShippingLine = existingShippingLine.copy(methodTitle: input.methodTitle, methodID: methodID, total: input.total)
+            let updatedShippingLine = existingShippingLine.copy(methodTitle: input.methodTitle, methodID: input.methodID, total: input.total)
             updatedLines[0] = updatedShippingLine
 
             return order.copy(shippingTotal: calculateTotals(from: updatedLines), shippingLines: updatedLines)

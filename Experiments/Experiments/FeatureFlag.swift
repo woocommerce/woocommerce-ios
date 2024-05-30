@@ -192,10 +192,6 @@ public enum FeatureFlag: Int {
     ///
     case subscriptionsInOrderCreationCustomers
 
-    /// Enables shipping method selection in order creation/editing.
-    ///
-    case orderShippingMethodSelection
-
     /// Makes the Experimental Feature toggle "Point Of Sale" menu visible, under app settings.
     ///
     case displayPointOfSaleToggle

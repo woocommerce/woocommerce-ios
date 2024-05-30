@@ -676,7 +676,7 @@
 		0396CFAD2981476900E91436 /* CardPresentModalBuiltInConnectingFailed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0396CFAC2981476800E91436 /* CardPresentModalBuiltInConnectingFailed.swift */; };
 		039B7E6329F136F200E21EF4 /* SetUpTapToPayOnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 039B7E6229F136F200E21EF4 /* SetUpTapToPayOnboardingViewController.swift */; };
 		039B7E6529F167DB00E21EF4 /* UniversalLinkRouter+JustInTimeMessages.swift in Sources */ = {isa = PBXBuildFile; fileRef = 039B7E6429F167DB00E21EF4 /* UniversalLinkRouter+JustInTimeMessages.swift */; };
-		039B7E6729F2855B00E21EF4 /* InPersonPaymentsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 039B7E6629F2855B00E21EF4 /* InPersonPaymentsViewModelTests.swift */; };
+		039B7E6729F2855B00E21EF4 /* CardPresentPaymentOnboardingViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 039B7E6629F2855B00E21EF4 /* CardPresentPaymentOnboardingViewModelTests.swift */; };
 		039D948D27610C6F0044EF38 /* UIView+SafeAreaConstraints.swift in Sources */ = {isa = PBXBuildFile; fileRef = 039D948C27610C6F0044EF38 /* UIView+SafeAreaConstraints.swift */; };
 		039D948F276113490044EF38 /* UIView+SuperviewConstraints.swift in Sources */ = {isa = PBXBuildFile; fileRef = 039D948E276113490044EF38 /* UIView+SuperviewConstraints.swift */; };
 		03A6C18428B52B1500AADF23 /* InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A6C18328B52B1500AADF23 /* InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModelTests.swift */; };
@@ -2538,7 +2538,7 @@
 		E1308381270311E200D5A68D /* CardPresentModalUpdateFailedLowBattery.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1308380270311E200D5A68D /* CardPresentModalUpdateFailedLowBattery.swift */; };
 		E1325EFB28FD544E00EC9B2A /* InAppPurchasesDebugView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1325EFA28FD544E00EC9B2A /* InAppPurchasesDebugView.swift */; };
 		E138D4F4269ED9C3006EA5C6 /* InPersonPaymentsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E138D4F3269ED9C3006EA5C6 /* InPersonPaymentsViewController.swift */; };
-		E138D4FC269EEAFE006EA5C6 /* InPersonPaymentsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E138D4FB269EEAFE006EA5C6 /* InPersonPaymentsViewModel.swift */; };
+		E138D4FC269EEAFE006EA5C6 /* CardPresentPaymentOnboardingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E138D4FB269EEAFE006EA5C6 /* CardPresentPaymentOnboardingViewModel.swift */; };
 		E15F163126C5117300D3059B /* InPersonPaymentsNoConnectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E15F163026C5117300D3059B /* InPersonPaymentsNoConnectionView.swift */; };
 		E15FC74126BC1CED00CF83E6 /* AttributedText.swift in Sources */ = {isa = PBXBuildFile; fileRef = E15FC74026BC1CED00CF83E6 /* AttributedText.swift */; };
 		E15FC74326BC1D2700CF83E6 /* SafariSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = E15FC74226BC1D2700CF83E6 /* SafariSheet.swift */; };
@@ -3478,7 +3478,7 @@
 		0396CFAC2981476800E91436 /* CardPresentModalBuiltInConnectingFailed.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardPresentModalBuiltInConnectingFailed.swift; sourceTree = "<group>"; };
 		039B7E6229F136F200E21EF4 /* SetUpTapToPayOnboardingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetUpTapToPayOnboardingViewController.swift; sourceTree = "<group>"; };
 		039B7E6429F167DB00E21EF4 /* UniversalLinkRouter+JustInTimeMessages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UniversalLinkRouter+JustInTimeMessages.swift"; sourceTree = "<group>"; };
-		039B7E6629F2855B00E21EF4 /* InPersonPaymentsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsViewModelTests.swift; sourceTree = "<group>"; };
+		039B7E6629F2855B00E21EF4 /* CardPresentPaymentOnboardingViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentOnboardingViewModelTests.swift; sourceTree = "<group>"; };
 		039D948C27610C6F0044EF38 /* UIView+SafeAreaConstraints.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+SafeAreaConstraints.swift"; sourceTree = "<group>"; };
 		039D948E276113490044EF38 /* UIView+SuperviewConstraints.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+SuperviewConstraints.swift"; sourceTree = "<group>"; };
 		03A6C18328B52B1500AADF23 /* InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModelTests.swift; sourceTree = "<group>"; };
@@ -5348,7 +5348,7 @@
 		E1308380270311E200D5A68D /* CardPresentModalUpdateFailedLowBattery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalUpdateFailedLowBattery.swift; sourceTree = "<group>"; };
 		E1325EFA28FD544E00EC9B2A /* InAppPurchasesDebugView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppPurchasesDebugView.swift; sourceTree = "<group>"; };
 		E138D4F3269ED9C3006EA5C6 /* InPersonPaymentsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsViewController.swift; sourceTree = "<group>"; };
-		E138D4FB269EEAFE006EA5C6 /* InPersonPaymentsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsViewModel.swift; sourceTree = "<group>"; };
+		E138D4FB269EEAFE006EA5C6 /* CardPresentPaymentOnboardingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentOnboardingViewModel.swift; sourceTree = "<group>"; };
 		E15F163026C5117300D3059B /* InPersonPaymentsNoConnectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsNoConnectionView.swift; sourceTree = "<group>"; };
 		E15FC74026BC1CED00CF83E6 /* AttributedText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttributedText.swift; sourceTree = "<group>"; };
 		E15FC74226BC1D2700CF83E6 /* SafariSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafariSheet.swift; sourceTree = "<group>"; };
@@ -7152,7 +7152,7 @@
 				03A6C18228B52ADB00AADF23 /* Onboarding Errors */,
 				03EF24FF28C0E9EE006A033E /* InPersonPaymentsCashOnDeliveryToggleRowViewModelTests.swift */,
 				03EF250328C6283B006A033E /* InPersonPaymentsMenuViewModelTests.swift */,
-				039B7E6629F2855B00E21EF4 /* InPersonPaymentsViewModelTests.swift */,
+				039B7E6629F2855B00E21EF4 /* CardPresentPaymentOnboardingViewModelTests.swift */,
 				20B0D65D2AD45BDE0059735A /* AboutTapToPayContactlessLimitViewModelTests.swift */,
 				03B9E52A2A1505A7005C77F5 /* TapToPayReconnectionControllerTests.swift */,
 			);
@@ -12225,7 +12225,7 @@
 				E120F63726C26B550005A029 /* InPersonPaymentsLoadingView.swift */,
 				03AFDE01282C0B82003B67CD /* InPersonPaymentsCompletedView.swift */,
 				319A626027ACAE3400BC96C3 /* InPersonPaymentsPluginChoicesView.swift */,
-				E138D4FB269EEAFE006EA5C6 /* InPersonPaymentsViewModel.swift */,
+				E138D4FB269EEAFE006EA5C6 /* CardPresentPaymentOnboardingViewModel.swift */,
 				E15FC74426BC213500CF83E6 /* InPersonPaymentsLearnMore.swift */,
 				0304E35D28BDC86D00A80191 /* LearnMoreViewModel.swift */,
 				E107FCE226C13A0D00BAF51B /* InPersonPaymentsSupportLink.swift */,
@@ -13768,7 +13768,7 @@
 				03E471D62942222E001A58AD /* CardPresentModalBuiltInFollowReaderInstructions.swift in Sources */,
 				B60B5026292D308A00178C26 /* AnalyticsTimeRangeCard.swift in Sources */,
 				026826C32BF59E410036F959 /* ReaderConnectedView.swift in Sources */,
-				E138D4FC269EEAFE006EA5C6 /* InPersonPaymentsViewModel.swift in Sources */,
+				E138D4FC269EEAFE006EA5C6 /* CardPresentPaymentOnboardingViewModel.swift in Sources */,
 				039D948F276113490044EF38 /* UIView+SuperviewConstraints.swift in Sources */,
 				D8736B5322EF4F5900A14A29 /* NotificationsBadgeController.swift in Sources */,
 				03E471CC293E0FB8001A58AD /* CardPresentModalProgressDisplaying.swift in Sources */,
@@ -15742,7 +15742,7 @@
 				02279590237A5DC900787C63 /* AztecUnorderedListFormatBarCommandTests.swift in Sources */,
 				B958A7D128B5281800823EEF /* UniversalLinkRouterTests.swift in Sources */,
 				B5F571AB21BEECB60010D1B8 /* NoteWooTests.swift in Sources */,
-				039B7E6729F2855B00E21EF4 /* InPersonPaymentsViewModelTests.swift in Sources */,
+				039B7E6729F2855B00E21EF4 /* CardPresentPaymentOnboardingViewModelTests.swift in Sources */,
 				03EF250428C6283B006A033E /* InPersonPaymentsMenuViewModelTests.swift in Sources */,
 				45DB706C26161F970064A6CF /* DecimalWooTests.swift in Sources */,
 				CCE4CD172667EBB100E09FD4 /* ShippingLabelPaymentMethodsViewModelTests.swift in Sources */,

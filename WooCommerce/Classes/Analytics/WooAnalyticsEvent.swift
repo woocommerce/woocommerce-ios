@@ -559,6 +559,7 @@ extension WooAnalyticsEvent {
             static let orderID = "id"
             static let productTypes = "product_types"
             static let hasMultipleShippingLines = "has_multiple_shipping_lines"
+            static let shippingLinesCount = "shipping_lines_count"
             static let hasMultipleFeeLines = "has_multiple_fee_lines"
             static let itemType = "item_type"
             static let source = "source"
@@ -816,8 +817,13 @@ extension WooAnalyticsEvent {
             ])
         }
 
-        static func orderCreationSuccess(millisecondsSinceSinceOrderAddNew: Int64?, couponsCount: Int64, usesGiftCard: Bool) -> WooAnalyticsEvent {
-            var properties: [String: WooAnalyticsEventPropertyType] = [Keys.couponsCount: couponsCount, Keys.usesGiftCard: usesGiftCard]
+        static func orderCreationSuccess(millisecondsSinceSinceOrderAddNew: Int64?,
+                                         couponsCount: Int64,
+                                         usesGiftCard: Bool,
+                                         shippingLinesCount: Int64) -> WooAnalyticsEvent {
+            var properties: [String: WooAnalyticsEventPropertyType] = [Keys.couponsCount: couponsCount,
+                                                                       Keys.usesGiftCard: usesGiftCard,
+                                                                       Keys.shippingLinesCount: shippingLinesCount]
 
             if let lapseSinceLastOrderAddNew = millisecondsSinceSinceOrderAddNew {
                 properties[GlobalKeys.millisecondsSinceOrderAddNew] = lapseSinceLastOrderAddNew

@@ -63,7 +63,6 @@ final class DashboardViewModel: ObservableObject {
     @Published var showingCustomization = false
 
     @Published var showNewCardsNotice = false
-    private var shouldSaveCurrentCards = false
 
     let siteID: Int64
     private let stores: StoresManager
@@ -257,11 +256,13 @@ final class DashboardViewModel: ObservableObject {
     }
 
     func showCustomizationScreen() {
-        if shouldSaveCurrentCards {
+        // The app should remove the notice once a user opens the Customize screen (whether they end up customizing or not).
+        // To do so, we save the current dashboard cards once when opening Customize. The current cards will already have
+        // been generated with the new cards included, so saving it ensures that the notice is hidden in subsequent checks.
+        if showNewCardsNotice {
             stores.dispatch(AppSettingsAction.setDashboardCards(siteID: siteID, cards: dashboardCards))
-            shouldSaveCurrentCards = false
+            showNewCardsNotice = false
         }
-
         showingCustomization = true
     }
 
@@ -562,11 +563,6 @@ private extension DashboardViewModel {
             showNewCardsNotice = false
         } else {
             showNewCardsNotice = true
-
-            // The app should remove the notice once a user opens the Customize screen (whether they end up customizing or not).
-            // To do so, schedule saving the current dashboard cards once when opening Customize. The cards will already have
-            // the new cards included, so doing it will ensure the notice is hidden in subsequent checks.
-            shouldSaveCurrentCards = true
         }
     }
 

@@ -185,6 +185,8 @@ enum WooAnalyticsStat: String {
     case dynamicDashboardHideCardTapped = "dynamic_dashboard_hide_card_tapped"
     case dynamicDashboardEditorSaveTapped = "dynamic_dashboard_editor_save_tapped"
     case dynamicDashboardCardRetryTapped = "dynamic_dashboard_card_retry_tapped"
+    case dynamicDashboardCardInteracted = "dynamic_dashboard_card_interacted"
+    case dynamicDashboardAddNewSectionsTapped = "dynamic_dashboard_add_new_sections_tapped"
 
     // MARK: Analytics Hub Events
     //

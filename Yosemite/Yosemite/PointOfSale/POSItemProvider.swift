@@ -5,7 +5,7 @@ public protocol POSItem {
     var price: String { get }
     var imageURL: URL { get }
     var details: [String] { get }
-    
+
     func makeCartItem() -> CartItem
 }
 

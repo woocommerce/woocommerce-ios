@@ -70,7 +70,7 @@ private extension PointOfSaleDashboardView {
     }
 
     var productGridView: some View {
-        ProductGridView(viewModel: viewModel)
+        ItemGridView(viewModel: viewModel)
             .background(Color.secondaryBackground)
             .frame(maxWidth: .infinity)
     }

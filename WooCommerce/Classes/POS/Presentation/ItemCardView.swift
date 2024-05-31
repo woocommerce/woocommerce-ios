@@ -3,13 +3,13 @@ import class WooFoundation.CurrencyFormatter
 import struct Yosemite.POSProduct
 import protocol Yosemite.POSItem
 
-struct ProductCardView: View {
+struct ItemCardView: View {
     private let item: POSItem
-    private let onProductCardTapped: (() -> Void)?
+    private let onItemCardTapped: (() -> Void)?
 
-    init(item: POSItem, onProductCardTapped: (() -> Void)? = nil) {
+    init(item: POSItem, onItemCardTapped: (() -> Void)? = nil) {
         self.item = item
-        self.onProductCardTapped = onProductCardTapped
+        self.onItemCardTapped = onItemCardTapped
     }
 
     var body: some View {
@@ -21,7 +21,7 @@ struct ProductCardView: View {
                 HStack(spacing: 8) {
                     Spacer()
                     Button(action: {
-                        onProductCardTapped?()
+                        onItemCardTapped?()
                     }, label: { })
                     .buttonStyle(POSPlusButtonStyle())
                     .frame(width: 56, height: 56)

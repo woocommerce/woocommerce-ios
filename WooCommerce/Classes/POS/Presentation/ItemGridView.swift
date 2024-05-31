@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct ProductGridView: View {
+struct ItemGridView: View {
     @ObservedObject var viewModel: PointOfSaleDashboardViewModel
 
     init(viewModel: PointOfSaleDashboardViewModel) {
@@ -26,7 +26,7 @@ struct ProductGridView: View {
             ScrollView {
                 LazyVGrid(columns: columns, spacing: 16) {
                     ForEach(viewModel.items, id: \.productID) { item in
-                        ProductCardView(item: item) {
+                        ItemCardView(item: item) {
                             viewModel.addItemToCart(item)
                         }
                         .foregroundColor(Color.primaryText)
@@ -40,7 +40,7 @@ struct ProductGridView: View {
     }
 }
 
-private extension ProductGridView {
+private extension ItemGridView {
     enum Constants {
         static let maxItemsPerRow: Int = 4
     }

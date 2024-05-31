@@ -129,8 +129,8 @@ private extension AddOrderComponentsSection {
         .accessibilityIdentifier("add-shipping-button")
         .disabled(viewModel.orderIsEmpty)
         .renderedIf(!shippingUseCase.paymentData.shouldShowShippingTotal)
-        .sheet(item: $shippingUseCase.addShippingLineViewModel, content: { addShippingLine in
-            ShippingLineSelectionDetails(viewModel: addShippingLine)
+        .sheet(item: $shippingUseCase.shippingLineDetails, content: { viewModel in
+            ShippingLineSelectionDetails(viewModel: viewModel)
         })
     }
 

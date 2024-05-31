@@ -84,3 +84,14 @@ extension POSProductProvider {
         ]
     }
 }
+
+/// Null product provider that acts as preview helper for the Point of Sale feature
+///
+public final class NullPOSProductProvider: POSItemProvider {
+
+    public init() {}
+
+    public func providePointOfSaleItems() -> [POSItem] {
+        []
+    }
+}

@@ -1,6 +1,6 @@
 import SwiftUI
+import Yosemite
 import class WooFoundation.CurrencySettings
-import protocol Yosemite.POSItemProvider
 
 struct PointOfSaleEntryPointView: View {
     @StateObject private var viewModel: PointOfSaleDashboardViewModel
@@ -32,8 +32,6 @@ struct PointOfSaleEntryPointView: View {
 
 #if DEBUG
 #Preview {
-    // TODO:
-    // Restore PointOfSaleEntryPointView preview once the POSProductProvider storemanager dependency is resolved
-    EmptyView()
+    PointOfSaleEntryPointView(itemProvider: NullPOSProductProvider(), currencySettings: ServiceLocator.currencySettings, hideAppTabBar: { _ in })
 }
 #endif

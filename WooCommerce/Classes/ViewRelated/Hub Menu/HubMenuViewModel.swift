@@ -70,11 +70,17 @@ final class HubMenuViewModel: ObservableObject {
     private let cardPresentPaymentsOnboarding: CardPresentPaymentsOnboardingUseCaseProtocol
     private let posEligibilityChecker: POSEligibilityCheckerProtocol
 
-    // TODO: Is this the right place to instantiate the product provider and use property injection?
-    // Additionally, the HubMenu ViewBuilder won't allow to compile if this is kept as lazy
-    //    private lazy var posProductProvider: POSItemProvider = POSProductProvider(storageManager: ServiceLocator.storageManager,
-    //                                                             siteID: ServiceLocator.stores.sessionManager.defaultSite?.siteID ?? 0,
-    //                                                             currencySettings: ServiceLocator.currencySettings)
+    // TODO:
+    // Is this the right place to instantiate the product provider and use property injection?
+    lazy var posItemProvider: POSItemProvider = {
+        let storageManager = ServiceLocator.storageManager
+        let siteID = ServiceLocator.stores.sessionManager.defaultSite?.siteID ?? 0
+        let currencySettings = ServiceLocator.currencySettings
+
+        return POSProductProvider(storageManager: storageManager,
+                                  siteID: siteID,
+                                  currencySettings: currencySettings)
+    }()
 
     private(set) var productReviewFromNoteParcel: ProductReviewFromNoteParcel?
 

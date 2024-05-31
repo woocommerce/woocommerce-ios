@@ -50,7 +50,7 @@ struct OrderShippingSection: View {
 private extension OrderShippingSection {
     func addShippingLine() {
         showAddShippingLine = true
-        // TODO-12584: Track that add shipping has been tapped
+        useCase.trackAddShippingTapped()
     }
 }
 

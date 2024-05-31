@@ -282,9 +282,10 @@ private extension DashboardView {
                 }
                 .buttonStyle(PrimaryButtonStyle())
                 .padding(.horizontal, Layout.elementPadding)
-                .padding(.vertical, Layout.elementPadding)
+                .padding(.top, Layout.elementPadding)
             }
         }
+        .padding(.bottom, Layout.elementPadding)
         .overlay(
             RoundedRectangle(cornerRadius: Layout.cornerRadius)
                 .stroke(Color(.border), lineWidth: 1)

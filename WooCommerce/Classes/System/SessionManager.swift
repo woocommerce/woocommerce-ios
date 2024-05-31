@@ -52,19 +52,6 @@ final class SessionManager: SessionManagerProtocol {
     ///
     private let imageCache: ImageCache
 
-    /// Makes sure the credentials are in sync with the watch session.
-    ///
-    private lazy var watchDependenciesSynchronizer = {
-        let storedDependencies: WatchDependencies? = {
-            guard let storeID = self.defaultStoreID, let storeName = self.defaultSite?.name, let credentials = self.loadCredentials() else {
-                return nil
-            }
-            return WatchDependencies(storeID: storeID, storeName: storeName, currencySettings: ServiceLocator.currencySettings, credentials: credentials)
-        }()
-
-        return WatchDependenciesSynchronizer(storedDependencies: storedDependencies)
-    }()
-
     /// Default Credentials.
     ///
     var defaultCredentials: Credentials? {
@@ -78,11 +65,11 @@ final class SessionManager: SessionManagerProtocol {
 
             removeCredentials()
 
-            if let credentials = newValue {
-                saveCredentials(credentials)
+            guard let credentials = newValue else {
+                return
             }
 
-            watchDependenciesSynchronizer.credentials = newValue
+            saveCredentials(credentials)
         }
     }
 
@@ -110,8 +97,6 @@ final class SessionManager: SessionManagerProtocol {
         set {
             defaults[.defaultStoreID] = newValue
             defaultStoreIDSubject.send(newValue)
-
-            watchDependenciesSynchronizer.storeID = defaultStoreID
         }
     }
 
@@ -162,11 +147,7 @@ final class SessionManager: SessionManagerProtocol {
 
     /// Default Store Site
     ///
-    @Published var defaultSite: Site? {
-        didSet {
-            watchDependenciesSynchronizer.storeName = defaultSite?.name
-        }
-    }
+    @Published var defaultSite: Site?
 
     /// Designated Initializer.
     ///
@@ -235,6 +216,22 @@ final class SessionManager: SessionManagerProtocol {
 // MARK: - Private Methods
 //
 private extension SessionManager {
+    enum AuthenticationTypeIdentifier: String {
+        case wpcom = "AuthenticationType.wpcom"
+        case wporg = "AuthenticationType.wporg"
+        case applicationPassword = "AuthenticationType.applicationPassword"
+
+        init(type: Credentials) {
+            switch type {
+            case .wpcom:
+                self = AuthenticationTypeIdentifier.wpcom
+            case .wporg:
+                self = AuthenticationTypeIdentifier.wporg
+            case .applicationPassword:
+                self = AuthenticationTypeIdentifier.applicationPassword
+            }
+        }
+    }
 
     /// Returns the Default Credentials, if any.
     ///
@@ -250,7 +247,18 @@ private extension SessionManager {
             return .wpcom(username: username, authToken: secret, siteAddress: siteAddress)
         }
 
-        return Credentials(rawType: defaultCredentialsType, username: username, secret: secret, siteAddress: siteAddress)
+        guard let identifier = AuthenticationTypeIdentifier(rawValue: defaultCredentialsType) else {
+            return nil
+        }
+
+        switch identifier {
+        case .wpcom:
+            return .wpcom(username: username, authToken: secret, siteAddress: siteAddress)
+        case .wporg:
+            return .wporg(username: username, password: secret, siteAddress: siteAddress)
+        case .applicationPassword:
+            return .applicationPassword(username: username, password: secret, siteAddress: siteAddress)
+        }
     }
 
     /// Persists the Credentials's authToken in the keychain, and username in User Settings.
@@ -258,7 +266,7 @@ private extension SessionManager {
     func saveCredentials(_ credentials: Credentials) {
         defaults[.defaultUsername] = credentials.username
         defaults[.defaultSiteAddress] = credentials.siteAddress
-        defaults[.defaultCredentialsType] = credentials.rawType
+        defaults[.defaultCredentialsType] = AuthenticationTypeIdentifier(type: credentials).rawValue
         keychain[credentials.username] = credentials.secret
     }
 

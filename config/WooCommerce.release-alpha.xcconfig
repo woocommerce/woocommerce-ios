@@ -1,5 +1,0 @@
-// Adopt all the release settings by default. Customize only the necessary ones.
-#include "WooCommerce.release.xcconfig"
-#include "Version.public.xcconfig"
-
-DEVELOPMENT_TEAM = 99KV9Z6BKV

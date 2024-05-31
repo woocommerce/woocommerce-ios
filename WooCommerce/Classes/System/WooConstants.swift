@@ -3,7 +3,7 @@ import Foundation
 
 /// WooCommerce Constants
 ///
-public enum WooConstants {
+enum WooConstants {
 
     /// App Display Name, used on the About screen
     ///
@@ -15,7 +15,7 @@ public enum WooConstants {
 
     /// Keychain Access's Service Name
     ///
-    public static let keychainServiceName = "com.automattic.woocommerce"
+    static let keychainServiceName = "com.automattic.woocommerce"
 
     /// Keychain Access's Key for Apple ID
     ///
@@ -79,10 +79,6 @@ public enum WooConstants {
     static let appLoginURLPrefix = "woocommerce://app-login"
 
     static let wooPaymentsPluginPath = "woocommerce-payments/woocommerce-payments.php"
-
-    /// Key used to identify track events sent between the phone and the watch.
-    ///
-    static let watchTracksKey = "watch-tracks-event"
 }
 
 // MARK: URLs

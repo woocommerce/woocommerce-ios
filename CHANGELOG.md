@@ -1,6 +1,9 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 18.9
+Stay ahead with our latest WooCommerce update! Explore our new Watch App for instant store data and order updates at a glance. We've fixed the issue with shipping methods, plus you can now have multiple shipping lines on orders, so you can handle complex shipping needs for your orders seamlessly.
+
 ## 18.8
 Delve into a smoother WooCommerce experience with our latest update! We've resolved issues hindering the "Card Reader" and "Tap To Pay" features under Menu > Payments > Collect Payment for seamless transactions. The dashboard screen gets a performance booster as we've optimized API calls. In addition, edit support for the Min/Max Quantities extension in product details is now available.
 

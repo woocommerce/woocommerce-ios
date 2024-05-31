@@ -164,12 +164,12 @@ private extension StoreInfoProvider {
     static func placeholderEntry(for dependencies: Dependencies?) -> StoreInfoEntry {
         StoreInfoEntry.data(.init(range: Localization.today,
                                   name: dependencies?.storeName ?? Localization.myShop,
-                                  revenue: StoreInfoFormatter.formattedAmountString(for: 132.234, with: dependencies?.storeCurrencySettings),
-                                  revenueCompact: StoreInfoFormatter.formattedAmountCompactString(for: 132.234, with: dependencies?.storeCurrencySettings),
+                                  revenue: Self.formattedAmountString(for: 132.234, with: dependencies?.storeCurrencySettings),
+                                  revenueCompact: Self.formattedAmountCompactString(for: 132.234, with: dependencies?.storeCurrencySettings),
                                   visitors: "67",
                                   orders: "23",
-                                  conversion: StoreInfoFormatter.formattedConversionString(for: 23/67),
-                                  updatedTime: StoreInfoFormatter.currentFormattedTime()))
+                                  conversion: Self.formattedConversionString(for: 23/67),
+                                  updatedTime: Self.currentFormattedTime()))
     }
 
     /// Real data entry.
@@ -179,23 +179,56 @@ private extension StoreInfoProvider {
             if let visitors = todayStats.totalVisitors {
                 return "\(visitors)"
             }
-            return StoreInfoFormatter.Constants.valuePlaceholderText
+            return Constants.valuePlaceholderText
         }()
         let conversion: String = {
             if let conversion = todayStats.conversion {
-                return StoreInfoFormatter.formattedConversionString(for: conversion)
+                return Self.formattedConversionString(for: conversion)
             }
-            return StoreInfoFormatter.Constants.valuePlaceholderText
+            return Constants.valuePlaceholderText
         }()
         return StoreInfoEntry.data(.init(range: Localization.today,
                                          name: dependencies.storeName,
-                                         revenue: StoreInfoFormatter.formattedAmountString(for: todayStats.revenue, with: dependencies.storeCurrencySettings),
-                                         revenueCompact: StoreInfoFormatter.formattedAmountCompactString(for: todayStats.revenue,
-                                                                                                         with: dependencies.storeCurrencySettings),
+                                         revenue: Self.formattedAmountString(for: todayStats.revenue, with: dependencies.storeCurrencySettings),
+                                         revenueCompact: Self.formattedAmountCompactString(for: todayStats.revenue, with: dependencies.storeCurrencySettings),
                                          visitors: visitors,
                                          orders: "\(todayStats.totalOrders)",
                                          conversion: conversion,
-                                         updatedTime: StoreInfoFormatter.currentFormattedTime()))
+                                         updatedTime: Self.currentFormattedTime()))
+    }
+
+    static func formattedAmountString(for amountValue: Decimal, with currencySettings: CurrencySettings?) -> String {
+        let currencyFormatter = CurrencyFormatter(currencySettings: currencySettings ?? CurrencySettings())
+        return currencyFormatter.formatAmount(amountValue) ?? Constants.valuePlaceholderText
+    }
+
+    static func formattedAmountCompactString(for amountValue: Decimal, with currencySettings: CurrencySettings?) -> String {
+        let currencyFormatter = CurrencyFormatter(currencySettings: currencySettings ?? CurrencySettings())
+        return currencyFormatter.formatHumanReadableAmount(amountValue) ?? Constants.valuePlaceholderText
+    }
+
+    static func formattedConversionString(for conversionRate: Double) -> String {
+        let numberFormatter = NumberFormatter()
+        numberFormatter.numberStyle = .percent
+        numberFormatter.minimumFractionDigits = 1
+
+        // do not add 0 fraction digit if the percentage is round
+        let minimumFractionDigits = floor(conversionRate * 100.0) == conversionRate * 100.0 ? 0 : 1
+        numberFormatter.minimumFractionDigits = minimumFractionDigits
+        return numberFormatter.string(from: conversionRate as NSNumber) ?? Constants.valuePlaceholderText
+    }
+
+    /// Returns the current time formatted as `10:24 PM` or `22:24` depending on the phone settings.
+    ///
+    static func currentFormattedTime() -> String {
+        let timeFormatter = DateFormatter()
+        timeFormatter.timeStyle = .short
+        timeFormatter.dateStyle = .none
+        return timeFormatter.string(from: Date())
+    }
+
+    enum Constants {
+        static let valuePlaceholderText = "-"
     }
 
     enum Localization {

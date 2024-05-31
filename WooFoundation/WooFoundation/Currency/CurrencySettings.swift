@@ -2,7 +2,7 @@ import Foundation
 
 /// Site-wide settings for displaying prices/money
 ///
-public class CurrencySettings: Codable, Equatable {
+public class CurrencySettings: Codable {
 
     // MARK: - Enums
 
@@ -425,13 +425,5 @@ public class CurrencySettings: Codable, Equatable {
         try container.encode(groupingSeparator, forKey: .groupingSeparator)
         try container.encode(decimalSeparator, forKey: .decimalSeparator)
         try container.encode(fractionDigits, forKey: .fractionDigits)
-    }
-
-    public static func == (lhs: CurrencySettings, rhs: CurrencySettings) -> Bool {
-        lhs.currencyCode == rhs.currencyCode &&
-        lhs.currencyPosition == rhs.currencyPosition &&
-        lhs.decimalSeparator == rhs.decimalSeparator &&
-        lhs.fractionDigits == rhs.fractionDigits &&
-        lhs.groupingSeparator == rhs.groupingSeparator
     }
 }

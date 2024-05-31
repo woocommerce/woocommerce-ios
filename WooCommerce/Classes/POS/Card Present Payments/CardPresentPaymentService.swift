@@ -2,7 +2,7 @@ import Combine
 import Foundation
 import struct Yosemite.Order
 
-final class CardPresentPaymentsAdaptor: CardPresentPaymentFacade {
+final class CardPresentPaymentService: CardPresentPaymentFacade {
     var paymentEventPublisher: AnyPublisher<CardPresentPaymentEvent, Never> {
         paymentEventSubject.eraseToAnyPublisher()
     }

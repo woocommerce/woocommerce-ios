@@ -3,7 +3,7 @@ import Combine
 @testable import WooCommerce
 import Yosemite
 
-final class CardPresentPaymentsOnboardingViewModelTests: XCTestCase {
+final class CardPresentPaymentOnboardingViewModelTests: XCTestCase {
     private var sut: CardPresentPaymentsOnboardingViewModel!
     private var onboardingUseCase: MockCardPresentPaymentsOnboardingUseCase!
     private var stateSubject: CurrentValueSubject<CardPresentPaymentOnboardingState, Never>!

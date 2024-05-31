@@ -18,7 +18,7 @@ struct CartView: View {
                 .foregroundColor(Color.white)
             ScrollView {
                 ForEach(viewModel.itemsInCart, id: \.item.productID) { cartItem in
-                    ProductRowView(cartItem: cartItem) {
+                    ItemRowView(cartItem: cartItem) {
                         viewModel.removeItemFromCart(cartItem)
                     }
                     .background(Color.tertiaryBackground)

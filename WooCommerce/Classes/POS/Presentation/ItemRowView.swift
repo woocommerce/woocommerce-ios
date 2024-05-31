@@ -1,13 +1,13 @@
+import Yosemite
 import SwiftUI
-import struct Yosemite.CartItem
 
-struct ProductRowView: View {
+struct ItemRowView: View {
     private let cartItem: CartItem
-    private let onProductRemoveTapped: (() -> Void)?
+    private let onItemRemoveTapped: (() -> Void)?
 
-    init(cartItem: CartItem, onProductRemoveTapped: (() -> Void)? = nil) {
+    init(cartItem: CartItem, onItemRemoveTapped: (() -> Void)? = nil) {
         self.cartItem = cartItem
-        self.onProductRemoveTapped = onProductRemoveTapped
+        self.onItemRemoveTapped = onItemRemoveTapped
     }
 
     var body: some View {
@@ -17,7 +17,7 @@ struct ProductRowView: View {
                 .foregroundColor(Color.primaryBackground)
             Spacer()
             Button(action: {
-                onProductRemoveTapped?()
+                onItemRemoveTapped?()
             }, label: {
                 Image(systemName: "x.circle")
             })
@@ -32,9 +32,10 @@ struct ProductRowView: View {
 }
 
 #if DEBUG
-//#Preview {
-//    ProductRowView(cartProduct: CartProduct(id: UUID(),
-//                                            product: POSProductProvider.provideProductForPreview(currencySettings: .init()),
-//                                            quantity: 2))
-//}
+#Preview {
+    ItemRowView(cartItem: CartItem(id: UUID(),
+                                      item: POSProductProvider.provideProductForPreview(),
+                                      quantity: 2),
+                onItemRemoveTapped: { })
+}
 #endif

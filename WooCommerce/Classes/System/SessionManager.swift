@@ -54,7 +54,16 @@ final class SessionManager: SessionManagerProtocol {
 
     /// Makes sure the credentials are in sync with the watch session.
     ///
-    private let watchDependenciesSynchronizer = WatchDependenciesSynchronizer()
+    private lazy var watchDependenciesSynchronizer = {
+        let storedDependencies: WatchDependencies? = {
+            guard let storeID = self.defaultStoreID, let storeName = self.defaultSite?.name, let credentials = self.loadCredentials() else {
+                return nil
+            }
+            return WatchDependencies(storeID: storeID, storeName: storeName, currencySettings: ServiceLocator.currencySettings, credentials: credentials)
+        }()
+
+        return WatchDependenciesSynchronizer(storedDependencies: storedDependencies)
+    }()
 
     /// Default Credentials.
     ///
@@ -69,14 +78,11 @@ final class SessionManager: SessionManagerProtocol {
 
             removeCredentials()
 
-            guard let credentials = newValue else {
-                return watchDependenciesSynchronizer.update(storeID: nil, storeName: nil, currencySettings: nil, credentials: nil)
+            if let credentials = newValue {
+                saveCredentials(credentials)
             }
-            saveCredentials(credentials)
-            watchDependenciesSynchronizer.update(storeID: defaultStoreID,
-                                                 storeName: defaultSite?.name,
-                                                 currencySettings: ServiceLocator.currencySettings,
-                                                 credentials: credentials)
+
+            watchDependenciesSynchronizer.credentials = newValue
         }
     }
 
@@ -105,10 +111,7 @@ final class SessionManager: SessionManagerProtocol {
             defaults[.defaultStoreID] = newValue
             defaultStoreIDSubject.send(newValue)
 
-            watchDependenciesSynchronizer.update(storeID: defaultStoreID,
-                                                 storeName: defaultSite?.name,
-                                                 currencySettings: ServiceLocator.currencySettings,
-                                                 credentials: defaultCredentials)
+            watchDependenciesSynchronizer.storeID = defaultStoreID
         }
     }
 
@@ -161,10 +164,7 @@ final class SessionManager: SessionManagerProtocol {
     ///
     @Published var defaultSite: Site? {
         didSet {
-            watchDependenciesSynchronizer.update(storeID: defaultStoreID,
-                                                 storeName: defaultSite?.name,
-                                                 currencySettings: ServiceLocator.currencySettings,
-                                                 credentials: loadCredentials())
+            watchDependenciesSynchronizer.storeName = defaultSite?.name
         }
     }
 

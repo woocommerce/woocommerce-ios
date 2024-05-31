@@ -31,6 +31,7 @@ struct Woo_Watch_AppApp: App {
                     })
                     .compatibleVerticalStyle()
                     .environment(\.dependencies, dependencies)
+                    .id(dependencies.storeID) // Forces a redraw when the store id changes
 
                 } else {
 

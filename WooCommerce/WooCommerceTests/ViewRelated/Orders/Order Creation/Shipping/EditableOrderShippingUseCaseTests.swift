@@ -148,12 +148,13 @@ final class EditableOrderShippingUseCaseTests: XCTestCase {
 
     // MARK: Add shipping line
 
-    func test_addShippingLineViewModel_returns_view_model_for_new_shipping_line() {
+    func test_addShippingLine_sets_view_model_for_new_shipping_line() {
         // When
-        let newShippingLineViewModel = useCase.addShippingLineViewModel()
+        useCase.addShippingLine()
 
         // Then
-        XCTAssertFalse(newShippingLineViewModel.isExistingShippingLine)
+        XCTAssertNotNil(useCase.addShippingLineViewModel)
+        XCTAssertFalse(try XCTUnwrap (useCase.addShippingLineViewModel).isExistingShippingLine)
     }
 
     // MARK: Shipping line rows
@@ -249,15 +250,15 @@ final class EditableOrderShippingUseCaseTests: XCTestCase {
 
     // MARK: Analytics
 
-    func test_trackAddShippingTapped_tracks_expected_event() {
+    func test_addShippingLine_tracks_expected_event() {
         // When
-        useCase.trackAddShippingTapped()
+        useCase.addShippingLine()
 
         // Then
         XCTAssertEqual(analytics.receivedEvents, [WooAnalyticsStat.orderAddShippingTapped.rawValue])
     }
 
-    func test_shipping_method_tracked_when_added() throws {
+    func test_saveShippingLine_tracks_expected_event_and_properties() throws {
         // Given
         let shippingLine = ShippingLine.fake().copy(methodID: "flat_rate")
 
@@ -271,7 +272,7 @@ final class EditableOrderShippingUseCaseTests: XCTestCase {
         assertEqual(1, analytics.receivedProperties.first?["shipping_lines_count"] as? Int64)
     }
 
-    func test_shipping_method_tracked_when_removed() throws {
+    func test_removeShippingLine_tracks_expected_event() throws {
         // When
         useCase.removeShippingLine(ShippingLine.fake())
 

@@ -4,8 +4,6 @@ struct OrderShippingSection: View {
     /// Use case to add, edit, or remove shipping lines
     @ObservedObject var useCase: EditableOrderShippingUseCase
 
-    @State private var showAddShippingLine: Bool = false
-
     @Environment(\.safeAreaInsets) private var safeAreaInsets: EdgeInsets
 
     var body: some View {
@@ -22,7 +20,7 @@ struct OrderShippingSection: View {
                     .renderedIf(useCase.shouldShowNonEditableIndicators)
 
                 Button(action: {
-                    addShippingLine()
+                    useCase.addShippingLine()
                 }) {
                     Image(uiImage: .plusImage)
                 }
@@ -38,19 +36,12 @@ struct OrderShippingSection: View {
         .padding()
         .background(Color(.listForeground(modal: true)))
         .addingTopAndBottomDividers()
-        .sheet(isPresented: $showAddShippingLine, content: {
-            ShippingLineSelectionDetails(viewModel: useCase.addShippingLineViewModel())
+        .sheet(item: $useCase.addShippingLineViewModel, content: { addShippingLine in
+            ShippingLineSelectionDetails(viewModel: addShippingLine)
         })
         .sheet(item: $useCase.selectedShippingLine, content: { selectedShippingLine in
             ShippingLineSelectionDetails(viewModel: selectedShippingLine)
         })
-    }
-}
-
-private extension OrderShippingSection {
-    func addShippingLine() {
-        showAddShippingLine = true
-        // TODO-12584: Track that add shipping has been tapped
     }
 }
 

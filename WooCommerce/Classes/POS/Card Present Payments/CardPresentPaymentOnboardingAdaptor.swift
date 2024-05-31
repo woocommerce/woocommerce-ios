@@ -11,7 +11,7 @@ final class CardPresentPaymentsOnboardingPresenterAdaptor: CardPresentPaymentsOn
 
     private let readinessUseCase: CardPresentPaymentsReadinessUseCase
 
-    private let onboardingViewModel: CardPresentPaymentOnboardingViewModel
+    private let onboardingViewModel: CardPresentPaymentsOnboardingViewModel
 
     private var readinessSubscription: AnyCancellable?
 
@@ -23,7 +23,7 @@ final class CardPresentPaymentsOnboardingPresenterAdaptor: CardPresentPaymentsOn
         self.stores = stores
         onboardingUseCase = CardPresentPaymentsOnboardingUseCase(stores: stores)
         readinessUseCase = CardPresentPaymentsReadinessUseCase(onboardingUseCase: onboardingUseCase, stores: stores)
-        onboardingViewModel = CardPresentPaymentOnboardingViewModel(useCase: onboardingUseCase)
+        onboardingViewModel = CardPresentPaymentsOnboardingViewModel(useCase: onboardingUseCase)
         onboardingScreenViewModelPublisher = onboardingScreenViewModelSubject.eraseToAnyPublisher()
     }
 

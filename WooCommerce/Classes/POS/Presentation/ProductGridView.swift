@@ -25,9 +25,9 @@ struct ProductGridView: View {
             .padding(.vertical, 0)
             ScrollView {
                 LazyVGrid(columns: columns, spacing: 16) {
-                    ForEach(viewModel.products, id: \.productID) { product in
-                        ProductCardView(product: product) {
-                            viewModel.addProductToCart(product)
+                    ForEach(viewModel.items, id: \.productID) { item in
+                        ProductCardView(item: item) {
+                            viewModel.addItemToCart(item)
                         }
                         .foregroundColor(Color.primaryText)
                         .background(Color.secondaryBackground)

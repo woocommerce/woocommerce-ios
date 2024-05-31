@@ -4,19 +4,19 @@ import struct Yosemite.POSProduct
 import protocol Yosemite.POSItem
 
 struct ProductCardView: View {
-    private let product: POSItem
+    private let item: POSItem
     private let onProductCardTapped: (() -> Void)?
 
-    init(product: POSItem, onProductCardTapped: (() -> Void)? = nil) {
-        self.product = product
+    init(item: POSItem, onProductCardTapped: (() -> Void)? = nil) {
+        self.item = item
         self.onProductCardTapped = onProductCardTapped
     }
 
     var body: some View {
             VStack {
-                Text(product.name)
+                Text(item.name)
                     .foregroundStyle(Color.primaryBackground)
-                Text(product.formattedPrice)
+                Text(item.formattedPrice)
                     .foregroundStyle(Color.primaryBackground)
                 HStack(spacing: 8) {
                     Spacer()

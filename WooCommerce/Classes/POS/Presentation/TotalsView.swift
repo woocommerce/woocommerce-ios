@@ -61,7 +61,7 @@ private extension TotalsView {
 
 #if DEBUG
 #Preview {
-    TotalsView(viewModel: .init(products: [],
+    TotalsView(viewModel: .init(items: [],
                                 cardReaderConnectionViewModel: .init(state: .connectingToReader),
                                 currencySettings: .init()))
 }

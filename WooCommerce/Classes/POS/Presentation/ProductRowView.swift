@@ -1,18 +1,18 @@
 import SwiftUI
-import struct Yosemite.CartProduct
+import struct Yosemite.CartItem
 
 struct ProductRowView: View {
-    private let cartProduct: CartProduct
+    private let cartItem: CartItem
     private let onProductRemoveTapped: (() -> Void)?
 
-    init(cartProduct: CartProduct, onProductRemoveTapped: (() -> Void)? = nil) {
-        self.cartProduct = cartProduct
+    init(cartItem: CartItem, onProductRemoveTapped: (() -> Void)? = nil) {
+        self.cartItem = cartItem
         self.onProductRemoveTapped = onProductRemoveTapped
     }
 
     var body: some View {
         HStack {
-            Text(cartProduct.product.name)
+            Text(cartItem.item.name)
                 .padding(.horizontal, 32)
                 .foregroundColor(Color.primaryBackground)
             Spacer()

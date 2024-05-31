@@ -64,9 +64,9 @@ final class DashboardViewModel: ObservableObject {
 
     @Published var showingCustomization = false
 
-    @Published var showNewCardsNotice = false
+    @Published private(set) var showNewCardsNotice = false
 
-    @Published var isReloadingAllData = false
+    @Published private(set) var isReloadingAllData = false
 
     let siteID: Int64
     private let stores: StoresManager

@@ -13,7 +13,7 @@ final class CardPresentPaymentsOnboardingPresenterAdaptor: CardPresentPaymentsOn
 
     private var readinessSubscription: AnyCancellable?
 
-    private(set) var onboardingScreenViewModelPublisher: AnyPublisher<CardPresentPaymentOnboardingPresentationEvent, Never>
+    let onboardingScreenViewModelPublisher: AnyPublisher<CardPresentPaymentOnboardingPresentationEvent, Never>
 
     private let onboardingScreenViewModelSubject: PassthroughSubject<CardPresentPaymentOnboardingPresentationEvent, Never> = PassthroughSubject()
 

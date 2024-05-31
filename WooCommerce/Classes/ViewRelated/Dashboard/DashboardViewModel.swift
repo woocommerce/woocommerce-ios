@@ -562,7 +562,6 @@ private extension DashboardViewModel {
     /// Determines whether to show the notice that new cards now exist and can be found in Customize screen.
     /// The checking criteria is whether the new cards are already in the saved cards (in which case we assume users
     /// already know about them, thus don't need the notice). Otherwise, show the notice.
-    @MainActor
     func configureNewCardsNotice() {
         let savedCardTypes = Set(savedCards.map { $0.type })
         let savedCardContainsAllNewCards = Constants.m2CardSet.isSubset(of: savedCardTypes)

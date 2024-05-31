@@ -11,7 +11,6 @@ final class CardPresentPaymentsOnboardingViewModelTests: XCTestCase {
     private var cancellables: Set<AnyCancellable> = []
 
     override func setUp() {
-        super.setUp()
         stateSubject = CurrentValueSubject<CardPresentPaymentOnboardingState, Never>(.loading)
         onboardingUseCase = MockCardPresentPaymentsOnboardingUseCase(
             initial: .noConnectionError,
@@ -22,7 +21,6 @@ final class CardPresentPaymentsOnboardingViewModelTests: XCTestCase {
     override func tearDown() {
         _ = cancellables.map { $0.cancel() }
         cancellables = []
-        super.tearDown()
     }
 
     func test_when_created_shouldShow_isUnknown() {

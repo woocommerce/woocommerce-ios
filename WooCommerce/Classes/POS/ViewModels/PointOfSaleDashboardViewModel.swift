@@ -6,7 +6,7 @@ import class WooFoundation.CurrencyFormatter
 import class WooFoundation.CurrencySettings
 
 final class PointOfSaleDashboardViewModel: ObservableObject {
-    @Published private(set) var products: [POSProduct]
+    @Published private(set) var products: [POSItem]
     @Published private(set) var productsInCart: [CartProduct] = [] {
         didSet {
             calculateAmounts()
@@ -32,15 +32,13 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
     init(products: [POSItem],
          cardReaderConnectionViewModel: CardReaderConnectionViewModel,
          currencySettings: CurrencySettings) {
-        // For the moment we inject POSItem, but only use the POSProduct implementation, since it's the only item type we're using
-        // Later we might change this to support other types of items
-        self.products = products.compactMap { $0 as? POSProduct }
+        self.products = products
         self.cardReaderConnectionViewModel = cardReaderConnectionViewModel
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
         observeProductsInCartForCartTotal()
     }
 
-    func addProductToCart(_ product: POSProduct) {
+    func addProductToCart(_ product: POSItem) {
         let cartProduct = CartProduct(id: UUID(), product: product, quantity: 1)
         productsInCart.append(cartProduct)
     }

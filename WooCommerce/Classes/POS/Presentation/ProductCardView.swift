@@ -1,12 +1,13 @@
 import SwiftUI
 import class WooFoundation.CurrencyFormatter
 import struct Yosemite.POSProduct
+import protocol Yosemite.POSItem
 
 struct ProductCardView: View {
-    private let product: POSProduct
+    private let product: POSItem
     private let onProductCardTapped: (() -> Void)?
 
-    init(product: POSProduct, onProductCardTapped: (() -> Void)? = nil) {
+    init(product: POSItem, onProductCardTapped: (() -> Void)? = nil) {
         self.product = product
         self.onProductCardTapped = onProductCardTapped
     }

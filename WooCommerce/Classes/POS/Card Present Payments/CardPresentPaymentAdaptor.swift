@@ -1,7 +1,6 @@
 import Combine
-import struct Yosemite.Order
 import Foundation
-import class WooFoundation.CurrencyFormatter
+import struct Yosemite.Order
 
 final class CardPresentPaymentsAdaptor: CardPresentPaymentFacade {
     var paymentEventPublisher: AnyPublisher<CardPresentPaymentEvent, Never> {

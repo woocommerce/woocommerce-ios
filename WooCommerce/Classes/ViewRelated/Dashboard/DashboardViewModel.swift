@@ -155,8 +155,8 @@ final class DashboardViewModel: ObservableObject {
     }
 
     @MainActor
-    func handleCustomizationDismissal() async {
-        await configureNewCardsNotice()
+    func handleCustomizationDismissal() {
+        configureNewCardsNotice()
     }
 
     @MainActor
@@ -557,7 +557,7 @@ private extension DashboardViewModel {
             dashboardCards = reorderedCards + remainingCards
         }
 
-        await configureNewCardsNotice()
+        configureNewCardsNotice()
     }
 
     /// Determines whether to show the notice that new cards now exist and can be found in Customize screen.

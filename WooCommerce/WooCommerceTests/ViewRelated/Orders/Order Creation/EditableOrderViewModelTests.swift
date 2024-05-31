@@ -3133,7 +3133,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.hasChanges)
     }
 
-    func test_editing_existing_shipping_line_sets_expected_selectedShippingLine() throws {
+    func test_editing_existing_shipping_line_sets_expected_shippingLineDetails_view_model() throws {
         // Given
         let shippingLine = ShippingLine.fake().copy(shippingID: 1, methodTitle: "Package 1")
         let order = Order.fake().copy(siteID: sampleSiteID, shippingLines: [shippingLine])
@@ -3145,7 +3145,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         viewModel.shippingUseCase.shippingLineRows.first?.editShippingLine()
 
         // Then
-        let editShippingLineViewModel = try XCTUnwrap(viewModel.shippingUseCase.selectedShippingLine)
+        let editShippingLineViewModel = try XCTUnwrap(viewModel.shippingUseCase.shippingLineDetails)
         assertEqual(shippingLine.methodTitle, editShippingLineViewModel.methodTitle)
     }
 }

@@ -27,13 +27,9 @@ final class EditableOrderShippingUseCase: ObservableObject {
     ///
     @Published private(set) var shippingLineRows: [ShippingLineRowViewModel] = []
 
-    /// View model to edit a selected shipping line.
+    /// View model for shipping line details.
     ///
-    @Published var selectedShippingLine: ShippingLineSelectionDetailsViewModel? = nil
-
-    /// View model to add a new shipping line.
-    ///
-    @Published var addShippingLineViewModel: ShippingLineSelectionDetailsViewModel? = nil
+    @Published var shippingLineDetails: ShippingLineSelectionDetailsViewModel? = nil
 
     // MARK: Shipping methods
 
@@ -130,10 +126,10 @@ final class EditableOrderShippingUseCase: ObservableObject {
     /// Handles when the "Add shipping" button is tapped.
     ///
     func addShippingLine() {
-        addShippingLineViewModel = ShippingLineSelectionDetailsViewModel(siteID: siteID,
-                                                                         shippingLine: nil,
-                                                                         didSelectSave: saveShippingLine,
-                                                                         didSelectRemove: removeShippingLine)
+        shippingLineDetails = ShippingLineSelectionDetailsViewModel(siteID: siteID,
+                                                                    shippingLine: nil,
+                                                                    didSelectSave: saveShippingLine,
+                                                                    didSelectRemove: removeShippingLine)
         analytics.track(event: .Orders.orderAddShippingTapped())
     }
 }
@@ -178,13 +174,13 @@ private extension EditableOrderShippingUseCase {
                         guard let self else {
                             return
                         }
-                        selectedShippingLine = ShippingLineSelectionDetailsViewModel(siteID: siteID,
-                                                                                     shippingID: shippingLine.shippingID,
-                                                                                     initialMethodID: shippingLine.methodID ?? "",
-                                                                                     initialMethodTitle: shippingLine.methodTitle,
-                                                                                     shippingTotal: shippingLine.total,
-                                                                                     didSelectSave: saveShippingLine,
-                                                                                     didSelectRemove: removeShippingLine)
+                        shippingLineDetails = ShippingLineSelectionDetailsViewModel(siteID: siteID,
+                                                                                    shippingID: shippingLine.shippingID,
+                                                                                    initialMethodID: shippingLine.methodID ?? "",
+                                                                                    initialMethodTitle: shippingLine.methodTitle,
+                                                                                    shippingTotal: shippingLine.total,
+                                                                                    didSelectSave: saveShippingLine,
+                                                                                    didSelectRemove: removeShippingLine)
                     })
                 }
             }

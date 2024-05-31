@@ -36,11 +36,8 @@ struct OrderShippingSection: View {
         .padding()
         .background(Color(.listForeground(modal: true)))
         .addingTopAndBottomDividers()
-        .sheet(item: $useCase.addShippingLineViewModel, content: { addShippingLine in
-            ShippingLineSelectionDetails(viewModel: addShippingLine)
-        })
-        .sheet(item: $useCase.selectedShippingLine, content: { selectedShippingLine in
-            ShippingLineSelectionDetails(viewModel: selectedShippingLine)
+        .sheet(item: $useCase.shippingLineDetails, content: { viewModel in
+            ShippingLineSelectionDetails(viewModel: viewModel)
         })
     }
 }

@@ -148,13 +148,13 @@ final class EditableOrderShippingUseCaseTests: XCTestCase {
 
     // MARK: Add shipping line
 
-    func test_addShippingLine_sets_view_model_for_new_shipping_line() {
+    func test_addShippingLine_sets_view_model_for_new_shipping_line() throws {
         // When
         useCase.addShippingLine()
 
         // Then
-        XCTAssertNotNil(useCase.addShippingLineViewModel)
-        XCTAssertFalse(try XCTUnwrap (useCase.addShippingLineViewModel).isExistingShippingLine)
+        let viewModel = try XCTUnwrap(useCase.shippingLineDetails)
+        XCTAssertFalse(viewModel.isExistingShippingLine)
     }
 
     // MARK: Shipping line rows
@@ -171,7 +171,7 @@ final class EditableOrderShippingUseCaseTests: XCTestCase {
         assertEqual(shippingLine.methodTitle, useCase.shippingLineRows.first?.shippingTitle)
     }
 
-    func test_selectedShippingLine_set_when_shipping_line_row_is_edited() {
+    func test_expected_view_model_set_when_shipping_line_row_is_edited() throws {
         // Given
         let shippingLine = ShippingLine.fake().copy(methodTitle: "Flat Rate")
         let order = Order.fake().copy(siteID: sampleSiteID, shippingLines: [shippingLine])
@@ -185,7 +185,9 @@ final class EditableOrderShippingUseCaseTests: XCTestCase {
         useCase.shippingLineRows.first?.editShippingLine()
 
         // Then
-        assertEqual(shippingLine.methodTitle, useCase.selectedShippingLine?.methodTitle)
+        let viewModel = try XCTUnwrap(useCase.shippingLineDetails)
+        XCTAssertTrue(viewModel.isExistingShippingLine)
+        assertEqual(shippingLine.methodTitle, viewModel.methodTitle)
     }
 
     func test_shipping_line_row_is_editable_for_new_order() throws {

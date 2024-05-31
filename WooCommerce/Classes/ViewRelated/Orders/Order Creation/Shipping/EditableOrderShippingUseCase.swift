@@ -193,12 +193,10 @@ private extension EditableOrderShippingUseCase {
     ///
     func configurePaymentData() {
         orderSynchronizer.orderPublisher
-            .map { [weak self] order in
-                guard let self else { return ShippingPaymentData() }
-
-                return ShippingPaymentData(shouldShowShippingTotal: order.shippingLines.filter { $0.methodID != nil }.isNotEmpty,
-                                           shippingTotal: order.shippingTotal.isNotEmpty ? order.shippingTotal : "0",
-                                           shippingTax: order.shippingTax.isNotEmpty ? order.shippingTax : "0")
+            .map { order in
+                ShippingPaymentData(shouldShowShippingTotal: order.shippingLines.filter { $0.methodID != nil }.isNotEmpty,
+                                    shippingTotal: order.shippingTotal.isNotEmpty ? order.shippingTotal : "0",
+                                    shippingTax: order.shippingTax.isNotEmpty ? order.shippingTax : "0")
             }
             .assign(to: &$paymentData)
     }

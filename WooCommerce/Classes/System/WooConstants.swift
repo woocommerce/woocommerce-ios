@@ -349,6 +349,14 @@ extension WooConstants {
         ///
         case jetpackStats = "https://jetpack.com/stats/"
 
+        /// URL for the Order Creation Shipping Lines feedback survey
+        ///
+#if DEBUG
+        case orderCreationShippingFeedback = "https://automattic.survey.fm/order-creation-shipping-lines-survey-testing"
+#else
+        case orderCreationShippingFeedback = "https://automattic.survey.fm/order-creation-shipping-lines-survey-production"
+#endif
+
         /// Returns the URL version of the receiver
         ///
         func asURL() -> URL {

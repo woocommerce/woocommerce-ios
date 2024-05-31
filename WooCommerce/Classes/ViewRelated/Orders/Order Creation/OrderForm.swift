@@ -383,30 +383,34 @@ struct OrderForm: View {
             }
         }
         .safeAreaInset(edge: .bottom) {
-            ExpandableBottomSheet(onChangeOfExpansion: viewModel.orderTotalsExpansionChanged) {
-                VStack {
-                    HStack {
-                        Text(Localization.orderTotal)
-                        Spacer()
-                        Text(viewModel.orderTotal)
-                    }
-                    .font(.headline)
-                    .padding()
+            VStack {
+                BannerPopover(isPresented: $viewModel.shippingUseCase.shouldShowFeedbackSurvey, config: viewModel.shippingUseCase.feedbackSurveyConfig)
 
-                    Divider()
-                        .padding([.leading], Layout.dividerLeadingPadding)
-
-                    completedButton
+                ExpandableBottomSheet(onChangeOfExpansion: viewModel.orderTotalsExpansionChanged) {
+                    VStack {
+                        HStack {
+                            Text(Localization.orderTotal)
+                            Spacer()
+                            Text(viewModel.orderTotal)
+                        }
+                        .font(.headline)
                         .padding()
+
+                        Divider()
+                            .padding([.leading], Layout.dividerLeadingPadding)
+
+                        completedButton
+                            .padding()
+                    }
+                } expandableContent: {
+                    OrderPaymentSection(
+                        viewModel: viewModel.paymentDataViewModel,
+                        shippingUseCase: viewModel.shippingUseCase,
+                        shouldShowGiftCardForm: $shouldShowGiftCardForm)
+                    .disabled(viewModel.shouldShowNonEditableIndicators)
                 }
-            } expandableContent: {
-                OrderPaymentSection(
-                    viewModel: viewModel.paymentDataViewModel,
-                    shippingUseCase: viewModel.shippingUseCase,
-                    shouldShowGiftCardForm: $shouldShowGiftCardForm)
-                .disabled(viewModel.shouldShowNonEditableIndicators)
+                .ignoresSafeArea(edges: .horizontal)
             }
-            .ignoresSafeArea(edges: .horizontal)
         }
         .navigationTitle(viewModel.title)
         .navigationBarTitleDisplayMode(.inline)

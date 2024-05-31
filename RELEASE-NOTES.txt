@@ -1,5 +1,9 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+19.0
+-----
+
+
 18.9
 -----
 - [***] Explore our new Watch App to get glance of you store data and latest orders.

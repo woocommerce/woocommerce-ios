@@ -64,6 +64,8 @@ final class DashboardViewModel: ObservableObject {
 
     @Published var showNewCardsNotice = false
 
+    @Published var isReloadingAllData = false
+
     let siteID: Int64
     private let stores: StoresManager
     private let featureFlagService: FeatureFlagService
@@ -156,6 +158,7 @@ final class DashboardViewModel: ObservableObject {
 
     @MainActor
     func reloadAllData() async {
+        isReloadingAllData = true
         await withTaskGroup(of: Void.self) { group in
             group.addTask { [weak self] in
                 await self?.syncDashboardEssentialData()
@@ -168,6 +171,7 @@ final class DashboardViewModel: ObservableObject {
                 await self?.checkInboxEligibility()
             }
         }
+        isReloadingAllData = false
     }
 
     /// Sync essential data to construct the dashboard

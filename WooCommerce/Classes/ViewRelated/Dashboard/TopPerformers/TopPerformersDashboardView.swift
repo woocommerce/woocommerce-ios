@@ -104,6 +104,8 @@ private extension TopPerformersDashboardView {
 
                 if viewModel.timeRange.isCustomTimeRange {
                     Button {
+                        ServiceLocator.analytics.track(event: .DynamicDashboard.dashboardCardInteracted(type: .topPerformers))
+
                         showingCustomRangePicker = true
                     } label: {
                         HStack {
@@ -120,6 +122,8 @@ private extension TopPerformersDashboardView {
             }
             Spacer()
             StatsTimeRangePicker(currentTimeRange: viewModel.timeRange) { newTimeRange in
+                ServiceLocator.analytics.track(event: .DynamicDashboard.dashboardCardInteracted(type: .topPerformers))
+
                 if newTimeRange.isCustomTimeRange {
                     showingCustomRangePicker = true
                 } else {
@@ -132,6 +136,8 @@ private extension TopPerformersDashboardView {
 
     var viewAllAnalyticsButton: some View {
         Button {
+            ServiceLocator.analytics.track(event: .DynamicDashboard.dashboardCardInteracted(type: .topPerformers))
+
             onViewAllAnalytics(viewModel.siteID, viewModel.siteTimezone, viewModel.timeRange)
         } label: {
             HStack {

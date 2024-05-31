@@ -14,3 +14,20 @@ public struct POSProduct: POSItem {
         self.formattedPrice = formattedPrice
     }
 }
+
+// TODO:
+// Temporary implementation just to comply with `POSItem` conformance
+extension POSProduct {
+    public var imageURL: URL {
+        let imageURLString = "http://www.automattic.com"
+        return URL(string: imageURLString)!
+    }
+
+    public var details: [String] {
+        return [""]
+    }
+
+    public func makeCartItem() -> CartItem {
+        fatalError("Not implemented")
+    }
+}

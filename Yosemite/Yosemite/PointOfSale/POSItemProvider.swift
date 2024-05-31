@@ -3,6 +3,10 @@ public protocol POSItem {
     var productID: Int64 { get }
     var name: String { get }
     var price: String { get }
+    var imageURL: URL { get }
+    var details: [String] { get }
+    
+    func makeCartItem() -> CartItem
 }
 
 public protocol POSItemProvider {

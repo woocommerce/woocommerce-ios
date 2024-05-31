@@ -35,7 +35,8 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
         self.items = items
         self.cardReaderConnectionViewModel = cardReaderConnectionViewModel
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
-        //observeProductsInCartForCartTotal()
+
+        observeItemsInCartForCartTotal()
     }
 
     func addItemToCart(_ item: POSItem) {
@@ -86,18 +87,18 @@ extension PointOfSaleDashboardViewModel {
 }
 
 private extension PointOfSaleDashboardViewModel {
-//    func observeProductsInCartForCartTotal() {
-//        $productsInCart
-//            .map { [weak self] in
-//                guard let self else { return nil }
-//                let totalValue: Decimal = $0.reduce(0) { partialResult, cartProduct in
-//                    let productPrice = self.currencyFormatter.convertToDecimal(cartProduct.product.price) ?? 0
-//                    let quantity = cartProduct.quantity
-//                    let total = productPrice.multiplying(by: NSDecimalNumber(value: quantity)) as Decimal
-//                    return partialResult + total
-//                }
-//                return currencyFormatter.formatAmount(totalValue)
-//            }
-//            .assign(to: &$formattedCartTotalPrice)
-//    }
+    func observeItemsInCartForCartTotal() {
+        $itemsInCart
+            .map { [weak self] in
+                guard let self else { return "-" }
+                let totalValue: Decimal = $0.reduce(0) { partialResult, cartItem in
+                    let itemPrice = self.currencyFormatter.convertToDecimal(cartItem.item.price) ?? 0
+                    let quantity = cartItem.quantity
+                    let total = itemPrice.multiplying(by: NSDecimalNumber(value: quantity)) as Decimal
+                    return partialResult + total
+                }
+                return currencyFormatter.formatAmount(totalValue)
+            }
+            .assign(to: &$formattedCartTotalPrice)
+    }
 }

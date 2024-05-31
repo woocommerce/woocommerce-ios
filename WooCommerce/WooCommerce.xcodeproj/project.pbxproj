@@ -763,6 +763,7 @@
 		2004E2D82C08E56300D62521 /* CardPresentPaymentOnboardingPresentationEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2004E2D72C08E56300D62521 /* CardPresentPaymentOnboardingPresentationEvent.swift */; };
 		2004E2E12C08ED3200D62521 /* ViewControllerPresenting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2004E2DB2C08E95B00D62521 /* ViewControllerPresenting.swift */; };
 		2004E2E32C0A128400D62521 /* CardPresentPaymentsConnectionControllerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2004E2E22C0A128400D62521 /* CardPresentPaymentsConnectionControllerManager.swift */; };
+		2004E2E52C0A206800D62521 /* CardPresentPaymentsAlertPresenterAdaptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2004E2E42C0A206800D62521 /* CardPresentPaymentsAlertPresenterAdaptor.swift */; };
 		201F5AC52AD4061800EF6C55 /* AboutTapToPayViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 201F5AC42AD4061800EF6C55 /* AboutTapToPayViewModel.swift */; };
 		20203AB22B31EEF1009D0C11 /* ExpandableBottomSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20203AB12B31EEF1009D0C11 /* ExpandableBottomSheet.swift */; };
 		202496642B0B9E0D00EE527D /* ScrollViewSectionKit in Frameworks */ = {isa = PBXBuildFile; productRef = 202496632B0B9E0D00EE527D /* ScrollViewSectionKit */; };
@@ -3682,6 +3683,7 @@
 		2004E2D72C08E56300D62521 /* CardPresentPaymentOnboardingPresentationEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentOnboardingPresentationEvent.swift; sourceTree = "<group>"; };
 		2004E2DB2C08E95B00D62521 /* ViewControllerPresenting.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewControllerPresenting.swift; sourceTree = "<group>"; };
 		2004E2E22C0A128400D62521 /* CardPresentPaymentsConnectionControllerManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentsConnectionControllerManager.swift; sourceTree = "<group>"; };
+		2004E2E42C0A206800D62521 /* CardPresentPaymentsAlertPresenterAdaptor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentsAlertPresenterAdaptor.swift; sourceTree = "<group>"; };
 		200B84AD2BEB99AC00EAAB23 /* WooCommercePOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = WooCommercePOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		201F5AC42AD4061800EF6C55 /* AboutTapToPayViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutTapToPayViewModel.swift; sourceTree = "<group>"; };
 		20203AB12B31EEF1009D0C11 /* ExpandableBottomSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpandableBottomSheet.swift; sourceTree = "<group>"; };
@@ -7441,6 +7443,7 @@
 				2004E2D52C08E1FA00D62521 /* CardPresentPaymentOnboardingAdaptor.swift */,
 				2004E2D72C08E56300D62521 /* CardPresentPaymentOnboardingPresentationEvent.swift */,
 				027179E12C08817F0049F0BD /* CardPresentPaymentService.swift */,
+				2004E2E42C0A206800D62521 /* CardPresentPaymentsAlertPresenterAdaptor.swift */,
 				2004E2E22C0A128400D62521 /* CardPresentPaymentsConnectionControllerManager.swift */,
 			);
 			path = "Card Present Payments";
@@ -15645,6 +15648,7 @@
 				CE606D812BE14000001CB424 /* ShippingLineSelectionDetails.swift in Sources */,
 				3F1FA84C28B60126009E246C /* StoreWidgets.intentdefinition in Sources */,
 				ABC3521A374A2355001E3CD6 /* CardReaderSettingsSearchingViewController.swift in Sources */,
+				2004E2E52C0A206800D62521 /* CardPresentPaymentsAlertPresenterAdaptor.swift in Sources */,
 				B9F1489A2AD586E5008FC795 /* FormattableAmountTextFieldViewModel.swift in Sources */,
 				EE5B5BC22AB42F21009BCBD6 /* AddProductNameWithAIView.swift in Sources */,
 				532842FC64B572D4545BD98E /* OrderFormCustomerNoteViewModel.swift in Sources */,

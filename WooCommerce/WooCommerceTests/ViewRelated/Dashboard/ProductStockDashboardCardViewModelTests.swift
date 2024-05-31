@@ -41,6 +41,7 @@ final class ProductStockDashboardCardViewModelTests: XCTestCase {
                                                       stockQuantity: 4)
         let variationReport = ProductReport.fake().copy(productID: variation.parentID,
                                                         variationID: variation.productID,
+                                                        name: "Pizza - Large, Seafood, Spicy",
                                                         imageURL: nil,
                                                         itemsSold: 8,
                                                         stockQuantity: 3)

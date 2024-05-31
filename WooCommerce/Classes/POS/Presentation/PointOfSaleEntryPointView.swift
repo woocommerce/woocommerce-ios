@@ -31,7 +31,9 @@ struct PointOfSaleEntryPointView: View {
 }
 
 #if DEBUG
-//#Preview {
-//    PointOfSaleEntryPointView(currencySettings: ServiceLocator.currencySettings, hideAppTabBar: { _ in })
-//}
+#Preview {
+    // TODO:
+    // Restore PointOfSaleEntryPointView preview once the POSProductProvider storemanager dependency is resolved
+    EmptyView()
+}
 #endif

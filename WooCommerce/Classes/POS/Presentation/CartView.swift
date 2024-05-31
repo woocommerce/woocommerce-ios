@@ -1,3 +1,4 @@
+import Yosemite
 import SwiftUI
 
 struct CartView: View {
@@ -69,9 +70,9 @@ private extension CartView {
 }
 
 #if DEBUG
-//#Preview {
-//    CartView(viewModel: PointOfSaleDashboardViewModel(products: POSProductProvider.provideProductsForPreview(),
-//                                                      cardReaderConnectionViewModel: .init(state: .connectingToReader),
-//                                                      currencySettings: .init()))
-//}
+#Preview {
+    CartView(viewModel: PointOfSaleDashboardViewModel(items: POSProductProvider.provideProductsForPreview(),
+                                                      cardReaderConnectionViewModel: .init(state: .connectingToReader),
+                                                      currencySettings: .init()))
+}
 #endif

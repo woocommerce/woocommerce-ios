@@ -67,7 +67,7 @@ public final class POSProductProvider: POSItemProvider {
 // MARK: - PreviewProvider helpers
 //
 extension POSProductProvider {
-    static func provideProductForPreview() -> POSProduct {
+    public static func provideProductForPreview() -> POSProduct {
         POSProduct(itemID: UUID(),
                    productID: 1,
                    name: "Product 1",
@@ -75,7 +75,7 @@ extension POSProductProvider {
                    formattedPrice: "$1.00")
     }
 
-    static func provideProductsForPreview() -> [POSProduct] {
+    public static func provideProductsForPreview() -> [POSProduct] {
         return [
             POSProduct(itemID: UUID(), productID: 1, name: "Product 1", price: "1.00", formattedPrice: "$1.00"),
             POSProduct(itemID: UUID(), productID: 2, name: "Product 2", price: "2.00", formattedPrice: "$2.00"),

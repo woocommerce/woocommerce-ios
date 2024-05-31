@@ -1,7 +1,5 @@
+import Yosemite
 import SwiftUI
-import class WooFoundation.CurrencyFormatter
-import struct Yosemite.POSProduct
-import protocol Yosemite.POSItem
 
 struct ItemCardView: View {
     private let item: POSItem
@@ -33,7 +31,7 @@ struct ItemCardView: View {
 }
 
 #if DEBUG
-//#Preview {
-//    ProductCardView(product: POSProductProvider.provideProductForPreview(currencySettings: .init()))
-//}
+#Preview {
+    ItemCardView(item: POSProductProvider.provideProductForPreview(), onItemCardTapped: { })
+}
 #endif

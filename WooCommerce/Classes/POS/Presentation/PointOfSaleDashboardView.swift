@@ -1,3 +1,4 @@
+import Yosemite
 import SwiftUI
 
 struct PointOfSaleDashboardView: View {
@@ -77,9 +78,9 @@ private extension PointOfSaleDashboardView {
 }
 
 #if DEBUG
-//#Preview {
-//    PointOfSaleDashboardView(viewModel: PointOfSaleDashboardViewModel(products: POSProductProvider.provideProductsForPreview(),
-//                                                                      cardReaderConnectionViewModel: .init(state: .connectingToReader),
-//                                                                      currencySettings: .init()))
-//}
+#Preview {
+    PointOfSaleDashboardView(viewModel: PointOfSaleDashboardViewModel(items: POSProductProvider.provideProductsForPreview(),
+                                                                      cardReaderConnectionViewModel: .init(state: .connectingToReader),
+                                                                      currencySettings: .init()))
+}
 #endif

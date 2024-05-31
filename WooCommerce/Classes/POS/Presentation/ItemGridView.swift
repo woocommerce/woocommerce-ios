@@ -1,3 +1,4 @@
+import Yosemite
 import SwiftUI
 
 struct ItemGridView: View {
@@ -47,9 +48,9 @@ private extension ItemGridView {
 }
 
 #if DEBUG
-//#Preview {
-//    ProductGridView(viewModel: PointOfSaleDashboardViewModel(products: POSProductProvider.provideProductsForPreview(),
-//                                                             cardReaderConnectionViewModel: .init(state: .connectingToReader),
-//                                                             currencySettings: .init()))
-//}
+#Preview {
+    ItemGridView(viewModel: PointOfSaleDashboardViewModel(items: POSProductProvider.provideProductsForPreview(),
+                                                          cardReaderConnectionViewModel: .init(state: .connectingToReader),
+                                                          currencySettings: .init()))
+}
 #endif

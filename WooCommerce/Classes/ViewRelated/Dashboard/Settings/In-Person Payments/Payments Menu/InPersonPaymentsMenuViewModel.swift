@@ -235,8 +235,8 @@ final class InPersonPaymentsMenuViewModel: ObservableObject {
             onDismiss: {})
     }()
 
-    lazy var onboardingViewModel: InPersonPaymentsViewModel = {
-        let onboardingViewModel = InPersonPaymentsViewModel(useCase: onboardingUseCase)
+    lazy var onboardingViewModel: CardPresentPaymentsOnboardingViewModel = {
+        let onboardingViewModel = CardPresentPaymentsOnboardingViewModel(useCase: onboardingUseCase)
         onboardingViewModel.showURL = { [weak self] url in
             self?.safariSheetURL = url
         }

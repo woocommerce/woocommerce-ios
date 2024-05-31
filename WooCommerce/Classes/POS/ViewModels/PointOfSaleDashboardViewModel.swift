@@ -110,9 +110,9 @@ private extension PointOfSaleDashboardViewModel {
             switch event {
             case .idle:
                 return false
-            case .showAlert(_),
-                    .showReaderList(_, _),
-                    .showOnboarding(_):
+            case .showAlert,
+                    .showReaderList,
+                    .showOnboarding:
                 return true
             }
         }.assign(to: &$showsCardReaderSheet)

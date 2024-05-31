@@ -46,10 +46,10 @@ final class SetUpTapToPayViewModelsOrderedList: PaymentSettingsFlowPrioritizedVi
         ///
         viewModelsAndViews.append(contentsOf: [
             PaymentSettingsFlowViewModelAndView(
-                viewModel: CardPresentPaymentOnboardingViewModel(useCase: onboardingUseCase,
-                                                                 didChangeShouldShow: { [weak self] state in
-                                                                     self?.onDidChangeShouldShow(state)
-                                                                 }),
+                viewModel: CardPresentPaymentsOnboardingViewModel(useCase: onboardingUseCase,
+                                                                  didChangeShouldShow: { [weak self] state in
+                                                                      self?.onDidChangeShouldShow(state)
+                                                                  }),
                 viewPresenter: SetUpTapToPayOnboardingViewController.self),
 
             PaymentSettingsFlowViewModelAndView(

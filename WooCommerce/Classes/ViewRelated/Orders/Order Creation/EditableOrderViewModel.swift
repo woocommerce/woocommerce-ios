@@ -367,9 +367,7 @@ final class EditableOrderViewModel: ObservableObject {
 
     /// Use case to display, add, edit, or remove shipping lines.
     ///
-    lazy var shippingUseCase: EditableOrderShippingUseCase = {
-        EditableOrderShippingUseCase(siteID: siteID, flow: flow, orderSynchronizer: orderSynchronizer)
-    }()
+    @Published var shippingUseCase: EditableOrderShippingUseCase
 
     // MARK: Customer data properties
 
@@ -505,6 +503,8 @@ final class EditableOrderViewModel: ObservableObject {
             updateCustomer: { _ in },
             resetAddressForm: {}
         )
+
+        self.shippingUseCase = EditableOrderShippingUseCase(siteID: siteID, flow: flow, orderSynchronizer: orderSynchronizer)
 
         configureDisabledState()
         configureCollectPaymentDisabledState()

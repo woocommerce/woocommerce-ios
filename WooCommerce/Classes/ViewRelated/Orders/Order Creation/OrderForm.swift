@@ -223,8 +223,6 @@ struct OrderForm: View {
 
     @State private var shouldShowGiftCardForm = false
 
-    @State private var shouldShowShippingLineDetails = false
-
     @Environment(\.adaptiveModalContainerPresentationStyle) var presentationStyle
 
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
@@ -306,13 +304,9 @@ struct OrderForm: View {
                                 viewModel: viewModel.paymentDataViewModel,
                                 shippingUseCase: viewModel.shippingUseCase,
                                 shouldShowCouponsInfoTooltip: $shouldShowInformationalCouponTooltip,
-                                shouldShowShippingLineDetails: $shouldShowShippingLineDetails,
                                 shouldShowGiftCardForm: $shouldShowGiftCardForm)
                             .addingTopAndBottomDividers()
                             .disabled(viewModel.shouldShowNonEditableIndicators)
-                            .sheet(isPresented: $shouldShowShippingLineDetails) {
-                                ShippingLineSelectionDetails(viewModel: viewModel.shippingUseCase.addShippingLineViewModel())
-                            }
 
                             Spacer(minLength: Layout.sectionSpacing)
                         }

@@ -5,7 +5,7 @@ struct AddOrderComponentsSection: View {
     let viewModel: EditableOrderViewModel.PaymentDataViewModel
 
     /// Use case for shipping lines on an order
-    private let shippingUseCase: EditableOrderShippingUseCase
+    @ObservedObject private var shippingUseCase: EditableOrderShippingUseCase
 
     /// Indicates if the coupon line details screen should be shown or not.
     ///
@@ -23,10 +23,6 @@ struct AddOrderComponentsSection: View {
     ///
     @State private var shouldShowGoToCouponsAlert: Bool = false
 
-    /// Indicates if the shipping line details screen should be shown or not.
-    ///
-    @Binding private var shouldShowShippingLineDetails: Bool
-
     ///   Environment safe areas
     ///
     @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
@@ -36,12 +32,10 @@ struct AddOrderComponentsSection: View {
     init(viewModel: EditableOrderViewModel.PaymentDataViewModel,
          shippingUseCase: EditableOrderShippingUseCase,
          shouldShowCouponsInfoTooltip: Binding<Bool>,
-         shouldShowShippingLineDetails: Binding<Bool>,
          shouldShowGiftCardForm: Binding<Bool>) {
         self.viewModel = viewModel
         self.shippingUseCase = shippingUseCase
         self._shouldShowCouponsInfoTooltip = shouldShowCouponsInfoTooltip
-        self._shouldShowShippingLineDetails = shouldShowShippingLineDetails
         self._shouldShowGiftCardForm = shouldShowGiftCardForm
     }
 
@@ -128,14 +122,16 @@ private extension AddOrderComponentsSection {
 
     @ViewBuilder var addShippingRow: some View {
         Button(Localization.addShipping) {
-            shouldShowShippingLineDetails = true
-            shippingUseCase.trackAddShippingTapped()
+            shippingUseCase.addShippingLine()
         }
         .buttonStyle(PlusButtonStyle())
         .padding()
         .accessibilityIdentifier("add-shipping-button")
         .disabled(viewModel.orderIsEmpty)
         .renderedIf(!shippingUseCase.paymentData.shouldShowShippingTotal)
+        .sheet(item: $shippingUseCase.addShippingLineViewModel, content: { addShippingLine in
+            ShippingLineSelectionDetails(viewModel: addShippingLine)
+        })
     }
 
     @ViewBuilder var addGiftCardRow: some View {
@@ -243,7 +239,6 @@ struct AddOrderComponentsSection_Previews: PreviewProvider {
         AddOrderComponentsSection(viewModel: viewModel,
                                   shippingUseCase: shippingUseCase,
                                   shouldShowCouponsInfoTooltip: .constant(true),
-                                  shouldShowShippingLineDetails: .constant(false),
                                   shouldShowGiftCardForm: .constant(false))
             .previewLayout(.sizeThatFits)
     }

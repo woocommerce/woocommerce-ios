@@ -31,6 +31,10 @@ final class EditableOrderShippingUseCase: ObservableObject {
     ///
     @Published var selectedShippingLine: ShippingLineSelectionDetailsViewModel? = nil
 
+    /// View model to add a new shipping line.
+    ///
+    @Published var addShippingLineViewModel: ShippingLineSelectionDetailsViewModel? = nil
+
     // MARK: Shipping methods
 
     /// Shipping Methods Results Controller.
@@ -102,12 +106,6 @@ final class EditableOrderShippingUseCase: ObservableObject {
         configureShippingLineRowViewModels()
     }
 
-    /// Returns a view model for adding a shipping line to an order.
-    ///
-    func addShippingLineViewModel() -> ShippingLineSelectionDetailsViewModel {
-        return ShippingLineSelectionDetailsViewModel(siteID: siteID, shippingLine: nil, didSelectSave: saveShippingLine, didSelectRemove: removeShippingLine)
-    }
-
     /// Saves a shipping line.
     ///
     /// - Parameter shippingLine: New or updated shipping line object to save.
@@ -129,9 +127,13 @@ final class EditableOrderShippingUseCase: ObservableObject {
         analytics.track(event: WooAnalyticsEvent.Orders.orderShippingMethodRemove(flow: flow.analyticsFlow))
     }
 
-    /// Tracks when the "Add shipping" button is tapped.
+    /// Handles when the "Add shipping" button is tapped.
     ///
-    func trackAddShippingTapped() {
+    func addShippingLine() {
+        addShippingLineViewModel = ShippingLineSelectionDetailsViewModel(siteID: siteID,
+                                                                         shippingLine: nil,
+                                                                         didSelectSave: saveShippingLine,
+                                                                         didSelectRemove: removeShippingLine)
         analytics.track(event: .Orders.orderAddShippingTapped())
     }
 }

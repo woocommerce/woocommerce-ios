@@ -50,15 +50,10 @@ final public class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase
     ///
     private var applicationPasswordName: String {
         get async {
-#if !os(watchOS)
             let bundleIdentifier = Bundle.main.bundleIdentifier ?? "Unknown"
             let model = await UIDevice.current.model
             let identifierForVendor = await UIDevice.current.identifierForVendor?.uuidString ?? ""
             return "\(bundleIdentifier).ios-app-client.\(model).\(identifierForVendor)"
-#endif
-#if os(watchOS)
-            return "" // This is not needed on watchOS as the watch does not create application passwords.
-#endif
         }
     }
 

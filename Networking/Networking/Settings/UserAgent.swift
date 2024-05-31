@@ -1,11 +1,4 @@
-#if canImport(WebKit)
 import WebKit
-#endif
-
-#if canImport(WatchKit)
-import WatchKit
-#endif
-
 
 /// WooCommerce User Agent!
 ///
@@ -37,13 +30,15 @@ public class UserAgent {
         // [^1]: https://github.com/WebKit/WebKit/blob/5fbb03ee1c6210c79779d6fa1a9e7290daa746d1/Source/WebCore/platform/ios/UserAgentIOS.mm#L88-L113
         // [^2]: https://github.com/WebKit/WebKit/blob/492140d27dbe/Source/WebKit/UIProcess/API/Cocoa/WKWebViewConfiguration.mm#L612
 
+        let device = UIDevice.current
+
         let deviceModel = device.model // Example: "iPhone"
         var osName = device.systemName // Example: "iPhone OS"
         let osVersion = device.systemVersion.replacingOccurrences(of: ".", with: "_") // Example: "17_2"
 
         // WKWebView on iPad uses a static user agent.
         // https://github.com/WebKit/WebKit/blob/6a053cfb431bd70d5017ba881a39f004e52effc2/Source/WebCore/platform/ios/UserAgentIOS.mm#L97
-        if device.isPad {
+        if device.userInterfaceIdiom == .pad {
             osName = "OS"
         }
 
@@ -60,17 +55,6 @@ public class UserAgent {
     public static var bundleShortVersion: String {
         let version = Bundle.main.object(forInfoDictionaryKey: Constants.shortVersionKey) as? String
         return version ?? String()
-    }
-
-    /// Returns the
-    ///
-    private static var device: AppleDevice {
-#if !os(watchOS)
-        return UIDevice.current
-#endif
-#if os(watchOS)
-        return WKInterfaceDevice.current()
-#endif
     }
 }
 
@@ -94,29 +78,3 @@ private extension UserAgent {
         static let shortVersionKey = "CFBundleShortVersionString"
     }
 }
-
-
-/// Protocol to abstract an `UIDevice` and `WKInterfaceDevice` behind the same interface.
-///
-private protocol AppleDevice {
-    var model: String { get }
-    var systemName: String { get }
-    var systemVersion: String { get }
-    var isPad: Bool { get }
-}
-
-#if !os(watchOS)
-extension UIDevice: AppleDevice {
-    var isPad: Bool {
-        return userInterfaceIdiom == .pad
-    }
-}
-#endif
-
-#if os(watchOS)
-extension WKInterfaceDevice: AppleDevice {
-    var isPad: Bool {
-        false
-    }
-}
-#endif

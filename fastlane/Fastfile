@@ -38,7 +38,6 @@ SCREENSHOT_DEVICES = [
 VERSION_CALCULATOR = Fastlane::Wpmreleasetoolkit::Versioning::MarketingVersionCalculator.new
 VERSION_FORMATTER = Fastlane::Wpmreleasetoolkit::Versioning::FourPartVersionFormatter.new
 BUILD_CODE_FORMATTER = Fastlane::Wpmreleasetoolkit::Versioning::FourPartBuildCodeFormatter.new
-BUILD_CODE_KEY = 'VERSION_LONG'
 VERSION_FILE = Fastlane::Wpmreleasetoolkit::Versioning::IOSVersionFile.new(xcconfig_path: PUBLIC_CONFIG_FILE)
 
 APP_STORE_VERSION_BUNDLE_IDENTIFIER = 'com.automattic.woocommerce'
@@ -46,16 +45,16 @@ APP_STORE_VERSION_BUNDLE_IDENTIFIER = 'com.automattic.woocommerce'
 MAIN_BUNDLE_IDENTIFIERS = [
   APP_STORE_VERSION_BUNDLE_IDENTIFIER,
   "#{APP_STORE_VERSION_BUNDLE_IDENTIFIER}.storewidgets",
-  "#{APP_STORE_VERSION_BUNDLE_IDENTIFIER}.notificationcontentextension",
-  "#{APP_STORE_VERSION_BUNDLE_IDENTIFIER}.watchkitapp",
-  "#{APP_STORE_VERSION_BUNDLE_IDENTIFIER}.watchkitapp.widgets"
+  "#{APP_STORE_VERSION_BUNDLE_IDENTIFIER}.notificationcontentextension"
 ].freeze
 
 ALPHA_VERSION_BUNDLE_IDENTIFIER = 'com.automattic.alpha.woocommerce'
 # Registered in our Enterprise account, for App Center / Prototype Builds
-ALPHA_BUNDLE_IDENTIFIERS = MAIN_BUNDLE_IDENTIFIERS.map do |id|
-  id.gsub(APP_STORE_VERSION_BUNDLE_IDENTIFIER, ALPHA_VERSION_BUNDLE_IDENTIFIER)
-end.freeze
+ALPHA_BUNDLE_IDENTIFIERS = [
+  ALPHA_VERSION_BUNDLE_IDENTIFIER,
+  "#{ALPHA_VERSION_BUNDLE_IDENTIFIER}.storewidgets",
+  "#{ALPHA_VERSION_BUNDLE_IDENTIFIER}.notificationcontentextension"
+].freeze
 
 # Shared options to use when invoking `gym` / `build_app`.
 #
@@ -628,7 +627,7 @@ platform :ios do
   # bundle exec fastlane build_and_upload_to_app_store_connect skip_confirm:true
   # bundle exec fastlane build_and_upload_to_app_store_connect beta_release:true
   #####################################################################################
-  desc 'Builds and uploads for distribution to the App Store'
+  desc 'Builds and uploads for distribution'
   lane :build_and_upload_to_app_store_connect do |options|
     unless options[:skip_prechecks]
       # Verify that there's nothing in progress in the working copy
@@ -645,7 +644,15 @@ platform :ios do
       UI.user_error!("Terminating as requested. Don't forget to run the remainder of this automation manually.")
     end
 
-    build_for_app_store_connect
+    appstore_code_signing
+
+    gym(
+      scheme: 'WooCommerce',
+      workspace: WORKSPACE_PATH,
+      clean: true,
+      export_team_id: get_required_env('EXT_EXPORT_TEAM_ID'),
+      export_options: { **COMMON_EXPORT_OPTIONS, method: 'app-store' }
+    )
 
     sentry_upload_dsym(
       auth_token: get_required_env('SENTRY_AUTH_TOKEN'),
@@ -681,19 +688,6 @@ platform :ios do
     sh('cd .. && rm WooCommerce.ipa')
   end
 
-  desc 'Builds for distribution to the App Store'
-  lane :build_for_app_store_connect do
-    appstore_code_signing
-
-    gym(
-      scheme: 'WooCommerce',
-      workspace: WORKSPACE_PATH,
-      clean: true,
-      export_team_id: get_required_env('EXT_EXPORT_TEAM_ID'),
-      export_options: { **COMMON_EXPORT_OPTIONS, method: 'app-store' }
-    )
-  end
-
   #####################################################################################
   # build_and_upload_prototype_build
   # -----------------------------------------------------------------------------------
@@ -706,12 +700,34 @@ platform :ios do
   # bundle exec fastlane build_and_upload_prototype_build
   # bundle exec fastlane build_and_upload_prototype_build build_number:123
   #####################################################################################
-  desc 'Builds and uploads a prototype build (Enterprise distribution)'
+  desc 'Builds and uploads an prototype build'
   lane :build_and_upload_prototype_build do
     ensure_sentry_installed
     xcversion # Ensure we're using the right version of Xcode, defined in `.xcode-version` file
 
-    build_for_prototype_build
+    alpha_code_signing
+
+    # Get the current build version, and update it if needed
+    versions = Xcodeproj::Config.new(File.new(PUBLIC_CONFIG_FILE)).to_hash
+    build_number = generate_prototype_build_number
+    UI.message("Updating build version to #{build_number}")
+    versions['VERSION_LONG'] = build_number
+    new_config = Xcodeproj::Config.new(versions)
+    new_config.save_as(Pathname.new(PUBLIC_CONFIG_FILE))
+
+    gym(
+      scheme: 'WooCommerce Alpha',
+      workspace: WORKSPACE_PATH,
+      export_method: 'enterprise',
+      clean: true,
+      output_directory: 'build',
+      export_team_id: ENV.fetch('INT_EXPORT_TEAM_ID'),
+      export_options: {
+        **COMMON_EXPORT_OPTIONS,
+        method: 'enterprise',
+        iCloudContainerEnvironment: 'Production'
+      }
+    )
 
     appcenter_upload(
       api_token: get_required_env('APPCENTER_API_TOKEN'),
@@ -729,10 +745,7 @@ platform :ios do
       dsym_path: './build/WooCommerce.app.dSYM.zip'
     )
 
-    # The build code used in the Enterprise build has a different format that the App Store one.
-    # We cannot use the standard build_code_current method but have to read it directly.
-    build_code = Xcodeproj::Config.new(File.new(PUBLIC_CONFIG_FILE)).to_hash[BUILD_CODE_KEY]
-    UI.message("Successfully built and uploaded prototype build `#{build_code}` to App Center.")
+    UI.message("Successfully built and uploaded prototype build `#{build_number}` to App Center.")
 
     return if ENV['BUILDKITE_PULL_REQUEST'].nil?
 
@@ -746,33 +759,6 @@ platform :ios do
       pr_number: Integer(ENV.fetch('BUILDKITE_PULL_REQUEST')),
       reuse_identifier: 'prototype-build-link',
       body: comment_body
-    )
-  end
-
-  desc 'Builds a prototype build (Enterprise build)'
-  lane :build_for_prototype_build do
-    alpha_code_signing
-
-    # Get the current build version, and update it if needed
-    versions = Xcodeproj::Config.new(File.new(PUBLIC_CONFIG_FILE)).to_hash
-    build_number = generate_prototype_build_number
-    UI.message("Updating build version to #{build_number}")
-    versions[BUILD_CODE_KEY] = build_number
-    new_config = Xcodeproj::Config.new(versions)
-    new_config.save_as(Pathname.new(PUBLIC_CONFIG_FILE))
-
-    gym(
-      scheme: 'WooCommerce Alpha',
-      workspace: WORKSPACE_PATH,
-      export_method: 'enterprise',
-      clean: true,
-      output_directory: 'build',
-      export_team_id: get_required_env('INT_EXPORT_TEAM_ID'),
-      export_options: {
-        **COMMON_EXPORT_OPTIONS,
-        method: 'enterprise',
-        iCloudContainerEnvironment: 'Production'
-      }
     )
   end
 
@@ -1387,7 +1373,7 @@ def build_code_current
   # Read the current build code from the .xcconfig file and parse it into an AppVersion object
   # The AppVersion is used because WCiOS uses the four part (1.2.3.4) build code format, so the version
   # calculator can be used to calculate the next four-part version
-  version = VERSION_FORMATTER.parse(VERSION_FILE.read_build_code(attribute_name: BUILD_CODE_KEY))
+  version = VERSION_FORMATTER.parse(VERSION_FILE.read_build_code(attribute_name: 'VERSION_LONG'))
   # Return the formatted build code
   BUILD_CODE_FORMATTER.build_code(version: version)
 end
@@ -1411,7 +1397,7 @@ def build_code_next
   # Read the current build code from the .xcconfig file and parse it into an AppVersion object
   # The AppVersion is used because WCiOS uses the four part (1.2.3.4) build code format, so the version
   # calculator can be used to calculate the next four-part version
-  build_code_current = VERSION_FORMATTER.parse(VERSION_FILE.read_build_code(attribute_name: BUILD_CODE_KEY))
+  build_code_current = VERSION_FORMATTER.parse(VERSION_FILE.read_build_code(attribute_name: 'VERSION_LONG'))
   # Calculate the next build code
   build_code_next = VERSION_CALCULATOR.next_build_number(version: build_code_current)
   # Return the formatted build code

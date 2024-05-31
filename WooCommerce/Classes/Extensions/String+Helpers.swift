@@ -103,7 +103,6 @@ extension String {
     }
 }
 
-#if !os(watchOS)
 extension String {
     /// Sends the string to the general pasteboard and triggers a success haptic.
     /// If the string is nil, nothing is sent to the pasteboard.
@@ -124,4 +123,3 @@ extension String {
         UINotificationFeedbackGenerator().notificationOccurred(.success)
     }
 }
-#endif

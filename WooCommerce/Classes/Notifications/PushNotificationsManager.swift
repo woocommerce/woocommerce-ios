@@ -622,6 +622,24 @@ private extension PushNotificationsManager {
     }
 }
 
+// MARK: - PushNotification Extension
+
+private extension PushNotification {
+    static func from(userInfo: [AnyHashable: Any]) -> PushNotification? {
+        guard let noteID = userInfo.integer(forKey: APNSKey.identifier),
+              let siteID = userInfo.integer(forKey: APNSKey.siteID),
+              let alert = userInfo.dictionary(forKey: APNSKey.aps)?.dictionary(forKey: APNSKey.alert),
+              let title = alert.string(forKey: APNSKey.alertTitle),
+              let type = userInfo.string(forKey: APNSKey.type),
+              let noteKind = Note.Kind(rawValue: type) else {
+                  return nil
+              }
+        let subtitle = alert.string(forKey: APNSKey.alertSubtitle)
+        let message = alert.string(forKey: APNSKey.alertMessage)
+        return PushNotification(noteID: noteID, siteID: siteID, kind: noteKind, title: title, subtitle: subtitle, message: message)
+    }
+}
+
 // MARK: - UNNotificationContent Extension
 
 private extension UNNotificationContent {
@@ -643,6 +661,17 @@ enum AppIconBadgeNumber {
 
 // MARK: - Private Types
 //
+private enum APNSKey {
+    static let aps = "aps"
+    static let alert = "alert"
+    static let alertTitle = "title"
+    static let alertSubtitle = "subtitle"
+    static let alertMessage = "body"
+    static let identifier = "note_id"
+    static let type = "type"
+    static let siteID = "blog"
+    static let postID = "post_id"
+}
 
 private enum AnalyticKey {
     static let identifier = "push_notification_note_id"

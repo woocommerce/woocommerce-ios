@@ -149,7 +149,7 @@ private struct NotLoggedInView: View {
             Color(.brand)
 
             VStack {
-                Image(uiImage: .wooLogo)
+                Image(uiImage: .wooLogoWhite)
                     .resizable()
                     .frame(width: Layout.logoSize.width, height: Layout.logoSize.height)
 
@@ -176,7 +176,7 @@ private struct UnableToFetchView: View {
             Color(.brand)
 
             VStack {
-                Image(uiImage: .wooLogo)
+                Image(uiImage: .wooLogoWhite)
                     .resizable()
                     .frame(width: Layout.logoSize.width, height: Layout.logoSize.height)
 

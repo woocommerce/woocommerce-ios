@@ -12,7 +12,7 @@ final class OrderListCellViewModelTests: XCTestCase {
         let expectedYearString = DateFormatter.yearFormatter.string(from: order.dateCreated)
 
         // When
-        let viewModel = OrderListCellViewModel(order: order, status: nil, currencySettings: ServiceLocator.currencySettings)
+        let viewModel = OrderListCellViewModel(order: order, status: nil)
 
         // Then
         let formatted = viewModel.dateCreated
@@ -26,7 +26,7 @@ final class OrderListCellViewModelTests: XCTestCase {
         let expectedYearString = DateFormatter.yearFormatter.string(from: order.dateCreated)
 
         // When
-        let viewModel = OrderListCellViewModel(order: order, status: nil, currencySettings: ServiceLocator.currencySettings)
+        let viewModel = OrderListCellViewModel(order: order, status: nil)
 
         // Then
         let formatted = viewModel.dateCreated
@@ -43,7 +43,7 @@ final class OrderListCellViewModelTests: XCTestCase {
                                       total: 0)
 
         // When
-        let viewModel = OrderListCellViewModel(order: order, status: orderStatus, currencySettings: ServiceLocator.currencySettings)
+        let viewModel = OrderListCellViewModel(order: order, status: orderStatus)
 
         // Then
         XCTAssertEqual(viewModel.status, .custom(orderStatus.slug))
@@ -55,7 +55,7 @@ final class OrderListCellViewModelTests: XCTestCase {
         let order = MockOrders().sampleOrder()
 
         // When
-        let viewModel = OrderListCellViewModel(order: order, status: nil, currencySettings: ServiceLocator.currencySettings)
+        let viewModel = OrderListCellViewModel(order: order, status: nil)
 
         // Then
         XCTAssertEqual(viewModel.status, order.status)
@@ -68,7 +68,7 @@ final class OrderListCellViewModelTests: XCTestCase {
         let expectedImage = UIImage(systemName: "chevron.forward")
 
         // When
-        let viewModel = OrderListCellViewModel(order: order, status: nil, currencySettings: ServiceLocator.currencySettings)
+        let viewModel = OrderListCellViewModel(order: order, status: nil)
 
         // Then
         guard let accessoryView = viewModel.accessoryView else {

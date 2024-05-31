@@ -1,5 +1,3 @@
-import Foundation
-
 protocol ResponseDataValidator {
     /// Throws an error contained in a given Data Instance (if any).
     ///

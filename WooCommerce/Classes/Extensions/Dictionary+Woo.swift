@@ -42,14 +42,14 @@ extension Dictionary {
     ///
     /// - Returns: Value as a Integer (when possible!)
     ///
-    public func integer(forKey key: Key) -> Int64? {
+    public func integer(forKey key: Key) -> Int? {
         switch self[key] {
-        case let integer as Int64:
+        case let integer as Int:
             return integer
         case let string as String:
-            return Int64(string)
+            return Int(string)
         case let number as NSNumber:
-            return number.int64Value
+            return number.intValue
         default:
             return nil
         }

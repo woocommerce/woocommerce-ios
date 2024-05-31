@@ -184,12 +184,6 @@ final class OrderDetailsDataSource: NSObject {
         return order.shippingLines.sorted(by: { $0.shippingID < $1.shippingID })
     }
 
-    /// First Shipping method from an order
-    ///
-    private var shippingMethod: String {
-        return shippingLines.first?.methodTitle ?? String()
-    }
-
     /// Yosemite.OrderItem
     /// The original list of order items a user purchased
     ///
@@ -392,14 +386,10 @@ private extension OrderDetailsDataSource {
             configureShippingAddress(cell: cell)
         case let cell as CustomerNoteTableViewCell where row == .customerNote:
             configureCustomerNote(cell: cell)
-        case let cell as CustomerNoteTableViewCell where row == .shippingMethod:
-            configureShippingMethod(cell: cell)
         case let cell as WooBasicTableViewCell where row == .billingDetail:
             configureBillingDetail(cell: cell)
         case let cell as WooBasicTableViewCell where row == .shippingLabelDetail:
             configureShippingLabelDetail(cell: cell)
-        case let cell as ImageAndTitleAndTextTableViewCell where row == .shippingNotice:
-            configureShippingNotice(cell: cell)
         case let cell as WCShipInstallTableViewCell where row == .installWCShip:
             configureInstallWCShip(cell: cell)
         case let cell as ImageAndTitleAndTextTableViewCell where row == .shippingLabelCreationInfo(showsSeparator: true),
@@ -544,29 +534,6 @@ private extension OrderDetailsDataSource {
             "Show the billing details for this order.",
             comment: "VoiceOver accessibility hint, informing the user that the button can be used to view billing information."
         )
-    }
-
-    private func configureShippingNotice(cell: ImageAndTitleAndTextTableViewCell) {
-        let cellTextContent = NSLocalizedString(
-            "This order is using extensions to calculate shipping. The shipping methods shown might be incomplete.",
-            comment: "Shipping notice row label when there is more than one shipping method")
-
-        cell.update(with: .imageAndTitleOnly(fontStyle: .body),
-                    data: .init(title: cellTextContent,
-                                textTintColor: .text,
-                                image: Icons.shippingNoticeIcon,
-                                imageTintColor: .listIcon,
-                                numberOfLinesForTitle: 0,
-                                isActionable: false))
-
-        cell.selectionStyle = .none
-
-        cell.accessibilityTraits = .staticText
-        cell.accessibilityLabel = NSLocalizedString(
-            "This order is using extensions to calculate shipping. The shipping methods shown might be incomplete.",
-            comment: "Accessibility label for the Shipping notice")
-        cell.accessibilityHint = NSLocalizedString("Shipping notice about the order",
-                                                    comment: "VoiceOver accessibility label for the shipping notice about the order")
     }
 
     private func configureInstallWCShip(cell: WCShipInstallTableViewCell) {
@@ -1007,13 +974,6 @@ private extension OrderDetailsDataSource {
         cell.configureLayout()
     }
 
-    private func configureShippingMethod(cell: CustomerNoteTableViewCell) {
-        cell.headline = NSLocalizedString("Shipping Method",
-                                          comment: "Shipping method title for customer info cell")
-        cell.body = shippingMethod.strippedHTML
-        cell.selectionStyle = .none
-    }
-
     private func configureShippingLine(cell: HostingConfigurationTableViewCell<ShippingLineRowView>, at indexPath: IndexPath) {
         let shippingLine = shippingLines[indexPath.row]
         let viewModel = ShippingLineRowViewModel(shippingLine: shippingLine, shippingMethods: siteShippingMethods, editable: false)
@@ -1161,18 +1121,6 @@ extension OrderDetailsDataSource {
 
         let summary = Section(category: .summary, row: .summary)
 
-        let shippingNotice: Section? = {
-            // Hide the shipping method warning if order contains only virtual products
-            // or if the order contains only one shipping method
-            // or if multiple shipping lines are supported (feature flag)
-            if isMultiShippingLinesAvailable(for: order) == false ||
-                featureFlags.isFeatureFlagEnabled(.multipleShippingLines) {
-                return nil
-            }
-
-            return Section(category: .shippingNotice, title: nil, rightTitle: nil, footer: nil, rows: [.shippingNotice])
-        }()
-
         let products: Section? = {
             if items.isEmpty {
                 return nil
@@ -1287,8 +1235,7 @@ extension OrderDetailsDataSource {
         }()
 
         let shippingLinesSection: Section? = {
-            guard shippingLines.count > 0
-                    && featureFlags.isFeatureFlagEnabled(.multipleShippingLines) else {
+            guard shippingLines.count > 0 else {
                 return nil
             }
 
@@ -1311,12 +1258,6 @@ extension OrderDetailsDataSource {
 
             if order.shippingAddress != nil && orderContainsOnlyVirtualProducts == false {
                 rows.append(.shippingAddress)
-            }
-
-            /// Shipping Lines (single shipping line)
-            if shippingLines.count > 0
-                && !featureFlags.isFeatureFlagEnabled(.multipleShippingLines) {
-                rows.append(.shippingMethod)
             }
 
             /// Billing Address
@@ -1473,7 +1414,6 @@ extension OrderDetailsDataSource {
         }()
 
         sections = ([summary,
-                     shippingNotice,
                      products,
                      customAmountsSection,
                      customFields,
@@ -1717,7 +1657,6 @@ extension OrderDetailsDataSource {
     }
 
     enum Icons {
-        static let shippingNoticeIcon = UIImage.noticeImage
         static let plusImage = UIImage.plusImage
     }
 
@@ -1788,7 +1727,6 @@ extension OrderDetailsDataSource {
     struct Section {
         enum Category {
             case summary
-            case shippingNotice
             case products
             case customAmounts
             case installWCShip
@@ -1883,7 +1821,6 @@ extension OrderDetailsDataSource {
         case issueRefundButton
         case customerNote
         case shippingAddress
-        case shippingMethod
         case billingDetail
         case payment
         case customerPaid
@@ -1906,7 +1843,6 @@ extension OrderDetailsDataSource {
         case shippingLabelReprintButton
         case shippingLabelTrackingNumber
         case shippingLine
-        case shippingNotice
         case addOrderNote
         case orderNoteHeader
         case orderNote
@@ -1938,8 +1874,6 @@ extension OrderDetailsDataSource {
                 return CustomerNoteTableViewCell.reuseIdentifier
             case .shippingAddress:
                 return CustomerInfoTableViewCell.reuseIdentifier
-            case .shippingMethod:
-                return CustomerNoteTableViewCell.reuseIdentifier
             case .billingDetail:
                 return WooBasicTableViewCell.reuseIdentifier
             case .payment:
@@ -1976,8 +1910,6 @@ extension OrderDetailsDataSource {
                 return ImageAndTitleAndTextTableViewCell.reuseIdentifier
             case .shippingLabelReprintButton:
                 return ButtonTableViewCell.reuseIdentifier
-            case .shippingNotice:
-                return ImageAndTitleAndTextTableViewCell.reuseIdentifier
             case .addOrderNote:
                 return LargeHeightLeftImageTableViewCell.reuseIdentifier
             case .orderNoteHeader:

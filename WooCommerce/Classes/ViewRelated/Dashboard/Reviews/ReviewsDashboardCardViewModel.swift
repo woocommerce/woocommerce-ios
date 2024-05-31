@@ -20,6 +20,26 @@ final class ReviewsDashboardCardViewModel: ObservableObject {
     }
 
     @Published private(set) var data: [ReviewViewModel] = []
+
+    /// View models for placeholder rows.
+    static let placeholderData: [ReviewViewModel] = [Int64](0..<3).map { index in
+        // The content does not matter because the text in placeholder rows is redacted.
+        ReviewViewModel(showProductTitle: true,
+                        review: ProductReview(siteID: 1,
+                                              reviewID: index,
+                                              productID: 1,
+                                              dateCreated: Date(),
+                                              statusKey: "",
+                                              reviewer: "########",
+                                              reviewerEmail: "##############################",
+                                              reviewerAvatarURL: nil,
+                                              review: "######## ######## ######## ################",
+                                              rating: 5,
+                                              verified: true),
+                        product: nil,
+                        notification: nil)
+    }
+
     private var reviews: [ProductReview] {
         return productReviewsResultsController.fetchedObjects
     }
@@ -29,10 +49,8 @@ final class ReviewsDashboardCardViewModel: ObservableObject {
     private var notifications: [Note] {
         return notificationsResultsController.fetchedObjects
     }
-    @Published private(set) var showLoadingAnimation = false
     @Published private(set) var syncingError: Error?
-    @Published private var syncingData: Bool = false
-    @Published private(set) var switchingStatus: Bool = false
+    @Published private(set) var syncingData: Bool = false
 
     private let stores: StoresManager
     private let storageManager: StorageManagerType
@@ -64,12 +82,6 @@ final class ReviewsDashboardCardViewModel: ObservableObject {
                                                                              sortedBy: [])
 
         configureResultsController()
-
-        $syncingData.combineLatest($data)
-            .map { syncing, data -> Bool in
-                syncing && data.isEmpty
-            }
-            .assign(to: &$showLoadingAnimation)
     }
 
     /// ResultsController for ProductReview
@@ -91,7 +103,7 @@ final class ReviewsDashboardCardViewModel: ObservableObject {
     }()
 
     func dismissReviews() {
-        // TODO: add tracking
+        analytics.track(event: .DynamicDashboard.hideCardTapped(type: .reviews))
         onDismiss?()
     }
 
@@ -110,10 +122,8 @@ final class ReviewsDashboardCardViewModel: ObservableObject {
 
     @MainActor
     func filterReviews(by filter: ReviewsFilter) async {
-        switchingStatus = true
         currentFilter = filter
         await reloadData()
-        switchingStatus = false
     }
 }
 
@@ -198,9 +208,13 @@ private extension ReviewsDashboardCardViewModel {
         }
 
         // Ensure to only get the first three items.
-        let localReviews = filteredLocalReviews.prefix(Constants.numberOfItems)
+        let localReviews = Array(filteredLocalReviews.prefix(Constants.numberOfItems))
 
-        data = localReviews.map { review in
+        updateDataWithReviews(localReviews)
+    }
+
+    func updateDataWithReviews(_ reviews: [ProductReview]) {
+        data = reviews.map { review in
 
             // Depending on the sync progress, `product` and `notification` might still be nil.
             // This is acceptable and the app is able to display partial review content.
@@ -223,6 +237,7 @@ private extension ReviewsDashboardCardViewModel {
     @MainActor
     func synchronizeReviews(filter: ReviewsFilter) async throws {
         let fetchedReviews = try await synchronizeProductReviews(filter: filter)
+        updateDataWithReviews(fetchedReviews)
 
         let productIDs = fetchedReviews.map { $0.productID }
 

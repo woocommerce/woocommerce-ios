@@ -27,8 +27,7 @@ final class EditableOrderShippingUseCaseTests: XCTestCase {
                                                    analytics: WooAnalytics(analyticsProvider: analytics),
                                                    storageManager: storageManager,
                                                    stores: stores,
-                                                   currencySettings: currencySettings,
-                                                   featureFlagService: MockFeatureFlagService(isMultipleShippingLinesEnabled: true))
+                                                   currencySettings: currencySettings)
     }
 
     // MARK: Initialization
@@ -67,8 +66,7 @@ final class EditableOrderShippingUseCaseTests: XCTestCase {
                                                        orderSynchronizer: RemoteOrderSynchronizer(siteID: sampleSiteID,
                                                                                                   flow: .editing(initialOrder: order),
                                                                                                   stores: stores),
-                                                       storageManager: storageManager,
-                                                       featureFlagService: MockFeatureFlagService(isMultipleShippingLinesEnabled: true))
+                                                       storageManager: storageManager)
 
         // Then
         assertEqual(1, useCase.shippingLineRows.count)
@@ -180,8 +178,7 @@ final class EditableOrderShippingUseCaseTests: XCTestCase {
                                                        flow: .editing(initialOrder: order),
                                                        orderSynchronizer: RemoteOrderSynchronizer(siteID: sampleSiteID,
                                                                                                   flow: .editing(initialOrder: order),
-                                                                                                  stores: stores),
-                                                       featureFlagService: MockFeatureFlagService(isMultipleShippingLinesEnabled: true))
+                                                                                                  stores: stores))
 
         // When
         useCase.shippingLineRows.first?.editShippingLine()

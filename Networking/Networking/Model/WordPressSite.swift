@@ -105,7 +105,7 @@ public extension WordPressSite {
               jetpackConnectionActivePlugins: [],
               timezone: timezone,
               gmtOffset: Double(gmtOffset) ?? 0,
-              visibility: .comingSoon,
+              visibility: .publicSite,
               canBlaze: false,
               isAdmin: false,
               wasEcommerceTrial: false)

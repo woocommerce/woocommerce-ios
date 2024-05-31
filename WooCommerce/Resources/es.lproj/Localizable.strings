@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-05-21 09:54:04+0000 */
+/* Translation-Revision-Date: 2024-05-30 12:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: es */
@@ -5667,6 +5667,9 @@ which should be translated separately and considered part of this sentence. */
    Navigates to Plugins screen. */
 "Plugins" = "Plugins";
 
+/* Title of the POS menu in the hub menu */
+"Point of Sale Mode" = "Modo de punto de venta";
+
 /* Country option for a site address. */
 "Poland" = "Polonia";
 
@@ -8792,6 +8795,9 @@ which should be translated separately and considered part of this sentence. */
 /* The button title text for logging in with WP.com password instead of magic link. */
 "Use password to sign in" = "Usa la contraseña para iniciar sesión";
 
+/* Description of the POS menu in the hub menu */
+"Use the app as a cash register" = "Utilizar la aplicación como caja registradora";
+
 /* Fourth instruction on the test order screen */
 "Use the app to process the refund for the test order." = "Usa la aplicación para procesar el reembolso del pedido de prueba.";
 
@@ -9345,9 +9351,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Info notice at the bottom of the product add-ons screen */
 "You can edit product add-ons in the web dashboard." = "Puedes editar los complementos para los productos en el escritorio del sitio web.";
-
-/* Info notice at the bottom of the quantity rules screen. */
-"You can edit quantity rules in the web dashboard" = "Puedes editar las reglas de cantidad en el Escritorio del sitio web.";
 
 /* Instructions of the domain purchase success screen. */
 "You can find the domain settings in menu > settings" = "Para acceder a los ajustes del dominio, ve a Menú > Ajustes.";
@@ -10948,6 +10951,18 @@ which should be translated separately and considered part of this sentence. */
 /* Display label for a product's subscription period, e.g. '12 months'. */
 "months" = "Meses";
 
+/* Button title to contact support to get help with deprecated stats module */
+"mostActiveCouponsCard.contentUnavailable.buttonTitle" = "¿Aún necesitas ayuda? Ponte en contacto con nosotros";
+
+/* Text that explains how to update WooCommerce to get the latest stats */
+"mostActiveCouponsCard.contentUnavailable.details" = "Asegúrate de estar ejecutando la última versión de WooCommerce en tu sitio web y de haber activado Analytics en los ajustes de WooCommerce.";
+
+/* Button to dismiss the support form from the Dashboard stats error screen. */
+"mostActiveCouponsCard.contentUnavailable.dismissSupport" = "Hecho";
+
+/* Title when we can't load coupon usage report because user is on a deprecated WooCommerce Version */
+"mostActiveCouponsCard.contentUnavailable.title" = "No se puede cargar el informe de uso de cupones";
+
 /* Title in the coupons list on the coupons card on the Dashboard screen */
 "mostActiveCouponsCard.coupons" = "Cupones";
 
@@ -10965,6 +10980,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button in date range picker to add a Custom Range tab */
 "mostActiveCouponsCardViewModel.addCustomRange" = "Añadir";
+
+/* Default text for Most active coupons dashboard card when no data exists for a given period. */
+"mostActiveCouponsEmptyView.text" = "No se puede utilizar ningún cupón durante este periodo";
 
 /* Placeholder in the search bar of a multiple selection list */
 "multipleSelectionList.search" = "Buscar";
@@ -11114,6 +11132,9 @@ which should be translated separately and considered part of this sentence. */
 /* Origin in Order Attribution Section on Order Details screen. */
 "orderDetailsDataSource.attributionInfo.unknown" = "Desconocido";
 
+/* Title of Shipping Section in Order Details screen */
+"orderDetailsDataSource.shippingLines.title" = "Envío";
+
 /* VoiceOver accessibility hint, informing the user that the button can be used to view the order custom fields information. */
 "orderDetailsDataSource.trashOrder.accessibilityHint" = "Envía este pedido a la papelera.";
 
@@ -11255,6 +11276,9 @@ which should be translated separately and considered part of this sentence. */
 /* Product title */
 "productForm.defaultTitle" = "Producto";
 
+/* Placeholder for empty product ratings */
+"productForm.quantityRules.placeholder" = "No hay reglas de cantidad";
+
 /* Description of the subscription period for a product. Reads like: 'every 2 months'. */
 "productFormDataModel.subscriptionPeriodFormat" = "todos los %1$@";
 
@@ -11357,6 +11381,9 @@ which should be translated separately and considered part of this sentence. */
 /* Button to submit selected products to the order, when some product has been selected. */
 "productselectorview.doneButtonTitle.addProductsText" = "Añadir productos";
 
+/* Button to dismiss the product quantity rules view screen. */
+"quantityRulesView.done" = "Hecho";
+
 /* Button to dismiss the alert displayed when selecting an invalid time range for analytics */
 "rangedDatePicker.invalidTimeRangeAlert.action" = "Entendido";
 
@@ -11384,17 +11411,8 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the switch in the IssueRefund screen to refund customAmounts */
 "refundIssue.customAmounts.title" = "Devolver importes personalizados";
 
-/* Text displayed when the author of a review is known. */
-"reviewsDashboardCard.completeAuthorText" = "%1$@ ha dejado una reseña sobre %2$@";
-
 /* Menu item to dismiss the Reviews card on the Dashboard screen */
 "reviewsDashboardCard.hideCard" = "Ocultar reseñas";
-
-/* Text displayed when the author of a review is unknown. */
-"reviewsDashboardCard.incompleteAuthorText" = "Un cliente dejó una reseña sobre %@";
-
-/* Additional label on a review when its status is hold. */
-"reviewsDashboardCard.pendingReview" = "Pendiente de revisión";
 
 /* Status label on the Reviews card's filter area. */
 "reviewsDashboardCard.status" = "Estado";
@@ -11426,6 +11444,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Cancel button title for the Shipping Label purchase flow, shown in the nav bar */
 "shipping.label.navigationBar.cancel.button.title" = "Cancelar";
+
+/* Accessibility title for the edit button on a shipping line row. */
+"shippingLine.edit.button.accessibilityLabel" = "Editar envío";
 
 /* Action to add a custom amount in the simple payments migration view. */
 "simplePaymentsMigrationSheet.addCustomAmount" = "Añadir un importe personalizado";

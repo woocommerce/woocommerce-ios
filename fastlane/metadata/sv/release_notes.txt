@@ -1,3 +1,1 @@
-Vi är glada över att kunna presentera de senaste uppdateringarna!
-Vår senaste uppdatering inkluderar förbättringar under huven av både stabilitet och prestanda.
-Vi är mycket måna om att ständigt förbättra vår app för att kunna ge dig bättre service. Tack för att du väljer WooCommerce.
+Ta del av en smidigare WooCommerce-upplevelse med vår senaste uppdatering! Vi har åtgärdat problemen med funktionerna "Kortläsare" och "Tryck för att betala" under Meny > Betalningar > Ta emot betalning, så att transaktioner nu fungerar smidigt. Adminpanelens skärm får en prestandaförbättring, eftersom vi har optimerat API-anropen. Dessutom finns nu stöd för redigering av utökningen Min/Max antal i produktinformationen.

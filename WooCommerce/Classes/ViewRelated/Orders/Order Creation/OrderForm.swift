@@ -296,34 +296,22 @@ struct OrderForm: View {
                             Spacer(minLength: Layout.sectionSpacing)
 
                             Group {
-                                OrderShippingSection(viewModel: viewModel)
+                                OrderShippingSection(useCase: viewModel.shippingUseCase)
                                     .disabled(viewModel.shouldShowNonEditableIndicators)
                                 Spacer(minLength: Layout.sectionSpacing)
                             }
-                            .renderedIf(viewModel.shippingLineRows.isNotEmpty && viewModel.multipleShippingLinesEnabled)
+                            .renderedIf(viewModel.shippingUseCase.shippingLineRows.isNotEmpty)
 
-                            Group {
-                                if let title = viewModel.multipleLinesMessage,
-                                   !viewModel.multipleShippingLinesEnabled {
-                                    MultipleLinesMessage(title: title)
-                                    Spacer(minLength: Layout.sectionSpacing)
-                                }
-
-                                Divider()
-                                AddOrderComponentsSection(
-                                    viewModel: viewModel.paymentDataViewModel,
-                                    shouldShowCouponsInfoTooltip: $shouldShowInformationalCouponTooltip,
-                                    shouldShowShippingLineDetails: $shouldShowShippingLineDetails,
-                                    shouldShowGiftCardForm: $shouldShowGiftCardForm)
-                                .disabled(viewModel.shouldShowNonEditableIndicators)
-                                .sheet(isPresented: $shouldShowShippingLineDetails) {
-                                    if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.orderShippingMethodSelection) {
-                                        ShippingLineSelectionDetails(viewModel: viewModel.paymentDataViewModel.shippingLineSelectionViewModel)
-                                    } else {
-                                        ShippingLineDetails(viewModel: viewModel.paymentDataViewModel.shippingLineViewModel)
-                                    }
-                                }
-                                Divider()
+                            AddOrderComponentsSection(
+                                viewModel: viewModel.paymentDataViewModel,
+                                shippingUseCase: viewModel.shippingUseCase,
+                                shouldShowCouponsInfoTooltip: $shouldShowInformationalCouponTooltip,
+                                shouldShowShippingLineDetails: $shouldShowShippingLineDetails,
+                                shouldShowGiftCardForm: $shouldShowGiftCardForm)
+                            .addingTopAndBottomDividers()
+                            .disabled(viewModel.shouldShowNonEditableIndicators)
+                            .sheet(isPresented: $shouldShowShippingLineDetails) {
+                                ShippingLineSelectionDetails(viewModel: viewModel.shippingUseCase.addShippingLineViewModel())
                             }
 
                             Spacer(minLength: Layout.sectionSpacing)
@@ -414,7 +402,7 @@ struct OrderForm: View {
             } expandableContent: {
                 OrderPaymentSection(
                     viewModel: viewModel.paymentDataViewModel,
-                    shouldShowShippingLineDetails: $shouldShowShippingLineDetails,
+                    shippingUseCase: viewModel.shippingUseCase,
                     shouldShowGiftCardForm: $shouldShowGiftCardForm)
                 .disabled(viewModel.shouldShowNonEditableIndicators)
             }
@@ -550,39 +538,6 @@ struct OrderForm: View {
             .buttonStyle(PrimaryLoadingButtonStyle(isLoading: loading))
             .accessibilityIdentifier(Accessibility.doneButtonIdentifier)
         }
-    }
-}
-
-/// Represents an information message to indicate about multiple shipping or fee lines.
-///
-private struct MultipleLinesMessage: View {
-
-    /// Message to display.
-    ///
-    let title: String
-
-    ///   Environment safe areas
-    ///
-    @Environment(\.safeAreaInsets) private var safeAreaInsets: EdgeInsets
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: OrderForm.Layout.noSpacing) {
-            Divider()
-
-            HStack(spacing: OrderForm.Layout.sectionSpacing) {
-
-                Image(uiImage: .infoImage)
-                    .foregroundColor(Color(.brand))
-
-                Text(title)
-                    .bodyStyle()
-            }
-            .padding()
-            .padding(.horizontal, insets: safeAreaInsets)
-
-            Divider()
-        }
-        .background(Color(.listForeground(modal: true)))
     }
 }
 

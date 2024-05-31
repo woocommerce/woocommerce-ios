@@ -139,8 +139,11 @@ private extension ProductStockDashboardCardViewModel {
         let variationsToFetchReports = groupedStockByVariations[true] ?? []
         let productsToFetchReports = groupedStockByVariations[false] ?? []
 
-        try await withThrowingTaskGroup(of: Void.self) { [weak self] group in
-            guard let self else { return }
+        let reports = try await withThrowingTaskGroup(of: [ProductReport].self, returning: [ProductReport].self) { [weak self] group in
+            guard let self else {
+                return []
+            }
+            var allReports: [ProductReport] = []
 
             if variationsToFetchReports.isNotEmpty {
                 group.addTask {
@@ -148,36 +151,43 @@ private extension ProductStockDashboardCardViewModel {
                         productIDs: Array(Set(variationsToFetchReports.map { $0.parentID })),
                         variationIDs: variationsToFetchReports.map { $0.productID }
                     )
-                    for report in reports {
-                        if let variationID = report.variationID {
-                            // In some cases, variation reports can have invalid product ID.
-                            // Fix that by restore the parent ID from the stock item.
-                            let updatedReport: ProductReport = {
-                                guard report.productID == 0,
-                                      let parentID = variationsToFetchReports.first(where: { $0.productID == variationID })?.productID else {
-                                    return report
-                                }
-                                return report.copy(productID: parentID)
-                            }()
-                            self.savedReports[variationID] = updatedReport
-                        }
-                    }
+                    return self.updatedVariationReports(from: reports, using: variationsToFetchReports)
                 }
             }
 
             if productsToFetchReports.isNotEmpty {
                 group.addTask {
-                    let reports = try await self.fetchProductReports(productIDs: productsToFetchReports.map { $0.productID })
-                    for report in reports {
-                        self.savedReports[report.productID] = report
-                    }
+                    try await self.fetchProductReports(productIDs: productsToFetchReports.map { $0.productID })
                 }
             }
 
             while !group.isEmpty {
-                // rethrow any failure.
-                try await group.next()
+                // gather the results and re-throw any failure.
+                if let items = try await group.next() {
+                    allReports.append(contentsOf: items)
+                }
             }
+
+            return allReports
+        }
+
+        /// Saves loaded reports to memory
+        for report in reports {
+            let id = report.variationID ?? report.productID
+            savedReports[id] = report
+        }
+    }
+
+    // In some cases, variation reports can have invalid product ID.
+    // Fix that by restoring the parent ID from the stock item.
+    func updatedVariationReports(from reports: [ProductReport], using stock: [ProductStock]) -> [ProductReport] {
+        reports.map { report in
+            guard let variationID = report.variationID,
+                  report.productID == 0,
+                  let parentID = stock.first(where: { $0.productID == variationID })?.productID else {
+                return report
+            }
+            return report.copy(productID: parentID)
         }
     }
 }

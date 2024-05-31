@@ -1,3 +1,1 @@
-Siamo felici di presentare gli ultimi aggiornamenti.
-Il nostro ultimo aggiornamento apporta miglioramenti per aumentare stabilità e prestazioni.
-Ci impegniamo a migliorare continuamente la nostra app per offrire un servizio migliore. Grazie per aver scelto WooCommerce.
+Scopri un'esperienza WooCommerce più agevole con il nostro ultimo aggiornamento! Abbiamo risolto i problemi che ostacolavano le funzionalità "Lettore di carte" e "Tocca per pagare" in Menu > Pagamenti > Ricevi pagamenti in modo da garantire transazioni senza interruzioni. Anche la schermata della bacheca ha ottenuto un miglioramento delle prestazioni grazie all'ottimizzazione delle chiamate API. Inoltre, è ora disponibile il supporto alla modifica dell'estensione Quantità minima/massima nei dettagli del prodotto.

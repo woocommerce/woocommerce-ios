@@ -341,7 +341,7 @@ extension OrderListViewModel {
 
         let status = lookUpOrderStatus(for: order)
 
-        return OrderListCellViewModel(order: order, status: status)
+        return OrderListCellViewModel(order: order, status: status, currencySettings: ServiceLocator.currencySettings)
     }
 
     /// Creates an `OrderDetailsViewModel` for the `Order` pointed to by `objectID`.

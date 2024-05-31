@@ -83,7 +83,7 @@ final class EditableOrderViewModelTests: XCTestCase {
             }
 
             // Trigger remote sync
-            viewModel.saveShippingLine(ShippingLine.fake())
+            viewModel.shippingUseCase.saveShippingLine(.fake())
         }
 
         // Then
@@ -191,7 +191,7 @@ final class EditableOrderViewModelTests: XCTestCase {
             }
 
             // When remote sync is triggered
-            viewModel.saveShippingLine(ShippingLine.fake())
+            viewModel.shippingUseCase.saveShippingLine(.fake())
         }
 
         // Then
@@ -215,7 +215,7 @@ final class EditableOrderViewModelTests: XCTestCase {
             }
 
             // When remote sync is triggered
-            viewModel.saveShippingLine(ShippingLine.fake())
+            viewModel.shippingUseCase.saveShippingLine(.fake())
         }
 
         // Then
@@ -240,7 +240,7 @@ final class EditableOrderViewModelTests: XCTestCase {
                 }
             }
             // Remote sync is triggered
-            viewModel.saveShippingLine(ShippingLine.fake())
+            viewModel.shippingUseCase.saveShippingLine(.fake())
         }
 
         // Then
@@ -747,17 +747,12 @@ final class EditableOrderViewModelTests: XCTestCase {
 
         // When
         let paymentDataViewModel = EditableOrderViewModel.PaymentDataViewModel(itemsTotal: "20.00",
-                                                                               shippingTotal: "3.00",
-                                                                               shippingTax: "0.30",
                                                                                customAmountsTotal: "2.00",
                                                                                taxesTotal: "5.00",
                                                                                currencyFormatter: CurrencyFormatter(currencySettings: currencySettings))
 
         // Then
         XCTAssertEqual(paymentDataViewModel.itemsTotal, "£20.00")
-        XCTAssertEqual(paymentDataViewModel.shippingTotal, "£3.00")
-        XCTAssertEqual(paymentDataViewModel.shippingTax, "£0.30")
-        XCTAssertEqual(paymentDataViewModel.shouldShowShippingTax, true)
         XCTAssertEqual(paymentDataViewModel.customAmountsTotal, "£2.00")
         XCTAssertEqual(paymentDataViewModel.taxesTotal, "£5.00")
     }
@@ -771,9 +766,6 @@ final class EditableOrderViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(viewModel.paymentDataViewModel.itemsTotal, "£0.00")
-        XCTAssertEqual(viewModel.paymentDataViewModel.shippingTotal, "£0.00")
-        XCTAssertEqual(viewModel.paymentDataViewModel.shippingTax, "£0.00")
-        XCTAssertEqual(viewModel.paymentDataViewModel.shouldShowShippingTax, false)
         XCTAssertEqual(viewModel.paymentDataViewModel.customAmountsTotal, "£0.00")
         XCTAssertEqual(viewModel.paymentDataViewModel.taxesTotal, "£0.00")
     }
@@ -906,45 +898,6 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.orderTotal, "£17.00")
     }
 
-    func test_payment_section_is_updated_when_shipping_line_updated() throws {
-        // Given
-        let currencySettings = CurrencySettings(currencyCode: .GBP, currencyPosition: .left, thousandSeparator: "", decimalSeparator: ".", numberOfDecimals: 2)
-        let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, price: "8.50", purchasable: true)
-        storageManager.insertSampleProduct(readOnlyProduct: product)
-
-        let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
-                                               storageManager: storageManager,
-                                               currencySettings: currencySettings)
-        viewModel.toggleProductSelectorVisibility()
-        let productSelectorViewModel = try XCTUnwrap(viewModel.productSelectorViewModel)
-
-        // When
-        productSelectorViewModel.changeSelectionStateForProduct(with: product.productID, selected: true)
-        productSelectorViewModel.completeMultipleSelection()
-        let testShippingLine = ShippingLine(shippingID: 0,
-                                            methodTitle: "Flat Rate",
-                                            methodID: "other",
-                                            total: "10",
-                                            totalTax: "",
-                                            taxes: [])
-        viewModel.saveShippingLine(testShippingLine)
-
-        // Then
-        XCTAssertTrue(viewModel.paymentDataViewModel.shouldShowShippingTotal)
-        XCTAssertEqual(viewModel.paymentDataViewModel.itemsTotal, "£8.50")
-        XCTAssertEqual(viewModel.paymentDataViewModel.shippingTotal, "£10.00")
-        XCTAssertEqual(viewModel.orderTotal, "£18.50")
-
-        // When
-        viewModel.saveShippingLine(nil)
-
-        // Then
-        XCTAssertFalse(viewModel.paymentDataViewModel.shouldShowShippingTotal)
-        XCTAssertEqual(viewModel.paymentDataViewModel.itemsTotal, "£8.50")
-        XCTAssertEqual(viewModel.paymentDataViewModel.shippingTotal, "£0.00")
-        XCTAssertEqual(viewModel.orderTotal, "£8.50")
-    }
-
     func test_payment_when_custom_amount_is_added_then_section_is_updated() throws {
         // Given
         let currencySettings = CurrencySettings(currencyCode: .GBP, currencyPosition: .left, thousandSeparator: "", decimalSeparator: ".", numberOfDecimals: 2)
@@ -1000,44 +953,6 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.paymentDataViewModel.couponLineViewModels.isEmpty)
     }
 
-    func test_payment_section_values_correct_when_shipping_line_is_negative() throws {
-        // Given
-        let currencySettings = CurrencySettings(currencyCode: .GBP, currencyPosition: .left, thousandSeparator: "", decimalSeparator: ".", numberOfDecimals: 2)
-        let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, price: "8.50", purchasable: true)
-        storageManager.insertSampleProduct(readOnlyProduct: product)
-        let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
-                                               storageManager: storageManager,
-                                               currencySettings: currencySettings)
-        viewModel.toggleProductSelectorVisibility()
-        let productSelectorViewModel = try XCTUnwrap(viewModel.productSelectorViewModel)
-
-        // When
-        productSelectorViewModel.changeSelectionStateForProduct(with: product.productID, selected: true)
-        let testShippingLine = ShippingLine(shippingID: 0,
-                                            methodTitle: "Flat Rate",
-                                            methodID: "other",
-                                            total: "-5",
-                                            totalTax: "",
-                                            taxes: [])
-        viewModel.saveShippingLine(testShippingLine)
-        productSelectorViewModel.completeMultipleSelection()
-
-        // Then
-        XCTAssertTrue(viewModel.paymentDataViewModel.shouldShowShippingTotal)
-        XCTAssertEqual(viewModel.paymentDataViewModel.itemsTotal, "£8.50")
-        XCTAssertEqual(viewModel.paymentDataViewModel.shippingTotal, "-£5.00")
-        XCTAssertEqual(viewModel.orderTotal, "£3.50")
-
-        // When
-        viewModel.saveShippingLine(nil)
-
-        // Then
-        XCTAssertFalse(viewModel.paymentDataViewModel.shouldShowShippingTotal)
-        XCTAssertEqual(viewModel.paymentDataViewModel.itemsTotal, "£8.50")
-        XCTAssertEqual(viewModel.paymentDataViewModel.shippingTotal, "£0.00")
-        XCTAssertEqual(viewModel.orderTotal, "£8.50")
-    }
-
     func test_payment_section_loading_indicator_is_enabled_while_order_syncs() {
         // When
         let isLoadingDuringSync: Bool = waitFor { promise in
@@ -1051,7 +966,7 @@ final class EditableOrderViewModelTests: XCTestCase {
                 }
             }
             // Trigger remote sync
-            self.viewModel.saveShippingLine(ShippingLine.fake())
+            self.viewModel.shippingUseCase.saveShippingLine(.fake())
         }
 
         // Then
@@ -1075,7 +990,7 @@ final class EditableOrderViewModelTests: XCTestCase {
                 }
             }
             // Trigger remote sync
-            viewModel.saveShippingLine(ShippingLine.fake())
+            viewModel.shippingUseCase.saveShippingLine(.fake())
         }
 
         // Then
@@ -1100,7 +1015,7 @@ final class EditableOrderViewModelTests: XCTestCase {
             }
         }
         // Trigger remote sync
-        viewModel.saveShippingLine(ShippingLine.fake())
+        viewModel.shippingUseCase.saveShippingLine(.fake())
 
         // Then
         waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
@@ -1165,7 +1080,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         let shippingLine = ShippingLine.fake()
 
         // When
-        viewModel.saveShippingLine(shippingLine)
+        viewModel.shippingUseCase.saveShippingLine(shippingLine)
 
         // Then
         XCTAssertTrue(viewModel.hasChanges)
@@ -1296,50 +1211,6 @@ final class EditableOrderViewModelTests: XCTestCase {
         }
 
         XCTAssertEqual(event.value as? String, "product_selector")
-    }
-
-    func test_payment_data_view_model_when_calling_add_shipping_tapped_tracks_expected_event() {
-        // Given
-        let analytics = MockAnalyticsProvider()
-        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, analytics: WooAnalytics(analyticsProvider: analytics))
-
-        // When
-        viewModel.paymentDataViewModel.addShippingTappedClosure()
-
-        // Then
-        XCTAssertEqual(analytics.receivedEvents, [WooAnalyticsStat.orderAddShippingTapped.rawValue])
-    }
-
-    func test_shipping_method_tracked_when_added() throws {
-        // Given
-        let analytics = MockAnalyticsProvider()
-        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, analytics: WooAnalytics(analyticsProvider: analytics))
-        let shippingLine = ShippingLine.fake().copy(methodID: "flat_rate")
-
-        // When
-        viewModel.saveShippingLine(shippingLine)
-
-        // Then
-        XCTAssertEqual(analytics.receivedEvents, [WooAnalyticsStat.orderShippingMethodAdd.rawValue])
-        assertEqual("creation", analytics.receivedProperties.first?["flow"] as? String)
-        assertEqual("flat_rate", analytics.receivedProperties.first?["shipping_method"] as? String)
-    }
-
-    func test_shipping_method_tracked_when_removed() throws {
-        // Given
-        let analytics = MockAnalyticsProvider()
-        let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
-                                               flow: .editing(initialOrder: .fake()),
-                                               analytics: WooAnalytics(analyticsProvider: analytics))
-
-        // When
-        viewModel.saveShippingLine(nil)
-
-        // Then
-        XCTAssertEqual(analytics.receivedEvents, [WooAnalyticsStat.orderShippingMethodRemove.rawValue])
-
-        let properties = try XCTUnwrap(analytics.receivedProperties.first?["flow"] as? String)
-        XCTAssertEqual(properties, "editing")
     }
 
     func test_coupon_line_tracked_when_added() throws {
@@ -1481,7 +1352,7 @@ final class EditableOrderViewModelTests: XCTestCase {
             }
 
             // When remote sync is triggered
-            viewModel.saveShippingLine(ShippingLine.fake())
+            viewModel.shippingUseCase.saveShippingLine(.fake())
         }
 
         // Then
@@ -1556,7 +1427,7 @@ final class EditableOrderViewModelTests: XCTestCase {
                 }
             }
             // Trigger remote sync
-            viewModel.saveShippingLine(ShippingLine.fake())
+            viewModel.shippingUseCase.saveShippingLine(.fake())
         }
 
         // When
@@ -2107,39 +1978,6 @@ final class EditableOrderViewModelTests: XCTestCase {
 
         // Then
         XCTAssertFalse(viewModel.shouldShowNonEditableIndicators)
-    }
-
-    func test_zero_fees_and_shipping_lines_order_displays_nil_message() {
-        // Given
-        let order = Order.fake()
-
-        // When
-        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, flow: .editing(initialOrder: order))
-
-        // Then
-        XCTAssertNil(viewModel.multipleLinesMessage)
-    }
-
-    func test_one_shipping_and_fee_line_order_displays_nil_message() {
-        // Given
-        let order = Order.fake().copy(shippingLines: [.fake()], fees: [.fake()])
-
-        // When
-        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, flow: .editing(initialOrder: order))
-
-        // Then
-        XCTAssertNil(viewModel.multipleLinesMessage)
-    }
-
-    func test_multiple_shipping_line_order_displays_info_message() {
-        // Given
-        let order = Order.fake().copy(shippingLines: [.fake(), .fake()])
-
-        // When
-        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, flow: .editing(initialOrder: order))
-
-        // Then
-        XCTAssertNotNil(viewModel.multipleLinesMessage)
     }
 
     func test_capturePermissionStatus_is_notDetermined_when_permissionChecker_is_notDetermined() {
@@ -3295,43 +3133,20 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.hasChanges)
     }
 
-    func test_init_syncs_available_shipping_methods() {
+    func test_editing_existing_shipping_line_sets_expected_selectedShippingLine() throws {
         // Given
-        var shippingMethodsSynced = false
-        stores.whenReceivingAction(ofType: ShippingMethodAction.self) { action in
-            switch action {
-            case let .synchronizeShippingMethods(_, completion):
-                shippingMethodsSynced = true
-                completion(.success(()))
-            }
-        }
-
-        // When
-        _ = EditableOrderViewModel(siteID: sampleSiteID, stores: stores)
-
-        // Then
-        XCTAssertTrue(shippingMethodsSynced)
-    }
-
-    func test_view_model_inits_with_expected_shipping_line_row_from_order_shipping_line_and_stored_shipping_method() throws {
-        // Given
-        let shippingMethod = ShippingMethod(siteID: sampleSiteID, methodID: "flat_rate", title: "Flat Rate")
-        storageManager.insert(shippingMethod)
-        let shippingLine = ShippingLine.fake().copy(methodTitle: "Package 1", methodID: "flat_rate")
+        let shippingLine = ShippingLine.fake().copy(shippingID: 1, methodTitle: "Package 1")
         let order = Order.fake().copy(siteID: sampleSiteID, shippingLines: [shippingLine])
-
-        // When
-        let featureFlagService = MockFeatureFlagService(isMultipleShippingLinesEnabled: true)
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
                                                flow: .editing(initialOrder: order),
-                                               storageManager: storageManager,
-                                               featureFlagService: featureFlagService)
+                                               storageManager: storageManager)
+
+        // When
+        viewModel.shippingUseCase.shippingLineRows.first?.editShippingLine()
 
         // Then
-        assertEqual(1, viewModel.shippingLineRows.count)
-        let shippingLineRow = try XCTUnwrap(viewModel.shippingLineRows.first)
-        assertEqual(shippingLine.methodTitle, shippingLineRow.shippingTitle)
-        assertEqual(shippingMethod.title, shippingLineRow.shippingMethod)
+        let editShippingLineViewModel = try XCTUnwrap(viewModel.shippingUseCase.selectedShippingLine)
+        assertEqual(shippingLine.methodTitle, editShippingLineViewModel.methodTitle)
     }
 }
 
@@ -3397,12 +3212,6 @@ private extension MockStorageManager {
         }
 
         return bundleProduct
-    }
-
-    func insert(_ readOnlyShippingMethod: ShippingMethod) {
-        let shippingMethod = viewStorage.insertNewObject(ofType: StorageShippingMethod.self)
-        shippingMethod.update(with: readOnlyShippingMethod)
-        viewStorage.saveIfNeeded()
     }
 }
 

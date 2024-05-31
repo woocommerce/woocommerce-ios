@@ -1,14 +1,14 @@
 import SwiftUI
 import Yosemite
 
-final class CardPresentPaymentOnboardingViewController: UIHostingController<CardPresentPaymentOnboardingView> {
+final class CardPresentPaymentsOnboardingViewController: UIHostingController<CardPresentPaymentsOnboardingView> {
 
     private let onWillDisappear: (() -> ())?
 
-    init(viewModel: CardPresentPaymentOnboardingViewModel,
+    init(viewModel: CardPresentPaymentsOnboardingViewModel,
          onWillDisappear: (() -> ())?) {
         self.onWillDisappear = onWillDisappear
-        super.init(rootView: CardPresentPaymentOnboardingView(viewModel: viewModel))
+        super.init(rootView: CardPresentPaymentsOnboardingView(viewModel: viewModel))
         viewModel.showSupport = { [weak self] in
             guard let self = self else { return }
             let supportForm = SupportFormHostingController(viewModel: .init())
@@ -30,8 +30,8 @@ final class CardPresentPaymentOnboardingViewController: UIHostingController<Card
     }
 }
 
-struct CardPresentPaymentOnboardingView: View {
-    @StateObject var viewModel: CardPresentPaymentOnboardingViewModel
+struct CardPresentPaymentsOnboardingView: View {
+    @StateObject var viewModel: CardPresentPaymentsOnboardingViewModel
     var shouldShowMenuOnCompletion: Bool = true
 
     var body: some View {
@@ -116,10 +116,10 @@ struct CardPresentPaymentOnboardingView: View {
     }
 }
 
-struct CardPresentPaymentOnboardingView_Previews: PreviewProvider {
+struct CardPresentPaymentsOnboardingView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
-            CardPresentPaymentOnboardingView(viewModel: CardPresentPaymentOnboardingViewModel(fixedState: .completed(plugin: .stripeOnly)))
+            CardPresentPaymentsOnboardingView(viewModel: CardPresentPaymentsOnboardingViewModel(fixedState: .completed(plugin: .stripeOnly)))
         }
     }
 }

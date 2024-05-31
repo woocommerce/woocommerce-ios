@@ -54,7 +54,7 @@ struct ShippingLineSelectionDetails: View {
 
                 // MARK: Delete Shipping Button
                 Button(Localization.deleteShippingButton) {
-                    viewModel.didSelectSave(nil)
+                    viewModel.removeShippingLine()
                     dismiss()
                 }
                 .foregroundColor(.init(uiColor: .error))
@@ -138,18 +138,20 @@ private extension ShippingLineSelectionDetails {
 
 #Preview("Add shipping") {
     ShippingLineSelectionDetails(viewModel: ShippingLineSelectionDetailsViewModel(siteID: 1,
-                                                                                  isExistingShippingLine: false,
+                                                                                  shippingID: nil,
                                                                                   initialMethodID: "",
                                                                                   initialMethodTitle: "",
                                                                                   shippingTotal: "",
-                                                                                  didSelectSave: { _ in }))
+                                                                                  didSelectSave: { _ in },
+                                                                                  didSelectRemove: { _ in }))
 }
 
 #Preview("Edit shipping") {
     ShippingLineSelectionDetails(viewModel: ShippingLineSelectionDetailsViewModel(siteID: 1,
-                                                                                  isExistingShippingLine: true,
+                                                                                  shippingID: 1,
                                                                                   initialMethodID: "flat_rate",
                                                                                   initialMethodTitle: "Shipping",
                                                                                   shippingTotal: "10.00",
-                                                                                  didSelectSave: { _ in }))
+                                                                                  didSelectSave: { _ in },
+                                                                                  didSelectRemove: { _ in }))
 }

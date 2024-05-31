@@ -559,6 +559,7 @@ extension WooAnalyticsEvent {
             static let orderID = "id"
             static let productTypes = "product_types"
             static let hasMultipleShippingLines = "has_multiple_shipping_lines"
+            static let shippingLinesCount = "shipping_lines_count"
             static let hasMultipleFeeLines = "has_multiple_fee_lines"
             static let itemType = "item_type"
             static let source = "source"
@@ -739,9 +740,10 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .orderShippingMethodSelected, properties: [Keys.shippingMethod: methodID])
         }
 
-        static func orderShippingMethodAdd(flow: Flow, methodID: String) -> WooAnalyticsEvent {
+        static func orderShippingMethodAdd(flow: Flow, methodID: String, shippingLinesCount: Int64) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .orderShippingMethodAdd, properties: [Keys.flow: flow.rawValue,
-                                                                              Keys.shippingMethod: methodID])
+                                                                              Keys.shippingMethod: methodID,
+                                                                              Keys.shippingLinesCount: shippingLinesCount])
         }
 
         static func orderShippingMethodRemove(flow: Flow) -> WooAnalyticsEvent {
@@ -816,8 +818,13 @@ extension WooAnalyticsEvent {
             ])
         }
 
-        static func orderCreationSuccess(millisecondsSinceSinceOrderAddNew: Int64?, couponsCount: Int64, usesGiftCard: Bool) -> WooAnalyticsEvent {
-            var properties: [String: WooAnalyticsEventPropertyType] = [Keys.couponsCount: couponsCount, Keys.usesGiftCard: usesGiftCard]
+        static func orderCreationSuccess(millisecondsSinceSinceOrderAddNew: Int64?,
+                                         couponsCount: Int64,
+                                         usesGiftCard: Bool,
+                                         shippingLinesCount: Int64) -> WooAnalyticsEvent {
+            var properties: [String: WooAnalyticsEventPropertyType] = [Keys.couponsCount: couponsCount,
+                                                                       Keys.usesGiftCard: usesGiftCard,
+                                                                       Keys.shippingLinesCount: shippingLinesCount]
 
             if let lapseSinceLastOrderAddNew = millisecondsSinceSinceOrderAddNew {
                 properties[GlobalKeys.millisecondsSinceOrderAddNew] = lapseSinceLastOrderAddNew
@@ -910,6 +917,12 @@ extension WooAnalyticsEvent {
         ///
         static func giftCardsShown() -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .orderDetailsGiftCardShown, properties: [:])
+        }
+
+        /// Tracks when shipping is displayed in order details.
+        ///
+        static func shippingShown(shippingLinesCount: Int64) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderDetailsShippingMethodsShown, properties: [Keys.shippingLinesCount: shippingLinesCount])
         }
 
         /// Tracked when the Configure button is shown in the order form.

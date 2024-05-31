@@ -1,3 +1,1 @@
-Ini dia pembaruan terkini kami!
-Kami hadirkan perbaikan internal di pembaruan terkini untuk meningkatkan stabilitas dan performa.
-Kami berkomitmen untuk terus menyempurnakan aplikasi kami demi pelayanan yang lebih baik.  Terima kasih telah memilih WooCommerce!
+Gunakan WooCommerce secara lebih mudah dengan pembaruan terkini! Kami mengatasi masalah yang mengganggu fitur "Pembaca Kartu" dan "Ketuk untuk Bayar" di Menu > Pembayaran > Terima Pembayaran demi kemudahan transaksi. Performa layar dasbor lebih baik karena kami mengoptimalkan panggilan API. Selain itu, kini tersedia dukungan penyunting untuk ekstensi Jumlah Min/Maks di detail produk.

@@ -1,1 +1,5 @@
 IPHONEOS_DEPLOYMENT_TARGET = 15.0
+
+// This is App Store account id.
+// Build configurations that need the Enterprise account should override in their dedicated xcconfig.
+DEVELOPMENT_TEAM = PZYM8XX95Q

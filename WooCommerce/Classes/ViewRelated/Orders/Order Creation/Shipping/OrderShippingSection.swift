@@ -1,8 +1,10 @@
 import SwiftUI
 
 struct OrderShippingSection: View {
-    /// View model to drive the view content
-    @ObservedObject var viewModel: EditableOrderViewModel
+    /// Use case to add, edit, or remove shipping lines
+    @ObservedObject var useCase: EditableOrderShippingUseCase
+
+    @State private var showAddShippingLine: Bool = false
 
     @Environment(\.safeAreaInsets) private var safeAreaInsets: EdgeInsets
 
@@ -17,7 +19,7 @@ struct OrderShippingSection: View {
 
                 Image(uiImage: .lockImage)
                     .foregroundColor(Color(.primary))
-                    .renderedIf(viewModel.shouldShowNonEditableIndicators)
+                    .renderedIf(useCase.shouldShowNonEditableIndicators)
 
                 Button(action: {
                     addShippingLine()
@@ -25,10 +27,10 @@ struct OrderShippingSection: View {
                     Image(uiImage: .plusImage)
                 }
                 .scaledToFit()
-                .renderedIf(!viewModel.shouldShowNonEditableIndicators)
+                .renderedIf(!useCase.shouldShowNonEditableIndicators)
             }
 
-            ForEach(viewModel.shippingLineRows) { shippingLineRow in
+            ForEach(useCase.shippingLineRows) { shippingLineRow in
                 ShippingLineRowView(viewModel: shippingLineRow)
             }
         }
@@ -36,12 +38,18 @@ struct OrderShippingSection: View {
         .padding()
         .background(Color(.listForeground(modal: true)))
         .addingTopAndBottomDividers()
+        .sheet(isPresented: $showAddShippingLine, content: {
+            ShippingLineSelectionDetails(viewModel: useCase.addShippingLineViewModel())
+        })
+        .sheet(item: $useCase.selectedShippingLine, content: { selectedShippingLine in
+            ShippingLineSelectionDetails(viewModel: selectedShippingLine)
+        })
     }
 }
 
 private extension OrderShippingSection {
     func addShippingLine() {
-        // TODO-12583: Add a new shipping line (opens `ShippingLineSelectionDetails`)
+        showAddShippingLine = true
         // TODO-12584: Track that add shipping has been tapped
     }
 }

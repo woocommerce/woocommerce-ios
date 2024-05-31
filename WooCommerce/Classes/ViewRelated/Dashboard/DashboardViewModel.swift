@@ -48,6 +48,8 @@ final class DashboardViewModel: ObservableObject {
         dashboardCards.filter { $0.availability == .show && $0.enabled }
     }
 
+    private var savedCards: [DashboardCard] = []
+
     @Published private(set) var isInAppFeedbackCardVisible = false
 
     private(set) var inAppFeedbackCardViewModel = InAppFeedbackCardViewModel()
@@ -138,6 +140,7 @@ final class DashboardViewModel: ObservableObject {
         observeDashboardCardsAndReload()
         Task {
             await checkInboxEligibility()
+            await savedCards = loadDashboardCards() ?? []
         }
     }
 
@@ -265,6 +268,7 @@ final class DashboardViewModel: ObservableObject {
         // been generated with the new cards included, so saving it ensures that the notice is hidden in subsequent checks.
         if showNewCardsNotice {
             stores.dispatch(AppSettingsAction.setDashboardCards(siteID: siteID, cards: dashboardCards))
+            savedCards = dashboardCards
             showNewCardsNotice = false
         }
         showingCustomization = true
@@ -277,6 +281,7 @@ final class DashboardViewModel: ObservableObject {
         analytics.track(event: .DynamicDashboard.editorSaveTapped(types: activeCardTypes))
         stores.dispatch(AppSettingsAction.setDashboardCards(siteID: siteID, cards: cards))
         dashboardCards = cards
+        savedCards = cards
     }
 }
 
@@ -520,23 +525,21 @@ private extension DashboardViewModel {
                                                 canShowLastOrders: canShowLastOrders,
                                                 canShowInbox: canShowInbox)
 
-        // Next, get saved cards and preserve existing enabled state for all available cards.
-        // This is needed because even if a user already disabled an available card and saved it, in `initialCards`
-        // the same card might be set to be enabled. To respect user's setting, we need to check the saved state and re-apply it.
-        let savedCards = await loadDashboardCards() ?? []
-        let updatedCards = initialCards.map { initialCard in
-            if let savedCard = savedCards.first(where: { $0.type == initialCard.type }),
-               savedCard.availability == .show && initialCard.availability == .show {
-                return initialCard.copy(enabled: savedCard.enabled)
-            } else {
-                return initialCard
-            }
-        }
-
         /// If no saved cards are found, display the default cards.
         if savedCards.isEmpty {
-            dashboardCards = updatedCards
+            dashboardCards = initialCards
         } else {
+            // Based on saved cards, preserve existing enabled state for all available cards.
+            // This is needed because even if a user already disabled an available card and saved it, in `initialCards`
+            // the same card might be set to be enabled. To respect user's setting, we need to check the saved state and re-apply it.
+            let updatedCards = initialCards.map { initialCard in
+                if let savedCard = savedCards.first(where: { $0.type == initialCard.type }),
+                   savedCard.availability == .show && initialCard.availability == .show {
+                    return initialCard.copy(enabled: savedCard.enabled)
+                } else {
+                    return initialCard
+                }
+            }
 
             // Reorder dashboardCards based on original ordering in savedCards
             let reorderedCards = savedCards.compactMap { savedCard in
@@ -552,22 +555,14 @@ private extension DashboardViewModel {
             dashboardCards = reorderedCards + remainingCards
         }
 
-        await configureNewCardsNotice(with: savedCards)
+        await configureNewCardsNotice()
     }
 
     /// Determines whether to show the notice that new cards now exist and can be found in Customize screen.
     /// Can optionally pass local cards in case they are recently loaded before calling this function.
     @MainActor
     func configureNewCardsNotice(with localCards: [DashboardCard]? = nil) async {
-        var cards: [DashboardCard]
-
-        if let localCards {
-            cards = localCards
-        } else {
-            cards = await loadDashboardCards() ?? []
-        }
-
-        let savedCardTypes = Set(cards.map { $0.type })
+        let savedCardTypes = Set(savedCards.map { $0.type })
         let savedCardContainsAllNewCards = Constants.m2CardSet.isSubset(of: savedCardTypes)
 
         if savedCardContainsAllNewCards {

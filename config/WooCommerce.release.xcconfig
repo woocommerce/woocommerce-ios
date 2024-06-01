@@ -1,2 +1,5 @@
 #include "Common.xcconfig"
 #include "Version.public.xcconfig"
+
+// Use Apple Development/Distribution to support both iOS and Mac Catalyst targets
+CODE_SIGN_IDENTITY = Apple Distribution

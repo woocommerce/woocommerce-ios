@@ -325,7 +325,6 @@
 		269014D42BEA9335006056E0 /* UserAgent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45551F112523E7F1007EF104 /* UserAgent.swift */; };
 		26B15E442A269F79000C35E4 /* ip-location.json in Resources */ = {isa = PBXBuildFile; fileRef = 26B15E432A269F79000C35E4 /* ip-location.json */; };
 		26B542452BEAC6A6003A55B5 /* Pods_NetworkingWatchOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6132DCC72AA9C070E2033628 /* Pods_NetworkingWatchOS.framework */; };
-		26B542462BEAC6A6003A55B5 /* Pods_NetworkingWatchOS.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 6132DCC72AA9C070E2033628 /* Pods_NetworkingWatchOS.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		26BD9FCD2965EC3C004E0D15 /* product-variations-bulk-create.json in Resources */ = {isa = PBXBuildFile; fileRef = 26BD9FCC2965EC3C004E0D15 /* product-variations-bulk-create.json */; };
 		26BD9FCF2965EE71004E0D15 /* ProductVariationsBulkCreateMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26BD9FCE2965EE71004E0D15 /* ProductVariationsBulkCreateMapper.swift */; };
 		26CFDEDD2C0295AD005ABC31 /* Note.swift in Sources */ = {isa = PBXBuildFile; fileRef = B59325C6217E22FC000B0E8E /* Note.swift */; };
@@ -342,7 +341,6 @@
 		26DAAB572BEA8DC100CE399E /* Credentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = B557DA1720979D51005962F4 /* Credentials.swift */; };
 		26DAAB582BEA8DFF00CE399E /* Remote.swift in Sources */ = {isa = PBXBuildFile; fileRef = B557DA0020975500005962F4 /* Remote.swift */; };
 		26DAAB592BEA8E1500CE399E /* Network.swift in Sources */ = {isa = PBXBuildFile; fileRef = B518662120A097C200037A38 /* Network.swift */; };
-		26EBDC492BED3CA6004D8E1C /* Codegen in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 269014C62BEA9166006056E0 /* Codegen */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		26F2CAD92BED574D00F9A5E7 /* AlamofireNetwork.swift in Sources */ = {isa = PBXBuildFile; fileRef = B518662320A099BF00037A38 /* AlamofireNetwork.swift */; };
 		26F2CADA2BED578200F9A5E7 /* RequestProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEFBA7532949CE6600C35BA9 /* RequestProcessor.swift */; };
 		26F2CADB2BED578200F9A5E7 /* RequestAuthenticator.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE99814D295AA7430074AE68 /* RequestAuthenticator.swift */; };
@@ -1224,18 +1222,6 @@
 			dstSubfolderSpec = 10;
 			files = (
 				263E38402641FF1600260D3B /* Codegen in Embed Frameworks */,
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		26B542472BEAC6A6003A55B5 /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				26EBDC492BED3CA6004D8E1C /* Codegen in Embed Frameworks */,
-				26B542462BEAC6A6003A55B5 /* Pods_NetworkingWatchOS.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -3938,7 +3924,6 @@
 				26DAAB4B2BEA8D3400CE399E /* Sources */,
 				26DAAB4C2BEA8D3400CE399E /* Frameworks */,
 				26DAAB4D2BEA8D3400CE399E /* Resources */,
-				26B542472BEAC6A6003A55B5 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);

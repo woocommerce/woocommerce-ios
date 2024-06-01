@@ -5,17 +5,22 @@ import SwiftUI
 ///
 struct AppLinkWidget: Widget {
     private var supportedFamilies: [WidgetFamily] {
+#if !os(watchOS)
         if #available(iOSApplicationExtension 16.0, *) {
             return [.accessoryCircular]
         } else {
             return []
         }
+#else
+        return [.accessoryCorner, .accessoryCircular]
+#endif
     }
 
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: WooConstants.appLinkWidgetKind, provider: AppLinkProvider()) { _ in
             AppButtonView()
         }
+        .containerBackgroundRemovable(false)
         .configurationDisplayName(Localization.title)
         .description(Localization.description)
         .supportedFamilies(supportedFamilies)
@@ -49,15 +54,11 @@ private struct AppLinkProvider: TimelineProvider {
 
 private struct AppButtonView: View {
     var body: some View {
-        ZStack {
-            Circle()
-                .fill(Color.black)
-            Image(uiImage: .wooLogoWhite)
-                .resizable()
-                .scaledToFit()
-                .padding(10)
-        }
-        .widgetBackground(backgroundView: Color(.clear))
+        Image("woo-logo", bundle: nil)
+            .resizable()
+            .scaledToFit()
+            .padding(8)
+            .widgetBackground(backgroundView: AccessoryWidgetBackground())
     }
 }
 

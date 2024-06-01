@@ -6,7 +6,7 @@ extension View {
     /// This API is needed to add support to stand by mode widgets.
     ///
     func widgetBackground(backgroundView: some View) -> some View {
-        if #available(iOSApplicationExtension 17.0, *) {
+        if #available(iOSApplicationExtension 17.0, watchOSApplicationExtension 10.0, *) {
             return containerBackground(for: .widget) {
                 backgroundView
             }

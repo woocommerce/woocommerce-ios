@@ -2,6 +2,7 @@ import Combine
 import Foundation
 import struct Yosemite.Order
 import struct Yosemite.CardPresentPaymentsConfiguration
+import struct Yosemite.CardReader
 
 import UIKit // TODO: remove after update to `ViewControllerPresenting` when #12864 is done
 
@@ -55,14 +56,21 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
     @MainActor
     func connectReader(using connectionMethod: CardReaderConnectionMethod) async throws -> CardPresentPaymentReaderConnectionResult {
         // What happens if this gets called while there's another connection ongoing?
-        let preflightController = createPreflightController()
+        let preflightControllerAdaptor = CardPresentPaymentPreflightAdaptor(preflightController: createPreflightController())
 
-        await preflightController.start(discoveryMethod: connectionMethod.discoveryMethod)
+        async let preflightResult = preflightControllerAdaptor.attemptConnection(discoveryMethod: connectionMethod.discoveryMethod)
 
-        // TODO: replace it with reader connection
-        let mockReader = CardPresentPaymentCardReader(name: "Test Reader", batteryLevel: 0.5)
-        connectedReaderSubject.send(mockReader)
-        return .connected(mockReader)
+        switch try await preflightResult {
+        case .completed(let cardReader, _):
+            let connectedReader = CardPresentPaymentCardReader(name: cardReader.name ?? cardReader.id,
+                                                               batteryLevel: cardReader.batteryLevel)
+            connectedReaderSubject.send(connectedReader)
+            paymentEventSubject.send(.idle)
+            return .connected(connectedReader)
+        case .canceled:
+            paymentEventSubject.send(.idle)
+            return .canceled
+        }
     }
 
     func disconnectReader() {

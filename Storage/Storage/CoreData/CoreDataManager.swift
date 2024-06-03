@@ -82,7 +82,6 @@ public final class CoreDataManager: StorageManagerType {
     ///
     public lazy var persistentContainer: NSPersistentContainer = {
 
-        
         let container = NSPersistentContainer(name: name, managedObjectModel: modelsInventory.currentModel)
         container.persistentStoreDescriptions = [storeDescription]
 

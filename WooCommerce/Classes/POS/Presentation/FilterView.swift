@@ -23,7 +23,7 @@ struct FilterView: View {
 
 #if DEBUG
 #Preview {
-    FilterView(viewModel: PointOfSaleDashboardViewModel(products: [],
+    FilterView(viewModel: PointOfSaleDashboardViewModel(items: [],
                                                         currencySettings: .init(),
                                                         cardPresentPaymentService: CardPresentPaymentService(siteID: 0)))
 }

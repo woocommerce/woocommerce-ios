@@ -1,3 +1,4 @@
+import class Yosemite.POSProductProvider
 import SwiftUI
 
 struct CartView: View {
@@ -16,9 +17,9 @@ struct CartView: View {
                 .font(.title)
                 .foregroundColor(Color.white)
             ScrollView {
-                ForEach(viewModel.productsInCart, id: \.product.productID) { cartProduct in
-                    ProductRowView(cartProduct: cartProduct) {
-                        viewModel.removeProductFromCart(cartProduct)
+                ForEach(viewModel.itemsInCart, id: \.id) { cartItem in
+                    ItemRowView(cartItem: cartItem) {
+                        viewModel.removeItemFromCart(cartItem)
                     }
                     .background(Color.tertiaryBackground)
                     .padding(.horizontal, 32)
@@ -70,7 +71,7 @@ private extension CartView {
 
 #if DEBUG
 #Preview {
-    CartView(viewModel: PointOfSaleDashboardViewModel(products: POSProductProvider.provideProductsForPreview(),
+    CartView(viewModel: PointOfSaleDashboardViewModel(items: POSProductProvider.provideProductsForPreview(),
                                                       currencySettings: .init(),
                                                       cardPresentPaymentService: CardPresentPaymentService(siteID: 0)))
 }

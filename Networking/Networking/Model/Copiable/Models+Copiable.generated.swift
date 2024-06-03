@@ -2311,19 +2311,16 @@ extension Networking.ProductReport.ExtendedInfo {
     public func copy(
         name: CopiableProp<String> = .copy,
         image: NullableCopiableProp<String> = .copy,
-        stockQuantity: CopiableProp<Int> = .copy,
-        attributes: NullableCopiableProp<[ProductVariationAttribute]> = .copy
+        stockQuantity: CopiableProp<Int> = .copy
     ) -> Networking.ProductReport.ExtendedInfo {
         let name = name ?? self.name
         let image = image ?? self.image
         let stockQuantity = stockQuantity ?? self.stockQuantity
-        let attributes = attributes ?? self.attributes
 
         return Networking.ProductReport.ExtendedInfo(
             name: name,
             image: image,
-            stockQuantity: stockQuantity,
-            attributes: attributes
+            stockQuantity: stockQuantity
         )
     }
 }

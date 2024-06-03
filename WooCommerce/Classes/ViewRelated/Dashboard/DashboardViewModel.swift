@@ -541,7 +541,10 @@ private extension DashboardViewModel {
 
             // Get any remaining available cards and disable them.
             let remainingCards = Set(updatedCards).subtracting(savedCards)
-                .filter { $0.availability == .show }
+                .filter { card in
+                    card.availability == .show &&
+                    !savedCards.contains(where: { $0.type == card.type })
+                }
                 .map { $0.copy(enabled: false) }
 
             // Append the remaining cards to the end of the list
@@ -555,6 +558,9 @@ private extension DashboardViewModel {
     /// Can optionally pass local cards in case they are recently loaded before calling this function.
     @MainActor
     func configureNewCardsNotice(with localCards: [DashboardCard]? = nil) async {
+        guard featureFlagService.isFeatureFlagEnabled(.dynamicDashboardM2) else {
+            return
+        }
         var cards: [DashboardCard]
 
         if let localCards {

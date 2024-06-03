@@ -1429,8 +1429,7 @@ extension Networking.ProductReport.ExtendedInfo {
         .init(
             name: .fake(),
             image: .fake(),
-            stockQuantity: .fake(),
-            attributes: .fake()
+            stockQuantity: .fake()
         )
     }
 }

@@ -116,6 +116,7 @@ private extension MostActiveCouponsCard {
             // Rows
             ForEach(viewModel.rows) { item in
                 MostActiveCouponRow(viewModel: item, tapHandler: {
+                    ServiceLocator.analytics.track(event: .DynamicDashboard.dashboardCardInteracted(type: .coupons))
                     onViewCouponDetail(item.coupon)
                 })
             }
@@ -143,6 +144,7 @@ private extension MostActiveCouponsCard {
 
                 if viewModel.timeRange.isCustomTimeRange {
                     Button {
+                        ServiceLocator.analytics.track(event: .DynamicDashboard.dashboardCardInteracted(type: .coupons))
                         showingCustomRangePicker = true
                     } label: {
                         HStack {
@@ -159,6 +161,8 @@ private extension MostActiveCouponsCard {
             }
             Spacer()
             StatsTimeRangePicker(currentTimeRange: viewModel.timeRange) { newTimeRange in
+                ServiceLocator.analytics.track(event: .DynamicDashboard.dashboardCardInteracted(type: .coupons))
+
                 if newTimeRange.isCustomTimeRange {
                     showingCustomRangePicker = true
                 } else {
@@ -171,6 +175,9 @@ private extension MostActiveCouponsCard {
 
     var viewAllCouponsButton: some View {
         Button {
+
+            ServiceLocator.analytics.track(event: .DynamicDashboard.dashboardCardInteracted(type: .coupons))
+
             onViewAllCoupons()
         } label: {
             HStack {

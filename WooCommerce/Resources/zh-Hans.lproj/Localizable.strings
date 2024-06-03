@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-05-21 09:54:04+0000 */
+/* Translation-Revision-Date: 2024-05-28 15:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_CN */
@@ -5667,6 +5667,9 @@ which should be translated separately and considered part of this sentence. */
    Navigates to Plugins screen. */
 "Plugins" = "插件";
 
+/* Title of the POS menu in the hub menu */
+"Point of Sale Mode" = "销售点模式";
+
 /* Country option for a site address. */
 "Poland" = "波兰";
 
@@ -8792,6 +8795,9 @@ which should be translated separately and considered part of this sentence. */
 /* The button title text for logging in with WP.com password instead of magic link. */
 "Use password to sign in" = "使用密码登录";
 
+/* Description of the POS menu in the hub menu */
+"Use the app as a cash register" = "将应用程序作为收银机使用";
+
 /* Fourth instruction on the test order screen */
 "Use the app to process the refund for the test order." = "使用此应用程序处理测试订单的退款事宜。";
 
@@ -9345,9 +9351,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Info notice at the bottom of the product add-ons screen */
 "You can edit product add-ons in the web dashboard." = "您可以在 Web 仪表盘中编辑产品加载项。";
-
-/* Info notice at the bottom of the quantity rules screen. */
-"You can edit quantity rules in the web dashboard" = "您可以在 Web 仪表盘中编辑数量规则";
 
 /* Instructions of the domain purchase success screen. */
 "You can find the domain settings in menu > settings" = "您可以在“菜单”>“设置”中查找域名设置";
@@ -10948,6 +10951,18 @@ which should be translated separately and considered part of this sentence. */
 /* Display label for a product's subscription period, e.g. '12 months'. */
 "months" = "月";
 
+/* Button title to contact support to get help with deprecated stats module */
+"mostActiveCouponsCard.contentUnavailable.buttonTitle" = "仍需帮助？ 联系我们";
+
+/* Text that explains how to update WooCommerce to get the latest stats */
+"mostActiveCouponsCard.contentUnavailable.details" = "确保您的站点上运行的是最新版本的 WooCommerce，并且您在 WooCommerce 设置中启用了分析功能。";
+
+/* Button to dismiss the support form from the Dashboard stats error screen. */
+"mostActiveCouponsCard.contentUnavailable.dismissSupport" = "完成";
+
+/* Title when we can't load coupon usage report because user is on a deprecated WooCommerce Version */
+"mostActiveCouponsCard.contentUnavailable.title" = "无法加载优惠券使用情况报告";
+
 /* Title in the coupons list on the coupons card on the Dashboard screen */
 "mostActiveCouponsCard.coupons" = "优惠券";
 
@@ -10965,6 +10980,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button in date range picker to add a Custom Range tab */
 "mostActiveCouponsCardViewModel.addCustomRange" = "添加";
+
+/* Default text for Most active coupons dashboard card when no data exists for a given period. */
+"mostActiveCouponsEmptyView.text" = "在此期间不能使用优惠券";
 
 /* Placeholder in the search bar of a multiple selection list */
 "multipleSelectionList.search" = "搜索";
@@ -11114,6 +11132,9 @@ which should be translated separately and considered part of this sentence. */
 /* Origin in Order Attribution Section on Order Details screen. */
 "orderDetailsDataSource.attributionInfo.unknown" = "未知";
 
+/* Title of Shipping Section in Order Details screen */
+"orderDetailsDataSource.shippingLines.title" = "配送";
+
 /* VoiceOver accessibility hint, informing the user that the button can be used to view the order custom fields information. */
 "orderDetailsDataSource.trashOrder.accessibilityHint" = "将此订单放入回收站。";
 
@@ -11255,6 +11276,9 @@ which should be translated separately and considered part of this sentence. */
 /* Product title */
 "productForm.defaultTitle" = "产品";
 
+/* Placeholder for empty product ratings */
+"productForm.quantityRules.placeholder" = "无数量规则";
+
 /* Description of the subscription period for a product. Reads like: 'every 2 months'. */
 "productFormDataModel.subscriptionPeriodFormat" = "每 %1$@";
 
@@ -11357,6 +11381,9 @@ which should be translated separately and considered part of this sentence. */
 /* Button to submit selected products to the order, when some product has been selected. */
 "productselectorview.doneButtonTitle.addProductsText" = "添加产品";
 
+/* Button to dismiss the product quantity rules view screen. */
+"quantityRulesView.done" = "完成";
+
 /* Button to dismiss the alert displayed when selecting an invalid time range for analytics */
 "rangedDatePicker.invalidTimeRangeAlert.action" = "已接受";
 
@@ -11384,17 +11411,8 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the switch in the IssueRefund screen to refund customAmounts */
 "refundIssue.customAmounts.title" = "退还自定义金额";
 
-/* Text displayed when the author of a review is known. */
-"reviewsDashboardCard.completeAuthorText" = "%1$@ 对 %2$@ 发表了评论";
-
 /* Menu item to dismiss the Reviews card on the Dashboard screen */
 "reviewsDashboardCard.hideCard" = "隐藏评论";
-
-/* Text displayed when the author of a review is unknown. */
-"reviewsDashboardCard.incompleteAuthorText" = "一位客户对 %@ 发表了评论";
-
-/* Additional label on a review when its status is hold. */
-"reviewsDashboardCard.pendingReview" = "待审核";
 
 /* Status label on the Reviews card's filter area. */
 "reviewsDashboardCard.status" = "状态";
@@ -11426,6 +11444,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Cancel button title for the Shipping Label purchase flow, shown in the nav bar */
 "shipping.label.navigationBar.cancel.button.title" = "取消";
+
+/* Accessibility title for the edit button on a shipping line row. */
+"shippingLine.edit.button.accessibilityLabel" = "编辑配送信息";
 
 /* Action to add a custom amount in the simple payments migration view. */
 "simplePaymentsMigrationSheet.addCustomAmount" = "添加自定义金额";

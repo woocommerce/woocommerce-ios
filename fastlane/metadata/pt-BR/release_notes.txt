@@ -1,3 +1,1 @@
-Estamos felizes em anunciar que temos novidades!
-Nossa mais recente atualização traz melhorias internas para otimizar a estabilidade e o desempenho.
-Temos o compromisso contínuo de aprimorar nosso aplicativo para melhor atender você. Obrigado por escolher o WooCommerce!
+Mergulhe em uma experiência do WooCommerce tranquila com nossa última atualização! Corrigimos problemas que impediam funcionalidades como "Leitor de cartão" e "Tap to Pay" em Menu > Pagamentos > Receber pagamento em transações simplificadas. Otimizamos as chamadas de API para impulsionar o desempenho da tela do painel. E agora, o suporte de edição para a extensão Min/Max Quantities em detalhes do produto está disponível.

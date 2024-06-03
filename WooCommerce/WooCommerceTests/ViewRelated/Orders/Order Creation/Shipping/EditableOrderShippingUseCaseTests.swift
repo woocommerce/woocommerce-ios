@@ -1,6 +1,7 @@
 import XCTest
 import WooFoundation
 import Yosemite
+import Storage
 @testable import WooCommerce
 
 final class EditableOrderShippingUseCaseTests: XCTestCase {
@@ -295,6 +296,34 @@ final class EditableOrderShippingUseCaseTests: XCTestCase {
         assertEqual(expectedFeedbackType, useCase.feedbackBannerConfig.feedbackType)
     }
 
+    func test_feedback_survey_config_onSurveyButtonTapped_updates_feedback_visibility() throws {
+        // Given
+        var updatedType: FeedbackType?
+        var updatedStatus: FeedbackSettings.Status?
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+            case let .updateFeedbackStatus(type, status, onCompletion):
+                updatedType = type
+                updatedStatus = status
+                onCompletion(.success(()))
+            default:
+                XCTFail("Unexpected action: \(action)")
+            }
+        }
+
+        // When
+        useCase.feedbackBannerConfig.onSurveyButtonTapped()
+
+        // Then
+        assertEqual(.orderFormShippingLines, updatedType)
+        switch updatedStatus {
+        case .given:
+            break
+        default:
+            XCTFail("Unexpected feedback status received: \(String(describing: updatedStatus))")
+        }
+    }
+
     func test_feedback_survey_config_onSurveyButtonTapped_tracks_expected_event() throws {
         // When
         useCase.feedbackBannerConfig.onSurveyButtonTapped()
@@ -303,6 +332,29 @@ final class EditableOrderShippingUseCaseTests: XCTestCase {
         assertEqual([WooAnalyticsStat.featureFeedbackBanner.rawValue], analytics.receivedEvents)
         assertEqual("order_form_shipping_lines", analytics.receivedProperties.first?["context"] as? String)
         assertEqual("gave_feedback", analytics.receivedProperties.first?["action"] as? String)
+    }
+
+    func test_feedback_survey_config_onCloseButtonTapped_updates_feedback_visibility() throws {
+        // Given
+        var updatedType: FeedbackType?
+        var updatedStatus: FeedbackSettings.Status?
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+            case let .updateFeedbackStatus(type, status, onCompletion):
+                updatedType = type
+                updatedStatus = status
+                onCompletion(.success(()))
+            default:
+                XCTFail("Unexpected action: \(action)")
+            }
+        }
+
+        // When
+        useCase.feedbackBannerConfig.onCloseButtonTapped()
+
+        // Then
+        assertEqual(.orderFormShippingLines, updatedType)
+        assertEqual(.dismissed, updatedStatus)
     }
 
     func test_feedback_survey_config_onCloseButtonTapped_tracks_expected_event() throws {
@@ -317,7 +369,7 @@ final class EditableOrderShippingUseCaseTests: XCTestCase {
 }
 
 private extension MockStorageManager {
-    func insert(_ readOnlyShippingMethod: ShippingMethod) {
+    func insert(_ readOnlyShippingMethod: Yosemite.ShippingMethod) {
         let shippingMethod = viewStorage.insertNewObject(ofType: StorageShippingMethod.self)
         shippingMethod.update(with: readOnlyShippingMethod)
         viewStorage.saveIfNeeded()

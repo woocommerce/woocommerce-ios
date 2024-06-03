@@ -2,6 +2,7 @@ import WooFoundation
 import Yosemite
 import protocol Experiments.FeatureFlagService
 import protocol Storage.StorageManagerType
+import struct Storage.FeedbackSettings
 import Combine
 
 /// Use case to add, edit, or remove shipping lines on an order.
@@ -86,10 +87,12 @@ final class EditableOrderShippingUseCase: ObservableObject {
                                             onSurveyButtonTapped: { [weak self] in
             guard let self else { return }
             analytics.track(event: .featureFeedbackBanner(context: .orderFormShippingLines, action: .gaveFeedback))
+            updateFeedbackSurveyVisibility(.given(Date()))
         },
                                             onCloseButtonTapped: { [weak self] in
             guard let self else { return }
             analytics.track(event: .featureFeedbackBanner(context: .orderFormShippingLines, action: .dismissed))
+            updateFeedbackSurveyVisibility(.dismissed)
         })
     }()
 
@@ -117,7 +120,7 @@ final class EditableOrderShippingUseCase: ObservableObject {
     /// - Parameter shippingLine: New or updated shipping line object to save.
     func saveShippingLine(_ shippingLine: ShippingLine) {
         orderSynchronizer.setShipping.send(shippingLine)
-        isSurveyPromptPresented = true // TODO-12586: Limit when this is shown
+        refreshFeedbackSurveyVisibility()
         analytics.track(event: WooAnalyticsEvent.Orders.orderShippingMethodAdd(flow: flow.analyticsFlow,
                                                                                methodID: shippingLine.methodID ?? "",
                                                                                shippingLinesCount: Int64(orderSynchronizer.order.shippingLines.count)))
@@ -227,6 +230,32 @@ private extension EditableOrderShippingUseCase {
                 self?.updateShippingMethodsResultsController()
             case let .failure(error):
                 DDLogError("⛔️ Error retrieving available shipping methods: \(error)")
+            }
+        }
+        stores.dispatch(action)
+    }
+
+    /// Checks whether the feedback survey prompt should be visible.
+    ///
+    func refreshFeedbackSurveyVisibility() {
+        let action = AppSettingsAction.loadFeedbackVisibility(type: .orderFormShippingLines) { [weak self] result in
+            switch result {
+            case .success(let visible):
+                self?.isSurveyPromptPresented = visible
+            case.failure(let error):
+                self?.isSurveyPromptPresented = false
+                DDLogError("⛔️ Error loading feedback visibility for shipping lines: \(error)")
+            }
+        }
+        stores.dispatch(action)
+    }
+
+    /// Saves when the feedback survey prompt has been interacted with.
+    ///
+    func updateFeedbackSurveyVisibility(_ status: FeedbackSettings.Status) {
+        let action = AppSettingsAction.updateFeedbackStatus(type: .orderFormShippingLines, status: status) { result in
+            if let error = result.failure {
+                DDLogError("⛔️ Error updating feedback visibility for shipping lines: \(error)")
             }
         }
         stores.dispatch(action)

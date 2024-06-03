@@ -9,7 +9,7 @@ public final class POSProductProvider: POSItemProvider {
     private var siteID: Int64
     private var currencySettings: CurrencySettings
 
-    public init(storageManager: StorageManagerType, siteID: Int64, currencySettings: CurrencySettings ) {
+    public init(storageManager: StorageManagerType, siteID: Int64, currencySettings: CurrencySettings) {
         self.storageManager = storageManager
         self.siteID = siteID
         self.currencySettings = currencySettings

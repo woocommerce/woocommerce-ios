@@ -164,7 +164,7 @@ private extension HubMenu {
             case HubMenuViewModel.PointOfSaleEntryPoint.id:
                 PointOfSaleEntryPointView(currencySettings: ServiceLocator.currencySettings, hideAppTabBar: { isHidden in
                     AppDelegate.shared.setShouldHideTabBar(isHidden)
-                })
+                }, siteID: viewModel.siteID)
             default:
                 fatalError("🚨 Unsupported menu item")
             }

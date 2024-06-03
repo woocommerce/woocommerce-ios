@@ -14,8 +14,8 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
     @Published private(set) var formattedOrderTotalTaxPrice: String?
 
     @Published var showsCardReaderSheet: Bool = false
+    @Published private(set) var cardPresentPaymentEvent: CardPresentPaymentEvent = .idle
     @Published var showsFilterSheet: Bool = false
-    @ObservedObject private(set) var cardReaderConnectionViewModel: CardReaderConnectionViewModel
 
     enum OrderStage {
         case building
@@ -26,12 +26,15 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
 
     private let currencyFormatter: CurrencyFormatter
 
+    private let cardPresentPaymentService: CardPresentPaymentFacade
+
     init(products: [POSProduct],
-         cardReaderConnectionViewModel: CardReaderConnectionViewModel,
-         currencySettings: CurrencySettings) {
+         currencySettings: CurrencySettings,
+         cardPresentPaymentService: CardPresentPaymentFacade) {
         self.products = products
-        self.cardReaderConnectionViewModel = cardReaderConnectionViewModel
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
+        self.cardPresentPaymentService = cardPresentPaymentService
+        observeCardPresentPaymentEvents()
         observeProductsInCartForCartTotal()
     }
 
@@ -55,7 +58,9 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
     }
 
     func showCardReaderConnection() {
-        showsCardReaderSheet = true
+        Task { @MainActor in
+            try await cardPresentPaymentService.connectReader(using: .bluetooth)
+        }
     }
 
     func showFilters() {
@@ -78,8 +83,8 @@ extension PointOfSaleDashboardViewModel {
     // Helper function to populate SwifUI previews
     static func defaultPreview() -> PointOfSaleDashboardViewModel {
         PointOfSaleDashboardViewModel(products: [],
-                                      cardReaderConnectionViewModel: .init(state: .connectingToReader),
-                                      currencySettings: .init())
+                                      currencySettings: .init(),
+                                      cardPresentPaymentService: CardPresentPaymentService(siteID: 0))
     }
 }
 
@@ -97,5 +102,19 @@ private extension PointOfSaleDashboardViewModel {
                 return currencyFormatter.formatAmount(totalValue)
             }
             .assign(to: &$formattedCartTotalPrice)
+    }
+
+    func observeCardPresentPaymentEvents() {
+        cardPresentPaymentService.paymentEventPublisher.assign(to: &$cardPresentPaymentEvent)
+        cardPresentPaymentService.paymentEventPublisher.map { event in
+            switch event {
+            case .idle:
+                return false
+            case .showAlert,
+                    .showReaderList,
+                    .showOnboarding:
+                return true
+            }
+        }.assign(to: &$showsCardReaderSheet)
     }
 }

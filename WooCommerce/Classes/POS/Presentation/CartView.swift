@@ -42,29 +42,54 @@ struct CartView: View {
 /// View sub-components
 ///
 private extension CartView {
+    private var checkoutButtonDisabled: Bool {
+        return viewModel.productsInCart.isEmpty
+    }
+
+    private var checkoutButtonForegroundColor: Color {
+        return checkoutButtonDisabled ? Color.gray : Color.primaryBackground
+    }
+
+    private var checkoutButtonBackgroundColor: Color {
+        return checkoutButtonDisabled ? Color.white.opacity(0.5) : Color.white
+    }
+
     var checkoutButton: some View {
-        Button("Checkout") {
+        Button {
             viewModel.submitCart()
+        } label: {
+            HStack {
+                Spacer()
+                Text("Checkout")
+                Spacer()
+            }
         }
+        .disabled(viewModel.productsInCart.isEmpty)
         .padding(.all, 20)
         .frame(maxWidth: .infinity, idealHeight: 120)
         .font(.title)
-        .foregroundColor(Color.primaryBackground)
-        .background(Color.white)
+        .foregroundColor(checkoutButtonForegroundColor)
+        .background(checkoutButtonBackgroundColor)
         .cornerRadius(10)
     }
 
     var addMoreButton: some View {
-        Button("Add More") {
+        Button {
             viewModel.addMoreToCart()
+        } label: {
+            Spacer()
+            Text("Add More")
+            Spacer()
         }
-        .padding(.all, 20)
+        .padding(20)
         .frame(maxWidth: .infinity, idealHeight: 120)
         .font(.title)
         .foregroundColor(Color.white)
         .background(Color.secondaryBackground)
-        .border(.white, width: 2)
-        .cornerRadius(10)
+        .overlay(
+            RoundedRectangle(cornerRadius: 10)
+                .stroke(.white, lineWidth: 2)
+        )
     }
 }
 

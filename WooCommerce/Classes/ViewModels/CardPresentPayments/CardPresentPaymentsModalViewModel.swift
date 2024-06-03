@@ -79,7 +79,7 @@ extension CardPresentPaymentsModalViewModelUIKitActions where Self: CardPresentP
 
     var secondaryButtonViewModel: CardPresentPaymentsModalButtonViewModel? {
         CardPresentPaymentsModalButtonViewModel(title: secondaryButtonTitle) {
-            didTapAuxiliaryButton(in: nil)
+            didTapSecondaryButton(in: nil)
         }
     }
 

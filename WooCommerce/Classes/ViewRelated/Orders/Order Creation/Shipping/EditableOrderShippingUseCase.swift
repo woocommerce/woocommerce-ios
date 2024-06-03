@@ -72,16 +72,26 @@ final class EditableOrderShippingUseCase: ObservableObject {
 
     // MARK: Feedback survey
 
-    /// Defines whether the shipping lines feedback survey is presented.
+    /// Defines whether the prompt for the shipping lines feedback survey is presented.
     ///
-    @Published var shouldShowFeedbackSurvey: Bool = false
+    @Published var isSurveyPromptPresented: Bool = false
 
-    /// Feedback survey configuration.
+    /// Returns the configuration for the shipping line feedback banner.
     ///
-    let feedbackSurveyConfig = BannerPopover.Configuration(title: Localization.FeedbackSurvey.title,
-                                                           message: Localization.FeedbackSurvey.message,
-                                                           buttonTitle: Localization.FeedbackSurvey.buttonTitle,
-                                                           buttonURL: WooConstants.URLs.orderCreationShippingFeedback.asURL())
+    lazy var feedbackBannerConfig = {
+        FeedbackBannerPopover.Configuration(title: Localization.FeedbackBanner.title,
+                                            message: Localization.FeedbackBanner.message,
+                                            buttonTitle: Localization.FeedbackBanner.buttonTitle,
+                                            feedbackType: .orderFormShippingLines,
+                                            onSurveyButtonTapped: { [weak self] in
+            guard let self else { return }
+            analytics.track(event: .featureFeedbackBanner(context: .orderFormShippingLines, action: .gaveFeedback))
+        },
+                                            onCloseButtonTapped: { [weak self] in
+            guard let self else { return }
+            analytics.track(event: .featureFeedbackBanner(context: .orderFormShippingLines, action: .dismissed))
+        })
+    }()
 
     init(siteID: Int64,
          flow: EditableOrderViewModel.Flow,
@@ -107,9 +117,7 @@ final class EditableOrderShippingUseCase: ObservableObject {
     /// - Parameter shippingLine: New or updated shipping line object to save.
     func saveShippingLine(_ shippingLine: ShippingLine) {
         orderSynchronizer.setShipping.send(shippingLine)
-        // TODO-12586: Show feedback survey under limited conditions
-        // For testing, un-comment the following line:
-        // shouldShowFeedbackSurvey = true
+        isSurveyPromptPresented = true // TODO-12586: Limit when this is shown
         analytics.track(event: WooAnalyticsEvent.Orders.orderShippingMethodAdd(flow: flow.analyticsFlow,
                                                                                methodID: shippingLine.methodID ?? "",
                                                                                shippingLinesCount: Int64(orderSynchronizer.order.shippingLines.count)))
@@ -227,7 +235,7 @@ private extension EditableOrderShippingUseCase {
 
 private extension EditableOrderShippingUseCase {
     enum Localization {
-        enum FeedbackSurvey {
+        enum FeedbackBanner {
             static let title = NSLocalizedString("editableOrderShippingUseCase.feedbackSurvey.title",
                                                  value: "Shipping added!",
                                                  comment: "Title for the feedback survey about adding shipping to an order")

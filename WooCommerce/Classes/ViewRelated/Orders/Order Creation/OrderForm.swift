@@ -378,7 +378,7 @@ struct OrderForm: View {
         }
         .safeAreaInset(edge: .bottom) {
             VStack {
-                BannerPopover(isPresented: $viewModel.shippingUseCase.shouldShowFeedbackSurvey, config: viewModel.shippingUseCase.feedbackSurveyConfig)
+                FeedbackBannerPopover(isPresented: $viewModel.shippingUseCase.isSurveyPromptPresented, config: viewModel.shippingUseCase.feedbackBannerConfig)
 
                 ExpandableBottomSheet(onChangeOfExpansion: viewModel.orderTotalsExpansionChanged) {
                     VStack {

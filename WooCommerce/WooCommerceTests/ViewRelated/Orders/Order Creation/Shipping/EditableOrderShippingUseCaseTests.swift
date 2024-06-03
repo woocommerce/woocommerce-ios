@@ -284,6 +284,36 @@ final class EditableOrderShippingUseCaseTests: XCTestCase {
         let properties = try XCTUnwrap(analytics.receivedProperties.first?["flow"] as? String)
         XCTAssertEqual(properties, "creation")
     }
+
+    // MARK: Feedback survey
+
+    func test_feedback_survey_config_has_expected_feedback_type() throws {
+        // Given
+        let expectedFeedbackType: SurveyViewController.Source = .orderFormShippingLines
+
+        // When & Then
+        assertEqual(expectedFeedbackType, useCase.feedbackBannerConfig.feedbackType)
+    }
+
+    func test_feedback_survey_config_onSurveyButtonTapped_tracks_expected_event() throws {
+        // When
+        useCase.feedbackBannerConfig.onSurveyButtonTapped()
+
+        // Then
+        assertEqual([WooAnalyticsStat.featureFeedbackBanner.rawValue], analytics.receivedEvents)
+        assertEqual("order_form_shipping_lines", analytics.receivedProperties.first?["context"] as? String)
+        assertEqual("gave_feedback", analytics.receivedProperties.first?["action"] as? String)
+    }
+
+    func test_feedback_survey_config_onCloseButtonTapped_tracks_expected_event() throws {
+        // When
+        useCase.feedbackBannerConfig.onCloseButtonTapped()
+
+        // Then
+        assertEqual([WooAnalyticsStat.featureFeedbackBanner.rawValue], analytics.receivedEvents)
+        assertEqual("order_form_shipping_lines", analytics.receivedProperties.first?["context"] as? String)
+        assertEqual("dismissed", analytics.receivedProperties.first?["action"] as? String)
+    }
 }
 
 private extension MockStorageManager {

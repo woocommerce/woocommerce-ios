@@ -1,6 +1,7 @@
+import class Yosemite.POSProductProvider
 import SwiftUI
 
-struct ProductGridView: View {
+struct ItemGridView: View {
     @ObservedObject var viewModel: PointOfSaleDashboardViewModel
 
     init(viewModel: PointOfSaleDashboardViewModel) {
@@ -25,9 +26,9 @@ struct ProductGridView: View {
             .padding(.vertical, 0)
             ScrollView {
                 LazyVGrid(columns: columns, spacing: 16) {
-                    ForEach(viewModel.products, id: \.productID) { product in
-                        ProductCardView(product: product) {
-                            viewModel.addProductToCart(product)
+                    ForEach(viewModel.items, id: \.productID) { item in
+                        ItemCardView(item: item) {
+                            viewModel.addItemToCart(item)
                         }
                         .foregroundColor(Color.primaryText)
                         .background(Color.secondaryBackground)
@@ -40,7 +41,7 @@ struct ProductGridView: View {
     }
 }
 
-private extension ProductGridView {
+private extension ItemGridView {
     enum Constants {
         static let maxItemsPerRow: Int = 4
     }
@@ -48,7 +49,9 @@ private extension ProductGridView {
 
 #if DEBUG
 #Preview {
-    ProductGridView(viewModel: PointOfSaleDashboardViewModel(products: POSProductProvider.provideProductsForPreview(),
+    // TODO: https://github.com/woocommerce/woocommerce-ios/issues/12917
+    // The Yosemite imports are only needed for previews
+    ItemGridView(viewModel: PointOfSaleDashboardViewModel(items: POSProductProvider.provideProductsForPreview(),
                                                              currencySettings: .init(),
                                                              cardPresentPaymentService: CardPresentPaymentService(siteID: 0)))
 }

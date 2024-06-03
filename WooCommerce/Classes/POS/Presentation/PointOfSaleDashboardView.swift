@@ -1,3 +1,4 @@
+import class Yosemite.POSProductProvider
 import SwiftUI
 
 struct PointOfSaleDashboardView: View {
@@ -36,9 +37,7 @@ struct PointOfSaleDashboardView: View {
                 }
             })
             ToolbarItem(placement: .principal, content: {
-                Button("Reader not connected") {
-                    viewModel.showCardReaderConnection()
-                }
+                CardReaderConnectionStatusView(connectionViewModel: viewModel.cardReaderConnectionViewModel)
             })
             ToolbarItem(placement: .primaryAction, content: {
                 Button("History") {
@@ -70,7 +69,7 @@ private extension PointOfSaleDashboardView {
     }
 
     var productGridView: some View {
-        ProductGridView(viewModel: viewModel)
+        ItemGridView(viewModel: viewModel)
             .background(Color.secondaryBackground)
             .frame(maxWidth: .infinity)
     }
@@ -93,7 +92,9 @@ fileprivate extension CardPresentPaymentEvent {
 
 #if DEBUG
 #Preview {
-    PointOfSaleDashboardView(viewModel: PointOfSaleDashboardViewModel(products: POSProductProvider.provideProductsForPreview(),
+    // TODO: https://github.com/woocommerce/woocommerce-ios/issues/12917
+    // The Yosemite imports are only needed for previews
+    PointOfSaleDashboardView(viewModel: PointOfSaleDashboardViewModel(items: POSProductProvider.provideProductsForPreview(),
                                                                       currencySettings: .init(),
                                                                       cardPresentPaymentService: CardPresentPaymentService(siteID: 0)))
 }

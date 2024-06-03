@@ -1,19 +1,18 @@
 import Foundation
-import Yosemite
 import protocol Storage.StorageManagerType
 import class WooFoundation.CurrencySettings
 
 /// Product provider for the Point of Sale feature
 ///
-final class POSProductProvider {
+public final class POSProductProvider: POSItemProvider {
     private let storageManager: StorageManagerType
     private var siteID: Int64
     private var currencySettings: CurrencySettings
 
-    init() {
-        self.storageManager = ServiceLocator.storageManager
-        self.siteID = ServiceLocator.stores.sessionManager.defaultSite?.siteID ?? 0
-        self.currencySettings = ServiceLocator.currencySettings
+    public init(storageManager: StorageManagerType, siteID: Int64, currencySettings: CurrencySettings) {
+        self.storageManager = storageManager
+        self.siteID = siteID
+        self.currencySettings = currencySettings
     }
 
     private lazy var productsResultsController: ResultsController<StorageProduct> = {
@@ -27,7 +26,7 @@ final class POSProductProvider {
 
     /// Provides a`[POSProduct]`array by mapping  simple, purchasable-only Products from storage
     ///
-    func providePointOfSaleProducts() -> [POSProduct] {
+    public func providePointOfSaleItems() -> [POSItem] {
         var loadedProducts: [Product] = []
 
         // 1. Fetch products from storage, and filter them by `purchasable` and `simple`
@@ -51,11 +50,12 @@ final class POSProductProvider {
 
         // 2. Map result to POSProduct and populate the output
         return loadedProducts.map { product in
+            // TODO: Decorate the price with currency formatting
             POSProduct(itemID: UUID(),
                        productID: product.productID,
                        name: product.name,
                        price: product.price,
-                       currencySettings: currencySettings)
+                       formattedPrice: "$\(product.price)")
         }
     }
 
@@ -66,20 +66,31 @@ final class POSProductProvider {
 // MARK: - PreviewProvider helpers
 //
 extension POSProductProvider {
-    static func provideProductForPreview(currencySettings: CurrencySettings = ServiceLocator.currencySettings) -> POSProduct {
+    public static func provideProductForPreview() -> POSProduct {
         POSProduct(itemID: UUID(),
                    productID: 1,
                    name: "Product 1",
                    price: "1.00",
-                   currencySettings: currencySettings)
+                   formattedPrice: "$1.00")
     }
 
-    static func provideProductsForPreview(currencySettings: CurrencySettings = ServiceLocator.currencySettings) -> [POSProduct] {
+    public static func provideProductsForPreview() -> [POSProduct] {
         return [
-            POSProduct(itemID: UUID(), productID: 1, name: "Product 1", price: "1.00", currencySettings: currencySettings),
-            POSProduct(itemID: UUID(), productID: 2, name: "Product 2", price: "2.00", currencySettings: currencySettings),
-            POSProduct(itemID: UUID(), productID: 3, name: "Product 3", price: "3.00", currencySettings: currencySettings),
-            POSProduct(itemID: UUID(), productID: 4, name: "Product 4", price: "4.00", currencySettings: currencySettings),
+            POSProduct(itemID: UUID(), productID: 1, name: "Product 1", price: "1.00", formattedPrice: "$1.00"),
+            POSProduct(itemID: UUID(), productID: 2, name: "Product 2", price: "2.00", formattedPrice: "$2.00"),
+            POSProduct(itemID: UUID(), productID: 3, name: "Product 3", price: "3.00", formattedPrice: "$3.00"),
+            POSProduct(itemID: UUID(), productID: 4, name: "Product 4", price: "4.00", formattedPrice: "$4.00"),
         ]
+    }
+}
+
+/// Null product provider that acts as preview helper for the Point of Sale feature
+///
+public final class NullPOSProductProvider: POSItemProvider {
+
+    public init() {}
+
+    public func providePointOfSaleItems() -> [POSItem] {
+        []
     }
 }

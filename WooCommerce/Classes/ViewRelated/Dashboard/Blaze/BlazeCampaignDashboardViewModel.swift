@@ -146,10 +146,12 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
     }
 
     func didSelectCampaignList() {
+        analytics.track(event: .DynamicDashboard.dashboardCardInteracted(type: .blaze))
         analytics.track(event: .Blaze.blazeCampaignListEntryPointSelected(source: .myStoreSection))
     }
 
     func didSelectCampaignDetails(_ campaign: BlazeCampaignListItem) {
+        analytics.track(event: .DynamicDashboard.dashboardCardInteracted(type: .blaze))
         analytics.track(event: .Blaze.blazeCampaignDetailSelected(source: .myStoreSection))
 
         let path = String(format: Constants.campaignDetailsURLFormat,
@@ -160,6 +162,7 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
     }
 
     func didSelectCreateCampaign(source: BlazeSource) {
+        analytics.track(event: .DynamicDashboard.dashboardCardInteracted(type: .blaze))
         analytics.track(event: .Blaze.blazeEntryPointTapped(source: source))
     }
 

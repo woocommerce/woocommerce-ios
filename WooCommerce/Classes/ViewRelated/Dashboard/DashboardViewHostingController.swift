@@ -192,12 +192,16 @@ private extension DashboardViewHostingController {
     func configureBlazeSection() {
         rootView.showAllBlazeCampaignsTapped = { [weak self] in
             guard let self, let navigationController else { return }
+            ServiceLocator.analytics.track(event: .DynamicDashboard.dashboardCardInteracted(type: .blaze))
+
             let controller = BlazeCampaignListHostingController(viewModel: .init(siteID: viewModel.siteID))
             navigationController.show(controller, sender: self)
         }
 
         rootView.createBlazeCampaignTapped = { [weak self] productID in
             guard let self, let navigationController else { return }
+            ServiceLocator.analytics.track(event: .DynamicDashboard.dashboardCardInteracted(type: .blaze))
+
             let coordinator = BlazeCampaignCreationCoordinator(
                 siteID: viewModel.blazeCampaignDashboardViewModel.siteID,
                 siteURL: viewModel.blazeCampaignDashboardViewModel.siteURL,

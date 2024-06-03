@@ -10,7 +10,6 @@ public final class POSProductProvider: POSItemProvider {
     private var currencySettings: CurrencySettings
 
     public init(storageManager: StorageManagerType, siteID: Int64, currencySettings: CurrencySettings ) {
-        // ServiceLocator is part of the WooCommerce binary, expose
         self.storageManager = storageManager
         self.siteID = siteID
         self.currencySettings = currencySettings

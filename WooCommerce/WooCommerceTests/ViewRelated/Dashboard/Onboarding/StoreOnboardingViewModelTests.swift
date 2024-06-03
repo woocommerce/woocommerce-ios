@@ -166,7 +166,7 @@ final class StoreOnboardingViewModelTests: XCTestCase {
 
     func test_launch_store_task_is_marked_as_complete_for_already_public_store() async throws {
         // Given
-        sessionManager.defaultSite = .fake().copy(plan: freeTrialPlanSlug, isWordPressComStore: true, isPublic: true)
+        sessionManager.defaultSite = .fake().copy(plan: freeTrialPlanSlug, isWordPressComStore: true, visibility: .publicSite)
         mockLoadOnboardingTasks(result: .success([
             .init(isComplete: false, type: .addFirstProduct),
             .init(isComplete: false, type: .launchStore)
@@ -186,7 +186,7 @@ final class StoreOnboardingViewModelTests: XCTestCase {
 
     func test_launch_store_task_is_not_marked_as_complete_for_non_public_store() async throws {
         // Given
-        sessionManager.defaultSite = .fake().copy(plan: freeTrialPlanSlug, isWordPressComStore: true, isPublic: false)
+        sessionManager.defaultSite = .fake().copy(plan: freeTrialPlanSlug, isWordPressComStore: true, visibility: .privateSite)
         mockLoadOnboardingTasks(result: .success([
             .init(isComplete: false, type: .addFirstProduct),
             .init(isComplete: false, type: .launchStore)
@@ -206,7 +206,7 @@ final class StoreOnboardingViewModelTests: XCTestCase {
 
     func test_tasks_other_than_launchStore_type_are_not_marked_as_complete_for_already_public_store_with_default_name() async {
         // Given
-        sessionManager.defaultSite = .fake().copy(name: WooConstants.defaultStoreName, plan: freeTrialPlanSlug, isWordPressComStore: true, isPublic: true)
+        sessionManager.defaultSite = .fake().copy(name: WooConstants.defaultStoreName, plan: freeTrialPlanSlug, isWordPressComStore: true, visibility: .publicSite)
         mockLoadOnboardingTasks(result: .success([
             .init(isComplete: false, type: .addFirstProduct),
             .init(isComplete: false, type: .storeDetails),

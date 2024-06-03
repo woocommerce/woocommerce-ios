@@ -231,7 +231,7 @@ final class DashboardViewModelTests: XCTestCase {
     func test_siteURLToShare_return_nil_if_site_is_not_public() {
         // Given
         let sessionManager = SessionManager.makeForTesting()
-        sessionManager.defaultSite = Site.fake().copy(isPublic: false)
+        sessionManager.defaultSite = Site.fake().copy(visibility: .privateSite)
         let stores = MockStoresManager(sessionManager: sessionManager)
         let viewModel = DashboardViewModel(siteID: 123, stores: stores)
 
@@ -246,7 +246,7 @@ final class DashboardViewModelTests: XCTestCase {
         // Given
         let sessionManager = SessionManager.makeForTesting()
         let expectedURL = "https://example.com"
-        sessionManager.defaultSite = Site.fake().copy(url: expectedURL, isPublic: true)
+        sessionManager.defaultSite = Site.fake().copy(url: expectedURL, visibility: .publicSite)
         let stores = MockStoresManager(sessionManager: sessionManager)
         let viewModel = DashboardViewModel(siteID: 123, stores: stores)
 

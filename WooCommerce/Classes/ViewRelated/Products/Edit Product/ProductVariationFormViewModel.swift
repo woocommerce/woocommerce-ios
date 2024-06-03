@@ -175,7 +175,7 @@ extension ProductVariationFormViewModel {
     }
 
     func canShareProduct() -> Bool {
-        let isSitePublic = storesManager.sessionManager.defaultSite?.isPublic == true
+        let isSitePublic = storesManager.sessionManager.defaultSite?.visibility == .publicSite
         let productHasLinkToShare = URL(string: originalProductVariation.permalink) != nil
         return isSitePublic && formType != .add && productHasLinkToShare
     }

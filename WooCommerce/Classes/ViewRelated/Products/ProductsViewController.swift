@@ -1128,7 +1128,7 @@ extension ProductsViewController: UITableViewDelegate {
     ///
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         let product = resultsController.object(at: indexPath)
-        guard ServiceLocator.stores.sessionManager.defaultSite?.isPublic == true,
+        guard ServiceLocator.stores.sessionManager.defaultSite?.visibility == .publicSite,
               product.productStatus == .published,
               let url = URL(string: product.permalink),
             let cell = tableView.cellForRow(at: indexPath) else {

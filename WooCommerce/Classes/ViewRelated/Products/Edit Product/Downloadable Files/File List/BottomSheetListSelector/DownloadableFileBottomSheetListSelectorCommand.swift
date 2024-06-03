@@ -22,6 +22,7 @@ final class DownloadableFileBottomSheetListSelectorCommand: BottomSheetListSelec
         cell.selectionStyle = .none
         cell.accessoryType = .disclosureIndicator
         let viewModel = ImageAndTitleAndTextTableViewCell.ViewModel(title: model.title,
+                                                                    titleTintColor: .text,
                                                                     text: nil,
                                                                     textTintColor: .text,
                                                                     image: model.image,

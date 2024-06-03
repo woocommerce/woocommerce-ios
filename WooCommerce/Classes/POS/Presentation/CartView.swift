@@ -28,10 +28,10 @@ struct CartView: View {
             switch viewModel.orderStage {
             case .building:
                 checkoutButton
-                    .padding(.horizontal, 32)
+                    .padding(32)
             case .finalizing:
                 addMoreButton
-                    .padding(.horizontal, 32)
+                    .padding(32)
             }
         }
         .frame(maxWidth: .infinity)

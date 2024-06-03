@@ -1,4 +1,4 @@
-import Yosemite
+import class Yosemite.POSProductProvider
 import SwiftUI
 
 struct ItemGridView: View {
@@ -49,6 +49,8 @@ private extension ItemGridView {
 
 #if DEBUG
 #Preview {
+    // TODO: https://github.com/woocommerce/woocommerce-ios/issues/12917
+    // The Yosemite imports are only needed for previews
     ItemGridView(viewModel: PointOfSaleDashboardViewModel(items: POSProductProvider.provideProductsForPreview(),
                                                           cardReaderConnectionViewModel: .init(state: .connectingToReader),
                                                           currencySettings: .init()))

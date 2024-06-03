@@ -1,4 +1,4 @@
-import Yosemite
+import class Yosemite.POSProductProvider
 import SwiftUI
 
 struct PointOfSaleDashboardView: View {
@@ -79,6 +79,8 @@ private extension PointOfSaleDashboardView {
 
 #if DEBUG
 #Preview {
+    // TODO: https://github.com/woocommerce/woocommerce-ios/issues/12917
+    // The Yosemite imports are only needed for previews
     PointOfSaleDashboardView(viewModel: PointOfSaleDashboardViewModel(items: POSProductProvider.provideProductsForPreview(),
                                                                       cardReaderConnectionViewModel: .init(state: .connectingToReader),
                                                                       currencySettings: .init()))

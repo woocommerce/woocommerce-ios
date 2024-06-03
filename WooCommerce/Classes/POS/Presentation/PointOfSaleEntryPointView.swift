@@ -1,5 +1,6 @@
 import SwiftUI
-import Yosemite
+import protocol Yosemite.POSItemProvider
+import class Yosemite.NullPOSProductProvider
 import class WooFoundation.CurrencySettings
 
 struct PointOfSaleEntryPointView: View {
@@ -32,6 +33,8 @@ struct PointOfSaleEntryPointView: View {
 
 #if DEBUG
 #Preview {
+    // TODO: https://github.com/woocommerce/woocommerce-ios/issues/12917
+    // Some Yosemite imports are only needed for previews
     PointOfSaleEntryPointView(itemProvider: NullPOSProductProvider(), currencySettings: ServiceLocator.currencySettings, hideAppTabBar: { _ in })
 }
 #endif

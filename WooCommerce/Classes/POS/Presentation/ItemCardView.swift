@@ -1,4 +1,5 @@
-import Yosemite
+import class Yosemite.POSProductProvider
+import protocol Yosemite.POSItem
 import SwiftUI
 
 struct ItemCardView: View {
@@ -32,6 +33,8 @@ struct ItemCardView: View {
 
 #if DEBUG
 #Preview {
+    // TODO: https://github.com/woocommerce/woocommerce-ios/issues/12917
+    // Some Yosemite imports are only needed for previews
     ItemCardView(item: POSProductProvider.provideProductForPreview(), onItemCardTapped: { })
 }
 #endif

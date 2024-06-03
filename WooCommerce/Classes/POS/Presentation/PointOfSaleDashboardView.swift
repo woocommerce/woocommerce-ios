@@ -37,9 +37,7 @@ struct PointOfSaleDashboardView: View {
                 }
             })
             ToolbarItem(placement: .principal, content: {
-                Button("Reader not connected") {
-                    viewModel.showCardReaderConnection()
-                }
+                CardReaderConnectionStatusView(connectionViewModel: viewModel.cardReaderConnectionViewModel)
             })
             ToolbarItem(placement: .primaryAction, content: {
                 Button("History") {

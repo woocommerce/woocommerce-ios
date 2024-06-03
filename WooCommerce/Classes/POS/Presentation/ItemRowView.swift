@@ -1,5 +1,4 @@
 import class Yosemite.POSProductProvider
-import struct Yosemite.CartItem
 import SwiftUI
 
 struct ItemRowView: View {

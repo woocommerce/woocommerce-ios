@@ -1,3 +1,5 @@
+import Foundation
+import protocol Yosemite.POSItem
 
 public struct CartItem {
     public let id: UUID

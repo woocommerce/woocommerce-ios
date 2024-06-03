@@ -55,7 +55,9 @@ struct FeedbackBannerPopover: View {
         .frame(maxWidth: .infinity)
         .transition(.opacity.animation(.easeInOut))
         .sheet(isPresented: $isSurveyPresented) {
-            Survey(source: config.feedbackType)
+            Survey(source: config.feedbackType, onDismiss: {
+                isPresented = false
+            })
         }
         .renderedIf(isPresented)
     }

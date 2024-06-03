@@ -58,9 +58,9 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
         // What happens if this gets called while there's another connection ongoing?
         let preflightControllerAdaptor = CardPresentPaymentPreflightAdaptor(preflightController: createPreflightController())
 
-        async let preflightResult = preflightControllerAdaptor.attemptConnection(discoveryMethod: connectionMethod.discoveryMethod)
+        let preflightResult = try await preflightControllerAdaptor.attemptConnection(discoveryMethod: connectionMethod.discoveryMethod)
 
-        switch try await preflightResult {
+        switch preflightResult {
         case .completed(let cardReader, _):
             let connectedReader = CardPresentPaymentCardReader(name: cardReader.name ?? cardReader.id,
                                                                batteryLevel: cardReader.batteryLevel)

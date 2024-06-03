@@ -1,7 +1,7 @@
 import Foundation
 import struct Yosemite.CardPresentPaymentsConfiguration
 
-class CardPresentPaymentsConnectionControllerManager {
+final class CardPresentPaymentsConnectionControllerManager {
     let externalReaderConnectionController: CardReaderConnectionController
     let tapToPayConnectionController: BuiltInCardReaderConnectionController
 

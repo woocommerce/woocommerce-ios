@@ -80,6 +80,8 @@ final class CardPresentPaymentPreflightController: CardPresentPaymentPreflightCo
          rootViewController: UIViewController,
          alertsPresenter: CardPresentPaymentAlertsPresenting,
          onboardingPresenter: CardPresentPaymentsOnboardingPresenting,
+         externalReaderConnectionController: CardReaderConnectionController? = nil,
+         tapToPayConnectionController: BuiltInCardReaderConnectionController? = nil,
          tapToPayReconnectionController: TapToPayReconnectionController = ServiceLocator.tapToPayReconnectionController,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics) {
@@ -97,7 +99,7 @@ final class CardPresentPaymentPreflightController: CardPresentPaymentPreflightCo
                                                                      connectionType: .userInitiated,
                                                                      stores: stores,
                                                                      analytics: analytics)
-        self.connectionController = CardReaderConnectionController(
+        self.connectionController = externalReaderConnectionController ?? CardReaderConnectionController(
             forSiteID: siteID,
             knownReaderProvider: CardReaderSettingsKnownReaderStorage(),
             alertsPresenter: alertsPresenter,
@@ -105,7 +107,7 @@ final class CardPresentPaymentPreflightController: CardPresentPaymentPreflightCo
             configuration: configuration,
             analyticsTracker: analyticsTracker)
 
-        self.builtInConnectionController = BuiltInCardReaderConnectionController(
+        self.builtInConnectionController = tapToPayConnectionController ?? BuiltInCardReaderConnectionController(
             forSiteID: siteID,
             alertsPresenter: alertsPresenter,
             alertsProvider: BuiltInReaderConnectionAlertsProvider(),

@@ -6,13 +6,13 @@ struct PointOfSaleEntryPointView: View {
 
     private let hideAppTabBar: ((Bool) -> Void)
 
-    init(currencySettings: CurrencySettings, hideAppTabBar: @escaping ((Bool) -> Void)) {
+    init(currencySettings: CurrencySettings, hideAppTabBar: @escaping ((Bool) -> Void), siteID: Int64) {
         self.hideAppTabBar = hideAppTabBar
 
         _viewModel = StateObject(wrappedValue: PointOfSaleDashboardViewModel(
             products: POSProductProvider().providePointOfSaleProducts(),
-            cardReaderConnectionViewModel: .init(state: .connectingToReader),
-            currencySettings: .init())
+            currencySettings: .init(),
+            cardPresentPaymentService: CardPresentPaymentService(siteID: siteID))
         )
     }
 
@@ -29,6 +29,6 @@ struct PointOfSaleEntryPointView: View {
 
 #if DEBUG
 #Preview {
-    PointOfSaleEntryPointView(currencySettings: ServiceLocator.currencySettings, hideAppTabBar: { _ in })
+    PointOfSaleEntryPointView(currencySettings: ServiceLocator.currencySettings, hideAppTabBar: { _ in }, siteID: 0)
 }
 #endif

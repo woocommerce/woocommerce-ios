@@ -10,10 +10,6 @@ struct OrderPaymentSection: View {
     /// Use case for shipping lines on an order
     let shippingUseCase: EditableOrderShippingUseCase
 
-    /// Indicates if the shipping line details screen should be shown or not.
-    ///
-    @Binding private var shouldShowShippingLineDetails: Bool
-
     /// Indicates if the gift card code input sheet should be shown or not.
     ///
     @Binding private var shouldShowGiftCardForm: Bool
@@ -41,11 +37,9 @@ struct OrderPaymentSection: View {
 
     init(viewModel: EditableOrderViewModel.PaymentDataViewModel,
          shippingUseCase: EditableOrderShippingUseCase,
-         shouldShowShippingLineDetails: Binding<Bool>,
          shouldShowGiftCardForm: Binding<Bool>) {
         self.viewModel = viewModel
         self.shippingUseCase = shippingUseCase
-        self._shouldShowShippingLineDetails = shouldShowShippingLineDetails
         self._shouldShowGiftCardForm = shouldShowGiftCardForm
     }
 
@@ -99,18 +93,9 @@ private extension OrderPaymentSection {
     }
 
     @ViewBuilder var existingShippingRow: some View {
-        if shippingUseCase.paymentData.isShippingTotalEditable {
-            TitleAndValueRow(title: Localization.shippingTotal,
-                             titleSuffixImage: (image: rowsEditImage, color: Color(.primary)),
-                             value: .content(shippingUseCase.paymentData.shippingTotal),
-                             selectionStyle: editableRowsSelectionStyle) {
-                shouldShowShippingLineDetails = true
-            }.renderedIf(shippingUseCase.paymentData.shouldShowShippingTotal)
-        } else {
-            TitleAndValueRow(title: Localization.shippingTotal,
-                             value: .content(shippingUseCase.paymentData.shippingTotal))
-            .renderedIf(shippingUseCase.paymentData.shouldShowShippingTotal)
-        }
+        TitleAndValueRow(title: Localization.shippingTotal,
+                         value: .content(shippingUseCase.paymentData.shippingTotal))
+        .renderedIf(shippingUseCase.paymentData.shouldShowShippingTotal)
     }
 
     @ViewBuilder var productsRow: some View {
@@ -343,7 +328,6 @@ struct OrderPaymentSection_Previews: PreviewProvider {
 
         OrderPaymentSection(viewModel: viewModel,
                             shippingUseCase: shippingUseCase,
-                            shouldShowShippingLineDetails: .constant(false),
                             shouldShowGiftCardForm: .constant(false))
             .previewLayout(.sizeThatFits)
     }

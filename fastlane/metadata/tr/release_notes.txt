@@ -1,3 +1,1 @@
-En yeni güncellemeleri sunmaktan heyecan duyuyoruz!
-En yeni güncellememiz, hem kararlılığı hem de performansı geliştirmek için arka planda iyileştirmeler getirir.
-Size daha iyi hizmet vermek için uygulamamızı sürekli olarak geliştirmek için çalışıyoruz. WooCommerce'i seçtiğiniz için teşekkür ederiz!
+En son güncellememizle daha pürüzsüz bir WooCommerce deneyimini inceleyin! Sorunsuz işlemler için Menü > Ödemeler > Ödeme Alma altındaki "Kart Okuyucu" ve "Tap to Pay" özelliklerini engelleyen sorunları çözdük. API çağrılarını optimize ettiğimizden pano ekranının performansı artar. Ek olarak ürün ayrıntılarında Min/Maks. Miktarlar eklentisi için düzenleme desteği artık kullanılabilir.

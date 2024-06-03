@@ -63,7 +63,7 @@ final class OrderSearchUICommand: SearchUICommand {
 
     func createCellViewModel(model: Order) -> OrderListCellViewModel {
         let orderStatus = lookUpOrderStatus(for: model)
-        return OrderListCellViewModel(order: model, status: orderStatus)
+        return OrderListCellViewModel(order: model, status: orderStatus, currencySettings: ServiceLocator.currencySettings)
     }
 
     /// Synchronizes the Orders matching a given Keyword

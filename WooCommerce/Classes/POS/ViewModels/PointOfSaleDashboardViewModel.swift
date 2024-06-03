@@ -37,7 +37,7 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
         self.cardPresentPaymentService = cardPresentPaymentService
         observeCardPresentPaymentEvents()
-        observeProductsInCartForCartTotal()
+        observeItemsInCartForCartTotal()
     }
 
     func addItemToCart(_ item: POSItem) {

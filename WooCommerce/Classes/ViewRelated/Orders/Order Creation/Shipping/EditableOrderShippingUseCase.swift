@@ -27,9 +27,9 @@ final class EditableOrderShippingUseCase: ObservableObject {
     ///
     @Published private(set) var shippingLineRows: [ShippingLineRowViewModel] = []
 
-    /// View model to edit a selected shipping line.
+    /// View model for shipping line details.
     ///
-    @Published var selectedShippingLine: ShippingLineSelectionDetailsViewModel? = nil
+    @Published var shippingLineDetails: ShippingLineSelectionDetailsViewModel? = nil
 
     // MARK: Shipping methods
 
@@ -70,6 +70,19 @@ final class EditableOrderShippingUseCase: ObservableObject {
         }
     }
 
+    // MARK: Feedback survey
+
+    /// Defines whether the shipping lines feedback survey is presented.
+    ///
+    @Published var shouldShowFeedbackSurvey: Bool = false
+
+    /// Feedback survey configuration.
+    ///
+    let feedbackSurveyConfig = BannerPopover.Configuration(title: Localization.FeedbackSurvey.title,
+                                                           message: Localization.FeedbackSurvey.message,
+                                                           buttonTitle: Localization.FeedbackSurvey.buttonTitle,
+                                                           buttonURL: WooConstants.URLs.orderCreationShippingFeedback.asURL())
+
     init(siteID: Int64,
          flow: EditableOrderViewModel.Flow,
          orderSynchronizer: OrderSynchronizer,
@@ -89,17 +102,14 @@ final class EditableOrderShippingUseCase: ObservableObject {
         configureShippingLineRowViewModels()
     }
 
-    /// Returns a view model for adding a shipping line to an order.
-    ///
-    func addShippingLineViewModel() -> ShippingLineSelectionDetailsViewModel {
-        return ShippingLineSelectionDetailsViewModel(siteID: siteID, shippingLine: nil, didSelectSave: saveShippingLine, didSelectRemove: removeShippingLine)
-    }
-
     /// Saves a shipping line.
     ///
     /// - Parameter shippingLine: New or updated shipping line object to save.
     func saveShippingLine(_ shippingLine: ShippingLine) {
         orderSynchronizer.setShipping.send(shippingLine)
+        // TODO-12586: Show feedback survey under limited conditions
+        // For testing, un-comment the following line:
+        // shouldShowFeedbackSurvey = true
         analytics.track(event: WooAnalyticsEvent.Orders.orderShippingMethodAdd(flow: flow.analyticsFlow,
                                                                                methodID: shippingLine.methodID ?? "",
                                                                                shippingLinesCount: Int64(orderSynchronizer.order.shippingLines.count)))
@@ -113,9 +123,13 @@ final class EditableOrderShippingUseCase: ObservableObject {
         analytics.track(event: WooAnalyticsEvent.Orders.orderShippingMethodRemove(flow: flow.analyticsFlow))
     }
 
-    /// Tracks when the "Add shipping" button is tapped.
+    /// Handles when the "Add shipping" button is tapped.
     ///
-    func trackAddShippingTapped() {
+    func addShippingLine() {
+        shippingLineDetails = ShippingLineSelectionDetailsViewModel(siteID: siteID,
+                                                                    shippingLine: nil,
+                                                                    didSelectSave: saveShippingLine,
+                                                                    didSelectRemove: removeShippingLine)
         analytics.track(event: .Orders.orderAddShippingTapped())
     }
 }
@@ -160,13 +174,13 @@ private extension EditableOrderShippingUseCase {
                         guard let self else {
                             return
                         }
-                        selectedShippingLine = ShippingLineSelectionDetailsViewModel(siteID: siteID,
-                                                                                     shippingID: shippingLine.shippingID,
-                                                                                     initialMethodID: shippingLine.methodID ?? "",
-                                                                                     initialMethodTitle: shippingLine.methodTitle,
-                                                                                     shippingTotal: shippingLine.total,
-                                                                                     didSelectSave: saveShippingLine,
-                                                                                     didSelectRemove: removeShippingLine)
+                        shippingLineDetails = ShippingLineSelectionDetailsViewModel(siteID: siteID,
+                                                                                    shippingID: shippingLine.shippingID,
+                                                                                    initialMethodID: shippingLine.methodID ?? "",
+                                                                                    initialMethodTitle: shippingLine.methodTitle,
+                                                                                    shippingTotal: shippingLine.total,
+                                                                                    didSelectSave: saveShippingLine,
+                                                                                    didSelectRemove: removeShippingLine)
                     })
                 }
             }
@@ -177,12 +191,10 @@ private extension EditableOrderShippingUseCase {
     ///
     func configurePaymentData() {
         orderSynchronizer.orderPublisher
-            .map { [weak self] order in
-                guard let self else { return ShippingPaymentData() }
-
-                return ShippingPaymentData(shouldShowShippingTotal: order.shippingLines.filter { $0.methodID != nil }.isNotEmpty,
-                                           shippingTotal: order.shippingTotal.isNotEmpty ? order.shippingTotal : "0",
-                                           shippingTax: order.shippingTax.isNotEmpty ? order.shippingTax : "0")
+            .map { order in
+                ShippingPaymentData(shouldShowShippingTotal: order.shippingLines.filter { $0.methodID != nil }.isNotEmpty,
+                                    shippingTotal: order.shippingTotal.isNotEmpty ? order.shippingTotal : "0",
+                                    shippingTax: order.shippingTax.isNotEmpty ? order.shippingTax : "0")
             }
             .assign(to: &$paymentData)
     }
@@ -210,5 +222,21 @@ private extension EditableOrderShippingUseCase {
             }
         }
         stores.dispatch(action)
+    }
+}
+
+private extension EditableOrderShippingUseCase {
+    enum Localization {
+        enum FeedbackSurvey {
+            static let title = NSLocalizedString("editableOrderShippingUseCase.feedbackSurvey.title",
+                                                 value: "Shipping added!",
+                                                 comment: "Title for the feedback survey about adding shipping to an order")
+            static let message = NSLocalizedString("editableOrderShippingUseCase.feedbackSurvey.message",
+                                                   value: "Does Woo make shipping easy?",
+                                                   comment: "Message for the feedback survey about adding shipping to an order")
+            static let buttonTitle = NSLocalizedString("editableOrderShippingUseCase.feedbackSurvey.buttonTitle",
+                                                       value: "Share your feedback",
+                                                       comment: "Title for button to view the feedback survey about adding shipping to an order")
+        }
     }
 }

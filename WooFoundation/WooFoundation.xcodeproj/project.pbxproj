@@ -33,7 +33,6 @@
 		269FFA4C2BF5AFC8004E6B86 /* CurrencySettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9C9C65C283E71C8001B879F /* CurrencySettings.swift */; };
 		269FFA4D2BF5AFCF004E6B86 /* CurrencyCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = B987B06E284540D300C53CF6 /* CurrencyCode.swift */; };
 		269FFA4F2BF5B040004E6B86 /* Codegen in Frameworks */ = {isa = PBXBuildFile; productRef = 269FFA4E2BF5B040004E6B86 /* Codegen */; };
-		269FFA502BF5B040004E6B86 /* Codegen in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 269FFA4E2BF5B040004E6B86 /* Codegen */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		26A0B2CF2BF9A51E002E9620 /* CurrencyFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9C9C65B283E71C8001B879F /* CurrencyFormatter.swift */; };
 		26A0B2D02BF9A550002E9620 /* NSDecimalNumber+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9C9C658283E7195001B879F /* NSDecimalNumber+Helpers.swift */; };
 		26A0B2D12BF9A58C002E9620 /* Double+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9C9C65F283E71F4001B879F /* Double+Woo.swift */; };
@@ -95,7 +94,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				269FFA502BF5B040004E6B86 /* Codegen in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;

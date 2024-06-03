@@ -7,6 +7,7 @@ public struct ProductStock: Decodable, GeneratedCopiable, Equatable, GeneratedFa
 
     public let siteID: Int64
     public let productID: Int64
+    public let parentID: Int64
     public let name: String
 
     public let sku: String?
@@ -15,11 +16,16 @@ public struct ProductStock: Decodable, GeneratedCopiable, Equatable, GeneratedFa
     public let stockStatusKey: String   // instock, outofstock, backorder
 
     public var productStockStatus: ProductStockStatus {
-        return ProductStockStatus(rawValue: stockStatusKey)
+        ProductStockStatus(rawValue: stockStatusKey)
+    }
+
+    public var isProductVariation: Bool {
+        parentID != 0
     }
 
     public init(siteID: Int64,
                 productID: Int64,
+                parentID: Int64,
                 name: String,
                 sku: String?,
                 manageStock: Bool,
@@ -27,6 +33,7 @@ public struct ProductStock: Decodable, GeneratedCopiable, Equatable, GeneratedFa
                 stockStatusKey: String) {
         self.siteID = siteID
         self.productID = productID
+        self.parentID = parentID
         self.name = name
         self.sku = sku
         self.manageStock = manageStock
@@ -43,6 +50,7 @@ public struct ProductStock: Decodable, GeneratedCopiable, Equatable, GeneratedFa
 
         let container = try decoder.container(keyedBy: CodingKeys.self)
         let productID = try container.decode(Int64.self, forKey: .productID)
+        let parentID = (try? container.decode(Int64.self, forKey: .parentID)) ?? 0
         let name = try container.decode(String.self, forKey: .name)
 
         // Even though a plain install of WooCommerce Core provides String values,
@@ -75,6 +83,7 @@ public struct ProductStock: Decodable, GeneratedCopiable, Equatable, GeneratedFa
 
         self.init(siteID: siteID,
                   productID: productID,
+                  parentID: parentID,
                   name: name,
                   sku: sku,
                   manageStock: manageStock,
@@ -89,6 +98,7 @@ private extension ProductStock {
 
     enum CodingKeys: String, CodingKey {
         case productID  = "id"
+        case parentID   = "parent_id"
         case name
         case sku            = "sku"
 

@@ -1,5 +1,1 @@
-- [*] 注文商品一覧のバッジ表示のテキスト色を変更して、ダークモードでの読みやすさを修正しました。 [https://github.com/woocommerce/woocommerce-ios/pull/12630]
-- [*] 注文通知を開く際のクラッシュに対する投機的修正 [https://github.com/woocommerce/woocommerce-ios/pull/12643]
-- [内部] ダッシュボードにアプリ内フィードバックカードを表示します。 [https://github.com/woocommerce/woocommerce-ios/pull/12636]
-- [*] 配送: 注文で配送を追加または編集する際に、配送方法を選択できるようになりました。 [https://github.com/woocommerce/woocommerce-ios/pull/12688]
-
+最新のアップデートで、よりスムーズな WooCommerce エクスペリエンスを体験できます ! 「メニュー」 > 「支払い」 > 「支払いを受け取る」で「カードリーダー」機能と「Tap To Pay」機能を妨げていた問題を解決し、シームレスに取引できるようになりました。 API 呼び出しが最適化され、ダッシュボード画面のパフォーマンスが向上しました。 さらに、製品詳細の最大 / 最小注文数量の拡張機能に対する編集サポートを利用できるようになりました。

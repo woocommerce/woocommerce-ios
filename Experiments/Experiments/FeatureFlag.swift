@@ -184,10 +184,6 @@ public enum FeatureFlag: Int {
     ///
     case splitViewInProductsTab
 
-    /// Displays a Customers section in the Hub menu.
-    ///
-    case customersInHubMenu
-
     /// Enables visibility of Subscription product details when creating an order, within product selection, and order details.
     ///
     case subscriptionsInOrderCreationUI
@@ -195,10 +191,6 @@ public enum FeatureFlag: Int {
     /// Enables a new customer creation flow in order creation for subscriptions support.
     ///
     case subscriptionsInOrderCreationCustomers
-
-    /// Enables shipping method selection in order creation/editing.
-    ///
-    case orderShippingMethodSelection
 
     /// Makes the Experimental Feature toggle "Point Of Sale" menu visible, under app settings.
     ///

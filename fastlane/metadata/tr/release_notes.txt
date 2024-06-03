@@ -1,5 +1,1 @@
-- [*] Karanlık mod okunabilirliğini düzeltmek için sipariş ürünleri listesinde rozet görünümünde metin rengi değiştirildi. [https://github.com/woocommerce/woocommerce-ios/pull/12630]
-- [*] Sipariş bildirimlerini açarken meydana gelen bir çökme için spekülatif düzeltme [https://github.com/woocommerce/woocommerce-ios/pull/12643]
-- [dahili] Panoda Uygulama İçi geri bildirim kartı gösterildi. [https://github.com/woocommerce/woocommerce-ios/pull/12636]
-- [*] Gönderim: Bir siparişe gönderim eklenirken veya bundaki sipariş düzenlenirken artık bir gönderim yöntemi seçilebilir. [https://github.com/woocommerce/woocommerce-ios/pull/12688]
-
+En son güncellememizle daha pürüzsüz bir WooCommerce deneyimini inceleyin! Sorunsuz işlemler için Menü > Ödemeler > Ödeme Alma altındaki "Kart Okuyucu" ve "Tap to Pay" özelliklerini engelleyen sorunları çözdük. API çağrılarını optimize ettiğimizden pano ekranının performansı artar. Ek olarak ürün ayrıntılarında Min/Maks. Miktarlar eklentisi için düzenleme desteği artık kullanılabilir.

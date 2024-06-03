@@ -1,5 +1,1 @@
-- [*] Vi har ändrat textfärgen i beställningsproduktlistans märkesvy för förbättrad läsbarhet i mörkt läge. [https://github.com/woocommerce/woocommerce-ios/pull/12630]
-- [*] Vi har korrigerat en krasch som uppstod vid öppnande av beställningsnotiser [https://github.com/woocommerce/woocommerce-ios/pull/12643]
-- [internal] Feedback i appen-kortet visas nu i adminpanelen [https://github.com/woocommerce/woocommerce-ios/pull/12636]
-- [*] Frakt: Det är nu möjligt att välja en fraktmetod när du lägger till eller redigerar frakt för en beställning. [https://github.com/woocommerce/woocommerce-ios/pull/12688]
-
+Ta del av en smidigare WooCommerce-upplevelse med vår senaste uppdatering! Vi har åtgärdat problemen med funktionerna "Kortläsare" och "Tryck för att betala" under Meny > Betalningar > Ta emot betalning, så att transaktioner nu fungerar smidigt. Adminpanelens skärm får en prestandaförbättring, eftersom vi har optimerat API-anropen. Dessutom finns nu stöd för redigering av utökningen Min/Max antal i produktinformationen.

@@ -26,6 +26,7 @@ final class DashboardViewModel: ObservableObject {
     let reviewsViewModel: ReviewsDashboardCardViewModel
     let mostActiveCouponsViewModel: MostActiveCouponsCardViewModel
     let productStockCardViewModel: ProductStockDashboardCardViewModel
+    let lastOrdersCardViewModel: LastOrdersDashboardCardViewModel
 
     @Published var justInTimeMessagesWebViewModel: WebViewSheetViewModel? = nil
 
@@ -55,9 +56,13 @@ final class DashboardViewModel: ObservableObject {
 
     @Published private(set) var jetpackBannerVisibleFromAppSettings = false
 
-    @Published private(set) var hasOrders: Bool = true
+    @Published private(set) var hasOrders = true
+
+    @Published private(set) var isEligibleForInbox = false
 
     @Published var showingCustomization = false
+
+    @Published var showNewCardsNotice = false
 
     let siteID: Int64
     private let stores: StoresManager
@@ -68,11 +73,12 @@ final class DashboardViewModel: ObservableObject {
     private let userDefaults: UserDefaults
     private let themeInstaller: ThemeInstaller
     private let storageManager: StorageManagerType
+    private let inboxEligibilityChecker: InboxEligibilityChecker
     private var subscriptions: Set<AnyCancellable> = []
 
     var siteURLToShare: URL? {
         if let site = stores.sessionManager.defaultSite,
-           !site.isWordPressComStore || site.isPublic, // only show share button if it's a .org site or a public .com site
+           !site.isWordPressComStore || (site.visibility == .publicSite), // only show share button if it's a .org site or a public .com site
            let url = URL(string: site.url) {
             return url
         }
@@ -96,7 +102,8 @@ final class DashboardViewModel: ObservableObject {
          analytics: Analytics = ServiceLocator.analytics,
          userDefaults: UserDefaults = .standard,
          themeInstaller: ThemeInstaller = DefaultThemeInstaller(),
-         usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter = StoreStatsUsageTracksEventEmitter()) {
+         usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter = StoreStatsUsageTracksEventEmitter(),
+         inboxEligibilityChecker: InboxEligibilityChecker = InboxEligibilityUseCase()) {
         self.siteID = siteID
         self.stores = stores
         self.storageManager = storageManager
@@ -115,8 +122,10 @@ final class DashboardViewModel: ObservableObject {
         self.reviewsViewModel = ReviewsDashboardCardViewModel(siteID: siteID)
         self.mostActiveCouponsViewModel = MostActiveCouponsCardViewModel(siteID: siteID)
         self.productStockCardViewModel = ProductStockDashboardCardViewModel(siteID: siteID)
+        self.lastOrdersCardViewModel = LastOrdersDashboardCardViewModel(siteID: siteID)
 
         self.themeInstaller = themeInstaller
+        self.inboxEligibilityChecker = inboxEligibilityChecker
         self.inAppFeedbackCardViewModel.onFeedbackGiven = { [weak self] feedback in
             self?.showingInAppFeedbackSurvey = feedback == .didntLike
             self?.onInAppFeedbackCardAction()
@@ -125,6 +134,9 @@ final class DashboardViewModel: ObservableObject {
         setupDashboardCards()
         installPendingThemeIfNeeded()
         observeDashboardCardsAndReload()
+        Task {
+            await checkInboxEligibility()
+        }
     }
 
     /// Must be called by the `View` during the `onAppear()` event. This will
@@ -138,14 +150,22 @@ final class DashboardViewModel: ObservableObject {
     }
 
     @MainActor
+    func handleCustomizationDismissal() async {
+        await configureNewCardsNotice()
+    }
+
+    @MainActor
     func reloadAllData() async {
         await withTaskGroup(of: Void.self) { group in
             group.addTask { [weak self] in
                 await self?.syncDashboardEssentialData()
             }
             group.addTask { [weak self] in
-                guard let self = self else { return }
+                guard let self else { return }
                 await reloadCards(showOnDashboardCards)
+            }
+            group.addTask { [weak self] in
+                await self?.checkInboxEligibility()
             }
         }
     }
@@ -220,18 +240,30 @@ final class DashboardViewModel: ObservableObject {
 
     func refreshDashboardCards() {
         storeOnboardingViewModel.$canShowInDashboard
-            .combineLatest(blazeCampaignDashboardViewModel.$canShowInDashboard, $hasOrders)
+            .combineLatest(blazeCampaignDashboardViewModel.$canShowInDashboard, $hasOrders, $isEligibleForInbox)
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] canShowOnboarding, canShowBlaze, hasOrders in
+            .sink { [weak self] canShowOnboarding, canShowBlaze, hasOrders, isEligibleForInbox in
                 guard let self else { return }
                 Task {
                     await self.updateDashboardCards(canShowOnboarding: canShowOnboarding,
                                                     canShowBlaze: canShowBlaze,
-                                                    canShowAnalytics: hasOrders
-                    )
+                                                    canShowAnalytics: hasOrders,
+                                                    canShowLastOrders: hasOrders,
+                                                    canShowInbox: isEligibleForInbox)
                 }
             }
             .store(in: &subscriptions)
+    }
+
+    func showCustomizationScreen() {
+        // The app should remove the notice once a user opens the Customize screen (whether they end up customizing or not).
+        // To do so, we save the current dashboard cards once when opening Customize. The current cards will already have
+        // been generated with the new cards included, so saving it ensures that the notice is hidden in subsequent checks.
+        if showNewCardsNotice {
+            stores.dispatch(AppSettingsAction.setDashboardCards(siteID: siteID, cards: dashboardCards))
+            showNewCardsNotice = false
+        }
+        showingCustomization = true
     }
 
     func didCustomizeDashboardCards(_ cards: [DashboardCard]) {
@@ -299,7 +331,7 @@ private extension DashboardViewModel {
                         await self?.reloadBlazeCampaignView()
                     }
                 case .inbox:
-                    guard featureFlagService.isFeatureFlagEnabled(.dynamicDashboardM2) else {
+                    guard featureFlagService.isFeatureFlagEnabled(.dynamicDashboardM2), isEligibleForInbox else {
                         return
                     }
                     group.addTask { [weak self] in
@@ -327,8 +359,12 @@ private extension DashboardViewModel {
                         await self?.reviewsViewModel.reloadData()
                     }
                 case .lastOrders:
-                    // TODO
-                    return
+                    guard featureFlagService.isFeatureFlagEnabled(.dynamicDashboardM2) else {
+                        return
+                    }
+                    group.addTask { [weak self] in
+                        await self?.lastOrdersCardViewModel.reloadData()
+                    }
                 }
             }
         }
@@ -369,24 +405,39 @@ private extension DashboardViewModel {
         localAnnouncementViewModel = viewModel
     }
 
-    func configureOrdersResultController() {
-        ordersResultsController.onDidChangeContent = { [weak self] in
-            self?.updateResults()
+    @MainActor
+    func checkInboxEligibility() async {
+        guard featureFlagService.isFeatureFlagEnabled(.dynamicDashboardM2) else {
+            return
         }
-        ordersResultsController.onDidResetContent = { [weak self] in
-            self?.updateResults()
+        isEligibleForInbox = await inboxEligibilityChecker.isEligibleForInbox(siteID: siteID)
+    }
+
+    func configureOrdersResultController() {
+        func refreshHasOrders() {
+            guard ordersResultsController.fetchedObjects.isEmpty else {
+                hasOrders = true
+                return
+            }
+
+            Task { @MainActor [weak self] in
+                await self?.updateHasOrdersStatus()
+            }
+        }
+
+        ordersResultsController.onDidChangeContent = {
+            refreshHasOrders()
+        }
+        ordersResultsController.onDidResetContent = {
+            refreshHasOrders()
         }
 
         do {
             try ordersResultsController.performFetch()
-            updateResults()
+            refreshHasOrders()
         } catch {
             ServiceLocator.crashLogging.logError(error)
         }
-    }
-
-    func updateResults() {
-        hasOrders = ordersResultsController.fetchedObjects.isNotEmpty
     }
 
     func setupDashboardCards() {
@@ -401,13 +452,14 @@ private extension DashboardViewModel {
         reviewsViewModel.onDismiss = showCustomizationScreen
         mostActiveCouponsViewModel.onDismiss = showCustomizationScreen
         productStockCardViewModel.onDismiss = showCustomizationScreen
+        lastOrdersCardViewModel.onDismiss = showCustomizationScreen
     }
 
-    func showCustomizationScreen() {
-        showingCustomization = true
-    }
-
-    func generateDefaultCards(canShowOnboarding: Bool, canShowBlaze: Bool, canShowAnalytics: Bool) -> [DashboardCard] {
+    func generateDefaultCards(canShowOnboarding: Bool,
+                              canShowBlaze: Bool,
+                              canShowAnalytics: Bool,
+                              canShowLastOrders: Bool,
+                              canShowInbox: Bool) -> [DashboardCard] {
         var cards = [DashboardCard]()
 
         // Onboarding card.
@@ -434,11 +486,17 @@ private extension DashboardViewModel {
 
         let dynamicDashboardM2 = featureFlagService.isFeatureFlagEnabled(.dynamicDashboardM2)
         if dynamicDashboardM2 {
-            // TODO: check eligibility and update `enabled` accordingly
-            cards.append(DashboardCard(type: .inbox, availability: .show, enabled: false))
+            cards.append(DashboardCard(type: .inbox,
+                                       availability: canShowInbox ? .show : .hide,
+                                       enabled: false))
             cards.append(DashboardCard(type: .reviews, availability: .show, enabled: false))
             cards.append(DashboardCard(type: .coupons, availability: .show, enabled: false))
             cards.append(DashboardCard(type: .stock, availability: .show, enabled: false))
+
+            // When not available, Last orders cards need to be hidden from Dashboard, but appear on Customize as "Unavailable"
+            cards.append(DashboardCard(type: .lastOrders,
+                                       availability: canShowLastOrders ? .show : .unavailable,
+                                       enabled: false))
         }
 
         return cards
@@ -447,12 +505,16 @@ private extension DashboardViewModel {
     @MainActor
     func updateDashboardCards(canShowOnboarding: Bool,
                               canShowBlaze: Bool,
-                              canShowAnalytics: Bool) async {
+                              canShowAnalytics: Bool,
+                              canShowLastOrders: Bool,
+                              canShowInbox: Bool) async {
 
         // First, generate latest cards state based on current canShow states
         let initialCards = generateDefaultCards(canShowOnboarding: canShowOnboarding,
                                                 canShowBlaze: canShowBlaze,
-                                                canShowAnalytics: canShowAnalytics)
+                                                canShowAnalytics: canShowAnalytics,
+                                                canShowLastOrders: canShowLastOrders,
+                                                canShowInbox: canShowInbox)
 
         // Next, get saved cards and preserve existing enabled state for all available cards.
         // This is needed because even if a user already disabled an available card and saved it, in `initialCards`
@@ -467,9 +529,53 @@ private extension DashboardViewModel {
             }
         }
 
-        // Reorder dashboardCards based on original ordering in savedCards
-        dashboardCards = savedCards.compactMap { savedCard in
-            updatedCards.first(where: { $0.type == savedCard.type })
+        /// If no saved cards are found, display the default cards.
+        if savedCards.isEmpty {
+            dashboardCards = updatedCards
+        } else {
+
+            // Reorder dashboardCards based on original ordering in savedCards
+            let reorderedCards = savedCards.compactMap { savedCard in
+                updatedCards.first(where: { $0.type == savedCard.type })
+            }
+
+            // Get any remaining available cards and disable them.
+            let remainingCards = Set(updatedCards).subtracting(savedCards)
+                .filter { card in
+                    card.availability == .show &&
+                    !savedCards.contains(where: { $0.type == card.type })
+                }
+                .map { $0.copy(enabled: false) }
+
+            // Append the remaining cards to the end of the list
+            dashboardCards = reorderedCards + remainingCards
+        }
+
+        await configureNewCardsNotice(with: savedCards)
+    }
+
+    /// Determines whether to show the notice that new cards now exist and can be found in Customize screen.
+    /// Can optionally pass local cards in case they are recently loaded before calling this function.
+    @MainActor
+    func configureNewCardsNotice(with localCards: [DashboardCard]? = nil) async {
+        guard featureFlagService.isFeatureFlagEnabled(.dynamicDashboardM2) else {
+            return
+        }
+        var cards: [DashboardCard]
+
+        if let localCards {
+            cards = localCards
+        } else {
+            cards = await loadDashboardCards() ?? []
+        }
+
+        let savedCardTypes = Set(cards.map { $0.type })
+        let savedCardContainsAllNewCards = Constants.m2CardSet.isSubset(of: savedCardTypes)
+
+        if savedCardContainsAllNewCards {
+            showNewCardsNotice = false
+        } else {
+            showNewCardsNotice = true
         }
     }
 
@@ -596,5 +702,7 @@ private extension DashboardViewModel {
         static let dashboardScreenName = "my_store"
         static let orderPageNumber = 1
         static let orderPageSize = 1
+
+        static let m2CardSet: Set<DashboardCard.CardType> = [.inbox, .reviews, .coupons, .stock, .lastOrders]
     }
 }

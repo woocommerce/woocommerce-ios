@@ -1,5 +1,1 @@
-- [*] Cambia el color del texto en la vista de logotipo de la lista de productos del pedido para solucionar la legibilidad del modo oscuro. [https://github.com/woocommerce/woocommerce-ios/pull/12630]
-- [*] Solución posible a un error que se produce al abrir notificaciones sobre un pedido [https://github.com/woocommerce/woocommerce-ios/pull/12643]
-- [internal] Muestra la tarjeta de valoraciones incluida en la aplicación en el panel de administración. [https://github.com/woocommerce/woocommerce-ios/pull/12636]
-- [*] Envíos: ahora se puede seleccionar un método de envío al añadir o editar el envío para un pedido. [https://github.com/woocommerce/woocommerce-ios/pull/12688]
-
+¡Explora en profundidad una experiencia de WooCommerce más fluida con nuestra última actualización! Hemos resuelto los problemas que obstaculizaban las funciones «Lector de tarjetas» y «Tocar para pagar» en Menú > Pagos > Cobrar pago para facilitar las transacciones. La pantalla del panel de administración ha mejorado su rendimiento gracias a la optimización de las llamadas a la API. Además, ahora se puede editar la extensión Cantidades mín./máx. en los detalles del producto.

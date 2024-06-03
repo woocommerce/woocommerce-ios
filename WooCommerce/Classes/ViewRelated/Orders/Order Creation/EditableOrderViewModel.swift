@@ -254,10 +254,6 @@ final class EditableOrderViewModel: ObservableObject {
     ///
     @Published private var isGiftCardSupported: Bool = false
 
-    /// Defines the multiple lines info message to show.
-    ///
-    @Published private(set) var multipleLinesMessage: String? = nil
-
     @Published var selectionSyncApproach: OrderItemSelectionSyncApproach = .onSelectorButtonTap
 
     enum OrderItemSelectionSyncApproach {
@@ -367,6 +363,12 @@ final class EditableOrderViewModel: ObservableObject {
         return selectedProductsCount + selectedProductVariationsCount
     }
 
+    // MARK: Shipping line properties
+
+    /// Use case to display, add, edit, or remove shipping lines.
+    ///
+    @Published var shippingUseCase: EditableOrderShippingUseCase
+
     // MARK: Customer data properties
 
     /// View model for the customer section.
@@ -402,19 +404,6 @@ final class EditableOrderViewModel: ObservableObject {
     @Published private(set) var paymentDataViewModel = PaymentDataViewModel()
 
     @Published private(set) var orderTotal: String = ""
-
-    /// Saves a shipping line.
-    ///
-    /// - Parameter shippingLine: Optional shipping line object to save. `nil` will remove existing shipping line.
-    func saveShippingLine(_ shippingLine: ShippingLine?) {
-        orderSynchronizer.setShipping.send(shippingLine)
-
-        if let shippingLine {
-            analytics.track(event: WooAnalyticsEvent.Orders.orderShippingMethodAdd(flow: flow.analyticsFlow, methodID: shippingLine.methodID ?? ""))
-        } else {
-            analytics.track(event: WooAnalyticsEvent.Orders.orderShippingMethodRemove(flow: flow.analyticsFlow))
-        }
-    }
 
     /// Saves a coupon line after an edition on it.
     ///
@@ -515,6 +504,8 @@ final class EditableOrderViewModel: ObservableObject {
             resetAddressForm: {}
         )
 
+        self.shippingUseCase = EditableOrderShippingUseCase(siteID: siteID, flow: flow, orderSynchronizer: orderSynchronizer)
+
         configureDisabledState()
         configureCollectPaymentDisabledState()
         configureOrderTotal()
@@ -528,7 +519,6 @@ final class EditableOrderViewModel: ObservableObject {
         configurePaymentDataViewModel()
         configureCustomerNoteDataViewModel()
         configureNonEditableIndicators()
-        configureMultipleLinesMessage()
         resetAddressForm()
         syncInitialSelectedState()
         configureTaxRates()
@@ -538,7 +528,6 @@ final class EditableOrderViewModel: ObservableObject {
         forwardSyncApproachToSynchronizer()
         observeChangesFromProductSelectorButtonTapSelectionSync()
         observeChangesInCustomerDetails()
-        syncShippingMethods()
     }
 
     /// Observes and keeps track of changes within the Customer Details
@@ -1180,17 +1169,6 @@ extension EditableOrderViewModel {
         let itemsTotal: String
         let orderIsEmpty: Bool
 
-        let shouldShowShippingTotal: Bool
-        let shippingTotal: String
-
-        // We only support one (the first) shipping line
-        let shippingMethodTitle: String
-        let shippingMethodTotal: String
-
-        // We show shipping tax if the amount is not zero
-        let shouldShowShippingTax: Bool
-        let shippingTax: String
-
         let shouldShowTotalCustomAmounts: Bool
         let customAmountsTotal: String
 
@@ -1223,25 +1201,16 @@ extension EditableOrderViewModel {
 
         let showNonEditableIndicators: Bool
 
-        let shippingLineViewModel: ShippingLineDetailsViewModel
-        let shippingLineSelectionViewModel: ShippingLineSelectionDetailsViewModel
         let addNewCouponLineClosure: (Coupon) -> Void
         let onGoToCouponsClosure: () -> Void
         let onTaxHelpButtonTappedClosure: () -> Void
         let onDismissWpAdminWebViewClosure: () -> Void
         let addGiftCardClosure: () -> Void
         let setGiftCardClosure: (_ code: String?) -> Void
-        let addShippingTappedClosure: () -> Void
 
         init(siteID: Int64 = 0,
              shouldShowProductsTotal: Bool = false,
              itemsTotal: String = "0",
-             shouldShowShippingTotal: Bool = false,
-             shippingTotal: String = "0",
-             shippingMethodID: String = "",
-             shippingMethodTitle: String = "",
-             shippingMethodTotal: String = "",
-             shippingTax: String = "0",
              shouldShowTotalCustomAmounts: Bool = false,
              customAmountsTotal: String = "0",
              taxesTotal: String = "0",
@@ -1263,24 +1232,16 @@ extension EditableOrderViewModel {
              shouldShowDiscountTotal: Bool = false,
              isLoading: Bool = false,
              showNonEditableIndicators: Bool = false,
-             saveShippingLineClosure: @escaping (ShippingLine?) -> Void = { _ in },
              addNewCouponLineClosure: @escaping (Coupon) -> Void = { _ in },
              onGoToCouponsClosure: @escaping () -> Void = {},
              onTaxHelpButtonTappedClosure: @escaping () -> Void = {},
              onDismissWpAdminWebViewClosure: @escaping () -> Void = {},
              addGiftCardClosure: @escaping () -> Void = {},
              setGiftCardClosure: @escaping (_ code: String?) -> Void = { _ in },
-             addShippingTappedClosure: @escaping () -> Void = {},
              currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)) {
             self.siteID = siteID
             self.shouldShowProductsTotal = shouldShowProductsTotal
             self.itemsTotal = currencyFormatter.formatAmount(itemsTotal) ?? "0.00"
-            self.shouldShowShippingTotal = shouldShowShippingTotal
-            self.shippingTotal = currencyFormatter.formatAmount(shippingTotal) ?? "0.00"
-            self.shippingMethodTitle = shippingMethodTitle
-            self.shippingMethodTotal = currencyFormatter.formatAmount(shippingMethodTotal) ?? "0.00"
-            self.shippingTax = currencyFormatter.formatAmount(shippingTax) ?? "0.00"
-            self.shouldShowShippingTax = !(currencyFormatter.convertToDecimal(shippingTax) ?? NSDecimalNumber(0.0)).isZero()
             self.shouldShowTotalCustomAmounts = shouldShowTotalCustomAmounts
             self.customAmountsTotal = currencyFormatter.formatAmount(customAmountsTotal) ?? "0.00"
             self.taxesTotal = currencyFormatter.formatAmount(taxesTotal) ?? "0.00"
@@ -1302,23 +1263,12 @@ extension EditableOrderViewModel {
             self.couponCode = couponCode
             self.discountTotal = "-" + (currencyFormatter.formatAmount(discountTotal) ?? "0.00")
             self.shouldShowDiscountTotal = shouldShowDiscountTotal
-            self.shippingLineViewModel = ShippingLineDetailsViewModel(isExistingShippingLine: shouldShowShippingTotal,
-                                                                      initialMethodTitle: shippingMethodTitle,
-                                                                      shippingTotal: shippingMethodTotal,
-                                                                      didSelectSave: saveShippingLineClosure)
-            self.shippingLineSelectionViewModel = ShippingLineSelectionDetailsViewModel(siteID: siteID,
-                                                                                        isExistingShippingLine: shouldShowShippingTotal,
-                                                                                        initialMethodID: shippingMethodID,
-                                                                                        initialMethodTitle: shippingMethodTitle,
-                                                                                        shippingTotal: shippingMethodTotal,
-                                                                                        didSelectSave: saveShippingLineClosure)
             self.addNewCouponLineClosure = addNewCouponLineClosure
             self.onGoToCouponsClosure = onGoToCouponsClosure
             self.onTaxHelpButtonTappedClosure = onTaxHelpButtonTappedClosure
             self.onDismissWpAdminWebViewClosure = onDismissWpAdminWebViewClosure
             self.addGiftCardClosure = addGiftCardClosure
             self.setGiftCardClosure = setGiftCardClosure
-            self.addShippingTappedClosure = addShippingTappedClosure
         }
 
         /// Indicates whether the Coupons informational tooltip button should be shown
@@ -1785,9 +1735,6 @@ private extension EditableOrderViewModel {
 
                 let orderTotals = OrderTotalsCalculator(for: order, using: self.currencyFormatter)
 
-                let shippingMethodID = order.shippingLines.first?.methodID ?? ""
-                let shippingMethodTitle = order.shippingLines.first?.methodTitle ?? ""
-
                 let isDataSyncing: Bool = {
                     switch state {
                     case .syncing:
@@ -1831,12 +1778,6 @@ private extension EditableOrderViewModel {
                 return PaymentDataViewModel(siteID: self.siteID,
                                             shouldShowProductsTotal: order.items.isNotEmpty,
                                             itemsTotal: orderTotals.itemsTotal.stringValue,
-                                            shouldShowShippingTotal: order.shippingLines.filter { $0.methodID != nil }.isNotEmpty,
-                                            shippingTotal: order.shippingTotal.isNotEmpty ? order.shippingTotal : "0",
-                                            shippingMethodID: shippingMethodID,
-                                            shippingMethodTitle: shippingMethodTitle,
-                                            shippingMethodTotal: order.shippingLines.first?.total ?? "0",
-                                            shippingTax: order.shippingTax.isNotEmpty ? order.shippingTax : "0",
                                             shouldShowTotalCustomAmounts: order.fees.filter { $0.name != nil }.isNotEmpty,
                                             customAmountsTotal: orderTotals.feesTotal.stringValue,
                                             taxesTotal: order.totalTax.isNotEmpty ? order.totalTax : "0",
@@ -1859,7 +1800,6 @@ private extension EditableOrderViewModel {
                                             shouldShowDiscountTotal: order.discountTotal.isNotEmpty && isDiscountBiggerThanZero,
                                             isLoading: isDataSyncing && !showNonEditableIndicators,
                                             showNonEditableIndicators: showNonEditableIndicators,
-                                            saveShippingLineClosure: self.saveShippingLine,
                                             addNewCouponLineClosure: { [weak self] coupon in
                                                 self?.saveCouponLine(result: .added(newCode: coupon.code))
                                             },
@@ -1883,9 +1823,6 @@ private extension EditableOrderViewModel {
                                                 self.analytics.track(event: .Orders.orderFormGiftCardSet(flow: self.flow.analyticsFlow,
                                                                                                          isRemoved: code == nil))
                                             },
-                                            addShippingTappedClosure: { [weak self] in
-                                                self?.analytics.track(event: .Orders.orderAddShippingTapped())
-                                            },
                                             currencyFormatter: self.currencyFormatter)
             }
             .assign(to: &$paymentDataViewModel)
@@ -1904,37 +1841,6 @@ private extension EditableOrderViewModel {
                 }
             }
             .assign(to: &$shouldShowNonEditableIndicators)
-    }
-
-    /// Binds the order state to the `multipleLineMessage` property.
-    ///
-    func configureMultipleLinesMessage() {
-        Publishers.CombineLatest(orderSynchronizer.orderPublisher, Just(flow))
-            .map { order, flow -> String? in
-                switch (flow, order.shippingLines.count) {
-                case (.creation, _):
-                    return nil
-                case (.editing, 2...Int.max): // Multiple shipping lines
-                    return Localization.multipleShippingLines
-                case (.editing, _): // Single/nil shipping & fee lines
-                    return nil
-                }
-            }
-            .assign(to: &$multipleLinesMessage)
-    }
-
-    /// Synchronizes available shipping methods for editing the order shipping lines.
-    ///
-    func syncShippingMethods() {
-        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.orderShippingMethodSelection) else {
-            return
-        }
-        let action = ShippingMethodAction.synchronizeShippingMethods(siteID: siteID) { result in
-            if let error = result.failure {
-                DDLogError("⛔️ Error retrieving available shipping methods: \(error)")
-            }
-        }
-        stores.dispatch(action)
     }
 
     func configureTaxRates() {
@@ -2171,7 +2077,8 @@ private extension EditableOrderViewModel {
         analytics.track(event: WooAnalyticsEvent.Orders.orderCreationSuccess(millisecondsSinceSinceOrderAddNew:
                                                                                 try? orderDurationRecorder.millisecondsSinceOrderAddNew(),
                                                                              couponsCount: Int64(orderSynchronizer.order.coupons.count),
-                                                                             usesGiftCard: usesGiftCard))
+                                                                             usesGiftCard: usesGiftCard,
+                                                                             shippingLinesCount: Int64(orderSynchronizer.order.shippingLines.count)))
     }
 
     /// Tracks an order creation failure
@@ -2700,13 +2607,6 @@ private extension EditableOrderViewModel {
         static let invalidBillingSuggestion =
         NSLocalizedString("Please make sure you are running the latest version of WooCommerce and try again later.",
                           comment: "Recovery suggestion when we fail to update an address when creating or editing an order")
-
-        static let multipleShippingLines = NSLocalizedString("Shipping details are incomplete.\n" +
-                                                             "To edit all shipping details, view the order in your WooCommerce store admin.",
-                                                             comment: "Info message shown when the order contains multiple shipping lines")
-        static let multipleFeesAndShippingLines = NSLocalizedString("Fees & Shipping details are incomplete.\n" +
-                                                                    "To edit all the details, view the order in your WooCommerce store admin.",
-                                                                    comment: "Info message shown when the order contains multiple fees and shipping lines")
         static let couponsErrorNoticeTitle = NSLocalizedString("Unable to add coupon.",
                                                                  comment: "Info message when the user tries to add a coupon" +
                                                                  "that is not applicated to the products")

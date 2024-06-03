@@ -1,5 +1,1 @@
-- [*] Modifica del colore del testo nella vista dei badge nell'elenco dei prodotti degli ordini per correggere la leggibilità in modalità scura. [https://github.com/woocommerce/woocommerce-ios/pull/12630]
-- [*] Correzione speculativa di un arresto anomalo durante l'apertura delle notifiche sugli ordini [https://github.com/woocommerce/woocommerce-ios/pull/12643]
-- [interno] Visualizzazione della scheda del feedback in app nella bacheca. [https://github.com/woocommerce/woocommerce-ios/pull/12636]
-- [*] Spedizione: ora è possibile selezionare un metodo di spedizione durante l'aggiunta o la modifica della spedizione relativa a un determinato ordine. [https://github.com/woocommerce/woocommerce-ios/pull/12688]
-
+Scopri un'esperienza WooCommerce più agevole con il nostro ultimo aggiornamento! Abbiamo risolto i problemi che ostacolavano le funzionalità "Lettore di carte" e "Tocca per pagare" in Menu > Pagamenti > Ricevi pagamenti in modo da garantire transazioni senza interruzioni. Anche la schermata della bacheca ha ottenuto un miglioramento delle prestazioni grazie all'ottimizzazione delle chiamate API. Inoltre, è ora disponibile il supporto alla modifica dell'estensione Quantità minima/massima nei dettagli del prodotto.

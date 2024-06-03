@@ -1,5 +1,1 @@
-- [*] Textfarbe der Badge-Ansicht der Liste der bestellten Produkte ändern, damit sie auch im dunklen Modus gut lesbar ist. [https://github.com/woocommerce/woocommerce-ios/pull/12630]
-- [*] Spekulative Fehlerbehebung eines Absturzes, der beim Öffnen von Bestellbenachrichtigungen auftritt [https://github.com/woocommerce/woocommerce-ios/pull/12643]
-- [intern] Karte mit In App-Feedback im Dashboard anzeigen. [https://github.com/woocommerce/woocommerce-ios/pull/12636]
-- [*] Versand: Beim Hinzufügen oder Bearbeiten von Versandinformationen zu einer Bestellung kann jetzt eine Versandmethode ausgewählt werden. [https://github.com/woocommerce/woocommerce-ios/pull/12688]
-
+Mit unserem neuesten Update genießt du ein reibungsloseres WooCommerce-Erlebnis! Wir haben Probleme behoben, die die Funktionen „Kartenlesegerät“ und „Tap To Pay“ unter „Menü > Zahlungen > Zahlung emempfangen“ an nahtlosen Transaktionen gehindert haben. Dank optimierter API-Aufrufe verfügt das Dashboard jetzt über eine verbesserte Perfomance. Zudem ist jetzt Bearbeitungs-Support für die Erweiterung Min/Max Quantities in den Produktdetails verfügbar.

@@ -1,5 +1,1 @@
-- [*] Alteração na cor do texto da visualização de selo na lista de produtos do pedido para corrigir a legibilidade no modo escuro. [https://github.com/woocommerce/woocommerce-ios/pull/12630]
-- [*] Correção especulativa de uma falha na abertura de notificações do pedido [https://github.com/woocommerce/woocommerce-ios/pull/12643]
-- [internal] Exibição do cartão de feedback no app no painel. [https://github.com/woocommerce/woocommerce-ios/pull/12636]
-- [*] Envio: agora é possível selecionar um método de envio ao adicionar ou editar o envio em um pedido. [https://github.com/woocommerce/woocommerce-ios/pull/12688]
-
+Mergulhe em uma experiência do WooCommerce tranquila com nossa última atualização! Corrigimos problemas que impediam funcionalidades como "Leitor de cartão" e "Tap to Pay" em Menu > Pagamentos > Receber pagamento em transações simplificadas. Otimizamos as chamadas de API para impulsionar o desempenho da tela do painel. E agora, o suporte de edição para a extensão Min/Max Quantities em detalhes do produto está disponível.

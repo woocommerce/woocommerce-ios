@@ -295,14 +295,16 @@ private extension OrderListViewController {
         /// Update the `dataSource` whenever there is a new snapshot.
         viewModel.snapshot.sink { [weak self] snapshot in
             guard let self = self else { return }
+
             dataSource?.apply(snapshot)
 
             transitionToResultsUpdatedState()
 
-            if self.splitViewController?.isCollapsed == false {
+            /// Check that view is loaded and displayed to prevent UI tests failing while synching orders from other screens.
+            if isViewLoaded == true && view.window != nil,
+               self.splitViewController?.isCollapsed == false {
                 self.checkSelectedItem()
             }
-
         }.store(in: &cancellables)
 
         /// Update the top banner when needed

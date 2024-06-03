@@ -319,6 +319,7 @@ final class CouponsRemoteTests: XCTestCase {
         // When
         let result = waitFor { promise in
             remote.loadMostActiveCoupons(for: self.sampleSiteID,
+                                         numberOfCouponsToLoad: 3,
                                          from: Date(),
                                          to: Date()
             ) { (result) in
@@ -345,6 +346,7 @@ final class CouponsRemoteTests: XCTestCase {
         // When
         let result = waitFor { promise in
             remote.loadMostActiveCoupons(for: self.sampleSiteID,
+                                         numberOfCouponsToLoad: 3,
                                          from: Date(),
                                          to: Date()
             ) { (result) in

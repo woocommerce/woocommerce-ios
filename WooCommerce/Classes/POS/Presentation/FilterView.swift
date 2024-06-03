@@ -10,6 +10,7 @@ struct FilterView: View {
     var body: some View {
         Button("Filter") {
             // TODO: https://github.com/woocommerce/woocommerce-ios/issues/12761
+            viewModel.showFilters()
         }
         .frame(maxWidth: .infinity, idealHeight: 120)
         .font(.title2)
@@ -22,7 +23,8 @@ struct FilterView: View {
 
 #if DEBUG
 #Preview {
-    FilterView(viewModel: PointOfSaleDashboardViewModel(products: [],
-                                                        cardReaderConnectionViewModel: .init(state: .connectingToReader)))
+    FilterView(viewModel: PointOfSaleDashboardViewModel(items: [],
+                                                        currencySettings: .init(),
+                                                        cardPresentPaymentService: CardPresentPaymentService(siteID: 0)))
 }
 #endif

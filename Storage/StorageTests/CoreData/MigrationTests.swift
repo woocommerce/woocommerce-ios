@@ -2817,6 +2817,49 @@ final class MigrationTests: XCTestCase {
         XCTAssertNotNil(shippingMethod.entity.attributesByName["methodID"])
         XCTAssertNotNil(shippingMethod.entity.attributesByName["title"])
     }
+
+    func test_migrating_from_111_to_112_updates_Site_entry() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 111")
+        let sourceContext = sourceContainer.viewContext
+
+        // Insert a new entity Site e sent the value of isPublic
+        let site = NSEntityDescription.insertNewObject(forEntityName: "Site", into: sourceContext)
+        site.setValue(true, forKey: "isPublic")
+        try sourceContext.save()
+
+        // Confidence Check. `isPublic` should check and `visibility` should not exist in Model 111
+        let siteEntity = NSEntityDescription.entity(forEntityName: "Site", in: sourceContext)
+        XCTAssertNotNil(siteEntity?.attributesByName["isPublic"])
+        XCTAssertNil(siteEntity?.attributesByName["visibility"])
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 112")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+
+        // `isPublic` should not exist and `visibility` should exist in Model 112
+        let migratedSiteEntity = NSEntityDescription.entity(forEntityName: "Site", in: targetContext)
+        XCTAssertNil(migratedSiteEntity?.attributesByName["isPublic"])
+        XCTAssertNotNil(migratedSiteEntity?.attributesByName["visibility"])
+
+        // Retrieve the migrated Site
+        let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "Site")
+        let migratedSites = try targetContext.fetch(fetchRequest)
+        let migratedSite = try XCTUnwrap(migratedSites.first)
+
+        // Verify that the `visibility` value is 1 (true converted to Int64)
+        XCTAssertEqual(migratedSite.value(forKey: "visibility") as? Int64, 1)
+
+        // Insert a new Site to verify that the new attribute can be set and saved correctly
+        let newSite = NSEntityDescription.insertNewObject(forEntityName: "Site", into: targetContext)
+        newSite.setValue(-1, forKey: "visibility")
+        try targetContext.save()
+
+        // Verify that the new attribute has been set correctly
+        XCTAssertEqual(newSite.value(forKey: "visibility") as? Int64, -1)
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations

@@ -1,22 +1,23 @@
 import SwiftUI
+import protocol Yosemite.POSItemProvider
+import class Yosemite.NullPOSProductProvider
+import class WooFoundation.CurrencySettings
 
 struct PointOfSaleEntryPointView: View {
-    // TODO:
-    // Temporary. DI proper product models once we have a data layer
-    private let viewModel: PointOfSaleDashboardViewModel = {
-        let products = POSProductFactory.makeFakeProducts()
-        let viewModel = PointOfSaleDashboardViewModel(products: products, cardReaderConnectionViewModel: .init(state: .scanningForReader(cancel: {})))
-
-        return viewModel
-    }()
+    @StateObject private var viewModel: PointOfSaleDashboardViewModel
+    private var itemProvider: POSItemProvider
 
     private let hideAppTabBar: ((Bool) -> Void)
 
-    // Necessary to expose the View's entry point to WooCommerce
-    // Otherwise the current switch on `HubMenu` where this View is created
-    // will error with "No exact matches in reference to static method 'buildExpression'"
-    public init(hideAppTabBar: @escaping ((Bool) -> Void)) {
+    init(itemProvider: POSItemProvider, currencySettings: CurrencySettings, hideAppTabBar: @escaping ((Bool) -> Void), siteID: Int64) {
+        self.itemProvider = itemProvider
         self.hideAppTabBar = hideAppTabBar
+
+        _viewModel = StateObject(wrappedValue: PointOfSaleDashboardViewModel(
+            items: itemProvider.providePointOfSaleItems(),
+            currencySettings: .init(),
+            cardPresentPaymentService: CardPresentPaymentService(siteID: siteID))
+        )
     }
 
     var body: some View {
@@ -32,6 +33,8 @@ struct PointOfSaleEntryPointView: View {
 
 #if DEBUG
 #Preview {
-    PointOfSaleEntryPointView(hideAppTabBar: { _ in })
+    // TODO: https://github.com/woocommerce/woocommerce-ios/issues/12917
+    // Some Yosemite imports are only needed for previews
+    PointOfSaleEntryPointView(itemProvider: NullPOSProductProvider(), currencySettings: ServiceLocator.currencySettings, hideAppTabBar: { _ in }, siteID: 0)
 }
 #endif

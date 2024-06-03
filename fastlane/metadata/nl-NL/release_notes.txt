@@ -1,5 +1,1 @@
-- [*] Verander de tekstkleur in badgeweergave in de productlijst van een bestelling om de leesbaarheid van de donkere modus te verbeteren. [https://github.com/woocommerce/woocommerce-ios/pull/12630]
-- [*] Speculatieve fix voor een crash wanneer meldingen over bestellingen worden geopend [https://github.com/woocommerce/woocommerce-ios/pull/12643]
-- [intern] In-app feedbackkaart op dashboard weergeven. [https://github.com/woocommerce/woocommerce-ios/pull/12636]
-- [*] Verzenden: Er kan nu een verzendmethode worden geselecteerd wanneer verzending wordt toegevoegd aan of bewerkt voor een bestelling. [https://github.com/woocommerce/woocommerce-ios/pull/12688]
-
+Duik in een soepelere WooCommerce-ervaring met onze nieuwste update! We hebben problemen opgelost met de functies 'Kaartlezer' en 'Tap to Pay' onder Menu > Betalingen > Betaling innen voor naadloze transacties. Het dashboardscherm biedt betere prestaties aangezien we API-oproepen hebben verbeterd. Bovendien is ondersteuning voor de extensie Min/max aantallen in productdetails nu beschikbaar.

@@ -308,4 +308,12 @@ public enum AppSettingsAction: Action {
     /// Loads the last selected stock type for the Stock dashboard card.
     ///
     case loadLastSelectedStockType(siteID: Int64, onCompletion: (String?) -> Void)
+
+    /// Stores the last selected order status for the Most recent orders dashboard card.
+    ///
+    case setLastSelectedOrderStatus(siteID: Int64, status: String?)
+
+    /// Loads the last selected order status for the Most recent orders dashboard card.
+    ///
+    case loadLastSelectedOrderStatus(siteID: Int64, onCompletion: (String?) -> Void)
 }

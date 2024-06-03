@@ -1,5 +1,1 @@
-- [*] 變更訂單商品清單中徽章檢視畫面的文字顏色，藉此修正深色模式的可讀性。[https://github.com/woocommerce/woocommerce-ios/pull/12630]
-- [*] 開啟訂單通知時，針對當機狀況進行推測性修正 [https://github.com/woocommerce/woocommerce-ios/pull/12643]
-- [內部] 在儀表板顯示應用程式內的意見回饋卡。[https://github.com/woocommerce/woocommerce-ios/pull/12636]
-- [*] 運送功能：在訂單中新增或編輯運送功能時，現在可以選取運送方式。[https://github.com/woocommerce/woocommerce-ios/pull/12688]
-
+用我們最新的更新內容，深入探索更流暢的 WooCommerce 體驗！ 我們解決了「選單」>「付款」>「收取款項」下方，使「讀卡機」和「輕觸付款」功能無法使用的問題，使交易流程更為順暢。 API 呼叫經過最佳化，使儀表板畫面的效能大幅提升。 此外，現在商品詳細資料的數量下限/上限擴充功能已可供編輯。

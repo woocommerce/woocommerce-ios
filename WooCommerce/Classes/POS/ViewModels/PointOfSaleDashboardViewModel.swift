@@ -1,73 +1,118 @@
 import SwiftUI
+import protocol Yosemite.POSItem
+import struct Yosemite.POSProduct
+import class WooFoundation.CurrencyFormatter
+import class WooFoundation.CurrencySettings
 
 final class PointOfSaleDashboardViewModel: ObservableObject {
-    @Published var products: [POSProduct]
-    @Published var productsInCart: [CartProduct] = []
+    @Published private(set) var items: [POSItem]
+    @Published private(set) var itemsInCart: [CartItem] = [] {
+        didSet {
+            calculateAmounts()
+        }
+    }
+    @Published private(set) var formattedCartTotalPrice: String?
+    @Published private(set) var formattedOrderTotalPrice: String?
+    @Published private(set) var formattedOrderTotalTaxPrice: String?
 
     @Published var showsCardReaderSheet: Bool = false
+    @Published private(set) var cardPresentPaymentEvent: CardPresentPaymentEvent = .idle
     @ObservedObject private(set) var cardReaderConnectionViewModel: CardReaderConnectionViewModel
 
-    init(products: [POSProduct],
-         cardReaderConnectionViewModel: CardReaderConnectionViewModel) {
-        self.products = products
-        self.cardReaderConnectionViewModel = cardReaderConnectionViewModel
+    @Published var showsFilterSheet: Bool = false
+
+    enum OrderStage {
+        case building
+        case finalizing
     }
 
-    func addProductToCart(_ product: POSProduct) {
-        if product.stockQuantity > 0 {
-            reduceInventory(product)
+    @Published private(set) var orderStage: OrderStage = .building
 
-            let cartProduct = CartProduct(id: UUID(), product: product, quantity: 1)
-            productsInCart.append(cartProduct)
-        } else {
-            // TODO: Handle out of stock
-            // wp.me/p91TBi-bcW#comment-12123
-            return
-        }
+    private let currencyFormatter: CurrencyFormatter
+
+    private let cardPresentPaymentService: CardPresentPaymentFacade
+
+    init(items: [POSItem],
+         currencySettings: CurrencySettings,
+         cardPresentPaymentService: CardPresentPaymentFacade) {
+        self.items = items
+        self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
+        self.cardPresentPaymentService = cardPresentPaymentService
+        self.cardReaderConnectionViewModel = CardReaderConnectionViewModel(cardPresentPayment: cardPresentPaymentService)
+        observeCardPresentPaymentEvents()
+        observeItemsInCartForCartTotal()
     }
 
-    func reduceInventory(_ product: POSProduct) {
-        guard let index = products.firstIndex(where: { $0.itemID == product.itemID }) else {
-            return
-        }
-        let updatedQuantity = product.stockQuantity - 1
-        let updatedProduct = POSProduct(itemID: product.itemID,
-                                    productID: product.productID,
-                                    name: product.name,
-                                    price: product.price,
-                                    stockQuantity: updatedQuantity)
-        products[index] = updatedProduct
+    func addItemToCart(_ item: POSItem) {
+        let cartItem = CartItem(id: UUID(), item: item, quantity: 1)
+        itemsInCart.append(cartItem)
     }
 
-    func restoreInventory(_ product: POSProduct) {
-        guard let index = products.firstIndex(where: { $0.itemID == product.itemID }) else {
-            return
-        }
-        let updatedQuantity = product.stockQuantity + 1
-        let updatedProduct = POSProduct(itemID: product.itemID,
-                                    productID: product.productID,
-                                    name: product.name,
-                                    price: product.price,
-                                    stockQuantity: updatedQuantity)
-        products[index] = updatedProduct
-    }
-
-    // Removes a `CartProduct` from the Cart
-    func removeProductFromCart(_ cartProduct: CartProduct) {
-        productsInCart.removeAll(where: { $0.id == cartProduct.id })
-
-        // When removing an item from the cart, restore previous inventory
-        guard let match = products.first(where: { $0.productID == cartProduct.product.productID }) else {
-            return
-        }
-        restoreInventory(match)
+    func removeItemFromCart(_ cartItem: CartItem) {
+        itemsInCart.removeAll(where: { $0.id == cartItem.id })
     }
 
     func submitCart() {
-        debugPrint("Not implemented")
+        // TODO: https://github.com/woocommerce/woocommerce-ios/issues/12810
+        orderStage = .finalizing
     }
 
-    func showCardReaderConnection() {
-        showsCardReaderSheet = true
+    func addMoreToCart() {
+        orderStage = .building
+    }
+
+    func showFilters() {
+        showsFilterSheet = true
+    }
+
+    private func calculateAmounts() {
+        // TODO: this is just a starting point for this logic, to have something calculated on the fly
+        if let formattedCartTotalPrice = formattedCartTotalPrice,
+           let subtotalAmount = currencyFormatter.convertToDecimal(formattedCartTotalPrice)?.doubleValue {
+            let taxAmount = subtotalAmount * 0.1 // having fixed 10% tax for testing
+            let totalAmount = subtotalAmount + taxAmount
+            formattedOrderTotalTaxPrice = currencyFormatter.formatAmount(Decimal(taxAmount))
+            formattedOrderTotalPrice = currencyFormatter.formatAmount(Decimal(totalAmount))
+        }
+    }
+}
+
+extension PointOfSaleDashboardViewModel {
+    // Helper function to populate SwifUI previews
+    static func defaultPreview() -> PointOfSaleDashboardViewModel {
+        PointOfSaleDashboardViewModel(items: [],
+                                      currencySettings: .init(),
+                                      cardPresentPaymentService: CardPresentPaymentService(siteID: 0))
+    }
+}
+
+private extension PointOfSaleDashboardViewModel {
+    func observeItemsInCartForCartTotal() {
+        $itemsInCart
+            .map { [weak self] in
+                guard let self else { return "-" }
+                let totalValue: Decimal = $0.reduce(0) { partialResult, cartItem in
+                    let itemPrice = self.currencyFormatter.convertToDecimal(cartItem.item.price) ?? 0
+                    let quantity = cartItem.quantity
+                    let total = itemPrice.multiplying(by: NSDecimalNumber(value: quantity)) as Decimal
+                    return partialResult + total
+                }
+                return currencyFormatter.formatAmount(totalValue)
+            }
+            .assign(to: &$formattedCartTotalPrice)
+    }
+
+    func observeCardPresentPaymentEvents() {
+        cardPresentPaymentService.paymentEventPublisher.assign(to: &$cardPresentPaymentEvent)
+        cardPresentPaymentService.paymentEventPublisher.map { event in
+            switch event {
+            case .idle:
+                return false
+            case .showAlert,
+                    .showReaderList,
+                    .showOnboarding:
+                return true
+            }
+        }.assign(to: &$showsCardReaderSheet)
     }
 }

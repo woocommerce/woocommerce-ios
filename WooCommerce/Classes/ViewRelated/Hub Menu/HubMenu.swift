@@ -168,7 +168,7 @@ private extension HubMenu {
                                           currencySettings: ServiceLocator.currencySettings,
                                           hideAppTabBar: { isHidden in
                     AppDelegate.shared.setShouldHideTabBar(isHidden)
-                })
+                }, siteID: viewModel.siteID)
             default:
                 fatalError("🚨 Unsupported menu item")
             }

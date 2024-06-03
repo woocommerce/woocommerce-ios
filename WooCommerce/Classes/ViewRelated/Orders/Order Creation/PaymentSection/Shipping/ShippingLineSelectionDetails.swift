@@ -54,7 +54,7 @@ struct ShippingLineSelectionDetails: View {
 
                 // MARK: Delete Shipping Button
                 Button(Localization.deleteShippingButton) {
-                    viewModel.didSelectSave(nil)
+                    viewModel.removeShippingLine()
                     dismiss()
                 }
                 .foregroundColor(.init(uiColor: .error))
@@ -142,7 +142,8 @@ private extension ShippingLineSelectionDetails {
                                                                                   initialMethodID: "",
                                                                                   initialMethodTitle: "",
                                                                                   shippingTotal: "",
-                                                                                  didSelectSave: { _ in }))
+                                                                                  didSelectSave: { _ in },
+                                                                                  didSelectRemove: { _ in }))
 }
 
 #Preview("Edit shipping") {
@@ -151,5 +152,6 @@ private extension ShippingLineSelectionDetails {
                                                                                   initialMethodID: "flat_rate",
                                                                                   initialMethodTitle: "Shipping",
                                                                                   shippingTotal: "10.00",
-                                                                                  didSelectSave: { _ in }))
+                                                                                  didSelectSave: { _ in },
+                                                                                  didSelectRemove: { _ in }))
 }

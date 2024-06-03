@@ -5,10 +5,10 @@ final class SetUpTapToPayOnboardingViewController: UIHostingController<SetUpTapT
 
     private let onWillDisappear: (() -> ())?
 
-    init(viewModel: InPersonPaymentsViewModel,
+    init(viewModel: CardPresentPaymentsOnboardingViewModel,
          onWillDisappear: (() -> ())?) {
         self.onWillDisappear = onWillDisappear
-        let onboardingView = InPersonPaymentsView(viewModel: viewModel)
+        let onboardingView = CardPresentPaymentsOnboardingView(viewModel: viewModel)
         super.init(rootView: SetUpTapToPayOnboardingView(onboardingView: onboardingView))
         rootView.cancelTapped = { [weak self] in
             ServiceLocator.analytics.track(.tapToPaySetupOnboardingCancelTapped)
@@ -28,7 +28,7 @@ final class SetUpTapToPayOnboardingViewController: UIHostingController<SetUpTapT
     }
 
     convenience init?(viewModel: PaymentSettingsFlowPresentedViewModel) {
-        guard let viewModel = viewModel as? InPersonPaymentsViewModel else {
+        guard let viewModel = viewModel as? CardPresentPaymentsOnboardingViewModel else {
             return nil
         }
         self.init(viewModel: viewModel, onWillDisappear: nil)
@@ -45,7 +45,7 @@ final class SetUpTapToPayOnboardingViewController: UIHostingController<SetUpTapT
 }
 
 struct SetUpTapToPayOnboardingView: View {
-    @State var onboardingView: InPersonPaymentsView
+    @State var onboardingView: CardPresentPaymentsOnboardingView
     var cancelTapped: (() -> Void)? = nil
 
     var body: some View {

@@ -28,7 +28,8 @@ final class ShippingLineSelectionDetailsViewModelTests: XCTestCase {
                                                               shippingLine: nil,
                                                               locale: usLocale,
                                                               storeCurrencySettings: usStoreSettings,
-                                                              didSelectSave: { _ in })
+                                                              didSelectSave: { _ in },
+                                                              didSelectRemove: { _ in })
 
         // When
         viewModel.formattableAmountViewModel.amount = "hi:11.3005.02-"
@@ -44,7 +45,8 @@ final class ShippingLineSelectionDetailsViewModelTests: XCTestCase {
                                                               shippingLine: nil,
                                                               locale: usLocale,
                                                               storeCurrencySettings: usStoreSettings,
-                                                              didSelectSave: { _ in })
+                                                              didSelectSave: { _ in },
+                                                              didSelectRemove: { _ in })
 
         // When
         viewModel.formattableAmountViewModel.amount = "-hi:11.3005.02-"
@@ -66,7 +68,8 @@ final class ShippingLineSelectionDetailsViewModelTests: XCTestCase {
                                                               shippingLine: nil,
                                                               locale: usLocale,
                                                               storeCurrencySettings: customSettings,
-                                                              didSelectSave: { _ in })
+                                                              didSelectSave: { _ in },
+                                                              didSelectRemove: { _ in })
 
         // When
         viewModel.formattableAmountViewModel.amount = "12.203"
@@ -87,7 +90,8 @@ final class ShippingLineSelectionDetailsViewModelTests: XCTestCase {
                                                               locale: usLocale,
                                                               storeCurrencySettings: usStoreSettings,
                                                               storageManager: storageManager,
-                                                              didSelectSave: { _ in })
+                                                              didSelectSave: { _ in },
+                                                              didSelectRemove: { _ in })
 
         // Then
         XCTAssertTrue(viewModel.isExistingShippingLine)
@@ -104,7 +108,8 @@ final class ShippingLineSelectionDetailsViewModelTests: XCTestCase {
                                                               shippingLine: shippingLine,
                                                               locale: usLocale,
                                                               storeCurrencySettings: usStoreSettings,
-                                                              didSelectSave: { _ in })
+                                                              didSelectSave: { _ in },
+                                                              didSelectRemove: { _ in })
 
         // Then
         XCTAssertTrue(viewModel.isExistingShippingLine)
@@ -121,7 +126,8 @@ final class ShippingLineSelectionDetailsViewModelTests: XCTestCase {
                                                               shippingTotal: "0",
                                                               locale: usLocale,
                                                               storeCurrencySettings: usStoreSettings,
-                                                              didSelectSave: { _ in })
+                                                              didSelectSave: { _ in },
+                                                              didSelectRemove: { _ in })
 
         // Then
         XCTAssertTrue(viewModel.formattableAmountViewModel.amount.isEmpty)
@@ -133,7 +139,8 @@ final class ShippingLineSelectionDetailsViewModelTests: XCTestCase {
                                                               shippingLine: nil,
                                                               locale: usLocale,
                                                               storeCurrencySettings: usStoreSettings,
-                                                              didSelectSave: { _ in })
+                                                              didSelectSave: { _ in },
+                                                              didSelectRemove: { _ in })
         XCTAssertFalse(viewModel.enableDoneButton)
 
         // When
@@ -156,7 +163,8 @@ final class ShippingLineSelectionDetailsViewModelTests: XCTestCase {
                                                               shippingLine: shippingLine,
                                                               locale: usLocale,
                                                               storeCurrencySettings: usStoreSettings,
-                                                              didSelectSave: { _ in })
+                                                              didSelectSave: { _ in },
+                                                              didSelectRemove: { _ in })
         XCTAssertFalse(viewModel.enableDoneButton)
 
         // When
@@ -179,7 +187,8 @@ final class ShippingLineSelectionDetailsViewModelTests: XCTestCase {
                                                               shippingLine: shippingLine,
                                                               locale: usLocale,
                                                               storeCurrencySettings: usStoreSettings,
-                                                              didSelectSave: { _ in })
+                                                              didSelectSave: { _ in },
+                                                              didSelectRemove: { _ in })
         XCTAssertFalse(viewModel.enableDoneButton)
 
         // When
@@ -206,7 +215,8 @@ final class ShippingLineSelectionDetailsViewModelTests: XCTestCase {
                                                               locale: usLocale,
                                                               storeCurrencySettings: usStoreSettings,
                                                               storageManager: storageManager,
-                                                              didSelectSave: { _ in })
+                                                              didSelectSave: { _ in },
+                                                              didSelectRemove: { _ in })
         XCTAssertFalse(viewModel.enableDoneButton)
 
         // When
@@ -233,7 +243,8 @@ final class ShippingLineSelectionDetailsViewModelTests: XCTestCase {
                                                               storeCurrencySettings: usStoreSettings,
                                                               didSelectSave: { newShippingLine in
             savedShippingLine = newShippingLine
-        })
+        },
+                                                              didSelectRemove: { _ in })
 
         // When
         viewModel.formattableAmountViewModel.amount = "$11.30"
@@ -256,7 +267,8 @@ final class ShippingLineSelectionDetailsViewModelTests: XCTestCase {
                                                               storeCurrencySettings: usStoreSettings,
                                                               didSelectSave: { newShippingLine in
             savedShippingLine = newShippingLine
-        })
+        },
+                                                              didSelectRemove: { _ in })
 
         // When
         viewModel.formattableAmountViewModel.amount = "-11.30"
@@ -277,7 +289,8 @@ final class ShippingLineSelectionDetailsViewModelTests: XCTestCase {
                                                               storeCurrencySettings: usStoreSettings,
                                                               didSelectSave: { newShippingLine in
             savedShippingLine = newShippingLine
-        })
+        },
+                                                              didSelectRemove: { _ in })
 
         // When
         viewModel.formattableAmountViewModel.amount = "0"
@@ -297,7 +310,8 @@ final class ShippingLineSelectionDetailsViewModelTests: XCTestCase {
                                                               storeCurrencySettings: usStoreSettings,
                                                               didSelectSave: { newShippingLine in
             savedShippingLine = newShippingLine
-        })
+        },
+                                                              didSelectRemove: { _ in })
 
         // When
         viewModel.formattableAmountViewModel.amount = "$11.30"
@@ -316,7 +330,8 @@ final class ShippingLineSelectionDetailsViewModelTests: XCTestCase {
                                                               shippingLine: nil,
                                                               locale: usLocale,
                                                               storeCurrencySettings: usStoreSettings,
-                                                              didSelectSave: { _ in })
+                                                              didSelectSave: { _ in },
+                                                              didSelectRemove: { _ in })
 
         // Then
         XCTAssertEqual(viewModel.formattableAmountViewModel.formattedAmount, "$0.00")
@@ -328,7 +343,8 @@ final class ShippingLineSelectionDetailsViewModelTests: XCTestCase {
                                                               shippingLine: nil,
                                                               locale: usLocale,
                                                               storeCurrencySettings: usStoreSettings,
-                                                              didSelectSave: { _ in })
+                                                              didSelectSave: { _ in },
+                                                              didSelectRemove: { _ in })
 
         // Then
         XCTAssertFalse(viewModel.isExistingShippingLine)
@@ -347,7 +363,8 @@ final class ShippingLineSelectionDetailsViewModelTests: XCTestCase {
                                                               locale: usLocale,
                                                               storeCurrencySettings: usStoreSettings,
                                                               storageManager: storageManager,
-                                                              didSelectSave: { _ in })
+                                                              didSelectSave: { _ in },
+                                                              didSelectRemove: { _ in })
 
         // Then
         XCTAssertEqual(viewModel.shippingMethods.count, 3) // Placeholder method + provided method + "Other"
@@ -362,7 +379,8 @@ final class ShippingLineSelectionDetailsViewModelTests: XCTestCase {
                                                               locale: usLocale,
                                                               storeCurrencySettings: usStoreSettings,
                                                               analytics: WooAnalytics(analyticsProvider: analytics),
-                                                              didSelectSave: { _ in })
+                                                              didSelectSave: { _ in },
+                                                              didSelectRemove: { _ in })
 
         // When
         let shippingMethod = ShippingMethod(siteID: sampleSiteID, methodID: "flat_rate", title: "Flat rate")
@@ -371,6 +389,24 @@ final class ShippingLineSelectionDetailsViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(analytics.receivedEvents, [WooAnalyticsStat.orderShippingMethodSelected.rawValue])
         assertEqual(shippingMethod.methodID, analytics.receivedProperties.first?["shipping_method"] as? String)
+    }
+
+    func test_removeShippingLine_returns_shipping_line_with_expected_shipping_id() {
+        // Given
+        var removedShippingLine: Yosemite.ShippingLine?
+        let existingShippingLine = ShippingLine.fake().copy(shippingID: 1)
+        let viewModel = ShippingLineSelectionDetailsViewModel(siteID: sampleSiteID,
+                                                              shippingLine: existingShippingLine,
+                                                              didSelectSave: { _ in },
+                                                              didSelectRemove: { shippingLine in
+            removedShippingLine = shippingLine
+        })
+
+        // When
+        viewModel.removeShippingLine()
+
+        // Then
+        assertEqual(existingShippingLine.shippingID, removedShippingLine?.shippingID)
     }
 }
 

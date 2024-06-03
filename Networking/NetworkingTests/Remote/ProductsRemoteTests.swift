@@ -838,7 +838,7 @@ final class ProductsRemoteTests: XCTestCase {
         let firstItem = try XCTUnwrap(products.first)
         XCTAssertEqual(firstItem.productID, 248)
         XCTAssertEqual(firstItem.variationID, 280)
-        XCTAssertEqual(firstItem.name, "Fantastic Concrete Shirt - ex, 7, Pink")
+        XCTAssertEqual(firstItem.name, "Fantastic Concrete Shirt")
         XCTAssertEqual(firstItem.itemsSold, 8)
         XCTAssertEqual(firstItem.imageURL?.absoluteString, "https://test.ninja/wp-content/uploads/2024/05/img-laboriosam-300x300.png")
     }

@@ -90,6 +90,7 @@ final class OrderDetailsViewController: UIViewController {
         configureViewModel()
         updateTopBannerView()
         trackGiftCardsShown()
+        trackShippingShown()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -727,6 +728,16 @@ private extension OrderDetailsViewController {
             return
         }
         ServiceLocator.analytics.track(event: .Orders.giftCardsShown())
+    }
+
+    /// Tracks when the Shipping section will be shown.
+    ///
+    func trackShippingShown() {
+        let shippingLinesCount = viewModel.dataSource.order.shippingLines.count
+        guard shippingLinesCount > 0 else {
+            return
+        }
+        ServiceLocator.analytics.track(event: .Orders.shippingShown(shippingLinesCount: Int64(shippingLinesCount)))
     }
 }
 

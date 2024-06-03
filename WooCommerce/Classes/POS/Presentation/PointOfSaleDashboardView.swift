@@ -48,7 +48,7 @@ struct PointOfSaleDashboardView: View {
             })
         }
         .sheet(isPresented: $viewModel.showsCardReaderSheet, content: {
-            CardReaderConnectionView(viewModel: viewModel.cardReaderConnectionViewModel)
+            Text(viewModel.cardPresentPaymentEvent.temporaryEventDescription)
         })
         .sheet(isPresented: $viewModel.showsFilterSheet, content: {
             FilterView(viewModel: viewModel)
@@ -77,12 +77,27 @@ private extension PointOfSaleDashboardView {
     }
 }
 
+fileprivate extension CardPresentPaymentEvent {
+    var temporaryEventDescription: String {
+        switch self {
+        case .idle:
+            return "Idle"
+        case .showAlert(let alertViewModel):
+            return "Alert: \(alertViewModel.topTitle)"
+        case .showReaderList(let readerIDs, _):
+            return "Reader List: \(readerIDs.joined())"
+        case .showOnboarding(let onboardingViewModel):
+            return "Onboarding: \(onboardingViewModel.state.reasonForAnalytics)" // This will only show the initial onboarding state
+        }
+    }
+}
+
 #if DEBUG
 #Preview {
     // TODO: https://github.com/woocommerce/woocommerce-ios/issues/12917
     // The Yosemite imports are only needed for previews
     PointOfSaleDashboardView(viewModel: PointOfSaleDashboardViewModel(items: POSProductProvider.provideProductsForPreview(),
-                                                                      cardReaderConnectionViewModel: .init(state: .connectingToReader),
-                                                                      currencySettings: .init()))
+                                                                      currencySettings: .init(),
+                                                                      cardPresentPaymentService: CardPresentPaymentService(siteID: 0)))
 }
 #endif

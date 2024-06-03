@@ -71,10 +71,8 @@ private extension CartView {
 
 #if DEBUG
 #Preview {
-    // TODO: https://github.com/woocommerce/woocommerce-ios/issues/12917
-    // The Yosemite.POSProductProvider import is only needed for previews
     CartView(viewModel: PointOfSaleDashboardViewModel(items: POSProductProvider.provideProductsForPreview(),
-                                                      cardReaderConnectionViewModel: .init(state: .connectingToReader),
-                                                      currencySettings: .init()))
+                                                      currencySettings: .init(),
+                                                      cardPresentPaymentService: CardPresentPaymentService(siteID: 0)))
 }
 #endif

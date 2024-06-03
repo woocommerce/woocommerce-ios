@@ -1,4 +1,6 @@
+#if canImport(WordPressShared)
 import WordPressShared
+#endif
 
 /// This enum contains all of the events we track in the WooCommerce app.
 ///
@@ -183,6 +185,8 @@ enum WooAnalyticsStat: String {
     case dynamicDashboardHideCardTapped = "dynamic_dashboard_hide_card_tapped"
     case dynamicDashboardEditorSaveTapped = "dynamic_dashboard_editor_save_tapped"
     case dynamicDashboardCardRetryTapped = "dynamic_dashboard_card_retry_tapped"
+    case dynamicDashboardCardInteracted = "dynamic_dashboard_card_interacted"
+    case dynamicDashboardAddNewSectionsTapped = "dynamic_dashboard_add_new_sections_tapped"
 
     // MARK: Analytics Hub Events
     //
@@ -512,6 +516,7 @@ enum WooAnalyticsStat: String {
     case orderDetailWaitingTimeLoaded = "order_detail_waiting_time_loaded"
     case orderDetailsSubscriptionsShown = "order_details_subscriptions_shown"
     case orderDetailsGiftCardShown = "order_details_gift_card_shown"
+    case orderDetailsShippingMethodsShown = "order_details_shipping_methods_shown"
     case orderFormBundleProductConfigureCTAShown = "order_form_bundle_product_configure_cta_shown"
     case orderFormBundleProductConfigureCTATapped = "order_form_bundle_product_configure_cta_tapped"
     case orderFormBundleProductConfigurationChanged = "order_form_bundle_product_configuration_changed"
@@ -1200,6 +1205,15 @@ enum WooAnalyticsStat: String {
     case connectivityToolRequestResponse = "connectivity_tool_request_response"
     case connectivityToolReadMoreTapped = "connectivity_tool_read_more_tapped"
     case connectivityToolContactSupportTapped = "connectivity_tool_contact_support_tapped"
+
+    // MARK: Watch App
+    case watchAppOpened = "watch_app_opened"
+    case watchStoreDataSynced = "watch_store_data_synced"
+    case watchConnectingOpened = "watch_connecting_opened"
+    case watchMyStoreOpened = "watch_my_store_opened"
+    case watchOrdersListOpened = "watch_orders_list_opened"
+    case watchPushNotificationTapped = "watch_push_notification_tapped"
+    case watchOrderDetailOpened = "watch_order_detail_opened"
 }
 
 extension WooAnalyticsStat {
@@ -1214,7 +1228,7 @@ extension WooAnalyticsStat {
     var shouldSendSiteProperties: Bool {
         switch self {
         // Application events
-        case .applicationClosed, .applicationOpened, .applicationUpgraded, .applicationInstalled:
+        case .applicationClosed, .applicationOpened, .applicationUpgraded, .applicationInstalled, .watchAppOpened:
             return false
         // Authentication Events
         case .signedIn, .logout, .openedLogin, .loginFailed,
@@ -1229,7 +1243,7 @@ extension WooAnalyticsStat {
              .onePasswordFailed, .onePasswordLogin, .onePasswordSignup, .twoFactorCodeRequested, .twoFactorSentSMS,
              .loginJetpackRequiredScreenViewed, .loginJetpackRequiredViewInstructionsButtonTapped,
              .loginWhatIsJetpackHelpScreenViewed, .loginWhatIsJetpackHelpScreenOkButtonTapped,
-             .loginWhatIsJetpackHelpScreenLearnMoreButtonTapped:
+             .loginWhatIsJetpackHelpScreenLearnMoreButtonTapped, .watchConnectingOpened, .watchStoreDataSynced:
             return false
         default:
             return true
@@ -1237,6 +1251,7 @@ extension WooAnalyticsStat {
     }
 }
 
+#if canImport(WordPressShared)
 extension WooAnalyticsStat {
 
     /// Converts the provided WPAnalyticsStat into a WooAnalyticsStat.
@@ -1333,3 +1348,4 @@ extension WooAnalyticsStat {
         return wooEvent
     }
 }
+#endif

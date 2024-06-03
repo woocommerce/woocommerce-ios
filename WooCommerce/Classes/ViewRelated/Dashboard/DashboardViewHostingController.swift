@@ -146,17 +146,20 @@ private extension DashboardViewHostingController {
         rootView.onboardingTaskTapped = { [weak self] site, task in
             guard let self, !task.isComplete else { return }
             updateStoreOnboardingCoordinatorIfNeeded(with: site)
+            ServiceLocator.analytics.track(event: .DynamicDashboard.dashboardCardInteracted(type: .onboarding))
             ServiceLocator.analytics.track(event: .StoreOnboarding.storeOnboardingTaskTapped(task: task.type))
             storeOnboardingCoordinator?.start(task: task)
         }
 
         rootView.viewAllOnboardingTasksTapped = { [weak self] site in
             guard let self else { return }
+            ServiceLocator.analytics.track(event: .DynamicDashboard.dashboardCardInteracted(type: .onboarding))
             updateStoreOnboardingCoordinatorIfNeeded(with: site)
             storeOnboardingCoordinator?.start()
         }
 
         rootView.onboardingShareFeedbackAction = { [weak self] in
+            ServiceLocator.analytics.track(event: .DynamicDashboard.dashboardCardInteracted(type: .onboarding))
             let navigationController = SurveyCoordinatingController(survey: .storeSetup)
             self?.present(navigationController, animated: true, completion: nil)
         }

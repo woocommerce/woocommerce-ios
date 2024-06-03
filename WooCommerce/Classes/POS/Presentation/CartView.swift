@@ -44,7 +44,7 @@ struct CartView: View {
 ///
 private extension CartView {
     private var checkoutButtonDisabled: Bool {
-        return viewModel.productsInCart.isEmpty
+        return viewModel.itemsInCart.isEmpty
     }
 
     private var checkoutButtonForegroundColor: Color {
@@ -65,7 +65,7 @@ private extension CartView {
                 Spacer()
             }
         }
-        .disabled(viewModel.productsInCart.isEmpty)
+        .disabled(checkoutButtonDisabled)
         .padding(.all, 20)
         .frame(maxWidth: .infinity, idealHeight: 120)
         .font(.title)

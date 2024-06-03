@@ -6,11 +6,13 @@ extension WooAnalyticsEvent {
         private enum Keys: String {
             case type
             case cards
+            case newCardAvailable = "new_card_available"
         }
 
         /// When the user taps the button to edit the dashboard layout.
-        static func editLayoutButtonTapped() -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .dynamicDashboardEditLayoutButtonTapped, properties: [:])
+        static func editLayoutButtonTapped(isNewCardAvailable: Bool) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .dynamicDashboardEditLayoutButtonTapped,
+                              properties: [Keys.newCardAvailable.rawValue: isNewCardAvailable])
         }
 
         /// When the user taps on the Hide button in the ellipsis menu of any dashboard card
@@ -30,6 +32,17 @@ extension WooAnalyticsEvent {
         static func cardRetryTapped(type: DashboardCard.CardType) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .dynamicDashboardCardRetryTapped,
                               properties: [Keys.type.rawValue: type.analyticName])
+        }
+
+        /// When the user interacts with the dashboard cards by tapping on any action buttons.
+        static func dashboardCardInteracted(type: DashboardCard.CardType) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .dynamicDashboardCardInteracted,
+                              properties: [Keys.type.rawValue: type.analyticName])
+        }
+
+        /// When the user taps the Add new sections button on the new cards suggestion.
+        static func dashboardCardAddNewSectionsTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .dynamicDashboardAddNewSectionsTapped, properties: [:])
         }
     }
 }
@@ -52,7 +65,7 @@ extension DashboardCard.CardType {
         case .reviews:
             "reviews"
         case .lastOrders:
-            "last_orders"
+            "orders"
         case .coupons:
             "coupons"
         }

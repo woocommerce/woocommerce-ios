@@ -99,6 +99,8 @@ private extension ReviewsDashboardCard {
             Menu {
                 ForEach(viewModel.filters, id: \.self) { filter in
                     Button {
+                        ServiceLocator.analytics.track(event: .DynamicDashboard.dashboardCardInteracted(type: .reviews))
+
                         Task {
                             await viewModel.filterReviews(by: filter)
                         }
@@ -125,6 +127,8 @@ private extension ReviewsDashboardCard {
 
     func reviewRow(for viewModel: ReviewViewModel, isLastItem: Bool) -> some View {
         Button {
+            ServiceLocator.analytics.track(event: .DynamicDashboard.dashboardCardInteracted(type: .reviews))
+
             onViewReviewDetail(viewModel)
         } label: {
             HStack(alignment: .firstTextBaseline, spacing: Layout.padding) {
@@ -212,6 +216,8 @@ private extension ReviewsDashboardCard {
 
     var viewAllReviewsButton: some View {
         Button {
+            ServiceLocator.analytics.track(event: .DynamicDashboard.dashboardCardInteracted(type: .reviews))
+
             onViewAllReviews()
         } label: {
             HStack {

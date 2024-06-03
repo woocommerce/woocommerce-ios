@@ -15,6 +15,8 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
 
     @Published var showsCardReaderSheet: Bool = false
     @Published private(set) var cardPresentPaymentEvent: CardPresentPaymentEvent = .idle
+    @ObservedObject private(set) var cardReaderConnectionViewModel: CardReaderConnectionViewModel
+
     @Published var showsFilterSheet: Bool = false
 
     enum OrderStage {
@@ -34,6 +36,7 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
         self.products = products
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
         self.cardPresentPaymentService = cardPresentPaymentService
+        self.cardReaderConnectionViewModel = CardReaderConnectionViewModel(cardPresentPayment: cardPresentPaymentService)
         observeCardPresentPaymentEvents()
         observeProductsInCartForCartTotal()
     }
@@ -55,12 +58,6 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
 
     func addMoreToCart() {
         orderStage = .building
-    }
-
-    func showCardReaderConnection() {
-        Task { @MainActor in
-            try await cardPresentPaymentService.connectReader(using: .bluetooth)
-        }
     }
 
     func showFilters() {

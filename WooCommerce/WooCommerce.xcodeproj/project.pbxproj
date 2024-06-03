@@ -299,7 +299,7 @@
 		026826AD2BF59DF70036F959 /* PointOfSaleDashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026826A52BF59DF60036F959 /* PointOfSaleDashboardView.swift */; };
 		026826AF2BF59DF70036F959 /* PointOfSaleEntryPointView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026826A72BF59DF70036F959 /* PointOfSaleEntryPointView.swift */; };
 		026826B42BF59E330036F959 /* CardReaderConnectionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026826B22BF59E320036F959 /* CardReaderConnectionViewModel.swift */; };
-		026826B52BF59E330036F959 /* CardReaderConnectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026826B32BF59E320036F959 /* CardReaderConnectionView.swift */; };
+		026826B52BF59E330036F959 /* CardReaderConnectionStatusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026826B32BF59E320036F959 /* CardReaderConnectionStatusView.swift */; };
 		026826BF2BF59E410036F959 /* ScanningForReaderFailedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026826B62BF59E400036F959 /* ScanningForReaderFailedView.swift */; };
 		026826C02BF59E410036F959 /* ConnectingFailedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026826B72BF59E400036F959 /* ConnectingFailedView.swift */; };
 		026826C12BF59E410036F959 /* ConnectingToReaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026826B82BF59E400036F959 /* ConnectingToReaderView.swift */; };
@@ -3216,7 +3216,7 @@
 		026826A72BF59DF70036F959 /* PointOfSaleEntryPointView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleEntryPointView.swift; sourceTree = "<group>"; };
 		026826A82BF59DF70036F959 /* ProductGridView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductGridView.swift; sourceTree = "<group>"; };
 		026826B22BF59E320036F959 /* CardReaderConnectionViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardReaderConnectionViewModel.swift; sourceTree = "<group>"; };
-		026826B32BF59E320036F959 /* CardReaderConnectionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardReaderConnectionView.swift; sourceTree = "<group>"; };
+		026826B32BF59E320036F959 /* CardReaderConnectionStatusView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardReaderConnectionStatusView.swift; sourceTree = "<group>"; };
 		026826B62BF59E400036F959 /* ScanningForReaderFailedView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScanningForReaderFailedView.swift; sourceTree = "<group>"; };
 		026826B72BF59E400036F959 /* ConnectingFailedView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConnectingFailedView.swift; sourceTree = "<group>"; };
 		026826B82BF59E400036F959 /* ConnectingToReaderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConnectingToReaderView.swift; sourceTree = "<group>"; };
@@ -6543,7 +6543,7 @@
 		026826B02BF59E170036F959 /* CardReaderConnection */ = {
 			isa = PBXGroup;
 			children = (
-				026826B32BF59E320036F959 /* CardReaderConnectionView.swift */,
+				026826B32BF59E320036F959 /* CardReaderConnectionStatusView.swift */,
 				026826B22BF59E320036F959 /* CardReaderConnectionViewModel.swift */,
 				026826B12BF59E1F0036F959 /* UI States */,
 			);
@@ -14048,7 +14048,7 @@
 				03E471DA29424E82001A58AD /* CardPresentModalBuiltInSuccess.swift in Sources */,
 				26E1BECE251CD9F80096D0A1 /* RefundItemViewModel.swift in Sources */,
 				DE7B479027A153C20018742E /* CouponSearchUICommand.swift in Sources */,
-				026826B52BF59E330036F959 /* CardReaderConnectionView.swift in Sources */,
+				026826B52BF59E330036F959 /* CardReaderConnectionStatusView.swift in Sources */,
 				DE50294D28BEF8F100551736 /* JetpackConnectionWebViewModel.swift in Sources */,
 				DEF8CF0A29A71EE600800A60 /* JetpackSetupCoordinator.swift in Sources */,
 				02645D8827BA2E820065DC68 /* NSAttributedString+Attributes.swift in Sources */,

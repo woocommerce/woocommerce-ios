@@ -666,47 +666,21 @@ private extension CardReaderConnectionController {
     }
 
     private func openWCSettingsAction(adminUrl: URL?,
-                                      retrySearch: @escaping () -> Void) -> ((UIViewController) -> Void)? {
+                                      retrySearch: @escaping () -> Void) -> (() -> Void)? {
         if let adminUrl = adminUrl {
             if let site = stores.sessionManager.defaultSite,
                site.isWordPressComStore {
-                return { [weak self] viewController in
-                    self?.openWCSettingsInWebview(url: adminUrl, from: viewController, retrySearch: retrySearch)
+                return { [weak self] in
+                    self?.alertsPresenter.presentWCSettingsWebView(adminURL: adminUrl, completion: retrySearch)
                 }
             } else {
-                return { [weak self] _ in
+                return { [weak self] in
                     UIApplication.shared.open(adminUrl)
                     self?.showIncompleteAddressErrorWithRefreshButton()
                 }
             }
         }
         return nil
-    }
-    private func openWCSettingsInWebview(url adminUrl: URL,
-                                         from viewController: UIViewController,
-                                         retrySearch: @escaping () -> Void) {
-        let nav = NavigationView {
-            AuthenticatedWebView(isPresented: .constant(true),
-                                 url: adminUrl,
-                                 urlToTriggerExit: nil,
-                                 exitTrigger: nil)
-                                 .navigationTitle(Localization.adminWebviewTitle)
-                                 .navigationBarTitleDisplayMode(.inline)
-                                 .toolbar {
-                                     ToolbarItem(placement: .confirmationAction) {
-                                         Button(action: {
-                                             viewController.dismiss(animated: true) {
-                                                 retrySearch()
-                                             }
-                                         }, label: {
-                                             Text(Localization.doneButtonUpdateAddress)
-                                         })
-                                     }
-                                 }
-        }
-        .wooNavigationBarStyle()
-        let hostingController = UIHostingController(rootView: nav)
-        viewController.present(hostingController, animated: true, completion: nil)
     }
 
     private func showIncompleteAddressErrorWithRefreshButton() {
@@ -735,20 +709,5 @@ private extension CardReaderConnectionController {
     private func returnFailure(error: Error) {
         onCompletion?(.failure(error))
         state = .idle
-    }
-}
-
-private extension CardReaderConnectionController {
-    enum Localization {
-        static let adminWebviewTitle = NSLocalizedString(
-            "WooCommerce Settings",
-            comment: "Navigation title of the webview which used by the merchant to update their store address"
-        )
-
-        static let doneButtonUpdateAddress = NSLocalizedString(
-            "Done",
-            comment: "The button title to indicate that the user has finished updating their store's address and is" +
-            "ready to close the webview. This also tries to connect to the reader again."
-        )
     }
 }

@@ -17,7 +17,7 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
 
     @Published var showsCardReaderSheet: Bool = false
     @Published private(set) var cardPresentPaymentEvent: CardPresentPaymentEvent = .idle
-    @ObservedObject private(set) var cardReaderConnectionViewModel: CardReaderConnectionViewModel
+    let cardReaderConnectionViewModel: CardReaderConnectionViewModel
 
     @Published var showsFilterSheet: Bool = false
 
@@ -111,7 +111,8 @@ private extension PointOfSaleDashboardViewModel {
                 return false
             case .showAlert,
                     .showReaderList,
-                    .showOnboarding:
+                    .showOnboarding,
+                    .showWCSettingsWebView:
                 return true
             }
         }.assign(to: &$showsCardReaderSheet)

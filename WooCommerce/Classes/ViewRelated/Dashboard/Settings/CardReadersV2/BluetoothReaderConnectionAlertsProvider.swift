@@ -25,7 +25,7 @@ struct BluetoothReaderConnectionAlertsProvider: BluetoothReaderConnnectionAlerts
         CardPresentModalNonRetryableError(amount: "", error: error, onDismiss: close)
     }
 
-    func connectingFailedIncompleteAddress(openWCSettings: ((UIViewController) -> Void)?,
+    func connectingFailedIncompleteAddress(openWCSettings: (() -> Void)?,
                                            retrySearch: @escaping () -> Void,
                                            cancelSearch: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
         CardPresentModalConnectingFailedUpdateAddress(openWCSettings: openWCSettings, retrySearch: retrySearch, cancelSearch: cancelSearch)

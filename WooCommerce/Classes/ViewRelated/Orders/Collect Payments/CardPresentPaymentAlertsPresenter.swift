@@ -1,8 +1,10 @@
 import Foundation
+import SwiftUI
 import UIKit
 
 protocol CardPresentPaymentAlertsPresenting {
     func present(viewModel: CardPresentPaymentsModalViewModel)
+    func presentWCSettingsWebView(adminURL: URL, completion: @escaping () -> Void)
     func foundSeveralReaders(readerIDs: [String],
                              connect: @escaping (String) -> Void,
                              cancelSearch: @escaping () -> Void)
@@ -67,6 +69,19 @@ final class CardPresentPaymentAlertsPresenter: CardPresentPaymentAlertsPresentin
             return
         }
         from.present(present, animated: animated)
+    }
+
+    func presentWCSettingsWebView(adminURL: URL, completion: @escaping () -> Void) {
+        guard let modalController else {
+            return
+        }
+        let nav = WCSettingsWebView(adminUrl: adminURL) {
+            modalController.dismiss(animated: true) {
+                completion()
+            }
+        }
+        let hostingController = UIHostingController(rootView: nav)
+        modalController.present(hostingController, animated: true, completion: nil)
     }
 
     /// Dismisses the `SeveralReadersFoundViewController`, then presents any

@@ -14,6 +14,7 @@ struct MockCollectOrderPaymentUseCase: CollectOrderPaymentProtocol {
     func collectPayment(using: Yosemite.CardReaderDiscoveryMethod,
                         onFailure: @escaping (Error) -> Void,
                         onCancel: @escaping () -> Void,
+                        onPaymentCompletion: @escaping () -> Void,
                         onCompleted: @escaping () -> Void) {
         switch onCollectResult {
         case .success:

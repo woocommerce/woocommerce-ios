@@ -37,9 +37,7 @@ struct PointOfSaleDashboardView: View {
                 }
             })
             ToolbarItem(placement: .principal, content: {
-                Button("Reader not connected") {
-                    viewModel.showCardReaderConnection()
-                }
+                CardReaderConnectionStatusView(connectionViewModel: viewModel.cardReaderConnectionViewModel)
             })
             ToolbarItem(placement: .primaryAction, content: {
                 Button("History") {
@@ -48,7 +46,14 @@ struct PointOfSaleDashboardView: View {
             })
         }
         .sheet(isPresented: $viewModel.showsCardReaderSheet, content: {
-            Text(viewModel.cardPresentPaymentEvent.temporaryEventDescription)
+            switch viewModel.cardPresentPaymentEvent {
+            case .showAlert(let alertViewModel):
+                CardPresentPaymentAlert(alertViewModel: alertViewModel)
+            case .idle,
+                    .showReaderList,
+                    .showOnboarding:
+                Text(viewModel.cardPresentPaymentEvent.temporaryEventDescription)
+            }
         })
         .sheet(isPresented: $viewModel.showsFilterSheet, content: {
             FilterView(viewModel: viewModel)

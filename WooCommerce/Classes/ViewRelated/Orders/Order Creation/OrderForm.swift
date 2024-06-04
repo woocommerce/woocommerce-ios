@@ -294,15 +294,15 @@ struct OrderForm: View {
                             Spacer(minLength: Layout.sectionSpacing)
 
                             Group {
-                                OrderShippingSection(useCase: viewModel.shippingUseCase)
+                                OrderShippingSection(viewModel: viewModel.shippingLineViewModel)
                                     .disabled(viewModel.shouldShowNonEditableIndicators)
                                 Spacer(minLength: Layout.sectionSpacing)
                             }
-                            .renderedIf(viewModel.shippingUseCase.shippingLineRows.isNotEmpty)
+                            .renderedIf(viewModel.shippingLineViewModel.shippingLineRows.isNotEmpty)
 
                             AddOrderComponentsSection(
                                 viewModel: viewModel.paymentDataViewModel,
-                                shippingUseCase: viewModel.shippingUseCase,
+                                shippingLineViewModel: viewModel.shippingLineViewModel,
                                 shouldShowCouponsInfoTooltip: $shouldShowInformationalCouponTooltip,
                                 shouldShowGiftCardForm: $shouldShowGiftCardForm)
                             .addingTopAndBottomDividers()
@@ -378,7 +378,8 @@ struct OrderForm: View {
         }
         .safeAreaInset(edge: .bottom) {
             VStack {
-                FeedbackBannerPopover(isPresented: $viewModel.shippingUseCase.isSurveyPromptPresented, config: viewModel.shippingUseCase.feedbackBannerConfig)
+                FeedbackBannerPopover(isPresented: $viewModel.shippingLineViewModel.isSurveyPromptPresented,
+                                      config: viewModel.shippingLineViewModel.feedbackBannerConfig)
 
                 ExpandableBottomSheet(onChangeOfExpansion: viewModel.orderTotalsExpansionChanged) {
                     VStack {
@@ -399,7 +400,7 @@ struct OrderForm: View {
                 } expandableContent: {
                     OrderPaymentSection(
                         viewModel: viewModel.paymentDataViewModel,
-                        shippingUseCase: viewModel.shippingUseCase,
+                        shippingLineViewModel: viewModel.shippingLineViewModel,
                         shouldShowGiftCardForm: $shouldShowGiftCardForm)
                     .disabled(viewModel.shouldShowNonEditableIndicators)
                 }

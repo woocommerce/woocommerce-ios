@@ -71,7 +71,7 @@ private extension PointOfSaleDashboardView {
 
     var totalsView: some View {
         TotalsView(viewModel: viewModel)
-            .background(Color.secondaryBackground)
+            .background(Color(UIColor.systemBackground))
             .frame(maxWidth: .infinity)
     }
 

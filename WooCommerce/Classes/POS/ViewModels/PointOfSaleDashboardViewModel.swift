@@ -1,6 +1,5 @@
 import SwiftUI
 import protocol Yosemite.POSItem
-import struct Yosemite.POSProduct
 import class WooFoundation.CurrencyFormatter
 import class WooFoundation.CurrencySettings
 

@@ -248,6 +248,7 @@
 		578CE7972475FD8200492EBF /* MockProductReview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 578CE7962475FD8200492EBF /* MockProductReview.swift */; };
 		57DFCC7925003C4000251E0C /* FetchResultSnapshotsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57DFCC7825003C4000251E0C /* FetchResultSnapshotsProvider.swift */; };
 		681D952B28E0F62B00C4039E /* CustomerAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681D952A28E0F62B00C4039E /* CustomerAction.swift */; };
+		687F83722C0EBF8900460AB3 /* POSProductProviderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 687F83712C0EBF8900460AB3 /* POSProductProviderTests.swift */; };
 		6889089F28F7B8540081A07E /* Customer+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6889089E28F7B8540081A07E /* Customer+ReadOnlyConvertible.swift */; };
 		6898F3742C0842150039F10A /* POSItemProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6898F3732C0842150039F10A /* POSItemProvider.swift */; };
 		689D11D52891B9A400F6A83F /* WooFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 689D11D42891B9A400F6A83F /* WooFoundation.framework */; };
@@ -735,6 +736,7 @@
 		57DFCC7825003C4000251E0C /* FetchResultSnapshotsProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchResultSnapshotsProvider.swift; sourceTree = "<group>"; };
 		585B973F61632665297738A3 /* Pods-Yosemite.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Yosemite.release-alpha.xcconfig"; path = "../Pods/Target Support Files/Pods-Yosemite/Pods-Yosemite.release-alpha.xcconfig"; sourceTree = "<group>"; };
 		681D952A28E0F62B00C4039E /* CustomerAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerAction.swift; sourceTree = "<group>"; };
+		687F83712C0EBF8900460AB3 /* POSProductProviderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSProductProviderTests.swift; sourceTree = "<group>"; };
 		6889089E28F7B8540081A07E /* Customer+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Customer+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		6898F3732C0842150039F10A /* POSItemProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSItemProvider.swift; sourceTree = "<group>"; };
 		689D11D42891B9A400F6A83F /* WooFoundation.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = WooFoundation.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1388,6 +1390,14 @@
 			path = SnapshotsProvider;
 			sourceTree = "<group>";
 		};
+		687F83702C0EBF3E00460AB3 /* PointOfSale */ = {
+			isa = PBXGroup;
+			children = (
+				687F83712C0EBF8900460AB3 /* POSProductProviderTests.swift */,
+			);
+			path = PointOfSale;
+			sourceTree = "<group>";
+		};
 		6898F3722C0840FE0039F10A /* PointOfSale */ = {
 			isa = PBXGroup;
 			children = (
@@ -1758,6 +1768,7 @@
 		B5C9DE022087FEC0006B910A /* YosemiteTests */ = {
 			isa = PBXGroup;
 			children = (
+				687F83702C0EBF3E00460AB3 /* PointOfSale */,
 				5779A0CB2500429700E35AF2 /* SnapshotsProvider */,
 				022F00C324728AFB008CD97F /* PListStorage */,
 				B5BC71DA21139CF2005CF5AA /* Responses */,
@@ -2512,6 +2523,7 @@
 				B5C9DE272087FF20006B910A /* MockAcountStore.swift in Sources */,
 				312DB64D268BD22B00AA0EE9 /* AppSettingsStoreTests+CardReaderSettings.swift in Sources */,
 				EEB4E2CF29B04D7900371C3C /* StoreOnboardingTasksStoreTests.swift in Sources */,
+				687F83722C0EBF8900460AB3 /* POSProductProviderTests.swift in Sources */,
 				03EB99922907EBB300F06A39 /* JustInTimeMessageStoreTests.swift in Sources */,
 				026D52C0238235930092AE05 /* ProductVariationStoreTests.swift in Sources */,
 				7492FAE1217FB87100ED2C69 /* SettingStoreTests.swift in Sources */,

@@ -69,6 +69,7 @@ final class HubMenuViewModel: ObservableObject {
     private let generalAppSettings: GeneralAppSettingsStorage
     private let cardPresentPaymentsOnboarding: CardPresentPaymentsOnboardingUseCaseProtocol
     private let posEligibilityChecker: POSEligibilityCheckerProtocol
+    private let inboxEligibilityChecker: InboxEligibilityChecker
 
     private(set) var productReviewFromNoteParcel: ProductReviewFromNoteParcel?
 
@@ -108,6 +109,7 @@ final class HubMenuViewModel: ObservableObject {
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          stores: StoresManager = ServiceLocator.stores,
          generalAppSettings: GeneralAppSettingsStorage = ServiceLocator.generalAppSettings,
+         inboxEligibilityChecker: InboxEligibilityChecker = InboxEligibilityUseCase(),
          blazeEligibilityChecker: BlazeEligibilityCheckerProtocol = BlazeEligibilityChecker()) {
         self.siteID = siteID
         self.tapToPayBadgePromotionChecker = tapToPayBadgePromotionChecker
@@ -115,6 +117,7 @@ final class HubMenuViewModel: ObservableObject {
         self.featureFlagService = featureFlagService
         self.generalAppSettings = generalAppSettings
         self.switchStoreEnabled = stores.isAuthenticatedWithoutWPCom == false
+        self.inboxEligibilityChecker = inboxEligibilityChecker
         self.blazeEligibilityChecker = blazeEligibilityChecker
         self.cardPresentPaymentsOnboarding = CardPresentPaymentsOnboardingUseCase()
         self.posEligibilityChecker = POSEligibilityChecker(cardPresentPaymentsOnboarding: cardPresentPaymentsOnboarding,
@@ -179,8 +182,7 @@ final class HubMenuViewModel: ObservableObject {
             generalElements.append(InAppPurchases())
         }
 
-        let inboxUseCase = InboxEligibilityUseCase(stores: stores, featureFlagService: featureFlagService)
-        inboxUseCase.isEligibleForInbox(siteID: siteID) { [weak self] isInboxMenuShown in
+        inboxEligibilityChecker.isEligibleForInbox(siteID: siteID) { [weak self] isInboxMenuShown in
             guard let self = self else { return }
             if let index = self.generalElements.firstIndex(where: { item in
                 type(of: item).id == Reviews.id

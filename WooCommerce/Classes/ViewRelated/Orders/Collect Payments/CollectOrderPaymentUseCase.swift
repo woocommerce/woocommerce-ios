@@ -18,9 +18,11 @@ protocol CollectOrderPaymentProtocol {
     /// - Parameter onCompleted: Closure Invoked after the flow has been totally completed.
     /// - Parameter onCancel: Closure invoked after the flow is cancelled
     /// - Parameter onFailure: Closure invoked when there is an error in the flow
+    /// - Parameter onPaymentCompletion: Closure invoked after any payment completes, but while the user can still continue with the flow in some way
     func collectPayment(using: CardReaderDiscoveryMethod,
                         onFailure: @escaping (Error) -> Void,
                         onCancel: @escaping () -> Void,
+                        onPaymentCompletion: @escaping () -> Void,
                         onCompleted: @escaping () -> Void)
 }
 
@@ -131,6 +133,7 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
     func collectPayment(using discoveryMethod: CardReaderDiscoveryMethod,
                         onFailure: @escaping (Error) -> Void,
                         onCancel: @escaping () -> Void,
+                        onPaymentCompletion: @escaping () -> Void,
                         onCompleted: @escaping () -> Void) {
         preflightController.readerConnection.sink { [weak self] connectionResult in
             guard let self = self else { return }
@@ -166,6 +169,7 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
                             }
                         }
                     }
+                    onPaymentCompletion()
                 })
             case .canceled(let cancellationSource, _):
                 self.handlePaymentCancellation(from: cancellationSource)

@@ -70,7 +70,7 @@ private extension TotalsView {
             paymentSuccessfulView
         }
     }
-    
+
     @ViewBuilder
     private var paymentsIconView: some View {
         switch paymentState {
@@ -86,7 +86,7 @@ private extension TotalsView {
             EmptyView()
         }
     }
-    
+
     @ViewBuilder
     private var paymentsView: some View {
         VStack {
@@ -94,7 +94,6 @@ private extension TotalsView {
                 .font(.title)
             paymentsIconView
         }
-        
     }
 
     private var cashPaymentButton: some View {

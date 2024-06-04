@@ -84,6 +84,12 @@ struct ExpandableBottomSheet<AlwaysVisibleContent, ExpandableContent>: View wher
                         panelHeight = calculateHeight()
                     }
                 })
+                .contentShape(Rectangle())
+                .onTapGesture {
+                    withAnimation {
+                        isExpanded.toggle()
+                    }
+                }
         }
         .padding(.horizontal, insets: safeAreaInsets)
         .background(GeometryReader { geometryProxy in

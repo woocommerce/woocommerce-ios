@@ -763,6 +763,7 @@
 		2004E2E52C0A206800D62521 /* CardPresentPaymentsAlertPresenterAdaptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2004E2E42C0A206800D62521 /* CardPresentPaymentsAlertPresenterAdaptor.swift */; };
 		2004E2E72C0DFB9E00D62521 /* CardPresentPaymentsModalButtonViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2004E2E62C0DFB9E00D62521 /* CardPresentPaymentsModalButtonViewModel.swift */; };
 		2004E2E92C0DFE2B00D62521 /* CardPresentPaymentAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2004E2E82C0DFE2B00D62521 /* CardPresentPaymentAlert.swift */; };
+		2004E2EB2C0E219D00D62521 /* CardPresentPaymentPreflightAdaptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2004E2EA2C0E219D00D62521 /* CardPresentPaymentPreflightAdaptor.swift */; };
 		201F5AC52AD4061800EF6C55 /* AboutTapToPayViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 201F5AC42AD4061800EF6C55 /* AboutTapToPayViewModel.swift */; };
 		20203AB22B31EEF1009D0C11 /* ExpandableBottomSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20203AB12B31EEF1009D0C11 /* ExpandableBottomSheet.swift */; };
 		202496642B0B9E0D00EE527D /* ScrollViewSectionKit in Frameworks */ = {isa = PBXBuildFile; productRef = 202496632B0B9E0D00EE527D /* ScrollViewSectionKit */; };
@@ -3684,6 +3685,7 @@
 		2004E2E42C0A206800D62521 /* CardPresentPaymentsAlertPresenterAdaptor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentsAlertPresenterAdaptor.swift; sourceTree = "<group>"; };
 		2004E2E62C0DFB9E00D62521 /* CardPresentPaymentsModalButtonViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentsModalButtonViewModel.swift; sourceTree = "<group>"; };
 		2004E2E82C0DFE2B00D62521 /* CardPresentPaymentAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentAlert.swift; sourceTree = "<group>"; };
+		2004E2EA2C0E219D00D62521 /* CardPresentPaymentPreflightAdaptor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentPreflightAdaptor.swift; sourceTree = "<group>"; };
 		200B84AD2BEB99AC00EAAB23 /* WooCommercePOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = WooCommercePOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		201F5AC42AD4061800EF6C55 /* AboutTapToPayViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutTapToPayViewModel.swift; sourceTree = "<group>"; };
 		20203AB12B31EEF1009D0C11 /* ExpandableBottomSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpandableBottomSheet.swift; sourceTree = "<group>"; };
@@ -7439,6 +7441,7 @@
 				2004E2E42C0A206800D62521 /* CardPresentPaymentsAlertPresenterAdaptor.swift */,
 				2004E2E22C0A128400D62521 /* CardPresentPaymentsConnectionControllerManager.swift */,
 				2004E2E62C0DFB9E00D62521 /* CardPresentPaymentsModalButtonViewModel.swift */,
+				2004E2EA2C0E219D00D62521 /* CardPresentPaymentPreflightAdaptor.swift */,
 			);
 			path = "Card Present Payments";
 			sourceTree = "<group>";
@@ -14361,6 +14364,7 @@
 				7E7C5F832719A93C00315B61 /* ProductCategoryListViewModel.swift in Sources */,
 				CC666F2427F329DC0045AF1E /* View+DiscardChanges.swift in Sources */,
 				0282DD94233C9465006A5FDB /* SearchUICommand.swift in Sources */,
+				2004E2EB2C0E219D00D62521 /* CardPresentPaymentPreflightAdaptor.swift in Sources */,
 				EEBA02A32ADD6005001FE8E4 /* BlazeCampaignDashboardView.swift in Sources */,
 				028BAC4722F3B550008BB4AF /* StatsTimeRangeV4+UI.swift in Sources */,
 				024DF32123744798006658FE /* AztecFormatBarCommandCoordinator.swift in Sources */,

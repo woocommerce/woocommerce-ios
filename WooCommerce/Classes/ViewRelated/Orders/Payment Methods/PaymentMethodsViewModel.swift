@@ -226,9 +226,6 @@ final class PaymentMethodsViewModel: ObservableObject {
             onCancel: {
                 // No tracking required because the flow remains on screen to choose other payment methods.
             },
-            onPaymentCompletion: {
-                // No tracking required at present because it's handled internally.
-            },
             onCompleted: { [weak self] in
                 // Update order in case its status and/or other details are updated after a successful in-person payment
                 self?.updateOrderAsynchronously()

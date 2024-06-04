@@ -43,16 +43,12 @@ struct CartView: View {
 /// View sub-components
 ///
 private extension CartView {
-    private var checkoutButtonDisabled: Bool {
-        return viewModel.itemsInCart.isEmpty
-    }
-
     private var checkoutButtonForegroundColor: Color {
-        return checkoutButtonDisabled ? Color.gray : Color.primaryBackground
+        return viewModel.checkoutButtonDisabled ? Color.gray : Color.primaryBackground
     }
 
     private var checkoutButtonBackgroundColor: Color {
-        return checkoutButtonDisabled ? Color.white.opacity(0.5) : Color.white
+        return viewModel.checkoutButtonDisabled ? Color.white.opacity(0.5) : Color.white
     }
 
     var checkoutButton: some View {
@@ -65,7 +61,7 @@ private extension CartView {
                 Spacer()
             }
         }
-        .disabled(checkoutButtonDisabled)
+        .disabled(viewModel.checkoutButtonDisabled)
         .padding(.all, 20)
         .frame(maxWidth: .infinity, idealHeight: 120)
         .font(.title)

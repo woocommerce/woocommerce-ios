@@ -75,6 +75,10 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
             formattedOrderTotalPrice = currencyFormatter.formatAmount(Decimal(totalAmount))
         }
     }
+
+    var checkoutButtonDisabled: Bool {
+        return itemsInCart.isEmpty
+    }
 }
 
 extension PointOfSaleDashboardViewModel {

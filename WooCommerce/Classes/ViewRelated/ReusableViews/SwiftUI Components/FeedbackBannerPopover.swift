@@ -1,19 +1,16 @@
 import SwiftUI
 
-struct BannerPopover: View {
+/// View for displaying a popover with a prompt to share feedback.
+///
+struct FeedbackBannerPopover: View {
     /// Whether the popover is presented.
-    ///
     @Binding var isPresented: Bool
 
-    /// Configuration for the popover.
-    ///
+    /// Configuration for the banner.
     var config: Configuration
 
-    /// View model for the link webview.
-    ///
-    /// Setting this view model displays the webview in a sheet.
-    ///
-    @State private var webviewViewModel: WebViewSheetViewModel?
+    /// Defines whether the feedback survey is presented.
+    @State private var isSurveyPresented: Bool = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: Layout.spacing) {
@@ -25,6 +22,7 @@ struct BannerPopover: View {
                 Spacer()
 
                 Button {
+                    config.onCloseButtonTapped()
                     isPresented = false
                 } label: {
                     Image(uiImage: .closeButton)
@@ -32,13 +30,15 @@ struct BannerPopover: View {
                         .frame(width: Layout.buttonSize, height: Layout.buttonSize)
                         .foregroundStyle(Color(.invertedSecondaryLabel))
                 }
+                .accessibilityIdentifier("feedback-banner-popover-close-button")
             }
 
             Text(config.message)
                 .foregroundStyle(Color(.textInverted))
 
             Button {
-                webviewViewModel = WebViewSheetViewModel(url: config.buttonURL, navigationTitle: config.buttonTitle, authenticated: false)
+                isSurveyPresented = true
+                config.onSurveyButtonTapped()
             } label: {
                 Text(config.buttonTitle)
                     .foregroundStyle(Color(.wooCommercePurple(.shade20)))
@@ -55,13 +55,12 @@ struct BannerPopover: View {
         .padding()
         .frame(maxWidth: .infinity)
         .transition(.opacity.animation(.easeInOut))
-        .renderedIf(isPresented)
-        .sheet(item: $webviewViewModel) { viewModel in
-            WebViewSheet(viewModel: viewModel) {
-                isPresented = false // Close the banner when the webview is dismissed
-                webviewViewModel = nil
-            }
+        .sheet(isPresented: $isSurveyPresented) {
+            Survey(source: config.feedbackType, onDismiss: {
+                isPresented = false
+            })
         }
+        .renderedIf(isPresented)
     }
 
     struct Configuration {
@@ -71,15 +70,21 @@ struct BannerPopover: View {
         /// Banner message.
         let message: String
 
-        /// Title for banner button.
+        /// Title for button that opens the survey.
         let buttonTitle: String
 
-        /// URL for banner button.
-        let buttonURL: URL
+        /// Feedback survey type.
+        let feedbackType: SurveyViewController.Source
+
+        /// Closure triggered when survey button is tapped.
+        let onSurveyButtonTapped: () -> Void
+
+        /// Closure triggered when close button is tapped.
+        let onCloseButtonTapped: () -> Void
     }
 }
 
-private extension BannerPopover {
+private extension FeedbackBannerPopover {
     enum Layout {
         static let spacing: CGFloat = 8
         static let cornerRadius: CGFloat = 8
@@ -90,8 +95,10 @@ private extension BannerPopover {
 }
 
 #Preview {
-    BannerPopover(isPresented: .constant(true), config: .init(title: "Take a survey!",
-                                                              message: "What do you think?",
-                                                              buttonTitle: "Share your feedback",
-                                                              buttonURL: WooConstants.URLs.blog.asURL()))
+    FeedbackBannerPopover(isPresented: .constant(true), config: .init(title: "Take a survey!",
+                                                                      message: "What do you think of the app?",
+                                                                      buttonTitle: "Share your feedback",
+                                                                      feedbackType: .inAppFeedback,
+                                                                      onSurveyButtonTapped: {},
+                                                                      onCloseButtonTapped: {}))
 }

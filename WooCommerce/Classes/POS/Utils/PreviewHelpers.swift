@@ -13,7 +13,7 @@ struct POSProductPreview: POSItem {
 }
 
 final class POSItemProviderPreview: POSItemProvider {
-    public func providePointOfSaleItems() -> [POSItem] {
+    func providePointOfSaleItems() -> [POSItem] {
         return [
             POSProductPreview(itemID: UUID(), productID: 1, name: "Product 1", price: "$1.00"),
             POSProductPreview(itemID: UUID(), productID: 2, name: "Product 2", price: "$2.00"),
@@ -22,7 +22,7 @@ final class POSItemProviderPreview: POSItemProvider {
         ]
     }
 
-    public func providePointOfSaleItem() -> POSItem {
+    func providePointOfSaleItem() -> POSItem {
         POSProductPreview(itemID: UUID(),
                    productID: 1,
                    name: "Product 1",

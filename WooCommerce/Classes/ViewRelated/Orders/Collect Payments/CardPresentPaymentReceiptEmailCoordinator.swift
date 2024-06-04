@@ -37,7 +37,7 @@ final class CardPresentPaymentReceiptEmailCoordinator: NSObject {
     ///   - cardReaderModel: if a card reader is connected, the reader model is used for analytics.
     ///   - completion: called when the user completes emailing the receipt.
     func presentEmailForm(data: EmailFormData,
-                          from viewController: UIViewController,
+                          from viewController: ViewControllerPresenting,
                           completion: @escaping () -> Void) {
         guard MFMailComposeViewController.canSendMail() else {
             DDLogError("⛔️ Failed to submit email receipt for order: \(data.order.orderID). Email is not configured.")

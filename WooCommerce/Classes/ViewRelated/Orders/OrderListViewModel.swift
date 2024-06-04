@@ -49,7 +49,7 @@ final class OrderListViewModel {
         }
 
         /// Enabled if site is launched, has published at least 1 product and set up payments.
-        return site.isPublic && hasAnyPaymentGateways && hasAnyPublishedProducts
+        return (site.visibility == .publicSite) && hasAnyPaymentGateways && hasAnyPublishedProducts
     }
 
     /// Filters applied to the order list.
@@ -341,7 +341,7 @@ extension OrderListViewModel {
 
         let status = lookUpOrderStatus(for: order)
 
-        return OrderListCellViewModel(order: order, status: status)
+        return OrderListCellViewModel(order: order, status: status, currencySettings: ServiceLocator.currencySettings)
     }
 
     /// Creates an `OrderDetailsViewModel` for the `Order` pointed to by `objectID`.

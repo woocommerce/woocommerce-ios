@@ -1,3 +1,4 @@
+import class Yosemite.POSProductProvider
 import SwiftUI
 
 struct CartView: View {
@@ -16,9 +17,9 @@ struct CartView: View {
                 .font(.title)
                 .foregroundColor(Color.white)
             ScrollView {
-                ForEach(viewModel.productsInCart, id: \.product.productID) { cartProduct in
-                    ProductRowView(cartProduct: cartProduct) {
-                        viewModel.removeProductFromCart(cartProduct)
+                ForEach(viewModel.itemsInCart, id: \.id) { cartItem in
+                    ItemRowView(cartItem: cartItem) {
+                        viewModel.removeItemFromCart(cartItem)
                     }
                     .background(Color.tertiaryBackground)
                     .padding(.horizontal, 32)
@@ -28,10 +29,10 @@ struct CartView: View {
             switch viewModel.orderStage {
             case .building:
                 checkoutButton
-                    .padding(.horizontal, 32)
+                    .padding(32)
             case .finalizing:
                 addMoreButton
-                    .padding(.horizontal, 32)
+                    .padding(32)
             }
         }
         .frame(maxWidth: .infinity)
@@ -42,36 +43,57 @@ struct CartView: View {
 /// View sub-components
 ///
 private extension CartView {
+    private var checkoutButtonForegroundColor: Color {
+        return viewModel.checkoutButtonDisabled ? Color.gray : Color.primaryBackground
+    }
+
+    private var checkoutButtonBackgroundColor: Color {
+        return viewModel.checkoutButtonDisabled ? Color.white.opacity(0.5) : Color.white
+    }
+
     var checkoutButton: some View {
-        Button("Checkout") {
+        Button {
             viewModel.submitCart()
+        } label: {
+            HStack {
+                Spacer()
+                Text("Checkout")
+                Spacer()
+            }
         }
+        .disabled(viewModel.checkoutButtonDisabled)
         .padding(.all, 20)
         .frame(maxWidth: .infinity, idealHeight: 120)
         .font(.title)
-        .foregroundColor(Color.primaryBackground)
-        .background(Color.white)
+        .foregroundColor(checkoutButtonForegroundColor)
+        .background(checkoutButtonBackgroundColor)
         .cornerRadius(10)
     }
 
     var addMoreButton: some View {
-        Button("Add More") {
+        Button {
             viewModel.addMoreToCart()
+        } label: {
+            Spacer()
+            Text("Add More")
+            Spacer()
         }
-        .padding(.all, 20)
+        .padding(20)
         .frame(maxWidth: .infinity, idealHeight: 120)
         .font(.title)
         .foregroundColor(Color.white)
         .background(Color.secondaryBackground)
-        .border(.white, width: 2)
-        .cornerRadius(10)
+        .overlay(
+            RoundedRectangle(cornerRadius: 10)
+                .stroke(.white, lineWidth: 2)
+        )
     }
 }
 
 #if DEBUG
 #Preview {
-    CartView(viewModel: PointOfSaleDashboardViewModel(products: POSProductProvider.provideProductsForPreview(),
-                                                      cardReaderConnectionViewModel: .init(state: .connectingToReader),
-                                                      currencySettings: .init()))
+    CartView(viewModel: PointOfSaleDashboardViewModel(items: POSProductProvider.provideProductsForPreview(),
+                                                      currencySettings: .init(),
+                                                      cardPresentPaymentService: CardPresentPaymentService(siteID: 0)))
 }
 #endif

@@ -2,6 +2,7 @@ import WooFoundation
 import Yosemite
 import protocol Experiments.FeatureFlagService
 import protocol Storage.StorageManagerType
+import struct Storage.FeedbackSettings
 import Combine
 
 /// Use case to add, edit, or remove shipping lines on an order.
@@ -27,9 +28,9 @@ final class EditableOrderShippingUseCase: ObservableObject {
     ///
     @Published private(set) var shippingLineRows: [ShippingLineRowViewModel] = []
 
-    /// View model to edit a selected shipping line.
+    /// View model for shipping line details.
     ///
-    @Published var selectedShippingLine: ShippingLineSelectionDetailsViewModel? = nil
+    @Published var shippingLineDetails: ShippingLineSelectionDetailsViewModel? = nil
 
     // MARK: Shipping methods
 
@@ -70,6 +71,31 @@ final class EditableOrderShippingUseCase: ObservableObject {
         }
     }
 
+    // MARK: Feedback survey
+
+    /// Defines whether the prompt for the shipping lines feedback survey is presented.
+    ///
+    @Published var isSurveyPromptPresented: Bool = false
+
+    /// Returns the configuration for the shipping line feedback banner.
+    ///
+    lazy var feedbackBannerConfig = {
+        FeedbackBannerPopover.Configuration(title: Localization.FeedbackBanner.title,
+                                            message: Localization.FeedbackBanner.message,
+                                            buttonTitle: Localization.FeedbackBanner.buttonTitle,
+                                            feedbackType: .orderFormShippingLines,
+                                            onSurveyButtonTapped: { [weak self] in
+            guard let self else { return }
+            analytics.track(event: .featureFeedbackBanner(context: .orderFormShippingLines, action: .gaveFeedback))
+            updateFeedbackSurveyVisibility(.given(Date()))
+        },
+                                            onCloseButtonTapped: { [weak self] in
+            guard let self else { return }
+            analytics.track(event: .featureFeedbackBanner(context: .orderFormShippingLines, action: .dismissed))
+            updateFeedbackSurveyVisibility(.dismissed)
+        })
+    }()
+
     init(siteID: Int64,
          flow: EditableOrderViewModel.Flow,
          orderSynchronizer: OrderSynchronizer,
@@ -89,17 +115,12 @@ final class EditableOrderShippingUseCase: ObservableObject {
         configureShippingLineRowViewModels()
     }
 
-    /// Returns a view model for adding a shipping line to an order.
-    ///
-    func addShippingLineViewModel() -> ShippingLineSelectionDetailsViewModel {
-        return ShippingLineSelectionDetailsViewModel(siteID: siteID, shippingLine: nil, didSelectSave: saveShippingLine, didSelectRemove: removeShippingLine)
-    }
-
     /// Saves a shipping line.
     ///
     /// - Parameter shippingLine: New or updated shipping line object to save.
     func saveShippingLine(_ shippingLine: ShippingLine) {
         orderSynchronizer.setShipping.send(shippingLine)
+        refreshFeedbackSurveyVisibility()
         analytics.track(event: WooAnalyticsEvent.Orders.orderShippingMethodAdd(flow: flow.analyticsFlow,
                                                                                methodID: shippingLine.methodID ?? "",
                                                                                shippingLinesCount: Int64(orderSynchronizer.order.shippingLines.count)))
@@ -113,9 +134,13 @@ final class EditableOrderShippingUseCase: ObservableObject {
         analytics.track(event: WooAnalyticsEvent.Orders.orderShippingMethodRemove(flow: flow.analyticsFlow))
     }
 
-    /// Tracks when the "Add shipping" button is tapped.
+    /// Handles when the "Add shipping" button is tapped.
     ///
-    func trackAddShippingTapped() {
+    func addShippingLine() {
+        shippingLineDetails = ShippingLineSelectionDetailsViewModel(siteID: siteID,
+                                                                    shippingLine: nil,
+                                                                    didSelectSave: saveShippingLine,
+                                                                    didSelectRemove: removeShippingLine)
         analytics.track(event: .Orders.orderAddShippingTapped())
     }
 }
@@ -160,13 +185,13 @@ private extension EditableOrderShippingUseCase {
                         guard let self else {
                             return
                         }
-                        selectedShippingLine = ShippingLineSelectionDetailsViewModel(siteID: siteID,
-                                                                                     shippingID: shippingLine.shippingID,
-                                                                                     initialMethodID: shippingLine.methodID ?? "",
-                                                                                     initialMethodTitle: shippingLine.methodTitle,
-                                                                                     shippingTotal: shippingLine.total,
-                                                                                     didSelectSave: saveShippingLine,
-                                                                                     didSelectRemove: removeShippingLine)
+                        shippingLineDetails = ShippingLineSelectionDetailsViewModel(siteID: siteID,
+                                                                                    shippingID: shippingLine.shippingID,
+                                                                                    initialMethodID: shippingLine.methodID ?? "",
+                                                                                    initialMethodTitle: shippingLine.methodTitle,
+                                                                                    shippingTotal: shippingLine.total,
+                                                                                    didSelectSave: saveShippingLine,
+                                                                                    didSelectRemove: removeShippingLine)
                     })
                 }
             }
@@ -177,12 +202,10 @@ private extension EditableOrderShippingUseCase {
     ///
     func configurePaymentData() {
         orderSynchronizer.orderPublisher
-            .map { [weak self] order in
-                guard let self else { return ShippingPaymentData() }
-
-                return ShippingPaymentData(shouldShowShippingTotal: order.shippingLines.filter { $0.methodID != nil }.isNotEmpty,
-                                           shippingTotal: order.shippingTotal.isNotEmpty ? order.shippingTotal : "0",
-                                           shippingTax: order.shippingTax.isNotEmpty ? order.shippingTax : "0")
+            .map { order in
+                ShippingPaymentData(shouldShowShippingTotal: order.shippingLines.filter { $0.methodID != nil }.isNotEmpty,
+                                    shippingTotal: order.shippingTotal.isNotEmpty ? order.shippingTotal : "0",
+                                    shippingTax: order.shippingTax.isNotEmpty ? order.shippingTax : "0")
             }
             .assign(to: &$paymentData)
     }
@@ -210,5 +233,47 @@ private extension EditableOrderShippingUseCase {
             }
         }
         stores.dispatch(action)
+    }
+
+    /// Checks whether the feedback survey prompt should be visible.
+    ///
+    func refreshFeedbackSurveyVisibility() {
+        let action = AppSettingsAction.loadFeedbackVisibility(type: .orderFormShippingLines) { [weak self] result in
+            switch result {
+            case .success(let visible):
+                self?.isSurveyPromptPresented = visible
+            case.failure(let error):
+                self?.isSurveyPromptPresented = false
+                DDLogError("⛔️ Error loading feedback visibility for shipping lines: \(error)")
+            }
+        }
+        stores.dispatch(action)
+    }
+
+    /// Saves when the feedback survey prompt has been interacted with.
+    ///
+    func updateFeedbackSurveyVisibility(_ status: FeedbackSettings.Status) {
+        let action = AppSettingsAction.updateFeedbackStatus(type: .orderFormShippingLines, status: status) { result in
+            if let error = result.failure {
+                DDLogError("⛔️ Error updating feedback visibility for shipping lines: \(error)")
+            }
+        }
+        stores.dispatch(action)
+    }
+}
+
+private extension EditableOrderShippingUseCase {
+    enum Localization {
+        enum FeedbackBanner {
+            static let title = NSLocalizedString("editableOrderShippingUseCase.feedbackSurvey.title",
+                                                 value: "Shipping added!",
+                                                 comment: "Title for the feedback survey about adding shipping to an order")
+            static let message = NSLocalizedString("editableOrderShippingUseCase.feedbackSurvey.message",
+                                                   value: "Does Woo make shipping easy?",
+                                                   comment: "Message for the feedback survey about adding shipping to an order")
+            static let buttonTitle = NSLocalizedString("editableOrderShippingUseCase.feedbackSurvey.buttonTitle",
+                                                       value: "Share your feedback",
+                                                       comment: "Title for button to view the feedback survey about adding shipping to an order")
+        }
     }
 }

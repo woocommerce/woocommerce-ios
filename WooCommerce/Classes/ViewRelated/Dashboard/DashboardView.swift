@@ -102,7 +102,7 @@ struct DashboardView: View {
             }
             ToolbarItem(placement: .topBarTrailing) {
                 Button(action: {
-                    ServiceLocator.analytics.track(event: .DynamicDashboard.editLayoutButtonTapped())
+                    ServiceLocator.analytics.track(event: .DynamicDashboard.editLayoutButtonTapped(isNewCardAvailable: viewModel.showNewCardsNotice))
                     viewModel.showCustomizationScreen()
                 }, label: {
                     Text(Localization.edit)
@@ -281,9 +281,10 @@ private extension DashboardView {
                 }
                 .buttonStyle(PrimaryButtonStyle())
                 .padding(.horizontal, Layout.elementPadding)
-                .padding(.vertical, Layout.elementPadding)
+                .padding(.top, Layout.elementPadding)
             }
         }
+        .padding(.bottom, Layout.elementPadding)
         .overlay(
             RoundedRectangle(cornerRadius: Layout.cornerRadius)
                 .stroke(Color(.border), lineWidth: 1)
@@ -305,6 +306,8 @@ private extension DashboardView {
                 .padding(.horizontal, Layout.elementPadding)
 
             Button(Localization.NewCardsNoticeCard.addSectionsButtonLabel) {
+                ServiceLocator.analytics.track(event: .DynamicDashboard.dashboardCardAddNewSectionsTapped())
+
                 viewModel.showCustomizationScreen()
             }
             .buttonStyle(PrimaryButtonStyle())

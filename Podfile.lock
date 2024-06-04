@@ -4,8 +4,6 @@ PODS:
     - Sentry (~> 8.0)
     - Sodium (>= 0.9.1)
     - UIDeviceIdentifier (~> 2.0)
-  - CocoaLumberjack (3.8.5):
-    - CocoaLumberjack/Core (= 3.8.5)
   - CocoaLumberjack/Core (3.8.5)
   - CocoaLumberjack/Swift (3.8.5):
     - CocoaLumberjack/Core
@@ -63,7 +61,6 @@ PODS:
 DEPENDENCIES:
   - Alamofire (~> 5.0)
   - Automattic-Tracks-iOS (~> 3.0)
-  - CocoaLumberjack (~> 3.8.5)
   - CocoaLumberjack/Swift (~> 3.8.5)
   - Gridicons (~> 1.2.0)
   - KeychainAccess (~> 4.2.2)
@@ -149,6 +146,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: 685b5d185af47ced0ec40564ec46355c838bbd06
   ZendeskSupportSDK: 92e6f9d334e81e9186f8a17583862350460a5393
 
-PODFILE CHECKSUM: 4c5b0009be57a71f4b3fd0839920c5cf8e181363
+PODFILE CHECKSUM: b7524097126a1fa85798f3d6352edd9b658ce91f
 
 COCOAPODS: 1.14.0

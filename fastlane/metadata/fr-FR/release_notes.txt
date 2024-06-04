@@ -1,3 +1,1 @@
-Les dernières mises à jour sont lancées, pour notre plus grande joie !
-Notre dernière mise à jour va sous le capot pour améliorer la stabilité et les performances.
-Nous nous engageons à améliorer sans cesse notre application pour mieux vous servir. Merci d’avoir choisi WooCommerce !
+Découvrez une expérience WooCommerce plus fluide avec notre dernière mise à jour ! Nous avons résolu des problèmes qui affectaient les fonctionnalités « Lecteur de carte » et « Appuyer pour payer » dans Menu > Paiements > Percevoir le paiement, pour des transactions fluides. L’écran du tableau de bord bénéficie de performances accrues grâce à l’optimisation des appels d’API. En outre, la prise en charge des modifications pour l’extension Min/Max Quantities dans les détails des produits est désormais disponible.

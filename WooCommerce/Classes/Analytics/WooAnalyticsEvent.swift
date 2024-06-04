@@ -82,6 +82,8 @@ extension WooAnalyticsEvent {
         case tapToPayFirstPaymentPaymentsMenu
         /// Shown in Product details form for a AI generated product
         case productCreationAI = "product_creation_ai"
+        /// Shown in the order form after adding a shipping line
+        case orderFormShippingLines = "order_form_shipping_lines"
     }
 
     /// The action performed on the survey screen.

@@ -1,10 +1,12 @@
 import SwiftUI
+import protocol Yosemite.POSItem
+import struct Yosemite.POSProduct
 import class WooFoundation.CurrencyFormatter
 import class WooFoundation.CurrencySettings
 
 final class PointOfSaleDashboardViewModel: ObservableObject {
-    @Published private(set) var products: [POSProduct]
-    @Published private(set) var productsInCart: [CartProduct] = [] {
+    @Published private(set) var items: [POSItem]
+    @Published private(set) var itemsInCart: [CartItem] = [] {
         didSet {
             calculateAmounts()
         }
@@ -14,8 +16,10 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
     @Published private(set) var formattedOrderTotalTaxPrice: String?
 
     @Published var showsCardReaderSheet: Bool = false
-    @Published var showsFilterSheet: Bool = false
+    @Published private(set) var cardPresentPaymentEvent: CardPresentPaymentEvent = .idle
     @ObservedObject private(set) var cardReaderConnectionViewModel: CardReaderConnectionViewModel
+
+    @Published var showsFilterSheet: Bool = false
 
     enum OrderStage {
         case building
@@ -26,23 +30,26 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
 
     private let currencyFormatter: CurrencyFormatter
 
-    init(products: [POSProduct],
-         cardReaderConnectionViewModel: CardReaderConnectionViewModel,
-         currencySettings: CurrencySettings) {
-        self.products = products
-        self.cardReaderConnectionViewModel = cardReaderConnectionViewModel
+    private let cardPresentPaymentService: CardPresentPaymentFacade
+
+    init(items: [POSItem],
+         currencySettings: CurrencySettings,
+         cardPresentPaymentService: CardPresentPaymentFacade) {
+        self.items = items
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
-        observeProductsInCartForCartTotal()
+        self.cardPresentPaymentService = cardPresentPaymentService
+        self.cardReaderConnectionViewModel = CardReaderConnectionViewModel(cardPresentPayment: cardPresentPaymentService)
+        observeCardPresentPaymentEvents()
+        observeItemsInCartForCartTotal()
     }
 
-    func addProductToCart(_ product: POSProduct) {
-        let cartProduct = CartProduct(id: UUID(), product: product, quantity: 1)
-        productsInCart.append(cartProduct)
+    func addItemToCart(_ item: POSItem) {
+        let cartItem = CartItem(id: UUID(), item: item, quantity: 1)
+        itemsInCart.append(cartItem)
     }
 
-    // Removes a `CartProduct` from the Cart
-    func removeProductFromCart(_ cartProduct: CartProduct) {
-        productsInCart.removeAll(where: { $0.id == cartProduct.id })
+    func removeItemFromCart(_ cartItem: CartItem) {
+        itemsInCart.removeAll(where: { $0.id == cartItem.id })
     }
 
     func submitCart() {
@@ -52,10 +59,6 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
 
     func addMoreToCart() {
         orderStage = .building
-    }
-
-    func showCardReaderConnection() {
-        showsCardReaderSheet = true
     }
 
     func showFilters() {
@@ -72,30 +75,48 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
             formattedOrderTotalPrice = currencyFormatter.formatAmount(Decimal(totalAmount))
         }
     }
+
+    var checkoutButtonDisabled: Bool {
+        return itemsInCart.isEmpty
+    }
 }
 
 extension PointOfSaleDashboardViewModel {
     // Helper function to populate SwifUI previews
     static func defaultPreview() -> PointOfSaleDashboardViewModel {
-        PointOfSaleDashboardViewModel(products: [],
-                                      cardReaderConnectionViewModel: .init(state: .connectingToReader),
-                                      currencySettings: .init())
+        PointOfSaleDashboardViewModel(items: [],
+                                      currencySettings: .init(),
+                                      cardPresentPaymentService: CardPresentPaymentService(siteID: 0))
     }
 }
 
 private extension PointOfSaleDashboardViewModel {
-    func observeProductsInCartForCartTotal() {
-        $productsInCart
+    func observeItemsInCartForCartTotal() {
+        $itemsInCart
             .map { [weak self] in
-                guard let self else { return nil }
-                let totalValue: Decimal = $0.reduce(0) { partialResult, cartProduct in
-                    let productPrice = self.currencyFormatter.convertToDecimal(cartProduct.product.price) ?? 0
-                    let quantity = cartProduct.quantity
-                    let total = productPrice.multiplying(by: NSDecimalNumber(value: quantity)) as Decimal
+                guard let self else { return "-" }
+                let totalValue: Decimal = $0.reduce(0) { partialResult, cartItem in
+                    let itemPrice = self.currencyFormatter.convertToDecimal(cartItem.item.price) ?? 0
+                    let quantity = cartItem.quantity
+                    let total = itemPrice.multiplying(by: NSDecimalNumber(value: quantity)) as Decimal
                     return partialResult + total
                 }
                 return currencyFormatter.formatAmount(totalValue)
             }
             .assign(to: &$formattedCartTotalPrice)
+    }
+
+    func observeCardPresentPaymentEvents() {
+        cardPresentPaymentService.paymentEventPublisher.assign(to: &$cardPresentPaymentEvent)
+        cardPresentPaymentService.paymentEventPublisher.map { event in
+            switch event {
+            case .idle:
+                return false
+            case .showAlert,
+                    .showReaderList,
+                    .showOnboarding:
+                return true
+            }
+        }.assign(to: &$showsCardReaderSheet)
     }
 }

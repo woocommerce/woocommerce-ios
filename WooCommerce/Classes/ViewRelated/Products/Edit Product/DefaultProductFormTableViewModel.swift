@@ -25,6 +25,7 @@ struct DefaultProductFormTableViewModel: ProductFormTableViewModel {
     private let isDescriptionAIEnabled: Bool
     private let featureFlagService: FeatureFlagService
 
+
     init(product: ProductFormDataModel,
          actionsFactory: ProductFormActionsFactoryProtocol,
          currency: String,
@@ -55,8 +56,11 @@ private extension DefaultProductFormTableViewModel {
     func primaryFieldRows(product: ProductFormDataModel, actions: [ProductFormEditAction]) -> [ProductFormSection.PrimaryFieldRow] {
         actions.map { action -> [ProductFormSection.PrimaryFieldRow] in
             switch action {
-            case .images(let editable):
-                return [.images(isEditable: editable, allowsMultiple: product.allowsMultipleImages(), isVariation: product is EditableProductVariationModel)]
+            case .images(let editable, let isStorePublic):
+                return [.images(isEditable: editable,
+                                isStorePublic: isStorePublic,
+                                allowsMultiple: product.allowsMultipleImages(),
+                                isVariation: product is EditableProductVariationModel)]
             case .linkedProductsPromo(let viewModel):
                 return [.linkedProductsPromo(viewModel: viewModel)]
             case .name(let editable):

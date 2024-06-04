@@ -50,7 +50,7 @@ struct ScreenshotObjectGraph: MockObjectGraph {
         jetpackConnectionActivePlugins: [],
         timezone: "UTC",
         gmtOffset: 0,
-        isPublic: true,
+        visibility: .publicSite,
         canBlaze: false,
         isAdmin: false,
         wasEcommerceTrial: false

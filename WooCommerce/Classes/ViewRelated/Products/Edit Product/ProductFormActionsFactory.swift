@@ -3,7 +3,7 @@ import protocol Experiments.FeatureFlagService
 
 /// Edit actions in the product form. Each action allows the user to edit a subset of product properties.
 enum ProductFormEditAction: Equatable {
-    case images(editable: Bool)
+    case images(editable: Bool, isStorePublic: Bool)
     case linkedProductsPromo(viewModel: FeatureAnnouncementCardViewModel)
     case name(editable: Bool)
     case description(editable: Bool)
@@ -62,6 +62,8 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
     private let addOnsFeatureEnabled: Bool
     private let variationsPrice: VariationsPrice
 
+    private let stores: StoresManager
+
     private let isLinkedProductsPromoEnabled: Bool
     private let linkedProductsPromoCampaign = LinkedProductsPromoCampaign()
     private var linkedProductsPromoViewModel: FeatureAnnouncementCardViewModel {
@@ -81,7 +83,8 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
          isBundledProductsEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productBundles),
          isCompositeProductsEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.compositeProducts),
          isMinMaxQuantitiesEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.readOnlyMinMaxQuantities),
-         variationsPrice: VariationsPrice = .unknown) {
+         variationsPrice: VariationsPrice = .unknown,
+         stores: StoresManager = ServiceLocator.stores) {
         self.product = product
         self.formType = formType
         self.canPromoteWithBlaze = canPromoteWithBlaze
@@ -92,6 +95,7 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
         self.isBundledProductsEnabled = isBundledProductsEnabled
         self.isCompositeProductsEnabled = isCompositeProductsEnabled
         self.isMinMaxQuantitiesEnabled = isMinMaxQuantitiesEnabled
+        self.stores = stores
     }
 
     /// Returns an array of actions that are visible in the product form primary section.
@@ -107,8 +111,14 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
 
         let shouldShowPromoteWithBlaze = canPromoteWithBlaze
 
+        var isStorePublic = true
+
+        if let site = stores.sessionManager.defaultSite {
+            isStorePublic = !site.isPrivateWPCOMSite
+        }
+
         let actions: [ProductFormEditAction?] = [
-            shouldShowImagesRow ? .images(editable: editable): nil,
+            shouldShowImagesRow ? .images(editable: editable, isStorePublic: isStorePublic): nil,
             shouldShowLinkedProductsPromo ? .linkedProductsPromo(viewModel: newLinkedProductsPromoViewModel) : nil,
             .name(editable: editable),
             shouldShowDescriptionRow ? .description(editable: editable): nil,

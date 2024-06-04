@@ -3,7 +3,7 @@ import Foundation
 
 /// WooCommerce Constants
 ///
-enum WooConstants {
+public enum WooConstants {
 
     /// App Display Name, used on the About screen
     ///
@@ -15,7 +15,7 @@ enum WooConstants {
 
     /// Keychain Access's Service Name
     ///
-    static let keychainServiceName = "com.automattic.woocommerce"
+    public static let keychainServiceName = "com.automattic.woocommerce"
 
     /// Keychain Access's Key for Apple ID
     ///
@@ -79,6 +79,10 @@ enum WooConstants {
     static let appLoginURLPrefix = "woocommerce://app-login"
 
     static let wooPaymentsPluginPath = "woocommerce-payments/woocommerce-payments.php"
+
+    /// Key used to identify track events sent between the phone and the watch.
+    ///
+    static let watchTracksKey = "watch-tracks-event"
 }
 
 // MARK: URLs
@@ -344,6 +348,14 @@ extension WooConstants {
         /// URL to learn more about Jetpack Stats
         ///
         case jetpackStats = "https://jetpack.com/stats/"
+
+        /// URL for the Order Creation Shipping Lines feedback survey
+        ///
+#if DEBUG
+        case orderCreationShippingFeedback = "https://automattic.survey.fm/order-creation-shipping-lines-survey-testing"
+#else
+        case orderCreationShippingFeedback = "https://automattic.survey.fm/order-creation-shipping-lines-survey-production"
+#endif
 
         /// Returns the URL version of the receiver
         ///

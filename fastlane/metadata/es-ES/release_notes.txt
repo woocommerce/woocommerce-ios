@@ -1,3 +1,1 @@
-¡Estamos emocionados con el lanzamiento de las últimas actualizaciones!
-Nuestra última actualización hace una puesta a punto de todos los procesos para mejorar la estabilidad y el rendimiento.
-Nos comprometemos a seguir mejorando nuestra aplicación para ofrecerte el mejor servicio. Gracias por elegir WooCommerce.
+¡Explora en profundidad una experiencia de WooCommerce más fluida con nuestra última actualización! Hemos resuelto los problemas que obstaculizaban las funciones «Lector de tarjetas» y «Tocar para pagar» en Menú > Pagos > Cobrar pago para facilitar las transacciones. La pantalla del panel de administración ha mejorado su rendimiento gracias a la optimización de las llamadas a la API. Además, ahora se puede editar la extensión Cantidades mín./máx. en los detalles del producto.

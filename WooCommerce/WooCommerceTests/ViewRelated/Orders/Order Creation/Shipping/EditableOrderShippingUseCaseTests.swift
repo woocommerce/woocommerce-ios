@@ -1,6 +1,7 @@
 import XCTest
 import WooFoundation
 import Yosemite
+import Storage
 @testable import WooCommerce
 
 final class EditableOrderShippingUseCaseTests: XCTestCase {
@@ -148,12 +149,13 @@ final class EditableOrderShippingUseCaseTests: XCTestCase {
 
     // MARK: Add shipping line
 
-    func test_addShippingLineViewModel_returns_view_model_for_new_shipping_line() {
+    func test_addShippingLine_sets_view_model_for_new_shipping_line() throws {
         // When
-        let newShippingLineViewModel = useCase.addShippingLineViewModel()
+        useCase.addShippingLine()
 
         // Then
-        XCTAssertFalse(newShippingLineViewModel.isExistingShippingLine)
+        let viewModel = try XCTUnwrap(useCase.shippingLineDetails)
+        XCTAssertFalse(viewModel.isExistingShippingLine)
     }
 
     // MARK: Shipping line rows
@@ -170,7 +172,7 @@ final class EditableOrderShippingUseCaseTests: XCTestCase {
         assertEqual(shippingLine.methodTitle, useCase.shippingLineRows.first?.shippingTitle)
     }
 
-    func test_selectedShippingLine_set_when_shipping_line_row_is_edited() {
+    func test_expected_view_model_set_when_shipping_line_row_is_edited() throws {
         // Given
         let shippingLine = ShippingLine.fake().copy(methodTitle: "Flat Rate")
         let order = Order.fake().copy(siteID: sampleSiteID, shippingLines: [shippingLine])
@@ -184,7 +186,9 @@ final class EditableOrderShippingUseCaseTests: XCTestCase {
         useCase.shippingLineRows.first?.editShippingLine()
 
         // Then
-        assertEqual(shippingLine.methodTitle, useCase.selectedShippingLine?.methodTitle)
+        let viewModel = try XCTUnwrap(useCase.shippingLineDetails)
+        XCTAssertTrue(viewModel.isExistingShippingLine)
+        assertEqual(shippingLine.methodTitle, viewModel.methodTitle)
     }
 
     func test_shipping_line_row_is_editable_for_new_order() throws {
@@ -249,15 +253,15 @@ final class EditableOrderShippingUseCaseTests: XCTestCase {
 
     // MARK: Analytics
 
-    func test_trackAddShippingTapped_tracks_expected_event() {
+    func test_addShippingLine_tracks_expected_event() {
         // When
-        useCase.trackAddShippingTapped()
+        useCase.addShippingLine()
 
         // Then
         XCTAssertEqual(analytics.receivedEvents, [WooAnalyticsStat.orderAddShippingTapped.rawValue])
     }
 
-    func test_shipping_method_tracked_when_added() throws {
+    func test_saveShippingLine_tracks_expected_event_and_properties() throws {
         // Given
         let shippingLine = ShippingLine.fake().copy(methodID: "flat_rate")
 
@@ -271,7 +275,7 @@ final class EditableOrderShippingUseCaseTests: XCTestCase {
         assertEqual(1, analytics.receivedProperties.first?["shipping_lines_count"] as? Int64)
     }
 
-    func test_shipping_method_tracked_when_removed() throws {
+    func test_removeShippingLine_tracks_expected_event() throws {
         // When
         useCase.removeShippingLine(ShippingLine.fake())
 
@@ -281,10 +285,91 @@ final class EditableOrderShippingUseCaseTests: XCTestCase {
         let properties = try XCTUnwrap(analytics.receivedProperties.first?["flow"] as? String)
         XCTAssertEqual(properties, "creation")
     }
+
+    // MARK: Feedback survey
+
+    func test_feedback_survey_config_has_expected_feedback_type() throws {
+        // Given
+        let expectedFeedbackType: SurveyViewController.Source = .orderFormShippingLines
+
+        // When & Then
+        assertEqual(expectedFeedbackType, useCase.feedbackBannerConfig.feedbackType)
+    }
+
+    func test_feedback_survey_config_onSurveyButtonTapped_updates_feedback_visibility() throws {
+        // Given
+        var updatedType: FeedbackType?
+        var updatedStatus: FeedbackSettings.Status?
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+            case let .updateFeedbackStatus(type, status, onCompletion):
+                updatedType = type
+                updatedStatus = status
+                onCompletion(.success(()))
+            default:
+                XCTFail("Unexpected action: \(action)")
+            }
+        }
+
+        // When
+        useCase.feedbackBannerConfig.onSurveyButtonTapped()
+
+        // Then
+        assertEqual(.orderFormShippingLines, updatedType)
+        switch updatedStatus {
+        case .given:
+            break
+        default:
+            XCTFail("Unexpected feedback status received: \(String(describing: updatedStatus))")
+        }
+    }
+
+    func test_feedback_survey_config_onSurveyButtonTapped_tracks_expected_event() throws {
+        // When
+        useCase.feedbackBannerConfig.onSurveyButtonTapped()
+
+        // Then
+        assertEqual([WooAnalyticsStat.featureFeedbackBanner.rawValue], analytics.receivedEvents)
+        assertEqual("order_form_shipping_lines", analytics.receivedProperties.first?["context"] as? String)
+        assertEqual("gave_feedback", analytics.receivedProperties.first?["action"] as? String)
+    }
+
+    func test_feedback_survey_config_onCloseButtonTapped_updates_feedback_visibility() throws {
+        // Given
+        var updatedType: FeedbackType?
+        var updatedStatus: FeedbackSettings.Status?
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+            case let .updateFeedbackStatus(type, status, onCompletion):
+                updatedType = type
+                updatedStatus = status
+                onCompletion(.success(()))
+            default:
+                XCTFail("Unexpected action: \(action)")
+            }
+        }
+
+        // When
+        useCase.feedbackBannerConfig.onCloseButtonTapped()
+
+        // Then
+        assertEqual(.orderFormShippingLines, updatedType)
+        assertEqual(.dismissed, updatedStatus)
+    }
+
+    func test_feedback_survey_config_onCloseButtonTapped_tracks_expected_event() throws {
+        // When
+        useCase.feedbackBannerConfig.onCloseButtonTapped()
+
+        // Then
+        assertEqual([WooAnalyticsStat.featureFeedbackBanner.rawValue], analytics.receivedEvents)
+        assertEqual("order_form_shipping_lines", analytics.receivedProperties.first?["context"] as? String)
+        assertEqual("dismissed", analytics.receivedProperties.first?["action"] as? String)
+    }
 }
 
 private extension MockStorageManager {
-    func insert(_ readOnlyShippingMethod: ShippingMethod) {
+    func insert(_ readOnlyShippingMethod: Yosemite.ShippingMethod) {
         let shippingMethod = viewStorage.insertNewObject(ofType: StorageShippingMethod.self)
         shippingMethod.update(with: readOnlyShippingMethod)
         viewStorage.saveIfNeeded()

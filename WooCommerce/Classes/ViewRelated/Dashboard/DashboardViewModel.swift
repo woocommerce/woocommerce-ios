@@ -82,7 +82,7 @@ final class DashboardViewModel: ObservableObject {
 
     var siteURLToShare: URL? {
         if let site = stores.sessionManager.defaultSite,
-           !site.isWordPressComStore || site.isPublic, // only show share button if it's a .org site or a public .com site
+           !site.isWordPressComStore || (site.visibility == .publicSite), // only show share button if it's a .org site or a public .com site
            let url = URL(string: site.url) {
             return url
         }
@@ -548,7 +548,8 @@ private extension DashboardViewModel {
             // Get any remaining available cards and disable them.
             let remainingCards = Set(updatedCards).subtracting(savedCards)
                 .filter { card in
-                    card.availability == .show && !savedCards.contains(where: { $0.type == card.type })
+                    card.availability == .show &&
+                    !savedCards.contains(where: { $0.type == card.type })
                 }
                 .map { $0.copy(enabled: false) }
 
@@ -563,6 +564,10 @@ private extension DashboardViewModel {
     /// The checking criteria is whether the new cards are already in the saved cards (in which case we assume users
     /// already know about them, thus don't need the notice). Otherwise, show the notice.
     func configureNewCardsNotice() {
+        guard featureFlagService.isFeatureFlagEnabled(.dynamicDashboardM2) else {
+            return
+        }
+
         let savedCardTypes = Set(savedCards.map { $0.type })
         let savedCardContainsAllNewCards = Constants.m2CardSet.isSubset(of: savedCardTypes)
 

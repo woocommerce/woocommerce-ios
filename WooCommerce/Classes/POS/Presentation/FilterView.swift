@@ -23,8 +23,8 @@ struct FilterView: View {
 
 #if DEBUG
 #Preview {
-    FilterView(viewModel: PointOfSaleDashboardViewModel(products: [],
-                                                        cardReaderConnectionViewModel: .init(state: .connectingToReader),
-                                                        currencySettings: .init()))
+    FilterView(viewModel: PointOfSaleDashboardViewModel(items: [],
+                                                        currencySettings: .init(),
+                                                        cardPresentPaymentService: CardPresentPaymentService(siteID: 0)))
 }
 #endif

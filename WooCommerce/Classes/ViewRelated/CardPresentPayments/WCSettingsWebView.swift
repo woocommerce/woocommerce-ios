@@ -17,10 +17,6 @@ struct WCSettingsWebView: View {
                                      ToolbarItem(placement: .confirmationAction) {
                                          Button(action: {
                                              completion()
-                                             // TODO: implement the completion logic
-//                                             viewController.dismiss(animated: true) {
-//                                                 retrySearch()
-//                                             }
                                          }, label: {
                                              Text(Localization.doneButtonUpdateAddress)
                                          })
@@ -28,6 +24,7 @@ struct WCSettingsWebView: View {
                                  }
         }
         .wooNavigationBarStyle()
+        .navigationViewStyle(.stack)
     }
 }
 

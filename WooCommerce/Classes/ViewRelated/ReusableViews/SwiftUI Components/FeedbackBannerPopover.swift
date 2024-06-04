@@ -49,7 +49,7 @@ struct FeedbackBannerPopover: View {
         .padding()
         .background {
             RoundedRectangle(cornerRadius: Layout.cornerRadius)
-                .fill(Color(.invertedTooltipBackgroundColor))
+                .fill(Color(.popoverBackground))
                 .shadow(color: Color(.secondaryLabel), radius: Layout.shadowRadius, y: Layout.shadowYOffset)
         }
         .padding()

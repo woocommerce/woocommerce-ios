@@ -110,7 +110,8 @@ private extension PointOfSaleDashboardViewModel {
                 return false
             case .showAlert,
                     .showReaderList,
-                    .showOnboarding:
+                    .showOnboarding,
+                    .showWCSettingsWebView:
                 return true
             }
         }.assign(to: &$showsCardReaderSheet)

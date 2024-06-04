@@ -16,6 +16,10 @@ final class CardPresentPaymentsAlertPresenterAdaptor: CardPresentPaymentAlertsPr
         paymentAlertSubject.send(.showAlert(viewModel))
     }
 
+    func presentWCSettingsWebView(adminURL: URL, completion: @escaping () -> Void) {
+        paymentAlertSubject.send(.showWCSettingsWebView(adminURL: adminURL, completion: completion))
+    }
+
     func foundSeveralReaders(readerIDs: [String], connect: @escaping (String) -> Void, cancelSearch: @escaping () -> Void) {
         let wrappedConnectionHandler = { [weak self] readerID in
             connect(readerID)

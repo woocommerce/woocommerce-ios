@@ -495,32 +495,21 @@ private extension BuiltInCardReaderConnectionController {
     }
 
     private func openWCSettingsAction(adminUrl: URL?,
-                                      retrySearch: @escaping () -> Void) -> ((UIViewController) -> Void)? {
+                                      retrySearch: @escaping () -> Void) -> (() -> Void)? {
         if let adminUrl = adminUrl {
             if let site = stores.sessionManager.defaultSite,
                site.isWordPressComStore {
-                return { [weak self] viewController in
-                    self?.openWCSettingsInWebview(url: adminUrl, from: viewController, retrySearch: retrySearch)
+                return { [weak self] in
+                    self?.alertsPresenter.presentWCSettingsWebView(adminURL: adminUrl, completion: retrySearch)
                 }
             } else {
-                return { [weak self] _ in
+                return { [weak self] in
                     UIApplication.shared.open(adminUrl)
                     self?.showIncompleteAddressErrorWithRefreshButton()
                 }
             }
         }
         return nil
-    }
-    private func openWCSettingsInWebview(url adminUrl: URL,
-                                         from viewController: UIViewController,
-                                         retrySearch: @escaping () -> Void) {
-        let nav = WCSettingsWebView(adminUrl: adminUrl) {
-            viewController.dismiss(animated: true) {
-                retrySearch()
-            }
-        }
-        let hostingController = UIHostingController(rootView: nav)
-        viewController.present(hostingController, animated: true, completion: nil)
     }
 
     private func showIncompleteAddressErrorWithRefreshButton() {

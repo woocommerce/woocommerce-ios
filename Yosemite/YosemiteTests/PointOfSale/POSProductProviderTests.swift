@@ -4,44 +4,83 @@ import WooFoundation
 
 final class POSProductProviderTests: XCTestCase {
 
-    func test_POSProductProvider_returns_no_products_when_store_has_no_products() {
-        let storageManager = MockStorageManager()
-        let siteID: Int64 = 123
-        let currencySettings = CurrencySettings()
+    private var storageManager: MockStorageManager!
+    private var currencySettings: CurrencySettings!
+    private var itemProvider: POSItemProvider!
+    private let siteID: Int64 = 123
 
-        let sut = POSProductProvider(storageManager: storageManager,
+    override func setUp() {
+        super.setUp()
+        storageManager = MockStorageManager()
+        currencySettings = CurrencySettings()
+    }
+
+    override func tearDown() {
+        storageManager = nil
+        currencySettings = nil
+        itemProvider = nil
+        super.tearDown()
+    }
+
+    func test_POSItemProvider_provides_no_items_when_store_has_no_products() {
+        // Given
+        itemProvider = POSProductProvider(storageManager: storageManager,
                                      siteID: siteID,
                                      currencySettings: currencySettings)
 
-        let products = sut.providePointOfSaleItems()
+        // When
+        let items = itemProvider.providePointOfSaleItems()
 
-        XCTAssertTrue(products.isEmpty)
+        // Then
+        XCTAssertTrue(items.isEmpty)
     }
 
-    func test_POSProductProvider_returns_correctly_formatted_product_when_store_has_eligible_products() {
-        let storageManager = MockStorageManager()
-        let siteID: Int64 = 123
-        let currencySettings = CurrencySettings()
+    func test_POSItemProvider_provides_no_items_when_store_has_no_eligible_products() {
+        // Given
+        let nonEligibleProduct = Product.fake().copy(siteID: siteID,
+                                                productID: 789,
+                                                name: "Choco",
+                                                productTypeKey: "not simple",
+                                                price: "2",
+                                                purchasable: true)
 
-        let sampleProduct = Product.fake().copy(siteID: 123,
+        storageManager.insertSampleProduct(readOnlyProduct: nonEligibleProduct)
+        itemProvider = POSProductProvider(storageManager: storageManager,
+                                     siteID: siteID,
+                                     currencySettings: currencySettings)
+
+        // When
+        let items = itemProvider.providePointOfSaleItems()
+
+        // Then
+        XCTAssertTrue(items.isEmpty)
+    }
+
+    func test_POSItemProvider_when_store_has_eligible_products_then_provides_correctly_formatted_product() {
+        // Given
+        let productPrice = "2"
+        let expectedFormattedPrice = "$2.00"
+        let eligibleProduct = Product.fake().copy(siteID: siteID,
                                                 productID: 789,
                                                 name: "Choco",
                                                 productTypeKey: "simple",
-                                                price: "2",
+                                                price: productPrice,
                                                 purchasable: true)
-        storageManager.insertSampleProduct(readOnlyProduct: sampleProduct)
 
-        let sut = POSProductProvider(storageManager: storageManager,
+        storageManager.insertSampleProduct(readOnlyProduct: eligibleProduct)
+        itemProvider = POSProductProvider(storageManager: storageManager,
                                      siteID: siteID,
                                      currencySettings: currencySettings)
 
-        let products = sut.providePointOfSaleItems()
+        // When
+        let items = itemProvider.providePointOfSaleItems()
 
-        guard let product = products.first else {
+        // Then
+        guard let product = items.first else {
             return XCTFail("No eligible products")
         }
         XCTAssertEqual(product.name, "Choco")
         XCTAssertEqual(product.productID, 789)
-        XCTAssertEqual(product.price, "$2.00")
+        XCTAssertEqual(product.price, expectedFormattedPrice)
     }
 }

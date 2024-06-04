@@ -5,12 +5,10 @@ import class WooFoundation.CurrencySettings
 
 struct PointOfSaleEntryPointView: View {
     @StateObject private var viewModel: PointOfSaleDashboardViewModel
-    private var itemProvider: POSItemProvider
 
     private let hideAppTabBar: ((Bool) -> Void)
 
     init(itemProvider: POSItemProvider, currencySettings: CurrencySettings, hideAppTabBar: @escaping ((Bool) -> Void), siteID: Int64) {
-        self.itemProvider = itemProvider
         self.hideAppTabBar = hideAppTabBar
 
         _viewModel = StateObject(wrappedValue: PointOfSaleDashboardViewModel(

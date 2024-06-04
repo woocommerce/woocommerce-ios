@@ -514,26 +514,11 @@ private extension BuiltInCardReaderConnectionController {
     private func openWCSettingsInWebview(url adminUrl: URL,
                                          from viewController: UIViewController,
                                          retrySearch: @escaping () -> Void) {
-        let nav = NavigationView {
-            AuthenticatedWebView(isPresented: .constant(true),
-                                 url: adminUrl,
-                                 urlToTriggerExit: nil,
-                                 exitTrigger: nil)
-                                 .navigationTitle(Localization.adminWebviewTitle)
-                                 .navigationBarTitleDisplayMode(.inline)
-                                 .toolbar {
-                                     ToolbarItem(placement: .confirmationAction) {
-                                         Button(action: {
-                                             viewController.dismiss(animated: true) {
-                                                 retrySearch()
-                                             }
-                                         }, label: {
-                                             Text(Localization.doneButtonUpdateAddress)
-                                         })
-                                     }
-                                 }
+        let nav = WCSettingsWebView(adminUrl: adminUrl) {
+            viewController.dismiss(animated: true) {
+                retrySearch()
+            }
         }
-        .wooNavigationBarStyle()
         let hostingController = UIHostingController(rootView: nav)
         viewController.present(hostingController, animated: true, completion: nil)
     }
@@ -564,21 +549,6 @@ private extension BuiltInCardReaderConnectionController {
     private func returnFailure(error: Error) {
         onCompletion?(.failure(error))
         state = .idle
-    }
-}
-
-private extension BuiltInCardReaderConnectionController {
-    enum Localization {
-        static let adminWebviewTitle = NSLocalizedString(
-            "WooCommerce Settings",
-            comment: "Navigation title of the webview which used by the merchant to update their store address"
-        )
-
-        static let doneButtonUpdateAddress = NSLocalizedString(
-            "Done",
-            comment: "The button title to indicate that the user has finished updating their store's address and is" +
-            "ready to close the webview. This also tries to connect to the reader again."
-        )
     }
 }
 

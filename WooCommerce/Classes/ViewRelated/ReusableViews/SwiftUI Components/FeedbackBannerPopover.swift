@@ -40,10 +40,12 @@ struct FeedbackBannerPopover: View {
                 isSurveyPresented = true
                 config.onSurveyButtonTapped()
             } label: {
-                Text(config.buttonTitle)
-                    .foregroundStyle(Color(.wooCommercePurple(.shade20)))
-                    .bold()
-                    .padding([.top], Layout.spacing)
+                HStack {
+                    Image(uiImage: .tooltipImage)
+                    Text(config.buttonTitle)
+                }
+                .foregroundStyle(Color(.wooCommercePurple(.shade20)))
+                .bold()
             }
         }
         .padding()

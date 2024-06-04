@@ -381,14 +381,14 @@ struct OrderForm: View {
                 FeedbackBannerPopover(isPresented: $viewModel.shippingUseCase.isSurveyPromptPresented, config: viewModel.shippingUseCase.feedbackBannerConfig)
 
                 ExpandableBottomSheet(onChangeOfExpansion: viewModel.orderTotalsExpansionChanged) {
-                    VStack {
+                    VStack(spacing: .zero) {
                         HStack {
                             Text(Localization.orderTotal)
                             Spacer()
                             Text(viewModel.orderTotal)
                         }
                         .font(.headline)
-                        .padding()
+                        .padding([.bottom, .horizontal])
 
                         Divider()
                             .padding([.leading], Layout.dividerLeadingPadding)

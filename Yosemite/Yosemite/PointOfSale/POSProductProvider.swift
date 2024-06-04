@@ -64,34 +64,3 @@ public final class POSProductProvider: POSItemProvider {
     // TODO: Mechanism to reload/sync product data.
     // https://github.com/woocommerce/woocommerce-ios/issues/12837
 }
-
-// MARK: - PreviewProvider helpers
-//
-extension POSProductProvider {
-    public static func provideProductForPreview() -> POSProduct {
-        POSProduct(itemID: UUID(),
-                   productID: 1,
-                   name: "Product 1",
-                   price: "$1.00")
-    }
-
-    public static func provideProductsForPreview() -> [POSProduct] {
-        return [
-            POSProduct(itemID: UUID(), productID: 1, name: "Product 1", price: "$1.00"),
-            POSProduct(itemID: UUID(), productID: 2, name: "Product 2", price: "$2.00"),
-            POSProduct(itemID: UUID(), productID: 3, name: "Product 3", price: "$3.00"),
-            POSProduct(itemID: UUID(), productID: 4, name: "Product 4", price: "$4.00")
-        ]
-    }
-}
-
-/// Null product provider that acts as preview helper for the Point of Sale feature
-///
-public final class NullPOSProductProvider: POSItemProvider {
-
-    public init() {}
-
-    public func providePointOfSaleItems() -> [POSItem] {
-        []
-    }
-}

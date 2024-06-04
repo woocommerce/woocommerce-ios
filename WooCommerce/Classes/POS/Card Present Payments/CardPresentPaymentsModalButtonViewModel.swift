@@ -1,8 +1,8 @@
 import Foundation
 
 struct CardPresentPaymentsModalButtonViewModel {
-    var title: String
-    var actionHandler: () -> Void
+    let title: String
+    let actionHandler: () -> Void
 
     init(title: String, actionHandler: @escaping (() -> Void)) {
         self.title = title

@@ -4,8 +4,6 @@ import struct Yosemite.Order
 import struct Yosemite.CardPresentPaymentsConfiguration
 import struct Yosemite.CardReader
 
-import UIKit // TODO: remove after update to `ViewControllerPresenting` when #12864 is done
-
 final class CardPresentPaymentService: CardPresentPaymentFacade {
     let paymentEventPublisher: AnyPublisher<CardPresentPaymentEvent, Never>
 
@@ -90,7 +88,7 @@ private extension CardPresentPaymentService {
         CardPresentPaymentPreflightController(
             siteID: siteID,
             configuration: cardPresentPaymentsConfiguration,
-            rootViewController: UIViewController(), // TODO: update to `ViewControllerPresenting` when #12864 is done
+            rootViewController: NullViewControllerPresenting(),
             alertsPresenter: paymentAlertsPresenterAdaptor,
             onboardingPresenter: onboardingAdaptor,
             externalReaderConnectionController: connectionControllerManager.externalReaderConnectionController,

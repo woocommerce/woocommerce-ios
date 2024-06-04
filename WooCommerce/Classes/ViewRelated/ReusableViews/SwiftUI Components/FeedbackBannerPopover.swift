@@ -30,6 +30,7 @@ struct FeedbackBannerPopover: View {
                         .frame(width: Layout.buttonSize, height: Layout.buttonSize)
                         .foregroundStyle(Color(.invertedSecondaryLabel))
                 }
+                .accessibilityIdentifier("feedback-banner-popover-close-button")
             }
 
             Text(config.message)

@@ -24,7 +24,7 @@ final class POSProductProviderTests: XCTestCase {
         let currencySettings = CurrencySettings()
 
         let sampleProduct = Product.fake().copy(siteID: 123,
-                                                productID: 789, 
+                                                productID: 789,
                                                 name: "Choco",
                                                 productTypeKey: "simple",
                                                 price: "2",

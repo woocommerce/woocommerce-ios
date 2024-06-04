@@ -165,7 +165,6 @@ private extension HubMenu {
                 // TODO:
                 // PointOfSaleEntryPointView does not need currencySettings, since these are passed through POSItemProvider
                 PointOfSaleEntryPointView(itemProvider: viewModel.posItemProvider,
-                                          currencySettings: ServiceLocator.currencySettings,
                                           hideAppTabBar: { isHidden in
                     AppDelegate.shared.setShouldHideTabBar(isHidden)
                 }, siteID: viewModel.siteID)

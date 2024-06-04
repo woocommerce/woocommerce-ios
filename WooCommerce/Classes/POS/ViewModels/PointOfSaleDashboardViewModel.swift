@@ -28,15 +28,13 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
 
     @Published private(set) var orderStage: OrderStage = .building
 
-    private let currencyFormatter: CurrencyFormatter
-
     private let cardPresentPaymentService: CardPresentPaymentFacade
 
+    private let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
+
     init(items: [POSItem],
-         currencySettings: CurrencySettings,
          cardPresentPaymentService: CardPresentPaymentFacade) {
         self.items = items
-        self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
         self.cardPresentPaymentService = cardPresentPaymentService
         self.cardReaderConnectionViewModel = CardReaderConnectionViewModel(cardPresentPayment: cardPresentPaymentService)
         observeCardPresentPaymentEvents()
@@ -85,7 +83,6 @@ extension PointOfSaleDashboardViewModel {
     // Helper function to populate SwifUI previews
     static func defaultPreview() -> PointOfSaleDashboardViewModel {
         PointOfSaleDashboardViewModel(items: [],
-                                      currencySettings: .init(),
                                       cardPresentPaymentService: CardPresentPaymentService(siteID: 0))
     }
 }

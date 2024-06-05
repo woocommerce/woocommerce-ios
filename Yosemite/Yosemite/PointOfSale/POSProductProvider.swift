@@ -53,11 +53,13 @@ public final class POSProductProvider: POSItemProvider {
         let currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
         return loadedProducts.map { product in
             let formattedPrice = currencyFormatter.formatAmount(product.price, with: currencySettings.currencyCode.rawValue) ?? "-"
+            let thumbnail: ProductImage? = product.images.first
 
             return POSProduct(itemID: UUID(),
                               productID: product.productID,
                               name: product.name,
-                              price: formattedPrice)
+                              price: formattedPrice,
+                              thumbnail: thumbnail)
         }
     }
 

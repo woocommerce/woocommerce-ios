@@ -11,6 +11,14 @@ struct ItemCardView: View {
     }
 
     var body: some View {
+        HStack {
+            if let image = item.thumbnail {
+                ProductImageThumbnail(productImageURL: URL(string: image.src),
+                                      productImageSize: 60,
+                                      scale: 1,
+                                      productImageCornerRadius: 1,
+                                      foregroundColor: .clear)
+            }
             VStack {
                 Text(item.name)
                     .foregroundStyle(Color.primaryBackground)
@@ -25,8 +33,9 @@ struct ItemCardView: View {
                     .frame(width: 56, height: 56)
                 }
             }
-            .frame(maxWidth: .infinity)
-            .background(Color.tertiaryBackground)
+        }
+        .frame(maxWidth: .infinity)
+        .background(Color.tertiaryBackground)
     }
 }
 

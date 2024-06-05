@@ -1,6 +1,7 @@
 import Foundation
 import protocol Yosemite.POSItemProvider
 import protocol Yosemite.POSItem
+import Yosemite
 
 #if DEBUG
 // MARK: - PreviewProvider helpers
@@ -10,6 +11,7 @@ struct POSProductPreview: POSItem {
     var productID: Int64
     var name: String
     var price: String
+    var thumbnail: ProductImage?
 }
 
 final class POSItemProviderPreview: POSItemProvider {

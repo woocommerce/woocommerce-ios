@@ -1,8 +1,8 @@
 import SwiftUI
 
 struct OrderShippingSection: View {
-    /// Use case to add, edit, or remove shipping lines
-    @ObservedObject var useCase: EditableOrderShippingUseCase
+    /// View model to add, edit, or remove shipping lines
+    @ObservedObject var viewModel: EditableOrderShippingLineViewModel
 
     @Environment(\.safeAreaInsets) private var safeAreaInsets: EdgeInsets
 
@@ -17,18 +17,18 @@ struct OrderShippingSection: View {
 
                 Image(uiImage: .lockImage)
                     .foregroundColor(Color(.primary))
-                    .renderedIf(useCase.shouldShowNonEditableIndicators)
+                    .renderedIf(viewModel.shouldShowNonEditableIndicators)
 
                 Button(action: {
-                    useCase.addShippingLine()
+                    viewModel.addShippingLine()
                 }) {
                     Image(uiImage: .plusImage)
                 }
                 .scaledToFit()
-                .renderedIf(!useCase.shouldShowNonEditableIndicators)
+                .renderedIf(!viewModel.shouldShowNonEditableIndicators)
             }
 
-            ForEach(useCase.shippingLineRows) { shippingLineRow in
+            ForEach(viewModel.shippingLineRows) { shippingLineRow in
                 ShippingLineRowView(viewModel: shippingLineRow)
             }
         }
@@ -36,7 +36,7 @@ struct OrderShippingSection: View {
         .padding()
         .background(Color(.listForeground(modal: true)))
         .addingTopAndBottomDividers()
-        .sheet(item: $useCase.shippingLineDetails, content: { viewModel in
+        .sheet(item: $viewModel.shippingLineDetails, content: { viewModel in
             ShippingLineSelectionDetails(viewModel: viewModel)
         })
     }

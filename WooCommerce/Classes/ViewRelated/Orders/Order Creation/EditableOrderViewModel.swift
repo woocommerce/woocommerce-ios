@@ -365,9 +365,9 @@ final class EditableOrderViewModel: ObservableObject {
 
     // MARK: Shipping line properties
 
-    /// Use case to display, add, edit, or remove shipping lines.
+    /// View model to display, add, edit, or remove shipping lines.
     ///
-    @Published var shippingUseCase: EditableOrderShippingUseCase
+    @Published var shippingLineViewModel: EditableOrderShippingLineViewModel
 
     // MARK: Customer data properties
 
@@ -504,7 +504,7 @@ final class EditableOrderViewModel: ObservableObject {
             resetAddressForm: {}
         )
 
-        self.shippingUseCase = EditableOrderShippingUseCase(siteID: siteID, flow: flow, orderSynchronizer: orderSynchronizer)
+        self.shippingLineViewModel = EditableOrderShippingLineViewModel(siteID: siteID, flow: flow, orderSynchronizer: orderSynchronizer)
 
         configureDisabledState()
         configureCollectPaymentDisabledState()

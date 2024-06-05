@@ -54,15 +54,10 @@ final class CardPresentModalScanningFailed: CardPresentPaymentsModalViewModel {
 
 // CardPresentPaymentsModalViewModelActions
 extension CardPresentModalScanningFailed {
-    // TODO: check that dismissCompletion is enough for dismissal.
-    // The CardReaderConnectionControllers call `returnFailure(error: error)`, so it might be.
-    // Wrapped in a closure to make it easier to break in to while we check, but it can be passed without wrapping if it works.
     var primaryButtonViewModel: CardPresentPaymentsModalButtonViewModel? {
         CardPresentPaymentsModalButtonViewModel(
             title: Localization.dismiss,
-            actionHandler: { [weak self] in
-                self?.primaryAction()
-            })
+            actionHandler: primaryAction)
     }
 }
 

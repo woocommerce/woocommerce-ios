@@ -68,9 +68,8 @@ final class CardPresentModalNonRetryableError: CardPresentPaymentsModalViewModel
 
 // CardPresentPaymentsModalViewModelActions
 extension CardPresentModalNonRetryableError {
-    // TODO: check that onDismiss is enough for dismissal.
-    // The CollectOrderPaymentUseCase calls `onCompletion(.failure(error))`, so it might be.
-    // Wrapped in a closure to make it easier to break in to while we check, but it can be passed without wrapping if it works.
+    // TODO: onDismiss is not enough for dismissal.
+    // Find another way to dismiss the alert here. We may need a specialised alert provider to fix this one.
     var primaryButtonViewModel: CardPresentPaymentsModalButtonViewModel? {
         CardPresentPaymentsModalButtonViewModel(
             title: Localization.dismiss,

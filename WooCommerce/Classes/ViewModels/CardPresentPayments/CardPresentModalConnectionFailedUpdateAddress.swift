@@ -3,6 +3,7 @@ import Yosemite
 
 import Combine
 
+// TODO: update to allow other customization like title
 struct CardPresentPaymentsWebViewModel: Identifiable {
     var id: String {
         webViewURL.absoluteString
@@ -15,7 +16,7 @@ struct CardPresentPaymentsWebViewModel: Identifiable {
 }
 
 protocol CardPresentPaymentsModalViewModelWebViewPresenting {
-    var webVM: Binding<CardPresentPaymentsWebViewModel?> { get }
+    var webViewModel: AnyPublisher<CardPresentPaymentsWebViewModel?, Never> { get }
 }
 
 /// Modal presented when an error occurs while connecting to a reader due to problems with the address
@@ -55,7 +56,7 @@ final class CardPresentModalConnectingFailedUpdateAddress: CardPresentPaymentsMo
 
     private let wcSettingsAdminURL: URL?
 
-    @Published private var webViewModel: CardPresentPaymentsWebViewModel? = nil
+    @Published private var wcSettingsWebViewModel: CardPresentPaymentsWebViewModel? = nil
 
     init(image: UIImage = .paymentErrorImage,
          openWCSettings: (() -> Void)?,
@@ -75,8 +76,8 @@ final class CardPresentModalConnectingFailedUpdateAddress: CardPresentPaymentsMo
         }
         openWCSettingsAction()
         if let adminURL = wcSettingsAdminURL {
-            webViewModel = .init(webViewURL: adminURL, onCompletion: retrySearchAction, onDismiss: { [weak self] in
-                self?.webViewModel = nil
+            wcSettingsWebViewModel = .init(webViewURL: adminURL, onCompletion: retrySearchAction, onDismiss: { [weak self] in
+                self?.wcSettingsWebViewModel = nil
             })
         }
     }
@@ -89,8 +90,8 @@ final class CardPresentModalConnectingFailedUpdateAddress: CardPresentPaymentsMo
 }
 
 extension CardPresentModalConnectingFailedUpdateAddress: CardPresentPaymentsModalViewModelWebViewPresenting {
-    var webVM: Binding<CardPresentPaymentsWebViewModel?> {
-        Binding(get: { self.webViewModel }, set: { self.webViewModel = $0 })
+    var webViewModel: AnyPublisher<CardPresentPaymentsWebViewModel?, Never> {
+        $wcSettingsWebViewModel.eraseToAnyPublisher()
     }
 }
 

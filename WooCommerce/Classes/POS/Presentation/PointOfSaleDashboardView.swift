@@ -49,7 +49,7 @@ struct PointOfSaleDashboardView: View {
             switch viewModel.cardPresentPaymentEvent {
             case .showAlert(let alertViewModel):
                 CardPresentPaymentAlert(alertViewModel: alertViewModel)
-                        .sheet(item: (alertViewModel as? CardPresentPaymentsModalViewModelWebViewPresenting)?.webVM ?? .constant(nil)) { webViewModel in
+                        .sheet(item: $viewModel.webViewModel) { webViewModel in
                             WCSettingsWebView(adminUrl: webViewModel.webViewURL, completion: webViewModel.onCompletion)
                         }
             case let .showWCSettingsWebView(adminURL, completion):

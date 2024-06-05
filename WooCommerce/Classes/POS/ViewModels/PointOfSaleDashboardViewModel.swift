@@ -1,3 +1,4 @@
+import Combine
 import SwiftUI
 import protocol Yosemite.POSItem
 import struct Yosemite.POSProduct
@@ -25,6 +26,7 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
 
     @Published var showsCardReaderSheet: Bool = false
     @Published private(set) var cardPresentPaymentEvent: CardPresentPaymentEvent = .idle
+    @Published var webViewModel: CardPresentPaymentsWebViewModel?
     let cardReaderConnectionViewModel: CardReaderConnectionViewModel
 
     @Published var showsCreatingOrderSheet: Bool = false
@@ -145,6 +147,15 @@ private extension PointOfSaleDashboardViewModel {
                 return true
             }
         }.assign(to: &$showsCardReaderSheet)
+
+        cardPresentPaymentService.paymentEventPublisher.flatMap { event in
+            let nilPublisher = Just<CardPresentPaymentsWebViewModel?>(nil).eraseToAnyPublisher()
+            guard case let .showAlert(alertViewModel) = event else {
+                return nilPublisher
+            }
+            return (alertViewModel as? CardPresentPaymentsModalViewModelWebViewPresenting)?.webViewModel ?? nilPublisher
+        }
+        .assign(to: &$webViewModel)
     }
 }
 

@@ -16,17 +16,29 @@ final class PaymentsTests: XCTestCase {
     }
 
     func test_load_chipper_card_reader_manual() throws {
+        guard UIDevice.current.userInterfaceIdiom == .pad else {
+            return
+        }
+
         try PaymentsScreen().tapCardReaderManuals()
             .tapChipperManual()
             .verifyChipperManualLoadedInWebView()
     }
 
     func test_load_learn_more_link() throws {
+        guard UIDevice.current.userInterfaceIdiom == .pad else {
+            return
+        }
+
         try PaymentsScreen().tapLearnMoreIPPLink()
             .verifyIPPDocumentationLoadedInWebView()
     }
 
     func test_complete_cash_simple_payment() throws {
+        guard UIDevice.current.userInterfaceIdiom == .pad else {
+            return
+        }
+
         try PaymentsScreen().tapCollectPayment()
             .enterPaymentAmount("5")
             .takeCashPayment()

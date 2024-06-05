@@ -61,6 +61,26 @@ final class CardPresentModalError: CardPresentPaymentsModalViewModel {
     func didTapAuxiliaryButton(in viewController: UIViewController?) { }
 }
 
+// CardPresentPaymentsModalViewModelActions
+extension CardPresentModalError {
+    var primaryButtonViewModel: CardPresentPaymentsModalButtonViewModel? {
+        CardPresentPaymentsModalButtonViewModel(
+            title: primaryButtonTitle,
+            actionHandler: primaryAction)
+    }
+
+    var secondaryButtonViewModel: CardPresentPaymentsModalButtonViewModel? {
+        // TODO: check that dismissCompletion is enough for dismissal.
+        // The CollectOrderPaymentUseCase calls `onCompletion(.failure(error))`, so it might be.
+        // Wrapped in a closure to make it easier to break in to while we check, but it can be passed without wrapping if it works.
+        CardPresentPaymentsModalButtonViewModel(
+            title: secondaryButtonTitle,
+            actionHandler: { [weak self] in
+                self?.dismissCompletion()
+            })
+    }
+}
+
 private extension CardPresentModalError {
     enum Localization {
         static func paymentFailed(transactionType: CardPresentTransactionType) -> String {

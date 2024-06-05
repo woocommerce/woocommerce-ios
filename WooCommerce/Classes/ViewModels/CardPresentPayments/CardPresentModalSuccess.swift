@@ -70,7 +70,7 @@ final class CardPresentModalSuccess: CardPresentPaymentsModalViewModel {
 // TODO: Consider changing the text of this button
 extension CardPresentModalSuccess {
     var primaryButtonViewModel: CardPresentPaymentsModalButtonViewModel? {
-        CardPresentPaymentsModalButtonViewModel(title: auxiliaryButtonTitle,
+        CardPresentPaymentsModalButtonViewModel(title: Localization.saveReceiptAndContinue,
                                                 actionHandler: noReceiptAction)
     }
 

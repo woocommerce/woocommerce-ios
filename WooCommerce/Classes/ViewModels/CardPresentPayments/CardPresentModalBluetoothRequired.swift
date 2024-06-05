@@ -56,6 +56,20 @@ final class CardPresentModalBluetoothRequired: CardPresentPaymentsModalViewModel
     func didTapAuxiliaryButton(in viewController: UIViewController?) { }
 }
 
+// CardPresentPaymentsModalViewModelActions
+extension CardPresentModalBluetoothRequired {
+    var secondaryButtonViewModel: CardPresentPaymentsModalButtonViewModel? {
+        // TODO: check that primaryAction is enough for dismissal.
+        // The ConnectionController calls `self?.returnFailure(error: error)`, so it might be.
+        // Wrapped in a closure to make it easier to break in to while we check, but it can be passed without wrapping if it works.
+        CardPresentPaymentsModalButtonViewModel(
+            title: Localization.dismiss,
+            actionHandler: { [weak self] in
+                self?.primaryAction()
+            })
+    }
+}
+
 private extension CardPresentModalBluetoothRequired {
     enum Localization {
         static let bluetoothRequired = NSLocalizedString(

@@ -66,6 +66,18 @@ final class CardPresentModalNonRetryableError: CardPresentPaymentsModalViewModel
     func didTapAuxiliaryButton(in viewController: UIViewController?) { }
 }
 
+// CardPresentPaymentsModalViewModelActions
+extension CardPresentModalNonRetryableError {
+    // TODO: check that onDismiss is enough for dismissal.
+    // The CollectOrderPaymentUseCase calls `onCompletion(.failure(error))`, so it might be.
+    // Wrapped in a closure to make it easier to break in to while we check, but it can be passed without wrapping if it works.
+    var primaryButtonViewModel: CardPresentPaymentsModalButtonViewModel? {
+        CardPresentPaymentsModalButtonViewModel(
+            title: Localization.dismiss,
+            actionHandler: onDismiss)
+    }
+}
+
 private extension CardPresentModalNonRetryableError {
     enum Localization {
         static let paymentFailed = NSLocalizedString(

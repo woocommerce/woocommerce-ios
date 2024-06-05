@@ -28,10 +28,6 @@ final class OrdersTests: XCTestCase {
     }
 
     func test_create_new_order() throws {
-        guard UIDevice.current.userInterfaceIdiom == .pad else {
-            return
-        }
-
         let order = try GetMocks.readSingleOrderData()
 
         try TabNavComponent().goToOrdersScreen()

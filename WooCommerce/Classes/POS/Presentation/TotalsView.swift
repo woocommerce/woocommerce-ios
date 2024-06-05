@@ -3,15 +3,7 @@ import SwiftUI
 struct TotalsView: View {
     @ObservedObject private var viewModel: PointOfSaleDashboardViewModel
 
-    enum PaymentState {
-        case acceptingCard
-        case processingCard
-        case cardPaymentSuccessful
-        case acceptingCash
-        case cashPaymentSuccessful
-    }
-
-    @State var paymentState: PaymentState = .acceptingCard
+    @State var paymentState: PointOfSaleDashboardViewModel.PaymentState = .acceptingCard
 
     init(viewModel: PointOfSaleDashboardViewModel) {
         self.viewModel = viewModel
@@ -138,9 +130,7 @@ private extension TotalsView {
     }
 
     private var provideReceiptButton: some View {
-        Button("Provide receipt") {
-            //
-        }
+        Button("Provide receipt") {}
         .padding(30)
         .font(.title)
         .foregroundColor(Color.primaryText)

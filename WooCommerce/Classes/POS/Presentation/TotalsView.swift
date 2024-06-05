@@ -180,8 +180,15 @@ private extension TotalsView {
         }
     }
 
-    private var cardReaderView: some View {
-        Text("Card reader status placeholder view")
+    @ViewBuilder private var cardReaderView: some View {
+        switch viewModel.cardReaderConnectionViewModel.connectionStatus {
+        case .connected:
+            Text("Card reader connected placeholder view")
+        case .disconnected:
+            Button(action: viewModel.cardPaymentTapped) {
+                Text("Collect Payment")
+            }
+        }
     }
 
     @ViewBuilder func priceFieldView(title: String, formattedPrice: String) -> some View {

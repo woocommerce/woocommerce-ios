@@ -36,6 +36,10 @@ final class DashboardViewModel: ObservableObject {
     ///
     private var previousDashboardCards: [DashboardCard] = []
 
+    /// Cards fetched from storage
+    ///
+    private var savedCards: [DashboardCard] = []
+
     var unavailableCards: [DashboardCard] {
         dashboardCards.filter { $0.availability == .unavailable }
     }
@@ -139,6 +143,7 @@ final class DashboardViewModel: ObservableObject {
         configureOrdersResultController()
         setupDashboardCards()
         installPendingThemeIfNeeded()
+        observeValuesForDashboardCards()
         observeDashboardCardsAndReload()
     }
 
@@ -152,9 +157,8 @@ final class DashboardViewModel: ObservableObject {
         refreshIsInAppFeedbackCardVisibleValue()
     }
 
-    @MainActor
-    func handleCustomizationDismissal() async {
-        await configureNewCardsNotice()
+    func handleCustomizationDismissal() {
+        configureNewCardsNotice()
     }
 
     @MainActor
@@ -172,6 +176,10 @@ final class DashboardViewModel: ObservableObject {
             }
             group.addTask { [weak self] in
                 await self?.checkInboxEligibility()
+            }
+            group.addTask { [weak self] in
+                guard let self else { return }
+                savedCards = await loadDashboardCards() ?? []
             }
         }
         isReloadingAllData = false
@@ -202,29 +210,12 @@ final class DashboardViewModel: ObservableObject {
         }
     }
 
-    func refreshDashboardCards() {
-        storeOnboardingViewModel.$canShowInDashboard
-            .combineLatest(blazeCampaignDashboardViewModel.$canShowInDashboard, $hasOrders, $isEligibleForInbox)
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] canShowOnboarding, canShowBlaze, hasOrders, isEligibleForInbox in
-                guard let self else { return }
-                Task {
-                    await self.updateDashboardCards(canShowOnboarding: canShowOnboarding,
-                                                    canShowBlaze: canShowBlaze,
-                                                    canShowAnalytics: hasOrders,
-                                                    canShowLastOrders: hasOrders,
-                                                    canShowInbox: isEligibleForInbox)
-                }
-            }
-            .store(in: &subscriptions)
-    }
-
     func showCustomizationScreen() {
         // The app should remove the notice once a user opens the Customize screen (whether they end up customizing or not).
         // To do so, we save the current dashboard cards once when opening Customize. The current cards will already have
         // been generated with the new cards included, so saving it ensures that the notice is hidden in subsequent checks.
         if showNewCardsNotice {
-            stores.dispatch(AppSettingsAction.setDashboardCards(siteID: siteID, cards: dashboardCards))
+            saveDashboardCards(cards: dashboardCards)
             showNewCardsNotice = false
         }
         showingCustomization = true
@@ -235,8 +226,13 @@ final class DashboardViewModel: ObservableObject {
             .filter { $0.enabled }
             .map(\.type)
         analytics.track(event: .DynamicDashboard.editorSaveTapped(types: activeCardTypes))
-        stores.dispatch(AppSettingsAction.setDashboardCards(siteID: siteID, cards: cards))
+        saveDashboardCards(cards: cards)
         dashboardCards = cards
+    }
+
+    func saveDashboardCards(cards: [DashboardCard]) {
+        stores.dispatch(AppSettingsAction.setDashboardCards(siteID: siteID, cards: cards))
+        savedCards = cards
     }
 }
 
@@ -380,6 +376,21 @@ private extension DashboardViewModel {
 
 // MARK: Private helpers
 private extension DashboardViewModel {
+    func observeValuesForDashboardCards() {
+        storeOnboardingViewModel.$canShowInDashboard
+            .combineLatest(blazeCampaignDashboardViewModel.$canShowInDashboard, $hasOrders, $isEligibleForInbox)
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] canShowOnboarding, canShowBlaze, hasOrders, isEligibleForInbox in
+                guard let self else { return }
+                updateDashboardCards(canShowOnboarding: canShowOnboarding,
+                                     canShowBlaze: canShowBlaze,
+                                     canShowAnalytics: hasOrders,
+                                     canShowLastOrders: hasOrders,
+                                     canShowInbox: isEligibleForInbox)
+            }
+            .store(in: &subscriptions)
+    }
+
     /// Checks for Just In Time Messages and prepares the announcement if needed.
     ///
     @MainActor
@@ -509,12 +520,11 @@ private extension DashboardViewModel {
         return cards
     }
 
-    @MainActor
     func updateDashboardCards(canShowOnboarding: Bool,
                               canShowBlaze: Bool,
                               canShowAnalytics: Bool,
                               canShowLastOrders: Bool,
-                              canShowInbox: Bool) async {
+                              canShowInbox: Bool) {
 
         // First, generate latest cards state based on current canShow states
         let initialCards = generateDefaultCards(canShowOnboarding: canShowOnboarding,
@@ -526,7 +536,6 @@ private extension DashboardViewModel {
         // Next, get saved cards and preserve existing enabled state for all available cards.
         // This is needed because even if a user already disabled an available card and saved it, in `initialCards`
         // the same card might be set to be enabled. To respect user's setting, we need to check the saved state and re-apply it.
-        let savedCards = await loadDashboardCards() ?? []
         let updatedCards = initialCards.map { initialCard in
             if let savedCard = savedCards.first(where: { $0.type == initialCard.type }),
                savedCard.availability == .show && initialCard.availability == .show {
@@ -558,26 +567,17 @@ private extension DashboardViewModel {
             dashboardCards = reorderedCards + remainingCards
         }
 
-        await configureNewCardsNotice(with: savedCards)
+        configureNewCardsNotice()
     }
 
     /// Determines whether to show the notice that new cards now exist and can be found in Customize screen.
     /// Can optionally pass local cards in case they are recently loaded before calling this function.
-    @MainActor
-    func configureNewCardsNotice(with localCards: [DashboardCard]? = nil) async {
+    func configureNewCardsNotice() {
         guard featureFlagService.isFeatureFlagEnabled(.dynamicDashboardM2) else {
             return
         }
 
-        var cards: [DashboardCard]
-
-        if let localCards {
-            cards = localCards
-        } else {
-            cards = await loadDashboardCards() ?? []
-        }
-
-        let savedCardTypes = Set(cards.map { $0.type })
+        let savedCardTypes = Set(savedCards.map { $0.type })
         let savedCardContainsAllNewCards = Constants.m2CardSet.isSubset(of: savedCardTypes)
 
         if savedCardContainsAllNewCards {

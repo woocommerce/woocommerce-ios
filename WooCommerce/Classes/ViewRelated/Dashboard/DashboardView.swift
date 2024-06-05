@@ -156,9 +156,7 @@ struct DashboardView: View {
         }
         .sheet(isPresented: $viewModel.showingCustomization,
                onDismiss: {
-            Task {
-                await viewModel.handleCustomizationDismissal()
-            }
+            viewModel.handleCustomizationDismissal()
         }) {
             DashboardCustomizationView(viewModel: DashboardCustomizationViewModel(
                 allCards: viewModel.availableCards,

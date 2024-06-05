@@ -30,12 +30,17 @@ struct TotalsView: View {
                     .font(.title)
                     .foregroundColor(Color.primaryBackground)
                     .background(Color.white)
-                Button("Card") { debugPrint("Not implemented") }
+                Button("Card") { viewModel.cardPaymentTapped() }
                     .padding(.all, 10)
                     .frame(maxWidth: .infinity, idealHeight: 120)
                     .font(.title)
                     .foregroundColor(Color.primaryBackground)
                     .background(Color.white)
+            }
+        }
+        .sheet(isPresented: $viewModel.showsCreatingOrderSheet) {
+            ProgressView {
+                Text("Creating $15 test order")
             }
         }
     }

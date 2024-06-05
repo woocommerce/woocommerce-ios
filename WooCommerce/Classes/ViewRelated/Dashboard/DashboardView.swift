@@ -107,7 +107,8 @@ struct DashboardView: View {
                 }, label: {
                     Text(Localization.edit)
                         .overlay(alignment: .topTrailing) {
-                            if viewModel.showNewCardsNotice {
+                            if viewModel.showNewCardsNotice &&
+                                !viewModel.isReloadingAllData {
                                 Circle()
                                     .fill(Color(.accent))
                                     .frame(width: Layout.dotBadgeSize)
@@ -246,7 +247,7 @@ private extension DashboardView {
                 }
             }
 
-            if viewModel.showNewCardsNotice {
+            if viewModel.showNewCardsNotice && !viewModel.isReloadingAllData {
                 newCardsNoticeCard
             }
 

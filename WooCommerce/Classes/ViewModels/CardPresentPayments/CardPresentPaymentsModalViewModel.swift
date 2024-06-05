@@ -67,9 +67,8 @@ protocol CardPresentPaymentsModalViewModelActions {
     var auxiliaryButtonViewModel: CardPresentPaymentsModalButtonViewModel? { get }
 }
 
-/// This is an initial, naive adapting of the existing view models to call the handlers without passing a view controller
-/// That's not really good enough, but unblocks us to be able to use the buttons.
-/// We should replace this with specific SwiftUI handlers.
+/// This is a naive fallback use of the existing UIKit handlers, without passing a view controller.
+/// In general, we should have specific SwiftUI handlers for each view model, but this helps us move forward quickly.
 extension CardPresentPaymentsModalViewModelUIKitActions where Self: CardPresentPaymentsModalViewModelActions {
     var primaryButtonViewModel: CardPresentPaymentsModalButtonViewModel? {
         CardPresentPaymentsModalButtonViewModel(title: primaryButtonTitle) {

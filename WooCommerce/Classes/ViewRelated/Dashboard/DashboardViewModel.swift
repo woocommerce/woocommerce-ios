@@ -105,6 +105,7 @@ final class DashboardViewModel: ObservableObject {
          userDefaults: UserDefaults = .standard,
          themeInstaller: ThemeInstaller = DefaultThemeInstaller(),
          usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter = StoreStatsUsageTracksEventEmitter(),
+         blazeEligibilityChecker: BlazeEligibilityCheckerProtocol = BlazeEligibilityChecker(),
          inboxEligibilityChecker: InboxEligibilityChecker = InboxEligibilityUseCase()) {
         self.siteID = siteID
         self.stores = stores
@@ -115,7 +116,10 @@ final class DashboardViewModel: ObservableObject {
         self.justInTimeMessagesManager = JustInTimeMessagesProvider(stores: stores, analytics: analytics)
         self.localAnnouncementsProvider = .init(stores: stores, analytics: analytics, featureFlagService: featureFlags)
         self.storeOnboardingViewModel = .init(siteID: siteID, isExpanded: false, stores: stores, defaults: userDefaults)
-        self.blazeCampaignDashboardViewModel = .init(siteID: siteID)
+        self.blazeCampaignDashboardViewModel = .init(siteID: siteID,
+                                                     stores: stores,
+                                                     storageManager: storageManager,
+                                                     blazeEligibilityChecker: blazeEligibilityChecker)
         self.storePerformanceViewModel = .init(siteID: siteID,
                                                usageTracksEventEmitter: usageTracksEventEmitter)
         self.topPerformersViewModel = .init(siteID: siteID,

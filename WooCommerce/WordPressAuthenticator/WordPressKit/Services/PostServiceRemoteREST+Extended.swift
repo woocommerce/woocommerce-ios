@@ -59,6 +59,23 @@ extension PostServiceRemoteREST: PostServiceRemoteExtended {
             }
         }
     }
+
+    public func createAutosave(forPostID postID: Int, parameters: RemotePostCreateParameters) async throws -> RemotePostAutosaveResponse {
+        let path = self.path(forEndpoint: "sites/\(siteID)/posts/\(postID)/autosave", withVersion: ._1_1)
+        let parameters = try makeParameters(from: RemotePostCreateParametersWordPressComEncoder(parameters: parameters))
+        let result = await wordPressComRestApi.perform(.post, URLString: path, parameters: parameters, type: RemotePostAutosaveResponse.self)
+        return try result.get().body
+    }
+}
+
+public struct RemotePostAutosaveResponse: Decodable {
+    public let autosaveID: Int
+    public let previewURL: URL
+
+    enum CodingKeys: String, CodingKey {
+        case autosaveID = "ID"
+        case previewURL = "preview_URL"
+    }
 }
 
 // Decodes the post in the background.

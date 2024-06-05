@@ -151,8 +151,9 @@ final class DashboardViewModel: ObservableObject {
         refreshIsInAppFeedbackCardVisibleValue()
     }
 
-    func handleCustomizationDismissal() {
-        configureNewCardsNotice()
+    @MainActor
+    func handleCustomizationDismissal() async {
+        await configureNewCardsNotice()
     }
 
     @MainActor

@@ -17,7 +17,8 @@ final class CardPresentPaymentsAlertPresenterAdaptor: CardPresentPaymentAlertsPr
     }
 
     func presentWCSettingsWebView(adminURL: URL, completion: @escaping () -> Void) {
-        paymentAlertSubject.send(.showWCSettingsWebView(adminURL: adminURL, completion: completion))
+        // TODO: revert UIKit implementation and remove `presentWCSettingsWebView`
+//        paymentAlertSubject.send(.showWCSettingsWebView(adminURL: adminURL, completion: completion))
     }
 
     func foundSeveralReaders(readerIDs: [String], connect: @escaping (String) -> Void, cancelSearch: @escaping () -> Void) {

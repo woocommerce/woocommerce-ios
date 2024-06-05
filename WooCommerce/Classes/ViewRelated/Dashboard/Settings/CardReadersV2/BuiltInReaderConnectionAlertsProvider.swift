@@ -29,11 +29,13 @@ struct BuiltInReaderConnectionAlertsProvider: CardReaderConnectionAlertsProvidin
     }
 
 
-    func connectingFailedIncompleteAddress(openWCSettings: (() -> Void)?,
+    func connectingFailedIncompleteAddress(wcSettingsAdminURL: URL?,
+                                           openWCSettings: (() -> Void)?,
                                            retrySearch: @escaping () -> Void,
                                            cancelSearch: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
         CardPresentModalConnectingFailedUpdateAddress(image: .builtInReaderError,
                                                       openWCSettings: openWCSettings,
+                                                      wcSettingsAdminURL: wcSettingsAdminURL,
                                                       retrySearch: retrySearch,
                                                       cancelSearch: cancelSearch)
     }

@@ -1,9 +1,26 @@
 import UIKit
 import Yosemite
 
+import Combine
+
+struct CardPresentPaymentsWebViewModel: Identifiable {
+    var id: String {
+        webViewURL.absoluteString
+    }
+
+    let webViewURL: URL
+    let onCompletion: () -> Void
+    // TODO: support dismissal
+    let onDismiss: () -> Void
+}
+
+protocol CardPresentPaymentsModalViewModelWebViewPresenting {
+    var webVM: Binding<CardPresentPaymentsWebViewModel?> { get }
+}
+
 /// Modal presented when an error occurs while connecting to a reader due to problems with the address
 ///
-final class CardPresentModalConnectingFailedUpdateAddress: CardPresentPaymentsModalViewModel {
+final class CardPresentModalConnectingFailedUpdateAddress: CardPresentPaymentsModalViewModel, ObservableObject {
     private let openWCSettingsAction: (() -> Void)?
     private let retrySearchAction: () -> Void
     private let cancelSearchAction: () -> Void
@@ -36,12 +53,18 @@ final class CardPresentModalConnectingFailedUpdateAddress: CardPresentPaymentsMo
         return topTitle
     }
 
+    private let wcSettingsAdminURL: URL?
+
+    @Published private var webViewModel: CardPresentPaymentsWebViewModel? = nil
+
     init(image: UIImage = .paymentErrorImage,
          openWCSettings: (() -> Void)?,
+         wcSettingsAdminURL: URL?,
          retrySearch: @escaping () -> Void,
          cancelSearch: @escaping () -> Void) {
         self.image = image
         self.openWCSettingsAction = openWCSettings
+        self.wcSettingsAdminURL = wcSettingsAdminURL
         self.retrySearchAction = retrySearch
         self.cancelSearchAction = cancelSearch
     }
@@ -51,6 +74,11 @@ final class CardPresentModalConnectingFailedUpdateAddress: CardPresentPaymentsMo
             return retrySearchAction()
         }
         openWCSettingsAction()
+        if let adminURL = wcSettingsAdminURL {
+            webViewModel = .init(webViewURL: adminURL, onCompletion: retrySearchAction, onDismiss: { [weak self] in
+                self?.webViewModel = nil
+            })
+        }
     }
 
     func didTapSecondaryButton(in viewController: UIViewController?) {
@@ -58,6 +86,12 @@ final class CardPresentModalConnectingFailedUpdateAddress: CardPresentPaymentsMo
     }
 
     func didTapAuxiliaryButton(in viewController: UIViewController?) { }
+}
+
+extension CardPresentModalConnectingFailedUpdateAddress: CardPresentPaymentsModalViewModelWebViewPresenting {
+    var webVM: Binding<CardPresentPaymentsWebViewModel?> {
+        Binding(get: { self.webViewModel }, set: { self.webViewModel = $0 })
+    }
 }
 
 private extension CardPresentModalConnectingFailedUpdateAddress {

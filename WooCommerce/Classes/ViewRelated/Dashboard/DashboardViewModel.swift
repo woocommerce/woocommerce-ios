@@ -153,8 +153,15 @@ final class DashboardViewModel: ObservableObject {
     /// The visibility is updated on `onAppear()` to consider scenarios when the app is
     /// never terminated.
     ///
-    func onViewAppear() {
+    @MainActor
+    func onViewAppear() async {
         refreshIsInAppFeedbackCardVisibleValue()
+
+        /// When the user creates a Blaze campaign after hiding the Blaze card
+        /// we add the Blaze card back in `BlazeCampaignCreationCoordinator`.
+        /// Here we need to get the updated cards from storage and update the dashboard accordingly.
+        savedCards = await loadDashboardCards() ?? []
+        observeValuesForDashboardCards()
     }
 
     func handleCustomizationDismissal() {

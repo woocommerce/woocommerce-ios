@@ -168,7 +168,9 @@ struct DashboardView: View {
             Survey(source: .inAppFeedback)
         }
         .onAppear {
-            viewModel.onViewAppear()
+            Task {
+                await viewModel.onViewAppear()
+            }
         }
     }
 }

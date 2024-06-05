@@ -210,6 +210,6 @@ private extension TotalsView {
 #if DEBUG
 #Preview {
     TotalsView(viewModel: .init(items: [],
-                                cardPresentPaymentService: CardPresentPaymentService(siteID: 0)))
+                                cardPresentPaymentService: CardPresentPaymentPreviewService()))
 }
 #endif

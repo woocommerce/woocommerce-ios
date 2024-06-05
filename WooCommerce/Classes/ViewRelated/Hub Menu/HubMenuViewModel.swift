@@ -116,6 +116,10 @@ final class HubMenuViewModel: ObservableObject {
             navigationPath: navigationPathBinding)
     }()
 
+    lazy var cardPresentPaymentService: CardPresentPaymentFacade = {
+        CardPresentPaymentService(siteID: siteID)
+    }()
+
     init(siteID: Int64,
          tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,

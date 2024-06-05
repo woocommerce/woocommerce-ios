@@ -32,7 +32,7 @@ struct CardReaderConnectionStatusView: View {
 
 #Preview {
     VStack {
-        CardReaderConnectionStatusView(connectionViewModel: .init(cardPresentPayment: CardPresentPaymentService(siteID: 0)))
+        CardReaderConnectionStatusView(connectionViewModel: .init(cardPresentPayment: CardPresentPaymentPreviewService()))
     }
 }
 

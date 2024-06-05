@@ -162,12 +162,12 @@ private extension HubMenu {
             case HubMenuViewModel.Customers.id:
                 CustomersListView(viewModel: .init(siteID: viewModel.siteID))
             case HubMenuViewModel.PointOfSaleEntryPoint.id:
-                // TODO:
-                // PointOfSaleEntryPointView does not need currencySettings, since these are passed through POSItemProvider
-                PointOfSaleEntryPointView(itemProvider: viewModel.posItemProvider,
-                                          hideAppTabBar: { isHidden in
-                    AppDelegate.shared.setShouldHideTabBar(isHidden)
-                }, siteID: viewModel.siteID)
+                PointOfSaleEntryPointView(
+                    itemProvider: viewModel.posItemProvider,
+                    hideAppTabBar: { isHidden in
+                        AppDelegate.shared.setShouldHideTabBar(isHidden)
+                    },
+                    cardPresentPaymentService: viewModel.cardPresentPaymentService)
             default:
                 fatalError("🚨 Unsupported menu item")
             }

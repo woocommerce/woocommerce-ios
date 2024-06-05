@@ -7,12 +7,14 @@ struct PointOfSaleEntryPointView: View {
 
     private let hideAppTabBar: ((Bool) -> Void)
 
-    init(itemProvider: POSItemProvider, hideAppTabBar: @escaping ((Bool) -> Void), siteID: Int64) {
+    init(itemProvider: POSItemProvider,
+         hideAppTabBar: @escaping ((Bool) -> Void),
+         cardPresentPaymentService: CardPresentPaymentFacade) {
         self.hideAppTabBar = hideAppTabBar
 
         _viewModel = StateObject(wrappedValue: PointOfSaleDashboardViewModel(
             items: itemProvider.providePointOfSaleItems(),
-            cardPresentPaymentService: CardPresentPaymentService(siteID: siteID))
+            cardPresentPaymentService: cardPresentPaymentService)
         )
     }
 
@@ -31,6 +33,8 @@ struct PointOfSaleEntryPointView: View {
 #Preview {
     // TODO: https://github.com/woocommerce/woocommerce-ios/issues/12917
     // Some Yosemite imports are only needed for previews
-    PointOfSaleEntryPointView(itemProvider: NullPOSProductProvider(), hideAppTabBar: { _ in }, siteID: 0)
+    PointOfSaleEntryPointView(itemProvider: NullPOSProductProvider(),
+                              hideAppTabBar: { _ in },
+                              cardPresentPaymentService: CardPresentPaymentPreviewService())
 }
 #endif

@@ -25,7 +25,7 @@ final class CardPresentPaymentReceiptEmailCoordinatorTests: XCTestCase {
         // When
         let _: Void = waitFor { promise in
             self.coordinator.presentEmailForm(data: .init(content: "", order: .fake(), storeName: nil),
-                                              from: .init()) {
+                                              from: MockViewControllerPresenting()) {
                 promise(())
             }
             let error = NSError(domain: "Email receipt failure", code: 100, userInfo: [:])
@@ -48,7 +48,7 @@ final class CardPresentPaymentReceiptEmailCoordinatorTests: XCTestCase {
         // When
         let _: Void = waitFor { promise in
             coordinator.presentEmailForm(data: .init(content: "", order: .fake(), storeName: nil),
-                                              from: .init()) {
+                                              from: MockViewControllerPresenting()) {
                 promise(())
             }
             let error = NSError(domain: "Email receipt failure", code: 100, userInfo: [:])
@@ -68,7 +68,7 @@ final class CardPresentPaymentReceiptEmailCoordinatorTests: XCTestCase {
         // When
         let _: Void = waitFor { promise in
             self.coordinator.presentEmailForm(data: .init(content: "", order: .fake(), storeName: nil),
-                                              from: .init()) {
+                                              from: MockViewControllerPresenting()) {
                 promise(())
             }
             self.coordinator.mailComposeController(.init(), didFinishWith: .cancelled, error: nil)
@@ -85,7 +85,7 @@ final class CardPresentPaymentReceiptEmailCoordinatorTests: XCTestCase {
         // When
         let _: Void = waitFor { promise in
             self.coordinator.presentEmailForm(data: .init(content: "", order: .fake(), storeName: nil),
-                                              from: .init()) {
+                                              from: MockViewControllerPresenting()) {
                 promise(())
             }
             self.coordinator.mailComposeController(.init(), didFinishWith: .sent, error: nil)

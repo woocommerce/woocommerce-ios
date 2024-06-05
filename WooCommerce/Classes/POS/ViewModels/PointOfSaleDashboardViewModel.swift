@@ -5,6 +5,14 @@ import class WooFoundation.CurrencyFormatter
 import class WooFoundation.CurrencySettings
 
 final class PointOfSaleDashboardViewModel: ObservableObject {
+    enum PaymentState {
+        case acceptingCard
+        case processingCard
+        case cardPaymentSuccessful
+        case acceptingCash
+        case cashPaymentSuccessful
+    }
+
     @Published private(set) var items: [POSItem]
     @Published private(set) var itemsInCart: [CartItem] = [] {
         didSet {
@@ -50,6 +58,13 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
 
     func removeItemFromCart(_ cartItem: CartItem) {
         itemsInCart.removeAll(where: { $0.id == cartItem.id })
+        checkIfCartEmpty()
+    }
+
+    private func checkIfCartEmpty() {
+        if itemsInCart.isEmpty {
+            orderStage = .building
+        }
     }
 
     func submitCart() {

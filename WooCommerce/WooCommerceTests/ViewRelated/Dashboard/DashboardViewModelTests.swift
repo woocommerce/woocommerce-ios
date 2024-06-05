@@ -736,7 +736,7 @@ final class DashboardViewModelTests: XCTestCase {
         ]
         mockLoadDashboardCards(withStoredCards: completeCardsSet)
 
-        viewModel.handleCustomizationDismissal() // Simulate dismissing Customize screen
+        await viewModel.handleCustomizationDismissal() // Simulate dismissing Customize screen
 
         // Then
         XCTAssertFalse(viewModel.showNewCardsNotice) // Check it's false after dismissing Customize screen

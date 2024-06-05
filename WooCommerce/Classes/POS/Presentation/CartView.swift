@@ -93,7 +93,6 @@ private extension CartView {
 #if DEBUG
 #Preview {
     CartView(viewModel: PointOfSaleDashboardViewModel(items: POSProductProvider.provideProductsForPreview(),
-                                                      currencySettings: .init(),
                                                       cardPresentPaymentService: CardPresentPaymentService(siteID: 0)))
 }
 #endif

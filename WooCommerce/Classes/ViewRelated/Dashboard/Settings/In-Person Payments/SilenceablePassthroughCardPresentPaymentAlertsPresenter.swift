@@ -11,6 +11,10 @@ final class SilenceablePassthroughCardPresentPaymentAlertsPresenter: CardPresent
         alertSubject.send(viewModel)
     }
 
+    func presentWCSettingsWebView(adminURL: URL, completion: @escaping () -> Void) {
+        // TODO: confirm if this is needed
+    }
+
     func foundSeveralReaders(readerIDs: [String], connect: @escaping (String) -> Void, cancelSearch: @escaping () -> Void) {
         // no-op – currently this only supports Built In readers, which don't require this
     }

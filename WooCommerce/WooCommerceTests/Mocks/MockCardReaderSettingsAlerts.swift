@@ -97,7 +97,7 @@ extension MockCardReaderSettingsAlerts: BluetoothReaderConnnectionAlertsProvidin
         return MockCardPresentPaymentsModalViewModel()
     }
 
-    func connectingFailedIncompleteAddress(openWCSettings: ((UIViewController) -> Void)?,
+    func connectingFailedIncompleteAddress(openWCSettings: (() -> Void)?,
                                            retrySearch: @escaping () -> Void,
                                            cancelSearch: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
         if mode == .continueSearchingAfterConnectionFailure {

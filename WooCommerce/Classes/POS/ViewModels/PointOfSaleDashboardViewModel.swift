@@ -25,7 +25,9 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
 
     @Published var showsCardReaderSheet: Bool = false
     @Published private(set) var cardPresentPaymentEvent: CardPresentPaymentEvent = .idle
-    @ObservedObject private(set) var cardReaderConnectionViewModel: CardReaderConnectionViewModel
+    let cardReaderConnectionViewModel: CardReaderConnectionViewModel
+
+    @Published var showsCreatingOrderSheet: Bool = false
 
     @Published var showsFilterSheet: Bool = false
 
@@ -36,15 +38,13 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
 
     @Published private(set) var orderStage: OrderStage = .building
 
-    private let currencyFormatter: CurrencyFormatter
-
     private let cardPresentPaymentService: CardPresentPaymentFacade
 
+    private let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
+
     init(items: [POSItem],
-         currencySettings: CurrencySettings,
          cardPresentPaymentService: CardPresentPaymentFacade) {
         self.items = items
-        self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
         self.cardPresentPaymentService = cardPresentPaymentService
         self.cardReaderConnectionViewModel = CardReaderConnectionViewModel(cardPresentPayment: cardPresentPaymentService)
         observeCardPresentPaymentEvents()
@@ -94,13 +94,24 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
     var checkoutButtonDisabled: Bool {
         return itemsInCart.isEmpty
     }
+
+    func cardPaymentTapped() {
+        Task { @MainActor in
+            showsCreatingOrderSheet = true
+            let order = try await createTestOrder()
+            showsCreatingOrderSheet = false
+            let _ = try await cardPresentPaymentService.collectPayment(for: order, using: .bluetooth)
+
+            // TODO: Here we should present something to show the payment was successful or not,
+            // and then clear the screen ready for the next transaction.
+        }
+    }
 }
 
 extension PointOfSaleDashboardViewModel {
     // Helper function to populate SwifUI previews
     static func defaultPreview() -> PointOfSaleDashboardViewModel {
         PointOfSaleDashboardViewModel(items: [],
-                                      currencySettings: .init(),
                                       cardPresentPaymentService: CardPresentPaymentService(siteID: 0))
     }
 }
@@ -129,9 +140,27 @@ private extension PointOfSaleDashboardViewModel {
                 return false
             case .showAlert,
                     .showReaderList,
-                    .showOnboarding:
+                    .showOnboarding,
+                    .showWCSettingsWebView:
                 return true
             }
         }.assign(to: &$showsCardReaderSheet)
     }
+}
+
+import enum Yosemite.OrderAction
+import struct Yosemite.Order
+private extension PointOfSaleDashboardViewModel {
+    @MainActor
+       func createTestOrder() async throws -> Order {
+           return try await withCheckedThrowingContinuation { continuation in
+               let action = OrderAction.createSimplePaymentsOrder(siteID: ServiceLocator.stores.sessionManager.defaultStoreID ?? 0,
+                                                                  status: .pending,
+                                                                  amount: "15.00",
+                                                                  taxable: false) { result in
+                   continuation.resume(with: result)
+               }
+               ServiceLocator.stores.dispatch(action)
+           }
+       }
 }

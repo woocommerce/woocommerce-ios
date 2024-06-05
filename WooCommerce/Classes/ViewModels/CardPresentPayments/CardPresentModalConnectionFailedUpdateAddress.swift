@@ -4,7 +4,7 @@ import Yosemite
 /// Modal presented when an error occurs while connecting to a reader due to problems with the address
 ///
 final class CardPresentModalConnectingFailedUpdateAddress: CardPresentPaymentsModalViewModel {
-    private let openWCSettingsAction: ((UIViewController) -> Void)?
+    private let openWCSettingsAction: (() -> Void)?
     private let retrySearchAction: () -> Void
     private let cancelSearchAction: () -> Void
 
@@ -37,7 +37,7 @@ final class CardPresentModalConnectingFailedUpdateAddress: CardPresentPaymentsMo
     }
 
     init(image: UIImage = .paymentErrorImage,
-         openWCSettings: ((UIViewController) -> Void)?,
+         openWCSettings: (() -> Void)?,
          retrySearch: @escaping () -> Void,
          cancelSearch: @escaping () -> Void) {
         self.image = image
@@ -47,11 +47,10 @@ final class CardPresentModalConnectingFailedUpdateAddress: CardPresentPaymentsMo
     }
 
     func didTapPrimaryButton(in viewController: UIViewController?) {
-        guard let openWCSettingsAction = openWCSettingsAction,
-              let viewController = viewController else {
+        guard let openWCSettingsAction else {
             return retrySearchAction()
         }
-        openWCSettingsAction(viewController)
+        openWCSettingsAction()
     }
 
     func didTapSecondaryButton(in viewController: UIViewController?) {

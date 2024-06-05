@@ -3,16 +3,14 @@ import Foundation
 import struct Yosemite.Order
 import struct Yosemite.CardPresentPaymentsConfiguration
 import struct Yosemite.CardReader
+import enum Yosemite.CardPresentPaymentAction
 
 final class CardPresentPaymentService: CardPresentPaymentFacade {
     let paymentEventPublisher: AnyPublisher<CardPresentPaymentEvent, Never>
 
-    var connectedReaderPublisher: AnyPublisher<CardPresentPaymentCardReader?, Never> {
-        connectedReaderSubject.eraseToAnyPublisher()
-    }
+    private (set) var connectedReaderPublisher: AnyPublisher<CardPresentPaymentCardReader?, Never>
 
     private let paymentEventSubject = PassthroughSubject<CardPresentPaymentEvent, Never>()
-    private let connectedReaderSubject = CurrentValueSubject<CardPresentPaymentCardReader?, Never>(nil)
 
     private let onboardingAdaptor: CardPresentPaymentsOnboardingPresenterAdaptor
 
@@ -27,7 +25,8 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
 
     private var paymentTask: Task<CardPresentPaymentAdaptedCollectOrderPaymentResult, Error>?
 
-    init(siteID: Int64) {
+    @MainActor
+    init(siteID: Int64) async {
         self.siteID = siteID
         let onboardingAdaptor = CardPresentPaymentsOnboardingPresenterAdaptor()
         self.onboardingAdaptor = onboardingAdaptor
@@ -51,6 +50,8 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
             .merge(with: paymentEventSubject)
             .receive(on: DispatchQueue.main) // These will be used for UI changes, so moving to the Main thread helps.
             .eraseToAnyPublisher()
+
+        connectedReaderPublisher = await Self.createCardReaderConnectionPublisher()
     }
 
     @MainActor
@@ -64,7 +65,6 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
         case .completed(let cardReader, _):
             let connectedReader = CardPresentPaymentCardReader(name: cardReader.name ?? cardReader.id,
                                                                batteryLevel: cardReader.batteryLevel)
-            connectedReaderSubject.send(connectedReader)
             paymentEventSubject.send(.idle)
             return .connected(connectedReader)
         case .canceled:
@@ -115,6 +115,30 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
 }
 
 private extension CardPresentPaymentService {
+    @MainActor
+    static func createCardReaderConnectionPublisher() async -> AnyPublisher<CardPresentPaymentCardReader?, Never> {
+        return await withCheckedContinuation { continuation in
+            var nillableContinuation: CheckedContinuation<AnyPublisher<CardPresentPaymentCardReader?, Never>, Never>? = continuation
+
+            let action = CardPresentPaymentAction.publishCardReaderConnections { cardReadersConnectionPublisher in
+                let readerConnectionPublisher = cardReadersConnectionPublisher
+                    .map { readers -> CardPresentPaymentCardReader? in
+                        guard let reader = readers.first else {
+                            return nil
+                        }
+                        return CardPresentPaymentCardReader(name: reader.name ?? reader.id,
+                                                            batteryLevel: reader.batteryLevel)
+                    }
+                    .receive(on: DispatchQueue.main)
+                    .eraseToAnyPublisher()
+
+                nillableContinuation?.resume(returning: readerConnectionPublisher)
+                nillableContinuation = nil
+            }
+            ServiceLocator.stores.dispatch(action)
+        }
+    }
+
     func createPreflightController() -> CardPresentPaymentPreflightController {
         CardPresentPaymentPreflightController(
             siteID: siteID,

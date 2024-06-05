@@ -50,7 +50,15 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
 
     func removeItemFromCart(_ cartItem: CartItem) {
         itemsInCart.removeAll(where: { $0.id == cartItem.id })
-        if itemsInCart.isEmpty {
+      checkIfCartEmpty()
+  }
+        
+  private func checkIfCartEmpty() {
+    if itemsInCart.isEmpty {
+      orderStage = .building
+    }
+  }
+
             orderStage = .building
         }
     }

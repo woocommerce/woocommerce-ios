@@ -136,9 +136,6 @@ final class DashboardViewModel: ObservableObject {
         setupDashboardCards()
         installPendingThemeIfNeeded()
         observeDashboardCardsAndReload()
-        Task {
-            await checkInboxEligibility()
-        }
     }
 
     /// Must be called by the `View` during the `onAppear()` event. This will
@@ -163,58 +160,17 @@ final class DashboardViewModel: ObservableObject {
             group.addTask { [weak self] in
                 await self?.syncDashboardEssentialData()
             }
-            group.addTask { [weak self] in
-                guard let self else { return }
-                await reloadCards(showOnDashboardCards)
+            if dashboardCards.isNotEmpty {
+                group.addTask { [weak self] in
+                    guard let self else { return }
+                    await reloadCards(showOnDashboardCards)
+                }
             }
             group.addTask { [weak self] in
                 await self?.checkInboxEligibility()
             }
         }
         isReloadingAllData = false
-    }
-
-    /// Sync essential data to construct the dashboard
-    ///
-    @MainActor
-    func syncDashboardEssentialData() async {
-        await withTaskGroup(of: Void.self) { group in
-            group.addTask { [weak self] in
-                guard let self else { return }
-                await self.syncAnnouncements(for: self.siteID)
-            }
-            group.addTask { [weak self] in
-                await self?.reloadBlazeCampaignView()
-            }
-            group.addTask { [weak self] in
-                await self?.updateJetpackBannerVisibilityFromAppSettings()
-            }
-            group.addTask { [weak self] in
-                await self?.updateHasOrdersStatus()
-            }
-        }
-    }
-
-    /// Reloads store onboarding tasks
-    ///
-    @MainActor
-    func reloadStoreOnboardingTasks() async {
-        await storeOnboardingViewModel.reloadTasks()
-    }
-
-    /// Reloads Blaze dashboard campaign view
-    ///
-    @MainActor
-    func reloadBlazeCampaignView() async {
-        await blazeCampaignDashboardViewModel.reload()
-    }
-
-    /// Checks for announcements to show on the dashboard
-    ///
-    @MainActor
-    func syncAnnouncements(for siteID: Int64) async {
-        await syncJustInTimeMessages(for: siteID)
-        await loadLocalAnnouncement()
     }
 
     /// Triggers the `.dashboardTimezonesDiffer` track event whenever the device local timezone and the current site timezone are different from each other
@@ -283,6 +239,49 @@ final class DashboardViewModel: ObservableObject {
 // MARK: Reload cards
 
 private extension DashboardViewModel {
+    /// Sync essential data to construct the dashboard
+    ///
+    @MainActor
+    func syncDashboardEssentialData() async {
+        await withTaskGroup(of: Void.self) { group in
+            group.addTask { [weak self] in
+                guard let self else { return }
+                await self.syncAnnouncements(for: self.siteID)
+            }
+            group.addTask { [weak self] in
+                await self?.reloadBlazeCampaignView()
+            }
+            group.addTask { [weak self] in
+                await self?.updateJetpackBannerVisibilityFromAppSettings()
+            }
+            group.addTask { [weak self] in
+                await self?.updateHasOrdersStatus()
+            }
+        }
+    }
+
+    /// Reloads store onboarding tasks
+    ///
+    @MainActor
+    func reloadStoreOnboardingTasks() async {
+        await storeOnboardingViewModel.reloadTasks()
+    }
+
+    /// Reloads Blaze dashboard campaign view
+    ///
+    @MainActor
+    func reloadBlazeCampaignView() async {
+        await blazeCampaignDashboardViewModel.reload()
+    }
+
+    /// Checks for announcements to show on the dashboard
+    ///
+    @MainActor
+    func syncAnnouncements(for siteID: Int64) async {
+        await syncJustInTimeMessages(for: siteID)
+        await loadLocalAnnouncement()
+    }
+
     func observeDashboardCardsAndReload() {
         $dashboardCards
             .filter({ $0.isNotEmpty })

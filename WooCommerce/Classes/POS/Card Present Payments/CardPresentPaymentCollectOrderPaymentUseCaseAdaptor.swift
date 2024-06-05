@@ -5,7 +5,11 @@ import struct Yosemite.Order
 import struct Yosemite.CardPresentPaymentsConfiguration
 
 struct CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
-    private let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
+    private let currencyFormatter: CurrencyFormatter
+
+    init(currencyFormatter: CurrencyFormatter = .init(currencySettings: ServiceLocator.currencySettings)) {
+        self.currencyFormatter = currencyFormatter
+    }
 
     func collectPaymentTask(for order: Order,
                             using connectionMethod: CardReaderConnectionMethod,
@@ -21,13 +25,13 @@ struct CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
             }
 
             let orderPaymentUseCase = CollectOrderPaymentUseCase(siteID: siteID,
-                                                 order: order,
-                                                 formattedAmount: formattedAmount,
-                                                 rootViewController: NullViewControllerPresenting(),
-                                                 onboardingPresenter: onboardingPresenter,
-                                                 configuration: configuration,
-                                                 alertsPresenter: alertsPresenter,
-                                                 preflightController: preflightController)
+                                                                 order: order,
+                                                                 formattedAmount: formattedAmount,
+                                                                 rootViewController: NullViewControllerPresenting(),
+                                                                 onboardingPresenter: onboardingPresenter,
+                                                                 configuration: configuration,
+                                                                 alertsPresenter: alertsPresenter,
+                                                                 preflightController: preflightController)
 
             return try await withTaskCancellationHandler {
                 return try await withCheckedThrowingContinuation { continuation in

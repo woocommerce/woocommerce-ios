@@ -110,7 +110,7 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
     }
 
     func cancelPayment() {
-        self.paymentTask?.cancel()
+        paymentTask?.cancel()
     }
 }
 

@@ -60,7 +60,7 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
 
     /// View Controller used to present alerts.
     ///
-    private let rootViewController: UIViewController
+    private let rootViewController: ViewControllerPresenting
 
     /// Alerts presenter: alerts from the various parts of the payment process are forwarded here
     ///
@@ -88,7 +88,7 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
     init(siteID: Int64,
          order: Order,
          formattedAmount: String,
-         rootViewController: UIViewController,
+         rootViewController: ViewControllerPresenting,
          onboardingPresenter: CardPresentPaymentsOnboardingPresenting,
          configuration: CardPresentPaymentsConfiguration,
          stores: StoresManager = ServiceLocator.stores,
@@ -596,6 +596,11 @@ private extension CollectOrderPaymentUseCase {
     }
 
     func presentBackedReceiptFailedNotice(with error: Error?, onCompleted: @escaping (() -> Void)) {
+        // TODO: consider removing this under #12864, when we have some other way to handle notices.
+        guard let rootViewController = rootViewController as? UIViewController else {
+            return
+        }
+
         DDLogError("Failed to present receipt for order: \(order.orderID). Site \(order.siteID). Error: \(String(describing: error))")
 
         let noticePresenter = DefaultNoticePresenter()
@@ -771,7 +776,7 @@ enum CardPaymentRetryApproach {
     case dontRetry
 }
 
-protocol CardPaymentErrorProtocol {
+protocol CardPaymentErrorProtocol: Error {
     var retryApproach: CardPaymentRetryApproach { get }
 }
 

@@ -150,6 +150,7 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
     }
 
     func didSelectCampaignDetails(_ campaign: BlazeCampaignListItem) {
+        analytics.track(event: .DynamicDashboard.dashboardCardInteracted(type: .blaze))
         analytics.track(event: .Blaze.blazeCampaignDetailSelected(source: .myStoreSection))
 
         let path = String(format: Constants.campaignDetailsURLFormat,

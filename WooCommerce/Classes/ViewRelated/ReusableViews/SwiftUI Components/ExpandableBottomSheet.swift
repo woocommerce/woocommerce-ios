@@ -71,7 +71,7 @@ struct ExpandableBottomSheet<AlwaysVisibleContent, ExpandableContent>: View wher
                 // but it's here as it wants to be outside the scrollview.
                 Divider()
                     .renderedIf(isExpanded || revealContentDuringDrag)
-                    .padding([.leading], Layout.dividerLeadingPadding)
+                    .padding([.bottom, .leading], Layout.dividerPadding)
             }
             .frame(maxWidth: .infinity)
             .clipped()
@@ -84,6 +84,12 @@ struct ExpandableBottomSheet<AlwaysVisibleContent, ExpandableContent>: View wher
                         panelHeight = calculateHeight()
                     }
                 })
+                .contentShape(Rectangle())
+                .onTapGesture {
+                    withAnimation {
+                        isExpanded.toggle()
+                    }
+                }
         }
         .padding(.horizontal, insets: safeAreaInsets)
         .background(GeometryReader { geometryProxy in
@@ -154,7 +160,7 @@ struct ExpandableBottomSheet<AlwaysVisibleContent, ExpandableContent>: View wher
         let collapsedHeight = fixedContentSize.height + chevronSize.height + Layout.chevronPadding
         let screenHeight = UIScreen.main.bounds.height
         let maxExpandedHeight = screenHeight * 0.8
-        let fullHeight = min(collapsedHeight + expandingContentSize.height, maxExpandedHeight)
+        let fullHeight = min(collapsedHeight + expandingContentSize.height + Layout.dividerPadding, maxExpandedHeight)
         let currentHeight = isExpanded ? fullHeight : collapsedHeight
         let dragAdjustedHeight = currentHeight - dragAmount
 
@@ -168,7 +174,7 @@ fileprivate enum Layout {
     static let chevronPadding: CGFloat = 8
     static let sheetCornerRadius: CGFloat = 10
     static let shadowRadius: CGFloat = 5
-    static let dividerLeadingPadding: CGFloat = 16
+    static let dividerPadding: CGFloat = 16
 }
 
 fileprivate enum Localization {

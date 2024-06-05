@@ -663,7 +663,14 @@ final class DashboardViewModelTests: XCTestCase {
 
     func test_showNewCardsNotice_is_false_when_all_new_cards_are_already_in_saved_cards() async {
         // Given
-        let viewModel = DashboardViewModel(siteID: sampleSiteID, stores: stores)
+        let featureFlagService = MockFeatureFlagService(isDynamicDashboardM2Enabled: true)
+        let inboxEligibilityChecker = MockInboxEligibilityChecker()
+        inboxEligibilityChecker.isEligible = true
+
+        let viewModel = DashboardViewModel(siteID: sampleSiteID,
+                                           stores: stores,
+                                           featureFlags: featureFlagService,
+                                           inboxEligibilityChecker: inboxEligibilityChecker)
         let completeCardsSet: [DashboardCard] = [
             .init(type: .inbox, availability: .show, enabled: true),
             .init(type: .reviews, availability: .show, enabled: true),

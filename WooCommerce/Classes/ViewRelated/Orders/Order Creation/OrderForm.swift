@@ -294,15 +294,15 @@ struct OrderForm: View {
                             Spacer(minLength: Layout.sectionSpacing)
 
                             Group {
-                                OrderShippingSection(useCase: viewModel.shippingUseCase)
+                                OrderShippingSection(viewModel: viewModel.shippingLineViewModel)
                                     .disabled(viewModel.shouldShowNonEditableIndicators)
                                 Spacer(minLength: Layout.sectionSpacing)
                             }
-                            .renderedIf(viewModel.shippingUseCase.shippingLineRows.isNotEmpty)
+                            .renderedIf(viewModel.shippingLineViewModel.shippingLineRows.isNotEmpty)
 
                             AddOrderComponentsSection(
                                 viewModel: viewModel.paymentDataViewModel,
-                                shippingUseCase: viewModel.shippingUseCase,
+                                shippingLineViewModel: viewModel.shippingLineViewModel,
                                 shouldShowCouponsInfoTooltip: $shouldShowInformationalCouponTooltip,
                                 shouldShowGiftCardForm: $shouldShowGiftCardForm)
                             .addingTopAndBottomDividers()
@@ -378,17 +378,18 @@ struct OrderForm: View {
         }
         .safeAreaInset(edge: .bottom) {
             VStack {
-                BannerPopover(isPresented: $viewModel.shippingUseCase.shouldShowFeedbackSurvey, config: viewModel.shippingUseCase.feedbackSurveyConfig)
+                FeedbackBannerPopover(isPresented: $viewModel.shippingLineViewModel.isSurveyPromptPresented,
+                                      config: viewModel.shippingLineViewModel.feedbackBannerConfig)
 
                 ExpandableBottomSheet(onChangeOfExpansion: viewModel.orderTotalsExpansionChanged) {
-                    VStack {
+                    VStack(spacing: .zero) {
                         HStack {
                             Text(Localization.orderTotal)
                             Spacer()
                             Text(viewModel.orderTotal)
                         }
                         .font(.headline)
-                        .padding()
+                        .padding([.bottom, .horizontal])
 
                         Divider()
                             .padding([.leading], Layout.dividerLeadingPadding)
@@ -399,7 +400,7 @@ struct OrderForm: View {
                 } expandableContent: {
                     OrderPaymentSection(
                         viewModel: viewModel.paymentDataViewModel,
-                        shippingUseCase: viewModel.shippingUseCase,
+                        shippingLineViewModel: viewModel.shippingLineViewModel,
                         shouldShowGiftCardForm: $shouldShowGiftCardForm)
                     .disabled(viewModel.shouldShowNonEditableIndicators)
                 }

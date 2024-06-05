@@ -52,7 +52,6 @@ private extension ItemGridView {
     // TODO: https://github.com/woocommerce/woocommerce-ios/issues/12917
     // The Yosemite imports are only needed for previews
     ItemGridView(viewModel: PointOfSaleDashboardViewModel(items: POSProductProvider.provideProductsForPreview(),
-                                                             currencySettings: .init(),
                                                              cardPresentPaymentService: CardPresentPaymentService(siteID: 0)))
 }
 #endif

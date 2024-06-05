@@ -4,6 +4,7 @@
 -----
 - [internal] Resolved an issue where users were unable to upload product images when the store is set to private on WP.com. [https://github.com/woocommerce/woocommerce-ios/issues/12646]
 - [internal] Enhanced Thread Safety in Core Data Management. [https://github.com/woocommerce/woocommerce-ios/pull/12805]
+- [internal] Bump Tracks iOS library to v.3.4.1, that fix a deadlock while getting device info. [https://github.com/woocommerce/woocommerce-ios/pull/12939]
 
 18.9
 -----

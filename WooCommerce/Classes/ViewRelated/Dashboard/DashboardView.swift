@@ -116,6 +116,7 @@ struct DashboardView: View {
                             }
                         }
                 })
+                .disabled(viewModel.isReloadingAllData)
             }
         }
         .toolbarBackground(Color.clear, for: .navigationBar)

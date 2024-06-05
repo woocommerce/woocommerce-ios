@@ -35,7 +35,7 @@ protocol CardReaderConnectionAlertsProviding {
     /// Defines an alert indicating connecting failed because their address needs updating.
     /// The user may try again or cancel
     ///
-    func connectingFailedIncompleteAddress(openWCSettings: ((UIViewController) -> Void)?,
+    func connectingFailedIncompleteAddress(openWCSettings: (() -> Void)?,
                                            retrySearch: @escaping () -> Void,
                                            cancelSearch: @escaping () -> Void) -> CardPresentPaymentsModalViewModel
 

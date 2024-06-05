@@ -4,6 +4,10 @@ import XCTest
 final class PaymentsTests: XCTestCase {
 
     override func setUpWithError() throws {
+        guard UIDevice.current.userInterfaceIdiom == .pad else {
+            return
+        }
+
         continueAfterFailure = false
 
         let app = XCUIApplication()

@@ -9,21 +9,21 @@ struct InAppFeedbackCardView: View {
 
     var body: some View {
         VStack(spacing: Layout.padding) {
-            Text(Localization.title)
+            Text(Localization.feedbackTitle)
                 .headlineStyle()
                 .multilineTextAlignment(.center)
                 .padding(.top, Layout.padding)
 
-            HStack(spacing: Layout.padding) {
-                Button(Localization.couldBeBetter) {
-                    viewModel.didTapCouldBeBetter()
-                }
-                .buttonStyle(SecondaryButtonStyle())
-
+            AdaptiveStack(spacing: Layout.padding) {
                 Button(Localization.iLikeIt) {
                     viewModel.didTapILikeIt()
                 }
                 .buttonStyle(PrimaryButtonStyle())
+
+                Button(Localization.couldBeBetter) {
+                    viewModel.didTapCouldBeBetter()
+                }
+                .buttonStyle(SecondaryButtonStyle())
             }
             .padding(Layout.padding)
         }
@@ -41,9 +41,9 @@ private extension InAppFeedbackCardView {
     }
 
     enum Localization {
-        static let title = NSLocalizedString(
-            "inAppFeedbackCardView.title",
-            value: "Enjoying the WooCommerce app?",
+        static let feedbackTitle = NSLocalizedString(
+            "inAppFeedbackCardView.feedbackTitle",
+            value: "Are you enjoying the app?",
             comment: "The title used when asking the user for feedback for the app."
         )
         static let couldBeBetter = NSLocalizedString(

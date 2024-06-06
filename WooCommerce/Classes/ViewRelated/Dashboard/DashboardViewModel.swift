@@ -160,7 +160,7 @@ final class DashboardViewModel: ObservableObject {
         /// When the user creates a Blaze campaign after hiding the Blaze card
         /// we add the Blaze card back in `BlazeCampaignCreationCoordinator`.
         /// Here we need to get the updated cards from storage and update the dashboard accordingly.
-        savedCards = await loadDashboardCards() ?? []
+        await loadDashboardCardsFromStorage()
         updateDashboardCards(canShowOnboarding: storeOnboardingViewModel.canShowInDashboard,
                              canShowBlaze: blazeCampaignDashboardViewModel.canShowInDashboard,
                              canShowAnalytics: hasOrders,
@@ -189,8 +189,7 @@ final class DashboardViewModel: ObservableObject {
                 await self?.checkInboxEligibility()
             }
             group.addTask { [weak self] in
-                guard let self else { return }
-                savedCards = await loadDashboardCards() ?? []
+                await self?.loadDashboardCardsFromStorage()
             }
         }
         isReloadingAllData = false
@@ -239,6 +238,20 @@ final class DashboardViewModel: ObservableObject {
         analytics.track(event: .DynamicDashboard.editorSaveTapped(types: activeCardTypes))
         saveDashboardCards(cards: cards)
         dashboardCards = cards
+    }
+}
+
+// MARK: Dashboard card persistence
+//
+private extension DashboardViewModel {
+    @MainActor
+    func loadDashboardCardsFromStorage() async {
+        let storageCards = await withCheckedContinuation { continuation in
+            stores.dispatch(AppSettingsAction.loadDashboardCards(siteID: siteID, onCompletion: { cards in
+                continuation.resume(returning: cards)
+            }))
+        }
+        savedCards = storageCards ?? []
     }
 
     func saveDashboardCards(cards: [DashboardCard]) {
@@ -634,15 +647,6 @@ private extension DashboardViewModel {
     @MainActor
     func updateJetpackBannerVisibilityFromAppSettings() async {
         jetpackBannerVisibleFromAppSettings = await loadJetpackBannerVisibilityFromAppSettings()
-    }
-
-    @MainActor
-    func loadDashboardCards() async -> [DashboardCard]? {
-        await withCheckedContinuation { continuation in
-            stores.dispatch(AppSettingsAction.loadDashboardCards(siteID: siteID, onCompletion: { cards in
-                continuation.resume(returning: cards)
-            }))
-        }
     }
 }
 

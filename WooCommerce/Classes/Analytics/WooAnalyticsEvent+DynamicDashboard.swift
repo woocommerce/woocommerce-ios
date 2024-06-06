@@ -7,6 +7,7 @@ extension WooAnalyticsEvent {
             case type
             case cards
             case newCardAvailable = "new_card_available"
+            case firstCardType = "first_card_type"
         }
 
         /// When the user taps the button to edit the dashboard layout.
@@ -24,8 +25,13 @@ extension WooAnalyticsEvent {
         /// When the user taps the Save button to in the layout editor.
         static func editorSaveTapped(types: [DashboardCard.CardType]) -> WooAnalyticsEvent {
             let typeNames = types.map { $0.analyticName }.sorted().joined(separator: ",")
-            return WooAnalyticsEvent(statName: .dynamicDashboardEditorSaveTapped,
-                                     properties: [Keys.cards.rawValue: typeNames])
+            return WooAnalyticsEvent(
+                statName: .dynamicDashboardEditorSaveTapped,
+                properties: [
+                    Keys.cards.rawValue: typeNames,
+                    Keys.firstCardType.rawValue: types.first?.analyticName
+                ].compactMapValues { $0 }
+            )
         }
 
         /// When the user taps the Retry button on the error state view of any dashboard card.

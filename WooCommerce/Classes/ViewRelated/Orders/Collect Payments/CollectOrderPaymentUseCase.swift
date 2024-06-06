@@ -66,6 +66,10 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
     ///
     private let alertsPresenter: CardPresentPaymentAlertsPresenting
 
+    private let bluetoothAlertsProvider: any CardReaderTransactionAlertsProviding
+
+    private let tapToPayAlertsProvider: any CardReaderTransactionAlertsProviding
+
     /// Onboarding presenter: shows steps for payment setup when required
     ///
     private let onboardingPresenter: CardPresentPaymentsOnboardingPresenting
@@ -95,6 +99,8 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
          paymentOrchestrator: PaymentCaptureOrchestrating = PaymentCaptureOrchestrator(),
          orderDurationRecorder: OrderDurationRecorderProtocol = OrderDurationRecorder.shared,
          alertsPresenter: CardPresentPaymentAlertsPresenting? = nil,
+         tapToPayAlertsProvider: any CardReaderTransactionAlertsProviding = BuiltInCardReaderPaymentAlertsProvider(),
+         bluetoothAlertsProvider: any CardReaderTransactionAlertsProviding = BluetoothCardReaderPaymentAlertsProvider(transactionType: .collectPayment),
          preflightController: CardPresentPaymentPreflightControllerProtocol? = nil,
          analyticsTracker: CollectOrderPaymentAnalyticsTracking? = nil) {
         self.siteID = siteID
@@ -103,6 +109,8 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
         self.rootViewController = rootViewController
         self.onboardingPresenter = onboardingPresenter
         self.alertsPresenter = alertsPresenter ?? CardPresentPaymentAlertsPresenter(rootViewController: rootViewController)
+        self.tapToPayAlertsProvider = tapToPayAlertsProvider
+        self.bluetoothAlertsProvider = bluetoothAlertsProvider
         self.configuration = configuration
         self.stores = stores
         self.paymentOrchestrator = paymentOrchestrator
@@ -140,7 +148,7 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
             self.analyticsTracker.preflightResultReceived(connectionResult)
             switch connectionResult {
             case .completed(let reader, let paymentGatewayAccount):
-                let paymentAlertProvider = reader.paymentAlertProvider()
+                let paymentAlertProvider = paymentAlertProvider(for: reader)
                 self.attemptPayment(alertProvider: paymentAlertProvider,
                                     paymentGatewayAccount: paymentGatewayAccount,
                                     onCompletion: { [weak self] result in
@@ -186,19 +194,17 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
     }
 }
 
-private extension CardReader {
-    func paymentAlertProvider() -> CardReaderTransactionAlertsProviding {
-        switch readerType {
-        case .appleBuiltIn:
-            return BuiltInCardReaderPaymentAlertsProvider()
-        default:
-            return BluetoothCardReaderPaymentAlertsProvider(transactionType: .collectPayment)
-        }
-    }
-}
-
 // MARK: Private functions
 private extension CollectOrderPaymentUseCase {
+    func paymentAlertProvider(for reader: CardReader) -> CardReaderTransactionAlertsProviding {
+        switch reader.readerType {
+        case .appleBuiltIn:
+            return tapToPayAlertsProvider
+        default:
+            return bluetoothAlertsProvider
+        }
+    }
+
     /// Checks whether the amount to be collected is valid: (not nil, convertible to decimal, higher than minimum amount ...)
     ///
     func isTotalAmountValid() -> Bool {

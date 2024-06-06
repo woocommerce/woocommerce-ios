@@ -196,8 +196,8 @@ private extension CardReaderSettingsAlerts {
     func connectingFailedUpdateAddress(openWCSettings: (() -> Void)?,
                                        retrySearch: @escaping () -> Void,
                                        cancelSearch: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
-        return CardPresentModalConnectingFailedUpdateAddress(openWCSettings: openWCSettings,
-                                                             wcSettingsAdminURL: nil,
+        return CardPresentModalConnectingFailedUpdateAddress(wcSettingsAdminURL: nil,
+                                                             openWCSettings: openWCSettings,
                                                              retrySearch: retrySearch,
                                                              cancelSearch: cancelSearch)
     }

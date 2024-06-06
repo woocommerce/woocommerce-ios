@@ -34,8 +34,8 @@ struct BuiltInReaderConnectionAlertsProvider: CardReaderConnectionAlertsProvidin
                                            retrySearch: @escaping () -> Void,
                                            cancelSearch: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
         CardPresentModalConnectingFailedUpdateAddress(image: .builtInReaderError,
-                                                      openWCSettings: openWCSettings,
                                                       wcSettingsAdminURL: wcSettingsAdminURL,
+                                                      openWCSettings: openWCSettings,
                                                       retrySearch: retrySearch,
                                                       cancelSearch: cancelSearch)
     }

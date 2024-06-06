@@ -29,7 +29,10 @@ struct BluetoothReaderConnectionAlertsProvider: BluetoothReaderConnnectionAlerts
                                            openWCSettings: (() -> Void)?,
                                            retrySearch: @escaping () -> Void,
                                            cancelSearch: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
-        CardPresentModalConnectingFailedUpdateAddress(openWCSettings: openWCSettings, wcSettingsAdminURL: wcSettingsAdminURL, retrySearch: retrySearch, cancelSearch: cancelSearch)
+        CardPresentModalConnectingFailedUpdateAddress(wcSettingsAdminURL: wcSettingsAdminURL,
+                                                      openWCSettings: openWCSettings,
+                                                      retrySearch: retrySearch,
+                                                      cancelSearch: cancelSearch)
     }
 
     func connectingFailedInvalidPostalCode(retrySearch: @escaping () -> Void,

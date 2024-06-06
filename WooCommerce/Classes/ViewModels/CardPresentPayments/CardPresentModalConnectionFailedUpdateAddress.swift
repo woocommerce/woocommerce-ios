@@ -59,13 +59,13 @@ final class CardPresentModalConnectingFailedUpdateAddress: CardPresentPaymentsMo
     @Published private var wcSettingsWebViewModel: CardPresentPaymentsWebViewModel? = nil
 
     init(image: UIImage = .paymentErrorImage,
-         openWCSettings: (() -> Void)?,
          wcSettingsAdminURL: URL?,
+         openWCSettings: (() -> Void)?,
          retrySearch: @escaping () -> Void,
          cancelSearch: @escaping () -> Void) {
         self.image = image
-        self.openWCSettingsAction = openWCSettings
         self.wcSettingsAdminURL = wcSettingsAdminURL
+        self.openWCSettingsAction = openWCSettings
         self.retrySearchAction = retrySearch
         self.cancelSearchAction = cancelSearch
     }

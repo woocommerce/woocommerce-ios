@@ -116,6 +116,8 @@ final class HubMenuViewModel: ObservableObject {
             navigationPath: navigationPathBinding)
     }()
 
+    private(set) var cardPresentPaymentService: CardPresentPaymentFacade?
+
     init(siteID: Int64,
          tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
@@ -139,10 +141,17 @@ final class HubMenuViewModel: ObservableObject {
         observeSiteForUIUpdates()
         observePlanName()
         tapToPayBadgePromotionChecker.$shouldShowTapToPayBadges.share().assign(to: &$shouldShowNewFeatureBadgeOnPayments)
+        createCardPresentPaymentService()
     }
 
     func viewDidAppear() {
         NotificationCenter.default.post(name: .hubMenuViewDidAppear, object: nil)
+    }
+
+    private func createCardPresentPaymentService() {
+        Task {
+            self.cardPresentPaymentService = await CardPresentPaymentService(siteID: siteID)
+        }
     }
 
     /// Resets the menu elements displayed on the menu.

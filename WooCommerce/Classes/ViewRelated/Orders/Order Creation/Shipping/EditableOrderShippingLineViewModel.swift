@@ -5,9 +5,11 @@ import protocol Storage.StorageManagerType
 import struct Storage.FeedbackSettings
 import Combine
 
-/// Use case to add, edit, or remove shipping lines on an order.
+/// View model used for order shipping lines in order creation and editing flows.
 ///
-final class EditableOrderShippingUseCase: ObservableObject {
+/// Encapsulates logic for displaying and editing (adding, updating, or removing) shipping lines on an order.
+///
+final class EditableOrderShippingLineViewModel: ObservableObject {
     private var siteID: Int64
     private var analytics: Analytics
     private var storageManager: StorageManagerType
@@ -147,7 +149,7 @@ final class EditableOrderShippingUseCase: ObservableObject {
 
 // MARK: Configuration
 
-private extension EditableOrderShippingUseCase {
+private extension EditableOrderShippingLineViewModel {
     /// Binds the order state to the `shouldShowNonEditableIndicators` property.
     ///
     func configureNonEditableIndicators() {
@@ -262,16 +264,16 @@ private extension EditableOrderShippingUseCase {
     }
 }
 
-private extension EditableOrderShippingUseCase {
+private extension EditableOrderShippingLineViewModel {
     enum Localization {
         enum FeedbackBanner {
-            static let title = NSLocalizedString("editableOrderShippingUseCase.feedbackSurvey.title",
+            static let title = NSLocalizedString("editableOrderShippingLineViewModel.feedbackSurvey.title",
                                                  value: "Shipping added!",
                                                  comment: "Title for the feedback survey about adding shipping to an order")
-            static let message = NSLocalizedString("editableOrderShippingUseCase.feedbackSurvey.message",
+            static let message = NSLocalizedString("editableOrderShippingLineViewModel.feedbackSurvey.message",
                                                    value: "Does Woo make shipping easy?",
                                                    comment: "Message for the feedback survey about adding shipping to an order")
-            static let buttonTitle = NSLocalizedString("editableOrderShippingUseCase.feedbackSurvey.buttonTitle",
+            static let buttonTitle = NSLocalizedString("editableOrderShippingLineViewModel.feedbackSurvey.buttonTitle",
                                                        value: "Share your feedback",
                                                        comment: "Title for button to view the feedback survey about adding shipping to an order")
         }

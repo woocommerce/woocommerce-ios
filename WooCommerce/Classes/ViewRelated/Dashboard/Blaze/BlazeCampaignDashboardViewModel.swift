@@ -76,7 +76,9 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
     /// Blaze campaign ResultsController.
     private lazy var blazeCampaignResultsController: ResultsController<StorageBlazeCampaignListItem> = {
         let predicate = NSPredicate(format: "siteID == %lld", siteID)
-        let sortDescriptorByID = NSSortDescriptor(keyPath: \StorageBlazeCampaignListItem.campaignID, ascending: false)
+        let sortDescriptorByID = NSSortDescriptor(key: "campaignID",
+                                                  ascending: false,
+                                                  selector: #selector(NSString.localizedStandardCompare))
         let resultsController = ResultsController<StorageBlazeCampaignListItem>(storageManager: storageManager,
                                                                                 matching: predicate,
                                                                                 fetchLimit: 1,
@@ -143,7 +145,6 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
     }
 
     func didSelectCampaignList() {
-        analytics.track(event: .DynamicDashboard.dashboardCardInteracted(type: .blaze))
         analytics.track(event: .Blaze.blazeCampaignListEntryPointSelected(source: .myStoreSection))
     }
 
@@ -159,7 +160,6 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
     }
 
     func didSelectCreateCampaign(source: BlazeSource) {
-        analytics.track(event: .DynamicDashboard.dashboardCardInteracted(type: .blaze))
         analytics.track(event: .Blaze.blazeEntryPointTapped(source: source))
     }
 

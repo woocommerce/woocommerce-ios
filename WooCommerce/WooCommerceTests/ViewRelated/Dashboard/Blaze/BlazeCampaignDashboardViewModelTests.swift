@@ -518,6 +518,39 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
     }
 
     @MainActor
+    func test_latest_campaign_is_displayed() async {
+        // Given
+        let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
+        let campaign1 = BlazeCampaignListItem.fake().copy(siteID: sampleSiteID, campaignID: "9", budgetCurrency: "USD")
+        let campaign2 = BlazeCampaignListItem.fake().copy(siteID: sampleSiteID, campaignID: "10", budgetCurrency: "USD")
+        let sut = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
+                                                  stores: stores,
+                                                  storageManager: storageManager,
+                                                  blazeEligibilityChecker: checker)
+
+        mockSynchronizeCampaignsList()
+        mockSynchronizeProducts()
+
+        await sut.reload()
+
+        if case .empty = sut.state {
+            // Expected empty state when no Blaze campaign or published product
+        } else {
+            XCTFail("Wrong state")
+        }
+
+        // When
+        insertCampaigns([campaign1, campaign2])
+
+        // Then
+        if case .showCampaign(let campaign) = sut.state {
+            XCTAssertEqual(campaign, campaign2)
+        } else {
+            XCTFail("Wrong state")
+        }
+    }
+
+    @MainActor
     func test_state_is_showProduct_if_published_product_is_added_to_storage() async {
         // Given
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)

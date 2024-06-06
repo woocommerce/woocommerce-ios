@@ -1,6 +1,5 @@
 import SwiftUI
 import protocol Yosemite.POSItemProvider
-import class Yosemite.NullPOSProductProvider
 
 struct PointOfSaleEntryPointView: View {
     @StateObject private var viewModel: PointOfSaleDashboardViewModel
@@ -29,8 +28,6 @@ struct PointOfSaleEntryPointView: View {
 
 #if DEBUG
 #Preview {
-    // TODO: https://github.com/woocommerce/woocommerce-ios/issues/12917
-    // Some Yosemite imports are only needed for previews
-    PointOfSaleEntryPointView(itemProvider: NullPOSProductProvider(), hideAppTabBar: { _ in }, siteID: 0)
+    PointOfSaleEntryPointView(itemProvider: POSItemProviderPreview(), hideAppTabBar: { _ in }, siteID: 0)
 }
 #endif

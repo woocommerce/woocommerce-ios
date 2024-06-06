@@ -226,15 +226,6 @@ private extension CollectOrderPaymentUseCase {
         return NotValidAmountError.belowMinimumAmount(amount: minimum)
     }
 
-    func handleTotalAmountInvalidError(_ error: Error,
-                                       onCompleted: @escaping () -> ()) {
-        analyticsTracker.trackPaymentFailure(with: error)
-        DDLogError("💳 Error: failed to capture payment for order. Order amount is below minimum or not valid")
-        alertsPresenter.present(viewModel: CardPresentModalNonRetryableError(amount: formattedAmount,
-                                                                             error: totalAmountInvalidError(),
-                                                                             onDismiss: onCompleted))
-    }
-
     func isOrderAwaitingPayment() -> Bool {
         order.datePaid == nil
     }

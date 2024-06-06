@@ -23,7 +23,8 @@ class DashboardServiceRemoteTests: RemoteTestCase, RESTTestable {
             "marketing_version",
             "device_id",
             "cards",
-            "locale"
+            "locale",
+            "os_version",
         ]
 
         stubRemoteResponse({ req in

@@ -15,7 +15,8 @@ class FeatureFlagRemoteTests: RemoteTestCase, RESTTestable {
             "platform",
             "build_number",
             "marketing_version",
-            "device_id"
+            "device_id",
+            "os_version",
         ]
 
         stub { req -> Bool in

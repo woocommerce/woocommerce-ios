@@ -1,16 +1,17 @@
 import SwiftUI
 
-typealias CardPresentPaymentsWebViewPresentingAlertViewModel = CardPresentPaymentsModalViewModelContent & CardPresentPaymentsModalViewModelActions & CardPresentPaymentsModalViewModelWebViewPresenting & ObservableObject
-
 struct CardPresentPaymentAlert: View {
-    let alertViewModel: CardPresentPaymentAlertViewModel
+    @StateObject private var viewModel: CardPresentPaymentAlertSwiftUIViewModel
+
+    init(alertViewModel: CardPresentPaymentAlertViewModel) {
+        self._viewModel = .init(wrappedValue: .init(alertViewModel: alertViewModel))
+    }
 
     var body: some View {
-        if let webViewPresentingViewModel = alertViewModel as? CardPresentPaymentsWebViewPresentingAlertViewModel {
-            WebViewPresentingCardPresentPaymentAlert(alertViewModel: webViewPresentingViewModel)
-        } else {
-            BasicCardPresentPaymentAlert(alertViewModel: alertViewModel)
-        }
+        BasicCardPresentPaymentAlert(alertViewModel: viewModel.alertViewModel)
+            .sheet(item: $viewModel.webViewModel) { webViewModel in
+                WCSettingsWebView(adminUrl: webViewModel.webViewURL, completion: webViewModel.onCompletion)
+            }
     }
 }
 
@@ -37,17 +38,6 @@ struct BasicCardPresentPaymentAlert: View {
                 Button(auxiliaryButton.title, action: auxiliaryButton.actionHandler)
             }
         }
-    }
-}
-
-struct WebViewPresentingCardPresentPaymentAlert: View {
-    @ObservedObject var alertViewModel: any CardPresentPaymentsWebViewPresentingAlertViewModel
-
-    var body: some View {
-        BasicCardPresentPaymentAlert(alertViewModel: alertViewModel)
-            .sheet(item: $alertViewModel.webViewModel) { webViewModel in
-                WCSettingsWebView(adminUrl: webViewModel.webViewURL, completion: webViewModel.onCompletion)
-            }
     }
 }
 

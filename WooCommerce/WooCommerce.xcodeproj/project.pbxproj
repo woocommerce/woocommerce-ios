@@ -569,6 +569,7 @@
 		02E4FD812306AA890049610C /* StatsTimeRangeBarViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E4FD802306AA890049610C /* StatsTimeRangeBarViewModelTests.swift */; };
 		02E6B97823853D81000A36F0 /* TitleAndValueTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E6B97623853D81000A36F0 /* TitleAndValueTableViewCell.swift */; };
 		02E6B97923853D81000A36F0 /* TitleAndValueTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 02E6B97723853D81000A36F0 /* TitleAndValueTableViewCell.xib */; };
+		02E71DB62C118C640036C2FD /* CardPresentPaymentAlertSwiftUIViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E71DB52C118C640036C2FD /* CardPresentPaymentAlertSwiftUIViewModel.swift */; };
 		02E8B17723E2C49000A43403 /* InProgressProductImageCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E8B17523E2C49000A43403 /* InProgressProductImageCollectionViewCell.swift */; };
 		02E8B17823E2C49000A43403 /* InProgressProductImageCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 02E8B17623E2C49000A43403 /* InProgressProductImageCollectionViewCell.xib */; };
 		02E8B17A23E2C4BD00A43403 /* CircleSpinnerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E8B17923E2C4BD00A43403 /* CircleSpinnerView.swift */; };
@@ -3492,6 +3493,7 @@
 		02E4FD802306AA890049610C /* StatsTimeRangeBarViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsTimeRangeBarViewModelTests.swift; sourceTree = "<group>"; };
 		02E6B97623853D81000A36F0 /* TitleAndValueTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitleAndValueTableViewCell.swift; sourceTree = "<group>"; };
 		02E6B97723853D81000A36F0 /* TitleAndValueTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TitleAndValueTableViewCell.xib; sourceTree = "<group>"; };
+		02E71DB52C118C640036C2FD /* CardPresentPaymentAlertSwiftUIViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentAlertSwiftUIViewModel.swift; sourceTree = "<group>"; };
 		02E8B17523E2C49000A43403 /* InProgressProductImageCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InProgressProductImageCollectionViewCell.swift; sourceTree = "<group>"; };
 		02E8B17623E2C49000A43403 /* InProgressProductImageCollectionViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InProgressProductImageCollectionViewCell.xib; sourceTree = "<group>"; };
 		02E8B17923E2C4BD00A43403 /* CircleSpinnerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircleSpinnerView.swift; sourceTree = "<group>"; };
@@ -6527,6 +6529,7 @@
 		026826A12BF59DED0036F959 /* Presentation */ = {
 			isa = PBXGroup;
 			children = (
+				02E71DB42C118C470036C2FD /* Card Present Payments */,
 				026826B02BF59E170036F959 /* CardReaderConnection */,
 				026826A72BF59DF70036F959 /* PointOfSaleEntryPointView.swift */,
 				026826A52BF59DF60036F959 /* PointOfSaleDashboardView.swift */,
@@ -7180,6 +7183,14 @@
 				DED039252BC79339005D0571 /* StoreStats */,
 			);
 			path = Dashboard;
+			sourceTree = "<group>";
+		};
+		02E71DB42C118C470036C2FD /* Card Present Payments */ = {
+			isa = PBXGroup;
+			children = (
+				02E71DB52C118C640036C2FD /* CardPresentPaymentAlertSwiftUIViewModel.swift */,
+			);
+			path = "Card Present Payments";
 			sourceTree = "<group>";
 		};
 		02EAF5BC29FA04660058071C /* AI */ = {
@@ -15214,6 +15225,7 @@
 				B95700AE2A72C39C001BADF2 /* CustomerSelectorView.swift in Sources */,
 				DE971219290A9615000C0BD3 /* AddStoreFooterView.swift in Sources */,
 				261E91A029C961EE00A5C118 /* SubscriptionsViewModel.swift in Sources */,
+				02E71DB62C118C640036C2FD /* CardPresentPaymentAlertSwiftUIViewModel.swift in Sources */,
 				4574745D24EA84D800CF49BC /* ProductTypeBottomSheetListSelectorCommand.swift in Sources */,
 				26578C4126277AFF00A15097 /* OrderAddOnsListViewController.swift in Sources */,
 				02F67FEE25805F9C00C3BAD2 /* ShippingLabelTrackingURLGenerator.swift in Sources */,

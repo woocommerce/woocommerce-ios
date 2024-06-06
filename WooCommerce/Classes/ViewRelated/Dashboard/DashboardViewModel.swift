@@ -161,7 +161,11 @@ final class DashboardViewModel: ObservableObject {
         /// we add the Blaze card back in `BlazeCampaignCreationCoordinator`.
         /// Here we need to get the updated cards from storage and update the dashboard accordingly.
         savedCards = await loadDashboardCards() ?? []
-        observeValuesForDashboardCards()
+        updateDashboardCards(canShowOnboarding: storeOnboardingViewModel.canShowInDashboard,
+                             canShowBlaze: blazeCampaignDashboardViewModel.canShowInDashboard,
+                             canShowAnalytics: hasOrders,
+                             canShowLastOrders: hasOrders,
+                             canShowInbox: isEligibleForInbox)
     }
 
     func handleCustomizationDismissal() {

@@ -77,6 +77,15 @@ final class CardPresentModalTapCard: CardPresentPaymentsModalViewModel {
     }
 }
 
+// CardPresentPaymentsModalViewModelActions
+extension CardPresentModalTapCard {
+    var secondaryButtonViewModel: CardPresentPaymentsModalButtonViewModel? {
+        CardPresentPaymentsModalButtonViewModel(
+            title: Localization.cancel,
+            actionHandler: onCancel)
+    }
+}
+
 private extension CardPresentModalTapCard {
     enum Localization {
         static let readerIsReady = NSLocalizedString(

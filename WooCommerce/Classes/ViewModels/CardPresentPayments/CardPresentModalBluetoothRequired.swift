@@ -56,6 +56,15 @@ final class CardPresentModalBluetoothRequired: CardPresentPaymentsModalViewModel
     func didTapAuxiliaryButton(in viewController: UIViewController?) { }
 }
 
+// CardPresentPaymentsModalViewModelActions
+extension CardPresentModalBluetoothRequired {
+    var secondaryButtonViewModel: CardPresentPaymentsModalButtonViewModel? {
+        CardPresentPaymentsModalButtonViewModel(
+            title: Localization.dismiss,
+            actionHandler: primaryAction)
+    }
+}
+
 private extension CardPresentModalBluetoothRequired {
     enum Localization {
         static let bluetoothRequired = NSLocalizedString(

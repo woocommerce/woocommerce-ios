@@ -1,6 +1,5 @@
 import SwiftUI
 import protocol Yosemite.POSItem
-import struct Yosemite.POSProduct
 import class WooFoundation.CurrencyFormatter
 import class WooFoundation.CurrencySettings
 
@@ -105,14 +104,6 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
             // TODO: Here we should present something to show the payment was successful or not,
             // and then clear the screen ready for the next transaction.
         }
-    }
-}
-
-extension PointOfSaleDashboardViewModel {
-    // Helper function to populate SwifUI previews
-    static func defaultPreview() -> PointOfSaleDashboardViewModel {
-        PointOfSaleDashboardViewModel(items: [],
-                                      cardPresentPaymentService: CardPresentPaymentService(siteID: 0))
     }
 }
 

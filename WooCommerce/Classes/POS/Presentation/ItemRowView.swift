@@ -1,4 +1,3 @@
-import class Yosemite.POSProductProvider
 import SwiftUI
 
 struct ItemRowView: View {
@@ -33,11 +32,9 @@ struct ItemRowView: View {
 
 #if DEBUG
 #Preview {
-    // TODO: https://github.com/woocommerce/woocommerce-ios/issues/12917
-    // The Yosemite imports are only needed for previews
     ItemRowView(cartItem: CartItem(id: UUID(),
-                                      item: POSProductProvider.provideProductForPreview(),
-                                      quantity: 2),
+                                   item: POSItemProviderPreview().providePointOfSaleItem(),
+                                   quantity: 2),
                 onItemRemoveTapped: { })
 }
 #endif

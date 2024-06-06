@@ -14,16 +14,9 @@ struct InAppFeedbackCardView: View {
                 .multilineTextAlignment(.center)
                 .padding(.top, Layout.padding)
 
-            AdaptiveStack(spacing: Layout.padding) {
-                Button(Localization.iLikeIt) {
-                    viewModel.didTapILikeIt()
-                }
-                .buttonStyle(PrimaryButtonStyle())
-
-                Button(Localization.couldBeBetter) {
-                    viewModel.didTapCouldBeBetter()
-                }
-                .buttonStyle(SecondaryButtonStyle())
+            ViewThatFits(in: .horizontal) {
+                horizontalButtonGroup
+                verticalButtonGroup
             }
             .padding(Layout.padding)
         }
@@ -31,6 +24,44 @@ struct InAppFeedbackCardView: View {
             RoundedRectangle(cornerRadius: Layout.cornerRadius)
                 .stroke(Color(.border), lineWidth: 1)
         )
+    }
+}
+
+private extension InAppFeedbackCardView {
+    var verticalButtonGroup: some View {
+        VStack(spacing: Layout.padding) {
+            Button(Localization.iLikeIt) {
+                viewModel.didTapILikeIt()
+            }
+            .buttonStyle(PrimaryButtonStyle())
+
+            Button(Localization.couldBeBetter) {
+                viewModel.didTapCouldBeBetter()
+            }
+            .buttonStyle(SecondaryButtonStyle())
+        }
+    }
+
+    var horizontalButtonGroup: some View {
+        HStack(spacing: Layout.padding) {
+            Button {
+                viewModel.didTapILikeIt()
+            } label: {
+                Text(Localization.iLikeIt)
+                    .fixedSize(horizontal: true, vertical: false)
+                    .frame(maxWidth: .infinity)
+            }
+            .buttonStyle(PrimaryButtonStyle())
+
+            Button {
+                viewModel.didTapCouldBeBetter()
+            } label: {
+                Text(Localization.couldBeBetter)
+                    .fixedSize(horizontal: true, vertical: false)
+                    .frame(maxWidth: .infinity)
+            }
+            .buttonStyle(SecondaryButtonStyle())
+        }
     }
 }
 

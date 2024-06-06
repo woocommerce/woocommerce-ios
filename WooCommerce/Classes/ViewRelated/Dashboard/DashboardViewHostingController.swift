@@ -65,13 +65,8 @@ final class DashboardViewHostingController: UIHostingController<DashboardView> {
         observeModalJustInTimeMessages()
 
         Task {
-            await viewModel.syncDashboardEssentialData()
+            await viewModel.reloadAllData()
         }
-    }
-
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        viewModel.refreshDashboardCards()
     }
 
     override var shouldShowOfflineBanner: Bool {

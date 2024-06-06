@@ -107,7 +107,8 @@ struct DashboardView: View {
                 }, label: {
                     Text(Localization.edit)
                         .overlay(alignment: .topTrailing) {
-                            if viewModel.showNewCardsNotice {
+                            if viewModel.showNewCardsNotice &&
+                                !viewModel.isReloadingAllData {
                                 Circle()
                                     .fill(Color(.accent))
                                     .frame(width: Layout.dotBadgeSize)
@@ -155,9 +156,7 @@ struct DashboardView: View {
         }
         .sheet(isPresented: $viewModel.showingCustomization,
                onDismiss: {
-            Task {
-                await viewModel.handleCustomizationDismissal()
-            }
+            viewModel.handleCustomizationDismissal()
         }) {
             DashboardCustomizationView(viewModel: DashboardCustomizationViewModel(
                 allCards: viewModel.availableCards,
@@ -169,7 +168,9 @@ struct DashboardView: View {
             Survey(source: .inAppFeedback)
         }
         .onAppear {
-            viewModel.onViewAppear()
+            Task {
+                await viewModel.onViewAppear()
+            }
         }
     }
 }
@@ -246,7 +247,7 @@ private extension DashboardView {
                 }
             }
 
-            if viewModel.showNewCardsNotice {
+            if viewModel.showNewCardsNotice && !viewModel.isReloadingAllData {
                 newCardsNoticeCard
             }
 

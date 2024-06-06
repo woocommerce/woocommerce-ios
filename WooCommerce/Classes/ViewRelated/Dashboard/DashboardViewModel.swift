@@ -36,6 +36,10 @@ final class DashboardViewModel: ObservableObject {
     ///
     private var previousDashboardCards: [DashboardCard] = []
 
+    /// Cards fetched from storage
+    ///
+    private var savedCards: [DashboardCard] = []
+
     var unavailableCards: [DashboardCard] {
         dashboardCards.filter { $0.availability == .unavailable }
     }
@@ -105,6 +109,7 @@ final class DashboardViewModel: ObservableObject {
          userDefaults: UserDefaults = .standard,
          themeInstaller: ThemeInstaller = DefaultThemeInstaller(),
          usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter = StoreStatsUsageTracksEventEmitter(),
+         blazeEligibilityChecker: BlazeEligibilityCheckerProtocol = BlazeEligibilityChecker(),
          inboxEligibilityChecker: InboxEligibilityChecker = InboxEligibilityUseCase()) {
         self.siteID = siteID
         self.stores = stores
@@ -115,7 +120,10 @@ final class DashboardViewModel: ObservableObject {
         self.justInTimeMessagesManager = JustInTimeMessagesProvider(stores: stores, analytics: analytics)
         self.localAnnouncementsProvider = .init(stores: stores, analytics: analytics, featureFlagService: featureFlags)
         self.storeOnboardingViewModel = .init(siteID: siteID, isExpanded: false, stores: stores, defaults: userDefaults)
-        self.blazeCampaignDashboardViewModel = .init(siteID: siteID)
+        self.blazeCampaignDashboardViewModel = .init(siteID: siteID,
+                                                     stores: stores,
+                                                     storageManager: storageManager,
+                                                     blazeEligibilityChecker: blazeEligibilityChecker)
         self.storePerformanceViewModel = .init(siteID: siteID,
                                                usageTracksEventEmitter: usageTracksEventEmitter)
         self.topPerformersViewModel = .init(siteID: siteID,
@@ -135,10 +143,8 @@ final class DashboardViewModel: ObservableObject {
         configureOrdersResultController()
         setupDashboardCards()
         installPendingThemeIfNeeded()
+        observeValuesForDashboardCards()
         observeDashboardCardsAndReload()
-        Task {
-            await checkInboxEligibility()
-        }
     }
 
     /// Must be called by the `View` during the `onAppear()` event. This will
@@ -147,13 +153,23 @@ final class DashboardViewModel: ObservableObject {
     /// The visibility is updated on `onAppear()` to consider scenarios when the app is
     /// never terminated.
     ///
-    func onViewAppear() {
+    @MainActor
+    func onViewAppear() async {
         refreshIsInAppFeedbackCardVisibleValue()
+
+        /// When the user creates a Blaze campaign after hiding the Blaze card
+        /// we add the Blaze card back in `BlazeCampaignCreationCoordinator`.
+        /// Here we need to get the updated cards from storage and update the dashboard accordingly.
+        await loadDashboardCardsFromStorage()
+        updateDashboardCards(canShowOnboarding: storeOnboardingViewModel.canShowInDashboard,
+                             canShowBlaze: blazeCampaignDashboardViewModel.canShowInDashboard,
+                             canShowAnalytics: hasOrders,
+                             canShowLastOrders: hasOrders,
+                             canShowInbox: isEligibleForInbox)
     }
 
-    @MainActor
-    func handleCustomizationDismissal() async {
-        await configureNewCardsNotice()
+    func handleCustomizationDismissal() {
+        configureNewCardsNotice()
     }
 
     @MainActor
@@ -163,17 +179,90 @@ final class DashboardViewModel: ObservableObject {
             group.addTask { [weak self] in
                 await self?.syncDashboardEssentialData()
             }
-            group.addTask { [weak self] in
-                guard let self else { return }
-                await reloadCards(showOnDashboardCards)
+            if dashboardCards.isNotEmpty {
+                group.addTask { [weak self] in
+                    guard let self else { return }
+                    await reloadCards(showOnDashboardCards)
+                }
             }
             group.addTask { [weak self] in
                 await self?.checkInboxEligibility()
+            }
+            group.addTask { [weak self] in
+                await self?.loadDashboardCardsFromStorage()
             }
         }
         isReloadingAllData = false
     }
 
+    /// Triggers the `.dashboardTimezonesDiffer` track event whenever the device local timezone and the current site timezone are different from each other
+    ///
+    func trackStatsTimezone(localTimezone: TimeZone, siteGMTOffset: Double) {
+        let localGMTOffsetInHours = Double(localTimezone.secondsFromGMT()) / 3600
+        guard localGMTOffsetInHours != siteGMTOffset else {
+            return
+        }
+
+        analytics.track(event: .Dashboard.dashboardTimezonesDiffers(localTimezone: localGMTOffsetInHours, storeTimezone: siteGMTOffset))
+    }
+
+    func saveJetpackBenefitBannerDismissedTime() {
+        let dismissAction = AppSettingsAction.setJetpackBenefitsBannerLastDismissedTime(time: Date())
+        stores.dispatch(dismissAction)
+    }
+
+    func maybeSyncAnnouncementsAfterWebViewDismissed() {
+        // Sync announcements again only when the JITM modal has been dismissed to avoid showing duplicated modals.
+        if modalJustInTimeMessageViewModel == nil {
+            Task {
+                await syncAnnouncements(for: siteID)
+            }
+        }
+    }
+
+    func showCustomizationScreen() {
+        // The app should remove the notice once a user opens the Customize screen (whether they end up customizing or not).
+        // To do so, we save the current dashboard cards once when opening Customize. The current cards will already have
+        // been generated with the new cards included, so saving it ensures that the notice is hidden in subsequent checks.
+        if showNewCardsNotice {
+            saveDashboardCards(cards: dashboardCards)
+            showNewCardsNotice = false
+        }
+        showingCustomization = true
+    }
+
+    func didCustomizeDashboardCards(_ cards: [DashboardCard]) {
+        let activeCardTypes = cards
+            .filter { $0.enabled }
+            .map(\.type)
+        analytics.track(event: .DynamicDashboard.editorSaveTapped(types: activeCardTypes))
+        saveDashboardCards(cards: cards)
+        dashboardCards = cards
+    }
+}
+
+// MARK: Dashboard card persistence
+//
+private extension DashboardViewModel {
+    @MainActor
+    func loadDashboardCardsFromStorage() async {
+        let storageCards = await withCheckedContinuation { continuation in
+            stores.dispatch(AppSettingsAction.loadDashboardCards(siteID: siteID, onCompletion: { cards in
+                continuation.resume(returning: cards)
+            }))
+        }
+        savedCards = storageCards ?? []
+    }
+
+    func saveDashboardCards(cards: [DashboardCard]) {
+        stores.dispatch(AppSettingsAction.setDashboardCards(siteID: siteID, cards: cards))
+        savedCards = cards
+    }
+}
+
+// MARK: Reload cards
+
+private extension DashboardViewModel {
     /// Sync essential data to construct the dashboard
     ///
     @MainActor
@@ -217,72 +306,6 @@ final class DashboardViewModel: ObservableObject {
         await loadLocalAnnouncement()
     }
 
-    /// Triggers the `.dashboardTimezonesDiffer` track event whenever the device local timezone and the current site timezone are different from each other
-    ///
-    func trackStatsTimezone(localTimezone: TimeZone, siteGMTOffset: Double) {
-        let localGMTOffsetInHours = Double(localTimezone.secondsFromGMT()) / 3600
-        guard localGMTOffsetInHours != siteGMTOffset else {
-            return
-        }
-
-        analytics.track(event: .Dashboard.dashboardTimezonesDiffers(localTimezone: localGMTOffsetInHours, storeTimezone: siteGMTOffset))
-    }
-
-    func saveJetpackBenefitBannerDismissedTime() {
-        let dismissAction = AppSettingsAction.setJetpackBenefitsBannerLastDismissedTime(time: Date())
-        stores.dispatch(dismissAction)
-    }
-
-    func maybeSyncAnnouncementsAfterWebViewDismissed() {
-        // Sync announcements again only when the JITM modal has been dismissed to avoid showing duplicated modals.
-        if modalJustInTimeMessageViewModel == nil {
-            Task {
-                await syncAnnouncements(for: siteID)
-            }
-        }
-    }
-
-    func refreshDashboardCards() {
-        storeOnboardingViewModel.$canShowInDashboard
-            .combineLatest(blazeCampaignDashboardViewModel.$canShowInDashboard, $hasOrders, $isEligibleForInbox)
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] canShowOnboarding, canShowBlaze, hasOrders, isEligibleForInbox in
-                guard let self else { return }
-                Task {
-                    await self.updateDashboardCards(canShowOnboarding: canShowOnboarding,
-                                                    canShowBlaze: canShowBlaze,
-                                                    canShowAnalytics: hasOrders,
-                                                    canShowLastOrders: hasOrders,
-                                                    canShowInbox: isEligibleForInbox)
-                }
-            }
-            .store(in: &subscriptions)
-    }
-
-    func showCustomizationScreen() {
-        // The app should remove the notice once a user opens the Customize screen (whether they end up customizing or not).
-        // To do so, we save the current dashboard cards once when opening Customize. The current cards will already have
-        // been generated with the new cards included, so saving it ensures that the notice is hidden in subsequent checks.
-        if showNewCardsNotice {
-            stores.dispatch(AppSettingsAction.setDashboardCards(siteID: siteID, cards: dashboardCards))
-            showNewCardsNotice = false
-        }
-        showingCustomization = true
-    }
-
-    func didCustomizeDashboardCards(_ cards: [DashboardCard]) {
-        let activeCardTypes = cards
-            .filter { $0.enabled }
-            .map(\.type)
-        analytics.track(event: .DynamicDashboard.editorSaveTapped(types: activeCardTypes))
-        stores.dispatch(AppSettingsAction.setDashboardCards(siteID: siteID, cards: cards))
-        dashboardCards = cards
-    }
-}
-
-// MARK: Reload cards
-
-private extension DashboardViewModel {
     func observeDashboardCardsAndReload() {
         $dashboardCards
             .filter({ $0.isNotEmpty })
@@ -377,6 +400,21 @@ private extension DashboardViewModel {
 
 // MARK: Private helpers
 private extension DashboardViewModel {
+    func observeValuesForDashboardCards() {
+        storeOnboardingViewModel.$canShowInDashboard
+            .combineLatest(blazeCampaignDashboardViewModel.$canShowInDashboard, $hasOrders, $isEligibleForInbox)
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] canShowOnboarding, canShowBlaze, hasOrders, isEligibleForInbox in
+                guard let self else { return }
+                updateDashboardCards(canShowOnboarding: canShowOnboarding,
+                                     canShowBlaze: canShowBlaze,
+                                     canShowAnalytics: hasOrders,
+                                     canShowLastOrders: hasOrders,
+                                     canShowInbox: isEligibleForInbox)
+            }
+            .store(in: &subscriptions)
+    }
+
     /// Checks for Just In Time Messages and prepares the announcement if needed.
     ///
     @MainActor
@@ -506,12 +544,11 @@ private extension DashboardViewModel {
         return cards
     }
 
-    @MainActor
     func updateDashboardCards(canShowOnboarding: Bool,
                               canShowBlaze: Bool,
                               canShowAnalytics: Bool,
                               canShowLastOrders: Bool,
-                              canShowInbox: Bool) async {
+                              canShowInbox: Bool) {
 
         // First, generate latest cards state based on current canShow states
         let initialCards = generateDefaultCards(canShowOnboarding: canShowOnboarding,
@@ -523,7 +560,6 @@ private extension DashboardViewModel {
         // Next, get saved cards and preserve existing enabled state for all available cards.
         // This is needed because even if a user already disabled an available card and saved it, in `initialCards`
         // the same card might be set to be enabled. To respect user's setting, we need to check the saved state and re-apply it.
-        let savedCards = await loadDashboardCards() ?? []
         let updatedCards = initialCards.map { initialCard in
             if let savedCard = savedCards.first(where: { $0.type == initialCard.type }),
                savedCard.availability == .show && initialCard.availability == .show {
@@ -555,26 +591,17 @@ private extension DashboardViewModel {
             dashboardCards = reorderedCards + remainingCards
         }
 
-        await configureNewCardsNotice(with: savedCards)
+        configureNewCardsNotice()
     }
 
     /// Determines whether to show the notice that new cards now exist and can be found in Customize screen.
     /// Can optionally pass local cards in case they are recently loaded before calling this function.
-    @MainActor
-    func configureNewCardsNotice(with localCards: [DashboardCard]? = nil) async {
+    func configureNewCardsNotice() {
         guard featureFlagService.isFeatureFlagEnabled(.dynamicDashboardM2) else {
             return
         }
 
-        var cards: [DashboardCard]
-
-        if let localCards {
-            cards = localCards
-        } else {
-            cards = await loadDashboardCards() ?? []
-        }
-
-        let savedCardTypes = Set(cards.map { $0.type })
+        let savedCardTypes = Set(savedCards.map { $0.type })
         let savedCardContainsAllNewCards = Constants.m2CardSet.isSubset(of: savedCardTypes)
 
         if savedCardContainsAllNewCards {
@@ -620,15 +647,6 @@ private extension DashboardViewModel {
     @MainActor
     func updateJetpackBannerVisibilityFromAppSettings() async {
         jetpackBannerVisibleFromAppSettings = await loadJetpackBannerVisibilityFromAppSettings()
-    }
-
-    @MainActor
-    func loadDashboardCards() async -> [DashboardCard]? {
-        await withCheckedContinuation { continuation in
-            stores.dispatch(AppSettingsAction.loadDashboardCards(siteID: siteID, onCompletion: { cards in
-                continuation.resume(returning: cards)
-            }))
-        }
     }
 }
 

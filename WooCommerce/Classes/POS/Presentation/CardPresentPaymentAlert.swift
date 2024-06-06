@@ -1,10 +1,13 @@
 import SwiftUI
 
 struct CardPresentPaymentAlert: View {
-    @StateObject private var viewModel: CardPresentPaymentAlertSwiftUIViewModel
+    // TODO: Figure out whether this is the right choice vs @StateObject
+    // Using @StateObject resulted in the alert not being updated when
+    // alertViewModel changed – possibly we needed to invalidate the view's id.
+    @ObservedObject private var viewModel: CardPresentPaymentAlertSwiftUIViewModel
 
     init(alertViewModel: CardPresentPaymentAlertViewModel) {
-        self._viewModel = .init(wrappedValue: .init(alertViewModel: alertViewModel))
+        self.viewModel = .init(alertViewModel: alertViewModel)
     }
 
     var body: some View {

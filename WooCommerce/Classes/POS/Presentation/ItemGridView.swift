@@ -8,7 +8,8 @@ struct ItemGridView: View {
     }
 
     var body: some View {
-        let columns: [GridItem] = Array(repeating: .init(.fixed(Constants.itemWidth)),
+        let columns: [GridItem] = Array(repeating: .init(.flexible(minimum: Constants.minItemWidth,
+                                                                   maximum: Constants.maxItemWidth)),
                                         count: Constants.maxItemsPerRow)
 
         VStack {
@@ -43,7 +44,8 @@ struct ItemGridView: View {
 private extension ItemGridView {
     enum Constants {
         static let maxItemsPerRow: Int = 2
-        static let itemWidth: CGFloat = 325.0
+        static let minItemWidth: CGFloat = 250.0
+        static let maxItemWidth: CGFloat = 325.0
     }
 }
 

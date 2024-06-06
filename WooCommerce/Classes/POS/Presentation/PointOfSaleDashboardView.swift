@@ -104,6 +104,6 @@ fileprivate extension CardPresentPaymentEvent {
 #Preview {
     PointOfSaleDashboardView(
         viewModel: PointOfSaleDashboardViewModel(items: POSItemProviderPreview().providePointOfSaleItems(),
-                                                 cardPresentPaymentService: CardPresentPaymentService(siteID: 0)))
+                                                 cardPresentPaymentService: CardPresentPaymentPreviewService()))
 }
 #endif

@@ -107,14 +107,6 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
     }
 }
 
-extension PointOfSaleDashboardViewModel {
-    // Helper function to populate SwifUI previews
-    static func defaultPreview() -> PointOfSaleDashboardViewModel {
-        PointOfSaleDashboardViewModel(items: [],
-                                      cardPresentPaymentService: CardPresentPaymentService(siteID: 0))
-    }
-}
-
 private extension PointOfSaleDashboardViewModel {
     func observeItemsInCartForCartTotal() {
         $itemsInCart

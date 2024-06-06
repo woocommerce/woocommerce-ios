@@ -79,7 +79,7 @@ final class CardPresentModalTapCard: CardPresentPaymentsModalViewModel {
 
 // CardPresentPaymentsModalViewModelActions
 extension CardPresentModalTapCard {
-    var secondaryButtonViewModel: CardPresentPaymentsModalButtonViewModel {
+    var secondaryButtonViewModel: CardPresentPaymentsModalButtonViewModel? {
         CardPresentPaymentsModalButtonViewModel(
             title: Localization.cancel,
             actionHandler: onCancel)

@@ -307,7 +307,7 @@ private extension DashboardView {
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, Layout.elementPadding)
 
-            Button(Localization.NewCardsNoticeCard.addSectionsButtonLabel) {
+            Button(Localization.NewCardsNoticeCard.addSectionsButtonText) {
                 ServiceLocator.analytics.track(event: .DynamicDashboard.dashboardCardAddNewSectionsTapped())
 
                 viewModel.showCustomizationScreen()
@@ -439,9 +439,9 @@ private extension DashboardView {
                 comment: "Subtitle of the New Cards Notice card"
             )
 
-            static let addSectionsButtonLabel = NSLocalizedString(
-                "dashboardView.newCardsNoticeCard.addSectionsButtonLabel",
-                value: "Add new sections",
+            static let addSectionsButtonText = NSLocalizedString(
+                "dashboardView.newCardsNoticeCard.addSectionsButtonText",
+                value: "Add New Sections",
                 comment: "Label of the button to add sections"
             )
         }

@@ -6,7 +6,7 @@ import struct Yosemite.CardPresentPaymentsConfiguration
 
 struct CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
     private let currencyFormatter: CurrencyFormatter
-    private let paymentAlertsProviderAdaptor: CardReaderTransactionAlertsProviding
+    private let paymentAlertsProviderAdaptor: CardPresentPaymentsAlertsProviderAdaptor
 
     init(currencyFormatter: CurrencyFormatter = .init(currencySettings: ServiceLocator.currencySettings)) {
         self.currencyFormatter = currencyFormatter
@@ -19,23 +19,24 @@ struct CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
                             preflightController: CardPresentPaymentPreflightController,
                             onboardingPresenter: CardPresentPaymentsOnboardingPresenting,
                             configuration: CardPresentPaymentsConfiguration,
-                            alertsPresenter: CardPresentPaymentAlertsPresenting,
+                            alertsPresenter: CardPresentPaymentsAlertPresenterAdaptor,
                             paymentEventSubject: any Subject<CardPresentPaymentEvent, Never>) -> Task<CardPresentPaymentAdaptedCollectOrderPaymentResult, Error> {
         return Task {
             guard let formattedAmount = currencyFormatter.formatAmount(order.total, with: order.currency) else {
                 throw CardPresentPaymentServiceError.invalidAmount
             }
 
-            let orderPaymentUseCase = CollectOrderPaymentUseCase(siteID: siteID,
-                                                                 order: order,
-                                                                 formattedAmount: formattedAmount,
-                                                                 rootViewController: NullViewControllerPresenting(),
-                                                                 onboardingPresenter: onboardingPresenter,
-                                                                 configuration: configuration,
-                                                                 alertsPresenter: alertsPresenter,
-                                                                 tapToPayAlertsProvider: paymentAlertsProviderAdaptor,
-                                                                 bluetoothAlertsProvider: paymentAlertsProviderAdaptor,
-                                                                 preflightController: preflightController)
+            let orderPaymentUseCase = CollectOrderPaymentUseCase<CardPresentPaymentsAlertsProviderAdaptor, CardPresentPaymentsAlertPresenterAdaptor>(
+                siteID: siteID,
+                order: order,
+                formattedAmount: formattedAmount,
+                rootViewController: NullViewControllerPresenting(),
+                onboardingPresenter: onboardingPresenter,
+                configuration: configuration,
+                alertsPresenter: alertsPresenter,
+                tapToPayAlertsProvider: paymentAlertsProviderAdaptor,
+                bluetoothAlertsProvider: paymentAlertsProviderAdaptor,
+                preflightController: preflightController)
 
             return try await withTaskCancellationHandler {
                 return try await withCheckedThrowingContinuation { continuation in

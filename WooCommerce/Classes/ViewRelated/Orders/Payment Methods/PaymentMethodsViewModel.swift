@@ -208,7 +208,9 @@ final class PaymentMethodsViewModel: ObservableObject {
         let alertsPresenter = CardPresentPaymentAlertsPresenter(rootViewController: rootViewController)
         let configuration = CardPresentConfigurationLoader().configuration
 
-        collectPaymentsUseCase = useCase ?? CollectOrderPaymentUseCase(
+        
+        // TODO: it would be better to specify both alerts provider types
+        collectPaymentsUseCase = useCase ?? CollectOrderPaymentUseCase<BluetoothCardReaderPaymentAlertsProvider, CardPresentPaymentAlertsPresenter>(
             siteID: self.siteID,
             order: order,
             formattedAmount: self.formattedTotal,

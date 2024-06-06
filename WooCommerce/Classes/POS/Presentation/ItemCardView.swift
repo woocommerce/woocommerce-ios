@@ -12,8 +12,14 @@ struct ItemCardView: View {
 
     var body: some View {
         HStack {
-            if let image = item.thumbnail {
-                ProductImageThumbnail(productImageURL: URL(string: image.src),
+            if let imageSource = item.productImageSource {
+                ProductImageThumbnail(productImageURL: URL(string: imageSource),
+                                      productImageSize: 60,
+                                      scale: 1,
+                                      productImageCornerRadius: 1,
+                                      foregroundColor: .clear)
+            } else {
+                ProductImageThumbnail(productImageURL: URL(string: ""),
                                       productImageSize: 60,
                                       scale: 1,
                                       productImageCornerRadius: 1,

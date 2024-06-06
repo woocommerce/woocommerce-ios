@@ -30,7 +30,7 @@ public final class POSProductProvider: POSItemProvider {
     public func providePointOfSaleItems() -> [POSItem] {
         var loadedProducts: [Product] = []
 
-        // 1. Fetch products from storage, and filter them by `purchasable` and `simple`
+        // Fetch products from storage, and filter them by `purchasable` and `simple`
         do {
             try productsResultsController.performFetch()
             if productsResultsController.fetchedObjects.isEmpty {
@@ -49,17 +49,19 @@ public final class POSProductProvider: POSItemProvider {
             DDLogError("Error fetching products from storage")
         }
 
-        // 2. Map result to POSProduct, and populate the output already formatted with any applicable store settings
+        // Maps result to POSProduct, and populate the output with:
+        // - Formatted price based on store's currency settings.
+        // - Product thumbnail, if any.
         let currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
         return loadedProducts.map { product in
             let formattedPrice = currencyFormatter.formatAmount(product.price, with: currencySettings.currencyCode.rawValue) ?? "-"
-            let thumbnail: ProductImage? = product.images.first
+            let thumbnailSource = product.images.first?.src
 
             return POSProduct(itemID: UUID(),
                               productID: product.productID,
                               name: product.name,
                               price: formattedPrice,
-                              thumbnail: thumbnail)
+                              productImageSource: thumbnailSource)
         }
     }
 

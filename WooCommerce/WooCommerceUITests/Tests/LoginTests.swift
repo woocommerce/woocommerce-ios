@@ -12,10 +12,6 @@ final class LoginTests: XCTestCase {
     }
 
     func test_site_address_login_logout() throws {
-        guard UIDevice.current.userInterfaceIdiom == .pad else {
-            return
-        }
-
         // do not test this case if site address login is not available
         guard try PrologueScreen().isSiteAddressLoginAvailable() else {
             return

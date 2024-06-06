@@ -18,10 +18,6 @@ final class ReviewsTests: XCTestCase {
     }
 
     func test_load_reviews_screen() throws {
-        guard UIDevice.current.userInterfaceIdiom == .pad else {
-            return
-        }
-
         let reviews = try GetMocks.readReviewsData()
 
         try TabNavComponent().goToMenuScreen()

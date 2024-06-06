@@ -55,8 +55,4 @@ extension MockOrderDetailsPaymentAlerts: OrderDetailsPaymentAlertsProtocol {
         nonRetryableErrorWasCalled = true
         dismissErrorCompletion = dismissCompletion
     }
-
-    func retryableError(from: UIViewController?, tryAgain: @escaping () -> Void) {
-        // no-op
-    }
 }

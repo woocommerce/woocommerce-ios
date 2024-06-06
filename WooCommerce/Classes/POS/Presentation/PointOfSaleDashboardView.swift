@@ -1,4 +1,3 @@
-import class Yosemite.POSProductProvider
 import SwiftUI
 
 struct PointOfSaleDashboardView: View {
@@ -103,9 +102,8 @@ fileprivate extension CardPresentPaymentEvent {
 
 #if DEBUG
 #Preview {
-    // TODO: https://github.com/woocommerce/woocommerce-ios/issues/12917
-    // The Yosemite imports are only needed for previews
-    PointOfSaleDashboardView(viewModel: PointOfSaleDashboardViewModel(items: POSProductProvider.provideProductsForPreview(),
-                                                                      cardPresentPaymentService: CardPresentPaymentPreviewService()))
+    PointOfSaleDashboardView(
+        viewModel: PointOfSaleDashboardViewModel(items: POSItemProviderPreview().providePointOfSaleItems(),
+                                                 cardPresentPaymentService: CardPresentPaymentPreviewService()))
 }
 #endif

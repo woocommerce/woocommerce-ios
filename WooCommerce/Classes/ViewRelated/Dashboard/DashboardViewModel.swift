@@ -60,7 +60,7 @@ final class DashboardViewModel: ObservableObject {
 
     @Published private(set) var jetpackBannerVisibleFromAppSettings = false
 
-    @Published private(set) var hasOrders = true
+    @Published private(set) var hasOrders = false
 
     @Published private(set) var isEligibleForInbox = false
 
@@ -595,9 +595,10 @@ private extension DashboardViewModel {
     }
 
     /// Determines whether to show the notice that new cards now exist and can be found in Customize screen.
-    /// Can optionally pass local cards in case they are recently loaded before calling this function.
     func configureNewCardsNotice() {
-        guard featureFlagService.isFeatureFlagEnabled(.dynamicDashboardM2) else {
+        // If the site has no orders, the app will display the "Share Your Store" card.
+        // In this situation, it should keep the notice (both card and badge) hidden.
+        guard featureFlagService.isFeatureFlagEnabled(.dynamicDashboardM2) && hasOrders else {
             return
         }
 

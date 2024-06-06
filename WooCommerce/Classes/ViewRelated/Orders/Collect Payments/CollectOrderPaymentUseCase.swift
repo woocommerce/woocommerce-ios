@@ -29,7 +29,7 @@ protocol CollectOrderPaymentProtocol {
 /// Use case to collect payments from an order.
 /// Orchestrates reader connection, payment, UI alerts, receipt handling and analytics.
 ///
-final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
+final class CollectOrderPaymentUseCase<AlertProvider: CardReaderTransactionAlertsProviding, AlertPresenter: CardPresentPaymentAlertsPresenting>: NSObject, CollectOrderPaymentProtocol where AlertProvider.AlertDetails == AlertPresenter.AlertDetails {
     /// Currency Formatter
     ///
     private let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
@@ -64,7 +64,7 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
 
     /// Alerts presenter: alerts from the various parts of the payment process are forwarded here
     ///
-    private let alertsPresenter: CardPresentPaymentAlertsPresenting
+    private let alertsPresenter: any CardPresentPaymentAlertsPresenting<AlertPresenter.AlertDetails>
 
     private let bluetoothAlertsProvider: any CardReaderTransactionAlertsProviding
 
@@ -98,7 +98,7 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
          stores: StoresManager = ServiceLocator.stores,
          paymentOrchestrator: PaymentCaptureOrchestrating = PaymentCaptureOrchestrator(),
          orderDurationRecorder: OrderDurationRecorderProtocol = OrderDurationRecorder.shared,
-         alertsPresenter: CardPresentPaymentAlertsPresenting? = nil,
+         alertsPresenter: any CardPresentPaymentAlertsPresenting<AlertPresenter.AlertDetails>,
          tapToPayAlertsProvider: any CardReaderTransactionAlertsProviding = BuiltInCardReaderPaymentAlertsProvider(),
          bluetoothAlertsProvider: any CardReaderTransactionAlertsProviding = BluetoothCardReaderPaymentAlertsProvider(transactionType: .collectPayment),
          preflightController: CardPresentPaymentPreflightControllerProtocol,
@@ -192,12 +192,12 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
 
 // MARK: Private functions
 private extension CollectOrderPaymentUseCase {
-    func paymentAlertProvider(for reader: CardReader) -> CardReaderTransactionAlertsProviding {
+    func paymentAlertProvider(for reader: CardReader) -> any CardReaderTransactionAlertsProviding<AlertPresenter.AlertDetails> {
         switch reader.readerType {
         case .appleBuiltIn:
-            return tapToPayAlertsProvider
+            return tapToPayAlertsProvider as! any CardReaderTransactionAlertsProviding<AlertPresenter.AlertDetails>
         default:
-            return bluetoothAlertsProvider
+            return bluetoothAlertsProvider as! any CardReaderTransactionAlertsProviding<AlertPresenter.AlertDetails>
         }
     }
 

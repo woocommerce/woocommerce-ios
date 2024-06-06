@@ -101,24 +101,20 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
          alertsPresenter: CardPresentPaymentAlertsPresenting? = nil,
          tapToPayAlertsProvider: any CardReaderTransactionAlertsProviding = BuiltInCardReaderPaymentAlertsProvider(),
          bluetoothAlertsProvider: any CardReaderTransactionAlertsProviding = BluetoothCardReaderPaymentAlertsProvider(transactionType: .collectPayment),
-         preflightController: CardPresentPaymentPreflightControllerProtocol? = nil,
+         preflightController: CardPresentPaymentPreflightControllerProtocol,
          analyticsTracker: CollectOrderPaymentAnalyticsTracking? = nil) {
         self.siteID = siteID
         self.order = order
         self.formattedAmount = formattedAmount
         self.rootViewController = rootViewController
         self.onboardingPresenter = onboardingPresenter
-        self.alertsPresenter = alertsPresenter ?? CardPresentPaymentAlertsPresenter(rootViewController: rootViewController)
+        self.alertsPresenter = alertsPresenter
         self.tapToPayAlertsProvider = tapToPayAlertsProvider
         self.bluetoothAlertsProvider = bluetoothAlertsProvider
         self.configuration = configuration
         self.stores = stores
         self.paymentOrchestrator = paymentOrchestrator
-        self.preflightController = preflightController ?? CardPresentPaymentPreflightController(siteID: siteID,
-                                                                                                configuration: configuration,
-                                                                                                rootViewController: rootViewController,
-                                                                                                alertsPresenter: self.alertsPresenter,
-                                                                                                onboardingPresenter: onboardingPresenter)
+        self.preflightController = preflightController
         self.analyticsTracker = analyticsTracker ?? CollectOrderPaymentAnalytics(siteID: siteID,
                                                                                  analytics: ServiceLocator.analytics,
                                                                                  configuration: configuration,

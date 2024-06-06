@@ -6,9 +6,11 @@ import struct Yosemite.CardPresentPaymentsConfiguration
 
 struct CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
     private let currencyFormatter: CurrencyFormatter
+    private let paymentAlertsProviderAdaptor: CardReaderTransactionAlertsProviding
 
     init(currencyFormatter: CurrencyFormatter = .init(currencySettings: ServiceLocator.currencySettings)) {
         self.currencyFormatter = currencyFormatter
+        self.paymentAlertsProviderAdaptor = CardPresentPaymentsAlertsProviderAdaptor()
     }
 
     func collectPaymentTask(for order: Order,
@@ -31,6 +33,8 @@ struct CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
                                                                  onboardingPresenter: onboardingPresenter,
                                                                  configuration: configuration,
                                                                  alertsPresenter: alertsPresenter,
+                                                                 tapToPayAlertsProvider: paymentAlertsProviderAdaptor,
+                                                                 bluetoothAlertsProvider: paymentAlertsProviderAdaptor,
                                                                  preflightController: preflightController)
 
             return try await withTaskCancellationHandler {

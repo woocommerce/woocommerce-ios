@@ -1422,54 +1422,6 @@ extension WooAnalyticsEvent {
             connectedReaderModel ?? noReaderConnected
         }
 
-        /// Tracked when we ask the user to choose between Built In and Bluetooth readers
-        /// at the start of the connection flow
-        ///
-        /// - Parameters:
-        ///   - forGatewayID: the plugin (e.g. "woocommerce-payments" or "woocommerce-gateway-stripe") to be included in the event properties in Tracks.
-        ///   - countryCode: the country code of the store.
-        ///
-        static func cardReaderSelectTypeShown(forGatewayID: String?, countryCode: CountryCode) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .cardReaderSelectTypeShown,
-                              properties: [
-                                Keys.countryCode: countryCode.rawValue,
-                                Keys.gatewayID: safeGatewayID(for: forGatewayID)
-                              ]
-            )
-        }
-
-        /// Tracked when the user to chooses the Built In reader
-        /// at the start of the connection flow
-        ///
-        /// - Parameters:
-        ///   - forGatewayID: the plugin (e.g. "woocommerce-payments" or "woocommerce-gateway-stripe") to be included in the event properties in Tracks.
-        ///   - countryCode: the country code of the store.
-        ///
-        static func cardReaderSelectTypeBuiltInTapped(forGatewayID: String?, countryCode: CountryCode) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .cardReaderSelectTypeBuiltInTapped,
-                              properties: [
-                                Keys.countryCode: countryCode.rawValue,
-                                Keys.gatewayID: safeGatewayID(for: forGatewayID)
-                              ]
-            )
-        }
-
-        /// Tracked when the user to chooses the Bluetooth reader
-        /// at the start of the connection flow
-        ///
-        /// - Parameters:
-        ///   - forGatewayID: the plugin (e.g. "woocommerce-payments" or "woocommerce-gateway-stripe") to be included in the event properties in Tracks.
-        ///   - countryCode: the country code of the store.
-        ///
-        static func cardReaderSelectTypeBluetoothTapped(forGatewayID: String?, countryCode: CountryCode) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .cardReaderSelectTypeBluetoothTapped,
-                              properties: [
-                                Keys.countryCode: countryCode.rawValue,
-                                Keys.gatewayID: safeGatewayID(for: forGatewayID)
-                              ]
-            )
-        }
-
         /// Tracked when we automatically disconnect a Built In reader, when Manage Card Reader is opened
         ///
         /// - Parameters:
@@ -1811,7 +1763,6 @@ extension WooAnalyticsEvent {
         enum CancellationSource: String {
             case appleTOSAcceptance = "apple_tap_to_pay_terms_acceptance"
             case reader = "card_reader"
-            case selectReaderType = "preflight_select_reader_type"
             case searchingForReader = "searching_for_reader"
             case foundReader = "found_reader"
             case foundSeveralReaders = "found_several_readers"

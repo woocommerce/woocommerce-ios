@@ -4,7 +4,7 @@ import Yosemite
 import Combine
 
 final class MockCardPresentPaymentPreflightController: CardPresentPaymentPreflightControllerProtocol {
-    func start(discoveryMethod: CardReaderDiscoveryMethod?) async {
+    func start(discoveryMethod: CardReaderDiscoveryMethod) async {
 
     }
 

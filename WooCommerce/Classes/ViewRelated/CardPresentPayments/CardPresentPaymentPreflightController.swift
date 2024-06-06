@@ -14,7 +14,7 @@ enum CardReaderConnectionResult {
 }
 
 protocol CardPresentPaymentPreflightControllerProtocol {
-    func start(discoveryMethod: CardReaderDiscoveryMethod?) async
+    func start(discoveryMethod: CardReaderDiscoveryMethod) async
 
     var readerConnection: AnyPublisher<CardReaderPreflightResult?, Never> { get }
 }
@@ -24,7 +24,7 @@ final class CardPresentPaymentPreflightController: CardPresentPaymentPreflightCo
     ///
     private let siteID: Int64
 
-    private var discoveryMethod: CardReaderDiscoveryMethod? = nil
+    private var discoveryMethod: CardReaderDiscoveryMethod = .bluetoothScan
 
     /// IPP Configuration.
     ///
@@ -118,7 +118,7 @@ final class CardPresentPaymentPreflightController: CardPresentPaymentPreflightCo
     }
 
     @MainActor
-    func start(discoveryMethod: CardReaderDiscoveryMethod?) async {
+    func start(discoveryMethod: CardReaderDiscoveryMethod) async {
         self.discoveryMethod = discoveryMethod
         observeConnectedReaders()
         await checkForConnectedReader()
@@ -190,10 +190,7 @@ final class CardPresentPaymentPreflightController: CardPresentPaymentPreflightCo
         let localMobileReaderSupported = await supportDeterminer.deviceSupportsLocalMobileReader() && supportDeterminer.siteSupportsLocalMobileReader()
 
         switch (discoveryMethod, localMobileReaderSupported) {
-        case (.none, true):
-            await promptForReaderTypeSelection(paymentGatewayAccount: paymentGatewayAccount)
-        case (.bluetoothScan, _),
-            (.none, false):
+        case (.bluetoothScan, _):
             connectionController.searchAndConnect(onCompletion: { [weak self] result in
                 self?.handleConnectionResult(result, paymentGatewayAccount: paymentGatewayAccount)
             })
@@ -215,41 +212,10 @@ final class CardPresentPaymentPreflightController: CardPresentPaymentPreflightCo
                     try await self?.automaticallyDisconnectFromReader()
                     await self?.startReaderConnection(using: paymentGatewayAccount)
                 }
-            case .localMobile, .none:
+            case .localMobile:
                 self.handleConnectionResult(result, paymentGatewayAccount: paymentGatewayAccount)
             }
         }
-    }
-
-    @MainActor
-    private func promptForReaderTypeSelection(paymentGatewayAccount: PaymentGatewayAccount) {
-        analytics.track(event: .InPersonPayments.cardReaderSelectTypeShown(forGatewayID: paymentGatewayAccount.gatewayID,
-                                                                           countryCode: configuration.countryCode))
-        alertsPresenter.present(viewModel: CardPresentModalSelectSearchType(
-            tapOnIPhoneAction: { [weak self] in
-                guard let self = self else { return }
-                self.analytics.track(event: .InPersonPayments.cardReaderSelectTypeBuiltInTapped(
-                    forGatewayID: paymentGatewayAccount.gatewayID,
-                    countryCode: self.configuration.countryCode))
-                self.builtInConnectionController.searchAndConnect(onCompletion: { [weak self] result in
-                    self?.handleConnectionResult(result, paymentGatewayAccount: paymentGatewayAccount)
-                })
-            },
-            bluetoothAction: { [weak self] in
-                guard let self = self else { return }
-                self.analytics.track(event: .InPersonPayments.cardReaderSelectTypeBluetoothTapped(
-                    forGatewayID: paymentGatewayAccount.gatewayID,
-                    countryCode: self.configuration.countryCode))
-                self.connectionController.searchAndConnect(onCompletion: { [weak self] result in
-                    self?.handleConnectionResult(result, paymentGatewayAccount: paymentGatewayAccount)
-                })
-            },
-            cancelAction: { [weak self] in
-                guard let self = self else { return }
-                self.alertsPresenter.dismiss()
-                self.handleConnectionResult(.success(.canceled(.selectReaderType)),
-                                            paymentGatewayAccount: paymentGatewayAccount)
-            }))
     }
 
     @MainActor

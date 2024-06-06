@@ -74,9 +74,7 @@ extension CardPresentModalError {
         // Find another way to dismiss the alert here. We may need a specialised alert provider to fix this one.
         CardPresentPaymentsModalButtonViewModel(
             title: secondaryButtonTitle,
-            actionHandler: { [weak self] in
-                self?.dismissCompletion()
-            })
+            actionHandler: dismissCompletion)
     }
 }
 

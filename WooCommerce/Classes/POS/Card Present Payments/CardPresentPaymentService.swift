@@ -4,6 +4,7 @@ import struct Yosemite.Order
 import struct Yosemite.CardPresentPaymentsConfiguration
 import struct Yosemite.CardReader
 import enum Yosemite.CardPresentPaymentAction
+import protocol Yosemite.StoresManager
 
 final class CardPresentPaymentService: CardPresentPaymentFacade {
     let paymentEventPublisher: AnyPublisher<CardPresentPaymentEvent, Never>
@@ -26,7 +27,7 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
     private var paymentTask: Task<CardPresentPaymentAdaptedCollectOrderPaymentResult, Error>?
 
     @MainActor
-    init(siteID: Int64) async {
+    init(siteID: Int64, stores: StoresManager = ServiceLocator.stores) async {
         self.siteID = siteID
         let onboardingAdaptor = CardPresentPaymentsOnboardingPresenterAdaptor()
         self.onboardingAdaptor = onboardingAdaptor
@@ -51,7 +52,7 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
             .receive(on: DispatchQueue.main) // These will be used for UI changes, so moving to the Main thread helps.
             .eraseToAnyPublisher()
 
-        connectedReaderPublisher = await Self.createCardReaderConnectionPublisher()
+        connectedReaderPublisher = await Self.createCardReaderConnectionPublisher(stores: stores)
     }
 
     @MainActor
@@ -116,7 +117,7 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
 
 private extension CardPresentPaymentService {
     @MainActor
-    static func createCardReaderConnectionPublisher() async -> AnyPublisher<CardPresentPaymentCardReader?, Never> {
+    static func createCardReaderConnectionPublisher(stores: StoresManager) async -> AnyPublisher<CardPresentPaymentCardReader?, Never> {
         return await withCheckedContinuation { continuation in
             var nillableContinuation: CheckedContinuation<AnyPublisher<CardPresentPaymentCardReader?, Never>, Never>? = continuation
 
@@ -135,7 +136,7 @@ private extension CardPresentPaymentService {
                 nillableContinuation?.resume(returning: readerConnectionPublisher)
                 nillableContinuation = nil
             }
-            ServiceLocator.stores.dispatch(action)
+            stores.dispatch(action)
         }
     }
 

@@ -48,8 +48,6 @@ struct PointOfSaleDashboardView: View {
             switch viewModel.cardPresentPaymentEvent {
             case .showAlert(let alertViewModel):
                 CardPresentPaymentAlert(alertViewModel: alertViewModel)
-            case let .showWCSettingsWebView(adminURL, completion):
-                WCSettingsWebView(adminUrl: adminURL, completion: completion)
             case .idle,
                     .showReaderList,
                     .showOnboarding:
@@ -94,8 +92,6 @@ fileprivate extension CardPresentPaymentEvent {
             return "Reader List: \(readerIDs.joined())"
         case .showOnboarding(let onboardingViewModel):
             return "Onboarding: \(onboardingViewModel.state.reasonForAnalytics)" // This will only show the initial onboarding state
-        case .showWCSettingsWebView(let adminURL, _):
-            return "WC Settings: \(adminURL.absoluteString)"
         }
     }
 }

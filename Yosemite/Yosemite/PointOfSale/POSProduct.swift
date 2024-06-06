@@ -1,9 +1,9 @@
 
 struct POSProduct: POSItem {
-    public let itemID: UUID
-    public let productID: Int64
-    public let name: String
-    public let price: String
+    let itemID: UUID
+    let productID: Int64
+    let name: String
+    let price: String
 
     init(itemID: UUID, productID: Int64, name: String, price: String) {
         self.itemID = itemID

@@ -4,7 +4,7 @@ import Yosemite
 
 class MockBuiltInCardReaderConnectionControllerFactory: BuiltInCardReaderConnectionControllerBuilding {
     var spyCreateConnectionControllerSiteID: Int64? = nil
-    var spyCreateConnectionControllerAlertsPresenter: CardPresentPaymentAlertsPresenting? = nil
+    var spyCreateConnectionControllerAlertsPresenter: (any CardPresentPaymentAlertsPresenting)? = nil
     var spyCreateConnectionControllerConfiguration: CardPresentPaymentsConfiguration? = nil
     var spyCreateConnectionControllerAnalyticsTracker: CardReaderConnectionAnalyticsTracker? = nil
     var spyCreateConnectionControllerAllowTermsOfServiceAcceptance: Bool? = nil
@@ -14,10 +14,10 @@ class MockBuiltInCardReaderConnectionControllerFactory: BuiltInCardReaderConnect
     var mockConnectionController: MockBuiltInCardReaderConnectionController? = nil
 
     func createConnectionController(forSiteID siteID: Int64,
-                                    alertsPresenter: CardPresentPaymentAlertsPresenting,
+                                    alertsPresenter: any CardPresentPaymentAlertsPresenting<CardPresentPaymentsModalViewModel>,
                                     configuration: CardPresentPaymentsConfiguration,
                                     analyticsTracker: CardReaderConnectionAnalyticsTracker,
-                                    allowTermsOfServiceAcceptance: Bool) -> BuiltInCardReaderConnectionControlling {
+                                    allowTermsOfServiceAcceptance: Bool) -> any BuiltInCardReaderConnectionControlling {
         spyCreateConnectionControllerSiteID = siteID
         spyCreateConnectionControllerAlertsPresenter = alertsPresenter
         spyCreateConnectionControllerConfiguration = configuration

@@ -80,7 +80,7 @@ final class CardReaderConnectionController {
 
     private let siteID: Int64
     private let knownCardReaderProvider: CardReaderSettingsKnownReaderProvider
-    private let alertsPresenter: CardPresentPaymentAlertsPresenting
+    private let alertsPresenter: any CardPresentPaymentAlertsPresenting<CardPresentPaymentsModalViewModel>
     private let configuration: CardPresentPaymentsConfiguration
 
     private let alertsProvider: BluetoothReaderConnnectionAlertsProviding
@@ -135,7 +135,7 @@ final class CardReaderConnectionController {
         storageManager: StorageManagerType = ServiceLocator.storageManager,
         stores: StoresManager = ServiceLocator.stores,
         knownReaderProvider: CardReaderSettingsKnownReaderProvider,
-        alertsPresenter: CardPresentPaymentAlertsPresenting,
+        alertsPresenter: any CardPresentPaymentAlertsPresenting<CardPresentPaymentsModalViewModel>,
         alertsProvider: BluetoothReaderConnnectionAlertsProviding,
         configuration: CardPresentPaymentsConfiguration,
         analyticsTracker: CardReaderConnectionAnalyticsTracker

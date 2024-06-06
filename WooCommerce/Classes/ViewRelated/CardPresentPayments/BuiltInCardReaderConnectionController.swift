@@ -76,7 +76,7 @@ final class BuiltInCardReaderConnectionController: BuiltInCardReaderConnectionCo
     }
 
     private let siteID: Int64
-    private let alertsPresenter: CardPresentPaymentAlertsPresenting
+    private let alertsPresenter: any CardPresentPaymentAlertsPresenting<CardPresentPaymentsModalViewModel>
     private let configuration: CardPresentPaymentsConfiguration
 
     private let alertsProvider: CardReaderConnectionAlertsProviding
@@ -113,7 +113,7 @@ final class BuiltInCardReaderConnectionController: BuiltInCardReaderConnectionCo
         forSiteID: Int64,
         storageManager: StorageManagerType = ServiceLocator.storageManager,
         stores: StoresManager = ServiceLocator.stores,
-        alertsPresenter: CardPresentPaymentAlertsPresenting,
+        alertsPresenter: any CardPresentPaymentAlertsPresenting<CardPresentPaymentsModalViewModel>,
         alertsProvider: CardReaderConnectionAlertsProviding,
         configuration: CardPresentPaymentsConfiguration,
         analyticsTracker: CardReaderConnectionAnalyticsTracker,

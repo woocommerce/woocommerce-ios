@@ -3,7 +3,7 @@ import Yosemite
 
 protocol BuiltInCardReaderConnectionControllerBuilding {
     func createConnectionController(forSiteID: Int64,
-                                    alertsPresenter: CardPresentPaymentAlertsPresenting,
+                                    alertsPresenter: any CardPresentPaymentAlertsPresenting<CardPresentPaymentsModalViewModel>,
                                     configuration: CardPresentPaymentsConfiguration,
                                     analyticsTracker: CardReaderConnectionAnalyticsTracker,
                                     allowTermsOfServiceAcceptance: Bool) -> BuiltInCardReaderConnectionControlling
@@ -11,7 +11,7 @@ protocol BuiltInCardReaderConnectionControllerBuilding {
 
 fileprivate class BuiltInCardReaderConnectionControllerFactory: BuiltInCardReaderConnectionControllerBuilding {
     func createConnectionController(forSiteID siteID: Int64,
-                                    alertsPresenter: CardPresentPaymentAlertsPresenting,
+                                    alertsPresenter: any CardPresentPaymentAlertsPresenting<CardPresentPaymentsModalViewModel>,
                                     configuration: CardPresentPaymentsConfiguration,
                                     analyticsTracker: CardReaderConnectionAnalyticsTracker,
                                     allowTermsOfServiceAcceptance: Bool) -> BuiltInCardReaderConnectionControlling {
@@ -91,7 +91,7 @@ final class TapToPayReconnectionController {
     ///   - alertsPresenter: The alerts presenter which can show the connection alerts.
     ///   It will be immediately called with the most recent alert
     ///   - onCompletion: A completion handler for the automatic reconnection, with success or an error.
-    func showAlertsForReconnection(from alertsPresenter: CardPresentPaymentAlertsPresenting,
+    func showAlertsForReconnection(from alertsPresenter: any CardPresentPaymentAlertsPresenting<CardPresentPaymentsModalViewModel>,
                                    onCompletion: @escaping (Result<CardReaderConnectionResult, Error>) -> Void) {
         guard isReconnecting else {
             return onCompletion(.failure(TapToPayReconnectionError.noReconnectionInProgress))

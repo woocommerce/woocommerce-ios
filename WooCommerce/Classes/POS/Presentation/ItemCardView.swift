@@ -5,6 +5,8 @@ struct ItemCardView: View {
     private let item: POSItem
     private let onItemCardTapped: (() -> Void)?
 
+    @ScaledMetric private var scale: CGFloat = 1.0
+
     init(item: POSItem, onItemCardTapped: (() -> Void)? = nil) {
         self.item = item
         self.onItemCardTapped = onItemCardTapped
@@ -15,15 +17,15 @@ struct ItemCardView: View {
             if let imageSource = item.productImageSource {
                 ProductImageThumbnail(productImageURL: URL(string: imageSource),
                                       productImageSize: 60,
-                                      scale: 1,
+                                      scale: scale,
                                       productImageCornerRadius: 1,
                                       foregroundColor: .clear)
             } else {
-                ProductImageThumbnail(productImageURL: URL(string: ""),
-                                      productImageSize: 60,
-                                      scale: 1,
-                                      productImageCornerRadius: 1,
-                                      foregroundColor: .clear)
+                // TODO:
+                // Handle what we'll show when there's lack of images:
+                Rectangle()
+                    .frame(width: 60 * scale, height: 60 * scale)
+                    .foregroundColor(.gray)
             }
             VStack {
                 Text(item.name)

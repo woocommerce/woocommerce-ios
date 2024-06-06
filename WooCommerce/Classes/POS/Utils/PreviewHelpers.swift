@@ -6,10 +6,10 @@ import protocol Yosemite.POSItem
 // MARK: - PreviewProvider helpers
 //
 struct POSProductPreview: POSItem {
-    var itemID: UUID
-    var productID: Int64
-    var name: String
-    var price: String
+    let itemID: UUID
+    let productID: Int64
+    let name: String
+    let price: String
 }
 
 final class POSItemProviderPreview: POSItemProvider {

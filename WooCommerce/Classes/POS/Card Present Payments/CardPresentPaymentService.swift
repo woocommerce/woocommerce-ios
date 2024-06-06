@@ -9,7 +9,7 @@ import protocol Yosemite.StoresManager
 final class CardPresentPaymentService: CardPresentPaymentFacade {
     let paymentEventPublisher: AnyPublisher<CardPresentPaymentEvent, Never>
 
-    private (set) var connectedReaderPublisher: AnyPublisher<CardPresentPaymentCardReader?, Never>
+    let connectedReaderPublisher: AnyPublisher<CardPresentPaymentCardReader?, Never>
 
     private let paymentEventSubject = PassthroughSubject<CardPresentPaymentEvent, Never>()
 

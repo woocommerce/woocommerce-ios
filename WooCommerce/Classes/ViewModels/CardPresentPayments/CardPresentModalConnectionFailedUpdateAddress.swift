@@ -3,25 +3,22 @@ import Yosemite
 
 import Combine
 
-// TODO: update to allow other customization like title
-struct CardPresentPaymentsWebViewModel: Identifiable {
+struct WCSettingsWebViewModel: Identifiable {
     var id: String {
         webViewURL.absoluteString
     }
 
     let webViewURL: URL
     let onCompletion: () -> Void
-    // TODO: support dismissal
-    let onDismiss: () -> Void
 }
 
-protocol CardPresentPaymentsModalViewModelWebViewPresenting {
-    var webViewModel: AnyPublisher<CardPresentPaymentsWebViewModel?, Never> { get }
+protocol CardPresentPaymentsModalViewModelWCSettingsWebViewPresenting {
+    var webViewModel: AnyPublisher<WCSettingsWebViewModel?, Never> { get }
 }
 
 /// Modal presented when an error occurs while connecting to a reader due to problems with the address
 ///
-final class CardPresentModalConnectingFailedUpdateAddress: CardPresentPaymentsModalViewModel, ObservableObject {
+final class CardPresentModalConnectingFailedUpdateAddress: CardPresentPaymentsModalViewModel {
     private let openWCSettingsAction: (() -> Void)?
     private let retrySearchAction: () -> Void
     private let cancelSearchAction: () -> Void
@@ -56,7 +53,7 @@ final class CardPresentModalConnectingFailedUpdateAddress: CardPresentPaymentsMo
 
     private let wcSettingsAdminURL: URL?
 
-    @Published private var wcSettingsWebViewModel: CardPresentPaymentsWebViewModel? = nil
+    @Published private var wcSettingsWebViewModel: WCSettingsWebViewModel? = nil
 
     init(image: UIImage = .paymentErrorImage,
          wcSettingsAdminURL: URL?,
@@ -76,8 +73,10 @@ final class CardPresentModalConnectingFailedUpdateAddress: CardPresentPaymentsMo
         }
         openWCSettingsAction()
         if let adminURL = wcSettingsAdminURL {
-            wcSettingsWebViewModel = .init(webViewURL: adminURL, onCompletion: retrySearchAction, onDismiss: { [weak self] in
-                self?.wcSettingsWebViewModel = nil
+            wcSettingsWebViewModel = .init(webViewURL: adminURL, onCompletion: { [weak self] in
+                guard let self else { return }
+                wcSettingsWebViewModel = nil
+                retrySearchAction()
             })
         }
     }
@@ -89,8 +88,8 @@ final class CardPresentModalConnectingFailedUpdateAddress: CardPresentPaymentsMo
     func didTapAuxiliaryButton(in viewController: UIViewController?) { }
 }
 
-extension CardPresentModalConnectingFailedUpdateAddress: CardPresentPaymentsModalViewModelWebViewPresenting {
-    var webViewModel: AnyPublisher<CardPresentPaymentsWebViewModel?, Never> {
+extension CardPresentModalConnectingFailedUpdateAddress: CardPresentPaymentsModalViewModelWCSettingsWebViewPresenting {
+    var webViewModel: AnyPublisher<WCSettingsWebViewModel?, Never> {
         $wcSettingsWebViewModel.eraseToAnyPublisher()
     }
 }

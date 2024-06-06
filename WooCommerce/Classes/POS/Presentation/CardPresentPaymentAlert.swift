@@ -9,7 +9,7 @@ struct CardPresentPaymentAlert: View {
 
     var body: some View {
         BasicCardPresentPaymentAlert(alertViewModel: viewModel.alertViewModel)
-            .sheet(item: $viewModel.webViewModel) { webViewModel in
+            .sheet(item: $viewModel.wcSettingsWebViewModel) { webViewModel in
                 WCSettingsWebView(adminUrl: webViewModel.webViewURL, completion: webViewModel.onCompletion)
             }
     }

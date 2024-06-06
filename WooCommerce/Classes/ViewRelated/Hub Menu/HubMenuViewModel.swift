@@ -116,7 +116,7 @@ final class HubMenuViewModel: ObservableObject {
             navigationPath: navigationPathBinding)
     }()
 
-    var cardPresentPaymentService: CardPresentPaymentFacade?
+    private(set) var cardPresentPaymentService: CardPresentPaymentFacade?
 
     init(siteID: Int64,
          tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker,
@@ -148,7 +148,7 @@ final class HubMenuViewModel: ObservableObject {
         NotificationCenter.default.post(name: .hubMenuViewDidAppear, object: nil)
     }
 
-    func createCardPresentPaymentService() {
+    private func createCardPresentPaymentService() {
         Task {
             self.cardPresentPaymentService = await CardPresentPaymentService(siteID: siteID)
         }

@@ -314,7 +314,7 @@ private extension DashboardView {
             }
             .buttonStyle(PrimaryButtonStyle())
             .padding(.horizontal, Layout.elementPadding)
-            .padding(.bottom, Layout.padding)
+            .padding(.bottom, Layout.elementPadding)
         }
         .background(Color(.listForeground(modal: false)))
         .clipShape(RoundedRectangle(cornerSize: Layout.cornerSize))

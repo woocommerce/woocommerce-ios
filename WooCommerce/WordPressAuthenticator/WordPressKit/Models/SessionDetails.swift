@@ -4,6 +4,7 @@ public struct SessionDetails {
     let buildNumber: String
     let marketingVersion: String
     let identifier: String
+    let osVersion: String
 }
 
 extension SessionDetails: Encodable {
@@ -14,6 +15,7 @@ extension SessionDetails: Encodable {
         case buildNumber = "build_number"
         case marketingVersion = "marketing_version"
         case identifier = "identifier"
+        case osVersion = "os_version"
     }
 
     init(deviceId: String, bundle: Bundle = .main) {
@@ -22,6 +24,7 @@ extension SessionDetails: Encodable {
         self.buildNumber = bundle.infoDictionary?["CFBundleVersion"] as? String ?? "Unknown"
         self.marketingVersion = bundle.infoDictionary?["CFBundleShortVersionString"] as? String ?? "Unknown"
         self.identifier = bundle.bundleIdentifier ?? "Unknown"
+        self.osVersion = UIDevice.current.systemVersion
     }
 
     func dictionaryRepresentation() throws -> [String: AnyObject]? {

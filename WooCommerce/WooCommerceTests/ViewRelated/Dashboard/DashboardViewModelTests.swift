@@ -345,7 +345,7 @@ final class DashboardViewModelTests: XCTestCase {
         let index = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "dynamic_dashboard_editor_save_tapped" }))
         let properties = analyticsProvider.receivedProperties[index] as? [String: AnyHashable]
         XCTAssertEqual(properties?["cards"], "blaze,performance")
-        XCTAssertEqual(properties?["first_card_type"], "performance")
+        XCTAssertEqual(properties?["sorted_cards"], "performance,blaze")
     }
 
     // MARK: Install theme

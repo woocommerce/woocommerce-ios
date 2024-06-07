@@ -63,10 +63,7 @@ msgstr ""
 
 msgctxt "v19.0-whats-new"
 msgid ""
-"- [***] Now you can add more sections to the My Store screen including contents for the last orders, top products with low stock, top active coupons and more! [https://github.com/woocommerce/woocommerce-ios/pull/12890]\n"
-"- [internal] Resolved an issue where users were unable to upload product images when the store is set to private on WP.com. [https://github.com/woocommerce/woocommerce-ios/issues/12646]\n"
-"- [internal] Bump Tracks iOS library to v.3.4.1, that fix a deadlock while getting device info. [https://github.com/woocommerce/woocommerce-ios/pull/12939]\n"
-"\n"
+"Our latest version enriches your My Store screen, now featuring details on your most recent orders, low-stock products, active coupons, customer reviews, and more. Dive deeper into your store’s performance with these new additions!\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.

@@ -149,7 +149,7 @@ private extension TopPerformersDashboardViewModel {
             .receive(on: DispatchQueue.global(qos: .background))
             .sink { [weak self] error in
                 guard let self else { return }
-                if error != nil {
+                if error == nil {
                     analytics.track(event: .Dashboard.dashboardTopPerformersLoaded(timeRange: timeRange))
                 }
                 waitingTracker?.end()

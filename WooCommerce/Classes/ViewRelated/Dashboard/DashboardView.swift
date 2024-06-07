@@ -132,10 +132,7 @@ struct DashboardView: View {
             connectivityStatus = status
         }
         .refreshable {
-            Task { @MainActor in
-                ServiceLocator.analytics.track(.dashboardPulledToRefresh)
-                await viewModel.reloadAllData()
-            }
+            viewModel.onPullToRefresh()
         }
         .safeAreaInset(edge: .bottom) {
             jetpackBenefitBanner

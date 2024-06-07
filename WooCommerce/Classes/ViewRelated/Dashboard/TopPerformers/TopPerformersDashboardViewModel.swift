@@ -33,8 +33,7 @@ final class TopPerformersDashboardViewModel: ObservableObject {
     lazy var periodViewModel = TopPerformersPeriodViewModel(state: .loading) { [weak self] topPerformersItem in
         guard let self else { return }
 
-        analytics.track(event: .DynamicDashboard.dashboardCardInteracted(type: .topPerformers))
-        usageTracksEventEmitter.interacted()
+        trackInteraction()
         selectedItem = topPerformersItem
     }
 
@@ -74,8 +73,6 @@ final class TopPerformersDashboardViewModel: ObservableObject {
     func didSelectTimeRange(_ newTimeRange: StatsTimeRangeV4) {
         timeRange = newTimeRange
         saveLastTimeRange(timeRange)
-        usageTracksEventEmitter.interacted()
-        analytics.track(event: .Dashboard.dashboardMainStatsDate(timeRange: timeRange))
         updateResultsController()
 
         Task { [weak self] in
@@ -104,6 +101,17 @@ final class TopPerformersDashboardViewModel: ObservableObject {
     func dismissTopPerformers() {
         analytics.track(event: .DynamicDashboard.hideCardTapped(type: .topPerformers))
         onDismiss?()
+    }
+
+    /// Adds necessary tracking for the interaction
+    func trackInteraction() {
+        analytics.track(event: .DynamicDashboard.dashboardCardInteracted(type: .topPerformers))
+        usageTracksEventEmitter.interacted()
+    }
+
+    func onViewAppear() {
+        /// tracks `used_analytics`
+        usageTracksEventEmitter.interacted()
     }
 }
 
@@ -147,7 +155,7 @@ private extension TopPerformersDashboardViewModel {
             .receive(on: DispatchQueue.global(qos: .background))
             .sink { [weak self] error in
                 guard let self else { return }
-                if error != nil {
+                if error == nil {
                     analytics.track(event: .Dashboard.dashboardTopPerformersLoaded(timeRange: timeRange))
                 }
                 waitingTracker?.end()

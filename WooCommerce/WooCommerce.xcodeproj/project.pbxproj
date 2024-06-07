@@ -592,6 +592,7 @@
 		02EEB5C52424AFAA00B8A701 /* TextFieldTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 02EEB5C32424AFAA00B8A701 /* TextFieldTableViewCell.xib */; };
 		02EF166C292DFE9A00D90AD6 /* WebCheckoutViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02EF166B292DFE9A00D90AD6 /* WebCheckoutViewModel.swift */; };
 		02EFDAD52C11967500131820 /* CardPresentPaymentsModalViewModelWCSettingsWebViewPresenting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02EFDAD42C11967500131820 /* CardPresentPaymentsModalViewModelWCSettingsWebViewPresenting.swift */; };
+		02EFDADA2C12D38300131820 /* POSToolbarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02EFDAD92C12D38300131820 /* POSToolbarView.swift */; };
 		02EFF8172ABBEBED0015ABB2 /* GiftCardError+Description.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02EFF8162ABBEBED0015ABB2 /* GiftCardError+Description.swift */; };
 		02EFF81A2ABC28BA0015ABB2 /* GiftCardInputViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02EFF8192ABC28BA0015ABB2 /* GiftCardInputViewModelTests.swift */; };
 		02F1E6BD2A39805C00C3E4C7 /* ProductDescriptionAICoordinatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02F1E6BC2A39805C00C3E4C7 /* ProductDescriptionAICoordinatorTests.swift */; };
@@ -3517,6 +3518,7 @@
 		02EEB5C32424AFAA00B8A701 /* TextFieldTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TextFieldTableViewCell.xib; sourceTree = "<group>"; };
 		02EF166B292DFE9A00D90AD6 /* WebCheckoutViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebCheckoutViewModel.swift; sourceTree = "<group>"; };
 		02EFDAD42C11967500131820 /* CardPresentPaymentsModalViewModelWCSettingsWebViewPresenting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentsModalViewModelWCSettingsWebViewPresenting.swift; sourceTree = "<group>"; };
+		02EFDAD92C12D38300131820 /* POSToolbarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSToolbarView.swift; sourceTree = "<group>"; };
 		02EFF8162ABBEBED0015ABB2 /* GiftCardError+Description.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GiftCardError+Description.swift"; sourceTree = "<group>"; };
 		02EFF8192ABC28BA0015ABB2 /* GiftCardInputViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GiftCardInputViewModelTests.swift; sourceTree = "<group>"; };
 		02F1E6BC2A39805C00C3E4C7 /* ProductDescriptionAICoordinatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductDescriptionAICoordinatorTests.swift; sourceTree = "<group>"; };
@@ -6532,6 +6534,7 @@
 		026826A12BF59DED0036F959 /* Presentation */ = {
 			isa = PBXGroup;
 			children = (
+				02EFDAD62C12D32700131820 /* Toolbar */,
 				02E71DB42C118C470036C2FD /* Card Present Payments */,
 				026826B02BF59E170036F959 /* CardReaderConnection */,
 				026826A72BF59DF70036F959 /* PointOfSaleEntryPointView.swift */,
@@ -7242,6 +7245,14 @@
 				02EF166B292DFE9A00D90AD6 /* WebCheckoutViewModel.swift */,
 			);
 			path = Plan;
+			sourceTree = "<group>";
+		};
+		02EFDAD62C12D32700131820 /* Toolbar */ = {
+			isa = PBXGroup;
+			children = (
+				02EFDAD92C12D38300131820 /* POSToolbarView.swift */,
+			);
+			path = Toolbar;
 			sourceTree = "<group>";
 		};
 		02EFF8182ABC28A50015ABB2 /* GiftCards */ = {
@@ -14311,6 +14322,7 @@
 				2688643D25D470C000821BA5 /* EditAttributesViewModel.swift in Sources */,
 				03A9F3B22A03E70700385673 /* AdaptiveAsyncImage.swift in Sources */,
 				DE2004602BF7092900660A72 /* ProductStockDashboardCard.swift in Sources */,
+				02EFDADA2C12D38300131820 /* POSToolbarView.swift in Sources */,
 				31C21FA426D9949000916E2E /* SeveralReadersFoundViewController.swift in Sources */,
 				45E1482527736D1E0099CF23 /* SettingsView.swift in Sources */,
 				02E3B62829026C8F007E0F13 /* AccountCreationForm.swift in Sources */,

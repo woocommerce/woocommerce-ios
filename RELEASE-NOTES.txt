@@ -1,5 +1,9 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+19.1
+-----
+
+
 19.0
 -----
 - [***] Now you can add more sections to the My Store screen including contents for the last orders, top products with low stock, top active coupons and more! [https://github.com/woocommerce/woocommerce-ios/pull/12890]

@@ -10,10 +10,12 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
         super.tearDown()
     }
 
-    func test_viewModel_empty_cart() {
+    func test_cart_is_empty_initially() {
+        // Given
         let viewModel = PointOfSaleDashboardViewModel(items: POSItemProviderPreview().providePointOfSaleItems(),
                                                       cardPresentPaymentService: CardPresentPaymentPreviewService())
 
+        // Then
         XCTAssertTrue(viewModel.itemsInCart.isEmpty)
     }
 }

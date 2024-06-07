@@ -226,7 +226,9 @@ private extension StorePerformanceViewModel {
         syncingDidFinishPublisher
             .receive(on: DispatchQueue.global(qos: .background))
             .sink { [weak self] in
-                self?.waitingTracker?.end()
+                guard let self else { return }
+                waitingTracker?.end()
+                analytics.track(event: .Dashboard.dashboardMainStatsLoaded(timeRange: timeRange))
             }
             .store(in: &subscriptions)
     }

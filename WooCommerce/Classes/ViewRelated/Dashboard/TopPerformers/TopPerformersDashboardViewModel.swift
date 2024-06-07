@@ -33,8 +33,7 @@ final class TopPerformersDashboardViewModel: ObservableObject {
     lazy var periodViewModel = TopPerformersPeriodViewModel(state: .loading) { [weak self] topPerformersItem in
         guard let self else { return }
 
-        analytics.track(event: .DynamicDashboard.dashboardCardInteracted(type: .topPerformers))
-        usageTracksEventEmitter.interacted()
+        trackInteraction()
         selectedItem = topPerformersItem
     }
 
@@ -74,8 +73,6 @@ final class TopPerformersDashboardViewModel: ObservableObject {
     func didSelectTimeRange(_ newTimeRange: StatsTimeRangeV4) {
         timeRange = newTimeRange
         saveLastTimeRange(timeRange)
-        usageTracksEventEmitter.interacted()
-        analytics.track(event: .Dashboard.dashboardMainStatsDate(timeRange: timeRange))
         updateResultsController()
 
         Task { [weak self] in
@@ -104,6 +101,11 @@ final class TopPerformersDashboardViewModel: ObservableObject {
     func dismissTopPerformers() {
         analytics.track(event: .DynamicDashboard.hideCardTapped(type: .topPerformers))
         onDismiss?()
+    }
+
+    func trackInteraction() {
+        analytics.track(event: .DynamicDashboard.dashboardCardInteracted(type: .topPerformers))
+        usageTracksEventEmitter.interacted()
     }
 }
 

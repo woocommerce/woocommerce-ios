@@ -6,7 +6,7 @@
 
 19.0
 -----
-Our latest version enriches your My Store screen, now featuring most recent orders, top low-stock products, and active coupons for a comprehensive overview. Dive deeper into your store's performance with these new additions!
+Our latest version enriches your My Store screen, now featuring details on your most recent orders, low stock products, active coupons, customer reviews, and more. Dive deeper into your store’s performance with these new additions!
 
 18.9
 -----

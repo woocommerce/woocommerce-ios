@@ -80,6 +80,8 @@ final class DashboardViewModel: ObservableObject {
     private let themeInstaller: ThemeInstaller
     private let storageManager: StorageManagerType
     private let inboxEligibilityChecker: InboxEligibilityChecker
+    private let usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter
+
     private var subscriptions: Set<AnyCancellable> = []
 
     var siteURLToShare: URL? {
@@ -136,10 +138,13 @@ final class DashboardViewModel: ObservableObject {
 
         self.themeInstaller = themeInstaller
         self.inboxEligibilityChecker = inboxEligibilityChecker
+        self.usageTracksEventEmitter = usageTracksEventEmitter
+
         self.inAppFeedbackCardViewModel.onFeedbackGiven = { [weak self] feedback in
             self?.showingInAppFeedbackSurvey = feedback == .didntLike
             self?.onInAppFeedbackCardAction()
         }
+
         configureOrdersResultController()
         setupDashboardCards()
         installPendingThemeIfNeeded()
@@ -237,6 +242,19 @@ final class DashboardViewModel: ObservableObject {
         analytics.track(event: .DynamicDashboard.editorSaveTapped(types: activeCardTypes))
         saveDashboardCards(cards: cards)
         dashboardCards = cards
+    }
+
+    func onPullToRefresh() {
+        /// Track `used_analytics` if stat cards are enabled.
+        let hasStatsCards = availableCards.contains(where: { $0.type == .performance || $0.type == .topPerformers })
+        if hasStatsCards {
+            usageTracksEventEmitter.interacted()
+        }
+
+        Task { @MainActor in
+            analytics.track(.dashboardPulledToRefresh)
+            await reloadAllData()
+        }
     }
 }
 

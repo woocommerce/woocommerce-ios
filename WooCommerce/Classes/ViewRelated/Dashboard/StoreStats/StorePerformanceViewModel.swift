@@ -104,7 +104,6 @@ final class StorePerformanceViewModel: ObservableObject {
         }
         saveLastTimeRange(timeRange)
         shouldHighlightStats = false
-        usageTracksEventEmitter.interacted()
         analytics.track(event: .Dashboard.dashboardMainStatsDate(timeRange: timeRange))
     }
 
@@ -162,6 +161,12 @@ final class StorePerformanceViewModel: ObservableObject {
     func hideStorePerformance() {
         analytics.track(event: .DynamicDashboard.hideCardTapped(type: .performance))
         onDismiss?()
+    }
+
+    /// Add necessary tracking for the interaction
+    func trackInteraction() {
+        usageTracksEventEmitter.interacted()
+        analytics.track(event: .DynamicDashboard.dashboardCardInteracted(type: .performance))
     }
 }
 
@@ -369,7 +374,7 @@ private extension StorePerformanceViewModel {
         if timeRange.isCustomTimeRange {
             analytics.track(event: .DashboardCustomRange.interacted())
         }
-        usageTracksEventEmitter.interacted()
+        trackInteraction()
     }
 }
 

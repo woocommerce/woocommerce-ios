@@ -1,5 +1,9 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+19.1
+-----
+- [*] Added "Private" filter option for enhanced product filtering on iOS.
+
 19.0
 -----
 - [internal] Resolved an issue where users were unable to upload product images when the store is set to private on WP.com. [https://github.com/woocommerce/woocommerce-ios/issues/12646]

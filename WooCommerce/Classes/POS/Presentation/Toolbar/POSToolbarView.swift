@@ -33,6 +33,10 @@ private extension POSToolbarView {
     }
 }
 
+#if DEBUG
+
 #Preview {
     POSToolbarView(readerConnectionViewModel: .init(cardPresentPayment: CardPresentPaymentPreviewService()))
 }
+
+#endif

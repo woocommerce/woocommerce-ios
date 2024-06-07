@@ -32,6 +32,8 @@ final class TopPerformersDashboardViewModel: ObservableObject {
 
     lazy var periodViewModel = TopPerformersPeriodViewModel(state: .loading) { [weak self] topPerformersItem in
         guard let self else { return }
+
+        analytics.track(event: .DynamicDashboard.dashboardCardInteracted(type: .topPerformers))
         usageTracksEventEmitter.interacted()
         selectedItem = topPerformersItem
     }

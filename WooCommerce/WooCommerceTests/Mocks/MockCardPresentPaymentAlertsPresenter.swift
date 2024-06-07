@@ -15,6 +15,10 @@ final class MockCardPresentPaymentAlertsPresenter: CardPresentPaymentAlertsPrese
         onPresentCalled?(viewModel)
     }
 
+    func presentWCSettingsWebView(adminURL: URL, completion: @escaping () -> Void) {
+        // no-op
+    }
+
     func foundSeveralReaders(readerIDs: [String],
                              connect: @escaping (String) -> Void,
                              cancelSearch: @escaping () -> Void) {

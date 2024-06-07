@@ -107,7 +107,8 @@ struct DashboardView: View {
                 }, label: {
                     Text(Localization.edit)
                         .overlay(alignment: .topTrailing) {
-                            if viewModel.showNewCardsNotice {
+                            if viewModel.showNewCardsNotice &&
+                                !viewModel.isReloadingAllData {
                                 Circle()
                                     .fill(Color(.accent))
                                     .frame(width: Layout.dotBadgeSize)
@@ -116,6 +117,7 @@ struct DashboardView: View {
                             }
                         }
                 })
+                .disabled(viewModel.isReloadingAllData)
             }
         }
         .toolbarBackground(Color.clear, for: .navigationBar)
@@ -154,9 +156,7 @@ struct DashboardView: View {
         }
         .sheet(isPresented: $viewModel.showingCustomization,
                onDismiss: {
-            Task {
-                await viewModel.handleCustomizationDismissal()
-            }
+            viewModel.handleCustomizationDismissal()
         }) {
             DashboardCustomizationView(viewModel: DashboardCustomizationViewModel(
                 allCards: viewModel.availableCards,
@@ -168,7 +168,9 @@ struct DashboardView: View {
             Survey(source: .inAppFeedback)
         }
         .onAppear {
-            viewModel.onViewAppear()
+            Task {
+                await viewModel.onViewAppear()
+            }
         }
     }
 }
@@ -245,7 +247,7 @@ private extension DashboardView {
                 }
             }
 
-            if viewModel.showNewCardsNotice {
+            if viewModel.showNewCardsNotice && !viewModel.isReloadingAllData {
                 newCardsNoticeCard
             }
 
@@ -306,14 +308,14 @@ private extension DashboardView {
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, Layout.elementPadding)
 
-            Button(Localization.NewCardsNoticeCard.addSectionsButtonLabel) {
+            Button(Localization.NewCardsNoticeCard.addSectionsButtonText) {
                 ServiceLocator.analytics.track(event: .DynamicDashboard.dashboardCardAddNewSectionsTapped())
 
                 viewModel.showCustomizationScreen()
             }
             .buttonStyle(PrimaryButtonStyle())
             .padding(.horizontal, Layout.elementPadding)
-            .padding(.bottom, Layout.padding)
+            .padding(.bottom, Layout.elementPadding)
         }
         .background(Color(.listForeground(modal: false)))
         .clipShape(RoundedRectangle(cornerSize: Layout.cornerSize))
@@ -438,9 +440,9 @@ private extension DashboardView {
                 comment: "Subtitle of the New Cards Notice card"
             )
 
-            static let addSectionsButtonLabel = NSLocalizedString(
-                "dashboardView.newCardsNoticeCard.addSectionsButtonLabel",
-                value: "Add new sections",
+            static let addSectionsButtonText = NSLocalizedString(
+                "dashboardView.newCardsNoticeCard.addSectionsButtonText",
+                value: "Add New Sections",
                 comment: "Label of the button to add sections"
             )
         }

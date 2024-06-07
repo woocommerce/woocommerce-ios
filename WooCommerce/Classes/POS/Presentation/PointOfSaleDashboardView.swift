@@ -45,7 +45,14 @@ struct PointOfSaleDashboardView: View {
             })
         }
         .sheet(isPresented: $viewModel.showsCardReaderSheet, content: {
-            Text(viewModel.cardPresentPaymentEvent.temporaryEventDescription)
+            switch viewModel.cardPresentPaymentEvent {
+            case .showAlert(let alertViewModel):
+                CardPresentPaymentAlert(alertViewModel: alertViewModel)
+            case .idle,
+                    .showReaderList,
+                    .showOnboarding:
+                Text(viewModel.cardPresentPaymentEvent.temporaryEventDescription)
+            }
         })
         .sheet(isPresented: $viewModel.showsFilterSheet, content: {
             FilterView(viewModel: viewModel)
@@ -63,7 +70,7 @@ private extension PointOfSaleDashboardView {
 
     var totalsView: some View {
         TotalsView(viewModel: viewModel)
-            .background(Color.secondaryBackground)
+            .background(Color(UIColor.systemBackground))
             .frame(maxWidth: .infinity)
     }
 
@@ -93,6 +100,6 @@ fileprivate extension CardPresentPaymentEvent {
 #Preview {
     PointOfSaleDashboardView(
         viewModel: PointOfSaleDashboardViewModel(items: POSItemProviderPreview().providePointOfSaleItems(),
-                                                 cardPresentPaymentService: CardPresentPaymentService(siteID: 0)))
+                                                 cardPresentPaymentService: CardPresentPaymentPreviewService()))
 }
 #endif

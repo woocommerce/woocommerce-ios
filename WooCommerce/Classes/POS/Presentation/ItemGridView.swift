@@ -52,6 +52,6 @@ private extension ItemGridView {
 #if DEBUG
 #Preview {
     ItemGridView(viewModel: PointOfSaleDashboardViewModel(items: POSItemProviderPreview().providePointOfSaleItems(),
-                                                          cardPresentPaymentService: CardPresentPaymentService(siteID: 0)))
+                                                          cardPresentPaymentService: CardPresentPaymentPreviewService()))
 }
 #endif

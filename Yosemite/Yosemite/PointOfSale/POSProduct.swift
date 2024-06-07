@@ -1,10 +1,10 @@
 
 struct POSProduct: POSItem {
-    public let itemID: UUID
-    public let productID: Int64
-    public let name: String
-    public let price: String
-    public let productImageSource: String?
+    let itemID: UUID
+    let productID: Int64
+    let name: String
+    let price: String
+    var productImageSource: String?
 
     init(itemID: UUID,
          productID: Int64,

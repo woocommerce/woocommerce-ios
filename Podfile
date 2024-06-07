@@ -30,7 +30,7 @@ def aztec
 end
 
 def tracks
-  pod 'Automattic-Tracks-iOS', '~> 3.0'
+  pod 'Automattic-Tracks-iOS', '~> 3.4.1'
   # pod 'Automattic-Tracks-iOS', :git => 'https://github.com/Automattic/Automattic-Tracks-iOS.git', :branch => 'trunk'
   # pod 'Automattic-Tracks-iOS', :git => 'https://github.com/Automattic/Automattic-Tracks-iOS.git', :commit => ''
   # pod 'Automattic-Tracks-iOS', :path => '../Automattic-Tracks-iOS'
@@ -49,7 +49,6 @@ def alamofire
 end
 
 def cocoa_lumberjack
-  pod 'CocoaLumberjack', '~> 3.8.5'
   pod 'CocoaLumberjack/Swift', '~> 3.8.5'
 end
 

@@ -28,7 +28,11 @@ struct OrdersListView: View {
                 case .error:
                     errorView
                 case .loaded(let orders):
-                    dataView(orders: orders)
+                    if orders.isEmpty {
+                        emptyStateView
+                    } else {
+                        dataView(orders: orders)
+                    }
                 }
             }
             .navigationTitle(Localization.title)
@@ -75,6 +79,21 @@ struct OrdersListView: View {
         }
     }
 
+    /// Empty State View.
+    ///
+    @ViewBuilder var emptyStateView: some View {
+        VStack {
+            Spacer()
+            Text(Localization.empty)
+            Spacer()
+            Images.cart
+                .resizable()
+                .frame(maxWidth: Layout.cartSize, maxHeight: Layout.cartSize)
+            Spacer()
+
+        }
+    }
+
     /// Data: List with live order content.
     ///
     @ViewBuilder private func dataView(orders: [Order]) -> some View {
@@ -109,10 +128,20 @@ private extension OrdersListView {
             value: "Retry",
             comment: "Retry on the watch orders list screen."
         )
+        static let empty = AppLocalizedString(
+            "watch.orders.empty.title",
+            value: "Waiting for your first order!",
+            comment: "Title on the watch orders list screen when there are no orders"
+        )
     }
 
     enum Images {
         static let myStore = Image(systemName: "house")
+        static let cart = Image(systemName: "cart")
+    }
+
+    enum Layout {
+        static let cartSize = 40.0
     }
 }
 

@@ -2,7 +2,7 @@
 
 19.1
 -----
-- [*] Added "Private" filter option for enhanced product filtering on iOS.
+- [*] Added "Private" filter option for enhanced product filtering on iOS. [https://github.com/woocommerce/woocommerce-ios/pull/13009]
 
 19.0
 -----

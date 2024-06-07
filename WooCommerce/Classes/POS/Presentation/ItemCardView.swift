@@ -16,15 +16,16 @@ struct ItemCardView: View {
         HStack {
             if let imageSource = item.productImageSource {
                 ProductImageThumbnail(productImageURL: URL(string: imageSource),
-                                      productImageSize: 60,
+                                      productImageSize: Constants.productImageWidth,
                                       scale: scale,
-                                      productImageCornerRadius: 1,
+                                      productImageCornerRadius: Constants.productImageCornerRadius,
                                       foregroundColor: .clear)
             } else {
                 // TODO:
                 // Handle what we'll show when there's lack of images:
                 Rectangle()
-                    .frame(width: 60 * scale, height: 60 * scale)
+                    .frame(width: Constants.productImageWidth * scale,
+                           height: Constants.productImageWidth * scale)
                     .foregroundColor(.gray)
             }
             VStack {
@@ -44,6 +45,13 @@ struct ItemCardView: View {
         }
         .frame(maxWidth: .infinity)
         .background(Color.tertiaryBackground)
+    }
+}
+
+private extension ItemCardView {
+    enum Constants {
+        static let productImageWidth: CGFloat = 60
+        static let productImageCornerRadius: CGFloat = 0
     }
 }
 

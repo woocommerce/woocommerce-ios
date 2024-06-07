@@ -1,11 +1,9 @@
 PODS:
   - Alamofire (5.8.1)
-  - Automattic-Tracks-iOS (3.0.0):
-    - Sentry (~> 8.0)
+  - Automattic-Tracks-iOS (3.4.1):
+    - Sentry (~> 8.26)
     - Sodium (>= 0.9.1)
     - UIDeviceIdentifier (~> 2.0)
-  - CocoaLumberjack (3.8.5):
-    - CocoaLumberjack/Core (= 3.8.5)
   - CocoaLumberjack/Core (3.8.5)
   - CocoaLumberjack/Swift (3.8.5):
     - CocoaLumberjack/Core
@@ -14,12 +12,9 @@ PODS:
   - Kingfisher (7.6.2)
   - NSObject-SafeExpectations (0.0.6)
   - "NSURL+IDN (0.4)"
-  - Sentry (8.15.2):
-    - Sentry/Core (= 8.15.2)
-    - SentryPrivate (= 8.15.2)
-  - Sentry/Core (8.15.2):
-    - SentryPrivate (= 8.15.2)
-  - SentryPrivate (8.15.2)
+  - Sentry (8.26.0):
+    - Sentry/Core (= 8.26.0)
+  - Sentry/Core (8.26.0)
   - Sodium (0.9.1)
   - Sourcery (1.0.3)
   - StripeTerminal (3.3.1)
@@ -62,8 +57,7 @@ PODS:
 
 DEPENDENCIES:
   - Alamofire (~> 5.0)
-  - Automattic-Tracks-iOS (~> 3.0)
-  - CocoaLumberjack (~> 3.8.5)
+  - Automattic-Tracks-iOS (~> 3.4.1)
   - CocoaLumberjack/Swift (~> 3.8.5)
   - Gridicons (~> 1.2.0)
   - KeychainAccess (~> 4.2.2)
@@ -92,7 +86,6 @@ SPEC REPOS:
     - NSObject-SafeExpectations
     - "NSURL+IDN"
     - Sentry
-    - SentryPrivate
     - Sodium
     - Sourcery
     - StripeTerminal
@@ -117,15 +110,14 @@ SPEC REPOS:
 
 SPEC CHECKSUMS:
   Alamofire: 3ca42e259043ee0dc5c0cdd76c4bc568b8e42af7
-  Automattic-Tracks-iOS: f30bf3362a77010ccb9fe9aded453645089f6ccb
+  Automattic-Tracks-iOS: 2d4bee68ff9db4d51f2f6c9fc85857dc69a008a4
   CocoaLumberjack: 6a459bc897d6d80bd1b8c78482ec7ad05dffc3f0
   Gridicons: 4455b9f366960121430e45997e32112ae49ffe1d
   KeychainAccess: c0c4f7f38f6fc7bbe58f5702e25f7bd2f65abf51
   Kingfisher: 6c5449c6450c5239166510ba04afe374a98afc4f
   NSObject-SafeExpectations: c01c8881cbd97efad6f668286b913cd0b7d62ab5
   "NSURL+IDN": afc873e639c18138a1589697c3add197fe8679ca
-  Sentry: 6f5742b4c47c17c9adcf265f6f328cf4a0ed1923
-  SentryPrivate: b2f7996f37781080f04a946eb4e377ff63c64195
+  Sentry: 74a073c71c998117edb08f56f443c83570a31bed
   Sodium: 23d11554ecd556196d313cf6130d406dfe7ac6da
   Sourcery: 70a6048014bd4f37ea80e6bd4354d47bf3b760e1
   StripeTerminal: 369ef0cf0b90d838f42be1a0b371475986f4b79f
@@ -149,6 +141,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: 685b5d185af47ced0ec40564ec46355c838bbd06
   ZendeskSupportSDK: 92e6f9d334e81e9186f8a17583862350460a5393
 
-PODFILE CHECKSUM: e1a5d6a5dc7e8fee2793f10f2df8f1645ab87e19
+PODFILE CHECKSUM: 1f66349fc0f65a2b05ac6ee9a7c58ee2e95f60f1
 
 COCOAPODS: 1.14.0

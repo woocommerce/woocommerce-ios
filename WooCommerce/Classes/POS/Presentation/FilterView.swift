@@ -24,7 +24,6 @@ struct FilterView: View {
 #if DEBUG
 #Preview {
     FilterView(viewModel: PointOfSaleDashboardViewModel(items: [],
-                                                        currencySettings: .init(),
-                                                        cardPresentPaymentService: CardPresentPaymentService(siteID: 0)))
+                                                        cardPresentPaymentService: CardPresentPaymentPreviewService()))
 }
 #endif

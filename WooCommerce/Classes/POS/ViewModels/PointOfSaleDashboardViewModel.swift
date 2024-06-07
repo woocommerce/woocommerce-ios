@@ -1,22 +1,32 @@
 import SwiftUI
 import protocol Yosemite.POSItem
-import struct Yosemite.POSProduct
 import class WooFoundation.CurrencyFormatter
 import class WooFoundation.CurrencySettings
 
 final class PointOfSaleDashboardViewModel: ObservableObject {
+    enum PaymentState {
+        case acceptingCard
+        case processingCard
+        case cardPaymentSuccessful
+        case acceptingCash
+        case cashPaymentSuccessful
+    }
+
     @Published private(set) var items: [POSItem]
-    @Published private(set) var itemsInCart: [CartItem] = []
-    
-    // Subtotal, Taxes...
+    @Published private(set) var itemsInCart: [CartItem] = [] {
+        didSet {
+            calculateAmounts()
+        }
+    }
     @Published private(set) var formattedCartTotalPrice: String?
-    @Published private(set) var formattedOrderTotalTaxPrice: String?
-    // Total
     @Published private(set) var formattedOrderTotalPrice: String?
+    @Published private(set) var formattedOrderTotalTaxPrice: String?
 
     @Published var showsCardReaderSheet: Bool = false
     @Published private(set) var cardPresentPaymentEvent: CardPresentPaymentEvent = .idle
-    @ObservedObject private(set) var cardReaderConnectionViewModel: CardReaderConnectionViewModel
+    let cardReaderConnectionViewModel: CardReaderConnectionViewModel
+
+    @Published var showsCreatingOrderSheet: Bool = false
 
     @Published var showsFilterSheet: Bool = false
 
@@ -27,15 +37,13 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
 
     @Published private(set) var orderStage: OrderStage = .building
 
-    private let currencyFormatter: CurrencyFormatter
-
     private let cardPresentPaymentService: CardPresentPaymentFacade
 
+    private let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
+
     init(items: [POSItem],
-         currencySettings: CurrencySettings,
          cardPresentPaymentService: CardPresentPaymentFacade) {
         self.items = items
-        self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
         self.cardPresentPaymentService = cardPresentPaymentService
         self.cardReaderConnectionViewModel = CardReaderConnectionViewModel(cardPresentPayment: cardPresentPaymentService)
         observeCardPresentPaymentEvents()
@@ -45,12 +53,10 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
     func addItemToCart(_ item: POSItem) {
         let cartItem = CartItem(id: UUID(), item: item, quantity: 1)
         itemsInCart.append(cartItem)
-        resetCalculatedAmounts()
     }
 
     func removeItemFromCart(_ cartItem: CartItem) {
         itemsInCart.removeAll(where: { $0.id == cartItem.id })
-        resetCalculatedAmounts()
         checkIfCartEmpty()
     }
 
@@ -63,7 +69,6 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
     func submitCart() {
         // TODO: https://github.com/woocommerce/woocommerce-ios/issues/12810
         orderStage = .finalizing
-        calculateAmounts()
     }
 
     func addMoreToCart() {
@@ -74,57 +79,31 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
         showsFilterSheet = true
     }
 
-    private func resetCalculatedAmounts() {
-        formattedOrderTotalTaxPrice = nil
-        formattedOrderTotalPrice = nil
-    }
-
-    var areAmountsFullyCalculated: Bool {
-        return calculatingAmounts == false && (formattedOrderTotalTaxPrice != nil || formattedOrderTotalPrice != nil)
-    }
-    var showRecalculateButton: Bool {
-        return !areAmountsFullyCalculated && calculatingAmounts == false
-    }
-
-    @Published private(set) var calculatingAmounts: Bool = false
-
-    func recalculateAmounts() {
-        resetCalculatedAmounts()
-        calculateAmounts()
-    }
-
     private func calculateAmounts() {
         // TODO: this is just a starting point for this logic, to have something calculated on the fly
         if let formattedCartTotalPrice = formattedCartTotalPrice,
            let subtotalAmount = currencyFormatter.convertToDecimal(formattedCartTotalPrice)?.doubleValue {
             let taxAmount = subtotalAmount * 0.1 // having fixed 10% tax for testing
             let totalAmount = subtotalAmount + taxAmount
-            calculatingAmounts = true
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: {
-                self.formattedOrderTotalTaxPrice = self.currencyFormatter.formatAmount(Decimal(taxAmount))
-                self.formattedOrderTotalPrice = self.currencyFormatter.formatAmount(Decimal(totalAmount))
-                self.calculatingAmounts = false
-            })
+            formattedOrderTotalTaxPrice = currencyFormatter.formatAmount(Decimal(taxAmount))
+            formattedOrderTotalPrice = currencyFormatter.formatAmount(Decimal(totalAmount))
         }
     }
 
     var checkoutButtonDisabled: Bool {
         return itemsInCart.isEmpty
     }
-}
 
-extension PointOfSaleDashboardViewModel {
-    // Helper function to populate SwifUI previews
-    static func defaultPreview() -> PointOfSaleDashboardViewModel {
-        PointOfSaleDashboardViewModel(items: [],
-                                      currencySettings: .init(),
-                                      cardPresentPaymentService: CardPresentPaymentService(siteID: 0))
-    }
+    func cardPaymentTapped() {
+        Task { @MainActor in
+            showsCreatingOrderSheet = true
+            let order = try await createTestOrder()
+            showsCreatingOrderSheet = false
+            let _ = try await cardPresentPaymentService.collectPayment(for: order, using: .bluetooth)
 
-    func startNewTransaction() {
-        // clear cart
-        itemsInCart.removeAll()
-        orderStage = .building
+            // TODO: Here we should present something to show the payment was successful or not,
+            // and then clear the screen ready for the next transaction.
+        }
     }
 }
 
@@ -157,4 +136,21 @@ private extension PointOfSaleDashboardViewModel {
             }
         }.assign(to: &$showsCardReaderSheet)
     }
+}
+
+import enum Yosemite.OrderAction
+import struct Yosemite.Order
+private extension PointOfSaleDashboardViewModel {
+    @MainActor
+       func createTestOrder() async throws -> Order {
+           return try await withCheckedThrowingContinuation { continuation in
+               let action = OrderAction.createSimplePaymentsOrder(siteID: ServiceLocator.stores.sessionManager.defaultStoreID ?? 0,
+                                                                  status: .pending,
+                                                                  amount: "15.00",
+                                                                  taxable: false) { result in
+                   continuation.resume(with: result)
+               }
+               ServiceLocator.stores.dispatch(action)
+           }
+       }
 }

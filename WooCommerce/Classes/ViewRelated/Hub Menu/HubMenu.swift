@@ -162,13 +162,17 @@ private extension HubMenu {
             case HubMenuViewModel.Customers.id:
                 CustomersListView(viewModel: .init(siteID: viewModel.siteID))
             case HubMenuViewModel.PointOfSaleEntryPoint.id:
-                // TODO:
-                // PointOfSaleEntryPointView does not need currencySettings, since these are passed through POSItemProvider
-                PointOfSaleEntryPointView(itemProvider: viewModel.posItemProvider,
-                                          currencySettings: ServiceLocator.currencySettings,
-                                          hideAppTabBar: { isHidden in
-                    AppDelegate.shared.setShouldHideTabBar(isHidden)
-                }, siteID: viewModel.siteID)
+                if let cardPresentPaymentService = viewModel.cardPresentPaymentService {
+                    PointOfSaleEntryPointView(
+                        itemProvider: viewModel.posItemProvider,
+                        hideAppTabBar: { isHidden in
+                            AppDelegate.shared.setShouldHideTabBar(isHidden)
+                        },
+                        cardPresentPaymentService: cardPresentPaymentService)
+                } else {
+                    // TODO: When we have a singleton for the card payment service, this should not be required.
+                    Text("Error creating card payment service")
+                }
             default:
                 fatalError("🚨 Unsupported menu item")
             }

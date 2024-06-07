@@ -3,19 +3,15 @@ import Foundation
 import struct Yosemite.Order
 import struct Yosemite.CardPresentPaymentsConfiguration
 import struct Yosemite.CardReader
-
-import UIKit // TODO: remove after update to `ViewControllerPresenting` when #12864 is done
+import enum Yosemite.CardPresentPaymentAction
+import protocol Yosemite.StoresManager
 
 final class CardPresentPaymentService: CardPresentPaymentFacade {
     let paymentEventPublisher: AnyPublisher<CardPresentPaymentEvent, Never>
 
-    var connectedReaderPublisher: AnyPublisher<CardPresentPaymentCardReader?, Never> {
-        connectedReaderSubject.eraseToAnyPublisher()
-    }
+    let connectedReaderPublisher: AnyPublisher<CardPresentPaymentCardReader?, Never>
 
-    // I don't actually think we need this, but just in case the service needs to send its own events
     private let paymentEventSubject = PassthroughSubject<CardPresentPaymentEvent, Never>()
-    private let connectedReaderSubject = CurrentValueSubject<CardPresentPaymentCardReader?, Never>(nil)
 
     private let onboardingAdaptor: CardPresentPaymentsOnboardingPresenterAdaptor
 
@@ -28,7 +24,10 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
         CardPresentConfigurationLoader().configuration
     }
 
-    init(siteID: Int64) {
+    private var paymentTask: Task<CardPresentPaymentAdaptedCollectOrderPaymentResult, Error>?
+
+    @MainActor
+    init(siteID: Int64, stores: StoresManager = ServiceLocator.stores) async {
         self.siteID = siteID
         let onboardingAdaptor = CardPresentPaymentsOnboardingPresenterAdaptor()
         self.onboardingAdaptor = onboardingAdaptor
@@ -50,7 +49,10 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
             }
             .merge(with: paymentAlertsPresenterAdaptor.paymentAlertPublisher)
             .merge(with: paymentEventSubject)
+            .receive(on: DispatchQueue.main) // These will be used for UI changes, so moving to the Main thread helps.
             .eraseToAnyPublisher()
+
+        connectedReaderPublisher = await Self.createCardReaderConnectionPublisher(stores: stores)
     }
 
     @MainActor
@@ -64,7 +66,6 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
         case .completed(let cardReader, _):
             let connectedReader = CardPresentPaymentCardReader(name: cardReader.name ?? cardReader.id,
                                                                batteryLevel: cardReader.batteryLevel)
-            connectedReaderSubject.send(connectedReader)
             paymentEventSubject.send(.idle)
             return .connected(connectedReader)
         case .canceled:
@@ -76,24 +77,82 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
     func disconnectReader() {
     }
 
+    @MainActor
     func collectPayment(for order: Order, using connectionMethod: CardReaderConnectionMethod) async throws -> CardPresentPaymentResult {
-        // TODO: replace it with payment collection
-        .cancellation
+        paymentTask?.cancel()
+
+        // What happens if `start` gets called while there's a connection ongoing but not finished?
+        // Ideally, we'd adopt the connection attempt.
+        // Since we're reusing the connection controllers, that's a good start, but it needs proper testing.
+        let preflightController = createPreflightController()
+
+        // TODO: Update the connected reader subject when we get a connection here.
+
+        let paymentTask = CardPresentPaymentCollectOrderPaymentUseCaseAdaptor().collectPaymentTask(
+            for: order,
+            using: connectionMethod,
+            siteID: siteID,
+            preflightController: preflightController,
+            onboardingPresenter: onboardingAdaptor,
+            configuration: cardPresentPaymentsConfiguration,
+            alertsPresenter: paymentAlertsPresenterAdaptor,
+            paymentEventSubject: paymentEventSubject)
+
+        self.paymentTask = paymentTask
+
+        switch try await paymentTask.value {
+        case .success:
+            // TODO: fetch the receipt URL to return an accurate value.
+            let transaction = CardPresentPaymentTransaction(receiptURL: URL(string: "https://example.com")!)
+            return .success(transaction)
+        case .cancellation:
+            return .cancellation
+        }
     }
 
     func cancelPayment() {
+        paymentTask?.cancel()
     }
 }
 
 private extension CardPresentPaymentService {
+    @MainActor
+    static func createCardReaderConnectionPublisher(stores: StoresManager) async -> AnyPublisher<CardPresentPaymentCardReader?, Never> {
+        return await withCheckedContinuation { continuation in
+            var nillableContinuation: CheckedContinuation<AnyPublisher<CardPresentPaymentCardReader?, Never>, Never>? = continuation
+
+            let action = CardPresentPaymentAction.publishCardReaderConnections { cardReadersConnectionPublisher in
+                let readerConnectionPublisher = cardReadersConnectionPublisher
+                    .map { readers -> CardPresentPaymentCardReader? in
+                        guard let reader = readers.first else {
+                            return nil
+                        }
+                        return CardPresentPaymentCardReader(name: reader.name ?? reader.id,
+                                                            batteryLevel: reader.batteryLevel)
+                    }
+                    .receive(on: DispatchQueue.main)
+                    .eraseToAnyPublisher()
+
+                nillableContinuation?.resume(returning: readerConnectionPublisher)
+                nillableContinuation = nil
+            }
+            stores.dispatch(action)
+        }
+    }
+
     func createPreflightController() -> CardPresentPaymentPreflightController {
         CardPresentPaymentPreflightController(
             siteID: siteID,
             configuration: cardPresentPaymentsConfiguration,
-            rootViewController: UIViewController(), // TODO: update to `ViewControllerPresenting` when #12864 is done
+            rootViewController: NullViewControllerPresenting(),
             alertsPresenter: paymentAlertsPresenterAdaptor,
             onboardingPresenter: onboardingAdaptor,
             externalReaderConnectionController: connectionControllerManager.externalReaderConnectionController,
             tapToPayConnectionController: connectionControllerManager.tapToPayConnectionController)
     }
+}
+
+enum CardPresentPaymentServiceError: Error {
+    case invalidAmount
+    case unknownPaymentError(underlyingError: Error)
 }

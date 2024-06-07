@@ -82,6 +82,9 @@ struct StorePerformanceView: View {
         .sheet(isPresented: $showingSupportForm) {
             supportForm
         }
+        .onAppear {
+            viewModel.onViewAppear()
+        }
     }
 }
 
@@ -119,6 +122,7 @@ private extension StorePerformanceView {
                     .subheadlineStyle()
                 if viewModel.timeRange.isCustomTimeRange {
                     Button {
+                        viewModel.trackInteraction()
                         showingCustomRangePicker = true
                     } label: {
                         HStack {
@@ -135,6 +139,8 @@ private extension StorePerformanceView {
             }
             Spacer()
             StatsTimeRangePicker(currentTimeRange: viewModel.timeRange) { newTimeRange in
+                viewModel.trackInteraction()
+
                 if newTimeRange.isCustomTimeRange {
                     showingCustomRangePicker = true
                 } else {
@@ -211,6 +217,8 @@ private extension StorePerformanceView {
                 viewModel.siteVisitStatMode == .redactedDueToCustomRange else {
                 return
             }
+
+            viewModel.trackInteraction()
             onCustomRangeRedactedViewTap()
         }
     }
@@ -241,6 +249,7 @@ private extension StorePerformanceView {
         if let chartViewModel = viewModel.chartViewModel {
             VStack {
                 StoreStatsChart(viewModel: chartViewModel) { selectedIndex in
+                    viewModel.trackInteraction()
                     viewModel.didSelectStatsInterval(at: selectedIndex)
                 }
                 .frame(height: Layout.chartViewHeight)
@@ -256,6 +265,7 @@ private extension StorePerformanceView {
 
     var viewAllAnalyticsButton: some View {
         Button {
+            viewModel.trackInteraction()
             onViewAllAnalytics(viewModel.siteID, viewModel.siteTimezone, viewModel.timeRange)
         } label: {
             HStack {

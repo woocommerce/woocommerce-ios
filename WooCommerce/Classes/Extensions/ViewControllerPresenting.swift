@@ -2,7 +2,7 @@ import UIKit
 
 /// Abstracts `UIViewController` usage in features (currently in card present payments) so that the UI/UX can also be implemented in
 /// SwiftUI while not affecting the pre-existing UIKit implementation.
-protocol ViewControllerPresenting {
+protocol ViewControllerPresenting: AnyObject {
     func present(_ viewControllerToPresent: UIViewController, animated: Bool, completion: (() -> Void)?)
     func present(_ viewControllerToPresent: UIViewController, animated: Bool)
     func dismiss(animated: Bool, completion: (() -> Void)?)

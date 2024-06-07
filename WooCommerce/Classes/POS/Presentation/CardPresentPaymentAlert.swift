@@ -1,6 +1,24 @@
 import SwiftUI
 
 struct CardPresentPaymentAlert: View {
+    // TODO: Figure out whether this is the right choice vs @StateObject
+    // Using @StateObject resulted in the alert not being updated when
+    // alertViewModel changed – possibly we needed to invalidate the view's id.
+    @ObservedObject private var viewModel: CardPresentPaymentAlertSwiftUIViewModel
+
+    init(alertViewModel: CardPresentPaymentAlertViewModel) {
+        self.viewModel = .init(alertViewModel: alertViewModel)
+    }
+
+    var body: some View {
+        BasicCardPresentPaymentAlert(alertViewModel: viewModel.alertViewModel)
+            .sheet(item: $viewModel.wcSettingsWebViewModel) { webViewModel in
+                WCSettingsWebView(adminUrl: webViewModel.webViewURL, completion: webViewModel.onCompletion)
+            }
+    }
+}
+
+struct BasicCardPresentPaymentAlert: View {
     let alertViewModel: CardPresentPaymentAlertViewModel
 
     var body: some View {

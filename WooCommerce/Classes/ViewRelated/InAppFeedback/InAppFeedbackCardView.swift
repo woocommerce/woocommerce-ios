@@ -9,21 +9,14 @@ struct InAppFeedbackCardView: View {
 
     var body: some View {
         VStack(spacing: Layout.padding) {
-            Text(Localization.title)
+            Text(Localization.feedbackTitle)
                 .headlineStyle()
                 .multilineTextAlignment(.center)
                 .padding(.top, Layout.padding)
 
-            HStack(spacing: Layout.padding) {
-                Button(Localization.couldBeBetter) {
-                    viewModel.didTapCouldBeBetter()
-                }
-                .buttonStyle(SecondaryButtonStyle())
-
-                Button(Localization.iLikeIt) {
-                    viewModel.didTapILikeIt()
-                }
-                .buttonStyle(PrimaryButtonStyle())
+            ViewThatFits(in: .horizontal) {
+                horizontalButtonGroup
+                verticalButtonGroup
             }
             .padding(Layout.padding)
         }
@@ -35,15 +28,53 @@ struct InAppFeedbackCardView: View {
 }
 
 private extension InAppFeedbackCardView {
+    var verticalButtonGroup: some View {
+        VStack(spacing: Layout.padding) {
+            Button(Localization.iLikeIt) {
+                viewModel.didTapILikeIt()
+            }
+            .buttonStyle(PrimaryButtonStyle())
+
+            Button(Localization.couldBeBetter) {
+                viewModel.didTapCouldBeBetter()
+            }
+            .buttonStyle(SecondaryButtonStyle())
+        }
+    }
+
+    var horizontalButtonGroup: some View {
+        HStack(spacing: Layout.padding) {
+            Button {
+                viewModel.didTapILikeIt()
+            } label: {
+                Text(Localization.iLikeIt)
+                    .fixedSize(horizontal: true, vertical: false)
+                    .frame(maxWidth: .infinity)
+            }
+            .buttonStyle(PrimaryButtonStyle())
+
+            Button {
+                viewModel.didTapCouldBeBetter()
+            } label: {
+                Text(Localization.couldBeBetter)
+                    .fixedSize(horizontal: true, vertical: false)
+                    .frame(maxWidth: .infinity)
+            }
+            .buttonStyle(SecondaryButtonStyle())
+        }
+    }
+}
+
+private extension InAppFeedbackCardView {
     enum Layout {
         static let padding: CGFloat = 16
         static let cornerRadius: CGFloat = 8
     }
 
     enum Localization {
-        static let title = NSLocalizedString(
-            "inAppFeedbackCardView.title",
-            value: "Enjoying the WooCommerce app?",
+        static let feedbackTitle = NSLocalizedString(
+            "inAppFeedbackCardView.feedbackTitle",
+            value: "Are you enjoying the app?",
             comment: "The title used when asking the user for feedback for the app."
         )
         static let couldBeBetter = NSLocalizedString(

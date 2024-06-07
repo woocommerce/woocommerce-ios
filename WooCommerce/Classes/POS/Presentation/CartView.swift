@@ -1,4 +1,3 @@
-import class Yosemite.POSProductProvider
 import SwiftUI
 
 struct CartView: View {
@@ -92,8 +91,7 @@ private extension CartView {
 
 #if DEBUG
 #Preview {
-    CartView(viewModel: PointOfSaleDashboardViewModel(items: POSProductProvider.provideProductsForPreview(),
-                                                      currencySettings: .init(),
-                                                      cardPresentPaymentService: CardPresentPaymentService(siteID: 0)))
+    CartView(viewModel: PointOfSaleDashboardViewModel(items: POSItemProviderPreview().providePointOfSaleItems(),
+                                                      cardPresentPaymentService: CardPresentPaymentPreviewService()))
 }
 #endif

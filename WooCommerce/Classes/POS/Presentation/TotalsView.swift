@@ -14,19 +14,29 @@ struct TotalsView: View {
             VStack(alignment: .leading) {
                 VStack(alignment: .leading, spacing: 32) {
                     HStack(spacing: 40) {
-                        priceFieldView(title: "Subtotal", formattedPrice: viewModel.formattedCartTotalPrice ?? "-")
-                        priceFieldView(title: "Taxes", formattedPrice: viewModel.formattedOrderTotalTaxPrice ?? "-")
+                        priceFieldView(title: "Subtotal", formattedPrice: viewModel.formattedCartTotalPrice, shimmeringActive: false)
+                        priceFieldView(title: "Taxes", formattedPrice: viewModel.formattedOrderTotalTaxPrice, shimmeringActive: viewModel.calculatingAmounts)
+
                     }
-                    totalPriceView(formattedPrice: viewModel.formattedOrderTotalPrice ?? "-")
+                    totalPriceView(formattedPrice: viewModel.formattedOrderTotalPrice)
+                    if viewModel.showRecalculateButton {
+                        Button("Calculate amounts") {
+                            viewModel.recalculateAmounts()
+                        }
+                    }
+                    Divider()
                 }
                 .padding()
                 Spacer()
                 cardReaderView
+                    .disabled(!viewModel.areAmountsFullyCalculated)
                     .padding()
                 paymentsView
                     .padding()
                 Spacer()
+                Divider()
                 paymentsActionButtons
+                    .disabled(!viewModel.areAmountsFullyCalculated)
                     .padding()
             }
             Spacer()
@@ -150,6 +160,7 @@ private extension TotalsView {
     private var newTransactionButton: some View {
         Button("New transaction") {
             paymentState = .acceptingCard
+            viewModel.startNewTransaction()
         }
         .padding(30)
         .font(.title)
@@ -196,24 +207,28 @@ private extension TotalsView {
         }
     }
 
-    @ViewBuilder func priceFieldView(title: String, formattedPrice: String) -> some View {
+    @ViewBuilder func priceFieldView(title: String, formattedPrice: String?, shimmeringActive: Bool) -> some View {
         VStack(alignment: .leading, spacing: .zero) {
             Text(title)
-            Text(formattedPrice)
+            Text(formattedPrice ?? "-----")
                 .font(.title2)
                 .fontWeight(.medium)
+                .redacted(reason: formattedPrice == nil ? [.placeholder] : [])
+                .shimmering(active: shimmeringActive)
         }
         .foregroundColor(Color.primaryText)
     }
 
-    @ViewBuilder func totalPriceView(formattedPrice: String) -> some View {
+    @ViewBuilder func totalPriceView(formattedPrice: String?) -> some View {
         VStack(alignment: .leading, spacing: .zero) {
             Text("Total")
                 .font(.title2)
                 .fontWeight(.medium)
-            Text(formattedPrice)
+            Text(formattedPrice ?? "-----")
                 .font(.largeTitle)
                 .bold()
+                .redacted(reason: formattedPrice == nil ? [.placeholder] : [])
+                .shimmering(active: viewModel.calculatingAmounts)
         }
         .foregroundColor(Color.primaryText)
     }

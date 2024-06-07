@@ -60,7 +60,7 @@ final class DashboardViewModel: ObservableObject {
 
     @Published private(set) var jetpackBannerVisibleFromAppSettings = false
 
-    @Published private(set) var hasOrders = true
+    @Published private(set) var hasOrders = false
 
     @Published private(set) var isEligibleForInbox = false
 
@@ -80,6 +80,8 @@ final class DashboardViewModel: ObservableObject {
     private let themeInstaller: ThemeInstaller
     private let storageManager: StorageManagerType
     private let inboxEligibilityChecker: InboxEligibilityChecker
+    private let usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter
+
     private var subscriptions: Set<AnyCancellable> = []
 
     var siteURLToShare: URL? {
@@ -136,10 +138,13 @@ final class DashboardViewModel: ObservableObject {
 
         self.themeInstaller = themeInstaller
         self.inboxEligibilityChecker = inboxEligibilityChecker
+        self.usageTracksEventEmitter = usageTracksEventEmitter
+
         self.inAppFeedbackCardViewModel.onFeedbackGiven = { [weak self] feedback in
             self?.showingInAppFeedbackSurvey = feedback == .didntLike
             self?.onInAppFeedbackCardAction()
         }
+
         configureOrdersResultController()
         setupDashboardCards()
         installPendingThemeIfNeeded()
@@ -163,13 +168,12 @@ final class DashboardViewModel: ObservableObject {
         await loadDashboardCardsFromStorage()
         updateDashboardCards(canShowOnboarding: storeOnboardingViewModel.canShowInDashboard,
                              canShowBlaze: blazeCampaignDashboardViewModel.canShowInDashboard,
-                             canShowAnalytics: hasOrders,
-                             canShowLastOrders: hasOrders,
-                             canShowInbox: isEligibleForInbox)
+                             canShowInbox: isEligibleForInbox,
+                             hasOrders: hasOrders)
     }
 
     func handleCustomizationDismissal() {
-        configureNewCardsNotice()
+        configureNewCardsNotice(hasOrders: hasOrders)
     }
 
     @MainActor
@@ -238,6 +242,19 @@ final class DashboardViewModel: ObservableObject {
         analytics.track(event: .DynamicDashboard.editorSaveTapped(types: activeCardTypes))
         saveDashboardCards(cards: cards)
         dashboardCards = cards
+    }
+
+    func onPullToRefresh() {
+        /// Track `used_analytics` if stat cards are enabled.
+        let hasStatsCards = availableCards.contains(where: { $0.type == .performance || $0.type == .topPerformers })
+        if hasStatsCards {
+            usageTracksEventEmitter.interacted()
+        }
+
+        Task { @MainActor in
+            analytics.track(.dashboardPulledToRefresh)
+            await reloadAllData()
+        }
     }
 }
 
@@ -408,9 +425,8 @@ private extension DashboardViewModel {
                 guard let self else { return }
                 updateDashboardCards(canShowOnboarding: canShowOnboarding,
                                      canShowBlaze: canShowBlaze,
-                                     canShowAnalytics: hasOrders,
-                                     canShowLastOrders: hasOrders,
-                                     canShowInbox: isEligibleForInbox)
+                                     canShowInbox: isEligibleForInbox,
+                                     hasOrders: hasOrders)
             }
             .store(in: &subscriptions)
     }
@@ -546,9 +562,11 @@ private extension DashboardViewModel {
 
     func updateDashboardCards(canShowOnboarding: Bool,
                               canShowBlaze: Bool,
-                              canShowAnalytics: Bool,
-                              canShowLastOrders: Bool,
-                              canShowInbox: Bool) {
+                              canShowInbox: Bool,
+                              hasOrders: Bool) {
+
+        let canShowAnalytics = hasOrders
+        let canShowLastOrders = hasOrders
 
         // First, generate latest cards state based on current canShow states
         let initialCards = generateDefaultCards(canShowOnboarding: canShowOnboarding,
@@ -591,13 +609,14 @@ private extension DashboardViewModel {
             dashboardCards = reorderedCards + remainingCards
         }
 
-        configureNewCardsNotice()
+        configureNewCardsNotice(hasOrders: hasOrders)
     }
 
-    /// Determines whether to show the notice that new cards now exist and can be found in Customize screen.
-    /// Can optionally pass local cards in case they are recently loaded before calling this function.
-    func configureNewCardsNotice() {
-        guard featureFlagService.isFeatureFlagEnabled(.dynamicDashboardM2) else {
+    /// Determines whether to show the notice that new cards are available and can be found in the Customize screen.
+    /// - Parameter hasOrders: A Boolean indicating whether the site has orders. If the site has no orders,
+    ///   the app will display the "Share Your Store" card, and the notice should remain hidden.
+    func configureNewCardsNotice(hasOrders: Bool) {
+        guard featureFlagService.isFeatureFlagEnabled(.dynamicDashboardM2) && hasOrders else {
             return
         }
 

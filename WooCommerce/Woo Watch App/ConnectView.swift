@@ -45,4 +45,5 @@ extension ConnectView {
 
 #Preview {
     ConnectView()
+        .environmentObject(WatchTracksProvider())
 }

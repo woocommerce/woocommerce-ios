@@ -103,8 +103,14 @@ final class TopPerformersDashboardViewModel: ObservableObject {
         onDismiss?()
     }
 
+    /// Adds necessary tracking for the interaction
     func trackInteraction() {
         analytics.track(event: .DynamicDashboard.dashboardCardInteracted(type: .topPerformers))
+        usageTracksEventEmitter.interacted()
+    }
+
+    func onViewAppear() {
+        /// tracks `used_analytics`
         usageTracksEventEmitter.interacted()
     }
 }

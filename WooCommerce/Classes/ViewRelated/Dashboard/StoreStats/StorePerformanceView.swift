@@ -82,6 +82,9 @@ struct StorePerformanceView: View {
         .sheet(isPresented: $showingSupportForm) {
             supportForm
         }
+        .onAppear {
+            viewModel.onViewAppear()
+        }
     }
 }
 

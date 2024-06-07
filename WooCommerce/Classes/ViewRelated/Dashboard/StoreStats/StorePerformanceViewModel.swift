@@ -163,10 +163,15 @@ final class StorePerformanceViewModel: ObservableObject {
         onDismiss?()
     }
 
-    /// Add necessary tracking for the interaction
+    /// Adds necessary tracking for the interaction
     func trackInteraction() {
         usageTracksEventEmitter.interacted()
         analytics.track(event: .DynamicDashboard.dashboardCardInteracted(type: .performance))
+    }
+
+    func onViewAppear() {
+        /// tracks `used_analytics`
+        usageTracksEventEmitter.interacted()
     }
 }
 

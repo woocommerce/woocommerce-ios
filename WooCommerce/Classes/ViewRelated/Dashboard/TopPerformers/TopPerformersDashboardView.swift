@@ -67,6 +67,9 @@ struct TopPerformersDashboardView: View {
         .sheet(item: $viewModel.selectedItem) { item in
             ViewControllerContainer(productDetailView(for: item))
         }
+        .onAppear {
+            viewModel.onViewAppear()
+        }
     }
 }
 

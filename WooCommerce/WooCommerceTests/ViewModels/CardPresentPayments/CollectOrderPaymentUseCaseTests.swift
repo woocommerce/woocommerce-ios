@@ -139,8 +139,8 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
 
         // Then
         XCTAssert(mockAnalyticsTracker.didCallTrackPaymentFailure)
-        let receivedError = try XCTUnwrap(mockAnalyticsTracker.spyTrackPaymentFailureError as? CollectOrderPaymentUseCase.NotValidAmountError)
-        assertEqual(CollectOrderPaymentUseCase.NotValidAmountError.belowMinimumAmount(amount: "$0.50"), receivedError)
+        let receivedError = try XCTUnwrap(mockAnalyticsTracker.spyTrackPaymentFailureError as? CollectOrderPaymentUseCaseNotValidAmountError)
+        assertEqual(CollectOrderPaymentUseCaseNotValidAmountError.belowMinimumAmount(amount: "$0.50"), receivedError)
     }
 
     func test_collectPayment_with_interac_dispatches_markOrderAsPaidLocally_after_successful_client_side_capture() throws {

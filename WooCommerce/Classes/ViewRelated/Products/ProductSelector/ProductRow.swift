@@ -37,11 +37,12 @@ struct ProductRow: View {
         HStack(alignment: .center) {
             if multipleSelectionsEnabled {
                 if let selectionHandler = onCheckboxSelected {
-                    checkbox.onTapGesture {
-                        selectionHandler()
-                    }
+                    checkbox(for: viewModel.selectedState)
+                        .onTapGesture {
+                            selectionHandler()
+                        }
                 } else {
-                    checkbox
+                    checkbox(for: viewModel.selectedState)
                 }
             }
 
@@ -82,10 +83,11 @@ struct ProductRow: View {
         .accessibilityHint(accessibilityHint)
     }
 
-    private var checkbox: some View {
-        Image(uiImage: viewModel.selectedState.image)
+    private func checkbox(for state: SelectedState) -> some View {
+        Image(uiImage: state.image)
+            .resizable()
             .frame(width: Layout.checkImageSize * scale, height: Layout.checkImageSize * scale)
-            .foregroundColor(isEnabled ? .init(UIColor.brand) : .gray)
+            .foregroundColor(isEnabled && state != .unsupported ? Color(.brand) : .gray)
     }
 }
 
@@ -96,6 +98,7 @@ extension ProductRow {
         case notSelected
         case partiallySelected
         case selected
+        case unsupported
 
         var image: UIImage {
             switch self {
@@ -105,6 +108,9 @@ extension ProductRow {
                 return .checkCircleImage.withRenderingMode(.alwaysTemplate)
             case .partiallySelected:
                 return .checkPartialCircleImage.withRenderingMode(.alwaysTemplate)
+            case .unsupported:
+                return UIImage(systemName: "minus.circle.fill")!
+                    .withRenderingMode(.alwaysTemplate)
             }
         }
     }

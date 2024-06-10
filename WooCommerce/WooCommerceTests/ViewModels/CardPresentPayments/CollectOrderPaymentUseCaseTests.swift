@@ -47,6 +47,8 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
                                              stores: stores,
                                              paymentOrchestrator: mockPaymentOrchestrator,
                                              alertsPresenter: alertsPresenter,
+                                             tapToPayAlertsProvider: BuiltInCardReaderPaymentAlertsProvider(),
+                                             bluetoothAlertsProvider: BluetoothCardReaderPaymentAlertsProvider(transactionType: .collectPayment),
                                              preflightController: mockPreflightController,
                                              analyticsTracker: mockAnalyticsTracker)
     }
@@ -102,6 +104,8 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
             stores: stores,
             paymentOrchestrator: mockPaymentOrchestrator,
             alertsPresenter: alertsPresenter,
+            tapToPayAlertsProvider: BuiltInCardReaderPaymentAlertsProvider(),
+            bluetoothAlertsProvider: BluetoothCardReaderPaymentAlertsProvider(transactionType: .collectPayment),
             preflightController: mockPreflightController,
             analyticsTracker: mockAnalyticsTracker)
 

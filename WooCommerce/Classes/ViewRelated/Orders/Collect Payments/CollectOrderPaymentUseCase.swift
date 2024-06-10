@@ -66,9 +66,9 @@ final class CollectOrderPaymentUseCase<AlertProvider: CardReaderTransactionAlert
     ///
     private let alertsPresenter: any CardPresentPaymentAlertsPresenting<AlertPresenter.AlertDetails>
 
-    private let bluetoothAlertsProvider: any CardReaderTransactionAlertsProviding
+    private let bluetoothAlertsProvider: any CardReaderTransactionAlertsProviding<AlertPresenter.AlertDetails>
 
-    private let tapToPayAlertsProvider: any CardReaderTransactionAlertsProviding
+    private let tapToPayAlertsProvider: any CardReaderTransactionAlertsProviding<AlertPresenter.AlertDetails>
 
     /// Onboarding presenter: shows steps for payment setup when required
     ///
@@ -99,8 +99,8 @@ final class CollectOrderPaymentUseCase<AlertProvider: CardReaderTransactionAlert
          paymentOrchestrator: PaymentCaptureOrchestrating = PaymentCaptureOrchestrator(),
          orderDurationRecorder: OrderDurationRecorderProtocol = OrderDurationRecorder.shared,
          alertsPresenter: any CardPresentPaymentAlertsPresenting<AlertPresenter.AlertDetails>,
-         tapToPayAlertsProvider: any CardReaderTransactionAlertsProviding = BuiltInCardReaderPaymentAlertsProvider(),
-         bluetoothAlertsProvider: any CardReaderTransactionAlertsProviding = BluetoothCardReaderPaymentAlertsProvider(transactionType: .collectPayment),
+         tapToPayAlertsProvider: any CardReaderTransactionAlertsProviding<AlertPresenter.AlertDetails>,
+         bluetoothAlertsProvider: any CardReaderTransactionAlertsProviding<AlertPresenter.AlertDetails>,
          preflightController: CardPresentPaymentPreflightControllerProtocol,
          analyticsTracker: CollectOrderPaymentAnalyticsTracking? = nil) {
         self.siteID = siteID
@@ -110,7 +110,7 @@ final class CollectOrderPaymentUseCase<AlertProvider: CardReaderTransactionAlert
         self.onboardingPresenter = onboardingPresenter
         self.alertsPresenter = alertsPresenter
         self.tapToPayAlertsProvider = tapToPayAlertsProvider
-        self.bluetoothAlertsProvider = bluetoothAlertsProvider
+        self.bluetoothAlertsProvider = bluetoothAlertsProvider 
         self.configuration = configuration
         self.stores = stores
         self.paymentOrchestrator = paymentOrchestrator
@@ -195,9 +195,9 @@ private extension CollectOrderPaymentUseCase {
     func paymentAlertProvider(for reader: CardReader) -> any CardReaderTransactionAlertsProviding<AlertPresenter.AlertDetails> {
         switch reader.readerType {
         case .appleBuiltIn:
-            return tapToPayAlertsProvider as! any CardReaderTransactionAlertsProviding<AlertPresenter.AlertDetails>
+            return tapToPayAlertsProvider //as! any CardReaderTransactionAlertsProviding<AlertPresenter.AlertDetails>
         default:
-            return bluetoothAlertsProvider as! any CardReaderTransactionAlertsProviding<AlertPresenter.AlertDetails>
+            return bluetoothAlertsProvider //as! any CardReaderTransactionAlertsProviding<AlertPresenter.AlertDetails>
         }
     }
 

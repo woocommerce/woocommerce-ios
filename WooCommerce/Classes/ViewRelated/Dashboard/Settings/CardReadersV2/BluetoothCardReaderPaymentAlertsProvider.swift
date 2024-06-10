@@ -5,6 +5,7 @@ import enum Hardware.CardReaderServiceError
 import enum Hardware.UnderlyingError
 
 final class BluetoothCardReaderPaymentAlertsProvider: CardReaderTransactionAlertsProviding {
+    typealias AlertDetails = CardPresentPaymentsModalViewModel
     var name: String = ""
     var amount: String = ""
     var transactionType: CardPresentTransactionType

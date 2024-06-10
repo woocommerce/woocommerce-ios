@@ -7,7 +7,7 @@ final class CardPresentPaymentsConnectionControllerManager {
 
     init(siteID: Int64,
          configuration: CardPresentPaymentsConfiguration,
-         alertsPresenter: CardPresentPaymentAlertsPresenting) {
+         alertsPresenter: any CardPresentPaymentAlertsPresenting<CardPresentPaymentsModalViewModel>) {
         let analyticsTracker = CardReaderConnectionAnalyticsTracker(
             configuration: configuration,
             siteID: siteID,

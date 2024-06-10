@@ -17,14 +17,16 @@ struct CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
                             preflightController: CardPresentPaymentPreflightController,
                             onboardingPresenter: CardPresentPaymentsOnboardingPresenting,
                             configuration: CardPresentPaymentsConfiguration,
-                            alertsPresenter: CardPresentPaymentAlertsPresenting,
+                            alertsPresenter: CardPresentPaymentsAlertPresenterAdaptor,
                             paymentEventSubject: any Subject<CardPresentPaymentEvent, Never>) -> Task<CardPresentPaymentAdaptedCollectOrderPaymentResult, Error> {
         return Task {
             guard let formattedAmount = currencyFormatter.formatAmount(order.total, with: order.currency) else {
                 throw CardPresentPaymentServiceError.invalidAmount
             }
 
-            let orderPaymentUseCase = CollectOrderPaymentUseCase(
+            let orderPaymentUseCase = CollectOrderPaymentUseCase<BuiltInCardReaderPaymentAlertsProvider,
+                                                                 BluetoothCardReaderPaymentAlertsProvider,
+                                                                    CardPresentPaymentsAlertPresenterAdaptor>(
                 siteID: siteID,
                 order: order,
                 formattedAmount: formattedAmount,

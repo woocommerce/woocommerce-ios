@@ -3,7 +3,7 @@ import Combine
 
 final class SilenceablePassthroughCardPresentPaymentAlertsPresenter: CardPresentPaymentAlertsPresenting {
     private var alertSubject: CurrentValueSubject<CardPresentPaymentsModalViewModel?, Never> = CurrentValueSubject(nil)
-    private var alertsPresenter: CardPresentPaymentAlertsPresenting?
+    private var alertsPresenter: (any CardPresentPaymentAlertsPresenting<CardPresentPaymentsModalViewModel>)?
 
     private var alertSubscription: AnyCancellable? = nil
 
@@ -28,7 +28,7 @@ final class SilenceablePassthroughCardPresentPaymentAlertsPresenter: CardPresent
         alertsPresenter?.dismiss()
     }
 
-    func startPresentingAlerts(from alertsPresenter: CardPresentPaymentAlertsPresenting) {
+    func startPresentingAlerts(from alertsPresenter: any CardPresentPaymentAlertsPresenting<CardPresentPaymentsModalViewModel>) {
         self.alertsPresenter = alertsPresenter
         alertSubscription = alertSubject.share().sink { viewModel in
             DispatchQueue.main.async {

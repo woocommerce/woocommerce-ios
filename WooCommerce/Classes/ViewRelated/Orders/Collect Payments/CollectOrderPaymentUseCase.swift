@@ -29,7 +29,9 @@ protocol CollectOrderPaymentProtocol {
 /// Use case to collect payments from an order.
 /// Orchestrates reader connection, payment, UI alerts, receipt handling and analytics.
 ///
-final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
+final class CollectOrderPaymentUseCase<BuiltInAlertProvider: CardReaderTransactionAlertsProviding, BluetoothAlertProvider: CardReaderTransactionAlertsProviding, AlertPresenter: CardPresentPaymentAlertsPresenting>:
+    NSObject, CollectOrderPaymentProtocol where BuiltInAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
+                                                BluetoothAlertProvider.AlertDetails == AlertPresenter.AlertDetails {
     /// Currency Formatter
     ///
     private let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
@@ -64,11 +66,11 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
 
     /// Alerts presenter: alerts from the various parts of the payment process are forwarded here
     ///
-    private let alertsPresenter: CardPresentPaymentAlertsPresenting
+    private let alertsPresenter: any CardPresentPaymentAlertsPresenting<AlertPresenter.AlertDetails>
 
-    private let bluetoothAlertsProvider: CardReaderTransactionAlertsProviding
+    private let bluetoothAlertsProvider: any CardReaderTransactionAlertsProviding<AlertPresenter.AlertDetails>
 
-    private let tapToPayAlertsProvider: CardReaderTransactionAlertsProviding
+    private let tapToPayAlertsProvider: any CardReaderTransactionAlertsProviding<AlertPresenter.AlertDetails>
 
     /// Onboarding presenter: shows steps for payment setup when required
     ///
@@ -98,9 +100,9 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
          stores: StoresManager = ServiceLocator.stores,
          paymentOrchestrator: PaymentCaptureOrchestrating = PaymentCaptureOrchestrator(),
          orderDurationRecorder: OrderDurationRecorderProtocol = OrderDurationRecorder.shared,
-         alertsPresenter: CardPresentPaymentAlertsPresenting,
-         tapToPayAlertsProvider: CardReaderTransactionAlertsProviding,
-         bluetoothAlertsProvider: CardReaderTransactionAlertsProviding,
+         alertsPresenter: any CardPresentPaymentAlertsPresenting<AlertPresenter.AlertDetails>,
+         tapToPayAlertsProvider: any CardReaderTransactionAlertsProviding<AlertPresenter.AlertDetails>,
+         bluetoothAlertsProvider: any CardReaderTransactionAlertsProviding<AlertPresenter.AlertDetails>,
          preflightController: CardPresentPaymentPreflightControllerProtocol,
          analyticsTracker: CollectOrderPaymentAnalyticsTracking? = nil) {
         self.siteID = siteID
@@ -189,7 +191,7 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
         }
     }
 
-    private func paymentAlertProvider(for reader: CardReader) -> CardReaderTransactionAlertsProviding {
+    private func paymentAlertProvider(for reader: CardReader) -> any CardReaderTransactionAlertsProviding<AlertPresenter.AlertDetails> {
         switch reader.readerType {
         case .appleBuiltIn:
             return tapToPayAlertsProvider
@@ -227,19 +229,19 @@ private extension CollectOrderPaymentUseCase {
     }
 
     func handleTotalAmountInvalidError(_ error: Error,
+                                       alertProvider: any CardReaderTransactionAlertsProviding<AlertPresenter.AlertDetails>,
                                        onCompleted: @escaping () -> ()) {
         analyticsTracker.trackPaymentFailure(with: error)
         DDLogError("💳 Error: failed to capture payment for order. Order amount is below minimum or not valid")
-        alertsPresenter.present(viewModel: CardPresentModalNonRetryableError(amount: formattedAmount,
-                                                                             error: totalAmountInvalidError(),
-                                                                             onDismiss: onCompleted))
+        alertsPresenter.present(viewModel: alertProvider.nonRetryableError(error: totalAmountInvalidError(),
+                                                                           dismissCompletion: onCompleted))
     }
 
     func isOrderAwaitingPayment() -> Bool {
         order.datePaid == nil
     }
 
-    func checkOrderIsStillEligibleForPayment(alertProvider paymentAlerts: CardReaderTransactionAlertsProviding,
+    func checkOrderIsStillEligibleForPayment(alertProvider paymentAlerts: any CardReaderTransactionAlertsProviding<AlertPresenter.AlertDetails>,
                                              onPaymentCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> (),
                                              onCheckCompletion: @escaping (Result<Void, Error>) -> Void) {
         alertsPresenter.present(viewModel: paymentAlerts.validatingOrder(onCancel: { [weak self] in
@@ -277,7 +279,7 @@ private extension CollectOrderPaymentUseCase {
 
     /// Attempts to collect payment for an order.
     ///
-    func attemptPayment(alertProvider paymentAlerts: CardReaderTransactionAlertsProviding,
+    func attemptPayment(alertProvider paymentAlerts: any CardReaderTransactionAlertsProviding<AlertPresenter.AlertDetails>,
                         paymentGatewayAccount: PaymentGatewayAccount,
                         onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> ()) {
         checkOrderIsStillEligibleForPayment(alertProvider: paymentAlerts, onPaymentCompletion: onCompletion) { [weak self] result in
@@ -370,7 +372,7 @@ private extension CollectOrderPaymentUseCase {
         alertsPresenter.dismiss()
     }
 
-    func handlePaymentCancellationFromReader(alertProvider paymentAlerts: CardReaderTransactionAlertsProviding) {
+    func handlePaymentCancellationFromReader(alertProvider paymentAlerts: any CardReaderTransactionAlertsProviding<AlertPresenter.AlertDetails>) {
         analyticsTracker.trackPaymentCancelation(cancelationSource: .reader)
         guard let dismissedOnReaderAlert = paymentAlerts.cancelledOnReader() else {
             return alertsPresenter.dismiss()
@@ -381,7 +383,7 @@ private extension CollectOrderPaymentUseCase {
     /// Log the failure reason, cancel the current payment and retry it if possible.
     ///
     func handlePaymentFailureAndRetryPayment(_ error: Error,
-                                             alertProvider paymentAlerts: CardReaderTransactionAlertsProviding,
+                                             alertProvider paymentAlerts: any CardReaderTransactionAlertsProviding<AlertPresenter.AlertDetails>,
                                              paymentGatewayAccount: PaymentGatewayAccount,
                                              onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> ()) {
         DDLogError("Failed to collect payment: \(error.localizedDescription)")
@@ -412,7 +414,7 @@ private extension CollectOrderPaymentUseCase {
     }
 
     private func presentRetryByRestartingError(error: Error,
-                                               paymentAlerts: CardReaderTransactionAlertsProviding,
+                                               paymentAlerts: any CardReaderTransactionAlertsProviding<AlertPresenter.AlertDetails>,
                                                paymentGatewayAccount: PaymentGatewayAccount,
                                                onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> ()) {
         alertsPresenter.present(
@@ -443,7 +445,7 @@ private extension CollectOrderPaymentUseCase {
     }
 
     private func presentRetryWithoutRestartingError(error: Error,
-                                                    paymentAlerts: CardReaderTransactionAlertsProviding,
+                                                    paymentAlerts: any CardReaderTransactionAlertsProviding<AlertPresenter.AlertDetails>,
                                                     paymentGatewayAccount: PaymentGatewayAccount,
                                                     onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> ()) {
         alertsPresenter.present(
@@ -489,7 +491,7 @@ private extension CollectOrderPaymentUseCase {
     }
 
     private func presentNonRetryableError(error: Error,
-                                          paymentAlerts: CardReaderTransactionAlertsProviding,
+                                          paymentAlerts: any CardReaderTransactionAlertsProviding<AlertPresenter.AlertDetails>,
                                           onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> ()) {
         alertsPresenter.present(
             viewModel: paymentAlerts.nonRetryableError(error: error,
@@ -510,7 +512,7 @@ private extension CollectOrderPaymentUseCase {
     /// Allow merchants to print or email backend-generated receipts.
     /// The alerts presenter can be simplified once we remove legacy receipts: https://github.com/woocommerce/woocommerce-ios/issues/11897
     ///
-    func presentBackendReceiptAlert(alertProvider paymentAlerts: CardReaderTransactionAlertsProviding, onCompleted: @escaping () -> ()) {
+    func presentBackendReceiptAlert(alertProvider paymentAlerts: any CardReaderTransactionAlertsProviding<AlertPresenter.AlertDetails>, onCompleted: @escaping () -> ()) {
         // Handles receipt presentation for both print and email actions
         let receiptPresentationCompletionAction: () -> Void = { [weak self] in
             guard let self else { return }
@@ -533,7 +535,7 @@ private extension CollectOrderPaymentUseCase {
     /// Allow merchants to print or email locally-generated receipts.
     ///
     func presentLocalReceiptAlert(receiptParameters: CardPresentReceiptParameters,
-                             alertProvider paymentAlerts: CardReaderTransactionAlertsProviding,
+                             alertProvider paymentAlerts: any CardReaderTransactionAlertsProviding<AlertPresenter.AlertDetails>,
                              onCompleted: @escaping () -> ()) {
         // Present receipt alert
         alertsPresenter.present(viewModel: paymentAlerts.success(printReceipt: { [order, configuration, weak self] in

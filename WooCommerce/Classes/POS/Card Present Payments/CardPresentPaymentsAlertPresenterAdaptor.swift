@@ -2,6 +2,7 @@ import Foundation
 import Combine
 
 final class CardPresentPaymentsAlertPresenterAdaptor: CardPresentPaymentAlertsPresenting {
+    typealias AlertDetails = CardPresentPaymentsModalViewModel
     let paymentAlertPublisher: AnyPublisher<CardPresentPaymentEvent, Never>
 
     private let paymentAlertSubject: PassthroughSubject<CardPresentPaymentEvent, Never> = PassthroughSubject()

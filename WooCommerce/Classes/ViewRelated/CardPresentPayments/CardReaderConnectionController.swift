@@ -166,12 +166,6 @@ final class CardReaderConnectionController {
             self?.state = .initializing
         }
     }
-
-    /// If reader can be disconnected externally during the lifetime of a `CardReaderConnectionController`, found readers need to be reset so as
-    /// not to result in potential connection failure due to outdated found readers.
-    func resetFoundReaders() {
-        foundReaders = []
-    }
 }
 
 private extension CardReaderConnectionController {
@@ -284,6 +278,7 @@ private extension CardReaderConnectionController {
     func onPreparingForSearch() {
         /// Always start fresh - i.e. we haven't skipped connecting to any reader yet
         ///
+        foundReaders = []
         skippedReaderIDs = []
         candidateReader = nil
         showSeveralFoundReaders = false

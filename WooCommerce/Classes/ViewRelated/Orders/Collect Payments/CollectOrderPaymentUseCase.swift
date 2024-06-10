@@ -66,6 +66,10 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
     ///
     private let alertsPresenter: CardPresentPaymentAlertsPresenting
 
+    private let bluetoothAlertsProvider: CardReaderTransactionAlertsProviding
+
+    private let tapToPayAlertsProvider: CardReaderTransactionAlertsProviding
+
     /// Onboarding presenter: shows steps for payment setup when required
     ///
     private let onboardingPresenter: CardPresentPaymentsOnboardingPresenting
@@ -105,6 +109,8 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
         self.rootViewController = rootViewController
         self.onboardingPresenter = onboardingPresenter
         self.alertsPresenter = alertsPresenter
+        self.tapToPayAlertsProvider = tapToPayAlertsProvider
+        self.bluetoothAlertsProvider = bluetoothAlertsProvider
         self.configuration = configuration
         self.stores = stores
         self.paymentOrchestrator = paymentOrchestrator
@@ -138,7 +144,7 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
             self.analyticsTracker.preflightResultReceived(connectionResult)
             switch connectionResult {
             case .completed(let reader, let paymentGatewayAccount):
-                let paymentAlertProvider = reader.paymentAlertProvider()
+                let paymentAlertProvider = paymentAlertProvider(for: reader)
                 self.attemptPayment(alertProvider: paymentAlertProvider,
                                     paymentGatewayAccount: paymentGatewayAccount,
                                     onCompletion: { [weak self] result in
@@ -182,15 +188,13 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
             await preflightController.start(discoveryMethod: discoveryMethod)
         }
     }
-}
 
-private extension CardReader {
-    func paymentAlertProvider() -> CardReaderTransactionAlertsProviding {
-        switch readerType {
+    private func paymentAlertProvider(for reader: CardReader) -> CardReaderTransactionAlertsProviding {
+        switch reader.readerType {
         case .appleBuiltIn:
-            return BuiltInCardReaderPaymentAlertsProvider()
+            return tapToPayAlertsProvider
         default:
-            return BluetoothCardReaderPaymentAlertsProvider(transactionType: .collectPayment)
+            return bluetoothAlertsProvider
         }
     }
 }

@@ -80,9 +80,10 @@ final class CardPresentPaymentPreflightController: CardPresentPaymentPreflightCo
          rootViewController: ViewControllerPresenting,
          alertsPresenter: any CardPresentPaymentAlertsPresenting<CardPresentPaymentsModalViewModel>,
          onboardingPresenter: CardPresentPaymentsOnboardingPresenting,
-         externalReaderConnectionController: CardReaderConnectionController? = nil,
-         tapToPayConnectionController: BuiltInCardReaderConnectionController? = nil,
+         externalReaderConnectionController: CardReaderConnectionController,
+         tapToPayConnectionController: BuiltInCardReaderConnectionController,
          tapToPayReconnectionController: TapToPayReconnectionController = ServiceLocator.tapToPayReconnectionController,
+         analyticsTracker: CardReaderConnectionAnalyticsTracker,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
@@ -94,25 +95,9 @@ final class CardPresentPaymentPreflightController: CardPresentPaymentPreflightCo
         self.stores = stores
         self.analytics = analytics
         self.connectedReader = nil
-        self.analyticsTracker = CardReaderConnectionAnalyticsTracker(configuration: configuration,
-                                                                     siteID: siteID,
-                                                                     connectionType: .userInitiated,
-                                                                     stores: stores,
-                                                                     analytics: analytics)
-        self.connectionController = externalReaderConnectionController ?? CardReaderConnectionController(
-            forSiteID: siteID,
-            knownReaderProvider: CardReaderSettingsKnownReaderStorage(),
-            alertsPresenter: alertsPresenter,
-            alertsProvider: BluetoothReaderConnectionAlertsProvider(),
-            configuration: configuration,
-            analyticsTracker: analyticsTracker)
-
-        self.builtInConnectionController = tapToPayConnectionController ?? BuiltInCardReaderConnectionController(
-            forSiteID: siteID,
-            alertsPresenter: alertsPresenter,
-            alertsProvider: BuiltInReaderConnectionAlertsProvider(),
-            configuration: configuration,
-            analyticsTracker: analyticsTracker)
+        self.analyticsTracker = analyticsTracker
+        self.connectionController = externalReaderConnectionController
+        self.builtInConnectionController = tapToPayConnectionController
 
         self.supportDeterminer = CardReaderSupportDeterminer(siteID: siteID, configuration: configuration, stores: stores)
     }

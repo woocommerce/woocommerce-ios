@@ -148,7 +148,8 @@ private extension CardPresentPaymentService {
             alertsPresenter: paymentAlertsPresenterAdaptor,
             onboardingPresenter: onboardingAdaptor,
             externalReaderConnectionController: connectionControllerManager.externalReaderConnectionController,
-            tapToPayConnectionController: connectionControllerManager.tapToPayConnectionController)
+            tapToPayConnectionController: connectionControllerManager.tapToPayConnectionController,
+            analyticsTracker: connectionControllerManager.analyticsTracker)
     }
 }
 

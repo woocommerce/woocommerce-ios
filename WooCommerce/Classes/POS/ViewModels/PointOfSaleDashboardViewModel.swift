@@ -101,6 +101,10 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
     }
 
     private func calculateAmounts() {
+        guard !calculatingAmounts else {
+            return
+        }
+        // create an order with the products and get the totals - orderSynchronizer.commitAllChanges
         // TODO: this is just a starting point for this logic, to have something calculated on the fly
         if let formattedCartTotalPrice = formattedCartTotalPrice,
            let subtotalAmount = currencyFormatter.convertToDecimal(formattedCartTotalPrice)?.doubleValue {

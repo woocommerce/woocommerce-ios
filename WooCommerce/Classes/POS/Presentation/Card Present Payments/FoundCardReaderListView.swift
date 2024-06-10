@@ -20,24 +20,17 @@ struct FoundCardReaderListView: View {
                 .font(.headline)
                 .padding(Layout.headerPadding)
 
-            List(readerIDs, id: \.self) { reader in
-                HStack {
-                    Text(reader)
-                    Spacer()
-                    Button(SeveralReadersFoundViewController.Localization.connect) {
-                        connect(reader)
+            List(readerIDs, id: \.self) { readerID in
+                VStack {
+                    readerRow(readerID: readerID)
+
+                    if readerID == readerIDs.last {
+                        scanningText()
                     }
-                    .buttonStyle(TextButtonStyle())
                 }
                 .listRowSeparator(.hidden)
             }
             .listStyle(.plain)
-
-            HStack(spacing: Layout.horizontalSpacing) {
-                ActivityIndicator(isAnimating: .constant(true), style: .large)
-                Text(SeveralReadersFoundViewController.Localization.scanningLabel)
-                Spacer()
-            }
 
             Button(action: {
                 cancelSearch()
@@ -48,6 +41,28 @@ struct FoundCardReaderListView: View {
             .padding(Layout.buttonPadding)
         }
         .padding(Layout.padding)
+    }
+}
+
+private extension FoundCardReaderListView {
+    @ViewBuilder func readerRow(readerID: String) -> some View {
+        HStack {
+            Text(readerID)
+            Spacer()
+            Button(SeveralReadersFoundViewController.Localization.connect) {
+                connect(readerID)
+            }
+            .buttonStyle(TextButtonStyle())
+        }
+    }
+
+    @ViewBuilder func scanningText() -> some View {
+        HStack(spacing: Layout.horizontalSpacing) {
+            ActivityIndicator(isAnimating: .constant(true), style: .medium)
+            Text(SeveralReadersFoundViewController.Localization.scanningLabel)
+                .font(.footnote)
+            Spacer()
+        }
     }
 }
 

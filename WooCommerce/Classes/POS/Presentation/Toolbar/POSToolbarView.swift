@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct POSToolbarView: View {
-    @Environment(\.presentationMode) var presentationMode
+    @Environment(\.presentationMode) private var presentationMode
     private let readerConnectionViewModel: CardReaderConnectionViewModel
 
     init(readerConnectionViewModel: CardReaderConnectionViewModel) {

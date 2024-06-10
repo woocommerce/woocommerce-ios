@@ -105,6 +105,7 @@ private extension ProductStockDashboardCard {
             Menu {
                 ForEach(ProductStockDashboardCardViewModel.StockType.allCases) { stockType in
                     Button {
+                        ServiceLocator.analytics.track(event: .DynamicDashboard.dashboardCardInteracted(type: .stock))
                         viewModel.updateStockType(stockType)
                     } label: {
                         SelectableItemRow(title: stockType.displayedName, selected: stockType == viewModel.selectedStockType)
@@ -131,6 +132,8 @@ private extension ProductStockDashboardCard {
             }
             ForEach(viewModel.reports) { element in
                 Button {
+                    ServiceLocator.analytics.track(event: .DynamicDashboard.dashboardCardInteracted(type: .stock))
+
                     selectedItem = element
                 } label: {
                     HStack(alignment: .top) {

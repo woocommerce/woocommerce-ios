@@ -65,13 +65,8 @@ final class DashboardViewHostingController: UIHostingController<DashboardView> {
         observeModalJustInTimeMessages()
 
         Task {
-            await viewModel.syncDashboardEssentialData()
+            await viewModel.reloadAllData()
         }
-    }
-
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        viewModel.refreshDashboardCards()
     }
 
     override var shouldShowOfflineBanner: Bool {
@@ -122,6 +117,7 @@ private extension DashboardViewHostingController {
 
         rootView.onViewAllAnalytics = { [weak self] siteID, siteTimeZone, timeRange in
             guard let self else { return }
+            ServiceLocator.analytics.track(event: .AnalyticsHub.seeMoreAnalyticsTapped())
             let analyticsHubVC = AnalyticsHubHostingViewController(siteID: siteID,
                                                                    timeZone: siteTimeZone,
                                                                    timeRange: timeRange,
@@ -146,17 +142,20 @@ private extension DashboardViewHostingController {
         rootView.onboardingTaskTapped = { [weak self] site, task in
             guard let self, !task.isComplete else { return }
             updateStoreOnboardingCoordinatorIfNeeded(with: site)
+            ServiceLocator.analytics.track(event: .DynamicDashboard.dashboardCardInteracted(type: .onboarding))
             ServiceLocator.analytics.track(event: .StoreOnboarding.storeOnboardingTaskTapped(task: task.type))
             storeOnboardingCoordinator?.start(task: task)
         }
 
         rootView.viewAllOnboardingTasksTapped = { [weak self] site in
             guard let self else { return }
+            ServiceLocator.analytics.track(event: .DynamicDashboard.dashboardCardInteracted(type: .onboarding))
             updateStoreOnboardingCoordinatorIfNeeded(with: site)
             storeOnboardingCoordinator?.start()
         }
 
         rootView.onboardingShareFeedbackAction = { [weak self] in
+            ServiceLocator.analytics.track(event: .DynamicDashboard.dashboardCardInteracted(type: .onboarding))
             let navigationController = SurveyCoordinatingController(survey: .storeSetup)
             self?.present(navigationController, animated: true, completion: nil)
         }
@@ -189,12 +188,16 @@ private extension DashboardViewHostingController {
     func configureBlazeSection() {
         rootView.showAllBlazeCampaignsTapped = { [weak self] in
             guard let self, let navigationController else { return }
+            ServiceLocator.analytics.track(event: .DynamicDashboard.dashboardCardInteracted(type: .blaze))
+
             let controller = BlazeCampaignListHostingController(viewModel: .init(siteID: viewModel.siteID))
             navigationController.show(controller, sender: self)
         }
 
         rootView.createBlazeCampaignTapped = { [weak self] productID in
             guard let self, let navigationController else { return }
+            ServiceLocator.analytics.track(event: .DynamicDashboard.dashboardCardInteracted(type: .blaze))
+
             let coordinator = BlazeCampaignCreationCoordinator(
                 siteID: viewModel.blazeCampaignDashboardViewModel.siteID,
                 siteURL: viewModel.blazeCampaignDashboardViewModel.siteURL,
@@ -267,11 +270,12 @@ private extension DashboardViewHostingController {
 private extension DashboardViewHostingController {
     func configureLastOrdersView() {
         rootView.onViewAllOrders = {
-            // TODO: 12655
+            MainTabBarController.switchToOrdersTab()
         }
 
-        rootView.onViewOrderDetail = { _ in
-            // TODO: 12655
+        rootView.onViewOrderDetail = { [weak self] order in
+            guard let self else { return }
+            MainTabBarController.navigateToOrderDetails(with: order.orderID, siteID: viewModel.siteID)
         }
     }
 }

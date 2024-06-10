@@ -67,6 +67,9 @@ struct TopPerformersDashboardView: View {
         .sheet(item: $viewModel.selectedItem) { item in
             ViewControllerContainer(productDetailView(for: item))
         }
+        .onAppear {
+            viewModel.onViewAppear()
+        }
     }
 }
 
@@ -104,6 +107,7 @@ private extension TopPerformersDashboardView {
 
                 if viewModel.timeRange.isCustomTimeRange {
                     Button {
+                        viewModel.trackInteraction()
                         showingCustomRangePicker = true
                     } label: {
                         HStack {
@@ -120,6 +124,8 @@ private extension TopPerformersDashboardView {
             }
             Spacer()
             StatsTimeRangePicker(currentTimeRange: viewModel.timeRange) { newTimeRange in
+                viewModel.trackInteraction()
+
                 if newTimeRange.isCustomTimeRange {
                     showingCustomRangePicker = true
                 } else {
@@ -132,6 +138,7 @@ private extension TopPerformersDashboardView {
 
     var viewAllAnalyticsButton: some View {
         Button {
+            viewModel.trackInteraction()
             onViewAllAnalytics(viewModel.siteID, viewModel.siteTimezone, viewModel.timeRange)
         } label: {
             HStack {

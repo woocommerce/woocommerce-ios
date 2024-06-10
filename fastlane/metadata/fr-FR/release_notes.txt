@@ -1,3 +1,1 @@
-Les dernières mises à jour sont lancées, pour notre plus grande joie !
-Notre dernière mise à jour va sous le capot pour améliorer la stabilité et les performances.
-Nous nous engageons à améliorer sans cesse notre application pour mieux vous servir. Merci d’avoir choisi WooCommerce !
+Gardez une longueur d’avance avec notre dernière mise à jour WooCommerce ! Explorez notre nouvelle application Watch pour visualiser instantanément les données et mises à jour de commandes de votre boutique. Nous avons corrigé le problème avec les méthodes d’expédition et vous pouvez désormais disposer de plusieurs lignes d’expédition sur les commandes afin de pouvoir gérer les expéditions complexes sans anicroche.

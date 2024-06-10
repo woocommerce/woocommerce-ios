@@ -4,6 +4,9 @@ struct AddOrderComponentsSection: View {
     /// View model to drive the view content
     let viewModel: EditableOrderViewModel.PaymentDataViewModel
 
+    /// View model for shipping lines on an order
+    @ObservedObject private var shippingLineViewModel: EditableOrderShippingLineViewModel
+
     /// Indicates if the coupon line details screen should be shown or not.
     ///
     @State private var shouldShowAddCouponLineDetails: Bool = false
@@ -20,10 +23,6 @@ struct AddOrderComponentsSection: View {
     ///
     @State private var shouldShowGoToCouponsAlert: Bool = false
 
-    /// Indicates if the shipping line details screen should be shown or not.
-    ///
-    @Binding private var shouldShowShippingLineDetails: Bool
-
     ///   Environment safe areas
     ///
     @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
@@ -31,12 +30,12 @@ struct AddOrderComponentsSection: View {
     @ScaledMetric private var scale: CGFloat = 1.0
 
     init(viewModel: EditableOrderViewModel.PaymentDataViewModel,
+         shippingLineViewModel: EditableOrderShippingLineViewModel,
          shouldShowCouponsInfoTooltip: Binding<Bool>,
-         shouldShowShippingLineDetails: Binding<Bool>,
          shouldShowGiftCardForm: Binding<Bool>) {
         self.viewModel = viewModel
+        self.shippingLineViewModel = shippingLineViewModel
         self._shouldShowCouponsInfoTooltip = shouldShowCouponsInfoTooltip
-        self._shouldShowShippingLineDetails = shouldShowShippingLineDetails
         self._shouldShowGiftCardForm = shouldShowGiftCardForm
     }
 
@@ -123,14 +122,16 @@ private extension AddOrderComponentsSection {
 
     @ViewBuilder var addShippingRow: some View {
         Button(Localization.addShipping) {
-            shouldShowShippingLineDetails = true
-            viewModel.addShippingTappedClosure()
+            shippingLineViewModel.addShippingLine()
         }
         .buttonStyle(PlusButtonStyle())
         .padding()
         .accessibilityIdentifier("add-shipping-button")
         .disabled(viewModel.orderIsEmpty)
-        .renderedIf(!viewModel.shouldShowShippingTotal)
+        .renderedIf(!shippingLineViewModel.paymentData.shouldShowShippingTotal)
+        .sheet(item: $shippingLineViewModel.shippingLineDetails, content: { viewModel in
+            ShippingLineSelectionDetails(viewModel: viewModel)
+        })
     }
 
     @ViewBuilder var addGiftCardRow: some View {
@@ -233,10 +234,13 @@ private extension AddOrderComponentsSection {
 struct AddOrderComponentsSection_Previews: PreviewProvider {
     static var previews: some View {
         let viewModel = EditableOrderViewModel.PaymentDataViewModel(itemsTotal: "20.00")
+        let shippingLineViewModel = EditableOrderShippingLineViewModel(siteID: 1,
+                                                                       flow: .creation,
+                                                                       orderSynchronizer: RemoteOrderSynchronizer(siteID: 1, flow: .creation))
 
         AddOrderComponentsSection(viewModel: viewModel,
+                                  shippingLineViewModel: shippingLineViewModel,
                                   shouldShowCouponsInfoTooltip: .constant(true),
-                                  shouldShowShippingLineDetails: .constant(false),
                                   shouldShowGiftCardForm: .constant(false))
             .previewLayout(.sizeThatFits)
     }

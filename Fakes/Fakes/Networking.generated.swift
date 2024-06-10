@@ -1429,8 +1429,7 @@ extension Networking.ProductReport.ExtendedInfo {
         .init(
             name: .fake(),
             image: .fake(),
-            stockQuantity: .fake(),
-            attributes: .fake()
+            stockQuantity: .fake()
         )
     }
 }
@@ -2100,7 +2099,7 @@ extension Networking.Site {
             jetpackConnectionActivePlugins: .fake(),
             timezone: .fake(),
             gmtOffset: .fake(),
-            isPublic: .fake(),
+            visibility: .fake(),
             canBlaze: .fake(),
             isAdmin: .fake(),
             wasEcommerceTrial: .fake()
@@ -2188,6 +2187,13 @@ extension Networking.SiteSummaryStats {
             visitors: .fake(),
             views: .fake()
         )
+    }
+}
+extension Networking.SiteVisibility {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.SiteVisibility {
+        .privateSite
     }
 }
 extension Networking.SiteVisitStats {

@@ -85,7 +85,7 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
 
         var isVariation: Bool?
         for row in rows {
-            if case .images(_, _, let isVariationValue) = row {
+            if case .images(_, _, _, let isVariationValue) = row {
                 isVariation = isVariationValue
                 break
             }
@@ -120,7 +120,7 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
 
         var isVariation: Bool?
         for row in rows {
-            if case .images(_, _, let isVariationValue) = row {
+            if case .images(_, _, _, let isVariationValue) = row {
                 isVariation = isVariationValue
                 break
             }

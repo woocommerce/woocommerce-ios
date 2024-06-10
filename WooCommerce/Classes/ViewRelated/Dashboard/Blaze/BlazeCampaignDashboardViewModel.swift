@@ -69,7 +69,6 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
     private let stores: StoresManager
     private let storageManager: StorageManagerType
     private let analytics: Analytics
-    private let userDefaults: UserDefaults
 
     private var isSiteEligibleForBlaze = false
     private let blazeEligibilityChecker: BlazeEligibilityCheckerProtocol
@@ -77,7 +76,9 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
     /// Blaze campaign ResultsController.
     private lazy var blazeCampaignResultsController: ResultsController<StorageBlazeCampaignListItem> = {
         let predicate = NSPredicate(format: "siteID == %lld", siteID)
-        let sortDescriptorByID = NSSortDescriptor(keyPath: \StorageBlazeCampaignListItem.campaignID, ascending: false)
+        let sortDescriptorByID = NSSortDescriptor(key: "campaignID",
+                                                  ascending: false,
+                                                  selector: #selector(NSString.localizedStandardCompare))
         let resultsController = ResultsController<StorageBlazeCampaignListItem>(storageManager: storageManager,
                                                                                 matching: predicate,
                                                                                 fetchLimit: 1,
@@ -106,15 +107,13 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          analytics: Analytics = ServiceLocator.analytics,
-         blazeEligibilityChecker: BlazeEligibilityCheckerProtocol = BlazeEligibilityChecker(),
-         userDefaults: UserDefaults = .standard) {
+         blazeEligibilityChecker: BlazeEligibilityCheckerProtocol = BlazeEligibilityChecker()) {
         self.siteID = siteID
         self.stores = stores
         self.storageManager = storageManager
         self.analytics = analytics
         self.blazeEligibilityChecker = blazeEligibilityChecker
         self.state = .loading
-        self.userDefaults = userDefaults
         observeSectionVisibility()
         configureResultsController()
     }
@@ -150,6 +149,7 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
     }
 
     func didSelectCampaignDetails(_ campaign: BlazeCampaignListItem) {
+        analytics.track(event: .DynamicDashboard.dashboardCardInteracted(type: .blaze))
         analytics.track(event: .Blaze.blazeCampaignDetailSelected(source: .myStoreSection))
 
         let path = String(format: Constants.campaignDetailsURLFormat,

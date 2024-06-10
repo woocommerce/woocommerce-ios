@@ -11,8 +11,6 @@ struct PointOfSaleDashboardView: View {
 
     var body: some View {
         VStack {
-            Text("WooCommerce Point Of Sale")
-                .foregroundColor(Color.white)
             HStack {
                 switch viewModel.orderStage {
                 case .building:
@@ -30,24 +28,24 @@ struct PointOfSaleDashboardView: View {
         .background(Color.primaryBackground)
         .navigationBarBackButtonHidden(true)
         .toolbar {
-            ToolbarItem(placement: .topBarLeading, content: {
-                Button("Exit POS") {
-                    presentationMode.wrappedValue.dismiss()
-                }
-            })
-            ToolbarItem(placement: .principal, content: {
-                Button("Reader not connected") {
-                    viewModel.showCardReaderConnection()
-                }
-            })
-            ToolbarItem(placement: .primaryAction, content: {
-                Button("History") {
-                    debugPrint("Not implemented")
-                }
-            })
+            ToolbarItem(placement: .bottomBar) {
+                POSToolbarView(readerConnectionViewModel: viewModel.cardReaderConnectionViewModel)
+            }
         }
         .sheet(isPresented: $viewModel.showsCardReaderSheet, content: {
-            CardReaderConnectionView(viewModel: viewModel.cardReaderConnectionViewModel)
+            switch viewModel.cardPresentPaymentEvent {
+            case .showAlert(let alertViewModel):
+                CardPresentPaymentAlert(alertViewModel: alertViewModel)
+            case let .showReaderList(readerIDs, selectionHandler):
+                FoundCardReaderListView(readerIDs: readerIDs, connect: { readerID in
+                    selectionHandler(readerID)
+                }, cancelSearch: {
+                    selectionHandler(nil)
+                })
+            case .idle,
+                    .showOnboarding:
+                Text(viewModel.cardPresentPaymentEvent.temporaryEventDescription)
+            }
         })
         .sheet(isPresented: $viewModel.showsFilterSheet, content: {
             FilterView(viewModel: viewModel)
@@ -65,21 +63,36 @@ private extension PointOfSaleDashboardView {
 
     var totalsView: some View {
         TotalsView(viewModel: viewModel)
-            .background(Color.secondaryBackground)
+            .background(Color(UIColor.systemBackground))
             .frame(maxWidth: .infinity)
     }
 
     var productGridView: some View {
-        ProductGridView(viewModel: viewModel)
+        ItemGridView(viewModel: viewModel)
             .background(Color.secondaryBackground)
             .frame(maxWidth: .infinity)
     }
 }
 
+fileprivate extension CardPresentPaymentEvent {
+    var temporaryEventDescription: String {
+        switch self {
+        case .idle:
+            return "Idle"
+        case .showAlert(let alertViewModel):
+            return "Alert: \(alertViewModel.topTitle)"
+        case .showReaderList(let readerIDs, _):
+            return "Reader List: \(readerIDs.joined())"
+        case .showOnboarding(let onboardingViewModel):
+            return "Onboarding: \(onboardingViewModel.state.reasonForAnalytics)" // This will only show the initial onboarding state
+        }
+    }
+}
+
 #if DEBUG
 #Preview {
-    PointOfSaleDashboardView(viewModel: PointOfSaleDashboardViewModel(products: POSProductFactory.makeFakeProducts(),
-                                                                      cardReaderConnectionViewModel: .init(state: .connectingToReader),
-                                                                      currencySettings: .init()))
+    PointOfSaleDashboardView(
+        viewModel: PointOfSaleDashboardViewModel(items: POSItemProviderPreview().providePointOfSaleItems(),
+                                                 cardPresentPaymentService: CardPresentPaymentPreviewService()))
 }
 #endif

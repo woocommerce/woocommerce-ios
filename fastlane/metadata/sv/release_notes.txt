@@ -1,3 +1,1 @@
-Vi är glada över att kunna presentera de senaste uppdateringarna!
-Vår senaste uppdatering inkluderar förbättringar under huven av både stabilitet och prestanda.
-Vi är mycket måna om att ständigt förbättra vår app för att kunna ge dig bättre service. Tack för att du väljer WooCommerce.
+Ligg steget före med vår senaste WooCommerce-uppdatering. Utforska vår nya klockapp för omedelbara butiksdata och beställningsuppdateringar i korthet. Vi har åtgärdat problemet med fraktmetoder och du kan nu även ha flera fraktrader på beställningar, vilket gör att du sömlöst kan hantera komplexa fraktbehov för dina beställningar.

@@ -1,27 +1,34 @@
-import Combine
 import SwiftUI
-import class Yosemite.PointOfSaleOrderService
-import protocol Yosemite.PointOfSaleOrderServiceProtocol
-import struct Yosemite.PointOfSaleOrder
-import struct Yosemite.PointOfSaleCartItem
-import struct Yosemite.PointOfSaleCartProduct
+import protocol Yosemite.POSItem
 import class WooFoundation.CurrencyFormatter
 import class WooFoundation.CurrencySettings
 
 final class PointOfSaleDashboardViewModel: ObservableObject {
-    @Published private(set) var products: [POSProduct]
-    @Published private(set) var productsInCart: [CartProduct] = []
-    @Published private(set) var formattedCartTotalPrice: String?
-    var formattedOrderTotalPrice: String? {
-        order?.total
-    }
-    var formattedOrderTotalTaxPrice: String? {
-        order?.totalTax
+    enum PaymentState {
+        case acceptingCard
+        case processingCard
+        case cardPaymentSuccessful
+        case acceptingCash
+        case cashPaymentSuccessful
     }
 
+    @Published private(set) var items: [POSItem]
+    @Published private(set) var itemsInCart: [CartItem] = [] {
+        didSet {
+            calculateAmounts()
+        }
+    }
+    @Published private(set) var formattedCartTotalPrice: String?
+    @Published private(set) var formattedOrderTotalPrice: String?
+    @Published private(set) var formattedOrderTotalTaxPrice: String?
+
     @Published var showsCardReaderSheet: Bool = false
+    @Published private(set) var cardPresentPaymentEvent: CardPresentPaymentEvent = .idle
+    let cardReaderConnectionViewModel: CardReaderConnectionViewModel
+
+    @Published var showsCreatingOrderSheet: Bool = false
+
     @Published var showsFilterSheet: Bool = false
-    @ObservedObject private(set) var cardReaderConnectionViewModel: CardReaderConnectionViewModel
 
     enum OrderStage {
         case building
@@ -30,67 +37,44 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
 
     @Published private(set) var orderStage: OrderStage = .building
 
-    @Published private var order: PointOfSaleOrder?
-    @Published private var isSyncingOrder: Bool = false
-    private let orderService: PointOfSaleOrderServiceProtocol
-    private var cartSubscription: AnyCancellable?
+    private let cardPresentPaymentService: CardPresentPaymentFacade
 
-    private let currencyFormatter: CurrencyFormatter
+    private let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
 
-    init(products: [POSProduct],
-         cardReaderConnectionViewModel: CardReaderConnectionViewModel,
-         // TODO: DI to entry point from the app
-         orderService: PointOfSaleOrderServiceProtocol = PointOfSaleOrderService(siteID: ServiceLocator.stores.sessionManager.defaultStoreID!,
-                                                                                 credentials: ServiceLocator.stores.sessionManager.defaultCredentials!),
-         currencySettings: CurrencySettings) {
-        self.products = products
-        self.cardReaderConnectionViewModel = cardReaderConnectionViewModel
-        self.orderService = orderService
-        self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
-        observeProductsInCartForCartTotal()
-        observeProductsInCartForRemoteOrderSyncing()
+    init(items: [POSItem],
+         cardPresentPaymentService: CardPresentPaymentFacade) {
+        self.items = items
+        self.cardPresentPaymentService = cardPresentPaymentService
+        self.cardReaderConnectionViewModel = CardReaderConnectionViewModel(cardPresentPayment: cardPresentPaymentService)
+        observeCardPresentPaymentEvents()
+        observeItemsInCartForCartTotal()
     }
 
-    func addProductToCart(_ product: POSProduct) {
-        if product.stockQuantity > 0 {
-            reduceInventory(product)
+    func addItemToCart(_ item: POSItem) {
+        let cartItem = CartItem(id: UUID(), item: item, quantity: 1)
+        itemsInCart.append(cartItem)
+    }
 
-            let cartProduct = CartProduct(id: UUID(), cartItemID: nil, product: product, quantity: 1)
-            productsInCart.append(cartProduct)
-        } else {
-            // TODO: Handle out of stock
-            // wp.me/p91TBi-bcW#comment-12123
-            return
+    func removeItemFromCart(_ cartItem: CartItem) {
+        itemsInCart.removeAll(where: { $0.id == cartItem.id })
+        checkIfCartEmpty()
+    }
+
+    var itemsInCartLabel: String? {
+        switch itemsInCart.count {
+        case 0:
+            return nil
+        default:
+            return String.pluralize(itemsInCart.count,
+                                    singular: "%1$d item",
+                                    plural: "%1$d items")
         }
     }
 
-    func reduceInventory(_ product: POSProduct) {
-        guard let index = products.firstIndex(where: { $0.itemID == product.itemID }) else {
-            return
+    private func checkIfCartEmpty() {
+        if itemsInCart.isEmpty {
+            orderStage = .building
         }
-        let updatedQuantity = product.stockQuantity - 1
-        let updatedProduct = product.createWithUpdatedQuantity(updatedQuantity)
-        products[index] = updatedProduct
-    }
-
-    func restoreInventory(_ product: POSProduct) {
-        guard let index = products.firstIndex(where: { $0.itemID == product.itemID }) else {
-            return
-        }
-        let updatedQuantity = product.stockQuantity + 1
-        let updatedProduct = product.createWithUpdatedQuantity(updatedQuantity)
-        products[index] = updatedProduct
-    }
-
-    // Removes a `CartProduct` from the Cart
-    func removeProductFromCart(_ cartProduct: CartProduct) {
-        productsInCart.removeAll(where: { $0.id == cartProduct.id })
-
-        // When removing an item from the cart, restore previous inventory
-        guard let match = products.first(where: { $0.productID == cartProduct.product.productID }) else {
-            return
-        }
-        restoreInventory(match)
     }
 
     func submitCart() {
@@ -102,85 +86,82 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
         orderStage = .building
     }
 
-    func showCardReaderConnection() {
-        showsCardReaderSheet = true
-    }
-
     func showFilters() {
         showsFilterSheet = true
     }
-}
 
-extension PointOfSaleDashboardViewModel {
-    // Helper function to populate SwiftUI previews
-    static func defaultPreview() -> PointOfSaleDashboardViewModel {
-        PointOfSaleDashboardViewModel(products: [],
-                                      cardReaderConnectionViewModel: .init(state: .connectingToReader),
-                                      currencySettings: .init())
+    private func calculateAmounts() {
+        // TODO: this is just a starting point for this logic, to have something calculated on the fly
+        if let formattedCartTotalPrice = formattedCartTotalPrice,
+           let subtotalAmount = currencyFormatter.convertToDecimal(formattedCartTotalPrice)?.doubleValue {
+            let taxAmount = subtotalAmount * 0.1 // having fixed 10% tax for testing
+            let totalAmount = subtotalAmount + taxAmount
+            formattedOrderTotalTaxPrice = currencyFormatter.formatAmount(Decimal(taxAmount))
+            formattedOrderTotalPrice = currencyFormatter.formatAmount(Decimal(totalAmount))
+        }
+    }
+
+    var checkoutButtonDisabled: Bool {
+        return itemsInCart.isEmpty
+    }
+
+    func cardPaymentTapped() {
+        Task { @MainActor in
+            showsCreatingOrderSheet = true
+            let order = try await createTestOrder()
+            showsCreatingOrderSheet = false
+            let _ = try await cardPresentPaymentService.collectPayment(for: order, using: .bluetooth)
+
+            // TODO: Here we should present something to show the payment was successful or not,
+            // and then clear the screen ready for the next transaction.
+        }
     }
 }
 
 private extension PointOfSaleDashboardViewModel {
-    func observeProductsInCartForCartTotal() {
-        $productsInCart
+    func observeItemsInCartForCartTotal() {
+        $itemsInCart
             .map { [weak self] in
-                guard let self else { return nil }
-                let totalValue: Decimal = $0.reduce(0) { partialResult, cartProduct in
-                    let productPrice = self.currencyFormatter.convertToDecimal(cartProduct.product.price) ?? 0
-                    let quantity = cartProduct.quantity
-                    let total = productPrice.multiplying(by: NSDecimalNumber(value: quantity)) as Decimal
+                guard let self else { return "-" }
+                let totalValue: Decimal = $0.reduce(0) { partialResult, cartItem in
+                    let itemPrice = self.currencyFormatter.convertToDecimal(cartItem.item.price) ?? 0
+                    let quantity = cartItem.quantity
+                    let total = itemPrice.multiplying(by: NSDecimalNumber(value: quantity)) as Decimal
                     return partialResult + total
                 }
                 return currencyFormatter.formatAmount(totalValue)
             }
             .assign(to: &$formattedCartTotalPrice)
     }
-}
 
-private extension PointOfSaleDashboardViewModel {
-    func observeProductsInCartForRemoteOrderSyncing() {
-        cartSubscription = Publishers.CombineLatest($productsInCart.debounce(for: .seconds(Constants.cartChangesDebounceDuration), scheduler: DispatchQueue.main),
-                                                    $isSyncingOrder)
-        .filter { _, isSyncingOrder in
-            isSyncingOrder == false
-        }
-        .map { $0.0 }
-        .removeDuplicates()
-        .dropFirst()
-        .sink { [weak self] cartProducts in
-            Task { @MainActor in
-                guard let self else {
-                    throw OrderSyncError.selfDeallocated
-                }
-                let cart = cartProducts
-                    .map {
-                        PointOfSaleCartItem(itemID: $0.cartItemID,
-                                            product: .init(productID: $0.product.productID, price: $0.product.price, productType: $0.product.productType),
-                                            quantity: Decimal($0.quantity))
-                    }
-                defer {
-                    self.isSyncingOrder = false
-                }
-                do {
-                    self.isSyncingOrder = true
-                    let posProducts = self.products.map { Yosemite.PointOfSaleCartProduct(productID: $0.productID, price: $0.price, productType: $0.productType) }
-                    let order = try await self.orderService.syncOrder(cart: cart, order: self.order, allProducts: posProducts)
-                    self.order = order
-                    print("🟢 [POS] Synced order: \(order)")
-                } catch {
-                    print("🔴 [POS] Error syncing order: \(error)")
-                }
+    func observeCardPresentPaymentEvents() {
+        cardPresentPaymentService.paymentEventPublisher.assign(to: &$cardPresentPaymentEvent)
+        cardPresentPaymentService.paymentEventPublisher.map { event in
+            switch event {
+            case .idle:
+                return false
+            case .showAlert,
+                    .showReaderList,
+                    .showOnboarding:
+                return true
             }
-        }
+        }.assign(to: &$showsCardReaderSheet)
     }
 }
 
+import enum Yosemite.OrderAction
+import struct Yosemite.Order
 private extension PointOfSaleDashboardViewModel {
-    enum Constants {
-        static let cartChangesDebounceDuration: TimeInterval = 0.5
-    }
-
-    enum OrderSyncError: Error {
-        case selfDeallocated
-    }
+    @MainActor
+       func createTestOrder() async throws -> Order {
+           return try await withCheckedThrowingContinuation { continuation in
+               let action = OrderAction.createSimplePaymentsOrder(siteID: ServiceLocator.stores.sessionManager.defaultStoreID ?? 0,
+                                                                  status: .pending,
+                                                                  amount: "15.00",
+                                                                  taxable: false) { result in
+                   continuation.resume(with: result)
+               }
+               ServiceLocator.stores.dispatch(action)
+           }
+       }
 }

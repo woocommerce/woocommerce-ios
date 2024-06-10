@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-05-21 11:54:03+0000 */
+/* Translation-Revision-Date: 2024-06-06 23:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: sv_SE */
@@ -508,9 +508,6 @@ which should be translated separately and considered part of this sentence. */
    Title text of the button that allows to add multiple products when creating or editing an order */
 "Add Products" = "Lägg till produkter";
 
-/* Title for the Shipping Line screen during order creation */
-"Add Shipping" = "Lägg till frakt";
-
 /* Title for the button to add the Shipping Address in Order Details */
 "Add Shipping Address" = "Lägg till leveransadress";
 
@@ -785,8 +782,7 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Amount field in the Coupon Edit or Creation screen for a percentage discount coupon. */
 "Amount (%)" = "Belopp (%)";
 
-/* Title for the amount field on the Fee/Discounts Details screenduring order creation Parameters: %1$@ - currency symbol
-   Title for the amount field on the Shipping Details screen during order creationParameters: %1$@ - currency symbol */
+/* Title for the amount field on the Fee/Discounts Details screenduring order creation Parameters: %1$@ - currency symbol */
 "Amount (%1$@)" = "Belopp (%1$@)";
 
 /* Title of the Amount field on the Coupon Edit or Creation screen for a fixed amount discount coupon.Reads like: Amount ($) */
@@ -1688,7 +1684,6 @@ which should be translated separately and considered part of this sentence. */
    Text for the close button in the Coupon Details screen
    Text for the close button in the Edit Address Form
    Text for the close button in the Fee/Discounts Details screen
-   Text for the close button in the Shipping Line Details screen
    Title of the Close action on the Jetpack Install view */
 "Close" = "Stäng";
 
@@ -2555,7 +2550,6 @@ which should be translated separately and considered part of this sentence. */
    Text for the done button in the Edit Address Form
    Text for the done button in the edit customer provided note screen
    Text for the done button in the Fee/Discounts Details screen
-   Text for the done button in the Shipping Line Details screen
    The button title to indicate that the user has finished updating their store's address and isready to close the webview. This also tries to connect to the reader again.
    Title for the Done button on a WebView modal sheet
    Title of the button to finish the domain purchase success screen. */
@@ -3184,9 +3178,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Line description for 'Fees' cart total on the receipt. Only shown when non-zero. */
 "Fees" = "Avgifter";
-
-/* Info message shown when the order contains multiple fees and shipping lines */
-"Fees & Shipping details are incomplete.\nTo edit all the details, view the order in your WooCommerce store admin." = "Avgifterna och leveransinformationen är ofullständiga.\nFör att redigera all information, visa beställningen i din WooCommerce-butiksadmin.";
 
 /* Blocking indicator text when fetching existing variations prior generating them. */
 "Fetching Variations..." = "Hämtar variationer...";
@@ -4695,7 +4686,6 @@ which should be translated separately and considered part of this sentence. */
    Product name placeholder on the add product from image form.
    Text field name in Shipping Label Address Validation
    Title above the name field on the add custom amount view in orders.
-   Title for the name field on the Shipping Line Details screen during order creation
    Title of the customer search filter to search by name. */
 "Name" = "Namn";
 
@@ -5667,6 +5657,9 @@ which should be translated separately and considered part of this sentence. */
    Navigates to Plugins screen. */
 "Plugins" = "Tillägg";
 
+/* Title of the POS menu in the hub menu */
+"Point of Sale Mode" = "Försäljningsplatsläge";
+
 /* Country option for a site address. */
 "Poland" = "Polen";
 
@@ -6206,9 +6199,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label action for removing a link from the editor */
 "Remove Link" = "Ta bort länk";
-
-/* Text for the button to remove a shipping line from the order during order creation */
-"Remove Shipping from Order" = "Ta bort frakt från beställning";
 
 /* Label action for removing a link from the editor */
 "Remove end date" = "Ta bort slutdatum";
@@ -6843,10 +6833,8 @@ which should be translated separately and considered part of this sentence. */
 "Shipped %@" = "Skickad %@";
 
 /* Line description for 'Shipping' cart total on the receipt. Only shown when non-zero
-   Placeholder for the name field on the Shipping Line Details screen during order creation
    Product Shipping Settings navigation title
    Shipping label for payment view
-   Title for the Shipping Line Details screen during order creation
    Title of the product form bottom sheet action for editing shipping settings.
    Title of the shipping field on the add product with AI Preview screen.
    Title of the Shipping Settings row on Product main screen */
@@ -6867,8 +6855,7 @@ which should be translated separately and considered part of this sentence. */
 /* Shipping title for customer info cell */
 "Shipping Details" = "Leveransadress";
 
-/* Shipping method title for customer info cell
-   Shipping method title for customer info section */
+/* Shipping method title for customer info section */
 "Shipping Method" = "Fraktmetod";
 
 /* Title on the refund screen that lists the shipping total cost */
@@ -6883,9 +6870,6 @@ which should be translated separately and considered part of this sentence. */
 /* Navigation bar title of the Product shipping class selector screen */
 "Shipping classes" = "Fraktklasser";
 
-/* Info message shown when the order contains multiple shipping lines */
-"Shipping details are incomplete.\nTo edit all shipping details, view the order in your WooCommerce store admin." = "Leveransinformationen är ofullständig.\nFör att redigera all leveransinformation, visa beställningen i din WooCommerce-butiksadmin.";
-
 /* Header of the order summary section in the shipping label creation form */
 "Shipping label order summary" = "Beställningssammanfattning för fraktetiketter";
 
@@ -6897,9 +6881,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Header text when printing multiple newly purchased shipping labels */
 "Shipping labels purchased!" = "Fraktetikett köpt!";
-
-/* VoiceOver accessibility label for the shipping notice about the order */
-"Shipping notice about the order" = "Fraktmeddelande om beställningen";
 
 /* Display label for the product's tax status setting option */
 "Shipping only" = "Endast frakt";
@@ -8012,10 +7993,6 @@ which should be translated separately and considered part of this sentence. */
 /* Message in action sheet when an order item is about to be moved on Package Details screen of Shipping Label flow.The package name reads like: Package 1: Custom Envelope. */
 "This item is currently in Package %1$d: %2$@. Where would you like to move it?" = "Denna artikel är för närvarande i förpackning %1$d: %2$@. Vart vill du flytta den?";
 
-/* Accessibility label for the Shipping notice
-   Shipping notice row label when there is more than one shipping method */
-"This order is using extensions to calculate shipping. The shipping methods shown might be incomplete." = "Den här beställningen använder tillägg för att beräkna frakten. De fraktmetoder som visas kan vara ofullständiga.";
-
 /* Explanation in the alert shown when a retry fails because the payment already completed */
 "This payment has already been completed – please check the order details." = "Den här betalningen har redan slutförts – kontrollera beställningsinformationen.";
 
@@ -8792,6 +8769,9 @@ which should be translated separately and considered part of this sentence. */
 /* The button title text for logging in with WP.com password instead of magic link. */
 "Use password to sign in" = "Använd lösenord för att logga in";
 
+/* Description of the POS menu in the hub menu */
+"Use the app as a cash register" = "Använd appen som kassaregister";
+
 /* Fourth instruction on the test order screen */
 "Use the app to process the refund for the test order." = "Använd appen för att behandla återbetalningen för testbeställningen.";
 
@@ -9346,9 +9326,6 @@ which should be translated separately and considered part of this sentence. */
 /* Info notice at the bottom of the product add-ons screen */
 "You can edit product add-ons in the web dashboard." = "Du kan redigera produkttillägg i webbadminpanelen.";
 
-/* Info notice at the bottom of the quantity rules screen. */
-"You can edit quantity rules in the web dashboard" = "Du kan redigera kvantitetsregler i webbadminpanelen";
-
 /* Instructions of the domain purchase success screen. */
 "You can find the domain settings in menu > settings" = "Du kan hitta domäninställningarna i menyn > Inställningar";
 
@@ -9446,10 +9423,10 @@ which should be translated separately and considered part of this sentence. */
 "Your free trial has ended" = "Din gratis provperiod har upphört";
 
 /* Info details for an expired free trial */
-"Your free trial has ended and you have limited access to all the features. Subscribe to a Woo Express Plan now." = "Din kostnadsfria provperiod har avslutats och du har begränsad tillgång till alla funktioner. Prenumerera på Woo Express-paketet nu.";
+"Your free trial has ended and you have limited access to all the features. Subscribe to a Woo Express Plan now." = "Din gratis provperiod har avslutats och du har begränsad åtkomst till alla funktioner. Prenumerera på ett Woo Express-paket nu.";
 
 /* Text within the Upgrades summary card, informing the merchant of how much time they have to upgrade. */
-"Your free trial will end in %@. Upgrade to a plan by %@ to unlock new features and start selling." = "Din kostnadsfria provperiod löper ut om %1$@. Uppgradera till ett paket senast %2$@ för att låsa upp nya funktioner och börja sälja.";
+"Your free trial will end in %@. Upgrade to a plan by %@ to unlock new features and start selling." = "Din gratis provperiod kommer sluta om %1$@. Uppgradera till ett paket före %2$@ för att låsa upp nya funktioner och börja sälja.";
 
 /* The description on the alert shown when connecting a card reader, asking the user to choose a reader type. Only shown when supported on their device. */
 "Your iPhone can be used as a card reader, or you can connect to an external reader via Bluetooth." = "Din iPhone kan användas som kortläsare, eller så kan du ansluta till en extern läsare via bluetooth.";
@@ -10618,6 +10595,15 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the button to edit the layout of the Dashboard screen. */
 "dashboardView.edit" = "Redigera";
 
+/* Label of the button to add sections */
+"dashboardView.newCardsNoticeCard.addSectionsButtonLabel" = "Lägg till ny sektion";
+
+/* Subtitle of the New Cards Notice card */
+"dashboardView.newCardsNoticeCard.subtitle" = "Lägg till nya sektioner för att anpassa din butikshanteringsupplevelse";
+
+/* Title of the New Cards Notice card */
+"dashboardView.newCardsNoticeCard.title" = "Letar du efter fler insikter?";
+
 /* Label of the button to share the store */
 "dashboardView.shareStoreCard.shareButtonLabel" = "Dela din butik";
 
@@ -10835,6 +10821,27 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the WPCom login screens when Jetpack is not installed yet */
 "jetpackSetupCoordinator.loginTitle" = "Installera Jetpack";
 
+/* In Last Orders dashboard card list, the name of the billed person when there are no first and last name. */
+"lastOrderDashboardRowViewModel.guestName" = "Gäst";
+
+/* Menu item to dismiss the Last Orders section on the My Store screen */
+"lastOrdersDashboardCard.hideCard" = "Dölj beställningar";
+
+/* Header label on the Last Orders section on the My Store screen */
+"lastOrdersDashboardCard.status" = "Status";
+
+/* Button to navigate to Orders list screen. */
+"lastOrdersDashboardCard.viewAll" = "Visa alla beställningar";
+
+/* Case Any in Order Filters for Order Statuses */
+"lastOrdersDashboardCardViewModel.anyStatusCase" = "Alla";
+
+/* Message when there are no orders found. */
+"lastOrdersDashboardEmptyView.noOrders" = "Väntar på din första beställning";
+
+/* Message when there are no orders found for a selected order status. The %@ is a placeholder for the order status selected by the user. */
+"lastOrdersDashboardEmptyView.noOrdersWithStatus" = "Inga %@-beställningar hittades";
+
 /* Later today */
 "later today" = "senare idag";
 
@@ -10948,6 +10955,18 @@ which should be translated separately and considered part of this sentence. */
 /* Display label for a product's subscription period, e.g. '12 months'. */
 "months" = "Månader";
 
+/* Button title to contact support to get help with deprecated stats module */
+"mostActiveCouponsCard.contentUnavailable.buttonTitle" = "Behöver du fortfarande hjälp? Kontakta oss";
+
+/* Text that explains how to update WooCommerce to get the latest stats */
+"mostActiveCouponsCard.contentUnavailable.details" = "Se till att du kör den senaste versionen av WooCommerce på din webbplats och att du har Analytics aktiverat i WooCommerce-inställningarna.";
+
+/* Button to dismiss the support form from the Dashboard stats error screen. */
+"mostActiveCouponsCard.contentUnavailable.dismissSupport" = "Klar";
+
+/* Title when we can't load coupon usage report because user is on a deprecated WooCommerce Version */
+"mostActiveCouponsCard.contentUnavailable.title" = "Det går inte att hämta rapporten över användning av rabattkoder";
+
 /* Title in the coupons list on the coupons card on the Dashboard screen */
 "mostActiveCouponsCard.coupons" = "Rabattkoder";
 
@@ -10965,6 +10984,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button in date range picker to add a Custom Range tab */
 "mostActiveCouponsCardViewModel.addCustomRange" = "Lägg till";
+
+/* Default text for Most active coupons dashboard card when no data exists for a given period. */
+"mostActiveCouponsEmptyView.text" = "Ingen användning av rabattkoder under denna period";
 
 /* Placeholder in the search bar of a multiple selection list */
 "multipleSelectionList.search" = "Sök";
@@ -11114,6 +11136,9 @@ which should be translated separately and considered part of this sentence. */
 /* Origin in Order Attribution Section on Order Details screen. */
 "orderDetailsDataSource.attributionInfo.unknown" = "Okänd";
 
+/* Title of Shipping Section in Order Details screen */
+"orderDetailsDataSource.shippingLines.title" = "Frakt";
+
 /* VoiceOver accessibility hint, informing the user that the button can be used to view the order custom fields information. */
 "orderDetailsDataSource.trashOrder.accessibilityHint" = "Lägg denna beställning i papperskorgen.";
 
@@ -11167,6 +11192,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the primary button on the new order screen when changes need to be manually synced. Tapping the button will send changes to the server, and when complete the totals and taxes will be accurate. */
 "orderForm.recalculate.button.title" = "Räkna om";
+
+/* Heading for the section that shows the Shipping Lines when creating or editing an order */
+"orderForm.shipping" = "Frakt";
 
 /* Label for the row showing the cost of coupon in the order */
 "orderPaymentSection.coupon" = "Rabattkod";
@@ -11255,6 +11283,9 @@ which should be translated separately and considered part of this sentence. */
 /* Product title */
 "productForm.defaultTitle" = "Produkt";
 
+/* Placeholder for empty product ratings */
+"productForm.quantityRules.placeholder" = "Inga kvantitetsregler";
+
 /* Description of the subscription period for a product. Reads like: 'every 2 months'. */
 "productFormDataModel.subscriptionPeriodFormat" = "varje %1$@";
 
@@ -11327,8 +11358,32 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the One time shipping product shipping setting. */
 "productShippingSettings.oneTimeShipping.title" = "Engångsfrakt";
 
+/* Button title to contact support to get help with deprecated stats module */
+"productStockDashboardCard.contentUnavailable.buttonTitle" = "Behöver du fortfarande hjälp? Kontakta oss";
+
+/* Text that explains how to update WooCommerce to get the latest stats */
+"productStockDashboardCard.contentUnavailable.details" = "Se till att du kör den senaste versionen av WooCommerce på din webbplats och att du har Analytics aktiverat i WooCommerce-inställningarna.";
+
+/* Button to dismiss the support form from the Dashboard stock card error screen. */
+"productStockDashboardCard.contentUnavailable.dismissSupport" = "Klar";
+
+/* Title when we can't load stock report because user is on a deprecated WooCommerce Version */
+"productStockDashboardCard.contentUnavailable.title" = "Det gick inte att läsa in lagerrapporten";
+
+/* Text on the empty state of the Stock section on the My Store screen. Reads as: No item found with Out of stock status */
+"productStockDashboardCard.emptyStateTitle" = "Inga varor hittades med statusen %1$@.";
+
 /* Menu item to dismiss the Stock section on the My Store screen */
 "productStockDashboardCard.hideCard" = "Dölj lager";
+
+/* Subtitle in plural mode for the stock items on the Stock section on the My Store screen. Reads as: 10 items sold last 30 days */
+"productStockDashboardCard.item.subtitle.plural" = "%1$d varor sålda de senaste 30 dagarna";
+
+/* Subtitle in singular mode for the stock items on the Stock section on the My Store screen. Reads as: 1 item sold last 30 days */
+"productStockDashboardCard.item.subtitle.singular" = "%1$d vara såld de senaste 30 dagarna";
+
+/* Subtitle for the stock items with no items sold on the Stock section on the My Store screen. */
+"productStockDashboardCard.item.subtitle.zero" = "Ingen vara såld de senaste 30 dagarna";
 
 /* Header label on the Stock section on the My Store screen */
 "productStockDashboardCard.products" = "Produkter";
@@ -11357,6 +11412,9 @@ which should be translated separately and considered part of this sentence. */
 /* Button to submit selected products to the order, when some product has been selected. */
 "productselectorview.doneButtonTitle.addProductsText" = "Lägg till produkter";
 
+/* Button to dismiss the product quantity rules view screen. */
+"quantityRulesView.done" = "Klar";
+
 /* Button to dismiss the alert displayed when selecting an invalid time range for analytics */
 "rangedDatePicker.invalidTimeRangeAlert.action" = "Jag förstår";
 
@@ -11384,17 +11442,14 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the switch in the IssueRefund screen to refund customAmounts */
 "refundIssue.customAmounts.title" = "Återbetala anpassade belopp";
 
-/* Text displayed when the author of a review is known. */
-"reviewsDashboardCard.completeAuthorText" = "%1$@ lämnade en recension på %2$@";
-
 /* Menu item to dismiss the Reviews card on the Dashboard screen */
 "reviewsDashboardCard.hideCard" = "Dölj recensioner";
 
-/* Text displayed when the author of a review is unknown. */
-"reviewsDashboardCard.incompleteAuthorText" = "En kund lämnade en recension på %@";
+/* Message shown in the Reviews Dashboard Card if the list is filtered and there is no review. The %@ is a placeholder for the filter name. */
+"reviewsDashboardCard.noFilteredReviewsText" = "Inga recensioner matchar statusen %@. Prova att byta filter.";
 
-/* Additional label on a review when its status is hold. */
-"reviewsDashboardCard.pendingReview" = "Väntande recension";
+/* Message shown in the Reviews Dashboard Card if the site has no review */
+"reviewsDashboardCard.noReviewsText" = "Inga recensioner hittades.";
 
 /* Status label on the Reviews card's filter area. */
 "reviewsDashboardCard.status" = "Status";
@@ -11426,6 +11481,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Cancel button title for the Shipping Label purchase flow, shown in the nav bar */
 "shipping.label.navigationBar.cancel.button.title" = "Avbryt";
+
+/* Accessibility title for the edit button on a shipping line row. */
+"shippingLine.edit.button.accessibilityLabel" = "Redigera frakt";
 
 /* Action to add a custom amount in the simple payments migration view. */
 "simplePaymentsMigrationSheet.addCustomAmount" = "Lägg till ett anpassat belopp";
@@ -11760,6 +11818,45 @@ which should be translated separately and considered part of this sentence. */
 
 /* Product detailsl button title. */
 "updateProductInventoryView.viewProductDetailsButtonTitle" = "Visa produktdetaljer";
+
+/* Info message when connecting your watch to the phone for the first time. */
+"watch.connect.message" = "Öppna Woo på din iPhone, anslut din butik och håll din klocka intill telefonen";
+
+/* Loading title on the watch store stats screen. */
+"watch.mystore.error.title" = "Det gick inte att läsa in butikens data";
+
+/* Retry on the watch store stats screen. */
+"watch.mystore.retry.title" = "Försök igen";
+
+/* Revenue title on the watch store stats screen. */
+"watch.mystore.revenue.title" = "intäkt";
+
+/* Format of the updated time in the watch store stats screen. */
+"watch.mystore.time.format" = "Från och med %@";
+
+/* Today title on the watch store stats screen. */
+"watch.mystore.today.title" = "Idag";
+
+/* Title when there is an error loading an order notification on the watch app */
+"watch.notification.order.error" = "Det gick inte att läsa in notisen";
+
+/* Customer title in the order detail screen. */
+"watch.orders.detail.customer" = "Kund";
+
+/* Plural format for the number of products in the order detail screen. */
+"watch.orders.detail.product-count" = "%d produkter";
+
+/* Singular format for the number of products in the order detail screen. */
+"watch.orders.detail.product-count-singular" = "1 produkt";
+
+/* Loading title on the watch orders list screen. */
+"watch.orders.error.title" = "Det gick inte att läsa in beställningslistan";
+
+/* Retry on the watch orders list screen. */
+"watch.orders.retry.title" = "Försök igen";
+
+/* Title on the watch orders list screen. */
+"watch.orders.title" = "Beställningar";
 
 /* Verb. Dismiss the web view screen. */
 "webKit.button.dismiss" = "Avfärda";

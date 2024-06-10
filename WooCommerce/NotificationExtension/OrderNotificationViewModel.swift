@@ -9,34 +9,18 @@ final class OrderNotificationViewModel {
     // Define possible error states.
     enum Error: Swift.Error {
         case noCredentials
-        case network(Swift.Error)
         case unavailableNote
         case unsupportedNotification
-        case unknown
-    }
-
-    private let notesRemote: NotificationsRemote?
-    private let orderRemote: OrdersRemote?
-
-    init() {
-        if let credentials = Self.fetchCredentials() {
-            let network = AlamofireNetwork(credentials: credentials)
-            self.notesRemote = NotificationsRemote(network: network)
-            self.orderRemote = OrdersRemote(network: network)
-        } else {
-            self.notesRemote = nil
-            self.orderRemote = nil
-        }
     }
 
     /// Loads a Note object from a given push notification object.
     ///
     @MainActor
-    func loadNotification(_ notification: UNNotification) async throws -> Note {
+    func loadOrder(from notification: UNNotification) async throws -> (Note, Order) {
 
         /// Only store order notifications are supported.
         ///
-        guard notification.request.content.categoryIdentifier == "store_order" else {
+        guard notification.request.content.categoryIdentifier == Note.Kind.storeOrder.rawValue else {
             throw Error.unsupportedNotification
         }
 
@@ -46,61 +30,14 @@ final class OrderNotificationViewModel {
             throw Error.unavailableNote
         }
 
-        /// Error if we couldn't create a remote object. This can happen if there are no valid credentials.
+        /// Error if there are no valid credentials.
         ///
-        guard let notesRemote else {
+        guard let credentials = Self.fetchCredentials() else {
             throw Error.noCredentials
         }
 
-        /// Load notification from a remote source.
-        ///
-        return try await withCheckedThrowingContinuation { continuation in
-            notesRemote.loadNotes(noteIDs: [noteID]) { result in
-                switch result {
-                case .success(let notes):
-                    if let note = notes.first {
-                        continuation.resume(returning: note)
-                    } else {
-                        continuation.resume(throwing: Error.unavailableNote)
-                    }
-                case .failure(let error):
-                    continuation.resume(throwing: error)
-                }
-            }
-        }
-    }
-
-    /// Loads an Order object from a given Note object.
-    ///
-    func loadOrder(for notification: Note) async throws -> Order {
-
-        /// Notification must contain order and site ID.
-        ///
-        guard let siteID = notification.meta.identifier(forKey: .site),
-              let orderID = notification.meta.identifier(forKey: .order) else {
-            throw Error.unsupportedNotification
-        }
-
-        /// Error if we couldn't create a remote object. This can happen if there are no valid credentials.
-        ///
-        guard let orderRemote else {
-            throw Error.noCredentials
-        }
-
-        /// Load notification from a remote source.
-        ///
-        return try await withCheckedThrowingContinuation { continuation in
-            orderRemote.loadOrder(for: Int64(siteID), orderID: Int64(orderID)) { order, error in
-                switch (order, error) {
-                case (let order?, nil):
-                    continuation.resume(returning: order)
-                case (_, let error?):
-                    continuation.resume(throwing: Error.network(error))
-                default:
-                    continuation.resume(throwing: Error.unknown)
-                }
-            }
-        }
+        let dataService = OrderNotificationDataService(credentials: credentials)
+        return try await dataService.loadOrderFrom(noteID: noteID)
     }
 
     /// Formats the information from the provided `Note` and `Order` to build a  `OrderNotificationView.Content` object.

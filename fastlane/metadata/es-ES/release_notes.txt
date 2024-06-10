@@ -1,3 +1,1 @@
-¡Estamos emocionados con el lanzamiento de las últimas actualizaciones!
-Nuestra última actualización hace una puesta a punto de todos los procesos para mejorar la estabilidad y el rendimiento.
-Nos comprometemos a seguir mejorando nuestra aplicación para ofrecerte el mejor servicio. Gracias por elegir WooCommerce.
+¡Mantente al día de las últimas actualizaciones de WooCommerce! Explora nuestra nueva aplicación Watch para obtener información instantánea de la tienda y actualizaciones de pedidos de un vistazo. Hemos corregido el problema con los métodos de envío, además de que ahora puedes incluir varias líneas de envío en los pedidos, para que puedas gestionar sin problemas las necesidades de envío complejas de tus pedidos.

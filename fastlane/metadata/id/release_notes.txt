@@ -1,3 +1,1 @@
-Ini dia pembaruan terkini kami!
-Kami hadirkan perbaikan internal di pembaruan terkini untuk meningkatkan stabilitas dan performa.
-Kami berkomitmen untuk terus menyempurnakan aplikasi kami demi pelayanan yang lebih baik.  Terima kasih telah memilih WooCommerce!
+Tetap terdepan dengan pembaruan WooCommerce terkini! Jelajahi aplikasi Watch baru untuk mendapatkan data toko secara instan dan pembaruan pesanan dalam sekejap. Masalah terkait metode pengiriman telah diatasi. Sekarang Anda dapat menambahkan beberapa jalur pengiriman pada pesanan sehingga Anda dapat menangani kebutuhan pengiriman yang kompleks untuk pesanan Anda dengan lancar.

@@ -6,11 +6,14 @@ extension WooAnalyticsEvent {
         private enum Keys: String {
             case type
             case cards
+            case newCardAvailable = "new_card_available"
+            case sortedCards = "sorted_cards"
         }
 
         /// When the user taps the button to edit the dashboard layout.
-        static func editLayoutButtonTapped() -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .dynamicDashboardEditLayoutButtonTapped, properties: [:])
+        static func editLayoutButtonTapped(isNewCardAvailable: Bool) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .dynamicDashboardEditLayoutButtonTapped,
+                              properties: [Keys.newCardAvailable.rawValue: isNewCardAvailable])
         }
 
         /// When the user taps on the Hide button in the ellipsis menu of any dashboard card
@@ -21,15 +24,32 @@ extension WooAnalyticsEvent {
 
         /// When the user taps the Save button to in the layout editor.
         static func editorSaveTapped(types: [DashboardCard.CardType]) -> WooAnalyticsEvent {
-            let typeNames = types.map { $0.analyticName }.sorted().joined(separator: ",")
-            return WooAnalyticsEvent(statName: .dynamicDashboardEditorSaveTapped,
-                                     properties: [Keys.cards.rawValue: typeNames])
+            let typeNamesUserSorted = types.map { $0.analyticName }
+            let typeNamesAlphabeticallySorted = typeNamesUserSorted.sorted()
+            return WooAnalyticsEvent(
+                statName: .dynamicDashboardEditorSaveTapped,
+                properties: [
+                    Keys.cards.rawValue: typeNamesAlphabeticallySorted.joined(separator: ","),
+                    Keys.sortedCards.rawValue: typeNamesUserSorted.joined(separator: ","),
+                ].compactMapValues { $0 }
+            )
         }
 
         /// When the user taps the Retry button on the error state view of any dashboard card.
         static func cardRetryTapped(type: DashboardCard.CardType) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .dynamicDashboardCardRetryTapped,
                               properties: [Keys.type.rawValue: type.analyticName])
+        }
+
+        /// When the user interacts with the dashboard cards by tapping on any action buttons.
+        static func dashboardCardInteracted(type: DashboardCard.CardType) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .dynamicDashboardCardInteracted,
+                              properties: [Keys.type.rawValue: type.analyticName])
+        }
+
+        /// When the user taps the Add new sections button on the new cards suggestion.
+        static func dashboardCardAddNewSectionsTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .dynamicDashboardAddNewSectionsTapped, properties: [:])
         }
     }
 }
@@ -52,7 +72,7 @@ extension DashboardCard.CardType {
         case .reviews:
             "reviews"
         case .lastOrders:
-            "last_orders"
+            "orders"
         case .coupons:
             "coupons"
         }

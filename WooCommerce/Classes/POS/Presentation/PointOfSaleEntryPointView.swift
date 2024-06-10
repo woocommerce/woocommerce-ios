@@ -1,19 +1,20 @@
 import SwiftUI
-import class WooFoundation.CurrencySettings
+import protocol Yosemite.POSItemProvider
 
 struct PointOfSaleEntryPointView: View {
     @StateObject private var viewModel: PointOfSaleDashboardViewModel
 
     private let hideAppTabBar: ((Bool) -> Void)
 
-    init(currencySettings: CurrencySettings, hideAppTabBar: @escaping ((Bool) -> Void)) {
+    init(itemProvider: POSItemProvider,
+         hideAppTabBar: @escaping ((Bool) -> Void),
+         cardPresentPaymentService: CardPresentPaymentFacade) {
         self.hideAppTabBar = hideAppTabBar
 
         _viewModel = StateObject(wrappedValue: PointOfSaleDashboardViewModel(
-            products: POSProductFactory.makeFakeProducts(currencySettings: currencySettings),
-            cardReaderConnectionViewModel: .init(state: .connectingToReader),
-            currencySettings: currencySettings
-        ))
+            items: itemProvider.providePointOfSaleItems(),
+            cardPresentPaymentService: cardPresentPaymentService)
+        )
     }
 
     var body: some View {
@@ -29,6 +30,8 @@ struct PointOfSaleEntryPointView: View {
 
 #if DEBUG
 #Preview {
-    PointOfSaleEntryPointView(currencySettings: ServiceLocator.currencySettings, hideAppTabBar: { _ in })
+    PointOfSaleEntryPointView(itemProvider: POSItemProviderPreview(),
+                              hideAppTabBar: { _ in },
+                              cardPresentPaymentService: CardPresentPaymentPreviewService())
 }
 #endif

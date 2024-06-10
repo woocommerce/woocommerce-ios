@@ -2311,19 +2311,16 @@ extension Networking.ProductReport.ExtendedInfo {
     public func copy(
         name: CopiableProp<String> = .copy,
         image: NullableCopiableProp<String> = .copy,
-        stockQuantity: CopiableProp<Int> = .copy,
-        attributes: CopiableProp<[ProductVariationAttribute]> = .copy
+        stockQuantity: CopiableProp<Int> = .copy
     ) -> Networking.ProductReport.ExtendedInfo {
         let name = name ?? self.name
         let image = image ?? self.image
         let stockQuantity = stockQuantity ?? self.stockQuantity
-        let attributes = attributes ?? self.attributes
 
         return Networking.ProductReport.ExtendedInfo(
             name: name,
             image: image,
-            stockQuantity: stockQuantity,
-            attributes: attributes
+            stockQuantity: stockQuantity
         )
     }
 }
@@ -3046,7 +3043,7 @@ extension Networking.Site {
         jetpackConnectionActivePlugins: CopiableProp<[String]> = .copy,
         timezone: CopiableProp<String> = .copy,
         gmtOffset: CopiableProp<Double> = .copy,
-        isPublic: CopiableProp<Bool> = .copy,
+        visibility: CopiableProp<SiteVisibility> = .copy,
         canBlaze: CopiableProp<Bool> = .copy,
         isAdmin: CopiableProp<Bool> = .copy,
         wasEcommerceTrial: CopiableProp<Bool> = .copy
@@ -3068,7 +3065,7 @@ extension Networking.Site {
         let jetpackConnectionActivePlugins = jetpackConnectionActivePlugins ?? self.jetpackConnectionActivePlugins
         let timezone = timezone ?? self.timezone
         let gmtOffset = gmtOffset ?? self.gmtOffset
-        let isPublic = isPublic ?? self.isPublic
+        let visibility = visibility ?? self.visibility
         let canBlaze = canBlaze ?? self.canBlaze
         let isAdmin = isAdmin ?? self.isAdmin
         let wasEcommerceTrial = wasEcommerceTrial ?? self.wasEcommerceTrial
@@ -3091,7 +3088,7 @@ extension Networking.Site {
             jetpackConnectionActivePlugins: jetpackConnectionActivePlugins,
             timezone: timezone,
             gmtOffset: gmtOffset,
-            isPublic: isPublic,
+            visibility: visibility,
             canBlaze: canBlaze,
             isAdmin: isAdmin,
             wasEcommerceTrial: wasEcommerceTrial

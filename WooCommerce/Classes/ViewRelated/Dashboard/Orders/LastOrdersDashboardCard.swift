@@ -71,6 +71,8 @@ private extension LastOrdersDashboardCard {
 
     var viewAllOrdersButton: some View {
         Button {
+            ServiceLocator.analytics.track(event: .DynamicDashboard.dashboardCardInteracted(type: .lastOrders))
+
             onViewAllOrders()
         } label: {
             HStack {
@@ -117,7 +119,11 @@ private extension LastOrdersDashboardCard {
             Menu {
                 ForEach(viewModel.allStatuses) { status in
                     Button {
-                        viewModel.updateOrderStatus(status)
+                        ServiceLocator.analytics.track(event: .DynamicDashboard.dashboardCardInteracted(type: .lastOrders))
+
+                        Task { @MainActor in
+                            await viewModel.updateOrderStatus(status)
+                        }
                     } label: {
                         SelectableItemRow(title: status.description, selected: status.status == viewModel.selectedOrderStatus)
                     }
@@ -134,6 +140,8 @@ private extension LastOrdersDashboardCard {
         VStack(alignment: .leading, spacing: Layout.padding) {
             ForEach(viewModel.rows) { element in
                 LastOrderDashboardRow(viewModel: element, tapHandler: {
+                    ServiceLocator.analytics.track(event: .DynamicDashboard.dashboardCardInteracted(type: .lastOrders))
+
                     onViewOrderDetail(element.order)
                 })
             }

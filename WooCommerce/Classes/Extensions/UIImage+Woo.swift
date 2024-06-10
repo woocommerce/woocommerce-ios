@@ -1220,6 +1220,12 @@ extension UIImage {
         .imageFlippedForRightToLeftLayoutDirection()
     }
 
+    /// Tooltip icon
+    ///
+    static var tooltipImage: UIImage {
+        return UIImage(named: "icon-tooltip")!
+    }
+
     /// Trash Can Icon
     ///
     static var trashImage: UIImage {

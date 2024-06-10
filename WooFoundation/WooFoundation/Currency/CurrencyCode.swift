@@ -2,7 +2,7 @@ import Foundation
 import Codegen
 /// The 3-letter country code for supported currencies
 ///
-public enum CurrencyCode: String, CaseIterable, Codable, GeneratedFakeable {
+public enum CurrencyCode: String, CaseIterable, Codable, GeneratedFakeable, Equatable {
     // A
     case AED, AFN, ALL, AMD, ANG, AOA, ARS, AUD, AWG, AZN,
     // B

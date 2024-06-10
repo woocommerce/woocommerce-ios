@@ -1,3 +1,1 @@
-En yeni güncellemeleri sunmaktan heyecan duyuyoruz!
-En yeni güncellememiz, hem kararlılığı hem de performansı geliştirmek için arka planda iyileştirmeler getirir.
-Size daha iyi hizmet vermek için uygulamamızı sürekli olarak geliştirmek için çalışıyoruz. WooCommerce'i seçtiğiniz için teşekkür ederiz!
+En yeni WooCommerce güncellememizle bir adım önde olun! Bir bakışta anında mağaza verileri ve sipariş güncellemeleri almak için yeni Watch Uygulamamızı keşfedin. Gönderim yöntemlerile ilgili sorunu düzelttik, ayrıca siparişlerde artık birden çok gönderim satırınız olabildiğinden siparişleriniz için karmaşık gönderim ihtiyaçlarınızı sorunsuz şekilde yönetebilirsiniz.

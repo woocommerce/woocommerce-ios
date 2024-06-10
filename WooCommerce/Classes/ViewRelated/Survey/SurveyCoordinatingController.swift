@@ -19,14 +19,18 @@ final class SurveyCoordinatingController: WooNavigationController {
     /// What kind of survey to present.
     private let survey: SurveyViewController.Source
 
+    private let onDismiss: (() -> Void)?
+
     init(survey: SurveyViewController.Source,
          zendeskManager: ZendeskManagerProtocol = ZendeskProvider.shared,
          viewControllersFactory: SurveyViewControllersFactoryProtocol = SurveyViewControllersFactory(),
-         analytics: Analytics = ServiceLocator.analytics) {
+         analytics: Analytics = ServiceLocator.analytics,
+         onDismiss: (() -> Void)? = nil) {
         self.survey = survey
         self.zendeskManager = zendeskManager
         self.viewControllersFactory = viewControllersFactory
         self.analytics = analytics
+        self.onDismiss = onDismiss
         super.init(nibName: nil, bundle: nil)
         startSurveyNavigation()
     }
@@ -41,6 +45,8 @@ final class SurveyCoordinatingController: WooNavigationController {
         if isBeingDismissed && !receivedSurveyFinishedEvent {
             analytics.track(event: .surveyScreen(context: survey.feedbackContextForEvents, action: .canceled))
         }
+
+        onDismiss?()
     }
 }
 

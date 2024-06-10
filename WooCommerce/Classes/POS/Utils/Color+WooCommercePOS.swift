@@ -5,7 +5,7 @@ extension Color {
     /// Primary POS background color
     ///
     static var primaryBackground: Color {
-        return Color(red: 11.0 / 255.0, green: 146.0 / 255.0, blue: 213.0 / 255.0)
+        return Color(red: 24.0 / 255.0, green: 24.0 / 255.0, blue: 24.0 / 255.0)
     }
 
     /// Secondary POS background color

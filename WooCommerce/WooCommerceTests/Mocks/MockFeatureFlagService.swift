@@ -22,7 +22,6 @@ struct MockFeatureFlagService: FeatureFlagService {
     private let isBackendReceiptsEnabled: Bool
     private let sideBySideViewForOrderForm: Bool
     private let isSubscriptionsInOrderCreationCustomersEnabled: Bool
-    private let isMultipleShippingLinesEnabled: Bool
     private let isDisplayPointOfSaleToggleEnabled: Bool
     private let isDynamicDashboardM2Enabled: Bool
 
@@ -46,7 +45,6 @@ struct MockFeatureFlagService: FeatureFlagService {
          isBackendReceiptsEnabled: Bool = false,
          sideBySideViewForOrderForm: Bool = false,
          isSubscriptionsInOrderCreationCustomersEnabled: Bool = false,
-         isMultipleShippingLinesEnabled: Bool = false,
          isDisplayPointOfSaleToggleEnabled: Bool = false,
          isDynamicDashboardM2Enabled: Bool = false) {
         self.isInboxOn = isInboxOn
@@ -69,7 +67,6 @@ struct MockFeatureFlagService: FeatureFlagService {
         self.isBackendReceiptsEnabled = isBackendReceiptsEnabled
         self.sideBySideViewForOrderForm = sideBySideViewForOrderForm
         self.isSubscriptionsInOrderCreationCustomersEnabled = isSubscriptionsInOrderCreationCustomersEnabled
-        self.isMultipleShippingLinesEnabled = isMultipleShippingLinesEnabled
         self.isDisplayPointOfSaleToggleEnabled = isDisplayPointOfSaleToggleEnabled
         self.isDynamicDashboardM2Enabled = isDynamicDashboardM2Enabled
     }
@@ -114,8 +111,6 @@ struct MockFeatureFlagService: FeatureFlagService {
             return sideBySideViewForOrderForm
         case .subscriptionsInOrderCreationCustomers:
             return isSubscriptionsInOrderCreationCustomersEnabled
-        case .multipleShippingLines:
-            return isMultipleShippingLinesEnabled
         case .displayPointOfSaleToggle:
             return isDisplayPointOfSaleToggleEnabled
         case .dynamicDashboardM2:

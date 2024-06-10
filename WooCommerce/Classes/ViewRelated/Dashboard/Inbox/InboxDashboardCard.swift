@@ -107,6 +107,7 @@ private extension InboxDashboardCard {
 
     var viewAllButton: some View {
         Button {
+            ServiceLocator.analytics.track(event: .DynamicDashboard.dashboardCardInteracted(type: .inbox))
             onShowAllInboxMessages()
         } label: {
             HStack {

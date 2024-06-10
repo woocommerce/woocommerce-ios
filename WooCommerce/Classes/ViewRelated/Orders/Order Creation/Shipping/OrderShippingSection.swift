@@ -1,8 +1,8 @@
 import SwiftUI
 
 struct OrderShippingSection: View {
-    /// View model to drive the view content
-    @ObservedObject var viewModel: EditableOrderViewModel
+    /// View model to add, edit, or remove shipping lines
+    @ObservedObject var viewModel: EditableOrderShippingLineViewModel
 
     @Environment(\.safeAreaInsets) private var safeAreaInsets: EdgeInsets
 
@@ -20,7 +20,7 @@ struct OrderShippingSection: View {
                     .renderedIf(viewModel.shouldShowNonEditableIndicators)
 
                 Button(action: {
-                    addShippingLine()
+                    viewModel.addShippingLine()
                 }) {
                     Image(uiImage: .plusImage)
                 }
@@ -36,13 +36,9 @@ struct OrderShippingSection: View {
         .padding()
         .background(Color(.listForeground(modal: true)))
         .addingTopAndBottomDividers()
-    }
-}
-
-private extension OrderShippingSection {
-    func addShippingLine() {
-        // TODO-12583: Add a new shipping line (opens `ShippingLineSelectionDetails`)
-        // TODO-12584: Track that add shipping has been tapped
+        .sheet(item: $viewModel.shippingLineDetails, content: { viewModel in
+            ShippingLineSelectionDetails(viewModel: viewModel)
+        })
     }
 }
 

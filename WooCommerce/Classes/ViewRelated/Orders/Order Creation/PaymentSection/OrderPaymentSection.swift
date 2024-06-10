@@ -7,9 +7,8 @@ struct OrderPaymentSection: View {
     /// View model to drive the view content
     let viewModel: EditableOrderViewModel.PaymentDataViewModel
 
-    /// Indicates if the shipping line details screen should be shown or not.
-    ///
-    @Binding private var shouldShowShippingLineDetails: Bool
+    /// View model for shipping lines on an order
+    let shippingLineViewModel: EditableOrderShippingLineViewModel
 
     /// Indicates if the gift card code input sheet should be shown or not.
     ///
@@ -37,10 +36,10 @@ struct OrderPaymentSection: View {
     }
 
     init(viewModel: EditableOrderViewModel.PaymentDataViewModel,
-         shouldShowShippingLineDetails: Binding<Bool>,
+         shippingLineViewModel: EditableOrderShippingLineViewModel,
          shouldShowGiftCardForm: Binding<Bool>) {
         self.viewModel = viewModel
-        self._shouldShowShippingLineDetails = shouldShowShippingLineDetails
+        self.shippingLineViewModel = shippingLineViewModel
         self._shouldShowGiftCardForm = shouldShowGiftCardForm
     }
 
@@ -94,19 +93,9 @@ private extension OrderPaymentSection {
     }
 
     @ViewBuilder var existingShippingRow: some View {
-        if viewModel.isShippingTotalEditable {
-            TitleAndValueRow(title: Localization.shippingTotal,
-                             titleSuffixImage: (image: rowsEditImage, color: Color(.primary)),
-                             value: .content(viewModel.shippingTotal),
-                             selectionStyle: editableRowsSelectionStyle) {
-                shouldShowShippingLineDetails = true
-            }
-            .renderedIf(viewModel.shouldShowShippingTotal)
-        } else {
-            TitleAndValueRow(title: Localization.shippingTotal,
-                             value: .content(viewModel.shippingTotal))
-            .renderedIf(viewModel.shouldShowShippingTotal)
-        }
+        TitleAndValueRow(title: Localization.shippingTotal,
+                         value: .content(shippingLineViewModel.paymentData.shippingTotal))
+        .renderedIf(shippingLineViewModel.paymentData.shouldShowShippingTotal)
     }
 
     @ViewBuilder var productsRow: some View {
@@ -168,7 +157,7 @@ private extension OrderPaymentSection {
             taxSectionTitle
             taxLines
             shippingTax
-                .renderedIf(viewModel.shouldShowShippingTax)
+                .renderedIf(shippingLineViewModel.paymentData.shouldShowShippingTax)
             taxBasedOnLine
                 .onTapGesture {
                     shouldShowTaxEducationalDialog = true
@@ -226,7 +215,7 @@ private extension OrderPaymentSection {
                     .foregroundColor(Color(uiColor: .secondaryLabel))
                     .multilineTextAlignment(.leading)
                     .frame(maxWidth: .infinity, alignment: .leading)
-                Text(viewModel.shippingTax)
+                Text(shippingLineViewModel.paymentData.shippingTax)
                     .footnoteStyle()
                     .multilineTextAlignment(.trailing)
                     .frame(width: nil, alignment: .trailing)
@@ -335,9 +324,12 @@ private extension OrderPaymentSection {
 struct OrderPaymentSection_Previews: PreviewProvider {
     static var previews: some View {
         let viewModel = EditableOrderViewModel.PaymentDataViewModel(itemsTotal: "20.00")
+        let shippingLineViewModel = EditableOrderShippingLineViewModel(siteID: 1,
+                                                                       flow: .creation,
+                                                                       orderSynchronizer: RemoteOrderSynchronizer(siteID: 1, flow: .creation))
 
         OrderPaymentSection(viewModel: viewModel,
-                            shouldShowShippingLineDetails: .constant(false),
+                            shippingLineViewModel: shippingLineViewModel,
                             shouldShowGiftCardForm: .constant(false))
             .previewLayout(.sizeThatFits)
     }

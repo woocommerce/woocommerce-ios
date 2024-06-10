@@ -27,25 +27,31 @@ struct ReviewsDashboardCard: View {
 
             reviewsFilterBar
                 .padding(.horizontal, Layout.padding)
-                .redacted(reason: viewModel.showLoadingAnimation ? [.placeholder] : [])
-                .shimmering(active: viewModel.showLoadingAnimation)
             Divider()
 
-            if viewModel.showLoadingAnimation || viewModel.data.isNotEmpty {
+            if viewModel.syncingError != nil {
+                DashboardCardErrorView(onRetry: {
+                    ServiceLocator.analytics.track(event: .DynamicDashboard.cardRetryTapped(type: .reviews))
+                    Task {
+                        await viewModel.reloadData()
+                    }
+                })
+                .padding(.horizontal, Layout.padding)
+            } else if viewModel.syncingData {
+                loadingStateView
+            } else if viewModel.data.isNotEmpty {
                 ForEach(viewModel.data, id: \.review.reviewID) { reviewViewModel in
                     reviewRow(for: reviewViewModel,
                               isLastItem: reviewViewModel == viewModel.data.last)
                 }
-                .redacted(reason: viewModel.showLoadingAnimation ? [.placeholder] : [])
-                .shimmering(active: viewModel.showLoadingAnimation)
+            } else {
+                emptyView(message: emptyViewText(isFiltered: viewModel.currentFilter != .all))
             }
 
             Divider()
 
             viewAllReviewsButton
                 .padding(.horizontal, Layout.padding)
-                .redacted(reason: viewModel.showLoadingAnimation ? [.placeholder] : [])
-                .shimmering(active: viewModel.showLoadingAnimation)
         }
         .padding(.vertical, Layout.padding)
         .background(Color(.listForeground(modal: false)))
@@ -74,7 +80,7 @@ private extension ReviewsDashboardCard {
                     .padding(.leading, Layout.padding)
                     .padding(.vertical, Layout.hideIconVerticalPadding)
             }
-            .disabled(viewModel.showLoadingAnimation)
+            .disabled(viewModel.syncingData)
         }
     }
 
@@ -88,13 +94,13 @@ private extension ReviewsDashboardCard {
                 Text(viewModel.currentFilter.title)
                     .subheadlineStyle()
             }
-            .redacted(reason: viewModel.switchingStatus ? [.placeholder] : [])
-            .shimmering(active: viewModel.switchingStatus)
             Spacer()
 
             Menu {
                 ForEach(viewModel.filters, id: \.self) { filter in
                     Button {
+                        ServiceLocator.analytics.track(event: .DynamicDashboard.dashboardCardInteracted(type: .reviews))
+
                         Task {
                             await viewModel.filterReviews(by: filter)
                         }
@@ -106,11 +112,23 @@ private extension ReviewsDashboardCard {
                 Image(systemName: "line.3.horizontal.decrease")
                     .foregroundStyle(Color.secondary)
             }
+            .disabled(viewModel.syncingData)
         }
+    }
+
+    var loadingStateView: some View {
+        ForEach(ReviewsDashboardCardViewModel.placeholderData, id: \.review.reviewID) { reviewViewModel in
+            reviewRow(for: reviewViewModel,
+                      isLastItem: reviewViewModel == viewModel.data.last)
+        }
+        .redacted(reason: .placeholder)
+        .shimmering()
     }
 
     func reviewRow(for viewModel: ReviewViewModel, isLastItem: Bool) -> some View {
         Button {
+            ServiceLocator.analytics.track(event: .DynamicDashboard.dashboardCardInteracted(type: .reviews))
+
             onViewReviewDetail(viewModel)
         } label: {
             HStack(alignment: .firstTextBaseline, spacing: Layout.padding) {
@@ -198,6 +216,8 @@ private extension ReviewsDashboardCard {
 
     var viewAllReviewsButton: some View {
         Button {
+            ServiceLocator.analytics.track(event: .DynamicDashboard.dashboardCardInteracted(type: .reviews))
+
             onViewAllReviews()
         } label: {
             HStack {
@@ -207,7 +227,25 @@ private extension ReviewsDashboardCard {
                     .foregroundStyle(Color(.tertiaryLabel))
             }
         }
-        .disabled(viewModel.showLoadingAnimation)
+        .disabled(viewModel.syncingData)
+    }
+
+    func emptyView(message: String) -> some View {
+        VStack(alignment: .center, spacing: Layout.padding) {
+            Image(uiImage: .emptyReviewsImage)
+            Text(message)
+                .subheadlineStyle()
+        }
+        .padding(.all, Layout.padding)
+        .frame(maxWidth: .infinity)
+    }
+
+    func emptyViewText(isFiltered: Bool) -> String {
+        if isFiltered {
+            return String.localizedStringWithFormat(Localization.noFilteredReviewsText, viewModel.currentFilter.title)
+        } else {
+            return Localization.noReviewsText
+        }
     }
 }
 
@@ -238,6 +276,17 @@ private extension ReviewsDashboardCard {
             "reviewsDashboardCard.viewAll",
             value: "View all reviews",
             comment: "Button to navigate to Reviews list screen."
+        )
+        static let noReviewsText = NSLocalizedString(
+            "reviewsDashboardCard.noReviewsText",
+            value: "No reviews found.",
+            comment: "Message shown in the Reviews Dashboard Card if the site has no review"
+        )
+
+        static let noFilteredReviewsText = NSLocalizedString(
+            "reviewsDashboardCard.noFilteredReviewsText",
+            value: "No reviews matching %@ status. Try changing the filter.",
+            comment: "Message shown in the Reviews Dashboard Card if the list is filtered and there is no review. The %@ is a placeholder for the filter name."
         )
     }
 }

@@ -69,6 +69,19 @@ final class HubMenuViewModel: ObservableObject {
     private let generalAppSettings: GeneralAppSettingsStorage
     private let cardPresentPaymentsOnboarding: CardPresentPaymentsOnboardingUseCaseProtocol
     private let posEligibilityChecker: POSEligibilityCheckerProtocol
+    private let inboxEligibilityChecker: InboxEligibilityChecker
+
+    // TODO:
+    // Is this the right place to instantiate the product provider and use property injection?
+    private(set) lazy var posItemProvider: POSItemProvider = {
+        let storageManager = ServiceLocator.storageManager
+        let siteID = ServiceLocator.stores.sessionManager.defaultSite?.siteID ?? 0
+        let currencySettings = ServiceLocator.currencySettings
+
+        return POSProductProvider(storageManager: storageManager,
+                                  siteID: siteID,
+                                  currencySettings: currencySettings)
+    }()
 
     private(set) var productReviewFromNoteParcel: ProductReviewFromNoteParcel?
 
@@ -103,11 +116,14 @@ final class HubMenuViewModel: ObservableObject {
             navigationPath: navigationPathBinding)
     }()
 
+    private(set) var cardPresentPaymentService: CardPresentPaymentFacade?
+
     init(siteID: Int64,
          tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          stores: StoresManager = ServiceLocator.stores,
          generalAppSettings: GeneralAppSettingsStorage = ServiceLocator.generalAppSettings,
+         inboxEligibilityChecker: InboxEligibilityChecker = InboxEligibilityUseCase(),
          blazeEligibilityChecker: BlazeEligibilityCheckerProtocol = BlazeEligibilityChecker()) {
         self.siteID = siteID
         self.tapToPayBadgePromotionChecker = tapToPayBadgePromotionChecker
@@ -115,6 +131,7 @@ final class HubMenuViewModel: ObservableObject {
         self.featureFlagService = featureFlagService
         self.generalAppSettings = generalAppSettings
         self.switchStoreEnabled = stores.isAuthenticatedWithoutWPCom == false
+        self.inboxEligibilityChecker = inboxEligibilityChecker
         self.blazeEligibilityChecker = blazeEligibilityChecker
         self.cardPresentPaymentsOnboarding = CardPresentPaymentsOnboardingUseCase()
         self.posEligibilityChecker = POSEligibilityChecker(cardPresentPaymentsOnboarding: cardPresentPaymentsOnboarding,
@@ -124,10 +141,17 @@ final class HubMenuViewModel: ObservableObject {
         observeSiteForUIUpdates()
         observePlanName()
         tapToPayBadgePromotionChecker.$shouldShowTapToPayBadges.share().assign(to: &$shouldShowNewFeatureBadgeOnPayments)
+        createCardPresentPaymentService()
     }
 
     func viewDidAppear() {
         NotificationCenter.default.post(name: .hubMenuViewDidAppear, object: nil)
+    }
+
+    private func createCardPresentPaymentService() {
+        Task {
+            self.cardPresentPaymentService = await CardPresentPaymentService(siteID: siteID)
+        }
     }
 
     /// Resets the menu elements displayed on the menu.
@@ -179,8 +203,7 @@ final class HubMenuViewModel: ObservableObject {
             generalElements.append(InAppPurchases())
         }
 
-        let inboxUseCase = InboxEligibilityUseCase(stores: stores, featureFlagService: featureFlagService)
-        inboxUseCase.isEligibleForInbox(siteID: siteID) { [weak self] isInboxMenuShown in
+        inboxEligibilityChecker.isEligibleForInbox(siteID: siteID) { [weak self] isInboxMenuShown in
             guard let self = self else { return }
             if let index = self.generalElements.firstIndex(where: { item in
                 type(of: item).id == Reviews.id

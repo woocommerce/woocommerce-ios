@@ -44,7 +44,7 @@ final class CardPresentPaymentPreflightController: CardPresentPaymentPreflightCo
 
     /// Root View Controller
     /// Used for showing onboarding alerts
-    private let rootViewController: UIViewController
+    private let rootViewController: ViewControllerPresenting
 
     /// Onboarding presenter.
     /// Shows messages to help a merchant get correctly set up for card payments, prior to taking a payment.
@@ -77,9 +77,11 @@ final class CardPresentPaymentPreflightController: CardPresentPaymentPreflightCo
 
     init(siteID: Int64,
          configuration: CardPresentPaymentsConfiguration,
-         rootViewController: UIViewController,
+         rootViewController: ViewControllerPresenting,
          alertsPresenter: CardPresentPaymentAlertsPresenting,
          onboardingPresenter: CardPresentPaymentsOnboardingPresenting,
+         externalReaderConnectionController: CardReaderConnectionController? = nil,
+         tapToPayConnectionController: BuiltInCardReaderConnectionController? = nil,
          tapToPayReconnectionController: TapToPayReconnectionController = ServiceLocator.tapToPayReconnectionController,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics) {
@@ -97,7 +99,7 @@ final class CardPresentPaymentPreflightController: CardPresentPaymentPreflightCo
                                                                      connectionType: .userInitiated,
                                                                      stores: stores,
                                                                      analytics: analytics)
-        self.connectionController = CardReaderConnectionController(
+        self.connectionController = externalReaderConnectionController ?? CardReaderConnectionController(
             forSiteID: siteID,
             knownReaderProvider: CardReaderSettingsKnownReaderStorage(),
             alertsPresenter: alertsPresenter,
@@ -105,7 +107,7 @@ final class CardPresentPaymentPreflightController: CardPresentPaymentPreflightCo
             configuration: configuration,
             analyticsTracker: analyticsTracker)
 
-        self.builtInConnectionController = BuiltInCardReaderConnectionController(
+        self.builtInConnectionController = tapToPayConnectionController ?? BuiltInCardReaderConnectionController(
             forSiteID: siteID,
             alertsPresenter: alertsPresenter,
             alertsProvider: BuiltInReaderConnectionAlertsProvider(),

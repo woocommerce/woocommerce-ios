@@ -385,6 +385,13 @@ public extension UIColor {
         return UIColor(light: .withColorStudio(.pink, shade: .shade50),
                        dark: .withColorStudio(.pink, shade: .shade30))
     }
+
+    /// Popover background color.
+    ///
+    static var popoverBackground: UIColor {
+        return UIColor(light: .systemGray5.color(for: UITraitCollection(userInterfaceStyle: .dark)),
+                       dark: .wooCommercePurple(.shade70))
+    }
 }
 
 // MARK: - Borders.

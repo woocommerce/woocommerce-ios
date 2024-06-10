@@ -84,7 +84,7 @@ final class ProductFormViewModelTests: XCTestCase {
         // Arrange
         let product = Product.fake().copy(name: "Test", permalink: "https://example.com/product", statusKey: ProductStatus.published.rawValue)
         let sessionManager = SessionManager.makeForTesting()
-        sessionManager.defaultSite = Site.fake().copy(isPublic: true)
+        sessionManager.defaultSite = Site.fake().copy(visibility: .publicSite)
         let stores = MockStoresManager(sessionManager: sessionManager)
         let viewModel = createViewModel(product: product, formType: .edit, stores: stores)
 
@@ -111,7 +111,7 @@ final class ProductFormViewModelTests: XCTestCase {
         // Arrange
         let product = Product.fake().copy(name: "Test", permalink: "https://example.com/product", statusKey: ProductStatus.pending.rawValue)
         let sessionManager = SessionManager.makeForTesting()
-        sessionManager.defaultSite = Site.fake().copy(isPublic: true)
+        sessionManager.defaultSite = Site.fake().copy(visibility: .publicSite)
         let stores = MockStoresManager(sessionManager: sessionManager)
         let viewModel = createViewModel(product: product, formType: .edit, stores: stores)
 
@@ -138,7 +138,7 @@ final class ProductFormViewModelTests: XCTestCase {
         // Given
         let product = Product.fake().copy(name: "Test", permalink: "https://example.com/product", statusKey: ProductStatus.published.rawValue)
         let sessionManager = SessionManager.makeForTesting()
-        sessionManager.defaultSite = Site.fake().copy(isPublic: false)
+        sessionManager.defaultSite = Site.fake().copy(visibility: .privateSite)
         let stores = MockStoresManager(sessionManager: sessionManager)
         let viewModel = createViewModel(product: product, formType: .edit, stores: stores)
 
@@ -153,7 +153,7 @@ final class ProductFormViewModelTests: XCTestCase {
         // Given
         let product = Product.fake().copy(name: "Test", permalink: "", statusKey: ProductStatus.published.rawValue)
         let sessionManager = SessionManager.makeForTesting()
-        sessionManager.defaultSite = Site.fake().copy(isPublic: true)
+        sessionManager.defaultSite = Site.fake().copy(visibility: .publicSite)
         let stores = MockStoresManager(sessionManager: sessionManager)
         let viewModel = createViewModel(product: product, formType: .edit, stores: stores)
 
@@ -168,7 +168,7 @@ final class ProductFormViewModelTests: XCTestCase {
         // Given
         let product = Product.fake().copy(name: "Test", permalink: "https://example.com/product", statusKey: ProductStatus.published.rawValue)
         let sessionManager = SessionManager.makeForTesting()
-        sessionManager.defaultSite = Site.fake().copy(isPublic: true)
+        sessionManager.defaultSite = Site.fake().copy(visibility: .publicSite)
         let stores = MockStoresManager(sessionManager: sessionManager)
         let viewModel = createViewModel(product: product, formType: .edit, stores: stores)
 
@@ -445,7 +445,7 @@ final class ProductFormViewModelTests: XCTestCase {
 
     func test_action_buttons_for_existing_published_product_and_no_pending_changes() {
         // Given
-        sessionManager.defaultSite = Site.fake().copy(frameNonce: "abc123", isPublic: true)
+        sessionManager.defaultSite = Site.fake().copy(frameNonce: "abc123", visibility: .publicSite)
         let product = Product.fake().copy(productID: 123,
                                           permalink: "https://example.com/product",
                                           statusKey: ProductStatus.published.rawValue)
@@ -514,7 +514,7 @@ final class ProductFormViewModelTests: XCTestCase {
 
     func test_action_buttons_for_any_product_in_read_only_mode() {
         // Given
-        sessionManager.defaultSite = Site.fake().copy(frameNonce: "abc123", isPublic: true)
+        sessionManager.defaultSite = Site.fake().copy(frameNonce: "abc123", visibility: .publicSite)
         let product = Product.fake().copy(productID: 123,
                                           permalink: "https://example.com/product",
                                           statusKey: ProductStatus.published.rawValue)

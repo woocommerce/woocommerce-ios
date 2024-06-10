@@ -39,6 +39,8 @@ struct InAppFeedbackCardVisibilityUseCase {
             return try shouldGeneralFeedbackBeVisible(currentDate: currentDate)
         case .shippingLabelsRelease3, .couponManagement:
             return settings.feedbackStatus(of: feedbackType) == .pending
+        case .orderFormShippingLines:
+            return try shouldFeedbackPopoverBeVisible(currentDate: currentDate)
         }
     }
 
@@ -62,6 +64,22 @@ struct InAppFeedbackCardVisibilityUseCase {
         }
 
         return true
+    }
+
+    /// Returns whether a feedback popover should be displayed.
+    ///
+    private func shouldFeedbackPopoverBeVisible(currentDate: Date) throws -> Bool {
+        switch settings.feedbackStatus(of: feedbackType) {
+        case .pending:
+            return true
+        case .dismissed:
+            return false
+        case .given(let lastFeedbackDate):
+            if try numberOfDays(from: lastFeedbackDate, to: currentDate) < Constants.feedbackPopoverFrequencyInDays {
+                return false
+            }
+            return true
+        }
     }
 
     /// Returns the total number of days between `from` and `to`.
@@ -121,5 +139,8 @@ private extension InAppFeedbackCardVisibilityUseCase {
         /// The minimum number of days after the user's last feedback before we should ask
         /// for another feedback.
         static let feedbackFrequencyInDays = 6 * 30
+        /// The minimum number of days after the user's last interaction with a feature
+        /// feedback popover before we should ask for another feedback.
+        static let feedbackPopoverFrequencyInDays = 7
     }
 }

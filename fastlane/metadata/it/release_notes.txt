@@ -1,3 +1,1 @@
-Siamo felici di presentare gli ultimi aggiornamenti.
-Il nostro ultimo aggiornamento apporta miglioramenti per aumentare stabilità e prestazioni.
-Ci impegniamo a migliorare continuamente la nostra app per offrire un servizio migliore. Grazie per aver scelto WooCommerce.
+Resta al passo con il nostro ultimo aggiornamento di WooCommerce. Esplora la nostra nuova app Watch per ottenere subito dati del negozio e aggiornamenti sugli ordini al primo sguardo. Abbiamo risolto il problema relativo ai metodi di spedizione; inoltre, ora puoi avere più righe di spedizione sugli ordini, in modo da gestire in tutta facilità anche le esigenze di spedizione più complesse.

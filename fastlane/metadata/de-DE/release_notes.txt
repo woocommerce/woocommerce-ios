@@ -1,3 +1,1 @@
-Wir freuen uns, die neuesten Updates veröffentlichen zu können!
-Unser neuestes Update beinhaltet grundlegende Verbesserungen, die sowohl die Stabilität als auch die Performance steigern.
-Unser Ziel ist es, unsere App und dein Erlebnis stets weiter zu verbessern. Danke, dass du dich für WooCommerce entschieden hast!
+Sei immer einen Schritt voraus – mit unserem neuesten WooCommerce-Update! Erkunde unsere neue Watch-App und profitiere von sofort verfügbaren Daten zu deinem Shop und Updates zu Bestellungen auf einen Blick. Wir haben das Problem mit den Versandmethoden behoben. Außerdem kannst du Bestellungen jetzt mehrere Versandzeilen hinzufügen: Auf diese Weise verwaltest du komplexe Versandanforderungen für deine Bestellungen nahtlos.

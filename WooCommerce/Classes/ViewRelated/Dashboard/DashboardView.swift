@@ -101,10 +101,23 @@ struct DashboardView: View {
                 }
             }
             ToolbarItem(placement: .topBarTrailing) {
-                Button(Localization.edit) {
-                    ServiceLocator.analytics.track(event: .DynamicDashboard.editLayoutButtonTapped())
-                    viewModel.showingCustomization = true
-                }
+                Button(action: {
+                    ServiceLocator.analytics.track(event: .DynamicDashboard.editLayoutButtonTapped(isNewCardAvailable: viewModel.showNewCardsNotice))
+                    viewModel.showCustomizationScreen()
+                }, label: {
+                    Text(Localization.edit)
+                        .overlay(alignment: .topTrailing) {
+                            if viewModel.showNewCardsNotice &&
+                                !viewModel.isReloadingAllData {
+                                Circle()
+                                    .fill(Color(.accent))
+                                    .frame(width: Layout.dotBadgeSize)
+                                    .padding(Layout.dotBadgePadding)
+                                    .offset(Layout.dotBadgeOffset)
+                            }
+                        }
+                })
+                .disabled(viewModel.isReloadingAllData)
             }
         }
         .toolbarBackground(Color.clear, for: .navigationBar)
@@ -119,10 +132,7 @@ struct DashboardView: View {
             connectivityStatus = status
         }
         .refreshable {
-            Task { @MainActor in
-                ServiceLocator.analytics.track(.dashboardPulledToRefresh)
-                await viewModel.reloadAllData()
-            }
+            viewModel.onPullToRefresh()
         }
         .safeAreaInset(edge: .bottom) {
             jetpackBenefitBanner
@@ -141,7 +151,10 @@ struct DashboardView: View {
                 viewModel.maybeSyncAnnouncementsAfterWebViewDismissed()
             }
         }
-        .sheet(isPresented: $viewModel.showingCustomization) {
+        .sheet(isPresented: $viewModel.showingCustomization,
+               onDismiss: {
+            viewModel.handleCustomizationDismissal()
+        }) {
             DashboardCustomizationView(viewModel: DashboardCustomizationViewModel(
                 allCards: viewModel.availableCards,
                 inactiveCards: viewModel.unavailableCards,
@@ -152,7 +165,9 @@ struct DashboardView: View {
             Survey(source: .inAppFeedback)
         }
         .onAppear {
-            viewModel.onViewAppear()
+            Task {
+                await viewModel.onViewAppear()
+            }
         }
     }
 }
@@ -229,7 +244,11 @@ private extension DashboardView {
                 }
             }
 
-            if !viewModel.hasOrders {
+            if viewModel.showNewCardsNotice && !viewModel.isReloadingAllData {
+                newCardsNoticeCard
+            }
+
+            if !viewModel.hasOrders && !viewModel.isReloadingAllData {
                 shareStoreCard
             }
         }
@@ -262,13 +281,41 @@ private extension DashboardView {
                 }
                 .buttonStyle(PrimaryButtonStyle())
                 .padding(.horizontal, Layout.elementPadding)
-                .padding(.vertical, Layout.elementPadding)
+                .padding(.top, Layout.elementPadding)
             }
         }
+        .padding(.bottom, Layout.elementPadding)
         .overlay(
             RoundedRectangle(cornerRadius: Layout.cornerRadius)
                 .stroke(Color(.border), lineWidth: 1)
         )
+        .padding(.horizontal, Layout.padding)
+    }
+
+    var newCardsNoticeCard: some View {
+        VStack(spacing: Layout.padding) {
+            Text(Localization.NewCardsNoticeCard.title)
+                .headlineStyle()
+                .multilineTextAlignment(.center)
+                .padding(.horizontal, Layout.elementPadding)
+                .padding(.top, Layout.padding)
+
+            Text(Localization.NewCardsNoticeCard.subtitle)
+                .bodyStyle()
+                .multilineTextAlignment(.center)
+                .padding(.horizontal, Layout.elementPadding)
+
+            Button(Localization.NewCardsNoticeCard.addSectionsButtonText) {
+                ServiceLocator.analytics.track(event: .DynamicDashboard.dashboardCardAddNewSectionsTapped())
+
+                viewModel.showCustomizationScreen()
+            }
+            .buttonStyle(PrimaryButtonStyle())
+            .padding(.horizontal, Layout.elementPadding)
+            .padding(.bottom, Layout.elementPadding)
+        }
+        .background(Color(.listForeground(modal: false)))
+        .clipShape(RoundedRectangle(cornerSize: Layout.cornerSize))
         .padding(.horizontal, Layout.padding)
     }
 
@@ -329,6 +376,11 @@ private extension DashboardView {
         static let imagePadding: CGFloat = 40
         static let textPadding: CGFloat = 8
         static let cornerRadius: CGFloat = 8
+        static let cornerSize = CGSize(width: 8.0, height: 8.0)
+        static let dotBadgePadding = EdgeInsets(top: 6, leading: 0, bottom: 0, trailing: 2)
+        static let dotBadgeSize: CGFloat = 6
+        static let dotBadgeOffset = CGSize(width: 7, height: -7)
+
     }
     enum Localization {
         static let title = NSLocalizedString(
@@ -369,6 +421,26 @@ private extension DashboardView {
                 "dashboardView.shareStoreCard.shareButtonLabel",
                 value: "Share Your Store",
                 comment: "Label of the button to share the store"
+            )
+        }
+
+        enum NewCardsNoticeCard {
+            static let title = NSLocalizedString(
+                "dashboardView.newCardsNoticeCard.title",
+                value: "Looking for more insights?",
+                comment: "Title of the New Cards Notice card"
+            )
+
+            static let subtitle = NSLocalizedString(
+                "dashboardView.newCardsNoticeCard.subtitle",
+                value: "Add new sections to customize your store management experience",
+                comment: "Subtitle of the New Cards Notice card"
+            )
+
+            static let addSectionsButtonText = NSLocalizedString(
+                "dashboardView.newCardsNoticeCard.addSectionsButtonText",
+                value: "Add New Sections",
+                comment: "Label of the button to add sections"
             )
         }
     }

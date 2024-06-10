@@ -63,6 +63,8 @@ final class CardPresentPaymentPreflightController: CardPresentPaymentPreflightCo
     ///
     private var builtInConnectionController: BuiltInCardReaderConnectionController
 
+    private var tapToPayAlertProvider: CardReaderConnectionAlertsProviding
+
     private var readerConnectionSubject = CurrentValueSubject<CardReaderPreflightResult?, Never>(nil)
 
     var readerConnection: AnyPublisher<CardReaderPreflightResult?, Never> {
@@ -82,6 +84,7 @@ final class CardPresentPaymentPreflightController: CardPresentPaymentPreflightCo
          onboardingPresenter: CardPresentPaymentsOnboardingPresenting,
          externalReaderConnectionController: CardReaderConnectionController,
          tapToPayConnectionController: BuiltInCardReaderConnectionController,
+         tapToPayAlertProvider: CardReaderConnectionAlertsProviding,
          tapToPayReconnectionController: TapToPayReconnectionController = ServiceLocator.tapToPayReconnectionController,
          analyticsTracker: CardReaderConnectionAnalyticsTracker,
          stores: StoresManager = ServiceLocator.stores,
@@ -96,6 +99,7 @@ final class CardPresentPaymentPreflightController: CardPresentPaymentPreflightCo
         self.analytics = analytics
         self.connectedReader = nil
         self.analyticsTracker = analyticsTracker
+        self.tapToPayAlertProvider = tapToPayAlertProvider
         self.connectionController = externalReaderConnectionController
         self.builtInConnectionController = tapToPayConnectionController
 
@@ -210,31 +214,28 @@ final class CardPresentPaymentPreflightController: CardPresentPaymentPreflightCo
     private func promptForReaderTypeSelection(paymentGatewayAccount: PaymentGatewayAccount) {
         analytics.track(event: .InPersonPayments.cardReaderSelectTypeShown(forGatewayID: paymentGatewayAccount.gatewayID,
                                                                            countryCode: configuration.countryCode))
-        alertsPresenter.present(viewModel: CardPresentModalSelectSearchType(
-            tapOnIPhoneAction: { [weak self] in
-                guard let self = self else { return }
-                self.analytics.track(event: .InPersonPayments.cardReaderSelectTypeBuiltInTapped(
-                    forGatewayID: paymentGatewayAccount.gatewayID,
-                    countryCode: self.configuration.countryCode))
-                self.builtInConnectionController.searchAndConnect(onCompletion: { [weak self] result in
-                    self?.handleConnectionResult(result, paymentGatewayAccount: paymentGatewayAccount)
-                })
-            },
-            bluetoothAction: { [weak self] in
-                guard let self = self else { return }
-                self.analytics.track(event: .InPersonPayments.cardReaderSelectTypeBluetoothTapped(
-                    forGatewayID: paymentGatewayAccount.gatewayID,
-                    countryCode: self.configuration.countryCode))
-                self.connectionController.searchAndConnect(onCompletion: { [weak self] result in
-                    self?.handleConnectionResult(result, paymentGatewayAccount: paymentGatewayAccount)
-                })
-            },
-            cancelAction: { [weak self] in
-                guard let self = self else { return }
-                self.alertsPresenter.dismiss()
-                self.handleConnectionResult(.success(.canceled(.selectReaderType)),
-                                            paymentGatewayAccount: paymentGatewayAccount)
-            }))
+        alertsPresenter.present(viewModel: tapToPayAlertProvider.selectSearchType(tapToPay: {[weak self] in
+            guard let self = self else { return }
+            self.analytics.track(event: .InPersonPayments.cardReaderSelectTypeBuiltInTapped(
+                forGatewayID: paymentGatewayAccount.gatewayID,
+                countryCode: self.configuration.countryCode))
+            self.builtInConnectionController.searchAndConnect(onCompletion: { [weak self] result in
+                self?.handleConnectionResult(result, paymentGatewayAccount: paymentGatewayAccount)
+            })
+        }, bluetooth: { [weak self] in
+            guard let self = self else { return }
+            self.analytics.track(event: .InPersonPayments.cardReaderSelectTypeBluetoothTapped(
+                forGatewayID: paymentGatewayAccount.gatewayID,
+                countryCode: self.configuration.countryCode))
+            self.connectionController.searchAndConnect(onCompletion: { [weak self] result in
+                self?.handleConnectionResult(result, paymentGatewayAccount: paymentGatewayAccount)
+            })
+        }, cancel: { [weak self] in
+            guard let self = self else { return }
+            self.alertsPresenter.dismiss()
+            self.handleConnectionResult(.success(.canceled(.selectReaderType)),
+                                        paymentGatewayAccount: paymentGatewayAccount)
+        }))
     }
 
     @MainActor

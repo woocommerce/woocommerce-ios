@@ -220,10 +220,11 @@ final class PaymentMethodsViewModel: ObservableObject {
             alertsProvider: BluetoothReaderConnectionAlertsProvider(),
             configuration: configuration,
             analyticsTracker: analyticsTracker)
+        let tapToPayAlertsProvider = BuiltInReaderConnectionAlertsProvider()
         let tapToPayConnectionController = BuiltInCardReaderConnectionController(
             forSiteID: siteID,
             alertsPresenter: alertsPresenter,
-            alertsProvider: BuiltInReaderConnectionAlertsProvider(),
+            alertsProvider: tapToPayAlertsProvider,
             configuration: configuration,
             analyticsTracker: analyticsTracker)
 
@@ -246,6 +247,7 @@ final class PaymentMethodsViewModel: ObservableObject {
                                                                        onboardingPresenter: self.cardPresentPaymentsOnboardingPresenter,
                                                                        externalReaderConnectionController: externalReaderConnectionController,
                                                                        tapToPayConnectionController: tapToPayConnectionController,
+                                                                       tapToPayAlertProvider: tapToPayAlertsProvider,
                                                                        analyticsTracker: analyticsTracker))
 
         collectPaymentsUseCase?.collectPayment(

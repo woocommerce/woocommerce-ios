@@ -210,7 +210,9 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     /// Label showing product details. Can include stock status or attributes, price, and variations (if any).
     ///
     var productDetailsLabel: String {
-        if productSubscriptionDetails != nil {
+        if let unsupportedReason {
+            unsupportedReason
+        } else if productSubscriptionDetails != nil {
             [stockOrAttributesLabel, skuLabel, variationsLabel]
                 .compactMap({ $0 })
                 .filter { $0.isNotEmpty }
@@ -225,6 +227,10 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     /// Label showing secondary product details. Can include product type (if the row is configurable), and SKU (if available).
     ///
     var secondaryProductDetailsLabel: String {
+        guard unsupportedReason == nil else {
+            return ""
+        }
+
         var labels = [productTypeLabel]
         // Only add the SKU label to the secondary product details when there are no
         // product subscription details
@@ -252,7 +258,10 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     /// Custom accessibility label for product.
     ///
     var productAccessibilityLabel: String {
-        [name, stockOrAttributesLabel, priceAndDiscountsLabel, variationsLabel, skuLabel]
+        if let unsupportedReason {
+            return unsupportedReason
+        }
+        return [name, stockOrAttributesLabel, priceAndDiscountsLabel, variationsLabel, skuLabel]
             .compactMap({ $0 })
             .joined(separator: ". ")
     }
@@ -260,6 +269,9 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     /// Quantity of product in the order. The source of truth is from the the quantity stepper view model `stepperViewModel`.
     ///
     @Published var quantity: Decimal
+
+    /// Text explaining why the product is not supported for order creation if that's the case.
+    private let unsupportedReason: String?
 
     /// Closure to configure a product if it is configurable.
     let configure: (() -> Void)?
@@ -294,6 +306,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
          selectedState: ProductRow.SelectedState = .notSelected,
          pricedIndividually: Bool = true,
          isConfigurable: Bool,
+         unsupportedReason: String? = nil,
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
          analytics: Analytics = ServiceLocator.analytics,
          configure: (() -> Void)? = nil) {
@@ -317,6 +330,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         self.numberOfVariations = numberOfVariations
         self.variationDisplayMode = variationDisplayMode
         self.productSubscriptionDetails = productSubscriptionDetails
+        self.unsupportedReason = unsupportedReason
         self.configure = configure
     }
 
@@ -389,6 +403,15 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
             productSubscriptionDetails = nil
         }
 
+        /// Bookable products are not supported for order creation yet.
+        let unsupportedReason: String? = {
+            guard product.productType == .booking else {
+                return nil
+            }
+            return Localization.bookableProductUnsupportedReason
+        }()
+        let updatedSelectedState: ProductRow.SelectedState = product.productType == .booking ? .unsupported : selectedState
+
         self.init(id: id,
                   productOrVariationID: product.productID,
                   name: product.name,
@@ -403,9 +426,10 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                   imageURL: product.imageURL,
                   numberOfVariations: product.variations.count,
                   productSubscriptionDetails: productSubscriptionDetails,
-                  selectedState: selectedState,
+                  selectedState: updatedSelectedState,
                   pricedIndividually: pricedIndividually,
                   isConfigurable: isConfigurable,
+                  unsupportedReason: unsupportedReason,
                   currencyFormatter: currencyFormatter,
                   analytics: analytics,
                   configure: configure)
@@ -539,5 +563,11 @@ private extension ProductRowViewModel {
                 comment: "Description of the subscription conditions for a subscription product, with signup fees but no trial." +
                 "Reads as: '$25.00 signup'.")
         }
+
+        static let bookableProductUnsupportedReason = NSLocalizedString(
+            "productRowViewModel.bookableProductUnsupportedReason",
+            value: "Bookable products are not supported for order creation",
+            comment: "Message explaining unsupported bookable products for order creation"
+        )
     }
 }

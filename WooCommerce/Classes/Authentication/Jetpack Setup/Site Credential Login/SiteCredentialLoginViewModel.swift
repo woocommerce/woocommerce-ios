@@ -4,6 +4,7 @@ import WordPressAuthenticator
 import enum Alamofire.AFError
 import struct Networking.CookieNonceAuthenticatorConfiguration
 import class Networking.WordPressOrgNetwork
+import protocol WooFoundation.Analytics
 
 /// View model for `SiteCredentialLoginView`.
 ///

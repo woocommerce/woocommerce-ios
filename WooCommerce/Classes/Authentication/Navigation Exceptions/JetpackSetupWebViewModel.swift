@@ -1,5 +1,6 @@
 import Foundation
 import WebKit
+import protocol WooFoundation.Analytics
 
 /// View model used for the web view controller to install Jetpack the plugin during the login flow.
 ///

@@ -1,15 +1,9 @@
 import XCTest
+import Fakes
+import Yosemite
 import enum Networking.DotcomError
-import enum Yosemite.StatsActionV4
-import enum Yosemite.ProductAction
-import enum Yosemite.OrderAction
-import enum Yosemite.AppSettingsAction
-import enum Yosemite.JustInTimeMessageAction
-import struct Yosemite.JustInTimeMessage
-import struct Yosemite.StoreOnboardingTask
-import enum Yosemite.StoreOnboardingTasksAction
-import enum Yosemite.ProductStatus
-import struct Yosemite.Site
+import protocol WooFoundation.Analytics
+import protocol Storage.StorageType
 @testable import WooCommerce
 
 final class DashboardViewModelTests: XCTestCase {
@@ -18,11 +12,25 @@ final class DashboardViewModelTests: XCTestCase {
     private var analytics: Analytics!
     private var analyticsProvider: MockAnalyticsProvider!
     private var stores: MockStoresManager!
+    private var userDefaults: UserDefaults!
 
-    override func setUp() {
+    private let blazeEligibilityChecker = MockBlazeEligibilityChecker(isSiteEligible: true)
+    private let inboxEligibilityChecker = MockInboxEligibilityChecker()
+
+    /// Mock Storage: InMemory
+    private var storageManager: MockStorageManager!
+
+    /// View storage for tests
+    private var storage: StorageType {
+        storageManager.viewStorage
+    }
+
+    override func setUpWithError() throws {
         analyticsProvider = MockAnalyticsProvider()
         analytics = WooAnalytics(analyticsProvider: analyticsProvider)
         stores = MockStoresManager(sessionManager: .makeForTesting())
+        userDefaults = try XCTUnwrap(UserDefaults(suiteName: "DashboardViewModelTests"))
+        storageManager = MockStorageManager()
     }
 
     func test_default_statsVersion_is_v4() {
@@ -33,132 +41,40 @@ final class DashboardViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.statsVersion, .v4)
     }
 
-    func test_statsVersion_changes_from_v4_to_v3_when_store_stats_sync_returns_noRestRoute_error() {
-        // Given
-        stores.whenReceivingAction(ofType: StatsActionV4.self) { action in
-            if case let .retrieveStats(_, _, _, _, _, _, _, completion) = action {
-                completion(.failure(DotcomError.noRestRoute))
-            }
-        }
-        let viewModel = DashboardViewModel(siteID: 0, stores: stores)
-        XCTAssertEqual(viewModel.statsVersion, .v4)
-
-        // When
-        viewModel.syncStats(for: sampleSiteID, siteTimezone: .current, timeRange: .thisMonth, latestDateToInclude: .init(), forceRefresh: false)
-
-        // Then
-        XCTAssertEqual(viewModel.statsVersion, .v3)
-    }
-
-    func test_statsVersion_remains_v4_when_non_store_stats_sync_returns_noRestRoute_error() {
-        // Given
-        stores.whenReceivingAction(ofType: StatsActionV4.self) { action in
-            switch action {
-            case let .retrieveStats(_, _, _, _, _, _, _, completion):
-                completion(.failure(DotcomError.empty))
-            case let .retrieveSiteVisitStats(_, _, _, _, completion):
-                completion(.failure(DotcomError.noRestRoute))
-            case let .retrieveTopEarnerStats(_, _, _, _, _, _, _, _, completion):
-                completion(.failure(DotcomError.noRestRoute))
-            case let .retrieveSiteSummaryStats(_, _, _, _, _, _, completion):
-                completion(.failure(DotcomError.noRestRoute))
-            default:
-                XCTFail("Received unsupported action: \(action)")
-            }
-        }
-        let viewModel = DashboardViewModel(siteID: 0, stores: stores)
-        XCTAssertEqual(viewModel.statsVersion, .v4)
-
-        // When
-        viewModel.syncStats(for: sampleSiteID, siteTimezone: .current, timeRange: .thisMonth, latestDateToInclude: .init(), forceRefresh: false)
-        viewModel.syncSiteVisitStats(for: sampleSiteID, siteTimezone: .current, timeRange: .thisMonth, latestDateToInclude: .init())
-        viewModel.syncTopEarnersStats(for: sampleSiteID, siteTimezone: .current, timeRange: .thisMonth, latestDateToInclude: .init(), forceRefresh: false)
-        viewModel.syncSiteSummaryStats(for: sampleSiteID, siteTimezone: .current, timeRange: .thisMonth, latestDateToInclude: .init())
-
-        // Then
-        XCTAssertEqual(viewModel.statsVersion, .v4)
-    }
-
-    func test_statsVersion_changes_from_v3_to_v4_when_store_stats_sync_returns_success() {
-        // Given
-        // `DotcomError.noRestRoute` error indicates the stats are unavailable.
-        var storeStatsResult: Result<Void, Error> = .failure(DotcomError.noRestRoute)
-        stores.whenReceivingAction(ofType: StatsActionV4.self) { action in
-            if case let .retrieveStats(_, _, _, _, _, _, _, completion) = action {
-                completion(storeStatsResult)
-            }
-        }
-        let viewModel = DashboardViewModel(siteID: 0, stores: stores)
-        viewModel.syncStats(for: sampleSiteID, siteTimezone: .current, timeRange: .thisMonth, latestDateToInclude: .init(), forceRefresh: false)
-        XCTAssertEqual(viewModel.statsVersion, .v3)
-
-        // When
-        storeStatsResult = .success(())
-        viewModel.syncStats(for: sampleSiteID, siteTimezone: .current, timeRange: .thisMonth, latestDateToInclude: .init(), forceRefresh: false)
-
-        // Then
-        XCTAssertEqual(viewModel.statsVersion, .v4)
-    }
-
+    @MainActor
     func test_view_model_syncs_just_in_time_messages() async {
         // Given
         let message = Yosemite.JustInTimeMessage.fake().copy(title: "JITM Message")
-        prepareStoresToShowJustInTimeMessage(.success([message]))
-        let viewModel = DashboardViewModel(siteID: 0, stores: stores)
+        mockReloadingData(jitmResult: .success([message]))
+        let viewModel = DashboardViewModel(siteID: 0,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           blazeEligibilityChecker: blazeEligibilityChecker)
 
         // When
-        await viewModel.syncAnnouncements(for: sampleSiteID)
+        await viewModel.reloadAllData()
 
         // Then
         XCTAssertEqual( viewModel.announcementViewModel?.title, "JITM Message")
     }
 
-    func prepareStoresToShowJustInTimeMessage(_ response: Result<[Yosemite.JustInTimeMessage], Error>) {
-        stores.whenReceivingAction(ofType: ProductAction.self) { action in
-            switch action {
-            case let .checkIfStoreHasProducts(_, _, completion):
-                completion(.success(true))
-            default:
-                XCTFail("Received unsupported action: \(action)")
-            }
-        }
-        stores.whenReceivingAction(ofType: JustInTimeMessageAction.self) { action in
-            switch action {
-            case let .loadMessage(_, _, _, completion):
-                completion(response)
-            default:
-                XCTFail("Received unsupported action: \(action)")
-            }
-        }
-    }
-
+    @MainActor
     func test_no_announcement_to_display_when_no_announcements_are_synced() async {
         // Given
-        stores.whenReceivingAction(ofType: ProductAction.self) { action in
-            switch action {
-            case let .checkIfStoreHasProducts(_, _, completion):
-                completion(.success(true))
-            default:
-                XCTFail("Received unsupported action: \(action)")
-            }
-        }
-        stores.whenReceivingAction(ofType: JustInTimeMessageAction.self) { action in
-            switch action {
-            case let .loadMessage(_, _, _, completion):
-                completion(.success([]))
-            default:
-                XCTFail("Received unsupported action: \(action)")
-            }
-        }
-        let viewModel = DashboardViewModel(siteID: 0, stores: stores)
+        mockReloadingData(jitmResult: .success([]))
+        let viewModel = DashboardViewModel(siteID: 0,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           blazeEligibilityChecker: blazeEligibilityChecker)
 
         // When
-        await viewModel.syncAnnouncements(for: sampleSiteID)
+        await viewModel.reloadAllData()
 
         // Then
         XCTAssertNil(viewModel.announcementViewModel)
     }
 
+    @MainActor
     func test_fetch_success_analytics_logged_when_just_in_time_messages_retrieved() async {
         // Given
         let message = Yosemite.JustInTimeMessage.fake().copy(messageID: "test-message-id",
@@ -166,11 +82,15 @@ final class DashboardViewModelTests: XCTestCase {
 
         let secondMessage = Yosemite.JustInTimeMessage.fake().copy(messageID: "test-message-id-2",
                                                                    featureClass: "test-feature-class-2")
-        prepareStoresToShowJustInTimeMessage(.success([message, secondMessage]))
-        let viewModel = DashboardViewModel(siteID: 0, stores: stores, analytics: analytics)
+        mockReloadingData(jitmResult: .success([message, secondMessage]))
+        let viewModel = DashboardViewModel(siteID: 0,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           analytics: analytics,
+                                           blazeEligibilityChecker: blazeEligibilityChecker)
 
         // When
-        await viewModel.syncAnnouncements(for: sampleSiteID)
+        await viewModel.reloadAllData()
 
         // Then
         guard let eventIndex = analyticsProvider.receivedEvents.firstIndex(of: "jitm_fetch_success"),
@@ -184,29 +104,39 @@ final class DashboardViewModelTests: XCTestCase {
         assertEqual(2, properties["count"] as? Int64)
     }
 
+    @MainActor
     func test_when_two_messages_are_received_only_the_first_is_displayed() async {
         // Given
         let message = Yosemite.JustInTimeMessage.fake().copy(title: "Higher priority JITM")
 
         let secondMessage = Yosemite.JustInTimeMessage.fake().copy(title: "Lower priority JITM")
-        prepareStoresToShowJustInTimeMessage(.success([message, secondMessage]))
-        let viewModel = DashboardViewModel(siteID: 0, stores: stores, analytics: analytics)
+        mockReloadingData(jitmResult: .success([message, secondMessage]))
+        let viewModel = DashboardViewModel(siteID: 0,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           analytics: analytics,
+                                           blazeEligibilityChecker: blazeEligibilityChecker)
 
         // When
-        await viewModel.syncAnnouncements(for: sampleSiteID)
+        await viewModel.reloadAllData()
 
         // Then
         XCTAssertEqual(viewModel.announcementViewModel?.title, "Higher priority JITM")
     }
 
+    @MainActor
     func test_fetch_failure_analytics_logged_when_just_in_time_message_errors() async {
         // Given
         let error = DotcomError.noRestRoute
-        prepareStoresToShowJustInTimeMessage(.failure(error))
-        let viewModel = DashboardViewModel(siteID: 0, stores: stores, analytics: analytics)
+        mockReloadingData(jitmResult: .failure(error))
+        let viewModel = DashboardViewModel(siteID: 0,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           analytics: analytics,
+                                           blazeEligibilityChecker: blazeEligibilityChecker)
 
         // When
-        await viewModel.syncAnnouncements(for: sampleSiteID)
+        await viewModel.reloadAllData()
 
         // Then
         guard let eventIndex = analyticsProvider.receivedEvents.firstIndex(of: "jitm_fetch_failure"),
@@ -220,18 +150,23 @@ final class DashboardViewModelTests: XCTestCase {
         assertEqual("Dotcom Invalid REST Route", properties["error_description"] as? String)
     }
 
+    @MainActor
     func test_when_no_messages_are_received_existing_messages_are_removed() async {
         // Given
-        prepareStoresToShowJustInTimeMessage(.success([]))
+        mockReloadingData(jitmResult: .success([]))
 
-        let viewModel = DashboardViewModel(siteID: 0, stores: stores, analytics: analytics)
+        let viewModel = DashboardViewModel(siteID: 0,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           analytics: analytics,
+                                           blazeEligibilityChecker: blazeEligibilityChecker)
         viewModel.announcementViewModel = JustInTimeMessageViewModel(
             justInTimeMessage: .fake(),
             screenName: "my_store",
             siteID: sampleSiteID)
 
         // When
-        await viewModel.syncAnnouncements(for: sampleSiteID)
+        await viewModel.reloadAllData()
 
         // Then
         XCTAssertNil(viewModel.announcementViewModel)
@@ -243,24 +178,21 @@ final class DashboardViewModelTests: XCTestCase {
     func test_it_does_not_trigger_AppSettingsAction_for_local_announcement_when_jitm_is_available() async {
         // Given
         let message = Yosemite.JustInTimeMessage.fake().copy(template: .modal)
-        prepareStoresToShowJustInTimeMessage(.success([message]))
+        mockReloadingData(jitmResult: .success([message]))
+
         // Sets the prerequisites for the product description AI local announcement.
         stores.updateDefaultStore(storeID: sampleSiteID)
         stores.updateDefaultStore(.fake().copy(siteID: sampleSiteID, isWordPressComStore: true))
         let featureFlagService = MockFeatureFlagService(isProductDescriptionAIFromStoreOnboardingEnabled: true)
 
-        let viewModel = DashboardViewModel(siteID: 0, stores: stores, featureFlags: featureFlagService)
-        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
-            switch action {
-            case .getLocalAnnouncementVisibility:
-                XCTFail("Local announcement should not be loaded when JITM is available.")
-            default:
-                XCTFail("Received unsupported action: \(action)")
-            }
-        }
+        let viewModel = DashboardViewModel(siteID: 0,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           featureFlags: featureFlagService,
+                                           blazeEligibilityChecker: blazeEligibilityChecker)
 
         // When
-        await viewModel.syncAnnouncements(for: sampleSiteID)
+        await viewModel.reloadAllData()
 
         // Then
         XCTAssertNotNil(viewModel.modalJustInTimeMessageViewModel)
@@ -271,201 +203,30 @@ final class DashboardViewModelTests: XCTestCase {
     func test_it_sets_localAnnouncementViewModel_when_jitm_is_nil_and_local_announcement_is_available() async {
         // Given
         // No JITM.
-        prepareStoresToShowJustInTimeMessage(.success([]))
+        mockReloadingData(jitmResult: .success([]))
         // Sets the prerequisites for the product description AI local announcement.
         stores.updateDefaultStore(storeID: sampleSiteID)
         stores.updateDefaultStore(.fake().copy(siteID: sampleSiteID, isWordPressComStore: true))
         let featureFlagService = MockFeatureFlagService(isProductDescriptionAIFromStoreOnboardingEnabled: true)
 
-        let viewModel = DashboardViewModel(siteID: 0, stores: stores, featureFlags: featureFlagService)
-        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
-            switch action {
-            case let .getLocalAnnouncementVisibility(_, completion):
-                completion(true)
-            default:
-                XCTFail("Received unsupported action: \(action)")
-            }
-        }
+        let viewModel = DashboardViewModel(siteID: 0,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           featureFlags: featureFlagService,
+                                           blazeEligibilityChecker: blazeEligibilityChecker)
 
         // When
-        await viewModel.syncAnnouncements(for: sampleSiteID)
+        await viewModel.reloadAllData()
 
         // Then
         XCTAssertNil(viewModel.modalJustInTimeMessageViewModel)
         XCTAssertNotNil(viewModel.localAnnouncementViewModel)
     }
 
-    // MARK: Store onboarding
-
-    func test_showOnboarding_is_false_when_feature_flag_is_turned_off_and_completedAllStoreOnboardingTasks_is_false() async throws {
-        // Given
-        let uuid = UUID().uuidString
-        let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
-        defaults[.completedAllStoreOnboardingTasks] = false
-        let viewModel = DashboardViewModel(siteID: 0,
-                                           stores: stores,
-                                           featureFlags: MockFeatureFlagService(isDashboardStoreOnboardingEnabled: false),
-                                           userDefaults: defaults)
-        // Then
-        XCTAssertFalse(viewModel.showOnboarding)
-    }
-
-    func test_showOnboarding_is_false_when_feature_flag_is_turned_off_and_completedAllStoreOnboardingTasks_is_true() async throws {
-        // Given
-        let uuid = UUID().uuidString
-        let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
-        defaults[.completedAllStoreOnboardingTasks] = true
-        let viewModel = DashboardViewModel(siteID: 0,
-                                           stores: stores,
-                                           featureFlags: MockFeatureFlagService(isDashboardStoreOnboardingEnabled: false),
-                                           userDefaults: defaults)
-        // Then
-        XCTAssertFalse(viewModel.showOnboarding)
-    }
-
-    func test_showOnboarding_is_false_when_feature_flag_is_turned_on_and_completedAllStoreOnboardingTasks_is_true() async throws {
-        // Given
-        let uuid = UUID().uuidString
-        let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
-        defaults[.completedAllStoreOnboardingTasks] = true
-        let viewModel = DashboardViewModel(siteID: 0,
-                                           stores: stores,
-                                           featureFlags: MockFeatureFlagService(isDashboardStoreOnboardingEnabled: true),
-                                           userDefaults: defaults)
-        // Then
-        XCTAssertFalse(viewModel.showOnboarding)
-    }
-
-    func test_showOnboarding_is_true_when_feature_flag_is_turned_on_and_completedAllStoreOnboardingTasks_is_false() async throws {
-        // Given
-        let uuid = UUID().uuidString
-        let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
-        defaults[.completedAllStoreOnboardingTasks] = false
-        let viewModel = DashboardViewModel(siteID: 0,
-                                           stores: stores,
-                                           featureFlags: MockFeatureFlagService(isDashboardStoreOnboardingEnabled: true),
-                                           userDefaults: defaults)
-        // Then
-        XCTAssertTrue(viewModel.showOnboarding)
-    }
-
-    func test_showOnboarding_is_true_when_feature_flag_is_turned_on_and_completedAllStoreOnboardingTasks_is_not_set() async throws {
-        // Given
-        let uuid = UUID().uuidString
-        let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
-        let viewModel = DashboardViewModel(siteID: 0,
-                                           stores: stores,
-                                           featureFlags: MockFeatureFlagService(isDashboardStoreOnboardingEnabled: true),
-                                           userDefaults: defaults)
-        // Then
-        XCTAssertTrue(viewModel.showOnboarding)
-    }
-
-    func test_showOnboarding_is_set_to_false_upon_setting_user_defaults_value_completedAllStoreOnboardingTasks_as_true() throws {
-        // Given
-        let uuid = UUID().uuidString
-        let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
-        let viewModel = DashboardViewModel(siteID: 0,
-                                           stores: stores,
-                                           featureFlags: MockFeatureFlagService(isDashboardStoreOnboardingEnabled: true),
-                                           userDefaults: defaults)
-        // Then
-        XCTAssertTrue(viewModel.showOnboarding)
-
-        // When
-        defaults[.completedAllStoreOnboardingTasks] = true
-
-        // Then
-        XCTAssertFalse(viewModel.showOnboarding)
-    }
-
-    func test_showOnboarding_is_true_when_there_are_tasks_available_for_display() async throws {
-        // Given
-        let uuid = UUID().uuidString
-        let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
-        let sut = DashboardViewModel(siteID: 0,
-                                     stores: stores,
-                                     featureFlags: MockFeatureFlagService(isDashboardStoreOnboardingEnabled: true),
-                                     userDefaults: defaults)
-        let tasks: [StoreOnboardingTask] = [
-            .init(isComplete: true, type: .addFirstProduct),
-            .init(isComplete: false, type: .launchStore),
-            .init(isComplete: true, type: .customizeDomains),
-            .init(isComplete: false, type: .payments)
-        ]
-        mockLoadOnboardingTasks(result: .success(tasks))
-
-        // When
-        await sut.reloadStoreOnboardingTasks()
-
-        // Then
-        XCTAssertTrue(sut.showOnboarding)
-    }
-
-    func test_showOnboarding_is_false_when_all_tasks_are_complete() async throws {
-        // Given
-        let uuid = UUID().uuidString
-        let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
-        let sut = DashboardViewModel(siteID: 0,
-                                     stores: stores,
-                                     featureFlags: MockFeatureFlagService(isDashboardStoreOnboardingEnabled: true),
-                                     userDefaults: defaults)
-        let tasks: [StoreOnboardingTask] = [
-            .init(isComplete: true, type: .addFirstProduct),
-            .init(isComplete: true, type: .launchStore),
-            .init(isComplete: true, type: .customizeDomains),
-            .init(isComplete: true, type: .payments)
-        ]
-        mockLoadOnboardingTasks(result: .success(tasks))
-
-        // When
-        await sut.reloadStoreOnboardingTasks()
-
-        // Then
-        XCTAssertFalse(sut.showOnboarding)
-    }
-
-    func test_showOnboarding_is_false_when_no_tasks_available_for_display_due_to_network_error() async throws {
-        // Given
-        let uuid = UUID().uuidString
-        let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
-        let sut = DashboardViewModel(siteID: 0,
-                                     stores: stores,
-                                     featureFlags: MockFeatureFlagService(isDashboardStoreOnboardingEnabled: true),
-                                     userDefaults: defaults)
-        mockLoadOnboardingTasks(result: .failure(MockError()))
-
-        // Then
-        XCTAssertTrue(sut.showOnboarding)
-
-        // When
-        await sut.reloadStoreOnboardingTasks()
-
-        // Then
-        XCTAssertFalse(sut.showOnboarding)
-    }
-
-    func test_showOnboarding_is_false_when_no_tasks_available_for_display_due_to_empty_tasks_response() async throws {
-        // Given
-        let uuid = UUID().uuidString
-        let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
-        let sut = DashboardViewModel(siteID: 0,
-                                     stores: stores,
-                                     featureFlags: MockFeatureFlagService(isDashboardStoreOnboardingEnabled: true),
-                                     userDefaults: defaults)
-        mockLoadOnboardingTasks(result: .success([]))
-
-        // When
-        await sut.reloadStoreOnboardingTasks()
-
-        // Then
-        XCTAssertFalse(sut.showOnboarding)
-    }
-
     func test_siteURLToShare_return_nil_if_site_is_not_public() {
         // Given
         let sessionManager = SessionManager.makeForTesting()
-        sessionManager.defaultSite = Site.fake().copy(isPublic: false)
+        sessionManager.defaultSite = Site.fake().copy(visibility: .privateSite)
         let stores = MockStoresManager(sessionManager: sessionManager)
         let viewModel = DashboardViewModel(siteID: 123, stores: stores)
 
@@ -480,7 +241,7 @@ final class DashboardViewModelTests: XCTestCase {
         // Given
         let sessionManager = SessionManager.makeForTesting()
         let expectedURL = "https://example.com"
-        sessionManager.defaultSite = Site.fake().copy(url: expectedURL, isPublic: true)
+        sessionManager.defaultSite = Site.fake().copy(url: expectedURL, visibility: .publicSite)
         let stores = MockStoresManager(sessionManager: sessionManager)
         let viewModel = DashboardViewModel(siteID: 123, stores: stores)
 
@@ -544,48 +305,47 @@ final class DashboardViewModelTests: XCTestCase {
         XCTAssertNil(analyticsProvider.receivedEvents.firstIndex(of: "dashboard_store_timezone_differ_from_device"))
     }
 
-    func test_wpcom_stats_not_synced_when_authenticated_without_wpcom() {
+    // MARK: Dashboard cards
+
+    func test_dashboard_cards_are_saved_to_app_settings() throws {
         // Given
-        stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: false))
-        stores.whenReceivingAction(ofType: StatsActionV4.self) { action in
-            switch action {
-            case .retrieveSiteVisitStats, .retrieveSiteSummaryStats:
-                XCTFail("WPCom stats should not be synced when store is authenticated without WPCom")
-            default:
-                XCTFail("Received unsupported action: \(action)")
+        let uuid = UUID().uuidString
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
+        defaults[.completedAllStoreOnboardingTasks] = true
+        let viewModel = DashboardViewModel(siteID: 0,
+                                           stores: stores,
+                                           userDefaults: defaults)
+        var setDashboardCardsActionCalled = false
+
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            if case .setDashboardCards = action {
+                setDashboardCardsActionCalled = true
             }
         }
-        let viewModel = DashboardViewModel(siteID: sampleSiteID, stores: stores)
 
         // When
-        let siteVisitStatsResult: Result<Void, Error> = waitFor { promise in
-            viewModel.syncSiteVisitStats(for: self.sampleSiteID, siteTimezone: .current, timeRange: .thisMonth, latestDateToInclude: .init()) { result in
-                promise(result)
-            }
-        }
-        let siteSummaryStatsResult: Result<Void, Error> = waitFor { promise in
-            viewModel.syncSiteSummaryStats(for: self.sampleSiteID, siteTimezone: .current, timeRange: .thisMonth, latestDateToInclude: .init()) { result in
-                promise(result)
-            }
-        }
+        viewModel.didCustomizeDashboardCards([.init(type: .onboarding, availability: .show, enabled: true)])
 
         // Then
-        XCTAssertTrue(siteVisitStatsResult.isSuccess)
-        XCTAssertTrue(siteSummaryStatsResult.isSuccess)
+        XCTAssertTrue(setDashboardCardsActionCalled)
     }
 
-    // MARK: Profiler answers
-    func test_uploadProfilerAnswers_triggers_uploadAnswers() async throws {
+    func test_editorSaveTapped_is_tracked_when_customizing_onboarding_card() throws {
         // Given
-        let usecase = MockStoreCreationProfilerUploadAnswersUseCase()
-        let viewModel = DashboardViewModel(siteID: sampleSiteID,
-                                           storeCreationProfilerUploadAnswersUseCase: usecase)
+        let viewModel = DashboardViewModel(siteID: sampleSiteID, analytics: analytics)
+        let cards: [DashboardCard] = [DashboardCard(type: .onboarding, availability: .show, enabled: false),
+                                      DashboardCard(type: .performance, availability: .show, enabled: true),
+                                      DashboardCard(type: .blaze, availability: .show, enabled: true),
+                                      DashboardCard(type: .topPerformers, availability: .show, enabled: false)]
 
         // When
-        await viewModel.uploadProfilerAnswers()
+        viewModel.didCustomizeDashboardCards(cards)
 
-        //  Then
-        XCTAssertTrue(usecase.uploadAnswersCalled)
+        // Then
+        let index = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "dynamic_dashboard_editor_save_tapped" }))
+        let properties = analyticsProvider.receivedProperties[index] as? [String: AnyHashable]
+        XCTAssertEqual(properties?["cards"], "blaze,performance")
+        XCTAssertEqual(properties?["sorted_cards"], "performance,blaze")
     }
 
     // MARK: Install theme
@@ -602,17 +362,420 @@ final class DashboardViewModelTests: XCTestCase {
         //  Then
         XCTAssertEqual(themeInstaller.installPendingThemeCalledForSiteID, sampleSiteID)
     }
+
+    // MARK: hasOrders state
+    func test_hasOrders_is_true_when_site_has_orders() {
+        // Given
+        let insertOrder = Order.fake().copy(siteID: sampleSiteID)
+        insertSampleOrder(readOnlyOrder: insertOrder)
+        let viewModel = DashboardViewModel(siteID: sampleSiteID, stores: stores, storageManager: storageManager)
+
+        // Then
+        XCTAssertTrue(viewModel.hasOrders)
+    }
+
+    @MainActor
+    func test_hasOrders_is_false_when_site_has_no_orders() async {
+        // Given
+        mockReloadingData(storeHasOrders: false)
+        let viewModel = DashboardViewModel(siteID: sampleSiteID, stores: stores)
+
+        // When
+        await viewModel.reloadAllData()
+
+        // Then
+        XCTAssertFalse(viewModel.hasOrders)
+    }
+
+    @MainActor
+    func test_hasOrders_is_true_when_remote_request_returns_true() async {
+        // Given
+        mockReloadingData(storeHasOrders: true)
+        let viewModel = DashboardViewModel(siteID: sampleSiteID, stores: stores)
+
+        // When
+        await viewModel.reloadAllData()
+
+        // Then
+        XCTAssertTrue(viewModel.hasOrders)
+    }
+
+    // MARK: Dashboard cards
+
+    @MainActor
+    func test_generated_default_cards_are_as_expected_with_m2_feature_flag_enabled_when_site_is_eligible_for_inbox() async {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isDynamicDashboardM2Enabled: true)
+        let inboxEligibilityChecker = MockInboxEligibilityChecker()
+        inboxEligibilityChecker.isEligible = true
+
+        let viewModel = DashboardViewModel(siteID: sampleSiteID,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           featureFlags: featureFlagService,
+                                           blazeEligibilityChecker: blazeEligibilityChecker,
+                                           inboxEligibilityChecker: inboxEligibilityChecker)
+        mockReloadingData(storeHasOrders: false)
+
+        let expectedCards = [DashboardCard(type: .onboarding, availability: .show, enabled: true),
+                             DashboardCard(type: .performance, availability: .unavailable, enabled: false),
+                             DashboardCard(type: .topPerformers, availability: .unavailable, enabled: false),
+                             DashboardCard(type: .blaze, availability: .hide, enabled: false),
+                             DashboardCard(type: .inbox, availability: .show, enabled: false),
+                             DashboardCard(type: .reviews, availability: .show, enabled: false),
+                             DashboardCard(type: .coupons, availability: .show, enabled: false),
+                             DashboardCard(type: .stock, availability: .show, enabled: false),
+                             DashboardCard(type: .lastOrders, availability: .unavailable, enabled: false)]
+
+        // When
+        await viewModel.reloadAllData()
+
+        // Then
+        assertEqual(expectedCards, viewModel.dashboardCards)
+    }
+
+    @MainActor
+    func test_generated_default_cards_are_as_expected_with_m2_feature_flag_enabled_when_site_is_not_eligible_for_inbox() async {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isDynamicDashboardM2Enabled: true)
+        inboxEligibilityChecker.isEligible = false
+
+        let viewModel = DashboardViewModel(siteID: sampleSiteID,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           featureFlags: featureFlagService,
+                                           blazeEligibilityChecker: blazeEligibilityChecker,
+                                           inboxEligibilityChecker: inboxEligibilityChecker)
+        mockReloadingData(storeHasOrders: false)
+
+        let expectedCards = [DashboardCard(type: .onboarding, availability: .show, enabled: true),
+                             DashboardCard(type: .performance, availability: .unavailable, enabled: false),
+                             DashboardCard(type: .topPerformers, availability: .unavailable, enabled: false),
+                             DashboardCard(type: .blaze, availability: .hide, enabled: false),
+                             DashboardCard(type: .inbox, availability: .hide, enabled: false),
+                             DashboardCard(type: .reviews, availability: .show, enabled: false),
+                             DashboardCard(type: .coupons, availability: .show, enabled: false),
+                             DashboardCard(type: .stock, availability: .show, enabled: false),
+                             DashboardCard(type: .lastOrders, availability: .unavailable, enabled: false)]
+
+        // When
+        await viewModel.reloadAllData()
+
+        // Then
+        assertEqual(expectedCards, viewModel.dashboardCards)
+    }
+
+    @MainActor
+    func test_generated_default_cards_are_as_expected_with_m2_feature_flag_disabled_and_store_has_no_orders() async {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isDynamicDashboardM2Enabled: false)
+
+        let viewModel = DashboardViewModel(siteID: sampleSiteID,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           featureFlags: featureFlagService,
+                                           blazeEligibilityChecker: blazeEligibilityChecker)
+        mockReloadingData(storeHasOrders: false)
+
+        let expectedCards = [DashboardCard(type: .onboarding, availability: .show, enabled: true),
+                             DashboardCard(type: .performance, availability: .unavailable, enabled: false),
+                             DashboardCard(type: .topPerformers, availability: .unavailable, enabled: false),
+                             DashboardCard(type: .blaze, availability: .hide, enabled: false)]
+
+        // When
+        await viewModel.reloadAllData()
+
+        // Then
+        assertEqual(expectedCards, viewModel.dashboardCards)
+    }
+
+    @MainActor
+    func test_dashboard_cards_contain_enabled_analytics_cards_when_there_is_order() async {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isDynamicDashboardM2Enabled: true)
+        let order = Order.fake().copy(siteID: sampleSiteID)
+        insertSampleOrder(readOnlyOrder: order)
+
+        let viewModel = DashboardViewModel(siteID: sampleSiteID,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           featureFlags: featureFlagService,
+                                           blazeEligibilityChecker: blazeEligibilityChecker)
+
+        mockReloadingData(storeHasOrders: true)
+
+        // Analytics cards need to be set with availability: .show and enabled: true to make them available and shown.
+        let expectedPerformanceCard = DashboardCard(type: .performance, availability: .show, enabled: true)
+        let expectedTopPerformersCard = DashboardCard(type: .topPerformers, availability: .show, enabled: true)
+
+        // When
+        await viewModel.reloadAllData()
+
+        // Then
+        XCTAssertTrue(viewModel.dashboardCards.contains(expectedPerformanceCard))
+        XCTAssertTrue(viewModel.dashboardCards.contains(expectedTopPerformersCard))
+    }
+
+    @MainActor
+    func test_dashboard_cards_contain_enabled_last_orders_cards_when_there_is_order() async {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isDynamicDashboardM2Enabled: true)
+        let order = Order.fake().copy(siteID: sampleSiteID)
+        insertSampleOrder(readOnlyOrder: order)
+        let viewModel = DashboardViewModel(siteID: sampleSiteID,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           featureFlags: featureFlagService,
+                                           blazeEligibilityChecker: blazeEligibilityChecker)
+        mockReloadingData()
+
+        // Last orders cards need to be set with availability: .show and enabled: false to make them available.
+        let expectedLastOrdersCard = DashboardCard(type: .lastOrders, availability: .show, enabled: false)
+
+        // When
+        await viewModel.reloadAllData()
+
+        // Then
+        XCTAssertTrue(viewModel.dashboardCards.contains(expectedLastOrdersCard))
+    }
+
+    @MainActor
+    func test_dashboard_cards_has_disabled_onboarding_card_if_all_tasks_are_completed() async throws {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isDynamicDashboardM2Enabled: false)
+        userDefaults[.completedAllStoreOnboardingTasks] = true
+
+        let viewModel = DashboardViewModel(siteID: sampleSiteID,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           featureFlags: featureFlagService,
+                                           userDefaults: userDefaults,
+                                           blazeEligibilityChecker: blazeEligibilityChecker)
+
+        mockReloadingData()
+
+        // When
+        await viewModel.reloadAllData()
+
+        // Then
+        let onboardingCard = try XCTUnwrap(viewModel.dashboardCards.first(where: {$0.type == .onboarding }))
+        XCTAssertFalse(onboardingCard.enabled)
+    }
+
+    @MainActor
+    func test_dashboard_cards_respects_existing_ordering_from_saved_cards() async {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isDynamicDashboardM2Enabled: false)
+
+        // Add order so that analytics cards are enabled
+        let insertOrder = Order.fake().copy(siteID: sampleSiteID)
+        insertSampleOrder(readOnlyOrder: insertOrder)
+
+        let viewModel = DashboardViewModel(siteID: sampleSiteID,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           featureFlags: featureFlagService,
+                                           blazeEligibilityChecker: blazeEligibilityChecker)
+
+        let storedCards = [DashboardCard(type: .topPerformers, availability: .show, enabled: true),
+                           DashboardCard(type: .onboarding, availability: .show, enabled: true),
+                           DashboardCard(type: .performance, availability: .show, enabled: true)]
+
+        mockReloadingData(storedDashboardCards: storedCards)
+
+        // When
+        await viewModel.reloadAllData()
+
+        // Then
+        assertEqual(storedCards, viewModel.dashboardCards)
+    }
+
+    @MainActor
+    func test_dashboard_cards_respects_enabled_setting_from_saved_cards() async throws {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isDynamicDashboardM2Enabled: false)
+
+        // Add order so that analytics cards are enabled
+        let order = Order.fake().copy(siteID: sampleSiteID)
+        insertSampleOrder(readOnlyOrder: order)
+
+        let viewModel = DashboardViewModel(siteID: sampleSiteID,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           featureFlags: featureFlagService,
+                                           blazeEligibilityChecker: blazeEligibilityChecker)
+
+        let storedCards = [DashboardCard(type: .onboarding, availability: .show, enabled: true),
+                           DashboardCard(type: .performance, availability: .show, enabled: true),
+                           DashboardCard(type: .topPerformers, availability: .show, enabled: false)]
+
+        mockReloadingData(storedDashboardCards: storedCards)
+
+        // When
+        await viewModel.reloadAllData()
+
+        // Then
+        let performanceCard = try XCTUnwrap(viewModel.dashboardCards.first(where: {$0.type == .performance }))
+        XCTAssertTrue(performanceCard.enabled)
+
+        let topPerformersCard = try XCTUnwrap(viewModel.dashboardCards.first(where: {$0.type == .topPerformers }))
+        XCTAssertFalse(topPerformersCard.enabled)
+    }
+
+    // MARK: Show New Cards Notice
+
+    @MainActor
+    func test_showNewCardsNotice_is_false_when_all_new_cards_are_already_in_saved_cards() async {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isDynamicDashboardM2Enabled: true)
+        inboxEligibilityChecker.isEligible = true
+
+        let viewModel = DashboardViewModel(siteID: sampleSiteID,
+                                           stores: stores,
+                                           featureFlags: featureFlagService,
+                                           inboxEligibilityChecker: inboxEligibilityChecker)
+        let completeCardsSet: [DashboardCard] = [
+            .init(type: .inbox, availability: .show, enabled: true),
+            .init(type: .reviews, availability: .show, enabled: true),
+            .init(type: .coupons, availability: .show, enabled: true),
+            .init(type: .stock, availability: .show, enabled: true),
+            .init(type: .lastOrders, availability: .show, enabled: true)
+        ]
+        mockReloadingData(storedDashboardCards: completeCardsSet)
+
+        // When
+        await viewModel.reloadAllData()
+
+        // Then
+        XCTAssertFalse(viewModel.showNewCardsNotice)
+    }
+
+    @MainActor
+    func test_showNewCardsNotice_is_true_when_not_all_new_cards_are_in_saved_cards() async {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isDynamicDashboardM2Enabled: true)
+        let viewModel = DashboardViewModel(siteID: sampleSiteID,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           featureFlags: featureFlagService,
+                                           blazeEligibilityChecker: blazeEligibilityChecker,
+                                           inboxEligibilityChecker: inboxEligibilityChecker)
+        let incompleteNewCardsSet: [DashboardCard] = []
+        mockReloadingData(storedDashboardCards: incompleteNewCardsSet)
+
+        // When
+        await viewModel.reloadAllData()
+
+        // Then
+        XCTAssertTrue(viewModel.showNewCardsNotice)
+    }
+
+    @MainActor
+    func test_showNewCardsNotice_changes_from_true_to_false_after_showing_customize_screen_and_dismissing_it() async {
+        // Given
+        let incompleteNewCardsSet: [DashboardCard] = [
+            .init(type: .inbox, availability: .show, enabled: false),
+            .init(type: .reviews, availability: .show, enabled: false)
+        ]
+        let featureFlagService = MockFeatureFlagService(isDynamicDashboardM2Enabled: true)
+        let viewModel = DashboardViewModel(siteID: sampleSiteID,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           featureFlags: featureFlagService,
+                                           blazeEligibilityChecker: blazeEligibilityChecker,
+                                           inboxEligibilityChecker: inboxEligibilityChecker)
+        mockReloadingData(storedDashboardCards: incompleteNewCardsSet)
+
+        // When
+        await viewModel.reloadAllData()
+
+        XCTAssertTrue(viewModel.showNewCardsNotice)
+        viewModel.showCustomizationScreen() // Simulate showing Customize screen
+        viewModel.handleCustomizationDismissal() // Simulate dismissing Customize screen
+
+        // Then
+        XCTAssertFalse(viewModel.showNewCardsNotice) // Check it's false after dismissing Customize screen
+    }
 }
 
 private extension DashboardViewModelTests {
-    func mockLoadOnboardingTasks(result: Result<[StoreOnboardingTask], Error>) {
-        stores.whenReceivingAction(ofType: StoreOnboardingTasksAction.self) { action in
-            guard case let .loadOnboardingTasks(_, completion) = action else {
-                return XCTFail()
+
+    func mockReloadingData(jitmResult: Result<[Yosemite.JustInTimeMessage], Error> = .success([]),
+                           storeHasOrders: Bool = true,
+                           existingProducts: [Product] = [],
+                           existingBlazeCampaigns: [BlazeCampaignListItem] = [],
+                           storedDashboardCards: [DashboardCard] = []) {
+        stores.whenReceivingAction(ofType: JustInTimeMessageAction.self) { action in
+            switch action {
+            case let .loadMessage(_, _, _, completion):
+                completion(jitmResult)
+            default:
+                XCTFail("Received unsupported action: \(action)")
             }
-            completion(result)
+        }
+
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+            case let .getLocalAnnouncementVisibility(_, completion):
+                completion(true)
+            case let .loadJetpackBenefitsBannerVisibility(_, _, completion):
+                completion(false)
+            case let .loadDashboardCards(_, onCompletion):
+                onCompletion(storedDashboardCards)
+            default:
+                break
+            }
+        }
+
+        stores.whenReceivingAction(ofType: OrderAction.self) { action in
+            switch action {
+            case let .checkIfStoreHasOrders(_, onCompletion):
+                onCompletion(.success(storeHasOrders))
+            default:
+                break
+            }
+        }
+
+        stores.whenReceivingAction(ofType: ProductAction.self) { [weak self] action in
+            switch action {
+            case .synchronizeProducts(_, _, _, _, _, _, _, _, _, _, let onCompletion):
+                for product in existingProducts {
+                    self?.insertProduct(product)
+                }
+                onCompletion(.success(true))
+            default:
+                break
+            }
+        }
+
+        stores.whenReceivingAction(ofType: BlazeAction.self) { [weak self] action in
+            switch action {
+            case .synchronizeCampaignsList(_, _, _, let onCompletion):
+                self?.insertCampaigns(existingBlazeCampaigns)
+                onCompletion(.success(false))
+            default:
+                break
+            }
         }
     }
 
-    final class MockError: Error { }
+    func insertProduct(_ readOnlyProduct: Product) {
+        let newProduct = storage.insertNewObject(ofType: StorageProduct.self)
+        newProduct.update(with: readOnlyProduct)
+        storage.saveIfNeeded()
+    }
+
+    func insertCampaigns(_ readOnlyCampaigns: [BlazeCampaignListItem]) {
+        readOnlyCampaigns.forEach { campaign in
+            let newCampaign = storage.insertNewObject(ofType: StorageBlazeCampaignListItem.self)
+            newCampaign.update(with: campaign)
+        }
+        storage.saveIfNeeded()
+    }
+
+    func insertSampleOrder(readOnlyOrder: Order) {
+        let newOrder = storage.insertNewObject(ofType: StorageOrder.self)
+        newOrder.update(with: readOnlyOrder)
+        storage.saveIfNeeded()
+    }
 }

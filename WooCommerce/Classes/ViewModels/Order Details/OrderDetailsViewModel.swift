@@ -34,6 +34,9 @@ final class OrderDetailsViewModel {
         self.stores = stores
         self.storageManager = storageManager
         self.currencyFormatter = currencyFormatter
+        self.configurationLoader = CardPresentConfigurationLoader(stores: stores)
+        self.dataSource = OrderDetailsDataSource(order: order,
+                                                 cardPresentPaymentsConfiguration: configurationLoader.configuration)
     }
 
     func update(order newOrder: Order) {
@@ -99,14 +102,11 @@ final class OrderDetailsViewModel {
     }
 
     /// IPP Configuration loader
-    private lazy var configurationLoader = CardPresentConfigurationLoader(stores: stores)
+    private let configurationLoader: CardPresentConfigurationLoader
 
     /// The datasource that will be used to render the Order Details screen
     ///
-    private(set) lazy var dataSource: OrderDetailsDataSource = {
-        return OrderDetailsDataSource(order: order,
-                                      cardPresentPaymentsConfiguration: configurationLoader.configuration)
-    }()
+    let dataSource: OrderDetailsDataSource
 
     private(set) lazy var editNoteViewModel: EditCustomerNoteViewModel = {
         return EditCustomerNoteViewModel(order: order)
@@ -281,6 +281,12 @@ extension OrderDetailsViewModel {
             group.leave()
         }
 
+        group.enter()
+        syncShippingMethods { _ in
+            onReloadSections?()
+            group.leave()
+        }
+
         group.notify(queue: .main) { [weak self] in
 
             /// Update state to synced
@@ -360,7 +366,7 @@ extension OrderDetailsViewModel {
     /// Registers all of the available TableViewCells
     ///
     func registerTableViewCells(_ tableView: UITableView) {
-        let cells = [
+        let cellsWithNib = [
             LargeHeightLeftImageTableViewCell.self,
             LeftImageTableViewCell.self,
             CustomerNoteTableViewCell.self,
@@ -381,8 +387,16 @@ extension OrderDetailsViewModel {
             TitleAndValueTableViewCell.self
         ]
 
-        for cellClass in cells {
+        let cellsWithoutNib = [
+            HostingConfigurationTableViewCell<ShippingLineRowView>.self
+        ]
+
+        for cellClass in cellsWithNib {
             tableView.registerNib(for: cellClass)
+        }
+
+        for cellClass in cellsWithoutNib {
+            tableView.register(cellClass)
         }
     }
 
@@ -526,6 +540,8 @@ extension OrderDetailsViewModel {
             //TODO: add analytics
             let wcShipInstallationFlowVC = Inject.ViewControllerHost(WCShipCTAHostingController())
             viewController.present(wcShipInstallationFlowVC, animated: true)
+        case .trashOrder:
+            onCellAction?(.trashOrder, indexPath)
         default:
             break
         }
@@ -624,8 +640,7 @@ extension OrderDetailsViewModel {
 
     @MainActor
     func syncShippingLabels() async {
-        guard orderContainsOnlyVirtualProducts == false,
-              await isPluginActive(SitePlugin.SupportedPlugin.WCShip) else {
+        guard await localRequirementsForShippingLabelsAreFulfilled() else {
             return
         }
         return await withCheckedContinuation { continuation in
@@ -686,10 +701,22 @@ extension OrderDetailsViewModel {
         }
     }
 
+    func syncShippingMethods(onCompletion: ((Error?) -> ())? = nil) {
+        let action = ShippingMethodAction.synchronizeShippingMethods(siteID: order.siteID) { result in
+            switch result {
+            case .success:
+                onCompletion?(nil)
+            case let .failure(error):
+                DDLogError("⛔️ Error synchronizing shipping methods: \(error)")
+                onCompletion?(error)
+            }
+        }
+        stores.dispatch(action)
+    }
+
     @MainActor
     func checkShippingLabelCreationEligibility() async -> Bool {
-        guard orderContainsOnlyVirtualProducts == false,
-              await isPluginActive(SitePlugin.SupportedPlugin.WCShip) else {
+        guard await localRequirementsForShippingLabelsAreFulfilled() else {
             return false
         }
         return await withCheckedContinuation { continuation in
@@ -702,6 +729,19 @@ extension OrderDetailsViewModel {
                 continuation.resume(returning: isEligible)
             })
         }
+    }
+
+    @MainActor
+    func localRequirementsForShippingLabelsAreFulfilled() async -> Bool {
+        guard !orderContainsOnlyVirtualProducts else {
+            return false
+        }
+
+        guard await !isPluginActive(SitePlugin.SupportedPlugin.LegacyWCShip) else {
+            return true
+        }
+
+        return await isPluginActive(SitePlugin.SupportedPlugin.WooShipping)
     }
 
     func checkOrderAddOnFeatureSwitchState(onCompletion: (() -> Void)? = nil) {
@@ -743,6 +783,20 @@ extension OrderDetailsViewModel {
         }
 
         stores.dispatch(deleteTrackingAction)
+    }
+
+    /// Put an order in the trash, without deleting it permanently.
+    ///
+    func trashOrder(_ onCompletion: @escaping (Result<Order, Error>) -> Void) {
+        let action = OrderAction.deleteOrder(siteID: order.siteID, order: order, deletePermanently: false) { result in
+            switch result {
+            case .success(let order):
+                onCompletion(.success(order))
+            case .failure(let error):
+                onCompletion(.failure(error))
+            }
+        }
+        stores.dispatch(action)
     }
 
     /// Helper function that returns `true` in its callback if the provided plugin name is active on the order's store.

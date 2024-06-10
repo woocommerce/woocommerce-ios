@@ -1,4 +1,5 @@
 import Foundation
+import protocol WooFoundation.Analytics
 
 private enum ProductTrackingSource: String {
     case popular
@@ -23,7 +24,7 @@ final class ProductSelectorViewModelTracker {
     func trackConfirmButtonTapped(with productCount: Int) {
         let trackingSources = productIDTrackingSources.values.map { $0.rawValue }
         let filtersAreActive = (viewModel?.filterListViewModel.criteria.numberOfActiveFilters ?? 0 > 0)
-        analytics.track(event: WooAnalyticsEvent.Orders.orderCreationProductSelectorConfirmButtonTapped(productCount: productCount,
+        analytics.track(event: .Orders.orderCreationProductSelectorConfirmButtonTapped(productCount: productCount,
                                                                                                         sources: trackingSources,
                                                                                                         isFilterActive: filtersAreActive))
     }
@@ -33,7 +34,7 @@ final class ProductSelectorViewModelTracker {
             return
         }
 
-        analytics.track(event: WooAnalyticsEvent.Orders.orderCreationProductSelectorSearchTriggered(searchFilter: productSearchFilter))
+        analytics.track(event: .Orders.orderCreationProductSelectorSearchTriggered(searchFilter: productSearchFilter))
     }
 
     func trackSearchSuccessIfNecessary() {
@@ -41,7 +42,7 @@ final class ProductSelectorViewModelTracker {
             return
         }
 
-        analytics.track(event: WooAnalyticsEvent.BarcodeScanning.productSearchViaSKUSuccess(from: Constants.orderProductSearchViaSKUSuccessSource))
+        analytics.track(event: .BarcodeScanning.productSearchViaSKUSuccess(from: Constants.orderProductSearchViaSKUSuccessSource))
     }
 
     func trackSearchFailureIfNecessary(with error: Error) {
@@ -49,7 +50,7 @@ final class ProductSelectorViewModelTracker {
             return
         }
 
-        analytics.track(event: WooAnalyticsEvent.BarcodeScanning.productSearchViaSKUFailure(from: Constants.orderProductSearchViaSKUSuccessSource,
+        analytics.track(event: .BarcodeScanning.productSearchViaSKUFailure(from: Constants.orderProductSearchViaSKUSuccessSource,
                                                                                         reason: error.localizedDescription))
     }
 

@@ -72,14 +72,138 @@ struct CollapsibleProductRowCardViewModel: Identifiable {
     let stepperViewModel: ProductStepperViewModel
     let priceSummaryViewModel: CollapsibleProductCardPriceSummaryViewModel
 
+    /// Subscription settings extracted from product meta data for a Subscription-type Product, if any
+    ///
+    private(set) var productSubscriptionDetails: ProductSubscription?
+
     private let currencyFormatter: CurrencyFormatter
     private let analytics: Analytics
+
+    /// Determines if Subscription-type product details should be shown
+    ///
+    var shouldShowProductSubscriptionsDetails: Bool {
+        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.subscriptionsInOrderCreationUI) &&
+        productSubscriptionDetails != nil
+    }
+
+    /// Description of the subscription billing interval for a Subscription-type Product
+    /// eg: "Every 2 months"
+    ///
+    var subscriptionBillingIntervalLabel: String? {
+        guard let periodInterval = productSubscriptionDetails?.periodInterval,
+              periodInterval != "0",
+              let period = productSubscriptionDetails?.period else {
+            return nil
+        }
+
+        let pluralizedPeriod = {
+            switch periodInterval {
+            case "1":
+                return period.descriptionSingular
+            default:
+                return period.descriptionPlural
+            }
+        }()
+
+        return String.localizedStringWithFormat(Localization.Subscription.formattedBillingDetails,
+                                                periodInterval,
+                                                pluralizedPeriod)
+    }
+
+    /// Subscription final price for a Subscription-type Product. Acounts for pricing modifications like "on-sale" pricing, and quantity
+    /// eg: Displays "$30.00" for 10 subscriptions of "$3.00" of regular price each
+    /// eg: Displays "$20.00" for 10 subscriptions of "$2.00" of on-sale price each
+    ///
+    var subscriptionPrice: String? {
+        // The price could be different from the subscription price if there are price modifiers, like on sale pricing.
+        // In this case, we use the product price, not the subscription price within the subscription metadata
+        var pricePerUnit: String
+        guard let subscriptionRegularPrice = productSubscriptionDetails?.price,
+              subscriptionRegularPrice != "0",
+              let productPrice = price else {
+            return nil
+        }
+        if productPrice != subscriptionRegularPrice {
+            pricePerUnit = productPrice
+        } else {
+            pricePerUnit = subscriptionRegularPrice
+        }
+        return pricePerQuantity(price: pricePerUnit)
+    }
+
+    /// Description of the subscription sign up fee for a Subscription-type Product
+    /// eg: "$0.50"
+    ///
+    var subscriptionConditionsSignupFee: String? {
+        guard let signupFee = productSubscriptionDetails?.signUpFee,
+              signupFee.isNotEmpty,
+              signupFee != "0" else {
+            return nil
+        }
+        return pricePerQuantity(price: signupFee)
+    }
+
+    /// Summary of the subscription sign up fees for a Subscription-type Product when an order has more than one
+    /// eg: "3 x $0.60"
+    ///
+    var signupFeeSummary: String? {
+        guard let subscriptionConditionsSignupFee, stepperViewModel.quantity > 1 else {
+            return nil
+        }
+        let quantity = stepperViewModel.quantity.formatted()
+        return String.localizedStringWithFormat(Localization.Subscription.signupFeeSummary,
+                                                quantity,
+                                                subscriptionConditionsSignupFee)
+    }
+
+    /// Label of the subscription sign up fee for a Subscription-type Product
+    /// eg: "$0.50 signup"
+    ///
+    var subscriptionConditionsSignupLabel: String? {
+        guard let subscriptionConditionsSignupFee else {
+            return nil
+        }
+        return String.localizedStringWithFormat(Localization.Subscription.formattedSignUpFee,
+                                                subscriptionConditionsSignupFee)
+    }
+
+    var subscriptionConditionsFreeTrialLabel: String? {
+        // Trial length or period could be nil. Trial length could be zero or empty.
+        // In both cases, the free trial conditions are invalid and should return no label.
+        guard let trialLength = productSubscriptionDetails?.trialLength,
+              let trialPeriod = productSubscriptionDetails?.trialPeriod,
+              trialLength.isNotEmpty,
+              trialLength != "0" else {
+            return nil
+        }
+
+        let pluralizedTrialPeriod = {
+            switch trialLength {
+            case "1":
+                return trialPeriod.descriptionSingular
+            default:
+                return trialPeriod.descriptionPlural
+            }
+        }()
+
+        return String.localizedStringWithFormat(Localization.Subscription.formattedFreeTrial,
+                                                trialLength,
+                                                pluralizedTrialPeriod)
+    }
+
+    var subscriptionConditionsDetailsLabel: String {
+        [subscriptionConditionsSignupLabel, subscriptionConditionsFreeTrialLabel]
+            .compactMap({ $0 })
+            .filter({ $0.isNotEmpty })
+            .joined(separator: " · ")
+    }
 
     init(id: Int64,
          productOrVariationID: Int64,
          hasParentProduct: Bool = false,
          isReadOnly: Bool = false,
          isConfigurable: Bool = false,
+         productSubscriptionDetails: ProductSubscription? = nil,
          imageURL: URL?,
          name: String,
          sku: String?,
@@ -100,6 +224,7 @@ struct CollapsibleProductRowCardViewModel: Identifiable {
         self.hasParentProduct = hasParentProduct
         self.isReadOnly = isReadOnly
         self.isConfigurable = configure != nil ? isConfigurable : false
+        self.productSubscriptionDetails = productSubscriptionDetails
         self.configure = configure
         self.imageURL = imageURL
         self.name = name
@@ -114,6 +239,7 @@ struct CollapsibleProductRowCardViewModel: Identifiable {
                                                                                            manageStock: manageStock)
         self.stepperViewModel = stepperViewModel
         self.priceSummaryViewModel = .init(pricedIndividually: pricedIndividually,
+                                           isSubscriptionProduct: (productSubscriptionDetails != nil),
                                            quantity: stepperViewModel.quantity,
                                            price: price)
         self.currencyFormatter = currencyFormatter
@@ -132,6 +258,18 @@ struct CollapsibleProductRowCardViewModel: Identifiable {
 }
 
 extension CollapsibleProductRowCardViewModel {
+    /// Returns the total price by multiplying price per quantity
+    ///
+    private func pricePerQuantity(price: String) -> String? {
+        let quantity = stepperViewModel.quantity
+        guard let decimalPrice = currencyFormatter.convertToDecimal(price)?.decimalValue,
+              let stringTotal =  currencyFormatter.formatHumanReadableAmount(decimalPrice * quantity, roundSmallNumbers: false) else {
+            return nil
+        }
+        let formattedPrice = currencyFormatter.formatAmount(stringTotal)
+        return formattedPrice
+    }
+
     /// Formatted price label based on a product's price and quantity. Accounting for discounts, if any.
     /// e.g: If price is $5, quantity is 10, and discount is $1, outputs "$49.00"
     ///
@@ -217,5 +355,27 @@ private extension CollapsibleProductRowCardViewModel {
         static let skuFormat = NSLocalizedString("CollapsibleProductRowCardViewModel.skuFormat",
                                                  value: "SKU: %1$@",
                                                  comment: "SKU label for a product in an order. The variable shows the SKU of the product.")
+        enum Subscription {
+            static let formattedBillingDetails = NSLocalizedString(
+                "CollapsibleProductRowCardViewModel.formattedBillingDetails",
+                value: "Every %1$@ %2$@",
+                comment: "Description of the billing and billing frequency for a subscription product. " +
+                "Reads as: 'Every 2 months'.")
+            static let formattedSignUpFee = NSLocalizedString(
+                "CollapsibleProductRowCardViewModel.formattedSignUpFee",
+                value: "%1$@ signup",
+                comment: "Description of the signup fees for a subscription product. " +
+                "Reads as: '$5.00 signup'.")
+            static let formattedFreeTrial = NSLocalizedString(
+                "CollapsibleProductRowCardViewModel.formattedFreeTrial",
+                value: "%1$@ %2$@ free",
+                comment: "Description of the free trial conditions for a subscription product. " +
+                "Reads as: '3 days free'.")
+            static let signupFeeSummary = NSLocalizedString(
+                "CollapsibleProductRowCardViewModel.signupFeeSummary",
+                value: "%1$@ × %2$@",
+                comment: "Summary of quantity and signup fees for a subscription product when multiple are selected." +
+                "Reads as: '3 × $0.60'. Please ensure you use a multiplication symbol, not a letter x")
+        }
     }
 }

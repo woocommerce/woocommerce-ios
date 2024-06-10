@@ -1,3 +1,4 @@
+import SwiftUI
 import XCTest
 
 @testable import WooCommerce
@@ -6,6 +7,7 @@ import XCTest
 final class HubMenuViewModelTests: XCTestCase {
     private let sampleSiteID: Int64 = 606
 
+    @MainActor
     func test_viewDidAppear_then_posts_notification() {
         // Given
         let viewModel = HubMenuViewModel(siteID: sampleSiteID, tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker())
@@ -18,6 +20,7 @@ final class HubMenuViewModelTests: XCTestCase {
         waitForExpectations(timeout: Constants.expectationTimeout)
     }
 
+    @MainActor
     func test_menuElements_do_not_include_inbox_when_feature_flag_is_off() {
         // Given
         let featureFlagService = MockFeatureFlagService(isInboxOn: false)
@@ -33,30 +36,16 @@ final class HubMenuViewModelTests: XCTestCase {
         }))
     }
 
+    @MainActor
     func test_menuElements_include_inbox_when_store_has_eligible_wc_version() {
-        // Given the store is eligible for inbox with only WC plugin
-        let featureFlagService = MockFeatureFlagService(isInboxOn: true)
+        let inboxEligibilityChecker = MockInboxEligibilityChecker()
+        inboxEligibilityChecker.isEligible = true
         let stores = MockStoresManager(sessionManager: .makeForTesting())
-
-        stores.whenReceivingAction(ofType: SystemStatusAction.self) { action in
-            switch action {
-            case let .fetchSystemPlugin(_, systemPluginName, onCompletion):
-                switch systemPluginName {
-                case PluginName.wooCommerce:
-                    onCompletion(Fixtures.wcPluginEligibleForInbox)
-                default:
-                    onCompletion(nil)
-                }
-            default:
-                break
-            }
-        }
 
         // When
         let viewModel = HubMenuViewModel(siteID: sampleSiteID,
                                          tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
-                                         featureFlagService: featureFlagService,
-                                         stores: stores)
+                                         inboxEligibilityChecker: inboxEligibilityChecker)
         viewModel.setupMenuElements()
 
         // Then inbox is in the menu
@@ -65,6 +54,7 @@ final class HubMenuViewModelTests: XCTestCase {
         }))
     }
 
+    @MainActor
     func test_menuElements_do_not_include_inbox_when_store_has_ineligible_wc_version() {
         // Given the store is ineligible WC version for inbox and coupons feature is enabled in app settings
         let featureFlagService = MockFeatureFlagService(isInboxOn: true)
@@ -96,6 +86,7 @@ final class HubMenuViewModelTests: XCTestCase {
         }))
     }
 
+    @MainActor
     func test_generalElements_does_not_include_blaze_when_default_site_is_not_set() {
         // When
         let viewModel = HubMenuViewModel(siteID: sampleSiteID,
@@ -106,6 +97,7 @@ final class HubMenuViewModelTests: XCTestCase {
         XCTAssertNil(viewModel.generalElements.firstIndex(where: { $0.id == HubMenuViewModel.Blaze.id }))
     }
 
+    @MainActor
     func test_generalElements_does_not_include_blaze_when_site_is_not_eligible_for_blaze() throws {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
@@ -126,6 +118,7 @@ final class HubMenuViewModelTests: XCTestCase {
         XCTAssertNil(viewModel.generalElements.firstIndex(where: { $0.id == HubMenuViewModel.Blaze.id }))
     }
 
+    @MainActor
     func test_generalElements_includes_blaze_after_payments_when_site_is_eligible_for_blaze() throws {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
@@ -150,6 +143,7 @@ final class HubMenuViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.generalElements[blazeIndex - 1].id, HubMenuViewModel.Payments.id)
     }
 
+    @MainActor
     func test_storeURL_when_site_has_storeURL_then_returns_storeURL() {
         // Given
         let sampleStoreURL = "https://testshop.com/"
@@ -166,6 +160,8 @@ final class HubMenuViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(viewModel.storeURL, try sampleStoreURL.asURL())
     }
+
+    @MainActor
     func test_woocommerceAdminURL_when_site_has_adminURL_then_returns_adminURL() {
         // Given
         let sampleAdminURL = "https://testshop.com/wp-admin/"
@@ -182,6 +178,8 @@ final class HubMenuViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(viewModel.woocommerceAdminURL, try sampleAdminURL.asURL())
     }
+
+    @MainActor
     func test_storeURL_when_storeURL_is_nil_then_returns_woocommerce_fallback_url() {
         // Given
         let sampleStoreURL: String? = nil
@@ -198,6 +196,8 @@ final class HubMenuViewModelTests: XCTestCase {
         XCTAssertNotNil(viewModel.storeURL)
         XCTAssertEqual(viewModel.storeURL, WooConstants.URLs.blog.asURL())
     }
+
+    @MainActor
     func test_woocommerceAdminURL_when_adminURL_is_nil_then_returns_adminURL() {
         // Given
         let sampleStoreURL = "https://testshop.com"
@@ -216,6 +216,8 @@ final class HubMenuViewModelTests: XCTestCase {
         XCTAssertNotNil(viewModel.woocommerceAdminURL)
         XCTAssertEqual(viewModel.woocommerceAdminURL, try URL(string: expectedAdminURL)?.asURL())
     }
+
+    @MainActor
     func test_woocommerceAdminURL_when_adminURL_is_empty_then_returns_adminURL() {
         // Given
         let sampleStoreURL = "https://testshop.com"
@@ -235,6 +237,7 @@ final class HubMenuViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.woocommerceAdminURL, try URL(string: expectedAdminURL)?.asURL())
     }
 
+    @MainActor
     func test_switchStoreEnabled_returns_true_when_logged_in_with_wpcom() {
         // Given
         let sampleStoreURL = "https://testshop.com"
@@ -253,6 +256,7 @@ final class HubMenuViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.switchStoreEnabled)
     }
 
+    @MainActor
     func test_switchStoreEnabled_returns_false_when_logged_in_without_wpcom() {
         // Given
         let sampleStoreURL = "https://testshop.com"
@@ -271,6 +275,7 @@ final class HubMenuViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.switchStoreEnabled)
     }
 
+    @MainActor
     func test_shouldAuthenticateAdminPage_returns_true_when_logged_in_with_wpcom_to_wpcom_site() {
         // Given
         let sampleStoreURL = "https://testshop.com"
@@ -289,6 +294,7 @@ final class HubMenuViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.shouldAuthenticateAdminPage)
     }
 
+    @MainActor
     func test_shouldAuthenticateAdminPage_returns_true_when_logged_in_without_wpcom_to_self_hosted_site() {
         // Given
         let sampleStoreURL = "https://testshop.com"
@@ -307,6 +313,7 @@ final class HubMenuViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.shouldAuthenticateAdminPage)
     }
 
+    @MainActor
     func test_shouldAuthenticateAdminPage_returns_false_when_logged_in_with_wpcom_to_self_hosted_site() {
         // Given
         let sampleStoreURL = "https://testshop.com"
@@ -325,7 +332,8 @@ final class HubMenuViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.shouldAuthenticateAdminPage)
     }
 
-    func test_menuElements_include_subscriptions_on_wp_com_sites() {
+    @MainActor
+    func test_menuElements_include_subscriptions_on_wp_com_sites_if_not_free_trial() {
         // Given
         let sessionManager = SessionManager.testingInstance
         sessionManager.defaultSite = Site.fake().copy(isWordPressComStore: true)
@@ -342,6 +350,26 @@ final class HubMenuViewModelTests: XCTestCase {
         }))
     }
 
+    @MainActor
+    func test_menuElements_does_not_include_subscriptions_on_wp_com_free_trial_sites() {
+        // Given
+        let freeTrialPlanSlug = "ecommerce-trial-bundle-monthly"
+        let sessionManager = SessionManager.testingInstance
+        sessionManager.defaultSite = Site.fake().copy(plan: freeTrialPlanSlug, isWordPressComStore: true)
+        let stores = MockStoresManager(sessionManager: sessionManager)
+
+        // When
+        let viewModel = HubMenuViewModel(siteID: sampleSiteID,
+                                         tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
+                                         stores: stores)
+        viewModel.setupMenuElements()
+
+        XCTAssertNil(viewModel.settingsElements.firstIndex(where: { item in
+            item.id == HubMenuViewModel.Subscriptions.id
+        }))
+    }
+
+    @MainActor
     func test_menuElements_does_not_include_subscriptions_on_self_hosted_sites() {
         // Given
         let sessionManager = SessionManager.testingInstance
@@ -357,6 +385,39 @@ final class HubMenuViewModelTests: XCTestCase {
         XCTAssertNil(viewModel.settingsElements.firstIndex(where: { item in
             item.id == HubMenuViewModel.Subscriptions.id
         }))
+    }
+
+    @MainActor
+    func test_menuElements_include_customers() {
+        // Given
+        let viewModel = HubMenuViewModel(siteID: sampleSiteID,
+                                         tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker())
+
+        // When
+        viewModel.setupMenuElements()
+
+        // Then
+        XCTAssertNotNil(viewModel.generalElements.firstIndex(where: { item in
+            item.id == HubMenuViewModel.Customers.id
+        }))
+    }
+
+    @MainActor
+    func test_showPayments_replaces_navigationPath_with_payments() {
+        // Given
+        var navigationPath = NavigationPath(["testPath1", "testPath2"])
+        navigationPath.append(HubMenuNavigationDestination.payments)
+        let viewModel = HubMenuViewModel(siteID: sampleSiteID,
+                                         tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker())
+        viewModel.navigationPath = navigationPath
+        XCTAssertEqual(viewModel.navigationPath.count, 3)
+
+        // When
+        viewModel.showPayments()
+
+        // Then
+        XCTAssertEqual(viewModel.navigationPath.count, 1)
+        XCTAssertEqual(viewModel.navigationPath, NavigationPath([HubMenuNavigationDestination.payments]))
     }
 }
 

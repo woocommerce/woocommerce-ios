@@ -33,8 +33,12 @@ final class CustomerSelectorViewModel {
     ///
     func loadCustomersListData(onCompletion: @escaping (Result<Bool, Error>) -> Void) {
         stores.dispatch(CustomerAction.synchronizeLightCustomersData(siteID: siteID,
-                                                                                    pageNumber: Constants.firstPageNumber,
-                                                                                    pageSize: Constants.pageSize, onCompletion: onCompletion))
+                                                                     pageNumber: Constants.firstPageNumber,
+                                                                     pageSize: Constants.pageSize,
+                                                                     orderby: .name,
+                                                                     order: .asc,
+                                                                     filterEmpty: .email,
+                                                                     onCompletion: onCompletion))
     }
 
     /// Loads the whole customer information and calls the completion closures

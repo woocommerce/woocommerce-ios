@@ -3,6 +3,7 @@ import Yosemite
 import Experiments
 
 import protocol Storage.StorageManagerType
+import protocol WooFoundation.Analytics
 
 /// Provides data for product form UI, and handles product editing actions.
 final class ProductFormViewModel: ProductFormViewModelProtocol {
@@ -303,7 +304,7 @@ extension ProductFormViewModel {
     }
 
     func canShareProduct() -> Bool {
-        let isSitePublic = stores.sessionManager.defaultSite?.isPublic == true
+        let isSitePublic = stores.sessionManager.defaultSite?.visibility == .publicSite
         let productHasLinkToShare = URL(string: product.permalink) != nil
         return isSitePublic && formType != .add && productHasLinkToShare
     }
@@ -548,6 +549,10 @@ extension ProductFormViewModel {
         let subscription = product.subscription?.copy(length: length)
         product = EditableProductModel(product: product.product.copy(subscription: subscription))
     }
+
+    func updateQuantityRules(minQuantity: String, maxQuantity: String, groupOf: String) {
+        product = EditableProductModel(product: product.product.copy(minAllowedQuantity: minQuantity, maxAllowedQuantity: maxQuantity, groupOfQuantity: groupOf))
+    }
 }
 
 // MARK: Remote actions
@@ -687,8 +692,8 @@ extension ProductFormViewModel {
 extension ProductFormViewModel {
     func trackProductFormLoaded() {
         let hasLinkedProducts = product.upsellIDs.isNotEmpty || product.crossSellIDs.isNotEmpty
-        let hasMinMaxQuantityRules = product.hasQuantityRules
-        analytics.track(event: WooAnalyticsEvent.ProductDetail.loaded(hasLinkedProducts: hasLinkedProducts,
+        let hasMinMaxQuantityRules = product.canEditQuantityRules
+        analytics.track(event: .ProductDetail.loaded(hasLinkedProducts: hasLinkedProducts,
                                                                       hasMinMaxQuantityRules: hasMinMaxQuantityRules,
                                                                       horizontalSizeClass: UITraitCollection.current.horizontalSizeClass))
     }

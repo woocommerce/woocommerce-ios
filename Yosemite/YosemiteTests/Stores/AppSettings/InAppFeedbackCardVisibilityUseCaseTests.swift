@@ -154,6 +154,74 @@ final class InAppFeedbackCardVisibilityUseCaseTests: XCTestCase {
         // Then
         XCTAssertEqual(error as? InferenceError, .failedToInferInstallationDate)
     }
+
+    func test_orderFormShippingLines_shouldBeVisible_is_true_if_feedback_status_is_pending() throws {
+        // Given
+        let lastFeedbackDate = try date(from: "2020-11-06T00:00:00Z")
+        let currentDate = try date(from: "2020-11-12T23:59:59Z")
+
+        fileManager.whenRetrievingAttributesOfItem(atPath: try documentDirectoryURL().path, thenReturn: [:])
+
+        let settings = createAppSetting(installationDate: nil, feedbackType: .orderFormShippingLines, feedbackStatus: .pending)
+        let useCase = InAppFeedbackCardVisibilityUseCase(settings: settings, feedbackType: .orderFormShippingLines, fileManager: fileManager, calendar: calendar)
+
+        // When
+        let shouldBeVisible = try useCase.shouldBeVisible(currentDate: currentDate)
+
+        // Then
+        XCTAssertTrue(shouldBeVisible)
+    }
+
+    func test_orderFormShippingLines_shouldBeVisible_is_false_if_feedback_status_is_dismissed() throws {
+        // Given
+        let lastFeedbackDate = try date(from: "2020-11-06T00:00:00Z")
+        let currentDate = try date(from: "2020-11-12T23:59:59Z")
+
+        fileManager.whenRetrievingAttributesOfItem(atPath: try documentDirectoryURL().path, thenReturn: [:])
+
+        let settings = createAppSetting(installationDate: nil, feedbackType: .orderFormShippingLines, feedbackStatus: .dismissed)
+        let useCase = InAppFeedbackCardVisibilityUseCase(settings: settings, feedbackType: .orderFormShippingLines, fileManager: fileManager, calendar: calendar)
+
+        // When
+        let shouldBeVisible = try useCase.shouldBeVisible(currentDate: currentDate)
+
+        // Then
+        XCTAssertFalse(shouldBeVisible)
+    }
+
+    func test_orderFormShippingLines_shouldBeVisible_is_false_if_lastFeedback_is_less_than_7_days_ago() throws {
+        // Given
+        let lastFeedbackDate = try date(from: "2020-11-06T00:00:00Z")
+        let currentDate = try date(from: "2020-11-12T23:59:59Z")
+
+        fileManager.whenRetrievingAttributesOfItem(atPath: try documentDirectoryURL().path, thenReturn: [:])
+
+        let settings = createAppSetting(installationDate: nil, feedbackType: .orderFormShippingLines, feedbackStatus: .given(lastFeedbackDate))
+        let useCase = InAppFeedbackCardVisibilityUseCase(settings: settings, feedbackType: .orderFormShippingLines, fileManager: fileManager, calendar: calendar)
+
+        // When
+        let shouldBeVisible = try useCase.shouldBeVisible(currentDate: currentDate)
+
+        // Then
+        XCTAssertFalse(shouldBeVisible)
+    }
+
+    func test_orderFormShippingLines_shouldBeVisible_is_true_if_lastFeedback_is_more_than_or_equal_to_7_days_ago() throws {
+        // Given
+        let lastFeedbackDate = try date(from: "2020-11-06T00:00:00Z")
+        let currentDate = try date(from: "2020-11-13T00:00:00Z")
+
+        fileManager.whenRetrievingAttributesOfItem(atPath: try documentDirectoryURL().path, thenReturn: [:])
+
+        let settings = createAppSetting(installationDate: nil, feedbackType: .orderFormShippingLines, feedbackStatus: .given(lastFeedbackDate))
+        let useCase = InAppFeedbackCardVisibilityUseCase(settings: settings, feedbackType: .orderFormShippingLines, fileManager: fileManager, calendar: calendar)
+
+        // When
+        let shouldBeVisible = try useCase.shouldBeVisible(currentDate: currentDate)
+
+        // Then
+        XCTAssertTrue(shouldBeVisible)
+    }
 }
 
 // MARK: - Utils
@@ -174,6 +242,7 @@ private extension InAppFeedbackCardVisibilityUseCaseTests {
             feedbacks: [feedback.name: feedback],
             isViewAddOnsSwitchEnabled: false,
             isInAppPurchasesSwitchEnabled: false,
+            isPointOfSaleEnabled: false,
             knownCardReaders: [],
             featureAnnouncementCampaignSettings: [:],
             sitesWithAtLeastOneIPPTransactionFinished: [],

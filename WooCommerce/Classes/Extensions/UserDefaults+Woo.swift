@@ -27,7 +27,6 @@ extension UserDefaults {
         case notificationsLastSeenTime
         case notificationsMarkAsReadCount
         case completedAllStoreOnboardingTasks
-        case shouldHideStoreOnboardingTaskList
         case storePhoneNumber
         case siteIDsWithSnapshotTracked
         case hasSavedPrivacyBannerSettings
@@ -42,9 +41,6 @@ extension UserDefaults {
 
         // AI prompt tone
         case aiPromptTone
-
-        // Whether the Blaze section on My Store screen has been dismissed
-        case hasDismissedBlazeSectionOnMyStore
 
         // Product Creation AI
         case numberOfTimesProductCreationAISurveySuggested

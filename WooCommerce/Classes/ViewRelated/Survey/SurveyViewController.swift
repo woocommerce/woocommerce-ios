@@ -71,6 +71,7 @@ extension SurveyViewController {
         case storeSetup
         case tapToPayFirstPayment
         case productCreationAI
+        case orderFormShippingLines
 
         fileprivate var url: URL {
             switch self {
@@ -120,6 +121,11 @@ extension SurveyViewController {
                     .asURL()
                     .tagPlatform("ios")
                     .tagAppVersion(Bundle.main.bundleVersion())
+            case .orderFormShippingLines:
+                return WooConstants.URLs.orderCreationShippingFeedback
+                    .asURL()
+                    .tagPlatform("ios")
+                    .tagAppVersion(Bundle.main.bundleVersion())
             }
         }
 
@@ -134,7 +140,8 @@ extension SurveyViewController {
                     .couponManagement,
                     .storeSetup,
                     .tapToPayFirstPayment,
-                    .productCreationAI:
+                    .productCreationAI,
+                    .orderFormShippingLines:
                 return Localization.giveFeedback
             }
         }
@@ -160,6 +167,8 @@ extension SurveyViewController {
                 return .tapToPayFirstPaymentPaymentsMenu
             case .productCreationAI:
                 return .productCreationAI
+            case .orderFormShippingLines:
+                return .orderFormShippingLines
             }
         }
     }

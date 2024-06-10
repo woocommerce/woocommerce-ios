@@ -127,7 +127,10 @@ class DefaultStoresManager: StoresManager {
         self.defaults = defaults
 
         isLoggedIn = isAuthenticated
+    }
 
+    /// This should only be invoked after all the ServiceLocator dependencies in this function are initialized to avoid circular reference.
+    func initializeAfterDependenciesAreInitialized() {
         fullyDeauthenticateIfNeeded()
         restoreSessionAccountIfPossible()
         restoreSessionSiteIfPossible()
@@ -222,7 +225,7 @@ class DefaultStoresManager: StoresManager {
     /// This handles the scenario where `DefaultStoresManager` can't be initialized
     /// in an authenticated state, but the default store is unexpectedly still set.
     ///
-    func fullyDeauthenticateIfNeeded() {
+    private func fullyDeauthenticateIfNeeded() {
         guard !isLoggedIn && !needsDefaultStore else {
             return
         }
@@ -265,7 +268,6 @@ class DefaultStoresManager: StoresManager {
         sessionManager.defaultSite = nil
         defaults[.storePhoneNumber] = nil
         defaults[.completedAllStoreOnboardingTasks] = nil
-        defaults[.shouldHideStoreOnboardingTaskList] = nil
         defaults[.usedProductDescriptionAI] = nil
         defaults[.hasDismissedWriteWithAITooltip] = nil
         defaults[.numberOfTimesWriteWithAITooltipIsShown] = nil

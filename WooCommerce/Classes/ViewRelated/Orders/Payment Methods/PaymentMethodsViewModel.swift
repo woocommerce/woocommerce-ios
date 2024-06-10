@@ -65,7 +65,11 @@ final class PaymentMethodsViewModel: ObservableObject {
 
     /// Transmits notice presentation intents.
     ///
-    private let presentNoticeSubject: PassthroughSubject<SimplePaymentsNotice, Never>
+    private let presentNoticeSubject: PassthroughSubject<PaymentMethodsNotice, Never>
+
+    var notice: AnyPublisher<PaymentMethodsNotice, Never> {
+        presentNoticeSubject.eraseToAnyPublisher()
+    }
 
     /// Store manager to update order.
     ///
@@ -107,7 +111,7 @@ final class PaymentMethodsViewModel: ObservableObject {
     private let cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration
 
     struct Dependencies {
-        let presentNoticeSubject: PassthroughSubject<SimplePaymentsNotice, Never>
+        let presentNoticeSubject: PassthroughSubject<PaymentMethodsNotice, Never>
         let cardPresentPaymentsOnboardingPresenter: CardPresentPaymentsOnboardingPresenting
         let stores: StoresManager
         let storage: StorageManagerType
@@ -117,7 +121,7 @@ final class PaymentMethodsViewModel: ObservableObject {
         let featureFlagService: FeatureFlagService
         let currencySettings: CurrencySettings
 
-        init(presentNoticeSubject: PassthroughSubject<SimplePaymentsNotice, Never> = PassthroughSubject(),
+        init(presentNoticeSubject: PassthroughSubject<PaymentMethodsNotice, Never> = PassthroughSubject(),
              cardPresentPaymentsOnboardingPresenter: CardPresentPaymentsOnboardingPresenting = CardPresentPaymentsOnboardingPresenter(),
              stores: StoresManager = ServiceLocator.stores,
              storage: StorageManagerType = ServiceLocator.storageManager,
@@ -273,6 +277,17 @@ final class PaymentMethodsViewModel: ObservableObject {
     ///
     func userDidCancelFlow() {
         trackFlowCanceled()
+    }
+
+    /// Logs an error when `PaymentMethodsView.rootViewController` is missing.
+    func logNoRootViewControllerError() {
+        let logProperties: [String: Any] = ["flow": flow.rawValue]
+        ServiceLocator.crashLogging.logMessage(
+            "Missing `rootViewController` in `PaymentMethodsView` can result in a broken IPP experience",
+            properties: logProperties,
+            level: .error
+        )
+        assertionFailure("Missing `rootViewController` in `PaymentMethodsView` can result in a broken IPP experience in flow: \(flow.rawValue)")
     }
 
     /// Defines if the swipe-to-dismiss gesture on the payment flow should be enabled
@@ -444,6 +459,14 @@ private extension PaymentMethodsViewModel {
                                                                value: "The order was paid by cash. Customer paid %1$@. The change due was %2$@.",
                                                                comment: "Note from the cash tender view.")
     }
+}
+
+/// Representation of possible notices that can be displayed from the payment methods flow
+///
+enum PaymentMethodsNotice: Equatable {
+    case created
+    case completed
+    case error(String)
 }
 
 private extension CardReaderDiscoveryMethod {

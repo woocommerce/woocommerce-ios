@@ -146,6 +146,10 @@ public class MockStoresManager: StoresManager {
         actions.forEach(dispatch)
     }
 
+    public func initializeAfterDependenciesAreInitialized() {
+        /// Does nothing
+    }
+
     public func removeDefaultStore() {
         /// Does nothing
     }

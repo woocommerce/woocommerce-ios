@@ -26,7 +26,7 @@ extension Storage.Site: ReadOnlyConvertible {
         jetpackConnectionActivePlugins = site.jetpackConnectionActivePlugins
         timezone = site.timezone
         gmtOffset = site.gmtOffset
-        isPublic = site.isPublic
+        visibility = Int64(site.visibility.rawValue)
         canBlaze = site.canBlaze
         isAdmin = site.isAdmin
         wasEcommerceTrial = site.wasEcommerceTrial
@@ -52,7 +52,7 @@ extension Storage.Site: ReadOnlyConvertible {
                     jetpackConnectionActivePlugins: jetpackConnectionActivePlugins ?? [],
                     timezone: timezone ?? "",
                     gmtOffset: gmtOffset,
-                    isPublic: isPublic,
+                    visibility: SiteVisibility(rawValue: Int(visibility)) ?? .privateSite,
                     canBlaze: canBlaze,
                     isAdmin: isAdmin,
                     wasEcommerceTrial: wasEcommerceTrial)

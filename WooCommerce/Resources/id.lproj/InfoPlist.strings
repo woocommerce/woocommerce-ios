@@ -3,6 +3,12 @@
 <!--Warning: Auto-generated file, do not edit.-->
 <plist version="1.0">
   <dict>
+    <key>AddOrderAction.Title</key>
+    <string>Pesanan Baru</string>
+    <key>AddProductAction.Title</key>
+    <string>Tambahkan produk</string>
+    <key>CollectPaymentAction.Title</key>
+    <string>Terima Pembayaran</string>
     <key>NSBluetoothAlwaysUsageDescription</key>
     <string>Aplikasi ini menggunakan Bluetooth untuk terhubung ke pembaca kartu yang didukung.</string>
     <key>NSBluetoothPeripheralUsageDescription</key>
@@ -13,5 +19,9 @@
     <string>Akses Lokasi diperlukan agar dapat menerima pembayaran.</string>
     <key>NSPhotoLibraryUsageDescription</key>
     <string>Diperlukan untuk menyimpan foto dari kamera untuk Gambar produk, atau menambahkan foto atau video ke Produk atau tiket dukungan.</string>
+    <key>OpenOrdersAction.Title</key>
+    <string>Pesanan</string>
+    <key>OpenPaymentsAction.Title</key>
+    <string>Pembayaran</string>
   </dict>
 </plist>

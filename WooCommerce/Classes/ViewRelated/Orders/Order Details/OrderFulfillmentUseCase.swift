@@ -1,5 +1,6 @@
 import Combine
 import Yosemite
+import protocol WooFoundation.Analytics
 
 /// Dispatches a network call for fulfilling an `Order`. This also provides actions for
 /// undoing the fulfillment and retrying failed network calls.

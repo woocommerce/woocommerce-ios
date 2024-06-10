@@ -16,12 +16,12 @@ struct FormattableAmountTextField: View {
         ZStack(alignment: .center) {
             // Hidden input text field
             BindableTextfield("", text: $viewModel.amount, focus: $focusAmountInput)
-                .keyboardType(.decimalPad)
+                .keyboardType(viewModel.allowNegativeNumber ? .numbersAndPunctuation : .decimalPad)
                 .opacity(0)
 
             // Visible & formatted label
             Text(viewModel.formattedAmount)
-                .font(.system(size: Layout.amountFontSize(scale: scale), weight: .bold))
+                .font(.system(size: Layout.amountFontSize(size: viewModel.amountTextSize.fontSize, scale: scale), weight: .bold))
                 .foregroundColor(Color(viewModel.amountTextColor))
                 .minimumScaleFactor(0.1)
                 .lineLimit(1)
@@ -35,8 +35,8 @@ struct FormattableAmountTextField: View {
 
 private extension FormattableAmountTextField {
     enum Layout {
-        static func amountFontSize(scale: CGFloat) -> CGFloat {
-            56 * scale
+        static func amountFontSize(size: CGFloat, scale: CGFloat) -> CGFloat {
+            size * scale
         }
     }
 }

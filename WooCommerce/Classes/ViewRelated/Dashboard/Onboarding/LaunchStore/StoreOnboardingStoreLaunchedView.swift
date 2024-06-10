@@ -109,6 +109,6 @@ private extension StoreOnboardingStoreLaunchedView {
 
 struct StoreOnboardingStoreLaunchedView_Previews: PreviewProvider {
     static var previews: some View {
-        StoreOnboardingStoreLaunchedView(siteURL: URL(string: "https://woo.com")!)
+        StoreOnboardingStoreLaunchedView(siteURL: URL(string: "https://woocommerce.com")!)
     }
 }

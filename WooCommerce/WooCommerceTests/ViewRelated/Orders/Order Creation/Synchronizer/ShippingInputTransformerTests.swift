@@ -20,48 +20,56 @@ class ShippingInputTransformerTests: XCTestCase {
 
         // Then
         let shippingLine = try XCTUnwrap(updatedOrder.shippingLines.first)
-        XCTAssertEqual(shippingLine, input)
-        XCTAssertEqual(updatedOrder.shippingTotal, input.total)
+        assertEqual(input, shippingLine)
+        assertEqual("10.0", updatedOrder.shippingTotal)
     }
 
-    func test_new_input_updates_first_shipping_line_from_order() throws {
+    func test_new_input_adds_expected_shipping_line_to_order() throws {
         // Given
-        let shipping = ShippingLine.fake().copy(shippingID: sampleShippingID, methodID: sampleMethodID, total: "10.00")
-        let shipping2 = ShippingLine.fake().copy(shippingID: sampleShippingID + 1, methodID: sampleMethodID, total: "12.00")
-        let order = Order.fake().copy(shippingLines: [shipping, shipping2])
+        let order = Order.fake()
+        let input = ShippingLine.fake().copy(methodID: "flat_rate", total: "10.00")
 
         // When
-        let input = ShippingLine.fake().copy(methodID: sampleMethodID, total: "12.00")
         let updatedOrder = ShippingInputTransformer.update(input: input, on: order)
 
         // Then
         let shippingLine = try XCTUnwrap(updatedOrder.shippingLines.first)
-        XCTAssertEqual(shippingLine.shippingID, shipping.shippingID)
-        XCTAssertEqual(shippingLine.methodID, input.methodID)
-        XCTAssertEqual(shippingLine.total, input.total)
-        XCTAssertEqual(updatedOrder.shippingTotal, "24.0")
-
-        let shippingLine2 = try XCTUnwrap(updatedOrder.shippingLines[safe: 1])
-        XCTAssertEqual(shipping2, shippingLine2)
+        assertEqual(input, shippingLine)
+        assertEqual("10.0", updatedOrder.shippingTotal)
     }
 
-    func test_new_input_deletes_first_shipping_line_from_order() throws {
+    func test_new_input_with_no_shipping_method_adds_expected_shipping_line_to_order() throws {
+        // Given
+        let order = Order.fake()
+        let input = ShippingLine.fake().copy(methodID: "", total: "10.00")
+
+        // When
+        let updatedOrder = ShippingInputTransformer.update(input: input, on: order)
+
+        // Then
+        let shippingLine = try XCTUnwrap(updatedOrder.shippingLines.first)
+        assertEqual(input.copy(methodID: " "), shippingLine)
+        assertEqual("10.0", updatedOrder.shippingTotal)
+    }
+
+    func test_new_input_updates_matching_shipping_line_from_order() throws {
         // Given
         let shipping = ShippingLine.fake().copy(shippingID: sampleShippingID, methodID: sampleMethodID, total: "10.00")
         let shipping2 = ShippingLine.fake().copy(shippingID: sampleShippingID + 1, methodID: sampleMethodID, total: "12.00")
         let order = Order.fake().copy(shippingLines: [shipping, shipping2])
 
         // When
-        let updatedOrder = ShippingInputTransformer.update(input: nil, on: order)
+        let input = shipping2.copy(total: "10.00")
+        let updatedOrder = ShippingInputTransformer.update(input: input, on: order)
 
         // Then
-        let shippingLine = try XCTUnwrap(updatedOrder.shippingLines.first)
-        XCTAssertNil(shippingLine.methodID)
-        XCTAssertEqual(shippingLine.shippingID, shipping.shippingID)
-        XCTAssertEqual(shippingLine.total, "0")
-        XCTAssertEqual(updatedOrder.shippingTotal, "12.0")
+        let updatedShippingLine = try XCTUnwrap(updatedOrder.shippingLines[safe: 1])
+        assertEqual(input.shippingID, updatedShippingLine.shippingID)
+        assertEqual(input.methodID, updatedShippingLine.methodID)
+        assertEqual(input.total, updatedShippingLine.total)
+        assertEqual("20.0", updatedOrder.shippingTotal)
 
-        let shippingLine2 = try XCTUnwrap(updatedOrder.shippingLines[safe: 1])
-        XCTAssertEqual(shipping2, shippingLine2)
+        let shippingLine = try XCTUnwrap(updatedOrder.shippingLines.first)
+        assertEqual(shippingLine, shipping)
     }
 }

@@ -140,6 +140,10 @@ public class AppSettingsStore: Store {
             setOrderAddOnsFeatureSwitchState(isEnabled: isEnabled, onCompletion: onCompletion)
         case .loadOrderAddOnsSwitchState(onCompletion: let onCompletion):
             loadOrderAddOnsSwitchState(onCompletion: onCompletion)
+        case .setPointOfSaleSwitchState(isEnabled: let isEnabled, onCompletion: let onCompletion):
+            setPointOfSaleSwitchState(isEnabled: isEnabled, onCompletion: onCompletion)
+        case .loadPointOfSaleSwitchState(onCompletion: let onCompletion):
+            loadPointOfSaleSwitchState(onCompletion: onCompletion)
         case .rememberCardReader(cardReaderID: let cardReaderID, onCompletion: let onCompletion):
             rememberCardReader(cardReaderID: cardReaderID, onCompletion: onCompletion)
         case .forgetCardReader(onCompletion: let onCompletion):
@@ -216,6 +220,30 @@ public class AppSettingsStore: Store {
             loadCustomStatsTimeRange(siteID: siteID, onCompletion: onCompletion)
         case let .setCustomStatsTimeRange(siteID, timeRange):
             setCustomStatsTimeRange(siteID: siteID, timeRange: timeRange)
+        case let .loadDashboardCards(siteID, onCompletion):
+            loadDashboardCards(siteID: siteID, onCompletion: onCompletion)
+        case let .setDashboardCards(siteID, cards):
+            setDashboardCards(siteID: siteID, cards: cards)
+        case let .setLastSelectedPerformanceTimeRange(siteID, timeRange):
+            setLastSelectedPerformanceTimeRange(siteID: siteID, timeRange: timeRange)
+        case let .loadLastSelectedPerformanceTimeRange(siteID, onCompletion):
+            loadLastSelectedPerformanceTimeRange(siteID: siteID, onCompletion: onCompletion)
+        case let .setLastSelectedTopPerformersTimeRange(siteID, timeRange):
+            setLastSelectedTopPerformersTimeRange(siteID: siteID, timeRange: timeRange)
+        case let .loadLastSelectedTopPerformersTimeRange(siteID, onCompletion):
+            loadLastSelectedTopPerformersTimeRange(siteID: siteID, onCompletion: onCompletion)
+        case let .setLastSelectedMostActiveCouponsTimeRange(siteID, timeRange):
+            setLastSelectedMostActiveCouponsTimeRange(siteID: siteID, timeRange: timeRange)
+        case let .loadLastSelectedMostActiveCouponsTimeRange(siteID, onCompletion):
+            loadLastSelectedMostActiveCouponsTimeRange(siteID: siteID, onCompletion: onCompletion)
+        case let .setLastSelectedStockType(siteID, type):
+            setLastSelectedStockType(siteID: siteID, type: type)
+        case let .loadLastSelectedStockType(siteID, onCompletion):
+            loadLastSelectedStockType(siteID: siteID, onCompletion: onCompletion)
+        case let .setLastSelectedOrderStatus(siteID, status):
+            setLastSelectedOrderStatus(siteID: siteID, status: status)
+        case let .loadLastSelectedOrderStatus(siteID, onCompletion):
+            loadLastSelectedOrderStatus(siteID: siteID, onCompletion: onCompletion)
         }
     }
 }
@@ -284,6 +312,23 @@ private extension AppSettingsStore {
     ///
     func loadOrderAddOnsSwitchState(onCompletion: (Result<Bool, Error>) -> Void) {
         onCompletion(.success(generalAppSettings.value(for: \.isViewAddOnsSwitchEnabled)))
+    }
+
+    /// Sets the current Point Of Sale beta feature switch state into `GeneralAppSettings`
+    ///
+    func setPointOfSaleSwitchState(isEnabled: Bool, onCompletion: (Result<Void, Error>) -> Void) {
+        do {
+            try generalAppSettings.setValue(isEnabled, for: \.isPointOfSaleEnabled)
+            onCompletion(.success(()))
+        } catch {
+            onCompletion(.failure(error))
+        }
+    }
+
+    /// Loads the current Point Of Sale beta feature switch state from `GeneralAppSettings`
+    ///
+    func loadPointOfSaleSwitchState(onCompletion: (Result<Bool, Error>) -> Void) {
+        onCompletion(.success(generalAppSettings.value(for: \.isPointOfSaleEnabled)))
     }
 
     /// Loads the last persisted eligibility error information from `GeneralAppSettings`
@@ -922,7 +967,7 @@ private extension AppSettingsStore {
 
         let updatedSettings: GeneralStoreSettings
         if let taxRateID = id {
-            updatedSettings = storeSettings.copy(selectedTaxRateID: id)
+            updatedSettings = storeSettings.copy(selectedTaxRateID: taxRateID)
         } else {
             updatedSettings = storeSettings.erasingSelectedTaxRateID()
         }
@@ -946,6 +991,83 @@ private extension AppSettingsStore {
 
     func loadAnalyticsHubCards(siteID: Int64, onCompletion: ([AnalyticsCard]?) -> Void) {
         onCompletion(getStoreSettings(for: siteID).analyticsHubCards)
+    }
+}
+
+// MARK: - Dashboard Cards
+
+private extension AppSettingsStore {
+    func setDashboardCards(siteID: Int64, cards: [DashboardCard]) {
+        let storeSettings = getStoreSettings(for: siteID)
+        let updatedSettings = storeSettings.copy(dashboardCards: cards)
+        setStoreSettings(settings: updatedSettings, for: siteID)
+    }
+
+    func loadDashboardCards(siteID: Int64, onCompletion: ([DashboardCard]?) -> Void) {
+        onCompletion(getStoreSettings(for: siteID).dashboardCards)
+    }
+
+    func setLastSelectedPerformanceTimeRange(siteID: Int64, timeRange: StatsTimeRangeV4) {
+        let storeSettings = getStoreSettings(for: siteID)
+        let updatedSettings = storeSettings.copy(lastSelectedPerformanceTimeRange: timeRange.rawValue)
+        setStoreSettings(settings: updatedSettings, for: siteID)
+    }
+
+    func loadLastSelectedPerformanceTimeRange(siteID: Int64, onCompletion: (StatsTimeRangeV4?) -> Void) {
+        let storeSettings = getStoreSettings(for: siteID)
+        let timeRangeRawValue = storeSettings.lastSelectedPerformanceTimeRange
+        let timeRange = StatsTimeRangeV4(rawValue: timeRangeRawValue)
+        onCompletion(timeRange)
+    }
+
+    func setLastSelectedTopPerformersTimeRange(siteID: Int64, timeRange: StatsTimeRangeV4) {
+        let storeSettings = getStoreSettings(for: siteID)
+        let updatedSettings = storeSettings.copy(lastSelectedTopPerformersTimeRange: timeRange.rawValue)
+        setStoreSettings(settings: updatedSettings, for: siteID)
+    }
+
+    func loadLastSelectedTopPerformersTimeRange(siteID: Int64, onCompletion: (StatsTimeRangeV4?) -> Void) {
+        let storeSettings = getStoreSettings(for: siteID)
+        let timeRangeRawValue = storeSettings.lastSelectedTopPerformersTimeRange
+        let timeRange = StatsTimeRangeV4(rawValue: timeRangeRawValue)
+        onCompletion(timeRange)
+    }
+
+    func setLastSelectedMostActiveCouponsTimeRange(siteID: Int64, timeRange: StatsTimeRangeV4) {
+        let storeSettings = getStoreSettings(for: siteID)
+        let updatedSettings = storeSettings.copy(lastSelectedMostActiveCouponsTimeRange: timeRange.rawValue)
+        setStoreSettings(settings: updatedSettings, for: siteID)
+    }
+
+    func loadLastSelectedMostActiveCouponsTimeRange(siteID: Int64, onCompletion: (StatsTimeRangeV4?) -> Void) {
+        let storeSettings = getStoreSettings(for: siteID)
+        let timeRangeRawValue = storeSettings.lastSelectedMostActiveCouponsTimeRange
+        let timeRange = StatsTimeRangeV4(rawValue: timeRangeRawValue)
+        onCompletion(timeRange)
+    }
+
+    func setLastSelectedStockType(siteID: Int64, type: String) {
+        let storeSettings = getStoreSettings(for: siteID)
+        let updatedSettings = storeSettings.copy(lastSelectedStockType: type)
+        setStoreSettings(settings: updatedSettings, for: siteID)
+    }
+
+    func loadLastSelectedStockType(siteID: Int64, onCompletion: (String?) -> Void) {
+        let storeSettings = getStoreSettings(for: siteID)
+        let stockType = storeSettings.lastSelectedStockType
+        onCompletion(stockType)
+    }
+
+    func setLastSelectedOrderStatus(siteID: Int64, status: String?) {
+        let storeSettings = getStoreSettings(for: siteID)
+        let updatedSettings = storeSettings.copy(lastSelectedOrderStatus: status)
+        setStoreSettings(settings: updatedSettings, for: siteID)
+    }
+
+    func loadLastSelectedOrderStatus(siteID: Int64, onCompletion: (String?) -> Void) {
+        let storeSettings = getStoreSettings(for: siteID)
+        let orderStatus = storeSettings.lastSelectedOrderStatus
+        onCompletion(orderStatus)
     }
 }
 

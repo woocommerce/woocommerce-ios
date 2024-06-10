@@ -1,6 +1,7 @@
 import UIKit
 import SwiftUI
 import struct Yosemite.Site
+import protocol WooFoundation.Analytics
 
 /// Coordinates navigation of the payments setup action from store onboarding.
 final class StoreOnboardingPaymentsSetupCoordinator: Coordinator {

@@ -66,6 +66,12 @@ public final class CouponStore: Store {
             createCoupon(coupon, siteTimezone: siteTimezone, onCompletion: onCompletion)
         case .loadCouponReport(let siteID, let couponID, let startDate, let onCompletion):
             loadCouponReport(siteID: siteID, couponID: couponID, startDate: startDate, onCompletion: onCompletion)
+        case .loadMostActiveCoupons(let siteID, let numberOfCouponsToLoad, let timeRange, let siteTimezone, let onCompletion):
+            loadMostActiveCoupons(siteID: siteID,
+                                  numberOfCouponsToLoad: numberOfCouponsToLoad,
+                                  timeRange: timeRange,
+                                  siteTimezone: siteTimezone,
+                                  onCompletion: onCompletion)
         case .searchCoupons(let siteID, let keyword, let pageNumber, let pageSize, let onCompletion):
             searchCoupons(siteID: siteID,
                           keyword: keyword,
@@ -76,6 +82,8 @@ public final class CouponStore: Store {
             retrieveCoupon(siteID: siteID, couponID: couponID, onCompletion: onCompletion)
         case .validateCouponCode(let code, let siteID, let onCompletion):
             validateCouponCode(code: code, siteID: siteID, onCompletion: onCompletion)
+        case .loadCoupons(let siteID, let couponIDs, let onCompletion):
+            loadCoupons(siteID: siteID, couponIDs: couponIDs, onCompletion: onCompletion)
         }
     }
 }
@@ -206,6 +214,28 @@ private extension CouponStore {
         remote.loadCouponReport(for: siteID, couponID: couponID, from: startDate, completion: onCompletion)
     }
 
+    /// Loads top 3 most active coupons report within the specified time range and site ID.
+    ///
+    /// - `siteID`: site ID.
+    /// - `numberOfCouponsToLoad`: Number of coupons to load.
+    /// - `timeRange`: Time range to fetch report for.
+    /// - `siteTimezone`: site's timezone
+    /// - `onCompletion`: invoked when the reports are fetched.
+    ///
+    func loadMostActiveCoupons(siteID: Int64,
+                               numberOfCouponsToLoad: Int,
+                               timeRange: StatsTimeRangeV4,
+                               siteTimezone: TimeZone,
+                               onCompletion: @escaping (Result<[CouponReport], Error>) -> Void) {
+        let to = timeRange.latestDate(currentDate: Date(), siteTimezone: siteTimezone)
+        let from = timeRange.earliestDate(latestDate: to, siteTimezone: siteTimezone)
+        remote.loadMostActiveCoupons(for: siteID,
+                                     numberOfCouponsToLoad: numberOfCouponsToLoad,
+                                     from: from,
+                                     to: to,
+                                     completion: onCompletion)
+    }
+
     /// Search coupons from a Site that match a specified keyword.
     /// Search results are persisted in the local storage to ensure
     /// good performance for future search of the same keyword.
@@ -260,6 +290,27 @@ private extension CouponStore {
             case .success(let coupon):
                 self.upsertStoredCouponsInBackground(readOnlyCoupons: [coupon], siteID: siteID) {
                     onCompletion(.success(coupon))
+                }
+            }
+        }
+    }
+    /// Loads the coupons for a site given all the coupon IDs
+    ///
+    /// - `siteID`: the site for which coupons should be fetched.
+    /// - `couponIDs`: IDs of the coupons to be retrieved.
+    /// - `onCompletion`: invoked upon completion.
+    ///
+    func loadCoupons(siteID: Int64,
+                     couponIDs: [Int64],
+                     onCompletion: @escaping (_ result: Result<[Coupon], Error>) -> Void) {
+        remote.loadCoupons(for: siteID, by: couponIDs) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .failure(let error):
+                onCompletion(.failure(error))
+            case .success(let coupons):
+                self.upsertStoredCouponsInBackground(readOnlyCoupons: coupons, siteID: siteID) {
+                    onCompletion(.success(coupons))
                 }
             }
         }

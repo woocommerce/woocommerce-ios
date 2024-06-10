@@ -1,5 +1,6 @@
 import UIKit
 import Yosemite
+import protocol WooFoundation.Analytics
 
 /// Configuration and actions for an ULErrorViewController,
 /// modelling an error when WooCommerce is not installed or activated.

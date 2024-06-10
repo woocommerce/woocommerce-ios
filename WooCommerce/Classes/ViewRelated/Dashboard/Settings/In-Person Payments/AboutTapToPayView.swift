@@ -10,7 +10,7 @@ struct AboutTapToPayView: View {
     var body: some View {
         VStack(spacing: 0) {
             ScrollView(.vertical) {
-                VStack {
+                VStack(alignment: .leading) {
                     VStack(alignment: .leading, spacing: Layout.spacing) {
                         Text(Localization.aboutTapToPayHeading)
                             .font(.title2.bold())
@@ -109,7 +109,7 @@ private extension AboutTapToPayView {
             "describes the steps required to take a payment.")
 
         static let howItWorksStep1 = NSLocalizedString(
-            "1. Create an order or collect a payment",
+            "1. Create an order",
             comment: "Step 1 of the 'How it works' list, instructing the merchant to prepare an order for payment")
 
         static let howItWorksStep2 = NSLocalizedString(

@@ -12,13 +12,13 @@
             "id": 13225,
             "name": "learn-more",
             "label": "Learn more",
-            "query": "https:\/\/woo.com\/posts\/pre-launch-checklist-the-essentials\/?utm_source=inbox&utm_medium=product",
+            "query": "https:\/\/woocommerce.com\/posts\/pre-launch-checklist-the-essentials\/?utm_source=inbox&utm_medium=product",
             "status": "actioned",
             "primary": false,
             "actioned_text": "",
             "nonce_action": null,
             "nonce_name": null,
-            "url": "https:\/\/woo.com\/posts\/pre-launch-checklist-the-essentials\/?utm_source=inbox&utm_medium=product"
+            "url": "https:\/\/woocommerce.com\/posts\/pre-launch-checklist-the-essentials\/?utm_source=inbox&utm_medium=product"
         }],
         "layout": "plain",
         "image": "",
@@ -38,13 +38,13 @@
             "id": 13271,
             "name": "optimizing-the-checkout-flow",
             "label": "Learn more",
-            "query": "https:\/\/woo.com\/posts\/optimizing-woocommerce-checkout?utm_source=inbox",
+            "query": "https:\/\/woocommerce.com\/posts\/optimizing-woocommerce-checkout?utm_source=inbox",
             "status": "actioned",
             "primary": true,
             "actioned_text": "",
             "nonce_action": null,
             "nonce_name": null,
-            "url": "https:\/\/woo.com\/posts\/optimizing-woocommerce-checkout?utm_source=inbox"
+            "url": "https:\/\/woocommerce.com\/posts\/optimizing-woocommerce-checkout?utm_source=inbox"
         }],
         "layout": "plain",
         "image": "",

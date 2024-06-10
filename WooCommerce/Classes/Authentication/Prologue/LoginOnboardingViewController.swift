@@ -1,6 +1,7 @@
 import Experiments
 import SwiftUI
 import UIKit
+import protocol WooFoundation.Analytics
 
 /// Contains a feature carousel with buttons that end up on the login prologue screen.
 final class LoginOnboardingViewController: UIViewController {

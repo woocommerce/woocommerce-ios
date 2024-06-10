@@ -194,12 +194,13 @@ final class BlazeCampaignListViewModelTests: XCTestCase {
     func test_campaignModels_match_loaded_campaigns() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let campaign = BlazeCampaignListItem.fake().copy(siteID: sampleSiteID)
+        let campaign1 = BlazeCampaignListItem.fake().copy(siteID: sampleSiteID, campaignID: "9", budgetCurrency: "USD")
+        let campaign2 = BlazeCampaignListItem.fake().copy(siteID: sampleSiteID, campaignID: "10", budgetCurrency: "USD")
         stores.whenReceivingAction(ofType: BlazeAction.self) { action in
             guard case let .synchronizeCampaignsList(_, _, _, onCompletion) = action else {
                 return
             }
-            self.insertCampaigns([campaign])
+            self.insertCampaigns([campaign1, campaign2])
             onCompletion(.success(true))
         }
         let viewModel = BlazeCampaignListViewModel(siteID: sampleSiteID, stores: stores, storageManager: storageManager)
@@ -208,7 +209,8 @@ final class BlazeCampaignListViewModelTests: XCTestCase {
         viewModel.loadCampaigns()
 
         // Then
-        XCTAssertEqual(viewModel.campaigns.first, campaign)
+        // ensure that the items are sorted correctly by IDs
+        XCTAssertEqual(viewModel.campaigns, [campaign2, campaign1])
     }
 
     func test_campaignModels_are_empty_when_loaded_campaigns_are_empty() {
@@ -232,8 +234,8 @@ final class BlazeCampaignListViewModelTests: XCTestCase {
     func test_campaignModels_are_sorted_by_id() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let campaignWithSmallerID = BlazeCampaignListItem.fake().copy(siteID: sampleSiteID, campaignID: "1")
-        let campaignWithLargerID = BlazeCampaignListItem.fake().copy(siteID: sampleSiteID, campaignID: "3")
+        let campaignWithSmallerID = BlazeCampaignListItem.fake().copy(siteID: sampleSiteID, campaignID: "1", budgetCurrency: "USD")
+        let campaignWithLargerID = BlazeCampaignListItem.fake().copy(siteID: sampleSiteID, campaignID: "3", budgetCurrency: "USD")
         stores.whenReceivingAction(ofType: BlazeAction.self) { action in
             guard case let .synchronizeCampaignsList(_, _, _, onCompletion) = action else {
                 return

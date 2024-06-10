@@ -28,6 +28,14 @@ public struct CardPresentTransactionDetails: Codable, Equatable, GeneratedFakeab
     /// (Only applicable to EMV payments) The authorization data from the card issuer.
     public let emvAuthData: String?
 
+    /// If this payment is from a card wallet, this contains the details of the card wallet.
+    public let wallet: Wallet?
+
+    /// Identifies which network this charge was processed on.
+    /// Contains SCPCardBrand represented as a nullable NSNumber. - https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPCardBrand.html
+    /// Only available after confirming the PaymentIntent.
+    public let cardBrandAssociatedIdentifier: Double?
+
     public init(last4: String,
                 expMonth: Int,
                 expYear: Int,
@@ -35,7 +43,9 @@ public struct CardPresentTransactionDetails: Codable, Equatable, GeneratedFakeab
                 brand: CardBrand,
                 generatedCard: String?,
                 receipt: ReceiptDetails?,
-                emvAuthData: String?) {
+                emvAuthData: String?,
+                wallet: Wallet?,
+                network: NSNumber?) {
         self.last4 = last4
         self.expMonth = expMonth
         self.expYear = expYear
@@ -44,6 +54,15 @@ public struct CardPresentTransactionDetails: Codable, Equatable, GeneratedFakeab
         self.generatedCard = generatedCard
         self.receipt = receipt
         self.emvAuthData = emvAuthData
+        self.wallet = wallet
+        self.cardBrandAssociatedIdentifier = network?.doubleValue
+    }
+
+    public var network: NSNumber? {
+        guard let cardBrandAssociatedIdentifier else {
+            return nil
+        }
+        return NSNumber(value: cardBrandAssociatedIdentifier)
     }
 }
 
@@ -57,5 +76,7 @@ extension CardPresentTransactionDetails {
         case generatedCard = "generated_card"
         case receipt = "receipt"
         case emvAuthData = "emv_auth_data"
+        case wallet = "wallet"
+        case cardBrandAssociatedIdentifier = "cardBrandAssociatedIdentifier"
     }
 }

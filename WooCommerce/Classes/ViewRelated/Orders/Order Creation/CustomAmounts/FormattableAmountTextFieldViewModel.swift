@@ -34,7 +34,7 @@ final class FormattableAmountTextFieldViewModel: ObservableObject {
             return false
         }
 
-        return amountDecimal > .zero
+        return allowNegativeNumber ? true : amountDecimal > .zero
     }
 
     /// Formatted amount to display. When empty displays a placeholder value.
@@ -46,12 +46,24 @@ final class FormattableAmountTextFieldViewModel: ObservableObject {
     /// Defines the amount text color.
     ///
     var amountTextColor: UIColor {
-        amount.isEmpty ? .textSubtle : .text
+        amount.isEmpty ? .textPlaceholder : .text
     }
 
-    init(locale: Locale = Locale.autoupdatingCurrent,
-        storeCurrencySettings: CurrencySettings = ServiceLocator.currencySettings) {
-        self.priceFieldFormatter = .init(locale: locale, storeCurrencySettings: storeCurrencySettings)
+    /// Defines the amount text size.
+    ///
+    let amountTextSize: AmountTextSize
+
+    /// Whether the amount is allowed to be negative.
+    ///
+    let allowNegativeNumber: Bool
+
+    init(size: AmountTextSize = .extraLarge,
+         locale: Locale = Locale.autoupdatingCurrent,
+         storeCurrencySettings: CurrencySettings = ServiceLocator.currencySettings,
+         allowNegativeNumber: Bool = false) {
+        self.priceFieldFormatter = .init(locale: locale, storeCurrencySettings: storeCurrencySettings, allowNegativeNumber: allowNegativeNumber)
+        amountTextSize = size
+        self.allowNegativeNumber = allowNegativeNumber
     }
 
     func reset() {
@@ -62,5 +74,21 @@ final class FormattableAmountTextFieldViewModel: ObservableObject {
         resetAmountWithNewValue = false
         amount = newAmount
         resetAmountWithNewValue = true
+    }
+}
+
+extension FormattableAmountTextFieldViewModel {
+    enum AmountTextSize {
+        case title2
+        case extraLarge
+
+        var fontSize: CGFloat {
+            switch self {
+            case .title2:
+                return UIFont.title2.pointSize
+            case .extraLarge:
+                return 56
+            }
+        }
     }
 }

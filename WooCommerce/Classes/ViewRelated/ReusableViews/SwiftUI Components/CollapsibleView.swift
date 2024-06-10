@@ -44,7 +44,7 @@ struct CollapsibleView<Label: View, Content: View>: View {
                     isCollapsed.toggle()
                 }
             }, label: {
-                HStack {
+                HStack(alignment: .top) {
                     label
                     Spacer()
                     if isCollapsible {

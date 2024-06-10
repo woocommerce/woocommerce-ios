@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-03-05 09:54:03+0000 */
+/* Translation-Revision-Date: 2024-06-04 15:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_TW */
@@ -12,7 +12,8 @@
 /* Label that describes the completed progress of an update being installed (e.g. 15% complete). Keep the %.0f%% exactly as is */
 "%.0f%% complete" = "已完成 %.0f%%";
 
-/* In Shipping Labels Package Details, the pattern used to show the weight of a product. For example, “1lbs”. */
+/* In Shipping Labels Package Details, the pattern used to show the weight of a product. For example, “1lbs”.
+   Title for the plugin detail row in settings. %1$@ is a placeholder for the plugin name. This is displayed with the current version number, and whether an update is available. */
 "%1$@" = "%1$@";
 
 /* Format for each Product attribute in singular form */
@@ -20,10 +21,6 @@
 
 /* Format for each Product attribute in plural form */
 "%1$@ (%2$ld options)" = "%1$@ (%2$ld 選項)";
-
-/* Displays a date range for a custom stats interval
-   Displays a date range for a stats interval */
-"%1$@ - %2$@" = "%1$@-%2$@";
 
 /* Labels an order note. The user know it's not visible to the customer. Reads like 05:30 PM - username (Private) */
 "%1$@ - %2$@ (Private)" = "%1$@ - %2$@ (隱藏)";
@@ -34,15 +31,11 @@
 /* Labels an order note. The user know it's visible to the customer. Reads like 05:30 PM - username (To Customer) */
 "%1$@ - %2$@ (To Customer)" = "%1$@ - %2$@ (向顧客顯示)";
 
-/* Description of the subscription price for a product, with the price and billing frequency. Reads like: '$60.00 / 2 months'.
-   The original price of a domain. %1$@ is the price per term. %2$@ is the duration of each pricing term, usually year. */
+/* The original price of a domain. %1$@ is the price per term. %2$@ is the duration of each pricing term, usually year. */
 "%1$@ \/ %2$@" = "%1$@ \/ %2$@";
 
 /* The default name for a duplicated product, with %1$@ being the original name. Reads like: Ramen Copy */
 "%1$@ Copy" = "%1$@ 複本";
-
-/* Title for the plugin version detail row in settings. %1$@ is a placeholder for the plugin name. This is displayed with the current version number, and whether an update is available. */
-"%1$@ Version" = "版本 %1$@";
 
 /* A label prompting users to learn more about Tap to Pay on iPhone"
 %1$@ is a placeholder that always replaced with \"Learn more\" string,
@@ -61,9 +54,6 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility description for a card payment method, used by assistive technologies such as screen reader. %1$@ is a placeholder for the card brand, %2$@ is a placeholder for the last 4 digits of the card number */
 "%1$@ card ending %2$@" = "卡號結尾是 %2$@ 的 %1$@ 卡";
 
-/* Exception rule for a coupon. Reads like: 3 Products excl. 1 Category */
-"%1$@ excl. %2$@" = "除 %2$@以外的 %1$@";
-
 /* Label about product's inventory stock status shown during order creation
    Label about product's inventory stock status shown on Products tab */
 "%1$@ in stock" = "%1$@ 尚有庫存";
@@ -77,8 +67,8 @@ which should be translated separately and considered part of this sentence. */
 /* Review title. Reads as {Review author} left a review on {Product}. */
 "%1$@ left a review on %2$@" = "%1$@ 在 %2$@ 上留下了評論";
 
-/* Summary line for a coupon, with the discounted amount and number of products and categories that the coupon is limited to. Reads like: '10% off all products' or '$15 off 2 Product 1 Category' */
-"%1$@ off %2$@" = "%2$@可享 %1$@ 折扣";
+/* Summary line for a coupon, with the discounted amount and number of products and categories that the coupon is limited to. Reads like: '10% off · all products' or '$15 off · 2 Product 1 Category' */
+"%1$@ off · %2$@" = "「%2$@」可享 %1$@ 優惠";
 
 /* Notice format when a shipping label refund request is successful. The first variable shows the shipping label service name (e.g. USPS Priority Mail). The second variable shows the formatted amount that is eligible for refund  (e.g. $7.50). */
 "%1$@ refund requested (%2$@)" = "已提出 %1$@ 退款要求 (%2$@)";
@@ -92,8 +82,15 @@ which should be translated separately and considered part of this sentence. */
 /* Payment on <date> received via (payment method title) */
 "%1$@ via %2$@" = "已在 %1$@ 收到 %2$@ 付款";
 
+/* Exception rule for a coupon. Reads like: 3 Products · Excl. 1 Category */
+"%1$@ · Excl. %2$@" = "除了「%2$@」以外的「%1$@」";
+
 /* In Order Details, the pattern used to show the quantity multiplied by the price. For example, “23 × $400.00”. The %1$@ is the quantity. The %2$@ is the formatted price with currency (e.g. $400.00). Please take care to use the multiplication symbol ×, not a letter x, where appropriate. */
 "%1$@ × %2$@" = "%1$@ × %2$@。";
+
+/* Displays a date range for a custom stats interval
+   Displays a date range for a stats interval */
+"%1$@ – %2$@" = "%1$@-%2$@";
 
 /* Order refunded shipping label title. The first variable shows the refunded amount (e.g. $12.90). The second variable shows the requested date (e.g. Jan 12, 2020 12:34 PM). */
 "%1$@ • %2$@" = "%1$@• %2$@";
@@ -284,7 +281,7 @@ which should be translated separately and considered part of this sentence. */
 "1. Available as standard in WooCommerce Payments (restrictions apply).Additional extensions may be required for other payment providers." = "1. 此為 WooCommerce Payments 的標準功能 (有其限制)。其他付款服務供應商可能需要額外安裝擴充功能才能使用。";
 
 /* Step 1 of the 'How it works' list, instructing the merchant to prepare an order for payment */
-"1. Create an order or collect a payment" = "1. 建立訂單或收取款項";
+"1. Create an order" = "1. 建立訂單";
 
 /* Settings > Manage Card Reader > Connect > Help hint number 2
    Settings > Set up Tap to Pay on iPhone > Information > Help hint number 2 */
@@ -305,6 +302,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Step 3 of the 'How it works' list, instructing the merchant to present the phone to the shopper */
 "3. Present your iPhone to the customer." = "3. 向顧客展示你的 iPhone。";
+
+/* Tutorial steps on the application password tutorial screen */
+"3. When the connection is complete, you will be logged in to your store." = "3. 連結完成後，系統會將你登入自己的商店。";
 
 /* Estimated setup time text shown on the Woo payments setup instructions screen. */
 "4-6 minutes" = "4-6 分鐘";
@@ -419,12 +419,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Application's Active State
    Display label for the subscription status type
-   Status name of an active Blaze campaign
+   Status name of an approved Blaze campaign
    Status of coupons that are active */
 "Active" = "啟用";
-
-/* Title for table view section of active plugins */
-"Active Plugins" = "啟用中的外掛程式";
 
 /* The plugin is active on the site and has not enabled automatic updates */
 "Active, Autoupdates off" = "已啟用，關閉自動更新";
@@ -511,9 +508,6 @@ which should be translated separately and considered part of this sentence. */
    Title text of the button that allows to add multiple products when creating or editing an order */
 "Add Products" = "新增商品";
 
-/* Title for the Shipping Line screen during order creation */
-"Add Shipping" = "新增運送";
-
 /* Title for the button to add the Shipping Address in Order Details */
 "Add Shipping Address" = "新增運送地址";
 
@@ -524,9 +518,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title on empty state button when the product has attributes but no variations
    Title on the bottom sheet to choose what variation process to start */
 "Add Variation" = "新增款式";
-
-/* Button title on the store picker for store creation */
-"Add a Store" = "新增商店";
 
 /* Title for the Add a Different Address switch in the Address form */
 "Add a different shipping address" = "新增其他運送地址";
@@ -581,9 +572,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button title in the Shipping Label Payment Method screen */
 "Add credit card" = "新增信用卡";
-
-/* Title of the order customer selection screen. */
-"Add customer details" = "新增顧客詳細資料";
 
 /* Message of the product description AI local announcement. */
 "Add descriptions in a snap with AI. Try our feature today!" = "讓 AI 幫助你迅速新增說明。 立即試用我們的功能！";
@@ -725,8 +713,8 @@ which should be translated separately and considered part of this sentence. */
    Title of the product search filter to search for all products. */
 "All Products" = "所有產品";
 
-/* Exception rule for a coupon. Reads like: All Products excl. 2 Products */
-"All Products excl. %1$@" = "除了 %1$@以外的所有商品";
+/* Exception rule for a coupon. Reads like: All Products · Excl. 2 Products */
+"All Products · Excl. %1$@" = "除了「%1$@」以外的所有商品";
 
 /* Value for the limit usage to X items row in Coupon Usage Restrictions screen when no limit is set */
 "All Qualifying" = "所有符合條件的商品";
@@ -794,8 +782,7 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Amount field in the Coupon Edit or Creation screen for a percentage discount coupon. */
 "Amount (%)" = "金額 (%)";
 
-/* Title for the amount field on the Fee/Discounts Details screenduring order creation Parameters: %1$@ - currency symbol
-   Title for the amount field on the Shipping Details screen during order creationParameters: %1$@ - currency symbol */
+/* Title for the amount field on the Fee/Discounts Details screenduring order creation Parameters: %1$@ - currency symbol */
 "Amount (%1$@)" = "金額 (%1$@)";
 
 /* Title of the Amount field on the Coupon Edit or Creation screen for a fixed amount discount coupon.Reads like: Amount ($) */
@@ -930,7 +917,6 @@ which should be translated separately and considered part of this sentence. */
 "Approve" = "核准";
 
 /* Display label for the review's approved status
-   Status name of an approved Blaze campaign
    Unapprove a comment */
 "Approved" = "已核准";
 
@@ -1095,9 +1081,6 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Bangladesh" = "孟加拉";
 
-/* VoiceOver accessibility value about a specific bar in the revenue chart.It reads: Bar number {bar number} {summary of bar}. */
-"Bar number %i, %@, " = "長條數目 %1$i, %2$@,";
-
 /* Country option for a site address. */
 "Barbados" = "巴貝多";
 
@@ -1230,6 +1213,12 @@ which should be translated separately and considered part of this sentence. */
 /* Title for Bundled Products row in the product form screen. */
 "Bundled products" = "搭售產品";
 
+/* Title for the product bundles card on the analytics hub screen. */
+"Bundles" = "搭售方案";
+
+/* Title for the bundles sold column on the product bundles card on the analytics hub screen. */
+"Bundles Sold" = "售出的搭售方案";
+
 /* Country option for a site address. */
 "Burkina Faso" = "布吉納法索";
 
@@ -1351,7 +1340,6 @@ which should be translated separately and considered part of this sentence. */
    Button to dismiss the site credential login screen
    Button to dismiss the store creation profiler flow
    Button to dismiss the store name screen
-   Button to dismiss the survey screen.
    Button to dismiss the view or error alerts of the application password authorization web view
    Button to dismiss. Presented to users when updating the card reader software fails
    Cancel button in the More Options action sheet
@@ -1392,7 +1380,6 @@ which should be translated separately and considered part of this sentence. */
    The title of the button to cancel issuing a refund.
    Title for canceling the edit attribute action sheet.
    Title for the button to cancel the payment methods screen
-   Title for the button to cancel the simple payments screen
    Title of an option to dismiss the bulk edit action sheet
    Title of dismiss button presented when site credential login fails
    Title of the alert dismiss action when the site cannot be launched from store onboarding > launch store screen.
@@ -1491,6 +1478,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message when the card is removed from the reader prematurely. */
 "Card was removed too soon - please try transaction again" = "太快移除卡片 - 請重新交易";
+
+/* Label for a cancel button when an optional software update is happening */
+"CardPresentModalUpdateProgress.button.cancelOptionalButtonText" = "取消";
+
+/* Label for a cancel button when a mandatory software update is happening */
+"CardPresentModalUpdateProgress.button.cancelRequiredButtonText" = "仍然要取消";
+
+/* Label for a dismiss button when a software update has finished */
+"CardPresentModalUpdateProgress.button.dismissButtonText" = "關閉";
 
 /* Navigation bar title of shipping label carrier and rates screen */
 "Carrier and Rates" = "貨運業者和費率";
@@ -1688,7 +1684,6 @@ which should be translated separately and considered part of this sentence. */
    Text for the close button in the Coupon Details screen
    Text for the close button in the Edit Address Form
    Text for the close button in the Fee/Discounts Details screen
-   Text for the close button in the Shipping Line Details screen
    Title of the Close action on the Jetpack Install view */
 "Close" = "關閉";
 
@@ -1712,6 +1707,27 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility value when a banner is collapsed */
 "Collapsed" = "已收合";
+
+/* The label points to the free trial conditions for product subscriptions */
+"CollapsibleProductRowCard.text.freetrial" = "免費試用";
+
+/* The label points to the charge interval for product subscriptions */
+"CollapsibleProductRowCard.text.interval" = "間隔";
+
+/* The label points to the sign up fee conditions for product subscriptions */
+"CollapsibleProductRowCard.text.signupfee" = "註冊費";
+
+/* Description of the billing and billing frequency for a subscription product. Reads as: 'Every 2 months'. */
+"CollapsibleProductRowCardViewModel.formattedBillingDetails" = "每 %2$@ %1$@";
+
+/* Description of the free trial conditions for a subscription product. Reads as: '3 days free'. */
+"CollapsibleProductRowCardViewModel.formattedFreeTrial" = "%1$@ %2$@免費";
+
+/* Description of the signup fees for a subscription product. Reads as: '$5.00 signup'. */
+"CollapsibleProductRowCardViewModel.formattedSignUpFee" = "註冊費只需 %1$@";
+
+/* Summary of quantity and signup fees for a subscription product when multiple are selected.Reads as: '3 × $0.60'. Please ensure you use a multiplication symbol, not a letter x */
+"CollapsibleProductRowCardViewModel.signupFeeSummary" = "%1$@ × %2$@";
 
 /* SKU label for a product in an order. The variable shows the SKU of the product. */
 "CollapsibleProductRowCardViewModel.skuFormat" = "貨號：%1$@";
@@ -1751,8 +1767,7 @@ which should be translated separately and considered part of this sentence. */
 /* Third instruction on the test order screen */
 "Complete the payment and await a push notification about the order on your WooCommerce app." = "完成付款流程，並等候 WooCommerce 應用程式的訂單推播通知。";
 
-/* Display label for completed order status.
-   Status name of a completed Blaze campaign */
+/* Display label for completed order status. */
 "Completed" = "已完成";
 
 /* Title for the list of component options in the Component Settings view */
@@ -1828,9 +1843,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Jetpack setup required screen */
 "Connect Store" = "連結商店";
 
-/* Button to connect to an existing store from the store picker */
-"Connect an existing store" = "連結現有商店";
-
 /* Name of the connection step on the Jetpack setup screen */
 "Connect store to Jetpack" = "將商店連結至 Jetpack";
 
@@ -1887,9 +1899,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Name of the step to connect the store to Jetpack */
 "Connecting your store" = "連結至你的商店";
-
-/* Screen title for the connectivity tool */
-"Connectivity Test" = "連線測試";
 
 /* Contact Customer action in Shipping Label Address Validation. */
 "Contact Customer" = "聯絡客戶";
@@ -1966,9 +1975,6 @@ which should be translated separately and considered part of this sentence. */
 /* Shown while logging in with Apple and the app waits for the site creation process to complete. */
 "Continuing with Apple" = "繼續使用 Apple";
 
-/* Conversion stat label on dashboard. */
-"Conversion" = "轉換";
-
 /* Label for the conversion rate (orders per visitor) in the Analytics Hub */
 "Conversion Rate" = "轉換率";
 
@@ -2002,9 +2008,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Costa Rica" = "哥斯大黎加";
-
-/* The title of the button for giving a negative feedback for the app. */
-"Could Be Better" = "可以再好一點";
 
 /* Message shown when site purchases API failed */
 "Could not check site purchases." = "無法確認網站購買項目。";
@@ -2096,9 +2099,6 @@ which should be translated separately and considered part of this sentence. */
 /* The button title text for creating a new account. */
 "Create Account" = "建立帳號";
 
-/* Action button linking to create WooCommerce store flow.Presented when logging in with an email address that is not a WordPress.com account */
-"Create An Account" = "建立帳號";
-
 /* Title of the create coupon button on the coupon list screen when it's empty */
 "Create Coupon" = "建立優惠券";
 
@@ -2124,9 +2124,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description for fixed cart discount type on the action sheet presented from Add or Edit coupon screen */
 "Create a fixed total discount for the entire cart" = "為整個購物車建立固定的總折扣";
-
-/* Button to create a new store from the store picker */
-"Create a new store" = "建立新商店";
 
 /* Description for percentage discount type on the action sheet presented from Add or Edit coupon screen */
 "Create a percentage discount for selected products" = "為選取的產品建立百分比折扣";
@@ -2289,9 +2286,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the store onboarding task to customize the store domain. */
 "Customize your domain" = "自訂你的網域";
 
-/* Subtitle of the store onboarding task to update store title */
-"Customizing your store name can also help your store search engine optimization." = "自訂商店名稱也能協助商店提升搜尋引擎最佳化。";
-
 /* Navigation title for Customs screen in Shipping Label flow
    Title of the cell Customs inside Create Shipping Label form */
 "Customs" = "海關";
@@ -2345,7 +2339,6 @@ which should be translated separately and considered part of this sentence. */
 "Default Option" = "預設選項";
 
 /* Button title Delete in Downloadable File Options Action Sheet
-   Button title Delete in Edit Product More Options Action Sheet
    Button to delete a product category
    Title for the action button on the confirm alert for deleting coupon on the Coupon Details screen */
 "Delete" = "刪除";
@@ -2432,9 +2425,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title text for the product discount row informational tooltip */
 "Discounts unavailable" = "折扣不適用";
-
-/* Message on the local notification to remind the user to purchase a plan. */
-"Discover advanced features and personalized recommendations for your store! Tap to pick a plan that suits you best." = "探索適用於貴店的進階功能和個人化建議！ 點選以挑選最適合你的方案。";
 
 /* Details on the store onboarding payments setup screen. */
 "Discover other payment providers and choose a payment provider." = "探索其他付款服務供應商，並從中選擇一家。";
@@ -2560,7 +2550,6 @@ which should be translated separately and considered part of this sentence. */
    Text for the done button in the Edit Address Form
    Text for the done button in the edit customer provided note screen
    Text for the done button in the Fee/Discounts Details screen
-   Text for the done button in the Shipping Line Details screen
    The button title to indicate that the user has finished updating their store's address and isready to close the webview. This also tries to connect to the reader again.
    Title for the Done button on a WebView modal sheet
    Title of the button to finish the domain purchase success screen. */
@@ -2813,18 +2802,12 @@ which should be translated separately and considered part of this sentence. */
    Label for one of the filters in order custom date range */
 "End Date" = "結束日期";
 
-/* The title used when asking the user for feedback for the app. */
-"Enjoying the WooCommerce app?" = "喜歡 WooCommerce 應用程式嗎？";
-
 /* Step 3 of shipping label printing instructions screen. The content inside two double asterisks **...** denote bolded text. */
 "Ensure that your **printer firmware is up to date**. See your printer documentation for instructions on updating." = "請確認你的**印表機韌體是最新的版本**。 如需瞭解如何更新，請參閱印表機的說明文件。";
 
 /* Address field placeholder in Edit Address Form
    Button to open a webview at the admin pages, so that the merchant can update their store address to continue setting up In Person Payments */
 "Enter Address" = "輸入地址";
-
-/* Short instructions label in the simple payments screen */
-"Enter Amount" = "輸入金額";
 
 /* Action button linking to instructions for enter another store.Presented when logging in with a site address that appears to be invalid.
    Action button linking to instructions for enter another store.Presented when logging in with a site address that is not a WordPress site */
@@ -3196,9 +3179,6 @@ which should be translated separately and considered part of this sentence. */
 /* Line description for 'Fees' cart total on the receipt. Only shown when non-zero. */
 "Fees" = "費用";
 
-/* Info message shown when the order contains multiple fees and shipping lines */
-"Fees & Shipping details are incomplete.\nTo edit all the details, view the order in your WooCommerce store admin." = "費用和運送詳細資訊不齊全。\n若要編輯詳細資訊，請在你的 WooCommerce 商店管理員中檢視訂單。";
-
 /* Blocking indicator text when fetching existing variations prior generating them. */
 "Fetching Variations..." = "正在擷取款式…";
 
@@ -3261,6 +3241,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the error screen when an in-person payments plugin is active but not set up. %1$@ contains the plugin name. */
 "Finish setup for %1$@ in your store admin" = "在商店管理員中完成設定 %1$@";
 
+/* Status name of a completed Blaze campaign */
+"Finished" = "完成";
+
 /* Country option for a site address. */
 "Finland" = "芬蘭";
 
@@ -3284,6 +3267,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label asking users to follow the on-screen Tap to Pay on iPhone instructions. Presented when a payment is going to be collected using Tap to Pay on iPhone, which results in an Apple-provided screen being shown with instructions for payment. */
 "Follow the on-screen instructions to pay" = "按照螢幕上的指示付款";
+
+/* Tutorial steps on the application password tutorial screen */
+"Follow these steps to connect the Woo app directly to your store using an application password.\n\n1. First, log in using your site credentials.\n\n2. When prompted, approve the connection by tapping the confirmation button." = "請依照以下步驟，透過應用程式密碼將 Woo 應用程式直接連結至你的商店。\n\n1. 首先，請透過網站憑證登入。\n\n2. 系統出現提示後，請點選確認按鈕以核准連結。";
 
 /* User role badge */
 "Follower" = "關注者";
@@ -3658,21 +3644,14 @@ which should be translated separately and considered part of this sentence. */
 /* Browse our help documentation website title */
 "Help Center" = "說明中心";
 
-/* Title in Free trail survey screen. */
-"Help us understand your subscription decisions. Your feedback matters." = "與我們分享你的訂閱決策。 我們很重視你的意見。";
-
 /* Text used when sharing a link to the app with a friend. */
 "Hey! Here is a link to download the WooCommerce app. I'm really enjoying it and thought you might too." = "嗨！ 在此提供 WooCommerce 應用程式的下載連結。我很喜歡這個應用程式，相信你也會喜歡。 ";
-
-/* Message on the local notification about a newly created store.The placeholder is the name of the user. */
-"Hi %1$@, Welcome to your 14-day free trial of Woo Express – everything you need to start and grow a successful online business, all in one place. Ready to explore?" = "%1$@，你好，歡迎免費試用 14 天 Woo Express：建立及發展成功線上事業所需的一切工具，這裡通通都有。 準備好開始探索了嗎？";
 
 /* Accessibility value if login page's password field is hiding the password (i.e. with asterisks).
    Display label for the product's catalog visibility */
 "Hidden" = "隱藏";
 
-/* Action title for hiding store onboarding task list
-   Title of the Hide store setup list button in the action sheet. */
+/* Title of the Hide store setup list button in the action sheet. */
 "Hide store setup list" = "隱藏商店設定清單";
 
 /* Subtitle on the add product features screen. */
@@ -3702,29 +3681,14 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Hungary" = "匈牙利";
 
-/* The title of the button for giving a positive feedback for the app. */
-"I Like It" = "我喜歡";
-
 /* Option in the store creation selling status question. */
 "I am already selling online" = "我已在線上銷售";
-
-/* Text for Free trial survey answer. */
-"I am evaluating and comparing your service with others on the market" = "我還在評估你們的服務，並與市面上其他服務比較";
 
 /* Option in the store creation selling status question. */
 "I am just starting to sell" = "我剛要開始銷售";
 
-/* Text for Free trial survey answer. */
-"I am part of a team, and we need to make the decision collectively." = "我隸屬於一個團隊，需要與成員取得共識。";
-
 /* Option in the store creation selling status question. */
 "I am selling offline" = "我從事線下銷售";
-
-/* Text for Free trial survey answer. */
-"I am still exploring and assessing the features and benefits of the app." = "我還在探索並評估應用程式的功能與優勢。";
-
-/* Text for Free trial survey answer. */
-"I find the price of the service to be a significant factor in my decision." = "我認為服務價格是影響我決策的重要因素。";
 
 /* Text on the support form to refer to what area the user has problem with. */
 "I need help with" = "我需要協助處理";
@@ -3772,7 +3736,10 @@ which should be translated separately and considered part of this sentence. */
 "If you continue with Apple or Google and don't already have a WordPress.com account, you are creating an account and you agree to our _Terms of Service_." = "如果你繼續使用 Apple 或 Google 操作且尚未擁有 WordPress.com 帳號，即表示你正在建立帳號，並同意我們的_服務條款_。";
 
 /* Text to contact support in the application password tutorial screen */
-"If you encounter any problem, contact us and we will happily assist you!" = "如果你遇到任何問題，歡迎聯絡我們，我們很樂意提供協助。";
+"If you run into any issues, please contact our support team." = "如果你遇到任何問題，請聯絡我們的支援團隊。";
+
+/* Info message when there are no connection issues in the connectivity tool screen */
+"If your data still isn’t loading, contact our support team for assistance." = "如果仍無法載入資料，請聯絡我們的支援團隊取得協助。";
 
 /* Heading for the details pane showing the contactless limit on About Tap to Pay */
 "Important information" = "重要資訊";
@@ -3782,9 +3749,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* A fallback describing the contactless limit, shown on the About Tap to Pay screen. %1$@ will be replaced with the country name of the store, which is a trade off as it can't be contextually translated, however this string is only used when there's a problem decoding the limit, so it's acceptable. */
 "In %1$@, cards may only be used with Tap to Pay for transactions up to the contactless limit." = "在 %1$@，與「卡緊收」搭配使用的卡片交易限額為感應交易上限。";
-
-/* Status name of a Blaze campaign under moderation */
-"In Moderation" = "審核中";
 
 /* Accessibility label for an indeterminate loading indicator */
 "In progress" = "進行中";
@@ -3829,9 +3793,6 @@ which should be translated separately and considered part of this sentence. */
 /* Application's Inactive State */
 "Inactive" = "未啟用";
 
-/* Title for table view section of inactive plugins */
-"Inactive Plugins" = "未啟用的外掛程式";
-
 /* The plugin is not active on the site and has not enabled automatic updates */
 "Inactive, Autoupdates off" = "未啟用，關閉自動更新";
 
@@ -3860,9 +3821,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Subtitle of the product form bottom sheet action for linked products. */
 "Increase sales with upsells and cross-sells" = "透過追加銷售和交叉銷售提高銷售額";
-
-/* Subtitle of the Blaze campaign view. */
-"Increase visibility and get your products sold quickly." = "提升能見度，加速產品銷售。";
 
 /* Country option for a site address. */
 "India" = "印度";
@@ -4060,6 +4018,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* An error message displayed when the user tries to log in to the app with a simple WP.com site. Reads like: It seems that your site google.com is a simple WordPress.com site that cannot install plugins. Please upgrade your plan to use WooCommerce. */
 "It seems that your site %@ is a simple WordPress.com site that cannot install plugins. Please upgrade your plan to use WooCommerce." = "你的網站 %@ 似乎是簡易的 WordPress.com 網站，因此無法安裝外掛程式。 若要使用 WooCommerce，請升級你的方案。";
+
+/* Error message explaining login failure due to invalid credentials. */
+"It seems the username or password you entered doesn't quite match. Double-check your credentials and try again." = "看來你輸入的使用者名稱或密碼並不相符。 請再次檢查你的憑證，然後再試一次。";
 
 /* Accessibility label for italic button on formatting toolbar. */
 "Italic" = "斜體";
@@ -4459,9 +4420,6 @@ which should be translated separately and considered part of this sentence. */
 /* Settings > Manage Card Reader > Connect > Hint to charge card reader */
 "Make sure card reader is charged" = "請確認讀卡機已充電";
 
-/* Text that explains how to update VC to get the latest stats */
-"Make sure you are running the latest version of WooCommerce on your site and that you have WooCommerce Admin activated." = "請確認你的網站執行最新版本的 WooCommerce，並已啟用 WooCommerce Admin。";
-
 /* Settings > Set up Tap to Pay on iPhone > Information > Hint to sign in to iCloud and set a passcode on the device */
 "Make sure you are signed in to iCloud, and have set a passcode." = "請確認你已登入 iCloud，並已設定密碼。";
 
@@ -4630,9 +4588,6 @@ which should be translated separately and considered part of this sentence. */
 /* The minimum limit of spending required for a coupon on the Coupon Details screen, reads like: Minimum spend of $20.00 */
 "Minimum spend of %1$@" = "最低消費金額為 %1$@";
 
-/* VoiceOver accessibility value, informs the user about the Y-axis min/max values. It reads: Minimum value {value}, maximum value {value}. */
-"Minimum value %@, maximum value %@" = "最小值：%1$@；最大值：%2$@";
-
 /* The description in product variations bulk update, of a value, that is different acrossall variations */
 "Mixed" = "混合";
 
@@ -4681,7 +4636,7 @@ which should be translated separately and considered part of this sentence. */
 "More options" = "更多選項";
 
 /* More Privacy toggle section in the privacy screen. */
-"More privacy options available for woo.com users. Check here to learn more." = "woo.com 為使用者提供更多隱私權選項。 如要瞭解詳情，請查看此處。";
+"More privacy options available for woocommerce.com users. Check here to learn more." = "woocommerce.com 為使用者提供更多隱私權選項。 若想深入了解，請查看此處。";
 
 /* Country option for a site address. */
 "Morocco" = "摩洛哥";
@@ -4718,8 +4673,7 @@ which should be translated separately and considered part of this sentence. */
    Title of the hub menu view in case there is no title for the store */
 "My Store" = "我的商店";
 
-/* Title of the bottom tab item that presents the user's store dashboard, and default title for the store dashboard
-   Title of the store creation summary screen. */
+/* Title of the store creation summary screen. */
 "My store" = "我的商店";
 
 /* Country option for a site address. */
@@ -4732,15 +4686,11 @@ which should be translated separately and considered part of this sentence. */
    Product name placeholder on the add product from image form.
    Text field name in Shipping Label Address Validation
    Title above the name field on the add custom amount view in orders.
-   Title for the name field on the Shipping Line Details screen during order creation
    Title of the customer search filter to search by name. */
 "Name" = "名稱";
 
 /* Error showed in Shipping Label Address Validation for the name field */
 "Name missing" = "未填寫姓名";
-
-/* Title of the store onboarding task to update store title */
-"Name your store" = "為自己的商店命名";
 
 /* Country option for a site address. */
 "Namibia" = "納米比亞";
@@ -4780,15 +4730,11 @@ which should be translated separately and considered part of this sentence. */
 /* Label for net sales (net revenue) in the Analytics Hub */
 "Net Sales" = "淨銷售額";
 
-/* Label for the total sales of a product in the Analytics Hub
-   Top performers — label for the total sales of a product */
+/* Label for the total sales of a product in the Analytics Hub */
 "Net sales: %@" = "淨銷售額：%@";
 
 /* Country option for a site address. */
 "Netherlands" = "荷蘭";
-
-/* Title for table view section of network active plugins */
-"Network Active Plugins" = "網路啟用中的外掛程式";
 
 /* Error message when session cookie has expired. */
 "NetworkError.invalidCookieNonce" = "很抱歉，您的連線已經逾期。 請再登入一次。";
@@ -4839,7 +4785,6 @@ which should be translated separately and considered part of this sentence. */
    Next nav bar button title in Add Product Attribute Options screen
    Next nav bar button title in Add Product Attribute screen
    The button title on the login onboarding screen to continue to the next step.
-   Title for the button to confirm the amount in the simple payments screen
    Title of a button.
    Title of a button. The text should be capitalized.
    Title of the next button in the issue refund screen */
@@ -4889,6 +4834,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the error screen when there was a network error checking In-Person Payments requirements. */
 "No connection" = "沒有連線";
 
+/* Title for when there are no connection issues in the connectivity tool screen */
+"No connection issues" = "沒有連結問題";
+
 /* Error message when there is no connection to the Internet. */
 "No connection to the Internet - please connect to the Internet and try again" = "未連接網路 - 請連接網路，然後再試一次";
 
@@ -4903,9 +4851,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* The title on the placeholder overlay when there are no customers on the customers list screen. */
 "No customers found" = "找不到顧客";
-
-/* Text displayed when no data is available for revenue chart. */
-"No data available" = "目前沒有資料";
 
 /* Placeholder when there's no customer email in the list */
 "No email address" = "無電子郵件地址";
@@ -4962,12 +4907,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Empty state for the list of shipment carriers. It reads: 'No results for DHL. Add a custom carrier'. Parameters: %1$@ - carrier name */
 "No results found for %1$@\nAdd a custom carrier" = "找不到「%1$@」的搜尋結果\n新增自訂貨運業者";
-
-/* Text displayed when no order data are available for the selected time range. */
-"No revenue this period" = "此期間沒有收益";
-
-/* Message on the local notification to remind after three days. */
-"No rush, take your time! If you have any questions or need assistance, we're always here to help. Happy exploring!" = "慢慢來，我們不趕時間！ 如有任何疑問或需要協助，我們會隨時為你服務。 祝你探索愉快！";
 
 /* The text on the placeholder overlay when there are no shipping classes on the Shipping Class list picker */
 "No shipping classes yet" = "尚未有運送類別";
@@ -5038,6 +4977,7 @@ which should be translated separately and considered part of this sentence. */
    Alert dismissal title
    Button text to confirm that we want to generate all variations
    Button title. An acknowledgement of the message displayed in a prompt.
+   Button to dismiss expired WPCom plan alert
    Button to dismiss the error alert on the site credential login screen
    Dismiss button on the alert when there is an error creating a new product category
    Dismiss button on the alert when there is an error creating new product tags.
@@ -5094,23 +5034,8 @@ which should be translated separately and considered part of this sentence. */
 /* Content of the banner notice on the Payment Method screen when user does not have permission to change the payment method. %1$@ is a placeholder for the store owner's name. %2$@ is a placeholder for the store owner's username. */
 "Only the site owner can manage the shipping label payment methods. Please contact %1$@ (%2$@) to manage payment methods." = "僅限網站擁有者能管理郵寄標籤付款方式。 請聯絡 %1$@ (%2$@) 以管理付款方式。";
 
-/* Message when we can't reach WPCom in the recovery tool */
-"Oops! It seems we can't connect to WordPress.com at the moment.\n\nBut don't worry, our support team is here to help. Contact us and we will happily assist you." = "糟糕！ 我們目前無法連結 WordPress.com。\n\n別擔心，我們的支援團隊可以提供協助。 聯絡我們，我們很樂意提供協助。";
-
-/* Message when we there is a decoding error in the recovery tool */
-"Oops! It seems we can't work properly with your site's response.\n\nBut don't worry, our support team is here to help. Contact us and we will happily assist you." = "糟糕！ 你的網站回應無法正常運作。\n\n別擔心，我們的支援團隊可以提供協助。 聯絡我們，我們很樂意提供協助。";
-
-/* Message when we there is a jetpack error in the recovery tool */
-"Oops! There seems to be a problem with your jetpack connection.\n\nBut don't worry, our support team is here to help. Contact us and we will happily assist you." = "糟糕！ 你的 Jetpack 連線發生問題。\n\n別擔心，我們的支援團隊可以提供協助。 聯絡我們，我們很樂意提供協助。";
-
-/* Message when we there is a generic error in the recovery tool */
-"Oops! There seems to be a problem with your site.\n\nContact your hosting provider for further assistance." = "糟糕！ 你的網站發生問題。\n\n聯絡你的主機服務提供者，尋求進一步協助。";
-
 /* Title of the alert when the store cannot be created in the store creation flow. */
 "Oops! We've hit a snag" = "糟糕！ 我們碰到一些問題";
-
-/* Message when we there is a timeout error in the recovery tool */
-"Oops! Your site seems to be taking too long to respond.\n\nContact your hosting provider for further assistance." = "糟糕！ 你的網站太久沒有回應。\n\n聯絡你的主機服務提供者，尋求進一步協助。";
 
 /* Message of the alert when the site cannot be launched from store onboarding > launch store screen. */
 "Oops, some unexpected errors happened." = "糟糕，發生了一些未預期的錯誤。";
@@ -5232,17 +5157,52 @@ which should be translated separately and considered part of this sentence. */
 /* Label for the the row showing the total cost of the order */
 "Order total" = "訂單總額";
 
+/* Retry Action inside notice */
+"OrderDetail.retry.notice.button" = "重試";
+
+/* Cancel button on the alert when the user is cancelling the action on moving an order to the trash */
+"OrderDetail.trashOrder.alert.cancelButton" = "取消";
+
+/* Body of the alert when a user is moving an order to the trash */
+"OrderDetail.trashOrder.alert.message" = "你要將此訂單移至垃圾桶嗎？";
+
+/* Confirmation button on the alert when the user is moving an order to the trash */
+"OrderDetail.trashOrder.alert.moveToTrashButton" = "移至垃圾桶";
+
+/* Title of the alert when a user is moving an order to the trash */
+"OrderDetail.trashOrder.alert.title" = "移除訂單";
+
+/* Content of error presented when Trash Order Action Failed. It reads: Unable to trash the order #{order number}. Parameters: %1$d - order number */
+"OrderDetail.trashOrder.notice.title" = "無法將訂單 #%1$d 移至垃圾桶";
+
+/* Undo Action */
+"OrderDetail.trashOrder.notice.undoAction" = "復原";
+
+/* Order trashed success notice */
+"OrderDetail.trashOrder.notice.undoMessage" = "已移至垃圾桶的訂單";
+
 /* Text on the button title to see the order's receipt */
 "OrderDetailsDataSource.configureSeeReceipt.button.title" = "查看收據";
 
 /* Notice that appears when no receipt can be retrieved upon tapping on 'See receipt' in the Order Details view. */
 "OrderDetailsViewModel.displayReceiptRetrievalErrorNotice.notice" = "無法擷取收據。";
 
+/* Description of the subscription billing interval for a product. Reads like: 'Every 2 months'. */
+"OrderSubscriptionTableViewCellViewModel.billingInterval" = "每 %2$@ %1$@";
+
+/* Formatted subscription title with subscription number. Reads like: 'Subscription #123' */
+"OrderSubscriptionTableViewCellViewModel.formattedSubscriptionTitle" = "訂閱 #%1$@";
+
+/* Description of the subscription price for a product. Reads like: '$60.00'. */
+"OrderSubscriptionTableViewCellViewModel.priceFormat" = "%1$@";
+
+/* Subscription title with subscription number. Reads like: 'Subscription #123' */
+"OrderSubscriptionTableViewCellViewModel.subscriptionTitle" = "訂閱 #%d";
+
 /* Accessibility label for Ordered list button on formatting toolbar. */
 "Ordered List" = "已排序清單";
 
-/* Orders stat label on dashboard - should be plural.
-   The title of the Orders tab.
+/* The title of the Orders tab.
    Title of the 'Orders' tab - used for spotlight indexing on iOS. */
 "Orders" = "訂單";
 
@@ -5267,9 +5227,6 @@ which should be translated separately and considered part of this sentence. */
    Restriction type Other for contents declared in the customs form for Shipping Label flow
    Type Other of content to be declared for the customs form in Shipping Label flow */
 "Other" = "其他";
-
-/* Placeholder text for Free trial survey. */
-"Other (please specify)." = "其他 (請具體說明)。";
 
 /* Title of the Other Plugin support area option */
 "Other Extension \/ Plugin" = "其他擴充功能\/外掛程式";
@@ -5422,7 +5379,8 @@ which should be translated separately and considered part of this sentence. */
 
 /* Display label for pending order status.
    Display label for the review's pending status
-   Display label for the subscription status type */
+   Display label for the subscription status type
+   Status name of an active Blaze campaign */
 "Pending" = "待審核";
 
 /* Display label for the subscription status type */
@@ -5656,6 +5614,9 @@ which should be translated separately and considered part of this sentence. */
    VoiceOver Accessibility label for the instruction */
 "Please wait" = "請稍候";
 
+/* Subtitle on the connectivity tool screen */
+"Please wait while we attempt to identify your connection issue." = "我們正嘗試找出你的連結問題，請稍後片刻。";
+
 /* Message on the Jetpack Install Progress screen. The %1$@ is the site address. */
 "Please wait while we connect your site %1$@ with Jetpack." = "我們正在連結你的網站 %1$@ 與 Jetpack，請稍候。";
 
@@ -5693,9 +5654,11 @@ which should be translated separately and considered part of this sentence. */
 "Please, add a new payment method" = "請新增付款方式";
 
 /* My Store > Settings > Plugins section title
-   Navigates to Plugins screen.
-   Title of the Plugin List screen */
+   Navigates to Plugins screen. */
 "Plugins" = "外掛程式";
+
+/* Title of the POS menu in the hub menu */
+"Point of Sale Mode" = "銷售時點情報系統模式";
 
 /* Country option for a site address. */
 "Poland" = "波蘭";
@@ -5848,8 +5811,7 @@ which should be translated separately and considered part of this sentence. */
 /* Display label for the product's private status */
 "Privately published" = "私密發佈";
 
-/* Display label for processing order status.
-   Status name of a Blaze campaign under processing */
+/* Display label for processing order status. */
 "Processing" = "處理中";
 
 /* Alert title when processing a payment without a user name.
@@ -5937,6 +5899,18 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message when the scanner cannot find a matching product. %@ is the SKU code. */
 "Product with SKU \"%@\" not found." = "找不到貨號為「%@」的產品。";
+
+/* Description of the subscription price for a product, with price and billing frequency. Reads as: '$60.00 / 2 months'. */
+"ProductRowViewModel.formattedProductSubscriptionBilling" = "%2$@ %3$@只需 %1$@";
+
+/* Description of the subscription conditions for a subscription product, with signup fees and free trials.Reads as: '$25.00 signup · 1 month free'. */
+"ProductRowViewModel.formattedProductSubscriptionConditions" = "註冊費只需 %1$@ · %2$@ %3$@免費";
+
+/* Description of the subscription conditions for a subscription product, with only free trial.Reads as: '1 month free'. */
+"ProductRowViewModel.formattedProductSubscriptionConditionsWithoutSignup" = "%1$@ %2$@免費";
+
+/* Description of the subscription conditions for a subscription product, with signup fees but no trial.Reads as: '$25.00 signup'. */
+"ProductRowViewModel.formattedProductSubscriptionConditionsWithoutTrial" = "註冊費只需 %1$@";
 
 /* Display label for the composite product's component option type
    Product section title if there is more than one product.
@@ -6068,7 +6042,7 @@ which should be translated separately and considered part of this sentence. */
 "Reach our happiness engineers who can help answer tough questions" = "聯絡我們的 happiness engineer，他們很樂於協助解決疑難問題。";
 
 /* Action button title for a generic error on the connectivity tool */
-"Read More" = "閱讀更多";
+"Read more" = "閱讀更多";
 
 /* Text for the button to navigate to troubleshooting tips from the store picker error screen */
 "Read our Troubleshooting Tips" = "閱讀疑難排解秘訣";
@@ -6106,6 +6080,9 @@ which should be translated separately and considered part of this sentence. */
 /* Button to reload plugin data after updating a Card Present Payments extension plugin
    Button to reload plugin data after updating a card present payments plugin settings */
 "Refresh After Updating" = "在更新後重新整理";
+
+/* The info of the time out error banner */
+"Refresh the screen to try again, or troubleshoot the connection. Contact support if your issue persists." = "重新整理畫面即可再次嘗試，或對連結進行疑難排解。 如果問題持續發生，請聯絡支援團隊。";
 
 /* The title of the button to confirm the refund. */
 "Refund" = "退費";
@@ -6192,8 +6169,7 @@ which should be translated separately and considered part of this sentence. */
 
 /* Confirm button on the alert when the user taps to delete a Product image
    Confirmation button on the alert when the user is deleting a variation
-   Title for removing an attribute in the edit attribute action sheet.
-   Title for the action button on the confirm alert for hiding store onboarding task list */
+   Title for removing an attribute in the edit attribute action sheet. */
 "Remove" = "移除";
 
 /* Confirmation title before removing an attribute from a variation. */
@@ -6223,9 +6199,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label action for removing a link from the editor */
 "Remove Link" = "移除連結";
-
-/* Text for the button to remove a shipping line from the order during order creation */
-"Remove Shipping from Order" = "從訂單中移除運送選項";
 
 /* Label action for removing a link from the editor */
 "Remove end date" = "移除結束日期";
@@ -6349,6 +6322,9 @@ which should be translated separately and considered part of this sentence. */
 /* Action button to check site's connection again. */
 "Retry Connection" = "重試連線";
 
+/* Retry connection button in the connectivity tool screen */
+"Retry connection" = "重試連結";
+
 /* Title of the secondary button displayed when activating the purchased plan fails, so the merchant can exit the flow. */
 "Return to My Store" = "返回我的商店";
 
@@ -6360,9 +6336,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Reunion" = "留尼旺";
-
-/* Revenue stat label on dashboard. */
-"Revenue" = "收益";
 
 /* Title of Review Order screen */
 "Review Order" = "檢閱訂單";
@@ -6619,9 +6592,6 @@ which should be translated separately and considered part of this sentence. */
 /* Link title to see all paper size options */
 "See layout and paper sizes options" = "查看版面配置和紙張大小選項";
 
-/* Button on the stats dashboard that navigates user to the analytics hub */
-"See more" = "查看更多";
-
 /* Title for a link to view Woo Express plan details on the web, as a fallback. */
 "See plan details" = "查看方案詳細資訊";
 
@@ -6725,8 +6695,7 @@ which should be translated separately and considered part of this sentence. */
 /* Text for the send button in the product review reply screen */
 "Send" = "傳送";
 
-/* CTA button title which sends survey feedback.
-   Presents a survey to gather feedback from the user. */
+/* Presents a survey to gather feedback from the user. */
 "Send Feedback" = "傳送回饋意見";
 
 /* Title of a button. The text should be uppercase.  Clicking requests a hyperlink be emailed ot the user. */
@@ -6864,10 +6833,8 @@ which should be translated separately and considered part of this sentence. */
 "Shipped %@" = "已運送 %@";
 
 /* Line description for 'Shipping' cart total on the receipt. Only shown when non-zero
-   Placeholder for the name field on the Shipping Line Details screen during order creation
    Product Shipping Settings navigation title
    Shipping label for payment view
-   Title for the Shipping Line Details screen during order creation
    Title of the product form bottom sheet action for editing shipping settings.
    Title of the shipping field on the add product with AI Preview screen.
    Title of the Shipping Settings row on Product main screen */
@@ -6888,8 +6855,7 @@ which should be translated separately and considered part of this sentence. */
 /* Shipping title for customer info cell */
 "Shipping Details" = "運送詳細資料";
 
-/* Shipping method title for customer info cell
-   Shipping method title for customer info section */
+/* Shipping method title for customer info section */
 "Shipping Method" = "運送方式";
 
 /* Title on the refund screen that lists the shipping total cost */
@@ -6904,9 +6870,6 @@ which should be translated separately and considered part of this sentence. */
 /* Navigation bar title of the Product shipping class selector screen */
 "Shipping classes" = "運送類別";
 
-/* Info message shown when the order contains multiple shipping lines */
-"Shipping details are incomplete.\nTo edit all shipping details, view the order in your WooCommerce store admin." = "運送詳細資訊不完整。\n若要編輯所有運送詳細資訊，請在你的 WooCommerce 商店管理員中檢視訂單。";
-
 /* Header of the order summary section in the shipping label creation form */
 "Shipping label order summary" = "郵寄標籤訂單摘要";
 
@@ -6918,9 +6881,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Header text when printing multiple newly purchased shipping labels */
 "Shipping labels purchased!" = "已購買郵寄標籤！";
-
-/* VoiceOver accessibility label for the shipping notice about the order */
-"Shipping notice about the order" = "訂單的運送通知";
 
 /* Display label for the product's tax status setting option */
 "Shipping only" = "僅限運送";
@@ -6938,9 +6898,6 @@ which should be translated separately and considered part of this sentence. */
    Title of the product form bottom sheet action for editing short description.
    Title of the Short Description row on Product main screen */
 "Short description" = "簡短說明";
-
-/* Button when tapped will show the Blaze campaign list. */
-"Show All Campaigns" = "顯示所有行銷活動";
 
 /* Button title for applying filters to a list of orders. */
 "Show Orders" = "顯示訂單";
@@ -7067,8 +7024,7 @@ which should be translated separately and considered part of this sentence. */
 /* Indicates the reviewer does not have a name. It reads { Someone left a review} */
 "Someone" = "某人";
 
-/* Error message presented to users after a failure occurs
-   The text on the placeholder overlay when there is issue syncing site plugins */
+/* Error message presented to users after a failure occurs */
 "Something went wrong" = "發生錯誤";
 
 /* Description of an unknown error after purchasing a plan */
@@ -7228,12 +7184,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the option to create a template product */
 "Start with a template" = "從範本開始著手";
 
-/* Subtitle displayed in the simplified prologue screen */
-"Start with our 14-day free trial, no credit card needed. Join 3.4M stores thriving with Woo, from first sale to millions." = "從 14 天免費試用著手入門，無須信用卡。 加入 Woo 旗下 340 萬家商店，從賣出第一份商品開始，朝暢銷商店之路邁進。";
-
-/* VoiceOver accessibility value, informs the user about the X-axis min/max values. It reads: Starting date {date}, ending date {date}. */
-"Starting period %@, ending period %@" = "期限：%1$@ 至 %2$@";
-
 /* Text field state in Edit Address Form
    Text field state in Shipping Label Address Validation
    Title to select state from the edit address screen */
@@ -7255,9 +7205,6 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle of the Jetpack benefits banner. */
 "Stay updated and boost store security. Explore Jetpack now." = "保持最新狀態並提升商店安全性。 立即深入瞭解 Jetpack。";
 
-/* Button title to contact support to get help with deprecated stats */
-"Still need help? Contact us" = "還需要協助嗎？ 聯絡我們";
-
 /* Row title for filtering products by stock status. */
 "Stock Status" = "庫存狀態";
 
@@ -7274,17 +7221,11 @@ which should be translated separately and considered part of this sentence. */
 /* Navigates to the Store name setup screen */
 "Store Name" = "商店名稱";
 
-/* Title on the notice presented when the store name is updated */
-"Store Name Set!" = "商店名稱已設定！";
-
 /* Title of the secondary button on the store creation success screen to preview the newly created store. */
 "Store Preview" = "商店預覽";
 
 /* My Store > Settings > Store Settings section title */
 "Store Settings" = "商店設定";
-
-/* Controls store onboarding setup list visibility. */
-"Store Setup List" = "商店設定清單";
 
 /* Title of the screen when the created store never becomes a Jetpack site in the store creation flow. */
 "Store creation still in progress" = "商店建立程序仍在進行中";
@@ -7298,21 +7239,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the store name screen */
 "Store name" = "商店名稱";
 
-/* VoiceOver accessibility label for the store revenue chart. */
-"Store revenue chart" = "商店收益圖";
-
-/* VoiceOver accessibility label for the store revenue chart. It reads: Store revenue chart {chart granularity}. */
-"Store revenue chart %@" = "商店收益圖 %@";
-
-/* VoiceOver accessibility label for the store revenue chart's X-axis. */
-"Store revenue chart: X Axis" = "商店收益圖：X 軸";
-
-/* VoiceOver accessibility label for the store revenue chart's Y-axis. */
-"Store revenue chart: Y Axis" = "商店收益圖：Y 軸";
-
-/* Title of the store setup progress view. */
-"Store setup" = "商店設定";
-
 /* Accessibility label for strikethrough button on formatting toolbar. */
 "Strike Through" = "刪除線";
 
@@ -7324,9 +7250,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Display label for simple subscription product type. */
 "Subscription" = "訂購";
-
-/* Subscription title with subscription number. Reads like: 'Subscription #123' */
-"Subscription #%d" = "訂購 #%d";
 
 /* Title for the plan section on the subscriptions view. Uppercased */
 "Subscription Status" = "訂購狀態";
@@ -7756,7 +7679,7 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when the card processor declines the payment. */
 "The card was declined by the payment processor - please try another means of payment" = "該卡片被付款處理商拒絕 - 請嘗試其他付款方式";
 
-/* No comment provided by engineer. */
+/* Message for when the certificate for the server is invalid. The %@ placeholder will be replaced the a host name, received from the API. */
 "The certificate for this server is invalid. You might be connecting to a server that is pretending to be “%@” which could put your confidential information at risk.\n\nWould you like to trust the certificate anyway?" = "此伺服器的憑證無效。你可能正連線至冒充為「%@」的伺服器，而這可能洩漏你的機密資料。\n\n是否仍然要信任憑證？";
 
 /* Message in the gift card input form when the code is not valid. */
@@ -7933,6 +7856,12 @@ which should be translated separately and considered part of this sentence. */
 /* The info on the Error Loading Data banner when there was a Jetpack connection error. */
 "There is a problem with your store's Jetpack connection. Please reconnect Jetpack or reach out to us and we'll be happy to assist you!" = "你商店的 Jetpack 連線發生問題。 請重新連線 Jetpack 或與我們聯絡，我們很樂意提供協助！";
 
+/* Message when we there is a jetpack error in the recovery tool */
+"There is problem with your jetpack connection.\n\nRead more about it or contact our support team and we will happily assist you." = "你的 Jetpack 連結發生問題。\n\n深入了解或聯絡我們的支援團隊，我們很樂意提供協助。";
+
+/* Message when we there is a generic error in the recovery tool */
+"There seems to be a problem with your site.\n\nPlease contact your hosting provider for further assistance." = "你的網站發生問題。\n\n請聯絡你的主機服務提供者，尋求進一步協助。";
+
 /* Error message informing the user that there was a problem blocking posts from a site from their reader. */
 "There was a problem blocking posts from the specified site." = "封鎖指定網站的文章時發生問題。";
 
@@ -7945,9 +7874,6 @@ which should be translated separately and considered part of this sentence. */
 /* Error message informing the user that there was a problem clearing the block on site preventing its posts from displaying in the reader. */
 "There was a problem removing the block for specified site." = "移除指定網站的封鎖時發生問題。";
 
-/* The details on the placeholder overlay when there is issue syncing site plugins */
-"There was a problem while trying to load plugins. Check your internet and try again." = "嘗試載入外掛程式時出現問題。 請檢查你的網際網路，然後再試一次。";
-
 /* Message to be displayed when there's an error communicating with the remote site during Jetpack setup */
 "There was an error communicating with your site." = "與你的網站通訊時發生錯誤。";
 
@@ -7956,9 +7882,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Message to be displayed when the user encounters an error during the connection step of Jetpack setup */
 "There was an error connecting your site to Jetpack." = "將你的網站連結至 Jetpack 時發生錯誤。";
-
-/* Notice text after failing to create a simple payments order. */
-"There was an error creating the order" = "建立訂單時發生錯誤";
 
 /* Error shown when failing to fetch the plan details in the upgrades view. */
 "There was an error fetching your plan details, please try again later." = "擷取方案詳細資料時發生錯誤，請稍後再試。";
@@ -8040,6 +7963,9 @@ which should be translated separately and considered part of this sentence. */
 /* Message when a card requires a PIN code and we have no means of entering such a code. */
 "This card requires a PIN code and thus cannot be processed. Try another means of payment" = "這張卡片需要 PIN 碼，因此無法處理。 請嘗試其他付款方式";
 
+/* Reason for why the user could not login tin the application password tutorial screen */
+"This could be because your store has some extra security steps in place." = "這可能是因為你的商店還需準備一些額外的安全性步驟。";
+
 /* The info on the Error Loading Data banner when there was a decoding error. */
 "This could be related to a conflict with a plugin. Please try again later or reach out to us and we'll be happy to assist you!" = "這可能與外掛程式衝突有關。 請稍後再試或與我們聯絡，我們很樂意提供協助！";
 
@@ -8051,9 +7977,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Generic reason for why the user could not login tin the application password tutorial screen */
 "This is because we got an unexpected response from your site." = "這是因為你的網站傳回了預期外的回應。";
-
-/* Reason for why the user could not login tin the application password tutorial screen */
-"This is likely because your store has some extra security steps in place." = "這可能是因為你的商店還需執行一些額外的安全性步驟。";
 
 /* Footer text in Product Slug screen */
 "This is the URL-friendly version of the product title" = "這是用在網址列上的產品標題";
@@ -8069,10 +7992,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Message in action sheet when an order item is about to be moved on Package Details screen of Shipping Label flow.The package name reads like: Package 1: Custom Envelope. */
 "This item is currently in Package %1$d: %2$@. Where would you like to move it?" = "此商品目前在包裹 %1$d 中：%2$@。 你想移到哪裡？";
-
-/* Accessibility label for the Shipping notice
-   Shipping notice row label when there is more than one shipping method */
-"This order is using extensions to calculate shipping. The shipping methods shown might be incomplete." = "此訂單使用延伸模組計算運送資訊。顯示的運送方式可能不完整。";
 
 /* Explanation in the alert shown when a retry fails because the payment already completed */
 "This payment has already been completed – please check the order details." = "此付款已完成，請確認訂單詳細資料。";
@@ -8144,9 +8063,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Subtitle on the variations list screen when there are no variations and attributes */
 "To add a variation, you'll need to set its attributes (ie \"Color\", \"Size\") first" = "若要新增款式，你需要先設定其屬性 (即「顏色」、「尺寸」)";
-
-/* Subtitle on the notice presented when the store name is updated */
-"To change again, visit Store Settings." = "若要再變更一次，請造訪商店設定。";
 
 /* Error message displayed when unable to close user account due to having active atomic site. */
 "To close this account now, contact our support team." = "若要立即關閉此帳號，請與支援團隊聯絡。";
@@ -8272,6 +8188,9 @@ which should be translated separately and considered part of this sentence. */
 /* The title of the button to get troubleshooting information in the Error Loading Data banner */
 "Troubleshoot" = "疑難排解";
 
+/* Screen title for the connectivity tool */
+"Troubleshoot Connection" = "對連結進行疑難排解";
+
 /* Title for the section to contact support on the subscriptions view. Uppercased */
 "Troubleshooting" = "疑難排解";
 
@@ -8334,8 +8253,7 @@ which should be translated separately and considered part of this sentence. */
 /* Title shown on the test order screen */
 "Try a test order" = "試用測試訂單";
 
-/* Action to resync on the placeholder overlay when there is issue syncing site plugins
-   Button to dismiss the alert presented when connecting to a specific reader fails. This allows the search to continue.
+/* Button to dismiss the alert presented when connecting to a specific reader fails. This allows the search to continue.
    Button to dismiss the alert presented when starting Tap to Pay on iPhone fails. This allows the search to continue.
    Title of the try again action when the site cannot be launched from store onboarding > launch store screen. */
 "Try again" = "再試一次";
@@ -8400,9 +8318,6 @@ which should be translated separately and considered part of this sentence. */
 /* Info text about the scanned text list on the add product from image form. */
 "Tweak your text: Unselect scans you don't need or tap to edit" = "微調你的文字：取消選取你不需要的掃瞄項目，或點一下即可編輯";
 
-/* Title of a button linking to the app's Twitter profile */
-"Twitter" = "Twitter";
-
 /* Placeholder of the search text field on the domain selector. */
 "Type a name for your store" = "輸入你的商店名稱";
 
@@ -8464,9 +8379,6 @@ which should be translated separately and considered part of this sentence. */
 /* Error title for when we can't create variations remotely. */
 "Unable to create variations" = "無法建立款式";
 
-/* Content of error presented when Delete Shipment Tracking Action Failed. It reads: Unable to delete tracking for order #{order number}. Parameters: %1$d - order number */
-"Unable to delete tracking for order #%1$d" = "無法刪除訂單 #%1$d 的追蹤";
-
 /* Unable to fetch countries action failed in Shipping Label Form */
 "Unable to fetch countries." = "無法擷取國家\/地區。";
 
@@ -8505,6 +8417,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Load Product Attributes Action Failed */
 "Unable to load product attributes" = "無法載入商品屬性";
+
+/* Text displayed when there is an error loading product bundles stats data. */
+"Unable to load product bundle analytics" = "無法載入商品搭售方案的分析";
+
+/* Text displayed when there is an error loading product bundles sold stats data. */
+"Unable to load product bundles sold analytics" = "無法載入商品搭售方案的售出狀況分析";
 
 /* Text displayed when there is an error loading items sold stats data. */
 "Unable to load product items sold analytics" = "無法載入已售出產品項目的分析";
@@ -8787,13 +8705,8 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the in-progress UI while bulk updating selected products remotely */
 "Updating your products..." = "正在更新你的產品...";
 
-/* Button to upgrade a WPCom plan on the expired WPCom plan alert
-   Navigation title for the Upgrades screen */
+/* Navigation title for the Upgrades screen */
 "Upgrade" = "升級";
-
-/* Title for the WebView when upgrading a free trial plan
-   Title on the button to upgrade a free trial plan. */
-"Upgrade Now" = "立即升級";
 
 /* Cell title for Upsells products in Linked Products Settings screen
    Navigation bar title for editing linked products for upsell products */
@@ -8855,6 +8768,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* The button title text for logging in with WP.com password instead of magic link. */
 "Use password to sign in" = "使用密碼登入";
+
+/* Description of the POS menu in the hub menu */
+"Use the app as a cash register" = "將應用程式充當收銀機";
 
 /* Fourth instruction on the test order screen */
 "Use the app to process the refund for the test order." = "使用應用程式處理測試訂單的退款流程。";
@@ -8974,9 +8890,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the banner notice in the add-ons view */
 "View add-ons from your device!" = "查看裝置的附加元件！";
 
-/* Button when tapped will show a screen with all the store setup tasks.%1$d represents the total number of tasks. */
-"View all (%1$d)" = "檢視全部 (%1$d)";
-
 /* Title of the feedback banner on the coupon list screen */
 "View and edit coupons" = "檢視並編輯優惠券";
 
@@ -9011,9 +8924,6 @@ which should be translated separately and considered part of this sentence. */
    Visibility label in Product Settings */
 "Visibility" = "可見度";
 
-/* Visitors stat label on dashboard - should be plural. */
-"Visitors" = "訪客";
-
 /* Add a note screen - Write Note section title */
 "WRITE NOTE" = "撰寫備註";
 
@@ -9042,11 +8952,14 @@ which should be translated separately and considered part of this sentence. */
 /* Content of the banner notice in the add-ons view */
 "We are working on making it easier for you to see product add-ons from your device! For now, you’ll be able to see the add-ons for your orders. You can create and edit these add-ons in your web dashboard." = "我們正努力讓你能更輕鬆查看裝置的產品附加元件！ 你現在可以查看訂單的附加元件。 你可以在 Web 控制台中建立和編輯這些附加元件。";
 
+/* Message when we there is a decoding error in the recovery tool */
+"We can't work properly with your site's response.\n\nRead more about it or contact our support team and we will happily assist you." = "你的網站回應無法正常運作。\n\n深入了解或聯絡我們的支援團隊，我們很樂意提供協助。";
+
 /* Error message displayed when there is no store matching the site URL that is associated with the user's account */
 "We cannot load the store at the moment." = "目前無法載入商店。";
 
-/* Title when we can't show stats because user is on a deprecated WC Version */
-"We can’t display your store’s analytics" = "我們無法顯示你的商店分析資料";
+/* Message when we can't reach WPCom in the recovery tool */
+"We can’t connect to WordPress.com right now.\n\nTry again in a few minutes, or contact our support team and we will happily assist you." = "我們目前無法連結至 WordPress.com。\n\n請稍待幾分鐘後再試一次，或聯絡我們的支援團隊，我們很樂意提供協助。";
 
 /* The title of the Error Loading Data banner when there is a Jetpack connection error */
 "We couldn't connect to your store" = "我們無法連線至你的商店";
@@ -9064,14 +8977,14 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the default store picker error screen */
 "We couldn't load your site" = "無法載入你的網站";
 
-/* Title for the application password tutorial screen */
-"We couldn't log in into your site! 😭" = "無法登入你的網站！😭";
-
 /* A message displayed through a bottom notice letting the user know that the login from the app link failed */
 "We couldn't process your app login request" = "我們無法處理你的應用程式登入要求";
 
 /* Title for the empty state on the Tax Rates selector screen */
 "We couldn’t find any tax rates" = "我們找不到任何稅率";
+
+/* Title for the application password tutorial screen */
+"We couldn’t log in into your store" = "我們無法登入你的商店";
 
 /* Error message. Presented to users when updating the card reader software fails */
 "We couldn’t update your reader’s software" = "我們無法更新你的讀卡機軟體";
@@ -9104,7 +9017,7 @@ which should be translated separately and considered part of this sentence. */
 "We found that the store has already launched." = "我們發現商店已經推出。";
 
 /* Message on the expired WPCom plan alert */
-"We have paused your store, but you can continue by picking a plan that suits you best." = "你的商店已暫停運作，不過你可挑選最符合需求的方案，以便繼續營運。";
+"We have paused your store. You can purchase another plan by logging in to WordPress.com on your browser." = "我們已將你的商店暫停。 只要你在瀏覽器登入 WordPress.com，就能購買其他方案。";
 
 /* Banner caption in Shipping Label Address when there is a suggested address. */
 "We have slightly modified the address entered. If correct, please use the suggested address to ensure accurate delivery." = "我們稍微修改了輸入的地址。 如果內容正確，請使用建議地址，確保正確運送。";
@@ -9204,9 +9117,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Subtitle of the Store details task to add details about the store. */
 "We’ll use the info to get a head start on your shipping, tax, and payments settings." = "我們會使用該資訊預先幫你完成運送、稅務和付款設定。";
-
-/* Message on the local notification to ask for Free trial survey. */
-"We’re interested in your decision-making journey. Could you please tell us about your current status?" = "我們想瞭解你的決策過程。 可以把你目前的狀態告訴我們嗎？";
 
 /* Content of the feedback banner on the coupon list screen */
 "We’ve been working on making it possible to view and edit coupons from your device!" = "我們一直努力讓你可以在裝置上查看並編輯優惠券！";
@@ -9364,6 +9274,9 @@ which should be translated separately and considered part of this sentence. */
 /* Prompt asking users if the logged in to the wrong account.Presented when logging in with a store address that does not match the account entered. */
 "Wrong account?" = "是否帳號有誤？";
 
+/* Title of a button linking to the app's X profile */
+"X" = "X";
+
 /* Placeholder of the gift card code text field in the order form. */
 "XXXX-XXXX-XXXX-XXXX" = "XXXX-XXXX-XXXX-XXXX";
 
@@ -9413,9 +9326,6 @@ which should be translated separately and considered part of this sentence. */
 /* Info notice at the bottom of the product add-ons screen */
 "You can edit product add-ons in the web dashboard." = "你可以在 Web 儀表板中編輯產品附加元件。";
 
-/* Info notice at the bottom of the quantity rules screen. */
-"You can edit quantity rules in the web dashboard" = "你可以在網頁儀表板中編輯數量規則";
-
 /* Instructions of the domain purchase success screen. */
 "You can find the domain settings in menu > settings" = "你可以在「選單」>「設定」中查看網域設定";
 
@@ -9436,9 +9346,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Subtitle of the alert presented when the user tries to connect to a specific card reader and it fails due to postal code problems */
 "You can set your store's postcode\/ZIP in wp-admin > WooCommerce > Settings (General)" = "你可以在「WP 管理員 > WooCommerce > 設定 (一般)」設定商店的郵遞區號\/ZIP";
-
-/* Confirm message for hiding store onboarding task list */
-"You can show it when you need it by going to Menu > Settings > Store" = "你可以視需要前往「選單」>「設定」>「商店」以顯示此資訊。";
 
 /* Error message when In-Person Payments is not supported in a specific country */
 "You can still accept in-person cash payments by enabling the “Cash on Delivery” payment method on your store." = "你仍可採用「親自收取現金」，只要為商店啟用「貨到付款」付款方式即可。";
@@ -9476,7 +9383,7 @@ which should be translated separately and considered part of this sentence. */
 /* Error message shown when Tap to Pay on iPhone cannot be used because the device does not have a passcode set. */
 "You need to set a lock screen passcode to use Tap to Pay on iPhone" = "你需要設定螢幕鎖定密碼，才能使用 iPhone 的點選支付功能";
 
-/* No comment provided by engineer. */
+/* Error messaged show when a mobile plugin is redirecting traffict to their site, DudaMobile in particular */
 "You seem to have installed a mobile plugin from DudaMobile which is preventing the app to connect to your blog" = "你似乎安裝了 DudaMobile 的行動版外掛程式，導致應用程式無法連接至你的網誌";
 
 /* Subtitle text in the store creation loading screen */
@@ -9563,6 +9470,9 @@ which should be translated separately and considered part of this sentence. */
 /* The title of the Error Loading Data banner when there is a Jetpack connection error */
 "Your site is taking a long time to respond" = "你的網站太久沒有回應";
 
+/* Message when we there is a timeout error in the recovery tool */
+"Your site is taking too long to respond.\n\nPlease contact your hosting provider for further assistance." = "你的網站太久沒有回應。\n\n請聯絡你的主機服務提供者，尋求進一步協助。";
+
 /* Title on the banner when the site's WooExpress plan has expired */
 "Your site plan has ended." = "你的網站方案已結束。";
 
@@ -9615,6 +9525,9 @@ which should be translated separately and considered part of this sentence. */
 /* Markdown content learn more link on the product creation action sheet. Please translate the words while keeping the markdown format and URL. */
 "[Learn more.](https:\/\/automattic.com\/ai-guidelines\/)" = "[瞭解更多。](https:\/\/automattic.com\/ai-guidelines\/)";
 
+/* Text for the 'Cancel' button that appears in the navigation bar, and closes the view */
+"adaptiveModalContainer.views.cancelButtonText" = "取消";
+
 /* Button title to delete the custom amount on the edit custom amount view in orders. */
 "addCustomAmount.deleteButton" = "刪除自訂金額";
 
@@ -9636,6 +9549,18 @@ which should be translated separately and considered part of this sentence. */
 /* Dismiss button on the alert asking to add an image for the Blaze campaign */
 "addProductWithAIActionSheet.manualOptionsTitle" = "請選取商品類型";
 
+/* Button title on the store picker for store connection */
+"addStoreFooterView.connectExistingStoreButton" = "連結現有商店";
+
+/* Title for the product bundles analytics report linked in the Analytics Hub */
+"analyticsHub.bundlesCard.reportTitle" = "商品搭售方案報告";
+
+/* Name for the Product Bundles analytics card in the Customize Analytics screen */
+"analyticsHub.customize.bundles" = "搭售方案";
+
+/* Name for the Gift Cards analytics card in the Customize Analytics screen */
+"analyticsHub.customize.giftCards" = "禮物卡";
+
 /* Name for the Orders analytics card in the Customize Analytics screen */
 "analyticsHub.customize.orders" = "訂單";
 
@@ -9648,6 +9573,9 @@ which should be translated separately and considered part of this sentence. */
 /* Name for the Sessions analytics card in the Customize Analytics screen */
 "analyticsHub.customize.sessions" = "工作階段";
 
+/* Button title to explore an extension that isn't installed */
+"analyticsHub.customizeAnalytics.exploreButton" = "探索";
+
 /* Button to save changes on the Customize Analytics screen */
 "analyticsHub.customizeAnalytics.saveButton" = "儲存";
 
@@ -9657,11 +9585,20 @@ which should be translated separately and considered part of this sentence. */
 /* Label for button that opens a screen to customize the Analytics Hub */
 "analyticsHub.editButton.label" = "編輯";
 
-/* Description when there are no analytics to display in the Analytics Hub. */
-"analyticsHub.emptyState.description" = "請選取其他日期範圍或按一下「編輯」，即可啟用更多分析資料。";
+/* Label for used gift cards in the Analytics Hub */
+"analyticsHub.giftCardsCard.leadingTitle" = "已使用";
 
-/* Title when there are no analytics to display in the Analytics Hub. */
-"analyticsHub.emptyState.title" = "沒有可用的分析";
+/* Title for the gift cards analytics report linked in the Analytics Hub */
+"analyticsHub.giftCardsCard.reportTitle" = "禮物卡報告";
+
+/* Text displayed when there is an error loading gift card stats data. */
+"analyticsHub.giftCardsCard.syncErrorMessage" = "無法載入禮物卡分析";
+
+/* Title for gift cards analytics section in the Analytics Hub */
+"analyticsHub.giftCardsCard.title" = "禮物卡";
+
+/* Label for net amount used for gift cards in the Analytics Hub */
+"analyticsHub.giftCardsCard.trailingTitle" = "淨額";
 
 /* Label for button to enable Jetpack Stats */
 "analyticsHub.jetpackStatsCTA.buttonLabel" = "啟用 Jetpack Stats";
@@ -9671,9 +9608,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text displayed in the Analytics Hub when the Jetpack Stats module is disabled */
 "analyticsHub.jetpackStatsCTA.message" = "啟用 Jetpack Stats 以查看你的商店工作階段分析。";
-
-/* Title for sessions section in the Analytics Hub */
-"analyticsHub.jetpackStatsCTA.title" = "工作階段";
 
 /* Title for the orders analytics report linked in the Analytics Hub */
 "analyticsHub.orderCard.reportTitle" = "訂單報告";
@@ -9686,6 +9620,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the revenue analytics report linked in the Analytics Hub */
 "analyticsHub.revenueCard.reportTitle" = "收益報告";
+
+/* Title for sessions section in the Analytics Hub */
+"analyticsHub.sessionsCard.Title" = "工作階段";
+
+/* Description when session data is unavailable in the Analytics Hub */
+"analyticsHub.sessionsCard.dataUnavailable.Description" = "自訂日期範圍無法提供工作階段分析所仰賴的不重複訪客數。";
+
+/* Message when session data is unavailable in the Analytics Hub */
+"analyticsHub.sessionsCard.dataUnavailable.Message" = "無法提供工作階段資料";
 
 /* Button to dismiss the alert asking for confirmation to switch store. */
 "appCoordinator.storeReadyAlert.cancelButton" = "取消";
@@ -9705,6 +9648,15 @@ which should be translated separately and considered part of this sentence. */
 /* Widget title, displayed when selecting which widget to add */
 "appLinkWidget.displayName" = "圖示";
 
+/* Title for the link for site creation guide. */
+"authenticationConstants.siteCreationGuideButtonTitle" = "是否開設新商店？";
+
+/* Cell description on beta features screen to enable the Point Of Sale feature */
+"betaFeature.pointOfSale.description" = "在準備啟動就緒後，測試銷售時點情報系統";
+
+/* Cell title on beta features screen to enable the Point Of Sale feature */
+"betaFeature.pointOfSale.title" = "銷售時點情報系統";
+
 /* Button to send a message to a customer via Telegram */
 "billingInfoViewController.telegram" = "傳送 Telegram 訊息";
 
@@ -9717,7 +9669,7 @@ which should be translated separately and considered part of this sentence. */
 /* Button to copy phone number to clipboard */
 "billingInformationViewController.action.copyPhoneNumber" = "複製電話號碼";
 
-/* Blaze Ad Destination: The final URl destination including optional parameters. %1$@ will be replaced by the URL text. Read like: Destination: https://woo.com/2022/04/11/product/?parameterkey=parametervalue */
+/* Blaze Ad Destination: The final URl destination including optional parameters. %1$@ will be replaced by the URL text. Read like: Destination: https://woocommerce.com/2022/04/11/product/?parameterkey=parametervalue */
 "blazeAdDestinationSettingVieModel.finalDestination" = "目的地：%1$@";
 
 /* Blaze Ad Destination: Plural form for characters limit label. %1$d will be replaced by a number. Read like: 10 characters remaining */
@@ -9886,6 +9838,9 @@ which should be translated separately and considered part of this sentence. */
 /* Message on the Blaze campaign creation error screen. */
 "blazeCampaignCreationError.failedToUploadCampaignImage" = "無法上傳行銷活動圖片。";
 
+/* Message on the Blaze campaign creation error screen. */
+"blazeCampaignCreationError.insufficientImageSize" = "圖片尺寸不足以裁切。 請選取其他行銷活動的圖片。";
+
 /* Button to dismiss the flow on the Blaze campaign creation error screen. */
 "blazeCampaignCreationErrorView.cancel" = "取消行銷活動";
 
@@ -9982,11 +9937,23 @@ which should be translated separately and considered part of this sentence. */
 /* Message in the Blaze campaign creation loading screen */
 "blazeCampaignCreationLoadingView.Message" = "建立行銷活動";
 
+/* Button that when tapped will launch create Blaze campaign flow. */
+"blazeCampaignDashboardView.createCampaign" = "建立行銷活動";
+
+/* Title of the Blaze campaign details view. */
+"blazeCampaignDashboardView.detailTitle" = "行銷活動詳細資料";
+
+/* Button to dismiss the Blaze campaign detail view */
+"blazeCampaignDashboardView.done" = "完成";
+
 /* Button to dismiss the Blaze campaign section on the My Store screen. */
 "blazeCampaignDashboardView.hideBlazeButton" = "隱藏 Blaze";
 
-/* Button when tapped will launch create Blaze campaign flow. */
-"blazeCampaignDashboardView.promote" = "宣傳";
+/* Button when tapped will show the Blaze campaign list. */
+"blazeCampaignDashboardView.showAllCampaigns" = "檢視所有行銷活動";
+
+/* Subtitle of the Blaze campaign view. */
+"blazeCampaignDashboardView.subtitle" = "提升能見度，加速商品銷售。";
 
 /* The action to be agreed upon on the Payment screen in the Blaze campaign creation flow. */
 "blazeConfirmPaymentView.adPolicy" = "廣告政策";
@@ -10078,6 +10045,12 @@ which should be translated separately and considered part of this sentence. */
 /* Change image button title in the Blaze Edit Ad screen. */
 "blazeEditAdView.image.changeImage" = "變更圖片";
 
+/* Error message displayed when selected campaign image is not large enough. */
+"blazeEditAdView.image.imageSizeErrorMessage" = "請選取並使用最小尺寸為 400x400 像素的圖片。";
+
+/* Button to dismiss the image view alert. */
+"blazeEditAdView.image.ok" = "確定";
+
 /* Save button in the Blaze Edit Ad screen. */
 "blazeEditAdView.save" = "儲存";
 
@@ -10155,6 +10128,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label for the email receipts toggle in Payment Method screen. %1$@ is a placeholder for the account display name. %2$@ is a placeholder for the username. %3$@ is a placeholder for the WordPress.com email address. */
 "blazePaymentMethodsView.emailReceipt" = "透過電子郵件傳送標籤購買收據給「%1$@」(%2$@)，電子郵件地址是 %3$@";
+
+/* Dismiss button on the error alert displayed on the Blaze payment method list screen */
+"blazePaymentMethodsView.loadPaymentMethodsErrorAlert.cancel" = "取消";
+
+/* Error message indicating that loading payment methods failed */
+"blazePaymentMethodsView.loadPaymentMethodsErrorAlert.paymentMethods" = "載入付款方式時發生錯誤";
+
+/* Button on the error alert displayed on the payment method list screen */
+"blazePaymentMethodsView.loadPaymentMethodsErrorAlert.retry" = "重試";
 
 /* Navigation bar title in the Blaze Payment Method screen */
 "blazePaymentMethodsView.navigationBarTitle" = "付款方式";
@@ -10352,6 +10334,27 @@ which should be translated separately and considered part of this sentence. */
 /* Navigation bar title for the cash tender view. Reads like 'Take Payment ($34.45)' */
 "cashPaymentTenderView.navigationBarTitle" = "收款 (%1$@)";
 
+/* Title of the button to add address in the order form customer card. */
+"collapsibleCustomerCard.addAddress.title" = "新增顧客地址";
+
+/* Address header text in the order form customer card when the billing and shipping addresses are the same. */
+"collapsibleCustomerCard.editAddress.address.header" = "地址";
+
+/* Billing address header text in the order form customer card. */
+"collapsibleCustomerCard.editAddress.billing.header" = "帳單地址";
+
+/* Shipping address header text in the order form customer card. */
+"collapsibleCustomerCard.editAddress.shipping.header" = "運送地址";
+
+/* Title of the email text field in the order form customer card. */
+"collapsibleCustomerCard.emailTextField.placeholder" = "輸入電子郵件地址";
+
+/* Title of the email text field in the order form customer card. */
+"collapsibleCustomerCard.emailTextField.title" = "電子郵件地址";
+
+/* Title of the button to remove customer from an order in the order form customer card. */
+"collapsibleCustomerCard.removeCustomerButton.title" = "從訂單移除顧客";
+
 /* Formatted price label based on a product's price and quantity. Reads as '8 x $10.00'. Please take care to use the multiplication symbol ×, not a letter x, where appropriate. */
 "collapsibleProductCardPriceSummaryViewModel.priceQuantityLine" = "%1$@ × %2$@。";
 
@@ -10378,6 +10381,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility hint for selecting a variable product to select product for filtering orders */
 "configurationForOrder.variableProductRowAccessibilityHint" = "開啟商品款式清單。";
+
+/* Title of the order customer selection screen. */
+"configurationForOrderCustomerSection.customerSelectorTitle" = "新增顧客詳細資料";
+
+/* Title for the screen to select customer in order filtering. */
+"configurationForOrderFilter.customerSelectorTitle" = "選擇顧客";
 
 /* Action to toggle whether a bundle item is included when it is optional. */
 "configureBundleItem.add" = "新增";
@@ -10442,8 +10451,179 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility title for the edit button on a custom amount row. */
 "customAmount.edit.button.accessibilityLabel" = "編輯金額";
 
-/* Button in date range picker to add a Custom Range tab */
-"customRangeTabCreationCoordinator.add" = "新增";
+/* Label for a customer with no name in the Customer detail screen. */
+"customerDetail.guestName" = "訪客";
+
+/* Label for the customer's average order value in the Customer Details screen. */
+"customerDetailView.avgOrderValueLabel" = "平均訂單金額";
+
+/* Label for the customer's city in the Customer Details screen. */
+"customerDetailView.cityLabel" = "城市";
+
+/* Button to copy a customer's email address in the Customer Details screen. */
+"customerDetailView.copyEmail" = "複製電子郵件地址";
+
+/* Label for the customer's country in the Customer Details screen. */
+"customerDetailView.countryLabel" = "國家\/地區";
+
+/* Heading for the section with general customer details in the Customer Details screen. */
+"customerDetailView.customerSection" = "顧客";
+
+/* Label for the date the customer was last active in the Customer Details screen. */
+"customerDetailView.dateLastActiveLabel" = "上次活動時間";
+
+/* Label for the customer's registration date in the Customer Details screen. */
+"customerDetailView.dateRegisteredLabel" = "註冊日期";
+
+/* Default placeholder if a customer's details are not available in the Customer Details screen. */
+"customerDetailView.defaultPlaceholder" = "無";
+
+/* Title for action to contact a customer via email. */
+"customerDetailView.emailActionLabel" = "透過電子郵件聯絡顧客";
+
+/* Placeholder if a customer's email address is not available in the Customer Details screen. */
+"customerDetailView.emailPlaceholder" = "無電子郵件地址";
+
+/* Heading for the section with customer location details in the Customer Details screen. */
+"customerDetailView.locationSection" = "地點";
+
+/* Label for the number of orders in the Customer Details screen. */
+"customerDetailView.ordersCountLabel" = "訂單";
+
+/* Heading for the section with customer order stats in the Customer Details screen. */
+"customerDetailView.ordersSection" = "訂單";
+
+/* Label for the customer's postal code in the Customer Details screen. */
+"customerDetailView.postcodeLabel" = "郵遞區號";
+
+/* Label for the customer's region in the Customer Details screen. */
+"customerDetailView.regionLabel" = "區域";
+
+/* Heading for the section with customer registration details in the Customer Details screen. */
+"customerDetailView.registrationSection" = "註冊";
+
+/* Button to email a customer in the Customer Details screen. */
+"customerDetailView.sendEmail" = "電子郵件地址";
+
+/* Label for the customer's total spend in the Customer Details screen. */
+"customerDetailView.totalSpendLabel" = "總預算";
+
+/* Label for the customer's username in the Customer Details screen. */
+"customerDetailView.usernameLabel" = "使用者名稱";
+
+/* Title when there are no customers in the search results in the Customers list screen. */
+"customerList.emptySearchTitle" = "找不到顧客";
+
+/* Message when there are no customers to show in the Customers list screen. */
+"customerList.emptyStateMessage" = "建立訂單，開始收集顧客洞察報告";
+
+/* Title when there are no customers to show in the Customers list screen. */
+"customerList.emptyStateTitle" = "目前尚無顧客";
+
+/* Message to prompt users to search for customers on the customer search screen */
+"customerSearchUICommand.emptyDefaultStateNoCreationMessage" = "搜尋現有顧客";
+
+/* The label that can be shown optionally for guest customers */
+"customerSearchUICommand.guestLabel" = "訪客";
+
+/* Error message in the Add Customer to order screen when getting the customer information */
+"customerSelectorViewController.guestSelectionDisallowedError" = "此使用者是訪客，而訪客無法用於篩選訂單。";
+
+/* Placeholder for a customer with no email address in the Customers list screen. */
+"customersList.emailPlaceholder" = "無電子郵件地址";
+
+/* Label for a customer with no name in the Customers list screen. */
+"customersList.guestLabel" = "訪客";
+
+/* Placeholder in the search bar in the Customers list screen. */
+"customersList.searchPlaceholder" = "搜尋顧客";
+
+/* Title for Customers list screen */
+"customersList.title" = "顧客";
+
+/* Name for the Blaze dashboard card in the Customize Dashboard screen */
+"dashboardCard.name.blazeCampaigns" = "Blaze 行銷活動";
+
+/* Name for the Most active coupons dashboard card in the Customize Dashboard screen */
+"dashboardCard.name.coupons" = "最常用的優惠券";
+
+/* Name for the Inbox dashboard card in the Customize Dashboard screen */
+"dashboardCard.name.inbox" = "收件匣";
+
+/* Name for the Most recent orders dashboard card in the Customize Dashboard screen */
+"dashboardCard.name.lastOrders" = "最近訂單";
+
+/* Name for the Store setup dashboard card in the Customize Dashboard screen */
+"dashboardCard.name.onboarding" = "商店設定";
+
+/* Name for the Performance dashboard card in the Customize Dashboard screen */
+"dashboardCard.name.performance" = "績效";
+
+/* Name for the Most recent reviews dashboard card in the Customize Dashboard screen */
+"dashboardCard.name.reviews" = "最近評論";
+
+/* Name for the Stock dashboard card in the Customize Dashboard screen */
+"dashboardCard.name.stock" = "庫存";
+
+/* Name for the Top performers dashboard card in the Customize Dashboard screen */
+"dashboardCard.name.topPerformers" = "成效最佳者";
+
+/* Link to open the support form. Should be lowercased. */
+"dashboardCardErrorView.contactSupport" = "聯絡支援團隊";
+
+/* Button to dismiss the support form from the Dashboard generic error card. */
+"dashboardCardErrorView.dismissSupport" = "完成";
+
+/* The info of the error view when failed to load store statistics on the Dashboard screen. The placeholder is a link to contact support. Reads as: Try reloading this card. If the issue persists, please contact us. */
+"dashboardCardErrorView.errorMessage" = "請嘗試重新載入這張卡片。 如果問題持續發生，請%1$@。";
+
+/* The title of the error view when failed to load a Dashboard card */
+"dashboardCardErrorView.errorTitle" = "無法載入資料";
+
+/* Button to reload the dashboard card on the Dashboard screen */
+"dashboardCardErrorView.retry" = "重試";
+
+/* Button to save changes on the Customize Dashboard screen */
+"dashboardCustomization.saveButton" = "儲存";
+
+/* Title for the screen to customize the dashboard screen */
+"dashboardCustomization.title" = "自訂";
+
+/* Text on unavailable dashboard card on the Customize Dashboard screen */
+"dashboardCustomization.unavailable" = "無法使用";
+
+/* Title of the button to edit the layout of the Dashboard screen. */
+"dashboardView.edit" = "編輯";
+
+/* Label of the button to add sections */
+"dashboardView.newCardsNoticeCard.addSectionsButtonLabel" = "新增新的區段";
+
+/* Subtitle of the New Cards Notice card */
+"dashboardView.newCardsNoticeCard.subtitle" = "新增新的區段，自訂你的商店管理體驗";
+
+/* Title of the New Cards Notice card */
+"dashboardView.newCardsNoticeCard.title" = "想獲得更多洞察報告？";
+
+/* Label of the button to share the store */
+"dashboardView.shareStoreCard.shareButtonLabel" = "分享你的商店";
+
+/* Subtitle of the Share Your Store card */
+"dashboardView.shareStoreCard.subtitle" = "使用電子郵件或社群媒體宣傳你的商店";
+
+/* Title of the Share Your Store card */
+"dashboardView.shareStoreCard.title" = "大肆宣傳！";
+
+/* Title on the banner when the site's WooExpress plan has expired */
+"dashboardView.storePlanBanner.expired" = "你的網站方案已結束。";
+
+/* Button to dismiss the support form from the Blaze confirm payment view screen. */
+"dashboardView.supportForm.done" = "完成";
+
+/* Title of the bottom tab item that presents the user's store dashboard, and default title for the store dashboard */
+"dashboardView.title" = "我的商店";
+
+/* Title of the bottom tab item that presents the user's store dashboard, and default title for the store dashboard */
+"dashboardViewHostingController.title" = "我的商店";
 
 /* Display label for a product's subscription period when it is a single day. */
 "day" = "天";
@@ -10563,8 +10743,56 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label to expand an expandable bottom sheet */
 "expandableBottomSheet.chevron.expand" = "顯示詳細資訊";
 
+/* Title of dismiss button for redaction information alert in Custom Range stats tab */
+"fancyAlertViewControllerStats.dismissButton" = "確定";
+
+/* Description for redaction information alert in Custom Range stats tab */
+"fancyAlertViewControllerStats.redactionInfoDescription" = "統計功能不支援顯示任意日期範圍的訪客和轉換資料。 \n\n不過你仍可點選圖表上的數值，查看該特定範圍的訪客和轉換資料。";
+
+/* Title for redaction information alert in Custom Range stats tab */
+"fancyAlertViewControllerStats.redactionInfoTitle" = "無法使用訪客和轉換資料";
+
+/* Row title for filtering orders by customer. */
+"filterOrderListViewModel.OrderListFilter.rowCustomer" = "顧客";
+
 /* Row title for filtering orders by Product. */
 "filterOrderListViewModel.OrderListFilter.rowTitleProduct" = "商品";
+
+/* Title of one of the hub menu options */
+"hubMenu.customers" = "顧客";
+
+/* Description of one of the hub menu options */
+"hubMenu.customersDescription" = "取得顧客洞察報告";
+
+/* Title of the view containing a single Product Review */
+"hubMenu.productReview" = "商品評論";
+
+/* The title of the button for giving a negative feedback for the app. */
+"inAppFeedbackCardView.couldBeBetter" = "可以更好";
+
+/* The title of the button for giving a positive feedback for the app. */
+"inAppFeedbackCardView.iLikeIt" = "我很喜歡";
+
+/* The title used when asking the user for feedback for the app. */
+"inAppFeedbackCardView.title" = "喜歡 WooCommerce 應用程式嗎？";
+
+/* Title displayed if there are no inbox notes in the Inbox section on the Dashboard screen. */
+"inboxDashboardCard.emptyStateTitle" = "沒有未讀訊息";
+
+/* Menu item to dismiss the Inbox section on the Dashboard screen */
+"inboxDashboardCard.hideCard" = "隱藏收件匣";
+
+/* Button to navigate to Inbox messages list screen. */
+"inboxDashboardCard.viewAll" = "檢視所有訊息";
+
+/* Title for Add Order home screen action */
+"infoplist.AddOrderAction.Title" = "新訂單";
+
+/* Title for Add Product home screen action */
+"infoplist.AddProductAction.Title" = "新增商品";
+
+/* Title for Payments home screen action */
+"infoplist.CollectPaymentAction.Title" = "收取款項";
 
 /* A message that tells the user why the app needs access to Bluetooth. */
 "infoplist.NSBluetoothAlwaysUsageDescription" = "此應用程式使用藍牙來與支援的讀卡機連線。";
@@ -10581,11 +10809,38 @@ which should be translated separately and considered part of this sentence. */
 /* A message that tells the user why the app is requesting access to the user’s photo library. */
 "infoplist.NSPhotoLibraryUsageDescription" = "用於儲存相機照片做為商品圖片，或為商品或支援票證新增照片或影片。";
 
+/* Title for Orders home screen action */
+"infoplist.OpenOrdersAction.Title" = "訂單";
+
+/* Title for Payments home screen action */
+"infoplist.OpenPaymentsAction.Title" = "付款";
+
 /* Title for the WPCom login screens when Jetpack is not connected yet */
 "jetpackSetupCoordinator.loginSubtitle" = "連結 Jetpack";
 
 /* Title for the WPCom login screens when Jetpack is not installed yet */
 "jetpackSetupCoordinator.loginTitle" = "安裝 Jetpack";
+
+/* In Last Orders dashboard card list, the name of the billed person when there are no first and last name. */
+"lastOrderDashboardRowViewModel.guestName" = "訪客";
+
+/* Menu item to dismiss the Last Orders section on the My Store screen */
+"lastOrdersDashboardCard.hideCard" = "隱藏訂單";
+
+/* Header label on the Last Orders section on the My Store screen */
+"lastOrdersDashboardCard.status" = "狀態";
+
+/* Button to navigate to Orders list screen. */
+"lastOrdersDashboardCard.viewAll" = "檢視所有訂單";
+
+/* Case Any in Order Filters for Order Statuses */
+"lastOrdersDashboardCardViewModel.anyStatusCase" = "任何";
+
+/* Message when there are no orders found. */
+"lastOrdersDashboardEmptyView.noOrders" = "等候你的第一筆訂單";
+
+/* Message when there are no orders found for a selected order status. The %@ is a placeholder for the order status selected by the user. */
+"lastOrdersDashboardEmptyView.noOrdersWithStatus" = "找不到「%@」狀態的訂單";
 
 /* Later today */
 "later today" = "今日稍晚";
@@ -10601,6 +10856,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* A hazardous material description stating when a package can fit into this category */
 "limited_quantity_category" = "有運送量限制的陸運包裹：氣溶膠、噴霧消毒劑、噴漆、髮膠、丙烷、丁烷、清潔產品等。 - 香氛、指甲油、去光水、溶劑、乾洗手、外用酒精、乙醇類產品等。 - 有運送量限制的陸運物品 (化妝品、清潔用品、塗料等)。";
+
+/* Subtitle displayed in the simplified prologue screen */
+"loginProloguePageType.getStartedText" = "從完成第一筆銷售到實現百萬收益，讓 Woo 一路陪伴你。 瞭解商家為何信賴我們為 3.9 萬間線上商店提供支援。";
 
 /* A manual refund is one where the store owner has given the purchaser alternative funds (cash, check, ACH) instead of using the payment gateway to create a refund (credit card or debit card was refunded) */
 "manual refund" = "手動退款";
@@ -10628,6 +10886,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* An accessibility label used when the balances are loading on the payments menu */
 "menu.payments.depositSummary.loading.accessibilityLabel" = "正在載入餘額…";
+
+/* Notice text after completing a payment order from In-Person Payments in the Menu */
+"menu.payments.inPersonPayments.collectPayment.notice.orderCompleted" = "🎉 已完成訂單";
+
+/* Notice text after creating an order from In-Person Payments in the Menu */
+"menu.payments.inPersonPayments.collectPayment.notice.orderCreated" = "🎉 已建立訂單";
 
 /* A label prompting users to learn more about card readers.
 This part is the link to the website, and forms part of a longer sentence which it should be considered a part of. */
@@ -10691,6 +10955,39 @@ which should be translated separately and considered part of this sentence. */
 /* Display label for a product's subscription period, e.g. '12 months'. */
 "months" = "月";
 
+/* Button title to contact support to get help with deprecated stats module */
+"mostActiveCouponsCard.contentUnavailable.buttonTitle" = "仍然需要幫助嗎？ 聯絡我們";
+
+/* Text that explains how to update WooCommerce to get the latest stats */
+"mostActiveCouponsCard.contentUnavailable.details" = "請確認你的網站是否執行最新版本的 WooCommerce，並已在 WooCommerce 設定中啟用「分析」功能。";
+
+/* Button to dismiss the support form from the Dashboard stats error screen. */
+"mostActiveCouponsCard.contentUnavailable.dismissSupport" = "完成";
+
+/* Title when we can't load coupon usage report because user is on a deprecated WooCommerce Version */
+"mostActiveCouponsCard.contentUnavailable.title" = "無法載入優惠券使用報告";
+
+/* Title in the coupons list on the coupons card on the Dashboard screen */
+"mostActiveCouponsCard.coupons" = "折價券";
+
+/* Title of the custom time range on the coupons card on the Dashboard screen */
+"mostActiveCouponsCard.custom" = "自訂";
+
+/* Menu item to dismiss the coupons card on the Dashboard screen */
+"mostActiveCouponsCard.hideCard" = "隱藏折價券";
+
+/* Title in the coupons list on the coupons card on the Dashboard screen. Denotes the number of times the coupon has been used. */
+"mostActiveCouponsCard.uses" = "使用次數";
+
+/* Button to navigate to Coupons list screen. */
+"mostActiveCouponsCard.viewAll" = "檢視所有折價券";
+
+/* Button in date range picker to add a Custom Range tab */
+"mostActiveCouponsCardViewModel.addCustomRange" = "新增";
+
+/* Default text for Most active coupons dashboard card when no data exists for a given period. */
+"mostActiveCouponsEmptyView.text" = "此期間並未使用任何優惠券";
+
 /* Placeholder in the search bar of a multiple selection list */
 "multipleSelectionList.search" = "搜尋";
 
@@ -10705,6 +11002,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* A error message when it's not possible toacquire the Analytics Hub previous selection range */
 "no previous period" = "沒有上個期間";
+
+/* Subtitle of a notice shown when a merchant scans a barcode for a product which is a parent to variations. It's not possible to purchase a parent product, as it simply groups its variable product children. In this case, the product is not added to the order as the merchant wanted it to be. */
+"order.barcode.scan.parent.product.notice.subtitle" = "請選取特定款式。";
+
+/* Title of a notice shown when a merchant scans a barcode for a product which is a parent to variations. It's not possible to purchase a parent product, as it simply groups its variable product children. In this case, the product is not added to the order as the merchant wanted it to be. */
+"order.barcode.scan.parent.product.notice.title" = "你無法直接新增整個多款式商品。";
 
 /* Title for the Coupon screen during order creation */
 "order.form.coupon.add.button.title" = "新增優惠券";
@@ -10742,19 +11045,50 @@ which should be translated separately and considered part of this sentence. */
 /* Title text of the button that adds shipping line when creating a new order */
 "order.form.shipping.add.button.title" = "新增運送";
 
+/* Button to add a shipping line to the order during order creation */
+"order.shippingLineDetails.addShipping" = "新增運送方式";
+
+/* Title above the amount field on the Shipping Line Details screen */
+"order.shippingLineDetails.amount" = "金額";
+
+/* Text for the cancel button in the Shipping Line Details screen */
+"order.shippingLineDetails.cancel" = "取消";
+
+/* Button to edit a shipping line to the order during order creation */
+"order.shippingLineDetails.editShipping" = "編輯運送方式";
+
+/* Title above the shipping method field on the Shipping Line Details screen */
+"order.shippingLineDetails.method" = "方式";
+
+/* Title above the name field on the Shipping Line Details screen */
+"order.shippingLineDetails.name" = "名稱";
+
+/* Placeholder for the name field on the Shipping Line Details screen
+   Placeholder for the name field on the Shipping Line Details screen in order form */
+"order.shippingLineDetails.namePlaceholder" = "運送方式";
+
+/* Title for the placeholder shipping method on the Shipping Line Details screen */
+"order.shippingLineDetails.placeholderMethodTitle" = "N\/A";
+
+/* Button to remove a shipping line from the order during order creation */
+"order.shippingLineDetails.removeShipping" = "從訂單移除運送方式";
+
+/* Title for the Shipping Line Details screen during order creation */
+"order.shippingLineDetails.shippingTitle" = "運送方式";
+
 /* Origin in Order Attribution Section on Order Details screen. */
 "orderAttributionInfo.direct" = "直接";
 
 /* Origin in Order Attribution Section on Order Details screen. */
 "orderAttributionInfo.mobileApp" = "行動應用程式";
 
-/* Origin in Order Attribution Section on Order Details screen.The placeholder is the source.Reads like: Organic: woo.com */
+/* Origin in Order Attribution Section on Order Details screen.The placeholder is the source.Reads like: Organic: woocommerce.com */
 "orderAttributionInfo.organic" = "有機：%1$@";
 
-/* Origin in Order Attribution Section on Order Details screen.The placeholder is the source.Reads like: Referral: woo.com */
+/* Origin in Order Attribution Section on Order Details screen.The placeholder is the source.Reads like: Referral: woocommerce.com */
 "orderAttributionInfo.referral" = "推薦：%1$@";
 
-/* Origin in Order Attribution Section on Order Details screen.The placeholder is the source.Reads like: Source: woo.com */
+/* Origin in Order Attribution Section on Order Details screen.The placeholder is the source.Reads like: Source: woocommerce.com */
 "orderAttributionInfo.source" = "來源：%1$@";
 
 /* Origin in Order Attribution Section on Order Details screen. */
@@ -10762,6 +11096,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Origin in Order Attribution Section on Order Details screen. */
 "orderAttributionInfo.webAdmin" = "網頁管理員";
+
+/* Content of error presented when Delete Shipment Tracking Action Failed. It reads: Unable to delete tracking for order #{order number}. Parameters: %1$d - order number */
+"orderDetail.deleteTracking.notice.title" = "無法刪除訂單 #%1$d 的追蹤";
 
 /* Title for the row to add tracking information. */
 "orderDetails.addTrackingRow.title" = "選用追蹤資訊";
@@ -10799,6 +11136,18 @@ which should be translated separately and considered part of this sentence. */
 /* Origin in Order Attribution Section on Order Details screen. */
 "orderDetailsDataSource.attributionInfo.unknown" = "未知";
 
+/* Title of Shipping Section in Order Details screen */
+"orderDetailsDataSource.shippingLines.title" = "運送方式";
+
+/* VoiceOver accessibility hint, informing the user that the button can be used to view the order custom fields information. */
+"orderDetailsDataSource.trashOrder.accessibilityHint" = "將此訂單移至垃圾桶。";
+
+/* Accessibility label for the 'Trash order' button */
+"orderDetailsDataSource.trashOrder.accessibilityLabel" = "「將訂單移至垃圾桶」按鈕";
+
+/* Text on the button title to trash an order */
+"orderDetailsDataSource.trashOrder.button.title" = "移至垃圾桶";
+
 /* Title text of the section that shows the Custom Amounts when creating or editing an order */
 "orderForm.customAmounts" = "自訂金額";
 
@@ -10810,6 +11159,21 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title text of the confirmation dialog that shows the add custom amounts options. */
 "orderForm.customAmounts.addOptionsDialogTitle" = "你想要如何新增自訂金額？";
+
+/* Title text of the button that adds customer data in the order form. */
+"orderForm.customerSection.addCustomer" = "新增顧客";
+
+/* Placeholder of the email in the header of a customer card in order form when an account is not required. */
+"orderForm.customerSection.customerCard.header.emailPlaceholder.notRequired" = "電子郵件地址";
+
+/* Placeholder of the email in the header of a customer card in order form when an account is required. */
+"orderForm.customerSection.customerCard.header.emailPlaceholder.required" = "必須提供電子郵件地址";
+
+/* Header text of the customer card in the order form. */
+"orderForm.customerSection.customerHeader" = "顧客";
+
+/* Title of the order customer selection screen in the order form.. */
+"orderForm.customerSection.customerSelectorTitle" = "新增顧客詳細資料";
 
 /* Title of the primary button on the new order screen to collect payment, likely in-person. This button first creates the order, then presents a view for the merchant to choose a payment method. */
 "orderForm.payment.collect.button.title" = "收取款項";
@@ -10828,6 +11192,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the primary button on the new order screen when changes need to be manually synced. Tapping the button will send changes to the server, and when complete the totals and taxes will be accurate. */
 "orderForm.recalculate.button.title" = "重新計算";
+
+/* Heading for the section that shows the Shipping Lines when creating or editing an order */
+"orderForm.shipping" = "運送方式";
 
 /* Label for the row showing the cost of coupon in the order */
 "orderPaymentSection.coupon" = "優惠券";
@@ -10871,6 +11238,12 @@ which should be translated separately and considered part of this sentence. */
 /* Shown with a 'Current:' label, but when we don't know what the plan that ended was */
 "plan ended" = "方案已結束";
 
+/* Title for the Close button within the Plugin List view. */
+"pluginListView.button.close" = "關閉";
+
+/* Title for the Plugin List view. */
+"pluginListView.title.plugins" = "外掛程式";
+
 /* Close title for the navigation bar button on the Print Shipping Label view. */
 "print.shipping.label.close.button.title" = "關閉";
 
@@ -10904,6 +11277,15 @@ which should be translated separately and considered part of this sentence. */
 /* Alert message about an unsupported file type when uploading file for a downloadable product. */
 "productDownloadListViewController.notice.unsupportedFileType" = "不支援所選檔案類型。";
 
+/* Button title Trash product in Edit Product More Options Action Sheet */
+"productForm.bottomSheet.trashAction" = "將商品移至垃圾桶";
+
+/* Product title */
+"productForm.defaultTitle" = "商品";
+
+/* Placeholder for empty product ratings */
+"productForm.quantityRules.placeholder" = "沒有數量規則";
+
 /* Description of the subscription period for a product. Reads like: 'every 2 months'. */
 "productFormDataModel.subscriptionPeriodFormat" = "每 %1$@";
 
@@ -10912,6 +11294,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Alert message to inform the user that they must wait for all image uploads to complete before they can reorder the images. */
 "productImagesCollectionViewController.notice" = "請稍候，直到所有上傳都完成後，再重新排序圖片。";
+
+/* Label for the suggested product on the Blaze dashboard view. */
+"productInfoView.suggestedProductLabel" = "建議的商品";
 
 /* Title of the billing interval row on the Product Price screen */
 "productPriceSettingsViewController.billingIntervalRowTitle" = "帳單間隔";
@@ -10973,6 +11358,51 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the One time shipping product shipping setting. */
 "productShippingSettings.oneTimeShipping.title" = "一次性運費";
 
+/* Button title to contact support to get help with deprecated stats module */
+"productStockDashboardCard.contentUnavailable.buttonTitle" = "仍然需要幫助嗎？ 聯絡我們";
+
+/* Text that explains how to update WooCommerce to get the latest stats */
+"productStockDashboardCard.contentUnavailable.details" = "請確認你的網站是否執行最新版本的 WooCommerce，並已在 WooCommerce 設定中啟用「分析」功能。";
+
+/* Button to dismiss the support form from the Dashboard stock card error screen. */
+"productStockDashboardCard.contentUnavailable.dismissSupport" = "完成";
+
+/* Title when we can't load stock report because user is on a deprecated WooCommerce Version */
+"productStockDashboardCard.contentUnavailable.title" = "無法載入庫存報告";
+
+/* Text on the empty state of the Stock section on the My Store screen. Reads as: No item found with Out of stock status */
+"productStockDashboardCard.emptyStateTitle" = "找不到「%1$@」狀態的商品";
+
+/* Menu item to dismiss the Stock section on the My Store screen */
+"productStockDashboardCard.hideCard" = "隱藏庫存";
+
+/* Subtitle in plural mode for the stock items on the Stock section on the My Store screen. Reads as: 10 items sold last 30 days */
+"productStockDashboardCard.item.subtitle.plural" = "過去 30 天賣出 %1$d 件商品";
+
+/* Subtitle in singular mode for the stock items on the Stock section on the My Store screen. Reads as: 1 item sold last 30 days */
+"productStockDashboardCard.item.subtitle.singular" = "過去 30 天賣出 %1$d 件商品";
+
+/* Subtitle for the stock items with no items sold on the Stock section on the My Store screen. */
+"productStockDashboardCard.item.subtitle.zero" = "過去 30 天沒有賣出任何商品";
+
+/* Header label on the Stock section on the My Store screen */
+"productStockDashboardCard.products" = "商品";
+
+/* Header label on the Stock section on the My Store screen */
+"productStockDashboardCard.status" = "狀態";
+
+/* Header label on the Stock section on the My Store screen */
+"productStockDashboardCard.stockLevels" = "庫存量";
+
+/* Title of a stock type displayed on the Stock section on My Store screen */
+"productStockDashboardCardViewModel.stockType.lowStock" = "庫存不足";
+
+/* Title of a stock type displayed on the Stock section on My Store screen */
+"productStockDashboardCardViewModel.stockType.onBackOrder" = "延期交貨";
+
+/* Title of a stock type displayed on the Stock section on My Store screen */
+"productStockDashboardCardViewModel.stockType.outOfStock" = "沒有庫存";
+
 /* Message on the secondary view of the products tab split view before any product is selected. */
 "productsTab.emptySecondaryView.message" = "未選取任何商品";
 
@@ -10982,11 +11412,14 @@ which should be translated separately and considered part of this sentence. */
 /* Button to submit selected products to the order, when some product has been selected. */
 "productselectorview.doneButtonTitle.addProductsText" = "新增商品";
 
+/* Button to dismiss the product quantity rules view screen. */
+"quantityRulesView.done" = "完成";
+
 /* Button to dismiss the alert displayed when selecting an invalid time range for analytics */
 "rangedDatePicker.invalidTimeRangeAlert.action" = "收到";
 
 /* Message of the alert displayed when selecting an invalid time range for analytics */
-"rangedDatePicker.invalidTimeRangeAlert.message" = "開始日期應早於結束日期。 請選取不同的時間範圍。";
+"rangedDatePicker.invalidTimeRangeAlert.message" = "開始日期不應晚於結束日期。 請選取不同的時間範圍。";
 
 /* Title of the alert displayed when selecting an invalid time range for analytics */
 "rangedDatePicker.invalidTimeRangeAlert.title" = "無效的時間範圍";
@@ -11009,6 +11442,30 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the switch in the IssueRefund screen to refund customAmounts */
 "refundIssue.customAmounts.title" = "退款自訂金額";
 
+/* Menu item to dismiss the Reviews card on the Dashboard screen */
+"reviewsDashboardCard.hideCard" = "隱藏評論";
+
+/* Message shown in the Reviews Dashboard Card if the list is filtered and there is no review. The %@ is a placeholder for the filter name. */
+"reviewsDashboardCard.noFilteredReviewsText" = "沒有和「%@」狀態相符的評論。 嘗試變更篩選條件。";
+
+/* Message shown in the Reviews Dashboard Card if the site has no review */
+"reviewsDashboardCard.noReviewsText" = "找不到評論。";
+
+/* Status label on the Reviews card's filter area. */
+"reviewsDashboardCard.status" = "狀態";
+
+/* Button to navigate to Reviews list screen. */
+"reviewsDashboardCard.viewAll" = "檢視所有評論";
+
+/* Menu item to dismiss the Reviews card on the Dashboard screen */
+"reviewsDashboardCardViewModel.filterAll" = "全部";
+
+/* Button to navigate to Reviews list screen. */
+"reviewsDashboardCardViewModel.filterApproved" = "已核准";
+
+/* Status label on the Reviews card's filter area. */
+"reviewsDashboardCardViewModel.filterHold" = "保留";
+
 /* The title for the cancel button in the search screen. */
 "searchViewController.cancelButton.tilet" = "取消";
 
@@ -11025,8 +11482,98 @@ which should be translated separately and considered part of this sentence. */
 /* Cancel button title for the Shipping Label purchase flow, shown in the nav bar */
 "shipping.label.navigationBar.cancel.button.title" = "取消";
 
+/* Accessibility title for the edit button on a shipping line row. */
+"shippingLine.edit.button.accessibilityLabel" = "編輯運送方式";
+
+/* Action to add a custom amount in the simple payments migration view. */
+"simplePaymentsMigrationSheet.addCustomAmount" = "新增自訂金額";
+
+/* Detail for the simple payments migration view. */
+"simplePaymentsMigrationSheet.detail" = "若要設定付款金額，可將自訂金額新增至新訂單。";
+
+/* Title for the simple payments migration view. Text in the asterisks is italic. */
+"simplePaymentsMigrationSheet.subtitle" = "我們結合了款項收取和訂單建立，讓功能變得更方便存取「也」更強大。";
+
+/* Title for the simple payments migration view. */
+"simplePaymentsMigrationSheet.title" = "「收取款項」已移動";
+
+/* Display text for the daily granularity of store stats on the My Store screen */
+"statsGranularityV4.dailyMetrics" = "每日間隔";
+
+/* Display text for the hourly granularity of store stats on the My Store screen */
+"statsGranularityV4.hourlyMetrics" = "每小時間隔";
+
+/* Display text for the monthly granularity of store stats on the My Store screen */
+"statsGranularityV4.monthlyMetrics" = "每月間隔";
+
+/* Display text for the weekly granularity of store stats on the My Store screen */
+"statsGranularityV4.weeklyMetrics" = "每週間隔";
+
+/* Display text for the yearly granularity of store stats on the My Store screen */
+"statsGranularityV4.yearlyMetrics" = "每年間隔";
+
 /* Tab selector title that shows the statistics for today */
 "statsTimeRangeV4.tabTitle.custom" = "自訂範圍";
+
+/* Button when tapped will show a screen with all the store setup tasks.%1$d represents the total number of tasks. */
+"storeOnboardingCardView.viewAll" = "檢視所有 %1$d 個工作項目";
+
+/* Button title to contact support to get help with deprecated stats module */
+"storePerformanceView.contentUnavailable.buttonTitle" = "仍然需要幫助嗎？ 聯絡我們";
+
+/* Text that explains how to update WooCommerce to get the latest stats */
+"storePerformanceView.contentUnavailable.details" = "請確認你的網站是否執行最新版本的 WooCommerce，並已在 WooCommerce 設定中啟用「分析」功能。";
+
+/* Button to dismiss the support form from the Dashboard stats error screen. */
+"storePerformanceView.contentUnavailable.dismissSupport" = "完成";
+
+/* Title when we can't show stats because user is on a deprecated WooCommerce Version */
+"storePerformanceView.contentUnavailable.title" = "我們無法顯示你的商店分析資料";
+
+/* Conversion stat label on dashboard. */
+"storePerformanceView.conversion" = "轉換";
+
+/* Title of the custom time range on the store performance card on the Dashboard screen */
+"storePerformanceView.custom" = "自訂";
+
+/* Menu item to dismiss the store performance section on the Dashboard screen */
+"storePerformanceView.hideCard" = "隱藏績效";
+
+/* Text on the store stats chart on the Dashboard screen when there is no revenue */
+"storePerformanceView.noRevenueText" = "所選日期沒有收益";
+
+/* Orders stat label on dashboard - should be plural. */
+"storePerformanceView.orders" = "訂單";
+
+/* Revenue stat label on dashboard. */
+"storePerformanceView.revenue" = "收益";
+
+/* Button to navigate to Analytics Hub. */
+"storePerformanceView.viewAll" = "檢視所有商店分析資料";
+
+/* Visitors stat label on dashboard - should be plural. */
+"storePerformanceView.visitors" = "訪客數";
+
+/* Button in date range picker to add a Custom Range tab */
+"storePerformanceViewModel.addCustomRange" = "新增";
+
+/* Button title on the store picker for store connection */
+"storePickerViewController.addStoreButton" = "連結現有商店";
+
+/* Value for the x-Axis of any selected point on the store stats chart on the Dashboard screen */
+"storeStatsChart.xSelectedValue" = "已選取日期";
+
+/* Value for the x-Axis of the store stats chart on the Dashboard screen */
+"storeStatsChart.xValue" = "日期";
+
+/* Value for the y-Axis of any selected point on the store stats chart on the Dashboard screen */
+"storeStatsChart.ySelectedValue" = "已選取收益";
+
+/* Value for the y-Axis of the store stats chart on the Dashboard screen */
+"storeStatsChart.yValue" = "收益";
+
+/* Value for the y-Axis of the store stats chart on the Dashboard screen when there is no revenue */
+"storeStatsChart.zeroRevenue" = "零收益";
 
 /* Widget description, displayed when selecting which widget to add */
 "storeWidgets.description" = "WooCommerce 今日統計資料";
@@ -11224,7 +11771,19 @@ which should be translated separately and considered part of this sentence. */
 /* Button in theme preview screen to pick a theme. The placeholder is the theme name. Reads like: Use Tsubaki */
 "themesPreviewViewModel.useThisThemeButton" = "使用 %1$@";
 
-/* Value for the WooCommerce plugin version detail row in settings, when the version is unknown. This is in place of the current version number. */
+/* Button in date range picker to add a Custom Range tab */
+"topPerformerDashboardViewModel.addCustomRange" = "新增";
+
+/* Title of the custom time range on the Top Performers card on the Dashboard screen */
+"topPerformersDashboardView.custom" = "自訂";
+
+/* Menu item to dismiss the Top Performers section on the Dashboard screen */
+"topPerformersDashboardView.hideCard" = "隱藏成效最佳者";
+
+/* Button to navigate to Analytics Hub. */
+"topPerformersDashboardView.viewAll" = "檢視所有商店分析資料";
+
+/* Value for the plugin version detail row in settings, when the version is unknown. This is in place of the current version number. */
 "unknown" = "未知";
 
 /* Used when the response doesn't have a valid url to display */
@@ -11260,6 +11819,45 @@ which should be translated separately and considered part of this sentence. */
 /* Product detailsl button title. */
 "updateProductInventoryView.viewProductDetailsButtonTitle" = "檢視產品詳細資訊";
 
+/* Info message when connecting your watch to the phone for the first time. */
+"watch.connect.message" = "在你的 iPhone 上開啟 Woo、連結商店，並將 Watch 放在附近";
+
+/* Loading title on the watch store stats screen. */
+"watch.mystore.error.title" = "載入商店資料時發生錯誤";
+
+/* Retry on the watch store stats screen. */
+"watch.mystore.retry.title" = "重試";
+
+/* Revenue title on the watch store stats screen. */
+"watch.mystore.revenue.title" = "收益";
+
+/* Format of the updated time in the watch store stats screen. */
+"watch.mystore.time.format" = "自 %@ 起";
+
+/* Today title on the watch store stats screen. */
+"watch.mystore.today.title" = "今天";
+
+/* Title when there is an error loading an order notification on the watch app */
+"watch.notification.order.error" = "載入通知時發生錯誤";
+
+/* Customer title in the order detail screen. */
+"watch.orders.detail.customer" = "顧客";
+
+/* Plural format for the number of products in the order detail screen. */
+"watch.orders.detail.product-count" = "%d 個商品";
+
+/* Singular format for the number of products in the order detail screen. */
+"watch.orders.detail.product-count-singular" = "1 個商品";
+
+/* Loading title on the watch orders list screen. */
+"watch.orders.error.title" = "載入訂單清單時發生錯誤";
+
+/* Retry on the watch orders list screen. */
+"watch.orders.retry.title" = "重試";
+
+/* Title on the watch orders list screen. */
+"watch.orders.title" = "訂單";
+
 /* Verb. Dismiss the web view screen. */
 "webKit.button.dismiss" = "關閉";
 
@@ -11278,6 +11876,9 @@ which should be translated separately and considered part of this sentence. */
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Products' tab. */
 "woocommerce, woo, products, categories, new product, search products" = "woocommerce、woo、產品、分類、新產品、搜尋產品";
 
+/* Title for the link for site creation guide. */
+"wordPressAuthenticatorDisplayStrings.default.siteCreationGuideButtonTitle" = "是否建立新網站？";
+
 /* Error message that describes an unknown error had occured */
 "wordpress-api.error.unknown" = "發生錯誤，請稍後再試一次。";
 
@@ -11286,6 +11887,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Message to show when a request for a WP.com API endpoint is throttled */
 "wordpresskit.api.message.endpoint_throttled" = "已達限制。 請於 1 分鐘後再試。 如果在這段時間結束前即重試，將使等候時間再度延長。 如果你覺得這是錯誤，請聯絡支援團隊。";
+
+/* Message to show to user when the app can't find WordPress.org REST API URL. */
+"wordpresskit.org-rest-api.not-found" = "找不到你網站的 REST API URL。 此應用程式需要該 URL 才能與你的網站通訊。 請聯絡你的主機服務提供者，以解決此問題。";
 
 /* Button to enter security key on the WPCom 2FA login screen */
 "wpCom2FALoginView.securityKeyButton" = "使用安全性金鑰";
@@ -11336,36 +11940,12 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Åland Islands" = "奧蘭群島";
 
-/* Tutorial steps on the application password tutorial screen */
-"⁃ Tap the continue button at the bottom to login directly into your site.\n\n⁃ Once logged in, approve the connection to give access to the woo app like the in the image below." = "⁃ 點選位於底端的「繼續」按鈕，即可直接登入你的網站。\n\n⁃ 請依下圖所示，在登入後核准連結，將存取權限賦予 Woo 應用程式。";
-
-/* Title of the local notification to remind the user to purchase a plan. */
-"🌟 Keep your business going!" = "🌟 讓業務蒸蒸日上！";
-
 /* Message when a tax rate is set */
 "🎉 New tax rate set" = "🎉 新稅率設定完成";
 
 /* Success notice when tapping Mark Order Complete on Review Order screen */
 "🎉 Order Completed" = "🎉 已完成訂單";
 
-/* Notice text after completing a simple payment order */
-"🎉 Order completed" = "🎉已完成訂單";
-
-/* Notice text after creating a simple payment order */
-"🎉 Order created" = "🎉 已建立訂單";
-
 /* Text of the notice that is displayed after the refund is created. */
 "🎉 Products successfully refunded" = "🎉 已成功退還商品款項";
-
-/* Title of the local notification about a newly created store */
-"🎉 Your store is ready!" = "🎉 你的商店已準備就緒！";
-
-/* Title of the local notification to ask for Free trial survey. */
-"💡Help Us Understand Your Subscription Decision" = "💡 與我們分享你的訂閱決策";
-
-/* Title of the Blaze campaign view. */
-"🔥 Blaze campaign" = "🔥Blaze 行銷活動";
-
-/* Title of the local notification to remind after three days. */
-"🧭 Still Exploring WooCommerce?" = "🧭 還在探索 WooCommerce 嗎？";
 

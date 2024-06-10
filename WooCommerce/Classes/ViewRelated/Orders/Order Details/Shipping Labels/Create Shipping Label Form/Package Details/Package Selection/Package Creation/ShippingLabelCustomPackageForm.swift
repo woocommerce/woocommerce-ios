@@ -24,10 +24,13 @@ struct ShippingLabelCustomPackageForm: View {
                             showingPackageTypes.toggle()
                         }
                         .sheet(isPresented: $showingPackageTypes, content: {
-                            SingleSelectionList(title: Localization.packageTypeLabel,
-                                                items: ShippingLabelCustomPackageFormViewModel.PackageType.allCases,
-                                                contentKeyPath: \.localizedName,
-                                                selected: $viewModel.packageType)
+                            NavigationStack {
+                                SingleSelectionList(title: Localization.packageTypeLabel,
+                                                    items: ShippingLabelCustomPackageFormViewModel.PackageType.allCases,
+                                                    contentKeyPath: \.localizedName,
+                                                    selected: $viewModel.packageType)
+                            }
+                            .wooNavigationBarStyle()
                         })
 
                         Divider()

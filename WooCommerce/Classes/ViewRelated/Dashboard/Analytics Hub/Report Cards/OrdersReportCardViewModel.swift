@@ -22,38 +22,22 @@ final class OrdersReportCardViewModel: AnalyticsReportCardProtocol {
     ///
     private let storeAdminURL: String?
 
-    var isRedacted: Bool = false
+    /// Indicates if the values should be hidden (for loading state)
+    ///
+    var isRedacted: Bool
 
     init(currentPeriodStats: OrderStatsV4?,
          previousPeriodStats: OrderStatsV4?,
          timeRange: AnalyticsHubTimeRangeSelection.SelectionType,
+         isRedacted: Bool = false,
          usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter,
          storeAdminURL: String? = ServiceLocator.stores.sessionManager.defaultSite?.adminURL) {
         self.currentPeriodStats = currentPeriodStats
         self.previousPeriodStats = previousPeriodStats
         self.timeRange = timeRange
+        self.isRedacted = isRedacted
         self.usageTracksEventEmitter = usageTracksEventEmitter
         self.storeAdminURL = storeAdminURL
-    }
-
-    /// Redacts the card content for a card loading state.
-    ///
-    func redact() {
-        isRedacted = true
-    }
-
-    /// Updates the stats used in the card metrics.
-    ///
-    func update(currentPeriodStats: OrderStatsV4?, previousPeriodStats: OrderStatsV4?) {
-        self.currentPeriodStats = currentPeriodStats
-        self.previousPeriodStats = previousPeriodStats
-        isRedacted = false
-    }
-
-    /// Updates the time range used in the card report link.
-    ///
-    func update(timeRange: AnalyticsHubTimeRangeSelection.SelectionType) {
-        self.timeRange = timeRange
     }
 }
 
@@ -77,11 +61,11 @@ extension OrdersReportCardViewModel {
 
     var leadingDelta: DeltaPercentage? {
         isRedacted ? DeltaPercentage(string: "0%", direction: .zero)
-        : StatsDataTextFormatter.createOrderCountDelta(from: previousPeriodStats, to: currentPeriodStats)
+        : StatsDataTextFormatter.createDelta(for: .totalOrders, from: previousPeriodStats, to: currentPeriodStats)
     }
 
     var leadingChartData: [Double] {
-        isRedacted ? [] : StatsIntervalDataParser.getChartData(for: .orderCount, from: currentPeriodStats)
+        isRedacted ? [] : StatsIntervalDataParser.getChartData(for: .totalOrders, from: currentPeriodStats)
     }
 
     // MARK: Average Order Value metric
@@ -96,7 +80,7 @@ extension OrdersReportCardViewModel {
 
     var trailingDelta: DeltaPercentage? {
         isRedacted ? DeltaPercentage(string: "0%", direction: .zero)
-        : StatsDataTextFormatter.createAverageOrderValueDelta(from: previousPeriodStats, to: currentPeriodStats)
+        : StatsDataTextFormatter.createDelta(for: .averageOrderValue, from: previousPeriodStats, to: currentPeriodStats)
     }
 
     var trailingChartData: [Double] {

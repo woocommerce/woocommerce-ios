@@ -196,7 +196,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
 
     func test_sending_shipping_input_updates_local_order() throws {
         // Given
-        let shippingLine = ShippingLine.fake().copy(shippingID: sampleShippingID)
+        let shippingLine = ShippingLine.fake().copy(shippingID: sampleShippingID, methodID: "free_shipping")
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
 
@@ -207,7 +207,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         XCTAssertEqual(synchronizer.order.shippingLines, [shippingLine])
     }
 
-    func test_sending_nil_shipping_input_updates_local_order() throws {
+    func test_removing_shipping_input_updates_local_order() throws {
         // Given
         let shippingLine = ShippingLine.fake().copy(shippingID: sampleShippingID)
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -215,7 +215,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
 
         // When
         synchronizer.setShipping.send(shippingLine)
-        synchronizer.setShipping.send(nil)
+        synchronizer.removeShipping.send(shippingLine)
 
         // Then
         let firstLine = try XCTUnwrap(synchronizer.order.shippingLines.first)
@@ -707,6 +707,50 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         // Then
         XCTAssertEqual(update.order.customerID, 16)
         XCTAssertTrue(update.fields.contains(.customerID))
+    }
+
+    func test_removing_customer_id_sets_customer_id_to_0() {
+        // Given
+        let order = Order.fake().copy(orderID: sampleOrderID, customerID: 16)
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .editing(initialOrder: order), stores: stores)
+
+        // When
+        stores.whenReceivingAction(ofType: OrderAction.self) { action in
+            // Then
+            XCTFail("Unexpected action: \(action)")
+        }
+        synchronizer.removeCustomerID.send(())
+
+        // Then
+        XCTAssertEqual(synchronizer.order.customerID, 0)
+    }
+
+    func test_removing_customer_id_does_not_trigger_sync_in_creation_flow() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
+
+        // When
+        stores.whenReceivingAction(ofType: OrderAction.self) { action in
+            // Then
+            XCTFail("Unexpected action: \(action)")
+        }
+        synchronizer.removeCustomerID.send(())
+    }
+
+    func test_removing_customer_id_does_not_trigger_sync_in_edit_flow() {
+        // Given
+        let order = Order.fake().copy(orderID: sampleOrderID)
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .editing(initialOrder: order), stores: stores)
+
+        // When
+        stores.whenReceivingAction(ofType: OrderAction.self) { action in
+            // Then
+            XCTFail("Unexpected action: \(action)")
+        }
+        synchronizer.removeCustomerID.send(())
     }
 
     func test_states_are_properly_set_upon_success_order_creation() {

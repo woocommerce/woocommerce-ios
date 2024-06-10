@@ -13,7 +13,7 @@ final class InboxViewModel: ObservableObject {
     @Published private(set) var noteRowViewModels: [InboxNoteRowViewModel] = []
 
     /// View models for placeholder rows.
-    let placeholderRowViewModels: [InboxNoteRowViewModel] = [Int64](0..<3).map {
+    static let placeholderRowViewModels: [InboxNoteRowViewModel] = [Int64](0..<3).map {
         // The content does not matter because the text in placeholder rows is redacted.
         InboxNoteRowViewModel(id: $0,
                               date: "   ",
@@ -36,8 +36,8 @@ final class InboxViewModel: ObservableObject {
     @Published private(set) var shouldShowBottomActivityIndicator = false
 
     private let pageSize: Int
-    private let noteTypes: [InboxNotesRemote.NoteType]? = [.info, .marketing, .survey, .warning]
-    private let noteStatuses: [InboxNotesRemote.Status]? = [.unactioned, .actioned]
+    static let noteTypes: [InboxNotesRemote.NoteType]? = [.info, .marketing, .survey, .warning]
+    static let noteStatuses: [InboxNotesRemote.Status]? = [.unactioned, .actioned]
 
     private var highestSyncedPageNumber: Int = 0
 
@@ -113,8 +113,8 @@ extension InboxViewModel: PaginationTrackerDelegate {
         let action = InboxNotesAction.loadAllInboxNotes(siteID: siteID,
                                                         pageNumber: pageNumber,
                                                         pageSize: pageSize,
-                                                        type: noteTypes,
-                                                        status: noteStatuses) { [weak self] result in
+                                                        type: Self.noteTypes,
+                                                        status: Self.noteStatuses) { [weak self] result in
             guard let self = self else { return }
             switch result {
             case .success(let notes):
@@ -148,8 +148,8 @@ extension InboxViewModel: PaginationTrackerDelegate {
         let pageSizeForAllSyncedNotes = highestSyncedPageNumber * pageSize
         let action = InboxNotesAction.dismissAllInboxNotes(siteID: siteID,
                                                            pageSize: pageSizeForAllSyncedNotes,
-                                                           type: noteTypes,
-                                                           status: noteStatuses) { result in
+                                                           type: Self.noteTypes,
+                                                           status: Self.noteStatuses) { result in
             switch result {
             case .success:
                 break

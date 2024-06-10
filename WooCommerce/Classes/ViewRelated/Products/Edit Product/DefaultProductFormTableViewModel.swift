@@ -25,6 +25,7 @@ struct DefaultProductFormTableViewModel: ProductFormTableViewModel {
     private let isDescriptionAIEnabled: Bool
     private let featureFlagService: FeatureFlagService
 
+
     init(product: ProductFormDataModel,
          actionsFactory: ProductFormActionsFactoryProtocol,
          currency: String,
@@ -55,8 +56,11 @@ private extension DefaultProductFormTableViewModel {
     func primaryFieldRows(product: ProductFormDataModel, actions: [ProductFormEditAction]) -> [ProductFormSection.PrimaryFieldRow] {
         actions.map { action -> [ProductFormSection.PrimaryFieldRow] in
             switch action {
-            case .images(let editable):
-                return [.images(isEditable: editable, allowsMultiple: product.allowsMultipleImages(), isVariation: product is EditableProductVariationModel)]
+            case .images(let editable, let isStorePublic):
+                return [.images(isEditable: editable,
+                                isStorePublic: isStorePublic,
+                                allowsMultiple: product.allowsMultipleImages(),
+                                isVariation: product is EditableProductVariationModel)]
             case .linkedProductsPromo(let viewModel):
                 return [.linkedProductsPromo(viewModel: viewModel)]
             case .name(let editable):
@@ -645,20 +649,20 @@ private extension DefaultProductFormTableViewModel {
 
         var quantityDetails = [String]()
 
-        if let minQuantity = product.minAllowedQuantity, minQuantity.isNotEmpty {
+        if let minQuantity = product.minAllowedQuantity, minQuantity.isAValidProductQuantityRuleValue {
             let minQuantityDescription = String.localizedStringWithFormat(Localization.minQuantityFormat, minQuantity)
             quantityDetails.append(minQuantityDescription)
         }
-        if let maxQuantity = product.maxAllowedQuantity, maxQuantity.isNotEmpty {
+        if let maxQuantity = product.maxAllowedQuantity, maxQuantity.isAValidProductQuantityRuleValue {
             let maxQuantityDescription = String.localizedStringWithFormat(Localization.maxQuantityFormat, maxQuantity)
             quantityDetails.append(maxQuantityDescription)
         }
-        if !quantityDetails.containsMoreThanOne, let groupOf = product.groupOfQuantity, groupOf.isNotEmpty {
+        if !quantityDetails.containsMoreThanOne, let groupOf = product.groupOfQuantity, groupOf.isAValidProductQuantityRuleValue {
             let groupOfDescription = String.localizedStringWithFormat(Localization.groupOfFormat, groupOf)
             quantityDetails.append(groupOfDescription)
         }
 
-        let details = quantityDetails.isEmpty ? nil : quantityDetails.joined(separator: "\n")
+        let details = quantityDetails.isEmpty ? Localization.emptyQuantityRules : quantityDetails.joined(separator: "\n")
 
         return ProductFormSection.SettingsRow.ViewModel(icon: icon,
                                                         title: title,
@@ -990,4 +994,7 @@ private extension DefaultProductFormTableViewModel.Localization {
                                                        comment: "Format of the Maximum Quantity setting (with a numeric quantity) on the Quantity Rules row")
         static let groupOfFormat = NSLocalizedString("Group of: %@",
                                                        comment: "Format of the Group Of setting (with a numeric quantity) on the Quantity Rules row")
+        static let emptyQuantityRules = NSLocalizedString("productForm.quantityRules.placeholder",
+                                                      value: "No Quantity Rules",
+                                                      comment: "Placeholder for empty product ratings")
 }

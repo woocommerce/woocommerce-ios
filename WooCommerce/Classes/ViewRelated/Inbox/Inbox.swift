@@ -64,7 +64,7 @@ struct Inbox: View {
                 case .syncingFirstPage:
                     ScrollView {
                         LazyVStack(spacing: 0) {
-                            ForEach(viewModel.placeholderRowViewModels) { rowViewModel in
+                            ForEach(InboxViewModel.placeholderRowViewModels) { rowViewModel in
                                 InboxNoteRow(viewModel: rowViewModel)
                                     .redacted(reason: .placeholder)
                                     .shimmering()

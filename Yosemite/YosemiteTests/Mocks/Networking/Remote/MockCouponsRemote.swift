@@ -9,6 +9,10 @@ final class MockCouponsRemote: CouponsRemoteProtocol {
     var spyLoadAllCouponsPageNumber: Int?
     var spyLoadAllCouponsPageSize: Int?
 
+    var didCallLoadCoupons = false
+    var spyLoadCouponsSiteID: Int64?
+    var spyLoadCouponsCouponIDs: [Int64]?
+
     var didCallSearchCoupons = false
     var spySearchCouponsSiteID: Int64?
     var spySearchCouponsPageNumber: Int?
@@ -34,8 +38,15 @@ final class MockCouponsRemote: CouponsRemoteProtocol {
     var spyLoadCouponReportSiteID: Int64?
     var spyLoadCouponReportCouponID: Int64?
 
+    var didCallLoadMostActiveCoupons = false
+    var spyLoadMostActiveCouponsSiteID: Int64?
+    var spyLoadMostActiveCouponsNumberOfCouponsToLoad: Int?
+    var spyLoadMostActiveCouponsStartDate: Date?
+    var spyLoadMostActiveCouponsEndDate: Date?
+
     // MARK: - Stub responses
     var resultForLoadAllCoupons: Result<[Coupon], Error>?
+    var resultForLoadCoupons: Result<[Coupon], Error>?
     var resultForSearchCoupons: Result<[Coupon], Error>?
 
     // MARK: - CouponsRemoteProtocol conformance
@@ -48,6 +59,18 @@ final class MockCouponsRemote: CouponsRemoteProtocol {
         spyLoadAllCouponsPageNumber = pageNumber
         spyLoadAllCouponsPageSize = pageSize
         guard let result = resultForLoadAllCoupons else { return }
+        completion(result)
+    }
+
+    func loadCoupons(for siteID: Int64,
+                     by couponIDs: [Int64],
+                     pageNumber: Int,
+                     pageSize: Int,
+                     completion: @escaping (Result<[Coupon], Error>) -> ()) {
+        didCallLoadCoupons = true
+        spyLoadCouponsSiteID = siteID
+        spyLoadCouponsCouponIDs = couponIDs
+        guard let result = resultForLoadCoupons else { return }
         completion(result)
     }
 
@@ -98,5 +121,17 @@ final class MockCouponsRemote: CouponsRemoteProtocol {
         didCallRetrieveCoupon = true
         spyRetrieveSiteID = siteID
         spyRetrieveCouponID = couponID
+    }
+
+    func loadMostActiveCoupons(for siteID: Int64,
+                               numberOfCouponsToLoad: Int,
+                               from startDate: Date,
+                               to endDate: Date,
+                               completion: @escaping (Result<[CouponReport], Error>) -> Void) {
+        didCallLoadMostActiveCoupons = true
+        spyLoadMostActiveCouponsSiteID = siteID
+        spyLoadMostActiveCouponsNumberOfCouponsToLoad = numberOfCouponsToLoad
+        spyLoadMostActiveCouponsStartDate = startDate
+        spyLoadMostActiveCouponsEndDate = endDate
     }
 }

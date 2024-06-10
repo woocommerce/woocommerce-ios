@@ -2,6 +2,7 @@ import SwiftUI
 import enum WordPressAuthenticator.SignInSource
 import struct WordPressAuthenticator.NavigateToEnterAccount
 import enum Yosemite.CreateAccountError
+import protocol WooFoundation.Analytics
 
 /// Hosting controller that wraps an `AccountCreationForm`.
 final class AccountCreationFormHostingController: UIHostingController<AccountCreationForm> {

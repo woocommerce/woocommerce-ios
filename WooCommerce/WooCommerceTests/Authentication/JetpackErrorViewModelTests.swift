@@ -153,7 +153,7 @@ final class JetpackErrorViewModelTests: XCTestCase {
 
 private extension JetpackErrorViewModelTests {
     private enum Expectations {
-        static let url = "https://woo.com"
+        static let url = "https://woocommerce.com"
         static let image = UIImage.loginNoJetpackError
         static let whatIsJetpack = NSLocalizedString("What is Jetpack?",
                                                      comment: "Button linking to webview that explains what Jetpack is"

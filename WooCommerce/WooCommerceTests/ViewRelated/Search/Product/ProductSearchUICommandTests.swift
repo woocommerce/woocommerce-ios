@@ -2,6 +2,7 @@ import XCTest
 
 @testable import WooCommerce
 import Yosemite
+import protocol WooFoundation.Analytics
 
 final class ProductSearchUICommandTests: XCTestCase {
     private let sampleSiteID: Int64 = 134

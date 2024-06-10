@@ -25,10 +25,6 @@ final class ConnectivityToolViewModel {
     ///
     private let siteID: Int64
 
-    /// Combine subscriptions.
-    ///
-    private var subscriptions: Set<AnyCancellable> = []
-
     init(session: SessionManagerProtocol = ServiceLocator.stores.sessionManager) {
 
         let network = AlamofireNetwork(credentials: session.defaultCredentials)
@@ -43,10 +39,11 @@ final class ConnectivityToolViewModel {
     }
 
     /// Sequentially runs all connectivity tests defined in `ConnectivityTest`.
+    /// Provide a `sinceTest` parameter to omit test cases before it..
     ///
-    private func startConnectivityTest() async {
+    private func startConnectivityTest(sinceTest: ConnectivityTest = .internetConnection) async {
 
-        for (index, testCase) in ConnectivityTest.allCases.enumerated() {
+        for (index, testCase) in ConnectivityTest.allCases.enumerated().dropFirst(sinceTest.rawValue) {
 
             // Add an inProgress card for the current test.
             cards.append(testCase.inProgressCard)
@@ -71,6 +68,9 @@ final class ConnectivityToolViewModel {
                 return // Exit connectivity test.
             }
         }
+
+        // Add no connections issues card if all tests are successful.
+        cards.append(noConnectionsIssueState())
     }
 
     /// Perform the test for a provided test case.
@@ -89,31 +89,45 @@ final class ConnectivityToolViewModel {
         }
     }
 
+    /// Retries the last test case and the subsequent ones.
+    ///
+    private func retryLastTest() {
+        // Remove the last test
+        cards.removeLast()
+
+        // Make sure there is a test case to run.
+        guard let testCaseToRepeat = ConnectivityTest(rawValue: cards.count) else {
+            return
+        }
+
+        // Run tests again from the last one.
+        Task {
+            await startConnectivityTest(sinceTest: testCaseToRepeat)
+        }
+    }
+
     /// Perform internet connectivity case using the `connectivityObserver`.
     ///
     private func testInternetConnectivity() async -> ConnectivityToolCard.State {
-        await withCheckedContinuation { continuation in
-            ServiceLocator.connectivityObserver.statusPublisher.first()
-                .sink { status in
-                    let reachable = {
-                        if case .reachable = status {
-                            DDLogInfo("Connectivity Tool: ✅ Internet Connection")
-                            return true
-                        } else {
-                            DDLogError("Connectivity Tool: ❌ Internet Connection")
-                            return false
-                        }
-                    }()
 
-                    let state: ConnectivityToolCard.State = reachable ?
-                        .success :
-                        .error(NSLocalizedString("It looks like you're not connected to the internet.\n\n" +
-                                                 "Ensure your Wi-Fi is turned on. If you're using mobile data, make sure it's enabled in your device settings.",
-                                                 comment: "Message when there is no internet connection in the recovery tool"), nil)
-                    continuation.resume(returning: state)
-                }
-                .store(in: &subscriptions)
-        }
+        let status = ServiceLocator.connectivityObserver.currentStatus
+        let reachable = {
+            if case .reachable = status {
+                DDLogInfo("Connectivity Tool: ✅ Internet Connection")
+                return true
+            } else {
+                DDLogError("Connectivity Tool: ❌ Internet Connection")
+                return false
+            }
+        }()
+
+        let state: ConnectivityToolCard.State = reachable ?
+            .success :
+            .error(NSLocalizedString("It looks like you're not connected to the internet.\n\n" +
+                                     "Ensure your Wi-Fi is turned on. If you're using mobile data, make sure it's enabled in your device settings.",
+                                     comment: "Message when there is no internet connection in the recovery tool"), [self.retryAction()])
+
+        return state
     }
 
     /// Test WPCom connectivity by fetching the mobile announcements.
@@ -131,9 +145,9 @@ final class ConnectivityToolViewModel {
 
                 let state: ConnectivityToolCard.State = result.isSuccess ?
                     .success :
-                    .error(NSLocalizedString("Oops! It seems we can't connect to WordPress.com at the moment.\n\n" +
-                                             "But don't worry, our support team is here to help. Contact us and we will happily assist you.",
-                                             comment: "Message when we can't reach WPCom in the recovery tool"), nil)
+                    .error(NSLocalizedString("We can’t connect to WordPress.com right now.\n\n" +
+                                             "Try again in a few minutes, or contact our support team and we will happily assist you.",
+                                             comment: "Message when we can't reach WPCom in the recovery tool"), [self.retryAction()])
                 continuation.resume(returning: state)
             }
         }
@@ -143,7 +157,8 @@ final class ConnectivityToolViewModel {
     ///
     func testSiteConnectivity() async -> ConnectivityToolCard.State {
         await withCheckedContinuation { continuation in
-            systemStatusRemote.fetchSystemStatusReport(for: siteID) { result in
+            systemStatusRemote.fetchSystemStatusReport(for: siteID) { [weak self] result in
+                guard let self else { return }
 
                 switch result {
                 case .success:
@@ -152,7 +167,7 @@ final class ConnectivityToolViewModel {
                     DDLogError("Connectivity Tool: ❌ Site connection\n\(error)")
                 }
 
-                let state = Self.stateForSiteResult(result)
+                let state = self.stateForSiteResult(result)
                 continuation.resume(returning: state)
             }
         }
@@ -162,7 +177,8 @@ final class ConnectivityToolViewModel {
     ///
     func testFetchingOrders() async -> ConnectivityToolCard.State {
         await withCheckedContinuation { continuation in
-            orderRemote?.loadAllOrders(for: siteID) { result in
+            orderRemote?.loadAllOrders(for: siteID) { [weak self] result in
+                guard let self else { return }
 
                 switch result {
                 case .success:
@@ -171,20 +187,20 @@ final class ConnectivityToolViewModel {
                     DDLogError("Connectivity Tool: ❌ Site Orders\n\(error)")
                 }
 
-                let state = Self.stateForSiteResult(result)
+                let state = self.stateForSiteResult(result)
                 continuation.resume(returning: state)
             }
         }
     }
 
-    private static func stateForSiteResult<T>(_ result: Result<T, Error>) -> ConnectivityToolCard.State {
+    private func stateForSiteResult<T>(_ result: Result<T, Error>) -> ConnectivityToolCard.State {
         guard case let .failure(error) = result else {
             return .success
         }
 
         let message: String
-        let errorAction: ConnectivityToolCard.State.ErrorAction?
-        let readMore = NSLocalizedString("Read More", comment: "Action button title for a generic error on the connectivity tool")
+        let readMoreAction: ConnectivityToolCard.State.Action
+        let readMore = NSLocalizedString("Read more", comment: "Action button title for a generic error on the connectivity tool")
         let generalTroubleshootAction = {
             UIApplication.shared.open(WooConstants.URLs.troubleshootErrorLoadingData.asURL())
             ServiceLocator.analytics.track(event: .ConnectivityTool.readMoreTapped())
@@ -194,32 +210,36 @@ final class ConnectivityToolViewModel {
             ServiceLocator.analytics.track(event: .ConnectivityTool.readMoreTapped())
         }
 
-        // Handle timeout errors specially
-        if error.isTimeoutError {
-            message = NSLocalizedString("Oops! Your site seems to be taking too long to respond.\n\nContact your hosting provider for further assistance.",
+        // Handle all types of errors but timeouts are specific.
+        switch (error, error.isTimeoutError) {
+        case (_, true):
+            message = NSLocalizedString("Your site is taking too long to respond.\n\nPlease contact your hosting provider for further assistance.",
                                         comment: "Message when we there is a timeout error in the recovery tool")
-            return .error(message, .init(title: readMore, action: generalTroubleshootAction))
-        }
-
-        // Handle all other types of errors.
-        switch error {
-        case is DecodingError:
-            message = NSLocalizedString("Oops! It seems we can't work properly with your site's response.\n\n" +
-                                        "But don't worry, our support team is here to help. Contact us and we will happily assist you.",
+            readMoreAction = .init(title: readMore, systemImage: SystemImages.readMore.rawValue, action: generalTroubleshootAction)
+        case (is DecodingError, _):
+            message = NSLocalizedString("We can't work properly with your site's response.\n\n" +
+                                        "Read more about it or contact our support team and we will happily assist you.",
                                         comment: "Message when we there is a decoding error in the recovery tool")
-            errorAction = .init(title: readMore, action: generalTroubleshootAction)
-        case DotcomError.jetpackNotConnected:
-            message = NSLocalizedString("Oops! There seems to be a problem with your jetpack connection.\n\n" +
-                                        "But don't worry, our support team is here to help. Contact us and we will happily assist you.",
+            readMoreAction = .init(title: readMore, systemImage: SystemImages.readMore.rawValue, action: generalTroubleshootAction)
+        case (DotcomError.jetpackNotConnected, _):
+            message = NSLocalizedString("There is problem with your jetpack connection.\n\n" +
+                                        "Read more about it or contact our support team and we will happily assist you.",
                                         comment: "Message when we there is a jetpack error in the recovery tool")
-            errorAction = .init(title: readMore, action: jetpackTroubleshootAction)
+            readMoreAction = .init(title: readMore, systemImage: SystemImages.readMore.rawValue, action: jetpackTroubleshootAction)
         default:
-            message = NSLocalizedString("Oops! There seems to be a problem with your site.\n\nContact your hosting provider for further assistance.",
+            message = NSLocalizedString("There seems to be a problem with your site.\n\nPlease contact your hosting provider for further assistance.",
                                         comment: "Message when we there is a generic error in the recovery tool")
-            errorAction = .init(title: readMore, action: generalTroubleshootAction)
+            readMoreAction = .init(title: readMore, systemImage: SystemImages.readMore.rawValue, action: generalTroubleshootAction)
         }
 
-        return .error(message, errorAction)
+        return .error(message, [readMoreAction, retryAction()])
+    }
+
+    private func retryAction() -> ConnectivityToolCard.State.Action {
+        let retryText = NSLocalizedString("Retry connection", comment: "Retry connection button in the connectivity tool screen")
+        return .init(title: retryText, systemImage: SystemImages.retry.rawValue, action: { [weak self] in
+            self?.retryLastTest()
+        })
     }
 
     /// Tracks the event with the respective test response.
@@ -235,10 +255,23 @@ final class ConnectivityToolViewModel {
         }()
         ServiceLocator.analytics.track(event: .ConnectivityTool.requestResponse(test: eventTest, success: success, timeTaken: timeTaken))
     }
+
+    private func noConnectionsIssueState() -> ConnectivityTool.Card {
+        .init(title: NSLocalizedString("No connection issues", comment: "Title for when there are no connection issues in the connectivity tool screen"),
+              icon: .empty,
+              state: .empty(NSLocalizedString("If your data still isn’t loading, contact our support team for assistance.",
+                                              comment: "Info message when there are no connection issues in the connectivity tool screen")))
+    }
 }
 
 private extension ConnectivityToolViewModel {
-    enum ConnectivityTest: CaseIterable {
+
+    private enum SystemImages: String {
+        case retry = "arrow.clockwise"
+        case readMore = "arrow.up.forward.app"
+    }
+
+    enum ConnectivityTest: Int, CaseIterable {
         case internetConnection
         case wpComServers
         case site
@@ -277,6 +310,7 @@ private extension ConnectivityToolViewModel {
 }
 
 extension ConnectivityTool.Card {
+
     /// Updates a card state to a new given state.
     ///
     func updatingState(_ newState: ConnectivityToolCard.State) -> ConnectivityTool.Card {

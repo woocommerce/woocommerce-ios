@@ -428,8 +428,9 @@ private extension FilterListViewController {
 
         func handleSelectedChange(selected: FilterType, viewController: ViewController) {
             // Do not allow selection for an unavailable promotable type.
+            // Instead, just launch a webview to promote it.
             if let promotable = selected as? PromotableProductType, !promotable.isAvailable {
-                return
+                return launchPromoteWebview(for: promotable)
             }
 
             onItemSelectedSubject.send(selected)
@@ -454,17 +455,21 @@ private extension FilterListViewController {
             configuration.buttonSize = .mini
             configuration.title = NSLocalizedString("Explore", comment: "Button title to explore an extension that isn't installed")
 
-            let action = UIAction { action in
-                if let url = promotableType.promoteUrl, let viewController = self.hostViewController {
-                    WebviewHelper.launch(url, with: viewController)
-                    ServiceLocator.analytics.track(event: .ProductListFilter.productFilterListExploreButtonTapped(type: promotableType))
-                }
+            let action = UIAction { [weak self] action in
+                self?.launchPromoteWebview(for: promotableType)
             }
 
             let button = UIButton(configuration: configuration, primaryAction: action)
             button.sizeToFit()
 
             return button
+        }
+
+        func launchPromoteWebview(for promotableType: PromotableProductType) {
+            if let url = promotableType.promoteUrl, let viewController = hostViewController {
+                WebviewHelper.launch(url, with: viewController)
+                ServiceLocator.analytics.track(event: .ProductListFilter.productFilterListExploreButtonTapped(type: promotableType))
+            }
         }
     }
 }

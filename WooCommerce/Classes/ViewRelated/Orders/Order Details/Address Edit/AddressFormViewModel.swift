@@ -3,6 +3,7 @@ import Yosemite
 import Experiments
 import class WordPressShared.EmailFormatValidator
 import protocol Storage.StorageManagerType
+import protocol WooFoundation.Analytics
 
 /// Parent class for AddressFormViewModelProtocol implementations. Holds shared sync/management logic.
 /// Not to be used on its own, so it doesn't conform to AddressFormViewModelProtocol.
@@ -102,6 +103,10 @@ open class AddressFormViewModel: ObservableObject {
     /// Address form fields
     ///
     @Published var fields: AddressFormFields
+
+    /// Emits changes to the AddressFormFields values
+    ///
+    var fieldsPublisher: Published<AddressFormFields>.Publisher { $fields }
 
     /// Secondary address form fields
     ///

@@ -2,6 +2,7 @@ import Foundation
 import Yosemite
 import Experiments
 import protocol Storage.StorageManagerType
+import protocol WooFoundation.Analytics
 
 /// Conformance to support listing in SwiftUI
 extension BlazeCampaignListItem: Identifiable {
@@ -45,7 +46,9 @@ final class BlazeCampaignListViewModel: ObservableObject {
     /// Blaze campaign ResultsController.
     private lazy var resultsController: ResultsController<StorageBlazeCampaignListItem> = {
         let predicate = NSPredicate(format: "siteID == %lld", siteID)
-        let sortDescriptorByID = NSSortDescriptor(keyPath: \StorageBlazeCampaignListItem.campaignID, ascending: false)
+        let sortDescriptorByID = NSSortDescriptor(key: "campaignID",
+                                                  ascending: false,
+                                                  selector: #selector(NSString.localizedStandardCompare))
         let resultsController = ResultsController<StorageBlazeCampaignListItem>(storageManager: storageManager,
                                                                         matching: predicate,
                                                                         sortedBy: [sortDescriptorByID])
@@ -103,6 +106,11 @@ final class BlazeCampaignListViewModel: ObservableObject {
 
     func didSelectCreateCampaign(source: BlazeSource) {
         analytics.track(event: .Blaze.blazeEntryPointTapped(source: source))
+    }
+
+    func didCreateCampaign() {
+        // TODO: make Blaze card appear on the dashboard again
+        loadCampaigns()
     }
 }
 

@@ -5,6 +5,7 @@ import enum Yosemite.Credentials
 import enum Yosemite.AccountAction
 import enum Yosemite.AccountCreationAction
 import enum Yosemite.CreateAccountError
+import protocol WooFoundation.Analytics
 import protocol Yosemite.StoresManager
 import class WordPressShared.EmailFormatValidator
 

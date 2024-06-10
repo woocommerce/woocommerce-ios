@@ -8,8 +8,8 @@ extension UIStoryboard {
 
     /// Returns a (new) instance of the Dashboard Storyboard.
     ///
-    static var dashboard: UIStoryboard {
-        return UIStoryboard(name: "Dashboard", bundle: .main)
+    static var settings: UIStoryboard {
+        return UIStoryboard(name: "Settings", bundle: .main)
     }
 
     /// Returns a (new) instance of the Orders Storyboard.

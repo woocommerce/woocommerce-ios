@@ -101,7 +101,7 @@ extension Date {
             formattedEnd = DateFormatter.Stats.createDayMonthYearFormatter(timezone: timezone).string(from: other)
         }
 
-        return "\(formattedStart) - \(formattedEnd)"
+        return "\(formattedStart) – \(formattedEnd)"
     }
 
     /// Returns the next midnight starting from `self`.

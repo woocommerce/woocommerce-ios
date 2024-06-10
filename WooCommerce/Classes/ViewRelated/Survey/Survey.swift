@@ -8,8 +8,18 @@ struct Survey: UIViewControllerRepresentable {
     ///
     let source: SurveyViewController.Source
 
+    /// Optional closure when survey is dismissed
+    ///
+    let onDismiss: (() -> Void)?
+
+    init(source: SurveyViewController.Source,
+         onDismiss: (() -> Void)? = nil) {
+        self.source = source
+        self.onDismiss = onDismiss
+    }
+
     func makeUIViewController(context: Context) -> SurveyCoordinatingController {
-        return SurveyCoordinatingController(survey: source)
+        return SurveyCoordinatingController(survey: source, onDismiss: onDismiss)
 
     }
 

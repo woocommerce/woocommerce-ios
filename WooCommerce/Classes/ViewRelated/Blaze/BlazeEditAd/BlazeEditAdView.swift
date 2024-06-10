@@ -65,6 +65,9 @@ struct BlazeEditAdView: View {
             .navigationBarTitleDisplayMode(.inline)
         }
         .navigationViewStyle(StackNavigationViewStyle())
+        .alert(Text(Localization.Image.imageSizeErrorMessage), isPresented: $viewModel.shouldDisplayImageSizeErrorAlert) {
+            Button(Localization.Image.ok, role: .cancel) { }
+        }
     }
 }
 
@@ -251,6 +254,16 @@ private extension BlazeEditAdView {
                 "blazeEditAdView.image.changeImage",
                 value: "Change image",
                 comment: "Change image button title in the Blaze Edit Ad screen."
+            )
+            static let imageSizeErrorMessage = NSLocalizedString(
+                "blazeEditAdView.image.imageSizeErrorMessage",
+                value: "Please select an image with minimum dimensions of 400 × 400 px.",
+                comment: "Error message displayed when selected campaign image is not large enough."
+            )
+            static let ok = NSLocalizedString(
+                "blazeEditAdView.image.ok",
+                value: "OK",
+                comment: "Button to dismiss the image view alert."
             )
         }
         enum Tagline {

@@ -1,5 +1,6 @@
 import Foundation
 import Yosemite
+import protocol WooFoundation.Analytics
 
 enum AddProductWithAIStep: Int, CaseIterable {
     case productName = 1

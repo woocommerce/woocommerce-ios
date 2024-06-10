@@ -61,7 +61,7 @@ final class ProductVariationFormViewModelTests: XCTestCase {
         // Given
         let product = ProductVariation.fake().copy(permalink: "https://example.com/product", status: ProductStatus.published)
         let sessionManager = SessionManager.makeForTesting()
-        sessionManager.defaultSite = Site.fake().copy(isPublic: true)
+        sessionManager.defaultSite = Site.fake().copy(visibility: .publicSite)
         let stores = MockStoresManager(sessionManager: sessionManager)
         let viewModel = createViewModel(product: product, formType: .edit, stores: stores)
 
@@ -88,7 +88,7 @@ final class ProductVariationFormViewModelTests: XCTestCase {
         // Given
         let product = ProductVariation.fake().copy(permalink: "https://example.com/product", status: ProductStatus.pending)
         let sessionManager = SessionManager.makeForTesting()
-        sessionManager.defaultSite = Site.fake().copy(isPublic: true)
+        sessionManager.defaultSite = Site.fake().copy(visibility: .publicSite)
         let stores = MockStoresManager(sessionManager: sessionManager)
         let viewModel = createViewModel(product: product, formType: .edit, stores: stores)
 
@@ -115,7 +115,7 @@ final class ProductVariationFormViewModelTests: XCTestCase {
         // Given
         let product = ProductVariation.fake().copy(permalink: "https://example.com/product", status: ProductStatus.published)
         let sessionManager = SessionManager.makeForTesting()
-        sessionManager.defaultSite = Site.fake().copy(isPublic: false)
+        sessionManager.defaultSite = Site.fake().copy(visibility: .privateSite)
         let stores = MockStoresManager(sessionManager: sessionManager)
         let viewModel = createViewModel(product: product, formType: .edit, stores: stores)
 
@@ -130,7 +130,7 @@ final class ProductVariationFormViewModelTests: XCTestCase {
         // Given
         let product = ProductVariation.fake().copy(permalink: "", status: ProductStatus.published)
         let sessionManager = SessionManager.makeForTesting()
-        sessionManager.defaultSite = Site.fake().copy(isPublic: true)
+        sessionManager.defaultSite = Site.fake().copy(visibility: .publicSite)
         let stores = MockStoresManager(sessionManager: sessionManager)
         let viewModel = createViewModel(product: product, formType: .edit, stores: stores)
 
@@ -145,7 +145,7 @@ final class ProductVariationFormViewModelTests: XCTestCase {
         // Given
         let product = ProductVariation.fake().copy(permalink: "https://example.com/product", status: ProductStatus.published)
         let sessionManager = SessionManager.makeForTesting()
-        sessionManager.defaultSite = Site.fake().copy(isPublic: true)
+        sessionManager.defaultSite = Site.fake().copy(visibility: .publicSite)
         let stores = MockStoresManager(sessionManager: sessionManager)
         let viewModel = createViewModel(product: product, formType: .edit, stores: stores)
 

@@ -1,4 +1,5 @@
 import Foundation
+import protocol WooFoundation.AnalyticsProvider
 @testable import WooCommerce
 @testable import WordPressShared
 

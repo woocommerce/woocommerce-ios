@@ -1,0 +1,50 @@
+{
+    "data": [
+        {
+          "product_id": 248,
+          "variation_id": 280,
+          "items_sold": 8,
+          "net_revenue": 6235.52,
+          "orders_count": 1,
+          "extended_info": {
+            "name": "Fantastic Concrete Shirt",
+            "price": 779.44,
+            "image": "<img width=\"300\" height=\"300\" src=\"https://test.ninja/wp-content/uploads/2024/05/img-laboriosam-300x300.png\" class=\"attachment-woocommerce_thumbnail size-woocommerce_thumbnail\" alt=\"\" decoding=\"async\" loading=\"lazy\" srcset=\"https://test.ninja/wp-content/uploads/2024/05/img-laboriosam-300x300.png 300w, https://test.ninja/wp-content/uploads/2024/05/img-laboriosam-150x150.png 150w, https://test.ninja/wp-content/uploads/2024/05/img-laboriosam-600x600.png 600w, https://test.ninja/wp-content/uploads/2024/05/img-laboriosam-100x100.png 100w, https://test.ninja/wp-content/uploads/2024/05/img-laboriosam.png 700w\" sizes=\"(max-width: 300px) 100vw, 300px\" />",
+            "permalink": "https://test.ninja/product/fantastic-concrete-shirt/?attribute_omnis-beatae-quaerat=ex&attribute_pa_numeric-size=7&attribute_pa_color=pink",
+            "stock_status": "instock",
+            "stock_quantity": 24,
+            "low_stock_amount": 2,
+            "sku": "fantastic-concrete-shirt-64346342",
+            "attributes": [
+              {
+                "id": 0,
+                "name": "omnis-beatae-quaerat",
+                "option": "ex"
+              },
+              {
+                "id": 2,
+                "name": "numeric-size",
+                "option": "7"
+              },
+              {
+                "id": 1,
+                "name": "color",
+                "option": "Pink"
+              }
+            ]
+          },
+          "_links": {
+            "product": [
+              {
+                "href": "https://test.ninja/wp-json/wc-analytics/products/248"
+              }
+            ],
+            "variation": [
+              {
+                "href": "https://test.ninja/wp-json/wc-analytics/products/248/variation/280"
+              }
+            ]
+          }
+        }
+      ]
+}

@@ -1,5 +1,6 @@
 import Foundation
 import Yosemite
+import protocol WooFoundation.Analytics
 
 /// Use case in charge of updating(remotely and locally) analytics choices.
 ///

@@ -39,7 +39,7 @@ import WooFoundation
 /// Analytics.track(event: .loginStart)
 /// ~~~
 ///
-public struct WooAnalyticsEvent {
+struct WooAnalyticsEvent {
     init(statName: WooAnalyticsStat, properties: [String: WooAnalyticsEventPropertyType], error: Error? = nil) {
         self.statName = statName
         self.properties = properties
@@ -82,6 +82,8 @@ extension WooAnalyticsEvent {
         case tapToPayFirstPaymentPaymentsMenu
         /// Shown in Product details form for a AI generated product
         case productCreationAI = "product_creation_ai"
+        /// Shown in the order form after adding a shipping line
+        case orderFormShippingLines = "order_form_shipping_lines"
     }
 
     /// The action performed on the survey screen.
@@ -240,6 +242,7 @@ extension WooAnalyticsEvent {
             static let errorDescription = "error_description"
             static let field = "field"
             static let variationsCount = "variations_count"
+            static let hasChangedData = "has_changed_data"
         }
 
         enum BulkUpdateField: String {
@@ -365,6 +368,11 @@ extension WooAnalyticsEvent {
         static func expirationDateSettingsTapped() -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .productVariationViewSubscriptionExpirationDateTapped, properties: [:])
         }
+
+        static func quantityRulesDoneButtonTapped(hasChangedData: Bool) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productVariationDetailsViewQuantityRulesDoneButtonTapped,
+                              properties: [Keys.hasChangedData: hasChangedData])
+        }
     }
 }
 
@@ -447,6 +455,11 @@ extension WooAnalyticsEvent {
         ///
         static func expirationDateSettingsTapped() -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .productDetailsViewSubscriptionExpirationDateTapped, properties: [:])
+        }
+
+        static func quantityRulesDoneButtonTapped(hasChangedData: Bool) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productDetailsViewQuantityRulesDoneButtonTapped,
+                              properties: [Keys.hasChangedData: hasChangedData])
         }
 
         /// For Woo Subscriptions products, tracks when the subscription expiration details screen is closed.
@@ -548,6 +561,7 @@ extension WooAnalyticsEvent {
             static let orderID = "id"
             static let productTypes = "product_types"
             static let hasMultipleShippingLines = "has_multiple_shipping_lines"
+            static let shippingLinesCount = "shipping_lines_count"
             static let hasMultipleFeeLines = "has_multiple_fee_lines"
             static let itemType = "item_type"
             static let source = "source"
@@ -560,6 +574,7 @@ extension WooAnalyticsEvent {
             static let taxStatus = "tax_status"
             static let expanded = "expanded"
             static let horizontalSizeClass = "horizontal_size_class"
+            static let shippingMethod = "shipping_method"
         }
 
         static func ordersSelected(horizontalSizeClass: UIUserInterfaceSizeClass) -> WooAnalyticsEvent {
@@ -719,8 +734,18 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .orderProductDiscountEditButtonTapped, properties: [:])
         }
 
-        static func orderShippingMethodAdd(flow: Flow) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .orderShippingMethodAdd, properties: [Keys.flow: flow.rawValue])
+        static func orderAddShippingTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderAddShippingTapped, properties: [:])
+        }
+
+        static func orderShippingMethodSelected(methodID: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderShippingMethodSelected, properties: [Keys.shippingMethod: methodID])
+        }
+
+        static func orderShippingMethodAdd(flow: Flow, methodID: String, shippingLinesCount: Int64) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderShippingMethodAdd, properties: [Keys.flow: flow.rawValue,
+                                                                              Keys.shippingMethod: methodID,
+                                                                              Keys.shippingLinesCount: shippingLinesCount])
         }
 
         static func orderShippingMethodRemove(flow: Flow) -> WooAnalyticsEvent {
@@ -795,8 +820,13 @@ extension WooAnalyticsEvent {
             ])
         }
 
-        static func orderCreationSuccess(millisecondsSinceSinceOrderAddNew: Int64?, couponsCount: Int64, usesGiftCard: Bool) -> WooAnalyticsEvent {
-            var properties: [String: WooAnalyticsEventPropertyType] = [Keys.couponsCount: couponsCount, Keys.usesGiftCard: usesGiftCard]
+        static func orderCreationSuccess(millisecondsSinceSinceOrderAddNew: Int64?,
+                                         couponsCount: Int64,
+                                         usesGiftCard: Bool,
+                                         shippingLinesCount: Int64) -> WooAnalyticsEvent {
+            var properties: [String: WooAnalyticsEventPropertyType] = [Keys.couponsCount: couponsCount,
+                                                                       Keys.usesGiftCard: usesGiftCard,
+                                                                       Keys.shippingLinesCount: shippingLinesCount]
 
             if let lapseSinceLastOrderAddNew = millisecondsSinceSinceOrderAddNew {
                 properties[GlobalKeys.millisecondsSinceOrderAddNew] = lapseSinceLastOrderAddNew
@@ -889,6 +919,12 @@ extension WooAnalyticsEvent {
         ///
         static func giftCardsShown() -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .orderDetailsGiftCardShown, properties: [:])
+        }
+
+        /// Tracks when shipping is displayed in order details.
+        ///
+        static func shippingShown(shippingLinesCount: Int64) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderDetailsShippingMethodsShown, properties: [Keys.shippingLinesCount: shippingLinesCount])
         }
 
         /// Tracked when the Configure button is shown in the order form.
@@ -1171,33 +1207,10 @@ extension WooAnalyticsEvent {
 extension WooAnalyticsEvent {
     // Namespace
     enum SimplePayments {
-        /// Possible Payment Methods
-        ///
-        enum PaymentMethod: String {
-            case card
-            case cash
-            case paymentLink = "payment_link"
-        }
-
-        /// Possible view sources
-        ///
-        enum Source: String {
-            case amount
-            case summary
-            case paymentMethod = "payment_method"
-        }
-
         /// Common event keys
         ///
         private enum Keys {
             static let state = "state"
-            static let amount = "amount"
-            static let paymentMethod = "payment_method"
-            static let source = "source"
-        }
-
-        static func simplePaymentsFlowStarted() -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .simplePaymentsFlowStarted, properties: [:])
         }
 
         static func simplePaymentsFlowNoteAdded() -> WooAnalyticsEvent {
@@ -1206,6 +1219,14 @@ extension WooAnalyticsEvent {
 
         static func simplePaymentsFlowTaxesToggled(isOn: Bool) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .simplePaymentsFlowTaxesToggled, properties: [Keys.state: isOn ? "on" : "off"])
+        }
+
+        static func simplePaymentsMigrationSheetAddCustomAmount() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .simplePaymentsMigrationSheetAddCustomAmount, properties: [:])
+        }
+
+        static func simplePaymentsMigrationSheetShown() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .simplePaymentsMigrationSheetShown, properties: [:])
         }
     }
 }
@@ -2832,34 +2853,6 @@ extension WooAnalyticsEvent {
     }
 }
 
-// MARK: - Free Trial
-//
-extension WooAnalyticsEvent {
-    enum FreeTrial {
-        enum Keys: String {
-            case source
-        }
-
-        enum Source: String {
-            case banner
-            case upgradesScreen = "upgrades_screen"
-            case expiredWPComPlanAlert = "expired_wpcom_plan_alert"
-        }
-
-        static func freeTrialUpgradeNowTapped(source: Source) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .freeTrialUpgradeNowTapped, properties: [Keys.source.rawValue: source.rawValue])
-        }
-
-        static func planUpgradeSuccess(source: Source) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .planUpgradeSuccess, properties: [Keys.source.rawValue: source.rawValue])
-        }
-
-        static func planUpgradeAbandoned(source: Source) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .planUpgradeAbandoned, properties: [Keys.source.rawValue: source.rawValue])
-        }
-    }
-}
-
 // MARK: - In-App Purchases
 extension WooAnalyticsEvent {
     enum InAppPurchases {
@@ -3072,5 +3065,56 @@ extension WooAnalyticsEvent {
 
             return WooAnalyticsEvent(statName: .orderProductSearchViaSKUFailure, properties: properties)
         }
+    }
+}
+
+// MARK: - Customers in Hub Menu
+
+extension WooAnalyticsEvent {
+    enum CustomersHub {
+        private enum Keys {
+            static let searchFilter = "filter"
+            static let registered = "registered"
+            static let hasEmail = "has_email_address"
+        }
+        static func customerListLoaded() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .customerHubLoaded, properties: [:])
+        }
+
+        static func customerListLoadFailed(withError error: Error) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .customerHubLoadFailed, properties: [:], error: error)
+        }
+
+        static func customerListSearched(withFilter filter: CustomerSearchFilter) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .customersHubSearch, properties: [Keys.searchFilter: filter.rawValue])
+        }
+
+        static func customerDetailOpened(registered: Bool, hasEmail: Bool) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .customersHubDetailOpen, properties: [Keys.registered: registered,
+                                                                              Keys.hasEmail: hasEmail])
+        }
+
+        static func customerDetailEmailMenuTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .customersHubDetailEmailMenuTapped, properties: [:])
+        }
+
+        static func customerDetailEmailOptionTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .customersHubDetailEmailOptionTapped, properties: [:])
+        }
+
+        static func customerDetailCopyEmailOptionTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .customersHubDetailCopyEmailOptionTapped, properties: [:])
+        }
+    }
+}
+
+// MARK: - Plugin events
+//
+extension WooAnalyticsEvent {
+    static func logOutOfDatePlugins(_ outOfDatePluginCount: Int, _ pluginList: String) -> WooAnalyticsEvent {
+        WooAnalyticsEvent(statName: .outOfDatePluginList, properties: [
+            "out_of_date_plugin_count": outOfDatePluginCount,
+            "plugins": "\(pluginList)"
+        ])
     }
 }

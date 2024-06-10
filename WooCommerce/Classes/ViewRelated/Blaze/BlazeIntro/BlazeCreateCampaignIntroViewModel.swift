@@ -1,4 +1,5 @@
 import Foundation
+import protocol WooFoundation.Analytics
 
 /// View model for `BlazeCreateCampaignIntroView`
 final class BlazeCreateCampaignIntroViewModel: ObservableObject {

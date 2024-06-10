@@ -1,6 +1,7 @@
 import Combine
 import Yosemite
 import protocol Storage.StorageManagerType
+import protocol WooFoundation.Analytics
 
 final class EditOrderAddressFormViewModel: AddressFormViewModel, AddressFormViewModelProtocol {
 
@@ -142,7 +143,7 @@ final class EditOrderAddressFormViewModel: AddressFormViewModel, AddressFormView
             case .success(let updatedOrder):
                 self.onOrderUpdate?(updatedOrder)
                 self.notice = NoticeFactory.createSuccessNotice()
-                self.analytics.track(event: WooAnalyticsEvent.OrderDetailsEdit.orderDetailEditFlowCompleted(subject: self.analyticsFlowType()))
+                self.analytics.track(event: .OrderDetailsEdit.orderDetailEditFlowCompleted(subject: self.analyticsFlowType()))
 
             case .failure(let error):
                 DDLogError("⛔️ Error updating order: \(error)")
@@ -150,7 +151,7 @@ final class EditOrderAddressFormViewModel: AddressFormViewModel, AddressFormView
                     DDLogError("⛔️ Email is nil in address. It won't work in WC < 5.9.0 (https://git.io/J68Gl)")
                 }
                 self.notice = AddressFormViewModel.NoticeFactory.createErrorNotice(from: .unableToUpdateAddress)
-                self.analytics.track(event: WooAnalyticsEvent.OrderDetailsEdit.orderDetailEditFlowFailed(subject: self.analyticsFlowType()))
+                self.analytics.track(event: .OrderDetailsEdit.orderDetailEditFlowFailed(subject: self.analyticsFlowType()))
             }
             onFinish(result.isSuccess)
         }
@@ -160,11 +161,11 @@ final class EditOrderAddressFormViewModel: AddressFormViewModel, AddressFormView
     }
 
     override func trackOnLoad() {
-        analytics.track(event: WooAnalyticsEvent.OrderDetailsEdit.orderDetailEditFlowStarted(subject: self.analyticsFlowType()))
+        analytics.track(event: .OrderDetailsEdit.orderDetailEditFlowStarted(subject: self.analyticsFlowType()))
     }
 
     func userDidCancelFlow() {
-        analytics.track(event: WooAnalyticsEvent.OrderDetailsEdit.orderDetailEditFlowCanceled(subject: self.analyticsFlowType()))
+        analytics.track(event: .OrderDetailsEdit.orderDetailEditFlowCanceled(subject: self.analyticsFlowType()))
     }
 }
 

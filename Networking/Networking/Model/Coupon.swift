@@ -212,7 +212,6 @@ public struct Coupon {
 
 }
 
-
 // MARK: - Codable Conformance
 
 /// Defines all of the Coupon CodingKeys

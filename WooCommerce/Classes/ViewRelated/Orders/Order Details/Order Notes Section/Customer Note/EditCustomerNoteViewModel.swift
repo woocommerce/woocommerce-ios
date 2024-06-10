@@ -2,6 +2,7 @@ import Foundation
 import Yosemite
 import Combine
 import Experiments
+import protocol WooFoundation.Analytics
 
 /// View Model for the Edit Customer Note screen
 ///
@@ -83,7 +84,7 @@ final class EditCustomerNoteViewModel: EditCustomerNoteViewModelProtocol {
         // We need to set the original value.
         syncNewNoteWithOrder()
 
-        analytics.track(event: WooAnalyticsEvent.OrderDetailsEdit.orderDetailEditFlowCanceled(subject: .customerNote))
+        analytics.track(event: .OrderDetailsEdit.orderDetailEditFlowCanceled(subject: .customerNote))
     }
 }
 
@@ -132,7 +133,7 @@ private extension EditCustomerNoteViewModel {
             self.performingNetworkRequest.send(false)
 
             guard case let .failure(error) = result else {
-                self.analytics.track(event: WooAnalyticsEvent.OrderDetailsEdit.orderDetailEditFlowCompleted(subject: .customerNote))
+                self.analytics.track(event: .OrderDetailsEdit.orderDetailEditFlowCompleted(subject: .customerNote))
                 self.displayCustomerNoteUpdatedNoticeIfNeeded()
                 onFinish?(true)
                 return
@@ -140,7 +141,7 @@ private extension EditCustomerNoteViewModel {
 
             DDLogError("⛔️ Order Update Failure: [\(orderID).customerNote = \(customerNote ?? "")]. Error: \(error)")
 
-            self.analytics.track(event: WooAnalyticsEvent.OrderDetailsEdit.orderDetailEditFlowFailed(subject: .customerNote))
+            self.analytics.track(event: .OrderDetailsEdit.orderDetailEditFlowFailed(subject: .customerNote))
             self.displayUpdateErrorNotice(customerNote: customerNote)
             onFinish?(false)
         }

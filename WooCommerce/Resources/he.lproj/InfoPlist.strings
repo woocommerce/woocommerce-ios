@@ -3,6 +3,12 @@
 <!--Warning: Auto-generated file, do not edit.-->
 <plist version="1.0">
   <dict>
+    <key>AddOrderAction.Title</key>
+    <string>הזמנה חדשה</string>
+    <key>AddProductAction.Title</key>
+    <string>להוסיף מוצר</string>
+    <key>CollectPaymentAction.Title</key>
+    <string>לגבות תשלום</string>
     <key>NSBluetoothAlwaysUsageDescription</key>
     <string>האפליקציה הזו משתמשת ב-Bluetooth כדי להתחבר לקוראי הכרטיסים הנתמכים.</string>
     <key>NSBluetoothPeripheralUsageDescription</key>
@@ -13,5 +19,9 @@
     <string>נדרשת גישה למיקום כדי לקבל תשלומים.</string>
     <key>NSPhotoLibraryUsageDescription</key>
     <string>כדי לשמור תמונות מהמצלמה לצורך תמונות של מוצרים, או כדי להוסיף תמונות או סרטוני וידאו למוצרים או לכרטיסי תמיכה.</string>
+    <key>OpenOrdersAction.Title</key>
+    <string>הזמנות</string>
+    <key>OpenPaymentsAction.Title</key>
+    <string>תשלומים</string>
   </dict>
 </plist>

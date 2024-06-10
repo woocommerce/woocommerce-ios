@@ -1,6 +1,7 @@
 import WordPressUI
 import SafariServices
 import WordPressAuthenticator
+import protocol WooFoundation.Analytics
 
 extension FancyAlertViewController {
     static func makeWhatIsJetpackAlertController(analytics: Analytics) -> FancyAlertViewController {
@@ -145,8 +146,6 @@ private extension FancyAlertViewController {
     }
 
     enum Strings {
-        static let instructionsURLString = "https://woo.com/document/jetpack-setup-instructions-for-the-woocommerce-mobile-app/"
-
         static let whatsJetpackURLString = "https://jetpack.com/about/"
     }
 }
@@ -174,7 +173,7 @@ private extension FancyAlertViewController {
     static func makeNeedMoreHelpButton(customHelpCenterContent: CustomHelpCenterContent? = nil) -> FancyAlertViewController.Config.ButtonConfig {
         return FancyAlertViewController.Config.ButtonConfig(Localization.needMoreHelp) { controller, _ in
             let identifier = HelpAndSupportViewController.classNameWithoutNamespaces
-            let supportViewController = UIStoryboard.dashboard.instantiateViewController(identifier: identifier,
+            let supportViewController = UIStoryboard.settings.instantiateViewController(identifier: identifier,
                                                                                          creator: { coder -> HelpAndSupportViewController? in
                 guard let customHelpCenterContent = customHelpCenterContent else {
                     /// Returning nil as we don't need to customise the HelpAndSupportViewController

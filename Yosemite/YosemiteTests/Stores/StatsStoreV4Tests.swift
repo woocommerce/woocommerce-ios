@@ -652,6 +652,235 @@ final class StatsStoreV4Tests: XCTestCase {
         let storageSiteSummaryStats = viewStorage.loadSiteSummaryStats(date: "2022-12-09", period: StatGranularity.day.rawValue)
         XCTAssertEqual(storageSiteSummaryStats?.toReadOnly(), expectedSiteSummaryStats)
     }
+
+    // MARK: - StatsStoreV4.retrieveProductBundleStats
+
+    /// Verifies that `StatsActionV4.retrieveProductBundleStats` returns the retrieved bundle stats.
+    ///
+    func test_retrieveProductBundleStats_returns_retrieved_stats() throws {
+        // Given
+        let store = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "reports/bundles/stats", filename: "product-bundle-stats")
+
+        // When
+        let result: Result<ProductBundleStats, Error> = waitFor { promise in
+            let action = StatsActionV4.retrieveProductBundleStats(siteID: self.sampleSiteID,
+                                                                  unit: .daily,
+                                                                  timeZone: .current,
+                                                                  earliestDateToInclude: Date(),
+                                                                  latestDateToInclude: Date(),
+                                                                  quantity: 2,
+                                                                  forceRefresh: false) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        let bundleStats = try XCTUnwrap(result.get())
+        assertEqual(sampleBundleStats(), bundleStats)
+    }
+
+    /// Verifies that `StatsActionV4.retrieveProductBundleStats` returns an error whenever there is an error response from the backend.
+    ///
+    func test_retrieveProductBundleStats_returns_error_upon_reponse_error() {
+        // Given
+        let store = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "reports/bundles/stats", filename: "generic_error")
+
+        // When
+        let result: Result<ProductBundleStats, Error> = waitFor { promise in
+            let action = StatsActionV4.retrieveProductBundleStats(siteID: self.sampleSiteID,
+                                                                  unit: .daily,
+                                                                  timeZone: .current,
+                                                                  earliestDateToInclude: Date(),
+                                                                  latestDateToInclude: Date(),
+                                                                  quantity: 2,
+                                                                  forceRefresh: false) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+    }
+
+    /// Verifies that `StatsActionV4.retrieveProductBundleStats` returns an error whenever there is no backend response.
+    ///
+    func test_retrieveProductBundleStats_returns_error_upon_empty_response() {
+        // Given
+        let store = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        // When
+        let result: Result<ProductBundleStats, Error> = waitFor { promise in
+            let action = StatsActionV4.retrieveProductBundleStats(siteID: self.sampleSiteID,
+                                                                  unit: .daily,
+                                                                  timeZone: .current,
+                                                                  earliestDateToInclude: Date(),
+                                                                  latestDateToInclude: Date(),
+                                                                  quantity: 2,
+                                                                  forceRefresh: false) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+    }
+
+    // MARK: - StatsStoreV4.retrieveTopProductBundles
+
+    /// Verifies that `StatsActionV4.retrieveTopProductBundles` returns the retrieved product bundle report items.
+    ///
+    func test_retrieveTopProductBundles_returns_retrieved_product_bundles() throws {
+        // Given
+        let store = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "reports/bundles", filename: "product-bundle-top-bundles")
+
+        // When
+        let result: Result<[ProductsReportItem], Error> = waitFor { promise in
+            let action = StatsActionV4.retrieveTopProductBundles(siteID: self.sampleSiteID,
+                                                                 timeZone: .current,
+                                                                 earliestDateToInclude: Date(),
+                                                                 latestDateToInclude: Date(),
+                                                                 quantity: 5) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        let topBundles = try XCTUnwrap(result.get())
+        assertEqual(5, topBundles.count)
+        assertEqual(sampleTopBundle(), topBundles.first)
+    }
+
+    /// Verifies that `StatsActionV4.retrieveTopProductBundles` returns an error whenever there is an error response from the backend.
+    ///
+    func test_retrieveTopProductBundles_returns_error_upon_reponse_error() {
+        // Given
+        let store = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "reports/bundles", filename: "generic_error")
+
+        // When
+        let result: Result<[ProductsReportItem], Error> = waitFor { promise in
+            let action = StatsActionV4.retrieveTopProductBundles(siteID: self.sampleSiteID,
+                                                                 timeZone: .current,
+                                                                 earliestDateToInclude: Date(),
+                                                                 latestDateToInclude: Date(),
+                                                                 quantity: 5) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+    }
+
+    /// Verifies that `StatsActionV4.retrieveTopProductBundles` returns an error whenever there is no backend response.
+    ///
+    func test_retrieveTopProductBundles_returns_error_upon_empty_response() {
+        // Given
+        let store = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        // When
+        let result: Result<[ProductsReportItem], Error> = waitFor { promise in
+            let action = StatsActionV4.retrieveTopProductBundles(siteID: self.sampleSiteID,
+                                                                 timeZone: .current,
+                                                                 earliestDateToInclude: Date(),
+                                                                 latestDateToInclude: Date(),
+                                                                 quantity: 5) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+    }
+
+    // MARK: - StatsStoreV4.retrieveUsedGiftCardStats
+
+    /// Verifies that `StatsActionV4.retrieveUsedGiftCardStats` returns the retrieved bundle stats.
+    ///
+    func test_retrieveUsedGiftCardStats_returns_retrieved_stats() throws {
+        // Given
+        let store = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "reports/giftcards/used/stats", filename: "gift-card-stats")
+
+        // When
+        let result: Result<GiftCardStats, Error> = waitFor { promise in
+            let action = StatsActionV4.retrieveUsedGiftCardStats(siteID: self.sampleSiteID,
+                                                                 unit: .daily,
+                                                                 timeZone: .current,
+                                                                 earliestDateToInclude: Date(),
+                                                                 latestDateToInclude: Date(),
+                                                                 quantity: 2,
+                                                                 forceRefresh: false) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        let giftCardStats = try XCTUnwrap(result.get())
+        assertEqual(sampleGiftCardStats(), giftCardStats)
+    }
+
+    /// Verifies that `StatsActionV4.retrieveUsedGiftCardStats` returns an error whenever there is an error response from the backend.
+    ///
+    func test_retrieveUsedGiftCardStats_returns_error_upon_reponse_error() {
+        // Given
+        let store = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "reports/giftcards/used/stats", filename: "generic_error")
+
+        // When
+        let result: Result<GiftCardStats, Error> = waitFor { promise in
+            let action = StatsActionV4.retrieveUsedGiftCardStats(siteID: self.sampleSiteID,
+                                                                 unit: .daily,
+                                                                 timeZone: .current,
+                                                                 earliestDateToInclude: Date(),
+                                                                 latestDateToInclude: Date(),
+                                                                 quantity: 2,
+                                                                 forceRefresh: false) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+    }
+
+    /// Verifies that `StatsActionV4.retrieveUsedGiftCardStats` returns an error whenever there is no backend response.
+    ///
+    func test_retrieveUsedGiftCardStats_returns_error_upon_empty_response() {
+        // Given
+        let store = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        // When
+        let result: Result<GiftCardStats, Error> = waitFor { promise in
+            let action = StatsActionV4.retrieveUsedGiftCardStats(siteID: self.sampleSiteID,
+                                                                 unit: .daily,
+                                                                 timeZone: .current,
+                                                                 earliestDateToInclude: Date(),
+                                                                 latestDateToInclude: Date(),
+                                                                 quantity: 2,
+                                                                 forceRefresh: false) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+    }
 }
 
 
@@ -835,5 +1064,77 @@ private extension StatsStoreV4Tests {
                                 period: .month,
                                 visitors: 243,
                                 views: 486)
+    }
+
+    // MARK: - Product Bundle Stats Sample
+
+    func sampleBundleStats() -> Networking.ProductBundleStats {
+        ProductBundleStats(siteID: sampleSiteID,
+                           granularity: .daily,
+                           totals: sampleBundleStatsTotals(),
+                           intervals: [sampleBundleStatsInterval1(), sampleBundleStatsInterval2()])
+    }
+
+    func sampleBundleStatsTotals() -> Networking.ProductBundleStatsTotals {
+        ProductBundleStatsTotals(totalItemsSold: 5,
+                                 totalBundledItemsSold: 3,
+                                 netRevenue: 50,
+                                 totalOrders: 2,
+                                 totalProducts: 4)
+    }
+
+    func sampleBundleStatsInterval1() -> Networking.ProductBundleStatsInterval {
+        ProductBundleStatsInterval(interval: "2024-01-21",
+                                   dateStart: "2024-01-21 00:00:00",
+                                   dateEnd: "2024-01-21 23:59:59",
+                                   subtotals: .init(totalItemsSold: 3,
+                                                    totalBundledItemsSold: 2,
+                                                    netRevenue: 35,
+                                                    totalOrders: 1,
+                                                    totalProducts: 2))
+    }
+
+    func sampleBundleStatsInterval2() -> Networking.ProductBundleStatsInterval {
+        ProductBundleStatsInterval(interval: "2024-01-20",
+                                   dateStart: "2024-01-20 00:00:00",
+                                   dateEnd: "2024-01-20 23:59:59",
+                                   subtotals: .init(totalItemsSold: 2,
+                                                    totalBundledItemsSold: 1,
+                                                    netRevenue: 15,
+                                                    totalOrders: 1,
+                                                    totalProducts: 2))
+    }
+
+    // MARK: - Top Product Bundles Sample
+
+    func sampleTopBundle() -> Networking.ProductsReportItem {
+        ProductsReportItem(productID: 507,
+                            productName: "Awesome bundle",
+                            quantity: 6,
+                            total: 361,
+                            imageUrl: "https://example.com/wp-content/uploads/2023/01/logo-1-600x599.jpg")
+    }
+
+    // MARK: - Gift Card Stats Sample
+
+    func sampleGiftCardStats() -> Networking.GiftCardStats {
+        GiftCardStats(siteID: sampleSiteID,
+                      granularity: .daily,
+                      totals: sampleGiftCardStatsTotals(),
+                      intervals: [sampleGiftCardStatsInterval()])
+    }
+
+    func sampleGiftCardStatsTotals() -> Networking.GiftCardStatsTotals {
+        GiftCardStatsTotals(giftCardsCount: 1,
+                            usedAmount: 20,
+                            refundedAmount: 0,
+                            netAmount: 20)
+    }
+
+    func sampleGiftCardStatsInterval() -> Networking.GiftCardStatsInterval {
+        GiftCardStatsInterval(interval: "2024-02",
+                                   dateStart: "2024-01-08 00:00:00",
+                                   dateEnd: "2024-01-14 23:59:59",
+                                   subtotals: sampleGiftCardStatsTotals())
     }
 }

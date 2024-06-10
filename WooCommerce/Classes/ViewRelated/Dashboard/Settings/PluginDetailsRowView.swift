@@ -1,6 +1,49 @@
 import SwiftUI
 import Yosemite
 
+struct PluginListView: View {
+    private let siteID: Int64
+    private let viewModel: PluginListViewModel
+    var onClose: (() -> Void)?
+
+    init(siteID: Int64, viewModel: PluginListViewModel, onClose: (() -> Void)? = nil) {
+        self.siteID = siteID
+        self.viewModel = viewModel
+        self.onClose = onClose
+    }
+
+    var body: some View {
+            ScrollView {
+                VStack {
+                    Divider()
+                    ForEach(viewModel.pluginNameList, id: \.self) { pluginName in
+                        PluginDetailsRowView(viewModel: PluginDetailsViewModel(siteID: siteID,
+                                                                               pluginName: pluginName))
+                        Divider()
+                    }
+                }
+            }
+            .navigationBarTitle(Localization.pluginsTitle, displayMode: .inline)
+            .navigationBarItems(trailing: Button(Localization.closeButton) {
+                onClose?()
+            })
+    }
+}
+
+private extension PluginListView {
+    enum Localization {
+        static let pluginsTitle = NSLocalizedString(
+            "pluginListView.title.plugins",
+            value: "Plugins",
+            comment: "Title for the Plugin List view.")
+
+        static let closeButton = NSLocalizedString(
+            "pluginListView.button.close",
+            value: "Close",
+            comment: "Title for the Close button within the Plugin List view.")
+    }
+}
+
 struct PluginDetailsRowView: View {
     @ObservedObject var viewModel: PluginDetailsViewModel
 
@@ -32,6 +75,7 @@ struct PluginDetailsRowContent: View {
                 HStack {
                     Text(viewModel.title)
                         .bodyStyle()
+                        .multilineTextAlignment(.leading)
                     Spacer()
                     Text(viewModel.version)
                         .secondaryBodyStyle()
@@ -112,7 +156,7 @@ struct PluginDetailsRowView_Previews: PreviewProvider {
                                             authorUrl: "",
                                             networkActivated: false,
                                             active: true)
-            viewModel.updateURL = URL(string: "https://woo.com")!
+            viewModel.updateURL = URL(string: "https://woocommerce.com")!
             return viewModel
     }
 

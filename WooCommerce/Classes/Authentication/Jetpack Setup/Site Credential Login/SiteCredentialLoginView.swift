@@ -1,4 +1,5 @@
 import SwiftUI
+import protocol WooFoundation.Analytics
 
 /// Hosting controller that wraps the `SiteCredentialLoginView`.
 final class SiteCredentialLoginHostingViewController: UIHostingController<SiteCredentialLoginView> {

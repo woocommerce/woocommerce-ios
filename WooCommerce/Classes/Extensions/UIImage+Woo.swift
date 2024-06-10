@@ -43,6 +43,12 @@ extension UIImage {
         return UIImage(named: "AppIcon60x60")!
     }
 
+    /// Bell icon
+    ///
+    static var bell: UIImage {
+        UIImage(named: "bell")!
+    }
+
     /// Blaze icon
     ///
     static var blaze: UIImage {
@@ -110,6 +116,12 @@ extension UIImage {
         return UIImage.gridicon(.camera)
             .imageFlippedForRightToLeftLayoutDirection()
             .withTintColor(.placeholderImage)
+    }
+
+    /// Cash register image
+    ///
+    static var cashRegisterImage: UIImage {
+        return UIImage(named: "cash-register")!
     }
 
     /// Product categories Icon
@@ -370,6 +382,10 @@ extension UIImage {
         UIImage(named: "woo-empty-search-results")!
     }
 
+    static var shoppingBagsImage: UIImage {
+        UIImage(named: "shopping-bags")!
+    }
+
     /// An image showing a bar chart. This is used to show an empty All Orders tab.
     ///
     static var emptyOrdersImage: UIImage {
@@ -587,12 +603,6 @@ extension UIImage {
     ///
     static var getPaidImage: UIImage {
         UIImage(named: "icon-get-paid")!
-    }
-
-    /// Set store name image
-    ///
-    static var setStoreNameImage: UIImage {
-        UIImage(systemName: "pencil.circle")!
     }
 
     /// Store summary image used in the store creation flow.
@@ -1048,6 +1058,12 @@ extension UIImage {
             .imageFlippedForRightToLeftLayoutDirection()
     }
 
+    /// Play square image
+    ///
+    static var playSquareImage: UIImage {
+        UIImage(systemName: "play.square")!
+    }
+
     /// Plus Icon
     ///
     static var plusImage: UIImage {
@@ -1064,6 +1080,12 @@ extension UIImage {
     ///
     static var plusSmallImage: UIImage {
         return UIImage.gridicon(.plusSmall)
+    }
+
+    /// Point of sale image
+    ///
+    static var pointOfSaleImage: UIImage {
+        UIImage(named: "point-of-sale")!
     }
 
     /// Product description AI announcement image
@@ -1198,6 +1220,12 @@ extension UIImage {
         .imageFlippedForRightToLeftLayoutDirection()
     }
 
+    /// Tooltip icon
+    ///
+    static var tooltipImage: UIImage {
+        return UIImage(named: "icon-tooltip")!
+    }
+
     /// Trash Can Icon
     ///
     static var trashImage: UIImage {
@@ -1236,6 +1264,12 @@ extension UIImage {
     ///
     static var noStoreImage: UIImage {
         return UIImage(imageLiteralResourceName: "woo-no-store").imageFlippedForRightToLeftLayoutDirection()
+    }
+
+    /// No connection image
+    ///
+    static var noConnectionImage: UIImage {
+        UIImage(imageLiteralResourceName: "connection-icon")
     }
 
     /// Upgrade plan error
@@ -1507,6 +1541,18 @@ extension UIImage {
 
     static var appPasswordTutorialImage: UIImage {
         UIImage(named: "app-password-tutorial-1")!
+    }
+
+    static var exclamationFilledImage: UIImage {
+        UIImage(systemName: "exclamationmark.circle.fill", withConfiguration: Configurations.barButtonItemSymbol)!.withRenderingMode(.alwaysTemplate)
+    }
+
+    static var exclamationImage: UIImage {
+        UIImage(systemName: "exclamationmark.circle", withConfiguration: Configurations.barButtonItemSymbol)!.withRenderingMode(.alwaysTemplate)
+    }
+
+    static var magnifyingGlassNotFound: UIImage {
+        UIImage(imageLiteralResourceName: "magnifying-glass-not-found")
     }
 }
 

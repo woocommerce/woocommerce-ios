@@ -164,94 +164,9 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         XCTAssertEqual(sut.tasksForDisplay[1].task.type, .launchStore)
     }
 
-    func test_tasksForDisplay_contains_launch_store_and_store_name_task_for_WPCOM_site_under_free_trial() async {
-        // Given
-        sessionManager.defaultSite = .fake().copy(plan: freeTrialPlanSlug, isWordPressComStore: true)
-        sessionManager.defaultRoles = [.administrator]
-        mockLoadOnboardingTasks(result: .success([
-            .init(isComplete: false, type: .addFirstProduct),
-        ]))
-
-        let sut = StoreOnboardingViewModel(siteID: 0,
-                                           isExpanded: true,
-                                           stores: stores,
-                                           defaults: defaults)
-        // When
-        await sut.reloadTasks()
-
-        // Then
-        XCTAssertTrue(sut.tasksForDisplay.filter({ $0.task.type == .launchStore}).isNotEmpty)
-        XCTAssertNotNil(sut.tasksForDisplay.first(where: { $0.task.type == .storeName }))
-    }
-
-    func test_tasksForDisplay_does_not_contain_launch_store_and_store_name_task_for_non_WPCOM_site() async {
-        // Given
-        sessionManager.defaultSite = .fake().copy(isWordPressComStore: false)
-        sessionManager.defaultRoles = [.administrator]
-        mockLoadOnboardingTasks(result: .success([
-            .init(isComplete: false, type: .addFirstProduct),
-        ]))
-
-        let sut = StoreOnboardingViewModel(siteID: 0,
-                                           isExpanded: true,
-                                           stores: stores,
-                                           defaults: defaults)
-        // When
-        await sut.reloadTasks()
-
-        // Then
-        XCTAssertTrue(sut.tasksForDisplay.filter({ $0.task.type == .launchStore}).isEmpty)
-        XCTAssertNil(sut.tasksForDisplay.first(where: { $0.task.type == .storeName }))
-    }
-
-    func test_tasksForDisplay_does_not_contain_launch_store_task_and_store_name_for_WPCOM_site_not_under_free_trial() async {
-        // Given
-        sessionManager.defaultSite = .fake().copy(plan: "ecommerce-plan", isWordPressComStore: true)
-        sessionManager.defaultRoles = [.administrator]
-        mockLoadOnboardingTasks(result: .success([
-            .init(isComplete: false, type: .addFirstProduct),
-        ]))
-
-        let sut = StoreOnboardingViewModel(siteID: 0,
-                                           isExpanded: true,
-                                           stores: stores,
-                                           defaults: defaults)
-        // When
-        await sut.reloadTasks()
-
-        // Then
-        XCTAssertTrue(sut.tasksForDisplay.filter({ $0.task.type == .launchStore}).isEmpty)
-        XCTAssertNil(sut.tasksForDisplay.first(where: { $0.task.type == .storeName }))
-    }
-
-    func test_tasksForDisplay_is_sorted_when_launch_store_and_store_name_tasks_get_manually_added_for_WPCOM_site_under_free_trial() async {
-        // Given
-        sessionManager.defaultSite = .fake().copy(name: WooConstants.defaultStoreName, plan: freeTrialPlanSlug, isWordPressComStore: true)
-        sessionManager.defaultRoles = [.administrator]
-        mockLoadOnboardingTasks(result: .success([
-            .init(isComplete: false, type: .addFirstProduct),
-            .init(isComplete: false, type: .customizeDomains),
-        ]))
-
-        let sut = StoreOnboardingViewModel(siteID: 0,
-                                           isExpanded: true,
-                                           stores: stores,
-                                           defaults: defaults)
-        // When
-        await sut.reloadTasks()
-
-        // Then
-        XCTAssertEqual(sut.tasksForDisplay.map({ $0.task }), [
-            .init(isComplete: false, type: .addFirstProduct),
-            .init(isComplete: false, type: .storeName),
-            .init(isComplete: false, type: .launchStore),
-            .init(isComplete: false, type: .customizeDomains)
-        ])
-    }
-
     func test_launch_store_task_is_marked_as_complete_for_already_public_store() async throws {
         // Given
-        sessionManager.defaultSite = .fake().copy(plan: freeTrialPlanSlug, isWordPressComStore: true, isPublic: true)
+        sessionManager.defaultSite = .fake().copy(plan: freeTrialPlanSlug, isWordPressComStore: true, visibility: .publicSite)
         mockLoadOnboardingTasks(result: .success([
             .init(isComplete: false, type: .addFirstProduct),
             .init(isComplete: false, type: .launchStore)
@@ -271,7 +186,7 @@ final class StoreOnboardingViewModelTests: XCTestCase {
 
     func test_launch_store_task_is_not_marked_as_complete_for_non_public_store() async throws {
         // Given
-        sessionManager.defaultSite = .fake().copy(plan: freeTrialPlanSlug, isWordPressComStore: true, isPublic: false)
+        sessionManager.defaultSite = .fake().copy(plan: freeTrialPlanSlug, isWordPressComStore: true, visibility: .privateSite)
         mockLoadOnboardingTasks(result: .success([
             .init(isComplete: false, type: .addFirstProduct),
             .init(isComplete: false, type: .launchStore)
@@ -291,7 +206,7 @@ final class StoreOnboardingViewModelTests: XCTestCase {
 
     func test_tasks_other_than_launchStore_type_are_not_marked_as_complete_for_already_public_store_with_default_name() async {
         // Given
-        sessionManager.defaultSite = .fake().copy(name: WooConstants.defaultStoreName, plan: freeTrialPlanSlug, isWordPressComStore: true, isPublic: true)
+        sessionManager.defaultSite = .fake().copy(name: WooConstants.defaultStoreName, plan: freeTrialPlanSlug, isWordPressComStore: true, visibility: .publicSite)
         mockLoadOnboardingTasks(result: .success([
             .init(isComplete: false, type: .addFirstProduct),
             .init(isComplete: false, type: .storeDetails),
@@ -309,26 +224,6 @@ final class StoreOnboardingViewModelTests: XCTestCase {
 
         // Then
         XCTAssertTrue(sut.tasksForDisplay.filter({ $0.task.isComplete}).isEmpty)
-    }
-
-    func test_store_name_task_is_marked_as_complete_for_free_trial_site_with_custom_name() async throws {
-        // Given
-        sessionManager.defaultSite = .fake().copy(name: "Test", plan: freeTrialPlanSlug, isWordPressComStore: true)
-        mockLoadOnboardingTasks(result: .success([
-            .init(isComplete: false, type: .addFirstProduct),
-            .init(isComplete: false, type: .launchStore)
-        ]))
-
-        let sut = StoreOnboardingViewModel(siteID: 0,
-                                           isExpanded: true,
-                                           stores: stores,
-                                           defaults: defaults)
-        // When
-        await sut.reloadTasks()
-
-        // Then
-        let storeNameTask = try XCTUnwrap(sut.tasksForDisplay.first(where: { $0.task.type == .storeName }))
-        XCTAssertTrue(storeNameTask.isComplete)
     }
 
     // MARK: - shouldShowViewAllButton
@@ -622,35 +517,6 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         XCTAssertTrue(sut.tasksForDisplay.count == 5)
     }
 
-    @MainActor
-    func test_the_badge_text_is_nil_for_all_tasks_when_productDescriptionAIFromStoreOnboarding_feature_is_disabled() async {
-        // Given
-        stores.updateDefaultStore(storeID: 6)
-        stores.updateDefaultStore(.fake().copy(siteID: 6, isWordPressComStore: true))
-        let sut = StoreOnboardingViewModel(siteID: 0,
-                                           isExpanded: true,
-                                           stores: stores,
-                                           defaults: defaults,
-                                           featureFlagService: MockFeatureFlagService(isProductDescriptionAIFromStoreOnboardingEnabled: false))
-        let tasks: [StoreOnboardingTask] = [
-            .init(isComplete: false, type: .addFirstProduct),
-            .init(isComplete: false, type: .storeDetails),
-            .init(isComplete: false, type: .launchStore),
-            .init(isComplete: true, type: .customizeDomains),
-            .init(isComplete: false, type: .payments)
-        ]
-        mockLoadOnboardingTasks(result: .success(tasks))
-
-        // When
-        await sut.reloadTasks()
-
-        // Then
-        XCTAssertEqual(sut.tasksForDisplay.count, 5)
-        sut.tasksForDisplay.forEach { taskViewModel in
-            XCTAssertNil(taskViewModel.badgeText)
-        }
-    }
-
     // MARK: completedAllStoreOnboardingTasks user defaults
 
     func test_completedAllStoreOnboardingTasks_is_nil_when_there_are_pending_tasks() async {
@@ -727,9 +593,9 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         XCTAssertNil(defaults[UserDefaults.Key.completedAllStoreOnboardingTasks])
     }
 
-    // MARK: - `shouldShowInDashboard``
+    // MARK: - canShowInDashboard
 
-    func test_shouldShowInDashboard_is_false_when_no_tasks_available_due_to_network_error() async {
+    func test_canShowInDashboard_is_false_when_no_tasks_available_due_to_network_error() async {
         // Given
         mockLoadOnboardingTasks(result: .failure(MockError()))
         let sut = StoreOnboardingViewModel(siteID: 0,
@@ -740,10 +606,10 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         await sut.reloadTasks()
 
         // Then
-        XCTAssertFalse(sut.shouldShowInDashboard)
+        XCTAssertFalse(sut.canShowInDashboard)
     }
 
-    func test_shouldShowInDashboard_is_false_when_no_tasks_received_in_success_response() async {
+    func test_canShowInDashboard_is_false_when_no_tasks_received_in_success_response() async {
         // Given
         mockLoadOnboardingTasks(result: .success([]))
         let sut = StoreOnboardingViewModel(siteID: 0,
@@ -754,10 +620,10 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         await sut.reloadTasks()
 
         // Then
-        XCTAssertFalse(sut.shouldShowInDashboard)
+        XCTAssertFalse(sut.canShowInDashboard)
     }
 
-    func test_shouldShowInDashboard_is_true_when_pending_tasks_received_in_response() async {
+    func test_canShowInDashboard_is_true_when_pending_tasks_received_in_response() async {
         // Given
         let tasks: [StoreOnboardingTask] = [
             .init(isComplete: false, type: .addFirstProduct),
@@ -775,10 +641,10 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         await sut.reloadTasks()
 
         // Then
-        XCTAssertTrue(sut.shouldShowInDashboard)
+        XCTAssertTrue(sut.canShowInDashboard)
     }
 
-    func test_shouldShowInDashboard_is_false_when_all_tasks_are_complete() async {
+    func test_canShowInDashboard_is_false_when_all_tasks_are_complete() async {
         // Given
         let tasks: [StoreOnboardingTask] = [
             .init(isComplete: true, type: .addFirstProduct),
@@ -796,67 +662,7 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         await sut.reloadTasks()
 
         // Then
-        XCTAssertFalse(sut.shouldShowInDashboard)
-    }
-
-    func test_shouldShowInDashboard_is_false_when_user_has_opted_to_hide_the_list() async {
-        // Given
-        let sut = StoreOnboardingViewModel(siteID: 0,
-                                           isExpanded: false,
-                                           stores: stores,
-                                           defaults: defaults)
-
-        // When
-        defaults[UserDefaults.Key.shouldHideStoreOnboardingTaskList] = true
-
-        // Then
-        XCTAssertFalse(sut.shouldShowInDashboard)
-    }
-
-    // MARK: - hideTaskList
-
-    func test_hideTaskList_updates_userdefaults() async {
-        // Given
-        defaults[UserDefaults.Key.shouldHideStoreOnboardingTaskList] = nil
-        let sut = StoreOnboardingViewModel(siteID: 0,
-                                           isExpanded: false,
-                                           stores: stores,
-                                           defaults: defaults)
-
-        // When
-        sut.hideTaskList()
-
-        // Then
-        XCTAssertTrue(try XCTUnwrap(defaults[UserDefaults.Key.shouldHideStoreOnboardingTaskList] as? Bool))
-    }
-
-    func test_hideTaskList_tracks_hide_list_event() async throws {
-        // Given
-        let tasks: [StoreOnboardingTask] = [
-            .init(isComplete: false, type: .addFirstProduct),
-            .init(isComplete: true, type: .storeDetails),
-            .init(isComplete: false, type: .launchStore),
-            .init(isComplete: false, type: .customizeDomains),
-            .init(isComplete: false, type: .payments)
-        ]
-        mockLoadOnboardingTasks(result: .success(tasks))
-        defaults[UserDefaults.Key.shouldHideStoreOnboardingTaskList] = nil
-        let sut = StoreOnboardingViewModel(siteID: 0,
-                                           isExpanded: false,
-                                           stores: stores,
-                                           defaults: defaults,
-                                           analytics: analytics)
-        await sut.reloadTasks()
-
-        // When
-        sut.hideTaskList()
-
-        // Then
-        let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "store_onboarding_hide_list"}))
-        let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])
-        XCTAssertEqual(eventProperties["source"] as? String, "onboarding_list")
-        XCTAssertTrue(try XCTUnwrap(eventProperties["hide"] as? Bool))
-        XCTAssertEqual(eventProperties["pending_tasks"] as? String, "add_domain,launch_site,payments,products")
+        XCTAssertFalse(sut.canShowInDashboard)
     }
 
     func test_reloadTasks_notifies_waitingTimeTracker_when_completedAllStoreOnboardingTasks_is_true() async {
@@ -917,6 +723,22 @@ final class StoreOnboardingViewModelTests: XCTestCase {
 
         // Then
         XCTAssertFalse(tracker.startupActionsPending.contains(.loadOnboardingTasks))
+    }
+
+    /// Skipped until the feature flag is on for dynamic dashboard.
+    func test_hideTaskList_triggers_tracking_event() throws {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+        let viewModel = StoreOnboardingViewModel(siteID: 123, isExpanded: false, analytics: analytics)
+
+        // When
+        viewModel.hideTaskList()
+
+        // Then
+        let index = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "dynamic_dashboard_hide_card_tapped" }))
+        let properties = analyticsProvider.receivedProperties[index] as? [String: AnyHashable]
+        XCTAssertEqual(properties?["type"], "store_setup")
     }
 }
 

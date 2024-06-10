@@ -94,23 +94,21 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
          stores: StoresManager = ServiceLocator.stores,
          paymentOrchestrator: PaymentCaptureOrchestrating = PaymentCaptureOrchestrator(),
          orderDurationRecorder: OrderDurationRecorderProtocol = OrderDurationRecorder.shared,
-         alertsPresenter: CardPresentPaymentAlertsPresenting? = nil,
-         preflightController: CardPresentPaymentPreflightControllerProtocol? = nil,
+         alertsPresenter: CardPresentPaymentAlertsPresenting,
+         tapToPayAlertsProvider: CardReaderTransactionAlertsProviding,
+         bluetoothAlertsProvider: CardReaderTransactionAlertsProviding,
+         preflightController: CardPresentPaymentPreflightControllerProtocol,
          analyticsTracker: CollectOrderPaymentAnalyticsTracking? = nil) {
         self.siteID = siteID
         self.order = order
         self.formattedAmount = formattedAmount
         self.rootViewController = rootViewController
         self.onboardingPresenter = onboardingPresenter
-        self.alertsPresenter = alertsPresenter ?? CardPresentPaymentAlertsPresenter(rootViewController: rootViewController)
+        self.alertsPresenter = alertsPresenter
         self.configuration = configuration
         self.stores = stores
         self.paymentOrchestrator = paymentOrchestrator
-        self.preflightController = preflightController ?? CardPresentPaymentPreflightController(siteID: siteID,
-                                                                                                configuration: configuration,
-                                                                                                rootViewController: rootViewController,
-                                                                                                alertsPresenter: self.alertsPresenter,
-                                                                                                onboardingPresenter: onboardingPresenter)
+        self.preflightController = preflightController
         self.analyticsTracker = analyticsTracker ?? CollectOrderPaymentAnalytics(siteID: siteID,
                                                                                  analytics: ServiceLocator.analytics,
                                                                                  configuration: configuration,

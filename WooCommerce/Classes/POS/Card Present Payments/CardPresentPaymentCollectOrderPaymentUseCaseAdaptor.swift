@@ -24,14 +24,17 @@ struct CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
                 throw CardPresentPaymentServiceError.invalidAmount
             }
 
-            let orderPaymentUseCase = CollectOrderPaymentUseCase(siteID: siteID,
-                                                                 order: order,
-                                                                 formattedAmount: formattedAmount,
-                                                                 rootViewController: NullViewControllerPresenting(),
-                                                                 onboardingPresenter: onboardingPresenter,
-                                                                 configuration: configuration,
-                                                                 alertsPresenter: alertsPresenter,
-                                                                 preflightController: preflightController)
+            let orderPaymentUseCase = CollectOrderPaymentUseCase(
+                siteID: siteID,
+                order: order,
+                formattedAmount: formattedAmount,
+                rootViewController: NullViewControllerPresenting(),
+                onboardingPresenter: onboardingPresenter,
+                configuration: configuration,
+                alertsPresenter: alertsPresenter,
+                tapToPayAlertsProvider: BuiltInCardReaderPaymentAlertsProvider(),
+                bluetoothAlertsProvider: BluetoothCardReaderPaymentAlertsProvider(transactionType: .collectPayment),
+                preflightController: preflightController)
 
             return try await withTaskCancellationHandler {
                 return try await withCheckedThrowingContinuation { continuation in

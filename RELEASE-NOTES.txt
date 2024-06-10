@@ -2,6 +2,7 @@
 
 19.1
 -----
+- [*] Restore a missing navigation bar on the privacy settings screen. [https://github.com/woocommerce/woocommerce-ios/pull/13018]
 
 
 19.0

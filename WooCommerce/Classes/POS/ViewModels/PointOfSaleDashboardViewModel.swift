@@ -60,6 +60,17 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
         checkIfCartEmpty()
     }
 
+    var itemsInCartLabel: String? {
+        switch itemsInCart.count {
+        case 0:
+            return nil
+        default:
+            return String.pluralize(itemsInCart.count,
+                                    singular: "%1$d item",
+                                    plural: "%1$d items")
+        }
+    }
+
     private func checkIfCartEmpty() {
         if itemsInCart.isEmpty {
             orderStage = .building
@@ -131,8 +142,7 @@ private extension PointOfSaleDashboardViewModel {
                 return false
             case .showAlert,
                     .showReaderList,
-                    .showOnboarding,
-                    .showWCSettingsWebView:
+                    .showOnboarding:
                 return true
             }
         }.assign(to: &$showsCardReaderSheet)

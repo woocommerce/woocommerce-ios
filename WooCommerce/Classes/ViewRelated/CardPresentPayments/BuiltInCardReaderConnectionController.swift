@@ -470,6 +470,7 @@ private extension BuiltInCardReaderConnectionController {
         case .incompleteStoreAddress(let adminUrl):
             alertsPresenter.present(
                 viewModel: alertsProvider.connectingFailedIncompleteAddress(
+                    wcSettingsAdminURL: adminUrl,
                     openWCSettings: openWCSettingsAction(adminUrl: adminUrl,
                                                          retrySearch: retrySearch),
                     retrySearch: retrySearch,

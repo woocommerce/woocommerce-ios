@@ -61,9 +61,9 @@ msgctxt "app_store_promo_text"
 msgid "Run your store from anywhere"
 msgstr ""
 
-msgctxt "v18.9-whats-new"
+msgctxt "v19.0-whats-new"
 msgid ""
-"Stay ahead with our latest WooCommerce update! Explore our new Watch App for instant store data and order updates at a glance. We've fixed the issue with shipping methods, plus you can now have multiple shipping lines on orders, so you can handle complex shipping needs for your orders seamlessly.\n"
+"Our latest version enriches your My Store screen, now featuring details on your most recent orders, low-stock products, active coupons, customer reviews, and more. Dive deeper into your store’s performance with these new additions!\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.

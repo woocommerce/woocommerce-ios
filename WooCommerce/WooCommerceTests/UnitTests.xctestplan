@@ -31,21 +31,6 @@
     {
       "skippedTests" : [
         "CardReaderConnectionControllerTests",
-        "DashboardViewModelTests\/test_dashboard_cards_contain_enabled_analytics_cards_when_there_is_order()",
-        "DashboardViewModelTests\/test_dashboard_cards_contain_enabled_last_orders_cards_when_there_is_order()",
-        "DashboardViewModelTests\/test_dashboard_cards_contain_unavailable_and_disabled_analytics_cards_when_there_are_no_orders()",
-        "DashboardViewModelTests\/test_dashboard_cards_has_disabled_onboarding_card_if_all_tasks_are_completed()",
-        "DashboardViewModelTests\/test_dashboard_cards_is_loaded_from_storage_if_they_exist()",
-        "DashboardViewModelTests\/test_dashboard_cards_respects_enabled_setting_from_saved_cards()",
-        "DashboardViewModelTests\/test_dashboard_cards_respects_existing_ordering_from_saved_cards()",
-        "DashboardViewModelTests\/test_generated_default_cards_are_as_expected_with_m2_feature_flag_disabled()",
-        "DashboardViewModelTests\/test_generated_default_cards_are_as_expected_with_m2_feature_flag_enabled_when_site_is_eligible_for_inbox()",
-        "DashboardViewModelTests\/test_generated_default_cards_are_as_expected_with_m2_feature_flag_enabled_when_site_is_not_eligible_for_inbox()",
-        "DashboardViewModelTests\/test_hasOrders_is_false_when_site_has_no_orders()",
-        "DashboardViewModelTests\/test_hasOrders_is_updated_correctly_when_orders_availability_changes()",
-        "DashboardViewModelTests\/test_showNewCardsNotice_changes_from_true_to_false_after_showing_customize_screen_and_dismissing_it()",
-        "DashboardViewModelTests\/test_showNewCardsNotice_is_false_when_all_new_cards_are_already_in_saved_cards()",
-        "DashboardViewModelTests\/test_showNewCardsNotice_is_true_when_not_all_new_cards_are_in_saved_cards()",
         "InAppPurchaseStoreTests\/test_user_is_entitled_to_product_returns_false_when_not_entitled()",
         "InAppPurchaseStoreTests\/test_user_is_entitled_to_product_returns_true_when_entitled()",
         "StripeCardReaderIntegrationTests"

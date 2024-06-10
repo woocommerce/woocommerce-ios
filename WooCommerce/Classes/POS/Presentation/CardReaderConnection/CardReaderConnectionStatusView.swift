@@ -16,15 +16,26 @@ struct CardReaderConnectionStatusView: View {
         Group {
             switch connectionViewModel.connectionStatus {
                 case .connected:
-                    Text("Reader connected")
+                    HStack(spacing: Layout.buttonImageAndTextSpacing) {
+                        Image(systemName: "wave.3.forward.circle")
+                        Text("Reader Connected")
+                    }
+                    .foregroundColor(.init(uiColor: .withColorStudio(.wooCommercePurple, shade: .shade10)))
                 case .disconnected:
                     Button {
                         connectionViewModel.connectReader()
                     } label: {
-                        Text("Reader disconnected")
+                        Text("Reader Disconnected")
+                            .foregroundColor(.init(uiColor: .withColorStudio(.wooCommercePurple, shade: .shade10)))
                     }
             }
         }
+    }
+}
+
+private extension CardReaderConnectionStatusView {
+    enum Layout {
+        static let buttonImageAndTextSpacing: CGFloat = 12
     }
 }
 

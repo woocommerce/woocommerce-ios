@@ -11,8 +11,6 @@ struct PointOfSaleDashboardView: View {
 
     var body: some View {
         VStack {
-            Text("WooCommerce Point Of Sale")
-                .foregroundColor(Color.white)
             HStack {
                 switch viewModel.orderStage {
                 case .building:
@@ -30,26 +28,14 @@ struct PointOfSaleDashboardView: View {
         .background(Color.primaryBackground)
         .navigationBarBackButtonHidden(true)
         .toolbar {
-            ToolbarItem(placement: .topBarLeading, content: {
-                Button("Exit POS") {
-                    presentationMode.wrappedValue.dismiss()
-                }
-            })
-            ToolbarItem(placement: .principal, content: {
-                CardReaderConnectionStatusView(connectionViewModel: viewModel.cardReaderConnectionViewModel)
-            })
-            ToolbarItem(placement: .primaryAction, content: {
-                Button("History") {
-                    debugPrint("Not implemented")
-                }
-            })
+            ToolbarItem(placement: .bottomBar) {
+                POSToolbarView(readerConnectionViewModel: viewModel.cardReaderConnectionViewModel)
+            }
         }
         .sheet(isPresented: $viewModel.showsCardReaderSheet, content: {
             switch viewModel.cardPresentPaymentEvent {
             case .showAlert(let alertViewModel):
                 CardPresentPaymentAlert(alertViewModel: alertViewModel)
-            case let .showWCSettingsWebView(adminURL, completion):
-                WCSettingsWebView(adminUrl: adminURL, completion: completion)
             case .idle,
                     .showReaderList,
                     .showOnboarding:
@@ -94,8 +80,6 @@ fileprivate extension CardPresentPaymentEvent {
             return "Reader List: \(readerIDs.joined())"
         case .showOnboarding(let onboardingViewModel):
             return "Onboarding: \(onboardingViewModel.state.reasonForAnalytics)" // This will only show the initial onboarding state
-        case .showWCSettingsWebView(let adminURL, _):
-            return "WC Settings: \(adminURL.absoluteString)"
         }
     }
 }

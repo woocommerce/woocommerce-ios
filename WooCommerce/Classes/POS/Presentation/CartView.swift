@@ -9,12 +9,18 @@ struct CartView: View {
 
     var body: some View {
         VStack {
-            Text("Cart")
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.horizontal, 32)
-                .padding(.vertical, 8)
-                .font(.title)
-                .foregroundColor(Color.white)
+            HStack {
+                Text("Cart")
+                Spacer()
+                if let temsInCartLabel = viewModel.itemsInCartLabel {
+                    Text(temsInCartLabel)
+                }
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.horizontal, 32)
+            .padding(.vertical, 8)
+            .font(.title)
+            .foregroundColor(Color.white)
             ScrollView {
                 ForEach(viewModel.itemsInCart, id: \.id) { cartItem in
                     ItemRowView(cartItem: cartItem) {

@@ -48,6 +48,7 @@ struct BasicCardPresentPaymentAlert: View {
 
                     if let bottomSubtitle = viewModel.bottomSubtitle, shouldShowBottomSubtitle() {
                         Text(bottomSubtitle)
+                            .foregroundStyle(Color(uiColor: .systemColor(.secondaryLabel)))
                             .font(.footnote)
                     }
                 }

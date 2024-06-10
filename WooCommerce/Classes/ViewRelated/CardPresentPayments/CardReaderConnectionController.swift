@@ -278,6 +278,7 @@ private extension CardReaderConnectionController {
     func onPreparingForSearch() {
         /// Always start fresh - i.e. we haven't skipped connecting to any reader yet
         ///
+        foundReaders = []
         skippedReaderIDs = []
         candidateReader = nil
         showSeveralFoundReaders = false

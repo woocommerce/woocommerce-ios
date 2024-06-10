@@ -11,8 +11,6 @@ struct PointOfSaleDashboardView: View {
 
     var body: some View {
         VStack {
-            Text("WooCommerce Point Of Sale")
-                .foregroundColor(Color.white)
             HStack {
                 switch viewModel.orderStage {
                 case .building:
@@ -30,19 +28,9 @@ struct PointOfSaleDashboardView: View {
         .background(Color.primaryBackground)
         .navigationBarBackButtonHidden(true)
         .toolbar {
-            ToolbarItem(placement: .topBarLeading, content: {
-                Button("Exit POS") {
-                    presentationMode.wrappedValue.dismiss()
-                }
-            })
-            ToolbarItem(placement: .principal, content: {
-                CardReaderConnectionStatusView(connectionViewModel: viewModel.cardReaderConnectionViewModel)
-            })
-            ToolbarItem(placement: .primaryAction, content: {
-                Button("History") {
-                    debugPrint("Not implemented")
-                }
-            })
+            ToolbarItem(placement: .bottomBar) {
+                POSToolbarView(readerConnectionViewModel: viewModel.cardReaderConnectionViewModel)
+            }
         }
         .sheet(isPresented: $viewModel.showsCardReaderSheet, content: {
             switch viewModel.cardPresentPaymentEvent {

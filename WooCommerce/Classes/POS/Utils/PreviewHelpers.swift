@@ -10,6 +10,7 @@ struct POSProductPreview: POSItem {
     let productID: Int64
     let name: String
     let price: String
+    var productImageSource: String?
 }
 
 final class POSItemProviderPreview: POSItemProvider {

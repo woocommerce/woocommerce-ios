@@ -28,13 +28,13 @@ struct CustomerDetailView: View {
                     .accessibilityLabel(Localization.emailAction)
                     .renderedIf(viewModel.email != nil)
                     .confirmationDialog(Localization.emailAction, isPresented: $isPresentingEmailDialog) {
-                        Button(Localization.sendEmail) {
+                        Button(Localization.ContactAction.sendEmail) {
                             isShowingEmailView.toggle()
                             viewModel.trackEmailOptionTapped()
                         }
                         .renderedIf(EmailView.canSendEmail())
 
-                        Button(Localization.copyEmail) {
+                        Button(Localization.ContactAction.copyEmail) {
                             viewModel.copyEmail()
                         }
                     }
@@ -66,11 +66,39 @@ struct CustomerDetailView: View {
             if let billing = viewModel.billing, billing.isNotEmpty {
                 Section(header: Text(Localization.billingSection)) {
                     Text(billing)
+                        .swipeActions(edge: .leading) {
+                            Button {
+                                billing.sendToPasteboard()
+                            } label: {
+                                Text(Localization.ContactAction.copy)
+                            }
+                        }
+                        .contextMenu {
+                            Button {
+                                billing.sendToPasteboard()
+                            } label: {
+                                Label(Localization.ContactAction.copy, systemImage: "doc.on.doc")
+                            }
+                        }
                 }
             }
             if let shipping = viewModel.shipping, shipping.isNotEmpty {
                 Section(header: Text(Localization.shippingSection)) {
                     Text(shipping)
+                        .swipeActions(edge: .leading) {
+                            Button {
+                                shipping.sendToPasteboard()
+                            } label: {
+                                Text(Localization.ContactAction.copy)
+                            }
+                        }
+                        .contextMenu {
+                            Button {
+                                shipping.sendToPasteboard()
+                            } label: {
+                                Label(Localization.ContactAction.copy, systemImage: "doc.on.doc")
+                            }
+                        }
                 }
             }
             if viewModel.showLocation {
@@ -183,12 +211,6 @@ private extension CustomerDetailView {
         static let emailAction = NSLocalizedString("customerDetailView.emailActionLabel",
                                                    value: "Contact customer via email",
                                                    comment: "Title for action to contact a customer via email.")
-        static let sendEmail = NSLocalizedString("customerDetailView.sendEmail",
-                                                 value: "Email",
-                                                 comment: "Button to email a customer in the Customer Details screen.")
-        static let copyEmail = NSLocalizedString("customerDetailView.copyEmail",
-                                                 value: "Copy email address",
-                                                 comment: "Button to copy a customer's email address in the Customer Details screen.")
         static let billingSection = NSLocalizedString("customerDetailView.billingSection",
                                                        value: "BILLING ADDRESS",
                                                        comment: "Heading for the section with customer billing address in the Customer Details screen.")
@@ -198,6 +220,18 @@ private extension CustomerDetailView {
         static let phonePlaceholder = NSLocalizedString("customerDetailView.phonePlaceholder",
                                                         value: "No phone number",
                                                         comment: "Placeholder if a customer's phone number is not available in the Customer Details screen.")
+
+        enum ContactAction {
+            static let sendEmail = NSLocalizedString("customerDetailView.sendEmail",
+                                                     value: "Email",
+                                                     comment: "Button to email a customer in the Customer Details screen.")
+            static let copyEmail = NSLocalizedString("customerDetailView.copyEmail",
+                                                     value: "Copy email address",
+                                                     comment: "Button to copy a customer's email address in the Customer Details screen.")
+            static let copy = NSLocalizedString("customerDetailView.copyButton.label",
+                                                value: "Copy",
+                                                comment: "Copy address text button title — should be one word and as short as possible.")
+        }
     }
 }
 

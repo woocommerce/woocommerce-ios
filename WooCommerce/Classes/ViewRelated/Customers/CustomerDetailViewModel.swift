@@ -14,6 +14,9 @@ final class CustomerDetailViewModel: ObservableObject {
     /// Customer email
     let email: String?
 
+    /// Customer phone
+    var phone: String?
+
     // MARK: Orders
 
     /// Number of orders from the customer
@@ -131,7 +134,7 @@ final class CustomerDetailViewModel: ObservableObject {
 }
 
 private extension CustomerDetailViewModel {
-    /// Retrieves and sets the customer billing and shipping address from remote, for registered customers.
+    /// Retrieves the customer billing and shipping details from remote and sets the corresponding addresses and phone number, for registered customers.
     ///
     func syncCustomerAddressData(siteID: Int64, userID: Int64) {
         // Only try to sync the address data for registered customers
@@ -145,6 +148,11 @@ private extension CustomerDetailViewModel {
             case let .success(customer):
                 billing = customer.billing?.fullNameWithCompanyAndAddress
                 shipping = customer.shipping?.fullNameWithCompanyAndAddress
+                if customer.billing?.hasPhoneNumber == true {
+                    phone = customer.billing?.phone
+                } else if customer.shipping?.hasPhoneNumber == true {
+                    phone = customer.shipping?.phone
+                }
             case let .failure(error):
                 DDLogError("⛔️ Error fetching customer details: \(error)")
             }

@@ -35,6 +35,11 @@ struct CustomerDetailView: View {
                         }
                     }
                 }
+                HStack {
+                    Text(viewModel.phone ?? Localization.phonePlaceholder)
+                        .style(for: viewModel.phone)
+                    Spacer()
+                }
                 customerDetailRow(label: Localization.dateLastActiveLabel, value: viewModel.dateLastActive)
             }
 
@@ -173,6 +178,9 @@ private extension CustomerDetailView {
         static let shippingSection = NSLocalizedString("customerDetailView.shippingSection",
                                                        value: "SHIPPING ADDRESS",
                                                        comment: "Heading for the section with customer shipping address in the Customer Details screen.")
+        static let phonePlaceholder = NSLocalizedString("customerDetailView.phonePlaceholder",
+                                                        value: "No phone number",
+                                                        comment: "Placeholder if a customer's phone number is not available in the Customer Details screen.")
     }
 }
 

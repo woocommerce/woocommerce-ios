@@ -9,18 +9,7 @@ final class CustomerDetailViewModelTests: XCTestCase {
 
     func test_it_inits_with_expected_values_from_customer() throws {
         // Given
-        let customer = WCAnalyticsCustomer.fake().copy(name: "Pat Smith",
-                                                       email: "pat.smith@example.com",
-                                                       username: "psmith",
-                                                       dateRegistered: Date(),
-                                                       dateLastActive: Date(),
-                                                       ordersCount: 2,
-                                                       totalSpend: 10,
-                                                       averageOrderValue: 5,
-                                                       country: "US",
-                                                       region: "CA",
-                                                       city: "San Francisco",
-                                                       postcode: "94103")
+        let customer = sampleCustomer()
 
         // When
         let vm = CustomerDetailViewModel(customer: customer, currencySettings: CurrencySettings())
@@ -73,24 +62,11 @@ final class CustomerDetailViewModelTests: XCTestCase {
         XCTAssertTrue(vm.showLocation)
     }
 
-    func test_it_updates_billing_and_shipping_from_remote() throws {
+    func test_it_updates_billing_and_shipping_and_phone_from_remote() throws {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let billing = sampleAddress()
         let shipping = Address.fake().copy(company: "Widget Shop", address1: "1 Main Street")
-        let customer = WCAnalyticsCustomer.fake().copy(userID: 123,
-                                                       name: "Pat Smith",
-                                                       email: "pat.smith@example.com",
-                                                       username: "psmith",
-                                                       dateRegistered: Date(),
-                                                       dateLastActive: Date(),
-                                                       ordersCount: 2,
-                                                       totalSpend: 10,
-                                                       averageOrderValue: 5,
-                                                       country: "US",
-                                                       region: "CA",
-                                                       city: "San Francisco",
-                                                       postcode: "94103")
 
         // When
         var vm: CustomerDetailViewModel?
@@ -106,7 +82,7 @@ final class CustomerDetailViewModelTests: XCTestCase {
                 }
             }
 
-            vm = CustomerDetailViewModel(customer: customer, stores: stores)
+            vm = CustomerDetailViewModel(customer: self.sampleCustomer(), stores: stores)
         }
 
         // Then
@@ -114,6 +90,7 @@ final class CustomerDetailViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.showLocation)
         assertEqual(billing.fullNameWithCompanyAndAddress, viewModel.billing)
         assertEqual(shipping.fullNameWithCompanyAndAddress, viewModel.shipping)
+        assertEqual(billing.phone, viewModel.phone)
     }
 
 }
@@ -131,5 +108,21 @@ private extension CustomerDetailViewModelTests {
                        country: "US",
                        phone: "333-333-3333",
                        email: "scrambled@scrambled.com")
+    }
+
+    func sampleCustomer() -> WCAnalyticsCustomer {
+        WCAnalyticsCustomer.fake().copy(userID: 123,
+                                        name: "Pat Smith",
+                                        email: "pat.smith@example.com",
+                                        username: "psmith",
+                                        dateRegistered: Date(),
+                                        dateLastActive: Date(),
+                                        ordersCount: 2,
+                                        totalSpend: 10,
+                                        averageOrderValue: 5,
+                                        country: "US",
+                                        region: "CA",
+                                        city: "San Francisco",
+                                        postcode: "94103")
     }
 }

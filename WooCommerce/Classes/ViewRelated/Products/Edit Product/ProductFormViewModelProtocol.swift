@@ -182,7 +182,7 @@ protocol ProductFormViewModelProtocol {
 
     // Favorite actions
 
-    func isFavorite() -> Bool
+    func isFavorite() async -> Bool
 
     func markAsFavorite()
 

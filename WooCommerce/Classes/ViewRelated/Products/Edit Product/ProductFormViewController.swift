@@ -319,76 +319,78 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
     /// More Options Action Sheet
     ///
     @objc func presentMoreOptionsActionSheet(_ sender: UIBarButtonItem) {
-        let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-        actionSheet.view.tintColor = .text
+        Task { @MainActor in
+            let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+            actionSheet.view.tintColor = .text
 
-        if viewModel.canShowPublishOption() {
-            actionSheet.addDefaultActionWithTitle(Localization.publishTitle) { [weak self] _ in
-                self?.publishProduct()
-            }
-        }
-
-        if viewModel.canSaveAsDraft() {
-            actionSheet.addDefaultActionWithTitle(ActionSheetStrings.saveProductAsDraft) { [weak self] _ in
-                self?.saveProductAsDraft()
-            }
-        }
-
-        /// The "View product in store" action will be shown only if the product is published.
-        if viewModel.canViewProductInStore() {
-            actionSheet.addDefaultActionWithTitle(ActionSheetStrings.viewProduct) { [weak self] _ in
-                ServiceLocator.analytics.track(.productDetailViewProductButtonTapped)
-                self?.displayWebViewForProductInStore()
-            }
-        }
-
-        if viewModel.canShareProduct() {
-            actionSheet.addDefaultActionWithTitle(ActionSheetStrings.share) { [weak self] _ in
-                self?.displayShareProduct(from: sender, analyticSource: .moreMenu)
-            }
-        }
-
-        if viewModel.canFavoriteProduct() {
-            if viewModel.isFavorite() {
-                actionSheet.addDefaultActionWithTitle(ActionSheetStrings.Favorite.removeFromFavorite) { [weak self] _ in
-                    ServiceLocator.analytics.track(event: .ProductForm.productDetailRemoveFromFavoriteButtonTapped())
-                    self?.viewModel.removeFromFavorite()
-                }
-            } else {
-                actionSheet.addDefaultActionWithTitle(ActionSheetStrings.Favorite.markAsFavorite) { [weak self] _ in
-                    ServiceLocator.analytics.track(event: .ProductForm.productDetailMarkAsFavoriteButtonTapped())
-                    self?.viewModel.markAsFavorite()
+            if viewModel.canShowPublishOption() {
+                actionSheet.addDefaultActionWithTitle(Localization.publishTitle) { [weak self] _ in
+                    self?.publishProduct()
                 }
             }
-        }
 
-        if viewModel.canEditProductSettings() {
-            actionSheet.addDefaultActionWithTitle(ActionSheetStrings.productSettings) { [weak self] _ in
-                ServiceLocator.analytics.track(.productDetailViewSettingsButtonTapped)
-                self?.displayProductSettings()
+            if viewModel.canSaveAsDraft() {
+                actionSheet.addDefaultActionWithTitle(ActionSheetStrings.saveProductAsDraft) { [weak self] _ in
+                    self?.saveProductAsDraft()
+                }
             }
-        }
 
-        if viewModel.canDuplicateProduct() {
-            actionSheet.addDefaultActionWithTitle(ActionSheetStrings.duplicate) { [weak self] _ in
-                ServiceLocator.analytics.track(.productDetailDuplicateButtonTapped)
-                self?.duplicateProduct()
+            /// The "View product in store" action will be shown only if the product is published.
+            if viewModel.canViewProductInStore() {
+                actionSheet.addDefaultActionWithTitle(ActionSheetStrings.viewProduct) { [weak self] _ in
+                    ServiceLocator.analytics.track(.productDetailViewProductButtonTapped)
+                    self?.displayWebViewForProductInStore()
+                }
             }
-        }
 
-        if viewModel.canDeleteProduct() {
-            actionSheet.addDestructiveActionWithTitle(ActionSheetStrings.trashProduct) { [weak self] _ in
-                self?.displayDeleteProductAlert()
+            if viewModel.canShareProduct() {
+                actionSheet.addDefaultActionWithTitle(ActionSheetStrings.share) { [weak self] _ in
+                    self?.displayShareProduct(from: sender, analyticSource: .moreMenu)
+                }
             }
+
+            if viewModel.canFavoriteProduct() {
+                if await viewModel.isFavorite() {
+                    actionSheet.addDefaultActionWithTitle(ActionSheetStrings.Favorite.removeFromFavorite) { [weak self] _ in
+                        ServiceLocator.analytics.track(event: .ProductForm.productDetailRemoveFromFavoriteButtonTapped())
+                        self?.viewModel.removeFromFavorite()
+                    }
+                } else {
+                    actionSheet.addDefaultActionWithTitle(ActionSheetStrings.Favorite.markAsFavorite) { [weak self] _ in
+                        ServiceLocator.analytics.track(event: .ProductForm.productDetailMarkAsFavoriteButtonTapped())
+                        self?.viewModel.markAsFavorite()
+                    }
+                }
+            }
+
+            if viewModel.canEditProductSettings() {
+                actionSheet.addDefaultActionWithTitle(ActionSheetStrings.productSettings) { [weak self] _ in
+                    ServiceLocator.analytics.track(.productDetailViewSettingsButtonTapped)
+                    self?.displayProductSettings()
+                }
+            }
+
+            if viewModel.canDuplicateProduct() {
+                actionSheet.addDefaultActionWithTitle(ActionSheetStrings.duplicate) { [weak self] _ in
+                    ServiceLocator.analytics.track(.productDetailDuplicateButtonTapped)
+                    self?.duplicateProduct()
+                }
+            }
+
+            if viewModel.canDeleteProduct() {
+                actionSheet.addDestructiveActionWithTitle(ActionSheetStrings.trashProduct) { [weak self] _ in
+                    self?.displayDeleteProductAlert()
+                }
+            }
+
+            actionSheet.addCancelActionWithTitle(ActionSheetStrings.cancel) { _ in
+            }
+
+            let popoverController = actionSheet.popoverPresentationController
+            popoverController?.barButtonItem = sender
+
+            present(actionSheet, animated: true)
         }
-
-        actionSheet.addCancelActionWithTitle(ActionSheetStrings.cancel) { _ in
-        }
-
-        let popoverController = actionSheet.popoverPresentationController
-        popoverController?.barButtonItem = sender
-
-        present(actionSheet, animated: true)
     }
 
 

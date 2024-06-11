@@ -31,7 +31,7 @@ struct ItemCardView: View {
             VStack {
                 Text(item.name)
                     .foregroundStyle(Color.primaryBackground)
-                Text(item.price)
+                Text(item.formattedPrice)
                     .foregroundStyle(Color.primaryBackground)
                 HStack(spacing: 8) {
                     Spacer()

@@ -60,7 +60,8 @@ public final class POSProductProvider: POSItemProvider {
             return POSProduct(itemID: UUID(),
                               productID: product.productID,
                               name: product.name,
-                              price: formattedPrice,
+                              price: product.price,
+                              formattedPrice: formattedPrice,
                               productImageSource: thumbnailSource)
         }
     }

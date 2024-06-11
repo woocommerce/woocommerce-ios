@@ -21,15 +21,21 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
 
     @Published private(set) var items: [POSItem]
     @Published private(set) var itemsInCart: [CartItem] = []
-    @Published private var checkoutItems: [CartItem] = []
 
     // Total amounts
     @Published private(set) var formattedCartTotalPrice: String?
     var formattedOrderTotalPrice: String? {
-        order?.total
+        return formattedPrice(order?.total, currency: order?.currency)
     }
     var formattedOrderTotalTaxPrice: String? {
-        order?.totalTax
+        return formattedPrice(order?.totalTax, currency: order?.currency)
+    }
+
+    private func formattedPrice(_ price: String?, currency: String?) -> String? {
+        guard let price, let currency else {
+            return nil
+        }
+        return currencyFormatter.formatAmount(price, with: currency)
     }
 
     @Published var showsCardReaderSheet: Bool = false
@@ -122,7 +128,7 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
     }
 
     var areAmountsFullyCalculated: Bool {
-        return isSyncingOrder == false && formattedOrderTotalTaxPrice != nil && formattedOrderTotalPrice != nil && (itemsInCart.count == checkoutItems.count)
+        return isSyncingOrder == false && formattedOrderTotalTaxPrice != nil && formattedOrderTotalPrice != nil
     }
     var showRecalculateButton: Bool {
         return !areAmountsFullyCalculated && isSyncingOrder == false
@@ -145,7 +151,6 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
     }
 
     func recalculateAmounts() {
-        checkoutItems = itemsInCart
     }
 
     func startNewTransaction() {
@@ -161,7 +166,7 @@ private extension PointOfSaleDashboardViewModel {
             .map { [weak self] in
                 guard let self else { return "-" }
                 let totalValue: Decimal = $0.reduce(0) { partialResult, cartItem in
-                    let itemPrice = self.currencyFormatter.convertToDecimal(cartItem.item.formattedPrice) ?? 0
+                    let itemPrice = self.currencyFormatter.convertToDecimal(cartItem.item.price) ?? 0
                     let quantity = cartItem.quantity
                     let total = itemPrice.multiplying(by: NSDecimalNumber(value: quantity)) as Decimal
                     return partialResult + total
@@ -192,7 +197,7 @@ private extension PointOfSaleDashboardViewModel {
     }
 
     func observeProductsInCartForRemoteOrderSyncing() {
-        cartSubscription = Publishers.CombineLatest($checkoutItems.debounce(for: .seconds(Constants.cartChangesDebounceDuration),
+        cartSubscription = Publishers.CombineLatest($itemsInCart.debounce(for: .seconds(Constants.cartChangesDebounceDuration),
                                                                                scheduler: DispatchQueue.main),
                                                     $isSyncingOrder)
         .filter { _, isSyncingOrder in
@@ -208,7 +213,7 @@ private extension PointOfSaleDashboardViewModel {
                 }
                 let cart = cartProducts
                     .map {
-                        PointOfSaleCartItem(itemID: $0.item.productID,
+                        PointOfSaleCartItem(itemID: nil,
                                             product: .init(productID: $0.item.productID,
                                                            price: $0.item.price,
                                                            productType: .simple),

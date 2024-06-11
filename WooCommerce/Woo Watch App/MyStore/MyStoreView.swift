@@ -36,7 +36,7 @@ struct MyStoreView: View {
                 dataView(revenue: revenue, orders: totalOrders, visitors: totalVisitors, conversion: conversion, time: time)
             }
         }
-        .padding()
+        .padding(.horizontal)
         .background(
             LinearGradient(gradient: Gradient(colors: [Colors.wooPurpleBackground, .black]), startPoint: .top, endPoint: .bottom)
         )
@@ -66,77 +66,81 @@ struct MyStoreView: View {
     /// My Store Stats data view.
     ///
     @ViewBuilder func dataView(revenue: String, orders: String, visitors: String, conversion: String, time: String) -> some View {
-        VStack {
-            Text(dependencies.storeName)
-                .font(.body)
-                .foregroundStyle(Colors.wooPurple5)
-                .padding(.bottom, Layout.storeNamePadding)
+        ScrollView {
+            VStack {
+                Text(dependencies.storeName)
+                    .font(.body)
+                    .foregroundStyle(Colors.wooPurple5)
+                    .lineLimit(2)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .padding(.bottom, Layout.storeNamePadding)
 
-            Text(Localization.revenue)
-                .font(.caption2)
-                .foregroundStyle(Colors.wooPurple5)
+                Text(Localization.revenue)
+                    .font(.caption2)
+                    .foregroundStyle(Colors.wooPurple5)
                 .padding(.bottom, Layout.revenueTitlePadding)
 
-            Text(revenue)
-                .font(.title2)
-                .bold()
+                Text(revenue)
+                    .font(.title2)
+                    .bold()
                 .padding(.bottom, Layout.revenueValuePadding)
 
-            Divider()
+                Divider()
                 .padding(.bottom, Layout.dividerPadding)
 
-            HStack {
-                Text(Localization.today)
-                Spacer()
-                Text(Localization.time(time))
-            }
-            .font(.footnote)
-            .foregroundStyle(.secondary)
-            .padding(.bottom, Layout.datePadding)
-
-            HStack {
-
-                Button(action: {
-                    self.watchTab = .ordersList
-                }) {
-                    HStack {
-                        Images.document
-                            .renderingMode(.original)
-                            .foregroundStyle(Colors.wooPurple10)
-
-                        Text(orders)
-                            .font(.caption)
-                            .bold()
-                    }
-                    .padding(Layout.orderButtonPadding)
+                HStack {
+                    Text(Localization.today)
+                    Spacer()
+                    Text(Localization.time(time))
                 }
-                .buttonStyle(.plain)
-                .background(Colors.wooPurple80)
-                .cornerRadius(Layout.orderButtonCornerRadius)
+                .font(.footnote)
+                .foregroundStyle(.secondary)
+                .padding(.bottom, Layout.datePadding)
 
-                Spacer()
+                HStack {
 
-                VStack(spacing: Layout.iconsSpacing) {
-                    HStack(spacing: Layout.iconsSpacing) {
+                    Button(action: {
+                        self.watchTab = .ordersList
+                    }) {
+                        HStack {
+                            Images.document
+                                .renderingMode(.original)
+                                .foregroundStyle(Colors.wooPurple10)
 
-                        Text(visitors)
-                            .font(.caption)
-                            .bold()
-
-                        Images.person
-                            .renderingMode(.original)
-                            .foregroundStyle(Colors.wooPurple10)
+                            Text(orders)
+                                .font(.caption)
+                                .bold()
+                        }
+                        .padding(Layout.orderButtonPadding)
                     }
+                    .buttonStyle(.plain)
+                    .background(Colors.wooPurple80)
+                    .cornerRadius(Layout.orderButtonCornerRadius)
 
-                    HStack(spacing: Layout.iconsSpacing) {
+                    Spacer()
 
-                        Text(conversion)
-                            .font(.caption2)
-                            .bold()
+                    VStack(spacing: Layout.iconsSpacing) {
+                        HStack(spacing: Layout.iconsSpacing) {
 
-                        Images.zigzag
-                            .renderingMode(.original)
-                            .foregroundStyle(Colors.wooPurple10)
+                            Text(visitors)
+                                .font(.caption)
+                                .bold()
+
+                            Images.person
+                                .renderingMode(.original)
+                                .foregroundStyle(Colors.wooPurple10)
+                        }
+
+                        HStack(spacing: Layout.iconsSpacing) {
+
+                            Text(conversion)
+                                .font(.caption2)
+                                .bold()
+
+                            Images.zigzag
+                                .renderingMode(.original)
+                                .foregroundStyle(Colors.wooPurple10)
+                        }
                     }
                 }
             }

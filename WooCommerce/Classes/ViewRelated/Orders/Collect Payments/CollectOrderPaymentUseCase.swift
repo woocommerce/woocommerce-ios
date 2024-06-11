@@ -29,7 +29,7 @@ protocol CollectOrderPaymentProtocol {
 /// Use case to collect payments from an order.
 /// Orchestrates reader connection, payment, UI alerts, receipt handling and analytics.
 ///
-final class CollectOrderPaymentUseCase<BuiltInAlertProvider: CardReaderTransactionAlertsProviding, 
+final class CollectOrderPaymentUseCase<BuiltInAlertProvider: CardReaderTransactionAlertsProviding,
                                         BluetoothAlertProvider: CardReaderTransactionAlertsProviding,
                                         AlertPresenter: CardPresentPaymentAlertsPresenting>:
     NSObject, CollectOrderPaymentProtocol where BuiltInAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
@@ -514,7 +514,7 @@ private extension CollectOrderPaymentUseCase {
     /// Allow merchants to print or email backend-generated receipts.
     /// The alerts presenter can be simplified once we remove legacy receipts: https://github.com/woocommerce/woocommerce-ios/issues/11897
     ///
-    func presentBackendReceiptAlert(alertProvider paymentAlerts: any CardReaderTransactionAlertsProviding<AlertPresenter.AlertDetails>, 
+    func presentBackendReceiptAlert(alertProvider paymentAlerts: any CardReaderTransactionAlertsProviding<AlertPresenter.AlertDetails>,
                                     onCompleted: @escaping () -> ()) {
         // Handles receipt presentation for both print and email actions
         let receiptPresentationCompletionAction: () -> Void = { [weak self] in

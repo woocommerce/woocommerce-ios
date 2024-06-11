@@ -39,7 +39,7 @@ final class InboxEligibilityUseCase: InboxEligibilityChecker {
     ///   - siteID: the ID of the site to check for Inbox eligibility.
     ///   - completion: called when the Inbox eligibility is determined.
     func isEligibleForInbox(siteID: Int64, completion: @escaping (Bool) -> Void) {
-        Task {
+        Task { @MainActor in
             let result = await isEligibleForInbox(siteID: siteID)
             completion(result)
         }

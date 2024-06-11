@@ -37,12 +37,11 @@ struct ProductRow: View {
         HStack(alignment: .center) {
             if multipleSelectionsEnabled {
                 if let selectionHandler = onCheckboxSelected {
-                    checkbox(for: viewModel.selectedState)
-                        .onTapGesture {
-                            selectionHandler()
-                        }
+                    checkbox.onTapGesture {
+                        selectionHandler()
+                    }
                 } else {
-                    checkbox(for: viewModel.selectedState)
+                    checkbox
                 }
             }
 
@@ -57,7 +56,6 @@ struct ProductRow: View {
             VStack(alignment: .leading) {
                 Text(viewModel.name)
                     .bodyStyle()
-                    .opacity(viewModel.selectedState == .unsupported ? 0.5 : 1)
                 Text(viewModel.productDetailsLabel)
                     .subheadlineStyle()
                     .renderedIf(viewModel.productDetailsLabel.isNotEmpty)
@@ -78,17 +76,18 @@ struct ProductRow: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .contentShape(Rectangle())
+        .opacity(viewModel.selectedState == .unsupported ? 0.7 : 1)
         .accessibilityElement(children: .ignore)
         .accessibilityAddTraits(.isButton)
         .accessibilityLabel(viewModel.productAccessibilityLabel)
         .accessibilityHint(accessibilityHint)
     }
 
-    private func checkbox(for state: SelectedState) -> some View {
-        Image(uiImage: state.image)
+    private var checkbox: some View {
+        Image(uiImage: viewModel.selectedState.image)
             .resizable()
             .frame(width: Layout.checkImageSize * scale, height: Layout.checkImageSize * scale)
-            .foregroundColor(isEnabled && state != .unsupported ? Color(.brand) : .gray)
+            .foregroundColor(isEnabled ? Color(.brand) : .gray)
     }
 }
 
@@ -103,15 +102,12 @@ extension ProductRow {
 
         var image: UIImage {
             switch self {
-            case .notSelected:
+            case .notSelected, .unsupported:
                 return .checkEmptyCircleImage
             case .selected:
                 return .checkCircleImage.withRenderingMode(.alwaysTemplate)
             case .partiallySelected:
                 return .checkPartialCircleImage.withRenderingMode(.alwaysTemplate)
-            case .unsupported:
-                return UIImage(systemName: "minus.circle.fill")!
-                    .withRenderingMode(.alwaysTemplate)
             }
         }
     }

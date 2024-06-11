@@ -17,7 +17,7 @@ struct POSToolbarView: View {
                     Image(systemName: "arrow.left.arrow.right")
                     Text("Exit POS")
                 }
-                .foregroundColor(Color.white)
+                .foregroundColor(Color(uiColor: .gray(.shade60)))
             }
 
             Spacer()

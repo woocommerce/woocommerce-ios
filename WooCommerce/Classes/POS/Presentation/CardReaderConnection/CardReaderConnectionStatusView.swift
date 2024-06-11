@@ -17,16 +17,26 @@ struct CardReaderConnectionStatusView: View {
             switch connectionViewModel.connectionStatus {
                 case .connected:
                     HStack(spacing: Layout.buttonImageAndTextSpacing) {
-                        Image(systemName: "wave.3.forward.circle")
+                        Image(systemName: "wave.3.forward.circle.fill")
+                            .foregroundColor(.init(uiColor: .wooCommercePurple(.shade30)))
                         Text("Reader Connected")
+                            .foregroundColor(.init(uiColor: .wooCommercePurple(.shade80)))
                     }
-                    .foregroundColor(.init(uiColor: .withColorStudio(.wooCommercePurple, shade: .shade10)))
                 case .disconnected:
-                    Button {
-                        connectionViewModel.connectReader()
-                    } label: {
-                        Text("Reader Disconnected")
-                            .foregroundColor(.init(uiColor: .withColorStudio(.wooCommercePurple, shade: .shade10)))
+                    HStack {
+                        HStack(spacing: 8) {
+                            Image(systemName: "bolt.fill")
+                                .foregroundColor(Color.wooAmberShade40)
+                            Text("Reader disconnected")
+                                .foregroundColor(Color.wooAmberShade80)
+                        }
+
+                        Button {
+                            connectionViewModel.connectReader()
+                        } label: {
+                            Text("Connect now")
+                        }
+                        .foregroundColor(Color(uiColor: .wooCommercePurple(.shade60)))
                     }
             }
         }

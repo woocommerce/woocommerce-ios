@@ -5,6 +5,8 @@ struct CustomerDetailView: View {
 
     @State private var isPresentingEmailDialog: Bool = false
     @State private var isShowingEmailView: Bool = false
+    @State private var isPresentingPhoneDialog: Bool = false
+    @State private var isShowingMessageView: Bool = false
 
     init(viewModel: CustomerDetailViewModel) {
         self._viewModel = StateObject(wrappedValue: viewModel)
@@ -25,9 +27,9 @@ struct CustomerDetailView: View {
                         Image(uiImage: .mailImage)
                             .foregroundColor(Color(.primary))
                     }
-                    .accessibilityLabel(Localization.emailAction)
+                    .accessibilityLabel(Localization.ContactAction.emailAction)
                     .renderedIf(viewModel.email != nil)
-                    .confirmationDialog(Localization.emailAction, isPresented: $isPresentingEmailDialog) {
+                    .confirmationDialog(Localization.ContactAction.emailAction, isPresented: $isPresentingEmailDialog) {
                         Button(Localization.ContactAction.sendEmail) {
                             isShowingEmailView.toggle()
                             viewModel.trackEmailOptionTapped()
@@ -48,6 +50,40 @@ struct CustomerDetailView: View {
                                 .shimmering()
                         }
                     Spacer()
+                    if let phone = viewModel.phone {
+                        Button {
+                            isPresentingPhoneDialog.toggle()
+                        } label: {
+                            Image(uiImage: .ellipsisImage)
+                                .foregroundColor(Color(.primary))
+                        }
+                        .accessibilityLabel(Localization.ContactAction.phoneAction)
+                        .confirmationDialog(Localization.ContactAction.phoneAction, isPresented: $isPresentingPhoneDialog) {
+                            Button(Localization.ContactAction.call) {
+                                viewModel.callCustomer()
+                            }
+                            .renderedIf(viewModel.isPhoneCallAvailable)
+
+                            Button(Localization.ContactAction.message) {
+                                isShowingMessageView.toggle()
+                            }
+                            .renderedIf(MessageComposeView.canSendMessage())
+
+                            Button(Localization.ContactAction.copyPhoneNumber) {
+                                phone.sendToPasteboard(includeTrailingNewline: false)
+                            }
+
+                            Button(Localization.ContactAction.whatsapp) {
+                                viewModel.sendWhatsappMessage()
+                            }
+                            .renderedIf(viewModel.isWhatsappAvailable)
+
+                            Button(Localization.ContactAction.telegram) {
+                                viewModel.sendTelegramMessage()
+                            }
+                            .renderedIf(viewModel.isTelegramAvailable)
+                        }
+                    }
                 }
                 customerDetailRow(label: Localization.dateLastActiveLabel, value: viewModel.dateLastActive)
             }
@@ -122,6 +158,10 @@ struct CustomerDetailView: View {
         .wooNavigationBarStyle()
         .sheet(isPresented: $isShowingEmailView) {
             EmailView(emailAddress: viewModel.email)
+                .ignoresSafeArea(edges: .bottom)
+        }
+        .sheet(isPresented: $isShowingMessageView) {
+            MessageComposeView(phone: viewModel.phone)
                 .ignoresSafeArea(edges: .bottom)
         }
         .onAppear {
@@ -207,10 +247,6 @@ private extension CustomerDetailView {
         static let emailPlaceholder = NSLocalizedString("customerDetailView.emailPlaceholder",
                                                           value: "No email address",
                                                           comment: "Placeholder if a customer's email address is not available in the Customer Details screen.")
-
-        static let emailAction = NSLocalizedString("customerDetailView.emailActionLabel",
-                                                   value: "Contact customer via email",
-                                                   comment: "Title for action to contact a customer via email.")
         static let billingSection = NSLocalizedString("customerDetailView.billingSection",
                                                        value: "BILLING ADDRESS",
                                                        comment: "Heading for the section with customer billing address in the Customer Details screen.")
@@ -222,6 +258,9 @@ private extension CustomerDetailView {
                                                         comment: "Placeholder if a customer's phone number is not available in the Customer Details screen.")
 
         enum ContactAction {
+            static let emailAction = NSLocalizedString("customerDetailView.emailActionLabel",
+                                                       value: "Contact customer via email",
+                                                       comment: "Title for action to contact a customer via email.")
             static let sendEmail = NSLocalizedString("customerDetailView.sendEmail",
                                                      value: "Email",
                                                      comment: "Button to email a customer in the Customer Details screen.")
@@ -231,6 +270,22 @@ private extension CustomerDetailView {
             static let copy = NSLocalizedString("customerDetailView.copyButton.label",
                                                 value: "Copy",
                                                 comment: "Copy address text button title — should be one word and as short as possible.")
+            static let phoneAction = NSLocalizedString("customerDetailView.phoneActionLabel",
+                                                       value: "Contact customer via phone",
+                                                       comment: "Title for action to contact a customer via phone.")
+            static let call = NSLocalizedString("customerDetailView.callPhoneNumber",
+                                                value: "Call", comment: "Call phone number button title")
+            static let message = NSLocalizedString("customerDetailView.messagePhoneNumber",
+                                                   value: "Message", comment: "Message phone number button title")
+            static let copyPhoneNumber = NSLocalizedString("customerDetailView.copyPhoneNumber",
+                                                           value: "Copy number",
+                                                           comment: "Button to copy phone number to clipboard")
+            static let whatsapp = NSLocalizedString("customerDetailView.whatsapp",
+                                                    value: "Send WhatsApp message",
+                                                    comment: "Button to send a message to a customer via WhatsApp")
+            static let telegram = NSLocalizedString("customerDetailView.telegram",
+                                                    value: "Send Telegram message",
+                                                    comment: "Button to send a message to a customer via Telegram")
         }
     }
 }

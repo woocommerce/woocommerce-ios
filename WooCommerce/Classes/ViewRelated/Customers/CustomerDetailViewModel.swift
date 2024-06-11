@@ -19,6 +19,12 @@ final class CustomerDetailViewModel: ObservableObject {
     /// Customer phone
     var phone: String?
 
+    /// Cleaned customer phone (only decimals)
+    private var cleanedPhone: String?
+
+    /// Customer phone as an iOS actionable URL
+    private var phoneURL: URL?
+
     // MARK: Orders
 
     /// Number of orders from the customer
@@ -130,7 +136,10 @@ final class CustomerDetailViewModel: ObservableObject {
                   shipping: nil,
                   stores: stores)
     }
+}
 
+// MARK: Contact actions
+extension CustomerDetailViewModel {
     /// Copies the customer email to the pasteboard.
     func copyEmail() {
         email?.sendToPasteboard(includeTrailingNewline: false)
@@ -145,6 +154,70 @@ final class CustomerDetailViewModel: ObservableObject {
     /// Tracks when the option to send an email is tapped.
     func trackEmailOptionTapped() {
         ServiceLocator.analytics.track(event: .CustomersHub.customerDetailEmailOptionTapped())
+    }
+
+    /// Whether the device can perform a phone call
+    var isPhoneCallAvailable: Bool {
+        guard let phoneURL else {
+            return false
+        }
+        return UIApplication.shared.canOpenURL(phoneURL)
+    }
+
+    /// Attempts to perform a phone call at the specified URL
+    func callCustomer() {
+        guard let phoneURL else {
+            return
+        }
+        UIApplication.shared.open(phoneURL, options: [:], completionHandler: nil)
+    }
+
+    /// Whatsapp deeplink to contact someone through their phone number
+    private var whatsappDeeplink: URL? {
+        guard let cleanedPhone else {
+            return nil
+        }
+        return URL(string: "whatsapp://send?phone=\(cleanedPhone)")
+    }
+
+    /// Whether the device can open a WhatsApp deep link
+    var isWhatsappAvailable: Bool {
+        guard let whatsappDeeplink else {
+            return false
+        }
+        return UIApplication.shared.canOpenURL(whatsappDeeplink)
+    }
+
+    /// Initiates communication with a customer via WhatsApp
+    func sendWhatsappMessage() {
+        guard let whatsappDeeplink else {
+            return
+        }
+        UIApplication.shared.open(whatsappDeeplink)
+    }
+
+    /// Telegram deeplink to contact someone through their phone number
+    private var telegramDeeplink: URL? {
+        guard let cleanedPhone else {
+            return nil
+        }
+        return URL(string: "tg://resolve?phone=\(cleanedPhone)")
+    }
+
+    /// Whether the device can open a Telegram deep link
+    var isTelegramAvailable: Bool {
+        guard let telegramDeeplink else {
+            return false
+        }
+        return UIApplication.shared.canOpenURL(telegramDeeplink)
+    }
+
+    /// Initiates communication with a customer via Telegram
+    func sendTelegramMessage() {
+        guard let telegramDeeplink else {
+            return
+        }
+        UIApplication.shared.open(telegramDeeplink)
     }
 }
 
@@ -175,8 +248,12 @@ extension CustomerDetailViewModel {
                 shipping = customer.shipping?.fullNameWithCompanyAndAddress
                 if customer.billing?.hasPhoneNumber == true {
                     phone = customer.billing?.phone
+                    cleanedPhone = customer.billing?.cleanedPhoneNumber
+                    phoneURL = customer.billing?.cleanedPhoneNumberAsActionableURL
                 } else if customer.shipping?.hasPhoneNumber == true {
                     phone = customer.shipping?.phone
+                    cleanedPhone = customer.shipping?.cleanedPhoneNumber
+                    phoneURL = customer.shipping?.cleanedPhoneNumberAsActionableURL
                 }
             case let .failure(error):
                 DDLogError("⛔️ Error fetching customer details: \(error)")

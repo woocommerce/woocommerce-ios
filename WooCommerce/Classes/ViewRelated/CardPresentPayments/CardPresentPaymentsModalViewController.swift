@@ -427,7 +427,6 @@ private extension CardPresentPaymentsModalViewController {
 // MARK: - Constants
 private extension CardPresentPaymentsModalViewController {
     enum Constants {
-        static let extraInfoCustomInsets = UIEdgeInsets(top: 12, left: 10, bottom: 12, right: 10)
         static let modalHeight: CGFloat = 382
         static let modalWidth: CGFloat = 280
         static let auxiliaryButtonInsets = NSDirectionalEdgeInsets(top: 8, leading: 8, bottom: 8, trailing: 8)

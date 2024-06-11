@@ -316,4 +316,16 @@ public enum AppSettingsAction: Action {
     /// Loads the last selected order status for the Most recent orders dashboard card.
     ///
     case loadLastSelectedOrderStatus(siteID: Int64, onCompletion: (String?) -> Void)
+
+    /// Stores the product ID as favorite.
+    ///
+    case setProductIDAsFavorite(productID: Int64, siteID: Int64)
+
+    /// Removes the product ID from favorite list.
+    ///
+    case removeProductIDAsFavorite(productID: Int64, siteID: Int64)
+
+    /// Loads the favorite products.
+    ///
+    case loadFavoriteProductIDs(siteID: Int64, onCompletion: ([Int64]) -> Void)
 }

@@ -343,6 +343,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                      productSubscriptionDetails: ProductSubscription? = nil,
                      selectedState: ProductRow.SelectedState = .notSelected,
                      pricedIndividually: Bool = true,
+                     unsupportedReason: String? = nil,
                      currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
                      analytics: Analytics = ServiceLocator.analytics,
                      featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
@@ -403,15 +404,6 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
             productSubscriptionDetails = nil
         }
 
-        /// Bookable products are not supported for order creation yet.
-        let unsupportedReason: String? = {
-            guard product.productType == .booking else {
-                return nil
-            }
-            return Localization.bookableProductUnsupportedReason
-        }()
-        let updatedSelectedState: ProductRow.SelectedState = product.productType == .booking ? .unsupported : selectedState
-
         self.init(id: id,
                   productOrVariationID: product.productID,
                   name: product.name,
@@ -426,7 +418,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                   imageURL: product.imageURL,
                   numberOfVariations: product.variations.count,
                   productSubscriptionDetails: productSubscriptionDetails,
-                  selectedState: updatedSelectedState,
+                  selectedState: selectedState,
                   pricedIndividually: pricedIndividually,
                   isConfigurable: isConfigurable,
                   unsupportedReason: unsupportedReason,
@@ -563,11 +555,5 @@ private extension ProductRowViewModel {
                 comment: "Description of the subscription conditions for a subscription product, with signup fees but no trial." +
                 "Reads as: '$25.00 signup'.")
         }
-
-        static let bookableProductUnsupportedReason = NSLocalizedString(
-            "productRowViewModel.bookableProductUnsupportedReason",
-            value: "Bookable products are not supported for order creation",
-            comment: "Message explaining unsupported bookable products for order creation"
-        )
     }
 }

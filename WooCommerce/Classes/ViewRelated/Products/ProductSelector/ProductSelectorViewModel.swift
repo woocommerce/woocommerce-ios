@@ -813,25 +813,40 @@ private extension ProductSelectorViewModel {
     ///
     func generateProductRows(products: [Product], selectedItemsIDs: [Int64]) -> [ProductRowViewModel] {
         return products.map { product in
-            var selectedState: ProductRow.SelectedState
-            if product.variations.isEmpty {
-                selectedState = selectedItemsIDs.contains(product.productID) ? .selected : .notSelected
-            } else {
-                let intersection = Set(product.variations).intersection(Set(selectedItemsIDs))
-                if intersection.isEmpty {
-                    selectedState = .notSelected
-                } else if intersection.count == product.variations.count {
-                    selectedState = .selected
-                } else {
-                    selectedState = .partiallySelected
+            let selectedState: ProductRow.SelectedState = {
+                switch (source, product.productType, product.variations) {
+                case (.orderForm, .booking, _):
+                    return .unsupported
+                case (_, _, let variations) where variations.isEmpty:
+                    return selectedItemsIDs.contains(product.productID) ? .selected : .notSelected
+                default:
+                    let intersection = Set(product.variations).intersection(Set(selectedItemsIDs))
+                    if intersection.isEmpty {
+                        return .notSelected
+                    } else if intersection.count == product.variations.count {
+                        return .selected
+                    } else {
+                        return .partiallySelected
+                    }
                 }
-            }
+            }()
 
             let configure: (() -> Void)? = onConfigureProductRow == nil ? nil: { [weak self] in
                 self?.onConfigureProductRow?(product)
             }
+
+            let unsupportedReason: String? = {
+                switch (source, product.productType) {
+                case (.orderForm, .booking):
+                    Localization.bookableProductUnsupportedReason
+                default:
+                    nil
+                }
+            }()
+
             return ProductRowViewModel(product: product,
                                        selectedState: selectedState,
+                                       unsupportedReason: unsupportedReason,
                                        featureFlagService: featureFlagService,
                                        configure: configure)
         }
@@ -913,6 +928,11 @@ private extension ProductSelectorViewModel {
             "productSelectorViewModel.selectProductsTitle.pluralProductSelectedFormattedText",
             value: "%ld products selected",
             comment: "Text on the header of the Select Product screen when more than one products are selected.")
+        static let bookableProductUnsupportedReason = NSLocalizedString(
+            "productSelectorViewModel.bookableProductUnsupportedReason",
+            value: "Bookable products are not supported for order creation",
+            comment: "Message explaining unsupported bookable products for order creation"
+        )
     }
 }
 

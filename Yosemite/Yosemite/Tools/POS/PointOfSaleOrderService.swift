@@ -31,6 +31,7 @@ public struct PointOfSaleOrder {
     public let orderID: Int64
     public let total: String
     public let totalTax: String
+    public let currency: String
     let items: [PointOfSaleOrderItem]
 }
 
@@ -42,7 +43,23 @@ struct PointOfSaleOrderItem {
     let quantity: Decimal
 
     func toOrderItem() -> OrderItem {
-        .init(itemID: itemID, name: "", productID: productID, variationID: .zero, quantity: quantity, price: .zero, sku: nil, subtotal: "", subtotalTax: "", taxClass: "", taxes: [], total: "", totalTax: "", attributes: [], addOns: [], parent: nil, bundleConfiguration: [])
+        .init(itemID: itemID,
+              name: "",
+              productID: productID,
+              variationID: .zero,
+              quantity: quantity,
+              price: .zero,
+              sku: nil,
+              subtotal: "",
+              subtotalTax: "",
+              taxClass: "",
+              taxes: [],
+              total: "",
+              totalTax: "",
+              attributes: [],
+              addOns: [],
+              parent: nil,
+              bundleConfiguration: [])
     }
 
     init(orderItem: OrderItem) {
@@ -105,6 +122,7 @@ public final class PointOfSaleOrderService: PointOfSaleOrderServiceProtocol {
                                 orderID: syncedOrder.orderID,
                                 total: syncedOrder.total,
                                 totalTax: syncedOrder.totalTax,
+                                currency: syncedOrder.currency,
                                 items: syncedOrder.items.map { PointOfSaleOrderItem(orderItem: $0) })
     }
 }
@@ -126,8 +144,12 @@ private struct PointOfSaleOrderSyncProductType: OrderSyncProductTypeProtocol {
 
 private extension PointOfSaleOrderService {
     func updateOrder(_ order: Order, cart: [PointOfSaleCartItem], allProducts: [PointOfSaleCartProduct]) -> Order {
-        let cartProducts = cart.map { PointOfSaleOrderSyncProductType(productID: $0.product.productID, price: $0.product.price, productType: $0.product.productType) }
-        let allProducts = allProducts.map { PointOfSaleOrderSyncProductType(productID: $0.productID, price: $0.price, productType: $0.productType) }
+        let cartProducts = cart.map { PointOfSaleOrderSyncProductType(productID: $0.product.productID,
+                                                                      price: $0.product.price,
+                                                                      productType: $0.product.productType) }
+        let allProducts = allProducts.map { PointOfSaleOrderSyncProductType(productID: $0.productID,
+                                                                            price: $0.price,
+                                                                            productType: $0.productType) }
 
         // Removes all existing items by setting quantity to 0.
         let itemsToRemove = order.items.compactMap {

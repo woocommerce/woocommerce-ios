@@ -5,11 +5,9 @@ import Yosemite
 ///
 final class ProductSelectorViewController: UIHostingController<ProductSelectorView> {
     init(configuration: ProductSelectorView.Configuration,
-         source: ProductSelectorView.Source,
          viewModel: ProductSelectorViewModel) {
 
         super.init(rootView: ProductSelectorView(configuration: configuration,
-                                                 source: source,
                                                  isPresented: .constant(true),
                                                  viewModel: viewModel))
     }
@@ -22,17 +20,8 @@ final class ProductSelectorViewController: UIHostingController<ProductSelectorVi
 /// View showing a list of products to select.
 ///
 struct ProductSelectorView: View {
-    enum Source {
-        case orderForm(flow: WooAnalyticsEvent.Orders.Flow)
-        case couponForm
-        case couponRestrictions
-        case blaze
-        case orderFilter
-    }
 
     let configuration: Configuration
-
-    let source: Source
 
     /// Defines whether the view is presented.
     ///
@@ -194,7 +183,7 @@ struct ProductSelectorView: View {
             FilterListView(viewModel: viewModel.filterListViewModel) { filters in
                 viewModel.updateFilters(filters)
                 ServiceLocator.analytics.track(event: .ProductListFilter
-                    .productFilterListShowProductsButtonTapped(source: source.filterAnalyticsSource, filters: filters))
+                    .productFilterListShowProductsButtonTapped(source: viewModel.source.filterAnalyticsSource, filters: filters))
             } onClearAction: {
                 // no-op
             } onDismissAction: {
@@ -256,7 +245,7 @@ struct ProductSelectorView: View {
                         guard !hasTrackedBundleProductConfigureCTAShownEvent else {
                             return
                         }
-                        switch source {
+                        switch viewModel.source {
                             case let .orderForm(flow):
                                 ServiceLocator.analytics.track(event: .Orders.orderFormBundleProductConfigureCTAShown(flow: flow, source: .productSelector))
                                 hasTrackedBundleProductConfigureCTAShownEvent = true
@@ -269,7 +258,7 @@ struct ProductSelectorView: View {
                 if let configure = rowViewModel.configure, rowViewModel.isConfigurable,
                    configuration.treatsAllProductsAsSimple == false {
                     configure()
-                    switch source {
+                    switch viewModel.source {
                         case let .orderForm(flow):
                             ServiceLocator.analytics.track(event: .Orders.orderFormBundleProductConfigureCTATapped(flow: flow, source: .productSelector))
                         default:
@@ -329,7 +318,7 @@ private extension ProductSelectorView {
 
             Button(viewModel.filterButtonTitle) {
                 showingFilters.toggle()
-                ServiceLocator.analytics.track(event: .ProductListFilter.productListViewFilterOptionsTapped(source: source.filterAnalyticsSource))
+                ServiceLocator.analytics.track(event: .ProductListFilter.productListViewFilterOptionsTapped(source: viewModel.source.filterAnalyticsSource))
             }
             .buttonStyle(LinkButtonStyle())
             .fixedSize()
@@ -356,7 +345,7 @@ private extension ProductSelectorView {
 
                 Button(viewModel.filterButtonTitle) {
                     showingFilters.toggle()
-                    ServiceLocator.analytics.track(event: .ProductListFilter.productListViewFilterOptionsTapped(source: source.filterAnalyticsSource))
+                    ServiceLocator.analytics.track(event: .ProductListFilter.productListViewFilterOptionsTapped(source: viewModel.source.filterAnalyticsSource))
                 }
                 .buttonStyle(LinkButtonStyle())
                 .fixedSize()
@@ -453,7 +442,7 @@ private extension ProductSelectorView {
     }
 }
 
-private extension ProductSelectorView.Source {
+private extension ProductSelectorSource {
     var filterAnalyticsSource: WooAnalyticsEvent.ProductListFilter.Source {
         switch self {
             case .orderForm:
@@ -472,12 +461,12 @@ private extension ProductSelectorView.Source {
 
 struct AddProduct_Previews: PreviewProvider {
     static var previews: some View {
-        let viewModel = ProductSelectorViewModel(siteID: 123)
+        let viewModel = ProductSelectorViewModel(siteID: 123, source: .orderForm(flow: .creation))
         let configuration = ProductSelectorView.Configuration(
             title: "Add Product",
             cancelButtonTitle: "Close",
             productRowAccessibilityHint: "Add product to order",
             variableProductRowAccessibilityHint: "Open variation list")
-        ProductSelectorView(configuration: configuration, source: .orderForm(flow: .creation), isPresented: .constant(true), viewModel: viewModel)
+        ProductSelectorView(configuration: configuration, isPresented: .constant(true), viewModel: viewModel)
     }
 }

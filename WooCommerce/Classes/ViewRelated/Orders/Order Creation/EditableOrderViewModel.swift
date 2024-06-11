@@ -1923,6 +1923,7 @@ private extension EditableOrderViewModel {
                 }
                 return ProductSelectorViewModel(
                     siteID: siteID,
+                    source: .orderForm(flow: flow.analyticsFlow),
                     selectedItemIDs: selectedProductsAndVariationsIDs,
                     purchasableItemsOnly: true,
                     storageManager: storageManager,

@@ -39,6 +39,14 @@ enum ProductSelectorSectionType {
     }
 }
 
+enum ProductSelectorSource {
+    case orderForm(flow: WooAnalyticsEvent.Orders.Flow)
+    case couponForm
+    case couponRestrictions
+    case blaze
+    case orderFilter
+}
+
 /// View model for `ProductSelectorView`.
 ///
 final class ProductSelectorViewModel: ObservableObject {
@@ -65,6 +73,10 @@ final class ProductSelectorViewModel: ObservableObject {
     /// Trigger to perform any one time setups.
     ///
     let onLoadTrigger: PassthroughSubject<Void, Never> = PassthroughSubject()
+
+    /// Entry point of the current product selector
+    ///
+    let source: ProductSelectorSource
 
     /// View model for the filter list.
     ///
@@ -221,6 +233,7 @@ final class ProductSelectorViewModel: ObservableObject {
     @Published var productVariationListViewModel: ProductVariationSelectorViewModel? = nil
 
     init(siteID: Int64,
+         source: ProductSelectorSource,
          selectedItemIDs: [Int64] = [],
          purchasableItemsOnly: Bool = false,
          shouldDeleteStoredProductsOnFirstPage: Bool = true,
@@ -244,6 +257,7 @@ final class ProductSelectorViewModel: ObservableObject {
          onCloseButtonTapped: (() -> Void)? = nil,
          onConfigureProductRow: ((_ product: Product) -> Void)? = nil) {
         self.siteID = siteID
+        self.source = source
         self.storageManager = storageManager
         self.stores = stores
         self.analytics = analytics

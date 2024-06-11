@@ -70,19 +70,16 @@ protocol CardPresentPaymentsModalViewModelActions {
 enum POSCardPresentPaymentsModalPresentation {
     case alert(viewModel: CardPresentPaymentAlertViewModel)
     case hidden
-    case inlineMessage(message: String)
+    case readyForPayment
+    case readerMessage(message: String)
     case success
 }
 
 struct POSCardPresentPaymentsModalViewModel {
     let presentation: POSCardPresentPaymentsModalPresentation
-    private let modalState: CardPresentPaymentsModalState?
-    private let modalViewModel: CardPresentPaymentsModalViewModel
 
     init(modalViewModel: CardPresentPaymentsModalViewModel) {
-        self.modalViewModel = modalViewModel
         self.presentation = Self.presentation(from: modalViewModel)
-        self.modalState = Self.modalState(from: modalViewModel)
     }
 }
 
@@ -90,70 +87,24 @@ private extension POSCardPresentPaymentsModalViewModel {
     static func presentation(from modalViewModel: CardPresentPaymentsModalViewModel) -> POSCardPresentPaymentsModalPresentation {
         switch modalViewModel {
             case is CardPresentModalScanningForReader:
-                return .hidden
+                return .readerMessage(message: "Scanning for reader...")
             case is CardPresentModalConnectingToReader:
+                return .readerMessage(message: "Connecting to reader...")
+            case is CardPresentModalPreparingForPayment:
                 return .hidden
             case is CardPresentModalTapCard:
-                return .hidden
+                return .readyForPayment
+            case is CardPresentModalProcessing:
+                return .readerMessage(message: "Processing payment...")
+            case let viewModel as CardPresentModalDisplayMessage:
+                // This is really just a workaround from making `CardPresentModalDisplayMessage.message` public that we should consider refactoring/changing.
+                return .readerMessage(message: viewModel.message)
             case is CardPresentModalSuccess:
                 return .success
             case is CardPresentModalSuccessWithoutEmail:
                 return .success
             default:
                 return .alert(viewModel: modalViewModel)
-        }
-    }
-
-    // TODO: can remove
-    static func modalState(from modalViewModel: CardPresentPaymentsModalViewModel) -> CardPresentPaymentsModalState? {
-        switch modalViewModel {
-            case is CardPresentModalScanningForReader:
-                return .scanningForReader
-            case is CardPresentModalConnectingToReader:
-                return .connectingToReader
-            case is CardPresentModalScanningFailed:
-                return .connectingFailed
-            case is CardPresentModalConnectingFailedUpdatePostalCode:
-                return .connectingFailed
-            case is CardPresentModalConnectingFailedChargeReader:
-                return .connectingFailed
-            case is CardPresentModalTapCard:
-                return .tapCard
-            case is CardPresentModalSuccess:
-                return .success
-            default:
-                return nil
-        }
-    }
-}
-
-// TODO: can remove
-enum CardPresentPaymentsModalState {
-    case scanningForReader
-    case connectingToReader
-    case scanningFailed
-    case bluetoothRequired
-    case connectingFailed
-    case preparingForPayment
-    case selectSearchType
-    case foundReader
-    case readerUpdateProgress
-    case readerUpdateFailed
-    case tapCard
-    case success
-    case error
-    case processing
-    case displayReaderMessage
-}
-
-// TODO: can remove
-extension CardPresentPaymentsModalState {
-    var shownAsAlert: Bool {
-        switch self {
-            case .scanningForReader, .connectingToReader, .preparingForPayment, .tapCard, .success, .processing, .displayReaderMessage:
-                return false
-            case .scanningFailed, .bluetoothRequired, .connectingFailed, .selectSearchType, .foundReader, .readerUpdateProgress, .readerUpdateFailed, .error:
-                return true
         }
     }
 }

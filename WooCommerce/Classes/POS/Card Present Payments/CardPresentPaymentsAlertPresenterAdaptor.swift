@@ -20,9 +20,10 @@ final class CardPresentPaymentsAlertPresenterAdaptor: CardPresentPaymentAlertsPr
                 paymentAlertSubject.send(.showAlert(viewModel))
             case .hidden:
                 paymentAlertSubject.send(.idle)
-            case .inlineMessage(let message):
-                //TODO
-                paymentAlertSubject.send(.showAlert(viewModel))
+            case .readyForPayment:
+                paymentAlertSubject.send(.readyForPayment)
+            case .readerMessage(let message):
+                paymentAlertSubject.send(.showReaderMessage(message))
             case .success:
                 paymentAlertSubject.send(.showPaymentSuccess)
         }

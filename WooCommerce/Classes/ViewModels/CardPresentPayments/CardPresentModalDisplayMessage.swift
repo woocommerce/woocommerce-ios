@@ -12,7 +12,8 @@ final class CardPresentModalDisplayMessage: CardPresentPaymentsModalViewModel {
     private let amount: String
 
     /// Message from reader to display
-    private let message: String
+    /// Consider refactoring the `POSCardPresentPaymentsModalViewModel` use case to make this property private again.
+    let message: String
 
     let textMode: PaymentsModalTextMode = .reducedBottomInfo
     let actionsMode: PaymentsModalActionsMode = .none

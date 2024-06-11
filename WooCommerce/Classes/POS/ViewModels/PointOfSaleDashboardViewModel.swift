@@ -6,7 +6,7 @@ import class WooFoundation.CurrencySettings
 final class PointOfSaleDashboardViewModel: ObservableObject {
     enum PaymentState {
         case acceptingCard
-        case processingCard
+        case processingCard(readerMessage: String?)
         case cardPaymentSuccessful
         case acceptingCash
         case cashPaymentSuccessful
@@ -138,12 +138,14 @@ private extension PointOfSaleDashboardViewModel {
         cardPresentPaymentService.paymentEventPublisher.assign(to: &$cardPresentPaymentEvent)
         cardPresentPaymentService.paymentEventPublisher.map { event in
             switch event {
-            case .idle:
+            case .idle,
+                    .readyForPayment,
+                    .showReaderMessage,
+                    .showPaymentSuccess:
                 return false
             case .showAlert,
                     .showReaderList,
-                    .showOnboarding,
-                    .showPaymentSuccess:
+                    .showOnboarding:
                 return true
             }
         }.assign(to: &$showsCardReaderSheet)

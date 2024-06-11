@@ -43,7 +43,9 @@ struct PointOfSaleDashboardView: View {
                     selectionHandler(nil)
                 })
             case .idle,
+                    .readyForPayment,
                     .showOnboarding,
+                    .showReaderMessage,
                     .showPaymentSuccess:
                 Text(viewModel.cardPresentPaymentEvent.temporaryEventDescription)
             }
@@ -86,6 +88,10 @@ fileprivate extension CardPresentPaymentEvent {
             return "Reader List: \(readerIDs.joined())"
         case .showOnboarding(let onboardingViewModel):
             return "Onboarding: \(onboardingViewModel.state.reasonForAnalytics)" // This will only show the initial onboarding state
+        case .showReaderMessage(let message):
+            return "Reader message: \(message)"
+        case .readyForPayment:
+            return "Ready for payment"
         case .showPaymentSuccess:
             return "Payment successful"
         }

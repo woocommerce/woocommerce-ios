@@ -46,9 +46,13 @@ final class TotalsViewModel: ObservableObject {
                 }
 
                 // TODO: update to acceptingCard when reader is ready for payment
-//                if case = cardPresentPaymentEvent
-//            case acceptingCard
-//            case processingCard
+                if case .readyForPayment = cardPresentPaymentEvent {
+                    return .acceptingCard
+                }
+
+                if case let .showReaderMessage(message) = cardPresentPaymentEvent {
+                    return .processingCard(readerMessage: message)
+                }
 
                 if cashPaymentState == .inProgress {
                     return .acceptingCash
@@ -100,8 +104,15 @@ struct TotalsView: View {
 }
 
 private extension TotalsView {
-    private var tapInsertCardView: some View {
-        Text("Tap or insert card to pay")
+    @ViewBuilder func tapInsertCardView(readerMessage: String?) -> some View {
+        VStack {
+            // TODO: update image based on M1 design
+            Image(uiImage: .cardPresentImage)
+            if let readerMessage {
+                Text(readerMessage)
+                    .font(.footnote)
+            }
+        }
     }
 
     private var takeCashView: some View {
@@ -116,9 +127,9 @@ private extension TotalsView {
     private var paymentsTextView: some View {
         switch totalsViewModel.paymentState {
         case .acceptingCard:
-            tapInsertCardView
-        case .processingCard:
-            tapInsertCardView
+            tapInsertCardView(readerMessage: nil)
+        case let .processingCard(readerMessage):
+            tapInsertCardView(readerMessage: readerMessage)
         case .cardPaymentSuccessful:
             paymentSuccessfulView
         case .acceptingCash:

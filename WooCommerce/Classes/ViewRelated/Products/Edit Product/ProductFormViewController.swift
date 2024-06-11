@@ -316,83 +316,89 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
 
     // MARK: Action Sheet
 
-    /// More Options Action Sheet
+    /// More Options button action
     ///
-    @objc func presentMoreOptionsActionSheet(_ sender: UIBarButtonItem) {
+    @objc func didTapMoreOptions(_ sender: UIBarButtonItem) {
         Task { @MainActor in
-            let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-            actionSheet.view.tintColor = .text
-
-            if viewModel.canShowPublishOption() {
-                actionSheet.addDefaultActionWithTitle(Localization.publishTitle) { [weak self] _ in
-                    self?.publishProduct()
-                }
-            }
-
-            if viewModel.canSaveAsDraft() {
-                actionSheet.addDefaultActionWithTitle(ActionSheetStrings.saveProductAsDraft) { [weak self] _ in
-                    self?.saveProductAsDraft()
-                }
-            }
-
-            /// The "View product in store" action will be shown only if the product is published.
-            if viewModel.canViewProductInStore() {
-                actionSheet.addDefaultActionWithTitle(ActionSheetStrings.viewProduct) { [weak self] _ in
-                    ServiceLocator.analytics.track(.productDetailViewProductButtonTapped)
-                    self?.displayWebViewForProductInStore()
-                }
-            }
-
-            if viewModel.canShareProduct() {
-                actionSheet.addDefaultActionWithTitle(ActionSheetStrings.share) { [weak self] _ in
-                    self?.displayShareProduct(from: sender, analyticSource: .moreMenu)
-                }
-            }
-
-            if viewModel.canFavoriteProduct() {
-                if await viewModel.isFavorite() {
-                    actionSheet.addDefaultActionWithTitle(ActionSheetStrings.Favorite.removeFromFavorite) { [weak self] _ in
-                        ServiceLocator.analytics.track(event: .ProductForm.productDetailRemoveFromFavoriteButtonTapped())
-                        self?.viewModel.removeFromFavorite()
-                    }
-                } else {
-                    actionSheet.addDefaultActionWithTitle(ActionSheetStrings.Favorite.markAsFavorite) { [weak self] _ in
-                        ServiceLocator.analytics.track(event: .ProductForm.productDetailMarkAsFavoriteButtonTapped())
-                        self?.viewModel.markAsFavorite()
-                    }
-                }
-            }
-
-            if viewModel.canEditProductSettings() {
-                actionSheet.addDefaultActionWithTitle(ActionSheetStrings.productSettings) { [weak self] _ in
-                    ServiceLocator.analytics.track(.productDetailViewSettingsButtonTapped)
-                    self?.displayProductSettings()
-                }
-            }
-
-            if viewModel.canDuplicateProduct() {
-                actionSheet.addDefaultActionWithTitle(ActionSheetStrings.duplicate) { [weak self] _ in
-                    ServiceLocator.analytics.track(.productDetailDuplicateButtonTapped)
-                    self?.duplicateProduct()
-                }
-            }
-
-            if viewModel.canDeleteProduct() {
-                actionSheet.addDestructiveActionWithTitle(ActionSheetStrings.trashProduct) { [weak self] _ in
-                    self?.displayDeleteProductAlert()
-                }
-            }
-
-            actionSheet.addCancelActionWithTitle(ActionSheetStrings.cancel) { _ in
-            }
-
-            let popoverController = actionSheet.popoverPresentationController
-            popoverController?.barButtonItem = sender
-
-            present(actionSheet, animated: true)
+            await presentMoreOptionsActionSheet(sender)
         }
     }
 
+    /// Present More Options Action Sheet
+    ///
+    @MainActor
+    func presentMoreOptionsActionSheet(_ moreOptionsButton: UIBarButtonItem) async {
+        let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        actionSheet.view.tintColor = .text
+
+        if viewModel.canShowPublishOption() {
+            actionSheet.addDefaultActionWithTitle(Localization.publishTitle) { [weak self] _ in
+                self?.publishProduct()
+            }
+        }
+
+        if viewModel.canSaveAsDraft() {
+            actionSheet.addDefaultActionWithTitle(ActionSheetStrings.saveProductAsDraft) { [weak self] _ in
+                self?.saveProductAsDraft()
+            }
+        }
+
+        /// The "View product in store" action will be shown only if the product is published.
+        if viewModel.canViewProductInStore() {
+            actionSheet.addDefaultActionWithTitle(ActionSheetStrings.viewProduct) { [weak self] _ in
+                ServiceLocator.analytics.track(.productDetailViewProductButtonTapped)
+                self?.displayWebViewForProductInStore()
+            }
+        }
+
+        if viewModel.canShareProduct() {
+            actionSheet.addDefaultActionWithTitle(ActionSheetStrings.share) { [weak self] _ in
+                self?.displayShareProduct(from: moreOptionsButton, analyticSource: .moreMenu)
+            }
+        }
+
+        if viewModel.canFavoriteProduct() {
+            if await viewModel.isFavorite() {
+                actionSheet.addDefaultActionWithTitle(ActionSheetStrings.Favorite.removeFromFavorite) { [weak self] _ in
+                    ServiceLocator.analytics.track(event: .ProductForm.productDetailRemoveFromFavoriteButtonTapped())
+                    self?.viewModel.removeFromFavorite()
+                }
+            } else {
+                actionSheet.addDefaultActionWithTitle(ActionSheetStrings.Favorite.markAsFavorite) { [weak self] _ in
+                    ServiceLocator.analytics.track(event: .ProductForm.productDetailMarkAsFavoriteButtonTapped())
+                    self?.viewModel.markAsFavorite()
+                }
+            }
+        }
+
+        if viewModel.canEditProductSettings() {
+            actionSheet.addDefaultActionWithTitle(ActionSheetStrings.productSettings) { [weak self] _ in
+                ServiceLocator.analytics.track(.productDetailViewSettingsButtonTapped)
+                self?.displayProductSettings()
+            }
+        }
+
+        if viewModel.canDuplicateProduct() {
+            actionSheet.addDefaultActionWithTitle(ActionSheetStrings.duplicate) { [weak self] _ in
+                ServiceLocator.analytics.track(.productDetailDuplicateButtonTapped)
+                self?.duplicateProduct()
+            }
+        }
+
+        if viewModel.canDeleteProduct() {
+            actionSheet.addDestructiveActionWithTitle(ActionSheetStrings.trashProduct) { [weak self] _ in
+                self?.displayDeleteProductAlert()
+            }
+        }
+
+        actionSheet.addCancelActionWithTitle(ActionSheetStrings.cancel) { _ in
+        }
+
+        let popoverController = actionSheet.popoverPresentationController
+        popoverController?.barButtonItem = moreOptionsButton
+
+        present(actionSheet, animated: true)
+    }
 
     // MARK: - UIScrollViewDelegate
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
@@ -1283,7 +1289,7 @@ private extension ProductFormViewController {
         let moreButton = UIBarButtonItem(image: .moreImage,
                                      style: .plain,
                                      target: self,
-                                     action: #selector(presentMoreOptionsActionSheet(_:)))
+                                     action: #selector(didTapMoreOptions(_:)))
         moreButton.accessibilityLabel = NSLocalizedString("More options", comment: "Accessibility label for the Edit Product More Options action sheet")
         moreButton.accessibilityIdentifier = "edit-product-more-options-button"
         return moreButton

@@ -569,6 +569,11 @@ extension UIImage {
         UIImage(named: "store-creation-progress-4")!
     }
 
+    /// Swap icon - horizontal
+    static var swapHorizontal: UIImage {
+        UIImage(named: "swap-horizontal")!
+    }
+
     /// Add product image
     ///
     static var addProductImage: UIImage {

@@ -14,7 +14,7 @@ struct POSToolbarView: View {
                 presentationMode.wrappedValue.dismiss()
             } label: {
                 HStack(spacing: Layout.buttonImageAndTextSpacing) {
-                    Image(systemName: "arrow.left.arrow.right")
+                    Image(uiImage: .swapHorizontal)
                     Text("Exit POS")
                 }
                 .foregroundColor(Color(uiColor: .gray(.shade60)))

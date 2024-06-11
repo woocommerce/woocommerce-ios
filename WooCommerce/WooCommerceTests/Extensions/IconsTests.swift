@@ -296,6 +296,10 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.storeCreationProgress4)
     }
 
+    func test_swapHorizontal_is_not_nil() {
+        XCTAssertNotNil(UIImage.swapHorizontal)
+    }
+
     func testStoreImageIsNotNil() {
         XCTAssertNotNil(UIImage.storeImage)
     }

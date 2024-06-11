@@ -1,10 +1,14 @@
 import SwiftUI
 
 struct CustomerDetailView: View {
-    let viewModel: CustomerDetailViewModel
+    @StateObject private var viewModel: CustomerDetailViewModel
 
     @State private var isPresentingEmailDialog: Bool = false
     @State private var isShowingEmailView: Bool = false
+
+    init(viewModel: CustomerDetailViewModel) {
+        self._viewModel = StateObject(wrappedValue: viewModel)
+    }
 
     var body: some View {
         List {
@@ -35,6 +39,16 @@ struct CustomerDetailView: View {
                         }
                     }
                 }
+                HStack {
+                    Text(viewModel.phone ?? Localization.phonePlaceholder)
+                        .style(for: viewModel.phone)
+                        .if(viewModel.isSyncing) { phone in
+                            phone
+                                .redacted(reason: .placeholder)
+                                .shimmering()
+                        }
+                    Spacer()
+                }
                 customerDetailRow(label: Localization.dateLastActiveLabel, value: viewModel.dateLastActive)
             }
 
@@ -49,11 +63,28 @@ struct CustomerDetailView: View {
                 customerDetailRow(label: Localization.dateRegisteredLabel, value: viewModel.dateRegistered)
             }
 
-            Section(header: Text(Localization.locationSection)) {
-                customerDetailRow(label: Localization.countryLabel, value: viewModel.country)
-                customerDetailRow(label: Localization.regionLabel, value: viewModel.region)
-                customerDetailRow(label: Localization.cityLabel, value: viewModel.city)
-                customerDetailRow(label: Localization.postcodeLabel, value: viewModel.postcode)
+            if let billing = viewModel.billing, billing.isNotEmpty {
+                Section(header: Text(Localization.billingSection)) {
+                    Text(billing)
+                }
+            }
+            if let shipping = viewModel.shipping, shipping.isNotEmpty {
+                Section(header: Text(Localization.shippingSection)) {
+                    Text(shipping)
+                }
+            }
+            if viewModel.showLocation {
+                Section(header: Text(Localization.locationSection)) {
+                    customerDetailRow(label: Localization.countryLabel, value: viewModel.country)
+                    customerDetailRow(label: Localization.regionLabel, value: viewModel.region)
+                    customerDetailRow(label: Localization.cityLabel, value: viewModel.city)
+                    customerDetailRow(label: Localization.postcodeLabel, value: viewModel.postcode)
+                }
+                .if(viewModel.isSyncing) { location in
+                    location
+                        .redacted(reason: .placeholder)
+                        .shimmering()
+                }
             }
         }
         .listStyle(.plain)
@@ -64,6 +95,9 @@ struct CustomerDetailView: View {
         .sheet(isPresented: $isShowingEmailView) {
             EmailView(emailAddress: viewModel.email)
                 .ignoresSafeArea(edges: .bottom)
+        }
+        .onAppear {
+            viewModel.syncCustomerAddressData()
         }
     }
 }
@@ -155,11 +189,22 @@ private extension CustomerDetailView {
         static let copyEmail = NSLocalizedString("customerDetailView.copyEmail",
                                                  value: "Copy email address",
                                                  comment: "Button to copy a customer's email address in the Customer Details screen.")
+        static let billingSection = NSLocalizedString("customerDetailView.billingSection",
+                                                       value: "BILLING ADDRESS",
+                                                       comment: "Heading for the section with customer billing address in the Customer Details screen.")
+        static let shippingSection = NSLocalizedString("customerDetailView.shippingSection",
+                                                       value: "SHIPPING ADDRESS",
+                                                       comment: "Heading for the section with customer shipping address in the Customer Details screen.")
+        static let phonePlaceholder = NSLocalizedString("customerDetailView.phonePlaceholder",
+                                                        value: "No phone number",
+                                                        comment: "Placeholder if a customer's phone number is not available in the Customer Details screen.")
     }
 }
 
-#Preview("Customer") {
-    CustomerDetailView(viewModel: CustomerDetailViewModel(name: "Pat Smith",
+#Preview("Unregistered Customer") {
+    CustomerDetailView(viewModel: CustomerDetailViewModel(siteID: 1,
+                                                          customerID: 0,
+                                                          name: "Pat Smith",
                                                           dateLastActive: "Jan 1, 2024",
                                                           email: "patsmith@example.com",
                                                           ordersCount: "3",
@@ -170,11 +215,34 @@ private extension CustomerDetailView {
                                                           country: "United States",
                                                           region: "Oregon",
                                                           city: "Portland",
-                                                          postcode: "12345"))
+                                                          postcode: "12345",
+                                                          billing: nil,
+                                                          shipping: nil))
+}
+
+#Preview("Registered Customer") {
+    CustomerDetailView(viewModel: CustomerDetailViewModel(siteID: 1,
+                                                          customerID: 0,
+                                                          name: "Pat Smith",
+                                                          dateLastActive: "Jan 1, 2024",
+                                                          email: "patsmith@example.com",
+                                                          ordersCount: "3",
+                                                          totalSpend: "$81.75",
+                                                          avgOrderValue: "$27.25",
+                                                          username: "patsmith",
+                                                          dateRegistered: "Jan 1, 2023",
+                                                          country: "United States",
+                                                          region: "Oregon",
+                                                          city: "Portland",
+                                                          postcode: "12345",
+                                                          billing: "Pat Smith\n1 Main Street\nPortland, Oregon 12345",
+                                                          shipping: "Pat Smith\n1 Main Street\nPortland, Oregon 12345"))
 }
 
 #Preview("Customer with Placeholders") {
-    CustomerDetailView(viewModel: CustomerDetailViewModel(name: "Guest",
+    CustomerDetailView(viewModel: CustomerDetailViewModel(siteID: 1,
+                                                          customerID: 0,
+                                                          name: "Guest",
                                                           dateLastActive: "Jan 1, 2024",
                                                           email: nil,
                                                           ordersCount: "0",
@@ -185,5 +253,7 @@ private extension CustomerDetailView {
                                                           country: nil,
                                                           region: nil,
                                                           city: nil,
-                                                          postcode: nil))
+                                                          postcode: nil,
+                                                          billing: nil,
+                                                          shipping: nil))
 }

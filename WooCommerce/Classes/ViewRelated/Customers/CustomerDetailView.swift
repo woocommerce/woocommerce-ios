@@ -96,6 +96,9 @@ struct CustomerDetailView: View {
             EmailView(emailAddress: viewModel.email)
                 .ignoresSafeArea(edges: .bottom)
         }
+        .onAppear {
+            viewModel.syncCustomerAddressData()
+        }
     }
 }
 
@@ -199,7 +202,9 @@ private extension CustomerDetailView {
 }
 
 #Preview("Unregistered Customer") {
-    CustomerDetailView(viewModel: CustomerDetailViewModel(name: "Pat Smith",
+    CustomerDetailView(viewModel: CustomerDetailViewModel(siteID: 1,
+                                                          customerID: 0,
+                                                          name: "Pat Smith",
                                                           dateLastActive: "Jan 1, 2024",
                                                           email: "patsmith@example.com",
                                                           ordersCount: "3",
@@ -216,7 +221,9 @@ private extension CustomerDetailView {
 }
 
 #Preview("Registered Customer") {
-    CustomerDetailView(viewModel: CustomerDetailViewModel(name: "Pat Smith",
+    CustomerDetailView(viewModel: CustomerDetailViewModel(siteID: 1,
+                                                          customerID: 0,
+                                                          name: "Pat Smith",
                                                           dateLastActive: "Jan 1, 2024",
                                                           email: "patsmith@example.com",
                                                           ordersCount: "3",
@@ -233,7 +240,9 @@ private extension CustomerDetailView {
 }
 
 #Preview("Customer with Placeholders") {
-    CustomerDetailView(viewModel: CustomerDetailViewModel(name: "Guest",
+    CustomerDetailView(viewModel: CustomerDetailViewModel(siteID: 1,
+                                                          customerID: 0,
+                                                          name: "Guest",
                                                           dateLastActive: "Jan 1, 2024",
                                                           email: nil,
                                                           ordersCount: "0",

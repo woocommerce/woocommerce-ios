@@ -4,6 +4,8 @@ import WooFoundation
 
 final class CustomerDetailViewModel: ObservableObject {
     private let stores: StoresManager
+    private let siteID: Int64
+    private let customerID: Int64
 
     /// Customer name
     let name: String
@@ -70,9 +72,11 @@ final class CustomerDetailViewModel: ObservableObject {
         syncState == .syncing
     }
 
-    private var syncState: CustomerSyncState = .syncing
+    @Published private var syncState: CustomerSyncState = .unsynced
 
-    init(name: String?,
+    init(siteID: Int64,
+         customerID: Int64,
+         name: String?,
          dateLastActive: String,
          email: String?,
          ordersCount: String,
@@ -88,6 +92,8 @@ final class CustomerDetailViewModel: ObservableObject {
          shipping: String?,
          stores: StoresManager = ServiceLocator.stores) {
         self.stores = stores
+        self.siteID = siteID
+        self.customerID = customerID
         self.name = name ?? Localization.guestName
         self.dateLastActive = dateLastActive
         self.email = email
@@ -106,7 +112,9 @@ final class CustomerDetailViewModel: ObservableObject {
                      currencySettings: CurrencySettings = ServiceLocator.currencySettings,
                      stores: StoresManager = ServiceLocator.stores) {
         let currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
-        self.init(name: customer.name?.nullifyIfEmptyOrWhitespace(),
+        self.init(siteID: customer.siteID,
+                  customerID: customer.userID,
+                  name: customer.name?.nullifyIfEmptyOrWhitespace(),
                   dateLastActive: DateFormatter.mediumLengthLocalizedDateFormatter.string(from: customer.dateLastActive),
                   email: customer.email?.nullifyIfEmptyOrWhitespace(),
                   ordersCount: customer.ordersCount.description,
@@ -121,8 +129,6 @@ final class CustomerDetailViewModel: ObservableObject {
                   billing: nil,
                   shipping: nil,
                   stores: stores)
-
-        syncCustomerAddressData(siteID: customer.siteID, userID: customer.userID)
     }
 
     /// Copies the customer email to the pasteboard.
@@ -143,10 +149,10 @@ final class CustomerDetailViewModel: ObservableObject {
 }
 
 // MARK: Syncing
-private extension CustomerDetailViewModel {
+extension CustomerDetailViewModel {
 
     /// Possible sync states for customer data
-    enum CustomerSyncState {
+    private enum CustomerSyncState {
         case unsynced
         case syncing
         case synced
@@ -154,14 +160,14 @@ private extension CustomerDetailViewModel {
 
     /// Retrieves the customer billing and shipping details from remote and sets the corresponding addresses and phone number, for registered customers.
     ///
-    func syncCustomerAddressData(siteID: Int64, userID: Int64) {
+    func syncCustomerAddressData() {
         // Only try to sync the address data for registered customers
-        guard userID != 0 else {
-            syncState = .unsynced
+        guard customerID != 0 else {
             return
         }
 
-        let action = CustomerAction.retrieveCustomer(siteID: siteID, customerID: userID) { [weak self] result in
+        syncState = .syncing
+        let action = CustomerAction.retrieveCustomer(siteID: siteID, customerID: customerID) { [weak self] result in
             guard let self else { return }
             switch result {
             case let .success(customer):

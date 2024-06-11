@@ -2,6 +2,7 @@
 
 19.1
 -----
+- [*] Disable bookable products from the order creation form. [https://github.com/woocommerce/woocommerce-ios/pull/13022]
 
 
 19.0

@@ -689,10 +689,7 @@ final class BlazeStoreTests: XCTestCase {
     func test_fetchPaymentInfo_is_successful_when_fetching_successfully() throws {
         // Given
         let paymentInfo = BlazePaymentInfo.fake().copy(
-            savedPaymentMethods: [],
-            addPaymentMethod: .init(formUrl: "https://example.com/payment-form",
-                                    successUrl: "https://example.com/payment-success",
-                                    idUrlParameter: "id"))
+            paymentMethods: [])
         remote.whenFetchingPaymentInfo(thenReturn: .success(paymentInfo))
         let store = BlazeStore(dispatcher: Dispatcher(),
                                storageManager: storageManager,

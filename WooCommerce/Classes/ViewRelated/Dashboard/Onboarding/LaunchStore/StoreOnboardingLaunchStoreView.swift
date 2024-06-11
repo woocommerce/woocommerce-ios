@@ -204,6 +204,6 @@ private extension SiteLaunchError {
 
 struct StoreOnboardingLaunchStoreView_Previews: PreviewProvider {
     static var previews: some View {
-        StoreOnboardingLaunchStoreView(viewModel: .init(siteURL: .init(string: "https://woo.com")!, siteID: 0, onLaunch: {}, onLearnMoreTapped: {}))
+        StoreOnboardingLaunchStoreView(viewModel: .init(siteURL: .init(string: "https://woocommerce.com")!, siteID: 0, onLaunch: {}, onLearnMoreTapped: {}))
     }
 }

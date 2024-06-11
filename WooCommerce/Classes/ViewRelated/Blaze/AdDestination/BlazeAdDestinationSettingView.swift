@@ -226,9 +226,9 @@ struct BlazeAdDestinationSettingView_Previews: PreviewProvider {
             // Showing the case where initial selected destination URL is product URL
             BlazeAdDestinationSettingView(
                 viewModel: .init(
-                    productURL: "https://woo.com/product",
-                    homeURL: "https://woo.com/",
-                    finalDestinationURL: "https://woo.com/product/?key1=value1&key2=value2",
+                    productURL: "https://woocommerce.com/product",
+                    homeURL: "https://woocommerce.com/",
+                    finalDestinationURL: "https://woocommerce.com/product/?key1=value1&key2=value2",
                     onSave: { _, _ in }
                 )
             )
@@ -236,9 +236,9 @@ struct BlazeAdDestinationSettingView_Previews: PreviewProvider {
             // Showing the case where initial selected destination URL is home URL
             BlazeAdDestinationSettingView(
                 viewModel: .init(
-                    productURL: "https://woo.com/product",
-                    homeURL: "https://woo.com/",
-                    finalDestinationURL: "https://woo.com/?key1=value1&key2=value2",
+                    productURL: "https://woocommerce.com/product",
+                    homeURL: "https://woocommerce.com/",
+                    finalDestinationURL: "https://woocommerce.com/?key1=value1&key2=value2",
                     onSave: { _, _ in }
                 )
             )

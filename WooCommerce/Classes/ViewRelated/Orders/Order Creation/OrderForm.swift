@@ -20,7 +20,7 @@ final class OrderFormHostingController: UIHostingController<OrderFormPresentatio
                     return .editing
             }
         }()
-        super.init(rootView: OrderFormPresentationWrapper(flow: flow, viewModel: viewModel))
+        super.init(rootView: OrderFormPresentationWrapper(flow: flow, dismissLabel: .cancelButton, viewModel: viewModel))
 
         // Needed because a `SwiftUI` cannot be dismissed when being presented by a UIHostingController
         rootView.dismissHandler = { [weak self] in
@@ -95,11 +95,21 @@ private extension OrderFormHostingController {
 }
 
 struct OrderFormPresentationWrapper: View {
+    /// Style of the dismiss button label.
+    enum DismissLabel {
+        /// Text label with Cancel copy.
+        case cancelButton
+        /// Backward chevron image.
+        case backButton
+    }
+
     /// Set this closure with UIKit dismiss code. Needed because we need access to the UIHostingController `dismiss` method.
     ///
     var dismissHandler: (() -> Void) = {}
 
     let flow: WooAnalyticsEvent.Orders.Flow
+
+    let dismissLabel: DismissLabel
 
     @ObservedObject var viewModel: EditableOrderViewModel
 
@@ -113,6 +123,12 @@ struct OrderFormPresentationWrapper: View {
                               flow: flow,
                               viewModel: viewModel,
                               presentProductSelector: presentProductSelector)
+                    // When we're modal-on-modal, show the notices on both screens so they're definitely visible
+                    .if(horizontalSizeClass == .compact, transform: {
+                        $0
+                            .notice($viewModel.autodismissableNotice)
+                            .notice($viewModel.fixedNotice, autoDismiss: false)
+                    })
                 },
                 secondaryView: { isShowingProductSelector in
                     if let productSelectorViewModel = viewModel.productSelectorViewModel {
@@ -123,19 +139,39 @@ struct OrderFormPresentationWrapper: View {
                         .sheet(item: $viewModel.productToConfigureViewModel) { viewModel in
                             ConfigurableBundleProductView(viewModel: viewModel)
                         }
+                        // When we're modal-on-modal, show the notices on both screens so they're definitely visible
+                        .if(horizontalSizeClass == .compact, transform: {
+                            $0
+                                .notice($viewModel.autodismissableNotice)
+                                .notice($viewModel.fixedNotice, autoDismiss: false)
+                        })
                     }
                 },
                 dismissBarButton: {
-                    Button(OrderForm.Localization.cancelButton) {
+                    Button {
                         // By only calling the dismissHandler here, we wouldn't sync the selected items on dismissal
                         // this is normally done via a callback through the ProductSelector's onCloseButtonTapped(),
                         // but on split views we move this responsibility to the AdaptiveModalContainer
                         viewModel.syncOrderItemSelectionStateOnDismiss()
                         dismissHandler()
+                    } label: {
+                        switch dismissLabel {
+                            case .cancelButton:
+                                Text(OrderForm.Localization.cancelButton)
+                            case .backButton:
+                                Image(systemName: "chevron.backward")
+                                    .headlineLinkStyle()
+                        }
                     }
                     .accessibilityIdentifier(OrderForm.Accessibility.cancelButtonIdentifier)
                 },
                 isShowingSecondaryView: $viewModel.isProductSelectorPresented)
+            // When we're side-by-side, show the notices over the combined screen
+            .if(horizontalSizeClass == .regular, transform: {
+                $0
+                    .notice($viewModel.autodismissableNotice)
+                    .notice($viewModel.fixedNotice, autoDismiss: false)
+            })
         } else {
             OrderForm(dismissHandler: dismissHandler, flow: flow, viewModel: viewModel, presentProductSelector: nil)
         }
@@ -187,14 +223,18 @@ struct OrderForm: View {
 
     @State private var shouldShowGiftCardForm = false
 
-    @State private var shouldShowShippingLineDetails = false
-
     @Environment(\.adaptiveModalContainerPresentationStyle) var presentationStyle
+
+    @Environment(\.horizontalSizeClass) var horizontalSizeClass
 
     var body: some View {
         orderFormSummary(presentProductSelector)
             .onAppear {
                 updateSelectionSyncApproach(for: presentationStyle)
+            }
+            .onChange(of: horizontalSizeClass) { _ in
+                viewModel.saveInFlightOrderNotes()
+                viewModel.saveInflightCustomerDetails()
             }
     }
 
@@ -246,7 +286,7 @@ struct OrderForm: View {
                             }
                             .renderedIf(viewModel.shouldSplitProductsAndCustomAmountsSections)
 
-                            OrderCustomAmountsSection(viewModel: viewModel)
+                            OrderCustomAmountsSection(viewModel: viewModel, sectionViewModel: viewModel.customAmountsSectionViewModel)
                                 .disabled(viewModel.shouldShowNonEditableIndicators)
 
                             Divider()
@@ -254,23 +294,19 @@ struct OrderForm: View {
                             Spacer(minLength: Layout.sectionSpacing)
 
                             Group {
-                                if let title = viewModel.multipleLinesMessage {
-                                    MultipleLinesMessage(title: title)
-                                    Spacer(minLength: Layout.sectionSpacing)
-                                }
-
-                                Divider()
-                                AddOrderComponentsSection(
-                                    viewModel: viewModel.paymentDataViewModel,
-                                    shouldShowCouponsInfoTooltip: $shouldShowInformationalCouponTooltip,
-                                    shouldShowShippingLineDetails: $shouldShowShippingLineDetails,
-                                    shouldShowGiftCardForm: $shouldShowGiftCardForm)
-                                .disabled(viewModel.shouldShowNonEditableIndicators)
-                                .sheet(isPresented: $shouldShowShippingLineDetails) {
-                                    ShippingLineDetails(viewModel: viewModel.paymentDataViewModel.shippingLineViewModel)
-                                }
-                                Divider()
+                                OrderShippingSection(viewModel: viewModel.shippingLineViewModel)
+                                    .disabled(viewModel.shouldShowNonEditableIndicators)
+                                Spacer(minLength: Layout.sectionSpacing)
                             }
+                            .renderedIf(viewModel.shippingLineViewModel.shippingLineRows.isNotEmpty)
+
+                            AddOrderComponentsSection(
+                                viewModel: viewModel.paymentDataViewModel,
+                                shippingLineViewModel: viewModel.shippingLineViewModel,
+                                shouldShowCouponsInfoTooltip: $shouldShowInformationalCouponTooltip,
+                                shouldShowGiftCardForm: $shouldShowGiftCardForm)
+                            .addingTopAndBottomDividers()
+                            .disabled(viewModel.shouldShowNonEditableIndicators)
 
                             Spacer(minLength: Layout.sectionSpacing)
                         }
@@ -313,7 +349,11 @@ struct OrderForm: View {
 
                             Divider()
 
-                            OrderCustomerSection(viewModel: viewModel, addressFormViewModel: viewModel.addressFormViewModel)
+                            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.subscriptionsInOrderCreationCustomers) {
+                                OrderCustomerSection(viewModel: viewModel.customerSectionViewModel)
+                            } else {
+                                LegacyOrderCustomerSection(viewModel: viewModel, addressFormViewModel: viewModel.addressFormViewModel)
+                            }
 
                             Group {
                                 Divider()
@@ -337,30 +377,35 @@ struct OrderForm: View {
             }
         }
         .safeAreaInset(edge: .bottom) {
-            ExpandableBottomSheet(onChangeOfExpansion: viewModel.orderTotalsExpansionChanged) {
-                VStack {
-                    HStack {
-                        Text(Localization.orderTotal)
-                        Spacer()
-                        Text(viewModel.orderTotal)
+            VStack {
+                FeedbackBannerPopover(isPresented: $viewModel.shippingLineViewModel.isSurveyPromptPresented,
+                                      config: viewModel.shippingLineViewModel.feedbackBannerConfig)
+
+                ExpandableBottomSheet(onChangeOfExpansion: viewModel.orderTotalsExpansionChanged) {
+                    VStack(spacing: .zero) {
+                        HStack {
+                            Text(Localization.orderTotal)
+                            Spacer()
+                            Text(viewModel.orderTotal)
+                        }
+                        .font(.headline)
+                        .padding([.bottom, .horizontal])
+
+                        Divider()
+                            .padding([.leading], Layout.dividerLeadingPadding)
+
+                        completedButton
+                            .padding()
                     }
-                    .font(.headline)
-                    .padding()
-
-                    Divider()
-                        .padding([.leading], Layout.dividerLeadingPadding)
-
-                    completedButton
-                        .padding()
+                } expandableContent: {
+                    OrderPaymentSection(
+                        viewModel: viewModel.paymentDataViewModel,
+                        shippingLineViewModel: viewModel.shippingLineViewModel,
+                        shouldShowGiftCardForm: $shouldShowGiftCardForm)
+                    .disabled(viewModel.shouldShowNonEditableIndicators)
                 }
-            } expandableContent: {
-                OrderPaymentSection(
-                    viewModel: viewModel.paymentDataViewModel,
-                    shouldShowShippingLineDetails: $shouldShowShippingLineDetails,
-                    shouldShowGiftCardForm: $shouldShowGiftCardForm)
-                .disabled(viewModel.shouldShowNonEditableIndicators)
+                .ignoresSafeArea(edges: .horizontal)
             }
-            .ignoresSafeArea(edges: .horizontal)
         }
         .navigationTitle(viewModel.title)
         .navigationBarTitleDisplayMode(.inline)
@@ -398,8 +443,13 @@ struct OrderForm: View {
         .onTapGesture {
             shouldShowInformationalCouponTooltip = false
         }
-        .notice($viewModel.autodismissableNotice)
-        .notice($viewModel.fixedNotice, autoDismiss: false)
+        // Avoids Notice duplication when the feature flag is enabled. These can be removed when the flag is removed.
+        .if(!ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm), transform: {
+            $0.notice($viewModel.autodismissableNotice)
+        })
+        .if(!ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm), transform: {
+            $0.notice($viewModel.fixedNotice, autoDismiss: false)
+        })
     }
 
     @ViewBuilder private var storedTaxRateBottomSheetContent: some View {
@@ -476,6 +526,7 @@ struct OrderForm: View {
             }
             .buttonStyle(PrimaryLoadingButtonStyle(isLoading: loading))
             .disabled(viewModel.collectPaymentDisabled)
+            .accessibilityIdentifier("order-form-collect-payment")
         case .done(let loading):
             Button {
                 viewModel.finishEditing()
@@ -486,39 +537,6 @@ struct OrderForm: View {
             .buttonStyle(PrimaryLoadingButtonStyle(isLoading: loading))
             .accessibilityIdentifier(Accessibility.doneButtonIdentifier)
         }
-    }
-}
-
-/// Represents an information message to indicate about multiple shipping or fee lines.
-///
-private struct MultipleLinesMessage: View {
-
-    /// Message to display.
-    ///
-    let title: String
-
-    ///   Environment safe areas
-    ///
-    @Environment(\.safeAreaInsets) private var safeAreaInsets: EdgeInsets
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: OrderForm.Layout.noSpacing) {
-            Divider()
-
-            HStack(spacing: OrderForm.Layout.sectionSpacing) {
-
-                Image(uiImage: .infoImage)
-                    .foregroundColor(Color(.brand))
-
-                Text(title)
-                    .bodyStyle()
-            }
-            .padding()
-            .padding(.horizontal, insets: safeAreaInsets)
-
-            Divider()
-        }
-        .background(Color(.listForeground(modal: true)))
     }
 }
 
@@ -882,6 +900,7 @@ struct OrderForm_Previews: PreviewProvider {
         NavigationView {
             OrderForm(flow: .creation, viewModel: viewModel, presentProductSelector: nil)
         }
+        .navigationViewStyle(StackNavigationViewStyle())
 
         NavigationView {
             OrderForm(flow: .creation, viewModel: viewModel, presentProductSelector: nil)

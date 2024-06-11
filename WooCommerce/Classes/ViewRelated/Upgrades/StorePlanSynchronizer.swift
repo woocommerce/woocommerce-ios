@@ -51,14 +51,6 @@ final class StorePlanSynchronizer: StorePlanSynchronizing {
     ///
     private let stores: StoresManager
 
-    /// Handles local notifications for free trial plan expiration
-    ///
-    private let localNotificationScheduler: LocalNotificationScheduler
-
-    /// Time zone used to scheduling local notifications.
-    ///
-    private let timeZone: TimeZone
-
     /// Observable subscription store.
     ///
     private var subscriptions: Set<AnyCancellable> = []
@@ -66,12 +58,9 @@ final class StorePlanSynchronizer: StorePlanSynchronizing {
     private let inAppPurchaseManager: InAppPurchasesForWPComPlansProtocol
 
     init(stores: StoresManager = ServiceLocator.stores,
-         timeZone: TimeZone = .current,
          pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
          inAppPurchaseManager: InAppPurchasesForWPComPlansProtocol = InAppPurchasesForWPComPlansManager()) {
         self.stores = stores
-        self.localNotificationScheduler = .init(pushNotesManager: pushNotesManager, stores: stores)
-        self.timeZone = timeZone
         self.inAppPurchaseManager = inAppPurchaseManager
 
         stores.site.sink { [weak self] site in
@@ -108,7 +97,6 @@ final class StorePlanSynchronizer: StorePlanSynchronizing {
             switch result {
             case .success(let plan):
                 self.planState = .loaded(plan)
-                self.scheduleOrCancelNotificationsIfNeeded(for: plan)
             case .failure(LoadSiteCurrentPlanError.noCurrentPlan):
                 // Since this is a WPCom store, if it has no plan its plan must have expired or been cancelled.
                 // Generally, expiry is `.success(plan)` with a plan expiry date in the past, but in some cases, we just
@@ -120,78 +108,5 @@ final class StorePlanSynchronizer: StorePlanSynchronizing {
             }
         }
         stores.dispatch(action)
-    }
-}
-
-// MARK: - Local notifications about trial plan expiration
-//
-private extension StorePlanSynchronizer {
-    func scheduleOrCancelNotificationsIfNeeded(for plan: WPComSitePlan) {
-        guard let siteID = site?.siteID else {
-            return
-        }
-        guard plan.isFreeTrial else {
-            /// cancels any scheduled notifications
-            Task {
-                await cancelFreeTrialExpirationNotifications(siteID: siteID)
-            }
-            return
-        }
-
-        if let subscribedDate = plan.subscribedDate {
-            // Schedule notification only if the Free trial is subscribed less than 6 hrs ago
-            if Date().timeIntervalSince(subscribedDate) < Constants.sixHoursTimeInterval {
-                let scenario = LocalNotification.Scenario.sixHoursAfterFreeTrialSubscribed(siteID: siteID)
-                schedulePostSubscriptionNotification(scenario: scenario,
-                                                     timeAfterSubscription: Constants.sixHoursTimeInterval,
-                                                     subscribedDate: subscribedDate)
-            }
-
-            // Schedule notification only if the Free trial is subscribed less than 24 hrs ago
-            if Date().timeIntervalSince(subscribedDate) < Constants.oneDayTimeInterval {
-                let scenario = LocalNotification.Scenario.freeTrialSurvey24hAfterFreeTrialSubscribed(siteID: siteID)
-                schedulePostSubscriptionNotification(scenario: scenario,
-                                                     timeAfterSubscription: Constants.oneDayTimeInterval,
-                                                     subscribedDate: subscribedDate)
-            }
-        }
-    }
-
-    func cancelFreeTrialExpirationNotifications(siteID: Int64) async {
-        await withTaskGroup(of: Void.self) { group in
-            group.addTask { [weak self] in
-                await self?.localNotificationScheduler.cancel(scenario: .sixHoursAfterFreeTrialSubscribed(siteID: siteID))
-            }
-            group.addTask { [weak self] in
-                await self?.localNotificationScheduler.cancel(scenario: .freeTrialSurvey24hAfterFreeTrialSubscribed(siteID: siteID))
-            }
-            group.addTask { [weak self] in
-                await self?.localNotificationScheduler.cancel(scenario: .threeDaysAfterStillExploring(siteID: siteID))
-            }
-        }
-    }
-
-    func schedulePostSubscriptionNotification(scenario: LocalNotification.Scenario,
-                                              timeAfterSubscription: TimeInterval,
-                                              subscribedDate: Date) {
-        /// Scheduled after subscribed date
-        let triggerDateComponents = subscribedDate.addingTimeInterval(timeAfterSubscription).dateAndTimeComponents()
-        let trigger = UNCalendarNotificationTrigger(dateMatching: triggerDateComponents, repeats: false)
-        Task {
-            let iapAvailable = await inAppPurchaseManager.inAppPurchasesAreSupported()
-            let notification = LocalNotification(scenario: scenario,
-                                                 userInfo: [LocalNotification.UserInfoKey.isIAPAvailable: iapAvailable])
-            await localNotificationScheduler.schedule(notification: notification,
-                                                      trigger: trigger,
-                                                      remoteFeatureFlag: nil,
-                                                      shouldSkipIfScheduled: true)
-        }
-    }
-}
-
-private extension StorePlanSynchronizer {
-    enum Constants {
-        static let sixHoursTimeInterval: TimeInterval = 21600
-        static let oneDayTimeInterval: TimeInterval = 86400
     }
 }

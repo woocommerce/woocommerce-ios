@@ -114,9 +114,9 @@ extension StatsTimeRangeV4 {
                 return .hourly
             }
             switch differenceInDays {
-            case .lessThan2:
+            case .sameDay:
                 return .hourly
-            case .from2To28:
+            case .from1To28:
                 return .daily
             case .from29To90:
                 return .weekly
@@ -140,7 +140,7 @@ extension StatsTimeRangeV4 {
                 return .day
             }
             switch differenceInDays {
-            case .lessThan2, .from2To28:
+            case .sameDay, .from1To28:
                 return .day
             case .from29To90:
                 return .week
@@ -168,7 +168,7 @@ extension StatsTimeRangeV4 {
                 return .day
             }
             switch differenceInDays {
-            case .lessThan2, .from2To28:
+            case .sameDay, .from1To28:
                 return .day
             case .from29To90:
                 return .week
@@ -196,7 +196,7 @@ extension StatsTimeRangeV4 {
                 return .day
             }
             switch differenceInDays {
-            case .lessThan2, .from2To28:
+            case .sameDay, .from1To28:
                 return .day
             case .from29To90:
                 return .week
@@ -262,8 +262,8 @@ public extension StatsTimeRangeV4 {
         case greaterThan3Years
         case from91daysTo3Years
         case from29To90
-        case from2To28
-        case lessThan2
+        case from1To28
+        case sameDay
     }
 
     /// Based on WooCommerce Core
@@ -286,12 +286,52 @@ public extension StatsTimeRangeV4 {
             return .from91daysTo3Years
         case 29...90:
             return .from29To90
-        case 2...28:
-            return .from2To28
-        case 0..<2:
-            return .lessThan2
+        case 1...28:
+            return .from1To28
+        case 0:
+            return .sameDay
         default:
             return nil
+        }
+    }
+
+    /// Returns the latest date to be shown for the time range, given the current date and site time zone
+    ///
+    /// - Parameters:
+    ///   - currentDate: the date which the latest date is based on
+    ///   - siteTimezone: site time zone, which the stats data are based on
+    func latestDate(currentDate: Date, siteTimezone: TimeZone) -> Date {
+        switch self {
+        case .today:
+            return currentDate.endOfDay(timezone: siteTimezone)
+        case .thisWeek:
+            return currentDate.endOfWeek(timezone: siteTimezone)!
+        case .thisMonth:
+            return currentDate.endOfMonth(timezone: siteTimezone)!
+        case .thisYear:
+            return currentDate.endOfYear(timezone: siteTimezone)!
+        case .custom(_, let toDate):
+            return toDate.endOfDay(timezone: siteTimezone)
+        }
+    }
+
+    /// Returns the earliest date to be shown for the time range, given the latest date and site time zone
+    ///
+    /// - Parameters:
+    ///   - latestDate: the date which the earliest date is based on
+    ///   - siteTimezone: site time zone, which the stats data are based on
+    func earliestDate(latestDate: Date, siteTimezone: TimeZone) -> Date {
+        switch self {
+        case .today:
+            return latestDate.startOfDay(timezone: siteTimezone)
+        case .thisWeek:
+            return latestDate.startOfWeek(timezone: siteTimezone)!
+        case .thisMonth:
+            return latestDate.startOfMonth(timezone: siteTimezone)!
+        case .thisYear:
+            return latestDate.startOfYear(timezone: siteTimezone)!
+        case .custom(let startDate, _):
+            return startDate.startOfDay(timezone: siteTimezone)
         }
     }
 }

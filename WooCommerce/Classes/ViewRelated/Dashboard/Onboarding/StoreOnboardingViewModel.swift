@@ -3,6 +3,7 @@ import UIKit
 import Yosemite
 import Combine
 import Experiments
+import protocol WooFoundation.Analytics
 
 /// View model for `StoreOnboardingView`.
 class StoreOnboardingViewModel: ObservableObject {
@@ -18,10 +19,11 @@ class StoreOnboardingViewModel: ObservableObject {
 
     @Published private(set) var isRedacted: Bool = true
     @Published private(set) var taskViewModels: [StoreOnboardingTaskViewModel] = []
+    @Published private(set) var failedToLoadTasks = false
 
-    /// Used to determine whether the task list should be displayed in dashboard
+    /// Used to determine whether the task list can be displayed in dashboard.
     ///
-    @Published private(set) var shouldShowInDashboard: Bool = false
+    @Published private(set) var canShowInDashboard = false
 
     /// Set externally in the hosting controller to invalidate the SwiftUI `StoreOnboardingView`'s intrinsic content size as a workaround with UIKit.
     var onStateChange: (() -> Void)?
@@ -49,14 +51,11 @@ class StoreOnboardingViewModel: ObservableObject {
         !isExpanded && !isRedacted && (taskViewModels.count > tasksForDisplay.count)
     }
 
-    let isHideStoreOnboardingTaskListFeatureEnabled: Bool
-
     let isExpanded: Bool
 
     private let siteID: Int64
 
     private let stores: StoresManager
-    private let featureFlagService: FeatureFlagService
 
     private var state: State
 
@@ -68,16 +67,8 @@ class StoreOnboardingViewModel: ObservableObject {
 
     private let waitingTimeTracker: AppStartupWaitingTimeTracker
 
-    private var isFreeTrialStore: Bool {
-        guard let site = stores.sessionManager.defaultSite else {
-            return false
-        }
-        return site.isFreeTrialSite
-    }
-
-    private var siteHasDefaultTitle: Bool {
-        stores.sessionManager.defaultSite?.name == WooConstants.defaultStoreName
-    }
+    /// Set externally to trigger the closure upon hiding the card.
+    var onDismiss: (() -> Void)?
 
     /// Emits when there are no tasks available for display after reload.
     /// i.e. When (request failed && No previously loaded local data available)
@@ -94,7 +85,6 @@ class StoreOnboardingViewModel: ObservableObject {
          stores: StoresManager = ServiceLocator.stores,
          defaults: UserDefaults = .standard,
          analytics: Analytics = ServiceLocator.analytics,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          waitingTimeTracker: AppStartupWaitingTimeTracker = ServiceLocator.startupWaitingTimeTracker) {
         self.siteID = siteID
         self.isExpanded = isExpanded
@@ -102,15 +92,12 @@ class StoreOnboardingViewModel: ObservableObject {
         self.state = .loading
         self.defaults = defaults
         self.analytics = analytics
-        self.featureFlagService = featureFlagService
-        isHideStoreOnboardingTaskListFeatureEnabled = featureFlagService.isFeatureFlagEnabled(.hideStoreOnboardingTaskList)
         self.waitingTimeTracker = waitingTimeTracker
 
-        Publishers.CombineLatest3($noTasksAvailableForDisplay,
-                                  defaults.publisher(for: \.completedAllStoreOnboardingTasks),
-                                  defaults.publisher(for: \.shouldHideStoreOnboardingTaskList))
-        .map { !($0 || $1 || $2) }
-        .assign(to: &$shouldShowInDashboard)
+        $noTasksAvailableForDisplay
+            .combineLatest(defaults.publisher(for: \.completedAllStoreOnboardingTasks))
+        .map { !($0 || $1) }
+        .assign(to: &$canShowInDashboard)
     }
 
     func reloadTasks() async {
@@ -138,26 +125,16 @@ class StoreOnboardingViewModel: ObservableObject {
         analytics.track(event: .StoreOnboarding.storeOnboardingShowOrHideList(isHiding: true,
                                                                               source: .onboardingList,
                                                                               pendingTasks: pending))
-        defaults[.shouldHideStoreOnboardingTaskList] = true
+
+        onDismiss?()
+        analytics.track(event: .DynamicDashboard.hideCardTapped(type: .onboarding))
     }
 }
 
 private extension StoreOnboardingViewModel {
     @MainActor
     func loadTasks() async throws -> [StoreOnboardingTaskViewModel] {
-
-        let localTasks: [StoreOnboardingTask] = {
-            var tasks: [StoreOnboardingTask] = []
-            if isFreeTrialStore {
-                tasks.append(.init(isComplete: false, type: .launchStore))
-                tasks.append(.init(isComplete: !siteHasDefaultTitle, type: .storeName))
-            }
-            return tasks
-        }()
-
-        let tasksFromServer: [StoreOnboardingTask] = try await fetchTasks()
-
-        return (tasksFromServer + localTasks)
+        try await fetchTasks()
             .sorted()
             .map { .init(task: $0, badgeText: nil) }
     }
@@ -167,7 +144,9 @@ private extension StoreOnboardingViewModel {
         switch state {
         case .loading:
             isRedacted = true
+            failedToLoadTasks = false
         case .loaded(let items):
+            failedToLoadTasks = false
             isRedacted = false
             taskViewModels = items
             if hasPendingTasks(items) {
@@ -177,6 +156,7 @@ private extension StoreOnboardingViewModel {
             isRedacted = false
             taskViewModels = []
             noTasksAvailableForDisplay = true
+            failedToLoadTasks = true
         }
         onStateChange?()
     }
@@ -226,7 +206,7 @@ private extension StoreOnboardingViewModel {
                         guard let self,
                               case .launchStore = task.type,
                               !task.isComplete,
-                              self.stores.sessionManager.defaultSite?.isPublic == true else {
+                              self.stores.sessionManager.defaultSite?.visibility == .publicSite else {
                             return task
                         }
 
@@ -259,11 +239,7 @@ private extension StoreOnboardingTaskViewModel {
 }
 
 extension UserDefaults {
-     @objc dynamic var completedAllStoreOnboardingTasks: Bool {
-         bool(forKey: Key.completedAllStoreOnboardingTasks.rawValue)
-     }
-
-    @objc dynamic var shouldHideStoreOnboardingTaskList: Bool {
-        bool(forKey: Key.shouldHideStoreOnboardingTaskList.rawValue)
+    @objc dynamic var completedAllStoreOnboardingTasks: Bool {
+        bool(forKey: Key.completedAllStoreOnboardingTasks.rawValue)
     }
- }
+}

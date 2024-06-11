@@ -166,9 +166,9 @@ public struct ProductVariation: Codable, GeneratedCopiable, Equatable, Generated
         self.shippingClassID = shippingClassID
         self.menuOrder = menuOrder
         self.subscription = subscription
-        self.minAllowedQuantity = minAllowedQuantity
+        self.minAllowedQuantity = minAllowedQuantity.refinedMinMaxQuantityEmptyValue
+        self.groupOfQuantity = groupOfQuantity.refinedMinMaxQuantityEmptyValue
         self.maxAllowedQuantity = maxAllowedQuantity
-        self.groupOfQuantity = groupOfQuantity
         self.overrideProductQuantities = overrideProductQuantities
     }
 
@@ -305,19 +305,14 @@ public struct ProductVariation: Codable, GeneratedCopiable, Equatable, Generated
         let subscription = try? container.decodeIfPresent(ProductMetadataExtractor.self, forKey: .metadata)?.extractProductSubscription()
 
         // Min/Max Quantities properties
-        let minAllowedQuantity = try? container.decodeIfPresent(ProductMetadataExtractor.self, forKey: .metadata)?
-            .extractStringValue(forKey: MetadataKeys.minAllowedQuantity)
-        let maxAllowedQuantity = try? container.decodeIfPresent(ProductMetadataExtractor.self, forKey: .metadata)?
-            .extractStringValue(forKey: MetadataKeys.maxAllowedQuantity)
-        let groupOfQuantity = try? container.decodeIfPresent(ProductMetadataExtractor.self, forKey: .metadata)?
-            .extractStringValue(forKey: MetadataKeys.groupOfQuantity)
-        let overrideProductQuantities: Bool? = {
-            guard let minMaxRules = try? container.decodeIfPresent(ProductMetadataExtractor.self, forKey: .metadata)?
-                .extractStringValue(forKey: MetadataKeys.minMaxRules) else {
-                return nil
-            }
-            return (minMaxRules as NSString).boolValue
-        }()
+        let minAllowedQuantity = container.failsafeDecodeIfPresent(stringForKey: .minAllowedQuantity)
+        let maxAllowedQuantity = container.failsafeDecodeIfPresent(stringForKey: .maxAllowedQuantity)
+        let groupOfQuantity = container.failsafeDecodeIfPresent(stringForKey: .groupOfQuantity)
+
+        var overrideProductQuantities: Bool?
+        if let overrideProductQuantitiesString = container.failsafeDecodeIfPresent(stringForKey: .variationQuantityRules) {
+            overrideProductQuantities = overrideProductQuantitiesString == Values.overrideProductQuantitiesTrueValue
+        }
 
         self.init(siteID: siteID,
                   productID: productID,
@@ -413,6 +408,12 @@ public struct ProductVariation: Codable, GeneratedCopiable, Equatable, Generated
         // Variation (Local) Attributes
         try container.encode(attributes, forKey: .attributes)
 
+        // Quantity Rules
+        // https://woocommerce.com/document/minmax-quantities/#section-6
+        try container.encode(maxAllowedQuantity, forKey: .maxAllowedQuantity)
+        try container.encode(minAllowedQuantity, forKey: .minAllowedQuantity)
+        try container.encode(groupOfQuantity, forKey: .groupOfQuantity)
+
         // Metadata
         let metaDataValuePairs = buildMetaDataValuePairs()
         if metaDataValuePairs.isEmpty == false {
@@ -483,13 +484,11 @@ extension ProductVariation {
         case menuOrder          = "menu_order"
 
         case metadata           = "meta_data"
-    }
 
-    enum MetadataKeys {
-        static let minAllowedQuantity = "variation_minimum_allowed_quantity"
-        static let maxAllowedQuantity = "variation_maximum_allowed_quantity"
-        static let groupOfQuantity    = "variation_group_of_quantity"
-        static let minMaxRules        = "min_max_rules"
+        case minAllowedQuantity     = "min_quantity"
+        case maxAllowedQuantity     = "max_quantity"
+        case groupOfQuantity        = "group_of_quantity"
+        case variationQuantityRules = "variation_quantity_rules"
     }
 }
 
@@ -498,6 +497,7 @@ extension ProductVariation {
 private extension ProductVariation {
     enum Values {
         static let manageStockParent = "parent"
+        static let overrideProductQuantitiesTrueValue = "yes"
     }
 }
 

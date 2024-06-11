@@ -1,6 +1,45 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 19.0
+Our latest version enriches your My Store screen, now featuring details on your most recent orders, low-stock products, active coupons, customer reviews, and more. Dive deeper into your store’s performance with these new additions!
+
+## 18.9
+Stay ahead with our latest WooCommerce update! Explore our new Watch App for instant store data and order updates at a glance. We've fixed the issue with shipping methods, plus you can now have multiple shipping lines on orders, so you can handle complex shipping needs for your orders seamlessly.
+
+## 18.8
+Delve into a smoother WooCommerce experience with our latest update! We've resolved issues hindering the "Card Reader" and "Tap To Pay" features under Menu > Payments > Collect Payment for seamless transactions. The dashboard screen gets a performance booster as we've optimized API calls. In addition, edit support for the Min/Max Quantities extension in product details is now available.
+
+## 18.7
+We're thrilled to roll out the latest updates!
+Our latest update brings under-the-hood improvements to enhance both stability and performance.
+We're committed to continuously improving our app to serve you better. Thank you for choosing WooCommerce!
+
+## 18.6
+With this week's update, you can set a shipping method when you add or edit an order. We've also addressed a potential crash from opening a notification, and made readability improvements in dark mode. Keep your app up to date for the best of WooCommerce!
+
+## 18.5
+In our latest update we've enhanced the barcode scanning by squashing a bug that allowed variable parent products to sneak into orders. Enjoy a smoother order creation experience with our latest update!
+
+## 18.4
+Wave goodbye to pesky bugs! Our latest update ensures the "Collect Payment" feature leads you directly to the order form, whether you're using a quick action or a deep link. Enjoy seamless transactions on the go!
+
+## 18.3
+Squashed a pesky bug to ensure the "Reset Activity Log" button works like a charm, cleaning the slate completely for a fresh start. Dive into a more seamless WooCommerce experience. Update now!
+
+## 18.2
+Discover the latest updates in our WooCommerce app! Enjoy a seamless payment process, log in effortlessly with site credentials, and create Blaze campaigns faster without errors. Upgrade now for an enhanced shop management experience!
+
+## 18.1
+Streamline your management with our latest update! Easily delete orders on-the-go, dive into new analytics for Product Bundles and Gift Cards, and enjoy a smoother Jetpack installation. Update now for a more efficient WooCommerce experience!
+
+## 18.0
+Discover our newest update for the WooCommerce app! Introducing a newly added Customers section in the Hub Menu. Now you can easily search and view customer details at your fingertips, even contact them directly via email. We've implemented crucial application dependency updates to enhance performance and reduce crashes, providing a smoother, more stable user experience. Also, iPad users can now enjoy a more reliable experience when viewing orders with our speculative fix. Dive in and explore these exciting new improvements!
+
+## 17.9
+In our latest update, we've enhanced your WooCommerce experience!
+We added few quick actions when you touch and hold the app icon, you can now start creating new order, get list of orders, add a new product or start collecting payment. Get to the specific feature of the app easier and faster by using one of the actions!
+
 ## 17.7
 In this update, we've made it easier to find one customer's orders, with a new filter by customer option. Analyzing store performance just got more flexible too, with the ability to set custom date ranges for your reports. For iPad and larger iPhones, enjoy a side-by-side view for order creation or editing, maximizing productivity. Plus, we've amped up performance with a new connectivity tool, diagnosing any network hiccups. Download now and unlock smoother, more intuitive store management!
 

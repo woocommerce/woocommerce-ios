@@ -23,6 +23,10 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.analyticsImage)
     }
 
+    func test_bell_image_is_not_nil() {
+        XCTAssertNotNil(UIImage.bell)
+    }
+
     func test_blaze_image_is_not_nil() {
         XCTAssertNotNil(UIImage.blaze)
     }
@@ -324,10 +328,6 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.getPaidImage)
     }
 
-    func test_setStoreNameImage_is_not_nil() {
-        XCTAssertNotNil(UIImage.setStoreNameImage)
-    }
-
     func test_storeSummaryImage_is_not_nil() {
         XCTAssertNotNil(UIImage.storeSummaryImage)
     }
@@ -490,6 +490,10 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.print)
     }
 
+    func test_playSquareImage_is_not_nil() {
+        XCTAssertNotNil(UIImage.playSquareImage)
+    }
+
     func testPlusImageIconIsNotNil() {
         XCTAssertNotNil(UIImage.plusImage)
     }
@@ -500,6 +504,10 @@ final class IconsTests: XCTestCase {
 
     func test_plus_small_image_is_not_nil() {
         XCTAssertNotNil(UIImage.plusSmallImage)
+    }
+
+    func test_pointOfSaleImage_is_not_nil() {
+        XCTAssertNotNil(UIImage.pointOfSaleImage)
     }
 
     func test_productDescriptionAIAnnouncementImage_is_not_nil() {
@@ -687,6 +695,10 @@ final class IconsTests: XCTestCase {
 
     func testNoStoreImageIsNotNil() {
         XCTAssertNotNil(UIImage.noStoreImage)
+    }
+
+    func test_no_connection_image_is_not_nil() {
+        XCTAssertNotNil(UIImage.noConnectionImage)
     }
 
     func test_megaphoneIcon_is_not_nil() {
@@ -923,5 +935,25 @@ final class IconsTests: XCTestCase {
 
     func test_variableSubscriptionProductImage_icon_is_not_nil() {
         XCTAssertNotNil(UIImage.variableSubscriptionProductImage)
+    }
+
+    func test_cashRegisterImage_is_not_nil() {
+        XCTAssertNotNil(UIImage.cashRegisterImage)
+    }
+
+    func test_exclamationFilledImage_is_not_nil() {
+        XCTAssertNotNil(UIImage.exclamationFilledImage)
+    }
+
+    func test_exclamationImage_is_not_nil() {
+        XCTAssertNotNil(UIImage.exclamationImage)
+    }
+
+    func test_magnifyingGlassNotFound_is_not_nil() {
+        XCTAssertNotNil(UIImage.magnifyingGlassNotFound)
+    }
+
+    func test_tooltipImage_is_not_nil() {
+        XCTAssertNotNil(UIImage.tooltipImage)
     }
 }

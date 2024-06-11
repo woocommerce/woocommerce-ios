@@ -1,6 +1,8 @@
 import Foundation
 import Yosemite
 import class Photos.PHAsset
+import enum Networking.NetworkError
+import protocol WooFoundation.Analytics
 
 /// View model for `BlazeConfirmPaymentView`
 final class BlazeConfirmPaymentViewModel: ObservableObject {
@@ -28,41 +30,29 @@ final class BlazeConfirmPaymentViewModel: ObservableObject {
     @Published var showAddPaymentSheet: Bool = false
 
     var paymentMethodsViewModel: BlazePaymentMethodsViewModel? {
-        guard let paymentInfo else {
-            DDLogError("⛔️ No payment info available to list in payment methods screen.")
-            return nil
-        }
-        return BlazePaymentMethodsViewModel(siteID: siteID,
-                                            paymentInfo: paymentInfo,
-                                            selectedPaymentMethodID: selectedPaymentMethod?.id,
-                                            completion: { paymentID in
+        BlazePaymentMethodsViewModel(siteID: siteID,
+                                     selectedPaymentMethodID: selectedPaymentMethod?.id,
+                                     completion: { paymentID in
             Task { @MainActor [weak self] in
                 guard let self else { return }
                 showAddPaymentSheet = false
 
-                if let existingPaymentMethod = paymentInfo.savedPaymentMethods.first(where: { $0.id == paymentID }) {
+                if let existingPaymentMethod = paymentInfo?.paymentMethods.first(where: { $0.id == paymentID }) {
                     selectedPaymentMethod = existingPaymentMethod
                 } else {
                     await updatePaymentInfo()
-                    selectedPaymentMethod = paymentInfo.savedPaymentMethods.first(where: { $0.id == paymentID })
+                    selectedPaymentMethod = paymentInfo?.paymentMethods.first(where: { $0.id == paymentID })
                 }
             }
         })
     }
 
     var addPaymentWebViewModel: BlazeAddPaymentMethodWebViewModel? {
-        guard let paymentInfo else {
-            DDLogError("⛔️ No add payment info available to initiate Add payment method flow.")
-            return nil
-        }
-
-        return BlazeAddPaymentMethodWebViewModel(siteID: siteID,
-                                                 addPaymentMethodInfo: paymentInfo.addPaymentMethod) { [weak self] newPaymentMethodID in
+        return BlazeAddPaymentMethodWebViewModel(siteID: siteID) { [weak self] in
             Task { @MainActor [weak self] in
                 guard let self else { return }
 
                 await updatePaymentInfo()
-                selectedPaymentMethod = paymentInfo.savedPaymentMethods.first(where: { $0.id == newPaymentMethodID })
             }
         }
     }
@@ -93,7 +83,7 @@ final class BlazeConfirmPaymentViewModel: ObservableObject {
         self.stores = stores
         self.analytics = analytics
         self.completionHandler = onCompletion
-        self.totalAmount = String(format: "$%.0f", campaignInfo.totalBudget)
+        self.totalAmount = String(format: "$%.0f", campaignInfo.budget.amount)
     }
 
     @MainActor
@@ -103,7 +93,7 @@ final class BlazeConfirmPaymentViewModel: ObservableObject {
         do {
             let info = try await fetchPaymentInfo()
             paymentInfo = info
-            selectedPaymentMethod = info.savedPaymentMethods.first
+            selectedPaymentMethod = info.paymentMethods.first
         } catch {
             DDLogError("⛔️ Error fetching payment info for Blaze campaign creation: \(error)")
             shouldDisplayPaymentErrorAlert = true
@@ -134,7 +124,11 @@ final class BlazeConfirmPaymentViewModel: ObservableObject {
                 try await requestCampaignCreation(details: updatedDetails)
             } catch {
                 DDLogError("⛔️ Error creating Blaze campaign: \(error)")
-                throw BlazeCampaignCreationError.failedToCreateCampaign
+                if error.isInsuffientImageSizeError {
+                    throw BlazeCampaignCreationError.insufficientImageSize
+                } else {
+                    throw BlazeCampaignCreationError.failedToCreateCampaign
+                }
             }
             analytics.track(event: .Blaze.Payment.campaignCreationSuccess())
             completionHandler()
@@ -235,5 +229,20 @@ private extension BlazeConfirmPaymentViewModel {
         cardIcon = cardType.icon
         cardTypeName = paymentMethod.info.type
         cardName = paymentMethod.name
+    }
+}
+
+private extension Error {
+    /// Error when campaign image size is not sufficient
+    ///
+    var isInsuffientImageSizeError: Bool {
+        let errorCode = {
+            if let error = self as? NetworkError, let code = error.responseCode {
+                return code
+            } else {
+                return (self as NSError).code
+            }
+        }()
+        return errorCode == 422
     }
 }

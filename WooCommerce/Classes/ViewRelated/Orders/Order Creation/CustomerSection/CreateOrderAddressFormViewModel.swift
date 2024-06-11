@@ -1,6 +1,7 @@
 import Combine
 import Yosemite
 import protocol Storage.StorageManagerType
+import protocol WooFoundation.Analytics
 
 final class CreateOrderAddressFormViewModel: AddressFormViewModel, AddressFormViewModelProtocol {
 
@@ -14,11 +15,13 @@ final class CreateOrderAddressFormViewModel: AddressFormViewModel, AddressFormVi
     private let onAddressUpdate: ((NewOrderAddressData) -> Void)?
 
     init(siteID: Int64,
+         showEmailField: Bool = true,
          addressData: NewOrderAddressData,
          onAddressUpdate: ((NewOrderAddressData) -> Void)?,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics) {
+        self.showEmailField = showEmailField
         self.onAddressUpdate = onAddressUpdate
 
         // don't prefill second set of fields if input addresses are identical
@@ -38,7 +41,7 @@ final class CreateOrderAddressFormViewModel: AddressFormViewModel, AddressFormVi
 
     // MARK: - Protocol conformance
 
-    let showEmailField: Bool = true
+    let showEmailField: Bool
 
     let showPhoneCountryCodeField: Bool = false
 

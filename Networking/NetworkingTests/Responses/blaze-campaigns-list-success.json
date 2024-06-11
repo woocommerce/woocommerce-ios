@@ -18,6 +18,11 @@
         "mime_type": "image/jpeg",
         "width": 500,
         "height": 500
+      },
+      "budget": {
+          "mode": "total",
+          "amount": 230.00,
+          "currency": "USD"
       }
     }
   ],

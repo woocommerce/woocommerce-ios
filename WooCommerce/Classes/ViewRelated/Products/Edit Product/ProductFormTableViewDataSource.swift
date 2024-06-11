@@ -4,6 +4,7 @@ import Yosemite
 private extension ProductFormSection.SettingsRow.ViewModel {
     func toCellViewModel() -> ImageAndTitleAndTextTableViewCell.ViewModel {
         return ImageAndTitleAndTextTableViewCell.ViewModel(title: title,
+                                                           titleTintColor: tintColor,
                                                            text: details,
                                                            textTintColor: tintColor,
                                                            image: icon,
@@ -87,8 +88,12 @@ private extension ProductFormTableViewDataSource {
 private extension ProductFormTableViewDataSource {
     func configureCellInPrimaryFieldsSection(_ cell: UITableViewCell, row: ProductFormSection.PrimaryFieldRow) {
         switch row {
-        case .images(let editable, let allowsMultipleImages, let isVariation):
-            configureImages(cell: cell, isEditable: editable, allowsMultipleImages: allowsMultipleImages, isVariation: isVariation)
+        case .images(let editable, let isStorePublic, let allowsMultipleImages, let isVariation):
+            configureImages(cell: cell,
+                            isEditable: editable,
+                            isStorePublic: isStorePublic,
+                            allowsMultipleImages: allowsMultipleImages,
+                            isVariation: isVariation)
         case .linkedProductsPromo(let viewModel):
             configureLinkedProductsPromo(cell: cell, viewModel: viewModel)
         case .name(let name, let editable, let productStatus):
@@ -107,9 +112,36 @@ private extension ProductFormTableViewDataSource {
             configurePromoteWithBlaze(cell: cell)
         }
     }
-    func configureImages(cell: UITableViewCell, isEditable: Bool, allowsMultipleImages: Bool, isVariation: Bool) {
+
+    func configureImages(cell: UITableViewCell, isEditable: Bool, isStorePublic: Bool, allowsMultipleImages: Bool, isVariation: Bool) {
+        // only show images row if it's a .org site or a public .com site. Private .com site will see a banner.
+        guard isStorePublic else {
+            guard let cell = cell as? ImageAndTitleAndTextTableViewCell else {
+                fatalError("Expected cell to be of type ImageAndTitleAndTextTableViewCell for the product images cell when store is private on WP.com")
+            }
+            let viewModel = ImageAndTitleAndTextTableViewCell.ViewModel(
+                title: Localization.wpComStoreNotPublicTitle,
+                titleFontStyle: .body,
+                titleTintColor: .text,
+                text: Localization.wpComStoreNotPublicText,
+                textTintColor: .textLink,
+                image: .infoOutlineImage,
+                imageTintColor: .text,
+                numberOfLinesForTitle: 0,
+                numberOfLinesForText: 0,
+                isActionable: true,
+                showsDisclosureIndicator: false,
+                showsSeparator: true
+            )
+
+            cell.updateUI(viewModel: viewModel)
+            cell.contentView.backgroundColor = .warningBackground
+            return
+        }
+
+        // display product images
         guard let cell = cell as? ProductImagesHeaderTableViewCell else {
-            fatalError()
+            fatalError("Expected cell to be of type ProductImagesHeaderTableViewCell for displaying product images")
         }
 
         defer {
@@ -144,6 +176,7 @@ private extension ProductFormTableViewDataSource {
             self?.onAddImage?()
         }
     }
+
     func configureName(cell: UITableViewCell, name: String?, isEditable: Bool, productStatus: ProductStatus) {
         if isEditable {
             configureEditableName(cell: cell, name: name, productStatus: productStatus)
@@ -429,6 +462,16 @@ private extension ProductFormTableViewDataSource {
         static let learnMore = NSLocalizedString(
             "Learn more",
             comment: "Title for the link to open the legal URL for AI-generated content in the product detail screen"
+        )
+        static let wpComStoreNotPublicTitle = NSLocalizedString(
+            "productFormTableViewDataSource.wpComStoreNotPublicTitle",
+            value: "The images are unavailable because your site is marked Private. You can change this by switching to Coming Soon mode.",
+            comment: "Title message indicating that images are unavailable because the site is private."
+        )
+        static let wpComStoreNotPublicText = NSLocalizedString(
+            "productFormTableViewDataSource.wpComStoreNotPublicText",
+            value: "Tap to learn more.",
+            comment: "Text message prompting the user to tap to learn more about changing the privacy setting."
         )
     }
 }

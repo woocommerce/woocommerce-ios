@@ -143,10 +143,13 @@ struct ShippingLabelCustomsFormItemDetails: View {
                         isShowingCountries.toggle()
                     }
                     .sheet(isPresented: $isShowingCountries, content: {
-                        SingleSelectionList(title: Localization.originTitle,
-                                            items: viewModel.allCountries,
-                                            contentKeyPath: \.name,
-                                            selected: $viewModel.originCountry)
+                        NavigationStack {
+                            SingleSelectionList(title: Localization.originTitle,
+                                                items: viewModel.allCountries,
+                                                contentKeyPath: \.name,
+                                                selected: $viewModel.originCountry)
+                        }
+                        .wooNavigationBarStyle()
                     })
                     Divider()
                         .padding(.leading, Constants.horizontalSpacing)
@@ -178,7 +181,7 @@ private extension ShippingLabelCustomsFormItemDetails {
     enum Constants {
         static let horizontalSpacing: CGFloat = 16
         static let verticalSpacing: CGFloat = 8
-        static let hsTariffURL: URL? = .init(string: "https://woo.com/document/woocommerce-shipping-and-tax/woocommerce-shipping/#section-29")
+        static let hsTariffURL: URL? = .init(string: "https://woocommerce.com/document/woocommerce-shipping-and-tax/woocommerce-shipping/#section-29")
     }
 
     enum Localization {

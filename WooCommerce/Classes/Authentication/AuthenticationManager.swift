@@ -1,4 +1,5 @@
 import Foundation
+import SafariServices
 import KeychainAccess
 import WordPressAuthenticator
 import WordPressUI
@@ -12,6 +13,7 @@ import protocol Networking.ApplicationPasswordUseCase
 import class Networking.OneTimeApplicationPasswordUseCase
 import class Networking.DefaultApplicationPasswordUseCase
 import protocol Experiments.ABTestVariationProvider
+import protocol WooFoundation.Analytics
 import struct Experiments.CachedABTestVariationProvider
 
 /// Encapsulates all of the interactions with the WordPress Authenticator
@@ -566,6 +568,16 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
         self.loggedOutStoreCreationCoordinator = coordinator
         coordinator.start()
     }
+
+    func showSiteCreationGuide(in navigationController: UINavigationController) {
+        analytics.track(event: .StoreCreation.loginPrologueStartingANewStoreTapped())
+
+        guard let url = try? AuthenticationConstants.hostingURL.asURL() else {
+            return
+        }
+        let webView = SFSafariViewController(url: url)
+        navigationController.present(webView, animated: true)
+    }
 }
 
 // MARK: - Private helpers
@@ -853,7 +865,7 @@ extension AuthenticationManager {
 
         switch wooAuthError {
         case .emailDoesNotMatchWPAccount, .invalidEmailFromWPComLogin, .invalidEmailFromSiteAddressLogin:
-            return NotWPAccountViewModel(error: error)
+            return NotWPAccountViewModel()
         case .notWPSite,
              .notValidAddress:
             return NotWPErrorViewModel()
@@ -933,7 +945,7 @@ private extension AuthenticationManager {
                                customHelpCenterContent: CustomHelpCenterContent? = nil,
                                sourceTag: WordPressSupportSourceTag?) {
         let identifier = HelpAndSupportViewController.classNameWithoutNamespaces
-        let supportViewController = UIStoryboard.dashboard.instantiateViewController(identifier: identifier,
+        let supportViewController = UIStoryboard.settings.instantiateViewController(identifier: identifier,
                                                                                      creator: { coder -> HelpAndSupportViewController? in
             guard let customHelpCenterContent = customHelpCenterContent else {
                 /// Returning nil as we don't need to customise the HelpAndSupportViewController

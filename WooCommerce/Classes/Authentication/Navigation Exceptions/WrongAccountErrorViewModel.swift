@@ -5,6 +5,7 @@ import WordPressUI
 import Yosemite
 import WordPressAuthenticator
 import class Networking.WordPressOrgNetwork
+import protocol WooFoundation.Analytics
 
 /// Configuration and actions for an ULErrorViewController, modelling
 /// an error when Jetpack is not installed or is not connected
@@ -310,7 +311,6 @@ private extension WrongAccountErrorViewModel {
     }
 
     enum Strings {
-        static let instructionsURLString = "https://woo.com/document/jetpack-setup-instructions-for-the-woocommerce-mobile-app/"
         static let jetpackTermsURL = "https://jetpack.com/redirect/?source=wpcom-tos&site="
         static let jetpackShareDetailsURL = "https://jetpack.com/redirect/?source=jetpack-support-what-data-does-jetpack-sync&site="
     }

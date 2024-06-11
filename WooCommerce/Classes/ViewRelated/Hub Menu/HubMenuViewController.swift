@@ -7,15 +7,20 @@ final class HubMenuViewController: UIHostingController<HubMenu> {
     private let viewModel: HubMenuViewModel
     private let tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker
 
+    private var storePickerCoordinator: StorePickerCoordinator?
+
     init(siteID: Int64,
          navigationController: UINavigationController?,
          tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker) {
         self.viewModel = HubMenuViewModel(siteID: siteID,
-                                          navigationController: navigationController,
                                           tapToPayBadgePromotionChecker: tapToPayBadgePromotionChecker)
+
         self.tapToPayBadgePromotionChecker = tapToPayBadgePromotionChecker
         super.init(rootView: HubMenu(viewModel: viewModel))
         configureTabBarItem()
+        rootView.switchStoreHandler = { [weak self] in
+            self?.presentSwitchStore()
+        }
     }
 
     required dynamic init?(coder aDecoder: NSCoder) {
@@ -35,12 +40,11 @@ final class HubMenuViewController: UIHostingController<HubMenu> {
     }
 
     func showPaymentsMenu() {
-        viewModel.showingPayments = true
+        viewModel.showPayments()
     }
 
     func showCoupons() {
-        let enhancedCouponListViewController = EnhancedCouponListViewController(siteID: viewModel.siteID)
-        show(enhancedCouponListViewController, sender: self)
+        viewModel.showingCoupons = true
     }
 
     /// Pushes the Settings & Privacy screen onto the navigation stack.
@@ -49,12 +53,13 @@ final class HubMenuViewController: UIHostingController<HubMenu> {
         guard let navigationController else {
             return DDLogError("⛔️ Could not find a navigation controller context.")
         }
-        guard let privacy = UIStoryboard.dashboard.instantiateViewController(ofClass: PrivacySettingsViewController.self) else {
+        guard let privacy = UIStoryboard.settings.instantiateViewController(ofClass: PrivacySettingsViewController.self) else {
             return DDLogError("⛔️ Could not instantiate PrivacySettingsViewController")
         }
 
         let settings = SettingsViewController()
         navigationController.setViewControllers(navigationController.viewControllers + [settings, privacy], animated: true)
+        navigationController.setNavigationBarHidden(false, animated: false)
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -63,16 +68,17 @@ final class HubMenuViewController: UIHostingController<HubMenu> {
         // We want to hide navigation bar *only* on HubMenu screen. But on iOS 16, the `navigationBarHidden(true)`
         // modifier on `HubMenu` view hides the navigation bar for the whole navigation stack.
         // Here we manually hide or show navigation bar when entering or leaving the HubMenu screen.
-        if #available(iOS 16.0, *) {
-            self.navigationController?.setNavigationBarHidden(true, animated: animated)
-        }
+        navigationController?.setNavigationBarHidden(true, animated: animated)
     }
+}
 
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-
-        if #available(iOS 16.0, *) {
-            self.navigationController?.setNavigationBarHidden(false, animated: animated)
+private extension HubMenuViewController {
+    /// Present the `StorePickerViewController` using the `StorePickerCoordinator`, passing the navigation controller from the entry point.
+    ///
+    func presentSwitchStore() {
+        if let navigationController = navigationController {
+            storePickerCoordinator = StorePickerCoordinator(navigationController, config: .switchingStores)
+            storePickerCoordinator?.start()
         }
     }
 }

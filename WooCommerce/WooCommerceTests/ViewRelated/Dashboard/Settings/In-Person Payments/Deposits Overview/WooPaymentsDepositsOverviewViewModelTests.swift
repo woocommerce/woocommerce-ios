@@ -1,4 +1,5 @@
 import XCTest
+import protocol WooFoundation.Analytics
 @testable import WooCommerce
 
 final class WooPaymentsDepositsOverviewViewModelTests: XCTestCase {

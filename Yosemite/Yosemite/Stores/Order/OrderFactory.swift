@@ -92,7 +92,15 @@ public enum OrderFactory {
     /// Creates a shipping line suitable to delete a shipping line already saved remotely in an order.
     ///
     public static func deletedShippingLine(_ shippingLine: ShippingLine) -> ShippingLine {
-        shippingLine.copy(methodID: .some(nil), total: "0")
+        shippingLine.copy(methodTitle: "", methodID: .some(nil), total: "0")
+    }
+
+    /// Creates a shipping line suitable to add a shipping line without a method not yet saved remotely in an order.
+    ///
+    /// The API can't save the order when a new shipping line has an empty `methodID`; we send a space as a workaround.
+    ///
+    public static func noMethodShippingLine(_ shippingLine: ShippingLine) -> ShippingLine {
+        shippingLine.copy(methodID: " ")
     }
 
     /// References a new empty order with constants `Date` values.
@@ -103,5 +111,11 @@ public enum OrderFactory {
 public extension OrderFeeLine {
     var isDeleted: Bool {
         self == OrderFactory.deletedFeeLine(self)
+    }
+}
+
+public extension ShippingLine {
+    var isDeleted: Bool {
+        self == OrderFactory.deletedShippingLine(self)
     }
 }

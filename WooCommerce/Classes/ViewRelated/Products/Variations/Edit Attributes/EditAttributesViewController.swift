@@ -1,5 +1,6 @@
 import UIKit
 import Yosemite
+import protocol WooFoundation.Analytics
 
 /// EditAttributesViewController: Displays the list of attributes for a product.
 ///
@@ -96,7 +97,7 @@ extension EditAttributesViewController {
 
     @objc private func addButtonTapped() {
         navigateToAddAttributeViewController()
-        analytics.track(event: WooAnalyticsEvent.Variations.addAttributeButtonTapped(productID: viewModel.product.productID))
+        analytics.track(event: .Variations.addAttributeButtonTapped(productID: viewModel.product.productID))
     }
 
     /// Navigates to an intermediate screen where we can generate our first variation.

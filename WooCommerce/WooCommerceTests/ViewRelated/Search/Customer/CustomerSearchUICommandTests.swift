@@ -1,6 +1,7 @@
 import XCTest
 @testable import WooCommerce
 import Yosemite
+import protocol WooFoundation.Analytics
 
 final class CustomerSearchUICommandTests: XCTestCase {
     private let sampleSiteID: Int64 = 123
@@ -98,7 +99,7 @@ final class CustomerSearchUICommandTests: XCTestCase {
 
         var invocationCount = 0
         stores.whenReceivingAction(ofType: CustomerAction.self) { action in
-            guard case let .synchronizeLightCustomersData(_, _, _, onCompletion) = action else {
+            guard case let .synchronizeLightCustomersData(_, _, _, _, _, _, onCompletion) = action else {
                 return XCTFail("Unexpected action: \(action)")
             }
             invocationCount += 1

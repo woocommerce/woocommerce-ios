@@ -2,7 +2,7 @@ import Foundation
 
 /// Site-wide settings for displaying prices/money
 ///
-public class CurrencySettings: Codable {
+public class CurrencySettings: Codable, Equatable {
 
     // MARK: - Enums
 
@@ -64,7 +64,7 @@ public class CurrencySettings: Codable {
     ///
     public func symbol(from code: CurrencyCode) -> String {
         // Currency codes pulled from WC:
-        // https://woo.com/wc-apidocs/source-function-get_woocommerce_currency.html#473
+        // https://woocommerce.github.io/code-reference/files/woocommerce-includes-wc-core-functions.html#source-view.662
         switch code {
         case .AED:
             return "\u{62f}.\u{625}"
@@ -425,5 +425,13 @@ public class CurrencySettings: Codable {
         try container.encode(groupingSeparator, forKey: .groupingSeparator)
         try container.encode(decimalSeparator, forKey: .decimalSeparator)
         try container.encode(fractionDigits, forKey: .fractionDigits)
+    }
+
+    public static func == (lhs: CurrencySettings, rhs: CurrencySettings) -> Bool {
+        lhs.currencyCode == rhs.currencyCode &&
+        lhs.currencyPosition == rhs.currencyPosition &&
+        lhs.decimalSeparator == rhs.decimalSeparator &&
+        lhs.fractionDigits == rhs.fractionDigits &&
+        lhs.groupingSeparator == rhs.groupingSeparator
     }
 }

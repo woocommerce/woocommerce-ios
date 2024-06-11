@@ -4,6 +4,7 @@ import TestKit
 @testable import WooCommerce
 import Yosemite
 import Networking
+import protocol WooFoundation.Analytics
 
 final class InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModelTests: XCTestCase {
     private var stores: MockStoresManager!

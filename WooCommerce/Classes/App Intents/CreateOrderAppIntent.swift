@@ -11,7 +11,7 @@ struct CreateOrderAppIntent: AppIntent {
     @MainActor
     func perform() async throws -> some IntentResult {
         MainTabBarController.presentOrderCreationFlow()
-        ServiceLocator.analytics.track(event: WooAnalyticsEvent.AppIntents.shortcutWasOpened(with: .createOrder))
+        ServiceLocator.analytics.track(event: .AppIntents.shortcutWasOpened(with: .createOrder))
 
         return .result()
     }

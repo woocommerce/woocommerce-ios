@@ -2,6 +2,7 @@ import Experiments
 import UIKit
 import Yosemite
 import protocol Storage.StorageManagerType
+import protocol WooFoundation.Analytics
 
 /// Coordinates navigation into the entry of the Blaze creation flow.
 final class BlazeCampaignCreationCoordinator: Coordinator {
@@ -31,6 +32,7 @@ final class BlazeCampaignCreationCoordinator: Coordinator {
     private let productID: Int64?
     private let source: BlazeSource
     private let shouldShowIntro: Bool
+    private let stores: StoresManager
     private let storageManager: StorageManagerType
     private let featureFlagService: FeatureFlagService
     private let analytics: Analytics
@@ -46,6 +48,7 @@ final class BlazeCampaignCreationCoordinator: Coordinator {
          productID: Int64? = nil,
          source: BlazeSource,
          shouldShowIntro: Bool,
+         stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          navigationController: UINavigationController,
@@ -57,6 +60,7 @@ final class BlazeCampaignCreationCoordinator: Coordinator {
         self.productID = productID
         self.source = source
         self.shouldShowIntro = shouldShowIntro
+        self.stores = stores
         self.storageManager = storageManager
         self.featureFlagService = featureFlagService
         self.navigationController = navigationController
@@ -171,9 +175,12 @@ private extension BlazeCampaignCreationCoordinator {
                                                            productID: productID,
                                                            storage: storageManager,
                                                            onCompletion: { [weak self] in
-            self?.onCampaignCreated()
-            self?.dismissCampaignCreation {
-                self?.showSuccessView()
+            Task { @MainActor [weak self] in
+                await self?.restoreBlazeOnDashboardIfNeeded()
+                self?.onCampaignCreated()
+                self?.dismissCampaignCreation {
+                    self?.showSuccessView()
+                }
             }
         })
         let controller = BlazeCampaignCreationFormHostingController(viewModel: viewModel)
@@ -195,9 +202,12 @@ private extension BlazeCampaignCreationCoordinator {
                                              source: source,
                                              siteURL: siteURL,
                                              productID: productID) { [weak self] in
-            self?.onCampaignCreated()
-            self?.dismissCampaignCreation {
-                self?.showSuccessView()
+            Task { @MainActor [weak self] in
+                await self?.restoreBlazeOnDashboardIfNeeded()
+                self?.onCampaignCreated()
+                self?.dismissCampaignCreation {
+                    self?.showSuccessView()
+                }
             }
         }
         let webViewController = AuthenticatedWebViewController(viewModel: webViewModel)
@@ -307,6 +317,25 @@ private extension BlazeCampaignCreationCoordinator {
             sheet.prefersGrabberVisible = true
             sheet.detents = [.medium(), .large()]
         })
+    }
+
+    @MainActor
+    func restoreBlazeOnDashboardIfNeeded() async {
+        guard var cards = await loadDashboardCards(),
+              let cardIndex = cards.firstIndex(where: { $0.type == .blaze && !$0.enabled }) else {
+            return
+        }
+        cards[cardIndex] = DashboardCard(type: .blaze, availability: .show, enabled: true)
+        stores.dispatch(AppSettingsAction.setDashboardCards(siteID: siteID, cards: cards))
+    }
+
+    @MainActor
+    func loadDashboardCards() async -> [DashboardCard]? {
+        await withCheckedContinuation { continuation in
+            stores.dispatch(AppSettingsAction.loadDashboardCards(siteID: siteID, onCompletion: { cards in
+                continuation.resume(returning: cards)
+            }))
+        }
     }
 }
 

@@ -8,7 +8,6 @@ import WordPressAuthenticator
 
 /// Test cases for `BlazeCampaignDashboardViewModel`.
 ///
-@MainActor
 final class BlazeCampaignDashboardViewModelTests: XCTestCase {
     private let sampleSiteID: Int64 = 122
 
@@ -42,34 +41,18 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         super.tearDown()
     }
 
-    // MARK: `shouldShowInDashboard`
+    // MARK: `canShowInDashboard`
 
-    func test_shouldShowInDashboard_is_false_by_default() async {
+    @MainActor
+    func test_canShowInDashboard_returns_true_if_store_is_eligible_for_blaze_and_has_at_least_one_published_product() async {
         // Given
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
-        insertProduct(.fake().copy(siteID: sampleSiteID,
-                                   statusKey: (ProductStatus.published.rawValue),
-                                   purchasable: true))
 
         let sut = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
                                                   stores: stores,
                                                   storageManager: storageManager,
                                                   blazeEligibilityChecker: checker)
-
-        // Then
-        XCTAssertFalse(sut.shouldShowInDashboard)
-    }
-
-    // MARK: Blaze eligibility
-
-    func test_it_shows_in_dashboard_if_eligible_for_blaze() async {
-        // Given
-        let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
-        let sut = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
-                                                  stores: stores,
-                                                  storageManager: storageManager,
-                                                  blazeEligibilityChecker: checker)
-
+        XCTAssertFalse(sut.canShowInDashboard)
         mockSynchronizeProducts(insertProductToStorage: .fake().copy(siteID: sampleSiteID,
                                                                      statusKey: (ProductStatus.published.rawValue),
                                                                      purchasable: true))
@@ -80,140 +63,54 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         await sut.reload()
 
         // Then
-        XCTAssertTrue(sut.shouldShowInDashboard)
+        XCTAssertTrue(sut.canShowInDashboard)
     }
 
-    func test_it_hides_from_dashboard_if_not_eligible_for_blaze() async {
-        // Given
-        let checker = MockBlazeEligibilityChecker(isSiteEligible: false)
-        let sut = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
-                                                  stores: stores,
-                                                  storageManager: storageManager,
-                                                  blazeEligibilityChecker: checker)
-
-        mockSynchronizeProducts(insertProductToStorage: .fake().copy(siteID: sampleSiteID,
-                                                                     statusKey: (ProductStatus.published.rawValue)))
-
-        mockSynchronizeCampaignsList()
-
-        // When
-        await sut.reload()
-
-        // Then
-        XCTAssertFalse(sut.shouldShowInDashboard)
-    }
-
-    func test_it_hides_from_dashboard_if_a_product_gets_published_while_site_not_eligible_for_blaze() async {
-        // Given
-        let checker = MockBlazeEligibilityChecker(isSiteEligible: false)
-        let sut = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
-                                                  stores: stores,
-                                                  storageManager: storageManager,
-                                                  blazeEligibilityChecker: checker)
-
-        mockSynchronizeProducts()
-
-        mockSynchronizeCampaignsList()
-
-        // When
-        await sut.reload()
-
-        insertProduct(.fake().copy(siteID: sampleSiteID,
-                                   statusKey: (ProductStatus.published.rawValue)))
-
-        // Then
-        XCTAssertFalse(sut.shouldShowInDashboard)
-    }
-
-    // MARK: Blaze campaigns
-
-    func test_it_shows_in_dashboard_if_blaze_campaign_available() async {
+    @MainActor
+    func test_canShowInDashboard_returns_false_if_store_is_eligible_for_blaze_but_has_no_published_product() async {
         // Given
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
-        let BlazeCampaignListItem = BlazeCampaignListItem.fake().copy(siteID: sampleSiteID)
+
         let sut = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
                                                   stores: stores,
                                                   storageManager: storageManager,
                                                   blazeEligibilityChecker: checker)
-
-        stores.whenReceivingAction(ofType: BlazeAction.self) { [weak self] action in
-            switch action {
-            case .synchronizeCampaignsList(_, _, _, let onCompletion):
-                self?.insertCampaigns([BlazeCampaignListItem])
-                onCompletion(.success(false))
-            default:
-                break
-            }
-        }
-
+        XCTAssertFalse(sut.canShowInDashboard)
         mockSynchronizeProducts()
 
-        // When
-        await sut.reload()
-
-        // Then
-        XCTAssertTrue(sut.shouldShowInDashboard)
-    }
-
-    func test_it_hides_from_dashboard_if_blaze_campaign_not_available() async {
-        // Given
-        let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
-        let sut = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
-                                                  stores: stores,
-                                                  storageManager: storageManager,
-                                                  blazeEligibilityChecker: checker)
-
-        mockSynchronizeProducts()
         mockSynchronizeCampaignsList()
 
         // When
         await sut.reload()
 
         // Then
-        XCTAssertFalse(sut.shouldShowInDashboard)
+        XCTAssertFalse(sut.canShowInDashboard)
+    }
+
+    @MainActor
+    func test_canShowInDashboard_returns_false_if_store_is_not_eligible_for_blaze() async {
+        // Given
+        let checker = MockBlazeEligibilityChecker(isSiteEligible: false)
+
+        let sut = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
+                                                  stores: stores,
+                                                  storageManager: storageManager,
+                                                  blazeEligibilityChecker: checker)
+        XCTAssertFalse(sut.canShowInDashboard)
+        mockSynchronizeProducts()
+
+        mockSynchronizeCampaignsList()
+
+        // When
+        await sut.reload()
+
+        // Then
+        XCTAssertFalse(sut.canShowInDashboard)
     }
 
     // MARK: Published product
 
-    func test_it_shows_in_dashboard_if_published_product_available() async {
-        // Given
-        let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
-        let sut = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
-                                                  stores: stores,
-                                                  storageManager: storageManager,
-                                                  blazeEligibilityChecker: checker)
-
-        mockSynchronizeProducts(insertProductToStorage: .fake().copy(siteID: sampleSiteID,
-                                                                     statusKey: (ProductStatus.published.rawValue),
-                                                                     purchasable: true))
-        mockSynchronizeCampaignsList()
-
-        // When
-        await sut.reload()
-
-        // Then
-        XCTAssertTrue(sut.shouldShowInDashboard)
-    }
-
-    func test_it_hides_from_dashboard_if_published_product_not_available() async {
-        // Given
-        let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
-
-        let sut = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
-                                                  stores: stores,
-                                                  storageManager: storageManager,
-                                                  blazeEligibilityChecker: checker)
-
-        mockSynchronizeProducts()
-        mockSynchronizeCampaignsList()
-
-        // When
-        await sut.reload()
-
-        // Then
-        XCTAssertFalse(sut.shouldShowInDashboard)
-    }
-
+    @MainActor
     func test_it_shows_latest_published_product_in_dashboard() async {
         // Given
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
@@ -247,6 +144,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
 
     // MARK: `state`
 
+    @MainActor
     func test_state_is_loading_while_reloading() async {
         // Given
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
@@ -289,10 +187,11 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         await sut.reload()
     }
 
+    @MainActor
     func test_state_is_showCampaign_if_blaze_campaign_available() async {
         // Given
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
-        let fakeBlazeCampaign = BlazeCampaignListItem.fake().copy(siteID: sampleSiteID)
+        let fakeBlazeCampaign = BlazeCampaignListItem.fake().copy(siteID: sampleSiteID, budgetCurrency: "USD")
         let sut = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
                                                   stores: stores,
                                                   storageManager: storageManager,
@@ -312,6 +211,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_state_is_showProduct_if_published_product_available_and_blaze_campaign_not_available() async {
         // Given
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
@@ -338,6 +238,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_state_is_empty_if_draft_product_available_and_blaze_campaign_not_available() async {
         // Given
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
@@ -363,6 +264,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_state_is_empty_if_no_blaze_campaign_no_product_available() async {
         // Given
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
@@ -387,6 +289,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
 
     // MARK: `shouldRedactView`
 
+    @MainActor
     func test_shouldRedactView_is_true_while_reloading() async {
         // Given
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
@@ -421,6 +324,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         await sut.reload()
     }
 
+    @MainActor
     func test_shouldRedactView_is_false_after_reload_finishes_when_blaze_campaign_available() async {
         // Given
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
@@ -440,6 +344,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         XCTAssertFalse(sut.shouldRedactView)
     }
 
+    @MainActor
     func test_shouldRedactView_is_false_after_reload_finishes_when_product_available() async {
         // Given
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
@@ -462,6 +367,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         XCTAssertFalse(sut.shouldRedactView)
     }
 
+    @MainActor
     func test_shouldRedactView_is_true_after_reload_finishes_with_no_data() async {
         // Given
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
@@ -482,6 +388,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
 
     // MARK: `shouldShowShowAllCampaignsButton`
 
+    @MainActor
     func test_shouldShowShowAllCampaignsButton_is_false_while_reloading() async {
         // Given
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
@@ -516,6 +423,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         await sut.reload()
     }
 
+    @MainActor
     func test_shouldShowShowAllCampaignsButton_is_true_after_reload_finishes_when_blaze_campaign_available() async {
         // Given
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
@@ -534,6 +442,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         XCTAssertTrue(sut.shouldShowShowAllCampaignsButton)
     }
 
+    @MainActor
     func test_shouldShowShowAllCampaignsButton_is_false_after_reload_finishes_when_product_available() async {
         // Given
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
@@ -555,6 +464,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         XCTAssertFalse(sut.shouldShowShowAllCampaignsButton)
     }
 
+    @MainActor
     func test_shouldShowShowAllCampaignsButton_is_false_after_reload_finishes_with_no_data() async {
         // Given
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
@@ -575,10 +485,11 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
 
     // MARK: Listen from storage
 
+    @MainActor
     func test_state_is_showCampaign_if_blaze_campaign_is_added_to_storage() async {
         // Given
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
-        let fakeBlazeCampaign = BlazeCampaignListItem.fake().copy(siteID: sampleSiteID)
+        let fakeBlazeCampaign = BlazeCampaignListItem.fake().copy(siteID: sampleSiteID, budgetCurrency: "USD")
         let sut = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
                                                   stores: stores,
                                                   storageManager: storageManager,
@@ -606,6 +517,40 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         }
     }
 
+    @MainActor
+    func test_latest_campaign_is_displayed() async {
+        // Given
+        let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
+        let campaign1 = BlazeCampaignListItem.fake().copy(siteID: sampleSiteID, campaignID: "9", budgetCurrency: "USD")
+        let campaign2 = BlazeCampaignListItem.fake().copy(siteID: sampleSiteID, campaignID: "10", budgetCurrency: "USD")
+        let sut = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
+                                                  stores: stores,
+                                                  storageManager: storageManager,
+                                                  blazeEligibilityChecker: checker)
+
+        mockSynchronizeCampaignsList()
+        mockSynchronizeProducts()
+
+        await sut.reload()
+
+        if case .empty = sut.state {
+            // Expected empty state when no Blaze campaign or published product
+        } else {
+            XCTFail("Wrong state")
+        }
+
+        // When
+        insertCampaigns([campaign1, campaign2])
+
+        // Then
+        if case .showCampaign(let campaign) = sut.state {
+            XCTAssertEqual(campaign, campaign2)
+        } else {
+            XCTFail("Wrong state")
+        }
+    }
+
+    @MainActor
     func test_state_is_showProduct_if_published_product_is_added_to_storage() async {
         // Given
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
@@ -782,6 +727,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         XCTAssertEqual(properties["source"] as? String, "intro_view")
     }
 
+    @MainActor
     func test_blazeEntryPointDisplayed_tracked_if_blaze_campaign_available() async throws {
         // Given
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
@@ -805,6 +751,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         XCTAssertEqual(eventProperties["source"] as? String, "my_store_section")
     }
 
+    @MainActor
     func test_blazeEntryPointDisplayed_tracked_if_published_product_available_and_blaze_campaign_not_available() async throws {
         // Given
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
@@ -831,6 +778,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         XCTAssertEqual(eventProperties["source"] as? String, "my_store_section")
     }
 
+    @MainActor
     func test_blazeEntryPointDisplayed_is_not_tracked_if_draft_product_available_and_blaze_campaign_not_available() async {
         // Given
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
@@ -853,6 +801,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         XCTAssertFalse(analyticsProvider.receivedEvents.contains("blaze_entry_point_displayed"))
     }
 
+    @MainActor
     func test_blazeEntryPointDisplayed_is_not_tracked_if_no_blaze_campaign_no_product_available() async {
         // Given
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
@@ -872,6 +821,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         XCTAssertFalse(analyticsProvider.receivedEvents.contains("blaze_entry_point_displayed"))
     }
 
+    @MainActor
     func test_blazeEntryPointDisplayed_is_not_tracked_again_after_reload() async throws {
         // Given
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
@@ -898,30 +848,19 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         XCTAssertTrue(analyticsProvider.receivedEvents.filter { $0 == "blaze_entry_point_displayed" }.count == 1)
     }
 
-    func test_dismissBlazeSection_sets_state_to_empty() async throws {
+    func test_dismissBlazeSection_triggers_tracking_event() throws {
         // Given
-        let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
-        let uuid = UUID().uuidString
-        let userDefaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
-        let viewModel = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
-                                                        stores: stores,
-                                                        storageManager: storageManager,
-                                                        blazeEligibilityChecker: checker,
-                                                        userDefaults: userDefaults)
-
-        let fakeBlazeCampaign = BlazeCampaignListItem.fake().copy(siteID: sampleSiteID)
-        mockSynchronizeCampaignsList(insertCampaignToStorage: fakeBlazeCampaign)
-        mockSynchronizeProducts()
-
-        await viewModel.reload()
-        // confidence check
-        XCTAssertEqual(viewModel.state, .showCampaign(campaign: fakeBlazeCampaign))
+        let analyticsProvider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+        let viewModel = BlazeCampaignDashboardViewModel(siteID: 123, analytics: analytics)
 
         // When
         viewModel.dismissBlazeSection()
 
         // Then
-        XCTAssertEqual(viewModel.state, .empty)
+        let index = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "dynamic_dashboard_hide_card_tapped" }))
+        let properties = analyticsProvider.receivedProperties[index] as? [String: AnyHashable]
+        XCTAssertEqual(properties?["type"], "blaze")
     }
 }
 

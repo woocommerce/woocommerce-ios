@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="21507" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="22505" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21505"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22504"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -13,6 +13,8 @@
             <connections>
                 <outlet property="tableView" destination="1mE-SE-uK9" id="ogX-nu-l5x"/>
                 <outlet property="toolbar" destination="9eA-hc-k15" id="V2c-iT-WpM"/>
+                <outlet property="toolbarBottomSeparator" destination="ICC-sG-8Ui" id="FVw-Wf-hM9"/>
+                <outlet property="toolbarBottomSeparatorHeightConstraint" destination="zU7-Tl-zDq" id="Emz-K2-2hf"/>
                 <outlet property="view" destination="iN0-l3-epB" id="Jh9-wF-LZg"/>
             </connections>
         </placeholder>
@@ -31,8 +33,15 @@
                                 <constraint firstAttribute="height" priority="995" constant="50" id="sEi-OR-bvb"/>
                             </constraints>
                         </view>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ICC-sG-8Ui">
+                            <rect key="frame" x="0.0" y="50" width="414" height="1"/>
+                            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="1" id="zU7-Tl-zDq"/>
+                            </constraints>
+                        </view>
                         <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="1mE-SE-uK9">
-                            <rect key="frame" x="0.0" y="50" width="414" height="798"/>
+                            <rect key="frame" x="0.0" y="51" width="414" height="797"/>
                             <userDefinedRuntimeAttributes>
                                 <userDefinedRuntimeAttribute type="string" keyPath="accessibilityIdentifier" value="orders-table-view"/>
                             </userDefinedRuntimeAttributes>
@@ -40,9 +49,10 @@
                     </subviews>
                     <constraints>
                         <constraint firstItem="9eA-hc-k15" firstAttribute="leading" secondItem="tDW-j0-dUT" secondAttribute="leading" id="2Md-DN-FrJ"/>
-                        <constraint firstItem="1mE-SE-uK9" firstAttribute="top" secondItem="9eA-hc-k15" secondAttribute="bottom" id="CRj-o0-2WZ"/>
                         <constraint firstAttribute="trailing" secondItem="9eA-hc-k15" secondAttribute="trailing" id="Qcx-pF-i9M"/>
+                        <constraint firstItem="ICC-sG-8Ui" firstAttribute="trailing" secondItem="9eA-hc-k15" secondAttribute="trailing" id="fuw-ni-peU"/>
                         <constraint firstItem="9eA-hc-k15" firstAttribute="top" secondItem="tDW-j0-dUT" secondAttribute="top" id="ilw-mJ-v1G"/>
+                        <constraint firstItem="ICC-sG-8Ui" firstAttribute="leading" secondItem="9eA-hc-k15" secondAttribute="leading" id="sKM-b7-27L"/>
                     </constraints>
                 </stackView>
             </subviews>

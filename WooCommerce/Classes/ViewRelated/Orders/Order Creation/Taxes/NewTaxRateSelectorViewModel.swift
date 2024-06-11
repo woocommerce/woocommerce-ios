@@ -3,6 +3,7 @@ import Yosemite
 import Combine
 import Storage
 import Experiments
+import protocol WooFoundation.Analytics
 
 final class NewTaxRateSelectorViewModel: ObservableObject {
     private let wpAdminTaxSettingsURLProvider: WPAdminTaxSettingsURLProviderProtocol

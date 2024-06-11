@@ -2,8 +2,8 @@ import XCTest
 @testable import WooCommerce
 
 final class BlazeAdDestinationSettingViewModelTests: XCTestCase {
-    private let sampleProductURL = "https://woo.com/product/"
-    private let sampleHomeURL = "https://woo.com/"
+    private let sampleProductURL = "https://woocommerce.com/product/"
+    private let sampleHomeURL = "https://woocommerce.com/"
     private let threeParameters = "one=a&two=b&three=c"
     private let maxParameterLength = 2096
 

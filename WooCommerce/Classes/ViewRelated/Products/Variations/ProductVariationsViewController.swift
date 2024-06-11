@@ -4,6 +4,7 @@ import Yosemite
 import Experiments
 
 import class AutomatticTracks.CrashLogging
+import protocol WooFoundation.Analytics
 
 /// Displays a paginated list of Product Variations with its price or visibility.
 ///
@@ -474,7 +475,7 @@ private extension ProductVariationsViewController {
         }
         show(addAttributeViewController, sender: self)
 
-        analytics.track(event: WooAnalyticsEvent.Variations.addFirstVariationButtonTapped(productID: product.productID))
+        analytics.track(event: .Variations.addFirstVariationButtonTapped(productID: product.productID))
     }
 
     /// Cleans the navigation stack until `self` and navigates to `EditAttributesViewController`
@@ -582,7 +583,7 @@ private extension ProductVariationsViewController {
     }
 
     @objc func addButtonTapped() {
-        analytics.track(event: WooAnalyticsEvent.Variations.addMoreVariationsButtonTapped(productID: product.productID))
+        analytics.track(event: .Variations.addMoreVariationsButtonTapped(productID: product.productID))
         presentGenerateVariationOptions()
     }
 

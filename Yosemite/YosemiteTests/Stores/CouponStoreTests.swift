@@ -474,6 +474,86 @@ final class CouponStoreTests: XCTestCase {
         XCTAssertEqual(try result.get(), expectedReport)
     }
 
+    func test_loadMostActiveCoupons_calls_remote_using_correct_request_parameters() throws {
+        setUpUsingSpyRemote()
+        // Given
+        let currentDate = try date(from: "2020-11-05T23:59:59Z")
+        let numberOfCouponsToLoad = 3
+        let from = currentDate.addingDays(-3)
+        let to = currentDate.addingDays(3)
+        let sampleTimeRange = StatsTimeRangeV4.custom(from: from,
+                                                      to: to)
+        let timeZone = try XCTUnwrap(TimeZone(secondsFromGMT: 0))
+        let action = CouponAction.loadMostActiveCoupons(siteID: sampleSiteID,
+                                                        numberOfCouponsToLoad: numberOfCouponsToLoad,
+                                                        timeRange: sampleTimeRange,
+                                                        siteTimezone: timeZone) { _ in }
+
+        // When
+        store.onAction(action)
+
+        // Then
+        XCTAssertTrue(remote.didCallLoadMostActiveCoupons)
+        XCTAssertEqual(remote.spyLoadMostActiveCouponsSiteID, sampleSiteID)
+        XCTAssertEqual(remote.spyLoadMostActiveCouponsNumberOfCouponsToLoad, numberOfCouponsToLoad)
+
+        let end = sampleTimeRange.latestDate(currentDate: currentDate,
+                                            siteTimezone: timeZone)
+        let start = sampleTimeRange.earliestDate(latestDate: to,
+                                                siteTimezone: timeZone)
+        XCTAssertEqual(remote.spyLoadMostActiveCouponsStartDate, start)
+        XCTAssertEqual(remote.spyLoadMostActiveCouponsEndDate, end)
+    }
+
+    func test_loadMostActiveCoupons_returns_network_error_on_failure() throws {
+        // Given
+        let currentDate = try date(from: "2020-11-05T23:59:59Z")
+        let from = currentDate.addingDays(-3)
+        let to = currentDate.addingDays(3)
+        let sampleTimeRange = StatsTimeRangeV4.custom(from: from,
+                                                      to: to)
+        let timeZone = try XCTUnwrap(TimeZone(secondsFromGMT: 0))
+        let expectedError = NetworkError.unacceptableStatusCode(statusCode: 500)
+        network.simulateError(requestUrlSuffix: "reports/coupons", error: expectedError)
+
+        // When
+        let result: Result<[Networking.CouponReport], Error> = waitFor { promise in
+            let action = CouponAction.loadMostActiveCoupons(siteID: self.sampleSiteID,
+                                                            numberOfCouponsToLoad: 3,
+                                                            timeRange: sampleTimeRange,
+                                                            siteTimezone: timeZone) { result in                 promise(result)
+            }
+            self.store.onAction(action)
+        }
+
+        // Then
+        XCTAssertEqual(result.failure as? NetworkError, expectedError)
+    }
+
+    func test_loadMostActiveCoupons_returns_expected_details_upon_success() throws {
+        // Given
+        let sampleCouponID: Int64 = 571
+        let sampleTimeRange = StatsTimeRangeV4.today
+        let timeZone = try XCTUnwrap(TimeZone(secondsFromGMT: 0))
+        let expectedReport = [CouponReport(couponID: sampleCouponID, amount: 12, ordersCount: 1)]
+        network.simulateResponse(requestUrlSuffix: "reports/coupons", filename: "coupon-reports")
+
+        // When
+        let result: Result<[Networking.CouponReport], Error> = waitFor { promise in
+            let action = CouponAction.loadMostActiveCoupons(siteID: self.sampleSiteID,
+                                                            numberOfCouponsToLoad: 3,
+                                                            timeRange: sampleTimeRange,
+                                                            siteTimezone: timeZone) { result in
+                promise(result)
+            }
+            self.store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        XCTAssertEqual(try result.get(), expectedReport)
+    }
+
     func test_searchCoupons_calls_remote_using_correct_request_parameters() {
         setUpUsingSpyRemote()
         // Given
@@ -677,9 +757,70 @@ final class CouponStoreTests: XCTestCase {
         // Then
         XCTAssertEqual(result.failure as? NetworkError, expectedError)
     }
+
+    // MARK: CouponAction.loadCoupons
+
+    func test_loadCoupons_calls_remote_using_correct_request_parameters() {
+        setUpUsingSpyRemote()
+        // Given
+        let action = CouponAction.loadCoupons(siteID: 1092,
+                                              couponIDs: [1, 2, 3]) { _ in }
+
+        // When
+        store.onAction(action)
+
+        // Then
+        XCTAssertTrue(remote.didCallLoadCoupons)
+        XCTAssertEqual(remote.spyLoadCouponsSiteID, 1092)
+        XCTAssertEqual(remote.spyLoadCouponsCouponIDs, [1, 2, 3])
+    }
+
+    func test_loadCoupons_returns_network_error_on_failure() {
+        setUpUsingSpyRemote()
+        // Given
+        let expectedError = NetworkError.unacceptableStatusCode(statusCode: 418)
+        remote.resultForLoadCoupons = .failure(expectedError)
+
+        // When
+        let result: Result<[Networking.Coupon], Error> = waitFor { promise in
+            let action = CouponAction.loadCoupons(siteID: 1092,
+                                                  couponIDs: [1, 2, 3]) { result in
+                promise(result)
+            }
+            self.store.onAction(action)
+        }
+
+        // Then
+        XCTAssertEqual(result.failure as? NetworkError, expectedError)
+    }
+
+    func test_loadCoupons_stores_coupons_upon_success() throws {
+        // Given
+        network.simulateResponse(requestUrlSuffix: "coupons",
+                                 filename: "coupons-all")
+        XCTAssertEqual(storedCouponsCount, 0)
+
+        // When
+        let result: Result<[Networking.Coupon], Error> = waitFor { promise in
+            let action = CouponAction.loadCoupons(siteID: 1092,
+                                                  couponIDs: [1, 2, 3]) { result in
+                promise(result)
+            }
+            self.store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        XCTAssertEqual(storedCouponsCount, 4)
+    }
 }
 
 private extension CouponStoreTests {
+    func date(from iso8601Date: String) throws -> Date {
+        let dateFormatter = DateFormatter.Defaults.iso8601
+        return try XCTUnwrap(dateFormatter.date(from: iso8601Date))
+    }
+
     @discardableResult
     func storeCoupon(_ coupon: Networking.Coupon, for siteID: Int64) -> Storage.Coupon {
         let storedCoupon = storage.insertNewObject(ofType: Coupon.self)

@@ -156,6 +156,46 @@ public class ProductStore: Store {
                               categories: categories,
                               tags: tags,
                               completion: completion)
+        case let .fetchStockReport(siteID, stockType, pageNumber, pageSize, order, completion):
+            fetchStockReport(siteID: siteID,
+                             stockType: stockType,
+                             pageNumber: pageNumber,
+                             pageSize: pageSize,
+                             order: order,
+                             completion: completion)
+        case let .fetchProductReports(siteID, productIDs, timeZone, earliestDateToInclude, latestDateToInclude, pageSize, pageNumber, orderBy, order, completion):
+            fetchProductReports(siteID: siteID,
+                                productIDs: productIDs,
+                                timeZone: timeZone,
+                                earliestDateToInclude: earliestDateToInclude,
+                                latestDateToInclude: latestDateToInclude,
+                                pageSize: pageSize,
+                                pageNumber: pageNumber,
+                                orderBy: orderBy,
+                                order: order,
+                                completion: completion)
+        case let .fetchVariationReports(siteID,
+                                        productIDs,
+                                        variationIDs,
+                                        timeZone,
+                                        earliestDateToInclude,
+                                        latestDateToInclude,
+                                        pageSize,
+                                        pageNumber,
+                                        orderBy,
+                                        order,
+                                        completion):
+            fetchVariationReports(siteID: siteID,
+                                  productIDs: productIDs,
+                                  variationIDs: variationIDs,
+                                  timeZone: timeZone,
+                                  earliestDateToInclude: earliestDateToInclude,
+                                  latestDateToInclude: latestDateToInclude,
+                                  pageSize: pageSize,
+                                  pageNumber: pageNumber,
+                                  orderBy: orderBy,
+                                  order: order,
+                                  completion: completion)
         }
     }
 }
@@ -597,7 +637,7 @@ private extension ProductStore {
 
         Task { @MainActor in
             let result = await Result {
-                let description = try await generativeContentRemote.generateText(siteID: siteID, base: prompt, feature: .productDescription)
+                let description = try await generativeContentRemote.generateText(siteID: siteID, base: prompt, feature: .productDescription, responseFormat: .text)
                 return description
             }
             completion(result)
@@ -624,7 +664,7 @@ private extension ProductStore {
 
         Task { @MainActor in
             let result = await Result {
-                let message = try await generativeContentRemote.generateText(siteID: siteID, base: prompt, feature: .productSharing)
+                let message = try await generativeContentRemote.generateText(siteID: siteID, base: prompt, feature: .productSharing, responseFormat: .text)
                     .trimmingCharacters(in: CharacterSet(["\""]))  // Trims quotation mark
                 return message
             }
@@ -656,7 +696,10 @@ private extension ProductStore {
         ].joined(separator: "\n")
         Task { @MainActor in
             do {
-                let jsonString = try await generativeContentRemote.generateText(siteID: siteID, base: prompt, feature: .productDetailsFromScannedTexts)
+                let jsonString = try await generativeContentRemote.generateText(siteID: siteID,
+                                                                                base: prompt,
+                                                                                feature: .productDetailsFromScannedTexts,
+                                                                                responseFormat: .json)
                 guard let jsonData = jsonString.data(using: .utf8) else {
                     return completion(.failure(DotcomError.resourceDoesNotExist))
                 }
@@ -682,7 +725,7 @@ private extension ProductStore {
 
         Task { @MainActor in
             let result = await Result {
-                let description = try await generativeContentRemote.generateText(siteID: siteID, base: prompt, feature: .productName)
+                let description = try await generativeContentRemote.generateText(siteID: siteID, base: prompt, feature: .productName, responseFormat: .text)
                 return description
             }
             completion(result)
@@ -726,6 +769,84 @@ private extension ProductStore {
                 return product
             }
             completion(result)
+        }
+    }
+
+    func fetchStockReport(siteID: Int64,
+                          stockType: String,
+                          pageNumber: Int,
+                          pageSize: Int,
+                          order: ProductsRemote.Order,
+                          completion: @escaping (Result<[ProductStock], Error>) -> Void) {
+        Task { @MainActor in
+            do {
+                let stock = try await remote.loadStock(for: siteID,
+                                                       with: stockType,
+                                                       pageNumber: pageNumber,
+                                                       pageSize: pageSize,
+                                                       order: order)
+                completion(.success(stock))
+            } catch {
+                completion(.failure(error))
+            }
+        }
+    }
+
+    func fetchProductReports(siteID: Int64,
+                             productIDs: [Int64],
+                             timeZone: TimeZone,
+                             earliestDateToInclude: Date,
+                             latestDateToInclude: Date,
+                             pageSize: Int,
+                             pageNumber: Int,
+                             orderBy: ProductsRemote.OrderKey,
+                             order: ProductsRemote.Order,
+                             completion: @escaping (Result<[ProductReport], Error>) -> Void) {
+        Task { @MainActor in
+            do {
+                let reports = try await remote.loadProductReports(for: siteID,
+                                                                  productIDs: productIDs,
+                                                                  timeZone: timeZone,
+                                                                  earliestDateToInclude: earliestDateToInclude,
+                                                                  latestDateToInclude: latestDateToInclude,
+                                                                  pageSize: pageSize,
+                                                                  pageNumber: pageNumber,
+                                                                  orderBy: orderBy,
+                                                                  order: order)
+                completion(.success(reports))
+            } catch {
+                completion(.failure(error))
+            }
+        }
+    }
+
+    func fetchVariationReports(siteID: Int64,
+                               productIDs: [Int64],
+                               variationIDs: [Int64],
+                               timeZone: TimeZone,
+                               earliestDateToInclude: Date,
+                               latestDateToInclude: Date,
+                               pageSize: Int,
+                               pageNumber: Int,
+                               orderBy: ProductsRemote.OrderKey,
+                               order: ProductsRemote.Order,
+                               completion: @escaping (Result<[ProductReport], Error>) -> Void) {
+        Task { @MainActor in
+            do {
+                let reports = try await remote.loadVariationReports(for: siteID,
+                                                                    productIDs: productIDs,
+                                                                    variationIDs: variationIDs,
+                                                                    timeZone: timeZone,
+                                                                    earliestDateToInclude: earliestDateToInclude,
+                                                                    latestDateToInclude: latestDateToInclude,
+                                                                    pageSize: pageSize,
+                                                                    pageNumber: pageNumber,
+                                                                    orderBy: orderBy,
+                                                                    order: order)
+                completion(.success(reports))
+            } catch {
+                completion(.failure(error))
+            }
         }
     }
 }
@@ -1180,6 +1301,7 @@ public enum ProductUpdateError: Error, Equatable {
     case variationInvalidImageId
     case unexpected
     case unknown(error: AnyError)
+    case generic(message: String)
 
     init(error: Error) {
         guard let dotcomError = error as? DotcomError else {
@@ -1187,12 +1309,12 @@ public enum ProductUpdateError: Error, Equatable {
             return
         }
         switch dotcomError {
-        case .unknown(let code, _):
+        case let .unknown(code, message):
             guard let errorCode = ErrorCode(rawValue: code) else {
                 self = .unknown(error: dotcomError.toAnyError)
                 return
             }
-            self = errorCode.error
+            self = errorCode.error(with: message)
         default:
             self = .unknown(error: dotcomError.toAnyError)
         }
@@ -1201,13 +1323,19 @@ public enum ProductUpdateError: Error, Equatable {
     private enum ErrorCode: String {
         case invalidSKU = "product_invalid_sku"
         case variationInvalidImageId = "woocommerce_variation_invalid_image_id"
+        case invalidMaxQuantity = "woocommerce_rest_invalid_max_quantity"
+        case invalidMinQuantity = "woocommerce_rest_invalid_min_quantity"
+        case invalidVariationMaxQuantity = "woocommerce_rest_invalid_variation_max_quantity"
+        case invalidVariationMinQuantity = "woocommerce_rest_invalid_variation_min_quantity"
 
-        var error: ProductUpdateError {
+        func error(with message: String?) -> ProductUpdateError {
             switch self {
             case .invalidSKU:
                 return .invalidSKU
             case .variationInvalidImageId:
                 return .variationInvalidImageId
+            case .invalidMaxQuantity, .invalidMinQuantity, .invalidVariationMaxQuantity, .invalidVariationMinQuantity:
+                return .generic(message: message ?? "")
             }
         }
     }

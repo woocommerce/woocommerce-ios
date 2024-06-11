@@ -1,4 +1,5 @@
 import UIKit
+import protocol WooFoundation.Analytics
 
 /// View model for `ProductCreationAISurveyConfirmationView`.
 struct ProductCreationAISurveyConfirmationViewModel {

@@ -2,6 +2,7 @@ import XCTest
 
 @testable import WooCommerce
 import Yosemite
+import protocol WooFoundation.Analytics
 
 final class ProductSearchUICommandTests: XCTestCase {
     private let sampleSiteID: Int64 = 134
@@ -177,5 +178,62 @@ final class ProductSearchUICommandTests: XCTestCase {
         XCTAssertEqual(event, "product_list_searched")
         let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties.first)
         XCTAssertEqual(eventProperties["filter"] as? String, "all")
+    }
+
+    // MARK: - Split view support
+
+    func test_onProductSelection_is_invoked_when_didSelectSearchResult_is_called() throws {
+        // Given
+        let product = Product.fake().copy(name: "Product")
+
+        // When
+        let selectedProduct = waitFor { promise in
+            let command = ProductSearchUICommand(siteID: self.sampleSiteID, isSearchProductsBySKUEnabled: true, onProductSelection: { product in
+                promise(product)
+            }, onCancel: {})
+            command.didSelectSearchResult(model: product, from: .init(), reloadData: {}, updateActionButton: {})
+        }
+
+        // Then
+        XCTAssertEqual(selectedProduct, product)
+    }
+
+    func test_onCancel_is_invoked_when_cancel_is_called() throws {
+        waitFor { promise in
+            let command = ProductSearchUICommand(siteID: self.sampleSiteID,
+                                                 isSearchProductsBySKUEnabled: true,
+                                                 onProductSelection: { _ in },
+                                                 onCancel: {
+                // Then
+                promise(())
+            })
+            // When
+            command.cancel(from: .init())
+        }
+    }
+
+    func test_shouldDeselectSearchResultOnSelection_is_false() throws {
+        // Given
+        let command = ProductSearchUICommand(siteID: self.sampleSiteID,
+                                             isSearchProductsBySKUEnabled: true,
+                                             onProductSelection: { _ in },
+                                             onCancel: {})
+
+        // Then
+        XCTAssertFalse(command.shouldDeselectSearchResultOnSelection())
+    }
+}
+
+private extension ProductSearchUICommand {
+    convenience init(siteID: Int64,
+                     stores: StoresManager = ServiceLocator.stores,
+                     analytics: Analytics = ServiceLocator.analytics,
+                     isSearchProductsBySKUEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.searchProductsBySKU)) {
+        self.init(siteID: siteID,
+                  stores: stores,
+                  analytics: analytics,
+                  isSearchProductsBySKUEnabled: isSearchProductsBySKUEnabled,
+                  onProductSelection: { _ in },
+                  onCancel: {})
     }
 }

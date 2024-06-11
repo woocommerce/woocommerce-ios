@@ -1,5 +1,6 @@
 import Foundation
 import class WordPressShared.EmailFormatValidator
+import protocol WooFoundation.Analytics
 
 /// Data Source for the Support Request
 ///

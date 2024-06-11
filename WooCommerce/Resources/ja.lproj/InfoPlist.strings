@@ -3,6 +3,12 @@
 <!--Warning: Auto-generated file, do not edit.-->
 <plist version="1.0">
   <dict>
+    <key>AddOrderAction.Title</key>
+    <string>新しい注文</string>
+    <key>AddProductAction.Title</key>
+    <string>商品を追加</string>
+    <key>CollectPaymentAction.Title</key>
+    <string>支払いを受け取る</string>
     <key>NSBluetoothAlwaysUsageDescription</key>
     <string>このアプリでは Bluetooth を使用してサポートされているカードリーダーに接続します。</string>
     <key>NSBluetoothPeripheralUsageDescription</key>
@@ -13,5 +19,9 @@
     <string>支払いを受け取るには位置情報へのアクセスが必要です。</string>
     <key>NSPhotoLibraryUsageDescription</key>
     <string>商品画像用にカメラの写真を保存したり、商品やサポートチケットに写真や動画を追加したりするためです。</string>
+    <key>OpenOrdersAction.Title</key>
+    <string>注文</string>
+    <key>OpenPaymentsAction.Title</key>
+    <string>支払い</string>
   </dict>
 </plist>

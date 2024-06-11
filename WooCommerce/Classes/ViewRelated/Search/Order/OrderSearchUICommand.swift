@@ -10,6 +10,8 @@ final class OrderSearchUICommand: SearchUICommand {
 
     let searchBarPlaceholder = NSLocalizedString("Search all orders", comment: "Orders Search Placeholder")
 
+    let returnKeyType = UIReturnKeyType.done
+
     let searchBarAccessibilityIdentifier = "order-search-screen-search-field"
 
     let cancelButtonAccessibilityIdentifier = "order-search-screen-cancel-button"
@@ -61,7 +63,7 @@ final class OrderSearchUICommand: SearchUICommand {
 
     func createCellViewModel(model: Order) -> OrderListCellViewModel {
         let orderStatus = lookUpOrderStatus(for: model)
-        return OrderListCellViewModel(order: model, status: orderStatus)
+        return OrderListCellViewModel(order: model, status: orderStatus, currencySettings: ServiceLocator.currencySettings)
     }
 
     /// Synchronizes the Orders matching a given Keyword

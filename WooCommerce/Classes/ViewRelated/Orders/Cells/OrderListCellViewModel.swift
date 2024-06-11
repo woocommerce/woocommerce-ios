@@ -1,31 +1,44 @@
 import Foundation
+
+#if canImport(Yosemite)
 import Yosemite
+#elseif canImport(NetworkingWatchOS)
+import NetworkingWatchOS
+#endif
+
+#if canImport(WooFoundation)
 import WooFoundation
+#elseif canImport(WooFoundationWatchOS)
+import WooFoundationWatchOS
+#endif
+
 
 // MARK: - View Model for individual cells on the Order List screen
 //
 struct OrderListCellViewModel {
     private let order: Order
     private let orderStatus: OrderStatus?
+    private let currencyFormatter: CurrencyFormatter
 
-    private let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
-
-    init(order: Order, status: OrderStatus?) {
+    init(order: Order, status: OrderStatus?, currencySettings: CurrencySettings) {
         self.order = order
-        orderStatus = status
+        self.orderStatus = status
+        self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
     }
 
     /// For example, #560 Pamela Nguyen
     ///
     var title: String {
-        let customerName: String = {
-            if let fullName = order.billingAddress?.fullName, fullName.isNotEmpty {
-                return fullName
-            }
-            return Localization.guestName
-        }()
+        Localization.title(orderNumber: order.number, customerName: customerName)
+    }
 
-        return Localization.title(orderNumber: order.number, customerName: customerName)
+    /// For example, Pamela Nguyen
+    ///
+    var customerName: String {
+        if let fullName = order.billingAddress?.fullName, fullName.isNotEmpty {
+            return fullName
+        }
+        return Localization.guestName
     }
 
     /// The localized unabbreviated total which includes the currency.
@@ -45,6 +58,14 @@ struct OrderListCellViewModel {
         return formatter.string(from: order.dateCreated)
     }
 
+    /// Time where the order was created
+    ///
+    var timeCreated: String {
+        let formatter: DateFormatter = .timeFormatter
+        formatter.timeZone = .siteTimezone
+        return formatter.string(from: order.dateCreated)
+    }
+
     /// Status of the order
     ///
     var status: OrderStatusEnum {
@@ -59,6 +80,15 @@ struct OrderListCellViewModel {
         return orderStatus?.name ?? order.status.rawValue
     }
 
+    /// The localized unabbreviated total for a given order item, which includes the currency.
+    ///
+    /// Example: $48,415,504.20
+    ///
+    func total(for orderItem: OrderItem) -> String {
+        currencyFormatter.formatAmount(orderItem.total, with: order.currency) ?? "$\(orderItem.total)"
+    }
+
+#if !os(watchOS)
     /// Accessory view that renders the cell's disclosure indicator
     ///
     var accessoryView: UIImageView? {
@@ -69,6 +99,7 @@ struct OrderListCellViewModel {
         accessoryView.tintColor = .tertiaryLabel
         return accessoryView
     }
+#endif
 }
 
 // MARK: - Constants

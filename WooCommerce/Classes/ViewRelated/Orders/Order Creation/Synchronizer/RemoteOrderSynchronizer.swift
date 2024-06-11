@@ -37,7 +37,9 @@ final class RemoteOrderSynchronizer: OrderSynchronizer {
 
     var setAddresses = PassthroughSubject<OrderSyncAddressesInput?, Never>()
 
-    var setShipping =  PassthroughSubject<ShippingLine?, Never>()
+    var setShipping =  PassthroughSubject<ShippingLine, Never>()
+
+    var removeShipping = PassthroughSubject<ShippingLine, Never>()
 
     var addFee = PassthroughSubject<OrderFeeLine, Never>()
 
@@ -54,6 +56,8 @@ final class RemoteOrderSynchronizer: OrderSynchronizer {
     var setNote = PassthroughSubject<String?, Never>()
 
     let setCustomerID = PassthroughSubject<Int64, Never>()
+
+    let removeCustomerID = PassthroughSubject<Void, Never>()
 
     var retryTrigger = PassthroughSubject<Void, Never>()
 
@@ -216,6 +220,19 @@ private extension RemoteOrderSynchronizer {
             }
             .store(in: &subscriptions)
 
+        removeShipping.withLatestFrom(orderPublisher)
+            .map { [weak self] shippingLineInput, order -> Order in
+                guard let self else { return order }
+                let updatedOrder = ShippingInputTransformer.remove(input: shippingLineInput, from: order)
+                // Calculate order total locally while order is being synced
+                return OrderTotalsCalculator(for: updatedOrder, using: self.currencyFormatter).updateOrderTotal()
+            }
+            .sink { [weak self] order in
+                self?.order = order
+                self?.orderSyncTrigger.send(order)
+            }
+            .store(in: &subscriptions)
+
         addFee.withLatestFrom(orderPublisher)
             .map { [weak self] feeLineInput, order -> Order in
                 guard let self = self else { return order }
@@ -306,6 +323,15 @@ private extension RemoteOrderSynchronizer {
         setCustomerID.withLatestFrom(orderPublisher)
             .map { customerID, order in
                 order.copy(customerID: customerID)
+            }
+            .sink { [weak self] order in
+                self?.order = order
+            }
+            .store(in: &subscriptions)
+
+        removeCustomerID.withLatestFrom(orderPublisher)
+            .map { _, order in
+                order.copy(customerID: 0)
             }
             .sink { [weak self] order in
                 self?.order = order

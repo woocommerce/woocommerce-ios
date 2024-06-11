@@ -14,7 +14,8 @@ final class StatsTests: XCTestCase {
         try LoginFlow.login()
     }
 
-    func test_load_stats_screen() throws {
+    /// TODO: Update tests after the new stats screen is released.
+    func skipped_test_load_stats_screen() throws {
         try TabNavComponent().goToMyStoreScreen()
             .verifyTodayStatsLoaded()
             .goToThisWeekTab()
@@ -25,7 +26,8 @@ final class StatsTests: XCTestCase {
             .verifyThisYearStatsLoaded()
     }
 
-    func test_view_detailed_chart_stats() throws {
+    /// TODO: Update tests after the new stats screen is released.
+    func skipped_test_view_detailed_chart_stats() throws {
         let myStoreScreen = try MyStoreScreen()
 
         var dailyRevenue = try TabNavComponent()

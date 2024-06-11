@@ -1,6 +1,7 @@
 import Combine
 import Foundation
 import Yosemite
+import protocol WooFoundation.Analytics
 
 /// View model for `ConfigurableBundleItemView` to configure a bundle item.
 final class ConfigurableBundleItemViewModel: ObservableObject, Identifiable {

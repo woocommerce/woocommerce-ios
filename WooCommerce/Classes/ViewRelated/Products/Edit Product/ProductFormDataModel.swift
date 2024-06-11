@@ -80,7 +80,7 @@ protocol ProductFormDataModel {
     var subscription: ProductSubscription? { get }
 
     // Quantity Rules (Min/Max Quantities extension)
-    var hasQuantityRules: Bool { get }
+    var canEditQuantityRules: Bool { get }
     var minAllowedQuantity: String? { get }
     var maxAllowedQuantity: String? { get }
     var groupOfQuantity: String? { get }

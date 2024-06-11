@@ -1,5 +1,6 @@
 import Foundation
 import Yosemite
+import protocol WooFoundation.Analytics
 
 /// Generates a new variation for a product, with no price and no options selected
 ///
@@ -28,7 +29,7 @@ final class GenerateVariationUseCase {
     func generateVariation(onCompletion: @escaping (Result<(Product, ProductVariation), Error>) -> Void) {
 
         let startDate = Date()
-        analytics.track(event: WooAnalyticsEvent.Variations.createVariation(productID: product.productID))
+        analytics.track(event: .Variations.createVariation(productID: product.productID))
 
         let action = ProductVariationAction.createProductVariation(siteID: product.siteID,
                                                                    productID: product.productID,
@@ -46,9 +47,9 @@ final class GenerateVariationUseCase {
             let timeElapsed = Date().timeIntervalSince(startDate)
             switch result {
             case .success:
-                analytics.track(event: WooAnalyticsEvent.Variations.createVariationSuccess(productID: product.productID, time: timeElapsed))
+                analytics.track(event: .Variations.createVariationSuccess(productID: product.productID, time: timeElapsed))
             case let .failure(error):
-                analytics.track(event: WooAnalyticsEvent.Variations.createVariationFail(productID: product.productID,
+                analytics.track(event: .Variations.createVariationFail(productID: product.productID,
                                                                                         time: timeElapsed,
                                                                                         error: error))
             }

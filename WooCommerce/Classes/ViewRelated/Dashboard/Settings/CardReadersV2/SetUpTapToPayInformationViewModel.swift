@@ -1,6 +1,7 @@
 import Foundation
 import Combine
 import Yosemite
+import protocol WooFoundation.Analytics
 
 final class SetUpTapToPayInformationViewModel: PaymentSettingsFlowPresentedViewModel, ObservableObject {
     private(set) var shouldShow: CardReaderSettingsTriState = .isUnknown

@@ -3,7 +3,6 @@
 import Codegen
 import Foundation
 
-
 extension Networking.AIProduct {
     public func copy(
         name: CopiableProp<String> = .copy,
@@ -175,20 +174,20 @@ extension Networking.BlazeAISuggestion {
     }
 }
 
-extension Networking.BlazeAddPaymentInfo {
+extension Networking.BlazeCampaignBudget {
     public func copy(
-        formUrl: CopiableProp<String> = .copy,
-        successUrl: CopiableProp<String> = .copy,
-        idUrlParameter: CopiableProp<String> = .copy
-    ) -> Networking.BlazeAddPaymentInfo {
-        let formUrl = formUrl ?? self.formUrl
-        let successUrl = successUrl ?? self.successUrl
-        let idUrlParameter = idUrlParameter ?? self.idUrlParameter
+        mode: CopiableProp<BlazeCampaignBudget.Mode> = .copy,
+        amount: CopiableProp<Double> = .copy,
+        currency: CopiableProp<String> = .copy
+    ) -> Networking.BlazeCampaignBudget {
+        let mode = mode ?? self.mode
+        let amount = amount ?? self.amount
+        let currency = currency ?? self.currency
 
-        return Networking.BlazeAddPaymentInfo(
-            formUrl: formUrl,
-            successUrl: successUrl,
-            idUrlParameter: idUrlParameter
+        return Networking.BlazeCampaignBudget(
+            mode: mode,
+            amount: amount,
+            currency: currency
         )
     }
 }
@@ -206,7 +205,10 @@ extension Networking.BlazeCampaignListItem {
         impressions: CopiableProp<Int64> = .copy,
         clicks: CopiableProp<Int64> = .copy,
         totalBudget: CopiableProp<Double> = .copy,
-        spentBudget: CopiableProp<Double> = .copy
+        spentBudget: CopiableProp<Double> = .copy,
+        budgetMode: CopiableProp<BlazeCampaignBudget.Mode> = .copy,
+        budgetAmount: CopiableProp<Double> = .copy,
+        budgetCurrency: CopiableProp<String> = .copy
     ) -> Networking.BlazeCampaignListItem {
         let siteID = siteID ?? self.siteID
         let campaignID = campaignID ?? self.campaignID
@@ -220,6 +222,9 @@ extension Networking.BlazeCampaignListItem {
         let clicks = clicks ?? self.clicks
         let totalBudget = totalBudget ?? self.totalBudget
         let spentBudget = spentBudget ?? self.spentBudget
+        let budgetMode = budgetMode ?? self.budgetMode
+        let budgetAmount = budgetAmount ?? self.budgetAmount
+        let budgetCurrency = budgetCurrency ?? self.budgetCurrency
 
         return Networking.BlazeCampaignListItem(
             siteID: siteID,
@@ -233,7 +238,10 @@ extension Networking.BlazeCampaignListItem {
             impressions: impressions,
             clicks: clicks,
             totalBudget: totalBudget,
-            spentBudget: spentBudget
+            spentBudget: spentBudget,
+            budgetMode: budgetMode,
+            budgetAmount: budgetAmount,
+            budgetCurrency: budgetCurrency
         )
     }
 }
@@ -255,15 +263,12 @@ extension Networking.BlazeImpressions {
 
 extension Networking.BlazePaymentInfo {
     public func copy(
-        savedPaymentMethods: CopiableProp<[BlazePaymentMethod]> = .copy,
-        addPaymentMethod: CopiableProp<BlazeAddPaymentInfo> = .copy
+        paymentMethods: CopiableProp<[BlazePaymentMethod]> = .copy
     ) -> Networking.BlazePaymentInfo {
-        let savedPaymentMethods = savedPaymentMethods ?? self.savedPaymentMethods
-        let addPaymentMethod = addPaymentMethod ?? self.addPaymentMethod
+        let paymentMethods = paymentMethods ?? self.paymentMethods
 
         return Networking.BlazePaymentInfo(
-            savedPaymentMethods: savedPaymentMethods,
-            addPaymentMethod: addPaymentMethod
+            paymentMethods: paymentMethods
         )
     }
 }
@@ -531,7 +536,7 @@ extension Networking.CreateBlazeCampaign {
         startDate: CopiableProp<Date> = .copy,
         endDate: CopiableProp<Date> = .copy,
         timeZone: CopiableProp<String> = .copy,
-        totalBudget: CopiableProp<Double> = .copy,
+        budget: CopiableProp<BlazeCampaignBudget> = .copy,
         siteName: CopiableProp<String> = .copy,
         textSnippet: CopiableProp<String> = .copy,
         targetUrl: CopiableProp<String> = .copy,
@@ -547,7 +552,7 @@ extension Networking.CreateBlazeCampaign {
         let startDate = startDate ?? self.startDate
         let endDate = endDate ?? self.endDate
         let timeZone = timeZone ?? self.timeZone
-        let totalBudget = totalBudget ?? self.totalBudget
+        let budget = budget ?? self.budget
         let siteName = siteName ?? self.siteName
         let textSnippet = textSnippet ?? self.textSnippet
         let targetUrl = targetUrl ?? self.targetUrl
@@ -564,7 +569,7 @@ extension Networking.CreateBlazeCampaign {
             startDate: startDate,
             endDate: endDate,
             timeZone: timeZone,
-            totalBudget: totalBudget,
+            budget: budget,
             siteName: siteName,
             textSnippet: textSnippet,
             targetUrl: targetUrl,
@@ -729,6 +734,69 @@ extension Networking.FeatureIcon {
             iconUrl: iconUrl,
             iconBase64: iconBase64,
             iconType: iconType
+        )
+    }
+}
+
+extension Networking.GiftCardStats {
+    public func copy(
+        siteID: CopiableProp<Int64> = .copy,
+        granularity: CopiableProp<StatsGranularityV4> = .copy,
+        totals: CopiableProp<GiftCardStatsTotals> = .copy,
+        intervals: CopiableProp<[GiftCardStatsInterval]> = .copy
+    ) -> Networking.GiftCardStats {
+        let siteID = siteID ?? self.siteID
+        let granularity = granularity ?? self.granularity
+        let totals = totals ?? self.totals
+        let intervals = intervals ?? self.intervals
+
+        return Networking.GiftCardStats(
+            siteID: siteID,
+            granularity: granularity,
+            totals: totals,
+            intervals: intervals
+        )
+    }
+}
+
+extension Networking.GiftCardStatsInterval {
+    public func copy(
+        interval: CopiableProp<String> = .copy,
+        dateStart: CopiableProp<String> = .copy,
+        dateEnd: CopiableProp<String> = .copy,
+        subtotals: CopiableProp<GiftCardStatsTotals> = .copy
+    ) -> Networking.GiftCardStatsInterval {
+        let interval = interval ?? self.interval
+        let dateStart = dateStart ?? self.dateStart
+        let dateEnd = dateEnd ?? self.dateEnd
+        let subtotals = subtotals ?? self.subtotals
+
+        return Networking.GiftCardStatsInterval(
+            interval: interval,
+            dateStart: dateStart,
+            dateEnd: dateEnd,
+            subtotals: subtotals
+        )
+    }
+}
+
+extension Networking.GiftCardStatsTotals {
+    public func copy(
+        giftCardsCount: CopiableProp<Int> = .copy,
+        usedAmount: CopiableProp<Decimal> = .copy,
+        refundedAmount: CopiableProp<Decimal> = .copy,
+        netAmount: CopiableProp<Decimal> = .copy
+    ) -> Networking.GiftCardStatsTotals {
+        let giftCardsCount = giftCardsCount ?? self.giftCardsCount
+        let usedAmount = usedAmount ?? self.usedAmount
+        let refundedAmount = refundedAmount ?? self.refundedAmount
+        let netAmount = netAmount ?? self.netAmount
+
+        return Networking.GiftCardStatsTotals(
+            giftCardsCount: giftCardsCount,
+            usedAmount: usedAmount,
+            refundedAmount: refundedAmount,
+            netAmount: netAmount
         )
     }
 }
@@ -2065,6 +2133,72 @@ extension Networking.ProductBundleItem {
     }
 }
 
+extension Networking.ProductBundleStats {
+    public func copy(
+        siteID: CopiableProp<Int64> = .copy,
+        granularity: CopiableProp<StatsGranularityV4> = .copy,
+        totals: CopiableProp<ProductBundleStatsTotals> = .copy,
+        intervals: CopiableProp<[ProductBundleStatsInterval]> = .copy
+    ) -> Networking.ProductBundleStats {
+        let siteID = siteID ?? self.siteID
+        let granularity = granularity ?? self.granularity
+        let totals = totals ?? self.totals
+        let intervals = intervals ?? self.intervals
+
+        return Networking.ProductBundleStats(
+            siteID: siteID,
+            granularity: granularity,
+            totals: totals,
+            intervals: intervals
+        )
+    }
+}
+
+extension Networking.ProductBundleStatsInterval {
+    public func copy(
+        interval: CopiableProp<String> = .copy,
+        dateStart: CopiableProp<String> = .copy,
+        dateEnd: CopiableProp<String> = .copy,
+        subtotals: CopiableProp<ProductBundleStatsTotals> = .copy
+    ) -> Networking.ProductBundleStatsInterval {
+        let interval = interval ?? self.interval
+        let dateStart = dateStart ?? self.dateStart
+        let dateEnd = dateEnd ?? self.dateEnd
+        let subtotals = subtotals ?? self.subtotals
+
+        return Networking.ProductBundleStatsInterval(
+            interval: interval,
+            dateStart: dateStart,
+            dateEnd: dateEnd,
+            subtotals: subtotals
+        )
+    }
+}
+
+extension Networking.ProductBundleStatsTotals {
+    public func copy(
+        totalItemsSold: CopiableProp<Int> = .copy,
+        totalBundledItemsSold: CopiableProp<Int> = .copy,
+        netRevenue: CopiableProp<Decimal> = .copy,
+        totalOrders: CopiableProp<Int> = .copy,
+        totalProducts: CopiableProp<Int> = .copy
+    ) -> Networking.ProductBundleStatsTotals {
+        let totalItemsSold = totalItemsSold ?? self.totalItemsSold
+        let totalBundledItemsSold = totalBundledItemsSold ?? self.totalBundledItemsSold
+        let netRevenue = netRevenue ?? self.netRevenue
+        let totalOrders = totalOrders ?? self.totalOrders
+        let totalProducts = totalProducts ?? self.totalProducts
+
+        return Networking.ProductBundleStatsTotals(
+            totalItemsSold: totalItemsSold,
+            totalBundledItemsSold: totalBundledItemsSold,
+            netRevenue: netRevenue,
+            totalOrders: totalOrders,
+            totalProducts: totalProducts
+        )
+    }
+}
+
 extension Networking.ProductCategory {
     public func copy(
         categoryID: CopiableProp<Int64> = .copy,
@@ -2146,6 +2280,51 @@ extension Networking.ProductImage {
     }
 }
 
+extension Networking.ProductReport {
+    public func copy(
+        productID: CopiableProp<Int64> = .copy,
+        variationID: NullableCopiableProp<Int64> = .copy,
+        name: CopiableProp<String> = .copy,
+        imageURL: NullableCopiableProp<URL> = .copy,
+        itemsSold: CopiableProp<Int> = .copy,
+        stockQuantity: CopiableProp<Int> = .copy
+    ) -> Networking.ProductReport {
+        let productID = productID ?? self.productID
+        let variationID = variationID ?? self.variationID
+        let name = name ?? self.name
+        let imageURL = imageURL ?? self.imageURL
+        let itemsSold = itemsSold ?? self.itemsSold
+        let stockQuantity = stockQuantity ?? self.stockQuantity
+
+        return Networking.ProductReport(
+            productID: productID,
+            variationID: variationID,
+            name: name,
+            imageURL: imageURL,
+            itemsSold: itemsSold,
+            stockQuantity: stockQuantity
+        )
+    }
+}
+
+extension Networking.ProductReport.ExtendedInfo {
+    public func copy(
+        name: CopiableProp<String> = .copy,
+        image: NullableCopiableProp<String> = .copy,
+        stockQuantity: CopiableProp<Int> = .copy
+    ) -> Networking.ProductReport.ExtendedInfo {
+        let name = name ?? self.name
+        let image = image ?? self.image
+        let stockQuantity = stockQuantity ?? self.stockQuantity
+
+        return Networking.ProductReport.ExtendedInfo(
+            name: name,
+            image: image,
+            stockQuantity: stockQuantity
+        )
+    }
+}
+
 extension Networking.ProductReview {
     public func copy(
         siteID: CopiableProp<Int64> = .copy,
@@ -2184,6 +2363,39 @@ extension Networking.ProductReview {
             review: review,
             rating: rating,
             verified: verified
+        )
+    }
+}
+
+extension Networking.ProductStock {
+    public func copy(
+        siteID: CopiableProp<Int64> = .copy,
+        productID: CopiableProp<Int64> = .copy,
+        parentID: CopiableProp<Int64> = .copy,
+        name: CopiableProp<String> = .copy,
+        sku: NullableCopiableProp<String> = .copy,
+        manageStock: CopiableProp<Bool> = .copy,
+        stockQuantity: NullableCopiableProp<Decimal> = .copy,
+        stockStatusKey: CopiableProp<String> = .copy
+    ) -> Networking.ProductStock {
+        let siteID = siteID ?? self.siteID
+        let productID = productID ?? self.productID
+        let parentID = parentID ?? self.parentID
+        let name = name ?? self.name
+        let sku = sku ?? self.sku
+        let manageStock = manageStock ?? self.manageStock
+        let stockQuantity = stockQuantity ?? self.stockQuantity
+        let stockStatusKey = stockStatusKey ?? self.stockStatusKey
+
+        return Networking.ProductStock(
+            siteID: siteID,
+            productID: productID,
+            parentID: parentID,
+            name: name,
+            sku: sku,
+            manageStock: manageStock,
+            stockQuantity: stockQuantity,
+            stockStatusKey: stockStatusKey
         )
     }
 }
@@ -2831,7 +3043,7 @@ extension Networking.Site {
         jetpackConnectionActivePlugins: CopiableProp<[String]> = .copy,
         timezone: CopiableProp<String> = .copy,
         gmtOffset: CopiableProp<Double> = .copy,
-        isPublic: CopiableProp<Bool> = .copy,
+        visibility: CopiableProp<SiteVisibility> = .copy,
         canBlaze: CopiableProp<Bool> = .copy,
         isAdmin: CopiableProp<Bool> = .copy,
         wasEcommerceTrial: CopiableProp<Bool> = .copy
@@ -2853,7 +3065,7 @@ extension Networking.Site {
         let jetpackConnectionActivePlugins = jetpackConnectionActivePlugins ?? self.jetpackConnectionActivePlugins
         let timezone = timezone ?? self.timezone
         let gmtOffset = gmtOffset ?? self.gmtOffset
-        let isPublic = isPublic ?? self.isPublic
+        let visibility = visibility ?? self.visibility
         let canBlaze = canBlaze ?? self.canBlaze
         let isAdmin = isAdmin ?? self.isAdmin
         let wasEcommerceTrial = wasEcommerceTrial ?? self.wasEcommerceTrial
@@ -2876,7 +3088,7 @@ extension Networking.Site {
             jetpackConnectionActivePlugins: jetpackConnectionActivePlugins,
             timezone: timezone,
             gmtOffset: gmtOffset,
-            isPublic: isPublic,
+            visibility: visibility,
             canBlaze: canBlaze,
             isAdmin: isAdmin,
             wasEcommerceTrial: wasEcommerceTrial
@@ -3244,23 +3456,53 @@ extension Networking.User {
 extension Networking.WCAnalyticsCustomer {
     public func copy(
         siteID: CopiableProp<Int64> = .copy,
+        customerID: CopiableProp<Int64> = .copy,
         userID: CopiableProp<Int64> = .copy,
         name: NullableCopiableProp<String> = .copy,
         email: NullableCopiableProp<String> = .copy,
-        username: NullableCopiableProp<String> = .copy
+        username: NullableCopiableProp<String> = .copy,
+        dateRegistered: NullableCopiableProp<Date> = .copy,
+        dateLastActive: CopiableProp<Date> = .copy,
+        ordersCount: CopiableProp<Int> = .copy,
+        totalSpend: CopiableProp<Decimal> = .copy,
+        averageOrderValue: CopiableProp<Decimal> = .copy,
+        country: CopiableProp<String> = .copy,
+        region: CopiableProp<String> = .copy,
+        city: CopiableProp<String> = .copy,
+        postcode: CopiableProp<String> = .copy
     ) -> Networking.WCAnalyticsCustomer {
         let siteID = siteID ?? self.siteID
+        let customerID = customerID ?? self.customerID
         let userID = userID ?? self.userID
         let name = name ?? self.name
         let email = email ?? self.email
         let username = username ?? self.username
+        let dateRegistered = dateRegistered ?? self.dateRegistered
+        let dateLastActive = dateLastActive ?? self.dateLastActive
+        let ordersCount = ordersCount ?? self.ordersCount
+        let totalSpend = totalSpend ?? self.totalSpend
+        let averageOrderValue = averageOrderValue ?? self.averageOrderValue
+        let country = country ?? self.country
+        let region = region ?? self.region
+        let city = city ?? self.city
+        let postcode = postcode ?? self.postcode
 
         return Networking.WCAnalyticsCustomer(
             siteID: siteID,
+            customerID: customerID,
             userID: userID,
             name: name,
             email: email,
-            username: username
+            username: username,
+            dateRegistered: dateRegistered,
+            dateLastActive: dateLastActive,
+            ordersCount: ordersCount,
+            totalSpend: totalSpend,
+            averageOrderValue: averageOrderValue,
+            country: country,
+            region: region,
+            city: city,
+            postcode: postcode
         )
     }
 }

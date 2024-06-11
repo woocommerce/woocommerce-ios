@@ -20,6 +20,9 @@
       location = "group:Hardware/Hardware.xcodeproj">
    </FileRef>
    <FileRef
+      location = "group:WooFoundation/WooFoundation.xcodeproj">
+   </FileRef>
+   <FileRef
       location = "group:Fakes/Fakes.xcodeproj">
    </FileRef>
    <FileRef
@@ -30,8 +33,5 @@
    </FileRef>
    <FileRef
       location = "group:Pods/Pods.xcodeproj">
-   </FileRef>
-   <FileRef
-      location = "group:WooFoundation/WooFoundation.xcodeproj">
    </FileRef>
 </Workspace>

@@ -2,6 +2,25 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
+## Model 112 (Release 19.0.0.0)
+- @pmusolino 2024-05-31
+    - Added `visibility` attribute to `Site` entity.
+    - Removed `isPublic` attribute from `Site` entity.
+    - Added `WooCommerceModelV111toV112` mapping model.
+    
+## Model 111 (Release 18.5.0.0)
+- @rachelmcr 2024-05-02
+    - Add `ShippingMethod` entity.
+
+## Model 110 (Release 17.9.0.0)
+- @rachelmcr 2024-03-19
+    - Add `WCAnalyticsCustomer` entity.
+    - Add `WCAnalyticsCustomerSearchResults` entity.
+
+## Model 109 (Release 17.9.0.0)
+- @itsmeichigo 2024-03-19
+    - Add new attributes `BudgetAmount`, `BudgetCurrency`, `BudgetMode` to `BlazeCampaignListItem` entity.
+
 ## Model 108 (Release 17.7.0.0)
 - @selanthiraiyan 2024-03-04
     - Remove `BlazeCampaign` entity.

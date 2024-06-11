@@ -50,9 +50,9 @@ class CardPresentConfigurationTests: XCTestCase {
         enum PurchaseURL {
             /// The URL format directs users to a country specific page
             ///
-            static let us = "https://woo.com/products/hardware/US?utm_medium=woo_ios"
-            static let ca = "https://woo.com/products/hardware/CA?utm_medium=woo_ios"
-            static let gb = "https://woo.com/products/hardware/GB?utm_medium=woo_ios"
+            static let us = "https://woocommerce.com/products/hardware/US?utm_medium=woo_ios"
+            static let ca = "https://woocommerce.com/products/hardware/CA?utm_medium=woo_ios"
+            static let gb = "https://woocommerce.com/products/hardware/GB?utm_medium=woo_ios"
         }
     }
 }

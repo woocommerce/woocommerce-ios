@@ -62,6 +62,6 @@ private extension BlazeAddParameterViewModel {
 
 private extension BlazeAddParameterViewModel {
     enum Constant {
-        static let baseURLForValidation = "https://woo.com/?"
+        static let baseURLForValidation = "https://woocommerce.com/?"
     }
 }

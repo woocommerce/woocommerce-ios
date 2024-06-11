@@ -3,6 +3,12 @@
 <!--Warning: Auto-generated file, do not edit.-->
 <plist version="1.0">
   <dict>
+    <key>AddOrderAction.Title</key>
+    <string>Nouvelle commande</string>
+    <key>AddProductAction.Title</key>
+    <string>Ajouter un produit</string>
+    <key>CollectPaymentAction.Title</key>
+    <string>Percevoir le paiement</string>
     <key>NSBluetoothAlwaysUsageDescription</key>
     <string>Cette application utilise le Bluetooth pour se connecter aux lecteurs de carte pris en charge.</string>
     <key>NSBluetoothPeripheralUsageDescription</key>
@@ -13,5 +19,9 @@
     <string>L’accès à la localisation est requis pour accepter les paiements.</string>
     <key>NSPhotoLibraryUsageDescription</key>
     <string>Pour enregistrer des photos de l’appareil photo comme images de produits, ou pour ajouter des photos ou des vidéos à vos produits ou tickets d’assistance.</string>
+    <key>OpenOrdersAction.Title</key>
+    <string>Commandes</string>
+    <key>OpenPaymentsAction.Title</key>
+    <string>Paiements</string>
   </dict>
 </plist>

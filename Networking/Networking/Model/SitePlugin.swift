@@ -8,9 +8,9 @@ public struct SitePlugin: Decodable, GeneratedFakeable, GeneratedCopiable {
     public let plugin: String                   // e.g. woocommerce/woocommerce (i.e. [folder/]main php file)
     public let status: SitePluginStatusEnum     // i.e. .active | .networkActive | .inactive
     public let name: String                     // e.g. WooCommerce
-    public let pluginUri: String                // e.g. https://woo.com/
+    public let pluginUri: String                // e.g. https://woocommerce.com/
     public let author: String                   // e.g. Automattic
-    public let authorUri: String                // e.g. https://woo.com
+    public let authorUri: String                // e.g. https://woocommerce.com
     public let descriptionRaw: String           // e.g. An eCommerce toolkit that helps you sell anything...
     public let descriptionRendered: String      // e.g. An eCommerce toolkit... (likely to contain HTML tags)
     public let version: String                  // e.g. 5.1.0

@@ -12,8 +12,7 @@ struct CustomAmountRowView: View {
     var body: some View {
         HStack(alignment: .center, spacing: Layout.contentSpacing) {
             Text(viewModel.name)
-                .foregroundColor(.init(UIColor.text))
-                .subheadlineStyle()
+                .bodyStyle()
                 .multilineTextAlignment(.leading)
                 // Avoids the custom amount name to be truncated when it's long enough
                 .fixedSize(horizontal: false, vertical: true)
@@ -21,17 +20,20 @@ struct CustomAmountRowView: View {
             Spacer()
 
             Text(viewModel.total)
-                .foregroundColor(.init(UIColor.text))
-                .subheadlineStyle()
+                .bodyStyle()
 
-            Image(systemName: "pencil")
-                .resizable()
-                .frame(width: Layout.editIconImageSize * scale,
-                       height: Layout.editIconImageSize * scale)
-                .foregroundColor(Color(.wooCommercePurple(.shade60)))
-                .accessibilityAddTraits(.isButton)
-                .accessibilityLabel(Localization.editButtonAccessibilityLabel)
-                .renderedIf(editable)
+
+            Button {
+                viewModel.onEditCustomAmount()
+            } label: {
+                Image(systemName: "pencil")
+                    .resizable()
+                    .frame(width: Layout.editIconImageSize * scale,
+                           height: Layout.editIconImageSize * scale)
+            }
+            .tint(Color(.primary))
+            .accessibilityLabel(Localization.editButtonAccessibilityLabel)
+            .renderedIf(editable)
         }
         .padding(Layout.contentPadding)
         .contentShape(Rectangle())
@@ -56,7 +58,7 @@ extension CustomAmountRowView {
         static let contentPadding: CGFloat = 16
         static let cornerRadius: CGFloat = 8
         static let borderLineWidth: CGFloat = 0.5
-        static let editIconImageSize: CGFloat = 16
+        static let editIconImageSize: CGFloat = 24
     }
 
     enum Localization {

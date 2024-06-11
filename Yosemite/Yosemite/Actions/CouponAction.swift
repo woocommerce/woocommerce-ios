@@ -60,6 +60,20 @@ public enum CouponAction: Action {
                           startDate: Date,
                           onCompletion: (Result<CouponReport, Error>) -> Void)
 
+    /// Loads top most active coupons report within the specified time range and site ID.
+    ///
+    /// - `siteID`: site ID.
+    /// - `numberOfCouponsToLoad`: Number of coupons to load.
+    /// - `timeRange`: Time range to fetch report for.
+    /// - `siteTimezone`: site's timezone.
+    /// - `onCompletion`: invoked when the reports are fetched.
+    ///
+    case loadMostActiveCoupons(siteID: Int64,
+                               numberOfCouponsToLoad: Int,
+                               timeRange: StatsTimeRangeV4,
+                               siteTimezone: TimeZone,
+                               onCompletion: (Result<[CouponReport], Error>) -> Void)
+
     /// Search Coupons matching a given keyword for a site
     ///
     /// - `siteID`: the site for which coupons should be fetched.
@@ -87,4 +101,14 @@ public enum CouponAction: Action {
     case validateCouponCode(code: String,
                             siteID: Int64,
                             onCompletion: (Result<Bool, Error>) -> Void)
+
+    /// Loads the coupons from a site given the coupon IDs
+    ///
+    /// - `siteID`: the site for which coupons should be fetched.
+    /// - `couponIDs`: IDs of the coupons to be retrieved.
+    /// - `onCompletion`: invoked upon completion.
+    ///
+    case loadCoupons(siteID: Int64,
+                     couponIDs: [Int64],
+                     onCompletion: (Result<[Coupon], Error>) -> Void)
 }

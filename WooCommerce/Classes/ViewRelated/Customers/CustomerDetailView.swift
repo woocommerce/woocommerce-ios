@@ -1,10 +1,14 @@
 import SwiftUI
 
 struct CustomerDetailView: View {
-    @ObservedObject var viewModel: CustomerDetailViewModel
+    @StateObject private var viewModel: CustomerDetailViewModel
 
     @State private var isPresentingEmailDialog: Bool = false
     @State private var isShowingEmailView: Bool = false
+
+    init(viewModel: CustomerDetailViewModel) {
+        self._viewModel = StateObject(wrappedValue: viewModel)
+    }
 
     var body: some View {
         List {

@@ -7,4 +7,5 @@ enum CardPresentPaymentEvent {
     case showAlert(_ alertViewModel: CardPresentPaymentAlertViewModel)
     case showReaderList(_ readerIDs: [String], selectionHandler: ((String?) -> Void))
     case showOnboarding(_ onboardingViewModel: CardPresentPaymentsOnboardingViewModel)
+    case showPaymentSuccess
 }

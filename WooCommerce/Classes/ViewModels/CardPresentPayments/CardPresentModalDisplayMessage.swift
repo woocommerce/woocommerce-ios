@@ -1,6 +1,7 @@
 import UIKit
 import Yosemite
 
+// TODO: rename to `CardPresentModalDisplayReaderMessage`
 /// Modal presented when a (headless) card reader requests we display a message to the customer
 final class CardPresentModalDisplayMessage: CardPresentPaymentsModalViewModel {
 

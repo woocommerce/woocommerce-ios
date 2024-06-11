@@ -1,12 +1,72 @@
 import SwiftUI
 
+import Combine
+
+final class TotalsViewModel: ObservableObject {
+    enum CashPaymentState {
+        case idle
+        case inProgress
+        case confirmed
+    }
+
+    @Published private(set) var paymentState: PointOfSaleDashboardViewModel.PaymentState = .acceptingCard
+
+    @Published private var cashPaymentState: CashPaymentState = .idle
+
+    private let cardPresentPaymentEvent: AnyPublisher<CardPresentPaymentEvent, Never>
+
+    // TODO: update init to only take in the event publisher
+    init(viewModel: PointOfSaleDashboardViewModel) {
+        self.cardPresentPaymentEvent = viewModel.$cardPresentPaymentEvent.eraseToAnyPublisher()
+        observeForPaymentState()
+    }
+
+    func takeCashPayment() {
+        cashPaymentState = .inProgress
+    }
+
+    // TODO: update to async to update order status remotely
+    func confirmCashPayment() {
+        cashPaymentState = .confirmed
+    }
+
+    func cancelCashPayment() {
+        cashPaymentState = .idle
+    }
+
+    private func observeForPaymentState() {
+        Publishers.CombineLatest($cashPaymentState, cardPresentPaymentEvent)
+            .compactMap { cashPaymentState, cardPresentPaymentEvent in
+                if case .showPaymentSuccess = cardPresentPaymentEvent {
+                    return .cardPaymentSuccessful
+                }
+
+                if cashPaymentState == .confirmed {
+                    return .cashPaymentSuccessful
+                }
+
+                // TODO: update to acceptingCard when reader is ready for payment
+//                if case = cardPresentPaymentEvent
+//            case acceptingCard
+//            case processingCard
+
+                if cashPaymentState == .inProgress {
+                    return .acceptingCash
+                }
+
+                return nil
+            }
+            .assign(to: &$paymentState)
+    }
+}
+
 struct TotalsView: View {
     @ObservedObject private var viewModel: PointOfSaleDashboardViewModel
-
-    @State var paymentState: PointOfSaleDashboardViewModel.PaymentState = .acceptingCard
+    @ObservedObject private var totalsViewModel: TotalsViewModel
 
     init(viewModel: PointOfSaleDashboardViewModel) {
         self.viewModel = viewModel
+        self.totalsViewModel = .init(viewModel: viewModel)
     }
 
     var body: some View {
@@ -54,7 +114,7 @@ private extension TotalsView {
 
     @ViewBuilder
     private var paymentsTextView: some View {
-        switch paymentState {
+        switch totalsViewModel.paymentState {
         case .acceptingCard:
             tapInsertCardView
         case .processingCard:
@@ -70,7 +130,7 @@ private extension TotalsView {
 
     @ViewBuilder
     private var paymentsIconView: some View {
-        switch paymentState {
+        switch totalsViewModel.paymentState {
         case .acceptingCard:
             EmptyView()
         case .processingCard:
@@ -95,7 +155,7 @@ private extension TotalsView {
 
     private var cashPaymentButton: some View {
         Button("Cash payment") {
-            paymentState = .acceptingCash
+            totalsViewModel.takeCashPayment()
         }
         .padding(30)
         .font(.title)
@@ -108,7 +168,7 @@ private extension TotalsView {
 
     private var confirmCashPaymentButton: some View {
         Button("Confirm") {
-            paymentState = .cashPaymentSuccessful
+            totalsViewModel.confirmCashPayment()
         }
         .padding(30)
         .font(.title)
@@ -123,7 +183,7 @@ private extension TotalsView {
 
     private var cancelCashPaymentButton: some View {
         Button("Cancel") {
-            paymentState = .acceptingCard
+            totalsViewModel.cancelCashPayment()
         }
         .padding(30)
         .font(.title)
@@ -149,7 +209,7 @@ private extension TotalsView {
 
     private var newTransactionButton: some View {
         Button("New transaction") {
-            paymentState = .acceptingCard
+            // TODO: reset POS/payment state
         }
         .padding(30)
         .font(.title)
@@ -163,7 +223,7 @@ private extension TotalsView {
     @ViewBuilder
     private var paymentsActionButtons: some View {
         VStack {
-            switch paymentState {
+            switch totalsViewModel.paymentState {
             case .acceptingCard:
                 HStack {
                     cashPaymentButton
@@ -188,7 +248,7 @@ private extension TotalsView {
     @ViewBuilder private var cardReaderView: some View {
         switch viewModel.cardReaderConnectionViewModel.connectionStatus {
         case .connected:
-            Text("Card reader connected placeholder view")
+            Text("Tap, swipe, or insert card to pay")
         case .disconnected:
             Button(action: viewModel.cardPaymentTapped) {
                 Text("Collect Payment")

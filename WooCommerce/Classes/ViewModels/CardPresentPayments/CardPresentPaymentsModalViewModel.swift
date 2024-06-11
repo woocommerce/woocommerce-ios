@@ -67,6 +67,97 @@ protocol CardPresentPaymentsModalViewModelActions {
     var auxiliaryButtonViewModel: CardPresentPaymentsModalButtonViewModel? { get }
 }
 
+enum POSCardPresentPaymentsModalPresentation {
+    case alert(viewModel: CardPresentPaymentAlertViewModel)
+    case hidden
+    case inlineMessage(message: String)
+    case success
+}
+
+struct POSCardPresentPaymentsModalViewModel {
+    let presentation: POSCardPresentPaymentsModalPresentation
+    private let modalState: CardPresentPaymentsModalState?
+    private let modalViewModel: CardPresentPaymentsModalViewModel
+
+    init(modalViewModel: CardPresentPaymentsModalViewModel) {
+        self.modalViewModel = modalViewModel
+        self.presentation = Self.presentation(from: modalViewModel)
+        self.modalState = Self.modalState(from: modalViewModel)
+    }
+}
+
+private extension POSCardPresentPaymentsModalViewModel {
+    static func presentation(from modalViewModel: CardPresentPaymentsModalViewModel) -> POSCardPresentPaymentsModalPresentation {
+        switch modalViewModel {
+            case is CardPresentModalScanningForReader:
+                return .hidden
+            case is CardPresentModalConnectingToReader:
+                return .hidden
+            case is CardPresentModalTapCard:
+                return .hidden
+            case is CardPresentModalSuccess:
+                return .success
+            case is CardPresentModalSuccessWithoutEmail:
+                return .success
+            default:
+                return .alert(viewModel: modalViewModel)
+        }
+    }
+
+    // TODO: can remove
+    static func modalState(from modalViewModel: CardPresentPaymentsModalViewModel) -> CardPresentPaymentsModalState? {
+        switch modalViewModel {
+            case is CardPresentModalScanningForReader:
+                return .scanningForReader
+            case is CardPresentModalConnectingToReader:
+                return .connectingToReader
+            case is CardPresentModalScanningFailed:
+                return .connectingFailed
+            case is CardPresentModalConnectingFailedUpdatePostalCode:
+                return .connectingFailed
+            case is CardPresentModalConnectingFailedChargeReader:
+                return .connectingFailed
+            case is CardPresentModalTapCard:
+                return .tapCard
+            case is CardPresentModalSuccess:
+                return .success
+            default:
+                return nil
+        }
+    }
+}
+
+// TODO: can remove
+enum CardPresentPaymentsModalState {
+    case scanningForReader
+    case connectingToReader
+    case scanningFailed
+    case bluetoothRequired
+    case connectingFailed
+    case preparingForPayment
+    case selectSearchType
+    case foundReader
+    case readerUpdateProgress
+    case readerUpdateFailed
+    case tapCard
+    case success
+    case error
+    case processing
+    case displayReaderMessage
+}
+
+// TODO: can remove
+extension CardPresentPaymentsModalState {
+    var shownAsAlert: Bool {
+        switch self {
+            case .scanningForReader, .connectingToReader, .preparingForPayment, .tapCard, .success, .processing, .displayReaderMessage:
+                return false
+            case .scanningFailed, .bluetoothRequired, .connectingFailed, .selectSearchType, .foundReader, .readerUpdateProgress, .readerUpdateFailed, .error:
+                return true
+        }
+    }
+}
+
 /// This is a naive fallback use of the existing UIKit handlers, without passing a view controller.
 /// In general, we should have specific SwiftUI handlers for each view model, but this helps us move forward quickly.
 extension CardPresentPaymentsModalViewModelUIKitActions where Self: CardPresentPaymentsModalViewModelActions {

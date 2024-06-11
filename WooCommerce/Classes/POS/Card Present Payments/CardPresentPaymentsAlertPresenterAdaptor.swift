@@ -13,7 +13,19 @@ final class CardPresentPaymentsAlertPresenterAdaptor: CardPresentPaymentAlertsPr
     }
 
     func present(viewModel: CardPresentPaymentsModalViewModel) {
-        paymentAlertSubject.send(.showAlert(viewModel))
+        let presentation = POSCardPresentPaymentsModalViewModel(modalViewModel: viewModel).presentation
+
+        switch presentation {
+            case .alert(let viewModel):
+                paymentAlertSubject.send(.showAlert(viewModel))
+            case .hidden:
+                paymentAlertSubject.send(.idle)
+            case .inlineMessage(let message):
+                //TODO
+                paymentAlertSubject.send(.showAlert(viewModel))
+            case .success:
+                paymentAlertSubject.send(.showPaymentSuccess)
+        }
     }
 
     func presentWCSettingsWebView(adminURL: URL, completion: @escaping () -> Void) {

@@ -448,7 +448,6 @@ private extension RefundSubmissionUseCaseTests {
 
     func createUseCase(details: RefundSubmissionUseCase.Details) -> RefundSubmissionUseCase {
         let dependencies = Dependencies(
-            cardReaderConnectionAlerts: cardReaderConnectionAlerts,
             currencyFormatter: CurrencyFormatter(currencySettings: .init()),
             currencySettings: .init(),
             knownReaderProvider: knownCardReaderProvider,
@@ -463,6 +462,8 @@ private extension RefundSubmissionUseCaseTests {
             rootViewController: .init(),
             alerts: alerts,
             cardPresentConfiguration: Mocks.configuration,
+            cardReaderConnectionAlerts: cardReaderConnectionAlerts,
+            alertPresenter: MockCardPresentPaymentAlertsPresenter(),
             dependencies: dependencies)
     }
 

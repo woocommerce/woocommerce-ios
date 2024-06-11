@@ -63,6 +63,8 @@ final class RefundSubmissionUseCase: NSObject, RefundSubmissionProtocol {
     /// Alert manager to inform merchants about card reader connection actions used in `CardReaderConnectionController`.
     private let cardReaderConnectionAlerts: BluetoothReaderConnnectionAlertsProviding
 
+    private let alertPresenter: any CardPresentPaymentAlertsPresenting<CardPresentPaymentsModalViewModel>
+
     /// Provides any known card reader to be used in `CardReaderConnectionController`.
     private let knownReaderProvider: CardReaderSettingsKnownReaderProvider
 
@@ -76,7 +78,7 @@ final class RefundSubmissionUseCase: NSObject, RefundSubmissionProtocol {
                                    storageManager: storageManager,
                                    stores: stores,
                                    knownReaderProvider: knownReaderProvider,
-                                   alertsPresenter: CardPresentPaymentAlertsPresenter(rootViewController: rootViewController),
+                                   alertsPresenter: alertPresenter,
                                    alertsProvider: cardReaderConnectionAlerts,
                                    configuration: cardPresentConfiguration,
                                    analyticsTracker: .init(configuration: cardPresentConfiguration,
@@ -89,7 +91,6 @@ final class RefundSubmissionUseCase: NSObject, RefundSubmissionProtocol {
     private let cardPresentConfiguration: CardPresentPaymentsConfiguration
 
     struct Dependencies {
-        let cardReaderConnectionAlerts: BluetoothReaderConnnectionAlertsProviding
         let currencyFormatter: CurrencyFormatter
         let currencySettings: CurrencySettings
         let knownReaderProvider: CardReaderSettingsKnownReaderProvider
@@ -98,15 +99,13 @@ final class RefundSubmissionUseCase: NSObject, RefundSubmissionProtocol {
         let storageManager: StorageManagerType
         let analytics: Analytics
 
-        init(cardReaderConnectionAlerts: BluetoothReaderConnnectionAlertsProviding = BluetoothReaderConnectionAlertsProvider(),
-             currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
+        init(currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
              currencySettings: CurrencySettings = ServiceLocator.currencySettings,
              knownReaderProvider: CardReaderSettingsKnownReaderProvider = CardReaderSettingsKnownReaderStorage(),
              cardPresentPaymentsOnboardingPresenter: CardPresentPaymentsOnboardingPresenting = CardPresentPaymentsOnboardingPresenter(),
              stores: StoresManager = ServiceLocator.stores,
              storageManager: StorageManagerType = ServiceLocator.storageManager,
              analytics: Analytics = ServiceLocator.analytics) {
-            self.cardReaderConnectionAlerts = cardReaderConnectionAlerts
             self.currencyFormatter = currencyFormatter
             self.currencySettings = currencySettings
             self.knownReaderProvider = knownReaderProvider
@@ -121,6 +120,8 @@ final class RefundSubmissionUseCase: NSObject, RefundSubmissionProtocol {
          rootViewController: UIViewController,
          alerts: OrderDetailsPaymentAlertsProtocol,
          cardPresentConfiguration: CardPresentPaymentsConfiguration,
+         cardReaderConnectionAlerts: any BluetoothReaderConnnectionAlertsProviding,
+         alertPresenter: any CardPresentPaymentAlertsPresenting<CardPresentPaymentsModalViewModel>,
          dependencies: Dependencies = Dependencies()) {
         self.details = details
         self.formattedAmount = {
@@ -130,7 +131,8 @@ final class RefundSubmissionUseCase: NSObject, RefundSubmissionProtocol {
         }()
         self.rootViewController = rootViewController
         self.alerts = alerts
-        self.cardReaderConnectionAlerts = dependencies.cardReaderConnectionAlerts
+        self.cardReaderConnectionAlerts = cardReaderConnectionAlerts
+        self.alertPresenter = alertPresenter
         self.currencyFormatter = dependencies.currencyFormatter
         self.cardPresentConfiguration = cardPresentConfiguration
         self.knownReaderProvider = dependencies.knownReaderProvider

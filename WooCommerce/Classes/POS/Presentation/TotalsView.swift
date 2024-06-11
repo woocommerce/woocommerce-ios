@@ -14,10 +14,17 @@ struct TotalsView: View {
             VStack(alignment: .leading) {
                 VStack(alignment: .leading, spacing: 32) {
                     HStack(spacing: 40) {
+                        Spacer()
                         priceFieldView(title: "Subtotal", formattedPrice: viewModel.formattedCartTotalPrice, shimmeringActive: false)
+                        Text("+")
                         priceFieldView(title: "Taxes", formattedPrice: viewModel.formattedOrderTotalTaxPrice, shimmeringActive: viewModel.isSyncingOrder)
+                        Spacer()
                     }
-                    totalPriceView(formattedPrice: viewModel.formattedOrderTotalPrice)
+                    HStack {
+                        Spacer()
+                        totalPriceView(formattedPrice: viewModel.formattedOrderTotalPrice)
+                        Spacer()
+                    }
                     if viewModel.showRecalculateButton {
                         Button("Calculate amounts") {
                             viewModel.recalculateAmounts()
@@ -210,7 +217,7 @@ private extension TotalsView {
     }
 
     @ViewBuilder func priceFieldView(title: String, formattedPrice: String?, shimmeringActive: Bool) -> some View {
-        VStack(alignment: .leading, spacing: .zero) {
+        VStack(alignment: .center, spacing: .zero) {
             Text(title)
             Text(formattedPrice ?? "-----")
                 .font(.title2)
@@ -222,7 +229,7 @@ private extension TotalsView {
     }
 
     @ViewBuilder func totalPriceView(formattedPrice: String?) -> some View {
-        VStack(alignment: .leading, spacing: .zero) {
+        VStack(alignment: .center, spacing: .zero) {
             Text("Total")
                 .font(.title2)
                 .fontWeight(.medium)

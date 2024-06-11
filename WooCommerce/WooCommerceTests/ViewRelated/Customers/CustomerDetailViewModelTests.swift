@@ -37,6 +37,7 @@ final class CustomerDetailViewModelTests: XCTestCase {
         assertEqual(customer.region, vm.region)
         assertEqual(customer.city, vm.city)
         assertEqual(customer.postcode, vm.postcode)
+        XCTAssertTrue(vm.showLocation)
     }
 
     func test_it_inits_with_expected_values_from_empty_customer() {
@@ -69,6 +70,66 @@ final class CustomerDetailViewModelTests: XCTestCase {
         XCTAssertNil(vm.region)
         XCTAssertNil(vm.city)
         XCTAssertNil(vm.postcode)
+        XCTAssertTrue(vm.showLocation)
     }
 
+    func test_it_updates_billing_and_shipping_from_remote() throws {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let billing = sampleAddress()
+        let shipping = Address.fake().copy(company: "Widget Shop", address1: "1 Main Street")
+        let customer = WCAnalyticsCustomer.fake().copy(userID: 123,
+                                                       name: "Pat Smith",
+                                                       email: "pat.smith@example.com",
+                                                       username: "psmith",
+                                                       dateRegistered: Date(),
+                                                       dateLastActive: Date(),
+                                                       ordersCount: 2,
+                                                       totalSpend: 10,
+                                                       averageOrderValue: 5,
+                                                       country: "US",
+                                                       region: "CA",
+                                                       city: "San Francisco",
+                                                       postcode: "94103")
+
+        // When
+        var vm: CustomerDetailViewModel?
+        _ = waitFor { promise in
+            stores.whenReceivingAction(ofType: CustomerAction.self) { action in
+                switch action {
+                case let .retrieveCustomer(_, userID, onCompletion):
+                    let customer = Customer.fake().copy(customerID: userID, billing: billing, shipping: shipping)
+                    onCompletion(.success(customer))
+                    promise(true)
+                default:
+                    XCTFail("Received unexpected action")
+                }
+            }
+
+            vm = CustomerDetailViewModel(customer: customer, stores: stores)
+        }
+
+        // Then
+        let viewModel = try XCTUnwrap(vm)
+        XCTAssertFalse(viewModel.showLocation)
+        assertEqual(billing.fullNameWithCompanyAndAddress, viewModel.billing)
+        assertEqual(shipping.fullNameWithCompanyAndAddress, viewModel.shipping)
+    }
+
+}
+
+private extension CustomerDetailViewModelTests {
+    func sampleAddress() -> Address {
+        return Address(firstName: "Johnny",
+                       lastName: "Appleseed",
+                       company: nil,
+                       address1: "234 70th Street",
+                       address2: nil,
+                       city: "Niagara Falls",
+                       state: "NY",
+                       postcode: "14304",
+                       country: "US",
+                       phone: "333-333-3333",
+                       email: "scrambled@scrambled.com")
+    }
 }

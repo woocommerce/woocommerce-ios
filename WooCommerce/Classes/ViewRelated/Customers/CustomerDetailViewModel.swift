@@ -1,8 +1,10 @@
 import Foundation
-import struct Yosemite.WCAnalyticsCustomer
+import Yosemite
 import WooFoundation
 
-final class CustomerDetailViewModel {
+final class CustomerDetailViewModel: ObservableObject {
+    private let stores: StoresManager
+
     /// Customer name
     let name: String
 
@@ -33,6 +35,11 @@ final class CustomerDetailViewModel {
 
     // MARK: Location
 
+    /// Whether to show the customer's location data
+    var showLocation: Bool {
+        billing.isNilOrEmpty && shipping.isNilOrEmpty
+    }
+
     /// Customer country
     let country: String?
 
@@ -45,6 +52,14 @@ final class CustomerDetailViewModel {
     /// Customer postal code
     let postcode: String?
 
+    // MARK: Address
+
+    /// Formatted billing name and address
+    @Published private(set) var billing: String?
+
+    /// Formatted shipping name and address
+    @Published private(set) var shipping: String?
+
     init(name: String?,
          dateLastActive: String,
          email: String?,
@@ -56,7 +71,11 @@ final class CustomerDetailViewModel {
          country: String?,
          region: String?,
          city: String?,
-         postcode: String?) {
+         postcode: String?,
+         billing: String?,
+         shipping: String?,
+         stores: StoresManager = ServiceLocator.stores) {
+        self.stores = stores
         self.name = name ?? Localization.guestName
         self.dateLastActive = dateLastActive
         self.email = email
@@ -72,7 +91,8 @@ final class CustomerDetailViewModel {
     }
 
     convenience init(customer: WCAnalyticsCustomer,
-                     currencySettings: CurrencySettings = ServiceLocator.currencySettings) {
+                     currencySettings: CurrencySettings = ServiceLocator.currencySettings,
+                     stores: StoresManager = ServiceLocator.stores) {
         let currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
         self.init(name: customer.name?.nullifyIfEmptyOrWhitespace(),
                   dateLastActive: DateFormatter.mediumLengthLocalizedDateFormatter.string(from: customer.dateLastActive),
@@ -85,7 +105,12 @@ final class CustomerDetailViewModel {
                   country: customer.country.nullifyIfEmptyOrWhitespace(),
                   region: customer.region.nullifyIfEmptyOrWhitespace(),
                   city: customer.city.nullifyIfEmptyOrWhitespace(),
-                  postcode: customer.postcode.nullifyIfEmptyOrWhitespace())
+                  postcode: customer.postcode.nullifyIfEmptyOrWhitespace(),
+                  billing: nil,
+                  shipping: nil,
+                  stores: stores)
+
+        syncCustomerAddressData(siteID: customer.siteID, userID: customer.userID)
     }
 
     /// Copies the customer email to the pasteboard.
@@ -102,6 +127,29 @@ final class CustomerDetailViewModel {
     /// Tracks when the option to send an email is tapped.
     func trackEmailOptionTapped() {
         ServiceLocator.analytics.track(event: .CustomersHub.customerDetailEmailOptionTapped())
+    }
+}
+
+private extension CustomerDetailViewModel {
+    /// Retrieves and sets the customer billing and shipping address from remote, for registered customers.
+    ///
+    func syncCustomerAddressData(siteID: Int64, userID: Int64) {
+        // Only try to sync the address data for registered customers
+        guard userID != 0 else {
+            return
+        }
+
+        let action = CustomerAction.retrieveCustomer(siteID: siteID, customerID: userID) { [weak self] result in
+            guard let self else { return }
+            switch result {
+            case let .success(customer):
+                billing = customer.billing?.fullNameWithCompanyAndAddress
+                shipping = customer.shipping?.fullNameWithCompanyAndAddress
+            case let .failure(error):
+                DDLogError("⛔️ Error fetching customer details: \(error)")
+            }
+        }
+        stores.dispatch(action)
     }
 }
 

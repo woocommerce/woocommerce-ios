@@ -12,11 +12,11 @@ final class CardReaderSettingsSearchingViewController: UIHostingController<CardR
 
     private lazy var alertsPresenter: CardPresentPaymentAlertsPresenter = CardPresentPaymentAlertsPresenter(rootViewController: self)
 
-    private let alertsProvider: BluetoothReaderConnnectionAlertsProviding = BluetoothReaderConnectionAlertsProvider()
+    private let alertsProvider: BluetoothReaderConnectionAlertsProvider = BluetoothReaderConnectionAlertsProvider()
 
     /// Connection Controller (helps connect readers)
     ///
-    private lazy var connectionController: CardReaderConnectionController? = {
+    private lazy var connectionController: CardReaderConnectionController<BluetoothReaderConnectionAlertsProvider, CardPresentPaymentAlertsPresenter>? = {
         guard let knownReaderProvider = viewModel.knownReaderProvider else {
             return nil
         }

@@ -22,7 +22,9 @@ protocol RefundSubmissionProtocol {
 /// If in-person refund is required for the payment method (e.g. Interac in Canada), orchestrates reader connection, refund, UI alerts,
 /// submit refund to the site, and analytics.
 /// Otherwise, it submits the refund to the site directly with analytics.
-final class RefundSubmissionUseCase: NSObject, RefundSubmissionProtocol {
+final class RefundSubmissionUseCase<AlertProvider: BluetoothReaderConnnectionAlertsProviding,
+                                        AlertPresenter: CardPresentPaymentAlertsPresenting>: NSObject, RefundSubmissionProtocol
+where AlertProvider.AlertDetails == AlertPresenter.AlertDetails {
     /// Refund details.
     private let details: Details
 
@@ -61,9 +63,9 @@ final class RefundSubmissionUseCase: NSObject, RefundSubmissionProtocol {
     private lazy var cardPresentRefundOrchestrator = CardPresentRefundOrchestrator(stores: stores)
 
     /// Alert manager to inform merchants about card reader connection actions used in `CardReaderConnectionController`.
-    private let cardReaderConnectionAlerts: BluetoothReaderConnnectionAlertsProviding
+    private let cardReaderConnectionAlerts: AlertProvider
 
-    private let alertPresenter: any CardPresentPaymentAlertsPresenting<CardPresentPaymentsModalViewModel>
+    private let alertPresenter: AlertPresenter
 
     /// Provides any known card reader to be used in `CardReaderConnectionController`.
     private let knownReaderProvider: CardReaderSettingsKnownReaderProvider
@@ -120,8 +122,8 @@ final class RefundSubmissionUseCase: NSObject, RefundSubmissionProtocol {
          rootViewController: UIViewController,
          alerts: OrderDetailsPaymentAlertsProtocol,
          cardPresentConfiguration: CardPresentPaymentsConfiguration,
-         cardReaderConnectionAlerts: any BluetoothReaderConnnectionAlertsProviding,
-         alertPresenter: any CardPresentPaymentAlertsPresenting<CardPresentPaymentsModalViewModel>,
+         cardReaderConnectionAlerts: AlertProvider,
+         alertPresenter: AlertPresenter,
          dependencies: Dependencies = Dependencies()) {
         self.details = details
         self.formattedAmount = {

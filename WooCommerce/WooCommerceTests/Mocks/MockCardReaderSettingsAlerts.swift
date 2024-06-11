@@ -28,6 +28,8 @@ final class MockCardReaderSettingsAlerts {
 }
 
 extension MockCardReaderSettingsAlerts: BluetoothReaderConnnectionAlertsProviding {
+    typealias AlertDetails = CardPresentPaymentsModalViewModel
+
     func scanningForReader(cancel: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
         if mode == .cancelScanning {
             cancel()

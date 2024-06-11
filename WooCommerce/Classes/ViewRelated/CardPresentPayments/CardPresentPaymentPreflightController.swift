@@ -19,7 +19,10 @@ protocol CardPresentPaymentPreflightControllerProtocol {
     var readerConnection: AnyPublisher<CardReaderPreflightResult?, Never> { get }
 }
 
-final class CardPresentPaymentPreflightController: CardPresentPaymentPreflightControllerProtocol {
+final class CardPresentPaymentPreflightController<BluetoothAlertProvider: BluetoothReaderConnnectionAlertsProviding,
+                                                  TapToPayAlertProvider: CardReaderConnectionAlertsProviding,
+                                                    AlertPresenter: CardPresentPaymentAlertsPresenting>: CardPresentPaymentPreflightControllerProtocol
+where BluetoothAlertProvider.AlertDetails == AlertPresenter.AlertDetails, TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails {
     /// Store's ID.
     ///
     private let siteID: Int64
@@ -32,7 +35,7 @@ final class CardPresentPaymentPreflightController: CardPresentPaymentPreflightCo
 
     /// Alerts presenter to send alert view models
     ///
-    private var alertsPresenter: any CardPresentPaymentAlertsPresenting<CardPresentPaymentsModalViewModel>
+    private var alertsPresenter: AlertPresenter
 
     /// Stores manager.
     ///
@@ -57,13 +60,13 @@ final class CardPresentPaymentPreflightController: CardPresentPaymentPreflightCo
 
     /// Controller to connect a card reader.
     ///
-    private var connectionController: CardReaderConnectionController
+    private var connectionController: CardReaderConnectionController<BluetoothAlertProvider, AlertPresenter>
 
     /// Controller to connect a card reader.
     ///
-    private var builtInConnectionController: BuiltInCardReaderConnectionController
+    private var builtInConnectionController: BuiltInCardReaderConnectionController<TapToPayAlertProvider, AlertPresenter>
 
-    private var tapToPayAlertProvider: CardReaderConnectionAlertsProviding
+    private var tapToPayAlertProvider: TapToPayAlertProvider
 
     private var readerConnectionSubject = CurrentValueSubject<CardReaderPreflightResult?, Never>(nil)
 
@@ -75,17 +78,17 @@ final class CardPresentPaymentPreflightController: CardPresentPaymentPreflightCo
 
     private let supportDeterminer: CardReaderSupportDeterminer
 
-    private let tapToPayReconnectionController: TapToPayReconnectionController
+    private let tapToPayReconnectionController: TapToPayReconnectionController<TapToPayAlertProvider, AlertPresenter>
 
     init(siteID: Int64,
          configuration: CardPresentPaymentsConfiguration,
          rootViewController: ViewControllerPresenting,
-         alertsPresenter: any CardPresentPaymentAlertsPresenting<CardPresentPaymentsModalViewModel>,
+         alertsPresenter: AlertPresenter,
          onboardingPresenter: CardPresentPaymentsOnboardingPresenting,
-         externalReaderConnectionController: CardReaderConnectionController,
-         tapToPayConnectionController: BuiltInCardReaderConnectionController,
-         tapToPayAlertProvider: CardReaderConnectionAlertsProviding,
-         tapToPayReconnectionController: TapToPayReconnectionController = ServiceLocator.tapToPayReconnectionController,
+         tapToPayAlertProvider: TapToPayAlertProvider,
+         externalReaderConnectionController: CardReaderConnectionController<BluetoothAlertProvider, AlertPresenter>,
+         tapToPayConnectionController: BuiltInCardReaderConnectionController<TapToPayAlertProvider, AlertPresenter>,
+         tapToPayReconnectionController: TapToPayReconnectionController<TapToPayAlertProvider, AlertPresenter>,
          analyticsTracker: CardReaderConnectionAnalyticsTracker,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics) {

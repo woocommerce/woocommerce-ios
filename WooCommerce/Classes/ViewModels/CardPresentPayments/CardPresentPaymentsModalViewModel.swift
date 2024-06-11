@@ -71,7 +71,7 @@ enum POSCardPresentPaymentsModalPresentation {
     case alert(viewModel: CardPresentPaymentAlertViewModel)
     case hidden
     case readyForPayment
-    case readerMessage(message: String)
+    case inlineMessage(message: String)
     case success
 }
 
@@ -87,18 +87,18 @@ private extension POSCardPresentPaymentsModalViewModel {
     static func presentation(from modalViewModel: CardPresentPaymentsModalViewModel) -> POSCardPresentPaymentsModalPresentation {
         switch modalViewModel {
             case is CardPresentModalScanningForReader:
-                return .readerMessage(message: "Scanning for reader...")
+                return .inlineMessage(message: "Scanning for reader...")
             case is CardPresentModalConnectingToReader:
-                return .readerMessage(message: "Connecting to reader...")
+                return .inlineMessage(message: "Connecting to reader...")
             case is CardPresentModalPreparingForPayment:
                 return .hidden
             case is CardPresentModalTapCard:
                 return .readyForPayment
             case is CardPresentModalProcessing:
-                return .readerMessage(message: "Processing payment...")
+                return .inlineMessage(message: "Processing payment...")
             case let viewModel as CardPresentModalDisplayMessage:
                 // This is really just a workaround from making `CardPresentModalDisplayMessage.message` public that we should consider refactoring/changing.
-                return .readerMessage(message: viewModel.message)
+                return .inlineMessage(message: viewModel.message)
             case is CardPresentModalSuccess:
                 return .success
             case is CardPresentModalSuccessWithoutEmail:

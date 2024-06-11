@@ -22,7 +22,7 @@ final class CardPresentPaymentsAlertPresenterAdaptor: CardPresentPaymentAlertsPr
                 paymentAlertSubject.send(.idle)
             case .readyForPayment:
                 paymentAlertSubject.send(.readyForPayment)
-            case .readerMessage(let message):
+            case .inlineMessage(let message):
                 paymentAlertSubject.send(.showReaderMessage(message))
             case .success:
                 paymentAlertSubject.send(.showPaymentSuccess)

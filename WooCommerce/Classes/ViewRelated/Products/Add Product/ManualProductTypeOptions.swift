@@ -9,6 +9,8 @@ struct ManualProductTypeOptions: View {
     /// Grouped product types based on their product category
     private let groupedProductTypes: [(BottomSheetProductType.ProductCreationCategory, [BottomSheetProductType])]
 
+    @ScaledMetric private var scale: CGFloat = 1.0
+
     init(productTypes: [BottomSheetProductType],
          onOptionSelected: @escaping (BottomSheetProductType) -> Void) {
         self.productTypes = productTypes
@@ -30,10 +32,11 @@ struct ManualProductTypeOptions: View {
                     .padding(.bottom, Constants.categoryVerticalSpacing)
                     .padding(.horizontal, Constants.horizontalSpacing)
 
-                ForEach(productTypes, id: \.self) { productType in
+                ForEach(productTypes) { productType in
                     HStack(alignment: .top, spacing: Constants.margin) {
                         Image(uiImage: productType.actionSheetImage.withRenderingMode(.alwaysTemplate))
-                            .font(.title3)
+                            .resizable()
+                            .frame(width: Constants.productTypeIconSize, height: Constants.productTypeIconSize)
                             .foregroundStyle(.primary)
                             .padding(.top, Constants.productIconTopSpacing)
 
@@ -69,8 +72,9 @@ private extension ManualProductTypeOptions {
         static let horizontalSpacing: CGFloat = 16
         static let categoryVerticalSpacing: CGFloat = 8
         static let productBottomSpacing: CGFloat = 16
-        static let productIconTopSpacing: CGFloat = 8
+        static let productIconTopSpacing: CGFloat = 4
         static let margin: CGFloat = 16
+        static let productTypeIconSize: CGFloat = 24
     }
 }
 

@@ -5,22 +5,23 @@ struct CardPresentPaymentsTransactionAlertsProvider: CardReaderTransactionAlerts
     typealias AlertDetails = CardPresentPaymentAlertDetails
 
     func validatingOrder(onCancel: @escaping () -> Void) -> CardPresentPaymentAlertDetails {
-        .validatingOrder
+        .validatingOrder(onCancel: onCancel)
     }
 
     func preparingReader(onCancel: @escaping () -> Void) -> CardPresentPaymentAlertDetails {
-        .preparingForPayment
+        .preparingForPayment(onCancel: onCancel)
     }
 
     func tapOrInsertCard(title: String,
                          amount: String,
                          inputMethods: CardReaderInput,
                          onCancel: @escaping () -> Void) -> CardPresentPaymentAlertDetails {
-        .tapCard
+        .tapSwipeOrInsertCard(inputMethods: inputMethods,
+                              cancel: onCancel)
     }
 
     func displayReaderMessage(message: String) -> CardPresentPaymentAlertDetails {
-        .displayReaderMessage
+        .displayReaderMessage(message: message)
     }
 
     func processingTransaction(title: String) -> CardPresentPaymentAlertDetails {
@@ -30,18 +31,21 @@ struct CardPresentPaymentsTransactionAlertsProvider: CardReaderTransactionAlerts
     func success(printReceipt: @escaping () -> Void,
                  emailReceipt: @escaping () -> Void,
                  noReceiptAction: @escaping () -> Void) -> CardPresentPaymentAlertDetails {
-        .success
+        .success(done: noReceiptAction)
     }
 
     func error(error: any Error,
                tryAgain: @escaping () -> Void,
                dismissCompletion: @escaping () -> Void) -> CardPresentPaymentAlertDetails {
-        .error
+        .error(error: error,
+               tryAgain: tryAgain,
+               dismissCompletion: dismissCompletion)
     }
 
     func nonRetryableError(error: any Error,
                            dismissCompletion: @escaping () -> Void) -> CardPresentPaymentAlertDetails {
-        .errorNonRetryable
+        .errorNonRetryable(error: error,
+                           dismissCompletion: dismissCompletion)
     }
 
     func cancelledOnReader() -> CardPresentPaymentAlertDetails? {

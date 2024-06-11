@@ -106,7 +106,6 @@ private extension BasicCardPresentPaymentAlert {
             case updateFailedNonRetryable
             case tapCard
             case success
-            case successWithoutEmail
             case error
             case errorNonRetryable
             case processing
@@ -118,28 +117,48 @@ private extension BasicCardPresentPaymentAlert {
         }
 
         private let alertDetailsByType: [AlertType: CardPresentPaymentAlertDetails] = [
-            .scanningForReaders: .scanningForReaders,
-            .scanningFailed: .scanningFailed,
-            .bluetoothRequired: .bluetoothRequired,
+            .scanningForReaders: .scanningForReaders(cancel: {}),
+            .scanningFailed: .scanningFailed(error: NSError(domain: "", code: 1, userInfo: nil),
+                                             close: {}),
+            .bluetoothRequired: .
+bluetoothRequired,
             .connectingToReader: .connectingToReader,
-            .connectingFailed: .connectingFailed,
-            .connectingFailedUpdatePostalCode: .connectingFailedUpdatePostalCode,
-            .connectingFailedChargeReader: .connectingFailedChargeReader,
-            .connectingFailedUpdateAddress: .connectingFailedUpdateAddress,
-            .preparingForPayment: .preparingForPayment,
-            .selectSearchType: .selectSearchType,
-            .foundReader: .foundReader,
-            .updateProgress: .updateProgress,
-            .updateFailed: .updateFailed,
-            .updateFailedLowBattery: .updateFailedLowBattery,
-            .updateFailedNonRetryable: .errorNonRetryable,
-            .tapCard: .tapCard,
-            .success: .success,
-            .successWithoutEmail: .successWithoutEmail,
-            .error: .error,
-            .errorNonRetryable: .errorNonRetryable,
+            .connectingFailed: .connectingFailed(error: NSError(domain: "", code: 1, userInfo: nil),
+                                                 retrySearch: {},
+                                                 cancelSearch: {}),
+            .connectingFailedUpdatePostalCode: .connectingFailedUpdatePostalCode(retrySearch: {}, 
+                                                                                 cancelSearch: {}),
+            .connectingFailedChargeReader: .connectingFailedChargeReader(retrySearch: {},
+                                                                         cancelSearch: {}),
+            .connectingFailedUpdateAddress: .connectingFailedUpdateAddress(wcSettingsAdminURL: nil, 
+                                                                           retrySearch: {},
+                                                                           cancelSearch: {}),
+            .preparingForPayment: .preparingForPayment(onCancel: {}),
+            .selectSearchType: .selectSearchType(tapToPay: {},
+                                                 bluetooth: {},
+                                                 cancel: {}),
+            .foundReader: .foundReader(name: "M100 Reader",
+                                       connect: {},
+                                       continueSearch: {},
+                                       cancelSearch: {}),
+            .updateProgress: .updateProgress(requiredUpdate: true,
+                                             progress: 0.4,
+                                             cancel: nil),
+            .updateFailed: .updateFailed(tryAgain: {}, close: {}),
+            .updateFailedLowBattery: .updateFailedLowBattery(batteryLevel: 0.6,
+                                                             close: {}),
+            .updateFailedNonRetryable: .errorNonRetryable(error: NSError(domain: "", code: 1, userInfo: nil),
+                                                          dismissCompletion: {}),
+            .tapCard: .tapSwipeOrInsertCard(inputMethods: [.tap, .insert, .swipe], 
+                                            cancel: {}),
+            .success: .success(done: {}),
+            .error: .error(error: NSError(domain: "", code: 1, userInfo: nil),
+                           tryAgain: {},
+                           dismissCompletion: {}),
+            .errorNonRetryable: .errorNonRetryable(error: NSError(domain: "", code: 1, userInfo: nil),
+                                                   dismissCompletion: {}),
             .processing: .processing,
-            .displayReaderMessage: .displayReaderMessage
+            .displayReaderMessage: .displayReaderMessage(message: "Reader message")
         ]
         @State private var showsAlert: Bool = false
         @State private var alertType: AlertType?

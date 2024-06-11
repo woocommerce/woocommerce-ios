@@ -32,7 +32,7 @@ protocol CollectOrderPaymentProtocol {
 final class CollectOrderPaymentUseCase<BuiltInAlertProvider: CardReaderTransactionAlertsProviding,
                                         BluetoothAlertProvider: CardReaderTransactionAlertsProviding,
                                         AlertPresenter: CardPresentPaymentAlertsPresenting>:
-    NSObject, CollectOrderPaymentProtocol 
+    NSObject, CollectOrderPaymentProtocol
 where BuiltInAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
       BluetoothAlertProvider.AlertDetails == AlertPresenter.AlertDetails {
     /// Currency Formatter

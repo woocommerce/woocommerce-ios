@@ -156,7 +156,7 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
         }
 
         // Then
-        XCTAssertEqual(result.failure as? RefundSubmissionUseCase.RefundSubmissionError, .unknownPaymentGatewayAccount)
+        XCTAssertEqual(result.failure as? RefundSubmissionUseCaseSubmissionError, .unknownPaymentGatewayAccount)
     }
 
     func test_submitRefund_successfully_tracks_interacRefundSuccess_event_when_payment_method_is_interac() throws {
@@ -226,7 +226,7 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
                                                    amount: "2.28",
                                                    paymentGatewayAccount: createPaymentGatewayAccount(siteID: Mocks.siteID)))
         mockCardPresentPaymentActions(clientSideRefundResult: .success(()))
-        mockServerSideRefund(result: .failure(RefundSubmissionUseCase.RefundSubmissionError.cardReaderDisconnected))
+        mockServerSideRefund(result: .failure(RefundSubmissionUseCaseSubmissionError.cardReaderDisconnected))
 
         // When
         let result = waitFor { promise in
@@ -237,7 +237,7 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
 
         // Then
         XCTAssertTrue(result.isFailure)
-        XCTAssertEqual(result.failure as? RefundSubmissionUseCase.RefundSubmissionError, .cardReaderDisconnected)
+        XCTAssertEqual(result.failure as? RefundSubmissionUseCaseSubmissionError, .cardReaderDisconnected)
 
         let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "interac_refund_success"}))
         let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])
@@ -258,7 +258,7 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
                                                                                   dedicatedFileName: "A000000003101001")))),
                                                    amount: "2.28",
                                                    paymentGatewayAccount: createPaymentGatewayAccount(siteID: Mocks.siteID)))
-        mockCardPresentPaymentActions(clientSideRefundResult: .failure(RefundSubmissionUseCase.RefundSubmissionError.cardReaderDisconnected))
+        mockCardPresentPaymentActions(clientSideRefundResult: .failure(RefundSubmissionUseCaseSubmissionError.cardReaderDisconnected))
 
         // When
         let result: Result<Void, Error> = waitFor { promise in
@@ -270,7 +270,7 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
 
         // Then
         XCTAssertTrue(result.isFailure)
-        XCTAssertEqual(result.failure as? RefundSubmissionUseCase.RefundSubmissionError, .cardReaderDisconnected)
+        XCTAssertEqual(result.failure as? RefundSubmissionUseCaseSubmissionError, .cardReaderDisconnected)
 
         let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "interac_refund_failed"}))
         let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])
@@ -347,7 +347,7 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
 
         // Then
         XCTAssertTrue(result.isFailure)
-        XCTAssertEqual(result.failure as? RefundSubmissionUseCase.RefundSubmissionError, .cardReaderDisconnected)
+        XCTAssertEqual(result.failure as? RefundSubmissionUseCaseSubmissionError, .cardReaderDisconnected)
 
         let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "interac_refund_cancelled"}))
         let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])
@@ -368,7 +368,7 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
                                                                                   dedicatedFileName: "A000000003101001")))),
                                                    amount: "2.28",
                                                    paymentGatewayAccount: createPaymentGatewayAccount(siteID: Mocks.siteID)))
-        mockCardPresentPaymentActions(clientSideRefundResult: .failure(RefundSubmissionUseCase.RefundSubmissionError.cardReaderDisconnected),
+        mockCardPresentPaymentActions(clientSideRefundResult: .failure(RefundSubmissionUseCaseSubmissionError.cardReaderDisconnected),
                                       cancelRefundResult: .success(()))
 
         // When
@@ -381,7 +381,7 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
 
         // Then
         XCTAssertTrue(result.isFailure)
-        XCTAssertEqual(result.failure as? RefundSubmissionUseCase.RefundSubmissionError, .canceledByUser)
+        XCTAssertEqual(result.failure as? RefundSubmissionUseCaseSubmissionError, .canceledByUser)
 
         let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "interac_refund_cancelled"}))
         let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])

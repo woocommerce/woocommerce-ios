@@ -165,11 +165,11 @@ final class RefundSubmissionUseCase: NSObject, RefundSubmissionProtocol {
                 guard let self = self else { return }
                 guard let refundAmount = self.currencyFormatter.convertToDecimal(self.details.amount) else {
                     DDLogError("Error: attempted to refund an order without a valid amount.")
-                    return onCompletion(.failure(RefundSubmissionError.invalidRefundAmount))
+                    return onCompletion(.failure(RefundSubmissionUseCaseSubmissionError.invalidRefundAmount))
                 }
 
                 guard let paymentGatewayAccount = self.details.paymentGatewayAccount else {
-                    return onCompletion(.failure(RefundSubmissionError.unknownPaymentGatewayAccount))
+                    return onCompletion(.failure(RefundSubmissionUseCaseSubmissionError.unknownPaymentGatewayAccount))
                 }
 
                 self.observeConnectedReadersForAnalytics()
@@ -273,7 +273,7 @@ private extension RefundSubmissionUseCase {
                                 case .canceled:
                                     self.readerSubscription = nil
                                     self.trackClientSideRefundCanceled(charge: charge, paymentGatewayAccount: paymentGatewayAccount)
-                                    onCompletion(.failure(RefundSubmissionError.cardReaderDisconnected))
+                                    onCompletion(.failure(RefundSubmissionUseCaseSubmissionError.cardReaderDisconnected))
                                 case .connected:
                                     // Connected case will be handled in `if readers.isNotEmpty`.
                                     break
@@ -312,7 +312,7 @@ private extension RefundSubmissionUseCase {
                                              onWaitingForInput: { [weak self] inputMethods in
             // Requests card input.
             guard let self = self else { return }
-            self.alerts.tapOrInsertCard(title: Localization.refundPaymentTitle(username: self.order.billingAddress?.firstName),
+            self.alerts.tapOrInsertCard(title: RefundSubmissionUseCaseDefinitions.Localization.refundPaymentTitle(username: self.order.billingAddress?.firstName),
                                         amount: self.formattedAmount,
                                         inputMethods: inputMethods,
                                         onCancel: { [weak self] in
@@ -320,7 +320,7 @@ private extension RefundSubmissionUseCase {
             })
         }, onProcessingMessage: { [weak self] in
             // Shows waiting message.
-            self?.alerts.processingPayment(title: Localization.refundPaymentTitle(username: self?.order.billingAddress?.firstName))
+            self?.alerts.processingPayment(title: RefundSubmissionUseCaseDefinitions.Localization.refundPaymentTitle(username: self?.order.billingAddress?.firstName))
         }, onDisplayMessage: { [weak self] message in
             // Shows reader messages (e.g. Remove Card).
             self?.alerts.displayReaderMessage(message: message)
@@ -376,7 +376,7 @@ private extension RefundSubmissionUseCase {
     func cancelRefund(charge: WCPayCharge, paymentGatewayAccount: PaymentGatewayAccount, onCompletion: @escaping (Result<Void, Error>) -> ()) {
         trackClientSideRefundCanceled(charge: charge, paymentGatewayAccount: paymentGatewayAccount)
         cardPresentRefundOrchestrator.cancelRefund { _ in
-            onCompletion(.failure(RefundSubmissionError.canceledByUser))
+            onCompletion(.failure(RefundSubmissionUseCaseSubmissionError.canceledByUser))
         }
     }
 
@@ -498,18 +498,16 @@ private extension RefundSubmissionUseCase {
 }
 
 // MARK: Definitions
-extension RefundSubmissionUseCase {
-    /// Mailing a receipt failed but the SDK didn't return a more specific error
-    ///
-    enum RefundSubmissionError: Error, Equatable {
-        case cardReaderDisconnected
-        case invalidRefundAmount
-        case unknownPaymentGatewayAccount
-        case canceledByUser
-    }
+/// Mailing a receipt failed but the SDK didn't return a more specific error
+///
+enum RefundSubmissionUseCaseSubmissionError: Error, Equatable {
+    case cardReaderDisconnected
+    case invalidRefundAmount
+    case unknownPaymentGatewayAccount
+    case canceledByUser
 }
 
-private extension RefundSubmissionUseCase {
+private enum RefundSubmissionUseCaseDefinitions {
     enum Localization {
         private static let refundPaymentWithoutName = NSLocalizedString("Refund payment",
                                                                         comment: "Alert title when starting the in-person refund flow without a user name.")

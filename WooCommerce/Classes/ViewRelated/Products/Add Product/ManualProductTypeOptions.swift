@@ -3,27 +3,26 @@ import SwiftUI
 /// View to show the manual product type creation options.
 ///
 struct ManualProductTypeOptions: View {
-    private let productTypes: [BottomSheetProductType]
+    private let supportedProductTypes: [BottomSheetProductType]
     private let onOptionSelected: (BottomSheetProductType) -> Void
 
-    /// Grouped product types based on their product category
-    private let groupedProductTypes: [(BottomSheetProductType.ProductCreationCategory, [BottomSheetProductType])]
+    private let supportedProductCategories: [BottomSheetProductCategory]
 
     @ScaledMetric private var scale: CGFloat = 1.0
 
-    init(productTypes: [BottomSheetProductType],
+    init(supportedProductTypes: [BottomSheetProductType],
          onOptionSelected: @escaping (BottomSheetProductType) -> Void) {
-        self.productTypes = productTypes
+        self.supportedProductTypes = supportedProductTypes
         self.onOptionSelected = onOptionSelected
 
-        self.groupedProductTypes = Constants.productCategoriesOrder.compactMap { category in
-            let currentCategoryProductTypes = productTypes.filter { $0.productCreationCategory == category }
-            return currentCategoryProductTypes.isEmpty ? nil : (category, currentCategoryProductTypes)
+        self.supportedProductCategories = BottomSheetProductCategory.allCases.filter { category in
+            // Only show a product category if at least one of its product types can be found in `supportedProductTypes`
+            category.productTypes.first { supportedProductTypes.contains($0) } != nil
         }
     }
 
     var body: some View {
-        ForEach(groupedProductTypes, id: \.0) { (category, productTypes) in
+        ForEach(supportedProductCategories, id: \.self) { category in
             VStack {
                 Text(category.label)
                     .subheadlineStyle()
@@ -32,30 +31,31 @@ struct ManualProductTypeOptions: View {
                     .padding(.bottom, Constants.categoryVerticalSpacing)
                     .padding(.horizontal, Constants.horizontalSpacing)
 
-                ForEach(productTypes) { productType in
-                    HStack(alignment: .top, spacing: Constants.margin) {
-                        Image(uiImage: productType.actionSheetImage.withRenderingMode(.alwaysTemplate))
-                            .resizable()
-                            .frame(width: Constants.productTypeIconSize, height: Constants.productTypeIconSize)
-                            .foregroundStyle(.primary)
-                            .padding(.top, Constants.productIconTopSpacing)
+                ForEach(category.productTypes) { productType in
+                    if supportedProductTypes.contains(productType) {
+                        HStack(alignment: .top, spacing: Constants.margin) {
+                            Image(uiImage: productType.actionSheetImage.withRenderingMode(.alwaysTemplate))
+                                .resizable()
+                                .frame(width: Constants.productTypeIconSize, height: Constants.productTypeIconSize)
+                                .foregroundStyle(.primary)
+                                .padding(.top, Constants.productIconTopSpacing)
 
-                        VStack(alignment: .leading, spacing: Constants.verticalSpacing) {
-                            Text(productType.actionSheetTitle)
-                                .bodyStyle()
-                            Text(productType.actionSheetDescription)
-                                .subheadlineStyle()
+                            VStack(alignment: .leading, spacing: Constants.verticalSpacing) {
+                                Text(productType.actionSheetTitle)
+                                    .bodyStyle()
+                                Text(productType.actionSheetDescription)
+                                    .subheadlineStyle()
+                            }
+                            .padding(.bottom, Constants.productBottomSpacing)
+                            Spacer()
                         }
-                        .padding(.bottom, Constants.productBottomSpacing)
-                        Spacer()
+                        .padding(.horizontal, Constants.horizontalSpacing)
+                        .onTapGesture {
+                            onOptionSelected(productType)
+                        }
                     }
-                    .padding(.horizontal, Constants.horizontalSpacing)
-                    .onTapGesture {
-                        onOptionSelected(productType)
-                    }
-
                 }
-                if category != Constants.productCategoriesOrder.last {
+                if category != supportedProductCategories.last {
                     Divider()
                         .padding(.vertical, Constants.categoryVerticalSpacing)
                 }
@@ -66,8 +66,6 @@ struct ManualProductTypeOptions: View {
 
 private extension ManualProductTypeOptions {
     enum Constants {
-        // List of product categories. The ordering dictates how the categories are displayed.
-        static let productCategoriesOrder: [BottomSheetProductType.ProductCreationCategory] = [.standard, .subscription, .other]
         static let verticalSpacing: CGFloat = 4
         static let horizontalSpacing: CGFloat = 16
         static let categoryVerticalSpacing: CGFloat = 8
@@ -80,7 +78,7 @@ private extension ManualProductTypeOptions {
 
 #Preview {
     ManualProductTypeOptions(
-        productTypes: [
+        supportedProductTypes: [
             .simple(isVirtual: false),
             .simple(isVirtual: true),
             .subscription,

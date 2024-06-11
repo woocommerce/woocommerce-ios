@@ -117,7 +117,7 @@ struct AddProductWithAIActionSheet: View {
                         }
                     }
                 } else {
-                    ManualProductTypeOptions(productTypes: productTypes, onOptionSelected: onProductTypeOption)
+                    ManualProductTypeOptions(supportedProductTypes: productTypes, onOptionSelected: onProductTypeOption)
                 }
 
                 Spacer()

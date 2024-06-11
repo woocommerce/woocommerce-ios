@@ -32,8 +32,9 @@ protocol CollectOrderPaymentProtocol {
 final class CollectOrderPaymentUseCase<BuiltInAlertProvider: CardReaderTransactionAlertsProviding,
                                         BluetoothAlertProvider: CardReaderTransactionAlertsProviding,
                                         AlertPresenter: CardPresentPaymentAlertsPresenting>:
-    NSObject, CollectOrderPaymentProtocol where BuiltInAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
-                                                BluetoothAlertProvider.AlertDetails == AlertPresenter.AlertDetails {
+    NSObject, CollectOrderPaymentProtocol 
+where BuiltInAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
+      BluetoothAlertProvider.AlertDetails == AlertPresenter.AlertDetails {
     /// Currency Formatter
     ///
     private let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
@@ -514,8 +515,9 @@ private extension CollectOrderPaymentUseCase {
     /// Allow merchants to print or email backend-generated receipts.
     /// The alerts presenter can be simplified once we remove legacy receipts: https://github.com/woocommerce/woocommerce-ios/issues/11897
     ///
-    func presentBackendReceiptAlert(alertProvider paymentAlerts: any CardReaderTransactionAlertsProviding<AlertPresenter.AlertDetails>,
-                                    onCompleted: @escaping () -> ()) {
+    func presentBackendReceiptAlert(
+        alertProvider paymentAlerts: any CardReaderTransactionAlertsProviding<AlertPresenter.AlertDetails>,
+        onCompleted: @escaping () -> ()) {
         // Handles receipt presentation for both print and email actions
         let receiptPresentationCompletionAction: () -> Void = { [weak self] in
             guard let self else { return }

@@ -57,6 +57,7 @@ struct ProductRow: View {
             VStack(alignment: .leading) {
                 Text(viewModel.name)
                     .bodyStyle()
+                    .opacity(viewModel.selectedState == .unsupported ? 0.5 : 1)
                 Text(viewModel.productDetailsLabel)
                     .subheadlineStyle()
                     .renderedIf(viewModel.productDetailsLabel.isNotEmpty)

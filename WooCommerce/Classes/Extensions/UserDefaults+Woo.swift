@@ -52,9 +52,6 @@ extension UserDefaults {
         // Store Creation
         case siteIDPendingStoreSwitch
         case expectedStoreNamePendingStoreSwitch
-
-        // Favorite product IDs
-        case favoriteProductIDs
     }
 }
 

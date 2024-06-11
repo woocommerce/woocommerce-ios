@@ -3,6 +3,7 @@
 19.1
 -----
 - [*] Disable bookable products from the order creation form. [https://github.com/woocommerce/woocommerce-ios/pull/13022]
+- [*] Restore a missing navigation bar on the privacy settings screen. [https://github.com/woocommerce/woocommerce-ios/pull/13018]
 
 
 19.0

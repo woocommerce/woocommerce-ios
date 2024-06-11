@@ -141,7 +141,7 @@ private extension CardPresentPaymentService {
     }
 
     func createPreflightController() -> CardPresentPaymentPreflightController {
-        CardPresentPaymentPreflightController(
+        return CardPresentPaymentPreflightController(
             siteID: siteID,
             configuration: cardPresentPaymentsConfiguration,
             rootViewController: NullViewControllerPresenting(),

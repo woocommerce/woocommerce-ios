@@ -36,8 +36,13 @@ struct PointOfSaleDashboardView: View {
             switch viewModel.cardPresentPaymentEvent {
             case .showAlert(let alertViewModel):
                 CardPresentPaymentAlert(alertViewModel: alertViewModel)
+            case let .showReaderList(readerIDs, selectionHandler):
+                FoundCardReaderListView(readerIDs: readerIDs, connect: { readerID in
+                    selectionHandler(readerID)
+                }, cancelSearch: {
+                    selectionHandler(nil)
+                })
             case .idle,
-                    .showReaderList,
                     .showOnboarding:
                 Text(viewModel.cardPresentPaymentEvent.temporaryEventDescription)
             }

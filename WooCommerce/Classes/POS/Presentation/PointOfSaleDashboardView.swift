@@ -34,8 +34,10 @@ struct PointOfSaleDashboardView: View {
         }
         .sheet(isPresented: $viewModel.showsCardReaderSheet, content: {
             switch viewModel.cardPresentPaymentEvent {
-            case .showAlert(let alertViewModel):
-                CardPresentPaymentAlert(alertViewModel: alertViewModel)
+            case .showAlert(let alertDetails):
+                CardPresentPaymentAlert(
+                    alertViewModel: CardPresentPaymentAlertViewModel(
+                        alertDetails: alertDetails))
             case .idle,
                     .showReaderList,
                     .showOnboarding:
@@ -74,8 +76,8 @@ fileprivate extension CardPresentPaymentEvent {
         switch self {
         case .idle:
             return "Idle"
-        case .showAlert(let alertViewModel):
-            return "Alert: \(alertViewModel.topTitle)"
+        case .showAlert(let alertDetails):
+            return "Alert"
         case .showReaderList(let readerIDs, _):
             return "Reader List: \(readerIDs.joined())"
         case .showOnboarding(let onboardingViewModel):

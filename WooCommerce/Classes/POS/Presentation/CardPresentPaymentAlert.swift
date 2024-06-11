@@ -26,7 +26,7 @@ struct BasicCardPresentPaymentAlert: View {
             VStack(alignment: .center, spacing: Layout.defaultVerticalSpacing) {
                 Text(viewModel.topTitle)
                     .font(.body)
-                if let topSubtitle = viewModel.topSubtitle, shouldShowTopSubtitle() {
+                if let topSubtitle = viewModel.topSubtitle {
                     Text(topSubtitle)
                         .font(.title)
                 }
@@ -37,16 +37,16 @@ struct BasicCardPresentPaymentAlert: View {
                     .progressViewStyle(CircularProgressViewStyle(tint: .gray))
                     .scaleEffect(1.5, anchor: .center)
             } else {
-                Image(uiImage: viewModel.image)
+                viewModel.image
                     .padding()
             }
 
-            if let bottomTitle = viewModel.bottomTitle, shouldShowBottomLabels() {
+            if let bottomTitle = viewModel.bottomTitle {
                 VStack(alignment: .center, spacing: Layout.defaultVerticalSpacing) {
                     Text(bottomTitle)
                         .font(.subheadline)
 
-                    if let bottomSubtitle = viewModel.bottomSubtitle, shouldShowBottomSubtitle() {
+                    if let bottomSubtitle = viewModel.bottomSubtitle {
                         Text(bottomSubtitle)
                             .foregroundStyle(Color(uiColor: .systemColor(.secondaryLabel)))
                             .font(.footnote)
@@ -73,22 +73,6 @@ struct BasicCardPresentPaymentAlert: View {
         }
         .multilineTextAlignment(.center)
         .padding(Layout.padding)
-    }
-}
-
-private extension BasicCardPresentPaymentAlert {
-    func shouldShowTopSubtitle() -> Bool {
-        viewModel.textMode != .reducedTopInfo
-    }
-
-    func shouldShowBottomLabels() -> Bool {
-        viewModel.textMode != .noBottomInfo
-    }
-
-    func shouldShowBottomSubtitle() -> Bool {
-        let textMode = viewModel.textMode
-        return textMode == .fullInfo ||
-            textMode == .reducedTopInfo
     }
 }
 
@@ -133,36 +117,29 @@ private extension BasicCardPresentPaymentAlert {
             }
         }
 
-        private let alertViewModelsByType: [AlertType: CardPresentPaymentAlertViewModel] = [
-            .scanningForReaders: CardPresentModalScanningForReader(cancel: {}),
-            .scanningFailed: CardPresentModalScanningFailed(error: NSError(domain: "", code: 1), image: .alarmBellRingImage, primaryAction: {}),
-            .bluetoothRequired: CardPresentModalBluetoothRequired(error: NSError(domain: "", code: 1), primaryAction: {}),
-            .connectingToReader: CardPresentModalConnectingToReader(),
-            .connectingFailed: CardPresentModalConnectingFailed(error: NSError(domain: "", code: 1), retrySearch: {}, cancelSearch: {}),
-            .connectingFailedUpdatePostalCode: CardPresentModalConnectingFailedUpdatePostalCode(image: .alarmBellRingImage, retrySearch: {}, cancelSearch: {}),
-            .connectingFailedChargeReader: CardPresentModalConnectingFailedChargeReader(retrySearch: {}, cancelSearch: {}),
-            .connectingFailedUpdateAddress: CardPresentModalConnectingFailedUpdateAddress(wcSettingsAdminURL: URL(string: "https://example.com/wp-admin")!,
-                                                                                          openWCSettings: nil,
-                                                                                          retrySearch: {},
-                                                                                          cancelSearch: {}),
-            .preparingForPayment: CardPresentModalPreparingForPayment(cancelAction: {}),
-            .selectSearchType: CardPresentModalSelectSearchType(tapOnIPhoneAction: {}, bluetoothAction: {}, cancelAction: {}),
-            .foundReader: CardPresentModalFoundReader(name: "Stripe M2", connect: {}, continueSearch: {}, cancel: {}),
-            .updateProgress: CardPresentModalUpdateProgress(requiredUpdate: true, progress: 0.6, cancel: nil),
-            .updateFailed: CardPresentModalUpdateFailed(image: .wcpayIcon, tryAgain: {}, close: {}),
-            .updateFailedLowBattery: CardPresentModalUpdateFailedLowBattery(batteryLevel: 0.2, close: {}),
-            .updateFailedNonRetryable: CardPresentModalUpdateFailedNonRetryable(image: .alarmBellRingImage, close: {}),
-            .tapCard: CardPresentModalTapCard(name: "Stripe M2", amount: "$60", transactionType: .collectPayment, inputMethods: .init(rawValue: 1), onCancel: {}),
-            .success: CardPresentModalSuccess(printReceipt: {}, emailReceipt: {}, noReceiptAction: {}),
-            .successWithoutEmail: CardPresentModalSuccessWithoutEmail(printReceipt: {}, noReceiptAction: {}),
-            .error: CardPresentModalError(errorDescription: "Preview error",
-                                          transactionType: .collectPayment,
-                                          image: .addImage,
-                                          primaryAction: {},
-                                          dismissCompletion: {}),
-            .errorNonRetryable: CardPresentModalNonRetryableError(amount: "$60", error: NSError(domain: "", code: 1), onDismiss: {}),
-            .processing: CardPresentModalProcessing(name: "Preview testing", amount: "$60", transactionType: .collectPayment),
-            .displayReaderMessage: CardPresentModalDisplayMessage(name: "Reader displaying message", amount: "$60", message: "Preview testing")
+        private let alertDetailsByType: [AlertType: CardPresentPaymentAlertDetails] = [
+            .scanningForReaders: .scanningForReaders,
+            .scanningFailed: .scanningFailed,
+            .bluetoothRequired: .bluetoothRequired,
+            .connectingToReader: .connectingToReader,
+            .connectingFailed: .connectingFailed,
+            .connectingFailedUpdatePostalCode: .connectingFailedUpdatePostalCode,
+            .connectingFailedChargeReader: .connectingFailedChargeReader,
+            .connectingFailedUpdateAddress: .connectingFailedUpdateAddress,
+            .preparingForPayment: .preparingForPayment,
+            .selectSearchType: .selectSearchType,
+            .foundReader: .foundReader,
+            .updateProgress: .updateProgress,
+            .updateFailed: .updateFailed,
+            .updateFailedLowBattery: .updateFailedLowBattery,
+            .updateFailedNonRetryable: .errorNonRetryable,
+            .tapCard: .tapCard,
+            .success: .success,
+            .successWithoutEmail: .successWithoutEmail,
+            .error: .error,
+            .errorNonRetryable: .errorNonRetryable,
+            .processing: .processing,
+            .displayReaderMessage: .displayReaderMessage
         ]
         @State private var showsAlert: Bool = false
         @State private var alertType: AlertType?
@@ -176,8 +153,10 @@ private extension BasicCardPresentPaymentAlert {
                 }
             }
             .sheet(item: $alertType) { alertType in
-                if let viewModel = alertViewModelsByType[alertType] {
-                    CardPresentPaymentAlert(alertViewModel: viewModel)
+                if let alertDetails = alertDetailsByType[alertType] {
+                    CardPresentPaymentAlert(
+                        alertViewModel: CardPresentPaymentAlertViewModel(
+                            alertDetails: alertDetails))
                 } else {
                     EmptyView()
                 }

@@ -141,10 +141,10 @@ private extension CardPresentPaymentService {
     }
 
     func createPreflightController() -> CardPresentPaymentPreflightController<
-        BluetoothReaderConnectionAlertsProvider,
-        BuiltInReaderConnectionAlertsProvider,
+        CardPresentPaymentBluetoothReaderConnectionAlertsProvider,
+        CardPresentPaymentBuiltInReaderConnectionAlertsProvider,
         CardPresentPaymentsAlertPresenterAdaptor> {
-            let alertProvider = BuiltInReaderConnectionAlertsProvider()
+            let alertProvider = CardPresentPaymentBuiltInReaderConnectionAlertsProvider()
             return CardPresentPaymentPreflightController(
                 siteID: siteID,
                 configuration: cardPresentPaymentsConfiguration,

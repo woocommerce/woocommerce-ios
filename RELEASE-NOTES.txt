@@ -2,6 +2,7 @@
 
 19.1
 -----
+- [*] Products: The creation sheet is now simplified and categorized better [https://github.com/woocommerce/woocommerce-ios/pull/12273]
 - [*] Restore a missing navigation bar on the privacy settings screen. [https://github.com/woocommerce/woocommerce-ios/pull/13018]
 
 

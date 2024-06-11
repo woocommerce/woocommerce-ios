@@ -37,7 +37,6 @@ public enum BottomSheetProductType: Hashable, Identifiable {
         }
     }
 
-
     /// Remote ProductType
     ///
     var productType: ProductType {
@@ -77,13 +76,13 @@ public enum BottomSheetProductType: Hashable, Identifiable {
         case .simple(let isVirtual):
             if isVirtual {
                 return NSLocalizedString(
-                    "bottomSheetProductType.simpleVirtual.title",
-                    value: "Simple virtual product",
+                    "bottomSheetProductType.simpleVirtualProduct.title",
+                    value: "Virtual product",
                     comment: "Action sheet option when the user wants to change the Product type to simple virtual product")
             } else {
                 return NSLocalizedString(
-                    "bottomSheetProductType.simple.title",
-                    value: "Simple physical product",
+                    "bottomSheetProductType.simpleProduct.title",
+                    value: "Physical product",
                     comment: "Action sheet option when the user wants to change the Product type to simple physical product")
             }
         case .variable:
@@ -105,13 +104,13 @@ public enum BottomSheetProductType: Hashable, Identifiable {
             return title
         case .subscription:
             return NSLocalizedString(
-                "bottomSheetProductType.subscription.title",
-                value: "Simple subscription product",
+                "bottomSheetProductType.subscriptionProduct.title",
+                value: "Simple subscription",
                 comment: "Action sheet option when the user wants to change the Product type to Subscription product")
         case .variableSubscription:
             return NSLocalizedString(
-                "bottomSheetProductType.variableSubscription.title",
-                value: "Variable subscription product",
+                "bottomSheetProductType.variableSubscriptionProduct.title",
+                value: "Variable subscription",
                 comment: "Action sheet option when the user wants to change the Product type to Variable subscription product")
         case .blank:
             return NSLocalizedString(

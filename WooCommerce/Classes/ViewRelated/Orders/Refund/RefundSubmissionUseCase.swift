@@ -320,7 +320,9 @@ private extension RefundSubmissionUseCase {
             })
         }, onProcessingMessage: { [weak self] in
             // Shows waiting message.
-            self?.alerts.processingPayment(title: RefundSubmissionUseCaseDefinitions.Localization.refundPaymentTitle(username: self?.order.billingAddress?.firstName))
+            self?.alerts.processingPayment(
+                title: RefundSubmissionUseCaseDefinitions.Localization.refundPaymentTitle(
+                    username: self?.order.billingAddress?.firstName))
         }, onDisplayMessage: { [weak self] message in
             // Shows reader messages (e.g. Remove Card).
             self?.alerts.displayReaderMessage(message: message)

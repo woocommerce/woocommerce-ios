@@ -38,6 +38,11 @@ struct CustomerDetailView: View {
                 HStack {
                     Text(viewModel.phone ?? Localization.phonePlaceholder)
                         .style(for: viewModel.phone)
+                        .if(viewModel.isSyncing) { phone in
+                            phone
+                                .redacted(reason: .placeholder)
+                                .shimmering()
+                        }
                     Spacer()
                 }
                 customerDetailRow(label: Localization.dateLastActiveLabel, value: viewModel.dateLastActive)
@@ -70,6 +75,11 @@ struct CustomerDetailView: View {
                     customerDetailRow(label: Localization.regionLabel, value: viewModel.region)
                     customerDetailRow(label: Localization.cityLabel, value: viewModel.city)
                     customerDetailRow(label: Localization.postcodeLabel, value: viewModel.postcode)
+                }
+                .if(viewModel.isSyncing) { location in
+                    location
+                        .redacted(reason: .placeholder)
+                        .shimmering()
                 }
             }
         }

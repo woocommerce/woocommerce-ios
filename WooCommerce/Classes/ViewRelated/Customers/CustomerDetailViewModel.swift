@@ -63,6 +63,15 @@ final class CustomerDetailViewModel: ObservableObject {
     /// Formatted shipping name and address
     @Published private(set) var shipping: String?
 
+    // MARK: Sync
+
+    /// Whether the view model is currently syncing customer data
+    var isSyncing: Bool {
+        syncState == .syncing
+    }
+
+    private var syncState: CustomerSyncState = .syncing
+
     init(name: String?,
          dateLastActive: String,
          email: String?,
@@ -133,12 +142,22 @@ final class CustomerDetailViewModel: ObservableObject {
     }
 }
 
+// MARK: Syncing
 private extension CustomerDetailViewModel {
+
+    /// Possible sync states for customer data
+    enum CustomerSyncState {
+        case unsynced
+        case syncing
+        case synced
+    }
+
     /// Retrieves the customer billing and shipping details from remote and sets the corresponding addresses and phone number, for registered customers.
     ///
     func syncCustomerAddressData(siteID: Int64, userID: Int64) {
         // Only try to sync the address data for registered customers
         guard userID != 0 else {
+            syncState = .unsynced
             return
         }
 
@@ -156,6 +175,7 @@ private extension CustomerDetailViewModel {
             case let .failure(error):
                 DDLogError("⛔️ Error fetching customer details: \(error)")
             }
+            syncState = .synced
         }
         stores.dispatch(action)
     }

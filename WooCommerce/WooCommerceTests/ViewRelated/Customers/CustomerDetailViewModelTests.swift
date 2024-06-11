@@ -93,6 +93,33 @@ final class CustomerDetailViewModelTests: XCTestCase {
         assertEqual(billing.phone, viewModel.phone)
     }
 
+    func test_it_updates_syncState_after_sync_completes() throws {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let customer = sampleCustomer()
+
+        // When
+        var vm: CustomerDetailViewModel?
+        _ = waitFor { promise in
+            stores.whenReceivingAction(ofType: CustomerAction.self) { action in
+                switch action {
+                case let .retrieveCustomer(_, userID, onCompletion):
+                    let customer = Customer.fake().copy(customerID: customer.customerID, billing: Address.fake())
+                    onCompletion(.success(customer))
+                    promise(true)
+                default:
+                    XCTFail("Received unexpected action")
+                }
+            }
+
+            vm = CustomerDetailViewModel(customer: customer, stores: stores)
+        }
+
+        // Then
+        let viewModel = try XCTUnwrap(vm)
+        XCTAssertFalse(viewModel.isSyncing)
+    }
+
 }
 
 private extension CustomerDetailViewModelTests {

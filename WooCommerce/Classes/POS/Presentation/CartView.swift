@@ -36,7 +36,7 @@ struct CartView: View {
                     if viewModel.orderStage == .building,
                        let last = viewModel.itemToScrollToWhenCartUpdated?.id {
                         withAnimation {
-                            proxy.scrollTo(last.id)
+                            proxy.scrollTo(last)
                         }
                     }
                 }

@@ -88,7 +88,7 @@ struct MyStoreView: View {
                 Text(Localization.revenue)
                     .font(.caption2)
                     .foregroundStyle(Colors.wooPurple5)
-                .padding(.bottom, Layout.revenueTitlePadding)
+                    .padding(.bottom, Layout.revenueTitlePadding)
 
                 Text(revenue)
                     .font(.title2)
@@ -129,28 +129,34 @@ struct MyStoreView: View {
 
                     Spacer()
 
-                    VStack(spacing: Layout.iconsSpacing) {
+                    VStack(alignment: .trailing, spacing: Layout.iconsSpacing) {
                         HStack(spacing: Layout.iconsSpacing) {
 
                             Text(visitors)
                                 .font(.caption)
-                                .bold()
 
                             Images.person
+                                .resizable()
                                 .renderingMode(.original)
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: Layout.iconWidth, height: Layout.iconWidth)
                                 .foregroundStyle(Colors.wooPurple10)
                         }
+                        .bold()
 
                         HStack(spacing: Layout.iconsSpacing) {
 
                             Text(conversion)
                                 .font(.caption2)
-                                .bold()
 
                             Images.zigzag
+                                .resizable()
                                 .renderingMode(.original)
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: Layout.iconWidth, height: Layout.iconWidth)
                                 .foregroundStyle(Colors.wooPurple10)
                         }
+                        .bold()
                     }
                 }
             }
@@ -171,13 +177,14 @@ fileprivate extension MyStoreView {
     }
 
     enum Layout {
-        static let revenueTitlePadding = 2.0
+        static let revenueTitlePadding = 1.0
         static let revenueValuePadding = 4.0
         static let dividerPadding = 4.0
         static let datePadding = 12.0
         static let orderButtonPadding = 10.0
         static let orderButtonCornerRadius = 18.0
         static let iconsSpacing = 4.0
+        static let iconWidth = 24.0
     }
 
     enum Localization {

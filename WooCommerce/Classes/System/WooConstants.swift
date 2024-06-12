@@ -86,7 +86,7 @@ public enum WooConstants {
 
     /// Key used to identify sync request attempt from the watch.
     ///
-    static let watchSyncKey = "watch-tracks-event"
+    static let watchSyncKey = "watch-sync-event"
 }
 
 // MARK: URLs

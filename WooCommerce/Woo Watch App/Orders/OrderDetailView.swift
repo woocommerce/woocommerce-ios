@@ -31,12 +31,10 @@ struct OrderDetailView: View {
             customerView
                 .tag(Tab.customer)
         }
-        .toolbar {
-            ToolbarItem(placement: .confirmationAction) {
-                Text(order.number)
-                    .font(.body)
-                    .foregroundStyle(Colors.wooPurple20)
-            }
+        .navigationTitle {
+            Text(order.number)
+                .font(.body)
+                .foregroundStyle(Colors.wooPurple20)
         }
         .background(
             LinearGradient(gradient: Gradient(colors: [Colors.wooPurpleBackground, .black]), startPoint: .top, endPoint: .bottom)
@@ -126,6 +124,7 @@ struct OrderDetailView: View {
                     .foregroundStyle(Colors.wooPurple20)
                     .padding(Layout.itemCountPadding)
                     .background(Circle().fill(Colors.whiteTransparent))
+                    .padding(.top, -5) // Offset the number a bit so it looks aligned to the other content
 
                 // Name and total
                 VStack(alignment: .leading) {

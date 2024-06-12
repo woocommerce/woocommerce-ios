@@ -11,8 +11,6 @@ struct PointOfSaleDashboardView: View {
 
     var body: some View {
         VStack {
-            Text("WooCommerce Point Of Sale")
-                .foregroundColor(Color.white)
             HStack {
                 switch viewModel.orderStage {
                 case .building:
@@ -30,26 +28,23 @@ struct PointOfSaleDashboardView: View {
         .background(Color.primaryBackground)
         .navigationBarBackButtonHidden(true)
         .toolbar {
-            ToolbarItem(placement: .topBarLeading, content: {
-                Button("Exit POS") {
-                    presentationMode.wrappedValue.dismiss()
-                }
-            })
-            ToolbarItem(placement: .principal, content: {
-                CardReaderConnectionStatusView(connectionViewModel: viewModel.cardReaderConnectionViewModel)
-            })
-            ToolbarItem(placement: .primaryAction, content: {
-                Button("History") {
-                    debugPrint("Not implemented")
-                }
-            })
+            ToolbarItem(placement: .bottomBar) {
+                POSToolbarView(readerConnectionViewModel: viewModel.cardReaderConnectionViewModel)
+            }
         }
+        .toolbarBackground(Color.toolbarBackground, for: .bottomBar)
+        .toolbarBackground(.visible, for: .bottomBar)
         .sheet(isPresented: $viewModel.showsCardReaderSheet, content: {
             switch viewModel.cardPresentPaymentEvent {
             case .showAlert(let alertViewModel):
                 CardPresentPaymentAlert(alertViewModel: alertViewModel)
+            case let .showReaderList(readerIDs, selectionHandler):
+                FoundCardReaderListView(readerIDs: readerIDs, connect: { readerID in
+                    selectionHandler(readerID)
+                }, cancelSearch: {
+                    selectionHandler(nil)
+                })
             case .idle,
-                    .showReaderList,
                     .showOnboarding:
                 Text(viewModel.cardPresentPaymentEvent.temporaryEventDescription)
             }
@@ -98,8 +93,10 @@ fileprivate extension CardPresentPaymentEvent {
 
 #if DEBUG
 #Preview {
-    PointOfSaleDashboardView(
-        viewModel: PointOfSaleDashboardViewModel(items: POSItemProviderPreview().providePointOfSaleItems(),
-                                                 cardPresentPaymentService: CardPresentPaymentPreviewService()))
+    NavigationStack {
+        PointOfSaleDashboardView(
+            viewModel: PointOfSaleDashboardViewModel(items: POSItemProviderPreview().providePointOfSaleItems(),
+                                                     cardPresentPaymentService: CardPresentPaymentPreviewService()))
+    }
 }
 #endif

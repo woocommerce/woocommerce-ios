@@ -50,47 +50,49 @@ struct OrderDetailView: View {
     /// First View: Summary
     ///
     @ViewBuilder private var summaryView: some View {
-        VStack(alignment: .leading) {
+        ScrollView {
+            VStack(alignment: .leading) {
 
-            // Date & Time
-            HStack {
-                Text(order.date)
-                Spacer()
-                Text(order.time)
-            }
-            .font(.caption2)
-            .foregroundStyle(.secondary)
-
-            Divider()
-
-            // Name, total, status
-            VStack(alignment: .leading, spacing: Layout.nameSectionSpacing) {
-                Text(order.name)
-                    .font(.body)
-                    .fixedSize(horizontal: false, vertical: true)
-
-                Text(order.total)
-                    .font(.title2)
-                    .bold()
-
-                Text(order.status)
-                    .font(.footnote)
-                    .foregroundStyle(Colors.gray5)
-            }
-            .padding(.bottom, Layout.mainSectionsPadding)
-
-            // Products button
-            Button(Localization.products(order.itemCount).lowercased()) {
-                if order.itemCount > 0 {
-                    self.selectedTab = .products
+                // Date & Time
+                HStack {
+                    Text(order.date)
+                    Spacer()
+                    Text(order.time)
                 }
+                .font(.caption2)
+                .foregroundStyle(.secondary)
+
+                Divider()
+
+                // Name, total, status
+                VStack(alignment: .leading, spacing: Layout.nameSectionSpacing) {
+                    Text(order.name)
+                        .font(.body)
+                        .fixedSize(horizontal: false, vertical: true)
+
+                    Text(order.total)
+                        .font(.title2)
+                        .bold()
+
+                    Text(order.status)
+                        .font(.footnote)
+                        .foregroundStyle(Colors.gray5)
+                }
+                .padding(.bottom, Layout.mainSectionsPadding)
+
+                // Products button
+                Button(Localization.products(order.itemCount).lowercased()) {
+                    if order.itemCount > 0 {
+                        self.selectedTab = .products
+                    }
+                }
+                .font(.caption2)
+                .buttonStyle(.borderless)
+                .frame(maxWidth: .greatestFiniteMagnitude, alignment: .leading)
+                .padding()
+                .background(Colors.whiteTransparent)
+                .cornerRadius(Layout.buttonCornerRadius)
             }
-            .font(.caption2)
-            .buttonStyle(.borderless)
-            .frame(maxWidth: .greatestFiniteMagnitude, alignment: .leading)
-            .padding()
-            .background(Colors.whiteTransparent)
-            .cornerRadius(Layout.buttonCornerRadius)
         }
     }
 

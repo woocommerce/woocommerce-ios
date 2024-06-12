@@ -269,7 +269,7 @@ private enum Row {
 
 // MARK: - Localization
 //
-private extension SeveralReadersFoundViewController {
+extension SeveralReadersFoundViewController {
     enum Localization {
         static let headline = NSLocalizedString(
             "Several readers found",

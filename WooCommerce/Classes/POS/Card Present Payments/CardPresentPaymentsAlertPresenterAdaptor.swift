@@ -6,7 +6,7 @@ final class CardPresentPaymentsAlertPresenterAdaptor: CardPresentPaymentAlertsPr
 
     private let paymentAlertSubject: PassthroughSubject<CardPresentPaymentEvent, Never> = PassthroughSubject()
 
-    private var latestReaderConnectionHandler: ((String) -> Void)?
+    private var latestReaderConnectionHandler: ((String?) -> Void)?
 
     init() {
         paymentAlertPublisher = paymentAlertSubject.eraseToAnyPublisher()
@@ -21,8 +21,12 @@ final class CardPresentPaymentsAlertPresenterAdaptor: CardPresentPaymentAlertsPr
     }
 
     func foundSeveralReaders(readerIDs: [String], connect: @escaping (String) -> Void, cancelSearch: @escaping () -> Void) {
-        let wrappedConnectionHandler = { [weak self] readerID in
-            connect(readerID)
+        let wrappedConnectionHandler = { [weak self] (readerID: String?) in
+            if let readerID {
+                connect(readerID)
+            } else {
+                cancelSearch()
+            }
             self?.latestReaderConnectionHandler = nil
         }
         self.latestReaderConnectionHandler = wrappedConnectionHandler

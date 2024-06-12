@@ -136,6 +136,19 @@ final class CustomerDetailViewModel: ObservableObject {
                   shipping: nil,
                   stores: stores)
     }
+
+    /// Whether a new order can be created for the customer.
+    var canCreateNewOrder: Bool {
+        customerID != 0
+    }
+
+    /// Navigates to the Orders tab and opens a new order with this customer pre-filled in the order form.
+    func createNewOrder() {
+        guard canCreateNewOrder else {
+            return
+        }
+        MainTabBarController.presentOrderCreationFlow(for: customerID)
+    }
 }
 
 // MARK: Contact actions

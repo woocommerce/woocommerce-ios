@@ -191,6 +191,13 @@ final class OrdersRootViewController: UIViewController {
         setupNavigation(viewModel: viewModel)
     }
 
+    /// Presents the Order Creation flow with the given customer pre-filled.
+    ///
+    func presentOrderCreationFlowWithCustomer(_ customerID: Int64) {
+        let viewModel = EditableOrderViewModel(siteID: siteID, initialCustomerID: customerID)
+        setupNavigation(viewModel: viewModel)
+    }
+
     /// Coordinates the navigation between the different views involved in Order Creation, Editing, and Details
     ///
     private func setupNavigation(viewModel: EditableOrderViewModel) {

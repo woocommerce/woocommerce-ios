@@ -90,10 +90,23 @@ struct CustomerDetailView: View {
                 customerDetailRow(label: Localization.dateLastActiveLabel, value: viewModel.dateLastActive)
             }
 
-            Section(header: Text(Localization.ordersSection)) {
+            Section {
                 customerDetailRow(label: Localization.ordersCountLabel, value: viewModel.ordersCount)
                 customerDetailRow(label: Localization.totalSpendLabel, value: viewModel.totalSpend)
                 customerDetailRow(label: Localization.avgOrderValueLabel, value: viewModel.avgOrderValue)
+            } header: {
+                HStack {
+                    Text(Localization.ordersSection)
+                    Spacer()
+                    Button {
+                        viewModel.createNewOrder()
+                    } label: {
+                        Image(uiImage: .plusImage)
+                    }
+                    .accessibilityLabel(Localization.newOrder)
+                    .renderedIf(viewModel.canCreateNewOrder)
+
+                }
             }
 
             Section(header: Text(Localization.registrationSection)) {
@@ -207,6 +220,9 @@ private extension CustomerDetailView {
         static let ordersSection = NSLocalizedString("customerDetailView.ordersSection",
                                                        value: "ORDERS",
                                                        comment: "Heading for the section with customer order stats in the Customer Details screen.")
+        static let newOrder = NSLocalizedString("customerDetailsView.newOrderButton",
+                                                value: "Create a new order",
+                                                comment: "Label for button to create a new order for the customer in the Customer Details screen.")
         static let ordersCountLabel = NSLocalizedString("customerDetailView.ordersCountLabel",
                                                         value: "Orders",
                                                         comment: "Label for the number of orders in the Customer Details screen.")

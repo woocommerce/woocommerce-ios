@@ -467,6 +467,7 @@ final class EditableOrderViewModel: ObservableObject {
          orderDurationRecorder: OrderDurationRecorderProtocol = OrderDurationRecorder.shared,
          permissionChecker: CaptureDevicePermissionChecker = AVCaptureDevicePermissionChecker(),
          initialItem: OrderBaseItem? = nil,
+         initialCustomerID: Int64? = nil,
          quantityDebounceDuration: Double = Constants.quantityDebounceDuration) {
         self.siteID = siteID
         self.flow = flow
@@ -528,6 +529,7 @@ final class EditableOrderViewModel: ObservableObject {
         forwardSyncApproachToSynchronizer()
         observeChangesFromProductSelectorButtonTapSelectionSync()
         observeChangesInCustomerDetails()
+        configureOrderWithinitialCustomer(initialCustomerID)
     }
 
     /// Observes and keeps track of changes within the Customer Details
@@ -1652,6 +1654,16 @@ private extension EditableOrderViewModel {
         // Increase quantity if exists
         let match = productRows.first(where: { $0.productRow.productOrVariationID == item.itemID })
         match?.productRow.stepperViewModel.incrementQuantity()
+    }
+
+    /// If given an initial customer ID on initialization, updates the Order with the customer
+    ///
+    func configureOrderWithinitialCustomer(_ customerID: Int64?) {
+        guard let customerID else {
+            return
+        }
+        orderSynchronizer.setCustomerID.send(customerID)
+        orderSynchronizer.retryTrigger.send() // Trigger a remote sync to retrieve the customer details on the order.
     }
 
     /// Updates customer data viewmodel based on order addresses.

@@ -18,37 +18,35 @@ struct OrdersListView: View {
     }
 
     var body: some View {
-        NavigationStack() {
-            Group {
-                switch viewModel.viewState {
-                case .idle:
-                    EmptyView()
-                case .loading:
-                    loadingView
-                case .error:
-                    errorView
-                case .loaded(let orders):
-                    if orders.isEmpty {
-                        emptyStateView
-                    } else {
-                        dataView(orders: orders)
+        HStack {
+            switch viewModel.viewState {
+            case .idle:
+                Rectangle().hidden()
+                    .task {
+                        await viewModel.fetchOrders()
                     }
-                }
-            }
-            .navigationTitle(Localization.title)
-            .listStyle(.plain)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button {
-                        self.watchTab = .myStore
-                    } label: {
-                        Images.myStore
-                    }
+            case .loading:
+                loadingView
+            case .error:
+                errorView
+            case .loaded(let orders):
+                if orders.isEmpty {
+                    emptyStateView
+                } else {
+                    dataView(orders: orders)
                 }
             }
         }
-        .task {
-            await viewModel.fetchOrders()
+        .navigationTitle(Localization.title)
+        .listStyle(.plain)
+        .toolbar {
+            ToolbarItem(placement: .cancellationAction) {
+                Button {
+                    self.watchTab = .myStore
+                } label: {
+                    Images.myStore
+                }
+            }
         }
         .onAppear {
             tracksProvider.sendTracksEvent(.watchOrdersListOpened)

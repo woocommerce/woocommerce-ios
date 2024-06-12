@@ -126,6 +126,7 @@ struct OrderDetailView: View {
                     .foregroundStyle(Colors.wooPurple20)
                     .padding(Layout.itemCountPadding)
                     .background(Circle().fill(Colors.whiteTransparent))
+                    .padding(.top, -5) // Offset the number a bit so it looks aligned to the other content
 
                 // Name and total
                 VStack(alignment: .leading) {

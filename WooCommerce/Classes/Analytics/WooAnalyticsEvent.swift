@@ -3077,6 +3077,26 @@ extension WooAnalyticsEvent {
             static let registered = "registered"
             static let hasEmail = "has_email_address"
         }
+
+        /// Possible actions to take in customer details
+        enum Action: String {
+            fileprivate static let key = "action"
+
+            case call = "phone_call"
+            case message = "text_message"
+            case copyPhone = "copy_phone_number"
+            case whatsapp = "whatsapp"
+            case telegram = "telegram"
+        }
+
+        /// Possible addresses in customer details
+        enum Address: String {
+            fileprivate static let key = "address"
+
+            case shipping = "shipping_address"
+            case billing = "billing_address"
+        }
+
         static func customerListLoaded() -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .customerHubLoaded, properties: [:])
         }
@@ -3104,6 +3124,18 @@ extension WooAnalyticsEvent {
 
         static func customerDetailCopyEmailOptionTapped() -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .customersHubDetailCopyEmailOptionTapped, properties: [:])
+        }
+
+        static func customerDetailPhoneMenuTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .customersHubDetailPhoneMenuTapped, properties: [:])
+        }
+
+        static func customerDetailActionTapped(_ action: Action) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .customersHubDetailPhoneActionTapped, properties: [Action.key: action.rawValue])
+        }
+
+        static func customerDetailAddressCopied(_ address: Address) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .customersHubDetailAddressCopied, properties: [Address.key: address.rawValue])
         }
     }
 }

@@ -18,6 +18,8 @@ final class CardPresentPaymentsAlertPresenterAdaptor: CardPresentPaymentAlertsPr
         switch presentation {
             case .alert(let viewModel):
                 paymentAlertSubject.send(.showAlert(viewModel))
+            case .alertWithDismiss(let viewModel):
+                paymentAlertSubject.send(.showAlertWithDismiss(viewModel))
             case .hidden:
                 paymentAlertSubject.send(.idle)
             case .readyForPayment:

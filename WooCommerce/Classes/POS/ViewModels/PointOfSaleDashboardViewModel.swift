@@ -144,6 +144,7 @@ private extension PointOfSaleDashboardViewModel {
                     .showPaymentSuccess:
                 return false
             case .showAlert,
+                    .showAlertWithDismiss,
                     .showReaderList,
                     .showOnboarding:
                 return true

@@ -6,7 +6,7 @@ struct CardPresentPaymentAlert: View {
     // alertViewModel changed – possibly we needed to invalidate the view's id.
     @ObservedObject private var viewModel: CardPresentPaymentAlertSwiftUIViewModel
 
-    init(alertViewModel: CardPresentPaymentAlertViewModel) {
+     init(alertViewModel: CardPresentPaymentAlertViewModel) {
         self.viewModel = .init(alertViewModel: alertViewModel)
     }
 
@@ -93,6 +93,95 @@ private extension BasicCardPresentPaymentAlert {
 }
 
 private extension BasicCardPresentPaymentAlert {
+    enum Layout {
+        static let padding: EdgeInsets = .init(top: 40, leading: 96, bottom: 56, trailing: 96)
+        static let stackViewVerticalSpacing: CGFloat = 32
+        static let defaultVerticalSpacing: CGFloat = 16
+    }
+}
+
+struct DismissableCardPresentPaymentAlert: View {
+    let viewModel: CardPresentPaymentAlertViewModel
+    @Environment(\.dismiss) private var dismiss
+
+    var body: some View {
+        VStack(spacing: Layout.stackViewVerticalSpacing) {
+            VStack(alignment: .center, spacing: Layout.defaultVerticalSpacing) {
+                Text(viewModel.topTitle)
+                    .font(.body)
+                if let topSubtitle = viewModel.topSubtitle, shouldShowTopSubtitle() {
+                    Text(topSubtitle)
+                        .font(.title)
+                }
+            }
+
+            if viewModel.showLoadingIndicator {
+                ProgressView()
+                    .progressViewStyle(CircularProgressViewStyle(tint: .gray))
+                    .scaleEffect(1.5, anchor: .center)
+            } else {
+                Image(uiImage: viewModel.image)
+                    .padding()
+            }
+
+            if let bottomTitle = viewModel.bottomTitle, shouldShowBottomLabels() {
+                VStack(alignment: .center, spacing: Layout.defaultVerticalSpacing) {
+                    Text(bottomTitle)
+                        .font(.subheadline)
+
+                    if let bottomSubtitle = viewModel.bottomSubtitle, shouldShowBottomSubtitle() {
+                        Text(bottomSubtitle)
+                            .foregroundStyle(Color(uiColor: .systemColor(.secondaryLabel)))
+                            .font(.footnote)
+                    }
+                }
+            }
+
+            VStack(spacing: Layout.defaultVerticalSpacing) {
+                if let primaryButton = viewModel.primaryButtonViewModel {
+                    Button(primaryButton.title, action: primaryButton.actionHandler)
+                        .buttonStyle(PrimaryButtonStyle())
+                }
+
+                if let secondaryButton = viewModel.secondaryButtonViewModel {
+                    Button(secondaryButton.title, action: secondaryButton.actionHandler)
+                        .buttonStyle(SecondaryButtonStyle())
+                }
+
+                if let auxiliaryButton = viewModel.auxiliaryButtonViewModel {
+                    Button(auxiliaryButton.title, action: auxiliaryButton.actionHandler)
+                        .buttonStyle(LinkButtonStyle())
+                }
+
+                Button(action: {
+                    dismiss()
+                }) {
+                    Text("Close")
+                }
+            }
+        }
+        .multilineTextAlignment(.center)
+        .padding(Layout.padding)
+    }
+}
+
+private extension DismissableCardPresentPaymentAlert {
+    func shouldShowTopSubtitle() -> Bool {
+        viewModel.textMode != .reducedTopInfo
+    }
+
+    func shouldShowBottomLabels() -> Bool {
+        viewModel.textMode != .noBottomInfo
+    }
+
+    func shouldShowBottomSubtitle() -> Bool {
+        let textMode = viewModel.textMode
+        return textMode == .fullInfo ||
+            textMode == .reducedTopInfo
+    }
+}
+
+private extension DismissableCardPresentPaymentAlert {
     enum Layout {
         static let padding: EdgeInsets = .init(top: 40, leading: 96, bottom: 56, trailing: 96)
         static let stackViewVerticalSpacing: CGFloat = 32

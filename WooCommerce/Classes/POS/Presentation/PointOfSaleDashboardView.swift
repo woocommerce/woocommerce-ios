@@ -36,6 +36,8 @@ struct PointOfSaleDashboardView: View {
             switch viewModel.cardPresentPaymentEvent {
             case .showAlert(let alertViewModel):
                 CardPresentPaymentAlert(alertViewModel: alertViewModel)
+            case .showAlertWithDismiss(let alertViewModel):
+                DismissableCardPresentPaymentAlert(viewModel: alertViewModel)
             case let .showReaderList(readerIDs, selectionHandler):
                 FoundCardReaderListView(readerIDs: readerIDs, connect: { readerID in
                     selectionHandler(readerID)
@@ -94,6 +96,8 @@ fileprivate extension CardPresentPaymentEvent {
             return "Ready for payment"
         case .showPaymentSuccess:
             return "Payment successful"
+        case .showAlertWithDismiss(let alertViewModel):
+            return "Alert: \(alertViewModel.topTitle)"
         }
     }
 }

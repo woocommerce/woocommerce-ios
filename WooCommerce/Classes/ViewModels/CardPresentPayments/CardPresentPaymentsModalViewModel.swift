@@ -69,6 +69,7 @@ protocol CardPresentPaymentsModalViewModelActions {
 
 enum POSCardPresentPaymentsModalPresentation {
     case alert(viewModel: CardPresentPaymentAlertViewModel)
+    case alertWithDismiss(viewModel: CardPresentPaymentAlertViewModel)
     case hidden
     case readyForPayment
     case inlineMessage(message: String)
@@ -92,6 +93,15 @@ private extension POSCardPresentPaymentsModalViewModel {
                 return .inlineMessage(message: "Connecting to reader...")
             case is CardPresentModalPreparingForPayment:
                 return .hidden
+            case is CardPresentModalError:
+                guard let actionHandler = modalViewModel.primaryButtonViewModel?.actionHandler else {
+                    return .hidden
+                }
+                return .alertWithDismiss(viewModel: CardPresentModalError(
+                    errorDescription: modalViewModel.bottomTitle,
+                    transactionType: .collectPayment,
+                    primaryAction: actionHandler,
+                    dismissCompletion: {}))
             case is CardPresentModalTapCard:
                 return .readyForPayment
             case is CardPresentModalProcessing:

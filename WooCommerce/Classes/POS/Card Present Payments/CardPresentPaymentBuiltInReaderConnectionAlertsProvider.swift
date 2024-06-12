@@ -35,7 +35,7 @@ struct CardPresentPaymentBuiltInReaderConnectionAlertsProvider: CardReaderConnec
                                            retrySearch: @escaping () -> Void,
                                            cancelSearch: @escaping () -> Void) -> CardPresentPaymentAlertDetails {
         .connectingFailedUpdateAddress(wcSettingsAdminURL: wcSettingsAdminURL,
-                                       retrySearch: retrySearch, 
+                                       retrySearch: retrySearch,
                                        endSearch: cancelSearch)
     }
 

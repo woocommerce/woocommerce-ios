@@ -66,7 +66,10 @@ struct CardPresentPaymentBluetoothReaderConnectionAlertsProvider: BluetoothReade
                           endSearch: cancel)
     }
 
-    func foundReader(name: String, connect: @escaping () -> Void, continueSearch: @escaping () -> Void, cancelSearch: @escaping () -> Void) -> CardPresentPaymentAlertDetails {
+    func foundReader(name: String,
+                     connect: @escaping () -> Void,
+                     continueSearch: @escaping () -> Void,
+                     cancelSearch: @escaping () -> Void) -> CardPresentPaymentAlertDetails {
         .foundReader(name: name,
                      connect: connect,
                      continueSearch: continueSearch,

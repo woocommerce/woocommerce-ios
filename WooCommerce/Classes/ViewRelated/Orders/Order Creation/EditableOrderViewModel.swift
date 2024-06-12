@@ -619,7 +619,11 @@ final class EditableOrderViewModel: ObservableObject {
     /// - Parameter item: Item to remove from the order
     ///
     func removeItemFromOrder(_ item: OrderItem) {
-        guard let input = ProductInputTransformer.createUpdateProductInput(item: item, quantity: 0, allProducts: Array(allProducts), allProductVariations: allProductVariations, defaultDiscount: currentDiscount(on: item)) else { return }
+        guard let input = ProductInputTransformer.createUpdateProductInput(item: item,
+                                                                           quantity: 0,
+                                                                           allProducts: Array(allProducts),
+                                                                           allProductVariations: allProductVariations,
+                                                                           defaultDiscount: currentDiscount(on: item)) else { return }
         orderSynchronizer.setProduct.send(input)
 
         if item.variationID != 0 {
@@ -652,7 +656,12 @@ final class EditableOrderViewModel: ObservableObject {
     }
 
     func addDiscountToOrderItem(item: OrderItem, discount: Decimal) {
-        guard let productInput = ProductInputTransformer.createUpdateProductInput(item: item, quantity: item.quantity, discount: discount, allProducts: Array(allProducts), allProductVariations: allProductVariations, defaultDiscount: currentDiscount(on: item)) else {
+        guard let productInput = ProductInputTransformer.createUpdateProductInput(item: item,
+                                                                                  quantity: item.quantity,
+                                                                                  discount: discount,
+                                                                                  allProducts: Array(allProducts),
+                                                                                  allProductVariations: allProductVariations,
+                                                                                  defaultDiscount: currentDiscount(on: item)) else {
             return
         }
 
@@ -1494,7 +1503,11 @@ private extension EditableOrderViewModel {
 
         for item in allOrderItemsToBeRemoved {
 
-            if let input = ProductInputTransformer.createUpdateProductInput(item: item, quantity: 0, allProducts: Array(allProducts), allProductVariations: allProductVariations, defaultDiscount: currentDiscount(on: item)) {
+            if let input = ProductInputTransformer.createUpdateProductInput(item: item,
+                                                                            quantity: 0,
+                                                                            allProducts: Array(allProducts),
+                                                                            allProductVariations: allProductVariations,
+                                                                            defaultDiscount: currentDiscount(on: item)) {
                 inputsToBeRemoved.append(input)
             }
 
@@ -2165,7 +2178,12 @@ private extension EditableOrderViewModel {
                 .sink { [weak self] newQuantity in
                     guard let self else { return }
                     let childItems = items.filter { $0.parent == item.itemID }
-                    guard let newInput = ProductInputTransformer.createUpdateProductInput(item: item, childItems: childItems, quantity: newQuantity, allProducts: Array(allProducts), allProductVariations: allProductVariations, defaultDiscount: currentDiscount(on: item)) else {
+                    guard let newInput = ProductInputTransformer.createUpdateProductInput(item: item,
+                                                                                          childItems: childItems,
+                                                                                          quantity: newQuantity,
+                                                                                          allProducts: Array(allProducts),
+                                                                                          allProductVariations: allProductVariations,
+                                                                                          defaultDiscount: currentDiscount(on: item)) else {
                         return
                     }
                     self.orderSynchronizer.setProduct.send(newInput)
@@ -2184,7 +2202,12 @@ private extension EditableOrderViewModel {
     }
 
     func addBundleConfigurationToOrderItem(item: OrderItem, bundleConfiguration: [BundledProductConfiguration]) {
-        guard let productInput = ProductInputTransformer.createUpdateProductInput(item: item, quantity: item.quantity, bundleConfiguration: bundleConfiguration, allProducts: Array(allProducts), allProductVariations: allProductVariations, defaultDiscount: currentDiscount(on: item)) else {
+        guard let productInput = ProductInputTransformer.createUpdateProductInput(item: item,
+                                                                                  quantity: item.quantity,
+                                                                                  bundleConfiguration: bundleConfiguration,
+                                                                                  allProducts: Array(allProducts),
+                                                                                  allProductVariations: allProductVariations,
+                                                                                  defaultDiscount: currentDiscount(on: item)) else {
             return
         }
         orderSynchronizer.setProduct.send(productInput)

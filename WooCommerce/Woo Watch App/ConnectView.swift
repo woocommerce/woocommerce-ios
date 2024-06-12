@@ -32,9 +32,6 @@ struct ConnectView: View {
         .task {
             tracksProvider.sendTracksEvent(.watchConnectingOpened)
         }
-        .onAppear {
-            synchronizer.requestCredentialSync()
-        }
     }
 }
 

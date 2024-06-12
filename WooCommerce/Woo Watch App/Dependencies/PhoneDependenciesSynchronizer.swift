@@ -47,6 +47,14 @@ final class PhoneDependenciesSynchronizer: NSObject, ObservableObject, WCSession
             self.reloadDependencies()
 
             self.tracksProvider?.flushQueuedEvents()
+
+            // If we could not find dependencies after the session is activated try a credential sync.
+            // Give it 1 second so the watch can successfully reach the counterpart.
+            if self.dependencies == nil {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                    self.requestCredentialSync()
+                }
+            }
         }
     }
 

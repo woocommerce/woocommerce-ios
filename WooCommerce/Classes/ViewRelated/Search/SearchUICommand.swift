@@ -10,6 +10,9 @@ protocol SearchUICommand {
     /// The placeholder of the search bar.
     var searchBarPlaceholder: String { get }
 
+    /// The visible title of the Return key.
+    var returnKeyType: UIReturnKeyType { get }
+
     /// Hides the cancel button on the search bar right. If it's hidden the search bar fills the hidden button space.
     ///
     var hideCancelButton: Bool { get }

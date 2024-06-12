@@ -1,5 +1,6 @@
 import Yosemite
 import protocol Networking.ApplicationPasswordUseCase
+import protocol WooFoundation.Analytics
 import enum Networking.ApplicationPasswordUseCaseError
 
 /// Checks if the user is eligible to use the app after logging in with site credentials only.

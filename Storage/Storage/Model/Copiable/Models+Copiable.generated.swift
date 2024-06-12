@@ -19,6 +19,24 @@ extension Storage.AnalyticsCard {
     }
 }
 
+extension Storage.DashboardCard {
+    public func copy(
+        type: CopiableProp<DashboardCard.CardType> = .copy,
+        availability: CopiableProp<DashboardCard.AvailabilityState> = .copy,
+        enabled: CopiableProp<Bool> = .copy
+    ) -> Storage.DashboardCard {
+        let type = type ?? self.type
+        let availability = availability ?? self.availability
+        let enabled = enabled ?? self.enabled
+
+        return Storage.DashboardCard(
+            type: type,
+            availability: availability,
+            enabled: enabled
+        )
+    }
+}
+
 extension Storage.FeatureAnnouncementCampaignSettings {
     public func copy(
         dismissedDate: NullableCopiableProp<Date> = .copy,
@@ -40,6 +58,7 @@ extension Storage.GeneralAppSettings {
         feedbacks: CopiableProp<[FeedbackType: FeedbackSettings]> = .copy,
         isViewAddOnsSwitchEnabled: CopiableProp<Bool> = .copy,
         isInAppPurchasesSwitchEnabled: CopiableProp<Bool> = .copy,
+        isPointOfSaleEnabled: CopiableProp<Bool> = .copy,
         knownCardReaders: CopiableProp<[String]> = .copy,
         lastEligibilityErrorInfo: NullableCopiableProp<EligibilityErrorInfo> = .copy,
         lastJetpackBenefitsBannerDismissedTime: NullableCopiableProp<Date> = .copy,
@@ -52,6 +71,7 @@ extension Storage.GeneralAppSettings {
         let feedbacks = feedbacks ?? self.feedbacks
         let isViewAddOnsSwitchEnabled = isViewAddOnsSwitchEnabled ?? self.isViewAddOnsSwitchEnabled
         let isInAppPurchasesSwitchEnabled = isInAppPurchasesSwitchEnabled ?? self.isInAppPurchasesSwitchEnabled
+        let isPointOfSaleEnabled = isPointOfSaleEnabled ?? self.isPointOfSaleEnabled
         let knownCardReaders = knownCardReaders ?? self.knownCardReaders
         let lastEligibilityErrorInfo = lastEligibilityErrorInfo ?? self.lastEligibilityErrorInfo
         let lastJetpackBenefitsBannerDismissedTime = lastJetpackBenefitsBannerDismissedTime ?? self.lastJetpackBenefitsBannerDismissedTime
@@ -65,6 +85,7 @@ extension Storage.GeneralAppSettings {
             feedbacks: feedbacks,
             isViewAddOnsSwitchEnabled: isViewAddOnsSwitchEnabled,
             isInAppPurchasesSwitchEnabled: isInAppPurchasesSwitchEnabled,
+            isPointOfSaleEnabled: isPointOfSaleEnabled,
             knownCardReaders: knownCardReaders,
             lastEligibilityErrorInfo: lastEligibilityErrorInfo,
             lastJetpackBenefitsBannerDismissedTime: lastJetpackBenefitsBannerDismissedTime,
@@ -88,7 +109,14 @@ extension Storage.GeneralStoreSettings {
         customStatsTimeRange: CopiableProp<String> = .copy,
         firstInPersonPaymentsTransactionsByReaderType: CopiableProp<[CardReaderType: Date]> = .copy,
         selectedTaxRateID: NullableCopiableProp<Int64> = .copy,
-        analyticsHubCards: NullableCopiableProp<[AnalyticsCard]> = .copy
+        analyticsHubCards: NullableCopiableProp<[AnalyticsCard]> = .copy,
+        dashboardCards: NullableCopiableProp<[DashboardCard]> = .copy,
+        lastSelectedPerformanceTimeRange: CopiableProp<String> = .copy,
+        lastSelectedTopPerformersTimeRange: CopiableProp<String> = .copy,
+        lastSelectedMostActiveCouponsTimeRange: CopiableProp<String> = .copy,
+        lastSelectedStockType: NullableCopiableProp<String> = .copy,
+        lastSelectedOrderStatus: NullableCopiableProp<String> = .copy,
+        favoriteProductIDs: CopiableProp<[Int64]> = .copy
     ) -> Storage.GeneralStoreSettings {
         let storeID = storeID ?? self.storeID
         let isTelemetryAvailable = isTelemetryAvailable ?? self.isTelemetryAvailable
@@ -101,6 +129,13 @@ extension Storage.GeneralStoreSettings {
         let firstInPersonPaymentsTransactionsByReaderType = firstInPersonPaymentsTransactionsByReaderType ?? self.firstInPersonPaymentsTransactionsByReaderType
         let selectedTaxRateID = selectedTaxRateID ?? self.selectedTaxRateID
         let analyticsHubCards = analyticsHubCards ?? self.analyticsHubCards
+        let dashboardCards = dashboardCards ?? self.dashboardCards
+        let lastSelectedPerformanceTimeRange = lastSelectedPerformanceTimeRange ?? self.lastSelectedPerformanceTimeRange
+        let lastSelectedTopPerformersTimeRange = lastSelectedTopPerformersTimeRange ?? self.lastSelectedTopPerformersTimeRange
+        let lastSelectedMostActiveCouponsTimeRange = lastSelectedMostActiveCouponsTimeRange ?? self.lastSelectedMostActiveCouponsTimeRange
+        let lastSelectedStockType = lastSelectedStockType ?? self.lastSelectedStockType
+        let lastSelectedOrderStatus = lastSelectedOrderStatus ?? self.lastSelectedOrderStatus
+        let favoriteProductIDs = favoriteProductIDs ?? self.favoriteProductIDs
 
         return Storage.GeneralStoreSettings(
             storeID: storeID,
@@ -113,7 +148,14 @@ extension Storage.GeneralStoreSettings {
             customStatsTimeRange: customStatsTimeRange,
             firstInPersonPaymentsTransactionsByReaderType: firstInPersonPaymentsTransactionsByReaderType,
             selectedTaxRateID: selectedTaxRateID,
-            analyticsHubCards: analyticsHubCards
+            analyticsHubCards: analyticsHubCards,
+            dashboardCards: dashboardCards,
+            lastSelectedPerformanceTimeRange: lastSelectedPerformanceTimeRange,
+            lastSelectedTopPerformersTimeRange: lastSelectedTopPerformersTimeRange,
+            lastSelectedMostActiveCouponsTimeRange: lastSelectedMostActiveCouponsTimeRange,
+            lastSelectedStockType: lastSelectedStockType,
+            lastSelectedOrderStatus: lastSelectedOrderStatus,
+            favoriteProductIDs: favoriteProductIDs
         )
     }
 }

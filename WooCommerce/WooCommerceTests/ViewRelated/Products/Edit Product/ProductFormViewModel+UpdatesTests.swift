@@ -302,7 +302,7 @@ final class ProductFormViewModel_UpdatesTests: XCTestCase {
                                              productImageActionHandler: productImageActionHandler)
 
         // Action
-        let externalURL = "woo.com"
+        let externalURL = "woocommerce.com"
         let buttonText = "Try!"
         viewModel.updateExternalLink(externalURL: externalURL, buttonText: buttonText)
 

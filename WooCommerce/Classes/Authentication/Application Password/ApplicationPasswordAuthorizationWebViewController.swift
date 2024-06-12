@@ -1,6 +1,7 @@
 import Combine
 import UIKit
 import WebKit
+import protocol WooFoundation.Analytics
 import struct Networking.ApplicationPassword
 
 /// View with embedded web view to authorize application password for a site.

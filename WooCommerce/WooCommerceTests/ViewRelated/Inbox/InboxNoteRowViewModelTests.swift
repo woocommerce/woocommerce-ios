@@ -94,12 +94,12 @@ final class InboxNoteRowViewModelTests: XCTestCase {
         let actionViewModel = InboxNoteRowActionViewModel(action: .init(id: 134, name: "wcpay_applepay_holiday2021",
                                                                         label: "Accept Apple Pay",
                                                                         status: "actioned",
-                                                                        url: "https://woo.com"))
+                                                                        url: "https://woocommerce.com"))
 
         // Then
-        XCTAssertEqual(actionViewModel, .init(id: 134, title: "Accept Apple Pay", url: .init(string: "https://woo.com")))
+        XCTAssertEqual(actionViewModel, .init(id: 134, title: "Accept Apple Pay", url: .init(string: "https://woocommerce.com")))
         XCTAssertEqual(actionViewModel.id, 134)
         XCTAssertEqual(actionViewModel.title, "Accept Apple Pay")
-        XCTAssertEqual(actionViewModel.url?.absoluteString, "https://woo.com")
+        XCTAssertEqual(actionViewModel.url?.absoluteString, "https://woocommerce.com")
     }
 }

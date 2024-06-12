@@ -175,7 +175,7 @@ extension ProductVariationFormViewModel {
     }
 
     func canShareProduct() -> Bool {
-        let isSitePublic = storesManager.sessionManager.defaultSite?.isPublic == true
+        let isSitePublic = storesManager.sessionManager.defaultSite?.visibility == .publicSite
         let productHasLinkToShare = URL(string: originalProductVariation.permalink) != nil
         return isSitePublic && formType != .add && productHasLinkToShare
     }
@@ -374,6 +374,16 @@ extension ProductVariationFormViewModel {
     func updateSubscriptionExpirySettings(length: String) {
         let subscription = productVariation.subscription?.copy(length: length)
         productVariation = EditableProductVariationModel(productVariation: productVariation.productVariation.copy(subscription: subscription),
+                                                         parentProductType: productVariation.productType,
+                                                         allAttributes: allAttributes,
+                                                         parentProductSKU: parentProductSKU,
+                                                         parentProductDisablesQuantityRules: parentProductDisablesQuantityRules)
+    }
+
+    func updateQuantityRules(minQuantity: String, maxQuantity: String, groupOf: String) {
+        productVariation = EditableProductVariationModel(productVariation: productVariation.productVariation.copy(minAllowedQuantity: minQuantity,
+                                                                                                                  maxAllowedQuantity: maxQuantity,
+                                                                                                                  groupOfQuantity: groupOf),
                                                          parentProductType: productVariation.productType,
                                                          allAttributes: allAttributes,
                                                          parentProductSKU: parentProductSKU,

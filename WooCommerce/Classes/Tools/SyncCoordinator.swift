@@ -113,15 +113,6 @@ class SyncingCoordinator: SyncingCoordinatorProtocol {
         synchronizeFirstPage(reason: reason, onCompletion: onCompletion)
     }
 
-    @MainActor
-    func resynchronize(reason: String? = nil) async {
-        await withCheckedContinuation {  continuation in
-            resynchronize(reason: reason) {
-                continuation.resume()
-            }
-        }
-    }
-
     /// Synchronizes the First Page in the collection.
     ///
     /// - Parameter reason: A value passed back to the `delegate`. This can be used to provide

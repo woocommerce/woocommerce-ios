@@ -7,20 +7,31 @@ struct ProductVariationFormActionsFactory: ProductFormActionsFactoryProtocol {
 
     private let isMinMaxQuantitiesEnabled: Bool
 
+    private let stores: StoresManager
+
     init(productVariation: EditableProductVariationModel,
          editable: Bool,
-         isMinMaxQuantitiesEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.readOnlyMinMaxQuantities)) {
+         isMinMaxQuantitiesEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.readOnlyMinMaxQuantities),
+         stores: StoresManager = ServiceLocator.stores) {
         self.productVariation = productVariation
         self.editable = editable
         self.isMinMaxQuantitiesEnabled = isMinMaxQuantitiesEnabled
+        self.stores = stores
     }
 
     /// Returns an array of actions that are visible in the product form primary section.
     func primarySectionActions() -> [ProductFormEditAction] {
+
+        var isStorePublic = true
+
+        if let site = stores.sessionManager.defaultSite {
+            isStorePublic = !site.isPrivateWPCOMSite
+        }
+
         let shouldShowImagesRow = editable || productVariation.images.isNotEmpty
         let shouldShowDescriptionRow = editable || productVariation.description?.isNotEmpty == true
         let actions: [ProductFormEditAction?] = [
-            shouldShowImagesRow ? .images(editable: editable): nil,
+            shouldShowImagesRow ? .images(editable: editable, isStorePublic: isStorePublic): nil,
             .variationName,
             shouldShowDescriptionRow ? .description(editable: editable): nil
         ]
@@ -57,7 +68,7 @@ private extension ProductVariationFormActionsFactory {
                 return nil
             }
         }()
-        let shouldShowQuantityRulesRow = isMinMaxQuantitiesEnabled && productVariation.hasQuantityRules
+        let shouldShowQuantityRulesRow = isMinMaxQuantitiesEnabled && productVariation.canEditQuantityRules
 
         let actions: [ProductFormEditAction?] = [
             subscriptionOrPriceRow,

@@ -82,7 +82,7 @@ private extension ProductReviewStore {
                                      pageNumber: pageNumber,
                                      pageSize: pageSize,
                                      products: products,
-                                     status: status) { [weak self] result in
+                                     filterByStatuses: status.map { [$0] }) { [weak self] result in
             switch result {
             case .failure(let error):
                 onCompletion(.failure(error))

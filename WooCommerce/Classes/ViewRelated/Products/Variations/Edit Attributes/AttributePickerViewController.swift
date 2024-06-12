@@ -1,5 +1,6 @@
 import UIKit
 import Yosemite
+import protocol WooFoundation.Analytics
 
 final class AttributePickerViewController: UIViewController {
 
@@ -158,7 +159,7 @@ private extension AttributePickerViewController {
 
     @objc func doneButtonPressed() {
         onCompletion(viewModel.resultAttributes)
-        analytics.track(event: WooAnalyticsEvent.Variations.editVariationAttributeOptionsDoneButtonTapped(productID: viewModel.variation.productID,
+        analytics.track(event: .Variations.editVariationAttributeOptionsDoneButtonTapped(productID: viewModel.variation.productID,
                                                                                                           variationID: viewModel.variation.productVariationID))
     }
 

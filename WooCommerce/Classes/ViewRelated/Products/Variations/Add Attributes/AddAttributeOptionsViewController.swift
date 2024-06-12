@@ -1,6 +1,7 @@
 import UIKit
 import Yosemite
 import WordPressUI
+import protocol WooFoundation.Analytics
 
 final class AddAttributeOptionsViewController: UIViewController, GhostableViewController {
 

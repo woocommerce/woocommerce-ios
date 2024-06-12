@@ -1,8 +1,93 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
-17.8
+19.1
+-----
+- [*] Products: The creation sheet is now simplified and categorized better [https://github.com/woocommerce/woocommerce-ios/pull/12273]
+- [*] Restore a missing navigation bar on the privacy settings screen. [https://github.com/woocommerce/woocommerce-ios/pull/13018]
+
+
+19.0
+-----
+- [***] Now you can add more sections to the My Store screen including contents for the last orders, top products with low stock, top active coupons and more! [https://github.com/woocommerce/woocommerce-ios/pull/12890]
+- [internal] Resolved an issue where users were unable to upload product images when the store is set to private on WP.com. [https://github.com/woocommerce/woocommerce-ios/issues/12646]
+- [internal] Bump Tracks iOS library to v.3.4.1, that fix a deadlock while getting device info. [https://github.com/woocommerce/woocommerce-ios/pull/12939]
+
+18.9
+-----
+- [***] Explore our new Watch App to get glance of you store data and latest orders.
+- [*] Orders: Fixes an issue where adding shipping to an order without selecting a shipping method prevented the order from being created/updated. [https://github.com/woocommerce/woocommerce-ios/pull/12870]
+- [**] Orders: Multiple shipping lines can now be viewed, added, edited, or removed on orders; previously only the first shipping line on an order was supported. [https://github.com/woocommerce/woocommerce-ios/pull/12888]
+- [internal] Orders: An empty order list screen after applying filters no longer affects Dashboard cards eligibility. [https://github.com/woocommerce/woocommerce-ios/pull/12873]
+
+18.8
+-----
+- [*] Menu > Payments > Collect Payment: fix the the "card reader" & "Tap To Pay" payment methods where it was no-op before. [https://github.com/woocommerce/woocommerce-ios/pull/12801]
+- [internal] Optimize API calls sent for Dashboard screen. [https://github.com/woocommerce/woocommerce-ios/pull/12775]
+- [**] Adds edit support for the Min/Max Quantities extension in product details. [https://github.com/woocommerce/woocommerce-ios/pull/12758]
+
+18.7
+-----
+- [*] Resolved an issue where the image on the tutorial of application password on the iPad login page was displayed too large, improving the login experience for iPad users. [https://github.com/woocommerce/woocommerce-ios/pull/12759]
+
+18.7
 -----
 
+18.6
+-----
+- [*] Change text color in badge view in order products list to fix the dark mode readability. [https://github.com/woocommerce/woocommerce-ios/pull/12630]
+- [*] Speculative fix for a crash when opening order notifications [https://github.com/woocommerce/woocommerce-ios/pull/12643]
+- [internal] Show In-App feedback card in dashboard. [https://github.com/woocommerce/woocommerce-ios/pull/12636]
+- [*] Shipping: A shipping method can now be selected when adding or editing shipping on an order. [https://github.com/woocommerce/woocommerce-ios/pull/12688]
+
+18.5
+-----
+- [*] Barcode scanning: Fixed bug where variable parent products could be added to orders directly using the barcode scanner. [https://github.com/woocommerce/woocommerce-ios/pull/12576]
+
+18.4.1
+-----
+- [***] The application crashes when the `Charts` library attempts to calculate stride values for the y-axis with negative numbers, typically occurring when the data contains negative revenue (refunds). The issue is traced to the `NumberBins.init(size:range:)` method within the library, causing a crash seconds after app launch when viewing stats in the new Dynamic Dashboard. [https://github.com/woocommerce/woocommerce-ios/pull/12672]
+
+18.4
+-----
+- [*] Bug fix: tapping on the "Collect payment" quick action (long press on the app icon) or deeplink (http://woo.com/mobile/payments/collect-payment) now shows the order form instead of a blank view. [https://github.com/woocommerce/woocommerce-ios/pull/12559]
+- [internal] Blaze: Change campaign image minimum expected dimensions. [https://github.com/woocommerce/woocommerce-ios/pull/12544]
+
+
+18.3
+-----
+- [*] Fixed an issue where the "Reset Activity log" button did not clear the current day's log files, ensuring all logs are now properly reset when the button is pressed. [https://github.com/woocommerce/woocommerce-ios/pull/12479]
+
+18.2
+-----
+- [*] Menu > Payments > Collect Payment: the simple payments flow has been migrated to order form with custom amount. [https://github.com/woocommerce/woocommerce-ios/pull/12455]
+- [*] Login: Allow login using site credentials for Jetpack connected stores. [https://github.com/woocommerce/woocommerce-ios/pull/12429]
+- [internal] Updated all `woo.com` URLs to use `woocommerce.com` domain. [https://github.com/woocommerce/woocommerce-ios/pull/12452]
+- [*] Blaze: Validate that campaign image has minimum expected dimensions. [https://github.com/woocommerce/woocommerce-ios/pull/12470]
+
+18.1
+-----
+- [**] Orders: now it's possible to swiftly delete orders right from the Order Detail page.
+- [**] Stats: The Analytics Hub now includes analytics for Product Bundles and Gift Cards, when those extensions are active. [https://github.com/woocommerce/woocommerce-ios/pull/12425]
+- [*] Login: Fix issues in Jetpack installation feature. [https://github.com/woocommerce/woocommerce-ios/pull/12426]
+- [Internal] WooExpress: Site creation with WooExpress is now disabled. [https://github.com/woocommerce/woocommerce-ios/issues/12323]
+- [*] Product Creation AI: Update prompt to fix error during product creation. [https://github.com/woocommerce/woocommerce-ios/pull/12457]
+- [internal] Fix product package flow error by specifying json as response format. [https://github.com/woocommerce/woocommerce-ios/pull/12466]
+
+18.0
+-----
+- [**] Hub Menu: A new Customers section shows a searchable list of customers with their details, including the option to contact a customer via email. [https://github.com/woocommerce/woocommerce-ios/pull/12349]
+- [Internal] Update Woo Purple color palette [https://github.com/woocommerce/woocommerce-ios/pull/12330]
+- [internal] The dependency setup in `AppDelegate`'s `application(_:willFinishLaunchingWithOptions:)` was updated as an attempted fix for one of the top crashes. [https://github.com/woocommerce/woocommerce-ios/pull/12268]
+- [*] Order List: Speculative fix for a crash on the iPad when viewing orders [https://github.com/woocommerce/woocommerce-ios/pull/12369]
+
+17.9
+-----
+- [***] Blaze: revamped the Blaze advertising flow with a native implementation to enhance user experience. This allows merchants to seamlessly create and manage their campaigns directly within the Woo mobile apps, without opening the flow in a webview. [https://github.com/woocommerce/woocommerce-ios/pull/12361]
+- [**] Added 4 home screen quick actions: "New Order", "Orders", "Add a product", "Collect Payment" [https://github.com/woocommerce/woocommerce-ios/pull/12264/]
+- [Internal] Payments: Updated StripeTerminal pod to 3.3.1 [https://github.com/woocommerce/woocommerce-ios/pull/12078]
+
+17.8
+-----
 
 17.7
 -----

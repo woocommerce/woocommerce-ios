@@ -395,6 +395,42 @@ final class AppSettingsStoreTests: XCTestCase {
         XCTAssertTrue(isEnabled)
     }
 
+    func test_loadPointOfSaleSwitchState_isEnabled_when_new_generalAppSettings_then_returns_false() throws {
+        // Given
+        try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
+
+        // When
+        let result: Result<Bool, Error> = waitFor { promise in
+            let action = AppSettingsAction.loadPointOfSaleSwitchState { result in
+                promise(result)
+            }
+            self.subject?.onAction(action)
+        }
+
+        // Then
+        let isEnabled = try result.get()
+        XCTAssertFalse(isEnabled)
+    }
+
+    func test_loadPointOfSaleSwitchState_isEnabled_when_setPointOfSaleSwitchState_to_true_then_returns_true() throws {
+        // Given
+        try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
+        let updateAction = AppSettingsAction.setPointOfSaleSwitchState(isEnabled: true, onCompletion: { _ in })
+        subject?.onAction(updateAction)
+
+        // When
+        let result: Result<Bool, Error> = waitFor { promise in
+            let action = AppSettingsAction.loadPointOfSaleSwitchState { result in
+                promise(result)
+            }
+            self.subject?.onAction(action)
+        }
+
+        // Then
+        let isEnabled = try result.get()
+        XCTAssertTrue(isEnabled)
+    }
+
     func test_loadJetpackBenefitsBannerVisibility_returns_true_on_new_generalAppSettings() throws {
         // Given
         // Deletes any pre-existing app settings.
@@ -1364,6 +1400,333 @@ extension AppSettingsStoreTests {
         // Then
         XCTAssertNil(customTimeRange)
     }
+
+    // MARK: - dashboard cards
+    func test_setDashboardCards_works_correctly() throws {
+        // Given
+        let dashboardCards = [
+            DashboardCard(type: .onboarding, availability: .show, enabled: false),
+            DashboardCard(type: .performance, availability: .show, enabled: true),
+            DashboardCard(type: .topPerformers, availability: .show, enabled: true),
+            DashboardCard(type: .blaze, availability: .show, enabled: true)
+        ]
+        let existingSettings = GeneralStoreSettingsBySite(storeSettingsBySite: [TestConstants.siteID: GeneralStoreSettings()])
+        try fileStorage?.write(existingSettings, to: expectedGeneralStoreSettingsFileURL)
+
+        // When
+        let action = AppSettingsAction.setDashboardCards(siteID: TestConstants.siteID, cards: dashboardCards)
+        subject?.onAction(action)
+
+        // Then
+        let savedSettings: GeneralStoreSettingsBySite = try XCTUnwrap(fileStorage?.data(for: expectedGeneralStoreSettingsFileURL))
+        let settingsForSite = savedSettings.storeSettingsBySite[TestConstants.siteID]
+
+        assertEqual(dashboardCards, settingsForSite?.dashboardCards)
+    }
+
+    func test_loadDashboardCards_works_correctly() throws {
+        // Given
+        let storedDashboardCards = [
+            DashboardCard(type: .onboarding, availability: .show, enabled: false),
+            DashboardCard(type: .performance, availability: .show, enabled: true),
+            DashboardCard(type: .topPerformers, availability: .show, enabled: true),
+            DashboardCard(type: .blaze, availability: .show, enabled: true)
+        ]
+        let storeSettings = GeneralStoreSettings(dashboardCards: storedDashboardCards)
+        let existingSettings = GeneralStoreSettingsBySite(storeSettingsBySite: [TestConstants.siteID: storeSettings])
+        try fileStorage?.write(existingSettings, to: expectedGeneralStoreSettingsFileURL)
+
+        // When
+        var loadedDashboardCards: [DashboardCard]?
+        let action = AppSettingsAction.loadDashboardCards(siteID: TestConstants.siteID) { cards in
+            loadedDashboardCards = cards
+        }
+        subject?.onAction(action)
+
+        // Then
+        assertEqual(storedDashboardCards, loadedDashboardCards)
+    }
+
+    func test_loadDashboardCards_returns_nil_when_no_cards_are_saved() throws {
+        // Given
+        let existingSettings = GeneralStoreSettingsBySite(storeSettingsBySite: [TestConstants.siteID: GeneralStoreSettings()])
+        try fileStorage?.write(existingSettings, to: expectedGeneralStoreSettingsFileURL)
+
+        // When
+        var loadedDashboardCards: [DashboardCard]?
+        let action = AppSettingsAction.loadDashboardCards(siteID: TestConstants.siteID) { cards in
+            loadedDashboardCards = cards
+        }
+        subject?.onAction(action)
+
+        // Then
+        XCTAssertNil(loadedDashboardCards)
+    }
+
+    // MARK: - Last selected time range for Performance card
+
+    func test_setLastSelectedPerformanceTimeRange_works_correctly() throws {
+        // Given
+        let timeRange = StatsTimeRangeV4.thisYear
+        let existingSettings = GeneralStoreSettingsBySite(storeSettingsBySite: [TestConstants.siteID: GeneralStoreSettings()])
+        try fileStorage?.write(existingSettings, to: expectedGeneralStoreSettingsFileURL)
+
+        // When
+        let action = AppSettingsAction.setLastSelectedPerformanceTimeRange(siteID: TestConstants.siteID, timeRange: timeRange)
+        subject?.onAction(action)
+
+        // Then
+        let savedSettings: GeneralStoreSettingsBySite = try XCTUnwrap(fileStorage?.data(for: expectedGeneralStoreSettingsFileURL))
+        let settingsForSite = savedSettings.storeSettingsBySite[TestConstants.siteID]
+
+        assertEqual(timeRange.rawValue, settingsForSite?.lastSelectedPerformanceTimeRange)
+    }
+
+    func test_loadLastSelectedPerformanceTimeRange_works_correctly() throws {
+        // Given
+        let timeRange = StatsTimeRangeV4.thisYear
+        let storeSettings = GeneralStoreSettings(lastSelectedPerformanceTimeRange: timeRange.rawValue)
+        let existingSettings = GeneralStoreSettingsBySite(storeSettingsBySite: [TestConstants.siteID: storeSettings])
+        try fileStorage?.write(existingSettings, to: expectedGeneralStoreSettingsFileURL)
+
+        // When
+        var loadedTimeRange: StatsTimeRangeV4?
+        let action = AppSettingsAction.loadLastSelectedPerformanceTimeRange(siteID: TestConstants.siteID) { timeRange in
+            loadedTimeRange = timeRange
+        }
+        subject?.onAction(action)
+
+        // Then
+        assertEqual(timeRange, loadedTimeRange)
+    }
+
+    func test_loadLastSelectedPerformanceTimeRange_returns_nil_when_no_data_was_saved() throws {
+        // Given
+        let existingSettings = GeneralStoreSettingsBySite(storeSettingsBySite: [TestConstants.siteID: GeneralStoreSettings()])
+        try fileStorage?.write(existingSettings, to: expectedGeneralStoreSettingsFileURL)
+
+        // When
+        var loadedTimeRange: StatsTimeRangeV4?
+        let action = AppSettingsAction.loadLastSelectedPerformanceTimeRange(siteID: TestConstants.siteID) { timeRange in
+            loadedTimeRange = timeRange
+        }
+        subject?.onAction(action)
+
+        // Then
+        XCTAssertNil(loadedTimeRange)
+    }
+
+    // MARK: - Last selected time range for Top Performers card
+
+    func test_setLastSelectedTopPerformersTimeRange_works_correctly() throws {
+        // Given
+        let timeRange = StatsTimeRangeV4.thisWeek
+        let existingSettings = GeneralStoreSettingsBySite(storeSettingsBySite: [TestConstants.siteID: GeneralStoreSettings()])
+        try fileStorage?.write(existingSettings, to: expectedGeneralStoreSettingsFileURL)
+
+        // When
+        let action = AppSettingsAction.setLastSelectedTopPerformersTimeRange(siteID: TestConstants.siteID, timeRange: timeRange)
+        subject?.onAction(action)
+
+        // Then
+        let savedSettings: GeneralStoreSettingsBySite = try XCTUnwrap(fileStorage?.data(for: expectedGeneralStoreSettingsFileURL))
+        let settingsForSite = savedSettings.storeSettingsBySite[TestConstants.siteID]
+
+        assertEqual(timeRange.rawValue, settingsForSite?.lastSelectedTopPerformersTimeRange)
+    }
+
+    func test_loadLastSelectedTopPerformersTimeRange_works_correctly() throws {
+        // Given
+        let timeRange = StatsTimeRangeV4.thisWeek
+        let storeSettings = GeneralStoreSettings(lastSelectedTopPerformersTimeRange: timeRange.rawValue)
+        let existingSettings = GeneralStoreSettingsBySite(storeSettingsBySite: [TestConstants.siteID: storeSettings])
+        try fileStorage?.write(existingSettings, to: expectedGeneralStoreSettingsFileURL)
+
+        // When
+        var loadedTimeRange: StatsTimeRangeV4?
+        let action = AppSettingsAction.loadLastSelectedTopPerformersTimeRange(siteID: TestConstants.siteID) { timeRange in
+            loadedTimeRange = timeRange
+        }
+        subject?.onAction(action)
+
+        // Then
+        assertEqual(timeRange, loadedTimeRange)
+    }
+
+    func test_loadLastSelectedTopPerformersTimeRange_returns_nil_when_no_data_was_saved() throws {
+        // Given
+        let existingSettings = GeneralStoreSettingsBySite(storeSettingsBySite: [TestConstants.siteID: GeneralStoreSettings()])
+        try fileStorage?.write(existingSettings, to: expectedGeneralStoreSettingsFileURL)
+
+        // When
+        var loadedTimeRange: StatsTimeRangeV4?
+        let action = AppSettingsAction.loadLastSelectedTopPerformersTimeRange(siteID: TestConstants.siteID) { timeRange in
+            loadedTimeRange = timeRange
+        }
+        subject?.onAction(action)
+
+        // Then
+        XCTAssertNil(loadedTimeRange)
+    }
+
+    // MARK: - Last selected time range for Most active coupons card
+
+    func test_setLastSelectedMostActiveCouponsTimeRange_works_correctly() throws {
+        // Given
+        let timeRange = StatsTimeRangeV4.thisMonth
+        let existingSettings = GeneralStoreSettingsBySite(storeSettingsBySite: [TestConstants.siteID: GeneralStoreSettings()])
+        try fileStorage?.write(existingSettings, to: expectedGeneralStoreSettingsFileURL)
+
+        // When
+        let action = AppSettingsAction.setLastSelectedMostActiveCouponsTimeRange(siteID: TestConstants.siteID, timeRange: timeRange)
+        subject?.onAction(action)
+
+        // Then
+        let savedSettings: GeneralStoreSettingsBySite = try XCTUnwrap(fileStorage?.data(for: expectedGeneralStoreSettingsFileURL))
+        let settingsForSite = savedSettings.storeSettingsBySite[TestConstants.siteID]
+
+        assertEqual(timeRange.rawValue, settingsForSite?.lastSelectedMostActiveCouponsTimeRange)
+    }
+
+    func test_loadLastSelectedMostActiveCouponsTimeRange_works_correctly() throws {
+        // Given
+        let timeRange = StatsTimeRangeV4.thisMonth
+        let storeSettings = GeneralStoreSettings(lastSelectedMostActiveCouponsTimeRange: timeRange.rawValue)
+        let existingSettings = GeneralStoreSettingsBySite(storeSettingsBySite: [TestConstants.siteID: storeSettings])
+        try fileStorage?.write(existingSettings, to: expectedGeneralStoreSettingsFileURL)
+
+        // When
+        var loadedTimeRange: StatsTimeRangeV4?
+        let action = AppSettingsAction.loadLastSelectedMostActiveCouponsTimeRange(siteID: TestConstants.siteID) { timeRange in
+            loadedTimeRange = timeRange
+        }
+        subject?.onAction(action)
+
+        // Then
+        assertEqual(timeRange, loadedTimeRange)
+    }
+
+    func test_loadLastSelectedMostActiveCouponsTimeRange_returns_nil_when_no_data_was_saved() throws {
+        // Given
+        let existingSettings = GeneralStoreSettingsBySite(storeSettingsBySite: [TestConstants.siteID: GeneralStoreSettings()])
+        try fileStorage?.write(existingSettings, to: expectedGeneralStoreSettingsFileURL)
+
+        // When
+        var loadedTimeRange: StatsTimeRangeV4?
+        let action = AppSettingsAction.loadLastSelectedMostActiveCouponsTimeRange(siteID: TestConstants.siteID) { timeRange in
+            loadedTimeRange = timeRange
+        }
+        subject?.onAction(action)
+
+        // Then
+        XCTAssertNil(loadedTimeRange)
+    }
+
+    // MARK: - Last selected stock type for Stock dashboard card
+
+    func test_setLastSelectedStockType_works_correctly() throws {
+        // Given
+        let stockType = "lowstock"
+        let existingSettings = GeneralStoreSettingsBySite(storeSettingsBySite: [TestConstants.siteID: GeneralStoreSettings()])
+        try fileStorage?.write(existingSettings, to: expectedGeneralStoreSettingsFileURL)
+
+        // When
+        let action = AppSettingsAction.setLastSelectedStockType(siteID: TestConstants.siteID, type: stockType)
+        subject?.onAction(action)
+
+        // Then
+        let savedSettings: GeneralStoreSettingsBySite = try XCTUnwrap(fileStorage?.data(for: expectedGeneralStoreSettingsFileURL))
+        let settingsForSite = savedSettings.storeSettingsBySite[TestConstants.siteID]
+
+        assertEqual(stockType, settingsForSite?.lastSelectedStockType)
+    }
+
+    func test_loadLastSelectedStockType_works_correctly() throws {
+        // Given
+        let stockType = "lowstock"
+        let storeSettings = GeneralStoreSettings(lastSelectedStockType: stockType)
+        let existingSettings = GeneralStoreSettingsBySite(storeSettingsBySite: [TestConstants.siteID: storeSettings])
+        try fileStorage?.write(existingSettings, to: expectedGeneralStoreSettingsFileURL)
+
+        // When
+        var loadedStockType: String?
+        let action = AppSettingsAction.loadLastSelectedStockType(siteID: TestConstants.siteID) { type in
+            loadedStockType = type
+        }
+        subject?.onAction(action)
+
+        // Then
+        assertEqual(stockType, loadedStockType)
+    }
+
+    func test_loadLastSelectedStockType_returns_nil_when_no_data_was_saved() throws {
+        // Given
+        let existingSettings = GeneralStoreSettingsBySite(storeSettingsBySite: [TestConstants.siteID: GeneralStoreSettings()])
+        try fileStorage?.write(existingSettings, to: expectedGeneralStoreSettingsFileURL)
+
+        // When
+        var loadedStockType: String?
+        let action = AppSettingsAction.loadLastSelectedStockType(siteID: TestConstants.siteID) { type in
+            loadedStockType = type
+        }
+        subject?.onAction(action)
+
+        // Then
+        XCTAssertNil(loadedStockType)
+    }
+
+    // MARK: - Last selected order status for Most recent orders card
+
+    func test_setLastSelectedOrderStatus_works_correctly() throws {
+        // Given
+        let status = "pending"
+        let existingSettings = GeneralStoreSettingsBySite(storeSettingsBySite: [TestConstants.siteID: GeneralStoreSettings()])
+        try fileStorage?.write(existingSettings, to: expectedGeneralStoreSettingsFileURL)
+
+        // When
+        let action = AppSettingsAction.setLastSelectedOrderStatus(siteID: TestConstants.siteID, status: status)
+        subject?.onAction(action)
+
+        // Then
+        let savedSettings: GeneralStoreSettingsBySite = try XCTUnwrap(fileStorage?.data(for: expectedGeneralStoreSettingsFileURL))
+        let settingsForSite = savedSettings.storeSettingsBySite[TestConstants.siteID]
+
+        assertEqual(status, settingsForSite?.lastSelectedOrderStatus)
+    }
+
+    func test_loadLastSelectedOrderStatus_works_correctly() throws {
+        // Given
+        let status = "pending"
+        let storeSettings = GeneralStoreSettings(lastSelectedOrderStatus: status)
+        let existingSettings = GeneralStoreSettingsBySite(storeSettingsBySite: [TestConstants.siteID: storeSettings])
+        try fileStorage?.write(existingSettings, to: expectedGeneralStoreSettingsFileURL)
+
+        // When
+        var loadedOrderStatus: String?
+        let action = AppSettingsAction.loadLastSelectedOrderStatus(siteID: TestConstants.siteID) { status in
+            loadedOrderStatus = status
+        }
+        subject?.onAction(action)
+
+        // Then
+        assertEqual(status, loadedOrderStatus)
+    }
+
+    func test_loadLastSelectedOrderStatus_returns_nil_when_no_data_was_saved() throws {
+        // Given
+        let existingSettings = GeneralStoreSettingsBySite(storeSettingsBySite: [TestConstants.siteID: GeneralStoreSettings()])
+        try fileStorage?.write(existingSettings, to: expectedGeneralStoreSettingsFileURL)
+
+        // When
+        var loadedOrderStatus: String?
+        let action = AppSettingsAction.loadLastSelectedOrderStatus(siteID: TestConstants.siteID) { status in
+            loadedOrderStatus = status
+        }
+        subject?.onAction(action)
+
+        // Then
+        XCTAssertNil(loadedOrderStatus)
+    }
 }
 
 // MARK: - Utils
@@ -1381,6 +1744,7 @@ private extension AppSettingsStoreTests {
             feedbacks: [feedback.name: feedback],
             isViewAddOnsSwitchEnabled: false,
             isInAppPurchasesSwitchEnabled: false,
+            isPointOfSaleEnabled: false,
             knownCardReaders: [],
             featureAnnouncementCampaignSettings: [:],
             sitesWithAtLeastOneIPPTransactionFinished: [],
@@ -1397,6 +1761,7 @@ private extension AppSettingsStoreTests {
             feedbacks: [:],
             isViewAddOnsSwitchEnabled: false,
             isInAppPurchasesSwitchEnabled: false,
+            isPointOfSaleEnabled: false,
             knownCardReaders: [],
             featureAnnouncementCampaignSettings: featureAnnouncementCampaignSettings,
             sitesWithAtLeastOneIPPTransactionFinished: [],

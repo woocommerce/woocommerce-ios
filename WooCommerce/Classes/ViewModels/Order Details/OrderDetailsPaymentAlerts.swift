@@ -93,9 +93,4 @@ final class OrderDetailsPaymentAlerts: OrderDetailsPaymentAlertsProtocol {
                                                          dismissCompletion: dismissCompletion)
         presentViewModel(viewModel: viewModel)
     }
-
-    func retryableError(from: UIViewController?, tryAgain: @escaping () -> Void) {
-        let viewModel = alertsProvider.retryableError(tryAgain: tryAgain)
-        presentViewModel(viewModel: viewModel)
-    }
 }

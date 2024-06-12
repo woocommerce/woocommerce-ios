@@ -1,4 +1,5 @@
 import Foundation
+import SwiftUI
 import UIKit
 import Yosemite
 import Experiments
@@ -15,10 +16,6 @@ final class OrderDetailsDataSource: NSObject {
 
     private(set) var order: Order
     private let couponLines: [OrderCouponLine]?
-
-    /// Haptic Feedback!
-    ///
-    private let hapticGenerator = UINotificationFeedbackGenerator()
 
     /// Sections to be rendered
     ///
@@ -85,7 +82,7 @@ final class OrderDetailsDataSource: NSObject {
     ///
     var shouldAllowWCShipInstallation: Bool {
         let isFeatureFlagEnabled = featureFlags.isFeatureFlagEnabled(.shippingLabelsOnboardingM1)
-        let plugin = resultsControllers.sitePlugins.first { $0.name == SitePlugin.SupportedPlugin.WCShip }
+        let plugin = resultsControllers.sitePlugins.first { $0.name == SitePlugin.SupportedPlugin.LegacyWCShip }
         let isPluginInstalled = plugin != nil && resultsControllers.sitePlugins.count > 0
         let isPluginActive = plugin?.status.isActive ?? false
         let isCountryCodeUS = SiteAddress(siteSettings: siteSettings).countryCode == CountryCode.US
@@ -169,6 +166,12 @@ final class OrderDetailsDataSource: NSObject {
         resultsControllers.addOnGroups
     }
 
+    /// Shipping Methods list
+    ///
+    var siteShippingMethods: [ShippingMethod] {
+        resultsControllers.siteShippingMethods
+    }
+
     /// Shipping Labels for an Order
     ///
     private(set) var shippingLabels: [ShippingLabel] = []
@@ -178,13 +181,7 @@ final class OrderDetailsDataSource: NSObject {
     /// Shipping Lines from an Order
     ///
     private var shippingLines: [ShippingLine] {
-        return order.shippingLines
-    }
-
-    /// First Shipping method from an order
-    ///
-    private var shippingMethod: String {
-        return shippingLines.first?.methodTitle ?? String()
+        return order.shippingLines.sorted(by: { $0.shippingID < $1.shippingID })
     }
 
     /// Yosemite.OrderItem
@@ -389,14 +386,10 @@ private extension OrderDetailsDataSource {
             configureShippingAddress(cell: cell)
         case let cell as CustomerNoteTableViewCell where row == .customerNote:
             configureCustomerNote(cell: cell)
-        case let cell as CustomerNoteTableViewCell where row == .shippingMethod:
-            configureShippingMethod(cell: cell)
         case let cell as WooBasicTableViewCell where row == .billingDetail:
             configureBillingDetail(cell: cell)
         case let cell as WooBasicTableViewCell where row == .shippingLabelDetail:
             configureShippingLabelDetail(cell: cell)
-        case let cell as ImageAndTitleAndTextTableViewCell where row == .shippingNotice:
-            configureShippingNotice(cell: cell)
         case let cell as WCShipInstallTableViewCell where row == .installWCShip:
             configureInstallWCShip(cell: cell)
         case let cell as ImageAndTitleAndTextTableViewCell where row == .shippingLabelCreationInfo(showsSeparator: true),
@@ -477,6 +470,10 @@ private extension OrderDetailsDataSource {
             configureAttributionDeviceType(cell: cell, at: indexPath)
         case let cell as TitleAndValueTableViewCell where row == .attributionSessionPageViews:
             configureAttributionSessionPageViews(cell: cell, at: indexPath)
+        case let cell as WooBasicTableViewCell where row == .trashOrder:
+            configureTrashOrder(cell: cell, at: indexPath)
+        case let cell as HostingConfigurationTableViewCell<ShippingLineRowView> where row == .shippingLine:
+            configureShippingLine(cell: cell, at: indexPath)
         default:
             fatalError("Unidentified customer info row type")
         }
@@ -537,29 +534,6 @@ private extension OrderDetailsDataSource {
             "Show the billing details for this order.",
             comment: "VoiceOver accessibility hint, informing the user that the button can be used to view billing information."
         )
-    }
-
-    private func configureShippingNotice(cell: ImageAndTitleAndTextTableViewCell) {
-        let cellTextContent = NSLocalizedString(
-            "This order is using extensions to calculate shipping. The shipping methods shown might be incomplete.",
-            comment: "Shipping notice row label when there is more than one shipping method")
-
-        cell.update(with: .imageAndTitleOnly(fontStyle: .body),
-                    data: .init(title: cellTextContent,
-                                textTintColor: .text,
-                                image: Icons.shippingNoticeIcon,
-                                imageTintColor: .listIcon,
-                                numberOfLinesForTitle: 0,
-                                isActionable: false))
-
-        cell.selectionStyle = .none
-
-        cell.accessibilityTraits = .staticText
-        cell.accessibilityLabel = NSLocalizedString(
-            "This order is using extensions to calculate shipping. The shipping methods shown might be incomplete.",
-            comment: "Accessibility label for the Shipping notice")
-        cell.accessibilityHint = NSLocalizedString("Shipping notice about the order",
-                                                    comment: "VoiceOver accessibility label for the shipping notice about the order")
     }
 
     private func configureInstallWCShip(cell: WCShipInstallTableViewCell) {
@@ -1000,11 +974,19 @@ private extension OrderDetailsDataSource {
         cell.configureLayout()
     }
 
-    private func configureShippingMethod(cell: CustomerNoteTableViewCell) {
-        cell.headline = NSLocalizedString("Shipping Method",
-                                          comment: "Shipping method title for customer info cell")
-        cell.body = shippingMethod.strippedHTML
+    private func configureShippingLine(cell: HostingConfigurationTableViewCell<ShippingLineRowView>, at indexPath: IndexPath) {
+        let shippingLine = shippingLines[indexPath.row]
+        let viewModel = ShippingLineRowViewModel(shippingLine: shippingLine, shippingMethods: siteShippingMethods, editable: false)
+        let view = ShippingLineRowView(viewModel: viewModel)
+
+        // Reduce cell padding between rows
+        let topMargin = indexPath.row == 0 ? Constants.cellDefaultMargin : 0
+        let insets = UIEdgeInsets(top: topMargin, left: Constants.cellDefaultMargin, bottom: Constants.cellDefaultMargin, right: Constants.cellDefaultMargin)
+
+        cell.host(view, insets: insets)
+        cell.hideSeparator()
         cell.selectionStyle = .none
+
     }
 
     private func configureSummary(cell: SummaryTableViewCell) {
@@ -1019,6 +1001,19 @@ private extension OrderDetailsDataSource {
         cell.onEditTouchUp = { [weak self] in
             self?.onCellAction?(.summary, nil)
         }
+    }
+
+    private func configureTrashOrder(cell: WooBasicTableViewCell, at indexPath: IndexPath) {
+        cell.bodyLabel.textColor = .error
+        cell.bodyLabel?.text = Titles.trashOrder
+        cell.bodyLabel.textAlignment = .center
+        cell.accessoryType = .none
+        cell.selectionStyle = .default
+
+        cell.accessibilityTraits = .button
+        cell.accessibilityIdentifier = "order-details-trash-order-button"
+        cell.accessibilityLabel = Accessibility.trashOrderLabel
+        cell.accessibilityHint = Accessibility.trashOrderHint
     }
 
     /// Returns attributes that can be categorized as `Add-ons`.
@@ -1125,16 +1120,6 @@ extension OrderDetailsDataSource {
                                                                                    productVariations: resultsControllers.productVariations)
 
         let summary = Section(category: .summary, row: .summary)
-
-        let shippingNotice: Section? = {
-            // Hide the shipping method warning if order contains only virtual products
-            // or if the order contains only one shipping method
-            if isMultiShippingLinesAvailable(for: order) == false {
-                return nil
-            }
-
-            return Section(category: .shippingNotice, title: nil, rightTitle: nil, footer: nil, rows: [.shippingNotice])
-        }()
 
         let products: Section? = {
             if items.isEmpty {
@@ -1249,6 +1234,14 @@ extension OrderDetailsDataSource {
             return sections
         }()
 
+        let shippingLinesSection: Section? = {
+            guard shippingLines.count > 0 else {
+                return nil
+            }
+
+            return Section(category: .shippingLines, title: Title.shippingLines, rows: Array(repeating: .shippingLine, count: shippingLines.count))
+        }()
+
         let customerInformation: Section? = {
             var rows: [Row] = []
 
@@ -1265,11 +1258,6 @@ extension OrderDetailsDataSource {
 
             if order.shippingAddress != nil && orderContainsOnlyVirtualProducts == false {
                 rows.append(.shippingAddress)
-            }
-
-            /// Shipping Lines
-            if shippingLines.count > 0 {
-                rows.append(.shippingMethod)
             }
 
             /// Billing Address
@@ -1421,22 +1409,27 @@ extension OrderDetailsDataSource {
             return Section(category: .attribution, title: Title.orderAttribution, rows: rows)
         }()
 
+        let trashOrderSection: Section? = {
+            return Section(category: .trashOrder, rows: [.trashOrder])
+        }()
+
         sections = ([summary,
-                     shippingNotice,
                      products,
                      customAmountsSection,
                      customFields,
                      installWCShipSection,
                      refundedProducts] +
                     shippingLabelSections +
-                    [payment,
+                    [subscriptions,
+                     shippingLinesSection,
+                     payment,
                      customerInformation,
                      attribution,
-                     subscriptions,
                      giftCards,
                      tracking,
                      addTracking,
-                     notes]).compactMap { $0 }
+                     notes,
+                     trashOrderSection]).compactMap { $0 }
 
         updateOrderNoteAsyncDictionary(orderNotes: orderNotes)
     }
@@ -1540,32 +1533,12 @@ extension OrderDetailsDataSource {
 
         switch row {
         case .shippingAddress:
-            sendToPasteboard(order.shippingAddress?.fullNameWithCompanyAndAddress)
+            order.shippingAddress?.fullNameWithCompanyAndAddress.sendToPasteboard()
         case .tracking:
-            sendToPasteboard(orderTracking(at: indexPath)?.trackingNumber, includeTrailingNewline: false)
+            orderTracking(at: indexPath)?.trackingNumber.sendToPasteboard(includeTrailingNewline: false)
         default:
             break // We only send text to the pasteboard from the address rows right meow
         }
-    }
-
-    /// Sends the provided text to the general pasteboard and triggers a success haptic. If the text param
-    /// is nil, nothing is sent to the pasteboard.
-    ///
-    /// - Parameter
-    ///   - text: string value to send to the pasteboard
-    ///   - includeTrailingNewline: If true, insert a trailing newline; defaults to true
-    ///
-    func sendToPasteboard(_ text: String?, includeTrailingNewline: Bool = true) {
-        guard var text = text, text.isEmpty == false else {
-            return
-        }
-
-        if includeTrailingNewline {
-            text += "\n"
-        }
-
-        UIPasteboard.general.string = text
-        hapticGenerator.notificationOccurred(.success)
     }
 
     /// Checks if copying the row data at the provided indexPath is allowed
@@ -1677,10 +1650,13 @@ extension OrderDetailsDataSource {
             value: "See Receipt",
             comment: "Text on the button title to see the order's receipt")
         static let seeLegacyReceipt = NSLocalizedString("See Receipt", comment: "Text on the button to see a saved receipt")
+        static let trashOrder = NSLocalizedString(
+                     "orderDetailsDataSource.trashOrder.button.title",
+                     value: "Move to trash",
+                     comment: "Text on the button title to trash an order")
     }
 
     enum Icons {
-        static let shippingNoticeIcon = UIImage.noticeImage
         static let plusImage = UIImage.plusImage
     }
 
@@ -1723,6 +1699,9 @@ extension OrderDetailsDataSource {
             value: "Order attribution",
             comment: "Title of Order Attribution Section in Order Details screen."
         )
+        static let shippingLines = NSLocalizedString("orderDetailsDataSource.shippingLines.title",
+                                                     value: "Shipping",
+                                                     comment: "Title of Shipping Section in Order Details screen")
     }
 
     enum Footer {
@@ -1732,10 +1711,22 @@ extension OrderDetailsDataSource {
                                                                 comment: "Button on bottom of shipping label package card to show shipping details")
     }
 
+    enum Accessibility {
+        static let trashOrderLabel = NSLocalizedString(
+            "orderDetailsDataSource.trashOrder.accessibilityLabel",
+            value: "Trash Order Button",
+            comment: "Accessibility label for the 'Trash order' button"
+        )
+        static let trashOrderHint = NSLocalizedString(
+            "orderDetailsDataSource.trashOrder.accessibilityHint",
+            value: "Put this order in the trash.",
+            comment: "VoiceOver accessibility hint, informing the user that the button can be used to view the order custom fields information."
+        )
+    }
+
     struct Section {
         enum Category {
             case summary
-            case shippingNotice
             case products
             case customAmounts
             case installWCShip
@@ -1750,6 +1741,8 @@ extension OrderDetailsDataSource {
             case notes
             case customFields
             case attribution
+            case trashOrder
+            case shippingLines
         }
 
         /// The table header style of a `Section`.
@@ -1828,7 +1821,6 @@ extension OrderDetailsDataSource {
         case issueRefundButton
         case customerNote
         case shippingAddress
-        case shippingMethod
         case billingDetail
         case payment
         case customerPaid
@@ -1850,7 +1842,7 @@ extension OrderDetailsDataSource {
         case shippingLabelRefunded
         case shippingLabelReprintButton
         case shippingLabelTrackingNumber
-        case shippingNotice
+        case shippingLine
         case addOrderNote
         case orderNoteHeader
         case orderNote
@@ -1862,6 +1854,7 @@ extension OrderDetailsDataSource {
         case attributionMedium
         case attributionDeviceType
         case attributionSessionPageViews
+        case trashOrder
 
         var reuseIdentifier: String {
             switch self {
@@ -1881,8 +1874,6 @@ extension OrderDetailsDataSource {
                 return CustomerNoteTableViewCell.reuseIdentifier
             case .shippingAddress:
                 return CustomerInfoTableViewCell.reuseIdentifier
-            case .shippingMethod:
-                return CustomerNoteTableViewCell.reuseIdentifier
             case .billingDetail:
                 return WooBasicTableViewCell.reuseIdentifier
             case .payment:
@@ -1919,8 +1910,6 @@ extension OrderDetailsDataSource {
                 return ImageAndTitleAndTextTableViewCell.reuseIdentifier
             case .shippingLabelReprintButton:
                 return ButtonTableViewCell.reuseIdentifier
-            case .shippingNotice:
-                return ImageAndTitleAndTextTableViewCell.reuseIdentifier
             case .addOrderNote:
                 return LargeHeightLeftImageTableViewCell.reuseIdentifier
             case .orderNoteHeader:
@@ -1941,6 +1930,10 @@ extension OrderDetailsDataSource {
                     .attributionDeviceType,
                     .attributionSessionPageViews:
                 return TitleAndValueTableViewCell.reuseIdentifier
+            case .trashOrder:
+                return WooBasicTableViewCell.reuseIdentifier
+            case .shippingLine:
+                return HostingConfigurationTableViewCell<ShippingLineRowView>.reuseIdentifier
             }
         }
     }
@@ -1957,11 +1950,13 @@ extension OrderDetailsDataSource {
         case viewAddOns(addOns: [OrderItemProductAddOn])
         case editCustomerNote
         case editShippingAddress
+        case trashOrder
     }
 
     enum Constants {
         static let addOrderCell = 1
         static let paymentCell = 1
         static let paidByCustomerCell = 1
+        static let cellDefaultMargin: CGFloat = 16
     }
 }

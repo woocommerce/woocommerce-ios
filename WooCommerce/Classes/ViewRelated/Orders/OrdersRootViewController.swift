@@ -38,7 +38,6 @@ final class OrdersRootViewController: UIViewController {
     ///
     private var filtersBar: FilteredOrdersHeaderBar = {
         let filteredOrdersBar: FilteredOrdersHeaderBar = FilteredOrdersHeaderBar.instantiateFromNib()
-        filteredOrdersBar.backgroundColor = .listForeground(modal: false)
         return filteredOrdersBar
     }()
 
@@ -116,7 +115,7 @@ final class OrdersRootViewController: UIViewController {
     override var shouldShowOfflineBanner: Bool {
         // Should show the offline banner only when there's no orderDetailsViewController in memory
         // otherwise, it will be shown within the order details view, so there's no need to duplicate it
-        if let orderDetailsViewController {
+        if orderDetailsViewController != nil {
             return false
         } else {
             return true
@@ -158,21 +157,9 @@ final class OrdersRootViewController: UIViewController {
         let detailsViewController = OrderDetailsViewController(viewModel: viewModel)
 
         viewController.navigationController?.pushViewController(detailsViewController, animated: true)
-        analytics.track(event: WooAnalyticsEvent.Orders.orderOpen(
+        analytics.track(event: .Orders.orderOpen(
             order: order,
             horizontalSizeClass: UITraitCollection.current.horizontalSizeClass))
-    }
-
-    /// Presents the Details for the Notification with the specified Identifier.
-    ///
-    func presentDetails(for note: Note) {
-        guard let orderID = note.meta.identifier(forKey: .order),
-              let siteID = note.meta.identifier(forKey: .site) else {
-            DDLogError("## Notification with [\(note.noteID)] lacks its OrderID!")
-            return
-        }
-
-        presentDetails(for: Int64(orderID), siteID: Int64(siteID), note: note)
     }
 
     /// Selects the order given the ID from the order list view if the order exists locally.
@@ -181,13 +168,6 @@ final class OrdersRootViewController: UIViewController {
     @discardableResult
     func selectOrderFromListIfPossible(for orderID: Int64) -> Bool {
         ordersViewController.selectOrderFromListIfPossible(for: orderID)
-    }
-
-    func presentDetails(for orderID: Int64, siteID: Int64, note: Note? = nil) {
-        let loaderViewController = OrderLoaderViewController(orderID: Int64(orderID), siteID: Int64(siteID), note: note)
-        navigationController?.pushViewController(loaderViewController, animated: true)
-
-        selectOrderFromListIfPossible(for: orderID)
     }
 
     /// Called when an order is shown externally (outside of `OrderListViewController`) and the order should be
@@ -250,14 +230,14 @@ final class OrdersRootViewController: UIViewController {
             navigationController.present(newOrderNavigationController, animated: true)
         }
 
-        analytics.track(event: WooAnalyticsEvent.Orders.orderAddNew())
+        analytics.track(event: .Orders.orderAddNew())
         orderDurationRecorder.startRecording()
     }
 
     /// Presents the Order Creation flow when a product is scanned
     ///
     @objc func presentOrderCreationFlowByProductScanning() {
-        analytics.track(event: WooAnalyticsEvent.Orders.orderAddNewFromBarcodeScanningTapped())
+        analytics.track(event: .Orders.orderAddNewFromBarcodeScanningTapped())
 
         guard let navigationController = navigationController else {
             return
@@ -265,14 +245,14 @@ final class OrdersRootViewController: UIViewController {
 
         let productSKUBarcodeScannerCoordinator = ProductSKUBarcodeScannerCoordinator(sourceNavigationController: navigationController,
                                                                                       onSKUBarcodeScanned: { [weak self] scannedBarcode in
-            self?.analytics.track(event: WooAnalyticsEvent.BarcodeScanning.barcodeScanningSuccess(from: .orderList))
+            self?.analytics.track(event: .BarcodeScanning.barcodeScanningSuccess(from: .orderList))
 
             self?.navigationItem.configureLeftBarButtonItemAsLoader()
             self?.handleScannedBarcode(scannedBarcode) { [weak self] result in
                 guard let self = self else { return }
                 switch result {
                 case let .success(product):
-                    self.analytics.track(event: WooAnalyticsEvent.Orders.orderProductAdd(flow: .creation,
+                    self.analytics.track(event: .Orders.orderProductAdd(flow: .creation,
                                                                                          source: .orderList,
                                                                                          addedVia: .scanning,
                                                                                          includesBundleProductConfiguration: false))
@@ -280,9 +260,10 @@ final class OrdersRootViewController: UIViewController {
                 case let .failure(error):
                     self.displayScannedProductErrorNotice(error, code: scannedBarcode)
                 }
+                navigationItem.leftBarButtonItem = createAddOrderByProductScanningButtonItem()
             }
         }, onPermissionsDenied: { [weak self] in
-            self?.analytics.track(event: WooAnalyticsEvent.BarcodeScanning.barcodeScanningFailure(from: .orderList, reason: .cameraAccessNotPermitted))
+            self?.analytics.track(event: .BarcodeScanning.barcodeScanningFailure(from: .orderList, reason: .cameraAccessNotPermitted))
         })
         barcodeScannerCoordinator = productSKUBarcodeScannerCoordinator
         productSKUBarcodeScannerCoordinator.start()
@@ -526,7 +507,7 @@ private extension OrdersRootViewController {
     /// Pushes an `OrderDetailsViewController` onto the navigation stack.
     ///
     private func navigateToOrderDetail(_ order: Order, onCompletion: ((Bool) -> Void)? = nil) {
-        analytics.track(event: WooAnalyticsEvent.Orders.orderOpen(
+        analytics.track(event: .Orders.orderOpen(
             order: order,
             horizontalSizeClass: UITraitCollection.current.horizontalSizeClass
         ))

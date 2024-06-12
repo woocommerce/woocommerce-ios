@@ -1,8 +1,11 @@
+import Combine
 import Storage
+import protocol WooFoundation.WooAnalyticsEventPropertyType
 
 enum BetaFeature: String, CaseIterable {
     case viewAddOns
     case inAppPurchases
+    case pointOfSale
 }
 
 extension BetaFeature {
@@ -12,6 +15,8 @@ extension BetaFeature {
             return Localization.viewAddOnsTitle
         case .inAppPurchases:
             return Localization.inAppPurchasesManagementTitle
+        case .pointOfSale:
+            return Localization.pointOfSaleTitle
         }
     }
 
@@ -21,6 +26,8 @@ extension BetaFeature {
             return Localization.viewAddOnsDescription
         case .inAppPurchases:
             return Localization.inAppPurchasesManagementDescription
+        case .pointOfSale:
+            return Localization.pointOfSaleDescription
         }
     }
 
@@ -30,6 +37,8 @@ extension BetaFeature {
             return \.isViewAddOnsSwitchEnabled
         case .inAppPurchases:
             return \.isInAppPurchasesSwitchEnabled
+        case .pointOfSale:
+            return \.isPointOfSaleEnabled
         }
     }
 
@@ -44,19 +53,6 @@ extension BetaFeature {
         }
     }
 
-    var isAvailable: Bool {
-        switch self {
-        case .inAppPurchases:
-            return ServiceLocator.featureFlagService.isFeatureFlagEnabled(.inAppPurchasesDebugMenu)
-        default:
-            return true
-        }
-    }
-
-    static var availableFeatures: [Self] {
-        allCases.filter(\.isAvailable)
-    }
-
     func analyticsProperties(toggleState enabled: Bool) -> [String: WooAnalyticsEventPropertyType] {
         var properties = ["state": enabled ? "on" : "off"]
         if analyticsStat == .settingsBetaFeatureToggled {
@@ -68,10 +64,11 @@ extension BetaFeature {
 
 extension GeneralAppSettingsStorage {
     func betaFeatureEnabled(_ feature: BetaFeature) -> Bool {
-        guard feature.isAvailable else {
-            return false
-        }
-        return value(for: feature.settingsKey)
+        value(for: feature.settingsKey)
+    }
+
+    func betaFeatureEnabledPublisher(_ feature: BetaFeature) -> AnyPublisher<Bool, Never> {
+        publisher(for: feature.settingsKey)
     }
 
     func betaFeatureEnabledBinding(_ feature: BetaFeature) -> Binding<Bool> {
@@ -111,5 +108,14 @@ private extension BetaFeature {
         static let inAppPurchasesManagementDescription = NSLocalizedString(
             "Test out in-app purchases as we get ready to launch",
             comment: "Cell description on beta features screen to enable in-app purchases")
+
+        static let pointOfSaleTitle = NSLocalizedString(
+            "betaFeature.pointOfSale.title",
+            value: "Point Of Sale",
+            comment: "Cell title on beta features screen to enable the Point Of Sale feature")
+        static let pointOfSaleDescription = NSLocalizedString(
+            "betaFeature.pointOfSale.description",
+            value: "Test out Point Of Sale as we get ready to launch",
+            comment: "Cell description on beta features screen to enable the Point Of Sale feature")
     }
 }

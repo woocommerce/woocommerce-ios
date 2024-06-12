@@ -341,7 +341,7 @@ final class OrderListViewModelTests: XCTestCase {
     func test_shouldEnableTestOrder_returns_true_when_site_is_public_and_has_a_published_product_and_set_up_payment() {
         // Given
         let siteID: Int64 = 123
-        let site = Site.fake().copy(siteID: siteID, url: "https://example.com", isPublic: true)
+        let site = Site.fake().copy(siteID: siteID, url: "https://example.com", visibility: .publicSite)
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, defaultSite: site))
         storageManager.insertSampleProduct(readOnlyProduct: Product.fake().copy(siteID: siteID, statusKey: "publish"))
         storageManager.insertSamplePaymentGateway(readOnlyGateway: PaymentGateway.fake().copy(siteID: siteID, enabled: true))
@@ -360,7 +360,7 @@ final class OrderListViewModelTests: XCTestCase {
     func test_shouldEnableTestOrder_returns_false_when_site_is_not_public() {
         // Given
         let siteID: Int64 = 123
-        let site = Site.fake().copy(siteID: siteID, url: "https://example.com", isPublic: false)
+        let site = Site.fake().copy(siteID: siteID, url: "https://example.com", visibility: .privateSite)
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, defaultSite: site))
         storageManager.insertSampleProduct(readOnlyProduct: Product.fake().copy(siteID: siteID, statusKey: "publish"))
         storageManager.insertSamplePaymentGateway(readOnlyGateway: PaymentGateway.fake().copy(siteID: siteID, enabled: true))
@@ -379,7 +379,7 @@ final class OrderListViewModelTests: XCTestCase {
     func test_shouldEnableTestOrder_returns_false_when_site_has_no_published_product() {
         // Given
         let siteID: Int64 = 123
-        let site = Site.fake().copy(siteID: siteID, url: "https://example.com", isPublic: true)
+        let site = Site.fake().copy(siteID: siteID, url: "https://example.com", visibility: .publicSite)
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, defaultSite: site))
         storageManager.insertSampleProduct(readOnlyProduct: Product.fake().copy(siteID: siteID, statusKey: "draft"))
         storageManager.insertSamplePaymentGateway(readOnlyGateway: PaymentGateway.fake().copy(siteID: siteID, enabled: true))
@@ -398,7 +398,7 @@ final class OrderListViewModelTests: XCTestCase {
     func test_shouldEnableTestOrder_returns_false_when_site_has_no_payment_gateway() {
         // Given
         let siteID: Int64 = 123
-        let site = Site.fake().copy(siteID: siteID, url: "https://example.com", isPublic: true)
+        let site = Site.fake().copy(siteID: siteID, url: "https://example.com", visibility: .publicSite)
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, defaultSite: site))
         storageManager.insertSampleProduct(readOnlyProduct: Product.fake().copy(siteID: siteID, statusKey: "publish"))
         storageManager.insertSamplePaymentGateway(readOnlyGateway: PaymentGateway.fake().copy(siteID: siteID, enabled: false))

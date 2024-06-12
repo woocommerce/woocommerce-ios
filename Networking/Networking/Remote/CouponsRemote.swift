@@ -10,6 +10,12 @@ public protocol CouponsRemoteProtocol {
                         pageSize: Int,
                         completion: @escaping (Result<[Coupon], Error>) -> ())
 
+    func loadCoupons(for siteID: Int64,
+                     by couponIDs: [Int64],
+                     pageNumber: Int,
+                     pageSize: Int,
+                     completion: @escaping (Result<[Coupon], Error>) -> ())
+
     func searchCoupons(for siteID: Int64,
                        keyword: String,
                        pageNumber: Int,
@@ -36,8 +42,23 @@ public protocol CouponsRemoteProtocol {
                           couponID: Int64,
                           from startDate: Date,
                           completion: @escaping (Result<CouponReport, Error>) -> Void)
+
+    func loadMostActiveCoupons(for siteID: Int64,
+                               numberOfCouponsToLoad: Int,
+                               from startDate: Date,
+                               to endDate: Date,
+                               completion: @escaping (Result<[CouponReport], Error>) -> Void)
 }
 
+extension CouponsRemoteProtocol {
+    public func loadCoupons(for siteID: Int64, by couponsIDs: [Int64], completion: @escaping (Result<[Coupon], Error>) -> Void) {
+        loadCoupons(for: siteID,
+                    by: couponsIDs,
+                    pageNumber: CouponsRemote.Default.pageNumber,
+                    pageSize: CouponsRemote.Default.pageSize,
+                    completion: completion)
+    }
+}
 
 /// Coupons: Remote endpoints
 ///
@@ -57,6 +78,48 @@ public final class CouponsRemote: Remote, CouponsRemoteProtocol {
                                pageSize: Int = Default.pageSize,
                                completion: @escaping (Result<[Coupon], Error>) -> ()) {
         let parameters = [
+            ParameterKey.page: String(pageNumber),
+            ParameterKey.perPage: String(pageSize)
+        ]
+
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .get,
+                                     siteID: siteID,
+                                     path: Path.coupons,
+                                     parameters: parameters,
+                                     availableAsRESTRequest: true)
+
+        let mapper = CouponListMapper(siteID: siteID)
+
+        enqueue(request, mapper: mapper, completion: completion)
+    }
+
+    /// Retrieves a specific list of `Coupon`s by `couponID`.
+    ///
+    /// - Note: this method makes a single request for a list of coupons.
+    ///         It is NOT a wrapper for `retrieveCoupon()`
+    ///
+    /// - Parameters:
+    ///     - siteID: We are fetching remote coupons for this site.
+    ///     - couponIDs: The array of coupon IDs that are requested.
+    ///     - pageNumber: Number of page that should be retrieved.
+    ///     - pageSize: Number of coupons to be retrieved per page.
+    ///     - completion: Closure to be executed upon completion.
+    ///
+    public func loadCoupons(for siteID: Int64,
+                            by couponIDs: [Int64],
+                            pageNumber: Int = Default.pageNumber,
+                            pageSize: Int = Default.pageSize,
+                            completion: @escaping (Result<[Coupon], Error>) -> Void) {
+        guard couponIDs.isEmpty == false else {
+            completion(.success([]))
+            return
+        }
+
+        let stringOfCouponIDs = couponIDs.map { String($0) }
+            .joined(separator: ",")
+        let parameters = [
+            ParameterKey.include: stringOfCouponIDs,
             ParameterKey.page: String(pageNumber),
             ParameterKey.perPage: String(pageSize)
         ]
@@ -255,6 +318,58 @@ public final class CouponsRemote: Remote, CouponsRemoteProtocol {
             }
         })
     }
+
+    // MARK: - Load most active coupons
+
+    /// Loads top 3 most active coupons based on order count within the specified time range and site ID.
+    ///
+    /// - Parameters:
+    ///     - siteID: The ID of the  site from which we'll fetch the coupons report.
+    ///     - numberOfCouponsToLoad: Number of coupons to load.
+    ///     - from: The start of the date range for which we'll fetch the coupons report.
+    ///     - to: The end of the date range until which we'll fetch the coupons report.
+    ///     - completion: Closure to be executed upon completion.
+    ///
+    public func loadMostActiveCoupons(for siteID: Int64,
+                                      numberOfCouponsToLoad: Int,
+                                      from startDate: Date,
+                                      to endDate: Date,
+                                      completion: @escaping (Result<[CouponReport], Error>) -> Void) {
+        let parameters: [String: Any] = {
+            var params = [
+                ParameterKey.page: 1,
+                ParameterKey.perPage: numberOfCouponsToLoad,
+                ParameterKey.order: ParameterValue.desc,
+                ParameterKey.orderBy: ParameterValue.ordersCount,
+            ]
+
+            let dateFormatter = ISO8601DateFormatter()
+            let formattedStartTime = dateFormatter.string(from: startDate)
+            params[ParameterKey.after] = formattedStartTime
+            let formattedEndTime = dateFormatter.string(from: endDate)
+            params[ParameterKey.before] = formattedEndTime
+
+            return params
+        }()
+
+        let request = JetpackRequest(wooApiVersion: .wcAnalytics,
+                                     method: .get,
+                                     siteID: siteID,
+                                     path: Path.couponReports,
+                                     parameters: parameters,
+                                     availableAsRESTRequest: true)
+
+        let mapper = CouponReportListMapper()
+
+        enqueue(request, mapper: mapper, completion: { result in
+            switch result {
+            case .success(let couponReports):
+                completion(.success(couponReports))
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        })
+    }
 }
 
 // MARK: - Constants
@@ -281,5 +396,14 @@ public extension CouponsRemote {
         static let coupons = "coupons"
         static let keyword = "search"
         static let after = "after"
+        static let before = "before"
+        static let orderBy = "orderby"
+        static let order = "order"
+        static let include = "include"
+    }
+
+    enum ParameterValue {
+        static let ordersCount = "orders_count"
+        static let desc = "desc"
     }
 }

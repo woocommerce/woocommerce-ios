@@ -3,6 +3,7 @@ import Experiments
 import Yosemite
 import class AutomatticTracks.CrashLogging
 import protocol Storage.StorageManagerType
+import protocol WooFoundation.Analytics
 
 /// ViewModel for `OrderListViewController`.
 ///
@@ -48,7 +49,7 @@ final class OrderListViewModel {
         }
 
         /// Enabled if site is launched, has published at least 1 product and set up payments.
-        return site.isPublic && hasAnyPaymentGateways && hasAnyPublishedProducts
+        return (site.visibility == .publicSite) && hasAnyPaymentGateways && hasAnyPublishedProducts
     }
 
     /// Filters applied to the order list.
@@ -110,7 +111,7 @@ final class OrderListViewModel {
         return statusResultsController.fetchedObjects
     }
 
-    private lazy var snapshotsProvider: FetchResultSnapshotsProvider<StorageOrder> = .init(storageManager: self.storageManager, query: createQuery())
+    private let snapshotsProvider: FetchResultSnapshotsProvider<StorageOrder>
 
     /// Emits snapshots of orders that should be displayed in the table view.
     var snapshot: AnyPublisher<FetchResultSnapshot, Never> {
@@ -143,6 +144,9 @@ final class OrderListViewModel {
         self.notificationCenter = notificationCenter
         self.filters = filters
         self.featureFlagService = featureFlagService
+        self.snapshotsProvider = FetchResultSnapshotsProvider<StorageOrder>(storageManager: storageManager,
+                                                                            query: Self.createQuery(siteID: siteID,
+                                                                                                    filters: filters))
     }
 
     deinit {
@@ -227,7 +231,7 @@ final class OrderListViewModel {
         })
     }
 
-    private func createQuery() -> FetchResultSnapshotsProvider<StorageOrder>.Query {
+    private static func createQuery(siteID: Int64, filters: FilterOrderListViewModel.Filters?) -> FetchResultSnapshotsProvider<StorageOrder>.Query {
         let predicateStatus: NSPredicate = {
             let excludeSearchCache = NSPredicate(format: "exclusiveForSearch = false")
             let excludeNonMatchingStatus = filters?.orderStatus.map { NSPredicate(format: "statusKey IN %@", $0.map { $0.rawValue }) }
@@ -337,7 +341,7 @@ extension OrderListViewModel {
 
         let status = lookUpOrderStatus(for: order)
 
-        return OrderListCellViewModel(order: order, status: status)
+        return OrderListCellViewModel(order: order, status: status, currencySettings: ServiceLocator.currencySettings)
     }
 
     /// Creates an `OrderDetailsViewModel` for the `Order` pointed to by `objectID`.

@@ -1,5 +1,6 @@
 import Foundation
 import Yosemite
+import protocol WooFoundation.Analytics
 
 protocol CollectOrderPaymentAnalyticsTracking {
     var connectedReaderModel: String? { get }

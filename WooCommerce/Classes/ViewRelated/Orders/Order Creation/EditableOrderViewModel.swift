@@ -149,6 +149,8 @@ final class EditableOrderViewModel: ObservableObject {
     /// When the value is non-nil, the bundle product configuration screen is shown.
     @Published var productToConfigureViewModel: ConfigurableBundleProductViewModel?
 
+    @Published private(set) var customAmountsSectionViewModel: OrderCustomAmountsSectionViewModel = .init()
+
     // MARK: Status properties
 
     /// Order creation date. For new order flow it's always current date.
@@ -234,7 +236,10 @@ final class EditableOrderViewModel: ObservableObject {
     }
 
     var shouldSplitCustomerAndNoteSections: Bool {
-        customerDataViewModel.isDataAvailable || customerNoteDataViewModel.customerNote.isNotEmpty
+        guard featureFlagService.isFeatureFlagEnabled(.subscriptionsInOrderCreationCustomers) else {
+            return customerDataViewModel.isDataAvailable || customerNoteDataViewModel.customerNote.isNotEmpty
+        }
+        return true
     }
 
     var shouldShowProductsSectionHeader: Bool {
@@ -248,10 +253,6 @@ final class EditableOrderViewModel: ObservableObject {
     /// Whether gift card is supported in order form.
     ///
     @Published private var isGiftCardSupported: Bool = false
-
-    /// Defines the multiple lines info message to show.
-    ///
-    @Published private(set) var multipleLinesMessage: String? = nil
 
     @Published var selectionSyncApproach: OrderItemSelectionSyncApproach = .onSelectorButtonTap
 
@@ -362,7 +363,17 @@ final class EditableOrderViewModel: ObservableObject {
         return selectedProductsCount + selectedProductVariationsCount
     }
 
+    // MARK: Shipping line properties
+
+    /// View model to display, add, edit, or remove shipping lines.
+    ///
+    @Published var shippingLineViewModel: EditableOrderShippingLineViewModel
+
     // MARK: Customer data properties
+
+    /// View model for the customer section.
+    ///
+    @Published private(set) var customerSectionViewModel: OrderCustomerSectionViewModel
 
     /// Representation of customer data display properties.
     ///
@@ -371,6 +382,10 @@ final class EditableOrderViewModel: ObservableObject {
     /// View model for the customer details address form.
     ///
     @Published private(set) var addressFormViewModel: CreateOrderAddressFormViewModel
+
+    /// Keeps a reference to the latest Address form fields state
+    ///
+    @Published private(set) var latestAddressFormFields: AddressFormFields? = nil
 
     // MARK: Customer note properties
 
@@ -389,19 +404,6 @@ final class EditableOrderViewModel: ObservableObject {
     @Published private(set) var paymentDataViewModel = PaymentDataViewModel()
 
     @Published private(set) var orderTotal: String = ""
-
-    /// Saves a shipping line.
-    ///
-    /// - Parameter shippingLine: Optional shipping line object to save. `nil` will remove existing shipping line.
-    func saveShippingLine(_ shippingLine: ShippingLine?) {
-        orderSynchronizer.setShipping.send(shippingLine)
-
-        if shippingLine != nil {
-            analytics.track(event: WooAnalyticsEvent.Orders.orderShippingMethodAdd(flow: flow.analyticsFlow))
-        } else {
-            analytics.track(event: WooAnalyticsEvent.Orders.orderShippingMethodRemove(flow: flow.analyticsFlow))
-        }
-    }
 
     /// Saves a coupon line after an edition on it.
     ///
@@ -482,7 +484,27 @@ final class EditableOrderViewModel: ObservableObject {
 
         // Set a temporary initial view model, as a workaround to avoid making it optional.
         // Needs to be reset before the view model is used.
-        self.addressFormViewModel = .init(siteID: siteID, addressData: .init(billingAddress: nil, shippingAddress: nil), onAddressUpdate: nil)
+        let addressFormViewModel = CreateOrderAddressFormViewModel(siteID: siteID,
+                                                                   addressData: .init(billingAddress: nil, shippingAddress: nil),
+                                                                   onAddressUpdate: nil)
+        self.addressFormViewModel = addressFormViewModel
+
+        // A temporary initial value is set here to avoid being an optional, and it will be reset in `configureCustomerDataViewModel`.
+        self.customerSectionViewModel = .init(
+            siteID: siteID,
+            addressFormViewModel: addressFormViewModel,
+            customerData: .init(customerID: nil,
+                                email: nil,
+                                fullName: nil,
+                                billingAddressFormatted: nil,
+                                shippingAddressFormatted: nil),
+            isCustomerAccountRequired: false,
+            isEditable: true,
+            updateCustomer: { _ in },
+            resetAddressForm: {}
+        )
+
+        self.shippingLineViewModel = EditableOrderShippingLineViewModel(siteID: siteID, flow: flow, orderSynchronizer: orderSynchronizer)
 
         configureDisabledState()
         configureCollectPaymentDisabledState()
@@ -497,7 +519,6 @@ final class EditableOrderViewModel: ObservableObject {
         configurePaymentDataViewModel()
         configureCustomerNoteDataViewModel()
         configureNonEditableIndicators()
-        configureMultipleLinesMessage()
         resetAddressForm()
         syncInitialSelectedState()
         configureTaxRates()
@@ -506,6 +527,23 @@ final class EditableOrderViewModel: ObservableObject {
         observeProductSelectorPresentationStateForViewModel()
         forwardSyncApproachToSynchronizer()
         observeChangesFromProductSelectorButtonTapSelectionSync()
+        observeChangesInCustomerDetails()
+    }
+
+    /// Observes and keeps track of changes within the Customer Details
+    ///
+    private func observeChangesInCustomerDetails() {
+        guard featureFlagService.isFeatureFlagEnabled(.subscriptionsInOrderCreationCustomers) else {
+            addressFormViewModel.fieldsPublisher.sink { [weak self] newValue in
+                self?.latestAddressFormFields = newValue
+            }
+            .store(in: &cancellables)
+            return
+        }
+        customerSectionViewModel.addressFormViewModel.fieldsPublisher.sink { [weak self] newValue in
+            self?.latestAddressFormFields = newValue
+        }
+        .store(in: &cancellables)
     }
 
     /// Checks the latest Order sync, and returns the current items that are in the Order
@@ -692,6 +730,7 @@ final class EditableOrderViewModel: ObservableObject {
                                                                   hasParentProduct: item.parent != nil,
                                                                   isReadOnly: isReadOnly,
                                                                   isConfigurable: isProductConfigurable,
+                                                                  productSubscriptionDetails: product.subscription,
                                                                   imageURL: product.imageURL,
                                                                   name: product.name,
                                                                   sku: product.sku,
@@ -732,15 +771,67 @@ final class EditableOrderViewModel: ObservableObject {
     /// Can be used to configure the address form for first use or discard pending changes.
     ///
     func resetAddressForm() {
-        addressFormViewModel = CreateOrderAddressFormViewModel(siteID: siteID,
-                                                               addressData: .init(billingAddress: orderSynchronizer.order.billingAddress,
-                                                                                  shippingAddress: orderSynchronizer.order.shippingAddress),
-                                                               onAddressUpdate: { [weak self] updatedAddressData in
+        guard featureFlagService.isFeatureFlagEnabled(.subscriptionsInOrderCreationCustomers) else {
+            addressFormViewModel = CreateOrderAddressFormViewModel(siteID: siteID,
+                                                                   addressData: .init(billingAddress: orderSynchronizer.order.billingAddress,
+                                                                                      shippingAddress: orderSynchronizer.order.shippingAddress),
+                                                                   onAddressUpdate: { [weak self] updatedAddressData in
+                let input = Self.createAddressesInputIfPossible(billingAddress: updatedAddressData.billingAddress,
+                                                                shippingAddress: updatedAddressData.shippingAddress)
+                self?.orderSynchronizer.setAddresses.send(input)
+                self?.trackCustomerDetailsAdded()
+            })
+            // Since the form is recreated the original reference is lost. This is a problem if we update the form more than once
+            // while keeping the Order open, since new published values won't be observed anymore.
+            // This is resolved by hooking the publisher again to the new object
+            observeChangesInCustomerDetails()
+            return
+        }
+
+        customerSectionViewModel.addressFormViewModel = .init(siteID: siteID,
+                                                              showEmailField: false,
+                                                              addressData: .init(billingAddress: orderSynchronizer.order.billingAddress,
+                                                                                 shippingAddress: orderSynchronizer.order.shippingAddress),
+                                                              onAddressUpdate: { [weak self] updatedAddressData in
             let input = Self.createAddressesInputIfPossible(billingAddress: updatedAddressData.billingAddress,
                                                             shippingAddress: updatedAddressData.shippingAddress)
             self?.orderSynchronizer.setAddresses.send(input)
             self?.trackCustomerDetailsAdded()
         })
+        // Since the form is recreated the original reference is lost. This is a problem if we update the form more than once
+        // while keeping the Order open, since new published values won't be observed anymore.
+        // This is resolved by hooking the publisher again to the new object
+        observeChangesInCustomerDetails()
+    }
+
+    /// Saves the latest data entered in the Address Form Fields if the view is dismissed with unsaved changes
+    /// Eg: on IPads, the modal is automatically dismissed on size class change, which would lead to data loss
+    ///
+    func saveInflightCustomerDetails() {
+        guard let latestAddressFormFields else {
+            return
+        }
+        let latestSyncBillingAddress = orderSynchronizer.order.billingAddress
+        let latestSyncShippingAddress = orderSynchronizer.order.shippingAddress
+
+        let latestAddressState = latestAddressFormFields.toAddress()
+
+        if (latestSyncBillingAddress != latestAddressState) || (latestSyncShippingAddress != latestAddressState) {
+            let address = Address(firstName: latestAddressFormFields.firstName,
+                                  lastName: latestAddressFormFields.lastName,
+                                  company: latestAddressFormFields.company,
+                                  address1: latestAddressFormFields.address1,
+                                  address2: latestAddressFormFields.address2,
+                                  city: latestAddressFormFields.city,
+                                  state: latestAddressFormFields.state,
+                                  postcode: latestAddressFormFields.postcode,
+                                  country: latestAddressFormFields.country,
+                                  phone: latestAddressFormFields.phone,
+                                  email: latestAddressFormFields.email)
+            let input = Self.createAddressesInputIfPossible(billingAddress: address, shippingAddress: address)
+            orderSynchronizer.setAddresses.send(input)
+            trackCustomerDetailsAdded()
+        }
     }
 
     func addCustomerAddressToOrder(customer: Customer) {
@@ -750,6 +841,12 @@ final class EditableOrderViewModel: ObservableObject {
         orderSynchronizer.setCustomerID.send(customer.customerID)
         orderSynchronizer.setAddresses.send(input)
         resetAddressForm()
+    }
+
+    private func removeCustomerFromOrder() {
+        orderSynchronizer.removeCustomerID.send(())
+        let input = Self.createAddressesInputIfPossible(billingAddress: .empty, shippingAddress: .empty)
+        orderSynchronizer.setAddresses.send(input)
     }
 
     func addTaxRateAddressToOrder(taxRate: TaxRate) {
@@ -787,6 +884,17 @@ final class EditableOrderViewModel: ObservableObject {
     func updateCustomerNote() {
         orderSynchronizer.setNote.send(noteViewModel.newNote)
         trackCustomerNoteAdded()
+    }
+
+    /// Saves the current contents of the Order Note, if there are differences with the latest edited content
+    ///
+    func saveInFlightOrderNotes() {
+        let latestSyncedNote = orderSynchronizer.order.customerNote
+        let currentlyEditedNote = noteViewModel.newNote
+
+        if latestSyncedNote != currentlyEditedNote {
+            updateCustomerNote()
+        }
     }
 
     func orderTotalsExpansionChanged(expanded: Bool) {
@@ -897,8 +1005,15 @@ final class EditableOrderViewModel: ObservableObject {
     }
 
     func onAddCustomAmountButtonTapped() {
-        editingFee = nil
         analytics.track(.orderCreationAddCustomAmountTapped)
+        addCustomAmount()
+    }
+
+    /// Starts the flow to add a custom amount.
+    func addCustomAmount() {
+        editingFee = nil
+        enableAddingCustomAmountViaOrderTotalPercentage ?
+        customAmountsSectionViewModel.showAddCustomAmountOptionsDialog.toggle() : customAmountsSectionViewModel.showAddCustomAmount.toggle()
     }
 
     func onCreateOrderTapped() {
@@ -1054,17 +1169,6 @@ extension EditableOrderViewModel {
         let itemsTotal: String
         let orderIsEmpty: Bool
 
-        let shouldShowShippingTotal: Bool
-        let shippingTotal: String
-
-        // We only support one (the first) shipping line
-        let shippingMethodTitle: String
-        let shippingMethodTotal: String
-
-        // We show shipping tax if the amount is not zero
-        let shouldShowShippingTax: Bool
-        let shippingTax: String
-
         let shouldShowTotalCustomAmounts: Bool
         let customAmountsTotal: String
 
@@ -1097,7 +1201,6 @@ extension EditableOrderViewModel {
 
         let showNonEditableIndicators: Bool
 
-        let shippingLineViewModel: ShippingLineDetailsViewModel
         let addNewCouponLineClosure: (Coupon) -> Void
         let onGoToCouponsClosure: () -> Void
         let onTaxHelpButtonTappedClosure: () -> Void
@@ -1108,11 +1211,6 @@ extension EditableOrderViewModel {
         init(siteID: Int64 = 0,
              shouldShowProductsTotal: Bool = false,
              itemsTotal: String = "0",
-             shouldShowShippingTotal: Bool = false,
-             shippingTotal: String = "0",
-             shippingMethodTitle: String = "",
-             shippingMethodTotal: String = "",
-             shippingTax: String = "0",
              shouldShowTotalCustomAmounts: Bool = false,
              customAmountsTotal: String = "0",
              taxesTotal: String = "0",
@@ -1134,7 +1232,6 @@ extension EditableOrderViewModel {
              shouldShowDiscountTotal: Bool = false,
              isLoading: Bool = false,
              showNonEditableIndicators: Bool = false,
-             saveShippingLineClosure: @escaping (ShippingLine?) -> Void = { _ in },
              addNewCouponLineClosure: @escaping (Coupon) -> Void = { _ in },
              onGoToCouponsClosure: @escaping () -> Void = {},
              onTaxHelpButtonTappedClosure: @escaping () -> Void = {},
@@ -1145,12 +1242,6 @@ extension EditableOrderViewModel {
             self.siteID = siteID
             self.shouldShowProductsTotal = shouldShowProductsTotal
             self.itemsTotal = currencyFormatter.formatAmount(itemsTotal) ?? "0.00"
-            self.shouldShowShippingTotal = shouldShowShippingTotal
-            self.shippingTotal = currencyFormatter.formatAmount(shippingTotal) ?? "0.00"
-            self.shippingMethodTitle = shippingMethodTitle
-            self.shippingMethodTotal = currencyFormatter.formatAmount(shippingMethodTotal) ?? "0.00"
-            self.shippingTax = currencyFormatter.formatAmount(shippingTax) ?? "0.00"
-            self.shouldShowShippingTax = !(currencyFormatter.convertToDecimal(shippingTax) ?? NSDecimalNumber(0.0)).isZero()
             self.shouldShowTotalCustomAmounts = shouldShowTotalCustomAmounts
             self.customAmountsTotal = currencyFormatter.formatAmount(customAmountsTotal) ?? "0.00"
             self.taxesTotal = currencyFormatter.formatAmount(taxesTotal) ?? "0.00"
@@ -1172,10 +1263,6 @@ extension EditableOrderViewModel {
             self.couponCode = couponCode
             self.discountTotal = "-" + (currencyFormatter.formatAmount(discountTotal) ?? "0.00")
             self.shouldShowDiscountTotal = shouldShowDiscountTotal
-            self.shippingLineViewModel = ShippingLineDetailsViewModel(isExistingShippingLine: shouldShowShippingTotal,
-                                                                      initialMethodTitle: shippingMethodTitle,
-                                                                      shippingTotal: shippingMethodTotal,
-                                                                      didSelectSave: saveShippingLineClosure)
             self.addNewCouponLineClosure = addNewCouponLineClosure
             self.onGoToCouponsClosure = onGoToCouponsClosure
             self.onTaxHelpButtonTappedClosure = onTaxHelpButtonTappedClosure
@@ -1526,6 +1613,13 @@ private extension EditableOrderViewModel {
     /// Updates the Order with the given product from SKU scanning
     ///
     func updateOrderWithBaseItem(_ item: OrderBaseItem) {
+        if case .product(let product) = item,
+           product.variations.isNotEmpty {
+            autodismissableNotice = Notice(title: Localization.parentProductScannedNoticeTitle,
+                                           subtitle: Localization.parentProductScannedNoticeSubtitle)
+            return
+        }
+
         // When a scanned product is a bundle product, the bundle configuration view is shown first.
         if case let .product(product) = item, product.productType == .bundle {
             configurableScannedProductViewModel = .init(product: product,
@@ -1563,11 +1657,50 @@ private extension EditableOrderViewModel {
     /// Updates customer data viewmodel based on order addresses.
     ///
     func configureCustomerDataViewModel() {
+        guard featureFlagService.isFeatureFlagEnabled(.subscriptionsInOrderCreationCustomers) else {
+            // Legacy customer section UI.
+            orderSynchronizer.orderPublisher
+                .map {
+                    CustomerDataViewModel(billingAddress: $0.billingAddress, shippingAddress: $0.shippingAddress)
+                }
+                .assign(to: &$customerDataViewModel)
+            return
+        }
+
+        customerSectionViewModel = .init(
+            siteID: siteID,
+            addressFormViewModel: addressFormViewModel,
+            customerData: .init(
+                customerID: nil,
+                email: nil,
+                fullName: nil,
+                billingAddressFormatted: nil,
+                shippingAddressFormatted: nil
+            ),
+            isCustomerAccountRequired: false,
+            isEditable: true,
+            updateCustomer: { [weak self] customer in
+                guard let self else { return }
+                if let customer {
+                    addCustomerAddressToOrder(customer: customer)
+                } else {
+                    removeCustomerFromOrder()
+                }
+            },
+            resetAddressForm: resetAddressForm
+        )
+
         orderSynchronizer.orderPublisher
             .map {
-                CustomerDataViewModel(billingAddress: $0.billingAddress, shippingAddress: $0.shippingAddress)
+                CollapsibleCustomerCardViewModel.CustomerData(
+                    customerID: $0.customerID,
+                    email: $0.billingAddress?.email ?? $0.shippingAddress?.email,
+                    fullName: $0.billingAddress?.fullName ?? $0.shippingAddress?.fullName,
+                    billingAddressFormatted: $0.billingAddress?.formattedPostalAddress,
+                    shippingAddressFormatted: $0.shippingAddress?.formattedPostalAddress
+                )
             }
-            .assign(to: &$customerDataViewModel)
+            .assign(to: &customerSectionViewModel.$customerData)
     }
 
     /// Updates notes data viewmodel based on order customer notes.
@@ -1579,7 +1712,6 @@ private extension EditableOrderViewModel {
                 }
                 .assign(to: &$customerNoteDataViewModel)
     }
-
 
     /// Updates payment section view model based on items in the order and order sync state.
     ///
@@ -1602,8 +1734,6 @@ private extension EditableOrderViewModel {
                 }
 
                 let orderTotals = OrderTotalsCalculator(for: order, using: self.currencyFormatter)
-
-                let shippingMethodTitle = order.shippingLines.first?.methodTitle ?? ""
 
                 let isDataSyncing: Bool = {
                     switch state {
@@ -1648,11 +1778,6 @@ private extension EditableOrderViewModel {
                 return PaymentDataViewModel(siteID: self.siteID,
                                             shouldShowProductsTotal: order.items.isNotEmpty,
                                             itemsTotal: orderTotals.itemsTotal.stringValue,
-                                            shouldShowShippingTotal: order.shippingLines.filter { $0.methodID != nil }.isNotEmpty,
-                                            shippingTotal: order.shippingTotal.isNotEmpty ? order.shippingTotal : "0",
-                                            shippingMethodTitle: shippingMethodTitle,
-                                            shippingMethodTotal: order.shippingLines.first?.total ?? "0",
-                                            shippingTax: order.shippingTax.isNotEmpty ? order.shippingTax : "0",
                                             shouldShowTotalCustomAmounts: order.fees.filter { $0.name != nil }.isNotEmpty,
                                             customAmountsTotal: orderTotals.feesTotal.stringValue,
                                             taxesTotal: order.totalTax.isNotEmpty ? order.totalTax : "0",
@@ -1675,7 +1800,6 @@ private extension EditableOrderViewModel {
                                             shouldShowDiscountTotal: order.discountTotal.isNotEmpty && isDiscountBiggerThanZero,
                                             isLoading: isDataSyncing && !showNonEditableIndicators,
                                             showNonEditableIndicators: showNonEditableIndicators,
-                                            saveShippingLineClosure: self.saveShippingLine,
                                             addNewCouponLineClosure: { [weak self] coupon in
                                                 self?.saveCouponLine(result: .added(newCode: coupon.code))
                                             },
@@ -1717,23 +1841,6 @@ private extension EditableOrderViewModel {
                 }
             }
             .assign(to: &$shouldShowNonEditableIndicators)
-    }
-
-    /// Binds the order state to the `multipleLineMessage` property.
-    ///
-    func configureMultipleLinesMessage() {
-        Publishers.CombineLatest(orderSynchronizer.orderPublisher, Just(flow))
-            .map { order, flow -> String? in
-                switch (flow, order.shippingLines.count) {
-                case (.creation, _):
-                    return nil
-                case (.editing, 2...Int.max): // Multiple shipping lines
-                    return Localization.multipleShippingLines
-                case (.editing, _): // Single/nil shipping & fee lines
-                    return nil
-                }
-            }
-            .assign(to: &$multipleLinesMessage)
     }
 
     func configureTaxRates() {
@@ -1825,6 +1932,7 @@ private extension EditableOrderViewModel {
                     syncApproach: selectionSyncApproach.productSelectorSyncApproach,
                     orderSyncState: orderSynchronizer.statePublisher,
                     shouldShowNonEditableIndicators: shouldShowNonEditableIndicators,
+                    externalNoticePublisher: $autodismissableNotice,
                     onProductSelectionStateChanged: { [weak self] product, isSelected in
                         guard let self else { return }
                         changeSelectionStateForProduct(product, to: isSelected)
@@ -1969,7 +2077,8 @@ private extension EditableOrderViewModel {
         analytics.track(event: WooAnalyticsEvent.Orders.orderCreationSuccess(millisecondsSinceSinceOrderAddNew:
                                                                                 try? orderDurationRecorder.millisecondsSinceOrderAddNew(),
                                                                              couponsCount: Int64(orderSynchronizer.order.coupons.count),
-                                                                             usesGiftCard: usesGiftCard))
+                                                                             usesGiftCard: usesGiftCard,
+                                                                             shippingLinesCount: Int64(orderSynchronizer.order.shippingLines.count)))
     }
 
     /// Tracks an order creation failure
@@ -2379,7 +2488,6 @@ extension EditableOrderViewModel {
 // MARK: Constants
 
 extension EditableOrderViewModel {
-
     enum NoticeFactory {
         /// Returns a default order creation error notice.
         ///
@@ -2499,13 +2607,6 @@ private extension EditableOrderViewModel {
         static let invalidBillingSuggestion =
         NSLocalizedString("Please make sure you are running the latest version of WooCommerce and try again later.",
                           comment: "Recovery suggestion when we fail to update an address when creating or editing an order")
-
-        static let multipleShippingLines = NSLocalizedString("Shipping details are incomplete.\n" +
-                                                             "To edit all shipping details, view the order in your WooCommerce store admin.",
-                                                             comment: "Info message shown when the order contains multiple shipping lines")
-        static let multipleFeesAndShippingLines = NSLocalizedString("Fees & Shipping details are incomplete.\n" +
-                                                                    "To edit all the details, view the order in your WooCommerce store admin.",
-                                                                    comment: "Info message shown when the order contains multiple fees and shipping lines")
         static let couponsErrorNoticeTitle = NSLocalizedString("Unable to add coupon.",
                                                                  comment: "Info message when the user tries to add a coupon" +
                                                                  "that is not applicated to the products")
@@ -2520,6 +2621,18 @@ private extension EditableOrderViewModel {
         static let customAmountDefaultName = NSLocalizedString("editableOrderViewModel.customAmountDefaultName",
                                                                value: "Custom Amount",
                                                                comment: "Default name when the custom amount does not have a name in order creation.")
+        static let parentProductScannedNoticeTitle = NSLocalizedString(
+            "order.barcode.scan.parent.product.notice.title",
+            value: "You cannot add a variable product directly.",
+            comment: "Title of a notice shown when a merchant scans a barcode for a product which is a parent to variations. " +
+            "It's not possible to purchase a parent product, as it simply groups its variable product children. " +
+            "In this case, the product is not added to the order as the merchant wanted it to be.")
+        static let parentProductScannedNoticeSubtitle = NSLocalizedString(
+            "order.barcode.scan.parent.product.notice.subtitle",
+            value: "Please select a specific variation.",
+            comment: "Subtitle of a notice shown when a merchant scans a barcode for a product which is a parent to variations. " +
+            "It's not possible to purchase a parent product, as it simply groups its variable product children. " +
+            "In this case, the product is not added to the order as the merchant wanted it to be.")
 
 
         enum CouponSummary {

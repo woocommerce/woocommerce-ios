@@ -1,3 +1,5 @@
+import Foundation
+
 enum RequestAuthenticatorError: Error {
     case applicationPasswordUseCaseNotAvailable
     case applicationPasswordNotAvailable

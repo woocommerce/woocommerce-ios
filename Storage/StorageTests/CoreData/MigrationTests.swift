@@ -2490,7 +2490,7 @@ final class MigrationTests: XCTestCase {
             "price": 4.99,
             "total": 4.99,
             "currency": "USD",
-            "imageUrl": "https://example.com/woo.jpg"
+            "imageUrl": "https://example.com/woocommerce.jpg"
         ])
         try sourceContext.save()
 
@@ -2699,6 +2699,167 @@ final class MigrationTests: XCTestCase {
         // Assert
         XCTAssertFalse(targetEntitiesNames.contains("BlazeCampaign"))
     }
+
+    func test_migrating_from_108_to_109_adds_new_budget_attributes_to_BlazeCampaignListItem() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 108")
+        let sourceContext = sourceContainer.viewContext
+
+        let campaign = insertBlazeCampaignListItem(to: sourceContext)
+        try sourceContext.save()
+
+        // Confidence check: new budget attributes are not present
+        XCTAssertNil(campaign.entity.attributesByName["budgetAmount"])
+        XCTAssertNil(campaign.entity.attributesByName["budgetCurrency"])
+        XCTAssertNil(campaign.entity.attributesByName["budgetMode"])
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 109")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+        let migratedEntity = try XCTUnwrap(targetContext.first(entityName: "BlazeCampaignListItem"))
+
+        // Check default values for new budget attributes
+        let budgetAmount = try XCTUnwrap(migratedEntity.value(forKey: "budgetAmount") as? Double)
+        XCTAssertEqual(budgetAmount, 0)
+
+        let budgetCurrency = try XCTUnwrap(migratedEntity.value(forKey: "budgetCurrency") as? String)
+        XCTAssertEqual(budgetCurrency, "USD")
+
+        let budgetMode = try XCTUnwrap(migratedEntity.value(forKey: "budgetMode") as? String)
+        XCTAssertEqual(budgetMode, "total")
+    }
+
+    func test_migrating_from_109_to_110_adds_WCAnalyticsCustomer_and_WCAnalyticsCustomerSearchResult_entities() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 109")
+        let sourceContext = sourceContainer.viewContext
+
+        try sourceContext.save()
+
+        // Confidence Check. These entities should not exist in Model 109
+        XCTAssertNil(NSEntityDescription.entity(forEntityName: "WCAnalyticsCustomer", in: sourceContext))
+        XCTAssertNil(NSEntityDescription.entity(forEntityName: "WCAnalyticsCustomerSearchResult", in: sourceContext))
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 110")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+
+        // These entities should exist in Model 110
+        XCTAssertNotNil(NSEntityDescription.entity(forEntityName: "WCAnalyticsCustomer", in: targetContext))
+        XCTAssertNotNil(NSEntityDescription.entity(forEntityName: "WCAnalyticsCustomerSearchResult", in: targetContext))
+        XCTAssertEqual(try targetContext.count(entityName: "WCAnalyticsCustomer"), 0)
+        XCTAssertEqual(try targetContext.count(entityName: "WCAnalyticsCustomerSearchResult"), 0)
+
+        // Insert a new WCAnalyticsCustomer
+        let customer = insertWCAnalyticsCustomer(to: targetContext, forModel: 110)
+        XCTAssertEqual(try targetContext.count(entityName: "WCAnalyticsCustomer"), 1)
+        XCTAssertEqual(customer.value(forKey: "customerID") as? Int64, 1)
+
+        // Insert a new WCAnalyticsCustomerSearchResult
+        let customerSearchResult = targetContext.insert(
+            entityName: "WCAnalyticsCustomerSearchResult",
+            properties: [
+                "siteID": 1,
+                "keyword": ""
+            ]
+        )
+        XCTAssertEqual(try targetContext.count(entityName: "WCAnalyticsCustomerSearchResult"), 1)
+        XCTAssertEqual(customer.value(forKey: "customerID") as? Int64, 1)
+
+        // Check all attributes
+        XCTAssertNotNil(customerSearchResult.entity.attributesByName["siteID"])
+        XCTAssertNotNil(customerSearchResult.entity.attributesByName["keyword"])
+        XCTAssertNotNil(customer.entity.attributesByName["siteID"])
+        XCTAssertNotNil(customer.entity.attributesByName["userID"])
+        XCTAssertNotNil(customer.entity.attributesByName["name"])
+        XCTAssertNotNil(customer.entity.attributesByName["email"])
+        XCTAssertNotNil(customer.entity.attributesByName["username"])
+        XCTAssertNotNil(customer.entity.attributesByName["dateLastActive"])
+        XCTAssertNotNil(customer.entity.attributesByName["ordersCount"])
+        XCTAssertNotNil(customer.entity.attributesByName["totalSpend"])
+        XCTAssertNotNil(customer.entity.attributesByName["averageOrderValue"])
+        XCTAssertNotNil(customer.entity.attributesByName["country"])
+        XCTAssertNotNil(customer.entity.attributesByName["region"])
+        XCTAssertNotNil(customer.entity.attributesByName["city"])
+        XCTAssertNotNil(customer.entity.attributesByName["postcode"])
+    }
+
+    func test_migrating_from_110_to_111_adds_ShippingMethod_entity() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 110")
+        let sourceContext = sourceContainer.viewContext
+
+        try sourceContext.save()
+
+        // Confidence Check. These entities should not exist in Model 110
+        XCTAssertNil(NSEntityDescription.entity(forEntityName: "ShippingMethod", in: sourceContext))
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 111")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+
+        // These entities should exist in Model 110
+        XCTAssertNotNil(NSEntityDescription.entity(forEntityName: "ShippingMethod", in: targetContext))
+        XCTAssertEqual(try targetContext.count(entityName: "ShippingMethod"), 0)
+
+        // Insert a new ShippingMethod
+        let shippingMethod = insertShippingMethod(to: targetContext, forModel: 111)
+        XCTAssertEqual(try targetContext.count(entityName: "ShippingMethod"), 1)
+
+        // Check all attributes
+        XCTAssertNotNil(shippingMethod.entity.attributesByName["siteID"])
+        XCTAssertNotNil(shippingMethod.entity.attributesByName["methodID"])
+        XCTAssertNotNil(shippingMethod.entity.attributesByName["title"])
+    }
+
+    func test_migrating_from_111_to_112_updates_Site_entry() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 111")
+        let sourceContext = sourceContainer.viewContext
+
+        // Insert a new entity Site e sent the value of isPublic
+        let site = NSEntityDescription.insertNewObject(forEntityName: "Site", into: sourceContext)
+        site.setValue(true, forKey: "isPublic")
+        try sourceContext.save()
+
+        // Confidence Check. `isPublic` should check and `visibility` should not exist in Model 111
+        let siteEntity = NSEntityDescription.entity(forEntityName: "Site", in: sourceContext)
+        XCTAssertNotNil(siteEntity?.attributesByName["isPublic"])
+        XCTAssertNil(siteEntity?.attributesByName["visibility"])
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 112")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+
+        // `isPublic` should not exist and `visibility` should exist in Model 112
+        let migratedSiteEntity = NSEntityDescription.entity(forEntityName: "Site", in: targetContext)
+        XCTAssertNil(migratedSiteEntity?.attributesByName["isPublic"])
+        XCTAssertNotNil(migratedSiteEntity?.attributesByName["visibility"])
+
+        // Retrieve the migrated Site
+        let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "Site")
+        let migratedSites = try targetContext.fetch(fetchRequest)
+        let migratedSite = try XCTUnwrap(migratedSites.first)
+
+        // Verify that the `visibility` value is 1 (true converted to Int64)
+        XCTAssertEqual(migratedSite.value(forKey: "visibility") as? Int64, 1)
+
+        // Insert a new Site to verify that the new attribute can be set and saved correctly
+        let newSite = NSEntityDescription.insertNewObject(forEntityName: "Site", into: targetContext)
+        newSite.setValue(-1, forKey: "visibility")
+        try targetContext.save()
+
+        // Verify that the new attribute has been set correctly
+        XCTAssertEqual(newSite.value(forKey: "visibility") as? Int64, -1)
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations
@@ -2871,7 +3032,7 @@ private extension MigrationTests {
             "amount": "2.00",
             "code": "2off2021",
             "usedBy": ["me@example.com"],
-            "emailRestrictions": ["*@woo.com"],
+            "emailRestrictions": ["*@woocommerce.com"],
             "siteID": 1212,
             "products": [1231, 111],
             "excludedProducts": [19182, 192],
@@ -2907,7 +3068,7 @@ private extension MigrationTests {
             "name": "renew-subscription",
             "label": "Renew Subscription",
             "status": "actioned",
-            "url": "https://woo.com/products/woocommerce-bookings/"
+            "url": "https://woocommerce.com/products/woocommerce-bookings/"
         ])
     }
 
@@ -3333,7 +3494,7 @@ private extension MigrationTests {
         context.insert(entityName: "ProductCompositeComponent", properties: [
             "componentID": "1679310855",
             "title": "Camera Body",
-            "imageURL": "https://example.com/woo.jpg",
+            "imageURL": "https://example.com/woocommerce.jpg",
             "optionType": "product_ids",
             "optionIDs": [413, 412]
         ])
@@ -3366,7 +3527,7 @@ private extension MigrationTests {
         context.insert(entityName: "OrderAttributionInfo", properties: [
             "sourceType": "referral",
             "campaign": "sale",
-            "source": "woo.com",
+            "source": "woocommerce.com",
             "medium": "referral",
             "deviceType": "Desktop",
             "sessionPageViews": "2"
@@ -3485,5 +3646,39 @@ private extension MigrationTests {
             "locale": "en"
         ])
         return topic
+    }
+
+    /// Inserts a `WCAnalyticsCustomer` entity, providing default values for the required properties.
+    @discardableResult
+    func insertWCAnalyticsCustomer(to context: NSManagedObjectContext, forModel modelVersion: Int) -> NSManagedObject {
+        let customer = context.insert(entityName: "WCAnalyticsCustomer", properties: [
+            "siteID": 1,
+            "customerID": 1,
+            "userID": 1,
+            "name": "John",
+            "email": "john.doe@example.com",
+            "username": "john",
+            "dateRegistered": nil,
+            "dateLastActive": Date(),
+            "ordersCount": 1,
+            "totalSpend": 10,
+            "averageOrderValue": 10,
+            "country": "US",
+            "city": "San Francisco",
+            "region": "CA",
+            "postcode": "94103"
+        ])
+        return customer
+    }
+
+    /// Inserts a `ShippingMethod` entity, providing default values for the required properties.
+    @discardableResult
+    func insertShippingMethod(to context: NSManagedObjectContext, forModel modelVersion: Int) -> NSManagedObject {
+        let method = context.insert(entityName: "ShippingMethod", properties: [
+            "siteID": 1,
+            "methodID": "flat_rate",
+            "title": "Flat rate"
+        ])
+        return method
     }
 }

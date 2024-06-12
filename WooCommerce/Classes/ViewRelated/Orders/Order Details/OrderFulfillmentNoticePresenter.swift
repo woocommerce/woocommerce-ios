@@ -1,5 +1,6 @@
 import Foundation
 import Combine
+import protocol WooFoundation.Analytics
 
 /// Presents notices for order fulfillment and handling of undos and retries.
 ///

@@ -12,15 +12,17 @@ extension NSNotification.Name {
     public static let hubMenuViewDidAppear = Foundation.Notification.Name(rawValue: "com.woocommerce.ios.hubMenuViewDidAppear")
 }
 
+/// Destination views that the hub menu can navigate to.
+enum HubMenuNavigationDestination {
+    case payments
+}
+
 /// View model for `HubMenu`.
 ///
+@MainActor
 final class HubMenuViewModel: ObservableObject {
 
     let siteID: Int64
-
-    /// The view controller that will be used for presenting the `StorePickerViewController` via `StorePickerCoordinator`
-    ///
-    private(set) unowned var navigationController: UINavigationController?
 
     var avatarURL: URL? {
         guard let urlString = stores.sessionManager.defaultAccount?.gravatarUrl, let url = URL(string: urlString) else {
@@ -29,6 +31,8 @@ final class HubMenuViewModel: ObservableObject {
         return url
     }
 
+    @Published var navigationPath = NavigationPath()
+
     @Published private(set) var storeTitle = Localization.myStore
 
     @Published private(set) var planName = ""
@@ -36,6 +40,10 @@ final class HubMenuViewModel: ObservableObject {
     @Published private(set) var storeURL = WooConstants.URLs.blog.asURL()
 
     @Published private(set) var woocommerceAdminURL = WooConstants.URLs.blog.asURL()
+
+    /// POS Section Element
+    ///
+    @Published private(set) var posElement: HubMenuItem?
 
     /// Settings Elements
     ///
@@ -49,19 +57,33 @@ final class HubMenuViewModel: ObservableObject {
     ///
     @Published private(set) var switchStoreEnabled = false
 
-    @Published var showingReviewDetail = false
+    @Published var selectedMenuID: String?
 
-    @Published var showingPayments = false
+    @Published var showingReviewDetail = false
+    @Published var showingCoupons = false
 
     @Published var shouldAuthenticateAdminPage = false
 
     private let stores: StoresManager
     private let featureFlagService: FeatureFlagService
     private let generalAppSettings: GeneralAppSettingsStorage
+    private let cardPresentPaymentsOnboarding: CardPresentPaymentsOnboardingUseCaseProtocol
+    private let posEligibilityChecker: POSEligibilityCheckerProtocol
+    private let inboxEligibilityChecker: InboxEligibilityChecker
 
-    private var productReviewFromNoteParcel: ProductReviewFromNoteParcel?
+    // TODO:
+    // Is this the right place to instantiate the product provider and use property injection?
+    private(set) lazy var posItemProvider: POSItemProvider = {
+        let storageManager = ServiceLocator.storageManager
+        let siteID = ServiceLocator.stores.sessionManager.defaultSite?.siteID ?? 0
+        let currencySettings = ServiceLocator.currencySettings
 
-    private var storePickerCoordinator: StorePickerCoordinator?
+        return POSProductProvider(storageManager: storageManager,
+                                  siteID: siteID,
+                                  currencySettings: currencySettings)
+    }()
+
+    private(set) var productReviewFromNoteParcel: ProductReviewFromNoteParcel?
 
     @Published private(set) var shouldShowNewFeatureBadgeOnPayments: Bool = false
 
@@ -74,54 +96,102 @@ final class HubMenuViewModel: ObservableObject {
     let tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker
 
     lazy var inPersonPaymentsMenuViewModel: InPersonPaymentsMenuViewModel = {
-        InPersonPaymentsMenuViewModel(
+        // There is no straightforward way to convert a @Published var to a Binding value because we cannot use $self.
+        let navigationPathBinding = Binding(
+            get: { [weak self] in
+                self?.navigationPath ?? NavigationPath()
+            },
+            set: { [weak self] in
+                self?.navigationPath = $0
+            }
+        )
+        return InPersonPaymentsMenuViewModel(
             siteID: siteID,
             dependencies: .init(
                 cardPresentPaymentsConfiguration: CardPresentConfigurationLoader().configuration,
                 onboardingUseCase: CardPresentPaymentsOnboardingUseCase(),
                 cardReaderSupportDeterminer: CardReaderSupportDeterminer(siteID: siteID),
                 wooPaymentsDepositService: WooPaymentsDepositService(siteID: siteID,
-                                                                      credentials: ServiceLocator.stores.sessionManager.defaultCredentials!)))
+                                                                     credentials: ServiceLocator.stores.sessionManager.defaultCredentials!)),
+            navigationPath: navigationPathBinding)
     }()
 
+    private(set) var cardPresentPaymentService: CardPresentPaymentFacade?
+
     init(siteID: Int64,
-         navigationController: UINavigationController? = nil,
          tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          stores: StoresManager = ServiceLocator.stores,
          generalAppSettings: GeneralAppSettingsStorage = ServiceLocator.generalAppSettings,
+         inboxEligibilityChecker: InboxEligibilityChecker = InboxEligibilityUseCase(),
          blazeEligibilityChecker: BlazeEligibilityCheckerProtocol = BlazeEligibilityChecker()) {
         self.siteID = siteID
-        self.navigationController = navigationController
         self.tapToPayBadgePromotionChecker = tapToPayBadgePromotionChecker
         self.stores = stores
         self.featureFlagService = featureFlagService
         self.generalAppSettings = generalAppSettings
         self.switchStoreEnabled = stores.isAuthenticatedWithoutWPCom == false
+        self.inboxEligibilityChecker = inboxEligibilityChecker
         self.blazeEligibilityChecker = blazeEligibilityChecker
+        self.cardPresentPaymentsOnboarding = CardPresentPaymentsOnboardingUseCase()
+        self.posEligibilityChecker = POSEligibilityChecker(cardPresentPaymentsOnboarding: cardPresentPaymentsOnboarding,
+                                                           siteSettings: ServiceLocator.selectedSiteSettings,
+                                                           currencySettings: ServiceLocator.currencySettings,
+                                                           featureFlagService: featureFlagService)
         observeSiteForUIUpdates()
         observePlanName()
         tapToPayBadgePromotionChecker.$shouldShowTapToPayBadges.share().assign(to: &$shouldShowNewFeatureBadgeOnPayments)
+        createCardPresentPaymentService()
     }
 
     func viewDidAppear() {
         NotificationCenter.default.post(name: .hubMenuViewDidAppear, object: nil)
     }
 
+    private func createCardPresentPaymentService() {
+        Task {
+            self.cardPresentPaymentService = await CardPresentPaymentService(siteID: siteID)
+        }
+    }
+
     /// Resets the menu elements displayed on the menu.
     ///
     func setupMenuElements() {
+        setupPOSElement()
         setupSettingsElements()
         setupGeneralElements()
+    }
+
+    /// Shows the payments menu from the hub menu root view.
+    func showPayments() {
+        navigationPath = .init()
+        navigationPath.append(HubMenuNavigationDestination.payments)
+    }
+
+    private func setupPOSElement() {
+        cardPresentPaymentsOnboarding.refreshIfNecessary()
+        Publishers.CombineLatest(generalAppSettings.betaFeatureEnabledPublisher(.pointOfSale), posEligibilityChecker.isEligible)
+            .map { isBetaFeatureEnabled, isEligibleForPOS in
+                if isBetaFeatureEnabled && isEligibleForPOS {
+                    return PointOfSaleEntryPoint()
+                } else {
+                    return nil
+                }
+            }
+            .assign(to: &$posElement)
     }
 
     private func setupSettingsElements() {
         settingsElements = [Settings()]
 
-        // Only show the upgrades menu on WPCom sites
-        if stores.sessionManager.defaultSite?.isWordPressComStore == true {
-            settingsElements.append(Subscriptions())
+        guard let site = stores.sessionManager.defaultSite,
+              // Only show the upgrades menu on WPCom sites and non free trial sites
+              site.isWordPressComStore,
+              !site.isFreeTrialSite else {
+            return
         }
+
+        settingsElements.append(Subscriptions())
     }
 
     private func setupGeneralElements() {
@@ -133,8 +203,7 @@ final class HubMenuViewModel: ObservableObject {
             generalElements.append(InAppPurchases())
         }
 
-        let inboxUseCase = InboxEligibilityUseCase(stores: stores, featureFlagService: featureFlagService)
-        inboxUseCase.isEligibleForInbox(siteID: siteID) { [weak self] isInboxMenuShown in
+        inboxEligibilityChecker.isEligibleForInbox(siteID: siteID) { [weak self] isInboxMenuShown in
             guard let self = self else { return }
             if let index = self.generalElements.firstIndex(where: { item in
                 type(of: item).id == Reviews.id
@@ -162,49 +231,13 @@ final class HubMenuViewModel: ObservableObject {
         } else {
             generalElements.removeAll(where: { $0.id == Blaze.id })
         }
-    }
 
-    /// Present the `StorePickerViewController` using the `StorePickerCoordinator`, passing the navigation controller from the entry point.
-    ///
-    func presentSwitchStore() {
-        ServiceLocator.analytics.track(.hubMenuSwitchStoreTapped)
-        if let navigationController = navigationController {
-            storePickerCoordinator = StorePickerCoordinator(navigationController, config: .switchingStores)
-            storePickerCoordinator?.start()
-        }
-    }
-
-    /// Presents the `Subscriptions` view from the view model's navigation controller property.
-    ///
-    func presentSubscriptions() {
-        let subscriptionController = SubscriptionsHostingController(siteID: siteID)
-        navigationController?.show(subscriptionController, sender: self)
+        generalElements.append(Customers())
     }
 
     func showReviewDetails(using parcel: ProductReviewFromNoteParcel) {
         productReviewFromNoteParcel = parcel
         showingReviewDetail = true
-    }
-
-    func getReviewDetailDestination() -> ReviewDetailView? {
-        guard let parcel = productReviewFromNoteParcel else {
-            return nil
-        }
-
-        return ReviewDetailView(productReview: parcel.review, product: parcel.product, notification: parcel.note)
-    }
-
-    /// Navigates to show the Blaze view from the view model's navigation controller property.
-    ///
-    func showBlaze() {
-        guard let site = stores.sessionManager.defaultSite else {
-            return
-        }
-
-        // shows campaign list for the new Blaze experience.
-        let controller = BlazeCampaignListHostingController(viewModel: .init(siteID: site.siteID))
-        navigationController?.show(controller, sender: self)
-        ServiceLocator.analytics.track(event: .Blaze.blazeCampaignListEntryPointSelected(source: .menu))
     }
 
     private func observeSiteForUIUpdates() {
@@ -414,6 +447,18 @@ extension HubMenuViewModel {
         let iconBadge: HubMenuBadgeType? = nil
     }
 
+    struct PointOfSaleEntryPoint: HubMenuItem {
+        static var id = "pointOfSale"
+
+        let title: String = Localization.pos
+        let description: String = Localization.posDescription
+        let icon: UIImage = .pointOfSaleImage
+        let iconColor: UIColor = .withColorStudio(.green, shade: .shade30)
+        let accessibilityIdentifier: String = "menu-pointOfSale"
+        let trackingOption: String = "pointOfSale"
+        let iconBadge: HubMenuBadgeType? = nil
+    }
+
     struct Subscriptions: HubMenuItem {
         static var id = "subscriptions"
 
@@ -423,6 +468,18 @@ extension HubMenuViewModel {
         let iconColor: UIColor = .primary
         let accessibilityIdentifier: String = "menu-subscriptions"
         let trackingOption: String = "upgrades"
+        let iconBadge: HubMenuBadgeType? = nil
+    }
+
+    struct Customers: HubMenuItem {
+        static var id = "customers"
+
+        let title: String = Localization.customers
+        let description: String = Localization.customersDescription
+        let icon: UIImage = .multipleUsersImage.withRenderingMode(.alwaysTemplate)
+        let iconColor: UIColor = .primary
+        let accessibilityIdentifier: String = "menu-customers"
+        let trackingOption: String = "customers"
         let iconBadge: HubMenuBadgeType? = nil
     }
 
@@ -454,6 +511,14 @@ extension HubMenuViewModel {
         static let myStore = NSLocalizedString(
             "My Store",
             comment: "Title of the hub menu view in case there is no title for the store")
+
+        static let pos = NSLocalizedString(
+            "Point of Sale Mode",
+            comment: "Title of the POS menu in the hub menu")
+
+        static let posDescription = NSLocalizedString(
+            "Use the app as a cash register",
+            comment: "Description of the POS menu in the hub menu")
 
         static let woocommerceAdmin = NSLocalizedString(
             "WooCommerce Admin",
@@ -501,6 +566,16 @@ extension HubMenuViewModel {
 
         static let subscriptionsDescription = NSLocalizedString(
             "Manage your subscription",
+            comment: "Description of one of the hub menu options")
+
+        static let customers = NSLocalizedString(
+            "hubMenu.customers",
+            value: "Customers",
+            comment: "Title of one of the hub menu options")
+
+        static let customersDescription = NSLocalizedString(
+            "hubMenu.customersDescription",
+            value: "Get customer insights",
             comment: "Description of one of the hub menu options")
     }
 }

@@ -1,4 +1,5 @@
 import Foundation
+import UIKit
 
 
 /// String: Helper Methods
@@ -101,3 +102,26 @@ extension String {
         return Set(arrayOfTags)
     }
 }
+
+#if !os(watchOS)
+extension String {
+    /// Sends the string to the general pasteboard and triggers a success haptic.
+    /// If the string is nil, nothing is sent to the pasteboard.
+    ///
+    /// - Parameter includeTrailingNewline: If true, inserts a trailing newline; defaults to true
+    ///
+    func sendToPasteboard(includeTrailingNewline: Bool = true) {
+        guard self.isEmpty == false else {
+            return
+        }
+
+        var text: String = self
+        if includeTrailingNewline {
+            text += "\n"
+        }
+
+        UIPasteboard.general.string = text
+        UINotificationFeedbackGenerator().notificationOccurred(.success)
+    }
+}
+#endif

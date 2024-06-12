@@ -1,4 +1,5 @@
 import Yosemite
+import protocol WooFoundation.Analytics
 
 /// Implementation of `SearchUICommand` for Product search.
 final class ProductSearchUICommand: SearchUICommand {
@@ -7,6 +8,8 @@ final class ProductSearchUICommand: SearchUICommand {
     typealias ResultsControllerModel = StorageProduct
 
     let searchBarPlaceholder = NSLocalizedString("Search products", comment: "Products Search Placeholder")
+
+    let returnKeyType = UIReturnKeyType.done
 
     let searchBarAccessibilityIdentifier = "product-search-screen-search-field"
 

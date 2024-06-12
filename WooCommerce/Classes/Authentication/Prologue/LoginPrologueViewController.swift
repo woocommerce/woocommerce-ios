@@ -2,6 +2,7 @@ import Foundation
 import UIKit
 import WordPressAuthenticator
 import Experiments
+import protocol WooFoundation.Analytics
 
 
 /// Displays the WooCommerce Prologue UI.

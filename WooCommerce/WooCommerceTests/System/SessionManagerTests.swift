@@ -232,27 +232,6 @@ final class SessionManagerTests: XCTestCase {
         XCTAssertNil(defaults[UserDefaults.Key.numberOfTimesWriteWithAITooltipIsShown])
     }
 
-    /// Verifies that `shouldHideStoreOnboardingTaskList` is set to `nil` upon reset
-    ///
-    func test_shouldHideStoreOnboardingTaskList_is_set_to_nil_upon_reset() throws {
-        // Given
-        let uuid = UUID().uuidString
-        let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
-        let sut = SessionManager(defaults: defaults, keychainServiceName: Settings.keychainServiceName)
-
-        // When
-        defaults[UserDefaults.Key.shouldHideStoreOnboardingTaskList] = true
-
-        // Then
-        XCTAssertTrue(try XCTUnwrap(defaults[UserDefaults.Key.shouldHideStoreOnboardingTaskList] as? Bool))
-
-        // When
-        sut.reset()
-
-        // Then
-        XCTAssertNil(defaults[UserDefaults.Key.shouldHideStoreOnboardingTaskList])
-    }
-
     /// Verifies that `storeProfilerAnswers` is set to `nil` upon reset
     ///
     func test_storeProfilerAnswers_is_set_to_nil_upon_reset() throws {
@@ -402,29 +381,6 @@ final class SessionManagerTests: XCTestCase {
 
         // Then
         XCTAssertNil(defaults[.expectedStoreNamePendingStoreSwitch])
-    }
-
-    /// Verifies that `favoriteProductIDs` is set to `nil` upon reset
-    ///
-    func test_favoriteProductIDs_is_set_to_nil_upon_reset() throws {
-        // Given
-        let uuid = UUID().uuidString
-        let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
-        let sut = SessionManager(defaults: defaults, keychainServiceName: Settings.keychainServiceName)
-        let siteID: Int64 = 123
-
-        // When
-        defaults[.favoriteProductIDs] = ["\(siteID)": [1, 2, 3]]
-
-        // Then
-        XCTAssertEqual(try XCTUnwrap(defaults[.favoriteProductIDs] as? [String: [Int64]]),
-                       ["\(siteID)": [1, 2, 3]])
-
-        // When
-        sut.reset()
-
-        // Then
-        XCTAssertNil(defaults[.favoriteProductIDs])
     }
 
     /// Verifies that image cache is cleared upon reset

@@ -422,8 +422,8 @@ private extension ReviewOrderViewController {
 
         actionSheet.addCancelActionWithTitle(TrackingAction.dismiss)
 
-        actionSheet.addDefaultActionWithTitle(TrackingAction.copyTrackingNumber) { [weak self] _ in
-            self?.sendToPasteboard(tracking.trackingNumber, includeTrailingNewline: false)
+        actionSheet.addDefaultActionWithTitle(TrackingAction.copyTrackingNumber) { _ in
+            tracking.trackingNumber.sendToPasteboard(includeTrailingNewline: false)
         }
 
         if tracking.trackingURL?.isEmpty == false {
@@ -442,21 +442,6 @@ private extension ReviewOrderViewController {
         popoverController?.sourceRect = cell.bounds
 
         present(actionSheet, animated: true)
-    }
-
-    /// Sends the provided text to the general pasteboard and triggers a success haptic.
-    ///
-    func sendToPasteboard(_ text: String?, includeTrailingNewline: Bool = true) {
-        guard var text = text, text.isEmpty == false else {
-            return
-        }
-
-        if includeTrailingNewline {
-            text += "\n"
-        }
-
-        UIPasteboard.general.string = text
-        hapticGenerator.notificationOccurred(.success)
     }
 
     /// Opens details of the shipment tracking in a web view
@@ -486,7 +471,7 @@ private extension ReviewOrderViewController {
     /// Displays the `Unable to delete tracking` Notice.
     ///
     func displayDeleteErrorNotice(order: Order, tracking: ShipmentTracking) {
-        notices.displayDeleteErrorNotice(order: order, tracking: tracking) { [weak self] in
+        notices.displayDeleteTrackingErrorNotice(order: order, tracking: tracking) { [weak self] in
             self?.deleteTracking(tracking)
         }
     }

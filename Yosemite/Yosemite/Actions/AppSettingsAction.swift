@@ -98,6 +98,14 @@ public enum AppSettingsAction: Action {
     ///
     case loadOrderAddOnsSwitchState(onCompletion: (Result<Bool, Error>) -> Void)
 
+    /// Sets the state for the Point Of Sale beta feature switch
+    ///
+    case setPointOfSaleSwitchState(isEnabled: Bool, onCompletion: (Result<Void, Error>) -> Void)
+
+    /// Loads the most recent state for the Point Of Sale beta feature switch
+    ///
+    case loadPointOfSaleSwitchState(onCompletion: (Result<Bool, Error>) -> Void)
+
     /// Remember the given card reader (to support automatic reconnection)
     /// where `cardReaderID` is a String e.g. "CHB204909005931"
     ///
@@ -258,4 +266,66 @@ public enum AppSettingsAction: Action {
     /// Loads the stored, ordered array of cards for the Analytics Hub.
     ///
     case loadAnalyticsHubCards(siteID: Int64, onCompletion: ([AnalyticsCard]?) -> Void)
+
+    // MARK: - Dashboard Cards
+
+    /// Stores an ordered array of cards for the Dashboard screen.
+    ///
+    case setDashboardCards(siteID: Int64, cards: [DashboardCard])
+
+    /// Loads the stored, ordered array of cards for the Dashboard screen.
+    ///
+    case loadDashboardCards(siteID: Int64, onCompletion: ([DashboardCard]?) -> Void)
+
+    /// Stores the last selected time range for the Performance dashboard card.
+    ///
+    case setLastSelectedPerformanceTimeRange(siteID: Int64, timeRange: StatsTimeRangeV4)
+
+    /// Loads the last selected time range for the Performance dashboard card.
+    ///
+    case loadLastSelectedPerformanceTimeRange(siteID: Int64, onCompletion: (StatsTimeRangeV4?) -> Void)
+
+    /// Stores the last selected time range for the Top Performers dashboard card.
+    ///
+    case setLastSelectedTopPerformersTimeRange(siteID: Int64, timeRange: StatsTimeRangeV4)
+
+    /// Loads the last selected time range for the Top Performers dashboard card.
+    ///
+    case loadLastSelectedTopPerformersTimeRange(siteID: Int64, onCompletion: (StatsTimeRangeV4?) -> Void)
+
+    /// Stores the last selected time range for the Most Active coupons dashboard card.
+    ///
+    case setLastSelectedMostActiveCouponsTimeRange(siteID: Int64, timeRange: StatsTimeRangeV4)
+
+    /// Loads the last selected time range for the Most Active coupons dashboard card.
+    ///
+    case loadLastSelectedMostActiveCouponsTimeRange(siteID: Int64, onCompletion: (StatsTimeRangeV4?) -> Void)
+
+    /// Stores the last selected stock type for the Stock dashboard card.
+    ///
+    case setLastSelectedStockType(siteID: Int64, type: String)
+
+    /// Loads the last selected stock type for the Stock dashboard card.
+    ///
+    case loadLastSelectedStockType(siteID: Int64, onCompletion: (String?) -> Void)
+
+    /// Stores the last selected order status for the Most recent orders dashboard card.
+    ///
+    case setLastSelectedOrderStatus(siteID: Int64, status: String?)
+
+    /// Loads the last selected order status for the Most recent orders dashboard card.
+    ///
+    case loadLastSelectedOrderStatus(siteID: Int64, onCompletion: (String?) -> Void)
+
+    /// Stores the product ID as favorite.
+    ///
+    case setProductIDAsFavorite(productID: Int64, siteID: Int64)
+
+    /// Removes the product ID from favorite list.
+    ///
+    case removeProductIDAsFavorite(productID: Int64, siteID: Int64)
+
+    /// Loads the favorite products.
+    ///
+    case loadFavoriteProductIDs(siteID: Int64, onCompletion: ([Int64]) -> Void)
 }

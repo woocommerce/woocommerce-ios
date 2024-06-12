@@ -79,7 +79,7 @@ final class AccountRemoteTests: XCTestCase {
         // Sites in `sites.json` include one Jetpack CP site and one site with Jetpack-the-plugin.
         let jcpSites = sites.filter { $0.isJetpackCPConnected }
         let nonJCPSites = sites.filter { $0.isJetpackCPConnected == false }
-        let publicSites = sites.filter { $0.isPublic }
+        let publicSites = sites.filter { $0.visibility == .publicSite }
         XCTAssertEqual(jcpSites.count, 1)
         XCTAssertEqual(nonJCPSites.count, 1)
         XCTAssertEqual(publicSites.count, 1)
@@ -175,7 +175,7 @@ final class AccountRemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "users/new", filename: "create-account-success")
 
         // When
-        let result = await remote.createAccount(email: "coffee@woo.com", username: "", password: "", clientID: "", clientSecret: "")
+        let result = await remote.createAccount(email: "coffee@woocommerce.com", username: "", password: "", clientID: "", clientSecret: "")
 
         // Then
         let data = try XCTUnwrap(result.get())
@@ -189,7 +189,7 @@ final class AccountRemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "users/new", filename: "create-account-error-email-exists")
 
         // When
-        let result = await remote.createAccount(email: "coffee@woo.com", username: "", password: "", clientID: "", clientSecret: "")
+        let result = await remote.createAccount(email: "coffee@woocommerce.com", username: "", password: "", clientID: "", clientSecret: "")
 
         // Then
         let error = try XCTUnwrap(result.failure)
@@ -202,7 +202,7 @@ final class AccountRemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "users/new", filename: "create-account-error-invalid-email")
 
         // When
-        let result = await remote.createAccount(email: "coffee@woo.com", username: "", password: "", clientID: "", clientSecret: "")
+        let result = await remote.createAccount(email: "coffee@woocommerce.com", username: "", password: "", clientID: "", clientSecret: "")
 
         // Then
         let error = try XCTUnwrap(result.failure)
@@ -215,7 +215,7 @@ final class AccountRemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "users/new", filename: "create-account-error-password")
 
         // When
-        let result = await remote.createAccount(email: "coffee@woo.com", username: "", password: "", clientID: "", clientSecret: "")
+        let result = await remote.createAccount(email: "coffee@wwoocommerceoo.com", username: "", password: "", clientID: "", clientSecret: "")
 
         // Then
         let error = try XCTUnwrap(result.failure)
@@ -229,7 +229,7 @@ final class AccountRemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "users/new", filename: "create-account-error-username")
 
         // When
-        let result = await remote.createAccount(email: "coffee@woo.com", username: "", password: "", clientID: "", clientSecret: "")
+        let result = await remote.createAccount(email: "coffee@woocommerce.com", username: "", password: "", clientID: "", clientSecret: "")
 
         // Then
         let error = try XCTUnwrap(result.failure)

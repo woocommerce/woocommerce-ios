@@ -1,81 +1,43 @@
 import Foundation
+import Yosemite
 
 struct FavoriteProductsUseCase {
     private let siteID: Int64
-    private let userDefaults: UserDefaults
-
-    private var idAsString: String {
-        "\(siteID)"
-    }
-
-    private var productIdDict: [String: [Int64]]? {
-        userDefaults[.favoriteProductIDs] as? [String: [Int64]]
-    }
+    private let stores: StoresManager
 
     init(siteID: Int64,
-         userDefaults: UserDefaults = .standard) {
+         stores: StoresManager = ServiceLocator.stores) {
         self.siteID = siteID
-        self.userDefaults = userDefaults
+        self.stores = stores
     }
 
+    @MainActor
     func markAsFavorite(productID: Int64) {
-        if var productIdDict = productIdDict {
-            let existingFavProductIDs = productIdDict[idAsString] ?? []
-            productIdDict[idAsString] = Array(Set(existingFavProductIDs + [productID])).suffix(Constants.favoriteProductsMaxLimit)
-            userDefaults[.favoriteProductIDs] = productIdDict
-        } else {
-            userDefaults[.favoriteProductIDs] = [idAsString: [productID]]
-        }
+        let action = AppSettingsAction.setProductIDAsFavorite(productID: productID, siteID: siteID)
+        stores.dispatch(action)
     }
 
+    @MainActor
     func removeFromFavorite(productID: Int64) {
-        guard var productIdDict = productIdDict else {
-            return
-        }
-
-        guard var savedFavProductIDs = productIdDict[idAsString],
-              let indexOfFavProductToBeRemoved = savedFavProductIDs.firstIndex(of: productID) else {
-            return
-        }
-
-        savedFavProductIDs.remove(at: indexOfFavProductToBeRemoved)
-        productIdDict[idAsString] = savedFavProductIDs
-
-        userDefaults[.favoriteProductIDs] = productIdDict
+        let action = AppSettingsAction.removeProductIDAsFavorite(productID: productID, siteID: siteID)
+        stores.dispatch(action)
     }
 
-    func isFavorite(productID: Int64) -> Bool {
-        guard let productIdDict = productIdDict,
-              let savedFavProductIDs = productIdDict[idAsString] else {
-            return false
+    @MainActor
+    func isFavorite(productID: Int64) async -> Bool {
+        return await withCheckedContinuation { continuation in
+            stores.dispatch(AppSettingsAction.loadFavoriteProductIDs(siteID: siteID, onCompletion: { savedFavProductIDs in
+                continuation.resume(returning: savedFavProductIDs.contains(where: { $0 == productID }))
+            }))
         }
-
-        return savedFavProductIDs.contains(where: { $0 == productID })
     }
 
-    func favoriteProductIDs() -> [Int64]? {
-        guard let productIdDict = productIdDict,
-              let savedFavProductIDs = productIdDict[idAsString] else {
-            return nil
-        }
-        return savedFavProductIDs
-    }
-}
-
-private extension FavoriteProductsUseCase {
-    enum Constants {
-        static let favoriteProductsMaxLimit = 10
-    }
-}
-
-extension UserDefaults {
-    /// Expose value for `favoriteProductIDs` to be observable through KVO.
-    @objc var favoriteProductIDs: [String: Any]? {
-        get {
-            dictionary(forKey: Key.favoriteProductIDs.rawValue)
-        }
-        set {
-            set(newValue, forKey: Key.favoriteProductIDs.rawValue)
+    @MainActor
+    func favoriteProductIDs() async -> [Int64] {
+        return await withCheckedContinuation { continuation in
+            stores.dispatch(AppSettingsAction.loadFavoriteProductIDs(siteID: siteID, onCompletion: { savedFavProductIDs in
+                continuation.resume(returning: savedFavProductIDs)
+            }))
         }
     }
 }

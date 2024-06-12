@@ -86,7 +86,7 @@ final class UniversalLinkRouterTests: XCTestCase {
 
     func test_handle_when_there_no_routes_matching_then_bounces_url() {
         // Given
-        let url = URL(string: "woo.com/mobile/a/nice/path")!
+        let url = URL(string: "woocommerce.com/mobile/a/nice/path")!
 
         var routeOneWasCalled = false
         let routeOne = MockRoute(handledSubpaths: ["a/different/path"], performAction: { _, _ in
@@ -166,7 +166,7 @@ private extension UniversalLinkRouterTests {
     func makeUrlForTesting(subPath: String, queryItem: URLQueryItem? = nil, includeMobileSegment: Bool = true) -> URL? {
         var components = URLComponents()
             components.scheme = "https"
-            components.host = "woo.com"
+            components.host = "woocommerce.com"
         if includeMobileSegment {
             components.path = "/mobile/" + subPath
         } else {

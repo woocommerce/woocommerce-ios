@@ -53,4 +53,18 @@ final class CardPresentDetailsTests: XCTestCase {
 
         XCTAssertEqual(details.emvAuthData, mockDetails.emvAuthData)
     }
+
+    func test_card_present_details_maps_wallet() {
+        let mockDetails = MockStripeCardPresentDetails.mock()
+        let details = CardPresentTransactionDetails(details: mockDetails)
+
+        XCTAssertEqual(details.wallet?.type, mockDetails.wallet?.type)
+    }
+
+    func test_card_present_details_maps_network() {
+        let mockDetails = MockStripeCardPresentDetails.mock()
+        let details = CardPresentTransactionDetails(details: mockDetails)
+
+        XCTAssertEqual(details.network, mockDetails.network)
+    }
 }

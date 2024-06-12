@@ -153,6 +153,8 @@ protocol ProductFormViewModelProtocol {
 
     func updateSubscriptionExpirySettings(length: String)
 
+    func updateQuantityRules(minQuantity: String, maxQuantity: String, groupOf: String)
+
     // Remote action
 
     /// Creates/updates a product remotely given an optional product status to override.
@@ -180,7 +182,7 @@ protocol ProductFormViewModelProtocol {
 
     // Favorite actions
 
-    func isFavorite() -> Bool
+    func isFavorite() async -> Bool
 
     func markAsFavorite()
 

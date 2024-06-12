@@ -41,7 +41,7 @@ public class OrderStore: Store {
             retrieveOrder(siteID: siteID, orderID: orderID, onCompletion: onCompletion)
         case .searchOrders(let siteID, let keyword, let pageNumber, let pageSize, let onCompletion):
             searchOrders(siteID: siteID, keyword: keyword, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
-        case let .fetchFilteredOrders(siteID, statuses, after, before, modifiedAfter, customerID, productID, deleteAllBeforeSaving, pageSize, onCompletion):
+        case let .fetchFilteredOrders(siteID, statuses, after, before, modifiedAfter, customerID, productID, writeStrategy, pageSize, onCompletion):
             fetchFilteredOrders(siteID: siteID,
                                 statuses: statuses,
                                 after: after,
@@ -49,7 +49,7 @@ public class OrderStore: Store {
                                 modifiedAfter: modifiedAfter,
                                 customerID: customerID,
                                 productID: productID,
-                                deleteAllBeforeSaving: deleteAllBeforeSaving,
+                                writeStrategy: writeStrategy,
                                 pageSize: pageSize,
                                 onCompletion: onCompletion)
         case let .synchronizeOrders(siteID, statuses, after, before, modifiedAfter, customerID, productID, pageNumber, pageSize, onCompletion):
@@ -151,9 +151,9 @@ private extension OrderStore {
                              modifiedAfter: Date?,
                              customerID: Int64?,
                              productID: Int64?,
-                             deleteAllBeforeSaving: Bool,
+                             writeStrategy: OrderAction.OrdersStorageWriteStrategy,
                              pageSize: Int,
-                             onCompletion: @escaping (TimeInterval, Error?) -> Void) {
+                             onCompletion: @escaping (TimeInterval, Result<[Order], Error>) -> Void) {
 
         let pageNumber = OrdersRemote.Defaults.pageNumber
 
@@ -164,6 +164,7 @@ private extension OrderStore {
         // the `group.notify()` call below which only _reads_ `fetchErrors` and all the _writes_
         // have finished.
         var fetchErrors = [Error]()
+        var fetchedOrders: [Order]?
         var hasDeletedAllOrders = false
         let serialQueue = DispatchQueue(label: "orders_sync", qos: .userInitiated)
         let startTime = Date()
@@ -208,11 +209,20 @@ private extension OrderStore {
 
                     switch result {
                     case .success(let orders):
-                        if deleteAllBeforeSaving {
-                            deleteAllOrdersOnce()
-                        }
+                        fetchedOrders = orders
 
-                        self.upsertStoredOrdersInBackground(readOnlyOrders: orders, onCompletion: completion)
+                        switch writeStrategy {
+                        case .doNotSave:
+                            completion()
+                        case .deleteAllBeforeSaving, .save:
+                            if writeStrategy == .deleteAllBeforeSaving {
+                                deleteAllOrdersOnce()
+                            }
+
+                            self.upsertStoredOrdersInBackground(readOnlyOrders: orders, onCompletion: {
+                                completion()
+                            })
+                        }
                     case .failure(let error):
                         fetchErrors.append(error)
                         completion()
@@ -237,7 +247,14 @@ private extension OrderStore {
         }
 
         group.notify(queue: .main) {
-            onCompletion(Date().timeIntervalSince(startTime), fetchErrors.first)
+            let result: Result<[Order], Error> = {
+                if let error = fetchErrors.first {
+                    .failure(error)
+                } else {
+                    .success(fetchedOrders ?? [])
+                }
+            }()
+            onCompletion(Date().timeIntervalSince(startTime), result)
         }
     }
 

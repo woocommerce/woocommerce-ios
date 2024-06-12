@@ -25,6 +25,7 @@ final class ImageAndTitleAndTextTableViewCell: UITableViewCell {
     struct DataConfiguration {
         let title: String?
         let titleFontStyle: FontStyle
+        let titleTintColor: UIColor?
         let text: String?
         let textTintColor: UIColor?
         let image: UIImage?
@@ -36,6 +37,7 @@ final class ImageAndTitleAndTextTableViewCell: UITableViewCell {
 
         init(title: String?,
              titleFontStyle: FontStyle = .body,
+             titleTintColor: UIColor? = nil,
              text: String? = nil,
              textTintColor: UIColor? = nil,
              image: UIImage? = nil,
@@ -46,6 +48,7 @@ final class ImageAndTitleAndTextTableViewCell: UITableViewCell {
              showsSeparator: Bool = true) {
             self.title = title
             self.titleFontStyle = titleFontStyle
+            self.titleTintColor = titleTintColor
             self.text = text
             self.textTintColor = textTintColor
             self.image = image
@@ -60,6 +63,7 @@ final class ImageAndTitleAndTextTableViewCell: UITableViewCell {
     struct ViewModel: Equatable {
         let title: String?
         let titleFontStyle: FontStyle
+        let titleTintColor: UIColor?
         let text: String?
         let textTintColor: UIColor?
         let image: UIImage?
@@ -73,6 +77,7 @@ final class ImageAndTitleAndTextTableViewCell: UITableViewCell {
 
         init(title: String?,
              titleFontStyle: FontStyle = .body,
+             titleTintColor: UIColor? = nil,
              text: String?,
              textTintColor: UIColor? = nil,
              image: UIImage? = nil,
@@ -85,6 +90,7 @@ final class ImageAndTitleAndTextTableViewCell: UITableViewCell {
              showsSeparator: Bool = true) {
             self.title = title
             self.titleFontStyle = titleFontStyle
+            self.titleTintColor = titleTintColor
             self.text = text
             self.textTintColor = textTintColor
             self.image = image
@@ -183,8 +189,11 @@ extension ImageAndTitleAndTextTableViewCell {
         selectionStyle = viewModel.isActionable ? .default: .none
         accessoryView = nil
 
+        if let titleTintColor = viewModel.titleTintColor {
+            titleLabel.textColor = titleTintColor
+        }
+
         if let textTintColor = viewModel.textTintColor {
-            titleLabel.textColor = textTintColor
             descriptionLabel.textColor = textTintColor
         }
 

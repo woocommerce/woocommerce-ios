@@ -1,6 +1,7 @@
 import Foundation
 import Yosemite
 import protocol Storage.StorageManagerType
+import protocol WooFoundation.Analytics
 
 /// View model for `BlazeTargetDevicePicker`
 final class BlazeTargetDevicePickerViewModel: ObservableObject {

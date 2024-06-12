@@ -162,7 +162,7 @@ extension Storage.Order: ReadOnlyConvertible {
 }
 
 extension Storage.Order {
-     var orderItemsArray: [Storage.OrderItem] {
-         return items?.toArray() ?? []
-     }
+    var orderItemsArray: [Storage.OrderItem] {
+        return items?.toTypeCheckedArray() ?? [Storage.OrderItem]()
+    }
  }

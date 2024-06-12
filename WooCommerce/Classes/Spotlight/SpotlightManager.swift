@@ -29,6 +29,6 @@ struct SpotlightManager {
             return
         }
 
-        ServiceLocator.analytics.track(event: WooAnalyticsEvent.Spotlight.activityWasOpened(with: type))
+        ServiceLocator.analytics.track(event: .Spotlight.activityWasOpened(with: type))
     }
 }

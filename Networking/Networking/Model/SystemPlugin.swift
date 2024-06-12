@@ -23,7 +23,7 @@ public struct SystemPlugin: Decodable, GeneratedFakeable, GeneratedCopiable, Equ
     ///
     public let versionLatest: String
 
-    /// Plugin url, e.g. https://woo.com/
+    /// Plugin url, e.g. https://woocommerce.com/
     ///
     public let url: String
 
@@ -31,7 +31,7 @@ public struct SystemPlugin: Decodable, GeneratedFakeable, GeneratedCopiable, Equ
     ///
     public let authorName: String
 
-    /// Author url, e.g. https://woo.com
+    /// Author url, e.g. https://woocommerce.com
     ///
     public let authorUrl: String
 

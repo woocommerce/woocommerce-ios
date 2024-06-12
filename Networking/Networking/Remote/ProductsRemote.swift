@@ -49,6 +49,33 @@ public protocol ProductsRemoteProtocol {
                         completion: @escaping (Result<[Int64], Error>) -> Void)
     func createTemplateProduct(for siteID: Int64, template: ProductsRemote.TemplateType, completion: @escaping (Result<Int64, Error>) -> Void)
     func loadNumberOfProducts(siteID: Int64) async throws -> Int64
+
+    func loadStock(for siteID: Int64,
+                   with stockType: String,
+                   pageNumber: Int,
+                   pageSize: Int,
+                   order: ProductsRemote.Order) async throws -> [ProductStock]
+
+    func loadProductReports(for siteID: Int64,
+                            productIDs: [Int64],
+                            timeZone: TimeZone,
+                            earliestDateToInclude: Date,
+                            latestDateToInclude: Date,
+                            pageSize: Int,
+                            pageNumber: Int,
+                            orderBy: ProductsRemote.OrderKey,
+                            order: ProductsRemote.Order) async throws -> [ProductReport]
+
+    func loadVariationReports(for siteID: Int64,
+                              productIDs: [Int64],
+                              variationIDs: [Int64],
+                              timeZone: TimeZone,
+                              earliestDateToInclude: Date,
+                              latestDateToInclude: Date,
+                              pageSize: Int,
+                              pageNumber: Int,
+                              orderBy: ProductsRemote.OrderKey,
+                              order: ProductsRemote.Order) async throws -> [ProductReport]
 }
 
 extension ProductsRemoteProtocol {
@@ -405,6 +432,94 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
         let mapper = ProductsTotalMapper()
         return try await enqueue(request, mapper: mapper)
     }
+
+    public func loadStock(for siteID: Int64,
+                          with stockType: String,
+                          pageNumber: Int,
+                          pageSize: Int,
+                          order: ProductsRemote.Order) async throws -> [ProductStock] {
+        let path = Path.stockReports
+        let parameters: [String: Any] = [
+            ParameterKey.type: stockType,
+            ParameterKey.page: String(pageNumber),
+            ParameterKey.perPage: String(pageSize),
+            ParameterKey.order: order.value
+        ]
+        let request = JetpackRequest(wooApiVersion: .wcAnalytics,
+                                     method: .get,
+                                     siteID: siteID,
+                                     path: path,
+                                     parameters: parameters,
+                                     availableAsRESTRequest: true)
+        let mapper = ProductStockListMapper(siteID: siteID)
+        return try await enqueue(request, mapper: mapper)
+    }
+
+    public func loadProductReports(for siteID: Int64,
+                                   productIDs: [Int64],
+                                   timeZone: TimeZone,
+                                   earliestDateToInclude: Date,
+                                   latestDateToInclude: Date,
+                                   pageSize: Int,
+                                   pageNumber: Int,
+                                   orderBy: ProductsRemote.OrderKey,
+                                   order: ProductsRemote.Order) async throws -> [ProductReport] {
+        let dateFormatter = DateFormatter.Defaults.iso8601WithoutTimeZone
+        dateFormatter.timeZone = timeZone
+        let path = Path.productReports
+        let parameters: [String: Any] = [
+            ParameterKey.products: productIDs,
+            ParameterKey.after: dateFormatter.string(from: earliestDateToInclude),
+            ParameterKey.before: dateFormatter.string(from: latestDateToInclude),
+            ParameterKey.page: String(pageNumber),
+            ParameterKey.perPage: String(pageSize),
+            ParameterKey.order: order.value,
+            ParameterKey.orderBy: orderBy.value,
+            ParameterKey.extendedInfo: true
+        ]
+        let request = JetpackRequest(wooApiVersion: .wcAnalytics,
+                                     method: .get,
+                                     siteID: siteID,
+                                     path: path,
+                                     parameters: parameters,
+                                     availableAsRESTRequest: true)
+        let mapper = ProductReportListMapper()
+        return try await enqueue(request, mapper: mapper)
+    }
+
+    public func loadVariationReports(for siteID: Int64,
+                                     productIDs: [Int64],
+                                     variationIDs: [Int64],
+                                     timeZone: TimeZone,
+                                     earliestDateToInclude: Date,
+                                     latestDateToInclude: Date,
+                                     pageSize: Int,
+                                     pageNumber: Int,
+                                     orderBy: ProductsRemote.OrderKey,
+                                     order: ProductsRemote.Order) async throws -> [ProductReport] {
+        let dateFormatter = DateFormatter.Defaults.iso8601WithoutTimeZone
+        dateFormatter.timeZone = timeZone
+        let path = Path.variationReports
+        let parameters: [String: Any] = [
+            ParameterKey.products: productIDs,
+            ParameterKey.variations: variationIDs,
+            ParameterKey.after: dateFormatter.string(from: earliestDateToInclude),
+            ParameterKey.before: dateFormatter.string(from: latestDateToInclude),
+            ParameterKey.page: String(pageNumber),
+            ParameterKey.perPage: String(pageSize),
+            ParameterKey.order: order.value,
+            ParameterKey.orderBy: orderBy.value,
+            ParameterKey.extendedInfo: true
+        ]
+        let request = JetpackRequest(wooApiVersion: .wcAnalytics,
+                                     method: .get,
+                                     siteID: siteID,
+                                     path: path,
+                                     parameters: parameters,
+                                     availableAsRESTRequest: true)
+        let mapper = ProductReportListMapper()
+        return try await enqueue(request, mapper: mapper)
+    }
 }
 
 
@@ -414,6 +529,8 @@ public extension ProductsRemote {
     enum OrderKey {
         case date
         case name
+        // available for use in `GET wc-analytics/reports/products/stats` only.
+        case itemsSold
     }
 
     enum Order {
@@ -441,6 +558,9 @@ public extension ProductsRemote {
         static let products   = "products"
         static let templateProducts   = "onboarding/tasks/create_product_from_template"
         static let productsTotal = "reports/products/totals"
+        static let stockReports = "reports/stock"
+        static let productReports = "reports/products"
+        static let variationReports = "reports/variations"
     }
 
     private enum ParameterKey {
@@ -462,10 +582,18 @@ public extension ProductsRemote {
         static let images: String = "images"
         static let id: String         = "id"
         static let templateName: String = "template_name"
+        static let type = "type"
+        static let products = "products"
+        static let variations = "variations"
+        static let before = "before"
+        static let after = "after"
+        static let extendedInfo = "extended_info"
     }
 
     private enum ParameterValues {
         static let skuFieldValues: String = "sku"
+        static let productSegment = "product"
+        static let itemsSold = "items_sold"
     }
 }
 
@@ -488,6 +616,8 @@ private extension ProductsRemote.OrderKey {
             return "date"
         case .name:
             return "title"
+        case .itemsSold:
+            return "items_sold"
         }
     }
 }

@@ -4,7 +4,7 @@ import UIKit
 final class MockCardPresentPaymentsOnboardingPresenter: CardPresentPaymentsOnboardingPresenting {
     var spyShowOnboardingWasCalled = false
 
-    func showOnboardingIfRequired(from viewController: UIViewController,
+    func showOnboardingIfRequired(from viewController: ViewControllerPresenting,
                                   readyToCollectPayment completion: @escaping () -> Void) {
         spyShowOnboardingWasCalled = true
         completion()

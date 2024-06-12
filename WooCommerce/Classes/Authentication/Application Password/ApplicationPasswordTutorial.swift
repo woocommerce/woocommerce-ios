@@ -61,37 +61,48 @@ struct ApplicationPasswordTutorial: View {
     ///
     let errorDescription: String
 
+    @ScaledMetric private var scale: CGFloat = 1.0
+
     var body: some View {
         VStack(spacing: .zero) {
             ScrollView {
                 Text(errorDescription)
-                    .subheadlineStyle()
-                    .multilineTextAlignment(.center)
-                    .padding([.bottom, .top])
+                    .bodyStyle(opacity: 0.8)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding()
+
+                Divider()
+                    .padding(.leading)
 
 
                 Text(Localization.tutorial)
-                    .foregroundColor(Color(uiColor: .text))
-                    .footnoteStyle(isEnabled: true)
-                    .multilineTextAlignment(.leading)
-                    .padding(.bottom)
+                    .bodyStyle(opacity: 0.8)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding([.horizontal, .top])
 
                 Image(uiImage: .appPasswordTutorialImage)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
-                    .padding(.horizontal, Layout.imagePadding)
+                    .frame(maxWidth: Layout.imageMaxWidth * scale)
+
+                Text(Localization.tutorial2)
+                    .bodyStyle(opacity: 0.8)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding([.horizontal, .bottom])
+
+                Divider()
+                    .padding(.leading)
 
                 Text(Localization.contactSupport)
-                    .subheadlineStyle()
-                    .multilineTextAlignment(.center)
+                    .bodyStyle(opacity: 0.8)
+                    .frame(maxWidth: .infinity, alignment: .leading)
                     .padding()
             }
-            .padding(.horizontal)
 
             Divider()
                 .ignoresSafeArea()
 
-            VStack {
+            VStack(spacing: Layout.bottomButtonsSpacing) {
 
                 Button(Localization.continueTitle) {
                     continueButtonTapped?()
@@ -113,27 +124,33 @@ struct ApplicationPasswordTutorial: View {
 
 private extension ApplicationPasswordTutorial {
     enum Localization {
-        static let title = NSLocalizedString("We couldn't log in into your site! 😭", comment: "Title for the application password tutorial screen")
-        static let reason = NSLocalizedString("This is likely because your store has some extra security steps in place.",
+        static let title = NSLocalizedString("We couldn’t log in into your store", comment: "Title for the application password tutorial screen")
+        static let reason = NSLocalizedString("This could be because your store has some extra security steps in place.",
                                               comment: "Reason for why the user could not login tin the application password tutorial screen")
         static let tutorial = NSLocalizedString("""
-                                                ⁃ Tap the continue button at the bottom to login directly into your site.
+                                                Follow these steps to connect the Woo app directly to your store using an application password.
 
-                                                ⁃ Once logged in, approve the connection to give access to the woo app like the in the image below.
+                                                1. First, log in using your site credentials.
+
+                                                2. When prompted, approve the connection by tapping the confirmation button.
                                                 """, comment: "Tutorial steps on the application password tutorial screen")
-        static let contactSupport = NSLocalizedString("If you encounter any problem, contact us and we will happily assist you!",
+        static let tutorial2 = NSLocalizedString("""
+                                                3. When the connection is complete, you will be logged in to your store.
+                                                """, comment: "Tutorial steps on the application password tutorial screen")
+        static let contactSupport = NSLocalizedString("If you run into any issues, please contact our support team.",
                                                       comment: "Text to contact support in the application password tutorial screen")
         static let continueTitle = NSLocalizedString("Continue", comment: "Continue button in the application password tutorial screen")
         static let contactSupportTitle = NSLocalizedString("Contact Support", comment: "Contact Support button in the application password tutorial screen")
     }
 
     enum Layout {
-        static let imagePadding = 60.0
+        static let bottomButtonsSpacing: CGFloat = 16.0
+        static let imageMaxWidth: CGFloat = 400
     }
 }
 
 #Preview {
     NavigationStack {
-        ApplicationPasswordTutorial(errorDescription: ApplicationPasswordTutorial.Localization.title)
+        ApplicationPasswordTutorial(errorDescription: ApplicationPasswordTutorial.Localization.reason)
     }
 }

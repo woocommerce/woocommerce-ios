@@ -1,6 +1,7 @@
 import Foundation
 import UIKit
 import WordPressUI
+import protocol WooFoundation.Analytics
 
 /// Type to handle the privacy banner presentation.
 ///

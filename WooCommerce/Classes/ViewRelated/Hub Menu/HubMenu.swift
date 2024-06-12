@@ -6,29 +6,67 @@ import Yosemite
 /// and will be the entry point of the `Menu` Tab.
 ///
 struct HubMenu: View {
+    /// Set from the hosting controller to handle switching store.
+    var switchStoreHandler: () -> Void = {}
+
     @ObservedObject private var iO = Inject.observer
 
     @ObservedObject private var viewModel: HubMenuViewModel
-
-    @State private var showingWooCommerceAdmin = false
-    @State private var showingViewStore = false
-    @State private var showingInbox = false
-    @State private var showingReviews = false
-    @State private var showingCoupons = false
-    @State private var showingIAPDebug = false
-    @State private var showSettings = false
 
     init(viewModel: HubMenuViewModel) {
         self.viewModel = viewModel
     }
 
     var body: some View {
-        List {
+        NavigationStack(path: $viewModel.navigationPath) {
+            /// TODO: switch to `navigationDestination(item:destination)`
+            /// when we drop support for iOS 16.
+            menuList
+                .navigationDestination(for: String.self) { id in
+                    detailView(menuID: id)
+                }
+                .navigationDestination(for: HubMenuNavigationDestination.self) { destination in
+                    detailView(destination: destination)
+                }
+                .navigationDestination(isPresented: $viewModel.showingReviewDetail) {
+                    reviewDetailView
+                }
+                .navigationDestination(isPresented: $viewModel.showingCoupons) {
+                    couponListView
+                }
+                .onAppear {
+                    viewModel.setupMenuElements()
+                }
+        }
+    }
 
+    /// Handle navigation when tapping a list menu row.
+    ///
+    private func handleTap(menu: HubMenuItem) {
+        ServiceLocator.analytics.track(.hubMenuOptionTapped, withProperties: [
+            Constants.trackingOptionKey: menu.trackingOption
+        ])
+
+        if menu.id == HubMenuViewModel.Settings.id {
+            ServiceLocator.analytics.track(.hubMenuSettingsTapped)
+        } else if menu.id == HubMenuViewModel.Blaze.id {
+            ServiceLocator.analytics.track(event: .Blaze.blazeCampaignListEntryPointSelected(source: .menu))
+        }
+
+        viewModel.selectedMenuID = menu.id
+    }
+}
+
+// MARK: SubViews
+private extension HubMenu {
+
+    var menuList: some View {
+        List {
             // Store Section
             Section {
                 Button {
-                    viewModel.presentSwitchStore()
+                    ServiceLocator.analytics.track(.hubMenuSwitchStoreTapped)
+                    switchStoreHandler()
                 } label: {
                     Row(title: viewModel.storeTitle,
                         titleBadge: viewModel.planName,
@@ -44,128 +82,147 @@ struct HubMenu: View {
                 .disabled(!viewModel.switchStoreEnabled)
             }
 
+            // Point of Sale
+            if let menu = viewModel.posElement {
+                Section {
+                    menuItemView(menu: menu, chevron: .enteringMode)
+                }
+            }
+
             // Settings Section
             Section(Localization.settings) {
                 ForEach(viewModel.settingsElements, id: \.id) { menu in
-                    Button {
-                        handleTap(menu: menu)
-                    } label: {
-                        Row(title: menu.title,
-                            titleBadge: nil,
-                            iconBadge: menu.iconBadge,
-                            description: menu.description,
-                            icon: .local(menu.icon),
-                            chevron: .leading)
-                        .foregroundColor(Color(menu.iconColor))
-                    }
-                    .accessibilityIdentifier(menu.accessibilityIdentifier)
+                    menuItemView(menu: menu)
                 }
             }
 
             // General Section
             Section(Localization.general) {
                 ForEach(viewModel.generalElements, id: \.id) { menu in
-                    Button {
-                        handleTap(menu: menu)
-                    } label: {
-                        Row(title: menu.title,
-                            titleBadge: nil,
-                            iconBadge: menu.iconBadge,
-                            description: menu.description,
-                            icon: .local(menu.icon),
-                            chevron: .leading)
-                        .foregroundColor(Color(menu.iconColor))
-                    }
-                    .accessibilityIdentifier(menu.accessibilityIdentifier)
+                    menuItemView(menu: menu)
                 }
             }
         }
-        .listStyle(.automatic)
-        .navigationBarHidden(true)
-        .background(Color(.listBackground).edgesIgnoringSafeArea(.all))
-        .onAppear {
-            viewModel.setupMenuElements()
+        .listStyle(.insetGrouped)
+        .background(Color(.listBackground))
+        .accentColor(Color(.listSelectedBackground))
+    }
+
+    @ViewBuilder
+    func menuItemView(menu: HubMenuItem, chevron: Row.Chevron = .leading) -> some View {
+        Button {
+            handleTap(menu: menu)
+        } label: {
+            Row(title: menu.title,
+                titleBadge: nil,
+                iconBadge: menu.iconBadge,
+                description: menu.description,
+                icon: .local(menu.icon),
+                chevron: chevron)
+            .foregroundColor(Color(menu.iconColor))
         }
-        .sheet(isPresented: $showingWooCommerceAdmin) {
-            WebViewSheet(viewModel: WebViewSheetViewModel(url: viewModel.woocommerceAdminURL,
-                                                          navigationTitle: HubMenuViewModel.Localization.woocommerceAdmin,
-                                                          authenticated: viewModel.shouldAuthenticateAdminPage)) {
-                showingWooCommerceAdmin = false
+        .accessibilityIdentifier(menu.accessibilityIdentifier)
+        .overlay {
+            NavigationLink(value: menu.id) {
+                EmptyView()
             }
-        }
-        .sheet(isPresented: $showingViewStore) {
-            WebViewSheet(viewModel: WebViewSheetViewModel(url: viewModel.storeURL,
-                                                          navigationTitle: HubMenuViewModel.Localization.viewStore,
-                                                          authenticated: false)) {
-                showingViewStore = false
-            }
-        }
-        NavigationLink(destination: SettingsView(), isActive: $showSettings) {
-            EmptyView()
-        }.hidden()
-        NavigationLink(destination: InPersonPaymentsMenu(viewModel: viewModel.inPersonPaymentsMenuViewModel)
-            .navigationTitle(InPersonPaymentsView.Localization.title),
-                       isActive: $viewModel.showingPayments) {
-            EmptyView()
-        }.hidden()
-        NavigationLink(destination:
-                        Inbox(viewModel: .init(siteID: viewModel.siteID)),
-                       isActive: $showingInbox) {
-            EmptyView()
-        }.hidden()
-        NavigationLink(destination:
-                        ReviewsView(siteID: viewModel.siteID),
-                       isActive: $showingReviews) {
-            EmptyView()
-        }.hidden()
-        NavigationLink(destination: EnhancedCouponListView(siteID: viewModel.siteID), isActive: $showingCoupons) {
-            EmptyView()
-        }.hidden()
-        NavigationLink(destination: InAppPurchasesDebugView(), isActive: $showingIAPDebug) {
-            EmptyView()
-        }.hidden()
-        LazyNavigationLink(destination: viewModel.getReviewDetailDestination(), isActive: $viewModel.showingReviewDetail) {
-            EmptyView()
+            .opacity(0)
         }
     }
 
-    /// Handle navigation when tapping a list menu row.
-    ///
-    private func handleTap(menu: HubMenuItem) {
-        ServiceLocator.analytics.track(.hubMenuOptionTapped, withProperties: [
-            Constants.trackingOptionKey: menu.trackingOption
-        ])
+    @ViewBuilder
+    func detailView(menuID: String) -> some View {
+        Group {
+            switch menuID {
+            case HubMenuViewModel.Settings.id:
+                SettingsView()
+                    .navigationTitle(HubMenuViewModel.Localization.settings)
+            case HubMenuViewModel.Payments.id:
+                paymentsView
+            case HubMenuViewModel.Blaze.id:
+                BlazeCampaignListHostingControllerRepresentable(siteID: viewModel.siteID)
+            case HubMenuViewModel.WoocommerceAdmin.id:
+                webView(url: viewModel.woocommerceAdminURL,
+                        title: HubMenuViewModel.Localization.woocommerceAdmin,
+                        shouldAuthenticate: viewModel.shouldAuthenticateAdminPage)
+            case HubMenuViewModel.ViewStore.id:
+                webView(url: viewModel.storeURL,
+                        title: HubMenuViewModel.Localization.viewStore,
+                        shouldAuthenticate: false)
+            case HubMenuViewModel.Inbox.id:
+                Inbox(viewModel: .init(siteID: viewModel.siteID))
+            case HubMenuViewModel.Reviews.id:
+                ReviewsView(siteID: viewModel.siteID)
+            case HubMenuViewModel.Coupons.id:
+                couponListView
+            case HubMenuViewModel.InAppPurchases.id:
+                InAppPurchasesDebugView()
+            case HubMenuViewModel.Subscriptions.id:
+                SubscriptionsView(viewModel: .init())
+            case HubMenuViewModel.Customers.id:
+                CustomersListView(viewModel: .init(siteID: viewModel.siteID))
+            case HubMenuViewModel.PointOfSaleEntryPoint.id:
+                if let cardPresentPaymentService = viewModel.cardPresentPaymentService {
+                    PointOfSaleEntryPointView(
+                        itemProvider: viewModel.posItemProvider,
+                        hideAppTabBar: { isHidden in
+                            AppDelegate.shared.setShouldHideTabBar(isHidden)
+                        },
+                        cardPresentPaymentService: cardPresentPaymentService)
+                } else {
+                    // TODO: When we have a singleton for the card payment service, this should not be required.
+                    Text("Error creating card payment service")
+                }
+            default:
+                fatalError("🚨 Unsupported menu item")
+            }
+        }
+        .navigationBarTitleDisplayMode(.inline)
+    }
 
-        switch type(of: menu).id {
-        case HubMenuViewModel.Settings.id:
-            ServiceLocator.analytics.track(.hubMenuSettingsTapped)
-            showSettings = true
-        case HubMenuViewModel.Payments.id:
-            viewModel.showingPayments = true
-        case HubMenuViewModel.Blaze.id:
-            viewModel.showBlaze()
-        case HubMenuViewModel.WoocommerceAdmin.id:
-            showingWooCommerceAdmin = true
-        case HubMenuViewModel.ViewStore.id:
-            showingViewStore = true
-        case HubMenuViewModel.Inbox.id:
-            showingInbox = true
-        case HubMenuViewModel.Reviews.id:
-            showingReviews = true
-        case HubMenuViewModel.Coupons.id:
-            showingCoupons = true
-        case HubMenuViewModel.InAppPurchases.id:
-            showingIAPDebug = true
-        case HubMenuViewModel.Subscriptions.id:
-            viewModel.presentSubscriptions()
-        default:
-            break
+    @ViewBuilder
+    func detailView(destination: HubMenuNavigationDestination) -> some View {
+        Group {
+            switch destination {
+                case .payments:
+                    paymentsView
+            }
+        }
+        .navigationBarTitleDisplayMode(.inline)
+    }
+
+    @ViewBuilder
+    func webView(url: URL, title: String, shouldAuthenticate: Bool) -> some View {
+        Group {
+            if shouldAuthenticate {
+                AuthenticatedWebView(isPresented: .constant(true),
+                                     url: url)
+            } else {
+                WebView(isPresented: .constant(true),
+                        url: url)
+            }
+        }
+        .navigationTitle(title)
+    }
+
+    @ViewBuilder
+    var reviewDetailView: some View {
+        if let parcel = viewModel.productReviewFromNoteParcel {
+            ReviewDetailView(productReview: parcel.review, product: parcel.product, notification: parcel.note)
+                .navigationBarTitleDisplayMode(.inline)
+                .navigationTitle(Localization.productReview)
         }
     }
-}
 
-// MARK: SubViews
-private extension HubMenu {
+    var paymentsView: some View {
+        InPersonPaymentsMenu(viewModel: viewModel.inPersonPaymentsMenuViewModel)
+            .navigationBarTitleDisplayMode(.inline)
+    }
+
+    var couponListView: some View {
+        EnhancedCouponListView(siteID: viewModel.siteID)
+            .navigationBarTitleDisplayMode(.inline)
+    }
 
     /// Reusable List row for the hub menu
     ///
@@ -184,6 +241,7 @@ private extension HubMenu {
             case none
             case down
             case leading
+            case enteringMode
 
             var asset: UIImage {
                 switch self {
@@ -193,6 +251,9 @@ private extension HubMenu {
                     return .chevronDownImage
                 case .leading:
                     return .chevronImage
+                case .enteringMode:
+                    return .playSquareImage
+                        .withTintColor(.secondaryLabel, renderingMode: .alwaysTemplate)
                 }
             }
         }
@@ -231,13 +292,6 @@ private extension HubMenu {
             HStack(spacing: HubMenu.Constants.padding) {
 
                 HStack(spacing: .zero) {
-                    /// iOS 16, aligns the list dividers to the first text position.
-                    /// This tricks the system by rendering an empty text and forcing the list to align the divider to it.
-                    /// Without this, the divider will be rendered from the title and will not cover the icon.
-                    /// Ideally we would want to use the `alignmentGuide` modifier but that is only available on iOS 16.
-                    ///
-                    Text("")
-
                     ZStack {
                         // Icon
                         Group {
@@ -249,6 +303,7 @@ private extension HubMenu {
                                     .overlay {
                                         Image(uiImage: asset)
                                             .resizable()
+                                            .aspectRatio(contentMode: .fit)
                                             .frame(width: HubMenu.Constants.iconSize, height: HubMenu.Constants.iconSize)
                                     }
 
@@ -256,6 +311,7 @@ private extension HubMenu {
                                 KFImage(url)
                                     .placeholder { Image(uiImage: .gravatarPlaceholderImage).resizable() }
                                     .resizable()
+                                    .aspectRatio(contentMode: .fit)
                                     .frame(width: HubMenu.Constants.avatarSize, height: HubMenu.Constants.avatarSize)
                                     .clipShape(Circle())
                             }
@@ -271,6 +327,8 @@ private extension HubMenu {
                         }
                     }
                 }
+                // Adjusts the list row separator to align with the leading edge of this view.
+                .alignmentGuide(.listRowSeparatorLeading) { d in d[.leading] }
 
 
                 // Title & Description
@@ -330,6 +388,11 @@ private extension HubMenu {
     enum Localization {
         static let settings = NSLocalizedString("Settings", comment: "Settings button in the hub menu")
         static let general = NSLocalizedString("General", comment: "General section title in the hub menu")
+        static let productReview = NSLocalizedString(
+            "hubMenu.productReview",
+            value: "Product Review",
+            comment: "Title of the view containing a single Product Review"
+        )
     }
 }
 

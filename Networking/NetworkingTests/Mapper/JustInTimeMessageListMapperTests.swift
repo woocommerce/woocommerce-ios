@@ -39,7 +39,7 @@ final class JustInTimeMessageListMapperTests: XCTestCase {
                 description: "Sell anywhere, and take card payments using a mobile card reader."),
             cta: JustInTimeMessage.CTA(
                 message: "Purchase Card Reader",
-                link: "https://woo.com/products/hardware/US"),
+                link: "https://woocommerce.com/products/hardware/US"),
             assets: ["background_image_url": URL(string: "https://example.net/images/background-light@2x.png")!],
             template: "modal")
         assertEqual(expectedJustInTimeMessage, justInTimeMessage)
@@ -60,7 +60,7 @@ final class JustInTimeMessageListMapperTests: XCTestCase {
                                                             description: "Sell anywhere, and take card payments using a mobile card reader."),
                                                           cta: JustInTimeMessage.CTA(
                                                             message: "Purchase Card Reader",
-                                                            link: "https://woo.com/products/hardware/US"),
+                                                            link: "https://woocommerce.com/products/hardware/US"),
                                                           assets: [:],
                                                           template: "default")
         assertEqual(expectedJustInTimeMessage, justInTimeMessage)

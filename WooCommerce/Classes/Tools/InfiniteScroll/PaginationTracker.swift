@@ -83,6 +83,15 @@ final class PaginationTracker {
         syncFirstPage(reason: reason, onCompletion: onCompletion)
     }
 
+    @MainActor
+    func resync(reason: String? = nil) async {
+        await withCheckedContinuation {  continuation in
+            resync(reason: reason) {
+                continuation.resume()
+            }
+        }
+    }
+
     /// Syncs the first page of results.
     ///
     /// - Parameter reason: A value passed back to the `delegate`. This can be used to provide

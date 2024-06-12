@@ -138,7 +138,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
     func test_view_model_attempts_completed_notice_presentation_when_marking_an_order_as_paid() async {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let noticeSubject = PassthroughSubject<SimplePaymentsNotice, Never>()
+        let noticeSubject = PassthroughSubject<PaymentMethodsNotice, Never>()
         let dependencies = Dependencies(presentNoticeSubject: noticeSubject, stores: stores)
         let viewModel = PaymentMethodsViewModel(formattedTotal: "$12.00",
                                                 flow: .simplePayment,
@@ -175,7 +175,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
     func test_view_model_attempts_error_notice_presentation_when_failing_to_mark_order_as_paid() async {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let noticeSubject = PassthroughSubject<SimplePaymentsNotice, Never>()
+        let noticeSubject = PassthroughSubject<PaymentMethodsNotice, Never>()
         let dependencies = Dependencies(presentNoticeSubject: noticeSubject, stores: stores)
         let viewModel = PaymentMethodsViewModel(formattedTotal: "$12.00",
                                                 flow: .simplePayment,
@@ -746,7 +746,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
 
     func test_view_model_attempts_created_notice_after_sharing_link() {
         // Given
-        let noticeSubject = PassthroughSubject<SimplePaymentsNotice, Never>()
+        let noticeSubject = PassthroughSubject<PaymentMethodsNotice, Never>()
         let dependencies = Dependencies(presentNoticeSubject: noticeSubject)
         let viewModel = PaymentMethodsViewModel(formattedTotal: "$12.00",
                                                 flow: .simplePayment,
@@ -772,7 +772,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
 
     func test_view_model_attempts_created_notice_after_scan_to_pay() {
         // Given
-        let noticeSubject = PassthroughSubject<SimplePaymentsNotice, Never>()
+        let noticeSubject = PassthroughSubject<PaymentMethodsNotice, Never>()
         let dependencies = Dependencies(presentNoticeSubject: noticeSubject)
         let viewModel = PaymentMethodsViewModel(formattedTotal: "$12.00",
                                                 flow: .simplePayment,
@@ -813,7 +813,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
             }
         }
 
-        let noticeSubject = PassthroughSubject<SimplePaymentsNotice, Never>()
+        let noticeSubject = PassthroughSubject<PaymentMethodsNotice, Never>()
         let useCase = MockCollectOrderPaymentUseCase(onCollectResult: .success(()))
         let onboardingPresenter = MockCardPresentPaymentsOnboardingPresenter()
         let dependencies = Dependencies(presentNoticeSubject: noticeSubject,

@@ -31,7 +31,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         super.tearDown()
     }
 
-    func test_payment_section_is_shown_right_after_the_products_custom_amounts_and_refunded_products_sections() {
+    func test_payment_section_is_shown_right_after_the_products_custom_amounts_refunded_products_and_shipping_sections() {
         // Given
         let order = makeOrder()
 
@@ -55,6 +55,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
             Title.products,
             Title.customAmounts,
             Title.refundedProducts,
+            Title.shippingLines,
             Title.payment,
             Title.information,
             Title.orderAttribution,
@@ -378,7 +379,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         // Given
         let sampleSiteID: Int64 = 1234
         let order = makeOrder()
-        let activePlugin = SitePlugin.fake().copy(siteID: sampleSiteID, status: .active, name: SitePlugin.SupportedPlugin.WCShip)
+        let activePlugin = SitePlugin.fake().copy(siteID: sampleSiteID, status: .active, name: SitePlugin.SupportedPlugin.LegacyWCShip)
         insert(activePlugin)
 
         let currencySettings = CurrencySettings(currencyCode: .USD,
@@ -856,6 +857,35 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         // Then
         let attributionSection = try section(withTitle: Title.orderAttribution, from: dataSource)
         let row = row(row: .attributionSessionPageViews, in: attributionSection)
+        XCTAssertNotNil(row)
+    }
+
+    func test_shipping_section_hidden_when_order_has_no_shipping_lines() {
+        // Given
+        let order = Order.fake()
+        let dataSource = OrderDetailsDataSource(order: order, storageManager: storageManager, cardPresentPaymentsConfiguration: Mocks.configuration)
+
+        // When
+        dataSource.reloadSections()
+
+        // Then
+        let shippingSection = section(withCategory: .shippingLines, from: dataSource)
+        XCTAssertNil(shippingSection)
+    }
+
+    func test_shipping_section_shows_shipping_line_row_when_order_has_shipping_line() throws {
+        // Given
+        let order = Order.fake().copy(shippingLines: [.fake()])
+        let dataSource = OrderDetailsDataSource(order: order,
+                                                storageManager: storageManager,
+                                                cardPresentPaymentsConfiguration: Mocks.configuration)
+
+        // When
+        dataSource.reloadSections()
+
+        // Then
+        let shippingSection = try section(withTitle: Title.shippingLines, from: dataSource)
+        let row = row(row: .shippingLine, in: shippingSection)
         XCTAssertNotNil(row)
     }
 }

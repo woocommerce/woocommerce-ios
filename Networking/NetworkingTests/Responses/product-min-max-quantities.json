@@ -51,6 +51,12 @@
         "shipping_taxable": true,
         "shipping_class": "",
         "shipping_class_id": 0,
+        "group_of_quantity": 2,
+        "min_quantity": 4,
+        "max_quantity": 200,
+        "exclude_order_quantity_value_rules":"no",
+        "exclude_category_quantity_rules":"no",
+        "combine_variations":"no",
         "reviews_allowed": true,
         "average_rating": "0.00",
         "rating_count": 0,
@@ -95,41 +101,6 @@
                 "id": 14135,
                 "key": "_last_editor_used_jetpack",
                 "value": "classic-editor"
-            },
-            {
-                "id": 14230,
-                "key": "group_of_quantity",
-                "value": "2"
-            },
-            {
-                "id": 14231,
-                "key": "minimum_allowed_quantity",
-                "value": "4"
-            },
-            {
-                "id": 14232,
-                "key": "maximum_allowed_quantity",
-                "value": "200"
-            },
-            {
-                "id": 14233,
-                "key": "allow_combination",
-                "value": "no"
-            },
-            {
-                "id": 14234,
-                "key": "minmax_do_not_count",
-                "value": "no"
-            },
-            {
-                "id": 14235,
-                "key": "minmax_cart_exclude",
-                "value": "yes"
-            },
-            {
-                "id": 14236,
-                "key": "minmax_category_group_of_exclude",
-                "value": "no"
             }
         ],
         "stock_status": "instock",

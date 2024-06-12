@@ -1,10 +1,13 @@
+import SwiftUI
 import XCTest
 import TestKit
+import protocol WooFoundation.Analytics
 @testable import Yosemite
 @testable import WooCommerce
 
 /// Temporarily removed pending a rewrite for the new InPersonPaymentsMenuViewModel #11168
-class InPersonPaymentsMenuViewModelTests: XCTestCase {
+@MainActor
+final class InPersonPaymentsMenuViewModelTests: XCTestCase {
 
     private var sut: InPersonPaymentsMenuViewModel!
 
@@ -41,6 +44,7 @@ class InPersonPaymentsMenuViewModelTests: XCTestCase {
                                         wooPaymentsDepositService: mockDepositService,
                                         systemStatusService: systemStatusService,
                                         analytics: analytics),
+                                      navigationPath: .constant(.init()),
                                       payInPersonToggleViewModel: mockPayInPersonToggleViewModel)
     }
 
@@ -179,7 +183,7 @@ class InPersonPaymentsMenuViewModelTests: XCTestCase {
          XCTAssertTrue(sut.presentPurchaseCardReader)
          let cardReaderPurchaseURL = try XCTUnwrap(sut.purchaseCardReaderWebViewModel.initialURL)
          assertEqual("https", cardReaderPurchaseURL.scheme)
-         assertEqual("woo.com", cardReaderPurchaseURL.host)
+         assertEqual("woocommerce.com", cardReaderPurchaseURL.host)
          assertEqual("/products/hardware/US", cardReaderPurchaseURL.path)
          let query = try XCTUnwrap(cardReaderPurchaseURL.query)
          XCTAssert(query.contains("utm_medium=woo_ios"))
@@ -207,7 +211,8 @@ class InPersonPaymentsMenuViewModelTests: XCTestCase {
                                                                        cardReaderSupportDeterminer: MockCardReaderSupportDeterminer(),
                                                                        wooPaymentsDepositService: mockDepositService)
          sut = InPersonPaymentsMenuViewModel(siteID: sampleStoreID,
-                                             dependencies: dependencies)
+                                             dependencies: dependencies,
+                                             navigationPath: .constant(.init()))
 
          // When
          await sut.onAppear()
@@ -235,12 +240,154 @@ class InPersonPaymentsMenuViewModelTests: XCTestCase {
                                                                       cardReaderSupportDeterminer: MockCardReaderSupportDeterminer(),
                                                                       wooPaymentsDepositService: mockDepositService)
         sut = InPersonPaymentsMenuViewModel(siteID: sampleStoreID,
-                                            dependencies: dependencies)
+                                            dependencies: dependencies,
+                                            navigationPath: .constant(.init()))
 
         // When
         await sut.onAppear()
 
         // Then
         XCTAssertFalse(sut.shouldShowTapToPaySection)
+    }
+
+    // MARK: - Collect Payment tests
+
+    func test_collectPaymentTapped_appends_collectPayment_to_navigation_path() {
+        // Given
+        let dependencies = InPersonPaymentsMenuViewModel.Dependencies(cardPresentPaymentsConfiguration: .init(country: .US),
+                                                                      onboardingUseCase: mockOnboardingUseCase,
+                                                                      cardReaderSupportDeterminer: MockCardReaderSupportDeterminer(),
+                                                                      wooPaymentsDepositService: mockDepositService)
+        var navigationPath = NavigationPath()
+        let navigationPathBinding = Binding<NavigationPath>(
+            get: { navigationPath },
+            set: { newValue in navigationPath = newValue }
+        )
+        sut = InPersonPaymentsMenuViewModel(siteID: sampleStoreID,
+                                            dependencies: dependencies,
+                                            navigationPath: navigationPathBinding)
+        XCTAssertTrue(sut.navigationPath.isEmpty)
+
+        // When
+        sut.collectPaymentTapped()
+
+        // Then
+        XCTAssertEqual(navigationPath, NavigationPath([InPersonPaymentsMenuNavigationDestination.collectPayment]))
+    }
+
+    func test_navigate_to_collectPayment_appends_collectPayment_to_empty_navigation_path() {
+        // Given
+        let dependencies = InPersonPaymentsMenuViewModel.Dependencies(cardPresentPaymentsConfiguration: .init(country: .US),
+                                                                      onboardingUseCase: mockOnboardingUseCase,
+                                                                      cardReaderSupportDeterminer: MockCardReaderSupportDeterminer(),
+                                                                      wooPaymentsDepositService: mockDepositService)
+        var navigationPath = NavigationPath()
+        let navigationPathBinding = Binding<NavigationPath>(
+            get: { navigationPath },
+            set: { newValue in navigationPath = newValue }
+        )
+        sut = InPersonPaymentsMenuViewModel(siteID: sampleStoreID,
+                                            dependencies: dependencies,
+                                            navigationPath: navigationPathBinding)
+        XCTAssertTrue(sut.navigationPath.isEmpty)
+
+        // When
+        sut.navigate(to: PaymentsMenuDestination.collectPayment)
+
+        // Then
+        XCTAssertEqual(navigationPath, NavigationPath([InPersonPaymentsMenuNavigationDestination.collectPayment]))
+    }
+
+    func test_navigate_to_collectPayment_appends_collectPayment_to_non_empty_navigation_path() {
+        // Given
+        let dependencies = InPersonPaymentsMenuViewModel.Dependencies(cardPresentPaymentsConfiguration: .init(country: .US),
+                                                                      onboardingUseCase: mockOnboardingUseCase,
+                                                                      cardReaderSupportDeterminer: MockCardReaderSupportDeterminer(),
+                                                                      wooPaymentsDepositService: mockDepositService)
+        var navigationPath = NavigationPath(["testPath"])
+        let navigationPathBinding = Binding<NavigationPath>(
+            get: { navigationPath },
+            set: { newValue in navigationPath = newValue }
+        )
+        sut = InPersonPaymentsMenuViewModel(siteID: sampleStoreID,
+                                            dependencies: dependencies,
+                                            navigationPath: navigationPathBinding)
+        XCTAssertEqual(navigationPath, NavigationPath(["testPath"]))
+
+        // When
+        sut.navigate(to: PaymentsMenuDestination.collectPayment)
+
+        // Then
+        XCTAssertEqual(navigationPath.count, 2)
+        let expectedPath = {
+            var path = NavigationPath(["testPath"])
+            path.append(InPersonPaymentsMenuNavigationDestination.collectPayment)
+            return path
+        }()
+        XCTAssertEqual(navigationPath.codable, expectedPath.codable)
+    }
+
+    func test_dismissPaymentCollection_pops_paths_down_to_before_the_first_colletPayment_path() {
+        // Given
+        let dependencies = InPersonPaymentsMenuViewModel.Dependencies(cardPresentPaymentsConfiguration: .init(country: .US),
+                                                                      onboardingUseCase: mockOnboardingUseCase,
+                                                                      cardReaderSupportDeterminer: MockCardReaderSupportDeterminer(),
+                                                                      wooPaymentsDepositService: mockDepositService)
+        var navigationPath = NavigationPath(["testPath"])
+        let navigationPathBinding = Binding<NavigationPath>(
+            get: { navigationPath },
+            set: { newValue in navigationPath = newValue }
+        )
+        sut = InPersonPaymentsMenuViewModel(siteID: sampleStoreID,
+                                            dependencies: dependencies,
+                                            navigationPath: navigationPathBinding)
+        XCTAssertEqual(navigationPath, NavigationPath(["testPath"]))
+
+        // When navigating to collectPayment and pushing other views, then dismiss payment collection
+        sut.navigate(to: PaymentsMenuDestination.collectPayment)
+        navigationPath.append(InPersonPaymentsMenuNavigationDestination.collectPayment)
+        navigationPath.append("anotherPath")
+        XCTAssertEqual(navigationPath.count, 4)
+        sut.dismissPaymentCollection()
+
+        // Then
+        XCTAssertEqual(navigationPath.count, 1)
+        XCTAssertEqual(navigationPath, NavigationPath(["testPath"]))
+    }
+
+    func test_collectPaymentTapped_sets_orderViewModel() throws {
+        // Given
+        let dependencies = InPersonPaymentsMenuViewModel.Dependencies(cardPresentPaymentsConfiguration: .init(country: .US),
+                                                                      onboardingUseCase: mockOnboardingUseCase,
+                                                                      cardReaderSupportDeterminer: MockCardReaderSupportDeterminer(),
+                                                                      wooPaymentsDepositService: mockDepositService)
+        sut = InPersonPaymentsMenuViewModel(siteID: sampleStoreID,
+                                            dependencies: dependencies,
+                                            navigationPath: .constant(.init()))
+        XCTAssertNil(sut.orderViewModel)
+
+        // When
+        sut.collectPaymentTapped()
+        XCTAssertNotNil(sut.orderViewModel)
+        sut.orderViewModel?.syncRequired = true
+
+        // Then
+        let originalOrderViewModel = try XCTUnwrap(sut.orderViewModel)
+        XCTAssertTrue(originalOrderViewModel.syncRequired)
+    }
+
+    func test_collectPaymentTapped_resets_presentCustomAmountAfterDismissingCollectPaymentMigrationSheet_and_hasPresentedCollectPaymentMigrationSheet_to_false() {
+        // Given
+        XCTAssertFalse(sut.presentCustomAmountAfterDismissingCollectPaymentMigrationSheet)
+        XCTAssertFalse(sut.hasPresentedCollectPaymentMigrationSheet)
+
+        // When
+        sut.presentCustomAmountAfterDismissingCollectPaymentMigrationSheet = true
+        sut.hasPresentedCollectPaymentMigrationSheet = true
+        sut.collectPaymentTapped()
+
+        // Then
+        XCTAssertFalse(sut.presentCustomAmountAfterDismissingCollectPaymentMigrationSheet)
+        XCTAssertFalse(sut.hasPresentedCollectPaymentMigrationSheet)
     }
 }

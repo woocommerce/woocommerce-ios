@@ -11,22 +11,20 @@ final class BlazePaymentMethodsViewModel: ObservableObject {
     private let stores: StoresManager
     private let defaultAccount: Account?
 
-    private let paymentInfo: BlazePaymentInfo?
-
-    var paymentMethods: [BlazePaymentMethod] {
-        paymentInfo?.savedPaymentMethods ?? []
-    }
+    @Published var showLoadPaymentsErrorAlert: Bool = false
+    @Published private(set) var isLoadingPaymentMethods: Bool = true
+    @Published private(set) var paymentMethods: [BlazePaymentMethod] = []
 
     var addPaymentWebViewModel: BlazeAddPaymentMethodWebViewModel? {
-        guard let paymentInfo else {
-            DDLogError("⛔️ No add payment info available to initiate Add payment method flow.")
-            return nil
-        }
-
-        return BlazeAddPaymentMethodWebViewModel(siteID: siteID,
-                                                 addPaymentMethodInfo: paymentInfo.addPaymentMethod) { [weak self] newPaymentMethodID in
+        BlazeAddPaymentMethodWebViewModel(siteID: siteID) { [weak self] in
             guard let self else { return }
-            didSelectPaymentMethod(withID: newPaymentMethodID)
+            Task { @MainActor in
+                let existingPaymentMethods = self.paymentMethods
+                await self.reloadPaymentMethods()
+
+                // Select the newly added payment method
+                self.selectedPaymentMethodID = self.paymentMethods.first(where: { existingPaymentMethods.contains($0) == false })?.id
+            }
         }
     }
 
@@ -45,20 +43,33 @@ final class BlazePaymentMethodsViewModel: ObservableObject {
     }
 
     init(siteID: Int64,
-         paymentInfo: BlazePaymentInfo,
          selectedPaymentMethodID: String? = nil,
          stores: StoresManager = ServiceLocator.stores,
          completion: @escaping Completion) {
         self.siteID = siteID
-        self.paymentInfo = paymentInfo
         self.originalSelectedPaymentMethodID = selectedPaymentMethodID
-        self.selectedPaymentMethodID = selectedPaymentMethodID ?? paymentInfo.savedPaymentMethods.first?.id
+        self.selectedPaymentMethodID = selectedPaymentMethodID
         self.stores = stores
         self.onCompletion = completion
         self.defaultAccount = stores.sessionManager.defaultAccount
     }
 
-    func didSelectPaymentMethod(withID paymentMethodID: String) {
+    @MainActor
+    func reloadPaymentMethods() async {
+        isLoadingPaymentMethods = true
+        paymentMethods = []
+        do {
+            paymentMethods = try await fetchPaymentInfo().paymentMethods
+            selectedPaymentMethodID = originalSelectedPaymentMethodID ?? paymentMethods.first?.id
+            isLoadingPaymentMethods = false
+        } catch {
+            DDLogError("⛔️ Error loading payment methods: \(error)")
+            showLoadPaymentsErrorAlert = true
+            isLoadingPaymentMethods = false
+        }
+    }
+
+    func didSelectPaymentMethod(withID paymentMethodID: String?) {
         selectedPaymentMethodID = paymentMethodID
         saveSelection()
     }
@@ -74,15 +85,22 @@ private extension BlazePaymentMethodsViewModel {
         }
         onCompletion(selectedPaymentMethodID)
     }
+
+    @MainActor
+    func fetchPaymentInfo() async throws -> BlazePaymentInfo {
+        try await withCheckedThrowingContinuation { continuation in
+            stores.dispatch(BlazeAction.fetchPaymentInfo(siteID: siteID, onCompletion: { result in
+                continuation.resume(with: result)
+            }))
+        }
+    }
 }
 
 // MARK: - Methods for rendering a SwiftUI Preview
 //
 extension BlazePaymentMethodsViewModel {
     static func samplePaymentInfo(paymentMethods: [BlazePaymentMethod] = samplePaymentMethods()) -> BlazePaymentInfo {
-        BlazePaymentInfo(savedPaymentMethods: paymentMethods, addPaymentMethod: BlazeAddPaymentInfo(formUrl: "https://example.com/blaze-pm-add",
-                                                                                                            successUrl: "https://example.com/blaze-pm-success",
-                                                                                                            idUrlParameter: "pmid"))
+        BlazePaymentInfo(paymentMethods: paymentMethods)
     }
 
     static func samplePaymentMethods() -> [BlazePaymentMethod] {

@@ -63,6 +63,87 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     ///
     private let variationDisplayMode: VariationDisplayMode?
 
+    /// Determines if Subscription-type product details should be shown
+    ///
+    var shouldShowProductSubscriptionsDetails: Bool {
+        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.subscriptionsInOrderCreationUI) &&
+        productSubscriptionDetails != nil
+    }
+
+    /// Subscription settings extracted from product meta data for a Subscription-type Product, if any
+    ///
+    private(set) var productSubscriptionDetails: ProductSubscription?
+
+    /// Description of the subscription billing details for a Subscription-type Product
+    /// eg: "$60.00 / 2 months"
+    ///
+    var subscriptionBillingDetailsLabel: String {
+        guard let subscriptionPrice = productSubscriptionDetails?.price,
+              let subscriptionInterval = productSubscriptionDetails?.periodInterval,
+              let subscriptionPeriod = productSubscriptionDetails?.period,
+              let formattedPrice = currencyFormatter.formatAmount(subscriptionPrice) else {
+            return ""
+        }
+
+        let subscriptionFrequency = {
+            switch subscriptionInterval {
+            case "1":
+                return subscriptionPeriod.descriptionSingular
+            default:
+                return subscriptionPeriod.descriptionPlural
+            }
+        }()
+        return String.localizedStringWithFormat(Localization.Subscription.formattedBilling,
+                                                formattedPrice, subscriptionInterval, subscriptionFrequency)
+    }
+
+    /// Description of the subscription conditions for a Subscription-type Product
+    /// These are separate from each other, a subscription could have any, all, or none
+    /// eg: "$25.00 signup · 1 month free"
+    ///
+    var subscriptionConditionsLabel: String {
+        // Signup fees
+        var formattedSignUpFee: String = ""
+
+        if let signUpFee = productSubscriptionDetails?.signUpFee, !signUpFee.isEmpty, signUpFee != "0" {
+            formattedSignUpFee = currencyFormatter.formatAmount(signUpFee) ?? ""
+        }
+
+        // Trial periods
+        let trialLength = productSubscriptionDetails?.trialLength ?? ""
+        let trialPeriod = productSubscriptionDetails?.trialPeriod
+
+        let formattedTrialDetails = {
+            // If trial period is missing, we can skip formatting the rest
+            guard let trialPeriod = trialPeriod else { return "" }
+            switch trialLength {
+            case "", "0":
+                // The API allows empty and 0 as values for trial length, with a non-nil trial period.
+                // eg: "every -empty- days", or "every 0 days"
+                return ""
+            case "1":
+                return trialPeriod.descriptionSingular
+            default:
+                return trialPeriod.descriptionPlural
+            }
+        }()
+
+        let hasNoSignUpFees = formattedSignUpFee.isEmpty
+        let hasNoFreeTrial = formattedTrialDetails.isEmpty
+
+        switch (hasNoSignUpFees, hasNoFreeTrial) {
+        case (true, true):
+            return ""
+        case (true, false):
+            return String.localizedStringWithFormat(Localization.Subscription.formattedConditionsWithoutSignup, trialLength, formattedTrialDetails)
+        case (false, true):
+            return String.localizedStringWithFormat(Localization.Subscription.formattedConditionsWithoutTrial, formattedSignUpFee)
+        case (false, false):
+            return String.localizedStringWithFormat(Localization.Subscription.formattedConditions,
+                                                    formattedSignUpFee, trialLength, formattedTrialDetails)
+        }
+    }
+
     /// Stock or variation attributes label.
     /// Provides stock label for non-variations; uses variation display mode to determine the label for variations.
     ///
@@ -129,15 +210,29 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     /// Label showing product details. Can include stock status or attributes, price, and variations (if any).
     ///
     var productDetailsLabel: String {
-        [stockOrAttributesLabel, priceAndDiscountsLabel, variationsLabel]
-            .compactMap({ $0 })
-            .joined(separator: " • ")
+        if productSubscriptionDetails != nil {
+            [stockOrAttributesLabel, skuLabel, variationsLabel]
+                .compactMap({ $0 })
+                .filter { $0.isNotEmpty }
+                .joined(separator: " • ")
+        } else {
+            [stockOrAttributesLabel, priceAndDiscountsLabel, variationsLabel]
+                .compactMap({ $0 })
+                .joined(separator: " • ")
+        }
     }
 
     /// Label showing secondary product details. Can include product type (if the row is configurable), and SKU (if available).
     ///
     var secondaryProductDetailsLabel: String {
-        [productTypeLabel, skuLabel]
+        var labels = [productTypeLabel]
+        // Only add the SKU label to the secondary product details when there are no
+        // product subscription details
+        if productSubscriptionDetails == nil {
+            labels.append(skuLabel)
+        }
+
+        return labels
             .compactMap({ $0 })
             .filter { $0.isNotEmpty }
             .joined(separator: " • ")
@@ -195,6 +290,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
          imageURL: URL?,
          numberOfVariations: Int = 0,
          variationDisplayMode: VariationDisplayMode? = nil,
+         productSubscriptionDetails: ProductSubscription? = nil,
          selectedState: ProductRow.SelectedState = .notSelected,
          pricedIndividually: Bool = true,
          isConfigurable: Bool,
@@ -220,6 +316,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         self.analytics = analytics
         self.numberOfVariations = numberOfVariations
         self.variationDisplayMode = variationDisplayMode
+        self.productSubscriptionDetails = productSubscriptionDetails
         self.configure = configure
     }
 
@@ -229,6 +326,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                      product: Product,
                      discount: Decimal? = nil,
                      quantity: Decimal = 1,
+                     productSubscriptionDetails: ProductSubscription? = nil,
                      selectedState: ProductRow.SelectedState = .notSelected,
                      pricedIndividually: Bool = true,
                      currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
@@ -284,6 +382,13 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
 
         let productTypeLabel: String? = isConfigurable ? product.productType.description: nil
 
+        let productSubscriptionDetails: ProductSubscription?
+        if product.productType == .subscription || product.productType == .variableSubscription {
+            productSubscriptionDetails = product.subscription
+        } else {
+            productSubscriptionDetails = nil
+        }
+
         self.init(id: id,
                   productOrVariationID: product.productID,
                   name: product.name,
@@ -297,6 +402,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                   quantity: quantity,
                   imageURL: product.imageURL,
                   numberOfVariations: product.variations.count,
+                  productSubscriptionDetails: productSubscriptionDetails,
                   selectedState: selectedState,
                   pricedIndividually: pricedIndividually,
                   isConfigurable: isConfigurable,
@@ -312,6 +418,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                      discount: Decimal? = nil,
                      name: String,
                      quantity: Decimal = 1,
+                     productSubscriptionDetails: ProductSubscription? = nil,
                      displayMode: VariationDisplayMode,
                      selectedState: ProductRow.SelectedState = .notSelected,
                      pricedIndividually: Bool = true,
@@ -322,6 +429,14 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
             imageURL = URL(string: encodedImageURLString)
         } else {
             imageURL = nil
+        }
+
+        // Checks if the product variation contains Subscription-type Product meta data
+        let productSubscriptionDetails: ProductSubscription?
+        if productVariation.subscription != nil {
+            productSubscriptionDetails = productVariation.subscription
+        } else {
+            productSubscriptionDetails = nil
         }
 
         self.init(id: id,
@@ -336,6 +451,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                   quantity: quantity,
                   imageURL: imageURL,
                   variationDisplayMode: displayMode,
+                  productSubscriptionDetails: productSubscriptionDetails,
                   selectedState: selectedState,
                   pricedIndividually: pricedIndividually,
                   isConfigurable: false,
@@ -400,5 +516,28 @@ private extension ProductRowViewModel {
                                                        comment: "Label for one product variation when showing details about a variable product")
         static let pluralVariations = NSLocalizedString("%ld variations",
                                                         comment: "Label for multiple product variations when showing details about a variable product")
+
+        enum Subscription {
+            static let formattedBilling = NSLocalizedString(
+                "ProductRowViewModel.formattedProductSubscriptionBilling",
+                value: "%1$@ / %2$@ %3$@",
+                comment: "Description of the subscription price for a product, with price and billing frequency. " +
+                "Reads as: '$60.00 / 2 months'.")
+            static let formattedConditions = NSLocalizedString(
+                "ProductRowViewModel.formattedProductSubscriptionConditions",
+                value: "%1$@ signup · %2$@ %3$@ free",
+                comment: "Description of the subscription conditions for a subscription product, with signup fees and free trials." +
+                "Reads as: '$25.00 signup · 1 month free'.")
+            static let formattedConditionsWithoutSignup = NSLocalizedString(
+                "ProductRowViewModel.formattedProductSubscriptionConditionsWithoutSignup",
+                value: "%1$@ %2$@ free",
+                comment: "Description of the subscription conditions for a subscription product, with only free trial." +
+                "Reads as: '1 month free'.")
+            static let formattedConditionsWithoutTrial = NSLocalizedString(
+                "ProductRowViewModel.formattedProductSubscriptionConditionsWithoutTrial",
+                value: "%1$@ signup",
+                comment: "Description of the subscription conditions for a subscription product, with signup fees but no trial." +
+                "Reads as: '$25.00 signup'.")
+        }
     }
 }

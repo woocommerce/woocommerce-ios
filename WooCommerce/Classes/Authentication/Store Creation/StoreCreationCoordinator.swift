@@ -4,6 +4,7 @@ import Yosemite
 import enum Networking.SiteCreationFlow
 import protocol Experiments.FeatureFlagService
 import protocol Storage.StorageManagerType
+import protocol WooFoundation.Analytics
 
 /// Coordinates navigation for store creation flow, with the assumption that the app is already authenticated with a WPCOM user.
 final class StoreCreationCoordinator: Coordinator {
@@ -31,7 +32,6 @@ final class StoreCreationCoordinator: Coordinator {
     private let switchStoreUseCase: SwitchStoreUseCaseProtocol
     private let storeSwitcher: StoreCreationStoreSwitchScheduler
     private let featureFlagService: FeatureFlagService
-    private let localNotificationScheduler: LocalNotificationScheduler
 
     private weak var storeCreationProgressViewModel: StoreCreationProgressViewModel?
     private var statusChecker: StoreCreationStatusChecker?
@@ -58,7 +58,6 @@ final class StoreCreationCoordinator: Coordinator {
         self.stores = stores
         self.analytics = analytics
         self.featureFlagService = featureFlagService
-        self.localNotificationScheduler = .init(pushNotesManager: pushNotesManager, stores: stores)
     }
 
     func start() {
@@ -175,7 +174,6 @@ private extension StoreCreationCoordinator {
     /// This method creates a free trial store async:
     /// - Create a simple site
     /// - Enable Free Trial on the site
-    /// - Schedule a local notification to notify the user when the site is ready
     ///
     @MainActor
     func createFreeTrialStore(storeName: String) async -> Result<SiteCreationResult, SiteCreationError> {
@@ -189,7 +187,6 @@ private extension StoreCreationCoordinator {
             let freeTrialResult = await enableFreeTrial(siteID: siteResult.siteID)
             switch freeTrialResult {
             case .success:
-                scheduleLocalNotificationWhenStoreIsReady(siteID: siteResult.siteID)
                 return .success(siteResult)
             case .failure(let error):
                 return .failure(SiteCreationError(remoteError: error))
@@ -287,7 +284,6 @@ private extension StoreCreationCoordinator {
     }
 
     func handleCompletionStatus(siteID: Int64, site: Site?, waitingTimeStart: Date, expectedStoreName: String) {
-        cancelLocalNotificationWhenStoreIsReady(siteID: siteID)
         guard let site else {
             return showJetpackSiteTimeoutView { [weak self] in
                 guard let self else { return }
@@ -350,27 +346,6 @@ private extension StoreCreationCoordinator {
                                                           flow: flow,
                                                           isFreeTrial: true,
                                                           waitingTime: waitingTime))
-    }
-}
-
-// MARK: - Local notification
-private extension StoreCreationCoordinator {
-    func scheduleLocalNotificationWhenStoreIsReady(siteID: Int64) {
-        let notification = LocalNotification(scenario: LocalNotification.Scenario.storeCreationComplete(siteID: siteID),
-                                             stores: stores)
-        cancelLocalNotificationWhenStoreIsReady(siteID: siteID)
-        Task {
-            await localNotificationScheduler.schedule(notification: notification,
-                                                      // 5 minutes from now when the site is most likely ready.
-                                                      trigger: UNTimeIntervalNotificationTrigger(timeInterval: 5 * 60, repeats: false),
-                                                      remoteFeatureFlag: .storeCreationCompleteNotification)
-        }
-    }
-
-    func cancelLocalNotificationWhenStoreIsReady(siteID: Int64) {
-        Task {
-            await localNotificationScheduler.cancel(scenario: LocalNotification.Scenario.storeCreationComplete(siteID: siteID))
-        }
     }
 }
 

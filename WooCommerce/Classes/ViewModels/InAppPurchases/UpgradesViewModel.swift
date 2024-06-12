@@ -2,6 +2,7 @@ import Foundation
 import SwiftUI
 import Yosemite
 import Combine
+import protocol WooFoundation.Analytics
 
 /// ViewModel for the Upgrades View
 /// Drives the site's available In-App Purchases plan upgrades

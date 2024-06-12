@@ -1,6 +1,7 @@
 import Combine
 import Yosemite
 import protocol Storage.StorageManagerType
+import protocol WooFoundation.Analytics
 
 /// View model for `DomainContactInfoForm`.
 final class DomainContactInfoFormViewModel: AddressFormViewModel, AddressFormViewModelProtocol {

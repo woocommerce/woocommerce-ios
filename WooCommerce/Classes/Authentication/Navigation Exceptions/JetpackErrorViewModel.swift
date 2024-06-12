@@ -3,6 +3,7 @@ import SafariServices
 import WordPressAuthenticator
 import WordPressUI
 import enum Yosemite.Credentials
+import protocol WooFoundation.Analytics
 
 /// Configuration and actions for an ULErrorViewController, modelling
 /// an error when Jetpack is not installed or is not connected
@@ -132,9 +133,5 @@ private extension JetpackErrorViewModel {
 
         static let helpBarButtonItemTitle = NSLocalizedString("Help",
                                                        comment: "Help button on Jetpack required error screen.")
-    }
-
-    enum Strings {
-        static let instructionsURLString = "https://woo.com/document/jetpack-setup-instructions-for-the-woocommerce-mobile-app/"
     }
 }

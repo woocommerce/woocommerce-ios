@@ -314,6 +314,7 @@ private extension SearchViewController {
         searchBar.placeholder = searchUICommand.searchBarPlaceholder
         searchBar.accessibilityIdentifier = searchUICommand.searchBarAccessibilityIdentifier
         searchBar.searchTextField.textColor = .text
+        searchBar.returnKeyType = searchUICommand.returnKeyType
     }
 
     /// Setup: Search Bar Borders

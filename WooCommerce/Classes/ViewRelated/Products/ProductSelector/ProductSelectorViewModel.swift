@@ -93,9 +93,11 @@ final class ProductSelectorViewModel: ObservableObject {
         }
     }
 
-    /// Defines the current notice that should be shown.
+    /// Defines the current notice that should be shown. Only for internal use as it may be routed different ways.
     /// Defaults to `nil`.
     ///
+    @Published private var productNotice: Notice?
+
     @Published var notice: Notice?
 
     /// All products that can be added to an order.
@@ -233,6 +235,7 @@ final class ProductSelectorViewModel: ObservableObject {
          syncApproach: SyncApproach = .onButtonTap,
          orderSyncState: Published<OrderSyncState>.Publisher? = nil,
          shouldShowNonEditableIndicators: Bool = false,
+         externalNoticePublisher: Published<Notice?>.Publisher? = nil,
          onProductSelectionStateChanged: ((Product, Bool) -> Void)? = nil,
          onVariationSelectionStateChanged: ((ProductVariation, Product, Bool) -> Void)? = nil,
          onMultipleSelectionCompleted: (([Int64]) -> Void)? = nil,
@@ -271,6 +274,12 @@ final class ProductSelectorViewModel: ObservableObject {
         synchronizeProductFilterSearch()
         bindShowPlaceholdersState()
         bindSelectionDisabledState()
+
+        if var externalNoticePublisher {
+            self.$productNotice.assign(to: &externalNoticePublisher)
+        } else {
+            self.$productNotice.assign(to: &$notice)
+        }
     }
 
     private let nonEditable: Bool
@@ -495,7 +504,7 @@ extension ProductSelectorViewModel: PaginationTrackerDelegate {
             case .success:
                 self.reloadData()
             case .failure(let error):
-                self.notice = NoticeFactory.productSyncNotice() { [weak self] in
+                self.productNotice = NoticeFactory.productSyncNotice() { [weak self] in
                     self?.sync(pageNumber: pageNumber, pageSize: pageSize, onCompletion: nil)
                 }
                 DDLogError("⛔️ Error synchronizing products during order creation: \(error)")
@@ -532,7 +541,7 @@ extension ProductSelectorViewModel: PaginationTrackerDelegate {
                 self.reloadData()
             case .failure(let error):
                 self.tracker.trackSearchFailureIfNecessary(with: error)
-                self.notice = NoticeFactory.productSearchNotice() { [weak self] in
+                self.productNotice = NoticeFactory.productSearchNotice() { [weak self] in
                     self?.searchProducts(siteID: siteID, keyword: keyword, pageNumber: pageNumber, pageSize: pageSize, onCompletion: nil)
                 }
                 DDLogError("⛔️ Error searching products during order creation: \(error)")
@@ -593,7 +602,7 @@ private extension ProductSelectorViewModel {
     ///
     func transitionToSyncingState(pageNumber: Int) {
         shouldShowScrollIndicator = true
-        notice = nil
+        productNotice = nil
 
         if shouldShowLoadingScreen(pageNumber: pageNumber) {
             syncStatus = .loading

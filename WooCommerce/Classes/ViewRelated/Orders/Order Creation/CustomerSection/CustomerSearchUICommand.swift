@@ -1,6 +1,7 @@
 import Foundation
 import Yosemite
 import Experiments
+import protocol WooFoundation.Analytics
 
 /// Implementation of `SearchUICommand` for Customer search.
 ///
@@ -17,6 +18,8 @@ final class CustomerSearchUICommand: SearchUICommand {
 
         return showSearchFilters ? Localization.customerFiltersSearchBarPlaceHolder : Localization.customerSelectorSearchBarPlaceHolder
     }
+
+    let returnKeyType = UIReturnKeyType.done
 
     var searchBarAccessibilityIdentifier: String = "customer-search-screen-search-field"
 
@@ -250,7 +253,12 @@ private extension CustomerSearchUICommand {
     }
 
     func synchronizeAllLightCustomersDataAction(siteID: Int64, pageNumber: Int, pageSize: Int, onCompletion: ((Bool) -> Void)?) -> CustomerAction {
-        CustomerAction.synchronizeLightCustomersData(siteID: siteID, pageNumber: pageNumber, pageSize: pageSize) { [weak self] result in
+        CustomerAction.synchronizeLightCustomersData(siteID: siteID,
+                                                     pageNumber: pageNumber,
+                                                     pageSize: pageSize,
+                                                     orderby: .name,
+                                                     order: .asc,
+                                                     filterEmpty: .email) { [weak self] result in
             switch result {
             case .success:
                 onCompletion?(result.isSuccess)
@@ -280,9 +288,12 @@ private extension CustomerSearchUICommand {
         return CustomerAction.searchCustomers(siteID: siteID,
                                               pageNumber: pageNumber,
                                               pageSize: pageSize,
+                                              orderby: .name,
+                                              order: .asc,
                                               keyword: keyword,
                                               retrieveFullCustomersData: !featureFlagService.isFeatureFlagEnabled(.betterCustomerSelectionInOrder),
-                                              filter: searchFilter) { result in
+                                              filter: searchFilter,
+                                              filterEmpty: .email) { result in
             switch result {
             case .success:
                 onCompletion?(result.isSuccess)

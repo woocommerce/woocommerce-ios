@@ -68,14 +68,26 @@ struct OrdersListView: View {
     ///
     @ViewBuilder var errorView: some View {
         VStack {
-            Spacer()
-            Text(Localization.error)
-            Spacer()
+            ScrollView {
+                Text(Localization.errorTitle)
+                    .font(.caption)
+
+                Spacer()
+
+                Text(Localization.errorDescription)
+                    .font(.footnote)
+
+                Spacer()
+
+            }
+            .multilineTextAlignment(.center)
+
             Button(Localization.retry) {
                 Task {
                     await viewModel.fetchOrders()
                 }
             }
+            .padding(.bottom, -16)
         }
     }
 
@@ -118,10 +130,15 @@ private extension OrdersListView {
             value: "Orders",
             comment: "Title on the watch orders list screen."
         )
-        static let error = AppLocalizedString(
+        static let errorTitle = AppLocalizedString(
             "watch.orders.error.title",
-            value: "There was an error loading the orders list",
-            comment: "Loading title on the watch orders list screen."
+            value: "Failed to load orders",
+            comment: "Error title on the watch orders list screen."
+        )
+        static let errorDescription = AppLocalizedString(
+            "watch.orders.error.description",
+            value: "Make sure your watch is connected to the internet and your phone is nearby.",
+            comment: "Error description on the watch orders list screen."
         )
         static let retry = AppLocalizedString(
             "watch.orders.retry.title",

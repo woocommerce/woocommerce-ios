@@ -52,29 +52,27 @@ struct MyStoreView: View {
     /// Error View with a retry button
     ///
     @ViewBuilder var errorView: some View {
-        ScrollView {
-            VStack(alignment: .center) {
-                storeNameView
-                Spacer()
-
+        VStack {
+            ScrollView {
                 Text(Localization.errorTitle)
                     .font(.caption)
-                    .multilineTextAlignment(.center)
-                    .fixedSize(horizontal: false, vertical: true)
+
                 Spacer()
 
                 Text(Localization.errorDescription)
                     .font(.footnote)
-                    .multilineTextAlignment(.center)
-                    .fixedSize(horizontal: false, vertical: true)
+
                 Spacer()
 
-                Button(Localization.retry) {
-                    Task {
-                        await viewModel.fetchStats()
-                    }
+            }
+            .multilineTextAlignment(.center)
+
+            Button(Localization.retry) {
+                Task {
+                    await viewModel.fetchStats()
                 }
             }
+            .padding(.bottom, -16)
         }
     }
 

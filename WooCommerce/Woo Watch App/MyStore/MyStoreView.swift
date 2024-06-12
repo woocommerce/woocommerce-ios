@@ -29,14 +29,15 @@ struct MyStoreView: View {
                 EmptyView()
             case .loading:
                 dataView(revenue: "------", orders: "--", visitors: "--", conversion: "--", time: "00:00 AM")
+                    .padding(.horizontal)
                     .redacted(reason: .placeholder)
             case .error:
                 errorView
             case let .loaded(revenue, totalOrders, totalVisitors, conversion, time):
                 dataView(revenue: revenue, orders: totalOrders, visitors: totalVisitors, conversion: conversion, time: time)
+                    .padding(.horizontal)
             }
         }
-        .padding(.horizontal)
         .background(
             LinearGradient(gradient: Gradient(colors: [Colors.wooPurpleBackground, .black]), startPoint: .top, endPoint: .bottom)
         )
@@ -51,13 +52,27 @@ struct MyStoreView: View {
     /// Error View with a retry button
     ///
     @ViewBuilder var errorView: some View {
-        VStack {
-            Spacer()
-            Text(Localization.error)
-            Spacer()
-            Button(Localization.retry) {
-                Task {
-                    await viewModel.fetchStats()
+        ScrollView {
+            VStack(alignment: .center) {
+                storeNameView
+                Spacer()
+
+                Text(Localization.errorTitle)
+                    .font(.caption)
+                    .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
+                Spacer()
+
+                Text(Localization.errorDescription)
+                    .font(.footnote)
+                    .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
+                Spacer()
+
+                Button(Localization.retry) {
+                    Task {
+                        await viewModel.fetchStats()
+                    }
                 }
             }
         }
@@ -68,12 +83,7 @@ struct MyStoreView: View {
     @ViewBuilder func dataView(revenue: String, orders: String, visitors: String, conversion: String, time: String) -> some View {
         ScrollView {
             VStack {
-                Text(dependencies.storeName)
-                    .font(.body)
-                    .foregroundStyle(Colors.wooPurple5)
-                    .lineLimit(2)
-                    .fixedSize(horizontal: false, vertical: true)
-                    .padding(.bottom, Layout.storeNamePadding)
+                storeNameView
 
                 Text(Localization.revenue)
                     .font(.caption2)
@@ -146,6 +156,15 @@ struct MyStoreView: View {
             }
         }
     }
+
+    @ViewBuilder var storeNameView: some View {
+        Text(dependencies.storeName)
+            .font(.body)
+            .foregroundStyle(Colors.wooPurple5)
+            .lineLimit(2)
+            .fixedSize(horizontal: false, vertical: true)
+            .padding(.bottom, Layout.storeNamePadding)
+    }
 }
 
 /// Constants
@@ -182,10 +201,15 @@ fileprivate extension MyStoreView {
             value: "Today",
             comment: "Today title on the watch store stats screen."
         )
-        static let error = AppLocalizedString(
+        static let errorTitle = AppLocalizedString(
             "watch.mystore.error.title",
-            value: "There was an error loading the store's data",
-            comment: "Loading title on the watch store stats screen."
+            value: "Failed to load store data",
+            comment: "Error title on the watch store stats screen."
+        )
+        static let errorDescription = AppLocalizedString(
+            "watch.mystore.error.description",
+            value: "Make sure your watch is connected to the internet and your phone is nearby.",
+            comment: "Error description on the watch store stats screen."
         )
         static let retry = AppLocalizedString(
             "watch.mystore.retry.title",

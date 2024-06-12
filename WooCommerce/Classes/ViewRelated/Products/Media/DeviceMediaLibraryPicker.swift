@@ -26,7 +26,7 @@ final class DeviceMediaLibraryPicker: NSObject {
         options.showActionBar = false
         options.showSearchBar = false
         options.showMostRecentFirst = true
-        options.filter = imagesOnly ? [.image] : [.all]
+        options.filter = imagesOnly ? [.image] : [.image, .video] // not yet support audio
         options.allowCaptureOfMedia = false
         options.badgedUTTypes = [UTType.gif.identifier]
         options.allowMultipleSelection = allowsMultipleSelections

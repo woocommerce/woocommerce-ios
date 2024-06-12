@@ -5,11 +5,11 @@ struct CardPresentPaymentsTransactionAlertsProvider: CardReaderTransactionAlerts
     typealias AlertDetails = CardPresentPaymentAlertDetails
 
     func validatingOrder(onCancel: @escaping () -> Void) -> CardPresentPaymentAlertDetails {
-        .validatingOrder(onCancel: onCancel)
+        .validatingOrder(cancelPayment: onCancel)
     }
 
     func preparingReader(onCancel: @escaping () -> Void) -> CardPresentPaymentAlertDetails {
-        .preparingForPayment(onCancel: onCancel)
+        .preparingForPayment(cancelPayment: onCancel)
     }
 
     func tapOrInsertCard(title: String,
@@ -17,7 +17,7 @@ struct CardPresentPaymentsTransactionAlertsProvider: CardReaderTransactionAlerts
                          inputMethods: CardReaderInput,
                          onCancel: @escaping () -> Void) -> CardPresentPaymentAlertDetails {
         .tapSwipeOrInsertCard(inputMethods: inputMethods,
-                              cancel: onCancel)
+                              cancelPayment: onCancel)
     }
 
     func displayReaderMessage(message: String) -> CardPresentPaymentAlertDetails {
@@ -39,13 +39,13 @@ struct CardPresentPaymentsTransactionAlertsProvider: CardReaderTransactionAlerts
                dismissCompletion: @escaping () -> Void) -> CardPresentPaymentAlertDetails {
         .error(error: error,
                tryAgain: tryAgain,
-               dismissCompletion: dismissCompletion)
+               cancelPayment: dismissCompletion)
     }
 
     func nonRetryableError(error: any Error,
                            dismissCompletion: @escaping () -> Void) -> CardPresentPaymentAlertDetails {
         .errorNonRetryable(error: error,
-                           dismissCompletion: dismissCompletion)
+                           cancelPayment: dismissCompletion)
     }
 
     func cancelledOnReader() -> CardPresentPaymentAlertDetails? {

@@ -3,13 +3,13 @@ import Foundation
 struct CardPresentPaymentBuiltInReaderConnectionAlertsProvider: CardReaderConnectionAlertsProviding {
     typealias AlertDetails = CardPresentPaymentAlertDetails
     func scanningForReader(cancel: @escaping () -> Void) -> CardPresentPaymentAlertDetails {
-        .scanningForReaders(cancel: cancel)
+        .scanningForReaders(endSearch: cancel)
     }
 
     func scanningFailed(error: any Error,
                         close: @escaping () -> Void) -> CardPresentPaymentAlertDetails {
         .scanningFailed(error: error,
-                        close: close)
+                        endSearch: close)
     }
 
     func connectingToReader() -> CardPresentPaymentAlertDetails {
@@ -21,13 +21,13 @@ struct CardPresentPaymentBuiltInReaderConnectionAlertsProvider: CardReaderConnec
                           cancelSearch: @escaping () -> Void) -> CardPresentPaymentAlertDetails {
         .connectingFailed(error: error,
                           retrySearch: retrySearch,
-                          cancelSearch: cancelSearch)
+                          endSearch: cancelSearch)
     }
 
     func connectingFailedNonRetryable(error: any Error,
                                       close: @escaping () -> Void) -> CardPresentPaymentAlertDetails {
         .connectingFailedNonRetryable(error: error,
-                                      close: close)
+                                      endSearch: close)
     }
 
     func connectingFailedIncompleteAddress(wcSettingsAdminURL: URL?,
@@ -36,19 +36,19 @@ struct CardPresentPaymentBuiltInReaderConnectionAlertsProvider: CardReaderConnec
                                            cancelSearch: @escaping () -> Void) -> CardPresentPaymentAlertDetails {
         .connectingFailedUpdateAddress(wcSettingsAdminURL: wcSettingsAdminURL,
                                        retrySearch: retrySearch, 
-                                       cancelSearch: cancelSearch)
+                                       endSearch: cancelSearch)
     }
 
     func connectingFailedInvalidPostalCode(retrySearch: @escaping () -> Void,
                                            cancelSearch: @escaping () -> Void) -> CardPresentPaymentAlertDetails {
         .connectingFailedUpdatePostalCode(retrySearch: retrySearch,
-                                          cancelSearch: cancelSearch)
+                                          endSearch: cancelSearch)
     }
 
     func updatingFailed(tryAgain: (() -> Void)?,
                         close: @escaping () -> Void) -> CardPresentPaymentAlertDetails {
         .updateFailed(tryAgain: tryAgain,
-                      close: close)
+                      cancelUpdate: close)
     }
 
     func updateProgress(requiredUpdate: Bool,
@@ -56,7 +56,7 @@ struct CardPresentPaymentBuiltInReaderConnectionAlertsProvider: CardReaderConnec
                         cancel: (() -> Void)?) -> CardPresentPaymentAlertDetails {
         .updateProgress(requiredUpdate: requiredUpdate,
                         progress: progress,
-                        cancel: cancel)
+                        cancelUpdate: cancel)
     }
 
     func selectSearchType(tapToPay: @escaping () -> Void,
@@ -64,6 +64,6 @@ struct CardPresentPaymentBuiltInReaderConnectionAlertsProvider: CardReaderConnec
                           cancel: @escaping () -> Void) -> CardPresentPaymentAlertDetails {
         .selectSearchType(tapToPay: tapToPay,
                           bluetooth: bluetooth,
-                          cancel: cancel)
+                          endSearch: cancel)
     }
 }

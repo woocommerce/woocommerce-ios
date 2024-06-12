@@ -2,49 +2,49 @@ import Foundation
 import struct Yosemite.CardReaderInput
 
 enum CardPresentPaymentAlertDetails {
-    case scanningForReaders(cancel: () -> Void)
+    case scanningForReaders(endSearch: () -> Void)
     case scanningFailed(error: Error,
-                        close: () -> Void)
+                        endSearch: () -> Void)
     case bluetoothRequired
     case connectingToReader
     case connectingFailed(error: Error,
                           retrySearch: () -> Void,
-                          cancelSearch: () -> Void)
+                          endSearch: () -> Void)
     case connectingFailedNonRetryable(error: Error,
-                                      close: () -> Void)
+                                      endSearch: () -> Void)
     case connectingFailedUpdatePostalCode(retrySearch: () -> Void,
-                                          cancelSearch: () -> Void)
+                                          endSearch: () -> Void)
     case connectingFailedChargeReader(retrySearch: () -> Void,
-                                      cancelSearch: () -> Void)
+                                      endSearch: () -> Void)
     case connectingFailedUpdateAddress(wcSettingsAdminURL: URL?,
                                        retrySearch: () -> Void,
-                                       cancelSearch: () -> Void)
-    case preparingForPayment(onCancel: () -> Void)
+                                       endSearch: () -> Void)
+    case preparingForPayment(cancelPayment: () -> Void)
     case selectSearchType(tapToPay: () -> Void,
                           bluetooth: () -> Void,
-                          cancel: () -> Void)
+                          endSearch: () -> Void)
     case foundReader(name: String,
                      connect: () -> Void,
                      continueSearch: () -> Void,
-                     cancelSearch: () -> Void)
+                     endSearch: () -> Void)
     case updateProgress(requiredUpdate: Bool,
                         progress: Float,
-                        cancel: (() -> Void)?)
+                        cancelUpdate: (() -> Void)?)
     case updateFailed(tryAgain: (() -> Void)?,
-                      close: () -> Void)
-    case updateFailedNonRetryable(close: () -> Void)
+                      cancelUpdate: () -> Void)
+    case updateFailedNonRetryable(cancelUpdate: () -> Void)
     case updateFailedLowBattery(batteryLevel: Double?,
-                                close: () -> Void)
+                                cancelUpdate: () -> Void)
     case tapSwipeOrInsertCard(inputMethods: CardReaderInput,
-                              cancel: () -> Void)
+                              cancelPayment: () -> Void)
     case success(done: () -> Void)
     case error(error: any Error,
                tryAgain: () -> Void,
-               dismissCompletion: () -> Void)
+               cancelPayment: () -> Void)
     case errorNonRetryable(error: any Error,
-                           dismissCompletion: () -> Void)
+                           cancelPayment: () -> Void)
     case processing
     case displayReaderMessage(message: String)
     case cancelledOnReader
-    case validatingOrder(onCancel: () -> Void)
+    case validatingOrder(cancelPayment: () -> Void)
 }

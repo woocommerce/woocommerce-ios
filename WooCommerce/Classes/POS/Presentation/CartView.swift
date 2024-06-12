@@ -49,7 +49,7 @@ struct CartView: View {
 ///
 private extension CartView {
     private var checkoutButtonForegroundColor: Color {
-        return viewModel.checkoutButtonDisabled ? Color.gray : Color.primaryBackground
+        return viewModel.checkoutButtonDisabled ? Color.gray : Color.primaryText
     }
 
     private var checkoutButtonBackgroundColor: Color {

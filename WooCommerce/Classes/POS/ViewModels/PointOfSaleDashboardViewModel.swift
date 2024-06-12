@@ -224,8 +224,8 @@ private extension PointOfSaleDashboardViewModel {
                 }
                 do {
                     strongSelf.isSyncingOrder = true
-                    let posProducts = strongSelf.itemsInCart.map { Yosemite.PointOfSaleCartProduct(productID: $0.item.productID,
-                                                                                             price: $0.item.price,
+                    let posProducts = strongSelf.items.map { Yosemite.PointOfSaleCartProduct(productID: $0.productID,
+                                                                                             price: $0.price,
                                                                                              productType: .simple) }
                     let order = try await strongSelf.orderService.syncOrder(cart: cart,
                                                                       order: strongSelf.order,
@@ -242,7 +242,7 @@ private extension PointOfSaleDashboardViewModel {
 
 private extension PointOfSaleDashboardViewModel {
     enum Constants {
-        static let cartChangesDebounceDuration: TimeInterval = 0
+        static let cartChangesDebounceDuration: TimeInterval = 0.3
     }
 
     enum OrderSyncError: Error {

@@ -34,8 +34,8 @@ struct BasicCardPresentPaymentAlert: View {
 
             if viewModel.showLoadingIndicator {
                 ProgressView()
-                    .progressViewStyle(CircularProgressViewStyle(tint: .gray))
-                    .scaleEffect(1.5, anchor: .center)
+                    .progressViewStyle(IndefiniteCircularProgressViewStyle(size: Layout.circularProgressIndicatorSize))
+                    .padding()
             } else {
                 Image(uiImage: viewModel.image)
                     .padding()
@@ -97,6 +97,7 @@ private extension BasicCardPresentPaymentAlert {
         static let padding: EdgeInsets = .init(top: 40, leading: 96, bottom: 56, trailing: 96)
         static let stackViewVerticalSpacing: CGFloat = 32
         static let defaultVerticalSpacing: CGFloat = 16
+        static let circularProgressIndicatorSize: CGFloat = 96
     }
 }
 

@@ -227,7 +227,6 @@ final class ProductsViewController: UIViewController, GhostableViewController {
         NotificationCenter.default.removeObserver(self)
     }
 
-    private let userDefaults: UserDefaults
     private var favoriteProducts: [Product] = []
 
     // MARK: - View Lifecycle
@@ -235,8 +234,7 @@ final class ProductsViewController: UIViewController, GhostableViewController {
     init(siteID: Int64,
          selectedProduct: AnyPublisher<Product?, Never>,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
-         navigateToContent: @escaping (NavigationContentType) -> Void,
-         userDefaults: UserDefaults = .standard) {
+         navigateToContent: @escaping (NavigationContentType) -> Void) {
         self.siteID = siteID
         self.viewModel = .init(siteID: siteID, stores: ServiceLocator.stores)
         self.selectedProduct = selectedProduct

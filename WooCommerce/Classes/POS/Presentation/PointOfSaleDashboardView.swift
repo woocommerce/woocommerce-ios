@@ -36,8 +36,7 @@ struct PointOfSaleDashboardView: View {
             switch viewModel.cardPresentPaymentEvent {
             case .showAlert(let alertDetails):
                 CardPresentPaymentAlert(
-                    alertViewModel: CardPresentPaymentAlertViewModel(
-                        alertDetails: alertDetails))
+                    viewModel: alertDetails.toAlertViewModel())
             case .idle,
                     .showReaderList,
                     .showOnboarding:

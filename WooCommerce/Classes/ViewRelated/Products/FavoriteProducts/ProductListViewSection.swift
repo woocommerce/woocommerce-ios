@@ -1,5 +1,6 @@
 import Foundation
 import struct Yosemite.Product
+import UIKit
 
 struct ProductListViewSection {
 
@@ -15,6 +16,12 @@ struct ProductListViewSection {
             case .allProducts:
                 return Localization.allProductsSectionTitle
             }
+        }
+
+        /// The type of `UITableViewHeaderFooterView` to use for this style.
+        ///
+        var headerViewType: UITableViewHeaderFooterView.Type {
+            PrimarySectionHeaderView.self
         }
     }
 

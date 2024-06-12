@@ -42,7 +42,10 @@ struct MyStoreView: View {
             }
         }
         .navigationBarTitleDisplayMode(.inline)
-        .navigationTitle(dependencies.storeName)
+        .navigationTitle {
+            Text(dependencies.storeName)
+                .foregroundStyle(Colors.wooPurple5)
+        }
         .background(
             LinearGradient(gradient: Gradient(colors: [Colors.wooPurpleBackground, .black]), startPoint: .top, endPoint: .bottom)
         )

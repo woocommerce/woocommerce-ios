@@ -37,7 +37,10 @@ struct OrdersListView: View {
                 }
             }
         }
-        .navigationTitle(Localization.title)
+        .navigationTitle {
+            Text(Localization.title)
+                .foregroundStyle(OrderListCard.Colors.wooPurple5)
+        }
         .listStyle(.plain)
         .toolbar {
             ToolbarItem(placement: .cancellationAction) {
@@ -201,6 +204,7 @@ struct OrderListCard: View {
 
 private extension OrderListCard {
     enum Colors {
+        static let wooPurple5 = Color(red: 223/255.0, green: 209/255.0, blue: 251/255.0)
         static let wooPurple20 = Color(red: 190/255.0, green: 160/255.0, blue: 242/255.0)
         static let wooBackgroundStart = Color(red: 69/255.0, green: 43/255.0, blue: 100/255.0)
         static let wooBackgroundEnd = Color(red: 49/255.0, green: 31/255.0, blue: 71/255.0)

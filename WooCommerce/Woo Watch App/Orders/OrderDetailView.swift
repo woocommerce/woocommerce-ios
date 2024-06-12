@@ -31,12 +31,10 @@ struct OrderDetailView: View {
             customerView
                 .tag(Tab.customer)
         }
-        .toolbar {
-            ToolbarItem(placement: .confirmationAction) {
-                Text(order.number)
-                    .font(.body)
-                    .foregroundStyle(Colors.wooPurple20)
-            }
+        .navigationTitle {
+            Text(order.number)
+                .font(.body)
+                .foregroundStyle(Colors.wooPurple20)
         }
         .background(
             LinearGradient(gradient: Gradient(colors: [Colors.wooPurpleBackground, .black]), startPoint: .top, endPoint: .bottom)

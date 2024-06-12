@@ -21,22 +21,26 @@ struct MyStoreView: View {
     }
 
     var body: some View {
-        // This VStack is needed so the `onAppear` task is properly executed.
-        VStack {
-            // Draw the view that corresponds to the view state.
-            switch viewModel.viewState {
-            case .idle:
-                EmptyView()
-            case .loading:
-                dataView(revenue: "------", orders: "--", visitors: "--", conversion: "--", time: "00:00 AM")
-                    .padding(.horizontal)
-                    .redacted(reason: .placeholder)
-            case .error:
-                errorView
-            case let .loaded(revenue, totalOrders, totalVisitors, conversion, time):
-                dataView(revenue: revenue, orders: totalOrders, visitors: totalVisitors, conversion: conversion, time: time)
-                    .padding(.horizontal)
+        NavigationStack() {
+            Group {
+                // Draw the view that corresponds to the view state.
+                switch viewModel.viewState {
+                case .idle:
+                    EmptyView()
+                case .loading:
+                    dataView(revenue: "------", orders: "--", visitors: "--", conversion: "--", time: "00:00 AM")
+                        .padding(.horizontal)
+                        .redacted(reason: .placeholder)
+                case .error:
+                    errorView
+                case let .loaded(revenue, totalOrders, totalVisitors, conversion, time):
+                    dataView(revenue: revenue, orders: totalOrders, visitors: totalVisitors, conversion: conversion, time: time)
+                        .padding(.horizontal)
+
+                }
             }
+            .navigationBarTitleDisplayMode(.inline)
+            .navigationTitle(dependencies.storeName)
         }
         .background(
             LinearGradient(gradient: Gradient(colors: [Colors.wooPurpleBackground, .black]), startPoint: .top, endPoint: .bottom)
@@ -81,8 +85,6 @@ struct MyStoreView: View {
     @ViewBuilder func dataView(revenue: String, orders: String, visitors: String, conversion: String, time: String) -> some View {
         ScrollView {
             VStack {
-                storeNameView
-
                 Text(Localization.revenue)
                     .font(.caption2)
                     .foregroundStyle(Colors.wooPurple5)
@@ -154,15 +156,6 @@ struct MyStoreView: View {
             }
         }
     }
-
-    @ViewBuilder var storeNameView: some View {
-        Text(dependencies.storeName)
-            .font(.body)
-            .foregroundStyle(Colors.wooPurple5)
-            .lineLimit(2)
-            .fixedSize(horizontal: false, vertical: true)
-            .padding(.bottom, Layout.storeNamePadding)
-    }
 }
 
 /// Constants
@@ -178,7 +171,6 @@ fileprivate extension MyStoreView {
     }
 
     enum Layout {
-        static let storeNamePadding = 8.0
         static let revenueTitlePadding = 2.0
         static let revenueValuePadding = 4.0
         static let dividerPadding = 4.0

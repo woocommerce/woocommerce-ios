@@ -60,7 +60,9 @@ struct OrdersListView: View {
     @ViewBuilder var loadingView: some View {
         List {
             OrderListCard(order: .placeholder)
+            OrderListCard(order: .placeholder)
         }
+        .scrollDisabled(true)
         .redacted(reason: .placeholder)
     }
 

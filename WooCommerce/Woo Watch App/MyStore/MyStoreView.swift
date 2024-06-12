@@ -21,12 +21,11 @@ struct MyStoreView: View {
     }
 
     var body: some View {
-        ScrollView {
+        HStack{
             // Draw the view that corresponds to the view state.
             switch viewModel.viewState {
             case .idle:
                 Rectangle().hidden()
-                    .scrollDisabled(true)
             case .loading:
                 dataView(revenue: "------", orders: "--", visitors: "--", conversion: "--", time: "00:00 AM")
                     .padding(.horizontal)
@@ -34,7 +33,6 @@ struct MyStoreView: View {
                     .scrollDisabled(true)
             case .error:
                 errorView
-                    .scrollDisabled(true)
             case let .loaded(revenue, totalOrders, totalVisitors, conversion, time):
                 dataView(revenue: revenue, orders: totalOrders, visitors: totalVisitors, conversion: conversion, time: time)
                     .padding(.horizontal)
@@ -87,79 +85,81 @@ struct MyStoreView: View {
     /// My Store Stats data view.
     ///
     @ViewBuilder func dataView(revenue: String, orders: String, visitors: String, conversion: String, time: String) -> some View {
-        VStack {
-            Text(Localization.revenue)
-                .font(.caption2)
-                .foregroundStyle(Colors.wooPurple5)
-                .padding(.bottom, Layout.revenueTitlePadding)
-
-            Text(revenue)
-                .font(.title2)
-                .bold()
-                .padding(.bottom, Layout.revenueValuePadding)
-
-            Divider()
-                .padding(.bottom, Layout.dividerPadding)
-
-            HStack {
-                Text(Localization.today)
-                Spacer()
-                Text(Localization.time(time))
-            }
-            .font(.footnote)
-            .foregroundStyle(.secondary)
-            .padding(.bottom, Layout.datePadding)
-
-            HStack {
-
-                Button(action: {
-                    self.watchTab = .ordersList
-                }) {
-                    HStack {
-                        Images.document
-                            .renderingMode(.original)
-                            .foregroundStyle(Colors.wooPurple10)
-
-                        Text(orders)
-                            .font(.caption)
-                            .bold()
-                    }
-                    .padding(Layout.orderButtonPadding)
+        ScrollView {
+            VStack {
+                Text(Localization.revenue)
+                    .font(.caption2)
+                    .foregroundStyle(Colors.wooPurple5)
+                    .padding(.bottom, Layout.revenueTitlePadding)
+                
+                Text(revenue)
+                    .font(.title2)
+                    .bold()
+                    .padding(.bottom, Layout.revenueValuePadding)
+                
+                Divider()
+                    .padding(.bottom, Layout.dividerPadding)
+                
+                HStack {
+                    Text(Localization.today)
+                    Spacer()
+                    Text(Localization.time(time))
                 }
-                .buttonStyle(.plain)
-                .background(Colors.wooPurple80)
-                .cornerRadius(Layout.orderButtonCornerRadius)
-
-                Spacer()
-
-                VStack(alignment: .trailing, spacing: Layout.iconsSpacing) {
-                    HStack(spacing: Layout.iconsSpacing) {
-
-                        Text(visitors)
-                            .font(.caption)
-
-                        Images.person
-                            .resizable()
-                            .renderingMode(.original)
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: Layout.iconWidth, height: Layout.iconWidth)
-                            .foregroundStyle(Colors.wooPurple10)
+                .font(.footnote)
+                .foregroundStyle(.secondary)
+                .padding(.bottom, Layout.datePadding)
+                
+                HStack {
+                    
+                    Button(action: {
+                        self.watchTab = .ordersList
+                    }) {
+                        HStack {
+                            Images.document
+                                .renderingMode(.original)
+                                .foregroundStyle(Colors.wooPurple10)
+                            
+                            Text(orders)
+                                .font(.caption)
+                                .bold()
+                        }
+                        .padding(Layout.orderButtonPadding)
                     }
-                    .bold()
-
-                    HStack(spacing: Layout.iconsSpacing) {
-
-                        Text(conversion)
-                            .font(.caption2)
-
-                        Images.zigzag
-                            .resizable()
-                            .renderingMode(.original)
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: Layout.iconWidth, height: Layout.iconWidth)
-                            .foregroundStyle(Colors.wooPurple10)
+                    .buttonStyle(.plain)
+                    .background(Colors.wooPurple80)
+                    .cornerRadius(Layout.orderButtonCornerRadius)
+                    
+                    Spacer()
+                    
+                    VStack(alignment: .trailing, spacing: Layout.iconsSpacing) {
+                        HStack(spacing: Layout.iconsSpacing) {
+                            
+                            Text(visitors)
+                                .font(.caption)
+                            
+                            Images.person
+                                .resizable()
+                                .renderingMode(.original)
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: Layout.iconWidth, height: Layout.iconWidth)
+                                .foregroundStyle(Colors.wooPurple10)
+                        }
+                        .bold()
+                        
+                        HStack(spacing: Layout.iconsSpacing) {
+                            
+                            Text(conversion)
+                                .font(.caption2)
+                            
+                            Images.zigzag
+                                .resizable()
+                                .renderingMode(.original)
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: Layout.iconWidth, height: Layout.iconWidth)
+                                .foregroundStyle(Colors.wooPurple10)
+                        }
+                        .bold()
                     }
-                    .bold()
                 }
             }
         }

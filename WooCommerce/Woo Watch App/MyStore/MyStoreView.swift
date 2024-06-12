@@ -21,7 +21,7 @@ struct MyStoreView: View {
     }
 
     var body: some View {
-        HStack{
+        HStack {
             // Draw the view that corresponds to the view state.
             switch viewModel.viewState {
             case .idle:
@@ -91,15 +91,15 @@ struct MyStoreView: View {
                     .font(.caption2)
                     .foregroundStyle(Colors.wooPurple5)
                     .padding(.bottom, Layout.revenueTitlePadding)
-                
+
                 Text(revenue)
                     .font(.title2)
                     .bold()
                     .padding(.bottom, Layout.revenueValuePadding)
-                
+
                 Divider()
                     .padding(.bottom, Layout.dividerPadding)
-                
+
                 HStack {
                     Text(Localization.today)
                     Spacer()
@@ -108,9 +108,9 @@ struct MyStoreView: View {
                 .font(.footnote)
                 .foregroundStyle(.secondary)
                 .padding(.bottom, Layout.datePadding)
-                
+
                 HStack {
-                    
+
                     Button(action: {
                         self.watchTab = .ordersList
                     }) {
@@ -118,7 +118,7 @@ struct MyStoreView: View {
                             Images.document
                                 .renderingMode(.original)
                                 .foregroundStyle(Colors.wooPurple10)
-                            
+
                             Text(orders)
                                 .font(.caption)
                                 .bold()
@@ -128,15 +128,15 @@ struct MyStoreView: View {
                     .buttonStyle(.plain)
                     .background(Colors.wooPurple80)
                     .cornerRadius(Layout.orderButtonCornerRadius)
-                    
+
                     Spacer()
-                    
+
                     VStack(alignment: .trailing, spacing: Layout.iconsSpacing) {
                         HStack(spacing: Layout.iconsSpacing) {
-                            
+
                             Text(visitors)
                                 .font(.caption)
-                            
+
                             Images.person
                                 .resizable()
                                 .renderingMode(.original)
@@ -145,12 +145,12 @@ struct MyStoreView: View {
                                 .foregroundStyle(Colors.wooPurple10)
                         }
                         .bold()
-                        
+
                         HStack(spacing: Layout.iconsSpacing) {
-                            
+
                             Text(conversion)
                                 .font(.caption2)
-                            
+
                             Images.zigzag
                                 .resizable()
                                 .renderingMode(.original)

@@ -114,7 +114,7 @@ struct CustomerDetailView: View {
                 customerDetailRow(label: Localization.dateRegisteredLabel, value: viewModel.dateRegistered)
             }
 
-            if let billing = viewModel.billing, billing.isNotEmpty {
+            if let billing = viewModel.formattedBilling, billing.isNotEmpty {
                 Section(header: Text(Localization.billingSection)) {
                     Text(billing)
                         .swipeActions(edge: .leading) {
@@ -133,7 +133,7 @@ struct CustomerDetailView: View {
                         }
                 }
             }
-            if let shipping = viewModel.shipping, shipping.isNotEmpty {
+            if let shipping = viewModel.formattedShipping, shipping.isNotEmpty {
                 Section(header: Text(Localization.shippingSection)) {
                     Text(shipping)
                         .swipeActions(edge: .leading) {
@@ -308,7 +308,7 @@ private extension CustomerDetailView {
     }
 }
 
-#Preview("Unregistered Customer") {
+#Preview("Customer") {
     CustomerDetailView(viewModel: CustomerDetailViewModel(siteID: 1,
                                                           customerID: 0,
                                                           name: "Pat Smith",
@@ -322,28 +322,7 @@ private extension CustomerDetailView {
                                                           country: "United States",
                                                           region: "Oregon",
                                                           city: "Portland",
-                                                          postcode: "12345",
-                                                          billing: nil,
-                                                          shipping: nil))
-}
-
-#Preview("Registered Customer") {
-    CustomerDetailView(viewModel: CustomerDetailViewModel(siteID: 1,
-                                                          customerID: 0,
-                                                          name: "Pat Smith",
-                                                          dateLastActive: "Jan 1, 2024",
-                                                          email: "patsmith@example.com",
-                                                          ordersCount: "3",
-                                                          totalSpend: "$81.75",
-                                                          avgOrderValue: "$27.25",
-                                                          username: "patsmith",
-                                                          dateRegistered: "Jan 1, 2023",
-                                                          country: "United States",
-                                                          region: "Oregon",
-                                                          city: "Portland",
-                                                          postcode: "12345",
-                                                          billing: "Pat Smith\n1 Main Street\nPortland, Oregon 12345",
-                                                          shipping: "Pat Smith\n1 Main Street\nPortland, Oregon 12345"))
+                                                          postcode: "12345"))
 }
 
 #Preview("Customer with Placeholders") {
@@ -360,7 +339,5 @@ private extension CustomerDetailView {
                                                           country: nil,
                                                           region: nil,
                                                           city: nil,
-                                                          postcode: nil,
-                                                          billing: nil,
-                                                          shipping: nil))
+                                                          postcode: nil))
 }

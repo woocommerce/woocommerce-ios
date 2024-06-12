@@ -16,14 +16,15 @@ final class CustomerDetailViewModel: ObservableObject {
     /// Customer email
     let email: String?
 
+    /// Source `Address` for the customer's phone number
+    private var phoneSource: Address? {
+        billing
+    }
+
     /// Customer phone
-    var phone: String?
-
-    /// Cleaned customer phone (only decimals)
-    private var cleanedPhone: String?
-
-    /// Customer phone as an iOS actionable URL
-    private var phoneURL: URL?
+    var phone: String? {
+        phoneSource?.phone
+    }
 
     // MARK: Orders
 
@@ -48,7 +49,7 @@ final class CustomerDetailViewModel: ObservableObject {
 
     /// Whether to show the customer's location data
     var showLocation: Bool {
-        billing.isNilOrEmpty && shipping.isNilOrEmpty
+        formattedBilling.isNilOrEmpty && formattedShipping.isNilOrEmpty
     }
 
     /// Customer country
@@ -65,11 +66,18 @@ final class CustomerDetailViewModel: ObservableObject {
 
     // MARK: Address
 
+    @Published private var billing: Address?
+    @Published private var shipping: Address?
+
     /// Formatted billing name and address
-    @Published private(set) var billing: String?
+    var formattedBilling: String? {
+        billing?.fullNameWithCompanyAndAddress
+    }
 
     /// Formatted shipping name and address
-    @Published private(set) var shipping: String?
+    var formattedShipping: String? {
+        shipping?.fullNameWithCompanyAndAddress
+    }
 
     // MARK: Sync
 
@@ -94,8 +102,6 @@ final class CustomerDetailViewModel: ObservableObject {
          region: String?,
          city: String?,
          postcode: String?,
-         billing: String?,
-         shipping: String?,
          stores: StoresManager = ServiceLocator.stores) {
         self.stores = stores
         self.siteID = siteID
@@ -132,8 +138,6 @@ final class CustomerDetailViewModel: ObservableObject {
                   region: customer.region.nullifyIfEmptyOrWhitespace(),
                   city: customer.city.nullifyIfEmptyOrWhitespace(),
                   postcode: customer.postcode.nullifyIfEmptyOrWhitespace(),
-                  billing: nil,
-                  shipping: nil,
                   stores: stores)
     }
 
@@ -187,7 +191,7 @@ extension CustomerDetailViewModel {
 
     /// Whether the device can perform a phone call
     var isPhoneCallAvailable: Bool {
-        guard let phoneURL else {
+        guard let phoneURL = phoneSource?.cleanedPhoneNumberAsActionableURL else {
             return false
         }
         return UIApplication.shared.canOpenURL(phoneURL)
@@ -195,7 +199,7 @@ extension CustomerDetailViewModel {
 
     /// Attempts to perform a phone call at the specified URL
     func callCustomer() {
-        guard let phoneURL else {
+        guard let phoneURL = phoneSource?.cleanedPhoneNumberAsActionableURL else {
             return
         }
         UIApplication.shared.open(phoneURL, options: [:], completionHandler: nil)
@@ -204,10 +208,10 @@ extension CustomerDetailViewModel {
 
     /// Whatsapp deeplink to contact someone through their phone number
     private var whatsappDeeplink: URL? {
-        guard let cleanedPhone else {
+        guard let phone = phoneSource?.cleanedPhoneNumber else {
             return nil
         }
-        return URL(string: "whatsapp://send?phone=\(cleanedPhone)")
+        return URL(string: "whatsapp://send?phone=\(phone)")
     }
 
     /// Whether the device can open a WhatsApp deep link
@@ -229,10 +233,10 @@ extension CustomerDetailViewModel {
 
     /// Telegram deeplink to contact someone through their phone number
     private var telegramDeeplink: URL? {
-        guard let cleanedPhone else {
+        guard let phone = phoneSource?.cleanedPhoneNumber else {
             return nil
         }
-        return URL(string: "tg://resolve?phone=\(cleanedPhone)")
+        return URL(string: "tg://resolve?phone=\(phone)")
     }
 
     /// Whether the device can open a Telegram deep link
@@ -254,13 +258,13 @@ extension CustomerDetailViewModel {
 
     /// Copies the billing address to the pasteboard.
     func copyBillingAddress() {
-        billing?.sendToPasteboard()
+        formattedBilling?.sendToPasteboard()
         ServiceLocator.analytics.track(event: .CustomersHub.customerDetailAddressCopied(.billing))
     }
 
     /// Copies the shipping address to the pasteboard.
     func copyShippingAddress() {
-        shipping?.sendToPasteboard()
+        formattedShipping?.sendToPasteboard()
         ServiceLocator.analytics.track(event: .CustomersHub.customerDetailAddressCopied(.shipping))
     }
 }
@@ -288,17 +292,8 @@ extension CustomerDetailViewModel {
             guard let self else { return }
             switch result {
             case let .success(customer):
-                billing = customer.billing?.fullNameWithCompanyAndAddress
-                shipping = customer.shipping?.fullNameWithCompanyAndAddress
-                if customer.billing?.hasPhoneNumber == true {
-                    phone = customer.billing?.phone
-                    cleanedPhone = customer.billing?.cleanedPhoneNumber
-                    phoneURL = customer.billing?.cleanedPhoneNumberAsActionableURL
-                } else if customer.shipping?.hasPhoneNumber == true {
-                    phone = customer.shipping?.phone
-                    cleanedPhone = customer.shipping?.cleanedPhoneNumber
-                    phoneURL = customer.shipping?.cleanedPhoneNumberAsActionableURL
-                }
+                billing = customer.billing
+                shipping = customer.shipping
             case let .failure(error):
                 DDLogError("⛔️ Error fetching customer details: \(error)")
             }

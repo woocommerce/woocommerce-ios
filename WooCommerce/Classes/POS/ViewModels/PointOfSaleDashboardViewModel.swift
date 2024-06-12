@@ -8,8 +8,6 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
         case acceptingCard
         case processingCard
         case cardPaymentSuccessful
-        case acceptingCash
-        case cashPaymentSuccessful
     }
 
     @Published private(set) var items: [POSItem]

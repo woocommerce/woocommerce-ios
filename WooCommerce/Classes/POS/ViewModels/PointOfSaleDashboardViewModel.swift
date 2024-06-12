@@ -49,7 +49,7 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
         observeCardPresentPaymentEvents()
         observeItemsInCartForCartTotal()
     }
-    
+
     var itemToScrollToWhenCartUpdated: CartItem? {
         return itemsInCart.last
     }

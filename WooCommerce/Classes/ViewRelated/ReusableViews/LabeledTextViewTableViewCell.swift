@@ -58,7 +58,7 @@ private extension LabeledTextViewTableViewCell {
 
         switch productStatus {
         case .privateStatus:
-            productStatusLabel.text = NSLocalizedString("productDetail.statusLabel",
+            productStatusLabel.text = NSLocalizedString("productDetail.privateStatusLabel",
                                                         value: "Private published",
                                                         comment: "Display label in product for the product's private status"
             )

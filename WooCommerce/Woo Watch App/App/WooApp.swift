@@ -36,7 +36,7 @@ struct Woo_Watch_AppApp: App {
 
                 } else {
 
-                    ConnectView()
+                    ConnectView(synchronizer: phoneDependencySynchronizer)
 
                 }
             }

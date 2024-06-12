@@ -32,6 +32,13 @@ final class PhoneDependenciesSynchronizer: NSObject, ObservableObject, WCSession
         }
     }
 
+    /// Sends a message to the paired counterpart to attempt a credential sync.
+    /// This should be received in `WatchDependenciesSynchronizer.didReceiveMessage` method.
+    ///
+    func requestCredentialSync() {
+        WCSession.default.sendMessage([WooConstants.watchSyncKey: true], replyHandler: nil)
+    }
+
     /// Get the latest application context when the session activates
     ///
     func session(_ session: WCSession, activationDidCompleteWith activationState: WCSessionActivationState, error: Error?) {

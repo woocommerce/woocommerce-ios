@@ -108,3 +108,19 @@ extension WatchDependenciesSynchronizer {
         ServiceLocator.analytics.track(analyticEvent)
     }
 }
+
+// MARK: Sync Delegate
+extension WatchDependenciesSynchronizer {
+    /// The `didReceiveMessage` only supports sync requests events for now.
+    /// When one is identified we should try to re-sync credentials.
+    ///
+    func session(_ session: WCSession, didReceiveMessage message: [String : Any]) {
+        guard message[WooConstants.watchTracksKey] as? Bool == true else {
+            return DDLogError("⛔️ Unsupported sync request message: \(message)")
+        }
+
+        // Reset storeID to trigger a `re-sync`.
+        // This could be improved by having a custom re-sync trigger(publisher).
+        self.storeID = self.storeID
+    }
+}

@@ -5,7 +5,7 @@ import Photos
 
 /// Exports a media item of `PHAsset` type to be uploadable.
 ///
-final class MediaAssetExporter: MediaExporter {
+public final class MediaAssetExporter: MediaExporter {
 
     let mediaDirectoryType: MediaDirectory
 
@@ -154,7 +154,7 @@ private extension MediaAssetExporter {
     }
 }
 
-extension MediaAssetExporter {
+public extension MediaAssetExporter {
     enum AssetExportError: Error {
         case unsupportedPHAssetMediaType
         case expectedPHAssetImageType

@@ -86,10 +86,12 @@ final class ProductDownloadListViewController: UIViewController {
             self?.onWPMediaPickerCompletion(mediaItems: mediaItems)
         }
         cancellable = productImageActionHandler?.addAssetUploadObserver(self) { [weak self] asset, result in
-            guard case let .success(productImage) = result else {
-                return
+            switch result {
+            case let .success(productImage):
+                self?.addDownloadableFile(fileName: productImage.name, fileURL: productImage.src)
+            case let .failure(error):
+                self?.showMediaUploadAlert(error: error)
             }
-            self?.addDownloadableFile(fileName: productImage.name, fileURL: productImage.src)
             self?.updateLoadingState(false)
         }
     }
@@ -340,6 +342,21 @@ private extension ProductDownloadListViewController {
     func showSiteMediaPicker(origin: UIViewController) {
         wpMediaLibraryPicker.start(from: origin)
     }
+
+    func showMediaUploadAlert(error: Error) {
+        let errorMessage: String = {
+            switch error {
+            case DotcomError.unknown(let code, _) where code == Constants.unsupportedMimeTypeCode:
+                Localization.unsupportedFileType
+            case MediaAssetExporter.AssetExportError.unsupportedPHAssetMediaType:
+                Localization.unsupportedFileType
+            default:
+                Localization.errorUploadingLocalFile
+            }
+        }()
+        let notice = Notice(title: errorMessage, feedbackType: .error)
+        noticePresenter.enqueue(notice: notice)
+    }
 }
 
 extension ProductDownloadListViewController: UIDocumentPickerDelegate {
@@ -371,15 +388,7 @@ extension ProductDownloadListViewController: UIDocumentPickerDelegate {
                 updateLoadingState(false)
             } catch {
                 updateLoadingState(false)
-                let errorMessage: String = {
-                    if case DotcomError.unknown(let code, _) = error,
-                       code == Constants.unsupportedMimeTypeCode {
-                        return Localization.unsupportedFileType
-                    }
-                    return Localization.errorUploadingLocalFile
-                }()
-                let notice = Notice(title: errorMessage, feedbackType: .error)
-                noticePresenter.enqueue(notice: notice)
+                showMediaUploadAlert(error: error)
             }
 
             url.stopAccessingSecurityScopedResource()

@@ -219,9 +219,7 @@ final class ProductListViewModel: ProductsListViewModelProtocol {
 
     @MainActor
     func fetchFavoriteProducts() async -> [Product]? {
-        guard let favProductIDs = favoriteProductsUseCase.favoriteProductIDs() else {
-            return nil
-        }
+        let favProductIDs = await favoriteProductsUseCase.favoriteProductIDs()
         return await withCheckedContinuation { continuation in
             stores.dispatch(ProductAction.retrieveProducts(siteID: siteID,
                                                            productIDs: favProductIDs) { result in

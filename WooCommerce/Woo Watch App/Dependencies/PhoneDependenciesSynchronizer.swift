@@ -101,7 +101,14 @@ final class PhoneDependenciesSynchronizer: NSObject, ObservableObject, WCSession
     /// Receiving an empty dictionary will clear the store as it likely mean that the user has logged out of the app.
     ///
     private func storeDependencies(appContext: [String: Any]) {
-        let dependencies = WatchDependencies(dictionary: appContext)
+        let dependencies: WatchDependencies? = {
+            do {
+                let data = try JSONSerialization.data(withJSONObject: appContext)
+                return try JSONDecoder().decode(WatchDependencies.self, from: data)
+            } catch {
+                return nil
+            }
+        }()
 
         // Only store the dependencies if we get new values to store.
         guard self.dependencies != dependencies else {

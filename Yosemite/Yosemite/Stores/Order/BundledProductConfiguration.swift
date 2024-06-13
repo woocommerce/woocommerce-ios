@@ -9,7 +9,7 @@ public struct BundledProductConfiguration: Equatable {
 
     let productOrVariation: ProductOrVariation
 
-    let quantity: Decimal
+    public let quantity: Decimal
 
     /// `nil` when it's not optional.
     let isOptionalAndSelected: Bool?

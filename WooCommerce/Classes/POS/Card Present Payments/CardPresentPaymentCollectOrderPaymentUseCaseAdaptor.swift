@@ -34,7 +34,6 @@ struct CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
                 order: order,
                 formattedAmount: formattedAmount,
                 rootViewController: NullViewControllerPresenting(),
-                onboardingPresenter: onboardingPresenter,
                 configuration: configuration,
                 alertsPresenter: alertsPresenter,
                 tapToPayAlertsProvider: CardPresentPaymentsTransactionAlertsProvider(),

@@ -234,7 +234,6 @@ final class PaymentMethodsViewModel: ObservableObject {
             order: order,
             formattedAmount: self.formattedTotal,
             rootViewController: rootViewController,
-            onboardingPresenter: self.cardPresentPaymentsOnboardingPresenter,
             configuration: cardPresentPaymentsConfiguration,
             alertsPresenter: alertsPresenter,
             tapToPayAlertsProvider: BuiltInCardReaderPaymentAlertsProvider(),

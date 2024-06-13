@@ -36,6 +36,7 @@ final class CardPresentPaymentsAlertPresenterAdaptor: CardPresentPaymentAlertsPr
                 paymentAlertSubject.send(.showAlert(.connectingFailed(viewModel: .init())))
             case .preparingForPayment(let cancelPayment):
                 paymentAlertSubject.send(.showPaymentMessage(.preparingForPayment))
+            // TODO: support this case
             case .selectSearchType(let tapToPay, let bluetooth, let endSearch):
                 fatalError("Not supported")
             case .foundReader(let name, let connect, let continueSearch, let endSearch):
@@ -55,14 +56,17 @@ final class CardPresentPaymentsAlertPresenterAdaptor: CardPresentPaymentAlertsPr
                 paymentAlertSubject.send(.showPaymentMessage(.tapSwipeOrInsertCard))
             case .success(let done):
                 paymentAlertSubject.send(.showPaymentMessage(.success))
+            // TODO: separate error into two error types for `showAlert` and `showPaymentMessage` depending on the type of error
             case .error(let error, let tryAgain, let cancelPayment):
                 paymentAlertSubject.send(.showPaymentMessage(.error))
+            // TODO: separate error into two error types for `showAlert` and `showPaymentMessage` depending on the type of error
             case .errorNonRetryable(let error, let cancelPayment):
                 paymentAlertSubject.send(.showPaymentMessage(.error))
             case .processing:
                 paymentAlertSubject.send(.showPaymentMessage(.processing))
             case .displayReaderMessage(let message):
                 paymentAlertSubject.send(.showPaymentMessage(.displayReaderMessage(message: message)))
+            // TODO: support this case
             case .cancelledOnReader:
                 fatalError("Not supported")
             case .validatingOrder(let cancelPayment):

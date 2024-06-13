@@ -12,17 +12,11 @@ enum CardPresentPaymentAlertType {
 
 enum CardPresentPaymentMessageType {
     case preparingForPayment
-//        Text("Preparing for payment")
     case tapSwipeOrInsertCard
-//        Text("Tap card")
     case processing
-//        Text("Processing")
     case displayReaderMessage(message: String)
-//        Text("Display reader message")
     case success
-//        Text("Success")
     case error
-//        Text("Error")
 }
 
 enum CardPresentPaymentEvent {

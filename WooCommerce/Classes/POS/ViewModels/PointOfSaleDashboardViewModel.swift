@@ -162,7 +162,7 @@ private extension PointOfSaleDashboardViewModel {
                 return true
             case .showReaderList,
                     .showOnboarding:
-                    // TODO: support these cases
+                // TODO: support these cases separately from `showAlert`
                 return false
             }
         }.assign(to: &$showsCardReaderSheet)

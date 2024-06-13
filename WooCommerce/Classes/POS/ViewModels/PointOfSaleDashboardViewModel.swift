@@ -74,7 +74,6 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
 
         observeCardPresentPaymentEvents()
         observeItemsInCartForCartTotal()
-        observeProductsInCartForRemoteOrderSyncing()
     }
 
     func addItemToCart(_ item: POSItem) {
@@ -151,6 +150,9 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
     }
 
     func recalculateAmounts() {
+        Task {
+            await createOrUpdateOrder()
+        }
     }
 
     func startNewTransaction() {
@@ -196,46 +198,33 @@ private extension PointOfSaleDashboardViewModel {
         return orderStage == .finalizing
     }
 
-    func observeProductsInCartForRemoteOrderSyncing() {
-        cartSubscription = Publishers.CombineLatest($itemsInCart.debounce(for: .seconds(Constants.cartChangesDebounceDuration),
-                                                                               scheduler: DispatchQueue.main),
-                                                    $isSyncingOrder)
-        .filter { _, isSyncingOrder in
-            isSyncingOrder == false
+    private func createOrUpdateOrder() async {
+        guard shouldSyncOrder, isSyncingOrder == false else {
+            return
         }
-        .map { $0.0 }
-        .removeDuplicates()
-        .dropFirst()
-        .sink { [weak self] cartProducts in
-            Task { @MainActor in
-                guard let strongSelf = self else {
-                    throw OrderSyncError.selfDeallocated
-                }
-                let cart = cartProducts
-                    .map {
-                        PointOfSaleCartItem(itemID: nil,
-                                            product: .init(productID: $0.item.productID,
-                                                           price: $0.item.price,
-                                                           productType: .simple),
-                                            quantity: Decimal($0.quantity))
-                    }
-                defer {
-                    strongSelf.isSyncingOrder = false
-                }
-                do {
-                    strongSelf.isSyncingOrder = true
-                    let posProducts = strongSelf.items.map { Yosemite.PointOfSaleCartProduct(productID: $0.productID,
-                                                                                             price: $0.price,
-                                                                                             productType: .simple) }
-                    let order = try await strongSelf.orderService.syncOrder(cart: cart,
-                                                                      order: strongSelf.order,
-                                                                      allProducts: posProducts)
-                    strongSelf.order = order
-                    print("🟢 [POS] Synced order: \(order)")
-                } catch {
-                    print("🔴 [POS] Error syncing order: \(error)")
-                }
+        let cart = itemsInCart
+            .map {
+                PointOfSaleCartItem(itemID: nil,
+                                    product: .init(productID: $0.item.productID,
+                                                   price: $0.item.price,
+                                                   productType: .simple),
+                                    quantity: Decimal($0.quantity))
             }
+        defer {
+            self.isSyncingOrder = false
+        }
+        do {
+            self.isSyncingOrder = true
+            let posProducts = self.items.map { Yosemite.PointOfSaleCartProduct(productID: $0.productID,
+                                                                                     price: $0.price,
+                                                                                     productType: .simple) }
+            let order = try await self.orderService.syncOrder(cart: cart,
+                                                              order: self.order,
+                                                              allProducts: posProducts)
+            self.order = order
+            print("🟢 [POS] Synced order: \(order)")
+        } catch {
+            print("🔴 [POS] Error syncing order: \(error)")
         }
     }
 }

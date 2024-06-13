@@ -108,7 +108,7 @@ public struct ProductInputTransformer {
         // the bundle configuration needs to be populated in order for the quantity of child order items to be updated.
         // The bundle configuration is deduced from the product's bundle items, existing child order items, and the bundle order item itself.
         if case let .product(productValue) = product,
-           productValue.productType == .bundle && item.quantity != quantity && bundleConfiguration.isEmpty && childItems.isNotEmpty {
+           productValue.productType == .bundle && item.quantity != quantity && bundleConfiguration.isEmpty && !childItems.isEmpty {
             let bundleConfiguration: [BundledProductConfiguration] = productValue.bundledItems
                 .compactMap { bundleItem -> BundledProductConfiguration? in
                     guard let existingOrderItem = childItems.first(where: { $0.productID == bundleItem.productID }) else {
@@ -284,29 +284,5 @@ extension OrderItem {
         }
 
         return variationID
-    }
-}
-
-// MARK: - Array Helpers
-//
-extension Array {
-    /// Removes and returns the first element in the array. If any!
-    ///
-    mutating func popFirst() -> Element? {
-        guard isEmpty == false else {
-            return nil
-        }
-
-        return removeFirst()
-    }
-
-    /// A Boolean value indicating whether a collection is not empty.
-    var isNotEmpty: Bool {
-        return !isEmpty
-    }
-
-    /// A Bool indicating if the collection has at least two elements
-    var containsMoreThanOne: Bool {
-        return count > 1
     }
 }

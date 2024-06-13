@@ -19,10 +19,11 @@ protocol CardPresentPaymentPreflightControllerProtocol {
     var readerConnection: AnyPublisher<CardReaderPreflightResult?, Never> { get }
 }
 
-final class CardPresentPaymentPreflightController<BluetoothAlertProvider: BluetoothReaderConnnectionAlertsProviding,
-                                                  TapToPayAlertProvider: CardReaderConnectionAlertsProviding,
-                                                    AlertPresenter: CardPresentPaymentAlertsPresenting>: CardPresentPaymentPreflightControllerProtocol
-where BluetoothAlertProvider.AlertDetails == AlertPresenter.AlertDetails, TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails {
+final class CardPresentPaymentPreflightController<TapToPayAlertProvider: CardReaderConnectionAlertsProviding,
+                                                  BluetoothAlertProvider: BluetoothReaderConnnectionAlertsProviding,
+                                                  AlertPresenter: CardPresentPaymentAlertsPresenting>: CardPresentPaymentPreflightControllerProtocol
+where TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
+      BluetoothAlertProvider.AlertDetails == AlertPresenter.AlertDetails {
     /// Store's ID.
     ///
     private let siteID: Int64

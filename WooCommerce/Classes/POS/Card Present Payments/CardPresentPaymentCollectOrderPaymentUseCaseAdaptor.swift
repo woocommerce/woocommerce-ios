@@ -15,8 +15,8 @@ struct CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
                             using connectionMethod: CardReaderConnectionMethod,
                             siteID: Int64,
                             preflightController: CardPresentPaymentPreflightController<
-                            CardPresentPaymentBluetoothReaderConnectionAlertsProvider,
                             CardPresentPaymentBuiltInReaderConnectionAlertsProvider,
+                            CardPresentPaymentBluetoothReaderConnectionAlertsProvider,
                             CardPresentPaymentsAlertPresenterAdaptor>,
                             onboardingPresenter: CardPresentPaymentsOnboardingPresenting,
                             configuration: CardPresentPaymentsConfiguration,

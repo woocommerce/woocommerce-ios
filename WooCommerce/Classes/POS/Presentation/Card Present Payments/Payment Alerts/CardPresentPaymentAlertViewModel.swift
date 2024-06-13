@@ -31,7 +31,9 @@ extension CardPresentPaymentAlertDetails {
                 .scanningForReaders(CardPresentPaymentScanningForReadersAlertViewModel(endSearchAction: endSearch))
 
         case .scanningFailed(let error, let endSearch):
-                .scanningFailed(CardPresentPaymentScanningFailedAlertViewModel())
+                .scanningFailed(CardPresentPaymentScanningFailedAlertViewModel(
+                    error: error,
+                    endSearchAction: endSearch))
 
         case .bluetoothRequired:
                 .scanningFailed(CardPresentPaymentScanningFailedAlertViewModel())

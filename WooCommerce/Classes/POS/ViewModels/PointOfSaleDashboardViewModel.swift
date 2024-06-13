@@ -160,12 +160,10 @@ private extension PointOfSaleDashboardViewModel {
             switch event {
             case .idle, .showPaymentMessage:
                 return false
-            case .showAlert:
-                return true
-            case .showReaderList,
+            case .showAlert,
+                    .showReaderList,
                     .showOnboarding:
-                // TODO: support these cases separately from `showAlert`
-                return false
+                return true
             }
         }.assign(to: &$showsCardReaderSheet)
     }

@@ -265,7 +265,6 @@ final class ProductsViewController: UIViewController, GhostableViewController {
         configurePaginationTracker()
         configureStorePlanBannerPresenter()
         registerTableViewCells()
-        registerTableViewHeader()
 
         showTopBannerViewIfNeeded()
         observeSelectedProductAndDataLoadedStateToUpdateSelectedRow()
@@ -728,6 +727,7 @@ private extension ProductsViewController {
 
         tableView.estimatedRowHeight = Constants.estimatedRowHeight
         tableView.rowHeight = UITableView.automaticDimension
+        tableView.sectionHeaderTopPadding = 0
 
         tableView.backgroundColor = .listBackground
         tableView.tableFooterView = footerSpinnerView
@@ -815,18 +815,6 @@ private extension ProductsViewController {
     ///
     func registerTableViewCells() {
         tableView.register(ProductsTabProductTableViewCell.self)
-    }
-
-    /// Registers table view headers
-    ///
-    func registerTableViewHeader() {
-        let headers = [
-            PrimarySectionHeaderView.self,
-        ]
-
-        for kind in headers {
-            tableView.register(kind.loadNib(), forHeaderFooterViewReuseIdentifier: kind.reuseIdentifier)
-        }
     }
 
     /// Show or hide the toolbar based on number of products
@@ -1143,30 +1131,25 @@ extension ProductsViewController: UITableViewDataSource {
             return nil
         }
 
-        let reuseIdentifier = section.type.headerViewType.reuseIdentifier
-        guard let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: reuseIdentifier) else {
-            assertionFailure("Could not find section header view for reuseIdentifier \(reuseIdentifier)")
-            return nil
-        }
-
-        if let headerView = headerView as? PrimarySectionHeaderView {
-            switch section.type {
-            case .favorites:
-                if let image = UIImage(systemName: shouldExpandFavoritesSection ? "chevron.up" : "chevron.down") {
-                    headerView.configure(title: section.type.title,
-                                         action: PrimarySectionHeaderView.ActionConfiguration(image: image,
-                                                                                              actionHandler: { [weak self] view in
-                        guard let self else { return }
-                        self.shouldExpandFavoritesSection.toggle()
-                        self.tableView.reloadSections(IndexSet(integer: 0), with: .fade)
-                    }))
-                }
-            case .allProducts:
-                headerView.configure(title: section.type.title)
+        switch section.type {
+        case .favorites:
+            let headerView = ActionableSectionHeaderView()
+            if let image = UIImage(systemName: shouldExpandFavoritesSection ? "chevron.up" : "chevron.down") {
+                headerView.configure(title: section.type.title,
+                                     action: ActionableSectionHeaderView.ActionConfiguration(image: image,
+                                                                                             actionHandler: { [weak self] view in
+                    guard let self else { return }
+                    self.shouldExpandFavoritesSection.toggle()
+                    self.tableView.reloadSections(IndexSet(integer: 0), with: .fade)
+                }))
             }
+            return headerView
+        case .allProducts:
+            let headerView = PlainTextSectionHeaderView()
+            headerView.label.applySubheadlineStyle()
+            headerView.label.text = section.type.title
+            return headerView
         }
-
-        return headerView
     }
 }
 
@@ -1748,7 +1731,7 @@ private extension ProductsViewController {
         static let headerDefaultHeight = CGFloat(130)
         static let headerContainerInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
         static let toolbarButtonInsets = NSDirectionalEdgeInsets(top: 12, leading: 16, bottom: 12, trailing: 16)
-        static let estimatedSectionHeaderHeight: CGFloat = 44
+        static let estimatedSectionHeaderHeight: CGFloat = 32
     }
 
     enum Localization {

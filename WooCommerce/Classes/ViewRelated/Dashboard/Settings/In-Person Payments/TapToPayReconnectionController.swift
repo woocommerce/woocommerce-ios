@@ -15,7 +15,7 @@ final class BuiltInCardReaderConnectionControllerFactory<AlertProvider: CardRead
                                                          AlertPresenter: CardPresentPaymentAlertsPresenting>:
                                                             BuiltInCardReaderConnectionControllerBuilding
 where AlertPresenter.AlertDetails == AlertProvider.AlertDetails {
-    let alertProvider: AlertProvider
+    private let alertProvider: AlertProvider
 
     init(alertProvider: AlertProvider) {
         self.alertProvider = alertProvider

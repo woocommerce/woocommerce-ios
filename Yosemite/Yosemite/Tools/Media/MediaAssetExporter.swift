@@ -115,7 +115,7 @@ public final class MediaAssetExporter: MediaExporter {
         // Configure the options for requesting the image.
         let options = PHVideoRequestOptions()
         options.version = .current
-        options.deliveryMode = .highQualityFormat
+        options.deliveryMode = .automatic
         options.isNetworkAccessAllowed = true
 
         // Export the video.

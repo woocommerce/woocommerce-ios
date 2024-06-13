@@ -13,6 +13,8 @@ struct CardPresentPaymentAlert: View {
             CardPresentPaymentScanningForReadersView(viewModel: alertViewModel)
         case .scanningFailed(let alertViewModel):
             CardPresentPaymentScanningForReadersFailedView(viewModel: alertViewModel)
+        case .bluetoothRequired(let alertViewModel):
+            CardPresentPaymentBluetoothRequiredAlertView(viewModel: alertViewModel)
         case .foundReader(let alertViewModel):
             CardPresentPaymentFoundReadersView(viewModel: alertViewModel)
         case .updatingReader(let alertViewModel):

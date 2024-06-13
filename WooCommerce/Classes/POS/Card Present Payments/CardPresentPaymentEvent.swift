@@ -3,6 +3,7 @@ import Foundation
 enum CardPresentPaymentAlertType {
     case scanningForReaders(viewModel: CardPresentPaymentScanningForReadersAlertViewModel)
     case scanningFailed(viewModel: CardPresentPaymentScanningFailedAlertViewModel)
+    case bluetoothRequired(viewModel: CardPresentPaymentBluetoothRequiredAlertViewModel)
     case foundReader(viewModel: CardPresentPaymentFoundReaderAlertViewModel)
     case updatingReader(viewModel: CardPresentPaymentUpdatingReaderAlertViewModel)
     case updateFailed(viewModel: CardPresentPaymentReaderUpdateFailedAlertViewModel)

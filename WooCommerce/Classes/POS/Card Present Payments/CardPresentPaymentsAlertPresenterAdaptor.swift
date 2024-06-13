@@ -19,9 +19,9 @@ final class CardPresentPaymentsAlertPresenterAdaptor: CardPresentPaymentAlertsPr
                 // TODO: hide it in collectPayment flow
                 paymentAlertSubject.send(.showAlert(.scanningForReaders(viewModel: .init(endSearchAction: endSearch))))
             case .scanningFailed(let error, let endSearch):
-                paymentAlertSubject.send(.showAlert(.scanningFailed(viewModel: .init())))
-            case .bluetoothRequired:
-                paymentAlertSubject.send(.showAlert(.scanningFailed(viewModel: .init())))
+            paymentAlertSubject.send(.showAlert(.scanningFailed(viewModel: .init(error: error, endSearchAction: endSearch))))
+            case .bluetoothRequired(let error, let endSearch):
+            paymentAlertSubject.send(.showAlert(.bluetoothRequired(viewModel: .init(error: error, endSearch: endSearch))))
             case .connectingToReader:
                 // TODO: hide it in collectPayment flow
                 paymentAlertSubject.send(.showAlert(.connectingToReader(viewModel: .init())))

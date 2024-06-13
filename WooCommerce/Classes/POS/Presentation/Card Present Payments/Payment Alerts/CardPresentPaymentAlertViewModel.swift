@@ -3,6 +3,7 @@ import Foundation
 enum CardPresentPaymentAlertViewModel {
     case scanningForReaders(CardPresentPaymentScanningForReadersAlertViewModel)
     case scanningFailed(CardPresentPaymentScanningFailedAlertViewModel)
+    case bluetoothRequired(CardPresentPaymentBluetoothRequiredAlertViewModel)
 
     case foundReader(CardPresentPaymentFoundReaderAlertViewModel)
 
@@ -35,8 +36,8 @@ extension CardPresentPaymentAlertDetails {
                     error: error,
                     endSearchAction: endSearch))
 
-        case .bluetoothRequired:
-                .scanningFailed(CardPresentPaymentScanningFailedAlertViewModel())
+        case .bluetoothRequired(let error, let endSearch):
+                .bluetoothRequired(CardPresentPaymentBluetoothRequiredAlertViewModel(error: error, endSearch: endSearch))
 
         case .connectingToReader:
                 .connectingToReader(CardPresentPaymentConnectingToReaderAlertViewModel())

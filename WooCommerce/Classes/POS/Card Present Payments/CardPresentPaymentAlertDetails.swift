@@ -5,7 +5,8 @@ enum CardPresentPaymentAlertDetails {
     case scanningForReaders(endSearch: () -> Void)
     case scanningFailed(error: Error,
                         endSearch: () -> Void)
-    case bluetoothRequired
+    case bluetoothRequired(error: Error,
+                           endSearch: () -> Void)
     case connectingToReader
     case connectingFailed(error: Error,
                           retrySearch: () -> Void,

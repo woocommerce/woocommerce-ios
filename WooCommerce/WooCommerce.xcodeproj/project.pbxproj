@@ -774,6 +774,8 @@
 		202496642B0B9E0D00EE527D /* ScrollViewSectionKit in Frameworks */ = {isa = PBXBuildFile; productRef = 202496632B0B9E0D00EE527D /* ScrollViewSectionKit */; };
 		2024966A2B0CC97100EE527D /* MockWooPaymentsDepositService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 202496692B0CC97100EE527D /* MockWooPaymentsDepositService.swift */; };
 		202D2A5A2AC5933100E4ABC0 /* TopTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 202D2A592AC5933100E4ABC0 /* TopTabView.swift */; };
+		203163A92C1B5AA7001C96DA /* CardPresentPaymentScanningFailedBluetoothRequiredAlertViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 203163A82C1B5AA7001C96DA /* CardPresentPaymentScanningFailedBluetoothRequiredAlertViewModel.swift */; };
+		203163AB2C1B5DEE001C96DA /* CardPresentPaymentBluetoothRequiredAlertView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 203163AA2C1B5DEE001C96DA /* CardPresentPaymentBluetoothRequiredAlertView.swift */; };
 		203A5C312AC5ADD700BF29A1 /* WooPaymentsDepositsOverviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 203A5C302AC5ADD700BF29A1 /* WooPaymentsDepositsOverviewView.swift */; };
 		204C9C742B6BDFFB007A94E0 /* UIUserInterfaceSizeClass+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 204C9C732B6BDFFB007A94E0 /* UIUserInterfaceSizeClass+Helpers.swift */; };
 		204CB80E2C0F8A5E000C9773 /* MockViewControllerPresenting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 204CB80D2C0F8A5E000C9773 /* MockViewControllerPresenting.swift */; };
@@ -3726,6 +3728,8 @@
 		20203AB12B31EEF1009D0C11 /* ExpandableBottomSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpandableBottomSheet.swift; sourceTree = "<group>"; };
 		202496692B0CC97100EE527D /* MockWooPaymentsDepositService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockWooPaymentsDepositService.swift; sourceTree = "<group>"; };
 		202D2A592AC5933100E4ABC0 /* TopTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopTabView.swift; sourceTree = "<group>"; };
+		203163A82C1B5AA7001C96DA /* CardPresentPaymentScanningFailedBluetoothRequiredAlertViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentScanningFailedBluetoothRequiredAlertViewModel.swift; sourceTree = "<group>"; };
+		203163AA2C1B5DEE001C96DA /* CardPresentPaymentBluetoothRequiredAlertView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentBluetoothRequiredAlertView.swift; sourceTree = "<group>"; };
 		203A5C302AC5ADD700BF29A1 /* WooPaymentsDepositsOverviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooPaymentsDepositsOverviewView.swift; sourceTree = "<group>"; };
 		204C9C732B6BDFFB007A94E0 /* UIUserInterfaceSizeClass+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIUserInterfaceSizeClass+Helpers.swift"; sourceTree = "<group>"; };
 		204CB80D2C0F8A5E000C9773 /* MockViewControllerPresenting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockViewControllerPresenting.swift; sourceTree = "<group>"; };
@@ -6613,6 +6617,7 @@
 			children = (
 				026826BE2BF59E410036F959 /* CardPresentPaymentScanningForReadersView.swift */,
 				026826B62BF59E400036F959 /* CardPresentPaymentScanningForReadersFailedView.swift */,
+				203163AA2C1B5DEE001C96DA /* CardPresentPaymentBluetoothRequiredAlertView.swift */,
 				026826B82BF59E400036F959 /* CardPresentPaymentConnectingToReaderView.swift */,
 				026826B72BF59E400036F959 /* CardPresentPaymentConnectingFailedView.swift */,
 				026826BB2BF59E410036F959 /* CardPresentPaymentFoundReadersView.swift */,
@@ -7553,6 +7558,7 @@
 				205B7EC82C19FCDB00D14A36 /* CardPresentPaymentTapSwipeInsertCardAlertViewModel.swift */,
 				205B7EB82C19FAF700D14A36 /* CardPresentPaymentScanningForReadersAlertViewModel.swift */,
 				205B7EBA2C19FB1200D14A36 /* CardPresentPaymentScanningFailedAlertViewModel.swift */,
+				203163A82C1B5AA7001C96DA /* CardPresentPaymentScanningFailedBluetoothRequiredAlertViewModel.swift */,
 				205B7EBC2C19FB6600D14A36 /* CardPresentPaymentFoundReaderAlertViewModel.swift */,
 				205B7EBE2C19FBCA00D14A36 /* CardPresentPaymentUpdatingReaderAlertViewModel.swift */,
 				205B7ED02C19FD8500D14A36 /* CardPresentPaymentErrorAlertViewModel.swift */,
@@ -14315,6 +14321,7 @@
 				026826932BF59D830036F959 /* PointOfSaleDashboardViewModel.swift in Sources */,
 				026CF63A237E9ABE009563D4 /* ProductVariationsViewController.swift in Sources */,
 				45D685FE23D0FB25005F87D0 /* Throttler.swift in Sources */,
+				203163AB2C1B5DEE001C96DA /* CardPresentPaymentBluetoothRequiredAlertView.swift in Sources */,
 				DE5C19C92AC42E7E0064600A /* WooAnalyticsEvent+ProductNameAI.swift in Sources */,
 				0250192E2BDF81F3009493A5 /* OrderCustomerSection.swift in Sources */,
 				459097F823CDE47F00DEA9E0 /* UIAlertController+Helpers.swift in Sources */,
@@ -15470,6 +15477,7 @@
 				03191AE628E1DF0600670723 /* PluginDetailsViewModel.swift in Sources */,
 				CE22709F2293052700C0626C /* WebviewHelper.swift in Sources */,
 				02BA12852461674B008D8325 /* Optional+String.swift in Sources */,
+				203163A92C1B5AA7001C96DA /* CardPresentPaymentScanningFailedBluetoothRequiredAlertViewModel.swift in Sources */,
 				DEEDA239298A11FB0088256B /* SiteCredentialLoginUseCase.swift in Sources */,
 				744F00D221B582A9007EFA93 /* StarRatingView.swift in Sources */,
 				45F627B9253603AE00894B86 /* ProductDownloadSettingsViewModel.swift in Sources */,

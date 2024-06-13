@@ -9,7 +9,6 @@ import protocol Yosemite.POSItem
 import class WooFoundation.CurrencyFormatter
 import class WooFoundation.CurrencySettings
 
-@MainActor
 final class PointOfSaleDashboardViewModel: ObservableObject {
     enum PaymentState {
         case acceptingCard

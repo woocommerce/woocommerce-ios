@@ -1089,6 +1089,7 @@ enum WooAnalyticsStat: String {
     case customersHubDetailPhoneMenuTapped = "customers_hub_customer_detail_phone_menu_tapped"
     case customersHubDetailPhoneActionTapped = "customers_hub_customer_detail_phone_action_tapped"
     case customersHubDetailAddressCopied = "customers_hub_customer_detail_address_copied"
+    case customersHubDetailNewOrderTapped = "customers_hub_customer_detail_new_order_tapped"
 
     // MARK: Close Account
     case closeAccountTapped = "close_account_tapped"

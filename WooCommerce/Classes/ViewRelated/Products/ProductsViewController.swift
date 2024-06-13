@@ -222,10 +222,6 @@ final class ProductsViewController: UIViewController, GhostableViewController {
     ///
     private var sections: [ProductListViewSection] = []
 
-    private var isShowingFavoritesSection: Bool {
-        sections.contains(where: { $0.type == .favorites })
-    }
-
     deinit {
         NotificationCenter.default.removeObserver(self)
     }

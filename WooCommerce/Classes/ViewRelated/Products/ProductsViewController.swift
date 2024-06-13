@@ -1236,7 +1236,7 @@ extension ProductsViewController: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        true
+        sections[indexPath.section].type == .allProducts
     }
 
     func scrollViewDidScroll(_ scrollView: UIScrollView) {

@@ -176,6 +176,9 @@ final class ProductsViewController: UIViewController, GhostableViewController {
                                                   productStatus: filters.productStatus,
                                                   productType: filters.promotableProductType?.productType)
 
+                /// Collapse favorites section when there are active filters for easy viewing
+                shouldExpandFavoritesSection = filters.numberOfActiveFilters == 0
+
                 /// Reload because `updatePredicate` calls `performFetch` when creating a new predicate
                 tableView.reloadData()
 
@@ -228,6 +231,7 @@ final class ProductsViewController: UIViewController, GhostableViewController {
     }
 
     private var favoriteProducts: [Product] = []
+    private var shouldExpandFavoritesSection = true
 
     // MARK: - View Lifecycle
 
@@ -1092,7 +1096,19 @@ extension ProductsViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        sections[section].products.count
+        guard let section = sections[safe: section] else {
+            return 0
+        }
+
+        switch section.type {
+        case .allProducts:
+            return section.products.count
+        case .favorites:
+            guard shouldExpandFavoritesSection else {
+                return 0
+            }
+            return section.products.count
+        }
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {

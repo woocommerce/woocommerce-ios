@@ -97,6 +97,8 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
 
     private let onDeleteCompletion: () -> Void
 
+    private let onMarkOrRemoveFavorite: () -> Void
+
     private let userDefaults: UserDefaults
 
     init(viewModel: ViewModel,
@@ -107,7 +109,8 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
          presentationStyle: ProductFormPresentationStyle,
          productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,
          userDefaults: UserDefaults = .standard,
-         onDeleteCompletion: @escaping () -> Void = {}) {
+         onDeleteCompletion: @escaping () -> Void = {},
+         onMarkOrRemoveFavorite: @escaping () -> Void = {}) {
         self.viewModel = viewModel
         self.isAIContent = isAIContent
         self.eventLogger = eventLogger
@@ -119,6 +122,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         self.userDefaults = userDefaults
         self.productImageUploader = productImageUploader
         self.onDeleteCompletion = onDeleteCompletion
+        self.onMarkOrRemoveFavorite = onMarkOrRemoveFavorite
         self.aiEligibilityChecker = .init(site: ServiceLocator.stores.sessionManager.defaultSite)
         self.tableViewModel = DefaultProductFormTableViewModel(product: viewModel.productModel,
                                                                actionsFactory: viewModel.actionsFactory,
@@ -362,11 +366,13 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                 actionSheet.addDefaultActionWithTitle(ActionSheetStrings.Favorite.removeFromFavorite) { [weak self] _ in
                     ServiceLocator.analytics.track(event: .ProductForm.productDetailRemoveFromFavoriteButtonTapped())
                     self?.viewModel.removeFromFavorite()
+                    self?.onMarkOrRemoveFavorite()
                 }
             } else {
                 actionSheet.addDefaultActionWithTitle(ActionSheetStrings.Favorite.markAsFavorite) { [weak self] _ in
                     ServiceLocator.analytics.track(event: .ProductForm.productDetailMarkAsFavoriteButtonTapped())
                     self?.viewModel.markAsFavorite()
+                    self?.onMarkOrRemoveFavorite()
                 }
             }
         }

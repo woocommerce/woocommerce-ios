@@ -117,9 +117,15 @@ private extension ProductsSplitViewCoordinator {
                                              forceReadOnly: false,
                                              onDeleteCompletion: { [weak self] in
             self?.onSecondaryProductFormDeletion()
-        }) { [weak self] viewController in
+        },
+                                             onMarkOrRemoveFavorite: {
+            Task { @MainActor [weak self] in
+                await self?.productsViewController.reloadFavorites()
+            }
+        },
+                                             onCompletion: { [weak self] viewController in
             self?.showSecondaryView(contentType: .productForm(product: product), viewController: viewController, replacesNavigationStack: true)
-        }
+        })
     }
 
     func startProductCreationIfNoUnsavedChanges(sourceView: AddProductCoordinator.SourceView, isFirstProduct: Bool) {

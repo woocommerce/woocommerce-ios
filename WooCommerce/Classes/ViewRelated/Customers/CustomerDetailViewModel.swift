@@ -152,6 +152,7 @@ final class CustomerDetailViewModel: ObservableObject {
             return
         }
         MainTabBarController.presentOrderCreationFlow(for: customerID, billing: billing, shipping: shipping)
+        ServiceLocator.analytics.track(event: .CustomersHub.customerDetailNewOrder())
     }
 }
 

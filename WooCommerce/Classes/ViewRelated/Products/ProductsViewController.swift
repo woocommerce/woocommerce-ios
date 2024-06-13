@@ -1272,9 +1272,15 @@ private extension ProductsViewController {
         guard isSplitViewEnabled else {
             ProductDetailsFactory.productDetails(product: product,
                                                  presentationStyle: .navigationStack,
-                                                 forceReadOnly: false) { [weak self] viewController in
+                                                 forceReadOnly: false,
+                                                 onMarkOrRemoveFavorite: { [weak self] in
+                Task { @MainActor in
+                    await self?.reloadFavorites()
+                }
+            },
+                                                 onCompletion: { [weak self] viewController in
                 self?.navigationController?.pushViewController(viewController, animated: true)
-            }
+            })
             return
         }
         navigateToContent(.productForm(product: product))

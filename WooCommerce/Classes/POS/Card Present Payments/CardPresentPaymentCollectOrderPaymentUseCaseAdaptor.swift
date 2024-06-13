@@ -15,8 +15,8 @@ struct CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
                             using connectionMethod: CardReaderConnectionMethod,
                             siteID: Int64,
                             preflightController: CardPresentPaymentPreflightController<
-                            BluetoothReaderConnectionAlertsProvider,
-                            BuiltInReaderConnectionAlertsProvider,
+                            CardPresentPaymentBluetoothReaderConnectionAlertsProvider,
+                            CardPresentPaymentBuiltInReaderConnectionAlertsProvider,
                             CardPresentPaymentsAlertPresenterAdaptor>,
                             onboardingPresenter: CardPresentPaymentsOnboardingPresenting,
                             configuration: CardPresentPaymentsConfiguration,
@@ -27,8 +27,8 @@ struct CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
                 throw CardPresentPaymentServiceError.invalidAmount
             }
 
-            let orderPaymentUseCase = CollectOrderPaymentUseCase<BuiltInCardReaderPaymentAlertsProvider,
-                                                                 BluetoothCardReaderPaymentAlertsProvider,
+            let orderPaymentUseCase = CollectOrderPaymentUseCase<CardPresentPaymentsTransactionAlertsProvider,
+                                                                 CardPresentPaymentsTransactionAlertsProvider,
                                                                     CardPresentPaymentsAlertPresenterAdaptor>(
                 siteID: siteID,
                 order: order,
@@ -37,8 +37,8 @@ struct CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
                 onboardingPresenter: onboardingPresenter,
                 configuration: configuration,
                 alertsPresenter: alertsPresenter,
-                tapToPayAlertsProvider: BuiltInCardReaderPaymentAlertsProvider(),
-                bluetoothAlertsProvider: BluetoothCardReaderPaymentAlertsProvider(transactionType: .collectPayment),
+                tapToPayAlertsProvider: CardPresentPaymentsTransactionAlertsProvider(),
+                bluetoothAlertsProvider: CardPresentPaymentsTransactionAlertsProvider(),
                 preflightController: preflightController)
 
             return try await withTaskCancellationHandler {

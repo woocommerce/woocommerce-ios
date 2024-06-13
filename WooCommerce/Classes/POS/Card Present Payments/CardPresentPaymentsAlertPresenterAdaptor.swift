@@ -2,7 +2,7 @@ import Foundation
 import Combine
 
 final class CardPresentPaymentsAlertPresenterAdaptor: CardPresentPaymentAlertsPresenting {
-    typealias AlertDetails = CardPresentPaymentsModalViewModel
+    typealias AlertDetails = CardPresentPaymentAlertDetails
     let paymentAlertPublisher: AnyPublisher<CardPresentPaymentEvent, Never>
 
     private let paymentAlertSubject: PassthroughSubject<CardPresentPaymentEvent, Never> = PassthroughSubject()
@@ -13,7 +13,7 @@ final class CardPresentPaymentsAlertPresenterAdaptor: CardPresentPaymentAlertsPr
         paymentAlertPublisher = paymentAlertSubject.eraseToAnyPublisher()
     }
 
-    func present(viewModel: CardPresentPaymentsModalViewModel) {
+    func present(viewModel: CardPresentPaymentAlertDetails) {
         paymentAlertSubject.send(.showAlert(viewModel))
     }
 

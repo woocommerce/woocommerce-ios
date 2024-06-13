@@ -22,6 +22,7 @@ struct PointOfSaleDashboardView: View {
                     Spacer()
                         VStack {
                             totalsView
+                            // TODO: replace temporary inline message UI based on design
                             if let inlinePaymentMessage = viewModel.cardPresentPaymentInlineMessage {
                                 switch inlinePaymentMessage {
                                     case .preparingForPayment:
@@ -39,6 +40,8 @@ struct PointOfSaleDashboardView: View {
                                 }
                             }
                         }
+                        // TODO: remove this after replacing temporary inline message UI based on design
+                        .background(Color.orange)
                 }
             }
             .padding()

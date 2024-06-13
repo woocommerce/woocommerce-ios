@@ -1246,6 +1246,10 @@ extension ProductsViewController: UITableViewDelegate {
     /// Provide an implementation to show cell swipe actions. Return `nil` to provide no action.
     ///
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        guard sections[indexPath.section].type == .allProducts else {
+            return nil
+        }
+
         let product = product(for: indexPath)
         guard ServiceLocator.stores.sessionManager.defaultSite?.visibility == .publicSite,
               product.productStatus == .published,

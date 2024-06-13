@@ -13,6 +13,7 @@ struct ConnectView: View {
         VStack(spacing: Layout.mainSpacing) {
             Text(message)
                 .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
 
             Image(systemName: "bolt.fill")
                 .renderingMode(.original)
@@ -20,7 +21,7 @@ struct ConnectView: View {
                 .frame(width: Layout.boltSize.width, height: Layout.boltSize.height)
                 .foregroundStyle(Layout.ambarColor)
         }
-        .padding()
+        .padding(.vertical)
         .task {
             tracksProvider.sendTracksEvent(.watchConnectingOpened)
         }

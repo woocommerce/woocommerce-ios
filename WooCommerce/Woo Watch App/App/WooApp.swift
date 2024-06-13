@@ -18,13 +18,14 @@ struct Woo_Watch_AppApp: App {
         WindowGroup {
             Group {
                 if let dependencies = phoneDependencySynchronizer.dependencies {
+                    NavigationStack {
+                        TabView(selection: $selectedTab) {
+                            MyStoreView(dependencies: dependencies, watchTab: $selectedTab)
+                                .tag(WooWatchTab.myStore)
 
-                    TabView(selection: $selectedTab) {
-                        MyStoreView(dependencies: dependencies, watchTab: $selectedTab)
-                            .tag(WooWatchTab.myStore)
-
-                        OrdersListView(dependencies: dependencies, watchTab: $selectedTab)
-                            .tag(WooWatchTab.ordersList)
+                            OrdersListView(dependencies: dependencies, watchTab: $selectedTab)
+                                .tag(WooWatchTab.ordersList)
+                        }
                     }
                     .sheet(item: $appBindings.orderNotification, content: { orderNotification in
                         OrderDetailLoader(dependencies: dependencies, pushNotification: orderNotification)

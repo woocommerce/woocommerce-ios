@@ -32,7 +32,7 @@ final class CardPresentPaymentPreflightController: CardPresentPaymentPreflightCo
 
     /// Alerts presenter to send alert view models
     ///
-    private var alertsPresenter: CardPresentPaymentAlertsPresenting
+    private var alertsPresenter: any CardPresentPaymentAlertsPresenting<CardPresentPaymentsModalViewModel>
 
     /// Stores manager.
     ///
@@ -78,7 +78,7 @@ final class CardPresentPaymentPreflightController: CardPresentPaymentPreflightCo
     init(siteID: Int64,
          configuration: CardPresentPaymentsConfiguration,
          rootViewController: ViewControllerPresenting,
-         alertsPresenter: CardPresentPaymentAlertsPresenting,
+         alertsPresenter: any CardPresentPaymentAlertsPresenting<CardPresentPaymentsModalViewModel>,
          onboardingPresenter: CardPresentPaymentsOnboardingPresenting,
          externalReaderConnectionController: CardReaderConnectionController? = nil,
          tapToPayConnectionController: BuiltInCardReaderConnectionController? = nil,

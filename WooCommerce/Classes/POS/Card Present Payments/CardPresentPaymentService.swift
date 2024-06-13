@@ -15,7 +15,7 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
 
     private let onboardingAdaptor: CardPresentPaymentsOnboardingPresenterAdaptor
 
-    private let paymentAlertsPresenterAdaptor: CardPresentPaymentAlertsPresenting
+    private let paymentAlertsPresenterAdaptor: CardPresentPaymentsAlertPresenterAdaptor
     private let connectionControllerManager: CardPresentPaymentsConnectionControllerManager
 
     private let siteID: Int64

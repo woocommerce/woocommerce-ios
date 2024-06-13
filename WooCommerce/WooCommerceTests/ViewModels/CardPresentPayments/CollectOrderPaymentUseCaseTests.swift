@@ -16,7 +16,9 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
     private var mockPreflightController: MockCardPresentPaymentPreflightController!
     private var mockAnalyticsTracker: MockCollectOrderPaymentAnalyticsTracker!
     private var mockPaymentOrchestrator: MockPaymentCaptureOrchestrator!
-    private var useCase: CollectOrderPaymentUseCase!
+    private var useCase: CollectOrderPaymentUseCase<BuiltInCardReaderPaymentAlertsProvider,
+                                                        BluetoothCardReaderPaymentAlertsProvider,
+                                                        MockCardPresentPaymentAlertsPresenter>!
 
     override func setUp() {
         super.setUp()
@@ -94,19 +96,22 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
     func test_collectPayment_with_below_minimum_amount_results_in_failure_and_tracks_collectPaymentFailed_event() throws {
         // Given
         let order = Order.fake().copy(total: "0.49")
-        let useCase = CollectOrderPaymentUseCase(siteID: 122,
-                                                 order: order,
-                                                 formattedAmount: "0.49",
-                                                 rootViewController: MockViewControllerPresenting(),
-                                                 onboardingPresenter: onboardingPresenter,
-                                                 configuration: Mocks.configuration,
-                                                 stores: stores,
-                                                 paymentOrchestrator: mockPaymentOrchestrator,
-                                                 alertsPresenter: alertsPresenter,
-                                                 tapToPayAlertsProvider: BuiltInCardReaderPaymentAlertsProvider(),
-                                                 bluetoothAlertsProvider: BluetoothCardReaderPaymentAlertsProvider(transactionType: .collectPayment),
-                                                 preflightController: mockPreflightController,
-                                                 analyticsTracker: mockAnalyticsTracker)
+        let useCase = CollectOrderPaymentUseCase<BuiltInCardReaderPaymentAlertsProvider,
+                                                    BluetoothCardReaderPaymentAlertsProvider,
+                                                    MockCardPresentPaymentAlertsPresenter>(
+            siteID: 122,
+            order: order,
+            formattedAmount: "0.49",
+            rootViewController: MockViewControllerPresenting(),
+            onboardingPresenter: onboardingPresenter,
+            configuration: Mocks.configuration,
+            stores: stores,
+            paymentOrchestrator: mockPaymentOrchestrator,
+            alertsPresenter: alertsPresenter,
+            tapToPayAlertsProvider: BuiltInCardReaderPaymentAlertsProvider(),
+            bluetoothAlertsProvider: BluetoothCardReaderPaymentAlertsProvider(transactionType: .collectPayment),
+            preflightController: mockPreflightController,
+            analyticsTracker: mockAnalyticsTracker)
 
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {

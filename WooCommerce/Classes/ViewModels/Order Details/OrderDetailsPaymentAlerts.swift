@@ -29,7 +29,7 @@ final class OrderDetailsPaymentAlerts: OrderDetailsPaymentAlertsProtocol {
 
     private let transactionType: CardPresentTransactionType
 
-    private let alertsProvider: CardReaderTransactionAlertsProviding
+    private let alertsProvider: BluetoothCardReaderPaymentAlertsProvider
 
     init(transactionType: CardPresentTransactionType,
          presentingController: UIViewController) {

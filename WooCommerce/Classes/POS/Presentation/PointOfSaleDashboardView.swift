@@ -20,7 +20,25 @@ struct PointOfSaleDashboardView: View {
                 case .finalizing:
                     cartView
                     Spacer()
-                    totalsView
+                        VStack {
+                            totalsView
+                            if let inlinePaymentMessage = viewModel.cardPresentPaymentInlineMessage {
+                                switch inlinePaymentMessage {
+                                    case .preparingForPayment:
+                                        Text("Preparing for payment...")
+                                    case .tapSwipeOrInsertCard:
+                                        Text("tapSwipeOrInsertCard...")
+                                    case .processing:
+                                        Text("processing...")
+                                    case .displayReaderMessage(let message):
+                                        Text("Reader message: \(message)")
+                                    case .success:
+                                        Text("Payment successful!")
+                                    case .error:
+                                        Text("Payment error")
+                                }
+                            }
+                        }
                 }
             }
             .padding()
@@ -33,14 +51,11 @@ struct PointOfSaleDashboardView: View {
             }
         }
         .sheet(isPresented: $viewModel.showsCardReaderSheet, content: {
-            switch viewModel.cardPresentPaymentEvent {
-            case .showAlert(let alertDetails):
-                CardPresentPaymentAlert(
-                    viewModel: alertDetails.toAlertViewModel())
-            case .idle,
-                    .showReaderList,
-                    .showOnboarding:
-                Text(viewModel.cardPresentPaymentEvent.temporaryEventDescription)
+            // Might be the only way unless we make the type conform to `Identifiable`
+            if let alertType = viewModel.cardPresentPaymentAlertViewModel {
+                CardPresentPaymentAlert(alertType: alertType)
+            } else {
+                EmptyView()
             }
         })
         .sheet(isPresented: $viewModel.showsFilterSheet, content: {
@@ -81,6 +96,8 @@ fileprivate extension CardPresentPaymentEvent {
             return "Reader List: \(readerIDs.joined())"
         case .showOnboarding(let onboardingViewModel):
             return "Onboarding: \(onboardingViewModel.state.reasonForAnalytics)" // This will only show the initial onboarding state
+        case .showPaymentMessage:
+            return "Payment message"
         }
     }
 }

@@ -7,7 +7,6 @@ final class PlainTextSectionHeaderView: UITableViewHeaderFooterView {
 
     override init(reuseIdentifier: String?) {
         super.init(reuseIdentifier: reuseIdentifier)
-        configureBackground()
         configureLabel()
     }
 
@@ -17,10 +16,6 @@ final class PlainTextSectionHeaderView: UITableViewHeaderFooterView {
 }
 
 private extension PlainTextSectionHeaderView {
-    func configureBackground() {
-        contentView.backgroundColor = .basicBackground
-    }
-
     func configureLabel() {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.numberOfLines = 0

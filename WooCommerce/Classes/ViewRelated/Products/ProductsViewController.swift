@@ -273,8 +273,10 @@ final class ProductsViewController: UIViewController, GhostableViewController {
 
         Task { @MainActor [weak self] in
             guard let self else { return }
+
+            await fetchFavoriteProducts()
+
             await syncProductsSettings()
-            await reloadFavorites()
         }
     }
 
@@ -327,7 +329,7 @@ final class ProductsViewController: UIViewController, GhostableViewController {
 
     @MainActor
     func reloadFavorites() async {
-        favoriteProducts = await fetchFavoriteProducts()
+        await fetchFavoriteProducts()
 
         await MainActor.run {
             // Reload to render fav products section
@@ -1081,11 +1083,13 @@ private extension ProductsViewController {
 // MARK: - Favorite products
 //
 private extension ProductsViewController {
-    func fetchFavoriteProducts() async -> [Product] {
-        guard let products = await viewModel.fetchFavoriteProducts() else {
-            return []
-        }
-        return products.sortUsing(sortOrder)
+    func fetchFavoriteProducts() async {
+        favoriteProducts = await {
+            guard let products = await viewModel.fetchFavoriteProducts() else {
+                return []
+            }
+            return products.sortUsing(sortOrder)
+        }()
     }
 }
 
@@ -1309,9 +1313,9 @@ private extension ProductsViewController {
         Task { @MainActor [weak self] in
             guard let self else { return }
 
-            await paginationTracker.resync()
-
             await reloadFavorites()
+
+            await paginationTracker.resync()
 
             sender.endRefreshing()
         }

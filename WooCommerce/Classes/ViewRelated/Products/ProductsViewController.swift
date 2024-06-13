@@ -989,18 +989,17 @@ private extension ProductsViewController {
     /// If any of the filters has to be synchronize remotely, it is done so after the filters are loaded, and the data updated if necessary.
     /// If no info are stored (so there is a failure), we resynchronize the syncingCoordinator for updating the screen using the default sort/filters.
     ///
-    func syncProductsSettings() {
-        syncLocalProductsSettings { [weak self] (result) in
-            guard let self else { return }
+    @MainActor
+    func syncProductsSettings() async {
+        do {
+            _ = try await syncLocalProductsSettings()
 
-            if result.isFailure {
-                paginationTracker.resync()
-            } else {
-                // Emits `onDataReloaded` when local product settings (filters & sort order) are loaded and synced, so that
-                // the first product selected in `selectFirstProductIfAvailable` is only triggered when the results match
-                // the product settings.
-                onDataReloaded.send(())
-            }
+            // Emits `onDataReloaded` when local product settings (filters & sort order) are loaded and synced, so that
+            // the first product selected in `selectFirstProductIfAvailable` is only triggered when the results match
+            // the product settings.
+            onDataReloaded.send(())
+        } catch {
+            await paginationTracker.resync()
         }
     }
 

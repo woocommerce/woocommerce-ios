@@ -57,19 +57,23 @@ struct PointOfSaleDashboardView: View {
         .toolbarBackground(.visible, for: .bottomBar)
         .sheet(isPresented: $viewModel.showsCardReaderSheet, content: {
             // Might be the only way unless we make the type conform to `Identifiable`
-            switch viewModel.cardPresentPaymentEvent {
-            case .showAlert(let alertType):
+            if let alertType = viewModel.cardPresentPaymentAlertViewModel {
                 CardPresentPaymentAlert(alertType: alertType)
-            case let .showReaderList(readerIDs, selectionHandler):
-                FoundCardReaderListView(readerIDs: readerIDs, connect: { readerID in
-                    selectionHandler(readerID)
-                }, cancelSearch: {
-                    selectionHandler(nil)
-                })
-            case .idle,
-                    .showOnboarding,
-                    .showPaymentMessage:
-                Text(viewModel.cardPresentPaymentEvent.temporaryEventDescription)
+            } else {
+                switch viewModel.cardPresentPaymentEvent {
+                case let .showReaderList(readerIDs, selectionHandler):
+                    // TODO: make this an instance of `showAlert` so we can handle it above too.
+                    FoundCardReaderListView(readerIDs: readerIDs, connect: { readerID in
+                        selectionHandler(readerID)
+                    }, cancelSearch: {
+                        selectionHandler(nil)
+                    })
+                case .idle,
+                        .showAlert, // handled abo ve
+                        .showOnboarding,
+                        .showPaymentMessage:
+                    Text(viewModel.cardPresentPaymentEvent.temporaryEventDescription)
+                }
             }
         })
         .sheet(isPresented: $viewModel.showsFilterSheet, content: {

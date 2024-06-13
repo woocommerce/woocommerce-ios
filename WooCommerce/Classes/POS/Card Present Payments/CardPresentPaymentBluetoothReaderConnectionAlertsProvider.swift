@@ -3,7 +3,7 @@ import Foundation
 struct CardPresentPaymentBluetoothReaderConnectionAlertsProvider: BluetoothReaderConnnectionAlertsProviding {
     typealias AlertDetails = CardPresentPaymentAlertDetails
     func scanningForReader(cancel: @escaping () -> Void) -> CardPresentPaymentAlertDetails {
-        .scanningForReaders(endSearch: {})
+        .scanningForReaders(endSearch: cancel)
     }
 
     func scanningFailed(error: any Error,

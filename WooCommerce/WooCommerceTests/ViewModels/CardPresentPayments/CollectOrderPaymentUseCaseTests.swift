@@ -12,7 +12,6 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
 
     private var stores: MockStoresManager!
     private var alertsPresenter: MockCardPresentPaymentAlertsPresenter!
-    private var onboardingPresenter: MockCardPresentPaymentsOnboardingPresenter!
     private var mockPreflightController: MockCardPresentPaymentPreflightController!
     private var mockAnalyticsTracker: MockCollectOrderPaymentAnalyticsTracker!
     private var mockPaymentOrchestrator: MockPaymentCaptureOrchestrator!
@@ -25,7 +24,6 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
         stores = MockStoresManager(sessionManager: .testingInstance)
         stores.reset()
         mockAnalyticsTracker = MockCollectOrderPaymentAnalyticsTracker()
-        onboardingPresenter = MockCardPresentPaymentsOnboardingPresenter()
         mockPaymentOrchestrator = MockPaymentCaptureOrchestrator()
         alertsPresenter = MockCardPresentPaymentAlertsPresenter()
         mockPreflightController = MockCardPresentPaymentPreflightController()
@@ -44,7 +42,6 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
                                              order: order,
                                              formattedAmount: "1.5",
                                              rootViewController: MockViewControllerPresenting(),
-                                             onboardingPresenter: onboardingPresenter,
                                              configuration: Mocks.configuration,
                                              stores: stores,
                                              paymentOrchestrator: mockPaymentOrchestrator,
@@ -103,7 +100,6 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
             order: order,
             formattedAmount: "0.49",
             rootViewController: MockViewControllerPresenting(),
-            onboardingPresenter: onboardingPresenter,
             configuration: Mocks.configuration,
             stores: stores,
             paymentOrchestrator: mockPaymentOrchestrator,

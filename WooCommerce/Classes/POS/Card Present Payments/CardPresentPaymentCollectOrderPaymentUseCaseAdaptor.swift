@@ -15,8 +15,8 @@ struct CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
                             using connectionMethod: CardReaderConnectionMethod,
                             siteID: Int64,
                             preflightController: CardPresentPaymentPreflightController<
-                            CardPresentPaymentBluetoothReaderConnectionAlertsProvider,
                             CardPresentPaymentBuiltInReaderConnectionAlertsProvider,
+                            CardPresentPaymentBluetoothReaderConnectionAlertsProvider,
                             CardPresentPaymentsAlertPresenterAdaptor>,
                             onboardingPresenter: CardPresentPaymentsOnboardingPresenting,
                             configuration: CardPresentPaymentsConfiguration,
@@ -34,7 +34,6 @@ struct CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
                 order: order,
                 formattedAmount: formattedAmount,
                 rootViewController: NullViewControllerPresenting(),
-                onboardingPresenter: onboardingPresenter,
                 configuration: configuration,
                 alertsPresenter: alertsPresenter,
                 tapToPayAlertsProvider: CardPresentPaymentsTransactionAlertsProvider(),

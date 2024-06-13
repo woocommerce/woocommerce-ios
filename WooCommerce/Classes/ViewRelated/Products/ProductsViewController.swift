@@ -1104,11 +1104,43 @@ extension ProductsViewController: UITableViewDataSource {
         return cell
     }
 
-    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        guard isShowingFavoritesSection else {
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        UITableView.automaticDimension
+    }
+
+    func tableView(_ tableView: UITableView, estimatedHeightForHeaderInSection section: Int) -> CGFloat {
+        Constants.estimatedSectionHeaderHeight
+    }
+
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        guard let section = sections[safe: section] else {
             return nil
         }
-        return sections[section].type.title
+
+        let reuseIdentifier = section.type.headerViewType.reuseIdentifier
+        guard let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: reuseIdentifier) else {
+            assertionFailure("Could not find section header view for reuseIdentifier \(reuseIdentifier)")
+            return nil
+        }
+
+        if let headerView = headerView as? PrimarySectionHeaderView {
+            switch section.type {
+            case .favorites:
+                if let image = UIImage(systemName: shouldExpandFavoritesSection ? "chevron.up" : "chevron.down") {
+                    headerView.configure(title: section.type.title,
+                                         action: PrimarySectionHeaderView.ActionConfiguration(image: image,
+                                                                                              actionHandler: { [weak self] view in
+                        guard let self else { return }
+                        self.shouldExpandFavoritesSection.toggle()
+                        self.tableView.reloadSections(IndexSet(integer: 0), with: .fade)
+                    }))
+                }
+            case .allProducts:
+                headerView.configure(title: section.type.title)
+            }
+        }
+
+        return headerView
     }
 }
 
@@ -1688,6 +1720,7 @@ private extension ProductsViewController {
         static let headerDefaultHeight = CGFloat(130)
         static let headerContainerInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
         static let toolbarButtonInsets = NSDirectionalEdgeInsets(top: 12, leading: 16, bottom: 12, trailing: 16)
+        static let estimatedSectionHeaderHeight: CGFloat = 44
     }
 
     enum Localization {

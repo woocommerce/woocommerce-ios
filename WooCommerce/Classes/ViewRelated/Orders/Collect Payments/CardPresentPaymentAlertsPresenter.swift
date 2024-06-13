@@ -14,6 +14,7 @@ protocol CardPresentPaymentAlertsPresenting<AlertDetails> {
 }
 
 final class CardPresentPaymentAlertsPresenter: CardPresentPaymentAlertsPresenting {
+    typealias AlertDetails = CardPresentPaymentsModalViewModel
     private var modalController: CardPresentPaymentsModalViewController?
     private var severalFoundController: SeveralReadersFoundViewController?
 

@@ -140,18 +140,25 @@ private extension CardPresentPaymentService {
         }
     }
 
-    func createPreflightController() -> CardPresentPaymentPreflightController {
-        return CardPresentPaymentPreflightController(
-            siteID: siteID,
-            configuration: cardPresentPaymentsConfiguration,
-            rootViewController: NullViewControllerPresenting(),
-            alertsPresenter: paymentAlertsPresenterAdaptor,
-            onboardingPresenter: onboardingAdaptor,
-            externalReaderConnectionController: connectionControllerManager.externalReaderConnectionController,
-            tapToPayConnectionController: connectionControllerManager.tapToPayConnectionController,
-            tapToPayAlertProvider: BuiltInReaderConnectionAlertsProvider(),
-            analyticsTracker: connectionControllerManager.analyticsTracker)
-    }
+    func createPreflightController() -> CardPresentPaymentPreflightController<
+        BluetoothReaderConnectionAlertsProvider,
+        BuiltInReaderConnectionAlertsProvider,
+        CardPresentPaymentsAlertPresenterAdaptor> {
+            let alertProvider = BuiltInReaderConnectionAlertsProvider()
+            return CardPresentPaymentPreflightController(
+                siteID: siteID,
+                configuration: cardPresentPaymentsConfiguration,
+                rootViewController: NullViewControllerPresenting(),
+                alertsPresenter: paymentAlertsPresenterAdaptor,
+                onboardingPresenter: onboardingAdaptor,
+                tapToPayAlertProvider: alertProvider,
+                externalReaderConnectionController: connectionControllerManager.externalReaderConnectionController,
+                tapToPayConnectionController: connectionControllerManager.tapToPayConnectionController,
+                tapToPayReconnectionController: TapToPayReconnectionController(
+                    connectionControllerFactory: BuiltInCardReaderConnectionControllerFactory(
+                        alertProvider: alertProvider)),
+                analyticsTracker: connectionControllerManager.analyticsTracker)
+        }
 }
 
 enum CardPresentPaymentServiceError: Error {

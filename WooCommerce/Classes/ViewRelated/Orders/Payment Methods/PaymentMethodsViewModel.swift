@@ -245,9 +245,10 @@ final class PaymentMethodsViewModel: ObservableObject {
                                                                        rootViewController: rootViewController,
                                                                        alertsPresenter: alertsPresenter,
                                                                        onboardingPresenter: self.cardPresentPaymentsOnboardingPresenter,
+                                                                       tapToPayAlertProvider: BuiltInReaderConnectionAlertsProvider(),
                                                                        externalReaderConnectionController: externalReaderConnectionController,
                                                                        tapToPayConnectionController: tapToPayConnectionController,
-                                                                       tapToPayAlertProvider: tapToPayAlertsProvider,
+                                                                       tapToPayReconnectionController: ServiceLocator.tapToPayReconnectionController,
                                                                        analyticsTracker: analyticsTracker))
 
         collectPaymentsUseCase?.collectPayment(

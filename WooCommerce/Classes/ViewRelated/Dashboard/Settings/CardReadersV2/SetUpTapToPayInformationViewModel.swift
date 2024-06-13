@@ -23,8 +23,8 @@ final class SetUpTapToPayInformationViewModel: PaymentSettingsFlowPresentedViewM
     private let onboardingStatePublisher: Published<CardPresentPaymentOnboardingState>.Publisher
     private let analytics: Analytics = ServiceLocator.analytics
 
-    var connectionController: BuiltInCardReaderConnectionController? = nil
-    var alertsPresenter: (any CardPresentPaymentAlertsPresenting)? = nil
+    var connectionController: BuiltInCardReaderConnectionController<BuiltInReaderConnectionAlertsProvider, CardPresentPaymentAlertsPresenter>? = nil
+    var alertsPresenter: CardPresentPaymentAlertsPresenter? = nil
 
     private(set) var noConnectedReader: CardReaderSettingsTriState = .isUnknown {
         didSet {

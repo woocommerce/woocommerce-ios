@@ -7,7 +7,7 @@ import WooFoundation
 import protocol Storage.StorageManagerType
 import protocol Storage.StorageType
 
-private typealias Dependencies = RefundSubmissionUseCase.Dependencies
+private typealias Dependencies = RefundSubmissionUseCase<MockCardReaderSettingsAlerts, MockCardPresentPaymentAlertsPresenter>.Dependencies
 
 final class RefundSubmissionUseCaseTests: XCTestCase {
     private var stores: MockStoresManager!
@@ -446,7 +446,8 @@ private extension RefundSubmissionUseCaseTests {
         }
     }
 
-    func createUseCase(details: RefundSubmissionUseCase.Details) -> RefundSubmissionUseCase {
+    func createUseCase(details: RefundSubmissionUseCase<MockCardReaderSettingsAlerts, MockCardPresentPaymentAlertsPresenter>.Details) ->
+    RefundSubmissionUseCase<MockCardReaderSettingsAlerts, MockCardPresentPaymentAlertsPresenter> {
         let dependencies = Dependencies(
             currencyFormatter: CurrencyFormatter(currencySettings: .init()),
             currencySettings: .init(),

@@ -3,8 +3,11 @@ import Foundation
 import Yosemite
 
 class MockBuiltInCardReaderConnectionControllerFactory: BuiltInCardReaderConnectionControllerBuilding {
+    typealias AlertProvider = BuiltInReaderConnectionAlertsProvider
+    typealias AlertPresenter = SilenceablePassthroughCardPresentPaymentAlertsPresenter<CardPresentPaymentAlertsPresenter>
+
     var spyCreateConnectionControllerSiteID: Int64? = nil
-    var spyCreateConnectionControllerAlertsPresenter: (any CardPresentPaymentAlertsPresenting)? = nil
+    var spyCreateConnectionControllerAlertsPresenter: AlertPresenter? = nil
     var spyCreateConnectionControllerConfiguration: CardPresentPaymentsConfiguration? = nil
     var spyCreateConnectionControllerAnalyticsTracker: CardReaderConnectionAnalyticsTracker? = nil
     var spyCreateConnectionControllerAllowTermsOfServiceAcceptance: Bool? = nil
@@ -14,12 +17,12 @@ class MockBuiltInCardReaderConnectionControllerFactory: BuiltInCardReaderConnect
     var mockConnectionController: MockBuiltInCardReaderConnectionController? = nil
 
     func createConnectionController(forSiteID siteID: Int64,
-                                    alertsPresenter: any CardPresentPaymentAlertsPresenting<CardPresentPaymentsModalViewModel>,
+                                    alertPresenter: AlertPresenter,
                                     configuration: CardPresentPaymentsConfiguration,
                                     analyticsTracker: CardReaderConnectionAnalyticsTracker,
                                     allowTermsOfServiceAcceptance: Bool) -> BuiltInCardReaderConnectionControlling {
         spyCreateConnectionControllerSiteID = siteID
-        spyCreateConnectionControllerAlertsPresenter = alertsPresenter
+        spyCreateConnectionControllerAlertsPresenter = alertPresenter
         spyCreateConnectionControllerConfiguration = configuration
         spyCreateConnectionControllerAnalyticsTracker = analyticsTracker
         spyCreateConnectionControllerAllowTermsOfServiceAcceptance = allowTermsOfServiceAcceptance

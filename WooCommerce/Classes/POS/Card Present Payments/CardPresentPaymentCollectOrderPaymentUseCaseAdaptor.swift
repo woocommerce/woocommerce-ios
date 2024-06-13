@@ -14,7 +14,10 @@ struct CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
     func collectPaymentTask(for order: Order,
                             using connectionMethod: CardReaderConnectionMethod,
                             siteID: Int64,
-                            preflightController: CardPresentPaymentPreflightController,
+                            preflightController: CardPresentPaymentPreflightController<
+                            BluetoothReaderConnectionAlertsProvider,
+                            BuiltInReaderConnectionAlertsProvider,
+                            CardPresentPaymentsAlertPresenterAdaptor>,
                             onboardingPresenter: CardPresentPaymentsOnboardingPresenting,
                             configuration: CardPresentPaymentsConfiguration,
                             alertsPresenter: CardPresentPaymentsAlertPresenterAdaptor,

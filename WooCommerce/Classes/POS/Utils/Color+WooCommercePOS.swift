@@ -5,7 +5,7 @@ extension Color {
     /// Primary POS background color
     ///
     static var primaryBackground: Color {
-        return Color(red: 24.0 / 255.0, green: 24.0 / 255.0, blue: 24.0 / 255.0)
+        Color(uiColor: .secondarySystemBackground)
     }
 
     /// Secondary POS background color
@@ -30,5 +30,17 @@ extension Color {
     ///
     static var primaryText: Color {
         return Color.primary
+    }
+
+    static var toolbarBackground: Color {
+        Color(uiColor: .systemBackground)
+    }
+
+    static var wooAmberShade40: Color {
+        Color(red: 255.0 / 255.0, green: 166.0 / 255.0, blue: 14.0 / 255.0)
+    }
+
+    static var wooAmberShade80: Color {
+        Color(red: 123.0 / 255.0, green: 7.0 / 255.0, blue: 0.0 / 255.0)
     }
 }

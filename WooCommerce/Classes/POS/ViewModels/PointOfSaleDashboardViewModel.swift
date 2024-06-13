@@ -8,8 +8,6 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
         case acceptingCard
         case processingCard
         case cardPaymentSuccessful
-        case acceptingCash
-        case cashPaymentSuccessful
     }
 
     @Published private(set) var items: [POSItem]
@@ -48,6 +46,10 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
         self.cardReaderConnectionViewModel = CardReaderConnectionViewModel(cardPresentPayment: cardPresentPaymentService)
         observeCardPresentPaymentEvents()
         observeItemsInCartForCartTotal()
+    }
+
+    var itemToScrollToWhenCartUpdated: CartItem? {
+        return itemsInCart.last
     }
 
     func addItemToCart(_ item: POSItem) {

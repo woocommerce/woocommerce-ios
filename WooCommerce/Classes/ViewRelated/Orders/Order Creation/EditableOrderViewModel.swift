@@ -451,6 +451,10 @@ final class EditableOrderViewModel: ObservableObject {
     ///
     private let initialItem: OrderBaseItem?
 
+    /// Initial customer data given to the order when it is created, if any
+    ///
+    private let initialCustomer: (id: Int64, billing: Address?, shipping: Address?)?
+
     private let orderDurationRecorder: OrderDurationRecorderProtocol
 
     private let barcodeSKUScannerItemFinder: BarcodeSKUScannerItemFinder
@@ -467,7 +471,7 @@ final class EditableOrderViewModel: ObservableObject {
          orderDurationRecorder: OrderDurationRecorderProtocol = OrderDurationRecorder.shared,
          permissionChecker: CaptureDevicePermissionChecker = AVCaptureDevicePermissionChecker(),
          initialItem: OrderBaseItem? = nil,
-         initialCustomerID: Int64? = nil,
+         initialCustomer: (id: Int64, billing: Address?, shipping: Address?)? = nil,
          quantityDebounceDuration: Double = Constants.quantityDebounceDuration) {
         self.siteID = siteID
         self.flow = flow
@@ -480,6 +484,7 @@ final class EditableOrderViewModel: ObservableObject {
         self.orderDurationRecorder = orderDurationRecorder
         self.permissionChecker = permissionChecker
         self.initialItem = initialItem
+        self.initialCustomer = initialCustomer
         self.barcodeSKUScannerItemFinder = BarcodeSKUScannerItemFinder(stores: stores)
         self.quantityDebounceDuration = quantityDebounceDuration
 
@@ -529,7 +534,6 @@ final class EditableOrderViewModel: ObservableObject {
         forwardSyncApproachToSynchronizer()
         observeChangesFromProductSelectorButtonTapSelectionSync()
         observeChangesInCustomerDetails()
-        configureOrderWithinitialCustomer(initialCustomerID)
     }
 
     /// Observes and keeps track of changes within the Customer Details
@@ -1656,14 +1660,15 @@ private extension EditableOrderViewModel {
         match?.productRow.stepperViewModel.incrementQuantity()
     }
 
-    /// If given an initial customer ID on initialization, updates the Order with the customer
+    /// If given initial customer data on initialization, updates the Order with the customer data.
     ///
-    func configureOrderWithinitialCustomer(_ customerID: Int64?) {
+    func configureOrderWithInitialCustomerIfNeeded(_ customerID: Int64?, billing: Address?, shipping: Address?) {
         guard let customerID else {
             return
         }
         orderSynchronizer.setCustomerID.send(customerID)
-        orderSynchronizer.retryTrigger.send() // Trigger a remote sync to retrieve the customer details on the order.
+        orderSynchronizer.setAddresses.send(Self.createAddressesInputIfPossible(billingAddress: billing, shippingAddress: shipping))
+        resetAddressForm()
     }
 
     /// Updates customer data viewmodel based on order addresses.
@@ -1676,6 +1681,7 @@ private extension EditableOrderViewModel {
                     CustomerDataViewModel(billingAddress: $0.billingAddress, shippingAddress: $0.shippingAddress)
                 }
                 .assign(to: &$customerDataViewModel)
+            configureOrderWithInitialCustomerIfNeeded(initialCustomer?.id, billing: initialCustomer?.billing, shipping: initialCustomer?.shipping)
             return
         }
 
@@ -1713,6 +1719,8 @@ private extension EditableOrderViewModel {
                 )
             }
             .assign(to: &customerSectionViewModel.$customerData)
+
+        configureOrderWithInitialCustomerIfNeeded(initialCustomer?.id, billing: initialCustomer?.billing, shipping: initialCustomer?.shipping)
     }
 
     /// Updates notes data viewmodel based on order customer notes.

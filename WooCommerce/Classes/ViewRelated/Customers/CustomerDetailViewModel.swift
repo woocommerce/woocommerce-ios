@@ -151,7 +151,7 @@ final class CustomerDetailViewModel: ObservableObject {
         guard canCreateNewOrder else {
             return
         }
-        MainTabBarController.presentOrderCreationFlow(for: customerID)
+        MainTabBarController.presentOrderCreationFlow(for: customerID, billing: billing, shipping: shipping)
     }
 }
 

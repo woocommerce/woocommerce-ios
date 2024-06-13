@@ -48,6 +48,10 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
         observeItemsInCartForCartTotal()
     }
 
+    var itemToScrollToWhenCartUpdated: CartItem? {
+        return itemsInCart.last
+    }
+
     func addItemToCart(_ item: POSItem) {
         let cartItem = CartItem(id: UUID(), item: item, quantity: 1)
         itemsInCart.append(cartItem)

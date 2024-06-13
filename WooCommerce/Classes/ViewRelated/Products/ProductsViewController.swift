@@ -1298,20 +1298,14 @@ private extension ProductsViewController {
     @objc private func pullToRefresh(sender: UIRefreshControl) {
         ServiceLocator.analytics.track(.productListPulledToRefresh)
 
-        Task { [weak self] in
+        Task { @MainActor [weak self] in
             guard let self else { return }
 
-            await withTaskGroup(of: Void.self) { group in
-                await self.paginationTracker.resync()
+            await paginationTracker.resync()
 
-                await self.fetchFavoriteProducts()
-            }
+            await reloadFavorites()
 
-            await MainActor.run {
-                // Reload to update fav products
-                self.reloadTableAndView()
-                sender.endRefreshing()
-            }
+            sender.endRefreshing()
         }
     }
 

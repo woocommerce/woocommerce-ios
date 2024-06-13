@@ -1080,6 +1080,7 @@ private extension ProductsViewController {
         guard let products = await viewModel.fetchFavoriteProducts() else {
             return []
         }
+        return products.sortUsing(sortOrder)
     }
 }
 

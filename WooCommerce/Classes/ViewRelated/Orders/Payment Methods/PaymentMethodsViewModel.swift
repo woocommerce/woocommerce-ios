@@ -205,6 +205,8 @@ final class PaymentMethodsViewModel: ObservableObject {
             DDLogError("⛔️ Order not found, can't collect payment.")
             return presentNoticeSubject.send(.error(Localization.genericCollectError))
         }
+        let alertsPresenter = CardPresentPaymentAlertsPresenter(rootViewController: rootViewController)
+        let configuration = CardPresentConfigurationLoader().configuration
 
         collectPaymentsUseCase = useCase ?? CollectOrderPaymentUseCase(
             siteID: self.siteID,
@@ -212,7 +214,15 @@ final class PaymentMethodsViewModel: ObservableObject {
             formattedAmount: self.formattedTotal,
             rootViewController: rootViewController,
             onboardingPresenter: self.cardPresentPaymentsOnboardingPresenter,
-            configuration: CardPresentConfigurationLoader().configuration)
+            configuration: CardPresentConfigurationLoader().configuration,
+            alertsPresenter: alertsPresenter,
+            tapToPayAlertsProvider: BuiltInCardReaderPaymentAlertsProvider(),
+            bluetoothAlertsProvider: BluetoothCardReaderPaymentAlertsProvider(transactionType: .collectPayment),
+            preflightController: CardPresentPaymentPreflightController(siteID: siteID,
+                                                                       configuration: configuration,
+                                                                       rootViewController: rootViewController,
+                                                                       alertsPresenter: alertsPresenter,
+                                                                       onboardingPresenter: self.cardPresentPaymentsOnboardingPresenter))
 
         collectPaymentsUseCase?.collectPayment(
             using: discoveryMethod,

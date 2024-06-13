@@ -1123,15 +1123,19 @@ extension ProductsViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        UITableView.automaticDimension
+        favoriteProducts.isEmpty ? 0 : UITableView.automaticDimension
     }
 
     func tableView(_ tableView: UITableView, estimatedHeightForHeaderInSection section: Int) -> CGFloat {
-        Constants.estimatedSectionHeaderHeight
+        favoriteProducts.isEmpty ? 0 : Constants.estimatedSectionHeaderHeight
     }
 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         guard let section = sections[safe: section] else {
+            return nil
+        }
+
+        guard favoriteProducts.isNotEmpty else {
             return nil
         }
 

@@ -319,6 +319,16 @@ final class ProductsViewController: UIViewController, GhostableViewController {
     func startProductCreation() {
         addProduct(sourceBarButtonItem: addProductButton, isFirstProduct: false)
     }
+
+    @MainActor
+    func reloadFavorites() async {
+        favoriteProducts = await fetchFavoriteProducts()
+
+        await MainActor.run {
+            // Reload to render fav products section
+            self.reloadTableAndView()
+        }
+    }
 }
 
 // MARK: - Navigation Bar Actions

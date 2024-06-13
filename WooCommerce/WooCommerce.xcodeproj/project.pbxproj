@@ -868,6 +868,7 @@
 		262A0999262908A60033AD20 /* OrderAddOnListI1Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262A0998262908A60033AD20 /* OrderAddOnListI1Tests.swift */; };
 		262A09A5262F65690033AD20 /* OrderAddOnTopBanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262A09A4262F65690033AD20 /* OrderAddOnTopBanner.swift */; };
 		262A2C2B2537A3330086C1BE /* MockRefunds.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262A2C2A2537A3330086C1BE /* MockRefunds.swift */; };
+		262C25362C1B4EB800E525E4 /* Environment+AppBindings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262C25352C1B4EB800E525E4 /* Environment+AppBindings.swift */; };
 		262C921F26EEF8B100011F92 /* Binding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262C921E26EEF8B100011F92 /* Binding.swift */; };
 		262C922126F1370000011F92 /* StorePickerError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262C922026F1370000011F92 /* StorePickerError.swift */; };
 		262EB5AE298C70EF009DCC36 /* SupportFormViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262EB5AD298C70EF009DCC36 /* SupportFormViewModel.swift */; };
@@ -3817,6 +3818,7 @@
 		262A0998262908A60033AD20 /* OrderAddOnListI1Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderAddOnListI1Tests.swift; sourceTree = "<group>"; };
 		262A09A4262F65690033AD20 /* OrderAddOnTopBanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderAddOnTopBanner.swift; sourceTree = "<group>"; };
 		262A2C2A2537A3330086C1BE /* MockRefunds.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockRefunds.swift; sourceTree = "<group>"; };
+		262C25352C1B4EB800E525E4 /* Environment+AppBindings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Environment+AppBindings.swift"; sourceTree = "<group>"; };
 		262C921E26EEF8B100011F92 /* Binding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Binding.swift; sourceTree = "<group>"; };
 		262C922026F1370000011F92 /* StorePickerError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorePickerError.swift; sourceTree = "<group>"; };
 		262EB5AD298C70EF009DCC36 /* SupportFormViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupportFormViewModel.swift; sourceTree = "<group>"; };
@@ -7958,6 +7960,7 @@
 			children = (
 				2604C3B92BE977F000250465 /* PhoneDependenciesSynchronizer.swift */,
 				26B984D32BEECC610052658C /* Environment+Dependencies.swift */,
+				262C25352C1B4EB800E525E4 /* Environment+AppBindings.swift */,
 			);
 			path = Dependencies;
 			sourceTree = "<group>";
@@ -14061,6 +14064,7 @@
 				26B984D62BEECF260052658C /* ConnectView.swift in Sources */,
 				26DD32D62BEBCE3900F2C69C /* UserDefaults+Woo.swift in Sources */,
 				26CA471D2BFD805900E54348 /* CNContact+Helpers.swift in Sources */,
+				262C25362C1B4EB800E525E4 /* Environment+AppBindings.swift in Sources */,
 				269FFA482BF516BA004E6B86 /* Logging.swift in Sources */,
 				26F81B182BE433A2009EC58E /* WooApp.swift in Sources */,
 				26CA47212BFD82AE00E54348 /* DateFormatter+Helpers.swift in Sources */,

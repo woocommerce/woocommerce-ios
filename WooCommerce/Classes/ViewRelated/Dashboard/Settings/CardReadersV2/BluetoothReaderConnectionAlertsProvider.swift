@@ -54,6 +54,12 @@ struct BluetoothReaderConnectionAlertsProvider: BluetoothReaderConnnectionAlerts
         CardPresentModalUpdateProgress(requiredUpdate: requiredUpdate, progress: progress, cancel: cancel)
     }
 
+    func selectSearchType(tapToPay: @escaping () -> Void,
+                          bluetooth: @escaping () -> Void,
+                          cancel: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
+        CardPresentModalSelectSearchType(tapOnIPhoneAction: tapToPay, bluetoothAction: bluetooth, cancelAction: cancel)
+    }
+
     func foundReader(name: String,
                      connect: @escaping () -> Void,
                      continueSearch: @escaping () -> Void,

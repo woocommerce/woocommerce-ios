@@ -4,6 +4,7 @@ import struct Yosemite.CardPresentPaymentsConfiguration
 final class CardPresentPaymentsConnectionControllerManager {
     let externalReaderConnectionController: CardReaderConnectionController
     let tapToPayConnectionController: BuiltInCardReaderConnectionController
+    let analyticsTracker: CardReaderConnectionAnalyticsTracker
 
     init(siteID: Int64,
          configuration: CardPresentPaymentsConfiguration,
@@ -12,6 +13,7 @@ final class CardPresentPaymentsConnectionControllerManager {
             configuration: configuration,
             siteID: siteID,
             connectionType: .userInitiated)
+        self.analyticsTracker = analyticsTracker
         self.externalReaderConnectionController = CardReaderConnectionController(
             forSiteID: siteID,
             knownReaderProvider: CardReaderSettingsKnownReaderStorage(),

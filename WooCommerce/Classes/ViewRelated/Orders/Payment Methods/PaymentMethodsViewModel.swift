@@ -207,6 +207,26 @@ final class PaymentMethodsViewModel: ObservableObject {
         }
         let alertsPresenter = CardPresentPaymentAlertsPresenter(rootViewController: rootViewController)
         let configuration = CardPresentConfigurationLoader().configuration
+        let analyticsTracker = CardReaderConnectionAnalyticsTracker(
+            configuration: configuration,
+            siteID: siteID,
+            connectionType: .userInitiated,
+            stores: stores,
+            analytics: analytics)
+        let externalReaderConnectionController = CardReaderConnectionController(
+            forSiteID: siteID,
+            knownReaderProvider: CardReaderSettingsKnownReaderStorage(),
+            alertsPresenter: alertsPresenter,
+            alertsProvider: BluetoothReaderConnectionAlertsProvider(),
+            configuration: configuration,
+            analyticsTracker: analyticsTracker)
+        let tapToPayAlertsProvider = BuiltInReaderConnectionAlertsProvider()
+        let tapToPayConnectionController = BuiltInCardReaderConnectionController(
+            forSiteID: siteID,
+            alertsPresenter: alertsPresenter,
+            alertsProvider: tapToPayAlertsProvider,
+            configuration: configuration,
+            analyticsTracker: analyticsTracker)
 
         collectPaymentsUseCase = useCase ?? CollectOrderPaymentUseCase<BuiltInCardReaderPaymentAlertsProvider,
                                                                         BluetoothCardReaderPaymentAlertsProvider,
@@ -224,7 +244,11 @@ final class PaymentMethodsViewModel: ObservableObject {
                                                                        configuration: configuration,
                                                                        rootViewController: rootViewController,
                                                                        alertsPresenter: alertsPresenter,
-                                                                       onboardingPresenter: self.cardPresentPaymentsOnboardingPresenter))
+                                                                       onboardingPresenter: self.cardPresentPaymentsOnboardingPresenter,
+                                                                       externalReaderConnectionController: externalReaderConnectionController,
+                                                                       tapToPayConnectionController: tapToPayConnectionController,
+                                                                       tapToPayAlertProvider: tapToPayAlertsProvider,
+                                                                       analyticsTracker: analyticsTracker))
 
         collectPaymentsUseCase?.collectPayment(
             using: discoveryMethod,

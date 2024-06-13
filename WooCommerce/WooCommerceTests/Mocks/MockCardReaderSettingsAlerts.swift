@@ -157,6 +157,10 @@ extension MockCardReaderSettingsAlerts: BluetoothReaderConnnectionAlertsProvidin
     func dismiss() {
         // GNDN
     }
+
+    func selectSearchType(tapToPay: @escaping () -> Void, bluetooth: @escaping () -> Void, cancel: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
+        return MockCardPresentPaymentsModalViewModel()
+    }
 }
 
 

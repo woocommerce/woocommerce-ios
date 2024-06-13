@@ -53,6 +53,10 @@ protocol CardReaderConnectionAlertsProviding {
     /// Shows progress when a software update is being installed
     ///
     func updateProgress(requiredUpdate: Bool, progress: Float, cancel: (() -> Void)?) -> CardPresentPaymentsModalViewModel
+
+    func selectSearchType(tapToPay: @escaping () -> Void,
+                          bluetooth: @escaping () -> Void,
+                          cancel: @escaping () -> Void) -> CardPresentPaymentsModalViewModel
 }
 
 

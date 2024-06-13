@@ -4,6 +4,7 @@ import Photos
 import UIKit
 import WordPressUI
 import Yosemite
+import protocol Storage.StorageManagerType
 
 /// The entry UI for adding/editing a Product.
 final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: UIViewController, UITableViewDelegate {
@@ -75,6 +76,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
 
     private let aiEligibilityChecker: ProductFormAIEligibilityChecker
     private var descriptionAICoordinator: ProductDescriptionAICoordinator?
+    private let subscriptionProductsEligibilityChecker: WooSubscriptionProductsEligibilityCheckerProtocol
 
     private lazy var tooltipUseCase = ProductDescriptionAITooltipUseCase(isDescriptionAIEnabled: aiEligibilityChecker.isFeatureEnabled(.description))
     private var didShowTooltip = false {
@@ -104,6 +106,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
          eventLogger: ProductFormEventLoggerProtocol,
          productImageActionHandler: ProductImageActionHandler,
          currency: String = ServiceLocator.currencySettings.symbol(from: ServiceLocator.currencySettings.currencyCode),
+         storageManager: StorageManagerType = ServiceLocator.storageManager,
          presentationStyle: ProductFormPresentationStyle,
          productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,
          userDefaults: UserDefaults = .standard,
@@ -120,6 +123,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         self.productImageUploader = productImageUploader
         self.onDeleteCompletion = onDeleteCompletion
         self.aiEligibilityChecker = .init(site: ServiceLocator.stores.sessionManager.defaultSite)
+        self.subscriptionProductsEligibilityChecker = WooSubscriptionProductsEligibilityChecker(siteID: viewModel.productModel.siteID, storage: storageManager)
         self.tableViewModel = DefaultProductFormTableViewModel(product: viewModel.productModel,
                                                                actionsFactory: viewModel.actionsFactory,
                                                                currency: currency,
@@ -1491,7 +1495,10 @@ private extension ProductFormViewController {
                                       comment: "Message title of bottom sheet for selecting a product type")
         let viewProperties = BottomSheetListSelectorViewProperties(subtitle: title)
         let productType = BottomSheetProductType(productType: viewModel.productModel.productType, isVirtual: viewModel.productModel.virtual)
-        let command = ProductTypeBottomSheetListSelectorCommand(selected: productType) { [weak self] (selectedProductType) in
+        let command = ProductTypeBottomSheetListSelectorCommand(
+            source: .editForm(selected: productType),
+            subscriptionProductsEligibilityChecker: subscriptionProductsEligibilityChecker
+        ) { [weak self] (selectedProductType) in
             self?.dismiss(animated: true, completion: nil)
 
             guard let originalProductType = self?.product.productType else {

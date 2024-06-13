@@ -270,7 +270,6 @@ final class ProductsViewController: UIViewController, GhostableViewController {
         syncProductsSettings()
         observeSelectedProductAndDataLoadedStateToUpdateSelectedRow()
         observeSelectedProductToAutoScrollWhenProductChanges()
-        observeFavoriteProductIDChanges()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -1055,27 +1054,9 @@ private extension ProductsViewController {
 // MARK: - Favorite products
 //
 private extension ProductsViewController {
-    func observeFavoriteProductIDChanges() {
-        userDefaults.publisher(for: \.favoriteProductIDs)
-            .sink { _ in
-                Task { @MainActor [weak self] in
-                    guard let self else { return }
-
-                    await self.fetchFavoriteProducts()
-
-                    await MainActor.run {
-                        self.reloadTableAndView()
-                    }
-                }
-            }
-            .store(in: &subscriptions)
-    }
-
-    func fetchFavoriteProducts() async {
-        favoriteProducts = []
-
-        if let products = await viewModel.fetchFavoriteProducts() {
-            favoriteProducts = products.sortUsing(sortOrder)
+    func fetchFavoriteProducts() async -> [Product] {
+        guard let products = await viewModel.fetchFavoriteProducts() else {
+            return []
         }
     }
 }

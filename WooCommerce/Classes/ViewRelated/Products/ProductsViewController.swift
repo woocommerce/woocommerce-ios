@@ -265,6 +265,7 @@ final class ProductsViewController: UIViewController, GhostableViewController {
         configurePaginationTracker()
         configureStorePlanBannerPresenter()
         registerTableViewCells()
+        registerTableViewHeader()
 
         showTopBannerViewIfNeeded()
         syncProductsSettings()
@@ -797,6 +798,18 @@ private extension ProductsViewController {
     ///
     func registerTableViewCells() {
         tableView.register(ProductsTabProductTableViewCell.self)
+    }
+
+    /// Registers table view headers
+    ///
+    func registerTableViewHeader() {
+        let headers = [
+            PrimarySectionHeaderView.self,
+        ]
+
+        for kind in headers {
+            tableView.register(kind.loadNib(), forHeaderFooterViewReuseIdentifier: kind.reuseIdentifier)
+        }
     }
 
     /// Show or hide the toolbar based on number of products

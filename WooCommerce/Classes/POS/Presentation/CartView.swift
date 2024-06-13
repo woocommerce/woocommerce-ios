@@ -21,13 +21,24 @@ struct CartView: View {
             .padding(.vertical, 8)
             .font(.title)
             .foregroundColor(Color.white)
-            ScrollView {
-                ForEach(viewModel.itemsInCart, id: \.id) { cartItem in
-                    ItemRowView(cartItem: cartItem) {
-                        viewModel.removeItemFromCart(cartItem)
+            ScrollViewReader { proxy in
+                ScrollView {
+                    ForEach(viewModel.itemsInCart, id: \.id) { cartItem in
+                        ItemRowView(cartItem: cartItem) {
+                            viewModel.removeItemFromCart(cartItem)
+                        }
+                        .id(cartItem.id)
+                        .background(Color.tertiaryBackground)
+                        .padding(.horizontal, 32)
                     }
-                    .background(Color.tertiaryBackground)
-                    .padding(.horizontal, 32)
+                }
+                .onChange(of: viewModel.itemToScrollToWhenCartUpdated?.id) { _ in
+                    if viewModel.orderStage == .building,
+                       let last = viewModel.itemToScrollToWhenCartUpdated?.id {
+                        withAnimation {
+                            proxy.scrollTo(last)
+                        }
+                    }
                 }
             }
             Spacer()

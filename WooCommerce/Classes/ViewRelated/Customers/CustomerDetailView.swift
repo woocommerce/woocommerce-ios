@@ -53,6 +53,7 @@ struct CustomerDetailView: View {
                     if let phone = viewModel.phone {
                         Button {
                             isPresentingPhoneDialog.toggle()
+                            viewModel.trackPhoneMenuTapped()
                         } label: {
                             Image(uiImage: .ellipsisImage)
                                 .foregroundColor(Color(.primary))
@@ -66,11 +67,12 @@ struct CustomerDetailView: View {
 
                             Button(Localization.ContactAction.message) {
                                 isShowingMessageView.toggle()
+                                viewModel.trackMessageActionTapped()
                             }
                             .renderedIf(MessageComposeView.canSendMessage())
 
                             Button(Localization.ContactAction.copyPhoneNumber) {
-                                phone.sendToPasteboard(includeTrailingNewline: false)
+                                viewModel.copyPhone()
                             }
 
                             Button(Localization.ContactAction.whatsapp) {
@@ -104,14 +106,14 @@ struct CustomerDetailView: View {
                     Text(billing)
                         .swipeActions(edge: .leading) {
                             Button {
-                                billing.sendToPasteboard()
+                                viewModel.copyBillingAddress()
                             } label: {
                                 Text(Localization.ContactAction.copy)
                             }
                         }
                         .contextMenu {
                             Button {
-                                billing.sendToPasteboard()
+                                viewModel.copyBillingAddress()
                             } label: {
                                 Label(Localization.ContactAction.copy, systemImage: "doc.on.doc")
                             }
@@ -123,14 +125,14 @@ struct CustomerDetailView: View {
                     Text(shipping)
                         .swipeActions(edge: .leading) {
                             Button {
-                                shipping.sendToPasteboard()
+                                viewModel.copyShippingAddress()
                             } label: {
                                 Text(Localization.ContactAction.copy)
                             }
                         }
                         .contextMenu {
                             Button {
-                                shipping.sendToPasteboard()
+                                viewModel.copyShippingAddress()
                             } label: {
                                 Label(Localization.ContactAction.copy, systemImage: "doc.on.doc")
                             }

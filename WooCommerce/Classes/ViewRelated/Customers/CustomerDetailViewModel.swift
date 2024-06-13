@@ -156,6 +156,22 @@ extension CustomerDetailViewModel {
         ServiceLocator.analytics.track(event: .CustomersHub.customerDetailEmailOptionTapped())
     }
 
+    /// Tracks when the phone menu is opened.
+    func trackPhoneMenuTapped() {
+        ServiceLocator.analytics.track(event: .CustomersHub.customerDetailPhoneMenuTapped())
+    }
+
+    /// Tracks when the option to send a text message is tapped.
+    func trackMessageActionTapped() {
+        ServiceLocator.analytics.track(event: .CustomersHub.customerDetailActionTapped(.message))
+    }
+
+    /// Copies the customer phone to the pasteboard.
+    func copyPhone() {
+        phone?.sendToPasteboard(includeTrailingNewline: false)
+        ServiceLocator.analytics.track(event: .CustomersHub.customerDetailActionTapped(.copyPhone))
+    }
+
     /// Whether the device can perform a phone call
     var isPhoneCallAvailable: Bool {
         guard let phoneURL else {
@@ -170,6 +186,7 @@ extension CustomerDetailViewModel {
             return
         }
         UIApplication.shared.open(phoneURL, options: [:], completionHandler: nil)
+        ServiceLocator.analytics.track(event: .CustomersHub.customerDetailActionTapped(.call))
     }
 
     /// Whatsapp deeplink to contact someone through their phone number
@@ -194,6 +211,7 @@ extension CustomerDetailViewModel {
             return
         }
         UIApplication.shared.open(whatsappDeeplink)
+        ServiceLocator.analytics.track(event: .CustomersHub.customerDetailActionTapped(.whatsapp))
     }
 
     /// Telegram deeplink to contact someone through their phone number
@@ -218,6 +236,19 @@ extension CustomerDetailViewModel {
             return
         }
         UIApplication.shared.open(telegramDeeplink)
+        ServiceLocator.analytics.track(event: .CustomersHub.customerDetailActionTapped(.telegram))
+    }
+
+    /// Copies the billing address to the pasteboard.
+    func copyBillingAddress() {
+        billing?.sendToPasteboard()
+        ServiceLocator.analytics.track(event: .CustomersHub.customerDetailAddressCopied(.billing))
+    }
+
+    /// Copies the shipping address to the pasteboard.
+    func copyShippingAddress() {
+        shipping?.sendToPasteboard()
+        ServiceLocator.analytics.track(event: .CustomersHub.customerDetailAddressCopied(.shipping))
     }
 }
 

@@ -63,10 +63,6 @@ private extension TotalsView {
         Text("Tap or insert card to pay")
     }
 
-    private var takeCashView: some View {
-        Text("Take cash payment")
-    }
-
     private var paymentSuccessfulView: some View {
         Text("Payment successful")
     }
@@ -80,10 +76,6 @@ private extension TotalsView {
             tapInsertCardView
         case .cardPaymentSuccessful:
             paymentSuccessfulView
-        case .acceptingCash:
-            takeCashView
-        case .cashPaymentSuccessful:
-            paymentSuccessfulView
         }
     }
 
@@ -96,10 +88,6 @@ private extension TotalsView {
             EmptyView()
         case .cardPaymentSuccessful:
             EmptyView()
-        case .acceptingCash:
-            EmptyView()
-        case .cashPaymentSuccessful:
-            EmptyView()
         }
     }
 
@@ -110,47 +98,6 @@ private extension TotalsView {
                 .font(.title)
             paymentsIconView
         }
-    }
-
-    private var cashPaymentButton: some View {
-        Button("Cash payment") {
-            paymentState = .acceptingCash
-        }
-        .padding(30)
-        .font(.title)
-        .foregroundColor(Color.primaryText)
-        .overlay(
-            RoundedRectangle(cornerRadius: 16)
-                .stroke(Color.primaryText, lineWidth: 2)
-        )
-    }
-
-    private var confirmCashPaymentButton: some View {
-        Button("Confirm") {
-            paymentState = .cashPaymentSuccessful
-        }
-        .padding(30)
-        .font(.title)
-        .foregroundColor(Color.primaryText)
-        .background(Color.secondaryBackground)
-        .cornerRadius(16)
-        .overlay(
-            RoundedRectangle(cornerRadius: 16)
-                .stroke(Color.primaryText, lineWidth: 2)
-        )
-    }
-
-    private var cancelCashPaymentButton: some View {
-        Button("Cancel") {
-            paymentState = .acceptingCard
-        }
-        .padding(30)
-        .font(.title)
-        .foregroundColor(Color.primaryText)
-        .overlay(
-            RoundedRectangle(cornerRadius: 16)
-                .stroke(Color.primaryText, lineWidth: 2)
-        )
     }
 
     private var provideReceiptButton: some View {
@@ -185,21 +132,14 @@ private extension TotalsView {
         VStack {
             switch paymentState {
             case .acceptingCard:
-                HStack {
-                    cashPaymentButton
-                }
+                EmptyView()
             case .processingCard:
                 EmptyView()
-            case .cardPaymentSuccessful, .cashPaymentSuccessful:
+            case .cardPaymentSuccessful:
                 HStack {
                     provideReceiptButton
                     Spacer()
                     newTransactionButton
-                }
-            case .acceptingCash:
-                HStack {
-                    confirmCashPaymentButton
-                    cancelCashPaymentButton
                 }
             }
         }

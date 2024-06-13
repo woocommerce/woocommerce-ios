@@ -22,6 +22,8 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
 
     @Published var showsCardReaderSheet: Bool = false
     @Published private(set) var cardPresentPaymentEvent: CardPresentPaymentEvent = .idle
+    @Published private(set) var cardPresentPaymentAlertViewModel: CardPresentPaymentAlertType?
+    @Published private(set) var cardPresentPaymentInlineMessage: CardPresentPaymentMessageType?
     let cardReaderConnectionViewModel: CardReaderConnectionViewModel
 
     @Published var showsCreatingOrderSheet: Bool = false
@@ -138,9 +140,25 @@ private extension PointOfSaleDashboardViewModel {
 
     func observeCardPresentPaymentEvents() {
         cardPresentPaymentService.paymentEventPublisher.assign(to: &$cardPresentPaymentEvent)
+        cardPresentPaymentService.paymentEventPublisher
+            .map { event in
+                guard case let .showAlert(alertDetails) = event else {
+                    return nil
+                }
+                return alertDetails
+            }
+            .assign(to: &$cardPresentPaymentAlertViewModel)
+        cardPresentPaymentService.paymentEventPublisher
+            .map { event in
+                guard case let .showPaymentMessage(messageType) = event else {
+                    return nil
+                }
+                return messageType
+            }
+            .assign(to: &$cardPresentPaymentInlineMessage)
         cardPresentPaymentService.paymentEventPublisher.map { event in
             switch event {
-            case .idle:
+            case .idle, .showPaymentMessage:
                 return false
             case .showAlert,
                     .showReaderList,

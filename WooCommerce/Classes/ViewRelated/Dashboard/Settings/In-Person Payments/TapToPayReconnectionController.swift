@@ -11,11 +11,11 @@ protocol BuiltInCardReaderConnectionControllerBuilding<AlertProvider, AlertPrese
                                     allowTermsOfServiceAcceptance: Bool) -> BuiltInCardReaderConnectionControlling
 }
 
-class BuiltInCardReaderConnectionControllerFactory<AlertProvider: CardReaderConnectionAlertsProviding,
-                                                               AlertPresenter: CardPresentPaymentAlertsPresenting>:
-                                                                BuiltInCardReaderConnectionControllerBuilding
+final class BuiltInCardReaderConnectionControllerFactory<AlertProvider: CardReaderConnectionAlertsProviding,
+                                                         AlertPresenter: CardPresentPaymentAlertsPresenting>:
+                                                            BuiltInCardReaderConnectionControllerBuilding
 where AlertPresenter.AlertDetails == AlertProvider.AlertDetails {
-    let alertProvider: AlertProvider
+    private let alertProvider: AlertProvider
 
     init(alertProvider: AlertProvider) {
         self.alertProvider = alertProvider

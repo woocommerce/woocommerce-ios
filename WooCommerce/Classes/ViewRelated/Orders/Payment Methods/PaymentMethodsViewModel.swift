@@ -206,9 +206,8 @@ final class PaymentMethodsViewModel: ObservableObject {
             return presentNoticeSubject.send(.error(Localization.genericCollectError))
         }
         let alertsPresenter = CardPresentPaymentAlertsPresenter(rootViewController: rootViewController)
-        let configuration = CardPresentConfigurationLoader().configuration
         let analyticsTracker = CardReaderConnectionAnalyticsTracker(
-            configuration: configuration,
+            configuration: cardPresentPaymentsConfiguration,
             siteID: siteID,
             connectionType: .userInitiated,
             stores: stores,
@@ -218,14 +217,14 @@ final class PaymentMethodsViewModel: ObservableObject {
             knownReaderProvider: CardReaderSettingsKnownReaderStorage(),
             alertsPresenter: alertsPresenter,
             alertsProvider: BluetoothReaderConnectionAlertsProvider(),
-            configuration: configuration,
+            configuration: cardPresentPaymentsConfiguration,
             analyticsTracker: analyticsTracker)
         let tapToPayAlertsProvider = BuiltInReaderConnectionAlertsProvider()
         let tapToPayConnectionController = BuiltInCardReaderConnectionController(
             forSiteID: siteID,
             alertsPresenter: alertsPresenter,
             alertsProvider: tapToPayAlertsProvider,
-            configuration: configuration,
+            configuration: cardPresentPaymentsConfiguration,
             analyticsTracker: analyticsTracker)
 
         collectPaymentsUseCase = useCase ?? CollectOrderPaymentUseCase<BuiltInCardReaderPaymentAlertsProvider,
@@ -235,17 +234,16 @@ final class PaymentMethodsViewModel: ObservableObject {
             order: order,
             formattedAmount: self.formattedTotal,
             rootViewController: rootViewController,
-            onboardingPresenter: self.cardPresentPaymentsOnboardingPresenter,
-            configuration: CardPresentConfigurationLoader().configuration,
+            configuration: cardPresentPaymentsConfiguration,
             alertsPresenter: alertsPresenter,
             tapToPayAlertsProvider: BuiltInCardReaderPaymentAlertsProvider(),
             bluetoothAlertsProvider: BluetoothCardReaderPaymentAlertsProvider(transactionType: .collectPayment),
             preflightController: CardPresentPaymentPreflightController(siteID: siteID,
-                                                                       configuration: configuration,
+                                                                       configuration: cardPresentPaymentsConfiguration,
                                                                        rootViewController: rootViewController,
                                                                        alertsPresenter: alertsPresenter,
                                                                        onboardingPresenter: self.cardPresentPaymentsOnboardingPresenter,
-                                                                       tapToPayAlertProvider: BuiltInReaderConnectionAlertsProvider(),
+                                                                       tapToPayAlertProvider: tapToPayAlertsProvider,
                                                                        externalReaderConnectionController: externalReaderConnectionController,
                                                                        tapToPayConnectionController: tapToPayConnectionController,
                                                                        tapToPayReconnectionController: ServiceLocator.tapToPayReconnectionController,

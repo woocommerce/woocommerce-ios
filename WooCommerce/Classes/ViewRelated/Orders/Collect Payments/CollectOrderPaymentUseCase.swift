@@ -75,10 +75,6 @@ where BuiltInAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
 
     private let tapToPayAlertsProvider: any CardReaderTransactionAlertsProviding<AlertPresenter.AlertDetails>
 
-    /// Onboarding presenter: shows steps for payment setup when required
-    ///
-    private let onboardingPresenter: CardPresentPaymentsOnboardingPresenting
-
     /// Stores the card reader listener subscription while trying to connect to one.
     ///
     private var readerSubscription: AnyCancellable?
@@ -98,7 +94,6 @@ where BuiltInAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
          order: Order,
          formattedAmount: String,
          rootViewController: ViewControllerPresenting,
-         onboardingPresenter: CardPresentPaymentsOnboardingPresenting,
          configuration: CardPresentPaymentsConfiguration,
          stores: StoresManager = ServiceLocator.stores,
          paymentOrchestrator: PaymentCaptureOrchestrating = PaymentCaptureOrchestrator(),
@@ -112,7 +107,6 @@ where BuiltInAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
         self.order = order
         self.formattedAmount = formattedAmount
         self.rootViewController = rootViewController
-        self.onboardingPresenter = onboardingPresenter
         self.alertsPresenter = alertsPresenter
         self.tapToPayAlertsProvider = tapToPayAlertsProvider
         self.bluetoothAlertsProvider = bluetoothAlertsProvider

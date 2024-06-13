@@ -1,14 +1,14 @@
 import SwiftUI
 
 struct CardPresentPaymentAlert: View {
-    private let viewModel: CardPresentPaymentAlertViewModel
+    private let alertType: CardPresentPaymentAlertType
 
-    init(viewModel: CardPresentPaymentAlertViewModel) {
-        self.viewModel = viewModel
+    init(alertType: CardPresentPaymentAlertType) {
+        self.alertType = alertType
     }
 
     var body: some View {
-        switch viewModel {
+        switch alertType {
         case .scanningForReaders(let alertViewModel):
             CardPresentPaymentScanningForReadersView(viewModel: alertViewModel)
         case .scanningFailed(let alertViewModel):
@@ -23,21 +23,6 @@ struct CardPresentPaymentAlert: View {
             CardPresentPaymentConnectingToReaderView(viewModel: alertViewModel)
         case .connectingFailed(let alertViewModel):
             CardPresentPaymentConnectingFailedView(viewModel: alertViewModel)
-        /// Note that the payment alerts below will mostly/all be displayed inline, so may need different treatment,
-        /// possibly not being supported within this enum/view at all.
-        /// Error is the main exception to this.
-        case .preparingForPayment(let alertViewModel):
-            Text("Preparing for payment")
-        case .tapSwipeOrInsertCard(let alertViewModel):
-            Text("Tap card")
-        case .processing(let alertViewModel):
-            Text("Processing")
-        case .displayReaderMessage(let alertViewModel):
-            Text("Display reader message")
-        case .success(let alertViewModel):
-            Text("Success")
-        case .error(let alertViewModel):
-            Text("Error")
         }
     }
 }

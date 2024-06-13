@@ -7,12 +7,12 @@ protocol CardPresentPaymentPreflightControllerFacade {
 }
 
 final class CardPresentPaymentPreflightAdaptor: CardPresentPaymentPreflightControllerFacade {
-    private let preflightController: CardPresentPaymentPreflightController<CardPresentPaymentBluetoothReaderConnectionAlertsProvider,
-                                                                           CardPresentPaymentBuiltInReaderConnectionAlertsProvider,
+    private let preflightController: CardPresentPaymentPreflightController<CardPresentPaymentBuiltInReaderConnectionAlertsProvider,
+                                                                           CardPresentPaymentBluetoothReaderConnectionAlertsProvider,
                                                                            CardPresentPaymentsAlertPresenterAdaptor>
 
-    init(preflightController: CardPresentPaymentPreflightController<CardPresentPaymentBluetoothReaderConnectionAlertsProvider,
-         CardPresentPaymentBuiltInReaderConnectionAlertsProvider,
+    init(preflightController: CardPresentPaymentPreflightController<CardPresentPaymentBuiltInReaderConnectionAlertsProvider,
+         CardPresentPaymentBluetoothReaderConnectionAlertsProvider,
          CardPresentPaymentsAlertPresenterAdaptor>) {
         self.preflightController = preflightController
     }

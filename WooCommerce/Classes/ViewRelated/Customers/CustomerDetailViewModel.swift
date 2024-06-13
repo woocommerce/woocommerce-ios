@@ -23,7 +23,7 @@ final class CustomerDetailViewModel: ObservableObject {
 
     /// Customer phone
     var phone: String? {
-        phoneSource?.phone
+        phoneSource?.phone?.nullifyIfEmptyOrWhitespace()
     }
 
     // MARK: Orders

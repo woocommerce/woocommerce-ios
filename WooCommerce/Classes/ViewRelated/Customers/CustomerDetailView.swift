@@ -50,7 +50,7 @@ struct CustomerDetailView: View {
                                 .shimmering()
                         }
                     Spacer()
-                    if let phone = viewModel.phone {
+                    if viewModel.phone != nil {
                         Button {
                             isPresentingPhoneDialog.toggle()
                             viewModel.trackPhoneMenuTapped()

@@ -55,7 +55,16 @@ private extension LabeledTextViewTableViewCell {
     }
 
     func configureProductStatusLabel(productStatus: ProductStatus) {
-        productStatusLabel.text = productStatus.description
+
+        switch productStatus {
+        case .privateStatus:
+            productStatusLabel.text = NSLocalizedString("productDetail.privateStatusLabel",
+                                                        value: "Private published",
+                                                        comment: "Display label in product for the product's private status"
+            )
+        default:
+            productStatusLabel.text = productStatus.description
+        }
 
         switch productStatus {
         case .pending:

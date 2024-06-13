@@ -59,6 +59,7 @@ final class HubMenuViewController: UIHostingController<HubMenu> {
 
         let settings = SettingsViewController()
         navigationController.setViewControllers(navigationController.viewControllers + [settings, privacy], animated: true)
+        navigationController.setNavigationBarHidden(false, animated: false)
     }
 
     override func viewWillAppear(_ animated: Bool) {

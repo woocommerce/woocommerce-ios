@@ -28,9 +28,9 @@ final class MyStoreViewModel: ObservableObject {
         self.dependencies = dependencies
     }
 
-    @MainActor
     /// Perform the initial fetch and binds the refresh trigger for further refreshes.
     ///
+    @MainActor
     func fetchAndBindRefreshTrigger(trigger: AnyPublisher<Void, Never>) async {
         trigger
             .sink { [weak self] _ in

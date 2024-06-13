@@ -2,6 +2,11 @@
 
 19.1
 -----
+- [*] Added "Private" filter option for enhanced product filtering on iOS. [https://github.com/woocommerce/woocommerce-ios/pull/13009]
+- [*] Products: The creation sheet is now simplified and categorized better [https://github.com/woocommerce/woocommerce-ios/pull/12273]
+- [*] Restore a missing navigation bar on the privacy settings screen. [https://github.com/woocommerce/woocommerce-ios/pull/13018]
+- [**] Customers: The customers section (Menu > Customers) now includes registered customers' phone number and billing/shipping addresses, when available, with actions to copy their contact details or contact them via phone. [https://github.com/woocommerce/woocommerce-ios/pull/13034]
+- [**] Customers: You can now create a new order for registered customers in the Customers section (Menu > Customers). Tap the + button in a customer's details to create a new order with that customer pre-filled in the order form.
 
 
 19.0

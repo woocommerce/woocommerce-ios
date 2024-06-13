@@ -53,12 +53,27 @@ struct PointOfSaleDashboardView: View {
                 POSToolbarView(readerConnectionViewModel: viewModel.cardReaderConnectionViewModel)
             }
         }
+        .toolbarBackground(Color.toolbarBackground, for: .bottomBar)
+        .toolbarBackground(.visible, for: .bottomBar)
         .sheet(isPresented: $viewModel.showsCardReaderSheet, content: {
             // Might be the only way unless we make the type conform to `Identifiable`
             if let alertType = viewModel.cardPresentPaymentAlertViewModel {
                 CardPresentPaymentAlert(alertType: alertType)
             } else {
-                EmptyView()
+                switch viewModel.cardPresentPaymentEvent {
+                case let .showReaderList(readerIDs, selectionHandler):
+                    // TODO: make this an instance of `showAlert` so we can handle it above too.
+                    FoundCardReaderListView(readerIDs: readerIDs, connect: { readerID in
+                        selectionHandler(readerID)
+                    }, cancelSearch: {
+                        selectionHandler(nil)
+                    })
+                case .idle,
+                        .showAlert, // handled abo ve
+                        .showOnboarding,
+                        .showPaymentMessage:
+                    Text(viewModel.cardPresentPaymentEvent.temporaryEventDescription)
+                }
             }
         })
         .sheet(isPresented: $viewModel.showsFilterSheet, content: {
@@ -107,8 +122,10 @@ fileprivate extension CardPresentPaymentEvent {
 
 #if DEBUG
 #Preview {
-    PointOfSaleDashboardView(
-        viewModel: PointOfSaleDashboardViewModel(items: POSItemProviderPreview().providePointOfSaleItems(),
-                                                 cardPresentPaymentService: CardPresentPaymentPreviewService()))
+    NavigationStack {
+        PointOfSaleDashboardView(
+            viewModel: PointOfSaleDashboardViewModel(items: POSItemProviderPreview().providePointOfSaleItems(),
+                                                     cardPresentPaymentService: CardPresentPaymentPreviewService()))
+    }
 }
 #endif

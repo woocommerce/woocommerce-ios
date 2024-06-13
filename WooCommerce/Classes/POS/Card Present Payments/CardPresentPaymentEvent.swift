@@ -23,6 +23,6 @@ enum CardPresentPaymentEvent {
     case idle
     case showAlert(_ alertDetails: CardPresentPaymentAlertType)
     case showPaymentMessage(_ message: CardPresentPaymentMessageType)
-    case showReaderList(_ readerIDs: [String], selectionHandler: ((String) -> Void))
+    case showReaderList(_ readerIDs: [String], selectionHandler: ((String?) -> Void))
     case showOnboarding(_ onboardingViewModel: CardPresentPaymentsOnboardingViewModel)
 }

@@ -268,9 +268,14 @@ final class ProductsViewController: UIViewController, GhostableViewController {
         registerTableViewHeader()
 
         showTopBannerViewIfNeeded()
-        syncProductsSettings()
         observeSelectedProductAndDataLoadedStateToUpdateSelectedRow()
         observeSelectedProductToAutoScrollWhenProductChanges()
+
+        Task { @MainActor [weak self] in
+            guard let self else { return }
+            await syncProductsSettings()
+            await reloadFavorites()
+        }
     }
 
     override func viewWillAppear(_ animated: Bool) {

@@ -1492,30 +1492,32 @@ extension ProductsViewController: PaginationTrackerDelegate {
 
     /// Fetch local Products Settings (eg.  sort order or filters stored in Products settings)
     ///
-    private func syncLocalProductsSettings(onCompletion: @escaping (Result<StoredProductSettings.Setting, Error>) -> Void) {
-        let action = AppSettingsAction.loadProductsSettings(siteID: siteID) { [weak self] (result) in
-            switch result {
-            case .success(let settings):
-                self?.syncProductCategoryFilterRemotely(from: settings) { [weak self] settings in
-                    guard let self else { return }
-                    if let sort = settings.sort {
-                        sortOrder = ProductsSortOrder(rawValue: sort) ?? .default
-                    }
+    private func syncLocalProductsSettings() async throws -> StoredProductSettings.Setting {
+        try await withCheckedThrowingContinuation { continuation in
+            let action = AppSettingsAction.loadProductsSettings(siteID: siteID) { [weak self] (result) in
+                switch result {
+                case .success(let settings):
+                    self?.syncProductCategoryFilterRemotely(from: settings) { [weak self] settings in
+                        guard let self else { return }
+                        if let sort = settings.sort {
+                            sortOrder = ProductsSortOrder(rawValue: sort) ?? .default
+                        }
 
-                    let promotableProductType = settings.productTypeFilter.map { PromotableProductType(productType: $0, isAvailable: true, promoteUrl: nil) }
-                    filters = FilterProductListViewModel.Filters(stockStatus: settings.stockStatusFilter,
-                                                                 productStatus: settings.productStatusFilter,
-                                                                 promotableProductType: promotableProductType,
-                                                                 productCategory: settings.productCategoryFilter,
-                                                                 numberOfActiveFilters: settings.numberOfActiveFilters())
-                    onCompletion(result)
+                        let promotableProductType = settings.productTypeFilter.map { PromotableProductType(productType: $0, isAvailable: true, promoteUrl: nil) }
+                        filters = FilterProductListViewModel.Filters(stockStatus: settings.stockStatusFilter,
+                                                                     productStatus: settings.productStatusFilter,
+                                                                     promotableProductType: promotableProductType,
+                                                                     productCategory: settings.productCategoryFilter,
+                                                                     numberOfActiveFilters: settings.numberOfActiveFilters())
+                        continuation.resume(with: result)
+                    }
+                case let .failure(error):
+                    DDLogError("⛔️ Error loading product settings: \(error)")
+                    continuation.resume(throwing: error)
                 }
-            case let .failure(error):
-                DDLogError("⛔️ Error loading product settings: \(error)")
-                onCompletion(result)
             }
+            ServiceLocator.stores.dispatch(action)
         }
-        ServiceLocator.stores.dispatch(action)
     }
 
     /// Syncs the Product Category filter of settings remotely. This is necessary in case the category information was updated

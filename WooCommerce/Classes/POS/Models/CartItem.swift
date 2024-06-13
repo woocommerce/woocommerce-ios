@@ -1,7 +1,7 @@
 import Foundation
 import protocol Yosemite.POSItem
 
-struct CartItem: Equatable {
+struct CartItem {
     let id: UUID
     let item: POSItem
     let quantity: Int
@@ -10,9 +10,5 @@ struct CartItem: Equatable {
         self.id = id
         self.item = item
         self.quantity = quantity
-    }
-
-    public static func == (lhs: CartItem, rhs: CartItem) -> Bool {
-        lhs.item.productID == rhs.item.productID
     }
 }

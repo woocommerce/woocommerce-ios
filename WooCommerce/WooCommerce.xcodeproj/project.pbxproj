@@ -2660,6 +2660,7 @@
 		EE19058E2B5F747200617C53 /* BlazeAddPaymentMethodWebViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE19058D2B5F747200617C53 /* BlazeAddPaymentMethodWebViewModel.swift */; };
 		EE1905902B5F83BB00617C53 /* BlazeAddPaymentMethodWebViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE19058F2B5F83BB00617C53 /* BlazeAddPaymentMethodWebViewModelTests.swift */; };
 		EE1905942B62AE9100617C53 /* BlazeCreateCampaignIntroViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE1905932B62AE9100617C53 /* BlazeCreateCampaignIntroViewModelTests.swift */; };
+		EE1D8EAC2C1B4E5A00A558B5 /* ActionableSectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE1D8EAB2C1B4E5A00A558B5 /* ActionableSectionHeaderView.swift */; };
 		EE28CF852B233AC40056D96E /* ProductCreationAISurveyConfirmationViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE28CF842B233AC40056D96E /* ProductCreationAISurveyConfirmationViewModelTests.swift */; };
 		EE2A57D729E399CC009F61E1 /* CaseIterable+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE2A57D629E399CC009F61E1 /* CaseIterable+Helpers.swift */; };
 		EE2A57D929E39A9C009F61E1 /* CaseIterable+HelpersTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE2A57D829E39A9C009F61E1 /* CaseIterable+HelpersTests.swift */; };
@@ -5575,6 +5576,7 @@
 		EE19058D2B5F747200617C53 /* BlazeAddPaymentMethodWebViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeAddPaymentMethodWebViewModel.swift; sourceTree = "<group>"; };
 		EE19058F2B5F83BB00617C53 /* BlazeAddPaymentMethodWebViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeAddPaymentMethodWebViewModelTests.swift; sourceTree = "<group>"; };
 		EE1905932B62AE9100617C53 /* BlazeCreateCampaignIntroViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeCreateCampaignIntroViewModelTests.swift; sourceTree = "<group>"; };
+		EE1D8EAB2C1B4E5A00A558B5 /* ActionableSectionHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionableSectionHeaderView.swift; sourceTree = "<group>"; };
 		EE28CF842B233AC40056D96E /* ProductCreationAISurveyConfirmationViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCreationAISurveyConfirmationViewModelTests.swift; sourceTree = "<group>"; };
 		EE2A57D629E399CC009F61E1 /* CaseIterable+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CaseIterable+Helpers.swift"; sourceTree = "<group>"; };
 		EE2A57D829E39A9C009F61E1 /* CaseIterable+HelpersTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CaseIterable+HelpersTests.swift"; sourceTree = "<group>"; };
@@ -8898,6 +8900,7 @@
 				57CFCD27248845B4003F51EC /* PrimarySectionHeaderView.swift */,
 				57CFCD292488496F003F51EC /* PrimarySectionHeaderView.xib */,
 				028FA46B257E0D9F00F88A48 /* PlainTextSectionHeaderView.swift */,
+				EE1D8EAB2C1B4E5A00A558B5 /* ActionableSectionHeaderView.swift */,
 			);
 			path = "Section Headers";
 			sourceTree = "<group>";
@@ -15029,6 +15032,7 @@
 				E12AF69926BA8ADC00C371C1 /* CardPresentPaymentsOnboardingUseCase.swift in Sources */,
 				45C11B7C2508E156006C2089 /* SelectedSiteSettings.swift in Sources */,
 				B5A56BF3219F46470065A902 /* UIButton+Animations.swift in Sources */,
+				EE1D8EAC2C1B4E5A00A558B5 /* ActionableSectionHeaderView.swift in Sources */,
 				03AA165E2719B7EF005CCB7B /* ReceiptActionCoordinator.swift in Sources */,
 				B9ACF6882BEE4FC60076E6BC /* String+ProductQuantityRules.swift in Sources */,
 				B54FBE552111F70700390F57 /* ResultsController+UIKit.swift in Sources */,

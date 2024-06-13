@@ -32,13 +32,20 @@ struct PointOfSaleDashboardView: View {
                 POSToolbarView(readerConnectionViewModel: viewModel.cardReaderConnectionViewModel)
             }
         }
+        .toolbarBackground(Color.toolbarBackground, for: .bottomBar)
+        .toolbarBackground(.visible, for: .bottomBar)
         .sheet(isPresented: $viewModel.showsCardReaderSheet, content: {
             switch viewModel.cardPresentPaymentEvent {
             case .showAlert(let alertDetails):
                 CardPresentPaymentAlert(
                     viewModel: alertDetails.toAlertViewModel())
+            case let .showReaderList(readerIDs, selectionHandler):
+                FoundCardReaderListView(readerIDs: readerIDs, connect: { readerID in
+                    selectionHandler(readerID)
+                }, cancelSearch: {
+                    selectionHandler(nil)
+                })
             case .idle,
-                    .showReaderList,
                     .showOnboarding:
                 Text(viewModel.cardPresentPaymentEvent.temporaryEventDescription)
             }
@@ -87,8 +94,10 @@ fileprivate extension CardPresentPaymentEvent {
 
 #if DEBUG
 #Preview {
-    PointOfSaleDashboardView(
-        viewModel: PointOfSaleDashboardViewModel(items: POSItemProviderPreview().providePointOfSaleItems(),
-                                                 cardPresentPaymentService: CardPresentPaymentPreviewService()))
+    NavigationStack {
+        PointOfSaleDashboardView(
+            viewModel: PointOfSaleDashboardViewModel(items: POSItemProviderPreview().providePointOfSaleItems(),
+                                                     cardPresentPaymentService: CardPresentPaymentPreviewService()))
+    }
 }
 #endif

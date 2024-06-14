@@ -24,7 +24,7 @@ struct CardPresentPaymentScanningForReadersFailedView: View {
 
 #Preview {
     CardPresentPaymentScanningForReadersFailedView(
-        viewModel:CardPresentPaymentScanningFailedAlertViewModel(
+        viewModel: CardPresentPaymentScanningFailedAlertViewModel(
             error: NSError(domain: "", code: 1, userInfo: nil),
             endSearchAction: {}))
 }

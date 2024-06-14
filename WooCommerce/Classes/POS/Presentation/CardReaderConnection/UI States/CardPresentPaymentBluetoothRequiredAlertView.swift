@@ -11,7 +11,7 @@ struct CardPresentPaymentBluetoothRequiredAlertView: View {
     var body: some View {
         VStack {
             Text(viewModel.title)
-            
+
             viewModel.image
 
             Text(viewModel.errorDetails)

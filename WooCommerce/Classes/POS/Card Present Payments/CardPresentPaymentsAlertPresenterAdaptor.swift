@@ -30,7 +30,8 @@ final class CardPresentPaymentsAlertPresenterAdaptor: CardPresentPaymentAlertsPr
             case .connectingFailedNonRetryable(let error, let endSearch):
             paymentAlertSubject.send(.showAlert(.connectingFailedNonRetryable(viewModel: .init(error: error, cancelAction: endSearch))))
             case .connectingFailedUpdatePostalCode(let retrySearch, let endSearch):
-            paymentAlertSubject.send(.showAlert(.connectingFailedUpdatePostalCode(viewModel: .init(retryButtonAction: retrySearch, cancelButtonAction: endSearch))))
+            paymentAlertSubject.send(.showAlert(.connectingFailedUpdatePostalCode(
+                viewModel: .init(retryButtonAction: retrySearch, cancelButtonAction: endSearch))))
             case .connectingFailedChargeReader(let retrySearch, let endSearch):
             paymentAlertSubject.send(.showAlert(.connectingFailedChargeReader(viewModel: .init(
                 retryButtonAction: retrySearch,

@@ -24,6 +24,8 @@ struct PointOfSaleDashboardView: View {
                     cartView
                     Spacer()
                     totalsView
+                case .successful:
+                    totalsView
                 }
             }
             .padding()

@@ -8,6 +8,7 @@ import struct Yosemite.PointOfSaleCartProduct
 import protocol Yosemite.POSItem
 import class WooFoundation.CurrencyFormatter
 import class WooFoundation.CurrencySettings
+import enum Networking.OrderStatusEnum
 
 final class PointOfSaleDashboardViewModel: ObservableObject {
     enum PaymentState {
@@ -47,6 +48,7 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
     enum OrderStage {
         case building
         case finalizing
+        case successful
     }
 
     @Published private(set) var orderStage: OrderStage = .building
@@ -142,12 +144,38 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
     func cardPaymentTapped() {
         Task { @MainActor in
             showsCreatingOrderSheet = true
-            let order = try await createTestOrder()
+            let finalOrder = orderService.orderFrom(posOrder: order)
             showsCreatingOrderSheet = false
-            let _ = try await cardPresentPaymentService.collectPayment(for: order, using: .bluetooth)
+            let result = try await cardPresentPaymentService.collectPayment(for: finalOrder, using: .bluetooth)
 
             // TODO: Here we should present something to show the payment was successful or not,
             // and then clear the screen ready for the next transaction.
+            self.orderStage = .successful
+            switch result {
+            case .success(let cardPresentPaymentTransaction):
+                print("🟢 [POS] Payment successful: \(cardPresentPaymentTransaction)")
+            case .cancellation:
+                print("🟡 [POS] Payment cancelled")
+            }
+        }
+    }
+
+    func updateOrderStatus(_ status: OrderStatusEnum) {
+        guard let order else {
+            return
+        }
+        Task { @MainActor
+            [weak self] in
+            guard let self else {
+                throw OrderSyncError.selfDeallocated
+            }
+            do {
+                let finalizedOrder = try await self.orderService.updateOrderStatus(posOrder: order, status: status)
+                self.order = finalizedOrder
+                print("🟢 [POS] Synced order: \(finalizedOrder)")
+            } catch {
+                print("🔴 [POS] Error syncing order: \(error)")
+            }
         }
     }
 
@@ -163,6 +191,7 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
         // clear cart
         itemsInCart.removeAll()
         orderStage = .building
+        order = nil
     }
 }
 

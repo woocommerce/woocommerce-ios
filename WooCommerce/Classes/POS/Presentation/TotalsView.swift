@@ -16,12 +16,15 @@ struct TotalsView: View {
         HStack {
             VStack(alignment: .leading) {
                 VStack(alignment: .leading, spacing: 32) {
-                    HStack(spacing: 40) {
-                        Spacer()
-                        priceFieldView(title: "Subtotal", formattedPrice: viewModel.formattedCartTotalPrice, shimmeringActive: false)
-                        Text("+")
-                        priceFieldView(title: "Taxes", formattedPrice: viewModel.formattedOrderTotalTaxPrice, shimmeringActive: viewModel.isSyncingOrder)
-                        Spacer()
+                    Spacer()
+                    if viewModel.orderStage != .successful {
+                        HStack(spacing: 40) {
+                            Spacer()
+                            priceFieldView(title: "Subtotal", formattedPrice: viewModel.formattedCartTotalPrice, shimmeringActive: false)
+                            Text("+")
+                            priceFieldView(title: "Taxes", formattedPrice: viewModel.formattedOrderTotalTaxPrice, shimmeringActive: viewModel.isSyncingOrder)
+                            Spacer()
+                        }
                     }
                     HStack {
                         Spacer()
@@ -33,6 +36,7 @@ struct TotalsView: View {
                             viewModel.calculateAmountsTapped()
                         }
                     }
+                    Spacer()
                     Divider()
                 }
                 .padding()
@@ -161,10 +165,12 @@ private extension TotalsView {
 
     @ViewBuilder func priceFieldView(title: String, formattedPrice: String?, shimmeringActive: Bool) -> some View {
         VStack(alignment: .center, spacing: .zero) {
-            Text(title)
+            Text(title.uppercased())
+                .font(Font.system(size: 16))
+                .fontWeight(.semibold)
+                .foregroundColor(Color.totalsTitleColor)
             Text(formattedPrice ?? "-----")
-                .font(.title2)
-                .fontWeight(.medium)
+                .font(Font.system(size: 28))
                 .redacted(reason: formattedPrice == nil ? [.placeholder] : [])
                                 .shimmering(active: shimmeringActive)
         }
@@ -173,11 +179,12 @@ private extension TotalsView {
 
     @ViewBuilder func totalPriceView(formattedPrice: String?) -> some View {
         VStack(alignment: .center, spacing: .zero) {
-            Text("Total")
-                .font(.title2)
-                .fontWeight(.medium)
+            Text("Total".uppercased())
+                .font(Font.system(size: 16))
+                .fontWeight(.semibold)
+                .foregroundColor(Color.totalsTitleColor)
             Text(formattedPrice ?? "-----")
-                .font(.largeTitle)
+                .font(Font.system(size: 84))
                 .bold()
                 .redacted(reason: formattedPrice == nil ? [.placeholder] : [])
                 .shimmering(active: viewModel.isSyncingOrder)

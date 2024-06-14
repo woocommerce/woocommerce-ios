@@ -18,6 +18,7 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
 
     @Published private(set) var items: [POSItem]
     @Published private(set) var itemsInCart: [CartItem] = []
+    @Published private var finalItems: [CartItem] = []
 
     // Total amounts
     @Published private(set) var formattedCartTotalPrice: String?
@@ -62,8 +63,7 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
     init(items: [POSItem],
          cardPresentPaymentService: CardPresentPaymentFacade,
          // TODO: DI to entry point from the app
-         orderService: PointOfSaleOrderServiceProtocol = PointOfSaleOrderService(siteID: ServiceLocator.stores.sessionManager.defaultStoreID!,
-                                                                                 credentials: ServiceLocator.stores.sessionManager.defaultCredentials!)) {
+         orderService: PointOfSaleOrderServiceProtocol) {
         self.items = items
         self.cardPresentPaymentService = cardPresentPaymentService
         self.cardReaderConnectionViewModel = CardReaderConnectionViewModel(cardPresentPayment: cardPresentPaymentService)
@@ -71,6 +71,7 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
 
         observeCardPresentPaymentEvents()
         observeItemsInCartForCartTotal()
+        observeProductsInCartForRemoteOrderSyncing()
     }
 
     var itemToScrollToWhenCartUpdated: CartItem? {
@@ -82,7 +83,7 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
         itemsInCart.append(cartItem)
 
         if orderStage == .finalizing {
-            recalculateAmounts()
+            createOrUpdateOrder()
         }
     }
 
@@ -90,7 +91,7 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
         itemsInCart.removeAll(where: { $0.id == cartItem.id })
 
         if orderStage == .finalizing {
-            recalculateAmounts()
+            createOrUpdateOrder()
         }
         checkIfCartEmpty()
     }
@@ -116,7 +117,7 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
         // TODO: https://github.com/woocommerce/woocommerce-ios/issues/12810
         orderStage = .finalizing
 
-        recalculateAmounts()
+        createOrUpdateOrder()
     }
 
     func addMoreToCart() {
@@ -150,10 +151,12 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
         }
     }
 
-    func recalculateAmounts() {
-        Task {
-            await createOrUpdateOrder()
-        }
+    func calculateAmountsTapped() {
+        createOrUpdateOrder()
+    }
+
+    private func createOrUpdateOrder() {
+        finalItems = itemsInCart
     }
 
     func startNewTransaction() {
@@ -192,47 +195,55 @@ private extension PointOfSaleDashboardViewModel {
             }
         }.assign(to: &$showsCardReaderSheet)
     }
-}
 
-private extension PointOfSaleDashboardViewModel {
-    private var shouldSyncOrder: Bool {
-        return orderStage == .finalizing
-    }
-
-    private func createOrUpdateOrder() async {
-        guard shouldSyncOrder, isSyncingOrder == false else {
-            return
+    func observeProductsInCartForRemoteOrderSyncing() {
+        cartSubscription = Publishers.CombineLatest($finalItems.debounce(for: .seconds(Constants.cartChangesDebounceDuration),
+                                                                          scheduler: DispatchQueue.main),
+                                                    $isSyncingOrder)
+        .filter { _, isSyncingOrder in
+            isSyncingOrder == false
         }
-        let cart = itemsInCart
-            .map {
-                PointOfSaleCartItem(itemID: nil,
-                                    product: .init(productID: $0.item.productID,
-                                                   price: $0.item.price,
-                                                   productType: .simple),
-                                    quantity: Decimal($0.quantity))
+        .map { $0.0 }
+        .removeDuplicates()
+        .dropFirst()
+        .sink { cartProducts in
+            Task { @MainActor
+                [weak self] in
+                guard let self else {
+                    throw OrderSyncError.selfDeallocated
+                }
+                let cart = cartProducts
+                    .map {
+                        PointOfSaleCartItem(itemID: nil,
+                                            product: .init(productID: $0.item.productID,
+                                                           price: $0.item.price,
+                                                           productType: .simple),
+                                            quantity: Decimal($0.quantity))
+                    }
+                defer {
+                    self.isSyncingOrder = false
+                }
+                do {
+                    self.isSyncingOrder = true
+                    let posProducts = self.items.map { Yosemite.PointOfSaleCartProduct(productID: $0.productID,
+                                                                                             price: $0.price,
+                                                                                             productType: .simple) }
+                    let order = try await self.orderService.syncOrder(cart: cart,
+                                                                            order: self.order,
+                                                                            allProducts: posProducts)
+                    self.order = order
+                    print("🟢 [POS] Synced order: \(order)")
+                } catch {
+                    print("🔴 [POS] Error syncing order: \(error)")
+                }
             }
-        defer {
-            self.isSyncingOrder = false
-        }
-        do {
-            self.isSyncingOrder = true
-            let posProducts = self.items.map { Yosemite.PointOfSaleCartProduct(productID: $0.productID,
-                                                                                     price: $0.price,
-                                                                                     productType: .simple) }
-            let order = try await self.orderService.syncOrder(cart: cart,
-                                                              order: self.order,
-                                                              allProducts: posProducts)
-            self.order = order
-            print("🟢 [POS] Synced order: \(order)")
-        } catch {
-            print("🔴 [POS] Error syncing order: \(error)")
         }
     }
 }
 
 private extension PointOfSaleDashboardViewModel {
     enum Constants {
-        static let cartChangesDebounceDuration: TimeInterval = 0.3
+        static let cartChangesDebounceDuration: TimeInterval = 0
     }
 
     enum OrderSyncError: Error {

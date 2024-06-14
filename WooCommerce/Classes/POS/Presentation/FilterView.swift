@@ -1,4 +1,7 @@
 import SwiftUI
+import protocol Yosemite.PointOfSaleOrderServiceProtocol
+import class Yosemite.PointOfSaleOrderService
+import enum Networking.Credentials
 
 struct FilterView: View {
     @ObservedObject private var viewModel: PointOfSaleDashboardViewModel
@@ -24,6 +27,8 @@ struct FilterView: View {
 #if DEBUG
 #Preview {
     FilterView(viewModel: PointOfSaleDashboardViewModel(items: [],
-                                                        cardPresentPaymentService: CardPresentPaymentPreviewService()))
+                                                        cardPresentPaymentService: CardPresentPaymentPreviewService(),
+                                                        orderService: PointOfSaleOrderService(siteID: Int64.min,
+                                                                                              credentials: Credentials(authToken: "token"))))
 }
 #endif

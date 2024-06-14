@@ -1,4 +1,7 @@
 import SwiftUI
+import protocol Yosemite.PointOfSaleOrderServiceProtocol
+import class Yosemite.PointOfSaleOrderService
+import enum Networking.Credentials
 
 struct TotalsView: View {
     @ObservedObject private var viewModel: PointOfSaleDashboardViewModel
@@ -27,7 +30,7 @@ struct TotalsView: View {
                     }
                     if viewModel.showRecalculateButton {
                         Button("Calculate amounts") {
-                            viewModel.recalculateAmounts()
+                            viewModel.calculateAmountsTapped()
                         }
                     }
                     Divider()
@@ -186,6 +189,8 @@ private extension TotalsView {
 #if DEBUG
 #Preview {
     TotalsView(viewModel: .init(items: [],
-                                cardPresentPaymentService: CardPresentPaymentPreviewService()))
+                                cardPresentPaymentService: CardPresentPaymentPreviewService(),
+                                orderService: PointOfSaleOrderService(siteID: Int64.min,
+                                                                      credentials: Credentials(authToken: "token"))))
 }
 #endif

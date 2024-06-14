@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-06-10 15:54:03+0000 */
+/* Translation-Revision-Date: 2024-06-11 09:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: fr */
@@ -10775,7 +10775,7 @@ which should be translated separately and considered part of this sentence. */
 "inAppFeedbackCardView.couldBeBetter" = "Cela pourrait être mieux";
 
 /* The title used when asking the user for feedback for the app. */
-"inAppFeedbackCardView.feedbackTitle" = "Appréciez-vous l’application mobile Jetpack ?";
+"inAppFeedbackCardView.feedbackTitle" = "Appréciez-vous l’application ?";
 
 /* The title of the button for giving a positive feedback for the app. */
 "inAppFeedbackCardView.iLikeIt" = "J’aime";
@@ -11860,7 +11860,7 @@ which should be translated separately and considered part of this sentence. */
 "watch.orders.detail.product-count-singular" = "1 produit";
 
 /* Title on the watch orders list screen when there are no orders */
-"watch.orders.empty.title" = "En attente de votre première commande";
+"watch.orders.empty.title" = "En attente de votre première commande !";
 
 /* Loading title on the watch orders list screen. */
 "watch.orders.error.title" = "Une erreur est survenue lors du chargement de la liste des commandes";

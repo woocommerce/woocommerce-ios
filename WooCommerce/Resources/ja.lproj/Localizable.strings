@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-06-04 09:54:04+0000 */
+/* Translation-Revision-Date: 2024-06-11 09:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ja_JP */
@@ -10590,6 +10590,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the button to edit the layout of the Dashboard screen. */
 "dashboardView.edit" = "編集";
 
+/* Label of the button to add sections */
+"dashboardView.newCardsNoticeCard.addSectionsButtonText" = "新しいセクションを追加";
+
 /* Subtitle of the New Cards Notice card */
 "dashboardView.newCardsNoticeCard.subtitle" = "新しいセクションを追加して、ストア管理エクスペリエンスをカスタマイズする";
 
@@ -10692,6 +10695,15 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the store creation plan on the plan screen. */
 "eCommerce" = "eコマース";
 
+/* Title for button to view the feedback survey about adding shipping to an order */
+"editableOrderShippingLineViewModel.feedbackSurvey.buttonTitle" = "フィードバックを共有";
+
+/* Message for the feedback survey about adding shipping to an order */
+"editableOrderShippingLineViewModel.feedbackSurvey.message" = "Woo は配送の簡易化に役立っていますか ?";
+
+/* Title for the feedback survey about adding shipping to an order */
+"editableOrderShippingLineViewModel.feedbackSurvey.title" = "配送が追加されました !";
+
 /* Default name when the custom amount does not have a name in order creation. */
 "editableOrderViewModel.customAmountDefaultName" = "カスタム金額";
 
@@ -10761,6 +10773,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* The title of the button for giving a negative feedback for the app. */
 "inAppFeedbackCardView.couldBeBetter" = "改善の余地あり";
+
+/* The title used when asking the user for feedback for the app. */
+"inAppFeedbackCardView.feedbackTitle" = "アプリをお楽しみいただけていますか ?";
 
 /* The title of the button for giving a positive feedback for the app. */
 "inAppFeedbackCardView.iLikeIt" = "気に入っている";
@@ -11280,6 +11295,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label for button on product form to open Blaze flow */
 "productFormTableViewDataSource.promoteWithBlazeButton" = "Blaze を使って宣伝する";
+
+/* Text message prompting the user to tap to learn more about changing the privacy setting. */
+"productFormTableViewDataSource.wpComStoreNotPublicText" = "タップして詳細をご確認ください。";
+
+/* Title message indicating that images are unavailable because the site is private. */
+"productFormTableViewDataSource.wpComStoreNotPublicTitle" = "サイトが「非公開」として設定されているため、画像が利用できません。 これは、「近日公開」モードに切り替えることで変更できます。";
 
 /* Alert message to inform the user that they must wait for all image uploads to complete before they can reorder the images. */
 "productImagesCollectionViewController.notice" = "画像の順序を変更するには、すべてのアップロードが完了するまでお待ちください。";
@@ -11837,6 +11858,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Singular format for the number of products in the order detail screen. */
 "watch.orders.detail.product-count-singular" = "1個の商品";
+
+/* Title on the watch orders list screen when there are no orders */
+"watch.orders.empty.title" = "最初の注文を待っています";
 
 /* Loading title on the watch orders list screen. */
 "watch.orders.error.title" = "注文リストの読み込み時にエラーが発生しました";

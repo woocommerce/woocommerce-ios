@@ -1,5 +1,9 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+19.2
+-----
+
+
 19.1
 -----
 - [*] Added "Private" filter option for enhanced product filtering on iOS. [https://github.com/woocommerce/woocommerce-ios/pull/13009]

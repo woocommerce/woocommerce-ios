@@ -802,6 +802,7 @@
 		205B7ECF2C19FD5200D14A36 /* CardPresentPaymentSuccessAlertViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 205B7ECE2C19FD5200D14A36 /* CardPresentPaymentSuccessAlertViewModel.swift */; };
 		205B7ED12C19FD8500D14A36 /* CardPresentPaymentErrorAlertViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 205B7ED02C19FD8500D14A36 /* CardPresentPaymentErrorAlertViewModel.swift */; };
 		205E79402C1CA213001BA266 /* PointOfSaleCardPresentPaymentMessageType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 205E793F2C1CA213001BA266 /* PointOfSaleCardPresentPaymentMessageType.swift */; };
+		205E79422C1CA6E3001BA266 /* PointOfSaleCardPresentPaymentEventPresentationStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 205E79412C1CA6E3001BA266 /* PointOfSaleCardPresentPaymentEventPresentationStyle.swift */; };
 		20762BA12C18A66400758305 /* CardPresentPaymentBuiltInReaderConnectionAlertsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20762BA02C18A66400758305 /* CardPresentPaymentBuiltInReaderConnectionAlertsProvider.swift */; };
 		20762BA32C18A6A300758305 /* CardPresentPaymentEventDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20762BA22C18A6A300758305 /* CardPresentPaymentEventDetails.swift */; };
 		20762BA52C18B42C00758305 /* CardPresentPaymentBluetoothReaderConnectionAlertsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20762BA42C18B42C00758305 /* CardPresentPaymentBluetoothReaderConnectionAlertsProvider.swift */; };
@@ -3764,6 +3765,7 @@
 		205B7ECE2C19FD5200D14A36 /* CardPresentPaymentSuccessAlertViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentSuccessAlertViewModel.swift; sourceTree = "<group>"; };
 		205B7ED02C19FD8500D14A36 /* CardPresentPaymentErrorAlertViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentErrorAlertViewModel.swift; sourceTree = "<group>"; };
 		205E793F2C1CA213001BA266 /* PointOfSaleCardPresentPaymentMessageType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleCardPresentPaymentMessageType.swift; sourceTree = "<group>"; };
+		205E79412C1CA6E3001BA266 /* PointOfSaleCardPresentPaymentEventPresentationStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleCardPresentPaymentEventPresentationStyle.swift; sourceTree = "<group>"; };
 		20762BA02C18A66400758305 /* CardPresentPaymentBuiltInReaderConnectionAlertsProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentBuiltInReaderConnectionAlertsProvider.swift; sourceTree = "<group>"; };
 		20762BA22C18A6A300758305 /* CardPresentPaymentEventDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentEventDetails.swift; sourceTree = "<group>"; };
 		20762BA42C18B42C00758305 /* CardPresentPaymentBluetoothReaderConnectionAlertsProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentBluetoothReaderConnectionAlertsProvider.swift; sourceTree = "<group>"; };
@@ -7265,6 +7267,7 @@
 		02E71DB42C118C470036C2FD /* Card Present Payments */ = {
 			isa = PBXGroup;
 			children = (
+				205E79412C1CA6E3001BA266 /* PointOfSaleCardPresentPaymentEventPresentationStyle.swift */,
 				205E793E2C1CA1EF001BA266 /* Reader Messages */,
 				205B7EB52C19F89B00D14A36 /* Connection Alerts */,
 				0220F4942C16DC98003723C2 /* FoundCardReaderListView.swift */,
@@ -14435,6 +14438,7 @@
 				029106C02BE3349500C2248B /* OrderCustomerSectionViewModel.swift in Sources */,
 				E1325EFB28FD544E00EC9B2A /* InAppPurchasesDebugView.swift in Sources */,
 				74460D4022289B7600D7316A /* Coordinator.swift in Sources */,
+				205E79422C1CA6E3001BA266 /* PointOfSaleCardPresentPaymentEventPresentationStyle.swift in Sources */,
 				B57C743D20F5493300EEFC87 /* AccountHeaderView.swift in Sources */,
 				02562AD2296D293D00980404 /* DomainSettingsCoordinator.swift in Sources */,
 				026826C42BF59E410036F959 /* PointOfSaleCardPresentPaymentFoundReadersView.swift in Sources */,

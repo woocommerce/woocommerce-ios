@@ -111,7 +111,7 @@ fileprivate extension CardPresentPaymentEvent {
         switch self {
         case .idle:
             return "Idle"
-        case .show(let eventDetails):
+        case .show:
             return "Event"
         case .showReaderList(let readerIDs, _):
             return "Reader List: \(readerIDs.joined())"

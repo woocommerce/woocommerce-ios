@@ -142,18 +142,20 @@ private extension PointOfSaleDashboardViewModel {
         cardPresentPaymentService.paymentEventPublisher.assign(to: &$cardPresentPaymentEvent)
         cardPresentPaymentService.paymentEventPublisher
             .map { event -> PointOfSaleCardPresentPaymentAlertType? in
-                guard case let .show(eventDetails) = event else {
+                guard case let .show(eventDetails) = event,
+                      case let .alert(alertType) = eventDetails.pointOfSalePresentationStyle else {
                     return nil
                 }
-                return eventDetails.toAlertType()
+                return alertType
             }
             .assign(to: &$cardPresentPaymentAlertViewModel)
         cardPresentPaymentService.paymentEventPublisher
             .map { event -> PointOfSaleCardPresentPaymentMessageType? in
-                guard case let .show(eventDetails) = event else {
+                guard case let .show(eventDetails) = event,
+                      case let .message(messageType) = eventDetails.pointOfSalePresentationStyle else {
                     return nil
                 }
-                return eventDetails.toMessageType()
+                return messageType
             }
             .assign(to: &$cardPresentPaymentInlineMessage)
         cardPresentPaymentService.paymentEventPublisher.map { event in
@@ -161,7 +163,12 @@ private extension PointOfSaleDashboardViewModel {
             case .idle:
                 return false
             case .show(let eventDetails):
-                return eventDetails.toAlertType() != nil
+                switch eventDetails.pointOfSalePresentationStyle {
+                case .alert:
+                    return true
+                case .message, .none:
+                    return false
+                }
             case .showReaderList,
                     .showOnboarding:
                 return true

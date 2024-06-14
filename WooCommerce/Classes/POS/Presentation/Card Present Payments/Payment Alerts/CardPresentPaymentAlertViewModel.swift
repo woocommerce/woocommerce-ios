@@ -53,7 +53,7 @@ extension CardPresentPaymentAlertDetails {
                     cancelButtonAction: endSearch))
 
         case .connectingFailedNonRetryable(let error, let endSearch):
-            .connectingFailedNonRetryable(CardPresentPaymentConnectingFailedNonRetryableAlertViewModel())
+                .connectingFailedNonRetryable(CardPresentPaymentConnectingFailedNonRetryableAlertViewModel(error: error, cancelAction: endSearch))
 
         case .connectingFailedUpdatePostalCode(let retrySearch, let endSearch):
                 .connectingFailedUpdatePostalCode(CardPresentPaymentConnectingFailedUpdatePostalCodeAlertViewModel())

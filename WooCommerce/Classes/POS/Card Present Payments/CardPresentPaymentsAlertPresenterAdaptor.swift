@@ -32,7 +32,9 @@ final class CardPresentPaymentsAlertPresenterAdaptor: CardPresentPaymentAlertsPr
             case .connectingFailedUpdatePostalCode(let retrySearch, let endSearch):
                 paymentAlertSubject.send(.showAlert(.connectingFailedUpdatePostalCode(viewModel: .init())))
             case .connectingFailedChargeReader(let retrySearch, let endSearch):
-                paymentAlertSubject.send(.showAlert(.connectingFailedChargeReader(viewModel: .init())))
+            paymentAlertSubject.send(.showAlert(.connectingFailedChargeReader(viewModel: .init(
+                retryButtonAction: retrySearch,
+                cancelButtonAction: endSearch))))
             case .connectingFailedUpdateAddress(let wcSettingsAdminURL, let retrySearch, let endSearch):
                 paymentAlertSubject.send(.showAlert(.connectingFailedUpdateAddress(viewModel: .init())))
             case .preparingForPayment(let cancelPayment):

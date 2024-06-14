@@ -59,7 +59,9 @@ extension CardPresentPaymentAlertDetails {
                 .connectingFailedUpdatePostalCode(CardPresentPaymentConnectingFailedUpdatePostalCodeAlertViewModel())
 
         case .connectingFailedChargeReader(let retrySearch, let endSearch):
-            .connectingFailedChargeReader(CardPresentPaymentConnectingFailedChargeReaderAlertViewModel())
+            .connectingFailedChargeReader(CardPresentPaymentConnectingFailedChargeReaderAlertViewModel(
+                retryButtonAction: retrySearch,
+                cancelButtonAction: endSearch))
 
         case .connectingFailedUpdateAddress(let wcSettingsAdminURL, let retrySearch, let endSearch):
             .connectingFailedUpdateAddress(CardPresentPaymentConnectingFailedUpdateAddressAlertViewModel())

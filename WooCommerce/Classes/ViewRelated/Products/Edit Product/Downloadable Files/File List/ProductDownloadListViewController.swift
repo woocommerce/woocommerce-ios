@@ -88,8 +88,10 @@ final class ProductDownloadListViewController: UIViewController {
         cancellable = productImageActionHandler?.addAssetUploadObserver(self) { [weak self] asset, result in
             switch result {
             case let .success(productImage):
+                ServiceLocator.analytics.track(.productDownloadableFileUploadingSuccess)
                 self?.addDownloadableFile(fileName: productImage.name, fileURL: productImage.src)
             case let .failure(error):
+                ServiceLocator.analytics.track(.productDownloadableFileUploadingFailed, withError: error)
                 self?.showMediaUploadAlert(error: error)
             }
             self?.updateLoadingState(false)
@@ -344,7 +346,6 @@ private extension ProductDownloadListViewController {
     }
 
     func showMediaUploadAlert(error: Error) {
-        ServiceLocator.analytics.track(.productDownloadableOnDeviceMediaUploadingFailed, withError: error)
         let errorMessage: String = {
             switch error {
             case DotcomError.unknown(let code, _) where code == Constants.unsupportedMimeTypeCode:
@@ -387,9 +388,11 @@ extension ProductDownloadListViewController: UIDocumentPickerDelegate {
         Task { @MainActor in
             do {
                 let media = try await localFileUploader.uploadFile(url: url)
+                ServiceLocator.analytics.track(.productDownloadableFileUploadingSuccess)
                 addDownloadableFile(fileName: media.name, fileURL: media.src)
                 updateLoadingState(false)
             } catch {
+                ServiceLocator.analytics.track(.productDownloadableFileUploadingFailed, withError: error)
                 updateLoadingState(false)
                 showMediaUploadAlert(error: error)
             }

@@ -840,7 +840,8 @@ enum WooAnalyticsStat: String {
     case productsDownloadableFile = "products_downloadable_file"
     case productDownloadableOnDeviceMediaSelected = "product_downloadable_on_device_media_selected"
     case productDownloadableDocumentSelected = "product_downloadable_document_selected"
-    case productDownloadableOnDeviceMediaUploadingFailed = "product_downloadable_on_device_media_uploading_failed"
+    case productDownloadableFileUploadingSuccess = "product_downloadable_file_uploading_success"
+    case productDownloadableFileUploadingFailed = "product_downloadable_file_uploading_failed"
 
     // Edit External/Affiliate Product Event
     //

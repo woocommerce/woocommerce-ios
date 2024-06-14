@@ -34,7 +34,7 @@ final class ProductListViewModel: ProductsListViewModelProtocol {
         self.featureFlagService = featureFlagService
         self.wooSubscriptionProductsEligibilityChecker = WooSubscriptionProductsEligibilityChecker(siteID: siteID)
         self.barcodeSKUScannerItemFinder = barcodeSKUScannerItemFinder
-        self.favoriteProductsUseCase = FavoriteProductsUseCase(siteID: siteID)
+        self.favoriteProductsUseCase = DefaultFavoriteProductsUseCase(siteID: siteID)
     }
 
     var selectedProductsCount: Int {

@@ -1014,7 +1014,7 @@ private extension ProductsViewController {
                     guard let selectedProduct else {
                         return nil
                     }
-                    return self?.indexPath(for: selectedProduct.productID)
+                    return self?.indexPathInAllProductsSection(for: selectedProduct.productID)
                 }()
 
                 if let selectedIndexPath {
@@ -1704,7 +1704,7 @@ private extension ProductsViewController {
         }
     }
 
-    func indexPath(for productID: Int64) -> IndexPath? {
+    func indexPathInAllProductsSection(for productID: Int64) -> IndexPath? {
         guard let allProductsSectionIndex = sections.firstIndex(where: {$0.type == .allProducts }),
               let indexPath = resultsController.indexPath(forObjectMatching: {
                   $0.productID == productID

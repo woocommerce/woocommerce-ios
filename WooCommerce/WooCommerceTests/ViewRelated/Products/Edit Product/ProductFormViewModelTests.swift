@@ -263,33 +263,34 @@ final class ProductFormViewModelTests: XCTestCase {
     func test_markAsFavorite_marks_product_as_favorite() async {
         // Given
         let product = Product.fake()
+        let mockUseCase = MockFavoriteProductsUseCase()
         let viewModel = createViewModel(product: product,
                                         formType: .add,
+                                        favoriteProductsUseCase: mockUseCase,
                                         featureFlagService: MockFeatureFlagService(favoriteProducts: true))
 
         // When
         viewModel.markAsFavorite()
 
         // Then
-        let isFavorite = await viewModel.isFavorite()
-        XCTAssertTrue(isFavorite)
+        XCTAssertEqual(mockUseCase.markAsFavoriteCalledForProductID, product.productID)
     }
 
     @MainActor
     func test_removeFromFavorite_removes_product_as_favorite() async {
         // Given
         let product = Product.fake()
+        let mockUseCase = MockFavoriteProductsUseCase()
         let viewModel = createViewModel(product: product,
                                         formType: .add,
+                                        favoriteProductsUseCase: mockUseCase,
                                         featureFlagService: MockFeatureFlagService(favoriteProducts: true))
-        viewModel.markAsFavorite()
 
         // When
         viewModel.removeFromFavorite()
 
         // Then
-        let isFavorite = await viewModel.isFavorite()
-        XCTAssertFalse(isFavorite)
+        XCTAssertEqual(mockUseCase.removeFromFavoriteCalledForProductID, product.productID)
     }
 
     // MARK: `canDeleteProduct`
@@ -835,6 +836,7 @@ private extension ProductFormViewModelTests {
                          stores: StoresManager = ServiceLocator.stores,
                          analytics: Analytics = ServiceLocator.analytics,
                          blazeEligibilityChecker: BlazeEligibilityCheckerProtocol = BlazeEligibilityChecker(),
+                         favoriteProductsUseCase: FavoriteProductsUseCase? = nil,
                          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) -> ProductFormViewModel {
         let model = EditableProductModel(product: product)
         let productImageActionHandler = ProductImageActionHandler(siteID: 0, product: model)
@@ -844,6 +846,7 @@ private extension ProductFormViewModelTests {
                                     stores: stores,
                                     analytics: analytics,
                                     blazeEligibilityChecker: blazeEligibilityChecker,
+                                    favoriteProductsUseCase: favoriteProductsUseCase,
                                     featureFlagService: featureFlagService)
     }
 }

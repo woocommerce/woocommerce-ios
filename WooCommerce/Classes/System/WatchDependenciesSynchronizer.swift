@@ -30,6 +30,10 @@ final class WatchDependenciesSynchronizer: NSObject, WCSessionDelegate {
     ///
     @Published private var isSessionActive: Bool = false
 
+    /// Toggle this value to force a credentials sync.
+    ///
+    @Published private var syncTrigger = false
+
     init(watchSession: WCSession = WCSession.default, storedDependencies: WatchDependencies?) {
         self.watchSession = watchSession
         super.init()
@@ -64,8 +68,8 @@ final class WatchDependenciesSynchronizer: NSObject, WCSessionDelegate {
             .debounce(for: 0.5, scheduler: DispatchQueue.main)
 
         // Syncs the dependencies to the paired counterpart when the session becomes available.
-        Publishers.CombineLatest(watchDependencies, $isSessionActive)
-            .sink { [watchSession] dependencies, isSessionActive in
+        Publishers.CombineLatest3(watchDependencies, $isSessionActive, $syncTrigger)
+            .sink { [watchSession] dependencies, isSessionActive, _ in
                 guard isSessionActive else { return }
                 do {
                     let dependenciesDic = dependencies?.toDictionary() ?? [:]
@@ -106,5 +110,19 @@ extension WatchDependenciesSynchronizer {
             return DDLogError("⛔️ Unsupported watch tracks event: \(userInfo)")
         }
         ServiceLocator.analytics.track(analyticEvent)
+    }
+}
+
+// MARK: Sync Delegate
+extension WatchDependenciesSynchronizer {
+    /// The `didReceiveMessage` only supports sync requests events for now.
+    /// When one is identified we should try to re-sync credentials.
+    ///
+    func session(_ session: WCSession, didReceiveMessage message: [String: Any]) {
+        guard message[WooConstants.watchTracksKey] as? Bool == true else {
+            return DDLogError("⛔️ Unsupported sync request message: \(message)")
+        }
+
+        syncTrigger.toggle()
     }
 }

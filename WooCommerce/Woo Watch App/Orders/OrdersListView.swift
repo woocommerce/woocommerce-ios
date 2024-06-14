@@ -4,6 +4,8 @@ import SwiftUI
 ///
 struct OrdersListView: View {
 
+    @Environment(\.appBindings) private var appBindings
+
     @EnvironmentObject private var tracksProvider: WatchTracksProvider
 
     // Used to changed the tab programmatically
@@ -23,7 +25,7 @@ struct OrdersListView: View {
             case .idle:
                 Rectangle().hidden()
                     .task {
-                        await viewModel.fetchOrders()
+                        await viewModel.fetchAndBindRefreshTrigger(trigger: appBindings.refreshData.eraseToAnyPublisher())
                     }
             case .loading:
                 loadingView
@@ -87,7 +89,7 @@ struct OrdersListView: View {
 
             Button(Localization.retry) {
                 Task {
-                    await viewModel.fetchOrders()
+                    appBindings.refreshData.send()
                 }
             }
             .padding(.bottom, -16)

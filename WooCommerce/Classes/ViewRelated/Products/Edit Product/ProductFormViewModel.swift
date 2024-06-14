@@ -235,6 +235,7 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
          productImagesUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,
          analytics: Analytics = ServiceLocator.analytics,
          blazeEligibilityChecker: BlazeEligibilityCheckerProtocol = BlazeEligibilityChecker(),
+         favoriteProductsUseCase: FavoriteProductsUseCase? = nil,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.formType = formType
         self.productImageActionHandler = productImageActionHandler
@@ -246,7 +247,7 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
         self.productImagesUploader = productImagesUploader
         self.analytics = analytics
         self.blazeEligibilityChecker = blazeEligibilityChecker
-        self.favoriteProductsUseCase = FavoriteProductsUseCase(siteID: product.siteID)
+        self.favoriteProductsUseCase = favoriteProductsUseCase ?? DefaultFavoriteProductsUseCase(siteID: product.siteID)
         self.featureFlagService = featureFlagService
 
         self.cancellable = productImageActionHandler.addUpdateObserver(self) { [weak self] allStatuses in

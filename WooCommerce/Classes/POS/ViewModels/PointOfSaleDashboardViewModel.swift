@@ -50,7 +50,6 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
     enum OrderStage {
         case building
         case finalizing
-        case successful
     }
 
     @Published private(set) var orderStage: OrderStage = .building
@@ -152,7 +151,6 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
 
             // TODO: Here we should present something to show the payment was successful or not,
             // and then clear the screen ready for the next transaction.
-            self.orderStage = .successful
             switch result {
             case .success(let cardPresentPaymentTransaction):
                 print("🟢 [POS] Payment successful: \(cardPresentPaymentTransaction)")

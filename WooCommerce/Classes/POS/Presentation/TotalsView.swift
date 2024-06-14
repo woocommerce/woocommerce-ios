@@ -17,14 +17,12 @@ struct TotalsView: View {
             VStack(alignment: .leading) {
                 VStack(alignment: .leading, spacing: 32) {
                     Spacer()
-                    if viewModel.orderStage != .successful {
-                        HStack(spacing: 40) {
-                            Spacer()
-                            priceFieldView(title: "Subtotal", formattedPrice: viewModel.formattedCartTotalPrice, shimmeringActive: false)
-                            Text("+")
-                            priceFieldView(title: "Taxes", formattedPrice: viewModel.formattedOrderTotalTaxPrice, shimmeringActive: viewModel.isSyncingOrder)
-                            Spacer()
-                        }
+                    HStack(spacing: 40) {
+                        Spacer()
+                        priceFieldView(title: "Subtotal", formattedPrice: viewModel.formattedCartTotalPrice, shimmeringActive: false)
+                        Text("+")
+                        priceFieldView(title: "Taxes", formattedPrice: viewModel.formattedOrderTotalTaxPrice, shimmeringActive: viewModel.isSyncingOrder)
+                        Spacer()
                     }
                     HStack {
                         Spacer()

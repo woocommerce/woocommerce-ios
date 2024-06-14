@@ -1,4 +1,7 @@
 import SwiftUI
+import protocol Yosemite.PointOfSaleOrderServiceProtocol
+import class Yosemite.PointOfSaleOrderService
+import enum Networking.Credentials
 
 struct PointOfSaleDashboardView: View {
     @Environment(\.presentationMode) var presentationMode
@@ -125,7 +128,8 @@ fileprivate extension CardPresentPaymentEvent {
     NavigationStack {
         PointOfSaleDashboardView(
             viewModel: PointOfSaleDashboardViewModel(items: POSItemProviderPreview().providePointOfSaleItems(),
-                                                     cardPresentPaymentService: CardPresentPaymentPreviewService()))
+                                                     cardPresentPaymentService: CardPresentPaymentPreviewService(),
+                                                     orderService: PointOfSaleOrderService(siteID: Int64.min, credentials: Credentials(authToken: "token"))))
     }
 }
 #endif

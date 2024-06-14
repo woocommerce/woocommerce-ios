@@ -52,8 +52,6 @@ struct CartView: View {
             case .finalizing:
                 addMoreButton
                     .padding(32)
-            case .successful:
-                EmptyView()
             }
         }
         .frame(maxWidth: .infinity)

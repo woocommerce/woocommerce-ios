@@ -1,7 +1,7 @@
 import Foundation
 import SwiftUI
 
-struct CardPresentPaymentConnectingFailedChargeReaderAlertViewModel {
+struct PointOfSaleCardPresentPaymentConnectingFailedChargeReaderAlertViewModel {
     let title = Localization.title
     let errorDetails = Localization.errorDetails
     let image = Image(uiImage: .paymentErrorImage)
@@ -19,30 +19,30 @@ struct CardPresentPaymentConnectingFailedChargeReaderAlertViewModel {
     }
 }
 
-private extension CardPresentPaymentConnectingFailedChargeReaderAlertViewModel {
+private extension PointOfSaleCardPresentPaymentConnectingFailedChargeReaderAlertViewModel {
     enum Localization {
         static let title = NSLocalizedString(
-            "cardPresentPayment.alert.connectingFailedChargeReader.title",
+            "pointOfSale.cardPresentPayment.alert.connectingFailedChargeReader.title",
             value: "We couldn't connect your reader",
             comment: "Title of the alert presented when the user tries to connect to a specific card reader and it fails " +
             "due to it having a critically low battery"
         )
 
         static let errorDetails = NSLocalizedString(
-            "cardPresentPayment.alert.connectingFailedChargeReader.error.details",
+            "pointOfSale.cardPresentPayment.alert.connectingFailedChargeReader.error.details",
             value: "The reader has a critically low battery. Please charge the reader or try a different reader.",
             comment: "Subtitle of the alert presented when the user tries to connect to a specific card reader and it fails " +
             "due to it having a critically low battery"
         )
 
         static let retry = NSLocalizedString(
-            "cardPresentPayment.alert.connectingFailedChargeReader.retry.button.title",
+            "pointOfSale.cardPresentPayment.alert.connectingFailedChargeReader.retry.button.title",
             value: "Try Again",
             comment: "Button to try again after connecting to a specific reader fails due to a critically low battery."
         )
 
         static let cancel = NSLocalizedString(
-            "cardPresentPayment.alert.connectingFailedChargeReader.cancel.button.title",
+            "pointOfSale.cardPresentPayment.alert.connectingFailedChargeReader.cancel.button.title",
             value: "Cancel",
             comment: "Button to dismiss the alert presented when connecting to a specific reader fails due to a critically low " +
             "battery. This also cancels searching."

@@ -47,7 +47,7 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
                     return .idle
                 }
             }
-            .merge(with: paymentAlertsPresenterAdaptor.paymentAlertPublisher)
+            .merge(with: paymentAlertsPresenterAdaptor.paymentEventPublisher)
             .merge(with: paymentEventSubject)
             .receive(on: DispatchQueue.main) // These will be used for UI changes, so moving to the Main thread helps.
             .eraseToAnyPublisher()

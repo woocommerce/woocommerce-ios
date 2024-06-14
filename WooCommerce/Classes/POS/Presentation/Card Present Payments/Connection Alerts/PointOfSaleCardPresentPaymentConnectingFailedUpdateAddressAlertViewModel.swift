@@ -1,7 +1,7 @@
 import Foundation
 import SwiftUI
 
-final class CardPresentPaymentConnectingFailedUpdateAddressAlertViewModel: ObservableObject {
+final class PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressAlertViewModel: ObservableObject {
     let title = Localization.title
     let image = Image(uiImage: .paymentErrorImage)
     let settingsAdminUrl: URL
@@ -44,31 +44,31 @@ final class CardPresentPaymentConnectingFailedUpdateAddressAlertViewModel: Obser
     }
 }
 
-private extension CardPresentPaymentConnectingFailedUpdateAddressAlertViewModel {
+private extension PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressAlertViewModel {
     enum Localization {
         static let title = NSLocalizedString(
-            "cardPresentPayment.alert.connectingFailedUpdateAddress.title",
+            "pointOfSale.cardPresentPayment.alert.connectingFailedUpdateAddress.title",
             value: "Please correct your store address to proceed",
             comment: "Title of the alert presented when the user tries to connect to a specific card reader and it fails " +
             "due to address problems"
         )
 
         static let openAdmin = NSLocalizedString(
-            "cardPresentPayment.alert.connectingFailedUpdateAddress.openSettings.button.title",
+            "pointOfSale.cardPresentPayment.alert.connectingFailedUpdateAddress.openSettings.button.title",
             value: "Enter Address",
             comment: "Button to open a webview at the admin pages, so that the merchant can update their store address " +
             "to continue setting up In Person Payments"
         )
 
         static let retry = NSLocalizedString(
-            "cardPresentPayment.alert.connectingFailedUpdateAddress.retry.button.title",
+            "pointOfSale.cardPresentPayment.alert.connectingFailedUpdateAddress.retry.button.title",
             value: "Retry After Updating",
             comment: "Button to try again after connecting to a specific reader fails due to address problems. " +
             "Intended for use after the merchant corrects the address in the store admin pages."
         )
 
         static let cancel = NSLocalizedString(
-            "cardPresentPayment.alert.connectingFailedUpdateAddress.cancel.button.title",
+            "pointOfSale.cardPresentPayment.alert.connectingFailedUpdateAddress.cancel.button.title",
             value: "Cancel",
             comment: "Button to dismiss the alert presented when connecting to a specific reader fails due to address " +
             "problems. This also cancels searching."

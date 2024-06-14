@@ -1,9 +1,9 @@
 import SwiftUI
 
-struct CardPresentPaymentScanningForReadersFailedView: View {
-    private let viewModel: CardPresentPaymentScanningFailedAlertViewModel
+struct PointOfSaleCardPresentPaymentScanningForReadersFailedView: View {
+    private let viewModel: PointOfSaleCardPresentPaymentScanningFailedAlertViewModel
 
-    init(viewModel: CardPresentPaymentScanningFailedAlertViewModel) {
+    init(viewModel: PointOfSaleCardPresentPaymentScanningFailedAlertViewModel) {
         self.viewModel = viewModel
     }
 
@@ -23,8 +23,8 @@ struct CardPresentPaymentScanningForReadersFailedView: View {
 }
 
 #Preview {
-    CardPresentPaymentScanningForReadersFailedView(
-        viewModel: CardPresentPaymentScanningFailedAlertViewModel(
+    PointOfSaleCardPresentPaymentScanningForReadersFailedView(
+        viewModel: PointOfSaleCardPresentPaymentScanningFailedAlertViewModel(
             error: NSError(domain: "", code: 1, userInfo: nil),
             endSearchAction: {}))
 }

@@ -58,7 +58,7 @@ struct PointOfSaleDashboardView: View {
         .sheet(isPresented: $viewModel.showsCardReaderSheet, content: {
             // Might be the only way unless we make the type conform to `Identifiable`
             if let alertType = viewModel.cardPresentPaymentAlertViewModel {
-                CardPresentPaymentAlert(alertType: alertType)
+                PointOfSaleCardPresentPaymentAlert(alertType: alertType)
             } else {
                 switch viewModel.cardPresentPaymentEvent {
                 case let .showReaderList(readerIDs, selectionHandler):
@@ -69,7 +69,7 @@ struct PointOfSaleDashboardView: View {
                         selectionHandler(nil)
                     })
                 case .idle,
-                        .showAlert, // handled abo ve
+                        .show, // handled above
                         .showOnboarding,
                         .showPaymentMessage:
                     Text(viewModel.cardPresentPaymentEvent.temporaryEventDescription)
@@ -108,8 +108,8 @@ fileprivate extension CardPresentPaymentEvent {
         switch self {
         case .idle:
             return "Idle"
-        case .showAlert(let alertDetails):
-            return "Alert"
+        case .show(let eventDetails):
+            return "Event"
         case .showReaderList(let readerIDs, _):
             return "Reader List: \(readerIDs.joined())"
         case .showOnboarding(let onboardingViewModel):

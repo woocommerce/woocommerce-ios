@@ -1,7 +1,7 @@
 import SwiftUI
 
-struct CardPresentPaymentConnectingFailedNonRetryableView: View {
-    let viewModel: CardPresentPaymentConnectingFailedNonRetryableAlertViewModel
+struct PointOfSaleCardPresentPaymentConnectingFailedNonRetryableView: View {
+    let viewModel: PointOfSaleCardPresentPaymentConnectingFailedNonRetryableAlertViewModel
     var body: some View {
         VStack {
             Text(viewModel.title)
@@ -18,8 +18,8 @@ struct CardPresentPaymentConnectingFailedNonRetryableView: View {
 }
 
 #Preview {
-    CardPresentPaymentConnectingFailedNonRetryableView(
-        viewModel: CardPresentPaymentConnectingFailedNonRetryableAlertViewModel(
+    PointOfSaleCardPresentPaymentConnectingFailedNonRetryableView(
+        viewModel: PointOfSaleCardPresentPaymentConnectingFailedNonRetryableAlertViewModel(
             error: NSError(domain: "payments error", code: 1),
             cancelAction: {}))
 }

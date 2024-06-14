@@ -2,7 +2,7 @@ import Foundation
 import SwiftUI
 import enum Yosemite.CardReaderServiceError
 
-struct CardPresentPaymentConnectingFailedAlertViewModel {
+struct PointOfSaleCardPresentPaymentConnectingFailedAlertViewModel {
     let title = Localization.title
     let image = Image(uiImage: .paymentErrorImage)
     let errorDetails: String?
@@ -30,22 +30,22 @@ struct CardPresentPaymentConnectingFailedAlertViewModel {
     }
 }
 
-private extension CardPresentPaymentConnectingFailedAlertViewModel {
+private extension PointOfSaleCardPresentPaymentConnectingFailedAlertViewModel {
     enum Localization {
         static let title = NSLocalizedString(
-            "cardPresentPayment.alert.connectingFailed.title",
+            "pointOfSale.cardPresentPayment.alert.connectingFailed.title",
             value: "We couldn't connect your reader",
             comment: "Title of the alert presented when the user tries to connect to a specific card reader and it fails"
         )
 
         static let tryAgain = NSLocalizedString(
-            "cardPresentPayment.alert.connectingFailed.tryAgain.button.title",
+            "pointOfSale.cardPresentPayment.alert.connectingFailed.tryAgain.button.title",
             value: "Try again",
             comment: "Button to dismiss the alert presented when connecting to a specific reader fails. This allows the search to continue."
         )
 
         static let cancel = NSLocalizedString(
-            "cardPresentPayment.alert.connectingFailed.cancel.button.title",
+            "pointOfSale.cardPresentPayment.alert.connectingFailed.cancel.button.title",
             value: "Cancel",
             comment: "Button to dismiss the alert presented when connecting to a specific reader fails. This also cancels searching."
         )

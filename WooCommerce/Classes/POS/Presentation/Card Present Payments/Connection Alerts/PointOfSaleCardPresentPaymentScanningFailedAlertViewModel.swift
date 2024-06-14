@@ -1,7 +1,7 @@
 import Foundation
 import SwiftUI
 
-struct CardPresentPaymentScanningFailedAlertViewModel {
+struct PointOfSaleCardPresentPaymentScanningFailedAlertViewModel {
     let title = Localization.title
     let image = Image(uiImage: .paymentErrorImage)
     let buttonViewModel: CardPresentPaymentsModalButtonViewModel
@@ -15,15 +15,17 @@ struct CardPresentPaymentScanningFailedAlertViewModel {
     }
 }
 
-private extension CardPresentPaymentScanningFailedAlertViewModel {
+private extension PointOfSaleCardPresentPaymentScanningFailedAlertViewModel {
     enum Localization {
         static let title = NSLocalizedString(
-            "Connecting reader failed",
+            "pointOfSale.cardPresentPayment.alert.scanningFailed.title",
+            value: "Connecting reader failed",
             comment: "Title of the alert presented when the user tries to connect a Bluetooth card reader and it fails"
         )
 
         static let dismiss = NSLocalizedString(
-            "Dismiss",
+            "pointOfSale.cardPresentPayment.alert.scanningFailed.dismiss.button.title",
+            value: "Dismiss",
             comment: "Button to dismiss the alert presented when finding a reader to connect to fails"
         )
     }

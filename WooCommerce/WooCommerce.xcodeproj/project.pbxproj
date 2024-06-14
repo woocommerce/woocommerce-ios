@@ -776,6 +776,14 @@
 		202D2A5A2AC5933100E4ABC0 /* TopTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 202D2A592AC5933100E4ABC0 /* TopTabView.swift */; };
 		203163A92C1B5AA7001C96DA /* CardPresentPaymentScanningFailedBluetoothRequiredAlertViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 203163A82C1B5AA7001C96DA /* CardPresentPaymentScanningFailedBluetoothRequiredAlertViewModel.swift */; };
 		203163AB2C1B5DEE001C96DA /* CardPresentPaymentBluetoothRequiredAlertView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 203163AA2C1B5DEE001C96DA /* CardPresentPaymentBluetoothRequiredAlertView.swift */; };
+		203163AD2C1C5C54001C96DA /* CardPresentPaymentConnectingFailedNonRetryableAlertViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 203163AC2C1C5C54001C96DA /* CardPresentPaymentConnectingFailedNonRetryableAlertViewModel.swift */; };
+		203163AF2C1C5C6B001C96DA /* CardPresentPaymentConnectingFailedUpdateAddressAlertViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 203163AE2C1C5C6B001C96DA /* CardPresentPaymentConnectingFailedUpdateAddressAlertViewModel.swift */; };
+		203163B12C1C5C87001C96DA /* CardPresentPaymentConnectingFailedUpdatePostalCodeAlertViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 203163B02C1C5C87001C96DA /* CardPresentPaymentConnectingFailedUpdatePostalCodeAlertViewModel.swift */; };
+		203163B32C1C5DAC001C96DA /* CardPresentPaymentConnectingFailedChargeReaderAlertViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 203163B22C1C5DAC001C96DA /* CardPresentPaymentConnectingFailedChargeReaderAlertViewModel.swift */; };
+		203163B52C1C5EB2001C96DA /* CardPresentPaymentConnectingFailedNonRetryableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 203163B42C1C5EB2001C96DA /* CardPresentPaymentConnectingFailedNonRetryableView.swift */; };
+		203163B72C1C5EDF001C96DA /* CardPresentPaymentConnectingFailedChargeReaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 203163B62C1C5EDF001C96DA /* CardPresentPaymentConnectingFailedChargeReaderView.swift */; };
+		203163B92C1C5F42001C96DA /* CardPresentPaymentConnectingFailedUpdateAddressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 203163B82C1C5F42001C96DA /* CardPresentPaymentConnectingFailedUpdateAddressView.swift */; };
+		203163BB2C1C5F72001C96DA /* CardPresentPaymentConnectingFailedUpdatePostalCodeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 203163BA2C1C5F72001C96DA /* CardPresentPaymentConnectingFailedUpdatePostalCodeView.swift */; };
 		203A5C312AC5ADD700BF29A1 /* WooPaymentsDepositsOverviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 203A5C302AC5ADD700BF29A1 /* WooPaymentsDepositsOverviewView.swift */; };
 		204C9C742B6BDFFB007A94E0 /* UIUserInterfaceSizeClass+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 204C9C732B6BDFFB007A94E0 /* UIUserInterfaceSizeClass+Helpers.swift */; };
 		204CB80E2C0F8A5E000C9773 /* MockViewControllerPresenting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 204CB80D2C0F8A5E000C9773 /* MockViewControllerPresenting.swift */; };
@@ -3730,6 +3738,14 @@
 		202D2A592AC5933100E4ABC0 /* TopTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopTabView.swift; sourceTree = "<group>"; };
 		203163A82C1B5AA7001C96DA /* CardPresentPaymentScanningFailedBluetoothRequiredAlertViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentScanningFailedBluetoothRequiredAlertViewModel.swift; sourceTree = "<group>"; };
 		203163AA2C1B5DEE001C96DA /* CardPresentPaymentBluetoothRequiredAlertView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentBluetoothRequiredAlertView.swift; sourceTree = "<group>"; };
+		203163AC2C1C5C54001C96DA /* CardPresentPaymentConnectingFailedNonRetryableAlertViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentConnectingFailedNonRetryableAlertViewModel.swift; sourceTree = "<group>"; };
+		203163AE2C1C5C6B001C96DA /* CardPresentPaymentConnectingFailedUpdateAddressAlertViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentConnectingFailedUpdateAddressAlertViewModel.swift; sourceTree = "<group>"; };
+		203163B02C1C5C87001C96DA /* CardPresentPaymentConnectingFailedUpdatePostalCodeAlertViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentConnectingFailedUpdatePostalCodeAlertViewModel.swift; sourceTree = "<group>"; };
+		203163B22C1C5DAC001C96DA /* CardPresentPaymentConnectingFailedChargeReaderAlertViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentConnectingFailedChargeReaderAlertViewModel.swift; sourceTree = "<group>"; };
+		203163B42C1C5EB2001C96DA /* CardPresentPaymentConnectingFailedNonRetryableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentConnectingFailedNonRetryableView.swift; sourceTree = "<group>"; };
+		203163B62C1C5EDF001C96DA /* CardPresentPaymentConnectingFailedChargeReaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentConnectingFailedChargeReaderView.swift; sourceTree = "<group>"; };
+		203163B82C1C5F42001C96DA /* CardPresentPaymentConnectingFailedUpdateAddressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentConnectingFailedUpdateAddressView.swift; sourceTree = "<group>"; };
+		203163BA2C1C5F72001C96DA /* CardPresentPaymentConnectingFailedUpdatePostalCodeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentConnectingFailedUpdatePostalCodeView.swift; sourceTree = "<group>"; };
 		203A5C302AC5ADD700BF29A1 /* WooPaymentsDepositsOverviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooPaymentsDepositsOverviewView.swift; sourceTree = "<group>"; };
 		204C9C732B6BDFFB007A94E0 /* UIUserInterfaceSizeClass+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIUserInterfaceSizeClass+Helpers.swift"; sourceTree = "<group>"; };
 		204CB80D2C0F8A5E000C9773 /* MockViewControllerPresenting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockViewControllerPresenting.swift; sourceTree = "<group>"; };
@@ -6620,7 +6636,11 @@
 				203163AA2C1B5DEE001C96DA /* CardPresentPaymentBluetoothRequiredAlertView.swift */,
 				026826B82BF59E400036F959 /* CardPresentPaymentConnectingToReaderView.swift */,
 				026826B72BF59E400036F959 /* CardPresentPaymentConnectingFailedView.swift */,
+				203163B42C1C5EB2001C96DA /* CardPresentPaymentConnectingFailedNonRetryableView.swift */,
+				203163BA2C1C5F72001C96DA /* CardPresentPaymentConnectingFailedUpdatePostalCodeView.swift */,
+				203163B62C1C5EDF001C96DA /* CardPresentPaymentConnectingFailedChargeReaderView.swift */,
 				026826BB2BF59E410036F959 /* CardPresentPaymentFoundReadersView.swift */,
+				203163B82C1C5F42001C96DA /* CardPresentPaymentConnectingFailedUpdateAddressView.swift */,
 				026826B92BF59E400036F959 /* CardPresentPaymentReaderUpdateInProgressView.swift */,
 				026826BC2BF59E410036F959 /* CardPresentPaymentReaderUpdateFailedView.swift */,
 				026826BA2BF59E400036F959 /* ReaderConnectedView.swift */,
@@ -7565,6 +7585,10 @@
 				205B7EC02C19FBEA00D14A36 /* CardPresentPaymentReaderUpdateFailedAlertViewModel.swift */,
 				205B7EC22C19FC3000D14A36 /* CardPresentPaymentConnectingToReaderAlertViewModel.swift */,
 				205B7EC42C19FC4F00D14A36 /* CardPresentPaymentConnectingFailedAlertViewModel.swift */,
+				203163AE2C1C5C6B001C96DA /* CardPresentPaymentConnectingFailedUpdateAddressAlertViewModel.swift */,
+				203163B02C1C5C87001C96DA /* CardPresentPaymentConnectingFailedUpdatePostalCodeAlertViewModel.swift */,
+				203163AC2C1C5C54001C96DA /* CardPresentPaymentConnectingFailedNonRetryableAlertViewModel.swift */,
+				203163B22C1C5DAC001C96DA /* CardPresentPaymentConnectingFailedChargeReaderAlertViewModel.swift */,
 				205B7EC62C19FCA700D14A36 /* CardPresentPaymentPreparingForPaymentAlertViewModel.swift */,
 				205B7ECA2C19FCFC00D14A36 /* CardPresentPaymentProcessingPaymentAlertViewModel.swift */,
 				205B7ECC2C19FD2F00D14A36 /* CardPresentPaymentDisplayReaderMessageAlertViewModel.swift */,
@@ -14649,6 +14673,7 @@
 				860476E82B6CA0FC00AF0AEB /* BottomSheetProductType.swift in Sources */,
 				028296EC237D28B600E84012 /* TextViewViewController.swift in Sources */,
 				02B8650F24A9E2D800265779 /* Product+SwiftUIPreviewHelpers.swift in Sources */,
+				203163B92C1C5F42001C96DA /* CardPresentPaymentConnectingFailedUpdateAddressView.swift in Sources */,
 				454B28BE23BF63C600CD2091 /* DateIntervalFormatter+Helpers.swift in Sources */,
 				AE6DBE3B2732CAAD00957E7A /* AdaptiveStack.swift in Sources */,
 				03A6C18628B8CC7F00AADF23 /* InPersonPaymentsOnboardingErrorButtonViewModel.swift in Sources */,
@@ -14862,6 +14887,7 @@
 				E1F52DC62668E03B00349D75 /* CardPresentModalBluetoothRequired.swift in Sources */,
 				CE29A63029F2DACC003D2A00 /* OrderSubscriptionTableViewCell.swift in Sources */,
 				DE1B030D268DD01A00804330 /* ReviewOrderViewController.swift in Sources */,
+				203163AF2C1C5C6B001C96DA /* CardPresentPaymentConnectingFailedUpdateAddressAlertViewModel.swift in Sources */,
 				EE45E2BF2A409E250085F227 /* UIColor+Tooltip.swift in Sources */,
 				B5FD111621D3F13700560344 /* BordersView.swift in Sources */,
 				68E674AF2A4DACD50034BA1E /* UpgradeTopBarView.swift in Sources */,
@@ -15111,6 +15137,7 @@
 				02ECD1E624FFB4E900735BE5 /* ProductFactory.swift in Sources */,
 				260520F42B87BA23005D5D59 /* WooAnalyticsEvent+ConnectivityTool.swift in Sources */,
 				579CDEFF274D7E7900E8903D /* StoreStatsUsageTracksEventEmitter.swift in Sources */,
+				203163AD2C1C5C54001C96DA /* CardPresentPaymentConnectingFailedNonRetryableAlertViewModel.swift in Sources */,
 				CEDBDA472B6BEF2E002047D4 /* AnalyticsWebReport.swift in Sources */,
 				314DC4BD268D158F00444C9E /* CardReaderSettingsKnownReadersProvider.swift in Sources */,
 				264957A329C520860095AA4C /* SubscriptionsView.swift in Sources */,
@@ -15488,6 +15515,7 @@
 				CE29FEED2BFF771F007679C2 /* ShippingLineRowView.swift in Sources */,
 				B932847429A8D6E600B01251 /* CardPresentPaymentsOnboardingIPPUsersRefresher.swift in Sources */,
 				AE3AA889290C303B00BE422D /* WebKitViewController.swift in Sources */,
+				203163B52C1C5EB2001C96DA /* CardPresentPaymentConnectingFailedNonRetryableView.swift in Sources */,
 				4535EE7A281ADD56004212B4 /* CouponCodeInputFormatter.swift in Sources */,
 				0373A1312A1E3FD700731236 /* TapToPayBadgePromotionChecker.swift in Sources */,
 				DEDB2D262845D31900CE7D35 /* CouponAllowedEmailsViewModel.swift in Sources */,
@@ -15507,6 +15535,7 @@
 				CEE02AF82C1859B400B0B6AB /* MessageComposeView.swift in Sources */,
 				D8C2A28F231BD00500F503E9 /* ReviewsViewModel.swift in Sources */,
 				EE8B42162BFC33670077C4E7 /* LastOrdersDashboardEmptyView.swift in Sources */,
+				203163B32C1C5DAC001C96DA /* CardPresentPaymentConnectingFailedChargeReaderAlertViewModel.swift in Sources */,
 				20E188842AD059A50053E945 /* AboutTapToPayView.swift in Sources */,
 				EE8A30452B74948C001D7C66 /* OrderAttributionInfo+Origin.swift in Sources */,
 				205B7ECF2C19FD5200D14A36 /* CardPresentPaymentSuccessAlertViewModel.swift in Sources */,
@@ -15525,6 +15554,7 @@
 				EE45E2B72A409BA40085F227 /* Tooltip.swift in Sources */,
 				B65496342A0B291A003D29E1 /* EUShippingNoticeBanner.swift in Sources */,
 				B946881029B8DD01000646B0 /* InPersonPaymentsMenuViewController+Activity.swift in Sources */,
+				203163B12C1C5C87001C96DA /* CardPresentPaymentConnectingFailedUpdatePostalCodeAlertViewModel.swift in Sources */,
 				027EB56C29C05F4B003CE551 /* StoreOnboardingLaunchStoreView.swift in Sources */,
 				DEC75CC62BC4ED2100763801 /* DashboardCard+UI.swift in Sources */,
 				09EA565527C8ACEE00407D40 /* BulkUpdateViewController.swift in Sources */,
@@ -15569,8 +15599,10 @@
 				DE19BB1A26C3B5DC00AB70D9 /* ShippingLabelCustomsFormItemDetailsViewModel.swift in Sources */,
 				B6F3796C293794A000718561 /* AnalyticsHubYearToDateRangeData.swift in Sources */,
 				2667BFE52530DCF4008099D4 /* RefundItemsValuesCalculationUseCase.swift in Sources */,
+				203163BB2C1C5F72001C96DA /* CardPresentPaymentConnectingFailedUpdatePostalCodeView.swift in Sources */,
 				AEE9A880293A3E5500227C92 /* RefreshablePlainList.swift in Sources */,
 				02D4472C2A4D29930040D72D /* WooAnalyticsEvent+LocalAnnouncement.swift in Sources */,
+				203163B72C1C5EDF001C96DA /* CardPresentPaymentConnectingFailedChargeReaderView.swift in Sources */,
 				2004E2ED2C0F5DD800D62521 /* CardPresentPaymentCollectOrderPaymentUseCaseAdaptor.swift in Sources */,
 				868029532C184E6C00CB64A1 /* BottomSheetProductCategory.swift in Sources */,
 				B55BC1F121A878A30011A0C0 /* String+HTML.swift in Sources */,

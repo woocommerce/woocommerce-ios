@@ -12,6 +12,10 @@ enum CardPresentPaymentAlertViewModel {
 
     case connectingToReader(CardPresentPaymentConnectingToReaderAlertViewModel)
     case connectingFailed(CardPresentPaymentConnectingFailedAlertViewModel)
+    case connectingFailedNonRetryable(CardPresentPaymentConnectingFailedNonRetryableAlertViewModel)
+    case connectingFailedChargeReader(CardPresentPaymentConnectingFailedChargeReaderAlertViewModel)
+    case connectingFailedUpdateAddress(CardPresentPaymentConnectingFailedUpdateAddressAlertViewModel)
+    case connectingFailedUpdatePostalCode(CardPresentPaymentConnectingFailedUpdatePostalCodeAlertViewModel)
 
     case preparingForPayment(CardPresentPaymentPreparingForPaymentAlertViewModel)
 
@@ -43,17 +47,22 @@ extension CardPresentPaymentAlertDetails {
                 .connectingToReader(CardPresentPaymentConnectingToReaderAlertViewModel())
 
         case .connectingFailed(let error, let retrySearch, let endSearch):
-            .connectingFailed(CardPresentPaymentConnectingFailedAlertViewModel())
+                .connectingFailed(CardPresentPaymentConnectingFailedAlertViewModel(
+                    error: error,
+                    retryButtonAction: retrySearch,
+                    cancelButtonAction: endSearch))
 
         case .connectingFailedNonRetryable(let error, let endSearch):
-            .connectingFailed(CardPresentPaymentConnectingFailedAlertViewModel())
+            .connectingFailedNonRetryable(CardPresentPaymentConnectingFailedNonRetryableAlertViewModel())
 
-        case .connectingFailedUpdatePostalCode(let retrySearch, let endSearch),
-                .connectingFailedChargeReader(let retrySearch, let endSearch):
-            .connectingFailed(CardPresentPaymentConnectingFailedAlertViewModel())
+        case .connectingFailedUpdatePostalCode(let retrySearch, let endSearch):
+                .connectingFailedUpdatePostalCode(CardPresentPaymentConnectingFailedUpdatePostalCodeAlertViewModel())
+
+        case .connectingFailedChargeReader(let retrySearch, let endSearch):
+            .connectingFailedChargeReader(CardPresentPaymentConnectingFailedChargeReaderAlertViewModel())
 
         case .connectingFailedUpdateAddress(let wcSettingsAdminURL, let retrySearch, let endSearch):
-            .connectingFailed(CardPresentPaymentConnectingFailedAlertViewModel())
+            .connectingFailedUpdateAddress(CardPresentPaymentConnectingFailedUpdateAddressAlertViewModel())
 
         case .preparingForPayment(let cancelPayment):
                 .preparingForPayment(CardPresentPaymentPreparingForPaymentAlertViewModel())

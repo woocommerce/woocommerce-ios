@@ -26,14 +26,15 @@ final class CardPresentPaymentsAlertPresenterAdaptor: CardPresentPaymentAlertsPr
                 // TODO: hide it in collectPayment flow
                 paymentAlertSubject.send(.showAlert(.connectingToReader(viewModel: .init())))
             case .connectingFailed(let error, let retrySearch, let endSearch):
-                paymentAlertSubject.send(.showAlert(.connectingFailed(viewModel: .init())))
+            paymentAlertSubject.send(.showAlert(.connectingFailed(viewModel: .init(error: error, retryButtonAction: retrySearch, cancelButtonAction: endSearch))))
             case .connectingFailedNonRetryable(let error, let endSearch):
-                paymentAlertSubject.send(.showAlert(.connectingFailed(viewModel: .init())))
-            case .connectingFailedUpdatePostalCode(let retrySearch, let endSearch),
-                    .connectingFailedChargeReader(let retrySearch, let endSearch):
-                paymentAlertSubject.send(.showAlert(.connectingFailed(viewModel: .init())))
+                paymentAlertSubject.send(.showAlert(.connectingFailedNonRetryable(viewModel: .init())))
+            case .connectingFailedUpdatePostalCode(let retrySearch, let endSearch):
+                paymentAlertSubject.send(.showAlert(.connectingFailedUpdatePostalCode(viewModel: .init())))
+            case .connectingFailedChargeReader(let retrySearch, let endSearch):
+                paymentAlertSubject.send(.showAlert(.connectingFailedChargeReader(viewModel: .init())))
             case .connectingFailedUpdateAddress(let wcSettingsAdminURL, let retrySearch, let endSearch):
-                paymentAlertSubject.send(.showAlert(.connectingFailed(viewModel: .init())))
+                paymentAlertSubject.send(.showAlert(.connectingFailedUpdateAddress(viewModel: .init())))
             case .preparingForPayment(let cancelPayment):
                 paymentAlertSubject.send(.showPaymentMessage(.preparingForPayment))
             // TODO: support this case

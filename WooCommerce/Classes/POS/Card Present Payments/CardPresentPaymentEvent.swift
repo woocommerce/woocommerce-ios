@@ -9,6 +9,10 @@ enum CardPresentPaymentAlertType {
     case updateFailed(viewModel: CardPresentPaymentReaderUpdateFailedAlertViewModel)
     case connectingToReader(viewModel: CardPresentPaymentConnectingToReaderAlertViewModel)
     case connectingFailed(viewModel: CardPresentPaymentConnectingFailedAlertViewModel)
+    case connectingFailedNonRetryable(viewModel: CardPresentPaymentConnectingFailedNonRetryableAlertViewModel)
+    case connectingFailedChargeReader(viewModel: CardPresentPaymentConnectingFailedChargeReaderAlertViewModel)
+    case connectingFailedUpdateAddress(viewModel: CardPresentPaymentConnectingFailedUpdateAddressAlertViewModel)
+    case connectingFailedUpdatePostalCode(viewModel: CardPresentPaymentConnectingFailedUpdatePostalCodeAlertViewModel)
 }
 
 enum CardPresentPaymentMessageType {

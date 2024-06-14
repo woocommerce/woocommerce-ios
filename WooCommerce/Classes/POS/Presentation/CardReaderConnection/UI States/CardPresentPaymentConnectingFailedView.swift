@@ -8,10 +8,30 @@ struct CardPresentPaymentConnectingFailedView: View {
     }
 
     var body: some View {
-        Text("Connection to reader failed")
+        VStack {
+            Text(viewModel.title)
+
+            viewModel.image
+
+            if let errorDetails = viewModel.errorDetails {
+                Text(errorDetails)
+            }
+
+            Button(viewModel.retryButtonViewModel.title,
+                   action: viewModel.retryButtonViewModel.actionHandler)
+            .buttonStyle(PrimaryButtonStyle())
+
+            Button(viewModel.cancelButtonViewModel.title,
+                   action: viewModel.cancelButtonViewModel.actionHandler)
+            .buttonStyle(SecondaryButtonStyle())
+        }
     }
 }
 
 #Preview {
-    CardPresentPaymentConnectingFailedView(viewModel: CardPresentPaymentConnectingFailedAlertViewModel())
+    CardPresentPaymentConnectingFailedView(
+        viewModel: CardPresentPaymentConnectingFailedAlertViewModel(
+            error: NSError(domain: "preview.error", code: 1),
+            retryButtonAction: {},
+            cancelButtonAction: {}))
 }

@@ -25,6 +25,14 @@ struct CardPresentPaymentAlert: View {
             CardPresentPaymentConnectingToReaderView(viewModel: alertViewModel)
         case .connectingFailed(let alertViewModel):
             CardPresentPaymentConnectingFailedView(viewModel: alertViewModel)
+        case .connectingFailedNonRetryable(let alertViewModel):
+            CardPresentPaymentConnectingFailedNonRetryableView(viewModel: alertViewModel)
+        case .connectingFailedChargeReader(let alertViewModel):
+            CardPresentPaymentConnectingFailedChargeReaderView(viewModel: alertViewModel)
+        case .connectingFailedUpdateAddress(let alertViewModel):
+            CardPresentPaymentConnectingFailedUpdateAddressView(viewModel: alertViewModel)
+        case .connectingFailedUpdatePostalCode(let alertViewModel):
+            CardPresentPaymentConnectingFailedUpdatePostalCodeView(viewModel: alertViewModel)
         }
     }
 }

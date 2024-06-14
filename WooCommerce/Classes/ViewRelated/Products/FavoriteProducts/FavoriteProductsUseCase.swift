@@ -1,7 +1,19 @@
 import Foundation
 import Yosemite
 
-struct FavoriteProductsUseCase {
+protocol FavoriteProductsUseCase {
+    func markAsFavorite(productID: Int64)
+
+    func removeFromFavorite(productID: Int64)
+
+    func isFavorite(productID: Int64) async -> Bool
+
+    func favoriteProductIDs() async -> [Int64]
+}
+
+/// Used for marking/removing products as favorite
+///
+struct DefaultFavoriteProductsUseCase: FavoriteProductsUseCase {
     private let siteID: Int64
     private let stores: StoresManager
 

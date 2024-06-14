@@ -17,7 +17,7 @@ enum CardPresentPaymentAlertDetails {
                                           endSearch: () -> Void)
     case connectingFailedChargeReader(retrySearch: () -> Void,
                                       endSearch: () -> Void)
-    case connectingFailedUpdateAddress(wcSettingsAdminURL: URL?,
+    case connectingFailedUpdateAddress(wcSettingsAdminURL: URL,
                                        retrySearch: () -> Void,
                                        endSearch: () -> Void)
     case preparingForPayment(cancelPayment: () -> Void)

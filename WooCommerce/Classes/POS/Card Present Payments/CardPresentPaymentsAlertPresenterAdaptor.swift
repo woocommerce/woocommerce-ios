@@ -36,7 +36,11 @@ final class CardPresentPaymentsAlertPresenterAdaptor: CardPresentPaymentAlertsPr
                 retryButtonAction: retrySearch,
                 cancelButtonAction: endSearch))))
             case .connectingFailedUpdateAddress(let wcSettingsAdminURL, let retrySearch, let endSearch):
-                paymentAlertSubject.send(.showAlert(.connectingFailedUpdateAddress(viewModel: .init())))
+                paymentAlertSubject.send(.showAlert(.connectingFailedUpdateAddress(
+                    viewModel: CardPresentPaymentConnectingFailedUpdateAddressAlertViewModel(
+                        settingsAdminUrl: wcSettingsAdminURL,
+                        retrySearchAction: retrySearch,
+                        cancelSearchAction: endSearch))))
             case .preparingForPayment(let cancelPayment):
                 paymentAlertSubject.send(.showPaymentMessage(.preparingForPayment))
             // TODO: support this case

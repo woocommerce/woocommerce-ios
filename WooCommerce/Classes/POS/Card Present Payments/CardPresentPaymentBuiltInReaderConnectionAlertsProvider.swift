@@ -34,7 +34,12 @@ struct CardPresentPaymentBuiltInReaderConnectionAlertsProvider: CardReaderConnec
                                            openWCSettings: (() -> Void)?,
                                            retrySearch: @escaping () -> Void,
                                            cancelSearch: @escaping () -> Void) -> CardPresentPaymentAlertDetails {
-        .connectingFailedUpdateAddress(wcSettingsAdminURL: wcSettingsAdminURL,
+        guard let wcSettingsAdminURL else {
+            return .connectingFailedNonRetryable(
+                error: CardPresentPaymentServiceError.incompleteAddressConnectionError,
+                endSearch: cancelSearch)
+        }
+        return .connectingFailedUpdateAddress(wcSettingsAdminURL: wcSettingsAdminURL,
                                        retrySearch: retrySearch,
                                        endSearch: cancelSearch)
     }

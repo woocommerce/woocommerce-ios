@@ -1,13 +1,33 @@
 import SwiftUI
 
 struct CardPresentPaymentConnectingFailedUpdateAddressView: View {
-    let viewModel: CardPresentPaymentConnectingFailedUpdateAddressAlertViewModel
+    @StateObject var viewModel: CardPresentPaymentConnectingFailedUpdateAddressAlertViewModel
     var body: some View {
-        Text("Connecting failed - update address")
+        VStack {
+            Text(viewModel.title)
+
+            viewModel.image
+
+            if let primaryButtonViewModel = viewModel.primaryButtonViewModel {
+                Button(primaryButtonViewModel.title,
+                       action: primaryButtonViewModel.actionHandler)
+            }
+
+            Button(viewModel.cancelButtonViewModel.title,
+                   action: viewModel.cancelButtonViewModel.actionHandler)
+            .buttonStyle(SecondaryButtonStyle())
+        }
+        .sheet(isPresented: $viewModel.shouldShowSettingsWebView) {
+            WCSettingsWebView(adminUrl: viewModel.settingsAdminUrl,
+                              completion: viewModel.settingsWebViewWasDismissed)
+        }
     }
 }
 
 #Preview {
     CardPresentPaymentConnectingFailedUpdateAddressView(
-        viewModel: CardPresentPaymentConnectingFailedUpdateAddressAlertViewModel())
+        viewModel: CardPresentPaymentConnectingFailedUpdateAddressAlertViewModel(
+            settingsAdminUrl: URL(string: "http://example.com")!,
+            retrySearchAction: {},
+            cancelSearchAction: {}))
 }

@@ -64,7 +64,10 @@ extension CardPresentPaymentAlertDetails {
                 cancelButtonAction: endSearch))
 
         case .connectingFailedUpdateAddress(let wcSettingsAdminURL, let retrySearch, let endSearch):
-            .connectingFailedUpdateAddress(CardPresentPaymentConnectingFailedUpdateAddressAlertViewModel())
+                .connectingFailedUpdateAddress(CardPresentPaymentConnectingFailedUpdateAddressAlertViewModel(
+                    settingsAdminUrl: wcSettingsAdminURL,
+                    retrySearchAction: retrySearch,
+                    cancelSearchAction: endSearch))
 
         case .preparingForPayment(let cancelPayment):
                 .preparingForPayment(CardPresentPaymentPreparingForPaymentAlertViewModel())

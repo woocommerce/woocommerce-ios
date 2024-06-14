@@ -8,7 +8,13 @@ struct CardPresentPaymentConnectingToReaderView: View {
     }
 
     var body: some View {
-        Text("Connecting to reader...")
+        VStack {
+            Text(viewModel.title)
+            
+            viewModel.image
+            
+            Text(viewModel.instruction)
+        }
     }
 }
 

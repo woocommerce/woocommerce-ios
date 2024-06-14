@@ -10,9 +10,9 @@ struct PointOfSaleCardPresentPaymentConnectingToReaderView: View {
     var body: some View {
         VStack {
             Text(viewModel.title)
-            
+
             viewModel.image
-            
+
             Text(viewModel.instruction)
         }
     }

@@ -259,6 +259,7 @@ final class ProductFormViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.canFavoriteProduct())
     }
 
+    @MainActor
     func test_markAsFavorite_marks_product_as_favorite() async {
         // Given
         let product = Product.fake()
@@ -267,23 +268,24 @@ final class ProductFormViewModelTests: XCTestCase {
                                         featureFlagService: MockFeatureFlagService(favoriteProducts: true))
 
         // When
-        await viewModel.markAsFavorite()
+        viewModel.markAsFavorite()
 
         // Then
         let isFavorite = await viewModel.isFavorite()
         XCTAssertTrue(isFavorite)
     }
 
+    @MainActor
     func test_removeFromFavorite_removes_product_as_favorite() async {
         // Given
         let product = Product.fake()
         let viewModel = createViewModel(product: product,
                                         formType: .add,
                                         featureFlagService: MockFeatureFlagService(favoriteProducts: true))
-        await viewModel.markAsFavorite()
+        viewModel.markAsFavorite()
 
         // When
-        await viewModel.removeFromFavorite()
+        viewModel.removeFromFavorite()
 
         // Then
         let isFavorite = await viewModel.isFavorite()

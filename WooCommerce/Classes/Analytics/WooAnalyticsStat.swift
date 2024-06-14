@@ -838,6 +838,9 @@ enum WooAnalyticsStat: String {
     // Edit Downloadable Products Events
     case productDownloadableFilesSettingsChanged = "product_downloadable_files_settings_changed"
     case productsDownloadableFile = "products_downloadable_file"
+    case productDownloadableOnDeviceMediaSelected = "product_downloadable_on_device_media_selected"
+    case productDownloadableDocumentSelected = "product_downloadable_document_selected"
+    case productDownloadableOnDeviceMediaUploadingFailed = "product_downloadable_on_device_media_uploading_failed"
 
     // Edit External/Affiliate Product Event
     //

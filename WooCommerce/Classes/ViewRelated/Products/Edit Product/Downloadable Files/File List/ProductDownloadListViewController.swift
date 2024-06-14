@@ -344,6 +344,7 @@ private extension ProductDownloadListViewController {
     }
 
     func showMediaUploadAlert(error: Error) {
+        ServiceLocator.analytics.track(.productDownloadableOnDeviceMediaUploadingFailed, withError: error)
         let errorMessage: String = {
             switch error {
             case DotcomError.unknown(let code, _) where code == Constants.unsupportedMimeTypeCode:
@@ -381,6 +382,8 @@ extension ProductDownloadListViewController: UIDocumentPickerDelegate {
             self.updateLoadingState(true)
         }
 
+        ServiceLocator.analytics.track(.productDownloadableDocumentSelected)
+
         Task { @MainActor in
             do {
                 let media = try await localFileUploader.uploadFile(url: url)
@@ -414,6 +417,7 @@ private extension ProductDownloadListViewController {
         guard let asset = assets.first else {
             return
         }
+        ServiceLocator.analytics.track(.productDownloadableOnDeviceMediaSelected, withProperties: ["type": asset.mediaType.rawValue])
         productImageActionHandler?.uploadMediaAssetToSiteMediaLibrary(asset: .phAsset(asset: asset))
         updateLoadingState(true)
     }

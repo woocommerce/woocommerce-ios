@@ -17,12 +17,6 @@ struct ProductListViewSection {
                 return Localization.allProductsSectionTitle
             }
         }
-
-        /// The type of `UITableViewHeaderFooterView` to use for this style.
-        ///
-        var headerViewType: UITableViewHeaderFooterView.Type {
-            PrimarySectionHeaderView.self
-        }
     }
 
     let type: ProductListViewSectionType

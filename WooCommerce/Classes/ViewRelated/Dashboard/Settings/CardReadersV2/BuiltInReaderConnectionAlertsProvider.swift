@@ -61,4 +61,10 @@ struct BuiltInReaderConnectionAlertsProvider: CardReaderConnectionAlertsProvidin
                         cancel: (() -> Void)?) -> CardPresentPaymentsModalViewModel {
         CardPresentModalBuiltInConfigurationProgress(progress: progress, cancel: cancel)
     }
+
+    func selectSearchType(tapToPay: @escaping () -> Void,
+                          bluetooth: @escaping () -> Void,
+                          cancel: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
+        CardPresentModalSelectSearchType(tapOnIPhoneAction: tapToPay, bluetoothAction: bluetooth, cancelAction: cancel)
+    }
 }

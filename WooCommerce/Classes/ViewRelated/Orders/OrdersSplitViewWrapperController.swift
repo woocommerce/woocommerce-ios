@@ -63,6 +63,10 @@ final class OrdersSplitViewWrapperController: UIViewController {
     func presentOrderCreationFlow() {
         ordersViewController.presentOrderCreationFlow()
     }
+
+    func presentOrderCreationFlow(for customerID: Int64, billing: Address?, shipping: Address?) {
+        ordersViewController.presentOrderCreationFlowWithCustomer(id: customerID, billing: billing, shipping: shipping)
+    }
 }
 
 private extension OrdersSplitViewWrapperController {

@@ -15,7 +15,7 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
 
     private let onboardingAdaptor: CardPresentPaymentsOnboardingPresenterAdaptor
 
-    private let paymentAlertsPresenterAdaptor: CardPresentPaymentAlertsPresenting
+    private let paymentAlertsPresenterAdaptor: CardPresentPaymentsAlertPresenterAdaptor
     private let connectionControllerManager: CardPresentPaymentsConnectionControllerManager
 
     private let siteID: Int64
@@ -140,16 +140,25 @@ private extension CardPresentPaymentService {
         }
     }
 
-    func createPreflightController() -> CardPresentPaymentPreflightController {
-        return CardPresentPaymentPreflightController(
-            siteID: siteID,
-            configuration: cardPresentPaymentsConfiguration,
-            rootViewController: NullViewControllerPresenting(),
-            alertsPresenter: paymentAlertsPresenterAdaptor,
-            onboardingPresenter: onboardingAdaptor,
-            externalReaderConnectionController: connectionControllerManager.externalReaderConnectionController,
-            tapToPayConnectionController: connectionControllerManager.tapToPayConnectionController)
-    }
+    func createPreflightController() -> CardPresentPaymentPreflightController<
+        CardPresentPaymentBuiltInReaderConnectionAlertsProvider,
+        CardPresentPaymentBluetoothReaderConnectionAlertsProvider,
+        CardPresentPaymentsAlertPresenterAdaptor> {
+            let alertProvider = CardPresentPaymentBuiltInReaderConnectionAlertsProvider()
+            return CardPresentPaymentPreflightController(
+                siteID: siteID,
+                configuration: cardPresentPaymentsConfiguration,
+                rootViewController: NullViewControllerPresenting(),
+                alertsPresenter: paymentAlertsPresenterAdaptor,
+                onboardingPresenter: onboardingAdaptor,
+                tapToPayAlertProvider: alertProvider,
+                externalReaderConnectionController: connectionControllerManager.externalReaderConnectionController,
+                tapToPayConnectionController: connectionControllerManager.tapToPayConnectionController,
+                tapToPayReconnectionController: TapToPayReconnectionController(
+                    connectionControllerFactory: BuiltInCardReaderConnectionControllerFactory(
+                        alertProvider: alertProvider)),
+                analyticsTracker: connectionControllerManager.analyticsTracker)
+        }
 }
 
 enum CardPresentPaymentServiceError: Error {

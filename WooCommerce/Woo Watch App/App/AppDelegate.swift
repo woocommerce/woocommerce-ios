@@ -26,6 +26,12 @@ class AppDelegate: NSObject, ObservableObject, WKApplicationDelegate {
         UNUserNotificationCenter.current().delegate = self
     }
 
+    /// Setup code when the app transitions from background to foreground.
+    ///
+    func applicationWillEnterForeground() {
+        appBindings.refreshData.send()
+    }
+
     /// Sets up CocoaLumberjack logging.
     ///
     func setupCocoaLumberjack() {

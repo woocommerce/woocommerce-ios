@@ -205,14 +205,49 @@ final class PaymentMethodsViewModel: ObservableObject {
             DDLogError("⛔️ Order not found, can't collect payment.")
             return presentNoticeSubject.send(.error(Localization.genericCollectError))
         }
+        let alertsPresenter = CardPresentPaymentAlertsPresenter(rootViewController: rootViewController)
+        let analyticsTracker = CardReaderConnectionAnalyticsTracker(
+            configuration: cardPresentPaymentsConfiguration,
+            siteID: siteID,
+            connectionType: .userInitiated,
+            stores: stores,
+            analytics: analytics)
+        let externalReaderConnectionController = CardReaderConnectionController(
+            forSiteID: siteID,
+            knownReaderProvider: CardReaderSettingsKnownReaderStorage(),
+            alertsPresenter: alertsPresenter,
+            alertsProvider: BluetoothReaderConnectionAlertsProvider(),
+            configuration: cardPresentPaymentsConfiguration,
+            analyticsTracker: analyticsTracker)
+        let tapToPayAlertsProvider = BuiltInReaderConnectionAlertsProvider()
+        let tapToPayConnectionController = BuiltInCardReaderConnectionController(
+            forSiteID: siteID,
+            alertsPresenter: alertsPresenter,
+            alertsProvider: tapToPayAlertsProvider,
+            configuration: cardPresentPaymentsConfiguration,
+            analyticsTracker: analyticsTracker)
 
-        collectPaymentsUseCase = useCase ?? CollectOrderPaymentUseCase(
+        collectPaymentsUseCase = useCase ?? CollectOrderPaymentUseCase<BuiltInCardReaderPaymentAlertsProvider,
+                                                                        BluetoothCardReaderPaymentAlertsProvider,
+                                                                        CardPresentPaymentAlertsPresenter>(
             siteID: self.siteID,
             order: order,
             formattedAmount: self.formattedTotal,
             rootViewController: rootViewController,
-            onboardingPresenter: self.cardPresentPaymentsOnboardingPresenter,
-            configuration: CardPresentConfigurationLoader().configuration)
+            configuration: cardPresentPaymentsConfiguration,
+            alertsPresenter: alertsPresenter,
+            tapToPayAlertsProvider: BuiltInCardReaderPaymentAlertsProvider(),
+            bluetoothAlertsProvider: BluetoothCardReaderPaymentAlertsProvider(transactionType: .collectPayment),
+            preflightController: CardPresentPaymentPreflightController(siteID: siteID,
+                                                                       configuration: cardPresentPaymentsConfiguration,
+                                                                       rootViewController: rootViewController,
+                                                                       alertsPresenter: alertsPresenter,
+                                                                       onboardingPresenter: self.cardPresentPaymentsOnboardingPresenter,
+                                                                       tapToPayAlertProvider: tapToPayAlertsProvider,
+                                                                       externalReaderConnectionController: externalReaderConnectionController,
+                                                                       tapToPayConnectionController: tapToPayConnectionController,
+                                                                       tapToPayReconnectionController: ServiceLocator.tapToPayReconnectionController,
+                                                                       analyticsTracker: analyticsTracker))
 
         collectPaymentsUseCase?.collectPayment(
             using: discoveryMethod,

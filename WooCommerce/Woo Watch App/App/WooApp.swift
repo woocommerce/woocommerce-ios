@@ -32,11 +32,12 @@ struct Woo_Watch_AppApp: App {
                     })
                     .compatibleVerticalStyle()
                     .environment(\.dependencies, dependencies)
+                    .environment(\.appBindings, appBindings)
                     .id(dependencies.storeID) // Forces a redraw when the store id changes
 
                 } else {
 
-                    ConnectView()
+                    ConnectView(synchronizer: phoneDependencySynchronizer)
 
                 }
             }

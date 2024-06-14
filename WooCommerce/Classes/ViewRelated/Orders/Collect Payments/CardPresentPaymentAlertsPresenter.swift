@@ -2,8 +2,9 @@ import Foundation
 import SwiftUI
 import UIKit
 
-protocol CardPresentPaymentAlertsPresenting {
-    func present(viewModel: CardPresentPaymentsModalViewModel)
+protocol CardPresentPaymentAlertsPresenting<AlertDetails> {
+    associatedtype AlertDetails
+    func present(viewModel: AlertDetails)
     func presentWCSettingsWebView(adminURL: URL, completion: @escaping () -> Void)
     func foundSeveralReaders(readerIDs: [String],
                              connect: @escaping (String) -> Void,
@@ -13,6 +14,7 @@ protocol CardPresentPaymentAlertsPresenting {
 }
 
 final class CardPresentPaymentAlertsPresenter: CardPresentPaymentAlertsPresenting {
+    typealias AlertDetails = CardPresentPaymentsModalViewModel
     private var modalController: CardPresentPaymentsModalViewController?
     private var severalFoundController: SeveralReadersFoundViewController?
 

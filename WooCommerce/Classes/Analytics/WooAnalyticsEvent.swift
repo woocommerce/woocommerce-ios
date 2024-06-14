@@ -3137,6 +3137,10 @@ extension WooAnalyticsEvent {
         static func customerDetailAddressCopied(_ address: Address) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .customersHubDetailAddressCopied, properties: [Address.key: address.rawValue])
         }
+
+        static func customerDetailNewOrder() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .customersHubDetailNewOrderTapped, properties: [:])
+        }
     }
 }
 

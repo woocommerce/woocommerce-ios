@@ -14,24 +14,31 @@ struct CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
     func collectPaymentTask(for order: Order,
                             using connectionMethod: CardReaderConnectionMethod,
                             siteID: Int64,
-                            preflightController: CardPresentPaymentPreflightController,
+                            preflightController: CardPresentPaymentPreflightController<
+                            CardPresentPaymentBuiltInReaderConnectionAlertsProvider,
+                            CardPresentPaymentBluetoothReaderConnectionAlertsProvider,
+                            CardPresentPaymentsAlertPresenterAdaptor>,
                             onboardingPresenter: CardPresentPaymentsOnboardingPresenting,
                             configuration: CardPresentPaymentsConfiguration,
-                            alertsPresenter: CardPresentPaymentAlertsPresenting,
+                            alertsPresenter: CardPresentPaymentsAlertPresenterAdaptor,
                             paymentEventSubject: any Subject<CardPresentPaymentEvent, Never>) -> Task<CardPresentPaymentAdaptedCollectOrderPaymentResult, Error> {
         return Task {
             guard let formattedAmount = currencyFormatter.formatAmount(order.total, with: order.currency) else {
                 throw CardPresentPaymentServiceError.invalidAmount
             }
 
-            let orderPaymentUseCase = CollectOrderPaymentUseCase(siteID: siteID,
-                                                                 order: order,
-                                                                 formattedAmount: formattedAmount,
-                                                                 rootViewController: NullViewControllerPresenting(),
-                                                                 onboardingPresenter: onboardingPresenter,
-                                                                 configuration: configuration,
-                                                                 alertsPresenter: alertsPresenter,
-                                                                 preflightController: preflightController)
+            let orderPaymentUseCase = CollectOrderPaymentUseCase<CardPresentPaymentsTransactionAlertsProvider,
+                                                                 CardPresentPaymentsTransactionAlertsProvider,
+                                                                    CardPresentPaymentsAlertPresenterAdaptor>(
+                siteID: siteID,
+                order: order,
+                formattedAmount: formattedAmount,
+                rootViewController: NullViewControllerPresenting(),
+                configuration: configuration,
+                alertsPresenter: alertsPresenter,
+                tapToPayAlertsProvider: CardPresentPaymentsTransactionAlertsProvider(),
+                bluetoothAlertsProvider: CardPresentPaymentsTransactionAlertsProvider(),
+                preflightController: preflightController)
 
             return try await withTaskCancellationHandler {
                 return try await withCheckedThrowingContinuation { continuation in

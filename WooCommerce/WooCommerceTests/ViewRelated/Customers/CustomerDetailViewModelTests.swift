@@ -87,8 +87,8 @@ final class CustomerDetailViewModelTests: XCTestCase {
         // Then
         let viewModel = try XCTUnwrap(vm)
         XCTAssertFalse(viewModel.showLocation)
-        assertEqual(billing.fullNameWithCompanyAndAddress, viewModel.billing)
-        assertEqual(shipping.fullNameWithCompanyAndAddress, viewModel.shipping)
+        assertEqual(billing.fullNameWithCompanyAndAddress, viewModel.formattedBilling)
+        assertEqual(shipping.fullNameWithCompanyAndAddress, viewModel.formattedShipping)
         assertEqual(billing.phone, viewModel.phone)
     }
 

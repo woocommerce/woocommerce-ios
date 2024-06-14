@@ -806,7 +806,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
             switch action {
             case let .selectedPaymentGatewayAccount(onCompletion):
                 onCompletion(PaymentGatewayAccount.fake())
-            case .checkDeviceSupport:
+            case .checkDeviceSupport, .observeConnectedReaders:
                 break
             default:
                 XCTFail("Unexpected action: \(action)")

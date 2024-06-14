@@ -2741,6 +2741,7 @@
 		EE8B421B2C04D18B0077C4E7 /* LastOrdersDashboardCardViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8B421A2C04D18B0077C4E7 /* LastOrdersDashboardCardViewModelTests.swift */; };
 		EE8DCA8028BF964700F23B23 /* MockAuthentication.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8DCA7F28BF964700F23B23 /* MockAuthentication.swift */; };
 		EE94258F29DDA49E0063B499 /* StoreCreationProgressViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE94258E29DDA49E0063B499 /* StoreCreationProgressViewModelTests.swift */; };
+		EE98AC492C1C228900C720A2 /* MockFavoriteProductsUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE98AC482C1C228900C720A2 /* MockFavoriteProductsUseCase.swift */; };
 		EE9D030C2B86078A0077CED1 /* ProductSelector+Order.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE9D030B2B86078A0077CED1 /* ProductSelector+Order.swift */; };
 		EE9D03122B89DF760077CED1 /* WooAnalyticsEvent+OrdersListFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE9D03112B89DF760077CED1 /* WooAnalyticsEvent+OrdersListFilter.swift */; };
 		EE9D03182B89E2B10077CED1 /* OrderStatusEnum+Analytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE9D03172B89E2B10077CED1 /* OrderStatusEnum+Analytics.swift */; };
@@ -5673,6 +5674,7 @@
 		EE8B421A2C04D18B0077C4E7 /* LastOrdersDashboardCardViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LastOrdersDashboardCardViewModelTests.swift; sourceTree = "<group>"; };
 		EE8DCA7F28BF964700F23B23 /* MockAuthentication.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockAuthentication.swift; sourceTree = "<group>"; };
 		EE94258E29DDA49E0063B499 /* StoreCreationProgressViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreCreationProgressViewModelTests.swift; sourceTree = "<group>"; };
+		EE98AC482C1C228900C720A2 /* MockFavoriteProductsUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockFavoriteProductsUseCase.swift; sourceTree = "<group>"; };
 		EE9D030B2B86078A0077CED1 /* ProductSelector+Order.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductSelector+Order.swift"; sourceTree = "<group>"; };
 		EE9D03112B89DF760077CED1 /* WooAnalyticsEvent+OrdersListFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WooAnalyticsEvent+OrdersListFilter.swift"; sourceTree = "<group>"; };
 		EE9D03172B89E2B10077CED1 /* OrderStatusEnum+Analytics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderStatusEnum+Analytics.swift"; sourceTree = "<group>"; };
@@ -9196,6 +9198,7 @@
 				DE2004772C05C36900660A72 /* MockInboxEligibilityChecker.swift */,
 				204CB80D2C0F8A5E000C9773 /* MockViewControllerPresenting.swift */,
 				DE7B17F82C1AA26B00A6C7D8 /* MockWooSubscriptionProductsEligibilityChecker.swift */,
+				EE98AC482C1C228900C720A2 /* MockFavoriteProductsUseCase.swift */,
 			);
 			path = Mocks;
 			sourceTree = "<group>";
@@ -16144,6 +16147,7 @@
 				02DFD5082B205AEF0048CD70 /* ProductStepperViewModelTests.swift in Sources */,
 				CCE785C829C1E8280003977F /* BundledProductsListViewModelTests.swift in Sources */,
 				45B9C64523A945C0007FC4C5 /* PriceInputFormatterTests.swift in Sources */,
+				EE98AC492C1C228900C720A2 /* MockFavoriteProductsUseCase.swift in Sources */,
 				EEA537532A853B9500A39D3D /* StoreCreationProfilerUploadAnswersUseCaseTests.swift in Sources */,
 				262EB5B3298D66FE009DCC36 /* SupportDataSourcesTests.swift in Sources */,
 				68A5221B2BA1804900A6A584 /* PluginDetailsViewModelTests.swift in Sources */,

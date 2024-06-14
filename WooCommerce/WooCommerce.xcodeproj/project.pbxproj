@@ -801,6 +801,7 @@
 		205B7ECD2C19FD2F00D14A36 /* CardPresentPaymentDisplayReaderMessageAlertViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 205B7ECC2C19FD2F00D14A36 /* CardPresentPaymentDisplayReaderMessageAlertViewModel.swift */; };
 		205B7ECF2C19FD5200D14A36 /* CardPresentPaymentSuccessAlertViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 205B7ECE2C19FD5200D14A36 /* CardPresentPaymentSuccessAlertViewModel.swift */; };
 		205B7ED12C19FD8500D14A36 /* CardPresentPaymentErrorAlertViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 205B7ED02C19FD8500D14A36 /* CardPresentPaymentErrorAlertViewModel.swift */; };
+		205E79402C1CA213001BA266 /* PointOfSaleCardPresentPaymentMessageType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 205E793F2C1CA213001BA266 /* PointOfSaleCardPresentPaymentMessageType.swift */; };
 		20762BA12C18A66400758305 /* CardPresentPaymentBuiltInReaderConnectionAlertsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20762BA02C18A66400758305 /* CardPresentPaymentBuiltInReaderConnectionAlertsProvider.swift */; };
 		20762BA32C18A6A300758305 /* CardPresentPaymentEventDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20762BA22C18A6A300758305 /* CardPresentPaymentEventDetails.swift */; };
 		20762BA52C18B42C00758305 /* CardPresentPaymentBluetoothReaderConnectionAlertsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20762BA42C18B42C00758305 /* CardPresentPaymentBluetoothReaderConnectionAlertsProvider.swift */; };
@@ -3762,6 +3763,7 @@
 		205B7ECC2C19FD2F00D14A36 /* CardPresentPaymentDisplayReaderMessageAlertViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentDisplayReaderMessageAlertViewModel.swift; sourceTree = "<group>"; };
 		205B7ECE2C19FD5200D14A36 /* CardPresentPaymentSuccessAlertViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentSuccessAlertViewModel.swift; sourceTree = "<group>"; };
 		205B7ED02C19FD8500D14A36 /* CardPresentPaymentErrorAlertViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentErrorAlertViewModel.swift; sourceTree = "<group>"; };
+		205E793F2C1CA213001BA266 /* PointOfSaleCardPresentPaymentMessageType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleCardPresentPaymentMessageType.swift; sourceTree = "<group>"; };
 		20762BA02C18A66400758305 /* CardPresentPaymentBuiltInReaderConnectionAlertsProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentBuiltInReaderConnectionAlertsProvider.swift; sourceTree = "<group>"; };
 		20762BA22C18A6A300758305 /* CardPresentPaymentEventDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentEventDetails.swift; sourceTree = "<group>"; };
 		20762BA42C18B42C00758305 /* CardPresentPaymentBluetoothReaderConnectionAlertsProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentBluetoothReaderConnectionAlertsProvider.swift; sourceTree = "<group>"; };
@@ -7263,6 +7265,7 @@
 		02E71DB42C118C470036C2FD /* Card Present Payments */ = {
 			isa = PBXGroup;
 			children = (
+				205E793E2C1CA1EF001BA266 /* Reader Messages */,
 				205B7EB52C19F89B00D14A36 /* Connection Alerts */,
 				0220F4942C16DC98003723C2 /* FoundCardReaderListView.swift */,
 			);
@@ -7572,26 +7575,34 @@
 			isa = PBXGroup;
 			children = (
 				203163BC2C1C9602001C96DA /* PointOfSaleCardPresentPaymentAlertType.swift */,
-				205B7EC82C19FCDB00D14A36 /* CardPresentPaymentTapSwipeInsertCardAlertViewModel.swift */,
 				205B7EB82C19FAF700D14A36 /* PointOfSaleCardPresentPaymentScanningForReadersAlertViewModel.swift */,
 				205B7EBA2C19FB1200D14A36 /* PointOfSaleCardPresentPaymentScanningFailedAlertViewModel.swift */,
 				203163A82C1B5AA7001C96DA /* PointOfSaleCardPresentPaymentBluetoothRequiredAlertViewModel.swift */,
 				205B7EBC2C19FB6600D14A36 /* PointOfSaleCardPresentPaymentFoundReaderAlertViewModel.swift */,
-				205B7EBE2C19FBCA00D14A36 /* CardPresentPaymentUpdatingReaderAlertViewModel.swift */,
-				205B7ED02C19FD8500D14A36 /* CardPresentPaymentErrorAlertViewModel.swift */,
-				205B7EC02C19FBEA00D14A36 /* CardPresentPaymentReaderUpdateFailedAlertViewModel.swift */,
 				205B7EC22C19FC3000D14A36 /* PointOfSaleCardPresentPaymentConnectingToReaderAlertViewModel.swift */,
 				205B7EC42C19FC4F00D14A36 /* PointOfSaleCardPresentPaymentConnectingFailedAlertViewModel.swift */,
 				203163AE2C1C5C6B001C96DA /* PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressAlertViewModel.swift */,
 				203163B02C1C5C87001C96DA /* PointOfSaleCardPresentPaymentConnectingFailedUpdatePostalCodeAlertViewModel.swift */,
 				203163AC2C1C5C54001C96DA /* PointOfSaleCardPresentPaymentConnectingFailedNonRetryableAlertViewModel.swift */,
 				203163B22C1C5DAC001C96DA /* PointOfSaleCardPresentPaymentConnectingFailedChargeReaderAlertViewModel.swift */,
-				205B7EC62C19FCA700D14A36 /* CardPresentPaymentPreparingForPaymentAlertViewModel.swift */,
-				205B7ECA2C19FCFC00D14A36 /* CardPresentPaymentProcessingPaymentAlertViewModel.swift */,
-				205B7ECC2C19FD2F00D14A36 /* CardPresentPaymentDisplayReaderMessageAlertViewModel.swift */,
-				205B7ECE2C19FD5200D14A36 /* CardPresentPaymentSuccessAlertViewModel.swift */,
+				205B7EBE2C19FBCA00D14A36 /* CardPresentPaymentUpdatingReaderAlertViewModel.swift */,
+				205B7EC02C19FBEA00D14A36 /* CardPresentPaymentReaderUpdateFailedAlertViewModel.swift */,
 			);
 			path = "Connection Alerts";
+			sourceTree = "<group>";
+		};
+		205E793E2C1CA1EF001BA266 /* Reader Messages */ = {
+			isa = PBXGroup;
+			children = (
+				205E793F2C1CA213001BA266 /* PointOfSaleCardPresentPaymentMessageType.swift */,
+				205B7EC82C19FCDB00D14A36 /* CardPresentPaymentTapSwipeInsertCardAlertViewModel.swift */,
+				205B7ED02C19FD8500D14A36 /* CardPresentPaymentErrorAlertViewModel.swift */,
+				205B7EC62C19FCA700D14A36 /* CardPresentPaymentPreparingForPaymentAlertViewModel.swift */,
+				205B7ECA2C19FCFC00D14A36 /* CardPresentPaymentProcessingPaymentAlertViewModel.swift */,
+				205B7ECE2C19FD5200D14A36 /* CardPresentPaymentSuccessAlertViewModel.swift */,
+				205B7ECC2C19FD2F00D14A36 /* CardPresentPaymentDisplayReaderMessageAlertViewModel.swift */,
+			);
+			path = "Reader Messages";
 			sourceTree = "<group>";
 		};
 		20AE33C32B0510AD00527B60 /* Destinations */ = {
@@ -15417,6 +15428,7 @@
 				8601C29A2B9769C200C59D93 /* FancyAlertViewController+Stats.swift in Sources */,
 				EE5A0A1C2A6908A800DA5926 /* WooAnalyticsEvent+LocalNotification.swift in Sources */,
 				02E3B63129066858007E0F13 /* StoreCreationCoordinator.swift in Sources */,
+				205E79402C1CA213001BA266 /* PointOfSaleCardPresentPaymentMessageType.swift in Sources */,
 				B554E1792152F20000F31188 /* UINavigationBar+Appearance.swift in Sources */,
 				26AE31B0251E602D004B1BCE /* RefundShippingDetailsTableViewCell.swift in Sources */,
 				020732062988AC4D000A53C2 /* DomainContactInfoFormViewModel.swift in Sources */,

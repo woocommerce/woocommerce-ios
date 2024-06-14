@@ -20,28 +20,32 @@ struct PointOfSaleDashboardView: View {
                 case .finalizing:
                     cartView
                     Spacer()
-                        VStack {
-                            totalsView
-                            // TODO: replace temporary inline message UI based on design
-                            if let inlinePaymentMessage = viewModel.cardPresentPaymentInlineMessage {
-                                switch inlinePaymentMessage {
-                                    case .preparingForPayment:
-                                        Text("Preparing for payment...")
-                                    case .tapSwipeOrInsertCard:
-                                        Text("tapSwipeOrInsertCard...")
-                                    case .processing:
-                                        Text("processing...")
-                                    case .displayReaderMessage(let message):
-                                        Text("Reader message: \(message)")
-                                    case .success:
-                                        Text("Payment successful!")
-                                    case .error:
-                                        Text("Payment error")
-                                }
+                    VStack {
+                        totalsView
+                        // TODO: replace temporary inline message UI based on design
+                        if let inlinePaymentMessage = viewModel.cardPresentPaymentInlineMessage {
+                            switch inlinePaymentMessage {
+                            case .preparingForPayment:
+                                Text("Preparing for payment...")
+                            case .tapSwipeOrInsertCard:
+                                Text("tapSwipeOrInsertCard...")
+                            case .processing:
+                                Text("processing...")
+                            case .displayReaderMessage(let message):
+                                Text("Reader message: \(message)")
+                            case .success:
+                                Text("Payment successful!")
+                            case .error:
+                                Text("Payment error")
+                            case .nonRetryableError:
+                                Text("Payment error - non retryable")
+                            case .cancelledOnReader:
+                                Text("Payment cancelled on reader")
                             }
                         }
-                        // TODO: remove this after replacing temporary inline message UI based on design
-                        .background(Color.orange)
+                    }
+                    // TODO: remove this after replacing temporary inline message UI based on design
+                    .background(Color.orange)
                 }
             }
             .padding()
@@ -70,8 +74,7 @@ struct PointOfSaleDashboardView: View {
                     })
                 case .idle,
                         .show, // handled above
-                        .showOnboarding,
-                        .showPaymentMessage:
+                        .showOnboarding:
                     Text(viewModel.cardPresentPaymentEvent.temporaryEventDescription)
                 }
             }
@@ -114,8 +117,6 @@ fileprivate extension CardPresentPaymentEvent {
             return "Reader List: \(readerIDs.joined())"
         case .showOnboarding(let onboardingViewModel):
             return "Onboarding: \(onboardingViewModel.state.reasonForAnalytics)" // This will only show the initial onboarding state
-        case .showPaymentMessage:
-            return "Payment message"
         }
     }
 }

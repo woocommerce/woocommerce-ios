@@ -1,7 +1,4 @@
 import SwiftUI
-import protocol Yosemite.PointOfSaleOrderServiceProtocol
-import class Yosemite.PointOfSaleOrderService
-import enum Networking.Credentials
 
 struct PointOfSaleDashboardView: View {
     @Environment(\.presentationMode) var presentationMode
@@ -23,9 +20,28 @@ struct PointOfSaleDashboardView: View {
                 case .finalizing:
                     cartView
                     Spacer()
-                    totalsView
-                case .successful:
-                    totalsView
+                        VStack {
+                            totalsView
+                            // TODO: replace temporary inline message UI based on design
+                            if let inlinePaymentMessage = viewModel.cardPresentPaymentInlineMessage {
+                                switch inlinePaymentMessage {
+                                    case .preparingForPayment:
+                                        Text("Preparing for payment...")
+                                    case .tapSwipeOrInsertCard:
+                                        Text("tapSwipeOrInsertCard...")
+                                    case .processing:
+                                        Text("processing...")
+                                    case .displayReaderMessage(let message):
+                                        Text("Reader message: \(message)")
+                                    case .success:
+                                        Text("Payment successful!")
+                                    case .error:
+                                        Text("Payment error")
+                                }
+                            }
+                        }
+                        // TODO: remove this after replacing temporary inline message UI based on design
+                        .background(Color.orange)
                 }
             }
             .padding()
@@ -40,18 +56,24 @@ struct PointOfSaleDashboardView: View {
         .toolbarBackground(Color.toolbarBackground, for: .bottomBar)
         .toolbarBackground(.visible, for: .bottomBar)
         .sheet(isPresented: $viewModel.showsCardReaderSheet, content: {
-            switch viewModel.cardPresentPaymentEvent {
-            case .showAlert(let alertViewModel):
-                CardPresentPaymentAlert(alertViewModel: alertViewModel)
-            case let .showReaderList(readerIDs, selectionHandler):
-                FoundCardReaderListView(readerIDs: readerIDs, connect: { readerID in
-                    selectionHandler(readerID)
-                }, cancelSearch: {
-                    selectionHandler(nil)
-                })
-            case .idle,
-                    .showOnboarding:
-                Text(viewModel.cardPresentPaymentEvent.temporaryEventDescription)
+            // Might be the only way unless we make the type conform to `Identifiable`
+            if let alertType = viewModel.cardPresentPaymentAlertViewModel {
+                CardPresentPaymentAlert(alertType: alertType)
+            } else {
+                switch viewModel.cardPresentPaymentEvent {
+                case let .showReaderList(readerIDs, selectionHandler):
+                    // TODO: make this an instance of `showAlert` so we can handle it above too.
+                    FoundCardReaderListView(readerIDs: readerIDs, connect: { readerID in
+                        selectionHandler(readerID)
+                    }, cancelSearch: {
+                        selectionHandler(nil)
+                    })
+                case .idle,
+                        .showAlert, // handled abo ve
+                        .showOnboarding,
+                        .showPaymentMessage:
+                    Text(viewModel.cardPresentPaymentEvent.temporaryEventDescription)
+                }
             }
         })
         .sheet(isPresented: $viewModel.showsFilterSheet, content: {
@@ -86,12 +108,14 @@ fileprivate extension CardPresentPaymentEvent {
         switch self {
         case .idle:
             return "Idle"
-        case .showAlert(let alertViewModel):
-            return "Alert: \(alertViewModel.topTitle)"
+        case .showAlert(let alertDetails):
+            return "Alert"
         case .showReaderList(let readerIDs, _):
             return "Reader List: \(readerIDs.joined())"
         case .showOnboarding(let onboardingViewModel):
             return "Onboarding: \(onboardingViewModel.state.reasonForAnalytics)" // This will only show the initial onboarding state
+        case .showPaymentMessage:
+            return "Payment message"
         }
     }
 }
@@ -101,8 +125,7 @@ fileprivate extension CardPresentPaymentEvent {
     NavigationStack {
         PointOfSaleDashboardView(
             viewModel: PointOfSaleDashboardViewModel(items: POSItemProviderPreview().providePointOfSaleItems(),
-                                                     cardPresentPaymentService: CardPresentPaymentPreviewService(),
-                                                     orderService: PointOfSaleOrderService(siteID: Int64.min, credentials: Credentials(authToken: "token"))))
+                                                     cardPresentPaymentService: CardPresentPaymentPreviewService()))
     }
 }
 #endif

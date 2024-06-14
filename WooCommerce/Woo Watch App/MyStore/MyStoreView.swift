@@ -7,6 +7,8 @@ struct MyStoreView: View {
 
     @Environment(\.dependencies) private var dependencies
 
+    @Environment(\.appBindings) private var appBindings
+
     @EnvironmentObject private var tracksProvider: WatchTracksProvider
 
     // View Model to drive the view
@@ -26,6 +28,9 @@ struct MyStoreView: View {
             switch viewModel.viewState {
             case .idle:
                 Rectangle().hidden()
+                    .task {
+                        await viewModel.fetchAndBindRefreshTrigger(trigger: appBindings.refreshData.eraseToAnyPublisher())
+                    }
             case .loading:
                 dataView(revenue: "------", orders: "--", visitors: "--", conversion: "--", time: "00:00 AM")
                     .padding(.horizontal)
@@ -50,7 +55,6 @@ struct MyStoreView: View {
         .onAppear() {
             Task {
                 tracksProvider.sendTracksEvent(.watchMyStoreOpened)
-                await viewModel.fetchStats()
             }
         }
     }
@@ -75,7 +79,7 @@ struct MyStoreView: View {
 
             Button(Localization.retry) {
                 Task {
-                    await viewModel.fetchStats()
+                    appBindings.refreshData.send()
                 }
             }
             .padding(.bottom, -16)

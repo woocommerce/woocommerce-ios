@@ -6,31 +6,32 @@ import Yosemite
 /// alert viewModels such a provider is expected to provide over the course of searching for
 /// and connecting to a reader
 ///
-protocol CardReaderConnectionAlertsProviding {
+protocol CardReaderConnectionAlertsProviding<AlertDetails> {
+    associatedtype AlertDetails
     /// Defines a cancellable alert indicating we are searching for a reader
     ///
-    func scanningForReader(cancel: @escaping () -> Void) -> CardPresentPaymentsModalViewModel
+    func scanningForReader(cancel: @escaping () -> Void) -> AlertDetails
 
     /// Defines a cancellable (closeable) alert indicating the search failed
     ///
-    func scanningFailed(error: Error, close: @escaping () -> Void) -> CardPresentPaymentsModalViewModel
+    func scanningFailed(error: Error, close: @escaping () -> Void) -> AlertDetails
 
     /// Defines a non-interactive alert indicating a connection is in progress to a particular reader
     ///
-    func connectingToReader() -> CardPresentPaymentsModalViewModel
+    func connectingToReader() -> AlertDetails
 
     /// Defines an alert indicating connecting failed. The user may continue the search
     /// or cancel
     ///
     func connectingFailed(error: Error,
                           retrySearch: @escaping () -> Void,
-                          cancelSearch: @escaping () -> Void) -> CardPresentPaymentsModalViewModel
+                          cancelSearch: @escaping () -> Void) -> AlertDetails
 
     /// Defines an alert indicating connecting failed, in a way which must be resolved outside
     /// the connection flow. The user can close the alert.
     ///
     func connectingFailedNonRetryable(error: Error,
-                                      close: @escaping () -> Void) -> CardPresentPaymentsModalViewModel
+                                      close: @escaping () -> Void) -> AlertDetails
 
     /// Defines an alert indicating connecting failed because their address needs updating.
     /// The user may try again or cancel
@@ -38,21 +39,25 @@ protocol CardReaderConnectionAlertsProviding {
     func connectingFailedIncompleteAddress(wcSettingsAdminURL: URL?,
                                            openWCSettings: (() -> Void)?,
                                            retrySearch: @escaping () -> Void,
-                                           cancelSearch: @escaping () -> Void) -> CardPresentPaymentsModalViewModel
+                                           cancelSearch: @escaping () -> Void) -> AlertDetails
 
     /// Defines an alert indicating connecting failed because their postal code needs updating.
     /// The user may try again or cancel
     ///
     func connectingFailedInvalidPostalCode(retrySearch: @escaping () -> Void,
-                                           cancelSearch: @escaping () -> Void) -> CardPresentPaymentsModalViewModel
+                                           cancelSearch: @escaping () -> Void) -> AlertDetails
 
     /// Defines an alert indicating an update couldn't be installed.
     ///
-    func updatingFailed(tryAgain: (() -> Void)?, close: @escaping () -> Void) -> CardPresentPaymentsModalViewModel
+    func updatingFailed(tryAgain: (() -> Void)?, close: @escaping () -> Void) -> AlertDetails
 
     /// Shows progress when a software update is being installed
     ///
-    func updateProgress(requiredUpdate: Bool, progress: Float, cancel: (() -> Void)?) -> CardPresentPaymentsModalViewModel
+    func updateProgress(requiredUpdate: Bool, progress: Float, cancel: (() -> Void)?) -> AlertDetails
+
+    func selectSearchType(tapToPay: @escaping () -> Void,
+                          bluetooth: @escaping () -> Void,
+                          cancel: @escaping () -> Void) -> AlertDetails
 }
 
 
@@ -60,14 +65,15 @@ protocol CardReaderConnectionAlertsProviding {
 /// between several readers - defining what alert viewModels such a provider is expected to provide over
 /// the course of searching for and connecting to a reader.
 ///
-protocol MultipleCardReaderConnectionAlertsProviding {
+protocol MultipleCardReaderConnectionAlertsProviding<AlertDetails> {
+    associatedtype AlertDetails
     /// Defines an interactive alert indicating a reader has been found. The user must
     /// choose to connect to that reader or continue searching
     ///
     func foundReader(name: String,
                      connect: @escaping () -> Void,
                      continueSearch: @escaping () -> Void,
-                     cancelSearch: @escaping () -> Void) -> CardPresentPaymentsModalViewModel
+                     cancelSearch: @escaping () -> Void) -> AlertDetails
 
     // TODO: implement this approach, allowing us to remove the several readers logic from CardPresentPaymentAlertsPresenter
     // https://github.com/woocommerce/woocommerce-ios/issues/8296
@@ -87,19 +93,22 @@ protocol MultipleCardReaderConnectionAlertsProviding {
 /// powered readers - defining what alert viewModels such a provider is expected to provide over
 /// the course of searching for and connecting to a reader.
 ///
-protocol BatteryPoweredCardReaderConnectionAlertsProviding {
+protocol BatteryPoweredCardReaderConnectionAlertsProviding<AlertDetails> {
+    associatedtype AlertDetails
     /// Defines an alert indicating connecting failed because the reader battery is critically low.
     /// The user may try searching again (i.e. for a different reader) or cancel
     ///
     func connectingFailedCriticallyLowBattery(retrySearch: @escaping () -> Void,
-                                              cancelSearch: @escaping () -> Void) -> CardPresentPaymentsModalViewModel
+                                              cancelSearch: @escaping () -> Void) -> AlertDetails
 
     /// Defines an alert indicating an update couldn't be installed because the reader is low on battery.
     ///
     func updatingFailedLowBattery(batteryLevel: Double?,
-                                  close: @escaping () -> Void) -> CardPresentPaymentsModalViewModel
+                                  close: @escaping () -> Void) -> AlertDetails
 }
 
-typealias BluetoothReaderConnnectionAlertsProviding = CardReaderConnectionAlertsProviding &
-                                                      MultipleCardReaderConnectionAlertsProviding &
-                                                      BatteryPoweredCardReaderConnectionAlertsProviding
+protocol BluetoothReaderConnnectionAlertsProviding<AlertDetails>: CardReaderConnectionAlertsProviding,
+                                                                  MultipleCardReaderConnectionAlertsProviding,
+                                                                  BatteryPoweredCardReaderConnectionAlertsProviding {
+    associatedtype AlertDetails
+}

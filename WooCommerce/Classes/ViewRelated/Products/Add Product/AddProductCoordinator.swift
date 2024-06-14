@@ -72,7 +72,7 @@ final class AddProductCoordinator: Coordinator {
         })
     }()
 
-    private var wooSubscriptionProductsEligibilityChecker: WooSubscriptionProductsEligibilityCheckerProtocol
+    private let wooSubscriptionProductsEligibilityChecker: WooSubscriptionProductsEligibilityCheckerProtocol
 
     /// - Parameters:
     ///   - navigateToProductForm: Optional custom navigation when showing the product form for the new product.
@@ -197,7 +197,10 @@ private extension AddProductCoordinator {
         let subtitle = NSLocalizedString("Select a product type",
                                          comment: "Message subtitle of bottom sheet for selecting a product type to create a product")
         let viewProperties = BottomSheetListSelectorViewProperties(title: title, subtitle: subtitle)
-        let command = ProductTypeBottomSheetListSelectorCommand(selected: nil) { [weak self] selectedBottomSheetProductType in
+        let command = ProductTypeBottomSheetListSelectorCommand(
+            source: .creationForm(isForTemplates: creationType == .template),
+            subscriptionProductsEligibilityChecker: wooSubscriptionProductsEligibilityChecker
+        ) { [weak self] selectedBottomSheetProductType in
             guard let self else { return }
             self.analytics.track(event: .ProductCreation
                 .addProductTypeSelected(bottomSheetProductType: selectedBottomSheetProductType,
@@ -210,20 +213,6 @@ private extension AddProductCoordinator {
                     self.createAndPresentTemplate(productType: selectedBottomSheetProductType)
                 }
             }
-        }
-
-        switch creationType {
-        case .template:
-            command.data = [.simple(isVirtual: false), .simple(isVirtual: true), .variable]
-        case .manual:
-            let isEligibleForWooSubscriptionProducts = wooSubscriptionProductsEligibilityChecker.isSiteEligible()
-            command.data = [.simple(isVirtual: false),
-                            .simple(isVirtual: true),
-                            isEligibleForWooSubscriptionProducts ? .subscription : nil,
-                            .variable,
-                            isEligibleForWooSubscriptionProducts ? .variableSubscription : nil,
-                            .grouped,
-                            .affiliate].compactMap { $0 }
         }
 
         let productTypesListPresenter = BottomSheetListSelectorPresenter(viewProperties: viewProperties, command: command)

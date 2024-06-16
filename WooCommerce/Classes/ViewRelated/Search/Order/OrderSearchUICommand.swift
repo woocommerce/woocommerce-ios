@@ -115,18 +115,10 @@ private extension OrderSearchUICommand {
     }
 
     func lookUpOrderStatus(for order: Order) -> OrderStatus? {
-        if let mockLookUpOrderStatus = OrderSearchUICommand._lookUpOrderStatus {
-            return mockLookUpOrderStatus(order)
-        }
         let listAll = statusResultsController.fetchedObjects
         for orderStatus in listAll where orderStatus.status == order.status {
             return orderStatus
         }
         return nil
     }
-}
-
-// Add an extension to OrderSearchUICommand to inject the lookUpOrderStatus method for testing
-extension OrderSearchUICommand {
-    static var _lookUpOrderStatus: ((Networking.Order) -> Networking.OrderStatus?)?
 }

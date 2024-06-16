@@ -1,17 +1,15 @@
 import XCTest
-
+import Yosemite
 @testable import WooCommerce
 import Storage
-import Yosemite
-import Networking
 
 final class OrderSearchUICommandTests: XCTestCase {
     let siteID: Int64 = 12345
-    private var storageManager: MockStorageManager!
+    private var storageManager: MockOrderStatusesStoresManager!
 
     override func setUpWithError() throws {
         super.setUp()
-        storageManager = MockStorageManager()
+        storageManager = MockOrderStatusesStoresManager()
     }
 
     override func tearDownWithError() throws {
@@ -46,28 +44,44 @@ final class OrderSearchUICommandTests: XCTestCase {
 
     func testCreateCellViewModel() {
         // Given
-        let mockOrders = MockOrders()
-        let mockOrder = mockOrders.sampleOrder() as Networking.Order
+        let mockOrder = MockOrders().makeOrder(status: .onHold, items: [], shippingLines: [], refunds: [], fees: [], taxes: [], customFields: [], giftCards: [])
 
-        // Create a local mock order status
-        let mockOrderStatus = OrderStatus(
-            name: "Processing",
-            siteID: mockOrder.siteID,
-            slug: "processing",
-            total: 0
-        )
         let command = OrderSearchUICommand(siteID: siteID, onSelectSearchResult: { _, _ in }, storageManager: storageManager)
 
-        // Override the lookUpOrderStatus method to return the mock order status
-        OrderSearchUICommand._lookUpOrderStatus = { (order: Networking.Order) in
-            return mockOrderStatus
-        }
+        // Insert mock order statuses
+        insertOrderStatuses()
 
         // When
         let cellViewModel = command.createCellViewModel(model: mockOrder)
 
         // Then
         XCTAssertNotNil(cellViewModel, "Expected createCellViewModel to return an OrderListCellViewModel instance")
-        XCTAssertEqual(cellViewModel.statusString, mockOrderStatus.name, "Expected order status name to match")
+        XCTAssertEqual(cellViewModel.statusString, "on-hold", "Expected order status name to match")
+        XCTAssertEqual(cellViewModel.status, .onHold, "Expected createCellViewModel to return on hold status")
+    }
+
+    private func insertOrderStatuses() {
+        let statuses: [OrderStatusEnum] = [.pending, .processing, .onHold, .completed, .cancelled, .failed, .custom("aCustomStatus")]
+        statuses.forEach { status in
+            storageManager.insertOrderStatus(name: status.rawValue)
+        }
+        storageManager.viewStorage.saveIfNeeded()
+    }
+}
+
+/// Mock Order Statuses Store Manager
+///
+private final class MockOrderStatusesStoresManager: MockStorageManager {
+    fileprivate static let siteID: Int64 = 12345
+
+    /// Inserts an order status
+    ///
+    @discardableResult
+    func insertOrderStatus(name: String) -> StorageOrderStatus {
+        let orderStatus = viewStorage.insertNewObject(ofType: StorageOrderStatus.self)
+        orderStatus.name = name
+        orderStatus.slug = name
+        orderStatus.siteID = MockOrderStatusesStoresManager.siteID
+        return orderStatus
     }
 }

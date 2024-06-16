@@ -1,4 +1,6 @@
 import Yosemite
+import Networking
+import protocol Storage.StorageManagerType
 
 /// Implementation of `SearchUICommand` for Order search.
 final class OrderSearchUICommand: SearchUICommand {
@@ -19,26 +21,27 @@ final class OrderSearchUICommand: SearchUICommand {
     var resynchronizeModels: (() -> Void) = {}
 
     private lazy var statusResultsController: ResultsController<StorageOrderStatus> = {
-        let storageManager = ServiceLocator.storageManager
         let predicate = NSPredicate(format: "siteID == %lld", siteID)
         let descriptor = NSSortDescriptor(key: "slug", ascending: true)
-
         return ResultsController<StorageOrderStatus>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
     }()
 
     private let siteID: Int64
 
+    private let storageManager: StorageManagerType
+
     private let onSelectSearchResult: ((Order, UIViewController) -> Void)
 
     init(siteID: Int64,
-         onSelectSearchResult: @escaping ((Order, UIViewController) -> Void)) {
+         onSelectSearchResult: @escaping ((Order, UIViewController) -> Void),
+         storageManager: StorageManagerType = ServiceLocator.storageManager) {
         self.siteID = siteID
         self.onSelectSearchResult = onSelectSearchResult
+        self.storageManager = storageManager
         configureResultsController()
     }
 
     func createResultsController() -> ResultsController<ResultsControllerModel> {
-        let storageManager = ServiceLocator.storageManager
         let predicate = NSPredicate(format: "siteID == %lld", siteID)
         let descriptor = NSSortDescriptor(keyPath: \StorageOrder.dateCreated, ascending: false)
         return ResultsController<StorageOrder>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
@@ -112,11 +115,18 @@ private extension OrderSearchUICommand {
     }
 
     func lookUpOrderStatus(for order: Order) -> OrderStatus? {
+        if let mockLookUpOrderStatus = OrderSearchUICommand._lookUpOrderStatus {
+            return mockLookUpOrderStatus(order)
+        }
         let listAll = statusResultsController.fetchedObjects
         for orderStatus in listAll where orderStatus.status == order.status {
             return orderStatus
         }
-
         return nil
     }
+}
+
+// Add an extension to OrderSearchUICommand to inject the lookUpOrderStatus method for testing
+extension OrderSearchUICommand {
+    static var _lookUpOrderStatus: ((Networking.Order) -> Networking.OrderStatus?)?
 }

@@ -2,6 +2,7 @@ import XCTest
 import Yosemite
 @testable import WooCommerce
 import Storage
+import Networking
 import protocol WooFoundation.Analytics
 
 final class OrderSearchUICommandTests: XCTestCase {
@@ -116,6 +117,22 @@ final class OrderSearchUICommandTests: XCTestCase {
         XCTAssertEqual(eventProperties["search"] as? String, keyword)
     }
 
+    func testDidSelectSearchResult() throws {
+        // Given
+        let order = Networking.Order.fake().copy()
+
+        // When
+        let selectedOrder = waitFor { promise in
+            let command = OrderSearchUICommand(siteID: self.siteID, onSelectSearchResult: { order, _ in
+                promise(order)
+            }, storageManager: storageManager)
+            command.didSelectSearchResult(model: order, from: .init(), reloadData: {}, updateActionButton: {})
+        }
+
+        // Then
+        XCTAssertEqual(selectedOrder, order)
+    }
+
     private func insertOrderStatuses() {
         let statuses: [OrderStatusEnum] = [.pending, .processing, .onHold, .completed, .cancelled, .failed, .custom("aCustomStatus")]
         statuses.forEach { status in
@@ -124,12 +141,15 @@ final class OrderSearchUICommandTests: XCTestCase {
         storageManager.viewStorage.saveIfNeeded()
     }
 
-    private func waitFor(timeout: TimeInterval = 1, _ completion: (_ promise: @escaping () -> Void) -> Void) {
+    private func waitFor<T>(timeout: TimeInterval = 1, _ completion: (_ promise: @escaping (T) -> Void) -> Void) -> T? {
+        var result: T?
         let expectation = self.expectation(description: "Waiting for completion")
         completion {
+            result = $0
             expectation.fulfill()
         }
         waitForExpectations(timeout: timeout, handler: nil)
+        return result
     }
 }
 

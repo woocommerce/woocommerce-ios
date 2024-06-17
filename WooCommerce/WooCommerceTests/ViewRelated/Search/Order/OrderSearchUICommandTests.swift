@@ -60,6 +60,19 @@ final class OrderSearchUICommandTests: XCTestCase {
         XCTAssertEqual(cellViewModel.status, .onHold, "Expected createCellViewModel to return on hold status")
     }
 
+    func testSanitizeKeyword() {
+        // Given
+        let command = OrderSearchUICommand(siteID: siteID, onSelectSearchResult: { _, _ in }, storageManager: storageManager)
+
+        // When
+        let sanitizedKeywordWithHash = command.sanitizeKeyword("#123")
+        let sanitizedKeywordWithoutHash = command.sanitizeKeyword("123")
+
+        // Then
+        XCTAssertEqual(sanitizedKeywordWithHash, "123", "Expected sanitizeKeyword to remove the leading '#'")
+        XCTAssertEqual(sanitizedKeywordWithoutHash, "123", "Expected sanitizeKeyword to return the keyword unchanged if there's no leading '#'")
+    }
+
     private func insertOrderStatuses() {
         let statuses: [OrderStatusEnum] = [.pending, .processing, .onHold, .completed, .cancelled, .failed, .custom("aCustomStatus")]
         statuses.forEach { status in

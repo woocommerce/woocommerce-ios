@@ -76,7 +76,7 @@ struct ProductRow: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .contentShape(Rectangle())
-        .opacity(viewModel.selectedState == .unsupported ? 0.7 : 1)
+        .opacity(viewModel.rowOpacity)
         .accessibilityElement(children: .ignore)
         .accessibilityAddTraits(.isButton)
         .accessibilityLabel(viewModel.productAccessibilityLabel)
@@ -98,7 +98,7 @@ extension ProductRow {
         case notSelected
         case partiallySelected
         case selected
-        case unsupported
+        case unsupported(reason: String)
 
         var image: UIImage {
             switch self {

@@ -816,7 +816,7 @@ private extension ProductSelectorViewModel {
             let selectedState: ProductRow.SelectedState = {
                 switch (source, product.productType, product.variations) {
                 case (.orderForm, .booking, _):
-                    return .unsupported
+                    return .unsupported(reason: Localization.bookableProductUnsupportedReason)
                 case (_, _, let variations) where variations.isEmpty:
                     return selectedItemsIDs.contains(product.productID) ? .selected : .notSelected
                 default:
@@ -835,18 +835,8 @@ private extension ProductSelectorViewModel {
                 self?.onConfigureProductRow?(product)
             }
 
-            let unsupportedReason: String? = {
-                switch (source, product.productType) {
-                case (.orderForm, .booking):
-                    Localization.bookableProductUnsupportedReason
-                default:
-                    nil
-                }
-            }()
-
             return ProductRowViewModel(product: product,
                                        selectedState: selectedState,
-                                       unsupportedReason: unsupportedReason,
                                        featureFlagService: featureFlagService,
                                        configure: configure)
         }

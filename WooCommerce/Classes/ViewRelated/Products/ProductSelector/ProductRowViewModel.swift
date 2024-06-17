@@ -63,6 +63,32 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     ///
     private let variationDisplayMode: VariationDisplayMode?
 
+    /// The opacity of the product row based on the selected state.
+    var rowOpacity: CGFloat {
+        switch selectedState {
+        case .unsupported: 0.7
+        case .notSelected, .selected, .partiallySelected: 1
+        }
+    }
+
+    /// Whether selection is enabled for the product row.
+    var selectionEnabled: Bool {
+        switch selectedState {
+        case .unsupported: false
+        case .notSelected, .selected, .partiallySelected: true
+        }
+    }
+
+    /// Toggled selected value for when the row is tapped.
+    /// If the row is currently selected, tapping it again should returns false for the toggled value and vice versa.
+    /// Unsupported state returns false by default.
+    var toggledSelectedValue: Bool {
+        switch selectedState {
+        case .selected, .unsupported: false
+        case .notSelected, .partiallySelected: true
+        }
+    }
+
     /// Determines if Subscription-type product details should be shown
     ///
     var shouldShowProductSubscriptionsDetails: Bool {
@@ -210,7 +236,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     /// Label showing product details. Can include stock status or attributes, price, and variations (if any).
     ///
     var productDetailsLabel: String {
-        if let unsupportedReason {
+        if case .unsupported(let unsupportedReason) = selectedState {
             unsupportedReason
         } else if productSubscriptionDetails != nil {
             [stockOrAttributesLabel, skuLabel, variationsLabel]
@@ -227,7 +253,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     /// Label showing secondary product details. Can include product type (if the row is configurable), and SKU (if available).
     ///
     var secondaryProductDetailsLabel: String {
-        guard unsupportedReason == nil else {
+        if case .unsupported(let reason) = selectedState {
             return ""
         }
 
@@ -258,8 +284,8 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     /// Custom accessibility label for product.
     ///
     var productAccessibilityLabel: String {
-        if let unsupportedReason {
-            return unsupportedReason
+        if case .unsupported(let reason) = selectedState {
+            return reason
         }
         return [name, stockOrAttributesLabel, priceAndDiscountsLabel, variationsLabel, skuLabel]
             .compactMap({ $0 })
@@ -269,9 +295,6 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     /// Quantity of product in the order. The source of truth is from the the quantity stepper view model `stepperViewModel`.
     ///
     @Published var quantity: Decimal
-
-    /// Text explaining why the product is not supported for order creation if that's the case.
-    private let unsupportedReason: String?
 
     /// Closure to configure a product if it is configurable.
     let configure: (() -> Void)?
@@ -306,7 +329,6 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
          selectedState: ProductRow.SelectedState = .notSelected,
          pricedIndividually: Bool = true,
          isConfigurable: Bool,
-         unsupportedReason: String? = nil,
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
          analytics: Analytics = ServiceLocator.analytics,
          configure: (() -> Void)? = nil) {
@@ -330,7 +352,6 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         self.numberOfVariations = numberOfVariations
         self.variationDisplayMode = variationDisplayMode
         self.productSubscriptionDetails = productSubscriptionDetails
-        self.unsupportedReason = unsupportedReason
         self.configure = configure
     }
 
@@ -343,7 +364,6 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                      productSubscriptionDetails: ProductSubscription? = nil,
                      selectedState: ProductRow.SelectedState = .notSelected,
                      pricedIndividually: Bool = true,
-                     unsupportedReason: String? = nil,
                      currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
                      analytics: Analytics = ServiceLocator.analytics,
                      featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
@@ -421,7 +441,6 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                   selectedState: selectedState,
                   pricedIndividually: pricedIndividually,
                   isConfigurable: isConfigurable,
-                  unsupportedReason: unsupportedReason,
                   currencyFormatter: currencyFormatter,
                   analytics: analytics,
                   configure: configure)

@@ -264,10 +264,10 @@ struct ProductSelectorView: View {
                         default:
                             break
                     }
-                } else if rowViewModel.selectedState != .unsupported {
+                } else if rowViewModel.selectionEnabled {
                     viewModel.changeSelectionStateForProduct(
                         with: rowViewModel.productOrVariationID,
-                        selected: rowViewModel.selectedState != .selected
+                        selected: rowViewModel.toggledSelectedValue
                     )
                 }
             }

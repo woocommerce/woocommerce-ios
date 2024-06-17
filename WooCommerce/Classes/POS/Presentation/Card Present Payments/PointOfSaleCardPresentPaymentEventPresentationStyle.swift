@@ -88,7 +88,9 @@ extension CardPresentPaymentEventDetails {
 
         case .tapSwipeOrInsertCard(inputMethods: let inputMethods, cancelPayment: let cancelPayment):
             return .message(.tapSwipeOrInsertCard(
-                viewModel: PointOfSaleCardPresentPaymentTapSwipeInsertCardMessageViewModel()))
+                viewModel: PointOfSaleCardPresentPaymentTapSwipeInsertCardMessageViewModel(
+                    inputMethods: inputMethods,
+                    cancelAction: cancelPayment)))
 
         case .paymentSuccess(done: let done):
             return .message(.paymentSuccess(viewModel: PointOfSaleCardPresentPaymentSuccessMessageViewModel()))

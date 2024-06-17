@@ -31,8 +31,8 @@ struct PointOfSaleDashboardView: View {
                             switch inlinePaymentMessage {
                             case .preparingForPayment(let viewModel):
                                 PointOfSaleCardPresentPaymentPreparingForPaymentMessageView(viewModel: viewModel)
-                            case .tapSwipeOrInsertCard:
-                                Text("tapSwipeOrInsertCard...")
+                            case .tapSwipeOrInsertCard(let viewModel):
+                                PointOfSaleCardPresentPaymentTapSwipeInsertCardMessageView(viewModel: viewModel)
                             case .processing:
                                 Text("processing...")
                             case .displayReaderMessage(let viewModel):

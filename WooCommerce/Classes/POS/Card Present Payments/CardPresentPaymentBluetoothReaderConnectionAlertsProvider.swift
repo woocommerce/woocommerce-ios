@@ -25,8 +25,8 @@ struct CardPresentPaymentBluetoothReaderConnectionAlertsProvider: BluetoothReade
 
     func connectingFailedNonRetryable(error: any Error,
                                       close: @escaping () -> Void) -> CardPresentPaymentEventDetails {
-        .errorNonRetryable(error: error,
-                           cancelPayment: close)
+        .connectingFailedNonRetryable(error: error,
+                                      endSearch: close)
     }
 
     func connectingFailedIncompleteAddress(wcSettingsAdminURL: URL?,
@@ -39,8 +39,8 @@ struct CardPresentPaymentBluetoothReaderConnectionAlertsProvider: BluetoothReade
                 endSearch: cancelSearch)
         }
         return .connectingFailedUpdateAddress(wcSettingsAdminURL: wcSettingsAdminURL,
-                                       retrySearch: retrySearch,
-                                       endSearch: cancelSearch)
+                                              retrySearch: retrySearch,
+                                              endSearch: cancelSearch)
     }
 
     func connectingFailedInvalidPostalCode(retrySearch: @escaping () -> Void,

@@ -18,12 +18,6 @@ struct ItemGridView: View {
                 .padding(.vertical, 8)
                 .font(.title)
                 .foregroundColor(Color.white)
-            HStack {
-                SearchView()
-                Spacer()
-                FilterView(viewModel: viewModel)
-            }
-            .padding(.vertical, 0)
             ScrollView {
                 LazyVGrid(columns: columns, spacing: 16) {
                     ForEach(viewModel.items, id: \.productID) { item in

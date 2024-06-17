@@ -80,9 +80,6 @@ struct PointOfSaleDashboardView: View {
                 }
             }
         })
-        .sheet(isPresented: $viewModel.showsFilterSheet, content: {
-            FilterView(viewModel: viewModel)
-        })
     }
 }
 

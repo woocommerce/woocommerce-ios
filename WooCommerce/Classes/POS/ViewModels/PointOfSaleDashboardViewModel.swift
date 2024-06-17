@@ -28,8 +28,6 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
 
     @Published var showsCreatingOrderSheet: Bool = false
 
-    @Published var showsFilterSheet: Bool = false
-
     enum OrderStage {
         case building
         case finalizing
@@ -92,10 +90,6 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
 
     func addMoreToCart() {
         orderStage = .building
-    }
-
-    func showFilters() {
-        showsFilterSheet = true
     }
 
     private func calculateAmounts() {

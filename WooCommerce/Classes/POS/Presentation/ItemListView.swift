@@ -16,11 +16,12 @@ struct ItemListView: View {
                 .foregroundColor(Color.white)
             ScrollView {
                 ForEach(viewModel.items, id: \.productID) { item in
-                    ItemCardView(item: item) {
-                        viewModel.addItemToCart(item)
-                    }
+                    ItemCardView(item: item)
                     .foregroundColor(Color.primaryText)
                     .background(Color.secondaryBackground)
+                    .onTapGesture {
+                        viewModel.addItemToCart(item)
+                    }
                 }
             }
         }

@@ -21,11 +21,12 @@ struct ItemGridView: View {
             ScrollView {
                 LazyVGrid(columns: columns, spacing: 16) {
                     ForEach(viewModel.items, id: \.productID) { item in
-                        ItemCardView(item: item) {
-                            viewModel.addItemToCart(item)
-                        }
+                        ItemCardView(item: item)
                         .foregroundColor(Color.primaryText)
                         .background(Color.secondaryBackground)
+                        .onTapGesture {
+                            viewModel.addItemToCart(item)
+                        }
                     }
                 }
             }

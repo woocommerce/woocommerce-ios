@@ -3,13 +3,11 @@ import SwiftUI
 
 struct ItemCardView: View {
     private let item: POSItem
-    private let onItemCardTapped: (() -> Void)?
 
     @ScaledMetric private var scale: CGFloat = 1.0
 
-    init(item: POSItem, onItemCardTapped: (() -> Void)? = nil) {
+    init(item: POSItem) {
         self.item = item
-        self.onItemCardTapped = onItemCardTapped
     }
 
     var commaSeparatedItemCategories: String {
@@ -57,7 +55,6 @@ private extension ItemCardView {
 
 #if DEBUG
 #Preview {
-    ItemCardView(item: POSItemProviderPreview().providePointOfSaleItem(),
-                 onItemCardTapped: { })
+    ItemCardView(item: POSItemProviderPreview().providePointOfSaleItem())
 }
 #endif

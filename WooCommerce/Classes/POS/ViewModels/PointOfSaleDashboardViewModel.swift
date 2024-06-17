@@ -29,7 +29,7 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
     var formattedOrderTotalTaxPrice: String? {
         return formattedPrice(order?.totalTax, currency: order?.currency)
     }
-    
+
     private func formattedPrice(_ price: String?, currency: String?) -> String? {
         guard let price, let currency else {
             return nil
@@ -180,11 +180,11 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
     func calculateAmountsTapped() {
         createOrUpdateOrder()
     }
-    
+
     private func createOrUpdateOrder() {
         finalItems = itemsInCart
     }
-    
+
     func startNewTransaction() {
         // clear cart
         itemsInCart.removeAll()
@@ -296,7 +296,7 @@ private extension PointOfSaleDashboardViewModel {
     enum Constants {
         static let cartChangesDebounceDuration: TimeInterval = 0
     }
-    
+
     enum OrderSyncError: Error {
         case selfDeallocated
     }

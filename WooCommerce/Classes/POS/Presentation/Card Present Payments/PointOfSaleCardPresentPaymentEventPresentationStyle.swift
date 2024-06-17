@@ -104,7 +104,9 @@ extension CardPresentPaymentEventDetails {
 
         case .paymentErrorNonRetryable(error: let error, cancelPayment: let cancelPayment):
             return .message(.paymentErrorNonRetryable(
-                viewModel: PointOfSaleCardPresentPaymentNonRetryableErrorMessageViewModel()))
+                viewModel: PointOfSaleCardPresentPaymentNonRetryableErrorMessageViewModel(
+                    error: error,
+                    cancelButtonAction: cancelPayment)))
 
         case .processing:
             return .message(.processing(viewModel: PointOfSaleCardPresentPaymentProcessingMessageViewModel()))

@@ -41,8 +41,8 @@ struct PointOfSaleDashboardView: View {
                                 Text("Payment successful!")
                             case .paymentError(let viewModel):
                                 PointOfSaleCardPresentPaymentErrorMessageView(viewModel: viewModel)
-                            case .paymentErrorNonRetryable:
-                                Text("Payment error - non retryable")
+                            case .paymentErrorNonRetryable(let viewModel):
+                                PointOfSaleCardPresentPaymentNonRetryableErrorMessageView(viewModel: viewModel)
                             case .cancelledOnReader:
                                 Text("Payment cancelled on reader")
                             }

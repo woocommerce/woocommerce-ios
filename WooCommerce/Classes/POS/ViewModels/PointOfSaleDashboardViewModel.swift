@@ -28,8 +28,6 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
 
     @Published var showsCreatingOrderSheet: Bool = false
 
-    @Published var showsFilterSheet: Bool = false
-
     enum OrderStage {
         case building
         case finalizing
@@ -48,6 +46,10 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
         self.cardReaderConnectionViewModel = CardReaderConnectionViewModel(cardPresentPayment: cardPresentPaymentService)
         observeCardPresentPaymentEvents()
         observeItemsInCartForCartTotal()
+    }
+
+    var isCartCollapsed: Bool {
+        itemsInCart.isEmpty
     }
 
     var itemToScrollToWhenCartUpdated: CartItem? {
@@ -88,10 +90,6 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
 
     func addMoreToCart() {
         orderStage = .building
-    }
-
-    func showFilters() {
-        showsFilterSheet = true
     }
 
     private func calculateAmounts() {

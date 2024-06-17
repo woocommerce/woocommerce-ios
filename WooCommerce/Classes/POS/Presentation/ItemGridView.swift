@@ -13,17 +13,11 @@ struct ItemGridView: View {
                                         count: Constants.maxItemsPerRow)
 
         VStack {
-            Text("Product List")
+            Text("Products")
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.vertical, 8)
                 .font(.title)
                 .foregroundColor(Color.white)
-            HStack {
-                SearchView()
-                Spacer()
-                FilterView(viewModel: viewModel)
-            }
-            .padding(.vertical, 0)
             ScrollView {
                 LazyVGrid(columns: columns, spacing: 16) {
                     ForEach(viewModel.items, id: \.productID) { item in

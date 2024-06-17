@@ -16,7 +16,11 @@ struct PointOfSaleDashboardView: View {
                 case .building:
                     productGridView
                     Spacer()
-                    cartView
+                    if viewModel.isCartCollapsed {
+                        collapsedCartView
+                    } else {
+                        cartView
+                    }
                 case .finalizing:
                     cartView
                     Spacer()
@@ -76,14 +80,15 @@ struct PointOfSaleDashboardView: View {
                 }
             }
         })
-        .sheet(isPresented: $viewModel.showsFilterSheet, content: {
-            FilterView(viewModel: viewModel)
-        })
     }
 }
 
 /// Helpers to generate all Dashboard subviews
 private extension PointOfSaleDashboardView {
+    var collapsedCartView: some View {
+        CollapsedCartView()
+    }
+
     var cartView: some View {
         CartView(viewModel: viewModel)
             .background(Color.secondaryBackground)
@@ -97,7 +102,7 @@ private extension PointOfSaleDashboardView {
     }
 
     var productGridView: some View {
-        ItemGridView(viewModel: viewModel)
+        ItemListView(viewModel: viewModel)
             .background(Color.secondaryBackground)
             .frame(maxWidth: .infinity)
     }

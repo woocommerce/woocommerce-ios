@@ -1,7 +1,5 @@
 import SwiftUI
 import protocol Yosemite.PointOfSaleOrderServiceProtocol
-import class Yosemite.PointOfSaleOrderService
-import enum Networking.Credentials
 
 struct PointOfSaleDashboardView: View {
     @Environment(\.presentationMode) var presentationMode
@@ -130,6 +128,8 @@ fileprivate extension CardPresentPaymentEvent {
 }
 
 #if DEBUG
+import class Yosemite.PointOfSaleOrderService
+import enum Networking.Credentials
 #Preview {
     NavigationStack {
         PointOfSaleDashboardView(

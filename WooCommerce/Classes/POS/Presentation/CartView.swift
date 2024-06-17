@@ -1,7 +1,4 @@
 import SwiftUI
-import protocol Yosemite.PointOfSaleOrderServiceProtocol
-import class Yosemite.PointOfSaleOrderService
-import enum Networking.Credentials
 
 struct CartView: View {
     @ObservedObject private var viewModel: PointOfSaleDashboardViewModel
@@ -110,6 +107,8 @@ private extension CartView {
 }
 
 #if DEBUG
+import class Yosemite.PointOfSaleOrderService
+import enum Networking.Credentials
 #Preview {
     CartView(viewModel: PointOfSaleDashboardViewModel(items: POSItemProviderPreview().providePointOfSaleItems(),
                                                       cardPresentPaymentService: CardPresentPaymentPreviewService(),

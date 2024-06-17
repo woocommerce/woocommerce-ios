@@ -1,7 +1,4 @@
 import SwiftUI
-import protocol Yosemite.PointOfSaleOrderServiceProtocol
-import class Yosemite.PointOfSaleOrderService
-import enum Networking.Credentials
 
 struct ItemGridView: View {
     @ObservedObject var viewModel: PointOfSaleDashboardViewModel
@@ -47,6 +44,8 @@ private extension ItemGridView {
 }
 
 #if DEBUG
+import class Yosemite.PointOfSaleOrderService
+import enum Networking.Credentials
 #Preview {
     ItemGridView(viewModel: PointOfSaleDashboardViewModel(items: POSItemProviderPreview().providePointOfSaleItems(),
                                                           cardPresentPaymentService: CardPresentPaymentPreviewService(),

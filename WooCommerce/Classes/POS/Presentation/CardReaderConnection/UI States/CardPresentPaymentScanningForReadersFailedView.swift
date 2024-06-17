@@ -8,10 +8,23 @@ struct CardPresentPaymentScanningForReadersFailedView: View {
     }
 
     var body: some View {
-        Text("Reader scanning failed")
+        VStack {
+            Text(viewModel.title)
+
+            viewModel.image
+
+            Text(viewModel.errorDetails)
+
+            Button(viewModel.buttonViewModel.title,
+                   action: viewModel.buttonViewModel.actionHandler)
+            .buttonStyle(SecondaryButtonStyle())
+        }
     }
 }
 
 #Preview {
-    CardPresentPaymentScanningForReadersFailedView(viewModel: CardPresentPaymentScanningFailedAlertViewModel())
+    CardPresentPaymentScanningForReadersFailedView(
+        viewModel: CardPresentPaymentScanningFailedAlertViewModel(
+            error: NSError(domain: "", code: 1, userInfo: nil),
+            endSearchAction: {}))
 }

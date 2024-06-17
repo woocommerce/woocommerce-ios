@@ -3,6 +3,7 @@ import Foundation
 enum CardPresentPaymentAlertViewModel {
     case scanningForReaders(CardPresentPaymentScanningForReadersAlertViewModel)
     case scanningFailed(CardPresentPaymentScanningFailedAlertViewModel)
+    case bluetoothRequired(CardPresentPaymentBluetoothRequiredAlertViewModel)
 
     case foundReader(CardPresentPaymentFoundReaderAlertViewModel)
 
@@ -11,6 +12,10 @@ enum CardPresentPaymentAlertViewModel {
 
     case connectingToReader(CardPresentPaymentConnectingToReaderAlertViewModel)
     case connectingFailed(CardPresentPaymentConnectingFailedAlertViewModel)
+    case connectingFailedNonRetryable(CardPresentPaymentConnectingFailedNonRetryableAlertViewModel)
+    case connectingFailedChargeReader(CardPresentPaymentConnectingFailedChargeReaderAlertViewModel)
+    case connectingFailedUpdateAddress(CardPresentPaymentConnectingFailedUpdateAddressAlertViewModel)
+    case connectingFailedUpdatePostalCode(CardPresentPaymentConnectingFailedUpdatePostalCodeAlertViewModel)
 
     case preparingForPayment(CardPresentPaymentPreparingForPaymentAlertViewModel)
 
@@ -31,26 +36,40 @@ extension CardPresentPaymentAlertDetails {
                 .scanningForReaders(CardPresentPaymentScanningForReadersAlertViewModel(endSearchAction: endSearch))
 
         case .scanningFailed(let error, let endSearch):
-                .scanningFailed(CardPresentPaymentScanningFailedAlertViewModel())
+                .scanningFailed(CardPresentPaymentScanningFailedAlertViewModel(
+                    error: error,
+                    endSearchAction: endSearch))
 
-        case .bluetoothRequired:
-                .scanningFailed(CardPresentPaymentScanningFailedAlertViewModel())
+        case .bluetoothRequired(let error, let endSearch):
+                .bluetoothRequired(CardPresentPaymentBluetoothRequiredAlertViewModel(error: error, endSearch: endSearch))
 
         case .connectingToReader:
                 .connectingToReader(CardPresentPaymentConnectingToReaderAlertViewModel())
 
         case .connectingFailed(let error, let retrySearch, let endSearch):
-            .connectingFailed(CardPresentPaymentConnectingFailedAlertViewModel())
+                .connectingFailed(CardPresentPaymentConnectingFailedAlertViewModel(
+                    error: error,
+                    retryButtonAction: retrySearch,
+                    cancelButtonAction: endSearch))
 
         case .connectingFailedNonRetryable(let error, let endSearch):
-            .connectingFailed(CardPresentPaymentConnectingFailedAlertViewModel())
+                .connectingFailedNonRetryable(CardPresentPaymentConnectingFailedNonRetryableAlertViewModel(error: error, cancelAction: endSearch))
 
-        case .connectingFailedUpdatePostalCode(let retrySearch, let endSearch),
-                .connectingFailedChargeReader(let retrySearch, let endSearch):
-            .connectingFailed(CardPresentPaymentConnectingFailedAlertViewModel())
+        case .connectingFailedUpdatePostalCode(let retrySearch, let endSearch):
+                .connectingFailedUpdatePostalCode(CardPresentPaymentConnectingFailedUpdatePostalCodeAlertViewModel(
+                    retryButtonAction: retrySearch,
+                    cancelButtonAction: endSearch))
+
+        case .connectingFailedChargeReader(let retrySearch, let endSearch):
+            .connectingFailedChargeReader(CardPresentPaymentConnectingFailedChargeReaderAlertViewModel(
+                retryButtonAction: retrySearch,
+                cancelButtonAction: endSearch))
 
         case .connectingFailedUpdateAddress(let wcSettingsAdminURL, let retrySearch, let endSearch):
-            .connectingFailed(CardPresentPaymentConnectingFailedAlertViewModel())
+                .connectingFailedUpdateAddress(CardPresentPaymentConnectingFailedUpdateAddressAlertViewModel(
+                    settingsAdminUrl: wcSettingsAdminURL,
+                    retrySearchAction: retrySearch,
+                    cancelSearchAction: endSearch))
 
         case .preparingForPayment(let cancelPayment):
                 .preparingForPayment(CardPresentPaymentPreparingForPaymentAlertViewModel())

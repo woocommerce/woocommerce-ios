@@ -1,11 +1,7 @@
 import SwiftUI
 
-struct CardPresentPaymentConnectingFailedView: View {
-    private let viewModel: CardPresentPaymentConnectingFailedAlertViewModel
-
-    init(viewModel: CardPresentPaymentConnectingFailedAlertViewModel) {
-        self.viewModel = viewModel
-    }
+struct CardPresentPaymentConnectingFailedUpdatePostalCodeView: View {
+    let viewModel: CardPresentPaymentConnectingFailedUpdatePostalCodeAlertViewModel
 
     var body: some View {
         VStack {
@@ -13,9 +9,7 @@ struct CardPresentPaymentConnectingFailedView: View {
 
             viewModel.image
 
-            if let errorDetails = viewModel.errorDetails {
-                Text(errorDetails)
-            }
+            Text(viewModel.errorDetails)
 
             Button(viewModel.retryButtonViewModel.title,
                    action: viewModel.retryButtonViewModel.actionHandler)
@@ -29,9 +23,8 @@ struct CardPresentPaymentConnectingFailedView: View {
 }
 
 #Preview {
-    CardPresentPaymentConnectingFailedView(
-        viewModel: CardPresentPaymentConnectingFailedAlertViewModel(
-            error: NSError(domain: "preview.error", code: 1),
+    CardPresentPaymentConnectingFailedUpdatePostalCodeView(
+        viewModel: CardPresentPaymentConnectingFailedUpdatePostalCodeAlertViewModel(
             retryButtonAction: {},
             cancelButtonAction: {}))
 }

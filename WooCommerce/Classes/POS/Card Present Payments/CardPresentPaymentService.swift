@@ -164,4 +164,5 @@ private extension CardPresentPaymentService {
 enum CardPresentPaymentServiceError: Error {
     case invalidAmount
     case unknownPaymentError(underlyingError: Error)
+    case incompleteAddressConnectionError
 }

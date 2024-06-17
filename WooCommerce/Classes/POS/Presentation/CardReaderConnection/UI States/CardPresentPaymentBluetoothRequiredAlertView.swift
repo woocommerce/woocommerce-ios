@@ -28,3 +28,6 @@ struct CardPresentPaymentBluetoothRequiredAlertView: View {
         }
     }
 }
+
+#Preview {
+    CardPresentPaymentBluetoothRequiredAlertView(viewModel: .init(error: NSError(domain: "", code: 1), endSearch: {}))

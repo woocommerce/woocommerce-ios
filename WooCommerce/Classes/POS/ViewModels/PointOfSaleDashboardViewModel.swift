@@ -50,6 +50,10 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
         observeItemsInCartForCartTotal()
     }
 
+    var isCartCollapsed: Bool {
+        itemsInCart.isEmpty
+    }
+
     var itemToScrollToWhenCartUpdated: CartItem? {
         return itemsInCart.last
     }

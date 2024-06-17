@@ -16,7 +16,11 @@ struct PointOfSaleDashboardView: View {
                 case .building:
                     productGridView
                     Spacer()
-                    cartView
+                    if viewModel.isCartCollapsed {
+                        collapsedCartView
+                    } else {
+                        cartView
+                    }
                 case .finalizing:
                     cartView
                     Spacer()
@@ -84,6 +88,10 @@ struct PointOfSaleDashboardView: View {
 
 /// Helpers to generate all Dashboard subviews
 private extension PointOfSaleDashboardView {
+    var collapsedCartView: some View {
+        CollapsedCartView()
+    }
+
     var cartView: some View {
         CartView(viewModel: viewModel)
             .background(Color.secondaryBackground)

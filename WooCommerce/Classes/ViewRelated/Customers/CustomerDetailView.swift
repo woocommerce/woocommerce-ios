@@ -50,9 +50,10 @@ struct CustomerDetailView: View {
                                 .shimmering()
                         }
                     Spacer()
-                    if let phone = viewModel.phone {
+                    if viewModel.phone != nil {
                         Button {
                             isPresentingPhoneDialog.toggle()
+                            viewModel.trackPhoneMenuTapped()
                         } label: {
                             Image(uiImage: .ellipsisImage)
                                 .foregroundColor(Color(.primary))
@@ -66,11 +67,12 @@ struct CustomerDetailView: View {
 
                             Button(Localization.ContactAction.message) {
                                 isShowingMessageView.toggle()
+                                viewModel.trackMessageActionTapped()
                             }
                             .renderedIf(MessageComposeView.canSendMessage())
 
                             Button(Localization.ContactAction.copyPhoneNumber) {
-                                phone.sendToPasteboard(includeTrailingNewline: false)
+                                viewModel.copyPhone()
                             }
 
                             Button(Localization.ContactAction.whatsapp) {
@@ -88,10 +90,23 @@ struct CustomerDetailView: View {
                 customerDetailRow(label: Localization.dateLastActiveLabel, value: viewModel.dateLastActive)
             }
 
-            Section(header: Text(Localization.ordersSection)) {
+            Section {
                 customerDetailRow(label: Localization.ordersCountLabel, value: viewModel.ordersCount)
                 customerDetailRow(label: Localization.totalSpendLabel, value: viewModel.totalSpend)
                 customerDetailRow(label: Localization.avgOrderValueLabel, value: viewModel.avgOrderValue)
+            } header: {
+                HStack {
+                    Text(Localization.ordersSection)
+                    Spacer()
+                    Button {
+                        viewModel.createNewOrder()
+                    } label: {
+                        Image(uiImage: .plusImage)
+                    }
+                    .accessibilityLabel(Localization.newOrder)
+                    .renderedIf(viewModel.canCreateNewOrder)
+
+                }
             }
 
             Section(header: Text(Localization.registrationSection)) {
@@ -99,38 +114,38 @@ struct CustomerDetailView: View {
                 customerDetailRow(label: Localization.dateRegisteredLabel, value: viewModel.dateRegistered)
             }
 
-            if let billing = viewModel.billing, billing.isNotEmpty {
+            if let billing = viewModel.formattedBilling, billing.isNotEmpty {
                 Section(header: Text(Localization.billingSection)) {
                     Text(billing)
                         .swipeActions(edge: .leading) {
                             Button {
-                                billing.sendToPasteboard()
+                                viewModel.copyBillingAddress()
                             } label: {
                                 Text(Localization.ContactAction.copy)
                             }
                         }
                         .contextMenu {
                             Button {
-                                billing.sendToPasteboard()
+                                viewModel.copyBillingAddress()
                             } label: {
                                 Label(Localization.ContactAction.copy, systemImage: "doc.on.doc")
                             }
                         }
                 }
             }
-            if let shipping = viewModel.shipping, shipping.isNotEmpty {
+            if let shipping = viewModel.formattedShipping, shipping.isNotEmpty {
                 Section(header: Text(Localization.shippingSection)) {
                     Text(shipping)
                         .swipeActions(edge: .leading) {
                             Button {
-                                shipping.sendToPasteboard()
+                                viewModel.copyShippingAddress()
                             } label: {
                                 Text(Localization.ContactAction.copy)
                             }
                         }
                         .contextMenu {
                             Button {
-                                shipping.sendToPasteboard()
+                                viewModel.copyShippingAddress()
                             } label: {
                                 Label(Localization.ContactAction.copy, systemImage: "doc.on.doc")
                             }
@@ -205,6 +220,9 @@ private extension CustomerDetailView {
         static let ordersSection = NSLocalizedString("customerDetailView.ordersSection",
                                                        value: "ORDERS",
                                                        comment: "Heading for the section with customer order stats in the Customer Details screen.")
+        static let newOrder = NSLocalizedString("customerDetailsView.newOrderButton",
+                                                value: "Create a new order",
+                                                comment: "Label for button to create a new order for the customer in the Customer Details screen.")
         static let ordersCountLabel = NSLocalizedString("customerDetailView.ordersCountLabel",
                                                         value: "Orders",
                                                         comment: "Label for the number of orders in the Customer Details screen.")
@@ -290,7 +308,7 @@ private extension CustomerDetailView {
     }
 }
 
-#Preview("Unregistered Customer") {
+#Preview("Customer") {
     CustomerDetailView(viewModel: CustomerDetailViewModel(siteID: 1,
                                                           customerID: 0,
                                                           name: "Pat Smith",
@@ -304,28 +322,7 @@ private extension CustomerDetailView {
                                                           country: "United States",
                                                           region: "Oregon",
                                                           city: "Portland",
-                                                          postcode: "12345",
-                                                          billing: nil,
-                                                          shipping: nil))
-}
-
-#Preview("Registered Customer") {
-    CustomerDetailView(viewModel: CustomerDetailViewModel(siteID: 1,
-                                                          customerID: 0,
-                                                          name: "Pat Smith",
-                                                          dateLastActive: "Jan 1, 2024",
-                                                          email: "patsmith@example.com",
-                                                          ordersCount: "3",
-                                                          totalSpend: "$81.75",
-                                                          avgOrderValue: "$27.25",
-                                                          username: "patsmith",
-                                                          dateRegistered: "Jan 1, 2023",
-                                                          country: "United States",
-                                                          region: "Oregon",
-                                                          city: "Portland",
-                                                          postcode: "12345",
-                                                          billing: "Pat Smith\n1 Main Street\nPortland, Oregon 12345",
-                                                          shipping: "Pat Smith\n1 Main Street\nPortland, Oregon 12345"))
+                                                          postcode: "12345"))
 }
 
 #Preview("Customer with Placeholders") {
@@ -342,7 +339,5 @@ private extension CustomerDetailView {
                                                           country: nil,
                                                           region: nil,
                                                           city: nil,
-                                                          postcode: nil,
-                                                          billing: nil,
-                                                          shipping: nil))
+                                                          postcode: nil))
 }

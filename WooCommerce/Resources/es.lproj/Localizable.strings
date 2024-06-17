@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-06-03 13:54:04+0000 */
+/* Translation-Revision-Date: 2024-06-11 15:54:05+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: es */
@@ -10590,6 +10590,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the button to edit the layout of the Dashboard screen. */
 "dashboardView.edit" = "Editar";
 
+/* Label of the button to add sections */
+"dashboardView.newCardsNoticeCard.addSectionsButtonText" = "Añadir nuevas secciones";
+
 /* Subtitle of the New Cards Notice card */
 "dashboardView.newCardsNoticeCard.subtitle" = "Añadir nuevas secciones para personalizar tu experiencia de gestión de la tienda";
 
@@ -10692,6 +10695,15 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the store creation plan on the plan screen. */
 "eCommerce" = "eCommerce";
 
+/* Title for button to view the feedback survey about adding shipping to an order */
+"editableOrderShippingLineViewModel.feedbackSurvey.buttonTitle" = "Comparte tu opinión";
+
+/* Message for the feedback survey about adding shipping to an order */
+"editableOrderShippingLineViewModel.feedbackSurvey.message" = "¿Se compra fácilmente en Woo?";
+
+/* Title for the feedback survey about adding shipping to an order */
+"editableOrderShippingLineViewModel.feedbackSurvey.title" = "¡Se ha añadido el envío!";
+
 /* Default name when the custom amount does not have a name in order creation. */
 "editableOrderViewModel.customAmountDefaultName" = "Cantidad personalizada";
 
@@ -10761,6 +10773,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* The title of the button for giving a negative feedback for the app. */
 "inAppFeedbackCardView.couldBeBetter" = "Podría estar mejor";
+
+/* The title used when asking the user for feedback for the app. */
+"inAppFeedbackCardView.feedbackTitle" = "¿Te está gustando la aplicación?";
 
 /* The title of the button for giving a positive feedback for the app. */
 "inAppFeedbackCardView.iLikeIt" = "Me gusta";
@@ -11280,6 +11295,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label for button on product form to open Blaze flow */
 "productFormTableViewDataSource.promoteWithBlazeButton" = "Promocionar con Blaze";
+
+/* Text message prompting the user to tap to learn more about changing the privacy setting. */
+"productFormTableViewDataSource.wpComStoreNotPublicText" = "Pulsa para obtener más información.";
+
+/* Title message indicating that images are unavailable because the site is private. */
+"productFormTableViewDataSource.wpComStoreNotPublicTitle" = "Las imágenes no están disponibles porque tu sitio está marcado como privado. Puedes modificar este ajuste cambiando al modo Próximamente.";
 
 /* Alert message to inform the user that they must wait for all image uploads to complete before they can reorder the images. */
 "productImagesCollectionViewController.notice" = "Espera hasta que se terminen todas las actualizaciones para reordenar imágenes.";
@@ -11837,6 +11858,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Singular format for the number of products in the order detail screen. */
 "watch.orders.detail.product-count-singular" = "1 producto";
+
+/* Title on the watch orders list screen when there are no orders */
+"watch.orders.empty.title" = "Esperando tu primer pedido.";
 
 /* Loading title on the watch orders list screen. */
 "watch.orders.error.title" = "Hubo un error al cargar la lista de pedidos";

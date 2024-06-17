@@ -1,6 +1,9 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 19.1
+Discover the latest updates to our WooCommerce app! We've added a "Private" filter option for enhanced product searches on iOS and revamped the product creation sheet for better organization. The privacy settings screen now has its navigation bar restored. The Customers section now displays phone numbers and addresses, with options to copy or contact directly. Plus, you can create new orders for registered customers with ease!
+
 ## 19.0
 Our latest version enriches your My Store screen, now featuring details on your most recent orders, low-stock products, active coupons, customer reviews, and more. Dive deeper into your store’s performance with these new additions!
 

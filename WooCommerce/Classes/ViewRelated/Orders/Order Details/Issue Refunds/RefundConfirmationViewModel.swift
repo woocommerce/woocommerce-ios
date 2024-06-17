@@ -98,6 +98,8 @@ final class RefundConfirmationViewModel {
             alerts: OrderDetailsPaymentAlerts(transactionType: .refund,
                                               presentingController: rootViewController),
             cardPresentConfiguration: CardPresentConfigurationLoader(stores: actionProcessor).configuration,
+            cardReaderConnectionAlerts: BluetoothReaderConnectionAlertsProvider(),
+            alertPresenter: CardPresentPaymentAlertsPresenter(rootViewController: rootViewController),
             dependencies: RefundSubmissionUseCase.Dependencies(
                 currencyFormatter: currencyFormatter,
                 cardPresentPaymentsOnboardingPresenter: cardPresentPaymentsOnboardingPresenter,

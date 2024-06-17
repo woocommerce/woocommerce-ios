@@ -7,6 +7,8 @@ struct MyStoreView: View {
 
     @Environment(\.dependencies) private var dependencies
 
+    @Environment(\.appBindings) private var appBindings
+
     @EnvironmentObject private var tracksProvider: WatchTracksProvider
 
     // View Model to drive the view
@@ -21,29 +23,38 @@ struct MyStoreView: View {
     }
 
     var body: some View {
-        // This VStack is needed so the `onAppear` task is properly executed.
-        VStack {
+        HStack {
             // Draw the view that corresponds to the view state.
             switch viewModel.viewState {
             case .idle:
-                EmptyView()
+                Rectangle().hidden()
+                    .task {
+                        await viewModel.fetchAndBindRefreshTrigger(trigger: appBindings.refreshData.eraseToAnyPublisher())
+                    }
             case .loading:
                 dataView(revenue: "------", orders: "--", visitors: "--", conversion: "--", time: "00:00 AM")
+                    .padding(.horizontal)
                     .redacted(reason: .placeholder)
+                    .scrollDisabled(true)
             case .error:
                 errorView
             case let .loaded(revenue, totalOrders, totalVisitors, conversion, time):
                 dataView(revenue: revenue, orders: totalOrders, visitors: totalVisitors, conversion: conversion, time: time)
+                    .padding(.horizontal)
+
             }
         }
-        .padding(.horizontal)
+        .navigationBarTitleDisplayMode(.inline)
+        .navigationTitle {
+            Text(dependencies.storeName)
+                .foregroundStyle(Colors.wooPurple5)
+        }
         .background(
             LinearGradient(gradient: Gradient(colors: [Colors.wooPurpleBackground, .black]), startPoint: .top, endPoint: .bottom)
         )
         .onAppear() {
             Task {
                 tracksProvider.sendTracksEvent(.watchMyStoreOpened)
-                await viewModel.fetchStats()
             }
         }
     }
@@ -52,14 +63,26 @@ struct MyStoreView: View {
     ///
     @ViewBuilder var errorView: some View {
         VStack {
-            Spacer()
-            Text(Localization.error)
-            Spacer()
+            ScrollView {
+                Text(Localization.errorTitle)
+                    .font(.caption)
+
+                Spacer()
+
+                Text(Localization.errorDescription)
+                    .font(.footnote)
+
+                Spacer()
+
+            }
+            .multilineTextAlignment(.center)
+
             Button(Localization.retry) {
                 Task {
-                    await viewModel.fetchStats()
+                    appBindings.refreshData.send()
                 }
             }
+            .padding(.bottom, -16)
         }
     }
 
@@ -68,25 +91,18 @@ struct MyStoreView: View {
     @ViewBuilder func dataView(revenue: String, orders: String, visitors: String, conversion: String, time: String) -> some View {
         ScrollView {
             VStack {
-                Text(dependencies.storeName)
-                    .font(.body)
-                    .foregroundStyle(Colors.wooPurple5)
-                    .lineLimit(2)
-                    .fixedSize(horizontal: false, vertical: true)
-                    .padding(.bottom, Layout.storeNamePadding)
-
                 Text(Localization.revenue)
                     .font(.caption2)
                     .foregroundStyle(Colors.wooPurple5)
-                .padding(.bottom, Layout.revenueTitlePadding)
+                    .padding(.bottom, Layout.revenueTitlePadding)
 
                 Text(revenue)
                     .font(.title2)
                     .bold()
-                .padding(.bottom, Layout.revenueValuePadding)
+                    .padding(.bottom, Layout.revenueValuePadding)
 
                 Divider()
-                .padding(.bottom, Layout.dividerPadding)
+                    .padding(.bottom, Layout.dividerPadding)
 
                 HStack {
                     Text(Localization.today)
@@ -119,28 +135,34 @@ struct MyStoreView: View {
 
                     Spacer()
 
-                    VStack(spacing: Layout.iconsSpacing) {
+                    VStack(alignment: .trailing, spacing: Layout.iconsSpacing) {
                         HStack(spacing: Layout.iconsSpacing) {
 
                             Text(visitors)
                                 .font(.caption)
-                                .bold()
 
                             Images.person
+                                .resizable()
                                 .renderingMode(.original)
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: Layout.iconWidth, height: Layout.iconWidth)
                                 .foregroundStyle(Colors.wooPurple10)
                         }
+                        .bold()
 
                         HStack(spacing: Layout.iconsSpacing) {
 
                             Text(conversion)
                                 .font(.caption2)
-                                .bold()
 
                             Images.zigzag
+                                .resizable()
                                 .renderingMode(.original)
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: Layout.iconWidth, height: Layout.iconWidth)
                                 .foregroundStyle(Colors.wooPurple10)
                         }
+                        .bold()
                     }
                 }
             }
@@ -161,14 +183,14 @@ fileprivate extension MyStoreView {
     }
 
     enum Layout {
-        static let storeNamePadding = 8.0
-        static let revenueTitlePadding = 2.0
+        static let revenueTitlePadding = 1.0
         static let revenueValuePadding = 4.0
         static let dividerPadding = 4.0
         static let datePadding = 12.0
         static let orderButtonPadding = 10.0
         static let orderButtonCornerRadius = 18.0
         static let iconsSpacing = 4.0
+        static let iconWidth = 24.0
     }
 
     enum Localization {
@@ -182,10 +204,15 @@ fileprivate extension MyStoreView {
             value: "Today",
             comment: "Today title on the watch store stats screen."
         )
-        static let error = AppLocalizedString(
+        static let errorTitle = AppLocalizedString(
             "watch.mystore.error.title",
-            value: "There was an error loading the store's data",
-            comment: "Loading title on the watch store stats screen."
+            value: "Failed to load store data",
+            comment: "Error title on the watch store stats screen."
+        )
+        static let errorDescription = AppLocalizedString(
+            "watch.mystore.error.description",
+            value: "Make sure your watch is connected to the internet and your phone is nearby.",
+            comment: "Error description on the watch store stats screen."
         )
         static let retry = AppLocalizedString(
             "watch.mystore.retry.title",

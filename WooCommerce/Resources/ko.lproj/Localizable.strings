@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-06-04 09:54:04+0000 */
+/* Translation-Revision-Date: 2024-06-11 09:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ko_KR */
@@ -10590,6 +10590,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the button to edit the layout of the Dashboard screen. */
 "dashboardView.edit" = "편집";
 
+/* Label of the button to add sections */
+"dashboardView.newCardsNoticeCard.addSectionsButtonText" = "새 섹션 추가";
+
 /* Subtitle of the New Cards Notice card */
 "dashboardView.newCardsNoticeCard.subtitle" = "새 섹션을 추가하여 스토어 관리 환경을 사용자 정의하세요.";
 
@@ -10692,6 +10695,15 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the store creation plan on the plan screen. */
 "eCommerce" = "전자상거래";
 
+/* Title for button to view the feedback survey about adding shipping to an order */
+"editableOrderShippingLineViewModel.feedbackSurvey.buttonTitle" = "피드백 공유";
+
+/* Message for the feedback survey about adding shipping to an order */
+"editableOrderShippingLineViewModel.feedbackSurvey.message" = "Woo를 사용하면 배송이 쉬워질까요?";
+
+/* Title for the feedback survey about adding shipping to an order */
+"editableOrderShippingLineViewModel.feedbackSurvey.title" = "배송이 추가되었습니다!";
+
 /* Default name when the custom amount does not have a name in order creation. */
 "editableOrderViewModel.customAmountDefaultName" = "사용자 정의 금액";
 
@@ -10761,6 +10773,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* The title of the button for giving a negative feedback for the app. */
 "inAppFeedbackCardView.couldBeBetter" = "개선의 여지가 있음";
+
+/* The title used when asking the user for feedback for the app. */
+"inAppFeedbackCardView.feedbackTitle" = "앱을 즐겁게 사용하고 계시나요?";
 
 /* The title of the button for giving a positive feedback for the app. */
 "inAppFeedbackCardView.iLikeIt" = "좋아요";
@@ -11280,6 +11295,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label for button on product form to open Blaze flow */
 "productFormTableViewDataSource.promoteWithBlazeButton" = "Blaze로 홍보";
+
+/* Text message prompting the user to tap to learn more about changing the privacy setting. */
+"productFormTableViewDataSource.wpComStoreNotPublicText" = "눌러서 자세히 알아보세요.";
+
+/* Title message indicating that images are unavailable because the site is private. */
+"productFormTableViewDataSource.wpComStoreNotPublicTitle" = "사이트가 비공개로 표시되어서 이미지를 사용할 수 없습니다. 공개 예정 모드로 전환하여 이를 변경할 수 있습니다.";
 
 /* Alert message to inform the user that they must wait for all image uploads to complete before they can reorder the images. */
 "productImagesCollectionViewController.notice" = "모든 업로드가 완료된 후에 이미지를 재정렬하세요.";
@@ -11837,6 +11858,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Singular format for the number of products in the order detail screen. */
 "watch.orders.detail.product-count-singular" = "1개 상품";
+
+/* Title on the watch orders list screen when there are no orders */
+"watch.orders.empty.title" = "첫 주문을 기다리는 중입니다!";
 
 /* Loading title on the watch orders list screen. */
 "watch.orders.error.title" = "주문 목록을 로드하는 중 오류가 발생했습니다.";

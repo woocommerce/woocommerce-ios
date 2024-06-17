@@ -35,8 +35,8 @@ struct PointOfSaleDashboardView: View {
                                 Text("tapSwipeOrInsertCard...")
                             case .processing:
                                 Text("processing...")
-                            case .displayReaderMessage(let message):
-                                Text("Reader message: \(message)")
+                            case .displayReaderMessage(let viewModel):
+                                Text("Reader message: \(viewModel.message)")
                             case .success:
                                 Text("Payment successful!")
                             case .error:

@@ -1,12 +1,12 @@
 import Foundation
 
 enum PointOfSaleCardPresentPaymentMessageType {
-    case preparingForPayment
-    case tapSwipeOrInsertCard
-    case processing
-    case displayReaderMessage(message: String)
-    case success
-    case error
-    case nonRetryableError
-    case cancelledOnReader
+    case preparingForPayment(viewModel: PointOfSaleCardPresentPaymentPreparingForPaymentMessageViewModel)
+    case tapSwipeOrInsertCard(viewModel: PointOfSaleCardPresentPaymentTapSwipeInsertCardMessageViewModel)
+    case processing(viewModel: PointOfSaleCardPresentPaymentProcessingMessageViewModel)
+    case displayReaderMessage(viewModel: PointOfSaleCardPresentPaymentDisplayReaderMessageMessageViewModel)
+    case success(viewModel: PointOfSaleCardPresentPaymentSuccessMessageViewModel)
+    case error(viewModel: PointOfSaleCardPresentPaymentErrorMessageViewModel)
+    case nonRetryableError(viewModel: PointOfSaleCardPresentPaymentNonRetryableErrorMessageViewModel)
+    case cancelledOnReader(viewModel: PointOfSaleCardPresentPaymentCancelledOnReaderMessageViewModel)
 }

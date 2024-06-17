@@ -61,6 +61,7 @@ struct HostedPaymentMethodsView: View {
         }
     }
 
+    @MainActor
     private var paymentMethodsView: some View {
         PaymentMethodsView(dismiss: dismiss, rootViewController: rootViewController, viewModel: viewModel)
             .toolbar {

@@ -12,6 +12,7 @@ struct CardPresentCapturedPaymentData {
 }
 
 protocol PaymentCaptureOrchestrating {
+    @MainActor
     func collectPayment(for order: Order,
                         orderTotal: NSDecimalNumber,
                         paymentGatewayAccount: PaymentGatewayAccount,
@@ -24,9 +25,11 @@ protocol PaymentCaptureOrchestrating {
                         onProcessingCompletion: @escaping (PaymentIntent) -> Void,
                         onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> Void)
 
+    @MainActor
     func retryPayment(for order: Order,
                       onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> Void)
 
+    @MainActor
     func cancelPayment(onCompletion: @escaping (Result<Void, Error>) -> Void)
 
     func emailReceipt(for order: Order, params: CardPresentReceiptParameters, onContent: @escaping (String) -> Void)
@@ -205,6 +208,7 @@ private extension PaymentCaptureOrchestrator {
     /// `com.apple.developer.passkit.pass-presentation-suppression`
     /// See Woo-*.entitlements in WooCommerce/Resources
     ///
+    @MainActor
     func suppressPassPresentation() {
         /// iPads don't support NFC passes. Attempting to call `requestAutomaticPassPresentationSuppression` on them will
         /// return 0 `notSupported`
@@ -233,6 +237,7 @@ private extension PaymentCaptureOrchestrator {
     }
 
     /// Restore wallet presentation.
+    @MainActor
     func allowPassPresentation() {
         /// iPads don't have passes (wallets) to present
         ///

@@ -2,6 +2,7 @@ import UIKit
 import Yosemite
 import WooFoundation
 
+@MainActor
 struct ProductVariationDetailsFactory {
     /// Creates a view controller asynchronously that shows product variation details based on feature flags.
     /// - Parameters:

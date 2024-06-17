@@ -2,24 +2,24 @@ import SwiftUI
 import protocol Experiments.FeatureFlagService
 import struct Storage.GeneralAppSettingsStorage
 
+@MainActor
 final class BetaFeaturesConfigurationViewModel: ObservableObject {
     @Published private(set) var availableFeatures: [BetaFeature] = []
     private let appSettings: GeneralAppSettingsStorage
     private let featureFlagService: FeatureFlagService
     private let posEligibilityChecker: POSEligibilityCheckerProtocol
 
-    @MainActor
     init(appSettings: GeneralAppSettingsStorage = ServiceLocator.generalAppSettings,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
-         posEligibilityChecker: POSEligibilityCheckerProtocol = POSEligibilityChecker(
+         posEligibilityChecker: POSEligibilityCheckerProtocol? = nil) {
+        self.appSettings = appSettings
+        self.featureFlagService = featureFlagService
+        self.posEligibilityChecker = posEligibilityChecker ?? POSEligibilityChecker(
             cardPresentPaymentsOnboarding: CardPresentPaymentsOnboardingUseCase(),
             siteSettings: ServiceLocator.selectedSiteSettings,
             currencySettings: ServiceLocator.currencySettings,
             featureFlagService: ServiceLocator.featureFlagService
-         )) {
-        self.appSettings = appSettings
-        self.featureFlagService = featureFlagService
-        self.posEligibilityChecker = posEligibilityChecker
+         )
         observePOSEligibilityForAvailableFeatures()
     }
 
@@ -29,6 +29,7 @@ final class BetaFeaturesConfigurationViewModel: ObservableObject {
 }
 
 private extension BetaFeaturesConfigurationViewModel {
+    @MainActor
     func observePOSEligibilityForAvailableFeatures() {
         posEligibilityChecker.isEligible
             .map { [weak self] isEligibleForPOS in

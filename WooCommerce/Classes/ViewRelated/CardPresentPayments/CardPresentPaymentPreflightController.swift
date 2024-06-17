@@ -154,6 +154,7 @@ where TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
         }
     }
 
+    @MainActor
     private func checkOnboarding() {
         // Can't currently make this async without leaking the continuation.
         onboardingPresenter.showOnboardingIfRequired(from: rootViewController) { [weak self] in
@@ -175,7 +176,7 @@ where TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
         await startReaderConnection(using: paymentGatewayAccount)
     }
 
-
+    @MainActor
     private func startReaderConnection(using paymentGatewayAccount: PaymentGatewayAccount) async {
         guard !tapToPayReconnectionController.isReconnecting else {
             return adoptReconnection(using: paymentGatewayAccount)
@@ -184,7 +185,7 @@ where TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
 
         switch (discoveryMethod, localMobileReaderSupported) {
         case (.none, true):
-            await promptForReaderTypeSelection(paymentGatewayAccount: paymentGatewayAccount)
+            promptForReaderTypeSelection(paymentGatewayAccount: paymentGatewayAccount)
         case (.bluetoothScan, _),
             (.none, false):
             connectionController.searchAndConnect(onCompletion: { [weak self] result in
@@ -199,6 +200,7 @@ where TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
         }
     }
 
+    @MainActor
     private func adoptReconnection(using paymentGatewayAccount: PaymentGatewayAccount) {
         tapToPayReconnectionController.showAlertsForReconnection(from: alertsPresenter) { [weak self] result in
             guard let self = self else { return }
@@ -252,6 +254,7 @@ where TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
         }
     }
 
+    @MainActor
     private func handleConnectionResult(_ result: Result<CardReaderConnectionResult, Error>,
                                         paymentGatewayAccount: PaymentGatewayAccount) {
         let connectionResult = result.map { connection in
@@ -275,6 +278,7 @@ where TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
         }
     }
 
+    @MainActor
     private func handlePreflightFailure(error: Error) {
         alertsPresenter.dismiss()
     }

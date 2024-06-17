@@ -6,6 +6,7 @@ import enum WooFoundation.CountryCode
 import protocol Experiments.FeatureFlagService
 import struct Yosemite.SiteSetting
 
+@MainActor
 protocol POSEligibilityCheckerProtocol {
     /// As POS eligibility can change from site settings and card payment onboarding state, it's recommended to observe the eligibility value.
     var isEligible: AnyPublisher<Bool, Never> { get }
@@ -25,7 +26,6 @@ final class POSEligibilityChecker: POSEligibilityCheckerProtocol {
     private let currencySettings: CurrencySettings
     private let featureFlagService: FeatureFlagService
 
-    @MainActor
     init(userInterfaceIdiom: UIUserInterfaceIdiom = UIDevice.current.userInterfaceIdiom,
          cardPresentPaymentsOnboarding: CardPresentPaymentsOnboardingUseCaseProtocol = CardPresentPaymentsOnboardingUseCase(),
          siteSettings: SelectedSiteSettings = ServiceLocator.selectedSiteSettings,

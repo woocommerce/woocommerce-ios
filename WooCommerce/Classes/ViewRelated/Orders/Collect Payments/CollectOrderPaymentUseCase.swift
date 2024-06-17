@@ -133,6 +133,7 @@ where BuiltInAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
     /// - Parameter onFailure: Closure invoked after the payment process fails.
     /// - Parameter onCancel: Closure invoked after the flow is cancelled
     /// - Parameter onCompleted: Closure invoked after the flow has been totally completed, currently after merchant has handled the receipt.
+    /// 
     func collectPayment(using discoveryMethod: CardReaderDiscoveryMethod,
                         onFailure: @escaping (Error) -> Void,
                         onCancel: @escaping () -> Void,

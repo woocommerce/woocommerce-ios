@@ -10,6 +10,7 @@ enum TextFieldTextAlignment {
 }
 
 extension TextFieldTextAlignment {
+    @MainActor
     func toTextAlignment(layoutDirection: UIUserInterfaceLayoutDirection = UIApplication.shared.userInterfaceLayoutDirection) -> NSTextAlignment {
         let isLeftToRight = layoutDirection == .leftToRight
         switch self {

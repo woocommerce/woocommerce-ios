@@ -13,6 +13,7 @@ public final class JetpackAssistantFeatureDetails: Codable {
     public let usagePeriod: UsagePeriod?
     public let isSiteUpdateRequired: Bool?
     public let upgradeType: String?
+    public let upgradeURL: String?
     public let nextTier: Tier?
     public let tierPlans: [Tier]?
     public let tierPlansEnabled: Bool?
@@ -67,6 +68,7 @@ public final class JetpackAssistantFeatureDetails: Codable {
         case requestsLimit = "requests-limit"
         case usagePeriod = "usage-period"
         case isSiteUpdateRequired = "site-require-upgrade"
+        case upgradeURL = "upgrade-url"
         case upgradeType = "upgrade-type"
         case currentTier = "current-tier"
         case nextTier = "next-tier"

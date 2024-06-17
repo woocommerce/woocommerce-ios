@@ -30,6 +30,6 @@ struct PointOfSaleCardPresentPaymentBluetoothRequiredAlertView: View {
 }
 
 #Preview {
-    PointOfSaleCardPresentPaymentBluetoothRequiredAlertView(viewModel: .init(error: NSError(domain: "", code: 1), 
+    PointOfSaleCardPresentPaymentBluetoothRequiredAlertView(viewModel: .init(error: NSError(domain: "", code: 1),
                                                                              endSearch: {}))
 }

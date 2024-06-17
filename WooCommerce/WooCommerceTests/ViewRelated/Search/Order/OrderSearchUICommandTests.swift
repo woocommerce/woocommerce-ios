@@ -2,18 +2,25 @@ import XCTest
 import Yosemite
 @testable import WooCommerce
 import Storage
+import protocol WooFoundation.Analytics
 
 final class OrderSearchUICommandTests: XCTestCase {
     let siteID: Int64 = 12345
     private var storageManager: MockOrderStatusesStoresManager!
+    private var analyticsProvider: MockAnalyticsProvider!
+    private var analytics: WooAnalytics!
 
     override func setUpWithError() throws {
         super.setUp()
         storageManager = MockOrderStatusesStoresManager()
+        analyticsProvider = MockAnalyticsProvider()
+        analytics = WooAnalytics(analyticsProvider: analyticsProvider)
     }
 
     override func tearDownWithError() throws {
         storageManager = nil
+        analyticsProvider = nil
+        analytics = nil
         super.tearDown()
     }
 
@@ -73,12 +80,56 @@ final class OrderSearchUICommandTests: XCTestCase {
         XCTAssertEqual(sanitizedKeywordWithoutHash, "123", "Expected sanitizeKeyword to return the keyword unchanged if there's no leading '#'")
     }
 
+    func testSynchronizeModelsTracksAnalytics() throws {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let command = OrderSearchUICommand(siteID: siteID, onSelectSearchResult: { _, _ in }, storageManager: storageManager, analytics: analytics, stores: stores)
+        let keyword = "testKeyword"
+        stores.whenReceivingAction(ofType: OrderAction.self) { (action: OrderAction) in
+            guard case let .searchOrders(_, _, _, _, onCompletion) = action else {
+                return XCTFail("Unexpected action: \(action)")
+            }
+            onCompletion(nil)
+        }
+
+        // Mock order statuses
+        insertOrderStatuses()
+
+        // When
+        waitFor { promise in
+            command.synchronizeModels(siteID: self.siteID, keyword: keyword, pageNumber: 1, pageSize: 20) { success in
+                promise(())
+            }
+        }
+
+        // Then
+        guard let event = analyticsProvider.receivedEvents.first else {
+            XCTFail("Expected an event but found none")
+            return
+        }
+        XCTAssertEqual(event, "orders_list_search")
+
+        guard let eventProperties = analyticsProvider.receivedProperties.first else {
+            XCTFail("Expected event properties but found none")
+            return
+        }
+        XCTAssertEqual(eventProperties["search"] as? String, keyword)
+    }
+
     private func insertOrderStatuses() {
         let statuses: [OrderStatusEnum] = [.pending, .processing, .onHold, .completed, .cancelled, .failed, .custom("aCustomStatus")]
         statuses.forEach { status in
             storageManager.insertOrderStatus(name: status.rawValue)
         }
         storageManager.viewStorage.saveIfNeeded()
+    }
+
+    private func waitFor(timeout: TimeInterval = 1, _ completion: (_ promise: @escaping () -> Void) -> Void) {
+        let expectation = self.expectation(description: "Waiting for completion")
+        completion {
+            expectation.fulfill()
+        }
+        waitForExpectations(timeout: timeout, handler: nil)
     }
 }
 

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-05-30 12:54:04+0000 */
+/* Translation-Revision-Date: 2024-06-11 15:54:05+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: es */
@@ -508,9 +508,6 @@ which should be translated separately and considered part of this sentence. */
    Title text of the button that allows to add multiple products when creating or editing an order */
 "Add Products" = "Añadir productos";
 
-/* Title for the Shipping Line screen during order creation */
-"Add Shipping" = "Añadir envío";
-
 /* Title for the button to add the Shipping Address in Order Details */
 "Add Shipping Address" = "Añadir dirección de envío";
 
@@ -785,8 +782,7 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Amount field in the Coupon Edit or Creation screen for a percentage discount coupon. */
 "Amount (%)" = "Importe (%)";
 
-/* Title for the amount field on the Fee/Discounts Details screenduring order creation Parameters: %1$@ - currency symbol
-   Title for the amount field on the Shipping Details screen during order creationParameters: %1$@ - currency symbol */
+/* Title for the amount field on the Fee/Discounts Details screenduring order creation Parameters: %1$@ - currency symbol */
 "Amount (%1$@)" = "Importe (%1$@)";
 
 /* Title of the Amount field on the Coupon Edit or Creation screen for a fixed amount discount coupon.Reads like: Amount ($) */
@@ -1320,7 +1316,6 @@ which should be translated separately and considered part of this sentence. */
    Button title to dismiss the alert when the store cannot be created in the store creation flow.
    Button title. Tapping it cancels the login flow.
    Button to allow the user to close the modal without connecting.
-   Button to cancel (not try again). Presented to users after a failure occurs
    Button to cancel a payment
    Button to cancel entering the gift card code from the order form.
    Button to cancel the creation of an order on the New Order screen
@@ -1688,7 +1683,6 @@ which should be translated separately and considered part of this sentence. */
    Text for the close button in the Coupon Details screen
    Text for the close button in the Edit Address Form
    Text for the close button in the Fee/Discounts Details screen
-   Text for the close button in the Shipping Line Details screen
    Title of the Close action on the Jetpack Install view */
 "Close" = "Cerrar";
 
@@ -2555,7 +2549,6 @@ which should be translated separately and considered part of this sentence. */
    Text for the done button in the Edit Address Form
    Text for the done button in the edit customer provided note screen
    Text for the done button in the Fee/Discounts Details screen
-   Text for the done button in the Shipping Line Details screen
    The button title to indicate that the user has finished updating their store's address and isready to close the webview. This also tries to connect to the reader again.
    Title for the Done button on a WebView modal sheet
    Title of the button to finish the domain purchase success screen. */
@@ -3184,9 +3177,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Line description for 'Fees' cart total on the receipt. Only shown when non-zero. */
 "Fees" = "Comisiones";
-
-/* Info message shown when the order contains multiple fees and shipping lines */
-"Fees & Shipping details are incomplete.\nTo edit all the details, view the order in your WooCommerce store admin." = "Las cuotas y los detalles del envío están incompletos.\nPara editar todos los detalles, visualiza el pedido en la administración de tu tienda de WooCommerce.";
 
 /* Blocking indicator text when fetching existing variations prior generating them. */
 "Fetching Variations..." = "Recuperando variaciones…";
@@ -4695,7 +4685,6 @@ which should be translated separately and considered part of this sentence. */
    Product name placeholder on the add product from image form.
    Text field name in Shipping Label Address Validation
    Title above the name field on the add custom amount view in orders.
-   Title for the name field on the Shipping Line Details screen during order creation
    Title of the customer search filter to search by name. */
 "Name" = "Nombre";
 
@@ -6210,9 +6199,6 @@ which should be translated separately and considered part of this sentence. */
 /* Label action for removing a link from the editor */
 "Remove Link" = "Borrar enlace";
 
-/* Text for the button to remove a shipping line from the order during order creation */
-"Remove Shipping from Order" = "Eliminar el envío del pedido";
-
 /* Label action for removing a link from the editor */
 "Remove end date" = "Eliminar fecha de finalización";
 
@@ -6846,10 +6832,8 @@ which should be translated separately and considered part of this sentence. */
 "Shipped %@" = "Enviado el %@";
 
 /* Line description for 'Shipping' cart total on the receipt. Only shown when non-zero
-   Placeholder for the name field on the Shipping Line Details screen during order creation
    Product Shipping Settings navigation title
    Shipping label for payment view
-   Title for the Shipping Line Details screen during order creation
    Title of the product form bottom sheet action for editing shipping settings.
    Title of the shipping field on the add product with AI Preview screen.
    Title of the Shipping Settings row on Product main screen */
@@ -6870,8 +6854,7 @@ which should be translated separately and considered part of this sentence. */
 /* Shipping title for customer info cell */
 "Shipping Details" = "Detalles del envío";
 
-/* Shipping method title for customer info cell
-   Shipping method title for customer info section */
+/* Shipping method title for customer info section */
 "Shipping Method" = "Método de envío";
 
 /* Title on the refund screen that lists the shipping total cost */
@@ -6886,9 +6869,6 @@ which should be translated separately and considered part of this sentence. */
 /* Navigation bar title of the Product shipping class selector screen */
 "Shipping classes" = "Clases de envío";
 
-/* Info message shown when the order contains multiple shipping lines */
-"Shipping details are incomplete.\nTo edit all shipping details, view the order in your WooCommerce store admin." = "Los detalles del envío están incompletos.\nPara editar todos los detalles del envío, visualiza el pedido en la administración de tu tienda de WooCommerce.";
-
 /* Header of the order summary section in the shipping label creation form */
 "Shipping label order summary" = "Resumen del pedido de la etiqueta de envío";
 
@@ -6900,9 +6880,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Header text when printing multiple newly purchased shipping labels */
 "Shipping labels purchased!" = "¡Se han comprado las etiquetas de envío!";
-
-/* VoiceOver accessibility label for the shipping notice about the order */
-"Shipping notice about the order" = "Aviso de envío del pedido";
 
 /* Display label for the product's tax status setting option */
 "Shipping only" = "Solo envío";
@@ -7045,9 +7022,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Indicates the reviewer does not have a name. It reads { Someone left a review} */
 "Someone" = "Alguien";
-
-/* Error message presented to users after a failure occurs */
-"Something went wrong" = "Algo ha salido mal";
 
 /* Description of an unknown error after purchasing a plan */
 "Something went wrong during your purchase, and we can't tell whether your payment has completed, or your store plan been upgraded." = "Se ha producido un error durante tu compra y no podemos saber si se ha efectuado el pago o si se ha mejorado el plan de tu tienda.";
@@ -8015,10 +7989,6 @@ which should be translated separately and considered part of this sentence. */
 /* Message in action sheet when an order item is about to be moved on Package Details screen of Shipping Label flow.The package name reads like: Package 1: Custom Envelope. */
 "This item is currently in Package %1$d: %2$@. Where would you like to move it?" = "Actualmente, este artículo se encuentra en el Paquete %1$d: %2$@. ¿A dónde te gustaría moverlo?";
 
-/* Accessibility label for the Shipping notice
-   Shipping notice row label when there is more than one shipping method */
-"This order is using extensions to calculate shipping. The shipping methods shown might be incomplete." = "Este pedido utiliza extensiones para calcular los envíos. Es posible que los métodos de envío que se muestran no estén completos.";
-
 /* Explanation in the alert shown when a retry fails because the payment already completed */
 "This payment has already been completed – please check the order details." = "Este pago ya se ha completado; comprueba los detalles del pedido.";
 
@@ -8231,7 +8201,6 @@ which should be translated separately and considered part of this sentence. */
    Button to retry a failed action in the Jetpack setup flow
    Button to retry a software update. Presented to users when updating the card reader software fails
    Button to try again after connecting to a specific reader fails due to a critically low battery.
-   Button to try again. Presented to users after a failure occurs
    Button to try to refund a payment again. Presented to users after refunding a payment fails
    Title of the button to attempt loading the store again after Jetpack setup
    Try Again button on the error alert when fetching system status report fails */
@@ -10621,6 +10590,15 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the button to edit the layout of the Dashboard screen. */
 "dashboardView.edit" = "Editar";
 
+/* Label of the button to add sections */
+"dashboardView.newCardsNoticeCard.addSectionsButtonText" = "Añadir nuevas secciones";
+
+/* Subtitle of the New Cards Notice card */
+"dashboardView.newCardsNoticeCard.subtitle" = "Añadir nuevas secciones para personalizar tu experiencia de gestión de la tienda";
+
+/* Title of the New Cards Notice card */
+"dashboardView.newCardsNoticeCard.title" = "¿Necesitas más información?";
+
 /* Label of the button to share the store */
 "dashboardView.shareStoreCard.shareButtonLabel" = "Comparte tu tienda";
 
@@ -10717,6 +10695,15 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the store creation plan on the plan screen. */
 "eCommerce" = "eCommerce";
 
+/* Title for button to view the feedback survey about adding shipping to an order */
+"editableOrderShippingLineViewModel.feedbackSurvey.buttonTitle" = "Comparte tu opinión";
+
+/* Message for the feedback survey about adding shipping to an order */
+"editableOrderShippingLineViewModel.feedbackSurvey.message" = "¿Se compra fácilmente en Woo?";
+
+/* Title for the feedback survey about adding shipping to an order */
+"editableOrderShippingLineViewModel.feedbackSurvey.title" = "¡Se ha añadido el envío!";
+
 /* Default name when the custom amount does not have a name in order creation. */
 "editableOrderViewModel.customAmountDefaultName" = "Cantidad personalizada";
 
@@ -10787,11 +10774,11 @@ which should be translated separately and considered part of this sentence. */
 /* The title of the button for giving a negative feedback for the app. */
 "inAppFeedbackCardView.couldBeBetter" = "Podría estar mejor";
 
+/* The title used when asking the user for feedback for the app. */
+"inAppFeedbackCardView.feedbackTitle" = "¿Te está gustando la aplicación?";
+
 /* The title of the button for giving a positive feedback for the app. */
 "inAppFeedbackCardView.iLikeIt" = "Me gusta";
-
-/* The title used when asking the user for feedback for the app. */
-"inAppFeedbackCardView.title" = "¿Te gusta la aplicación de WooCommerce?";
 
 /* Title displayed if there are no inbox notes in the Inbox section on the Dashboard screen. */
 "inboxDashboardCard.emptyStateTitle" = "No hay mensajes sin leer";
@@ -10837,6 +10824,27 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the WPCom login screens when Jetpack is not installed yet */
 "jetpackSetupCoordinator.loginTitle" = "Instalar Jetpack ";
+
+/* In Last Orders dashboard card list, the name of the billed person when there are no first and last name. */
+"lastOrderDashboardRowViewModel.guestName" = "Invitado";
+
+/* Menu item to dismiss the Last Orders section on the My Store screen */
+"lastOrdersDashboardCard.hideCard" = "Ocultar pedidos";
+
+/* Header label on the Last Orders section on the My Store screen */
+"lastOrdersDashboardCard.status" = "Estado";
+
+/* Button to navigate to Orders list screen. */
+"lastOrdersDashboardCard.viewAll" = "Ver todos los pedidos";
+
+/* Case Any in Order Filters for Order Statuses */
+"lastOrdersDashboardCardViewModel.anyStatusCase" = "Cualquiera";
+
+/* Message when there are no orders found. */
+"lastOrdersDashboardEmptyView.noOrders" = "Esperando tu primer pedido";
+
+/* Message when there are no orders found for a selected order status. The %@ is a placeholder for the order status selected by the user. */
+"lastOrdersDashboardEmptyView.noOrdersWithStatus" = "No se han encontrado pedidos de %@";
 
 /* Later today */
 "later today" = "más tarde hoy";
@@ -11189,6 +11197,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the primary button on the new order screen when changes need to be manually synced. Tapping the button will send changes to the server, and when complete the totals and taxes will be accurate. */
 "orderForm.recalculate.button.title" = "Recalcular";
 
+/* Heading for the section that shows the Shipping Lines when creating or editing an order */
+"orderForm.shipping" = "Envío";
+
 /* Label for the row showing the cost of coupon in the order */
 "orderPaymentSection.coupon" = "Cupón";
 
@@ -11285,6 +11296,12 @@ which should be translated separately and considered part of this sentence. */
 /* Label for button on product form to open Blaze flow */
 "productFormTableViewDataSource.promoteWithBlazeButton" = "Promocionar con Blaze";
 
+/* Text message prompting the user to tap to learn more about changing the privacy setting. */
+"productFormTableViewDataSource.wpComStoreNotPublicText" = "Pulsa para obtener más información.";
+
+/* Title message indicating that images are unavailable because the site is private. */
+"productFormTableViewDataSource.wpComStoreNotPublicTitle" = "Las imágenes no están disponibles porque tu sitio está marcado como privado. Puedes modificar este ajuste cambiando al modo Próximamente.";
+
 /* Alert message to inform the user that they must wait for all image uploads to complete before they can reorder the images. */
 "productImagesCollectionViewController.notice" = "Espera hasta que se terminen todas las actualizaciones para reordenar imágenes.";
 
@@ -11351,8 +11368,32 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the One time shipping product shipping setting. */
 "productShippingSettings.oneTimeShipping.title" = "Envío único";
 
+/* Button title to contact support to get help with deprecated stats module */
+"productStockDashboardCard.contentUnavailable.buttonTitle" = "¿Aún necesitas ayuda? Ponte en contacto con nosotros";
+
+/* Text that explains how to update WooCommerce to get the latest stats */
+"productStockDashboardCard.contentUnavailable.details" = "Asegúrate de estar ejecutando la última versión de WooCommerce en tu sitio web y de haber activado Analytics en los ajustes de WooCommerce.";
+
+/* Button to dismiss the support form from the Dashboard stock card error screen. */
+"productStockDashboardCard.contentUnavailable.dismissSupport" = "Hecho";
+
+/* Title when we can't load stock report because user is on a deprecated WooCommerce Version */
+"productStockDashboardCard.contentUnavailable.title" = "No se ha podido cargar el informe de existencias";
+
+/* Text on the empty state of the Stock section on the My Store screen. Reads as: No item found with Out of stock status */
+"productStockDashboardCard.emptyStateTitle" = "No se ha encontrado ningún elemento con el estado %1$@";
+
 /* Menu item to dismiss the Stock section on the My Store screen */
 "productStockDashboardCard.hideCard" = "Ocultar inventario";
+
+/* Subtitle in plural mode for the stock items on the Stock section on the My Store screen. Reads as: 10 items sold last 30 days */
+"productStockDashboardCard.item.subtitle.plural" = "%1$d elementos vendidos en los últimos 30 días";
+
+/* Subtitle in singular mode for the stock items on the Stock section on the My Store screen. Reads as: 1 item sold last 30 days */
+"productStockDashboardCard.item.subtitle.singular" = "%1$d elemento vendido en los últimos 30 días";
+
+/* Subtitle for the stock items with no items sold on the Stock section on the My Store screen. */
+"productStockDashboardCard.item.subtitle.zero" = "No hay elementos vendidos en los últimos 30 días";
 
 /* Header label on the Stock section on the My Store screen */
 "productStockDashboardCard.products" = "Productos";
@@ -11413,6 +11454,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Menu item to dismiss the Reviews card on the Dashboard screen */
 "reviewsDashboardCard.hideCard" = "Ocultar reseñas";
+
+/* Message shown in the Reviews Dashboard Card if the list is filtered and there is no review. The %@ is a placeholder for the filter name. */
+"reviewsDashboardCard.noFilteredReviewsText" = "No hay reseñas que coincidan con el estado %@. Prueba a cambiar los parámetros del filtro.";
+
+/* Message shown in the Reviews Dashboard Card if the site has no review */
+"reviewsDashboardCard.noReviewsText" = "No se han encontrado reseñas.";
 
 /* Status label on the Reviews card's filter area. */
 "reviewsDashboardCard.status" = "Estado";
@@ -11781,6 +11828,48 @@ which should be translated separately and considered part of this sentence. */
 
 /* Product detailsl button title. */
 "updateProductInventoryView.viewProductDetailsButtonTitle" = "Ver detalles del producto";
+
+/* Info message when connecting your watch to the phone for the first time. */
+"watch.connect.message" = "Abre Woo en tu iPhone, conecta tu tienda y mantén tu Apple Watch cerca";
+
+/* Loading title on the watch store stats screen. */
+"watch.mystore.error.title" = "Ha habido un error al cargar los datos de la tienda";
+
+/* Retry on the watch store stats screen. */
+"watch.mystore.retry.title" = "Reintentar";
+
+/* Revenue title on the watch store stats screen. */
+"watch.mystore.revenue.title" = "Ingresos";
+
+/* Format of the updated time in the watch store stats screen. */
+"watch.mystore.time.format" = "A partir del %@";
+
+/* Today title on the watch store stats screen. */
+"watch.mystore.today.title" = "Hoy";
+
+/* Title when there is an error loading an order notification on the watch app */
+"watch.notification.order.error" = "Ha habido un error al cargar la notificación";
+
+/* Customer title in the order detail screen. */
+"watch.orders.detail.customer" = "Cliente";
+
+/* Plural format for the number of products in the order detail screen. */
+"watch.orders.detail.product-count" = "%d productos";
+
+/* Singular format for the number of products in the order detail screen. */
+"watch.orders.detail.product-count-singular" = "1 producto";
+
+/* Title on the watch orders list screen when there are no orders */
+"watch.orders.empty.title" = "Esperando tu primer pedido.";
+
+/* Loading title on the watch orders list screen. */
+"watch.orders.error.title" = "Hubo un error al cargar la lista de pedidos";
+
+/* Retry on the watch orders list screen. */
+"watch.orders.retry.title" = "Reintentar";
+
+/* Title on the watch orders list screen. */
+"watch.orders.title" = "Pedidos";
 
 /* Verb. Dismiss the web view screen. */
 "webKit.button.dismiss" = "Descartar";

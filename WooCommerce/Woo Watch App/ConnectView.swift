@@ -7,20 +7,28 @@ struct ConnectView: View {
 
     @EnvironmentObject private var tracksProvider: WatchTracksProvider
 
+    let synchronizer: PhoneDependenciesSynchronizer
+
     let message: String = Localization.connectMessage
 
     var body: some View {
-        VStack(spacing: Layout.mainSpacing) {
-            Text(message)
-                .multilineTextAlignment(.center)
+        ScrollView {
+            VStack(spacing: Layout.mainSpacing) {
+                Text(message)
+                    .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
 
-            Image(systemName: "bolt.fill")
-                .renderingMode(.original)
-                .resizable()
-                .frame(width: Layout.boltSize.width, height: Layout.boltSize.height)
-                .foregroundStyle(Layout.ambarColor)
+                Image(systemName: "bolt.fill")
+                    .renderingMode(.original)
+                    .resizable()
+                    .frame(width: Layout.boltSize.width, height: Layout.boltSize.height)
+                    .foregroundStyle(Layout.ambarColor)
+
+                Button(Localization.itsNotWorking) {
+                    synchronizer.requestCredentialSync()
+                }
+            }
         }
-        .padding()
         .task {
             tracksProvider.sendTracksEvent(.watchConnectingOpened)
         }
@@ -40,9 +48,15 @@ extension ConnectView {
             value: "Open Woo on your iPhone, connect your store, and hold your Watch nearby",
             comment: "Info message when connecting your watch to the phone for the first time."
         )
+        static let itsNotWorking = AppLocalizedString(
+            "watch.connect.notworking.title",
+            value: "It's not working",
+            comment: "Button title for when connecting the watch does not work on the connecting screen."
+        )
     }
 }
 
 #Preview {
-    ConnectView()
+    ConnectView(synchronizer: PhoneDependenciesSynchronizer())
+        .environmentObject(WatchTracksProvider())
 }

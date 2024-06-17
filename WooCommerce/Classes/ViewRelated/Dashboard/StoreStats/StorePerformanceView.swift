@@ -82,6 +82,9 @@ struct StorePerformanceView: View {
         .sheet(isPresented: $showingSupportForm) {
             supportForm
         }
+        .onAppear {
+            viewModel.onViewAppear()
+        }
     }
 }
 
@@ -119,8 +122,7 @@ private extension StorePerformanceView {
                     .subheadlineStyle()
                 if viewModel.timeRange.isCustomTimeRange {
                     Button {
-                        ServiceLocator.analytics.track(event: .DynamicDashboard.dashboardCardInteracted(type: .performance))
-
+                        viewModel.trackInteraction()
                         showingCustomRangePicker = true
                     } label: {
                         HStack {
@@ -137,7 +139,7 @@ private extension StorePerformanceView {
             }
             Spacer()
             StatsTimeRangePicker(currentTimeRange: viewModel.timeRange) { newTimeRange in
-                ServiceLocator.analytics.track(event: .DynamicDashboard.dashboardCardInteracted(type: .performance))
+                viewModel.trackInteraction()
 
                 if newTimeRange.isCustomTimeRange {
                     showingCustomRangePicker = true
@@ -216,8 +218,7 @@ private extension StorePerformanceView {
                 return
             }
 
-            ServiceLocator.analytics.track(event: .DynamicDashboard.dashboardCardInteracted(type: .performance))
-
+            viewModel.trackInteraction()
             onCustomRangeRedactedViewTap()
         }
     }
@@ -248,8 +249,7 @@ private extension StorePerformanceView {
         if let chartViewModel = viewModel.chartViewModel {
             VStack {
                 StoreStatsChart(viewModel: chartViewModel) { selectedIndex in
-                    ServiceLocator.analytics.track(event: .DynamicDashboard.dashboardCardInteracted(type: .performance))
-
+                    viewModel.trackInteraction()
                     viewModel.didSelectStatsInterval(at: selectedIndex)
                 }
                 .frame(height: Layout.chartViewHeight)
@@ -265,8 +265,7 @@ private extension StorePerformanceView {
 
     var viewAllAnalyticsButton: some View {
         Button {
-            ServiceLocator.analytics.track(event: .DynamicDashboard.dashboardCardInteracted(type: .performance))
-
+            viewModel.trackInteraction()
             onViewAllAnalytics(viewModel.siteID, viewModel.siteTimezone, viewModel.timeRange)
         } label: {
             HStack {

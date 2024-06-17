@@ -9,19 +9,36 @@ struct CartView: View {
 
     var body: some View {
         VStack {
-            Text("Cart")
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.horizontal, 32)
-                .padding(.vertical, 8)
-                .font(.title)
-                .foregroundColor(Color.white)
-            ScrollView {
-                ForEach(viewModel.itemsInCart, id: \.id) { cartItem in
-                    ItemRowView(cartItem: cartItem) {
-                        viewModel.removeItemFromCart(cartItem)
+            HStack {
+                Text("Cart")
+                Spacer()
+                if let temsInCartLabel = viewModel.itemsInCartLabel {
+                    Text(temsInCartLabel)
+                }
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.horizontal, 32)
+            .padding(.vertical, 8)
+            .font(.title)
+            .foregroundColor(Color.white)
+            ScrollViewReader { proxy in
+                ScrollView {
+                    ForEach(viewModel.itemsInCart, id: \.id) { cartItem in
+                        ItemRowView(cartItem: cartItem) {
+                            viewModel.removeItemFromCart(cartItem)
+                        }
+                        .id(cartItem.id)
+                        .background(Color.tertiaryBackground)
+                        .padding(.horizontal, 32)
                     }
-                    .background(Color.tertiaryBackground)
-                    .padding(.horizontal, 32)
+                }
+                .onChange(of: viewModel.itemToScrollToWhenCartUpdated?.id) { _ in
+                    if viewModel.orderStage == .building,
+                       let last = viewModel.itemToScrollToWhenCartUpdated?.id {
+                        withAnimation {
+                            proxy.scrollTo(last)
+                        }
+                    }
                 }
             }
             Spacer()

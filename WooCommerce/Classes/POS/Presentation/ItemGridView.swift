@@ -8,21 +8,16 @@ struct ItemGridView: View {
     }
 
     var body: some View {
-        let columns: [GridItem] = Array(repeating: .init(.fixed(120)),
+        let columns: [GridItem] = Array(repeating: .init(.flexible(minimum: Constants.minItemWidth,
+                                                                   maximum: Constants.maxItemWidth)),
                                         count: Constants.maxItemsPerRow)
 
         VStack {
-            Text("Product List")
+            Text("Products")
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.vertical, 8)
                 .font(.title)
                 .foregroundColor(Color.white)
-            HStack {
-                SearchView()
-                Spacer()
-                FilterView(viewModel: viewModel)
-            }
-            .padding(.vertical, 0)
             ScrollView {
                 LazyVGrid(columns: columns, spacing: 16) {
                     ForEach(viewModel.items, id: \.productID) { item in
@@ -42,7 +37,9 @@ struct ItemGridView: View {
 
 private extension ItemGridView {
     enum Constants {
-        static let maxItemsPerRow: Int = 4
+        static let maxItemsPerRow: Int = 2
+        static let minItemWidth: CGFloat = 250.0
+        static let maxItemWidth: CGFloat = 325.0
     }
 }
 

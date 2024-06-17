@@ -1,9 +1,6 @@
 import Yosemite
-import protocol WooFoundation.Analytics
 
 final class DashboardCustomizationViewModel: ObservableObject {
-
-    private let analytics: Analytics
 
     /// Ordered array of all available dashboard cards.
     ///
@@ -41,7 +38,6 @@ final class DashboardCustomizationViewModel: ObservableObject {
     ///   - onSave: Optional closure to perform when the changes are saved.
     init(allCards: [DashboardCard],
          inactiveCards: [DashboardCard] = [],
-         analytics: Analytics = ServiceLocator.analytics,
          onSave: (([DashboardCard]) -> Void)? = nil) {
         self.inactiveCards = inactiveCards
 
@@ -55,7 +51,6 @@ final class DashboardCustomizationViewModel: ObservableObject {
         self.originalSelection = selectedCards
 
         self.onSave = onSave
-        self.analytics = analytics
     }
 
     /// Assembles the new selections and order into an updated set of cards.
@@ -65,8 +60,6 @@ final class DashboardCustomizationViewModel: ObservableObject {
         var updatedCards = allCards.map { card in
             card.copy(enabled: selectedCards.contains(card))
         }
-
-        // TODO: add tracking
 
         // Add back any inactive cards
         updatedCards.append(contentsOf: inactiveCards)

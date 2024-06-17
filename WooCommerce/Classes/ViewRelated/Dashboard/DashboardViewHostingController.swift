@@ -65,13 +65,8 @@ final class DashboardViewHostingController: UIHostingController<DashboardView> {
         observeModalJustInTimeMessages()
 
         Task {
-            await viewModel.syncDashboardEssentialData()
+            await viewModel.reloadAllData()
         }
-    }
-
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        viewModel.refreshDashboardCards()
     }
 
     override var shouldShowOfflineBanner: Bool {
@@ -122,6 +117,7 @@ private extension DashboardViewHostingController {
 
         rootView.onViewAllAnalytics = { [weak self] siteID, siteTimeZone, timeRange in
             guard let self else { return }
+            ServiceLocator.analytics.track(event: .AnalyticsHub.seeMoreAnalyticsTapped())
             let analyticsHubVC = AnalyticsHubHostingViewController(siteID: siteID,
                                                                    timeZone: siteTimeZone,
                                                                    timeRange: timeRange,

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-05-28 09:54:04+0000 */
+/* Translation-Revision-Date: 2024-06-11 09:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ko_KR */
@@ -508,9 +508,6 @@ which should be translated separately and considered part of this sentence. */
    Title text of the button that allows to add multiple products when creating or editing an order */
 "Add Products" = "제품 추가";
 
-/* Title for the Shipping Line screen during order creation */
-"Add Shipping" = "배송 추가";
-
 /* Title for the button to add the Shipping Address in Order Details */
 "Add Shipping Address" = "배송 주소 추가";
 
@@ -785,8 +782,7 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Amount field in the Coupon Edit or Creation screen for a percentage discount coupon. */
 "Amount (%)" = "금액(%)";
 
-/* Title for the amount field on the Fee/Discounts Details screenduring order creation Parameters: %1$@ - currency symbol
-   Title for the amount field on the Shipping Details screen during order creationParameters: %1$@ - currency symbol */
+/* Title for the amount field on the Fee/Discounts Details screenduring order creation Parameters: %1$@ - currency symbol */
 "Amount (%1$@)" = "금액(%1$@)";
 
 /* Title of the Amount field on the Coupon Edit or Creation screen for a fixed amount discount coupon.Reads like: Amount ($) */
@@ -1320,7 +1316,6 @@ which should be translated separately and considered part of this sentence. */
    Button title to dismiss the alert when the store cannot be created in the store creation flow.
    Button title. Tapping it cancels the login flow.
    Button to allow the user to close the modal without connecting.
-   Button to cancel (not try again). Presented to users after a failure occurs
    Button to cancel a payment
    Button to cancel entering the gift card code from the order form.
    Button to cancel the creation of an order on the New Order screen
@@ -1688,7 +1683,6 @@ which should be translated separately and considered part of this sentence. */
    Text for the close button in the Coupon Details screen
    Text for the close button in the Edit Address Form
    Text for the close button in the Fee/Discounts Details screen
-   Text for the close button in the Shipping Line Details screen
    Title of the Close action on the Jetpack Install view */
 "Close" = "닫기";
 
@@ -2555,7 +2549,6 @@ which should be translated separately and considered part of this sentence. */
    Text for the done button in the Edit Address Form
    Text for the done button in the edit customer provided note screen
    Text for the done button in the Fee/Discounts Details screen
-   Text for the done button in the Shipping Line Details screen
    The button title to indicate that the user has finished updating their store's address and isready to close the webview. This also tries to connect to the reader again.
    Title for the Done button on a WebView modal sheet
    Title of the button to finish the domain purchase success screen. */
@@ -3184,9 +3177,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Line description for 'Fees' cart total on the receipt. Only shown when non-zero. */
 "Fees" = "수수료";
-
-/* Info message shown when the order contains multiple fees and shipping lines */
-"Fees & Shipping details are incomplete.\nTo edit all the details, view the order in your WooCommerce store admin." = "수수료 및 배송 상세 정보가 완전하지 않습니다.\n모든 상세 정보를 편집하려면 우커머스 스토어 관리자에서 주문을 확인하세요.";
 
 /* Blocking indicator text when fetching existing variations prior generating them. */
 "Fetching Variations..." = "변형을 가져오는 중…";
@@ -4695,7 +4685,6 @@ which should be translated separately and considered part of this sentence. */
    Product name placeholder on the add product from image form.
    Text field name in Shipping Label Address Validation
    Title above the name field on the add custom amount view in orders.
-   Title for the name field on the Shipping Line Details screen during order creation
    Title of the customer search filter to search by name. */
 "Name" = "이름";
 
@@ -6210,9 +6199,6 @@ which should be translated separately and considered part of this sentence. */
 /* Label action for removing a link from the editor */
 "Remove Link" = "링크 제거";
 
-/* Text for the button to remove a shipping line from the order during order creation */
-"Remove Shipping from Order" = "주문에서 배송 제거";
-
 /* Label action for removing a link from the editor */
 "Remove end date" = "종료 날짜 제거";
 
@@ -6846,10 +6832,8 @@ which should be translated separately and considered part of this sentence. */
 "Shipped %@" = "%@에 배송됨";
 
 /* Line description for 'Shipping' cart total on the receipt. Only shown when non-zero
-   Placeholder for the name field on the Shipping Line Details screen during order creation
    Product Shipping Settings navigation title
    Shipping label for payment view
-   Title for the Shipping Line Details screen during order creation
    Title of the product form bottom sheet action for editing shipping settings.
    Title of the shipping field on the add product with AI Preview screen.
    Title of the Shipping Settings row on Product main screen */
@@ -6870,8 +6854,7 @@ which should be translated separately and considered part of this sentence. */
 /* Shipping title for customer info cell */
 "Shipping Details" = "배송 상세 내역";
 
-/* Shipping method title for customer info cell
-   Shipping method title for customer info section */
+/* Shipping method title for customer info section */
 "Shipping Method" = "배송 방법";
 
 /* Title on the refund screen that lists the shipping total cost */
@@ -6886,9 +6869,6 @@ which should be translated separately and considered part of this sentence. */
 /* Navigation bar title of the Product shipping class selector screen */
 "Shipping classes" = "배송 클래스";
 
-/* Info message shown when the order contains multiple shipping lines */
-"Shipping details are incomplete.\nTo edit all shipping details, view the order in your WooCommerce store admin." = "배송 상세 정보가 완전하지 않습니다.\n모든 배송 상세 정보를 편집하려면 우커머스 스토어 관리자에서 주문을 확인하세요.";
-
 /* Header of the order summary section in the shipping label creation form */
 "Shipping label order summary" = "배송 레이블 주문 요약";
 
@@ -6900,9 +6880,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Header text when printing multiple newly purchased shipping labels */
 "Shipping labels purchased!" = "배송 레이블이 구매되었습니다!";
-
-/* VoiceOver accessibility label for the shipping notice about the order */
-"Shipping notice about the order" = "주문 관련 배송 알림";
 
 /* Display label for the product's tax status setting option */
 "Shipping only" = "배송만";
@@ -7045,9 +7022,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Indicates the reviewer does not have a name. It reads { Someone left a review} */
 "Someone" = "다른 사람";
-
-/* Error message presented to users after a failure occurs */
-"Something went wrong" = "문제가 발생했습니다";
 
 /* Description of an unknown error after purchasing a plan */
 "Something went wrong during your purchase, and we can't tell whether your payment has completed, or your store plan been upgraded." = "구매 중 문제가 발생했으며, 결제가 완료되었거나 스토어 요금제가 업그레이드되었는지 알 수 없습니다.";
@@ -8015,10 +7989,6 @@ which should be translated separately and considered part of this sentence. */
 /* Message in action sheet when an order item is about to be moved on Package Details screen of Shipping Label flow.The package name reads like: Package 1: Custom Envelope. */
 "This item is currently in Package %1$d: %2$@. Where would you like to move it?" = "이 아이템은 현재 패키지 %1$d: %2$@에 있습니다. 해당 아이템을 어디로 이동하시겠어요?";
 
-/* Accessibility label for the Shipping notice
-   Shipping notice row label when there is more than one shipping method */
-"This order is using extensions to calculate shipping. The shipping methods shown might be incomplete." = "이 주문은 확장을 사용하여 배송 요금을 계산합니다. 표시된 배송 방법이 불완전할 수 있습니다.";
-
 /* Explanation in the alert shown when a retry fails because the payment already completed */
 "This payment has already been completed – please check the order details." = "결제가 이미 완료되었습니다. 주문 상세 정보를 확인해 보세요.";
 
@@ -8231,7 +8201,6 @@ which should be translated separately and considered part of this sentence. */
    Button to retry a failed action in the Jetpack setup flow
    Button to retry a software update. Presented to users when updating the card reader software fails
    Button to try again after connecting to a specific reader fails due to a critically low battery.
-   Button to try again. Presented to users after a failure occurs
    Button to try to refund a payment again. Presented to users after refunding a payment fails
    Title of the button to attempt loading the store again after Jetpack setup
    Try Again button on the error alert when fetching system status report fails */
@@ -10621,6 +10590,15 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the button to edit the layout of the Dashboard screen. */
 "dashboardView.edit" = "편집";
 
+/* Label of the button to add sections */
+"dashboardView.newCardsNoticeCard.addSectionsButtonText" = "새 섹션 추가";
+
+/* Subtitle of the New Cards Notice card */
+"dashboardView.newCardsNoticeCard.subtitle" = "새 섹션을 추가하여 스토어 관리 환경을 사용자 정의하세요.";
+
+/* Title of the New Cards Notice card */
+"dashboardView.newCardsNoticeCard.title" = "인사이트가 더 필요하신가요?";
+
 /* Label of the button to share the store */
 "dashboardView.shareStoreCard.shareButtonLabel" = "스토어 공유";
 
@@ -10717,6 +10695,15 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the store creation plan on the plan screen. */
 "eCommerce" = "전자상거래";
 
+/* Title for button to view the feedback survey about adding shipping to an order */
+"editableOrderShippingLineViewModel.feedbackSurvey.buttonTitle" = "피드백 공유";
+
+/* Message for the feedback survey about adding shipping to an order */
+"editableOrderShippingLineViewModel.feedbackSurvey.message" = "Woo를 사용하면 배송이 쉬워질까요?";
+
+/* Title for the feedback survey about adding shipping to an order */
+"editableOrderShippingLineViewModel.feedbackSurvey.title" = "배송이 추가되었습니다!";
+
 /* Default name when the custom amount does not have a name in order creation. */
 "editableOrderViewModel.customAmountDefaultName" = "사용자 정의 금액";
 
@@ -10787,11 +10774,11 @@ which should be translated separately and considered part of this sentence. */
 /* The title of the button for giving a negative feedback for the app. */
 "inAppFeedbackCardView.couldBeBetter" = "개선의 여지가 있음";
 
+/* The title used when asking the user for feedback for the app. */
+"inAppFeedbackCardView.feedbackTitle" = "앱을 즐겁게 사용하고 계시나요?";
+
 /* The title of the button for giving a positive feedback for the app. */
 "inAppFeedbackCardView.iLikeIt" = "좋아요";
-
-/* The title used when asking the user for feedback for the app. */
-"inAppFeedbackCardView.title" = "WooCommerce 앱이 마음에 드시나요?";
 
 /* Title displayed if there are no inbox notes in the Inbox section on the Dashboard screen. */
 "inboxDashboardCard.emptyStateTitle" = "읽지 않은 메시지 없음";
@@ -10837,6 +10824,27 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the WPCom login screens when Jetpack is not installed yet */
 "jetpackSetupCoordinator.loginTitle" = "젯팩 설치";
+
+/* In Last Orders dashboard card list, the name of the billed person when there are no first and last name. */
+"lastOrderDashboardRowViewModel.guestName" = "비회원";
+
+/* Menu item to dismiss the Last Orders section on the My Store screen */
+"lastOrdersDashboardCard.hideCard" = "주문 숨기기";
+
+/* Header label on the Last Orders section on the My Store screen */
+"lastOrdersDashboardCard.status" = "상태";
+
+/* Button to navigate to Orders list screen. */
+"lastOrdersDashboardCard.viewAll" = "모든 주문 보기";
+
+/* Case Any in Order Filters for Order Statuses */
+"lastOrdersDashboardCardViewModel.anyStatusCase" = "모두";
+
+/* Message when there are no orders found. */
+"lastOrdersDashboardEmptyView.noOrders" = "첫 주문을 기다리는 중";
+
+/* Message when there are no orders found for a selected order status. The %@ is a placeholder for the order status selected by the user. */
+"lastOrdersDashboardEmptyView.noOrdersWithStatus" = "주문 %@건을 찾을 수 없음";
 
 /* Later today */
 "later today" = "오늘 중";
@@ -11189,6 +11197,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the primary button on the new order screen when changes need to be manually synced. Tapping the button will send changes to the server, and when complete the totals and taxes will be accurate. */
 "orderForm.recalculate.button.title" = "다시 계산";
 
+/* Heading for the section that shows the Shipping Lines when creating or editing an order */
+"orderForm.shipping" = "배송";
+
 /* Label for the row showing the cost of coupon in the order */
 "orderPaymentSection.coupon" = "쿠폰";
 
@@ -11285,6 +11296,12 @@ which should be translated separately and considered part of this sentence. */
 /* Label for button on product form to open Blaze flow */
 "productFormTableViewDataSource.promoteWithBlazeButton" = "Blaze로 홍보";
 
+/* Text message prompting the user to tap to learn more about changing the privacy setting. */
+"productFormTableViewDataSource.wpComStoreNotPublicText" = "눌러서 자세히 알아보세요.";
+
+/* Title message indicating that images are unavailable because the site is private. */
+"productFormTableViewDataSource.wpComStoreNotPublicTitle" = "사이트가 비공개로 표시되어서 이미지를 사용할 수 없습니다. 공개 예정 모드로 전환하여 이를 변경할 수 있습니다.";
+
 /* Alert message to inform the user that they must wait for all image uploads to complete before they can reorder the images. */
 "productImagesCollectionViewController.notice" = "모든 업로드가 완료된 후에 이미지를 재정렬하세요.";
 
@@ -11351,8 +11368,32 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the One time shipping product shipping setting. */
 "productShippingSettings.oneTimeShipping.title" = "1회 배송";
 
+/* Button title to contact support to get help with deprecated stats module */
+"productStockDashboardCard.contentUnavailable.buttonTitle" = "여전히 도움이 필요하신가요? 문의하기";
+
+/* Text that explains how to update WooCommerce to get the latest stats */
+"productStockDashboardCard.contentUnavailable.details" = "사이트에서 우커머스 최신 버전을 실행하고 있으며 우커머스 설정에서 분석이 활성화되어 있는지 확인하세요.";
+
+/* Button to dismiss the support form from the Dashboard stock card error screen. */
+"productStockDashboardCard.contentUnavailable.dismissSupport" = "완료";
+
+/* Title when we can't load stock report because user is on a deprecated WooCommerce Version */
+"productStockDashboardCard.contentUnavailable.title" = "재고 보고서를 로드할 수 없음";
+
+/* Text on the empty state of the Stock section on the My Store screen. Reads as: No item found with Out of stock status */
+"productStockDashboardCard.emptyStateTitle" = "상태가 %1$@인 아이템 없음";
+
 /* Menu item to dismiss the Stock section on the My Store screen */
 "productStockDashboardCard.hideCard" = "재고 숨기기";
+
+/* Subtitle in plural mode for the stock items on the Stock section on the My Store screen. Reads as: 10 items sold last 30 days */
+"productStockDashboardCard.item.subtitle.plural" = "최근 30일간 판매된 아이템 %1$d개";
+
+/* Subtitle in singular mode for the stock items on the Stock section on the My Store screen. Reads as: 1 item sold last 30 days */
+"productStockDashboardCard.item.subtitle.singular" = "최근 30일간 판매된 아이템 %1$d개";
+
+/* Subtitle for the stock items with no items sold on the Stock section on the My Store screen. */
+"productStockDashboardCard.item.subtitle.zero" = "최근 30일간 판매된 아이템 없음";
 
 /* Header label on the Stock section on the My Store screen */
 "productStockDashboardCard.products" = "상품";
@@ -11413,6 +11454,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Menu item to dismiss the Reviews card on the Dashboard screen */
 "reviewsDashboardCard.hideCard" = "리뷰 숨기기";
+
+/* Message shown in the Reviews Dashboard Card if the list is filtered and there is no review. The %@ is a placeholder for the filter name. */
+"reviewsDashboardCard.noFilteredReviewsText" = "%@ 상태와 일치하는 리뷰가 없습니다. 필터를 변경해 보세요.";
+
+/* Message shown in the Reviews Dashboard Card if the site has no review */
+"reviewsDashboardCard.noReviewsText" = "리뷰가 없습니다.";
 
 /* Status label on the Reviews card's filter area. */
 "reviewsDashboardCard.status" = "상태";
@@ -11781,6 +11828,48 @@ which should be translated separately and considered part of this sentence. */
 
 /* Product detailsl button title. */
 "updateProductInventoryView.viewProductDetailsButtonTitle" = "상품 상세 정보 보기";
+
+/* Info message when connecting your watch to the phone for the first time. */
+"watch.connect.message" = "iPhone에서 Woo를 열고 스토어에 연결한 다음 Watch를 가까이에 두세요.";
+
+/* Loading title on the watch store stats screen. */
+"watch.mystore.error.title" = "스토어의 데이터를 로드하는 중 오류가 발생했습니다.";
+
+/* Retry on the watch store stats screen. */
+"watch.mystore.retry.title" = "다시 시도";
+
+/* Revenue title on the watch store stats screen. */
+"watch.mystore.revenue.title" = "수익";
+
+/* Format of the updated time in the watch store stats screen. */
+"watch.mystore.time.format" = "%@ 기준";
+
+/* Today title on the watch store stats screen. */
+"watch.mystore.today.title" = "오늘";
+
+/* Title when there is an error loading an order notification on the watch app */
+"watch.notification.order.error" = "알림을 로드하는 중 오류가 발생했습니다.";
+
+/* Customer title in the order detail screen. */
+"watch.orders.detail.customer" = "고객";
+
+/* Plural format for the number of products in the order detail screen. */
+"watch.orders.detail.product-count" = "%d개 상품";
+
+/* Singular format for the number of products in the order detail screen. */
+"watch.orders.detail.product-count-singular" = "1개 상품";
+
+/* Title on the watch orders list screen when there are no orders */
+"watch.orders.empty.title" = "첫 주문을 기다리는 중입니다!";
+
+/* Loading title on the watch orders list screen. */
+"watch.orders.error.title" = "주문 목록을 로드하는 중 오류가 발생했습니다.";
+
+/* Retry on the watch orders list screen. */
+"watch.orders.retry.title" = "다시 시도";
+
+/* Title on the watch orders list screen. */
+"watch.orders.title" = "주문";
 
 /* Verb. Dismiss the web view screen. */
 "webKit.button.dismiss" = "무시";

@@ -323,9 +323,6 @@ which should be translated separately and considered part of this sentence. */
 /* Comment Attachment Label */
 "[COMMENT]" = "[COMMENT]";
 
-/* Markdown content learn more link on the product creation action sheet. Please translate the words while keeping the markdown format and URL. */
-"[Learn more.](https://automattic.com/ai-guidelines/)" = "[Learn more.](https://automattic.com/ai-guidelines/)";
-
 /* Placeholder of the Product Short Description row on Product main screen */
 "A brief excerpt about the product" = "A brief excerpt about the product";
 
@@ -456,12 +453,8 @@ which should be translated separately and considered part of this sentence. */
 "Add a price to your variation to make it visible on your store" = "Add a price to your variation to make it visible on your store";
 
 /* Message title of bottom sheet for selecting a template or manual product
-   The action to add a product
-   Title on the action sheet to select an option for adding new product */
+   The action to add a product */
 "Add a product" = "Add a product";
-
-/* Description of the option to add new product manually */
-"Add a product and the details manually" = "Add a product and the details manually";
 
 /* Cell text in Add / Edit product when there are no images. */
 "Add a product image" = "Add a product image";
@@ -546,8 +539,7 @@ which should be translated separately and considered part of this sentence. */
 /* Description for the text field on the add product features screen */
 "Add key features, benefits, or details to help your product get found online." = "Add key features, benefits, or details to help your product get found online.";
 
-/* Title for the option to create product manually
-   Title of the option to add new product manually */
+/* Title for the option to create product manually */
 "Add manually" = "Add manually";
 
 /* Title of the bottom sheet from the product form to add more product details.
@@ -663,8 +655,29 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the charge taxes toggle in the custom amounts screen. */
 "addCustomAmountView.chargeTaxesToggle.title" = "Charge Taxes";
 
-/* Dismiss button on the alert asking to add an image for the Blaze campaign */
-"addProductWithAIActionSheet.manualOptionsTitle" = "Select a product type";
+/* Description of the option to add new product with AI assistance */
+"addProductWithAIActionSheet.aiDescription" = "Quickly generate details for you";
+
+/* Title of the option to add new product with AI assistance */
+"addProductWithAIActionSheet.aiTitle" = "Create a product with AI";
+
+/* Markdown content learn more link on the product creation action sheet. Please translate the words while keeping the markdown format and URL. */
+"addProductWithAIActionSheet.learnMore" = "[Learn more.](https://automattic.com/ai-guidelines/)";
+
+/* Label to indicate AI-generated content on the product creation action sheet. */
+"addProductWithAIActionSheet.legalText" = "Powered by AI.";
+
+/* Description of the option to add new product manually */
+"addProductWithAIActionSheet.manualDescription" = "Add a product and the details manually";
+
+/* Title of the option to add new product manually */
+"addProductWithAIActionSheet.manualTitle" = "Add manually";
+
+/* Subitle on the action sheet to select an option for adding new product */
+"addProductWithAIActionSheet.subtitle" = "Select a product type";
+
+/* Title on the action sheet to select an option for adding new product */
+"addProductWithAIActionSheet.title" = "Create Product";
 
 /* Address section title in the domain contact info form.
    Details section title in the Edit Address Form */
@@ -1917,19 +1930,19 @@ which should be translated separately and considered part of this sentence. */
 "bottomSheetProductType.simple.description" = "A unique physical product that you may have to ship to the customer";
 
 /* Action sheet option when the user wants to change the Product type to simple physical product */
-"bottomSheetProductType.simple.title" = "Simple physical product";
+"bottomSheetProductType.simpleProduct.title" = "Physical product";
 
 /* Description of the Action sheet option when the user wants to change the Product type to simple virtual product */
 "bottomSheetProductType.simpleVirtual.description" = "A unique digital product like services, downloadable books, music or videos";
 
 /* Action sheet option when the user wants to change the Product type to simple virtual product */
-"bottomSheetProductType.simpleVirtual.title" = "Simple virtual product";
+"bottomSheetProductType.simpleVirtualProduct.title" = "Virtual product";
 
 /* Description of the Action sheet option when the user wants to change the Product type to Subscription product */
 "bottomSheetProductType.subscription.description" = "A unique product subscription that enables recurring payments";
 
 /* Action sheet option when the user wants to change the Product type to Subscription product */
-"bottomSheetProductType.subscription.title" = "Simple subscription product";
+"bottomSheetProductType.subscriptionProduct.title" = "Simple subscription";
 
 /* Description of the Action sheet option when the user wants to change the Product type to variable product */
 "bottomSheetProductType.variable.description" = "A product with variations like color or size";
@@ -1941,7 +1954,7 @@ which should be translated separately and considered part of this sentence. */
 "bottomSheetProductType.variableSubscription.description" = "A product subscription with variations";
 
 /* Action sheet option when the user wants to change the Product type to Variable subscription product */
-"bottomSheetProductType.variableSubscription.title" = "Variable subscription product";
+"bottomSheetProductType.variableSubscriptionProduct.title" = "Variable subscription";
 
 /* Country option for a site address. */
 "Bouvet Island" = "Bouvet Island";
@@ -2080,7 +2093,6 @@ which should be translated separately and considered part of this sentence. */
    Button title to dismiss the alert when the store cannot be created in the store creation flow.
    Button title. Tapping it cancels the login flow.
    Button to allow the user to close the modal without connecting.
-   Button to cancel (not try again). Presented to users after a failure occurs
    Button to cancel a payment
    Button to cancel entering the gift card code from the order form.
    Button to cancel the creation of an order on the New Order screen
@@ -3032,9 +3044,6 @@ which should be translated separately and considered part of this sentence. */
 /* Description for percentage discount type on the action sheet presented from Add or Edit coupon screen */
 "Create a percentage discount for selected products" = "Create a percentage discount for selected products";
 
-/* Title of the option to add new product with AI assistance */
-"Create a product with AI" = "Create a product with AI";
-
 /* Navigates to a new flow for site creation. */
 "Create a Site" = "Create a Site";
 
@@ -3216,14 +3225,29 @@ which should be translated separately and considered part of this sentence. */
 /* Label for a customer with no name in the Customer detail screen. */
 "customerDetail.guestName" = "Guest";
 
+/* Label for button to create a new order for the customer in the Customer Details screen. */
+"customerDetailsView.newOrderButton" = "Create a new order";
+
 /* Label for the customer's average order value in the Customer Details screen. */
 "customerDetailView.avgOrderValueLabel" = "Average order value";
+
+/* Heading for the section with customer billing address in the Customer Details screen. */
+"customerDetailView.billingSection" = "BILLING ADDRESS";
+
+/* Call phone number button title */
+"customerDetailView.callPhoneNumber" = "Call";
 
 /* Label for the customer's city in the Customer Details screen. */
 "customerDetailView.cityLabel" = "City";
 
+/* Copy address text button title — should be one word and as short as possible. */
+"customerDetailView.copyButton.label" = "Copy";
+
 /* Button to copy a customer's email address in the Customer Details screen. */
 "customerDetailView.copyEmail" = "Copy email address";
+
+/* Button to copy phone number to clipboard */
+"customerDetailView.copyPhoneNumber" = "Copy number";
 
 /* Label for the customer's country in the Customer Details screen. */
 "customerDetailView.countryLabel" = "Country";
@@ -3249,11 +3273,20 @@ which should be translated separately and considered part of this sentence. */
 /* Heading for the section with customer location details in the Customer Details screen. */
 "customerDetailView.locationSection" = "LOCATION";
 
+/* Message phone number button title */
+"customerDetailView.messagePhoneNumber" = "Message";
+
 /* Label for the number of orders in the Customer Details screen. */
 "customerDetailView.ordersCountLabel" = "Orders";
 
 /* Heading for the section with customer order stats in the Customer Details screen. */
 "customerDetailView.ordersSection" = "ORDERS";
+
+/* Title for action to contact a customer via phone. */
+"customerDetailView.phoneActionLabel" = "Contact customer via phone";
+
+/* Placeholder if a customer's phone number is not available in the Customer Details screen. */
+"customerDetailView.phonePlaceholder" = "No phone number";
 
 /* Label for the customer's postal code in the Customer Details screen. */
 "customerDetailView.postcodeLabel" = "Postal code";
@@ -3267,11 +3300,20 @@ which should be translated separately and considered part of this sentence. */
 /* Button to email a customer in the Customer Details screen. */
 "customerDetailView.sendEmail" = "Email";
 
+/* Heading for the section with customer shipping address in the Customer Details screen. */
+"customerDetailView.shippingSection" = "SHIPPING ADDRESS";
+
+/* Button to send a message to a customer via Telegram */
+"customerDetailView.telegram" = "Send Telegram message";
+
 /* Label for the customer's total spend in the Customer Details screen. */
 "customerDetailView.totalSpendLabel" = "Total spend";
 
 /* Label for the customer's username in the Customer Details screen. */
 "customerDetailView.usernameLabel" = "Username";
+
+/* Button to send a message to a customer via WhatsApp */
+"customerDetailView.whatsapp" = "Send WhatsApp message";
 
 /* Title when there are no customers in the search results in the Customers list screen. */
 "customerList.emptySearchTitle" = "No customers found";
@@ -3386,7 +3428,7 @@ which should be translated separately and considered part of this sentence. */
 "dashboardView.edit" = "Edit";
 
 /* Label of the button to add sections */
-"dashboardView.newCardsNoticeCard.addSectionsButtonLabel" = "Add new sections";
+"dashboardView.newCardsNoticeCard.addSectionsButtonText" = "Add New Sections";
 
 /* Subtitle of the New Cards Notice card */
 "dashboardView.newCardsNoticeCard.subtitle" = "Add new sections to customize your store management experience";
@@ -3899,6 +3941,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the button that prompts the user to edit tax rates in the web */
 "Edit tax rates in admin" = "Edit tax rates in admin";
+
+/* Title for button to view the feedback survey about adding shipping to an order */
+"editableOrderShippingLineViewModel.feedbackSurvey.buttonTitle" = "Share your feedback";
+
+/* Message for the feedback survey about adding shipping to an order */
+"editableOrderShippingLineViewModel.feedbackSurvey.message" = "Does Woo make shipping easy?";
+
+/* Title for the feedback survey about adding shipping to an order */
+"editableOrderShippingLineViewModel.feedbackSurvey.title" = "Shipping added!";
 
 /* Default name when the custom amount does not have a name in order creation. */
 "editableOrderViewModel.customAmountDefaultName" = "Custom Amount";
@@ -5039,11 +5090,11 @@ which should be translated separately and considered part of this sentence. */
 /* The title of the button for giving a negative feedback for the app. */
 "inAppFeedbackCardView.couldBeBetter" = "Could be better";
 
+/* The title used when asking the user for feedback for the app. */
+"inAppFeedbackCardView.feedbackTitle" = "Are you enjoying the app?";
+
 /* The title of the button for giving a positive feedback for the app. */
 "inAppFeedbackCardView.iLikeIt" = "I like it";
-
-/* The title used when asking the user for feedback for the app. */
-"inAppFeedbackCardView.title" = "Enjoying the WooCommerce app?";
 
 /* Navigation title of the webview which is used in Inbox Notes.
    Title for the screen that shows inbox notes.
@@ -7377,9 +7428,6 @@ which should be translated separately and considered part of this sentence. */
    The text is followed by a WordPress.com logo on the store creation plan screen. */
 "Powered by" = "Powered by";
 
-/* Label to indicate AI-generated content on the product creation action sheet. */
-"Powered by AI." = "Powered by AI.";
-
 /* Label to indicate AI-generated content in the product detail screen. Reads: Powered by AI. Learn more. */
 "Powered by AI. %1$@." = "Powered by AI. %1$@.";
 
@@ -7504,14 +7552,12 @@ which should be translated separately and considered part of this sentence. */
 /* Label shown on the launch store task. */
 "private" = "private";
 
-/* One of the possible options in Product Visibility */
+/* Display label for the product's private status
+   One of the possible options in Product Visibility */
 "Private" = "Private";
 
 /* Spoken accessibility label for an icon image that indicates it's a private note and is not seen by the customer. */
 "Private note" = "Private note";
-
-/* Display label for the product's private status */
-"Privately published" = "Privately published";
 
 /* Display label for processing order status. */
 "Processing" = "Processing";
@@ -7620,6 +7666,18 @@ which should be translated separately and considered part of this sentence. */
 /* Dismiss button title in Product Creation AI survey confirmation view. */
 "productCreationAISurveyConfirmationViewModel.remindMeLater" = "Remind Me Later";
 
+/* Category label for other product creation types */
+"productCreationCategory.other" = "Other";
+
+/* Category label for standard product creation types */
+"productCreationCategory.standard" = "Standard";
+
+/* Category label for subscription product creation types */
+"productCreationCategory.subscription" = "Subscription";
+
+/* Display label in product for the product's private status */
+"productDetail.privateStatusLabel" = "Private published";
+
 /* Alert message to inform the user about a failure in uploading file for a downloadable product. */
 "productDownloadListViewController.notice.errorUploadingLocalFile" = "Error uploading the file. Please try again.";
 
@@ -7643,6 +7701,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label for button on product form to open Blaze flow */
 "productFormTableViewDataSource.promoteWithBlazeButton" = "Promote with Blaze";
+
+/* Text message prompting the user to tap to learn more about changing the privacy setting. */
+"productFormTableViewDataSource.wpComStoreNotPublicText" = "Tap to learn more.";
+
+/* Title message indicating that images are unavailable because the site is private. */
+"productFormTableViewDataSource.wpComStoreNotPublicTitle" = "The images are unavailable because your site is marked Private. You can change this by switching to Coming Soon mode.";
 
 /* Alert message to inform the user that they must wait for all image uploads to complete before they can reorder the images. */
 "productImagesCollectionViewController.notice" = "Please wait until all uploads are finished before reordering images.";
@@ -7889,9 +7953,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the Analytics Hub Quarter to Date selection range */
 "Quarter to Date" = "Quarter to Date";
-
-/* Description of the option to add new product with AI assistance */
-"Quickly generate details for you" = "Quickly generate details for you";
 
 /* Subtitle displayed during the Login flow, whenever the user has no woo stores associated. */
 "Quickly get up and selling with a beautiful online store." = "Quickly get up and selling with a beautiful online store.";
@@ -8972,9 +9033,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Indicates the reviewer does not have a name. It reads { Someone left a review} */
 "Someone" = "Someone";
-
-/* Error message presented to users after a failure occurs */
-"Something went wrong" = "Something went wrong";
 
 /* Description of an unknown error after purchasing a plan */
 "Something went wrong during your purchase, and we can't tell whether your payment has completed, or your store plan been upgraded." = "Something went wrong during your purchase, and we can't tell whether your payment has completed, or your store plan been upgraded.";
@@ -10455,7 +10513,6 @@ which should be translated separately and considered part of this sentence. */
    Button to retry a failed action in the Jetpack setup flow
    Button to retry a software update. Presented to users when updating the card reader software fails
    Button to try again after connecting to a specific reader fails due to a critically low battery.
-   Button to try again. Presented to users after a failure occurs
    Button to try to refund a payment again. Presented to users after refunding a payment fails
    Title of the button to attempt loading the store again after Jetpack setup
    Try Again button on the error alert when fetching system status report fails */
@@ -11217,8 +11274,14 @@ which should be translated separately and considered part of this sentence. */
 /* Info message when connecting your watch to the phone for the first time. */
 "watch.connect.message" = "Open Woo on your iPhone, connect your store, and hold your Watch nearby";
 
-/* Loading title on the watch store stats screen. */
-"watch.mystore.error.title" = "There was an error loading the store's data";
+/* Button title for when connecting the watch does not work on the connecting screen. */
+"watch.connect.notworking.title" = "It's not working";
+
+/* Error description on the watch store stats screen. */
+"watch.mystore.error.description" = "Make sure your watch is connected to the internet and your phone is nearby.";
+
+/* Error title on the watch store stats screen. */
+"watch.mystore.error.title" = "Failed to load store data";
 
 /* Retry on the watch store stats screen. */
 "watch.mystore.retry.title" = "Retry";
@@ -11244,8 +11307,14 @@ which should be translated separately and considered part of this sentence. */
 /* Singular format for the number of products in the order detail screen. */
 "watch.orders.detail.product-count-singular" = "1 Product";
 
-/* Loading title on the watch orders list screen. */
-"watch.orders.error.title" = "There was an error loading the orders list";
+/* Title on the watch orders list screen when there are no orders */
+"watch.orders.empty.title" = "Waiting for your first order!";
+
+/* Error description on the watch orders list screen. */
+"watch.orders.error.description" = "Make sure your watch is connected to the internet and your phone is nearby.";
+
+/* Error title on the watch orders list screen. */
+"watch.orders.error.title" = "Failed to load orders";
 
 /* Retry on the watch orders list screen. */
 "watch.orders.retry.title" = "Retry";

@@ -69,7 +69,6 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
     private let stores: StoresManager
     private let storageManager: StorageManagerType
     private let analytics: Analytics
-    private let userDefaults: UserDefaults
 
     private var isSiteEligibleForBlaze = false
     private let blazeEligibilityChecker: BlazeEligibilityCheckerProtocol
@@ -108,15 +107,13 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          analytics: Analytics = ServiceLocator.analytics,
-         blazeEligibilityChecker: BlazeEligibilityCheckerProtocol = BlazeEligibilityChecker(),
-         userDefaults: UserDefaults = .standard) {
+         blazeEligibilityChecker: BlazeEligibilityCheckerProtocol = BlazeEligibilityChecker()) {
         self.siteID = siteID
         self.stores = stores
         self.storageManager = storageManager
         self.analytics = analytics
         self.blazeEligibilityChecker = blazeEligibilityChecker
         self.state = .loading
-        self.userDefaults = userDefaults
         observeSectionVisibility()
         configureResultsController()
     }

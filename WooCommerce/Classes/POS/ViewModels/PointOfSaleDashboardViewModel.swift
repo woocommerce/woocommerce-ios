@@ -8,8 +8,6 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
         case acceptingCard
         case processingCard
         case cardPaymentSuccessful
-        case acceptingCash
-        case cashPaymentSuccessful
     }
 
     @Published private(set) var items: [POSItem]
@@ -24,11 +22,11 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
 
     @Published var showsCardReaderSheet: Bool = false
     @Published private(set) var cardPresentPaymentEvent: CardPresentPaymentEvent = .idle
+    @Published private(set) var cardPresentPaymentAlertViewModel: PointOfSaleCardPresentPaymentAlertType?
+    @Published private(set) var cardPresentPaymentInlineMessage: PointOfSaleCardPresentPaymentMessageType?
     let cardReaderConnectionViewModel: CardReaderConnectionViewModel
 
     @Published var showsCreatingOrderSheet: Bool = false
-
-    @Published var showsFilterSheet: Bool = false
 
     enum OrderStage {
         case building
@@ -50,6 +48,14 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
         observeItemsInCartForCartTotal()
     }
 
+    var isCartCollapsed: Bool {
+        itemsInCart.isEmpty
+    }
+
+    var itemToScrollToWhenCartUpdated: CartItem? {
+        return itemsInCart.last
+    }
+
     func addItemToCart(_ item: POSItem) {
         let cartItem = CartItem(id: UUID(), item: item, quantity: 1)
         itemsInCart.append(cartItem)
@@ -58,6 +64,17 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
     func removeItemFromCart(_ cartItem: CartItem) {
         itemsInCart.removeAll(where: { $0.id == cartItem.id })
         checkIfCartEmpty()
+    }
+
+    var itemsInCartLabel: String? {
+        switch itemsInCart.count {
+        case 0:
+            return nil
+        default:
+            return String.pluralize(itemsInCart.count,
+                                    singular: "%1$d item",
+                                    plural: "%1$d items")
+        }
     }
 
     private func checkIfCartEmpty() {
@@ -73,10 +90,6 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
 
     func addMoreToCart() {
         orderStage = .building
-    }
-
-    func showFilters() {
-        showsFilterSheet = true
     }
 
     private func calculateAmounts() {
@@ -125,12 +138,36 @@ private extension PointOfSaleDashboardViewModel {
 
     func observeCardPresentPaymentEvents() {
         cardPresentPaymentService.paymentEventPublisher.assign(to: &$cardPresentPaymentEvent)
+        cardPresentPaymentService.paymentEventPublisher
+            .map { event -> PointOfSaleCardPresentPaymentAlertType? in
+                guard case let .show(eventDetails) = event,
+                      case let .alert(alertType) = eventDetails.pointOfSalePresentationStyle else {
+                    return nil
+                }
+                return alertType
+            }
+            .assign(to: &$cardPresentPaymentAlertViewModel)
+        cardPresentPaymentService.paymentEventPublisher
+            .map { event -> PointOfSaleCardPresentPaymentMessageType? in
+                guard case let .show(eventDetails) = event,
+                      case let .message(messageType) = eventDetails.pointOfSalePresentationStyle else {
+                    return nil
+                }
+                return messageType
+            }
+            .assign(to: &$cardPresentPaymentInlineMessage)
         cardPresentPaymentService.paymentEventPublisher.map { event in
             switch event {
             case .idle:
                 return false
-            case .showAlert,
-                    .showReaderList,
+            case .show(let eventDetails):
+                switch eventDetails.pointOfSalePresentationStyle {
+                case .alert:
+                    return true
+                case .message, .none:
+                    return false
+                }
+            case .showReaderList,
                     .showOnboarding:
                 return true
             }

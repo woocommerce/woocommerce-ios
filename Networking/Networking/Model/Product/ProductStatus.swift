@@ -64,7 +64,7 @@ extension ProductStatus: RawRepresentable {
         case .pending:
             return NSLocalizedString("Pending review", comment: "Display label for the product's pending status")
         case .privateStatus:
-            return NSLocalizedString("Privately published", comment: "Display label for the product's private status")
+            return NSLocalizedString("Private", comment: "Display label for the product's private status")
         case .autoDraft:
             return "Auto Draft" // We don't need to localize this now.
         case .importing:

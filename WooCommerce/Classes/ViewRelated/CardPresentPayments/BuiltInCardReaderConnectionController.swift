@@ -12,7 +12,10 @@ protocol BuiltInCardReaderConnectionControlling {
     func searchAndConnect(onCompletion: @escaping (Result<CardReaderConnectionResult, Error>) -> Void)
 }
 
-final class BuiltInCardReaderConnectionController: BuiltInCardReaderConnectionControlling {
+final class BuiltInCardReaderConnectionController<AlertProvider: CardReaderConnectionAlertsProviding,
+                                                  AlertPresenter: CardPresentPaymentAlertsPresenting>:
+                                                    BuiltInCardReaderConnectionControlling
+where AlertProvider.AlertDetails == AlertPresenter.AlertDetails {
     private enum ControllerState {
         /// Initial state of the controller
         ///
@@ -76,10 +79,10 @@ final class BuiltInCardReaderConnectionController: BuiltInCardReaderConnectionCo
     }
 
     private let siteID: Int64
-    private let alertsPresenter: CardPresentPaymentAlertsPresenting
+    private let alertsPresenter: AlertPresenter
     private let configuration: CardPresentPaymentsConfiguration
 
-    private let alertsProvider: CardReaderConnectionAlertsProviding
+    private let alertsProvider: AlertProvider
 
     /// The reader we want the user to consider connecting to
     ///
@@ -113,8 +116,8 @@ final class BuiltInCardReaderConnectionController: BuiltInCardReaderConnectionCo
         forSiteID: Int64,
         storageManager: StorageManagerType = ServiceLocator.storageManager,
         stores: StoresManager = ServiceLocator.stores,
-        alertsPresenter: CardPresentPaymentAlertsPresenting,
-        alertsProvider: CardReaderConnectionAlertsProviding,
+        alertsPresenter: AlertPresenter,
+        alertsProvider: AlertProvider,
         configuration: CardPresentPaymentsConfiguration,
         analyticsTracker: CardReaderConnectionAnalyticsTracker,
         allowTermsOfServiceAcceptance: Bool = true

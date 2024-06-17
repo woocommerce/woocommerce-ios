@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-06-08 12:11:27+0000 */
+/* Translation-Revision-Date: 2024-06-11 11:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: sv_SE */
@@ -10698,6 +10698,12 @@ which should be translated separately and considered part of this sentence. */
 /* Title for button to view the feedback survey about adding shipping to an order */
 "editableOrderShippingLineViewModel.feedbackSurvey.buttonTitle" = "Dela din feedback";
 
+/* Message for the feedback survey about adding shipping to an order */
+"editableOrderShippingLineViewModel.feedbackSurvey.message" = "Gör Woo frakt enkelt?";
+
+/* Title for the feedback survey about adding shipping to an order */
+"editableOrderShippingLineViewModel.feedbackSurvey.title" = "Frakt tillagd.";
+
 /* Default name when the custom amount does not have a name in order creation. */
 "editableOrderViewModel.customAmountDefaultName" = "Anpassat belopp";
 
@@ -11292,6 +11298,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text message prompting the user to tap to learn more about changing the privacy setting. */
 "productFormTableViewDataSource.wpComStoreNotPublicText" = "Tryck för att lära dig mer.";
+
+/* Title message indicating that images are unavailable because the site is private. */
+"productFormTableViewDataSource.wpComStoreNotPublicTitle" = "Bilderna är inte tillgängliga, eftersom din webbplats är satt som Privat. Du kan ändra detta genom att växla till läget Kommer snart.";
 
 /* Alert message to inform the user that they must wait for all image uploads to complete before they can reorder the images. */
 "productImagesCollectionViewController.notice" = "Vänta tills alla uppladdningar har slutförts innan du ändrar ordning på bilderna.";

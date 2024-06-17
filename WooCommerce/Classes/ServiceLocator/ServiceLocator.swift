@@ -100,7 +100,9 @@ final class ServiceLocator {
     private static var _cardPresentPaymentsOnboardingIPPUsersRefresher: CardPresentPaymentsOnboardingIPPUsersRefresher =
     CardPresentPaymentsOnboardingIPPUsersRefresher()
 
-    private static var _tapToPayReconnectionController: TapToPayReconnectionController = TapToPayReconnectionController()
+    private static var _tapToPayReconnectionController = TapToPayReconnectionController<BuiltInReaderConnectionAlertsProvider, CardPresentPaymentAlertsPresenter>(
+            connectionControllerFactory: BuiltInCardReaderConnectionControllerFactory(
+                alertProvider: BuiltInReaderConnectionAlertsProvider()))
 
     /// Tracker for app startup waiting time
     ///
@@ -254,7 +256,8 @@ final class ServiceLocator {
         _cardPresentPaymentsOnboardingIPPUsersRefresher
     }
 
-    static var tapToPayReconnectionController: TapToPayReconnectionController {
+    static var tapToPayReconnectionController: TapToPayReconnectionController<BuiltInReaderConnectionAlertsProvider,
+                                                                                CardPresentPaymentAlertsPresenter> {
         _tapToPayReconnectionController
     }
 

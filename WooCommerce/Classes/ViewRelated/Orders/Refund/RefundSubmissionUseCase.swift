@@ -22,7 +22,9 @@ protocol RefundSubmissionProtocol {
 /// If in-person refund is required for the payment method (e.g. Interac in Canada), orchestrates reader connection, refund, UI alerts,
 /// submit refund to the site, and analytics.
 /// Otherwise, it submits the refund to the site directly with analytics.
-final class RefundSubmissionUseCase: NSObject, RefundSubmissionProtocol {
+final class RefundSubmissionUseCase<AlertProvider: BluetoothReaderConnnectionAlertsProviding,
+                                        AlertPresenter: CardPresentPaymentAlertsPresenting>: NSObject, RefundSubmissionProtocol
+where AlertProvider.AlertDetails == AlertPresenter.AlertDetails {
     /// Refund details.
     private let details: Details
 
@@ -61,7 +63,9 @@ final class RefundSubmissionUseCase: NSObject, RefundSubmissionProtocol {
     private lazy var cardPresentRefundOrchestrator = CardPresentRefundOrchestrator(stores: stores)
 
     /// Alert manager to inform merchants about card reader connection actions used in `CardReaderConnectionController`.
-    private let cardReaderConnectionAlerts: BluetoothReaderConnnectionAlertsProviding
+    private let cardReaderConnectionAlerts: AlertProvider
+
+    private let alertPresenter: AlertPresenter
 
     /// Provides any known card reader to be used in `CardReaderConnectionController`.
     private let knownReaderProvider: CardReaderSettingsKnownReaderProvider
@@ -76,7 +80,7 @@ final class RefundSubmissionUseCase: NSObject, RefundSubmissionProtocol {
                                    storageManager: storageManager,
                                    stores: stores,
                                    knownReaderProvider: knownReaderProvider,
-                                   alertsPresenter: CardPresentPaymentAlertsPresenter(rootViewController: rootViewController),
+                                   alertsPresenter: alertPresenter,
                                    alertsProvider: cardReaderConnectionAlerts,
                                    configuration: cardPresentConfiguration,
                                    analyticsTracker: .init(configuration: cardPresentConfiguration,
@@ -89,7 +93,6 @@ final class RefundSubmissionUseCase: NSObject, RefundSubmissionProtocol {
     private let cardPresentConfiguration: CardPresentPaymentsConfiguration
 
     struct Dependencies {
-        let cardReaderConnectionAlerts: BluetoothReaderConnnectionAlertsProviding
         let currencyFormatter: CurrencyFormatter
         let currencySettings: CurrencySettings
         let knownReaderProvider: CardReaderSettingsKnownReaderProvider
@@ -98,15 +101,13 @@ final class RefundSubmissionUseCase: NSObject, RefundSubmissionProtocol {
         let storageManager: StorageManagerType
         let analytics: Analytics
 
-        init(cardReaderConnectionAlerts: BluetoothReaderConnnectionAlertsProviding = BluetoothReaderConnectionAlertsProvider(),
-             currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
+        init(currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
              currencySettings: CurrencySettings = ServiceLocator.currencySettings,
              knownReaderProvider: CardReaderSettingsKnownReaderProvider = CardReaderSettingsKnownReaderStorage(),
              cardPresentPaymentsOnboardingPresenter: CardPresentPaymentsOnboardingPresenting = CardPresentPaymentsOnboardingPresenter(),
              stores: StoresManager = ServiceLocator.stores,
              storageManager: StorageManagerType = ServiceLocator.storageManager,
              analytics: Analytics = ServiceLocator.analytics) {
-            self.cardReaderConnectionAlerts = cardReaderConnectionAlerts
             self.currencyFormatter = currencyFormatter
             self.currencySettings = currencySettings
             self.knownReaderProvider = knownReaderProvider
@@ -121,6 +122,8 @@ final class RefundSubmissionUseCase: NSObject, RefundSubmissionProtocol {
          rootViewController: UIViewController,
          alerts: OrderDetailsPaymentAlertsProtocol,
          cardPresentConfiguration: CardPresentPaymentsConfiguration,
+         cardReaderConnectionAlerts: AlertProvider,
+         alertPresenter: AlertPresenter,
          dependencies: Dependencies = Dependencies()) {
         self.details = details
         self.formattedAmount = {
@@ -130,7 +133,8 @@ final class RefundSubmissionUseCase: NSObject, RefundSubmissionProtocol {
         }()
         self.rootViewController = rootViewController
         self.alerts = alerts
-        self.cardReaderConnectionAlerts = dependencies.cardReaderConnectionAlerts
+        self.cardReaderConnectionAlerts = cardReaderConnectionAlerts
+        self.alertPresenter = alertPresenter
         self.currencyFormatter = dependencies.currencyFormatter
         self.cardPresentConfiguration = cardPresentConfiguration
         self.knownReaderProvider = dependencies.knownReaderProvider
@@ -163,11 +167,11 @@ final class RefundSubmissionUseCase: NSObject, RefundSubmissionProtocol {
                 guard let self = self else { return }
                 guard let refundAmount = self.currencyFormatter.convertToDecimal(self.details.amount) else {
                     DDLogError("Error: attempted to refund an order without a valid amount.")
-                    return onCompletion(.failure(RefundSubmissionError.invalidRefundAmount))
+                    return onCompletion(.failure(RefundSubmissionUseCaseSubmissionError.invalidRefundAmount))
                 }
 
                 guard let paymentGatewayAccount = self.details.paymentGatewayAccount else {
-                    return onCompletion(.failure(RefundSubmissionError.unknownPaymentGatewayAccount))
+                    return onCompletion(.failure(RefundSubmissionUseCaseSubmissionError.unknownPaymentGatewayAccount))
                 }
 
                 self.observeConnectedReadersForAnalytics()
@@ -271,7 +275,7 @@ private extension RefundSubmissionUseCase {
                                 case .canceled:
                                     self.readerSubscription = nil
                                     self.trackClientSideRefundCanceled(charge: charge, paymentGatewayAccount: paymentGatewayAccount)
-                                    onCompletion(.failure(RefundSubmissionError.cardReaderDisconnected))
+                                    onCompletion(.failure(RefundSubmissionUseCaseSubmissionError.cardReaderDisconnected))
                                 case .connected:
                                     // Connected case will be handled in `if readers.isNotEmpty`.
                                     break
@@ -310,7 +314,7 @@ private extension RefundSubmissionUseCase {
                                              onWaitingForInput: { [weak self] inputMethods in
             // Requests card input.
             guard let self = self else { return }
-            self.alerts.tapOrInsertCard(title: Localization.refundPaymentTitle(username: self.order.billingAddress?.firstName),
+            self.alerts.tapOrInsertCard(title: RefundSubmissionUseCaseDefinitions.Localization.refundPaymentTitle(username: self.order.billingAddress?.firstName),
                                         amount: self.formattedAmount,
                                         inputMethods: inputMethods,
                                         onCancel: { [weak self] in
@@ -318,7 +322,9 @@ private extension RefundSubmissionUseCase {
             })
         }, onProcessingMessage: { [weak self] in
             // Shows waiting message.
-            self?.alerts.processingPayment(title: Localization.refundPaymentTitle(username: self?.order.billingAddress?.firstName))
+            self?.alerts.processingPayment(
+                title: RefundSubmissionUseCaseDefinitions.Localization.refundPaymentTitle(
+                    username: self?.order.billingAddress?.firstName))
         }, onDisplayMessage: { [weak self] message in
             // Shows reader messages (e.g. Remove Card).
             self?.alerts.displayReaderMessage(message: message)
@@ -374,7 +380,7 @@ private extension RefundSubmissionUseCase {
     func cancelRefund(charge: WCPayCharge, paymentGatewayAccount: PaymentGatewayAccount, onCompletion: @escaping (Result<Void, Error>) -> ()) {
         trackClientSideRefundCanceled(charge: charge, paymentGatewayAccount: paymentGatewayAccount)
         cardPresentRefundOrchestrator.cancelRefund { _ in
-            onCompletion(.failure(RefundSubmissionError.canceledByUser))
+            onCompletion(.failure(RefundSubmissionUseCaseSubmissionError.canceledByUser))
         }
     }
 
@@ -496,18 +502,16 @@ private extension RefundSubmissionUseCase {
 }
 
 // MARK: Definitions
-extension RefundSubmissionUseCase {
-    /// Mailing a receipt failed but the SDK didn't return a more specific error
-    ///
-    enum RefundSubmissionError: Error, Equatable {
-        case cardReaderDisconnected
-        case invalidRefundAmount
-        case unknownPaymentGatewayAccount
-        case canceledByUser
-    }
+/// Mailing a receipt failed but the SDK didn't return a more specific error
+///
+enum RefundSubmissionUseCaseSubmissionError: Error, Equatable {
+    case cardReaderDisconnected
+    case invalidRefundAmount
+    case unknownPaymentGatewayAccount
+    case canceledByUser
 }
 
-private extension RefundSubmissionUseCase {
+private enum RefundSubmissionUseCaseDefinitions {
     enum Localization {
         private static let refundPaymentWithoutName = NSLocalizedString("Refund payment",
                                                                         comment: "Alert title when starting the in-person refund flow without a user name.")

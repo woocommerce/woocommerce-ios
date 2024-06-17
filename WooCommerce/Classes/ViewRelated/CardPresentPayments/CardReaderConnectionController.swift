@@ -7,7 +7,9 @@ import Yosemite
 
 /// Facilitates connecting to a card reader
 ///
-final class CardReaderConnectionController {
+final class CardReaderConnectionController<AlertProvider: BluetoothReaderConnnectionAlertsProviding,
+                                          AlertPresenter: CardPresentPaymentAlertsPresenting>
+where AlertProvider.AlertDetails == AlertPresenter.AlertDetails {
     private enum ControllerState {
         /// Initial state of the controller
         ///
@@ -80,10 +82,10 @@ final class CardReaderConnectionController {
 
     private let siteID: Int64
     private let knownCardReaderProvider: CardReaderSettingsKnownReaderProvider
-    private let alertsPresenter: CardPresentPaymentAlertsPresenting
+    private let alertsPresenter: AlertPresenter
     private let configuration: CardPresentPaymentsConfiguration
 
-    private let alertsProvider: BluetoothReaderConnnectionAlertsProviding
+    private let alertsProvider: AlertProvider
 
     /// Reader(s) discovered by the card reader service
     ///
@@ -135,8 +137,8 @@ final class CardReaderConnectionController {
         storageManager: StorageManagerType = ServiceLocator.storageManager,
         stores: StoresManager = ServiceLocator.stores,
         knownReaderProvider: CardReaderSettingsKnownReaderProvider,
-        alertsPresenter: CardPresentPaymentAlertsPresenting,
-        alertsProvider: BluetoothReaderConnnectionAlertsProviding,
+        alertsPresenter: AlertPresenter,
+        alertsProvider: AlertProvider,
         configuration: CardPresentPaymentsConfiguration,
         analyticsTracker: CardReaderConnectionAnalyticsTracker
     ) {

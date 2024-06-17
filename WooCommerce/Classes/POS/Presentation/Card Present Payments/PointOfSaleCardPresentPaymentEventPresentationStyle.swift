@@ -83,7 +83,8 @@ extension CardPresentPaymentEventDetails {
         /// Payment messages
         case .preparingForPayment(cancelPayment: let cancelPayment):
             return .message(.preparingForPayment(
-                viewModel: PointOfSaleCardPresentPaymentPreparingForPaymentMessageViewModel()))
+                viewModel: PointOfSaleCardPresentPaymentPreparingForPaymentMessageViewModel(
+                    cancelAction: cancelPayment)))
 
         case .tapSwipeOrInsertCard(inputMethods: let inputMethods, cancelPayment: let cancelPayment):
             return .message(.tapSwipeOrInsertCard(

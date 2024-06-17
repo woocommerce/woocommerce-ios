@@ -285,7 +285,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     ///
     var productAccessibilityLabel: String {
         if case .unsupported(let reason) = selectedState {
-            return reason
+            return [name, reason].joined(separator: ". ")
         }
         return [name, stockOrAttributesLabel, priceAndDiscountsLabel, variationsLabel, skuLabel]
             .compactMap({ $0 })

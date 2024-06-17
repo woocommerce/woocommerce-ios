@@ -13,7 +13,7 @@ struct ItemGridView: View {
                                         count: Constants.maxItemsPerRow)
 
         VStack {
-            Text("Product List")
+            Text("Products")
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.vertical, 8)
                 .font(.title)

@@ -18,7 +18,7 @@ final class CardPresentPaymentsAlertPresenterAdaptor: CardPresentPaymentAlertsPr
     }
 
     func presentWCSettingsWebView(adminURL: URL, completion: @escaping () -> Void) {
-        // Web view support in SwiftUI is in the alert's implementation of `CardPresentPaymentsModalViewModelWCSettingsWebViewPresenting`
+        assertionFailure("Web view should be presented within `CardPresentPaymentEventDetails`")
     }
 
     func foundSeveralReaders(readerIDs: [String], connect: @escaping (String) -> Void, cancelSearch: @escaping () -> Void) {

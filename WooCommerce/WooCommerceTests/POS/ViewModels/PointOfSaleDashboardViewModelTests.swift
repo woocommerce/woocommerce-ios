@@ -1,7 +1,8 @@
 import XCTest
 @testable import struct Yosemite.POSProduct
 @testable import WooCommerce
-@testable import Yosemite
+@testable import class Yosemite.PointOfSaleOrderService
+@testable import enum Networking.Credentials
 
 final class PointOfSaleDashboardViewModelTests: XCTestCase {
 
@@ -40,6 +41,7 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
                                  productID: 0,
                                  name: "Choco",
                                  price: "2.00",
+                                 formattedPrice: "$2.00",
                                  productImageSource: nil)
 
         // When

@@ -4,23 +4,32 @@ import XCTest
 
 final class PointOfSaleDashboardViewModelTests: XCTestCase {
 
-    func test_cart_is_empty_initially() {
-        // Given
-        let viewModel = PointOfSaleDashboardViewModel(items: POSItemProviderPreview().providePointOfSaleItems(),
-                                                      cardPresentPaymentService: CardPresentPaymentPreviewService())
+    private var sut: PointOfSaleDashboardViewModel!
+    private var cardPresentPaymentService: CardPresentPaymentPreviewService!
 
-        // Then
-        XCTAssertTrue(viewModel.itemsInCart.isEmpty)
+    override func setUp() {
+        super.setUp()
+        cardPresentPaymentService = CardPresentPaymentPreviewService()
+        sut = PointOfSaleDashboardViewModel(items: [],
+                                            cardPresentPaymentService: cardPresentPaymentService)
+    }
+
+    override func tearDown() {
+        cardPresentPaymentService = nil
+        sut = nil
+        super.tearDown()
+    }
+
+    func test_cart_is_empty_initially() {
+        // Given/Then
+        XCTAssertTrue(sut.itemsInCart.isEmpty)
     }
 
     func test_cart_is_collapsed_when_empty_then_not_collapsed_when_has_items() {
+        XCTAssertTrue(sut.itemsInCart.isEmpty, "Precondition")
+        XCTAssertTrue(sut.isCartCollapsed, "Precondition")
+
         // Given
-        let viewModel = PointOfSaleDashboardViewModel(items: POSItemProviderPreview().providePointOfSaleItems(),
-                                                      cardPresentPaymentService: CardPresentPaymentPreviewService())
-
-        XCTAssertTrue(viewModel.itemsInCart.isEmpty, "Precondition")
-        XCTAssertTrue(viewModel.isCartCollapsed, "Precondition")
-
         let product = POSProduct(itemID: UUID(),
                                  productID: 0,
                                  name: "Choco",
@@ -28,10 +37,10 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
                                  productImageSource: nil)
 
         // When
-        viewModel.addItemToCart(product)
+        sut.addItemToCart(product)
 
         // Then
-        XCTAssertFalse(viewModel.itemsInCart.isEmpty)
-        XCTAssertFalse(viewModel.isCartCollapsed)
+        XCTAssertFalse(sut.itemsInCart.isEmpty)
+        XCTAssertFalse(sut.isCartCollapsed)
     }
 }

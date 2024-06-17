@@ -36,7 +36,7 @@ struct PointOfSaleDashboardView: View {
                             case .processing:
                                 Text("processing...")
                             case .displayReaderMessage(let viewModel):
-                                Text("Reader message: \(viewModel.message)")
+                                PointOfSaleCardPresentPaymentDisplayReaderMessageMessageView(viewModel: viewModel)
                             case .paymentSuccess:
                                 Text("Payment successful!")
                             case .paymentError(let viewModel):

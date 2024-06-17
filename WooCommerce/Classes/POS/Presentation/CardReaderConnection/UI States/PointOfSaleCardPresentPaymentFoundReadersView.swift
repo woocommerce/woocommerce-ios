@@ -1,7 +1,7 @@
 import SwiftUI
 
-struct CardPresentPaymentFoundReadersView: View {
-    let viewModel: CardPresentPaymentFoundReaderAlertViewModel
+struct PointOfSaleCardPresentPaymentFoundReadersView: View {
+    let viewModel: PointOfSaleCardPresentPaymentFoundReaderAlertViewModel
 
     var body: some View {
         VStack {
@@ -24,7 +24,7 @@ struct CardPresentPaymentFoundReadersView: View {
 }
 
 #Preview {
-    CardPresentPaymentFoundReadersView(viewModel: CardPresentPaymentFoundReaderAlertViewModel(
+    PointOfSaleCardPresentPaymentFoundReadersView(viewModel: PointOfSaleCardPresentPaymentFoundReaderAlertViewModel(
         readerName: "READER NAME",
         connectAction: {},
         continueSearchAction: {},

@@ -2,53 +2,53 @@ import Foundation
 import struct Yosemite.CardReaderInput
 
 struct CardPresentPaymentsTransactionAlertsProvider: CardReaderTransactionAlertsProviding {
-    typealias AlertDetails = CardPresentPaymentAlertDetails
+    typealias AlertDetails = CardPresentPaymentEventDetails
 
-    func validatingOrder(onCancel: @escaping () -> Void) -> CardPresentPaymentAlertDetails {
+    func validatingOrder(onCancel: @escaping () -> Void) -> CardPresentPaymentEventDetails {
         .validatingOrder(cancelPayment: onCancel)
     }
 
-    func preparingReader(onCancel: @escaping () -> Void) -> CardPresentPaymentAlertDetails {
+    func preparingReader(onCancel: @escaping () -> Void) -> CardPresentPaymentEventDetails {
         .preparingForPayment(cancelPayment: onCancel)
     }
 
     func tapOrInsertCard(title: String,
                          amount: String,
                          inputMethods: CardReaderInput,
-                         onCancel: @escaping () -> Void) -> CardPresentPaymentAlertDetails {
+                         onCancel: @escaping () -> Void) -> CardPresentPaymentEventDetails {
         .tapSwipeOrInsertCard(inputMethods: inputMethods,
                               cancelPayment: onCancel)
     }
 
-    func displayReaderMessage(message: String) -> CardPresentPaymentAlertDetails {
+    func displayReaderMessage(message: String) -> CardPresentPaymentEventDetails {
         .displayReaderMessage(message: message)
     }
 
-    func processingTransaction(title: String) -> CardPresentPaymentAlertDetails {
+    func processingTransaction(title: String) -> CardPresentPaymentEventDetails {
         .processing
     }
 
     func success(printReceipt: @escaping () -> Void,
                  emailReceipt: @escaping () -> Void,
-                 noReceiptAction: @escaping () -> Void) -> CardPresentPaymentAlertDetails {
+                 noReceiptAction: @escaping () -> Void) -> CardPresentPaymentEventDetails {
         .success(done: noReceiptAction)
     }
 
     func error(error: any Error,
                tryAgain: @escaping () -> Void,
-               dismissCompletion: @escaping () -> Void) -> CardPresentPaymentAlertDetails {
+               dismissCompletion: @escaping () -> Void) -> CardPresentPaymentEventDetails {
         .error(error: error,
                tryAgain: tryAgain,
                cancelPayment: dismissCompletion)
     }
 
     func nonRetryableError(error: any Error,
-                           dismissCompletion: @escaping () -> Void) -> CardPresentPaymentAlertDetails {
+                           dismissCompletion: @escaping () -> Void) -> CardPresentPaymentEventDetails {
         .errorNonRetryable(error: error,
                            cancelPayment: dismissCompletion)
     }
 
-    func cancelledOnReader() -> CardPresentPaymentAlertDetails? {
+    func cancelledOnReader() -> CardPresentPaymentEventDetails? {
         .cancelledOnReader
     }
 }

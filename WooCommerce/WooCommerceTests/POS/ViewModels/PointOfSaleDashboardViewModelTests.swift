@@ -1,20 +1,46 @@
 import XCTest
+@testable import struct Yosemite.POSProduct
 @testable import WooCommerce
-@testable import Yosemite
 
 final class PointOfSaleDashboardViewModelTests: XCTestCase {
 
+    private var sut: PointOfSaleDashboardViewModel!
+    private var cardPresentPaymentService: CardPresentPaymentPreviewService!
+
+    override func setUp() {
+        super.setUp()
+        cardPresentPaymentService = CardPresentPaymentPreviewService()
+        sut = PointOfSaleDashboardViewModel(items: [],
+                                            cardPresentPaymentService: cardPresentPaymentService)
+    }
+
+    override func tearDown() {
+        cardPresentPaymentService = nil
+        sut = nil
+        super.tearDown()
+    }
+
     func test_cart_is_empty_initially() {
+        // Given/Then
+        XCTAssertTrue(sut.itemsInCart.isEmpty)
+    }
+
+    func test_cart_is_collapsed_when_empty_then_not_collapsed_when_has_items() {
+        XCTAssertTrue(sut.itemsInCart.isEmpty, "Precondition")
+        XCTAssertTrue(sut.isCartCollapsed, "Precondition")
+
         // Given
-        let siteID = ServiceLocator.stores.sessionManager.defaultStoreID ?? Int64.min
-        let credentials = Credentials(authToken: "token")
-        let orderService = PointOfSaleOrderService(siteID: siteID,
-                                                   credentials: credentials)
-        let viewModel = PointOfSaleDashboardViewModel(items: POSItemProviderPreview().providePointOfSaleItems(),
-                                                      cardPresentPaymentService: CardPresentPaymentPreviewService(),
-                                                      orderService: orderService)
+        let product = POSProduct(itemID: UUID(),
+                                 productID: 0,
+                                 name: "Choco",
+                                 price: "2.00",
+                                 productImageSource: nil)
+
+        // When
+        sut.addItemToCart(product)
 
         // Then
-        XCTAssertTrue(viewModel.itemsInCart.isEmpty)
+        XCTAssertFalse(sut.itemsInCart.isEmpty)
+        XCTAssertFalse(sut.isCartCollapsed)
     }
 }

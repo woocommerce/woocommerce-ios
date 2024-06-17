@@ -8,7 +8,7 @@ final class PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressAlertViewM
 
     @Published var shouldShowSettingsWebView: Bool = false
 
-    @Published var primaryButtonViewModel: CardPresentPaymentsModalButtonViewModel? = nil
+    @Published private(set) var primaryButtonViewModel: CardPresentPaymentsModalButtonViewModel? = nil
     let cancelButtonViewModel: CardPresentPaymentsModalButtonViewModel
 
     private let retrySearchAction: () -> Void

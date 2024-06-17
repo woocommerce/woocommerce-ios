@@ -87,9 +87,17 @@ public protocol PointOfSaleOrderServiceProtocol {
     /// - Returns: Order from the remote sync.
     func syncOrder(cart: [PointOfSaleCartItem], order: PointOfSaleOrder?, allProducts: [PointOfSaleCartProduct]) async throws -> PointOfSaleOrder
 
-    // TODO: add a function to update order's status from "auto-draft" when checking out / finalizing the order
+    /// Updates status of an order and syncs it
+    /// - Parameters:
+    ///   - posOrder: POS order.
+    ///   - status: New order status.
+    /// - Returns: Updated and synced POS order.
     func updateOrderStatus(posOrder: PointOfSaleOrder, status: OrderStatusEnum) async throws -> PointOfSaleOrder
 
+    /// Creates WOO Order from POS Order.
+    /// - Parameters:
+    ///   - posOrder: Optional POS order.
+    /// - Returns: Order created from posOrder data.
     func orderFrom(posOrder: PointOfSaleOrder?) -> Order
 }
 

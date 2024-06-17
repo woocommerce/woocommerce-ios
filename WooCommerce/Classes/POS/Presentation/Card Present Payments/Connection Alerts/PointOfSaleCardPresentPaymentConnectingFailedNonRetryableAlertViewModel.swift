@@ -1,7 +1,7 @@
 import Foundation
 import SwiftUI
 
-struct CardPresentPaymentConnectingFailedNonRetryableAlertViewModel {
+struct PointOfSaleCardPresentPaymentConnectingFailedNonRetryableAlertViewModel {
     let title = Localization.title
     let errorDetails: String
     let image = Image(uiImage: .paymentErrorImage)
@@ -16,16 +16,16 @@ struct CardPresentPaymentConnectingFailedNonRetryableAlertViewModel {
     }
 }
 
-private extension CardPresentPaymentConnectingFailedNonRetryableAlertViewModel {
+private extension PointOfSaleCardPresentPaymentConnectingFailedNonRetryableAlertViewModel {
     enum Localization {
         static let title = NSLocalizedString(
-            "cardPresentPayment.alert.connectingFailedNonRetryable.title",
+            "pointOfSale.cardPresentPayment.alert.connectingFailedNonRetryable.title",
             value: "Connection failed",
             comment: "Error message. Presented to users after collecting a payment fails"
         )
 
         static let dismiss = NSLocalizedString(
-            "cardPresentPayment.alert.connectingFailedNonRetryable.dismiss.button.title",
+            "pointOfSale.cardPresentPayment.alert.connectingFailedNonRetryable.dismiss.button.title",
             value: "Dismiss",
             comment: "Button to dismiss. Presented to users after collecting a payment fails"
         )

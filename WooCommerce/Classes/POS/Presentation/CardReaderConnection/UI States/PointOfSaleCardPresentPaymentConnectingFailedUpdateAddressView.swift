@@ -1,7 +1,7 @@
 import SwiftUI
 
-struct CardPresentPaymentConnectingFailedUpdateAddressView: View {
-    @StateObject var viewModel: CardPresentPaymentConnectingFailedUpdateAddressAlertViewModel
+struct PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressView: View {
+    @StateObject var viewModel: PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressAlertViewModel
     var body: some View {
         VStack {
             Text(viewModel.title)
@@ -25,8 +25,8 @@ struct CardPresentPaymentConnectingFailedUpdateAddressView: View {
 }
 
 #Preview {
-    CardPresentPaymentConnectingFailedUpdateAddressView(
-        viewModel: CardPresentPaymentConnectingFailedUpdateAddressAlertViewModel(
+    PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressView(
+        viewModel: PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressAlertViewModel(
             settingsAdminUrl: URL(string: "http://example.com")!,
             retrySearchAction: {},
             cancelSearchAction: {}))

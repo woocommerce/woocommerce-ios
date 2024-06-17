@@ -1,31 +1,31 @@
 import Foundation
 
 struct CardPresentPaymentBuiltInReaderConnectionAlertsProvider: CardReaderConnectionAlertsProviding {
-    typealias AlertDetails = CardPresentPaymentAlertDetails
-    func scanningForReader(cancel: @escaping () -> Void) -> CardPresentPaymentAlertDetails {
+    typealias AlertDetails = CardPresentPaymentEventDetails
+    func scanningForReader(cancel: @escaping () -> Void) -> CardPresentPaymentEventDetails {
         .scanningForReaders(endSearch: cancel)
     }
 
     func scanningFailed(error: any Error,
-                        close: @escaping () -> Void) -> CardPresentPaymentAlertDetails {
+                        close: @escaping () -> Void) -> CardPresentPaymentEventDetails {
         .scanningFailed(error: error,
                         endSearch: close)
     }
 
-    func connectingToReader() -> CardPresentPaymentAlertDetails {
+    func connectingToReader() -> CardPresentPaymentEventDetails {
         .connectingToReader
     }
 
     func connectingFailed(error: any Error,
                           retrySearch: @escaping () -> Void,
-                          cancelSearch: @escaping () -> Void) -> CardPresentPaymentAlertDetails {
+                          cancelSearch: @escaping () -> Void) -> CardPresentPaymentEventDetails {
         .connectingFailed(error: error,
                           retrySearch: retrySearch,
                           endSearch: cancelSearch)
     }
 
     func connectingFailedNonRetryable(error: any Error,
-                                      close: @escaping () -> Void) -> CardPresentPaymentAlertDetails {
+                                      close: @escaping () -> Void) -> CardPresentPaymentEventDetails {
         .connectingFailedNonRetryable(error: error,
                                       endSearch: close)
     }
@@ -33,7 +33,7 @@ struct CardPresentPaymentBuiltInReaderConnectionAlertsProvider: CardReaderConnec
     func connectingFailedIncompleteAddress(wcSettingsAdminURL: URL?,
                                            openWCSettings: (() -> Void)?,
                                            retrySearch: @escaping () -> Void,
-                                           cancelSearch: @escaping () -> Void) -> CardPresentPaymentAlertDetails {
+                                           cancelSearch: @escaping () -> Void) -> CardPresentPaymentEventDetails {
         guard let wcSettingsAdminURL else {
             return .connectingFailedNonRetryable(
                 error: CardPresentPaymentServiceError.incompleteAddressConnectionError,
@@ -45,20 +45,20 @@ struct CardPresentPaymentBuiltInReaderConnectionAlertsProvider: CardReaderConnec
     }
 
     func connectingFailedInvalidPostalCode(retrySearch: @escaping () -> Void,
-                                           cancelSearch: @escaping () -> Void) -> CardPresentPaymentAlertDetails {
+                                           cancelSearch: @escaping () -> Void) -> CardPresentPaymentEventDetails {
         .connectingFailedUpdatePostalCode(retrySearch: retrySearch,
                                           endSearch: cancelSearch)
     }
 
     func updatingFailed(tryAgain: (() -> Void)?,
-                        close: @escaping () -> Void) -> CardPresentPaymentAlertDetails {
+                        close: @escaping () -> Void) -> CardPresentPaymentEventDetails {
         .updateFailed(tryAgain: tryAgain,
                       cancelUpdate: close)
     }
 
     func updateProgress(requiredUpdate: Bool,
                         progress: Float,
-                        cancel: (() -> Void)?) -> CardPresentPaymentAlertDetails {
+                        cancel: (() -> Void)?) -> CardPresentPaymentEventDetails {
         .updateProgress(requiredUpdate: requiredUpdate,
                         progress: progress,
                         cancelUpdate: cancel)
@@ -66,7 +66,7 @@ struct CardPresentPaymentBuiltInReaderConnectionAlertsProvider: CardReaderConnec
 
     func selectSearchType(tapToPay: @escaping () -> Void,
                           bluetooth: @escaping () -> Void,
-                          cancel: @escaping () -> Void) -> CardPresentPaymentAlertDetails {
+                          cancel: @escaping () -> Void) -> CardPresentPaymentEventDetails {
         .selectSearchType(tapToPay: tapToPay,
                           bluetooth: bluetooth,
                           endSearch: cancel)

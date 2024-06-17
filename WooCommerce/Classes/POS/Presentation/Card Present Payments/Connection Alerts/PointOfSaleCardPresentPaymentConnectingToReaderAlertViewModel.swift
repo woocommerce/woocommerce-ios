@@ -1,22 +1,22 @@
 import Foundation
 import SwiftUI
 
-struct CardPresentPaymentConnectingToReaderAlertViewModel {
+struct PointOfSaleCardPresentPaymentConnectingToReaderAlertViewModel {
     let title = Localization.title
     let image = Image(uiImage: .cardReaderConnecting)
     let instruction = Localization.instruction
 }
 
-private extension CardPresentPaymentConnectingToReaderAlertViewModel {
+private extension PointOfSaleCardPresentPaymentConnectingToReaderAlertViewModel {
     enum Localization {
         static let title = NSLocalizedString(
-            "cardPresentPayment.alert.connectingToReader.title",
+            "pointOfSale.cardPresentPayment.alert.connectingToReader.title",
             value: "Connecting to reader",
             comment: "Title label for modal dialog that appears when connecting to a card reader"
         )
 
         static let instruction = NSLocalizedString(
-            "cardPresentPayment.alert.connectingToReader.instruction",
+            "pointOfSale.cardPresentPayment.alert.connectingToReader.instruction",
             value: "Please wait...",
             comment: "Label within the modal dialog that appears when connecting to a card reader"
         )

@@ -1,10 +1,10 @@
 import SwiftUI
 
-struct CardPresentPaymentBluetoothRequiredAlertView: View {
-    private let viewModel: CardPresentPaymentBluetoothRequiredAlertViewModel
+struct PointOfSaleCardPresentPaymentBluetoothRequiredAlertView: View {
+    private let viewModel: PointOfSaleCardPresentPaymentBluetoothRequiredAlertViewModel
     @Environment(\.dismiss) private var dismiss
 
-    init(viewModel: CardPresentPaymentBluetoothRequiredAlertViewModel) {
+    init(viewModel: PointOfSaleCardPresentPaymentBluetoothRequiredAlertViewModel) {
         self.viewModel = viewModel
     }
 
@@ -30,5 +30,6 @@ struct CardPresentPaymentBluetoothRequiredAlertView: View {
 }
 
 #Preview {
-    CardPresentPaymentBluetoothRequiredAlertView(viewModel: .init(error: NSError(domain: "", code: 1), endSearch: {}))
+    PointOfSaleCardPresentPaymentBluetoothRequiredAlertView(viewModel: .init(error: NSError(domain: "", code: 1),
+                                                                             endSearch: {}))
 }

@@ -1,7 +1,7 @@
 import SwiftUI
 
-struct CardPresentPaymentConnectingFailedChargeReaderView: View {
-    let viewModel: CardPresentPaymentConnectingFailedChargeReaderAlertViewModel
+struct PointOfSaleCardPresentPaymentConnectingFailedChargeReaderView: View {
+    let viewModel: PointOfSaleCardPresentPaymentConnectingFailedChargeReaderAlertViewModel
     var body: some View {
         VStack {
             Text(viewModel.title)
@@ -21,8 +21,8 @@ struct CardPresentPaymentConnectingFailedChargeReaderView: View {
 }
 
 #Preview {
-    CardPresentPaymentConnectingFailedChargeReaderView(
-        viewModel: CardPresentPaymentConnectingFailedChargeReaderAlertViewModel(
+    PointOfSaleCardPresentPaymentConnectingFailedChargeReaderView(
+        viewModel: PointOfSaleCardPresentPaymentConnectingFailedChargeReaderAlertViewModel(
             retryButtonAction: {},
             cancelButtonAction: {}))
 }

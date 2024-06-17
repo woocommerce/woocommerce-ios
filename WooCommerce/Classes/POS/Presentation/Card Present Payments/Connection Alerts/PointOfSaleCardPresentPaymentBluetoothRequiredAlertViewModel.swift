@@ -1,7 +1,7 @@
 import Foundation
 import SwiftUI
 
-struct CardPresentPaymentBluetoothRequiredAlertViewModel {
+struct PointOfSaleCardPresentPaymentBluetoothRequiredAlertViewModel {
     let title = Localization.bluetoothRequired
     let image = Image(uiImage: .paymentErrorImage)
     let openSettingsButtonViewModel: CardPresentPaymentsModalButtonViewModel
@@ -26,20 +26,23 @@ struct CardPresentPaymentBluetoothRequiredAlertViewModel {
     }
 }
 
-private extension CardPresentPaymentBluetoothRequiredAlertViewModel {
+private extension PointOfSaleCardPresentPaymentBluetoothRequiredAlertViewModel {
     enum Localization {
         static let bluetoothRequired = NSLocalizedString(
-            "Bluetooth permission required",
+            "pointOfSale.cardPresentPayment.alert.bluetoothRequired.title",
+            value: "Bluetooth permission required",
             comment: "Title of the alert presented when the user tries to connect a Bluetooth card reader with insufficient permissions"
         )
 
         static let openDeviceSettings = NSLocalizedString(
-            "Open Device Settings",
+            "pointOfSale.cardPresentPayment.alert.bluetoothRequired.openSettings.button.title",
+            value: "Open Device Settings",
             comment: "Opens iOS's Device Settings for the app"
         )
 
         static let dismiss = NSLocalizedString(
-            "Dismiss",
+            "pointOfSale.cardPresentPayment.alert.bluetoothRequired.dismiss.button.title",
+            value: "Dismiss",
             comment: "Button to dismiss the alert presented when finding a reader to connect to fails"
         )
     }

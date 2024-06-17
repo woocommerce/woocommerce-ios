@@ -61,6 +61,7 @@ struct JetpackErrorViewModel: ULErrorViewModel {
         analytics.track(.loginJetpackSetupButtonTapped)
     }
 
+    @MainActor
     private func showJetpackSetupScreen(in viewController: UIViewController?) {
         guard let viewController = viewController else {
             return

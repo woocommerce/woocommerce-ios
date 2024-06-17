@@ -1,6 +1,7 @@
 import UIKit
 
 /// Based on `UISheetPresentationController`'s properties for bottom sheet customizations.
+@MainActor
 protocol BottomSheetConfigurable {
     var prefersEdgeAttachedInCompactHeight: Bool { get set }
     var largestUndimmedDetentIdentifier: UISheetPresentationController.Detent.Identifier? { get set }
@@ -11,6 +12,7 @@ protocol BottomSheetConfigurable {
 extension UISheetPresentationController: BottomSheetConfigurable {}
 
 /// Handles presentation and dismissal of a bottom sheet natively.
+@MainActor
 final class BottomSheetPresenter: NSObject {
     typealias ConfigureBottomSheet = (BottomSheetConfigurable) -> Void
 
@@ -70,6 +72,7 @@ private extension BottomSheetPresenter {
 
 private extension BottomSheetPresenter {
     enum Defaults {
+        @MainActor
         static let config: ConfigureBottomSheet = { bottomSheet in
             var sheet = bottomSheet
             sheet.prefersEdgeAttachedInCompactHeight = true

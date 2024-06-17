@@ -7,6 +7,7 @@ import class AutomatticTracks.CrashLogging
 
 /// A generic data source for the paginated list selector UI `PaginatedListSelectorViewController`.
 ///
+@MainActor
 protocol PaginatedListSelectorDataSource {
     associatedtype StorageModel: ResultsControllerMutableType
     associatedtype Cell: UITableViewCell

@@ -188,6 +188,7 @@ final class PaymentMethodsViewModel: ObservableObject {
     /// Starts the collect payment flow in the provided `rootViewController`
     /// - parameter useCase: Assign a custom useCase object for testing purposes. If not provided `CollectOrderPaymentUseCase` will be used.
     ///
+    @MainActor
     func collectPayment(using discoveryMethod: CardReaderDiscoveryMethod,
                         on rootViewController: UIViewController?,
                         useCase: CollectOrderPaymentProtocol? = nil,

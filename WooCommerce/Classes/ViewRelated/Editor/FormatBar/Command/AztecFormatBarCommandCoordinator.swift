@@ -1,6 +1,7 @@
 import Aztec
 
 /// Coordinates the format bar commands for handling formatting actions.
+@MainActor
 struct AztecFormatBarCommandCoordinator {
     let commandsByFormattingIdentifier: [FormattingIdentifier: AztecFormatBarCommand]
 
@@ -21,6 +22,7 @@ struct AztecFormatBarCommandCoordinator {
         self.commandsByFormattingIdentifier = commandsByFormattingIdentifier
     }
 
+    @MainActor
     func handleAction(formatBarItem: FormatBarItem, editorView: EditorView, formatBar: FormatBar) {
         guard let identifier = formatBarItem.identifier,
             let formattingIdentifier = FormattingIdentifier(rawValue: identifier) else {

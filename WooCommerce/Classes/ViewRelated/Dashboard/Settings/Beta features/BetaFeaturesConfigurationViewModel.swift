@@ -8,6 +8,7 @@ final class BetaFeaturesConfigurationViewModel: ObservableObject {
     private let featureFlagService: FeatureFlagService
     private let posEligibilityChecker: POSEligibilityCheckerProtocol
 
+    @MainActor
     init(appSettings: GeneralAppSettingsStorage = ServiceLocator.generalAppSettings,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          posEligibilityChecker: POSEligibilityCheckerProtocol = POSEligibilityChecker(

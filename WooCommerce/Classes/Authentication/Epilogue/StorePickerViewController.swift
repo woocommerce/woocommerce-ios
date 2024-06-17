@@ -12,7 +12,7 @@ typealias SelectStoreClosure = () -> Void
 
 /// StorePickerViewControllerDelegate: the interface with operations related to the store picker
 ///
-protocol StorePickerViewControllerDelegate: AnyObject {
+@MainActor protocol StorePickerViewControllerDelegate: AnyObject {
 
     /// Notifies the delegate that the store selection is complete,
     /// - Parameter storeID: ID of the store selected by the user

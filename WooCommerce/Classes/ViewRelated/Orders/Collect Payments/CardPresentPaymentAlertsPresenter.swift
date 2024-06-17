@@ -4,12 +4,22 @@ import UIKit
 
 protocol CardPresentPaymentAlertsPresenting<AlertDetails> {
     associatedtype AlertDetails
+
+    @MainActor
     func present(viewModel: AlertDetails)
+
+    @MainActor
     func presentWCSettingsWebView(adminURL: URL, completion: @escaping () -> Void)
+
+    @MainActor
     func foundSeveralReaders(readerIDs: [String],
                              connect: @escaping (String) -> Void,
                              cancelSearch: @escaping () -> Void)
+
+    @MainActor
     func updateSeveralReadersList(readerIDs: [String])
+
+    @MainActor
     func dismiss()
 }
 
@@ -27,10 +37,12 @@ final class CardPresentPaymentAlertsPresenter: CardPresentPaymentAlertsPresentin
         self.rootViewController = rootViewController
     }
 
+    @MainActor
     func present(viewModel: CardPresentPaymentsModalViewModel) {
         setViewModelAndPresent(viewModel: viewModel)
     }
 
+    @MainActor
     private func setViewModelAndPresent(viewModel: CardPresentPaymentsModalViewModel) {
         guard modalController == nil else {
             modalController?.setViewModel(viewModel)
@@ -50,6 +62,7 @@ final class CardPresentPaymentAlertsPresenter: CardPresentPaymentAlertsPresentin
     /// Dismisses any view controller based on `CardPresentPaymentsModalViewController`,
     /// then presents any `SeveralReadersFoundViewController` passed to it
     ///
+    @MainActor
     private func dismissCommonAndPresent(animated: Bool = true, from: ViewControllerPresenting? = nil, present: SeveralReadersFoundViewController? = nil) {
         /// Dismiss any common modal
         ///
@@ -73,6 +86,7 @@ final class CardPresentPaymentAlertsPresenter: CardPresentPaymentAlertsPresentin
         from.present(present, animated: animated)
     }
 
+    @MainActor
     func presentWCSettingsWebView(adminURL: URL, completion: @escaping () -> Void) {
         guard let modalController else {
             return
@@ -89,6 +103,7 @@ final class CardPresentPaymentAlertsPresenter: CardPresentPaymentAlertsPresentin
     /// Dismisses the `SeveralReadersFoundViewController`, then presents any
     /// `CardPresentPaymentsModalViewController` passed to it.
     ///
+    @MainActor
     func dismissSeveralFoundAndPresent(animated: Bool = true, from: ViewControllerPresenting? = nil, present: CardPresentPaymentsModalViewController? = nil) {
         guard severalFoundController == nil else {
             let shouldAnimateDismissal = animated && present == nil
@@ -116,6 +131,7 @@ final class CardPresentPaymentAlertsPresenter: CardPresentPaymentAlertsPresentin
     /// This will dismiss any view controllers using the common view model first before
     /// presenting the several readers found modal
     ///
+    @MainActor
     func foundSeveralReaders(readerIDs: [String],
                              connect: @escaping (String) -> Void,
                              cancelSearch: @escaping () -> Void) {
@@ -135,10 +151,12 @@ final class CardPresentPaymentAlertsPresenter: CardPresentPaymentAlertsPresentin
 
     /// Used to update the readers list in the several readers found view
     ///
+    @MainActor
     func updateSeveralReadersList(readerIDs: [String]) {
         severalFoundController?.updateReaderIDs(readerIDs: readerIDs)
     }
 
+    @MainActor
     func dismiss() {
         dismissCommonAndPresent(animated: true)
         dismissSeveralFoundAndPresent(animated: true)

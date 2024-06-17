@@ -127,6 +127,7 @@ extension RefundDetailsViewModel {
 
     /// Handle taps on cells
     ///
+    @MainActor
     func tableView(_ tableView: UITableView,
                    in viewController: UIViewController,
                    didSelectRowAt indexPath: IndexPath) {

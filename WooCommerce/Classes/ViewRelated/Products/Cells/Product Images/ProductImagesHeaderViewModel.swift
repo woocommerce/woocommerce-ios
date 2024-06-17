@@ -50,6 +50,7 @@ final class ProductImagesHeaderViewModel {
 extension ProductImagesHeaderViewModel {
     /// Registers all of the available CollectionViewCells
     ///
+    @MainActor
     func registerCollectionViewCells(_ collectionView: UICollectionView) {
         let cells = [
             ProductImageCollectionViewCell.self,

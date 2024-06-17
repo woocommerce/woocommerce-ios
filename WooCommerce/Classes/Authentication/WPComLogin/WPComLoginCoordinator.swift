@@ -5,6 +5,7 @@ import WordPressAuthenticator
 import WooFoundation
 
 /// Coordinates navigation for the login flow with WPCom accounts.
+@MainActor
 final class WPComLoginCoordinator {
     /// Title to display on top of the login views
     private let title: String

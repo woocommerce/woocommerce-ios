@@ -4,6 +4,7 @@ import Yosemite
 
 /// Adds a method to UITableViewDelegate so that we can
 /// trigger navigation from its implementation
+@MainActor
 protocol ReviewsInteractionDelegate: UITableViewDelegate {
     /// Called when users pick a review from the list
     ///

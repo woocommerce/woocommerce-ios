@@ -5,7 +5,8 @@ import WordPressUI
 
 /// Helper that makes sharing on iOS slightly easier
 ///
-class SharingHelper {
+@MainActor
+final class SharingHelper {
 
     typealias Completion = (UIActivity.ActivityType?, Bool, [Any]?, Error?) -> Void
 

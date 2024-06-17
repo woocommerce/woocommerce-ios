@@ -28,6 +28,7 @@ struct NotificationsBadgeInput {
     let tabIndex: Int
 }
 
+@MainActor
 final class NotificationsBadgeController {
     /// Updates the tab badge depending on the provided input parameter
     ///

@@ -7,6 +7,7 @@ import WooFoundation
 
 /// Coordinates the Jetpack setup flow in the authenticated state.
 ///
+@MainActor
 final class JetpackSetupCoordinator {
     let rootViewController: UIViewController
 
@@ -24,9 +25,13 @@ final class JetpackSetupCoordinator {
     private lazy var emailLoginViewModel: WPComEmailLoginViewModel = {
         .init(siteURL: site.url,
               requiresConnectionOnly: requiresConnectionOnly,
-              onPasswordUIRequest: showPasswordUI(email:),
-              onMagicLinkUIRequest: showMagicLinkUI(email:),
-              onError: { [weak self] message in
+              onPasswordUIRequest: { [weak self] email in
+            self?.showPasswordUI(email: email)
+        },
+              onMagicLinkUIRequest: { [weak self] email in
+            self?.showMagicLinkUI(email: email)
+        },
+            onError: { [weak self] message in
             self?.showAlert(message: message)
         })
     }()

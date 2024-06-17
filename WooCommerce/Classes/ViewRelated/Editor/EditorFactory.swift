@@ -1,5 +1,6 @@
 import Yosemite
 
+@MainActor
 protocol Editor {
     typealias OnContentSave = (_ content: String, _ productName: String?) -> Void
     var onContentSave: OnContentSave? { get }
@@ -11,6 +12,7 @@ final class EditorFactory {
 
     // MARK: - Editor: Instantiation
 
+    @MainActor
     func productDescriptionEditor(product: ProductFormDataModel,
                                   isAIGenerationEnabled: Bool,
                                   onContentSave: @escaping Editor.OnContentSave) -> Editor & UIViewController {
@@ -25,6 +27,7 @@ final class EditorFactory {
         return editor
     }
 
+    @MainActor
     func productShortDescriptionEditor(product: ProductFormDataModel,
                                        onContentSave: @escaping Editor.OnContentSave) -> Editor & UIViewController {
         let viewProperties = EditorViewProperties(navigationTitle: Localization.productShortDescriptionTitle,

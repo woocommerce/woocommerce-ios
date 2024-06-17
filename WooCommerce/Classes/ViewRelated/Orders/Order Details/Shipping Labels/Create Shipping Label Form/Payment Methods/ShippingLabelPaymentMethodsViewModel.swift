@@ -101,6 +101,7 @@ extension ShippingLabelPaymentMethodsViewModel {
 
     /// Updates remote shipping label account settings
     ///
+    @MainActor
     func updateShippingLabelAccountSettings(onCompletion: @escaping ((ShippingLabelAccountSettings) -> Void)) {
         isUpdating = true
         let newSettings = accountSettings.copy(selectedPaymentMethodID: selectedPaymentMethodID,

@@ -3,6 +3,7 @@ import WordPressUI
 
 /// Presents a bottom sheet list selector specified in its initializer.
 ///
+@MainActor
 final class BottomSheetListSelectorPresenter<Command: BottomSheetListSelectorCommand> {
     private let bottomSheetChildViewController: DrawerPresentableViewController
 

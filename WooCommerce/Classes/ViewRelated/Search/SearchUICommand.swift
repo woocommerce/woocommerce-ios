@@ -2,6 +2,7 @@ import UIKit
 import Yosemite
 
 /// An interface for search UI associated with a generic model and cell view model.
+@MainActor
 protocol SearchUICommand {
     associatedtype Model
     associatedtype CellViewModel

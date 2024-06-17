@@ -82,6 +82,7 @@ public final class SupportFormViewModel: ObservableObject {
         }
     }
 
+    @MainActor
     init(areas: [Area] = wooSupportAreas(),
          sourceTag: String? = nil,
          zendeskProvider: ZendeskManagerProtocol = ZendeskProvider.shared,
@@ -94,6 +95,7 @@ public final class SupportFormViewModel: ObservableObject {
 
     /// Tracks when the support form is viewed.
     ///
+    @MainActor
     func onViewAppear() {
         analyticsProvider.track(.supportNewRequestViewed)
         requestZendeskIdentityIfNeeded()
@@ -113,6 +115,7 @@ public final class SupportFormViewModel: ObservableObject {
 
     /// Submits the support request using the Zendesk Provider.
     ///
+    @MainActor
     func submitSupportRequest() {
         guard let area else { return }
 
@@ -188,6 +191,7 @@ extension SupportFormViewModel {
 
 // MARK: Private helpers
 private extension SupportFormViewModel {
+    @MainActor
     func requestZendeskIdentityIfNeeded() {
         guard !zendeskProvider.haveUserIdentity else {
             DDLogDebug("Using existing Zendesk identity")

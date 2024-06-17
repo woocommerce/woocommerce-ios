@@ -1,6 +1,7 @@
 import CoreSpotlight
 import Foundation
 
+@MainActor
 struct SpotlightManager {
     static func handleUserActivity(_ userActivity: NSUserActivity) {
         var type: WooActivityType?

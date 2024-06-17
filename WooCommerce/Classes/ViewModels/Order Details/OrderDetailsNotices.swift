@@ -1,7 +1,9 @@
 import Foundation
 import Yosemite
 
+@MainActor
 final class OrderDetailsNotices {
+
     static let shared = OrderDetailsNotices()
     /// Displays the `Unable to delete tracking` Notice.
     ///

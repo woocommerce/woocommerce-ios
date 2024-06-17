@@ -27,6 +27,7 @@ final class ProductReviewsViewModel {
         self.data = data
     }
 
+    @MainActor
     func configureResultsController(tableView: UITableView) {
         data.startForwardingEvents(to: tableView)
 
@@ -46,6 +47,7 @@ final class ProductReviewsViewModel {
 
     /// Setup: TableViewCells
     ///
+    @MainActor
     func configureTableViewCells(tableView: UITableView) {
         tableView.registerNib(for: ProductReviewTableViewCell.self)
     }

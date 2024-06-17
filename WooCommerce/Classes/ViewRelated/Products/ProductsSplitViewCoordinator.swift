@@ -3,6 +3,7 @@ import UIKit
 import Yosemite
 
 /// Coordinates the state of multiple columns (product list and secondary view) based on the secondary view.
+@MainActor
 final class ProductsSplitViewCoordinator: NSObject {
     /// Content type that is shown in the secondary view.
     enum SecondaryViewContentType: Equatable {
@@ -28,7 +29,9 @@ final class ProductsSplitViewCoordinator: NSObject {
     private let secondaryNavigationController: UINavigationController
     private lazy var productsViewController = ProductsViewController(siteID: siteID,
                                                                      selectedProduct: selectedProduct,
-                                                                     navigateToContent: showFromProductList)
+                                                                     navigateToContent: { [weak self] content in
+        self?.showFromProductList(content: content)
+    })
 
     private var addProductCoordinator: AddProductCoordinator?
 

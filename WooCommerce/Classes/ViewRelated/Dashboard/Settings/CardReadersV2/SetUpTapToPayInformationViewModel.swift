@@ -113,6 +113,7 @@ final class SetUpTapToPayInformationViewModel: PaymentSettingsFlowPresentedViewM
         .store(in: &subscriptions)
     }
 
+    @MainActor
     func setUpTapped() {
         analytics.track(.tapToPaySetupInformationSetUpTapped)
         setUpInProgress = true

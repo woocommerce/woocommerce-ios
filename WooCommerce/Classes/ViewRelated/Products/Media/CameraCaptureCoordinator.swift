@@ -4,6 +4,7 @@ import Photos
 
 /// Encapsulates capturing media from a device camera.
 ///
+@MainActor
 final class CameraCaptureCoordinator {
     private var capturePresenter: WPMediaCapturePresenter?
 

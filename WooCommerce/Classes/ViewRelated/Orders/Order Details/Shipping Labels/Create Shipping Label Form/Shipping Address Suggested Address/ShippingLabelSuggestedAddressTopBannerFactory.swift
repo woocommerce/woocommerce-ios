@@ -3,6 +3,7 @@ import UIKit
 /// Generates top banner view that is shown at the top of variation list screen when at least one variation is missing a price.
 ///
 final class ShippingLabelSuggestedAddressTopBannerFactory {
+    @MainActor
     static func topBannerView() -> TopBannerView {
         let viewModel = TopBannerViewModel(title: nil,
                                            infoText: Localization.info,

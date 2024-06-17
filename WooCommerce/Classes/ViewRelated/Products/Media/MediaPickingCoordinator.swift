@@ -13,6 +13,7 @@ enum MediaPickingSource {
 
 /// Prepares the alert controller that will be presented when trying to add media to a site.
 ///
+@MainActor
 final class MediaPickingCoordinator {
     private lazy var cameraCapture: CameraCaptureCoordinator = {
         return CameraCaptureCoordinator(onCompletion: onCameraCaptureCompletion)

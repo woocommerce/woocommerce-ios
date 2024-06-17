@@ -25,6 +25,7 @@ final class POSEligibilityChecker: POSEligibilityCheckerProtocol {
     private let currencySettings: CurrencySettings
     private let featureFlagService: FeatureFlagService
 
+    @MainActor
     init(userInterfaceIdiom: UIUserInterfaceIdiom = UIDevice.current.userInterfaceIdiom,
          cardPresentPaymentsOnboarding: CardPresentPaymentsOnboardingUseCaseProtocol = CardPresentPaymentsOnboardingUseCase(),
          siteSettings: SelectedSiteSettings = ServiceLocator.selectedSiteSettings,

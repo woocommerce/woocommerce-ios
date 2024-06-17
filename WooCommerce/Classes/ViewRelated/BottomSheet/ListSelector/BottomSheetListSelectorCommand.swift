@@ -2,6 +2,7 @@ import UIKit
 
 /// A generic interface for rendering the bottom sheet list selector UI `BottomSheetListSelectorViewController`.
 ///
+@MainActor
 protocol BottomSheetListSelectorCommand {
     associatedtype Model: Equatable
     associatedtype Cell: UITableViewCell

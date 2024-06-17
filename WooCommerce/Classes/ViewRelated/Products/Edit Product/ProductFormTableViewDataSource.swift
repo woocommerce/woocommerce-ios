@@ -18,6 +18,7 @@ private extension ProductFormSection.SettingsRow.ViewModel {
 
 /// Configures the sections and rows of Product form table view based on the view model.
 ///
+@MainActor
 final class ProductFormTableViewDataSource: NSObject {
     private let viewModel: ProductFormTableViewModel
     private var onNameChange: ((_ name: String?) -> Void)?

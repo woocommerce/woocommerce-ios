@@ -13,5 +13,6 @@ protocol Route {
     /// - Parameter parameters: The parameters dictionary that was contained in the URL
     /// - Returns: Whether the `Route` could perform the action or not.
     ///
+    @MainActor
     func perform(for subPath: String, with parameters: [String: String]) -> Bool
 }

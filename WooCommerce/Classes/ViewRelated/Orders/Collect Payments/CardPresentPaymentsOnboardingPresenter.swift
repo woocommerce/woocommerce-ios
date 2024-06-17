@@ -4,6 +4,7 @@ import Combine
 import Foundation
 
 protocol CardPresentPaymentsOnboardingPresenting {
+    @MainActor
     func showOnboardingIfRequired(from: ViewControllerPresenting,
                                   readyToCollectPayment: @escaping () -> Void)
 
@@ -32,6 +33,7 @@ final class CardPresentPaymentsOnboardingPresenter: CardPresentPaymentsOnboardin
         onboardingViewModel = CardPresentPaymentsOnboardingViewModel(useCase: onboardingUseCase)
     }
 
+    @MainActor
     func showOnboardingIfRequired(from viewController: ViewControllerPresenting,
                                   readyToCollectPayment completion: @escaping () -> Void) {
         readinessUseCase.checkCardPaymentReadiness()
@@ -41,6 +43,7 @@ final class CardPresentPaymentsOnboardingPresenter: CardPresentPaymentsOnboardin
         completion()
     }
 
+    @MainActor
     private func showOnboarding(from viewController: ViewControllerPresenting,
                                 readyToCollectPayment completion: @escaping () -> Void) {
         let onboardingViewController = CardPresentPaymentsOnboardingViewController(viewModel: onboardingViewModel,

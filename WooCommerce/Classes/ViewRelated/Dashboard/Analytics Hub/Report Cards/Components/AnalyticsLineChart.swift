@@ -22,6 +22,7 @@ struct AnalyticsLineChart: UIViewRepresentable {
         configureChartData(for: uiView, data: dataPoints, lineColor: lineChartColor)
     }
 
+    @MainActor
     func configureChart(_ lineChartView: LineChartView) {
         lineChartView.chartDescription.enabled = false
 
@@ -38,6 +39,7 @@ struct AnalyticsLineChart: UIViewRepresentable {
         lineChartView.rightAxis.enabled = false
     }
 
+    @MainActor
     func configureChartData(for lineChartView: LineChartView, data dataPoints: [Double], lineColor: UIColor) {
         // Adds provided `dataPoints` to data set
         var dataEntries: [ChartDataEntry] = []

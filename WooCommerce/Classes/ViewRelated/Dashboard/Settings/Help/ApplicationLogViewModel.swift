@@ -110,6 +110,7 @@ final class ApplicationLogViewModel: ObservableObject {
     /// - returns: all unsupported types
     /// Preserves support for `.copyToPasteboard`, `.mail`, and `.airDrop`
     ///
+    @MainActor
     var excludedActivityTypes: Set<UIActivity.ActivityType> {
         let activityTypes = Set(SharingHelper.allActivityTypes())
         let supportedTypes: Set<UIActivity.ActivityType> = [

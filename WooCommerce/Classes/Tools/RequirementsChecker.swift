@@ -22,6 +22,7 @@ enum RequirementCheckResult: Int, CaseIterable {
 
 /// Responsible for checking the minimum requirements for the app and its features!
 ///
+@MainActor
 final class RequirementsChecker {
 
     private let stores: StoresManager

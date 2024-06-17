@@ -4,6 +4,7 @@ import enum Networking.DotcomError
 /// Creates a top banner to be used when there is an error loading data on a screen.
 /// The banner has two action buttons: "Troubleshoot" and "Contact Support."
 struct ErrorTopBannerFactory {
+    @MainActor
     static func createTopBanner(for error: Error,
                                 expandedStateChangeHandler: @escaping () -> Void,
                                 onTroubleshootButtonPressed: @escaping () -> Void,

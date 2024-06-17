@@ -267,6 +267,7 @@ final class SimplePaymentsSummaryViewModel: ObservableObject {
 
     /// Creates a view model for the `SimplePaymentsMethods` screen.
     ///
+    @MainActor
     func createMethodsViewModel() -> PaymentMethodsViewModel {
         PaymentMethodsViewModel(siteID: siteID,
                                 orderID: orderID,

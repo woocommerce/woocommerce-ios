@@ -7,6 +7,7 @@ import Yosemite
 
 /// Facilitates connecting to a card reader
 ///
+@MainActor
 final class CardReaderConnectionController<AlertProvider: BluetoothReaderConnnectionAlertsProviding,
                                           AlertPresenter: CardPresentPaymentAlertsPresenting>
 where AlertProvider.AlertDetails == AlertPresenter.AlertDetails {

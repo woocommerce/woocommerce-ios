@@ -2,6 +2,7 @@ import Foundation
 import UIKit
 
 /// Abstracts the In-App Notifications Presenter
+@MainActor
 protocol NoticePresenter {
 
     /// Enqueues the specified Notice for display.

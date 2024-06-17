@@ -35,6 +35,7 @@ extension ProductImagesCollectionViewDataSource: UICollectionViewDataSource {
 // MARK: - Support methods for UICollectionViewDataSource
 //
 private extension ProductImagesCollectionViewDataSource {
+    @MainActor
     func configure(collectionView: UICollectionView, _ cell: UICollectionViewCell, for item: ProductImagesItem, at indexPath: IndexPath) {
         switch item {
         case .image(let status):
@@ -48,6 +49,7 @@ private extension ProductImagesCollectionViewDataSource {
         }
     }
 
+    @MainActor
     func configureImageCell(_ cell: UICollectionViewCell, productImageStatus: ProductImageStatus) {
         switch productImageStatus {
         case .remote(let image):
@@ -62,6 +64,7 @@ private extension ProductImagesCollectionViewDataSource {
         }
     }
 
+    @MainActor
     func configureRemoteImageCell(_ cell: UICollectionViewCell, productImage: ProductImage) {
         guard let cell = cell as? ProductImageCollectionViewCell else {
             fatalError()
@@ -85,6 +88,7 @@ private extension ProductImagesCollectionViewDataSource {
         }
     }
 
+    @MainActor
     func configureUploadingImageCell(_ cell: UICollectionViewCell, asset: PHAsset) {
         guard let cell = cell as? InProgressProductImageCollectionViewCell else {
             fatalError()
@@ -99,6 +103,7 @@ private extension ProductImagesCollectionViewDataSource {
         }
     }
 
+    @MainActor
     func configureUploadingImageCell(_ cell: UICollectionViewCell, image: UIImage) {
         guard let cell = cell as? InProgressProductImageCollectionViewCell else {
             fatalError()
@@ -114,6 +119,7 @@ enum ProductImagesItem {
     case addImage
     case extendedAddImage(isVariation: Bool)
 
+    @MainActor
     var reuseIdentifier: String {
         switch self {
         case .image(let status):

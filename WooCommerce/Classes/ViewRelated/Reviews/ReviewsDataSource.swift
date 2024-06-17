@@ -168,6 +168,7 @@ private extension ReviewsDataSource {
 
     /// Initializes the Notifications Cell at the specified indexPath
     ///
+    @MainActor
     func configure(_ cell: ProductReviewTableViewCell, at indexPath: IndexPath) {
         let viewModel = reviewViewModel(at: indexPath)
 

@@ -24,6 +24,7 @@ final class CardPresentRefundOrchestrator {
     ///   - onProcessingMessage: called when the refund is processing.
     ///   - onDisplayMessage: called when the card reader sends a message to display to the user.
     ///   - onCompletion: called when the refund completes.
+    @MainActor
     func refund(amount: Decimal,
                 charge: WCPayCharge,
                 paymentGatewayAccount: PaymentGatewayAccount,
@@ -74,6 +75,7 @@ private extension CardPresentRefundOrchestrator {
     /// Suppresses wallet presentation. This requires a special entitlement from Apple:
     /// `com.apple.developer.passkit.pass-presentation-suppression`
     /// See Woo-*.entitlements in WooCommerce/Resources
+    @MainActor
     func suppressPassPresentation() {
         /// iPads don't support NFC passes. Attempting to call `requestAutomaticPassPresentationSuppression` on them will
         /// return 0 `notSupported`
@@ -98,6 +100,7 @@ private extension CardPresentRefundOrchestrator {
     }
 
     /// Restores wallet presentation.
+    @MainActor
     func allowPassPresentation() {
         /// iPads don't have passes (wallets) to present
         ///

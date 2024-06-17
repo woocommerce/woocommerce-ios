@@ -73,6 +73,7 @@ final class RefundConfirmationViewModel {
     ///   - rootViewController: view controller used to present in-person refund alerts if needed.
     ///   - showInProgressUI: called when in-progress UI should be shown during refund submission. In-person refund submission does not show in-progress UI.
     ///   - onCompletion: called when the refund submission completes.
+    @MainActor
     func submit(rootViewController: UIViewController,
                 showInProgressUI: @escaping (() -> Void),
                 onCompletion: @escaping (Result<Void, Error>) -> Void) {

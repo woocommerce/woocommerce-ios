@@ -2,6 +2,7 @@ import UIKit
 import Yosemite
 
 /// Protocol for `OrderDetailsPaymentAlerts` to enable unit testing.
+@MainActor
 protocol OrderDetailsPaymentAlertsProtocol {
     func presentViewModel(viewModel: CardPresentPaymentsModalViewModel)
 

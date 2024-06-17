@@ -4,6 +4,7 @@ import Yosemite
 import protocol WooFoundation.Analytics
 
 /// Coordinates navigation actions for printing shipping labels.
+@MainActor
 final class PrintShippingLabelCoordinator {
     private let sourceNavigationController: UINavigationController
     private let shippingLabels: [ShippingLabel]

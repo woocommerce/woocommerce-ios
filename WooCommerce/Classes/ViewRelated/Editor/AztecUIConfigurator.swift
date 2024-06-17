@@ -3,6 +3,7 @@ import UIKit
 import WordPressEditor
 
 /// Configures the Aztec UI components, like the styling and Auto Layout constraints.
+@MainActor
 struct AztecUIConfigurator {
     func configureEditorView(_ editorView: EditorView,
                              textViewDelegate: UITextViewDelegate,

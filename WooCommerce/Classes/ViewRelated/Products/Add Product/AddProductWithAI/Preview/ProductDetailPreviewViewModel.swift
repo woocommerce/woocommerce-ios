@@ -6,6 +6,7 @@ import protocol Storage.StorageManagerType
 
 /// View model for `ProductDetailPreviewView`
 ///
+@MainActor
 final class ProductDetailPreviewViewModel: ObservableObject {
 
     @Published private(set) var isGeneratingDetails: Bool = false

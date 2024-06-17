@@ -68,11 +68,14 @@ protocol ManualTrackingViewModel {
     var isCustom: Bool { get }
     var isAdding: Bool { get }
 
+    @MainActor
     func registerCells(for tableView: UITableView)
+
     func saveSelectedShipmentProvider()
 }
 
 extension ManualTrackingViewModel {
+    @MainActor
     func registerCells(for tableView: UITableView) {
         for row in AddEditTrackingRow.allCases {
             tableView.registerNib(for: row.type)

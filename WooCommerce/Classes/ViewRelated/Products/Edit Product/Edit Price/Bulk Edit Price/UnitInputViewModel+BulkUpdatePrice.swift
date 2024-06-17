@@ -5,6 +5,7 @@ extension UnitInputViewModel {
     /// Creates a `UnitInputViewModel` for configuring the cell for the bulk price update.
     /// It has the price input field on the left and no title (`.secondary` style).
     ///
+    @MainActor
     static func createBulkPriceViewModel(using currencySettings: CurrencySettings,
                                          onInputChange: @escaping (_ input: String?) -> Void) -> UnitInputViewModel {
 

@@ -106,12 +106,14 @@ final class CustomersListViewModel: ObservableObject {
     }
 
     /// Called when the next page should be loaded.
+    @MainActor
     func onLoadNextPageAction() {
         paginationTracker.ensureNextPageIsSynced()
     }
 
     /// Called when the user pulls down the list to refresh.
     /// - Parameter completion: called when the refresh completes.
+    @MainActor
     func onRefreshAction(completion: @escaping () -> Void) {
         paginationTracker.resync(reason: nil) {
             completion()
@@ -129,6 +131,7 @@ final class CustomersListViewModel: ObservableObject {
 
 extension CustomersListViewModel: PaginationTrackerDelegate {
     /// Syncs the first page of customers from remote.
+    @MainActor
     func loadCustomers() {
         paginationTracker.syncFirstPage()
     }
@@ -297,6 +300,7 @@ extension CustomersListViewModel {
     }
 
     /// View models for placeholder rows.
+    @MainActor
     static let placeholderRows: [WCAnalyticsCustomer] = [Int64](0..<3).map {
         // The content does not matter because the text in placeholder rows is redacted.
         WCAnalyticsCustomer(siteID: 0,

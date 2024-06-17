@@ -7,6 +7,7 @@ import class AutomatticTracks.CrashLogging
 import protocol Storage.StorageManagerType
 import protocol WooFoundation.Analytics
 
+@MainActor
 final class AppCoordinator {
     let tabBarController: MainTabBarController
 

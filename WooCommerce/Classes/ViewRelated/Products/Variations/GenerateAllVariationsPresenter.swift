@@ -3,6 +3,7 @@ import UIKit
 
 /// Type to encapsulate view controllers and notices shown while generating all variations.
 ///
+@MainActor
 final class GenerateAllVariationsPresenter {
 
     /// Base view controller where the loading indicators and notices will be presented.

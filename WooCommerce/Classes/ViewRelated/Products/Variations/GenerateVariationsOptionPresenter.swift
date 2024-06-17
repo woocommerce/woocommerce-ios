@@ -5,6 +5,7 @@ import protocol WooFoundation.Analytics
 
 /// Type to encapsulate the options presented when generating variations.
 ///
+@MainActor
 final class GenerateVariationsOptionsPresenter {
     /// Options available when generating variations
     ///

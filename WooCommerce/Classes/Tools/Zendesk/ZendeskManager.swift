@@ -15,6 +15,7 @@ import Experiments
 /// This is primarily used for testability. Not all methods in `ZendeskManager` are defined but
 /// feel free to add them when needed.
 ///
+@MainActor
 protocol ZendeskManagerProtocol {
     typealias onUserInformationCompletion = (_ success: Bool, _ email: String?) -> Void
 
@@ -92,6 +93,7 @@ struct NoZendeskManager: ZendeskManagerProtocol {
     }
 }
 
+@MainActor
 struct ZendeskProvider {
     /// Shared Instance
     ///

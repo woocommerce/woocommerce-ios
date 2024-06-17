@@ -3,6 +3,7 @@ import Yosemite
 import protocol WooFoundation.Analytics
 
 /// View model for `ProductSharingMessageGenerationView`
+@MainActor
 final class ProductSharingMessageGenerationViewModel: ObservableObject {
     @Published var isSharePopoverPresented = false
     @Published var isShareSheetPresented = false

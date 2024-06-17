@@ -52,12 +52,14 @@ extension RefundedProductsViewModel {
 extension RefundedProductsViewModel {
     /// Registers all of the available TableViewCells
     ///
+    @MainActor
     func registerTableViewCells(_ tableView: UITableView) {
         tableView.registerNib(for: ProductDetailsTableViewCell.self)
     }
 
     /// Registers all of the available TableViewHeaderFooters
     ///
+    @MainActor
     func registerTableViewHeaderFooters(_ tableView: UITableView) {
         let headersAndFooters = [
             TwoColumnSectionHeaderView.self

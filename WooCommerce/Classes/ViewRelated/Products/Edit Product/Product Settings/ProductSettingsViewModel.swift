@@ -114,6 +114,7 @@ extension ProductSettingsViewModel {
 
     /// Registers all of the available TableViewCells
     ///
+    @MainActor
     func registerTableViewCells(_ tableView: UITableView) {
         sections.flatMap {
             $0.rows.flatMap { $0.cellTypes }
@@ -124,6 +125,7 @@ extension ProductSettingsViewModel {
 
     /// Registers all of the available TableViewHeaderFooters
     ///
+    @MainActor
     func registerTableViewHeaderFooters(_ tableView: UITableView) {
         let headersAndFooters = [TwoColumnSectionHeaderView.self]
 

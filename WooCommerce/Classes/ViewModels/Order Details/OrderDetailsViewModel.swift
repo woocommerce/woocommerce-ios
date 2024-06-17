@@ -197,6 +197,7 @@ final class OrderDetailsViewModel {
 extension OrderDetailsViewModel {
     /// Syncs all data related to the current order.
     ///
+    @MainActor
     func syncEverything(onReloadSections: (() -> ())? = nil, onCompletion: (() -> ())? = nil) {
         let group = DispatchGroup()
 
@@ -365,6 +366,7 @@ extension OrderDetailsViewModel {
 extension OrderDetailsViewModel {
     /// Registers all of the available TableViewCells
     ///
+    @MainActor
     func registerTableViewCells(_ tableView: UITableView) {
         let cellsWithNib = [
             LargeHeightLeftImageTableViewCell.self,
@@ -402,6 +404,7 @@ extension OrderDetailsViewModel {
 
     /// Registers all of the available TableViewHeaderFooters
     ///
+    @MainActor
     func registerTableViewHeaderFooters(_ tableView: UITableView) {
         let headersAndFooters = [
             TwoColumnSectionHeaderView.self,
@@ -423,6 +426,7 @@ extension OrderDetailsViewModel {
 
 
 extension OrderDetailsViewModel {
+    @MainActor
     func tableView(_ tableView: UITableView,
                    in viewController: UIViewController,
                    didSelectRowAt indexPath: IndexPath) {
@@ -869,6 +873,7 @@ private extension OrderDetailsViewModel {
 
 // MARK: - Notices
 private extension OrderDetailsViewModel {
+    @MainActor
     func displayReceiptRetrievalErrorNotice(for order: Order,
                                             with error: Error?,
                                             in viewController: UIViewController) {

@@ -3,6 +3,7 @@ import Yosemite
 
 /// Generates top banner view that is shown at the top of Shipping Label address form screen when there is an error in the address validation.
 ///
+@MainActor
 final class ShippingLabelAddressTopBannerFactory {
     static func addressErrorTopBannerView(shipType: ShipType,
                                           hasContactInfo: Bool,

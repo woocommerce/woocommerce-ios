@@ -2,7 +2,7 @@
 
 19.2
 -----
-
+- [*] Product Form: Support picking videos from local library for downloadable files. [https://github.com/woocommerce/woocommerce-ios/pull/13051]
 
 19.1
 -----

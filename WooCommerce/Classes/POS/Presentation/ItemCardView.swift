@@ -12,6 +12,11 @@ struct ItemCardView: View {
         self.onItemCardTapped = onItemCardTapped
     }
 
+    var commaSeparatedItemCategories: String {
+        let maxNumberOfCategories = 3
+        return item.itemCategories.prefix(maxNumberOfCategories).joined(separator: ", ")
+    }
+
     var body: some View {
         HStack {
             if let imageSource = item.productImageSource {
@@ -28,20 +33,15 @@ struct ItemCardView: View {
                            height: Constants.productImageWidth * scale)
                     .foregroundColor(.gray)
             }
-            VStack {
+            VStack(alignment: .leading) {
                 Text(item.name)
                     .foregroundStyle(Color.primaryBackground)
-                Text(item.price)
+                Text(commaSeparatedItemCategories)
                     .foregroundStyle(Color.primaryBackground)
-                HStack(spacing: 8) {
-                    Spacer()
-                    Button(action: {
-                        onItemCardTapped?()
-                    }, label: { })
-                    .buttonStyle(POSPlusButtonStyle())
-                    .frame(width: 56, height: 56)
-                }
             }
+            Spacer()
+            Text(item.price)
+                .foregroundStyle(Color.primaryBackground)
         }
         .frame(maxWidth: .infinity)
         .background(Color.tertiaryBackground)

@@ -85,12 +85,6 @@ extension CardPresentModalConnectingFailedUpdateAddress {
     }
 }
 
-extension CardPresentModalConnectingFailedUpdateAddress: CardPresentPaymentsModalViewModelWCSettingsWebViewPresenting {
-    var webViewModel: AnyPublisher<WCSettingsWebViewModel?, Never> {
-        $wcSettingsWebViewModel.eraseToAnyPublisher()
-    }
-}
-
 private extension CardPresentModalConnectingFailedUpdateAddress {
     enum Localization {
         static let title = NSLocalizedString(

@@ -9,7 +9,3 @@ struct WCSettingsWebViewModel: Identifiable {
     let webViewURL: URL
     let onCompletion: () -> Void
 }
-
-protocol CardPresentPaymentsModalViewModelWCSettingsWebViewPresenting {
-    var webViewModel: AnyPublisher<WCSettingsWebViewModel?, Never> { get }
-}

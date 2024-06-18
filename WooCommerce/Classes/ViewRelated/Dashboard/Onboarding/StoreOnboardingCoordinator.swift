@@ -36,14 +36,19 @@ final class StoreOnboardingCoordinator: Coordinator {
 
     /// Navigates to the fullscreen store onboarding view.
     func start() {
-        let onboardingNavigationController = UINavigationController()
-        let onboardingViewController = StoreOnboardingViewHostingController(viewModel: .init(siteID: site.siteID,
-                                                                                             isExpanded: true),
-                                                                            navigationController: onboardingNavigationController,
-                                                                            site: site,
-                                                                            onUpgradePlan: onUpgradePlan)
-        onboardingNavigationController.pushViewController(onboardingViewController, animated: false)
-        navigationController.present(onboardingNavigationController, animated: true)
+        Task { @MainActor in
+            let onboardingNavigationController = UINavigationController()
+            let storeOnboardViewModel = StoreOnboardingViewModel(siteID: site.siteID,
+                                                                 isExpanded: true)
+            let onboardingViewController = StoreOnboardingViewHostingController(
+                viewModel: storeOnboardViewModel,
+                navigationController: onboardingNavigationController,
+                site: site,
+                onUpgradePlan: onUpgradePlan
+            )
+            onboardingNavigationController.pushViewController(onboardingViewController, animated: false)
+            navigationController.present(onboardingNavigationController, animated: true)
+        }
     }
 
     /// Navigates to complete an onboarding task.

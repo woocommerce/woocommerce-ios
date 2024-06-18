@@ -625,7 +625,11 @@ final class EditableOrderViewModel: ObservableObject {
     /// - Parameter item: Item to remove from the order
     ///
     func removeItemFromOrder(_ item: OrderItem) {
-        guard let input = createUpdateProductInput(item: item, quantity: 0) else { return }
+        guard let input = ProductInputTransformer.createUpdateProductInput(item: item,
+                                                                           quantity: 0,
+                                                                           allProducts: Array(allProducts),
+                                                                           allProductVariations: allProductVariations,
+                                                                           defaultDiscount: currentDiscount(on: item)) else { return }
         orderSynchronizer.setProduct.send(input)
 
         if item.variationID != 0 {
@@ -658,7 +662,12 @@ final class EditableOrderViewModel: ObservableObject {
     }
 
     func addDiscountToOrderItem(item: OrderItem, discount: Decimal) {
-        guard let productInput = createUpdateProductInput(item: item, quantity: item.quantity, discount: discount) else {
+        guard let productInput = ProductInputTransformer.createUpdateProductInput(item: item,
+                                                                                  quantity: item.quantity,
+                                                                                  discount: discount,
+                                                                                  allProducts: Array(allProducts),
+                                                                                  allProductVariations: allProductVariations,
+                                                                                  defaultDiscount: currentDiscount(on: item)) else {
             return
         }
 
@@ -1450,7 +1459,7 @@ private extension EditableOrderViewModel {
         for product in products {
             // Only perform the operation if the product has not been already added to the existing Order
             if !itemsInOrder.contains(where: { $0.productID == product.productID && $0.parent == nil })
-                || productSelectorBundleConfigurationsByProductID[product.productID]?.isNotEmpty == true {
+                || productSelectorBundleConfigurationsByProductID[product.productID]?.isEmpty == false {
                 switch product.productType {
                     case .bundle:
                         if let bundleConfiguration = productSelectorBundleConfigurationsByProductID[product.productID]?.popFirst() {
@@ -1500,7 +1509,11 @@ private extension EditableOrderViewModel {
 
         for item in allOrderItemsToBeRemoved {
 
-            if let input = createUpdateProductInput(item: item, quantity: 0) {
+            if let input = ProductInputTransformer.createUpdateProductInput(item: item,
+                                                                            quantity: 0,
+                                                                            allProducts: Array(allProducts),
+                                                                            allProductVariations: allProductVariations,
+                                                                            defaultDiscount: currentDiscount(on: item)) {
                 inputsToBeRemoved.append(input)
             }
 
@@ -2129,78 +2142,6 @@ private extension EditableOrderViewModel {
         return OrderSyncAddressesInput(billing: billingAddress, shipping: shippingAddress)
     }
 
-    /// Creates a new `OrderSyncProductInput` type meant to update an existing input from `OrderSynchronizer`
-    /// If the referenced product can't be found, `nil` is returned.
-    ///
-    private func createUpdateProductInput(item: OrderItem,
-                                          childItems: [OrderItem] = [],
-                                          quantity: Decimal,
-                                          discount: Decimal? = nil,
-                                          bundleConfiguration: [BundledProductConfiguration] = []) -> OrderSyncProductInput? {
-        // Finds the product or productVariation associated with the order item.
-        let product: OrderSyncProductInput.ProductType? = {
-            if item.variationID != 0, let variation = allProductVariations.first(where: { $0.productVariationID == item.variationID }) {
-                return .variation(variation)
-            }
-
-            if let product = allProducts.first(where: { $0.productID == item.productID }) {
-                return .product(product)
-            }
-
-            return nil
-        }()
-
-        guard let product = product else {
-            DDLogError("⛔️ Product with ID: \(item.productID) not found.")
-            return nil
-        }
-
-        // When updating a bundle product's quantity while there are no bundle configuration updates from the configuration form,
-        // the bundle configuration needs to be populated in order for the quantity of child order items to be updated.
-        // The bundle configuration is deduced from the product's bundle items, existing child order items, and the bundle order item itself.
-        if case let .product(productValue) = product,
-           productValue.productType == .bundle && item.quantity != quantity && bundleConfiguration.isEmpty && childItems.isNotEmpty {
-            let bundleConfiguration: [BundledProductConfiguration] = productValue.bundledItems
-                .compactMap { bundleItem -> BundledProductConfiguration? in
-                    guard let existingOrderItem = childItems.first(where: { $0.productID == bundleItem.productID }) else {
-                        return .init(bundledItemID: bundleItem.bundledItemID,
-                                     productOrVariation: .product(id: bundleItem.productID),
-                                     quantity: 0,
-                                     isOptionalAndSelected: false)
-                    }
-                    let attributes = existingOrderItem.attributes
-                        .map { ProductVariationAttribute(id: $0.metaID, name: $0.name, option: $0.value) }
-                    let productOrVariation: BundledProductConfiguration.ProductOrVariation = existingOrderItem.variationID == 0 ?
-                        .product(id: existingOrderItem.productID): .variation(productID: existingOrderItem.productID,
-                                                                              variationID: existingOrderItem.variationID,
-                                                                              attributes: attributes)
-                    // The quantity per bundle: as a buggy behavior in Pe5pgL-3Vd-p2#quantity-of-bundle-child-order-items, the child item quantity
-                    // can either by multiplied by the bundle quantity or not. To encounter for the edge case, the quantity is only divided by
-                    // the bundle quantity if the child item has at least the same quantity as the bundle.
-                    let quantity = existingOrderItem.quantity >= item.quantity ?
-                    existingOrderItem.quantity * 1.0 / item.quantity: existingOrderItem.quantity
-                    return .init(bundledItemID: bundleItem.bundledItemID,
-                                 productOrVariation: productOrVariation,
-                                 quantity: quantity,
-                                 isOptionalAndSelected: bundleItem.isOptional ? true: nil)
-                }
-            return OrderSyncProductInput(id: item.itemID,
-                                         product: product,
-                                         quantity: quantity,
-                                         discount: discount ?? currentDiscount(on: item),
-                                         baseSubtotal: baseSubtotal(on: item),
-                                         bundleConfiguration: bundleConfiguration)
-        }
-
-        // Return a new input with the new quantity but with the same item id to properly reference the update.
-        return OrderSyncProductInput(id: item.itemID,
-                                     product: product,
-                                     quantity: quantity,
-                                     discount: discount ?? currentDiscount(on: item),
-                                     baseSubtotal: baseSubtotal(on: item),
-                                     bundleConfiguration: bundleConfiguration)
-    }
-
     /// Creates the configuration related to adding a discount to a product. If the feature shouldn't be shown it returns `nil`
     ///
     func addProductDiscountConfiguration(on orderItem: OrderItem) -> ProductDiscountViewModel.DiscountConfiguration? {
@@ -2234,16 +2175,6 @@ private extension EditableOrderViewModel {
         return subtotal.subtracting(total) as Decimal
     }
 
-    /// Calculates the subtotal of a single quantity of an item
-    ///
-    func baseSubtotal(on item: OrderItem) -> Decimal? {
-        guard let itemSubtotal = Decimal(string: item.subtotal) else {
-            return nil
-        }
-
-        return itemSubtotal / item.quantity
-    }
-
     /// Creates `ProductRowViewModels` ready to be used as product rows.
     ///
     func createProductRows(items: [OrderItem]) -> [CollapsibleProductCardViewModel] {
@@ -2267,7 +2198,12 @@ private extension EditableOrderViewModel {
                 .sink { [weak self] newQuantity in
                     guard let self else { return }
                     let childItems = items.filter { $0.parent == item.itemID }
-                    guard let newInput = self.createUpdateProductInput(item: item, childItems: childItems, quantity: newQuantity) else {
+                    guard let newInput = ProductInputTransformer.createUpdateProductInput(item: item,
+                                                                                          childItems: childItems,
+                                                                                          quantity: newQuantity,
+                                                                                          allProducts: Array(allProducts),
+                                                                                          allProductVariations: allProductVariations,
+                                                                                          defaultDiscount: currentDiscount(on: item)) else {
                         return
                     }
                     self.orderSynchronizer.setProduct.send(newInput)
@@ -2286,7 +2222,12 @@ private extension EditableOrderViewModel {
     }
 
     func addBundleConfigurationToOrderItem(item: OrderItem, bundleConfiguration: [BundledProductConfiguration]) {
-        guard let productInput = createUpdateProductInput(item: item, quantity: item.quantity, bundleConfiguration: bundleConfiguration) else {
+        guard let productInput = ProductInputTransformer.createUpdateProductInput(item: item,
+                                                                                  quantity: item.quantity,
+                                                                                  bundleConfiguration: bundleConfiguration,
+                                                                                  allProducts: Array(allProducts),
+                                                                                  allProductVariations: allProductVariations,
+                                                                                  defaultDiscount: currentDiscount(on: item)) else {
             return
         }
         orderSynchronizer.setProduct.send(productInput)

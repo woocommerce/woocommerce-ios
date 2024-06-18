@@ -1,9 +1,9 @@
 import Foundation
-import Yosemite
+import Networking
 
 /// Helper to updates an `order` given an `OrderSyncInput` type.
 ///
-struct ProductInputTransformer {
+public struct ProductInputTransformer {
     /// Type to help bundling  order Items parameters.
     ///
     struct OrderItemParameters {
@@ -27,7 +27,7 @@ struct ProductInputTransformer {
         }
     }
 
-    enum UpdateOrDelete {
+    public enum UpdateOrDelete {
         case update
         case delete
     }
@@ -35,7 +35,7 @@ struct ProductInputTransformer {
     /// Adds, deletes, or updates order items based on the given product input.
     /// When `shouldUpdateOrDeleteZeroQuantities` value is `.update`, items with `.zero` quantities will be updated instead of being deleted.
     ///
-    static func update(input: OrderSyncProductInput, on order: Order, shouldUpdateOrDeleteZeroQuantities: UpdateOrDelete) -> Order {
+    public static func update(input: OrderSyncProductInput, on order: Order, shouldUpdateOrDeleteZeroQuantities: UpdateOrDelete) -> Order {
         // If the input's quantity is 0 or less, delete the item if required.
         guard input.quantity > 0 || shouldUpdateOrDeleteZeroQuantities == .update else {
             return remove(input: input, from: order)
@@ -56,7 +56,7 @@ struct ProductInputTransformer {
     ///   - shouldUpdateOrDeleteZeroQuantities: When its value is `.update`, items with `.zero` quantities will be updated instead of being deleted.
     ///
     /// - Returns: An Order entity.
-    static func updateMultipleItems(with inputs: [OrderSyncProductInput], on order: Order, shouldUpdateOrDeleteZeroQuantities: UpdateOrDelete) -> Order {
+    public static func updateMultipleItems(with inputs: [OrderSyncProductInput], on order: Order, shouldUpdateOrDeleteZeroQuantities: UpdateOrDelete) -> Order {
         var updatedOrderItems = order.items
 
         for input in inputs {
@@ -73,6 +73,81 @@ struct ProductInputTransformer {
         }
 
         return order.copy(items: updatedOrderItems)
+    }
+
+    /// Creates a new `OrderSyncProductInput` type meant to update an existing input from `OrderSynchronizer`
+    /// If the referenced product can't be found, `nil` is returned.
+    ///
+    public static func createUpdateProductInput(item: OrderItem,
+                                                childItems: [OrderItem] = [],
+                                                quantity: Decimal,
+                                                discount: Decimal? = nil,
+                                                bundleConfiguration: [BundledProductConfiguration] = [],
+                                                allProducts: [OrderSyncProductTypeProtocol],
+                                                allProductVariations: Set<ProductVariation>,
+                                                defaultDiscount: Decimal) -> OrderSyncProductInput? {
+        // Finds the product or productVariation associated with the order item.
+        let product: OrderSyncProductInput.ProductType? = {
+            if item.variationID != 0, let variation = allProductVariations.first(where: { $0.productVariationID == item.variationID }) {
+                return .variation(variation)
+            }
+
+            if let product = allProducts.first(where: { $0.productID == item.productID }) {
+                return .product(product)
+            }
+
+            return nil
+        }()
+
+        guard let product = product else {
+            DDLogError("⛔️ Product with ID: \(item.productID) not found.")
+            return nil
+        }
+
+        // When updating a bundle product's quantity while there are no bundle configuration updates from the configuration form,
+        // the bundle configuration needs to be populated in order for the quantity of child order items to be updated.
+        // The bundle configuration is deduced from the product's bundle items, existing child order items, and the bundle order item itself.
+        if case let .product(productValue) = product,
+           productValue.productType == .bundle && item.quantity != quantity && bundleConfiguration.isEmpty && !childItems.isEmpty {
+            let bundleConfiguration: [BundledProductConfiguration] = productValue.bundledItems
+                .compactMap { bundleItem -> BundledProductConfiguration? in
+                    guard let existingOrderItem = childItems.first(where: { $0.productID == bundleItem.productID }) else {
+                        return .init(bundledItemID: bundleItem.bundledItemID,
+                                     productOrVariation: .product(id: bundleItem.productID),
+                                     quantity: 0,
+                                     isOptionalAndSelected: false)
+                    }
+                    let attributes = existingOrderItem.attributes
+                        .map { ProductVariationAttribute(id: $0.metaID, name: $0.name, option: $0.value) }
+                    let productOrVariation: BundledProductConfiguration.ProductOrVariation = existingOrderItem.variationID == 0 ?
+                        .product(id: existingOrderItem.productID): .variation(productID: existingOrderItem.productID,
+                                                                              variationID: existingOrderItem.variationID,
+                                                                              attributes: attributes)
+                    // The quantity per bundle: as a buggy behavior in Pe5pgL-3Vd-p2#quantity-of-bundle-child-order-items, the child item quantity
+                    // can either by multiplied by the bundle quantity or not. To encounter for the edge case, the quantity is only divided by
+                    // the bundle quantity if the child item has at least the same quantity as the bundle.
+                    let quantity = existingOrderItem.quantity >= item.quantity ?
+                    existingOrderItem.quantity * 1.0 / item.quantity: existingOrderItem.quantity
+                    return .init(bundledItemID: bundleItem.bundledItemID,
+                                 productOrVariation: productOrVariation,
+                                 quantity: quantity,
+                                 isOptionalAndSelected: bundleItem.isOptional ? true: nil)
+                }
+            return OrderSyncProductInput(id: item.itemID,
+                                         product: product,
+                                         quantity: quantity,
+                                         discount: discount ?? defaultDiscount,
+                                         baseSubtotal: baseSubtotal(on: item),
+                                         bundleConfiguration: bundleConfiguration)
+        }
+
+        // Return a new input with the new quantity but with the same item id to properly reference the update.
+        return OrderSyncProductInput(id: item.itemID,
+                                     product: product,
+                                     quantity: quantity,
+                                     discount: discount ?? defaultDiscount,
+                                     baseSubtotal: baseSubtotal(on: item),
+                                     bundleConfiguration: bundleConfiguration)
     }
 }
 
@@ -186,4 +261,28 @@ private extension ProductInputTransformer {
             }
         })
     }
+
+    /// Calculates the subtotal of a single quantity of an item
+    ///
+    static func baseSubtotal(on item: OrderItem) -> Decimal? {
+        guard let itemSubtotal = Decimal(string: item.subtotal) else {
+            return nil
+        }
+
+        return itemSubtotal / item.quantity
+    }
 }
+
+//// MARK: - OrderItem Helper Methods
+////
+//extension OrderItem {
+//    /// Returns the variant if it exists
+//    ///
+//    var productOrVariationID: Int64 {
+//        if variationID == 0 {
+//            return productID
+//        }
+//
+//        return variationID
+//    }
+//}

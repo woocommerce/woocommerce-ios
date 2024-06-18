@@ -426,6 +426,10 @@
 		D8C11A5622DFB0BE00D4A88D /* OrderStatsV4Totals+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8C11A5522DFB0BE00D4A88D /* OrderStatsV4Totals+ReadOnlyConvertible.swift */; };
 		D8C11A5822DFB2FF00D4A88D /* OrderStatsV4Interval+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8C11A5722DFB2FF00D4A88D /* OrderStatsV4Interval+ReadOnlyConvertible.swift */; };
 		D8C11A5A22DFC21600D4A88D /* StatsStoreV4Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8C11A5922DFC21600D4A88D /* StatsStoreV4Tests.swift */; };
+		DA3F0E152C218AC200B8C2F8 /* BundledProductConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA3F0E142C218AC200B8C2F8 /* BundledProductConfiguration.swift */; };
+		DA3F0E172C218ADA00B8C2F8 /* OrderSyncProductInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA3F0E162C218ADA00B8C2F8 /* OrderSyncProductInput.swift */; };
+		DA3F0E192C218E7E00B8C2F8 /* ProductInputTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA3F0E182C218E7E00B8C2F8 /* ProductInputTransformer.swift */; };
+		DA3F0E1C2C218EF100B8C2F8 /* PointOfSaleOrderService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA3F0E1B2C218EF100B8C2F8 /* PointOfSaleOrderService.swift */; };
 		DE2E8EA52953F77A002E4B14 /* WordPressSiteAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE2E8EA42953F77A002E4B14 /* WordPressSiteAction.swift */; };
 		DE2E8EA72953F85C002E4B14 /* WordPressSiteStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE2E8EA62953F85C002E4B14 /* WordPressSiteStore.swift */; };
 		DE2E8EAF29541C32002E4B14 /* WordPressSiteStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE2E8EAE29541C32002E4B14 /* WordPressSiteStoreTests.swift */; };
@@ -923,6 +927,10 @@
 		D8C11A5522DFB0BE00D4A88D /* OrderStatsV4Totals+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderStatsV4Totals+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		D8C11A5722DFB2FF00D4A88D /* OrderStatsV4Interval+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderStatsV4Interval+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		D8C11A5922DFC21600D4A88D /* StatsStoreV4Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsStoreV4Tests.swift; sourceTree = "<group>"; };
+		DA3F0E142C218AC200B8C2F8 /* BundledProductConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BundledProductConfiguration.swift; sourceTree = "<group>"; };
+		DA3F0E162C218ADA00B8C2F8 /* OrderSyncProductInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderSyncProductInput.swift; sourceTree = "<group>"; };
+		DA3F0E182C218E7E00B8C2F8 /* ProductInputTransformer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductInputTransformer.swift; sourceTree = "<group>"; };
+		DA3F0E1B2C218EF100B8C2F8 /* PointOfSaleOrderService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleOrderService.swift; sourceTree = "<group>"; };
 		DE2E8EA42953F77A002E4B14 /* WordPressSiteAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordPressSiteAction.swift; sourceTree = "<group>"; };
 		DE2E8EA62953F85C002E4B14 /* WordPressSiteStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordPressSiteStore.swift; sourceTree = "<group>"; };
 		DE2E8EAE29541C32002E4B14 /* WordPressSiteStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordPressSiteStoreTests.swift; sourceTree = "<group>"; };
@@ -1293,6 +1301,9 @@
 				5726456E250BD4E4005BBD7C /* OrdersUpsertUseCase.swift */,
 				26788978270E057900BD249E /* OrderFactory.swift */,
 				B9AECD452851DBED00E78584 /* Order+CurrencyFormattedValues.swift */,
+				DA3F0E142C218AC200B8C2F8 /* BundledProductConfiguration.swift */,
+				DA3F0E162C218ADA00B8C2F8 /* OrderSyncProductInput.swift */,
+				DA3F0E182C218E7E00B8C2F8 /* ProductInputTransformer.swift */,
 			);
 			path = Order;
 			sourceTree = "<group>";
@@ -1552,6 +1563,7 @@
 		B56C1EBC20EABD1C00D749F9 /* Tools */ = {
 			isa = PBXGroup;
 			children = (
+				DA3F0E1A2C218EE200B8C2F8 /* POS */,
 				20BCF6F32B0E558500954840 /* SystemStatus */,
 				B9C0C1062A3C665300DF84EA /* ProductVariations */,
 				E18FDAFC28F97E9C008519BA /* InAppPurchases */,
@@ -1951,6 +1963,14 @@
 			path = CardPresentPayments;
 			sourceTree = "<group>";
 		};
+		DA3F0E1A2C218EE200B8C2F8 /* POS */ = {
+			isa = PBXGroup;
+			children = (
+				DA3F0E1B2C218EF100B8C2F8 /* PointOfSaleOrderService.swift */,
+			);
+			path = POS;
+			sourceTree = "<group>";
+		};
 		E18FDAFC28F97E9C008519BA /* InAppPurchases */ = {
 			isa = PBXGroup;
 			children = (
@@ -2300,6 +2320,7 @@
 				02FF055023D983F30058E6E7 /* ExportableAsset.swift in Sources */,
 				02C255022563C76A00A04423 /* ShippingLabel+ReadOnlyConvertible.swift in Sources */,
 				7493750E224988DE007D85D1 /* ProductImage+ReadOnlyConvertible.swift in Sources */,
+				DA3F0E1C2C218EF100B8C2F8 /* PointOfSaleOrderService.swift in Sources */,
 				26E5A08225A66868000DF8F6 /* ProductAttributeTermStore.swift in Sources */,
 				02FF056323DE9C490058E6E7 /* MediaAction.swift in Sources */,
 				031C1EAC27B1873200298699 /* WCPayCardPresentReceiptDetails+ReadOnlyConvertible.swift in Sources */,
@@ -2311,6 +2332,7 @@
 				CEF2DDA32B572E4A00A3DD0B /* JetpackSettingsAction.swift in Sources */,
 				021940E4291E8A660090354E /* SiteAction.swift in Sources */,
 				02291735270BE18C00449FA0 /* ProductReviewFromNoteParcel.swift in Sources */,
+				DA3F0E192C218E7E00B8C2F8 /* ProductInputTransformer.swift in Sources */,
 				74B260212188B5F30041793A /* Note+ReadOnlyType.swift in Sources */,
 				B505254C20EE6491008090F5 /* Site+ReadOnlyConvertible.swift in Sources */,
 				26E5A07E25A6640E000DF8F6 /* ProductAttributeTermAction.swift in Sources */,
@@ -2333,6 +2355,7 @@
 				02393065291A018600B2632F /* DomainAction.swift in Sources */,
 				D831E2E6230E7149000037D0 /* ProductReview+ReadOnlyConvertible.swift in Sources */,
 				DEA493962B3D608B00EED015 /* BlazeTargetTopic+ReadonlyConvertible.swift in Sources */,
+				DA3F0E172C218ADA00B8C2F8 /* OrderSyncProductInput.swift in Sources */,
 				CC24A4F129ED4CEB0009D6DA /* ProductSubscription+ReadOnlyConvertible.swift in Sources */,
 				03101F0129DD7D9D00769CF3 /* CardReaderType+ReadOnlyConvertible.swift in Sources */,
 				CE4FD4502350F27C00A16B31 /* OrderItemTax+ReadOnlyConvertible.swift in Sources */,
@@ -2387,6 +2410,7 @@
 				DEA493942B3D588500EED015 /* BlazeTargetLanguage+ReadonlyConvertible.swift in Sources */,
 				0225512122FC2F3000D98613 /* WCAnalyticsStatsInterval+Date.swift in Sources */,
 				0202B690238790E200F3EBE0 /* ProductsFeatureSwitchPListWrapper.swift in Sources */,
+				DA3F0E152C218AC200B8C2F8 /* BundledProductConfiguration.swift in Sources */,
 				077F39DE26A5A1CB00ABEADC /* SystemStatusAction.swift in Sources */,
 				74D7F29B20F6A7FB0058B2F0 /* Order+ReadOnlyConvertible.swift in Sources */,
 				026CF628237D8F30009563D4 /* ProductVariationAction.swift in Sources */,

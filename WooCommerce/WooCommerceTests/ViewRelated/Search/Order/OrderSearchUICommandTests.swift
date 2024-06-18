@@ -9,38 +9,35 @@ final class OrderSearchUICommandTests: XCTestCase {
     private var storageManager: MockOrderStatusesStoresManager!
     private var analyticsProvider: MockAnalyticsProvider!
     private var analytics: WooAnalytics!
+    private var systemUnderTest: OrderSearchUICommand!
 
     override func setUp() {
         super.setUp()
         storageManager = MockOrderStatusesStoresManager()
         analyticsProvider = MockAnalyticsProvider()
         analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+        systemUnderTest = OrderSearchUICommand(siteID: siteID, onSelectSearchResult: { _, _ in }, storageManager: storageManager)
     }
 
     override func tearDown() {
         storageManager = nil
         analyticsProvider = nil
         analytics = nil
+        systemUnderTest = nil
         super.tearDown()
     }
 
     func test_createStarterViewController_returns_nil_so_empty_results_table_shown_before_search() {
-        // Given
-        let command = OrderSearchUICommand(siteID: siteID, onSelectSearchResult: { _, _ in }, storageManager: storageManager)
-
         // When
-        let starterViewController = command.createStarterViewController()
+        let starterViewController = systemUnderTest.createStarterViewController()
 
         // Then
         XCTAssertNil(starterViewController, "Expected createStarterViewController to return nil so that the empty results table will be shown before the search.")
     }
 
     func test_createResultsController_returns_results_controller_with_correct_predicate_and_sort_options() {
-        // Given
-        let command = OrderSearchUICommand(siteID: siteID, onSelectSearchResult: { _, _ in }, storageManager: storageManager)
-
         // When
-        let resultsController = command.createResultsController()
+        let resultsController = systemUnderTest.createResultsController()
 
         // Then
         XCTAssertNotNil(resultsController, "Expected createResultsController to return a ResultsController instance")
@@ -53,13 +50,11 @@ final class OrderSearchUICommandTests: XCTestCase {
         // Given
         let mockOrder = MockOrders().makeOrder(status: .onHold)
 
-        let command = OrderSearchUICommand(siteID: siteID, onSelectSearchResult: { _, _ in }, storageManager: storageManager)
-
         // Insert mock order statuses
         insertOrderStatuses()
 
         // When
-        let cellViewModel = command.createCellViewModel(model: mockOrder)
+        let cellViewModel = systemUnderTest.createCellViewModel(model: mockOrder)
 
         // Then
         XCTAssertNotNil(cellViewModel, "Expected createCellViewModel to return an OrderListCellViewModel instance")
@@ -68,12 +63,9 @@ final class OrderSearchUICommandTests: XCTestCase {
     }
 
     func test_SanitizeKeyword_removing_leading_pound_symbol() {
-        // Given
-        let command = OrderSearchUICommand(siteID: siteID, onSelectSearchResult: { _, _ in }, storageManager: storageManager)
-
         // When
-        let sanitizedKeywordWithHash = command.sanitizeKeyword("#123")
-        let sanitizedKeywordWithoutHash = command.sanitizeKeyword("123")
+        let sanitizedKeywordWithHash = systemUnderTest.sanitizeKeyword("#123")
+        let sanitizedKeywordWithoutHash = systemUnderTest.sanitizeKeyword("123")
 
         // Then
         XCTAssertEqual(sanitizedKeywordWithHash, "123", "Expected sanitizeKeyword to remove the leading '#'")
@@ -83,7 +75,8 @@ final class OrderSearchUICommandTests: XCTestCase {
     func test_SynchronizeModels_tracks_orders_list_search_analytics() throws {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let command = OrderSearchUICommand(siteID: siteID, onSelectSearchResult: { _, _ in }, storageManager: storageManager, analytics: analytics, stores: stores)
+        let systemUnderTestWithMockedAnalytics = OrderSearchUICommand(siteID: siteID, onSelectSearchResult: { _, _ in }, storageManager: storageManager,
+                                                                      analytics: analytics, stores: stores)
         let keyword = "testKeyword"
         stores.whenReceivingAction(ofType: OrderAction.self) { (action: OrderAction) in
             guard case let .searchOrders(_, _, _, _, onCompletion) = action else {
@@ -97,7 +90,7 @@ final class OrderSearchUICommandTests: XCTestCase {
 
         // When
         waitFor { promise in
-            command.synchronizeModels(siteID: self.siteID, keyword: keyword, pageNumber: 1, pageSize: 20) { success in
+            systemUnderTestWithMockedAnalytics.synchronizeModels(siteID: self.siteID, keyword: keyword, pageNumber: 1, pageSize: 20) { success in
                 promise(())
             }
         }

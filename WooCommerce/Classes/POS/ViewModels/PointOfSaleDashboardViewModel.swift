@@ -103,10 +103,6 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
         }
     }
 
-    var checkoutButtonDisabled: Bool {
-        return itemsInCart.isEmpty
-    }
-
     func cardPaymentTapped() {
         Task { @MainActor in
             showsCreatingOrderSheet = true

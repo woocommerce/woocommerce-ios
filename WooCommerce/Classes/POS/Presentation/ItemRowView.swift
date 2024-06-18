@@ -26,9 +26,12 @@ struct ItemRowView: View {
                     .frame(width: 60 * scale, height: 60 * scale)
                     .foregroundColor(.gray)
             }
-            Text(cartItem.item.name)
-                .padding(.horizontal, 32)
-                .foregroundColor(Color.primaryBackground)
+            VStack(alignment: .leading) {
+                Text(cartItem.item.name)
+                    .foregroundColor(Color.posPrimaryTexti3)
+                Text(cartItem.item.price)
+                    .foregroundColor(Color.posPrimaryTexti3)
+            }
             Spacer()
             Button(action: {
                 onItemRemoveTapped?()
@@ -37,11 +40,9 @@ struct ItemRowView: View {
             })
             .frame(width: 56, height: 56, alignment: .trailing)
             .padding(.horizontal, 32)
-            .foregroundColor(Color.lightBlue)
-            .background(Color(.clear))
+            .foregroundColor(Color.posIconGrayi3)
         }
         .frame(maxWidth: .infinity, idealHeight: 120)
-        .foregroundColor(Color.tertiaryBackground)
     }
 }
 

@@ -8,10 +8,22 @@ struct CardPresentPaymentReaderUpdateFailedView: View {
     }
 
     var body: some View {
-        Text("Reader update failed")
+        VStack {
+            Text(viewModel.title)
+
+            viewModel.image
+
+            Button(viewModel.retryButtonViewModel.title,
+                   action: viewModel.retryButtonViewModel.actionHandler)
+            .buttonStyle(PrimaryButtonStyle())
+
+            Button(viewModel.cancelButtonViewModel.title,
+                   action: viewModel.cancelButtonViewModel.actionHandler)
+            .buttonStyle(SecondaryButtonStyle())
+        }
     }
 }
 
 #Preview {
-    CardPresentPaymentReaderUpdateFailedView(viewModel: CardPresentPaymentReaderUpdateFailedAlertViewModel())
+    CardPresentPaymentReaderUpdateFailedView(viewModel: .init(retryAction: {}, cancelUpdateAction: {}))
 }

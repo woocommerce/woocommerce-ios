@@ -10,9 +10,8 @@ struct ItemCardView: View {
         self.item = item
     }
 
-    var commaSeparatedItemCategories: String {
-        let maxNumberOfCategories = 3
-        return item.itemCategories.prefix(maxNumberOfCategories).joined(separator: ", ")
+    private var commaSeparatedItemCategories: String {
+        item.itemCategories.prefix(Constants.maxNumberOfCategories).joined(separator: ", ")
     }
 
     var body: some View {
@@ -50,6 +49,7 @@ private extension ItemCardView {
     enum Constants {
         static let productImageWidth: CGFloat = 60
         static let productImageCornerRadius: CGFloat = 0
+        static let maxNumberOfCategories = 3
     }
 }
 

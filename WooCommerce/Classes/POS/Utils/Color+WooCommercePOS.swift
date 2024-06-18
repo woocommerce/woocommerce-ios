@@ -43,8 +43,4 @@ extension Color {
     static var wooAmberShade80: Color {
         Color(red: 123.0 / 255.0, green: 7.0 / 255.0, blue: 0.0 / 255.0)
     }
-
-    static var totalsTitleColor: Color {
-        Color(red: 127.0 / 255.0, green: 84.0 / 255.0, blue: 179.0 / 255.0)
-    }
 }

@@ -67,24 +67,6 @@ final class CardPresentModalConnectingFailedUpdateAddress: CardPresentPaymentsMo
     func didTapAuxiliaryButton(in viewController: UIViewController?) { }
 }
 
-// CardPresentPaymentsModalViewModelActions
-extension CardPresentModalConnectingFailedUpdateAddress {
-    var primaryButtonViewModel: CardPresentPaymentsModalButtonViewModel? {
-        CardPresentPaymentsModalButtonViewModel(
-            title: primaryButtonTitle,
-            actionHandler: { [weak self] in
-                guard let self else { return }
-                if let adminURL = wcSettingsAdminURL {
-                    wcSettingsWebViewModel = .init(webViewURL: adminURL, onCompletion: { [weak self] in
-                        guard let self else { return }
-                        wcSettingsWebViewModel = nil
-                        retrySearchAction()
-                    })
-                }
-            })
-    }
-}
-
 extension CardPresentModalConnectingFailedUpdateAddress: CardPresentPaymentsModalViewModelWCSettingsWebViewPresenting {
     var webViewModel: AnyPublisher<WCSettingsWebViewModel?, Never> {
         $wcSettingsWebViewModel.eraseToAnyPublisher()

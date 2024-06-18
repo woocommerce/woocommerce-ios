@@ -37,7 +37,7 @@ struct ItemCardView: View {
                     .foregroundStyle(Color.primaryBackground)
             }
             Spacer()
-            Text(item.price)
+            Text(item.formattedPrice)
                 .foregroundStyle(Color.primaryBackground)
         }
         .frame(maxWidth: .infinity)

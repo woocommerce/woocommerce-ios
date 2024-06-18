@@ -107,8 +107,11 @@ private extension CartView {
 }
 
 #if DEBUG
+import class Yosemite.PointOfSaleOrderService
+import enum Networking.Credentials
 #Preview {
     CartView(viewModel: PointOfSaleDashboardViewModel(items: POSItemProviderPreview().providePointOfSaleItems(),
-                                                      cardPresentPaymentService: CardPresentPaymentPreviewService()))
+                                                      cardPresentPaymentService: CardPresentPaymentPreviewService(),
+                                                      orderService: PointOfSaleOrderService(siteID: Int64.min, credentials: Credentials(authToken: "token"))))
 }
 #endif

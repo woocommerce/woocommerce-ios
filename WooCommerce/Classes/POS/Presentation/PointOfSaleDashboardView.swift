@@ -127,11 +127,14 @@ fileprivate extension CardPresentPaymentEvent {
 }
 
 #if DEBUG
+import class Yosemite.PointOfSaleOrderService
+import enum Networking.Credentials
 #Preview {
     NavigationStack {
         PointOfSaleDashboardView(
             viewModel: PointOfSaleDashboardViewModel(items: POSItemProviderPreview().providePointOfSaleItems(),
-                                                     cardPresentPaymentService: CardPresentPaymentPreviewService()))
+                                                     cardPresentPaymentService: CardPresentPaymentPreviewService(),
+                                                     orderService: PointOfSaleOrderService(siteID: Int64.min, credentials: Credentials(authToken: "token"))))
     }
 }
 #endif

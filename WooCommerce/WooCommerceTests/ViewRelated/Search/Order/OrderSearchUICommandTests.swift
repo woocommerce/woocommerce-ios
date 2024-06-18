@@ -51,7 +51,7 @@ final class OrderSearchUICommandTests: XCTestCase {
 
     func test_CreateCellViewModel() {
         // Given
-        let mockOrder = MockOrders().makeOrder(status: .onHold, items: [], shippingLines: [], refunds: [], fees: [], taxes: [], customFields: [], giftCards: [])
+        let mockOrder = MockOrders().makeOrder(status: .onHold)
 
         let command = OrderSearchUICommand(siteID: siteID, onSelectSearchResult: { _, _ in }, storageManager: storageManager)
 

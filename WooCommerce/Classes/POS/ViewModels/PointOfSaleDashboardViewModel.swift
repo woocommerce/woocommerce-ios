@@ -248,9 +248,7 @@ private extension PointOfSaleDashboardViewModel {
     }
 
     func observeProductsInCartForRemoteOrderSyncing() {
-        cartSubscription = Publishers.CombineLatest($finalItems.debounce(for: .seconds(Constants.cartChangesDebounceDuration),
-                                                                         scheduler: DispatchQueue.main),
-                                                    $isSyncingOrder)
+        cartSubscription = Publishers.CombineLatest($finalItems, $isSyncingOrder)
         .filter { _, isSyncingOrder in
             isSyncingOrder == false
         }
@@ -293,10 +291,6 @@ private extension PointOfSaleDashboardViewModel {
 }
 
 private extension PointOfSaleDashboardViewModel {
-    enum Constants {
-        static let cartChangesDebounceDuration: TimeInterval = 0
-    }
-
     enum OrderSyncError: Error {
         case selfDeallocated
     }

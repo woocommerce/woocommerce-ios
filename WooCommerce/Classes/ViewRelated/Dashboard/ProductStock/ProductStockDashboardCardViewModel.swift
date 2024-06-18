@@ -152,7 +152,14 @@ private extension ProductStockDashboardCardViewModel {
                         productIDs: Array(Set(variationsToFetchReports.map { $0.parentID })),
                         variationIDs: variationsToFetchReports.map { $0.productID }
                     )
-                    return self.updatedVariationReports(from: reports, using: variationsToFetchReports)
+                    return reports.map { report in
+                        guard let variationID = report.variationID,
+                              report.productID == 0,
+                              let parentID = stock.first(where: { $0.productID == variationID })?.productID else {
+                            return report
+                        }
+                        return report.copy(productID: parentID)
+                    }
                 }
             }
 
@@ -176,19 +183,6 @@ private extension ProductStockDashboardCardViewModel {
         for report in reports {
             let id = report.variationID ?? report.productID
             savedReports[id] = report
-        }
-    }
-
-    // In some cases, variation reports can have invalid product ID.
-    // Fix that by restoring the parent ID from the stock item.
-    func updatedVariationReports(from reports: [ProductReport], using stock: [ProductStock]) -> [ProductReport] {
-        reports.map { report in
-            guard let variationID = report.variationID,
-                  report.productID == 0,
-                  let parentID = stock.first(where: { $0.productID == variationID })?.productID else {
-                return report
-            }
-            return report.copy(productID: parentID)
         }
     }
 }

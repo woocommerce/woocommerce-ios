@@ -6608,8 +6608,6 @@
 				026826B02BF59E170036F959 /* CardReaderConnection */,
 				026826A72BF59DF70036F959 /* PointOfSaleEntryPointView.swift */,
 				026826A52BF59DF60036F959 /* PointOfSaleDashboardView.swift */,
-				2004E2E82C0DFE2B00D62521 /* PointOfSaleCardPresentPaymentAlert.swift */,
-				026826A82BF59DF70036F959 /* ItemGridView.swift */,
 				68C53CBD2C1FE59B00C6D80B /* ItemListView.swift */,
 				026826A32BF59DF60036F959 /* CartView.swift */,
 				68C53CBB2C1FDE0800C6D80B /* CollapsedCartView.swift */,
@@ -6633,19 +6631,9 @@
 		026826B12BF59E1F0036F959 /* UI States */ = {
 			isa = PBXGroup;
 			children = (
+				2004E2E82C0DFE2B00D62521 /* PointOfSaleCardPresentPaymentAlert.swift */,
 				205E79492C204B2D001BA266 /* Reader Messages */,
-				026826BE2BF59E410036F959 /* PointOfSaleCardPresentPaymentScanningForReadersView.swift */,
-				026826B62BF59E400036F959 /* PointOfSaleCardPresentPaymentScanningForReadersFailedView.swift */,
-				203163AA2C1B5DEE001C96DA /* PointOfSaleCardPresentPaymentBluetoothRequiredAlertView.swift */,
-				026826B82BF59E400036F959 /* PointOfSaleCardPresentPaymentConnectingToReaderView.swift */,
-				026826B72BF59E400036F959 /* PointOfSaleCardPresentPaymentConnectingFailedView.swift */,
-				203163B42C1C5EB2001C96DA /* PointOfSaleCardPresentPaymentConnectingFailedNonRetryableView.swift */,
-				203163BA2C1C5F72001C96DA /* PointOfSaleCardPresentPaymentConnectingFailedUpdatePostalCodeView.swift */,
-				203163B62C1C5EDF001C96DA /* PointOfSaleCardPresentPaymentConnectingFailedChargeReaderView.swift */,
-				026826BB2BF59E410036F959 /* PointOfSaleCardPresentPaymentFoundReadersView.swift */,
-				203163B82C1C5F42001C96DA /* PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressView.swift */,
-				026826B92BF59E400036F959 /* CardPresentPaymentReaderUpdateInProgressView.swift */,
-				026826BC2BF59E410036F959 /* CardPresentPaymentReaderUpdateFailedView.swift */,
+				2023E2AC2C21D8A400FC365A /* Connection Alerts */,
 				026826BA2BF59E400036F959 /* ReaderConnectedView.swift */,
 			);
 			path = "UI States";
@@ -7560,6 +7548,25 @@
 				2004E2EA2C0E219D00D62521 /* CardPresentPaymentPreflightAdaptor.swift */,
 			);
 			path = "Card Present Payments";
+			sourceTree = "<group>";
+		};
+		2023E2AC2C21D8A400FC365A /* Connection Alerts */ = {
+			isa = PBXGroup;
+			children = (
+				026826BE2BF59E410036F959 /* PointOfSaleCardPresentPaymentScanningForReadersView.swift */,
+				026826B62BF59E400036F959 /* PointOfSaleCardPresentPaymentScanningForReadersFailedView.swift */,
+				203163AA2C1B5DEE001C96DA /* PointOfSaleCardPresentPaymentBluetoothRequiredAlertView.swift */,
+				026826B82BF59E400036F959 /* PointOfSaleCardPresentPaymentConnectingToReaderView.swift */,
+				026826B72BF59E400036F959 /* PointOfSaleCardPresentPaymentConnectingFailedView.swift */,
+				203163B42C1C5EB2001C96DA /* PointOfSaleCardPresentPaymentConnectingFailedNonRetryableView.swift */,
+				203163BA2C1C5F72001C96DA /* PointOfSaleCardPresentPaymentConnectingFailedUpdatePostalCodeView.swift */,
+				203163B62C1C5EDF001C96DA /* PointOfSaleCardPresentPaymentConnectingFailedChargeReaderView.swift */,
+				026826BB2BF59E410036F959 /* PointOfSaleCardPresentPaymentFoundReadersView.swift */,
+				203163B82C1C5F42001C96DA /* PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressView.swift */,
+				026826B92BF59E400036F959 /* CardPresentPaymentReaderUpdateInProgressView.swift */,
+				026826BC2BF59E410036F959 /* CardPresentPaymentReaderUpdateFailedView.swift */,
+			);
+			path = "Connection Alerts";
 			sourceTree = "<group>";
 		};
 		202496682B0BC07E00EE527D /* Deposits Overview */ = {

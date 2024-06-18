@@ -2,7 +2,7 @@
 
 19.2
 -----
-
+- [*] Internal: Add additional logs for payment gateway accounts missing requirements. [https://github.com/woocommerce/woocommerce-ios/pull/13078]
 
 19.1
 -----

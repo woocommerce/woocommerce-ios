@@ -165,6 +165,7 @@ private final class MockOrderStatusesStoresManager: MockStorageManager {
         orderStatus.name = name
         orderStatus.slug = name
         orderStatus.siteID = MockOrderStatusesStoresManager.siteID
+        viewStorage.saveIfNeeded()
         return orderStatus
     }
 }

@@ -290,7 +290,6 @@
 		02667A1C2AC159A000C77B56 /* GiftCardCodeScannerNavigationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02667A1B2AC159A000C77B56 /* GiftCardCodeScannerNavigationView.swift */; };
 		026826932BF59D830036F959 /* PointOfSaleDashboardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026826922BF59D830036F959 /* PointOfSaleDashboardViewModel.swift */; };
 		026826992BF59DA90036F959 /* Color+WooCommercePOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026826982BF59DA80036F959 /* Color+WooCommercePOS.swift */; };
-		026826A92BF59DF70036F959 /* ItemGridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026826A82BF59DF70036F959 /* ItemGridView.swift */; };
 		026826AA2BF59DF70036F959 /* CartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026826A32BF59DF60036F959 /* CartView.swift */; };
 		026826AB2BF59DF70036F959 /* ItemRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026826A22BF59DF60036F959 /* ItemRowView.swift */; };
 		026826AC2BF59DF70036F959 /* ItemCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026826A42BF59DF60036F959 /* ItemCardView.swift */; };
@@ -3242,7 +3241,6 @@
 		026826A42BF59DF60036F959 /* ItemCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemCardView.swift; sourceTree = "<group>"; };
 		026826A52BF59DF60036F959 /* PointOfSaleDashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleDashboardView.swift; sourceTree = "<group>"; };
 		026826A72BF59DF70036F959 /* PointOfSaleEntryPointView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleEntryPointView.swift; sourceTree = "<group>"; };
-		026826A82BF59DF70036F959 /* ItemGridView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemGridView.swift; sourceTree = "<group>"; };
 		026826B22BF59E320036F959 /* CardReaderConnectionViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardReaderConnectionViewModel.swift; sourceTree = "<group>"; };
 		026826B32BF59E320036F959 /* CardReaderConnectionStatusView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardReaderConnectionStatusView.swift; sourceTree = "<group>"; };
 		026826B62BF59E400036F959 /* CardPresentPaymentScanningForReadersFailedView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentScanningForReadersFailedView.swift; sourceTree = "<group>"; };
@@ -6577,7 +6575,6 @@
 				026826A72BF59DF70036F959 /* PointOfSaleEntryPointView.swift */,
 				026826A52BF59DF60036F959 /* PointOfSaleDashboardView.swift */,
 				2004E2E82C0DFE2B00D62521 /* CardPresentPaymentAlert.swift */,
-				026826A82BF59DF70036F959 /* ItemGridView.swift */,
 				68C53CBD2C1FE59B00C6D80B /* ItemListView.swift */,
 				026826A32BF59DF60036F959 /* CartView.swift */,
 				68C53CBB2C1FDE0800C6D80B /* CollapsedCartView.swift */,
@@ -14394,7 +14391,6 @@
 				03E471CA293E0A30001A58AD /* CardPresentModalBuiltInConfigurationProgress.swift in Sources */,
 				31AD0B1126E9575F000B6391 /* CardPresentModalConnectingFailed.swift in Sources */,
 				576EA39425264C9B00AFC0B3 /* RefundConfirmationViewModel.swift in Sources */,
-				026826A92BF59DF70036F959 /* ItemGridView.swift in Sources */,
 				DEC51B00276AEE91009F3DF4 /* SystemStatusReportViewModel.swift in Sources */,
 				B66D6CEC29396A3E0075D4AF /* AnalyticsHubTimeRangeData.swift in Sources */,
 				CC4A4E962655273D00B75DCD /* ShippingLabelPaymentMethods.swift in Sources */,

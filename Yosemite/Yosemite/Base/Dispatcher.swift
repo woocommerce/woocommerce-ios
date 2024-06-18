@@ -3,11 +3,13 @@ import WooFoundation
 
 // MARK: - Action: Represents a Flux Action.
 //
+@MainActor
 public protocol Action { }
 
 
 // MARK: - Action: Represents a Flux Action Processor. Processors should get registered into the Dispatcher instance, for action processing.
 //
+@MainActor
 public protocol ActionsProcessor: AnyObject {
 
     /// Called whenever a given Action is dispatched.
@@ -21,6 +23,7 @@ public protocol ActionsProcessor: AnyObject {
 //
 // NOTE: - Dispatcher is not thread safe yet, and it expects its methods to be called from the main thread only.
 //
+@MainActor
 public class Dispatcher {
 
     /// Collection of active Action Processors, per action kind.
@@ -80,6 +83,7 @@ public class Dispatcher {
 
 // MARK: - WeakProcessor: Allows us to weakly-store ActionProcessors, and thus, prevent retain cycles.
 //
+@MainActor
 private class WeakProcessor {
 
     /// The actual ActionsProcessor we're proxying.

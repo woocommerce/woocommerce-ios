@@ -10,6 +10,7 @@ public extension NSNotification.Name {
 
 /// Defines the methods and properties implemented by any concrete StorageManager implementation.
 ///
+@MainActor
 public protocol StorageManagerType {
 
     /// Returns the `Storage` associated to the main thread.

@@ -24,7 +24,7 @@ final class OrderSearchUICommandTests: XCTestCase {
         super.tearDown()
     }
 
-    func testCreateStarterViewControllerReturnsNil() {
+    func test_createStarterViewController_returns_nil_so_empty_results_table_shown_before_search() {
         // Given
         let command = OrderSearchUICommand(siteID: siteID, onSelectSearchResult: { _, _ in }, storageManager: storageManager)
 
@@ -32,10 +32,10 @@ final class OrderSearchUICommandTests: XCTestCase {
         let starterViewController = command.createStarterViewController()
 
         // Then
-        XCTAssertNil(starterViewController, "Expected createStarterViewController to return nil")
+        XCTAssertNil(starterViewController, "Expected createStarterViewController to return nil so that the empty results table will be shown before the search.")
     }
 
-    func testCreateResultsController() {
+    func test_createResultsController_returns_results_controller_with_correct_predicate_and_sort_options() {
         // Given
         let command = OrderSearchUICommand(siteID: siteID, onSelectSearchResult: { _, _ in }, storageManager: storageManager)
 
@@ -49,7 +49,7 @@ final class OrderSearchUICommandTests: XCTestCase {
         XCTAssertEqual(resultsController.sortDescriptors?.first?.ascending, false, "First sort descriptor ascending did not match")
     }
 
-    func testCreateCellViewModel() {
+    func test_CreateCellViewModel() {
         // Given
         let mockOrder = MockOrders().makeOrder(status: .onHold, items: [], shippingLines: [], refunds: [], fees: [], taxes: [], customFields: [], giftCards: [])
 
@@ -67,7 +67,7 @@ final class OrderSearchUICommandTests: XCTestCase {
         XCTAssertEqual(cellViewModel.status, .onHold, "Expected createCellViewModel to return on hold status")
     }
 
-    func testSanitizeKeyword() {
+    func test_SanitizeKeyword_removing_leading_pound_symbol() {
         // Given
         let command = OrderSearchUICommand(siteID: siteID, onSelectSearchResult: { _, _ in }, storageManager: storageManager)
 
@@ -80,7 +80,7 @@ final class OrderSearchUICommandTests: XCTestCase {
         XCTAssertEqual(sanitizedKeywordWithoutHash, "123", "Expected sanitizeKeyword to return the keyword unchanged if there's no leading '#'")
     }
 
-    func testSynchronizeModelsTracksAnalytics() throws {
+    func test_SynchronizeModels_tracks_orders_list_search_analytics() throws {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let command = OrderSearchUICommand(siteID: siteID, onSelectSearchResult: { _, _ in }, storageManager: storageManager, analytics: analytics, stores: stores)
@@ -116,7 +116,7 @@ final class OrderSearchUICommandTests: XCTestCase {
         XCTAssertEqual(eventProperties["search"] as? String, keyword)
     }
 
-    func testDidSelectSearchResult() throws {
+    func test_DidSelectSearchResult_selects_correct_order() throws {
         // Given
         let order = Order.fake()
 

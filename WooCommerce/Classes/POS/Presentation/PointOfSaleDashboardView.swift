@@ -26,6 +26,9 @@ struct PointOfSaleDashboardView: View {
                     Spacer()
                     VStack {
                         totalsView
+                            .task {
+                                await viewModel.checkoutAppeared()
+                            }
                         if let inlinePaymentMessage = viewModel.cardPresentPaymentInlineMessage {
                             PointOfSaleCardPresentPaymentInLineMessage(messageType: inlinePaymentMessage)
                         }

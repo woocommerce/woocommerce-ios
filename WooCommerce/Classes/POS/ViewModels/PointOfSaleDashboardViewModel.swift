@@ -35,6 +35,10 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
 
     @Published private(set) var orderStage: OrderStage = .building
 
+    /// Order created the first time the checkout is shown for a given transaction.
+    /// If the merchant goes back to the product selection screen and makes changes, this should be updated when they return to the checkout.
+    private var order: Order?
+
     private let cardPresentPaymentService: CardPresentPaymentFacade
 
     private let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
@@ -106,12 +110,46 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
     func cardPaymentTapped() {
         Task { @MainActor in
             showsCreatingOrderSheet = true
-            let order = try await createTestOrder()
+            let order = try await createTestOrder(amount: formattedOrderTotalPrice ?? "15.00")
             showsCreatingOrderSheet = false
-            let _ = try await cardPresentPaymentService.collectPayment(for: order, using: .bluetooth)
+            try await collectPayment(for: order)
+        }
+    }
 
-            // TODO: Here we should present something to show the payment was successful or not,
-            // and then clear the screen ready for the next transaction.
+    @MainActor
+    private func collectPayment(for order: Order) async throws {
+        let _ = try await cardPresentPaymentService.collectPayment(for: order, using: .bluetooth)
+
+        // TODO: Here we should present something to show the payment was successful or not,
+        // and then clear the screen ready for the next transaction.
+    }
+
+    @MainActor
+    func checkoutAppeared() async {
+        if order == nil {
+            do {
+                order = try await createTestOrder(amount: formattedOrderTotalPrice ?? "15.00")
+            } catch {
+                DDLogError("Error creating test order: \(error)")
+            }
+        }
+
+        guard let order else {
+            // This happens only if there's an error above
+            return
+        }
+
+        // Digging in to the connection viewmodel here is a bit of a shortcut, we could be neater.
+        if cardReaderConnectionViewModel.connectionStatus == .connected {
+            do {
+                // Since this function is called from a `task`, it'll be cancelled automatically if the view is removed.
+                // Proper cancellation isn't implemented yet, so that can lead to some unwanted behaviour, but currently
+                // if you go back during a payment, it will still complete.
+                // TODO: We should consider disabling the `Add More` button when the shopper taps their card.
+                try await collectPayment(for: order)
+            } catch {
+                DDLogError("Error taking payment: \(error)")
+            }
         }
     }
 }
@@ -175,11 +213,11 @@ import enum Yosemite.OrderAction
 import struct Yosemite.Order
 private extension PointOfSaleDashboardViewModel {
     @MainActor
-       func createTestOrder() async throws -> Order {
+    func createTestOrder(amount: String = "15.00") async throws -> Order {
            return try await withCheckedThrowingContinuation { continuation in
                let action = OrderAction.createSimplePaymentsOrder(siteID: ServiceLocator.stores.sessionManager.defaultStoreID ?? 0,
                                                                   status: .pending,
-                                                                  amount: "15.00",
+                                                                  amount: amount,
                                                                   taxable: false) { result in
                    continuation.resume(with: result)
                }

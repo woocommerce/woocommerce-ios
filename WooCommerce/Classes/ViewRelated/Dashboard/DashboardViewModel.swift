@@ -78,7 +78,6 @@ final class DashboardViewModel: ObservableObject {
     private let justInTimeMessagesManager: JustInTimeMessagesProvider
     private let localAnnouncementsProvider: LocalAnnouncementsProvider
     private let userDefaults: UserDefaults
-    private let themeInstaller: ThemeInstaller
     private let storageManager: StorageManagerType
     private let inboxEligibilityChecker: InboxEligibilityChecker
     private let usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter
@@ -110,7 +109,6 @@ final class DashboardViewModel: ObservableObject {
          featureFlags: FeatureFlagService = ServiceLocator.featureFlagService,
          analytics: Analytics = ServiceLocator.analytics,
          userDefaults: UserDefaults = .standard,
-         themeInstaller: ThemeInstaller? = nil,
          usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter = StoreStatsUsageTracksEventEmitter(),
          blazeEligibilityChecker: BlazeEligibilityCheckerProtocol = BlazeEligibilityChecker(),
          inboxEligibilityChecker: InboxEligibilityChecker? = nil) {
@@ -137,7 +135,6 @@ final class DashboardViewModel: ObservableObject {
         self.productStockCardViewModel = ProductStockDashboardCardViewModel(siteID: siteID)
         self.lastOrdersCardViewModel = LastOrdersDashboardCardViewModel(siteID: siteID)
 
-        self.themeInstaller = themeInstaller ?? DefaultThemeInstaller()
         self.inboxEligibilityChecker = inboxEligibilityChecker ?? InboxEligibilityUseCase()
         self.usageTracksEventEmitter = usageTracksEventEmitter
 
@@ -148,7 +145,6 @@ final class DashboardViewModel: ObservableObject {
 
         configureOrdersResultController()
         setupDashboardCards()
-        installPendingThemeIfNeeded()
         observeValuesForDashboardCards()
         observeDashboardCardsAndReload()
     }
@@ -717,22 +713,6 @@ private extension DashboardViewModel {
         isInAppFeedbackCardVisible = newValue
         if trackEvent {
             analytics.track(event: .appFeedbackPrompt(action: .shown))
-        }
-    }
-}
-
-// MARK: Theme install
-//
-private extension DashboardViewModel {
-    /// Installs themes for newly created store.
-    ///
-    func installPendingThemeIfNeeded() {
-        Task { @MainActor in
-            do {
-                try await themeInstaller.installPendingThemeIfNeeded(siteID: siteID)
-            } catch {
-                DDLogError("⛔️ Dashboard - Error installing pending theme: \(error)")
-            }
         }
     }
 }

@@ -21,6 +21,8 @@ struct PointOfSaleCardPresentPaymentAlert: View {
             PointOfSaleCardPresentPaymentReaderUpdateInProgressView(viewModel: alertViewModel)
         case .updateFailed(let alertViewModel):
             CardPresentPaymentReaderUpdateFailedView(viewModel: alertViewModel)
+        case .updateFailedNonRetryable(let alertViewModel):
+            PointOfSaleCardPresentPaymentReaderUpdateFailedNonRetryableView(viewModel: alertViewModel)
         case .connectingToReader(let alertViewModel):
             PointOfSaleCardPresentPaymentConnectingToReaderView(viewModel: alertViewModel)
         case .connectingFailed(let alertViewModel):

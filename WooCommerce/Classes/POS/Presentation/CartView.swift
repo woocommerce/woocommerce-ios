@@ -66,7 +66,7 @@ private extension CartView {
     }
 
     private var checkoutButtonBackgroundColor: Color {
-        return viewModel.checkoutButtonDisabled ? Color.white.opacity(0.5) : Color.white
+        return viewModel.checkoutButtonDisabled ? Color.white.opacity(0.5) : Color.init(uiColor: .wooCommercePurple(.shade60))
     }
 
     var checkoutButton: some View {

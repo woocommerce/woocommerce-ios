@@ -35,13 +35,13 @@ struct PointOfSaleDashboardView: View {
                                 Text("tapSwipeOrInsertCard...")
                             case .processing:
                                 Text("processing...")
-                            case .displayReaderMessage(let message):
-                                Text("Reader message: \(message)")
-                            case .success:
+                            case .displayReaderMessage(let viewModel):
+                                Text("Reader message: \(viewModel.message)")
+                            case .paymentSuccess:
                                 Text("Payment successful!")
-                            case .error:
+                            case .paymentError:
                                 Text("Payment error")
-                            case .nonRetryableError:
+                            case .paymentErrorNonRetryable:
                                 Text("Payment error - non retryable")
                             case .cancelledOnReader:
                                 Text("Payment cancelled on reader")

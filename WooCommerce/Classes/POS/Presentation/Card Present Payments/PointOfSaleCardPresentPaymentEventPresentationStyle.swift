@@ -82,28 +82,33 @@ extension CardPresentPaymentEventDetails {
 
         /// Payment messages
         case .preparingForPayment(cancelPayment: let cancelPayment):
-            return .message(.preparingForPayment)
+            return .message(.preparingForPayment(
+                viewModel: PointOfSaleCardPresentPaymentPreparingForPaymentMessageViewModel()))
 
         case .tapSwipeOrInsertCard(inputMethods: let inputMethods, cancelPayment: let cancelPayment):
-            return .message(.tapSwipeOrInsertCard)
+            return .message(.tapSwipeOrInsertCard(
+                viewModel: PointOfSaleCardPresentPaymentTapSwipeInsertCardMessageViewModel()))
 
-        case .success(done: let done):
-            return .message(.success)
+        case .paymentSuccess(done: let done):
+            return .message(.paymentSuccess(viewModel: PointOfSaleCardPresentPaymentSuccessMessageViewModel()))
 
-        case .error(error: let error, tryAgain: let tryAgain, cancelPayment: let cancelPayment):
-            return .message(.error)
+        case .paymentError(error: let error, tryAgain: let tryAgain, cancelPayment: let cancelPayment):
+            return .message(.paymentError(viewModel: PointOfSaleCardPresentPaymentErrorMessageViewModel()))
 
-        case .errorNonRetryable(error: let error, cancelPayment: let cancelPayment):
-            return .message(.nonRetryableError)
+        case .paymentErrorNonRetryable(error: let error, cancelPayment: let cancelPayment):
+            return .message(.paymentErrorNonRetryable(
+                viewModel: PointOfSaleCardPresentPaymentNonRetryableErrorMessageViewModel()))
 
         case .processing:
-            return .message(.processing)
+            return .message(.processing(viewModel: PointOfSaleCardPresentPaymentProcessingMessageViewModel()))
 
         case .displayReaderMessage(message: let message):
-            return .message(.displayReaderMessage(message: message))
+            return .message(.displayReaderMessage(
+                viewModel: PointOfSaleCardPresentPaymentDisplayReaderMessageMessageViewModel(message: message)))
 
         case .cancelledOnReader:
-            return .message(.cancelledOnReader)
+            return .message(.cancelledOnReader(
+                viewModel: PointOfSaleCardPresentPaymentCancelledOnReaderMessageViewModel()))
 
         /// Not-yet supported types
         case .selectSearchType,

@@ -31,21 +31,21 @@ struct CardPresentPaymentsTransactionAlertsProvider: CardReaderTransactionAlerts
     func success(printReceipt: @escaping () -> Void,
                  emailReceipt: @escaping () -> Void,
                  noReceiptAction: @escaping () -> Void) -> CardPresentPaymentEventDetails {
-        .success(done: noReceiptAction)
+        .paymentSuccess(done: noReceiptAction)
     }
 
     func error(error: any Error,
                tryAgain: @escaping () -> Void,
                dismissCompletion: @escaping () -> Void) -> CardPresentPaymentEventDetails {
-        .error(error: error,
-               tryAgain: tryAgain,
-               cancelPayment: dismissCompletion)
+        .paymentError(error: error,
+                      tryAgain: tryAgain,
+                      cancelPayment: dismissCompletion)
     }
 
     func nonRetryableError(error: any Error,
                            dismissCompletion: @escaping () -> Void) -> CardPresentPaymentEventDetails {
-        .errorNonRetryable(error: error,
-                           cancelPayment: dismissCompletion)
+        .paymentErrorNonRetryable(error: error,
+                                  cancelPayment: dismissCompletion)
     }
 
     func cancelledOnReader() -> CardPresentPaymentEventDetails? {

@@ -170,7 +170,7 @@ private extension TotalsView {
             Text(formattedPrice ?? "-----")
                 .font(Font.system(size: 28))
                 .redacted(reason: formattedPrice == nil ? [.placeholder] : [])
-                                .shimmering(active: shimmeringActive)
+                .shimmering(active: shimmeringActive)
         }
         .foregroundColor(Color.primaryText)
     }

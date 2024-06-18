@@ -54,7 +54,7 @@ struct PointOfSaleDashboardView: View {
             }
             .padding()
         }
-        .background(Color.primaryBackground)
+        .background(Color.posBackgroundGreyi3)
         .navigationBarBackButtonHidden(true)
         .toolbar {
             ToolbarItem(placement: .bottomBar) {
@@ -94,7 +94,6 @@ private extension PointOfSaleDashboardView {
 
     var cartView: some View {
         CartView(viewModel: viewModel)
-            .background(Color.secondaryBackground)
             .frame(maxWidth: .infinity)
     }
 
@@ -106,7 +105,6 @@ private extension PointOfSaleDashboardView {
 
     var productGridView: some View {
         ItemListView(viewModel: viewModel)
-            .background(Color.secondaryBackground)
             .frame(maxWidth: .infinity)
     }
 }

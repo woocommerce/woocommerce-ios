@@ -11,9 +11,11 @@ struct CartView: View {
         VStack {
             HStack {
                 Text("Cart")
+                    .foregroundColor(Color.posPrimaryTexti3)
                 Spacer()
                 if let temsInCartLabel = viewModel.itemsInCartLabel {
                     Text(temsInCartLabel)
+                        .foregroundColor(Color.posPrimaryTexti3)
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -28,7 +30,7 @@ struct CartView: View {
                             viewModel.removeItemFromCart(cartItem)
                         }
                         .id(cartItem.id)
-                        .background(Color.tertiaryBackground)
+                        .background(Color.posBackgroundGreyi3)
                         .padding(.horizontal, 32)
                     }
                 }
@@ -52,7 +54,7 @@ struct CartView: View {
             }
         }
         .frame(maxWidth: .infinity)
-        .background(Color.secondaryBackground)
+        .background(Color.posBackgroundWhitei3)
     }
 }
 

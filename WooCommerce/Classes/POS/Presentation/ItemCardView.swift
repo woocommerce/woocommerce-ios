@@ -32,16 +32,16 @@ struct ItemCardView: View {
             }
             VStack(alignment: .leading) {
                 Text(item.name)
-                    .foregroundStyle(Color.primaryBackground)
+                    .foregroundStyle(Color.posPrimaryTexti3)
                 Text(commaSeparatedItemCategories)
-                    .foregroundStyle(Color.primaryBackground)
+                    .foregroundStyle(Color.posPrimaryTexti3)
             }
             Spacer()
             Text(item.price)
-                .foregroundStyle(Color.primaryBackground)
+                .foregroundStyle(Color.posPrimaryTexti3)
         }
         .frame(maxWidth: .infinity)
-        .background(Color.tertiaryBackground)
+        .background(Color.posBackgroundWhitei3)
     }
 }
 

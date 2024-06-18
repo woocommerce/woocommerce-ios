@@ -2,7 +2,6 @@ import XCTest
 import Yosemite
 @testable import WooCommerce
 import Storage
-import Networking
 import protocol WooFoundation.Analytics
 
 final class OrderSearchUICommandTests: XCTestCase {
@@ -119,7 +118,7 @@ final class OrderSearchUICommandTests: XCTestCase {
 
     func testDidSelectSearchResult() throws {
         // Given
-        let order = Networking.Order.fake().copy()
+        let order = Order.fake()
 
         // When
         let selectedOrder = waitFor { promise in

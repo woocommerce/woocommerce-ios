@@ -33,14 +33,16 @@ public struct PointOfSaleOrder {
     public let totalTax: String
     public let currency: String
     let items: [PointOfSaleOrderItem]
+}
 
-    static func createFromOrder(_ order: Order) -> PointOfSaleOrder {
-        return PointOfSaleOrder(siteID: order.siteID,
-                                orderID: order.orderID,
-                                total: order.total,
-                                totalTax: order.totalTax,
-                                currency: order.currency,
-                                items: order.items.map { PointOfSaleOrderItem(orderItem: $0) })
+extension PointOfSaleOrder {
+    init(order: Order) {
+        self.init(siteID: order.siteID,
+                  orderID: order.orderID,
+                  total: order.total,
+                  totalTax: order.totalTax,
+                  currency: order.currency,
+                  items: order.items.map { PointOfSaleOrderItem(orderItem: $0) })
     }
 }
 
@@ -96,9 +98,12 @@ public protocol PointOfSaleOrderServiceProtocol {
 
     /// Creates WOO Order from POS Order.
     /// - Parameters:
-    ///   - posOrder: Optional POS order.
+    ///   - posOrder: POS order.
     /// - Returns: Order created from posOrder data.
-    func orderFrom(posOrder: PointOfSaleOrder?) -> Order
+    func order(from posOrder: PointOfSaleOrder) -> Order
+    
+    /// Creates an empty autodraft order
+    func createAutoDraftOrder() -> Order
 }
 
 public final class PointOfSaleOrderService: PointOfSaleOrderServiceProtocol {
@@ -121,7 +126,13 @@ public final class PointOfSaleOrderService: PointOfSaleOrderServiceProtocol {
     // MARK: - Protocol conformance
 
     public func syncOrder(cart: [PointOfSaleCartItem], order posOrder: PointOfSaleOrder?, allProducts: [PointOfSaleCartProduct]) async throws -> PointOfSaleOrder {
-        let initialOrder: Order = orderFrom(posOrder: posOrder)
+        let initialOrder: Order
+        if let posOrder {
+            initialOrder = order(from: posOrder)
+        }
+        else {
+            initialOrder = createAutoDraftOrder()
+        }
 
         let order = updateOrder(initialOrder, cart: cart, allProducts: allProducts)
         let syncedOrder: Order
@@ -130,30 +141,30 @@ public final class PointOfSaleOrderService: PointOfSaleOrderServiceProtocol {
         } else {
             syncedOrder = try await ordersRemote.createPointOfSaleOrder(siteID: siteID, order: order, fields: [.items, .status])
         }
-        return PointOfSaleOrder.createFromOrder(syncedOrder)
+        return PointOfSaleOrder(order: syncedOrder)
     }
 
     public func updateOrderStatus(posOrder: PointOfSaleOrder, status: OrderStatusEnum) async throws -> PointOfSaleOrder {
-        let order: Order = orderFrom(posOrder: posOrder)
+        let order: Order = order(from: posOrder)
 
         let syncedOrder: Order = try await ordersRemote.updatePointOfSaleOrder(siteID: siteID, order: order, fields: [.status])
         print("🟢 [POS] Synced order status: \(order.status)")
 
-        return PointOfSaleOrder.createFromOrder(syncedOrder)
+        return PointOfSaleOrder(order: syncedOrder)
     }
 
-    public func orderFrom(posOrder: PointOfSaleOrder?) -> Order {
-        if let posOrder {
-            return OrderFactory.emptyNewOrder.copy(siteID: posOrder.siteID,
-                                                   orderID: posOrder.orderID,
-                                                   currency: posOrder.currency,
-                                                   total: posOrder.total,
-                                                   totalTax: posOrder.totalTax,
-                                                   items: posOrder.items.map { $0.toOrderItem() })
-        } else {
-            // TODO: handle WC version under 6.3 when auto-draft status is unavailable as in `NewOrderInitialStatusResolver`
-            return OrderFactory.emptyNewOrder.copy(siteID: siteID, status: .autoDraft)
-        }
+    public func order(from posOrder: PointOfSaleOrder) -> Order {
+        return OrderFactory.emptyNewOrder.copy(siteID: posOrder.siteID,
+                                               orderID: posOrder.orderID,
+                                               currency: posOrder.currency,
+                                               total: posOrder.total,
+                                               totalTax: posOrder.totalTax,
+                                               items: posOrder.items.map { $0.toOrderItem() })
+    }
+
+    public func createAutoDraftOrder() -> Order {
+        //    TODO: handle WC version under 6.3 when auto-draft status is unavailable as in `NewOrderInitialStatusResolver`
+        return OrderFactory.emptyNewOrder.copy(siteID: siteID, status: .autoDraft)
     }
 }
 

@@ -2,6 +2,7 @@ import Foundation
 
 /// Declares functions to create appropiate view controllers for the in-app Survey flow
 ///
+@MainActor
 protocol SurveyViewControllersFactoryProtocol {
     /// Creates a `ViewController` that conforms to `SurveyViewControllerOutputs` based on a given
     /// survey source and a completion block

@@ -115,7 +115,7 @@ final class InPersonPaymentsCashOnDeliveryToggleRowViewModel: ObservableObject, 
     }
 
     // MARK: - Toggle Cash on Delivery Payment Gateway
-
+    @MainActor
     func updateCashOnDeliverySetting(enabled: Bool) {
         trackCashOnDeliveryToggled(enabled: enabled)
         switch enabled {
@@ -126,6 +126,7 @@ final class InPersonPaymentsCashOnDeliveryToggleRowViewModel: ObservableObject, 
         }
     }
 
+    @MainActor
     private func enableCashOnDeliveryGateway() {
         guard let siteID = siteID else {
             return
@@ -147,6 +148,7 @@ final class InPersonPaymentsCashOnDeliveryToggleRowViewModel: ObservableObject, 
         stores.dispatch(action)
     }
 
+    @MainActor
     private func displayEnableCashOnDeliveryFailureNotice() {
         let notice = Notice(title: Localization.enableCashOnDeliveryFailureNoticeTitle,
                             message: nil,
@@ -157,6 +159,7 @@ final class InPersonPaymentsCashOnDeliveryToggleRowViewModel: ObservableObject, 
         noticePresenter.enqueue(notice: notice)
     }
 
+    @MainActor
     private func disableCashOnDeliveryGateway() {
         guard let cashOnDeliveryGateway = cashOnDeliveryGateway else {
             return
@@ -179,6 +182,7 @@ final class InPersonPaymentsCashOnDeliveryToggleRowViewModel: ObservableObject, 
         stores.dispatch(action)
     }
 
+    @MainActor
     private func displayDisableCashOnDeliveryFailureNotice() {
         let notice = Notice(title: Localization.disableCashOnDeliveryFailureNoticeTitle,
                             message: nil,

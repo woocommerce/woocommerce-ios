@@ -73,6 +73,7 @@ struct BlazeCampaignCreationErrorView: View {
 }
 
 private extension BlazeCampaignCreationErrorView {
+    @MainActor
     var supportForm: some View {
         NavigationView {
             SupportForm(isPresented: $isShowingSupport,

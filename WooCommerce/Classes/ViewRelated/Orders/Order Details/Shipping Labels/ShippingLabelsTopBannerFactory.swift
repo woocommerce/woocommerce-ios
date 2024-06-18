@@ -27,6 +27,7 @@ final class ShippingLabelsTopBannerFactory {
     ///   - onGiveFeedbackButtonPressed: called when the give feedback button is pressed.
     ///   - onDismissButtonPressed: called when the dismiss button is pressed.
     ///   - onCompletion: called when it finishes determining whether the top banner is being shown, and an optional top banner is returned.
+    @MainActor
     func createTopBannerIfNeeded(isExpanded: Bool,
                                  expandedStateChangeHandler: @escaping () -> Void,
                                  onGiveFeedbackButtonPressed: @escaping () -> Void,
@@ -66,6 +67,7 @@ private extension ShippingLabelsTopBannerFactory {
         stores.dispatch(action)
     }
 
+    @MainActor
     func createTopBanner(isExpanded: Bool,
                          expandedStateChangeHandler: @escaping () -> Void,
                          onGiveFeedbackButtonPressed: @escaping () -> Void,

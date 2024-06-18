@@ -48,6 +48,7 @@ struct DashboardCardErrorView: View {
         }
     }
 
+    @MainActor
     private var supportForm: some View {
         NavigationView {
             SupportForm(isPresented: $showingSupportForm,

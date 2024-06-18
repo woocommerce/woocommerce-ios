@@ -1,7 +1,7 @@
 import Foundation
 import WooFoundation
 
-public struct CardPresentPaymentsConfiguration: Equatable {
+public struct CardPresentPaymentsConfiguration: Equatable, Sendable {
     public let countryCode: CountryCode
     public let paymentMethods: [WCPayPaymentMethodType]
     public let currencies: [CurrencyCode]

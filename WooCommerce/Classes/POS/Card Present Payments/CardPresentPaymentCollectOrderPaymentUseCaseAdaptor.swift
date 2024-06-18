@@ -4,7 +4,7 @@ import Combine
 import struct Yosemite.Order
 import struct Yosemite.CardPresentPaymentsConfiguration
 
-struct CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
+struct CardPresentPaymentCollectOrderPaymentUseCaseAdaptor: Sendable {
     private let currencyFormatter: CurrencyFormatter
 
     init(currencyFormatter: CurrencyFormatter = .init(currencySettings: ServiceLocator.currencySettings)) {
@@ -22,7 +22,7 @@ struct CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
                             configuration: CardPresentPaymentsConfiguration,
                             alertsPresenter: CardPresentPaymentsAlertPresenterAdaptor,
                             paymentEventSubject: any Subject<CardPresentPaymentEvent, Never>) -> Task<CardPresentPaymentAdaptedCollectOrderPaymentResult, Error> {
-        return Task {
+        return Task { @MainActor in
             guard let formattedAmount = currencyFormatter.formatAmount(order.total, with: order.currency) else {
                 throw CardPresentPaymentServiceError.invalidAmount
             }

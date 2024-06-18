@@ -1,7 +1,7 @@
 import Yosemite
 
 /// Describes a data model that contains necessary properties for rendering a product form (`ProductFormViewController`).
-protocol ProductFormDataModel {
+protocol ProductFormDataModel: Sendable {
     // General
     var siteID: Int64 { get }
     var productID: Int64 { get }

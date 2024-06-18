@@ -7,7 +7,7 @@ import Yosemite
 
 /// Facilitates connecting to a card reader
 ///
-
+@MainActor
 protocol BuiltInCardReaderConnectionControlling {
     func searchAndConnect(onCompletion: @escaping (Result<CardReaderConnectionResult, Error>) -> Void)
 }

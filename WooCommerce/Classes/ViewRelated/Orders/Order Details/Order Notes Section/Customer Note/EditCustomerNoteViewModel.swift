@@ -121,6 +121,7 @@ private extension EditCustomerNoteViewModel {
     ///   - customerNote: Given new customer note to update the order.
     ///   - onFinish: Callback to notify when the action has finished.
     ///
+    @MainActor
     func handleOrderUpdate(withNote customerNote: String?, onFinish: ((Bool) -> Void)? = nil) {
         let orderID = order.orderID
         let modifiedOrder = order.copy(customerNote: customerNote)
@@ -162,6 +163,7 @@ private extension EditCustomerNoteViewModel {
 
     /// Enqueues the `Order Updated` Notice if the optimistic updates are not enabled.
     ///
+    @MainActor
     func displayCustomerNoteUpdatedNoticeIfNeeded() {
         guard !areOptimisticUpdatesEnabled else {
             return
@@ -172,6 +174,7 @@ private extension EditCustomerNoteViewModel {
 
     /// Enqueues the `Unable to Change Customer Note of Order` Notice.
     ///
+    @MainActor
     func displayUpdateErrorNotice(customerNote: String?) {
         let noticeIdentifier = UUID().uuidString
         let notice = Notice(title: Localization.error,

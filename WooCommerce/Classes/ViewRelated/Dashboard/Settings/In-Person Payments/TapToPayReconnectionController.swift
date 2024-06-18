@@ -4,6 +4,7 @@ import Yosemite
 protocol BuiltInCardReaderConnectionControllerBuilding<AlertProvider, AlertPresenter> {
     associatedtype AlertProvider
     associatedtype AlertPresenter
+    @MainActor
     func createConnectionController(forSiteID: Int64,
                                     alertPresenter: AlertPresenter,
                                     configuration: CardPresentPaymentsConfiguration,
@@ -117,6 +118,7 @@ where AlertProvider.AlertDetails == AlertPresenter.AlertDetails {
 }
 
 private extension TapToPayReconnectionController {
+    @MainActor
     func reconnectToTapToPayReader() {
         let connectionController = builtInConnectionControllerForReconnection()
 
@@ -127,6 +129,7 @@ private extension TapToPayReconnectionController {
         })
     }
 
+    @MainActor
     func builtInConnectionControllerForReconnection() -> BuiltInCardReaderConnectionControlling {
         // If we already have a connection controller, there may be a reconnection in progress.
         // Starting again now would result in an SDK failure, and lose our original reference to the controller.

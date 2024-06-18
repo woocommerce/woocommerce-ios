@@ -13,6 +13,7 @@ protocol RefundSubmissionProtocol {
     /// - Parameter refund: the refund to submit.
     /// - Parameter showInProgressUI: called when the in-progress UI should be shown during refund submission.
     /// - Parameter onCompletion: called when the refund completes.
+    @MainActor
     func submitRefund(_ refund: Refund,
                       showInProgressUI: @escaping (() -> Void),
                       onCompletion: @escaping (Result<Void, Error>) -> Void)
@@ -242,6 +243,7 @@ private extension RefundSubmissionUseCase {
 
     /// Attempts to connect to a reader.
     /// Finishes with success immediately if a reader is already connected.
+    @MainActor
     func connectReader(charge: WCPayCharge, paymentGatewayAccount: PaymentGatewayAccount, onCompletion: @escaping (Result<Void, Error>) -> ()) {
         // `checkCardReaderConnected` action will return a publisher that:
         // - Sends one value if there is no reader connected.
@@ -298,6 +300,7 @@ private extension RefundSubmissionUseCase {
     ///   - charge: the charge of the order for the refund to match the payment method.
     ///   - paymentGatewayAccount: the payment gateway account for the site to refund (e.g. WCPay or Stripe extension).
     ///   - onCompletion: called when the in-person refund completes.
+    @MainActor
     private func attemptCardPresentRefund(refundAmount: Decimal,
                                   charge: WCPayCharge,
                                   paymentGatewayAccount: PaymentGatewayAccount,
@@ -346,6 +349,7 @@ private extension RefundSubmissionUseCase {
     }
 
     /// Logs the failure reason, cancels the current refund, and offers retry if possible.
+    @MainActor
     private func handleRefundFailureAndRetryRefund(_ error: Error,
                                            refundAmount: Decimal,
                                            charge: WCPayCharge,

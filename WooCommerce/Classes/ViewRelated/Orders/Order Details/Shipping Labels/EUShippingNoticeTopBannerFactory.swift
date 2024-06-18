@@ -1,6 +1,7 @@
 import Foundation
 
 final class EUShippingNoticeTopBannerFactory {
+    @MainActor
     static func createTopBanner(infoType: InfoType,
                                 onDismissPressed: @escaping () -> Void,
                                 onLearnMorePressed: @escaping () -> Void) -> TopBannerView {

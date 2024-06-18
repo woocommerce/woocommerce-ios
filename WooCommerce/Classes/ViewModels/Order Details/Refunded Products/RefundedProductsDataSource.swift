@@ -78,6 +78,7 @@ extension RefundedProductsDataSource: UITableViewDataSource {
 extension RefundedProductsDataSource {
     /// Set up table section headings
     ///
+    @MainActor
     func viewForHeaderInSection(_ section: Int, tableView: UITableView) -> UIView? {
         guard let leftText = sections[section].title else {
             return nil
@@ -99,6 +100,7 @@ extension RefundedProductsDataSource {
 // MARK: - Support for UITableViewDataSource
 //
 private extension RefundedProductsDataSource {
+    @MainActor
     func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
         switch cell {
         case let cell as ProductDetailsTableViewCell where row == .orderItemRefunded:
@@ -110,6 +112,7 @@ private extension RefundedProductsDataSource {
 
     /// Setup: Refunded product details cell
     ///
+    @MainActor
     func configureRefundedProduct(_ cell: ProductDetailsTableViewCell, at indexPath: IndexPath) {
         let refundedProduct = refundedProducts[indexPath.row]
         let product = lookUpProduct(by: refundedProduct.productOrVariationID)
@@ -167,6 +170,7 @@ extension RefundedProductsDataSource {
         /// Listed in the order they appear on screen
         case orderItemRefunded
 
+        @MainActor
         var reuseIdentifier: String {
             switch self {
             case .orderItemRefunded:

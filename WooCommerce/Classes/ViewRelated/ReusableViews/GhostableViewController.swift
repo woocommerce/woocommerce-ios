@@ -10,6 +10,7 @@ protocol GhostableViewController: UIViewController {
 
 extension GhostableViewController {
     /// Displays the animated ghost view by adding the `GhostTableViewController` as child
+    @MainActor
     func displayGhostContent() {
         guard let ghostView = ghostTableViewController.view else {
             return
@@ -27,6 +28,7 @@ extension GhostableViewController {
     ///
     /// - parameter containerView: The view to which the `GhostTableViewController` `view` will be added
     ///
+    @MainActor
     func displayGhostContent(over containerView: UIView) {
         guard let ghostView = ghostTableViewController.view,
         containerView.isDescendant(of: view) else {
@@ -41,6 +43,7 @@ extension GhostableViewController {
     }
 
     /// Removes the animated ghost
+    @MainActor
     func removeGhostContent() {
         guard let ghostView = ghostTableViewController.view else {
             return

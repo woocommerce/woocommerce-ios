@@ -34,6 +34,7 @@ struct ProductsTopBannerFactory {
     ///   - onGiveFeedbackButtonPressed: called the give feedback button is pressed.
     ///   - onDismissButtonPressed: called the dismiss button is pressed
     ///   - onCompletion: called when the view controller is created and ready for display.
+    @MainActor
     static func topBanner(isExpanded: Bool,
                           stores: StoresManager = ServiceLocator.stores,
                           analytics: Analytics = ServiceLocator.analytics,

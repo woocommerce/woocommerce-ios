@@ -35,20 +35,17 @@ final class LocalAnnouncementViewModel {
     }
 
     // MARK: - Actions
-
-    func ctaTapped() {
+    @MainActor
+    func ctaTapped() async {
         actionTapped(announcement)
         trackCtaTapped()
-        Task { @MainActor in
-            await markAnnouncementAsDismissed()
-        }
+        await markAnnouncementAsDismissed()
     }
 
-    func dismissTapped() {
+    @MainActor
+    func dismissTapped() async {
         trackDismissTapped()
-        Task { @MainActor in
-            await markAnnouncementAsDismissed()
-        }
+        await markAnnouncementAsDismissed()
     }
 }
 

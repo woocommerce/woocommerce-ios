@@ -19,6 +19,7 @@ final class JustInTimeMessagesProvider {
         self.analytics = analytics
     }
 
+    @MainActor
     func loadMessage(for screen: JustInTimeMessagesSourceScreen, siteID: Int64) async throws -> JustInTimeMessageViewModel? {
         guard let source = appScreenJitmSourceMapping[screen] else {
             DDLogInfo("Could not load JITM for \(screen) because there is no mapping for the given screen")
@@ -52,9 +53,7 @@ final class JustInTimeMessagesProvider {
                         continuation.resume(throwing: error)
                     }
                 }
-            Task { @MainActor in
-                stores.dispatch(action)
-            }
+            stores.dispatch(action)
         }
     }
 }

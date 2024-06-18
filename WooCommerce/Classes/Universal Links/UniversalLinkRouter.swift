@@ -39,6 +39,7 @@ struct UniversalLinkRouter {
         return routes + [PaymentsRoute(deepLinkNavigator: tabBarController)]
     }
 
+    @MainActor
     func handle(url: URL) {
         guard let matchedRoute = matcher.firstRouteMatching(url),
               matchedRoute.performAction() else {

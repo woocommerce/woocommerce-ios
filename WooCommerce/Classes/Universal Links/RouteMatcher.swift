@@ -8,6 +8,7 @@ struct MatchedRoute {
     let subPath: String
     let parameters: [String: String]
 
+    @MainActor
     func performAction() -> Bool {
         route.perform(for: subPath, with: parameters)
     }

@@ -26,14 +26,18 @@ struct LocalAnnouncementModal: View {
                 Button(buttonTitle) {
                     // dismissal and async call to the viewModel are required for the webview presentation to work.
                     isPresented = false
-                    viewModel.ctaTapped()
+                    Task {
+                        await viewModel.ctaTapped()
+                    }
                 }
                 .buttonStyle(PrimaryButtonStyle())
                 .foregroundColor(Color(uiColor: .primary))
             }
 
             Button(viewModel.dismissButtonTitle) {
-                viewModel.dismissTapped()
+                Task {
+                    await viewModel.dismissTapped()
+                }
                 isPresented = false
             }
             .buttonStyle(SecondaryButtonStyle())

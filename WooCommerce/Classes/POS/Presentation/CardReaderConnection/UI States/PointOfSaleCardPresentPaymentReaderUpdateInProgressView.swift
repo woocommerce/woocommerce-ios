@@ -1,10 +1,10 @@
 import SwiftUI
 
 struct PointOfSaleCardPresentPaymentReaderUpdateInProgressView: View {
-    private let viewModel: CardPresentPaymentUpdatingReaderAlertViewModel
+    private let viewModel: PointOfSaleCardPresentPaymentUpdatingReaderAlertViewModel
     @Environment(\.dismiss) private var dismiss
 
-    init(viewModel: CardPresentPaymentUpdatingReaderAlertViewModel) {
+    init(viewModel: PointOfSaleCardPresentPaymentUpdatingReaderAlertViewModel) {
         self.viewModel = viewModel
     }
 
@@ -44,7 +44,7 @@ struct CardPresentPaymentReaderUpdateInProgressPreviewView: View {
             }
         }
         .sheet(isPresented: $showsSheet) {
-            PointOfSaleCardPresentPaymentReaderUpdateInProgressView(viewModel: CardPresentPaymentUpdatingReaderAlertViewModel(
+            PointOfSaleCardPresentPaymentReaderUpdateInProgressView(viewModel: PointOfSaleCardPresentPaymentUpdatingReaderAlertViewModel(
                 requiredUpdate: true, progress: 0.6, cancel: nil
             ))
         }

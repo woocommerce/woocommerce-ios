@@ -70,7 +70,7 @@ extension CardPresentPaymentEventDetails {
 
         case .updateProgress(let requiredUpdate, let progress, let cancelUpdate):
             return .alert(.updatingReader(
-                viewModel: CardPresentPaymentUpdatingReaderAlertViewModel(
+                viewModel: PointOfSaleCardPresentPaymentUpdatingReaderAlertViewModel(
                     requiredUpdate: requiredUpdate,
                     progress: progress,
                     cancel: cancelUpdate)))

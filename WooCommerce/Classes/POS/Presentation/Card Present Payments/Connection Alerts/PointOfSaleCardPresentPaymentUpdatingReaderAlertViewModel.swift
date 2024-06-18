@@ -1,7 +1,7 @@
 import Foundation
 import SwiftUI
 
-struct CardPresentPaymentUpdatingReaderAlertViewModel {
+struct PointOfSaleCardPresentPaymentUpdatingReaderAlertViewModel {
     let title: String
     let image: Image
     let progressTitle: String
@@ -24,7 +24,7 @@ struct CardPresentPaymentUpdatingReaderAlertViewModel {
     }
 }
 
-private extension CardPresentPaymentUpdatingReaderAlertViewModel {
+private extension PointOfSaleCardPresentPaymentUpdatingReaderAlertViewModel {
     enum Localization {
         static let title = NSLocalizedString(
             "pointOfSale.cardPresentPayment.alert.updatingReader.title",

@@ -39,14 +39,16 @@ struct ItemCardView: View {
             Spacer()
             Text(item.price)
                 .foregroundStyle(Color.posPrimaryTexti3)
+                .padding()
         }
-        .frame(maxWidth: .infinity)
+        .frame(maxWidth: .infinity, idealHeight: Constants.productCardHeight)
         .background(Color.posBackgroundWhitei3)
     }
 }
 
 private extension ItemCardView {
     enum Constants {
+        static let productCardHeight: CGFloat = 120
         static let productImageWidth: CGFloat = 60
         static let productImageCornerRadius: CGFloat = 0
         static let maxNumberOfCategories = 3

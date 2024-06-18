@@ -82,12 +82,15 @@ extension CardPresentPaymentEventDetails {
                     cancelUpdateAction: cancelUpdate)))
 
         case .updateFailedNonRetryable(let cancelUpdate):
-                return .alert(.updateFailedNonRetryable(
-                    viewModel: PointOfSaleCardPresentPaymentReaderUpdateFailedNonRetryableAlertViewModel(
-                        cancelUpdateAction: cancelUpdate)))
+            return .alert(.updateFailedNonRetryable(
+                viewModel: PointOfSaleCardPresentPaymentReaderUpdateFailedNonRetryableAlertViewModel(
+                    cancelUpdateAction: cancelUpdate)))
 
         case .updateFailedLowBattery(let batteryLevel, let cancelUpdate):
-                fatalError("TODO")
+            return .alert(.updateFailedLowBattery(
+                viewModel: PointOfSaleCardPresentPaymentReaderUpdateFailedLowBatteryAlertViewModel(
+                    batteryLevel: batteryLevel,
+                    cancelUpdateAction: cancelUpdate)))
 
         /// Payment messages
         case .preparingForPayment(cancelPayment: let cancelPayment):

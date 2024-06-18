@@ -1,7 +1,7 @@
 import Foundation
 import SwiftUI
 
-struct CardPresentPaymentReaderUpdateFailedAlertViewModel {
+struct PointOfSaleCardPresentPaymentReaderUpdateFailedAlertViewModel {
     let title: String = Localization.title
     let image: Image = .init(uiImage: .paymentErrorImage)
     let retryButtonViewModel: CardPresentPaymentsModalButtonViewModel
@@ -13,7 +13,7 @@ struct CardPresentPaymentReaderUpdateFailedAlertViewModel {
     }
 }
 
-private extension CardPresentPaymentReaderUpdateFailedAlertViewModel {
+private extension PointOfSaleCardPresentPaymentReaderUpdateFailedAlertViewModel {
     enum Localization {
         static let title = NSLocalizedString(
             "pointOfSale.cardPresentPayment.alert.readerUpdateFailed.title",

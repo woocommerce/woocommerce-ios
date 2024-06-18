@@ -8,7 +8,7 @@ enum PointOfSaleCardPresentPaymentAlertType {
     case bluetoothRequired(viewModel: PointOfSaleCardPresentPaymentBluetoothRequiredAlertViewModel)
     case foundReader(viewModel: PointOfSaleCardPresentPaymentFoundReaderAlertViewModel)
     case updatingReader(viewModel: PointOfSaleCardPresentPaymentUpdatingReaderAlertViewModel)
-    case updateFailed(viewModel: CardPresentPaymentReaderUpdateFailedAlertViewModel)
+    case updateFailed(viewModel: PointOfSaleCardPresentPaymentReaderUpdateFailedAlertViewModel)
     case updateFailedNonRetryable(viewModel: PointOfSaleCardPresentPaymentReaderUpdateFailedNonRetryableAlertViewModel)
     case connectingToReader(viewModel: PointOfSaleCardPresentPaymentConnectingToReaderAlertViewModel)
     case connectingFailed(viewModel: PointOfSaleCardPresentPaymentConnectingFailedAlertViewModel)

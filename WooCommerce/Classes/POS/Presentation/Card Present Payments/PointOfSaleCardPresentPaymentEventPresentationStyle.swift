@@ -77,7 +77,7 @@ extension CardPresentPaymentEventDetails {
 
         case .updateFailed(let tryAgain, let cancelUpdate):
             return .alert(.updateFailed(
-                viewModel: CardPresentPaymentReaderUpdateFailedAlertViewModel(
+                viewModel: PointOfSaleCardPresentPaymentReaderUpdateFailedAlertViewModel(
                     retryAction: tryAgain,
                     cancelUpdateAction: cancelUpdate)))
 

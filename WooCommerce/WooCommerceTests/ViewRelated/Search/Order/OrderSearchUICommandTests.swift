@@ -10,21 +10,21 @@ final class OrderSearchUICommandTests: XCTestCase {
     private var analyticsProvider: MockAnalyticsProvider!
     private var analytics: WooAnalytics!
 
-    override func setUpWithError() throws {
+    override func setUp() {
         super.setUp()
         storageManager = MockOrderStatusesStoresManager()
         analyticsProvider = MockAnalyticsProvider()
         analytics = WooAnalytics(analyticsProvider: analyticsProvider)
     }
 
-    override func tearDownWithError() throws {
+    override func tearDown() {
         storageManager = nil
         analyticsProvider = nil
         analytics = nil
         super.tearDown()
     }
 
-    func testCreateStarterViewControllerReturnsNil() throws {
+    func testCreateStarterViewControllerReturnsNil() {
         // Given
         let command = OrderSearchUICommand(siteID: siteID, onSelectSearchResult: { _, _ in }, storageManager: storageManager)
 

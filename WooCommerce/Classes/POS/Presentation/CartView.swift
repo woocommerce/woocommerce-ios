@@ -61,14 +61,6 @@ struct CartView: View {
 /// View sub-components
 ///
 private extension CartView {
-    private var checkoutButtonForegroundColor: Color {
-        return viewModel.checkoutButtonDisabled ? Color.gray : Color.primaryBackground
-    }
-
-    private var checkoutButtonBackgroundColor: Color {
-        return viewModel.checkoutButtonDisabled ? Color.white.opacity(0.5) : Color.init(uiColor: .wooCommercePurple(.shade60))
-    }
-
     var checkoutButton: some View {
         Button {
             viewModel.submitCart()
@@ -79,12 +71,11 @@ private extension CartView {
                 Spacer()
             }
         }
-        .disabled(viewModel.checkoutButtonDisabled)
         .padding(.all, 20)
         .frame(maxWidth: .infinity, idealHeight: 120)
         .font(.title)
-        .foregroundColor(checkoutButtonForegroundColor)
-        .background(checkoutButtonBackgroundColor)
+        .foregroundColor(Color.primaryBackground)
+        .background(Color.init(uiColor: .wooCommercePurple(.shade60)))
         .cornerRadius(10)
     }
 

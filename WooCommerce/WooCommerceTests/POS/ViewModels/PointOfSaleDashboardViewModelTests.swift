@@ -34,6 +34,7 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
                                  productID: 0,
                                  name: "Choco",
                                  price: "2.00",
+                                 formattedPrice: "$2.00",
                                  itemCategories: [],
                                  productImageSource: nil)
 

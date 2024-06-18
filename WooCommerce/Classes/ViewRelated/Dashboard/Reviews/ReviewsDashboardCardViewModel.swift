@@ -246,24 +246,18 @@ private extension ReviewsDashboardCardViewModel {
             updateProductsResultsController(for: productIDs)
 
             // Get product names and, optionally, read status from notifications.
-            await withTaskGroup(of: Void.self) { group in
+            try await withThrowingTaskGroup(of: Void.self) { group in
                 group.addTask { [weak self] in
-                    do {
-                        try await self?.retrieveProducts(for: productIDs)
-                    } catch {
-                        self?.syncingError = error
-                        DDLogError("⛔️ Dashboard (Reviews) — Error retrieving products: \(error)")
-                    }
+                    try await self?.retrieveProducts(for: productIDs)
                 }
                 if stores.isAuthenticatedWithoutWPCom == false {
                     group.addTask { [weak self] in
-                        do {
-                            try await self?.synchronizeNotifications()
-                        } catch {
-                            self?.syncingError = error
-                            DDLogError("⛔️ Dashboard (Reviews) — Error synchronizing notifications: \(error)")
-                        }
+                        try await self?.synchronizeNotifications()
                     }
+                }
+                while !group.isEmpty {
+                    // rethrow any failure.
+                    try await group.next()
                 }
             }
         }

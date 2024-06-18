@@ -22,8 +22,8 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
 
     @Published var showsCardReaderSheet: Bool = false
     @Published private(set) var cardPresentPaymentEvent: CardPresentPaymentEvent = .idle
-    @Published private(set) var cardPresentPaymentAlertViewModel: CardPresentPaymentAlertType?
-    @Published private(set) var cardPresentPaymentInlineMessage: CardPresentPaymentMessageType?
+    @Published private(set) var cardPresentPaymentAlertViewModel: PointOfSaleCardPresentPaymentAlertType?
+    @Published private(set) var cardPresentPaymentInlineMessage: PointOfSaleCardPresentPaymentMessageType?
     let cardReaderConnectionViewModel: CardReaderConnectionViewModel
 
     @Published var showsCreatingOrderSheet: Bool = false
@@ -139,16 +139,18 @@ private extension PointOfSaleDashboardViewModel {
     func observeCardPresentPaymentEvents() {
         cardPresentPaymentService.paymentEventPublisher.assign(to: &$cardPresentPaymentEvent)
         cardPresentPaymentService.paymentEventPublisher
-            .map { event in
-                guard case let .showAlert(alertDetails) = event else {
+            .map { event -> PointOfSaleCardPresentPaymentAlertType? in
+                guard case let .show(eventDetails) = event,
+                      case let .alert(alertType) = eventDetails.pointOfSalePresentationStyle else {
                     return nil
                 }
-                return alertDetails
+                return alertType
             }
             .assign(to: &$cardPresentPaymentAlertViewModel)
         cardPresentPaymentService.paymentEventPublisher
-            .map { event in
-                guard case let .showPaymentMessage(messageType) = event else {
+            .map { event -> PointOfSaleCardPresentPaymentMessageType? in
+                guard case let .show(eventDetails) = event,
+                      case let .message(messageType) = eventDetails.pointOfSalePresentationStyle else {
                     return nil
                 }
                 return messageType
@@ -156,10 +158,16 @@ private extension PointOfSaleDashboardViewModel {
             .assign(to: &$cardPresentPaymentInlineMessage)
         cardPresentPaymentService.paymentEventPublisher.map { event in
             switch event {
-            case .idle, .showPaymentMessage:
+            case .idle:
                 return false
-            case .showAlert,
-                    .showReaderList,
+            case .show(let eventDetails):
+                switch eventDetails.pointOfSalePresentationStyle {
+                case .alert:
+                    return true
+                case .message, .none:
+                    return false
+                }
+            case .showReaderList,
                     .showOnboarding:
                 return true
             }

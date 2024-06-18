@@ -101,7 +101,7 @@ public protocol PointOfSaleOrderServiceProtocol {
     ///   - posOrder: POS order.
     /// - Returns: Order created from posOrder data.
     func order(from posOrder: PointOfSaleOrder) -> Order
-    
+
     /// Creates an empty autodraft order
     func createAutoDraftOrder() -> Order
 }

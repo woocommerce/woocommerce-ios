@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct CardPresentPaymentReaderUpdateInProgressView: View {
+struct PointOfSaleCardPresentPaymentReaderUpdateInProgressView: View {
     private let viewModel: CardPresentPaymentUpdatingReaderAlertViewModel
     @Environment(\.dismiss) private var dismiss
 
@@ -44,7 +44,7 @@ struct CardPresentPaymentReaderUpdateInProgressPreviewView: View {
             }
         }
         .sheet(isPresented: $showsSheet) {
-            CardPresentPaymentReaderUpdateInProgressView(viewModel: CardPresentPaymentUpdatingReaderAlertViewModel(
+            PointOfSaleCardPresentPaymentReaderUpdateInProgressView(viewModel: CardPresentPaymentUpdatingReaderAlertViewModel(
                 requiredUpdate: true, progress: 0.6, cancel: nil
             ))
         }

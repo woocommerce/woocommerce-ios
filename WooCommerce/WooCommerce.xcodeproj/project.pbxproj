@@ -300,7 +300,7 @@
 		026826BF2BF59E410036F959 /* PointOfSaleCardPresentPaymentScanningForReadersFailedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026826B62BF59E400036F959 /* PointOfSaleCardPresentPaymentScanningForReadersFailedView.swift */; };
 		026826C02BF59E410036F959 /* PointOfSaleCardPresentPaymentConnectingFailedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026826B72BF59E400036F959 /* PointOfSaleCardPresentPaymentConnectingFailedView.swift */; };
 		026826C12BF59E410036F959 /* PointOfSaleCardPresentPaymentConnectingToReaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026826B82BF59E400036F959 /* PointOfSaleCardPresentPaymentConnectingToReaderView.swift */; };
-		026826C22BF59E410036F959 /* CardPresentPaymentReaderUpdateInProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026826B92BF59E400036F959 /* CardPresentPaymentReaderUpdateInProgressView.swift */; };
+		026826C22BF59E410036F959 /* PointOfSaleCardPresentPaymentReaderUpdateInProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026826B92BF59E400036F959 /* PointOfSaleCardPresentPaymentReaderUpdateInProgressView.swift */; };
 		026826C32BF59E410036F959 /* ReaderConnectedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026826BA2BF59E400036F959 /* ReaderConnectedView.swift */; };
 		026826C42BF59E410036F959 /* PointOfSaleCardPresentPaymentFoundReadersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026826BB2BF59E410036F959 /* PointOfSaleCardPresentPaymentFoundReadersView.swift */; };
 		026826C52BF59E410036F959 /* CardPresentPaymentReaderUpdateFailedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026826BC2BF59E410036F959 /* CardPresentPaymentReaderUpdateFailedView.swift */; };
@@ -3263,7 +3263,7 @@
 		026826B62BF59E400036F959 /* PointOfSaleCardPresentPaymentScanningForReadersFailedView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PointOfSaleCardPresentPaymentScanningForReadersFailedView.swift; sourceTree = "<group>"; };
 		026826B72BF59E400036F959 /* PointOfSaleCardPresentPaymentConnectingFailedView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PointOfSaleCardPresentPaymentConnectingFailedView.swift; sourceTree = "<group>"; };
 		026826B82BF59E400036F959 /* PointOfSaleCardPresentPaymentConnectingToReaderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PointOfSaleCardPresentPaymentConnectingToReaderView.swift; sourceTree = "<group>"; };
-		026826B92BF59E400036F959 /* CardPresentPaymentReaderUpdateInProgressView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentReaderUpdateInProgressView.swift; sourceTree = "<group>"; };
+		026826B92BF59E400036F959 /* PointOfSaleCardPresentPaymentReaderUpdateInProgressView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PointOfSaleCardPresentPaymentReaderUpdateInProgressView.swift; sourceTree = "<group>"; };
 		026826BA2BF59E400036F959 /* ReaderConnectedView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReaderConnectedView.swift; sourceTree = "<group>"; };
 		026826BB2BF59E410036F959 /* PointOfSaleCardPresentPaymentFoundReadersView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PointOfSaleCardPresentPaymentFoundReadersView.swift; sourceTree = "<group>"; };
 		026826BC2BF59E410036F959 /* CardPresentPaymentReaderUpdateFailedView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentReaderUpdateFailedView.swift; sourceTree = "<group>"; };
@@ -6644,7 +6644,7 @@
 				203163B62C1C5EDF001C96DA /* PointOfSaleCardPresentPaymentConnectingFailedChargeReaderView.swift */,
 				026826BB2BF59E410036F959 /* PointOfSaleCardPresentPaymentFoundReadersView.swift */,
 				203163B82C1C5F42001C96DA /* PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressView.swift */,
-				026826B92BF59E400036F959 /* CardPresentPaymentReaderUpdateInProgressView.swift */,
+				026826B92BF59E400036F959 /* PointOfSaleCardPresentPaymentReaderUpdateInProgressView.swift */,
 				026826BC2BF59E410036F959 /* CardPresentPaymentReaderUpdateFailedView.swift */,
 				026826BA2BF59E400036F959 /* ReaderConnectedView.swift */,
 			);
@@ -14299,7 +14299,7 @@
 				024073802BBAAF7400C00441 /* SimplePaymentsMigrationView.swift in Sources */,
 				DE653EAD2A70D09F00937C78 /* CreateTestOrderView.swift in Sources */,
 				AE9E04752776213E003FA09E /* LegacyOrderCustomerSection.swift in Sources */,
-				026826C22BF59E410036F959 /* CardPresentPaymentReaderUpdateInProgressView.swift in Sources */,
+				026826C22BF59E410036F959 /* PointOfSaleCardPresentPaymentReaderUpdateInProgressView.swift in Sources */,
 				CE15524A21FFB10100EAA690 /* ApplicationLogViewController.swift in Sources */,
 				EEBDF7DA2A2EF69B00EFEF47 /* ShareProductCoordinator.swift in Sources */,
 				DEFB3011289904E300A620B3 /* WooSetupWebViewModel.swift in Sources */,

@@ -14,7 +14,29 @@ final class CardPresentPaymentsAlertPresenterAdaptor: CardPresentPaymentAlertsPr
     }
 
     func present(viewModel eventDetails: CardPresentPaymentEventDetails) {
-        paymentEventSubject.send(.show(eventDetails: eventDetails))
+        switch eventDetails {
+        case .paymentError(let error, let tryAgain, let cancelPayment):
+            paymentEventSubject.send(.show(
+                eventDetails: .paymentError(
+                    error: error,
+                    tryAgain: tryAgain,
+                    cancelPayment: { [weak self] in
+                        // TODO: this should also call CardPresentPaymentFacade.cancelPayment
+                        cancelPayment()
+                        self?.paymentEventSubject.send(.idle)
+                    })))
+        case .paymentErrorNonRetryable(let error, let cancelPayment):
+            paymentEventSubject.send(.show(
+                eventDetails: .paymentErrorNonRetryable(
+                    error: error,
+                    cancelPayment: { [weak self] in
+                        // TODO: this should also call CardPresentPaymentFacade.cancelPayment
+                        cancelPayment()
+                        self?.paymentEventSubject.send(.idle)
+                    })))
+        default:
+            paymentEventSubject.send(.show(eventDetails: eventDetails))
+        }
     }
 
     func presentWCSettingsWebView(adminURL: URL, completion: @escaping () -> Void) {

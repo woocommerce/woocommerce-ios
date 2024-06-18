@@ -29,20 +29,20 @@ struct PointOfSaleDashboardView: View {
                         // TODO: replace temporary inline message UI based on design
                         if let inlinePaymentMessage = viewModel.cardPresentPaymentInlineMessage {
                             switch inlinePaymentMessage {
-                            case .preparingForPayment:
-                                Text("Preparing for payment...")
-                            case .tapSwipeOrInsertCard:
-                                Text("tapSwipeOrInsertCard...")
+                            case .preparingForPayment(let viewModel):
+                                PointOfSaleCardPresentPaymentPreparingForPaymentMessageView(viewModel: viewModel)
+                            case .tapSwipeOrInsertCard(let viewModel):
+                                PointOfSaleCardPresentPaymentTapSwipeInsertCardMessageView(viewModel: viewModel)
                             case .processing:
                                 Text("processing...")
                             case .displayReaderMessage(let viewModel):
-                                Text("Reader message: \(viewModel.message)")
+                                PointOfSaleCardPresentPaymentDisplayReaderMessageMessageView(viewModel: viewModel)
                             case .paymentSuccess:
                                 Text("Payment successful!")
-                            case .paymentError:
-                                Text("Payment error")
-                            case .paymentErrorNonRetryable:
-                                Text("Payment error - non retryable")
+                            case .paymentError(let viewModel):
+                                PointOfSaleCardPresentPaymentErrorMessageView(viewModel: viewModel)
+                            case .paymentErrorNonRetryable(let viewModel):
+                                PointOfSaleCardPresentPaymentNonRetryableErrorMessageView(viewModel: viewModel)
                             case .cancelledOnReader:
                                 Text("Payment cancelled on reader")
                             }

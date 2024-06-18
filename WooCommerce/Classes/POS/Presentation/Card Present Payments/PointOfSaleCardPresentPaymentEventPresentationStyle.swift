@@ -83,21 +83,30 @@ extension CardPresentPaymentEventDetails {
         /// Payment messages
         case .preparingForPayment(cancelPayment: let cancelPayment):
             return .message(.preparingForPayment(
-                viewModel: PointOfSaleCardPresentPaymentPreparingForPaymentMessageViewModel()))
+                viewModel: PointOfSaleCardPresentPaymentPreparingForPaymentMessageViewModel(
+                    cancelAction: cancelPayment)))
 
         case .tapSwipeOrInsertCard(inputMethods: let inputMethods, cancelPayment: let cancelPayment):
             return .message(.tapSwipeOrInsertCard(
-                viewModel: PointOfSaleCardPresentPaymentTapSwipeInsertCardMessageViewModel()))
+                viewModel: PointOfSaleCardPresentPaymentTapSwipeInsertCardMessageViewModel(
+                    inputMethods: inputMethods,
+                    cancelAction: cancelPayment)))
 
         case .paymentSuccess(done: let done):
             return .message(.paymentSuccess(viewModel: PointOfSaleCardPresentPaymentSuccessMessageViewModel()))
 
         case .paymentError(error: let error, tryAgain: let tryAgain, cancelPayment: let cancelPayment):
-            return .message(.paymentError(viewModel: PointOfSaleCardPresentPaymentErrorMessageViewModel()))
+            return .message(.paymentError(
+                viewModel: PointOfSaleCardPresentPaymentErrorMessageViewModel(
+                    error: error,
+                    tryAgainButtonAction: tryAgain,
+                    cancelButtonAction: cancelPayment)))
 
         case .paymentErrorNonRetryable(error: let error, cancelPayment: let cancelPayment):
             return .message(.paymentErrorNonRetryable(
-                viewModel: PointOfSaleCardPresentPaymentNonRetryableErrorMessageViewModel()))
+                viewModel: PointOfSaleCardPresentPaymentNonRetryableErrorMessageViewModel(
+                    error: error,
+                    cancelButtonAction: cancelPayment)))
 
         case .processing:
             return .message(.processing(viewModel: PointOfSaleCardPresentPaymentProcessingMessageViewModel()))

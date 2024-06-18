@@ -7,6 +7,7 @@ import Experiments
 /// Checks whether a store is eligible for Inbox feature.
 /// Since mobile requires API support for filtering, only stores with a minimum WC plugin version are eligible.
 ///
+@MainActor
 protocol InboxEligibilityChecker {
     /// Determines whether the store is eligible for inbox feature.
     /// - Parameters:

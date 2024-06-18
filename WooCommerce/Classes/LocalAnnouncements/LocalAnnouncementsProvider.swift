@@ -5,6 +5,7 @@ import protocol WooFoundation.Analytics
 
 /// Provides the local announcements to be displayed on the dashboard tab.
 ///
+@MainActor
 final class LocalAnnouncementsProvider {
     private let stores: StoresManager
     private let analytics: Analytics

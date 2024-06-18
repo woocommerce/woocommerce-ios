@@ -8,6 +8,7 @@ enum JustInTimeMessagesSourceScreen {
 
 /// Provides the Just in Time Messages content for a given source screen and site. It also tracks the requests success or error.
 ///
+@MainActor
 final class JustInTimeMessagesProvider {
     private let stores: StoresManager
     private let analytics: Analytics

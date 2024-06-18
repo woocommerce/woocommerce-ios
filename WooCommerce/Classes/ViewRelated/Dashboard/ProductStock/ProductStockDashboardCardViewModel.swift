@@ -4,6 +4,7 @@ import protocol WooFoundation.Analytics
 
 /// View model for `ProductStockDashboardCard`
 ///
+@MainActor
 final class ProductStockDashboardCardViewModel: ObservableObject {
     // Set externally to trigger callback upon hiding the Inbox card.
     var onDismiss: (() -> Void)?

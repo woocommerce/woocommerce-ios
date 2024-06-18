@@ -5,6 +5,7 @@ import protocol Storage.StorageManagerType
 
 /// View model for `MostActiveCouponsCard`.
 ///
+@MainActor
 final class MostActiveCouponsCardViewModel: ObservableObject {
     // Set externally to trigger callback upon hiding the Coupons card.
     var onDismiss: (() -> Void)?

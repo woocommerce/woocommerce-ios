@@ -2,6 +2,7 @@ import Yosemite
 import enum Networking.InstallThemeError
 import protocol WooFoundation.Analytics
 
+@MainActor
 protocol ThemeInstaller {
     func install(themeID: String, siteID: Int64) async throws
 

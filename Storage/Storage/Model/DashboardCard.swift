@@ -2,7 +2,7 @@ import Codegen
 import Foundation
 
 /// Represents a card on the Dashboard screen.
-public struct DashboardCard: Codable, Hashable, Equatable, GeneratedCopiable {
+public struct DashboardCard: Codable, Hashable, Equatable, GeneratedCopiable, Sendable {
     /// The type of dashboard card.
     public let type: CardType
 

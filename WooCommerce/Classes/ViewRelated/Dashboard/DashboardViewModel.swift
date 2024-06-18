@@ -7,6 +7,7 @@ import protocol Experiments.FeatureFlagService
 import protocol WooFoundation.Analytics
 
 /// Syncs data for dashboard stats UI and determines the state of the dashboard UI based on stats version.
+@MainActor
 final class DashboardViewModel: ObservableObject {
     /// Stats v4 is shown by default, then falls back to v3 if store stats are unavailable.
     @Published private(set) var statsVersion: StatsVersion = .v4
@@ -109,10 +110,10 @@ final class DashboardViewModel: ObservableObject {
          featureFlags: FeatureFlagService = ServiceLocator.featureFlagService,
          analytics: Analytics = ServiceLocator.analytics,
          userDefaults: UserDefaults = .standard,
-         themeInstaller: ThemeInstaller = DefaultThemeInstaller(),
+         themeInstaller: ThemeInstaller? = nil,
          usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter = StoreStatsUsageTracksEventEmitter(),
          blazeEligibilityChecker: BlazeEligibilityCheckerProtocol = BlazeEligibilityChecker(),
-         inboxEligibilityChecker: InboxEligibilityChecker = InboxEligibilityUseCase()) {
+         inboxEligibilityChecker: InboxEligibilityChecker? = nil) {
         self.siteID = siteID
         self.stores = stores
         self.storageManager = storageManager
@@ -136,8 +137,8 @@ final class DashboardViewModel: ObservableObject {
         self.productStockCardViewModel = ProductStockDashboardCardViewModel(siteID: siteID)
         self.lastOrdersCardViewModel = LastOrdersDashboardCardViewModel(siteID: siteID)
 
-        self.themeInstaller = themeInstaller
-        self.inboxEligibilityChecker = inboxEligibilityChecker
+        self.themeInstaller = themeInstaller ?? DefaultThemeInstaller()
+        self.inboxEligibilityChecker = inboxEligibilityChecker ?? InboxEligibilityUseCase()
         self.usageTracksEventEmitter = usageTracksEventEmitter
 
         self.inAppFeedbackCardViewModel.onFeedbackGiven = { [weak self] feedback in

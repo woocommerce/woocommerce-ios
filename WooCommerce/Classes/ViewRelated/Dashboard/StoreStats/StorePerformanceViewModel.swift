@@ -17,6 +17,7 @@ enum SiteVisitStatsMode {
 
 /// View model for `StorePerformanceView`.
 ///
+@MainActor
 final class StorePerformanceViewModel: ObservableObject {
     @Published private(set) var timeRange = StatsTimeRangeV4.today
     @Published private(set) var statsIntervalData: [StoreStatsChartData] = []

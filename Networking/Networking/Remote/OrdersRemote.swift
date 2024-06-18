@@ -220,7 +220,7 @@ public class OrdersRemote: Remote {
         }
     }
 
-    public func createPointOfSaleOrder(siteID: Int64, order: Order, fields: [CreateOrderField]) async throws -> Order {
+    public func createPOSOrder(siteID: Int64, order: Order, fields: [CreateOrderField]) async throws -> Order {
         return try await withCheckedThrowingContinuation { continuation in
             createOrder(siteID: siteID, order: order, giftCard: nil, fields: fields) { result in
                 switch result {
@@ -321,7 +321,7 @@ public class OrdersRemote: Remote {
         }
     }
 
-    public func updatePointOfSaleOrder(siteID: Int64, order: Order, fields: [UpdateOrderField]) async throws -> Order {
+    public func updatePOSOrder(siteID: Int64, order: Order, fields: [UpdateOrderField]) async throws -> Order {
         return try await withCheckedThrowingContinuation { continuation in
             updateOrder(from: siteID, order: order, giftCard: nil, fields: fields) { result in
                 switch result {

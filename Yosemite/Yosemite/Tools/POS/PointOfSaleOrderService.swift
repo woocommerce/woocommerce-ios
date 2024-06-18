@@ -13,7 +13,7 @@ public struct PointOfSaleCartProduct {
     }
 }
 
-public struct PointOfSaleCartItem {
+public struct POSCartItem {
     /// Nil when the cart item is local and has not been synced remotely.
     let itemID: Int64?
     let product: PointOfSaleCartProduct
@@ -26,27 +26,27 @@ public struct PointOfSaleCartItem {
     }
 }
 
-public struct PointOfSaleOrder {
+public struct POSOrder {
     public let siteID: Int64
     public let orderID: Int64
     public let total: String
     public let totalTax: String
     public let currency: String
-    let items: [PointOfSaleOrderItem]
+    let items: [POSOrderItem]
 }
 
-extension PointOfSaleOrder {
+extension POSOrder {
     init(order: Order) {
         self.init(siteID: order.siteID,
                   orderID: order.orderID,
                   total: order.total,
                   totalTax: order.totalTax,
                   currency: order.currency,
-                  items: order.items.map { PointOfSaleOrderItem(orderItem: $0) })
+                  items: order.items.map { POSOrderItem(orderItem: $0) })
     }
 }
 
-struct PointOfSaleOrderItem {
+struct POSOrderItem {
     let itemID: Int64
 
     /// The product ID of a product order item, or the ID of the variable product if the order item is a product variation.
@@ -80,33 +80,33 @@ struct PointOfSaleOrderItem {
     }
 }
 
-public protocol PointOfSaleOrderServiceProtocol {
+public protocol POSOrderServiceProtocol {
     /// Syncs order based on the cart.
     /// - Parameters:
     ///   - cart: Cart with optional items (product & quantity).
     ///   - order: Optional latest remotely synced order. Nil when syncing order for the first time.
     ///   - allProducts: Necessary for removing existing order items with products that have been removed from the cart.
     /// - Returns: Order from the remote sync.
-    func syncOrder(cart: [PointOfSaleCartItem], order: PointOfSaleOrder?, allProducts: [PointOfSaleCartProduct]) async throws -> PointOfSaleOrder
+    func syncOrder(cart: [POSCartItem], order: POSOrder?, allProducts: [PointOfSaleCartProduct]) async throws -> POSOrder
 
     /// Updates status of an order and syncs it
     /// - Parameters:
     ///   - posOrder: POS order.
     ///   - status: New order status.
     /// - Returns: Updated and synced POS order.
-    func updateOrderStatus(posOrder: PointOfSaleOrder, status: OrderStatusEnum) async throws -> PointOfSaleOrder
+    func updateOrderStatus(posOrder: POSOrder, status: OrderStatusEnum) async throws -> POSOrder
 
     /// Creates WOO Order from POS Order.
     /// - Parameters:
     ///   - posOrder: POS order.
     /// - Returns: Order created from posOrder data.
-    func order(from posOrder: PointOfSaleOrder) -> Order
+    func order(from posOrder: POSOrder) -> Order
 
     /// Creates an empty autodraft order
     func createAutoDraftOrder() -> Order
 }
 
-public final class PointOfSaleOrderService: PointOfSaleOrderServiceProtocol {
+public final class POSOrderService: POSOrderServiceProtocol {
     // MARK: - Properties
 
     private let siteID: Int64
@@ -125,7 +125,7 @@ public final class PointOfSaleOrderService: PointOfSaleOrderServiceProtocol {
 
     // MARK: - Protocol conformance
 
-    public func syncOrder(cart: [PointOfSaleCartItem], order posOrder: PointOfSaleOrder?, allProducts: [PointOfSaleCartProduct]) async throws -> PointOfSaleOrder {
+    public func syncOrder(cart: [POSCartItem], order posOrder: POSOrder?, allProducts: [PointOfSaleCartProduct]) async throws -> POSOrder {
         let initialOrder: Order
         if let posOrder {
             initialOrder = order(from: posOrder)
@@ -137,22 +137,22 @@ public final class PointOfSaleOrderService: PointOfSaleOrderServiceProtocol {
         let order = updateOrder(initialOrder, cart: cart, allProducts: allProducts)
         let syncedOrder: Order
         if posOrder != nil {
-            syncedOrder = try await ordersRemote.updatePointOfSaleOrder(siteID: siteID, order: order, fields: [.items])
+            syncedOrder = try await ordersRemote.updatePOSOrder(siteID: siteID, order: order, fields: [.items])
         } else {
-            syncedOrder = try await ordersRemote.createPointOfSaleOrder(siteID: siteID, order: order, fields: [.items, .status])
+            syncedOrder = try await ordersRemote.createPOSOrder(siteID: siteID, order: order, fields: [.items, .status])
         }
-        return PointOfSaleOrder(order: syncedOrder)
+        return POSOrder(order: syncedOrder)
     }
 
-    public func updateOrderStatus(posOrder: PointOfSaleOrder, status: OrderStatusEnum) async throws -> PointOfSaleOrder {
+    public func updateOrderStatus(posOrder: POSOrder, status: OrderStatusEnum) async throws -> POSOrder {
         let order: Order = order(from: posOrder)
 
-        let syncedOrder: Order = try await ordersRemote.updatePointOfSaleOrder(siteID: siteID, order: order, fields: [.status])
+        let syncedOrder: Order = try await ordersRemote.updatePOSOrder(siteID: siteID, order: order, fields: [.status])
 
-        return PointOfSaleOrder(order: syncedOrder)
+        return POSOrder(order: syncedOrder)
     }
 
-    public func order(from posOrder: PointOfSaleOrder) -> Order {
+    public func order(from posOrder: POSOrder) -> Order {
         return OrderFactory.emptyNewOrder.copy(siteID: posOrder.siteID,
                                                orderID: posOrder.orderID,
                                                currency: posOrder.currency,
@@ -167,7 +167,7 @@ public final class PointOfSaleOrderService: PointOfSaleOrderServiceProtocol {
     }
 }
 
-private struct PointOfSaleOrderSyncProductType: OrderSyncProductTypeProtocol {
+private struct POSOrderSyncProductType: OrderSyncProductTypeProtocol {
     let productID: Int64
     let price: String
     // Not used in POS but have to be included for the app usage.
@@ -182,12 +182,12 @@ private struct PointOfSaleOrderSyncProductType: OrderSyncProductTypeProtocol {
     }
 }
 
-private extension PointOfSaleOrderService {
-    func updateOrder(_ order: Order, cart: [PointOfSaleCartItem], allProducts: [PointOfSaleCartProduct]) -> Order {
-        let cartProducts = cart.map { PointOfSaleOrderSyncProductType(productID: $0.product.productID,
+private extension POSOrderService {
+    func updateOrder(_ order: Order, cart: [POSCartItem], allProducts: [PointOfSaleCartProduct]) -> Order {
+        let cartProducts = cart.map { POSOrderSyncProductType(productID: $0.product.productID,
                                                                       price: $0.product.price,
                                                                       productType: $0.product.productType) }
-        let allProducts = allProducts.map { PointOfSaleOrderSyncProductType(productID: $0.productID,
+        let allProducts = allProducts.map { POSOrderSyncProductType(productID: $0.productID,
                                                                             price: $0.price,
                                                                             productType: $0.productType) }
 
@@ -215,7 +215,7 @@ private extension PointOfSaleOrderService {
         return ProductInputTransformer.updateMultipleItems(with: itemsToSync, on: order, shouldUpdateOrDeleteZeroQuantities: .update)
     }
 
-    func createQuantitiesByProductID(from cart: [PointOfSaleCartItem]) -> [Int64: Decimal] {
+    func createQuantitiesByProductID(from cart: [POSCartItem]) -> [Int64: Decimal] {
         cart.reduce([Int64: Decimal]()) { partialResult, cartItem in
             var result = partialResult
             if let quantity = partialResult[cartItem.product.productID] {

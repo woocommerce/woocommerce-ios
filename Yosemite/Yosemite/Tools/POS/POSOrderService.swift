@@ -1,25 +1,15 @@
 import Foundation
 import Networking
 
-public struct PointOfSaleCartProduct {
-    let productID: Int64
-    let price: String
-    let productType: ProductType
-
-    public init(productID: Int64, price: String, productType: ProductType) {
-        self.productID = productID
-        self.price = price
-        self.productType = productType
-    }
-}
-
+/// POSCartItem is different from the CartItem in the POS app layer.
+/// - The POS cart UI might show the cart items differently from how they appear in an order in wp-admin.
 public struct POSCartItem {
     /// Nil when the cart item is local and has not been synced remotely.
     let itemID: Int64?
-    let product: PointOfSaleCartProduct
+    let product: POSItem
     let quantity: Decimal
 
-    public init(itemID: Int64?, product: PointOfSaleCartProduct, quantity: Decimal) {
+    public init(itemID: Int64?, product: POSItem, quantity: Decimal) {
         self.itemID = itemID
         self.product = product
         self.quantity = quantity
@@ -87,7 +77,7 @@ public protocol POSOrderServiceProtocol {
     ///   - order: Optional latest remotely synced order. Nil when syncing order for the first time.
     ///   - allProducts: Necessary for removing existing order items with products that have been removed from the cart.
     /// - Returns: Order from the remote sync.
-    func syncOrder(cart: [POSCartItem], order: POSOrder?, allProducts: [PointOfSaleCartProduct]) async throws -> POSOrder
+    func syncOrder(cart: [POSCartItem], order: POSOrder?, allProducts: [POSItem]) async throws -> POSOrder
 
     /// Updates status of an order and syncs it
     /// - Parameters:
@@ -125,7 +115,7 @@ public final class POSOrderService: POSOrderServiceProtocol {
 
     // MARK: - Protocol conformance
 
-    public func syncOrder(cart: [POSCartItem], order posOrder: POSOrder?, allProducts: [PointOfSaleCartProduct]) async throws -> POSOrder {
+    public func syncOrder(cart: [POSCartItem], order posOrder: POSOrder?, allProducts: [POSItem]) async throws -> POSOrder {
         let initialOrder: Order
         if let posOrder {
             initialOrder = order(from: posOrder)
@@ -183,7 +173,7 @@ private struct POSOrderSyncProductType: OrderSyncProductTypeProtocol {
 }
 
 private extension POSOrderService {
-    func updateOrder(_ order: Order, cart: [POSCartItem], allProducts: [PointOfSaleCartProduct]) -> Order {
+    func updateOrder(_ order: Order, cart: [POSCartItem], allProducts: [POSItem]) -> Order {
         let cartProducts = cart.map { POSOrderSyncProductType(productID: $0.product.productID,
                                                                       price: $0.product.price,
                                                                       productType: $0.product.productType) }

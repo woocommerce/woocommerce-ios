@@ -64,7 +64,8 @@ public final class POSProductProvider: POSItemProvider {
                               name: product.name,
                               price: formattedPrice,
                               itemCategories: productCategories,
-                              productImageSource: thumbnailSource)
+                              productImageSource: thumbnailSource,
+                              productType: product.productType)
         }
     }
 

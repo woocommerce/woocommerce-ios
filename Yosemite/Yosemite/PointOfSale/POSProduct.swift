@@ -5,18 +5,21 @@ struct POSProduct: POSItem {
     let price: String
     let itemCategories: [String]
     var productImageSource: String?
+    let productType: ProductType
 
     init(itemID: UUID,
          productID: Int64,
          name: String,
          price: String,
          itemCategories: [String],
-         productImageSource: String?) {
+         productImageSource: String?,
+         productType: ProductType) {
         self.itemID = itemID
         self.productID = productID
         self.name = name
         self.price = price
         self.itemCategories = itemCategories
         self.productImageSource = productImageSource
+        self.productType = productType
     }
 }

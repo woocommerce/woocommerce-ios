@@ -37,17 +37,12 @@ final class CardPresentModalConnectingFailedUpdateAddress: CardPresentPaymentsMo
         return topTitle
     }
 
-    private let wcSettingsAdminURL: URL?
-
-    @Published private var wcSettingsWebViewModel: WCSettingsWebViewModel? = nil
-
     init(image: UIImage = .paymentErrorImage,
          wcSettingsAdminURL: URL?,
          openWCSettings: (() -> Void)?,
          retrySearch: @escaping () -> Void,
          cancelSearch: @escaping () -> Void) {
         self.image = image
-        self.wcSettingsAdminURL = wcSettingsAdminURL
         self.openWCSettingsAction = openWCSettings
         self.retrySearchAction = retrySearch
         self.cancelSearchAction = cancelSearch
@@ -65,12 +60,6 @@ final class CardPresentModalConnectingFailedUpdateAddress: CardPresentPaymentsMo
     }
 
     func didTapAuxiliaryButton(in viewController: UIViewController?) { }
-}
-
-extension CardPresentModalConnectingFailedUpdateAddress: CardPresentPaymentsModalViewModelWCSettingsWebViewPresenting {
-    var webViewModel: AnyPublisher<WCSettingsWebViewModel?, Never> {
-        $wcSettingsWebViewModel.eraseToAnyPublisher()
-    }
 }
 
 private extension CardPresentModalConnectingFailedUpdateAddress {

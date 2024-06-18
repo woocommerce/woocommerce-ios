@@ -148,7 +148,6 @@ public final class PointOfSaleOrderService: PointOfSaleOrderServiceProtocol {
         let order: Order = order(from: posOrder)
 
         let syncedOrder: Order = try await ordersRemote.updatePointOfSaleOrder(siteID: siteID, order: order, fields: [.status])
-        DDLog("🟢 [POS] Synced order status: \(order.status)")
 
         return PointOfSaleOrder(order: syncedOrder)
     }

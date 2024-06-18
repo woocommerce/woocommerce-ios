@@ -625,11 +625,8 @@ final class EditableOrderViewModel: ObservableObject {
     /// - Parameter item: Item to remove from the order
     ///
     func removeItemFromOrder(_ item: OrderItem) {
-        guard let input = ProductInputTransformer.createUpdateProductInput(item: item,
-                                                                           quantity: 0,
-                                                                           allProducts: Array(allProducts),
-                                                                           allProductVariations: allProductVariations,
-                                                                           defaultDiscount: currentDiscount(on: item)) else { return }
+        guard let input = createUpdateProductInput(item: item,
+                                                   quantity: 0) else { return }
         orderSynchronizer.setProduct.send(input)
 
         if item.variationID != 0 {
@@ -662,12 +659,9 @@ final class EditableOrderViewModel: ObservableObject {
     }
 
     func addDiscountToOrderItem(item: OrderItem, discount: Decimal) {
-        guard let productInput = ProductInputTransformer.createUpdateProductInput(item: item,
-                                                                                  quantity: item.quantity,
-                                                                                  discount: discount,
-                                                                                  allProducts: Array(allProducts),
-                                                                                  allProductVariations: allProductVariations,
-                                                                                  defaultDiscount: currentDiscount(on: item)) else {
+        guard let productInput = createUpdateProductInput(item: item,
+                                                          quantity: item.quantity,
+                                                          discount: discount) else {
             return
         }
 
@@ -1509,11 +1503,8 @@ private extension EditableOrderViewModel {
 
         for item in allOrderItemsToBeRemoved {
 
-            if let input = ProductInputTransformer.createUpdateProductInput(item: item,
-                                                                            quantity: 0,
-                                                                            allProducts: Array(allProducts),
-                                                                            allProductVariations: allProductVariations,
-                                                                            defaultDiscount: currentDiscount(on: item)) {
+            if let input = createUpdateProductInput(item: item,
+                                                    quantity: 0) {
                 inputsToBeRemoved.append(input)
             }
 
@@ -2142,6 +2133,22 @@ private extension EditableOrderViewModel {
         return OrderSyncAddressesInput(billing: billingAddress, shipping: shippingAddress)
     }
 
+    /// Creates a new `OrderSyncProductInput` type meant to update an existing input from `OrderSynchronizer`
+    /// If the referenced product can't be found, `nil` is returned.
+    ///
+    private func createUpdateProductInput(item: OrderItem,
+                                          childItems: [OrderItem] = [],
+                                          quantity: Decimal,
+                                          discount: Decimal? = nil,
+                                          bundleConfiguration: [BundledProductConfiguration] = []) -> OrderSyncProductInput? {
+        ProductInputTransformer.createUpdateProductInput(item: item,
+                                                         childItems: childItems,
+                                                         quantity: quantity,
+                                                         allProducts: Array(allProducts),
+                                                         allProductVariations: allProductVariations,
+                                                         defaultDiscount: currentDiscount(on: item))
+    }
+
     /// Creates the configuration related to adding a discount to a product. If the feature shouldn't be shown it returns `nil`
     ///
     func addProductDiscountConfiguration(on orderItem: OrderItem) -> ProductDiscountViewModel.DiscountConfiguration? {
@@ -2198,12 +2205,9 @@ private extension EditableOrderViewModel {
                 .sink { [weak self] newQuantity in
                     guard let self else { return }
                     let childItems = items.filter { $0.parent == item.itemID }
-                    guard let newInput = ProductInputTransformer.createUpdateProductInput(item: item,
-                                                                                          childItems: childItems,
-                                                                                          quantity: newQuantity,
-                                                                                          allProducts: Array(allProducts),
-                                                                                          allProductVariations: allProductVariations,
-                                                                                          defaultDiscount: currentDiscount(on: item)) else {
+                    guard let newInput = createUpdateProductInput(item: item,
+                                                                  childItems: childItems,
+                                                                  quantity: newQuantity) else {
                         return
                     }
                     self.orderSynchronizer.setProduct.send(newInput)
@@ -2222,12 +2226,9 @@ private extension EditableOrderViewModel {
     }
 
     func addBundleConfigurationToOrderItem(item: OrderItem, bundleConfiguration: [BundledProductConfiguration]) {
-        guard let productInput = ProductInputTransformer.createUpdateProductInput(item: item,
-                                                                                  quantity: item.quantity,
-                                                                                  bundleConfiguration: bundleConfiguration,
-                                                                                  allProducts: Array(allProducts),
-                                                                                  allProductVariations: allProductVariations,
-                                                                                  defaultDiscount: currentDiscount(on: item)) else {
+        guard let productInput = createUpdateProductInput(item: item,
+                                                          quantity: item.quantity,
+                                                          bundleConfiguration: bundleConfiguration) else {
             return
         }
         orderSynchronizer.setProduct.send(productInput)

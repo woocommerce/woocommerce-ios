@@ -21,7 +21,7 @@ public struct DashboardCard: Codable, Hashable, Equatable, GeneratedCopiable, Se
     }
 
     /// Types of cards to display on the Dashboard screen.
-    public enum CardType: String, Codable, CaseIterable {
+    public enum CardType: String, Codable, CaseIterable, Sendable {
         case onboarding
         case performance
         case topPerformers
@@ -35,7 +35,7 @@ public struct DashboardCard: Codable, Hashable, Equatable, GeneratedCopiable, Se
 
     /// Card's availability state that determines whether it can be displayed and used.
     /// Affects how it's shown (or not shown) in Dashboard and Customize.
-    public enum AvailabilityState: String, Codable {
+    public enum AvailabilityState: String, Codable, Sendable {
         case show           // Shown in Dashboard and Customize
         case unavailable    // Shown in Dashboard and Customize (as "Unavailable")
         case hide           // Not shown in Dashboard and Customize

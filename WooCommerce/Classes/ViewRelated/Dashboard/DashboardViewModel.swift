@@ -740,7 +740,7 @@ private extension DashboardViewModel {
 // MARK: - Constants
 //
 private extension DashboardViewModel {
-    enum Constants {
+    enum Constants: Sendable {
         static let topEarnerStatsLimit: Int = 5
         static let dashboardScreenName = "my_store"
         static let orderPageNumber = 1

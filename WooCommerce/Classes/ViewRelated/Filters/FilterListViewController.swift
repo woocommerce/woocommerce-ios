@@ -98,7 +98,7 @@ final class FilterListViewController<ViewModel: FilterListViewModel>: UIViewCont
 
     private lazy var listSelector: ListSelectorViewController
         <FilterListSelectorCommand, FilterListSelectorCommand.Model, FilterListSelectorCommand.Cell> = {
-            return ListSelectorViewController(command: listSelectorCommand, tableViewStyle: .plain) { [weak self] _ in }
+            return ListSelectorViewController(command: listSelectorCommand, tableViewStyle: .plain) { _ in }
     }()
 
     private var clearAllBarButtonItem: UIBarButtonItem?
@@ -447,6 +447,7 @@ private extension FilterListViewController {
             }
         }
 
+        @MainActor
         func createPromoteButton(promotableType: PromotableProductType) -> UIButton {
             var configuration = UIButton.Configuration.tinted()
             configuration.cornerStyle = .small

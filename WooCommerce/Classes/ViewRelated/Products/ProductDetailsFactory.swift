@@ -11,6 +11,7 @@ struct ProductDetailsFactory {
     ///   - forceReadOnly: force the product detail to be presented in read only mode
     ///   - onDeleteCompletion: called when the product deletion completes in the product form.
     ///   - onCompletion: called when the view controller is created and ready for display.
+    @MainActor
     static func productDetails(product: Product,
                                presentationStyle: ProductFormPresentationStyle,
                                currencySettings: CurrencySettings = ServiceLocator.currencySettings,
@@ -29,6 +30,7 @@ struct ProductDetailsFactory {
 }
 
 private extension ProductDetailsFactory {
+    @MainActor
     static func productDetails(product: Product,
                                presentationStyle: ProductFormPresentationStyle,
                                currencySettings: CurrencySettings,

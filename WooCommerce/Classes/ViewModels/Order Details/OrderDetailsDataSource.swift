@@ -346,6 +346,7 @@ extension OrderDetailsDataSource: UITableViewDataSource {
 
 // MARK: - Support for UITableViewDelegate
 extension OrderDetailsDataSource {
+    @MainActor
     func viewForHeaderInSection(_ section: Int, tableView: UITableView) -> UIView? {
         guard let section = sections[safe: section] else {
             return nil
@@ -380,6 +381,7 @@ extension OrderDetailsDataSource {
 // MARK: - Support for UITableViewDataSource
 
 private extension OrderDetailsDataSource {
+    @MainActor
     func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
         switch cell {
         case let cell as CustomerInfoTableViewCell where row == .shippingAddress:
@@ -479,6 +481,7 @@ private extension OrderDetailsDataSource {
         }
     }
 
+    @MainActor
     private func configureCustomFields(cell: WooBasicTableViewCell) {
         cell.bodyLabel?.text = Title.customFields
         cell.applyPlainTextStyle()
@@ -496,6 +499,7 @@ private extension OrderDetailsDataSource {
         )
     }
 
+    @MainActor
     private func configureCustomerNote(cell: CustomerNoteTableViewCell) {
         cell.selectionStyle = .none
         if customerNote.isNotEmpty {
@@ -518,6 +522,7 @@ private extension OrderDetailsDataSource {
             comment: "Accessibility Label for the edit button to change the Customer Provided Note in Order Details")
     }
 
+    @MainActor
     private func configureBillingDetail(cell: WooBasicTableViewCell) {
         cell.bodyLabel?.text = Footer.showBilling
         cell.applyPlainTextStyle()
@@ -536,6 +541,7 @@ private extension OrderDetailsDataSource {
         )
     }
 
+    @MainActor
     private func configureInstallWCShip(cell: WCShipInstallTableViewCell) {
         cell.update(title: NSLocalizedString("Need a shipping label?",
                                              comment: "Title of the banner in the Order Detail for suggesting to install WCShip extension."),
@@ -554,6 +560,7 @@ private extension OrderDetailsDataSource {
                                                    comment: "VoiceOver accessibility label for the Install WCShip banner in the Order Detail")
     }
 
+    @MainActor
     private func configureNewNote(cell: LargeHeightLeftImageTableViewCell) {
         cell.imageView?.tintColor = .accent
         cell.configure(image: Icons.plusImage, text: Titles.addNoteText, textColor: .textLink)
@@ -570,6 +577,7 @@ private extension OrderDetailsDataSource {
         )
     }
 
+    @MainActor
     private func configureOrderNoteHeader(cell: OrderNoteHeaderTableViewCell, at indexPath: IndexPath) {
         guard let noteHeader = noteHeader(at: indexPath) else {
             return
@@ -578,6 +586,7 @@ private extension OrderDetailsDataSource {
         cell.dateCreated = noteHeader.toStringInSiteTimeZone(dateStyle: .medium, timeStyle: .none)
     }
 
+    @MainActor
     private func configureOrderNote(cell: OrderNoteTableViewCell, at indexPath: IndexPath) {
         guard let note = note(at: indexPath) else {
             return
@@ -590,11 +599,13 @@ private extension OrderDetailsDataSource {
         cell.contents = orderNoteAsyncDictionary.value(forKey: note.noteID)
     }
 
+    @MainActor
     private func configurePayment(cell: LedgerTableViewCell) {
         let paymentViewModel = OrderPaymentDetailsViewModel(order: order)
         cell.configure(with: paymentViewModel)
     }
 
+    @MainActor
     private func configureCustomerPaid(cell: TwoColumnHeadlineFootnoteTableViewCell) {
         let paymentViewModel = OrderPaymentDetailsViewModel(order: order)
         cell.leftText = Titles.paidByCustomer
@@ -602,6 +613,7 @@ private extension OrderDetailsDataSource {
         cell.updateFootnoteText(paymentViewModel.paymentSummary)
     }
 
+    @MainActor
     private func configureSeeReceipt(cell: TwoColumnHeadlineFootnoteTableViewCell) {
         guard featureFlags.isFeatureFlagEnabled(.backendReceipts) else {
             return
@@ -612,6 +624,7 @@ private extension OrderDetailsDataSource {
         cell.hideFootnote()
     }
 
+    @MainActor
     private func configureSeeLegacyReceipt(cell: TwoColumnHeadlineFootnoteTableViewCell) {
         cell.setLeftTitleToLinkStyle(true)
         cell.leftText = Titles.seeLegacyReceipt
@@ -620,6 +633,7 @@ private extension OrderDetailsDataSource {
         cell.hideSeparator()
     }
 
+    @MainActor
     private func configureRefund(cell: TwoColumnHeadlineFootnoteTableViewCell, at indexPath: IndexPath) {
         let index = indexPath.row - Constants.paymentCell - Constants.paidByCustomerCell
         let condensedRefund = condensedRefunds[index]
@@ -643,12 +657,14 @@ private extension OrderDetailsDataSource {
         )
     }
 
+    @MainActor
     private func configureNetAmount(cell: TwoColumnHeadlineFootnoteTableViewCell) {
         cell.leftText = Titles.netAmount
         cell.rightText = order.netAmount
         cell.hideFootnote()
     }
 
+    @MainActor
     private func configureCollectPaymentButton(cell: ButtonTableViewCell, at indexPath: IndexPath) {
         cell.configure(style: .primary,
                        title: Titles.collectPayment,
@@ -658,6 +674,7 @@ private extension OrderDetailsDataSource {
         cell.hideSeparator()
     }
 
+    @MainActor
     private func configureCreateShippingLabelButton(cell: ButtonTableViewCell, at indexPath: IndexPath) {
         cell.configure(style: .primary,
                        title: Titles.createShippingLabel,
@@ -667,6 +684,7 @@ private extension OrderDetailsDataSource {
         cell.hideSeparator()
     }
 
+    @MainActor
     private func configureShippingLabelCreationInfo(cell: ImageAndTitleAndTextTableViewCell, showsSeparator: Bool) {
         cell.update(with: .imageAndTitleOnly(fontStyle: .footnote),
                     data: .init(title: Title.shippingLabelCreationInfoAction,
@@ -685,6 +703,7 @@ private extension OrderDetailsDataSource {
                               comment: "VoiceOver accessibility hint for the row that shows information about creating a shipping label")
     }
 
+    @MainActor
     private func configureShippingLabelDetail(cell: WooBasicTableViewCell) {
         cell.bodyLabel?.text = Footer.showShippingLabelDetails
         cell.applyPlainTextStyle()
@@ -703,6 +722,7 @@ private extension OrderDetailsDataSource {
         )
     }
 
+    @MainActor
     private func configureShippingLabelPrintingInfo(cell: ImageAndTitleAndTextTableViewCell) {
         cell.update(with: .imageAndTitleOnly(fontStyle: .footnote),
                     data: .init(title: Title.shippingLabelPrintingInfoAction,
@@ -722,6 +742,7 @@ private extension OrderDetailsDataSource {
                                 "VoiceOver accessibility hint for the row that shows instructions on how to print a shipping label on the mobile device")
     }
 
+    @MainActor
     private func configureShippingLabelProducts(cell: WooBasicTableViewCell, at indexPath: IndexPath) {
         guard let shippingLabel = shippingLabel(at: indexPath) else {
             assertionFailure("Cannot access shipping label and/or order item at \(indexPath)")
@@ -751,6 +772,7 @@ private extension OrderDetailsDataSource {
         comment: "VoiceOver accessibility hint, informing the user that the button can be used to view the items inside the shipping label package")
     }
 
+    @MainActor
     private func configureShippingLabelTrackingNumber(cell: ImageAndTitleAndTextTableViewCell, at indexPath: IndexPath) {
         guard let shippingLabel = shippingLabel(at: indexPath) else {
             return
@@ -774,6 +796,7 @@ private extension OrderDetailsDataSource {
         cell.accessoryView = actionButton
     }
 
+    @MainActor
     private func configureShippingLabelRefunded(cell: ImageAndTitleAndTextTableViewCell, at indexPath: IndexPath) {
         guard let shippingLabel = shippingLabel(at: indexPath), let refund = shippingLabel.refund else {
             return
@@ -794,6 +817,7 @@ private extension OrderDetailsDataSource {
         cell.updateUI(viewModel: viewModel)
     }
 
+    @MainActor
     private func configureReprintShippingLabelButton(cell: ButtonTableViewCell, at indexPath: IndexPath) {
         cell.configure(style: .secondary,
                        title: Titles.reprintShippingLabel,
@@ -808,6 +832,7 @@ private extension OrderDetailsDataSource {
         cell.hideSeparator()
     }
 
+    @MainActor
     private func configureAggregateOrderItem(cell: ProductDetailsTableViewCell, at indexPath: IndexPath) {
         cell.selectionStyle = .default
 
@@ -841,12 +866,14 @@ private extension OrderDetailsDataSource {
         }
     }
 
+    @MainActor
     private func configureCustomAmount(cell: ProductDetailsTableViewCell, at indexPath: IndexPath) {
         let customAmount = customAmounts[indexPath.row]
         cell.configure(customAmountViewModel: .init(customAmount: customAmount, currency: order.currency, currencyFormatter: currencyFormatter))
         cell.accessibilityIdentifier = "custom-amount-cell"
     }
 
+    @MainActor
     private func configureRefundedProducts(_ cell: WooBasicTableViewCell) {
         let singular = NSLocalizedString("%@ Item",
                                          comment: "1 Item")
@@ -871,6 +898,7 @@ private extension OrderDetailsDataSource {
         )
     }
 
+    @MainActor
     private func configureMarkCompleteButton(cell: ButtonTableViewCell,
                                              buttonStyle: ButtonTableViewCell.Style,
                                              showsBottomSpacing: Bool) {
@@ -881,12 +909,14 @@ private extension OrderDetailsDataSource {
         cell.hideSeparator()
     }
 
+    @MainActor
     private func configureIssueRefundButton(cell: IssueRefundTableViewCell) {
         cell.onIssueRefundTouchUp = { [weak self] in
             self?.onCellAction?(.issueRefund, nil)
         }
     }
 
+    @MainActor
     private func configureSubscriptions(cell: OrderSubscriptionTableViewCell, at indexPath: IndexPath) {
         guard let subscription = orderSubscriptions(at: indexPath) else {
             return
@@ -896,6 +926,7 @@ private extension OrderDetailsDataSource {
         cell.configure(cellViewModel)
     }
 
+    @MainActor
     private func configureGiftCards(cell: TitleAndValueTableViewCell, at indexPath: IndexPath) {
         guard let giftCard = giftCard(at: indexPath) else {
             return
@@ -907,6 +938,7 @@ private extension OrderDetailsDataSource {
         cell.apply(style: .boldValue)
     }
 
+    @MainActor
     private func configureTracking(cell: OrderTrackingTableViewCell, at indexPath: IndexPath) {
         guard let tracking = orderTracking(at: indexPath) else {
             return
@@ -931,6 +963,7 @@ private extension OrderDetailsDataSource {
         }
     }
 
+    @MainActor
     private func configureNewTracking(cell: LargeHeightLeftImageTableViewCell) {
         let cellTextContent = NSLocalizedString("Add Tracking", comment: "Add Tracking row label")
         cell.imageView?.tintColor = .accent
@@ -948,6 +981,7 @@ private extension OrderDetailsDataSource {
         )
     }
 
+    @MainActor
     private func configureShippingAddress(cell: CustomerInfoTableViewCell) {
         let shippingAddress = order.shippingAddress
 
@@ -974,6 +1008,7 @@ private extension OrderDetailsDataSource {
         cell.configureLayout()
     }
 
+    @MainActor
     private func configureShippingLine(cell: HostingConfigurationTableViewCell<ShippingLineRowView>, at indexPath: IndexPath) {
         let shippingLine = shippingLines[indexPath.row]
         let viewModel = ShippingLineRowViewModel(shippingLine: shippingLine, shippingMethods: siteShippingMethods, editable: false)
@@ -989,6 +1024,7 @@ private extension OrderDetailsDataSource {
 
     }
 
+    @MainActor
     private func configureSummary(cell: SummaryTableViewCell) {
         let cellViewModel = SummaryTableViewCellViewModel(
             order: order,
@@ -1003,6 +1039,7 @@ private extension OrderDetailsDataSource {
         }
     }
 
+    @MainActor
     private func configureTrashOrder(cell: WooBasicTableViewCell, at indexPath: IndexPath) {
         cell.bodyLabel.textColor = .error
         cell.bodyLabel?.text = Titles.trashOrder
@@ -1029,6 +1066,7 @@ private extension OrderDetailsDataSource {
 
 // MARK: - Attribution section
 private extension OrderDetailsDataSource {
+    @MainActor
     func configureAttributionOrigin(cell: TitleAndValueTableViewCell, at indexPath: IndexPath) {
         let origin: String = {
             guard let orderAttributionInfo = order.attributionInfo else {
@@ -1041,36 +1079,42 @@ private extension OrderDetailsDataSource {
         cell.apply(style: .regular)
     }
 
+    @MainActor
     func configureAttributionSourceType(cell: TitleAndValueTableViewCell, at indexPath: IndexPath) {
         cell.updateUI(title: Localization.AttributionInfo.sourceType,
                       value: order.attributionInfo?.sourceType ?? "")
         cell.apply(style: .regular)
     }
 
+    @MainActor
     func configureAttributionCampaign(cell: TitleAndValueTableViewCell, at indexPath: IndexPath) {
         cell.updateUI(title: Localization.AttributionInfo.campaign,
                       value: order.attributionInfo?.campaign ?? "")
         cell.apply(style: .regular)
     }
 
+    @MainActor
     func configureAttributionSource(cell: TitleAndValueTableViewCell, at indexPath: IndexPath) {
         cell.updateUI(title: Localization.AttributionInfo.source,
                       value: order.attributionInfo?.source ?? "")
         cell.apply(style: .regular)
     }
 
+    @MainActor
     func configureAttributionMedium(cell: TitleAndValueTableViewCell, at indexPath: IndexPath) {
         cell.updateUI(title: Localization.AttributionInfo.medium,
                       value: order.attributionInfo?.medium ?? "")
         cell.apply(style: .regular)
     }
 
+    @MainActor
     func configureAttributionDeviceType(cell: TitleAndValueTableViewCell, at indexPath: IndexPath) {
         cell.updateUI(title: Localization.AttributionInfo.deviceType,
                       value: order.attributionInfo?.deviceType ?? "")
         cell.apply(style: .regular)
     }
 
+    @MainActor
     func configureAttributionSessionPageViews(cell: TitleAndValueTableViewCell, at indexPath: IndexPath) {
         cell.updateUI(title: Localization.AttributionInfo.sessionPageViews,
                       value: order.attributionInfo?.sessionPageViews ?? "")
@@ -1856,6 +1900,7 @@ extension OrderDetailsDataSource {
         case attributionSessionPageViews
         case trashOrder
 
+        @MainActor
         var reuseIdentifier: String {
             switch self {
             case .summary:

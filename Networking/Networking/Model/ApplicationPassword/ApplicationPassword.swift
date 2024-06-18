@@ -2,7 +2,9 @@
 import WordPressShared
 #endif
 
-public struct ApplicationPassword: Decodable {
+extension Secret: @unchecked Sendable {}
+
+public struct ApplicationPassword: Decodable, Sendable {
     /// WordPress org username that the application password belongs to
     ///
     public let wpOrgUsername: String

@@ -7,7 +7,7 @@ protocol FilterListSelectorViewModelable: ObservableObject {
 
     /// Binding variable for the filter search term
     ///
-    var searchTerm: String { get set }
+    @MainActor var searchTerm: String { get set }
 
     /// Command to provide data and cell configuration
     ///

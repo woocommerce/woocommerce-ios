@@ -20,12 +20,15 @@ protocol ListSelectorCommand {
     /// - Parameters:
     ///   - selected: the model that is selected by the user.
     ///   - viewController: the list selector view controller.
+    @MainActor
     func handleSelectedChange(selected: Model, viewController: ViewController)
 
     /// Configures the selected UI.
+    @MainActor
     func isSelected(model: Model) -> Bool
 
     /// Configures the cell with the given model.
+    @MainActor
     func configureCell(cell: Cell, model: Model)
 }
 

@@ -11,7 +11,7 @@ public enum ApplicationPasswordUseCaseError: Error {
     case notSupported
 }
 
-public protocol ApplicationPasswordUseCase {
+public protocol ApplicationPasswordUseCase: Sendable {
     /// Returns the locally saved ApplicationPassword if available
     ///
     var applicationPassword: ApplicationPassword? { get }

@@ -2,6 +2,7 @@ import Foundation
 import Yosemite
 import SwiftUI
 
+@MainActor
 protocol AreaSelectorCommandProtocol {
     var name: String { get }
     var code: String { get }
@@ -48,6 +49,7 @@ final class AreaSelectorCommand: ObservableListSelectorCommand {
 
     /// Filter available areas that contains a given search term.
     ///
+    @MainActor
     func filterAreas(term: String) {
         guard term.isNotEmpty else {
             return data = areas

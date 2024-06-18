@@ -11,6 +11,7 @@ import enum Hardware.UnderlyingError
 /// Protocol to abstract the `CollectOrderPaymentUseCase`.
 /// Currently only used to facilitate unit tests.
 ///
+@MainActor
 protocol CollectOrderPaymentProtocol {
     /// Starts the collect payment flow.
     ///

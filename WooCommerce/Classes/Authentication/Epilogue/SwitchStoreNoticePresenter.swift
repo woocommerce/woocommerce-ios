@@ -22,6 +22,7 @@ final class SwitchStoreNoticePresenter {
 
     /// Present the switch notice to the user, with the new configured store name.
     ///
+    @MainActor
     func presentStoreSwitchedNoticeWhenSiteIsAvailable(configuration: StorePickerConfiguration) {
         guard configuration == .switchingStores else {
             return
@@ -31,6 +32,7 @@ final class SwitchStoreNoticePresenter {
 }
 
 private extension SwitchStoreNoticePresenter {
+    @MainActor
     func observeSiteAndPresentWhenSiteNameIsAvailable() {
         stores.site.compactMap { $0 }
             .filter { $0.siteID == self.siteID }
@@ -43,6 +45,7 @@ private extension SwitchStoreNoticePresenter {
 
     /// Present the switch notice to the user, with the new configured store name.
     ///
+    @MainActor
     func presentStoreSwitchedNotice(site: Site) {
         let newStoreName = site.name
 

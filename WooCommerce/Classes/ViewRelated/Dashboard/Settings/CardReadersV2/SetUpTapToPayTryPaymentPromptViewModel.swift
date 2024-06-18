@@ -166,9 +166,11 @@ final class SetUpTapToPayTryPaymentPromptViewModel: PaymentSettingsFlowPresented
                     }
                     analytics.track(.tapToPayAutoRefundSuccess)
                     self.dismiss?()
-                    ServiceLocator.noticePresenter.enqueue(
-                        notice: Notice(title: Localization.paymentRefundNoticeTitle,
-                                       message: Localization.paymentRefundNoticeMessage))
+                    Task { @MainActor in
+                        ServiceLocator.noticePresenter.enqueue(
+                            notice: Notice(title: Localization.paymentRefundNoticeTitle,
+                                           message: Localization.paymentRefundNoticeMessage))
+                    }
                 }
                 stores.dispatch(refundAction)
             }

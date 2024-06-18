@@ -52,7 +52,9 @@ final class CardPresentModalUpdateProgress: CardPresentPaymentsModalViewModel, C
         if !isComplete {
             cancelAction?()
         } else {
-            viewController?.dismiss(animated: true)
+            Task { @MainActor in
+                viewController?.dismiss(animated: true)
+            }
         }
     }
 

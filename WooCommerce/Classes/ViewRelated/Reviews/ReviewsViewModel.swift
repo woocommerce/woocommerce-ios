@@ -26,10 +26,12 @@ protocol ReviewsViewModelOutput {
 /// Handles actions related to Reviews screen
 ///
 protocol ReviewsViewModelActionsHandler {
+    @MainActor
     func configureResultsController(tableView: UITableView)
 
     func refreshResults()
 
+    @MainActor
     func configureTableViewCells(tableView: UITableView)
 
     func markAllAsRead(onCompletion: @escaping (Error?) -> Void)

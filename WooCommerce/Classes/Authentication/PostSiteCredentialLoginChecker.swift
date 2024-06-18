@@ -27,6 +27,7 @@ final class PostSiteCredentialLoginChecker {
 
     /// Checks whether the user is eligible to use the app.
     ///
+    @MainActor
     func checkEligibility(for siteURL: String, from navigationController: UINavigationController, onSuccess: @escaping () -> Void) {
         checkApplicationPassword(for: siteURL,
                                  with: applicationPasswordUseCase,
@@ -78,6 +79,7 @@ private extension PostSiteCredentialLoginChecker {
     /// Checks role eligibility for the logged in user with the site address saved in the credentials.
     /// Placeholder store ID is used because we are checking for users logging in with site credentials.
     ///
+    @MainActor
     func checkRoleEligibility(in navigationController: UINavigationController, onSuccess: @escaping () -> Void) {
         roleEligibilityUseCase.checkEligibility(for: WooConstants.placeholderStoreID) { [weak self] result in
             switch result {
@@ -108,6 +110,7 @@ private extension PostSiteCredentialLoginChecker {
 
     /// Shows a Role Error page using the provided error information.
     ///
+    @MainActor
     func showRoleErrorScreen(for siteID: Int64,
                              errorInfo: StorageEligibilityErrorInfo,
                              in navigationController: UINavigationController,
@@ -125,6 +128,7 @@ private extension PostSiteCredentialLoginChecker {
 
     /// Checks if WooCommerce is active on the logged in site.
     ///
+    @MainActor
     func checkWooInstallation(for siteURL: String, in navigationController: UINavigationController,
                               onSuccess: @escaping () -> Void) {
         let action = WordPressSiteAction.fetchSiteInfo(siteURL: siteURL) { [weak self] result in
@@ -150,6 +154,7 @@ private extension PostSiteCredentialLoginChecker {
 
     /// Shows an error alert with a button to restart login and an optional button to retry the failed action.
     ///
+    @MainActor
     func showAlert(message: String,
                    in navigationController: UINavigationController,
                    onRetry: (() -> Void)? = nil) {
@@ -179,6 +184,7 @@ private extension PostSiteCredentialLoginChecker {
     /// The error screen to be displayed when the user tries to log in with site credentials
     /// with application password disabled.
     ///
+    @MainActor
     func applicationPasswordDisabledUI(for siteURL: String) -> UIViewController {
         let viewModel = ApplicationPasswordDisabledViewModel(siteURL: siteURL)
         return ULErrorViewController(viewModel: viewModel)

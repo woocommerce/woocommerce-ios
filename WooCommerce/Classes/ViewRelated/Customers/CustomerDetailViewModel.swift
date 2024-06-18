@@ -147,6 +147,7 @@ final class CustomerDetailViewModel: ObservableObject {
     }
 
     /// Navigates to the Orders tab and opens a new order with this customer pre-filled in the order form.
+    @MainActor
     func createNewOrder() {
         guard canCreateNewOrder else {
             return

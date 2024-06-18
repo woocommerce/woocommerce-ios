@@ -3,6 +3,8 @@ import AutomatticAbout
 import SafariServices
 import WordPressShared
 
+extension AboutItemActionContext: @unchecked Sendable {}
+
 final class WooAboutScreenConfiguration: AboutScreenConfiguration {
     var sections: [AboutScreenSection] {
         [
@@ -55,7 +57,9 @@ final class WooAboutScreenConfiguration: AboutScreenConfiguration {
     }
 
     func dismissScreen(_ actionContext: AboutItemActionContext) {
-        actionContext.viewController.presentingViewController?.dismiss(animated: true)
+        Task { @MainActor in
+            actionContext.viewController.presentingViewController?.dismiss(animated: true)
+        }
     }
 
     func willShow(viewController: UIViewController) {}
@@ -88,14 +92,15 @@ private extension WooAboutScreenConfiguration {
     }
 
     func presentShareSheet(from viewController: UIViewController, sourceView: UIView?) {
-        let activityItems = [
-            ShareAppTextActivityItemSource(message: Localization.shareSheetMessage) as Any,
-            Links.website as Any
-        ]
-
-        let activityViewController = UIActivityViewController(activityItems: activityItems, applicationActivities: nil)
-        activityViewController.popoverPresentationController?.sourceView = sourceView
-        viewController.present(activityViewController, animated: true, completion: nil)
+        Task { @MainActor in
+            let activityItems = [
+                ShareAppTextActivityItemSource(message: Localization.shareSheetMessage) as Any,
+                Links.website as Any
+            ]
+            let activityViewController = UIActivityViewController(activityItems: activityItems, applicationActivities: nil)
+            activityViewController.popoverPresentationController?.sourceView = sourceView
+            viewController.present(activityViewController, animated: true, completion: nil)
+        }
     }
 
     // MARK: - Header Info Helper
@@ -179,7 +184,9 @@ final class WooLegalAndMoreSubmenuConfiguration: AboutScreenConfiguration {
     }()
 
     func dismissScreen(_ actionContext: AboutItemActionContext) {
-        actionContext.viewController.presentingViewController?.dismiss(animated: true)
+        Task { @MainActor in
+            actionContext.viewController.presentingViewController?.dismiss(animated: true)
+        }
     }
 
     func willShow(viewController: UIViewController) {}
@@ -202,12 +209,14 @@ private extension WooLegalAndMoreSubmenuConfiguration {
     }
 
     func presentLicenses(from viewController: UIViewController) {
-        ServiceLocator.analytics.track(.settingsLicensesLinkTapped)
-        guard let licensesViewController = UIStoryboard.settings.instantiateViewController(ofClass: LicensesViewController.self) else {
-            fatalError("Cannot instantiate `LicensesViewController` from Dashboard storyboard")
+        Task { @MainActor in
+            ServiceLocator.analytics.track(.settingsLicensesLinkTapped)
+            guard let licensesViewController = UIStoryboard.settings.instantiateViewController(ofClass: LicensesViewController.self) else {
+                fatalError("Cannot instantiate `LicensesViewController` from Dashboard storyboard")
+            }
+            
+            viewController.show(licensesViewController, sender: nil)
         }
-
-        viewController.show(licensesViewController, sender: self)
     }
 
     // MARK: - Constants

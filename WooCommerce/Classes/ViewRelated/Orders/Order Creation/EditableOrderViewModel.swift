@@ -1459,7 +1459,7 @@ private extension EditableOrderViewModel {
         for product in products {
             // Only perform the operation if the product has not been already added to the existing Order
             if !itemsInOrder.contains(where: { $0.productID == product.productID && $0.parent == nil })
-                || productSelectorBundleConfigurationsByProductID[product.productID]?.isEmpty == false {
+                || productSelectorBundleConfigurationsByProductID[product.productID]?.isNotEmpty == true {
                 switch product.productType {
                     case .bundle:
                         if let bundleConfiguration = productSelectorBundleConfigurationsByProductID[product.productID]?.popFirst() {

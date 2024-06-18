@@ -35,7 +35,8 @@ final class PointOfSaleDashboardViewModelTests: XCTestCase {
                                  name: "Choco",
                                  price: "2.00",
                                  itemCategories: [],
-                                 productImageSource: nil)
+                                 productImageSource: nil,
+                                 productType: .simple)
 
         // When
         sut.addItemToCart(product)

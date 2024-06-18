@@ -24,17 +24,7 @@ struct PointOfSaleDashboardView: View {
                 case .finalizing:
                     cartView
                     Spacer()
-                    VStack {
-                        totalsView
-                            .task {
-                                await viewModel.checkoutAppeared()
-                            }
-                        if let inlinePaymentMessage = viewModel.cardPresentPaymentInlineMessage {
-                            PointOfSaleCardPresentPaymentInLineMessage(messageType: inlinePaymentMessage)
-                        }
-                    }
-                    // TODO: remove this after replacing temporary inline message UI based on design
-                    .background(Color.orange)
+                    totalsView
                 }
             }
             .padding()

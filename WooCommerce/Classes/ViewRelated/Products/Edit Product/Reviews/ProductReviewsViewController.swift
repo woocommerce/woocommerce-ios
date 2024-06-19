@@ -2,7 +2,7 @@ import UIKit
 import Yosemite
 
 /// The UI that shows the approved Reviews related to a specific product.
-final class ProductReviewsViewController: UIViewController, GhostableViewController {
+final class ProductReviewsViewController: UIViewController {
 
     private let product: Product
 
@@ -236,7 +236,7 @@ private extension ProductReviewsViewController {
         case .results:
             break
         case .placeholder:
-            displayGhostContent()
+            break
         case .syncing:
             ensureFooterSpinnerIsStarted()
         }
@@ -251,7 +251,7 @@ private extension ProductReviewsViewController {
         case .results:
             break
         case .placeholder:
-            removeGhostContent()
+            break
         case .syncing:
             ensureFooterSpinnerIsStopped()
         }

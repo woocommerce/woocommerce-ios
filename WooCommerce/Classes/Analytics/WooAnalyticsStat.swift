@@ -838,6 +838,10 @@ enum WooAnalyticsStat: String {
     // Edit Downloadable Products Events
     case productDownloadableFilesSettingsChanged = "product_downloadable_files_settings_changed"
     case productsDownloadableFile = "products_downloadable_file"
+    case productDownloadableOnDeviceMediaSelected = "product_downloadable_on_device_media_selected"
+    case productDownloadableDocumentSelected = "product_downloadable_document_selected"
+    case productDownloadableFileUploadingSuccess = "product_downloadable_file_uploading_success"
+    case productDownloadableFileUploadingFailed = "product_downloadable_file_uploading_failed"
 
     // Edit External/Affiliate Product Event
     //
@@ -1086,6 +1090,10 @@ enum WooAnalyticsStat: String {
     case customersHubDetailEmailMenuTapped = "customers_hub_customer_detail_email_menu_tapped"
     case customersHubDetailEmailOptionTapped = "customers_hub_customer_detail_email_option_tapped"
     case customersHubDetailCopyEmailOptionTapped = "customers_hub_customer_detail_email_copy_option_tapped"
+    case customersHubDetailPhoneMenuTapped = "customers_hub_customer_detail_phone_menu_tapped"
+    case customersHubDetailPhoneActionTapped = "customers_hub_customer_detail_phone_action_tapped"
+    case customersHubDetailAddressCopied = "customers_hub_customer_detail_address_copied"
+    case customersHubDetailNewOrderTapped = "customers_hub_customer_detail_new_order_tapped"
 
     // MARK: Close Account
     case closeAccountTapped = "close_account_tapped"

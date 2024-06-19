@@ -15,7 +15,7 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
 
     private let onboardingAdaptor: CardPresentPaymentsOnboardingPresenterAdaptor
 
-    private let paymentAlertsPresenterAdaptor: CardPresentPaymentAlertsPresenting
+    private let paymentAlertsPresenterAdaptor: CardPresentPaymentsAlertPresenterAdaptor
     private let connectionControllerManager: CardPresentPaymentsConnectionControllerManager
 
     private let siteID: Int64
@@ -47,7 +47,7 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
                     return .idle
                 }
             }
-            .merge(with: paymentAlertsPresenterAdaptor.paymentAlertPublisher)
+            .merge(with: paymentAlertsPresenterAdaptor.paymentEventPublisher)
             .merge(with: paymentEventSubject)
             .receive(on: DispatchQueue.main) // These will be used for UI changes, so moving to the Main thread helps.
             .eraseToAnyPublisher()
@@ -140,19 +140,29 @@ private extension CardPresentPaymentService {
         }
     }
 
-    func createPreflightController() -> CardPresentPaymentPreflightController {
-        CardPresentPaymentPreflightController(
-            siteID: siteID,
-            configuration: cardPresentPaymentsConfiguration,
-            rootViewController: NullViewControllerPresenting(),
-            alertsPresenter: paymentAlertsPresenterAdaptor,
-            onboardingPresenter: onboardingAdaptor,
-            externalReaderConnectionController: connectionControllerManager.externalReaderConnectionController,
-            tapToPayConnectionController: connectionControllerManager.tapToPayConnectionController)
-    }
+    func createPreflightController() -> CardPresentPaymentPreflightController<
+        CardPresentPaymentBuiltInReaderConnectionAlertsProvider,
+        CardPresentPaymentBluetoothReaderConnectionAlertsProvider,
+        CardPresentPaymentsAlertPresenterAdaptor> {
+            let alertProvider = CardPresentPaymentBuiltInReaderConnectionAlertsProvider()
+            return CardPresentPaymentPreflightController(
+                siteID: siteID,
+                configuration: cardPresentPaymentsConfiguration,
+                rootViewController: NullViewControllerPresenting(),
+                alertsPresenter: paymentAlertsPresenterAdaptor,
+                onboardingPresenter: onboardingAdaptor,
+                tapToPayAlertProvider: alertProvider,
+                externalReaderConnectionController: connectionControllerManager.externalReaderConnectionController,
+                tapToPayConnectionController: connectionControllerManager.tapToPayConnectionController,
+                tapToPayReconnectionController: TapToPayReconnectionController(
+                    connectionControllerFactory: BuiltInCardReaderConnectionControllerFactory(
+                        alertProvider: alertProvider)),
+                analyticsTracker: connectionControllerManager.analyticsTracker)
+        }
 }
 
 enum CardPresentPaymentServiceError: Error {
     case invalidAmount
     case unknownPaymentError(underlyingError: Error)
+    case incompleteAddressConnectionError
 }

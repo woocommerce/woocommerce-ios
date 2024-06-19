@@ -39,6 +39,14 @@ enum ProductSelectorSectionType {
     }
 }
 
+enum ProductSelectorSource {
+    case orderForm(flow: WooAnalyticsEvent.Orders.Flow)
+    case couponForm
+    case couponRestrictions
+    case blaze
+    case orderFilter
+}
+
 /// View model for `ProductSelectorView`.
 ///
 final class ProductSelectorViewModel: ObservableObject {
@@ -65,6 +73,10 @@ final class ProductSelectorViewModel: ObservableObject {
     /// Trigger to perform any one time setups.
     ///
     let onLoadTrigger: PassthroughSubject<Void, Never> = PassthroughSubject()
+
+    /// Entry point of the current product selector
+    ///
+    let source: ProductSelectorSource
 
     /// View model for the filter list.
     ///
@@ -221,6 +233,7 @@ final class ProductSelectorViewModel: ObservableObject {
     @Published var productVariationListViewModel: ProductVariationSelectorViewModel? = nil
 
     init(siteID: Int64,
+         source: ProductSelectorSource,
          selectedItemIDs: [Int64] = [],
          purchasableItemsOnly: Bool = false,
          shouldDeleteStoredProductsOnFirstPage: Bool = true,
@@ -244,6 +257,7 @@ final class ProductSelectorViewModel: ObservableObject {
          onCloseButtonTapped: (() -> Void)? = nil,
          onConfigureProductRow: ((_ product: Product) -> Void)? = nil) {
         self.siteID = siteID
+        self.source = source
         self.storageManager = storageManager
         self.stores = stores
         self.analytics = analytics
@@ -799,23 +813,28 @@ private extension ProductSelectorViewModel {
     ///
     func generateProductRows(products: [Product], selectedItemsIDs: [Int64]) -> [ProductRowViewModel] {
         return products.map { product in
-            var selectedState: ProductRow.SelectedState
-            if product.variations.isEmpty {
-                selectedState = selectedItemsIDs.contains(product.productID) ? .selected : .notSelected
-            } else {
-                let intersection = Set(product.variations).intersection(Set(selectedItemsIDs))
-                if intersection.isEmpty {
-                    selectedState = .notSelected
-                } else if intersection.count == product.variations.count {
-                    selectedState = .selected
-                } else {
-                    selectedState = .partiallySelected
+            let selectedState: ProductRow.SelectedState = {
+                switch (source, product.productType, product.variations) {
+                case (.orderForm, .booking, _):
+                    return .unsupported(reason: Localization.bookableProductUnsupportedReason)
+                case (_, _, let variations) where variations.isEmpty:
+                    return selectedItemsIDs.contains(product.productID) ? .selected : .notSelected
+                default:
+                    let intersection = Set(product.variations).intersection(Set(selectedItemsIDs))
+                    if intersection.isEmpty {
+                        return .notSelected
+                    } else if intersection.count == product.variations.count {
+                        return .selected
+                    } else {
+                        return .partiallySelected
+                    }
                 }
-            }
+            }()
 
             let configure: (() -> Void)? = onConfigureProductRow == nil ? nil: { [weak self] in
                 self?.onConfigureProductRow?(product)
             }
+
             return ProductRowViewModel(product: product,
                                        selectedState: selectedState,
                                        featureFlagService: featureFlagService,
@@ -899,6 +918,11 @@ private extension ProductSelectorViewModel {
             "productSelectorViewModel.selectProductsTitle.pluralProductSelectedFormattedText",
             value: "%ld products selected",
             comment: "Text on the header of the Select Product screen when more than one products are selected.")
+        static let bookableProductUnsupportedReason = NSLocalizedString(
+            "productSelectorViewModel.bookableProductUnsupportedReason",
+            value: "Bookable products are not supported for order creation",
+            comment: "Message explaining unsupported bookable products for order creation"
+        )
     }
 }
 

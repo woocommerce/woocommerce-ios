@@ -1,4 +1,5 @@
 import Foundation
+import Combine
 import NetworkingWatchOS
 import WooFoundationWatchOS
 
@@ -8,7 +9,7 @@ final class MyStoreViewModel: ObservableObject {
 
     /// Enum that tracks the state of the view.
     ///
-    enum ViewState {
+    enum ViewState: Equatable {
         case idle
         case loading
         case error
@@ -17,17 +18,43 @@ final class MyStoreViewModel: ObservableObject {
 
     private let dependencies: WatchDependencies
 
+    /// Combine subs store.
+    ///
+    private var subscriptions: Set<AnyCancellable> = []
+
     @Published private(set) var viewState: ViewState = .idle
 
     init(dependencies: WatchDependencies) {
         self.dependencies = dependencies
     }
 
+    /// Perform the initial fetch and binds the refresh trigger for further refreshes.
+    ///
+    @MainActor
+    func fetchAndBindRefreshTrigger(trigger: AnyPublisher<Void, Never>) async {
+        trigger
+            .sink { [weak self] _ in
+                // Do not refresh data if we are already loading it.
+                guard let self, self.viewState != .loading else { return }
+
+                Task {
+                    await self.fetchStats()
+                }
+            }
+            .store(in: &subscriptions)
+
+        await fetchStats()
+    }
+
     /// Fetch stats and update the view state based on the result.
     ///
     @MainActor
-    func fetchStats() async {
-        self.viewState = .loading
+    private func fetchStats() async {
+
+        if Self.shouldTransitionToLoading(state: viewState) {
+            self.viewState = .loading
+        }
+
         let service = StoreInfoDataService(credentials: dependencies.credentials)
         do {
             let stats = try await service.fetchTodayStats(for: dependencies.storeID)
@@ -54,6 +81,17 @@ final class MyStoreViewModel: ObservableObject {
         } catch {
             DDLogError("⛔️ Error fetching watch today stats: \(error)")
             self.viewState = .error
+        }
+    }
+
+    /// Determines when we should transition to a loading state.
+    ///
+    static private func shouldTransitionToLoading(state: ViewState) -> Bool {
+        switch state {
+        case .idle, .error:
+            return true
+        case .loading, .loaded: // If we have already loaded the data don't transition to a loading state.
+            return false
         }
     }
 }

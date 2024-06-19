@@ -10,7 +10,7 @@ final class TapToPayReconnectionControllerTests: XCTestCase {
     private var storageManager: MockStorageManager!
     private var connectionControllerFactory: MockBuiltInCardReaderConnectionControllerFactory!
     private var onboardingCache: CardPresentPaymentOnboardingStateCache!
-    private var sut: TapToPayReconnectionController!
+    private var sut: TapToPayReconnectionController<BuiltInReaderConnectionAlertsProvider, CardPresentPaymentAlertsPresenter>!
     private let sampleSiteID: Int64 = 12891
     private let sampleConfiguration: CardPresentPaymentsConfiguration = CardPresentPaymentsConfiguration(country: .US)
 

@@ -451,6 +451,10 @@ final class EditableOrderViewModel: ObservableObject {
     ///
     private let initialItem: OrderBaseItem?
 
+    /// Initial customer data given to the order when it is created, if any
+    ///
+    private let initialCustomer: (id: Int64, billing: Address?, shipping: Address?)?
+
     private let orderDurationRecorder: OrderDurationRecorderProtocol
 
     private let barcodeSKUScannerItemFinder: BarcodeSKUScannerItemFinder
@@ -467,6 +471,7 @@ final class EditableOrderViewModel: ObservableObject {
          orderDurationRecorder: OrderDurationRecorderProtocol = OrderDurationRecorder.shared,
          permissionChecker: CaptureDevicePermissionChecker = AVCaptureDevicePermissionChecker(),
          initialItem: OrderBaseItem? = nil,
+         initialCustomer: (id: Int64, billing: Address?, shipping: Address?)? = nil,
          quantityDebounceDuration: Double = Constants.quantityDebounceDuration) {
         self.siteID = siteID
         self.flow = flow
@@ -479,6 +484,7 @@ final class EditableOrderViewModel: ObservableObject {
         self.orderDurationRecorder = orderDurationRecorder
         self.permissionChecker = permissionChecker
         self.initialItem = initialItem
+        self.initialCustomer = initialCustomer
         self.barcodeSKUScannerItemFinder = BarcodeSKUScannerItemFinder(stores: stores)
         self.quantityDebounceDuration = quantityDebounceDuration
 
@@ -725,6 +731,11 @@ final class EditableOrderViewModel: ObservableObject {
                 self?.removeItemFromOrder(item)
             })
             let isProductConfigurable = product.productType == .bundle && product.bundledItems.isNotEmpty
+
+            /// Bookable items' prices vary depending on the selected booking resources.
+            /// Display the order item price instead of the product price for the correct value.
+            let price = product.productType == .booking ? item.price.stringValue : product.price
+
             let rowViewModel = CollapsibleProductRowCardViewModel(id: item.itemID,
                                                                   productOrVariationID: product.productID,
                                                                   hasParentProduct: item.parent != nil,
@@ -734,7 +745,7 @@ final class EditableOrderViewModel: ObservableObject {
                                                                   imageURL: product.imageURL,
                                                                   name: product.name,
                                                                   sku: product.sku,
-                                                                  price: product.price,
+                                                                  price: price,
                                                                   pricedIndividually: pricedIndividually,
                                                                   discount: passingDiscountValue,
                                                                   productTypeDescription: product.productType.description,
@@ -1654,6 +1665,17 @@ private extension EditableOrderViewModel {
         match?.productRow.stepperViewModel.incrementQuantity()
     }
 
+    /// If given initial customer data on initialization, updates the Order with the customer data.
+    ///
+    func configureOrderWithInitialCustomerIfNeeded(_ customerID: Int64?, billing: Address?, shipping: Address?) {
+        guard let customerID else {
+            return
+        }
+        orderSynchronizer.setCustomerID.send(customerID)
+        orderSynchronizer.setAddresses.send(Self.createAddressesInputIfPossible(billingAddress: billing, shippingAddress: shipping))
+        resetAddressForm()
+    }
+
     /// Updates customer data viewmodel based on order addresses.
     ///
     func configureCustomerDataViewModel() {
@@ -1664,6 +1686,7 @@ private extension EditableOrderViewModel {
                     CustomerDataViewModel(billingAddress: $0.billingAddress, shippingAddress: $0.shippingAddress)
                 }
                 .assign(to: &$customerDataViewModel)
+            configureOrderWithInitialCustomerIfNeeded(initialCustomer?.id, billing: initialCustomer?.billing, shipping: initialCustomer?.shipping)
             return
         }
 
@@ -1701,6 +1724,8 @@ private extension EditableOrderViewModel {
                 )
             }
             .assign(to: &customerSectionViewModel.$customerData)
+
+        configureOrderWithInitialCustomerIfNeeded(initialCustomer?.id, billing: initialCustomer?.billing, shipping: initialCustomer?.shipping)
     }
 
     /// Updates notes data viewmodel based on order customer notes.
@@ -1923,6 +1948,7 @@ private extension EditableOrderViewModel {
                 }
                 return ProductSelectorViewModel(
                     siteID: siteID,
+                    source: .orderForm(flow: flow.analyticsFlow),
                     selectedItemIDs: selectedProductsAndVariationsIDs,
                     purchasableItemsOnly: true,
                     storageManager: storageManager,

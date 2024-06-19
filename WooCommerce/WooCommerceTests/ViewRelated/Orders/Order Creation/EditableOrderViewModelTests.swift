@@ -3148,6 +3148,94 @@ final class EditableOrderViewModelTests: XCTestCase {
         let editShippingLineViewModel = try XCTUnwrap(viewModel.shippingLineViewModel.shippingLineDetails)
         assertEqual(shippingLine.methodTitle, editShippingLineViewModel.methodTitle)
     }
+
+    func test_order_creation_when_initialCustomer_is_nil_does_not_trigger_sync() {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isSubscriptionsInOrderCreationCustomersEnabled: true)
+
+        // When
+        stores.whenReceivingAction(ofType: OrderAction.self) { action in
+            // Then
+            XCTFail("Unexpected action: \(action)")
+        }
+        _ = EditableOrderViewModel(siteID: sampleSiteID,
+                                   stores: stores,
+                                   featureFlagService: featureFlagService,
+                                   initialCustomer: nil)
+    }
+
+    func test_order_creation_when_initialCustomer_is_nil_does_not_trigger_sync_in_legacy_customer_flow() {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isSubscriptionsInOrderCreationCustomersEnabled: false)
+
+        // When
+        stores.whenReceivingAction(ofType: OrderAction.self) { action in
+            // Then
+            XCTFail("Unexpected action: \(action)")
+        }
+        _ = EditableOrderViewModel(siteID: sampleSiteID,
+                                   stores: stores,
+                                   featureFlagService: featureFlagService,
+                                   initialCustomer: nil)
+    }
+
+    func test_order_creation_when_initialCustomer_is_not_nil_syncs_order_with_customer_data() {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isSubscriptionsInOrderCreationCustomersEnabled: true)
+        let address = Address.fake().copy(address1: "1 Main Street")
+        let customerData: (id: Int64, billing: Address, shipping: Address) = (123, address, address)
+
+        // When
+        let orderToUpdate: Order = waitFor { promise in
+            self.stores.whenReceivingAction(ofType: OrderAction.self) { action in
+                switch action {
+                case let .createOrder(_, order, _, onCompletion):
+                    promise(order)
+                    onCompletion(.success(.fake()))
+                default:
+                    XCTFail("Unexpected action: \(action)")
+                }
+            }
+            _ = EditableOrderViewModel(siteID: self.sampleSiteID,
+                                       stores: self.stores,
+                                       featureFlagService: featureFlagService,
+                                       initialCustomer: customerData)
+        }
+
+        // Then
+        assertEqual(customerData.id, orderToUpdate.customerID)
+        assertEqual(customerData.billing, orderToUpdate.billingAddress)
+        assertEqual(customerData.shipping, orderToUpdate.shippingAddress)
+    }
+
+    func test_order_creation_when_initialCustomer_is_not_nil_syncs_order_with_customer_data_in_legacy_customer_flow() {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isSubscriptionsInOrderCreationCustomersEnabled: false)
+        let address = Address.fake().copy(address1: "1 Main Street")
+        let customerData: (id: Int64, billing: Address, shipping: Address) = (123, address, address)
+
+        // When
+        let orderToUpdate: Order = waitFor { promise in
+            self.stores.whenReceivingAction(ofType: OrderAction.self) { action in
+                switch action {
+                case let .createOrder(_, order, _, onCompletion):
+                    promise(order)
+                    onCompletion(.success(.fake()))
+                default:
+                    XCTFail("Unexpected action: \(action)")
+                }
+            }
+            _ = EditableOrderViewModel(siteID: self.sampleSiteID,
+                                       stores: self.stores,
+                                       featureFlagService: featureFlagService,
+                                       initialCustomer: customerData)
+        }
+
+        // Then
+        assertEqual(customerData.id, orderToUpdate.customerID)
+        assertEqual(customerData.billing, orderToUpdate.billingAddress)
+        assertEqual(customerData.shipping, orderToUpdate.shippingAddress)
+    }
 }
 
 private extension EditableOrderViewModelTests {

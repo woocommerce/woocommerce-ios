@@ -11,14 +11,16 @@ struct PointOfSaleDashboardView: View {
 
     var body: some View {
         VStack {
-            Text("WooCommerce Point Of Sale")
-                .foregroundColor(Color.white)
             HStack {
                 switch viewModel.orderStage {
                 case .building:
                     productGridView
                     Spacer()
-                    cartView
+                    if viewModel.isCartCollapsed {
+                        collapsedCartView
+                    } else {
+                        cartView
+                    }
                 case .finalizing:
                     cartView
                     Spacer()
@@ -27,44 +29,46 @@ struct PointOfSaleDashboardView: View {
             }
             .padding()
         }
-        .background(Color.primaryBackground)
+        .background(Color.posBackgroundGreyi3)
         .navigationBarBackButtonHidden(true)
         .toolbar {
-            ToolbarItem(placement: .topBarLeading, content: {
-                Button("Exit POS") {
-                    presentationMode.wrappedValue.dismiss()
-                }
-            })
-            ToolbarItem(placement: .principal, content: {
-                CardReaderConnectionStatusView(connectionViewModel: viewModel.cardReaderConnectionViewModel)
-            })
-            ToolbarItem(placement: .primaryAction, content: {
-                Button("History") {
-                    debugPrint("Not implemented")
-                }
-            })
-        }
-        .sheet(isPresented: $viewModel.showsCardReaderSheet, content: {
-            switch viewModel.cardPresentPaymentEvent {
-            case .showAlert(let alertViewModel):
-                CardPresentPaymentAlert(alertViewModel: alertViewModel)
-            case .idle,
-                    .showReaderList,
-                    .showOnboarding:
-                Text(viewModel.cardPresentPaymentEvent.temporaryEventDescription)
+            ToolbarItem(placement: .bottomBar) {
+                POSToolbarView(readerConnectionViewModel: viewModel.cardReaderConnectionViewModel)
             }
-        })
-        .sheet(isPresented: $viewModel.showsFilterSheet, content: {
-            FilterView(viewModel: viewModel)
+        }
+        .toolbarBackground(Color.toolbarBackground, for: .bottomBar)
+        .toolbarBackground(.visible, for: .bottomBar)
+        .sheet(isPresented: $viewModel.showsCardReaderSheet, content: {
+            // Might be the only way unless we make the type conform to `Identifiable`
+            if let alertType = viewModel.cardPresentPaymentAlertViewModel {
+                PointOfSaleCardPresentPaymentAlert(alertType: alertType)
+            } else {
+                switch viewModel.cardPresentPaymentEvent {
+                case let .showReaderList(readerIDs, selectionHandler):
+                    // TODO: make this an instance of `showAlert` so we can handle it above too.
+                    FoundCardReaderListView(readerIDs: readerIDs, connect: { readerID in
+                        selectionHandler(readerID)
+                    }, cancelSearch: {
+                        selectionHandler(nil)
+                    })
+                case .idle,
+                        .show, // handled above
+                        .showOnboarding:
+                    Text(viewModel.cardPresentPaymentEvent.temporaryEventDescription)
+                }
+            }
         })
     }
 }
 
 /// Helpers to generate all Dashboard subviews
 private extension PointOfSaleDashboardView {
+    var collapsedCartView: some View {
+        CollapsedCartView()
+    }
+
     var cartView: some View {
         CartView(viewModel: viewModel)
-            .background(Color.secondaryBackground)
             .frame(maxWidth: .infinity)
     }
 
@@ -75,8 +79,7 @@ private extension PointOfSaleDashboardView {
     }
 
     var productGridView: some View {
-        ItemGridView(viewModel: viewModel)
-            .background(Color.secondaryBackground)
+        ItemListView(viewModel: viewModel)
             .frame(maxWidth: .infinity)
     }
 }
@@ -86,8 +89,8 @@ fileprivate extension CardPresentPaymentEvent {
         switch self {
         case .idle:
             return "Idle"
-        case .showAlert(let alertViewModel):
-            return "Alert: \(alertViewModel.topTitle)"
+        case .show:
+            return "Event"
         case .showReaderList(let readerIDs, _):
             return "Reader List: \(readerIDs.joined())"
         case .showOnboarding(let onboardingViewModel):
@@ -98,8 +101,10 @@ fileprivate extension CardPresentPaymentEvent {
 
 #if DEBUG
 #Preview {
-    PointOfSaleDashboardView(
-        viewModel: PointOfSaleDashboardViewModel(items: POSItemProviderPreview().providePointOfSaleItems(),
-                                                 cardPresentPaymentService: CardPresentPaymentPreviewService()))
+    NavigationStack {
+        PointOfSaleDashboardView(
+            viewModel: PointOfSaleDashboardViewModel(items: POSItemProviderPreview().providePointOfSaleItems(),
+                                                     cardPresentPaymentService: CardPresentPaymentPreviewService()))
+    }
 }
 #endif

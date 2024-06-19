@@ -2,18 +2,41 @@ import Foundation
 import Combine
 
 final class CardPresentPaymentsAlertPresenterAdaptor: CardPresentPaymentAlertsPresenting {
-    let paymentAlertPublisher: AnyPublisher<CardPresentPaymentEvent, Never>
+    typealias AlertDetails = CardPresentPaymentEventDetails
+    let paymentEventPublisher: AnyPublisher<CardPresentPaymentEvent, Never>
 
-    private let paymentAlertSubject: PassthroughSubject<CardPresentPaymentEvent, Never> = PassthroughSubject()
+    private let paymentEventSubject: PassthroughSubject<CardPresentPaymentEvent, Never> = PassthroughSubject()
 
-    private var latestReaderConnectionHandler: ((String) -> Void)?
+    private var latestReaderConnectionHandler: ((String?) -> Void)?
 
     init() {
-        paymentAlertPublisher = paymentAlertSubject.eraseToAnyPublisher()
+        paymentEventPublisher = paymentEventSubject.eraseToAnyPublisher()
     }
 
-    func present(viewModel: CardPresentPaymentsModalViewModel) {
-        paymentAlertSubject.send(.showAlert(viewModel))
+    func present(viewModel eventDetails: CardPresentPaymentEventDetails) {
+        switch eventDetails {
+        case .paymentError(let error, let tryAgain, let cancelPayment):
+            paymentEventSubject.send(.show(
+                eventDetails: .paymentError(
+                    error: error,
+                    tryAgain: tryAgain,
+                    cancelPayment: { [weak self] in
+                        // TODO: this should also call CardPresentPaymentFacade.cancelPayment
+                        cancelPayment()
+                        self?.paymentEventSubject.send(.idle)
+                    })))
+        case .paymentErrorNonRetryable(let error, let cancelPayment):
+            paymentEventSubject.send(.show(
+                eventDetails: .paymentErrorNonRetryable(
+                    error: error,
+                    cancelPayment: { [weak self] in
+                        // TODO: this should also call CardPresentPaymentFacade.cancelPayment
+                        cancelPayment()
+                        self?.paymentEventSubject.send(.idle)
+                    })))
+        default:
+            paymentEventSubject.send(.show(eventDetails: eventDetails))
+        }
     }
 
     func presentWCSettingsWebView(adminURL: URL, completion: @escaping () -> Void) {
@@ -21,24 +44,28 @@ final class CardPresentPaymentsAlertPresenterAdaptor: CardPresentPaymentAlertsPr
     }
 
     func foundSeveralReaders(readerIDs: [String], connect: @escaping (String) -> Void, cancelSearch: @escaping () -> Void) {
-        let wrappedConnectionHandler = { [weak self] readerID in
-            connect(readerID)
+        let wrappedConnectionHandler = { [weak self] (readerID: String?) in
+            if let readerID {
+                connect(readerID)
+            } else {
+                cancelSearch()
+            }
             self?.latestReaderConnectionHandler = nil
         }
         self.latestReaderConnectionHandler = wrappedConnectionHandler
-        paymentAlertSubject.send(.showReaderList(readerIDs, selectionHandler: wrappedConnectionHandler))
+        paymentEventSubject.send(.showReaderList(readerIDs, selectionHandler: wrappedConnectionHandler))
     }
 
     func updateSeveralReadersList(readerIDs: [String]) {
         guard let latestReaderConnectionHandler else {
-            paymentAlertSubject.send(.idle) // TODO: Consider more error handling here
+            paymentEventSubject.send(.idle) // TODO: Consider more error handling here
             return
         }
-        paymentAlertSubject.send(.showReaderList(readerIDs, selectionHandler: latestReaderConnectionHandler))
+        paymentEventSubject.send(.showReaderList(readerIDs, selectionHandler: latestReaderConnectionHandler))
     }
 
     func dismiss() {
-        paymentAlertSubject.send(.idle)
+        paymentEventSubject.send(.idle)
     }
 
     func reset() {

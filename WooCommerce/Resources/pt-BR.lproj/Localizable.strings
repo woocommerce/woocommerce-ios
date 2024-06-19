@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2024-06-03 20:54:03+0000 */
+/* Translation-Revision-Date: 2024-06-11 15:54:08+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: pt_BR */
@@ -1316,7 +1316,6 @@ which should be translated separately and considered part of this sentence. */
    Button title to dismiss the alert when the store cannot be created in the store creation flow.
    Button title. Tapping it cancels the login flow.
    Button to allow the user to close the modal without connecting.
-   Button to cancel (not try again). Presented to users after a failure occurs
    Button to cancel a payment
    Button to cancel entering the gift card code from the order form.
    Button to cancel the creation of an order on the New Order screen
@@ -7024,9 +7023,6 @@ which should be translated separately and considered part of this sentence. */
 /* Indicates the reviewer does not have a name. It reads { Someone left a review} */
 "Someone" = "Alguém";
 
-/* Error message presented to users after a failure occurs */
-"Something went wrong" = "Ocorreu um erro";
-
 /* Description of an unknown error after purchasing a plan */
 "Something went wrong during your purchase, and we can't tell whether your payment has completed, or your store plan been upgraded." = "Ocorreu um erro durante a compra, e não é possível determinar se seu pagamento foi concluído ou se o plano da loja foi atualizado.";
 
@@ -8205,7 +8201,6 @@ which should be translated separately and considered part of this sentence. */
    Button to retry a failed action in the Jetpack setup flow
    Button to retry a software update. Presented to users when updating the card reader software fails
    Button to try again after connecting to a specific reader fails due to a critically low battery.
-   Button to try again. Presented to users after a failure occurs
    Button to try to refund a payment again. Presented to users after refunding a payment fails
    Title of the button to attempt loading the store again after Jetpack setup
    Try Again button on the error alert when fetching system status report fails */
@@ -10596,7 +10591,7 @@ which should be translated separately and considered part of this sentence. */
 "dashboardView.edit" = "Editar";
 
 /* Label of the button to add sections */
-"dashboardView.newCardsNoticeCard.addSectionsButtonLabel" = "Adicionar novas seções";
+"dashboardView.newCardsNoticeCard.addSectionsButtonText" = "Adicionar novas seções";
 
 /* Subtitle of the New Cards Notice card */
 "dashboardView.newCardsNoticeCard.subtitle" = "Adicione novas seções para personalizar sua experiência de gerenciamento de loja";
@@ -10700,6 +10695,15 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the store creation plan on the plan screen. */
 "eCommerce" = "Comércio eletrônico";
 
+/* Title for button to view the feedback survey about adding shipping to an order */
+"editableOrderShippingLineViewModel.feedbackSurvey.buttonTitle" = "Compartilhe seu feedback";
+
+/* Message for the feedback survey about adding shipping to an order */
+"editableOrderShippingLineViewModel.feedbackSurvey.message" = "O Woo facilita os envios?";
+
+/* Title for the feedback survey about adding shipping to an order */
+"editableOrderShippingLineViewModel.feedbackSurvey.title" = "Envio adicionado!";
+
 /* Default name when the custom amount does not have a name in order creation. */
 "editableOrderViewModel.customAmountDefaultName" = "Valor personalizado";
 
@@ -10770,11 +10774,11 @@ which should be translated separately and considered part of this sentence. */
 /* The title of the button for giving a negative feedback for the app. */
 "inAppFeedbackCardView.couldBeBetter" = "Poderia ser melhor";
 
+/* The title used when asking the user for feedback for the app. */
+"inAppFeedbackCardView.feedbackTitle" = "Está gostando do aplicativo?";
+
 /* The title of the button for giving a positive feedback for the app. */
 "inAppFeedbackCardView.iLikeIt" = "Gostei";
-
-/* The title used when asking the user for feedback for the app. */
-"inAppFeedbackCardView.title" = "O que você acha do aplicativo WooCommerce?";
 
 /* Title displayed if there are no inbox notes in the Inbox section on the Dashboard screen. */
 "inboxDashboardCard.emptyStateTitle" = "Sem mensagens não lidas";
@@ -11291,6 +11295,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label for button on product form to open Blaze flow */
 "productFormTableViewDataSource.promoteWithBlazeButton" = "Promover com o Blaze";
+
+/* Text message prompting the user to tap to learn more about changing the privacy setting. */
+"productFormTableViewDataSource.wpComStoreNotPublicText" = "Toque para saber mais.";
+
+/* Title message indicating that images are unavailable because the site is private. */
+"productFormTableViewDataSource.wpComStoreNotPublicTitle" = "As imagens não estão disponíveis, pois o site está marcado como privado. Você pode alterar isso ao mudar para o modo Em breve.";
 
 /* Alert message to inform the user that they must wait for all image uploads to complete before they can reorder the images. */
 "productImagesCollectionViewController.notice" = "Aguarde até todos os uploads serem concluídos para reorganizar as imagens.";
@@ -11848,6 +11858,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Singular format for the number of products in the order detail screen. */
 "watch.orders.detail.product-count-singular" = "1 produto";
+
+/* Title on the watch orders list screen when there are no orders */
+"watch.orders.empty.title" = "Aguardando o primeiro pedido!";
 
 /* Loading title on the watch orders list screen. */
 "watch.orders.error.title" = "Ocorreu um erro ao carregar a lista de pedidos";

@@ -8,6 +8,8 @@ private extension ProductStatus {
             return .wooBlue
         case .pending:
             return .orange
+        case .privateStatus:
+            return .wooBlue
         default:
             assertionFailure("Color for \(self) is not specified")
             return .textSubtle
@@ -85,7 +87,7 @@ private extension EditableProductModel {
 
     func createStatusText() -> String? {
         switch status {
-        case .pending, .draft:
+        case .pending, .draft, .privateStatus:
             return status.description
         default:
             return nil

@@ -35,7 +35,8 @@ private extension BlazeEditAdHostingController {
     func showImagePicker(source: MediaPickingSource) async -> MediaPickerImage? {
         await withCheckedContinuation { continuation in
             let mediaPickingCoordinator = MediaPickingCoordinator(siteID: siteID,
-                                                                  allowsMultipleImages: false,
+                                                                  imagesOnly: true,
+                                                                  allowsMultipleSelections: false,
                                                                   flow: .blazeEditAdForm,
                                                                   onCameraCaptureCompletion: { [weak self] asset, error in
                 guard let self else {

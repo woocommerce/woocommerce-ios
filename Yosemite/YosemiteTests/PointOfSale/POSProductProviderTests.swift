@@ -81,6 +81,7 @@ final class POSProductProviderTests: XCTestCase {
         }
         XCTAssertEqual(product.name, "Choco")
         XCTAssertEqual(product.productID, 789)
-        XCTAssertEqual(product.price, expectedFormattedPrice)
+        XCTAssertEqual(product.price, productPrice)
+        XCTAssertEqual(product.formattedPrice, expectedFormattedPrice)
     }
 }

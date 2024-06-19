@@ -168,7 +168,9 @@ private extension HubMenu {
                         hideAppTabBar: { isHidden in
                             AppDelegate.shared.setShouldHideTabBar(isHidden)
                         },
-                        cardPresentPaymentService: cardPresentPaymentService)
+                        cardPresentPaymentService: cardPresentPaymentService,
+                        orderService: POSOrderService(siteID: viewModel.siteID,
+                                                      credentials: ServiceLocator.stores.sessionManager.defaultCredentials!))
                 } else {
                     // TODO: When we have a singleton for the card payment service, this should not be required.
                     Text("Error creating card payment service")

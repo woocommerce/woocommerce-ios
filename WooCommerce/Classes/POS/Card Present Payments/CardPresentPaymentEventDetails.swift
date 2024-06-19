@@ -38,12 +38,12 @@ enum CardPresentPaymentEventDetails {
                                 cancelUpdate: () -> Void)
     case tapSwipeOrInsertCard(inputMethods: CardReaderInput,
                               cancelPayment: () -> Void)
-    case success(done: () -> Void)
-    case error(error: any Error,
-               tryAgain: () -> Void,
-               cancelPayment: () -> Void)
-    case errorNonRetryable(error: any Error,
-                           cancelPayment: () -> Void)
+    case paymentSuccess(done: () -> Void)
+    case paymentError(error: any Error,
+                      tryAgain: () -> Void,
+                      cancelPayment: () -> Void)
+    case paymentErrorNonRetryable(error: any Error,
+                                  cancelPayment: () -> Void)
     case processing
     case displayReaderMessage(message: String)
     case cancelledOnReader

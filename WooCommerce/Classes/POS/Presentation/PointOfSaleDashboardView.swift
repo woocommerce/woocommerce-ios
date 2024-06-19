@@ -29,20 +29,20 @@ struct PointOfSaleDashboardView: View {
                         // TODO: replace temporary inline message UI based on design
                         if let inlinePaymentMessage = viewModel.cardPresentPaymentInlineMessage {
                             switch inlinePaymentMessage {
-                            case .preparingForPayment:
-                                Text("Preparing for payment...")
-                            case .tapSwipeOrInsertCard:
-                                Text("tapSwipeOrInsertCard...")
+                            case .preparingForPayment(let viewModel):
+                                PointOfSaleCardPresentPaymentPreparingForPaymentMessageView(viewModel: viewModel)
+                            case .tapSwipeOrInsertCard(let viewModel):
+                                PointOfSaleCardPresentPaymentTapSwipeInsertCardMessageView(viewModel: viewModel)
                             case .processing:
                                 Text("processing...")
-                            case .displayReaderMessage(let message):
-                                Text("Reader message: \(message)")
-                            case .success:
+                            case .displayReaderMessage(let viewModel):
+                                PointOfSaleCardPresentPaymentDisplayReaderMessageMessageView(viewModel: viewModel)
+                            case .paymentSuccess:
                                 Text("Payment successful!")
-                            case .error:
-                                Text("Payment error")
-                            case .nonRetryableError:
-                                Text("Payment error - non retryable")
+                            case .paymentError(let viewModel):
+                                PointOfSaleCardPresentPaymentErrorMessageView(viewModel: viewModel)
+                            case .paymentErrorNonRetryable(let viewModel):
+                                PointOfSaleCardPresentPaymentNonRetryableErrorMessageView(viewModel: viewModel)
                             case .cancelledOnReader:
                                 Text("Payment cancelled on reader")
                             }
@@ -54,7 +54,7 @@ struct PointOfSaleDashboardView: View {
             }
             .padding()
         }
-        .background(Color.primaryBackground)
+        .background(Color.posBackgroundGreyi3)
         .navigationBarBackButtonHidden(true)
         .toolbar {
             ToolbarItem(placement: .bottomBar) {
@@ -94,7 +94,6 @@ private extension PointOfSaleDashboardView {
 
     var cartView: some View {
         CartView(viewModel: viewModel)
-            .background(Color.secondaryBackground)
             .frame(maxWidth: .infinity)
     }
 
@@ -106,7 +105,6 @@ private extension PointOfSaleDashboardView {
 
     var productGridView: some View {
         ItemListView(viewModel: viewModel)
-            .background(Color.secondaryBackground)
             .frame(maxWidth: .infinity)
     }
 }

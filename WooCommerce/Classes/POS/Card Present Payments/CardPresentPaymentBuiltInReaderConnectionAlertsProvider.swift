@@ -52,8 +52,12 @@ struct CardPresentPaymentBuiltInReaderConnectionAlertsProvider: CardReaderConnec
 
     func updatingFailed(tryAgain: (() -> Void)?,
                         close: @escaping () -> Void) -> CardPresentPaymentEventDetails {
-        .updateFailed(tryAgain: tryAgain,
-                      cancelUpdate: close)
+        if let tryAgain {
+            .updateFailed(tryAgain: tryAgain,
+                          cancelUpdate: close)
+        } else {
+            .updateFailedNonRetryable(cancelUpdate: close)
+        }
     }
 
     func updateProgress(requiredUpdate: Bool,

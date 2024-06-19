@@ -31,7 +31,7 @@ enum CardPresentPaymentEventDetails {
     case updateProgress(requiredUpdate: Bool,
                         progress: Float,
                         cancelUpdate: (() -> Void)?)
-    case updateFailed(tryAgain: (() -> Void)?,
+    case updateFailed(tryAgain: () -> Void,
                       cancelUpdate: () -> Void)
     case updateFailedNonRetryable(cancelUpdate: () -> Void)
     case updateFailedLowBattery(batteryLevel: Double?,

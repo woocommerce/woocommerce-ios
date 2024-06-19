@@ -58,7 +58,7 @@ struct ProductVariationSelectorView: View {
                                 .disabled(viewModel.selectionDisabled)
                                 .onTapGesture {
                                     viewModel.changeSelectionStateForVariation(with: rowViewModel.productOrVariationID,
-                                                                               selected: rowViewModel.selectedState != .selected)
+                                                                               selected: rowViewModel.toggledSelectedValue)
                                 }
                             Divider().frame(height: Constants.dividerHeight)
                                 .padding(.leading, Constants.defaultPadding)

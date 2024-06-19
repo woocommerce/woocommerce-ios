@@ -2203,9 +2203,7 @@ private extension EditableOrderViewModel {
                 .sink { [weak self] newQuantity in
                     guard let self else { return }
                     let childItems = items.filter { $0.parent == item.itemID }
-                    guard let newInput = createUpdateProductInput(item: item,
-                                                                  childItems: childItems,
-                                                                  quantity: newQuantity) else {
+                    guard let newInput = createUpdateProductInput(item: item, childItems: childItems, quantity: newQuantity) else {
                         return
                     }
                     self.orderSynchronizer.setProduct.send(newInput)

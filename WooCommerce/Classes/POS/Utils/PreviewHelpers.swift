@@ -1,7 +1,7 @@
 import Foundation
 import protocol Yosemite.POSItemProvider
 import protocol Yosemite.POSItem
-import enum Networking.ProductType
+import enum Yosemite.ProductType
 
 #if DEBUG
 // MARK: - PreviewProvider helpers

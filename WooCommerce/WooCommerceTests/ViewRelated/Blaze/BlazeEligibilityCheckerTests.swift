@@ -2,7 +2,6 @@ import XCTest
 import Yosemite
 @testable import WooCommerce
 
-@MainActor
 final class BlazeEligibilityCheckerTests: XCTestCase {
     private var stores: MockStoresManager!
 
@@ -18,7 +17,7 @@ final class BlazeEligibilityCheckerTests: XCTestCase {
     }
 
     // MARK: - `isSiteEligible` for site
-
+    @MainActor
     func test_isEligible_is_true_when_authenticated_with_wpcom_and_feature_flag_enabled_and_blaze_approved() async {
         // Given
         stores.authenticate(credentials: .wpcom(username: "", authToken: "", siteAddress: ""))
@@ -33,6 +32,7 @@ final class BlazeEligibilityCheckerTests: XCTestCase {
         XCTAssertTrue(isEligible)
     }
 
+    @MainActor
     func test_isEligible_is_false_when_authenticated_without_wpcom() async {
         // Given
         mockDefaultSite(isEligibleForBlaze: true)
@@ -53,6 +53,7 @@ final class BlazeEligibilityCheckerTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_isEligible_is_false_when_remote_feature_is_disabled() async {
         // Given
         stores.authenticate(credentials: .wpcom(username: "", authToken: "", siteAddress: ""))
@@ -67,6 +68,7 @@ final class BlazeEligibilityCheckerTests: XCTestCase {
         XCTAssertFalse(isEligible)
     }
 
+    @MainActor
     func test_isEligible_is_false_when_blaze_is_not_approved() async {
         // Given
         stores.authenticate(credentials: .wpcom(username: "", authToken: "", siteAddress: ""))
@@ -81,6 +83,7 @@ final class BlazeEligibilityCheckerTests: XCTestCase {
         XCTAssertFalse(isEligible)
     }
 
+    @MainActor
     func test_isEligible_is_false_when_site_user_is_not_admin() async {
         // Given
         stores.authenticate(credentials: .wpcom(username: "", authToken: "", siteAddress: ""))
@@ -96,7 +99,7 @@ final class BlazeEligibilityCheckerTests: XCTestCase {
     }
 
     // MARK: - `isProductEligible`
-
+    @MainActor
     func test_isProductEligible_is_true_when_wpcom_auth_and_feature_flag_enabled_and_blaze_approved_and_product_public_without_password() async {
         // Given
         stores.authenticate(credentials: .wpcom(username: "", authToken: "", siteAddress: ""))
@@ -112,6 +115,7 @@ final class BlazeEligibilityCheckerTests: XCTestCase {
         XCTAssertTrue(isEligible)
     }
 
+    @MainActor
     func test_isProductEligible_is_false_when_product_is_not_public() async {
         // Given
         let nonPublicStatuses: [ProductStatus] = [.draft, .pending, .privateStatus, .autoDraft, .custom("status")]
@@ -128,6 +132,7 @@ final class BlazeEligibilityCheckerTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_isProductEligible_is_false_when_product_is_password_protected() async {
         // Given
         let checker = BlazeEligibilityChecker(stores: stores)
@@ -140,6 +145,7 @@ final class BlazeEligibilityCheckerTests: XCTestCase {
         XCTAssertFalse(isEligible)
     }
 
+    @MainActor
     func test_isProductEligible_is_false_when_authenticated_without_wpcom() async {
         // Given
         let nonWPCOMCredentialsValues: [Credentials] = [
@@ -160,6 +166,7 @@ final class BlazeEligibilityCheckerTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_isProductEligible_is_false_when_remote_feature_is_disabled() async {
         // Given
         stores.authenticate(credentials: .wpcom(username: "", authToken: "", siteAddress: ""))
@@ -174,6 +181,7 @@ final class BlazeEligibilityCheckerTests: XCTestCase {
         XCTAssertFalse(isEligible)
     }
 
+    @MainActor
     func test_isProductEligible_is_false_when_blaze_is_not_approved() async {
         // Given
         stores.authenticate(credentials: .wpcom(username: "", authToken: "", siteAddress: ""))

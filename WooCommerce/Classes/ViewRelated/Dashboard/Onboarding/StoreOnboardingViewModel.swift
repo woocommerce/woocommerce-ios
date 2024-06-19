@@ -7,7 +7,7 @@ import protocol WooFoundation.Analytics
 
 /// View model for `StoreOnboardingView`.
 @MainActor
-final class StoreOnboardingViewModel: ObservableObject {
+class StoreOnboardingViewModel: ObservableObject {
     /// UI state of the store onboarding tasks.
     enum State {
         /// Shows placeholder rows.

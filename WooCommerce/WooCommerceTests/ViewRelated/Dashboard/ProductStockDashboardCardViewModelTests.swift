@@ -4,6 +4,7 @@ import Yosemite
 
 final class ProductStockDashboardCardViewModelTests: XCTestCase {
 
+    @MainActor
     func test_initial_stock_type_is_low_stock() {
         // Given
         let viewModel = ProductStockDashboardCardViewModel(siteID: 123)
@@ -12,6 +13,7 @@ final class ProductStockDashboardCardViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.selectedStockType, .lowStock)
     }
 
+    @MainActor
     func test_updateStockType_updates_selected_stock_type() {
         // Given
         let viewModel = ProductStockDashboardCardViewModel(siteID: 123)

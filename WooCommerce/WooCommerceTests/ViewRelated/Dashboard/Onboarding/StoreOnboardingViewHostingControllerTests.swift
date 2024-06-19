@@ -6,6 +6,7 @@ import XCTest
 /// Test cases for `StoreOnboardingViewHostingController`.
 ///
 final class StoreOnboardingViewHostingControllerTests: XCTestCase {
+    @MainActor
     func test_it_reloads_tasks_when_view_appears() {
         // Given
         let mockViewModel = MockStoreOnboardingViewModel()

@@ -133,7 +133,6 @@ struct OrderFormPresentationWrapper: View {
                 secondaryView: { isShowingProductSelector in
                     if let productSelectorViewModel = viewModel.productSelectorViewModel {
                         ProductSelectorView(configuration: .loadConfiguration(for: horizontalSizeClass),
-                                            source: .orderForm(flow: flow),
                                             isPresented: isShowingProductSelector,
                                             viewModel: productSelectorViewModel)
                         .sheet(item: $viewModel.productToConfigureViewModel) { viewModel in
@@ -715,7 +714,6 @@ private struct ProductsSection: View {
                 if let productSelectorViewModel = viewModel.productSelectorViewModel {
                     ProductSelectorNavigationView(
                         configuration: ProductSelectorView.Configuration.addProductToOrder(),
-                        source: .orderForm(flow: flow),
                         isPresented: $viewModel.isProductSelectorPresented,
                         viewModel: productSelectorViewModel)
                     .onDisappear {

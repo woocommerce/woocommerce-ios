@@ -33,7 +33,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
 
     func test_view_model_is_initialized_with_default_values() {
         // Given
-        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID)
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID, source: .orderForm(flow: .creation))
 
         // Then
         XCTAssertTrue(viewModel.toggleAllVariationsOnSelection)
@@ -51,6 +51,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         insert(product1)
         insert(product2)
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 source: .orderForm(flow: .creation),
                                                  storageManager: storageManager)
         // When, Then
         assertEqual("Select products", viewModel.selectProductsTitle)
@@ -68,7 +69,9 @@ final class ProductSelectorViewModelTests: XCTestCase {
         insert(product)
 
         // When
-        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID, storageManager: storageManager)
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 source: .orderForm(flow: .creation),
+                                                 storageManager: storageManager)
 
         // Then
         XCTAssertEqual(viewModel.productRows.count, 1)
@@ -76,7 +79,10 @@ final class ProductSelectorViewModelTests: XCTestCase {
 
     func test_scrolling_indicator_appears_only_during_sync() {
         // Given
-        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID, storageManager: storageManager, stores: stores)
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 source: .orderForm(flow: .creation),
+                                                 storageManager: storageManager,
+                                                 stores: stores)
         XCTAssertFalse(viewModel.shouldShowScrollIndicator, "Scroll indicator is not disabled at start")
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
@@ -97,7 +103,10 @@ final class ProductSelectorViewModelTests: XCTestCase {
 
     func test_sync_status_updates_as_expected_for_empty_product_list() {
         // Given
-        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID, storageManager: storageManager, stores: stores)
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 source: .orderForm(flow: .creation),
+                                                 storageManager: storageManager,
+                                                 stores: stores)
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
             case let .synchronizeProducts(_, _, _, _, _, _, _, _, _, _, onCompletion):
@@ -122,6 +131,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         let mockStores = MockStoresManager(sessionManager: .testingInstance)
         let viewModel = ProductSelectorViewModel(
             siteID: sampleSiteID,
+            source: .orderForm(flow: .creation),
             storageManager: mockStorageManager,
             stores: mockStores
         )
@@ -162,7 +172,10 @@ final class ProductSelectorViewModelTests: XCTestCase {
         let product = Product.fake().copy(siteID: self.sampleSiteID, purchasable: true)
         insert(product)
 
-        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID, storageManager: storageManager, stores: stores)
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 source: .orderForm(flow: .creation),
+                                                 storageManager: storageManager,
+                                                 stores: stores)
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
             case let .synchronizeProducts(_, _, _, _, _, _, _, _, _, _, onCompletion):
@@ -182,7 +195,10 @@ final class ProductSelectorViewModelTests: XCTestCase {
 
     func test_onLoadTrigger_triggers_initial_product_sync() {
         // Given
-        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID, storageManager: storageManager, stores: stores)
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 source: .orderForm(flow: .creation),
+                                                 storageManager: storageManager,
+                                                 stores: stores)
         var timesSynced = 0
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
@@ -203,7 +219,10 @@ final class ProductSelectorViewModelTests: XCTestCase {
 
     func test_entering_search_term_performs_remote_product_search() {
         // Given
-        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID, storageManager: storageManager, stores: stores)
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 source: .orderForm(flow: .creation),
+                                                 storageManager: storageManager,
+                                                 stores: stores)
         let expectation = expectation(description: "Completed product search")
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
@@ -229,7 +248,10 @@ final class ProductSelectorViewModelTests: XCTestCase {
 
     func test_entering_search_term_when_search_filter_is_sku_then_requests_and_shows_right_products() {
         // Given
-        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID, storageManager: storageManager, stores: stores)
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 source: .orderForm(flow: .creation),
+                                                 storageManager: storageManager,
+                                                 stores: stores)
         let expectation = expectation(description: "Completed product search")
         let allFilterProduct = Product.fake().copy(siteID: self.sampleSiteID, productID: 1, name: "shirt", purchasable: true)
         let skuFilterProduct = Product.fake().copy(siteID: self.sampleSiteID, productID: 2, name: "t-shirt", purchasable: true)
@@ -263,7 +285,10 @@ final class ProductSelectorViewModelTests: XCTestCase {
 
     func test_entering_search_term_when_search_filter_is_sku_and_returns_variations_as_products_then_shows_the_variations() {
         // Given
-        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID, storageManager: storageManager, stores: stores)
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 source: .orderForm(flow: .creation),
+                                                 storageManager: storageManager,
+                                                 stores: stores)
         let expectation = expectation(description: "Completed product search")
         let skuFilterVariation = Product.fake().copy(siteID: self.sampleSiteID, productID: 2, name: "t-shirt", productTypeKey: "variation", purchasable: true)
 
@@ -292,7 +317,10 @@ final class ProductSelectorViewModelTests: XCTestCase {
 
     func test_entering_search_term_when_there_are_no_filters_then_performs_local_product_search() {
         // Given
-        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID, storageManager: storageManager, stores: stores)
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 source: .orderForm(flow: .creation),
+                                                 storageManager: storageManager,
+                                                 stores: stores)
         let expectation = expectation(description: "Completed product search")
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
@@ -318,7 +346,10 @@ final class ProductSelectorViewModelTests: XCTestCase {
 
     func test_entering_search_term_when_there_are_no_cached_items_then_it_does_not_reload_products() {
         // Given
-        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID, storageManager: storageManager, stores: stores)
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 source: .orderForm(flow: .creation),
+                                                 storageManager: storageManager,
+                                                 stores: stores)
         let expectation = expectation(description: "Completed product search")
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
@@ -348,7 +379,10 @@ final class ProductSelectorViewModelTests: XCTestCase {
         let shirt = Product.fake().copy(siteID: sampleSiteID, productID: 2, name: "T-shirt", purchasable: true)
         insert([hoodie, shirt])
 
-        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID, storageManager: storageManager, stores: stores)
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 source: .orderForm(flow: .creation),
+                                                 storageManager: storageManager,
+                                                 stores: stores)
         let expectation = expectation(description: "Completed product search")
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
@@ -376,7 +410,8 @@ final class ProductSelectorViewModelTests: XCTestCase {
 
     func test_clearSearchAndFilters_resets_searchTerm_and_filters() {
         // Given
-        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID)
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 source: .orderForm(flow: .creation))
 
         // When
         let filters = FilterProductListViewModel.Filters(
@@ -398,7 +433,10 @@ final class ProductSelectorViewModelTests: XCTestCase {
 
     func test_clearing_search_returns_full_product_list() {
         // Given
-        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID, storageManager: storageManager, stores: stores)
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 source: .orderForm(flow: .creation),
+                                                 storageManager: storageManager,
+                                                 stores: stores)
         let expectation = expectation(description: "Cleared product search")
         let product = Product.fake().copy(siteID: sampleSiteID, purchasable: true)
         insert([product.copy(name: "T-shirt"), product.copy(name: "Hoodie")])
@@ -426,7 +464,8 @@ final class ProductSelectorViewModelTests: XCTestCase {
 
     func test_searchTerm_and_filters_are_clear_on_init() {
         // Given
-        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID)
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 source: .orderForm(flow: .creation))
 
         // Then
         let currentFilters = viewModel.filterListViewModel.criteria
@@ -440,7 +479,9 @@ final class ProductSelectorViewModelTests: XCTestCase {
 
     func test_view_model_fires_error_notice_when_product_sync_fails() {
         // Given
-        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID, stores: stores)
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 source: .orderForm(flow: .creation),
+                                                 stores: stores)
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
             case let .synchronizeProducts(_, _, _, _, _, _, _, _, _, _, onCompletion):
@@ -463,6 +504,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         let mockStores = MockStoresManager(sessionManager: .testingInstance)
         let viewModel = ProductSelectorViewModel(
             siteID: sampleSiteID,
+            source: .orderForm(flow: .creation),
             storageManager: mockStorageManager,
             stores: mockStores
         )
@@ -493,6 +535,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         let product = Product.fake().copy(siteID: sampleSiteID, productID: 1, purchasable: true)
         insert(product)
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 source: .orderForm(flow: .creation),
                                                  storageManager: storageManager,
                                                  onProductSelectionStateChanged: { updatedProduct, _ in
             selectedProduct = updatedProduct.productID
@@ -511,6 +554,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         let product = Product.fake().copy(siteID: sampleSiteID, productID: 1, purchasable: true)
         insert(product)
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 source: .orderForm(flow: .creation),
                                                  storageManager: storageManager,
                                                  onProductSelectionStateChanged: { updatedProduct, _ in
             selectedProduct = updatedProduct.productID
@@ -528,6 +572,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         let product = Product.fake().copy(siteID: sampleSiteID, productID: 1, name: "Test Product", purchasable: true, variations: [1, 2])
         insert(product)
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 source: .orderForm(flow: .creation),
                                                  storageManager: storageManager)
 
         // When
@@ -545,6 +590,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         let product = Product.fake().copy(siteID: sampleSiteID, productID: 1, name: "Test Product", purchasable: true)
         insert(product)
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 source: .orderForm(flow: .creation),
                                                  storageManager: storageManager)
 
         // When
@@ -561,6 +607,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         let product = Product.fake().copy(siteID: sampleSiteID, productID: 1, name: "Test Product", purchasable: true, variations: [1, 2])
         insert(product)
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 source: .orderForm(flow: .creation),
                                                  storageManager: storageManager,
                                                  toggleAllVariationsOnSelection: false)
 
@@ -578,6 +625,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         let product = Product.fake().copy(siteID: sampleSiteID, productID: 1, name: "Test Product", purchasable: true)
         insert(product)
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 source: .orderForm(flow: .creation),
                                                  storageManager: storageManager,
                                                  toggleAllVariationsOnSelection: false)
 
@@ -595,6 +643,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         let product = Product.fake().copy(siteID: sampleSiteID, productID: 1, purchasable: true)
         insert(product)
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 source: .orderForm(flow: .creation),
                                                  storageManager: storageManager,
                                                  onProductSelectionStateChanged: { _, _ in })
 
@@ -612,6 +661,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         let product = Product.fake().copy(siteID: sampleSiteID, productID: 1, purchasable: true)
         insert(product)
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 source: .orderForm(flow: .creation),
                                                  storageManager: storageManager)
 
         // When
@@ -629,6 +679,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         let product = Product.fake().copy(siteID: sampleSiteID, productID: 1, purchasable: true)
         insert(product)
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 source: .orderForm(flow: .creation),
                                                  storageManager: storageManager,
                                                  onProductSelectionStateChanged: { _, _ in })
 
@@ -647,6 +698,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         let product = Product.fake().copy(siteID: sampleSiteID, productID: 1, purchasable: true)
         insert(product)
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 source: .orderForm(flow: .creation),
                                                  storageManager: storageManager)
 
         // When
@@ -664,6 +716,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         let product = Product.fake().copy(siteID: sampleSiteID, productID: 1, purchasable: true, variations: [1, 2])
         insert(product)
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 source: .orderForm(flow: .creation),
                                                  storageManager: storageManager)
 
         // When
@@ -680,6 +733,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         let product = Product.fake().copy(siteID: sampleSiteID, productID: 1, purchasable: true, variations: [1, 2])
         insert(product)
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 source: .orderForm(flow: .creation),
                                                  storageManager: storageManager)
 
         // When
@@ -696,6 +750,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         let product = Product.fake().copy(siteID: sampleSiteID, productID: 1, purchasable: true, variations: [1, 2])
         insert(product)
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 source: .orderForm(flow: .creation),
                                                  storageManager: storageManager)
 
         // When
@@ -713,6 +768,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         let product = Product.fake().copy(siteID: sampleSiteID, productID: 1, purchasable: true, variations: [1, 2])
         insert(product)
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 source: .orderForm(flow: .creation),
                                                  storageManager: storageManager)
 
         // When
@@ -734,6 +790,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
 
         // When
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 source: .orderForm(flow: .creation),
                                                  selectedItemIDs: [1, 12, 20],
                                                  storageManager: storageManager)
 
@@ -752,6 +809,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         insert(variableProduct)
         var selectedItems: [Int64] = []
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 source: .orderForm(flow: .creation),
                                                  selectedItemIDs: [],
                                                  storageManager: storageManager,
                                                  onMultipleSelectionCompleted: {
@@ -774,6 +832,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         insert(simpleProduct)
         insert(variableProduct)
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 source: .orderForm(flow: .creation),
                                                  selectedItemIDs: [1, 10, 20],
                                                  storageManager: storageManager,
                                                  analytics: analytics)
@@ -796,6 +855,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
     func test_analytics_when_completeMultipleSelection_closure_is_invoked_and_filters_are_enabled_then_event_and_properties_are_logged_correctly() throws {
         // Given
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 source: .orderForm(flow: .creation),
                                                  selectedItemIDs: [1, 10, 20],
                                                  storageManager: storageManager,
                                                  analytics: analytics)
@@ -847,6 +907,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
                                                                                                         lastSoldProductsIds: [lastSoldProductId]))
 
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 source: .orderForm(flow: .creation),
                                                  storageManager: storageManager,
                                                  analytics: analytics,
                                                  topProductsProvider: topProductsProvider)
@@ -885,6 +946,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
                                                                                                         lastSoldProductsIds: [2]))
 
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 source: .orderForm(flow: .creation),
                                                  storageManager: storageManager,
                                                  analytics: analytics,
                                                  topProductsProvider: topProductsProvider)
@@ -930,6 +992,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
                                                                                                         lastSoldProductsIds: [lastSoldProductId]))
 
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 source: .orderForm(flow: .creation),
                                                  storageManager: storageManager,
                                                  analytics: analytics,
                                                  topProductsProvider: topProductsProvider)
@@ -958,7 +1021,8 @@ final class ProductSelectorViewModelTests: XCTestCase {
 
     func test_filter_button_title_shows_correct_number_of_active_filters() async throws {
         // Given
-        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID)
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 source: .orderForm(flow: .creation))
         let defaultTitle = NSLocalizedString("Filter", comment: "")
         // confidence check
         XCTAssertEqual(viewModel.filterButtonTitle, defaultTitle)
@@ -985,7 +1049,9 @@ final class ProductSelectorViewModelTests: XCTestCase {
         let variableProduct = Product.fake().copy(siteID: sampleSiteID, productID: 10, productTypeKey: ProductType.variable.rawValue, purchasable: true)
         insert(variableProduct)
         insert(simpleProduct)
-        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID, storageManager: storageManager)
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 source: .orderForm(flow: .creation),
+                                                 storageManager: storageManager)
 
         // When
         let filters = FilterProductListViewModel.Filters(
@@ -1009,6 +1075,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         let product = Product.fake().copy(siteID: sampleSiteID, productID: 1, purchasable: true)
         insert(product)
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 source: .orderForm(flow: .creation),
                                                  storageManager: storageManager)
 
         // When
@@ -1032,6 +1099,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
 
         // When
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 source: .orderForm(flow: .creation),
                                                  selectedItemIDs: [1, 12, 20],
                                                  storageManager: storageManager)
         viewModel.clearSelection()
@@ -1046,7 +1114,10 @@ final class ProductSelectorViewModelTests: XCTestCase {
     func test_clearSelection_invokes_onAllSelectionsCleared_closure() {
         // Given
         var onAllSelectionsClearedCalled = false
-        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID, selectedItemIDs: [1, 12, 20], onAllSelectionsCleared: {
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 source: .orderForm(flow: .creation),
+                                                 selectedItemIDs: [1, 12, 20],
+                                                 onAllSelectionsCleared: {
             onAllSelectionsClearedCalled = true
         })
 
@@ -1059,7 +1130,9 @@ final class ProductSelectorViewModelTests: XCTestCase {
 
     func test_addSelection_allows_multiple_same_ids() {
         // Given
-        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID, selectedItemIDs: [1, 12, 20])
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 source: .orderForm(flow: .creation),
+                                                 selectedItemIDs: [1, 12, 20])
 
         // When
         viewModel.addSelection(id: 1)
@@ -1076,6 +1149,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         let mockStores = MockStoresManager(sessionManager: .testingInstance)
         let viewModel = ProductSelectorViewModel(
             siteID: sampleSiteID,
+            source: .orderForm(flow: .creation),
             storageManager: mockStorageManager,
             stores: mockStores
         )
@@ -1119,7 +1193,9 @@ final class ProductSelectorViewModelTests: XCTestCase {
 
     func test_searchProducts_are_triggered_with_correct_filters() async throws {
         // Given
-        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID, stores: stores)
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 source: .orderForm(flow: .creation),
+                                                 stores: stores)
         var filteredStockStatus: ProductStockStatus?
         var filteredProductStatus: ProductStatus?
         var filteredProductType: ProductType?
@@ -1165,7 +1241,9 @@ final class ProductSelectorViewModelTests: XCTestCase {
         insert(bolognese, withSearchTerm: "spa")
         insert(carbonara, withSearchTerm: "spa")
 
-        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID, storageManager: storageManager)
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 source: .orderForm(flow: .creation),
+                                                 storageManager: storageManager)
         XCTAssertEqual(viewModel.productRows.count, 3) // Confidence check
 
         // When
@@ -1211,6 +1289,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
 
         let viewModel = ProductSelectorViewModel(
             siteID: sampleSiteID,
+            source: .orderForm(flow: .creation),
             storageManager: storageManager,
             onProductSelectionStateChanged: { updatedProduct, _ in
                 selectedProduct = updatedProduct.productID
@@ -1252,7 +1331,11 @@ final class ProductSelectorViewModelTests: XCTestCase {
         let topProductsProvider = MockProductSelectorTopProductsProvider(provideTopProductsFromCachedOrders:
                                                                             ProductSelectorTopProducts(popularProductsIds: mostPopularProductIds,
                                                                                                         lastSoldProductsIds: lastSoldProductIds))
-        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID, storageManager: storageManager, stores: stores, topProductsProvider: topProductsProvider)
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 source: .orderForm(flow: .creation),
+                                                 storageManager: storageManager,
+                                                 stores: stores,
+                                                 topProductsProvider: topProductsProvider)
 
         waitUntil {
             viewModel.productsSectionViewModels.isNotEmpty
@@ -1286,7 +1369,11 @@ final class ProductSelectorViewModelTests: XCTestCase {
         let topProductsProvider = MockProductSelectorTopProductsProvider(provideTopProductsFromCachedOrders:
                                                                             ProductSelectorTopProducts(popularProductsIds: mostPopularProductIds,
                                                                                                         lastSoldProductsIds: lastSoldProductIds))
-        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID, storageManager: storageManager, stores: stores, topProductsProvider: topProductsProvider)
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 source: .orderForm(flow: .creation),
+                                                 storageManager: storageManager,
+                                                 stores: stores,
+                                                 topProductsProvider: topProductsProvider)
 
         waitUntil {
             viewModel.productsSectionViewModels.isNotEmpty
@@ -1315,7 +1402,11 @@ final class ProductSelectorViewModelTests: XCTestCase {
         let topProductsProvider = MockProductSelectorTopProductsProvider(provideTopProductsFromCachedOrders:
                                                                             ProductSelectorTopProducts(popularProductsIds: mostPopularProductIds,
                                                                                                         lastSoldProductsIds: lastSoldProductIds))
-        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID, storageManager: storageManager, stores: stores, topProductsProvider: topProductsProvider)
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 source: .orderForm(flow: .creation),
+                                                 storageManager: storageManager,
+                                                 stores: stores,
+                                                 topProductsProvider: topProductsProvider)
 
 
         let expectation = expectation(description: "Completed product search")
@@ -1363,7 +1454,11 @@ final class ProductSelectorViewModelTests: XCTestCase {
         insert(variableProduct)
         insert(simpleProduct)
 
-        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID, storageManager: storageManager, stores: stores, topProductsProvider: topProductsProvider)
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 source: .orderForm(flow: .creation),
+                                                 storageManager: storageManager,
+                                                 stores: stores,
+                                                 topProductsProvider: topProductsProvider)
 
         // When
         let filters = FilterProductListViewModel.Filters(
@@ -1390,6 +1485,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
 
         // When
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 source: .orderForm(flow: .creation),
                                                  storageManager: storageManager,
                                                  stores: stores,
                                                  featureFlagService: featureFlagService,
@@ -1409,6 +1505,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         // When
         let productToConfigure: Yosemite.Product = try waitFor { promise in
             let viewModel = ProductSelectorViewModel(siteID: self.sampleSiteID,
+                                                     source: .orderForm(flow: .creation),
                                                      storageManager: self.storageManager,
                                                      stores: self.stores,
                                                      featureFlagService: featureFlagService,
@@ -1452,7 +1549,10 @@ final class ProductSelectorViewModelTests: XCTestCase {
             }
         }
 
-        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID, storageManager: storageManager, stores: stores)
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 source: .orderForm(flow: .creation),
+                                                 storageManager: storageManager,
+                                                 stores: stores)
         viewModel.onLoadTrigger.send(())
 
         XCTAssertEqual(synchronizeProductsPages, [1])

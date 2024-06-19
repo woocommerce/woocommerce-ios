@@ -2,6 +2,7 @@
 
 19.2
 -----
+- [*] Disable bookable products from the order creation form. [https://github.com/woocommerce/woocommerce-ios/pull/13022]
 - [internal] Update: ZendeskSupportSDK from v6.0 to v.8.0.3 [https://github.com/woocommerce/woocommerce-ios/pull/12984]
 
 19.1

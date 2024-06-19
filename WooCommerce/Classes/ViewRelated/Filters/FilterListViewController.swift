@@ -264,6 +264,7 @@ private extension FilterListViewController {
                 let controller: WooNavigationController = {
                     let productSelectorViewModel = ProductSelectorViewModel(
                         siteID: siteID,
+                        source: .orderFilter,
                         selectedItemIDs: selectedProductID,
                         onProductSelectionStateChanged: { [weak self] product, _ in
                             guard let self else { return }
@@ -280,7 +281,6 @@ private extension FilterListViewController {
                         }
                     )
                     return WooNavigationController(rootViewController: ProductSelectorViewController(configuration: .configurationForOrder,
-                                                                                                     source: .orderFilter,
                                                                                                      viewModel: productSelectorViewModel))
                 }()
                 self.listSelector.present(controller, animated: true)

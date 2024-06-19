@@ -731,6 +731,11 @@ final class EditableOrderViewModel: ObservableObject {
                 self?.removeItemFromOrder(item)
             })
             let isProductConfigurable = product.productType == .bundle && product.bundledItems.isNotEmpty
+
+            /// Bookable items' prices vary depending on the selected booking resources.
+            /// Display the order item price instead of the product price for the correct value.
+            let price = product.productType == .booking ? item.price.stringValue : product.price
+
             let rowViewModel = CollapsibleProductRowCardViewModel(id: item.itemID,
                                                                   productOrVariationID: product.productID,
                                                                   hasParentProduct: item.parent != nil,
@@ -740,7 +745,7 @@ final class EditableOrderViewModel: ObservableObject {
                                                                   imageURL: product.imageURL,
                                                                   name: product.name,
                                                                   sku: product.sku,
-                                                                  price: product.price,
+                                                                  price: price,
                                                                   pricedIndividually: pricedIndividually,
                                                                   discount: passingDiscountValue,
                                                                   productTypeDescription: product.productType.description,
@@ -1943,6 +1948,7 @@ private extension EditableOrderViewModel {
                 }
                 return ProductSelectorViewModel(
                     siteID: siteID,
+                    source: .orderForm(flow: flow.analyticsFlow),
                     selectedItemIDs: selectedProductsAndVariationsIDs,
                     purchasableItemsOnly: true,
                     storageManager: storageManager,

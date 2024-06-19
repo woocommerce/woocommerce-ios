@@ -65,7 +65,8 @@ final class CustomerDetailViewModelTests: XCTestCase {
     func test_it_updates_billing_and_shipping_and_phone_from_remote() throws {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let vm = CustomerDetailViewModel(customer: sampleCustomer(), stores: stores)
+        let storage = MockStorageManager()
+        let vm = CustomerDetailViewModel(customer: sampleCustomer(), stores: stores, storageManager: storage)
         let billing = sampleAddress()
         let shipping = Address.fake().copy(company: "Widget Shop", address1: "1 Main Street")
 
@@ -73,8 +74,9 @@ final class CustomerDetailViewModelTests: XCTestCase {
         _ = waitFor { promise in
             stores.whenReceivingAction(ofType: CustomerAction.self) { action in
                 switch action {
-                case let .retrieveCustomer(_, userID, onCompletion):
-                    let customer = Customer.fake().copy(customerID: userID, billing: billing, shipping: shipping)
+                case let .retrieveCustomer(_, customerID, onCompletion):
+                    let customer = Customer.fake().copy(customerID: customerID, billing: billing, shipping: shipping)
+                    storage.insertSampleCustomer(readOnlyCustomer: customer)
                     onCompletion(.success(customer))
                     promise(true)
                 default:
@@ -102,8 +104,8 @@ final class CustomerDetailViewModelTests: XCTestCase {
         let isSyncingDuringAction: Bool = waitFor { promise in
             stores.whenReceivingAction(ofType: CustomerAction.self) { action in
                 switch action {
-                case let .retrieveCustomer(_, userID, onCompletion):
-                    let customer = Customer.fake().copy(customerID: userID, billing: Address.fake())
+                case let .retrieveCustomer(_, customerID, onCompletion):
+                    let customer = Customer.fake().copy(customerID: customerID, billing: Address.fake())
                     promise(vm.isSyncing)
                     onCompletion(.success(customer))
                 default:
@@ -117,6 +119,23 @@ final class CustomerDetailViewModelTests: XCTestCase {
         XCTAssertFalse(isSyncingOnInit)
         XCTAssertTrue(isSyncingDuringAction)
         XCTAssertFalse(vm.isSyncing)
+    }
+
+    func test_it_fetches_billing_and_shipping_from_storage() {
+        // Given
+        let billing = sampleAddress()
+        let shipping = Address.fake().copy(company: "Widget Shop", address1: "1 Main Street")
+        let customer = Customer.fake().copy(customerID: sampleCustomer().userID, billing: billing, shipping: shipping)
+        let storage = MockStorageManager()
+        storage.insertSampleCustomer(readOnlyCustomer: customer)
+
+        // When
+        let vm = CustomerDetailViewModel(customer: sampleCustomer(), storageManager: storage)
+
+        // Then
+        assertEqual(billing.fullNameWithCompanyAndAddress, vm.formattedBilling)
+        assertEqual(shipping.fullNameWithCompanyAndAddress, vm.formattedShipping)
+        assertEqual(billing.phone, vm.phone)
     }
 
 }

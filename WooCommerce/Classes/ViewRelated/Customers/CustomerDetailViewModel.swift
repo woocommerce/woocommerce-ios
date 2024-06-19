@@ -11,7 +11,7 @@ final class CustomerDetailViewModel: ObservableObject {
     let name: String
 
     /// Date the customer was last active
-    let dateLastActive: String
+    let dateLastActive: String?
 
     /// Customer email
     let email: String?
@@ -91,7 +91,7 @@ final class CustomerDetailViewModel: ObservableObject {
     init(siteID: Int64,
          customerID: Int64,
          name: String?,
-         dateLastActive: String,
+         dateLastActive: String?,
          email: String?,
          ordersCount: String,
          totalSpend: String,
@@ -127,7 +127,7 @@ final class CustomerDetailViewModel: ObservableObject {
         self.init(siteID: customer.siteID,
                   customerID: customer.userID,
                   name: customer.name?.nullifyIfEmptyOrWhitespace(),
-                  dateLastActive: DateFormatter.mediumLengthLocalizedDateFormatter.string(from: customer.dateLastActive),
+                  dateLastActive: customer.dateLastActive.map { DateFormatter.mediumLengthLocalizedDateFormatter.string(from: $0) },
                   email: customer.email?.nullifyIfEmptyOrWhitespace(),
                   ordersCount: customer.ordersCount.description,
                   totalSpend: currencyFormatter.formatAmount(customer.totalSpend) ?? customer.totalSpend.description,

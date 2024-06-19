@@ -3,13 +3,15 @@ import SwiftUI
 
 struct ItemCardView: View {
     private let item: POSItem
-    private let onItemCardTapped: (() -> Void)?
 
     @ScaledMetric private var scale: CGFloat = 1.0
 
-    init(item: POSItem, onItemCardTapped: (() -> Void)? = nil) {
+    init(item: POSItem) {
         self.item = item
-        self.onItemCardTapped = onItemCardTapped
+    }
+
+    private var commaSeparatedItemCategories: String {
+        item.itemCategories.prefix(Constants.maxNumberOfCategories).joined(separator: ", ")
     }
 
     var body: some View {
@@ -28,36 +30,33 @@ struct ItemCardView: View {
                            height: Constants.productImageWidth * scale)
                     .foregroundColor(.gray)
             }
-            VStack {
+            VStack(alignment: .leading) {
                 Text(item.name)
-                    .foregroundStyle(Color.primaryBackground)
-                Text(item.price)
-                    .foregroundStyle(Color.primaryBackground)
-                HStack(spacing: 8) {
-                    Spacer()
-                    Button(action: {
-                        onItemCardTapped?()
-                    }, label: { })
-                    .buttonStyle(POSPlusButtonStyle())
-                    .frame(width: 56, height: 56)
-                }
+                    .foregroundStyle(Color.posPrimaryTexti3)
+                Text(commaSeparatedItemCategories)
+                    .foregroundStyle(Color.posPrimaryTexti3)
             }
+            Spacer()
+            Text(item.price)
+                .foregroundStyle(Color.posPrimaryTexti3)
+                .padding()
         }
-        .frame(maxWidth: .infinity)
-        .background(Color.tertiaryBackground)
+        .frame(maxWidth: .infinity, idealHeight: Constants.productCardHeight)
+        .background(Color.posBackgroundWhitei3)
     }
 }
 
 private extension ItemCardView {
     enum Constants {
+        static let productCardHeight: CGFloat = 120
         static let productImageWidth: CGFloat = 60
         static let productImageCornerRadius: CGFloat = 0
+        static let maxNumberOfCategories = 3
     }
 }
 
 #if DEBUG
 #Preview {
-    ItemCardView(item: POSItemProviderPreview().providePointOfSaleItem(),
-                 onItemCardTapped: { })
+    ItemCardView(item: POSItemProviderPreview().providePointOfSaleItem())
 }
 #endif

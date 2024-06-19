@@ -14,18 +14,6 @@ extension Color {
         return Color(red: 89.0 / 255.0, green: 181.0 / 255.0, blue: 227.0 / 255.0)
     }
 
-    /// Tertiary POS background color
-    ///
-    static var tertiaryBackground: Color {
-        return Color(red: 142.0 / 255.0, green: 208.0 / 255.0, blue: 240.0 / 255.0)
-    }
-
-    /// POS color: Light Blue
-    ///
-    static var lightBlue: Color {
-        return Color(red: 202.0 / 255.0, green: 237.0 / 255.0, blue: 255.0 / 255.0)
-    }
-
     /// Default POS text color
     ///
     static var primaryText: Color {
@@ -42,5 +30,23 @@ extension Color {
 
     static var wooAmberShade80: Color {
         Color(red: 123.0 / 255.0, green: 7.0 / 255.0, blue: 0.0 / 255.0)
+    }
+
+    /// Colors from hi-fi m: p91TBi-bot-p2
+    ///
+    static var posPrimaryTexti3: Color {
+        Color(red: 39.0 / 255.0, green: 27.0 / 255.0, blue: 61.0 / 255.0)
+    }
+
+    static var posIconGrayi3: Color {
+        return Color.gray
+    }
+
+    static var posBackgroundGreyi3: Color {
+        Color(red: 246.0 / 255.0, green: 247.0 / 255.0, blue: 247.0 / 255.0)
+    }
+
+    static var posBackgroundWhitei3: Color {
+        Color.white
     }
 }

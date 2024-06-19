@@ -63,7 +63,8 @@ private extension AddProductFromImageCoordinator {
         }
         return await withCheckedContinuation { continuation in
             let mediaPickingCoordinator = MediaPickingCoordinator(siteID: siteID,
-                                                                  allowsMultipleImages: false,
+                                                                  imagesOnly: true,
+                                                                  allowsMultipleSelections: false,
                                                                   flow: .productFromImageForm,
                                                                   onCameraCaptureCompletion: { [weak self] asset, error in
                 guard let self else {

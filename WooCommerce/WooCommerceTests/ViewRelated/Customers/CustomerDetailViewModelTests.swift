@@ -18,7 +18,7 @@ final class CustomerDetailViewModelTests: XCTestCase {
         assertEqual(customer.name, vm.name)
         assertEqual(customer.email, vm.email)
         assertEqual(dateFormatter.string(from: try XCTUnwrap(customer.dateRegistered)), vm.dateRegistered)
-        assertEqual(dateFormatter.string(from: customer.dateLastActive), vm.dateLastActive)
+        assertEqual(dateFormatter.string(from: try XCTUnwrap(customer.dateLastActive)), vm.dateLastActive)
         assertEqual(customer.ordersCount.description, vm.ordersCount)
         assertEqual("$10.00", vm.totalSpend)
         assertEqual("$5.00", vm.avgOrderValue)
@@ -35,7 +35,7 @@ final class CustomerDetailViewModelTests: XCTestCase {
                                                        email: "",
                                                        username: "",
                                                        dateRegistered: .some(nil),
-                                                       dateLastActive: Date(),
+                                                       dateLastActive: .some(nil),
                                                        ordersCount: 0,
                                                        totalSpend: 0,
                                                        averageOrderValue: 0,
@@ -49,12 +49,12 @@ final class CustomerDetailViewModelTests: XCTestCase {
 
         // Then
         assertEqual("Guest", vm.name)
-        assertEqual(dateFormatter.string(from: customer.dateLastActive), vm.dateLastActive)
         assertEqual(customer.ordersCount.description, vm.ordersCount)
         assertEqual("$0.00", vm.totalSpend)
         assertEqual("$0.00", vm.avgOrderValue)
         XCTAssertNil(vm.email)
         XCTAssertNil(vm.dateRegistered)
+        XCTAssertNil(vm.dateLastActive)
         XCTAssertNil(vm.country)
         XCTAssertNil(vm.region)
         XCTAssertNil(vm.city)
@@ -65,7 +65,8 @@ final class CustomerDetailViewModelTests: XCTestCase {
     func test_it_updates_billing_and_shipping_and_phone_from_remote() throws {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let vm = CustomerDetailViewModel(customer: sampleCustomer(), stores: stores)
+        let storage = MockStorageManager()
+        let vm = CustomerDetailViewModel(customer: sampleCustomer(), stores: stores, storageManager: storage)
         let billing = sampleAddress()
         let shipping = Address.fake().copy(company: "Widget Shop", address1: "1 Main Street")
 
@@ -73,8 +74,9 @@ final class CustomerDetailViewModelTests: XCTestCase {
         _ = waitFor { promise in
             stores.whenReceivingAction(ofType: CustomerAction.self) { action in
                 switch action {
-                case let .retrieveCustomer(_, userID, onCompletion):
-                    let customer = Customer.fake().copy(customerID: userID, billing: billing, shipping: shipping)
+                case let .retrieveCustomer(_, customerID, onCompletion):
+                    let customer = Customer.fake().copy(customerID: customerID, billing: billing, shipping: shipping)
+                    storage.insertSampleCustomer(readOnlyCustomer: customer)
                     onCompletion(.success(customer))
                     promise(true)
                 default:
@@ -92,7 +94,7 @@ final class CustomerDetailViewModelTests: XCTestCase {
         assertEqual(billing.phone, viewModel.phone)
     }
 
-    func test_it_updates_syncState_during_and_after_sync() {
+    func test_it_updates_isSyncing_during_and_after_sync() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let vm = CustomerDetailViewModel(customer: sampleCustomer(), stores: stores)
@@ -102,8 +104,8 @@ final class CustomerDetailViewModelTests: XCTestCase {
         let isSyncingDuringAction: Bool = waitFor { promise in
             stores.whenReceivingAction(ofType: CustomerAction.self) { action in
                 switch action {
-                case let .retrieveCustomer(_, userID, onCompletion):
-                    let customer = Customer.fake().copy(customerID: userID, billing: Address.fake())
+                case let .retrieveCustomer(_, customerID, onCompletion):
+                    let customer = Customer.fake().copy(customerID: customerID, billing: Address.fake())
                     promise(vm.isSyncing)
                     onCompletion(.success(customer))
                 default:
@@ -117,6 +119,52 @@ final class CustomerDetailViewModelTests: XCTestCase {
         XCTAssertFalse(isSyncingOnInit)
         XCTAssertTrue(isSyncingDuringAction)
         XCTAssertFalse(vm.isSyncing)
+    }
+
+    func test_isSyncing_not_true_if_data_already_loaded() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let storage = MockStorageManager()
+        let customer = Customer.fake().copy(customerID: sampleCustomer().userID, billing: Address.fake())
+        storage.insertSampleCustomer(readOnlyCustomer: customer)
+        let vm = CustomerDetailViewModel(customer: sampleCustomer(), stores: stores, storageManager: storage)
+        let isSyncingOnInit = vm.isSyncing
+
+        // When
+        let isSyncingDuringAction: Bool = waitFor { promise in
+            stores.whenReceivingAction(ofType: CustomerAction.self) { action in
+                switch action {
+                case let .retrieveCustomer(_, _, onCompletion):
+                    promise(vm.isSyncing)
+                    onCompletion(.success(customer))
+                default:
+                    XCTFail("Received unexpected action")
+                }
+            }
+            vm.syncCustomerAddressData()
+        }
+
+        // Then
+        XCTAssertFalse(isSyncingOnInit)
+        XCTAssertFalse(isSyncingDuringAction)
+        XCTAssertFalse(vm.isSyncing)
+    }
+
+    func test_it_fetches_billing_and_shipping_from_storage() {
+        // Given
+        let billing = sampleAddress()
+        let shipping = Address.fake().copy(company: "Widget Shop", address1: "1 Main Street")
+        let customer = Customer.fake().copy(customerID: sampleCustomer().userID, billing: billing, shipping: shipping)
+        let storage = MockStorageManager()
+        storage.insertSampleCustomer(readOnlyCustomer: customer)
+
+        // When
+        let vm = CustomerDetailViewModel(customer: sampleCustomer(), storageManager: storage)
+
+        // Then
+        assertEqual(billing.fullNameWithCompanyAndAddress, vm.formattedBilling)
+        assertEqual(shipping.fullNameWithCompanyAndAddress, vm.formattedShipping)
+        assertEqual(billing.phone, vm.phone)
     }
 
 }

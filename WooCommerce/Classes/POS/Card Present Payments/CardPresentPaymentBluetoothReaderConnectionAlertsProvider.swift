@@ -1,58 +1,67 @@
 import Foundation
 
 struct CardPresentPaymentBluetoothReaderConnectionAlertsProvider: BluetoothReaderConnnectionAlertsProviding {
-    typealias AlertDetails = CardPresentPaymentAlertDetails
-    func scanningForReader(cancel: @escaping () -> Void) -> CardPresentPaymentAlertDetails {
+    typealias AlertDetails = CardPresentPaymentEventDetails
+    func scanningForReader(cancel: @escaping () -> Void) -> CardPresentPaymentEventDetails {
         .scanningForReaders(endSearch: cancel)
     }
 
     func scanningFailed(error: any Error,
-                        close: @escaping () -> Void) -> CardPresentPaymentAlertDetails {
+                        close: @escaping () -> Void) -> CardPresentPaymentEventDetails {
         .scanningFailed(error: error, endSearch: close)
     }
 
-    func connectingToReader() -> CardPresentPaymentAlertDetails {
+    func connectingToReader() -> CardPresentPaymentEventDetails {
         .connectingToReader
     }
 
     func connectingFailed(error: any Error,
                           retrySearch: @escaping () -> Void,
-                          cancelSearch: @escaping () -> Void) -> CardPresentPaymentAlertDetails {
+                          cancelSearch: @escaping () -> Void) -> CardPresentPaymentEventDetails {
         .connectingFailed(error: error,
                           retrySearch: retrySearch,
                           endSearch: cancelSearch)
     }
 
     func connectingFailedNonRetryable(error: any Error,
-                                      close: @escaping () -> Void) -> CardPresentPaymentAlertDetails {
-        .errorNonRetryable(error: error,
-                           cancelPayment: close)
+                                      close: @escaping () -> Void) -> CardPresentPaymentEventDetails {
+        .connectingFailedNonRetryable(error: error,
+                                      endSearch: close)
     }
 
     func connectingFailedIncompleteAddress(wcSettingsAdminURL: URL?,
                                            openWCSettings: (() -> Void)?,
                                            retrySearch: @escaping () -> Void,
-                                           cancelSearch: @escaping () -> Void) -> CardPresentPaymentAlertDetails {
-        .connectingFailedUpdateAddress(wcSettingsAdminURL: wcSettingsAdminURL,
-                                       retrySearch: retrySearch,
-                                       endSearch: cancelSearch)
+                                           cancelSearch: @escaping () -> Void) -> CardPresentPaymentEventDetails {
+        guard let wcSettingsAdminURL else {
+            return .connectingFailedNonRetryable(
+                error: CardPresentPaymentServiceError.incompleteAddressConnectionError,
+                endSearch: cancelSearch)
+        }
+        return .connectingFailedUpdateAddress(wcSettingsAdminURL: wcSettingsAdminURL,
+                                              retrySearch: retrySearch,
+                                              endSearch: cancelSearch)
     }
 
     func connectingFailedInvalidPostalCode(retrySearch: @escaping () -> Void,
-                                           cancelSearch: @escaping () -> Void) -> CardPresentPaymentAlertDetails {
+                                           cancelSearch: @escaping () -> Void) -> CardPresentPaymentEventDetails {
         .connectingFailedUpdatePostalCode(retrySearch: retrySearch,
                                           endSearch: cancelSearch)
     }
 
     func updatingFailed(tryAgain: (() -> Void)?,
-                        close: @escaping () -> Void) -> CardPresentPaymentAlertDetails {
-        .updateFailed(tryAgain: tryAgain,
-                      cancelUpdate: close)
+                        close: @escaping () -> Void) -> CardPresentPaymentEventDetails {
+        if let tryAgain {
+            .updateFailed(tryAgain: tryAgain,
+                          cancelUpdate: close)
+        } else {
+            .updateFailedNonRetryable(cancelUpdate: close)
+        }
     }
 
     func updateProgress(requiredUpdate: Bool,
                         progress: Float,
-                        cancel: (() -> Void)?) -> CardPresentPaymentAlertDetails {
+                        cancel: (() -> Void)?) -> CardPresentPaymentEventDetails {
         .updateProgress(requiredUpdate: requiredUpdate,
                         progress: progress,
                         cancelUpdate: cancel)
@@ -60,7 +69,7 @@ struct CardPresentPaymentBluetoothReaderConnectionAlertsProvider: BluetoothReade
 
     func selectSearchType(tapToPay: @escaping () -> Void,
                           bluetooth: @escaping () -> Void,
-                          cancel: @escaping () -> Void) -> CardPresentPaymentAlertDetails {
+                          cancel: @escaping () -> Void) -> CardPresentPaymentEventDetails {
         .selectSearchType(tapToPay: tapToPay,
                           bluetooth: bluetooth,
                           endSearch: cancel)
@@ -69,19 +78,19 @@ struct CardPresentPaymentBluetoothReaderConnectionAlertsProvider: BluetoothReade
     func foundReader(name: String,
                      connect: @escaping () -> Void,
                      continueSearch: @escaping () -> Void,
-                     cancelSearch: @escaping () -> Void) -> CardPresentPaymentAlertDetails {
+                     cancelSearch: @escaping () -> Void) -> CardPresentPaymentEventDetails {
         .foundReader(name: name,
                      connect: connect,
                      continueSearch: continueSearch,
                      endSearch: cancelSearch)
     }
 
-    func connectingFailedCriticallyLowBattery(retrySearch: @escaping () -> Void, cancelSearch: @escaping () -> Void) -> CardPresentPaymentAlertDetails {
+    func connectingFailedCriticallyLowBattery(retrySearch: @escaping () -> Void, cancelSearch: @escaping () -> Void) -> CardPresentPaymentEventDetails {
         .connectingFailedChargeReader(retrySearch: retrySearch,
                                       endSearch: cancelSearch)
     }
 
-    func updatingFailedLowBattery(batteryLevel: Double?, close: @escaping () -> Void) -> CardPresentPaymentAlertDetails {
+    func updatingFailedLowBattery(batteryLevel: Double?, close: @escaping () -> Void) -> CardPresentPaymentEventDetails {
         .updateFailedLowBattery(batteryLevel: batteryLevel,
                                 cancelUpdate: close)
     }

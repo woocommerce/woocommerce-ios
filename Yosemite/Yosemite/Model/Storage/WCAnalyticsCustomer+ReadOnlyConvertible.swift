@@ -37,7 +37,7 @@ extension Storage.WCAnalyticsCustomer: ReadOnlyConvertible {
                                    email: email,
                                    username: username,
                                    dateRegistered: dateRegistered,
-                                   dateLastActive: dateLastActive ?? Date(),
+                                   dateLastActive: dateLastActive,
                                    ordersCount: Int(ordersCount),
                                    totalSpend: totalSpend?.decimalValue ?? 0,
                                    averageOrderValue: averageOrderValue?.decimalValue ?? 0,

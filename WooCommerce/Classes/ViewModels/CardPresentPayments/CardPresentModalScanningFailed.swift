@@ -52,15 +52,6 @@ final class CardPresentModalScanningFailed: CardPresentPaymentsModalViewModel {
     func didTapAuxiliaryButton(in viewController: UIViewController?) { }
 }
 
-// CardPresentPaymentsModalViewModelActions
-extension CardPresentModalScanningFailed {
-    var primaryButtonViewModel: CardPresentPaymentsModalButtonViewModel? {
-        CardPresentPaymentsModalButtonViewModel(
-            title: Localization.dismiss,
-            actionHandler: primaryAction)
-    }
-}
-
 private extension CardPresentModalScanningFailed {
     enum Localization {
         static let title = NSLocalizedString(

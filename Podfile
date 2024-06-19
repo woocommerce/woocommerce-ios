@@ -113,7 +113,7 @@ target 'WooCommerce' do
   alamofire
   cocoa_lumberjack
   keychain
-  pod 'ZendeskSupportSDK', '~> 6.0'
+  pod 'ZendeskSupportSDK', '~> 8.0.3'
   stripe_terminal
   pod 'Kingfisher', '~> 7.6.2'
   pod 'Wormholy', '~> 1.6.6', configurations: ['Debug']

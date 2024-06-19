@@ -3462,7 +3462,7 @@ extension Networking.WCAnalyticsCustomer {
         email: NullableCopiableProp<String> = .copy,
         username: NullableCopiableProp<String> = .copy,
         dateRegistered: NullableCopiableProp<Date> = .copy,
-        dateLastActive: CopiableProp<Date> = .copy,
+        dateLastActive: NullableCopiableProp<Date> = .copy,
         ordersCount: CopiableProp<Int> = .copy,
         totalSpend: CopiableProp<Decimal> = .copy,
         averageOrderValue: CopiableProp<Decimal> = .copy,

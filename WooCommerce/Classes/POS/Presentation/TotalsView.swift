@@ -35,7 +35,7 @@ struct TotalsView: View {
         }
         .task {
             /// This will prepare the reader for payment, if connected
-            await viewModel.totalsAppeared()
+            await viewModel.totalsViewWillAppear()
         }
         .sheet(isPresented: $viewModel.showsCreatingOrderSheet) {
             ProgressView {

@@ -125,7 +125,7 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
     }
 
     @MainActor
-    func totalsAppeared() async {
+    func totalsViewWillAppear() async {
         // Digging in to the connection viewmodel here is a bit of a shortcut, we should improve this.
         // TODO: Have our own subscription to the connected readers
         if cardReaderConnectionViewModel.connectionStatus == .connected {

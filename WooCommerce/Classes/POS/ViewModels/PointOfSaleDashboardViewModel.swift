@@ -22,13 +22,11 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
 
     @Published var showsCardReaderSheet: Bool = false
     @Published private(set) var cardPresentPaymentEvent: CardPresentPaymentEvent = .idle
-    @Published private(set) var cardPresentPaymentAlertViewModel: CardPresentPaymentAlertType?
-    @Published private(set) var cardPresentPaymentInlineMessage: CardPresentPaymentMessageType?
+    @Published private(set) var cardPresentPaymentAlertViewModel: PointOfSaleCardPresentPaymentAlertType?
+    @Published private(set) var cardPresentPaymentInlineMessage: PointOfSaleCardPresentPaymentMessageType?
     let cardReaderConnectionViewModel: CardReaderConnectionViewModel
 
     @Published var showsCreatingOrderSheet: Bool = false
-
-    @Published var showsFilterSheet: Bool = false
 
     enum OrderStage {
         case building
@@ -48,6 +46,10 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
         self.cardReaderConnectionViewModel = CardReaderConnectionViewModel(cardPresentPayment: cardPresentPaymentService)
         observeCardPresentPaymentEvents()
         observeItemsInCartForCartTotal()
+    }
+
+    var isCartCollapsed: Bool {
+        itemsInCart.isEmpty
     }
 
     var itemToScrollToWhenCartUpdated: CartItem? {
@@ -90,10 +92,6 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
         orderStage = .building
     }
 
-    func showFilters() {
-        showsFilterSheet = true
-    }
-
     private func calculateAmounts() {
         // TODO: this is just a starting point for this logic, to have something calculated on the fly
         if let formattedCartTotalPrice = formattedCartTotalPrice,
@@ -103,10 +101,6 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
             formattedOrderTotalTaxPrice = currencyFormatter.formatAmount(Decimal(taxAmount))
             formattedOrderTotalPrice = currencyFormatter.formatAmount(Decimal(totalAmount))
         }
-    }
-
-    var checkoutButtonDisabled: Bool {
-        return itemsInCart.isEmpty
     }
 
     func cardPaymentTapped() {
@@ -141,16 +135,18 @@ private extension PointOfSaleDashboardViewModel {
     func observeCardPresentPaymentEvents() {
         cardPresentPaymentService.paymentEventPublisher.assign(to: &$cardPresentPaymentEvent)
         cardPresentPaymentService.paymentEventPublisher
-            .map { event in
-                guard case let .showAlert(alertDetails) = event else {
+            .map { event -> PointOfSaleCardPresentPaymentAlertType? in
+                guard case let .show(eventDetails) = event,
+                      case let .alert(alertType) = eventDetails.pointOfSalePresentationStyle else {
                     return nil
                 }
-                return alertDetails
+                return alertType
             }
             .assign(to: &$cardPresentPaymentAlertViewModel)
         cardPresentPaymentService.paymentEventPublisher
-            .map { event in
-                guard case let .showPaymentMessage(messageType) = event else {
+            .map { event -> PointOfSaleCardPresentPaymentMessageType? in
+                guard case let .show(eventDetails) = event,
+                      case let .message(messageType) = eventDetails.pointOfSalePresentationStyle else {
                     return nil
                 }
                 return messageType
@@ -158,10 +154,16 @@ private extension PointOfSaleDashboardViewModel {
             .assign(to: &$cardPresentPaymentInlineMessage)
         cardPresentPaymentService.paymentEventPublisher.map { event in
             switch event {
-            case .idle, .showPaymentMessage:
+            case .idle:
                 return false
-            case .showAlert,
-                    .showReaderList,
+            case .show(let eventDetails):
+                switch eventDetails.pointOfSalePresentationStyle {
+                case .alert:
+                    return true
+                case .message, .none:
+                    return false
+                }
+            case .showReaderList,
                     .showOnboarding:
                 return true
             }

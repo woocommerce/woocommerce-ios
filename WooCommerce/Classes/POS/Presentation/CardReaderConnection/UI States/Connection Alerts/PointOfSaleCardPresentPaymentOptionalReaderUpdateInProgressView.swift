@@ -1,10 +1,10 @@
 import SwiftUI
 
-struct PointOfSaleCardPresentPaymentReaderUpdateInProgressView: View {
-    private let viewModel: PointOfSaleCardPresentPaymentUpdatingReaderAlertViewModel
+struct PointOfSaleCardPresentPaymentOptionalReaderUpdateInProgressView: View {
+    private let viewModel: PointOfSaleCardPresentPaymentOptionalReaderUpdateInProgressAlertViewModel
     @Environment(\.dismiss) private var dismiss
 
-    init(viewModel: PointOfSaleCardPresentPaymentUpdatingReaderAlertViewModel) {
+    init(viewModel: PointOfSaleCardPresentPaymentOptionalReaderUpdateInProgressAlertViewModel) {
         self.viewModel = viewModel
     }
 
@@ -15,9 +15,7 @@ struct PointOfSaleCardPresentPaymentReaderUpdateInProgressView: View {
             viewModel.image
 
             Text(viewModel.progressTitle)
-            if let progressSubtitle = viewModel.progressSubtitle {
-                Text(progressSubtitle)
-            }
+            Text(viewModel.progressSubtitle)
 
             Button(viewModel.cancelButtonTitle,
                    action: {
@@ -34,7 +32,7 @@ struct PointOfSaleCardPresentPaymentReaderUpdateInProgressView: View {
 
 #if DEBUG
 
-struct CardPresentPaymentReaderUpdateInProgressPreviewView: View {
+struct PointOfSaleCardPresentPaymentOptionalReaderUpdateInProgressPreviewView: View {
     @State var showsSheet = false
 
     var body: some View {
@@ -44,15 +42,15 @@ struct CardPresentPaymentReaderUpdateInProgressPreviewView: View {
             }
         }
         .sheet(isPresented: $showsSheet) {
-            PointOfSaleCardPresentPaymentReaderUpdateInProgressView(viewModel: PointOfSaleCardPresentPaymentUpdatingReaderAlertViewModel(
-                requiredUpdate: true, progress: 0.6, cancel: nil
+            PointOfSaleCardPresentPaymentOptionalReaderUpdateInProgressView(viewModel: .init(
+                progress: 0.6, cancel: nil
             ))
         }
     }
 }
 
 #Preview {
-    CardPresentPaymentReaderUpdateInProgressPreviewView()
+    PointOfSaleCardPresentPaymentOptionalReaderUpdateInProgressPreviewView()
 }
 
 #endif

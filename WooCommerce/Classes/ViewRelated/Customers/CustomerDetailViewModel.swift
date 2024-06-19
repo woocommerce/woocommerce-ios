@@ -1,9 +1,11 @@
 import Foundation
 import Yosemite
 import WooFoundation
+import protocol Storage.StorageManagerType
 
 final class CustomerDetailViewModel: ObservableObject {
     private let stores: StoresManager
+    private let storageManager: StorageManagerType
     private let siteID: Int64
     private let customerID: Int64
 
@@ -83,10 +85,18 @@ final class CustomerDetailViewModel: ObservableObject {
 
     /// Whether the view model is currently syncing customer data
     var isSyncing: Bool {
-        syncState == .syncing
+        state == .loading
     }
 
-    @Published private var syncState: CustomerSyncState = .unsynced
+    @Published private var state: State = .empty
+
+    // MARK: Storage
+
+    /// Results controller for stored customer details
+    private lazy var resultsController: ResultsController<StorageCustomer> = {
+        let predicate = NSPredicate(format: "siteID == %lld && customerID == %lld", siteID, customerID)
+        return ResultsController<StorageCustomer>(storageManager: storageManager, matching: predicate, sortedBy: [])
+    }()
 
     init(siteID: Int64,
          customerID: Int64,
@@ -102,8 +112,10 @@ final class CustomerDetailViewModel: ObservableObject {
          region: String?,
          city: String?,
          postcode: String?,
-         stores: StoresManager = ServiceLocator.stores) {
+         stores: StoresManager = ServiceLocator.stores,
+         storageManager: StorageManagerType = ServiceLocator.storageManager) {
         self.stores = stores
+        self.storageManager = storageManager
         self.siteID = siteID
         self.customerID = customerID
         self.name = name ?? Localization.guestName
@@ -118,11 +130,14 @@ final class CustomerDetailViewModel: ObservableObject {
         self.region = region
         self.city = city
         self.postcode = postcode
+
+        configureResultsController()
     }
 
     convenience init(customer: WCAnalyticsCustomer,
                      currencySettings: CurrencySettings = ServiceLocator.currencySettings,
-                     stores: StoresManager = ServiceLocator.stores) {
+                     stores: StoresManager = ServiceLocator.stores,
+                     storageManager: StorageManagerType = ServiceLocator.storageManager) {
         let currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
         self.init(siteID: customer.siteID,
                   customerID: customer.userID,
@@ -138,7 +153,8 @@ final class CustomerDetailViewModel: ObservableObject {
                   region: customer.region.nullifyIfEmptyOrWhitespace(),
                   city: customer.city.nullifyIfEmptyOrWhitespace(),
                   postcode: customer.postcode.nullifyIfEmptyOrWhitespace(),
-                  stores: stores)
+                  stores: stores,
+                  storageManager: storageManager)
     }
 
     /// Whether a new order can be created for the customer.
@@ -270,14 +286,22 @@ extension CustomerDetailViewModel {
     }
 }
 
-// MARK: Syncing
+// MARK: Syncing & Storage
 extension CustomerDetailViewModel {
 
-    /// Possible sync states for customer data
-    private enum CustomerSyncState {
-        case unsynced
-        case syncing
-        case synced
+    /// Possible loading states for customer data
+    private enum State {
+        case empty
+        case loading
+        case loaded
+    }
+
+    /// Updates the loading state if needed
+    private func updateStateIfNeeded(to newState: State) {
+        if newState == .loading && state == .loaded {
+            return // Don't transition to a loading state if there is data already loaded.
+        }
+        state = newState
     }
 
     /// Retrieves the customer billing and shipping details from remote and sets the corresponding addresses and phone number, for registered customers.
@@ -288,19 +312,46 @@ extension CustomerDetailViewModel {
             return
         }
 
-        syncState = .syncing
+        // Don't show loading state if we already have customer billing or shipping data to display
+        updateStateIfNeeded(to: .loading)
         let action = CustomerAction.retrieveCustomer(siteID: siteID, customerID: customerID) { [weak self] result in
             guard let self else { return }
             switch result {
-            case let .success(customer):
-                billing = customer.billing
-                shipping = customer.shipping
+            case .success:
+                refreshStoredResults()
             case let .failure(error):
                 DDLogError("⛔️ Error fetching customer details: \(error)")
             }
-            syncState = .synced
+            updateStateIfNeeded(to: .loaded)
         }
         stores.dispatch(action)
+    }
+
+    /// Performs initial fetch from storage and updates results.
+    private func configureResultsController() {
+        resultsController.onDidChangeContent = { [weak self] in
+            self?.refreshStoredResults()
+        }
+        resultsController.onDidResetContent = { [weak self] in
+            self?.refreshStoredResults()
+        }
+
+        refreshStoredResults()
+    }
+
+    /// Refreshes locally stored customer data that was synced previously.
+    private func refreshStoredResults() {
+        do {
+            try resultsController.performFetch()
+            guard let customer = resultsController.fetchedObjects.first else {
+                return
+            }
+            billing = customer.billing
+            shipping = customer.shipping
+            updateStateIfNeeded(to: .loaded)
+        } catch {
+            DDLogError("⛔️ Unable to fetch customer from storage: \(error)")
+        }
     }
 }
 

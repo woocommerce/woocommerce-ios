@@ -12,39 +12,45 @@ struct TotalsView: View {
     var body: some View {
         HStack {
             VStack(alignment: .leading) {
-                VStack(alignment: .leading, spacing: 32) {
-                    Spacer()
-                    HStack {
-                        VStack(spacing: 10) {
-                            priceFieldView(title: "Subtotal", formattedPrice: viewModel.formattedCartTotalPrice, shimmeringActive: false)
-                            Divider()
-                            priceFieldView(title: "Taxes", formattedPrice: viewModel.formattedOrderTotalTaxPrice, shimmeringActive: viewModel.isSyncingOrder)
-                            Divider()
-                            totalPriceView(formattedPrice: viewModel.formattedOrderTotalPrice)
-                        }
+                VStack {
+                    // payments info view
+                    cardReaderView
+                        .disabled(!viewModel.areAmountsFullyCalculated)
                         .padding()
-                    }
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 8)
-                            .stroke(Color.primaryText, lineWidth: 1)
-                    )
-                    if viewModel.showRecalculateButton {
-                        Button("Calculate amounts") {
-                            viewModel.calculateAmountsTapped()
-                        }
-                    }
+                    paymentsView
+                        .disabled(paymentButtonsDisabled)
+                        .padding()
                     Spacer()
-                    Divider()
+                    // totals amounts
+                    VStack(alignment: .leading, spacing: 32) {
+                        Spacer()
+                        HStack {
+                            VStack(spacing: 10) {
+                                priceFieldView(title: "Subtotal", formattedPrice: viewModel.formattedCartTotalPrice, shimmeringActive: false)
+                                Divider()
+                                priceFieldView(title: "Taxes", formattedPrice: viewModel.formattedOrderTotalTaxPrice, shimmeringActive: viewModel.isSyncingOrder)
+                                Divider()
+                                totalPriceView(formattedPrice: viewModel.formattedOrderTotalPrice)
+                            }
+                            .padding()
+                        }
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 8)
+                                .stroke(Color.primaryText, lineWidth: 1)
+                        )
+                        if viewModel.showRecalculateButton {
+                            Button("Calculate amounts") {
+                                viewModel.calculateAmountsTapped()
+                            }
+                        }
+                        Spacer()
+                    }
+                    .padding()
                 }
-                .padding()
-                Spacer()
-                cardReaderView
-                    .disabled(!viewModel.areAmountsFullyCalculated)
-                    .padding()
-                paymentsView
-                    .disabled(paymentButtonsDisabled)
-                    .padding()
-                Spacer()
+                .background(
+                    LinearGradient(gradient: Gradient(colors: [.clear, Color.purple]), startPoint: .top, endPoint: .bottom)
+                )
+                // action buttons
                 paymentsActionButtons
                     .padding()
             }

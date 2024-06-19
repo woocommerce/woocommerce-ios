@@ -658,9 +658,7 @@ final class EditableOrderViewModel: ObservableObject {
     }
 
     func addDiscountToOrderItem(item: OrderItem, discount: Decimal) {
-        guard let productInput = createUpdateProductInput(item: item,
-                                                          quantity: item.quantity,
-                                                          discount: discount) else {
+        guard let productInput = createUpdateProductInput(item: item, quantity: item.quantity, discount: discount) else {
             return
         }
 
@@ -1502,8 +1500,7 @@ private extension EditableOrderViewModel {
 
         for item in allOrderItemsToBeRemoved {
 
-            if let input = createUpdateProductInput(item: item,
-                                                    quantity: 0) {
+            if let input = createUpdateProductInput(item: item, quantity: 0) {
                 inputsToBeRemoved.append(input)
             }
 
@@ -2227,9 +2224,7 @@ private extension EditableOrderViewModel {
     }
 
     func addBundleConfigurationToOrderItem(item: OrderItem, bundleConfiguration: [BundledProductConfiguration]) {
-        guard let productInput = createUpdateProductInput(item: item,
-                                                          quantity: item.quantity,
-                                                          bundleConfiguration: bundleConfiguration) else {
+        guard let productInput = createUpdateProductInput(item: item, quantity: item.quantity, bundleConfiguration: bundleConfiguration) else {
             return
         }
         orderSynchronizer.setProduct.send(productInput)

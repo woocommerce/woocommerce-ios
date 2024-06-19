@@ -94,7 +94,7 @@ struct ProductRow: View {
 /// Subtype: SelectedState
 ///
 extension ProductRow {
-    enum SelectedState {
+    enum SelectedState: Equatable {
         case notSelected
         case partiallySelected
         case selected

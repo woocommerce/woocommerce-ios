@@ -76,6 +76,7 @@ struct ProductRow: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .contentShape(Rectangle())
+        .opacity(viewModel.rowOpacity)
         .accessibilityElement(children: .ignore)
         .accessibilityAddTraits(.isButton)
         .accessibilityLabel(viewModel.productAccessibilityLabel)
@@ -84,22 +85,24 @@ struct ProductRow: View {
 
     private var checkbox: some View {
         Image(uiImage: viewModel.selectedState.image)
+            .resizable()
             .frame(width: Layout.checkImageSize * scale, height: Layout.checkImageSize * scale)
-            .foregroundColor(isEnabled ? .init(UIColor.brand) : .gray)
+            .foregroundColor(isEnabled ? Color(.brand) : .gray)
     }
 }
 
 /// Subtype: SelectedState
 ///
 extension ProductRow {
-    enum SelectedState {
+    enum SelectedState: Equatable {
         case notSelected
         case partiallySelected
         case selected
+        case unsupported(reason: String)
 
         var image: UIImage {
             switch self {
-            case .notSelected:
+            case .notSelected, .unsupported:
                 return .checkEmptyCircleImage
             case .selected:
                 return .checkCircleImage.withRenderingMode(.alwaysTemplate)

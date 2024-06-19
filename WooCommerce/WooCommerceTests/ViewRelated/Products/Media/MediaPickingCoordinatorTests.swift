@@ -24,7 +24,8 @@ final class MediaPickingCoordinatorTests: XCTestCase {
     func test_showMediaPicker_tracks_correct_event_and_properties() throws {
         // Given
         let coordinator = MediaPickingCoordinator(siteID: siteID,
-                                                  allowsMultipleImages: true,
+                                                  imagesOnly: true,
+                                                  allowsMultipleSelections: true,
                                                   flow: .productFromImageForm,
                                                   analytics: analytics,
                                                   onCameraCaptureCompletion: { _, _ in },

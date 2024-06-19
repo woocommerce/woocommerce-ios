@@ -220,6 +220,7 @@ private extension BlazeCampaignCreationCoordinator {
         let controller: ProductSelectorViewController = {
             let productSelectorViewModel = ProductSelectorViewModel(
                 siteID: siteID,
+                source: .blaze,
                 onProductSelectionStateChanged: { [weak self] product, _ in
                     guard let self else { return }
 
@@ -233,7 +234,6 @@ private extension BlazeCampaignCreationCoordinator {
                 }
             )
             return ProductSelectorViewController(configuration: .configurationForBlaze,
-                                                 source: .blaze,
                                                  viewModel: productSelectorViewModel)
         }()
 

@@ -61,23 +61,6 @@ final class CardPresentModalError: CardPresentPaymentsModalViewModel {
     func didTapAuxiliaryButton(in viewController: UIViewController?) { }
 }
 
-// CardPresentPaymentsModalViewModelActions
-extension CardPresentModalError {
-    var primaryButtonViewModel: CardPresentPaymentsModalButtonViewModel? {
-        CardPresentPaymentsModalButtonViewModel(
-            title: primaryButtonTitle,
-            actionHandler: primaryAction)
-    }
-
-    var secondaryButtonViewModel: CardPresentPaymentsModalButtonViewModel? {
-        // TODO: dismissCompletion is not enough for dismissal.
-        // Find another way to dismiss the alert here. We may need a specialised alert provider to fix this one.
-        CardPresentPaymentsModalButtonViewModel(
-            title: secondaryButtonTitle,
-            actionHandler: dismissCompletion)
-    }
-}
-
 private extension CardPresentModalError {
     enum Localization {
         static func paymentFailed(transactionType: CardPresentTransactionType) -> String {

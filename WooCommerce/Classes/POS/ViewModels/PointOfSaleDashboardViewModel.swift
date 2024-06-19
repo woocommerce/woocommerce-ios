@@ -209,9 +209,13 @@ import struct Yosemite.Order
 private extension PointOfSaleDashboardViewModel {
     private func createOrUpdateTestOrder() async throws -> Order {
         if let order {
-            return try await update(order: order, amount: formattedOrderTotalPrice ?? "15.00")
+            let updatedOrder = try await update(order: order, amount: formattedOrderTotalPrice ?? "15.00")
+            self.order = updatedOrder
+            return updatedOrder
         } else {
-            return try await createTestOrder(amount: formattedOrderTotalPrice ?? "15.00")
+            let order = try await createTestOrder(amount: formattedOrderTotalPrice ?? "15.00")
+            self.order = order
+            return order
         }
     }
 

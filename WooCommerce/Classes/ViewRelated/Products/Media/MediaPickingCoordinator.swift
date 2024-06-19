@@ -19,17 +19,20 @@ final class MediaPickingCoordinator {
     }()
 
     private lazy var deviceMediaLibraryPicker: DeviceMediaLibraryPicker = {
-        return DeviceMediaLibraryPicker(allowsMultipleImages: allowsMultipleImages, onCompletion: onDeviceMediaLibraryPickerCompletion)
+        return DeviceMediaLibraryPicker(imagesOnly: imagesOnly,
+                                        allowsMultipleSelections: allowsMultipleSelections,
+                                        onCompletion: onDeviceMediaLibraryPickerCompletion)
     }()
 
     private lazy var wpMediaLibraryPicker: WordPressMediaLibraryPickerCoordinator =
         .init(siteID: siteID,
-              imagesOnly: true,
-              allowsMultipleSelections: allowsMultipleImages,
+              imagesOnly: imagesOnly,
+              allowsMultipleSelections: allowsMultipleSelections,
               onCompletion: onWPMediaPickerCompletion)
 
     private let siteID: Int64
-    private let allowsMultipleImages: Bool
+    private let imagesOnly: Bool
+    private let allowsMultipleSelections: Bool
     private let flow: Flow
     private let analytics: Analytics
     private let onCameraCaptureCompletion: CameraCaptureCoordinator.Completion
@@ -37,14 +40,16 @@ final class MediaPickingCoordinator {
     private let onWPMediaPickerCompletion: WordPressMediaLibraryPickerViewController.Completion
 
     init(siteID: Int64,
-         allowsMultipleImages: Bool,
+         imagesOnly: Bool,
+         allowsMultipleSelections: Bool,
          flow: Flow,
          analytics: Analytics = ServiceLocator.analytics,
          onCameraCaptureCompletion: @escaping CameraCaptureCoordinator.Completion,
          onDeviceMediaLibraryPickerCompletion: @escaping DeviceMediaLibraryPicker.Completion,
          onWPMediaPickerCompletion: @escaping WordPressMediaLibraryPickerViewController.Completion) {
         self.siteID = siteID
-        self.allowsMultipleImages = allowsMultipleImages
+        self.imagesOnly = imagesOnly
+        self.allowsMultipleSelections = allowsMultipleSelections
         self.flow = flow
         self.analytics = analytics
         self.onCameraCaptureCompletion = onCameraCaptureCompletion

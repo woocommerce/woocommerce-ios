@@ -22,18 +22,24 @@ struct TotalsView: View {
                 .padding()
                 Spacer()
                 cardReaderView
+                    .font(.title)
                     .padding()
-                paymentsView
-                    .padding()
+                // Temporarily removed because the CardReaderView is doing this job right now.
+//                paymentsView
+//                    .padding()
                 Spacer()
                 paymentsActionButtons
                     .padding()
             }
             Spacer()
         }
+        .task {
+            /// This will prepare the reader for payment, if connected
+            await viewModel.totalsViewWillAppear()
+        }
         .sheet(isPresented: $viewModel.showsCreatingOrderSheet) {
             ProgressView {
-                Text("Creating $15 test order")
+                Text("Creating order")
             }
         }
     }
@@ -128,7 +134,11 @@ private extension TotalsView {
     @ViewBuilder private var cardReaderView: some View {
         switch viewModel.cardReaderConnectionViewModel.connectionStatus {
         case .connected:
-            Text("Card reader connected placeholder view")
+            if let inlinePaymentMessage = viewModel.cardPresentPaymentInlineMessage {
+                PointOfSaleCardPresentPaymentInLineMessage(messageType: inlinePaymentMessage)
+            } else {
+                Text("Reader connected")
+            }
         case .disconnected:
             Button(action: viewModel.cardPaymentTapped) {
                 Text("Collect Payment")

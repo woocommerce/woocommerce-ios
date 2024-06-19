@@ -2,7 +2,6 @@ import UIKit
 
 typealias CardPresentPaymentsModalViewModel = CardPresentPaymentsModalViewModelContent
     & CardPresentPaymentsModalViewModelUIKitActions
-    & CardPresentPaymentsModalViewModelActions
 
 /// Abstracts configuration and contents of the modal screens presented
 /// during operations related to Card Present Payments
@@ -59,34 +58,6 @@ protocol CardPresentPaymentsModalViewModelUIKitActions {
     /// Executes action associated to a tap in the view controller auxiliary button
     /// - Parameter viewController: usually the view controller sending the tap
     func didTapAuxiliaryButton(in viewController: UIViewController?)
-}
-
-protocol CardPresentPaymentsModalViewModelActions {
-    var primaryButtonViewModel: CardPresentPaymentsModalButtonViewModel? { get }
-    var secondaryButtonViewModel: CardPresentPaymentsModalButtonViewModel? { get }
-    var auxiliaryButtonViewModel: CardPresentPaymentsModalButtonViewModel? { get }
-}
-
-/// This is a naive fallback use of the existing UIKit handlers, without passing a view controller.
-/// In general, we should have specific SwiftUI handlers for each view model, but this helps us move forward quickly.
-extension CardPresentPaymentsModalViewModelUIKitActions where Self: CardPresentPaymentsModalViewModelActions {
-    var primaryButtonViewModel: CardPresentPaymentsModalButtonViewModel? {
-        CardPresentPaymentsModalButtonViewModel(title: primaryButtonTitle) {
-            didTapPrimaryButton(in: nil)
-        }
-    }
-
-    var secondaryButtonViewModel: CardPresentPaymentsModalButtonViewModel? {
-        CardPresentPaymentsModalButtonViewModel(title: secondaryButtonTitle) {
-            didTapSecondaryButton(in: nil)
-        }
-    }
-
-    var auxiliaryButtonViewModel: CardPresentPaymentsModalButtonViewModel? {
-        CardPresentPaymentsModalButtonViewModel(title: auxiliaryButtonTitle) {
-            didTapAuxiliaryButton(in: nil)
-        }
-    }
 }
 
 /// The type of card-present transaction.

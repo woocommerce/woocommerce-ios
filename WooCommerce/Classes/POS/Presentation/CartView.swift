@@ -11,9 +11,11 @@ struct CartView: View {
         VStack {
             HStack {
                 Text("Cart")
+                    .foregroundColor(Color.posPrimaryTexti3)
                 Spacer()
                 if let temsInCartLabel = viewModel.itemsInCartLabel {
                     Text(temsInCartLabel)
+                        .foregroundColor(Color.posPrimaryTexti3)
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -28,7 +30,7 @@ struct CartView: View {
                             viewModel.removeItemFromCart(cartItem)
                         }
                         .id(cartItem.id)
-                        .background(Color.tertiaryBackground)
+                        .background(Color.posBackgroundGreyi3)
                         .padding(.horizontal, 32)
                     }
                 }
@@ -52,21 +54,13 @@ struct CartView: View {
             }
         }
         .frame(maxWidth: .infinity)
-        .background(Color.secondaryBackground)
+        .background(Color.posBackgroundWhitei3)
     }
 }
 
 /// View sub-components
 ///
 private extension CartView {
-    private var checkoutButtonForegroundColor: Color {
-        return viewModel.checkoutButtonDisabled ? Color.gray : Color.primaryBackground
-    }
-
-    private var checkoutButtonBackgroundColor: Color {
-        return viewModel.checkoutButtonDisabled ? Color.white.opacity(0.5) : Color.white
-    }
-
     var checkoutButton: some View {
         Button {
             viewModel.submitCart()
@@ -77,12 +71,11 @@ private extension CartView {
                 Spacer()
             }
         }
-        .disabled(viewModel.checkoutButtonDisabled)
         .padding(.all, 20)
         .frame(maxWidth: .infinity, idealHeight: 120)
         .font(.title)
-        .foregroundColor(checkoutButtonForegroundColor)
-        .background(checkoutButtonBackgroundColor)
+        .foregroundColor(Color.primaryBackground)
+        .background(Color.init(uiColor: .wooCommercePurple(.shade60)))
         .cornerRadius(10)
     }
 

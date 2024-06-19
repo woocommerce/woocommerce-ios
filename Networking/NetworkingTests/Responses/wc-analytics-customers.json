@@ -68,13 +68,13 @@
             "state":"CA",
             "postcode":"94103",
             "date_registered":null,
-            "date_last_active":"2022-07-12T08:36:54",
+            "date_last_active":null,
             "date_last_order":"2022-07-12 08:36:54",
             "orders_count":1,
             "total_spend":10,
             "avg_order_value":10,
             "date_registered_gmt":null,
-            "date_last_active_gmt":"2022-07-12T08:36:54"
+            "date_last_active_gmt":null
         }
     ]
 }

@@ -13,7 +13,7 @@ struct ItemListView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.vertical, 8)
                 .font(.title)
-                .foregroundColor(Color.white)
+                .foregroundColor(Color.posPrimaryTexti3)
             ScrollView {
                 ForEach(viewModel.items, id: \.productID) { item in
                     Button(action: {
@@ -25,7 +25,7 @@ struct ItemListView: View {
             }
         }
         .padding(.horizontal, 32)
-        .background(Color.secondaryBackground)
+        .background(Color.posBackgroundGreyi3)
     }
 }
 

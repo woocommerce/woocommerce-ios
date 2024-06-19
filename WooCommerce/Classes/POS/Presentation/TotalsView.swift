@@ -12,59 +12,36 @@ struct TotalsView: View {
     var body: some View {
         HStack {
             VStack(alignment: .leading) {
-                VStack {
-                    // payments info view
-                    cardReaderView
-                        .disabled(!viewModel.areAmountsFullyCalculated)
-                        .padding()
-                    paymentsView
-                        .disabled(paymentButtonsDisabled)
-                        .padding()
-                    Spacer()
-                    // totals amounts
-                    VStack(alignment: .leading, spacing: 32) {
-                        Spacer()
-                        HStack {
-                            VStack(spacing: 10) {
-                                priceFieldView(title: "Subtotal", formattedPrice: viewModel.formattedCartTotalPrice, shimmeringActive: false)
-                                Divider()
-                                priceFieldView(title: "Taxes", formattedPrice: viewModel.formattedOrderTotalTaxPrice, shimmeringActive: viewModel.isSyncingOrder)
-                                Divider()
-                                totalPriceView(formattedPrice: viewModel.formattedOrderTotalPrice)
-                            }
-                            .padding()
-                        }
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 8)
-                                .stroke(Color.primaryText, lineWidth: 1)
-                        )
-                        if viewModel.showRecalculateButton {
-                            Button("Calculate amounts") {
-                                viewModel.calculateAmountsTapped()
-                            }
-                        }
-                        Spacer()
+                VStack(alignment: .leading, spacing: 32) {
+                    HStack(spacing: 40) {
+                        priceFieldView(title: "Subtotal", formattedPrice: viewModel.formattedCartTotalPrice ?? "-")
+                        priceFieldView(title: "Taxes", formattedPrice: viewModel.formattedOrderTotalTaxPrice ?? "-")
                     }
-                    .padding()
+                    totalPriceView(formattedPrice: viewModel.formattedOrderTotalPrice ?? "-")
                 }
-                .background(
-                    LinearGradient(gradient: Gradient(colors: [.clear, Color.purple]), startPoint: .top, endPoint: .bottom)
-                )
-                // action buttons
+                .padding()
+                Spacer()
+                cardReaderView
+                    .font(.title)
+                    .padding()
+                // Temporarily removed because the CardReaderView is doing this job right now.
+//                paymentsView
+//                    .padding()
+                Spacer()
                 paymentsActionButtons
                     .padding()
             }
             Spacer()
         }
+        .task {
+            /// This will prepare the reader for payment, if connected
+            await viewModel.totalsViewWillAppear()
+        }
         .sheet(isPresented: $viewModel.showsCreatingOrderSheet) {
             ProgressView {
-                Text("Creating $15 test order")
+                Text("Creating order")
             }
         }
-    }
-
-    private var paymentButtonsDisabled: Bool {
-        return !viewModel.areAmountsFullyCalculated
     }
 }
 
@@ -126,7 +103,6 @@ private extension TotalsView {
     private var newTransactionButton: some View {
         Button("New transaction") {
             paymentState = .acceptingCard
-            viewModel.startNewTransaction()
         }
         .padding(30)
         .font(.title)
@@ -158,7 +134,11 @@ private extension TotalsView {
     @ViewBuilder private var cardReaderView: some View {
         switch viewModel.cardReaderConnectionViewModel.connectionStatus {
         case .connected:
-            Text("Card reader connected placeholder view")
+            if let inlinePaymentMessage = viewModel.cardPresentPaymentInlineMessage {
+                PointOfSaleCardPresentPaymentInLineMessage(messageType: inlinePaymentMessage)
+            } else {
+                Text("Reader connected")
+            }
         case .disconnected:
             Button(action: viewModel.cardPaymentTapped) {
                 Text("Collect Payment")
@@ -166,43 +146,32 @@ private extension TotalsView {
         }
     }
 
-    @ViewBuilder func priceFieldView(title: String, formattedPrice: String?, shimmeringActive: Bool) -> some View {
-        HStack(alignment: .center, spacing: .zero) {
+    @ViewBuilder func priceFieldView(title: String, formattedPrice: String) -> some View {
+        VStack(alignment: .leading, spacing: .zero) {
             Text(title)
-                .font(Font.system(size: 20))
-                .fontWeight(.semibold)
-            Spacer()
-            Text(formattedPrice ?? "-----")
-                .font(Font.system(size: 20))
-                .redacted(reason: formattedPrice == nil ? [.placeholder] : [])
-                .shimmering(active: shimmeringActive)
+            Text(formattedPrice)
+                .font(.title2)
+                .fontWeight(.medium)
         }
         .foregroundColor(Color.primaryText)
     }
 
-    @ViewBuilder func totalPriceView(formattedPrice: String?) -> some View {
-        HStack(alignment: .center, spacing: .zero) {
+    @ViewBuilder func totalPriceView(formattedPrice: String) -> some View {
+        VStack(alignment: .leading, spacing: .zero) {
             Text("Total")
-                .font(Font.system(size: 21))
-                .fontWeight(.semibold)
-            Spacer()
-            Text(formattedPrice ?? "-----")
-                .font(Font.system(size: 40))
+                .font(.title2)
+                .fontWeight(.medium)
+            Text(formattedPrice)
+                .font(.largeTitle)
                 .bold()
-                .redacted(reason: formattedPrice == nil ? [.placeholder] : [])
-                .shimmering(active: viewModel.isSyncingOrder)
         }
         .foregroundColor(Color.primaryText)
     }
 }
 
 #if DEBUG
-import class Yosemite.POSOrderService
-import enum Yosemite.Credentials
 #Preview {
     TotalsView(viewModel: .init(items: [],
-                                cardPresentPaymentService: CardPresentPaymentPreviewService(),
-                                orderService: POSOrderService(siteID: Int64.min,
-                                                                      credentials: Credentials(authToken: "token"))))
+                                cardPresentPaymentService: CardPresentPaymentPreviewService()))
 }
 #endif

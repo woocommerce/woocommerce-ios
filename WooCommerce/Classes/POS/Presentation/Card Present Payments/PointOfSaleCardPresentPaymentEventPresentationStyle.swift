@@ -69,16 +69,37 @@ extension CardPresentPaymentEventDetails {
                     endSearchAction: endSearch)))
 
         case .updateProgress(let requiredUpdate, let progress, let cancelUpdate):
-            return .alert(.updatingReader(viewModel: CardPresentPaymentUpdatingReaderAlertViewModel()))
+                if progress == 1.0 {
+                    return .alert(.readerUpdateCompletion(viewModel: .init()))
+                } else {
+                    return requiredUpdate ?
+                        .alert(.requiredReaderUpdateInProgress(
+                            viewModel: PointOfSaleCardPresentPaymentRequiredReaderUpdateInProgressAlertViewModel(
+                                progress: progress,
+                                cancel: cancelUpdate))) :
+                        .alert(.optionalReaderUpdateInProgress(
+                            viewModel: PointOfSaleCardPresentPaymentOptionalReaderUpdateInProgressAlertViewModel(
+                                progress: progress,
+                                cancel: cancelUpdate)))
+
+                }
 
         case .updateFailed(let tryAgain, let cancelUpdate):
-            return .alert(.updateFailed(viewModel: CardPresentPaymentReaderUpdateFailedAlertViewModel()))
+            return .alert(.updateFailed(
+                viewModel: PointOfSaleCardPresentPaymentReaderUpdateFailedAlertViewModel(
+                    retryAction: tryAgain,
+                    cancelUpdateAction: cancelUpdate)))
 
         case .updateFailedNonRetryable(let cancelUpdate):
-            return .alert(.updateFailed(viewModel: CardPresentPaymentReaderUpdateFailedAlertViewModel()))
+            return .alert(.updateFailedNonRetryable(
+                viewModel: PointOfSaleCardPresentPaymentReaderUpdateFailedNonRetryableAlertViewModel(
+                    cancelUpdateAction: cancelUpdate)))
 
         case .updateFailedLowBattery(let batteryLevel, let cancelUpdate):
-            return .alert(.updateFailed(viewModel: CardPresentPaymentReaderUpdateFailedAlertViewModel()))
+            return .alert(.updateFailedLowBattery(
+                viewModel: PointOfSaleCardPresentPaymentReaderUpdateFailedLowBatteryAlertViewModel(
+                    batteryLevel: batteryLevel,
+                    cancelUpdateAction: cancelUpdate)))
 
         /// Payment messages
         case .preparingForPayment(cancelPayment: let cancelPayment):

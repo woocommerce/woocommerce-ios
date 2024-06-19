@@ -53,26 +53,6 @@ final class CardPresentModalSuccessWithoutEmail: CardPresentPaymentsModalViewMod
     func didTapAuxiliaryButton(in viewController: UIViewController?) {}
 }
 
-// CardPresentPaymentsModalViewModelActions
-/// In the adapted version of the card reader, receipt presentation can be separated from the payment alerts.
-/// The existing print/email handlers won't work directly, as they rely on being able to present a receipt view controller
-/// As a step towards this, we'll only provide the "Save and continue" button here.
-// TODO: Consider changing the text of this button
-extension CardPresentModalSuccessWithoutEmail {
-    var primaryButtonViewModel: CardPresentPaymentsModalButtonViewModel? {
-        CardPresentPaymentsModalButtonViewModel(title: Localization.saveReceiptAndContinue,
-                                                actionHandler: noReceiptAction)
-    }
-
-    var secondaryButtonViewModel: CardPresentPaymentsModalButtonViewModel? {
-        nil
-    }
-
-    var auxiliaryButtonViewModel: CardPresentPaymentsModalButtonViewModel? {
-        nil
-    }
-}
-
 private extension CardPresentModalSuccessWithoutEmail {
     enum Localization {
         static let paymentSuccessful = NSLocalizedString(

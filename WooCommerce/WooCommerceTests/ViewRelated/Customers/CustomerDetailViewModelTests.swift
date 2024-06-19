@@ -94,7 +94,7 @@ final class CustomerDetailViewModelTests: XCTestCase {
         assertEqual(billing.phone, viewModel.phone)
     }
 
-    func test_it_updates_syncState_during_and_after_sync() {
+    func test_it_updates_isSyncing_during_and_after_sync() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let vm = CustomerDetailViewModel(customer: sampleCustomer(), stores: stores)
@@ -118,6 +118,35 @@ final class CustomerDetailViewModelTests: XCTestCase {
         // Then
         XCTAssertFalse(isSyncingOnInit)
         XCTAssertTrue(isSyncingDuringAction)
+        XCTAssertFalse(vm.isSyncing)
+    }
+
+    func test_isSyncing_not_true_if_data_already_loaded() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let storage = MockStorageManager()
+        let customer = Customer.fake().copy(customerID: sampleCustomer().userID, billing: Address.fake())
+        storage.insertSampleCustomer(readOnlyCustomer: customer)
+        let vm = CustomerDetailViewModel(customer: sampleCustomer(), stores: stores, storageManager: storage)
+        let isSyncingOnInit = vm.isSyncing
+
+        // When
+        let isSyncingDuringAction: Bool = waitFor { promise in
+            stores.whenReceivingAction(ofType: CustomerAction.self) { action in
+                switch action {
+                case let .retrieveCustomer(_, _, onCompletion):
+                    promise(vm.isSyncing)
+                    onCompletion(.success(customer))
+                default:
+                    XCTFail("Received unexpected action")
+                }
+            }
+            vm.syncCustomerAddressData()
+        }
+
+        // Then
+        XCTAssertFalse(isSyncingOnInit)
+        XCTAssertFalse(isSyncingDuringAction)
         XCTAssertFalse(vm.isSyncing)
     }
 

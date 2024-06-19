@@ -85,10 +85,10 @@ final class CustomerDetailViewModel: ObservableObject {
 
     /// Whether the view model is currently syncing customer data
     var isSyncing: Bool {
-        syncState == .syncing
+        state == .loading
     }
 
-    @Published private var syncState: CustomerSyncState = .unsynced
+    @Published private var state: State = .empty
 
     // MARK: Storage
 
@@ -289,11 +289,19 @@ extension CustomerDetailViewModel {
 // MARK: Syncing & Storage
 extension CustomerDetailViewModel {
 
-    /// Possible sync states for customer data
-    private enum CustomerSyncState {
-        case unsynced
-        case syncing
-        case synced
+    /// Possible loading states for customer data
+    private enum State {
+        case empty
+        case loading
+        case loaded
+    }
+
+    /// Updates the loading state if needed
+    private func updateStateIfNeeded(to newState: State) {
+        if newState == .loading && state == .loaded {
+            return // Don't transition to a loading state if there is data already loaded.
+        }
+        state = newState
     }
 
     /// Retrieves the customer billing and shipping details from remote and sets the corresponding addresses and phone number, for registered customers.
@@ -305,7 +313,7 @@ extension CustomerDetailViewModel {
         }
 
         // Don't show loading state if we already have customer billing or shipping data to display
-        syncState = billing == nil && shipping == nil ? .syncing : .synced
+        updateStateIfNeeded(to: .loading)
         let action = CustomerAction.retrieveCustomer(siteID: siteID, customerID: customerID) { [weak self] result in
             guard let self else { return }
             switch result {
@@ -314,7 +322,7 @@ extension CustomerDetailViewModel {
             case let .failure(error):
                 DDLogError("⛔️ Error fetching customer details: \(error)")
             }
-            syncState = .synced
+            updateStateIfNeeded(to: .loaded)
         }
         stores.dispatch(action)
     }
@@ -340,6 +348,7 @@ extension CustomerDetailViewModel {
             }
             billing = customer.billing
             shipping = customer.shipping
+            updateStateIfNeeded(to: .loaded)
         } catch {
             DDLogError("⛔️ Unable to fetch customer from storage: \(error)")
         }

@@ -39,7 +39,7 @@ struct TotalsView: View {
         }
         .sheet(isPresented: $viewModel.showsCreatingOrderSheet) {
             ProgressView {
-                Text("Creating $15 test order")
+                Text("Creating order")
             }
         }
     }

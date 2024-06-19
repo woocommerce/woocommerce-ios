@@ -110,7 +110,14 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
     func cardPaymentTapped() {
         Task { @MainActor in
             showsCreatingOrderSheet = true
-            let order = try await createTestOrder(amount: formattedOrderTotalPrice ?? "15.00")
+
+            // Once we have finalised order creation/update, this check shouldn't be required.
+            // Instead, we should have whatever code does the order creation/update kick off this connection process.
+            guard let order = try? await createOrUpdateTestOrder() else {
+                showsCardReaderSheet = false
+                return DDLogError("Error creating or updating order")
+            }
+
             showsCreatingOrderSheet = false
             try await collectPayment(for: order)
         }

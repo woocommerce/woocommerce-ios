@@ -91,9 +91,6 @@ public protocol POSOrderServiceProtocol {
     ///   - posOrder: POS order.
     /// - Returns: Order created from posOrder data.
     func order(from posOrder: POSOrder) -> Order
-
-    /// Creates an empty autodraft order
-    func createAutoDraftOrder() -> Order
 }
 
 public final class POSOrderService: POSOrderServiceProtocol {
@@ -116,13 +113,7 @@ public final class POSOrderService: POSOrderServiceProtocol {
     // MARK: - Protocol conformance
 
     public func syncOrder(cart: [POSCartItem], order posOrder: POSOrder?, allProducts: [POSItem]) async throws -> POSOrder {
-        let initialOrder: Order
-        if let posOrder {
-            initialOrder = order(from: posOrder)
-        }
-        else {
-            initialOrder = createAutoDraftOrder()
-        }
+        let initialOrder: Order = createInitialOrder(from: posOrder)
 
         let order = updateOrder(initialOrder, cart: cart, allProducts: allProducts)
         let syncedOrder: Order
@@ -132,6 +123,16 @@ public final class POSOrderService: POSOrderServiceProtocol {
             syncedOrder = try await ordersRemote.createPOSOrder(siteID: siteID, order: order, fields: [.items, .status])
         }
         return POSOrder(order: syncedOrder)
+    }
+
+    private func createInitialOrder(from posOrder: POSOrder?) -> Order {
+        if let posOrder {
+            return order(from: posOrder)
+        }
+        else {
+            //    TODO: handle WC version under 6.3 when auto-draft status is unavailable as in `NewOrderInitialStatusResolver`
+            return OrderFactory.emptyNewOrder.copy(siteID: siteID, status: .autoDraft)
+        }
     }
 
     public func updateOrderStatus(posOrder: POSOrder, status: OrderStatusEnum) async throws -> POSOrder {
@@ -149,11 +150,6 @@ public final class POSOrderService: POSOrderServiceProtocol {
                                                total: posOrder.total,
                                                totalTax: posOrder.totalTax,
                                                items: posOrder.items.map { $0.toOrderItem() })
-    }
-
-    public func createAutoDraftOrder() -> Order {
-        //    TODO: handle WC version under 6.3 when auto-draft status is unavailable as in `NewOrderInitialStatusResolver`
-        return OrderFactory.emptyNewOrder.copy(siteID: siteID, status: .autoDraft)
     }
 }
 

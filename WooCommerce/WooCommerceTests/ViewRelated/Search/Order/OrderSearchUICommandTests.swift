@@ -117,7 +117,7 @@ final class OrderSearchUICommandTests: XCTestCase {
         let selectedOrder = waitFor { promise in
             let command = OrderSearchUICommand(siteID: self.siteID, onSelectSearchResult: { order, _ in
                 promise(order)
-            }, storageManager: storageManager)
+            }, storageManager: self.storageManager)
             command.didSelectSearchResult(model: order, from: .init(), reloadData: {}, updateActionButton: {})
         }
 
@@ -131,17 +131,6 @@ final class OrderSearchUICommandTests: XCTestCase {
             storageManager.insertOrderStatus(name: status.rawValue)
         }
         storageManager.viewStorage.saveIfNeeded()
-    }
-
-    private func waitFor<T>(timeout: TimeInterval = 1, _ completion: (_ promise: @escaping (T) -> Void) -> Void) -> T? {
-        var result: T?
-        let expectation = self.expectation(description: "Waiting for completion")
-        completion {
-            result = $0
-            expectation.fulfill()
-        }
-        waitForExpectations(timeout: timeout, handler: nil)
-        return result
     }
 }
 

@@ -2144,6 +2144,8 @@ private extension EditableOrderViewModel {
         ProductInputTransformer.createUpdateProductInput(item: item,
                                                          childItems: childItems,
                                                          quantity: quantity,
+                                                         discount: discount,
+                                                         bundleConfiguration: bundleConfiguration,
                                                          allProducts: Array(allProducts),
                                                          allProductVariations: allProductVariations,
                                                          defaultDiscount: currentDiscount(on: item))

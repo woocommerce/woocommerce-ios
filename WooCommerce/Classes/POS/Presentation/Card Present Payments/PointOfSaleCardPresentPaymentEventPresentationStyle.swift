@@ -69,7 +69,20 @@ extension CardPresentPaymentEventDetails {
                     endSearchAction: endSearch)))
 
         case .updateProgress(let requiredUpdate, let progress, let cancelUpdate):
-            return .alert(.updatingReader(viewModel: CardPresentPaymentUpdatingReaderAlertViewModel()))
+                if progress == 1.0 {
+                    return .alert(.readerUpdateCompletion(viewModel: .init()))
+                } else {
+                    return requiredUpdate ?
+                        .alert(.requiredReaderUpdateInProgress(
+                            viewModel: PointOfSaleCardPresentPaymentRequiredReaderUpdateInProgressAlertViewModel(
+                                progress: progress,
+                                cancel: cancelUpdate))) :
+                        .alert(.optionalReaderUpdateInProgress(
+                            viewModel: PointOfSaleCardPresentPaymentOptionalReaderUpdateInProgressAlertViewModel(
+                                progress: progress,
+                                cancel: cancelUpdate)))
+
+                }
 
         case .updateFailed(let tryAgain, let cancelUpdate):
             return .alert(.updateFailed(viewModel: CardPresentPaymentReaderUpdateFailedAlertViewModel()))

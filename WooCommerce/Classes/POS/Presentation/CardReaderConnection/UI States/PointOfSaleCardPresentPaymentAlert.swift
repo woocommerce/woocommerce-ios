@@ -17,8 +17,12 @@ struct PointOfSaleCardPresentPaymentAlert: View {
             PointOfSaleCardPresentPaymentBluetoothRequiredAlertView(viewModel: alertViewModel)
         case .foundReader(let alertViewModel):
             PointOfSaleCardPresentPaymentFoundReadersView(viewModel: alertViewModel)
-        case .updatingReader(let alertViewModel):
-            CardPresentPaymentReaderUpdateInProgressView(viewModel: alertViewModel)
+        case .requiredReaderUpdateInProgress(let alertViewModel):
+            PointOfSaleCardPresentPaymentRequiredReaderUpdateInProgressView(viewModel: alertViewModel)
+        case .optionalReaderUpdateInProgress(let alertViewModel):
+            PointOfSaleCardPresentPaymentOptionalReaderUpdateInProgressView(viewModel: alertViewModel)
+        case .readerUpdateCompletion(let alertViewModel):
+            PointOfSaleCardPresentPaymentReaderUpdateCompletionView(viewModel: alertViewModel)
         case .updateFailed(let alertViewModel):
             CardPresentPaymentReaderUpdateFailedView(viewModel: alertViewModel)
         case .connectingToReader(let alertViewModel):

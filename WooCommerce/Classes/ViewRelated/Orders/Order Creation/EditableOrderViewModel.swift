@@ -625,8 +625,7 @@ final class EditableOrderViewModel: ObservableObject {
     /// - Parameter item: Item to remove from the order
     ///
     func removeItemFromOrder(_ item: OrderItem) {
-        guard let input = createUpdateProductInput(item: item,
-                                                   quantity: 0) else { return }
+        guard let input = createUpdateProductInput(item: item, quantity: 0) else { return }
         orderSynchronizer.setProduct.send(input)
 
         if item.variationID != 0 {

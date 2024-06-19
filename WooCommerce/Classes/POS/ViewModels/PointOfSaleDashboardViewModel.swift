@@ -2,6 +2,11 @@ import SwiftUI
 import protocol Yosemite.POSItem
 import class WooFoundation.CurrencyFormatter
 import class WooFoundation.CurrencySettings
+import protocol Yosemite.POSOrderServiceProtocol
+import struct Yosemite.POSOrder
+import Combine
+import enum Yosemite.OrderStatusEnum
+import struct Yosemite.POSCartItem
 
 final class PointOfSaleDashboardViewModel: ObservableObject {
     enum PaymentState {
@@ -11,14 +16,23 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
     }
 
     @Published private(set) var items: [POSItem]
-    @Published private(set) var itemsInCart: [CartItem] = [] {
-        didSet {
-            calculateAmounts()
-        }
-    }
+    @Published private(set) var itemsInCart: [CartItem] = []
+
+    // Total amounts
     @Published private(set) var formattedCartTotalPrice: String?
-    @Published private(set) var formattedOrderTotalPrice: String?
-    @Published private(set) var formattedOrderTotalTaxPrice: String?
+    var formattedOrderTotalPrice: String? {
+        return formattedPrice(order?.total, currency: order?.currency)
+    }
+    var formattedOrderTotalTaxPrice: String? {
+        return formattedPrice(order?.totalTax, currency: order?.currency)
+    }
+
+    private func formattedPrice(_ price: String?, currency: String?) -> String? {
+        guard let price, let currency else {
+            return nil
+        }
+        return currencyFormatter.formatAmount(price, with: currency)
+    }
 
     @Published var showsCardReaderSheet: Bool = false
     @Published private(set) var cardPresentPaymentEvent: CardPresentPaymentEvent = .idle
@@ -37,17 +51,22 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
 
     /// Order created the first time the checkout is shown for a given transaction.
     /// If the merchant goes back to the product selection screen and makes changes, this should be updated when they return to the checkout.
-    private var order: Order?
+    @Published private var order: POSOrder?
+    @Published private(set) var isSyncingOrder: Bool = false
+    private let orderService: POSOrderServiceProtocol
+    private var cartSubscription: AnyCancellable?
 
     private let cardPresentPaymentService: CardPresentPaymentFacade
 
     private let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
 
     init(items: [POSItem],
-         cardPresentPaymentService: CardPresentPaymentFacade) {
+         cardPresentPaymentService: CardPresentPaymentFacade,
+         orderService: POSOrderServiceProtocol) {
         self.items = items
         self.cardPresentPaymentService = cardPresentPaymentService
         self.cardReaderConnectionViewModel = CardReaderConnectionViewModel(cardPresentPayment: cardPresentPaymentService)
+        self.orderService = orderService
         observeCardPresentPaymentEvents()
         observeItemsInCartForCartTotal()
     }
@@ -63,11 +82,19 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
     func addItemToCart(_ item: POSItem) {
         let cartItem = CartItem(id: UUID(), item: item, quantity: 1)
         itemsInCart.append(cartItem)
+
+        if orderStage == .finalizing {
+            createOrUpdateOrder()
+        }
     }
 
     func removeItemFromCart(_ cartItem: CartItem) {
         itemsInCart.removeAll(where: { $0.id == cartItem.id })
         checkIfCartEmpty()
+
+        if orderStage == .finalizing {
+            createOrUpdateOrder()
+        }
     }
 
     var itemsInCartLabel: String? {
@@ -90,45 +117,52 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
     func submitCart() {
         // TODO: https://github.com/woocommerce/woocommerce-ios/issues/12810
         orderStage = .finalizing
+
+        createOrUpdateOrder()
     }
 
     func addMoreToCart() {
         orderStage = .building
     }
 
-    private func calculateAmounts() {
-        // TODO: this is just a starting point for this logic, to have something calculated on the fly
-        if let formattedCartTotalPrice = formattedCartTotalPrice,
-           let subtotalAmount = currencyFormatter.convertToDecimal(formattedCartTotalPrice)?.doubleValue {
-            let taxAmount = subtotalAmount * 0.1 // having fixed 10% tax for testing
-            let totalAmount = subtotalAmount + taxAmount
-            formattedOrderTotalTaxPrice = currencyFormatter.formatAmount(Decimal(taxAmount))
-            formattedOrderTotalPrice = currencyFormatter.formatAmount(Decimal(totalAmount))
-        }
+    var areAmountsFullyCalculated: Bool {
+        return isSyncingOrder == false && formattedOrderTotalTaxPrice != nil && formattedOrderTotalPrice != nil
+    }
+
+    var showRecalculateButton: Bool {
+        return !areAmountsFullyCalculated && isSyncingOrder == false
+    }
+
+    var checkoutButtonDisabled: Bool {
+        return itemsInCart.isEmpty
     }
 
     func cardPaymentTapped() {
         Task { @MainActor in
+            guard let order else {
+                return
+            }
             showsCreatingOrderSheet = true
 
-            // Once we have finalised order creation/update, this check shouldn't be required.
-            // Instead, we should have whatever code does the order creation/update kick off this connection process.
-            guard let order = try? await createOrUpdateTestOrder() else {
-                showsCardReaderSheet = false
-                return DDLogError("Error creating or updating order")
-            }
+            let finalOrder = orderService.order(from: order)
 
             showsCreatingOrderSheet = false
-            try await collectPayment(for: order)
+            try await collectPayment(for: finalOrder)
         }
     }
 
     @MainActor
     private func collectPayment(for order: Order) async throws {
-        let _ = try await cardPresentPaymentService.collectPayment(for: order, using: .bluetooth)
+        let result = try await cardPresentPaymentService.collectPayment(for: order, using: .bluetooth)
 
         // TODO: Here we should present something to show the payment was successful or not,
         // and then clear the screen ready for the next transaction.
+        switch result {
+        case .success(let cardPresentPaymentTransaction):
+            print("🟢 [POS] Payment successful: \(cardPresentPaymentTransaction)")
+        case .cancellation:
+            print("🟡 [POS] Payment cancelled")
+        }
     }
 
     @MainActor
@@ -138,7 +172,7 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
         if cardReaderConnectionViewModel.connectionStatus == .connected {
             // Once we have finalised order creation/update, this check shouldn't be required.
             // Instead, we should have whatever code does the order creation/update kick off this connection process.
-            guard let order = try? await createOrUpdateTestOrder() else {
+            guard let order else {
                 return DDLogError("Error creating or updating order")
             }
 
@@ -147,11 +181,39 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
                 // Proper cancellation isn't implemented yet, so that can lead to some unwanted behaviour, but currently
                 // if you go back during a payment, it will still complete.
                 // TODO: We should consider disabling the `Add More` button when the shopper taps their card.
-                try await collectPayment(for: order)
+                let finalOrder = orderService.order(from: order)
+
+                try await collectPayment(for: finalOrder)
             } catch {
                 DDLogError("Error taking payment: \(error)")
             }
         }
+    }
+
+    @MainActor
+    func updateOrderStatus(_ status: OrderStatusEnum) async throws -> POSOrder? {
+        guard let order else {
+            return nil
+        }
+        let updatedOrder = try await self.orderService.updateOrderStatus(posOrder: order, status: status)
+        return updatedOrder
+    }
+
+    func calculateAmountsTapped() {
+        createOrUpdateOrder()
+    }
+
+    private func createOrUpdateOrder() {
+        Task { @MainActor in
+            await syncOrder(for: itemsInCart)
+        }
+    }
+
+    func startNewTransaction() {
+        // clear cart
+        itemsInCart.removeAll()
+        orderStage = .building
+        order = nil
     }
 }
 
@@ -208,49 +270,54 @@ private extension PointOfSaleDashboardViewModel {
             }
         }.assign(to: &$showsCardReaderSheet)
     }
+
+    @MainActor
+    private func syncOrder(for cartProducts: [CartItem]) async {
+        guard isSyncingOrder == false else {
+            return
+        }
+        isSyncingOrder = true
+        let cart = cartProducts
+            .map {
+                POSCartItem(itemID: nil,
+                            product: $0.item,
+                            quantity: Decimal($0.quantity))
+            }
+        defer {
+            self.isSyncingOrder = false
+        }
+        do {
+            self.isSyncingOrder = true
+            let order = try await self.orderService.syncOrder(cart: cart,
+                                                              order: self.order,
+                                                              allProducts: self.items)
+            self.order = order
+            print("🟢 [POS] Synced order: \(order)")
+        } catch {
+            print("🔴 [POS] Error syncing order: \(error)")
+        }
+    }
+}
+
+private extension PointOfSaleDashboardViewModel {
+    enum OrderSyncError: Error {
+        case selfDeallocated
+    }
 }
 
 import enum Yosemite.OrderAction
 import struct Yosemite.Order
-@MainActor
 private extension PointOfSaleDashboardViewModel {
-    private func createOrUpdateTestOrder() async throws -> Order {
-        if let order {
-            let updatedOrder = try await update(order: order, amount: formattedOrderTotalPrice ?? "15.00")
-            self.order = updatedOrder
-            return updatedOrder
-        } else {
-            let order = try await createTestOrder(amount: formattedOrderTotalPrice ?? "15.00")
-            self.order = order
-            return order
-        }
-    }
-
-    func createTestOrder(amount: String = "15.00") async throws -> Order {
+    @MainActor
+       func createTestOrder() async throws -> Order {
            return try await withCheckedThrowingContinuation { continuation in
                let action = OrderAction.createSimplePaymentsOrder(siteID: ServiceLocator.stores.sessionManager.defaultStoreID ?? 0,
                                                                   status: .pending,
-                                                                  amount: amount,
+                                                                  amount: "15.00",
                                                                   taxable: false) { result in
                    continuation.resume(with: result)
                }
                ServiceLocator.stores.dispatch(action)
            }
        }
-
-    func update(order: Order, amount: String) async throws -> Order {
-        return try await withCheckedThrowingContinuation { continuation in
-            let action = OrderAction.updateSimplePaymentsOrder(siteID: ServiceLocator.stores.sessionManager.defaultStoreID ?? 0,
-                                                               orderID: order.orderID,
-                                                               feeID: order.fees.first?.feeID ?? 0,
-                                                               status: .autoDraft,
-                                                               amount: amount,
-                                                               taxable: false,
-                                                               orderNote: order.customerNote,
-                                                               email: "") { result in
-                continuation.resume(with: result)
-            }
-            ServiceLocator.stores.dispatch(action)
-        }
-    }
 }

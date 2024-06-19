@@ -12,22 +12,42 @@ struct TotalsView: View {
     var body: some View {
         HStack {
             VStack(alignment: .leading) {
-                VStack(alignment: .leading, spacing: 32) {
-                    HStack(spacing: 40) {
-                        priceFieldView(title: "Subtotal", formattedPrice: viewModel.formattedCartTotalPrice ?? "-")
-                        priceFieldView(title: "Taxes", formattedPrice: viewModel.formattedOrderTotalTaxPrice ?? "-")
+                VStack {
+                    cardReaderView
+                        .font(.title)
+                        .padding()
+                    // Temporarily removed because the CardReaderView is doing this job right now.
+    //                paymentsView
+    //                    .padding()
+                    VStack(alignment: .leading, spacing: 32) {
+                        Spacer()
+                        HStack {
+                            VStack(spacing: 10) {
+                                priceFieldView(title: "Subtotal", formattedPrice: viewModel.formattedCartTotalPrice, shimmeringActive: false)
+                                Divider()
+                                priceFieldView(title: "Taxes", formattedPrice: viewModel.formattedOrderTotalTaxPrice, shimmeringActive: viewModel.isSyncingOrder)
+                                Divider()
+                                totalPriceView(formattedPrice: viewModel.formattedOrderTotalPrice)
+                            }
+                            .padding()
+                        }
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 8)
+                                .stroke(Color.primaryText, lineWidth: 1)
+                        )
+                        if viewModel.showRecalculateButton {
+                            Button("Calculate amounts") {
+                                viewModel.calculateAmountsTapped()
+                            }
+                        }
+                        Spacer()
                     }
-                    totalPriceView(formattedPrice: viewModel.formattedOrderTotalPrice ?? "-")
-                }
-                .padding()
-                Spacer()
-                cardReaderView
-                    .font(.title)
                     .padding()
-                // Temporarily removed because the CardReaderView is doing this job right now.
-//                paymentsView
-//                    .padding()
-                Spacer()
+                    Spacer()
+                }
+                .background(
+                    LinearGradient(gradient: Gradient(colors: [.clear, Color.purple]), startPoint: .top, endPoint: .bottom)
+                )
                 paymentsActionButtons
                     .padding()
             }
@@ -42,6 +62,10 @@ struct TotalsView: View {
                 Text("Creating order")
             }
         }
+    }
+
+    private var paymentButtonsDisabled: Bool {
+        return !viewModel.areAmountsFullyCalculated
     }
 }
 
@@ -103,6 +127,7 @@ private extension TotalsView {
     private var newTransactionButton: some View {
         Button("New transaction") {
             paymentState = .acceptingCard
+            viewModel.startNewTransaction()
         }
         .padding(30)
         .font(.title)
@@ -146,32 +171,43 @@ private extension TotalsView {
         }
     }
 
-    @ViewBuilder func priceFieldView(title: String, formattedPrice: String) -> some View {
-        VStack(alignment: .leading, spacing: .zero) {
+    @ViewBuilder func priceFieldView(title: String, formattedPrice: String?, shimmeringActive: Bool) -> some View {
+        HStack(alignment: .center, spacing: .zero) {
             Text(title)
-            Text(formattedPrice)
-                .font(.title2)
-                .fontWeight(.medium)
+                .font(Font.system(size: 20))
+                .fontWeight(.semibold)
+            Spacer()
+            Text(formattedPrice ?? "-----")
+                .font(Font.system(size: 20))
+                .redacted(reason: formattedPrice == nil ? [.placeholder] : [])
+                .shimmering(active: shimmeringActive)
         }
         .foregroundColor(Color.primaryText)
     }
 
-    @ViewBuilder func totalPriceView(formattedPrice: String) -> some View {
-        VStack(alignment: .leading, spacing: .zero) {
+    @ViewBuilder func totalPriceView(formattedPrice: String?) -> some View {
+        HStack(alignment: .center, spacing: .zero) {
             Text("Total")
-                .font(.title2)
-                .fontWeight(.medium)
-            Text(formattedPrice)
-                .font(.largeTitle)
+                .font(Font.system(size: 21))
+                .fontWeight(.semibold)
+            Spacer()
+            Text(formattedPrice ?? "-----")
+                .font(Font.system(size: 40))
                 .bold()
+                .redacted(reason: formattedPrice == nil ? [.placeholder] : [])
+                .shimmering(active: viewModel.isSyncingOrder)
         }
         .foregroundColor(Color.primaryText)
     }
 }
 
 #if DEBUG
+import class Yosemite.POSOrderService
+import enum Yosemite.Credentials
 #Preview {
     TotalsView(viewModel: .init(items: [],
-                                cardPresentPaymentService: CardPresentPaymentPreviewService()))
+                                cardPresentPaymentService: CardPresentPaymentPreviewService(),
+                                orderService: POSOrderService(siteID: Int64.min,
+                                                              credentials: Credentials(authToken: "token"))))
 }
 #endif

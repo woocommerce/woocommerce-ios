@@ -111,7 +111,7 @@ final class DashboardViewModel: ObservableObject {
          userDefaults: UserDefaults = .standard,
          usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter = StoreStatsUsageTracksEventEmitter(),
          blazeEligibilityChecker: BlazeEligibilityCheckerProtocol = BlazeEligibilityChecker(),
-         inboxEligibilityChecker: InboxEligibilityChecker? = nil) {
+         inboxEligibilityChecker: InboxEligibilityChecker = InboxEligibilityUseCase()) {
         self.siteID = siteID
         self.stores = stores
         self.storageManager = storageManager
@@ -135,7 +135,7 @@ final class DashboardViewModel: ObservableObject {
         self.productStockCardViewModel = ProductStockDashboardCardViewModel(siteID: siteID)
         self.lastOrdersCardViewModel = LastOrdersDashboardCardViewModel(siteID: siteID)
 
-        self.inboxEligibilityChecker = inboxEligibilityChecker ?? InboxEligibilityUseCase()
+        self.inboxEligibilityChecker = inboxEligibilityChecker
         self.usageTracksEventEmitter = usageTracksEventEmitter
 
         self.inAppFeedbackCardViewModel.onFeedbackGiven = { [weak self] feedback in

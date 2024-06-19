@@ -5,7 +5,6 @@ import protocol WooFoundation.Analytics
 
 /// Provides the local announcements to be displayed on the dashboard tab.
 ///
-@MainActor
 final class LocalAnnouncementsProvider {
     private let stores: StoresManager
     private let analytics: Analytics
@@ -25,6 +24,7 @@ final class LocalAnnouncementsProvider {
     /// is eligible and hasn't been dismissed before.
     /// - Returns: An announcement to be displayed, if it's eligible and hasn't been dismissed before. `nil` is returned if there
     ///            is no announcement to be displayed.
+    @MainActor
     func loadAnnouncement() async -> LocalAnnouncementViewModel? {
         for announcement in announcements {
             guard isEligible(announcement: announcement), await isVisible(announcement: announcement) else {

@@ -123,7 +123,7 @@ final class HubMenuViewModel: ObservableObject {
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          stores: StoresManager = ServiceLocator.stores,
          generalAppSettings: GeneralAppSettingsStorage = ServiceLocator.generalAppSettings,
-         inboxEligibilityChecker: InboxEligibilityChecker? = nil,
+         inboxEligibilityChecker: InboxEligibilityChecker = InboxEligibilityUseCase(),
          blazeEligibilityChecker: BlazeEligibilityCheckerProtocol = BlazeEligibilityChecker()) {
         self.siteID = siteID
         self.tapToPayBadgePromotionChecker = tapToPayBadgePromotionChecker
@@ -131,7 +131,7 @@ final class HubMenuViewModel: ObservableObject {
         self.featureFlagService = featureFlagService
         self.generalAppSettings = generalAppSettings
         self.switchStoreEnabled = stores.isAuthenticatedWithoutWPCom == false
-        self.inboxEligibilityChecker = inboxEligibilityChecker ?? InboxEligibilityUseCase()
+        self.inboxEligibilityChecker = inboxEligibilityChecker
         self.blazeEligibilityChecker = blazeEligibilityChecker
         self.cardPresentPaymentsOnboarding = CardPresentPaymentsOnboardingUseCase()
         self.posEligibilityChecker = POSEligibilityChecker(cardPresentPaymentsOnboarding: cardPresentPaymentsOnboarding,

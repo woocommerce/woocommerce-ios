@@ -18,7 +18,7 @@ final class CustomerDetailViewModelTests: XCTestCase {
         assertEqual(customer.name, vm.name)
         assertEqual(customer.email, vm.email)
         assertEqual(dateFormatter.string(from: try XCTUnwrap(customer.dateRegistered)), vm.dateRegistered)
-        assertEqual(dateFormatter.string(from: customer.dateLastActive), vm.dateLastActive)
+        assertEqual(dateFormatter.string(from: try XCTUnwrap(customer.dateLastActive)), vm.dateLastActive)
         assertEqual(customer.ordersCount.description, vm.ordersCount)
         assertEqual("$10.00", vm.totalSpend)
         assertEqual("$5.00", vm.avgOrderValue)
@@ -35,7 +35,7 @@ final class CustomerDetailViewModelTests: XCTestCase {
                                                        email: "",
                                                        username: "",
                                                        dateRegistered: .some(nil),
-                                                       dateLastActive: Date(),
+                                                       dateLastActive: .some(nil),
                                                        ordersCount: 0,
                                                        totalSpend: 0,
                                                        averageOrderValue: 0,
@@ -49,12 +49,12 @@ final class CustomerDetailViewModelTests: XCTestCase {
 
         // Then
         assertEqual("Guest", vm.name)
-        assertEqual(dateFormatter.string(from: customer.dateLastActive), vm.dateLastActive)
         assertEqual(customer.ordersCount.description, vm.ordersCount)
         assertEqual("$0.00", vm.totalSpend)
         assertEqual("$0.00", vm.avgOrderValue)
         XCTAssertNil(vm.email)
         XCTAssertNil(vm.dateRegistered)
+        XCTAssertNil(vm.dateLastActive)
         XCTAssertNil(vm.country)
         XCTAssertNil(vm.region)
         XCTAssertNil(vm.city)

@@ -2,9 +2,11 @@ import UIKit
 import Yosemite
 import WordPressUI
 
-final class AddAttributeViewController: UIViewController {
+final class AddAttributeViewController: UIViewController, GhostableViewController {
 
     @IBOutlet private weak var tableView: UITableView!
+
+    lazy var ghostTableViewController = GhostTableViewController(options: GhostTableViewOptions(cellClass: WooBasicTableViewCell.self))
 
     private let viewModel: AddAttributeViewModel
 
@@ -89,11 +91,13 @@ private extension AddAttributeViewController {
             case .initialized:
                 break
             case .syncing:
-                break
+                self?.displayGhostContent()
             case .failed:
+                self?.removeGhostContent()
                 self?.displaySyncingErrorNotice()
             case .synced:
                 self?.tableView.reloadData()
+                self?.removeGhostContent()
             }
         }
     }

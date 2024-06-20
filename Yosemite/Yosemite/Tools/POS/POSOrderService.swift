@@ -125,16 +125,6 @@ public final class POSOrderService: POSOrderServiceProtocol {
         return POSOrder(order: syncedOrder)
     }
 
-    private func createInitialOrder(from posOrder: POSOrder?) -> Order {
-        if let posOrder {
-            return order(from: posOrder)
-        }
-        else {
-            //    TODO: handle WC version under 6.3 when auto-draft status is unavailable as in `NewOrderInitialStatusResolver`
-            return OrderFactory.emptyNewOrder.copy(siteID: siteID, status: .autoDraft)
-        }
-    }
-
     public func updateOrderStatus(posOrder: POSOrder, status: OrderStatusEnum) async throws -> POSOrder {
         let order: Order = order(from: posOrder)
 
@@ -150,6 +140,17 @@ public final class POSOrderService: POSOrderServiceProtocol {
                                                total: posOrder.total,
                                                totalTax: posOrder.totalTax,
                                                items: posOrder.items.map { $0.toOrderItem() })
+    }
+}
+
+private extension POSOrderService {
+    func createInitialOrder(from posOrder: POSOrder?) -> Order {
+        if let posOrder {
+            return order(from: posOrder)
+        }
+        else {
+            return OrderFactory.emptyNewOrder.copy(siteID: siteID, status: .autoDraft)
+        }
     }
 }
 

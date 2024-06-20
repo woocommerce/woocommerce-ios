@@ -287,9 +287,7 @@ private extension PointOfSaleDashboardViewModel {
                                                               allProducts: self.items)
             self.order = order
             // TODO: this is temporary solution
-            Task {
-                await self.totalsViewWillAppear()
-            }
+            await totalsViewWillAppear()
             DDLogInfo("🟢 [POS] Synced order: \(order)")
         } catch {
             DDLogError("🔴 [POS] Error syncing order: \(error)")

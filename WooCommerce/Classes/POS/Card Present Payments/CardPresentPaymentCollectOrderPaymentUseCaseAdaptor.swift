@@ -113,47 +113,46 @@ private extension CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
         switch paymentEventDetails {
             case .scanningForReaders(let endSearch):
                 endSearch()
-            case .scanningFailed(let error, let endSearch):
+            case .scanningFailed(_, let endSearch):
                 endSearch()
-            case .bluetoothRequired(let error, let endSearch):
+            case .bluetoothRequired(_, let endSearch):
                 endSearch()
             case .connectingToReader:
                 // TODO: cancel connection if possible?
                 return
-            case .connectingFailed(let error, let retrySearch, let endSearch):
+            case .connectingFailed(_, _, let endSearch):
                 endSearch()
-            case .connectingFailedNonRetryable(let error, let endSearch):
+            case .connectingFailedNonRetryable(_, let endSearch):
                 endSearch()
-            case .connectingFailedUpdatePostalCode(let retrySearch, let endSearch):
+            case .connectingFailedUpdatePostalCode(_, let endSearch):
                 endSearch()
-            case .connectingFailedChargeReader(let retrySearch, let endSearch):
+            case .connectingFailedChargeReader(_, let endSearch):
                 endSearch()
-            case .connectingFailedUpdateAddress(let wcSettingsAdminURL, let retrySearch, let endSearch):
+            case .connectingFailedUpdateAddress(_, _, let endSearch):
                 endSearch()
-            case .foundReader(let name, let connect, let continueSearch, let endSearch):
+            case .foundReader(_, _, _, let endSearch):
                 endSearch()
-            case .updateProgress(let requiredUpdate, let progress, let cancelUpdate):
-                // TODO: handle optional case if possible?
+            case .updateProgress(_, _, let cancelUpdate):
                 cancelUpdate?()
-            case .updateFailed(let tryAgain, let cancelUpdate):
+            case .updateFailed(_, let cancelUpdate):
                 cancelUpdate()
             case .updateFailedNonRetryable(let cancelUpdate):
                 cancelUpdate()
-            case .updateFailedLowBattery(let batteryLevel, let cancelUpdate):
+            case .updateFailedLowBattery(_, let cancelUpdate):
                 cancelUpdate()
             case .preparingForPayment(cancelPayment: let cancelPayment):
                 cancelPayment()
-            case .tapSwipeOrInsertCard(inputMethods: let inputMethods, cancelPayment: let cancelPayment):
+            case .tapSwipeOrInsertCard(_, cancelPayment: let cancelPayment):
                 cancelPayment()
             case .paymentSuccess(done: let done):
                 done()
-            case .paymentError(error: let error, tryAgain: let tryAgain, cancelPayment: let cancelPayment):
+            case .paymentError(_, _, cancelPayment: let cancelPayment):
                 cancelPayment()
-            case .paymentErrorNonRetryable(error: let error, cancelPayment: let cancelPayment):
+            case .paymentErrorNonRetryable(_, cancelPayment: let cancelPayment):
                 cancelPayment()
             case .processing:
                 cancelPayment()
-            case .displayReaderMessage(message: let message):
+            case .displayReaderMessage:
                 cancelPayment()
             /// An alert to notify the merchant that the transaction was cancelled using a button on the reader
             case .cancelledOnReader:
@@ -170,9 +169,7 @@ private extension CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
 
 private extension CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
     func cancelReaderSearch() {
-        stores.dispatch(CardPresentPaymentAction.cancelCardReaderDiscovery() { [weak self] _ in
-            //            self?.returnSuccess(result: .canceled(cancellationSource))
-        })
+        stores.dispatch(CardPresentPaymentAction.cancelCardReaderDiscovery() { _ in })
     }
 
     func cancelReaderConnection() {
@@ -180,9 +177,8 @@ private extension CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
     }
 
     func cancelPayment() {
-        stores.dispatch(CardPresentPaymentAction.cancelPayment() { [weak self] result in
-            // TODO: implement allowPassPresentation when Tap To Pay is supported
-//            self?.allowPassPresentation()
+        stores.dispatch(CardPresentPaymentAction.cancelPayment() { _ in
+            // TODO: implement allowPassPresentation when Tap To Pay is supported following `PaymentCaptureOrchestrator.allowPassPresentation`
         })
     }
 }

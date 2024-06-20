@@ -54,7 +54,6 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
     @Published private var order: POSOrder?
     @Published private(set) var isSyncingOrder: Bool = false
     private let orderService: POSOrderServiceProtocol
-    private var cartSubscription: AnyCancellable?
 
     private let cardPresentPaymentService: CardPresentPaymentFacade
 
@@ -84,7 +83,7 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
         itemsInCart.append(cartItem)
 
         if orderStage == .finalizing {
-            createOrUpdateOrder()
+            startSyncingOrder()
         }
     }
 
@@ -93,7 +92,7 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
         checkIfCartEmpty()
 
         if orderStage == .finalizing {
-            createOrUpdateOrder()
+            startSyncingOrder()
         }
     }
 
@@ -118,7 +117,7 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
         // TODO: https://github.com/woocommerce/woocommerce-ios/issues/12810
         orderStage = .finalizing
 
-        createOrUpdateOrder()
+        startSyncingOrder()
     }
 
     func addMoreToCart() {
@@ -200,10 +199,10 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
     }
 
     func calculateAmountsTapped() {
-        createOrUpdateOrder()
+        startSyncingOrder()
     }
 
-    private func createOrUpdateOrder() {
+    private func startSyncingOrder() {
         Task { @MainActor in
             await syncOrder(for: itemsInCart)
         }

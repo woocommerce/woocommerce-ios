@@ -162,10 +162,8 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
         // and then clear the screen ready for the next transaction.
         switch paymentResult {
         case .success(let cardPresentPaymentTransaction):
-            print("🟢 [POS] Payment successful: \(cardPresentPaymentTransaction)")
             paymentState = .cardPaymentSuccessful
         case .cancellation:
-            print("🟡 [POS] Payment cancelled")
             paymentState = .acceptingCard
         }
     }
@@ -292,9 +290,9 @@ private extension PointOfSaleDashboardViewModel {
             Task {
                 await self.totalsViewWillAppear()
             }
-            print("🟢 [POS] Synced order: \(order)")
+            DDLogInfo("🟢 [POS] Synced order: \(order)")
         } catch {
-            print("🔴 [POS] Error syncing order: \(error)")
+            DDLogError("🔴 [POS] Error syncing order: \(error)")
         }
     }
 }

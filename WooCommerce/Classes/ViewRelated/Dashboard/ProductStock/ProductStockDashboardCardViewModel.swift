@@ -42,7 +42,7 @@ final class ProductStockDashboardCardViewModel: ObservableObject {
             reports = stock.compactMap { item in
                 savedReports[item.productID]
             }
-            .sorted { $0.stockQuantity < $1.stockQuantity }
+            .sorted { ($0.stockQuantity ?? 0) < ($1.stockQuantity ?? 0) }
         } catch {
             syncingError = error
         }

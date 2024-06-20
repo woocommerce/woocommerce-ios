@@ -132,10 +132,6 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
         return !areAmountsFullyCalculated && isSyncingOrder == false
     }
 
-    var checkoutButtonDisabled: Bool {
-        return itemsInCart.isEmpty
-    }
-
     func cardPaymentTapped() {
         Task { @MainActor in
             guard let order else {

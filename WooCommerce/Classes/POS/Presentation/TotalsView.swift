@@ -132,6 +132,9 @@ private extension TotalsView {
             }
         case .disconnected:
             Text("Reader disconnected")
+            Button(action: viewModel.cardPaymentTapped) {
+                Text("Collect Payment")
+            }
         }
     }
 

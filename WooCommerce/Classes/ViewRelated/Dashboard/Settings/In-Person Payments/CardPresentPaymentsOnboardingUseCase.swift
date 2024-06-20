@@ -390,9 +390,11 @@ private extension CardPresentPaymentsOnboardingUseCase {
             return .stripeAccountUnderReview(plugin: plugin)
         }
         guard !isStripeAccountOverdueRequirements(account: account) else {
+            logMissingRequirements(for: account)
             return .stripeAccountOverdueRequirement(plugin: plugin)
         }
         guard !shouldShowPendingRequirements(account: account) else {
+            logMissingRequirements(for: account)
             return .stripeAccountPendingRequirement(plugin: plugin, deadline: account.currentDeadline)
         }
         guard !isStripeAccountRejected(account: account) else {
@@ -559,6 +561,19 @@ private extension CardPresentPaymentsOnboardingUseCase {
                                                                                 countryCode: storeCountryCode,
                                                                                 error: error,
                                                                                 gatewayID: preferredPluginLocal?.gatewayID))
+    }
+
+    func logMissingRequirements(for account: PaymentGatewayAccount) {
+        let log = """
+            ❌ Account has missing requirements:
+            Gateway ID: \(account.gatewayID)
+            Account status: \(account.status)
+            WCPay status: \(account.wcpayStatus)
+            Has pending requirements? \(account.hasPendingRequirements)
+            Has overdue requirements? \(account.hasOverdueRequirements)
+            Deadline: \(String(describing: account.currentDeadline))
+            """
+        DDLogError(log)
     }
 }
 

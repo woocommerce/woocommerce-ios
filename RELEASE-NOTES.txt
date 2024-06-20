@@ -2,6 +2,7 @@
 
 19.2
 -----
+- [*] Internal: Add additional logs for payment gateway accounts missing requirements. [https://github.com/woocommerce/woocommerce-ios/pull/13078]
 - [*] The `Private` tag was not displayed for products set to private on the product list tab. [https://github.com/woocommerce/woocommerce-ios/pull/13083]
 - [*] Product Form: Support picking videos from local library for downloadable files. [https://github.com/woocommerce/woocommerce-ios/pull/13051]
 - [*] Disable bookable products from the order creation form. [https://github.com/woocommerce/woocommerce-ios/pull/13022]

@@ -162,7 +162,7 @@ private extension ProductStockDashboardCard {
                                     .multilineTextAlignment(.leading)
                                 }
                                 Spacer()
-                                Text("\(element.stockQuantity ?? 0)")
+                                Text("\(Decimal(4.6))")
                                     .foregroundStyle(Color(.error))
                                     .bodyStyle()
                                     .fontWeight(.semibold)

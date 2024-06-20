@@ -3,8 +3,6 @@ import SwiftUI
 struct TotalsView: View {
     @ObservedObject private var viewModel: PointOfSaleDashboardViewModel
 
-    @State var paymentState: PointOfSaleDashboardViewModel.PaymentState = .acceptingCard
-
     init(viewModel: PointOfSaleDashboardViewModel) {
         self.viewModel = viewModel
     }
@@ -80,7 +78,7 @@ private extension TotalsView {
 
     @ViewBuilder
     private var paymentsTextView: some View {
-        switch paymentState {
+        switch viewModel.paymentState {
         case .acceptingCard:
             tapInsertCardView
         case .processingCard:
@@ -91,42 +89,15 @@ private extension TotalsView {
     }
 
     @ViewBuilder
-    private var paymentsIconView: some View {
-        switch paymentState {
-        case .acceptingCard:
-            EmptyView()
-        case .processingCard:
-            EmptyView()
-        case .cardPaymentSuccessful:
-            EmptyView()
-        }
-    }
-
-    @ViewBuilder
     private var paymentsView: some View {
         VStack {
             paymentsTextView
                 .font(.title)
-            paymentsIconView
         }
-    }
-
-    private var provideReceiptButton: some View {
-        Button("Provide receipt") {}
-        .padding(30)
-        .font(.title)
-        .foregroundColor(Color.primaryText)
-        .background(Color.secondaryBackground)
-        .cornerRadius(16)
-        .overlay(
-            RoundedRectangle(cornerRadius: 16)
-                .stroke(Color.primaryText, lineWidth: 2)
-        )
     }
 
     private var newTransactionButton: some View {
         Button("New transaction") {
-            paymentState = .acceptingCard
             viewModel.startNewTransaction()
         }
         .padding(30)
@@ -140,19 +111,15 @@ private extension TotalsView {
 
     @ViewBuilder
     private var paymentsActionButtons: some View {
-        VStack {
-            switch paymentState {
-            case .acceptingCard:
-                EmptyView()
-            case .processingCard:
-                EmptyView()
-            case .cardPaymentSuccessful:
-                HStack {
-                    provideReceiptButton
-                    Spacer()
-                    newTransactionButton
-                }
-            }
+        if let cardPresentPaymentInlineMessage = viewModel.cardPresentPaymentInlineMessage,
+           case PointOfSaleCardPresentPaymentMessageType.paymentSuccess(_) = cardPresentPaymentInlineMessage {
+            newTransactionButton
+        }
+        else if viewModel.paymentState == .cardPaymentSuccessful {
+            newTransactionButton
+        }
+        else {
+            EmptyView()
         }
     }
 

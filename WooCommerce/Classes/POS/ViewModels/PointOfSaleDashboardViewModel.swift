@@ -48,6 +48,7 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
     }
 
     @Published private(set) var orderStage: OrderStage = .building
+    @Published private(set) var paymentState: PointOfSaleDashboardViewModel.PaymentState = .acceptingCard
 
     /// Order created the first time the checkout is shown for a given transaction.
     /// If the merchant goes back to the product selection screen and makes changes, this should be updated when they return to the checkout.
@@ -148,6 +149,8 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
 
     @MainActor
     private func collectPayment(for order: Order) async throws {
+        paymentState = .processingCard
+
         let paymentResult = try await cardPresentPaymentService.collectPayment(for: order, using: .bluetooth)
 
         // TODO: Here we should present something to show the payment was successful or not,
@@ -155,8 +158,10 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
         switch paymentResult {
         case .success(let cardPresentPaymentTransaction):
             print("🟢 [POS] Payment successful: \(cardPresentPaymentTransaction)")
+            paymentState = .cardPaymentSuccessful
         case .cancellation:
             print("🟡 [POS] Payment cancelled")
+            paymentState = .acceptingCard
         }
     }
 
@@ -208,6 +213,7 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
         // clear cart
         itemsInCart.removeAll()
         orderStage = .building
+        paymentState = .acceptingCard
         order = nil
     }
 }
@@ -287,6 +293,10 @@ private extension PointOfSaleDashboardViewModel {
                                                               order: self.order,
                                                               allProducts: self.items)
             self.order = order
+            // TODO: this is temporary solution
+            Task {
+                await self.totalsViewWillAppear()
+            }
             print("🟢 [POS] Synced order: \(order)")
         } catch {
             print("🔴 [POS] Error syncing order: \(error)")

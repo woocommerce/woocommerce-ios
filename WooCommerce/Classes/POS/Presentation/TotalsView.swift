@@ -23,28 +23,33 @@ struct TotalsView: View {
                             VStack(spacing: 10) {
                                 priceFieldView(title: "Subtotal", formattedPrice: viewModel.formattedCartTotalPrice, shimmeringActive: false)
                                 Divider()
+                                    .overlay(Color.posTotalsSeparator)
                                 priceFieldView(title: "Taxes", formattedPrice: viewModel.formattedOrderTotalTaxPrice, shimmeringActive: viewModel.isSyncingOrder)
                                 Divider()
+                                    .overlay(Color.posTotalsSeparator)
                                 totalPriceView(formattedPrice: viewModel.formattedOrderTotalPrice)
                             }
                             .padding()
                         }
                         .overlay(
                             RoundedRectangle(cornerRadius: 8)
-                                .stroke(Color.primaryText, lineWidth: 1)
+                                .stroke(Color.posTotalsSeparator, lineWidth: 1)
                         )
                         if viewModel.showRecalculateButton {
                             Button("Calculate amounts") {
                                 viewModel.calculateAmountsTapped()
                             }
                         }
-                        Spacer()
                     }
-                    .padding()
-                    Spacer()
+                    .padding(50)
                 }
                 .background(
-                    LinearGradient(gradient: Gradient(colors: [.clear, Color.purple]), startPoint: .top, endPoint: .bottom)
+                    LinearGradient(gradient: Gradient(stops: [
+                        Gradient.Stop(color: Color.clear, location: 0.0),
+                        Gradient.Stop(color: Color.posTotalsGradientPurple, location: 1.0)
+                    ]),
+                                   startPoint: .top,
+                                   endPoint: .bottom)
                 )
                 paymentsActionButtons
                     .padding()
@@ -134,7 +139,6 @@ private extension TotalsView {
         HStack(alignment: .center, spacing: .zero) {
             Text(title)
                 .font(Font.system(size: 20))
-                .fontWeight(.semibold)
             Spacer()
             Text(formattedPrice ?? "-----")
                 .font(Font.system(size: 20))

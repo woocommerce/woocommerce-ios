@@ -106,11 +106,7 @@ private extension TotalsView {
 
     @ViewBuilder
     private var paymentsActionButtons: some View {
-        if let cardPresentPaymentInlineMessage = viewModel.cardPresentPaymentInlineMessage,
-           case PointOfSaleCardPresentPaymentMessageType.paymentSuccess(_) = cardPresentPaymentInlineMessage {
-            newTransactionButton
-        }
-        else if viewModel.paymentState == .cardPaymentSuccessful {
+        if viewModel.paymentState == .cardPaymentSuccessful {
             newTransactionButton
         }
         else {

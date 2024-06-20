@@ -40,8 +40,6 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
     @Published private(set) var cardPresentPaymentInlineMessage: PointOfSaleCardPresentPaymentMessageType?
     let cardReaderConnectionViewModel: CardReaderConnectionViewModel
 
-    @Published var showsCreatingOrderSheet: Bool = false
-
     enum OrderStage {
         case building
         case finalizing
@@ -135,15 +133,21 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
 
     func cardPaymentTapped() {
         Task { @MainActor in
-            guard let order else {
-                return
-            }
-            showsCreatingOrderSheet = true
+            await collectPayment()
+        }
+    }
 
+    @MainActor
+    private func collectPayment() async {
+        guard let order,
+              cardReaderConnectionViewModel.connectionStatus == .connected else {
+            return
+        }
+        do {
             let finalOrder = orderService.order(from: order)
-
-            showsCreatingOrderSheet = false
             try await collectPayment(for: finalOrder)
+        } catch {
+            DDLogError("Error taking payment: \(error)")
         }
     }
 
@@ -167,27 +171,17 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
 
     @MainActor
     func totalsViewWillAppear() async {
+        await collectPayment()
         // Digging in to the connection viewmodel here is a bit of a shortcut, we should improve this.
         // TODO: Have our own subscription to the connected readers
-        if cardReaderConnectionViewModel.connectionStatus == .connected {
-            // Once we have finalised order creation/update, this check shouldn't be required.
-            // Instead, we should have whatever code does the order creation/update kick off this connection process.
-            guard let order else {
-                return DDLogError("Error creating or updating order")
-            }
 
-            do {
-                // Since this function is called from a `task`, it'll be cancelled automatically if the view is removed.
-                // Proper cancellation isn't implemented yet, so that can lead to some unwanted behaviour, but currently
-                // if you go back during a payment, it will still complete.
-                // TODO: We should consider disabling the `Add More` button when the shopper taps their card.
-                let finalOrder = orderService.order(from: order)
+        // Once we have finalised order creation/update, this check shouldn't be required.
+        // Instead, we should have whatever code does the order creation/update kick off this connection process.
 
-                try await collectPayment(for: finalOrder)
-            } catch {
-                DDLogError("Error taking payment: \(error)")
-            }
-        }
+        // Since this function is called from a `task`, it'll be cancelled automatically if the view is removed.
+        // Proper cancellation isn't implemented yet, so that can lead to some unwanted behaviour, but currently
+        // if you go back during a payment, it will still complete.
+        // TODO: We should consider disabling the `Add More` button when the shopper taps their card.
     }
 
     @MainActor

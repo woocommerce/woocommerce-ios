@@ -162,7 +162,7 @@ private extension CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
                 cancelReaderSearch()
             /// Connection already completed, before attempting payment
             case .validatingOrder:
-                return
+                cancelPayment()
         }
     }
 }

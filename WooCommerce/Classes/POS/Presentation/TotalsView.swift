@@ -55,11 +55,6 @@ struct TotalsView: View {
             /// This will prepare the reader for payment, if connected
             await viewModel.totalsViewWillAppear()
         }
-        .sheet(isPresented: $viewModel.showsCreatingOrderSheet) {
-            ProgressView {
-                Text("Creating order")
-            }
-        }
     }
 
     private var paymentButtonsDisabled: Bool {
@@ -130,11 +125,12 @@ private extension TotalsView {
                 PointOfSaleCardPresentPaymentInLineMessage(messageType: inlinePaymentMessage)
             } else {
                 Text("Reader connected")
+                Button(action: viewModel.cardPaymentTapped) {
+                    Text("Collect Payment")
+                }
             }
         case .disconnected:
-            Button(action: viewModel.cardPaymentTapped) {
-                Text("Collect Payment")
-            }
+            Text("Reader disconnected")
         }
     }
 

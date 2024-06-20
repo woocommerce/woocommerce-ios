@@ -148,11 +148,11 @@ final class PointOfSaleDashboardViewModel: ObservableObject {
 
     @MainActor
     private func collectPayment(for order: Order) async throws {
-        let result = try await cardPresentPaymentService.collectPayment(for: order, using: .bluetooth)
+        let paymentResult = try await cardPresentPaymentService.collectPayment(for: order, using: .bluetooth)
 
         // TODO: Here we should present something to show the payment was successful or not,
         // and then clear the screen ready for the next transaction.
-        switch result {
+        switch paymentResult {
         case .success(let cardPresentPaymentTransaction):
             print("🟢 [POS] Payment successful: \(cardPresentPaymentTransaction)")
         case .cancellation:

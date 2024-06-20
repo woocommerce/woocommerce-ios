@@ -60,6 +60,9 @@ final class DashboardViewHostingController: UIHostingController<DashboardView> {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        ServiceLocator.analytics.track(.dashboardLoaded)
+
         registerUserActivity()
         presentPrivacyBannerIfNeeded()
         observeModalJustInTimeMessages()

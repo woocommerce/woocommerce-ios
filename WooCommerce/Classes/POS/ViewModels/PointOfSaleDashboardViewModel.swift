@@ -7,6 +7,7 @@ import struct Yosemite.POSOrder
 import Combine
 import enum Yosemite.OrderStatusEnum
 import struct Yosemite.POSCartItem
+import struct Yosemite.Order
 
 final class PointOfSaleDashboardViewModel: ObservableObject {
     enum PaymentState {
@@ -301,22 +302,5 @@ private extension PointOfSaleDashboardViewModel {
 private extension PointOfSaleDashboardViewModel {
     enum OrderSyncError: Error {
         case selfDeallocated
-    }
-}
-
-import enum Yosemite.OrderAction
-import struct Yosemite.Order
-private extension PointOfSaleDashboardViewModel {
-    @MainActor
-    func createTestOrder(amount: String = "15.00") async throws -> Order {
-        return try await withCheckedThrowingContinuation { continuation in
-            let action = OrderAction.createSimplePaymentsOrder(siteID: ServiceLocator.stores.sessionManager.defaultStoreID ?? 0,
-                                                               status: .pending,
-                                                               amount: amount,
-                                                               taxable: false) { result in
-                continuation.resume(with: result)
-            }
-            ServiceLocator.stores.dispatch(action)
-        }
     }
 }
